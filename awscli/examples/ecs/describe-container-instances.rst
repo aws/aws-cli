@@ -1,10 +1,10 @@
 **To describe container instance**
 
-This example command provides a description of the specified container instance in your default region, using the container instance UUID as an identifier.
+This example command provides a description of the specified container instance in the ``update`` cluster, using the container instance UUID as an identifier.
 
 Command::
 
-  aws ecs describe-container-instance --cluster default --container-instances f2756532-8f13-4d53-87c9-aed50dc94cd7
+  aws ecs describe-container-instances --cluster update --container-instances 53ac7152-dcd1-4102-81f5-208962864132
 
 Output::
 
@@ -22,7 +22,7 @@ Output::
 	                    "doubleValue": 0.0
 	                },
 	                {
-	                    "integerValue": 3768,
+	                    "integerValue": 3955,
 	                    "longValue": 0,
 	                    "type": "INTEGER",
 	                    "name": "MEMORY",
@@ -33,29 +33,29 @@ Output::
 	                    "longValue": 0,
 	                    "doubleValue": 0.0,
 	                    "stringSetValue": [
-	                        "2376",
 	                        "22",
-	                        "51678",
-	                        "2375"
+	                        "2376",
+	                        "2375",
+	                        "51678"
 	                    ],
 	                    "type": "STRINGSET",
 	                    "integerValue": 0
 	                }
 	            ],
-	            "ec2InstanceId": "i-807f3249",
+	            "ec2InstanceId": "i-f3c1de3a",
 	            "agentConnected": true,
-	            "containerInstanceArn": "arn:aws:ecs:<region>:<aws_account_id>:container-instance/f2756532-8f13-4d53-87c9-aed50dc94cd7",
+	            "containerInstanceArn": "arn:aws:ecs:us-west-2:<aws_account_id>:container-instance/53ac7152-dcd1-4102-81f5-208962864132",
 	            "pendingTasksCount": 0,
 	            "remainingResources": [
 	                {
-	                    "integerValue": 1948,
+	                    "integerValue": 2048,
 	                    "longValue": 0,
 	                    "type": "INTEGER",
 	                    "name": "CPU",
 	                    "doubleValue": 0.0
 	                },
 	                {
-	                    "integerValue": 3668,
+	                    "integerValue": 3955,
 	                    "longValue": 0,
 	                    "type": "INTEGER",
 	                    "name": "MEMORY",
@@ -66,17 +66,21 @@ Output::
 	                    "longValue": 0,
 	                    "doubleValue": 0.0,
 	                    "stringSetValue": [
-	                        "2376",
 	                        "22",
-	                        "80",
-	                        "51678",
-	                        "2375"
+	                        "2376",
+	                        "2375",
+	                        "51678"
 	                    ],
 	                    "type": "STRINGSET",
 	                    "integerValue": 0
 	                }
 	            ],
-	            "runningTasksCount": 1
+	            "runningTasksCount": 0,
+	            "versionInfo": {
+	                "agentVersion": "1.0.0",
+	                "agentHash": "4023248",
+	                "dockerVersion": "DockerVersion: 1.5.0"
+	            }
 	        }
 	    ]
 	}

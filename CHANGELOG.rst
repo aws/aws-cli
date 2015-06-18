@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.7.35
+======
+
+* feature:``aws ecs``: Add support for DeregisterTaskDefintion and environment
+  variable overrides.
+* bugfix:msi: Fix issue with msi's being installed on Windows 2008 and below.
+
+
 1.7.34
 =======
 

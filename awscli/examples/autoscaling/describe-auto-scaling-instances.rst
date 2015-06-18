@@ -1,33 +1,42 @@
-**To get a description of all the specified instances**
+**To describe one or more instances**
 
-The following ``describe-auto-scaling-instances`` command describes all the specified instances::
+This example describes the specified instance::
 
     aws autoscaling describe-auto-scaling-instances --instance-ids i-4ba0837f
 
-The output of this command is a JSON block that describes the specified instances, similar to the following::
+The following is example output::
 
-    {
-       "AutoScalingInstances": [
-           {
-               "AvailabilityZone": "us-west-2c",
-               "InstanceId": "i-4ba0837f",
-               "AutoScalingGroupName": "my-test-asg",
-               "HealthStatus": "HEALTHY",
-               "LifecycleState": "InService",
-               "LaunchConfigurationName": "my-test-lc"
-           }
-       ]
-    }
+  {
+    "AutoScalingInstances": [
+        {
+            "InstanceId": "i-4ba0837f",
+            "HealthStatus": "HEALTHY",
+            "AvailabilityZone": "us-west-2c",
+            "AutoScalingGroupName": "my-asg",
+            "LifecycleState": "InService"
+        }
+    ]
+  }
 
-To return a specific number of instances with this command, use the ``max-items`` parameter::
+This example uses the ``max-items`` parameter to specify how many instances to return with this call::
 
 	aws autoscaling describe-auto-scaling-instances --max-items 1
 
-This command returns a JSON block that includes a ``NextToken`` field. You can use the value of this field with the ``starting-token`` parameter to return additional Auto Scaling instances::
+The following is example output::
+
+  {
+    "NextToken": "None___1",
+    "AutoScalingInstances": [
+        {
+            "InstanceId": "i-4ba0837f",
+            "HealthStatus": "HEALTHY",
+            "AvailabilityZone": "us-west-2c",
+            "AutoScalingGroupName": "my-asg",
+            "LifecycleState": "InService"
+        }
+    ]
+  }
+
+Notice that the output for this command includes a ``NextToken`` field, which indicates that there are more instances. You can use the value of this field with the ``starting-token`` parameter as follows to return additional instances::
 
     aws autoscaling describe-auto-scaling-instances --starting-token None___1
-
-For more information, see `Basic Auto Scaling Configuration`_ in the *Auto Scaling Developer Guide*.
-
-.. _`Basic Auto Scaling Configuration`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/US_BasicSetup.html
-

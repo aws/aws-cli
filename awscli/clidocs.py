@@ -12,8 +12,8 @@
 # language governing permissions and limitations under the License.
 import logging
 import os
-from bcdoc.docevents import DOC_EVENTS
 from botocore import xform_name
+from botocore.docs.bcdoc.docevents import DOC_EVENTS
 
 from awscli import SCALAR_TYPES
 from awscli.argprocess import ParamShorthandDocGen

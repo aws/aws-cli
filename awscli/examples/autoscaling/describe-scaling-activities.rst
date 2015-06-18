@@ -1,16 +1,16 @@
-**To get a description of the scaling activities in an Auto Scaling group**
+**To get a description of the scaling activities for an Auto Scaling group**
 
-The following ``describe-scaling-activities`` command describes the scaling activities for the specified Auto Scaling group::
+This example describes the scaling activities for the specified Auto Scaling group::
 
-    aws autoscaling describe-scaling-activities --auto-scaling-group-name my-test-asg
+    aws autoscaling describe-scaling-activities --auto-scaling-group-name my-asg
 
-The output of this command is a JSON block that describes the scaling activities for the specified Auto Scaling group, similar to the following::
+The following is example output::
 
       {
           "Activities": [
               {
                   "Description": "Launching a new EC2 instance: i-4ba0837f",
-                  "AutoScalingGroupName": "my-test-asg",
+                  "AutoScalingGroupName": "my-asg",
                   "ActivityId": "f9f2d65b-f1f2-43e7-b46d-d86756459699",
                   "Details": "{"Availability Zone":"us-west-2c"}",
                   "StartTime": "2013-08-19T20:53:29.930Z",
@@ -22,7 +22,7 @@ The output of this command is a JSON block that describes the scaling activities
          ]
       }
 
-To return information on a specific scaling activity, use the ``activity-ids`` parameter::
+To return information about a specific scaling activity, use the ``activity-ids`` parameter::
 
 	aws autoscaling describe-scaling-activities --activity-ids b55c7b67-c8aa-4d10-b240-730ff91d8895
 
@@ -30,11 +30,6 @@ To return a specific number of activities with this command, use the ``max-items
 
 	aws autoscaling describe-scaling-activities --max-items 1
 
-This command returns a JSON block that includes a ``NextToken`` field. You can use the value of this field with the ``starting-token`` parameter to return additional scaling activities::
+If the output for this command includes a ``NextToken`` field, this indicates that there are more activities. You can use the value of this field with the ``starting-token`` parameter as follows to return additional activities::
 
     aws autoscaling describe-scaling-activities --starting-token None___1
-
-For more information, see `Basic Auto Scaling Configuration`_ in the *Auto Scaling Developer Guide*.
-
-.. _`Basic Auto Scaling Configuration`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/US_BasicSetup.html
-

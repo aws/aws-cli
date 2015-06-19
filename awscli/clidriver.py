@@ -219,7 +219,7 @@ class CLIDriver(object):
         self.session.emit(
             'top-level-args-parsed', parsed_args=args, session=self.session)
         if args.profile:
-            self.session.profile = args.profile
+            self.session.set_config_variable('profile', args.profile)
         if args.debug:
             # TODO:
             # Unfortunately, by setting debug mode here, we miss out

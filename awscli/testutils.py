@@ -182,7 +182,8 @@ class BaseCLIDriverTest(unittest.TestCase):
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
         emitter = HierarchicalEmitter()
-        session = Session(EnvironmentVariables, emitter, loader=_LOADER)
+        session = Session(EnvironmentVariables, emitter)
+        session.register_component('data_loader', _LOADER)
         load_plugins({}, event_hooks=emitter)
         driver = CLIDriver(session=session)
         self.session = session

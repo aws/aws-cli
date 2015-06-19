@@ -256,7 +256,7 @@ class ProviderHelpCommand(HelpCommand):
 
     def __init__(self, session, command_table, arg_table,
                  description, synopsis, usage):
-        HelpCommand.__init__(self, session, session.provider,
+        HelpCommand.__init__(self, session, None,
                              command_table, arg_table)
         self.description = description
         self.synopsis = synopsis
@@ -271,7 +271,7 @@ class ProviderHelpCommand(HelpCommand):
 
     @property
     def name(self):
-        return self.obj.name
+        return 'aws'
 
     @property
     def subcommand_table(self):

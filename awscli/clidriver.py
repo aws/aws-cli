@@ -546,7 +546,7 @@ class ServiceOperation(object):
 
     def _add_help(self, parser):
         # The 'help' output is processed a little differently from
-        # the provider/operation help because the arg_table has
+        # the operation help because the arg_table has
         # CLIArguments for values.
         parser.add_argument('help', nargs='?')
 

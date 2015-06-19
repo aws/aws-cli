@@ -209,6 +209,10 @@ class FakeSession(object):
     def get_credentials(self):
         return self.credentials
 
+    def set_config_variable(self, name, value):
+        if name == 'profile':
+            self.profile = value
+
 
 class FakeCommand(BasicCommand):
     def _run_main(self, args, parsed_globals):

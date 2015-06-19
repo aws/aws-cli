@@ -737,44 +737,39 @@ class TestConfigureGetCommand(unittest.TestCase):
 
     def test_get_from_profile(self):
         session = FakeSession({})
-        session.config = {'aws_access_key_id': 'access_key'}
-        session.profile = None
+        session.full_config = {'profiles': {'testing': {'aws_access_key_id': 'access_key'}}}
         stream = StringIO()
         config_get = configure.ConfigureGetCommand(session, stream)
         config_get(args=['profile.testing.aws_access_key_id'],
                    parsed_globals=None)
         rendered = stream.getvalue()
         self.assertEqual(rendered.strip(), 'access_key')
-        self.assertEqual(session.profile, 'testing')
 
     def test_get_nested_attribute(self):
         session = FakeSession({})
-        session.config = {'s3': {'signature_version': 's3v4'}}
-        session.profile = None
+        session.full_config = {
+            'profiles': {'testing': {'s3': {'signature_version': 's3v4'}}}}
         stream = StringIO()
         config_get = configure.ConfigureGetCommand(session, stream)
         config_get(args=['profile.testing.s3.signature_version'],
                    parsed_globals=None)
         rendered = stream.getvalue()
         self.assertEqual(rendered.strip(), 's3v4')
-        self.assertEqual(session.profile, 'testing')
 
     def test_get_nested_attribute_from_default(self):
         session = FakeSession({})
-        session.config = {'s3': {'signature_version': 's3v4'}}
-        session.profile = None
+        session.full_config = {
+            'profiles': {'default': {'s3': {'signature_version': 's3v4'}}}}
         stream = StringIO()
         config_get = configure.ConfigureGetCommand(session, stream)
         config_get(args=['default.s3.signature_version'],
                    parsed_globals=None)
         rendered = stream.getvalue()
         self.assertEqual(rendered.strip(), 's3v4')
-        self.assertEqual(session.profile, 'default')
 
     def test_get_nested_attribute_from_default_does_not_exist(self):
         session = FakeSession({})
-        session.config = {}
-        session.profile = None
+        session.full_config = {'profiles': {}}
         stream = StringIO()
         config_get = configure.ConfigureGetCommand(session, stream)
         config_get(args=['default.s3.signature_version'],

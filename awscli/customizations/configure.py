@@ -498,8 +498,8 @@ class ConfigureGetCommand(BasicCommand):
             config_name = parts[0]
             remaining = parts[1:]
 
-        self._session.profile = profile_name
-        value = self._session.get_scoped_config().get(config_name)
+        value = self._session.full_config['profiles'].get(
+            profile_name, {}).get(config_name)
         if len(remaining) == 1:
             try:
                 value = value.get(remaining[-1])
@@ -556,8 +556,6 @@ class ConfigureCommand(BasicCommand):
     def _run_main(self, parsed_args, parsed_globals):
         # Called when invoked with no args "aws configure"
         new_values = {}
-        if parsed_globals.profile is not None:
-            self._session.profile = parsed_globals.profile
         # This is the config from the config file scoped to a specific
         # profile.
         try:

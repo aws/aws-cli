@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+
+1.7.36
+======
+
+* feature:``aws s3``: Move Content-MD5 calculations into underlying
+  botocore library
+
+
 1.7.35
 ======
 

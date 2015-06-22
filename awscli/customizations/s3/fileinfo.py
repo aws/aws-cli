@@ -216,7 +216,10 @@ class FileInfo(TaskInfo):
                                      'permission=principal')
                 params[self._permission_to_param(permission)] = grantee
         if self.parameters['sse']:
-            params['ServerSideEncryption'] = 'AES256'
+            sse = self.parameters['sse'][0]
+            if sse == 'aws:kms':
+                self.client._request_signer._signature_version = 's3v4'
+            params['ServerSideEncryption'] = sse
         if self.parameters['storage_class']:
             params['StorageClass'] = self.parameters['storage_class'][0]
         if self.parameters['website_redirect']:
@@ -263,9 +266,10 @@ class FileInfo(TaskInfo):
         }
         self._handle_object_params(params)
         response_data = self.client.put_object(**params)
-        etag = response_data['ETag'][1:-1]
-        body.seek(0)
-        check_etag(etag, body)
+        if response_data['ServerSideEncryption'] != 'aws:kms':
+            etag = response_data['ETag'][1:-1]
+            body.seek(0)
+            check_etag(etag, body)
 
     def _inject_content_type(self, params, filename):
         # Add a content type param if we can guess the type.

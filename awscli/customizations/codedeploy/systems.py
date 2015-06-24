@@ -19,6 +19,11 @@ DEFAULT_CONFIG_FILE = 'codedeploy.onpremises.yml'
 
 
 class System:
+    UNSUPPORTED_SYSTEM_MSG = (
+        'Only Ubuntu Server, Red Hat Enterprise Linux Server and '
+        'Windows Server operating systems are supported.'
+    )
+
     def __init__(self, params):
         self.session = params.session
         self.s3 = self.session.create_client(
@@ -158,18 +163,7 @@ class Linux(System):
             self.INSTALLER = params.installer
 
         self._update_system(params)
-
-        process = subprocess.Popen(
-            ['service', 'codedeploy-agent', 'stop'],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-        (output, error) = process.communicate()
-        not_found = 'codedeploy-agent: unrecognized service'
-        if process.returncode != 0 and not_found not in error:
-            raise RuntimeError(
-                'Failed to stop the AWS CodeDeploy Agent:\n{0}'.format(error)
-            )
+        self._stop_agent(params)
 
         response = self.s3.get_object(Bucket=params.bucket, Key=params.key)
         with open(self.INSTALLER, 'wb') as f:
@@ -192,25 +186,28 @@ class Linux(System):
         )
 
     def uninstall(self, params):
-        process = subprocess.Popen(
-            ['service', 'codedeploy-agent', 'stop'],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-        (output, error) = process.communicate()
-        not_found = 'codedeploy-agent: unrecognized service'
+        process = self._stop_agent(params)
         if process.returncode == 0:
             self._remove_agent(params)
-        elif not_found not in error:
-            raise RuntimeError(
-                'Failed to stop the AWS CodeDeploy Agent:\n{0}'.format(error)
-            )
 
     def _update_system(self, params):
         raise NotImplementedError('preinstall')
 
     def _remove_agent(self, params):
         raise NotImplementedError('remove_agent')
+
+    def _stop_agent(self, params):
+        process = subprocess.Popen(
+            ['service', 'codedeploy-agent', 'stop'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+        (output, error) = process.communicate()
+        if process.returncode != 0 and params.not_found_msg not in error:
+            raise RuntimeError(
+                'Failed to stop the AWS CodeDeploy Agent:\n{0}'.format(error)
+            )
+        return process
 
 
 class Ubuntu(Linux):
@@ -220,3 +217,19 @@ class Ubuntu(Linux):
 
     def _remove_agent(self, params):
         subprocess.check_call(['dpkg', '-r', 'codedeploy-agent'])
+
+    def _stop_agent(self, params):
+        params.not_found_msg = 'codedeploy-agent: unrecognized service'
+        return Linux._stop_agent(self, params)
+
+
+class RHEL(Linux):
+    def _update_system(self, params):
+        subprocess.check_call(['yum', '-y', 'install', 'ruby'])
+
+    def _remove_agent(self, params):
+        subprocess.check_call(['yum', '-y', 'erase', 'codedeploy-agent'])
+
+    def _stop_agent(self, params):
+        params.not_found_msg = 'Redirecting to /bin/systemctl stop  codedeploy-agent.service'
+        return Linux._stop_agent(self, params)

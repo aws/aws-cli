@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.36
+======
 
 * feature:``aws cloudfront``: Update the ``aws cloudfront`` command to the
   latest version.

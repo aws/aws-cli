@@ -18,7 +18,6 @@ import re
 import botocore.exceptions
 from botocore import xform_name
 
-from awscli.customizations.commands import BasicCommand
 from awscli.customizations.emr import configutils
 from awscli.customizations.emr import emrutils
 from awscli.customizations.emr import exceptions
@@ -34,6 +33,7 @@ from awscli.customizations.emr.exceptions import ResolveServicePrincipalError
 
 LOG = logging.getLogger(__name__)
 
+
 def assume_role_policy(serviceprincipal):
     return {
         "Version": "2008-10-17",
@@ -47,13 +47,16 @@ def assume_role_policy(serviceprincipal):
         ]
     }
 
+
 def get_service_role_policy_arn(region):
     region_suffix = _get_policy_arn_suffix(region)
     return EMR_ROLE_ARN_PATTERN.replace("{{region_suffix}}", region_suffix)
 
+
 def get_ec2_role_policy_arn(region):
     region_suffix = _get_policy_arn_suffix(region)
     return EC2_ROLE_ARN_PATTERN.replace("{{region_suffix}}", region_suffix)
+
 
 def _get_policy_arn_suffix(region):
     region_string = region.lower()
@@ -63,6 +66,7 @@ def _get_policy_arn_suffix(region):
         return "aws-us-gov"
     else:
         return "aws"
+
 
 def get_service_principal(service, endpoint_host):
     return service + '.' + _get_suffix(endpoint_host)
@@ -100,10 +104,10 @@ class CreateDefaultRoles(Command):
     NAME = "create-default-roles"
     DESCRIPTION = ('Creates the default IAM role ' +
                    EC2_ROLE_NAME + ' and ' +
-                   EMR_ROLE_NAME + ' which can be used when'
-                   ' creating the cluster using the create-cluster command.'
-                   ' The default roles for EMR use managed policies, which'
-                   ' are updated automatically to support future EMR functionality.\n'
+                   EMR_ROLE_NAME + ' which can be used when creating the'
+                   ' cluster using the create-cluster command. The default'
+                   ' roles for EMR use managed policies, which are updated'
+                   ' automatically to support future EMR functionality.\n'
                    '\nIf you do not have a Service Role and Instance Profile '
                    'variable set for your create-cluster command in the AWS '
                    'CLI config file, create-default-roles will automatically '
@@ -152,7 +156,7 @@ class CreateDefaultRoles(Command):
             role_arn = get_ec2_role_policy_arn(self.region)
             ec2_result = self._create_role_with_role_policy(
                 role_name, EC2, role_arn, parsed_globals)
-            ec2_policy = self._get_role_policy(role_arn, parsed_globals);
+            ec2_policy = self._get_role_policy(role_arn, parsed_globals)
 
         # Check if the default EC2 Instance Profile for EMR exists.
         instance_profile_name = EC2_ROLE_NAME
@@ -183,7 +187,8 @@ class CreateDefaultRoles(Command):
         emrutils.display_response(
             self._session,
             'create_role',
-            self._construct_result(ec2_result, ec2_policy, emr_result, emr_policy),
+            self._construct_result(ec2_result, ec2_policy,
+                                   emr_result, emr_policy),
             parsed_globals)
 
         return 0
@@ -195,7 +200,8 @@ class CreateDefaultRoles(Command):
             if iam_endpoint is None:
                 raise exceptions.UnknownIamEndpointError(region=region)
 
-    def _construct_result(self, ec2_response, ec2_policy, emr_response, emr_policy):
+    def _construct_result(self, ec2_response, ec2_policy,
+                          emr_response, emr_policy):
         result = []
         self._construct_role_and_role_policy_structure(
             result, ec2_response, ec2_policy)
@@ -247,11 +253,12 @@ class CreateDefaultRoles(Command):
     def _get_role_policy(self, arn, parsed_globals):
         parameters = {}
         parameters['PolicyArn'] = arn
-        policy_details = self._call_iam_operation('GetPolicy',
-                                                   parameters,
-                                                   parsed_globals)
+        policy_details = self._call_iam_operation('GetPolicy', parameters,
+                                                  parsed_globals)
         parameters["VersionId"] = policy_details["Policy"]["DefaultVersionId"]
-        policy_version_details = self._call_iam_operation('GetPolicyVersion', parameters, parsed_globals)
+        policy_version_details = self._call_iam_operation('GetPolicyVersion',
+                                                          parameters,
+                                                          parsed_globals)
         return policy_version_details["PolicyVersion"]["Document"]
 
     def _create_role_with_role_policy(
@@ -271,7 +278,8 @@ class CreateDefaultRoles(Command):
         parameters = {}
         parameters['PolicyArn'] = role_arn
         parameters['RoleName'] = role_name
-        self._call_iam_operation('AttachRolePolicy', parameters, parsed_globals)
+        self._call_iam_operation('AttachRolePolicy',
+                                 parameters, parsed_globals)
 
         return create_role_response
 

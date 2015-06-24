@@ -278,3 +278,30 @@ def join(values, separator=',', lastSeparator='and'):
         separator = '%s ' % separator
         return ' '.join([separator.join(values[:-1]),
                          lastSeparator, values[-1]])
+
+
+def split_to_key_value(string):
+    if string.find('=') == -1:
+        return string, ''
+    else:
+        return string.split('=', 1)
+
+
+def get_cluster(cluster_id, session, region,
+                endpoint_url, verify_ssl):
+        describe_cluster_params = {'ClusterId': cluster_id}
+        describe_cluster_response = call(
+            session, 'describe_cluster', describe_cluster_params,
+            region, endpoint_url,
+            verify_ssl)
+
+        if describe_cluster_response is not None:
+            return describe_cluster_response.get('Cluster')
+
+
+def get_release_label(cluster_id, session, region,
+                      endpoint_url, verify_ssl):
+        cluster = get_cluster(cluster_id, session, region,
+                              endpoint_url, verify_ssl)
+        if cluster is not None:
+            return cluster.get('ReleaseLabel')

@@ -11,10 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+
+import json
+import mock
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
-import copy
-import json
 
 
 INSTALL_HIVE_STEP = {
@@ -110,6 +111,18 @@ class TestInstallApplications(BaseAWSCommandParamsTest):
         result = self.run_cmd(cmdline, 255)
         self.assertEqual(result[1], expected_error_msg)
 
+    @mock.patch('awscli.customizations.emr.'
+                'emrutils.get_release_label')
+    def test_unsupported_command_on_release_based_cluster_error(
+            self, grl_patch):
+        grl_patch.return_value = 'emr-4.0'
+        cmdline = (self.prefix + 'Name=Hive,'
+                   'Args=[--hive-site=s3://test/hive-conf/hive-site.xml]')
+
+        expected_error_msg = ("\naws: error: install-applications"
+                              " is not supported with 'emr-4.0' release.\n")
+        result = self.run_cmd(cmdline, 255)
+        self.assertEqual(result[1], expected_error_msg)
 
 if __name__ == "__main__":
     unittest.main()

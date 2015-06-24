@@ -2,6 +2,29 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``aws cloudfront``: Update the ``aws cloudfront`` command to the
+  latest version.
+* feature:``aws redshift``: Update the ``aws redshift`` command to latest
+  version.
+* feature:``aws glacier``: Add support for tagging.
+* feature:``aws opsworks``: Update the ``aws opsworks`` command to latest
+  version.
+* feature:``aws config``: Add support for users to specify which types of
+  supported resources AWS Config records for tracking configuration changes.
+* feature:``aws deploy``: Adds support for deployments to Red Hat
+  Enterprise Linux (RHEL) instances.
+* feature:``aws machinelearning wait``:  Add ``data-source-available``,
+  ``ml-model-available``, ``evaluation-available``, and
+  ``batch-prediction-available`` waiter commands.
+  (`botocore issue 544 <https://github.com/boto/botocore/pull/544>`__)
+* feature:``aws route53 wait``:  Add ``resource-record-sets-changed``
+  waiter command.
+  (`botocore issue 543 <https://github.com/boto/botocore/pull/543>`__)
+
+
 1.7.35
 ======
 

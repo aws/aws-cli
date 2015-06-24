@@ -58,6 +58,8 @@ from awscli.customizations.configservice.subscribe import register_subscribe
 from awscli.customizations.configservice.getstatus import register_get_status
 from awscli.customizations.configservice.rename_cmd import \
     register_rename_config
+from awscli.customizations.configservice.putconfigurationrecorder import \
+    register_modify_put_configuration_recorder
 from awscli.customizations.scalarparse import register_scalar_parser
 from awscli.customizations.opsworks import initialize as opsworks_init
 from awscli.customizations.awslambda import register_lambda_create_function
@@ -128,3 +130,4 @@ def awscli_initialize(event_handlers):
     register_lambda_create_function(event_handlers)
     register_fix_kms_create_grant_docs(event_handlers)
     register_create_hosted_zone_doc_fix(event_handlers)
+    register_modify_put_configuration_recorder(event_handlers)

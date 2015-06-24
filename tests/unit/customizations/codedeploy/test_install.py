@@ -15,7 +15,7 @@ import sys
 
 from argparse import Namespace
 from awscli.customizations.codedeploy.install import Install
-from awscli.customizations.codedeploy.systems import Ubuntu, Windows
+from awscli.customizations.codedeploy.systems import Ubuntu, Windows, RHEL, System
 from awscli.testutils import unittest
 from mock import MagicMock, patch, mock_open
 from socket import timeout
@@ -101,9 +101,7 @@ class TestInstall(unittest.TestCase):
     def test_install_throws_on_unsupported_system(self):
         self.system.return_value = 'Unsupported'
         with self.assertRaisesRegexp(
-                RuntimeError,
-                'Only Ubuntu Server and Windows Server operating systems are '
-                'supported.'):
+                RuntimeError, System.UNSUPPORTED_SYSTEM_MSG):
             self.install._run_main(self.args, self.globals)
 
     def test_install_throws_on_ec2_instance(self):

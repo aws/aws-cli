@@ -30,7 +30,11 @@ class TestPutConfigurationRecorder(BaseAWSCommandParamsTest):
     def test_no_configuration_recorder(self):
         stdout, stderr, rc = self.run_cmd(self.prefix, expected_rc=2)
         self.assertIn(
-            '--configuration-recorder is required',
+            'required',
+            stderr
+        )
+        self.assertIn(
+            '--configuration-recorder',
             stderr
         )
 

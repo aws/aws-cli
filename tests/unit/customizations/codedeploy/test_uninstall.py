@@ -14,7 +14,7 @@
 import sys
 
 from argparse import Namespace
-from awscli.customizations.codedeploy.systems import Ubuntu, Windows
+from awscli.customizations.codedeploy.systems import Ubuntu, Windows, RHEL, System
 from awscli.customizations.codedeploy.uninstall import Uninstall
 from awscli.testutils import unittest
 from mock import MagicMock, patch
@@ -68,9 +68,7 @@ class TestUninstall(unittest.TestCase):
     def test_uninstall_throws_on_unsupported_system(self):
         self.system.return_value = 'Unsupported'
         with self.assertRaisesRegexp(
-                RuntimeError,
-                'Only Ubuntu Server and Windows Server operating systems are '
-                'supported.'):
+                RuntimeError, System.UNSUPPORTED_SYSTEM_MSG):
             self.uninstall._run_main(self.args, self.globals)
 
     def test_uninstall_throws_on_ec2_instance(self):
@@ -91,6 +89,16 @@ class TestUninstall(unittest.TestCase):
     def test_uninstall_for_ubuntu(self, uninstall):
         self.system.return_value = 'Linux'
         self.linux_distribution.return_value = ('Ubuntu', '', '')
+        self.uninstall._run_main(self.args, self.globals)
+        uninstall.assert_called_with(self.args)
+        self.remove.assert_called_with(
+            '/etc/codedeploy-agent/conf/codedeploy.onpremises.yml'
+        )
+
+    @patch.object(RHEL, 'uninstall')
+    def test_uninstall_for_RHEL(self, uninstall):
+        self.system.return_value = 'Linux'
+        self.linux_distribution.return_value = ('Red Hat Enterprise Linux Server', '', '')
         self.uninstall._run_main(self.args, self.globals)
         uninstall.assert_called_with(self.args)
         self.remove.assert_called_with(

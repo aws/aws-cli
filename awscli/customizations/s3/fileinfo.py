@@ -10,7 +10,7 @@ from dateutil.tz import tzlocal
 
 from botocore.compat import quote
 from awscli.customizations.s3.utils import find_bucket_key, \
-    check_etag, uni_print, guess_content_type, MD5Error, bytes_print
+    uni_print, guess_content_type, MD5Error, bytes_print
 
 
 class CreateDirectoryError(Exception):
@@ -48,7 +48,7 @@ def save_file(filename, response_data, last_update, is_stream=False):
     file_chunks = iter(partial(body.read, 1024 * 1024), b'')
     if is_stream:
         # Need to save the data to be able to check the etag for a stream
-        # becuase once the data is written to the stream there is no
+        # because once the data is written to the stream there is no
         # undoing it.
         payload = write_to_file(None, etag, md5, file_chunks, True)
     else:
@@ -263,9 +263,6 @@ class FileInfo(TaskInfo):
         }
         self._handle_object_params(params)
         response_data = self.client.put_object(**params)
-        etag = response_data['ETag'][1:-1]
-        body.seek(0)
-        check_etag(etag, body)
 
     def _inject_content_type(self, params, filename):
         # Add a content type param if we can guess the type.

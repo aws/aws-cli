@@ -1,6 +1,7 @@
 The following command creates a pre-paid shipping label for the specified job::
 
-  aws importexport get-shipping-label --job-ids EX1ID --name "Jane Roe" --company "Example Corp." --phone-number "206-555-1111" --country "USA" --state-or-province "WA" --city "Anytown" --postal-code "91011-1111" --street1 "123 Any Street"
+  aws importexport get-shipping-label --job-ids EX1ID --name "Jane Roe" --company "Example Corp." --phone-number "206-555-1111" --country "USA" --state-or-province "WA" --city 
+"Anytown" --postal-code "91011-1111" --street-1 "123 Any Street"
 
 The output for the get-shipping-label command looks like the following::
 

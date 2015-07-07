@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.37
+======
 
 * feature:``aws ec2``: Add support for EBS Snapshot Copy Support for Customer
   Managed Encryption Keys

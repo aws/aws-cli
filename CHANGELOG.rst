@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.7.37
+======
+
+* feature:``aws ec2``: Add support for EBS Snapshot Copy Support for Customer
+  Managed Encryption Keys
+* feature:``aws autoscaling``: Add support for Step Policies
+
+
 1.7.36
 ======
 

@@ -150,6 +150,7 @@ class TestWindows(unittest.TestCase):
             call().communicate()
         ])
 
+
 class TestLinux(unittest.TestCase):
     def setUp(self):
         self.popen_patcher = patch('subprocess.Popen')
@@ -212,7 +213,7 @@ class TestLinux(unittest.TestCase):
         self.check_call_patcher.stop()
         self.open_patcher.stop()
         self.environ_patcher.stop()
-        
+
 
 class TestUbuntu(TestLinux):
     def setUp(self):
@@ -299,7 +300,7 @@ class TestRHEL(TestLinux):
     def test_installer(self):
         self.assertEquals(self.installer, self.rhel.INSTALLER)
 
-    @patch('os.geteuid')
+    @patch('os.geteuid', create=True)
     def test_validate_administrator_throws(self, geteuid):
         geteuid.return_value = 1
         with self.assertRaisesRegexp(

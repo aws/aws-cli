@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``aws codepipeline``: Add support for AWS CodePipeline
+
+
 1.7.37
 ======
 

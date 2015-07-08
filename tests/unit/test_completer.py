@@ -31,6 +31,7 @@ COMPLETIONS = [
     ('aws ', -1, set(['autoscaling', 'cloudformation', 'cloudfront',
                       'cloudhsm', 'cloudsearch', 'cloudsearchdomain',
                       'cloudtrail', 'cloudwatch', 'cognito-identity',
+                      'codepipeline',
                       'cognito-sync', 'configservice', 'configure',
                       'datapipeline', 'deploy', 'directconnect', 'ds',
                       'dynamodb', 'glacier', 'ec2', 'ecs', 'efs',

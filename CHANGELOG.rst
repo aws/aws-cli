@@ -6,6 +6,7 @@ Next Release (TBD)
 ==================
 
 * feature:``aws codepipeline``: Add support for AWS CodePipeline
+* feature:``aws codecommit``: Add support for AWS CodeCommit
 
 
 1.7.37

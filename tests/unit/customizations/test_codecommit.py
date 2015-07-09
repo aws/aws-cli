@@ -20,15 +20,10 @@ from botocore.session import Session
 from botocore.credentials import Credentials
 from awscli.customizations.codecommit import CodeCommitGetCommand
 from awscli.customizations.codecommit import CodeCommitCommand
-from awscli.testutils import unittest
+from awscli.testutils import unittest, StringIOWithFileNo
 
 from botocore.auth import SigV4Auth
 from botocore.awsrequest import AWSRequest
-
-
-class StringIOWithFileNo(StringIO):
-    def fileno(self):
-        return 0
 
 
 class TestCodeCommitCredentialHelper(unittest.TestCase):

@@ -34,6 +34,8 @@ import string
 from pprint import pformat
 from subprocess import Popen, PIPE
 
+from awscli.compat import StringIO
+
 
 try:
     import mock
@@ -705,3 +707,8 @@ class BaseS3CLICommand(unittest.TestCase):
         self.assertNotIn("failed:", p.stderr)
         self.assertNotIn("client error", p.stderr)
         self.assertNotIn("server error", p.stderr)
+
+
+class StringIOWithFileNo(StringIO):
+    def fileno(self):
+        return 0

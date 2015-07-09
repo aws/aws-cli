@@ -21,7 +21,7 @@ from six import StringIO
 from botocore.session import Session
 from botocore.credentials import Credentials
 from awscli.customizations.codecommit import CodeCommitGetCommand
-from awscli.testutils import unittest
+from awscli.testutils import unittest, StringIOWithFileNo
 from botocore.awsrequest import AWSRequest
 from awscli.clidriver import create_clidriver
 
@@ -49,7 +49,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
             del os.environ['AWS_SECRET_ACCESS_KEY']
 
     @patch('sys.stdin', StringIO(PROTOCOL_HOST_PATH))
-    @patch('sys.stdout', new_callable=StringIO)
+    @patch('sys.stdout', new_callable=StringIOWithFileNo)
     @patch.object(awscli.customizations.codecommit.datetime, 'datetime')
     def test_integration_using_cli_driver(self, dt_mock, stdout_mock):
         dt_mock.utcnow.return_value = datetime(2010, 10, 8)

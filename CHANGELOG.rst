@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.38
+======
 
 * feature:``aws codepipeline``: Add support for AWS CodePipeline
 * feature:``aws codecommit``: Add support for AWS CodeCommit

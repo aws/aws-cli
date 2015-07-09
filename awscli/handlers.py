@@ -65,6 +65,7 @@ from awscli.customizations.opsworks import initialize as opsworks_init
 from awscli.customizations.awslambda import register_lambda_create_function
 from awscli.customizations.kms import register_fix_kms_create_grant_docs
 from awscli.customizations.route53 import register_create_hosted_zone_doc_fix
+from awscli.customizations.codecommit import initialize as codecommit_init
 
 
 def awscli_initialize(event_handlers):
@@ -131,3 +132,4 @@ def awscli_initialize(event_handlers):
     register_fix_kms_create_grant_docs(event_handlers)
     register_create_hosted_zone_doc_fix(event_handlers)
     register_modify_put_configuration_recorder(event_handlers)
+    codecommit_init(event_handlers)

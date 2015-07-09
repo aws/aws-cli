@@ -32,14 +32,27 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
                           'host=git-codecommit.us-east-1.amazonaws.com\n'
                           'path=/v1/repos/myrepo')
 
+    def setUp(self):
+        self.orig_id = os.environ.get('AWS_ACCESS_KEY_ID')
+        self.orig_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
+        os.environ['AWS_ACCESS_KEY_ID'] = 'foo'
+        os.environ['AWS_SECRET_ACCESS_KEY'] = 'bar'
+
+    def tearDown(self):
+        if self.orig_id:
+            os.environ['AWS_ACCESS_KEY_ID'] = self.orig_id
+        else:
+            del os.environ['AWS_ACCESS_KEY_ID']
+        if self.orig_key:
+            os.environ['AWS_SECRET_ACCESS_KEY'] = self.orig_key
+        else:
+            del os.environ['AWS_SECRET_ACCESS_KEY']
+
     @patch('sys.stdin', StringIO(PROTOCOL_HOST_PATH))
     @patch('sys.stdout', new_callable=StringIO)
     @patch.object(awscli.customizations.codecommit.datetime, 'datetime')
     def test_integration_using_cli_driver(self, dt_mock, stdout_mock):
         dt_mock.utcnow.return_value = datetime(2010, 10, 8)
-        
-        os.environ['AWS_ACCESS_KEY_ID'] = 'foo'
-        os.environ['AWS_SECRET_ACCESS_KEY'] = 'bar'
         driver = create_clidriver()
         rc = driver.main('codecommit credential-helper get'.split())
         output = stdout_mock.getvalue().strip()

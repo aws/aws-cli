@@ -17,7 +17,7 @@ The file ``lifecycle.json`` is a JSON document in the current folder that specif
       },
       {
         "Expiration": {
-          "Date": "2016-01-01T00:00:00.000Z",
+          "Date": "2016-01-01T00:00:00.000Z"
         },
         "ID": "Delete 2014 logs in 2016.",
         "Prefix": "logs/2014/",

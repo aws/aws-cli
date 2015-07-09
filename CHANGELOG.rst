@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.7.38
+======
+
+* feature:``aws codepipeline``: Add support for AWS CodePipeline
+* feature:``aws codecommit``: Add support for AWS CodeCommit
+* feature:``aws ses``: Add support for cross-account sending
+* feature:``aws iam``: Add support for managing SSH Public Keys
+* feature:``aws ecs``: Update API
+
+
 1.7.37
 ======
 

@@ -25,6 +25,12 @@ from awscli.testutils import unittest
 from botocore.auth import SigV4Auth
 from botocore.awsrequest import AWSRequest
 
+
+class StringIOWithFileNo(StringIO):
+    def fileno(self):
+        return 0
+
+
 class TestCodeCommitCredentialHelper(unittest.TestCase):
 
     PROTOCOL_HOST_PATH = ('protocol=https\n'
@@ -39,6 +45,8 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
                                   'host=mydomain.com\n'
                                   'path=/v1/repos/myrepo')
 
+    MOCK_STDOUT_CLASS = StringIOWithFileNo
+
     def setUp(self):
         self.credentials = Credentials('access', 'secret')
         self.args = Namespace()
@@ -50,25 +58,25 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.session.get_config_variable.return_value = 'us-east-1'
         self.session.get_credentials.return_value = self.credentials
 
-    @patch('sys.stdout', new_callable=StringIO)
+    @patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
     @patch('sys.stdin', StringIO(PROTOCOL_HOST_PATH))
     def test_generate_credentials(self, stdout_mock):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        self.assertRegexpMatches(output,
-                                 'username={0}\npassword=.+'.format('access'))
+        self.assertRegexpMatches(
+            output, 'username={0}\npassword=.+'.format('access'))
 
-    @patch('sys.stdout', new_callable=StringIO)
+    @patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
     @patch('sys.stdin', StringIO(NO_REGION_PROTOCOL_HOST_PATH))
     def test_generate_credentials_reads_region_from_session(self, stdout_mock):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        self.assertRegexpMatches(output,
-                                 'username={0}\npassword=.+'.format('access'))
+        self.assertRegexpMatches(
+            output, 'username={0}\npassword=.+'.format('access'))
 
-    @patch('sys.stdout', new_callable=StringIO)
+    @patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
     @patch('sys.stdin', StringIO(NON_AWS_PROTOCOL_HOST_PATH))
     def test_does_nothing_for_non_amazon_domain(self, stdout_mock):
         self.get_command = CodeCommitGetCommand(self.session)
@@ -81,7 +89,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.get_command._run_main(self.args, self.globals)
 
-    @patch('sys.stdout', new_callable=StringIO)
+    @patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
     @patch('sys.stdin', StringIO(PROTOCOL_HOST_PATH))
     def test_generate_session_credentials(self, stdout_mock):
         self.credentials = Credentials('access', 'secret', 'token')
@@ -93,21 +101,25 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
             output,
             'username={0}%{1}\npassword=.+'.format('access', 'token'))
 
+    @patch('sys.stdout', MOCK_STDOUT_CLASS())
     @patch('sys.stdin', StringIO(PROTOCOL_HOST_PATH))
     @patch('botocore.auth.SigV4Auth.string_to_sign')
     @patch('botocore.auth.SigV4Auth.signature')
-    def test_generate_credentials_creates_a_valid_request(self, signature, string_to_sign):
+    def test_generate_credentials_creates_a_valid_request(self, signature,
+                                                          string_to_sign):
         self.credentials = Credentials('access', 'secret')
         self.session.get_credentials.return_value = self.credentials
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         aws_request = signature.call_args[0][1]
         self.assertEquals('GIT', aws_request.method)
-        self.assertEquals('https://git-codecommit.us-east-1.amazonaws.com//v1/repos/myrepo', aws_request.url)
+        self.assertEquals(
+            'https://git-codecommit.us-east-1.amazonaws.com//v1/repos/myrepo',
+            aws_request.url)
         self.assertEquals(
             ('GIT\n//v1/repos/myrepo\n\n'
-            'host:git-codecommit.us-east-1.amazonaws.com\n\n'
-            'host\n'),
+             'host:git-codecommit.us-east-1.amazonaws.com\n\n'
+             'host\n'),
             string_to_sign.call_args[0][1])
 
 if __name__ == "__main__":

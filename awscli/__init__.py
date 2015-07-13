@@ -35,7 +35,7 @@ os.environ['AWS_DATA_PATH'] = os.pathsep.join(_awscli_data_path)
 
 
 EnvironmentVariables = {
-    'ca_bundle': ('ca_bundle', 'AWS_CA_BUNDLE', None),
+    'ca_bundle': ('ca_bundle', 'AWS_CA_BUNDLE', None, None),
     'output': ('output', 'AWS_DEFAULT_OUTPUT', 'json', None),
 }
 

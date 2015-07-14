@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.7.39
+======
+
+* feature:``aws devicefarm``: Add support for AWS Device Farm
+* feature:``aws dynamodbstreams``: Add support for Amazon DynamoDB Streams
+* feature:``aws dynamodb``: Add support for consistent reads with the Scan API
+
+
 1.7.38
 ======
 

@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.39
+======
 
 * feature:``aws devicefarm``: Add support for AWS Device Farm
 * feature:``aws dynamodbstreams``: Add support for Amazon DynamoDB Streams

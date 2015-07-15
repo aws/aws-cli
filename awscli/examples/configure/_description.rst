@@ -1,8 +1,8 @@
-Configure AWS CLI configuration data.  If this command is run with no
+Configure AWS CLI options. If this command is run with no
 arguments, you will be prompted for configuration values such as your AWS
-Access Key Id and you AWS Secret Access Key.  You can configure a specific
+Access Key Id and you AWS Secret Access Key.  You can configure a named
 profile using the ``--profile`` argument.  If your config file does not exist
-(the default location is ``~/.aws/config``), it will be automatically created
+(the default location is ``~/.aws/config``), the AWS CLI will create it
 for you.  To keep an existing value, hit enter when prompted for the value.
 When you are prompted for information, the current value will be displayed in
 ``[brackets]``.  If the config item has no value, it be displayed as
@@ -31,3 +31,7 @@ The following configuration variables are supported in the config file:
   credentials.  If you know for certain you will be using an IAM role on an
   Amazon EC2 instance, you can set this value to ensure any intermittent
   failures are retried.  By default this value is 1.
+
+For more information on configuration options, see `Configuring the AWS Command Line Interface`_ in the *AWS CLI User Guide*.
+
+.. _`Configuring the AWS Command Line Interface`: http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html

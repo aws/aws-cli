@@ -24,6 +24,8 @@ The following command initiates a job to retrieve an archive from the vault ``my
     "SNSTopic": "arn:aws:sns:us-west-2:0123456789012:my-topic"
   }
 
+Archive IDs are available in the output of ``aws glacier upload-archive`` and ``aws glacier get-job-output``.
+
 Output::
 
   {

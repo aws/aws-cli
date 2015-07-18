@@ -2,7 +2,7 @@ The following command retrieves a list of SNS subscriptions::
 
   aws sns list-subscriptions
 
-Output
+Output::
 
   {
       "Subscriptions": [

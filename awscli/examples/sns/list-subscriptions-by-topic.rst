@@ -2,7 +2,7 @@ The following command retrieves a list of SNS subscriptions::
 
   aws sns list-subscriptions-by-topic --topic-arn "arn:aws:sns:us-west-2:0123456789012:my-topic"
 
-Output
+Output::
 
   {
       "Subscriptions": [

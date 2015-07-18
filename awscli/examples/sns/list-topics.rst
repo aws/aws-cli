@@ -2,7 +2,7 @@ The following command retrieves a list of SNS topics::
 
   aws sns list-topics
 
-Output
+Output::
 
   {
       "Topics": [

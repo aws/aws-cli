@@ -66,12 +66,46 @@ USE_DEFAULT_ROLES = (
 AMI_VERSION = (
     '<p>The version number of the Amazon Machine Image (AMI) '
     'to use for Amazon EC2 instances in the cluster. '
-    'For example,--ami-version 3.1.0 </p>'
+    'For example,--ami-version 3.1.0  You cannot specify both a release label'
+    ' (emr-4.0.0 and later) and an AMI version (3.x or 2.x) on a cluster</p>'
     '<p>For details about the AMIs currently supported by Amazon '
     'Elastic MapReduce, go to AMI Versions Supported in Amazon Elastic '
     'MapReduce in the Amazon Elastic MapReduce Developer\'s Guide.</p>'
     '<p>http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/'
     'ami-versions-supported.html</p>')
+
+RELEASE_LABEL = (
+    '<p>The identifier for the EMR release, which includes a set of software,'
+    ' to use with Amazon EC2 instances that are part of an Amazon EMR cluster.'
+    ' For example, --release-label emr-4.0.0  You cannot specify both a'
+    ' release label (emr-4.0.0 and later) and AMI version (3.x or 2.x) on a'
+    ' cluster.</p>'
+    '<p>For details about the releases available in Amazon Elastic MapReduce,'
+    ' go to Releases Available in Amazon Elastic MapReduce in the'
+    ' Amazon Elastic MapReduce Documentation.</p>'
+    '<p>http://docs.aws.amazon.com/ElasticMapReduce/latest/Applications/'
+    'emr-release.html</p><p>Please use ami-version if you want to specify AMI'
+    ' Versions for your Amazon EMR cluster (3.x and 2.x)</p>')
+
+CONFIGURATIONS = (
+    '<p>Specifies new configuration values for applications installed on your'
+    ' cluster when using an EMR release (emr-4.0.0 and later). The'
+    ' configuration files available for editing in each application (for'
+    ' example: yarn-site for YARN) can be found in the Amazon EMR Developer\'s'
+    ' Guide in the respective application\'s section. Currently on the CLI,'
+    ' you can only specify these values in a JSON file stored locally or in'
+    ' Amazon S3, and you supply the path to this file to this parameter.</p>'
+    '<p> For example:</p>'
+    '<li>To specify configurations from a local file <code>--configurations'
+    ' file://configurations.json</code></li>'
+    ' <li>To specify configurations from a file in Amazon S3 <code>'
+    '--configurations https://s3.amazonaws.com/myBucket/configurations.json'
+    '</code></li>'
+    '<p>For more information about configuring applications in EMR release,'
+    ' go to the Amazon EMR Documentation: </p>'
+    '<p>http://docs.aws.amazon.com/ElasticMapReduce/latest/Applications/'
+    'emr-configure-apps.html</p>'
+    )
 
 INSTANCE_GROUPS = (
     '<p>A specification of the number and type'
@@ -89,9 +123,10 @@ INSTANCE_TYPE = (
 
 INSTANCE_COUNT = (
     '<p>Shortcut option for --instance-groups. '
-    'A specification of the number of Amazon EC2 instances used '
-    'together with --instance-type to create instance groups in '
-    'a cluster. Specifying the --instance-type argument without '
+    'A specification of the number of Amazon EC2 instances used together with'
+    ' --instance-type to create instance groups in a cluster. EMR will use one'
+    ' node as the cluster\'s master node and use the remainder of the nodes as'
+    ' core nodes. Specifying the --instance-type argument without '
     'also specifying --instance-count launches a single-node cluster.</p>')
 
 ADDITIONAL_INFO = (
@@ -180,12 +215,14 @@ BOOTSTRAP_ACTIONS = (
     'and/or key-value pairs (e.g. Args=[arg1,arg2=arg3,arg4]).</p>')
 
 APPLICATIONS = (
-    '<p>Installs applications such as Hue, Hive, Pig, HBase, Ganglia and'
-    ' Impala  or the MapR distribution when creating a cluster. '
-    'Each application takes the following'
-    ' parameters: <code>Name</code> and <code>[Args]'
-    '</code>. Note: Args should either be a comma-separated list of values  '
-    '(e.g. Args=arg1,arg2,arg3) or a bracket-enclosed list of values '
+    '<p>Installs applications such as Hadoop, Spark, Hue, Hive, Pig, HBase,'
+    ' Ganglia and Impala  or the MapR distribution when creating a cluster.'
+    ' Available applications vary by EMR release, and the set of components'
+    ' installed when specifying an Application Name can be found in the Amazon'
+    ' EMR Developer\'s Guide. Note: If you are using an AMI version instead of'
+    ' an EMR release, some applications take optional Args for configuration.'
+    ' Args should either be a comma-separated list of values'
+    ' (e.g. Args=arg1,arg2,arg3) or a bracket-enclosed list of values'
     ' and/or key-value pairs (e.g. Args=[arg1,arg2=arg3,arg4]).</p>')
 
 EMR_FS = (
@@ -194,7 +231,8 @@ EMR_FS = (
     '<li>Encryption - enables Amazon S3 server-side encryption or'
     ' Amazon S3 client-side encryption and takes the mutually exclusive'
     ' values, ServerSide or ClientSide.</li>'
-    '<li>ProviderType - the encryption ProviderType, which is either Custom or KMS</li> '
+    '<li>ProviderType - the encryption ProviderType, which is either Custom'
+    ' or KMS</li> '
     '<li>KMSKeyId - the AWS KMS KeyId, the alias'
     ' you mapped to the KeyId, or the full ARN of the key that'
     ' includes the region, account ID, and the KeyId.</li>'
@@ -213,7 +251,8 @@ EMR_FS = (
 RESTORE_FROM_HBASE = (
     '<p>Launches a new HBase cluster and populates it with'
     ' data from a previous backup of an HBase cluster. You must install HBase'
-    ' using the <code>--applications</code> option. </p>')
+    ' using the <code>--applications</code> option.'
+    ' Note: this is only supported by AMI versions (3.x and 2.x).</p>')
 
 
 STEPS = (
@@ -273,3 +312,14 @@ ADDITIONAL_MASTER_SECURITY_GROUPS = (
 ADDITIONAL_SLAVE_SECURITY_GROUPS = (
     '<p>A list of additional Amazon EC2 security group IDs for '
     'the slave nodes.</p>')
+
+AVAILABLE_ONLY_FOR_AMI_VERSIONS = (
+    'This command is only available for AMI Versions (3.x and 2.x).')
+
+CREATE_CLUSTER_DESCRIPTION = (
+    'Creates an Amazon EMR cluster with specified software.\n'
+    '\nQuick start:\n\naws emr create-cluster --release-label <release-label>'
+    ' --instance-type <instance-type> [--instance-count <instance-count>]\n\n'
+    'Values for variables Instance Profile (under EC2 Attributes),'
+    ' Service Role, Log URI, and Key Name (under EC2 Attributes) can be set in'
+    ' the AWS CLI config file using the "aws configure set" command.\n')

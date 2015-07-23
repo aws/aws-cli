@@ -16,6 +16,7 @@ from awscli.customizations.commands import BasicCommand
 from awscli.customizations.emr import config
 from awscli.customizations.emr import configutils
 from awscli.customizations.emr import emrutils
+from awscli.customizations.emr import exceptions
 
 LOG = logging.getLogger(__name__)
 
@@ -23,13 +24,24 @@ LOG = logging.getLogger(__name__)
 class Command(BasicCommand):
     region = None
 
+    UNSUPPORTED_COMMANDS_FOR_RELEASE_BASED_CLUSTERS = set([
+        'install-applications',
+        'restore-from-hbase-backup',
+        'schedule-hbase-backup',
+        'create-hbase-backup',
+        'disable-hbase-backups',
+    ])
+
     def supports_arg(self, name):
         return any((x['name'] == name for x in self.ARG_TABLE))
 
     def _run_main(self, parsed_args, parsed_globals):
+
         self._apply_configs(parsed_args,
                             configutils.get_configs(self._session))
         self.region = emrutils.get_region(self._session, parsed_globals)
+        self._validate_unsupported_commands_for_release_based_clusters(
+            parsed_args, parsed_globals)
         return self._run_main_command(parsed_args, parsed_globals)
 
     def _apply_configs(self, parsed_args, parsed_configs):
@@ -63,8 +75,8 @@ class Command(BasicCommand):
                           if x.name in parsed_configs
                           and not x.is_present(parsed_args)]
 
-        configurations = self._filter_configurations_in_special_cases \
-            (configurations, parsed_args, parsed_configs)
+        configurations = self._filter_configurations_in_special_cases(
+            configurations, parsed_args, parsed_configs)
 
         return configurations
 
@@ -85,6 +97,20 @@ class Command(BasicCommand):
         # from the config file if the corresponding argument is not
         # explicitly specified on the CLI
         raise NotImplementedError("_run_main_command")
+
+    def _validate_unsupported_commands_for_release_based_clusters(
+            self, parsed_args, parsed_globals):
+        command = self.NAME
+
+        if (command in self.UNSUPPORTED_COMMANDS_FOR_RELEASE_BASED_CLUSTERS
+                and hasattr(parsed_args, 'cluster_id')):
+            release_label = emrutils.get_release_label(
+                parsed_args.cluster_id, self._session, self.region,
+                parsed_globals.endpoint_url, parsed_globals.verify_ssl)
+            if release_label:
+                raise exceptions.UnsupportedCommandWithReleaseError(
+                    command=command,
+                    release_label=release_label)
 
 
 def override_args_required_option(argument_table, args, session, **kwargs):

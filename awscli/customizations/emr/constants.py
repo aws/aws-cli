@@ -15,8 +15,10 @@
 
 EC2_ROLE_NAME = "EMR_EC2_DefaultRole"
 EMR_ROLE_NAME = "EMR_DefaultRole"
-EC2_ROLE_ARN_PATTERN = "arn:{{region_suffix}}:iam::aws:policy/service-role/AmazonElasticMapReduceforEC2Role"
-EMR_ROLE_ARN_PATTERN = "arn:{{region_suffix}}:iam::aws:policy/service-role/AmazonElasticMapReduceRole"
+EC2_ROLE_ARN_PATTERN = ("arn:{{region_suffix}}:iam::aws:policy/service-role/"
+                        "AmazonElasticMapReduceforEC2Role")
+EMR_ROLE_ARN_PATTERN = ("arn:{{region_suffix}}:iam::aws:policy/service-role/"
+                        "AmazonElasticMapReduceRole")
 
 # Action on failure
 CONTINUE = 'CONTINUE'
@@ -29,7 +31,9 @@ SPOT = 'SPOT'
 ON_DEMAND = 'ON_DEMAND'
 
 SCRIPT_RUNNER_PATH = '/libs/script-runner/script-runner.jar'
+COMMAND_RUNNER = 'command-runner.jar'
 DEBUGGING_PATH = '/libs/state-pusher/0.1/fetch'
+DEBUGGING_COMMAND = 'state-pusher-script'
 DEBUGGING_NAME = 'Setup Hadoop Debugging'
 
 CONFIG_HADOOP_PATH = '/bootstrap-actions/configure-hadoop'
@@ -51,6 +55,8 @@ EMRFS_CSE_KEY = 'fs.s3.cse.enabled'
 EMRFS_CSE_KMS_KEY_ID_KEY = 'fs.s3.cse.kms.keyId'
 EMRFS_CSE_ENCRYPTION_MATERIALS_PROVIDER_KEY = \
     'fs.s3.cse.encryptionMaterialsProvider'
+EMRFS_CSE_CUSTOM_PROVIDER_URI_KEY = 'fs.s3.cse.custom.provider.uri'
+
 EMRFS_CSE_KMS_PROVIDER_FULL_CLASS_NAME = ('com.amazon.ws.emr.hadoop.fs.cse.'
                                           'KMSEncryptionMaterialsProvider')
 EMRFS_CSE_CUSTOM_S3_GET_BA_PATH = 'file:/usr/share/aws/emr/scripts/s3get'
@@ -61,14 +67,18 @@ EMRFS_CLIENT_SIDE = 'CLIENTSIDE'
 EMRFS_KMS = 'KMS'
 EMRFS_CUSTOM = 'CUSTOM'
 
+EMRFS_SITE = 'emrfs-site'
+
 MAX_BOOTSTRAP_ACTION_NUMBER = 16
 BOOTSTRAP_ACTION_NAME = 'Bootstrap action'
 
 HIVE_BASE_PATH = '/libs/hive'
 HIVE_SCRIPT_PATH = '/libs/hive/hive-script'
+HIVE_SCRIPT_COMMAND = 'hive-script'
 
 PIG_BASE_PATH = '/libs/pig'
 PIG_SCRIPT_PATH = '/libs/pig/pig-script'
+PIG_SCRIPT_COMMAND = 'pig-script'
 
 GANGLIA_INSTALL_BA_PATH = '/bootstrap-actions/install-ganglia'
 
@@ -102,7 +112,8 @@ HBASE_SCHEDULE_BACKUP_STEP_NAME = 'Modify Backup Schedule'
 IMPALA_INSTALL_PATH = '/libs/impala/setup-impala'
 
 # Step
-STREAMING_JAR_PATH = '/home/hadoop/contrib/streaming/hadoop-streaming.jar'
+HADOOP_STREAMING_PATH = '/home/hadoop/contrib/streaming/hadoop-streaming.jar'
+HADOOP_STREAMING_COMMAND = 'hadoop-streaming'
 
 CUSTOM_JAR = 'custom_jar'
 HIVE = 'hive'
@@ -128,7 +139,8 @@ RUN_PIG_SCRIPT = '--run-pig-script'
 PIG_VERSIONS = '--pig-versions'
 PIG_STEP_CONFIG = 'PigStepConfig'
 RUN_IMPALA_SCRIPT = '--run-impala-script'
-SPARK_SUBMIT_COMMAND = '/home/hadoop/spark/bin/spark-submit'
+SPARK_SUBMIT_PATH = '/home/hadoop/spark/bin/spark-submit'
+SPARK_SUBMIT_COMMAND = 'spark-submit'
 IMPALA_STEP_CONFIG = 'ImpalaStepConfig'
 SPARK_STEP_CONFIG = 'SparkStepConfig'
 STREAMING_STEP_CONFIG = 'StreamingStepConfig'

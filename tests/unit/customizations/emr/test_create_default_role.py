@@ -76,6 +76,23 @@ CONSTRUCTED_RESULT_OUTPUT = [
 http_response = requests.models.Response()
 http_response.status_code = 200
 
+CN_EC2_ROLE_ARN = ('arn:aws-cn:iam::aws:policy/service-role/'
+                   'AmazonElasticMapReduceforEC2Role')
+US_GOV_EC2_ROLE_ARN = ('arn:aws-us-gov:iam::aws:policy/service-role/'
+                       'AmazonElasticMapReduceforEC2Role')
+
+EC2_ROLE_ARN = ('arn:aws:iam::aws:policy/service-role/'
+                'AmazonElasticMapReduceforEC2Role')
+
+CN_EMR_ROLE_ARN = ('arn:aws-cn:iam::aws:policy/service-role/'
+                   'AmazonElasticMapReduceRole')
+
+US_GOV_EMR_ROLE_ARN = ('arn:aws-us-gov:iam::aws:policy/'
+                       'service-role/AmazonElasticMapReduceRole')
+
+EMR_ROLE_ARN = ('arn:aws:iam::aws:policy/service-role/'
+                'AmazonElasticMapReduceRole')
+
 
 class TestCreateDefaultRole(BaseAWSCommandParamsTest):
     prefix = 'emr create-default-roles'
@@ -157,7 +174,7 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
         self.assertEqual(self.operations_called[1][0].name,
                          'AttachRolePolicy')
         self.assertEqual(self.operations_called[1][1]['PolicyArn'],
-                         "arn:aws-cn:iam::aws:policy/service-role/AmazonElasticMapReduceforEC2Role")
+                         CN_EC2_ROLE_ARN)
         self.assertEqual(self.operations_called[1][1]['RoleName'],
                          EC2_ROLE_NAME)
 
@@ -182,10 +199,9 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
 
         self.assertEqual(self.operations_called[5][0].name, 'AttachRolePolicy')
         self.assertEqual(self.operations_called[5][1]['PolicyArn'],
-                         "arn:aws-cn:iam::aws:policy/service-role/AmazonElasticMapReduceRole")
+                         CN_EMR_ROLE_ARN)
         self.assertEqual(self.operations_called[5][1]['RoleName'],
                          EMR_ROLE_NAME)
-
 
     @mock.patch('awscli.customizations.emr.emr.'
                 'CreateDefaultRoles._construct_result')
@@ -258,18 +274,24 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
         self.assertEquals(result[0], expected_output)
 
     def test_policy_arn_construction(self):
-        self.assertEquals(createdefaultroles.get_ec2_role_policy_arn("cn-north-1"),
-                          "arn:aws-cn:iam::aws:policy/service-role/AmazonElasticMapReduceforEC2Role")
-        self.assertEquals(createdefaultroles.get_ec2_role_policy_arn("us-gov-west-1"),
-                          "arn:aws-us-gov:iam::aws:policy/service-role/AmazonElasticMapReduceforEC2Role")
-        self.assertEquals(createdefaultroles.get_ec2_role_policy_arn("eu-west-1"),
-                          "arn:aws:iam::aws:policy/service-role/AmazonElasticMapReduceforEC2Role")
-        self.assertEquals(createdefaultroles.get_service_role_policy_arn("cn-north-1"),
-                          "arn:aws-cn:iam::aws:policy/service-role/AmazonElasticMapReduceRole")
-        self.assertEquals(createdefaultroles.get_service_role_policy_arn("us-gov-west-1"),
-                          "arn:aws-us-gov:iam::aws:policy/service-role/AmazonElasticMapReduceRole")
-        self.assertEquals(createdefaultroles.get_service_role_policy_arn("eu-west-1"),
-                          "arn:aws:iam::aws:policy/service-role/AmazonElasticMapReduceRole")
+        self.assertEquals(
+            createdefaultroles.get_ec2_role_policy_arn("cn-north-1"),
+            CN_EC2_ROLE_ARN)
+        self.assertEquals(
+            createdefaultroles.get_ec2_role_policy_arn("us-gov-west-1"),
+            US_GOV_EC2_ROLE_ARN)
+        self.assertEquals(
+            createdefaultroles.get_ec2_role_policy_arn("eu-west-1"),
+            EC2_ROLE_ARN)
+        self.assertEquals(
+            createdefaultroles.get_service_role_policy_arn("cn-north-1"),
+            CN_EMR_ROLE_ARN)
+        self.assertEquals(
+            createdefaultroles.get_service_role_policy_arn("us-gov-west-1"),
+            US_GOV_EMR_ROLE_ARN)
+        self.assertEquals(
+            createdefaultroles.get_service_role_policy_arn("eu-west-1"),
+            EMR_ROLE_ARN)
 
 
 def side_effect_of_check_if_role_exists(*args, **kwargs):

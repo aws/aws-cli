@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.7.40
+======
+
+* feature:``aws glacier``: Add support for Vault Lock.
+* feature:``aws emr``: Add support for release-based clusters.
+
+
 1.7.39
 ======
 

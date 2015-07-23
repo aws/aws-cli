@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``aws glacier``: Add support for Vault Lock.
+
+
 1.7.39
 ======
 

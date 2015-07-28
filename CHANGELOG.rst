@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.7.41
+======
+
+* feature:``aws s3api``: Add support for more types of event notifications.
+* feature:``aws s3api``: Add support for GET/HEAD storage class response
+  headers.
+* feature:``aws logs``: Add destination API support.
+
+
 1.7.40
 ======
 

@@ -93,7 +93,10 @@ def update_description_with_preview(help_command, **kwargs):
     # So for now we're just going to add the configure command
     # to enable this.
     style.doc.write("You can enable this service by running: ")
-    style.code("aws configure set preview.%s true" % help_command.name)
+    # The service name will always be the first element in the
+    # event class for the help object
+    service_name = help_command.event_class.split('.')[0]
+    style.code("aws configure set preview.%s true" % service_name)
     style.end_note()
 
 

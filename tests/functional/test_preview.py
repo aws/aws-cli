@@ -28,7 +28,7 @@ class TestPreviewMode(BaseAWSCommandParamsTest):
         # Implementation detail, but we want to patch out the
         # session config, as that's the only way to control
         # preview services.
-        self.driver.session._config=  self.full_config
+        self.driver.session._config = self.full_config
 
     def tearDown(self):
         super(TestPreviewMode, self).tearDown()
@@ -62,12 +62,26 @@ class TestPreviewMode(BaseAWSCommandParamsTest):
         # Even if a service is still marked as being in preview,
         # you can still pull up its documentation.
         self.full_config['preview'] = {'cloudfront': 'false'}
-        renderer = mock.Mock()
-        get_renderer.return_value = renderer
         self.driver.main('cloudfront help'.split())
         # In this case, the normal help processing should have occurred
-        # and we check that we rendered the contents.
-        self.assertTrue(renderer.render.called)
+        # and we check that we rendered the contents correctly.
+        self.assertTrue(get_renderer.return_value.render.called)
+        contents = get_renderer.return_value.render.call_args[0][0]
+        self.assertIn('aws configure set preview.cloudfront true',
+                      contents.decode('utf-8'))
+
+    @mock.patch('awscli.help.get_renderer')
+    def test_document_preview_service_operation(self, get_renderer):
+        # Even if a service is still marked as being in preview,
+        # you can still pull up its documentation for its operations.
+        self.full_config['preview'] = {'cloudfront': 'false'}
+        self.driver.main('cloudfront create-distribution help'.split())
+        # The contents should be have the correct way to set the command
+        # out of preview in the config file.
+        self.assertTrue(get_renderer.return_value.render.called)
+        contents = get_renderer.return_value.render.call_args[0][0]
+        self.assertIn('aws configure set preview.cloudfront true',
+                      contents.decode('utf-8'))
 
     @mock.patch('awscli.help.get_renderer')
     def test_preview_mode_is_in_provider_help(self, renderer):

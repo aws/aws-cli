@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``aws opsworks``: Add support for managing Amazon EC2 Container
+  Service clusters.
+* feature:``aws rds``: Add support for Amazon Aurora.
+
+
 1.7.41
 ======
 

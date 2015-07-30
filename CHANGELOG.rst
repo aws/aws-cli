@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.42
+======
 
 * feature:``aws opsworks``: Add support for managing Amazon EC2 Container
   Service clusters.

@@ -14,7 +14,7 @@ import json
 
 import mock
 from botocore.model import ShapeResolver, StructureShape, StringShape
-from bcdoc.restdoc import ReSTDocument
+from botocore.docs.bcdoc.restdoc import ReSTDocument
 
 from awscli.testutils import unittest, FileCreator
 from awscli.clidocs import OperationDocumentEventHandler, \

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.7.43
+======
+
+* feature:``aws devicefarm``: Add support for testing iOS applications with
+  AWS Device Farm.
+
 1.7.42
 ======
 

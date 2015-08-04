@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.43
+======
 
 * feature:``aws devicefarm``: Add support for testing iOS applications with
   AWS Device Farm.

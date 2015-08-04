@@ -14,6 +14,7 @@ import logging
 import os
 from botocore import xform_name
 from botocore.docs.bcdoc.docevents import DOC_EVENTS
+from botocore.model import StringShape
 
 from awscli import SCALAR_TYPES
 from awscli.argprocess import ParamShorthandDocGen
@@ -160,6 +161,7 @@ class CLIDocumentEventHandler(object):
         doc.write('%s (%s)\n' % (name, argument.cli_type_name))
         doc.style.indent()
         doc.include_doc_string(argument.documentation)
+        self._document_enums(argument, doc)
         doc.style.dedent()
         doc.style.new_paragraph()
 
@@ -176,6 +178,19 @@ class CLIDocumentEventHandler(object):
             text=related_item
         )
         doc.write('\n')
+
+    def _document_enums(self, argument, doc):
+        """Documents top-level parameter enums"""
+        if hasattr(argument, 'argument_model'):
+            model = argument.argument_model
+            if isinstance(model, StringShape):
+                if model.enum:
+                    doc.style.new_paragraph()
+                    doc.write('Possible values:')
+                    doc.style.start_ul()
+                    for enum in model.enum:
+                        doc.style.li('``%s``' % enum)
+                    doc.style.end_ul()
 
 
 class ProviderDocumentEventHandler(CLIDocumentEventHandler):
@@ -302,9 +317,9 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
     def _json_example_value_name(self, argument_model, include_enum_values=True):
         # If include_enum_values is True, then the valid enum values
         # are included as the sample JSON value.
-        if argument_model.type_name == 'string':
-            if 'enum' in argument_model.metadata and include_enum_values:
-                choices = argument_model.metadata['enum']
+        if isinstance(argument_model, StringShape):
+            if argument_model.enum and include_enum_values:
+                choices = argument_model.enum
                 return '|'.join(['"%s"' % c for c in choices])
             else:
                 return '"string"'
@@ -422,17 +437,17 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             # use the argparse behavior of space separated lists.
             # "foo" "bar" "baz".  In fact we don't even want to
             # document the JSON syntax in this case.
+            member = argument_model.member
             doc.style.new_paragraph()
             doc.write('Syntax')
             doc.style.start_codeblock()
             example_type = self._json_example_value_name(
-                argument_model.member, include_enum_values=False)
+                member, include_enum_values=False)
             doc.write('%s %s ...' % (example_type, example_type))
-            if 'enum' in argument_model.member.metadata:
+            if isinstance(member, StringShape) and member.enum:
                 # If we have enum values, we can tell the user
                 # exactly what valid values they can provide.
-                enum = argument_model.member.metadata['enum']
-                self._write_valid_enums(doc, enum)
+                self._write_valid_enums(doc, member.enum)
             doc.style.end_codeblock()
             doc.style.new_paragraph()
         elif cli_argument.cli_type_name not in SCALAR_TYPES:

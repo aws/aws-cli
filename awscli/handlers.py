@@ -35,7 +35,6 @@ from awscli.customizations.putmetricdata import register_put_metric_data
 from awscli.customizations.sessendemail import register_ses_send_email
 from awscli.customizations.iamvirtmfa import IAMVMFAWrapper
 from awscli.customizations.argrename import register_arg_renames
-from awscli.customizations.dryrundocs import register_dryrun_docs
 from awscli.customizations.configure import register_configure_cmd
 from awscli.customizations.cloudtrail import initialize as cloudtrail_init
 from awscli.customizations.toplevelbool import register_bool_params
@@ -109,7 +108,6 @@ def awscli_initialize(event_handlers):
     register_ses_send_email(event_handlers)
     IAMVMFAWrapper(event_handlers)
     register_arg_renames(event_handlers)
-    register_dryrun_docs(event_handlers)
     register_configure_cmd(event_handlers)
     cloudtrail_init(event_handlers)
     register_bool_params(event_handlers)

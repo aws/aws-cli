@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``aws swf``: Add support for Added support for invoking AWS Lambda
+  tasks from an Amazon SWF workflow.
+
 1.7.43
 ======
 

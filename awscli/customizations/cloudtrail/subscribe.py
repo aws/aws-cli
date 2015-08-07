@@ -14,6 +14,7 @@ import json
 import logging
 import sys
 
+from .utils import get_account_id, remove_cli_error_event
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import s3_bucket_exists
 from botocore.exceptions import ClientError
@@ -26,23 +27,6 @@ SNS_POLICY_TEMPLATE = 'policy/SNS/AWSCloudTrail-SnsTopicPolicy-2014-12-17.json'
 
 class CloudTrailError(Exception):
     pass
-
-
-def initialize(cli):
-    """
-    The entry point for CloudTrail high level commands.
-    """
-    cli.register('building-command-table.cloudtrail', inject_commands)
-
-
-def inject_commands(command_table, session, **kwargs):
-    """
-    Called when the CloudTrail command table is being built. Used to inject new
-    high level commands into the command list. These high level commands
-    must not collide with existing low-level API call names.
-    """
-    command_table['create-subscription'] = CloudTrailSubscribe(session)
-    command_table['update-subscription'] = CloudTrailUpdate(session)
 
 
 class CloudTrailSubscribe(BasicCommand):
@@ -99,13 +83,7 @@ class CloudTrailSubscribe(BasicCommand):
         self.iam = self._session.create_client('iam', **client_args)
         self.s3 = self._session.create_client('s3', **client_args)
         self.sns = self._session.create_client('sns', **client_args)
-        # This unregister call will go away once the client switchover
-        # is done, but for now we're relying on S3 catching a ClientError
-        # when we check if a bucket exists, so we need to ensure the
-        # botocore ClientError is raised instead of the CLI's error handler.
-        self.s3.meta.events.unregister('after-call',
-                                       unique_id='awscli-error-handler')
-
+        remove_cli_error_event(self.s3)
         self.region_name = self.s3.meta.region_name
 
         # If the endpoint is specified, it is designated for the cloudtrail
@@ -210,9 +188,7 @@ class CloudTrailSubscribe(BasicCommand):
         sys.stdout.write(
             'Setting up new S3 bucket {bucket}...\n'.format(bucket=bucket))
 
-        # Who am I?
-        response = self.iam.get_user()
-        account_id = response['User']['Arn'].split(':')[4]
+        account_id = get_account_id(self.iam)
 
         # Clean up the prefix - it requires a trailing slash if set
         if prefix and not prefix.endswith('/'):
@@ -264,9 +240,7 @@ class CloudTrailSubscribe(BasicCommand):
         sys.stdout.write(
             'Setting up new SNS topic {topic}...\n'.format(topic=topic))
 
-        # Who am I?
-        response = self.iam.get_user()
-        account_id = response['User']['Arn'].split(':')[4]
+        account_id = get_account_id(self.iam)
 
         # Make sure topic doesn't already exist
         # Warn but do not fail if ListTopics permissions

@@ -51,7 +51,7 @@ class ShorthandParser(object):
     _DOUBLE_QUOTED = _NamedRegex('double quoted', r'"(?:\\\\|\\"|[^"])*"')
     _FIRST_VALUE = _NamedRegex('first',
                                ur'[\!\#-&\(-\+\--\<\>-Z\\-z\u007c-\uffff]'
-                               ur'[\!\#-&\(-\+\--\\\^-\uffff]*')
+                               ur'[\!\#-&\(-\+\--\\\^-\|~-\uffff]*')
     _SECOND_VALUE = _NamedRegex('second',
                                 ur'[\!\#-&\(-\+\--\<\>-Z\\-z\u007c-\uffff]'
                                 ur'[\!\#-&\(-\+\--\<\>-\uffff]*')
@@ -145,6 +145,17 @@ class ShorthandParser(object):
         self._consume_whitespace()
         values = []
         while self._current() != ']':
+            # TODO: We need to decide if we're ok with changing
+            # this.  The previous parser assumed that we were
+            # parsing a list of strings.  If we want to support
+            # nested lists/hashes, this would be a change in
+            # behavior if an existing user has:
+            # foo=[{a=b},{c=d}]
+            #
+            # Previously this parses as {'foo': ['{a=b}', '{c=d}]}
+            # If we support nested values this would now parse as
+            # {'foo': [{'a': 'b'}, {'c': 'd'}]}
+            # For now, the old behavior is kept.
             val = self._value()
             values.append(val)
             self._consume_whitespace()
@@ -155,7 +166,29 @@ class ShorthandParser(object):
         return values
 
     def _hash_literal(self):
-        raise NotImplementedError("_hash_literal")
+        self._expect('{')
+        self._consume_whitespace()
+        keyvals = {}
+        while self._current() != '}':
+            key = self._key()
+            self._consume_whitespace()
+            self._expect('=')
+            self._consume_whitespace()
+            if self._current() == '[':
+                v = self._explicit_list()
+            elif self._current() == '{':
+                v = self._hash_literal()
+            else:
+                # Don't support CSV list, it can only
+                # be a scalar value.
+                v = self._first_value()
+            self._consume_whitespace()
+            if self._current() != '}':
+                self._expect(',')
+                self._consume_whitespace()
+            keyvals[key] = v
+        self._expect('}')
+        return keyvals
 
     def _first_value(self):
         # first-value = value / single-quoted-val / double-quoted-val

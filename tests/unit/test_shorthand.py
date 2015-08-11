@@ -92,6 +92,24 @@ def test_parse():
     yield (_can_parse, 'Name=foo,Values= a,  b  ,  c',
            {'Name': 'foo', 'Values': ['a', 'b', 'c']})
 
+    # Hashes
+    yield (_can_parse, 'Name={foo=bar,baz=qux}',
+           {'Name': {'foo': 'bar', 'baz': 'qux'}})
+    yield (_can_parse, 'Name={foo=[a,b,c],bar=baz}',
+           {'Name': {'foo': ['a', 'b', 'c'], 'bar': 'baz'}})
+    yield (_can_parse, 'Name={foo=bar},Bar=baz',
+           {'Name': {'foo': 'bar'}, 'Bar': 'baz'})
+    yield (_can_parse, 'Bar=baz,Name={foo=bar}',
+           {'Bar': 'baz', 'Name': {'foo': 'bar'}})
+    yield (_can_parse, 'a={b={c=d}}',
+           {'a': {'b': {'c': 'd'}}})
+    yield (_can_parse, 'a={b={c=d,e=f},g=h}',
+           {'a': {'b': {'c': 'd', 'e': 'f'}, 'g': 'h'}})
+
+    # Combining lists and hashes.
+    #yield (_can_parse, 'Name=[{foo=bar}, {baz=qux}]',
+    #       {'Name': [{'foo': 'bar'}, {'baz': 'qux'}]})
+
 
 def test_error_parsing():
     yield (_is_error, 'foo')
@@ -99,21 +117,15 @@ def test_error_parsing():
     yield (_is_error, 'foo="bar')
     yield (_is_error, "foo='bar")
     yield (_is_error, "foo=[bar")
-
-
-def test_regressions():
-    return
-    with open('/tmp/shorthand') as f:
-        for expr in f:
-            yield _can_parse, expr.strip().decode('utf-8'), {}
+    yield (_is_error, "foo={bar")
+    yield (_is_error, "foo={bar}")
+    yield (_is_error, "foo={bar=bar")
 
 
 def _is_error(expr):
     try:
         shorthand.ShorthandParser().parse(expr)
     except shorthand.ShorthandParseError:
-        #except TypeError:
-        # Expected result, test passes.
         pass
     else:
         raise AssertionError("Expected ShorthandParseError, but no "

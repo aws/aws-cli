@@ -124,8 +124,11 @@ config file or the AWS Shared credentials file (``~/.aws/credentials``).
 The Shared Credentials File
 ---------------------------
 
-The shared credentials file has a fixed location of
-``~/.aws/credentials``.  This file is an INI formatted file with section names
+The shared credentials file has a default location of
+``~/.aws/credentials``.  You can change the location of the shared
+credentials file by setting the ``AWS_SHARED_CREDENTIALS_FILE``.
+
+This file is an INI formatted file with section names
 corresponding to profiles.  With each section, the three configuration
 variables shown above can be specified: ``aws_access_key_id``,
 ``aws_secret_access_key``, ``aws_session_token``.  **These are the only

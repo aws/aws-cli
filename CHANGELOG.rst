@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* Add support for changing the shared credentials file from the
+  default location of ``~/.aws/credentials`` by setting the
+  ``AWS_SHARED_CREDENTIALS_FILE`` environment variable
+  (`botocore issue 623 <https://github.com/boto/botocore/pull/623>`__)
+
+
 1.7.44
 ======
 

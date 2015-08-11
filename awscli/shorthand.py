@@ -50,11 +50,11 @@ class ShorthandParser(object):
     _SINGLE_QUOTED = _NamedRegex('singled quoted', r'\'(?:\\\\|\\\'|[^\'])*\'')
     _DOUBLE_QUOTED = _NamedRegex('double quoted', r'"(?:\\\\|\\"|[^"])*"')
     _FIRST_VALUE = _NamedRegex('first',
-                               ur'[\!\#-&\(-\+\--\<\>-Z\\-z\u007c-\uffff]'
-                               ur'[\!\#-&\(-\+\--\\\^-\|~-\uffff]*')
+                               u'[\!\#-&\(-\+\--\<\>-Z\\\\-z\u007c-\uffff]'
+                               u'[\!\#-&\(-\+\--\\\\\^-\|~-\uffff]*')
     _SECOND_VALUE = _NamedRegex('second',
-                                ur'[\!\#-&\(-\+\--\<\>-Z\\-z\u007c-\uffff]'
-                                ur'[\!\#-&\(-\+\--\<\>-\uffff]*')
+                                u'[\!\#-&\(-\+\--\<\>-Z\\\\-z\u007c-\uffff]'
+                                u'[\!\#-&\(-\+\--\<\>-\uffff]*')
 
     def __init__(self):
         self._tokens = []

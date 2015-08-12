@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* Add support for changing the shared credentials file from the
+  default location of ``~/.aws/credentials`` by setting the
+  ``AWS_SHARED_CREDENTIALS_FILE`` environment variable
+  (`botocore issue 623 <https://github.com/boto/botocore/pull/623>`__)
+* Add ``aws iam wait instance-profile-exists`` and
+  ``aws iam wait user-exists`` commands
+  (`botocore issue <https://github.com/boto/botocore/pull/624>`__)
+
+
 1.7.44
 ======
 

@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.45
+======
 
 
 * feature:``aws elasticbeanstalk``: Add support for enhanced

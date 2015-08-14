@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws iam create-virtual-mfa-device``: Fix issue when an error
+  response is received from the ``create-virtual-mfa-device`` command
+  (`issue 1447 <https://github.com/aws/aws-cli/pull/1447/>`__)
+
 1.7.45
 ======
 

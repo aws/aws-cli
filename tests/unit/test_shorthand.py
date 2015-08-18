@@ -92,6 +92,12 @@ def test_parse():
     yield (_can_parse, 'Name=foo,Values= a,  b  ,  c',
            {'Name': 'foo', 'Values': ['a', 'b', 'c']})
 
+    # Can handle newlines between values.
+    yield (_can_parse, 'Name=foo,\nValues=a,b,c',
+           {'Name': 'foo', 'Values': ['a', 'b', 'c']})
+    yield (_can_parse, 'A=b,\nC=d,\nE=f\n',
+           {'A': 'b', 'C': 'd', 'E': 'f'})
+
     # Hashes
     yield (_can_parse, 'Name={foo=bar,baz=qux}',
            {'Name': {'foo': 'bar', 'baz': 'qux'}})

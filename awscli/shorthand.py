@@ -36,12 +36,17 @@ class ShorthandParseError(Exception):
         super(ShorthandParseError, self).__init__(msg)
 
     def _construct_msg(self):
+        if '\n' in self.value:
+            last_newline = self.value[:self.index].rindex('\n')
+            num_spaces = self.index - last_newline - 1
+        else:
+            num_spaces = self.index
         msg = (
             "Expected: '%s', received: '%s' for input:\n"
             "%s\n"
             "%s\n"
         ) % (self.expected, self.actual, self.value,
-             ' ' * self.index + '^')
+             ' ' * num_spaces + '^')
         return msg
 
 

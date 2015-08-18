@@ -245,7 +245,7 @@ class ShorthandParser(object):
             raise ShorthandParseError(self._input_value, char,
                                       'EOF', self._index)
         actual = self._input_value[self._index]
-        if actual  != char:
+        if actual != char:
             raise ShorthandParseError(self._input_value, char,
                                       actual, self._index)
         self._index += 1

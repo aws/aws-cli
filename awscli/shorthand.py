@@ -102,15 +102,15 @@ class ShorthandParser(object):
     def _values(self):
         # values = csv-list / explicit-list / hash-literal
         if self._at_eof():
-            return None
+            return ''
         elif self._current() == '[':
             return self._explicit_list()
         elif self._current() == '{':
             return self._hash_literal()
         else:
-            return self._csv_list()
+            return self._csv_value()
 
-    def _csv_list(self):
+    def _csv_value(self):
         first_value = self._first_value()
         self._consume_whitespace()
         if self._at_eof() or self._input_value[self._index] != ',':
@@ -143,6 +143,7 @@ class ShorthandParser(object):
         result = self._FIRST_VALUE.match(self._input_value[self._index:])
         if result is not None:
             return self._consume_matched_regex(result)
+        return ''
 
     def _explicit_list(self):
         # explicit-list = "[" [value *(",' value)] "]"

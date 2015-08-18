@@ -21,8 +21,8 @@ def test_parse():
     yield (_can_parse, 'foo=bar,baz=qux', {'foo': 'bar', 'baz': 'qux'})
     yield (_can_parse, 'a=b,c=d,e=f', {'a': 'b', 'c': 'd', 'e': 'f'})
     # Empty values are allowed.
-    yield (_can_parse, 'foo=', {'foo': None})
-    yield (_can_parse, 'foo=,bar=', {'foo': None, 'bar': None})
+    yield (_can_parse, 'foo=', {'foo': ''})
+    yield (_can_parse, 'foo=,bar=', {'foo': '', 'bar': ''})
     # Unicode is allowed.
     yield (_can_parse, u'foo=\u2713', {'foo': u'\u2713'})
     yield (_can_parse, u'foo=\u2713,\u2713', {'foo': [u'\u2713', u'\u2713']})
@@ -85,7 +85,7 @@ def test_parse():
     yield (_can_parse, 'foo  =   bar', {'foo': 'bar'})
     yield (_can_parse, 'foo = bar,baz = qux', {'foo': 'bar', 'baz': 'qux'})
     yield (_can_parse, 'a = b,  c = d , e = f', {'a': 'b', 'c': 'd', 'e': 'f'})
-    yield (_can_parse, 'foo = ', {'foo': None})
+    yield (_can_parse, 'foo = ', {'foo': ''})
     yield (_can_parse, 'a=b,c=  d,  e,  f', {'a': 'b', 'c': ['d', 'e', 'f']})
     yield (_can_parse, 'Name=foo,Values=  a  ,  b  ,  c  ',
            {'Name': 'foo', 'Values': ['a', 'b', 'c']})

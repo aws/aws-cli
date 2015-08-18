@@ -37,6 +37,12 @@ class ShorthandParseError(Exception):
 
     def _construct_msg(self):
         if '\n' in self.value:
+            # If there's newlines in the expression, we want
+            # to make sure we're only counting the spaces
+            # from the last newline:
+            # foo=bar,\n
+            # bar==baz
+            #     ^
             last_newline = self.value[:self.index].rindex('\n')
             num_spaces = self.index - last_newline - 1
         else:
@@ -107,12 +113,24 @@ class ShorthandParser(object):
             return self._csv_value()
 
     def _csv_value(self):
+        # Supports either:
+        # foo=bar     -> 'bar'
+        #     ^
+        # foo=bar,baz -> ['bar', 'baz']
+        #     ^
         first_value = self._first_value()
         self._consume_whitespace()
         if self._at_eof() or self._input_value[self._index] != ',':
             return first_value
         self._expect(',', consume_whitespace=True)
         csv_list = [first_value]
+        # Try to parse remaining list values.
+        # It's possible we don't parse anything:
+        # a=b,c=d
+        #     ^-here
+        # In the case above, we'll hit the ShorthandParser,
+        # backtrack to the comma, and return a single scalar
+        # value 'b'.
         while True:
             try:
                 current = self._second_value()
@@ -126,9 +144,19 @@ class ShorthandParser(object):
                 csv_list.append(current)
             except ShorthandParseError:
                 # Backtrack to the previous comma.
+                # This can happen when we reach this case:
+                # foo=a,b,c=d,e=f
+                #     ^-start
+                # foo=a,b,c=d,e=f
+                #          ^-error, "expected ',' received '='
+                # foo=a,b,c=d,e=f
+                #        ^-backtrack to here.
                 self._backtrack_to(',')
                 break
         if len(csv_list) == 1:
+            # Then this was a foo=bar case, so we expect
+            # this to parse to a scalar value 'bar', i.e
+            # {"foo": "bar"} instead of {"bar": ["bar"]}
             return first_value
         return csv_list
 

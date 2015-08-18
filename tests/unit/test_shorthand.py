@@ -113,8 +113,12 @@ def test_parse():
            {'a': {'b': {'c': 'd', 'e': 'f'}, 'g': 'h'}})
 
     # Combining lists and hashes.
-    #yield (_can_parse, 'Name=[{foo=bar}, {baz=qux}]',
-    #       {'Name': [{'foo': 'bar'}, {'baz': 'qux'}]})
+    yield (_can_parse, 'Name=[{foo=bar}, {baz=qux}]',
+           {'Name': [{'foo': 'bar'}, {'baz': 'qux'}]})
+
+    # Combining hashes and lists.
+    yield (_can_parse, 'Name=[{foo=[a,b]}, {bar=[c,d]}]',
+           {'Name': [{'foo': ['a', 'b']}, {'bar': ['c', 'd']}]})
 
 
 def test_error_parsing():

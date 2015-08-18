@@ -74,18 +74,14 @@ class ShorthandParser(object):
         params = {}
         params.update(self._keyval())
         while self._index < len(self._input_value):
-            self._consume_whitespace()
-            self._expect(',')
-            self._consume_whitespace()
+            self._expect(',', consume_whitespace=True)
             params.update(self._keyval())
         return params
 
     def _keyval(self):
         # keyval = key "=" [values]
         key = self._key()
-        self._consume_whitespace()
-        self._expect('=')
-        self._consume_whitespace()
+        self._expect('=', consume_whitespace=True)
         values = self._values()
         return {key: values}
 
@@ -115,9 +111,7 @@ class ShorthandParser(object):
         self._consume_whitespace()
         if self._at_eof() or self._input_value[self._index] != ',':
             return first_value
-        self._consume_whitespace()
-        self._expect(',')
-        self._consume_whitespace()
+        self._expect(',', consume_whitespace=True)
         csv_list = [first_value]
         while True:
             try:
@@ -128,8 +122,7 @@ class ShorthandParser(object):
                 if self._at_eof():
                     csv_list.append(current)
                     break
-                self._expect(',')
-                self._consume_whitespace()
+                self._expect(',', consume_whitespace=True)
                 csv_list.append(current)
             except ShorthandParseError:
                 # Backtrack to the previous comma.
@@ -147,8 +140,7 @@ class ShorthandParser(object):
 
     def _explicit_list(self):
         # explicit-list = "[" [value *(",' value)] "]"
-        self._expect('[')
-        self._consume_whitespace()
+        self._expect('[', consume_whitespace=True)
         values = []
         while self._current() != ']':
             # TODO: We need to decide if we're ok with changing
@@ -172,14 +164,11 @@ class ShorthandParser(object):
         return values
 
     def _hash_literal(self):
-        self._expect('{')
-        self._consume_whitespace()
+        self._expect('{', consume_whitespace=True)
         keyvals = {}
         while self._current() != '}':
             key = self._key()
-            self._consume_whitespace()
-            self._expect('=')
-            self._consume_whitespace()
+            self._expect('=', consume_whitespace=True)
             if self._current() == '[':
                 v = self._explicit_list()
             elif self._current() == '{':
@@ -228,7 +217,9 @@ class ShorthandParser(object):
         else:
             return self._must_consume_regex(self._SECOND_VALUE)
 
-    def _expect(self, char):
+    def _expect(self, char, consume_whitespace=False):
+        if consume_whitespace:
+            self._consume_whitespace()
         if self._index >= len(self._input_value):
             raise ShorthandParseError(self._input_value, char,
                                       'EOF', self._index)
@@ -237,6 +228,8 @@ class ShorthandParser(object):
             raise ShorthandParseError(self._input_value, char,
                                       actual, self._index)
         self._index += 1
+        if consume_whitespace:
+            self._consume_whitespace()
 
     def _must_consume_regex(self, regex):
         result = regex.match(self._input_value[self._index:])

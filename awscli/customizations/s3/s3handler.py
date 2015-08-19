@@ -55,15 +55,33 @@ class S3Handler(object):
         self.result_queue = result_queue
         if not self.result_queue:
             self.result_queue = queue.Queue()
-        self.params = {'dryrun': False, 'quiet': False, 'acl': None,
-                       'guess_mime_type': True, 'sse': False,
-                       'storage_class': None, 'website_redirect': None,
-                       'content_type': None, 'cache_control': None,
-                       'content_disposition': None, 'content_encoding': None,
-                       'content_language': None, 'expires': None,
-                       'grants': None, 'only_show_errors': False,
-                       'is_stream': False, 'paths_type': None,
-                       'expected_size': None, 'metadata_directive': None}
+        self.params = {'dryrun': False,
+                       'quiet': False,
+                       'acl': None,
+                       'guess_mime_type': True,
+                       'sse_copy_source_customer_algorithm': None,
+                       'sse_copy_source_customer_key': None,
+                       'sse_copy_source_customer_key_md5': None,
+                       'sse': False,
+                       'sse_class': None,
+                       'sse_customer_algorithm': None,
+                       'sse_customer_key': None,
+                       'sse_customer_key_md5': None,
+                       'sse_kms_key_id': None,
+                       'storage_class': None,
+                       'website_redirect': None,
+                       'content_type': None,
+                       'cache_control': None,
+                       'content_disposition': None,
+                       'content_encoding': None,
+                       'content_language': None,
+                       'expires': None,
+                       'grants': None,
+                       'only_show_errors': False,
+                       'is_stream': False,
+                       'paths_type': None,
+                       'expected_size': None,
+                       'metadata_directive': None}
         self.params['region'] = params['region']
         for key in self.params.keys():
             if key in params:
@@ -269,7 +287,8 @@ class S3Handler(object):
             task = tasks.DownloadPartTask(
                 part_number=i, chunk_size=chunksize,
                 result_queue=self.result_queue, filename=filename,
-                context=context, io_queue=self.write_queue)
+                context=context, io_queue=self.write_queue,
+                params=self.params)
             self.executor.submit(task)
 
     def _enqueue_multipart_upload_tasks(self, filename,
@@ -332,7 +351,8 @@ class S3Handler(object):
                                          payload=None):
         kwargs = {'part_number': part_number, 'chunk_size': chunk_size,
                   'result_queue': self.result_queue,
-                  'upload_context': upload_context, 'filename': filename}
+                  'upload_context': upload_context, 'filename': filename,
+                  'params': self.params}
         if payload:
             kwargs['payload'] = payload
         task = task_class(**kwargs)

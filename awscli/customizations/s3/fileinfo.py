@@ -35,6 +35,7 @@ def save_file(filename, response_data, last_update, is_stream=False):
     body = response_data['Body']
     etag = response_data['ETag'][1:-1]
     sse = response_data.get('ServerSideEncryption', None)
+    sse_customer_algorithm = response_data.get('SSECustomerAlgorithm', None)
     if not is_stream:
         d = os.path.dirname(filename)
         try:
@@ -55,7 +56,8 @@ def save_file(filename, response_data, last_update, is_stream=False):
         with open(filename, 'wb') as out_file:
             write_to_file(out_file, etag, md5, file_chunks)
 
-    if not _is_multipart_etag(etag) and sse != 'aws:kms':
+    if not _is_multipart_etag(etag) and sse != 'aws:kms' and \
+          sse_customer_algorithm is None:
         if etag != md5.hexdigest():
             if not is_stream:
                 os.remove(filename)
@@ -189,6 +191,7 @@ class FileInfo(TaskInfo):
         bucket, key = find_bucket_key(self.src)
         params = {'Bucket': bucket,
                   'Key': key}
+        self._handle_sse_params(params)
         response_data = self.client.head_object(**params)
         self.size = int(response_data['ContentLength'])
 
@@ -215,8 +218,6 @@ class FileInfo(TaskInfo):
                     raise ValueError('grants should be of the form '
                                      'permission=principal')
                 params[self._permission_to_param(permission)] = grantee
-        if self.parameters['sse']:
-            params['ServerSideEncryption'] = 'AES256'
         if self.parameters['storage_class']:
             params['StorageClass'] = self.parameters['storage_class'][0]
         if self.parameters['website_redirect']:
@@ -237,6 +238,27 @@ class FileInfo(TaskInfo):
             params['ContentLanguage'] = self.parameters['content_language'][0]
         if self.parameters['expires']:
             params['Expires'] = self.parameters['expires'][0]
+
+    def _handle_sse_params(self, params):
+        if self.parameters['sse_copy_source_customer_key']:
+            params['CopySourceSSECustomerAlgorithm'] = \
+                self.parameters['sse_copy_source_customer_algorithm']
+            params['CopySourceSSECustomerKey'] = \
+                self.parameters['sse_copy_source_customer_key']
+            params['CopySourceSSECustomerKeyMD5'] = \
+                self.parameters['sse_copy_source_customer_key_md5']
+        if self.parameters['sse_class'] == 'C':
+            params['SSECustomerAlgorithm'] = \
+                self.parameters['sse_customer_algorithm']
+            params['SSECustomerKey'] = \
+                self.parameters['sse_customer_key']
+            params['SSECustomerKeyMD5'] = \
+                self.parameters['sse_customer_key_md5']
+        if self.parameters['sse_class'] == 'KMS':
+            params['ServerSideEncryption'] = 'aws:kms'
+            params['SSEKMSKeyId'] = self.parameters['sse_kms_key_id']
+        if self.parameters['sse_class'] == 'S3':
+            params['ServerSideEncryption'] = 'AES256'
 
     def _handle_metadata_directive(self, params):
         if self.parameters['metadata_directive']:
@@ -262,6 +284,7 @@ class FileInfo(TaskInfo):
             'Body': body,
         }
         self._handle_object_params(params)
+        self._handle_sse_params(params)
         response_data = self.client.put_object(**params)
 
     def _inject_content_type(self, params, filename):
@@ -277,6 +300,7 @@ class FileInfo(TaskInfo):
         """
         bucket, key = find_bucket_key(self.src)
         params = {'Bucket': bucket, 'Key': key}
+        self._handle_sse_params(params)
         response_data = self.client.get_object(**params)
         save_file(self.dest, response_data, self.last_update,
                   self.is_stream)
@@ -290,8 +314,9 @@ class FileInfo(TaskInfo):
         params = {'Bucket': bucket,
                   'CopySource': copy_source, 'Key': key}
         self._handle_object_params(params)
+        self._handle_sse_params(params)
         self._handle_metadata_directive(params)
-        self.client.copy_object(**params)
+        response_data = self.client.copy_object(**params)
 
     def delete(self):
         """
@@ -325,6 +350,11 @@ class FileInfo(TaskInfo):
         bucket, key = find_bucket_key(self.dest)
         params = {'Bucket': bucket, 'Key': key}
         self._handle_object_params(params)
+        self._handle_sse_params(params)
+        params = params.copy()
+        params.pop('CopySourceSSECustomerAlgorithm', None)
+        params.pop('CopySourceSSECustomerKey', None)
+        params.pop('CopySourceSSECustomerKeyMD5', None)
         response_data = self.client.create_multipart_upload(**params)
         upload_id = response_data['UploadId']
         return upload_id

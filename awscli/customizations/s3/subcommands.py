@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import hashlib
+import logging
 import os
 import sys
 
@@ -32,6 +34,7 @@ from awscli.customizations.s3.syncstrategy.base import MissingFileSync, \
     SizeAndLastModifiedSync, NeverSync
 from awscli.customizations.s3 import transferconfig
 
+LOG = logging.getLogger(__name__)
 
 RECURSIVE = {'name': 'recursive', 'action': 'store_true', 'dest': 'dir_op',
              'help_text': (
@@ -157,9 +160,93 @@ GRANTS = {
         'UsingAuthAccess.html">Access Control</a>')}
 
 
-SSE = {'name': 'sse', 'action': 'store_true',
-       'help_text': (
-           "Enable Server Side Encryption of the object in S3")}
+SSE_COPY_SOURCE_CUSTOMER_ALGORITHM = {'name': 'sse-copy-source-customer-algorithm',
+                                      'action': 'store',
+                                      'choices': ['AES256'],
+                                      'default': 'AES256',
+                                      'help_text': ('''\
+The server-side encryption algorithm to use with the customer-specified key for \
+the source object. When present this must be "AES256". This argument is only \
+valid when doing s3 -> s3 operations.\
+''')}
+
+
+SSE_COPY_SOURCE_CUSTOMER_KEY = {'name': 'sse-copy-source-customer-key',
+                                'action': 'store',
+                                'help_text': ('''\
+The customer-controlled encryption key used to server-side encrypt the source \
+object of an s3 -> s3 operation. This argument is only valid when doing s3 -> \
+s3 operations. See --sse-customer-key for how arg values are interpretted.\
+''')}
+
+
+SSE_COPY_SOURCE_CUSTOMER_KEY_MD5 = {'name': 'sse-copy-source-customer-key-md5',
+                                    'action': 'store',
+                                    'help_text': ('''\
+The base64 encoded raw 128 bit MD5 digest of the server-side encryption copy \
+source customer key. Note: This is NOT the base64 encoding of the hex \
+(printable) MD5 digest.\
+''')}
+
+
+SSE = {'name': 'sse',
+       'action': 'store_true',
+       'help_text': ('''\
+Enable Server Side Encryption of the object in S3.  Using this arg will enable \
+SSE-S3 by default if no other --sse-* args are specified.\
+''')}
+
+
+SSE_CLASS = {'name': 'sse-class',
+             'action': 'store',
+             'choices': ['C', 'KMS', 'S3'],
+             'default': None,
+             'help_text': ('''\
+The class of Server Side Encryption to use.  Valid values are "C", "KMS", and \
+"S3".  This argument is optional since it can be inferred from the presence or \
+absence of other --sse-* arguments.  Note that KMS requires Signature v4, \
+which needs to be enabled via aws configure.
+''')}
+
+
+SSE_CUSTOMER_ALGORITHM = {'name': 'sse-customer-algorithm',
+                          'action': 'store',
+                          'choices': ['AES256'],
+                          'default': 'AES256',
+                          'help_text': ('''\
+The server-side encryption algorithm to use with the customer-specified key. \
+When present this must be "AES256".\
+''')}
+
+
+SSE_CUSTOMER_KEY = {'name': 'sse-customer-key',
+                    'action': 'store',
+                    'help_text': ('''\
+The customer-controlled encryption key to use to server-side encrypt the \
+destination object in S3. Can be specified as a string (insecure) or a file URL \
+(more secure). When --customer-key-md5 is not specified this value is \
+interpretted as raw key bytes and base64 encoded for use in the S3 API. When \
+--customer-key-md5 is specified this value is not encoded at all, and must \
+already be in a form expected by the API (base64 encoded). The unencoded value \
+must be 32 bytes (256 bits) in length.\
+''')}
+
+
+SSE_CUSTOMER_KEY_MD5 = {'name': 'sse-customer-key-md5',
+                        'action': 'store',
+                        'help_text': ('''\
+The base64-encoded raw 128 bit MD5 digest of the customer key.  Note: This is \
+NOT the base64 encoding of the hex (printable) MD5 digest.\
+''')}
+
+
+SSE_KMS_KEY_ID = {'name': 'sse-kms-key-id',
+                  'action': 'store',
+                  'help_text': ('''\
+The AWS KMS key ID that should be used to server-side encrypt the destination \
+object.  Note that KMS requires Signature v4, which needs to be enabled via \
+aws configure.\
+''')}
 
 
 STORAGE_CLASS = {'name': 'storage-class', 'nargs': 1,
@@ -282,14 +369,35 @@ PAGE_SIZE = {'name': 'page-size', 'cli_type_name': 'integer',
                  'operation. The default value is 1000 (the maximum allowed). '
                  'Using a lower value may help if an operation times out.')}
 
-
-TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
-                 FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
-                 SSE, STORAGE_CLASS, GRANTS, WEBSITE_REDIRECT, CONTENT_TYPE,
-                 CACHE_CONTROL, CONTENT_DISPOSITION, CONTENT_ENCODING,
-                 CONTENT_LANGUAGE, EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS,
+TRANSFER_ARGS = [DRYRUN,
+                 QUIET,
+                 INCLUDE,
+                 EXCLUDE,
+                 ACL,
+                 FOLLOW_SYMLINKS,
+                 NO_FOLLOW_SYMLINKS,
+                 NO_GUESS_MIME_TYPE,
+                 SSE,
+                 SSE_CLASS,
+                 SSE_COPY_SOURCE_CUSTOMER_ALGORITHM,
+                 SSE_COPY_SOURCE_CUSTOMER_KEY,
+                 SSE_COPY_SOURCE_CUSTOMER_KEY_MD5,
+                 SSE_CUSTOMER_ALGORITHM,
+                 SSE_CUSTOMER_KEY,
+                 SSE_CUSTOMER_KEY_MD5,
+                 SSE_KMS_KEY_ID,
+                 STORAGE_CLASS,
+                 GRANTS,
+                 WEBSITE_REDIRECT,
+                 CONTENT_TYPE,
+                 CACHE_CONTROL,
+                 CONTENT_DISPOSITION,
+                 CONTENT_ENCODING,
+                 CONTENT_LANGUAGE,
+                 EXPIRES,
+                 SOURCE_REGION,
+                 ONLY_SHOW_ERRORS,
                  PAGE_SIZE]
-
 
 def get_client(session, region, endpoint_url, verify):
     return session.create_client('s3', region_name=region,
@@ -496,6 +604,94 @@ class S3TransferCommand(S3Command):
         cmd_params.add_page_size(parsed_args)
         cmd_params.add_paths(parsed_args.paths)
         self._handle_rm_force(parsed_globals, cmd_params.parameters)
+
+        params = cmd_params.parameters # alias
+
+        if 'sse' in params:
+            # fixup SSE-related params; someone with better knowledge of the
+            # awscli command line argument subsystem may know a better place
+            # for this, but this gets the job done
+
+            if params['sse'] and params['sse_class'] is None:
+                params['sse_class'] = 'S3'
+
+            if params['sse_class'] is not None and not params['sse']:
+                params['sse'] = True
+
+            if params['sse_class'] is None and \
+                  params['sse_customer_key'] is not None:
+                params['sse_class'] = 'C'
+
+            if params['sse_class'] is None and \
+                  params['sse_kms_key_id'] is not None:
+                params['sse_class'] = 'KMS'
+
+            if params['sse_class'] == 'C' and \
+                  params['sse_customer_key'] is None:
+                raise ValueError('must specify --sse-customer-key')
+
+            if params['sse_class'] == 'KMS' and \
+                  params['sse_kms_key_id'] is None:
+                raise ValueError('must specify --sse-kms-key-id')
+
+            if params['sse_class'] == 'S3' and \
+                  (params['sse_customer_key'] is not None or
+                   params['sse_kms_key_id'] is not None):
+                raise ValueError('extraneous keys specified')
+
+            if params['sse_copy_source_customer_key'] is not None and \
+                  params['paths_type'] != 's3s3':
+                raise ValueError('--sse-copy-source-customer-key is only '
+                                 'valid for s3 source and s3 target')
+
+            # There's an inconsistency in boto/botocore and the aws s3api
+            # subcommand regarding how SSECustomerKey, SSECustomerKeyMD5,
+            # CopySourceSSECustomerKey, and CopySourceSSECustomerKeyMD5 are
+            # treated. SSECustomerKey is base64 encoded for you by botocore as
+            # long as you don't set SSECustomerKeyMD5 (no matter what the
+            # encoding of SSECustomerKey already is). CopySource* are never
+            # transformed for you in any way by botocore. So in our case, let's
+            # transform both SSECustomerKey and CopySourceSSECustomerKey
+            # depending on the presence of the corresponding *MD5.
+
+            for k, m in (('sse_copy_source_customer_key',
+                          'sse_copy_source_customer_key_md5'),
+                         ('sse_customer_key',
+                          'sse_customer_key_md5')):
+                if params[k] is None:
+                    continue
+
+                if params[m] is not None:
+                    # this means that both params[k] and params[m] are
+                    # specified, and assumed to be base64 encoded already
+
+                    rawkey = params[k].decode('base64')
+
+                    if len(rawkey) != 32:
+                        raise ValueError('%s value is not 32 bytes' % k)
+
+                    md5b64 = hashlib.md5(rawkey).digest().encode('base64')\
+                               .strip()
+
+                    if params[m] != md5b64:
+                        raise ValueError('md5 of %s does not match %s' %
+                                         (k, m))
+
+                else:
+                    # params[m] was not specified, so this means that params[k]
+                    # is assumed to be raw bytes. It needs base64 encoding, and
+                    # the base64 encoded raw digest needs to be set.
+
+                    if len(params[k]) != 32:
+                        raise ValueError('%s value is not 32 bytes' % k)
+
+                    md5b64 = hashlib.md5(params[k]).digest().encode('base64')\
+                               .strip()
+                    params[k] = params[k].encode('base64').strip()
+                    params[m] = md5b64
+
+        LOG.debug('S3 params %r', cmd_params.parameters)
+
         runtime_config = transferconfig.RuntimeConfig().build_config(
             **self._session.get_scoped_config().get('s3', {}))
         cmd = CommandArchitecture(self._session, self.NAME,
@@ -731,6 +927,45 @@ class CommandArchitecture(object):
         files = FileFormat().format(src, dest, self.parameters)
         rev_files = FileFormat().format(dest, src, self.parameters)
 
+        fgen_sse_customer_algorithm = None
+        fgen_sse_customer_key = None
+        fgen_sse_customer_key_md5 = None
+        rgen_sse_customer_algorithm = None
+        rgen_sse_customer_key = None
+        rgen_sse_customer_key_md5 = None
+
+        if paths_type == 's3':
+            fgen_sse_customer_algorithm = \
+                self.parameters.get('sse_customer_algorithm', None)
+            fgen_sse_customer_key = \
+                self.parameters.get('sse_customer_key', None)
+            fgen_sse_customer_key_md5 = \
+                self.parameters.get('sse_customer_key_md5', None)
+        elif paths_type == 's3s3':
+            fgen_sse_customer_algorithm = \
+                self.parameters.get('sse_copy_source_customer_algorithm', None)
+            fgen_sse_customer_key = \
+                self.parameters.get('sse_copy_source_customer_key', None)
+            fgen_sse_customer_key_md5 = \
+                self.parameters.get('sse_copy_source_customer_key_md5', None)
+            rgen_sse_customer_algorithm = \
+                self.parameters.get('sse_customer_algorithm', None)
+            rgen_sse_customer_key = \
+                self.parameters.get('sse_customer_key', None)
+            rgen_sse_customer_key_md5 = \
+                self.parameters.get('sse_customer_key_md5', None)
+        elif paths_type == 's3local':
+            fgen_sse_customer_algorithm = \
+                self.parameters.get('sse_customer_algorithm', None)
+            fgen_sse_customer_key = \
+                self.parameters.get('sse_customer_key', None)
+            fgen_sse_customer_key_md5 = \
+                self.parameters.get('sse_customer_key_md5', None)
+        elif paths_type == 'locals3':
+            pass
+        else:
+            raise ValueError('unknown paths_type value')
+
         cmd_translation = {}
         cmd_translation['locals3'] = {'cp': 'upload', 'sync': 'upload',
                                       'mv': 'move'}
@@ -748,11 +983,17 @@ class CommandArchitecture(object):
                                        operation_name,
                                        self.parameters['follow_symlinks'],
                                        self.parameters['page_size'],
-                                       result_queue=result_queue)
+                                       result_queue=result_queue,
+                                       sse_customer_algorithm=fgen_sse_customer_algorithm,
+                                       sse_customer_key=fgen_sse_customer_key,
+                                       sse_customer_key_md5=fgen_sse_customer_key_md5)
         rev_generator = FileGenerator(self._client, '',
                                       self.parameters['follow_symlinks'],
                                       self.parameters['page_size'],
-                                      result_queue=result_queue)
+                                      result_queue=result_queue,
+                                      sse_customer_algorithm=rgen_sse_customer_algorithm,
+                                      sse_customer_key=rgen_sse_customer_key,
+                                      sse_customer_key_md5=rgen_sse_customer_key_md5)
         taskinfo = [TaskInfo(src=files['src']['path'],
                              src_type='s3',
                              operation_name=operation_name,

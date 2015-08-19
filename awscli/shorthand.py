@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import re
+import decimal
 import string
 
 
@@ -301,3 +302,61 @@ class ShorthandParser(object):
     def _consume_whitespace(self):
         while self._current() != _EOF and self._current() in string.whitespace:
             self._index += 1
+
+
+class ModelVisitor(object):
+    def visit(self, params, model):
+        self._visit({}, model, '', params)
+
+    def _visit(self, parent, shape, name, value):
+        method = getattr(self, '_visit_%s' % shape.type_name,
+                         self._visit_scalar)
+        method(parent, shape, name, value)
+
+    def _visit_structure(self, parent, shape, name, value):
+        if not isinstance(value, dict):
+            return
+        for member_name, member_shape in shape.members.items():
+            self._visit(value, member_shape, member_name,
+                        value.get(member_name))
+
+    def _visit_list(self, parent, shape, name, value):
+        if not isinstance(value, list):
+            return
+        for element in value:
+            self._visit(value, shape.member, '', element)
+
+    def _visit_map(self, parent, shape, name, value):
+        if not isinstance(value, dict):
+            return
+        value_shape = shape.value
+        for k, v in value.items():
+            self._visit(value, value_shape, k, v)
+
+    def _visit_scalar(self, parent, shape, name, value):
+        pass
+
+
+class BackCompatVisitor(ModelVisitor):
+    def _visit_list(self, parent, shape, name, value):
+        if not isinstance(value, list):
+            # Convert a -> [a] because they specified
+            # "foo=bar", but "bar" should really be ["bar"].
+            parent[name] = [value]
+        elif shape.member.type_name == 'structure' and \
+                    len(shape.member.members) == 1:
+            element_name = shape.member.members.keys()[0]
+            new_values = []
+            for v in value:
+                new_values.append({element_name: v})
+            parent[name] = new_values
+        else:
+            return super(BackCompatVisitor, self)._visit_structure(
+                parent, shape, name, value)
+
+    def _visit_scalar(self, parent, shape, name, value):
+        type_name = shape.type_name
+        if type_name == 'integer':
+            parent[name] = int(value)
+        elif type_name == 'float':
+            parent[name] = decimal.Decimal(value)

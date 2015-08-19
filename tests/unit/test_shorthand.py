@@ -10,7 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import decimal
+
 from awscli import shorthand
+from awscli.testutils import unittest
+
+from botocore import model
+
 from nose.tools import assert_equal
 
 
@@ -144,3 +150,52 @@ def _is_error(expr):
 def _can_parse(data, expected):
     actual = shorthand.ShorthandParser().parse(data)
     assert_equal(actual, expected)
+
+
+class TestModelVisitor(unittest.TestCase):
+    def test_promote_to_list_of_ints(self):
+        m = model.DenormalizedStructureBuilder().with_members({
+            'A': {
+                'type': 'list',
+                'member': {'type': 'string'}
+            },
+        }).build_model()
+        b = shorthand.BackCompatVisitor()
+
+        params = {'A': 'foo'}
+        b.visit(params, m)
+        self.assertEqual(params, {'A': ['foo']})
+
+    def test_promote_list_of_scalars_to_single_struct(self):
+        m = model.DenormalizedStructureBuilder().with_members({
+            'A': {
+                'type': 'list',
+                'member': {
+                    'type': 'structure',
+                    'members': {
+                        'Single': {'type': 'string'}
+                    },
+                },
+            },
+        }).build_model()
+        b = shorthand.BackCompatVisitor()
+
+        params = {'A': ['a', 'b', 'c']}
+        b.visit(params, m)
+        self.assertEqual(params, {'A': [{'Single': 'a'},
+                                        {'Single': 'b'},
+                                        {'Single': 'c'},]})
+
+    def test_can_convert_scalar_types_from_string(self):
+        m = model.DenormalizedStructureBuilder().with_members({
+            'A': {'type': 'integer'},
+            'B': {'type': 'string'},
+            'C': {'type': 'float'},
+        }).build_model()
+        b = shorthand.BackCompatVisitor()
+
+        params = {'A': '24', 'B': '24', 'C': '24.12345'}
+        b.visit(params, m)
+        self.assertEqual(
+            params,
+            {'A': 24, 'B': '24', 'C': decimal.Decimal('24.12345')})

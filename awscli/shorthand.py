@@ -342,7 +342,8 @@ class BackCompatVisitor(ModelVisitor):
         if not isinstance(value, list):
             # Convert a -> [a] because they specified
             # "foo=bar", but "bar" should really be ["bar"].
-            parent[name] = [value]
+            if value is not None:
+                parent[name] = [value]
         elif shape.member.type_name == 'structure' and \
                     len(shape.member.members) == 1:
             element_name = shape.member.members.keys()[0]
@@ -351,12 +352,21 @@ class BackCompatVisitor(ModelVisitor):
                 new_values.append({element_name: v})
             parent[name] = new_values
         else:
-            return super(BackCompatVisitor, self)._visit_structure(
+            return super(BackCompatVisitor, self)._visit_list(
                 parent, shape, name, value)
 
     def _visit_scalar(self, parent, shape, name, value):
+        if value is None:
+            return
         type_name = shape.type_name
-        if type_name == 'integer':
+        if type_name in ['integer', 'long']:
             parent[name] = int(value)
-        elif type_name == 'float':
+        elif type_name in ['double', 'float']:
             parent[name] = decimal.Decimal(value)
+        elif type_name == 'boolean':
+            # We want to make sure we only set a value
+            # only if "true"/"false" is specified.
+            if value.lower() == 'true':
+                parent[name] = True
+            elif value.lower() == 'false':
+                parent[name] = False

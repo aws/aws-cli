@@ -186,16 +186,47 @@ class TestModelVisitor(unittest.TestCase):
                                         {'Single': 'b'},
                                         {'Single': 'c'},]})
 
+    def test_dont_promote_list_if_none_value(self):
+        m = model.DenormalizedStructureBuilder().with_members({
+            'A': {
+                'type': 'list',
+                'member': {
+                    'type': 'structure',
+                    'members': {
+                        'Single': {'type': 'string'}
+                    },
+                },
+            },
+        }).build_model()
+        b = shorthand.BackCompatVisitor()
+        params = {}
+        b.visit(params, m)
+        self.assertEqual(params, {})
+
     def test_can_convert_scalar_types_from_string(self):
         m = model.DenormalizedStructureBuilder().with_members({
             'A': {'type': 'integer'},
             'B': {'type': 'string'},
             'C': {'type': 'float'},
+            'D': {'type': 'boolean'},
+            'E': {'type': 'boolean'},
         }).build_model()
         b = shorthand.BackCompatVisitor()
 
-        params = {'A': '24', 'B': '24', 'C': '24.12345'}
+        params = {'A': '24', 'B': '24', 'C': '24.12345',
+                  'D': 'true', 'E': 'false'}
         b.visit(params, m)
         self.assertEqual(
             params,
-            {'A': 24, 'B': '24', 'C': decimal.Decimal('24.12345')})
+            {'A': 24, 'B': '24', 'C': decimal.Decimal('24.12345'),
+             'D': True, 'E': False})
+
+    def test_empty_values_not_added(self):
+        m = model.DenormalizedStructureBuilder().with_members({
+            'A': {'type': 'boolean'},
+        }).build_model()
+        b = shorthand.BackCompatVisitor()
+
+        params = {}
+        b.visit(params, m)
+        self.assertEqual(params, {})

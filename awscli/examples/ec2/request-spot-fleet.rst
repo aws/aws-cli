@@ -4,7 +4,22 @@ This example command creates a request for a Spot fleet in a nondefault VPC.
 
 Command::
 
-  aws ec2 request-spot-fleet --spot-fleet-request-config {\"TargetCapacity\":2,\"SpotPrice\":\"0.05\",\"IamFleetRole\":\"arn:aws:iam::123456789012:role/my-spot-fleet-role\",\"LaunchSpecifications\":[{\"ImageId\":\"ami-1a2b3c4d\",\"InstanceType\":\"m3.medium\",\"SubnetId\":\"subnet-a61dafcf\"}]}
+  aws ec2 request-spot-fleet --spot-fleet-request-config file://config.json
+
+Config.json:: 
+  
+  {
+    "SpotPrice": "0.05",
+    "TargetCapacity": 2,
+    "IamFleetRole": "arn:aws:iam::123456789012:role/my-spot-fleet-role",
+    "LaunchSpecifications": [
+      {
+        "ImageId": "ami-1a2b3c4d",
+        "InstanceType": "m3.medium",
+        "SubnetId": "subnet-a61dafcf"
+      }
+    ]
+  }
 
 Output::
 
@@ -19,11 +34,32 @@ This example command creates a request for a Spot fleet in a default VPC or EC2-
 
 Command::
 
-  aws ec2 request-spot-fleet --spot-fleet-request-config {\"TargetCapacity\":2,\"SpotPrice\":\"0.05\",\"IamFleetRole\":\"arn:aws:iam::123456789012:role/my-spot-fleet-role\",\"LaunchSpecifications\":[{\"ImageId\":\"ami-1a2b3c4d\",\"InstanceType\":\"m3.medium\",\"Placement\":{\"AvailabilityZone\":\"us-west-2b\"}}]}
+  aws ec2 request-spot-fleet --spot-fleet-request-config file://config.json
+  
+Config.json:: 
+
+  {
+    "SpotPrice": "0.05", 
+    "TargetCapacity": 2,
+    "IamFleetRole": "arn:aws:iam::123456789012:role/my-spot-fleet-role",
+    "LaunchSpecifications": [
+      {
+        "ImageId": "ami-1a2b3c4d",
+        "InstanceType": "m3.medium",
+        "Placement": {
+          "AvailabilityZone": "us-west-2b"
+        }
+      }
+    ]
+  }
 
 Output::
 
   {
     "SpotFleetRequestId": "sfr-73fbd2ce-aa30-494c-8788-1cee4EXAMPLE"
   }
+
+For more information, see `Spot Fleets`_ in the *Amazon Elastic Compute Cloud User Guide*.
+
+.. _`Spot Fleets`: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-fleet.html
 

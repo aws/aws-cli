@@ -238,6 +238,16 @@ class TestParamShorthand(BaseArgProcessTest):
                 "Name = architecture, Values = i386"])
         self.assertEqual(returned3, expected)
 
+    def test_parse_empty_values(self):
+        # A value can be omitted and will default to an empty string.
+        p = self.get_param_model('ec2.DescribeInstances.Filters')
+        expected = [{"Name": "", "Values": ["i-1", "i-2"]},
+                    {"Name": "architecture", "Values": ['']}]
+        returned = self.simplify(
+            p, ["Name=,Values=i-1,i-2",
+                "Name=architecture,Values="])
+        self.assertEqual(returned, expected)
+
     def test_list_structure_list_scalar_2(self):
         p = self.get_param_model('emr.ModifyInstanceGroups.InstanceGroups')
         expected = [

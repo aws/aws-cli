@@ -57,6 +57,12 @@ class ShorthandParseError(Exception):
 
 
 class ShorthandParser(object):
+    """Parses shorthand syntax in the CLI.
+
+    Note that this parser does not rely on any JSON models to control
+    how to parse the shorthand syntax.
+
+    """
 
     _SINGLE_QUOTED = _NamedRegex('singled quoted', r'\'(?:\\\\|\\\'|[^\'])*\'')
     _DOUBLE_QUOTED = _NamedRegex('double quoted', r'"(?:\\\\|\\"|[^"])*"')
@@ -71,6 +77,19 @@ class ShorthandParser(object):
         self._tokens = []
 
     def parse(self, value):
+        """Parse shorthand syntax.
+
+        For example::
+
+            parser = ShorthandParser()
+            parser.parse('a=b')  # {'a': 'b'}
+            parser.parse('a=b,c')  # {'a': ['b', 'c']}
+
+        :tpye value: str
+        :param value: Any value that needs to be parsed.
+
+        :return: Parsed value, which will be a dictionary.
+        """
         self._input_value = value
         self._index = 0
         return self._parameter()

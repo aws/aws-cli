@@ -2,6 +2,121 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws iam create-virtual-mfa-device``: Fix issue when an error
+  response is received from the ``create-virtual-mfa-device`` command
+  (`issue 1447 <https://github.com/aws/aws-cli/pull/1447/>`__)
+
+1.7.45
+======
+
+
+* feature:``aws elasticbeanstalk``: Add support for enhanced
+  health reporting in ``aws elasticbeanstalk`` commands
+* feature:Shared Credentials File: Add support for changing the shared
+  credentials file from the default location of ``~/.aws/credentials`` by
+  setting the ``AWS_SHARED_CREDENTIALS_FILE`` environment variable
+  (`botocore issue 623 <https://github.com/boto/botocore/pull/623>`__)
+* feature:Waiters: Add ``aws iam wait instance-profile-exists`` and
+  ``aws iam wait user-exists`` commands
+  (`botocore issue <https://github.com/boto/botocore/pull/624>`__)
+
+
+1.7.44
+======
+
+* feature:``aws swf``: Add support for Added support for invoking AWS Lambda
+  tasks from an Amazon SWF workflow.
+
+1.7.43
+======
+
+* feature:``aws devicefarm``: Add support for testing iOS applications with
+  AWS Device Farm.
+
+1.7.42
+======
+
+* feature:``aws opsworks``: Add support for managing Amazon EC2 Container
+  Service clusters.
+* feature:``aws rds``: Add support for Amazon Aurora.
+
+
+1.7.41
+======
+
+* feature:``aws s3api``: Add support for more types of event notifications.
+* feature:``aws s3api``: Add support for GET/HEAD storage class response
+  headers.
+* feature:``aws logs``: Add destination API support.
+
+
+1.7.40
+======
+
+* feature:``aws glacier``: Add support for Vault Lock.
+* feature:``aws emr``: Add support for release-based clusters.
+
+
+1.7.39
+======
+
+* feature:``aws devicefarm``: Add support for AWS Device Farm
+* feature:``aws dynamodbstreams``: Add support for Amazon DynamoDB Streams
+* feature:``aws dynamodb``: Add support for consistent reads with the Scan API
+
+
+1.7.38
+======
+
+* feature:``aws codepipeline``: Add support for AWS CodePipeline
+* feature:``aws codecommit``: Add support for AWS CodeCommit
+* feature:``aws ses``: Add support for cross-account sending
+* feature:``aws iam``: Add support for managing SSH Public Keys
+* feature:``aws ecs``: Update API
+
+
+1.7.37
+======
+
+* feature:``aws ec2``: Add support for EBS Snapshot Copy Support for Customer
+  Managed Encryption Keys
+* feature:``aws autoscaling``: Add support for Step Policies
+
+
+1.7.36
+======
+
+* feature:``aws cloudfront``: Update the ``aws cloudfront`` command to the
+  latest version.
+* feature:``aws redshift``: Update the ``aws redshift`` command to latest
+  version.
+* feature:``aws glacier``: Add support for tagging.
+* feature:``aws opsworks``: Update the ``aws opsworks`` command to latest
+  version.
+* feature:``aws config``: Add support for users to specify which types of
+  supported resources AWS Config records for tracking configuration changes.
+* feature:``aws deploy``: Adds support for deployments to Red Hat
+  Enterprise Linux (RHEL) instances.
+* feature:``aws machinelearning wait``:  Add ``data-source-available``,
+  ``ml-model-available``, ``evaluation-available``, and
+  ``batch-prediction-available`` waiter commands.
+  (`botocore issue 544 <https://github.com/boto/botocore/pull/544>`__)
+* feature:``aws route53 wait``:  Add ``resource-record-sets-changed``
+  waiter command.
+  (`botocore issue 543 <https://github.com/boto/botocore/pull/543>`__)
+
+
+1.7.35
+======
+
+* feature:``aws ecs``: Add support for DeregisterTaskDefintion and environment
+  variable overrides.
+* bugfix:msi: Fix issue with msi's being installed on Windows 2008 and below.
+
+
 1.7.34
 =======
 

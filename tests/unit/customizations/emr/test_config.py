@@ -68,7 +68,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         self._assert_args_for_default_configs(parsed_args)
 
     @mock.patch.object(CreateCluster, '_run_main_command')
-    def test_with_configs_and_other_ec2_attributes(self, mock_run_main_command):
+    def test_with_configs_and_other_ec2_attributes(self,
+                                                   mock_run_main_command):
         self.set_configs(DEFAULT_CONFIGS)
         cmd = CREATE_CLUSTER_CMD \
             + ' --ec2-attributes AvailabilityZone=us-east-1e'

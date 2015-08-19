@@ -41,7 +41,7 @@ class EMRBaseAWSCommandParamsTest(BaseAWSCommandParamsTest):
         self.patcher_update_config.stop()
 
     def assert_error_msg(self, cmd,
-                         exception_class_name, error_msg_kwargs):
+                         exception_class_name, error_msg_kwargs={}):
         exception_class = getattr(exceptions, exception_class_name)
         error_msg = "\n%s\n" % exception_class.fmt.format(**error_msg_kwargs)
         result = self.run_cmd(cmd, 255)

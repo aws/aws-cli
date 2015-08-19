@@ -11,11 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import copy
-
 from awscli.customizations.emr import constants
 from awscli.customizations.emr import emrutils
 from awscli.customizations.emr import exceptions
+from botocore.compat import OrderedDict
 
 
 CONSISTENT_OPTIONAL_KEYS = ['RetryCount', 'RetryPeriod']
@@ -59,6 +58,21 @@ def build_bootstrap_action_configs(region, emrfs_args):
     return bootstrap_actions
 
 
+def build_emrfs_confiuration(emrfs_args):
+    _verify_emrfs_args(emrfs_args)
+    emrfs_properties = _build_emrfs_properties(emrfs_args)
+
+    if _need_to_configure_cse(emrfs_args, 'CUSTOM'):
+        emrfs_properties[constants.EMRFS_CSE_CUSTOM_PROVIDER_URI_KEY] = \
+            emrfs_args.get('CustomProviderLocation')
+
+    emrfs_configuration = {
+        'Classification': constants.EMRFS_SITE,
+        'Properties': emrfs_properties}
+
+    return emrfs_configuration
+
+
 def _verify_emrfs_args(emrfs_args):
     # Encryption should have a valid value
     if 'Encryption' in emrfs_args \
@@ -74,8 +88,8 @@ def _verify_emrfs_args(emrfs_args):
     # CSE should be configured correctly
     # ProviderType should be present and should have valid value
     # Given the type, the required parameters should be present
-    if 'Encryption' in emrfs_args \
-            and emrfs_args['Encryption'].upper() == constants.EMRFS_CLIENT_SIDE:
+    if ('Encryption' in emrfs_args and
+            emrfs_args['Encryption'].upper() == constants.EMRFS_CLIENT_SIDE):
         if 'ProviderType' not in emrfs_args:
             raise exceptions.MissingParametersError(
                 object_name=CSE_OPTION_NAME, missing='ProviderType')
@@ -120,28 +134,35 @@ def _verify_child_args(actual_keys, child_keys, parent_object_name):
 
 
 def _build_ba_args_to_setup_emrfs(emrfs_args):
+    emrfs_properties = _build_emrfs_properties(emrfs_args)
+
+    return _create_ba_args(emrfs_properties)
+
+
+def _build_emrfs_properties(emrfs_args):
     """
     Assumption: emrfs_args is valid i.e. all required attributes are present
     """
-    ba_args = []
+    emrfs_properties = OrderedDict()
 
     if _need_to_configure_consistent_view(emrfs_args):
-        _update_ba_args_for_consistent_view(ba_args, emrfs_args)
+        _update_properties_for_consistent_view(emrfs_properties, emrfs_args)
 
     if _need_to_configure_sse(emrfs_args):
-        _update_ba_args_for_sse(ba_args, emrfs_args)
+        _update_properties_for_sse(emrfs_properties, emrfs_args)
 
     if _need_to_configure_cse(emrfs_args, 'KMS'):
-        _update_ba_args_for_cse(ba_args, emrfs_args, 'KMS')
+        _update_properties_for_cse(emrfs_properties, emrfs_args, 'KMS')
 
     if _need_to_configure_cse(emrfs_args, 'CUSTOM'):
-        _update_ba_args_for_cse(ba_args, emrfs_args, 'CUSTOM')
+        _update_properties_for_cse(emrfs_properties, emrfs_args, 'CUSTOM')
 
     if 'Args' in emrfs_args:
         for arg_value in emrfs_args.get('Args'):
-            _update_ba_args_main(ba_args, arg_value)
+            key, value = emrutils.split_to_key_value(arg_value)
+            emrfs_properties[key] = value
 
-    return ba_args
+    return emrfs_properties
 
 
 def _need_to_configure_consistent_view(emrfs_args):
@@ -150,8 +171,8 @@ def _need_to_configure_consistent_view(emrfs_args):
 
 def _need_to_configure_sse(emrfs_args):
     return 'SSE' in emrfs_args \
-        or ('Encryption' in emrfs_args
-            and emrfs_args['Encryption'].upper() == constants.EMRFS_SERVER_SIDE)
+        or ('Encryption' in emrfs_args and
+            emrfs_args['Encryption'].upper() == constants.EMRFS_SERVER_SIDE)
 
 
 def _need_to_configure_cse(emrfs_args, cse_type):
@@ -161,46 +182,53 @@ def _need_to_configure_cse(emrfs_args, cse_type):
             and emrfs_args['ProviderType'].upper() == cse_type)
 
 
-def _update_ba_args_for_consistent_view(ba_args, emrfs_args):
-    _update_ba_args(ba_args,
-                    constants.EMRFS_CONSISTENT_KEY,
-                    str(emrfs_args['Consistent']).lower())
+def _update_properties_for_consistent_view(emrfs_properties, emrfs_args):
+    emrfs_properties[constants.EMRFS_CONSISTENT_KEY] = \
+        str(emrfs_args['Consistent']).lower()
 
     if 'RetryCount' in emrfs_args:
-        _update_ba_args(ba_args, constants.EMRFS_RETRY_COUNT_KEY,
-                        str(emrfs_args['RetryCount']))
+        emrfs_properties[constants.EMRFS_RETRY_COUNT_KEY] = \
+            str(emrfs_args['RetryCount'])
 
     if 'RetryPeriod' in emrfs_args:
-        _update_ba_args(ba_args, constants.EMRFS_RETRY_PERIOD_KEY,
-                        str(emrfs_args['RetryPeriod']))
+        emrfs_properties[constants.EMRFS_RETRY_PERIOD_KEY] = \
+            str(emrfs_args['RetryPeriod'])
 
 
-def _update_ba_args_for_sse(ba_args, emrfs_args):
+def _update_properties_for_sse(emrfs_properties, emrfs_args):
     sse_value = emrfs_args['SSE'] if 'SSE' in emrfs_args else True
     # if 'SSE' is not in emrfs_args then 'Encryption' must be 'ServerSide'
 
-    _update_ba_args(
-        ba_args, constants.EMRFS_SSE_KEY, str(sse_value).lower())
+    emrfs_properties[constants.EMRFS_SSE_KEY] = str(sse_value).lower()
 
 
-def _update_ba_args_for_cse(ba_args, emrfs_args, cse_type):
-    _update_ba_args(ba_args, constants.EMRFS_CSE_KEY, 'true')
+def _update_properties_for_cse(emrfs_properties, emrfs_args, cse_type):
+    emrfs_properties[constants.EMRFS_CSE_KEY] = 'true'
     if cse_type == 'KMS':
-        _update_ba_args(ba_args,
-                        constants.EMRFS_CSE_ENCRYPTION_MATERIALS_PROVIDER_KEY,
-                        constants.EMRFS_CSE_KMS_PROVIDER_FULL_CLASS_NAME)
-        _update_ba_args(
-            ba_args, constants.EMRFS_CSE_KMS_KEY_ID_KEY, emrfs_args['KMSKeyId'])
+        emrfs_properties[
+            constants.EMRFS_CSE_ENCRYPTION_MATERIALS_PROVIDER_KEY] = \
+            constants.EMRFS_CSE_KMS_PROVIDER_FULL_CLASS_NAME
+
+        emrfs_properties[constants.EMRFS_CSE_KMS_KEY_ID_KEY] =\
+            emrfs_args['KMSKeyId']
+
     elif cse_type == 'CUSTOM':
-        _update_ba_args(ba_args,
-                        constants.EMRFS_CSE_ENCRYPTION_MATERIALS_PROVIDER_KEY,
-                        emrfs_args['CustomProviderClass'])
+        emrfs_properties[
+            constants.EMRFS_CSE_ENCRYPTION_MATERIALS_PROVIDER_KEY] = \
+            emrfs_args['CustomProviderClass']
 
 
-def _update_ba_args_main(ba_args, key_value):
+def _update_emrfs_ba_args(ba_args, key_value):
     ba_args.append(constants.EMRFS_BA_ARG_KEY)
     ba_args.append(key_value)
 
 
-def _update_ba_args(ba_args, key, value):
-    _update_ba_args_main(ba_args, "%s=%s" % (key, value))
+def _create_ba_args(emrfs_properties):
+    ba_args = []
+    for key, value in emrfs_properties.items():
+        key_value = key
+        if value:
+            key_value = key_value + "=" + value
+        _update_emrfs_ba_args(ba_args, key_value)
+
+    return ba_args

@@ -23,7 +23,9 @@ from awscli.customizations.emr.command import Command
 class InstallApplications(Command):
     NAME = 'install-applications'
     DESCRIPTION = ('Installs applications on a running cluster. Currently only'
-                   ' Hive and Pig can be installed using this command.')
+                   ' Hive and Pig can be installed using this command, and'
+                   ' this command is only supported by AMI versions'
+                   ' (3.x and 2.x).')
     ARG_TABLE = [
         {'name': 'cluster-id', 'required': True,
          'help_text': helptext.CLUSTER_ID},

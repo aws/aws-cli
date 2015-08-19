@@ -1,10 +1,10 @@
 import logging
 import os
 
-import bcdoc.docevents
 from botocore import model
 from botocore.compat import OrderedDict
 from botocore.validate import validate_parameters
+from botocore.docs.bcdoc import docevents
 
 import awscli
 from awscli.argparser import ArgTableArgParser
@@ -355,7 +355,7 @@ class BasicHelp(HelpCommand):
         # Now generate all of the events for a Provider document.
         # We pass ourselves along so that we can, in turn, get passed
         # to all event handlers.
-        bcdoc.docevents.generate_events(self.session, self)
+        docevents.generate_events(self.session, self)
         self.renderer.render(self.doc.getvalue())
         instance.unregister()
 

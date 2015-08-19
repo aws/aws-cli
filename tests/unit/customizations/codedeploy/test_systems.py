@@ -15,7 +15,7 @@ import subprocess
 
 from argparse import Namespace
 from mock import MagicMock, patch, call, mock_open
-from awscli.customizations.codedeploy.systems import Windows, Ubuntu
+from awscli.customizations.codedeploy.systems import Windows, Ubuntu, RHEL
 from awscli.testutils import unittest
 
 
@@ -151,7 +151,7 @@ class TestWindows(unittest.TestCase):
         ])
 
 
-class TestUbuntu(unittest.TestCase):
+class TestLinux(unittest.TestCase):
     def setUp(self):
         self.popen_patcher = patch('subprocess.Popen')
         self.popen = self.popen_patcher.start()
@@ -208,13 +208,17 @@ class TestUbuntu(unittest.TestCase):
         self.params.bucket = self.bucket
         self.params.key = self.key
 
-        self.ubuntu = Ubuntu(self.params)
-
     def tearDown(self):
         self.popen_patcher.stop()
         self.check_call_patcher.stop()
         self.open_patcher.stop()
         self.environ_patcher.stop()
+
+
+class TestUbuntu(TestLinux):
+    def setUp(self):
+        super(self.__class__, self).setUp()
+        self.ubuntu = Ubuntu(self.params)
 
     def test_config_dir(self):
         self.assertEquals(self.config_dir, self.ubuntu.CONFIG_DIR)
@@ -279,6 +283,72 @@ class TestUbuntu(unittest.TestCase):
             call(['dpkg', '-r', 'codedeploy-agent'])
         ])
 
+class TestRHEL(TestLinux):
+    def setUp(self):
+        super(self.__class__, self).setUp()
+        self.rhel = RHEL(self.params)
+
+    def test_config_dir(self):
+        self.assertEquals(self.config_dir, self.rhel.CONFIG_DIR)
+
+    def test_config_file(self):
+        self.assertEquals(self.config_file, self.rhel.CONFIG_FILE)
+
+    def test_config_path(self):
+        self.assertEquals(self.config_path, self.rhel.CONFIG_PATH)
+
+    def test_installer(self):
+        self.assertEquals(self.installer, self.rhel.INSTALLER)
+
+    @patch('os.geteuid', create=True)
+    def test_validate_administrator_throws(self, geteuid):
+        geteuid.return_value = 1
+        with self.assertRaisesRegexp(
+                RuntimeError, 'You must run this command as sudo.'):
+            self.rhel.validate_administrator()
+
+    def test_install(self):
+        process = MagicMock()
+        process.communicate.return_value = ('', '')
+        process.returncode = 0
+        self.popen.return_value = process
+        self.rhel.install(self.params)
+        self.popen.assert_has_calls([
+            call(
+                ['service', 'codedeploy-agent', 'stop'],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            ),
+            call().communicate()
+        ])
+        self.check_call.assert_has_calls([
+            call(['yum', '-y', 'install', 'ruby']),
+            call(['chmod', '+x', './{0}'.format(self.installer)]),
+            call(
+                ['./{0}'.format(self.installer), 'auto'],
+                env=self.environment
+            )
+        ])
+        self.open.assert_called_with(self.installer, 'wb')
+        self.open().write.assert_called_with(self.body)
+
+    def test_uninstall(self):
+        process = MagicMock()
+        process.communicate.return_value = ('', '')
+        process.returncode = 0
+        self.popen.return_value = process
+        self.rhel.uninstall(self.params)
+        self.popen.assert_has_calls([
+            call(
+                ['service', 'codedeploy-agent', 'stop'],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            ),
+            call().communicate()
+        ])
+        self.check_call.assert_has_calls([
+            call(['yum', '-y', 'erase', 'codedeploy-agent'])
+        ])
 
 if __name__ == "__main__":
     unittest.main()

@@ -35,7 +35,6 @@ from awscli.customizations.putmetricdata import register_put_metric_data
 from awscli.customizations.sessendemail import register_ses_send_email
 from awscli.customizations.iamvirtmfa import IAMVMFAWrapper
 from awscli.customizations.argrename import register_arg_renames
-from awscli.customizations.dryrundocs import register_dryrun_docs
 from awscli.customizations.configure import register_configure_cmd
 from awscli.customizations.cloudtrail import initialize as cloudtrail_init
 from awscli.customizations.toplevelbool import register_bool_params
@@ -58,11 +57,14 @@ from awscli.customizations.configservice.subscribe import register_subscribe
 from awscli.customizations.configservice.getstatus import register_get_status
 from awscli.customizations.configservice.rename_cmd import \
     register_rename_config
+from awscli.customizations.configservice.putconfigurationrecorder import \
+    register_modify_put_configuration_recorder
 from awscli.customizations.scalarparse import register_scalar_parser
 from awscli.customizations.opsworks import initialize as opsworks_init
 from awscli.customizations.awslambda import register_lambda_create_function
 from awscli.customizations.kms import register_fix_kms_create_grant_docs
 from awscli.customizations.route53 import register_create_hosted_zone_doc_fix
+from awscli.customizations.codecommit import initialize as codecommit_init
 
 
 def awscli_initialize(event_handlers):
@@ -106,7 +108,6 @@ def awscli_initialize(event_handlers):
     register_ses_send_email(event_handlers)
     IAMVMFAWrapper(event_handlers)
     register_arg_renames(event_handlers)
-    register_dryrun_docs(event_handlers)
     register_configure_cmd(event_handlers)
     cloudtrail_init(event_handlers)
     register_bool_params(event_handlers)
@@ -128,3 +129,5 @@ def awscli_initialize(event_handlers):
     register_lambda_create_function(event_handlers)
     register_fix_kms_create_grant_docs(event_handlers)
     register_create_hosted_zone_doc_fix(event_handlers)
+    register_modify_put_configuration_recorder(event_handlers)
+    codecommit_init(event_handlers)

@@ -81,6 +81,8 @@ class IAMVMFAWrapper(object):
         argument_table['bootstrap-method'] = self._method
 
     def _save_file(self, parsed, **kwargs):
+        if 'Error' in parsed:
+            return
         method = self._method.value
         outfile = self._outfile.value
         if method in parsed['VirtualMFADevice']:

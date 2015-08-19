@@ -34,6 +34,8 @@ import string
 from pprint import pformat
 from subprocess import Popen, PIPE
 
+from awscli.compat import StringIO
+
 
 try:
     import mock
@@ -182,7 +184,8 @@ class BaseCLIDriverTest(unittest.TestCase):
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
         emitter = HierarchicalEmitter()
-        session = Session(EnvironmentVariables, emitter, loader=_LOADER)
+        session = Session(EnvironmentVariables, emitter)
+        session.register_component('data_loader', _LOADER)
         load_plugins({}, event_hooks=emitter)
         driver = CLIDriver(session=session)
         self.session = session
@@ -704,3 +707,8 @@ class BaseS3CLICommand(unittest.TestCase):
         self.assertNotIn("failed:", p.stderr)
         self.assertNotIn("client error", p.stderr)
         self.assertNotIn("server error", p.stderr)
+
+
+class StringIOWithFileNo(StringIO):
+    def fileno(self):
+        return 0

@@ -219,7 +219,7 @@ class CLIDriver(object):
         self.session.emit(
             'top-level-args-parsed', parsed_args=args, session=self.session)
         if args.profile:
-            self.session.profile = args.profile
+            self.session.set_config_variable('profile', args.profile)
         if args.debug:
             # TODO:
             # Unfortunately, by setting debug mode here, we miss out
@@ -546,7 +546,7 @@ class ServiceOperation(object):
 
     def _add_help(self, parser):
         # The 'help' output is processed a little differently from
-        # the provider/operation help because the arg_table has
+        # the operation help because the arg_table has
         # CLIArguments for values.
         parser.add_argument('help', nargs='?')
 

@@ -15,6 +15,7 @@ Output::
 	        "registeredContainerInstancesCount": 0,
 	        "pendingTasksCount": 0,
 	        "runningTasksCount": 0,
+			"activeServicesCount": 0,
 	        "clusterArn": "arn:aws:ecs:<region>:<aws_account_id>:cluster/my_cluster"
 	    }
 	}

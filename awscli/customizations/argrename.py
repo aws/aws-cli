@@ -39,6 +39,9 @@ ARGUMENT_RENAMES = {
     'sns.subscribe.endpoint': 'notification-endpoint',
     'deploy.*.s-3-location': 's3-location',
     'deploy.*.ec-2-tag-filters': 'ec2-tag-filters',
+    'codepipeline.get-pipeline.version': 'pipeline-version',
+    'codepipeline.create-custom-action-type.version': 'action-version',
+    'codepipeline.delete-custom-action-type.version': 'action-version',
 }
 
 

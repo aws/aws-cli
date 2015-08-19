@@ -31,7 +31,6 @@ from awscli.clidriver import ServiceOperation
 from awscli.customizations.commands import BasicCommand
 from awscli import formatter
 from botocore.hooks import HierarchicalEmitter
-from botocore.provider import Provider
 
 
 GET_DATA = {
@@ -160,7 +159,6 @@ class FakeSession(object):
         if emitter is None:
             emitter = HierarchicalEmitter()
         self.emitter = emitter
-        self.provider = Provider(self, 'aws')
         self.profile = None
         self.stream_logger_args = None
         self.credentials = 'fakecredentials'
@@ -208,6 +206,10 @@ class FakeSession(object):
 
     def get_credentials(self):
         return self.credentials
+
+    def set_config_variable(self, name, value):
+        if name == 'profile':
+            self.profile = value
 
 
 class FakeCommand(BasicCommand):

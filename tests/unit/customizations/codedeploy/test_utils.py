@@ -16,7 +16,7 @@ import sys
 from socket import timeout
 from argparse import Namespace
 from mock import MagicMock, patch
-from awscli.customizations.codedeploy.systems import Ubuntu, Windows
+from awscli.customizations.codedeploy.systems import Ubuntu, Windows, RHEL, System
 from awscli.customizations.codedeploy.utils import \
     validate_region, validate_instance_name, validate_tags, \
     validate_iam_user_arn, validate_instance, validate_s3_location, \
@@ -152,6 +152,16 @@ class TestUtils(unittest.TestCase):
         self.assertIn('system', self.params)
         self.assertTrue(isinstance(self.params.system, Ubuntu))
 
+    def test_validate_instance_rhel(self):
+        self.urlopen.side_effect = timeout('Not EC2 instance')
+        self.system.return_value = 'Linux'
+        self.linux_distribution.return_value = ('Red Hat Enterprise Linux Server', None, None)
+        self.params.session = self.session
+        self.params.region = self.region
+        validate_instance(self.params)
+        self.assertIn('system', self.params)
+        self.assertTrue(isinstance(self.params.system, RHEL))
+
     def test_validate_instance_windows(self):
         self.urlopen.side_effect = timeout('Not EC2 instance')
         self.system.return_value = 'Windows'
@@ -164,9 +174,7 @@ class TestUtils(unittest.TestCase):
     def test_validate_instance_throws_on_unsupported_system(self):
         self.system.return_value = 'Unsupported'
         with self.assertRaisesRegexp(
-                RuntimeError,
-                'Only Ubuntu Server and Windows Server operating systems are '
-                'supported.'):
+                RuntimeError, System.UNSUPPORTED_SYSTEM_MSG):
             validate_instance(self.params)
 
     def test_validate_instance_throws_on_ec2_instance(self):

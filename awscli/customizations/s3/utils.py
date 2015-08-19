@@ -251,20 +251,6 @@ def find_dest_path_comp_key(files, src_path=None):
     return dest_path, compare_key
 
 
-def check_etag(etag, fileobj):
-    """
-    This fucntion checks the etag and the md5 checksum to ensure no
-    data was corrupted upon transfer.
-    """
-    get_chunk = partial(fileobj.read, 1024 * 1024)
-    m = hashlib.md5()
-    for chunk in iter(get_chunk, b''):
-        m.update(chunk)
-    if '-' not in etag:
-        if etag != m.hexdigest():
-            raise MD5Error
-
-
 def create_warning(path, error_message):
     """
     This creates a ``PrintTask`` for whenever a warning is to be thrown.

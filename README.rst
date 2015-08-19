@@ -335,7 +335,6 @@ Additionally, there are several other packages that are developed in tandem
 with the CLI.  This includes:
 
 * `botocore <https://github.com/boto/botocore>`__
-* `bcdoc <https://github.com/boto/bcdoc>`__
 * `jmespath <https://github.com/boto/jmespath>`__
 
 If you just want to install a snapshot of the latest development version of
@@ -348,15 +347,13 @@ This file points to the development version of the above packages::
 
 However, to keep up to date, you will continually have to run the
 ``pip install -r requirements.txt`` file to pull in the latest changes
-from the develop branches of botocore, bcdoc, etc.
+from the develop branches of botocore, jmespath, etc.
 
 You can optionally clone each of those repositories and run "pip install -e ."
 for each repository::
 
     git clone <jmespath> && cd jmespath/
     pip install -e . && cd ..
-    git clone <bcdoc> && cd bcdoc/
-    pip install -e . &&  cd ..
     git clone <botocore> && cd botocore/
     pip install -e . && cd ..
     git clone <awscli> && cd aws-cli/

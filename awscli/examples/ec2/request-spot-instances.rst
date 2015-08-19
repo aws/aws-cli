@@ -47,7 +47,7 @@ This example command creates a Spot Instance request for five instances in a non
 
 Command::
 
-  aws ec2 request-spot-instances --spot-price "0.050" --instance-count 5 --type "one-time" --launch-specification {\"ImageId\":\"ami-a43909e1\",\"InstanceType\":"t2.micro\",\"SubnetId\":\"subnet-d50bfebc\"}
+  aws ec2 request-spot-instances --spot-price "0.050" --instance-count 5 --type "one-time" --launch-specification {\"ImageId\":\"ami-a43909e1\",\"InstanceType\":\"t2.micro\",\"SubnetId\":\"subnet-d50bfebc\"}
 
 Output::
 

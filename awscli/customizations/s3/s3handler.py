@@ -287,7 +287,8 @@ class S3Handler(object):
             task = tasks.DownloadPartTask(
                 part_number=i, chunk_size=chunksize,
                 result_queue=self.result_queue, filename=filename,
-                context=context, io_queue=self.write_queue)
+                context=context, io_queue=self.write_queue,
+                params=self.params)
             self.executor.submit(task)
 
     def _enqueue_multipart_upload_tasks(self, filename,
@@ -350,7 +351,8 @@ class S3Handler(object):
                                          payload=None):
         kwargs = {'part_number': part_number, 'chunk_size': chunk_size,
                   'result_queue': self.result_queue,
-                  'upload_context': upload_context, 'filename': filename}
+                  'upload_context': upload_context, 'filename': filename,
+                  'params': self.params}
         if payload:
             kwargs['payload'] = payload
         task = task_class(**kwargs)

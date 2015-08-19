@@ -100,7 +100,7 @@ class TestSetSizeFromS3(unittest.TestCase):
     def test_set_size_from_s3(self):
         client = mock.Mock()
         client.head_object.return_value = {'ContentLength': 5}
-        file_info = FileInfo(src="bucket/key", client=client)
+        file_info = FileInfo(src="bucket/key", client=client, parameters=mock.MagicMock())
         file_info.set_size_from_s3()
         self.assertEqual(file_info.size, 5)
 

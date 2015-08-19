@@ -1,0 +1,450 @@
+#!/bin/bash
+
+# Script to test SSE-C, SSE-KMS, and SSE-S3 support of the aws s3 cp and sync
+# subcommands.
+#
+# Usage example:
+#
+# $ BUCKET=yourbucketname KEYID0=yourkmskeyid0 KEYID1=yourkmskeyid1 \
+#   DOWNLOAD=false tests/functional/s3/test_sse
+
+set -e
+set -u
+set -x
+
+EXTRAOPTS=${EXTRAOPTS:-}
+AWS="aws --endpoint-url https://s3-external-1.amazonaws.com"
+DOWNLOAD=${DOWNLOAD:-false}
+
+BUCKET=${BUCKET:?}
+BUCKETURL=s3://$BUCKET/test_sse
+CKEY0=${CKEY0:-00000000000000000000000000000000} # this is a horrible key just for testing purposes
+CKEY0MD5B64=$(python -c "import hashlib; print hashlib.md5('$CKEY0').digest().encode('base64'),")
+CKEY1=${CKEY1:-00000000000000000000000000000001} # this is a horrible key just for testing purposes
+CKEY1MD5B64=$(python -c "import hashlib; print hashlib.md5('$CKEY1').digest().encode('base64'),")
+KEYID0=${KEYID0:?}
+KEYID1=${KEYID1:?}
+
+TMPDIR=$(mktemp -d)
+
+cleanup () {
+    rm -rf $TMPDIR
+}
+
+trap cleanup EXIT
+
+cd $TMPDIR
+mkdir -p $TMPDIR/.aws
+mkdir -p $TMPDIR/.key
+mkdir -p $TMPDIR/copy
+mkdir -p $TMPDIR/head
+mkdir -p $TMPDIR/local
+mkdir -p $TMPDIR/remote
+mkdir -p $TMPDIR/sync
+mkdir -p $TMPDIR/synccopy
+
+echo -n $CKEY0 > $TMPDIR/.key/ckey0_raw
+base64 -w 0 $TMPDIR/.key/ckey0_raw > $TMPDIR/.key/ckey0_b64
+echo -n $CKEY0MD5B64 > $TMPDIR/.key/ckey0_md5_b64
+
+dd if=/dev/urandom of=local/s3_singlepart bs=4K count=1
+dd if=/dev/urandom of=local/s3_multipart bs=5M count=2
+dd if=/dev/urandom of=local/sse-c_singlepart bs=4K count=1
+dd if=/dev/urandom of=local/sse-c_multipart bs=5M count=2
+dd if=/dev/urandom of=local/sse-kms_singlepart bs=4K count=1
+dd if=/dev/urandom of=local/sse-kms_multipart bs=5M count=2
+dd if=/dev/urandom of=local/sse-s3_singlepart bs=4K count=1
+dd if=/dev/urandom of=local/sse-s3_multipart bs=5M count=2
+
+export AWS_CONFIG_FILE=$TMPDIR/.aws/config
+cat > $TMPDIR/.aws/config <<EOF
+[default]
+region = us-east-1
+s3 =
+    signature_version = s3v4
+    multipart_threshold = 5MB
+    multipart_chunksize = 5MB
+EOF
+if [[ -n ${AWS_DEFAULT_PROFILE:-} ]]; then
+    cat >> $TMPDIR/.aws/config <<EOF
+[profile $AWS_DEFAULT_PROFILE]
+region = us-east-1
+s3 =
+    signature_version = s3v4
+    multipart_threshold = 5MB
+    multipart_chunksize = 5MB
+EOF
+fi
+
+$AWS $EXTRAOPTS s3 rm $BUCKETURL --recursive
+
+test_s3 () {
+    # arguments
+
+    op=$1
+    ts=$2
+    td=$3
+    src=$4
+    dst=$5
+    src_key=
+    dst_key=
+    dst_key_md5_b64=
+    dst_key_md5_arg=
+
+    if [ $# -ge 6 ]; then
+        dst_key=$6
+    fi
+
+    if [ $# -ge 7 ]; then
+        dst_key_md5_b64=$7
+    fi
+
+    if [ $# -ge 8 ]; then
+        dst_key_md5_arg=$8
+    fi
+
+    # variables
+
+    suffix=""
+    head_cmp=""
+    head_key=""
+    head_out=""
+    src_prefix=""
+    sse_up_opts=""
+    sse_copy_opts=""
+    sse_head_opts=""
+    sse_down_opts=""
+
+    # ... vary based on the SSE type of the source
+
+    if [[ $ts != dir && $ts != file ]]; then
+        src_prefix=$BUCKETURL/
+    fi
+
+    if [[ $ts == sse-c ]]; then
+        src_key=$CKEY0
+        sse_copy_opts="--sse-copy-source-customer-key $src_key"
+    fi
+
+    # ... vary based on the SSE type of the destination
+
+    if [[ $td == sse-c ]]; then
+        dst_key=${dst_key:-$CKEY0}
+        dst_key_md5_b64=${dst_key_md5_b64:-$CKEY0MD5B64}
+        sse_up_opts="--sse --sse-class C --sse-customer-key $dst_key"
+        sse_head_opts="--sse-customer-algorithm AES256 --sse-customer-key $dst_key"
+        sse_down_opts="--sse-customer-key $dst_key"
+        if [[ -n $dst_key_md5_arg ]]; then
+            sse_up_opts="$sse_up_opts --sse-customer-key-md5 $dst_key_md5_arg"
+            sse_head_opts="$sse_head_opts --sse-customer-key-md5 $dst_key_md5_arg"
+            sse_down_opts="$sse_down_opts --sse-customer-key-md5 $dst_key_md5_arg"
+        fi
+    elif [[ $td == sse-kms ]]; then
+        dst_key=${dst_key:-$KEYID0}
+        sse_up_opts="--sse --sse-class KMS --sse-kms-key-id $dst_key"
+    elif [[ $td == sse-s3 ]]; then
+        sse_up_opts="--sse --sse-class S3"
+    fi
+
+    # ... vary based on the operation
+
+    if [[ $op == sync ]]; then
+        suffix=/
+        if $DOWNLOAD; then
+            head_cmp=$src/s3_singlepart
+        else
+            head_cmp=local/s3_singlepart
+        fi
+        head_key=test_sse/$dst/$(basename $head_cmp)
+    else
+        head_cmp=$src
+        head_key=test_sse/$dst
+    fi
+
+    head_out=head/$(basename ${dst}_head.txt)
+
+    echo "[+] testing op=$op ts=$ts td=$td src=$src dst=$dst src_key=$src_key dst_key=$dst_key dst_key_md5_b64=$dst_key_md5_b64 head_cmp=$head_cmp head_key=$head_key"
+
+    # setup tracing
+
+    nosetx=false
+
+    case "$-" in
+        *x*)
+            nosetx=true
+            ;;
+    esac
+
+    if ! $nosetx; then
+        set -x
+    fi
+
+    # perform the remote operation using aws s3
+
+    if [[ $op == sync ]]; then
+        set +e
+    fi
+    $AWS $EXTRAOPTS s3 $op $sse_copy_opts $sse_up_opts $src_prefix$src$suffix $BUCKETURL/$dst$suffix
+    EC=$?
+    if [[ $op == sync ]]; then
+        set -e
+        test $EC -eq 0 -o $EC -eq 2
+    fi
+
+    # check the result using head-object on (one of) the object(s) uploaded
+
+    $AWS $EXTRAOPTS s3api head-object --bucket $BUCKET --key $head_key $sse_head_opts > $head_out
+
+    if [[ $td == s3 ]]; then
+        if $DOWNLOAD && [[ ! $dst =~ .*multipart ]]; then
+            test "$(cat $head_out | jq -r '.ETag' | tr -d '\"')" == $(md5sum $head_cmp | cut -d ' ' -f 1)
+        fi
+    elif [[ $td == sse-c ]]; then
+        test "$(cat $head_out | jq -r '.SSECustomerAlgorithm')" == "AES256"
+        test "$(cat $head_out | jq -r '.SSECustomerKeyMD5')" == $dst_key_md5_b64
+    elif [[ $td == sse-kms ]]; then
+        test "$(cat $head_out | jq -r '.ServerSideEncryption')" == "aws:kms"
+        test "$(cat $head_out | jq -r '.SSEKMSKeyId' | cut -d '/' -f 2)" == $dst_key
+    elif [[ $td == sse-s3 ]]; then
+        test "$(cat $head_out | jq -r '.ServerSideEncryption')" == "AES256"
+    else
+        exit 1
+    fi
+
+    # optionally download what was uploaded/copied and compare
+
+    if $DOWNLOAD; then
+        if [[ $op == sync ]]; then
+            mkdir -p $dst$suffix
+        fi
+
+        set +e
+        $AWS $EXTRAOPTS s3 $op $sse_down_opts $BUCKETURL/$dst$suffix $dst$suffix
+        EC=$?
+        set -e
+        test $EC -eq 0 -o $EC -eq 2
+
+        diff -rq $src$suffix $dst$suffix
+    fi
+
+    # cleanup tracing
+
+    if ! $nosetx; then
+        set +x
+    fi
+}
+
+
+########
+# copy #
+########
+
+# cp: file --> s3, s3 --> file
+
+test_s3 'cp' 'file' 's3' 'local/s3_singlepart' 'remote/s3_singlepart'
+test_s3 'cp' 'file' 's3' 'local/s3_multipart' 'remote/s3_multipart'
+
+# cp: file --> sse-c, sse-c --> file
+
+test_s3 'cp' 'file' 'sse-c' 'local/sse-c_singlepart' 'remote/sse-c_singlepart'
+# ... test different forms of specifying key arguments
+test_s3 'cp' 'file' 'sse-c' 'local/sse-c_singlepart' 'remote/sse-c_singlepart' file://$TMPDIR/.key/ckey0_raw $CKEY0MD5B64
+test_s3 'cp' 'file' 'sse-c' 'local/sse-c_singlepart' 'remote/sse-c_singlepart' file://$TMPDIR/.key/ckey0_b64 $CKEY0MD5B64 $CKEY0MD5B64
+test_s3 'cp' 'file' 'sse-c' 'local/sse-c_singlepart' 'remote/sse-c_singlepart' file://$TMPDIR/.key/ckey0_b64 $CKEY0MD5B64 file://$TMPDIR/.key/ckey0_md5_b64
+# ... multipart
+test_s3 'cp' 'file' 'sse-c' 'local/sse-c_multipart' 'remote/sse-c_multipart'
+
+# cp: file --> sse-kms, sse-kms --> file
+
+test_s3 'cp' 'file' 'sse-kms' 'local/sse-kms_singlepart' 'remote/sse-kms_singlepart'
+test_s3 'cp' 'file' 'sse-kms' 'local/sse-kms_multipart' 'remote/sse-kms_multipart'
+
+# cp: file --> sse-s3, sse-s3 --> file
+
+test_s3 'cp' 'file' 'sse-s3' 'local/sse-s3_singlepart' 'remote/sse-s3_singlepart'
+test_s3 'cp' 'file' 'sse-s3' 'local/sse-s3_multipart' 'remote/sse-s3_multipart'
+
+# cp: s3 --> s3
+
+test_s3 'cp' 's3' 's3' 'remote/s3_singlepart' 'copy/s3_s3_singlepart'
+test_s3 'cp' 's3' 's3' 'remote/s3_multipart' 'copy/s3_s3_multipart'
+
+# cp: s3 --> sse-c
+
+test_s3 'cp' 's3' 'sse-c' 'remote/s3_singlepart' 'copy/s3_sse-c_siglepart'
+test_s3 'cp' 's3' 'sse-c' 'remote/s3_multipart' 'copy/s3_sse-c_multipart'
+
+# cp: s3 --> sse-kms
+
+test_s3 'cp' 's3' 'sse-kms' 'remote/s3_singlepart' 'copy/s3_sse-kms_singlepart'
+test_s3 'cp' 's3' 'sse-kms' 'remote/s3_multipart' 'copy/s3_sse-kms_multipart'
+
+# cp: s3 --> sse-s3
+
+test_s3 'cp' 's3' 'sse-s3' 'remote/s3_singlepart' 'copy/s3_sse-s3_singlepart'
+test_s3 'cp' 's3' 'sse-s3' 'remote/s3_multipart' 'copy/s3_sse-s3_multipart'
+
+# cp: sse-c --> s3
+
+test_s3 'cp' 'sse-c' 's3' 'remote/sse-c_singlepart' 'copy/sse-c_s3_singlepart'
+test_s3 'cp' 'sse-c' 's3' 'remote/sse-c_multipart' 'copy/sse-c_s3_multipart'
+
+# cp: sse-c --> sse-c (same key)
+
+test_s3 'cp' 'sse-c' 'sse-c' 'remote/sse-c_singlepart' 'copy/sse-c_sse-c_same_singlepart'
+test_s3 'cp' 'sse-c' 'sse-c' 'remote/sse-c_multipart' 'copy/sse-c_sse-c_same_multipart'
+
+# cp: sse-c --> sse-c (diff key)
+
+test_s3 'cp' 'sse-c' 'sse-c' 'remote/sse-c_singlepart' 'copy/sse-c_sse-c_diff_singlepart' $CKEY1 $CKEY1MD5B64
+test_s3 'cp' 'sse-c' 'sse-c' 'remote/sse-c_multipart' 'copy/sse-c_sse-c_diff_multipart' $CKEY1 $CKEY1MD5B64
+
+# cp: sse-c --> sse-kms
+
+test_s3 'cp' 'sse-c' 'sse-kms' 'remote/sse-c_singlepart' 'copy/sse-c_sse-kms_singlepart'
+test_s3 'cp' 'sse-c' 'sse-kms' 'remote/sse-c_multipart' 'copy/sse-c_sse-kms_multipart'
+
+# cp: sse-c --> sse-s3
+
+test_s3 'cp' 'sse-c' 'sse-s3' 'remote/sse-c_singlepart' 'copy/sse-c_sse-s3_singlepart'
+test_s3 'cp' 'sse-c' 'sse-s3' 'remote/sse-c_multipart' 'copy/sse-c_sse-s3_multipart'
+
+# cp: sse-kms --> s3
+
+test_s3 'cp' 'sse-kms' 's3' 'remote/sse-kms_singlepart' 'copy/sse-kms_s3_singlepart'
+test_s3 'cp' 'sse-kms' 's3' 'remote/sse-kms_multipart' 'copy/sse-kms_s3_multipart'
+
+# cp: sse-kms --> sse-c
+
+test_s3 'cp' 'sse-kms' 'sse-c' 'remote/sse-kms_singlepart' 'copy/sse-kms_sse-c_singlepart'
+test_s3 'cp' 'sse-kms' 'sse-c' 'remote/sse-kms_multipart' 'copy/sse-kms_sse-c_multipart'
+
+# cp: sse-kms --> sse-kms (same key)
+
+test_s3 'cp' 'sse-kms' 'sse-kms' 'remote/sse-kms_singlepart' 'copy/sse-kms_sse-kms_same_singlepart'
+test_s3 'cp' 'sse-kms' 'sse-kms' 'remote/sse-kms_multipart' 'copy/sse-kms_sse-kms_same_multipart'
+
+# cp: sse-kms --> sse-kms (diff key)
+
+test_s3 'cp' 'sse-kms' 'sse-kms' 'remote/sse-kms_singlepart' 'copy/sse-kms_sse-kms_diff_singlepart' $KEYID1
+test_s3 'cp' 'sse-kms' 'sse-kms' 'remote/sse-kms_multipart' 'copy/sse-kms_sse-kms_diff_multipart' $KEYID1
+
+# cp: sse-kms --> sse-s3
+
+test_s3 'cp' 'sse-kms' 'sse-s3' 'remote/sse-kms_singlepart' 'copy/sse-kms_sse-s3_singlepart'
+test_s3 'cp' 'sse-kms' 'sse-s3' 'remote/sse-kms_multipart' 'copy/sse-kms_sse-s3_multipart'
+
+# cp: sse-s3 --> s3
+
+test_s3 'cp' 'sse-s3' 's3' 'remote/sse-s3_singlepart' 'copy/sse-s3_s3_singlepart'
+test_s3 'cp' 'sse-s3' 's3' 'remote/sse-s3_multipart' 'copy/sse-s3_s3_multipart'
+
+# cp: sse-s3 --> sse-c
+
+test_s3 'cp' 'sse-s3' 'sse-c' 'remote/sse-s3_singlepart' 'copy/sse-s3_sse-c_singlepart'
+test_s3 'cp' 'sse-s3' 'sse-c' 'remote/sse-s3_multipart' 'copy/sse-s3_sse-c_multipart'
+
+# cp: sse-s3 --> sse-kms
+
+test_s3 'cp' 'sse-s3' 'sse-kms' 'remote/sse-s3_singlepart' 'copy/sse-s3_sse-kms_singlepart'
+test_s3 'cp' 'sse-s3' 'sse-kms' 'remote/sse-s3_multipart' 'copy/sse-s3_sse-kms_multipart'
+
+# cp: sse-s3 --> sse-s3
+
+test_s3 'cp' 'sse-s3' 'sse-s3' 'remote/sse-s3_singlepart' 'copy/sse-s3_sse-s3_singlepart'
+test_s3 'cp' 'sse-s3' 'sse-s3' 'remote/sse-s3_multipart' 'copy/sse-s3_sse-s3_multipart'
+
+########
+# sync #
+########
+
+# sync: dir --> s3, s3 --> dir
+
+test_s3 'sync' 'dir' 's3' 'local' 'sync/dir_s3'
+
+# sync: dir --> sse-c, sse-c --> dir
+
+test_s3 'sync' 'dir' 'sse-c' 'local' 'sync/dir_sse-c'
+
+# sync: dir --> sse-kms, sse-kms --> dir
+
+test_s3 'sync' 'dir' 'sse-kms' 'local' 'sync/dir_sse-kms'
+
+# sync: dir --> sse-s3, sse-s3 --> dir
+
+test_s3 'sync' 'dir' 'sse-s3' 'local' 'sync/dir_sse-s3'
+
+# sync: s3 --> s3
+
+test_s3 'sync' 's3' 's3' 'sync/dir_s3' 'copysync/s3_s3'
+
+# sync: s3 --> sse-c
+
+test_s3 'sync' 's3' 'sse-c' 'sync/dir_s3' 'copysync/s3_sse-c'
+
+# sync: s3 --> sse-kms
+
+test_s3 'sync' 's3' 'sse-kms' 'sync/dir_s3' 'copysync/s3_sse-kms'
+
+# sync: s3 --> sse-s3
+
+test_s3 'sync' 's3' 'sse-s3' 'sync/dir_s3' 'copysync/s3_sse-s3'
+
+# sync: sse-c --> s3
+
+test_s3 'sync' 'sse-c' 's3' 'sync/dir_sse-c' 'copysync/sse-c_s3'
+
+# sync: sse-c --> sse-c (same key)
+
+test_s3 'sync' 'sse-c' 'sse-c' 'sync/dir_sse-c' 'copysync/sse-c_sse-c_same'
+
+# sync: sse-c --> sse-c (diff key)
+
+test_s3 'sync' 'sse-c' 'sse-c' 'sync/dir_sse-c' 'copysync/sse-c_sse-c_diff' $CKEY1 $CKEY1MD5B64
+
+# sync: sse-c --> sse-kms
+
+test_s3 'sync' 'sse-c' 'sse-kms' 'sync/dir_sse-c' 'copysync/sse-c_sse-kms'
+
+# sync: sse-c --> sse-s3
+
+test_s3 'sync' 'sse-c' 'sse-s3' 'sync/dir_sse-c' 'copysync/sse-c_sse-s3'
+
+# sync: sse-kms --> s3
+
+test_s3 'sync' 'sse-kms' 's3' 'sync/dir_sse-kms' 'copysync/sse-kms_s3'
+
+# sync: sse-kms --> sse-c
+
+test_s3 'sync' 'sse-kms' 'sse-c' 'sync/dir_sse-kms' 'copysync/sse-kms_sse-c'
+
+# sync: sse-kms --> sse-kms (same key)
+
+test_s3 'sync' 'sse-kms' 'sse-kms' 'sync/dir_sse-kms' 'copysync/sse-kms_sse-kms_same'
+
+# sync: sse-kms --> sse-kms (diff key)
+
+test_s3 'sync' 'sse-kms' 'sse-kms' 'sync/dir_sse-kms' 'copysync/sse-kms_sse-kms_diff' $KEYID1
+
+# sync: sse-kms --> sse-s3
+
+test_s3 'sync' 'sse-kms' 'sse-s3' 'sync/dir_sse-kms' 'copysync/sse-kms_sse-s3'
+
+# sync: sse-s3 --> s3
+
+test_s3 'sync' 'sse-s3' 's3' 'sync/dir_sse-s3' 'copysync/sse-s3_s3'
+
+# sync: sse-s3 --> sse-c
+
+test_s3 'sync' 'sse-s3' 'sse-c' 'sync/dir_sse-s3' 'copysync/sse-s3_sse-c'
+
+# sync: sse-s3 --> sse-kms
+
+test_s3 'sync' 'sse-s3' 'sse-kms' 'sync/dir_sse-s3' 'copysync/sse-s3_sse-kms'
+
+# sync: sse-s3 --> sse-s3
+
+test_s3 'sync' 'sse-s3' 'sse-s3' 'sync/dir_sse-s3' 'copysync/sse-s3_sse-s3'
+
+echo done
+

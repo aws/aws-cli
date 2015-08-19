@@ -1,0 +1,45 @@
+# TODO migrate test_sse shell script "tests" to functional written in python
+  tests
+
+# TODO test_sse tests different ways of passing customer key and customer key
+  md5 on the command line, but does not test the same for copy source customer
+  key/md5 (although these two use the same code path for arg processing)
+
+# TODO update aws s3 {cp,sync} manpages with examples
+
+# TODO maybe add debug logging for new options and option encrichment, etc.?
+
+# TODO is there a better way to do the opt parsing within the awscli framework?
+
+# TODO validate that ServerSideEncryption, SSECustomerAlgorithm,
+  SSECustomerKeyMD5, and/or SSEKMSKeyId values present in response data after
+  certain APIs (head_object(), put_object(), get_object(), copy_object(),
+  create_multipart_upload(), upload_part(), upload_part_copy()) have expected
+  values given the request (and, not specific to SSE, there is no checking of
+  these now for ETag, etc.). Approximate source locations as of 2015-08-27
+  (these comments were removed afterwards, so source line numbers are slightly
+  different; look for use of client APIs above):
+
+    awscli/customizations/s3/filegenerator.py
+    317:            # TODO validate that ServerSideEncryption, SSECustomerAlgorithm,
+
+    awscli/customizations/s3/fileinfo.py
+    196:        # TODO validate that ServerSideEncryption, SSECustomerAlgorithm,
+    292:        # TODO validate that ServerSideEncryption, SSECustomerAlgorithm,
+    311:        # TODO validate that ServerSideEncryption, SSECustomerAlgorithm,
+    329:        # TODO validate that ServerSideEncryption, SSECustomerAlgorithm,
+    372:        # TODO validate that ServerSideEncryption, SSECustomerAlgorithm,
+
+    awscli/customizations/s3/tasks.py
+    180:            # TODO validate that ServerSideEncryption, SSECustomerAlgorithm,
+    261:            # TODO validate that ServerSideEncryption, SSECustomerAlgorithm,
+    401:                # TODO validate that ServerSideEncryption, SSECustomerAlgorithm,
+    535:            # TODO validate that ServerSideEncryption and/or SSEKMSKeyId values
+
+    (complete_multipart_upload() has only ServerSideEncryption and/or
+     SSEKMSKeyId. The rest have all four.)
+
+# TODO consider storing md5sum/sha256sum in object metadata (this is not
+  specific to SSE, but to anything that alters ETag like multipart) so it could
+  later be used (perhaps for sync)
+

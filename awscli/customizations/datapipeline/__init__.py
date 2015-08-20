@@ -5,6 +5,8 @@ from datetime import datetime, timedelta
 from awscli.arguments import CustomArgument
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.datapipeline import translator
+from awscli.customizations.datapipeline.createdefaultroles \
+    import CreateDefaultRoles
 
 
 DEFINITION_HELP_TEXT = """\
@@ -45,7 +47,6 @@ class ParameterDefinitionError(Exception):
         super(ParameterDefinitionError, self).__init__(full_msg)
         self.msg = msg
 
-
 def register_customizations(cli):
     cli.register(
         'building-argument-table.datapipeline.put-pipeline-definition',
@@ -66,6 +67,7 @@ def register_customizations(cli):
 
 def register_commands(command_table, session, **kwargs):
     command_table['list-runs'] = ListRunsCommand(session)
+    command_table['create-default-roles'] = CreateDefaultRoles(session)
 
 
 def document_translation(help_command, **kwargs):

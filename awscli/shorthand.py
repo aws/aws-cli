@@ -10,6 +10,34 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+"""Module for parsing shorthand syntax.
+
+This module parses any CLI options that use a "shorthand"
+syntax::
+
+    --foo A=b,C=d
+         |------|
+            |
+            Shorthand syntax
+
+
+This module provides two main classes to do this.
+First, there's a ``ShorthandParser`` class.  This class works
+on a purely syntactic level.  It looks only at the string value
+provided to it in order to figure out how the string should be parsed.
+
+However, because there was a pre-existing shorthand parser, we need
+to remain backwards compatible with the previous parser.  One of the
+things the previous parser did was use the associated JSON model to
+control how the expression was parsed.
+
+In order to accommodate this a post processing class is provided that
+takes the parsed values from the ``ShorthandParser`` as well as the
+corresponding JSON model for the CLI argument and makes any adjustments
+necessary to maintain backwards compatibility.  This is done in the
+``BackCompatVisitor`` class.
+
+"""
 import re
 import decimal
 import string
@@ -67,12 +95,14 @@ class ShorthandParser(object):
 
     _SINGLE_QUOTED = _NamedRegex('singled quoted', r'\'(?:\\\\|\\\'|[^\'])*\'')
     _DOUBLE_QUOTED = _NamedRegex('double quoted', r'"(?:\\\\|\\"|[^"])*"')
-    _FIRST_VALUE = _NamedRegex('first',
-                               u'((\\\\,)|[\!\#-&\(-\+\--\<\>-Z\\\\-z\u007c-\uffff])'
-                               u'((\\\\,)|[\!\#-&\(-\+\--\\\\\^-\|~-\uffff])*')
-    _SECOND_VALUE = _NamedRegex('second',
-                                u'((\\\\,)|[\!\#-&\(-\+\--\<\>-Z\\\\-z\u007c-\uffff])'
-                                u'((\\\\,)|[\!\#-&\(-\+\--\<\>-\uffff])*')
+    _FIRST_VALUE = _NamedRegex(
+        'first',
+        u'((\\\\,)|[\!\#-&\(-\+\--\<\>-Z\\\\-z\u007c-\uffff])'
+        u'((\\\\,)|[\!\#-&\(-\+\--\\\\\^-\|~-\uffff])*')
+    _SECOND_VALUE = _NamedRegex(
+        'second',
+        u'((\\\\,)|[\!\#-&\(-\+\--\<\>-Z\\\\-z\u007c-\uffff])'
+        u'((\\\\,)|[\!\#-&\(-\+\--\<\>-\uffff])*')
 
     def __init__(self):
         self._tokens = []
@@ -154,8 +184,6 @@ class ShorthandParser(object):
         while True:
             try:
                 current = self._second_value()
-                if current is None:
-                    break
                 self._consume_whitespace()
                 if self._at_eof():
                     csv_list.append(current)
@@ -171,6 +199,8 @@ class ShorthandParser(object):
                 #          ^-error, "expected ',' received '='
                 # foo=a,b,c=d,e=f
                 #        ^-backtrack to here.
+                if self._at_eof():
+                    raise
                 self._backtrack_to(',')
                 break
         if len(csv_list) == 1:
@@ -203,9 +233,7 @@ class ShorthandParser(object):
 
     def _explicit_values(self):
         # values = csv-list / explicit-list / hash-literal
-        if self._at_eof():
-            return ''
-        elif self._current() == '[':
+        if self._current() == '[':
             return self._explicit_list()
         elif self._current() == '{':
             return self._hash_literal()
@@ -347,8 +375,8 @@ class BackCompatVisitor(ModelVisitor):
             if value is not None:
                 parent[name] = [value]
         elif shape.member.type_name == 'structure' and \
-                    len(shape.member.members) == 1:
-            element_name = shape.member.members.keys()[0]
+                len(shape.member.members) == 1:
+            element_name = list(shape.member.members.keys())[0]
             new_values = []
             for v in value:
                 new_values.append({element_name: v})

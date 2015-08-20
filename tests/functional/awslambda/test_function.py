@@ -96,7 +96,8 @@ class TestCreateFunction(BaseLambdaTests):
         cmdline += ' --code S3Bucket=mybucket,S3Key=mykey,S3ObjectVersion=vs,'
         cmdline += 'ZipFile=foo'
         stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
-        self.assertIn('Unknown key \'ZipFile\'', stderr)
+        self.assertIn('ZipFile cannot be provided as part of the --code',
+                      stderr)
 
     def test_create_function_with_invalid_file_contents(self):
         cmdline = self.prefix

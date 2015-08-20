@@ -324,24 +324,9 @@ class TestParamShorthand(BaseArgProcessTest):
         p = self.get_param_model(
             'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
         value = 'ApplicationName:foo,TemplateName=bar'
-        error_msg = "Error parsing parameter '--source-configuration'.*should be"
+        error_msg = "Error parsing parameter '--source-configuration'.*Expected"
         with self.assertRaisesRegexp(ParamError, error_msg):
             self.simplify(p, value)
-
-    def test_mispelled_param_name(self):
-        p = self.get_param_model(
-            'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
-        # We're checking three things.
-        # 1) The CLI parameter is in the error message
-        # 2) The parameter name that failed validation is in the error message
-        # 3) The correct parameter name is in the error message.
-        error_msg = (
-            '--source-configuration.*'
-            'ApplicationNames.*valid choices.*'
-            'ApplicationName')
-        with self.assertRaisesRegexp(ParamError, error_msg):
-            # Typo in 'ApplicationName'
-            self.simplify(p, 'ApplicationNames=foo, TemplateName=bar')
 
     def test_improper_separator(self):
         # If the user uses ':' instead of '=', we should give a good
@@ -349,21 +334,15 @@ class TestParamShorthand(BaseArgProcessTest):
         p = self.get_param_model(
             'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
         value = 'ApplicationName:foo,TemplateName:bar'
-        error_msg = "Error parsing parameter '--source-configuration'.*should be"
+        error_msg = "Error parsing parameter '--source-configuration'.*Expected"
         with self.assertRaisesRegexp(ParamError, error_msg):
             self.simplify(p, value)
 
     def test_improper_separator_for_filters_param(self):
         p = self.get_param_model('ec2.DescribeInstances.Filters')
-        error_msg = "Error parsing parameter '--filters'.*should be"
+        error_msg = "Error parsing parameter '--filters'.*Expected"
         with self.assertRaisesRegexp(ParamError, error_msg):
             self.simplify(p, ["Name:tag:Name,Values:foo"])
-
-    def test_unknown_key_for_filters_param(self):
-        p = self.get_param_model('ec2.DescribeInstances.Filters')
-        with self.assertRaisesRegexp(ParamError,
-                                     '--filters.*Names.*valid choices.*Name'):
-            self.simplify(p, ["Names=instance-id,Values=foo,bar"])
 
     def test_csv_syntax_escaped(self):
         p = self.get_param_model('cloudformation.CreateStack.Parameters')
@@ -391,7 +370,7 @@ class TestParamShorthand(BaseArgProcessTest):
 
     def test_csv_syntax_errors(self):
         p = self.get_param_model('cloudformation.CreateStack.Parameters')
-        error_msg = "Error parsing parameter '--parameters'.*should be"
+        error_msg = "Error parsing parameter '--parameters'.*Expected"
         with self.assertRaisesRegexp(ParamError, error_msg):
             self.simplify(p, ['ParameterKey=key,ParameterValue="foo,bar'])
         with self.assertRaisesRegexp(ParamError, error_msg):

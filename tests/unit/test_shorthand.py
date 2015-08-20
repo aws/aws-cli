@@ -58,6 +58,7 @@ def test_parse():
            {'foo': ['a', 'b', 'c']})
     yield (_can_parse, 'foo  =  [ a , b  , c  ]',
            {'foo': ['a', 'b', 'c']})
+    yield (_can_parse, 'foo=[,,]', {'foo': ['', '']})
 
     # Single quoted strings.
     yield (_can_parse, "foo='bar'", {"foo": "bar"})
@@ -145,6 +146,7 @@ def test_error_parsing():
     yield (_is_error, "foo={bar")
     yield (_is_error, "foo={bar}")
     yield (_is_error, "foo={bar=bar")
+    yield (_is_error, "foo=bar,")
 
 
 def _is_error(expr):
@@ -152,6 +154,10 @@ def _is_error(expr):
         shorthand.ShorthandParser().parse(expr)
     except shorthand.ShorthandParseError:
         pass
+    except Exception as e:
+        raise AssertionError(
+            "Expected ShorthandParseError, but received unexpected "
+            "exception instead (%s): %s" % (e.__class__, e))
     else:
         raise AssertionError("Expected ShorthandParseError, but no "
                             "exception was raised for expression: %s" % expr)

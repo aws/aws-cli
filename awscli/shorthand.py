@@ -68,11 +68,11 @@ class ShorthandParser(object):
     _SINGLE_QUOTED = _NamedRegex('singled quoted', r'\'(?:\\\\|\\\'|[^\'])*\'')
     _DOUBLE_QUOTED = _NamedRegex('double quoted', r'"(?:\\\\|\\"|[^"])*"')
     _FIRST_VALUE = _NamedRegex('first',
-                               u'[\!\#-&\(-\+\--\<\>-Z\\\\-z\u007c-\uffff]'
-                               u'[\!\#-&\(-\+\--\\\\\^-\|~-\uffff]*')
+                               u'((\\\\,)|[\!\#-&\(-\+\--\<\>-Z\\\\-z\u007c-\uffff])'
+                               u'((\\\\,)|[\!\#-&\(-\+\--\\\\\^-\|~-\uffff])*')
     _SECOND_VALUE = _NamedRegex('second',
-                                u'[\!\#-&\(-\+\--\<\>-Z\\\\-z\u007c-\uffff]'
-                                u'[\!\#-&\(-\+\--\<\>-\uffff]*')
+                                u'((\\\\,)|[\!\#-&\(-\+\--\<\>-Z\\\\-z\u007c-\uffff])'
+                                u'((\\\\,)|[\!\#-&\(-\+\--\<\>-\uffff])*')
 
     def __init__(self):
         self._tokens = []
@@ -183,7 +183,8 @@ class ShorthandParser(object):
     def _value(self):
         result = self._FIRST_VALUE.match(self._input_value[self._index:])
         if result is not None:
-            return self._consume_matched_regex(result)
+            consumed = self._consume_matched_regex(result)
+            return consumed.replace('\\,', ',')
         return ''
 
     def _explicit_list(self):
@@ -256,7 +257,8 @@ class ShorthandParser(object):
         elif self._current() == '"':
             return self._double_quoted_value()
         else:
-            return self._must_consume_regex(self._SECOND_VALUE)
+            consumed = self._must_consume_regex(self._SECOND_VALUE)
+            return consumed.replace('\\,', ',')
 
     def _expect(self, char, consume_whitespace=False):
         if consume_whitespace:

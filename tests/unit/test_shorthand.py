@@ -84,6 +84,15 @@ def test_parse():
     yield (_can_parse, 'foo="bar\\"baz"', {'foo': 'bar"baz'})
     yield (_can_parse, 'foo="bar\\\\baz"', {'foo': 'bar\\baz'})
 
+    # Can escape comma in CSV list.
+    yield (_can_parse, 'foo=a\\,b', {"foo": "a,b"})
+    yield (_can_parse, 'foo=a\\,b', {"foo": "a,b"})
+    yield (_can_parse, 'foo=a\\,', {"foo": "a,"})
+    yield (_can_parse, 'foo=\\,', {"foo": ","})
+    yield (_can_parse, 'foo=a,b\\,c', {"foo": ['a', 'b,c']})
+    yield (_can_parse, 'foo=a,b\\,', {"foo": ['a', 'b,']})
+    yield (_can_parse, 'foo=a,\\,bc', {"foo": ['a', ',bc']})
+
     # Ignores whitespace around '=' and ','
     yield (_can_parse, 'foo= bar', {'foo': 'bar'})
     yield (_can_parse, 'foo =bar', {'foo': 'bar'})

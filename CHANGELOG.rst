@@ -2,9 +2,10 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.46
+======
 
+* feature:``aws s3``: Add support for event notification filters
 * bugfix:``aws iam create-virtual-mfa-device``: Fix issue when an error
   response is received from the ``create-virtual-mfa-device`` command
   (`issue 1447 <https://github.com/aws/aws-cli/pull/1447/>`__)

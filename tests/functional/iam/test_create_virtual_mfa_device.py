@@ -127,3 +127,28 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
         cmdline += ' --virtual-mfa-device-name fiebaz'
         cmdline += ' --outfile %s --bootstrap-method QRCodePNG' % outfile
         self.assert_params_for_cmd(cmdline, expected_rc=255)
+
+    def test_bad_response(self):
+        # This can happen if you run the create-virtual-mfa-device
+        # command multiple times with the same name.  You'll get
+        # an "already exists" error and we should handle that case
+        # gracefully.
+        self.parsed_response = {
+            'Error': {
+                'Code': 'EntityAlreadyExists',
+                'Message': 'MFADevice entity at the and name already exists.',
+                'Type': 'Sender',
+            },
+            'ResponseMetadata': {
+                'HTTPStatusCode': 409,
+                'RequestId': 'requset-id'}
+        }
+        self.http_response.status_code = 409
+        cmdline = self.prefix
+        cmdline += ' --virtual-mfa-device-name fiebaz'
+        cmdline += ' --outfile foo --bootstrap-method QRCodePNG'
+        # The error message should be in the stderr.
+        self.assert_params_for_cmd(
+            cmdline,
+            stderr_contains=self.parsed_response['Error']['Message'],
+            expected_rc=255)

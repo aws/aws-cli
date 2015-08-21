@@ -457,12 +457,12 @@ class TestDocGen(BaseArgProcessTest):
     # tests.
     def setUp(self):
         super(TestDocGen, self).setUp()
-        self.simplify = ParamShorthand()
         self.shorthand_documenter = ParamShorthandDocGen()
 
     def get_generated_example_for(self, argument):
         # Returns a string containing the generated documentation.
-        return self.shorthand_documenter.generate_shorthand_example(argument)
+        return self.shorthand_documenter.generate_shorthand_example(
+            argument.cli_name, argument.argument_model)
 
     def assert_generated_example_is(self, argument, expected_docs):
         generated_docs = self.get_generated_example_for(argument)
@@ -475,7 +475,7 @@ class TestDocGen(BaseArgProcessTest):
     def test_gen_map_type_docs(self):
         argument = self.get_param_model('sqs.SetQueueAttributes.Attributes')
         expected_example_str = (
-            "--attributes key_name=string,key_name2=string\n"
+            "KeyName1=string,KeyName2=string\n\n"
             "Where valid key names are:\n"
             "  Policy"
         )
@@ -490,9 +490,6 @@ class TestDocGen(BaseArgProcessTest):
     def test_gen_list_structure_of_scalars_docs(self):
         argument = self.get_param_model('elb.CreateLoadBalancer.Listeners')
         generated_example = self.get_generated_example_for(argument)
-        self.assertIn(
-            'Key value pairs, with multiple values separated by a space.',
-            generated_example)
         self.assertIn('Protocol=string', generated_example)
         self.assertIn('LoadBalancerPort=integer', generated_example)
         self.assertIn('InstanceProtocol=string', generated_example)
@@ -503,12 +500,10 @@ class TestDocGen(BaseArgProcessTest):
         argument = self.get_param_model(
             'emr.ModifyInstanceGroups.InstanceGroups')
         expected = (
-            'Key value pairs, where values are separated by commas, '
-             'and multiple pairs are separated by spaces.\n'
-             '--instance-groups InstanceGroupId=string1,'
-             'InstanceCount=integer1,EC2InstanceIdsToTerminate=string1,'
-             'string2 InstanceGroupId=string1,InstanceCount=integer1,'
-             'EC2InstanceIdsToTerminate=string1,string2')
+             'InstanceGroupId=string,'
+             'InstanceCount=integer,EC2InstanceIdsToTerminate=string,'
+             'string ...'
+        )
         self.assert_generated_example_is(argument, expected)
 
     def test_gen_list_structure_list_scalar_scalar_docs(self):
@@ -516,10 +511,7 @@ class TestDocGen(BaseArgProcessTest):
         # so we make it clear that multiple values are separated by spaces.
         argument = self.get_param_model('ec2.DescribeInstances.Filters')
         generated_example = self.get_generated_example_for(argument)
-        self.assertIn('multiple pairs are separated by spaces',
-                      generated_example)
-        self.assertIn('Name=string1,Values=string1,string2 '
-                      'Name=string1,Values=string1,string2',
+        self.assertIn('Name=string,Values=string,string',
                       generated_example)
 
     def test_gen_structure_list_scalar_docs(self):
@@ -541,9 +533,102 @@ class TestDocGen(BaseArgProcessTest):
         cli_argument = CustomArgument('test', argument_model=argument_model)
 
         generated_example = self.get_generated_example_for(cli_argument)
-        self.assertIn('Key value pairs', generated_example)
-        self.assertIn('Consistent=boolean1,Args=string1,string2',
+        self.assertIn('Consistent=boolean,Args=string,string',
                       generated_example)
+
+    def test_can_gen_recursive_structure(self):
+        argument = self.get_param_model('dynamodb.PutItem.Item')
+        generated_example = self.get_generated_example_for(argument)
+
+    def test_can_document_nested_structs(self):
+        argument = self.get_param_model('ec2.RunInstances.BlockDeviceMappings')
+        generated_example = self.get_generated_example_for(argument)
+        self.assertIn('Ebs={SnapshotId=string', generated_example)
+
+    def test_can_document_nested_lists(self):
+        m = model.DenormalizedStructureBuilder().with_members({
+            'A': {
+                'type': 'list',
+                'member': {
+                    'type': 'list',
+                    'member': {'type': 'string'},
+                },
+            },
+        }).build_model()
+        generated_example = self.shorthand_documenter.generate_shorthand_example(
+            '--foo', m)
+        self.assertIn('A=[[string,string],[string,string]]', generated_example)
+
+    def test_can_generated_nested_maps(self):
+        m = model.DenormalizedStructureBuilder().with_members({
+            'A': {
+                'type': 'map',
+                'key': {'type': 'string'},
+                'value': {'type': 'string'}
+            },
+        }).build_model()
+        generated_example = self.shorthand_documenter.generate_shorthand_example(
+            '--foo', m)
+        self.assertIn('A={KeyName1=string,KeyName2=string}', generated_example)
+
+    def test_can_document_recursive_struct(self):
+        # It's a little more work to set up a recursive
+        # shape because DenormalizedStructureBuilder cannot handle
+        # recursion.
+        struct_shape = {
+            'type': 'structure',
+            'members': {
+                'Recurse': {'shape': 'SubShape'},
+                'Scalar': {'shape': 'String'},
+            }
+        }
+        shapes = {
+            'Top': struct_shape,
+            'String': {'type': 'string'},
+            'SubShape': {
+                'type': 'structure',
+                'members': {
+                    'SubRecurse': {'shape': 'Top'},
+                    'Scalar': {'shape': 'String'},
+                },
+            }
+        }
+        m = model.StructureShape(
+            shape_name='Top',
+            shape_model=struct_shape,
+            shape_resolver=model.ShapeResolver(shapes))
+        generated_example = self.shorthand_documenter.generate_shorthand_example(
+            '--foo', m)
+        self.assertIn(
+            'Scalar=string,Recurse='
+            '{Scalar=string,SubRecurse={Scalar=string,( ... recursive ... )}}',
+            generated_example)
+
+    def test_skip_deeply_nested_shorthand(self):
+        # The eventual goal is to have a better way to document
+        # deeply nested shorthand params, but for now, we'll
+        # only document shorthand params up to a certain stack level.
+        m = model.DenormalizedStructureBuilder().with_members({
+            'A': {
+                'type': 'structure',
+                'members': {
+                    'B': {
+                        'type': 'structure',
+                        'members': {
+                            'C': {
+                                'type': 'structure',
+                                'members': {
+                                    'D': {'type': 'string'},
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+        }).build_model()
+        generated_example = self.shorthand_documenter.generate_shorthand_example(
+            '--foo', m)
+        self.assertEqual(generated_example, '')
 
 
 class TestUnpackJSONParams(BaseArgProcessTest):

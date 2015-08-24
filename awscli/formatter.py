@@ -20,7 +20,7 @@ from botocore.paginate import PageIterator
 from awscli.table import MultiTable, Styler, ColorizedStyler
 from awscli import text
 from awscli import compat
-from awscli.utils import json_encoder
+from awscli.utils import json_encoder, six
 
 
 LOG = logging.getLogger(__name__)
@@ -94,6 +94,24 @@ class JSONFormatter(FullyBufferedFormatter):
         if response:
             json.dump(response, stream, indent=4, default=json_encoder,
                       ensure_ascii=False)
+            stream.write('\n')
+
+
+class CountFormatter(FullyBufferedFormatter):
+
+    def _format_response(self, command_name, response, stream):
+        if response:
+            if type(response) is list:
+                length = len(response)
+                stream.write(str(length))
+                stream.write('\n')
+            elif type(response) is dict:
+                response_keys = six.next(six.iterkeys(response))
+                length = len(response[response_keys])
+                stream.write(str(length))
+                stream.write('\n')
+        else:
+            stream.write('0')
             stream.write('\n')
 
 
@@ -269,4 +287,6 @@ def get_formatter(format_type, args):
         return TextFormatter(args)
     elif format_type == 'table':
         return TableFormatter(args)
+    elif format_type == 'count':
+        return CountFormatter(args)
     raise ValueError("Unknown output type: %s" % format_type)

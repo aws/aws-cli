@@ -80,6 +80,7 @@ The valid values of the ``output`` configuration variable are:
 * json
 * table
 * text
+* count
 
 When you specify a profile, either using ``--profile profile-name`` or by
 setting a value for the ``AWS_DEFAULT_PROFILE`` environment variable, profile

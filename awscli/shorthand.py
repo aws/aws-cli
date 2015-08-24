@@ -374,13 +374,6 @@ class BackCompatVisitor(ModelVisitor):
             # "foo=bar", but "bar" should really be ["bar"].
             if value is not None:
                 parent[name] = [value]
-        elif shape.member.type_name == 'structure' and \
-                len(shape.member.members) == 1:
-            element_name = list(shape.member.members.keys())[0]
-            new_values = []
-            for v in value:
-                new_values.append({element_name: v})
-            parent[name] = new_values
         else:
             return super(BackCompatVisitor, self)._visit_list(
                 parent, shape, name, value)

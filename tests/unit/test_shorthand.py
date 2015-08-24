@@ -181,26 +181,6 @@ class TestModelVisitor(unittest.TestCase):
         b.visit(params, m)
         self.assertEqual(params, {'A': ['foo']})
 
-    def test_promote_list_of_scalars_to_single_struct(self):
-        m = model.DenormalizedStructureBuilder().with_members({
-            'A': {
-                'type': 'list',
-                'member': {
-                    'type': 'structure',
-                    'members': {
-                        'Single': {'type': 'string'}
-                    },
-                },
-            },
-        }).build_model()
-        b = shorthand.BackCompatVisitor()
-
-        params = {'A': ['a', 'b', 'c']}
-        b.visit(params, m)
-        self.assertEqual(params, {'A': [{'Single': 'a'},
-                                        {'Single': 'b'},
-                                        {'Single': 'c'},]})
-
     def test_dont_promote_list_if_none_value(self):
         m = model.DenormalizedStructureBuilder().with_members({
             'A': {

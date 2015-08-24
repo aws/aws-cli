@@ -39,7 +39,6 @@ necessary to maintain backwards compatibility.  This is done in the
 
 """
 import re
-import decimal
 import string
 
 
@@ -385,7 +384,7 @@ class BackCompatVisitor(ModelVisitor):
         if type_name in ['integer', 'long']:
             parent[name] = int(value)
         elif type_name in ['double', 'float']:
-            parent[name] = decimal.Decimal(value)
+            parent[name] = float(value)
         elif type_name == 'boolean':
             # We want to make sure we only set a value
             # only if "true"/"false" is specified.

@@ -213,7 +213,7 @@ class TestModelVisitor(unittest.TestCase):
         b.visit(params, m)
         self.assertEqual(
             params,
-            {'A': 24, 'B': '24', 'C': decimal.Decimal('24.12345'),
+            {'A': 24, 'B': '24', 'C': float('24.12345'),
              'D': True, 'E': False})
 
     def test_empty_values_not_added(self):

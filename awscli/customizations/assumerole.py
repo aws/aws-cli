@@ -1,16 +1,16 @@
-from datetime import datetime
-import getpass
-import json
-import logging
 import os
 import time
+import json
+import logging
+import getpass
+
+from dateutil.parser import parse
+from datetime import datetime
+from dateutil.tz import tzlocal
 
 from botocore import credentials
 from botocore.compat import total_seconds
-from botocore.credentials import InstanceMetadataProvider, Credentials
-from botocore.utils import InstanceMetadataFetcher
-from dateutil.parser import parse
-from dateutil.tz import tzlocal
+from botocore.exceptions import PartialCredentialsError
 
 
 LOG = logging.getLogger(__name__)
@@ -138,8 +138,7 @@ class AssumeRoleProvider(credentials.CredentialProvider):
     EXPIRY_WINDOW_SECONDS = 60 * 15
 
     def __init__(self, load_config, client_creator, cache, profile_name,
-                 prompter=getpass.getpass, 
-                 fallback_cred_provider=None):
+                 prompter=getpass.getpass):
         """
 
         :type load_config: callable
@@ -172,12 +171,6 @@ class AssumeRoleProvider(credentials.CredentialProvider):
         self._profile_name = profile_name
         self._cache = cache
         self._prompter = prompter
-        if fallback_cred_provider==None:
-            self._fallback_cred_provider=InstanceMetadataProvider(
-              iam_role_fetcher=InstanceMetadataFetcher())
-        else:
-            self._fallback_cred_provider = fallback_cred_provider
-        
         # The _loaded_config attribute will be populated from the
         # load_config() function once the configuration is actually
         # loaded.  The reason we go through all this instead of just
@@ -188,7 +181,6 @@ class AssumeRoleProvider(credentials.CredentialProvider):
         self._loaded_config = {}
 
     def load(self):
-        LOG.debug("Attempting load from assume role provider")
         self._loaded_config = self._load_config()
         if self._has_assume_role_config_vars():
             return self._load_creds_via_assume_role()
@@ -250,40 +242,29 @@ class AssumeRoleProvider(credentials.CredentialProvider):
     def _get_role_config_values(self):
         # This returns the role related configuration.
         profiles = self._loaded_config.get('profiles', {})
-        role_profile=profiles[self._profile_name];
-        
-        source_profile = role_profile.get('source_profile')
-        role_arn = role_profile['role_arn']
-        mfa_serial = role_profile.get('mfa_serial')
-        external_id = role_profile.get('external_id')
-        role_session_name = role_profile.get('role_session_name')
-        
-        return {
-            'role_arn': role_arn,
-            'external_id': external_id,
-            'source_profile': source_profile,
-            'mfa_serial': mfa_serial,
-            'role_session_name': role_session_name
-        }
-        
-    def _get_source_profile_credentials(self,source_profile):
-        profiles = self._loaded_config.get('profiles', {})
-        if source_profile == None :
-            return self._fallback_cred_provider.load() 
-
+        try:
+            source_profile = profiles[self._profile_name]['source_profile']
+            role_arn = profiles[self._profile_name]['role_arn']
+            mfa_serial = profiles[self._profile_name].get('mfa_serial')
+        except KeyError as e:
+            raise PartialCredentialsError(provider=self.METHOD,
+                                          cred_var=str(e))
+        external_id = profiles[self._profile_name].get('external_id')
+        role_session_name = profiles[self._profile_name].get('role_session_name')
         if source_profile not in profiles:
             raise InvalidConfigError(
                 'The source_profile "%s" referenced in '
                 'the profile "%s" does not exist.' % (
                     source_profile, self._profile_name))
-
-        access_key_id=profiles[source_profile]['aws_access_key_id']
-        secret_key=profiles[source_profile]['aws_secret_access_key']
-        session_token=profiles[source_profile].get('aws_session_token')
-        return Credentials(
-            access_key=access_key_id,
-            secret_key=secret_key,
-            token=session_token)
+        source_cred_values = profiles[source_profile]
+        return {
+            'role_arn': role_arn,
+            'external_id': external_id,
+            'source_profile': source_profile,
+            'mfa_serial': mfa_serial,
+            'source_cred_values': source_cred_values,
+            'role_session_name': role_session_name
+        }
 
     def _create_creds_from_response(self, response):
         config = self._get_role_config_values()
@@ -305,12 +286,11 @@ class AssumeRoleProvider(credentials.CredentialProvider):
             refresh_using=refresh_func)
 
     def _create_client_from_config(self, config):
-        source_profile=config['source_profile'];
-        creds=self._get_source_profile_credentials(source_profile);
+        source_cred_values = config['source_cred_values']
         client = self._client_creator(
-            'sts', aws_access_key_id=creds.access_key,
-            aws_secret_access_key=creds.secret_key,
-            aws_session_token=creds.token,
+            'sts', aws_access_key_id=source_cred_values['aws_access_key_id'],
+            aws_secret_access_key=source_cred_values['aws_secret_access_key'],
+            aws_session_token=source_cred_values.get('aws_session_token'),
         )
         return client
 

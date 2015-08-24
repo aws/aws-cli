@@ -18,13 +18,11 @@ from datetime import datetime, timedelta
 
 import mock
 from botocore.hooks import HierarchicalEmitter
-from botocore.credentials import Credentials
-
+from botocore.exceptions import PartialCredentialsError
 from dateutil.tz import tzlocal
 
 from awscli.testutils import unittest
 from awscli.customizations import assumerole
-
 
 
 class TestAssumeRolePlugin(unittest.TestCase):
@@ -311,44 +309,13 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
 
     def test_source_profile_not_provided(self):
         del self.fake_config['profiles']['development']['source_profile']
-
-        
-        fallback_creds=Credentials(
-            access_key='access-fallback',
-            secret_key='secret-fallback',
-            token='token-fallback')
-
-        mock_fallback_provider=mock.Mock()
-        mock_fallback_provider.load.return_value=fallback_creds
-        
-        response = {
-            'Credentials': {
-                'AccessKeyId': 'AKI',
-                'SecretAccessKey': 'SAK',
-                'SessionToken': 'ST',
-                'Expiration': datetime.now(tzlocal()).isoformat()
-            },
-        }
-        client = mock.Mock()
-        client.assume_role.return_value = response
-        def side_effect_of_create_client(*args,**kwargs):
-            self.assertEqual(args[0],'sts')
-            self.assertEqual(kwargs['aws_access_key_id'],'access-fallback')
-            self.assertEqual(kwargs['aws_secret_access_key'],'secret-fallback')
-            self.assertEqual(kwargs['aws_session_token'],'token-fallback')
-            return client;
-        
-        client_creator=mock.Mock(side_effect=side_effect_of_create_client)
-    
         provider = assumerole.AssumeRoleProvider(
             self.create_config_loader(),
-            client_creator, cache={}, profile_name='development', 
-            fallback_cred_provider=mock_fallback_provider)
+            mock.Mock(), cache={}, profile_name='development')
 
-        credentials=provider.load()
-        self.assertEqual(credentials.access_key, 'AKI')
-        self.assertEqual(credentials.secret_key, 'SAK')
-        self.assertEqual(credentials.token, 'ST')
+        # source_profile is required, we shoudl get an error.
+        with self.assertRaises(PartialCredentialsError):
+            provider.load()
 
     def test_source_profile_does_not_exist(self):
         dev_profile = self.fake_config['profiles']['development']

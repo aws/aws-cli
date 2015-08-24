@@ -233,7 +233,12 @@ class AssumeRoleProvider(credentials.CredentialProvider):
         # On windows, ':' is not allowed in filenames, so we'll
         # replace them with '_' instead.
         role_arn = role_config['role_arn'].replace(':', '_')
-        cache_key = '%s--%s' % (self._profile_name, role_arn)
+        role_session_name=role_config.get('role_session_name')
+        if role_session_name:
+            cache_key = '%s--%s--%s' % (self._profile_name, role_arn, role_session_name)
+        else:
+            cache_key = '%s--%s' % (self._profile_name, role_arn)
+
         return cache_key.replace('/', '-')
 
     def _write_cached_credentials(self, creds, cache_key):

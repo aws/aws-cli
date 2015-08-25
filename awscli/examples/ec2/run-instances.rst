@@ -173,23 +173,38 @@ Command::
 
 **To launch an instance using a block device mapping**
 
-Add the following parameter to your ``run-instances`` command to add an Amazon EBS volume with the device name ``/dev/sdh`` and a volume size of 100.
+Add the following parameter to your ``run-instances`` command to specify block devices::
 
-Command::
+  --block-device-mappings file://mapping.json
 
-  --block-device-mappings "[{\"DeviceName\": \"/dev/sdh\",\"Ebs\":{\"VolumeSize\":100}}]"
+To add an Amazon EBS volume with the device name ``/dev/sdh`` and a volume size of 100, specify the following in mapping.json::
 
-Add the following parameter to your ``run-instances`` command to add ``ephemeral1`` as an instance store volume with the device name ``/dev/sdc``.
+  [
+    {
+      "DeviceName": "/dev/sdh",
+      "Ebs": {
+        "VolumeSize": 100
+      }
+    }
+  ]
 
-Command::
+To add ``ephemeral1`` as an instance store volume with the device name ``/dev/sdc``, specify the following in mapping.json::
 
-  --block-device-mappings "[{\"DeviceName\": \"/dev/sdc\",\"VirtualName\":\"ephemeral1\"}]"
+  [
+    {
+      "DeviceName": "/dev/sdc",
+      "VirtualName": "ephemeral1"
+    }
+  ]
 
-Add the following parameter to your ``run-instances`` command to omit a device specified by the AMI used to launch the instance (for example, ``/dev/sdf``).
+To omit a device specified by the AMI used to launch the instance (for example, ``/dev/sdf``), specify the following in mapping.json::
 
-Command::
-
-  --block-device-mappings "[{\"DeviceName\": \"/dev/sdf\",\"NoDevice\":\"\"}]"
+  [
+    {
+      "DeviceName": "/dev/sdf",
+      "NoDevice": ""
+    }
+  ]
 
 You can view only the Amazon EBS volumes in your block device mapping using the console or the ``describe-instances`` command. To view all volumes, including the instance store volumes, use the following command.
 
@@ -216,9 +231,7 @@ Output::
 
 You can change individual characteristics of existing AMI block device mappings to suit your needs. Perhaps you want to use an existing AMI, but you want a larger root volume than the usual 8 GiB. Or, you would like to use a General Purpose (SSD) volume for an AMI that currently uses a Magnetic volume.
 
-Use the ``describe-images`` command with the image ID of the AMI you want to use to find its existing block device mapping. You should see a block device mapping in the output.
-
-Output::
+Use the ``describe-images`` command with the image ID of the AMI you want to use to find its existing block device mapping. You should see a block device mapping in the output::
 
   {
     "DeviceName": "/dev/sda1",
@@ -231,11 +244,23 @@ Output::
     }
   }
 
-You can modify the above mapping by changing the individual parameters. For example, to launch an instance with a modified block device mapping, add the following parameter to your ``run-instances`` command to change the above mapping's volume size and type.
+You can modify the above mapping by changing the individual parameters. For example, to launch an instance with a modified block device mapping, add the following parameter to your ``run-instances`` command to change the above mapping's volume size and type::
 
-Command::
+  --block-device-mappings file://mapping.json
 
-  --block-device-mappings "[{\"DeviceName\":\"/dev/sda1\",\"Ebs\":{\"DeleteOnTermination\":true,\"SnapshotId\":\"snap-b047276d\",\"VolumeSize\":100,\"VolumeType\":\"gp2\"}}]"
+Where mapping.json contains the following::
+
+  [
+    {
+      "DeviceName": "/dev/sda1",
+      "Ebs": {
+        "DeleteOnTermination": true,
+        "SnapshotId": "snap-b047276d", 
+        "VolumeSize": 100,
+        "VolumeType": "gp2"
+      }
+    }
+  ]
 
 For more information about launching instances, see `Using Amazon EC2 Instances`_ in the *AWS Command Line Interface User Guide*.
 

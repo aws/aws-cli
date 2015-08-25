@@ -4,7 +4,17 @@ This example command creates a Spot Instance request for five instances in a def
 
 Command::
 
-  aws ec2 request-spot-instances --spot-price "0.050" --instance-count 5 --type "one-time" --launch-specification {\"ImageId\":\"ami-1a2b3c4d\",\"InstanceType\":"t1.micro\",\"Placement\":{\"AvailabilityZone\":\"us-west-2a\"}}
+  aws ec2 request-spot-instances --spot-price "0.050" --instance-count 5 --type "one-time" --launch-specification file://specification.json
+
+Specification.json::
+  
+  {
+    "ImageId": "ami-1a2b3c4d",
+    "InstanceType": "t1.micro",
+    "Placement": {
+      "AvailabilityZone": "us-west-2a"
+    }
+  }
 
 Output::
 
@@ -47,7 +57,15 @@ This example command creates a Spot Instance request for five instances in a non
 
 Command::
 
-  aws ec2 request-spot-instances --spot-price "0.050" --instance-count 5 --type "one-time" --launch-specification {\"ImageId\":\"ami-a43909e1\",\"InstanceType\":"t2.micro\",\"SubnetId\":\"subnet-d50bfebc\"}
+  aws ec2 request-spot-instances --spot-price "0.050" --instance-count 5 --type "one-time" --launch-specification file://specification.json
+  
+Specification.json::
+
+   {
+     "ImageId": "ami-a43909e1",
+     "InstanceType": "t2.micro",
+     "SubnetId": "subnet-d50bfebc"
+   }
 
 Output::
 
@@ -87,8 +105,22 @@ Output::
     ]
   }
 
-To assign a public IP address to the Spot Instances that you launch in a nondefault VPC, use the following command: 
+This example assigns a public IP address to the Spot Instances that you launch in a nondefault VPC.
 
 Command::
 
-  aws ec2 request-spot-instances --spot-price "0.050" --instance-count 1 --type "one-time" --launch-specification "{\"ImageId\":\"ami-e7527ed7\",\"InstanceType\":\"m3.medium\",\"NetworkInterfaces\":[{\"DeviceIndex\":0,\"SubnetId\":\"subnet-e4f33493\",\"AssociatePublicIpAddress\":true}]}"
+  aws ec2 request-spot-instances --spot-price "0.050" --instance-count 1 --type "one-time" --launch-specification file://specification.json
+
+Specification.json::
+  
+  {
+    "ImageId": "ami-e7527ed7",
+    "InstanceType": "m3.medium",
+    "NetworkInterfaces": [
+      {
+        "DeviceIndex": 0,
+        "SubnetId": "subnet-e4f33493",
+        "AssociatePublicIpAddress": true
+      }
+    ]
+  }

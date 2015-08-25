@@ -1,28 +1,32 @@
 **To create a new environment for an application**
 
-The following command creates a new environment for version "v1" of a java application named "myApp"::
+The following command creates a new environment for version "v1" of a java application named "my-app"::
 
-  $ aws elasticbeanstalk create-environment --application-name myApp --environment-name myAppEnv --cname-prefix myApp --version-label v1 --solution-stack-name "64bit Amazon Linux running Tomcat 7"
+  aws elasticbeanstalk create-environment --application-name my-app --environment-name my-env --cname-prefix my-app --version-label v1 --solution-stack-name "64bit Amazon Linux 2015.03 v2.0.0 running Tomcat 8 Java 8"
 
 Output::
 
   {
-    "ApplicationName": "myApp",
+    "ApplicationName": "my-app",
     "EnvironmentName": "myAppEnv",
     "VersionLabel": "v1",
     "Status": "Launching",
     "EnvironmentId": "e-izqpassy4h",
-    "SolutionStackName": "64bit Amazon Linux running Tomcat 7",
-    "CNAME": "myApp.elasticbeanstalk.com",
+    "SolutionStackName": "64bit Amazon Linux 2015.03 v2.0.0 running Tomcat 8 Java 8",
+    "CNAME": "my-app.elasticbeanstalk.com",
     "Health": "Grey",
     "Tier": {
-        "Version": " ",
         "Type": "Standard",
         "Name": "WebServer"
+        "Version": " ",
     },
     "DateUpdated": "2015-02-03T23:04:54.479Z",
     "DateCreated": "2015-02-03T23:04:54.479Z"
   }
+
+``v1`` is the label of an application version previously updloaded with `create-application-version`_.
+
+.. _`create-application-version`: http://docs.aws.amazon.com/cli/latest/reference/elasticbeanstalk/create-application-version.html
 
 **To specify a JSON file to define environment configuration options**
 

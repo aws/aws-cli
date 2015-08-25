@@ -86,6 +86,11 @@ class CodeArgument(CLIArgument):
         if value is None:
             return
         unpacked = self._unpack_argument(value)
+        if 'ZipFile' in unpacked:
+            raise ValueError("ZipFile cannot be provided "
+                             "as part of the --code argument.  "
+                             "Please use the '--zip-file' "
+                             "option instead to specify a zip file.")
         if parameters.get('Code'):
             parameters['Code'].update(unpacked)
         else:

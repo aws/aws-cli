@@ -10,7 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import decimal
+
 from awscli import shorthand
+from awscli.testutils import unittest
+
+from botocore import model
+
 from nose.tools import assert_equal
 
 
@@ -52,6 +58,7 @@ def test_parse():
            {'foo': ['a', 'b', 'c']})
     yield (_can_parse, 'foo  =  [ a , b  , c  ]',
            {'foo': ['a', 'b', 'c']})
+    yield (_can_parse, 'foo=[,,]', {'foo': ['', '']})
 
     # Single quoted strings.
     yield (_can_parse, "foo='bar'", {"foo": "bar"})
@@ -77,6 +84,15 @@ def test_parse():
            {'foo': ['bar', '--option=bar space']})
     yield (_can_parse, 'foo="bar\\"baz"', {'foo': 'bar"baz'})
     yield (_can_parse, 'foo="bar\\\\baz"', {'foo': 'bar\\baz'})
+
+    # Can escape comma in CSV list.
+    yield (_can_parse, 'foo=a\\,b', {"foo": "a,b"})
+    yield (_can_parse, 'foo=a\\,b', {"foo": "a,b"})
+    yield (_can_parse, 'foo=a\\,', {"foo": "a,"})
+    yield (_can_parse, 'foo=\\,', {"foo": ","})
+    yield (_can_parse, 'foo=a,b\\,c', {"foo": ['a', 'b,c']})
+    yield (_can_parse, 'foo=a,b\\,', {"foo": ['a', 'b,']})
+    yield (_can_parse, 'foo=a,\\,bc', {"foo": ['a', ',bc']})
 
     # Ignores whitespace around '=' and ','
     yield (_can_parse, 'foo= bar', {'foo': 'bar'})
@@ -130,6 +146,7 @@ def test_error_parsing():
     yield (_is_error, "foo={bar")
     yield (_is_error, "foo={bar}")
     yield (_is_error, "foo={bar=bar")
+    yield (_is_error, "foo=bar,")
 
 
 def _is_error(expr):
@@ -137,6 +154,10 @@ def _is_error(expr):
         shorthand.ShorthandParser().parse(expr)
     except shorthand.ShorthandParseError:
         pass
+    except Exception as e:
+        raise AssertionError(
+            "Expected ShorthandParseError, but received unexpected "
+            "exception instead (%s): %s" % (e.__class__, e))
     else:
         raise AssertionError("Expected ShorthandParseError, but no "
                             "exception was raised for expression: %s" % expr)
@@ -144,3 +165,63 @@ def _is_error(expr):
 def _can_parse(data, expected):
     actual = shorthand.ShorthandParser().parse(data)
     assert_equal(actual, expected)
+
+
+class TestModelVisitor(unittest.TestCase):
+    def test_promote_to_list_of_ints(self):
+        m = model.DenormalizedStructureBuilder().with_members({
+            'A': {
+                'type': 'list',
+                'member': {'type': 'string'}
+            },
+        }).build_model()
+        b = shorthand.BackCompatVisitor()
+
+        params = {'A': 'foo'}
+        b.visit(params, m)
+        self.assertEqual(params, {'A': ['foo']})
+
+    def test_dont_promote_list_if_none_value(self):
+        m = model.DenormalizedStructureBuilder().with_members({
+            'A': {
+                'type': 'list',
+                'member': {
+                    'type': 'structure',
+                    'members': {
+                        'Single': {'type': 'string'}
+                    },
+                },
+            },
+        }).build_model()
+        b = shorthand.BackCompatVisitor()
+        params = {}
+        b.visit(params, m)
+        self.assertEqual(params, {})
+
+    def test_can_convert_scalar_types_from_string(self):
+        m = model.DenormalizedStructureBuilder().with_members({
+            'A': {'type': 'integer'},
+            'B': {'type': 'string'},
+            'C': {'type': 'float'},
+            'D': {'type': 'boolean'},
+            'E': {'type': 'boolean'},
+        }).build_model()
+        b = shorthand.BackCompatVisitor()
+
+        params = {'A': '24', 'B': '24', 'C': '24.12345',
+                  'D': 'true', 'E': 'false'}
+        b.visit(params, m)
+        self.assertEqual(
+            params,
+            {'A': 24, 'B': '24', 'C': float('24.12345'),
+             'D': True, 'E': False})
+
+    def test_empty_values_not_added(self):
+        m = model.DenormalizedStructureBuilder().with_members({
+            'A': {'type': 'boolean'},
+        }).build_model()
+        b = shorthand.BackCompatVisitor()
+
+        params = {}
+        b.visit(params, m)
+        self.assertEqual(params, {})

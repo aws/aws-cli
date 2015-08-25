@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``aws codepipeline``: Add support for specification of an
+  encryption key to use with the artifact bucket, when creating and updating
+  a pipeline
+
+
 1.7.46
 ======
 

@@ -233,22 +233,23 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
     def test_call_parameters(self, call_patch):
         cmdline = self.prefix + ' --region eu-west-1' + ' --no-verify-ssl'
         self.run_cmd(cmdline, expected_rc=0)
-        self.assertEquals(call_patch.call_args[0][1], 'eu-west-1')
-        self.assertEquals(call_patch.call_args[0][3], False)
+        self.assertEquals(call_patch.call_args[1]['region_name'], 'eu-west-1')
+        self.assertEquals(call_patch.call_args[1]['verify'], False)
 
     @mock.patch('botocore.session.Session.create_client')
     def test_call_parameters_only_endpoint(self, call_patch):
         endpoint_arg = 'https://elasticmapreduce.us-unknown-1.amazonaws.com'
         cmdline = self.prefix + ' --endpoint ' + endpoint_arg
         self.run_cmd(cmdline, expected_rc=0)
-        self.assertEquals(call_patch.call_args[0][2], None)
+        self.assertEquals(call_patch.call_args[1]['endpoint_url'], None)
 
     @mock.patch('botocore.session.Session.create_client')
     def test_call_parameters_only_iam_endpoint(self, call_patch):
         endpoint_arg = 'https://elasticmapreduce.us-unknown-1.amazonaws.com'
         cmdline = self.prefix + ' --iam-endpoint ' + endpoint_arg
         self.run_cmd(cmdline, expected_rc=0)
-        self.assertEquals(call_patch.call_args[0][2], endpoint_arg)
+        self.assertEquals(call_patch.call_args[1]['endpoint_url'],
+                          endpoint_arg)
 
     @mock.patch('awscli.customizations.emr.emr.'
                 'CreateDefaultRoles._get_role_policy')

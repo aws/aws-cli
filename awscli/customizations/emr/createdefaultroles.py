@@ -298,6 +298,6 @@ class CreateDefaultRoles(Command):
 
     def _call_iam_operation(self, operation_name, parameters, parsed_globals):
         client = self._session.create_client(
-            'iam', self.region, self.iam_endpoint_url,
-            parsed_globals.verify_ssl)
+            'iam', region_name=self.region, endpoint_url=self.iam_endpoint_url,
+            verify=parsed_globals.verify_ssl)
         return getattr(client, xform_name(operation_name))(**parameters)

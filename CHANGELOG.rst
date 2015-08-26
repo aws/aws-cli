@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws emr create-default-roles``: Fix the issue where the command
+  would fail to honor an existing AWS_CA_BUNDLE environment setting and end up
+  with "SSLError: object has no attribute"
+  (`issue 1468 <https://github.com/aws/aws-cli/pull/1468>`__)
+
+
 1.7.47
 ======
 

@@ -368,18 +368,8 @@ class ParamShorthand(object):
 class ParamShorthandDocGen(object):
     """Documentation generator for param shorthand syntax."""
 
-    SHORTHAND_SHAPES = {
-        'structure(scalars)': '_key_value_parse',
-        'structure(scalar)': '_special_key_value_parse',
-        'structure(list-scalar, scalar)': '_struct_scalar_list_parse',
-        'map-scalar': '_key_value_parse',
-        'list-structure(scalar)': '_list_scalar_parse',
-        'list-structure(scalars)': '_list_key_value_parse',
-        'list-structure(list-scalar, scalar)': '_list_scalar_list_parse',
-    }
     _DONT_DOC = object()
     _MAX_STACK = 3
-
 
     def supports_shorthand(self, argument_model):
         """Checks if a CLI argument supports shorthand syntax."""

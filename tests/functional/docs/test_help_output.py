@@ -137,7 +137,7 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.driver.main(['ec2', 'run-instances', 'help'])
         self.assert_contains('``--iam-instance-profile``')
         self.assert_contains('Shorthand Syntax')
-        self.assert_contains('--iam-instance-profile Arn=value,Name=value')
+        self.assert_contains('Arn=string,Name=string')
 
     def test_required_args_come_before_optional_args(self):
         self.driver.main(['ec2', 'run-instances', 'help'])
@@ -298,7 +298,7 @@ class TestStructureScalarHasNoExamples(BaseAWSHelpOutputTest):
         # (single element named "Value"), then we still document
         # the example syntax.
         self.driver.main(['s3api', 'restore-object', 'help'])
-        self.assert_contains('Days=value')
+        self.assert_contains('Days=integer')
         # Also should see the JSON syntax in the help output.
         self.assert_contains('"Days": integer')
 

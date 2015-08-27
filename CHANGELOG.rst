@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.8.0
+=====
 
 * feature:``aws configservice``: Add support for listing discovered resources
 * bugfix:``aws emr create-default-roles``: Fix the issue where the command

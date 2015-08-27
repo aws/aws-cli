@@ -9,6 +9,9 @@ Next Release (TBD)
   would fail to honor an existing AWS_CA_BUNDLE environment setting and end up
   with "SSLError: object has no attribute"
   (`issue 1468 <https://github.com/aws/aws-cli/pull/1468>`__)
+* feature:Shorthand Syntax: Add support for nested hashes when using
+  shorthand syntax
+  (`issue 1444 <https://github.com/aws/aws-cli/pull/1444>`__)
 
 
 1.7.47

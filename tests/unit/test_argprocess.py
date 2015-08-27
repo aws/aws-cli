@@ -575,6 +575,40 @@ class TestDocGen(BaseArgProcessTest):
             '--foo', m)
         self.assertIn('A={KeyName1=string,KeyName2=string}', generated_example)
 
+    def test_list_of_structures_with_triple_dots(self):
+        list_shape = {
+            'type': 'list',
+            'member': {'shape': 'StructShape'},
+        }
+        shapes = {
+            'Top': list_shape,
+            'String': {'type': 'string'},
+            'StructShape': {
+                'type': 'structure',
+                'members': OrderedDict([
+                    ('A', {'shape': 'String'}),
+                    ('B', {'shape': 'String'}),
+                ])
+            }
+        }
+        m = model.ListShape(
+            shape_name='Top',
+            shape_model=list_shape,
+            shape_resolver=model.ShapeResolver(shapes))
+        generated_example = self.shorthand_documenter.generate_shorthand_example(
+            '--foo', m)
+        self.assertIn('A=string,B=string ...', generated_example)
+
+    def test_handle_special_case_value_struct_not_documented(self):
+        m = model.DenormalizedStructureBuilder().with_members({
+            'Value': {'type': 'string'}
+        }).build_model()
+        generated_example = self.shorthand_documenter.generate_shorthand_example(
+            '--foo', m)
+        # This is one of the special cases, we shouldn't generate any
+        # shorthand example for this shape.
+        self.assertIsNone(generated_example)
+
     def test_can_document_recursive_struct(self):
         # It's a little more work to set up a recursive
         # shape because DenormalizedStructureBuilder cannot handle

@@ -442,10 +442,7 @@ class ParamShorthandDocGen(object):
             element_docs = self._shorthand_docs(argument_model.member, stack)
         finally:
             stack.pop()
-        if not stack:
-            # Top of the stack means we're a top level shorthand param.
-            return '%s ...' % element_docs
-        elif list_member.type_name in COMPLEX_TYPES or len(stack) > 1:
+        if list_member.type_name in COMPLEX_TYPES or len(stack) > 1:
             return '[%s,%s]' % (element_docs, element_docs)
         else:
             return '%s,%s' % (element_docs, element_docs)

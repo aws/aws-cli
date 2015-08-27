@@ -531,9 +531,12 @@ class TestDocGen(BaseArgProcessTest):
             }
         }
         argument_model = create_argument_model_from_schema(schema)
-        cli_argument = CustomArgument('test', argument_model=argument_model)
-
-        generated_example = self.get_generated_example_for(cli_argument)
+        m = model.DenormalizedStructureBuilder().with_members(OrderedDict([
+            ('Consistent', {'type': 'boolean'}),
+            ('Args', { 'type': 'list', 'member': { 'type': 'string', }}),
+        ])).build_model()
+        generated_example = self.shorthand_documenter.generate_shorthand_example(
+            '--foo', m)
         self.assertIn('Consistent=boolean,Args=string,string',
                       generated_example)
 

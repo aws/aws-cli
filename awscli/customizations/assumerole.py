@@ -60,8 +60,6 @@ def create_assume_role_provider(session, provider_cls):
 
 def create_refresher_function(client, params):
     def refresh():
-        role_session_name = 'AWS-CLI-session-%s' % (int(time.time()))
-        params['RoleSessionName'] = role_session_name
         response = client.assume_role(**params)
         credentials = response['Credentials']
         # We need to normalize the credential names to
@@ -248,6 +246,7 @@ class AssumeRoleProvider(credentials.CredentialProvider):
             source_profile = profiles[self._profile_name]['source_profile']
             role_arn = profiles[self._profile_name]['role_arn']
             mfa_serial = profiles[self._profile_name].get('mfa_serial')
+            role_session_name = profiles[self._profile_name].get('role_session_name')
         except KeyError as e:
             raise PartialCredentialsError(provider=self.METHOD,
                                           cred_var=str(e))
@@ -260,6 +259,7 @@ class AssumeRoleProvider(credentials.CredentialProvider):
         source_cred_values = profiles[source_profile]
         return {
             'role_arn': role_arn,
+            'role_session_name': role_session_name,
             'external_id': external_id,
             'source_profile': source_profile,
             'mfa_serial': mfa_serial,
@@ -300,8 +300,6 @@ class AssumeRoleProvider(credentials.CredentialProvider):
         client = self._create_client_from_config(config)
 
         assume_role_kwargs = self._assume_role_base_kwargs(config)
-        role_session_name = 'AWS-CLI-session-%s' % (int(time.time()))
-        assume_role_kwargs['RoleSessionName'] = role_session_name
 
         response = client.assume_role(**assume_role_kwargs)
         creds = self._create_creds_from_response(response)
@@ -309,6 +307,11 @@ class AssumeRoleProvider(credentials.CredentialProvider):
 
     def _assume_role_base_kwargs(self, config):
         assume_role_kwargs = {'RoleArn': config['role_arn']}
+        if config['role_session_name'] is None:
+            role_session_name = 'AWS-CLI-session-%s' % (int(time.time()))
+            assume_role_kwargs['RoleSessionName']=role_session_name
+        else:
+            assume_role_kwargs['RoleSessionName']=config['role_session_name']
         if config['external_id'] is not None:
             assume_role_kwargs['ExternalId'] = config['external_id']
         if config['mfa_serial'] is not None:

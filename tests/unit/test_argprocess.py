@@ -15,6 +15,7 @@ import json
 import mock
 from botocore import xform_name
 from botocore import model
+from botocore.compat import OrderedDict
 
 from awscli.testutils import unittest
 from awscli.testutils import BaseCLIDriverTest
@@ -577,20 +578,20 @@ class TestDocGen(BaseArgProcessTest):
         # recursion.
         struct_shape = {
             'type': 'structure',
-            'members': {
-                'Recurse': {'shape': 'SubShape'},
-                'Scalar': {'shape': 'String'},
-            }
+            'members': OrderedDict([
+                ('Recurse', {'shape': 'SubShape'}),
+                ('Scalar', {'shape': 'String'}),
+            ]),
         }
         shapes = {
             'Top': struct_shape,
             'String': {'type': 'string'},
             'SubShape': {
                 'type': 'structure',
-                'members': {
-                    'SubRecurse': {'shape': 'Top'},
-                    'Scalar': {'shape': 'String'},
-                },
+                'members': OrderedDict([
+                    ('SubRecurse', {'shape': 'Top'}),
+                    ('Scalar', {'shape': 'String'}),
+                ]),
             }
         }
         m = model.StructureShape(
@@ -600,8 +601,8 @@ class TestDocGen(BaseArgProcessTest):
         generated_example = self.shorthand_documenter.generate_shorthand_example(
             '--foo', m)
         self.assertIn(
-            'Scalar=string,Recurse='
-            '{Scalar=string,SubRecurse={Scalar=string,( ... recursive ... )}}',
+            'Recurse={SubRecurse={( ... recursive ... ),Scalar=string},'
+            'Scalar=string},Scalar=string',
             generated_example)
 
     def test_skip_deeply_nested_shorthand(self):

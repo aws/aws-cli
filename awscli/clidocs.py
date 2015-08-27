@@ -412,24 +412,22 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
                 return
         argument_model = cli_argument.argument_model
         docgen = ParamShorthandDocGen()
-        if docgen.supports_shorthand(cli_argument):
-            # TODO: bcdoc should not know about shorthand syntax. This
-            # should be pulled out into a separate handler in the
-            # awscli.customizations package.
+        if docgen.supports_shorthand(cli_argument.argument_model):
             example_shorthand_syntax = docgen.generate_shorthand_example(
-                cli_argument)
+                cli_argument.cli_name, cli_argument.argument_model)
             if example_shorthand_syntax is None:
                 # If the shorthand syntax returns a value of None,
                 # this indicates to us that there is no example
                 # needed for this param so we can immediately
                 # return.
                 return
-            doc.style.new_paragraph()
-            doc.write('Shorthand Syntax')
-            doc.style.start_codeblock()
-            for example_line in example_shorthand_syntax.splitlines():
-                doc.writeln(example_line)
-            doc.style.end_codeblock()
+            if example_shorthand_syntax:
+                doc.style.new_paragraph()
+                doc.write('Shorthand Syntax')
+                doc.style.start_codeblock()
+                for example_line in example_shorthand_syntax.splitlines():
+                    doc.writeln(example_line)
+                doc.style.end_codeblock()
         if argument_model is not None and argument_model.type_name == 'list' and \
                 argument_model.member.type_name in SCALAR_TYPES:
             # A list of scalars is special.  While you *can* use

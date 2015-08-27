@@ -5,6 +5,7 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* feature:``aws configservice``: Add support for listing discovered resources
 * bugfix:``aws emr create-default-roles``: Fix the issue where the command
   would fail to honor an existing AWS_CA_BUNDLE environment setting and end up
   with "SSLError: object has no attribute"

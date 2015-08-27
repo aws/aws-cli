@@ -15,13 +15,12 @@ import os
 import logging
 from awscli.compat import six
 
-from botocore import xform_name
 from botocore.compat import OrderedDict, json
 
-from awscli import utils
 from awscli import SCALAR_TYPES, COMPLEX_TYPES
 from awscli.paramfile import get_paramfile, ResourceLoadingError
 from awscli.paramfile import PARAMFILE_DISABLED
+from awscli import shorthand
 
 
 LOG = logging.getLogger('awscli.argprocess')
@@ -58,6 +57,10 @@ class ParamUnknownKeyError(Exception):
             "Unknown key '%s', valid choices "
             "are: %s" % (key, valid_keys))
         super(ParamUnknownKeyError, self).__init__(full_message)
+
+
+class TooComplexError(Exception):
+    pass
 
 
 def unpack_argument(session, service_name, operation_name, cli_argument, value):
@@ -233,28 +236,20 @@ def unpack_scalar_cli_arg(argument_model, value, cli_name=''):
         return value
 
 
+def _is_complex_shape(model):
+    if model.type_name not in ['structure', 'list', 'map']:
+        return False
+    elif model.type_name == 'list':
+        if model.member.type_name not in ['structure', 'list', 'map']:
+            return False
+    return True
+
+
 class ParamShorthand(object):
 
-    # To add support for a new shape:
-    #
-    #  * Add it to SHORTHAND_SHAPES below, key is the shape structure
-    #    value is the name of the method to call.
-    #  * Implement parse method.
-    #  * Implement _doc_<parse_method_name>.  This is used to generate
-    #    the docs for this shorthand syntax.
-
-    SHORTHAND_SHAPES = {
-        'structure(scalars)': '_key_value_parse',
-        'structure(scalar)': '_special_key_value_parse',
-        'structure(list-scalar, scalar)': '_struct_scalar_list_parse',
-        'map-scalar': '_key_value_parse',
-        'list-structure(scalar)': '_list_scalar_parse',
-        'list-structure(scalars)': '_list_key_value_parse',
-        'list-structure(list-scalar, scalar)': '_list_scalar_list_parse',
-    }
-
     def __init__(self):
-        pass
+        self._parser = shorthand.ShorthandParser()
+        self._visitor = shorthand.BackCompatVisitor()
 
     def __call__(self, cli_argument, value, **kwargs):
         """Attempt to parse shorthand syntax for values.
@@ -283,28 +278,74 @@ class ParamShorthand(object):
             be raised.
 
         """
-        parse_method = self.get_parse_method_for_param(cli_argument, value)
-        if parse_method is None:
+        if not self._should_parse_as_shorthand(cli_argument, value):
             return
         else:
-            try:
-                LOG.debug("Using %s for param %s", parse_method,
-                          cli_argument.cli_name)
-                parsed = getattr(self, parse_method)(
-                    cli_argument.argument_model, value)
-            except ParamSyntaxError as e:
-                docgen = ParamShorthandDocGen()
-                example_usage = docgen.generate_shorthand_example(cli_argument)
-                raise ParamError(cli_argument.cli_name, "should be: %s" % example_usage)
-            except (ParamError, ParamUnknownKeyError) as e:
-                # The shorthand parse methods don't have the cli_name,
-                # so any ParamError won't have this value.  To accomodate
-                # this, ParamErrors are caught and reraised with the cli_name
-                # injected.
-                raise ParamError(cli_argument.cli_name, str(e))
-            return parsed
+            return self._parse_as_shorthand(cli_argument, value)
 
-    def get_parse_method_for_param(self, cli_argument, value=None):
+    def _parse_as_shorthand(self, cli_argument, value):
+        try:
+            LOG.debug("Parsing param %s as shorthand",
+                        cli_argument.cli_name)
+            handled_value = self._handle_special_cases(cli_argument, value)
+            if handled_value is not None:
+                return handled_value
+            if isinstance(value, list):
+                # Because of how we're using argparse, list shapes
+                # are configured with nargs='+' which means the ``value``
+                # is given to us "conveniently" as a list.  When
+                # this happens we need to parse each list element
+                # individually.
+                parsed = [self._parser.parse(v) for v in value]
+                self._visitor.visit(parsed, cli_argument.argument_model)
+            else:
+                # Otherwise value is just a string.
+                parsed = self._parser.parse(value)
+                self._visitor.visit(parsed, cli_argument.argument_model)
+        except shorthand.ShorthandParseError as e:
+            raise ParamError(cli_argument.cli_name, str(e))
+        except (ParamError, ParamUnknownKeyError) as e:
+            # The shorthand parse methods don't have the cli_name,
+            # so any ParamError won't have this value.  To accomodate
+            # this, ParamErrors are caught and reraised with the cli_name
+            # injected.
+            raise ParamError(cli_argument.cli_name, str(e))
+        return parsed
+
+    def _handle_special_cases(self, cli_argument, value):
+        # We need to handle a few special cases that the previous
+        # parser handled in order to stay backwards compatible.
+        model = cli_argument.argument_model
+        if model.type_name == 'list' and \
+                model.member.type_name == 'structure' and \
+                len(model.member.members) == 1:
+            # First special case is handling a list of structures
+            # of a single element such as:
+            #
+            # --instance-ids id-1 id-2 id-3
+            #
+            # gets parsed as:
+            #
+            # [{"InstanceId": "id-1"}, {"InstanceId": "id-2"},
+            #  {"InstanceId": "id-3"}]
+            key_name = list(model.member.members.keys())[0]
+            new_values = [{key_name: v} for v in value]
+            return new_values
+        elif model.type_name == 'structure' and \
+                len(model.members) == 1 and \
+                'Value' in model.members and \
+                model.members['Value'].type_name == 'string' and \
+                '=' not in value:
+            # Second special case is where a structure of a single
+            # value whose member name is "Value" can be specified
+            # as:
+            # --instance-terminate-behavior shutdown
+            #
+            # gets parsed as:
+            # {"Value": "shutdown"}
+            return {'Value': value}
+
+    def _should_parse_as_shorthand(self, cli_argument, value):
         # We first need to make sure this is a parameter that qualifies
         # for simplification.  The first short-circuit case is if it looks
         # like json we immediately return.
@@ -316,282 +357,123 @@ class ParamShorthand(object):
                 ('[', '{')):
             LOG.debug("Param %s looks like JSON, not considered for "
                       "param shorthand.", cli_argument.py_name)
-            return
-        structure = detect_shape_structure(cli_argument.argument_model)
-        # If this looks like shorthand then we log the detected structure
-        # to help with debugging why the shorthand may not work, for
-        # example list-structure(list-structure(scalars))
-        LOG.debug('Detected structure: {0}'.format(structure))
-        parse_method = self.SHORTHAND_SHAPES.get(structure)
-        return parse_method
-
-    def _get_example_fn(self, param):
-        doc_fn = None
-        shape_structure = detect_shape_structure(param)
-        method = self.SHORTHAND_SHAPES.get(shape_structure)
-        if method:
-            doc_fn = getattr(self, '_docs' + method, None)
-        return doc_fn
-
-    def add_example_fn(self, arg_name, help_command, **kwargs):
-        """
-        Adds a callable to the ``example_fn`` attribute of the parameter
-        if the parameter type is supported by shorthand syntax.  This
-        callable should return a string containing just the example and
-        not any of the ReST formatting that might be required in the docs.
-        """
-        argument = help_command.arg_table[arg_name]
-        model = argument.argument_model
-        LOG.debug('Adding example fn for: %s' % arg_name)
-        doc_fn = self._get_example_fn(model)
-        # XXX: fix this, don't set attributes on argument objects.
-        argument.example_fn = doc_fn
-
-    def _list_scalar_list_parse(self, param, value):
-        # Think something like ec2.DescribeInstances.Filters.
-        # We're looking for key=val1,val2,val3,key2=val1,val2.
-        parsed = []
-
-        for v in value:
-            struct = self._struct_scalar_list_parse(param.member, v)
-            parsed.append(struct)
-
-        return parsed
-
-    def _struct_scalar_list_parse(self, param, value):
-        # Create a mapping of argument name -> argument object
-        args = {}
-        for member_name, arg in param.members.items():
-            # Arg name -> arg object lookup
-            args[member_name] = arg
-
-        parts = self._split_on_commas(value)
-        current_parsed = {}
-        current_key = None
-        for part in parts:
-            current = part.split('=', 1)
-            if len(current) == 2:
-                # This is a key/value pair.
-                current_key = current[0].strip()
-                if current_key not in args:
-                    raise ParamUnknownKeyError(current_key,
-                                               args.keys())
-                current_value = unpack_scalar_cli_arg(args[current_key],
-                                                      current[1].strip())
-                if args[current_key].type_name == 'list':
-                    current_parsed[current_key] = current_value.split(',')
-                else:
-                    current_parsed[current_key] = current_value
-            elif current_key is not None:
-                # This is a value which we associate with the current_key,
-                # so key1=val1,val2
-                #               ^
-                #               |
-                #             val2 is associated with key1.
-                current_value = unpack_scalar_cli_arg(args[current_key],
-                                                      current[0])
-                current_parsed[current_key].append(current_value)
-            else:
-                raise ParamSyntaxError(part)
-
-        return current_parsed
-
-    def _list_scalar_parse(self, param, value):
-        single_param_name = list(param.member.members.keys())[0]
-        parsed = []
-        # We know that value is a list in this case.
-        for v in value:
-            parsed.append({single_param_name: v})
-        return parsed
-
-    def _list_key_value_parse(self, param, value):
-        # param is a list param.
-        # param.member is the struct param.
-        struct_param = param.member
-        parsed = []
-        for v in value:
-            single_struct_param = self._key_value_parse(struct_param, v)
-            parsed.append(single_struct_param)
-        return parsed
-
-    def _special_key_value_parse(self, param, value):
-        # This is a special key value parse that can do the normal
-        # key=value parsing, *but* supports a few additional conveniences
-        # when working with a structure with a single element.
-        # Precondition: param is a shape of structure(scalar)
-        if self._is_special_case_key_value(param, value):
-            # We have an even shorter shorthand syntax for structure
-            # of scalars of a single element with a member name of
-            # 'Value'.
-            return {'Value': value}
-        else:
-            return self._key_value_parse(param, value)
-
-    def _is_special_case_key_value(self, param, value):
-        members = param.members
-        if len(param.members) == 1:
-            if list(members.keys())[0] == 'Value' and \
-                    '=' not in value:
-                return True
-        return False
-
-    def _key_value_parse(self, param, value):
-        # The expected structure is:
-        #  key=value,key2=value
-        # that is, csv key value pairs, where the key and values
-        # are separated by '='.  All of this should be whitespace
-        # insensitive.
-        parsed = OrderedDict()
-        parts = self._split_on_commas(value)
-        valid_names = self._create_name_to_params(param)
-        for part in parts:
-            try:
-                key, value = part.split('=', 1)
-            except ValueError:
-                raise ParamSyntaxError(part)
-            key = key.strip()
-            value = value.strip()
-            if valid_names and key not in valid_names:
-                raise ParamUnknownKeyError(key, valid_names)
-            if valid_names:
-                sub_param = valid_names[key]
-                if sub_param is not None:
-                    # TODO: you are here.  unpack_scalar_cli_arg takes
-                    # the cli_name, but we don't have it.  What are our
-                    # options?
-                    value = unpack_scalar_cli_arg(sub_param, value)
-            parsed[key] = value
-        return parsed
-
-    def _create_name_to_params(self, param):
-        if param.type_name == 'structure':
-            return dict([(member_name, p) for member_name, p
-                         in param.members.items()])
-        elif param.type_name == 'map' and hasattr(param.key, 'enum'):
-            return dict([(v, None) for v in param.key.enum])
-
-    def _split_on_commas(self, value):
-        try:
-            return utils.split_on_commas(value)
-        except ValueError as e:
-            raise ParamSyntaxError(six.text_type(e))
+            return False
+        model = cli_argument.argument_model
+        # The second case is to make sure the argument is sufficiently
+        # complex, that is, it's base type is a complex type *and*
+        # if it's a list, then it can't be a list of scalar types.
+        return _is_complex_shape(model)
 
 
 class ParamShorthandDocGen(object):
     """Documentation generator for param shorthand syntax."""
 
-    SHORTHAND_SHAPES = ParamShorthand.SHORTHAND_SHAPES
+    _DONT_DOC = object()
+    _MAX_STACK = 3
 
-    def supports_shorthand(self, cli_argument):
+    def supports_shorthand(self, argument_model):
         """Checks if a CLI argument supports shorthand syntax."""
-        if cli_argument.argument_model is not None:
-            structure = detect_shape_structure(cli_argument.argument_model)
-            return structure in self.SHORTHAND_SHAPES
+        if argument_model is not None:
+            return _is_complex_shape(argument_model)
         return False
 
-    def generate_shorthand_example(self, cli_argument):
+    def generate_shorthand_example(self, cli_name, argument_model):
         """Generate documentation for a CLI argument.
 
         :type cli_argument: awscli.arguments.BaseCLIArgument
         :param cli_argument: The CLI argument which to generate
             documentation for.
+
+        :return: Returns either a string or ``None``.  If a string
+            is returned, it is the generated shorthand example.
+            If a value of ``None`` is returned then this indicates
+            that no shorthand syntax is available for the provided
+            ``argument_model``.
+
         """
-        structure = detect_shape_structure(cli_argument.argument_model)
-        parse_method_name = self.SHORTHAND_SHAPES.get(structure)
-        doc_method_name = '_docs%s' % parse_method_name
-        method = getattr(self, doc_method_name)
-        doc_string = method(cli_argument)
-        return doc_string
-
-    def _docs_list_scalar_parse(self, cli_argument):
-        cli_name = cli_argument.cli_name
-        structure_members = cli_argument.argument_model.member.members
-        # We know based on the SHORTHAND_SHAPES that this is a
-        # structure with a single member, so we can safely say:
-        member_name = list(structure_members.keys())[0]
-        return '%s %s1 %s2 %s3' % (cli_name, member_name,
-                                   member_name, member_name)
-
-    def _docs_key_value_parse(self, cli_argument):
-        cli_name = cli_argument.cli_name
-        model = cli_argument.argument_model
-        s = '%s ' % cli_name
-        if model.type_name == 'structure':
-            members_dict = model.members
-            member_names = list(members_dict.keys())
-            s += ','.join(['%s=value' % name for name in member_names])
-        elif model.type_name == 'map':
-            s += 'key_name=string,key_name2=string'
-            if self._has_enum_values(model.key):
-                enum_values = self._get_enum_values(model.key)
-                s += '\nWhere valid key names are:\n'
-                for value in enum_values:
-                    s += '  %s\n' % value
-        return s
-
-    def _docs_list_key_value_parse(self, cli_argument):
-        s = "Key value pairs, with multiple values separated by a space.\n"
-        s += '%s ' % cli_argument.cli_name
-        members = cli_argument.argument_model.member.members
-        pair = ','.join(['%s=%s' % (member_name, shape.type_name)
-                         for member_name, shape in members.items()])
-        pair += ' %s' % pair
-        s += pair
-        return s
-
-    def _docs_list_scalar_list_parse(self, cli_argument):
-        s = ('Key value pairs, where values are separated by commas, '
-             'and multiple pairs are separated by spaces.\n')
-        s += '%s ' % cli_argument.cli_name
-        pair = self._generate_struct_list_scalar_docs(
-            cli_argument.argument_model.member.members)
-        pair += ' %s' % pair
-        s += pair
-        return s
-
-    def _docs_struct_scalar_list_parse(self, cli_argument):
-        s = ('Key value pairs, where values are separated by commas.\n')
-        s += '%s ' % cli_argument.cli_name
-        s += self._generate_struct_list_scalar_docs(
-            cli_argument.argument_model.members)
-        return s
-
-    def _generate_struct_list_scalar_docs(self, members_dict):
-        scalar_params = list(self._get_scalar_params(members_dict))
-        list_params = list(self._get_list_params(members_dict))
-        pair = ''
-        for member_name, param in scalar_params:
-            pair += '%s=%s1,' % (member_name, param.type_name)
-        for member_name, param in list_params[:-1]:
-            param_type = param.member.type_name
-            pair += '%s=%s1,%s2,' % (member_name, param_type, param_type)
-        member_name, last_param = list_params[-1]
-        param_type = last_param.member.type_name
-        pair += '%s=%s1,%s2' % (member_name, param_type, param_type)
-        return pair
-
-    def _get_scalar_params(self, members_dict):
-        for key, value in members_dict.items():
-            if value.type_name in SCALAR_TYPES:
-                yield (key, value)
-
-    def _get_list_params(self, members_dict):
-        for key, value in members_dict.items():
-            if value.type_name == 'list':
-                yield (key, value)
-
-    def _has_enum_values(self, model):
-        return 'enum' in model.metadata
-
-    def _get_enum_values(self, model):
-        return model.metadata['enum']
-
-    def _docs_special_key_value_parse(self, cli_argument):
-        members = cli_argument.argument_model.members
-        if len(members) == 1 and 'Value' in members:
-            # Returning None will indicate that we don't have
-            # any examples to generate, and the entire examples section
-            # should be skipped for this arg.
+        docstring = self._handle_special_cases(cli_name, argument_model)
+        if docstring is self._DONT_DOC:
             return None
+        elif docstring:
+            return docstring
+
+        # Otherwise we fall back to the normal docgen for shorthand
+        # syntax.
+        stack = []
+        try:
+            if argument_model.type_name == 'list':
+                argument_model = argument_model.member
+                return self._shorthand_docs(argument_model, stack) + ' ...'
+            else:
+                return self._shorthand_docs(argument_model, stack)
+        except TooComplexError:
+            return ''
+
+    def _handle_special_cases(self, cli_name, model):
+        if model.type_name == 'list' and \
+                model.member.type_name == 'structure' and \
+                len(model.member.members) == 1:
+            member_name = list(model.member.members)[0]
+            return '%s %s1 %s2 %s3' % (cli_name, member_name,
+                                       member_name, member_name)
+        elif model.type_name == 'structure' and \
+                len(model.members) == 1 and \
+                'Value' in model.members and \
+                model.members['Value'].type_name == 'string':
+            return self._DONT_DOC
+        return ''
+
+    def _shorthand_docs(self, argument_model, stack):
+        if len(stack) > self._MAX_STACK:
+            raise TooComplexError()
+        if argument_model.type_name == 'structure':
+            return self._structure_docs(argument_model, stack)
+        elif argument_model.type_name == 'list':
+            return self._list_docs(argument_model, stack)
+        elif argument_model.type_name == 'map':
+            return self._map_docs(argument_model, stack)
         else:
-            return self._docs_key_value_parse(cli_argument)
+            return argument_model.type_name
+
+    def _list_docs(self, argument_model, stack):
+        list_member = argument_model.member
+        stack.append(list_member.name)
+        try:
+            element_docs = self._shorthand_docs(argument_model.member, stack)
+        finally:
+            stack.pop()
+        if list_member.type_name in COMPLEX_TYPES or len(stack) > 1:
+            return '[%s,%s]' % (element_docs, element_docs)
+        else:
+            return '%s,%s' % (element_docs, element_docs)
+
+    def _map_docs(self, argument_model, stack):
+        k = argument_model.key
+        value_docs = self._shorthand_docs(argument_model.value, stack)
+        start = 'KeyName1=%s,KeyName2=%s' % (value_docs, value_docs)
+        if k.enum and not stack:
+            start += '\n\nWhere valid key names are:\n'
+            for enum in k.enum:
+                start += '  %s\n' % enum
+        elif stack:
+            start = '{%s}' % start
+        return start
+
+    def _structure_docs(self, argument_model, stack):
+        parts = []
+        for name, member_shape in argument_model.members.items():
+            parts.append(self._member_docs(name, member_shape, stack))
+        inner_part = ','.join(parts)
+        if not stack:
+            return inner_part
+        return '{%s}' % inner_part
+
+    def _member_docs(self, name, shape, stack):
+        if stack.count(shape.name) > 0:
+            return '( ... recursive ... )'
+        stack.append(shape.name)
+        try:
+            value_doc = self._shorthand_docs(shape, stack)
+        finally:
+            stack.pop()
+        return '%s=%s' % (name, value_doc)

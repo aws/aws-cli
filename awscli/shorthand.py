@@ -10,6 +10,34 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+"""Module for parsing shorthand syntax.
+
+This module parses any CLI options that use a "shorthand"
+syntax::
+
+    --foo A=b,C=d
+         |------|
+            |
+            Shorthand syntax
+
+
+This module provides two main classes to do this.
+First, there's a ``ShorthandParser`` class.  This class works
+on a purely syntactic level.  It looks only at the string value
+provided to it in order to figure out how the string should be parsed.
+
+However, because there was a pre-existing shorthand parser, we need
+to remain backwards compatible with the previous parser.  One of the
+things the previous parser did was use the associated JSON model to
+control how the expression was parsed.
+
+In order to accommodate this a post processing class is provided that
+takes the parsed values from the ``ShorthandParser`` as well as the
+corresponding JSON model for the CLI argument and makes any adjustments
+necessary to maintain backwards compatibility.  This is done in the
+``BackCompatVisitor`` class.
+
+"""
 import re
 import string
 
@@ -57,20 +85,41 @@ class ShorthandParseError(Exception):
 
 
 class ShorthandParser(object):
+    """Parses shorthand syntax in the CLI.
+
+    Note that this parser does not rely on any JSON models to control
+    how to parse the shorthand syntax.
+
+    """
 
     _SINGLE_QUOTED = _NamedRegex('singled quoted', r'\'(?:\\\\|\\\'|[^\'])*\'')
     _DOUBLE_QUOTED = _NamedRegex('double quoted', r'"(?:\\\\|\\"|[^"])*"')
-    _FIRST_VALUE = _NamedRegex('first',
-                               u'[\!\#-&\(-\+\--\<\>-Z\\\\-z\u007c-\uffff]'
-                               u'[\!\#-&\(-\+\--\\\\\^-\|~-\uffff]*')
-    _SECOND_VALUE = _NamedRegex('second',
-                                u'[\!\#-&\(-\+\--\<\>-Z\\\\-z\u007c-\uffff]'
-                                u'[\!\#-&\(-\+\--\<\>-\uffff]*')
+    _FIRST_VALUE = _NamedRegex(
+        'first',
+        u'((\\\\,)|[\!\#-&\(-\+\--\<\>-Z\\\\-z\u007c-\uffff])'
+        u'((\\\\,)|[\!\#-&\(-\+\--\\\\\^-\|~-\uffff])*')
+    _SECOND_VALUE = _NamedRegex(
+        'second',
+        u'((\\\\,)|[\!\#-&\(-\+\--\<\>-Z\\\\-z\u007c-\uffff])'
+        u'((\\\\,)|[\!\#-&\(-\+\--\<\>-\uffff])*')
 
     def __init__(self):
         self._tokens = []
 
     def parse(self, value):
+        """Parse shorthand syntax.
+
+        For example::
+
+            parser = ShorthandParser()
+            parser.parse('a=b')  # {'a': 'b'}
+            parser.parse('a=b,c')  # {'a': ['b', 'c']}
+
+        :tpye value: str
+        :param value: Any value that needs to be parsed.
+
+        :return: Parsed value, which will be a dictionary.
+        """
         self._input_value = value
         self._index = 0
         return self._parameter()
@@ -134,8 +183,6 @@ class ShorthandParser(object):
         while True:
             try:
                 current = self._second_value()
-                if current is None:
-                    break
                 self._consume_whitespace()
                 if self._at_eof():
                     csv_list.append(current)
@@ -151,6 +198,8 @@ class ShorthandParser(object):
                 #          ^-error, "expected ',' received '='
                 # foo=a,b,c=d,e=f
                 #        ^-backtrack to here.
+                if self._at_eof():
+                    raise
                 self._backtrack_to(',')
                 break
         if len(csv_list) == 1:
@@ -163,7 +212,8 @@ class ShorthandParser(object):
     def _value(self):
         result = self._FIRST_VALUE.match(self._input_value[self._index:])
         if result is not None:
-            return self._consume_matched_regex(result)
+            consumed = self._consume_matched_regex(result)
+            return consumed.replace('\\,', ',')
         return ''
 
     def _explicit_list(self):
@@ -182,9 +232,7 @@ class ShorthandParser(object):
 
     def _explicit_values(self):
         # values = csv-list / explicit-list / hash-literal
-        if self._at_eof():
-            return ''
-        elif self._current() == '[':
+        if self._current() == '[':
             return self._explicit_list()
         elif self._current() == '{':
             return self._hash_literal()
@@ -236,7 +284,8 @@ class ShorthandParser(object):
         elif self._current() == '"':
             return self._double_quoted_value()
         else:
-            return self._must_consume_regex(self._SECOND_VALUE)
+            consumed = self._must_consume_regex(self._SECOND_VALUE)
+            return consumed.replace('\\,', ',')
 
     def _expect(self, char, consume_whitespace=False):
         if consume_whitespace:
@@ -282,3 +331,64 @@ class ShorthandParser(object):
     def _consume_whitespace(self):
         while self._current() != _EOF and self._current() in string.whitespace:
             self._index += 1
+
+
+class ModelVisitor(object):
+    def visit(self, params, model):
+        self._visit({}, model, '', params)
+
+    def _visit(self, parent, shape, name, value):
+        method = getattr(self, '_visit_%s' % shape.type_name,
+                         self._visit_scalar)
+        method(parent, shape, name, value)
+
+    def _visit_structure(self, parent, shape, name, value):
+        if not isinstance(value, dict):
+            return
+        for member_name, member_shape in shape.members.items():
+            self._visit(value, member_shape, member_name,
+                        value.get(member_name))
+
+    def _visit_list(self, parent, shape, name, value):
+        if not isinstance(value, list):
+            return
+        for element in value:
+            self._visit(value, shape.member, '', element)
+
+    def _visit_map(self, parent, shape, name, value):
+        if not isinstance(value, dict):
+            return
+        value_shape = shape.value
+        for k, v in value.items():
+            self._visit(value, value_shape, k, v)
+
+    def _visit_scalar(self, parent, shape, name, value):
+        pass
+
+
+class BackCompatVisitor(ModelVisitor):
+    def _visit_list(self, parent, shape, name, value):
+        if not isinstance(value, list):
+            # Convert a -> [a] because they specified
+            # "foo=bar", but "bar" should really be ["bar"].
+            if value is not None:
+                parent[name] = [value]
+        else:
+            return super(BackCompatVisitor, self)._visit_list(
+                parent, shape, name, value)
+
+    def _visit_scalar(self, parent, shape, name, value):
+        if value is None:
+            return
+        type_name = shape.type_name
+        if type_name in ['integer', 'long']:
+            parent[name] = int(value)
+        elif type_name in ['double', 'float']:
+            parent[name] = float(value)
+        elif type_name == 'boolean':
+            # We want to make sure we only set a value
+            # only if "true"/"false" is specified.
+            if value.lower() == 'true':
+                parent[name] = True
+            elif value.lower() == 'false':
+                parent[name] = False

@@ -11,9 +11,13 @@ Output::
 	{
 	    "clusters": [
 	        {
-	            "clusterName": "default",
 	            "status": "ACTIVE",
-	            "clusterArn": "arn:aws:ecs:us-east-1:<aws_account_id>:cluster/default"
+	            "clusterName": "default",
+	            "registeredContainerInstancesCount": 0,
+	            "pendingTasksCount": 0,
+	            "runningTasksCount": 0,
+	            "activeServicesCount": 1,
+	            "clusterArn": "arn:aws:ecs:us-west-2:<aws_Account_id>:cluster/default"
 	        }
 	    ],
 	    "failures": []

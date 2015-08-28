@@ -94,14 +94,26 @@ class ShorthandParser(object):
 
     _SINGLE_QUOTED = _NamedRegex('singled quoted', r'\'(?:\\\\|\\\'|[^\'])*\'')
     _DOUBLE_QUOTED = _NamedRegex('double quoted', r'"(?:\\\\|\\"|[^"])*"')
+    _START_WORD = u'\!\#-&\(-\+\--\<\>-Z\\\\-z\u007c-\uffff'
+    _FIRST_FOLLOW_CHARS = u'\!\#-&\(-\+\--\\\\\^-\|~-\uffff'
+    _SECOND_FOLLOW_CHARS = u'\!\#-&\(-\+\--\<\>-\uffff'
+    _ESCAPED_COMMA = '(\\\\,)'
     _FIRST_VALUE = _NamedRegex(
         'first',
-        u'((\\\\,)|[\!\#-&\(-\+\--\<\>-Z\\\\-z\u007c-\uffff])'
-        u'((\\\\,)|[\!\#-&\(-\+\--\\\\\^-\|~-\uffff])*')
+        u'({escaped_comma}|[{start_word}])'
+        u'({escaped_comma}|[{follow_chars}])*'.format(
+            escaped_comma=_ESCAPED_COMMA,
+            start_word=_START_WORD,
+            follow_chars=_FIRST_FOLLOW_CHARS,
+        ))
     _SECOND_VALUE = _NamedRegex(
         'second',
-        u'((\\\\,)|[\!\#-&\(-\+\--\<\>-Z\\\\-z\u007c-\uffff])'
-        u'((\\\\,)|[\!\#-&\(-\+\--\<\>-\uffff])*')
+        u'({escaped_comma}|[{start_word}])'
+        u'({escaped_comma}|[{follow_chars}])*'.format(
+            escaped_comma=_ESCAPED_COMMA,
+            start_word=_START_WORD,
+            follow_chars=_SECOND_FOLLOW_CHARS,
+        ))
 
     def __init__(self):
         self._tokens = []

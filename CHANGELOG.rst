@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:Shorthand Parser: Fix regression where '-' character was not accepted
+  as a key name in a shorthand value
+  (`issue 1470 <https://github.com/aws/aws-cli/issues/1470>`__)
+* bugfix:Shorthand Parser: Fix regression where spaces in unquoted values
+  were not being accepted
+  (`issue 1471 <https://github.com/aws/aws-cli/issues/1471>`__)
+
+
 1.8.0
 =====
 

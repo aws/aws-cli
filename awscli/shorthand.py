@@ -95,8 +95,8 @@ class ShorthandParser(object):
     _SINGLE_QUOTED = _NamedRegex('singled quoted', r'\'(?:\\\\|\\\'|[^\'])*\'')
     _DOUBLE_QUOTED = _NamedRegex('double quoted', r'"(?:\\\\|\\"|[^"])*"')
     _START_WORD = u'\!\#-&\(-\+\--\<\>-Z\\\\-z\u007c-\uffff'
-    _FIRST_FOLLOW_CHARS = u'\!\#-&\(-\+\--\\\\\^-\|~-\uffff'
-    _SECOND_FOLLOW_CHARS = u'\!\#-&\(-\+\--\<\>-\uffff'
+    _FIRST_FOLLOW_CHARS = u'\s\!\#-&\(-\+\--\\\\\^-\|~-\uffff'
+    _SECOND_FOLLOW_CHARS = u'\s\!\#-&\(-\+\--\<\>-\uffff'
     _ESCAPED_COMMA = '(\\\\,)'
     _FIRST_VALUE = _NamedRegex(
         'first',
@@ -225,7 +225,7 @@ class ShorthandParser(object):
         result = self._FIRST_VALUE.match(self._input_value[self._index:])
         if result is not None:
             consumed = self._consume_matched_regex(result)
-            return consumed.replace('\\,', ',')
+            return consumed.replace('\\,', ',').rstrip()
         return ''
 
     def _explicit_list(self):
@@ -297,7 +297,7 @@ class ShorthandParser(object):
             return self._double_quoted_value()
         else:
             consumed = self._must_consume_regex(self._SECOND_VALUE)
-            return consumed.replace('\\,', ',')
+            return consumed.replace('\\,', ',').rstrip()
 
     def _expect(self, char, consume_whitespace=False):
         if consume_whitespace:

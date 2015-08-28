@@ -39,6 +39,15 @@ def test_parse():
                                            'bar': ['c', 'd']})
     yield (_can_parse, 'foo=a,b,c,bar=d,e,f',
            {'foo': ['a', 'b', 'c'], 'bar': ['d', 'e', 'f']})
+    # Spaces in values are allowed.
+    yield (_can_parse, 'foo=a,b=with space', {'foo': 'a', 'b': 'with space'})
+    # Trailing spaces are still ignored.
+    yield (_can_parse, 'foo=a,b=with trailing space  ',
+           {'foo': 'a', 'b': 'with trailing space'})
+    yield (_can_parse, 'foo=first space',
+           {'foo': 'first space'})
+    yield (_can_parse, 'foo=a space,bar=a space,baz=a space',
+           {'foo': 'a space', 'bar': 'a space', 'baz': 'a space'})
 
     # Explicit lists.
     yield (_can_parse, 'foo=[]', {'foo': []})

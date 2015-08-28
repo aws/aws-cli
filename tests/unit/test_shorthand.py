@@ -49,6 +49,9 @@ def test_parse():
     yield (_can_parse, 'foo=a space,bar=a space,baz=a space',
            {'foo': 'a space', 'bar': 'a space', 'baz': 'a space'})
 
+    # Dashes are allowed in key names.
+    yield (_can_parse, 'with-dash=bar', {'with-dash': 'bar'})
+
     # Explicit lists.
     yield (_can_parse, 'foo=[]', {'foo': []})
     yield (_can_parse, 'foo=[a]', {'foo': ['a']})

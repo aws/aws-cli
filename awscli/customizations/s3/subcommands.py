@@ -527,8 +527,9 @@ class S3TransferCommand(S3Command):
 
     def _handle_rm_force(self, parsed_globals, parameters):
         """
-        This function recursive deletes objects in a bucket if the force
-        parameters was thrown when using the remove bucket command.
+        This function recursively deletes objects in a bucket if the force
+        parameter was thrown when using the remove bucket command. It will
+        refuse to delete if a key is specified in the s3path.
         """
         # XXX: This shouldn't really be here.  This was originally moved from
         # the CommandParameters class to here, but this is still not the ideal
@@ -540,7 +541,10 @@ class S3TransferCommand(S3Command):
         # to be kept simple.
         if 'force' in parameters:
             if parameters['force']:
-                bucket = find_bucket_key(parameters['src'][5:])[0]
+                bucket, key = find_bucket_key(parameters['src'][5:])
+                if key:
+                    raise ValueError('Please specify a valid bucket name only.'
+                                     ' E.g. s3://%s' % bucket)
                 path = 's3://' + bucket
                 del_objects = RmCommand(self._session)
                 del_objects([path, '--recursive'], parsed_globals)
@@ -605,7 +609,7 @@ class RbCommand(S3TransferCommand):
         "the non-versioned objects in the bucket before the bucket is "
         "deleted."
     )
-    USAGE = "<S3Path>"
+    USAGE = "<S3BucketPath>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
                   'synopsis': USAGE}, FORCE]
 

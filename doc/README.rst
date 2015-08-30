@@ -8,7 +8,7 @@ the requirements.txt file at the root of this repo::
 
     pip install -r requirements.txt
 
-The process for building the documention is:
+The process for building the documentation is:
 
 * Run ``make html`` which will build all of the HTML documentation
   into the ``build/html`` directory.
@@ -18,7 +18,7 @@ The process for building the documention is:
   distribution and installed by ``python setup.py install``.
 
 * Run ``make text`` which will build all of the text pages that
-  are used for interactive help on the Window platform.  These files
+  are used for interactive help on the Windows platform.  These files
   are included in the source distribution and installed by
   ``python setup.py install``.
 

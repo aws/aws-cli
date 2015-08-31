@@ -10,8 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import decimal
-
 from awscli import shorthand
 from awscli.testutils import unittest
 
@@ -39,6 +37,18 @@ def test_parse():
                                            'bar': ['c', 'd']})
     yield (_can_parse, 'foo=a,b,c,bar=d,e,f',
            {'foo': ['a', 'b', 'c'], 'bar': ['d', 'e', 'f']})
+    # Spaces in values are allowed.
+    yield (_can_parse, 'foo=a,b=with space', {'foo': 'a', 'b': 'with space'})
+    # Trailing spaces are still ignored.
+    yield (_can_parse, 'foo=a,b=with trailing space  ',
+           {'foo': 'a', 'b': 'with trailing space'})
+    yield (_can_parse, 'foo=first space',
+           {'foo': 'first space'})
+    yield (_can_parse, 'foo=a space,bar=a space,baz=a space',
+           {'foo': 'a space', 'bar': 'a space', 'baz': 'a space'})
+
+    # Dashes are allowed in key names.
+    yield (_can_parse, 'with-dash=bar', {'with-dash': 'bar'})
 
     # Explicit lists.
     yield (_can_parse, 'foo=[]', {'foo': []})

@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.8.1
+=====
 
 * feature:``aws ec2 request-spot-fleet``: Add support for new request config
   parameters

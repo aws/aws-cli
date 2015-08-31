@@ -5,6 +5,8 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* feature:``aws ec2 request-spot-fleet``: Add support for new request config
+  parameters
 * bugfix:Shorthand Parser: Fix regression where '-' character was not accepted
   as a key name in a shorthand value
   (`issue 1470 <https://github.com/aws/aws-cli/issues/1470>`__)

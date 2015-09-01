@@ -11,41 +11,41 @@ Output::
   {
     "ReservedInstancesOfferings": [
         {
-            "OfferingType": "Heavy Utilization",
-            "FixedPrice": 631.0,
+            "OfferingType": "Partial Upfront",
+            "AvailabilityZone": "us-east-1b",
             "InstanceTenancy": "default",
             "PricingDetails": [],
             "ProductDescription": "Red Hat Enterprise Linux",
             "UsagePrice": 0.0,
             "RecurringCharges": [
                 {
-                    "Amount": 0.104,
+                    "Amount": 0.088,
                     "Frequency": "Hourly"
                 }
             ],
             "Marketplace": false,
             "CurrencyCode": "USD",
-            "AvailabilityZone": "us-west-1a",
+            "FixedPrice": 631.0,
             "Duration": 94608000,
             "ReservedInstancesOfferingId": "9a06095a-bdc6-47fe-a94a-2a382f016040",
             "InstanceType": "c1.medium"
         },
         {
-            "OfferingType": "Heavy Utilization",
-            "FixedPrice": 631.0,
+            "OfferingType": "PartialUpfront",
+            "AvailabilityZone": "us-east-1b",
             "InstanceTenancy": "default",
             "PricingDetails": [],
             "ProductDescription": "Linux/UNIX",
             "UsagePrice": 0.0,
             "RecurringCharges": [
                 {
-                    "Amount": 0.044,
+                    "Amount": 0.028,
                     "Frequency": "Hourly"
                 }
             ],
             "Marketplace": false,
             "CurrencyCode": "USD",
-            "AvailabilityZone": "us-west-1a",
+            "FixedPrice": 631.0,
             "Duration": 94608000,
             "ReservedInstancesOfferingId": "bfbefc6c-0d10-418d-b144-7258578d329d",
             "InstanceType": "c1.medium"
@@ -59,50 +59,50 @@ This example lists Reserved Instances offered by AWS with the following specific
 
 Command::
 
-  aws ec2 describe-reserved-instances-offerings --no-include-marketplace --instance-type "t1.micro" --product-description "Windows (Amazon VPC)" --offering-type "heavy utilization"
+  aws ec2 describe-reserved-instances-offerings --no-include-marketplace --instance-type "t1.micro" --product-description "Windows (Amazon VPC)" --offering-type "no upfront"
 
 Output::
 
   {
       "ReservedInstancesOfferings": [
         {
-            "OfferingType": "Heavy Utilization", 
-            "FixedPrice": 100.0, 
+            "OfferingType": "No Upfront", 
+            "AvailabilityZone": "us-east-1b", 
             "InstanceTenancy": "default", 
             "PricingDetails": [], 
-            "ProductDescription": "Windows (Amazon VPC)", 
+            "ProductDescription": "Windows", 
             "UsagePrice": 0.0, 
             "RecurringCharges": [
                 {
-                    "Amount": 0.014, 
+                    "Amount": 0.015, 
                     "Frequency": "Hourly"
                 }
             ], 
             "Marketplace": false, 
             "CurrencyCode": "USD", 
-            "AvailabilityZone": "us-west-1a", 
-            "Duration": 94608000, 
+            "FixedPrice": 0.0, 
+            "Duration": 31536000, 
             "ReservedInstancesOfferingId": "c48ab04c-fe69-4f94-8e39-a23842292823", 
             "InstanceType": "t1.micro"
         }, 
 
 		...
         {
-            "OfferingType": "Heavy Utilization", 
-            "FixedPrice": 62.0, 
+            "OfferingType": "No Upfront", 
+            "AvailabilityZone": "us-east-1d", 
             "InstanceTenancy": "default", 
             "PricingDetails": [], 
             "ProductDescription": "Windows (Amazon VPC)", 
             "UsagePrice": 0.0, 
             "RecurringCharges": [
                 {
-                    "Amount": 0.014, 
+                    "Amount": 0.015, 
                     "Frequency": "Hourly"
                 }
             ], 
             "Marketplace": false, 
             "CurrencyCode": "USD", 
-            "AvailabilityZone": "us-west-1c", 
+            "FixedPrice": 0.0, 
             "Duration": 31536000, 
             "ReservedInstancesOfferingId": "3a98bf7d-2123-42d4-b4f5-8dbec4b06dc6", 
             "InstanceType": "t1.micro"

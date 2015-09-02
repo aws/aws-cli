@@ -63,7 +63,12 @@ QUIET = {'name': 'quiet', 'action': 'store_true',
 
 FORCE = {'name': 'force', 'action': 'store_true',
          'help_text': (
-             "Deletes all objects in the bucket including the bucket itself.")}
+             "Deletes all objects in the bucket including the bucket itself. "
+             "Note that versioned objects will not be deleted in this "
+             "process which would cause the bucket deletion to fail because "
+             "the bucket would not be empty. To delete versioned "
+             "objects use the ``s3api delete-object`` command with "
+             "the ``--version-id`` parameter.")}
 
 
 FOLLOW_SYMLINKS = {'name': 'follow-symlinks', 'action': 'store_true',
@@ -593,7 +598,13 @@ class MbCommand(S3TransferCommand):
 
 class RbCommand(S3TransferCommand):
     NAME = 'rb'
-    DESCRIPTION = "Deletes an S3 bucket."
+    DESCRIPTION = (
+        "Deletes an empty S3 bucket. A bucket must be completely empty "
+        "of objects and versioned objects before it can be deleted. "
+        "However, the ``--force`` parameter can be used to delete "
+        "the non-versioned objects in the bucket before the bucket is "
+        "deleted."
+    )
     USAGE = "<S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
                   'synopsis': USAGE}, FORCE]

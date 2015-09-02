@@ -600,7 +600,10 @@ class RbCommand(S3TransferCommand):
     NAME = 'rb'
     DESCRIPTION = (
         "Deletes an empty S3 bucket. A bucket must be completely empty "
-        "of objects and versioned objects before it can be deleted."
+        "of objects and versioned objects before it can be deleted. "
+        "However, the ``--force`` parameter can be used to delete "
+        "the non-versioned objects in the bucket before the bucket is "
+        "deleted."
     )
     USAGE = "<S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,

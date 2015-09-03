@@ -620,17 +620,15 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(
             'ec2 describe-instances --endpoint-url https://foobar.com/',
             expected_rc=0)
-        self.create_endpoint.assert_called_with(
-            mock.ANY, 'us-east-1', verify=None, endpoint_url='https://foobar.com/',
-            is_secure=True, response_parser_factory=mock.ANY)
+        self.assertEqual(self.create_endpoint.call_args[1]['endpoint_url'],
+                         'https://foobar.com/')
 
     def test_aws_with_region(self):
         self.assert_params_for_cmd(
             'ec2 describe-instances --region us-west-2',
             expected_rc=0)
-        self.create_endpoint.assert_called_with(
-            mock.ANY, 'us-west-2', verify=None, endpoint_url=None,
-            is_secure=True, response_parser_factory=mock.ANY)
+        self.assertEqual(self.create_endpoint.call_args[0],
+                         (mock.ANY, 'us-west-2'))
 
     def test_aws_with_verify_false(self):
         self.assert_params_for_cmd(
@@ -638,19 +636,18 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
             expected_rc=0)
         # Because we used --no-verify-ssl, create_endpoint should be
         # called with verify=False
-        self.create_endpoint.assert_called_with(
-            mock.ANY, 'us-east-1', verify=False, endpoint_url=None,
-            is_secure=True, response_parser_factory=mock.ANY)
+        call_args = self.create_endpoint.call_args
+        self.assertEqual(call_args[0], (mock.ANY, 'us-east-1'))
+        self.assertFalse(call_args[1]['verify'])
 
     def test_aws_with_cacert_env_var(self):
         self.environ['AWS_CA_BUNDLE'] = '/path/cacert.pem'
         self.assert_params_for_cmd(
             'ec2 describe-instances --region us-east-1',
             expected_rc=0)
-        self.create_endpoint.assert_called_with(
-            mock.ANY, 'us-east-1', verify='/path/cacert.pem',
-            endpoint_url=None, is_secure=True,
-            response_parser_factory=mock.ANY)
+        call_args = self.create_endpoint.call_args
+        self.assertEqual(call_args[0], (mock.ANY, 'us-east-1'))
+        self.assertEqual(call_args[1]['verify'], '/path/cacert.pem')
 
 
 class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):

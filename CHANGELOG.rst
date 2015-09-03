@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.8.2
+=====
+
+* feature:``aws storagegateway``: Add support for resource tagging.
+
+
 1.8.1
 =====
 

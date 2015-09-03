@@ -14,6 +14,14 @@ Command::
 
   aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --protocol tcp --port 80 --source-group otheraccountgroup --group-owner 123456789012
 
+**[EC2-Classic] To add a rule that allows inbound HTTPS traffic from an ELB**
+
+This example enables inbound traffic on TCP port 443 from an ELB. If the command succeeds, no output is returned.
+
+Command::
+
+  aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --protocol tcp --port 443 --source-group amazon-elb-sg --group-owner amazon-elb
+
 **[EC2-VPC] To add a rule that allows inbound SSH traffic**
 
 This example enables inbound traffic on TCP port 22 (SSH). Note that you can't reference a security group for EC2-VPC by name. If the command succeeds, no output is returned.

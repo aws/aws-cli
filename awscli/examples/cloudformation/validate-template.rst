@@ -1,8 +1,8 @@
 **To validate an AWS CloudFormation template**
 
-The following ``validate-template`` command validates the ``sampletemplate.json`` template::
+The following ``validate-template`` command validates the ``sampletemplate.json`` template in the Amazon S3 bucket named ``sample``::
 
-  aws cloudformation validate-template --template-body file:////home//local//test//sampletemplate.json
+  aws cloudformation validate-template --template-url https://s3.amazonaws.com/sample/sample.template
 
 Output::
 

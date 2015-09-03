@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.8.2
+=====
 
 * feature:``aws storagegateway``: Add support for resource tagging.
 

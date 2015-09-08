@@ -49,25 +49,32 @@ class TestGetClient(unittest.TestCase):
 
 
 class TestRbCommand(unittest.TestCase):
-    def test_rb_command_with_force_deletes_objects_in_bucket(self):
+    def setUp(self):
         self.session = mock.Mock()
         self.session.get_scoped_config.return_value = {}
-        rb_command = RbCommand(self.session)
-        parsed_args = FakeArgs(paths='s3://mybucket/',
-                               force=True,
-                               dir_op=False)
-        parsed_globals = FakeArgs(region=None, endpoint_url=None,
-                                  verify_ssl=None)
-        cmd_name = 'awscli.customizations.s3.subcommands.RmCommand'
-        arch_name = 'awscli.customizations.s3.subcommands.CommandArchitecture'
-        with mock.patch(cmd_name) as rm_command:
-            with mock.patch(arch_name):
-                rb_command._run_main(parsed_args,
-                                     parsed_globals=parsed_globals)
+        self.rb_command = RbCommand(self.session)
+        self.parsed_args = FakeArgs(paths='s3://mybucket/',
+                                    force=True, dir_op=False)
+        self.parsed_globals = FakeArgs(region=None, endpoint_url=None,
+                                       verify_ssl=None)
+        self.cmd_name = 'awscli.customizations.s3.subcommands.RmCommand'
+        self.arch_name = 'awscli.customizations.s3.subcommands.CommandArchitecture'
+
+    def test_rb_command_with_force_deletes_objects_in_bucket(self):
+        with mock.patch(self.cmd_name) as rm_command:
+            with mock.patch(self.arch_name):
+                self.rb_command._run_main(self.parsed_args,
+                                     parsed_globals=self.parsed_globals)
             # Because of --force we should have called the
             # rm_command with the --recursive option.
             rm_command.return_value.assert_called_with(
                 ['s3://mybucket', '--recursive'], mock.ANY)
+
+    def test_rb_command_with_force_requires_strict_path(self):
+        with self.assertRaises(ValueError):
+            self.parsed_args.paths = 's3://mybucket/mykey'
+            self.rb_command._run_main(self.parsed_args,
+                                      parsed_globals=self.parsed_globals)
 
 
 class TestLSCommand(unittest.TestCase):

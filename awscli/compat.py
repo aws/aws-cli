@@ -23,6 +23,7 @@ advance_iterator = six.advance_iterator
 PY3 = six.PY3
 queue = six.moves.queue
 shlex_quote = six.moves.shlex_quote
+string_types = six.string_types
 StringIO = six.StringIO
 urlopen = six.moves.urllib.request.urlopen
 

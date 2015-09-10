@@ -23,18 +23,27 @@ from awscli.compat import get_stdout_text_writer
 
 class TestGetPasswordData(BaseAWSCommandParamsTest):
 
-    prefix = 'iam add-user-to-group '
+    COMMAND = 'iam add-user-to-group --group-name foo --user-name bar'
 
-    def test_empty_response_prints_nothing(self):
+    def setUp(self):
+        super(TestGetPasswordData, self).setUp()
+        self.parsed_response = {}
+
+    def test_empty_dict_response_prints_nothing(self):
         # This is the default response, but we want to be explicit
         # that we're returning an empty dict.
         self.parsed_response = {}
-        args = ' --group-name foo --user-name bar'
-        cmdline = self.prefix + args
-        result = {'GroupName': 'foo', 'UserName': 'bar'}
-        stdout = self.assert_params_for_cmd(cmdline, result, expected_rc=0)[0]
-        # We should have printed nothing because the parsed response
-        # is an empty dict: {}.
+        stdout = self.run_cmd(self.COMMAND, expected_rc=0)[0]
+        self.assertEqual(stdout, '')
+
+    def test_empty_list_prints_nothing(self):
+        self.parsed_response = []
+        stdout = self.run_cmd(self.COMMAND, expected_rc=0)[0]
+        self.assertEqual(stdout, '')
+
+    def test_empty_string_prints_nothing(self):
+        self.parsed_response = ''
+        stdout = self.run_cmd(self.COMMAND, expected_rc=0)[0]
         self.assertEqual(stdout, '')
 
 
@@ -75,6 +84,15 @@ class TestListUsers(BaseAWSCommandParamsTest):
                               expected_rc=0)[0]
         parsed_output = json.loads(output)
         self.assertEqual(parsed_output, ['testuser-50', 'testuser-51'])
+
+    def test_zero_value_is_printed(self):
+        # Even though the integer 0 is false-like, we still
+        # should be printing it to stdout if a jmespath query
+        # evalutes to 0.
+        jmespath_query = '`0`'
+        output = self.run_cmd('iam list-users --query %s' % jmespath_query,
+                              expected_rc=0)[0]
+        self.assertEqual(output, '0\n')
 
     def test_unknown_output_type_from_env_var(self):
         # argparse already handles the case with a bad --output

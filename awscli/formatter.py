@@ -20,6 +20,7 @@ from botocore.paginate import PageIterator
 from awscli.table import MultiTable, Styler, ColorizedStyler
 from awscli import text
 from awscli import compat
+from awscli.compat import string_types
 from awscli.utils import json_encoder
 
 
@@ -91,10 +92,11 @@ class JSONFormatter(FullyBufferedFormatter):
         # the response will be an empty string.  We don't want to print
         # that out to the user but other "falsey" values like an empty
         # dictionary should be printed.
-        if response:
-            json.dump(response, stream, indent=4, default=json_encoder,
-                      ensure_ascii=False)
-            stream.write('\n')
+        if isinstance(response, (dict, list) + string_types) and not response:
+            return
+        json.dump(response, stream, indent=4, default=json_encoder,
+                  ensure_ascii=False)
+        stream.write('\n')
 
 
 class TableFormatter(FullyBufferedFormatter):

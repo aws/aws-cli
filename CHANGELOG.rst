@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+
+Next Release (TBD)
+==================
+* feature:``aws iam``: Add two new APIs that enable programmatic access to the
+  IAM policy simulator
+* feature:``aws importexport``: Documentation update
+* bugfix:``aws machinelearning``: Remove a constraint
+* feature:``aws kinesis get-records``: Add a timestamp field to all Records
+* bugfix:``aws cloudfront``: Add paginators and waiters
+
+
 1.8.2
 =====
 

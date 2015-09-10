@@ -3,8 +3,8 @@ CHANGELOG
 =========
 
 
-Next Release (TBD)
-==================
+1.8.3
+=====
 * feature:``aws iam``: Add two new APIs that enable programmatic access to the
   IAM policy simulator
 * feature:``aws importexport``: Documentation update

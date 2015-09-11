@@ -36,15 +36,15 @@ class TestGetPasswordData(BaseAWSCommandParamsTest):
         stdout = self.run_cmd(self.COMMAND, expected_rc=0)[0]
         self.assertEqual(stdout, '')
 
-    def test_empty_list_prints_nothing(self):
+    def test_empty_list_prints_list(self):
         self.parsed_response = []
         stdout = self.run_cmd(self.COMMAND, expected_rc=0)[0]
-        self.assertEqual(stdout, '')
+        self.assertEqual(stdout, '[]\n')
 
     def test_empty_string_prints_nothing(self):
         self.parsed_response = ''
         stdout = self.run_cmd(self.COMMAND, expected_rc=0)[0]
-        self.assertEqual(stdout, '')
+        self.assertEqual(stdout, '""\n')
 
 
 class TestListUsers(BaseAWSCommandParamsTest):

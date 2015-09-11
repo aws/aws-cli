@@ -92,11 +92,10 @@ class JSONFormatter(FullyBufferedFormatter):
         # the response will be an empty string.  We don't want to print
         # that out to the user but other "falsey" values like an empty
         # dictionary should be printed.
-        if isinstance(response, (dict, list) + string_types) and not response:
-            return
-        json.dump(response, stream, indent=4, default=json_encoder,
-                  ensure_ascii=False)
-        stream.write('\n')
+        if response != {}:
+            json.dump(response, stream, indent=4, default=json_encoder,
+                    ensure_ascii=False)
+            stream.write('\n')
 
 
 class TableFormatter(FullyBufferedFormatter):

@@ -3,6 +3,20 @@ CHANGELOG
 =========
 
 
+Next Release (TBD)
+==================
+* feature:``aws ec2 request-spot-fleet``: Add new Diversified bidding strategy
+  parameter
+* feature:``aws ec2 describe-snapshots``: Add new dataEncryptionKeyId and
+  StateMessage parameters
+* feature:``aws efs describe-mount-targets``: Add new optional MountTargetId
+  parameter
+* feature:``aws route53``: Add calculated health checks and latency health
+  checks
+* bugfix:StreamingBody: File-like object for HTTP response can now be properly
+  closed
+
+
 1.8.3
 =====
 * feature:``aws iam``: Add two new APIs that enable programmatic access to the

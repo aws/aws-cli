@@ -3,8 +3,8 @@ CHANGELOG
 =========
 
 
-Next Release (TBD)
-==================
+1.8.4
+=====
 * feature:``aws ec2 request-spot-fleet``: Add new Diversified bidding strategy
   parameter
 * feature:``aws ec2 describe-snapshots``: Add new dataEncryptionKeyId and

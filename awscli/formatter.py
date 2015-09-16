@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
-import sys
 from botocore.compat import json
 
 from botocore.utils import set_value_from_jmespath
@@ -91,9 +90,9 @@ class JSONFormatter(FullyBufferedFormatter):
         # the response will be an empty string.  We don't want to print
         # that out to the user but other "falsey" values like an empty
         # dictionary should be printed.
-        if response:
+        if response != {}:
             json.dump(response, stream, indent=4, default=json_encoder,
-                      ensure_ascii=False)
+                    ensure_ascii=False)
             stream.write('\n')
 
 

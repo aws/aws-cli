@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.8.5
+=====
+
+* bugfix:Output: Only omit printing response to stdout if
+  the response is an empty dictionary
+  (`issue 1496 <https://github.com/aws/aws-cli/pull/1496>`__)
+* feature:``aws s3/s3api``: Update Amazon S3 commands to the
+  latest version
+
 
 1.8.4
 =====

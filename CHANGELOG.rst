@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.8.5
+=====
 
 * bugfix:Output: Only omit printing response to stdout if
   the response is an empty dictionary

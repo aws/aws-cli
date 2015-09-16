@@ -8,7 +8,7 @@ Output::
 
   {
     "ApplicationName": "my-app",
-    "EnvironmentName": "myAppEnv",
+    "EnvironmentName": "my-env",
     "VersionLabel": "v1",
     "Status": "Launching",
     "EnvironmentId": "e-izqpassy4h",
@@ -17,14 +17,14 @@ Output::
     "Health": "Grey",
     "Tier": {
         "Type": "Standard",
-        "Name": "WebServer"
-        "Version": " ",
+        "Name": "WebServer",
+        "Version": " "
     },
     "DateUpdated": "2015-02-03T23:04:54.479Z",
     "DateCreated": "2015-02-03T23:04:54.479Z"
   }
 
-``v1`` is the label of an application version previously updloaded with `create-application-version`_.
+``v1`` is the label of an application version previously uploaded with `create-application-version`_.
 
 .. _`create-application-version`: http://docs.aws.amazon.com/cli/latest/reference/elasticbeanstalk/create-application-version.html
 

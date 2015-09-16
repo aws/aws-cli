@@ -50,6 +50,9 @@ def test_parse():
     # Dashes are allowed in key names.
     yield (_can_parse, 'with-dash=bar', {'with-dash': 'bar'})
 
+    # Underscore are also allowed.
+    yield (_can_parse, 'with_underscore=bar', {'with_underscore': 'bar'})
+
     # Explicit lists.
     yield (_can_parse, 'foo=[]', {'foo': []})
     yield (_can_parse, 'foo=[a]', {'foo': ['a']})

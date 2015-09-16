@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
-import sys
 from botocore.compat import json
 
 from botocore.utils import set_value_from_jmespath
@@ -20,7 +19,6 @@ from botocore.paginate import PageIterator
 from awscli.table import MultiTable, Styler, ColorizedStyler
 from awscli import text
 from awscli import compat
-from awscli.compat import string_types
 from awscli.utils import json_encoder
 
 

@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.8.6
+=====
 
 * bugfix:Shorthand Syntax: Fix parser regression when a key
   name has an underscore character

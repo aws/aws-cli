@@ -71,6 +71,15 @@ class TestGetObject(BaseAWSCommandParamsTest):
                   'StorageClass': u'REDUCED_REDUNDANCY'}
         self.assert_params(cmdline, result)
 
+    def test_standard_ia_storage_class(self):
+        cmdline = self.prefix
+        cmdline += self.file_path
+        cmdline += ' s3://mybucket/mykey'
+        cmdline += ' --storage-class STANDARD_IA'
+        result = {'Bucket': u'mybucket', 'Key': u'mykey',
+                  'StorageClass': u'STANDARD_IA'}
+        self.assert_params(cmdline, result)
+
     def test_website_redirect(self):
         cmdline = self.prefix
         cmdline += self.file_path

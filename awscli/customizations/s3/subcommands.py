@@ -163,10 +163,11 @@ SSE = {'name': 'sse', 'action': 'store_true',
 
 
 STORAGE_CLASS = {'name': 'storage-class', 'nargs': 1,
-                 'choices': ['STANDARD', 'REDUCED_REDUNDANCY'],
+                 'choices': ['STANDARD', 'REDUCED_REDUNDANCY', 'STANDARD_IA'],
                  'help_text': (
                      "The type of storage to use for the object. "
-                     "Valid choices are: STANDARD | REDUCED_REDUNDANCY. "
+                     "Valid choices are: STANDARD | REDUCED_REDUNDANCY "
+                     "| STANDARD_IA. "
                      "Defaults to 'STANDARD'")}
 
 

@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.8.6
+=====
+
+* bugfix:Shorthand Syntax: Fix parser regression when a key
+  name has an underscore character
+  (`issue 1510 <https://github.com/aws/aws-cli/pull/1510>`__)
+* feature:``aws s3``: Add support for ``STANDARD_IA`` storage class
+  to the ``aws s3`` commands
+  (`issue 1511 <https://github.com/aws/aws-cli/pull/1511>`__)
+* feature:``aws logs``: Add support for ``create-export-task``,
+  ``cancel-export-task``, and ``describe-export-tasks``.
+
+
 1.8.5
 =====
 

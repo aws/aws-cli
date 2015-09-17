@@ -1,24 +1,21 @@
-**To create an SQS queue**
+**To create a queue**
 
-The following ``create-queue`` command creates an SQS queue named my-queue::
+This example creates a queue with the specified name, sets the message retention period to 3 days (3 days * 24 hours * 60 minutes * 60 seconds), and sets the queue's dead letter queue to the specified queue with a maximum receive count of 1,000 messages.
 
-  aws sqs create-queue --queue-name my-queue
+Command::
 
-**To create an SQS queue with a Redrive Policy**
+  aws sqs create-queue --queue-name MyQueue --attributes file://create-queue.json
 
-The following command creates an SWS queue with attributes loaded from a JSON file::
-
-  aws sqs create-queue --queue-name my-queue --attributes file://attributes.json
-
-attributes.json::
+Input file (create-queue.json)::
 
   {
-    "RedrivePolicy":"{\"deadLetterTargetArn\":\"arn:aws:sqs:us-west-2:0123456789012:deadletter\", \"maxReceiveCount\":\"5\"}"
+    "RedrivePolicy": "{\"deadLetterTargetArn\":\"arn:aws:sqs:us-east-1:80398EXAMPLE:MyDeadLetterQueue\",\"maxReceiveCount\":\"1000\"}",
+    "MessageRetentionPeriod": "259200"  
   }
 
-Because the value of the RedrivePolicy key is a JSON document, you must escape its quotes and provide the attributes parameter in JSON.
+Output::
 
-For more information about using SQS with the AWS CLI, see `Using the AWS Command Line Interface with Amazon SQS and Amazon SNS`_ in the *AWS Command Line Interface User Guide*.
-
-.. _`Using the AWS Command Line Interface with Amazon SQS and Amazon SNS`: http://docs.aws.amazon.com/cli/latest/userguide/cli-sqs-queue-sns-topic.html
+  {
+    "QueueUrl": "https://queue.amazonaws.com/80398EXAMPLE/MyQueue"
+  }
 

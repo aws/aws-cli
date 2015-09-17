@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:Shorthand Syntax: Fix parser regression when a key
+  name has an underscore character
+  (`issue 1510 <https://github.com/aws/aws-cli/pull/1510>`__)
+* feature:``aws s3``: Add support for ``STANDARD_IA`` storage class
+  to the ``aws s3`` commands
+  (`issue 1511 <https://github.com/aws/aws-cli/pull/1511>`__)
+
+
 1.8.5
 =====
 

@@ -1,14 +1,41 @@
-**To retrieve queue attributes from an SQS queue**
+**To get a queue's attributes**
 
-The following ``get-queue-attributes`` command retrieves the queue ARN::
+This example gets all of the specified queue's attributes.
 
-  aws sqs get-queue-attributes --queue-url https://queue.amazonaws.com/803981987763/MyQueue --attribute-names QueueArn
+Command::
 
-The following ``get-queue-attributes`` command retrieves multiple attributes from the specified SQS queue::
+  aws sqs get-queue-attributes --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyQueue --attribute-names All
 
-  aws sqs get-queue-attributes --queue-url https://queue.amazonaws.com/803981987763/MyQueue --attribute-names QueueArn MaximumMessageSize VisibilityTimeout
+Output::
 
-For more information, see `Using the AWS Command Line Interface with Amazon SQS and Amazon SNS`_ in the *AWS Command Line Interface User Guide*.
+  {
+    "Attributes": {
+      "ApproximateNumberOfMessagesNotVisible": "0",
+      "RedrivePolicy": "{\"deadLetterTargetArn\":\"arn:aws:sqs:us-east-1:80398EXAMPLE:MyDeadLetterQueue\",\"maxReceiveCount\":1000}",
+      "MessageRetentionPeriod": "345600",
+      "ApproximateNumberOfMessagesDelayed": "0",
+      "MaximumMessageSize": "262144",
+      "CreatedTimestamp": "1442426968",
+      "ApproximateNumberOfMessages": "0",
+      "ReceiveMessageWaitTimeSeconds": "0",
+      "DelaySeconds": "0",
+      "VisibilityTimeout": "30",
+      "LastModifiedTimestamp": "1442426968",
+      "QueueArn": "arn:aws:sqs:us-east-1:80398EXAMPLE:MyNewQueue"
+    }
+  }
 
-.. _`Using the AWS Command Line Interface with Amazon SQS and Amazon SNS`: http://docs.aws.amazon.com/cli/latest/userguide/cli-sqs-queue-sns-topic.html
+This example gets only the specified queue's maximum message size and visibility timeout attributes.
 
+Command::
+
+  aws sqs get-queue-attributes --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyNewQueue --attribute-names MaximumMessageSize VisibilityTimeout
+
+Output::
+
+  {
+    "Attributes": {
+      "VisibilityTimeout": "30",
+      "MaximumMessageSize": "262144"
+    }
+  }

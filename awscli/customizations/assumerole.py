@@ -11,6 +11,7 @@ from dateutil.tz import tzlocal
 from botocore import credentials
 from botocore.compat import total_seconds
 from botocore.exceptions import PartialCredentialsError
+from botocore.exceptions import UnknownCredentialError
 
 
 LOG = logging.getLogger(__name__)
@@ -40,11 +41,12 @@ def inject_assume_role_provider(session, **kwargs):
         # * ...
         cred_chain = session.get_component('credential_provider')
         cred_chain.insert_before('shared-credentials-file', provider)
-    except Exception:
+    except (ValueError, UnknownCredentialError):
+        # Only catch UnknownCredentialError and ValueError
         # This is ok, it just means that we couldn't create the credential
         # provider object.
         LOG.debug("Not registering assume-role provider, credential "
-                  "provider from session could not be created.")
+                  "provider from session could not be created.", exc_info=True)
 
 
 def create_assume_role_provider(session, provider_cls):

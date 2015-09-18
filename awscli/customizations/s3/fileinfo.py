@@ -298,7 +298,7 @@ class FileInfo(TaskInfo):
         Deletes the file from s3 or local.  The src file and type is used
         from the file info object.
         """
-        if (self.src_type == 's3'):
+        if self.src_type == 's3':
             bucket, key = find_bucket_key(self.src)
             params = {'Bucket': bucket, 'Key': key}
             self.source_client.delete_object(**params)

@@ -149,6 +149,26 @@ class TestMoveCommand(BaseS3CLICommand):
         self.assert_key_contents_equal(to_bucket, 'largefile',
                                        large_file_contents)
 
+    def test_mv_s3_to_s3_with_sig4(self):
+        to_region = 'eu-central-1'
+        from_region = 'us-west-2'
+
+        from_bucket = self.create_bucket(region=from_region)
+        to_bucket = self.create_bucket(region=to_region)
+
+        file_name = 'hello.txt'
+        file_contents = 'hello'
+        self.put_object(from_bucket, file_name, file_contents)
+
+        p = aws('s3 mv s3://{0}/{4} s3://{1}/{4} '
+                '--source-region {2} --region {3}'
+                .format(from_bucket, to_bucket, from_region, to_region,
+                        file_name))
+        self.assert_no_errors(p)
+
+        self.assertFalse(self.key_exists(from_bucket, file_name))
+        self.assertTrue(self.key_exists(to_bucket, file_name))
+
     @attr('slow')
     def test_mv_with_large_file(self):
         bucket_name = self.create_bucket()
@@ -624,6 +644,42 @@ class TestSync(BaseS3CLICommand):
         self.assertNotIn('download:', p.stdout)
         self.assertNotIn('delete:', p.stdout)
         self.assertEqual('', p.stdout)
+
+    def test_sync_with_delete_across_sig4_regions(self):
+        src_region = 'us-west-2'
+        dst_region = 'eu-central-1'
+
+        src_bucket = self.create_bucket(region=src_region)
+        dst_bucket = self.create_bucket(region=dst_region)
+
+        src_key_name = 'hello.txt'
+        self.files.create_file(src_key_name, contents='hello')
+
+        p = aws('s3 sync %s s3://%s --region %s' %
+                (self.files.rootdir, src_bucket, src_region))
+        self.assert_no_errors(p)
+        self.assertTrue(self.key_exists(src_bucket, src_key_name))
+
+        self.files.remove_all()
+
+        dst_key_name = 'goodbye.txt'
+        self.files.create_file(dst_key_name, contents='goodbye')
+
+        p = aws('s3 sync %s s3://%s --region %s' %
+                (self.files.rootdir, dst_bucket, dst_region))
+        self.assert_no_errors(p)
+        self.assertTrue(self.key_exists(dst_bucket, dst_key_name))
+        self.assertFalse(self.key_exists(dst_bucket, src_key_name))
+
+        p = aws('s3 sync --delete s3://%s s3://%s '
+                '--source-region %s --region %s' %
+                (src_bucket, dst_bucket, src_region, dst_region))
+        self.assert_no_errors(p)
+
+        self.assertTrue(self.key_exists(src_bucket, src_key_name))
+        self.assertTrue(self.key_exists(dst_bucket, src_key_name))
+        self.assertFalse(self.key_exists(src_bucket, dst_key_name))
+        self.assertFalse(self.key_exists(dst_bucket, dst_key_name))
 
 
 class TestSourceRegion(BaseS3CLICommand):

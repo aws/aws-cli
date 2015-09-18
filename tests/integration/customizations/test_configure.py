@@ -28,6 +28,7 @@ class TestConfigureCommand(unittest.TestCase):
             self.tempdir, 'config-%s' % random.randint(1, 100000))
         self.env_vars = os.environ.copy()
         self.env_vars['AWS_CONFIG_FILE'] = self.config_filename
+        self.env_vars['AWS_SHARED_CREDENTIALS_FILE'] = 'asdf-does-not-exist'
 
     def tearDown(self):
         if os.path.isfile(self.config_filename):

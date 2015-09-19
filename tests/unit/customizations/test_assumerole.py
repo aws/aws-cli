@@ -49,9 +49,7 @@ class TestAssumeRolePlugin(unittest.TestCase):
 
     def test_provider_not_registered_on_error(self):
         session = mock.Mock()
-        # This is the exception raised when we can't retrieve the component
-        # from the ComponentLocator.
-        session.get_component.side_effect = ValueError(
+        session.get_component.side_effect = Exception(
             "Couldn't get credential_provider.")
         assumerole.inject_assume_role_provider(
             session, event_name='building-command-table.foo')

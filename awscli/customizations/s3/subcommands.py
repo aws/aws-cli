@@ -131,14 +131,15 @@ ACL = {'name': 'acl', 'nargs': 1,
 GRANTS = {
     'name': 'grants', 'nargs': '+',
     'help_text': (
-        'Grant specific permissions to individual users or groups. You '
-        'can supply a list of grants of the form::<p/>  --grants '
+        '<p>Grant specific permissions to individual users or groups. You '
+        'can supply a list of grants of the form</p><codeblock>--grants '
         'Permission=Grantee_Type=Grantee_ID [Permission=Grantee_Type='
-        'Grantee_ID ...]<p/>To specify the same permission type for multiple '
-        'grantees, specify the permission as such::<p/> --grants '
+        'Grantee_ID ...]</codeblock>To specify the same permission type '
+        'for multiple '
+        'grantees, specify the permission as such as <codeblock>--grants '
         'Permission=Grantee_Type=Grantee_ID,Grantee_Type=Grantee_ID,...'
-        '</p>Each value contains the following elements:'
-        '<p/><ul><li><code>Permission</code> - Specifies '
+        '</codeblock>Each value contains the following elements:'
+        '<ul><li><code>Permission</code> - Specifies '
         'the granted permissions, and can be set to read, readacl, '
         'writeacl, or full.</li><li><code>Grantee_Type</code> - '
         'Specifies how the grantee is to be identified, and can be set '

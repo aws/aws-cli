@@ -42,8 +42,26 @@ class FileInfoBuilder(object):
         file_info_attr['src_type'] = file_base.src_type
         file_info_attr['dest_type'] = file_base.dest_type
         file_info_attr['operation_name'] = file_base.operation_name
-        file_info_attr['client'] = self._client
-        file_info_attr['source_client'] = self._source_client
         file_info_attr['parameters'] = self._parameters
         file_info_attr['is_stream'] = self._is_stream
+
+        # This is a bit quirky. The below conditional hinges on the --delete
+        # flag being set, which only occurs during a sync command. The source
+        # client in a sync delete refers to the source of the sync rather than
+        # the source of the delete. What this means is that the client that
+        # gets called during the delete process would point to the wrong region.
+        # Normally this doesn't matter because DNS will re-route the request
+        # to the correct region. In the case of s3v4 signing, however, this
+        # would result in a failed delete. The conditional below fixes this
+        # issue by swapping clients only in the case of a sync delete since
+        # swapping which client is used in the delete function would then break
+        # moving under s3v4.
+        if (file_base.operation_name == 'delete' and
+                self._parameters.get('delete')):
+            file_info_attr['client'] = self._source_client
+            file_info_attr['source_client'] = self._client
+        else:
+            file_info_attr['client'] = self._client
+            file_info_attr['source_client'] = self._source_client
+
         return FileInfo(**file_info_attr)

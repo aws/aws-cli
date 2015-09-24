@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.8.7
+=====
 
 * feature:``aws cognito-sync``: Update API to latest version
 * feature:``aws cognito-identity``: Update API to latest version

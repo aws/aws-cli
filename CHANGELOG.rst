@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.8.7
+=====
+
+* feature:``aws cognito-sync``: Update API to latest version
+* feature:``aws cognito-identity``: Update API to latest version
+* bugfix:Assume Role Provider: Fix issue where profile does not
+  exist errors were not being propogated back to the user
+  (`issue 1515 <https://github.com/aws/aws-cli/pull/1515>`__)
+
+
 1.8.6
 =====
 

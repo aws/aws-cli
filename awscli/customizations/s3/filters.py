@@ -36,12 +36,16 @@ def create_filter(parameters):
             # the bucket to be the root dir.
             src_rootdir = _get_s3_root(source_location,
                                        parameters['dir_op'])
-            dst_rootdir = _get_local_root(parameters['dest'],
-                                          parameters['dir_op'])
         else:
             src_rootdir = _get_local_root(parameters['src'], parameters['dir_op'])
+
+        destination_location = parameters['dest']
+        if destination_location.startswith('s3://'):
             dst_rootdir = _get_s3_root(parameters['dest'],
                                        parameters['dir_op'])
+        else:
+            dst_rootdir = _get_local_root(parameters['dest'],
+                                          parameters['dir_op'])
 
         return Filter(real_filters, src_rootdir, dst_rootdir)
     else:

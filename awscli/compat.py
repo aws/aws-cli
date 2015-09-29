@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import sys
 import os
+import zipfile
 
 from botocore.compat import six
 #import botocore.compat
@@ -25,6 +26,15 @@ queue = six.moves.queue
 shlex_quote = six.moves.shlex_quote
 StringIO = six.StringIO
 urlopen = six.moves.urllib.request.urlopen
+
+# Most, but not all, python installations will have zlib. This is required to
+# compress any files we send via a push. If we can't compress, we can still
+# package the files in a zip container.
+try:
+    import zlib
+    ZIP_COMPRESSION_MODE = zipfile.ZIP_DEFLATED
+except ImportError:
+    ZIP_COMPRESSION_MODE = zipfile.ZIP_STORED
 
 
 class BinaryStdout(object):

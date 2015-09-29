@@ -22,6 +22,7 @@ from awscli.compat import six
 from awscli.customizations.codedeploy.utils import validate_s3_location
 from awscli.customizations.commands import BasicCommand
 from awscli.errorhandler import ServerError, ClientError
+from awscli.compat import ZIP_COMPRESSION_MODE
 
 
 ONE_MB = 1 << 20
@@ -199,7 +200,7 @@ class Push(BasicCommand):
                         arcname = filename[len(source_path) + 1:]
                         if filename == appspec_path:
                             contains_appspec = True
-                        zf.write(filename, arcname)
+                        zf.write(filename, arcname, ZIP_COMPRESSION_MODE)
                 if not contains_appspec:
                     raise RuntimeError(
                         '{0} was not found'.format(appspec_path)

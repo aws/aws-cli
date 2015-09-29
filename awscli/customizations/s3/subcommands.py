@@ -128,6 +128,19 @@ ACL = {'name': 'acl', 'nargs': 1,
            "``log-delivery-write``.")}
 
 
+COPY_ACL = {'name': 'copy-acl', 'action': 'store_true', 'dest': 'copy_acl',
+            'default': False, 'group_name': 'copy_acl',
+            'help_text': (
+                "Copies the ACL from the source object to the destination. "
+                "This will result in slower transfers, as it involves two "
+                "additional requests per object. This will override any ACL "
+                "set with the ``--acl`` or ``--grants`` options.")}
+
+
+NO_COPY_ACL = {'name': 'no-copy-acl', 'action': 'store_false',
+               'dest': 'copy_acl', 'default': True, 'group_name': 'copy_acl'}
+
+
 GRANTS = {
     'name': 'grants', 'nargs': '+',
     'help_text': (
@@ -285,7 +298,7 @@ PAGE_SIZE = {'name': 'page-size', 'cli_type_name': 'integer',
                  'Using a lower value may help if an operation times out.')}
 
 
-TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
+TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL, COPY_ACL, NO_COPY_ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
                  SSE, STORAGE_CLASS, GRANTS, WEBSITE_REDIRECT, CONTENT_TYPE,
                  CACHE_CONTROL, CONTENT_DISPOSITION, CONTENT_ENCODING,

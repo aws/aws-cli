@@ -56,7 +56,7 @@ class S3Handler(object):
         if not self.result_queue:
             self.result_queue = queue.Queue()
         self.params = {'dryrun': False, 'quiet': False, 'acl': None,
-                       'guess_mime_type': True, 'sse': False,
+                       'copy_acl': None, 'guess_mime_type': True, 'sse': False,
                        'storage_class': None, 'website_redirect': None,
                        'content_type': None, 'cache_control': None,
                        'content_disposition': None, 'content_encoding': None,

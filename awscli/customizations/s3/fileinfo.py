@@ -293,6 +293,36 @@ class FileInfo(TaskInfo):
         self._handle_metadata_directive(params)
         self.client.copy_object(**params)
 
+        if self.parameters['copy_acl']:
+            self.copy_acl()
+
+    def copy_acl(self):
+        """
+        Copies an object's ACL in s3 to the copied object in another location
+        in s3.
+        """
+
+        src_bucket, src_key = find_bucket_key(self.src)
+        bucket, key = find_bucket_key(self.dest)
+        src_acl = self.client.get_object_acl(Bucket=src_bucket, Key=src_key)
+        acl = {'Grants': src_acl['Grants'], 'Owner': src_acl['Owner']}
+
+        # The `get_object_acl` method doesn't return 'Type', which is required
+        # by `put_object_acl`, so we'll infer if from which grantee fields are
+        # provided.
+        for grant in acl['Grants']:
+            grantee = grant['Grantee']
+            if grantee.get('ID'):
+                grantee['Type'] = 'CanonicalUser'
+            elif grantee.get('EmailAddress'):
+                grantee['Type'] = 'AmazonCustomerByEmail'
+            else:
+                grantee['Type'] = 'Group'
+
+        self.client.put_object_acl(
+            Bucket=bucket, Key=key, AccessControlPolicy=acl
+        )
+
     def delete(self):
         """
         Deletes the file from s3 or local.  The src file and type is used

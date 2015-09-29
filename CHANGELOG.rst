@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+
+1.8.8
+=====
+* feature:``aws ses``: Adds 17 new operations for accepting incoming emails.
+* feature:``aws cloudformation describe-account-limits``: This is a new API.
+* feature:``aws ec2 modify-spot-fleet-request``: This is a new API.
+* bugfix:``aws elasticbeanstalk``: Documentation update.
+
+
 1.8.7
 =====
 

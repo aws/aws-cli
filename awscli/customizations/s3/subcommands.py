@@ -298,7 +298,7 @@ PAGE_SIZE = {'name': 'page-size', 'cli_type_name': 'integer',
                  'Using a lower value may help if an operation times out.')}
 
 
-TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL, COPY_ACL, NO_COPY_ACL,
+TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
                  SSE, STORAGE_CLASS, GRANTS, WEBSITE_REDIRECT, CONTENT_TYPE,
                  CACHE_CONTROL, CONTENT_DISPOSITION, CONTENT_ENCODING,
@@ -573,7 +573,8 @@ class CpCommand(S3TransferCommand):
             "or <S3Path> <S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
-                [METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE]
+                [METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE, COPY_ACL,
+                 NO_COPY_ACL]
 
 
 class MvCommand(S3TransferCommand):
@@ -583,8 +584,9 @@ class MvCommand(S3TransferCommand):
     USAGE = "<LocalPath> <S3Path> or <S3Path> <LocalPath> " \
             "or <S3Path> <S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
-                  'synopsis': USAGE}] + TRANSFER_ARGS + [METADATA_DIRECTIVE,
-                                                         RECURSIVE]
+                  'synopsis': USAGE}] + TRANSFER_ARGS + \
+                [METADATA_DIRECTIVE, RECURSIVE, COPY_ACL, NO_COPY_ACL]
+
 
 class RmCommand(S3TransferCommand):
     NAME = 'rm'
@@ -604,7 +606,7 @@ class SyncCommand(S3TransferCommand):
     USAGE = "<LocalPath> <S3Path> or <S3Path> " \
             "<LocalPath> or <S3Path> <S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
-                  'synopsis': USAGE}] + TRANSFER_ARGS
+                  'synopsis': USAGE}] + TRANSFER_ARGS + [COPY_ACL, NO_COPY_ACL]
 
 
 class MbCommand(S3TransferCommand):

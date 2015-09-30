@@ -244,7 +244,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 
 man_pages = [('reference/index', 'aws', 'The main command', '', 1),
-             ('reference/autoscaling/index', 'Auto Scaling',
+             ('reference/autoscaling/index', 'aws-autoscaling',
               'The autoscaling service', '', 1),
              ('reference/cloudformation/index', 'aws-cloudformation',
               'AWS CloudFormation', '', 1),

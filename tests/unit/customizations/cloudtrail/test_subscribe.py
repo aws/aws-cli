@@ -18,24 +18,9 @@ from botocore.session import Session
 
 from tests.unit.test_clidriver import FakeSession
 from awscli.compat import six
-from awscli.customizations import cloudtrail
+from awscli.customizations.cloudtrail.subscribe import CloudTrailError, CloudTrailSubscribe
 from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.testutils import unittest, temporary_file
-
-
-class TestCloudTrailPlumbing(unittest.TestCase):
-    def test_initialization_registers_injector(self):
-        cli = Mock()
-        cloudtrail.initialize(cli)
-        cli.register.assert_called_with('building-command-table.cloudtrail',
-                                        cloudtrail.inject_commands)
-
-    def test_injection_adds_two_commands_to_cmd_table(self):
-        command_table = {}
-        session = Mock()
-        cloudtrail.inject_commands(command_table, session)
-        self.assertIn('create-subscription', command_table)
-        self.assertIn('update-subscription', command_table)
 
 
 class TestCreateSubscription(BaseAWSCommandParamsTest):
@@ -77,7 +62,7 @@ class TestCreateSubscription(BaseAWSCommandParamsTest):
 class TestCloudTrailCommand(unittest.TestCase):
     def setUp(self):
         self.session = FakeSession({'config_file': 'myconfigfile'})
-        self.subscribe = cloudtrail.CloudTrailSubscribe(self.session)
+        self.subscribe = CloudTrailSubscribe(self.session)
         self.subscribe.region_name = 'us-east-1'
 
         self.subscribe.iam = Mock()
@@ -102,7 +87,7 @@ class TestCloudTrailCommand(unittest.TestCase):
 
     def test_clients_all_from_same_session(self):
         session = Mock()
-        subscribe_command = cloudtrail.CloudTrailSubscribe(session)
+        subscribe_command = CloudTrailSubscribe(session)
         parsed_globals = Mock(region=None, verify_ssl=None,
                               endpoint_url=None)
         subscribe_command.setup_services(None, parsed_globals)
@@ -123,7 +108,7 @@ class TestCloudTrailCommand(unittest.TestCase):
     def test_endpoint_url_is_only_used_for_cloudtrail(self):
         endpoint_url = 'https://mycloudtrail.awsamazon.com/'
         session = Mock()
-        subscribe_command = cloudtrail.CloudTrailSubscribe(session)
+        subscribe_command = CloudTrailSubscribe(session)
         parsed_globals = Mock(region=None, verify_ssl=None,
                               endpoint_url=endpoint_url)
         subscribe_command.setup_services(None, parsed_globals)
@@ -216,7 +201,7 @@ class TestCloudTrailCommand(unittest.TestCase):
     def test_s3_get_policy_fail(self):
         self.subscribe.s3.get_object = Mock(side_effect=Exception('Foo!'))
 
-        with self.assertRaises(cloudtrail.CloudTrailError) as cm:
+        with self.assertRaises(CloudTrailError) as cm:
             self.subscribe.setup_new_bucket('test', 'logs')
 
         # Exception should contain its custom message, the region
@@ -231,7 +216,7 @@ class TestCloudTrailCommand(unittest.TestCase):
         response['Body'].read.side_effect = Exception('Error!')
         self.subscribe.s3.get_object.return_value = response
 
-        with self.assertRaises(cloudtrail.CloudTrailError):
+        with self.assertRaises(CloudTrailError):
             self.subscribe.setup_new_bucket('test', 'logs')
 
     def test_sns_get_policy_fail(self):

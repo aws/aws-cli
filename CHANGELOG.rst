@@ -3,6 +3,17 @@ CHANGELOG
 =========
 
 
+Next Release (TBD)
+==================
+* feature:``aws es``: Adds support for the new Amazon Elasticsearch
+* feature:``aws cloudtrail``: Adds support for log file integrity validation,
+  log encryption with AWS KMS-Managed Keys (SSE-KMS), and trail tagging.
+* feature:``aws rds create-db-instance``: --db-instance-class has a new value
+  as db.t2.large
+* feature:``aws workspaces``: Adds support for volume encryption in
+  Amazon WorkSpaces.
+
+
 1.8.8
 =====
 * feature:``aws ses``: Adds 17 new operations for accepting incoming emails.

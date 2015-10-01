@@ -3,8 +3,8 @@ CHANGELOG
 =========
 
 
-Next Release (TBD)
-==================
+1.8.9
+=====
 * feature:``aws es``: Adds support for the new Amazon Elasticsearch
 * feature:``aws cloudtrail``: Adds support for log file integrity validation,
   log encryption with AWS KMS-Managed Keys (SSE-KMS), and trail tagging.

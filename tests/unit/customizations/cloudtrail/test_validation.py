@@ -405,8 +405,9 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
 
     def test_ensures_digest_has_proper_metadata(self):
         out = six.BytesIO()
-        with gzip.GzipFile(fileobj=out, mode="wb") as f:
-            f.write('{"foo":"bar"}'.encode())
+        f = gzip.GzipFile(fileobj=out, mode="wb")
+        f.write('{"foo":"bar"}'.encode())
+        f.close()
         gzipped_data = out.getvalue()
         s3_client = Mock()
         s3_client.get_object.return_value = {
@@ -428,8 +429,9 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
     def test_ensures_digests_can_be_json_parsed(self):
         json_str = '{{{'
         out = six.BytesIO()
-        with gzip.GzipFile(fileobj=out, mode="wb") as f:
-            f.write(json_str.encode())
+        f = gzip.GzipFile(fileobj=out, mode="wb")
+        f.write(json_str.encode())
+        f.close()
         gzipped_data = out.getvalue()
         s3_client = Mock()
         s3_client.get_object.return_value = {
@@ -442,8 +444,9 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
     def test_fetches_digests(self):
         json_str = '{"foo":"bar"}'
         out = six.BytesIO()
-        with gzip.GzipFile(fileobj=out, mode="wb") as f:
-            f.write(json_str.encode())
+        f = gzip.GzipFile(fileobj=out, mode="wb")
+        f.write(json_str.encode())
+        f.close()
         gzipped_data = out.getvalue()
         s3_client = Mock()
         s3_client.get_object.return_value = {

@@ -30,8 +30,9 @@ END_TIME_ARG = END_DATE.strftime(DATE_FORMAT)
 
 def _gz_compress(data):
     out = six.BytesIO()
-    with gzip.GzipFile(fileobj=out, mode="wb") as f:
-        f.write(data.encode())
+    f = gzip.GzipFile(fileobj=out, mode="wb")
+    f.write(data.encode())
+    f.close()
     return out.getvalue()
 
 

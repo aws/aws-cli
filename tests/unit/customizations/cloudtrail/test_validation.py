@@ -10,7 +10,7 @@
 # distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import codecs
+import binascii
 import base64
 import hashlib
 import json
@@ -287,8 +287,7 @@ class TestSha256RSADigestValidator(unittest.TestCase):
             sha256_hash.hexdigest(),
             self._digest_data['previousDigestSignature'])
         signature = rsa.sign(string_to_sign.encode(), private_key, 'SHA-256')
-        encoder = codecs.getencoder('hex')
-        self._digest_data['_signature'] = encoder(signature)[0]
+        self._digest_data['_signature'] = binascii.hexlify(signature)
         validator = Sha256RSADigestValidator()
         public_key_b64 = base64.b64encode(public_key.save_pkcs1(format='DER'))
         validator.validate('b', 'k', public_key_b64, self._digest_data,
@@ -405,8 +404,9 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
 
     def test_ensures_digest_has_proper_metadata(self):
         out = six.BytesIO()
-        with gzip.GzipFile(fileobj=out, mode="wb") as f:
-            f.write('{"foo":"bar"}'.encode())
+        f = gzip.GzipFile(fileobj=out, mode="wb")
+        f.write('{"foo":"bar"}'.encode())
+        f.close()
         gzipped_data = out.getvalue()
         s3_client = Mock()
         s3_client.get_object.return_value = {
@@ -428,8 +428,9 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
     def test_ensures_digests_can_be_json_parsed(self):
         json_str = '{{{'
         out = six.BytesIO()
-        with gzip.GzipFile(fileobj=out, mode="wb") as f:
-            f.write(json_str.encode())
+        f = gzip.GzipFile(fileobj=out, mode="wb")
+        f.write(json_str.encode())
+        f.close()
         gzipped_data = out.getvalue()
         s3_client = Mock()
         s3_client.get_object.return_value = {
@@ -442,8 +443,9 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
     def test_fetches_digests(self):
         json_str = '{"foo":"bar"}'
         out = six.BytesIO()
-        with gzip.GzipFile(fileobj=out, mode="wb") as f:
-            f.write(json_str.encode())
+        f = gzip.GzipFile(fileobj=out, mode="wb")
+        f.write(json_str.encode())
+        f.close()
         gzipped_data = out.getvalue()
         s3_client = Mock()
         s3_client.get_object.return_value = {

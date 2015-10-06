@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.8.11
+======
 * feature:``aws marketplacecommerceanalytics``: Add support for
   AWS Marketplace Commerce Analytics
 * feature:``aws firehose``: Add support for Amazon Kinesis Firehose

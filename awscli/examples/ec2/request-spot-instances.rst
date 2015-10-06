@@ -1,18 +1,25 @@
 **To request Spot Instances**
 
-This example command creates a Spot Instance request for five instances in a default VPC or EC2-Classic.
+This example command creates a one-time Spot Instance request for five instances in the specified Availability Zone.
+If your account supports EC2-VPC only, Amazon EC2 launches the instances in the default subnet of the specified Availability Zone.
+If your account supports EC2-Classic, Amazon EC2 launches the instances in EC2-Classic in the specified Availability Zone.
 
 Command::
 
-  aws ec2 request-spot-instances --spot-price "0.050" --instance-count 5 --type "one-time" --launch-specification file://specification.json
+  aws ec2 request-spot-instances --spot-price "0.03" --instance-count 5 --type "one-time" --launch-specification file://specification.json
 
 Specification.json::
   
   {
     "ImageId": "ami-1a2b3c4d",
-    "InstanceType": "t1.micro",
+    "KeyName": "my-key-pair",
+    "SecurityGroupIds": [ "sg-1a2b3c4d" ],
+    "InstanceType": "m3.medium",
     "Placement": {
       "AvailabilityZone": "us-west-2a"
+    },
+    "IamInstanceProfile": {
+        "Arn": "arn:aws:iam::123456789012:instance-profile/my-iam-role"
     }
   }
 
@@ -33,17 +40,21 @@ Output::
                 "Placement": {
                     "AvailabilityZone": "us-west-2a"
                 },
+                "ImageId": "ami-1a2b3c4d",
+                "KeyName": "my-key-pair",
                 "SecurityGroups": [
                     {
-                        "GroupName": "default",
-                        "GroupId": "sg-223b284e"
+                        "GroupName": "my-security-group",
+                        "GroupId": "sg-1a2b3c4d"
                     }
                 ],
-                "InstanceType": "t1.micro",
                 "Monitoring": {
                     "Enabled": false
                 },
-                "ImageId": "ami-1a2b3c4d"
+                "IamInstanceProfile": {
+                    "Arn": "arn:aws:iam::123456789012:instance-profile/my-iam-role"
+                },
+                "InstanceType": "m3.medium"
             },
             "Type": "one-time",
             "CreateTime": "2014-03-25T20:54:20.000Z",
@@ -53,7 +64,9 @@ Output::
     ]
   }
 
-This example command creates a Spot Instance request for five instances in a nondefault VPC.
+This example command creates a one-time Spot Instance request for five instances in the specified subnet.
+Amazon EC2 launches the instances in the specified subnet. If the VPC is a nondefault VPC, the instances
+do not receive a public IP address by default.
 
 Command::
 
@@ -61,11 +74,15 @@ Command::
   
 Specification.json::
 
-   {
-     "ImageId": "ami-a43909e1",
-     "InstanceType": "t2.micro",
-     "SubnetId": "subnet-d50bfebc"
-   }
+  {
+    "ImageId": "ami-1a2b3c4d",
+    "SecurityGroupIds": [ "sg-1a2b3c4d" ],
+    "InstanceType": "m3.medium",
+    "SubnetId": "subnet-1a2b3c4d",
+    "IamInstanceProfile": {
+        "Arn": "arn:aws:iam::123456789012:instance-profile/my-iam-role"
+    }
+  }
 
 Output::
 
@@ -84,18 +101,21 @@ Output::
                "Placement": {
                    "AvailabilityZone": "us-west-2a"
                }
-               "ImageId": "ami-a43909e1"
+               "ImageId": "ami-1a2b3c4d"
                "SecurityGroups": [
                    {
-                       "GroupName": "default",
-                       "GroupID": "sg-223b284e"
+                       "GroupName": "my-security-group",
+                       "GroupID": "sg-1a2b3c4d"
                    }
                ]
-               "SubnetId": "subnet-d50bfebc",
+               "SubnetId": "subnet-1a2b3c4d",
                "Monitoring": {
                    "Enabled": false
                },
-               "InstanceType": "t2.micro",
+               "IamInstanceProfile": {
+                   "Arn": "arn:aws:iam::123456789012:instance-profile/my-iam-role"
+               },
+               "InstanceType": "m3.medium",
            },
            "Type": "one-time",
            "CreateTime": "2014-03-25T22:21:58.000Z",
@@ -106,6 +126,8 @@ Output::
   }
 
 This example assigns a public IP address to the Spot Instances that you launch in a nondefault VPC.
+Note that when you specify a network interface, you must include the subnet ID and security group ID
+using the network interface.
 
 Command::
 
@@ -114,13 +136,18 @@ Command::
 Specification.json::
   
   {
-    "ImageId": "ami-e7527ed7",
+    "ImageId": "ami-1a2b3c4d",
+    "KeyName": "my-key-pair",
     "InstanceType": "m3.medium",
     "NetworkInterfaces": [
       {
         "DeviceIndex": 0,
-        "SubnetId": "subnet-e4f33493",
+        "SubnetId": "subnet-1a2b3c4d",
+        "Groups": [ "sg-1a2b3c4d" ],
         "AssociatePublicIpAddress": true
       }
-    ]
+    ],
+    "IamInstanceProfile": {
+        "Arn": "arn:aws:iam::123456789012:instance-profile/my-iam-role"
+    }
   }

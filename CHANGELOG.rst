@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.8.10
+======
+* feature:``aws waf``: Add support for AWS WAF
+* feature:``aws ec2``: Add support for spot blocks
+* feature:``aws cloudfront``: Add support for adding Web ACLs to CloudFront
+  distributions
+
 
 1.8.9
 =====

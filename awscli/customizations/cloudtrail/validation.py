@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import base64
-import codecs
+import binascii
 import json
 import hashlib
 import logging
@@ -512,8 +512,6 @@ class Sha256RSADigestValidator(object):
     The result of validating the digest is inserted into the digest_data
     dictionary using the isValid key value pair.
     """
-    def __init__(self):
-        self.hex_decoder = codecs.getdecoder('hex')
 
     def validate(self, bucket, key, public_key, digest_data, inflated_digest):
         """Validates a digest file.
@@ -531,7 +529,7 @@ class Sha256RSADigestValidator(object):
             decoded_key = base64.b64decode(public_key)
             public_key = rsa.PublicKey.load_pkcs1(decoded_key, format='DER')
             to_sign = self._create_string_to_sign(digest_data, inflated_digest)
-            signature_bytes = self.hex_decoder(digest_data['_signature'])[0]
+            signature_bytes = binascii.unhexlify(digest_data['_signature'])
             rsa.verify(to_sign, signature_bytes, public_key)
         except PyAsn1Error:
             raise DigestError(

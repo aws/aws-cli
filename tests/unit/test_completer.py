@@ -41,7 +41,7 @@ COMPLETIONS = [
                       'lambda', 'logs', 'machinelearning', 'opsworks', 'rds',
                       'redshift', 'route53', 'route53domains', 's3', 's3api',
                       'sdb', 'ses', 'sns', 'sqs', 'storagegateway', 'sts',
-                      'ssm', 'support', 'swf', 'workspaces'])),
+                      'ssm', 'support', 'swf', 'waf', 'workspaces'])),
     ('aws cloud', -1, set(['cloudformation', 'cloudfront', 'cloudhsm',
                            'cloudsearch', 'cloudsearchdomain', 'cloudtrail',
                            'cloudwatch'])),

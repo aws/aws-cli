@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.8.11
+======
+* feature:``aws marketplacecommerceanalytics``: Add support for
+  AWS Marketplace Commerce Analytics
+* feature:``aws firehose``: Add support for Amazon Kinesis Firehose
+* feature:``aws inspector``: Add support for Amazon Inspector
+* feature:``aws kinesis``: Add support for updating stream retention periods
+* feature:``aws configservice``: Add support for config rules
+
+
 1.8.10
 ======
 * feature:``aws waf``: Add support for AWS WAF

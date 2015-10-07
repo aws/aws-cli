@@ -399,3 +399,19 @@ class TestRoute53CreateHostedZone(BaseAWSHelpOutputTest):
         # Ensure that the proper casing is used for this command's docs.
         self.assert_contains(
             'do **not** include ``PrivateZone`` in this input structure')
+
+
+class TestIotData(BaseAWSHelpOutputTest):
+    def test_service_help_command_has_note(self):
+        self.driver.main(['iot-data', 'help'])
+        # Ensure the note is in help page.
+        self.assert_contains(
+            'The default endpoint data.iot.[region].amazonaws.com is '
+            'intended for testing purposes only.')
+
+    def test_operation_help_command_has_note(self):
+        self.driver.main(['iot-data', 'get-thing-shadow', 'help'])
+        # Ensure the note is in help page.
+        self.assert_contains(
+            'The default endpoint data.iot.[region].amazonaws.com is '
+            'intended for testing purposes only.')

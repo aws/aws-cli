@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.8.12
+======
 * feature:``aws iot``: Add support for AWS IoT
 * feature:``aws iot-data``: Add support for AWS IoT Data Plane
 * feature:``aws lambda``: Add support for aliasing and function versioning

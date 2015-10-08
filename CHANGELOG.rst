@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.8.12
+======
+* feature:``aws iot``: Add support for AWS IoT
+* feature:``aws iot-data``: Add support for AWS IoT Data Plane
+* feature:``aws lambda``: Add support for aliasing and function versioning
+* feature:``aws ecs``: Update commands
+
+
 1.8.11
 ======
 * feature:``aws marketplacecommerceanalytics``: Add support for

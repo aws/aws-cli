@@ -154,7 +154,8 @@ class CLIDriver(object):
         command_table['help'] = self.create_help_command()
         cli_data = self._get_cli_data()
         parser = MainArgParser(
-            command_table, self.session.user_agent(),
+            command_table,
+            "%s botocore/%s" % (self.session.user_agent(), botocore_version),
             cli_data.get('description', None),
             cli_data.get('synopsis', None),
             self._get_argument_table())

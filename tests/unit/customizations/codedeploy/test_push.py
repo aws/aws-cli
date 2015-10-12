@@ -20,6 +20,7 @@ from six import StringIO
 from awscli.customizations.codedeploy.push import Push
 from awscli.errorhandler import ClientError
 from awscli.testutils import unittest
+from awscli.compat import ZIP_COMPRESSION_MODE
 
 
 class TestPush(unittest.TestCase):
@@ -218,7 +219,8 @@ class TestPush(unittest.TestCase):
                 self.args.ignore_hidden_files):
             zf().write.assert_called_with(
                 '/tmp/appspec.yml',
-                self.appspec
+                self.appspec,
+                ZIP_COMPRESSION_MODE
             )
 
     def test_upload_to_s3_with_put_object(self):

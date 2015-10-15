@@ -160,9 +160,10 @@ class TestConfigureCommand(unittest.TestCase):
         # Test the case where the user only wants to change a single_value.
         responses = {
             "AWS Access Key ID": None,
-            "AWS Secert Access Key": None,
+            "AWS Secret Access Key": None,
             "Default region name": None,
             "Default output format": "NEW OUTPUT FORMAT",
+            "CA certificate bundle": None,
         }
         prompter = KeyValuePrompter(responses)
         self.configure = configure.ConfigureCommand(self.session, prompter=prompter,
@@ -614,6 +615,7 @@ class TestConfigureListCommand(unittest.TestCase):
         self.assertRegexpMatches(rendered, 'access_key\s+<not set>')
         self.assertRegexpMatches(rendered, 'secret_key\s+<not set>')
         self.assertRegexpMatches(rendered, 'region\s+<not set>')
+        self.assertRegexpMatches(rendered, 'ca_bundle\s+<not set>')
 
     def test_configure_from_env(self):
         env_vars = {
@@ -657,7 +659,8 @@ class TestConfigureListCommand(unittest.TestCase):
             'profile': 'myprofilename'
         }
         config_file_vars = {
-            'region': 'us-west-2'
+            'region': 'us-west-2',
+            'ca_bundle': '/path/to/cacert.pem'
         }
         credentials = mock.Mock()
         credentials.access_key = 'access_key'
@@ -670,7 +673,8 @@ class TestConfigureListCommand(unittest.TestCase):
             credentials=credentials)
         session.session_var_map = {
             'region': ('region', 'AWS_REGION'),
-            'profile': ('profile', 'AWS_DEFAULT_PROFILE')}
+            'profile': ('profile', 'AWS_DEFAULT_PROFILE'),
+            'ca_bundle': ('ca_bundle', 'AWS_CA_BUNDLE')}
         session.full_config = {
             'profiles': {'default': {'region': 'AWS_REGION'}}}
         stream = StringIO()
@@ -683,6 +687,9 @@ class TestConfigureListCommand(unittest.TestCase):
         # The region came from the config file.
         self.assertRegexpMatches(
             rendered, 'region\s+us-west-2\s+config-file\s+/config/location')
+        # The ca_bundle came from the config file.
+        self.assertRegexpMatches(
+            rendered, 'ca_bundle\s+/path/to/cacert.pem\s+config-file\s+/config/location')
         # The credentials came from an IAM role.  Note how we're
         # also checking that the access_key/secret_key are masked
         # with '*' chars except for the last 4 chars.

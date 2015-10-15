@@ -79,3 +79,6 @@ Output::
 
     download: s3://mybucket/test1.txt to test1.txt
 
+The following ``sync`` command syncs files between two buckets in different regions::
+
+    aws s3 sync s3://my-us-west-2-bucket s3://my-us-east-1-bucket --source-region us-west-2 --region us-east-1

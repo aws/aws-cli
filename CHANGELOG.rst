@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+1.8.13
+======
+
+* feature:``aws deploy``: Compress zip files when using
+  ``aws deploy push``
+  (`issue 1534 <https://github.com/aws/aws-cli/pull/1534>`--)
+* bugfix:Shorthand Parser: Fix issue when display error message
+  for multiline shorthand syntax values
+  (`issue 1543 <https://github.com/aws/aws-cli/pull/1543>`__)
+* bugfix:``aws route53``: Automatically retry Throttling and
+  PriorRequestNotComplete errors
+  (`botocore issue 682 <https://github.com/boto/botocore/pull/682>`__)
+* feature:``aws s3/s3api``: Add support for changing the bucket
+  addressing style
+  (`botocore issue 673 <https://github.com/boto/botocore/pull/673>`__)
+* bugfix:``aws s3api``: Add missing ``--server-side-encryption``
+  option to ``upload-part`` command
+* feature:``aws kms``: Add ability to delete customer master keys (CMKs)
+
+
 1.8.12
 ======
 * feature:``aws iot``: Add support for AWS IoT

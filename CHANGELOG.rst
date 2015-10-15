@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.8.13
+======
 
 * feature:``aws deploy``: Compress zip files when using
   ``aws deploy push``

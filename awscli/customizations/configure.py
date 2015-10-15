@@ -524,7 +524,6 @@ class ConfigureCommand(BasicCommand):
         '    AWS Secret Access Key [None]: secretkey\n'
         '    Default region name [None]: us-west-2\n'
         '    Default output format [None]:\n'
-        '    CA certificate bundle [None]: /etc/pki/tls/certs/ca-bundle.crt\n'
         '\n'
         'To update just the region name::\n'
         '\n'
@@ -533,7 +532,6 @@ class ConfigureCommand(BasicCommand):
         '    AWS Secret Access Key [****]:\n'
         '    Default region name [us-west-1]: us-west-2\n'
         '    Default output format [None]:\n'
-        '    CA certificate bundle [None]:\n'
     )
     SUBCOMMANDS = [
         {'name': 'list', 'command_class': ConfigureListCommand},
@@ -548,7 +546,6 @@ class ConfigureCommand(BasicCommand):
         ('aws_secret_access_key', "AWS Secret Access Key"),
         ('region', "Default region name"),
         ('output', "Default output format"),
-        ('ca_bundle', "CA certificate bundle"),
     ]
 
     def __init__(self, session, prompter=None, config_writer=None):

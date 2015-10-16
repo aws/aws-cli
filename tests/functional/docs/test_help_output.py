@@ -261,6 +261,12 @@ class TestPagingParamDocs(BaseAWSHelpOutputTest):
         self.assert_not_contains('``--next-token``')
         self.assert_not_contains('``--max-keys``')
 
+    def test_paging_documentation_added(self):
+        self.driver.main(['s3api', 'list-objects', 'help'])
+        self.assert_contains('``list-objects`` is a paginated operation')
+        self.assert_contains('When using ``--output text`` and the')
+        self.assert_contains('following query expressions: ')
+
 
 class TestMergeBooleanGroupArgs(BaseAWSHelpOutputTest):
     def test_merge_bool_args(self):

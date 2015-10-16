@@ -56,8 +56,8 @@ PAGE_SIZE_HELP = """
 
 
 def register_pagination(event_handlers):
-    event_handlers.register('building-argument-table',
-                            unify_paging_params)
+    event_handlers.register('building-argument-table', unify_paging_params)
+    event_handlers.register_last('doc-description', add_paging_description)
 
 
 def get_paginator_config(session, service_name, operation_name):
@@ -71,6 +71,32 @@ def get_paginator_config(session, service_name, operation_name):
     except ValueError:
         return None
     return operation_paginator_config
+
+
+def add_paging_description(help_command, **kwargs):
+    if not isinstance(help_command.obj, model.OperationModel):
+        return
+    service_name = help_command.obj.service_model.service_name
+    paginator_config = get_paginator_config(
+        help_command.session, service_name, help_command.obj.name)
+    if not paginator_config:
+        return
+    help_command.doc.writeln(
+        ('\n\n``%s`` is a paginated operation. Multiple API calls may be '
+         'issued in order to retrieve the entire data set of results. You can '
+         'disable pagination by providing the ``--no-paginate`` argument.')
+        % help_command.name)
+    # Only include result key information if it is present.
+    if paginator_config.get('result_key'):
+        queries = paginator_config['result_key']
+        if type(queries) is not list:
+            queries = [queries]
+        queries = ", ".join([('``%s``' % s) for s in queries])
+        help_command.doc.writeln(
+            ('When using ``--output text`` and the ``--query`` argument on a '
+             'paginated response, the ``--query`` argument must extract data '
+             'from the results of the following query expressions: %s')
+            % queries)
 
 
 def unify_paging_params(argument_table, operation_model, event_name,

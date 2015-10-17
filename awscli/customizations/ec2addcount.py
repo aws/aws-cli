@@ -20,12 +20,13 @@ from awscli.arguments import BaseCLIArgument
 logger = logging.getLogger(__name__)
 
 
+DEFAULT = 1
 HELP = """
 <p>Number of instances to launch. If a single number is provided, it
-is assumed to be the minimum to launch (defaults to 1).  If a range is
+is assumed to be the minimum to launch (defaults to %d).  If a range is
 provided in the form <code>min:max</code> then the first number is
 interpreted as the minimum number of instances to launch and the second
-is interpreted as the maximum number of instances to launch.</p>"""
+is interpreted as the maximum number of instances to launch.</p>""" % DEFAULT
 
 
 def ec2_add_count(argument_table, **kwargs):
@@ -64,9 +65,15 @@ class CountArgument(BaseCLIArgument):
     def add_to_parser(self, parser):
         parser.add_argument(self.cli_name, metavar=self.py_name,
                             help='Number of instances to launch',
-                            default='1')
+                            ## We will delegate the default value logic to
+                            ## ec2runinstances.py:_fix_args()
+                            # default=str(DEFAULT)
+                            )
 
     def add_to_params(self, parameters, value):
+        if value is None:
+            # NO-OP if value is not explicitly set by user
+            return
         try:
             if ':' in value:
                 minstr, maxstr = value.split(':')

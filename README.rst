@@ -104,7 +104,6 @@ The quickest way to get started is to run the ``aws configure`` command::
     AWS Secret Access Key: bar
     Default region name [us-west-2]: us-west-2
     Default output format [None]: json
-    CA certificate bundle [None]: /path/to/ca-bundle.pem
 
 To use environment variables, do the following::
 
@@ -118,8 +117,6 @@ To use a config file, create a configuration file like this::
     aws_secret_access_key=<default secret key>
     # Optional, to define default region for this profile.
     region=us-west-1
-    # Optional, define the default CA certificate bundle.
-    ca_bundle=/path/to/ca-bundle.pem
 
     [profile testing]
     aws_access_key_id=<testing access key>

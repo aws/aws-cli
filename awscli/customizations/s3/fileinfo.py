@@ -270,9 +270,10 @@ class FileInfo(TaskInfo):
 
     def _inject_content_type(self, params, filename):
         # Add a content type param if we can guess the type.
-        guessed_type = None
         try:
             guessed_type = guess_content_type(filename)
+            if guessed_type is not None:
+                params['ContentType'] = guessed_type
         # This catches a bug in the mimetype libary where some MIME types
         # specifically on windows machines cause a UnicodeDecodeError
         # because the MIME type in the Windows registery has an encoding
@@ -286,8 +287,6 @@ class FileInfo(TaskInfo):
                 'Unable to guess content type for %s due to '
                 'UnicodeDecodeError: ', filename, exc_info=True
             )
-        if guessed_type is not None:
-            params['ContentType'] = guessed_type
 
     def download(self):
         """

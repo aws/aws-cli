@@ -74,6 +74,8 @@ def get_paginator_config(session, service_name, operation_name):
 
 
 def add_paging_description(help_command, **kwargs):
+    # This customization is only applied to the description of
+    # Operations, so we must filter out all other events.
     if not isinstance(help_command.obj, model.OperationModel):
         return
     service_name = help_command.obj.service_model.service_name
@@ -81,9 +83,10 @@ def add_paging_description(help_command, **kwargs):
         help_command.session, service_name, help_command.obj.name)
     if not paginator_config:
         return
+    help_command.doc.style.new_paragraph()
     help_command.doc.writeln(
-        ('\n\n``%s`` is a paginated operation. Multiple API calls may be '
-         'issued in order to retrieve the entire data set of results. You can '
+        ('``%s`` is a paginated operation. Multiple API calls may be issued '
+         'in order to retrieve the entire data set of results. You can '
          'disable pagination by providing the ``--no-paginate`` argument.')
         % help_command.name)
     # Only include result key information if it is present.

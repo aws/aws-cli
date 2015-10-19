@@ -103,7 +103,7 @@ class TestGlobalArgsCustomization(unittest.TestCase):
             config_file_vars = {'ca_bundle': '/path/to/bundle.pem'}
             session_var_map = {'ca_bundle': ('ca_bundle', 'AWS_CA_BUNDLE')}
             session = FakeSession(
-                session_vars=session_var_map, 
+                session_vars=session_var_map,
                 config_file_vars=config_file_vars)
             globalargs.resolve_verify_ssl(parsed_args, session)
             self.assertEqual(parsed_args.verify_ssl, '/path/to/bundle.pem')
@@ -117,7 +117,7 @@ class TestGlobalArgsCustomization(unittest.TestCase):
             config_file_vars = {'ca_bundle': '/path/to/confg_bundle.pem'}
             session_var_map = {'ca_bundle': ('ca_bundle', 'AWS_CA_BUNDLE')}
             session = FakeSession(
-                session_vars=session_var_map, 
+                session_vars=session_var_map,
                 config_file_vars=config_file_vars)
             globalargs.resolve_verify_ssl(parsed_args, session)
             self.assertEqual(parsed_args.verify_ssl, '/path/to/env_bundle.pem')
@@ -126,12 +126,12 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         environ = {}
         with mock.patch('os.environ', environ):
             parsed_args = FakeParsedArgs(
-                verify_ssl=True, 
+                verify_ssl=True,
                 ca_bundle='/path/to/cli_bundle.pem')
             config_file_vars = {}
             session_var_map = {'ca_bundle': ('ca_bundle', 'AWS_CA_BUNDLE')}
             session = FakeSession(
-                session_vars=session_var_map, 
+                session_vars=session_var_map,
                 config_file_vars=config_file_vars)
             globalargs.resolve_verify_ssl(parsed_args, session)
             self.assertEqual(parsed_args.verify_ssl, '/path/to/cli_bundle.pem')
@@ -142,12 +142,12 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         }
         with mock.patch('os.environ', environ):
             parsed_args = FakeParsedArgs(
-                verify_ssl=True, 
+                verify_ssl=True,
                 ca_bundle='/path/to/cli_bundle.pem')
             config_file_vars = {}
             session_var_map = {'ca_bundle': ('ca_bundle', 'AWS_CA_BUNDLE')}
             session = FakeSession(
-                session_vars=session_var_map, 
+                session_vars=session_var_map,
                 config_file_vars=config_file_vars)
             globalargs.resolve_verify_ssl(parsed_args, session)
             self.assertEqual(parsed_args.verify_ssl, '/path/to/cli_bundle.pem')
@@ -158,12 +158,12 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         }
         with mock.patch('os.environ', environ):
             parsed_args = FakeParsedArgs(
-                verify_ssl=False, 
+                verify_ssl=False,
                 ca_bundle='/path/to/cli_bundle.pem')
             config_file_vars = {}
             session_var_map = {'ca_bundle': ('ca_bundle', 'AWS_CA_BUNDLE')}
             session = FakeSession(
-                session_vars=session_var_map, 
+                session_vars=session_var_map,
                 config_file_vars=config_file_vars)
             globalargs.resolve_verify_ssl(parsed_args, session)
             self.assertFalse(parsed_args.verify_ssl)

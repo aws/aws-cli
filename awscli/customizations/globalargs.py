@@ -62,6 +62,8 @@ def resolve_verify_ssl(parsed_args, session, **kwargs):
     arg_value = getattr(parsed_args, arg_name, None)
     if arg_value is not None:
         verify = None
+        # Only consider setting a custom ca_bundle if they
+        # haven't provided --no-verify-ssl.
         if not arg_value:
             verify = False
         else:

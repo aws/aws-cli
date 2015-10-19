@@ -29,10 +29,22 @@ interpreted as the minimum number of instances to launch and the second
 is interpreted as the maximum number of instances to launch.</p>""" % DEFAULT
 
 
+def register_count_events(event_handler):
+    event_handler.register(
+        'building-argument-table.ec2.run-instances', ec2_add_count)
+    event_handler.register(
+        'before-parameter-build.ec2.RunInstances', set_default_count)
+
+
 def ec2_add_count(argument_table, **kwargs):
     argument_table['count'] = CountArgument('count')
     del argument_table['min-count']
     del argument_table['max-count']
+
+
+def set_default_count(params, **kwargs):
+    params.setdefault('MaxCount', DEFAULT)
+    params.setdefault('MinCount', DEFAULT)
 
 
 class CountArgument(BaseCLIArgument):
@@ -63,12 +75,9 @@ class CountArgument(BaseCLIArgument):
         return HELP
 
     def add_to_parser(self, parser):
+        # We do NOT set default value here. It will be set later by event hook.
         parser.add_argument(self.cli_name, metavar=self.py_name,
-                            help='Number of instances to launch',
-                            ## We will delegate the default value logic to
-                            ## ec2runinstances.py:_fix_args()
-                            # default=str(DEFAULT)
-                            )
+                            help='Number of instances to launch')
 
     def add_to_params(self, parameters, value):
         if value is None:

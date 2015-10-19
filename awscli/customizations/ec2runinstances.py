@@ -23,7 +23,6 @@ This functionality (and much more) is also available using the
 the most commonly used features available more easily.
 """
 from awscli.arguments import CustomArgument
-from awscli.customizations.ec2addcount import DEFAULT
 
 # --secondary-private-ip-address
 SECONDARY_PRIVATE_IP_ADDRESSES_DOCS = (
@@ -106,8 +105,6 @@ def _fix_args(params, **kwargs):
                            'Primary': True}
                 ni[0]['PrivateIpAddresses'] = [ip_addr]
                 del params['PrivateIpAddress']
-    params.setdefault('MaxCount', DEFAULT)
-    params.setdefault('MinCount', DEFAULT)
 
 
 EVENTS = [

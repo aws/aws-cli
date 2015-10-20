@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:Assume Role: Add ``role_session_name`` config variable
+  to control the ``RoleSessionName`` when assuming roles
+  (`issue 1389 <https://github.com/aws/aws-cli/pull/1389>`__)
+
 1.8.13
 ======
 

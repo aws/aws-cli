@@ -157,6 +157,30 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
         # to replace any ':' that come up.
         self.assertEqual(cache['development--arn_aws_iam__foo-role'],
                          response)
+                         
+    def test_cache_key_with_role_session_name(self):
+        response = {
+            'Credentials': {
+                'AccessKeyId': 'foo',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': datetime.now(tzlocal()).isoformat()
+            },
+        }
+        cache = {}
+        self.fake_config['profiles']['development']['role_arn'] = (
+            'arn:aws:iam::foo-role')
+        self.fake_config['profiles']['development']['role_session_name'] = (
+            'foo_role_session_name')
+
+        client_creator = self.create_client_creator(with_response=response)
+        provider = assumerole.AssumeRoleProvider(
+            self.create_config_loader(),
+            client_creator, cache=cache, profile_name='development')
+
+        provider.load()
+        self.assertEqual(cache['development--arn_aws_iam__foo-role--foo_role_session_name'],
+                         response)
 
     def test_assume_role_in_cache_but_expired(self):
         expired_creds = datetime.utcnow()
@@ -189,6 +213,27 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
         self.assertEqual(credentials.access_key, 'foo')
         self.assertEqual(credentials.secret_key, 'bar')
         self.assertEqual(credentials.token, 'baz')
+        
+    def test_role_session_name_provided(self):
+        self.fake_config['profiles']['development']['role_session_name'] = 'myname'
+        response = {
+            'Credentials': {
+                'AccessKeyId': 'foo',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': datetime.now(tzlocal()).isoformat(),
+            },
+        }
+        client_creator = self.create_client_creator(with_response=response)
+        provider = assumerole.AssumeRoleProvider(
+            self.create_config_loader(),
+            client_creator, cache={}, profile_name='development')
+
+        provider.load()
+
+        client = client_creator.return_value
+        client.assume_role.assert_called_with(
+            RoleArn='myrole', RoleSessionName='myname')
 
     def test_external_id_provided(self):
         self.fake_config['profiles']['development']['external_id'] = 'myid'

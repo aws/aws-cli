@@ -778,8 +778,10 @@ class TestWarnings(BaseS3CLICommand):
     def test_no_exist(self):
         filename = os.path.join(self.files.rootdir, "no-exists-file")
         p = aws('s3 cp %s s3://%s/' % (filename, self.bucket_name))
-        self.assertEqual(p.rc, 2, p.stderr)
-        self.assertIn('warning: Skipping file %s. File does not exist.' %
+        # If the local path provided by the user is nonexistant for an
+        # upload, this should error out.
+        self.assertEqual(p.rc, 1, p.stderr)
+        self.assertIn('The user-provided path %s does not exist.' %
                       filename, p.stderr)
 
     @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],

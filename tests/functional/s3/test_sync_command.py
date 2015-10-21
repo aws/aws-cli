@@ -82,7 +82,7 @@ class TestSyncCommand(BaseAWSCommandParamsTest):
     def test_handles_glacier_incompatible_operations(self):
         self.parsed_responses = [
             {'Contents': [
-                {'Key': 'foo', 'Size': '100',
+                {'Key': 'foo', 'Size': 100,
                  'LastModified': '00:00:00Z', 'StorageClass': 'GLACIER'}]}
         ]
         cmdline = '%s s3://bucket/ %s' % (
@@ -97,7 +97,7 @@ class TestSyncCommand(BaseAWSCommandParamsTest):
     def test_turn_off_glacier_warnings(self):
         self.parsed_responses = [
             {'Contents': [
-                {'Key': 'foo', 'Size': '100',
+                {'Key': 'foo', 'Size': 100,
                  'LastModified': '00:00:00Z', 'StorageClass': 'GLACIER'}]}
         ]
         cmdline = '%s s3://bucket/ %s --ignore-glacier-warnings' % (

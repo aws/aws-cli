@@ -60,7 +60,7 @@ class TestSyncCommand(BaseAWSCommandParamsTest):
         self.parsed_responses = [
             {"CommonPrefixes": [], "Contents": []}
         ]
-        _, stderr, _ = self.run_cmd(cmdline, expected_rc=1)
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=255)
         self.assertIn('does not exist', stderr)
 
     def test_sync_to_non_existant_directory(self):

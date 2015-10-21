@@ -780,7 +780,7 @@ class TestWarnings(BaseS3CLICommand):
         p = aws('s3 cp %s s3://%s/' % (filename, self.bucket_name))
         # If the local path provided by the user is nonexistant for an
         # upload, this should error out.
-        self.assertEqual(p.rc, 1, p.stderr)
+        self.assertEqual(p.rc, 255, p.stderr)
         self.assertIn('The user-provided path %s does not exist.' %
                       filename, p.stderr)
 

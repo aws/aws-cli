@@ -110,7 +110,7 @@ class LocalFileGeneratorTest(unittest.TestCase):
                                      'type': 's3'},
                             'dir_op': False, 'use_src_name': False}
         params = {'region': 'us-east-1'}
-        files = FileGenerator(self.client, 'upload').call(input_local_file)
+        files = FileGenerator(self.client, '').call(input_local_file)
         result_list = []
         for filename in files:
             result_list.append(filename)
@@ -118,7 +118,7 @@ class LocalFileGeneratorTest(unittest.TestCase):
         file_stat = FileStat(src=self.local_file, dest='bucket/text1.txt',
                              compare_key='text1.txt', size=size,
                              last_update=last_update, src_type='local',
-                             dest_type='s3', operation_name='upload')
+                             dest_type='s3', operation_name='')
         ref_list = [file_stat]
         self.assertEqual(len(result_list), len(ref_list))
         for i in range(len(result_list)):
@@ -134,7 +134,7 @@ class LocalFileGeneratorTest(unittest.TestCase):
                                     'type': 's3'},
                            'dir_op': True, 'use_src_name': True}
         params = {'region': 'us-east-1'}
-        files = FileGenerator(self.client, 'upload').call(input_local_dir)
+        files = FileGenerator(self.client, '').call(input_local_dir)
         result_list = []
         for filename in files:
             result_list.append(filename)
@@ -142,7 +142,7 @@ class LocalFileGeneratorTest(unittest.TestCase):
         file_stat = FileStat(src=self.local_file, dest='bucket/text1.txt',
                              compare_key='text1.txt', size=size,
                              last_update=last_update, src_type='local',
-                             dest_type='s3', operation_name='upload')
+                             dest_type='s3', operation_name='')
         path = self.local_dir + 'another_directory' + os.sep \
             + 'text2.txt'
         size, last_update = get_file_stat(path)
@@ -151,7 +151,7 @@ class LocalFileGeneratorTest(unittest.TestCase):
                               compare_key='another_directory/text2.txt',
                               size=size, last_update=last_update,
                               src_type='local',
-                              dest_type='s3', operation_name='upload')
+                              dest_type='s3', operation_name='')
         ref_list = [file_stat2, file_stat]
         self.assertEqual(len(result_list), len(ref_list))
         for i in range(len(result_list)):
@@ -175,7 +175,7 @@ class TestIgnoreFilesLocally(unittest.TestCase):
     def test_warning(self):
         path = os.path.join(self.files.rootdir, 'badsymlink')
         os.symlink('non-existent-file', path)
-        filegenerator = FileGenerator(self.client, 'upload', True)
+        filegenerator = FileGenerator(self.client, '', True)
         self.assertTrue(filegenerator.should_ignore_file(path))
 
     def test_skip_symlink(self):
@@ -185,7 +185,7 @@ class TestIgnoreFilesLocally(unittest.TestCase):
                                contents='foo.txt contents')
         sym_path = os.path.join(self.files.rootdir, 'symlink')
         os.symlink(filename, sym_path)
-        filegenerator = FileGenerator(self.client, 'upload', False)
+        filegenerator = FileGenerator(self.client, '', False)
         self.assertTrue(filegenerator.should_ignore_file(sym_path))
 
     def test_no_skip_symlink(self):
@@ -195,7 +195,7 @@ class TestIgnoreFilesLocally(unittest.TestCase):
                                       contents='foo.txt contents')
         sym_path = os.path.join(self.files.rootdir, 'symlink')
         os.symlink(path, sym_path)
-        filegenerator = FileGenerator(self.client, 'upload', True)
+        filegenerator = FileGenerator(self.client, '', True)
         self.assertFalse(filegenerator.should_ignore_file(sym_path))
         self.assertFalse(filegenerator.should_ignore_file(path))
 
@@ -205,7 +205,7 @@ class TestIgnoreFilesLocally(unittest.TestCase):
         os.mkdir(path)
         sym_path = os.path.join(self.files.rootdir, 'symlink')
         os.symlink(path, sym_path)
-        filegenerator = FileGenerator(self.client, 'upload', True)
+        filegenerator = FileGenerator(self.client, '', True)
         self.assertFalse(filegenerator.should_ignore_file(sym_path))
         self.assertFalse(filegenerator.should_ignore_file(path))
 
@@ -321,8 +321,7 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
                            'dest': {'path': self.bucket,
                                     'type': 's3'},
                            'dir_op': True, 'use_src_name': True}
-        file_stats = FileGenerator(self.client, 'upload', False).call(
-            input_local_dir)
+        file_stats = FileGenerator(self.client, '', False).call(input_local_dir)
         self.filenames.sort()
         result_list = []
         for file_stat in file_stats:
@@ -344,7 +343,7 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
                                     'type': 's3'},
                            'dir_op': True, 'use_src_name': True}
         file_stats = FileGenerator(self.client, '', True).call(input_local_dir)
-        file_gen = FileGenerator(self.client, 'upload', True)
+        file_gen = FileGenerator(self.client, '', True)
         file_stats = file_gen.call(input_local_dir)
         all_filenames = self.filenames + self.symlink_files
         all_filenames.sort()
@@ -367,8 +366,7 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
                            'dest': {'path': self.bucket,
                                     'type': 's3'},
                            'dir_op': True, 'use_src_name': True}
-        file_stats = FileGenerator(self.client, 'upload', True).call(
-            input_local_dir)
+        file_stats = FileGenerator(self.client, '', True).call(input_local_dir)
         all_filenames = self.filenames + self.symlink_files
         all_filenames.sort()
         result_list = []
@@ -449,21 +447,6 @@ class TestListFilesLocally(unittest.TestCase):
             u"\u00e6"
         ]]
         self.assertEqual(values, expected_order)
-
-    def test_list_local_directory_that_does_not_exist_from_local_to_s3(self):
-        path = os.path.join(self.directory, 'nonexistantdirectory')
-        file_generator = FileGenerator(None, None, None)
-        with self.assertRaises(RuntimeError):
-            list(file_generator.list_files(
-                path, dir_op=True, transfer_direction_context='locals3'))
-
-    def test_list_local_directory_that_does_not_exist_from_s3_to_local(self):
-        path = os.path.join(self.directory, 'nonexistantdirectory')
-        file_generator = FileGenerator(None, None, None)
-        file_list = list(
-            file_generator.list_files(
-                path, dir_op=True, transfer_direction_context='s3local'))
-        self.assertEqual(file_list, [])
 
 
 class TestNormalizeSort(unittest.TestCase):

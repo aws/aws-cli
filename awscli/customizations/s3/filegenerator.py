@@ -130,24 +130,11 @@ class FileGenerator(object):
         ``dir_op`` and ``use_src_name`` flags affect which files are used and
         ensure the proper destination paths and compare keys are formed.
         """
+        function_table = {'s3': self.list_objects, 'local': self.list_files}
         source = files['src']['path']
         src_type = files['src']['type']
         dest_type = files['dest']['type']
-        if src_type == 'local':
-            direction_context = src_type + dest_type
-            # If the file generator has no associated operation, it
-            # is not the driving force behind an operation. That means
-            # it is being used as the other generator (the one being used
-            # for listing of files in the destination) in a sync command.
-            # More specifically this if statement will only be hit if it
-            # is the file generator listing files for a downloading sync.
-            if self.operation_name == '':
-                direction_context = dest_type + src_type
-            file_list = self.list_files(
-                source, files['dir_op'],
-                transfer_direction_context=direction_context)
-        else:
-            file_list = self.list_objects(source, files['dir_op'])
+        file_list = function_table[src_type](source, files['dir_op'])
         for src_path, size, last_update in file_list:
             dest_path, compare_key = find_dest_path_comp_key(files, src_path)
             yield FileStat(src=src_path, dest=dest_path,
@@ -156,7 +143,7 @@ class FileGenerator(object):
                            dest_type=dest_type,
                            operation_name=self.operation_name)
 
-    def list_files(self, path, dir_op, transfer_direction_context=None):
+    def list_files(self, path, dir_op):
         """
         This function yields the appropriate local file or local files
         under a directory depending on if the operation is on a directory.
@@ -167,7 +154,7 @@ class FileGenerator(object):
         """
         join, isdir, isfile = os.path.join, os.path.isdir, os.path.isfile
         error, listdir = os.error, os.listdir
-        if not self.should_ignore_file(path, transfer_direction_context):
+        if not self.should_ignore_file(path):
             if not dir_op:
                 size, last_update = get_file_stat(path)
                 yield path, size, last_update
@@ -233,27 +220,11 @@ class FileGenerator(object):
         path = os.path.join(dirname, filename)
         return self.should_ignore_file(path)
 
-    def should_ignore_file(self, path, transfer_direction_context=None):
+    def should_ignore_file(self, path):
         """
         This function checks whether a file should be ignored in the
         file generation process.  This includes symlinks that are not to be
         followed and files that generate warnings.
-
-        :type path: string
-        :param path: The local path to check if a file should be ignored.
-
-        :type transfer_direction_context: string
-        :param transfer_direction_context: If provided indicates the direction
-            in which the local transfer is happening. 'locals3' indicates an
-            upload and 's3local' indicates a download. If the direction is
-            indicated, extra logic is added to wheter the file path should
-            be skipped as the ignore logic will deter based on what direction
-            the transfer is happening. For example, if we are downloading to
-            a non-existant directory we should not be warning about the
-            directory not existing because we will create it anyways.
-            Likewise, if we are uploading a file and the local path specified
-            does not exist, we should error out because it is impossible
-            to upload the file/directory as it does not exist.
         """
         if not self.follow_symlinks:
             if os.path.isdir(path) and path.endswith(os.sep):
@@ -261,20 +232,6 @@ class FileGenerator(object):
                 path = path[:-1]
             if os.path.islink(path):
                 return True
-
-        if not os.path.exists(path):
-            # Handling user provided paths for uploads. This path should
-            # always exist as the user specified it.
-            if transfer_direction_context == 'locals3':
-                raise RuntimeError(
-                    'The user-provided path %s does not exist.' % path)
-            # Handling user provided paths for downloads. It is not important
-            # if this path does not exist because we try to download to it no
-            # matter its existance and therefore we should ignore it but
-            # not warn about it.
-            elif transfer_direction_context == 's3local':
-                return True
-
         warning_triggered = self.triggers_warning(path)
         if warning_triggered:
             return True

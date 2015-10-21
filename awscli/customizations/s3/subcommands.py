@@ -752,6 +752,21 @@ class CommandArchitecture(object):
             'rb': 'remove_bucket'
         }
         result_queue = queue.Queue()
+
+        # If the user provided local path does not exist, hard fail because
+        # we know that we will not be able to upload the file.
+        if 'locals3' == paths_type and not self.parameters['is_stream']:
+            if not os.path.exists(files['src']['path']):
+                raise RuntimeError(
+                    'The user-provided path %s does not exist.' %
+                    files['src']['path'])
+        # If the operation is downloading to a directory that does not exist,
+        # create the directories so no warnings are thrown during the syncing
+        # process.
+        elif 's3local' == paths_type and files['dir_op']:
+            if not os.path.exists(files['dest']['path']):
+                os.makedirs(files['dest']['path'])
+
         operation_name = cmd_translation[paths_type][self.cmd]
         file_generator = FileGenerator(self._source_client,
                                        operation_name,

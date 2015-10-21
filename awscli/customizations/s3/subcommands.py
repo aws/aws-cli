@@ -290,12 +290,23 @@ PAGE_SIZE = {'name': 'page-size', 'cli_type_name': 'integer',
                  'Using a lower value may help if an operation times out.')}
 
 
+IGNORE_GLACIER_WARNINGS = {
+    'name': 'ignore-glacier-warnings', 'action': 'store_true',
+    'help_text': (
+        'Turns off glacier warnings. Warnings about operations that cannot '
+        'be performed because it involves copying, downloading, or moving '
+        'a glacier object will no longer be printed to standard error and '
+        'cause the return code of the command to be ``2``.'
+    )
+}
+
+
 TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
                  SSE, STORAGE_CLASS, GRANTS, WEBSITE_REDIRECT, CONTENT_TYPE,
                  CACHE_CONTROL, CONTENT_DISPOSITION, CONTENT_ENCODING,
                  CONTENT_LANGUAGE, EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS,
-                 PAGE_SIZE]
+                 PAGE_SIZE, IGNORE_GLACIER_WARNINGS]
 
 
 def get_client(session, region, endpoint_url, verify):

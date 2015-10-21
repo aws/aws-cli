@@ -95,7 +95,7 @@ class FileDecodingError(Exception):
 class FileStat(object):
     def __init__(self, src, dest=None, compare_key=None, size=None,
                  last_update=None, src_type=None, dest_type=None,
-                 operation_name=None):
+                 operation_name=None, response_data=None):
         self.src = src
         self.dest = dest
         self.compare_key = compare_key
@@ -104,6 +104,7 @@ class FileStat(object):
         self.src_type = src_type
         self.dest_type = dest_type
         self.operation_name = operation_name
+        self.response_data = response_data
 
 
 class FileGenerator(object):
@@ -135,13 +136,14 @@ class FileGenerator(object):
         src_type = files['src']['type']
         dest_type = files['dest']['type']
         file_list = function_table[src_type](source, files['dir_op'])
-        for src_path, size, last_update in file_list:
+        for src_path, size, last_update, response_data in file_list:
             dest_path, compare_key = find_dest_path_comp_key(files, src_path)
             yield FileStat(src=src_path, dest=dest_path,
                            compare_key=compare_key, size=size,
                            last_update=last_update, src_type=src_type,
                            dest_type=dest_type,
-                           operation_name=self.operation_name)
+                           operation_name=self.operation_name,
+                           response_data=response_data)
 
     def list_files(self, path, dir_op):
         """
@@ -157,7 +159,7 @@ class FileGenerator(object):
         if not self.should_ignore_file(path):
             if not dir_op:
                 size, last_update = get_file_stat(path)
-                yield path, size, last_update
+                yield path, size, last_update, None
             else:
                 # We need to list files in byte order based on the full
                 # expanded path of the key: 'test/1/2/3.txt'  However,
@@ -191,7 +193,7 @@ class FileGenerator(object):
                             yield x
                     else:
                         size, last_update = get_file_stat(file_path)
-                        yield file_path, size, last_update
+                        yield file_path, size, last_update, None
 
     def normalize_sort(self, names, os_sep, character):
         """
@@ -281,7 +283,7 @@ class FileGenerator(object):
             lister = BucketLister(self._client)
             for key in lister.list_objects(bucket=bucket, prefix=prefix,
                                            page_size=self.page_size):
-                source_path, size, last_update = key
+                source_path, size, last_update, response_data = key
                 if size == 0 and source_path.endswith('/'):
                     if self.operation_name == 'delete':
                         # This is to filter out manually created folders
@@ -290,11 +292,11 @@ class FileGenerator(object):
                         # are automatically created when they do not
                         # exist locally.  But user should be able to
                         # delete them.
-                        yield source_path, size, last_update
+                        yield source_path, size, last_update, response_data
                 elif not dir_op and s3_path != source_path:
                     pass
                 else:
-                    yield source_path, size, last_update
+                    yield source_path, size, last_update, response_data
 
     def _list_single_object(self, s3_path):
         # When we know we're dealing with a single object, we can avoid
@@ -324,4 +326,4 @@ class FileGenerator(object):
         file_size = int(response['ContentLength'])
         last_update = parse(response['LastModified'])
         last_update = last_update.astimezone(tzlocal())
-        return s3_path, file_size, last_update
+        return s3_path, file_size, last_update, response

@@ -469,7 +469,7 @@ class BucketLister(object):
                     source_path = bucket + '/' + content['Key']
                     size = content['Size']
                     last_update = self._date_parser(content['LastModified'])
-                    yield source_path, size, last_update
+                    yield source_path, size, last_update, content
 
     def _decode_keys(self, parsed, **kwargs):
         if 'Contents' in parsed:

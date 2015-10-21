@@ -164,11 +164,16 @@ class FileInfo(TaskInfo):
     :param dest_type: string
     :param parameters: a dictionary of important values this is assigned in
         the ``BasicTask`` object.
+    :param associated_response_data: The response data used by
+        the ``FileGenerator`` to create this task. It is either an dictionary
+        from the list of a ListObjects or the response from a HeadObject. It
+        will only be filled if the task was generated from an S3 bucket.
     """
     def __init__(self, src, dest=None, compare_key=None, size=None,
                  last_update=None, src_type=None, dest_type=None,
                  operation_name=None, client=None, parameters=None,
-                 source_client=None, is_stream=False):
+                 source_client=None, is_stream=False,
+                 associated_response_data=None):
         super(FileInfo, self).__init__(src, src_type=src_type,
                                        operation_name=operation_name,
                                        client=client)
@@ -185,6 +190,7 @@ class FileInfo(TaskInfo):
                                'sse': None}
         self.source_client = source_client
         self.is_stream = is_stream
+        self.associated_response_data = associated_response_data
 
     def set_size_from_s3(self):
         """

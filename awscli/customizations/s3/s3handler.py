@@ -17,7 +17,8 @@ import os
 import sys
 
 from awscli.customizations.s3.utils import find_chunksize, \
-    find_bucket_key, relative_path, PrintTask, create_warning
+    find_bucket_key, relative_path, PrintTask, create_warning, \
+    is_glacier_compatible_operation
 from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3 import tasks
 from awscli.customizations.s3.transferconfig import RuntimeConfig
@@ -183,6 +184,18 @@ class S3Handler(object):
                 warning = create_warning(relative_path(filename.src),
                                          message=warning_message)
                 self.result_queue.put(warning)
+            # Warn and skip over glacier incompatible tasks.
+            elif not is_glacier_compatible_operation(filename):
+                warning = create_warning(
+                    's3://'+filename.src,
+                    'Object is of storage class GLACIER. Unable to '
+                    'perform %s operations on GLACIER objects. You must '
+                    'restore the object to be able to the perform '
+                    'operation.' %
+                    filename.operation_name
+                )
+                self.result_queue.put(warning)
+                continue
             elif is_multipart_task and not self.params['dryrun']:
                 # If we're in dryrun mode, then we don't need the
                 # real multipart tasks.  We can just use a BasicTask

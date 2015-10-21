@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import logging
 
-from awscli.customizations.s3.syncstrategy.base import BaseSync
+from awscli.customizations.s3.syncstrategy.base import SizeAndLastModifiedSync
 
 
 LOG = logging.getLogger(__name__)
@@ -27,20 +27,9 @@ EXACT_TIMESTAMPS = {'name': 'exact-timestamps', 'action': 'store_true',
                         'than the S3 version.')}
 
 
-class ExactTimestampsSync(BaseSync):
+class ExactTimestampsSync(SizeAndLastModifiedSync):
 
     ARGUMENT = EXACT_TIMESTAMPS
-
-    def determine_should_sync(self, src_file, dest_file):
-        same_size = self.compare_size(src_file, dest_file)
-        same_last_modified_time = self.compare_time(src_file, dest_file)
-        should_sync = (not same_size) or (not same_last_modified_time)
-        if should_sync:
-            LOG.debug("syncing: %s -> %s, size_changed: %s, "
-                      "last_modified_time_changed: %s",
-                      src_file.src, src_file.dest,
-                      not same_size, not same_last_modified_time)
-        return should_sync
 
     def compare_time(self, src_file, dest_file):
         src_time = src_file.last_update

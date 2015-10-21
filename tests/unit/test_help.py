@@ -20,6 +20,7 @@ import mock
 from awscli.help import PosixHelpRenderer, ExecutableNotFoundError
 from awscli.help import WindowsHelpRenderer, ProviderHelpCommand, HelpCommand
 from awscli.help import TopicListerCommand, TopicHelpCommand
+from awscli.argparser import HELP_BLURB
 
 
 class HelpSpyMixin(object):
@@ -160,12 +161,12 @@ class TestHelpCommand(TestHelpCommandBase):
         self.assertTrue(self.renderer.render.called)
 
     def test_invalid_subcommand(self):
-        # This sole purpose of this patch is to remove errors from being
-        # printed to screen even when the test passes when running the test
-        # suite.
-        with mock.patch('sys.stderr'):
+        with mock.patch('sys.stderr') as f:
             with self.assertRaises(SystemExit):
                 self.cmd(['no-exist-command'], None)
+        # We should see the pointer to "aws help" in the error message.
+        error_message = ''.join(arg[0][0] for arg in f.write.call_args_list)
+        self.assertIn(HELP_BLURB, error_message)
 
 
 class TestProviderHelpCommand(TestHelpCommandBase):

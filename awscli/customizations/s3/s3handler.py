@@ -187,6 +187,9 @@ class S3Handler(object):
                 self.result_queue.put(warning)
             # Warn and skip over glacier incompatible tasks.
             elif not is_glacier_compatible_operation(filename):
+                LOGGER.debug(
+                    'Encountered glacier object s3://%s. Not performing '
+                    '%s on object.' % (filename.src, filename.operation_name))
                 if not self.params['ignore_glacier_warnings']:
                     warning = create_warning(
                         's3://'+filename.src,

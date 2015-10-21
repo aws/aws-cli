@@ -349,7 +349,7 @@ class ParamShorthand(object):
         # We first need to make sure this is a parameter that qualifies
         # for simplification.  The first short-circuit case is if it looks
         # like json we immediately return.
-        if isinstance(value, list):
+        if value and isinstance(value, list):
             check_val = value[0]
         else:
             check_val = value

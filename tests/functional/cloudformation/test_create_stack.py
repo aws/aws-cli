@@ -14,7 +14,7 @@
 from awscli.testutils import BaseAWSCommandParamsTest
 
 
-class TestDescribeInstances(BaseAWSCommandParamsTest):
+class TestCreateStack(BaseAWSCommandParamsTest):
 
     prefix = 'cloudformation create-stack'
 
@@ -55,4 +55,11 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         result = {'StackName': 'test-stack', 'TemplateURL': 'http://foo',
                   'Parameters': [{'ParameterKey': 'foo',
                                   'ParameterValue': 'one,two'}]}
+        self.assert_params_for_cmd(cmdline, result)
+
+    def test_can_handle_empty_parameters(self):
+        cmdline = self.prefix
+        cmdline += ' --stack-name test --parameters --template-url http://foo'
+        result = {'StackName': 'test', 'TemplateURL': 'http://foo',
+                  'Parameters': []}
         self.assert_params_for_cmd(cmdline, result)

@@ -122,7 +122,10 @@ ACL = {'name': 'acl', 'nargs': 1,
                    'bucket-owner-full-control', 'log-delivery-write'],
        'help_text': (
            "Sets the ACL for the object when the command is "
-           "performed.  Only accepts values of ``private``, ``public-read``, "
+           "performed.  If you use this parameter you must have the "
+           '"s3:PutObjectAcl" permission included in the list of actions '
+           "for your IAM policy. "
+           "Only accepts values of ``private``, ``public-read``, "
            "``public-read-write``, ``authenticated-read``, "
            "``bucket-owner-read``, ``bucket-owner-full-control`` and "
            "``log-delivery-write``.")}

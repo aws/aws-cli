@@ -2,15 +2,20 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.9.0
+=====
 
+* feature:``aws iam``: Add policy simulator support
+* feature:``aws autoscaling``: Add support for launch configurations
+  that include encrypted Amazon Elastic Block Store (EBS) volumes
+* feature:configure: Add support for ``ca_bundle`` config variable
 * feature:Assume Role: Add ``role_session_name`` config variable
   to control the ``RoleSessionName`` when assuming roles
   (`issue 1389 <https://github.com/aws/aws-cli/pull/1389>`__)
 * bug:Argument Parsing: Handle case when empty list parameter
   was specified with no value
   (`issue 838 <https://github.com/aws/aws-cli/issues/838>`__)
+
 
 1.8.13
 ======

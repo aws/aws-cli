@@ -753,20 +753,6 @@ class CommandArchitecture(object):
         }
         result_queue = queue.Queue()
 
-        # If the user provided local path does not exist, hard fail because
-        # we know that we will not be able to upload the file.
-        if 'locals3' == paths_type and not self.parameters['is_stream']:
-            if not os.path.exists(files['src']['path']):
-                raise RuntimeError(
-                    'The user-provided path %s does not exist.' %
-                    files['src']['path'])
-        # If the operation is downloading to a directory that does not exist,
-        # create the directories so no warnings are thrown during the syncing
-        # process.
-        elif 's3local' == paths_type and files['dir_op']:
-            if not os.path.exists(files['dest']['path']):
-                os.makedirs(files['dest']['path'])
-
         operation_name = cmd_translation[paths_type][self.cmd]
         file_generator = FileGenerator(self._source_client,
                                        operation_name,
@@ -928,6 +914,20 @@ class CommandParameters(object):
         if self.cmd == 'mv' and self._same_path(params['src'], params['dest']):
             raise ValueError("Cannot mv a file onto itself: '%s' - '%s'" % (
                 params['src'], params['dest']))
+
+        # If the user provided local path does not exist, hard fail because
+        # we know that we will not be able to upload the file.
+        if 'locals3' == params['paths_type'] and not params['is_stream']:
+            if not os.path.exists(params['src']):
+                raise RuntimeError(
+                    'The user-provided path %s does not exist.' %
+                    params['src'])
+        # If the operation is downloading to a directory that does not exist,
+        # create the directories so no warnings are thrown during the syncing
+        # process.
+        elif 's3local' == params['paths_type'] and params['dir_op']:
+            if not os.path.exists(params['dest']):
+                os.makedirs(params['dest'])
 
     def _same_path(self, src, dest):
         if not self.parameters['paths_type'] == 's3s3':

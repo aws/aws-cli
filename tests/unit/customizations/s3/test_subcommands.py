@@ -620,25 +620,25 @@ class CommandParametersTest(unittest.TestCase):
             cmd_parameter.check_src_path(filename[0])
 
     def test_validate_streaming_paths_upload(self):
-        parameters = {'src': '-', 'dest': 's3://bucket'}
-        cmd_params = CommandParameters('cp', parameters, '')
-        cmd_params._validate_streaming_paths()
+        paths = ['-', 's3://bucket']
+        cmd_params = CommandParameters('cp', {}, '')
+        cmd_params.add_paths(paths)
         self.assertTrue(cmd_params.parameters['is_stream'])
         self.assertTrue(cmd_params.parameters['only_show_errors'])
         self.assertFalse(cmd_params.parameters['dir_op'])
 
     def test_validate_streaming_paths_download(self):
-        parameters = {'src': 'localfile', 'dest': '-'}
-        cmd_params = CommandParameters('cp', parameters, '')
-        cmd_params._validate_streaming_paths()
+        paths = ['s3://bucket/key', '-']
+        cmd_params = CommandParameters('cp', {}, '')
+        cmd_params.add_paths(paths)
         self.assertTrue(cmd_params.parameters['is_stream'])
         self.assertTrue(cmd_params.parameters['only_show_errors'])
         self.assertFalse(cmd_params.parameters['dir_op'])
 
     def test_validate_no_streaming_paths(self):
-        parameters = {'src': 'localfile', 'dest': 's3://bucket'}
-        cmd_params = CommandParameters('cp', parameters, '')
-        cmd_params._validate_streaming_paths()
+        paths = [self.file_creator.rootdir, 's3://bucket']
+        cmd_params = CommandParameters('cp', {}, '')
+        cmd_params.add_paths(paths)
         self.assertFalse(cmd_params.parameters['is_stream'])
 
     def test_validate_streaming_paths_error(self):
@@ -646,6 +646,20 @@ class CommandParametersTest(unittest.TestCase):
         cmd_params = CommandParameters('sync', parameters, '')
         with self.assertRaises(ValueError):
             cmd_params._validate_streaming_paths()
+
+    def test_validate_non_existent_local_path_upload(self):
+        non_existent_path = os.path.join(self.file_creator.rootdir, 'foo')
+        paths = [non_existent_path, 's3://bucket/']
+        cmd_param = CommandParameters('cp', {}, '')
+        with self.assertRaises(RuntimeError):
+            cmd_param.add_paths(paths)
+
+    def test_add_path_for_non_existsent_local_path_download(self):
+        non_existent_path = os.path.join(self.file_creator.rootdir, 'foo')
+        paths = ['s3://bucket', non_existent_path]
+        cmd_param = CommandParameters('cp', {'dir_op': True}, '')
+        cmd_param.add_paths(paths)
+        self.assertTrue(os.path.exists(non_existent_path))
 
 
 class HelpDocTest(BaseAWSHelpOutputTest):

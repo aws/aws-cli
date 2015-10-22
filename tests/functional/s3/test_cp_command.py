@@ -163,6 +163,15 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
         self.assertNotIn('MetadataDirective', self.operations_called[0][1])
 
-
-if __name__ == "__main__":
-    unittest.main()
+    def test_cp_succeeds_with_mimetype_errors(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = '%s %s s3://bucket/key.txt' % (self.prefix, full_path)
+        self.parsed_responses = [
+            {'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
+        with mock.patch('mimetypes.guess_type') as mock_guess_type:
+            # This should throw a UnicodeDecodeError.
+            mock_guess_type.side_effect = lambda x: b'\xe2'.decode('ascii')
+            self.run_cmd(cmdline, expected_rc=0)
+        # Because of the decoding error the command should have succeeded
+        # just that there was no content type added.
+        self.assertNotIn('ContentType', self.last_kwargs)

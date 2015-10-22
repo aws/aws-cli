@@ -68,6 +68,19 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         }
         self.assert_params_for_cmd(args_list, result)
 
+    def test_count_in_json_only(self):
+        input_json = '{"ImageId":"ami-xxxx","MaxCount":9,"MinCount":5}'
+        args_list = (self.prefix + ' --cli-input-json ' + input_json).split()
+        result = {'ImageId': 'ami-xxxx', 'MaxCount': 9, 'MinCount': 5}
+        self.assert_params_for_cmd(args_list, result)
+
+    def test_count_in_cli_and_in_json(self):
+        input_json = '{"ImageId":"ami-xxxx","MaxCount":9,"MinCount":5}'
+        args_list = (
+            self.prefix + ' --count 3 --cli-input-json ' + input_json).split()
+        result = {'ImageId': 'ami-xxxx', 'MaxCount': 3, 'MinCount': 3}
+        self.assert_params_for_cmd(args_list, result)
+
     def test_block_device_mapping(self):
         args = ' --image-id ami-foobar --count 1'
         args_list = (self.prefix + args).split()

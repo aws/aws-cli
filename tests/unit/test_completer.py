@@ -25,7 +25,7 @@ LOG = logging.getLogger(__name__)
 
 GLOBALOPTS = ['--debug', '--endpoint-url', '--no-verify-ssl', '--no-paginate',
               '--output', '--profile', '--region', '--version', '--color',
-              '--query', '--no-sign-request']
+              '--query', '--no-sign-request', '--ca-bundle']
 
 COMPLETIONS = [
     ('aws ', -1, set(['autoscaling', 'cloudformation', 'cloudfront',
@@ -71,7 +71,7 @@ COMPLETIONS = [
      set(['--filters', '--dry-run', '--no-dry-run', '--endpoint-url',
           '--no-verify-ssl', '--no-paginate', '--no-sign-request', '--output',
           '--profile', '--starting-token', '--max-items', '--page-size',
-          '--region', '--version', '--color', '--query',
+          '--region', '--version', '--color', '--query', '--ca-bundle',
           '--generate-cli-skeleton', '--cli-input-json'])),
     ('aws s3', -1, set(['cp', 'mv', 'rm', 'mb', 'rb', 'ls', 'sync', 'website'])),
     ('aws s3 m', -1, set(['mv', 'mb'])),
@@ -131,6 +131,7 @@ def test_completions():
         'AWS_DEFAULT_REGION': 'us-east-1',
         'AWS_ACCESS_KEY_ID': 'access_key',
         'AWS_SECRET_ACCESS_KEY': 'secret_key',
+        'AWS_CA_BUNDLE': 'ca_bundle',
         'AWS_CONFIG_FILE': '',
     }
     with mock.patch('os.environ', environ):

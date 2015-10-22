@@ -230,10 +230,11 @@ class SizeAndLastModifiedSync(BaseSync):
         same_last_modified_time = self.compare_time(src_file, dest_file)
         should_sync = (not same_size) or (not same_last_modified_time)
         if should_sync:
-            LOG.debug("syncing: %s -> %s, size_changed: %s, "
-                      "last_modified_time_changed: %s",
-                      src_file.src, src_file.dest,
-                      not same_size, not same_last_modified_time)
+            LOG.debug(
+                "syncing: %s -> %s, size: %s -> %s, modified time: %s -> %s",
+                src_file.src, src_file.dest,
+                src_file.size, dest_file.size,
+                src_file.last_update, dest_file.last_update)
         return should_sync
 
 

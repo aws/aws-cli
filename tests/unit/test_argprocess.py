@@ -265,6 +265,12 @@ class TestParamShorthand(BaseArgProcessTest):
 
         self.assertEqual(simplified, expected)
 
+    def test_empty_value_of_list_structure(self):
+        p = self.get_param_model('emr.ModifyInstanceGroups.InstanceGroups')
+        expected = []
+        simplified = self.simplify(p, [])
+        self.assertEqual(simplified, expected)
+
     def test_list_structure_list_multiple_scalar(self):
         p = self.get_param_model(
             'emr.ModifyInstanceGroups.InstanceGroups')

@@ -214,12 +214,6 @@ class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
         self.assert_command_does_not_exist(
             'ec2', 'import-volume')
 
-    def test_cloudformation(self):
-        self.driver.main(['cloudformation', 'help'])
-        self.assert_not_contains('estimate-template-cost')
-        self.assert_command_does_not_exist(
-            'cloudformation', 'estimate-template-cost')
-
     def test_boolean_param_documented(self):
         self.driver.main(['autoscaling',
                           'terminate-instance-in-auto-scaling-group', 'help'])
@@ -260,6 +254,12 @@ class TestPagingParamDocs(BaseAWSHelpOutputTest):
         self.driver.main(['s3api', 'list-objects', 'help'])
         self.assert_not_contains('``--next-token``')
         self.assert_not_contains('``--max-keys``')
+
+    def test_paging_documentation_added(self):
+        self.driver.main(['s3api', 'list-objects', 'help'])
+        self.assert_contains('``list-objects`` is a paginated operation')
+        self.assert_contains('When using ``--output text`` and the')
+        self.assert_contains('following query expressions: ')
 
 
 class TestMergeBooleanGroupArgs(BaseAWSHelpOutputTest):

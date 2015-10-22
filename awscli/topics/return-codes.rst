@@ -50,3 +50,12 @@ On Windows PowerShell, the return code can be determined by running::
 Output (if successful)::
 
   0
+
+
+On Windows Command Prompt, the return code can be determined by running::
+
+  > echo %errorlevel%
+
+Output (if successful)::
+
+  0

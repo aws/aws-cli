@@ -61,6 +61,7 @@ def create_clidriver():
 def _set_user_agent_for_session(session):
     session.user_agent_name = 'aws-cli'
     session.user_agent_version = __version__
+    session.user_agent_extra = 'botocore/%s' % botocore_version
 
 
 class CLIDriver(object):
@@ -229,9 +230,7 @@ class CLIDriver(object):
                                            format_string=LOG_FORMAT)
             self.session.set_stream_logger('awscli', logging.DEBUG,
                                            format_string=LOG_FORMAT)
-            LOG.debug("CLI version: %s, botocore version: %s",
-                      self.session.user_agent(),
-                      botocore_version)
+            LOG.debug("CLI version: %s", self.session.user_agent())
             LOG.debug("Arguments entered to CLI: %s", sys.argv[1:])
 
         else:

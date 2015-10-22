@@ -90,6 +90,34 @@ Output::
 
     copy: s3://mybucket/test.txt to s3://mybucket/test2.txt
 
+Note that if you're using the ``--acl`` option, ensure that any associated IAM
+policies include the ``"s3:PutObjectAcl"`` action::
+
+    aws iam get-user-policy --user-name myuser --policy-name mypolicy
+
+Output::
+
+    {
+        "UserName": "myuser",
+        "PolicyName": "mypolicy",
+        "PolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Action": [
+                        "s3:PutObject",
+                        "s3:PutObjectAcl"
+                    ],
+                    "Resource": [
+                        "arn:aws:s3:::mybucket/*"
+                    ],
+                    "Effect": "Allow",
+                    "Sid": "Stmt1234567891234"
+                }
+            ]
+        }
+    }
+
 **Granting permissions for an S3 object**
 
 The following ``cp`` command illustrates the use of the ``--grants`` option to grant read access to all users and full

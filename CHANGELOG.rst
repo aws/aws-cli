@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.9.0
+=====
 
 * feature:``aws iam``: Add policy simulator support
 * feature:``aws autoscaling``: Add support for launch configurations

@@ -752,7 +752,6 @@ class CommandArchitecture(object):
             'rb': 'remove_bucket'
         }
         result_queue = queue.Queue()
-
         operation_name = cmd_translation[paths_type][self.cmd]
         file_generator = FileGenerator(self._source_client,
                                        operation_name,
@@ -971,35 +970,6 @@ class CommandParameters(object):
             self.parameters['paths_type'] = paths_type
         else:
             raise TypeError("%s\nError: Invalid argument type" % usage)
-
-    def check_src_path(self, paths):
-        """
-        This checks the source paths to deem if they are valid.  The check
-        performed in S3 is first it lists the objects using the source path.
-        If there is an error like the bucket does not exist, the error will be
-        caught with ``check_error()`` function.  If the operation is on a
-        single object in s3, it checks that a list of object was returned and
-        that the first object listed is the name of the specified in the
-        command line.  If the operation is on objects under a common prefix,
-        it will check that there are common prefixes and objects under
-        the specified prefix.
-        For local files, it first checks that the path exists.  Then it checks
-        that the path is a directory if it is a directory operation or that
-        the path is a file if the operation is on a single file.
-        """
-        src_path = paths[0]
-        dir_op = self.parameters['dir_op']
-        if not src_path.startswith('s3://'):
-            src_path = os.path.abspath(src_path)
-            if os.path.exists(src_path):
-                if os.path.isdir(src_path) and not dir_op:
-                    raise Exception("Error: Requires a local file")
-                elif os.path.isfile(src_path) and dir_op:
-                    raise Exception("Error: Requires a local directory")
-                else:
-                    pass
-            else:
-                raise Exception("Error: Local path does not exist")
 
     def add_region(self, parsed_globals):
         self.parameters['region'] = parsed_globals.region

@@ -596,29 +596,6 @@ class CommandParametersTest(unittest.TestCase):
                 with self.assertRaises(TypeError):
                     cmd_param.check_path_type(combos[path_args])
 
-    def test_check_src_path_pass(self):
-        # This tests to see if all of the checks on the source path works.  It
-        # does so by testing if s3 objects and and prefixes exist as well as
-        # local files and directories.  All of these should not throw an
-        # exception.
-        s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
-        local_file = self.loc_files[0]
-        s3_prefix = 's3://' + self.bucket
-        local_dir = self.loc_files[3]
-
-        # :var files: a list of tuples where the first element is a single
-        #     element list of file paths. The second element is a boolean
-        #     representing if the operation is a directory operation.
-        files = [([s3_file], False), ([local_file], False),
-                 ([s3_prefix], True), ([local_dir], True)]
-
-        parameters = {}
-        for filename in files:
-            parameters['dir_op'] = filename[1]
-            cmd_parameter = CommandParameters('put', parameters, '')
-            cmd_parameter.add_region(mock.Mock())
-            cmd_parameter.check_src_path(filename[0])
-
     def test_validate_streaming_paths_upload(self):
         paths = ['-', 's3://bucket']
         cmd_params = CommandParameters('cp', {}, '')

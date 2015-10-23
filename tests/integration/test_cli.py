@@ -267,13 +267,13 @@ class TestBasicCommandFunctionality(unittest.TestCase):
     def test_help_usage_top_level(self):
         p = aws('')
         self.assertIn('usage: aws [options] <command> '
-                      '<subcommand> [parameters]', p.stderr)
+                      '<subcommand> [<subcommand> ...] [parameters]', p.stderr)
         self.assertIn('aws: error', p.stderr)
 
     def test_help_usage_service_level(self):
         p = aws('ec2')
         self.assertIn('usage: aws [options] <command> '
-                      '<subcommand> [parameters]', p.stderr)
+                      '<subcommand> [<subcommand> ...] [parameters]', p.stderr)
         # python3: aws: error: the following arguments are required: operation
         # python2: aws: error: too few arguments
         # We don't care too much about the specific error message, as long
@@ -283,7 +283,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
     def test_help_usage_operation_level(self):
         p = aws('ec2 run-instances')
         self.assertIn('usage: aws [options] <command> '
-                      '<subcommand> [parameters]', p.stderr)
+                      '<subcommand> [<subcommand> ...] [parameters]', p.stderr)
 
     def test_unknown_argument(self):
         p = aws('ec2 describe-instances --filterss')

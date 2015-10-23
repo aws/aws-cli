@@ -24,7 +24,7 @@ HELP_BLURB = (
     "  aws <command> <subcommand> help\n"
 )
 USAGE = (
-    "aws [options] <command> <subcommand> [parameters]\n"
+    "aws [options] <command> <subcommand> [<subcommand> ...] [parameters]\n"
     "%s" % HELP_BLURB
 )
 

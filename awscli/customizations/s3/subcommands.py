@@ -128,7 +128,9 @@ ACL = {'name': 'acl', 'nargs': 1,
            "Only accepts values of ``private``, ``public-read``, "
            "``public-read-write``, ``authenticated-read``, "
            "``bucket-owner-read``, ``bucket-owner-full-control`` and "
-           "``log-delivery-write``.")}
+           "``log-delivery-write``. "
+           'See <a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/'
+           'acl-overview.html#canned-acl">Canned ACL</a> for details')}
 
 
 GRANTS = {

@@ -28,7 +28,7 @@ GLOBALOPTS = ['--debug', '--endpoint-url', '--no-verify-ssl', '--no-paginate',
               '--query', '--no-sign-request', '--ca-bundle']
 
 COMPLETIONS = [
-    ('aws ', -1, set(['autoscaling', 'cloudformation', 'cloudfront',
+    ('aws ', -1, set(['apigateway', 'autoscaling', 'cloudformation', 'cloudfront',
                       'cloudhsm', 'cloudsearch', 'cloudsearchdomain',
                       'cloudtrail', 'cloudwatch', 'cognito-identity',
                       'codecommit', 'codepipeline', 'cognito-sync',
@@ -42,7 +42,7 @@ COMPLETIONS = [
                       'lambda', 'logs', 'marketplacecommerceanalytics',
                       'machinelearning', 'opsworks', 'rds',
                       'redshift', 'route53', 'route53domains', 's3', 's3api',
-                      'sdb', 'ses', 'sns', 'sqs', 'storagegateway', 'sts',
+                      'sdb', 'ses', 'sns', 'sqs', 'ssm', 'storagegateway', 'sts',
                       'ssm', 'support', 'swf', 'waf', 'workspaces'])),
     ('aws cloud', -1, set(['cloudformation', 'cloudfront', 'cloudhsm',
                            'cloudsearch', 'cloudsearchdomain', 'cloudtrail',

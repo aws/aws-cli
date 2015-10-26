@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.9.1
+=====
+* feature:``aws ssm``: Add support for Amazon EC2 Run Command
+* feature:``aws apigateway``: Add support for Amazon API Gateway
+
+
 1.9.0
 =====
 

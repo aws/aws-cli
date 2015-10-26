@@ -30,6 +30,7 @@ from awscli.clidriver import ServiceCommand
 from awscli.clidriver import ServiceOperation
 from awscli.customizations.commands import BasicCommand
 from awscli import formatter
+from awscli.argparser import HELP_BLURB
 from botocore.hooks import HierarchicalEmitter
 
 
@@ -594,6 +595,26 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         # will result in 255 rc.
         rc = self.driver.main('ec2 describe-instances'.split())
         self.assertEqual(rc, 255)
+
+    def test_help_blurb_in_error_message(self):
+        with self.assertRaises(SystemExit):
+            self.driver.main([])
+        self.assertIn(HELP_BLURB, self.stderr.getvalue())
+
+    def test_help_blurb_in_service_error_message(self):
+        with self.assertRaises(SystemExit):
+            self.driver.main(['ec2'])
+        self.assertIn(HELP_BLURB, self.stderr.getvalue())
+
+    def test_help_blurb_in_operation_error_message(self):
+        with self.assertRaises(SystemExit):
+            self.driver.main(['ec2', 'run-instances'])
+        self.assertIn(HELP_BLURB, self.stderr.getvalue())
+
+    def test_help_blurb_in_unknown_argument_error_message(self):
+        with self.assertRaises(SystemExit):
+            self.driver.main(['ec2', 'run-instances', '--help'])
+        self.assertIn(HELP_BLURB, self.stderr.getvalue())
 
 
 class TestHowClientIsCreated(BaseAWSCommandParamsTest):

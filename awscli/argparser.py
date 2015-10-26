@@ -16,6 +16,19 @@ from awscli.compat import six
 from difflib import get_close_matches
 
 
+HELP_BLURB = (
+    "To see help text, you can run:\n"
+    "\n"
+    "  aws help\n"
+    "  aws <command> help\n"
+    "  aws <command> <subcommand> help\n"
+)
+USAGE = (
+    "aws [options] <command> <subcommand> [<subcommand> ...] [parameters]\n"
+    "%s" % HELP_BLURB
+)
+
+
 class CLIArgParser(argparse.ArgumentParser):
     Formatter = argparse.RawTextHelpFormatter
 
@@ -71,13 +84,13 @@ class MainArgParser(CLIArgParser):
     Formatter = argparse.RawTextHelpFormatter
 
     def __init__(self, command_table, version_string,
-                 description, usage, argument_table):
+                 description, argument_table):
         super(MainArgParser, self).__init__(
             formatter_class=self.Formatter,
             add_help=False,
             conflict_handler='resolve',
             description=description,
-            usage=usage)
+            usage=USAGE)
         self._build(command_table, version_string, argument_table)
 
     def _create_choice_help(self, choices):
@@ -98,14 +111,12 @@ class MainArgParser(CLIArgParser):
 
 class ServiceArgParser(CLIArgParser):
 
-    Usage = ("aws [options] <command> <subcommand> [parameters]")
-
     def __init__(self, operations_table, service_name):
         super(ServiceArgParser, self).__init__(
             formatter_class=argparse.RawTextHelpFormatter,
             add_help=False,
             conflict_handler='resolve',
-            usage=self.Usage)
+            usage=USAGE)
         self._build(operations_table)
         self._service_name = service_name
 
@@ -115,7 +126,6 @@ class ServiceArgParser(CLIArgParser):
 
 class ArgTableArgParser(CLIArgParser):
     """CLI arg parser based on an argument table."""
-    Usage = ("aws [options] <command> <subcommand> [parameters]")
 
     def __init__(self, argument_table, command_table=None):
         # command_table is an optional subcommand_table.  If it's passed
@@ -124,7 +134,7 @@ class ArgTableArgParser(CLIArgParser):
         super(ArgTableArgParser, self).__init__(
             formatter_class=self.Formatter,
             add_help=False,
-            usage=self.Usage,
+            usage=USAGE,
             conflict_handler='resolve')
         if command_table is None:
             command_table = {}

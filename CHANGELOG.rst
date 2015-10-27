@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+* bugfix:``aws s3``: Fix some local path validation issues
+  (`issue 1575 <https://github.com/aws/aws-cli/pull/1575>`__)
+
+
 1.9.1
 =====
 * feature:``aws ssm``: Add support for Amazon EC2 Run Command

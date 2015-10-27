@@ -353,6 +353,30 @@ def relative_path(filename, start=os.path.curdir):
         return os.path.abspath(filename)
 
 
+def set_file_utime(filename, desired_time):
+    """
+    Set the utime of a file, and if it fails, raise a more explicit error.
+
+    :param filename: the file to modify
+    :param desired_time: the epoch timestamp to set for atime and mtime.
+    :raises: SetFileUtimeError: if you do not have permission (errno 1)
+    :raises: OSError: for all errors other than errno 1
+    """
+    try:
+        os.utime(filename, (desired_time, desired_time))
+    except OSError as e:
+        # Only raise a more explicit exception when errno is 1
+        if e.errno is not 1:
+            raise e
+        raise SetFileUtimeError(
+            ("The file was downloaded, but attempting to modify the "
+             "utime of the file failed. Is the file owned by another user?"))
+
+
+class SetFileUtimeError(Exception):
+    pass
+
+
 class ReadFileChunk(object):
     def __init__(self, filename, start_byte, size):
         self._filename = filename

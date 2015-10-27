@@ -596,49 +596,26 @@ class CommandParametersTest(unittest.TestCase):
                 with self.assertRaises(TypeError):
                     cmd_param.check_path_type(combos[path_args])
 
-    def test_check_src_path_pass(self):
-        # This tests to see if all of the checks on the source path works.  It
-        # does so by testing if s3 objects and and prefixes exist as well as
-        # local files and directories.  All of these should not throw an
-        # exception.
-        s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
-        local_file = self.loc_files[0]
-        s3_prefix = 's3://' + self.bucket
-        local_dir = self.loc_files[3]
-
-        # :var files: a list of tuples where the first element is a single
-        #     element list of file paths. The second element is a boolean
-        #     representing if the operation is a directory operation.
-        files = [([s3_file], False), ([local_file], False),
-                 ([s3_prefix], True), ([local_dir], True)]
-
-        parameters = {}
-        for filename in files:
-            parameters['dir_op'] = filename[1]
-            cmd_parameter = CommandParameters('put', parameters, '')
-            cmd_parameter.add_region(mock.Mock())
-            cmd_parameter.check_src_path(filename[0])
-
     def test_validate_streaming_paths_upload(self):
-        parameters = {'src': '-', 'dest': 's3://bucket'}
-        cmd_params = CommandParameters('cp', parameters, '')
-        cmd_params._validate_streaming_paths()
+        paths = ['-', 's3://bucket']
+        cmd_params = CommandParameters('cp', {}, '')
+        cmd_params.add_paths(paths)
         self.assertTrue(cmd_params.parameters['is_stream'])
         self.assertTrue(cmd_params.parameters['only_show_errors'])
         self.assertFalse(cmd_params.parameters['dir_op'])
 
     def test_validate_streaming_paths_download(self):
-        parameters = {'src': 'localfile', 'dest': '-'}
-        cmd_params = CommandParameters('cp', parameters, '')
-        cmd_params._validate_streaming_paths()
+        paths = ['s3://bucket/key', '-']
+        cmd_params = CommandParameters('cp', {}, '')
+        cmd_params.add_paths(paths)
         self.assertTrue(cmd_params.parameters['is_stream'])
         self.assertTrue(cmd_params.parameters['only_show_errors'])
         self.assertFalse(cmd_params.parameters['dir_op'])
 
     def test_validate_no_streaming_paths(self):
-        parameters = {'src': 'localfile', 'dest': 's3://bucket'}
-        cmd_params = CommandParameters('cp', parameters, '')
-        cmd_params._validate_streaming_paths()
+        paths = [self.file_creator.rootdir, 's3://bucket']
+        cmd_params = CommandParameters('cp', {}, '')
+        cmd_params.add_paths(paths)
         self.assertFalse(cmd_params.parameters['is_stream'])
 
     def test_validate_streaming_paths_error(self):
@@ -646,6 +623,20 @@ class CommandParametersTest(unittest.TestCase):
         cmd_params = CommandParameters('sync', parameters, '')
         with self.assertRaises(ValueError):
             cmd_params._validate_streaming_paths()
+
+    def test_validate_non_existent_local_path_upload(self):
+        non_existent_path = os.path.join(self.file_creator.rootdir, 'foo')
+        paths = [non_existent_path, 's3://bucket/']
+        cmd_param = CommandParameters('cp', {}, '')
+        with self.assertRaises(RuntimeError):
+            cmd_param.add_paths(paths)
+
+    def test_add_path_for_non_existsent_local_path_download(self):
+        non_existent_path = os.path.join(self.file_creator.rootdir, 'foo')
+        paths = ['s3://bucket', non_existent_path]
+        cmd_param = CommandParameters('cp', {'dir_op': True}, '')
+        cmd_param.add_paths(paths)
+        self.assertTrue(os.path.exists(non_existent_path))
 
 
 class HelpDocTest(BaseAWSHelpOutputTest):

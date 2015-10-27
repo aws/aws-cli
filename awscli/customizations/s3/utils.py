@@ -15,6 +15,7 @@ from datetime import datetime
 import mimetypes
 import hashlib
 import math
+import errno
 import os
 import sys
 from collections import namedtuple, deque
@@ -365,8 +366,8 @@ def set_file_utime(filename, desired_time):
     try:
         os.utime(filename, (desired_time, desired_time))
     except OSError as e:
-        # Only raise a more explicit exception when errno is 1
-        if e.errno is not 1:
+        # Only raise a more explicit exception when it is a permission issue.
+        if e.errno != errno.EPERM:
             raise e
         raise SetFileUtimeError(
             ("The file was downloaded, but attempting to modify the "

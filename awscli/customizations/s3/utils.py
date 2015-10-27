@@ -15,6 +15,7 @@ from datetime import datetime
 import mimetypes
 import hashlib
 import math
+import errno
 import os
 import sys
 from collections import namedtuple, deque
@@ -351,6 +352,30 @@ def relative_path(filename, start=os.path.curdir):
         return os.path.join(relative_dir, basename)
     except ValueError:
         return os.path.abspath(filename)
+
+
+def set_file_utime(filename, desired_time):
+    """
+    Set the utime of a file, and if it fails, raise a more explicit error.
+
+    :param filename: the file to modify
+    :param desired_time: the epoch timestamp to set for atime and mtime.
+    :raises: SetFileUtimeError: if you do not have permission (errno 1)
+    :raises: OSError: for all errors other than errno 1
+    """
+    try:
+        os.utime(filename, (desired_time, desired_time))
+    except OSError as e:
+        # Only raise a more explicit exception when it is a permission issue.
+        if e.errno != errno.EPERM:
+            raise e
+        raise SetFileUtimeError(
+            ("The file was downloaded, but attempting to modify the "
+             "utime of the file failed. Is the file owned by another user?"))
+
+
+class SetFileUtimeError(Exception):
+    pass
 
 
 class ReadFileChunk(object):

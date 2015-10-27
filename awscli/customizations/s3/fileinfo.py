@@ -11,7 +11,7 @@ from dateutil.tz import tzlocal
 
 from botocore.compat import quote
 from awscli.customizations.s3.utils import find_bucket_key, \
-    uni_print, guess_content_type, MD5Error, bytes_print
+    uni_print, guess_content_type, MD5Error, bytes_print, set_file_utime
 
 
 LOGGER = logging.getLogger(__name__)
@@ -68,7 +68,7 @@ def save_file(filename, response_data, last_update, is_stream=False):
     if not is_stream:
         last_update_tuple = last_update.timetuple()
         mod_timestamp = time.mktime(last_update_tuple)
-        os.utime(filename, (int(mod_timestamp), int(mod_timestamp)))
+        set_file_utime(filename, int(mod_timestamp))
     else:
         # Now write the output to stdout since the md5 is correct.
         bytes_print(payload)

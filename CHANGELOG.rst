@@ -4,8 +4,15 @@ CHANGELOG
 
 Next Release (TBD)
 ==================
+
 * bugfix:``aws s3``: Fix some local path validation issues
   (`issue 1575 <https://github.com/aws/aws-cli/pull/1575>`__)
+* bugfix:``aws storagegateway``:  Fix ``--tape-ar-ns``,
+  ``--volume-ar-ns``, and ``--vtl-device-ar-ns`` to
+  ``--tape-arns``, ``--volume-arns``, and ``--vtl-device-arns``,
+  respectively.  The old arguments are still supported for backwards
+  compatibility, but are no longer documented.
+  (`issue 1599 <https://github.com/aws/aws-cli/pull/1599>`__)
 
 
 1.9.1

@@ -17,8 +17,7 @@ import os
 import sys
 
 from awscli.customizations.s3.utils import find_chunksize, \
-    find_bucket_key, relative_path, PrintTask, create_warning, \
-    is_glacier_compatible_operation
+    find_bucket_key, relative_path, PrintTask, create_warning
 from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3 import tasks
 from awscli.customizations.s3.transferconfig import RuntimeConfig
@@ -186,7 +185,7 @@ class S3Handler(object):
                                          message=warning_message)
                 self.result_queue.put(warning)
             # Warn and skip over glacier incompatible tasks.
-            elif not is_glacier_compatible_operation(filename):
+            elif not filename.is_glacier_compatible():
                 LOGGER.debug(
                     'Encountered glacier object s3://%s. Not performing '
                     '%s on object.' % (filename.src, filename.operation_name))

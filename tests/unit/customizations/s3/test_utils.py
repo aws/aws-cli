@@ -307,9 +307,11 @@ class TestBucketList(unittest.TestCase):
         lister = BucketLister(self.client, self.date_parser)
         objects = list(lister.list_objects(bucket='foo'))
         self.assertEqual(objects,
-            [('foo/a', 1, now, individual_response_elements[0]),
-             ('foo/b', 2, now, individual_response_elements[1]),
-             ('foo/c', 3, now, individual_response_elements[2])])
+            [('foo/a', individual_response_elements[0]),
+             ('foo/b', individual_response_elements[1]),
+             ('foo/c', individual_response_elements[2])])
+        for individual_response in individual_response_elements:
+            self.assertEqual(individual_response['LastModified'], now)
 
     def test_urlencoded_keys(self):
         # In order to workaround control chars being in key names,
@@ -328,7 +330,8 @@ class TestBucketList(unittest.TestCase):
         objects = list(lister.list_objects(bucket='foo'))
         # And note how it's been converted to '\r'.
         self.assertEqual(
-            objects, [('foo/bar\r.txt', 1, now, individual_response_element)])
+            objects, [('foo/bar\r.txt', individual_response_element)])
+        self.assertEqual(individual_response_element['LastModified'], now)
 
     def test_urlencoded_with_unicode_keys(self):
         now = mock.sentinel.now
@@ -343,7 +346,8 @@ class TestBucketList(unittest.TestCase):
         objects = list(lister.list_objects(bucket='foo'))
         # And note how it's been converted to '\r'.
         self.assertEqual(
-            objects, [(u'foo/\u2713', 1, now, individual_response_element)])
+            objects, [(u'foo/\u2713', individual_response_element)])
+        self.assertEqual(individual_response_element['LastModified'], now)
 
 
 class TestScopedEventHandler(unittest.TestCase):

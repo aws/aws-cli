@@ -135,15 +135,35 @@ class FileGenerator(object):
         source = files['src']['path']
         src_type = files['src']['type']
         dest_type = files['dest']['type']
-        file_list = function_table[src_type](source, files['dir_op'])
-        for src_path, size, last_update, response_data in file_list:
+        file_iterator = function_table[src_type](source, files['dir_op'])
+        for file_data in file_iterator:
+            src_path = file_data[0]
+            extra_information = file_data[1:]
             dest_path, compare_key = find_dest_path_comp_key(files, src_path)
-            yield FileStat(src=src_path, dest=dest_path,
-                           compare_key=compare_key, size=size,
-                           last_update=last_update, src_type=src_type,
-                           dest_type=dest_type,
-                           operation_name=self.operation_name,
-                           response_data=response_data)
+            file_stat_kwargs = {
+                'src': src_path, 'dest': dest_path, 'compare_key': compare_key,
+                'src_type': src_type, 'dest_type': dest_type,
+                'operation_name': self.operation_name
+            }
+            self._inject_extra_information(file_stat_kwargs, extra_information)
+            yield FileStat(**file_stat_kwargs)
+
+    def _inject_extra_information(self, file_stat_kwargs, extra_information):
+        src_type = file_stat_kwargs['src_type']
+        # For local sources, ``extra_information`` will be the tuple
+        # containing the file's size and the file's last modified time
+        if src_type == 'local':
+            file_stat_kwargs['size'] = extra_information[0]
+            file_stat_kwargs['last_update'] = extra_information[1]
+
+        # For s3 sources, ``extra_information`` will have a dictionary
+        # representing the response element the object represents from
+        # a ListObjects or HeadObject by itself in a tuple.
+        else:
+            response_data = extra_information[0]
+            file_stat_kwargs['size'] = response_data['Size']
+            file_stat_kwargs['last_update'] = response_data['LastModified']
+            file_stat_kwargs['response_data'] = response_data
 
     def list_files(self, path, dir_op):
         """
@@ -283,8 +303,8 @@ class FileGenerator(object):
             lister = BucketLister(self._client)
             for key in lister.list_objects(bucket=bucket, prefix=prefix,
                                            page_size=self.page_size):
-                source_path, size, last_update, response_data = key
-                if size == 0 and source_path.endswith('/'):
+                source_path, response_data = key
+                if response_data['Size'] == 0 and source_path.endswith('/'):
                     if self.operation_name == 'delete':
                         # This is to filter out manually created folders
                         # in S3.  They have a size zero and would be
@@ -292,11 +312,11 @@ class FileGenerator(object):
                         # are automatically created when they do not
                         # exist locally.  But user should be able to
                         # delete them.
-                        yield source_path, size, last_update, response_data
+                        yield source_path, response_data
                 elif not dir_op and s3_path != source_path:
                     pass
                 else:
-                    yield source_path, size, last_update, response_data
+                    yield source_path, response_data
 
     def _list_single_object(self, s3_path):
         # When we know we're dealing with a single object, we can avoid
@@ -323,7 +343,7 @@ class FileGenerator(object):
                 copy_fields['error_code'] = reason
                 copy_fields['error_message'] = reason
             raise ClientError(**copy_fields)
-        file_size = int(response['ContentLength'])
+        response['Size'] = int(response.pop('ContentLength'))
         last_update = parse(response['LastModified'])
-        last_update = last_update.astimezone(tzlocal())
-        return s3_path, file_size, last_update, response
+        response['LastModified'] = last_update.astimezone(tzlocal())
+        return s3_path, response

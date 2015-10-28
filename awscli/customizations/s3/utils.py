@@ -467,9 +467,9 @@ class BucketLister(object):
                 contents = page.get('Contents', [])
                 for content in contents:
                     source_path = bucket + '/' + content['Key']
-                    size = content['Size']
-                    last_update = self._date_parser(content['LastModified'])
-                    yield source_path, size, last_update, content
+                    content['LastModified'] = self._date_parser(
+                        content['LastModified'])
+                    yield source_path, content
 
     def _decode_keys(self, parsed, **kwargs):
         if 'Contents' in parsed:

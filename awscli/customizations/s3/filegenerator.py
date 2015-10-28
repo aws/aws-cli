@@ -13,6 +13,7 @@
 import os
 import sys
 import stat
+from collections import namedtuple
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
@@ -92,6 +93,10 @@ class FileDecodingError(Exception):
         super(FileDecodingError, self).__init__(self.error_message)
 
 
+LocalFileData = namedtuple(
+    'LocalFileData', ['size', 'last_update'])
+
+
 class FileStat(object):
     def __init__(self, src, dest=None, compare_key=None, size=None,
                  last_update=None, src_type=None, dest_type=None,
@@ -136,9 +141,7 @@ class FileGenerator(object):
         src_type = files['src']['type']
         dest_type = files['dest']['type']
         file_iterator = function_table[src_type](source, files['dir_op'])
-        for file_data in file_iterator:
-            src_path = file_data[0]
-            extra_information = file_data[1:]
+        for src_path, extra_information in file_iterator:
             dest_path, compare_key = find_dest_path_comp_key(files, src_path)
             file_stat_kwargs = {
                 'src': src_path, 'dest': dest_path, 'compare_key': compare_key,
@@ -150,20 +153,19 @@ class FileGenerator(object):
 
     def _inject_extra_information(self, file_stat_kwargs, extra_information):
         src_type = file_stat_kwargs['src_type']
-        # For local sources, ``extra_information`` will be the tuple
-        # containing the file's size and the file's last modified time
+        # For local sources, ``extra_information`` will be a ``LocalFileData``
+        # object.
         if src_type == 'local':
-            file_stat_kwargs['size'] = extra_information[0]
-            file_stat_kwargs['last_update'] = extra_information[1]
+            file_stat_kwargs['size'] = extra_information.size
+            file_stat_kwargs['last_update'] = extra_information.last_update
 
-        # For s3 sources, ``extra_information`` will have a dictionary
+        # For s3 sources, ``extra_information`` will be a dictionary
         # representing the response element the object represents from
-        # a ListObjects or HeadObject by itself in a tuple.
+        # a ListObjects or HeadObject.
         else:
-            response_data = extra_information[0]
-            file_stat_kwargs['size'] = response_data['Size']
-            file_stat_kwargs['last_update'] = response_data['LastModified']
-            file_stat_kwargs['response_data'] = response_data
+            file_stat_kwargs['size'] = extra_information['Size']
+            file_stat_kwargs['last_update'] = extra_information['LastModified']
+            file_stat_kwargs['response_data'] = extra_information
 
     def list_files(self, path, dir_op):
         """
@@ -179,7 +181,7 @@ class FileGenerator(object):
         if not self.should_ignore_file(path):
             if not dir_op:
                 size, last_update = get_file_stat(path)
-                yield path, size, last_update, None
+                yield path, LocalFileData(size, last_update)
             else:
                 # We need to list files in byte order based on the full
                 # expanded path of the key: 'test/1/2/3.txt'  However,
@@ -213,7 +215,7 @@ class FileGenerator(object):
                             yield x
                     else:
                         size, last_update = get_file_stat(file_path)
-                        yield file_path, size, last_update, None
+                        yield file_path, LocalFileData(size, last_update)
 
     def normalize_sort(self, names, os_sep, character):
         """

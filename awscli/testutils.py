@@ -57,6 +57,7 @@ import awscli.clidriver
 from awscli.plugin import load_plugins
 from awscli.clidriver import CLIDriver
 from awscli import EnvironmentVariables
+import awscli.errorhandler
 
 
 # The unittest module got a significant overhaul
@@ -163,7 +164,16 @@ def create_bucket(session, name=None, region=None):
     params = {'Bucket': bucket_name}
     if region != 'us-east-1':
         params['CreateBucketConfiguration'] = {'LocationConstraint': region}
-    client.create_bucket(**params)
+    try:
+        client.create_bucket(**params)
+    except awscli.errorhandler.ClientError as e:
+        if e.error_code == 'BucketAlreadyOwnedByYou':
+            # This can happen in the retried request, when the first one
+            # succeeded on S3 but somehow the response never comes back.
+            # We still got a bucket ready for test anyway.
+            pass
+        else:
+            raise
     return bucket_name
 
 

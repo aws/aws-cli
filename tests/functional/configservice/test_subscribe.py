@@ -10,7 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import mock
+
 from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.customizations.configservice.subscribe import S3BucketHelper
 
 
 class TestSubscribe(BaseAWSCommandParamsTest):
@@ -34,47 +37,39 @@ class TestSubscribe(BaseAWSCommandParamsTest):
         self.run_cmd(self.prefix)
 
         self.assertEqual(len(self.operations_called), 7)
-        # S3 operations
-        self.assertEqual(self.operations_called[0][0].name, 'HeadBucket')
-        self.assertEqual(self.operations_called[0][1], {'Bucket': 'mybucket'})
+        list_of_operation_names_called = []
+        list_of_parameters_called = []
+        for operation_called in self.operations_called:
+            list_of_operation_names_called.append(operation_called[0].name)
+            list_of_parameters_called.append(operation_called[1])
 
-        # SNS operations
-        self.assertEqual(self.operations_called[1][0].name, 'CreateTopic')
-        self.assertEqual(self.operations_called[1][1], {'Name': 'mytopic'})
-
-        # Config operations
         self.assertEqual(
-            self.operations_called[2][0].name,
-            'PutConfigurationRecorder')
-        self.assertEqual(
-            self.operations_called[2][1],
-            {'ConfigurationRecorder': {'name': 'default', 'roleARN': 'myrole'}}
+            list_of_operation_names_called, [
+                'HeadBucket',
+                'CreateTopic',
+                'PutConfigurationRecorder',
+                'PutDeliveryChannel',
+                'StartConfigurationRecorder',
+                'DescribeConfigurationRecorders',
+                'DescribeDeliveryChannels'
+            ]
         )
         self.assertEqual(
-            self.operations_called[3][0].name,
-            'PutDeliveryChannel')
-        self.assertEqual(
-            self.operations_called[3][1],
-            {'DeliveryChannel': {
-                'name': 'default',
-                's3BucketName': 'mybucket',
-                'snsTopicARN': 'my-topic-arn'}}
+            list_of_parameters_called, [
+                {'Bucket': 'mybucket'},  # S3 HeadBucket
+                {'Name': 'mytopic'},  # SNS CreateTopic
+                {'ConfigurationRecorder': {  # PutConfigurationRecorder
+                    'name': 'default', 'roleARN': 'myrole'}},
+                {'DeliveryChannel': {  # PutDeliveryChannel
+                    'name': 'default',
+                    's3BucketName': 'mybucket',
+                    'snsTopicARN': 'my-topic-arn'}},
+                # StartConfigurationRecorder
+                {'ConfigurationRecorderName': 'default'},
+                {},  # DescribeConfigurationRecorders
+                {}  # DescribeDeliveryChannels
+            ]
         )
-        self.assertEqual(
-            self.operations_called[4][0].name,
-            'StartConfigurationRecorder')
-        self.assertEqual(
-            self.operations_called[4][1],
-            {'ConfigurationRecorderName': 'default'}
-        )
-        self.assertEqual(
-            self.operations_called[5][0].name,
-            'DescribeConfigurationRecorders')
-        self.assertEqual(self.operations_called[5][1], {})
-        self.assertEqual(
-            self.operations_called[6][0].name,
-            'DescribeDeliveryChannels')
-        self.assertEqual(self.operations_called[6][1], {})
 
     def test_subscribe_when_bucket_exists_and_sns_topic_arn_provided(self):
         self.parsed_responses.pop(1)
@@ -83,64 +78,62 @@ class TestSubscribe(BaseAWSCommandParamsTest):
         self.run_cmd(self.prefix)
 
         self.assertEqual(len(self.operations_called), 6)
-        # S3 operations
-        self.assertEqual(self.operations_called[0][0].name, 'HeadBucket')
-        self.assertEqual(self.operations_called[0][1], {'Bucket': 'mybucket'})
+        list_of_operation_names_called = []
+        list_of_parameters_called = []
+        for operation_called in self.operations_called:
+            list_of_operation_names_called.append(operation_called[0].name)
+            list_of_parameters_called.append(operation_called[1])
 
-        # Config operations
         self.assertEqual(
-            self.operations_called[1][0].name,
-            'PutConfigurationRecorder')
-        self.assertEqual(
-            self.operations_called[1][1],
-            {'ConfigurationRecorder': {'name': 'default', 'roleARN': 'myrole'}}
+            list_of_operation_names_called, [
+                'HeadBucket',
+                'PutConfigurationRecorder',
+                'PutDeliveryChannel',
+                'StartConfigurationRecorder',
+                'DescribeConfigurationRecorders',
+                'DescribeDeliveryChannels'
+            ]
         )
         self.assertEqual(
-            self.operations_called[2][0].name,
-            'PutDeliveryChannel')
-        self.assertEqual(
-            self.operations_called[2][1],
-            {'DeliveryChannel': {
-                'name': 'default',
-                's3BucketName': 'mybucket',
-                'snsTopicARN': 'arn:mytopic'}}
+            list_of_parameters_called, [
+                {'Bucket': 'mybucket'},  # S3 HeadBucket
+                {'ConfigurationRecorder': {  # PutConfigurationRecorder
+                    'name': 'default', 'roleARN': 'myrole'}},
+                {'DeliveryChannel': {  # PutDeliveryChannel
+                    'name': 'default',
+                    's3BucketName': 'mybucket',
+                    'snsTopicARN': 'arn:mytopic'}},
+                # StartConfigurationRecorder
+                {'ConfigurationRecorderName': 'default'},
+                {},  # DescribeConfigurationRecorders
+                {}  # DescribeDeliveryChannels
+            ]
         )
-        self.assertEqual(
-            self.operations_called[3][0].name,
-            'StartConfigurationRecorder')
-        self.assertEqual(
-            self.operations_called[3][1],
-            {'ConfigurationRecorderName': 'default'}
-        )
-        self.assertEqual(
-            self.operations_called[4][0].name,
-            'DescribeConfigurationRecorders')
-        self.assertEqual(self.operations_called[4][1], {})
-        self.assertEqual(
-            self.operations_called[5][0].name,
-            'DescribeDeliveryChannels')
-        self.assertEqual(self.operations_called[5][1], {})
 
     def test_subscribe_when_bucket_needs_to_be_created(self):
-        # Make the HeadObject request fail now and should try to create a new
-        # bucket.
-        self.parsed_responses = None
-        self.http_response.status_code = 404
-        self.parsed_response = {'Error': {'Code': 404, 'Message': ''}}
+        with mock.patch('botocore.endpoint.Session.send') as \
+                http_session_send_patch:
+            # Mock for HeadBucket request
+            head_bucket_response = mock.Mock()
+            head_bucket_response.status_code = 404
+            head_bucket_response.content = b''
+            head_bucket_response.headers = {}
 
-        self.prefix += ' --s3-bucket mybucket --sns-topic arn:mytopic'
-        self.prefix += ' --iam-role myrole'
-        self.run_cmd(self.prefix, expected_rc=255)
-        # This will fail because there is no current way to specify
-        # a change in status code in BaseAWSCommandParamsTest
-        # As of now only one status code applies to all parsed responses.
-        # Therefore the CreateBucket will be the one that receives the 404.
-        # But it does not matter because we are just checking that the bucket
-        # is attempted to be made if we determine the bucket does not exist
-        self.assertEqual(len(self.operations_called), 2)
+            # Mock for CreateBucket request
+            create_bucket_response = mock.Mock()
+            create_bucket_response.status_code = 200
+            create_bucket_response.content = b''
+            create_bucket_response.headers = {}
 
-        self.assertEqual(self.operations_called[0][0].name, 'HeadBucket')
-        self.assertEqual(self.operations_called[0][1], {'Bucket': 'mybucket'})
-        self.assertEqual(self.operations_called[1][0].name, 'CreateBucket')
-        self.assertEqual(
-            self.operations_called[1][1]['Bucket'], 'mybucket')
+            http_session_send_patch.side_effect = [
+                head_bucket_response, create_bucket_response
+            ]
+
+            s3_client = self.driver.session.create_client('s3')
+            bucket_helper = S3BucketHelper(s3_client)
+            bucket_helper.prepare_bucket('mybucket')
+            send_call_list = http_session_send_patch.call_args_list
+            self.assertEqual(send_call_list[0][0][0].method, 'HEAD')
+            # Since the HeadObject fails with 404, the CreateBucket which is
+            # is a PUT request should be made.
+            self.assertEqual(send_call_list[1][0][0].method, 'PUT')

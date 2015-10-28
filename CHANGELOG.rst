@@ -13,6 +13,9 @@ Next Release (TBD)
   respectively.  The old arguments are still supported for backwards
   compatibility, but are no longer documented.
   (`issue 1599 <https://github.com/aws/aws-cli/pull/1599>`__)
+* bugfix:``aws configservice subscribe``: Fix an issue when creating a
+  new S3 bucket
+  (`issue 1593 <https://github.com/aws/aws-cli/pull/1593>`__)
 
 
 1.9.1

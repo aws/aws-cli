@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.9.2
+=====
 
 * bugfix:``aws s3``: Fix some local path validation issues
   (`issue 1575 <https://github.com/aws/aws-cli/pull/1575>`__)

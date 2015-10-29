@@ -175,3 +175,15 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         # Because of the decoding error the command should have succeeded
         # just that there was no content type added.
         self.assertNotIn('ContentType', self.last_kwargs)
+
+    def test_cp_fails_with_utime_errors_but_continues(self):
+        full_path = self.files.create_file('foo.txt', '')
+        cmdline = '%s s3://bucket/key.txt %s' % (self.prefix, full_path)
+        self.parsed_responses = [
+            {"ContentLength": "100", "LastModified": "00:00:00Z"},
+            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')}
+        ]
+        with mock.patch('os.utime') as mock_utime:
+            mock_utime.side_effect = OSError(1, '')
+            _, err, _ = self.run_cmd(cmdline, expected_rc=1)
+            self.assertIn('attempting to modify the utime', err)

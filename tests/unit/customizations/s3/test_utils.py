@@ -24,6 +24,7 @@ from awscli.customizations.s3.utils import create_warning
 from awscli.customizations.s3.utils import human_readable_size
 from awscli.customizations.s3.utils import human_readable_to_bytes
 from awscli.customizations.s3.utils import MAX_SINGLE_UPLOAD_SIZE
+from awscli.customizations.s3.utils import set_file_utime, SetFileUtimeError
 
 
 def test_human_readable_size():
@@ -380,6 +381,33 @@ class TestGetFileStat(unittest.TestCase):
                     "localtime()/gmtime() function")
                 with self.assertRaisesRegexp(ValueError, 'myfilename\.txt'):
                     get_file_stat('myfilename.txt')
+
+
+class TestSetsFileUtime(unittest.TestCase):
+
+    def test_successfully_sets_utime(self):
+        now = datetime.datetime.now(tzlocal())
+        epoch_now = time.mktime(now.timetuple())
+        with temporary_file('w') as f:
+            set_file_utime(f.name, epoch_now)
+            _, update_time = get_file_stat(f.name)
+            self.assertEqual(time.mktime(update_time.timetuple()), epoch_now)
+
+    def test_throws_more_relevant_error_when_errno_1(self):
+        now = datetime.datetime.now(tzlocal())
+        epoch_now = time.mktime(now.timetuple())
+        with mock.patch('os.utime') as utime_mock:
+            utime_mock.side_effect = OSError(1, '')
+            with self.assertRaises(SetFileUtimeError):
+                set_file_utime('not_real_file', epoch_now)
+
+    def test_passes_through_other_os_errors(self):
+        now = datetime.datetime.now(tzlocal())
+        epoch_now = time.mktime(now.timetuple())
+        with mock.patch('os.utime') as utime_mock:
+            utime_mock.side_effect = OSError(2, '')
+            with self.assertRaises(OSError):
+                set_file_utime('not_real_file', epoch_now)
 
 
 if __name__ == "__main__":

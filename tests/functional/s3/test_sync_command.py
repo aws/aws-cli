@@ -11,9 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
-import re
+import os
 
-import mock
 from awscli.compat import six
 
 
@@ -54,3 +53,28 @@ class TestSyncCommand(BaseAWSCommandParamsTest):
         cmdline = '. s3://mybucket --recursive'
         # Return code will be 2 for invalid parameter ``--recursive``
         self.run_cmd(cmdline, expected_rc=2)
+
+    def test_sync_from_non_existant_directory(self):
+        non_existant_directory = os.path.join(self.files.rootdir, 'fakedir')
+        cmdline = '%s %s s3://bucket/' % (self.prefix, non_existant_directory)
+        self.parsed_responses = [
+            {"CommonPrefixes": [], "Contents": []}
+        ]
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=255)
+        self.assertIn('does not exist', stderr)
+
+    def test_sync_to_non_existant_directory(self):
+        key = 'foo.txt'
+        non_existant_directory = os.path.join(self.files.rootdir, 'fakedir')
+        cmdline = '%s s3://bucket/ %s' % (self.prefix, non_existant_directory)
+        self.parsed_responses = [
+            {"CommonPrefixes": [], "Contents": [
+                {"Key": key, "Size": 3,
+                 "LastModified": "2014-01-09T20:45:49.000Z"}]},
+            {'ETag': '"c8afdb36c52cf4727836669019e69222-"',
+             'Body': six.BytesIO(b'foo')}
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        # Make sure the file now exists.
+        self.assertTrue(
+            os.path.exists(os.path.join(non_existant_directory, key)))

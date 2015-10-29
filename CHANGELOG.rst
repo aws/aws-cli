@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.9.2
+=====
 
 * bugfix:``aws s3``: Fix some local path validation issues
   (`issue 1575 <https://github.com/aws/aws-cli/pull/1575>`__)
@@ -13,6 +13,12 @@ Next Release (TBD)
   respectively.  The old arguments are still supported for backwards
   compatibility, but are no longer documented.
   (`issue 1599 <https://github.com/aws/aws-cli/pull/1599>`__)
+* bugfix:``aws configservice subscribe``: Fix an issue when creating a
+  new S3 bucket
+  (`issue 1593 <https://github.com/aws/aws-cli/pull/1593>`__)
+* bugfix:``aws apigateway put-integration``: Fix issue with
+  ``--uri`` and ``--integration-http-method`` parameters
+  (`issue 1605 <https://github.com/aws/aws-cli/issues/1605>`_)
 
 
 1.9.1

@@ -55,13 +55,10 @@ class TestListUsers(BaseAWSCommandParamsTest):
             'Groups': []
         }
 
-    def patch_make_request(self):
-        make_request_patch = self.make_request_patch.start()
-        make_request_patch.side_effect = [
-            (self.http_response, self.first_parsed_response),
-            (self.http_response, self.second_parsed_response),
+        self.parsed_responses = [
+            self.first_parsed_response,
+            self.second_parsed_response
         ]
-        self.make_request_is_patched = True
 
     def test_text_response(self):
         output = self.run_cmd('iam list-users --output text', expected_rc=0)[0]

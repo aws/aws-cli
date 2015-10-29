@@ -27,6 +27,7 @@ logger = logging.getLogger(__name__)
 # refers to an actual URI of some sort and we don't want to actually
 # download the content (i.e TemplateURL in cloudformation).
 PARAMFILE_DISABLED = set([
+    'apigateway.put-integration.uri',
     'cloudformation.create-stack.template-url',
     'cloudformation.update-stack.template-url',
     'cloudformation.validate-template.template-url',

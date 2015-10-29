@@ -301,6 +301,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         self.environ_patch.stop()
         if self.make_request_is_patched:
             self.make_request_patch.stop()
+            self.make_request_is_patched = False
 
     def before_call(self, params, **kwargs):
         self._store_params(params)
@@ -310,6 +311,13 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         self.last_params = params['body']
 
     def patch_make_request(self):
+        # If you do not stop a previously started patch,
+        # it can never be stopped if you call start() again on the same
+        # patch again...
+        # So stop the current patch before calling start() on it again.
+        if self.make_request_is_patched:
+            self.make_request_patch.stop()
+            self.make_request_is_patched = False
         make_request_patch = self.make_request_patch.start()
         if self.parsed_responses is not None:
             make_request_patch.side_effect = lambda *args, **kwargs: \

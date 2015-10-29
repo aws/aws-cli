@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import mock
+import botocore.session
 from botocore.exceptions import ClientError
 
 from awscli.testutils import unittest
@@ -21,7 +22,8 @@ from awscli.customizations.configservice.subscribe import SubscribeCommand, \
 
 class TestS3BucketHelper(unittest.TestCase):
     def setUp(self):
-        self.s3_client = mock.Mock()
+        self.session = botocore.session.get_session()
+        self.s3_client = mock.Mock(self.session.create_client('s3'))
         self.helper = S3BucketHelper(self.s3_client)
         self.error_response = {
             'Error': {
@@ -53,7 +55,7 @@ class TestS3BucketHelper(unittest.TestCase):
     def test_bucket_no_exist(self):
         name = 'MyBucket/MyPrefix'
         self.s3_client.head_bucket.side_effect = self.bucket_no_exists_error
-        self.s3_client._endpoint.region_name = 'us-east-1'
+        self.s3_client.meta.region_name = 'us-east-1'
         bucket, prefix = self.helper.prepare_bucket(name)
         # Ensure that the create bucket was called with the proper args.
         self.s3_client.create_bucket.assert_called_with(
@@ -66,7 +68,7 @@ class TestS3BucketHelper(unittest.TestCase):
     def test_bucket_no_exist_with_location_constraint(self):
         name = 'MyBucket/MyPrefix'
         self.s3_client.head_bucket.side_effect = self.bucket_no_exists_error
-        self.s3_client._endpoint.region_name = 'us-west-2'
+        self.s3_client.meta.region_name = 'us-west-2'
         bucket, prefix = self.helper.prepare_bucket(name)
         # Ensure that the create bucket was called with the proper args.
         self.s3_client.create_bucket.assert_called_with(
@@ -113,7 +115,9 @@ class TestS3BucketHelper(unittest.TestCase):
 
 class TestSNSTopicHelper(unittest.TestCase):
     def setUp(self):
-        self.sns_client = mock.Mock()
+        self.session = botocore.session.get_session()
+        self.sns_client = mock.Mock(self.session.create_client(
+            'sns', 'us-east-1'))
         self.helper = SNSTopicHelper(self.sns_client)
 
     def test_sns_topic_by_name(self):
@@ -151,17 +155,20 @@ class TestSNSTopicHelper(unittest.TestCase):
 
 class TestSubscribeCommand(unittest.TestCase):
     def setUp(self):
-        self.session = mock.Mock()
+        self.session = botocore.session.get_session()
 
         # Set up the client mocks.
-        self.s3_client = mock.Mock()
-        self.sns_client = mock.Mock()
-        self.config_client = mock.Mock()
+        self.s3_client = mock.Mock(self.session.create_client('s3'))
+        self.sns_client = mock.Mock(self.session.create_client(
+            'sns', 'us-east-1'))
+        self.config_client = mock.Mock(self.session.create_client(
+            'config', 'us-east-1'))
         self.config_client.describe_configuration_recorders.return_value = \
             {'ConfigurationRecorders': []}
         self.config_client.describe_delivery_channels.return_value = \
             {'DeliveryChannels': []}
 
+        self.session = mock.Mock(self.session)
         self.session.create_client.side_effect = [
             self.s3_client,
             self.sns_client,

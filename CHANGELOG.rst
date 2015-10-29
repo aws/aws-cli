@@ -16,6 +16,9 @@ Next Release (TBD)
 * bugfix:``aws configservice subscribe``: Fix an issue when creating a
   new S3 bucket
   (`issue 1593 <https://github.com/aws/aws-cli/pull/1593>`__)
+* bugfix:``aws apigateway put-integration``: Fix issue with
+  ``--uri`` and ``--integration-http-method`` parameters
+  (`issue 1605 <https://github.com/aws/aws-cli/issues/1605>`_)
 
 
 1.9.1

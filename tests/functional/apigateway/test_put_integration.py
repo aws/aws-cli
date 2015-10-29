@@ -17,7 +17,7 @@ class TestPutIntegration(BaseAWSCommandParamsTest):
 
     prefix = 'apigateway put-integration '
 
-    def test_stack_policy_during_update_url(self):
+    def test_put_integration(self):
         cmdline = self.prefix
         cmdline += '--rest-api-id api-id '
         cmdline += '--resource-id resource-id '

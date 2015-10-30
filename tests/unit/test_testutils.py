@@ -15,20 +15,21 @@ import mock
 from awscli.testutils import create_bucket
 from awscli.testutils import BaseCLIDriverTest
 
-ERROR_409 = b'''<?xml version="1.0" encoding="UTF-8"?>
-<Error>
-<Code>BucketAlreadyOwnedByYou</Code>
-<Message>Your previous request to create the named bucket succeeded and you already own it.</Message>
-<BucketName>awscli-s3test-3uvz5tdmf1</BucketName>
-<RequestId>A8E7C34EA4F108FF</RequestId>
-<HostId>BUXR7OBsTxKfIGjPJUN4/BYFNt5mNK/KHtV769LKcDdZEb+IRn82U/TaSu3+Oz1Y</HostId>
-</Error>'''
 
 class TestCreateBucket(BaseCLIDriverTest):
     def test_bucket_already_owned_by_you(self):
         with mock.patch('botocore.endpoint.Session.send') as _send:
             _send.side_effect = [
                 mock.Mock(status_code=500, headers={}, content=b''),
-                mock.Mock(status_code=409, headers={}, content=ERROR_409),
+                mock.Mock(
+                    status_code=409, headers={},
+                    content=b'''<?xml version="1.0" encoding="UTF-8"?>
+                        <Error>
+                        <Code>BucketAlreadyOwnedByYou</Code>
+                        <Message>Your previous request to create the named bucket succeeded and you already own it.</Message>
+                        <BucketName>awscli-foo-bar</BucketName>
+                        <RequestId>0123456789ABCDEF</RequestId>
+                        <HostId>foo</HostId>
+                        </Error>'''),
                 ]
             self.assertEqual(create_bucket(self.session, 'bucket'), 'bucket')

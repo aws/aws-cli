@@ -166,93 +166,77 @@ GRANTS = {
         'UsingAuthAccess.html">Access Control</a>')}
 
 
-SSE_COPY_SOURCE_CUSTOMER_ALGORITHM = {'name': 'sse-copy-source-customer-algorithm',
-                                      'action': 'store',
-                                      'choices': ['AES256'],
-                                      'default': 'AES256',
-                                      'help_text': ('''\
-The server-side encryption algorithm to use with the customer-specified key for \
-the source object. When present this must be "AES256". This argument is only \
-valid when doing s3 -> s3 operations.\
-''')}
+SSE = {
+    'name': 'sse', 'nargs': '?', 'const': 'AES256',
+    'choices': ['AES256', 'aws:kms'],
+    'help_text': (
+        'Specifies server-side encryption of the object in S3. '
+        'Valid values are ``AES256`` and ``aws:kms``. If the parameter is '
+        'specified but no value is provided, ``AES256`` is used.'
+    )
+}
 
 
-SSE_COPY_SOURCE_CUSTOMER_KEY = {'name': 'sse-copy-source-customer-key',
-                                'action': 'store',
-                                'help_text': ('''\
-The customer-controlled encryption key used to server-side encrypt the source \
-object of an s3 -> s3 operation. This argument is only valid when doing s3 -> \
-s3 operations. See --sse-customer-key for how arg values are interpretted.\
-''')}
+SSE_C = {
+    'name': 'sse-c', 'nargs': '?', 'const': 'AES256', 'choices': ['AES256'],
+    'help_text': (
+        'Specifies server-side encryption using customer provided keys '
+        'of the the object in S3. ``AES256`` is the only valid value. '
+        'If the parameter is specified but no value is provided, '
+        '``AES256`` is used. If you provide this value, ``--sse-c-key`` '
+        'be specfied as well.'
+    )
+}
 
 
-SSE_COPY_SOURCE_CUSTOMER_KEY_MD5 = {'name': 'sse-copy-source-customer-key-md5',
-                                    'action': 'store',
-                                    'help_text': ('''\
-The base64 encoded raw 128 bit MD5 digest of the server-side encryption copy \
-source customer key. Note: This is NOT the base64 encoding of the hex \
-(printable) MD5 digest.\
-''')}
+SSE_C_KEY = {
+    'name': 'sse-c-key',
+    'help_text': (
+        'The customer-provided encryption key to use to server-side '
+        'encrypt the object in S3. If you provide this value, '
+        '``--sse-c`` be specfied as well.'
+    )
+}
 
 
-SSE = {'name': 'sse',
-       'action': 'store_true',
-       'help_text': ('''\
-Enable Server Side Encryption of the object in S3.  Using this arg will enable \
-SSE-S3 by default if no other --sse-* args are specified.\
-''')}
+SSE_KMS_KEY_ID = {
+    'name': 'sse-kms-key-id',
+    'help_text': (
+        'The AWS KMS key ID that should be used to server-side '
+        'encrypt the object in S3. Note that you should only '
+        'provide this parameter if KMS key ID is different the '
+        'default S3 master KMS key.'
+    )
+}
 
 
-SSE_CLASS = {'name': 'sse-class',
-             'action': 'store',
-             'choices': ['C', 'KMS', 'S3'],
-             'default': None,
-             'help_text': ('''\
-The class of Server Side Encryption to use.  Valid values are "C", "KMS", and \
-"S3".  This argument is optional since it can be inferred from the presence or \
-absence of other --sse-* arguments.  Note that KMS requires Signature v4, \
-which needs to be enabled via aws configure.
-''')}
+SSE_C_COPY_SOURCE = {
+    'name': 'sse-c-copy-source', 'nargs': '?',
+    'const': 'AES256', 'choices': ['AES256'],
+    'help_text': (
+        'This parameter should only be specified when copying an S3 object '
+        'that was encrypted server-side with a customer-provided '
+        'key. It specifies the algorithm to use when decrypting the source '
+        'object. ``AES256`` is the only valid '
+        'value. If the parameter is specified but no value is provided, '
+        '``AES256`` is used. If you provide this value, '
+        '``--sse-c-copy-source-key`` be specfied as well. '
+    )
+}
 
 
-SSE_CUSTOMER_ALGORITHM = {'name': 'sse-customer-algorithm',
-                          'action': 'store',
-                          'choices': ['AES256'],
-                          'default': 'AES256',
-                          'help_text': ('''\
-The server-side encryption algorithm to use with the customer-specified key. \
-When present this must be "AES256".\
-''')}
-
-
-SSE_CUSTOMER_KEY = {'name': 'sse-customer-key',
-                    'action': 'store',
-                    'help_text': ('''\
-The customer-controlled encryption key to use to server-side encrypt the \
-destination object in S3. Can be specified as a string (insecure) or a file URL \
-(more secure). When --customer-key-md5 is not specified this value is \
-interpretted as raw key bytes and base64 encoded for use in the S3 API. When \
---customer-key-md5 is specified this value is not encoded at all, and must \
-already be in a form expected by the API (base64 encoded). The unencoded value \
-must be 32 bytes (256 bits) in length.\
-''')}
-
-
-SSE_CUSTOMER_KEY_MD5 = {'name': 'sse-customer-key-md5',
-                        'action': 'store',
-                        'help_text': ('''\
-The base64-encoded raw 128 bit MD5 digest of the customer key.  Note: This is \
-NOT the base64 encoding of the hex (printable) MD5 digest.\
-''')}
-
-
-SSE_KMS_KEY_ID = {'name': 'sse-kms-key-id',
-                  'action': 'store',
-                  'help_text': ('''\
-The AWS KMS key ID that should be used to server-side encrypt the destination \
-object.  Note that KMS requires Signature v4, which needs to be enabled via \
-aws configure.\
-''')}
+SSE_C_COPY_SOURCE_KEY = {
+    'name': 'sse-c-copy-source-key',
+    'help_text': (
+        'This parameter should only be specified when copying an S3 object '
+        'that was encrypted server-side with a customer-provided '
+        'key. Specifies the customer-provided encryption key for Amazon S3 '
+        'to use to decrypt the source object. The encryption key provided '
+        'must be one that was used when the source object was created. '
+        'If you provide this value, ``--sse-c-copy-source`` be specfied as '
+        'well.'
+    )
+}
 
 
 STORAGE_CLASS = {'name': 'storage-class', 'nargs': 1,
@@ -390,9 +374,11 @@ IGNORE_GLACIER_WARNINGS = {
 
 TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
-                 SSE, STORAGE_CLASS, GRANTS, WEBSITE_REDIRECT, CONTENT_TYPE,
-                 CACHE_CONTROL, CONTENT_DISPOSITION, CONTENT_ENCODING,
-                 CONTENT_LANGUAGE, EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS,
+                 SSE, SSE_C, SSE_C_KEY, SSE_KMS_KEY_ID, SSE_C_COPY_SOURCE,
+                 SSE_C_COPY_SOURCE_KEY, STORAGE_CLASS, GRANTS,
+                 WEBSITE_REDIRECT, CONTENT_TYPE, CACHE_CONTROL,
+                 CONTENT_DISPOSITION, CONTENT_ENCODING, CONTENT_LANGUAGE,
+                 EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS,
                  PAGE_SIZE, IGNORE_GLACIER_WARNINGS]
 
 
@@ -604,90 +590,7 @@ class S3TransferCommand(S3Command):
 
         params = cmd_params.parameters # alias
 
-        if 'sse' in params:
-            # fixup SSE-related params; someone with better knowledge of the
-            # awscli command line argument subsystem may know a better place
-            # for this, but this gets the job done
 
-            if params['sse'] and params['sse_class'] is None:
-                params['sse_class'] = 'S3'
-
-            if params['sse_class'] is not None and not params['sse']:
-                params['sse'] = True
-
-            if params['sse_class'] is None and \
-                  params['sse_customer_key'] is not None:
-                params['sse_class'] = 'C'
-
-            if params['sse_class'] is None and \
-                  params['sse_kms_key_id'] is not None:
-                params['sse_class'] = 'KMS'
-
-            if params['sse_class'] == 'C' and \
-                  params['sse_customer_key'] is None:
-                raise ValueError('must specify --sse-customer-key')
-
-            if params['sse_class'] == 'KMS' and \
-                  params['sse_kms_key_id'] is None:
-                raise ValueError('must specify --sse-kms-key-id')
-
-            if params['sse_class'] == 'S3' and \
-                  (params['sse_customer_key'] is not None or
-                   params['sse_kms_key_id'] is not None):
-                raise ValueError('extraneous keys specified')
-
-            if params['sse_copy_source_customer_key'] is not None and \
-                  params['paths_type'] != 's3s3':
-                raise ValueError('--sse-copy-source-customer-key is only '
-                                 'valid for s3 source and s3 target')
-
-            # There's an inconsistency in boto/botocore and the aws s3api
-            # subcommand regarding how SSECustomerKey, SSECustomerKeyMD5,
-            # CopySourceSSECustomerKey, and CopySourceSSECustomerKeyMD5 are
-            # treated. SSECustomerKey is base64 encoded for you by botocore as
-            # long as you don't set SSECustomerKeyMD5 (no matter what the
-            # encoding of SSECustomerKey already is). CopySource* are never
-            # transformed for you in any way by botocore. So in our case, let's
-            # transform both SSECustomerKey and CopySourceSSECustomerKey
-            # depending on the presence of the corresponding *MD5.
-
-            for k, m in (('sse_copy_source_customer_key',
-                          'sse_copy_source_customer_key_md5'),
-                         ('sse_customer_key',
-                          'sse_customer_key_md5')):
-                if params[k] is None:
-                    continue
-
-                if params[m] is not None:
-                    # this means that both params[k] and params[m] are
-                    # specified, and assumed to be base64 encoded already
-
-                    rawkey = params[k].decode('base64')
-
-                    if len(rawkey) != 32:
-                        raise ValueError('%s value is not 32 bytes' % k)
-
-                    md5b64 = hashlib.md5(rawkey).digest().encode('base64')\
-                               .strip()
-
-                    if params[m] != md5b64:
-                        raise ValueError('md5 of %s does not match %s' %
-                                         (k, m))
-
-                else:
-                    # params[m] was not specified, so this means that params[k]
-                    # is assumed to be raw bytes. It needs base64 encoding, and
-                    # the base64 encoded raw digest needs to be set.
-
-                    if len(params[k]) != 32:
-                        raise ValueError('%s value is not 32 bytes' % k)
-
-                    md5b64 = hashlib.md5(params[k]).digest().encode('base64')\
-                               .strip()
-                    params[k] = params[k].encode('base64').strip()
-                    params[m] = md5b64
-
-        LOG.debug('S3 params %r', cmd_params.parameters)
 
         runtime_config = transferconfig.RuntimeConfig().build_config(
             **self._session.get_scoped_config().get('s3', {}))
@@ -928,45 +831,6 @@ class CommandArchitecture(object):
         files = FileFormat().format(src, dest, self.parameters)
         rev_files = FileFormat().format(dest, src, self.parameters)
 
-        fgen_sse_customer_algorithm = None
-        fgen_sse_customer_key = None
-        fgen_sse_customer_key_md5 = None
-        rgen_sse_customer_algorithm = None
-        rgen_sse_customer_key = None
-        rgen_sse_customer_key_md5 = None
-
-        if paths_type == 's3':
-            fgen_sse_customer_algorithm = \
-                self.parameters.get('sse_customer_algorithm', None)
-            fgen_sse_customer_key = \
-                self.parameters.get('sse_customer_key', None)
-            fgen_sse_customer_key_md5 = \
-                self.parameters.get('sse_customer_key_md5', None)
-        elif paths_type == 's3s3':
-            fgen_sse_customer_algorithm = \
-                self.parameters.get('sse_copy_source_customer_algorithm', None)
-            fgen_sse_customer_key = \
-                self.parameters.get('sse_copy_source_customer_key', None)
-            fgen_sse_customer_key_md5 = \
-                self.parameters.get('sse_copy_source_customer_key_md5', None)
-            rgen_sse_customer_algorithm = \
-                self.parameters.get('sse_customer_algorithm', None)
-            rgen_sse_customer_key = \
-                self.parameters.get('sse_customer_key', None)
-            rgen_sse_customer_key_md5 = \
-                self.parameters.get('sse_customer_key_md5', None)
-        elif paths_type == 's3local':
-            fgen_sse_customer_algorithm = \
-                self.parameters.get('sse_customer_algorithm', None)
-            fgen_sse_customer_key = \
-                self.parameters.get('sse_customer_key', None)
-            fgen_sse_customer_key_md5 = \
-                self.parameters.get('sse_customer_key_md5', None)
-        elif paths_type == 'locals3':
-            pass
-        else:
-            raise ValueError('unknown paths_type value')
-
         cmd_translation = {}
         cmd_translation['locals3'] = {'cp': 'upload', 'sync': 'upload',
                                       'mv': 'move'}
@@ -980,21 +844,37 @@ class CommandArchitecture(object):
         }
         result_queue = queue.Queue()
         operation_name = cmd_translation[paths_type][self.cmd]
-        file_generator = FileGenerator(self._source_client,
-                                       operation_name,
-                                       self.parameters['follow_symlinks'],
-                                       self.parameters['page_size'],
-                                       result_queue=result_queue,
-                                       sse_customer_algorithm=fgen_sse_customer_algorithm,
-                                       sse_customer_key=fgen_sse_customer_key,
-                                       sse_customer_key_md5=fgen_sse_customer_key_md5)
-        rev_generator = FileGenerator(self._client, '',
-                                      self.parameters['follow_symlinks'],
-                                      self.parameters['page_size'],
-                                      result_queue=result_queue,
-                                      sse_customer_algorithm=rgen_sse_customer_algorithm,
-                                      sse_customer_key=rgen_sse_customer_key,
-                                      sse_customer_key_md5=rgen_sse_customer_key_md5)
+
+        fgen_kwargs = {
+            'client': self._source_client, 'operation_name': operation_name,
+            'follow_symlinks': self.parameters['follow_symlinks'],
+            'page_size': self.parameters['page_size'],
+            'result_queue': result_queue
+        }
+        rgen_kwargs = {
+            'client': self._client, 'operation_name': '',
+            'follow_symlinks': self.parameters['follow_symlinks'],
+            'page_size': self.parameters['page_size'],
+            'result_queue': result_queue
+        }
+
+        # SSE-C may be neaded for HeadObject for copies/downloads/deletes
+        # If the operation is s3 to s3, the FileGenerator should use the
+        # copy source key and algorithm. Otherwise, use the regular
+        # SSE-C key and algorithm. Note the reverse FileGenerator does
+        # not need any of these because it is used only for sync operations
+        # which only use ListObjects which does not require HeadObject. 
+        if paths_type == 's3s3':
+            fgen_kwargs['sse_c'] = self.parameters.get(
+                'sse_c_copy_source')
+            fgen_kwargs['sse_c_key'] = self.parameters.get(
+                'sse_c_copy_source_key')
+        else:
+            fgen_kwargs['sse_c'] = self.parameters.get('sse_c')
+            fgen_kwargs['sse_c_key'] = self.parameters.get('sse_c_key')
+        
+        file_generator = FileGenerator(**fgen_kwargs)
+        rev_generator = FileGenerator(**rgen_kwargs)
         taskinfo = [TaskInfo(src=files['src']['path'],
                              src_type='s3',
                              operation_name=operation_name,
@@ -1129,6 +1009,7 @@ class CommandParameters(object):
             self.parameters['dest'] = paths[0]
         self._validate_streaming_paths()
         self._validate_path_args()
+        self._validate_sse_c_args()
 
     def _validate_streaming_paths(self):
         self.parameters['is_stream'] = False
@@ -1222,3 +1103,27 @@ class CommandParameters(object):
 
     def add_page_size(self, parsed_args):
         self.parameters['page_size'] = getattr(parsed_args, 'page_size', None)
+
+    def _validate_sse_c_args(self):
+        self._validate_sse_arg_type()
+        self._validate_sse_arg_type('sse_c_copy_source')
+        self._validate_sse_c_copy_source_for_paths()
+
+    def _validate_sse_arg_type(self, sse_c_type='sse_c')
+        sse_c_key_type = sse_c + '_key'
+        sse_c_type_param = '--' + sse_c_type.replace('_', '-')
+        sse_c_key_type_param = '--' + sse_c_type.replace('_', '-')
+        if sse_c_type in self.parameters:
+            if sse_c_key_type not in self.parameters:
+                raise ValueError(
+                    'It %s is specified, %s must be specified '
+                    'as well.' % (sse_c_type_param, sse_c_key_type_param)
+                )
+        
+    def _validate_sse_c_copy_source_for_path(self):
+        if 'sse_c_customer_source' in self.parameters:
+            if self.parameters['path_type'] != 's3s3':
+                raise ValueError(
+                    '--sse-c-customer-source is only supported for '
+                    'copy operations.'
+                )      

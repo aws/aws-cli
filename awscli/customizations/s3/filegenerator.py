@@ -116,9 +116,8 @@ class FileGenerator(object):
     ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
     def __init__(self, client, operation_name, follow_symlinks=True,
-                 page_size=None, result_queue=None,
-                 sse_customer_algorithm=None, sse_customer_key=None,
-                 sse_customer_key_md5=None):
+                 page_size=None, result_queue=None, sse_c=None,
+                 sse_c_key=None):
         self._client = client
         self.operation_name = operation_name
         self.follow_symlinks = follow_symlinks
@@ -126,9 +125,8 @@ class FileGenerator(object):
         self.result_queue = result_queue
         if not result_queue:
             self.result_queue = queue.Queue()
-        self.sse_customer_algorithm = sse_customer_algorithm
-        self.sse_customer_key = sse_customer_key
-        self.sse_customer_key_md5 = sse_customer_key_md5
+        self.sse_c = sse_c
+        self.sse_c_key = sse_c_key
 
     def call(self, files):
         """
@@ -326,10 +324,9 @@ class FileGenerator(object):
         bucket, key = find_bucket_key(s3_path)
         try:
             params = {'Bucket': bucket, 'Key': key}
-            if self.sse_customer_key:
-                params['SSECustomerAlgorithm'] = self.sse_customer_algorithm
-                params['SSECustomerKey'] = self.sse_customer_key
-                params['SSECustomerKeyMD5'] = self.sse_customer_key_md5
+            if self.sse_c:
+                params['SSECustomerAlgorithm'] = self.sse_c
+                params['SSECustomerKey'] = self.sse_c_key
             response = self._client.head_object(**params)
         except ClientError as e:
             # We want to try to give a more helpful error message.

@@ -162,20 +162,7 @@ class CopyPartTask(OrderableTask):
                       'UploadId': upload_id,
                       'CopySource': '%s/%s' % (src_bucket, src_key),
                       'CopySourceRange': range_param}
-            if self._params['sse_copy_source_customer_key']:
-                params['CopySourceSSECustomerAlgorithm'] = \
-                    self._params['sse_copy_source_customer_algorithm']
-                params['CopySourceSSECustomerKey'] = \
-                    self._params['sse_copy_source_customer_key']
-                params['CopySourceSSECustomerKeyMD5'] = \
-                    self._params['sse_copy_source_customer_key_md5']
-            if self._params['sse_customer_key']:
-                params['SSECustomerAlgorithm'] = \
-                    self._params['sse_customer_algorithm']
-                params['SSECustomerKey'] = \
-                    self._params['sse_customer_key']
-                params['SSECustomerKeyMD5'] = \
-                    self._params['sse_customer_key_md5']
+            self.set_sse_c_request_params(params, self._params)
             response_data = self._filename.client.upload_part_copy(**params)
             etag = response_data['CopyPartResult']['ETag'][1:-1]
             self._upload_context.announce_finished_part(
@@ -247,10 +234,7 @@ class UploadPartTask(OrderableTask):
                       'PartNumber': self._part_number,
                       'UploadId': upload_id,
                       'Body': body}
-            if self._params['sse_customer_key']:
-                params['SSECustomerAlgorithm'] = self._params['sse_customer_algorithm']
-                params['SSECustomerKey'] = self._params['sse_customer_key']
-                params['SSECustomerKeyMD5'] = self._params['sse_customer_key_md5']
+            self._filename.set_sse_c_request_params(params, self._params)
             try:
                 response_data = self._filename.client.upload_part(**params)
             finally:
@@ -389,10 +373,7 @@ class DownloadPartTask(OrderableTask):
         params = {'Bucket': bucket,
                   'Key': key,
                   'Range': range_param}
-        if self._params['sse_customer_key']:
-            params['SSECustomerAlgorithm'] = self._params['sse_customer_algorithm']
-            params['SSECustomerKey'] = self._params['sse_customer_key']
-            params['SSECustomerKeyMD5'] = self._params['sse_customer_key_md5']
+        self._filename.set_sse_c_request_params(params, self._params)
         for i in range(self.TOTAL_ATTEMPTS):
             try:
                 LOGGER.debug("Making GetObject requests with byte range: %s",

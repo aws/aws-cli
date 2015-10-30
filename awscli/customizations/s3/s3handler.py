@@ -55,16 +55,19 @@ class S3Handler(object):
         self.result_queue = result_queue
         if not self.result_queue:
             self.result_queue = queue.Queue()
-        self.params = {'dryrun': False, 'quiet': False, 'acl': None,
-                       'guess_mime_type': True, 'sse': False,
-                       'storage_class': None, 'website_redirect': None,
-                       'content_type': None, 'cache_control': None,
-                       'content_disposition': None, 'content_encoding': None,
-                       'content_language': None, 'expires': None,
-                       'grants': None, 'only_show_errors': False,
-                       'is_stream': False, 'paths_type': None,
-                       'expected_size': None, 'metadata_directive': None,
-                       'ignore_glacier_warnings': False}
+        self.params = {
+            'dryrun': False, 'quiet': False, 'acl': None,
+            'guess_mime_type': True, 'sse_c_copy_source': None,
+            'sse_c_copy_source_key': None, 'sse': None,
+            'sse_c': None, 'sse_c_key': None, 'sse_kms_key_id': None,
+            'storage_class': None, 'website_redirect': None,
+            'content_type': None, 'cache_control': None,
+            'content_disposition': None, 'content_encoding': None,
+            'content_language': None, 'expires': None, 'grants': None,
+            'only_show_errors': False, 'is_stream': False,
+            'paths_type': None, 'expected_size': None,
+            'metadata_directive': None, 'ignore_glacier_warnings': False
+        }
         self.params['region'] = params['region']
         for key in self.params.keys():
             if key in params:

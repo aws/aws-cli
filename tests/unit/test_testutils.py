@@ -26,7 +26,8 @@ class TestCreateBucket(BaseCLIDriverTest):
                     content=b'''<?xml version="1.0" encoding="UTF-8"?>
                         <Error>
                         <Code>BucketAlreadyOwnedByYou</Code>
-                        <Message>Your previous request to create the named bucket succeeded and you already own it.</Message>
+                        <Message>Your previous request to create the named
+                            bucket succeeded and you already own it.</Message>
                         <BucketName>awscli-foo-bar</BucketName>
                         <RequestId>0123456789ABCDEF</RequestId>
                         <HostId>foo</HostId>

@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.9.3
+=====
 * feature:``aws iam``: Add support for resource-level policy simulation
 
 

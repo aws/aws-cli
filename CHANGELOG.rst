@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+* feature:``aws datapipeline create-default-roles``: Creates default IAM
+  roles for creating EMR clusters.
+  (`issue 1616 <https://github.com/aws/aws-cli/pull/1616>`__)
+
+
 1.9.3
 =====
 * feature:``aws iam``: Add support for resource-level policy simulation

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.9.4
+=====
+* feature:``aws datapipeline create-default-roles``: Creates default IAM
+  roles for creating EMR clusters.
+  (`issue 1616 <https://github.com/aws/aws-cli/pull/1616>`__)
+* feature:``aws devicefarm``: Add commands for updating and deleting
+  projects, device pools, uploads, and runs.
+
+
 1.9.3
 =====
 * feature:``aws iam``: Add support for resource-level policy simulation

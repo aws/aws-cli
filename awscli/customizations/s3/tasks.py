@@ -162,7 +162,8 @@ class CopyPartTask(OrderableTask):
                       'UploadId': upload_id,
                       'CopySource': '%s/%s' % (src_bucket, src_key),
                       'CopySourceRange': range_param}
-            self.set_sse_c_request_params(params, self._params)
+            self._filename.set_sse_c_and_copy_source_request_params(
+                params, self._params)
             response_data = self._filename.client.upload_part_copy(**params)
             etag = response_data['CopyPartResult']['ETag'][1:-1]
             self._upload_context.announce_finished_part(

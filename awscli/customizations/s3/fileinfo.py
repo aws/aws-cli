@@ -262,15 +262,23 @@ class FileInfo(TaskInfo):
         if cli_params['sse_c']:
             request_params['SSECustomerAlgorithm'] = cli_params['sse_c']
             request_params['SSECustomerKey'] = cli_params['sse_c_key']
+
+    def set_sse_c_and_copy_source_request_params(self, request_params,
+                                                 cli_params):
+        self.set_sse_c_request_params(request_params, cli_params)
+        self.set_sse_c_copy_source_request_params(request_params, cli_params)
+
+    def set_sse_c_copy_source_request_params(self, request_params, cli_params):
         if cli_params['sse_c_copy_source']:
             request_params['CopySourceSSECustomerAlgorithm'] = cli_params[
                 'sse_c_copy_source']
             request_params['CopySourceSSECustomerKey'] = cli_params[
-                'sse_copy_source_customer_key']
+                'sse_c_copy_source_key']
 
     def set_sse_and_sse_c_request_params(self, request_params, cli_params):
         self.set_sse_request_params(request_params, cli_params)
-        self.set_sse_c_request_params(request_params, cli_params)
+        self.set_sse_c_and_copy_source_request_params(
+            request_params, cli_params)
 
     def _handle_metadata_directive(self, params):
         if self.parameters['metadata_directive']:
@@ -401,7 +409,8 @@ class FileInfo(TaskInfo):
         bucket, key = find_bucket_key(self.dest)
         params = {'Bucket': bucket, 'Key': key}
         self._handle_object_params(params)
-        self.set_sse_and_sse_c_request_params(params, self.request_params)
+        self.set_sse_request_params(params, self.parameters)
+        self.set_sse_c_request_params(params, self.parameters)
         response_data = self.client.create_multipart_upload(**params)
         upload_id = response_data['UploadId']
         return upload_id

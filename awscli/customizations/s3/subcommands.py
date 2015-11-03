@@ -15,6 +15,7 @@ import logging
 import os
 import sys
 
+from botocore.client import Config
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
@@ -44,7 +45,6 @@ RECURSIVE = {'name': 'recursive', 'action': 'store_true', 'dest': 'dir_op',
 
 HUMAN_READABLE = {'name': 'human-readable', 'action': 'store_true',
                   'help_text': "Displays file sizes in human readable format."}
-
 
 SUMMARIZE = {'name': 'summarize', 'action': 'store_true',
              'help_text': (
@@ -382,10 +382,10 @@ TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  PAGE_SIZE, IGNORE_GLACIER_WARNINGS]
 
 
-def get_client(session, region, endpoint_url, verify):
+def get_client(session, region, endpoint_url, verify, config=None):
     return session.create_client('s3', region_name=region,
-                                 endpoint_url=endpoint_url, verify=verify)
-
+                                 endpoint_url=endpoint_url, verify=verify,
+                                 config=config)
 
 class S3Command(BasicCommand):
     def _run_main(self, parsed_args, parsed_globals):
@@ -588,10 +588,6 @@ class S3TransferCommand(S3Command):
         cmd_params.add_paths(parsed_args.paths)
         self._handle_rm_force(parsed_globals, cmd_params.parameters)
 
-        params = cmd_params.parameters # alias
-
-
-
         runtime_config = transferconfig.RuntimeConfig().build_config(
             **self._session.get_scoped_config().get('s3', {}))
         cmd = CommandArchitecture(self._session, self.NAME,
@@ -732,17 +728,22 @@ class CommandArchitecture(object):
         self._source_client = None
 
     def set_clients(self):
+        client_config = None
+        if self.parameters.get('sse') == 'aws:kms':
+            client_config = Config(signature_version='s3v4')
         self._client = get_client(
             self.session,
             region=self.parameters['region'],
             endpoint_url=self.parameters['endpoint_url'],
-            verify=self.parameters['verify_ssl']
+            verify=self.parameters['verify_ssl'],
+            config=client_config
         )
         self._source_client = get_client(
             self.session,
             region=self.parameters['region'],
             endpoint_url=self.parameters['endpoint_url'],
-            verify=self.parameters['verify_ssl']
+            verify=self.parameters['verify_ssl'],
+            config=client_config
         )
         if self.parameters['source_region']:
             if self.parameters['paths_type'] == 's3s3':
@@ -750,7 +751,8 @@ class CommandArchitecture(object):
                     self.session,
                     region=self.parameters['source_region'][0],
                     endpoint_url=None,
-                    verify=self.parameters['verify_ssl']
+                    verify=self.parameters['verify_ssl'],
+                    config=client_config
                 )
 
     def create_instructions(self):
@@ -1105,12 +1107,12 @@ class CommandParameters(object):
         self.parameters['page_size'] = getattr(parsed_args, 'page_size', None)
 
     def _validate_sse_c_args(self):
-        self._validate_sse_arg_type()
-        self._validate_sse_arg_type('sse_c_copy_source')
+        self._validate_sse_c_arg()
+        self._validate_sse_c_arg('sse_c_copy_source')
         self._validate_sse_c_copy_source_for_paths()
 
-    def _validate_sse_arg_type(self, sse_c_type='sse_c')
-        sse_c_key_type = sse_c + '_key'
+    def _validate_sse_c_arg(self, sse_c_type='sse_c'):
+        sse_c_key_type = sse_c_type + '_key'
         sse_c_type_param = '--' + sse_c_type.replace('_', '-')
         sse_c_key_type_param = '--' + sse_c_type.replace('_', '-')
         if sse_c_type in self.parameters:
@@ -1120,7 +1122,7 @@ class CommandParameters(object):
                     'as well.' % (sse_c_type_param, sse_c_key_type_param)
                 )
         
-    def _validate_sse_c_copy_source_for_path(self):
+    def _validate_sse_c_copy_source_for_paths(self):
         if 'sse_c_customer_source' in self.parameters:
             if self.parameters['path_type'] != 's3s3':
                 raise ValueError(

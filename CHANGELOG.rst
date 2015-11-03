@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.9.4
+=====
 * feature:``aws datapipeline create-default-roles``: Creates default IAM
   roles for creating EMR clusters.
   (`issue 1616 <https://github.com/aws/aws-cli/pull/1616>`__)

@@ -20,6 +20,7 @@ import shutil
 import botocore.session
 from awscli.testutils import unittest, aws, BaseS3CLICommand
 from awscli.testutils import temporary_file
+from awscli.testutils import skip_if_windows
 from awscli.clidriver import create_clidriver
 
 
@@ -354,6 +355,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         p = aws('ec2 describe-instances', env_vars=environ)
         self.assertIn('must specify a region', p.stderr)
 
+    @skip_if_windows('Ctrl-C not supported on windows.')
     def test_ctrl_c_does_not_print_traceback(self):
         # Relying on the fact that this generally takes
         # more than 1 second to complete.

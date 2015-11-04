@@ -18,6 +18,7 @@ from awscli.compat import six
 from awscli.formatter import JSONFormatter
 
 from awscli.testutils import BaseAWSCommandParamsTest, unittest
+from awscli.testutils import skip_if_windows
 from awscli.compat import get_stdout_text_writer
 
 
@@ -101,8 +102,7 @@ class TestListUsers(BaseAWSCommandParamsTest):
         self.environ['AWS_DEFAULT_OUTPUT'] = 'bad-output-type'
         self.run_cmd('iam list-users', expected_rc=255)
 
-    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                    'Encoding tests only supported on mac/linux')
+    @skip_if_windows('Encoding tests only supported on mac/linux')
     def test_json_prints_unicode_chars(self):
         self.parsed_response['Users'][1]['UserId'] = u'\u2713'
         output = self.run_cmd('iam list-users', expected_rc=0)[0]

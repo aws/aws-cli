@@ -34,6 +34,7 @@ from awscli.compat import six
 from nose.plugins.attrib import attr
 
 from awscli.testutils import unittest, get_stdout_encoding
+from awscli.testutils import skip_if_windows
 from awscli.testutils import aws as _aws
 from awscli.testutils import BaseS3CLICommand
 from tests.integration.customizations.s3 import create_bucket as _create_bucket
@@ -221,8 +222,7 @@ class TestMoveCommand(BaseS3CLICommand):
 
 
 class TestRm(BaseS3CLICommand):
-    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                     'Newline in filename test not valid on windows.')
+    @skip_if_windows('Newline in filename test not valid on windows.')
     # Windows won't let you do this.  You'll get:
     # [Errno 22] invalid mode ('w') or filename:
     # 'c:\\windows\\temp\\tmp0fv8uu\\foo\r.txt'
@@ -341,8 +341,7 @@ class TestCp(BaseS3CLICommand):
                          len(foo_contents.getvalue()))
 
     @attr('slow')
-    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                     'SIGINT not supported on Windows.')
+    @skip_if_windows('SIGINT not supported on Windows.')
     def test_download_ctrl_c_does_not_hang(self):
         bucket_name = self.create_bucket()
         foo_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 20))
@@ -784,8 +783,7 @@ class TestWarnings(BaseS3CLICommand):
         self.assertIn('The user-provided path %s does not exist.' %
                       filename, p.stderr)
 
-    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                     'Read permissions tests only supported on mac/linux')
+    @skip_if_windows('Read permissions tests only supported on mac/linux')
     def test_no_read_access(self):
         if os.geteuid() == 0:
             self.skipTest('Cannot completely remove read access as root user.')
@@ -800,8 +798,7 @@ class TestWarnings(BaseS3CLICommand):
         self.assertIn('warning: Skipping file %s. File/Directory is '
                       'not readable.' % filename, p.stderr)
 
-    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                     'Special files only supported on mac/linux')
+    @skip_if_windows('Special files only supported on mac/linux')
     def test_is_special_file(self):
         file_path = os.path.join(self.files.rootdir, 'foo')
         # Use socket for special file.
@@ -814,8 +811,7 @@ class TestWarnings(BaseS3CLICommand):
                        "socket." % file_path), p.stderr)
 
 
-@unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                 'Symlink tests only supported on mac/linux')
+@skip_if_windows('Symlink tests only supported on mac/linux')
 class TestSymlinks(BaseS3CLICommand):
     """
     This class test the ability to follow or not follow symlinks.
@@ -1203,8 +1199,7 @@ class TestDryrun(BaseS3CLICommand):
             "argument was not obeyed.")
 
 
-@unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                 'Memory tests only supported on mac/linux')
+@skip_if_windows('Memory tests only supported on mac/linux')
 class TestMemoryUtilization(BaseS3CLICommand):
     # These tests verify the memory utilization and growth are what we expect.
     def extra_setup(self):

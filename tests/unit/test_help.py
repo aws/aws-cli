@@ -132,9 +132,11 @@ class TestHelpPager(unittest.TestCase):
                 return 'less' in args[0]
 
         renderer = CtrlCRenderer()
-        renderer.mock_popen.communicate.return_value = ('rendered', '')
+        renderer.mock_popen.communicate.return_value = ('send to pager', '')
         renderer.exists_on_path['groff'] = True
         renderer.render('foo')
+        last_call = renderer.mock_popen.communicate.call_args_list[-1]
+        self.assertEqual(last_call, mock.call(input='send to pager'))
 
 
 class TestHelpCommandBase(unittest.TestCase):

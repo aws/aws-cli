@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import time
+import signal
 import os
 import tempfile
 import random
@@ -352,6 +353,18 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         environ['AWS_CONFIG_FILE'] = 'nowhere-foo'
         p = aws('ec2 describe-instances', env_vars=environ)
         self.assertIn('must specify a region', p.stderr)
+
+    def test_ctrl_c_does_not_print_traceback(self):
+        # Relying on the fact that this generally takes
+        # more than 1 second to complete.
+        process = aws('ec2 describe-images', wait_for_finish=False)
+        time.sleep(1)
+        process.send_signal(signal.SIGINT)
+        process.wait()
+        stdout = process.stdout.read()
+        stderr = process.stderr.read()
+        self.assertNotIn(b'Traceback', stdout)
+        self.assertNotIn(b'Traceback', stderr)
 
 
 class TestCommandLineage(unittest.TestCase):

@@ -163,7 +163,19 @@ def create_bucket(session, name=None, region=None):
     params = {'Bucket': bucket_name}
     if region != 'us-east-1':
         params['CreateBucketConfiguration'] = {'LocationConstraint': region}
-    client.create_bucket(**params)
+    try:
+        # To disable the (obsolete) awscli.errorhandler.ClientError behavior
+        client.meta.events.unregister(
+            'after-call', unique_id='awscli-error-handler')
+        client.create_bucket(**params)
+    except ClientError as e:
+        if e.response['Error'].get('Code') == 'BucketAlreadyOwnedByYou':
+            # This can happen in the retried request, when the first one
+            # succeeded on S3 but somehow the response never comes back.
+            # We still got a bucket ready for test anyway.
+            pass
+        else:
+            raise
     return bucket_name
 
 

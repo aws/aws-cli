@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import signal
+import platform
 import os
 
 from awscli.testutils import unittest
@@ -90,6 +91,8 @@ class TestCSVSplit(unittest.TestCase):
                          ['foo', 'bar=foo,*[biz]*,baz'])
 
 
+@unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
+                 "Ctrl-C not valid on windows.")
 class TestIgnoreCtrlC(unittest.TestCase):
     def test_ctrl_c_is_ignored(self):
         with ignore_ctrl_c():

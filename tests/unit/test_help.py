@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest, FileCreator
 import signal
+import platform
 import json
 import sys
 import os
@@ -118,6 +119,8 @@ class TestHelpPager(unittest.TestCase):
         renderer.render('foo')
         self.assertEqual(renderer.popen_calls[-1][0], (['more'],))
 
+    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
+                    "Ctrl-C not valid on windows.")
     def test_can_handle_ctrl_c(self):
         class CtrlCRenderer(FakePosixHelpRenderer):
             def _popen(self, *args, **kwargs):

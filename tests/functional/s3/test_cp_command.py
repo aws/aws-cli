@@ -229,6 +229,37 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
         self.assertEqual('', stderr)
+    
+    def test_cp_with_sse_flag(self):
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = (
+            '%s %s s3://bucket/key.txt --sse' % (
+                self.prefix, full_path))
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertDictEqual(
+            self.operations_called[0][1],
+            {'Key': 'key.txt', 'Bucket': 'bucket',
+             'ContentType': 'text/plain', 'Body': mock.ANY,
+             'ServerSideEncryption': 'AES256'}
+        )
+
+    def test_cp_with_sse_c_flag(self):
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = (
+            '%s %s s3://bucket/key.txt --sse-c --sse-c-key foo' % (
+                self.prefix, full_path))
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertDictEqual(
+            self.operations_called[0][1],
+            {'Key': 'key.txt', 'Bucket': 'bucket',
+             'ContentType': 'text/plain', 'Body': mock.ANY,
+             'SSECustomerAlgorithm': 'AES256', 'SSECustomerKey': 'Zm9v',
+             'SSECustomerKeyMD5': 'rL0Y20zC+Fzt72VPzMSk2A=='}
+        )
 
     # Note ideally the kms sse with a key id would be integration tests
     # However, you cannot delete kms keys so there would be no way to clean

@@ -1114,18 +1114,24 @@ class CommandParameters(object):
     def _validate_sse_c_arg(self, sse_c_type='sse_c'):
         sse_c_key_type = sse_c_type + '_key'
         sse_c_type_param = '--' + sse_c_type.replace('_', '-')
-        sse_c_key_type_param = '--' + sse_c_type.replace('_', '-')
-        if sse_c_type in self.parameters:
-            if sse_c_key_type not in self.parameters:
+        sse_c_key_type_param = '--' + sse_c_key_type.replace('_', '-')
+        if self.parameters.get(sse_c_type):
+            if not self.parameters.get(sse_c_key_type):
                 raise ValueError(
                     'It %s is specified, %s must be specified '
                     'as well.' % (sse_c_type_param, sse_c_key_type_param)
                 )
+        if self.parameters.get(sse_c_key_type):
+            if not self.parameters.get(sse_c_type):
+                raise ValueError(
+                    'It %s is specified, %s must be specified '
+                    'as well.' % (sse_c_key_type_param, sse_c_type_param)
+                )
         
     def _validate_sse_c_copy_source_for_paths(self):
-        if 'sse_c_customer_source' in self.parameters:
-            if self.parameters['path_type'] != 's3s3':
+        if self.parameters.get('sse_c_copy_source'):
+            if self.parameters['paths_type'] != 's3s3':
                 raise ValueError(
-                    '--sse-c-customer-source is only supported for '
+                    '--sse-c-copy-source is only supported for '
                     'copy operations.'
                 )      

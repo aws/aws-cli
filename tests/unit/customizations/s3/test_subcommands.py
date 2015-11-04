@@ -43,9 +43,9 @@ class TestGetClient(unittest.TestCase):
         session = Mock()
         endpoint = get_client(session, region='us-west-1', endpoint_url='URL',
                               verify=True)
-        session.create_client.assert_called_with('s3', region_name='us-west-1',
-                                                 endpoint_url='URL',
-                                                 verify=True)
+        session.create_client.assert_called_with(
+            's3', region_name='us-west-1', endpoint_url='URL', verify=True,
+            config=None)
 
 
 class TestRbCommand(unittest.TestCase):
@@ -121,8 +121,9 @@ class TestLSCommand(unittest.TestCase):
         # Verify get_client
         get_client = self.session.create_client
         args = get_client.call_args
-        self.assertEqual(args, mock.call('s3', region_name=None,
-                                         endpoint_url=None, verify=None))
+        self.assertEqual(args, mock.call(
+            's3', region_name=None, endpoint_url=None, verify=None,
+            config=None))
 
     def test_ls_with_verify_argument(self):
         options = {'default': 's3://', 'nargs': '?'}
@@ -135,8 +136,9 @@ class TestLSCommand(unittest.TestCase):
         # Verify get_client
         get_client = self.session.create_client
         args = get_client.call_args
-        self.assertEqual(args, mock.call('s3', region_name='us-west-2',
-                                         endpoint_url=None, verify=False))
+        self.assertEqual(args, mock.call(
+            's3', region_name='us-west-2', endpoint_url=None, verify=False,
+            config=None))
 
 
 class CommandArchitectureTest(BaseAWSCommandParamsTest):
@@ -174,14 +176,16 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         self.assertEqual(
             session.create_client.call_args_list[0],
             mock.call(
-             's3', region_name='us-west-1', endpoint_url=None, verify=None)
+             's3', region_name='us-west-1', endpoint_url=None, verify=None,
+             config=None)
         )
         # A client created with the same arguments as the first should be used
         # for the source client since no source region was provided.
         self.assertEqual(
             session.create_client.call_args_list[1],
             mock.call(
-             's3', region_name='us-west-1', endpoint_url=None, verify=None)
+                's3', region_name='us-west-1', endpoint_url=None, verify=None,
+                config=None)
         )
 
     def test_set_client_with_source(self):
@@ -198,17 +202,20 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         self.assertEqual(len(create_client_args), 3)
         self.assertEqual(
             create_client_args[0][1],
-            {'region_name': 'us-west-1', 'verify': None, 'endpoint_url': None}
+            {'region_name': 'us-west-1', 'verify': None, 'endpoint_url': None,
+             'config': None}
         )
         self.assertEqual(
             create_client_args[1][1],
-            {'region_name': 'us-west-1', 'verify': None, 'endpoint_url': None}
+            {'region_name': 'us-west-1', 'verify': None, 'endpoint_url': None,
+             'config': None}
         )
         # Assert override the second client created with the one needed for the
         # source region.
         self.assertEqual(
             create_client_args[2][1],
-            {'region_name': 'us-west-2', 'verify': None, 'endpoint_url': None}
+            {'region_name': 'us-west-2', 'verify': None, 'endpoint_url': None,
+             'config': None}
         )
 
     def test_create_instructions(self):
@@ -637,6 +644,46 @@ class CommandParametersTest(unittest.TestCase):
         cmd_param = CommandParameters('cp', {'dir_op': True}, '')
         cmd_param.add_paths(paths)
         self.assertTrue(os.path.exists(non_existent_path))
+
+    def test_validate_sse_c_args_missing_sse(self):
+        paths = ['s3://bucket/foo', 's3://bucket/bar']
+        params = {'dir_op': False, 'sse_c_key': 'foo'}
+        cmd_param = CommandParameters('cp', params, '')
+        with self.assertRaisesRegexp(ValueError, '--sse-c must be specified'):
+            cmd_param.add_paths(paths)
+
+    def test_validate_sse_c_args_missing_sse_c_key(self):
+        paths = ['s3://bucket/foo', 's3://bucket/bar']
+        params = {'dir_op': False, 'sse_c': 'AES256'}
+        cmd_param = CommandParameters('cp', params, '')
+        with self.assertRaisesRegexp(ValueError,
+                                     '--sse-c-key must be specified'):
+            cmd_param.add_paths(paths)
+
+    def test_validate_sse_c_args_missing_sse_c_copy_source(self):
+        paths = ['s3://bucket/foo', 's3://bucket/bar']
+        params = {'dir_op': False, 'sse_c_copy_source_key': 'foo'}
+        cmd_param = CommandParameters('cp', params, '')
+        with self.assertRaisesRegexp(ValueError,
+                                     '--sse-c-copy-source must be specified'):
+            cmd_param.add_paths(paths)
+
+    def test_validate_sse_c_args_missing_sse_c_copy_source_key(self):
+        paths = ['s3://bucket/foo', 's3://bucket/bar']
+        params = {'dir_op': False, 'sse_c_copy_source': 'AES256'}
+        cmd_param = CommandParameters('cp', params, '')
+        with self.assertRaisesRegexp(ValueError,
+                '--sse-c-copy-source-key must be specified'):
+            cmd_param.add_paths(paths)
+
+    def test_validate_sse_c_args_wrong_path_type(self):
+        paths = ['s3://bucket/foo', self.file_creator.rootdir]
+        params = {'dir_op': False, 'sse_c_copy_source': 'AES256',
+                  'sse_c_copy_source_key': 'foo'}
+        cmd_param = CommandParameters('cp', params, '')
+        with self.assertRaisesRegexp(ValueError,
+                                     'only supported for copy operations'):
+            cmd_param.add_paths(paths)
 
 
 class HelpDocTest(BaseAWSHelpOutputTest):

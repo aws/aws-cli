@@ -292,20 +292,26 @@ class TestBucketList(unittest.TestCase):
     def test_list_objects(self):
         now = mock.sentinel.now
         self.client.get_paginator.return_value.paginate = self.fake_paginate
+        individual_response_elements = [
+            {'LastModified': '2014-02-27T04:20:38.000Z',
+             'Key': 'a', 'Size': 1},
+            {'LastModified': '2014-02-27T04:20:38.000Z',
+                 'Key': 'b', 'Size': 2},
+            {'LastModified': '2014-02-27T04:20:38.000Z',
+                 'Key': 'c', 'Size': 3}
+        ]
         self.responses = [
-            {'Contents': [
-                {'LastModified': '2014-02-27T04:20:38.000Z',
-                 'Key': 'a', 'Size': 1},
-                {'LastModified': '2014-02-27T04:20:38.000Z',
-                 'Key': 'b', 'Size': 2}]},
-            {'Contents': [
-                {'LastModified': '2014-02-27T04:20:38.000Z',
-                 'Key': 'c', 'Size': 3}]}
+            {'Contents': individual_response_elements[0:2]},
+            {'Contents': [individual_response_elements[2]]}
         ]
         lister = BucketLister(self.client, self.date_parser)
         objects = list(lister.list_objects(bucket='foo'))
-        self.assertEqual(objects, [('foo/a', 1, now), ('foo/b', 2, now),
-                                   ('foo/c', 3, now)])
+        self.assertEqual(objects,
+            [('foo/a', individual_response_elements[0]),
+             ('foo/b', individual_response_elements[1]),
+             ('foo/c', individual_response_elements[2])])
+        for individual_response in individual_response_elements:
+            self.assertEqual(individual_response['LastModified'], now)
 
     def test_urlencoded_keys(self):
         # In order to workaround control chars being in key names,
@@ -314,28 +320,34 @@ class TestBucketList(unittest.TestCase):
         # in bar.txt:
         now = mock.sentinel.now
         self.client.get_paginator.return_value.paginate = self.fake_paginate
+        individual_response_element = {
+            'LastModified': '2014-02-27T04:20:38.000Z',
+            'Key': 'bar%0D.txt', 'Size': 1}
         self.responses = [
-            {'Contents': [
-                {'LastModified': '2014-02-27T04:20:38.000Z',
-                 'Key': 'bar%0D.txt', 'Size': 1}]},
+            {'Contents': [individual_response_element]}
         ]
         lister = BucketLister(self.client, self.date_parser)
         objects = list(lister.list_objects(bucket='foo'))
         # And note how it's been converted to '\r'.
-        self.assertEqual(objects, [('foo/bar\r.txt', 1, now)])
+        self.assertEqual(
+            objects, [('foo/bar\r.txt', individual_response_element)])
+        self.assertEqual(individual_response_element['LastModified'], now)
 
     def test_urlencoded_with_unicode_keys(self):
         now = mock.sentinel.now
         self.client.get_paginator.return_value.paginate = self.fake_paginate
+        individual_response_element = {
+            'LastModified': '2014-02-27T04:20:38.000Z',
+            'Key': '%E2%9C%93', 'Size': 1}
         self.responses = [
-            {'Contents': [
-                {'LastModified': '2014-02-27T04:20:38.000Z',
-                 'Key': '%E2%9C%93', 'Size': 1}]},
+            {'Contents': [individual_response_element]}
         ]
         lister = BucketLister(self.client, self.date_parser)
         objects = list(lister.list_objects(bucket='foo'))
         # And note how it's been converted to '\r'.
-        self.assertEqual(objects, [(u'foo/\u2713', 1, now)])
+        self.assertEqual(
+            objects, [(u'foo/\u2713', individual_response_element)])
+        self.assertEqual(individual_response_element['LastModified'], now)
 
 
 class TestScopedEventHandler(unittest.TestCase):
@@ -408,7 +420,3 @@ class TestSetsFileUtime(unittest.TestCase):
             utime_mock.side_effect = OSError(2, '')
             with self.assertRaises(OSError):
                 set_file_utime('not_real_file', epoch_now)
-
-
-if __name__ == "__main__":
-    unittest.main()

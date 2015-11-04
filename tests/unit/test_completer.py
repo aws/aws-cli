@@ -85,7 +85,8 @@ COMPLETIONS = [
                              '--content-encoding', '--content-language',
                              '--expires', '--grants', '--only-show-errors',
                              '--expected-size', '--page-size',
-                             '--metadata-directive']
+                             '--metadata-directive',
+                             '--ignore-glacier-warnings']
                             + GLOBALOPTS)),
     ('aws s3 cp --quiet -', -1, set(['--no-guess-mime-type', '--dryrun',
                                      '--recursive', '--content-type',
@@ -97,7 +98,8 @@ COMPLETIONS = [
                                      '--exclude', '--include',
                                      '--source-region', '--metadata-directive',
                                      '--grants', '--only-show-errors',
-                                     '--expected-size', '--page-size']
+                                     '--expected-size', '--page-size',
+                                     '--ignore-glacier-warnings']
                                     + GLOBALOPTS)),
     ('aws emr ', -1, set(['add-instance-groups', 'add-steps', 'add-tags',
                           'create-cluster', 'create-default-roles',

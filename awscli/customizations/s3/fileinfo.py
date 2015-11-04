@@ -141,6 +141,11 @@ class TaskInfo(object):
         bucket, key = find_bucket_key(self.src)
         self.client.delete_bucket(Bucket=bucket)
 
+    def is_glacier_compatible(self):
+        # These operations do not involving transferring glacier objects
+        # so they are always glacier compatible.
+        return True
+
 
 class FileInfo(TaskInfo):
     """
@@ -164,11 +169,16 @@ class FileInfo(TaskInfo):
     :param dest_type: string
     :param parameters: a dictionary of important values this is assigned in
         the ``BasicTask`` object.
+    :param associated_response_data: The response data used by
+        the ``FileGenerator`` to create this task. It is either an dictionary
+        from the list of a ListObjects or the response from a HeadObject. It
+        will only be filled if the task was generated from an S3 bucket.
     """
     def __init__(self, src, dest=None, compare_key=None, size=None,
                  last_update=None, src_type=None, dest_type=None,
                  operation_name=None, client=None, parameters=None,
-                 source_client=None, is_stream=False):
+                 source_client=None, is_stream=False,
+                 associated_response_data=None):
         super(FileInfo, self).__init__(src, src_type=src_type,
                                        operation_name=operation_name,
                                        client=client)
@@ -185,6 +195,7 @@ class FileInfo(TaskInfo):
                                'sse': None}
         self.source_client = source_client
         self.is_stream = is_stream
+        self.associated_response_data = associated_response_data
 
     def set_size_from_s3(self):
         """
@@ -246,6 +257,31 @@ class FileInfo(TaskInfo):
         if self.parameters['metadata_directive']:
             params['MetadataDirective'] = \
                 self.parameters['metadata_directive'][0]
+
+    def is_glacier_compatible(self):
+        """Determines if a file info object is glacier compatible
+
+        Operations will fail if the S3 object has a storage class of GLACIER
+        and it involves copying from S3 to S3, downloading from S3, or moving
+        where S3 is the source (the delete will actually succeed, but we do
+        not want fail to transfer the file and then successfully delete it).
+
+        :returns: True if the FileInfo's operation will not fail because the
+            operation is on a glacier object. False if it will fail.
+        """
+        if self._is_glacier_object(self.associated_response_data):
+            if self.operation_name in ['copy', 'download']:
+                return False
+            elif self.operation_name == 'move':
+                if self.src_type == 's3':
+                    return False
+        return True
+
+    def _is_glacier_object(self, response_data):
+        if response_data:
+            if response_data.get('StorageClass') == 'GLACIER':
+                return True
+        return False
 
     def upload(self, payload=None):
         """

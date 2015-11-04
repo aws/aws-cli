@@ -32,8 +32,6 @@ def register_removals(event_handler):
                                         'verify-email-address'])
     cmd_remover.remove(on_event='building-command-table.ec2',
                        remove_commands=['import-instance', 'import-volume'])
-    cmd_remover.remove(on_event='building-command-table.cloudformation',
-                       remove_commands=['estimate-template-cost'])
     cmd_remover.remove(on_event='building-command-table.emr',
                        remove_commands=['run-job-flow', 'describe-job-flows',
                                         'add-job-flow-steps',

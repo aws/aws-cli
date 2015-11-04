@@ -163,6 +163,69 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
         self.assertNotIn('MetadataDirective', self.operations_called[0][1])
 
+    def test_cp_succeeds_with_mimetype_errors(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = '%s %s s3://bucket/key.txt' % (self.prefix, full_path)
+        self.parsed_responses = [
+            {'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
+        with mock.patch('mimetypes.guess_type') as mock_guess_type:
+            # This should throw a UnicodeDecodeError.
+            mock_guess_type.side_effect = lambda x: b'\xe2'.decode('ascii')
+            self.run_cmd(cmdline, expected_rc=0)
+        # Because of the decoding error the command should have succeeded
+        # just that there was no content type added.
+        self.assertNotIn('ContentType', self.last_kwargs)
 
-if __name__ == "__main__":
-    unittest.main()
+    def test_cp_fails_with_utime_errors_but_continues(self):
+        full_path = self.files.create_file('foo.txt', '')
+        cmdline = '%s s3://bucket/key.txt %s' % (self.prefix, full_path)
+        self.parsed_responses = [
+            {"ContentLength": "100", "LastModified": "00:00:00Z"},
+            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')}
+        ]
+        with mock.patch('os.utime') as mock_utime:
+            mock_utime.side_effect = OSError(1, '')
+            _, err, _ = self.run_cmd(cmdline, expected_rc=1)
+            self.assertIn('attempting to modify the utime', err)
+
+    def test_warns_on_glacier_incompatible_operation(self):
+        self.parsed_responses = [
+            {'ContentLength': '100', 'LastModified': '00:00:00Z',
+             'StorageClass': 'GLACIER'},
+        ]
+        cmdline = ('%s s3://bucket/key.txt .' % self.prefix)
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=2)
+        # There should not have been a download attempted because the
+        # operation was skipped because it is glacier incompatible.
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        self.assertIn('GLACIER', stderr)
+
+    def test_warns_on_glacier_incompatible_operation_for_multipart_file(self):
+        self.parsed_responses = [
+            {'ContentLength': str(20 * (1024 ** 2)),
+             'LastModified': '00:00:00Z',
+             'StorageClass': 'GLACIER'},
+        ]
+        cmdline = ('%s s3://bucket/key.txt .' % self.prefix)
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=2)
+        # There should not have been a download attempted because the
+        # operation was skipped because it is glacier incompatible.
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        self.assertIn('GLACIER', stderr)
+
+    def test_turn_off_glacier_warnings(self):
+        self.parsed_responses = [
+            {'ContentLength': str(20 * (1024 ** 2)),
+             'LastModified': '00:00:00Z',
+             'StorageClass': 'GLACIER'},
+        ]
+        cmdline = (
+            '%s s3://bucket/key.txt . --ignore-glacier-warnings' % self.prefix)
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=0)
+        # There should not have been a download attempted because the
+        # operation was skipped because it is glacier incompatible.
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        self.assertEqual('', stderr)

@@ -25,10 +25,10 @@ LOG = logging.getLogger(__name__)
 
 GLOBALOPTS = ['--debug', '--endpoint-url', '--no-verify-ssl', '--no-paginate',
               '--output', '--profile', '--region', '--version', '--color',
-              '--query', '--no-sign-request']
+              '--query', '--no-sign-request', '--ca-bundle']
 
 COMPLETIONS = [
-    ('aws ', -1, set(['autoscaling', 'cloudformation', 'cloudfront',
+    ('aws ', -1, set(['apigateway', 'autoscaling', 'cloudformation', 'cloudfront',
                       'cloudhsm', 'cloudsearch', 'cloudsearchdomain',
                       'cloudtrail', 'cloudwatch', 'cognito-identity',
                       'codecommit', 'codepipeline', 'cognito-sync',
@@ -36,11 +36,14 @@ COMPLETIONS = [
                       'devicefarm', 'directconnect', 'ds', 'dynamodb',
                       'dynamodbstreams', 'glacier', 'ec2', 'ecs', 'efs',
                       'elasticache', 'elasticbeanstalk', 'elastictranscoder',
-                      'elb', 'emr', 'iam', 'importexport', 'kinesis', 'kms',
-                      'lambda', 'logs', 'machinelearning', 'opsworks', 'rds',
+                      'elb', 'emr', 'es', 'firehose',
+                      'iam', 'iot', 'iot-data', 'importexport', 'inspector',
+                      'kinesis', 'kms',
+                      'lambda', 'logs', 'marketplacecommerceanalytics',
+                      'machinelearning', 'opsworks', 'rds',
                       'redshift', 'route53', 'route53domains', 's3', 's3api',
-                      'sdb', 'ses', 'sns', 'sqs', 'storagegateway', 'sts',
-                      'ssm', 'support', 'swf', 'workspaces'])),
+                      'sdb', 'ses', 'sns', 'sqs', 'ssm', 'storagegateway', 'sts',
+                      'ssm', 'support', 'swf', 'waf', 'workspaces'])),
     ('aws cloud', -1, set(['cloudformation', 'cloudfront', 'cloudhsm',
                            'cloudsearch', 'cloudsearchdomain', 'cloudtrail',
                            'cloudwatch'])),
@@ -68,7 +71,7 @@ COMPLETIONS = [
      set(['--filters', '--dry-run', '--no-dry-run', '--endpoint-url',
           '--no-verify-ssl', '--no-paginate', '--no-sign-request', '--output',
           '--profile', '--starting-token', '--max-items', '--page-size',
-          '--region', '--version', '--color', '--query',
+          '--region', '--version', '--color', '--query', '--ca-bundle',
           '--generate-cli-skeleton', '--cli-input-json'])),
     ('aws s3', -1, set(['cp', 'mv', 'rm', 'mb', 'rb', 'ls', 'sync', 'website'])),
     ('aws s3 m', -1, set(['mv', 'mb'])),
@@ -82,7 +85,8 @@ COMPLETIONS = [
                              '--source-region', '--content-encoding',
                              '--content-language', '--expires', '--grants',
                              '--only-show-errors', '--expected-size',
-                             '--page-size', '--metadata-directive']
+                             '--page-size', '--metadata-directive',
+							 '--ignore-glacier-warnings']
                             + GLOBALOPTS)),
     ('aws s3 cp --quiet -', -1, set(['--no-guess-mime-type', '--dryrun',
                                      '--recursive', '--content-type',
@@ -95,7 +99,8 @@ COMPLETIONS = [
                                      '--exclude', '--include',
                                      '--source-region', '--metadata-directive',
                                      '--grants', '--only-show-errors',
-                                     '--expected-size', '--page-size']
+                                     '--expected-size', '--page-size',
+                                     '--ignore-glacier-warnings']
                                     + GLOBALOPTS)),
     ('aws emr ', -1, set(['add-instance-groups', 'add-steps', 'add-tags',
                           'create-cluster', 'create-default-roles',
@@ -129,6 +134,7 @@ def test_completions():
         'AWS_DEFAULT_REGION': 'us-east-1',
         'AWS_ACCESS_KEY_ID': 'access_key',
         'AWS_SECRET_ACCESS_KEY': 'secret_key',
+        'AWS_CA_BUNDLE': 'ca_bundle',
         'AWS_CONFIG_FILE': '',
     }
     with mock.patch('os.environ', environ):

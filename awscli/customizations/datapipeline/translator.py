@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
+from awscli.clidriver import CLIOperationCaller
 
 
 class PipelineDefinitionError(Exception):
@@ -20,6 +21,39 @@ class PipelineDefinitionError(Exception):
         super(PipelineDefinitionError, self).__init__(full_msg)
         self.msg = msg
         self.definition = definition
+
+
+# Method to convert the dictionary input to a string
+# This is required for escaping
+def dict_to_string(dictionary, indent=2):
+    return json.dumps(dictionary, indent=indent)
+
+
+# Method to parse the arguments to get the region value
+def get_region(session, parsed_globals):
+    region = parsed_globals.region
+    if region is None:
+        region = session.get_config_variable('region')
+    return region
+
+
+def remove_cli_error_event(client):
+    """This unregister call will go away once the client switchover
+    is done, but for now we're relying on S3 catching a ClientError
+    when we check if a bucket exists, so we need to ensure the
+    botocore ClientError is raised instead of the CLI's error handler.
+    """
+    client.meta.events.unregister(
+        'after-call', unique_id='awscli-error-handler')
+
+
+# Method to display the response for a particular CLI operation
+def display_response(session, operation_name, result, parsed_globals):
+    cli_operation_caller = CLIOperationCaller(session)
+    # Calling a private method. Should be changed after the functionality
+    # is moved outside CliOperationCaller.
+    cli_operation_caller._display_response(
+        operation_name, result, parsed_globals)
 
 
 def api_to_definition(definition):

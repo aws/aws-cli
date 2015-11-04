@@ -22,7 +22,7 @@ from awscli.errorhandler import ErrorHandler
 from awscli.customizations.streamingoutputarg import add_streaming_output_arg
 from awscli.customizations.addexamples import add_examples
 from awscli.customizations.removals import register_removals
-from awscli.customizations.ec2addcount import ec2_add_count
+from awscli.customizations.ec2addcount import register_count_events
 from awscli.customizations.paginate import register_pagination
 from awscli.customizations.ec2decryptpassword import ec2_add_priv_launch_key
 from awscli.customizations.ec2secgroupsimplify import register_secgroup
@@ -65,6 +65,7 @@ from awscli.customizations.awslambda import register_lambda_create_function
 from awscli.customizations.kms import register_fix_kms_create_grant_docs
 from awscli.customizations.route53 import register_create_hosted_zone_doc_fix
 from awscli.customizations.codecommit import initialize as codecommit_init
+from awscli.customizations.iot_data import register_custom_endpoint_note
 
 
 def awscli_initialize(event_handlers):
@@ -91,8 +92,7 @@ def awscli_initialize(event_handlers):
     register_cli_input_json(event_handlers)
     event_handlers.register('building-argument-table.*',
                             add_streaming_output_arg)
-    event_handlers.register('building-argument-table.ec2.run-instances',
-                            ec2_add_count)
+    register_count_events(event_handlers)
     event_handlers.register('building-argument-table.ec2.get-password-data',
                             ec2_add_priv_launch_key)
     register_parse_global_args(event_handlers)
@@ -131,3 +131,4 @@ def awscli_initialize(event_handlers):
     register_create_hosted_zone_doc_fix(event_handlers)
     register_modify_put_configuration_recorder(event_handlers)
     codecommit_init(event_handlers)
+    register_custom_endpoint_note(event_handlers)

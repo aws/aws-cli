@@ -18,6 +18,7 @@ import shutil
 
 import botocore.session
 from awscli.testutils import unittest, aws, BaseS3CLICommand
+from awscli.testutils import temporary_file
 from awscli.clidriver import create_clidriver
 
 
@@ -266,13 +267,13 @@ class TestBasicCommandFunctionality(unittest.TestCase):
     def test_help_usage_top_level(self):
         p = aws('')
         self.assertIn('usage: aws [options] <command> '
-                      '<subcommand> [parameters]', p.stderr)
+                      '<subcommand> [<subcommand> ...] [parameters]', p.stderr)
         self.assertIn('aws: error', p.stderr)
 
     def test_help_usage_service_level(self):
         p = aws('ec2')
         self.assertIn('usage: aws [options] <command> '
-                      '<subcommand> [parameters]', p.stderr)
+                      '<subcommand> [<subcommand> ...] [parameters]', p.stderr)
         # python3: aws: error: the following arguments are required: operation
         # python2: aws: error: too few arguments
         # We don't care too much about the specific error message, as long
@@ -282,7 +283,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
     def test_help_usage_operation_level(self):
         p = aws('ec2 run-instances')
         self.assertIn('usage: aws [options] <command> '
-                      '<subcommand> [parameters]', p.stderr)
+                      '<subcommand> [<subcommand> ...] [parameters]', p.stderr)
 
     def test_unknown_argument(self):
         p = aws('ec2 describe-instances --filterss')
@@ -492,6 +493,69 @@ class TestGlobalArgs(BaseS3CLICommand):
         p = aws('s3api head-object --bucket %s --key private --no-sign-request'
                 % bucket_name, env_vars=env)
         self.assertEqual(p.rc, 255)
+
+    def test_profile_arg_has_precedence_over_env_vars(self):
+        # At a high level, we're going to set access_key/secret_key
+        # via env vars, but ensure that a --profile <foo> results
+        # in creds being retrieved from the shared creds file
+        # and not from env vars.
+        env_vars = os.environ.copy()
+        with temporary_file('w') as f:
+            env_vars.pop('AWS_PROFILE', None)
+            env_vars.pop('AWS_DEFAULT_PROFILE', None)
+            # 'aws configure list' only shows 4 values
+            # from the credentials so we'll show
+            # 4 char values.
+            env_vars['AWS_ACCESS_KEY_ID'] = 'enva'
+            env_vars['AWS_SECRET_ACCESS_KEY'] = 'envb'
+            env_vars['AWS_SHARED_CREDENTIALS_FILE'] = f.name
+            env_vars['AWS_CONFIG_FILE'] = 'does-not-exist-foo'
+            f.write(
+                '[from_argument]\n'
+                'aws_access_key_id=proa\n'
+                'aws_secret_access_key=prob\n'
+            )
+            f.flush()
+            p = aws('configure list --profile from_argument',
+                    env_vars=env_vars)
+            # 1. We should see the profile name being set.
+            self.assertIn('from_argument', p.stdout)
+            # 2. The creds should be proa/prob, which come
+            #    from the "from_argument" profile.
+            self.assertIn('proa', p.stdout)
+            self.assertIn('prob', p.stdout)
+            self.assertIn('shared-credentials-file', p.stdout)
+
+    def test_profile_arg_wins_over_profile_env_var(self):
+        env_vars = os.environ.copy()
+        with temporary_file('w') as f:
+            # Remove existing profile related env vars.
+            env_vars.pop('AWS_PROFILE', None)
+            env_vars.pop('AWS_DEFAULT_PROFILE', None)
+            env_vars['AWS_SHARED_CREDENTIALS_FILE'] = f.name
+            env_vars['AWS_CONFIG_FILE'] = 'does-not-exist-foo'
+            f.write(
+                '[from_env_var]\n'
+                'aws_access_key_id=enva\n'
+                'aws_secret_access_key=envb\n'
+                '\n'
+                '[from_argument]\n'
+                'aws_access_key_id=proa\n'
+                'aws_secret_access_key=prob\n'
+            )
+            f.flush()
+            # Now we set the current profile via env var:
+            env_vars['AWS_PROFILE'] = 'from_env_var'
+            # If we specify the --profile argument, that
+            # value should win over the AWS_PROFILE env var.
+            p = aws('configure list --profile from_argument',
+                    env_vars=env_vars)
+            # 1. We should see the profile name being set.
+            self.assertIn('from_argument', p.stdout)
+            # 2. The creds should be profa/profb, which come
+            #    from the "from_argument" profile.
+            self.assertIn('proa', p.stdout)
+            self.assertIn('prob', p.stdout)
 
 
 if __name__ == '__main__':

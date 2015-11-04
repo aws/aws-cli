@@ -214,12 +214,6 @@ class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
         self.assert_command_does_not_exist(
             'ec2', 'import-volume')
 
-    def test_cloudformation(self):
-        self.driver.main(['cloudformation', 'help'])
-        self.assert_not_contains('estimate-template-cost')
-        self.assert_command_does_not_exist(
-            'cloudformation', 'estimate-template-cost')
-
     def test_boolean_param_documented(self):
         self.driver.main(['autoscaling',
                           'terminate-instance-in-auto-scaling-group', 'help'])
@@ -260,6 +254,12 @@ class TestPagingParamDocs(BaseAWSHelpOutputTest):
         self.driver.main(['s3api', 'list-objects', 'help'])
         self.assert_not_contains('``--next-token``')
         self.assert_not_contains('``--max-keys``')
+
+    def test_paging_documentation_added(self):
+        self.driver.main(['s3api', 'list-objects', 'help'])
+        self.assert_contains('``list-objects`` is a paginated operation')
+        self.assert_contains('When using ``--output text`` and the')
+        self.assert_contains('following query expressions: ')
 
 
 class TestMergeBooleanGroupArgs(BaseAWSHelpOutputTest):
@@ -399,3 +399,19 @@ class TestRoute53CreateHostedZone(BaseAWSHelpOutputTest):
         # Ensure that the proper casing is used for this command's docs.
         self.assert_contains(
             'do **not** include ``PrivateZone`` in this input structure')
+
+
+class TestIotData(BaseAWSHelpOutputTest):
+    def test_service_help_command_has_note(self):
+        self.driver.main(['iot-data', 'help'])
+        # Ensure the note is in help page.
+        self.assert_contains(
+            'The default endpoint data.iot.[region].amazonaws.com is '
+            'intended for testing purposes only.')
+
+    def test_operation_help_command_has_note(self):
+        self.driver.main(['iot-data', 'get-thing-shadow', 'help'])
+        # Ensure the note is in help page.
+        self.assert_contains(
+            'The default endpoint data.iot.[region].amazonaws.com is '
+            'intended for testing purposes only.')

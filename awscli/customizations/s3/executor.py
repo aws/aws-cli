@@ -16,7 +16,7 @@ import sys
 import threading
 
 from awscli.customizations.s3.utils import uni_print, bytes_print, \
-    IORequest, IOCloseRequest, StablePriorityQueue
+    IORequest, IOCloseRequest, StablePriorityQueue, set_file_utime
 from awscli.customizations.s3.tasks import OrderableTask
 from awscli.compat import queue
 
@@ -181,8 +181,7 @@ class IOWriterThread(threading.Thread):
             fileobj.close()
             del self.fd_descriptor_cache[task.filename]
         if task.desired_mtime is not None:
-            os.utime(task.filename, (task.desired_mtime,
-                                     task.desired_mtime))
+            set_file_utime(task.filename, task.desired_mtime)
 
     def _handle_stream_task(self, data):
         fileobj = sys.stdout

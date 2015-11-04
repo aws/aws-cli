@@ -2,6 +2,125 @@
 CHANGELOG
 =========
 
+1.9.4
+=====
+* feature:``aws datapipeline create-default-roles``: Creates default IAM
+  roles for creating EMR clusters.
+  (`issue 1616 <https://github.com/aws/aws-cli/pull/1616>`__)
+* feature:``aws devicefarm``: Add commands for updating and deleting
+  projects, device pools, uploads, and runs.
+
+
+1.9.3
+=====
+* feature:``aws iam``: Add support for resource-level policy simulation
+
+
+1.9.2
+=====
+
+* bugfix:``aws s3``: Fix some local path validation issues
+  (`issue 1575 <https://github.com/aws/aws-cli/pull/1575>`__)
+* bugfix:``aws storagegateway``:  Fix ``--tape-ar-ns``,
+  ``--volume-ar-ns``, and ``--vtl-device-ar-ns`` to
+  ``--tape-arns``, ``--volume-arns``, and ``--vtl-device-arns``,
+  respectively.  The old arguments are still supported for backwards
+  compatibility, but are no longer documented.
+  (`issue 1599 <https://github.com/aws/aws-cli/pull/1599>`__)
+* bugfix:``aws configservice subscribe``: Fix an issue when creating a
+  new S3 bucket
+  (`issue 1593 <https://github.com/aws/aws-cli/pull/1593>`__)
+* bugfix:``aws apigateway put-integration``: Fix issue with
+  ``--uri`` and ``--integration-http-method`` parameters
+  (`issue 1605 <https://github.com/aws/aws-cli/issues/1605>`_)
+
+
+1.9.1
+=====
+* feature:``aws ssm``: Add support for Amazon EC2 Run Command
+* feature:``aws apigateway``: Add support for Amazon API Gateway
+
+
+1.9.0
+=====
+
+* feature:``aws iam``: Add policy simulator support
+* feature:``aws autoscaling``: Add support for launch configurations
+  that include encrypted Amazon Elastic Block Store (EBS) volumes
+* feature:configure: Add support for ``ca_bundle`` config variable
+* feature:Assume Role: Add ``role_session_name`` config variable
+  to control the ``RoleSessionName`` when assuming roles
+  (`issue 1389 <https://github.com/aws/aws-cli/pull/1389>`__)
+* bug:Argument Parsing: Handle case when empty list parameter
+  was specified with no value
+  (`issue 838 <https://github.com/aws/aws-cli/issues/838>`__)
+
+
+1.8.13
+======
+
+* feature:``aws deploy``: Compress zip files when using
+  ``aws deploy push``
+  (`issue 1534 <https://github.com/aws/aws-cli/pull/1534>`--)
+* bugfix:Shorthand Parser: Fix issue when display error message
+  for multiline shorthand syntax values
+  (`issue 1543 <https://github.com/aws/aws-cli/pull/1543>`__)
+* bugfix:``aws route53``: Automatically retry Throttling and
+  PriorRequestNotComplete errors
+  (`botocore issue 682 <https://github.com/boto/botocore/pull/682>`__)
+* feature:``aws s3/s3api``: Add support for changing the bucket
+  addressing style
+  (`botocore issue 673 <https://github.com/boto/botocore/pull/673>`__)
+* bugfix:``aws s3api``: Add missing ``--server-side-encryption``
+  option to ``upload-part`` command
+* feature:``aws kms``: Add ability to delete customer master keys (CMKs)
+
+
+1.8.12
+======
+* feature:``aws iot``: Add support for AWS IoT
+* feature:``aws iot-data``: Add support for AWS IoT Data Plane
+* feature:``aws lambda``: Add support for aliasing and function versioning
+* feature:``aws ecs``: Update commands
+
+
+1.8.11
+======
+* feature:``aws marketplacecommerceanalytics``: Add support for
+  AWS Marketplace Commerce Analytics
+* feature:``aws firehose``: Add support for Amazon Kinesis Firehose
+* feature:``aws inspector``: Add support for Amazon Inspector
+* feature:``aws kinesis``: Add support for updating stream retention periods
+* feature:``aws configservice``: Add support for config rules
+
+
+1.8.10
+======
+* feature:``aws waf``: Add support for AWS WAF
+* feature:``aws ec2``: Add support for spot blocks
+* feature:``aws cloudfront``: Add support for adding Web ACLs to CloudFront
+  distributions
+
+
+1.8.9
+=====
+* feature:``aws es``: Adds support for the new Amazon Elasticsearch
+* feature:``aws cloudtrail``: Adds support for log file integrity validation,
+  log encryption with AWS KMS-Managed Keys (SSE-KMS), and trail tagging.
+* feature:``aws rds create-db-instance``: --db-instance-class has a new value
+  as db.t2.large
+* feature:``aws workspaces``: Adds support for volume encryption in
+  Amazon WorkSpaces.
+
+
+1.8.8
+=====
+* feature:``aws ses``: Adds 17 new operations for accepting incoming emails.
+* feature:``aws cloudformation describe-account-limits``: This is a new API.
+* feature:``aws ec2 modify-spot-fleet-request``: This is a new API.
+* bugfix:``aws elasticbeanstalk``: Documentation update.
+
+
 1.8.7
 =====
 

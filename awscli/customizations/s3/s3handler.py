@@ -63,7 +63,8 @@ class S3Handler(object):
                        'content_language': None, 'expires': None,
                        'grants': None, 'only_show_errors': False,
                        'is_stream': False, 'paths_type': None,
-                       'expected_size': None, 'metadata_directive': None}
+                       'expected_size': None, 'metadata_directive': None,
+                       'ignore_glacier_warnings': False}
         self.params['region'] = params['region']
         for key in self.params.keys():
             if key in params:
@@ -183,6 +184,22 @@ class S3Handler(object):
                 warning = create_warning(relative_path(filename.src),
                                          message=warning_message)
                 self.result_queue.put(warning)
+            # Warn and skip over glacier incompatible tasks.
+            elif not filename.is_glacier_compatible():
+                LOGGER.debug(
+                    'Encountered glacier object s3://%s. Not performing '
+                    '%s on object.' % (filename.src, filename.operation_name))
+                if not self.params['ignore_glacier_warnings']:
+                    warning = create_warning(
+                        's3://'+filename.src,
+                        'Object is of storage class GLACIER. Unable to '
+                        'perform %s operations on GLACIER objects. You must '
+                        'restore the object to be able to the perform '
+                        'operation.' %
+                        filename.operation_name
+                    )
+                    self.result_queue.put(warning)
+                continue
             elif is_multipart_task and not self.params['dryrun']:
                 # If we're in dryrun mode, then we don't need the
                 # real multipart tasks.  We can just use a BasicTask

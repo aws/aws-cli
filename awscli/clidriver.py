@@ -27,6 +27,7 @@ from awscli.plugin import load_plugins
 from awscli.argparser import MainArgParser
 from awscli.argparser import ServiceArgParser
 from awscli.argparser import ArgTableArgParser
+from awscli.argparser import USAGE
 from awscli.help import ProviderHelpCommand
 from awscli.help import ServiceHelpCommand
 from awscli.help import OperationHelpCommand
@@ -61,6 +62,7 @@ def create_clidriver():
 def _set_user_agent_for_session(session):
     session.user_agent_name = 'aws-cli'
     session.user_agent_version = __version__
+    session.user_agent_extra = 'botocore/%s' % botocore_version
 
 
 class CLIDriver(object):
@@ -156,7 +158,6 @@ class CLIDriver(object):
         parser = MainArgParser(
             command_table, self.session.user_agent(),
             cli_data.get('description', None),
-            cli_data.get('synopsis', None),
             self._get_argument_table())
         return parser
 
@@ -182,8 +183,9 @@ class CLIDriver(object):
             self._emit_session_event()
             return command_table[parsed_args.command](remaining, parsed_args)
         except UnknownArgumentError as e:
+            sys.stderr.write("usage: %s\n" % USAGE)
+            sys.stderr.write(str(e))
             sys.stderr.write("\n")
-            sys.stderr.write(str(e) + '\n')
             return 255
         except NoRegionError as e:
             msg = ('%s You can also configure your region by running '
@@ -229,9 +231,7 @@ class CLIDriver(object):
                                            format_string=LOG_FORMAT)
             self.session.set_stream_logger('awscli', logging.DEBUG,
                                            format_string=LOG_FORMAT)
-            LOG.debug("CLI version: %s, botocore version: %s",
-                      self.session.user_agent(),
-                      botocore_version)
+            LOG.debug("CLI version: %s", self.session.user_agent())
             LOG.debug("Arguments entered to CLI: %s", sys.argv[1:])
 
         else:

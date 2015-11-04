@@ -151,7 +151,7 @@ class S3BucketHelper(object):
         return s3_bucket_exists(self._s3_client, bucket)
 
     def _create_bucket(self, bucket):
-        region_name = self._s3_client._endpoint.region_name
+        region_name = self._s3_client.meta.region_name
         params = {
             'Bucket': bucket
         }

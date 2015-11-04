@@ -160,7 +160,7 @@ def test_error_parsing():
     yield (_is_error, "foo={bar}")
     yield (_is_error, "foo={bar=bar")
     yield (_is_error, "foo=bar,")
-
+    yield (_is_error, "foo==bar,\nbar=baz")
 
 def _is_error(expr):
     try:

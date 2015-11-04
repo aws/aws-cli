@@ -122,10 +122,15 @@ ACL = {'name': 'acl', 'nargs': 1,
                    'bucket-owner-full-control', 'log-delivery-write'],
        'help_text': (
            "Sets the ACL for the object when the command is "
-           "performed.  Only accepts values of ``private``, ``public-read``, "
+           "performed.  If you use this parameter you must have the "
+           '"s3:PutObjectAcl" permission included in the list of actions '
+           "for your IAM policy. "
+           "Only accepts values of ``private``, ``public-read``, "
            "``public-read-write``, ``authenticated-read``, "
            "``bucket-owner-read``, ``bucket-owner-full-control`` and "
-           "``log-delivery-write``.")}
+           "``log-delivery-write``. "
+           'See <a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/'
+           'acl-overview.html#canned-acl">Canned ACL</a> for details')}
 
 
 COPY_ACL = {'name': 'copy-acl', 'action': 'store_true', 'dest': 'copy_acl',
@@ -298,12 +303,23 @@ PAGE_SIZE = {'name': 'page-size', 'cli_type_name': 'integer',
                  'Using a lower value may help if an operation times out.')}
 
 
+IGNORE_GLACIER_WARNINGS = {
+    'name': 'ignore-glacier-warnings', 'action': 'store_true',
+    'help_text': (
+        'Turns off glacier warnings. Warnings about operations that cannot '
+        'be performed because it involves copying, downloading, or moving '
+        'a glacier object will no longer be printed to standard error and '
+        'will no longer cause the return code of the command to be ``2``.'
+    )
+}
+
+
 TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
                  SSE, STORAGE_CLASS, GRANTS, WEBSITE_REDIRECT, CONTENT_TYPE,
                  CACHE_CONTROL, CONTENT_DISPOSITION, CONTENT_ENCODING,
                  CONTENT_LANGUAGE, EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS,
-                 PAGE_SIZE]
+                 PAGE_SIZE, IGNORE_GLACIER_WARNINGS]
 
 
 def get_client(session, region, endpoint_url, verify):
@@ -926,6 +942,20 @@ class CommandParameters(object):
             raise ValueError("Cannot mv a file onto itself: '%s' - '%s'" % (
                 params['src'], params['dest']))
 
+        # If the user provided local path does not exist, hard fail because
+        # we know that we will not be able to upload the file.
+        if 'locals3' == params['paths_type'] and not params['is_stream']:
+            if not os.path.exists(params['src']):
+                raise RuntimeError(
+                    'The user-provided path %s does not exist.' %
+                    params['src'])
+        # If the operation is downloading to a directory that does not exist,
+        # create the directories so no warnings are thrown during the syncing
+        # process.
+        elif 's3local' == params['paths_type'] and params['dir_op']:
+            if not os.path.exists(params['dest']):
+                os.makedirs(params['dest'])
+
     def _same_path(self, src, dest):
         if not self.parameters['paths_type'] == 's3s3':
             return False
@@ -968,35 +998,6 @@ class CommandParameters(object):
             self.parameters['paths_type'] = paths_type
         else:
             raise TypeError("%s\nError: Invalid argument type" % usage)
-
-    def check_src_path(self, paths):
-        """
-        This checks the source paths to deem if they are valid.  The check
-        performed in S3 is first it lists the objects using the source path.
-        If there is an error like the bucket does not exist, the error will be
-        caught with ``check_error()`` function.  If the operation is on a
-        single object in s3, it checks that a list of object was returned and
-        that the first object listed is the name of the specified in the
-        command line.  If the operation is on objects under a common prefix,
-        it will check that there are common prefixes and objects under
-        the specified prefix.
-        For local files, it first checks that the path exists.  Then it checks
-        that the path is a directory if it is a directory operation or that
-        the path is a file if the operation is on a single file.
-        """
-        src_path = paths[0]
-        dir_op = self.parameters['dir_op']
-        if not src_path.startswith('s3://'):
-            src_path = os.path.abspath(src_path)
-            if os.path.exists(src_path):
-                if os.path.isdir(src_path) and not dir_op:
-                    raise Exception("Error: Requires a local file")
-                elif os.path.isfile(src_path) and dir_op:
-                    raise Exception("Error: Requires a local directory")
-                else:
-                    pass
-            else:
-                raise Exception("Error: Local path does not exist")
 
     def add_region(self, parsed_globals):
         self.parameters['region'] = parsed_globals.region

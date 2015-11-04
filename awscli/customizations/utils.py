@@ -14,6 +14,7 @@
 Utility functions to make it easier to work with customizations.
 
 """
+import copy
 
 from botocore.exceptions import ClientError
 
@@ -23,6 +24,25 @@ def rename_argument(argument_table, existing_name, new_name):
     argument_table[new_name] = current
     current.name = new_name
     del argument_table[existing_name]
+
+
+def make_hidden_alias(argument_table, existing_name, alias_name):
+    """Create a hidden alias for an existing argument.
+
+    This will copy an existing argument object in an arg table,
+    and add a new entry to the arg table with a different name.
+    The new argument will also be undocumented.
+
+    This is needed if you want to check an existing argument,
+    but you still need the other one to work for backwards
+    compatibility reasons.
+
+    """
+    current = argument_table[existing_name]
+    copy_arg = copy.copy(current)
+    copy_arg._UNDOCUMENTED = True
+    copy_arg.name = alias_name
+    argument_table[alias_name] = copy_arg
 
 
 def rename_command(command_table, existing_name, new_name):

@@ -64,8 +64,9 @@ class ShorthandParseError(Exception):
         super(ShorthandParseError, self).__init__(msg)
 
     def _construct_msg(self):
-        if '\n' in self.value:
-            # If there's newlines in the expression, we want
+        consumed, remaining, num_spaces = self.value, '', self.index
+        if '\n' in self.value[:self.index]:
+            # If there's newlines in the consumed expression, we want
             # to make sure we're only counting the spaces
             # from the last newline:
             # foo=bar,\n
@@ -73,14 +74,22 @@ class ShorthandParseError(Exception):
             #     ^
             last_newline = self.value[:self.index].rindex('\n')
             num_spaces = self.index - last_newline - 1
-        else:
-            num_spaces = self.index
+        if '\n' in self.value[self.index:]:
+            # If there's newline in the remaining, divide value
+            # into consumed and remainig
+            # foo==bar,\n
+            #     ^
+            # bar=baz
+            next_newline = self.index + self.value[self.index:].index('\n')
+            consumed = self.value[:next_newline]
+            remaining = self.value[next_newline:]
         msg = (
             "Expected: '%s', received: '%s' for input:\n"
             "%s\n"
-            "%s\n"
-        ) % (self.expected, self.actual, self.value,
-             ' ' * num_spaces + '^')
+            "%s"
+            "%s"
+        ) % (self.expected, self.actual, consumed,
+             ' ' * num_spaces + '^', remaining)
         return msg
 
 

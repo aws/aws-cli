@@ -261,7 +261,7 @@ class TestCliDriver(unittest.TestCase):
         expected = {'log_level': logging.ERROR, 'logger_name': 'awscli'}
         self.assertEqual(driver.session.stream_logger_args[1], expected)
 
-    def test_ctrl_s_is_handled(self):
+    def test_ctrl_c_is_handled(self):
         driver = CLIDriver(session=self.session)
         fake_client = mock.Mock()
         fake_client.list_objects.side_effect = KeyboardInterrupt

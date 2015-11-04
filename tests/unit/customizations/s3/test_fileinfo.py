@@ -23,6 +23,7 @@ from awscli.testutils import unittest
 from awscli.customizations.s3 import fileinfo
 from awscli.customizations.s3.utils import MD5Error
 from awscli.customizations.s3.fileinfo import FileInfo
+from awscli.customizations.s3.fileinfo import TaskInfo
 
 
 class TestSaveFile(unittest.TestCase):
@@ -102,3 +103,48 @@ class TestSetSizeFromS3(unittest.TestCase):
         file_info = FileInfo(src="bucket/key", client=client)
         file_info.set_size_from_s3()
         self.assertEqual(file_info.size, 5)
+
+
+class TestIsGlacierCompatible(unittest.TestCase):
+    def setUp(self):
+        self.file_info = FileInfo('bucket/key')
+        self.file_info.associated_response_data = {'StorageClass': 'GLACIER'}
+
+    def test_operation_is_glacier_compatible(self):
+        self.file_info.operation_name = 'delete'
+        self.assertTrue(self.file_info.is_glacier_compatible())
+
+    def test_download_operation_is_not_glacier_compatible(self):
+        self.file_info.operation_name = 'download'
+        self.assertFalse(self.file_info.is_glacier_compatible())
+
+    def test_copy_operation_is_not_glacier_compatible(self):
+        self.file_info.operation_name = 'copy'
+        self.assertFalse(self.file_info.is_glacier_compatible())
+
+    def test_operation_is_glacier_compatible_for_non_glacier(self):
+        self.file_info.operation_name = 'download'
+        self.file_info.associated_response_data = {'StorageClass': 'STANDARD'}
+        self.assertTrue(self.file_info.is_glacier_compatible())
+
+    def test_move_operation_is_not_glacier_compatible_for_s3_source(self):
+        self.file_info.operation_name = 'move'
+        self.file_info.src_type = 's3'
+        self.assertFalse(self.file_info.is_glacier_compatible())
+
+    def test_move_operation_is_glacier_compatible_for_local_source(self):
+        self.file_info.operation_name = 'move'
+        self.file_info.src_type = 'local'
+        self.assertTrue(self.file_info.is_glacier_compatible())
+
+    def test_response_is_not_glacier(self):
+        self.file_info.associated_response_data = {'StorageClass': 'STANDARD'}
+        self.assertTrue(self.file_info.is_glacier_compatible())
+
+    def test_response_missing_storage_class(self):
+        self.file_info.associated_response_data = {'Key': 'Foo'}
+        self.assertTrue(self.file_info.is_glacier_compatible())
+
+    def test_task_info_glacier_compatibility(self):
+        task_info = TaskInfo('bucket/key', 's3', 'remove_bucket', None)
+        self.assertTrue(task_info.is_glacier_compatible())

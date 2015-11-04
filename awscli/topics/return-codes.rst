@@ -29,6 +29,8 @@ of a CLI command:
   block special device, FIFO's, or sockets, and files that the user cannot
   read from.
 
+* ``130`` -- The process received a SIGINT (Ctrl-C).
+
 * ``255`` -- Command failed. There were errors thrown by either the CLI or
   by the service the request was made to.
 

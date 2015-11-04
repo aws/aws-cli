@@ -11,6 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest, FileCreator
+import signal
+import platform
 import json
 import sys
 import os
@@ -116,6 +118,25 @@ class TestHelpPager(unittest.TestCase):
         renderer.mock_popen.communicate.return_value = ('rendered', '')
         renderer.render('foo')
         self.assertEqual(renderer.popen_calls[-1][0], (['more'],))
+
+    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
+                    "Ctrl-C not valid on windows.")
+    def test_can_handle_ctrl_c(self):
+        class CtrlCRenderer(FakePosixHelpRenderer):
+            def _popen(self, *args, **kwargs):
+                if self._is_pager_call(args):
+                    os.kill(os.getpid(), signal.SIGINT)
+                return self.mock_popen
+
+            def _is_pager_call(self, args):
+                return 'less' in args[0]
+
+        renderer = CtrlCRenderer()
+        renderer.mock_popen.communicate.return_value = ('send to pager', '')
+        renderer.exists_on_path['groff'] = True
+        renderer.render('foo')
+        last_call = renderer.mock_popen.communicate.call_args_list[-1]
+        self.assertEqual(last_call, mock.call(input='send to pager'))
 
 
 class TestHelpCommandBase(unittest.TestCase):

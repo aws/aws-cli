@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.9.5
+=====
 * bugfix:``aws help``: Gracefully handle Ctrl-C interrupts.
   (`issue 1619 <https://github.com/aws/aws-cli/pull/1619>`__)
 * bugfix:``aws datapipline create-default-roles``: Fix issue with

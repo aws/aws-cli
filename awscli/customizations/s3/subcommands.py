@@ -296,7 +296,7 @@ IGNORE_GLACIER_WARNINGS = {
         'Turns off glacier warnings. Warnings about operations that cannot '
         'be performed because it involves copying, downloading, or moving '
         'a glacier object will no longer be printed to standard error and '
-        'cause the return code of the command to be ``2``.'
+        'will no longer cause the return code of the command to be ``2``.'
     )
 }
 

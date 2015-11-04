@@ -6,7 +6,7 @@ Command::
 
   aws codepipeline update-pipeline --cli-input-json file://MyFirstPipeline.json
   
-  Sample JSON file contents:
+Sample JSON file contents::
   
   {
    "pipeline": {

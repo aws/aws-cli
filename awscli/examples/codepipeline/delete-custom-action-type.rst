@@ -6,7 +6,7 @@ Command::
 
   aws codepipeline delete-custom-action-type --cli-input-json file://DeleteMyCustomAction.json
   
-  JSON file sample contents:
+JSON file sample contents::
   
   {
     "category": "Build",

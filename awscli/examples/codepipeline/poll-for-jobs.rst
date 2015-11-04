@@ -6,7 +6,7 @@ Command::
 
   aws codepipeline poll-for-jobs --cli-input-json file://MyActionTypeInfo.json
 
-  JSON file sample contents:
+JSON file sample contents::
   
   {
     "actionTypeId": {

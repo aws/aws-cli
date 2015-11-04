@@ -6,7 +6,7 @@ Command::
 
   aws codepipeline create-pipeline --cli-input-json file://MySecondPipeline.json
   
-  JSON file sample contents:
+JSON file sample contents::
   
   {
    "pipeline": {

@@ -6,7 +6,7 @@ Command::
 
   aws codepipeline create-custom-action-type --cli-input-json file://MyCustomAction.json
   
-  JSON file sample contents:
+JSON file sample contents::
   
   {
    "actionType": {

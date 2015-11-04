@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+* bugfix:``aws help``: Gracefully handle Ctrl-C interrupts.
+  (`issue 1619 <https://github.com/aws/aws-cli/pull/1619>`__)
+* bugfix:``aws datapipline create-default-roles``: Fix issue with
+  error handling.
+  (`issue 1618 <https://github.com/aws/aws-cli/pull/1618>`__)
+* bugfix:``aws s3``: Skip glacier objects when downloading from S3.
+  (`issue 1581 <https://github.com/aws/aws-cli/pull/1581>`__)
+* feature:``aws s3api``: Auto-populate ``--copy-source-sse-customer-key-md5``
+  (`botocore issue 709 <https://github.com/boto/botocore/pull/709>`__)
+
+
 1.9.4
 =====
 * feature:``aws datapipeline create-default-roles``: Creates default IAM

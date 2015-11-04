@@ -13,7 +13,6 @@
 import os
 import sys
 import stat
-from collections import namedtuple
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
@@ -93,10 +92,6 @@ class FileDecodingError(Exception):
         super(FileDecodingError, self).__init__(self.error_message)
 
 
-LocalFileData = namedtuple(
-    'LocalFileData', ['size', 'last_update'])
-
-
 class FileStat(object):
     def __init__(self, src, dest=None, compare_key=None, size=None,
                  last_update=None, src_type=None, dest_type=None,
@@ -153,18 +148,12 @@ class FileGenerator(object):
 
     def _inject_extra_information(self, file_stat_kwargs, extra_information):
         src_type = file_stat_kwargs['src_type']
-        # For local sources, ``extra_information`` will be a ``LocalFileData``
-        # object.
-        if src_type == 'local':
-            file_stat_kwargs['size'] = extra_information.size
-            file_stat_kwargs['last_update'] = extra_information.last_update
+        file_stat_kwargs['size'] = extra_information['Size']
+        file_stat_kwargs['last_update'] = extra_information['LastModified']
 
-        # For s3 sources, ``extra_information`` will be a dictionary
-        # representing the response element the object represents from
-        # a ListObjects or HeadObject.
-        else:
-            file_stat_kwargs['size'] = extra_information['Size']
-            file_stat_kwargs['last_update'] = extra_information['LastModified']
+        # S3 objects require the response data retrieved from HeadObject
+        # and ListObject
+        if src_type == 's3':
             file_stat_kwargs['response_data'] = extra_information
 
     def list_files(self, path, dir_op):
@@ -181,7 +170,8 @@ class FileGenerator(object):
         if not self.should_ignore_file(path):
             if not dir_op:
                 size, last_update = get_file_stat(path)
-                yield path, LocalFileData(size, last_update)
+                yield path, {'Size': size, 'LastModified': last_update}
+
             else:
                 # We need to list files in byte order based on the full
                 # expanded path of the key: 'test/1/2/3.txt'  However,
@@ -215,7 +205,10 @@ class FileGenerator(object):
                             yield x
                     else:
                         size, last_update = get_file_stat(file_path)
-                        yield file_path, LocalFileData(size, last_update)
+                        yield (
+                            file_path,
+                            {'Size': size, 'LastModified': last_update}
+                        )
 
     def normalize_sort(self, names, os_sep, character):
         """

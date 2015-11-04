@@ -10,8 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import hashlib
-import logging
 import os
 import sys
 
@@ -35,7 +33,6 @@ from awscli.customizations.s3.syncstrategy.base import MissingFileSync, \
     SizeAndLastModifiedSync, NeverSync
 from awscli.customizations.s3 import transferconfig
 
-LOG = logging.getLogger(__name__)
 
 RECURSIVE = {'name': 'recursive', 'action': 'store_true', 'dest': 'dir_op',
              'help_text': (
@@ -45,6 +42,7 @@ RECURSIVE = {'name': 'recursive', 'action': 'store_true', 'dest': 'dir_op',
 
 HUMAN_READABLE = {'name': 'human-readable', 'action': 'store_true',
                   'help_text': "Displays file sizes in human readable format."}
+
 
 SUMMARIZE = {'name': 'summarize', 'action': 'store_true',
              'help_text': (

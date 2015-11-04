@@ -379,7 +379,7 @@ class TestDownloadPartTask(unittest.TestCase):
         self.filename.operation_name = 'download'
         self.context = mock.Mock()
         self.open = mock.MagicMock()
-        self.params = mock.MagicMock()
+        self.params = {}
 
     def test_socket_timeout_is_retried(self):
         self.client.get_object.side_effect = socket.error
@@ -543,7 +543,7 @@ class TestTaskOrdering(unittest.TestCase):
         return CompleteDownloadTask(None, None, None, None, None)
 
     def download_task(self):
-        return DownloadPartTask(None, None, None, mock.Mock(), None, None, mock.MagicMock())
+        return DownloadPartTask(None, None, None, mock.Mock(), None, None, {})
 
     def shutdown_task(self, priority=None):
         return ShutdownThreadRequest(priority)

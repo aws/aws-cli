@@ -253,29 +253,55 @@ class FileInfo(TaskInfo):
             params['Expires'] = self.parameters['expires'][0]
 
     def set_sse_request_params(self, request_params, cli_params):
-        if cli_params['sse']:
+        """Sets the sse parameters for client call based on cli params
+
+        :param request_params: The dictionary to be passed to the client call
+        :param cli_params: The dictionary of current CLI params
+        """
+        if cli_params.get('sse'):
             request_params['ServerSideEncryption'] = cli_params['sse']
-        if self.parameters['sse_kms_key_id']:
+        if self.parameters.get('sse_kms_key_id'):
             request_params['SSEKMSKeyId'] = cli_params['sse_kms_key_id']
 
     def set_sse_c_request_params(self, request_params, cli_params):
-        if cli_params['sse_c']:
+        """Sets the sse-c parameters for client call based on cli params
+
+        :param request_params: The dictionary to be passed to the client call
+        :param cli_params: The dictionary of current CLI params
+        """
+
+        if cli_params.get('sse_c'):
             request_params['SSECustomerAlgorithm'] = cli_params['sse_c']
             request_params['SSECustomerKey'] = cli_params['sse_c_key']
 
     def set_sse_c_and_copy_source_request_params(self, request_params,
                                                  cli_params):
+        """Sets the sse-c and sse-c copy-source parameters based on cli params
+
+        :param request_params: The dictionary to be passed to the client call
+        :param cli_params: The dictionary of current CLI params
+        """
         self.set_sse_c_request_params(request_params, cli_params)
         self.set_sse_c_copy_source_request_params(request_params, cli_params)
 
     def set_sse_c_copy_source_request_params(self, request_params, cli_params):
-        if cli_params['sse_c_copy_source']:
+        """Sets the sse-c copy-source parameters based on cli params
+
+        :param request_params: The dictionary to be passed to the client call
+        :param cli_params: The dictionary of current CLI params
+        """
+        if cli_params.get('sse_c_copy_source'):
             request_params['CopySourceSSECustomerAlgorithm'] = cli_params[
                 'sse_c_copy_source']
             request_params['CopySourceSSECustomerKey'] = cli_params[
                 'sse_c_copy_source_key']
 
     def set_sse_and_sse_c_request_params(self, request_params, cli_params):
+        """Sets the sse and sse-c (inc. copy-source) parameters with cli params
+
+        :param request_params: The dictionary to be passed to the client call
+        :param cli_params: The dictionary of current CLI params
+        """
         self.set_sse_request_params(request_params, cli_params)
         self.set_sse_c_and_copy_source_request_params(
             request_params, cli_params)

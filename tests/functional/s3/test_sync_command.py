@@ -78,3 +78,33 @@ class TestSyncCommand(BaseAWSCommandParamsTest):
         # Make sure the file now exists.
         self.assertTrue(
             os.path.exists(os.path.join(non_existant_directory, key)))
+    
+    def test_handles_glacier_incompatible_operations(self):
+        self.parsed_responses = [
+            {'Contents': [
+                {'Key': 'foo', 'Size': 100,
+                 'LastModified': '00:00:00Z', 'StorageClass': 'GLACIER'}]}
+        ]
+        cmdline = '%s s3://bucket/ %s' % (
+            self.prefix, self.files.rootdir)
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=2)
+        # There should not have been a download attempted because the
+        # operation was skipped because it is glacier incompatible.
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertIn('GLACIER', stderr)
+
+    def test_turn_off_glacier_warnings(self):
+        self.parsed_responses = [
+            {'Contents': [
+                {'Key': 'foo', 'Size': 100,
+                 'LastModified': '00:00:00Z', 'StorageClass': 'GLACIER'}]}
+        ]
+        cmdline = '%s s3://bucket/ %s --ignore-glacier-warnings' % (
+            self.prefix, self.files.rootdir)
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=0)
+        # There should not have been a download attempted because the
+        # operation was skipped because it is glacier incompatible.
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual('', stderr)

@@ -27,7 +27,8 @@ class TestFileInfoBuilder(unittest.TestCase):
         files = [FileStat(src='src', dest='dest', compare_key='compare_key',
                           size='size', last_update='last_update',
                           src_type='src_type', dest_type='dest_type',
-                          operation_name='operation_name')]
+                          operation_name='operation_name',
+                          response_data='associated_response_data')]
         file_infos = info_setter.call(files)
         for file_info in file_infos:
             attributes = file_info.__dict__.keys()

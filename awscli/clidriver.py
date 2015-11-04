@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sys
+import signal
 import logging
 
 import botocore.session
@@ -197,6 +198,12 @@ class CLIDriver(object):
                    '"aws configure".' % e)
             self._show_error(msg)
             return 255
+        except KeyboardInterrupt:
+            # Shell standard for signals that terminate
+            # the process is to return 128 + signum, in this case
+            # SIGINT=2, so we'll have an RC of 130.
+            sys.stdout.write("\n")
+            return 128 + signal.SIGINT
         except Exception as e:
             LOG.debug("Exception caught in main()", exc_info=True)
             LOG.debug("Exiting with rc 255")

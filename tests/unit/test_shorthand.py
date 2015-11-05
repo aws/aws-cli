@@ -53,6 +53,9 @@ def test_parse():
     # Underscore are also allowed.
     yield (_can_parse, 'with_underscore=bar', {'with_underscore': 'bar'})
 
+    # Dots are allowed.
+    yield (_can_parse, 'with.dot=bar', {'with.dot': 'bar'})
+
     # Explicit lists.
     yield (_can_parse, 'foo=[]', {'foo': []})
     yield (_can_parse, 'foo=[a]', {'foo': ['a']})

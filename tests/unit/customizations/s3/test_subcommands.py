@@ -218,6 +218,23 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
              'config': None}
         )
 
+    def test_set_sigv4_clients_with_sse_kms(self):
+        session = Mock()
+        cmd_arc = CommandArchitecture(
+            session, 'sync',
+            {'region': 'us-west-1', 'endpoint_url': None, 'verify_ssl': None,
+             'source_region': None, 'sse': 'aws:kms'})
+        cmd_arc.set_clients()
+        self.assertEqual( session.create_client.call_count, 2)
+        create_client_call = session.create_client.call_args_list[0]
+        create_source_client_call = session.create_client.call_args_list[1]
+
+        # Make sure that both clients are using sigv4 if kms is enabled.
+        self.assertEqual(
+            create_client_call[1]['config'].signature_version, 's3v4')
+        self.assertEqual(
+            create_source_client_call[1]['config'].signature_version, 's3v4')
+
     def test_create_instructions(self):
         """
         This tests to make sure the instructions for any command is generated

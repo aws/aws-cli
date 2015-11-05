@@ -79,7 +79,8 @@ For tcsh::
 
 You should add this to your startup scripts to enable it for future sessions.
 
-For zsh please refer to bin/aws_zsh_completer.sh.  Source that file::
+For zsh please refer to bin/aws_zsh_completer.sh.  Source that file, e.g.
+from your `~/.zshrc`, and make sure you run `compinit` before::
 
     $ source bin/aws_zsh_completer.sh
 

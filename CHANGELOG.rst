@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+* bugfix:shorthand: Allow ``.`` as a valid key character.
+  (`issue 1628 <https://github.com/aws/aws-cli/pull/1628>`__)
+
+
 1.9.5
 =====
 * bugfix:``aws help``: Gracefully handle Ctrl-C interrupts.

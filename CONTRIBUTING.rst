@@ -33,7 +33,7 @@ contributions as well:
   for the code to be consistent if there are any discrepancies.
 * Code must work on ``python2.6``, ``python2.7``, and ``python3.3``,
   ``python3.4`` and higher.
-* The AWS CLI is cross platform and code must work on at least linux, Windows,
+* The AWS CLI is cross platform and code must work on at least Linux, Windows,
   and Mac OS X.  Avoid platform specific behavior.
 * If you would like to implement support for a significant feature that is not
   yet available in the AWS CLI, please talk to us beforehand to avoid any duplication

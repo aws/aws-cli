@@ -13,6 +13,7 @@
 import os
 import platform
 from awscli.testutils import unittest, FileCreator, BaseAWSCommandParamsTest
+from awscli.testutils import skip_if_windows
 import stat
 import tempfile
 import shutil
@@ -29,8 +30,7 @@ from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     compare_files
 
 
-@unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                 'Special files only supported on mac/linux')
+@skip_if_windows('Special files only supported on mac/linux')
 class TestIsSpecialFile(unittest.TestCase):
     def setUp(self):
         self.files = FileCreator()
@@ -158,8 +158,7 @@ class LocalFileGeneratorTest(unittest.TestCase):
             compare_files(self, result_list[i], ref_list[i])
 
 
-@unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                 'Symlink tests only supported on mac/linux')
+@skip_if_windows('Symlink tests only supported on mac/linux')
 class TestIgnoreFilesLocally(unittest.TestCase):
     """
     This class tests the ability to ignore particular files.  This includes
@@ -251,8 +250,7 @@ class TestThrowsWarning(unittest.TestCase):
                          ("warning: Skipping file %s. File/Directory is "
                           "not readable." % full_path))
 
-    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                     'Special files only supported on mac/linux')
+    @skip_if_windows('Special files only supported on mac/linux')
     def test_is_special_file_warning(self):
         file_gen = FileGenerator(self.client, '', False)
         file_path = os.path.join(self.files.rootdir, 'foo')
@@ -268,8 +266,7 @@ class TestThrowsWarning(unittest.TestCase):
                           "socket." % file_path))
 
 
-@unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                 'Symlink tests only supported on mac/linux')
+@skip_if_windows('Symlink tests only supported on mac/linux')
 class TestSymlinksIgnoreFiles(unittest.TestCase):
     """
     This class tests the ability to list out the correct local files

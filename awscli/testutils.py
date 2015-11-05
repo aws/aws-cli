@@ -81,6 +81,22 @@ INTEG_LOG = logging.getLogger('awscli.tests.integration')
 AWS_CMD = None
 
 
+def skip_if_windows(reason):
+    """Decorator to skip tests that should not be run on windows.
+
+    Example usage:
+
+        @skip_if_windows("Not valid")
+        def test_some_non_windows_stuff(self):
+            self.assertEqual(...)
+
+    """
+    def decorator(func):
+        return unittest.skipIf(
+            platform.system() not in ['Darwin', 'Linux'], reason)(func)
+    return decorator
+
+
 def create_clidriver():
     driver = awscli.clidriver.create_clidriver()
     session = driver.session

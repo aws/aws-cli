@@ -21,7 +21,7 @@ from botocore.hooks import HierarchicalEmitter
 from botocore.exceptions import PartialCredentialsError
 from dateutil.tz import tzlocal
 
-from awscli.testutils import unittest
+from awscli.testutils import unittest, skip_if_windows
 from awscli.customizations import assumerole
 
 
@@ -400,8 +400,7 @@ class TestJSONCache(unittest.TestCase):
         with self.assertRaises(KeyError):
             self.cache['foo']
 
-    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                     'File permissions tests not supported on Windows.')
+    @skip_if_windows('File permissions tests not supported on Windows.')
     def test_permissions_for_file_restricted(self):
         self.cache['mykey'] = {'foo': 'bar'}
         filename = os.path.join(self.tempdir, 'mykey.json')

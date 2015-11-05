@@ -23,9 +23,10 @@ to the specified file.  It will also remove the two bootstrap data
 fields from the response.
 """
 import base64
-import os
 
-from awscli.arguments import CustomArgument
+from awscli.customizations.arguments import StatefulArgument
+from awscli.customizations.arguments import resolve_given_outfile_path
+from awscli.customizations.arguments import is_parsed_result_successful
 
 
 CHOICES = ('QRCodePNG', 'Base32StringSeed')
@@ -35,30 +36,13 @@ BOOTSTRAP_HELP = ('Method to use to seed the virtual MFA.  '
                   'Valid values are: %s | %s' % CHOICES)
 
 
-class StatefulArgument(CustomArgument):
-
-    def __init__(self, *args, **kwargs):
-        super(StatefulArgument, self).__init__(*args, **kwargs)
-        self._value = None
-
-    def add_to_params(self, parameters, value):
-        self._value = value
-
-    @property
-    def value(self):
-        return self._value
-
-
 class FileArgument(StatefulArgument):
 
     def add_to_params(self, parameters, value):
         # Validate the file here so we can raise an error prior
         # calling the service.
-        outfile = os.path.expandvars(value)
-        outfile = os.path.expanduser(outfile)
-        if not os.access(os.path.dirname(os.path.abspath(outfile)), os.W_OK):
-            raise ValueError('Unable to write to file: %s' % outfile)
-        self._value = outfile
+        value = resolve_given_outfile_path(value)
+        super(FileArgument, self).add_to_params(parameters, value)
 
 
 class IAMVMFAWrapper(object):
@@ -81,7 +65,7 @@ class IAMVMFAWrapper(object):
         argument_table['bootstrap-method'] = self._method
 
     def _save_file(self, parsed, **kwargs):
-        if 'Error' in parsed:
+        if not is_parsed_result_successful(parsed):
             return
         method = self._method.value
         outfile = self._outfile.value

@@ -83,6 +83,23 @@ class TestOpsWorksRegister(TestOpsWorksBase):
             mock.call("opsworks", endpoint_url="http://xxx/"),
         ])
 
+    def test_create_clients_with_verify_ssl(self):
+        """Should pass verify-ssl to OpsWorks, but not to IAM clients."""
+
+        self.register._create_clients(
+            self._build_args(), argparse.Namespace(verify_ssl=False))
+        self.mock_session.create_client.assert_has_calls([
+            mock.call("iam"),
+            mock.call("opsworks", verify=False),
+        ])
+
+        self.register._create_clients(
+            self._build_args(), argparse.Namespace(verify_ssl="/path/to/ca"))
+        self.mock_session.create_client.assert_has_calls([
+            mock.call("iam"),
+            mock.call("opsworks", verify="/path/to/ca"),
+        ])
+
     @mock.patch.object(opsworks, "platform")
     def test_prevalidate_arguments_invalid_hostnames(self, mock_platform):
         """Should only accept valid hostnames."""

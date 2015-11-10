@@ -195,7 +195,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                                        'endpoint_url': None,
                                        'verify_ssl': None,
                                        'paths_type': 's3s3',
-                                       'source_region': ['us-west-2']})
+                                       'source_region': 'us-west-2'})
         cmd_arc.set_clients()
         create_client_args = session.create_client.call_args_list
         # Assert that two clients were created

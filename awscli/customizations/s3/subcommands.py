@@ -28,7 +28,8 @@ from awscli.customizations.s3.fileinfo import TaskInfo, FileInfo
 from awscli.customizations.s3.filters import create_filter
 from awscli.customizations.s3.s3handler import S3Handler, S3StreamHandler
 from awscli.customizations.s3.utils import find_bucket_key, uni_print, \
-    AppendFilter, find_dest_path_comp_key, human_readable_size
+    AppendFilter, find_dest_path_comp_key, human_readable_size, \
+    RequestParamsMapper
 from awscli.customizations.s3.syncstrategy.base import MissingFileSync, \
     SizeAndLastModifiedSync, NeverSync
 from awscli.customizations.s3 import transferconfig
@@ -97,7 +98,7 @@ NO_GUESS_MIME_TYPE = {'name': 'no-guess-mime-type', 'action': 'store_false',
                           "file is guessed when it is uploaded.")}
 
 
-CONTENT_TYPE = {'name': 'content-type', 'nargs': 1,
+CONTENT_TYPE = {'name': 'content-type',
                 'help_text': (
                     "Specify an explicit content type for this operation.  "
                     "This value overrides any guessed mime types.")}
@@ -117,7 +118,7 @@ INCLUDE = {'name': 'include', 'action': AppendFilter, 'nargs': 1,
                "in the command that match the specified pattern")}
 
 
-ACL = {'name': 'acl', 'nargs': 1,
+ACL = {'name': 'acl',
        'choices': ['private', 'public-read', 'public-read-write',
                    'authenticated-read', 'bucket-owner-read',
                    'bucket-owner-full-control', 'log-delivery-write'],
@@ -237,7 +238,7 @@ SSE_C_COPY_SOURCE_KEY = {
 }
 
 
-STORAGE_CLASS = {'name': 'storage-class', 'nargs': 1,
+STORAGE_CLASS = {'name': 'storage-class',
                  'choices': ['STANDARD', 'REDUCED_REDUNDANCY', 'STANDARD_IA'],
                  'help_text': (
                      "The type of storage to use for the object. "
@@ -246,7 +247,7 @@ STORAGE_CLASS = {'name': 'storage-class', 'nargs': 1,
                      "Defaults to 'STANDARD'")}
 
 
-WEBSITE_REDIRECT = {'name': 'website-redirect', 'nargs': 1,
+WEBSITE_REDIRECT = {'name': 'website-redirect',
                     'help_text': (
                         "If the bucket is configured as a website, "
                         "redirects requests for this object to another object "
@@ -255,19 +256,19 @@ WEBSITE_REDIRECT = {'name': 'website-redirect', 'nargs': 1,
                         "metadata.")}
 
 
-CACHE_CONTROL = {'name': 'cache-control', 'nargs': 1,
+CACHE_CONTROL = {'name': 'cache-control',
                  'help_text': (
                      "Specifies caching behavior along the "
                      "request/reply chain.")}
 
 
-CONTENT_DISPOSITION = {'name': 'content-disposition', 'nargs': 1,
+CONTENT_DISPOSITION = {'name': 'content-disposition',
                        'help_text': (
                            "Specifies presentational information "
                            "for the object.")}
 
 
-CONTENT_ENCODING = {'name': 'content-encoding', 'nargs': 1,
+CONTENT_ENCODING = {'name': 'content-encoding',
                     'help_text': (
                         "Specifies what content encodings have been "
                         "applied to the object and thus what decoding "
@@ -275,11 +276,11 @@ CONTENT_ENCODING = {'name': 'content-encoding', 'nargs': 1,
                         "referenced by the Content-Type header field.")}
 
 
-CONTENT_LANGUAGE = {'name': 'content-language', 'nargs': 1,
+CONTENT_LANGUAGE = {'name': 'content-language',
                     'help_text': ("The language the content is in.")}
 
 
-SOURCE_REGION = {'name': 'source-region', 'nargs': 1,
+SOURCE_REGION = {'name': 'source-region',
                  'help_text': (
                      "When transferring objects from an s3 bucket to an s3 "
                      "bucket, this specifies the region of the source bucket."
@@ -291,14 +292,14 @@ SOURCE_REGION = {'name': 'source-region', 'nargs': 1,
 
 
 EXPIRES = {
-    'name': 'expires', 'nargs': 1,
+    'name': 'expires',
     'help_text': (
         "The date and time at which the object is no longer cacheable.")
 }
 
 
 METADATA_DIRECTIVE = {
-    'name': 'metadata-directive', 'nargs': 1, 'choices': ['COPY', 'REPLACE'],
+    'name': 'metadata-directive', 'choices': ['COPY', 'REPLACE'],
     'help_text': (
         'Specifies whether the metadata is copied from the source object '
         'or replaced with metadata provided when copying S3 objects. '
@@ -747,7 +748,7 @@ class CommandArchitecture(object):
             if self.parameters['paths_type'] == 's3s3':
                 self._source_client = get_client(
                     self.session,
-                    region=self.parameters['source_region'][0],
+                    region=self.parameters['source_region'],
                     endpoint_url=None,
                     verify=self.parameters['verify_ssl'],
                     config=client_config
@@ -858,21 +859,27 @@ class CommandArchitecture(object):
             'result_queue': result_queue
         }
 
+        fgen_request_parameters = {}
+        fgen_head_object_params = {}
+        fgen_request_parameters['HeadObject'] = fgen_head_object_params
+        fgen_kwargs['request_parameters'] = fgen_request_parameters
+
         # SSE-C may be neaded for HeadObject for copies/downloads/deletes
         # If the operation is s3 to s3, the FileGenerator should use the
         # copy source key and algorithm. Otherwise, use the regular
         # SSE-C key and algorithm. Note the reverse FileGenerator does
         # not need any of these because it is used only for sync operations
-        # which only use ListObjects which does not require HeadObject. 
+        # which only use ListObjects which does not require HeadObject.
+        RequestParamsMapper.map_head_object_params(
+            fgen_head_object_params, self.parameters)
         if paths_type == 's3s3':
-            fgen_kwargs['sse_c'] = self.parameters.get(
-                'sse_c_copy_source')
-            fgen_kwargs['sse_c_key'] = self.parameters.get(
-                'sse_c_copy_source_key')
-        else:
-            fgen_kwargs['sse_c'] = self.parameters.get('sse_c')
-            fgen_kwargs['sse_c_key'] = self.parameters.get('sse_c_key')
-        
+            RequestParamsMapper.map_head_object_params(
+                fgen_head_object_params, {
+                    'sse_c': self.parameters.get('sse_c_copy_source'),
+                    'sse_c_key': self.parameters.get('sse_c_copy_source_key')
+                }
+            )
+
         file_generator = FileGenerator(**fgen_kwargs)
         rev_generator = FileGenerator(**rgen_kwargs)
         taskinfo = [TaskInfo(src=files['src']['path'],

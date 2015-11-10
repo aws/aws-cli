@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.9.6
+=====
 * bugfix:shorthand: Allow ``.`` as a valid key character.
   (`issue 1628 <https://github.com/aws/aws-cli/pull/1628>`__)
 * feature:``aws apigateway``: Support for stage variables to configure

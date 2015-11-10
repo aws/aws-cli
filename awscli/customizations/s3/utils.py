@@ -528,16 +528,19 @@ class RequestParamsMapper(object):
     """
     @classmethod
     def map_put_object_params(cls, request_params, cli_params):
+        """Map CLI params to PutObject request params"""
         cls._set_general_object_params(request_params, cli_params)
         cls._set_sse_request_params(request_params, cli_params)
         cls._set_sse_c_request_params(request_params, cli_params)
 
     @classmethod
     def map_get_object_params(cls, request_params, cli_params):
+        """Map CLI params to GetObject request params"""
         cls._set_sse_c_request_params(request_params, cli_params)
 
     @classmethod
     def map_copy_object_params(cls, request_params, cli_params):
+        """Map CLI params to CopyObject request params"""
         cls._set_general_object_params(request_params, cli_params)
         cls._set_metadata_directive_param(request_params, cli_params)
         cls._set_sse_request_params(request_params, cli_params)
@@ -546,20 +549,24 @@ class RequestParamsMapper(object):
 
     @classmethod
     def map_head_object_params(cls, request_params, cli_params):
+        """Map CLI params to HeadObject request params"""
         cls._set_sse_c_request_params(request_params, cli_params)
 
     @classmethod
     def map_create_multipart_upload_params(cls, request_params, cli_params):
+        """Map CLI params to CreateMultipartUpload request params"""
         cls._set_general_object_params(request_params, cli_params)
         cls._set_sse_request_params(request_params, cli_params)
         cls._set_sse_c_request_params(request_params, cli_params)
 
     @classmethod
     def map_upload_part_params(cls, request_params, cli_params):
+        """Map CLI params to UploadPart request params"""
         cls._set_sse_c_request_params(request_params, cli_params)
 
     @classmethod
     def map_upload_part_copy_params(cls, request_params, cli_params):
+        """Map CLI params to UploadPartCopy request params"""
         cls._set_sse_c_and_copy_source_request_params(
             request_params, cli_params)
 

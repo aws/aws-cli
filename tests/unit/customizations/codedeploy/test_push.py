@@ -217,6 +217,7 @@ class TestPush(unittest.TestCase):
         with self.push._compress(
                 self.args.source,
                 self.args.ignore_hidden_files):
+            zf.assert_called_with(ANY, 'w', allowZip64=True)
             zf().write.assert_called_with(
                 '/tmp/appspec.yml',
                 self.appspec,

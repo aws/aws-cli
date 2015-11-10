@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest, FileCreator
+from awscli.testutils import unittest, skip_if_windows, FileCreator
 import signal
 import platform
 import json
@@ -92,7 +92,7 @@ class TestHelpPager(unittest.TestCase):
         self.assertEqual(self.renderer.get_pager_cmdline(),
                          pager_cmd.split())
 
-    @unittest.skipIf(sys.platform.startswith('win'), "requires posix system")
+    @skip_if_windows('Requires posix system.')
     def test_no_groff_exists(self):
         renderer = FakePosixHelpRenderer()
         renderer.exists_on_path['groff'] = False
@@ -119,8 +119,7 @@ class TestHelpPager(unittest.TestCase):
         renderer.render('foo')
         self.assertEqual(renderer.popen_calls[-1][0], (['more'],))
 
-    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                    "Ctrl-C not valid on windows.")
+    @skip_if_windows("Ctrl-C not valid on windows.")
     def test_can_handle_ctrl_c(self):
         class CtrlCRenderer(FakePosixHelpRenderer):
             def _popen(self, *args, **kwargs):

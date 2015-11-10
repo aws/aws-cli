@@ -14,7 +14,7 @@ import signal
 import platform
 import os
 
-from awscli.testutils import unittest
+from awscli.testutils import unittest, skip_if_windows
 from awscli.utils import split_on_commas, ignore_ctrl_c
 
 
@@ -91,8 +91,7 @@ class TestCSVSplit(unittest.TestCase):
                          ['foo', 'bar=foo,*[biz]*,baz'])
 
 
-@unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                 "Ctrl-C not valid on windows.")
+@skip_if_windows("Ctrl-C not supported on windows.")
 class TestIgnoreCtrlC(unittest.TestCase):
     def test_ctrl_c_is_ignored(self):
         with ignore_ctrl_c():

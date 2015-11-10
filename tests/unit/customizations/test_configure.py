@@ -21,7 +21,7 @@ import mock
 from six import StringIO
 
 from awscli.customizations import configure
-from awscli.testutils import unittest
+from awscli.testutils import unittest, skip_if_windows
 
 
 class PrecannedPrompter(object):
@@ -419,8 +419,7 @@ class TestConfigFileWriter(unittest.TestCase):
             new_contents = f.read()
         self.assertEqual(new_contents, '[default]\nfoo = value\n')
 
-    @unittest.skipIf(sys.platform.lower().startswith('win'),
-                     "Test not valid on windows.")
+    @skip_if_windows("Test not valid on windows.")
     def test_permissions_on_new_file(self):
         self.writer.update_config({'foo': 'value'}, self.config_filename)
         with open(self.config_filename, 'r') as f:

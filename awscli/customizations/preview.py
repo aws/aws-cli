@@ -126,7 +126,8 @@ class PreviewModeCommandMixin(object):
         aws configure set preview.{service} true
 
     """)
-    HELP_SNIPPET = "This service is only available as a preview service.\n"
+    HELP_SNIPPET = ("AWS CLI support for this service is only "
+                    "available in a preview stage.\n")
 
     def __init__(self, *args, **kwargs):
         self._is_enabled = kwargs.pop('is_enabled')

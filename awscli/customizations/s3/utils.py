@@ -551,6 +551,7 @@ class RequestParamsMapper(object):
     def map_put_object_params(cls, request_params, cli_params):
         """Map CLI params to PutObject request params"""
         cls._set_general_object_params(request_params, cli_params)
+        cls._set_metadata_params(request_params, cli_params)
         cls._set_sse_request_params(request_params, cli_params)
         cls._set_sse_c_request_params(request_params, cli_params)
 
@@ -564,6 +565,7 @@ class RequestParamsMapper(object):
         """Map CLI params to CopyObject request params"""
         cls._set_general_object_params(request_params, cli_params)
         cls._set_metadata_directive_param(request_params, cli_params)
+        cls._set_metadata_params(request_params, cli_params)
         cls._set_sse_request_params(request_params, cli_params)
         cls._set_sse_c_and_copy_source_request_params(
             request_params, cli_params)
@@ -636,6 +638,13 @@ class RequestParamsMapper(object):
             return 'GrantWriteACP'
         raise ValueError('permission must be one of: '
                          'read|readacl|writeacl|full')
+
+    @classmethod
+    def _set_metadata_params(cls, request_params, cli_params):
+        if cli_params.get('metadata'):
+            request_params['Metadata'] = cli_params['metadata']
+            if not cli_params.get('metadata-directive'):
+                request_params['MetadataDirective'] = 'REPLACE'
 
     @classmethod
     def _set_metadata_directive_param(cls, request_params, cli_params):

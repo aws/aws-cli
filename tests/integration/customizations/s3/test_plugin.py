@@ -439,6 +439,20 @@ class TestCp(BaseS3CLICommand):
         self.assert_no_errors(p)
         self.assertTrue(self.key_exists(bucket_name, key_name='foo.txt'))
 
+    def test_copy_metadata(self):
+        # Copy the same style of parsing as the CLI session. This is needed
+        # For comparing expires timestamp.
+        add_scalar_parsers(self.session)
+        bucket_name = self.create_bucket()
+        key = 'foo.txt'
+        filename = self.files.create_file(key, contents='')
+        p = aws('s3 cp %s s3://%s/%s --metadata keyname=value' %
+                (filename, bucket_name, key))
+        self.assert_no_errors(p)
+        response = self.head_object(bucket_name, key)
+        # These values should have the metadata of the source object
+        self.assertEqual(response['Metadata'].get('keyname'), 'value')
+
     def test_copy_metadata_directive(self):
         # Copy the same style of parsing as the CLI session. This is needed
         # For comparing expires timestamp.

@@ -298,6 +298,22 @@ EXPIRES = {
 }
 
 
+METADATA = {
+    'name': 'metadata', 'cli_type_name': 'map',
+    'schema': {
+        'type': 'map',
+        'key': {'type': 'string'},
+        'value': {'type': 'string'}
+    },
+    'help_text': (
+        "A map of metadata to store with the objects in S3. This will be "
+        "applied to every object which is part of this request. When copying "
+        "between two s3 locations, the metadata-directive argument will default"
+        " to 'REPLACE' unless otherwise specified."
+    )
+}
+
+
 METADATA_DIRECTIVE = {
     'name': 'metadata-directive', 'choices': ['COPY', 'REPLACE'],
     'help_text': (
@@ -649,7 +665,7 @@ class CpCommand(S3TransferCommand):
             "or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
-                [METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE]
+                [METADATA, METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE]
 
 
 class MvCommand(S3TransferCommand):

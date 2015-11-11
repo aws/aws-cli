@@ -136,6 +136,21 @@ class TestCPCommand(BaseAWSCommandParamsTest):
             'http://someserver'
         )
 
+    def test_metadata_copy(self):
+        self.parsed_responses = [
+            {"ContentLength": "100", "LastModified": "00:00:00Z"},
+            {'ETag': '"foo-1"'},
+        ]
+        cmdline = ('%s s3://bucket/key.txt s3://bucket/key2.txt'
+                   ' --metadata KeyName=Value' % self.prefix)
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 2,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
+        self.assertEqual(self.operations_called[1][1]['Metadata'],
+                         {'KeyName': 'Value'})
+
     def test_metadata_directive_copy(self):
         self.parsed_responses = [
             {"ContentLength": "100", "LastModified": "00:00:00Z"},

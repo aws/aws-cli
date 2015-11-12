@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+
+Next Release (TBD)
+==================
+* feature:``aws rds``: Cross account snapshot sharing and
+  Modify DB Instance Visibility features
+* bugfix:``memory management``: Resolve a potential memory leak when
+  creating lots of clients on Python 2.6 and Linux 2.6
+* bugfix:``presign url``: Now generate_presigned_url() works correctly
+  with different expiry time
+
+
 1.9.6
 =====
 * bugfix:shorthand: Allow ``.`` as a valid key character.

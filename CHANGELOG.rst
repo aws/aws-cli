@@ -3,8 +3,8 @@ CHANGELOG
 =========
 
 
-Next Release (TBD)
-==================
+1.9.7
+=====
 * feature:``aws rds``: Cross account snapshot sharing and
   Modify DB Instance Visibility features
 * bugfix:``memory management``: Resolve a potential memory leak when

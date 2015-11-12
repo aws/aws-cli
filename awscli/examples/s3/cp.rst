@@ -79,6 +79,15 @@ Output::
 
     copy: s3://mybucket/test1.txt to s3://mybucket2/test1.txt
 
+You can combine ``--exclude`` and ``--include`` options to copy only objects that match a pattern, excluding all others::
+
+    aws s3 cp s3://mybucket/logs/ s3://mybucket2/logs/ --recursive --exclude "*" --include "*.log" 
+
+Output::
+
+    copy: s3://mybucket/test/test.log to s3://mybucket2/test/test.log
+    copy: s3://mybucket/test3.log to s3://mybucket2/test3.log
+
 **Setting the Access Control List (ACL) while copying an S3 object**
 
 The following ``cp`` command copies a single object to a specified bucket and key while setting the ACL to

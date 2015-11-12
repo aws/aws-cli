@@ -1,9 +1,10 @@
-# Source this file to activate auto completion for zsh using the bash compatibility
-# helper.
+# Source this file to activate auto completion for zsh using the bash
+# compatibility helper.  Make sure to run `compinit` before, which should be
+# given usually.
 #
-# source /path/to/zsh_complete.sh
+# % source /path/to/zsh_complete.sh
 #
-# Typically that would be called somewhere in your .zshrc
+# Typically that would be called somewhere in your .zshrc.
 #
 # Note, the overwrite of _bash_complete() is to export COMP_LINE and COMP_POINT
 # That is only required for zsh <= edab1d3dbe61da7efe5f1ac0e40444b2ec9b9570
@@ -15,8 +16,7 @@
 # It is planned to write a proper zsh auto completion soon. Please talk
 # to Frank Becker <fb@alien8.de>.
 
-autoload -Uz bashcompinit compinit
-compinit
+autoload -Uz bashcompinit
 bashcompinit -i
 
 _bash_complete() {

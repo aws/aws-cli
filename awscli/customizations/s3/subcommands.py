@@ -142,10 +142,6 @@ COPY_ACL = {'name': 'copy-acl', 'action': 'store_true', 'dest': 'copy_acl',
                 "set with the ``--acl`` or ``--grants`` options.")}
 
 
-NO_COPY_ACL = {'name': 'no-copy-acl', 'action': 'store_false',
-               'dest': 'copy_acl', 'default': True, 'group_name': 'copy_acl'}
-
-
 GRANTS = {
     'name': 'grants', 'nargs': '+',
     'help_text': (
@@ -589,8 +585,7 @@ class CpCommand(S3TransferCommand):
             "or <S3Path> <S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
-                [METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE, COPY_ACL,
-                 NO_COPY_ACL]
+                [METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE, COPY_ACL]
 
 
 class MvCommand(S3TransferCommand):
@@ -601,7 +596,7 @@ class MvCommand(S3TransferCommand):
             "or <S3Path> <S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
-                [METADATA_DIRECTIVE, RECURSIVE, COPY_ACL, NO_COPY_ACL]
+                [METADATA_DIRECTIVE, RECURSIVE, COPY_ACL]
 
 
 class RmCommand(S3TransferCommand):
@@ -622,7 +617,7 @@ class SyncCommand(S3TransferCommand):
     USAGE = "<LocalPath> <S3Path> or <S3Path> " \
             "<LocalPath> or <S3Path> <S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
-                  'synopsis': USAGE}] + TRANSFER_ARGS + [COPY_ACL, NO_COPY_ACL]
+                  'synopsis': USAGE}] + TRANSFER_ARGS + [COPY_ACL]
 
 
 class MbCommand(S3TransferCommand):

@@ -131,6 +131,8 @@ class OpsWorksRegister(BasicCommand):
             endpoint_args['region_name'] = parsed_globals.region
         if 'endpoint_url' in parsed_globals:
             endpoint_args['endpoint_url'] = parsed_globals.endpoint_url
+        if 'verify_ssl' in parsed_globals:
+            endpoint_args['verify'] = parsed_globals.verify_ssl
         self.iam = self._session.create_client('iam')
         self.opsworks = self._session.create_client(
             'opsworks', **endpoint_args)

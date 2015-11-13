@@ -80,6 +80,10 @@ GET_DATA = {
                 "type": "int",
                 "help": "",
             },
+            "read-timeout": {
+                "type": "int",
+                "help": ""
+            }
         }
     },
 }
@@ -678,6 +682,13 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
         call_args = self.create_endpoint.call_args
         self.assertEqual(call_args[0], (mock.ANY, 'us-east-1'))
         self.assertEqual(call_args[1]['verify'], '/path/cacert.pem')
+
+    def test_aws_with_read_timeout(self):
+        self.assert_params_for_cmd(
+            'lambda invoke --function-name foo out.log --cli-read-timeout 90',
+            expected_rc=0)
+        call_args = self.create_endpoint.call_args
+        self.assertEqual(call_args[1]['timeout'][1], 90)
 
 
 class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):

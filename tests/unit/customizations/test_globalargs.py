@@ -193,3 +193,9 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         globalargs.resolve_types(parsed_args)
         self.assertEqual(parsed_args.endpoint_url,
                          'http://custom-endpoint.com')
+
+    def test_cli_read_timeout(self):
+        parsed_args = FakeParsedArgs(read_timeout='60')
+        session = mock.Mock()
+        globalargs.resolve_cli_read_timeout(parsed_args, session)
+        self.assertEqual(parsed_args.read_timeout, 60)

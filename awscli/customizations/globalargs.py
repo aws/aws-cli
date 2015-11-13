@@ -23,6 +23,7 @@ def register_parse_global_args(cli):
     cli.register('top-level-args-parsed', resolve_types)
     cli.register('top-level-args-parsed', no_sign_request)
     cli.register('top-level-args-parsed', resolve_verify_ssl)
+    cli.register('top-level-args-parsed', resolve_cli_read_timeout)
 
 
 def resolve_types(parsed_args, **kwargs):
@@ -77,3 +78,11 @@ def no_sign_request(parsed_args, session, **kwargs):
         # In order to make signing disabled for all requests
         # we need to use botocore's ``disable_signing()`` handler.
         session.register('choose-signer', disable_signing)
+
+
+def resolve_cli_read_timeout(parsed_args, session, **kwargs):
+    arg_name = 'read_timeout'
+    arg_value = getattr(parsed_args, arg_name, None)
+
+    if arg_value is not None:
+        setattr(parsed_args, arg_name, int(arg_value))

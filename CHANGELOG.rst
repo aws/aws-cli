@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+* bugfix:``aws opsworks register``: Support ``--no-verify-ssl``
+  argument for the ``aws opsworks register`` command
+  (`issue 1632 <https://github.com/aws/aws-cli/pull/1632>`__)
+
 
 1.9.7
 =====

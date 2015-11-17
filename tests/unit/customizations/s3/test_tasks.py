@@ -35,6 +35,7 @@ from awscli.customizations.s3.tasks import print_operation
 from awscli.customizations.s3.tasks import RetriesExeededError
 from awscli.customizations.s3.executor import ShutdownThreadRequest
 from awscli.customizations.s3.utils import StablePriorityQueue
+from awscli.testutils import skip_if_windows
 
 
 class TestMultipartUploadContext(unittest.TestCase):
@@ -352,6 +353,7 @@ class TestCreateLocalFileTask(unittest.TestCase):
         self.context.announce_file_created.assert_called_with()
         self.assertTrue(self.result_queue.empty())
 
+    @skip_if_windows('Read permissions tests only supported on mac/linux')
     def test_cancel_command_on_exception(self):
         # Set destination directory to read-only
         os.chmod(self.tempdir, 444)

@@ -266,3 +266,12 @@ For more information about launching instances, see `Using Amazon EC2 Instances`
 
 .. _`Using Amazon EC2 Instances`: http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-launch.html
 
+**To launch an instance with an instance profile**
+
+This example shows the use of the ``iam-instance-profile`` option to specify an `IAM instance profile`_ by name.
+
+.. _`IAM instance profile`: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html
+
+Command::
+
+  aws ec2 run-instances --iam-instance-profile Name=MyInstanceProfile --image-id ami-1a2b3c4d --count 1 --instance-type t2.micro --key-name MyKeyPair --security-groups MySecurityGroup

@@ -13,6 +13,7 @@
 import sys
 import os
 
+from botocore.endpoint import DEFAULT_TIMEOUT
 from botocore.handlers import disable_signing
 import jmespath
 
@@ -93,5 +94,9 @@ def resolve_cli_read_timeout(parsed_args, session, **kwargs):
 
 def _resolve_timeout(parsed_args, arg_name):
     arg_value = getattr(parsed_args, arg_name, None)
-    if arg_value is not None:
-        setattr(parsed_args, arg_name, int(arg_value))
+    if arg_value is None:
+        arg_value = DEFAULT_TIMEOUT
+    arg_value = int(arg_value)
+    if arg_value == -1:
+        arg_value = None
+    setattr(parsed_args, arg_name, arg_value)

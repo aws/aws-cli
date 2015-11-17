@@ -205,3 +205,15 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         session = mock.Mock()
         globalargs.resolve_cli_connect_timeout(parsed_args, session)
         self.assertEqual(parsed_args.connect_timeout, 60)
+
+    def test_cli_read_timeout_for_blocking(self):
+        parsed_args = FakeParsedArgs(read_timeout='-1')
+        session = mock.Mock()
+        globalargs.resolve_cli_read_timeout(parsed_args, session)
+        self.assertEqual(parsed_args.read_timeout, None)
+
+    def test_cli_connect_timeout_for_blocking(self):
+        parsed_args = FakeParsedArgs(connect_timeout='-1')
+        session = mock.Mock()
+        globalargs.resolve_cli_connect_timeout(parsed_args, session)
+        self.assertEqual(parsed_args.connect_timeout, None)

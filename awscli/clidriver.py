@@ -658,10 +658,12 @@ class CLIOperationCaller(object):
             value is returned.
 
         """
+        config_kwargs = {}
         if parsed_globals.read_timeout is not None:
-            config = Config(read_timeout=parsed_globals.read_timeout)
-        else:
-            config = Config()
+            config_kwargs['read_timeout'] = parsed_globals.read_timeout
+        if parsed_globals.connect_timeout is not None:
+            config_kwargs['connect_timeout'] = parsed_globals.connect_timeout
+        config = Config(**config_kwargs)
         client = self._session.create_client(
             service_name, region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,

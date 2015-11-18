@@ -524,7 +524,28 @@ class RequestParamsMapper(object):
 
     Each method in the class maps to a particular operation and will set
     the request parameters depending on the operation and CLI parameters
-    provided.
+    provided. For each of the class's methods the parameters are as follows:
+
+    :type request_params: dict
+    :param request_params: A dictionary to be filled out with the appropriate
+        parameters for the specified client operation using the current CLI
+        parameters
+
+    :type cli_params: dict
+    :param cli_params: A dictionary of the current CLI params that will be
+        used to generate the request parameters for the specified operation
+
+    For example, take the mapping of request parameters for PutObject::
+
+        >>> cli_request_params = {'sse': 'AES256', 'storage_class': 'GLACIER'}
+        >>> request_params = {}
+        >>> RequestParamsMapper.map_put_object_params(
+                request_params, cli_request_params)
+        >>> print(request_params)
+        {'StorageClass': 'GLACIER', 'ServerSideEncryption': 'AES256'}
+
+    Note that existing parameters in ``request_params`` will be overriden if
+    a parameter in ``cli_params`` maps to the existing parameter.
     """
     @classmethod
     def map_put_object_params(cls, request_params, cli_params):

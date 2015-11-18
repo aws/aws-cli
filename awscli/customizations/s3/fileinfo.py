@@ -11,7 +11,8 @@ from dateutil.tz import tzlocal
 
 from botocore.compat import quote
 from awscli.customizations.s3.utils import find_bucket_key, \
-    uni_print, guess_content_type, MD5Error, bytes_print, set_file_utime
+    uni_print, guess_content_type, MD5Error, bytes_print, set_file_utime, \
+    RequestParamsMapper
 
 
 LOGGER = logging.getLogger(__name__)
@@ -38,7 +39,6 @@ def save_file(filename, response_data, last_update, is_stream=False):
     """
     body = response_data['Body']
     etag = response_data['ETag'][1:-1]
-    sse = response_data.get('ServerSideEncryption', None)
     if not is_stream:
         d = os.path.dirname(filename)
         try:
@@ -59,7 +59,7 @@ def save_file(filename, response_data, last_update, is_stream=False):
         with open(filename, 'wb') as out_file:
             write_to_file(out_file, etag, md5, file_chunks)
 
-    if not _is_multipart_etag(etag) and sse != 'aws:kms':
+    if _can_validate_md5_with_etag(etag, response_data):
         if etag != md5.hexdigest():
             if not is_stream:
                 os.remove(filename)
@@ -73,6 +73,15 @@ def save_file(filename, response_data, last_update, is_stream=False):
         # Now write the output to stdout since the md5 is correct.
         bytes_print(payload)
         sys.stdout.flush()
+
+
+def _can_validate_md5_with_etag(etag, response_data):
+    sse = response_data.get('ServerSideEncryption', None)
+    sse_customer_algorithm = response_data.get('SSECustomerAlgorithm', None)
+    if not _is_multipart_etag(etag) and sse != 'aws:kms' and \
+            sse_customer_algorithm is None:
+        return True
+    return False
 
 
 def write_to_file(out_file, etag, md5, file_chunks, is_stream=False):
@@ -188,11 +197,9 @@ class FileInfo(TaskInfo):
         self.size = size
         self.last_update = last_update
         # Usually inject ``parameters`` from ``BasicTask`` class.
+        self.parameters = {}
         if parameters is not None:
             self.parameters = parameters
-        else:
-            self.parameters = {'acl': None,
-                               'sse': None}
         self.source_client = source_client
         self.is_stream = is_stream
         self.associated_response_data = associated_response_data
@@ -204,59 +211,9 @@ class FileInfo(TaskInfo):
         bucket, key = find_bucket_key(self.src)
         params = {'Bucket': bucket,
                   'Key': key}
+        RequestParamsMapper.map_head_object_params(params, self.parameters)
         response_data = self.client.head_object(**params)
         self.size = int(response_data['ContentLength'])
-
-    def _permission_to_param(self, permission):
-        if permission == 'read':
-            return 'GrantRead'
-        if permission == 'full':
-            return 'GrantFullControl'
-        if permission == 'readacl':
-            return 'GrantReadACP'
-        if permission == 'writeacl':
-            return 'GrantWriteACP'
-        raise ValueError('permission must be one of: '
-                         'read|readacl|writeacl|full')
-
-    def _handle_object_params(self, params):
-        if self.parameters['acl']:
-            params['ACL'] = self.parameters['acl'][0]
-        if self.parameters['grants']:
-            for grant in self.parameters['grants']:
-                try:
-                    permission, grantee = grant.split('=', 1)
-                except ValueError:
-                    raise ValueError('grants should be of the form '
-                                     'permission=principal')
-                params[self._permission_to_param(permission)] = grantee
-        if self.parameters['sse']:
-            params['ServerSideEncryption'] = 'AES256'
-        if self.parameters['storage_class']:
-            params['StorageClass'] = self.parameters['storage_class'][0]
-        if self.parameters['website_redirect']:
-            params['WebsiteRedirectLocation'] = \
-                    self.parameters['website_redirect'][0]
-        if self.parameters['guess_mime_type']:
-            self._inject_content_type(params, self.src)
-        if self.parameters['content_type']:
-            params['ContentType'] = self.parameters['content_type'][0]
-        if self.parameters['cache_control']:
-            params['CacheControl'] = self.parameters['cache_control'][0]
-        if self.parameters['content_disposition']:
-            params['ContentDisposition'] = \
-                    self.parameters['content_disposition'][0]
-        if self.parameters['content_encoding']:
-            params['ContentEncoding'] = self.parameters['content_encoding'][0]
-        if self.parameters['content_language']:
-            params['ContentLanguage'] = self.parameters['content_language'][0]
-        if self.parameters['expires']:
-            params['Expires'] = self.parameters['expires'][0]
-
-    def _handle_metadata_directive(self, params):
-        if self.parameters['metadata_directive']:
-            params['MetadataDirective'] = \
-                self.parameters['metadata_directive'][0]
 
     def is_glacier_compatible(self):
         """Determines if a file info object is glacier compatible
@@ -301,10 +258,14 @@ class FileInfo(TaskInfo):
             'Key': key,
             'Body': body,
         }
-        self._handle_object_params(params)
+        self._inject_content_type(params)
+        RequestParamsMapper.map_put_object_params(params, self.parameters)
         response_data = self.client.put_object(**params)
 
-    def _inject_content_type(self, params, filename):
+    def _inject_content_type(self, params):
+        if not self.parameters['guess_mime_type']:
+            return
+        filename = self.src
         # Add a content type param if we can guess the type.
         try:
             guessed_type = guess_content_type(filename)
@@ -331,6 +292,7 @@ class FileInfo(TaskInfo):
         """
         bucket, key = find_bucket_key(self.src)
         params = {'Bucket': bucket, 'Key': key}
+        RequestParamsMapper.map_get_object_params(params, self.parameters)
         response_data = self.client.get_object(**params)
         save_file(self.dest, response_data, self.last_update,
                   self.is_stream)
@@ -343,9 +305,9 @@ class FileInfo(TaskInfo):
         bucket, key = find_bucket_key(self.dest)
         params = {'Bucket': bucket,
                   'CopySource': copy_source, 'Key': key}
-        self._handle_object_params(params)
-        self._handle_metadata_directive(params)
-        self.client.copy_object(**params)
+        self._inject_content_type(params)
+        RequestParamsMapper.map_copy_object_params(params, self.parameters)
+        response_data = self.client.copy_object(**params)
 
     def delete(self):
         """
@@ -378,7 +340,9 @@ class FileInfo(TaskInfo):
     def create_multipart_upload(self):
         bucket, key = find_bucket_key(self.dest)
         params = {'Bucket': bucket, 'Key': key}
-        self._handle_object_params(params)
+        self._inject_content_type(params)
+        RequestParamsMapper.map_create_multipart_upload_params(
+            params, self.parameters)
         response_data = self.client.create_multipart_upload(**params)
         upload_id = response_data['UploadId']
         return upload_id

@@ -379,12 +379,13 @@ class TestDownloadPartTask(unittest.TestCase):
         self.filename.operation_name = 'download'
         self.context = mock.Mock()
         self.open = mock.MagicMock()
+        self.params = {}
 
     def test_socket_timeout_is_retried(self):
         self.client.get_object.side_effect = socket.error
         task = DownloadPartTask(0, 1024 * 1024, self.result_queue,
                                 self.filename, self.context,
-                                self.io_queue)
+                                self.io_queue, self.params)
         # The mock is configured to keep raising a socket.error
         # so we should cancel the download.
         with self.assertRaises(RetriesExeededError):
@@ -401,7 +402,7 @@ class TestDownloadPartTask(unittest.TestCase):
             socket.error, {'Body': body}]
         task = DownloadPartTask(0, 1024 * 1024, self.result_queue,
                                 self.filename, self.context,
-                                self.io_queue)
+                                self.io_queue, self.params)
         task()
         self.assertEqual(self.result_queue.put.call_count, 1)
         # And we tried twice, the first one failed, the second one
@@ -414,7 +415,7 @@ class TestDownloadPartTask(unittest.TestCase):
         self.client.get_object.side_effect = [{'Body': body}]
         task = DownloadPartTask(0, 1024 * 1024, self.result_queue,
                                 self.filename, self.context,
-                                self.io_queue)
+                                self.io_queue, self.params)
         task()
         call_args_list = self.io_queue.put.call_args_list
         self.assertEqual(len(call_args_list), 2)
@@ -428,7 +429,7 @@ class TestDownloadPartTask(unittest.TestCase):
                 IncompleteReadError(actual_bytes=1, expected_bytes=2)
         task = DownloadPartTask(0, 1024 * 1024, self.result_queue,
                                 self.filename,
-                                self.context, self.io_queue)
+                                self.context, self.io_queue, self.params)
         with self.assertRaises(RetriesExeededError):
             task()
         self.context.cancel.assert_called_with()
@@ -440,7 +441,8 @@ class TestDownloadPartTask(unittest.TestCase):
             ReadTimeoutError(None, None, None)
         task = DownloadPartTask(0, 1024 * 1024, self.result_queue,
                                 self.filename,
-                                self.context, self.io_queue)
+                                self.context, self.io_queue,
+                                self.params)
         with self.assertRaises(RetriesExeededError):
             task()
         self.context.cancel.assert_called_with()
@@ -463,7 +465,8 @@ class TestDownloadPartTask(unittest.TestCase):
         self.filename.is_stream = True
         task = DownloadPartTask(
             0, transferconfig.DEFAULTS['multipart_chunksize'],
-            self.result_queue, self.filename, self.context, self.io_queue)
+            self.result_queue, self.filename, self.context, self.io_queue,
+            self.params)
         task()
         call_args_list = self.io_queue.put.call_args_list
         self.assertEqual(len(call_args_list), 1)
@@ -540,7 +543,7 @@ class TestTaskOrdering(unittest.TestCase):
         return CompleteDownloadTask(None, None, None, None, None)
 
     def download_task(self):
-        return DownloadPartTask(None, None, None, mock.Mock(), None, None)
+        return DownloadPartTask(None, None, None, mock.Mock(), None, None, {})
 
     def shutdown_task(self, priority=None):
         return ShutdownThreadRequest(priority)

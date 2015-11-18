@@ -229,3 +229,121 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
         self.assertEqual('', stderr)
+    
+    def test_cp_with_sse_flag(self):
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = (
+            '%s %s s3://bucket/key.txt --sse' % (
+                self.prefix, full_path))
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertDictEqual(
+            self.operations_called[0][1],
+            {'Key': 'key.txt', 'Bucket': 'bucket',
+             'ContentType': 'text/plain', 'Body': mock.ANY,
+             'ServerSideEncryption': 'AES256'}
+        )
+
+    def test_cp_with_sse_c_flag(self):
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = (
+            '%s %s s3://bucket/key.txt --sse-c --sse-c-key foo' % (
+                self.prefix, full_path))
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertDictEqual(
+            self.operations_called[0][1],
+            {'Key': 'key.txt', 'Bucket': 'bucket',
+             'ContentType': 'text/plain', 'Body': mock.ANY,
+             'SSECustomerAlgorithm': 'AES256', 'SSECustomerKey': 'Zm9v',
+             'SSECustomerKeyMD5': 'rL0Y20zC+Fzt72VPzMSk2A=='}
+        )
+
+    # Note ideally the kms sse with a key id would be integration tests
+    # However, you cannot delete kms keys so there would be no way to clean
+    # up the tests
+    def test_cp_upload_with_sse_kms_and_key_id(self):
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = (
+            '%s %s s3://bucket/key.txt --sse aws:kms --sse-kms-key-id foo' % (
+                self.prefix, full_path))
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertDictEqual(
+            self.operations_called[0][1],
+            {'Key': 'key.txt', 'Bucket': 'bucket',
+             'ContentType': 'text/plain', 'Body': mock.ANY,
+             'SSEKMSKeyId': 'foo', 'ServerSideEncryption': 'aws:kms'}
+        )
+
+    def test_cp_upload_large_file_with_sse_kms_and_key_id(self):
+        self.parsed_responses = [
+            {'UploadId': 'foo'},  # CreateMultipartUpload
+            {'ETag': '"foo"'},  # UploadPart
+            {'ETag': '"foo"'},  # UploadPart
+            {}  # CompleteMultipartUpload
+        ]
+        full_path = self.files.create_file('foo.txt', 'a' * 10 * (1024 ** 2))
+        cmdline = (
+            '%s %s s3://bucket/key.txt --sse aws:kms --sse-kms-key-id foo' % (
+                self.prefix, full_path))
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 4)
+
+        # We are only really concerned that the CreateMultipartUpload
+        # used the KMS key id.
+        self.assertEqual(
+            self.operations_called[0][0].name, 'CreateMultipartUpload')
+        self.assertDictEqual(
+            self.operations_called[0][1],
+            {'Key': 'key.txt', 'Bucket': 'bucket',
+             'ContentType': 'text/plain',
+             'SSEKMSKeyId': 'foo', 'ServerSideEncryption': 'aws:kms'}
+        )
+
+    def test_cp_copy_with_sse_kms_and_key_id(self):
+        self.parsed_responses = [
+            {'ContentLength': 5, 'LastModified': '00:00:00Z'},  # HeadObject
+            {}  # CopyObject
+        ]
+        cmdline = (
+            '%s s3://bucket/key1.txt s3://bucket/key2.txt '
+            '--sse aws:kms --sse-kms-key-id foo' % self.prefix)
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 2)
+        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
+        self.assertDictEqual(
+            self.operations_called[1][1],
+            {'Key': 'key2.txt', 'Bucket': 'bucket',
+             'ContentType': 'text/plain', 'CopySource': 'bucket/key1.txt',
+             'SSEKMSKeyId': 'foo', 'ServerSideEncryption': 'aws:kms'}
+        )
+
+    def test_cp_copy_large_file_with_sse_kms_and_key_id(self):
+        self.parsed_responses = [
+            {'ContentLength': 10 * (1024 ** 2),
+             'LastModified': '00:00:00Z'},  # HeadObject
+            {'UploadId': 'foo'},  # CreateMultipartUpload
+            {'CopyPartResult': {'ETag': '"foo"'}},  # UploadPartCopy
+            {'CopyPartResult': {'ETag': '"foo"'}},  # UploadPartCopy
+            {}  # CompleteMultipartUpload
+        ]
+        cmdline = (
+            '%s s3://bucket/key1.txt s3://bucket/key2.txt '
+            '--sse aws:kms --sse-kms-key-id foo' % self.prefix)
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 5)
+
+        # We are only really concerned that the CreateMultipartUpload
+        # used the KMS key id.
+        self.assertEqual(
+            self.operations_called[1][0].name, 'CreateMultipartUpload')
+        self.assertDictEqual(
+            self.operations_called[1][1],
+            {'Key': 'key2.txt', 'Bucket': 'bucket',
+             'ContentType': 'text/plain',
+             'SSEKMSKeyId': 'foo', 'ServerSideEncryption': 'aws:kms'}
+        )

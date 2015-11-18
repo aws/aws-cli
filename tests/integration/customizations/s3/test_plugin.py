@@ -1699,5 +1699,305 @@ class TestHonorsEndpointUrl(BaseS3CLICommand):
         self.assertIn(expected, debug_logs)
 
 
-if __name__ == "__main__":
-    unittest.main()
+class TestSSERelatedParams(BaseS3CLICommand):
+    def download_and_assert_kms_object_integrity(self, bucket, key, contents):
+        # Ensure the kms object can be download it by downloading it
+        # with --sse aws:kms is enabled to ensure sigv4 is used on the
+        # download, as it is required for kms.
+        download_filename = os.path.join(self.files.rootdir, 'tmp', key)
+        p = aws('s3 cp s3://%s/%s %s --sse aws:kms' % (
+            bucket, key, download_filename))
+        self.assert_no_errors(p)
+
+        self.assertTrue(os.path.isfile(download_filename))
+        with open(download_filename, 'r') as f:
+            self.assertEqual(f.read(), contents)
+
+    def test_sse_upload(self):
+        bucket = self.create_bucket()
+        key = 'foo.txt'
+        contents = 'contents'
+        file_name = self.files.create_file(key, contents)
+
+        # Upload the file using AES256
+        p = aws('s3 cp %s s3://%s/%s --sse AES256' % (file_name, bucket, key))
+        self.assert_no_errors(p)
+
+        # Ensure the file was uploaded correctly
+        self.assert_key_contents_equal(bucket, key, contents)
+
+    def test_large_file_sse_upload(self):
+        bucket = self.create_bucket()
+        key = 'foo.txt'
+        contents = 'a' * (10 * (1024 * 1024))
+        file_name = self.files.create_file(key, contents)
+
+        # Upload the file using AES256
+        p = aws('s3 cp %s s3://%s/%s --sse AES256' % (file_name, bucket, key))
+        self.assert_no_errors(p)
+
+        # Ensure the file was uploaded correctly
+        self.assert_key_contents_equal(bucket, key, contents)
+
+    def test_sse_with_kms_upload(self):
+        bucket = self.create_bucket()
+        key = 'foo.txt'
+        contents = 'contents'
+        file_name = self.files.create_file(key, contents)
+
+        # Upload the file using KMS
+        p = aws('s3 cp %s s3://%s/%s --sse aws:kms' % (file_name, bucket, key))
+        self.assert_no_errors(p)
+
+        self.download_and_assert_kms_object_integrity(bucket, key, contents)
+
+    def test_large_file_sse_kms_upload(self):
+        bucket = self.create_bucket()
+        key = 'foo.txt'
+        contents = 'a' * (10 * (1024 * 1024))
+        file_name = self.files.create_file(key, contents)
+
+        # Upload the file using KMS
+        p = aws('s3 cp %s s3://%s/%s --sse aws:kms' % (file_name, bucket, key))
+        self.assert_no_errors(p)
+
+        self.download_and_assert_kms_object_integrity(bucket, key, contents)
+
+    def test_sse_copy(self):
+        bucket = self.create_bucket()
+        key = 'foo.txt'
+        new_key = 'bar.txt'
+        contents = 'contents'
+        self.put_object(bucket, key, contents)
+
+        # Copy the file using AES256
+        p = aws('s3 cp s3://%s/%s s3://%s/%s --sse AES256' % (
+            bucket, key, bucket, new_key))
+        self.assert_no_errors(p)
+
+        # Ensure the file was copied correctly
+        self.assert_key_contents_equal(bucket, new_key, contents)
+
+    def test_large_file_sse_copy(self):
+        bucket = self.create_bucket()
+        key = 'foo.txt'
+        new_key = 'bar.txt'
+        contents = 'a' * (10 * (1024 * 1024))
+
+        # This is a little faster and more efficient than
+        # calling self.put_object()
+        file_name = self.files.create_file(key, contents)
+        p = aws('s3 cp %s s3://%s/%s' % (file_name, bucket, key))
+        self.assert_no_errors(p)
+
+        # Copy the file using AES256
+        p = aws('s3 cp s3://%s/%s s3://%s/%s --sse AES256' % (
+            bucket, key, bucket, new_key))
+        self.assert_no_errors(p)
+
+        # Ensure the file was copied correctly
+        self.assert_key_contents_equal(bucket, new_key, contents)
+
+    def test_sse_kms_copy(self):
+        bucket = self.create_bucket()
+        key = 'foo.txt'
+        new_key = 'bar.txt'
+        contents = 'contents'
+        self.put_object(bucket, key, contents)
+
+        # Copy the file using KMS
+        p = aws('s3 cp s3://%s/%s s3://%s/%s --sse aws:kms' % (
+            bucket, key, bucket, new_key))
+        self.assert_no_errors(p)
+        self.download_and_assert_kms_object_integrity(bucket, key, contents)
+
+    def test_large_file_sse_kms_copy(self):
+        bucket = self.create_bucket()
+        key = 'foo.txt'
+        new_key = 'bar.txt'
+        contents = 'a' * (10 * (1024 * 1024))
+
+        # This is a little faster and more efficient than
+        # calling self.put_object()
+        file_name = self.files.create_file(key, contents)
+        p = aws('s3 cp %s s3://%s/%s' % (file_name, bucket, key))
+        self.assert_no_errors(p)
+
+        # Copy the file using KMS
+        p = aws('s3 cp s3://%s/%s s3://%s/%s --sse aws:kms' % (
+            bucket, key, bucket, new_key))
+        self.assert_no_errors(p)
+        self.download_and_assert_kms_object_integrity(bucket, key, contents)
+
+    def test_smoke_sync_sse(self):
+        bucket = self.create_bucket()
+        key = 'foo.txt'
+        contents = 'contents'
+        file_name = self.files.create_file(key, contents)
+
+        # Upload sync
+        p = aws('s3 sync %s s3://%s/foo/ --sse AES256' % (
+            self.files.rootdir, bucket))
+        self.assert_no_errors(p)
+
+        # Copy sync
+        p = aws('s3 sync s3://%s/foo/ s3://%s/bar/ --sse AES256' % (
+            bucket, bucket))
+        self.assert_no_errors(p)
+
+        # Remove the original file
+        os.remove(file_name)
+
+        # Download sync
+        p = aws('s3 sync s3://%s/bar/ %s --sse AES256' % (
+            bucket, self.files.rootdir))
+        self.assert_no_errors(p)
+
+        self.assertTrue(os.path.isfile(file_name))
+        with open(file_name, 'r') as f:
+            self.assertEqual(f.read(), contents)
+
+    def test_smoke_sync_sse_kms(self):
+        bucket = self.create_bucket()
+        key = 'foo.txt'
+        contents = 'contents'
+        file_name = self.files.create_file(key, contents)
+
+        # Upload sync
+        p = aws('s3 sync %s s3://%s/foo/ --sse aws:kms' % (
+            self.files.rootdir, bucket))
+        self.assert_no_errors(p)
+
+        # Copy sync
+        p = aws('s3 sync s3://%s/foo/ s3://%s/bar/ --sse aws:kms' % (
+            bucket, bucket))
+        self.assert_no_errors(p)
+
+        # Remove the original file
+        os.remove(file_name)
+
+        # Download sync
+        p = aws('s3 sync s3://%s/bar/ %s --sse aws:kms' % (
+            bucket, self.files.rootdir))
+        self.assert_no_errors(p)
+
+        self.assertTrue(os.path.isfile(file_name))
+        with open(file_name, 'r') as f:
+            self.assertEqual(f.read(), contents)
+
+
+class TestSSECRelatedParams(BaseS3CLICommand):
+    def setUp(self):
+        super(TestSSECRelatedParams, self).setUp()
+        self.encrypt_key = 'a' * 32
+        self.other_encrypt_key = 'b' * 32
+        self.bucket = self.create_bucket()
+
+    def download_and_assert_sse_c_object_integrity(
+            self, bucket, key, encrypt_key, contents):
+        download_filename = os.path.join(self.files.rootdir, 'tmp', key)
+        p = aws('s3 cp s3://%s/%s %s --sse-c AES256 --sse-c-key %s' % (
+            bucket, key, download_filename, encrypt_key))
+        self.assert_no_errors(p)
+
+        self.assertTrue(os.path.isfile(download_filename))
+        with open(download_filename, 'r') as f:
+            self.assertEqual(f.read(), contents)
+
+    def test_sse_c_upload_and_download(self):
+        key = 'foo.txt'
+        contents = 'contents'
+        file_name = self.files.create_file(key, contents)
+
+        # Upload the file using SSE-C
+        p = aws('s3 cp %s s3://%s --sse-c AES256 --sse-c-key %s' % (
+            file_name, self.bucket, self.encrypt_key))
+        self.assert_no_errors(p)
+
+        self.download_and_assert_sse_c_object_integrity(
+            self.bucket, key, self.encrypt_key, contents)
+
+    def test_sse_c_upload_and_download_large_file(self):
+        key = 'foo.txt'
+        contents = 'a' * (10 * (1024 * 1024))
+        file_name = self.files.create_file(key, contents)
+
+        # Upload the file using SSE-C
+        p = aws('s3 cp %s s3://%s --sse-c AES256 --sse-c-key %s' % (
+            file_name, self.bucket, self.encrypt_key))
+        self.assert_no_errors(p)
+
+        self.download_and_assert_sse_c_object_integrity(
+            self.bucket, key, self.encrypt_key, contents)
+
+    def test_sse_c_copy(self):
+        key = 'foo.txt'
+        new_key = 'bar.txt'
+        contents = 'contents'
+        file_name = self.files.create_file(key, contents)
+
+        # Upload the file using SSE-C
+        p = aws('s3 cp %s s3://%s --sse-c AES256 --sse-c-key %s' % (
+            file_name, self.bucket, self.encrypt_key))
+        self.assert_no_errors(p)
+
+        # Copy the file using SSE-C and a new encryption key
+        p = aws(
+            's3 cp s3://%s/%s s3://%s/%s --sse-c AES256 --sse-c-key %s '
+            '--sse-c-copy-source AES256 --sse-c-copy-source-key %s' % (
+                self.bucket, key, self.bucket, new_key, self.other_encrypt_key,
+                self.encrypt_key))
+        self.assert_no_errors(p)
+        self.download_and_assert_sse_c_object_integrity(
+            self.bucket, new_key, self.other_encrypt_key, contents)
+
+    def test_sse_c_copy_large_file(self):
+        key = 'foo.txt'
+        new_key = 'bar.txt'
+        contents = 'a' * (10 * (1024 * 1024))
+        file_name = self.files.create_file(key, contents)
+
+        # Upload the file using SSE-C
+        p = aws('s3 cp %s s3://%s --sse-c AES256 --sse-c-key %s' % (
+            file_name, self.bucket, self.encrypt_key))
+        self.assert_no_errors(p)
+
+        # Copy the file using SSE-C and a new encryption key
+        p = aws(
+            's3 cp s3://%s/%s s3://%s/%s --sse-c AES256 --sse-c-key %s '
+            '--sse-c-copy-source AES256 --sse-c-copy-source-key %s' % (
+                self.bucket, key, self.bucket, new_key, self.other_encrypt_key,
+                self.encrypt_key))
+        self.assert_no_errors(p)
+        self.download_and_assert_sse_c_object_integrity(
+            self.bucket, new_key, self.other_encrypt_key, contents)
+
+    def test_smoke_sync_sse_c(self):
+        key = 'foo.txt'
+        contents = 'contents'
+        file_name = self.files.create_file(key, contents)
+
+        # Upload sync
+        p = aws('s3 sync %s s3://%s/foo/ --sse-c AES256 --sse-c-key %s' % (
+            self.files.rootdir, self.bucket, self.encrypt_key))
+        self.assert_no_errors(p)
+
+        # Copy sync
+        p = aws('s3 sync s3://%s/foo/ s3://%s/bar/ --sse-c AES256 '
+                '--sse-c-key %s --sse-c-copy-source AES256 '
+                '--sse-c-copy-source-key %s' % (
+                    self.bucket, self.bucket, self.other_encrypt_key,
+                    self.encrypt_key))
+        self.assert_no_errors(p)
+
+        # Remove the original file
+        os.remove(file_name)
+
+        # Download sync
+        p = aws('s3 sync s3://%s/bar/ %s --sse-c AES256 --sse-c-key %s' % (
+            self.bucket, self.files.rootdir, self.other_encrypt_key))
+        self.assert_no_errors(p)
+
+        self.assertTrue(os.path.isfile(file_name))
+        with open(file_name, 'r') as f:
+            self.assertEqual(f.read(), contents)

@@ -13,6 +13,7 @@
 import os
 import sys
 
+from botocore.client import Config
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
@@ -27,7 +28,8 @@ from awscli.customizations.s3.fileinfo import TaskInfo, FileInfo
 from awscli.customizations.s3.filters import create_filter
 from awscli.customizations.s3.s3handler import S3Handler, S3StreamHandler
 from awscli.customizations.s3.utils import find_bucket_key, uni_print, \
-    AppendFilter, find_dest_path_comp_key, human_readable_size
+    AppendFilter, find_dest_path_comp_key, human_readable_size, \
+    RequestParamsMapper
 from awscli.customizations.s3.syncstrategy.base import MissingFileSync, \
     SizeAndLastModifiedSync, NeverSync
 from awscli.customizations.s3 import transferconfig
@@ -96,7 +98,7 @@ NO_GUESS_MIME_TYPE = {'name': 'no-guess-mime-type', 'action': 'store_false',
                           "file is guessed when it is uploaded.")}
 
 
-CONTENT_TYPE = {'name': 'content-type', 'nargs': 1,
+CONTENT_TYPE = {'name': 'content-type',
                 'help_text': (
                     "Specify an explicit content type for this operation.  "
                     "This value overrides any guessed mime types.")}
@@ -116,7 +118,7 @@ INCLUDE = {'name': 'include', 'action': AppendFilter, 'nargs': 1,
                "in the command that match the specified pattern")}
 
 
-ACL = {'name': 'acl', 'nargs': 1,
+ACL = {'name': 'acl',
        'choices': ['private', 'public-read', 'public-read-write',
                    'authenticated-read', 'bucket-owner-read',
                    'bucket-owner-full-control', 'log-delivery-write'],
@@ -163,12 +165,80 @@ GRANTS = {
         'UsingAuthAccess.html">Access Control</a>')}
 
 
-SSE = {'name': 'sse', 'action': 'store_true',
-       'help_text': (
-           "Enable Server Side Encryption of the object in S3")}
+SSE = {
+    'name': 'sse', 'nargs': '?', 'const': 'AES256',
+    'choices': ['AES256', 'aws:kms'],
+    'help_text': (
+        'Specifies server-side encryption of the object in S3. '
+        'Valid values are ``AES256`` and ``aws:kms``. If the parameter is '
+        'specified but no value is provided, ``AES256`` is used.'
+    )
+}
 
 
-STORAGE_CLASS = {'name': 'storage-class', 'nargs': 1,
+SSE_C = {
+    'name': 'sse-c', 'nargs': '?', 'const': 'AES256', 'choices': ['AES256'],
+    'help_text': (
+        'Specifies server-side encryption using customer provided keys '
+        'of the the object in S3. ``AES256`` is the only valid value. '
+        'If the parameter is specified but no value is provided, '
+        '``AES256`` is used. If you provide this value, ``--sse-c-key`` '
+        'be specfied as well.'
+    )
+}
+
+
+SSE_C_KEY = {
+    'name': 'sse-c-key',
+    'help_text': (
+        'The customer-provided encryption key to use to server-side '
+        'encrypt the object in S3. If you provide this value, '
+        '``--sse-c`` be specfied as well.'
+    )
+}
+
+
+SSE_KMS_KEY_ID = {
+    'name': 'sse-kms-key-id',
+    'help_text': (
+        'The AWS KMS key ID that should be used to server-side '
+        'encrypt the object in S3. Note that you should only '
+        'provide this parameter if KMS key ID is different the '
+        'default S3 master KMS key.'
+    )
+}
+
+
+SSE_C_COPY_SOURCE = {
+    'name': 'sse-c-copy-source', 'nargs': '?',
+    'const': 'AES256', 'choices': ['AES256'],
+    'help_text': (
+        'This parameter should only be specified when copying an S3 object '
+        'that was encrypted server-side with a customer-provided '
+        'key. It specifies the algorithm to use when decrypting the source '
+        'object. ``AES256`` is the only valid '
+        'value. If the parameter is specified but no value is provided, '
+        '``AES256`` is used. If you provide this value, '
+        '``--sse-c-copy-source-key`` be specfied as well. '
+    )
+}
+
+
+SSE_C_COPY_SOURCE_KEY = {
+    'name': 'sse-c-copy-source-key',
+    'help_text': (
+        'This parameter should only be specified when copying an S3 object '
+        'that was encrypted server-side with a customer-provided '
+        'key. Specifies the customer-provided encryption key for Amazon S3 '
+        'to use to decrypt the source object. The encryption key provided '
+        'must be one that was used when the source object was created. '
+        'If you provide this value, ``--sse-c-copy-source`` be specfied as '
+        'well.'
+    )
+}
+
+
+STORAGE_CLASS = {'name': 'storage-class',
                  'choices': ['STANDARD', 'REDUCED_REDUNDANCY', 'STANDARD_IA'],
                  'help_text': (
                      "The type of storage to use for the object. "
@@ -177,7 +247,7 @@ STORAGE_CLASS = {'name': 'storage-class', 'nargs': 1,
                      "Defaults to 'STANDARD'")}
 
 
-WEBSITE_REDIRECT = {'name': 'website-redirect', 'nargs': 1,
+WEBSITE_REDIRECT = {'name': 'website-redirect',
                     'help_text': (
                         "If the bucket is configured as a website, "
                         "redirects requests for this object to another object "
@@ -186,19 +256,19 @@ WEBSITE_REDIRECT = {'name': 'website-redirect', 'nargs': 1,
                         "metadata.")}
 
 
-CACHE_CONTROL = {'name': 'cache-control', 'nargs': 1,
+CACHE_CONTROL = {'name': 'cache-control',
                  'help_text': (
                      "Specifies caching behavior along the "
                      "request/reply chain.")}
 
 
-CONTENT_DISPOSITION = {'name': 'content-disposition', 'nargs': 1,
+CONTENT_DISPOSITION = {'name': 'content-disposition',
                        'help_text': (
                            "Specifies presentational information "
                            "for the object.")}
 
 
-CONTENT_ENCODING = {'name': 'content-encoding', 'nargs': 1,
+CONTENT_ENCODING = {'name': 'content-encoding',
                     'help_text': (
                         "Specifies what content encodings have been "
                         "applied to the object and thus what decoding "
@@ -206,11 +276,11 @@ CONTENT_ENCODING = {'name': 'content-encoding', 'nargs': 1,
                         "referenced by the Content-Type header field.")}
 
 
-CONTENT_LANGUAGE = {'name': 'content-language', 'nargs': 1,
+CONTENT_LANGUAGE = {'name': 'content-language',
                     'help_text': ("The language the content is in.")}
 
 
-SOURCE_REGION = {'name': 'source-region', 'nargs': 1,
+SOURCE_REGION = {'name': 'source-region',
                  'help_text': (
                      "When transferring objects from an s3 bucket to an s3 "
                      "bucket, this specifies the region of the source bucket."
@@ -222,14 +292,14 @@ SOURCE_REGION = {'name': 'source-region', 'nargs': 1,
 
 
 EXPIRES = {
-    'name': 'expires', 'nargs': 1,
+    'name': 'expires',
     'help_text': (
         "The date and time at which the object is no longer cacheable.")
 }
 
 
 METADATA_DIRECTIVE = {
-    'name': 'metadata-directive', 'nargs': 1, 'choices': ['COPY', 'REPLACE'],
+    'name': 'metadata-directive', 'choices': ['COPY', 'REPLACE'],
     'help_text': (
         'Specifies whether the metadata is copied from the source object '
         'or replaced with metadata provided when copying S3 objects. '
@@ -303,16 +373,18 @@ IGNORE_GLACIER_WARNINGS = {
 
 TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
-                 SSE, STORAGE_CLASS, GRANTS, WEBSITE_REDIRECT, CONTENT_TYPE,
-                 CACHE_CONTROL, CONTENT_DISPOSITION, CONTENT_ENCODING,
-                 CONTENT_LANGUAGE, EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS,
+                 SSE, SSE_C, SSE_C_KEY, SSE_KMS_KEY_ID, SSE_C_COPY_SOURCE,
+                 SSE_C_COPY_SOURCE_KEY, STORAGE_CLASS, GRANTS,
+                 WEBSITE_REDIRECT, CONTENT_TYPE, CACHE_CONTROL,
+                 CONTENT_DISPOSITION, CONTENT_ENCODING, CONTENT_LANGUAGE,
+                 EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS,
                  PAGE_SIZE, IGNORE_GLACIER_WARNINGS]
 
 
-def get_client(session, region, endpoint_url, verify):
+def get_client(session, region, endpoint_url, verify, config=None):
     return session.create_client('s3', region_name=region,
-                                 endpoint_url=endpoint_url, verify=verify)
-
+                                 endpoint_url=endpoint_url, verify=verify,
+                                 config=config)
 
 class S3Command(BasicCommand):
     def _run_main(self, parsed_args, parsed_globals):
@@ -514,6 +586,7 @@ class S3TransferCommand(S3Command):
         cmd_params.add_page_size(parsed_args)
         cmd_params.add_paths(parsed_args.paths)
         self._handle_rm_force(parsed_globals, cmd_params.parameters)
+
         runtime_config = transferconfig.RuntimeConfig().build_config(
             **self._session.get_scoped_config().get('s3', {}))
         cmd = CommandArchitecture(self._session, self.NAME,
@@ -654,25 +727,31 @@ class CommandArchitecture(object):
         self._source_client = None
 
     def set_clients(self):
+        client_config = None
+        if self.parameters.get('sse') == 'aws:kms':
+            client_config = Config(signature_version='s3v4')
         self._client = get_client(
             self.session,
             region=self.parameters['region'],
             endpoint_url=self.parameters['endpoint_url'],
-            verify=self.parameters['verify_ssl']
+            verify=self.parameters['verify_ssl'],
+            config=client_config
         )
         self._source_client = get_client(
             self.session,
             region=self.parameters['region'],
             endpoint_url=self.parameters['endpoint_url'],
-            verify=self.parameters['verify_ssl']
+            verify=self.parameters['verify_ssl'],
+            config=client_config
         )
         if self.parameters['source_region']:
             if self.parameters['paths_type'] == 's3s3':
                 self._source_client = get_client(
                     self.session,
-                    region=self.parameters['source_region'][0],
+                    region=self.parameters['source_region'],
                     endpoint_url=None,
-                    verify=self.parameters['verify_ssl']
+                    verify=self.parameters['verify_ssl'],
+                    config=client_config
                 )
 
     def create_instructions(self):
@@ -766,15 +845,43 @@ class CommandArchitecture(object):
         }
         result_queue = queue.Queue()
         operation_name = cmd_translation[paths_type][self.cmd]
-        file_generator = FileGenerator(self._source_client,
-                                       operation_name,
-                                       self.parameters['follow_symlinks'],
-                                       self.parameters['page_size'],
-                                       result_queue=result_queue)
-        rev_generator = FileGenerator(self._client, '',
-                                      self.parameters['follow_symlinks'],
-                                      self.parameters['page_size'],
-                                      result_queue=result_queue)
+
+        fgen_kwargs = {
+            'client': self._source_client, 'operation_name': operation_name,
+            'follow_symlinks': self.parameters['follow_symlinks'],
+            'page_size': self.parameters['page_size'],
+            'result_queue': result_queue
+        }
+        rgen_kwargs = {
+            'client': self._client, 'operation_name': '',
+            'follow_symlinks': self.parameters['follow_symlinks'],
+            'page_size': self.parameters['page_size'],
+            'result_queue': result_queue
+        }
+
+        fgen_request_parameters = {}
+        fgen_head_object_params = {}
+        fgen_request_parameters['HeadObject'] = fgen_head_object_params
+        fgen_kwargs['request_parameters'] = fgen_request_parameters
+
+        # SSE-C may be neaded for HeadObject for copies/downloads/deletes
+        # If the operation is s3 to s3, the FileGenerator should use the
+        # copy source key and algorithm. Otherwise, use the regular
+        # SSE-C key and algorithm. Note the reverse FileGenerator does
+        # not need any of these because it is used only for sync operations
+        # which only use ListObjects which does not require HeadObject.
+        RequestParamsMapper.map_head_object_params(
+            fgen_head_object_params, self.parameters)
+        if paths_type == 's3s3':
+            RequestParamsMapper.map_head_object_params(
+                fgen_head_object_params, {
+                    'sse_c': self.parameters.get('sse_c_copy_source'),
+                    'sse_c_key': self.parameters.get('sse_c_copy_source_key')
+                }
+            )
+
+        file_generator = FileGenerator(**fgen_kwargs)
+        rev_generator = FileGenerator(**rgen_kwargs)
         taskinfo = [TaskInfo(src=files['src']['path'],
                              src_type='s3',
                              operation_name=operation_name,
@@ -909,6 +1016,7 @@ class CommandParameters(object):
             self.parameters['dest'] = paths[0]
         self._validate_streaming_paths()
         self._validate_path_args()
+        self._validate_sse_c_args()
 
     def _validate_streaming_paths(self):
         self.parameters['is_stream'] = False
@@ -1002,3 +1110,33 @@ class CommandParameters(object):
 
     def add_page_size(self, parsed_args):
         self.parameters['page_size'] = getattr(parsed_args, 'page_size', None)
+
+    def _validate_sse_c_args(self):
+        self._validate_sse_c_arg()
+        self._validate_sse_c_arg('sse_c_copy_source')
+        self._validate_sse_c_copy_source_for_paths()
+
+    def _validate_sse_c_arg(self, sse_c_type='sse_c'):
+        sse_c_key_type = sse_c_type + '_key'
+        sse_c_type_param = '--' + sse_c_type.replace('_', '-')
+        sse_c_key_type_param = '--' + sse_c_key_type.replace('_', '-')
+        if self.parameters.get(sse_c_type):
+            if not self.parameters.get(sse_c_key_type):
+                raise ValueError(
+                    'It %s is specified, %s must be specified '
+                    'as well.' % (sse_c_type_param, sse_c_key_type_param)
+                )
+        if self.parameters.get(sse_c_key_type):
+            if not self.parameters.get(sse_c_type):
+                raise ValueError(
+                    'It %s is specified, %s must be specified '
+                    'as well.' % (sse_c_key_type_param, sse_c_type_param)
+                )
+        
+    def _validate_sse_c_copy_source_for_paths(self):
+        if self.parameters.get('sse_c_copy_source'):
+            if self.parameters['paths_type'] != 's3s3':
+                raise ValueError(
+                    '--sse-c-copy-source is only supported for '
+                    'copy operations.'
+                )      

@@ -206,7 +206,8 @@ class CustomArgument(BaseCLIArgument):
     def __init__(self, name, help_text='', dest=None, default=None,
                  action=None, required=None, choices=None, nargs=None,
                  cli_type_name=None, group_name=None, positional_arg=False,
-                 no_paramfile=False, argument_model=None, synopsis=''):
+                 no_paramfile=False, argument_model=None, synopsis='',
+                 const=None):
         self._name = name
         self._help = help_text
         self._dest = dest
@@ -214,6 +215,7 @@ class CustomArgument(BaseCLIArgument):
         self._action = action
         self._required = required
         self._nargs = nargs
+        self._const = const
         self._cli_type_name = cli_type_name
         self._group_name = group_name
         self._positional_arg = positional_arg
@@ -275,6 +277,8 @@ class CustomArgument(BaseCLIArgument):
             kwargs['required'] = self._required
         if self._nargs is not None:
             kwargs['nargs'] = self._nargs
+        if self._const is not None:
+            kwargs['const'] = self._const
         parser.add_argument(cli_name, **kwargs)
 
     @property

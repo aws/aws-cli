@@ -1,4 +1,5 @@
 import os
+import re
 import logging
 import sys
 import time
@@ -279,8 +280,22 @@ class FileInfo(TaskInfo):
 
     def _is_glacier_object(self, response_data):
         if response_data:
-            if response_data.get('StorageClass') == 'GLACIER':
+            if response_data.get('StorageClass') == 'GLACIER' and \
+                    not self._is_restored(response_data):
                 return True
+        return False
+
+    def _is_restored(self, response_data):
+        # Returns True is this is a glacier object that has been
+        # restored back to S3.
+        # 'Restore' looks like: 'ongoing-request="false", expiry-date="..."'
+        result = re.search(r'ongoing-request="(.+?)"',
+                           response_data.get('Restore', ''))
+        if result is None:
+            return False
+        ongoing_request_value = result.group(1)
+        if ongoing_request_value == 'false':
+            return True
         return False
 
     def upload(self, payload=None):

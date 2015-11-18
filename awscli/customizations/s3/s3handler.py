@@ -260,8 +260,9 @@ class S3Handler(object):
         chunksize = find_chunksize(filename.size, self.chunksize)
         num_downloads = int(filename.size / chunksize)
         context = tasks.MultipartDownloadContext(num_downloads)
-        create_file_task = tasks.CreateLocalFileTask(context=context,
-                                                     filename=filename)
+        create_file_task = tasks.CreateLocalFileTask(
+            context=context, filename=filename,
+            result_queue=self.result_queue)
         self.executor.submit(create_file_task)
         self._do_enqueue_range_download_tasks(
             filename=filename, chunksize=chunksize,

@@ -15,6 +15,10 @@ import random
 import threading
 import mock
 import socket
+import os
+import tempfile
+import shutil
+from six.moves import queue
 
 from botocore.exceptions import IncompleteReadError
 from botocore.vendored.requests.packages.urllib3.exceptions import \
@@ -31,6 +35,7 @@ from awscli.customizations.s3.tasks import print_operation
 from awscli.customizations.s3.tasks import RetriesExeededError
 from awscli.customizations.s3.executor import ShutdownThreadRequest
 from awscli.customizations.s3.utils import StablePriorityQueue
+from awscli.testutils import skip_if_windows
 
 
 class TestMultipartUploadContext(unittest.TestCase):
@@ -326,6 +331,40 @@ class TestPrintOperation(unittest.TestCase):
         self.assertIn(r'e:\foo', message)
 
 
+class TestCreateLocalFileTask(unittest.TestCase):
+    def setUp(self):
+        self.result_queue = queue.Queue()
+        self.tempdir = tempfile.mkdtemp()
+        self.filename = mock.Mock()
+        self.filename.src = 'bucket/key'
+        self.filename.dest = os.path.join(self.tempdir, 'local', 'file')
+        self.filename.operation_name = 'download'
+        self.context = mock.Mock()
+        self.task = CreateLocalFileTask(self.context,
+                                        self.filename,
+                                        self.result_queue)
+
+    def tearDown(self):
+        shutil.rmtree(self.tempdir)
+
+    def test_creates_file_and_announces(self):
+        self.task()
+        self.assertTrue(os.path.isfile(self.filename.dest))
+        self.context.announce_file_created.assert_called_with()
+        self.assertTrue(self.result_queue.empty())
+
+    @skip_if_windows('Write permissions tests only supported on mac/linux')
+    def test_cancel_command_on_exception(self):
+        # Set destination directory to read-only
+        os.chmod(self.tempdir, 0o444)
+        self.task()
+        self.assertFalse(os.path.isfile(self.filename.dest))
+        self.context.cancel.assert_called_with()
+        self.assertFalse(self.result_queue.empty())
+        error_message = self.result_queue.get()
+        self.assertIn("download failed", error_message.message)
+
+
 class TestDownloadPartTask(unittest.TestCase):
     def setUp(self):
         self.result_queue = mock.Mock()
@@ -495,7 +534,7 @@ class TestTaskOrdering(unittest.TestCase):
     def create_task(self):
         # We don't actually care about the arguments, we just want to test
         # the ordering of the tasks.
-        return CreateLocalFileTask(None, None)
+        return CreateLocalFileTask(None, None, None)
 
     def complete_task(self):
         return CompleteDownloadTask(None, None, None, None, None)

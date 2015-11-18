@@ -263,9 +263,10 @@ class UploadPartTask(OrderableTask):
 
 
 class CreateLocalFileTask(OrderableTask):
-    def __init__(self, context, filename):
+    def __init__(self, context, filename, result_queue):
         self._context = context
         self._filename = filename
+        self._result_queue = result_queue
 
     def __call__(self):
         dirname = os.path.dirname(self._filename.dest)
@@ -284,6 +285,11 @@ class CreateLocalFileTask(OrderableTask):
             with open(self._filename.dest, 'wb'):
                 pass
         except Exception as e:
+            message = print_operation(self._filename, failed=True,
+                                      dryrun=False)
+            message += '\n' + str(e)
+            result = {'message': message, 'error': True}
+            self._result_queue.put(PrintTask(**result))
             self._context.cancel()
         else:
             self._context.announce_file_created()

@@ -811,6 +811,38 @@ class TestWarnings(BaseS3CLICommand):
                        "socket." % file_path), p.stderr)
 
 
+class TestUnableToWriteToFile(BaseS3CLICommand):
+
+    def extra_setup(self):
+        self.bucket_name = self.create_bucket()
+
+    @skip_if_windows('Write permissions tests only supported on mac/linux')
+    def test_no_write_access_small_file(self):
+        os.chmod(self.files.rootdir, 0o444)
+        self.put_object(self.bucket_name, 'foo.txt',
+                        contents='Hello world')
+        p = aws('s3 cp s3://%s/foo.txt %s' % (
+            self.bucket_name, os.path.join(self.files.rootdir, 'foo.txt')))
+        self.assertEqual(p.rc, 1)
+        self.assertIn('download failed', p.stderr)
+
+    @skip_if_windows('Write permissions tests only supported on mac/linux')
+    def test_no_write_access_large_file(self):
+        # We have to use a file like object because using a string
+        # would result in the header + body sent as a single packet
+        # which effectively disables the expect 100 continue logic.
+        # This will result in a test error because we won't follow
+        # the temporary redirect for the newly created bucket.
+        contents = six.StringIO('a' * 10 * 1024 * 1024)
+        self.put_object(self.bucket_name, 'foo.txt',
+                        contents=contents)
+        os.chmod(self.files.rootdir, 0o444)
+        p = aws('s3 cp s3://%s/foo.txt %s' % (
+            self.bucket_name, os.path.join(self.files.rootdir, 'foo.txt')))
+        self.assertEqual(p.rc, 1)
+        self.assertIn('download failed', p.stderr)
+
+
 @skip_if_windows('Symlink tests only supported on mac/linux')
 class TestSymlinks(BaseS3CLICommand):
     """

@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+1.9.8
+=====
+* feature:Read Timeouts: Add ``--cli-read-timeout`` to specify
+  the number of seconds until a read times out.
+* bugfix:``aws s3``: Fix regression when downloading a restored
+  Glacier object
+  (`issue 1650 <https://github.com/aws/aws-cli/pull/1650>__`)
+* bugfix:``aws s3``: Fix issue when encountering "out of disk
+  space" errors as well as permissions errors when downloading
+  large files
+  (`issue 1645 <https://github.com/aws/aws-cli/issues/1645>`__,
+   `issue 1442 <https://github.com/aws/aws-cli/issues/1442>`__)
+* bugfix:``aws opsworks register``: Support ``--no-verify-ssl``
+  argument for the ``aws opsworks register`` command
+  (`issue 1632 <https://github.com/aws/aws-cli/pull/1632>`__)
+* feature:``s3``: Add support for Server-Side Encryption with KMS
+  and Server-Side Encryption with Customer-Provided Keys.
+  (`issue 1623 <https://github.com/aws/aws-cli/pull/1623>`__)
+
 
 1.9.7
 =====

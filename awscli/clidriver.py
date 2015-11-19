@@ -21,6 +21,7 @@ from botocore import xform_name
 from botocore.compat import copy_kwargs, OrderedDict
 from botocore.exceptions import NoCredentialsError
 from botocore.exceptions import NoRegionError
+from botocore.client import Config
 
 from awscli import EnvironmentVariables, __version__
 from awscli.formatter import get_formatter
@@ -141,7 +142,8 @@ class CLIDriver(object):
             default=option_params.get('default'),
             action=option_params.get('action'),
             required=option_params.get('required'),
-            choices=option_params.get('choices'))
+            choices=option_params.get('choices'),
+            cli_type_name=option_params.get('type'))
 
     def create_help_command(self):
         cli_data = self._get_cli_data()
@@ -656,10 +658,15 @@ class CLIOperationCaller(object):
             value is returned.
 
         """
+        if parsed_globals.read_timeout is not None:
+            config = Config(read_timeout=parsed_globals.read_timeout)
+        else:
+            config = Config()
         client = self._session.create_client(
             service_name, region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
-            verify=parsed_globals.verify_ssl)
+            verify=parsed_globals.verify_ssl,
+            config=config)
         py_operation_name = xform_name(operation_name)
         if client.can_paginate(py_operation_name) and parsed_globals.paginate:
             paginator = client.get_paginator(py_operation_name)

@@ -25,6 +25,7 @@ from awscli.customizations.s3.utils import human_readable_size
 from awscli.customizations.s3.utils import human_readable_to_bytes
 from awscli.customizations.s3.utils import MAX_SINGLE_UPLOAD_SIZE
 from awscli.customizations.s3.utils import set_file_utime, SetFileUtimeError
+from awscli.customizations.s3.utils import RequestParamsMapper
 
 
 def test_human_readable_size():
@@ -420,3 +421,89 @@ class TestSetsFileUtime(unittest.TestCase):
             utime_mock.side_effect = OSError(2, '')
             with self.assertRaises(OSError):
                 set_file_utime('not_real_file', epoch_now)
+
+
+class TestRequestParamsMapperSSE(unittest.TestCase):
+    def setUp(self):
+        self.cli_params = {
+            'sse': 'AES256',
+            'sse_kms_key_id': 'my-kms-key',
+            'sse_c': 'AES256',
+            'sse_c_key': 'my-sse-c-key',
+            'sse_c_copy_source': 'AES256',
+            'sse_c_copy_source_key': 'my-sse-c-copy-source-key'
+        }
+
+    def test_head_object(self):
+        params = {}
+        RequestParamsMapper.map_head_object_params(params, self.cli_params)
+        self.assertEqual(
+            params,
+            {'SSECustomerAlgorithm': 'AES256',
+             'SSECustomerKey': 'my-sse-c-key'}
+        )
+
+    def test_put_object(self):
+        params = {}
+        RequestParamsMapper.map_put_object_params(params, self.cli_params)
+        self.assertEqual(
+            params,
+            {'SSECustomerAlgorithm': 'AES256',
+             'SSECustomerKey': 'my-sse-c-key',
+             'SSEKMSKeyId': 'my-kms-key',
+             'ServerSideEncryption': 'AES256'}
+        )
+
+    def test_get_object(self):
+        params = {}
+        RequestParamsMapper.map_get_object_params(params, self.cli_params)
+        self.assertEqual(
+            params,
+            {'SSECustomerAlgorithm': 'AES256',
+             'SSECustomerKey': 'my-sse-c-key'}
+        )
+
+    def test_copy_object(self):
+        params = {}
+        RequestParamsMapper.map_copy_object_params(params, self.cli_params)
+        self.assertEqual(
+            params,
+            {'CopySourceSSECustomerAlgorithm': 'AES256',
+             'CopySourceSSECustomerKey': 'my-sse-c-copy-source-key',
+             'SSECustomerAlgorithm': 'AES256',
+             'SSECustomerKey': 'my-sse-c-key',
+             'SSEKMSKeyId': 'my-kms-key',
+             'ServerSideEncryption': 'AES256'}
+        )
+
+    def test_create_multipart_upload(self):
+        params = {}
+        RequestParamsMapper.map_create_multipart_upload_params(
+            params, self.cli_params)
+        self.assertEqual(
+            params,
+            {'SSECustomerAlgorithm': 'AES256',
+             'SSECustomerKey': 'my-sse-c-key',
+             'SSEKMSKeyId': 'my-kms-key',
+             'ServerSideEncryption': 'AES256'}
+        )
+
+    def test_upload_part(self):
+        params = {}
+        RequestParamsMapper.map_upload_part_params(params, self.cli_params)
+        self.assertEqual(
+            params,
+            {'SSECustomerAlgorithm': 'AES256',
+             'SSECustomerKey': 'my-sse-c-key'}
+        )
+
+    def test_upload_part_copy(self):
+        params = {}
+        RequestParamsMapper.map_upload_part_copy_params(
+            params, self.cli_params)
+        self.assertEqual(
+            params,
+            {'CopySourceSSECustomerAlgorithm': 'AES256',
+             'CopySourceSSECustomerKey': 'my-sse-c-copy-source-key',
+             'SSECustomerAlgorithm': 'AES256',
+             'SSECustomerKey': 'my-sse-c-key'})

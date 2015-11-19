@@ -120,7 +120,7 @@ class S3HandlerTestUpload(unittest.TestCase):
     def setUp(self):
         self.session = botocore.session.get_session(EnvironmentVariables)
         self.client = self.session.create_client('s3', 'us-west-2')
-        params = {'region': 'us-west-2', 'acl': ['private']}
+        params = {'region': 'us-west-2', 'acl': 'private'}
         self.s3_handler = S3Handler(self.session, params)
         self.s3_handler_multi = S3Handler(
             self.session, params=params,
@@ -184,7 +184,7 @@ class S3HandlerTestUnicodeMove(unittest.TestCase):
         self.session = botocore.session.get_session(EnvironmentVariables)
         self.client = self.session.create_client('s3', 'us-west-2')
         self.source_client = self.session.create_client('s3', 'us-west-2')
-        params = {'region': 'us-west-2', 'acl': ['private'], 'quiet': True}
+        params = {'region': 'us-west-2', 'acl': 'private', 'quiet': True}
         self.s3_handler = S3Handler(self.session, params)
         self.bucket = make_s3_files(self.session, key1=u'\u2713')
         self.bucket2 = create_bucket(self.session)
@@ -223,7 +223,7 @@ class S3HandlerTestMove(unittest.TestCase):
         self.session = botocore.session.get_session(EnvironmentVariables)
         self.client = self.session.create_client('s3', 'us-west-2')
         self.source_client = self.session.create_client('s3', 'us-west-2')
-        params = {'region': 'us-west-2', 'acl': ['private']}
+        params = {'region': 'us-west-2', 'acl': 'private'}
         self.s3_handler = S3Handler(self.session, params)
         self.bucket = make_s3_files(self.session)
         self.bucket2 = create_bucket(self.session)

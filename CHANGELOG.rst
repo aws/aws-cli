@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.9.8
+=====
 * feature:Read Timeouts: Add ``--cli-read-timeout`` to specify
   the number of seconds until a read times out.
 * bugfix:``aws s3``: Fix regression when downloading a restored

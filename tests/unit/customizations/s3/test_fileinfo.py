@@ -148,3 +148,19 @@ class TestIsGlacierCompatible(unittest.TestCase):
     def test_task_info_glacier_compatibility(self):
         task_info = TaskInfo('bucket/key', 's3', 'remove_bucket', None)
         self.assertTrue(task_info.is_glacier_compatible())
+
+    def test_restored_object_is_glacier_compatible(self):
+        self.file_info.operation_name = 'download'
+        self.file_info.associated_response_data = {
+            'StorageClass': 'GLACIER',
+            'Restore': 'ongoing-request="false", expiry-date="..."'
+        }
+        self.assertTrue(self.file_info.is_glacier_compatible())
+
+    def test_ongoing_restore_is_not_glacier_compatible(self):
+        self.file_info.operation_name = 'download'
+        self.file_info.associated_response_data = {
+            'StorageClass': 'GLACIER',
+            'Restore': 'ongoing-request="true", expiry-date="..."'
+        }
+        self.assertFalse(self.file_info.is_glacier_compatible())

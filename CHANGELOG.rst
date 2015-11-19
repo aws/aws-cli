@@ -4,6 +4,9 @@ CHANGELOG
 
 Next Release (TBD)
 ==================
+* bugfix:``aws s3``: Fix regression when downloading a restored
+  Glacier object
+  (`issue 1650 <https://github.com/aws/aws-cli/pull/1650>__`)
 * bugfix:``aws opsworks register``: Support ``--no-verify-ssl``
   argument for the ``aws opsworks register`` command
   (`issue 1632 <https://github.com/aws/aws-cli/pull/1632>`__)

@@ -44,7 +44,7 @@ CHANGELOG
 =====
 * bugfix:``aws help``: Gracefully handle Ctrl-C interrupts.
   (`issue 1619 <https://github.com/aws/aws-cli/pull/1619>`__)
-* bugfix:``aws datapipline create-default-roles``: Fix issue with
+* bugfix:``aws datapipeline create-default-roles``: Fix issue with
   error handling.
   (`issue 1618 <https://github.com/aws/aws-cli/pull/1618>`__)
 * bugfix:``aws s3``: Skip glacier objects when downloading from S3.

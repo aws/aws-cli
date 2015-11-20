@@ -185,7 +185,7 @@ class Push(BasicCommand):
         source_path = os.path.abspath(source)
         appspec_path = os.path.sep.join([source_path, 'appspec.yml'])
         with tempfile.TemporaryFile('w+b') as tf:
-            zf = zipfile.ZipFile(tf, 'w')
+            zf = zipfile.ZipFile(tf, 'w', allowZip64=True)
             # Using 'try'/'finally' instead of 'with' statement since ZipFile
             # does not have support context manager in Python 2.6.
             try:

@@ -10,7 +10,25 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
+
 from awscli.arguments import CustomArgument
+import jmespath
+
+
+def resolve_given_outfile_path(path):
+    """Asserts that a path is writable and returns the expanded path"""
+    if path is None:
+        return
+    outfile = os.path.expanduser(os.path.expandvars(path))
+    if not os.access(os.path.dirname(os.path.abspath(outfile)), os.W_OK):
+        raise ValueError('Unable to write to file: %s' % outfile)
+    return outfile
+
+
+def is_parsed_result_successful(parsed_result):
+    """Returns True if a parsed result is successful"""
+    return parsed_result['ResponseMetadata']['HTTPStatusCode'] < 300
 
 
 class OverrideRequiredArgsArgument(CustomArgument):
@@ -51,3 +69,60 @@ class OverrideRequiredArgsArgument(CustomArgument):
         if name_in_cmdline in args:
             for arg_name in argument_table.keys():
                 argument_table[arg_name].required = False
+
+
+class StatefulArgument(CustomArgument):
+    """An argument that maintains a stateful value"""
+
+    def __init__(self, *args, **kwargs):
+        super(StatefulArgument, self).__init__(*args, **kwargs)
+        self._value = None
+
+    def add_to_params(self, parameters, value):
+        super(StatefulArgument, self).add_to_params(parameters, value)
+        self._value = value
+
+    @property
+    def value(self):
+        return self._value
+
+
+class QueryOutFileArgument(StatefulArgument):
+    """An argument that write a JMESPath query result to a file"""
+
+    def __init__(self, session, name, query, after_call_event,
+                 *args, **kwargs):
+        self._session = session
+        self._query = query
+        self._after_call_event = after_call_event
+        # Generate default help_text if text was not provided.
+        if 'help_text' not in kwargs:
+            kwargs['help_text'] = ('Saves the command output contents of %s '
+                                   'to the given filename' % self.query)
+        super(QueryOutFileArgument, self).__init__(name, *args, **kwargs)
+
+    @property
+    def query(self):
+        return self._query
+
+    def add_to_params(self, parameters, value):
+        value = resolve_given_outfile_path(value)
+        super(QueryOutFileArgument, self).add_to_params(parameters, value)
+        if self.value is not None:
+            # Only register the event to save the argument if it is set
+            self._session.register(self._after_call_event, self.save_query)
+
+    def save_query(self, parsed, **kwargs):
+        """Saves the result of a JMESPath expression to a file.
+
+        This method only saves the query data if the response code of
+        the parsed result is < 300.
+        """
+        if is_parsed_result_successful(parsed):
+            contents = jmespath.search(self.query, parsed)
+            with open(self.value, 'w') as fp:
+                # Don't write 'None' to a file -- write ''.
+                if contents is None:
+                    fp.write('')
+                else:
+                    fp.write(contents)

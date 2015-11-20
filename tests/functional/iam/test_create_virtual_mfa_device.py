@@ -22,6 +22,10 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
     def setUp(self):
         super(TestCreateVirtualMFADevice, self).setUp()
         self.parsed_response = {
+            'ResponseMetadata': {
+                'HTTPStatusCode': 200,
+                'RequestId': 'requset-id'
+            },
             "VirtualMFADevice": {
                 "Base32StringSeed": (
                     "VFpYTVc2V1lIUFlFRFczSVhLUlpRUTJRVFdUSFRNRDNTQ0c3"

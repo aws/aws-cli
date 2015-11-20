@@ -81,6 +81,22 @@ INTEG_LOG = logging.getLogger('awscli.tests.integration')
 AWS_CMD = None
 
 
+def skip_if_windows(reason):
+    """Decorator to skip tests that should not be run on windows.
+
+    Example usage:
+
+        @skip_if_windows("Not valid")
+        def test_some_non_windows_stuff(self):
+            self.assertEqual(...)
+
+    """
+    def decorator(func):
+        return unittest.skipIf(
+            platform.system() not in ['Darwin', 'Linux'], reason)(func)
+    return decorator
+
+
 def create_clidriver():
     driver = awscli.clidriver.create_clidriver()
     session = driver.session
@@ -163,7 +179,19 @@ def create_bucket(session, name=None, region=None):
     params = {'Bucket': bucket_name}
     if region != 'us-east-1':
         params['CreateBucketConfiguration'] = {'LocationConstraint': region}
-    client.create_bucket(**params)
+    try:
+        # To disable the (obsolete) awscli.errorhandler.ClientError behavior
+        client.meta.events.unregister(
+            'after-call', unique_id='awscli-error-handler')
+        client.create_bucket(**params)
+    except ClientError as e:
+        if e.response['Error'].get('Code') == 'BucketAlreadyOwnedByYou':
+            # This can happen in the retried request, when the first one
+            # succeeded on S3 but somehow the response never comes back.
+            # We still got a bucket ready for test anyway.
+            pass
+        else:
+            raise
     return bucket_name
 
 

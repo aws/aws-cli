@@ -25,7 +25,8 @@ LOG = logging.getLogger(__name__)
 
 GLOBALOPTS = ['--debug', '--endpoint-url', '--no-verify-ssl', '--no-paginate',
               '--output', '--profile', '--region', '--version', '--color',
-              '--query', '--no-sign-request', '--ca-bundle']
+              '--query', '--no-sign-request', '--ca-bundle',
+              '--cli-read-timeout']
 
 COMPLETIONS = [
     ('aws ', -1, set(['apigateway', 'autoscaling', 'cloudformation', 'cloudfront',
@@ -72,13 +73,17 @@ COMPLETIONS = [
           '--no-verify-ssl', '--no-paginate', '--no-sign-request', '--output',
           '--profile', '--starting-token', '--max-items', '--page-size',
           '--region', '--version', '--color', '--query', '--ca-bundle',
-          '--generate-cli-skeleton', '--cli-input-json'])),
+          '--generate-cli-skeleton', '--cli-input-json', '--cli-read-timeout'])),
     ('aws s3', -1, set(['cp', 'mv', 'rm', 'mb', 'rb', 'ls', 'sync', 'website'])),
     ('aws s3 m', -1, set(['mv', 'mb'])),
     ('aws s3 cp -', -1, set(['--no-guess-mime-type', '--dryrun',
                              '--recursive', '--website-redirect',
                              '--quiet', '--acl', '--storage-class',
-                             '--sse', '--exclude', '--include',
+                             '--sse', '--sse-c', '--sse-c-copy-source',
+                             '--sse-c-copy-source-key',
+                             '--sse-c-key',
+                             '--sse-kms-key-id',
+                             '--exclude', '--include',
                              '--follow-symlinks', '--no-follow-symlinks',
                              '--cache-control', '--content-type',
                              '--content-disposition', '--source-region',
@@ -95,7 +100,11 @@ COMPLETIONS = [
                                      '--content-disposition', '--cache-control',
                                      '--content-encoding', '--content-language',
                                      '--expires', '--website-redirect', '--acl',
-                                     '--storage-class', '--sse',
+                                     '--storage-class', '--sse', '--sse-c',
+                                     '--sse-c-copy-source',
+                                     '--sse-c-copy-source-key',
+                                     '--sse-c-key',
+                                     '--sse-kms-key-id',
                                      '--exclude', '--include',
                                      '--source-region', '--metadata-directive',
                                      '--grants', '--only-show-errors',

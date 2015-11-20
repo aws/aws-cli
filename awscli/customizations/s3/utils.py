@@ -517,3 +517,155 @@ _IOCloseRequest = namedtuple('IOCloseRequest', ['filename', 'desired_mtime'])
 class IOCloseRequest(_IOCloseRequest):
     def __new__(cls, filename, desired_mtime=None):
         return super(IOCloseRequest, cls).__new__(cls, filename, desired_mtime)
+
+
+class RequestParamsMapper(object):
+    """A utility class that maps CLI params to request params
+
+    Each method in the class maps to a particular operation and will set
+    the request parameters depending on the operation and CLI parameters
+    provided. For each of the class's methods the parameters are as follows:
+
+    :type request_params: dict
+    :param request_params: A dictionary to be filled out with the appropriate
+        parameters for the specified client operation using the current CLI
+        parameters
+
+    :type cli_params: dict
+    :param cli_params: A dictionary of the current CLI params that will be
+        used to generate the request parameters for the specified operation
+
+    For example, take the mapping of request parameters for PutObject::
+
+        >>> cli_request_params = {'sse': 'AES256', 'storage_class': 'GLACIER'}
+        >>> request_params = {}
+        >>> RequestParamsMapper.map_put_object_params(
+                request_params, cli_request_params)
+        >>> print(request_params)
+        {'StorageClass': 'GLACIER', 'ServerSideEncryption': 'AES256'}
+
+    Note that existing parameters in ``request_params`` will be overriden if
+    a parameter in ``cli_params`` maps to the existing parameter.
+    """
+    @classmethod
+    def map_put_object_params(cls, request_params, cli_params):
+        """Map CLI params to PutObject request params"""
+        cls._set_general_object_params(request_params, cli_params)
+        cls._set_sse_request_params(request_params, cli_params)
+        cls._set_sse_c_request_params(request_params, cli_params)
+
+    @classmethod
+    def map_get_object_params(cls, request_params, cli_params):
+        """Map CLI params to GetObject request params"""
+        cls._set_sse_c_request_params(request_params, cli_params)
+
+    @classmethod
+    def map_copy_object_params(cls, request_params, cli_params):
+        """Map CLI params to CopyObject request params"""
+        cls._set_general_object_params(request_params, cli_params)
+        cls._set_metadata_directive_param(request_params, cli_params)
+        cls._set_sse_request_params(request_params, cli_params)
+        cls._set_sse_c_and_copy_source_request_params(
+            request_params, cli_params)
+
+    @classmethod
+    def map_head_object_params(cls, request_params, cli_params):
+        """Map CLI params to HeadObject request params"""
+        cls._set_sse_c_request_params(request_params, cli_params)
+
+    @classmethod
+    def map_create_multipart_upload_params(cls, request_params, cli_params):
+        """Map CLI params to CreateMultipartUpload request params"""
+        cls._set_general_object_params(request_params, cli_params)
+        cls._set_sse_request_params(request_params, cli_params)
+        cls._set_sse_c_request_params(request_params, cli_params)
+
+    @classmethod
+    def map_upload_part_params(cls, request_params, cli_params):
+        """Map CLI params to UploadPart request params"""
+        cls._set_sse_c_request_params(request_params, cli_params)
+
+    @classmethod
+    def map_upload_part_copy_params(cls, request_params, cli_params):
+        """Map CLI params to UploadPartCopy request params"""
+        cls._set_sse_c_and_copy_source_request_params(
+            request_params, cli_params)
+
+    @classmethod
+    def _set_general_object_params(cls, request_params, cli_params):
+        # Paramters set in this method should be applicable to the following
+        # operations involving objects: PutObject, CopyObject, and
+        # CreateMultipartUpload.
+        general_param_translation = {
+            'acl': 'ACL',
+            'storage_class': 'StorageClass',
+            'website_redirect': 'WebsiteRedirectLocation',
+            'content_type': 'ContentType',
+            'cache_control': 'CacheControl',
+            'content_disposition': 'ContentDisposition',
+            'content_encoding': 'ContentEncoding',
+            'content_language': 'ContentLanguage',
+            'expires': 'Expires'
+        }
+        for cli_param_name in general_param_translation:
+            if cli_params.get(cli_param_name):
+                request_param_name = general_param_translation[cli_param_name]
+                request_params[request_param_name] = cli_params[cli_param_name]
+        cls._set_grant_params(request_params, cli_params)
+
+    @classmethod
+    def _set_grant_params(cls, request_params, cli_params):
+        if cli_params.get('grants'):
+            for grant in cli_params['grants']:
+                try:
+                    permission, grantee = grant.split('=', 1)
+                except ValueError:
+                    raise ValueError('grants should be of the form '
+                                     'permission=principal')
+                request_params[cls._permission_to_param(permission)] = grantee
+
+    @classmethod
+    def _permission_to_param(cls, permission):
+        if permission == 'read':
+            return 'GrantRead'
+        if permission == 'full':
+            return 'GrantFullControl'
+        if permission == 'readacl':
+            return 'GrantReadACP'
+        if permission == 'writeacl':
+            return 'GrantWriteACP'
+        raise ValueError('permission must be one of: '
+                         'read|readacl|writeacl|full')
+
+    @classmethod
+    def _set_metadata_directive_param(cls, request_params, cli_params):
+        if cli_params.get('metadata_directive'):
+            request_params['MetadataDirective'] = cli_params[
+                'metadata_directive']
+
+    @classmethod
+    def _set_sse_request_params(cls, request_params, cli_params):
+        if cli_params.get('sse'):
+            request_params['ServerSideEncryption'] = cli_params['sse']
+        if  cli_params.get('sse_kms_key_id'):
+            request_params['SSEKMSKeyId'] = cli_params['sse_kms_key_id']
+
+    @classmethod
+    def _set_sse_c_request_params(cls, request_params, cli_params):
+        if cli_params.get('sse_c'):
+            request_params['SSECustomerAlgorithm'] = cli_params['sse_c']
+            request_params['SSECustomerKey'] = cli_params['sse_c_key']
+
+    @classmethod
+    def _set_sse_c_copy_source_request_params(cls, request_params, cli_params):
+        if cli_params.get('sse_c_copy_source'):
+            request_params['CopySourceSSECustomerAlgorithm'] = cli_params[
+                'sse_c_copy_source']
+            request_params['CopySourceSSECustomerKey'] = cli_params[
+                'sse_c_copy_source_key']
+
+    @classmethod
+    def _set_sse_c_and_copy_source_request_params(cls, request_params,
+                                                  cli_params):
+        cls._set_sse_c_request_params(request_params, cli_params)
+        cls._set_sse_c_copy_source_request_params(request_params, cli_params)

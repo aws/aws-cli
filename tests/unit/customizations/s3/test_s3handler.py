@@ -125,7 +125,7 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
     """
     def setUp(self):
         super(S3HandlerTestUpload, self).setUp()
-        params = {'region': 'us-east-1', 'acl': ['private'], 'quiet': True}
+        params = {'region': 'us-east-1', 'acl': 'private', 'quiet': True}
         self.s3_handler = S3Handler(
             self.session, params, runtime_config=runtime_config(
                 max_concurrent_requests=1))
@@ -294,7 +294,7 @@ class S3HandlerTestMvLocalS3(S3HandlerBaseTest):
     """
     def setUp(self):
         super(S3HandlerTestMvLocalS3, self).setUp()
-        params = {'region': 'us-east-1', 'acl': ['private'], 'quiet': True}
+        params = {'region': 'us-east-1', 'acl': 'private', 'quiet': True}
         self.s3_handler = S3Handler(self.session, params,
                                     runtime_config=runtime_config(
                                         max_concurrent_requests=1))
@@ -341,7 +341,7 @@ class S3HandlerTestMvS3S3(S3HandlerBaseTest):
     """
     def setUp(self):
         super(S3HandlerTestMvS3S3, self).setUp()
-        params = {'region': 'us-east-1', 'acl': ['private']}
+        params = {'region': 'us-east-1', 'acl': 'private'}
         self.s3_handler = S3Handler(self.session, params,
                                     runtime_config=runtime_config(
                                         max_concurrent_requests=1))

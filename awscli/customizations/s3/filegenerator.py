@@ -116,7 +116,7 @@ class FileGenerator(object):
     ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
     def __init__(self, client, operation_name, follow_symlinks=True,
-                 page_size=None, result_queue=None):
+                 page_size=None, result_queue=None, request_parameters=None):
         self._client = client
         self.operation_name = operation_name
         self.follow_symlinks = follow_symlinks
@@ -124,6 +124,9 @@ class FileGenerator(object):
         self.result_queue = result_queue
         if not result_queue:
             self.result_queue = queue.Queue()
+        self.request_parameters = {}
+        if request_parameters is not None:
+            self.request_parameters = request_parameters
 
     def call(self, files):
         """
@@ -320,7 +323,9 @@ class FileGenerator(object):
         # instead use a HeadObject request.
         bucket, key = find_bucket_key(s3_path)
         try:
-            response = self._client.head_object(Bucket=bucket, Key=key)
+            params = {'Bucket': bucket, 'Key': key}
+            params.update(self.request_parameters.get('HeadObject', {}))
+            response = self._client.head_object(**params)
         except ClientError as e:
             # We want to try to give a more helpful error message.
             # This is what the customer is going to see so we want to

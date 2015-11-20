@@ -1,6 +1,6 @@
 The following ``ls`` command lists all of the bucket owned by the user.  In this example, the user owns the buckets
 ``mybucket`` and ``mybucket2``.  The ``CreationTime`` is the date the bucket was created.  Note if ``s3://`` is used for
-the path argument ``<S3Path>``, it will list all of the buckets as well::
+the path argument ``<S3Uri>``, it will list all of the buckets as well::
 
     aws s3 ls
 
@@ -11,7 +11,8 @@ Output::
 
 The following ``ls`` command lists objects and common prefixes under a spcified bucket and prefix.  In this example, the
 user owns the bucket ``mybucket`` with the objects ``test.txt`` and ``somePrefix/test.txt``.  The ``LastWriteTime`` and
-``Length`` are arbitrary::
+``Length`` are arbitrary. Note that since the ``ls`` command has no interaction with the local filesystem, the ``s3://``
+URI scheme is not required to resolve ambiguity and may be ommited::
 
     aws s3 ls s3://mybucket
 

@@ -15,6 +15,7 @@ import platform
 import mock
 from awscli.compat import six
 from awscli.testutils import unittest, FileCreator
+from awscli.testutils import skip_if_windows
 
 from awscli.paramfile import get_paramfile, ResourceLoadingError
 
@@ -42,9 +43,8 @@ class TestParamFile(unittest.TestCase):
         self.assertEqual(data, b'This is a test')
         self.assertIsInstance(data, six.binary_type)
 
-    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                     'Binary content error only occurs on '
-                     'non-Windows platforms.')
+    @skip_if_windows('Binary content error only occurs '
+                     'on non-Windows platforms.')
     def test_cannot_load_text_file(self):
         contents = b'\xbfX\xac\xbe'
         filename = self.files.create_file('foo', contents, mode='wb')

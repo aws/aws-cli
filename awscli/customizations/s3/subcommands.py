@@ -307,9 +307,10 @@ METADATA = {
     },
     'help_text': (
         "A map of metadata to store with the objects in S3. This will be "
-        "applied to every object which is part of this request. When copying "
-        "between two s3 locations, the metadata-directive argument will default"
-        " to 'REPLACE' unless otherwise specified."
+        "applied to every object which is part of this request. In a sync, this"
+        "means that files which haven't changed won't receive the new metadata."
+        " When copying between two s3 locations, the metadata-directive "
+        "argument will default to 'REPLACE' unless otherwise specified."
     )
 }
 
@@ -401,6 +402,7 @@ def get_client(session, region, endpoint_url, verify, config=None):
     return session.create_client('s3', region_name=region,
                                  endpoint_url=endpoint_url, verify=verify,
                                  config=config)
+
 
 class S3Command(BasicCommand):
     def _run_main(self, parsed_args, parsed_globals):
@@ -675,8 +677,8 @@ class MvCommand(S3TransferCommand):
     USAGE = "<LocalPath> <S3Uri> or <S3Uri> <LocalPath> " \
             "or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
-                  'synopsis': USAGE}] + TRANSFER_ARGS + [METADATA_DIRECTIVE,
-                                                         RECURSIVE]
+                  'synopsis': USAGE}] + TRANSFER_ARGS +\
+                [METADATA, METADATA_DIRECTIVE, RECURSIVE]
 
 class RmCommand(S3TransferCommand):
     NAME = 'rm'
@@ -696,7 +698,8 @@ class SyncCommand(S3TransferCommand):
     USAGE = "<LocalPath> <S3Uri> or <S3Uri> " \
             "<LocalPath> or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
-                  'synopsis': USAGE}] + TRANSFER_ARGS
+                  'synopsis': USAGE}] + TRANSFER_ARGS + \
+                [METADATA, METADATA_DIRECTIVE]
 
 
 class MbCommand(S3TransferCommand):

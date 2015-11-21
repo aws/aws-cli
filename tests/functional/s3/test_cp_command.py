@@ -151,6 +151,39 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         self.assertEqual(self.operations_called[1][1]['Metadata'],
                          {'KeyName': 'Value'})
 
+    def test_metadata_copy_with_put_object(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        self.parsed_responses = [
+            {"ContentLength": "100", "LastModified": "00:00:00Z"},
+            {'ETag': '"foo-1"'},
+        ]
+        cmdline = ('%s %s s3://bucket/key2.txt'
+                   ' --metadata KeyName=Value' % (self.prefix, full_path))
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[0][1]['Metadata'],
+                         {'KeyName': 'Value'})
+
+    def test_metadata_copy_with_multipart_upload(self):
+        full_path = self.files.create_file('foo.txt', 'a' * 10 * (1024 ** 2))
+        self.parsed_responses = [
+            {'UploadId': 'foo'},
+            {'ETag': '"foo-1"'},
+            {'ETag': '"foo-2"'},
+            {}
+        ]
+        cmdline = ('%s %s s3://bucket/key2.txt'
+                   ' --metadata KeyName=Value' % (self.prefix, full_path))
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 4,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name,
+                         'CreateMultipartUpload')
+        self.assertEqual(self.operations_called[0][1]['Metadata'],
+                         {'KeyName': 'Value'})
+
     def test_metadata_directive_copy(self):
         self.parsed_responses = [
             {"ContentLength": "100", "LastModified": "00:00:00Z"},

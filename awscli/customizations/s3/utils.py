@@ -566,6 +566,7 @@ class RequestParamsMapper(object):
         cls._set_general_object_params(request_params, cli_params)
         cls._set_metadata_directive_param(request_params, cli_params)
         cls._set_metadata_params(request_params, cli_params)
+        cls._auto_populate_metadata_directive(request_params)
         cls._set_sse_request_params(request_params, cli_params)
         cls._set_sse_c_and_copy_source_request_params(
             request_params, cli_params)
@@ -581,6 +582,7 @@ class RequestParamsMapper(object):
         cls._set_general_object_params(request_params, cli_params)
         cls._set_sse_request_params(request_params, cli_params)
         cls._set_sse_c_request_params(request_params, cli_params)
+        cls._set_metadata_params(request_params, cli_params)
 
     @classmethod
     def map_upload_part_params(cls, request_params, cli_params):
@@ -643,8 +645,12 @@ class RequestParamsMapper(object):
     def _set_metadata_params(cls, request_params, cli_params):
         if cli_params.get('metadata'):
             request_params['Metadata'] = cli_params['metadata']
-            if not cli_params.get('metadata-directive'):
-                request_params['MetadataDirective'] = 'REPLACE'
+
+    @classmethod
+    def _auto_populate_metadata_directive(cls, request_params):
+        if request_params.get('Metadata') and \
+                not request_params.get('MetadataDirective'):
+            request_params['MetadataDirective'] = 'REPLACE'
 
     @classmethod
     def _set_metadata_directive_param(cls, request_params, cli_params):

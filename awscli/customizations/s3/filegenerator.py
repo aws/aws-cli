@@ -13,6 +13,7 @@
 import os
 import sys
 import stat
+import unicodedata
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
@@ -31,7 +32,7 @@ def is_special_file(path):
     """
     This function checks to see if a special file.  It checks if the
     file is a character special device, block special device, FIFO, or
-    socket. 
+    socket.
     """
     mode = os.stat(path).st_mode
     # Character special device.
@@ -116,11 +117,13 @@ class FileGenerator(object):
     ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
     def __init__(self, client, operation_name, follow_symlinks=True,
-                 page_size=None, result_queue=None, request_parameters=None):
+                 page_size=None, normalize_unicode=False,
+                 result_queue=None, request_parameters=None):
         self._client = client
         self.operation_name = operation_name
         self.follow_symlinks = follow_symlinks
         self.page_size = page_size
+        self.normalize_unicode = normalize_unicode
         self.result_queue = result_queue
         if not result_queue:
             self.result_queue = queue.Queue()
@@ -170,6 +173,8 @@ class FileGenerator(object):
         """
         join, isdir, isfile = os.path.join, os.path.isdir, os.path.isfile
         error, listdir = os.error, os.listdir
+        if self.normalize_unicode:
+            path = unicodedata.normalize('NFKC', path)
         if not self.should_ignore_file(path):
             if not dir_op:
                 size, last_update = get_file_stat(path)
@@ -188,6 +193,8 @@ class FileGenerator(object):
                 listdir_names = listdir(path)
                 names = []
                 for name in listdir_names:
+                    if self.normalize_unicode:
+                        name = unicodedata.normalize('NFKC', name)
                     if not self.should_ignore_file_with_decoding_warnings(
                             path, name):
                         file_path = join(path, name)

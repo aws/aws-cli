@@ -66,7 +66,8 @@ class S3Handler(object):
             'content_language': None, 'expires': None, 'grants': None,
             'only_show_errors': False, 'is_stream': False,
             'paths_type': None, 'expected_size': None,
-            'metadata_directive': None, 'ignore_glacier_warnings': False
+            'metadata_directive': None, 'ignore_glacier_warnings': False,
+            'normalize_unicode': False
         }
         self.params['region'] = params['region']
         for key in self.params.keys():

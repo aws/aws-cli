@@ -818,6 +818,9 @@ class TestUnableToWriteToFile(BaseS3CLICommand):
 
     @skip_if_windows('Write permissions tests only supported on mac/linux')
     def test_no_write_access_small_file(self):
+        if os.geteuid() == 0:
+            self.skipTest(
+                'Cannot completely remove write access as root user.')
         os.chmod(self.files.rootdir, 0o444)
         self.put_object(self.bucket_name, 'foo.txt',
                         contents='Hello world')
@@ -828,6 +831,9 @@ class TestUnableToWriteToFile(BaseS3CLICommand):
 
     @skip_if_windows('Write permissions tests only supported on mac/linux')
     def test_no_write_access_large_file(self):
+        if os.geteuid() == 0:
+            self.skipTest(
+                'Cannot completely remove write access as root user.')
         # We have to use a file like object because using a string
         # would result in the header + body sent as a single packet
         # which effectively disables the expect 100 continue logic.

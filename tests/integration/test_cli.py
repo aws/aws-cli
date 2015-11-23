@@ -362,9 +362,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         process = aws('ec2 describe-images', wait_for_finish=False)
         time.sleep(1)
         process.send_signal(signal.SIGINT)
-        process.wait()
-        stdout = process.stdout.read()
-        stderr = process.stderr.read()
+        stdout, stderr = process.communicate()
         self.assertNotIn(b'Traceback', stdout)
         self.assertNotIn(b'Traceback', stderr)
 

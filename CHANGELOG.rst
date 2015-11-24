@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.9.9
+=====
+
+* feature:``aws s3api``: Added support for the aws-exec-read canned ACL on
+  objects.
+* feature:``aws elasticbeanstalk``: Added support for composable web
+  applications.
+* feature:``aws ec2``: Added support for EC2 dedicated hosts.
+* feature:``aws ecs``: Added support for task stopped reasons and task start
+  and stop times.
+
+
 1.9.8
 =====
 * feature:Read Timeouts: Add ``--cli-read-timeout`` to specify
@@ -44,7 +56,7 @@ CHANGELOG
 =====
 * bugfix:``aws help``: Gracefully handle Ctrl-C interrupts.
   (`issue 1619 <https://github.com/aws/aws-cli/pull/1619>`__)
-* bugfix:``aws datapipline create-default-roles``: Fix issue with
+* bugfix:``aws datapipeline create-default-roles``: Fix issue with
   error handling.
   (`issue 1618 <https://github.com/aws/aws-cli/pull/1618>`__)
 * bugfix:``aws s3``: Skip glacier objects when downloading from S3.

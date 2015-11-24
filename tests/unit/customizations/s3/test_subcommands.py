@@ -361,7 +361,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                   'paths_type': 'locals3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
-                  'is_stream': False, 'source_region': None}
+                  'is_stream': False, 'source_region': None, 'metadata': None}
         self.http_response.status_code = 400
         self.parsed_responses = [{'Error': {
                                   'Code': 'BucketNotExists',

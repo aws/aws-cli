@@ -17,7 +17,6 @@ from awscli.customizations.s3.utils import ReadFileChunk
 from awscli.customizations.s3.utils import relative_path
 from awscli.customizations.s3.utils import StablePriorityQueue
 from awscli.customizations.s3.utils import BucketLister
-from awscli.customizations.s3.utils import ScopedEventHandler
 from awscli.customizations.s3.utils import get_file_stat
 from awscli.customizations.s3.utils import AppendFilter
 from awscli.customizations.s3.utils import create_warning
@@ -313,63 +312,6 @@ class TestBucketList(unittest.TestCase):
              ('foo/c', individual_response_elements[2])])
         for individual_response in individual_response_elements:
             self.assertEqual(individual_response['LastModified'], now)
-
-    def test_urlencoded_keys(self):
-        # In order to workaround control chars being in key names,
-        # we force the urlencoding of the key names and we decode
-        # them before yielding them.  For example, note the %0D
-        # in bar.txt:
-        now = mock.sentinel.now
-        self.client.get_paginator.return_value.paginate = self.fake_paginate
-        individual_response_element = {
-            'LastModified': '2014-02-27T04:20:38.000Z',
-            'Key': 'bar%0D.txt', 'Size': 1}
-        self.responses = [
-            {'Contents': [individual_response_element]}
-        ]
-        lister = BucketLister(self.client, self.date_parser)
-        objects = list(lister.list_objects(bucket='foo'))
-        # And note how it's been converted to '\r'.
-        self.assertEqual(
-            objects, [('foo/bar\r.txt', individual_response_element)])
-        self.assertEqual(individual_response_element['LastModified'], now)
-
-    def test_urlencoded_with_unicode_keys(self):
-        now = mock.sentinel.now
-        self.client.get_paginator.return_value.paginate = self.fake_paginate
-        individual_response_element = {
-            'LastModified': '2014-02-27T04:20:38.000Z',
-            'Key': '%E2%9C%93', 'Size': 1}
-        self.responses = [
-            {'Contents': [individual_response_element]}
-        ]
-        lister = BucketLister(self.client, self.date_parser)
-        objects = list(lister.list_objects(bucket='foo'))
-        # And note how it's been converted to '\r'.
-        self.assertEqual(
-            objects, [(u'foo/\u2713', individual_response_element)])
-        self.assertEqual(individual_response_element['LastModified'], now)
-
-
-class TestScopedEventHandler(unittest.TestCase):
-    def test_scoped_event_handler(self):
-        event_emitter = mock.Mock()
-        scoped = ScopedEventHandler(event_emitter, 'eventname', 'handler')
-        with scoped:
-            event_emitter.register.assert_called_with(
-                'eventname', 'handler', None)
-        event_emitter.unregister.assert_called_with(
-            'eventname', 'handler', None)
-
-    def test_scoped_event_unique(self):
-        event_emitter = mock.Mock()
-        scoped = ScopedEventHandler(
-            event_emitter, 'eventname', 'handler', 'unique')
-        with scoped:
-            event_emitter.register.assert_called_with(
-                'eventname', 'handler', 'unique')
-        event_emitter.unregister.assert_called_with(
-            'eventname', 'handler', 'unique')
 
 
 class TestGetFileStat(unittest.TestCase):

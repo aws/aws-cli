@@ -449,50 +449,19 @@ class BucketLister(object):
         self._date_parser = date_parser
 
     def list_objects(self, bucket, prefix=None, page_size=None):
-        kwargs = {'Bucket': bucket, 'EncodingType': 'url',
-                  'PaginationConfig': {'PageSize': page_size}}
+        kwargs = {'Bucket': bucket, 'PaginationConfig': {'PageSize': page_size}}
         if prefix is not None:
             kwargs['Prefix'] = prefix
-        # This event handler is needed because we use encoding_type url and
-        # we're paginating.  The pagination token is the last Key of the
-        # Contents list.  However, botocore does not know that the encoding
-        # type needs to be urldecoded.
-        with ScopedEventHandler(self._client.meta.events,
-                                'after-call.s3.ListObjects',
-                                self._decode_keys,
-                                'BucketListerDecodeKeys'):
-            paginator = self._client.get_paginator('list_objects')
-            pages = paginator.paginate(**kwargs)
-            for page in pages:
-                contents = page.get('Contents', [])
-                for content in contents:
-                    source_path = bucket + '/' + content['Key']
-                    content['LastModified'] = self._date_parser(
-                        content['LastModified'])
-                    yield source_path, content
 
-    def _decode_keys(self, parsed, **kwargs):
-        if 'Contents' in parsed:
-            for content in parsed['Contents']:
-                content['Key'] = unquote_str(content['Key'])
-
-
-class ScopedEventHandler(object):
-    """Register an event callback for the duration of a scope."""
-
-    def __init__(self, event_emitter, event_name, handler, unique_id=None):
-        self._event_emitter = event_emitter
-        self._event_name = event_name
-        self._handler = handler
-        self._unique_id = unique_id
-
-    def __enter__(self):
-        self._event_emitter.register(self._event_name, self._handler,
-                                     self._unique_id)
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        self._event_emitter.unregister(self._event_name, self._handler,
-                                       self._unique_id)
+        paginator = self._client.get_paginator('list_objects')
+        pages = paginator.paginate(**kwargs)
+        for page in pages:
+            contents = page.get('Contents', [])
+            for content in contents:
+                source_path = bucket + '/' + content['Key']
+                content['LastModified'] = self._date_parser(
+                    content['LastModified'])
+                yield source_path, content
 
 
 class PrintTask(namedtuple('PrintTask',

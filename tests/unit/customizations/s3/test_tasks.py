@@ -353,11 +353,11 @@ class TestCreateLocalFileTask(unittest.TestCase):
         self.context.announce_file_created.assert_called_with()
         self.assertTrue(self.result_queue.empty())
 
-    @skip_if_windows('Write permissions tests only supported on mac/linux')
     def test_cancel_command_on_exception(self):
-        # Set destination directory to read-only
-        os.chmod(self.tempdir, 0o444)
-        self.task()
+        with mock.patch('awscli.customizations.s3.tasks.open',
+                        create=True) as mock_open:
+            mock_open.side_effect = OSError("Fake permissions error")
+            self.task()
         self.assertFalse(os.path.isfile(self.filename.dest))
         self.context.cancel.assert_called_with()
         self.assertFalse(self.result_queue.empty())

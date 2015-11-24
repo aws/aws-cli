@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.9.9
+=====
 
 * feature:``aws s3api``: Added support for the aws-exec-read canned ACL on
   objects.

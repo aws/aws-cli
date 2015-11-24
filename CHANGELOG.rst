@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``aws s3api``: Added support for the aws-exec-read canned ACL on
+  objects.
+* feature:``aws elasticbeanstalk``: Added support for composable web
+  applications.
+* feature:``aws ec2``: Added support for EC2 dedicated hosts.
+* feature:``aws ecs``: Added support for task stopped reasons and task start
+  and stop times.
+
+
 1.9.8
 =====
 * feature:Read Timeouts: Add ``--cli-read-timeout`` to specify

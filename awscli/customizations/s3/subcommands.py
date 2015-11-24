@@ -115,7 +115,10 @@ INCLUDE = {'name': 'include', 'action': AppendFilter, 'nargs': 1,
            'dest': 'filters',
            'help_text': (
                "Don't exclude files or objects "
-               "in the command that match the specified pattern")}
+               "in the command that match the specified pattern. "
+               'See <a href="http://docs.aws.amazon.com/cli/latest/reference'
+               '/s3/index.html#use-of-exclude-and-include-filters">Use of '
+               'Exclude and Include Filters</a> for details.')}
 
 
 ACL = {'name': 'acl',

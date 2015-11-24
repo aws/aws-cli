@@ -22,7 +22,7 @@ from awscli.customizations.s3.utils import AppendFilter
 from awscli.customizations.s3.utils import create_warning
 from awscli.customizations.s3.utils import human_readable_size
 from awscli.customizations.s3.utils import human_readable_to_bytes
-from awscli.customizations.s3.utils import MAX_SINGLE_UPLOAD_SIZE
+from awscli.customizations.s3.utils import MAX_SINGLE_UPLOAD_SIZE, EPOCH_TIME
 from awscli.customizations.s3.utils import set_file_utime, SetFileUtimeError
 from awscli.customizations.s3.utils import RequestParamsMapper
 
@@ -328,14 +328,20 @@ class TestGetFileStat(unittest.TestCase):
             self.assertEqual(time.mktime(update_time.timetuple()), epoch_now)
 
     def test_get_file_stat_error_message(self):
+        with mock.patch('os.stat', mock.Mock(side_effect=IOError('msg'))):
+            with self.assertRaisesRegexp(ValueError, 'myfilename\.txt'):
+                get_file_stat('myfilename.txt')
+
+    def test_get_file_stat_returns_epoch_on_invalid_timestamp(self):
         patch_attribute = 'awscli.customizations.s3.utils.datetime'
-        with mock.patch(patch_attribute) as f:
-            with mock.patch('os.stat'):
-                f.fromtimestamp.side_effect = ValueError(
-                    "timestamp out of range for platform "
-                    "localtime()/gmtime() function")
-                with self.assertRaisesRegexp(ValueError, 'myfilename\.txt'):
-                    get_file_stat('myfilename.txt')
+        with mock.patch(patch_attribute) as datetime_mock:
+            with temporary_file('w') as temp_file:
+                temp_file.write('foo')
+                temp_file.flush()
+                datetime_mock.fromtimestamp.side_effect = ValueError()
+                size, update_time = get_file_stat(temp_file.name)
+                self.assertIsNone(update_time)
+
 
 
 class TestSetsFileUtime(unittest.TestCase):

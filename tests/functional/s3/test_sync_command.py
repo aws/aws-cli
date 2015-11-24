@@ -108,3 +108,22 @@ class TestSyncCommand(BaseAWSCommandParamsTest):
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
         self.assertEqual('', stderr)
+
+    def test_warning_on_invalid_timestamp(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+
+        # Set the update time to a value that will raise a ValueError when
+        # converting to datetime
+        os.utime(full_path, (-1, -100000000000))
+        cmdline = '%s %s s3://bucket/key.txt' % \
+                  (self.prefix, self.files.rootdir)
+        self.parsed_responses = [
+            {"CommonPrefixes": [], "Contents": []},
+            {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
+        ]
+        self.run_cmd(cmdline, expected_rc=2)
+
+        # We should still have put the object
+        self.assertEqual(len(self.operations_called), 2, self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[1][0].name, 'PutObject')

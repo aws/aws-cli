@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from botocore.session import get_session
 from botocore.handlers import disable_signing
 import os
 
@@ -196,24 +197,32 @@ class TestGlobalArgsCustomization(unittest.TestCase):
 
     def test_cli_read_timeout(self):
         parsed_args = FakeParsedArgs(read_timeout='60')
-        session = mock.Mock()
+        session = get_session()
         globalargs.resolve_cli_read_timeout(parsed_args, session)
         self.assertEqual(parsed_args.read_timeout, 60)
+        self.assertEqual(
+            session.get_default_client_config().read_timeout, 60)
 
     def test_cli_connect_timeout(self):
         parsed_args = FakeParsedArgs(connect_timeout='60')
-        session = mock.Mock()
+        session = get_session()
         globalargs.resolve_cli_connect_timeout(parsed_args, session)
         self.assertEqual(parsed_args.connect_timeout, 60)
+        self.assertEqual(
+            session.get_default_client_config().connect_timeout, 60)
 
     def test_cli_read_timeout_for_blocking(self):
         parsed_args = FakeParsedArgs(read_timeout='-1')
-        session = mock.Mock()
+        session = get_session()
         globalargs.resolve_cli_read_timeout(parsed_args, session)
         self.assertEqual(parsed_args.read_timeout, None)
+        self.assertEqual(
+            session.get_default_client_config().read_timeout, None)
 
     def test_cli_connect_timeout_for_blocking(self):
         parsed_args = FakeParsedArgs(connect_timeout='-1')
-        session = mock.Mock()
+        session = get_session()
         globalargs.resolve_cli_connect_timeout(parsed_args, session)
         self.assertEqual(parsed_args.connect_timeout, None)
+        self.assertEqual(
+            session.get_default_client_config().connect_timeout, None)

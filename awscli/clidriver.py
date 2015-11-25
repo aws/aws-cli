@@ -21,7 +21,6 @@ from botocore import xform_name
 from botocore.compat import copy_kwargs, OrderedDict
 from botocore.exceptions import NoCredentialsError
 from botocore.exceptions import NoRegionError
-from botocore.client import Config
 
 from awscli import EnvironmentVariables, __version__
 from awscli.formatter import get_formatter
@@ -658,15 +657,10 @@ class CLIOperationCaller(object):
             value is returned.
 
         """
-        config_kwargs = {}
-        config_kwargs['read_timeout'] = parsed_globals.read_timeout
-        config_kwargs['connect_timeout'] = parsed_globals.connect_timeout
-        config = Config(**config_kwargs)
         client = self._session.create_client(
             service_name, region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
-            verify=parsed_globals.verify_ssl,
-            config=config)
+            verify=parsed_globals.verify_ssl)
         py_operation_name = xform_name(operation_name)
         if client.can_paginate(py_operation_name) and parsed_globals.paginate:
             paginator = client.get_paginator(py_operation_name)

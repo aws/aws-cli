@@ -11,3 +11,7 @@ Output::
   }
 
 Amazon Glacier requires an account ID argument when performing operations, but you can use a hyphen to specify the in-use account.
+
+To retrieve an uploaded archive, initiate a retrieval job with the `aws glacier initiate-job`_ command.
+
+.. _`aws glacier initiate-job`: http://docs.aws.amazon.com/cli/latest/reference/glacier/initiate-job.html

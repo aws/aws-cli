@@ -696,7 +696,7 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
 
     def test_aws_with_blocking_read_timeout(self):
         self.assert_params_for_cmd(
-            'lambda invoke --function-name foo out.log --cli-read-timeout -1',
+            'lambda invoke --function-name foo out.log --cli-read-timeout 0',
             expected_rc=0)
         call_args = self.create_endpoint.call_args
         self.assertEqual(call_args[1]['timeout'], (60, None))
@@ -712,7 +712,7 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
     def test_aws_with_blocking_connect_timeout(self):
         self.assert_params_for_cmd(
             'lambda invoke --function-name foo out.log '
-            '--cli-connect-timeout -1',
+            '--cli-connect-timeout 0',
             expected_rc=0)
         call_args = self.create_endpoint.call_args
         self.assertEqual(call_args[1]['timeout'], (None, 60))

@@ -212,7 +212,7 @@ class TestGlobalArgsCustomization(unittest.TestCase):
             session.get_default_client_config().connect_timeout, 60)
 
     def test_cli_read_timeout_for_blocking(self):
-        parsed_args = FakeParsedArgs(read_timeout='-1')
+        parsed_args = FakeParsedArgs(read_timeout='0')
         session = get_session()
         globalargs.resolve_cli_read_timeout(parsed_args, session)
         self.assertEqual(parsed_args.read_timeout, None)
@@ -220,7 +220,7 @@ class TestGlobalArgsCustomization(unittest.TestCase):
             session.get_default_client_config().read_timeout, None)
 
     def test_cli_connect_timeout_for_blocking(self):
-        parsed_args = FakeParsedArgs(connect_timeout='-1')
+        parsed_args = FakeParsedArgs(connect_timeout='0')
         session = get_session()
         globalargs.resolve_cli_connect_timeout(parsed_args, session)
         self.assertEqual(parsed_args.connect_timeout, None)

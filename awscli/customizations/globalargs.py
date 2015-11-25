@@ -98,7 +98,7 @@ def _resolve_timeout(session, parsed_args, arg_name):
     if arg_value is None:
         arg_value = DEFAULT_TIMEOUT
     arg_value = int(arg_value)
-    if arg_value == -1:
+    if arg_value == 0:
         arg_value = None
     setattr(parsed_args, arg_name, arg_value)
     # Update in the default client config so that the timeout will be used

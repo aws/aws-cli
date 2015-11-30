@@ -65,7 +65,7 @@ class S3Handler(object):
             'content_disposition': None, 'content_encoding': None,
             'content_language': None, 'expires': None, 'grants': None,
             'only_show_errors': False, 'is_stream': False,
-            'paths_type': None, 'expected_size': None,
+            'paths_type': None, 'expected_size': None, 'metadata': None,
             'metadata_directive': None, 'ignore_glacier_warnings': False,
             'copy_acl': None
         }

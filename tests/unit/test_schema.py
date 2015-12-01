@@ -167,6 +167,24 @@ class TestSchemaTransformer(unittest.TestCase):
             }
         )
 
+    def test_transforms_map(self):
+        self.assert_schema_transforms_to(
+            schema={
+                "type": "map",
+                "key": {"type": "string"},
+                "value": {"type": "string"}
+            },
+            transforms_to={
+                'InputShape': {
+                    "type": "map",
+                    "key": {"shape": "StringType1"},
+                    "value": {"shape": "StringType2"}
+                },
+                'StringType1': {'type': 'string'},
+                'StringType2': {'type': 'string'},
+            }
+        )
+
     def test_description_on_shape_type(self):
         self.assert_schema_transforms_to(
             schema={

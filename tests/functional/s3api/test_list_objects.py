@@ -25,7 +25,8 @@ class TestListObjects(BaseAWSCommandParamsTest):
     def test_simple(self):
         cmdline = self.prefix
         cmdline += ' --bucket mybucket'
-        self.assert_params_for_cmd(cmdline, {'Bucket': 'mybucket'})
+        self.assert_params_for_cmd(cmdline, {'Bucket': 'mybucket',
+                                             'EncodingType': 'url'})
 
     def test_max_items(self):
         cmdline = self.prefix
@@ -33,7 +34,8 @@ class TestListObjects(BaseAWSCommandParamsTest):
         # The max-items is a customization and therefore won't
         # show up in the result params.
         cmdline += ' --max-items 100'
-        self.assert_params_for_cmd(cmdline, {'Bucket': 'mybucket'})
+        self.assert_params_for_cmd(cmdline, {'Bucket': 'mybucket',
+                                             'EncodingType': 'url'})
 
     def test_page_size(self):
         cmdline = self.prefix
@@ -42,7 +44,8 @@ class TestListObjects(BaseAWSCommandParamsTest):
         # show up in the result params.
         cmdline += ' --page-size 100'
         self.assert_params_for_cmd(cmdline, {'Bucket': 'mybucket',
-                                              'MaxKeys': 100})
+                                             'MaxKeys': 100,
+                                             'EncodingType': 'url'})
 
     def test_starting_token(self):
         # We don't need to test this in depth because botocore
@@ -52,12 +55,14 @@ class TestListObjects(BaseAWSCommandParamsTest):
         cmdline += ' --bucket mybucket'
         cmdline += ' --starting-token foo___2'
         self.assert_params_for_cmd(cmdline, {'Bucket': 'mybucket',
-                                              'Marker': 'foo'})
+                                             'Marker': 'foo',
+                                             'EncodingType': 'url'})
 
     def test_no_paginate(self):
         cmdline = self.prefix
         cmdline += ' --bucket mybucket --no-paginate'
-        self.assert_params_for_cmd(cmdline, {'Bucket': 'mybucket'})
+        self.assert_params_for_cmd(cmdline, {'Bucket': 'mybucket',
+                                             'EncodingType': 'url'})
 
     def test_max_keys_can_be_specified(self):
         cmdline = self.prefix
@@ -66,7 +71,8 @@ class TestListObjects(BaseAWSCommandParamsTest):
         # we will automatically see this and turn auto-pagination off.
         cmdline += ' --bucket mybucket --max-keys 1'
         self.assert_params_for_cmd(cmdline, {'Bucket': 'mybucket',
-                                              'MaxKeys': 1})
+                                             'MaxKeys': 1,
+                                             'EncodingType': 'url'})
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'ListObjects')

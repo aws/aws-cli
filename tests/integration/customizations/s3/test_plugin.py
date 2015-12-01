@@ -439,6 +439,20 @@ class TestCp(BaseS3CLICommand):
         self.assert_no_errors(p)
         self.assertTrue(self.key_exists(bucket_name, key_name='foo.txt'))
 
+    def test_copy_metadata(self):
+        # Copy the same style of parsing as the CLI session. This is needed
+        # For comparing expires timestamp.
+        add_scalar_parsers(self.session)
+        bucket_name = self.create_bucket()
+        key = 'foo.txt'
+        filename = self.files.create_file(key, contents='')
+        p = aws('s3 cp %s s3://%s/%s --metadata keyname=value' %
+                (filename, bucket_name, key))
+        self.assert_no_errors(p)
+        response = self.head_object(bucket_name, key)
+        # These values should have the metadata of the source object
+        self.assertEqual(response['Metadata'].get('keyname'), 'value')
+
     def test_copy_metadata_directive(self):
         # Copy the same style of parsing as the CLI session. This is needed
         # For comparing expires timestamp.
@@ -818,6 +832,9 @@ class TestUnableToWriteToFile(BaseS3CLICommand):
 
     @skip_if_windows('Write permissions tests only supported on mac/linux')
     def test_no_write_access_small_file(self):
+        if os.geteuid() == 0:
+            self.skipTest(
+                'Cannot completely remove write access as root user.')
         os.chmod(self.files.rootdir, 0o444)
         self.put_object(self.bucket_name, 'foo.txt',
                         contents='Hello world')
@@ -828,6 +845,9 @@ class TestUnableToWriteToFile(BaseS3CLICommand):
 
     @skip_if_windows('Write permissions tests only supported on mac/linux')
     def test_no_write_access_large_file(self):
+        if os.geteuid() == 0:
+            self.skipTest(
+                'Cannot completely remove write access as root user.')
         # We have to use a file like object because using a string
         # would result in the header + body sent as a single packet
         # which effectively disables the expect 100 continue logic.

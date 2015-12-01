@@ -90,7 +90,7 @@ COMPLETIONS = [
                              '--content-encoding', '--content-language',
                              '--expires', '--grants', '--only-show-errors',
                              '--expected-size', '--page-size',
-                             '--metadata-directive',
+                             '--metadata', '--metadata-directive',
                              '--ignore-glacier-warnings']
                             + GLOBALOPTS)),
     ('aws s3 cp --quiet -', -1, set(['--no-guess-mime-type', '--dryrun',
@@ -105,7 +105,8 @@ COMPLETIONS = [
                                      '--sse-c-key',
                                      '--sse-kms-key-id',
                                      '--exclude', '--include',
-                                     '--source-region', '--metadata-directive',
+                                     '--source-region', '--metadata',
+                                     '--metadata-directive',
                                      '--grants', '--only-show-errors',
                                      '--expected-size', '--page-size',
                                      '--ignore-glacier-warnings']

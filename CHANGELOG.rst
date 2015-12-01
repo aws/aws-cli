@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.9.10
+======
 
 * feature:``aws config``: Added support for dedicated hosts.
 * feature:``aws s3``: Added support for custom metadata in cp, mv, and sync.

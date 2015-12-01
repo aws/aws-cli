@@ -1,5 +1,10 @@
 The following command creates an invalidation for a CloudFront distribution with the ID ``S11A16G5KZMEQD``::
 
+  aws cloudfront create-invalidation --distribution-id S11A16G5KZMEQD \
+    --paths /index.html /error.html
+
+Or you can use the following command to do the same thing. And you can have a chance to specify your own CallerReference here::
+
   aws cloudfront create-invalidation --invalidation-batch file://invbatch.json --distribution-id S11A16G5KZMEQD
 
 The distribution ID is available in the output of ``create-distribution`` and ``list-distributions``.
@@ -14,7 +19,7 @@ The file ``invbatch.json`` is a JSON document in the current folder that specifi
     "CallerReference": "my-invalidation-2015-09-01"
   }
 
-Output::
+Output of both commands::
 
   {
       "Invalidation": {

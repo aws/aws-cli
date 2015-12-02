@@ -34,12 +34,12 @@ def _add_paths(argument_table, **kwargs):
 class PathsArgument(CustomArgument):
 
     def __init__(self):
-        help = """The space-separated paths to be invalidated.
-            It will automatically generate a CallerReference for you."""
-        super(PathsArgument, self).__init__('paths', nargs='+', help_text=help)
+        doc = """The space-separated paths to be invalidated.
+            Note: --invalidation-batch and --paths are mututally exclusive."""
+        super(PathsArgument, self).__init__('paths', nargs='+', help_text=doc)
 
     def add_to_params(self, parameters, value):
-        if value:
+        if value is not None:
             parameters['InvalidationBatch'] = {
                 "CallerReference": datetime.utcnow().strftime('%Y%m%d%H%M%S'),
                 "Paths": {"Quantity": len(value), "Items": value},

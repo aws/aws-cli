@@ -17,7 +17,7 @@ from awscli.testutils import BaseAWSPreviewCommandParamsTest as \
 
 class TestCreateInvalidation(BaseAWSCommandParamsTest):
 
-    prefix = 'cloudfront create-invalidation --distribution-id my_id' + ' '
+    prefix = 'cloudfront create-invalidation --distribution-id my_id '
 
     def test_invalidation_batch_only(self):
         batch = "Paths={Quantity=2,Items=[foo.txt,bar.txt]},CallerReference=ab"

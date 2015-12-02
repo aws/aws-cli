@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import json
 import os
 
 from botocore.model import ServiceModel
@@ -81,7 +82,7 @@ class AddModelCommand(BasicCommand):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        service_definition = parsed_args.service_model
+        service_definition = json.loads(parsed_args.service_model)
 
         # Get the path to where the model should be written
         model_location = get_model_location(
@@ -96,6 +97,6 @@ class AddModelCommand(BasicCommand):
 
         # Write the model to the specified location
         with open(model_location, 'w') as f:
-            f.write(service_definition)
+            f.write(parsed_args.service_model)
 
         return 0

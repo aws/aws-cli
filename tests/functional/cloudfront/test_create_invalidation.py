@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import mock
+
 from awscli.testutils import BaseAWSPreviewCommandParamsTest as \
     BaseAWSCommandParamsTest
 
@@ -36,11 +38,10 @@ class TestCreateInvalidation(BaseAWSCommandParamsTest):
             'DistributionId': 'my_id',
             'InvalidationBatch': {
                 'Paths': {'Items': ['index.html', 'foo.txt'], 'Quantity': 2},
+                'CallerReference': mock.ANY,
                 },
             }
         self.run_cmd(cmdline)
-        # There will be a CallerReference, but we don't really check it
-        del self.last_kwargs['InvalidationBatch']['CallerReference']
         self.assertEqual(self.last_kwargs, result)
 
     def test_invalidation_batch_and_paths(self):

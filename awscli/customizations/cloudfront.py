@@ -10,7 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from datetime import datetime
+import time
+import random
 
 from awscli.arguments import CustomArgument
 from awscli.customizations.utils import validate_mutually_exclusive_handler
@@ -40,7 +41,9 @@ class PathsArgument(CustomArgument):
 
     def add_to_params(self, parameters, value):
         if value is not None:
+            caller_reference = 'cli-%s-%s' % (
+                int(time.time()), random.randint(1, 1000000))
             parameters['InvalidationBatch'] = {
-                "CallerReference": datetime.utcnow().strftime('%Y%m%d%H%M%S'),
+                "CallerReference": caller_reference,
                 "Paths": {"Quantity": len(value), "Items": value},
                 }

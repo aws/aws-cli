@@ -3,7 +3,9 @@ The following command creates an invalidation for a CloudFront distribution with
   aws cloudfront create-invalidation --distribution-id S11A16G5KZMEQD \
     --paths /index.html /error.html
 
-Or you can use the following command to do the same thing. And you can have a chance to specify your own CallerReference here::
+The --paths will automatically generate a random CallerReference every time.
+
+Or you can use the following command to do the same thing, so that you can have a chance to specify your own CallerReference here::
 
   aws cloudfront create-invalidation --invalidation-batch file://invbatch.json --distribution-id S11A16G5KZMEQD
 

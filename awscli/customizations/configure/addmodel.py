@@ -28,6 +28,23 @@ def _get_endpoint_prefix_to_name_mappings(session):
     return prefixes_to_services
 
 
+def _get_service_name(session, endpoint_prefix):
+    if endpoint_prefix in session.get_available_services():
+        # Check if the endpoint prefix is a pre-existing service.
+        # If it is, use that endpoint prefix as the service name.
+        return endpoint_prefix
+    else:
+        # The service may have a different endpoint prefix than its name
+        # So we need to determine what the correct mapping may be.
+
+        # Figure out the mappings of endpoint prefix to service names.
+        name_mappings = _get_endpoint_prefix_to_name_mappings(session)
+        # Determine the service name from the mapping.
+        # If it does not exist in the mapping, return the original endpoint
+        # prefix.
+        return name_mappings.get(endpoint_prefix, endpoint_prefix)
+
+
 def get_model_location(session, service_definition, service_name=None):
     """Gets the path of where a service-2.json file should go in ~/.aws/models
 
@@ -51,12 +68,8 @@ def get_model_location(session, service_definition, service_name=None):
 
     # Determine the service_name if not provided
     if service_name is None:
-        # Figure out names that do not match the endpoint prefi
-        name_mappings = _get_endpoint_prefix_to_name_mappings(session)
         endpoint_prefix = service_model.endpoint_prefix
-        # Determine the service name
-        service_name = name_mappings.get(endpoint_prefix, endpoint_prefix)
-
+        service_name = _get_service_name(session, endpoint_prefix)
     api_version = service_model.api_version
 
     # For the model location we only want the custom data path (~/.aws/models

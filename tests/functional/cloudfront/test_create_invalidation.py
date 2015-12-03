@@ -14,7 +14,6 @@ from awscli.testutils import BaseAWSPreviewCommandParamsTest as \
     BaseAWSCommandParamsTest
 
 
-
 class TestCreateInvalidation(BaseAWSCommandParamsTest):
 
     prefix = 'cloudfront create-invalidation --distribution-id my_id '

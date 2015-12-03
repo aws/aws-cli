@@ -62,7 +62,12 @@ def get_model_location(session, service_definition, service_name=None):
     # For the model location we only want the custom data path (~/.aws/models
     # not the one set by AWS_DATA_PATH)
     data_path = session.get_component('data_loader').CUSTOMER_DATA_PATH
-    return os.path.join(data_path, service_name, api_version, 'service-2.json')
+    # Use the version of the model to determine the file's naming convention.
+    service_model_name = (
+        'service-%d.json' % int(
+            float(service_definition.get('version', '2.0'))))
+    return os.path.join(data_path, service_name, api_version,
+        service_model_name)
 
 
 class AddModelCommand(BasicCommand):

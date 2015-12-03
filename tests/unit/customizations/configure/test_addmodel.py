@@ -126,3 +126,25 @@ class TestGetModelLocation(unittest.TestCase):
                 self.data_loader.CUSTOMER_DATA_PATH,
                 'override', self.default_api_version,
                 'service-2.json'), model_location)
+
+    def test_get_model_location_with_non_v2(self):
+        service_definition = self._create_service_definition(
+            'existant', self.default_api_version)
+        service_definition['version'] = '3.0'
+        model_location = get_model_location(self.session, service_definition)
+        self.assertEqual(
+            os.path.join(
+                self.data_loader.CUSTOMER_DATA_PATH,
+                'existant', self.default_api_version,
+                'service-3.json'), model_location)
+
+    def test_get_model_location_with_missing_version(self):
+        service_definition = self._create_service_definition(
+            'existant', self.default_api_version)
+        service_definition.pop('version')
+        model_location = get_model_location(self.session, service_definition)
+        self.assertEqual(
+            os.path.join(
+                self.data_loader.CUSTOMER_DATA_PATH,
+                'existant', self.default_api_version,
+                'service-2.json'), model_location)

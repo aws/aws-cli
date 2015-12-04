@@ -9,6 +9,7 @@ Next Release (TBD)
   (`issue 1664 <https://github.com/aws/aws-cli/pull/1664>`__)
 * feature:``aws cloudfront create-invalidation``: Add a new --paths option.
   (`issue 1662 <https://github.com/aws/aws-cli/pull/1662>`__)
+* feature:``aws cloudfront sign``: Add a new command to sign url.
 
 
 1.9.11

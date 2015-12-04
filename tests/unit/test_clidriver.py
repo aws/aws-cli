@@ -83,6 +83,10 @@ GET_DATA = {
             "read-timeout": {
                 "type": "int",
                 "help": ""
+            },
+            "connect-timeout": {
+                "type": "int",
+                "help": ""
             }
         }
     },
@@ -689,6 +693,37 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
             expected_rc=0)
         call_args = self.create_endpoint.call_args
         self.assertEqual(call_args[1]['timeout'][1], 90)
+
+    def test_aws_with_blocking_read_timeout(self):
+        self.assert_params_for_cmd(
+            'lambda invoke --function-name foo out.log --cli-read-timeout 0',
+            expected_rc=0)
+        call_args = self.create_endpoint.call_args
+        self.assertEqual(call_args[1]['timeout'][1], None)
+
+    def test_aws_with_connnect_timeout(self):
+        self.assert_params_for_cmd(
+            'lambda invoke --function-name foo out.log '
+            '--cli-connect-timeout 90',
+            expected_rc=0)
+        call_args = self.create_endpoint.call_args
+        self.assertEqual(call_args[1]['timeout'][0], 90)
+
+    def test_aws_with_blocking_connect_timeout(self):
+        self.assert_params_for_cmd(
+            'lambda invoke --function-name foo out.log '
+            '--cli-connect-timeout 0',
+            expected_rc=0)
+        call_args = self.create_endpoint.call_args
+        self.assertEqual(call_args[1]['timeout'][0], None)
+
+    def test_aws_with_read_and_connnect_timeout(self):
+        self.assert_params_for_cmd(
+            'lambda invoke --function-name foo out.log '
+            '--cli-read-timeout 70 --cli-connect-timeout 90',
+            expected_rc=0)
+        call_args = self.create_endpoint.call_args
+        self.assertEqual(call_args[1]['timeout'], (90, 70))
 
 
 class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):

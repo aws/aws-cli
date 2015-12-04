@@ -42,6 +42,9 @@ ARGUMENT_RENAMES = {
     'codepipeline.get-pipeline.version': 'pipeline-version',
     'codepipeline.create-custom-action-type.version': 'action-version',
     'codepipeline.delete-custom-action-type.version': 'action-version',
+    'route53.delete-traffic-policy.version': 'traffic-policy-version',
+    'route53.get-traffic-policy.version': 'traffic-policy-version',
+    'route53.update-traffic-policy-comment.version': 'traffic-policy-version'
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,

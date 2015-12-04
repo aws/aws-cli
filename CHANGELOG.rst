@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.9.11
+======
 
 * feature:``aws rds``: Added support for specifying port number.
 * feature:``aws ds``: Added support for Microsoft ActiveDirctory.

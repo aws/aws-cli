@@ -76,6 +76,9 @@ class TestGetModelLocation(unittest.TestCase):
             json.dump(self._create_service_definition(
                 self.non_matching_prefix, self.default_api_version), f)
 
+    def tearDown(self):
+        self.files.remove_all()
+
     def _create_service_definition(self, endpoint_prefix, api_version):
         return {
             "version": "2.0",
@@ -107,20 +110,20 @@ class TestGetModelLocation(unittest.TestCase):
                 self.non_matching_service, self.default_api_version,
                 'service-2.json'), model_location)
 
-    def test_get_model_location_of_nonexistant_service(self):
+    def test_get_model_location_of_nonexistent_service(self):
         model_location = get_model_location(
             self.session, self._create_service_definition(
-                'nonexistant', self.default_api_version))
+                'nonexistent', self.default_api_version))
         self.assertEqual(
             os.path.join(
                 self.data_loader.CUSTOMER_DATA_PATH,
-                'nonexistant', self.default_api_version,
+                'nonexistent', self.default_api_version,
                 'service-2.json'), model_location)
 
     def test_get_model_location_when_service_name_provided(self):
         model_location = get_model_location(
             self.session, self._create_service_definition(
-                'nonexistant', self.default_api_version), 'override')
+                'nonexistent', self.default_api_version), 'override')
         self.assertEqual(
             os.path.join(
                 self.data_loader.CUSTOMER_DATA_PATH,
@@ -129,22 +132,22 @@ class TestGetModelLocation(unittest.TestCase):
 
     def test_get_model_location_with_non_v2(self):
         service_definition = self._create_service_definition(
-            'existant', self.default_api_version)
+            'existent', self.default_api_version)
         service_definition['version'] = '3.0'
         model_location = get_model_location(self.session, service_definition)
         self.assertEqual(
             os.path.join(
                 self.data_loader.CUSTOMER_DATA_PATH,
-                'existant', self.default_api_version,
+                'existent', self.default_api_version,
                 'service-3.json'), model_location)
 
     def test_get_model_location_with_missing_version(self):
         service_definition = self._create_service_definition(
-            'existant', self.default_api_version)
+            'existent', self.default_api_version)
         service_definition.pop('version')
         model_location = get_model_location(self.session, service_definition)
         self.assertEqual(
             os.path.join(
                 self.data_loader.CUSTOMER_DATA_PATH,
-                'existant', self.default_api_version,
+                'existent', self.default_api_version,
                 'service-2.json'), model_location)

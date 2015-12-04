@@ -35,6 +35,10 @@ class TestAddModel(BaseAWSCommandParamsTest):
             "shapes": {}
         }
 
+    def tearDown(self):
+        super(TestAddModel, self).tearDown()
+        self.files.remove_all()
+
     def test_add_model(self):
         cmdline = self.prefix + ' --service-model %s' % json.dumps(
             self.service_definition, separators=(',', ':'))
@@ -42,9 +46,9 @@ class TestAddModel(BaseAWSCommandParamsTest):
 
         # Ensure that the model exists in the correct location.
         self.assertTrue(
-            os.path.join(
+            os.path.exists(os.path.join(
                 self.customer_data_root, 'myservice', '2015-12-02',
-                'service-2.json'))
+                'service-2.json')))
 
     def test_add_model_with_service_name(self):
         cmdline = self.prefix + ' --service-model %s' % json.dumps(
@@ -54,6 +58,6 @@ class TestAddModel(BaseAWSCommandParamsTest):
 
         # Ensure that the model exists in the correct location.
         self.assertTrue(
-            os.path.join(
+            os.path.exists(os.path.join(
                 self.customer_data_root, 'override-name', '2015-12-02',
-                'service-2.json'))
+                'service-2.json')))

@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``aws rds``: Added support for specifying port number.
+* feature:``aws ds``: Added support for Microsoft ActiveDirctory.
+* feature:``aws route53``: Added support for TrafficFlow, a new 
+  management and modeling layer for Route53.
+* feature:Timeouts: Added additonal options for configuring socket timeouts.
+
+
 1.9.10
 ======
 

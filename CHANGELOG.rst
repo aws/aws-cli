@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+* feature:``aws configure add-model``: Added command for updating commands
+  in the CLI and clients in boto3.
+  (`issue 1664 <https://github.com/aws/aws-cli/pull/1664>`__)
+
+
 1.9.11
 ======
 

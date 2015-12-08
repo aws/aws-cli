@@ -10,6 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import mock
+from botocore.compat import urlparse, parse_qs
+
 from awscli.testutils import FileCreator
 from awscli.testutils import BaseAWSPreviewCommandParamsTest as \
     BaseAWSCommandParamsTest
@@ -54,14 +57,28 @@ class TestSign(BaseAWSCommandParamsTest):
         self.addCleanup(files.remove_all)
         super(TestSign, self).setUp()
 
+    def assertDesiredUrl(self, url, base, params):
+        self.assertEqual(len(url.splitlines()), 1, "Expects only 1 line")
+        self.assertTrue(url.startswith(base), "URL mismatch")
+        url = url.strip()  # Otherwise the last param contains a trailing CRLF
+        self.assertEqual(parse_qs(urlparse(url).query), params)
+
     def test_canned_policy(self):
         cmdline = (
             self.prefix + '--private-key file://' + self.private_key_file +
             ' --date-less-than 2016-1-1')
-        self.assertIn('Expires', self.run_cmd(cmdline)[0])
+        expected_params = {
+            'Key-Pair-Id': ['my_id'],
+            'Expires': ['1451606400'], 'Signature': [mock.ANY]}
+        self.assertDesiredUrl(
+            self.run_cmd(cmdline)[0], 'http://example.com/hi', expected_params)
 
     def test_custom_policy(self):
         cmdline = (
             self.prefix + '--private-key file://' + self.private_key_file +
             ' --date-less-than 2016-1-1 --ip-address 12.34.56.78')
-        self.assertIn('Policy', self.run_cmd(cmdline)[0])
+        expected_params = {
+            'Key-Pair-Id': ['my_id'],
+            'Policy': [mock.ANY], 'Signature': [mock.ANY]}
+        self.assertDesiredUrl(
+            self.run_cmd(cmdline)[0], 'http://example.com/hi', expected_params)

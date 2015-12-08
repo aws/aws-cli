@@ -33,7 +33,7 @@ from awscli.customizations.ec2runinstances import register_runinstances
 from awscli.customizations.rds import register_rds_modify_split
 from awscli.customizations.putmetricdata import register_put_metric_data
 from awscli.customizations.sessendemail import register_ses_send_email
-from awscli.customizations.cloudfront import register as cloudfront_register
+from awscli.customizations.cloudfront import register as register_cloudfront
 from awscli.customizations.iamvirtmfa import IAMVMFAWrapper
 from awscli.customizations.argrename import register_arg_renames
 from awscli.customizations.configure import register_configure_cmd
@@ -109,7 +109,6 @@ def awscli_initialize(event_handlers):
     register_rds_modify_split(event_handlers)
     register_put_metric_data(event_handlers)
     register_ses_send_email(event_handlers)
-    cloudfront_register(event_handlers)
     IAMVMFAWrapper(event_handlers)
     register_arg_renames(event_handlers)
     register_configure_cmd(event_handlers)
@@ -142,3 +141,4 @@ def awscli_initialize(event_handlers):
     event_handlers.register(
         'building-argument-table.iot.create-certificate-from-csr',
         register_create_keys_from_csr_arguments)
+    register_cloudfront(event_handlers)

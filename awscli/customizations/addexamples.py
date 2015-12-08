@@ -25,6 +25,12 @@ work you need to:
   directory and needs to be named ``<service_name>-<op_name>.rst``.
   For example, ``examples/ec2/ec2-create-key-pair.rst``.
 
+To test new examples outside of the source tree, you can set the local
+environment variable ``AWS_EXAMPLE_PATH`` to an ``examples`` folder
+in an alternate location.
+
+For example: ``AWS_EXAMPLE_PATH="~/workplace/AWSCLIExamples/examples"``
+
 """
 import os
 import logging
@@ -34,16 +40,28 @@ LOG = logging.getLogger(__name__)
 
 
 def add_examples(help_command, **kwargs):
-    doc_path = os.path.join(
+    # set the relative path for the example .rst file
+    relative_rst_path = help_command.event_class.replace('.', os.path.sep) + '.rst'
+    # Set the default source example base path
+    src_example_base = os.path.join(
         os.path.dirname(
             os.path.dirname(
                 os.path.abspath(__file__))), 'examples')
-    doc_path = os.path.join(doc_path,
-                            help_command.event_class.replace('.', os.path.sep))
-    doc_path = doc_path + '.rst'
-    LOG.debug("Looking for example file at: %s", doc_path)
-    if os.path.isfile(doc_path):
-        help_command.doc.style.h2('Examples')
-        fp = open(doc_path)
-        for line in fp.readlines():
-            help_command.doc.write(line)
+    # Initialize empty list for example file locations
+    doc_paths = []
+    # If the AWS_EXAMPLE_PATH environment variable is set,
+    # add the alternative example path to doc_paths
+    if os.getenv('AWS_EXAMPLE_PATH'):
+        alt_example_base = os.path.expanduser(os.getenv('AWS_EXAMPLE_PATH'))
+        doc_paths.append(os.path.join(alt_example_base, relative_rst_path))
+    # Add the default example path to doc_paths
+    doc_paths.append(os.path.join(src_example_base, relative_rst_path))
+
+    for doc_path in doc_paths:
+        LOG.debug("Looking for example file at: %s", doc_path)
+        if os.path.isfile(doc_path):
+            help_command.doc.style.h2('Examples')
+            fp = open(doc_path)
+            for line in fp.readlines():
+                help_command.doc.write(line)
+            break

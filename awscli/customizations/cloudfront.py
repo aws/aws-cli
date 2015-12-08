@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import sys
 import time
 import random
 
@@ -64,7 +65,7 @@ def _add_sign(command_table, session, **kwargs):
 class SignCommand(BasicCommand):
     NAME = 'sign'
     DESCRIPTION = 'Sign a given url.'
-    DATE_HELP = """Supported formats include:
+    DATE_FORMAT = """Supported formats include:
         YYYY-MM-DD (which means 0AM UTC of that day),
         YYYY-MM-DDThh:mm:ss (with default timezone as UTC),
         YYYY-MM-DDThh:mm:ss+hh:mm or YYYY-MM-DDThh:mm:ss-hh:mm (with offset),
@@ -80,34 +81,49 @@ class SignCommand(BasicCommand):
         {
             'name': 'key-pair-id',
             'required': True,
-            'help_text': 'The ID of your CloudFront key pairs.',
+            'help_text': (
+                "The active CloudFront key pair Id for the key pair "
+                "that you're using to generate the signature."),
         },
         {
             'name': 'private-key',
             'required': True,
             'help_text': 'file://path/to/your/private-key.pem',
         },
-        {'name': 'date-less-than', 'required': True, 'help_text': DATE_HELP},
-        {'name': 'date-greater-than', 'help_text': DATE_HELP},
-        {'name': 'ip-address', 'help_text': 'Format: x.x.x.x/x or x.x.x.x'},
+        {
+            'name': 'date-less-than', 'required': True,
+            'help_text':
+                'The expiration date and time for the URL. ' + DATE_FORMAT,
+        },
+        {
+            'name': 'date-greater-than',
+            'help_text':
+                'An optional start date and time for the URL. ' + DATE_FORMAT,
+        },
+        {
+            'name': 'ip-address',
+            'help_text': (
+                'An optional IP address or IP address range to allow client '
+                'making the GET request from. Format: x.x.x.x/x or x.x.x.x'),
+        },
     ]
 
     def _run_main(self, args, parsed_globals):
         signer = CloudFrontSigner(
             args.key_pair_id, RSASigner(args.private_key).sign)
         date_less_than = parse_to_aware_datetime(args.date_less_than)
-        if args.date_greater_than is not None:
-            date_greater_than = parse_to_aware_datetime(args.date_greater_than)
-        else:
-            date_greater_than = None
+        date_greater_than = args.date_greater_than
+        if date_greater_than is not None:
+            date_greater_than = parse_to_aware_datetime(date_greater_than)
         if date_greater_than is not None or args.ip_address is not None:
             policy = signer.build_policy(
                 args.url, date_less_than, date_greater_than=date_greater_than,
                 ip_address=args.ip_address)
-            print(signer.generate_presigned_url(args.url, policy=policy))
+            sys.stdout.write(signer.generate_presigned_url(
+                args.url, policy=policy))
         else:
-            print(signer.generate_presigned_url(args.url,
-                                                date_less_than=date_less_than))
+            sys.stdout.write(signer.generate_presigned_url(
+                args.url, date_less_than=date_less_than))
         return 0
 
 

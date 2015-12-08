@@ -22,16 +22,16 @@ from collections import namedtuple, deque
 from functools import partial
 
 from dateutil.parser import parse
-from dateutil.tz import tzlocal
+from dateutil.tz import tzlocal, tzutc
 from botocore.compat import unquote_str
 
 from awscli.compat import six
 from awscli.compat import PY3
 from awscli.compat import queue
 
-
 HUMANIZE_SUFFIXES = ('KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB')
 MAX_PARTS = 10000
+EPOCH_TIME = datetime(1970, 1, 1, tzinfo=tzutc())
 # The maximum file size you can upload via S3 per request.
 # See: http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html
 # and: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
@@ -217,10 +217,21 @@ def get_file_stat(path):
     """
     try:
         stats = os.stat(path)
-        update_time = datetime.fromtimestamp(stats.st_mtime, tzlocal())
-    except (ValueError, IOError) as e:
+    except IOError as e:
         raise ValueError('Could not retrieve file stat of "%s": %s' % (
             path, e))
+
+    try:
+        update_time = datetime.fromtimestamp(stats.st_mtime, tzlocal())
+    except ValueError:
+        # Python's fromtimestamp raises value errors when the timestamp is out
+        # of range of the platform's C localtime() function. This can cause
+        # issues when syncing from systems with a wide range of valid timestamps
+        # to systems with a lower range. Some systems support 64-bit timestamps,
+        # for instance, while others only support 32-bit. We don't want to fail
+        # in these cases, so instead we pass along none.
+        update_time = None
+
     return stats.st_size, update_time
 
 
@@ -252,12 +263,13 @@ def find_dest_path_comp_key(files, src_path=None):
     return dest_path, compare_key
 
 
-def create_warning(path, error_message):
+def create_warning(path, error_message, skip_file=True):
     """
     This creates a ``PrintTask`` for whenever a warning is to be thrown.
     """
     print_string = "warning: "
-    print_string = print_string + "Skipping file " + path + ". "
+    if skip_file:
+        print_string = print_string + "Skipping file " + path + ". "
     print_string = print_string + error_message
     warning_message = PrintTask(message=print_string, error=False,
                                 warning=True)

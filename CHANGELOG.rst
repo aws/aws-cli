@@ -11,6 +11,9 @@ Next Release (TBD)
   (`issue 1662 <https://github.com/aws/aws-cli/pull/1662>`__)
 * feature:``aws cloudfront sign``: Add a new command to create a signed url.
   (`issue 1668 <https://github.com/aws/aws-cli/pull/1668>`__)
+* feature:``aws autoscaling``: Added support for protecting instances from
+  scale-in events.
+* feature:``aws rds``: Added support for Aurora encryption at rest.
 
 
 1.9.11

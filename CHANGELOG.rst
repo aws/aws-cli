@@ -7,6 +7,8 @@ Next Release (TBD)
 * feature:``aws configure add-model``: Added command for updating commands
   in the CLI and clients in boto3.
   (`issue 1664 <https://github.com/aws/aws-cli/pull/1664>`__)
+* feature:``aws cloudfront create-invalidation``: Add a new --paths option.
+  (`issue 1662 <https://github.com/aws/aws-cli/pull/1662>`__)
 
 
 1.9.11

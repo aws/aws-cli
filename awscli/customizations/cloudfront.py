@@ -68,7 +68,7 @@ class SignCommand(BasicCommand):
         YYYY-MM-DD (which means 0AM UTC of that day),
         YYYY-MM-DDThh:mm:ss (with default timezone as UTC),
         YYYY-MM-DDThh:mm:ss+hh:mm or YYYY-MM-DDThh:mm:ss-hh:mm (with offset),
-        or EpochTime.
+        or EpochTime (which always means UTC).
         Do NOT use YYYYMMDD, because it will be treated as EpochTime."""
     ARG_TABLE = [
         {
@@ -94,7 +94,7 @@ class SignCommand(BasicCommand):
 
     def _run_main(self, args, parsed_globals):
         signer = CloudFrontSigner(
-            args.key_pair_id, RsaSigner(args.private_key).sign)
+            args.key_pair_id, RSASigner(args.private_key).sign)
         date_less_than = parse_to_aware_datetime(args.date_less_than)
         if args.date_greater_than is not None:
             date_greater_than = parse_to_aware_datetime(args.date_greater_than)
@@ -106,11 +106,12 @@ class SignCommand(BasicCommand):
                 ip_address=args.ip_address)
             print(signer.generate_presigned_url(args.url, policy=policy))
         else:
-            print(signer.generate_presigned_url(args.url, date_less_than))
+            print(signer.generate_presigned_url(args.url,
+                                                date_less_than=date_less_than))
         return 0
 
 
-class RsaSigner(object):
+class RSASigner(object):
     def __init__(self, private_key):
         self.priv_key = rsa.PrivateKey.load_pkcs1(private_key.encode('utf8'))
 

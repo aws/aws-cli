@@ -19,6 +19,7 @@
 		            }
 		        }, 
 		        "Ec2InstanceAttributes": {
+		            "ServiceAccessSecurityGroup": "sg-xxxxxxxx",
 		            "EmrManagedMasterSecurityGroup": "sg-xxxxxxxx", 
 		            "IamInstanceProfile": "EMR_EC2_DefaultRole", 
 		            "Ec2KeyName": "myKey", 

@@ -151,11 +151,14 @@ EC2_ATTRIBUTES = (
     '<li>InstanceProfile - Provides access to other AWS services such as S3,'
     ' DynamoDB from EC2 instances that are launched by EMR.. </li>'
     '<li>EmrManagedMasterSecurityGroup - The identifier of the Amazon EC2'
-    ' security group (managed by Amazon Elastic MapReduce)'
+    ' security group'
     ' for the master node. </li>'
     '<li>EmrManagedSlaveSecurityGroup - The identifier of the Amazon EC2'
-    ' security group (managed by Amazon Elastic MapReduce)'
+    ' security group'
     ' for the slave nodes.</li>'
+    '<li>ServiceAccessSecurityGroup - The identifier of the Amazon EC2 '
+    'security group for the Amazon EMR service '
+    'to access clusters in VPC private subnets </li>'
     '<li>AdditionalMasterSecurityGroups - A list of additional Amazon EC2'
     ' security group IDs for the master node</li>'
     '<li>AdditionalSlaveSecurityGroups - A list of additional Amazon EC2'
@@ -298,12 +301,17 @@ LIST_CLUSTERS_CREATED_BEFORE = (
     'listing clusters. For example, 2014-07-15T00:01:30. </p>')
 
 EMR_MANAGED_MASTER_SECURITY_GROUP = (
-    '<p>The identifier of the Amazon EC2 security group (managed by Amazon '
-    'Elastic MapReduce) for the master node.</p>')
+    '<p>The identifier of the Amazon EC2 security group '
+    'for the master node.</p>')
 
 EMR_MANAGED_SLAVE_SECURITY_GROUP = (
-    '<p>The identifier of the Amazon EC2 security group (managed by Amazon '
-    'Elastic MapReduce) for the slave nodes.</p>')
+    '<p>The identifier of the Amazon EC2 security group '
+    'for the slave nodes.</p>')
+
+SERVICE_ACCESS_SECURITY_GROUP = (
+    '<p>The identifier of the Amazon EC2 security group '
+    'for the Amazon EMR service to access '
+    'clusters in VPC private subnets.</p>')
 
 ADDITIONAL_MASTER_SECURITY_GROUPS = (
     '<p> A list of additional Amazon EC2 security group IDs for '

@@ -97,6 +97,10 @@ EC2_ATTRIBUTES_SCHEMA = {
             "type": "string",
             "description": helptext.EMR_MANAGED_SLAVE_SECURITY_GROUP
         },
+        "ServiceAccessSecurityGroup": {
+            "type": "string",
+            "description": helptext.SERVICE_ACCESS_SECURITY_GROUP
+        },
         "AdditionalMasterSecurityGroups": {
             "type": "array",
             "description": helptext.ADDITIONAL_MASTER_SECURITY_GROUPS,

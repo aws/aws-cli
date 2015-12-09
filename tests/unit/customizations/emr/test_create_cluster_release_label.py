@@ -133,6 +133,8 @@ EMR_MANAGED_MASTER_SECURITY_GROUP = 'sg-master1'
 
 EMR_MANAGED_SLAVE_SECURITY_GROUP = 'sg-slave1'
 
+SERVICE_ACCESS_SECURITY_GROUP = "sg-service-access"
+
 ADDITIONAL_MASTER_SECURITY_GROUPS = \
     ['sg-addMaster1', 'sg-addMaster2', 'sg-addMaster3', 'sg-addMaster4']
 
@@ -905,8 +907,10 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_all_security_groups(self):
         cmd = DEFAULT_CMD + (
             '--ec2-attributes EmrManagedMasterSecurityGroup=sg-master1,'
-            'EmrManagedSlaveSecurityGroup=sg-slave1,AdditionalMasterSecu'
-            'rityGroups=[sg-addMaster1,sg-addMaster2,sg-addMaster3,'
+            'EmrManagedSlaveSecurityGroup=sg-slave1,'
+            'ServiceAccessSecurityGroup=sg-service-access,'
+            'AdditionalMasterSecurityGroups='
+            '[sg-addMaster1,sg-addMaster2,sg-addMaster3,'
             'sg-addMaster4],AdditionalSlaveSecurityGroups=[sg-addSlave1,'
             'sg-addSlave2,sg-addSlave3,sg-addSlave4]')
 
@@ -916,6 +920,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             EMR_MANAGED_MASTER_SECURITY_GROUP
         instances['EmrManagedSlaveSecurityGroup'] = \
             EMR_MANAGED_SLAVE_SECURITY_GROUP
+        instances['ServiceAccessSecurityGroup'] = \
+            SERVICE_ACCESS_SECURITY_GROUP
         instances['AdditionalMasterSecurityGroups'] = \
             ADDITIONAL_MASTER_SECURITY_GROUPS
         instances['AdditionalSlaveSecurityGroups'] = \
@@ -926,7 +932,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_emr_managed_security_groups(self):
         cmd = DEFAULT_CMD + (
             '--ec2-attributes EmrManagedMasterSecurityGroup=sg-master1,'
-            'EmrManagedSlaveSecurityGroup=sg-slave1')
+            'EmrManagedSlaveSecurityGroup=sg-slave1,'
+            'ServiceAccessSecurityGroup=sg-service-access')
 
         result = copy.deepcopy(DEFAULT_RESULT)
         instances = result['Instances']
@@ -934,6 +941,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             EMR_MANAGED_MASTER_SECURITY_GROUP
         instances['EmrManagedSlaveSecurityGroup'] = \
             EMR_MANAGED_SLAVE_SECURITY_GROUP
+        instances['ServiceAccessSecurityGroup'] = \
+            SERVICE_ACCESS_SECURITY_GROUP
 
         self.assert_params_for_cmd(cmd, result)
 
@@ -964,6 +973,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             EMR_MANAGED_MASTER_SECURITY_GROUP
         instances['EmrManagedSlaveSecurityGroup'] = \
             EMR_MANAGED_SLAVE_SECURITY_GROUP
+        instances['ServiceAccessSecurityGroup'] = \
+            SERVICE_ACCESS_SECURITY_GROUP
         instances['AdditionalMasterSecurityGroups'] = \
             ADDITIONAL_MASTER_SECURITY_GROUPS
         instances['AdditionalSlaveSecurityGroups'] = \

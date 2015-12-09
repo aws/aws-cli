@@ -2,11 +2,18 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.9.12
+======
 * feature:``aws configure add-model``: Added command for updating commands
   in the CLI and clients in boto3.
   (`issue 1664 <https://github.com/aws/aws-cli/pull/1664>`__)
+* feature:``aws cloudfront create-invalidation``: Add a new --paths option.
+  (`issue 1662 <https://github.com/aws/aws-cli/pull/1662>`__)
+* feature:``aws cloudfront sign``: Add a new command to create a signed url.
+  (`issue 1668 <https://github.com/aws/aws-cli/pull/1668>`__)
+* feature:``aws autoscaling``: Added support for protecting instances from
+  scale-in events.
+* feature:``aws rds``: Added support for Aurora encryption at rest.
 
 
 1.9.11

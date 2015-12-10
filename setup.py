@@ -30,7 +30,7 @@ setup_options = dict(
     packages=find_packages(exclude=['tests*']),
     package_data={'awscli': ['data/*.json', 'examples/*/*.rst',
                              'examples/*/*/*.rst', 'topics/*.rst',
-                             'topics/*.json']},
+                             'topics/*.json', 'bin/aws_bash_completer']},
     install_requires=requires,
     extras_require={
         ':python_version=="2.6"': [

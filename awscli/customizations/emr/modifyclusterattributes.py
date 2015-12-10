@@ -48,8 +48,8 @@ class ModifyClusterAttr(Command):
             raise exceptions.MutualExclusiveOptionError(
                 option1='--termination-protected',
                 option2='--no-termination-protected')
-        if not(args.termination_protected or args.no_termination_protected
-               or args.visible_to_all_users or args.no_visible_to_all_users):
+        if not(args.termination_protected or args.no_termination_protected or
+               args.visible_to_all_users or args.no_visible_to_all_users):
             raise exceptions.MissingClusterAttributesError()
 
         if (args.visible_to_all_users or args.no_visible_to_all_users):

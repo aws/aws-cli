@@ -138,8 +138,8 @@ EC2_ATTRIBUTES = (
     ' EmrManagedMasterSecurityGroup, EmrManagedSlaveSecurityGroup,'
     ' AdditionalMasterSecurityGroups and AdditionalSlaveSecurityGroups.'
     ' AvailabilityZone and Subnet cannot be specified together.'
-    ' To create the default instance profile <code>'
-    + EC2_ROLE_NAME + '</code>,'
+    ' To create the default instance profile <code>' +
+    EC2_ROLE_NAME + '</code>,'
     ' use <code>aws emr create-default-roles</code> command. </p>'
     'This command will also create the default EMR service role '
     '<code>' + EMR_ROLE_NAME + '</code>.'

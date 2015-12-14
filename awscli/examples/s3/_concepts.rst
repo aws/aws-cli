@@ -85,7 +85,7 @@ a particular file or object.  The following pattern symbols are supported.
     * ``*``: Matches everything
     * ``?``: Matches any single character
     * ``[sequence]``: Matches any character in ``sequence``
-    * ``[!sequence]``: Matches any charater not in ``sequence``
+    * ``[!sequence]``: Matches any character not in ``sequence``
 
 Any number of these parameters can be passed to a command.  You can do this by
 providing an ``--exclude`` or ``--include`` argument multiple times, e.g.

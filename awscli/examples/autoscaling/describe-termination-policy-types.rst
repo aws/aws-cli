@@ -6,15 +6,15 @@ The following ``describe-termination-policy-types`` command returns the availabl
 
 The output of this command is a JSON block that lists the types of termination policies, similar to the following::
 
-	{
-		"TerminationPolicyTypes": [
-			"ClosestToNextInstanceHour",
-			"Default",
-			"NewestInstance",
-			"OldestInstance",
-			"OldestLaunchConfiguration"
-		]
-	}
+  {
+    "TerminationPolicyTypes": [
+        "ClosestToNextInstanceHour",
+        "Default",
+        "NewestInstance",
+        "OldestInstance",
+        "OldestLaunchConfiguration"
+    ]
+  }
 
 For more information, see the `How Termination Policies Work`_ section in the Configure Instance Termination Policy for Your Auto Scaling Group topic, in the *Auto Scaling Developer Guide*.
 

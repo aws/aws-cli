@@ -35,7 +35,7 @@ COMPLETIONS = [
                       'codecommit', 'codepipeline', 'cognito-sync',
                       'configservice', 'configure', 'datapipeline', 'deploy',
                       'devicefarm', 'directconnect', 'ds', 'dynamodb',
-                      'dynamodbstreams', 'glacier', 'ec2', 'ecs', 'efs',
+                      'dynamodbstreams', 'glacier', 'ec2', 'ecr', 'ecs', 'efs',
                       'elasticache', 'elasticbeanstalk', 'elastictranscoder',
                       'elb', 'emr', 'es', 'firehose',
                       'iam', 'iot', 'iot-data', 'importexport', 'inspector',

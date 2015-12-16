@@ -98,3 +98,23 @@ def s3_bucket_exists(s3_client, bucket_name):
         if error_code == 404:
             bucket_exists = False
     return bucket_exists
+
+
+def create_client_from_parsed_globals(session, service_name, parsed_globals,
+                                      overrides=None):
+    """Creates a service client, taking parsed_globals into account
+
+    Any values specified in overrides will override the returned dict. Note
+    that this override occurs after 'region' from parsed_globals has been
+    translated into 'region_name' in the resulting dict.
+    """
+    client_args = {}
+    if 'region' in parsed_globals:
+        client_args['region_name'] = parsed_globals.region
+    if 'endpoint_url' in parsed_globals:
+        client_args['endpoint_url'] = parsed_globals.endpoint_url
+    if 'verify_ssl' in parsed_globals:
+        client_args['verify'] = parsed_globals.verify_ssl
+    if overrides:
+        client_args.update(overrides)
+    return session.create_client(service_name, **client_args)

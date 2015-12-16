@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+
+1.9.13
+======
+* feature:``aws ec2 copy-image``: Adds two optional parameters to support
+  launching EC2 instances with EBS encrypted boot volumes.
+* bugfix:``aws``: Fix regression when using AWS_DATA_PATH environment
+  variable
+  (`issue 736 <https://github.com/boto/botocore/pull/736>__`)
+
+
 1.9.12
 ======
 * feature:``aws configure add-model``: Added command for updating commands

@@ -38,6 +38,7 @@ from awscli.customizations.iamvirtmfa import IAMVMFAWrapper
 from awscli.customizations.argrename import register_arg_renames
 from awscli.customizations.configure import register_configure_cmd
 from awscli.customizations.cloudtrail import initialize as cloudtrail_init
+from awscli.customizations.ecr import register_ecr_commands
 from awscli.customizations.toplevelbool import register_bool_params
 from awscli.customizations.ec2protocolarg import register_protocol_args
 from awscli.customizations import datapipeline
@@ -113,6 +114,7 @@ def awscli_initialize(event_handlers):
     register_arg_renames(event_handlers)
     register_configure_cmd(event_handlers)
     cloudtrail_init(event_handlers)
+    register_ecr_commands(event_handlers)
     register_bool_params(event_handlers)
     register_protocol_args(event_handlers)
     datapipeline.register_customizations(event_handlers)

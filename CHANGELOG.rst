@@ -3,8 +3,8 @@ CHANGELOG
 =========
 
 
-Next Release (TBD)
-==================
+1.9.13
+======
 * feature:``aws ec2 copy-image``: Adds two optional parameters to support
   launching EC2 instances with EBS encrypted boot volumes.
 * bugfix:``aws``: Fix regression when using AWS_DATA_PATH environment

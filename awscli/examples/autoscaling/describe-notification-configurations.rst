@@ -6,20 +6,20 @@ The following ``describe-notification-configurations`` command returns the notif
 
 The output of this command is a JSON block that describes the notification configurations, similar to the following::
 
-	{
-		"NotificationConfigurations": [
-			{
-				"AutoScalingGroupName": "basic-auto-scaling-group",
-				"NotificationType": "autoscaling:TEST_NOTIFICATION",
-				"TopicARN": "arn:aws:sns:us-west-2:896650972448:second-test-topic"
-			},
-			{
-				"AutoScalingGroupName": "basic-auto-scaling-group",
-				"NotificationType": "autoscaling:TEST_NOTIFICATION",
-				"TopicARN": "arn:aws:sns:us-west-2:896650972448:test-topic"
-			}
-		]
-	}
+  {
+    "NotificationConfigurations": [
+      {
+        "AutoScalingGroupName": "basic-auto-scaling-group",
+        "NotificationType": "autoscaling:TEST_NOTIFICATION",
+        "TopicARN": "arn:aws:sns:us-west-2:123456789012:second-test-topic"
+      },
+      {
+        "AutoScalingGroupName": "basic-auto-scaling-group",
+        "NotificationType": "autoscaling:TEST_NOTIFICATION",
+        "TopicARN": "arn:aws:sns:us-west-2:123456789012:test-topic"
+      }
+    ]
+  }
 
 To return a specific number of notification configurations with this command, use the ``max-items`` parameter::
 
@@ -27,16 +27,16 @@ To return a specific number of notification configurations with this command, us
 
 In this example, the output of this command is a JSON block that describes the first notification configuration::
 
-	{
-		"NextToken": "None___1",
-		"NotificationConfigurations": [
-			{
-				"AutoScalingGroupName": "basic-auto-scaling-group",
-				"NotificationType": "autoscaling:TEST_NOTIFICATION",
-				"TopicARN": "arn:aws:sns:us-west-2:896650972448:second-test-topic"
-			}
-		]
-	}
+  {
+    "NextToken": "None___1",
+    "NotificationConfigurations": [
+      {
+        "AutoScalingGroupName": "basic-auto-scaling-group",
+        "NotificationType": "autoscaling:TEST_NOTIFICATION",
+        "TopicARN": "arn:aws:sns:us-west-2:123456789012:second-test-topic"
+      }
+    ]
+  }
 
 This JSON block includes a ``NextToken`` field. You can use the value of this field with the ``starting-token`` parameter to return additional notification configurations::
 

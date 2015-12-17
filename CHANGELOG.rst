@@ -3,13 +3,23 @@ CHANGELOG
 =========
 
 
+1.9.14
+======
+* feature:``aws rds``: Adds Enhanced Monitoring support so that you can
+  monitor operating system metrics for your RDS DB instances
+* feature:``aws configservice``: Support for IAM resource types
+* feature:``aws cloudtrail``: Adds ``isMultiRegion`` to some of the commands
+* feature:``aws cloudfront``: Adds support for gzip
+* feature:``aws ec2``: Adds new commands for VPC Managed NAT
+
+
 1.9.13
 ======
 * feature:``aws ec2 copy-image``: Adds two optional parameters to support
   launching EC2 instances with EBS encrypted boot volumes.
 * bugfix:``aws``: Fix regression when using AWS_DATA_PATH environment
   variable
-  (`issue 736 <https://github.com/boto/botocore/pull/736>__`)
+  (`issue 736 <https://github.com/boto/botocore/pull/736>`__)
 
 
 1.9.12
@@ -31,7 +41,7 @@ CHANGELOG
 
 * feature:``aws rds``: Added support for specifying port number.
 * feature:``aws ds``: Added support for Microsoft ActiveDirctory.
-* feature:``aws route53``: Added support for TrafficFlow, a new 
+* feature:``aws route53``: Added support for TrafficFlow, a new
   management and modeling layer for Route53.
 * feature:Timeouts: Added additonal options for configuring socket timeouts.
 

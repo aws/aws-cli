@@ -6,24 +6,24 @@ The following ``describe-tags`` command returns all tags::
 
 The output of this command is a JSON block that describes the tags for all Auto Scaling groups, similar to the following::
 
-	{
-		"Tags": [
-			{
-				"ResourceType": "auto-scaling-group",
-				"ResourceId": "tags-auto-scaling-group",
-				"PropagateAtLaunch": true,
-				"Value": "Research",
-				"Key": "Dept"
-			},
-			{
-				"ResourceType": "auto-scaling-group",
-				"ResourceId": "tags-auto-scaling-group",
-				"PropagateAtLaunch": true,
-				"Value": "WebServer",
-				"Key": "Role"
-			}
-		]
-	}
+  {
+    "Tags": [
+      {
+        "ResourceType": "auto-scaling-group",
+        "ResourceId": "tags-auto-scaling-group",
+        "PropagateAtLaunch": true,
+        "Value": "Research",
+        "Key": "Dept"
+      },
+      {
+        "ResourceType": "auto-scaling-group",
+        "ResourceId": "tags-auto-scaling-group",
+        "PropagateAtLaunch": true,
+        "Value": "WebServer",
+        "Key": "Role"
+      }
+    ]
+  }
 
 The following example uses the ``filters`` parameter to return tags for a specific Auto Scaling group::
 
@@ -35,18 +35,18 @@ To return a specific number of tags with this command, use the ``max-items`` par
 
 In this example, the output of this command is a JSON block that describes the first tag::
 
-	{
-		"NextToken": "None___1",
-		"Tags": [
-			{
-				"ResourceType": "auto-scaling-group",
-				"ResourceId": "tags-auto-scaling-group",
-				"PropagateAtLaunch": true,
-				"Value": "Research",
-				"Key": "Dept"
-			}
-		]
-	}
+  {
+    "NextToken": "None___1",
+    "Tags": [
+      {
+        "ResourceType": "auto-scaling-group",
+        "ResourceId": "tags-auto-scaling-group",
+        "PropagateAtLaunch": true,
+        "Value": "Research",
+        "Key": "Dept"
+      }
+    ]
+  }
 
 This JSON block includes a ``NextToken`` field. You can use the value of this field with the ``starting-token`` parameter to return additional tags::
 

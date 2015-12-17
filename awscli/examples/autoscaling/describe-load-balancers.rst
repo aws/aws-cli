@@ -6,11 +6,11 @@ This example returns information about the load balancers for the specified Auto
 
 The following is example output for this command::
 
-	{
+  {
     "LoadBalancers": [
-        {
-            "State": "Added",
-            "LoadBalancerName": "my-lb"
-        }
+      {
+        "State": "Added",
+        "LoadBalancerName": "my-lb"
+      }
     ]
-	}
+  }

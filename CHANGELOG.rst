@@ -3,8 +3,8 @@ CHANGELOG
 =========
 
 
-Next Release (TBD)
-==================
+1.9.14
+======
 * feature:``aws rds``: Adds Enhanced Monitoring support so that you can
   monitor operating system metrics for your RDS DB instances
 * feature:``aws configservice``: Support for IAM resource types

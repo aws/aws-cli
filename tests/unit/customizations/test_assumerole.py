@@ -19,6 +19,7 @@ from datetime import datetime, timedelta
 import mock
 from botocore.hooks import HierarchicalEmitter
 from botocore.exceptions import PartialCredentialsError
+from botocore.exceptions import ProfileNotFound
 from dateutil.tz import tzlocal
 
 from awscli.testutils import unittest, skip_if_windows
@@ -46,6 +47,17 @@ class TestAssumeRolePlugin(unittest.TestCase):
         # that our handler was called, as it's the only thing that should
         # be registered.
         session.get_component.assert_called_with('credential_provider')
+
+    def test_no_registration_if_profile_does_not_exist(self):
+        session = mock.Mock()
+        session.get_component.side_effect = ProfileNotFound(
+            profile='unknown')
+
+        assumerole.inject_assume_role_provider_cache(
+            session, event_name='building-command-table.foo')
+
+        credential_provider = session.get_component.return_value
+        self.assertFalse(credential_provider.get_provider.called)
 
 
 class TestJSONCache(unittest.TestCase):

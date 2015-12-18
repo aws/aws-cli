@@ -1,5 +1,10 @@
 import os
 import json
+import logging
+
+from botocore.exceptions import ProfileNotFound
+
+LOG = logging.getLogger(__name__)
 
 
 def register_assume_role_provider(event_handlers):
@@ -9,7 +14,28 @@ def register_assume_role_provider(event_handlers):
 
 
 def inject_assume_role_provider_cache(session, **kwargs):
-    cred_chain = session.get_component('credential_provider')
+    try:
+        cred_chain = session.get_component('credential_provider')
+    except ProfileNotFound:
+        # If a user has provided a profile that does not exist,
+        # trying to retrieve components/config on the session
+        # will raise ProfileNotFound.  Sometimes this is invalid:
+        #
+        # "ec2 describe-instances --profile unknown"
+        #
+        # and sometimes this is perfectly valid:
+        #
+        # "configure set region us-west-2 --profile brand-new-profile"
+        #
+        # Because we can't know (and don't want to know) whether
+        # the customer is trying to do something valid, we just
+        # immediately return.  If it's invalid something else
+        # up the stack will raise ProfileNotFound, otherwise
+        # the configure (and other) commands will work as expected.
+        LOG.debug("ProfileNotFound caught when trying to inject "
+                  "assume-role cred provider cache.  Not configuring "
+                  "JSONFileCache for assume-role.")
+        return
     provider = cred_chain.get_provider('assume-role')
     provider.cache = JSONFileCache()
 

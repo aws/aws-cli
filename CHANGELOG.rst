@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.9.15
+======
 
 * feature:``aws ecr``: Add ``aws ecr`` commands
 * feature:``aws emr``: Update ``aws emr create-cluster`` to accept Amazon EC2

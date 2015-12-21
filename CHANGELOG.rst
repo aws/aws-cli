@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``aws ecr``: Add ``aws ecr`` commands
+* feature:``aws emr``: Update ``aws emr create-cluster`` to accept Amazon EC2
+  security group
+* feature:``aws ecs``: Update ``ecs`` command to include a new deployment
+  option
+
 
 1.9.14
 ======

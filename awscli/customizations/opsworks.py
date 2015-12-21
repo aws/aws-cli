@@ -24,6 +24,7 @@ import textwrap
 
 from awscli.compat import shlex_quote, urlopen
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.utils import create_client_from_parsed_globals
 from awscli.errorhandler import ClientError
 
 
@@ -126,16 +127,9 @@ class OpsWorksRegister(BasicCommand):
         self._name_for_iam = None
 
     def _create_clients(self, args, parsed_globals):
-        endpoint_args = {}
-        if 'region' in parsed_globals:
-            endpoint_args['region_name'] = parsed_globals.region
-        if 'endpoint_url' in parsed_globals:
-            endpoint_args['endpoint_url'] = parsed_globals.endpoint_url
-        if 'verify_ssl' in parsed_globals:
-            endpoint_args['verify'] = parsed_globals.verify_ssl
         self.iam = self._session.create_client('iam')
-        self.opsworks = self._session.create_client(
-            'opsworks', **endpoint_args)
+        self.opsworks = create_client_from_parsed_globals(
+            self._session, 'opsworks', parsed_globals)
 
     def _run_main(self, args, parsed_globals):
         self._create_clients(args, parsed_globals)

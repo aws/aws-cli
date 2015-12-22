@@ -4,7 +4,7 @@ This example command adds a rule that grants access to the specified address ran
 
 Command::
 
-  aws ec2 authorize-security-group-egress --group-id sg-1a2b3c4d --protocol tcp --port 80 --cidr 203.0.113.0/24
+  aws ec2 authorize-security-group-egress --group-id sg-1a2b3c4d --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 80, "ToPort": 80, "IpRanges": [{"CidrIp": "10.0.0.0/16"}]}]'
 
 **To add a rule that allows outbound traffic to a specific security group**
 
@@ -12,4 +12,4 @@ This example command adds a rule that grants access to the specified security gr
 
 Command::
 
-  aws ec2 authorize-security-group-egress --group-id sg-1a2b3c4d --protocol tcp --port 80 --source-group sg-9a8d7f5c
+  aws ec2 authorize-security-group-egress --group-id sg-1a2b3c4d --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 80, "ToPort": 80, "UserIdGroupPairs": [{"GroupId": "sg-4b51a32f"}]}]' 

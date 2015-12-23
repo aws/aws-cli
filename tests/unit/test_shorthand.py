@@ -241,3 +241,19 @@ class TestModelVisitor(unittest.TestCase):
         params = {}
         b.visit(params, m)
         self.assertEqual(params, {})
+
+    def test_can_convert_list_of_integers(self):
+        m = model.DenormalizedStructureBuilder().with_members({
+            'A': {
+                'type': 'list',
+                'member': {
+                    'type': 'integer',
+                },
+            },
+        }).build_model()
+        b = shorthand.BackCompatVisitor()
+        params = {'A': ['1', '2']}
+        b.visit(params, m)
+        # We should have converted each list element to an integer
+        # because the type of the list member is integer.
+        self.assertEqual(params, {'A': [1, 2]})

@@ -1,16 +1,18 @@
-**To list the policies for IAM groups in the current account**
+**To list all inline policies that are attached to the specified group**
 
-The following ``list-group-policies`` command lists the names of policies that are attached to the IAM group named
+The following ``list-group-policies`` command lists the names of inline policies that are attached to the IAM group named
 ``Admins`` in the current account::
 
   aws iam list-group-policies --group-name Admins
 
 Output::
 
-  "PolicyNames": [
-    "ExamplepPolicy",
-    "AdminPolicy"
-  ]
+  {
+      "PolicyNames": [
+          "AdminRoot",
+          "ExamplepPolicy"
+      ]
+  }
 
 For more information, see `Managing IAM Policies`_ in the *Using IAM* guide.
 

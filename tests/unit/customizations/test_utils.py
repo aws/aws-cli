@@ -40,6 +40,17 @@ class TestCommandTableRenames(BaseAWSHelpOutputTest):
         self.assert_contains('run-instances')
 
 
+class TestHiddenAlias(unittest.TestCase):
+    def test_hidden_alias_makrs_as_not_required(self):
+        original_arg_required = mock.Mock()
+        original_arg_required.required = True
+        arg_table = {'original': original_arg_required}
+        utils.make_hidden_alias(arg_table, 'original', 'new-name')
+        self.assertIn('new-name', arg_table)
+        self.assertFalse(arg_table['original'].required)
+        self.assertFalse(arg_table['new-name'].required)
+
+
 class TestValidateMututuallyExclusiveGroups(unittest.TestCase):
     def test_two_single_groups(self):
         # The most basic example of mutually exclusive args.
@@ -53,7 +64,6 @@ class TestValidateMututuallyExclusiveGroups(unittest.TestCase):
         parsed = FakeParsedArgs(foo='one', bar='two')
         with self.assertRaises(ValueError):
             utils.validate_mutually_exclusive(parsed, ['foo'], ['bar'])
-
 
     def test_multiple_groups(self):
         groups = (['one', 'two', 'three'], ['foo', 'bar', 'baz'],
@@ -98,6 +108,7 @@ class TestS3BucketExists(unittest.TestCase):
         self.s3_client.head_bucket.side_effect = forbidden_error
         self.assertTrue(
             utils.s3_bucket_exists(self.s3_client, self.bucket_name))
+
 
 class TestClientCreationFromGlobals(unittest.TestCase):
     def setUp(self):

@@ -2,6 +2,11 @@
 CHANGELOG
 =========
 
+1.9.16
+======
+* feature:``aws ec2``: Add new EC2 instance type: t2.nano
+* feature:``aws datapipeline list-runs``: Add support for output format
+
 1.9.15
 ======
 

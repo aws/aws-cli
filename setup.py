@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 import awscli
 
 
-requires = ['botocore==1.3.15',
+requires = ['botocore==1.3.16',
             'colorama>=0.2.5,<=0.3.3',
             'docutils>=0.10',
             'rsa>=3.1.2,<=3.3.0']
@@ -26,7 +26,8 @@ setup_options = dict(
     author='Amazon Web Services',
     url='http://aws.amazon.com/cli/',
     scripts=['bin/aws', 'bin/aws.cmd',
-             'bin/aws_completer', 'bin/aws_zsh_completer.sh'],
+             'bin/aws_completer', 'bin/aws_zsh_completer.sh',
+             'bin/aws_bash_completer'],
     packages=find_packages(exclude=['tests*']),
     package_data={'awscli': ['data/*.json', 'examples/*/*.rst',
                              'examples/*/*/*.rst', 'topics/*.rst',

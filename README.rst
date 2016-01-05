@@ -69,9 +69,12 @@ Command Completion
 
 The aws-cli package includes a very useful command completion feature.
 This feature is not automatically installed so you need to configure it manually.
-To enable tab completion for bash use the built-in command ``complete``::
+To enable tab completion for bash either use the built-in command ``complete``::
 
     $ complete -C aws_completer aws
+
+Or add ``bin/aws_bash_completer`` file under ``/etc/bash_completion.d``,
+``/usr/local/etc/bash_completion.d`` or any other ``bash_completion.d`` location.
 
 For tcsh::
 

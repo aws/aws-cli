@@ -1,12 +1,27 @@
-import sys
+# Copyright 2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"). You
+# may not use this file except in compliance with the License. A copy of
+# the License is located at
+#
+#     http://aws.amazon.com/apache2.0/
+#
+# or in the "license" file accompanying this file. This file is
+# distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+# ANY KIND, either express or implied. See the License for the specific
+# language governing permissions and limitations under the License.
+
 import json
 from datetime import datetime, timedelta
 
+from awscli.formatter import get_formatter
 from awscli.arguments import CustomArgument
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.datapipeline import translator
 from awscli.customizations.datapipeline.createdefaultroles \
     import CreateDefaultRoles
+from awscli.customizations.datapipeline.listrunsformatter \
+    import ListRunsFormatter
 
 
 DEFINITION_HELP_TEXT = """\
@@ -46,6 +61,7 @@ class ParameterDefinitionError(Exception):
         full_msg = ("Error in parameter: %s\n" % msg)
         super(ParameterDefinitionError, self).__init__(full_msg)
         self.msg = msg
+
 
 def register_customizations(cli):
     cli.register(
@@ -162,8 +178,8 @@ def convert_described_objects(api_describe_objects, sort_key_func=None):
 
 
 class QueryArgBuilder(object):
-    """Convert CLI arguments to Query arguments used by QueryObject.
-
+    """
+    Convert CLI arguments to Query arguments used by QueryObject.
     """
     def __init__(self, current_time=None):
         if current_time is None:
@@ -335,21 +351,16 @@ class ListRunsCommand(BasicCommand):
                     'finished', 'failed', 'waiting_for_runner',
                     'waiting_on_dependencies', 'shutting_down']
 
-    def __init__(self, session, formatter=None):
-        super(ListRunsCommand, self).__init__(session)
-        if formatter is None:
-            formatter = ListRunsFormatter()
-        self._formatter = formatter
-
     def _run_main(self, parsed_args, parsed_globals, **kwargs):
         self._set_client(parsed_globals)
         self._parse_type_args(parsed_args)
-        self._list_runs(parsed_args)
+        self._list_runs(parsed_args, parsed_globals)
 
     def _set_client(self, parsed_globals):
         # This is called from _run_main and is used to ensure that we have
         # a service/endpoint object to work with.
-        self.client = self._session.create_client('datapipeline',
+        self.client = self._session.create_client(
+            'datapipeline',
             region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl)
@@ -378,7 +389,7 @@ class ListRunsCommand(BasicCommand):
                 raise ValueError("Invalid status: %s, must be one of: %s" %
                                  (status, ', '.join(self.VALID_STATUS)))
 
-    def _list_runs(self, parsed_args):
+    def _list_runs(self, parsed_args, parsed_globals):
         query = QueryArgBuilder().build_query(parsed_args)
         object_ids = self._query_objects(parsed_args.pipeline_id, query)
         objects = self._describe_objects(parsed_args.pipeline_id, object_ids)[
@@ -387,7 +398,8 @@ class ListRunsCommand(BasicCommand):
             objects,
             sort_key_func=lambda x: (x.get('@scheduledStartTime'),
                                      x.get('name')))
-        self._formatter.display_objects_to_user(converted)
+        formatter = self._get_formatter(parsed_globals)
+        formatter(self.NAME, converted)
 
     def _describe_objects(self, pipeline_id, object_ids):
         parsed = self.client.describe_objects(
@@ -401,43 +413,9 @@ class ListRunsCommand(BasicCommand):
         parsed = paginator.build_full_result()
         return parsed['ids']
 
-
-class ListRunsFormatter(object):
-    TITLE_ROW_FORMAT_STRING = "       %-50.50s  %-19.19s  %-23.23s"
-    FIRST_ROW_FORMAT_STRING = "%4d.  %-50.50s  %-19.19s  %-23.23s"
-    SECOND_ROW_FORMAT_STRING = "       %-50.50s  %-19.19s  %-19.19s"
-
-    def __init__(self, stream=sys.stdout):
-        self._stream = stream
-
-    def display_objects_to_user(self, objects):
-        self._print_headers()
-        for i, obj in enumerate(objects):
-            self._print_row(i, obj)
-
-    def _print_headers(self):
-        self._stream.write(self.TITLE_ROW_FORMAT_STRING % (
-            "Name", "Scheduled Start", "Status"))
-        self._stream.write('\n')
-        second_row = (self.SECOND_ROW_FORMAT_STRING % (
-            "ID", "Started", "Ended"))
-        self._stream.write(second_row)
-        self._stream.write('\n')
-        self._stream.write('-' * len(second_row))
-        self._stream.write('\n')
-
-    def _print_row(self, index, obj):
-        logical_name = obj['@componentParent']
-        object_id = obj['@id']
-        scheduled_start_date = obj.get('@scheduledStartTime', '')
-        status = obj.get('@status', '')
-        start_date = obj.get('@actualStartTime', '')
-        end_date = obj.get('@actualEndTime', '')
-        first_row = self.FIRST_ROW_FORMAT_STRING % (
-            index + 1, logical_name, scheduled_start_date, status)
-        second_row = self.SECOND_ROW_FORMAT_STRING % (
-            object_id, start_date, end_date)
-        self._stream.write(first_row)
-        self._stream.write('\n')
-        self._stream.write(second_row)
-        self._stream.write('\n\n')
+    def _get_formatter(self, parsed_globals):
+        output = parsed_globals.output
+        if output is None:
+            return ListRunsFormatter(parsed_globals)
+        else:
+            return get_formatter(output, parsed_globals)

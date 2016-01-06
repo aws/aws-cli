@@ -262,6 +262,14 @@ Where mapping.json contains the following::
     }
   ]
 
+**To launch an instance with user data**
+
+You can launch an instance and specify user data that performs instance configuration, or that runs a script. The following example passes user data in a file called ``my_script.txt`` that contains a configuration script for your instance. The script runs at launch.
+
+Command::
+
+  aws ec2 run-instances --image-id ami-abc1234 --count 1 --instance-type m4.large --key-name keypair --user-data file://my_script.txt --subnet-id subnet-abcd1234 --security-group-ids sg-abcd1234 
+
 For more information about launching instances, see `Using Amazon EC2 Instances`_ in the *AWS Command Line Interface User Guide*.
 
 .. _`Using Amazon EC2 Instances`: http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-launch.html

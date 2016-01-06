@@ -2,6 +2,10 @@
 CHANGELOG
 =========
 
+1.9.17
+======
+* bugfix:``aws ssm``: Documentation update.
+
 1.9.16
 ======
 * feature:``aws ec2``: Add new EC2 instance type: t2.nano

@@ -57,3 +57,16 @@ Output::
           }
       ]  
   }
+  
+**To describe subnets with a specific tag**
+
+This example lists subnets with the tag ``Name=MySubnet`` and returns the output in text format.
+
+Command::
+
+  aws ec2 describe-subnets --filters Name=tag:Name,Values=MySubnet --output text
+
+Output::
+
+  SUBNETS	us-east-1a	251	10.0.1.0/24	False	False	available	subnet-1a2b3c4d	vpc-11223344
+  TAGS	Name	MySubnet

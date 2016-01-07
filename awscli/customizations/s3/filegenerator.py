@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import logging
 import os
 import sys
 import stat
@@ -23,6 +24,8 @@ from awscli.customizations.s3.utils import BucketLister, create_warning, \
     find_dest_path_comp_key, EPOCH_TIME
 from awscli.compat import six
 from awscli.compat import queue
+
+LOGGER = logging.getLogger(__name__)
 
 _open = open
 
@@ -116,7 +119,8 @@ class FileGenerator(object):
     ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
     def __init__(self, client, operation_name, follow_symlinks=True,
-                 page_size=None, result_queue=None, request_parameters=None):
+                 page_size=None, result_queue=None, request_parameters=None,
+                 filters=None):
         self._client = client
         self.operation_name = operation_name
         self.follow_symlinks = follow_symlinks
@@ -127,6 +131,9 @@ class FileGenerator(object):
         self.request_parameters = {}
         if request_parameters is not None:
             self.request_parameters = request_parameters
+        self.filters = []
+        if filters is not None:
+            self.filters = filters
 
     def call(self, files):
         """
@@ -319,6 +326,15 @@ class FileGenerator(object):
         else:
             lister = BucketLister(self._client)
             extra_args = self.request_parameters.get('ListObjectsV2', {})
+
+            # API optimization: if we have only one include filter, we
+            # can minimize our S3 API calls by using it as our prefix
+            if self.filters:
+                includes = [t[1] for t in self.filters.patterns if t[0] == 'include']
+                if len(includes) == 1:
+                    prefix = includes[0].rstrip('*').lstrip(bucket).lstrip('/')
+                    LOGGER.debug("Using lone include filter as prefix: %s" % (prefix))
+
             for key in lister.list_objects(bucket=bucket, prefix=prefix,
                                            page_size=self.page_size,
                                            extra_args=extra_args):

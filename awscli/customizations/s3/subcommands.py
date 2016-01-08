@@ -741,6 +741,7 @@ class MvCommand(S3TransferCommand):
                   'synopsis': USAGE}] + TRANSFER_ARGS +\
                 [METADATA, METADATA_DIRECTIVE, RECURSIVE]
 
+
 class RmCommand(S3TransferCommand):
     NAME = 'rm'
     DESCRIPTION = "Deletes an S3 object."
@@ -965,7 +966,11 @@ class CommandArchitecture(object):
         paths_type = self.parameters['paths_type']
         files = FileFormat().format(src, dest, self.parameters)
         rev_files = FileFormat().format(dest, src, self.parameters)
-        filters = create_filter(self.parameters)
+
+        # some commands won't populate filters
+        filters = None
+        if self.parameters.get('filters'):
+            filters = create_filter(self.parameters)
 
         cmd_translation = {
             'locals3': 'upload',

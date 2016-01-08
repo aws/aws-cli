@@ -33,6 +33,19 @@ def register(event_handler):
         'operation-args-parsed.cloudfront.create-invalidation',
         validate_mutually_exclusive_handler(['invalidation_batch'], ['paths']))
 
+    # Provides a --origin-domain-name for "aws cloudfront create-distribution"
+    event_handler.register(
+        'building-argument-table.cloudfront.create-distribution',
+        _add_origin_domain_name)
+    event_handler.register(
+        'operation-args-parsed.cloudfront.create-distribution',
+        validate_mutually_exclusive_handler(
+            ['origin-domain-name'], ['distribution-config']))
+
+
+def caller_reference(prefix="cli"):
+    return '%s-%s-%s' % (prefix, int(time.time()), random.randint(1, 1000000))
+
 
 def _add_paths(argument_table, **kwargs):
     argument_table['invalidation-batch'].required = False
@@ -50,12 +63,59 @@ class PathsArgument(CustomArgument):
 
     def add_to_params(self, parameters, value):
         if value is not None:
-            caller_reference = 'cli-%s-%s' % (
-                int(time.time()), random.randint(1, 1000000))
             parameters['InvalidationBatch'] = {
-                "CallerReference": caller_reference,
+                "CallerReference": caller_reference(),
                 "Paths": {"Quantity": len(value), "Items": value},
                 }
+
+
+def _add_origin_domain_name(argument_table, **kwargs):
+    argument_table['distribution-config'].required = False
+    argument_table['origin-domain-name'] = OriginDomainNameArgument()
+
+
+class OriginDomainNameArgument(CustomArgument):
+
+    def __init__(self):
+        doc = (
+            'The domain name for your origin. Note: --origin-domain-name '
+            'and --distribution-config are mututally exclusive.'
+        )
+        super(OriginDomainNameArgument, self).__init__(
+            'origin-domain-name', help_text=doc)
+
+    def add_to_params(self, parameters, value):
+        if value is None:
+            return
+        origin_id = caller_reference(prefix='origin_id')
+        item = {"Id": origin_id, "DomainName": value, "OriginPath": ""}
+        if value.endswith('.s3.amazonaws.com'):
+            item["S3OriginConfig"] = {"OriginAccessIdentity": ""}
+        else:
+            item["CustomOriginConfig"] = {
+                'HTTPPort': 80, 'HTTPSPort': 443,
+                'OriginProtocolPolicy': 'http-only'}
+        parameters['DistributionConfig'] = {  # The minimal config
+            "CallerReference": caller_reference(),
+            "Origins": {"Quantity": 1, "Items": [item]},
+            "DefaultCacheBehavior": {
+                "TargetOriginId": origin_id,
+                "ForwardedValues": {
+                    "QueryString": True,
+                    "Cookies": {
+                        "Forward": "none"
+                    }
+                },
+                "TrustedSigners": {
+                    "Enabled": True,
+                    "Quantity": 0
+                },
+                "ViewerProtocolPolicy": "allow-all",
+                "MinTTL": 0
+            },
+            "Enabled": True,
+            "Comment": ""
+        }
 
 
 def _add_sign(command_table, session, **kwargs):

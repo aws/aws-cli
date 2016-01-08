@@ -17,6 +17,7 @@ import random
 import rsa
 from botocore.utils import parse_to_aware_datetime
 from botocore.signers import CloudFrontSigner
+from botocore.session import Session
 
 from awscli.arguments import CustomArgument
 from awscli.customizations.utils import validate_mutually_exclusive_handler
@@ -32,6 +33,17 @@ def register(event_handler):
     event_handler.register(
         'operation-args-parsed.cloudfront.create-invalidation',
         validate_mutually_exclusive_handler(['invalidation_batch'], ['paths']))
+
+    # Provides a --default-root-object for "aws cloudfront update-distribution"
+    event_handler.register(
+        'building-argument-table.cloudfront.update-distribution',
+        _add_default_root_object)
+    event_handler.register(
+        'operation-args-parsed.cloudfront.update-distribution',
+        validate_mutually_exclusive_handler(
+            ['default_root_object'], ['distribution_config']))
+    event_handler.register(
+        'calling-command.cloudfront.update-distribution', _update_distribution)
 
 
 def _add_paths(argument_table, **kwargs):
@@ -56,6 +68,44 @@ class PathsArgument(CustomArgument):
                 "CallerReference": caller_reference,
                 "Paths": {"Quantity": len(value), "Items": value},
                 }
+
+
+def _add_default_root_object(argument_table, **kwargs):
+    argument_table['distribution-config'].required = False
+    argument_table['default-root-object'] = DefaultRootObjectArgument(
+        kwargs['session'])
+
+
+class DefaultRootObjectArgument(CustomArgument):
+
+    def __init__(self, session):
+        doc = (
+            'The object that you want CloudFront to return (for example, '
+            'index.html) when a viewer request points to your root URL. '
+            'Note: --default-root-object '
+            'and --distribution-config are mututally exclusive.'
+        )
+        super(DefaultRootObjectArgument, self).__init__(
+            'default-root-object', help_text=doc)
+        self.session = session
+
+    def add_to_params(self, parameters, value):
+        if value is not None:
+            parameters[self.name] = value
+
+
+def _update_distribution(parsed_globals, call_parameters, **kwargs):
+    if ('default-root-object' in call_parameters
+            and 'DistributionConfig' not in call_parameters):
+        client = Session().create_client(
+            'cloudfront', region_name=parsed_globals.region,
+            endpoint_url=parsed_globals.endpoint_url,
+            verify=parsed_globals.verify_ssl)
+        response = client.get_distribution_config(Id=call_parameters['Id'])
+        call_parameters['IfMatch'] = response['ETag']
+        call_parameters['DistributionConfig'] = response['DistributionConfig']
+        call_parameters['DistributionConfig']['DefaultRootObject'] = \
+            call_parameters.pop('default-root-object')
 
 
 def _add_sign(command_table, session, **kwargs):

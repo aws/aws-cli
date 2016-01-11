@@ -2,6 +2,75 @@
 CHANGELOG
 =========
 
+1.9.17
+======
+* bugfix:``aws ssm``: Documentation update.
+
+1.9.16
+======
+* feature:``aws ec2``: Add new EC2 instance type: t2.nano
+* feature:``aws datapipeline list-runs``: Add support for output format
+
+1.9.15
+======
+
+* feature:``aws ecr``: Add ``aws ecr`` commands
+* feature:``aws emr``: Update ``aws emr create-cluster`` to accept Amazon EC2
+  security group
+* feature:``aws ecs``: Update ``ecs`` command to include a new deployment
+  option
+
+
+1.9.14
+======
+* feature:``aws rds``: Adds Enhanced Monitoring support so that you can
+  monitor operating system metrics for your RDS DB instances
+* feature:``aws configservice``: Support for IAM resource types
+* feature:``aws cloudtrail``: Adds ``isMultiRegion`` to some of the commands
+* feature:``aws cloudfront``: Adds support for gzip
+* feature:``aws ec2``: Adds new commands for VPC Managed NAT
+
+
+1.9.13
+======
+* feature:``aws ec2 copy-image``: Adds two optional parameters to support
+  launching EC2 instances with EBS encrypted boot volumes.
+* bugfix:``aws``: Fix regression when using AWS_DATA_PATH environment
+  variable
+  (`issue 736 <https://github.com/boto/botocore/pull/736>`__)
+
+
+1.9.12
+======
+* feature:``aws configure add-model``: Added command for updating commands
+  in the CLI and clients in boto3.
+  (`issue 1664 <https://github.com/aws/aws-cli/pull/1664>`__)
+* feature:``aws cloudfront create-invalidation``: Add a new --paths option.
+  (`issue 1662 <https://github.com/aws/aws-cli/pull/1662>`__)
+* feature:``aws cloudfront sign``: Add a new command to create a signed url.
+  (`issue 1668 <https://github.com/aws/aws-cli/pull/1668>`__)
+* feature:``aws autoscaling``: Added support for protecting instances from
+  scale-in events.
+* feature:``aws rds``: Added support for Aurora encryption at rest.
+
+
+1.9.11
+======
+
+* feature:``aws rds``: Added support for specifying port number.
+* feature:``aws ds``: Added support for Microsoft ActiveDirctory.
+* feature:``aws route53``: Added support for TrafficFlow, a new
+  management and modeling layer for Route53.
+* feature:Timeouts: Added additonal options for configuring socket timeouts.
+
+
+1.9.10
+======
+
+* feature:``aws config``: Added support for dedicated hosts.
+* feature:``aws s3``: Added support for custom metadata in cp, mv, and sync.
+
+
 1.9.9
 =====
 

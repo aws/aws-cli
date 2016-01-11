@@ -19,6 +19,7 @@ from botocore.exceptions import ProfileNotFound
 
 from awscli.compat import raw_input
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.configure.addmodel import AddModelCommand
 
 
 logger = logging.getLogger(__name__)
@@ -533,6 +534,7 @@ class ConfigureCommand(BasicCommand):
         {'name': 'list', 'command_class': ConfigureListCommand},
         {'name': 'get', 'command_class': ConfigureGetCommand},
         {'name': 'set', 'command_class': ConfigureSetCommand},
+        {'name': 'add-model', 'command_class': AddModelCommand}
     ]
 
     # If you want to add new values to prompt, update this list here.

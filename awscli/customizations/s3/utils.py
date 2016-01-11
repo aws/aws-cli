@@ -22,16 +22,16 @@ from collections import namedtuple, deque
 from functools import partial
 
 from dateutil.parser import parse
-from dateutil.tz import tzlocal
+from dateutil.tz import tzlocal, tzutc
 from botocore.compat import unquote_str
 
 from awscli.compat import six
 from awscli.compat import PY3
 from awscli.compat import queue
 
-
 HUMANIZE_SUFFIXES = ('KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB')
 MAX_PARTS = 10000
+EPOCH_TIME = datetime(1970, 1, 1, tzinfo=tzutc())
 # The maximum file size you can upload via S3 per request.
 # See: http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html
 # and: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
@@ -217,10 +217,21 @@ def get_file_stat(path):
     """
     try:
         stats = os.stat(path)
-        update_time = datetime.fromtimestamp(stats.st_mtime, tzlocal())
-    except (ValueError, IOError) as e:
+    except IOError as e:
         raise ValueError('Could not retrieve file stat of "%s": %s' % (
             path, e))
+
+    try:
+        update_time = datetime.fromtimestamp(stats.st_mtime, tzlocal())
+    except ValueError:
+        # Python's fromtimestamp raises value errors when the timestamp is out
+        # of range of the platform's C localtime() function. This can cause
+        # issues when syncing from systems with a wide range of valid timestamps
+        # to systems with a lower range. Some systems support 64-bit timestamps,
+        # for instance, while others only support 32-bit. We don't want to fail
+        # in these cases, so instead we pass along none.
+        update_time = None
+
     return stats.st_size, update_time
 
 
@@ -252,12 +263,13 @@ def find_dest_path_comp_key(files, src_path=None):
     return dest_path, compare_key
 
 
-def create_warning(path, error_message):
+def create_warning(path, error_message, skip_file=True):
     """
     This creates a ``PrintTask`` for whenever a warning is to be thrown.
     """
     print_string = "warning: "
-    print_string = print_string + "Skipping file " + path + ". "
+    if skip_file:
+        print_string = print_string + "Skipping file " + path + ". "
     print_string = print_string + error_message
     warning_message = PrintTask(message=print_string, error=False,
                                 warning=True)
@@ -449,50 +461,19 @@ class BucketLister(object):
         self._date_parser = date_parser
 
     def list_objects(self, bucket, prefix=None, page_size=None):
-        kwargs = {'Bucket': bucket, 'EncodingType': 'url',
-                  'PaginationConfig': {'PageSize': page_size}}
+        kwargs = {'Bucket': bucket, 'PaginationConfig': {'PageSize': page_size}}
         if prefix is not None:
             kwargs['Prefix'] = prefix
-        # This event handler is needed because we use encoding_type url and
-        # we're paginating.  The pagination token is the last Key of the
-        # Contents list.  However, botocore does not know that the encoding
-        # type needs to be urldecoded.
-        with ScopedEventHandler(self._client.meta.events,
-                                'after-call.s3.ListObjects',
-                                self._decode_keys,
-                                'BucketListerDecodeKeys'):
-            paginator = self._client.get_paginator('list_objects')
-            pages = paginator.paginate(**kwargs)
-            for page in pages:
-                contents = page.get('Contents', [])
-                for content in contents:
-                    source_path = bucket + '/' + content['Key']
-                    content['LastModified'] = self._date_parser(
-                        content['LastModified'])
-                    yield source_path, content
 
-    def _decode_keys(self, parsed, **kwargs):
-        if 'Contents' in parsed:
-            for content in parsed['Contents']:
-                content['Key'] = unquote_str(content['Key'])
-
-
-class ScopedEventHandler(object):
-    """Register an event callback for the duration of a scope."""
-
-    def __init__(self, event_emitter, event_name, handler, unique_id=None):
-        self._event_emitter = event_emitter
-        self._event_name = event_name
-        self._handler = handler
-        self._unique_id = unique_id
-
-    def __enter__(self):
-        self._event_emitter.register(self._event_name, self._handler,
-                                     self._unique_id)
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        self._event_emitter.unregister(self._event_name, self._handler,
-                                       self._unique_id)
+        paginator = self._client.get_paginator('list_objects')
+        pages = paginator.paginate(**kwargs)
+        for page in pages:
+            contents = page.get('Contents', [])
+            for content in contents:
+                source_path = bucket + '/' + content['Key']
+                content['LastModified'] = self._date_parser(
+                    content['LastModified'])
+                yield source_path, content
 
 
 class PrintTask(namedtuple('PrintTask',

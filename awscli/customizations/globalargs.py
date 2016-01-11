@@ -13,6 +13,8 @@
 import sys
 import os
 
+from botocore.client import Config
+from botocore.endpoint import DEFAULT_TIMEOUT
 from botocore.handlers import disable_signing
 import jmespath
 
@@ -24,6 +26,7 @@ def register_parse_global_args(cli):
     cli.register('top-level-args-parsed', no_sign_request)
     cli.register('top-level-args-parsed', resolve_verify_ssl)
     cli.register('top-level-args-parsed', resolve_cli_read_timeout)
+    cli.register('top-level-args-parsed', resolve_cli_connect_timeout)
 
 
 def resolve_types(parsed_args, **kwargs):
@@ -80,9 +83,32 @@ def no_sign_request(parsed_args, session, **kwargs):
         session.register('choose-signer', disable_signing)
 
 
+def resolve_cli_connect_timeout(parsed_args, session, **kwargs):
+    arg_name = 'connect_timeout'
+    _resolve_timeout(session, parsed_args, arg_name)
+
+
 def resolve_cli_read_timeout(parsed_args, session, **kwargs):
     arg_name = 'read_timeout'
-    arg_value = getattr(parsed_args, arg_name, None)
+    _resolve_timeout(session, parsed_args, arg_name)
 
-    if arg_value is not None:
-        setattr(parsed_args, arg_name, int(arg_value))
+
+def _resolve_timeout(session, parsed_args, arg_name):
+    arg_value = getattr(parsed_args, arg_name, None)
+    if arg_value is None:
+        arg_value = DEFAULT_TIMEOUT
+    arg_value = int(arg_value)
+    if arg_value == 0:
+        arg_value = None
+    setattr(parsed_args, arg_name, arg_value)
+    # Update in the default client config so that the timeout will be used
+    # by all clients created from then on.
+    _update_default_client_config(session, arg_name, arg_value)
+
+
+def _update_default_client_config(session, arg_name, arg_value):
+    current_default_config = session.get_default_client_config()
+    new_default_config = Config(**{arg_name: arg_value})
+    if current_default_config is not None:
+        new_default_config = current_default_config.merge(new_default_config)
+    session.set_default_client_config(new_default_config)

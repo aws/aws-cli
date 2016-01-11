@@ -322,6 +322,10 @@ class CreateCluster(Command):
             dest_params=instances, dest_key='EmrManagedSlaveSecurityGroup')
 
         emrutils.apply_params(
+            src_params=parsed_attrs, src_key='ServiceAccessSecurityGroup',
+            dest_params=instances, dest_key='ServiceAccessSecurityGroup')
+
+        emrutils.apply_params(
             src_params=parsed_attrs, src_key='AdditionalMasterSecurityGroups',
             dest_params=instances, dest_key='AdditionalMasterSecurityGroups')
 

@@ -19,7 +19,7 @@ from dateutil.tz import tzlocal
 
 from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
 from awscli.customizations.s3.utils import BucketLister, create_warning, \
-    find_dest_path_comp_key
+    find_dest_path_comp_key, EPOCH_TIME
 from awscli.errorhandler import ClientError
 from awscli.compat import six
 from awscli.compat import queue
@@ -173,6 +173,7 @@ class FileGenerator(object):
         if not self.should_ignore_file(path):
             if not dir_op:
                 size, last_update = get_file_stat(path)
+                last_update = self._validate_update_time(last_update, path)
                 yield path, {'Size': size, 'LastModified': last_update}
 
             else:
@@ -208,10 +209,24 @@ class FileGenerator(object):
                             yield x
                     else:
                         size, last_update = get_file_stat(file_path)
+                        last_update = self._validate_update_time(
+                            last_update, path)
                         yield (
                             file_path,
                             {'Size': size, 'LastModified': last_update}
                         )
+
+    def _validate_update_time(self, update_time, path):
+        # If the update time is None we know we ran into an invalid tiemstamp.
+        if update_time is None:
+            warning = create_warning(
+                path=path,
+                error_message="File has an invalid timestamp. Passing epoch "
+                              "time as timestamp.",
+                skip_file=False)
+            self.result_queue.put(warning)
+            return EPOCH_TIME
+        return update_time
 
     def normalize_sort(self, names, os_sep, character):
         """

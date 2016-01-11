@@ -373,8 +373,8 @@ class ModelVisitor(object):
     def _visit_list(self, parent, shape, name, value):
         if not isinstance(value, list):
             return
-        for element in value:
-            self._visit(value, shape.member, '', element)
+        for i, element in enumerate(value):
+            self._visit(value, shape.member, i, element)
 
     def _visit_map(self, parent, shape, name, value):
         if not isinstance(value, dict):

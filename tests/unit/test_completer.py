@@ -26,7 +26,7 @@ LOG = logging.getLogger(__name__)
 GLOBALOPTS = ['--debug', '--endpoint-url', '--no-verify-ssl', '--no-paginate',
               '--output', '--profile', '--region', '--version', '--color',
               '--query', '--no-sign-request', '--ca-bundle',
-              '--cli-read-timeout']
+              '--cli-read-timeout', '--cli-connect-timeout']
 
 COMPLETIONS = [
     ('aws ', -1, set(['apigateway', 'autoscaling', 'cloudformation', 'cloudfront',
@@ -35,7 +35,7 @@ COMPLETIONS = [
                       'codecommit', 'codepipeline', 'cognito-sync',
                       'configservice', 'configure', 'datapipeline', 'deploy',
                       'devicefarm', 'directconnect', 'ds', 'dynamodb',
-                      'dynamodbstreams', 'glacier', 'ec2', 'ecs', 'efs',
+                      'dynamodbstreams', 'glacier', 'ec2', 'ecr', 'ecs', 'efs',
                       'elasticache', 'elasticbeanstalk', 'elastictranscoder',
                       'elb', 'emr', 'es', 'firehose',
                       'iam', 'iot', 'iot-data', 'importexport', 'inspector',
@@ -73,7 +73,8 @@ COMPLETIONS = [
           '--no-verify-ssl', '--no-paginate', '--no-sign-request', '--output',
           '--profile', '--starting-token', '--max-items', '--page-size',
           '--region', '--version', '--color', '--query', '--ca-bundle',
-          '--generate-cli-skeleton', '--cli-input-json', '--cli-read-timeout'])),
+          '--generate-cli-skeleton', '--cli-input-json', '--cli-read-timeout',
+          '--cli-connect-timeout'])),
     ('aws s3', -1, set(['cp', 'mv', 'rm', 'mb', 'rb', 'ls', 'sync', 'website'])),
     ('aws s3 m', -1, set(['mv', 'mb'])),
     ('aws s3 cp -', -1, set(['--no-guess-mime-type', '--dryrun',

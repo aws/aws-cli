@@ -25,7 +25,7 @@ import mock
 from awscli.errorhandler import ClientError
 from awscli.customizations.s3.filegenerator import FileGenerator, \
     FileDecodingError, FileStat, is_special_file, is_readable
-from awscli.customizations.s3.utils import get_file_stat
+from awscli.customizations.s3.utils import get_file_stat, EPOCH_TIME
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     compare_files
 
@@ -415,6 +415,14 @@ class TestListFilesLocally(unittest.TestCase):
         ref_vals = list(sorted(values,
                                key=lambda items: items.replace(os.sep, '/')))
         self.assertEqual(values, ref_vals)
+
+    @mock.patch('awscli.customizations.s3.filegenerator.get_file_stat')
+    def test_list_files_with_invalid_timestamp(self, stat_mock):
+        stat_mock.return_value = 9, None
+        open(os.path.join(self.directory, 'test'), 'w').close()
+        file_generator = FileGenerator(None, None, None)
+        value = list(file_generator.list_files(self.directory, dir_op=True))[0]
+        self.assertIs(value[1]['LastModified'], EPOCH_TIME)
 
     def test_list_local_files_with_unicode_chars(self):
         p = os.path.join

@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.9.18
+======
+* feature:``aws ec2``: Enables support for DNS resolution of public hostnames
+  to private IP addresses when queried over ClassicLink. Additionally, you
+  can now access private hosted zones associated with your VPC from a linked
+  EC2-Classic instance. ClassicLink DNS support makes it easier for EC2-Classic
+  instances to communicate with VPC resources using public DNS hostnames.
+* feature:``aws ec2``: Add support for the new 63-bit EC2 Instance and
+  Reservation IDs.
+
 1.9.17
 ======
 * bugfix:``aws ssm``: Documentation update.

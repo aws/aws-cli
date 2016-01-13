@@ -12,7 +12,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
-import re
 
 import mock
 from awscli.compat import six

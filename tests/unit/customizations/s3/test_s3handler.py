@@ -17,6 +17,7 @@ import sys
 
 import mock
 
+import awscli.customizations.s3.s3handler
 from awscli.testutils import unittest
 from awscli import EnvironmentVariables
 from awscli.compat import six
@@ -257,6 +258,22 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
         ]
         stdout, stderr, rc = self.run_s3_handler(self.s3_handler_multi, tasks)
         self.assertEqual(rc.num_tasks_failed, 1)
+
+    def test_multiupload_invalid_chunksize_fail(self):
+        """
+        This tests the ability to break on an invalid multipart upload chunksize
+        """
+        awscli.customizations.s3.s3handler.MIN_UPLOAD_CHUNKSIZE = 50000
+        files = [self.loc_files[0]]
+        tasks = []
+        for i in range(len(files)):
+            tasks.append(FileInfo(
+                src=self.loc_files[i],
+                dest=self.s3_files[i], size=15,
+                operation_name='upload',
+                client=self.client))
+        stdout, stderr, rc = self.run_s3_handler(self.s3_handler_multi, tasks)
+        self.assertEqual(rc.num_tasks_warned, 1)
 
     def test_multiupload_abort_in_s3_handler(self):
         files = [self.loc_files[0]]

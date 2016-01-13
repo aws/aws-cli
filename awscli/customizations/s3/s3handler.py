@@ -29,6 +29,7 @@ LOGGER = logging.getLogger(__name__)
 # Maximum object size allowed in S3.
 # See: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
 MAX_UPLOAD_SIZE = 5 * (1024 ** 4)
+MIN_UPLOAD_CHUNKSIZE = 5 * (1024 ** 2)
 
 CommandResult = namedtuple('CommandResult',
                            ['num_tasks_failed', 'num_tasks_warned'])
@@ -203,14 +204,18 @@ class S3Handler(object):
                     )
                     self.result_queue.put(warning)
                 continue
-            elif is_multipart_task and not self.params['dryrun']:
-                # If we're in dryrun mode, then we don't need the
-                # real multipart tasks.  We can just use a BasicTask
-                # in the else clause below, which will print out the
-                # fact that it's transferring a file rather than
-                # the specific part tasks required to perform the
-                # transfer.
-                num_uploads = self._enqueue_multipart_tasks(filename)
+            elif is_multipart_task:
+                if self._is_upload(filename) and not \
+                        self._is_upload_chunksize_valid(filename):
+                    continue
+                if not self.params['dryrun']:
+                    # If we're in dryrun mode, then we don't need the
+                    # real multipart tasks.  We can just use a BasicTask
+                    # in the else clause below, which will print out the
+                    # fact that it's transferring a file rather than
+                    # the specific part tasks required to perform the
+                    # transfer.
+                    num_uploads = self._enqueue_multipart_tasks(filename)
             else:
                 task = tasks.BasicTask(
                     session=self.session, filename=filename,
@@ -234,6 +239,29 @@ class S3Handler(object):
                     return False
         else:
             return False
+
+    def _is_upload(self, filename):
+        if filename.operation_name in ['upload', 'copy']:
+            return True
+
+        if filename.operation_name == 'move':
+            if filename.src_type == 'local' and filename.dest_type == 's3':
+                return True
+            elif filename.src_type == 's3' and filename.dest_type == 's3':
+                return True
+
+        return False
+
+    def _is_upload_chunksize_valid(self, filename):
+        if self.chunksize < MIN_UPLOAD_CHUNKSIZE:
+            warning_message = ("Multipart chunksize for uploads must be at "
+                               "least 5MB, but is currently %s."
+                               % self.chunksize)
+            warning = create_warning(
+                    relative_path(filename.src), warning_message)
+            self.result_queue.put(warning)
+            return False
+        return True
 
     def _enqueue_multipart_tasks(self, filename):
         num_uploads = 1
@@ -476,8 +504,8 @@ class S3StreamHandler(S3Handler):
         # First we need to create a CreateMultipartUpload task,
         # then create UploadTask objects for each of the parts.
         # And finally enqueue a CompleteMultipartUploadTask.
-
         chunksize = self.chunksize
+
         # Determine an appropriate chunksize if given an expected size.
         if self.params['expected_size']:
             chunksize = find_chunksize(int(self.params['expected_size']),

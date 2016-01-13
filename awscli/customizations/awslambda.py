@@ -59,7 +59,7 @@ def _extract_code_and_zip_file_arguments(session, argument_table, **kwargs):
 
 def _modify_zipfile_docstring(session, argument_table, **kwargs):
     if 'zip-file' in argument_table:
-        argument_table['zip-file'].argument_model.documentation = ZIP_DOCSTRING
+        argument_table['zip-file'].documentation = ZIP_DOCSTRING
 
 
 def _should_contain_zip_content(value):

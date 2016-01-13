@@ -40,7 +40,7 @@ def register(event_handler):
     event_handler.register(
         'operation-args-parsed.cloudfront.create-distribution',
         validate_mutually_exclusive_handler(
-            ['origin-domain-name'], ['distribution-config']))
+            ['origin_domain_name'], ['distribution_config']))
 
 
 def caller_reference(prefix="cli"):

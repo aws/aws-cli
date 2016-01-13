@@ -312,18 +312,34 @@ def uni_print(statement, out_file=None):
     """
     if out_file is None:
         out_file = sys.stdout
-    # Check for an encoding on the file.
-    encoding = getattr(out_file, 'encoding', None)
-    if encoding is not None and not PY3:
-        out_file.write(statement.encode(out_file.encoding))
-    else:
-        try:
-            out_file.write(statement)
-        except UnicodeEncodeError:
-            # Some file like objects like cStringIO will
-            # try to decode as ascii.  Interestingly enough
-            # this works with a normal StringIO.
-            out_file.write(statement.encode('utf-8'))
+    try:
+        # Otherwise we assume that out_file is a
+        # text writer type that accepts str/unicode instead
+        # of bytes.
+        out_file.write(statement)
+    except UnicodeEncodeError:
+        # Some file like objects like cStringIO will
+        # try to decode as ascii on python2.
+        #
+        # This can also fail if our encoding associated
+        # with the text writer cannot encode the unicode
+        # ``statement`` we've been given.  This commonly
+        # happens on windows where we have some S3 key
+        # previously encoded with utf-8 that can't be
+        # encoded using whatever codepage the user has
+        # configured in their console.
+        #
+        # At this point we've already failed to do what's
+        # been requested.  We now try to make a best effort
+        # attempt at printing the statement to the outfile.
+        # We're using 'ascii' as the default because if the
+        # stream doesn't give us any encoding information
+        # we want to pick an encoding that has the highest
+        # chance of printing successfully.
+        new_encoding = getattr(out_file, 'encoding', 'ascii')
+        new_statement = statement.encode(
+            new_encoding, 'replace').decode(new_encoding)
+        out_file.write(new_statement)
     out_file.flush()
 
 

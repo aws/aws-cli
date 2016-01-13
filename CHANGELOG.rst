@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws s3``: Gracefully handle encoding errors when printing S3 keys
+  (`issue 1719 <https://github.com/boto/botocore/pull/1719>`__)
+
+
 1.9.18
 ======
 * feature:``aws ec2``: Enables support for DNS resolution of public hostnames

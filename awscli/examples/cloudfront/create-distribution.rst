@@ -1,4 +1,12 @@
-The following command creates a CloudFront web distribution::
+You can create a CloudFront web distribution for an S3 domain (such as
+my-bucket.s3.amazonaws.com) or for a custom domain (such as example.com).
+The following command shows an example for an S3 domain::
+
+  aws cloudfront create-distribution \
+    --origin-domain-name my-bucket.s3.amazonaws.com
+
+Or you can use the following command together with a JSON document to do the
+same thing::
 
   aws cloudfront create-distribution --distribution-config file://distconfig.json
 

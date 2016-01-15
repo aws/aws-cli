@@ -90,6 +90,9 @@ class OriginDomainNameArgument(CustomArgument):
         origin_id = caller_reference(prefix='origin_id')
         item = {"Id": origin_id, "DomainName": value, "OriginPath": ""}
         if value.endswith('.s3.amazonaws.com'):
+            # We do not need to detect '.s3[\w-].amazonaws.com' as S3 buckets,
+            # because CloudFront treats GovCloud S3 buckets as custom domain.
+            # http://docs.aws.amazon.com/govcloud-us/latest/UserGuide/setting-up-cloudfront.html
             item["S3OriginConfig"] = {"OriginAccessIdentity": ""}
         else:
             item["CustomOriginConfig"] = {

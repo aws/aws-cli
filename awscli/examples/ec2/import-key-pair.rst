@@ -12,7 +12,7 @@ Command::
 
   openssl rsa -in my-key.pem -pubout > my-key.pub
   
-Finally, this example command imports the specified public key. The public key is the text in the .pub file that is between <code>-----BEGIN PUBLIC KEY-----</code> and <code>-----END PUBLIC KEY-----</code>.
+Finally, this example command imports the specified public key. The public key is the text in the .pub file that is between ``-----BEGIN PUBLIC KEY-----`` and ``-----END PUBLIC KEY-----``.
 
 Command::
 

@@ -23,10 +23,15 @@ ERROR_MSG = (
     "--zip-file must be a file with the fileb:// prefix.\n"
     "Example usage:  --zip-file fileb://path/to/file.zip")
 
+ZIP_DOCSTRING = ('<p>The path to the zip file of the code you are uploading. '
+                 'Example: fileb://code.zip</p>')
+
 
 def register_lambda_create_function(cli):
     cli.register('building-argument-table.lambda.create-function',
                  _extract_code_and_zip_file_arguments)
+    cli.register('building-argument-table.lambda.update-function-code',
+                 _modify_zipfile_docstring)
     cli.register('process-cli-arg.lambda.update-function-code',
                  validate_is_zip_file)
 
@@ -38,9 +43,7 @@ def validate_is_zip_file(cli_argument, value, **kwargs):
 
 def _extract_code_and_zip_file_arguments(session, argument_table, **kwargs):
     argument_table['zip-file'] = ZipFileArgument(
-        'zip-file', help_text=('The path to the zip file of the code you '
-                               'are uploading. Example: fileb://code.zip'),
-        cli_type_name='blob')
+        'zip-file', help_text=ZIP_DOCSTRING, cli_type_name='blob')
     code_argument = argument_table['code']
     code_model = copy.deepcopy(code_argument.argument_model)
     del code_model.members['ZipFile']
@@ -52,6 +55,11 @@ def _extract_code_and_zip_file_arguments(session, argument_table, **kwargs):
         event_emitter=session.get_component('event_emitter'),
         serialized_name='Code'
     )
+
+
+def _modify_zipfile_docstring(session, argument_table, **kwargs):
+    if 'zip-file' in argument_table:
+        argument_table['zip-file'].documentation = ZIP_DOCSTRING
 
 
 def _should_contain_zip_content(value):

@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+1.9.20
+======
+
+* bugfix:``aws cloudfront``: Fix regression in waiters.
+
+
+1.9.19
+======
+
+* feature:``aws events``: Initial support for Amazon CloudWatch Events.
+  CloudWatch Events allows you to track changes to your AWS resources with
+  less overhead and greater efficiency.
+* feature:``aws ec2``: Adds support for purchasing reserved capacity for
+  specific blocks of time on a one-time of recurring basis.
+* feature:``aws cloudfront``: Adds support for HTTPS-only connections, and
+  control of edge-to-origin request headers.
+* bugfix:``aws s3``: Gracefully handle encoding errors when printing S3 keys
+  (`issue 1719 <https://github.com/boto/botocore/pull/1719>`__)
+
+
 1.9.18
 ======
 * feature:``aws ec2``: Enables support for DNS resolution of public hostnames

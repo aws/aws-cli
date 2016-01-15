@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.9.19
+======
 
 * feature:``aws events``: Initial support for Amazon CloudWatch Events.
   CloudWatch Events allows you to track changes to your AWS resources with

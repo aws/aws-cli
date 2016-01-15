@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws cloudfront``: Fix regression in waiters.
+
+
 1.9.19
 ======
 

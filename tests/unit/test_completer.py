@@ -37,7 +37,7 @@ COMPLETIONS = [
                       'devicefarm', 'directconnect', 'ds', 'dynamodb',
                       'dynamodbstreams', 'glacier', 'ec2', 'ecr', 'ecs', 'efs',
                       'elasticache', 'elasticbeanstalk', 'elastictranscoder',
-                      'elb', 'emr', 'es', 'firehose',
+                      'elb', 'emr', 'es', 'events', 'firehose',
                       'iam', 'iot', 'iot-data', 'importexport', 'inspector',
                       'kinesis', 'kms',
                       'lambda', 'logs', 'marketplacecommerceanalytics',

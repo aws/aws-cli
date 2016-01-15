@@ -1,6 +1,6 @@
 The following command creates a customer managed policy named ``my-policy``::
 
-  aws create-policy --policy-name my-policy --policy-document file://policy
+  aws iam create-policy --policy-name my-policy --policy-document file://policy
 
 Output::
 

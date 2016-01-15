@@ -6,6 +6,7 @@ import shutil
 import ntpath
 import time
 import datetime
+import io
 
 import mock
 from dateutil.tz import tzlocal
@@ -25,6 +26,7 @@ from awscli.customizations.s3.utils import human_readable_to_bytes
 from awscli.customizations.s3.utils import MAX_SINGLE_UPLOAD_SIZE, EPOCH_TIME
 from awscli.customizations.s3.utils import set_file_utime, SetFileUtimeError
 from awscli.customizations.s3.utils import RequestParamsMapper
+from awscli.customizations.s3.utils import uni_print
 
 
 def test_human_readable_size():
@@ -455,3 +457,20 @@ class TestRequestParamsMapperSSE(unittest.TestCase):
              'CopySourceSSECustomerKey': 'my-sse-c-copy-source-key',
              'SSECustomerAlgorithm': 'AES256',
              'SSECustomerKey': 'my-sse-c-key'})
+
+
+class TestUniPrint(unittest.TestCase):
+
+    def test_out_file_with_encoding_attribute(self):
+        buf = io.BytesIO()
+        out = io.TextIOWrapper(buf, encoding='utf-8')
+        uni_print(u'\u2713', out)
+        self.assertEqual(buf.getvalue(), u'\u2713'.encode('utf-8'))
+
+    def test_encoding_statement_fails_are_replaced(self):
+        buf = io.BytesIO()
+        out = io.TextIOWrapper(buf, encoding='ascii')
+        uni_print(u'SomeChars\u2713\u2714OtherChars', out)
+        # We replace the characters that can't be encoded
+        # with '?'.
+        self.assertEqual(buf.getvalue(), b'SomeChars??OtherChars')

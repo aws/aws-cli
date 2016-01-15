@@ -20,7 +20,7 @@ class TestCreateDistribution(BaseAWSCommandParamsTest):
 
     prefix = 'cloudfront create-distribution '
 
-    def test_origin_domain_name(self):
+    def test_origin_domain_name_with_custom_domain(self):
         cmdline = self.prefix + '--origin-domain-name foo.com'
         result = {
             'DistributionConfig': {
@@ -29,6 +29,28 @@ class TestCreateDistribution(BaseAWSCommandParamsTest):
                     'Items': [{
                         'CustomOriginConfig': mock.ANY,
                         'DomainName': 'foo.com',
+                        'Id': mock.ANY,
+                        'OriginPath': '',
+                    }]
+                },
+                'CallerReference': mock.ANY,
+                'Comment': '',
+                'Enabled': True,
+                'DefaultCacheBehavior': mock.ANY,
+                },
+            }
+        self.run_cmd(cmdline)
+        self.assertEqual(self.last_kwargs, result)
+
+    def test_origin_domain_name_with_s3_domain(self):
+        cmdline = self.prefix + '--origin-domain-name foo.s3.amazonaws.com'
+        result = {
+            'DistributionConfig': {
+                'Origins': {
+                    'Quantity': 1,
+                    'Items': [{
+                        'S3OriginConfig': mock.ANY,
+                        'DomainName': 'foo.s3.amazonaws.com',
                         'Id': mock.ANY,
                         'OriginPath': '',
                     }]

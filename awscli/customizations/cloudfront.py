@@ -95,13 +95,13 @@ class OriginDomainNameArgument(CustomArgument):
             item["CustomOriginConfig"] = {
                 'HTTPPort': 80, 'HTTPSPort': 443,
                 'OriginProtocolPolicy': 'http-only'}
-        parameters['DistributionConfig'] = {  # The minimal config
+        parameters['DistributionConfig'] = {
             "CallerReference": caller_reference(),
             "Origins": {"Quantity": 1, "Items": [item]},
             "DefaultCacheBehavior": {
                 "TargetOriginId": origin_id,
                 "ForwardedValues": {
-                    "QueryString": True,
+                    "QueryString": False,
                     "Cookies": {
                         "Forward": "none"
                     }

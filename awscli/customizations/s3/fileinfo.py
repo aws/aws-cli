@@ -308,7 +308,8 @@ class FileInfo(TaskInfo):
         """
         Copies a object in s3 to another location in s3.
         """
-        copy_source = self.src
+        source_bucket, source_key = find_bucket_key(self.src)
+        copy_source = {'Bucket': source_bucket, 'Key': source_key}
         bucket, key = find_bucket_key(self.dest)
         params = {'Bucket': bucket,
                   'CopySource': copy_source, 'Key': key}

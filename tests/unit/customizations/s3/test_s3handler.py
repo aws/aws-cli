@@ -392,7 +392,11 @@ class S3HandlerTestMvS3S3(S3HandlerBaseTest):
         ref_calls = [
             ('CopyObject',
              {'Bucket': self.bucket, 'Key': u'\u2713',
-              'CopySource': self.bucket2 + '/' + u'\u2713', 'ACL': 'private'}),
+              # Implementation detail, but the botocore handler
+              # now fixes up CopySource in before-call so it will
+              # show up in the operations_called.
+              'CopySource': u'mybucket2/%E2%9C%93',
+              'ACL': 'private'}),
             ('DeleteObject',
              {'Bucket': self.bucket2, 'Key': u'\u2713'})
         ]

@@ -135,7 +135,7 @@ def _create_distribution(call_parameters, **kwargs):
                     "Cookies": {"Forward": "none"},
                 },
                 "TrustedSigners": {
-                    "Enabled": True,
+                    "Enabled": False,
                     "Quantity": 0
                 },
                 "ViewerProtocolPolicy": "allow-all",

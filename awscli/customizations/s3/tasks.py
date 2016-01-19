@@ -161,7 +161,7 @@ class CopyPartTask(OrderableTask):
             params = {'Bucket': bucket, 'Key': key,
                       'PartNumber': self._part_number,
                       'UploadId': upload_id,
-                      'CopySource': '%s/%s' % (src_bucket, src_key),
+                      'CopySource': {'Bucket': src_bucket, 'Key': src_key},
                       'CopySourceRange': range_param}
             RequestParamsMapper.map_upload_part_copy_params(
                 params, self._params)

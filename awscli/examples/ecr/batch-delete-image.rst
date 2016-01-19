@@ -5,7 +5,7 @@ This example deletes an image with the tag ``precise`` in a repository called
 
 Command::
 
-  aws ecr batch-get-image --repository-name ubuntu --image-ids imageTag=precise
+  aws ecr batch-delete-image --repository-name ubuntu --image-ids imageTag=precise
 
 Output::
 

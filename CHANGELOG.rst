@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.10.0
+======
+
+* feature:``aws acm``: adds support for AWS Certificate Manager
+* feature:``aws cloudfront``: adds support for AWS Certificate Manager
+  certificates
+* feature:``aws cloudfront create-distribution``: Adds support for
+  --origin-domain-name and --default-root-object
+* feature:``aws cloudfront update-distribution``: Adds support for
+  --default-root-object
+* feature:``aws iot``: adds support for topic rules
+* feature:``aws cloudformation``: adds suport for ContinueUpdateRollback
+
+
 1.9.21
 ======
 

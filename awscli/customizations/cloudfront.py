@@ -146,9 +146,9 @@ class OriginDomainName(ExclusiveArgument):
 
 
 class CreateDefaultRootObject(ExclusiveArgument):
-    def __init__(self, argument_table):
+    def __init__(self, argument_table, help_text=''):
         super(CreateDefaultRootObject, self).__init__(
-            'default-root-object', argument_table, help_text=(
+            'default-root-object', argument_table, help_text=help_text or (
                 'The object that you want CloudFront to return (for example, '
                 'index.html) when a viewer request points to your root URL.'))
 
@@ -161,7 +161,12 @@ class CreateDefaultRootObject(ExclusiveArgument):
 
 class UpdateDefaultRootObject(CreateDefaultRootObject):
     def __init__(self, context, argument_table):
-        super(UpdateDefaultRootObject, self).__init__(argument_table)
+        super(UpdateDefaultRootObject, self).__init__(
+            argument_table, help_text=(
+                'The object that you want CloudFront to return (for example, '
+                'index.html) when a viewer request points to your root URL. '
+                'CLI will automatically make a get-distribution-config call '
+                'to load and preserve your other settings.'))
         self.context = context
 
     def add_to_params(self, parameters, value):

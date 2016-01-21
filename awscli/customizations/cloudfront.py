@@ -17,7 +17,6 @@ import random
 import rsa
 from botocore.utils import parse_to_aware_datetime
 from botocore.signers import CloudFrontSigner
-from botocore.session import Session
 
 from awscli.arguments import CustomArgument
 from awscli.customizations.utils import validate_mutually_exclusive_handler

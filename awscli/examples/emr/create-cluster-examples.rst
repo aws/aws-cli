@@ -60,7 +60,7 @@ http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/emr-aws-cli-co
 - Create an Amazon EMR cluster in a VPC private subnet and use a specific Amazon EC2 security group to enable the Amazon EMR service access (required for clusters in private subnets)::
 
     aws  emr create-cluster --release-label emr-4.2.0 --service-role myServiceRole --ec2-attributes InstanceProfile=myRole,ServiceAccessSecurityGroup=sg-service-access,EmrManagedMasterSecurityGroup=sg-master,EmrManagedSlaveSecurityGroup=sg-slave --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge
-
+ 
 
 - JSON equivalent (contents of ec2_attributes.json)::
 
@@ -276,7 +276,7 @@ NOTE: JSON arguments must include options and values as their own items in the l
 - Impala steps optional parameters::
 
     Name, ActionOnFailure
-
+ 
 
 **19. To enable consistent view in EMRFS and change the RetryCount and Retry Period settings when creating an Amazon EMR cluster**
 
@@ -299,7 +299,7 @@ NOTE: JSON arguments must include options and values as their own items in the l
 - Command (Using emrfs.json)::
  
     aws emr create-cluster --instance-type m3.xlarge --release-label emr-4.0.0 --emrfs file://emrfs.json
-
+ 
 
 **20. To enable consistent view with arguments e.g. change the DynamoDB read and write capacity when creating an Amazon EMR cluster**
 
@@ -412,3 +412,20 @@ NOTE: JSON arguments must include options and values as their own items in the l
       "CustomProviderLocation": "s3://mybucket/myfolder/provider.jar",
       "CustomProviderClass": "classname"
     }
+    
+ **25. Create a cluster with EBS volumes configured to the instance groups:
+    to create an Amazon EMR cluster**
+
+- Create a cluster with multiple EBS volumes attached to the CORE instance group. EBS volumes can be attached to MASTER, CORE, and TASK instance groups. For instance groups with EBS configurations, which have an embedded JSON structure, you should enclose the entire instance group argument with single quotes. For instance groups with no EBS configuration, using single quotes is optional.
+- Command::
+
+    aws emr create-cluster --release-label emr-4.2.0  --use-default-roles --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge 'InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge,EbsConfiguration={EbsOptimized=true,VolumeSpecifications=[{VolumeType=gp2,SizeInGB=100,Iops=100},{VolumeType=gp2,SizeInGB=100,Iops=100}]}' --auto-terminate
+
+- Create a cluster with multiple EBS volumes attached to the MASTER instance group. 
+- Command::
+
+    aws emr create-cluster --release-label emr-4.2.0 --use-default-roles --instance-groups 'InstanceGroupType=MASTER, InstanceCount=1, InstanceType=m3.xlarge, EbsConfiguration={EbsOptimized=true, VolumeSpecifications=[{VolumeType=gp2, SizeInGB=100, Iops=100},{VolumeType=standard,SizeInGB=50,Iops=100}]}' InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
+
+- Required parameters::
+    
+    VolumeType, SizeInGB if VolumeSpecifications specified

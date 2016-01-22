@@ -105,14 +105,18 @@ CONFIGURATIONS = (
     ' go to the Amazon EMR Documentation: </p>'
     '<p>http://docs.aws.amazon.com/ElasticMapReduce/latest/Applications/'
     'emr-configure-apps.html</p>'
-    )
+)
 
 INSTANCE_GROUPS = (
     '<p>A specification of the number and type'
     ' of Amazon EC2 instances to create instance groups in a cluster.</p>'
     '<p> Each instance group takes the following parameters: '
     '<code>[Name], InstanceGroupType, InstanceType, InstanceCount,'
-    ' [BidPrice]</code></p>')
+    ' [BidPrice], [EbsConfiguration]</code>. [EbsConfiguration] is optional.'
+    ' EbsConfiguration takes the following parameters: <code>EbsOptimized</code>'
+    ' and <code>VolumeSpecifications</code>. VolumeSpecifications is array of EBS volume'
+    ' specification which takes the following parameters : <code>[VolumeType], '
+    ' [SizeInGB], Iops</code></p>')
 
 INSTANCE_TYPE = (
     '<p>Shortcut option for --instance-groups. A specification of the '

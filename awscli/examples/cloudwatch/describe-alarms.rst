@@ -1,8 +1,8 @@
 **To list information about an alarm**
 
-The following example uses the ``describe-alarms`` command to provide information about the alarm named "myalarm".::
+The following example uses the ``describe-alarms`` command to provide information about the alarm named "myalarm"::
 
-  aws cloudwatch describe-alarms --alarm-name "myalarm"
+  aws cloudwatch describe-alarms --alarm-names "myalarm"
 
 Output::
 

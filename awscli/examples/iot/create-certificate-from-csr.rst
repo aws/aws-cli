@@ -16,7 +16,7 @@ using a single command. On Linux and OSX, this command is::
 
 This command lists all of the CSRs in ``my-csr-directory`` and
 pipes each CSR filename to the ``aws iot create-certificate-from-csr`` AWS CLI
-command to create a certficiate for the corresponding CSR.
+command to create a certificate for the corresponding CSR.
 
 The ``aws iot create-certificate-from-csr`` part of the command can also be
 ran in parallel to speed up the certificate creation process::

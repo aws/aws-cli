@@ -183,5 +183,5 @@ Config.json::
 
 For more information, see `Spot Fleet Requests`_ in the *Amazon Elastic Compute Cloud User Guide*.
 
-.. _`Spot Fleets`: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-fleet-requests.html
+.. _`Spot Fleet Requests`: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-fleet-requests.html
 

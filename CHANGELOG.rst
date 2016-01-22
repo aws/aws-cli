@@ -2,12 +2,122 @@
 CHANGELOG
 =========
 
+1.10.0
+======
+
+* feature:``aws acm``: adds support for AWS Certificate Manager
+* feature:``aws cloudfront``: adds support for AWS Certificate Manager
+  certificates
+* feature:``aws cloudfront create-distribution``: Adds support for
+  --origin-domain-name and --default-root-object
+* feature:``aws cloudfront update-distribution``: Adds support for
+  --default-root-object
+* feature:``aws iot``: adds support for topic rules
+* feature:``aws cloudformation``: adds suport for ContinueUpdateRollback
+
+
+1.9.21
+======
+
+* feature:``aws sts``: now returns RegionDisabledException instead of
+  AccessDenied when a user sends an API request to an STS regional endpoint
+  that is not activated for that AWS account. This enables customers to more
+  easily decide how to respond, such as by trying to call a different region
+  instead of simply failing the call.
+* feature:``aws opsworks``: adds support for new enums.
+* feature:``aws devicefarm``: adds support running Appium tests written in
+  Python against your native, hybrid and browser-based apps on
+  AWS Device Farm.
+
+
+1.9.20
+======
+
+* bugfix:``aws cloudfront``: Fix regression in waiters.
+
+
+1.9.19
+======
+
+* feature:``aws events``: Initial support for Amazon CloudWatch Events.
+  CloudWatch Events allows you to track changes to your AWS resources with
+  less overhead and greater efficiency.
+* feature:``aws ec2``: Adds support for purchasing reserved capacity for
+  specific blocks of time on a one-time of recurring basis.
+* feature:``aws cloudfront``: Adds support for HTTPS-only connections, and
+  control of edge-to-origin request headers.
+* bugfix:``aws s3``: Gracefully handle encoding errors when printing S3 keys
+  (`issue 1719 <https://github.com/boto/botocore/pull/1719>`__)
+
+
+1.9.18
+======
+* feature:``aws ec2``: Enables support for DNS resolution of public hostnames
+  to private IP addresses when queried over ClassicLink. Additionally, you
+  can now access private hosted zones associated with your VPC from a linked
+  EC2-Classic instance. ClassicLink DNS support makes it easier for EC2-Classic
+  instances to communicate with VPC resources using public DNS hostnames.
+* feature:``aws ec2``: Add support for the new 63-bit EC2 Instance and
+  Reservation IDs.
+
+1.9.17
+======
+* bugfix:``aws ssm``: Documentation update.
+
+1.9.16
+======
+* feature:``aws ec2``: Add new EC2 instance type: t2.nano
+* feature:``aws datapipeline list-runs``: Add support for output format
+
+1.9.15
+======
+
+* feature:``aws ecr``: Add ``aws ecr`` commands
+* feature:``aws emr``: Update ``aws emr create-cluster`` to accept Amazon EC2
+  security group
+* feature:``aws ecs``: Update ``ecs`` command to include a new deployment
+  option
+
+
+1.9.14
+======
+* feature:``aws rds``: Adds Enhanced Monitoring support so that you can
+  monitor operating system metrics for your RDS DB instances
+* feature:``aws configservice``: Support for IAM resource types
+* feature:``aws cloudtrail``: Adds ``isMultiRegion`` to some of the commands
+* feature:``aws cloudfront``: Adds support for gzip
+* feature:``aws ec2``: Adds new commands for VPC Managed NAT
+
+
+1.9.13
+======
+* feature:``aws ec2 copy-image``: Adds two optional parameters to support
+  launching EC2 instances with EBS encrypted boot volumes.
+* bugfix:``aws``: Fix regression when using AWS_DATA_PATH environment
+  variable
+  (`issue 736 <https://github.com/boto/botocore/pull/736>`__)
+
+
+1.9.12
+======
+* feature:``aws configure add-model``: Added command for updating commands
+  in the CLI and clients in boto3.
+  (`issue 1664 <https://github.com/aws/aws-cli/pull/1664>`__)
+* feature:``aws cloudfront create-invalidation``: Add a new --paths option.
+  (`issue 1662 <https://github.com/aws/aws-cli/pull/1662>`__)
+* feature:``aws cloudfront sign``: Add a new command to create a signed url.
+  (`issue 1668 <https://github.com/aws/aws-cli/pull/1668>`__)
+* feature:``aws autoscaling``: Added support for protecting instances from
+  scale-in events.
+* feature:``aws rds``: Added support for Aurora encryption at rest.
+
+
 1.9.11
 ======
 
 * feature:``aws rds``: Added support for specifying port number.
 * feature:``aws ds``: Added support for Microsoft ActiveDirctory.
-* feature:``aws route53``: Added support for TrafficFlow, a new 
+* feature:``aws route53``: Added support for TrafficFlow, a new
   management and modeling layer for Route53.
 * feature:Timeouts: Added additonal options for configuring socket timeouts.
 

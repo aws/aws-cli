@@ -22,16 +22,16 @@ from collections import namedtuple, deque
 from functools import partial
 
 from dateutil.parser import parse
-from dateutil.tz import tzlocal
+from dateutil.tz import tzlocal, tzutc
 from botocore.compat import unquote_str
 
 from awscli.compat import six
 from awscli.compat import PY3
 from awscli.compat import queue
 
-
 HUMANIZE_SUFFIXES = ('KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB')
 MAX_PARTS = 10000
+EPOCH_TIME = datetime(1970, 1, 1, tzinfo=tzutc())
 # The maximum file size you can upload via S3 per request.
 # See: http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html
 # and: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
@@ -217,10 +217,21 @@ def get_file_stat(path):
     """
     try:
         stats = os.stat(path)
-        update_time = datetime.fromtimestamp(stats.st_mtime, tzlocal())
-    except (ValueError, IOError) as e:
+    except IOError as e:
         raise ValueError('Could not retrieve file stat of "%s": %s' % (
             path, e))
+
+    try:
+        update_time = datetime.fromtimestamp(stats.st_mtime, tzlocal())
+    except ValueError:
+        # Python's fromtimestamp raises value errors when the timestamp is out
+        # of range of the platform's C localtime() function. This can cause
+        # issues when syncing from systems with a wide range of valid timestamps
+        # to systems with a lower range. Some systems support 64-bit timestamps,
+        # for instance, while others only support 32-bit. We don't want to fail
+        # in these cases, so instead we pass along none.
+        update_time = None
+
     return stats.st_size, update_time
 
 
@@ -252,12 +263,13 @@ def find_dest_path_comp_key(files, src_path=None):
     return dest_path, compare_key
 
 
-def create_warning(path, error_message):
+def create_warning(path, error_message, skip_file=True):
     """
     This creates a ``PrintTask`` for whenever a warning is to be thrown.
     """
     print_string = "warning: "
-    print_string = print_string + "Skipping file " + path + ". "
+    if skip_file:
+        print_string = print_string + "Skipping file " + path + ". "
     print_string = print_string + error_message
     warning_message = PrintTask(message=print_string, error=False,
                                 warning=True)
@@ -300,18 +312,34 @@ def uni_print(statement, out_file=None):
     """
     if out_file is None:
         out_file = sys.stdout
-    # Check for an encoding on the file.
-    encoding = getattr(out_file, 'encoding', None)
-    if encoding is not None and not PY3:
-        out_file.write(statement.encode(out_file.encoding))
-    else:
-        try:
-            out_file.write(statement)
-        except UnicodeEncodeError:
-            # Some file like objects like cStringIO will
-            # try to decode as ascii.  Interestingly enough
-            # this works with a normal StringIO.
-            out_file.write(statement.encode('utf-8'))
+    try:
+        # Otherwise we assume that out_file is a
+        # text writer type that accepts str/unicode instead
+        # of bytes.
+        out_file.write(statement)
+    except UnicodeEncodeError:
+        # Some file like objects like cStringIO will
+        # try to decode as ascii on python2.
+        #
+        # This can also fail if our encoding associated
+        # with the text writer cannot encode the unicode
+        # ``statement`` we've been given.  This commonly
+        # happens on windows where we have some S3 key
+        # previously encoded with utf-8 that can't be
+        # encoded using whatever codepage the user has
+        # configured in their console.
+        #
+        # At this point we've already failed to do what's
+        # been requested.  We now try to make a best effort
+        # attempt at printing the statement to the outfile.
+        # We're using 'ascii' as the default because if the
+        # stream doesn't give us any encoding information
+        # we want to pick an encoding that has the highest
+        # chance of printing successfully.
+        new_encoding = getattr(out_file, 'encoding', 'ascii')
+        new_statement = statement.encode(
+            new_encoding, 'replace').decode(new_encoding)
+        out_file.write(new_statement)
     out_file.flush()
 
 

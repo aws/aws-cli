@@ -392,6 +392,7 @@ class CLIArgument(BaseCLIArgument):
         self._required = is_required
         self._operation_model = operation_model
         self._event_emitter = event_emitter
+        self._documentation = argument_model.documentation
 
     @property
     def py_name(self):
@@ -407,7 +408,11 @@ class CLIArgument(BaseCLIArgument):
 
     @property
     def documentation(self):
-        return self.argument_model.documentation
+        return self._documentation
+
+    @documentation.setter
+    def documentation(self, value):
+        self._documentation = value
 
     @property
     def cli_type_name(self):

@@ -1,4 +1,10 @@
-The following command updates a CloudFront distribution with the ID ``S11A16G5KZMEQD``::
+The following command updates the Default Root Object to "index.html"
+for a CloudFront distribution with the ID ``S11A16G5KZMEQD``::
+
+  aws cloudfront update-distribution --id S11A16G5KZMEQD \
+    --default-root-object index.html
+
+The following command disables a CloudFront distribution with the ID ``S11A16G5KZMEQD``::
 
   aws cloudfront update-distribution --id S11A16G5KZMEQD --distribution-config file://distconfig-disabled.json --if-match E37HOT42DHPVYH
 

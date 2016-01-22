@@ -1,6 +1,6 @@
 **To describe the attachment attribute of a network interface**
 
-This example command describes the <code>attachment</code> attribute of the specified network interface.
+This example command describes the ``attachment`` attribute of the specified network interface.
 
 Command::
 
@@ -23,7 +23,7 @@ Output::
 
 **To describe the description attribute of a network interface**
 
-This example command describes the <code>description</code> attribute of the specified network interface.
+This example command describes the ``description`` attribute of the specified network interface.
 
 Command::
 
@@ -40,7 +40,7 @@ Output::
 
 **To describe the groupSet attribute of a network interface**
 
-This example command describes the <code>groupSet</code> attribute of the specified network interface.
+This example command describes the ``groupSet`` attribute of the specified network interface.
 
 Command::
 
@@ -60,7 +60,7 @@ Output::
 
 **To describe the sourceDestCheck attribute of a network interface**
 
-This example command describes the <code>sourceDestCheck</code> attribute of the specified network interface.
+This example command describes the ``sourceDestCheck`` attribute of the specified network interface.
 
 Command::
 

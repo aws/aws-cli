@@ -33,10 +33,12 @@ from awscli.customizations.ec2runinstances import register_runinstances
 from awscli.customizations.rds import register_rds_modify_split
 from awscli.customizations.putmetricdata import register_put_metric_data
 from awscli.customizations.sessendemail import register_ses_send_email
+from awscli.customizations.cloudfront import register as register_cloudfront
 from awscli.customizations.iamvirtmfa import IAMVMFAWrapper
 from awscli.customizations.argrename import register_arg_renames
 from awscli.customizations.configure import register_configure_cmd
 from awscli.customizations.cloudtrail import initialize as cloudtrail_init
+from awscli.customizations.ecr import register_ecr_commands
 from awscli.customizations.toplevelbool import register_bool_params
 from awscli.customizations.ec2protocolarg import register_protocol_args
 from awscli.customizations import datapipeline
@@ -112,6 +114,7 @@ def awscli_initialize(event_handlers):
     register_arg_renames(event_handlers)
     register_configure_cmd(event_handlers)
     cloudtrail_init(event_handlers)
+    register_ecr_commands(event_handlers)
     register_bool_params(event_handlers)
     register_protocol_args(event_handlers)
     datapipeline.register_customizations(event_handlers)
@@ -140,3 +143,4 @@ def awscli_initialize(event_handlers):
     event_handlers.register(
         'building-argument-table.iot.create-certificate-from-csr',
         register_create_keys_from_csr_arguments)
+    register_cloudfront(event_handlers)

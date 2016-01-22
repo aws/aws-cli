@@ -1,6 +1,6 @@
 **To modify the attachment attribute of a network interface**
 
-This example command modifies the <code>attachment</code> attribute of the specified network interface.
+This example command modifies the ``attachment`` attribute of the specified network interface.
 
 Command::
 
@@ -9,7 +9,7 @@ Command::
 
 **To modify the description attribute of a network interface**
 
-This example command modifies the <code>description</code> attribute of the specified network interface.
+This example command modifies the ``description`` attribute of the specified network interface.
 
 Command::
 
@@ -18,7 +18,7 @@ Command::
 
 **To modify the groupSet attribute of a network interface**
 
-This example command modifies the <code>groupSet</code> attribute of the specified network interface.
+This example command modifies the ``groupSet`` attribute of the specified network interface.
 
 Command::
 
@@ -27,7 +27,7 @@ Command::
 
 **To modify the sourceDestCheck attribute of a network interface**
 
-This example command modifies the <code>sourceDestCheck</code> attribute of the specified network interface.
+This example command modifies the ``sourceDestCheck`` attribute of the specified network interface.
 
 Command::
 

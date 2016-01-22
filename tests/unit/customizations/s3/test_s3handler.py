@@ -392,7 +392,11 @@ class S3HandlerTestMvS3S3(S3HandlerBaseTest):
         ref_calls = [
             ('CopyObject',
              {'Bucket': self.bucket, 'Key': u'\u2713',
-              'CopySource': self.bucket2 + '/' + u'\u2713', 'ACL': 'private'}),
+              # Implementation detail, but the botocore handler
+              # now fixes up CopySource in before-call so it will
+              # show up in the operations_called.
+              'CopySource': u'mybucket2/%E2%9C%93',
+              'ACL': 'private'}),
             ('DeleteObject',
              {'Bucket': self.bucket2, 'Key': u'\u2713'})
         ]
@@ -535,6 +539,7 @@ class S3HandlerTestCpS3S3(S3HandlerBaseTest):
     def test_multi_copy(self):
         # Create file info objects to perform move.
         tasks = []
+        self.s3_files2[0] = 'mybucket2/destkey2.txt'
         tasks.append(FileInfo(src=self.s3_files[0], src_type='s3',
                               dest=self.s3_files2[0], dest_type='s3',
                               operation_name='copy', size=15,
@@ -550,20 +555,20 @@ class S3HandlerTestCpS3S3(S3HandlerBaseTest):
 
         ref_calls = [
             ('CreateMultipartUpload',
-             {'Bucket': self.bucket2, 'Key': 'text1.txt',
+             {'Bucket': self.bucket2, 'Key': 'destkey2.txt',
               'ContentType': 'text/plain'}),
             ('UploadPartCopy',
-             {'Bucket': self.bucket2, 'Key': 'text1.txt',
+             {'Bucket': self.bucket2, 'Key': 'destkey2.txt',
               'PartNumber': 1, 'UploadId': 'foo',
               'CopySourceRange': 'bytes=0-4',
               'CopySource': self.bucket + '/text1.txt'}),
             ('UploadPartCopy',
-             {'Bucket': self.bucket2, 'Key': 'text1.txt',
+             {'Bucket': self.bucket2, 'Key': 'destkey2.txt',
               'PartNumber': 2, 'UploadId': 'foo',
               'CopySourceRange': 'bytes=5-9',
               'CopySource': self.bucket + '/text1.txt'}),
             ('UploadPartCopy',
-             {'Bucket': self.bucket2, 'Key': 'text1.txt',
+             {'Bucket': self.bucket2, 'Key': 'destkey2.txt',
               'PartNumber': 3, 'UploadId': 'foo',
               'CopySourceRange': 'bytes=10-14',
               'CopySource': self.bucket + '/text1.txt'}),
@@ -574,7 +579,7 @@ class S3HandlerTestCpS3S3(S3HandlerBaseTest):
                                              'ETag': mock.ANY},
                                             {'PartNumber': 3,
                                              'ETag': mock.ANY}]},
-              'Bucket': self.bucket2, 'UploadId': 'foo', 'Key': 'text1.txt'})
+              'Bucket': self.bucket2, 'UploadId': 'foo', 'Key': 'destkey2.txt'})
         ]
 
         # Perform the copy.

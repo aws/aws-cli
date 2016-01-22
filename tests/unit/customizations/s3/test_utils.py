@@ -6,6 +6,7 @@ import shutil
 import ntpath
 import time
 import datetime
+import io
 
 import mock
 from dateutil.tz import tzlocal
@@ -22,9 +23,10 @@ from awscli.customizations.s3.utils import AppendFilter
 from awscli.customizations.s3.utils import create_warning
 from awscli.customizations.s3.utils import human_readable_size
 from awscli.customizations.s3.utils import human_readable_to_bytes
-from awscli.customizations.s3.utils import MAX_SINGLE_UPLOAD_SIZE
+from awscli.customizations.s3.utils import MAX_SINGLE_UPLOAD_SIZE, EPOCH_TIME
 from awscli.customizations.s3.utils import set_file_utime, SetFileUtimeError
 from awscli.customizations.s3.utils import RequestParamsMapper
+from awscli.customizations.s3.utils import uni_print
 
 
 def test_human_readable_size():
@@ -328,14 +330,20 @@ class TestGetFileStat(unittest.TestCase):
             self.assertEqual(time.mktime(update_time.timetuple()), epoch_now)
 
     def test_get_file_stat_error_message(self):
+        with mock.patch('os.stat', mock.Mock(side_effect=IOError('msg'))):
+            with self.assertRaisesRegexp(ValueError, 'myfilename\.txt'):
+                get_file_stat('myfilename.txt')
+
+    def test_get_file_stat_returns_epoch_on_invalid_timestamp(self):
         patch_attribute = 'awscli.customizations.s3.utils.datetime'
-        with mock.patch(patch_attribute) as f:
-            with mock.patch('os.stat'):
-                f.fromtimestamp.side_effect = ValueError(
-                    "timestamp out of range for platform "
-                    "localtime()/gmtime() function")
-                with self.assertRaisesRegexp(ValueError, 'myfilename\.txt'):
-                    get_file_stat('myfilename.txt')
+        with mock.patch(patch_attribute) as datetime_mock:
+            with temporary_file('w') as temp_file:
+                temp_file.write('foo')
+                temp_file.flush()
+                datetime_mock.fromtimestamp.side_effect = ValueError()
+                size, update_time = get_file_stat(temp_file.name)
+                self.assertIsNone(update_time)
+
 
 
 class TestSetsFileUtime(unittest.TestCase):
@@ -449,3 +457,20 @@ class TestRequestParamsMapperSSE(unittest.TestCase):
              'CopySourceSSECustomerKey': 'my-sse-c-copy-source-key',
              'SSECustomerAlgorithm': 'AES256',
              'SSECustomerKey': 'my-sse-c-key'})
+
+
+class TestUniPrint(unittest.TestCase):
+
+    def test_out_file_with_encoding_attribute(self):
+        buf = io.BytesIO()
+        out = io.TextIOWrapper(buf, encoding='utf-8')
+        uni_print(u'\u2713', out)
+        self.assertEqual(buf.getvalue(), u'\u2713'.encode('utf-8'))
+
+    def test_encoding_statement_fails_are_replaced(self):
+        buf = io.BytesIO()
+        out = io.TextIOWrapper(buf, encoding='ascii')
+        uni_print(u'SomeChars\u2713\u2714OtherChars', out)
+        # We replace the characters that can't be encoded
+        # with '?'.
+        self.assertEqual(buf.getvalue(), b'SomeChars??OtherChars')

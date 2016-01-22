@@ -13,6 +13,7 @@
 from awscli.testutils import unittest
 from awscli.testutils import BaseAWSHelpOutputTest
 
+import argparse
 import mock
 from botocore.exceptions import ClientError
 
@@ -97,3 +98,47 @@ class TestS3BucketExists(unittest.TestCase):
         self.s3_client.head_bucket.side_effect = forbidden_error
         self.assertTrue(
             utils.s3_bucket_exists(self.s3_client, self.bucket_name))
+
+class TestClientCreationFromGlobals(unittest.TestCase):
+    def setUp(self):
+        self.fake_client = {}
+        self.session = mock.Mock()
+        self.session.create_client.return_value = self.fake_client
+        self.parsed_globals = argparse.Namespace()
+        self.parsed_globals.region = 'us-west-2'
+        self.parsed_globals.endpoint_url = 'https://foo.bar.com'
+        self.parsed_globals.verify_ssl = False
+
+    def test_creates_clients_with_no_overrides(self):
+        client = utils.create_client_from_parsed_globals(
+            self.session, 'ec2', self.parsed_globals)
+        self.assertEqual(self.fake_client, client)
+        self.session.create_client.assert_called_once_with(
+            'ec2',
+            region_name='us-west-2',
+            verify=False,
+            endpoint_url='https://foo.bar.com'
+        )
+
+    def test_creates_clients_with_overrides(self):
+        overrides = {
+            'region_name': 'custom',
+            'verify': True,
+            'other_thing': 'more custom'
+        }
+        client = utils.create_client_from_parsed_globals(
+            self.session, 'ec2', self.parsed_globals, overrides)
+        self.assertEqual(self.fake_client, client)
+        self.session.create_client.assert_called_once_with(
+            'ec2',
+            region_name='custom',
+            verify=True,
+            other_thing='more custom',
+            endpoint_url='https://foo.bar.com'
+        )
+
+    def test_creates_clients_with_no_parsed_globals(self):
+        client = utils.create_client_from_parsed_globals(
+            self.session, 'ec2', argparse.Namespace())
+        self.assertEqual(self.fake_client, client)
+        self.session.create_client.assert_called_once_with('ec2')

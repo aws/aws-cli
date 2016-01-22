@@ -51,6 +51,38 @@ INSTANCE_GROUPS_SCHEMA = {
                 "description": "Target number of Amazon EC2 instances "
                 "for the instance group",
                 "required": True
+            },
+            "EbsConfiguration": {
+                "type": "object",
+                "description": "EBS configuration that will be associated with the instance group.",
+                "properties": {
+                    "EbsOptimized": {
+                        "type": "boolean",
+                        "description": "Boolean flag used to tag EBS-optimized instances.",
+                    },
+                    "VolumeSpecifications": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "VolumeType": {
+                                    "type": "string",
+                                    "description": "The EBS volume type that is attached to all the instances in the instance group. Valid types are: gp2, io1, and standard.",
+                                    "required": True
+                                },
+                                "SizeInGB": {
+                                    "type": "integer",
+                                    "description": "The EBS volume size, in GB, that is attached to all the instances in the instance group.",
+                                    "required": True
+                                },
+                                "Iops": {
+                                    "type": "integer",
+                                    "description": "The IOPS of the EBS volume that is attached to all the instances in the instance group.",
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

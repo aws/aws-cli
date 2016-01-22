@@ -13,9 +13,29 @@
 
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
+from tests.unit.customizations.emr import test_constants as \
+    CONSTANTS
 import json
 from mock import patch
 from botocore.vendored import requests
+
+INSTANCE_GROUPS_WITH_EBS_VOLUME_ARG = (
+    ' InstanceGroupType=TASK,InstanceType=m3.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,VolumeSpecifications=[{VolumeType=gp2,SizeInGB=100,Iops=100},{VolumeType=gp2,SizeInGB=100,Iops=100}]}')
+
+INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_VOLTYPE_ARG = (
+    ' InstanceGroupType=TASK,InstanceType=m3.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,VolumeSpecifications=[{SizeInGB=100,Iops=100},{VolumeType=gp2,SizeInGB=100,Iops=100}]}')
+
+INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_SIZE_ARG = (
+    ' InstanceGroupType=TASK,InstanceType=m3.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,VolumeSpecifications=[{VolumeType=gp2,Iops=100},{VolumeType=gp2,SizeInGB=100,Iops=100}]}')
+
+INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_VOLSPEC_ARG = (
+    ' InstanceGroupType=TASK,InstanceType=m3.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true}')
+
+INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_IOPS_ARG = (
+    ' InstanceGroupType=TASK,InstanceType=m3.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,VolumeSpecifications=[{VolumeType=gp2,SizeInGB=100}]}')
+
+MULTIPLE_INSTANCE_GROUPS_WITH_EBS_VOLUMES_VOLUME_ARG = (
+    ' InstanceGroupType=TASK,InstanceType=m3.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,VolumeSpecifications=[{VolumeType=gp2,SizeInGB=100}]} InstanceGroupType=CORE,InstanceType=m3.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,VolumeSpecifications=[{VolumeType=gp2,SizeInGB=100,Iops=100},{VolumeType=gp2,SizeInGB=100,Iops=100}]}')
 
 
 DEFAULT_INSTANCE_GROUPS = [{'InstanceRole': 'TASK',
@@ -24,6 +44,70 @@ DEFAULT_INSTANCE_GROUPS = [{'InstanceRole': 'TASK',
                             'Market': 'ON_DEMAND',
                             'InstanceType': 'm2.large'
                             }]
+
+DEFAULT_INSTANCE_GROUPS_WITH_EBS_CONFIG = \
+    [{'EbsConfiguration': 
+        {'EbsOptimized': True,
+            'VolumeSpecifications': 
+                [{'Iops': 100,
+                  'SizeInGB': 100,
+                  'VolumeType': 'gp2'},
+                 {'Iops': 100,
+                  'SizeInGB': 100,
+                  'VolumeType': 'gp2'}]},
+    'InstanceCount': 2,
+    'InstanceRole': 'TASK',
+    'InstanceType': 'm3.xlarge',
+    'Market': 'ON_DEMAND',
+    'Name': 'TASK'}]
+
+DEFAULT_INSTANCE_GROUPS_WITH_EBS_CONFIG_MISSING_IOPS = \
+    [{'EbsConfiguration': 
+        {'EbsOptimized': True,
+            'VolumeSpecifications': 
+                [{'SizeInGB': 100,
+                  'VolumeType': 'gp2'}]},
+
+     'InstanceCount': 2,
+     'InstanceRole': 'TASK',
+     'InstanceType': 'm3.xlarge',
+     'Market': 'ON_DEMAND',
+     'Name': 'TASK'}]
+
+DEFAULT_INSTANCE_GROUPS_WITH_EBS_CONFIG_MISSING_VOLSPEC = \
+    [{'EbsConfiguration': {'EbsOptimized': True},
+    'InstanceCount': 2,
+    'InstanceRole': 'TASK',
+    'InstanceType': 'm3.xlarge',
+    'Market': 'ON_DEMAND',
+    'Name': 'TASK'}]
+
+DEFAULT_MULTIPLE_INSTANCE_GROUPS_WITH_EBS_CONFIG = \
+    [{'EbsConfiguration': 
+        {'EbsOptimized': True,
+            'VolumeSpecifications': 
+                [{'SizeInGB': 100,
+                  'VolumeType': 'gp2'}]},
+    'InstanceCount': 2,
+    'InstanceRole': 'TASK',
+    'InstanceType': 'm3.xlarge',
+    'Market': 'ON_DEMAND',
+    'Name': 'TASK'},
+   {'EbsConfiguration': 
+        {'EbsOptimized': True,
+            'VolumeSpecifications': 
+                [{'Iops': 100,
+                    'SizeInGB': 100,
+                    'VolumeType': 'gp2'},
+                   {'Iops': 100,
+                    'SizeInGB': 100,
+                    'VolumeType': 'gp2'}]},
+    'InstanceCount': 2,
+    'InstanceRole': 'CORE',
+    'InstanceType': 'm3.xlarge',
+    'Market': 'ON_DEMAND',
+    'Name': 'CORE'}]
+
 
 ADD_INSTANCE_GROUPS_RESULT = {
     "InstanceGroupIds": [
@@ -102,10 +186,50 @@ class TestAddInstanceGroups(BaseAWSCommandParamsTest):
              'Market': 'ON_DEMAND',
              'InstanceType': 'm1.large'
              }
-            ]
+        ]
         result = {'JobFlowId': 'J-ABCD',
                   'InstanceGroups': expected_instance_groups}
 
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_groups_with_ebs_config(self):
+        cmd = self.prefix
+        cmd += INSTANCE_GROUPS_WITH_EBS_VOLUME_ARG
+        result = {'JobFlowId': 'J-ABCD',
+                  'InstanceGroups': DEFAULT_INSTANCE_GROUPS_WITH_EBS_CONFIG}
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_groups_with_ebs_config_missing_volume_type(self):
+        cmd = self.prefix
+        cmd += INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_VOLTYPE_ARG
+        stderr = self.run_cmd(cmd, 255)[1]
+        self.assert_error_message_has_field_name(stderr, 'VolumeType')
+
+    def test_instance_groups_with_ebs_config_missing_size(self):
+        cmd = self.prefix
+        cmd += INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_SIZE_ARG
+        stderr = self.run_cmd(cmd, 255)[1]
+        self.assert_error_message_has_field_name(stderr, 'SizeInGB')
+
+    def test_instance_groups_with_ebs_config_missing_volume_spec(self):
+        cmd = self.prefix
+        cmd += INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_VOLSPEC_ARG
+        result = {'JobFlowId': 'J-ABCD',
+                  'InstanceGroups': DEFAULT_INSTANCE_GROUPS_WITH_EBS_CONFIG_MISSING_VOLSPEC}
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_groups_with_ebs_config_missing_iops(self):
+        cmd = self.prefix
+        cmd += INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_IOPS_ARG
+        result = {'JobFlowId': 'J-ABCD',
+                  'InstanceGroups': DEFAULT_INSTANCE_GROUPS_WITH_EBS_CONFIG_MISSING_IOPS}
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_groups_with_ebs_config_multiple_instance_groups(self):
+        cmd = self.prefix
+        cmd += MULTIPLE_INSTANCE_GROUPS_WITH_EBS_VOLUMES_VOLUME_ARG
+        result = {'JobFlowId': 'J-ABCD',
+                  'InstanceGroups': DEFAULT_MULTIPLE_INSTANCE_GROUPS_WITH_EBS_CONFIG}
         self.assert_params_for_cmd(cmd, result)
 
     @patch('awscli.customizations.emr.emrutils.call')

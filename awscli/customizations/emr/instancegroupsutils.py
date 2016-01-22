@@ -24,6 +24,7 @@ def build_instance_groups(parsed_instance_groups):
     instance_groups = []
     for instance_group in parsed_instance_groups:
         ig_config = {}
+
         keys = instance_group.keys()
         if 'Name' in keys:
             ig_config['Name'] = instance_group['Name']
@@ -38,8 +39,10 @@ def build_instance_groups(parsed_instance_groups):
             ig_config['Market'] = constants.SPOT
         else:
             ig_config['Market'] = constants.ON_DEMAND
-        instance_groups.append(ig_config)
+        if 'EbsConfiguration' in keys:
+            ig_config['EbsConfiguration'] = instance_group['EbsConfiguration']
 
+        instance_groups.append(ig_config)
     return instance_groups
 
 
@@ -76,7 +79,7 @@ def validate_and_build_instance_groups(
         if instance_count is not None and int(instance_count) > 1:
             core_ig = _build_instance_group(
                 instance_type=instance_type,
-                instance_count=int(instance_count)-1,
+                instance_count=int(instance_count) - 1,
                 instance_group_type="CORE")
             instance_groups.append(core_ig)
 

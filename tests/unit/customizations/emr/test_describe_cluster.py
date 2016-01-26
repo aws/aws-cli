@@ -154,7 +154,7 @@ EXPECTED_RESULT = {
         "TerminationProtected": "false",
         "RunningAmiVersion": "2.4.2",
         "MasterPublicDnsName": "ec2-01-01-1-188.compute-1.amazonaws.com",
-        "MasterPrivateDnsName": "ec2-01-01-1-189.compute-1.amazonaws.com",
+        "MasterPrivateDnsName": "ip-10-10-10-177.ec2.internal",
         "InstanceGroups": [
             {
                 "RequestedInstanceCount": 1,

@@ -20,7 +20,7 @@ from awscli.testutils import unittest
 class TestSSHUtils(unittest.TestCase):
 
     @mock.patch('awscli.customizations.emr.sshutils.emrutils')
-    def test_validate_and_find_master_dns_waits(self, emrutils):
+    def test_validate_and_find_master_public_dns_waits(self, emrutils):
         emrutils.get_cluster_state.return_value = 'STARTING'
         session = mock.Mock()
         client = mock.Mock()
@@ -36,6 +36,27 @@ class TestSSHUtils(unittest.TestCase):
 
         # 2. Found the master public DNS
         self.assertTrue(emrutils.find_master_public_dns.called)
+
+    @mock.patch('awscli.customizations.emr.sshutils.emrutils')
+    def test_validate_and_find_master_private_dns_waits(self, emrutils):
+        emrutils.get_cluster_state.return_value = 'STARTING'
+        session = mock.Mock()
+        client = mock.Mock()
+        # Empty signifies a cluster running in a private network
+        emrutils.find_master_public_dns.return_value = ""
+
+        emrutils.get_client.return_value = client
+
+        sshutils.validate_and_find_master_dns(session, None, 'cluster-id')
+
+        # We should have:
+        # 1. Waiter for the cluster to be running.
+        client.get_waiter.assert_called_with('cluster_running')
+        client.get_waiter.return_value.wait.assert_called_with(
+            ClusterId='cluster-id')
+
+        # 2. Found the master private DNS
+        self.assertTrue(emrutils.find_master_private_dns.called)
 
     @mock.patch('awscli.customizations.emr.sshutils.emrutils')
     def test_cluster_in_terminated_states(self, emrutils):

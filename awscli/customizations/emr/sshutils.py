@@ -27,8 +27,8 @@ def validate_and_find_master_dns(session, parsed_globals, cluster_id):
     Check if the cluster to be connected to is
      terminated or being terminated.
     Check if the cluster is running.
-    Find master instance public dns of a given cluster.
-    Return the latest created master instance public dns name.
+    Find master instance public dns or private dns of a given cluster.
+    Return the latest created master instance  dns name.
     Throw MasterDNSNotAvailableError or ClusterTerminatedError.
     """
     cluster_state = emrutils.get_cluster_state(
@@ -47,9 +47,16 @@ def validate_and_find_master_dns(session, parsed_globals, cluster_id):
     except WaiterError:
         raise exceptions.MasterDNSNotAvailableError
 
-    return emrutils.find_master_public_dns(
+    master_dns = emrutils.find_master_public_dns(
         session=session, cluster_id=cluster_id,
         parsed_globals=parsed_globals)
+
+    if master_dns == "":
+        master_dns = emrutils.find_master_private_dns(
+            session=session, cluster_id=cluster_id,
+            parsed_globals=parsed_globals)
+
+
 
 
 def validate_ssh_with_key_file(key_file):

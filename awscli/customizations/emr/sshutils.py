@@ -27,7 +27,8 @@ def validate_and_find_master_dns(session, parsed_globals, cluster_id):
     Check if the cluster to be connected to is
      terminated or being terminated.
     Check if the cluster is running.
-    Find master instance public dns or private dns of a given cluster.
+    Find master instance public dns or if that isn't
+    available the private dns of a given cluster.
     Return the latest created master instance  dns name.
     Throw MasterDNSNotAvailableError or ClusterTerminatedError.
     """
@@ -55,6 +56,8 @@ def validate_and_find_master_dns(session, parsed_globals, cluster_id):
         master_dns = emrutils.find_master_private_dns(
             session=session, cluster_id=cluster_id,
             parsed_globals=parsed_globals)
+
+    return master_dns
 
 
 

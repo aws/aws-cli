@@ -11,11 +11,11 @@ Output::
   {
     "Vpcs": [
       {
-        "VpcId": "vpc-614cc409", 
+        "VpcId": "vpc-88888888", 
         "ClassicLinkDnsSupported": true
       }, 
       {
-        "VpcId": "vpc-c64bc1a3", 
+        "VpcId": "vpc-1a2b3c4d", 
         "ClassicLinkDnsSupported": false
       }
     ]

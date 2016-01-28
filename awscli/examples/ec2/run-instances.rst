@@ -264,7 +264,7 @@ Where mapping.json contains the following::
 
 **To launch an instance with user data**
 
-You can launch an instance and specify user data that performs instance configuration, or that runs a script. The following example passes user data in a file called ``my_script.txt`` that contains a configuration script for your instance. The script runs at launch.
+You can launch an instance and specify user data that performs instance configuration, or that runs a script. The user data needs to be passed as normal string, base64 encoding is handled internally. The following example passes user data in a file called ``my_script.txt`` that contains a configuration script for your instance. The script runs at launch.
 
 Command::
 

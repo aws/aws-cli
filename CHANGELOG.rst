@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``aws waf``: Add support for blocking, allowing, or monitoring
+  (count) requests based on the content in HTTP request bodies.
+* bugfix:``aws ssm``: Remove constraint on Amazon EC2 instance id's.
+  (`issue 1729 <https://github.com/aws/aws-cli/issues/1729>`__)
+
+
 1.10.0
 ======
 

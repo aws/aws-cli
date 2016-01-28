@@ -156,7 +156,11 @@ Precedence
 Credentials from environment variables have precedence over credentials from
 the shared credentials and AWS CLI config file.  Credentials specified in the
 shared credentials file have precedence over credentials in the AWS CLI config
-file.
+file. If ``AWS_DEFAULT_PROFILE`` environment variable is set and the
+``AWS_ACCESS_KEY_ID`` and ``AWS_SECRET_ACCESS_KEY`` environment variables are
+set, then the credentials provided by  ``AWS_ACCESS_KEY_ID`` and
+``AWS_SECRET_ACCESS_KEY`` will override the credentials located in the
+profile provided by ``AWS_DEFAULT_PROFILE``.
 
 
 Using AWS IAM Roles

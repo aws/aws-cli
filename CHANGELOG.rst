@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.10.1
+======
 
 * feature:``aws waf``: Add support for blocking, allowing, or monitoring
   (count) requests based on the content in HTTP request bodies.

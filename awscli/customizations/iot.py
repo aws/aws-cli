@@ -35,13 +35,13 @@ def register_create_keys_and_cert_arguments(session, argument_table, **kwargs):
     after_event = 'after-call.iot.CreateKeysAndCertificate'
     argument_table['certificate-pem-outfile'] = QueryOutFileArgument(
         session=session, name='certificate-pem-outfile',
-        query='certificatePem', after_call_event=after_event)
+        query='certificatePem', after_call_event=after_event, perm=0o600)
     argument_table['public-key-outfile'] = QueryOutFileArgument(
         session=session, name='public-key-outfile', query='keyPair.PublicKey',
-        after_call_event=after_event)
+        after_call_event=after_event, perm=0o600)
     argument_table['private-key-outfile'] = QueryOutFileArgument(
         session=session, name='private-key-outfile',
-        query='keyPair.PrivateKey', after_call_event=after_event)
+        query='keyPair.PrivateKey', after_call_event=after_event, perm=0o600)
 
 
 def register_create_keys_from_csr_arguments(session, argument_table, **kwargs):
@@ -49,4 +49,4 @@ def register_create_keys_from_csr_arguments(session, argument_table, **kwargs):
     argument_table['certificate-pem-outfile'] = QueryOutFileArgument(
         session=session, name='certificate-pem-outfile',
         query='certificatePem',
-        after_call_event='after-call.iot.CreateCertificateFromCsr')
+        after_call_event='after-call.iot.CreateCertificateFromCsr', perm=0o600)

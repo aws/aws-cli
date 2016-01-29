@@ -2,21 +2,21 @@
 
 This example describes the specified Auto Scaling group::
 
-    aws autoscaling describe-auto-scaling-groups --auto-scaling-group-name my-asg
+    aws autoscaling describe-auto-scaling-groups --auto-scaling-group-name my-auto-scaling-group
 
 The following is example output::
 
     {
         "AutoScalingGroups": [
            {
-              "AutoScalingGroupARN": "arn:aws:autoscaling:us-west-2:123456789012:autoScalingGroup:930d940e-891e-4781-a11a-7b0acd480f03:autoScalingGroupName/my-asg",
-              "HealthCheckGracePeriod": 0,
+              "AutoScalingGroupARN": "arn:aws:autoscaling:us-west-2:123456789012:autoScalingGroup:930d940e-891e-4781-a11a-7b0acd480f03:autoScalingGroupName/my-auto-scaling-group",
+              "HealthCheckGracePeriod": 300,
               "SuspendedProcesses": [],
               "DesiredCapacity": 1,
               "Tags": [],
               "EnabledMetrics": [],
               "LoadBalancerNames": [],
-              "AutoScalingGroupName": "my-test-asg",
+              "AutoScalingGroupName": "my-auto-scaling-group",
               "DefaultCooldown": 300,
               "MinSize": 0,
               "Instances": [
@@ -25,7 +25,7 @@ The following is example output::
                       "AvailabilityZone": "us-west-2c",
                       "HealthStatus": "Healthy",
                       "LifecycleState": "InService",
-                      "LaunchConfigurationName": "my-test-lc"
+                      "LaunchConfigurationName": "my-launch-config"
                    }
                ],
                "MaxSize": 1,
@@ -33,20 +33,21 @@ The following is example output::
                "TerminationPolicies": [
                      "Default"
                ],
-               "LaunchConfigurationName": "my-test-lc",
+               "LaunchConfigurationName": "my-launch-config",
                "CreatedTime": "2013-08-19T20:53:25.584Z",
                "AvailabilityZones": [
                    "us-west-2c"
                ],
-               "HealthCheckType": "EC2"
+               "HealthCheckType": "EC2",
+               "NewInstancesProtectedFromScaleIn": false
            }
         ]
     }
 
-To return a specific number of Auto Scaling groups with this command, use the ``max-items`` parameter::
+To return a specific number of Auto Scaling groups, use the ``max-items`` parameter::
 
     aws autoscaling describe-auto-scaling-groups --max-items 1
 
-If the output for this command includes a ``NextToken`` field, it indicates that there are more groups. You can use the value of this field with the ``starting-token`` parameter to return additional groups::
+If the output includes a ``NextToken`` field, there are more groups. To get the additional groups, use the value of this field with the ``starting-token`` parameter in a subsequent call as follows::
 
     aws autoscaling describe-auto-scaling-groups --starting-token None___1

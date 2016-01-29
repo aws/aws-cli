@@ -1,10 +1,10 @@
 **To describe the Auto Scaling notification types**
 
-The following ``describe-auto-scaling-notification-types`` command describes the notification types available for Auto Scaling groups::
+This example describes the available notification types::
 
 	aws autoscaling describe-auto-scaling-notification-types
 
-The output of this command is a JSON block that describes the notification types, similar to the following::
+The following is example output::
 
 	{
 		"AutoScalingNotificationTypes": [
@@ -16,7 +16,6 @@ The output of this command is a JSON block that describes the notification types
 		]
 	}
 
-For more information, see the `Configure your Auto Scaling Group to Send Notifications`_ section in the Getting Notifications When Your Auto Scaling Group Changes topic, in the *Auto Scaling Developer Guide*.
+For more information, see `Configure Your Auto Scaling Group to Send Notifications`_ in the *Auto Scaling Developer Guide*.
 
-.. _`Configure your Auto Scaling Group to Send Notifications`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/ASGettingNotifications.html#as-configure-asg-for-sns
-
+.. _`Configure Your Auto Scaling Group to Send Notifications`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/ASGettingNotifications.html#as-configure-asg-for-sns

@@ -2,7 +2,7 @@
 
 This example detaches the specified instance from the specified Auto Scaling group::
 
-   aws autoscaling detach-instances --instance-ids i-93633f9b --auto-scaling-group-name my-asg --should-decrement-desired-capacity
+   aws autoscaling detach-instances --instance-ids i-93633f9b --auto-scaling-group-name my-auto-scaling-group --should-decrement-desired-capacity
    
 The following is example output::
 
@@ -10,7 +10,7 @@ The following is example output::
     "Activities": [
         {
             "Description": "Detaching EC2 instance: i-93633f9b",
-            "AutoScalingGroupName": "my-asg",
+            "AutoScalingGroupName": "my-auto-scaling-group",
             "ActivityId": "5091cb52-547a-47ce-a236-c9ccbc2cb2c9",
             "Details": {"Availability Zone": "us-west-2a"},
             "StartTime": "2015-04-12T15:02:16.179Z",

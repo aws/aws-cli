@@ -123,7 +123,7 @@ INCLUDE = {'name': 'include', 'action': AppendFilter, 'nargs': 1,
 
 ACL = {'name': 'acl',
        'choices': ['private', 'public-read', 'public-read-write',
-                   'authenticated-read', 'bucket-owner-read',
+                   'authenticated-read', 'aws-exec-read', 'bucket-owner-read',
                    'bucket-owner-full-control', 'log-delivery-write'],
        'help_text': (
            "Sets the ACL for the object when the command is "
@@ -131,7 +131,7 @@ ACL = {'name': 'acl',
            '"s3:PutObjectAcl" permission included in the list of actions '
            "for your IAM policy. "
            "Only accepts values of ``private``, ``public-read``, "
-           "``public-read-write``, ``authenticated-read``, "
+           "``public-read-write``, ``authenticated-read``, ``aws-exec-read``, "
            "``bucket-owner-read``, ``bucket-owner-full-control`` and "
            "``log-delivery-write``. "
            'See <a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/'

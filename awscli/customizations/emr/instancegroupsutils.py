@@ -41,7 +41,6 @@ def build_instance_groups(parsed_instance_groups):
             ig_config['Market'] = constants.ON_DEMAND
         if 'EbsConfiguration' in keys:
             ig_config['EbsConfiguration'] = instance_group['EbsConfiguration']
-
         instance_groups.append(ig_config)
     return instance_groups
 

@@ -196,7 +196,8 @@ SSE_C_KEY = {
     'help_text': (
         'The customer-provided encryption key to use to server-side '
         'encrypt the object in S3. If you provide this value, '
-        '``--sse-c`` be specfied as well.'
+        '``--sse-c`` be specfied as well. The key provided should '
+        '**not** be base64 encoded.'
     )
 }
 
@@ -236,7 +237,7 @@ SSE_C_COPY_SOURCE_KEY = {
         'to use to decrypt the source object. The encryption key provided '
         'must be one that was used when the source object was created. '
         'If you provide this value, ``--sse-c-copy-source`` be specfied as '
-        'well.'
+        'well. The key provided should **not** be base64 encoded.'
     )
 }
 

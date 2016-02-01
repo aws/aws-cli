@@ -1396,17 +1396,14 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                     'InstanceCount': 1,
                     'Name': 'Master Instance Group',
                     'Market': 'ON_DEMAND',
-                    'InstanceType': 'm1.large',
+                    'InstanceType': 'd2.xlarge',
                     'EbsConfiguration':
-                   {'VolumeSpecifications':
+                   {'EbsBlockDeviceConfigs':
                          [
-                           {'VolumeType': 'gp2',
-                            'Iops': 100,
-                            'SizeInGB': 10
-                            },
-                           {'VolumeType': 'gp2',
-                            'Iops': 100,
-                            'SizeInGB': 20
+                           {'VolumeSpecification':
+                            {'VolumeType': 'standard',
+                            'SizeInGB': 10},
+                            'VolumesPerInstance': 4
                             }
                          ],
                         'EbsOptimized': True}
@@ -1415,14 +1412,14 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                     'InstanceCount': 2,
                     'Name': 'Core Instance Group',
                     'Market': 'ON_DEMAND',
-                    'InstanceType': 'm1.xlarge'
+                    'InstanceType': 'd2.xlarge'
                     },
                    {'InstanceRole': 'TASK',
                     'InstanceCount': 3,
                     'Name': 'Task Instance Group',
                     'Market': 'SPOT',
                     'BidPrice': '3.45',
-                    'InstanceType': 'm1.xlarge'
+                    'InstanceType': 'd2.xlarge'
                     }
            ]
            self.assert_params_for_cmd(cmd, result)

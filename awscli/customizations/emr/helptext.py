@@ -114,9 +114,10 @@ INSTANCE_GROUPS = (
     '<code>[Name], InstanceGroupType, InstanceType, InstanceCount,'
     ' [BidPrice], [EbsConfiguration]</code>. [EbsConfiguration] is optional.'
     ' EbsConfiguration takes the following parameters: <code>EbsOptimized</code>'
-    ' and <code>VolumeSpecifications</code>. VolumeSpecifications is array of EBS volume'
-    ' specification which takes the following parameters : <code>[VolumeType], '
-    ' [SizeInGB], Iops</code></p>')
+    ' and <code>EbsBlockDeviceConfigs</code>. EbsBlockDeviceConfigs is an array of EBS volume'
+    ' specifications, which takes the following parameters : <code>([VolumeType], '
+    ' [SizeInGB], Iops)</code> and VolumesPerInstance which is the count of EBS volumes'
+    ' per instance with this specification.</p>')
 
 INSTANCE_TYPE = (
     '<p>Shortcut option for --instance-groups. A specification of the '

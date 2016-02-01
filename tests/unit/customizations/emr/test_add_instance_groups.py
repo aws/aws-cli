@@ -20,22 +20,22 @@ from mock import patch
 from botocore.vendored import requests
 
 INSTANCE_GROUPS_WITH_EBS_VOLUME_ARG = (
-    ' InstanceGroupType=TASK,InstanceType=m3.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,VolumeSpecifications=[{VolumeType=gp2,SizeInGB=100,Iops=100},{VolumeType=gp2,SizeInGB=100,Iops=100}]}')
+    ' InstanceGroupType=TASK,InstanceType=d2.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,EbsBlockDeviceConfigs=[{VolumeSpecification={VolumeType=gp2,SizeInGB=100,Iops=100},VolumesPerInstance=4},{VolumeSpecification={VolumeType=gp2,SizeInGB=100,Iops=100}}]}')
 
 INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_VOLTYPE_ARG = (
-    ' InstanceGroupType=TASK,InstanceType=m3.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,VolumeSpecifications=[{SizeInGB=100,Iops=100},{VolumeType=gp2,SizeInGB=100,Iops=100}]}')
+    ' InstanceGroupType=TASK,InstanceType=d2.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,EbsBlockDeviceConfigs=[{VolumeSpecification={SizeInGB=100,Iops=100},VolumesPerInstance=4},{VolumeSpecification={VolumeType=gp2,SizeInGB=100,Iops=100}}]}')
 
 INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_SIZE_ARG = (
-    ' InstanceGroupType=TASK,InstanceType=m3.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,VolumeSpecifications=[{VolumeType=gp2,Iops=100},{VolumeType=gp2,SizeInGB=100,Iops=100}]}')
+    ' InstanceGroupType=TASK,InstanceType=d2.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,EbsBlockDeviceConfigs=[{VolumeSpecification={VolumeType=gp2,Iops=100},VolumesPerInstance=4},{VolumeSpecification={VolumeType=gp2,SizeInGB=100,Iops=100}}]}')
 
 INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_VOLSPEC_ARG = (
-    ' InstanceGroupType=TASK,InstanceType=m3.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true}')
+    ' InstanceGroupType=TASK,InstanceType=d2.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true}')
 
 INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_IOPS_ARG = (
-    ' InstanceGroupType=TASK,InstanceType=m3.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,VolumeSpecifications=[{VolumeType=gp2,SizeInGB=100}]}')
+    ' InstanceGroupType=TASK,InstanceType=d2.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,EbsBlockDeviceConfigs=[{VolumeSpecification={VolumeType=gp2,SizeInGB=100},VolumesPerInstance=4}]}')
 
 MULTIPLE_INSTANCE_GROUPS_WITH_EBS_VOLUMES_VOLUME_ARG = (
-    ' InstanceGroupType=TASK,InstanceType=m3.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,VolumeSpecifications=[{VolumeType=gp2,SizeInGB=100}]} InstanceGroupType=CORE,InstanceType=m3.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,VolumeSpecifications=[{VolumeType=gp2,SizeInGB=100,Iops=100},{VolumeType=gp2,SizeInGB=100,Iops=100}]}')
+    ' InstanceGroupType=TASK,InstanceType=d2.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,EbsBlockDeviceConfigs=[{VolumeSpecification={VolumeType=gp2,SizeInGB=100},VolumesPerInstance=4}]} InstanceGroupType=CORE,InstanceType=d2.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,EbsBlockDeviceConfigs=[{VolumeSpecification={VolumeType=gp2,SizeInGB=100,Iops=20}},{VolumeSpecification={VolumeType=gp2,SizeInGB=100,Iops=40}}]}')
 
 
 DEFAULT_INSTANCE_GROUPS = [{'InstanceRole': 'TASK',
@@ -48,29 +48,35 @@ DEFAULT_INSTANCE_GROUPS = [{'InstanceRole': 'TASK',
 DEFAULT_INSTANCE_GROUPS_WITH_EBS_CONFIG = \
     [{'EbsConfiguration': 
         {'EbsOptimized': True,
-            'VolumeSpecifications': 
-                [{'Iops': 100,
-                  'SizeInGB': 100,
-                  'VolumeType': 'gp2'},
-                 {'Iops': 100,
-                  'SizeInGB': 100,
-                  'VolumeType': 'gp2'}]},
+            'EbsBlockDeviceConfigs': 
+                [
+                 {'VolumeSpecification':
+                      {'Iops': 100,
+                      'SizeInGB': 100,
+                      'VolumeType': 'gp2'},
+                      'VolumesPerInstance': 4},
+                  {'VolumeSpecification':
+                     {'Iops': 100,
+                      'SizeInGB': 100,
+                      'VolumeType': 'gp2'}}]},
     'InstanceCount': 2,
     'InstanceRole': 'TASK',
-    'InstanceType': 'm3.xlarge',
+    'InstanceType': 'd2.xlarge',
     'Market': 'ON_DEMAND',
     'Name': 'TASK'}]
 
 DEFAULT_INSTANCE_GROUPS_WITH_EBS_CONFIG_MISSING_IOPS = \
     [{'EbsConfiguration': 
         {'EbsOptimized': True,
-            'VolumeSpecifications': 
-                [{'SizeInGB': 100,
-                  'VolumeType': 'gp2'}]},
+            'EbsBlockDeviceConfigs': 
+                [{'VolumeSpecification':
+                  {'SizeInGB': 100,
+                  'VolumeType': 'gp2'},
+                  'VolumesPerInstance': 4}]},
 
      'InstanceCount': 2,
      'InstanceRole': 'TASK',
-     'InstanceType': 'm3.xlarge',
+     'InstanceType': 'd2.xlarge',
      'Market': 'ON_DEMAND',
      'Name': 'TASK'}]
 
@@ -78,33 +84,38 @@ DEFAULT_INSTANCE_GROUPS_WITH_EBS_CONFIG_MISSING_VOLSPEC = \
     [{'EbsConfiguration': {'EbsOptimized': True},
     'InstanceCount': 2,
     'InstanceRole': 'TASK',
-    'InstanceType': 'm3.xlarge',
+    'InstanceType': 'd2.xlarge',
     'Market': 'ON_DEMAND',
     'Name': 'TASK'}]
 
 DEFAULT_MULTIPLE_INSTANCE_GROUPS_WITH_EBS_CONFIG = \
     [{'EbsConfiguration': 
         {'EbsOptimized': True,
-            'VolumeSpecifications': 
-                [{'SizeInGB': 100,
-                  'VolumeType': 'gp2'}]},
+            'EbsBlockDeviceConfigs': 
+                [{'VolumeSpecification':
+                  {'SizeInGB': 100,
+                  'VolumeType': 'gp2'},
+                  'VolumesPerInstance': 4}]},
     'InstanceCount': 2,
     'InstanceRole': 'TASK',
-    'InstanceType': 'm3.xlarge',
+    'InstanceType': 'd2.xlarge',
     'Market': 'ON_DEMAND',
     'Name': 'TASK'},
    {'EbsConfiguration': 
         {'EbsOptimized': True,
-            'VolumeSpecifications': 
-                [{'Iops': 100,
+            'EbsBlockDeviceConfigs': 
+                [{'VolumeSpecification':
+                   {'Iops': 20,
                     'SizeInGB': 100,
-                    'VolumeType': 'gp2'},
-                   {'Iops': 100,
+                    'VolumeType': 'gp2'
+                    }},
+                   {'VolumeSpecification':
+                    {'Iops': 40,
                     'SizeInGB': 100,
-                    'VolumeType': 'gp2'}]},
+                    'VolumeType': 'gp2'}}]},
     'InstanceCount': 2,
     'InstanceRole': 'CORE',
-    'InstanceType': 'm3.xlarge',
+    'InstanceType': 'd2.xlarge',
     'Market': 'ON_DEMAND',
     'Name': 'CORE'}]
 

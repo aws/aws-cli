@@ -60,24 +60,34 @@ INSTANCE_GROUPS_SCHEMA = {
                         "type": "boolean",
                         "description": "Boolean flag used to tag EBS-optimized instances.",
                     },
-                    "VolumeSpecifications": {
+                    "EbsBlockDeviceConfigs": {
                         "type": "array",
                         "items": {
                             "type": "object",
                             "properties": {
-                                "VolumeType": {
-                                    "type": "string",
-                                    "description": "The EBS volume type that is attached to all the instances in the instance group. Valid types are: gp2, io1, and standard.",
-                                    "required": True
+                                "VolumeSpecification" : {
+                                    "type": "object",
+                                    "description": "The EBS volume specification that will be created and attached to every instance in this instance group.",
+                                    "properties": {
+                                        "VolumeType": {
+                                            "type": "string",
+                                            "description": "The EBS volume type that is attached to all the instances in the instance group. Valid types are: gp2, io1, and standard.",
+                                            "required": True
+                                        },
+                                        "SizeInGB": {
+                                            "type": "integer",
+                                            "description": "The EBS volume size, in GB, that is attached to all the instances in the instance group.",
+                                            "required": True
+                                        },
+                                        "Iops": {
+                                            "type": "integer",
+                                            "description": "The IOPS of the EBS volume that is attached to all the instances in the instance group.",
+                                        }
+                                    }
                                 },
-                                "SizeInGB": {
+                                "VolumesPerInstance": {
                                     "type": "integer",
-                                    "description": "The EBS volume size, in GB, that is attached to all the instances in the instance group.",
-                                    "required": True
-                                },
-                                "Iops": {
-                                    "type": "integer",
-                                    "description": "The IOPS of the EBS volume that is attached to all the instances in the instance group.",
+                                    "description": "The number of EBS volumes that will be created and attached to each instance in the instance group.",
                                 }
                             }
                         }

@@ -419,13 +419,13 @@ NOTE: JSON arguments must include options and values as their own items in the l
 - Create a cluster with multiple EBS volumes attached to the CORE instance group. EBS volumes can be attached to MASTER, CORE, and TASK instance groups. For instance groups with EBS configurations, which have an embedded JSON structure, you should enclose the entire instance group argument with single quotes. For instance groups with no EBS configuration, using single quotes is optional.
 - Command::
 
-    aws emr create-cluster --release-label emr-4.2.0  --use-default-roles --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge 'InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge,EbsConfiguration={EbsOptimized=true,VolumeSpecifications=[{VolumeType=gp2,SizeInGB=100,Iops=100},{VolumeType=gp2,SizeInGB=100,Iops=100}]}' --auto-terminate
+    aws emr create-cluster --release-label emr-4.2.0  --use-default-roles --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=d2.xlarge 'InstanceGroupType=CORE,InstanceCount=2,InstanceType=d2.xlarge,EbsConfiguration={EbsOptimized=true,EbsBlockDeviceConfigs=[{VolumeSpecification={VolumeType=gp2,SizeInGB=100}},{VolumeSpecification={VolumeType=io1,SizeInGB=100,Iops=100},VolumesPerInstance=4}]}' --auto-terminate
 
 - Create a cluster with multiple EBS volumes attached to the MASTER instance group. 
 - Command::
 
-    aws emr create-cluster --release-label emr-4.2.0 --use-default-roles --instance-groups 'InstanceGroupType=MASTER, InstanceCount=1, InstanceType=m3.xlarge, EbsConfiguration={EbsOptimized=true, VolumeSpecifications=[{VolumeType=gp2, SizeInGB=100, Iops=100},{VolumeType=standard,SizeInGB=50,Iops=100}]}' InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
+    aws emr create-cluster --release-label emr-4.2.0 --use-default-roles --instance-groups 'InstanceGroupType=MASTER, InstanceCount=1, InstanceType=d2.xlarge, EbsConfiguration={EbsOptimized=true, EbsBlockDeviceConfigs=[{VolumeSpecification={VolumeType=io1, SizeInGB=100, Iops=100}},{VolumeSpecification={VolumeType=standard,SizeInGB=50},VolumesPerInstance=3}]}' InstanceGroupType=CORE,InstanceCount=2,InstanceType=d2.xlarge --auto-terminate
 
 - Required parameters::
     
-    VolumeType, SizeInGB if VolumeSpecifications specified
+    VolumeType, SizeInGB if EbsBlockDeviceConfigs specified

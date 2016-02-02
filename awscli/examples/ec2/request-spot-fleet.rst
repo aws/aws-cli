@@ -27,21 +27,7 @@ Config.json::
                 }
             ],
             "InstanceType": "m3.medium",
-            "SubnetId": "subnet-1a2b3c4d",
-            "IamInstanceProfile": {
-                "Arn": "arn:aws:iam::123456789012:instance-profile/my-iam-role"
-            }
-        },
-        {
-            "ImageId": "ami-1a2b3c4d",
-            "KeyName": "my-key-pair",
-            "SecurityGroups": [
-                {
-                    "GroupId": "sg-1a2b3c4d"
-                }
-            ],
-            "InstanceType": "m3.medium",
-            "SubnetId": "subnet-3c4d5e6f",
+            "SubnetId": "subnet-1a2b3c4d, subnet-3c4d5e6f",
             "IamInstanceProfile": {
                 "Arn": "arn:aws:iam::123456789012:instance-profile/my-iam-role"
             }
@@ -84,23 +70,7 @@ Config.json::
             ],
             "InstanceType": "m3.medium",
             "Placement": {
-                "AvailabilityZone": "us-west-2a"
-            },
-            "IamInstanceProfile": {
-                "Arn": "arn:aws:iam::123456789012:instance-profile/my-iam-role"
-            }
-        },
-        {
-            "ImageId": "ami-1a2b3c4d",
-            "KeyName": "my-key-pair",
-            "SecurityGroups": [
-                {
-                    "GroupId": "sg-1a2b3c4d"
-                }
-            ],
-            "InstanceType": "m3.medium",
-            "Placement": {
-                "AvailabilityZone": "us-west-2b"
+                "AvailabilityZone": "us-west-2a, us-west-2b"
             },
             "IamInstanceProfile": {
                 "Arn": "arn:aws:iam::123456789012:instance-profile/my-iam-role"

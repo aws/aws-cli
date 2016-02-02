@@ -13,7 +13,7 @@
 import os
 import mock
 
-from awscli.testutils import unittest, FileCreator
+from awscli.testutils import unittest, FileCreator, skip_if_windows
 from awscli.customizations.arguments import OverrideRequiredArgsArgument
 from awscli.customizations.arguments import StatefulArgument
 from awscli.customizations.arguments import QueryOutFileArgument
@@ -99,26 +99,26 @@ class TestQueryFileArgument(unittest.TestCase):
 
     def test_proxies_to_super_ctor(self):
         session = mock.Mock()
-        arg = QueryOutFileArgument(session, 'foo', 'bar.baz', 'event')
+        arg = QueryOutFileArgument(session, 'foo', 'bar.baz', 'event', 0o600)
         self.assertEqual('foo', arg.name)
         self.assertEqual('bar.baz', arg.query)
 
     def test_adds_default_help_text(self):
         session = mock.Mock()
-        arg = QueryOutFileArgument(session, 'foo', 'bar.baz', 'event')
+        arg = QueryOutFileArgument(session, 'foo', 'bar.baz', 'event', 0o600)
         self.assertEqual(('Saves the command output contents of bar.baz '
                           'to the given filename'), arg.documentation)
 
     def test_does_not_add_help_text_if_set(self):
         session = mock.Mock()
-        arg = QueryOutFileArgument(session, 'foo', 'bar.baz', 'event',
+        arg = QueryOutFileArgument(session, 'foo', 'bar.baz', 'event', 0o600,
                                    help_text='abc')
         self.assertEqual('abc', arg.documentation)
 
     def test_saves_query_to_file(self):
         outfile = self.files.create_file('not-empty-test', '')
         session = mock.Mock()
-        arg = QueryOutFileArgument(session, 'foo', 'baz', 'event')
+        arg = QueryOutFileArgument(session, 'foo', 'baz', 'event', 0o600)
         arg.add_to_params({}, outfile)
         arg.save_query({'ResponseMetadata': {'HTTPStatusCode': 200},
                         'baz': 'abc123'})
@@ -129,14 +129,26 @@ class TestQueryFileArgument(unittest.TestCase):
 
     def test_does_not_save_when_not_set(self):
         session = mock.Mock()
-        QueryOutFileArgument(session, 'foo', 'baz', 'event')
+        QueryOutFileArgument(session, 'foo', 'baz', 'event', 0o600)
         self.assertEquals(0, session.register.call_count)
 
     def test_saves_query_to_file_as_empty_string_when_none_result(self):
         outfile = self.files.create_file('none-test', '')
         session = mock.Mock()
-        arg = QueryOutFileArgument(session, 'foo', 'baz', 'event')
+        arg = QueryOutFileArgument(session, 'foo', 'baz', 'event', 0o600)
         arg.add_to_params({}, outfile)
         arg.save_query({'ResponseMetadata': {'HTTPStatusCode': 200}})
         with open(outfile) as fp:
             self.assertEquals('', fp.read())
+
+    @skip_if_windows("Test not valid on windows.")
+    def test_permissions_on_created_file(self):
+        outfile = self.files.create_file('not-empty-test', '')
+        session = mock.Mock()
+        arg = QueryOutFileArgument(session, 'foo', 'baz', 'event', 0o600)
+        arg.add_to_params({}, outfile)
+        arg.save_query({'ResponseMetadata': {'HTTPStatusCode': 200},
+                        'baz': 'abc123'})
+        with open(outfile) as fp:
+            fp.read()
+        self.assertEqual(os.stat(outfile).st_mode & 0xFFF, 0o600)

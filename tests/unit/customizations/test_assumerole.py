@@ -34,7 +34,8 @@ class TestAssumeRolePlugin(unittest.TestCase):
         session.get_component.assert_called_with('credential_provider')
         credential_provider = session.get_component.return_value
         get_provider = credential_provider.get_provider
-        get_provider.assert_called_with('assume-role')
+        get_provider.assert_has_calls([
+            mock.call('assume-role'), mock.call('assume-role-with-saml')])
         self.assertIsInstance(get_provider.return_value.cache,
                               assumerole.JSONFileCache)
 
@@ -58,6 +59,19 @@ class TestAssumeRolePlugin(unittest.TestCase):
 
         credential_provider = session.get_component.return_value
         self.assertFalse(credential_provider.get_provider.called)
+
+
+class TestRoleSelector(unittest.TestCase):
+    dev = {'RoleArn': 'dev', 'PrincipalArn': 'ExampleOrganization'}
+    prd = {'RoleArn': 'prd', 'PrincipalArn': 'ExampleOrganization'}
+    roles = [dev, prd]
+
+    def test_choose_one_matching_role(self):
+        self.assertEqual(assumerole.role_selector('dev', self.roles), self.dev)
+
+    def test_no_matching_role(self):
+        self.assertRaises(
+            ValueError, assumerole.role_selector, 'other', self.roles)
 
 
 class TestJSONCache(unittest.TestCase):

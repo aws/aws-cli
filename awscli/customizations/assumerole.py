@@ -3,6 +3,8 @@ import json
 import logging
 
 from botocore.exceptions import ProfileNotFound
+from botocore.compat import six
+from six.moves import input as raw_input
 
 LOG = logging.getLogger(__name__)
 
@@ -37,7 +39,40 @@ def inject_assume_role_provider_cache(session, **kwargs):
                   "JSONFileCache for assume-role.")
         return
     cred_chain.get_provider('assume-role').cache = JSONFileCache()
-    cred_chain.get_provider('assume-role-with-saml').cache = JSONFileCache()
+    saml_provider = cred_chain.get_provider('assume-role-with-saml')
+    saml_provider.cache = JSONFileCache()
+    saml_provider.role_selector = role_selector
+
+
+def role_selector(role_arn, roles):
+    if role_arn:
+        chosen_roles = [r for r in roles if r['RoleArn']==role_arn]
+        if not chosen_roles:
+            raise ValueError(
+                'Your specified role %s does not exist in IdP roles list: %s'
+                % (role_arn, [r['RoleArn'] for r in roles]))
+        role = chosen_roles[0]
+    else:
+        # So end user has not yet configured a role_arn.
+        # If IdP provides more than one role, ask the user to choose one,
+        # otherwise just proceed.
+        if len(roles) > 1:
+            options = [(str(i), role) for i, role in enumerate(roles, start=1)]
+            prompt = "\n".join(
+                "[%s]: %s" % (i, role['RoleArn']) for i, role in options)
+            choice = raw_input(
+                "Please choose the role you would like to assume:\n"
+                "(You can preconfigure the role_arn in your profile)\n"
+                "%s\n"
+                "Selection: " % prompt)
+            role = dict(options).get(choice)
+            if not role:
+                raise ValueError('You selected an invalid role index.')
+        elif roles:
+            role = roles[0]
+        else:
+            raise ValueError('There is no role to choose')
+    return role
 
 
 class JSONFileCache(object):

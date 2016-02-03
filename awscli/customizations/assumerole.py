@@ -80,6 +80,7 @@ class JSONFileCache(object):
             os.makedirs(self._working_dir)
         with os.fdopen(os.open(full_key,
                                os.O_WRONLY | os.O_CREAT, 0o600), 'w') as f:
+            f.truncate()
             f.write(file_content)
 
     def _convert_cache_key(self, cache_key):

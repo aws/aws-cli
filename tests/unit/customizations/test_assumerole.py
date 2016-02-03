@@ -107,6 +107,13 @@ class TestJSONCache(unittest.TestCase):
         with self.assertRaises(KeyError):
             self.cache['foo']
 
+    def test_file_is_truncated_before_writing(self):
+        self.cache['mykey'] = {
+            'really long key in the cache': 'really long value in cache'}
+        # Now overwrite it with a smaller value.
+        self.cache['mykey'] = {'a': 'b'}
+        self.assertEqual(self.cache['mykey'], {'a': 'b'})
+
     @skip_if_windows('File permissions tests not supported on Windows.')
     def test_permissions_for_file_restricted(self):
         self.cache['mykey'] = {'foo': 'bar'}

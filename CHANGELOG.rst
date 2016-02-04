@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:Assume Role: Fix issue where temporary credentials from assuming
+  a role were not being properly cached
+  (`issue 1684 <https://github.com/aws/aws-cli/issues/1684>`__)
+
+
 1.10.1
 ======
 

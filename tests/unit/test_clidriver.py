@@ -478,7 +478,13 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             self.assertEqual(rc, 0)
 
             # Make sure uri_param was called
-            uri_param_mock.assert_called()
+            uri_param_mock.assert_any_call(
+                event_name='load-cli-arg.ec2.describe-instances.unknown-arg',
+                operation_name='describe-instances',
+                param=mock.ANY,
+                service_name='ec2',
+                value='file:///foo',
+            )
             # Make sure it was called with our passed-in URI
             self.assertEqual('file:///foo',
                              uri_param_mock.call_args_list[-1][1]['value'])
@@ -496,7 +502,13 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
 
             self.assertEqual(rc, 0)
 
-            uri_param_mock.assert_called()
+            uri_param_mock.assert_any_call(
+                event_name='load-cli-arg.custom.foo.bar',
+                operation_name='foo',
+                param=mock.ANY,
+                service_name='custom',
+                value='file:///foo',
+            )
 
     @unittest.skip
     def test_custom_arg_no_paramfile(self):

@@ -61,19 +61,6 @@ class TestAssumeRolePlugin(unittest.TestCase):
         self.assertFalse(credential_provider.get_provider.called)
 
 
-class TestRoleSelector(unittest.TestCase):
-    dev = {'RoleArn': 'dev', 'PrincipalArn': 'ExampleOrganization'}
-    prd = {'RoleArn': 'prd', 'PrincipalArn': 'ExampleOrganization'}
-    roles = [dev, prd]
-
-    def test_choose_one_matching_role(self):
-        self.assertEqual(assumerole.role_selector('dev', self.roles), self.dev)
-
-    def test_no_matching_role(self):
-        self.assertRaises(
-            ValueError, assumerole.role_selector, 'other', self.roles)
-
-
 class TestJSONCache(unittest.TestCase):
     def setUp(self):
         self.tempdir = tempfile.mkdtemp()

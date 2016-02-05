@@ -262,7 +262,7 @@ class TestPublicKeyProvider(unittest.TestCase):
             'c': {'Fingerprint': 'c', 'OtherData': 'c', 'Value': 'c'},
         }, keys)
         cloudtrail_client.list_public_keys.assert_has_calls(
-            call(EndTime=end_date, StartTime=start_date))
+            [call(EndTime=end_date, StartTime=start_date)])
 
 
 class TestSha256RSADigestValidator(unittest.TestCase):

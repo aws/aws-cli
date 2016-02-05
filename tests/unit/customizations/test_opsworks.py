@@ -801,19 +801,19 @@ class TestOpsWorksRegisterEc2(TestOpsWorksBase):
             mock_ec2.describe_instances.return_value = {
                 "Reservations": [{
                     "Instances": [{
-                        "InstanceId": "i-12345678",
+                        "InstanceId": "i-12345678910",
                     }]
                 }]
             }
             self.register.retrieve_stack(self._build_args(
-                stack_id="STACKID", target="i-12345678"
+                stack_id="STACKID", target="i-12345678910"
             ))
             mock_ec2.describe_instances.assert_called_with(
-                InstanceIds=["i-12345678"], Filters=[]
+                InstanceIds=["i-12345678910"], Filters=[]
             )
             self.assertEqual(
                 self.register._ec2_instance["InstanceId"],
-                "i-12345678")
+                "i-12345678910")
 
     def test_retrieve_stack_target_ip_address(self):
         """Should find an EC2 instance by IP address."""

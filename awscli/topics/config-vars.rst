@@ -238,12 +238,15 @@ retrieve AWS credentials for you. You do not need to configure any credentials.
 You can specify the following configuration values for configuring an SAML role
 in the AWS CLI config file:
 
-* ``saml_endpoint`` - The URL of the login page of your SAML IdP
+* ``saml_endpoint`` - The HTTPS URL of the login page of your SAML IdP
 * ``saml_authentication_type`` - The authentication type of your SAML IdP.
-  So far, the only valid setting is `form`, means forms-based authentication.
+  So far, the only valid setting is ``form``, means forms-based authentication.
 * ``saml_provider`` - This tells CLI what kind of login page will be used.
-  The valid settings is `adfs` for Active Directory Federation Services (AD FS)
-  and `okta` for Okta.
+  The valid settings are:
+
+  - ``adfs`` for Active Directory Federation Services (AD FS)
+  - ``okta`` for Okta.
+
 * ``saml_username`` - The username you use to login on your SAML IdP.
   It is optional. If absent, the CLI will prompt for your input.
 * ``role_arn`` - The ARN of the role you want to assume.

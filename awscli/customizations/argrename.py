@@ -44,7 +44,9 @@ ARGUMENT_RENAMES = {
     'codepipeline.delete-custom-action-type.version': 'action-version',
     'route53.delete-traffic-policy.version': 'traffic-policy-version',
     'route53.get-traffic-policy.version': 'traffic-policy-version',
-    'route53.update-traffic-policy-comment.version': 'traffic-policy-version'
+    'route53.update-traffic-policy-comment.version': 'traffic-policy-version',
+    'gamelift.create-build.version': 'build-version',
+    'gamelift.update-build.version': 'build-version'
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,

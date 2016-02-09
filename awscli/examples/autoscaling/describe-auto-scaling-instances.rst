@@ -12,7 +12,7 @@ The following is example output::
             "InstanceId": "i-4ba0837f",
             "HealthStatus": "HEALTHY",
             "AvailabilityZone": "us-west-2c",
-            "AutoScalingGroupName": "my-asg",
+            "AutoScalingGroupName": "my-auto-scaling-group",
             "LifecycleState": "InService"
         }
     ]
@@ -31,12 +31,12 @@ The following is example output::
             "InstanceId": "i-4ba0837f",
             "HealthStatus": "HEALTHY",
             "AvailabilityZone": "us-west-2c",
-            "AutoScalingGroupName": "my-asg",
+            "AutoScalingGroupName": "my-auto-scaling-group",
             "LifecycleState": "InService"
         }
     ]
   }
 
-Notice that the output for this command includes a ``NextToken`` field, which indicates that there are more instances. You can use the value of this field with the ``starting-token`` parameter as follows to return additional instances::
+If the output includes a ``NextToken`` field, there are more instances. To get the additional instances, use the value of this field with the ``starting-token`` parameter in a subsequent call as follows::
 
     aws autoscaling describe-auto-scaling-instances --starting-token None___1

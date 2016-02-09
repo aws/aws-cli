@@ -24,7 +24,8 @@ class TestGetGameSessionLog(BaseAWSCommandParamsTest):
         super(TestGetGameSessionLog, self).setUp()
         self.files = FileCreator()
         self.filename = os.path.join(self.files.rootdir, 'myfile')
-        self.urlopen_patch = mock.patch('urllib2.urlopen')
+        self.urlopen_patch = mock.patch(
+            'awscli.customizations.gamelift.getlog.urlopen')
         self.contents = b'My Contents'
         self.urlopen_mock = self.urlopen_patch.start()
         self.urlopen_mock.return_value = six.BytesIO(self.contents)

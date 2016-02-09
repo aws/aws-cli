@@ -34,7 +34,8 @@ class TestGetGameSessionLogCommand(unittest.TestCase):
 
         self.contents = b'mycontents'
         self.file_creator = FileCreator()
-        self.urlopen_patch = mock.patch('urllib2.urlopen')
+        self.urlopen_patch = mock.patch(
+            'awscli.customizations.gamelift.getlog.urlopen')
         self.urlopen_mock = self.urlopen_patch.start()
         self.urlopen_mock.return_value = six.BytesIO(self.contents)
 

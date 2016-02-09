@@ -10,10 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import urllib2
 import sys
 from functools import partial
 
+from botocore.compat import six
+from six.moves.urllib.request import urlopen
 from awscli.customizations.commands import BasicCommand
 
 
@@ -40,7 +41,7 @@ class GetGameSessionLogCommand(BasicCommand):
         url = response['PreSignedUrl']
 
         # Retrieve the content from the presigned url and save it locally.
-        contents = urllib2.urlopen(url)
+        contents = urlopen(url)
 
         sys.stdout.write(
             'Downloading log archive for game session %s...\r' %

@@ -70,6 +70,7 @@ from awscli.customizations.codecommit import initialize as codecommit_init
 from awscli.customizations.iot_data import register_custom_endpoint_note
 from awscli.customizations.iot import register_create_keys_and_cert_arguments
 from awscli.customizations.iot import register_create_keys_from_csr_arguments
+from awscli.customizations.gamelift import register_gamelift_commands
 
 
 def awscli_initialize(event_handlers):
@@ -144,3 +145,4 @@ def awscli_initialize(event_handlers):
         'building-argument-table.iot.create-certificate-from-csr',
         register_create_keys_from_csr_arguments)
     register_cloudfront(event_handlers)
+    register_gamelift_commands(event_handlers)

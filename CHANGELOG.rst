@@ -2,9 +2,10 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.10.2
+======
 
+* feature:``aws gamelift``: Add support for AWS GameLift
 * bugfix:Assume Role: Fix issue where temporary credentials from assuming
   a role were not being properly cached
   (`issue 1684 <https://github.com/aws/aws-cli/issues/1684>`__)

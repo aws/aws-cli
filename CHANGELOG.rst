@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.10.2
+======
 
 * feature:``aws gamelift``: Add support for AWS GameLift
 * bugfix:Assume Role: Fix issue where temporary credentials from assuming

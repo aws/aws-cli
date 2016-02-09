@@ -6,7 +6,8 @@ CHANGELOG
 Next Release (TBD)
 ==================
 * feature:``aws cloudfront``: Add support for new ACMCertificateARN parameter
-
+* feature:``aws marketplacecommerceanalytics generate-data-set``:
+  Add support for --customer-defined-values parameter
 
 1.10.2
 ======

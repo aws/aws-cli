@@ -93,11 +93,6 @@ class TestGetGameSessionLogCommand(unittest.TestCase):
             }
         }
 
-    def tearDown(self):
-        self.create_client_patch.stop()
-        self.upload_file_patch.stop()
-        self.file_creator.remove_all()
-
     def test_upload_build(self):
         self.cmd(self.args, self.global_args)
 
@@ -160,8 +155,17 @@ class TestZipDirectory(unittest.TestCase):
         zip_file_object = zipfile.ZipFile(
             self.zip_file, 'r', zipfile.ZIP_DEFLATED)
         with contextlib.closing(zip_file_object) as zf:
+            ref_zipfiles = []
             zipfile_contents = zf.namelist()
-            self.assertEqual(sorted(zipfile_contents), filenames)
+            for ref_zipfile in zipfile_contents:
+                if os.sep == '\\':
+                    # Internally namelist() represent directories with
+                    # forward slashes so we need to account for that if
+                    # the separator is a backslash depending on the operating
+                    # system.
+                    ref_zipfile = ref_zipfile.replace('/', '\\')
+                ref_zipfiles.append(ref_zipfile)
+            self.assertEqual(sorted(ref_zipfiles), filenames)
 
     def test_single_file(self):
         self.add_to_directory('foo')

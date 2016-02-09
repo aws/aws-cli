@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+
+Next Release (TBD)
+==================
+* feature:``aws cloudfront``: Add support for new ACMCertificateARN parameter
+
+
 1.10.2
 ======
 

@@ -20,7 +20,6 @@ from botocore.compat import OrderedDict
 from awscli.testutils import unittest
 from awscli.testutils import BaseCLIDriverTest
 from awscli.testutils import temporary_file
-from awscli.clidriver import CLIArgument
 from awscli.help import OperationHelpCommand
 from awscli.argprocess import detect_shape_structure
 from awscli.argprocess import unpack_cli_arg

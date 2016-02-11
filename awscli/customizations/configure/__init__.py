@@ -368,6 +368,7 @@ class ConfigureSetCommand(BasicCommand):
         {'name': 'value',
          'help_text': 'The value to set.',
          'action': 'store',
+         'no_paramfile': True,  # To disable the default paramfile behavior
          'cli_type_name': 'string', 'positional_arg': True},
     ]
     # Any variables specified in this list will be written to

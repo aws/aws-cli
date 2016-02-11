@@ -14,7 +14,7 @@ import os
 
 from mock import patch, Mock
 
-import awscli.customizations.s3.s3handler as s3handler
+import awscli.customizations.s3.utils as utils
 from awscli.compat import six
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, \
     capture_output
@@ -30,11 +30,13 @@ class S3HandlerBaseTest(BaseAWSCommandParamsTest):
         self.client = self.session.create_client('s3', 'us-east-1')
         self.source_client = self.session.create_client('s3', 'us-east-1')
         self.file_creator = FileCreator()
-        s3handler.MIN_UPLOAD_CHUNKSIZE = 1
+        self._saved_min_chunksize = utils.MIN_UPLOAD_CHUNKSIZE
+        utils.MIN_UPLOAD_CHUNKSIZE = 1
 
     def tearDown(self):
         super(S3HandlerBaseTest, self).tearDown()
         clean_loc_files(self.file_creator)
+        utils.MIN_UPLOAD_CHUNKSIZE = self._saved_min_chunksize
 
     def run_s3_handler(self, s3_handler, tasks):
         self.patch_make_request()

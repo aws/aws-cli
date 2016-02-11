@@ -25,7 +25,8 @@ from awscli.testutils import unittest, FileCreator
 
 from awscli import EnvironmentVariables
 from awscli.compat import StringIO
-from awscli.customizations.s3.s3handler import S3Handler, MIN_UPLOAD_CHUNKSIZE
+from awscli.customizations.s3.s3handler import S3Handler
+from awscli.customizations.s3.utils import MIN_UPLOAD_CHUNKSIZE
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.transferconfig import RuntimeConfig
 import botocore.session

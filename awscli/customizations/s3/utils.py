@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import argparse
+import logging
 from datetime import datetime
 import mimetypes
 import hashlib
@@ -29,6 +30,7 @@ from awscli.compat import six
 from awscli.compat import PY3
 from awscli.compat import queue
 
+LOGGER = logging.getLogger(__name__)
 HUMANIZE_SUFFIXES = ('KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB')
 MAX_PARTS = 10000
 EPOCH_TIME = datetime(1970, 1, 1, tzinfo=tzutc())
@@ -36,6 +38,7 @@ EPOCH_TIME = datetime(1970, 1, 1, tzinfo=tzutc())
 # See: http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html
 # and: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
 MAX_SINGLE_UPLOAD_SIZE = 5 * (1024 ** 3)
+MIN_UPLOAD_CHUNKSIZE = 5 * (1024 ** 2)
 SIZE_SUFFIX = {
     'kb': 1024,
     'mb': 1024 ** 2,
@@ -283,15 +286,43 @@ def find_chunksize(size, current_chunksize):
     the ``MAX_PARTS``.  If the ``chunksize`` is greater than
     ``MAX_SINGLE_UPLOAD_SIZE`` it returns ``MAX_SINGLE_UPLOAD_SIZE``.
     """
+    chunksize = enforce_max_parts(size, current_chunksize)
+    return enforce_chunksize_limits(chunksize)
+
+
+def enforce_chunksize_limits(current_chunksize):
+    chunksize = current_chunksize
+    chunksize_human = human_readable_size(chunksize)
+    if chunksize > MAX_SINGLE_UPLOAD_SIZE:
+        LOGGER.debug(
+            "Chunksize greater than maximum chunksize. Setting to %s from %s."
+            % (human_readable_size(MAX_SINGLE_UPLOAD_SIZE), chunksize_human))
+        return MAX_SINGLE_UPLOAD_SIZE
+    elif chunksize < MIN_UPLOAD_CHUNKSIZE:
+        LOGGER.debug(
+            "Chunksize less than minimum chunksize. Setting to %s from %s." %
+            (human_readable_size(MIN_UPLOAD_CHUNKSIZE), chunksize_human))
+        return MIN_UPLOAD_CHUNKSIZE
+    else:
+        return chunksize
+
+
+def enforce_max_parts(size, current_chunksize):
     chunksize = current_chunksize
     num_parts = int(math.ceil(size / float(chunksize)))
+
     while num_parts > MAX_PARTS:
         chunksize *= 2
         num_parts = int(math.ceil(size / float(chunksize)))
-    if chunksize > MAX_SINGLE_UPLOAD_SIZE:
-        return MAX_SINGLE_UPLOAD_SIZE
-    else:
-        return chunksize
+
+    if chunksize != current_chunksize:
+        chunksize_human = human_readable_size(chunksize)
+        LOGGER.debug(
+            "Chunksize would result in the number of parts exceeding the "
+            "maximum. Setting to %s from %s." %
+            (chunksize_human, human_readable_size(current_chunksize)))
+
+    return chunksize
 
 
 class MultiCounter(object):

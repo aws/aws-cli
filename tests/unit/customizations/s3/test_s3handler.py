@@ -17,7 +17,7 @@ import sys
 
 import mock
 
-import awscli.customizations.s3.s3handler
+import awscli.customizations.s3.utils
 from awscli.testutils import unittest
 from awscli import EnvironmentVariables
 from awscli.compat import six
@@ -258,22 +258,6 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
         ]
         stdout, stderr, rc = self.run_s3_handler(self.s3_handler_multi, tasks)
         self.assertEqual(rc.num_tasks_failed, 1)
-
-    def test_multiupload_invalid_chunksize_fail(self):
-        """
-        This tests the ability to break on an invalid multipart upload chunksize
-        """
-        awscli.customizations.s3.s3handler.MIN_UPLOAD_CHUNKSIZE = 50000
-        files = [self.loc_files[0]]
-        tasks = []
-        for i in range(len(files)):
-            tasks.append(FileInfo(
-                src=self.loc_files[i],
-                dest=self.s3_files[i], size=15,
-                operation_name='upload',
-                client=self.client))
-        stdout, stderr, rc = self.run_s3_handler(self.s3_handler_multi, tasks)
-        self.assertEqual(rc.num_tasks_warned, 1)
 
     def test_multiupload_abort_in_s3_handler(self):
         files = [self.loc_files[0]]
@@ -912,7 +896,7 @@ class TestStreams(S3HandlerBaseTest):
         self.assertEqual(submitted_tasks[2][0][0]._payload.read(),
                          b'ar')
 
-    def test_upload_stream_with_expected_size(self):
+    def test_upload_stream_with_expected_parts(self):
         self.params['expected_size'] = 100000
         # With this large of expected size, the chunksize of 2 will have
         # to change.
@@ -930,6 +914,25 @@ class TestStreams(S3HandlerBaseTest):
         changed_chunk_size = submitted_tasks[1][0][0]._chunk_size
         # New chunksize should have a total parts under 1000.
         self.assertTrue(100000 / float(changed_chunk_size) <= MAX_PARTS)
+
+    def test_upload_stream_with_expected_size(self):
+        minimum_chunksize = 10
+        awscli.customizations.s3.utils.MIN_UPLOAD_CHUNKSIZE = minimum_chunksize
+        s3handler = S3StreamHandler(
+            self.session, self.params,
+            runtime_config=runtime_config(
+                multipart_threshold=1, multipart_chunksize=2))
+        s3handler.executor = mock.Mock()
+        fileinfo = FileInfo('filename', operation_name='upload',
+                            is_stream=True)
+        with MockStdIn(b'bar'):
+            s3handler._enqueue_multipart_upload_tasks(fileinfo, b'')
+        submitted_tasks = s3handler.executor.submit.call_args_list
+        # Determine what the chunksize was changed to from one of the
+        # UploadPartTasks.
+        changed_chunk_size = submitted_tasks[1][0][0]._chunk_size
+        # New chunksize should be equal to the minimum
+        self.assertEqual(changed_chunk_size, minimum_chunksize)
 
     def test_upload_stream_enqueue_upload_task(self):
         s3handler = S3StreamHandler(self.session, self.params)

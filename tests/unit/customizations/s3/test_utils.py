@@ -23,7 +23,8 @@ from awscli.customizations.s3.utils import AppendFilter
 from awscli.customizations.s3.utils import create_warning
 from awscli.customizations.s3.utils import human_readable_size
 from awscli.customizations.s3.utils import human_readable_to_bytes
-from awscli.customizations.s3.utils import MAX_SINGLE_UPLOAD_SIZE, EPOCH_TIME
+from awscli.customizations.s3.utils import MAX_SINGLE_UPLOAD_SIZE
+from awscli.customizations.s3.utils import MIN_UPLOAD_CHUNKSIZE
 from awscli.customizations.s3.utils import set_file_utime, SetFileUtimeError
 from awscli.customizations.s3.utils import RequestParamsMapper
 from awscli.customizations.s3.utils import uni_print
@@ -113,7 +114,7 @@ class FindChunksizeTest(unittest.TestCase):
     This test ensures that the ``find_chunksize`` function works
     as expected.
     """
-    def test_small_chunk(self):
+    def test_valid_chunk(self):
         """
         This test ensures if the ``chunksize`` is appropriate to begin with,
         it does not change.
@@ -121,6 +122,15 @@ class FindChunksizeTest(unittest.TestCase):
         chunksize = 7 * (1024 ** 2)
         size = 8 * (1024 ** 2)
         self.assertEqual(find_chunksize(size, chunksize), chunksize)
+
+    def test_small_chunk(self):
+        """
+        This test ensures that if the ``chunksize`` is below the minimum
+        threshold, it is automatically raised to the minimum.
+        """
+        chunksize = MIN_UPLOAD_CHUNKSIZE - 1
+        size = 3 * MIN_UPLOAD_CHUNKSIZE
+        self.assertEqual(find_chunksize(size, chunksize), MIN_UPLOAD_CHUNKSIZE)
 
     def test_large_chunk(self):
         """

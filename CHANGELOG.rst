@@ -2,6 +2,10 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+* feature:``aws lambda``: Add support for accessing resources in your VPC.
+* feature:``aws apigateway``: Add support for custom request authorizers.
 
 1.10.3
 ======

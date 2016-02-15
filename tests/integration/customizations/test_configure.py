@@ -17,7 +17,7 @@ import random
 import mock
 
 from awscli.testutils import unittest, aws
-from awscli.customizations import configure
+from awscli.customizations.configure.configure import ConfigureCommand
 
 
 class TestConfigureCommand(unittest.TestCase):
@@ -302,7 +302,7 @@ class TestConfigureCommand(unittest.TestCase):
 class TestConfigureHasArgTable(unittest.TestCase):
     def test_configure_command_has_arg_table(self):
         m = mock.Mock()
-        command = configure.ConfigureCommand(m)
+        command = ConfigureCommand(m)
         self.assertEqual(command.arg_table, {})
 
 

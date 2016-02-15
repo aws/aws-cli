@@ -13,7 +13,7 @@
 import logging
 import os
 
-from awscli.customizations.configure import ConfigFileWriter
+from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.emr.constants import EC2_ROLE_NAME
 from awscli.customizations.emr.constants import EMR_ROLE_NAME
 

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``aws rds``: Added support for Cross-account Encrypted (KMS) snapshot
+  sharing.
+* feature:``aws emr``: Added support for adding EBS storage to EMR instances.
+* bugfix:pagination: Fixed a bug that was causing non-string service tokens
+  to fail on serialization
+
 1.10.4
 ======
 * feature:``aws lambda``: Add support for accessing resources in your VPC.

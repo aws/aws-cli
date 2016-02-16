@@ -12,6 +12,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import BaseAWSCommandParamsTest
+import base64
+import json
 
 
 class TestListObjects(BaseAWSCommandParamsTest):
@@ -53,7 +55,10 @@ class TestListObjects(BaseAWSCommandParamsTest):
         # properly.
         cmdline = self.prefix
         cmdline += ' --bucket mybucket'
-        cmdline += ' --starting-token foo___2'
+        token = {"Marker": "foo"}
+        token = base64.b64encode(json.dumps(token).encode('utf-8'))
+        token = token.decode('utf-8')
+        cmdline += ' --starting-token %s' % token
         self.assert_params_for_cmd(cmdline, {'Bucket': 'mybucket',
                                              'Marker': 'foo',
                                              'EncodingType': 'url'})

@@ -72,8 +72,8 @@ class Command(BasicCommand):
             config.get_applicable_configurations(self)
 
         configurations = [x for x in configurations
-                          if x.name in parsed_configs
-                          and not x.is_present(parsed_args)]
+                          if x.name in parsed_configs and
+                          not x.is_present(parsed_args)]
 
         configurations = self._filter_configurations_in_special_cases(
             configurations, parsed_args, parsed_configs)
@@ -102,8 +102,8 @@ class Command(BasicCommand):
             self, parsed_args, parsed_globals):
         command = self.NAME
 
-        if (command in self.UNSUPPORTED_COMMANDS_FOR_RELEASE_BASED_CLUSTERS
-                and hasattr(parsed_args, 'cluster_id')):
+        if (command in self.UNSUPPORTED_COMMANDS_FOR_RELEASE_BASED_CLUSTERS and
+                hasattr(parsed_args, 'cluster_id')):
             release_label = emrutils.get_release_label(
                 parsed_args.cluster_id, self._session, self.region,
                 parsed_globals.endpoint_url, parsed_globals.verify_ssl)

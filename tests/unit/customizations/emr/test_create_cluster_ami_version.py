@@ -13,6 +13,8 @@
 
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
+from tests.unit.customizations.emr import test_constants as \
+    CONSTANTS
 import copy
 import os
 import json
@@ -1304,6 +1306,124 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             ADDITIONAL_SLAVE_SECURITY_GROUPS
 
         self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_group_with_ebs_config(self):
+        cmd = (self.prefix + '--ami-version 3.1.0 --instance-groups ' +
+               CONSTANTS.INSTANCE_GROUPS_WITH_EBS_VOLUME_ARG)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceGroups':
+                                                CONSTANTS.INSTANCE_GROUPS_WITH_EBS
+                            },
+                'AmiVersion': '3.1.0',
+                'VisibleToAllUsers': True,
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_groups_with_ebs_config_missing_volume_type(self):
+        cmd = (self.prefix + '--ami-version 3.1.0 --instance-groups ' +
+               CONSTANTS.INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_VOLTYPE_ARG)
+        stderr = self.run_cmd(cmd, 255)[1]
+        self.assert_error_message_has_field_name(stderr, 'VolumeType')
+
+    def test_instance_groups_with_ebs_config_missing_size(self):
+        cmd = (self.prefix + '--ami-version 3.1.0 --instance-groups ' +
+               CONSTANTS.INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_SIZE_ARG)
+        stderr = self.run_cmd(cmd, 255)[1]
+        self.assert_error_message_has_field_name(stderr, 'SizeInGB')
+
+    def test_instance_groups_with_ebs_config_missing_volume_spec(self):
+        cmd = (self.prefix + '--ami-version 3.1.0 --instance-groups ' +
+               CONSTANTS.INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_VOLSPEC_ARG)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceGroups': CONSTANTS.INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_VOLSPEC
+                                      },
+                'AmiVersion': '3.1.0',
+                'VisibleToAllUsers': True,
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_groups_with_ebs_config_missing_iops(self):
+        cmd = (self.prefix + '--ami-version 3.1.0 --instance-groups ' +
+               CONSTANTS.INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_IOPS_ARG)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceGroups': CONSTANTS.INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_IOPS
+                             },
+                'AmiVersion': '3.1.0',
+                'VisibleToAllUsers': True,
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_groups_with_ebs_config_multiple_instance_groups(self):
+        cmd = (self.prefix + '--ami-version 3.1.0 --instance-groups ' +
+               CONSTANTS.MULTIPLE_INSTANCE_GROUPS_WITH_EBS_VOLUMES_VOLUME_ARG)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceGroups': CONSTANTS.MULTIPLE_INSTANCE_GROUPS_WITH_EBS_VOLUMES
+                             },
+                'AmiVersion': '3.1.0',
+                'VisibleToAllUsers': True,
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_group_with_ebs_config_from_json(self):
+           data_path = os.path.join(
+               os.path.dirname(__file__), 'input_instance_groups_ebs_config.json')
+           cmd = ('emr create-cluster --use-default-roles --ami-version 3.0.4  '
+                  '--instance-groups file://' + data_path)
+           result = copy.deepcopy(DEFAULT_RESULT)
+           result['Instances']['InstanceGroups'] = \
+               [
+                   {'InstanceRole': 'MASTER',
+                    'InstanceCount': 1,
+                    'Name': 'Master Instance Group',
+                    'Market': 'ON_DEMAND',
+                    'InstanceType': 'd2.xlarge',
+                    'EbsConfiguration':
+                   {'EbsBlockDeviceConfigs':
+                         [
+                           {'VolumeSpecification':
+                            {'VolumeType': 'standard',
+                            'SizeInGB': 10},
+                            'VolumesPerInstance': 4
+                            }
+                         ],
+                        'EbsOptimized': True}
+                    },
+                   {'InstanceRole': 'CORE',
+                    'InstanceCount': 2,
+                    'Name': 'Core Instance Group',
+                    'Market': 'ON_DEMAND',
+                    'InstanceType': 'd2.xlarge'
+                    },
+                   {'InstanceRole': 'TASK',
+                    'InstanceCount': 3,
+                    'Name': 'Task Instance Group',
+                    'Market': 'SPOT',
+                    'BidPrice': '3.45',
+                    'InstanceType': 'd2.xlarge'
+                    }
+           ]
+           self.assert_params_for_cmd(cmd, result)
+
 
 if __name__ == "__main__":
     unittest.main()

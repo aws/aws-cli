@@ -892,7 +892,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result = copy.deepcopy(DEFAULT_RESULT)
         ba = copy.deepcopy(INSTALL_IMPALA_BA)
         ba['ScriptBootstrapAction']['Args'] += \
-            ['--impala-conf', 'arg1', 'arg2']
+            ['--impala-conf', 'arg1,arg2']
         result['BootstrapActions'] = [ba]
         self.assert_params_for_cmd(cmd, result)
 
@@ -952,7 +952,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         impala_ba = copy.deepcopy(INSTALL_IMPALA_BA)
         impala_ba['ScriptBootstrapAction']['Args'] += \
             ['--impala-conf',
-             'IMPALA_BACKEND_PORT=22001', 'IMPALA_MEM_LIMIT=70%']
+             'IMPALA_BACKEND_PORT=22001,IMPALA_MEM_LIMIT=70%']
         ba_list = [INSTALL_GANGLIA_BA, INSTALL_HBASE_BA,
                    impala_ba]
         step_list = [INSTALL_HIVE_STEP, INSTALL_PIG_STEP, INSTALL_HBASE_STEP]

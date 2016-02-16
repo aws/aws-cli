@@ -35,7 +35,7 @@ class TestSSHUtils(unittest.TestCase):
             ClusterId='cluster-id')
 
         # 2. Found the master public DNS
-        self.assertTrue(emrutils.find_master_public_dns.called)
+        self.assertTrue(emrutils.find_master_dns.called)
 
     @mock.patch('awscli.customizations.emr.sshutils.emrutils')
     def test_cluster_in_terminated_states(self, emrutils):

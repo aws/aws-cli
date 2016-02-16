@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.10.5
+======
 
 * feature:``aws rds``: Added support for Cross-account Encrypted (KMS) snapshot
   sharing.

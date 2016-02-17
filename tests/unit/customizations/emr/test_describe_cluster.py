@@ -154,6 +154,7 @@ EXPECTED_RESULT = {
         "TerminationProtected": "false",
         "RunningAmiVersion": "2.4.2",
         "MasterPublicDnsName": "ec2-01-01-1-188.compute-1.amazonaws.com",
+        "MasterPrivateDnsName": "ip-10-10-10-177.ec2.internal",
         "InstanceGroups": [
             {
                 "RequestedInstanceCount": 1,
@@ -240,11 +241,20 @@ class TestDescribeCluster(BaseAWSCommandParamsTest):
     @patch('awscli.customizations.emr.emr.DescribeCluster._construct_result')
     @patch('awscli.customizations.emr.emr.'
            'DescribeCluster._find_master_public_dns')
+    @patch('awscli.customizations.emr.emr.'
+           'DescribeCluster._find_master_private_dns')
+
     def test_operations_called(
             self, find_master_public_dns_patch,
+            find_master_private_dns_patch,
             construct_result_patch):
+
         find_master_public_dns_patch.return_value = \
             list_instances_result_mock["Instances"][0]['PublicDnsName']
+
+        find_master_private_dns_patch.return_value = \
+            list_instances_result_mock["Instances"][0]['PrivateDnsName']
+
         construct_result_patch.return_value = dict()
 
         args = ' --cluster-id j-ABCD'

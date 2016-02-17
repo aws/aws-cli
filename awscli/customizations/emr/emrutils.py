@@ -230,6 +230,17 @@ def find_master_public_dns(session, parsed_globals, cluster_id):
     else:
         return master_instance.get('PublicDnsName')
 
+def find_master_private_dns(session, parsed_globals, cluster_id):
+    """
+    Returns the private_instance's 'PrivateDnsName'
+    """
+    master_instance = _find_master_instance(
+        session, parsed_globals, cluster_id)
+    if master_instance is None:
+        return ""
+    else:
+        return master_instance.get('PrivateDnsName')
+
 
 def which(program):
     for path in os.environ["PATH"].split(os.pathsep):

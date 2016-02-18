@@ -6,6 +6,8 @@ Next Release (TBD)
 ==================
 * bugfix:``aws emr``: Fix missing dns name issue with private clusters.
   (`issue 1749 <https://github.com/aws/aws-cli/pull/1749>`__)
+* bugfix:``aws emr``: Fix issue where impala args were not joined with commas.
+  (`issue 1802 <https://github.com/aws/aws-cli/pull/1802>`__)
 
 
 1.10.5

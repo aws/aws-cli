@@ -43,25 +43,15 @@ class DescribeCluster(Command):
             self._session, 'list_bootstrap_actions',
             parameters, parsed_globals)
 
-        master_public_dns = self._find_master_public_dns(
-            cluster_id=parsed_args.cluster_id,
-            parsed_globals=parsed_globals)
-
         constructed_result = self._construct_result(
             describe_cluster_result,
             list_instance_groups_result,
-            list_bootstrap_actions_result,
-            master_public_dns)
+            list_bootstrap_actions_result)
 
         emrutils.display_response(self._session, 'describe_cluster',
                                   constructed_result, parsed_globals)
 
         return 0
-
-    def _find_master_public_dns(self, cluster_id, parsed_globals):
-        return emrutils.find_master_public_dns(
-            session=self._session, cluster_id=cluster_id,
-            parsed_globals=parsed_globals)
 
     def _call(self, session, operation_name, parameters, parsed_globals):
         return emrutils.call(
@@ -78,9 +68,8 @@ class DescribeCluster(Command):
 
     def _construct_result(
             self, describe_cluster_result, list_instance_groups_result,
-            list_bootstrap_actions_result, master_public_dns):
+            list_bootstrap_actions_result):
         result = describe_cluster_result
-        result['Cluster']['MasterPublicDnsName'] = master_public_dns
         result['Cluster']['InstanceGroups'] = []
         result['Cluster']['BootstrapActions'] = []
 

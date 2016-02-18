@@ -4,6 +4,9 @@ CHANGELOG
 
 Next Release (TBD)
 ==================
+* feature:``aws storagegateway``: Added support for user-supplied barcodes.
+* feature:``aws codedeploy``: Added support for setting up triggers for a deployment
+  group.
 * bugfix:``aws emr``: Fix missing dns name issue with private clusters.
   (`issue 1749 <https://github.com/aws/aws-cli/pull/1749>`__)
 * bugfix:``aws emr``: Fix issue where impala args were not joined with commas.

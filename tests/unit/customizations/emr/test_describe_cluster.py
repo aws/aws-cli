@@ -50,7 +50,8 @@ describe_cluster_result_mock = {
         "RequestedAmiVersion": "2.4.2",
         "LogUri": "s3n://abc/logs/",
         "AutoTerminate": "false",
-        "Id": "j-ABCD"
+        "Id": "j-ABCD",
+        "MasterPublicDnsName": "ec2-01-01-1-188.compute-1.amazonaws.com"
         }
     }
 list_instance_groups_result_mock = {
@@ -112,34 +113,6 @@ list_bootstrap_actions_result_mock = {
             "Args": [],
             "Name": "Install HBase",
             "ScriptPath": "s3://elasticmapreduce/bootstrap-actions/setup-hbase"
-        }
-    ]
-}
-
-list_instances_result_mock = {
-    "ResponseMetadata": {
-        "RequestId": '12ec323c-50b1-11e4-b653-afa4228d882f'
-    },
-    "Instances": [
-        {
-            "Status": {
-                "Timeline": {
-                    "ReadyDateTime": 1406583288.786,
-                    "EndDateTime": 1406583367.255,
-                    "CreationDateTime": 1406583080.779
-                },
-                "State": "TERMINATED",
-                "StateChangeReason": {
-                    "Message": "Cluster was terminated.",
-                    "Code": "CLUSTER_TERMINATED"
-                }
-            },
-            "Ec2InstanceId": "i-A1234567",
-            "PublicDnsName": "ec2-01-01-1-188.compute-1.amazonaws.com",
-            "PrivateDnsName": "ip-10-10-10-177.ec2.internal",
-            "PublicIpAddress": "54.1.1.200",
-            "Id": "ci-ABCDEFGHIJKL",
-            "PrivateIpAddress": "10.10.100.177"
         }
     ]
 }
@@ -238,13 +211,7 @@ class TestDescribeCluster(BaseAWSCommandParamsTest):
     prefix = 'emr describe-cluster'
 
     @patch('awscli.customizations.emr.emr.DescribeCluster._construct_result')
-    @patch('awscli.customizations.emr.emr.'
-           'DescribeCluster._find_master_public_dns')
-    def test_operations_called(
-            self, find_master_public_dns_patch,
-            construct_result_patch):
-        find_master_public_dns_patch.return_value = \
-            list_instances_result_mock["Instances"][0]['PublicDnsName']
+    def test_operations_called(self, construct_result_patch):
         construct_result_patch.return_value = dict()
 
         args = ' --cluster-id j-ABCD'
@@ -268,13 +235,8 @@ class TestDescribeCluster(BaseAWSCommandParamsTest):
         self.assertEqual(self.operations_called[2][1]['ClusterId'],
                          'j-ABCD')
 
-    @patch('awscli.customizations.emr.emrutils._find_most_recently_created')
     @patch('awscli.customizations.emr.emr.DescribeCluster._call')
-    def test_constructed_result(
-            self, call_patch, find_most_recently_created_instance_patch):
-        find_most_recently_created_instance_patch.return_value = \
-            list_instances_result_mock['Instances'][0]
-
+    def test_constructed_result(self, call_patch):
         call_patch.side_effect = side_effect_of_call
 
         args = ' --cluster-id j-ABCD'
@@ -291,8 +253,6 @@ def side_effect_of_call(*args, **kwargs):
         return list_instance_groups_result_mock
     elif args[1] == 'list_bootstrap_actions':
         return list_bootstrap_actions_result_mock
-    elif args[1] == 'list_instances':
-        return list_instances_result_mock
 
 
 if __name__ == "__main__":

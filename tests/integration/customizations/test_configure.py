@@ -158,6 +158,15 @@ class TestConfigureCommand(unittest.TestCase):
             '[default]\n'
             'region = us-west-1\n', self.get_config_file_contents())
 
+    def test_set_with_a_url(self):
+        p = aws('configure set endpoint http://www.example.com',
+                env_vars=self.env_vars)
+        self.assert_no_errors(p)
+        self.assertEqual(
+            '[default]\n'
+            'endpoint = http://www.example.com\n',
+            self.get_config_file_contents())
+
     def test_set_with_empty_config_file(self):
         with open(self.config_filename, 'w'):
             pass

@@ -184,51 +184,19 @@ def get_client(session, parsed_globals):
         verify=parsed_globals.verify_ssl)
 
 
-def _get_creation_date_time(instance):
-    return instance['Status']['Timeline']['CreationDateTime']
-
-
-def _find_most_recently_created(pages):
-    """ Find instance which is most recently created. """
-    most_recently_created = None
-    for page in pages:
-        for instance in page['Instances']:
-            if (not most_recently_created or
-                    _get_creation_date_time(most_recently_created) <
-                    _get_creation_date_time(instance)):
-                most_recently_created = instance
-    return most_recently_created
-
-
 def get_cluster_state(session, parsed_globals, cluster_id):
     client = get_client(session, parsed_globals)
     data = client.describe_cluster(ClusterId=cluster_id)
     return data['Cluster']['Status']['State']
 
 
-def _find_master_instance(session, parsed_globals, cluster_id):
-    """
-    Find the most recently created master instance.
-    If the master instance is not available yet,
-     the method will return None.
-    """
-    client = get_client(session, parsed_globals)
-    paginator = client.get_paginator('list_instances')
-    pages = paginator.paginate(
-        ClusterId=cluster_id, InstanceGroupTypes=['MASTER'])
-    return _find_most_recently_created(pages)
-
-
-def find_master_public_dns(session, parsed_globals, cluster_id):
+def find_master_dns(session, parsed_globals, cluster_id):
     """
     Returns the master_instance's 'PublicDnsName'.
     """
-    master_instance = _find_master_instance(
-        session, parsed_globals, cluster_id)
-    if master_instance is None:
-        return ""
-    else:
-        return master_instance.get('PublicDnsName')
+    client = get_client(session, parsed_globals)
+    data = client.describe_cluster(ClusterId=cluster_id)
+    return data['Cluster']['MasterPublicDnsName']
 
 
 def which(program):

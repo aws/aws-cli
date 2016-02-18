@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.10.6
+======
 * feature:``aws storagegateway``: Added support for user-supplied barcodes.
 * feature:``aws codedeploy``: Added support for setting up triggers for a deployment
   group.

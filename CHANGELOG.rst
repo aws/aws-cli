@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+* bugfix:``aws emr``: Fix missing dns name issue with private clusters.
+  (`issue 1749 <https://github.com/aws/aws-cli/pull/1749>`__)
+
+
 1.10.5
 ======
 

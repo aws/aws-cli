@@ -47,7 +47,7 @@ def validate_and_find_master_dns(session, parsed_globals, cluster_id):
     except WaiterError:
         raise exceptions.MasterDNSNotAvailableError
 
-    return emrutils.find_master_public_dns(
+    return emrutils.find_master_dns(
         session=session, cluster_id=cluster_id,
         parsed_globals=parsed_globals)
 

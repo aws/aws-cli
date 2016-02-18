@@ -145,9 +145,9 @@ class LogUriError(EmrError):
 class MasterDNSNotAvailableError(EmrError):
 
     """
-    Cannot get public dns of master node on the cluster.
+    Cannot get dns of master node on the cluster.
     """
-    fmt = 'Cannot get Public DNS of master node on the cluster. '\
+    fmt = 'Cannot get DNS of master node on the cluster. '\
           ' Please try again after some time.'
 
 

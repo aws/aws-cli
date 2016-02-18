@@ -114,7 +114,7 @@ def _build_impala_install_bootstrap_action(region, args=None):
         constants.LATEST]
     if args is not None:
         args_list.append(constants.IMPALA_CONF)
-        args_list += args
+        args_list.append(','.join(args))
     return emrutils.build_bootstrap_action(
         name=constants.INSTALL_IMPALA_NAME,
         path=emrutils.build_s3_link(

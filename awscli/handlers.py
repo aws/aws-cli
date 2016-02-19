@@ -36,7 +36,7 @@ from awscli.customizations.sessendemail import register_ses_send_email
 from awscli.customizations.cloudfront import register as register_cloudfront
 from awscli.customizations.iamvirtmfa import IAMVMFAWrapper
 from awscli.customizations.argrename import register_arg_renames
-from awscli.customizations.configure import register_configure_cmd
+from awscli.customizations.configure.configure import register_configure_cmd
 from awscli.customizations.cloudtrail import initialize as cloudtrail_init
 from awscli.customizations.ecr import register_ecr_commands
 from awscli.customizations.toplevelbool import register_bool_params

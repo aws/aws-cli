@@ -336,3 +336,17 @@ class TestConfigFileWriter(unittest.TestCase):
             '    signature_version = newval\n'
             '[profile foo]\n'
             'foo = bar\n')
+
+    def test_can_handle_empty_section(self):
+        original = (
+            '[default]\n'
+            '[preview]\n'
+            'cloudfront = true\n'
+        )
+        self.assert_update_config(
+            original, {'region': 'us-west-2', '__section__': 'default'},
+            '[default]\n'
+            'region = us-west-2\n'
+            '[preview]\n'
+            'cloudfront = true\n'
+        )

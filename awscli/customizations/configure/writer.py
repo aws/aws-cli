@@ -108,11 +108,17 @@ class ConfigFileWriter(object):
         # to figure out if we're updating a value or adding a new value.
         # There's 2 cases.  Either we're setting a normal scalar value
         # of, we're setting a nested value.
-        section_start_line_num += 1
         last_matching_line = section_start_line_num
-        j = section_start_line_num
+        j = last_matching_line + 1
         while j < len(contents):
             line = contents[j]
+            if self.SECTION_REGEX.search(line) is not None:
+                # We've hit a new section which means the config key is
+                # not in the section.  We need to add it here.
+                self._insert_new_values(line_number=last_matching_line,
+                                        contents=contents,
+                                        new_values=new_values)
+                return
             match = self.OPTION_REGEX.search(line)
             if match is not None:
                 last_matching_line = j
@@ -131,13 +137,6 @@ class ConfigFileWriter(object):
                             j, contents, new_values[key_name],
                             len(match.group(1)) - len(match.group(1).lstrip()))
                         return
-            elif self.SECTION_REGEX.search(line) is not None:
-                # We've hit a new section which means the config key is
-                # not in the section.  We need to add it here.
-                self._insert_new_values(line_number=last_matching_line,
-                                        contents=contents,
-                                        new_values=new_values)
-                return
             j += 1
 
         if new_values:

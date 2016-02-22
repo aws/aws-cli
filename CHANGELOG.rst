@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bug:``aws configure set``: Fix issue when adding entries to
+  an empty profile section
+  (`issue 1806 <https://github.com/aws/aws-cli/pull/1806>`__)
+
+
 1.10.6
 ======
 * feature:``aws storagegateway``: Added support for user-supplied barcodes.

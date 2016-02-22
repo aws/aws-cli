@@ -15,15 +15,16 @@ Output::
               "Description": "My security group",
               "IpPermissions": [
                   {
-                      "ToPort": 22,
-                      "IpProtocol": "tcp",
+                      "PrefixListIds": [], 
+                      "FromPort": 22, 
                       "IpRanges": [
                           {
                               "CidrIp": "203.0.113.0/24"
                           }
-                      ],
-                      "UserIdGroupPairs": [],
-                      "FromPort": 22
+                      ], 
+                      "ToPort": 22, 
+                      "IpProtocol": "tcp", 
+                      "UserIdGroupPairs": []
                   }
               ],
               "GroupName": "MySecurityGroup",
@@ -54,22 +55,41 @@ Output::
                               "CidrIp": "0.0.0.0/0"
                           }
                       ],
-                      "UserIdGroupPairs": []
+                      "UserIdGroupPairs": [],
+                      "PrefixListIds": []
                   }
               ],
               "Description": "My security group",
+              "Tags": [
+                  {
+                      "Value": "SG1", 
+                      "Key": "Name"
+                   }
+              ], 
               "IpPermissions": [
                   {
-                      "ToPort": 22,
-                      "IpProtocol": "tcp",
+                      "IpProtocol": "-1", 
+                      "IpRanges": [], 
+                      "UserIdGroupPairs": [
+                          {
+                               "UserId": "123456789012", 
+                               "GroupId": "sg-903004f8"
+                          }
+                      ], 
+                      "PrefixListIds": []
+                  },
+                  {
+                      "PrefixListIds": [], 
+                      "FromPort": 22, 
                       "IpRanges": [
                           {
                               "CidrIp": "203.0.113.0/24"
                           }
-                      ],
-                      "UserIdGroupPairs": [],
-                      "FromPort": 22
-                  }
+                      ], 
+                      "ToPort": 22, 
+                      "IpProtocol": "tcp", 
+                      "UserIdGroupPairs": []
+                    }
               ],
               "GroupName": "MySecurityGroup",
               "VpcId": "vpc-1a2b3c4d",

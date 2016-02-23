@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.10.7
+======
 
 * bug:``aws configure set``: Fix issue when adding entries to
   an empty profile section

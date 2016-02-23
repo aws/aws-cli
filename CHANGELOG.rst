@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.10.7
+======
+
+* bug:``aws configure set``: Fix issue when adding entries to
+  an empty profile section
+  (`issue 1806 <https://github.com/aws/aws-cli/pull/1806>`__)
+* feature:``aws route53``: Add suport for SNI health checks
+
+
 1.10.6
 ======
 * feature:``aws storagegateway``: Added support for user-supplied barcodes.

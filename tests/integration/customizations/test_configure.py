@@ -17,7 +17,7 @@ import random
 import mock
 
 from awscli.testutils import unittest, aws
-from awscli.customizations import configure
+from awscli.customizations.configure.configure import ConfigureCommand
 
 
 class TestConfigureCommand(unittest.TestCase):
@@ -298,11 +298,27 @@ class TestConfigureCommand(unittest.TestCase):
         self.assertEqual(p.rc, 1)
         self.assertEqual(p.stdout, '')
 
+    def test_can_handle_empty_section(self):
+        self.set_config_file_contents(
+            '[default]\n'
+        )
+        p = aws('configure set preview.cloudfront true',
+                env_vars=self.env_vars)
+        p = aws('configure set region us-west-2',
+                env_vars=self.env_vars)
+        self.assertEqual(
+            '[default]\n'
+            'region = us-west-2\n'
+            '[preview]\n'
+            'cloudfront = true\n',
+            self.get_config_file_contents(),
+        )
+
 
 class TestConfigureHasArgTable(unittest.TestCase):
     def test_configure_command_has_arg_table(self):
         m = mock.Mock()
-        command = configure.ConfigureCommand(m)
+        command = ConfigureCommand(m)
         self.assertEqual(command.arg_table, {})
 
 

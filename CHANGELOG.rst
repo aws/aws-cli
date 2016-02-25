@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+1.10.8
+======
+
+* bugfix:``aws s3``: Disable use of MD5 when SHA256 checksum
+  is already calculated for the body
+  (`botocore issue 804 <https://github.com/boto/botocore/pull/804>`__)
+* bugfix:FIPS: Handle case where MD5 cipher is not available
+  on FIPS compliant systems
+  (`botocore issue 807 <https://github.com/boto/botocore/pull/807>`__)
+* feature:``aws cloudformation``: Update AWS CloudFormation command
+  to the latest version
+* feature:``aws logs``: Update Amazon CloudWatch Logs command to the
+  latest version
+* feature:``aws ses``: Update Amazon SES to the latest version
+* feature:``aws autoscaling``: Update Auto Scaling to the latest version
+
+
 1.10.7
 ======
 

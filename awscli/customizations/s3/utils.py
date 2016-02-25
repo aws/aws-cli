@@ -281,16 +281,28 @@ def create_warning(path, error_message, skip_file=True):
 
 def find_chunksize(size, current_chunksize):
     """
-    The purpose of this function is determine a chunksize so that
-    the number of parts in a multipart upload is not greater than
-    the ``MAX_PARTS``.  If the ``chunksize`` is greater than
-    ``MAX_SINGLE_UPLOAD_SIZE`` it returns ``MAX_SINGLE_UPLOAD_SIZE``.
+    The purpose of this function is determine a chunksize so that the number of
+    parts in a multipart upload is not greater than the ``MAX_PARTS``, and that
+    the chunksize is not less than the minimum chunksize.
+
+    :param size: The size of the file to upload
+    :param current_chunksize: The currently configured chunksize
+    :return: If the given chunksize is valid, it is returned. Otherwise a valid
+        chunksize is calculated and returned.
     """
-    chunksize = enforce_max_parts(size, current_chunksize)
-    return enforce_chunksize_limits(chunksize)
+    size = adjust_chunksize_for_max_parts(size, current_chunksize)
+    return adjust_chunksize_to_upload_limits(size)
 
 
-def enforce_chunksize_limits(current_chunksize):
+def adjust_chunksize_to_upload_limits(current_chunksize):
+    """
+    Given a chunksize, verifies that the chunksize is within max and min
+    chunksize for uploads. If it is not, a valid chunksize will be returned.
+
+    :param current_chunksize: The current configured chunksize.
+    :return: If the given chunksize is valid, it is returned. Otherwise a valid
+        chunksize, which is a close to the given as possible, is returned.
+    """
     chunksize = current_chunksize
     chunksize_human = human_readable_size(chunksize)
     if chunksize > MAX_SINGLE_UPLOAD_SIZE:
@@ -307,7 +319,17 @@ def enforce_chunksize_limits(current_chunksize):
         return chunksize
 
 
-def enforce_max_parts(size, current_chunksize):
+def adjust_chunksize_for_max_parts(size, current_chunksize):
+    """
+    Given a chunksize and file size, verifies that the upload will not exceed
+    the maximum parts for a multipart upload. If it will, a valid chunksize
+    is calculated and returned.
+
+    :param size: The size of the file to upload
+    :param current_chunksize: The currently configured chunksize
+    :return: If the given chunksize is valid, it is returned. Otherwise a valid
+        chunksize is calculated and returned.
+    """
     chunksize = current_chunksize
     num_parts = int(math.ceil(size / float(chunksize)))
 

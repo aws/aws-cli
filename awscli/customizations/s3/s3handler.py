@@ -17,7 +17,7 @@ import os
 import sys
 
 from awscli.customizations.s3.utils import (
-    find_chunksize, enforce_chunksize_limits,
+    find_chunksize, adjust_chunksize_to_upload_limits,
     find_bucket_key, relative_path, PrintTask, create_warning)
 from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3 import tasks
@@ -475,12 +475,15 @@ class S3StreamHandler(S3Handler):
         # First we need to create a CreateMultipartUpload task,
         # then create UploadTask objects for each of the parts.
         # And finally enqueue a CompleteMultipartUploadTask.
-        chunksize = enforce_chunksize_limits(self.chunksize)
-
-        # Determine an appropriate chunksize if given an expected size.
         if self.params['expected_size']:
+            # If we have the expected size, we can calculate an appropriate
+            # chunksize based on max parts and chunksize limits
             chunksize = find_chunksize(int(self.params['expected_size']),
                                        self.chunksize)
+        else:
+            # Otherwise, we can still adjust for chunksize limits
+            chunksize = adjust_chunksize_to_upload_limits(self.chunksize)
+
         num_uploads = '...'
 
         # Submit a task to begin the multipart upload.

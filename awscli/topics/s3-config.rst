@@ -110,7 +110,6 @@ multipart_threshold
 -------------------
 
 **Default** - ``8MB``
-**Minimum** - ``5MB``
 
 When uploading, downloading, or copying a file, the S3 commands
 will switch to multipart operations if the file reaches a given
@@ -128,7 +127,8 @@ multipart_chunksize
 -------------------
 
 **Default** - ``8MB``
-**Minimum** - ``5MB``
+
+**Minimum For Uploads** - ``5MB``
 
 Once the S3 commands have decided to use multipart operations, the
 file is divided into chunks.  This configuration option specifies what

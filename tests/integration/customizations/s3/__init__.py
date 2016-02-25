@@ -10,11 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import random
-import string
-
 from botocore.exceptions import ClientError
-from botocore.client import Config
 from awscli.testutils import create_bucket
 
 
@@ -34,7 +30,6 @@ def make_s3_files(session, key1='text1.txt', key2='text2.txt', size=None):
         string1 = "This is a test."
         string2 = "This is another test."
 
-    config = Config(s3={"addressing_style": "path"})
     client = session.create_client('s3', region_name=region, config=config)
     client.put_object(Bucket=bucket, Key=key1, Body=string1)
     if key2 is not None:

@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.10.8
+======
 
 * bugfix:``aws s3``: Disable use of MD5 when SHA256 checksum
   is already calculated for the body

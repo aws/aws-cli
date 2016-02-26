@@ -8,8 +8,8 @@ The following example retrieves information about when the access key ``ABCDEXAM
 Output::
 
   {
-    "UserName":  "Bob", {
-        "AccessKeyLastUsed":
+    "UserName":  "Bob",
+    "AccessKeyLastUsed": {
         "Region": "us-east-1",
         "ServiceName": "iam",
         "LastUsedDate": "2015-06-16T22:45:00Z"

@@ -486,15 +486,16 @@ class TestDigestTraverser(unittest.TestCase):
     def test_ensures_public_key_is_found(self):
         start_date = START_DATE
         end_date = END_DATE
+        key_name = end_date.strftime(DATE_FORMAT) + '.json.gz'
         digest_provider = Mock()
-        digest_provider.load_digest_keys_in_range.return_value = ['abc']
+        digest_provider.load_digest_keys_in_range.return_value = [key_name]
         digest_provider.fetch_digest.return_value = (
             {'digestEndTime': 'foo',
              'digestStartTime': 'foo',
              'awsAccountId': 'account',
              'digestPublicKeyFingerprint': 'abc',
              'digestS3Bucket': '1',
-             'digestS3Object': 'abc',
+             'digestS3Object': key_name,
              'previousDigestSignature': 'xyz'},
             'abc'
         )
@@ -509,22 +510,26 @@ class TestDigestTraverser(unittest.TestCase):
         with self.assertRaises(StopIteration):
             next(digest_iter)
         self.assertEqual(1, len(calls))
-        self.assertEqual(('Digest file\ts3://1/abc\tINVALID: public key not '
-                          'found for fingerprint abc'), calls[0]['message'])
+        self.assertEqual(
+            ('Digest file\ts3://1/%s\tINVALID: public key not '
+             'found for fingerprint abc' % key_name),
+            calls[0]['message'])
 
     def test_invokes_digest_validator(self):
         start_date = START_DATE
         end_date = END_DATE
+        key_name = end_date.strftime(DATE_FORMAT) + '.json.gz'
         digest = {'digestPublicKeyFingerprint': 'a',
                   'digestS3Bucket': '1',
-                  'digestS3Object': 'abc',
+                  'digestS3Object': key_name,
                   'previousDigestSignature': '...',
                   'digestStartTime': (end_date - timedelta(hours=1)).strftime(
                       DATE_FORMAT),
                   'digestEndTime': end_date.strftime(DATE_FORMAT)}
         digest_provider = Mock()
-        digest_provider.load_digest_keys_in_range.return_value = ['abc']
-        digest_provider.fetch_digest.return_value = (digest, 'abc')
+        digest_provider.load_digest_keys_in_range.return_value = [
+            key_name]
+        digest_provider.fetch_digest.return_value = (digest, key_name)
         key_provider = Mock()
         public_keys = {'a': {'Fingerprint': 'a', 'Value': 'a'}}
         key_provider.get_public_keys.return_value = public_keys
@@ -536,19 +541,20 @@ class TestDigestTraverser(unittest.TestCase):
         digest_iter = traverser.traverse(start_date, end_date)
         self.assertEqual(digest, next(digest_iter))
         digest_validator.validate.assert_called_with(
-            '1', 'abc', public_keys['a']['Value'], digest, 'abc')
+            '1', key_name, public_keys['a']['Value'], digest, key_name)
 
     def test_ensures_digest_from_same_location_as_json_contents(self):
         start_date = START_DATE
         end_date = END_DATE
         callback, collected = collecting_callback()
+        key_name = end_date.strftime(DATE_FORMAT) + '.json.gz'
         digest = {'digestPublicKeyFingerprint': 'a',
                   'digestS3Bucket': 'not_same',
-                  'digestS3Object': 'abc',
+                  'digestS3Object': key_name,
                   'digestEndTime': end_date.strftime(DATE_FORMAT)}
         digest_provider = Mock()
-        digest_provider.load_digest_keys_in_range.return_value = ['abc']
-        digest_provider.fetch_digest.return_value = (digest, 'abc')
+        digest_provider.load_digest_keys_in_range.return_value = [key_name]
+        digest_provider.fetch_digest.return_value = (digest, key_name)
         key_provider = Mock()
         digest_validator = Mock()
         traverser = DigestTraverser(
@@ -559,7 +565,7 @@ class TestDigestTraverser(unittest.TestCase):
         self.assertIsNone(next(digest_iter, None))
         self.assertEqual(1, len(collected))
         self.assertEqual(
-            'Digest file\ts3://1/abc\tINVALID: invalid format',
+            'Digest file\ts3://1/%s\tINVALID: invalid format' % key_name,
             collected[0]['message'])
 
     def test_loads_digests_in_range(self):
@@ -691,17 +697,19 @@ class TestDigestTraverser(unittest.TestCase):
     def test_does_not_hard_fail_on_invalid_signature(self):
         start_date = START_DATE
         end_date = END_DATE
+        end_timestamp = end_date.strftime(DATE_FORMAT) + '.json.gz'
         digest = {'digestPublicKeyFingerprint': 'a',
                   'digestS3Bucket': '1',
-                  'digestS3Object': 'abc',
+                  'digestS3Object': end_timestamp,
                   'previousDigestSignature': '...',
                   'digestStartTime': (end_date - timedelta(hours=1)).strftime(
                       DATE_FORMAT),
-                  'digestEndTime': end_date.strftime(DATE_FORMAT),
+                  'digestEndTime': end_timestamp,
                   '_signature': '123'}
         digest_provider = Mock()
-        digest_provider.load_digest_keys_in_range.return_value = ['abc']
-        digest_provider.fetch_digest.return_value = (digest, 'abc')
+        digest_provider.load_digest_keys_in_range.return_value = [
+            end_timestamp]
+        digest_provider.fetch_digest.return_value = (digest, end_timestamp)
         key_provider = Mock()
         public_keys = {'a': {'Fingerprint': 'a', 'Value': 'a'}}
         key_provider.get_public_keys.return_value = public_keys
@@ -713,8 +721,9 @@ class TestDigestTraverser(unittest.TestCase):
             digest_validator=digest_validator, on_invalid=on_invalid)
         digest_iter = traverser.traverse(start_date, end_date)
         next(digest_iter, None)
-        self.assertEquals('Digest file\ts3://1/abc\tINVALID: Incorrect padding',
-                          calls[0]['message'])
+        self.assertEquals(
+            'Digest file\ts3://1/%s\tINVALID: Incorrect padding' % end_timestamp,
+            calls[0]['message'])
 
 
 class TestCloudTrailCommand(BaseAWSCommandParamsTest):

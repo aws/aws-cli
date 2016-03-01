@@ -2,41 +2,41 @@
 
 This example describes the notification configurations for the specified Auto Scaling group::
 
-	aws autoscaling describe-notification-configurations --auto-scaling-group-name my-auto-scaling-group
+    aws autoscaling describe-notification-configurations --auto-scaling-group-name my-auto-scaling-group
 
 The following is example output::
 
-  {
-    "NotificationConfigurations": [
-      {
-        "AutoScalingGroupName": "my-auto-scaling-group",
-        "NotificationType": "autoscaling:TEST_NOTIFICATION",
-        "TopicARN": "arn:aws:sns:us-west-2:123456789012:my-sns-topic-2"
-      },
-      {
-        "AutoScalingGroupName": "my-auto-scaling-group",
-        "NotificationType": "autoscaling:TEST_NOTIFICATION",
-        "TopicARN": "arn:aws:sns:us-west-2:123456789012:my-sns-topic"
-      }
-    ]
-  }
+    {
+        "NotificationConfigurations": [
+            {
+                "AutoScalingGroupName": "my-auto-scaling-group",
+                "NotificationType": "autoscaling:TEST_NOTIFICATION",
+                "TopicARN": "arn:aws:sns:us-west-2:123456789012:my-sns-topic-2"
+            },
+            {
+                "AutoScalingGroupName": "my-auto-scaling-group",
+                "NotificationType": "autoscaling:TEST_NOTIFICATION",
+                "TopicARN": "arn:aws:sns:us-west-2:123456789012:my-sns-topic"
+            }
+        ]
+    }
 
 To return a specific number of notification configurations, use the ``max-items`` parameter::
 
-	aws autoscaling describe-notification-configurations --auto-scaling-group-name my-auto-scaling-group --max-items 1
+    aws autoscaling describe-notification-configurations --auto-scaling-group-name my-auto-scaling-group --max-items 1
 
 The following is example output::
 
-  {
-    "NextToken": "None___1",
-    "NotificationConfigurations": [
-      {
-        "AutoScalingGroupName": "my-auto-scaling-group",
-        "NotificationType": "autoscaling:TEST_NOTIFICATION",
-        "TopicARN": "arn:aws:sns:us-west-2:123456789012:my-sns-topic-2"
-      }
-    ]
-  }
+    {
+        "NextToken": "None___1",
+        "NotificationConfigurations": [
+            {
+                "AutoScalingGroupName": "my-auto-scaling-group",
+                "NotificationType": "autoscaling:TEST_NOTIFICATION",
+                "TopicARN": "arn:aws:sns:us-west-2:123456789012:my-sns-topic-2"
+            }
+        ]
+    }
 
 Use the ``NextToken`` field with the ``starting-token`` parameter in a subsequent call to get additional notification configurations::
 

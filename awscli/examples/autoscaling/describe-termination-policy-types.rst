@@ -2,19 +2,19 @@
 
 This example describes the available termination policy types::
 
-	aws autoscaling describe-termination-policy-types
+    aws autoscaling describe-termination-policy-types
 
 The following is example output::
 
-  {
-    "TerminationPolicyTypes": [
-        "ClosestToNextInstanceHour",
-        "Default",
-        "NewestInstance",
-        "OldestInstance",
-        "OldestLaunchConfiguration"
-    ]
-  }
+    {
+        "TerminationPolicyTypes": [
+            "ClosestToNextInstanceHour",
+            "Default",
+            "NewestInstance",
+            "OldestInstance",
+            "OldestLaunchConfiguration"
+        ]
+    }
 
 For more information, see `Controlling Which Instances Auto Scaling Terminates During Scale In`_ in the *Auto Scaling Developer Guide*.
 

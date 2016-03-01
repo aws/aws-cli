@@ -2,7 +2,7 @@
 
 This example creates an Auto Scaling group in a VPC::
 
-     aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-auto-scaling-group --launch-configuration-name my-launch-config --min-size 1 --max-size 3 --vpc-zone-identifier subnet-41767929c
+    aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-auto-scaling-group --launch-configuration-name my-launch-config --min-size 1 --max-size 3 --vpc-zone-identifier subnet-41767929c
 
 This example creates an Auto Scaling group and configures it to use an Elastic Load Balancing load balancer::
 

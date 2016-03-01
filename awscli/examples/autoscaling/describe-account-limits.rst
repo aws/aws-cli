@@ -2,16 +2,16 @@
 
 This example describes the Auto Scaling limits for your AWS account::
 
-	aws autoscaling describe-account-limits
+    aws autoscaling describe-account-limits
 
 The following is example output::
 
-	{
-	  "NumberOfLaunchConfigurations": 5,
-		"MaxNumberOfLaunchConfigurations": 100,
-		"NumberOfAutoScalingGroups": 3,
-		"MaxNumberOfAutoScalingGroups": 20
-	}
+    {
+        "NumberOfLaunchConfigurations": 5,
+        "MaxNumberOfLaunchConfigurations": 100,
+        "NumberOfAutoScalingGroups": 3,
+        "MaxNumberOfAutoScalingGroups": 20
+    }
 
 For more information, see `Auto Scaling Limits`_ in the *Auto Scaling Developer Guide*.
 

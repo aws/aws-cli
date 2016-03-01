@@ -2,51 +2,51 @@
 
 This example describes all your tags::
 
-	aws autoscaling describe-tags
+    aws autoscaling describe-tags
 
 The following is example output::
 
-  {
-    "Tags": [
-      {
-        "ResourceType": "auto-scaling-group",
-        "ResourceId": "my-auto-scaling-group",
-        "PropagateAtLaunch": true,
-        "Value": "Research",
-        "Key": "Dept"
-      },
-      {
-        "ResourceType": "auto-scaling-group",
-        "ResourceId": "my-auto-scaling-group",
-        "PropagateAtLaunch": true,
-        "Value": "WebServer",
-        "Key": "Role"
-      }
-    ]
-  }
+    {
+        "Tags": [
+            {
+                "ResourceType": "auto-scaling-group",
+                "ResourceId": "my-auto-scaling-group",
+                "PropagateAtLaunch": true,
+                "Value": "Research",
+                "Key": "Dept"
+            },
+            {
+                "ResourceType": "auto-scaling-group",
+                "ResourceId": "my-auto-scaling-group",
+                "PropagateAtLaunch": true,
+                "Value": "WebServer",
+                "Key": "Role"
+            }
+        ]
+    }
 
 To describe tags for a specific Auto Scaling group, use the ``filters`` parameter::
 
-	aws autoscaling describe-tags --filters Name=auto-scaling-group,Values=my-auto-scaling-group
+    aws autoscaling describe-tags --filters Name=auto-scaling-group,Values=my-auto-scaling-group
 
 To return a specific number of tags, use the ``max-items`` parameter::
 
-	aws autoscaling describe-tags --max-items 1
+    aws autoscaling describe-tags --max-items 1
 
 The following is example output::
 
-  {
-    "NextToken": "None___1",
-    "Tags": [
-      {
-        "ResourceType": "auto-scaling-group",
-        "ResourceId": "my-auto-scaling-group",
-        "PropagateAtLaunch": true,
-        "Value": "Research",
-        "Key": "Dept"
-      }
-    ]
-  }
+    {
+        "NextToken": "None___1",
+        "Tags": [
+            {
+                "ResourceType": "auto-scaling-group",
+                "ResourceId": "my-auto-scaling-group",
+                "PropagateAtLaunch": true,
+                "Value": "Research",
+                "Key": "Dept"
+            }
+        ]
+    }
 
 Use the ``NextToken`` field with the ``starting-token`` parameter in a subsequent call to get the additional tags::
 
@@ -55,4 +55,3 @@ Use the ``NextToken`` field with the ``starting-token`` parameter in a subsequen
 For more information, see `Tagging Auto Scaling Groups and Instances`_ in the *Auto Scaling Developer Guide*.
 
 .. _`Tagging Auto Scaling Groups and Instances`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/ASTagging.html
-

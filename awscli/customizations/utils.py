@@ -42,8 +42,14 @@ def make_hidden_alias(argument_table, existing_name, alias_name):
     copy_arg = copy.copy(current)
     copy_arg._UNDOCUMENTED = True
     copy_arg.name = alias_name
-    copy_arg.required = False
-    current.required = False
+    if current.required:
+        # If the current argument is required, then
+        # we'll mark both as not required, but
+        # flag _DOCUMENT_AS_REQUIRED so our doc gen
+        # knows to still document this argument as required.
+        copy_arg.required = False
+        current.required = False
+        current._DOCUMENT_AS_REQUIRED = True
     argument_table[alias_name] = copy_arg
 
 

@@ -375,6 +375,19 @@ class TestParametersCanBeHidden(BaseAWSHelpOutputTest):
         self.assert_not_contains('--starting-sequence-number')
 
 
+class TestCanDocumentAsRequired(BaseAWSHelpOutputTest):
+    def test_can_doc_as_required(self):
+        # This param is already marked as required, but to be
+        # explicit this is repeated here to make it more clear.
+        def doc_as_required(argument_table, **kwargs):
+            arg = argument_table['volume-arns']
+        self.driver.session.register('building-argument-table',
+                                     doc_as_required)
+        self.driver.main(['storagegateway', 'describe-cached-iscsi-volumes',
+                          'help'])
+        self.assert_not_contains('[--volume-arns <value>]')
+
+
 class TestEC2AuthorizeSecurityGroupNotRendered(BaseAWSHelpOutputTest):
     def test_deprecated_args_not_documented(self):
         self.driver.main(['ec2', 'authorize-security-group-ingress', 'help'])

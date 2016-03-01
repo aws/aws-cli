@@ -17,7 +17,7 @@ import os
 import sys
 
 from awscli.customizations.s3.utils import (
-    find_chunksize, adjust_chunksize_to_upload_limits,
+    find_chunksize, adjust_chunksize_to_upload_limits, MAX_UPLOAD_SIZE,
     find_bucket_key, relative_path, PrintTask, create_warning)
 from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3 import tasks
@@ -27,9 +27,6 @@ from awscli.compat import queue
 
 
 LOGGER = logging.getLogger(__name__)
-# Maximum object size allowed in S3.
-# See: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
-MAX_UPLOAD_SIZE = 5 * (1024 ** 4)
 
 CommandResult = namedtuple('CommandResult',
                            ['num_tasks_failed', 'num_tasks_warned'])

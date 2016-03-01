@@ -30,7 +30,7 @@ def make_s3_files(session, key1='text1.txt', key2='text2.txt', size=None):
         string1 = "This is a test."
         string2 = "This is another test."
 
-    client = session.create_client('s3', region_name=region, config=config)
+    client = session.create_client('s3', region_name=region)
     client.put_object(Bucket=bucket, Key=key1, Body=string1)
     if key2 is not None:
         client.put_object(Bucket=bucket, Key='another_directory/')

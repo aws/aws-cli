@@ -41,7 +41,19 @@ class TestCommandTableRenames(BaseAWSHelpOutputTest):
 
 
 class TestHiddenAlias(unittest.TestCase):
-    def test_hidden_alias_makrs_as_not_required(self):
+    def test_not_marked_as_required_if_not_needed(self):
+        original_arg_required = mock.Mock()
+        original_arg_required.required = False
+        arg_table = {'original': original_arg_required}
+        utils.make_hidden_alias(arg_table, 'original', 'new-name')
+        self.assertIn('new-name', arg_table)
+        # Note: the _DOCUMENT_AS_REQUIRED is tested as a functional
+        # test because it only affects how the doc synopsis is
+        # rendered.
+        self.assertFalse(arg_table['original'].required)
+        self.assertFalse(arg_table['new-name'].required)
+
+    def test_hidden_alias_marks_as_not_required(self):
         original_arg_required = mock.Mock()
         original_arg_required.required = True
         arg_table = {'original': original_arg_required}

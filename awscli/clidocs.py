@@ -127,7 +127,8 @@ class CLIDocumentEventHandler(object):
             self._documented_arg_groups.append(argument.group_name)
         else:
             option_str = '%s <value>' % argument.cli_name
-        if not argument.required:
+        if not (argument.required
+                or getattr(argument, '_DOCUMENT_AS_REQUIRED', False)):
             option_str = '[%s]' % option_str
         doc.writeln('%s' % option_str)
 

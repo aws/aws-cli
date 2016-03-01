@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+* bugfix:``aws s3``: Avoid MD5 checksumming if unavailable.
+  (`issue 1812 <https://github.com/aws/aws-cli/pull/1812>`__)
+* feature:``aws dynamodb``: Add support for describing limits.
+* feature:``aws apigateway``: Add support for testing invoke authorizers and
+  flushing stage authorizers cache.
+* feature:``aws cloudsearchdomain``: Add support for new stat fields.
+
+
 1.10.8
 ======
 

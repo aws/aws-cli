@@ -39,6 +39,9 @@ EPOCH_TIME = datetime(1970, 1, 1, tzinfo=tzutc())
 # and: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
 MAX_SINGLE_UPLOAD_SIZE = 5 * (1024 ** 3)
 MIN_UPLOAD_CHUNKSIZE = 5 * (1024 ** 2)
+# Maximum object size allowed in S3.
+# See: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
+MAX_UPLOAD_SIZE = 5 * (1024 ** 4)
 SIZE_SUFFIX = {
     'kb': 1024,
     'mb': 1024 ** 2,
@@ -289,7 +292,10 @@ def find_chunksize(size, current_chunksize):
     :param current_chunksize: The currently configured chunksize
     :return: If the given chunksize is valid, it is returned. Otherwise a valid
         chunksize is calculated and returned.
+    :raises: ValueError: if the file size exceeds the max size of 5TB
     """
+    if size > MAX_UPLOAD_SIZE:
+        raise ValueError("File size exceeds maximum upload size.")
     size = adjust_chunksize_for_max_parts(size, current_chunksize)
     return adjust_chunksize_to_upload_limits(size)
 

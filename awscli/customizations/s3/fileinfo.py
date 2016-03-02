@@ -6,13 +6,10 @@ from functools import partial
 import errno
 import hashlib
 
-from dateutil.parser import parse
-from dateutil.tz import tzlocal
-
-from botocore.compat import quote
-from awscli.customizations.s3.utils import find_bucket_key, \
-    uni_print, guess_content_type, MD5Error, bytes_print, set_file_utime, \
-    RequestParamsMapper
+from botocore.compat import MD5_AVAILABLE
+from awscli.customizations.s3.utils import (
+    find_bucket_key, guess_content_type, MD5Error, bytes_print, set_file_utime,
+    RequestParamsMapper)
 
 
 LOGGER = logging.getLogger(__name__)
@@ -48,22 +45,26 @@ def save_file(filename, response_data, last_update, is_stream=False):
             if not e.errno == errno.EEXIST:
                 raise CreateDirectoryError(
                     "Could not create directory %s: %s" % (d, e))
-    md5 = hashlib.md5()
+
+    if MD5_AVAILABLE and _can_validate_md5_with_etag(etag, response_data):
+        md5 = hashlib.md5()
+    else:
+        md5 = None
+
     file_chunks = iter(partial(body.read, 1024 * 1024), b'')
     if is_stream:
         # Need to save the data to be able to check the etag for a stream
         # because once the data is written to the stream there is no
         # undoing it.
-        payload = write_to_file(None, etag, md5, file_chunks, True)
+        payload = write_to_file(None, etag, file_chunks, md5, True)
     else:
         with open(filename, 'wb') as out_file:
-            write_to_file(out_file, etag, md5, file_chunks)
+            write_to_file(out_file, etag, file_chunks, md5)
 
-    if _can_validate_md5_with_etag(etag, response_data):
-        if etag != md5.hexdigest():
-            if not is_stream:
-                os.remove(filename)
-            raise MD5Error(filename)
+    if md5 is not None and etag != md5.hexdigest():
+        if not is_stream:
+            os.remove(filename)
+        raise MD5Error(filename)
 
     if not is_stream:
         last_update_tuple = last_update.timetuple()
@@ -84,7 +85,7 @@ def _can_validate_md5_with_etag(etag, response_data):
     return False
 
 
-def write_to_file(out_file, etag, md5, file_chunks, is_stream=False):
+def write_to_file(out_file, etag, file_chunks, md5=None, is_stream=False):
     """
     Updates the etag for each file chunk.  It will write to the file if it a
     file but if it is a stream it will return a byte string to be later
@@ -92,7 +93,7 @@ def write_to_file(out_file, etag, md5, file_chunks, is_stream=False):
     """
     body = b''
     for chunk in file_chunks:
-        if not _is_multipart_etag(etag):
+        if md5 is not None and not _is_multipart_etag(etag):
             md5.update(chunk)
         if is_stream:
             body += chunk

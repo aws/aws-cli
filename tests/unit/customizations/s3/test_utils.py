@@ -1,3 +1,15 @@
+# Copyright 2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"). You
+# may not use this file except in compliance with the License. A copy of
+# the License is located at
+#
+#     http://aws.amazon.com/apache2.0/
+#
+# or in the "license" file accompanying this file. This file is
+# distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+# ANY KIND, either express or implied. See the License for the specific
+# language governing permissions and limitations under the License.
 from awscli.testutils import unittest, temporary_file
 import argparse
 import os
@@ -13,20 +25,12 @@ from dateutil.tz import tzlocal
 from nose.tools import assert_equal
 
 from botocore.hooks import HierarchicalEmitter
-from awscli.customizations.s3.utils import find_bucket_key, find_chunksize
-from awscli.customizations.s3.utils import ReadFileChunk
-from awscli.customizations.s3.utils import relative_path
-from awscli.customizations.s3.utils import StablePriorityQueue
-from awscli.customizations.s3.utils import BucketLister
-from awscli.customizations.s3.utils import get_file_stat
-from awscli.customizations.s3.utils import AppendFilter
-from awscli.customizations.s3.utils import create_warning
-from awscli.customizations.s3.utils import human_readable_size
-from awscli.customizations.s3.utils import human_readable_to_bytes
-from awscli.customizations.s3.utils import MAX_SINGLE_UPLOAD_SIZE, EPOCH_TIME
-from awscli.customizations.s3.utils import set_file_utime, SetFileUtimeError
-from awscli.customizations.s3.utils import RequestParamsMapper
-from awscli.customizations.s3.utils import uni_print
+from awscli.customizations.s3.utils import (
+    find_bucket_key, find_chunksize, ReadFileChunk, relative_path,
+    StablePriorityQueue, BucketLister, get_file_stat, AppendFilter,
+    create_warning, human_readable_size, human_readable_to_bytes,
+    MAX_SINGLE_UPLOAD_SIZE, MIN_UPLOAD_CHUNKSIZE, MAX_UPLOAD_SIZE,
+    set_file_utime, SetFileUtimeError, RequestParamsMapper, uni_print)
 
 
 def test_human_readable_size():
@@ -113,7 +117,7 @@ class FindChunksizeTest(unittest.TestCase):
     This test ensures that the ``find_chunksize`` function works
     as expected.
     """
-    def test_small_chunk(self):
+    def test_valid_chunk(self):
         """
         This test ensures if the ``chunksize`` is appropriate to begin with,
         it does not change.
@@ -121,6 +125,15 @@ class FindChunksizeTest(unittest.TestCase):
         chunksize = 7 * (1024 ** 2)
         size = 8 * (1024 ** 2)
         self.assertEqual(find_chunksize(size, chunksize), chunksize)
+
+    def test_small_chunk(self):
+        """
+        This test ensures that if the ``chunksize`` is below the minimum
+        threshold, it is automatically raised to the minimum.
+        """
+        chunksize = MIN_UPLOAD_CHUNKSIZE - 1
+        size = 3 * MIN_UPLOAD_CHUNKSIZE
+        self.assertEqual(find_chunksize(size, chunksize), MIN_UPLOAD_CHUNKSIZE)
 
     def test_large_chunk(self):
         """
@@ -142,6 +155,12 @@ class FindChunksizeTest(unittest.TestCase):
         size = MAX_SINGLE_UPLOAD_SIZE * 2
         self.assertEqual(find_chunksize(size, chunksize),
                          MAX_SINGLE_UPLOAD_SIZE)
+
+    def test_file_too_large(self):
+        size = MAX_UPLOAD_SIZE + 1
+        chunksize = 1
+        with self.assertRaises(ValueError):
+            find_chunksize(size, chunksize)
 
 
 class TestReadFileChunk(unittest.TestCase):

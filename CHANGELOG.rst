@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.10.9
+======
 * bugfix:``aws s3``: Avoid MD5 checksumming if unavailable.
   (`issue 1812 <https://github.com/aws/aws-cli/pull/1812>`__)
 * feature:``aws dynamodb``: Add support for describing limits.

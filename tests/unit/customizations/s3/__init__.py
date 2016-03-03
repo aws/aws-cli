@@ -14,6 +14,7 @@ import os
 
 from mock import patch, Mock
 
+import awscli.customizations.s3.utils as utils
 from awscli.compat import six
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, \
     capture_output
@@ -29,10 +30,13 @@ class S3HandlerBaseTest(BaseAWSCommandParamsTest):
         self.client = self.session.create_client('s3', 'us-east-1')
         self.source_client = self.session.create_client('s3', 'us-east-1')
         self.file_creator = FileCreator()
+        self._saved_min_chunksize = utils.MIN_UPLOAD_CHUNKSIZE
+        utils.MIN_UPLOAD_CHUNKSIZE = 1
 
     def tearDown(self):
         super(S3HandlerBaseTest, self).tearDown()
         clean_loc_files(self.file_creator)
+        utils.MIN_UPLOAD_CHUNKSIZE = self._saved_min_chunksize
 
     def run_s3_handler(self, s3_handler, tasks):
         self.patch_make_request()
@@ -68,13 +72,16 @@ class S3HandlerBaseTest(BaseAWSCommandParamsTest):
             self.assertEqual(self.operations_called[i][1], ref_operation[1])
 
 
-def make_loc_files(file_creator):
+def make_loc_files(file_creator, size=None):
     """
     This sets up the test by making a directory named some_directory.  It
     has the file text1.txt and the directory another_directory inside.  Inside
     of another_directory it creates the file text2.txt.
     """
-    body = 'This is a test.'
+    if size:
+        body = "*" * size
+    else:
+        body = 'This is a test.'
 
     filename1 = file_creator.create_file(
         os.path.join('some_directory', 'text1.txt'), body)

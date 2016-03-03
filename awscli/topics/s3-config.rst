@@ -128,6 +128,8 @@ multipart_chunksize
 
 **Default** - ``8MB``
 
+**Minimum For Uploads** - ``5MB``
+
 Once the S3 commands have decided to use multipart operations, the
 file is divided into chunks.  This configuration option specifies what
 the chunk size (also referred to as the part size) should be.  This

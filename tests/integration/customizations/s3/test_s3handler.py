@@ -26,6 +26,7 @@ from awscli.testutils import unittest, FileCreator
 from awscli import EnvironmentVariables
 from awscli.compat import StringIO
 from awscli.customizations.s3.s3handler import S3Handler
+from awscli.customizations.s3.utils import MIN_UPLOAD_CHUNKSIZE
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.transferconfig import RuntimeConfig
 import botocore.session
@@ -36,6 +37,10 @@ from tests.integration.customizations.s3 import make_s3_files, s3_cleanup, \
 
 def runtime_config(**kwargs):
     return RuntimeConfig().build_config(**kwargs)
+
+
+def minimum_chunk_size():
+    return MIN_UPLOAD_CHUNKSIZE
 
 
 class S3HandlerTestDelete(unittest.TestCase):
@@ -122,18 +127,22 @@ class S3HandlerTestUpload(unittest.TestCase):
         self.client = self.session.create_client('s3', 'us-west-2')
         params = {'region': 'us-west-2', 'acl': 'private'}
         self.s3_handler = S3Handler(self.session, params)
+        self.chunk_size = minimum_chunk_size()
+        self.threshold = self.chunk_size + 1
         self.s3_handler_multi = S3Handler(
             self.session, params=params,
             runtime_config=runtime_config(
-                multipart_threshold=10, multipart_chunksize=2))
+                multipart_threshold=self.threshold,
+                multipart_chunksize=self.chunk_size))
         self.bucket = create_bucket(self.session)
         self.file_creator = FileCreator()
-        self.loc_files = make_loc_files(self.file_creator)
         self.s3_files = [self.bucket + '/text1.txt',
                          self.bucket + '/another_directory/text2.txt']
         self.output = StringIO()
         self.saved_stderr = sys.stderr
+        self.saved_stdout = sys.stdout
         sys.stderr = self.output
+        sys.stdout = self.output
 
     def tearDown(self):
         self.output.close()
@@ -142,6 +151,7 @@ class S3HandlerTestUpload(unittest.TestCase):
         s3_cleanup(self.bucket, self.session)
 
     def test_upload(self):
+        self.loc_files = make_loc_files(self.file_creator)
         # Confirm there are no objects in the bucket.
         response = self.client.list_objects(Bucket=self.bucket)
         self.assertEqual(len(response.get('Contents', [])), 0)
@@ -162,21 +172,26 @@ class S3HandlerTestUpload(unittest.TestCase):
         self.assertEqual(len(response.get('Contents', [])), 2)
 
     def test_multi_upload(self):
+        self.loc_files = make_loc_files(self.file_creator, self.threshold+1)
         files = [self.loc_files[0], self.loc_files[1]]
         tasks = []
         for i in range(len(files)):
             tasks.append(FileInfo(
                 src=self.loc_files[i],
-                dest=self.s3_files[i], size=15,
+                dest=self.s3_files[i],
+                size=self.threshold+1,
                 operation_name='upload',
                 client=self.client,
             ))
 
-        # Note nothing is uploaded because the file is too small
-        # a print statement will show up if it fails.
         self.s3_handler_multi.call(tasks)
-        print_op = "Your proposed upload is smaller than the minimum"
-        self.assertIn(print_op, self.output.getvalue())
+
+        # Confirm UploadPart was called
+        self.assertIn("Completed 4 of 4 part(s)", self.output.getvalue())
+
+        # Confirm the files were uploaded.
+        response = self.client.list_objects(Bucket=self.bucket)
+        self.assertEqual(len(response.get('Contents', [])), 2)
 
 
 class S3HandlerTestUnicodeMove(unittest.TestCase):

@@ -16,8 +16,9 @@ import math
 import os
 import sys
 
-from awscli.customizations.s3.utils import find_chunksize, \
-    find_bucket_key, relative_path, PrintTask, create_warning
+from awscli.customizations.s3.utils import (
+    find_chunksize, adjust_chunksize_to_upload_limits, MAX_UPLOAD_SIZE,
+    find_bucket_key, relative_path, PrintTask, create_warning)
 from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3 import tasks
 from awscli.customizations.s3.transferconfig import RuntimeConfig
@@ -26,9 +27,6 @@ from awscli.compat import queue
 
 
 LOGGER = logging.getLogger(__name__)
-# Maximum object size allowed in S3.
-# See: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
-MAX_UPLOAD_SIZE = 5 * (1024 ** 4)
 
 CommandResult = namedtuple('CommandResult',
                            ['num_tasks_failed', 'num_tasks_warned'])
@@ -260,15 +258,14 @@ class S3Handler(object):
         return num_uploads
 
     def _enqueue_range_download_tasks(self, filename, remove_remote_file=False):
-        chunksize = find_chunksize(filename.size, self.chunksize)
-        num_downloads = int(filename.size / chunksize)
+        num_downloads = int(filename.size / self.chunksize)
         context = tasks.MultipartDownloadContext(num_downloads)
         create_file_task = tasks.CreateLocalFileTask(
             context=context, filename=filename,
             result_queue=self.result_queue)
         self.executor.submit(create_file_task)
         self._do_enqueue_range_download_tasks(
-            filename=filename, chunksize=chunksize,
+            filename=filename, chunksize=self.chunksize,
             num_downloads=num_downloads, context=context,
             remove_remote_file=remove_remote_file
         )
@@ -455,8 +452,7 @@ class S3StreamHandler(S3Handler):
     def _enqueue_range_download_tasks(self, filename, remove_remote_file=False):
 
         # Create the context for the multipart download.
-        chunksize = find_chunksize(filename.size, self.chunksize)
-        num_downloads = int(filename.size / chunksize)
+        num_downloads = int(filename.size / self.chunksize)
         context = tasks.MultipartDownloadContext(num_downloads)
 
         # No file is needed for downloading a stream.  So just announce
@@ -466,7 +462,7 @@ class S3StreamHandler(S3Handler):
 
         # Submit download part tasks to the executor.
         self._do_enqueue_range_download_tasks(
-            filename=filename, chunksize=chunksize,
+            filename=filename, chunksize=self.chunksize,
             num_downloads=num_downloads, context=context,
             remove_remote_file=remove_remote_file
         )
@@ -476,12 +472,15 @@ class S3StreamHandler(S3Handler):
         # First we need to create a CreateMultipartUpload task,
         # then create UploadTask objects for each of the parts.
         # And finally enqueue a CompleteMultipartUploadTask.
-
-        chunksize = self.chunksize
-        # Determine an appropriate chunksize if given an expected size.
         if self.params['expected_size']:
+            # If we have the expected size, we can calculate an appropriate
+            # chunksize based on max parts and chunksize limits
             chunksize = find_chunksize(int(self.params['expected_size']),
                                        self.chunksize)
+        else:
+            # Otherwise, we can still adjust for chunksize limits
+            chunksize = adjust_chunksize_to_upload_limits(self.chunksize)
+
         num_uploads = '...'
 
         # Submit a task to begin the multipart upload.

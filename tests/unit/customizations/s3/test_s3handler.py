@@ -17,6 +17,7 @@ import sys
 
 import mock
 
+import awscli.customizations.s3.utils
 from awscli.testutils import unittest
 from awscli import EnvironmentVariables
 from awscli.compat import six
@@ -895,7 +896,7 @@ class TestStreams(S3HandlerBaseTest):
         self.assertEqual(submitted_tasks[2][0][0]._payload.read(),
                          b'ar')
 
-    def test_upload_stream_with_expected_size(self):
+    def test_upload_stream_with_expected_parts(self):
         self.params['expected_size'] = 100000
         # With this large of expected size, the chunksize of 2 will have
         # to change.
@@ -913,6 +914,25 @@ class TestStreams(S3HandlerBaseTest):
         changed_chunk_size = submitted_tasks[1][0][0]._chunk_size
         # New chunksize should have a total parts under 1000.
         self.assertTrue(100000 / float(changed_chunk_size) <= MAX_PARTS)
+
+    def test_upload_stream_with_expected_size(self):
+        minimum_chunksize = 10
+        awscli.customizations.s3.utils.MIN_UPLOAD_CHUNKSIZE = minimum_chunksize
+        s3handler = S3StreamHandler(
+            self.session, self.params,
+            runtime_config=runtime_config(
+                multipart_threshold=1, multipart_chunksize=2))
+        s3handler.executor = mock.Mock()
+        fileinfo = FileInfo('filename', operation_name='upload',
+                            is_stream=True)
+        with MockStdIn(b'bar'):
+            s3handler._enqueue_multipart_upload_tasks(fileinfo, b'')
+        submitted_tasks = s3handler.executor.submit.call_args_list
+        # Determine what the chunksize was changed to from one of the
+        # UploadPartTasks.
+        changed_chunk_size = submitted_tasks[1][0][0]._chunk_size
+        # New chunksize should be equal to the minimum
+        self.assertEqual(changed_chunk_size, minimum_chunksize)
 
     def test_upload_stream_enqueue_upload_task(self):
         s3handler = S3StreamHandler(self.session, self.params)

@@ -10,148 +10,397 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import create_clidriver
-import os
 import pprint
-import logging
 import difflib
 
 import mock
 
+from botocore.compat import OrderedDict
+from awscli.clidriver import (
+    CLIDriver, ServiceCommand, ServiceOperation, CLICommand)
+from awscli.arguments import BaseCLIArgument, CustomArgument
+from awscli.help import ProviderHelpCommand
 from awscli.completer import Completer
-
-LOG = logging.getLogger(__name__)
-
-
-GLOBALOPTS = ['--debug', '--endpoint-url', '--no-verify-ssl', '--no-paginate',
-              '--output', '--profile', '--region', '--version', '--color',
-              '--query', '--no-sign-request', '--ca-bundle',
-              '--cli-read-timeout', '--cli-connect-timeout']
-
-COMPLETIONS = [
-    ('aws ', -1, set(['acm', 'apigateway', 'autoscaling', 'cloudformation',
-                      'cloudfront', 'cloudhsm', 'cloudsearch',
-                      'cloudsearchdomain', 'cloudtrail', 'cloudwatch',
-                      'cognito-identity', 'codecommit', 'codepipeline',
-                      'cognito-sync', 'configservice', 'configure',
-                      'datapipeline', 'deploy', 'devicefarm', 'directconnect',
-                      'ds', 'dynamodb', 'dynamodbstreams', 'glacier', 'ec2',
-                      'ecr', 'ecs', 'efs', 'elasticache', 'elasticbeanstalk',
-                      'elastictranscoder', 'elb', 'emr', 'es', 'events',
-                      'firehose', 'gamelift', 'iam', 'iot', 'iot-data',
-                      'importexport', 'inspector', 'kinesis', 'kms',
-                      'lambda', 'logs', 'marketplacecommerceanalytics',
-                      'machinelearning', 'opsworks', 'rds',
-                      'redshift', 'route53', 'route53domains', 's3', 's3api',
-                      'sdb', 'ses', 'sns', 'sqs', 'ssm', 'storagegateway', 'sts',
-                      'ssm', 'support', 'swf', 'waf', 'workspaces'])),
-    ('aws cloud', -1, set(['cloudformation', 'cloudfront', 'cloudhsm',
-                           'cloudsearch', 'cloudsearchdomain', 'cloudtrail',
-                           'cloudwatch'])),
-    ('aws cloudf', -1, set(['cloudformation', 'cloudfront',])),
-    ('aws cloudfr', -1, set(['cloudfront'])),
-    ('aws foobar', -1, set([])),
-    ('aws  --', -1, set(GLOBALOPTS)),
-    ('aws  --re', -1, set(['--region'])),
-    ('aws sts ', -1, set(['assume-role', 'assume-role-with-saml',
-                          'get-federation-token',
-                          'decode-authorization-message',
-                          'assume-role-with-web-identity',
-                          'get-session-token'])),
-    ('aws sts --debug --de', -1, set([])),
-    ('aws sts de', -1, set(['decode-authorization-message'])),
-    ('aws sts --', -1, set(GLOBALOPTS)),
-    ('aws sts decode-authorization-message', -1, set([])),
-    ('aws sts decode-authorization-message --encoded-message --re', -1,
-     set(['--region'])),
-    ('aws sts decode-authorization-message --encoded-message --enco', -1,
-     set([])),
-    ('aws ec2 --debug describe-instances --instance-ids ', -1,
-     set([])),
-    ('aws ec2 --debug describe-instances --instance-ids i-12345678 - ', -1,
-     set(['--filters', '--dry-run', '--no-dry-run', '--endpoint-url',
-          '--no-verify-ssl', '--no-paginate', '--no-sign-request', '--output',
-          '--profile', '--starting-token', '--max-items', '--page-size',
-          '--region', '--version', '--color', '--query', '--ca-bundle',
-          '--generate-cli-skeleton', '--cli-input-json', '--cli-read-timeout',
-          '--cli-connect-timeout'])),
-    ('aws s3', -1, set(['cp', 'mv', 'rm', 'mb', 'rb', 'ls', 'sync', 'website'])),
-    ('aws s3 m', -1, set(['mv', 'mb'])),
-    ('aws s3 cp -', -1, set(['--no-guess-mime-type', '--dryrun',
-                             '--recursive', '--website-redirect',
-                             '--quiet', '--acl', '--storage-class',
-                             '--sse', '--sse-c', '--sse-c-copy-source',
-                             '--sse-c-copy-source-key',
-                             '--sse-c-key',
-                             '--sse-kms-key-id',
-                             '--exclude', '--include',
-                             '--follow-symlinks', '--no-follow-symlinks',
-                             '--cache-control', '--content-type',
-                             '--content-disposition', '--source-region',
-                             '--content-encoding', '--content-language',
-                             '--expires', '--grants', '--only-show-errors',
-                             '--expected-size', '--page-size',
-                             '--metadata', '--metadata-directive',
-                             '--ignore-glacier-warnings']
-                            + GLOBALOPTS)),
-    ('aws s3 cp --quiet -', -1, set(['--no-guess-mime-type', '--dryrun',
-                                     '--recursive', '--content-type',
-                                     '--follow-symlinks', '--no-follow-symlinks',
-                                     '--content-disposition', '--cache-control',
-                                     '--content-encoding', '--content-language',
-                                     '--expires', '--website-redirect', '--acl',
-                                     '--storage-class', '--sse', '--sse-c',
-                                     '--sse-c-copy-source',
-                                     '--sse-c-copy-source-key',
-                                     '--sse-c-key',
-                                     '--sse-kms-key-id',
-                                     '--exclude', '--include',
-                                     '--source-region', '--metadata',
-                                     '--metadata-directive',
-                                     '--grants', '--only-show-errors',
-                                     '--expected-size', '--page-size',
-                                     '--ignore-glacier-warnings']
-                                    + GLOBALOPTS)),
-    ('aws emr ', -1, set(['add-instance-groups', 'add-steps', 'add-tags',
-                          'create-cluster', 'create-default-roles',
-                          'create-hbase-backup', 'describe-cluster',
-                          'describe-step', 'disable-hbase-backups', 'get',
-                          'install-applications', 'list-clusters',
-                          'list-instances', 'list-steps',
-                          'modify-cluster-attributes', 'modify-instance-groups',
-                          'put', 'remove-tags', 'restore-from-hbase-backup',
-                          'schedule-hbase-backup', 'socks', 'ssh',
-                          'terminate-clusters', 'wait']))
-]
+from awscli.testutils import unittest
+from awscli.customizations.commands import BasicCommand
 
 
-def check_completer(cmdline, results, expected_results):
-    if not results == expected_results:
-        # Borrowed from assertDictEqual, though this doesn't
-        # handle the case when unicode literals are used in one
-        # dict but not in the other (and we want to consider them
-        # as being equal).
-        pretty_d1 = pprint.pformat(results, width=1).splitlines()
-        pretty_d2 = pprint.pformat(expected_results, width=1).splitlines()
-        diff = ('\n' + '\n'.join(difflib.ndiff(pretty_d1, pretty_d2)))
-        raise AssertionError("Results are not equal:\n%s" % diff)
-    assert results == expected_results
+class BaseCompleterTest(unittest.TestCase):
+    def setUp(self):
+        self.clidriver_creator = MockCLIDriverFactory()
+
+    def assert_completion(self, completer, cmdline, expected_results,
+                          point=None):
+        if point is None:
+            point = len(cmdline)
+        actual = set(completer.complete(cmdline, point))
+        expected = set(expected_results)
+
+        if not actual == expected:
+            # Borrowed from assertDictEqual, though this doesn't
+            # handle the case when unicode literals are used in one
+            # dict but not in the other (and we want to consider them
+            # as being equal).
+            pretty_d1 = pprint.pformat(actual, width=1).splitlines()
+            pretty_d2 = pprint.pformat(expected, width=1).splitlines()
+            diff = ('\n' + '\n'.join(difflib.ndiff(pretty_d1, pretty_d2)))
+            raise AssertionError("Results are not equal:\n%s" % diff)
+        self.assertEqual(actual, expected)
 
 
-def test_completions():
-    environ = {
-        'AWS_DATA_PATH': os.environ['AWS_DATA_PATH'],
-        'AWS_DEFAULT_REGION': 'us-east-1',
-        'AWS_ACCESS_KEY_ID': 'access_key',
-        'AWS_SECRET_ACCESS_KEY': 'secret_key',
-        'AWS_CA_BUNDLE': 'ca_bundle',
-        'AWS_CONFIG_FILE': '',
-    }
-    with mock.patch('os.environ', environ):
-        completer = Completer()
-        completer.clidriver = create_clidriver()
-        for cmdline, point, expected_results in COMPLETIONS:
-            if point == -1:
-                point = len(cmdline)
-            results = set(completer.complete(cmdline, point))
-            yield check_completer, cmdline, results, expected_results
+class TestCompleter(BaseCompleterTest):
+    def test_complete_services(self):
+        commands = {
+            'subcommands': {
+                'foo': {},
+                'bar': {
+                    'subcommands': {
+                        'baz': {}
+                    }
+                }
+            },
+            'arguments': []
+        }
+        completer = Completer(
+            self.clidriver_creator.create_clidriver(commands))
+        self.assert_completion(completer, 'aws ', ['foo', 'bar'])
+
+    def test_complete_partial_service_name(self):
+        commands = {
+            'subcommands': {
+                'cloudfront': {},
+                'cloudformation': {},
+                'cloudhsm': {},
+                'sts': {}
+            },
+            'arguments': []
+        }
+        completer = Completer(
+            self.clidriver_creator.create_clidriver(commands))
+        self.assert_completion(completer, 'aws cloud', [
+            'cloudfront', 'cloudformation', 'cloudhsm'])
+        self.assert_completion(completer, 'aws cloudf', [
+            'cloudfront', 'cloudformation'])
+        self.assert_completion(completer, 'aws cloudfr', ['cloudfront'])
+        self.assert_completion(completer, 'aws cloudfront', [])
+
+    def test_complete_on_invalid_service(self):
+        commands = {
+            'subcommands': {
+                'foo': {},
+                'bar': {
+                    'subcommands': {
+                        'baz': {}
+                    }
+                }
+            },
+            'arguments': []
+        }
+        completer = Completer(
+            self.clidriver_creator.create_clidriver(commands))
+        self.assert_completion(completer, 'aws bin', [])
+
+    def test_complete_top_level_args(self):
+        commands = {
+            'subcommands': {},
+            'arguments': ['foo', 'bar']
+        }
+        completer = Completer(
+            self.clidriver_creator.create_clidriver(commands))
+        self.assert_completion(completer, 'aws --', ['--foo', '--bar'])
+
+    def test_complete_partial_top_level_arg(self):
+        commands = {
+            'subcommands': {},
+            'arguments': ['foo', 'bar', 'foobar', 'fubar']
+        }
+        completer = Completer(
+            self.clidriver_creator.create_clidriver(commands))
+        self.assert_completion(completer, 'aws --f', [
+            '--foo', '--fubar', '--foobar'])
+        self.assert_completion(completer, 'aws --fo', [
+            '--foo', '--foobar'])
+        self.assert_completion(completer, 'aws --foob', ['--foobar'])
+        self.assert_completion(completer, 'aws --foobar', [])
+
+    def test_complete_top_level_arg_with_arg_already_used(self):
+        commands = {
+            'subcommands': {
+                'baz': {}
+            },
+            'arguments': ['foo', 'bar']
+        }
+        completer = Completer(
+            self.clidriver_creator.create_clidriver(commands))
+        self.assert_completion(completer, 'aws --foo --f', [])
+
+    def test_complete_service_commands(self):
+        commands = {
+            'subcommands': {
+                'foo': {
+                    'subcommands': {
+                        'bar': {
+                            'arguments': ['bin']
+                        },
+                        'baz': {}
+                    }
+                }
+            },
+            'arguments': []
+        }
+        completer = Completer(
+            self.clidriver_creator.create_clidriver(commands))
+        self.assert_completion(completer, 'aws foo ', ['bar', 'baz'])
+
+    def test_complete_partial_service_commands(self):
+        commands = {
+            'subcommands': {
+                'foo': {
+                    'subcommands': {
+                        'barb': {
+                            'arguments': ['nil']
+                        },
+                        'baz': {},
+                        'biz': {},
+                        'foobar': {}
+                    }
+                }
+            },
+            'arguments': []
+        }
+        completer = Completer(
+            self.clidriver_creator.create_clidriver(commands))
+        self.assert_completion(completer, 'aws foo b', ['barb', 'baz', 'biz'])
+        self.assert_completion(completer, 'aws foo ba', ['barb', 'baz'])
+        self.assert_completion(completer, 'aws foo bar', ['barb'])
+        self.assert_completion(completer, 'aws foo barb', [])
+
+    def test_complete_service_arguments(self):
+        commands = {
+            'subcommands': {
+                'foo': {}
+            },
+            'arguments': ['baz', 'bin']
+        }
+        completer = Completer(
+            self.clidriver_creator.create_clidriver(commands))
+        self.assert_completion(completer, 'aws foo --', ['--baz', '--bin'])
+
+    def test_complete_partial_service_arguments(self):
+        commands = {
+            'subcommands': {
+                'biz': {}
+            },
+            'arguments': ['foo', 'bar', 'foobar', 'fubar']
+        }
+        completer = Completer(
+            self.clidriver_creator.create_clidriver(commands))
+        self.assert_completion(completer, 'aws biz --f', [
+            '--foo', '--fubar', '--foobar'])
+        self.assert_completion(completer, 'aws biz --fo', [
+            '--foo', '--foobar'])
+        self.assert_completion(completer, 'aws biz --foob', ['--foobar'])
+
+    def test_complete_service_arg_with_arg_already_used(self):
+        commands = {
+            'subcommands': {
+                'baz': {}
+            },
+            'arguments': ['foo', 'bar']
+        }
+        completer = Completer(
+            self.clidriver_creator.create_clidriver(commands))
+        self.assert_completion(completer, 'aws baz --foo --f', [])
+
+    def test_complete_operation_arguments(self):
+        commands = {
+            'subcommands': {
+                'foo': {'subcommands': {
+                    'bar': {'arguments': ['baz']}
+                }}
+            },
+            'arguments': ['bin']
+        }
+        completer = Completer(
+            self.clidriver_creator.create_clidriver(commands))
+        self.assert_completion(completer, 'aws foo bar --', ['--baz', '--bin'])
+
+    def test_complete_partial_operation_arguments(self):
+        commands = {
+            'subcommands': {
+                'foo': {'subcommands': {
+                    'bar': {'arguments': ['base', 'baz', 'air']}
+                }}
+            },
+            'arguments': ['bin']
+        }
+        completer = Completer(
+            self.clidriver_creator.create_clidriver(commands))
+        self.assert_completion(completer, 'aws foo bar --b', [
+            '--base', '--baz', '--bin'])
+        self.assert_completion(completer, 'aws foo bar --ba', [
+            '--base', '--baz'])
+        self.assert_completion(completer, 'aws foo bar --bas', ['--base'])
+        self.assert_completion(completer, 'aws foo bar --base', [])
+
+    def test_complete_operation_arg_when_arg_already_used(self):
+        commands = {
+            'subcommands': {
+                'foo': {'subcommands': {
+                    'bar': {'arguments': ['baz']}
+                }}
+            },
+            'arguments': []
+        }
+        completer = Completer(
+            self.clidriver_creator.create_clidriver(commands))
+        self.assert_completion(completer, 'aws foo bar --baz --b', [])
+
+    def test_complete_positional_argument(self):
+        commands = {
+            'subcommands': {
+                'foo': {'subcommands': {
+                    'bar': {'arguments': [
+                        'baz',
+                        CustomArgument('bin', positional_arg=True)
+                    ]}
+                }}
+            },
+            'arguments': []
+        }
+        completer = Completer(
+            self.clidriver_creator.create_clidriver(commands))
+        self.assert_completion(completer, 'aws foo bar --bin ', [])
+        self.assert_completion(completer, 'aws foo bar --bin blah --',
+                               ['--baz'])
+
+    def test_complete_undocumented_command(self):
+        class UndocumentedCommand(CLICommand):
+            _UNDOCUMENTED = True
+        commands = {
+            'subcommands': {
+                'foo': {},
+                'bar': UndocumentedCommand()
+            },
+            'arguments': []
+        }
+        completer = Completer(
+            self.clidriver_creator.create_clidriver(commands))
+        self.assert_completion(completer, 'aws ', ['foo'])
+
+
+class TestCompleteCustomCommands(BaseCompleterTest):
+    def setUp(self):
+        super(TestCompleteCustomCommands, self).setUp()
+        custom_arguments = [
+            {'name': 'recursive'},
+            {'name': 'sse'}
+        ]
+        custom_commands = [
+            self.create_custom_command('mb'),
+            self.create_custom_command('mv'),
+            self.create_custom_command('cp', arguments=custom_arguments)
+        ]
+        custom_service = self.create_custom_command('s3', custom_commands)
+        clidriver = self.clidriver_creator.create_clidriver({
+            'subcommands': {
+                's3': custom_service['command_class'](mock.Mock()),
+                'foo': {}
+            },
+            'arguments': ['bar']
+        })
+        self.completer = Completer(clidriver)
+
+    def create_custom_command(self, name, sub_commands=None, arguments=None):
+        arg_table = arguments
+        if arg_table is None:
+            arg_table = []
+
+        subs = sub_commands
+        if subs is None:
+            subs = []
+
+        class CustomCommand(BasicCommand):
+            NAME = name
+            ARG_TABLE = arg_table
+            SUBCOMMANDS = subs
+        return {'name': name, 'command_class': CustomCommand}
+
+    def test_complete_custom_service(self):
+        self.assert_completion(self.completer, 'aws ', ['s3', 'foo'])
+
+    def test_complete_custom_command(self):
+        self.assert_completion(self.completer, 'aws s3 ', ['mb', 'mv', 'cp'])
+
+    def test_complete_partial_custom_command(self):
+        self.assert_completion(self.completer, 'aws s3 m', ['mb', 'mv'])
+
+    def test_complete_custom_command_arguments(self):
+        self.assert_completion(self.completer, 'aws s3 cp --', [
+            '--bar', '--recursive', '--sse'])
+
+    def test_complete_custom_command_arguments_with_arg_already_used(self):
+        self.assert_completion(self.completer, 'aws s3 cp --recursive --', [
+            '--bar', '--sse'])
+
+
+class MockCLIDriverFactory(object):
+    def create_clidriver(self, commands=None, profiles=None):
+        session = mock.Mock()
+        session.get_data.return_value = None
+        if profiles is not None and isinstance(profiles, list):
+            session.available_profiles = profiles
+        else:
+            session.available_profiles = ['default']
+        clidriver = mock.Mock(spec=CLIDriver)
+        clidriver.create_help_command.return_value = \
+            self._create_top_level_help(commands, session)
+
+        clidriver.session = session
+        return clidriver
+
+    def _create_top_level_help(self, commands, session):
+        command_table = self.create_command_table(
+            commands.get('subcommands', {}), self._create_service_command)
+        argument_table = self.create_argument_table(
+            commands.get('arguments', []))
+        return ProviderHelpCommand(
+            session, command_table, argument_table, None, None, None)
+
+    def _create_service_command(self, name, command):
+        command_table = self.create_command_table(
+            command.get('subcommands', {}), self._create_operation_command)
+        service_command = ServiceCommand(name, None)
+        service_command._service_model = {}
+        service_command._command_table = command_table
+        return service_command
+
+    def _create_operation_command(self, name, command):
+        argument_table = self.create_argument_table(
+            command.get('arguments', []))
+        operation = ServiceOperation(name, 'parent', None, {}, None)
+        operation._arg_table = argument_table
+        return operation
+
+    def create_command_table(self, commands, command_creator):
+        if not commands:
+            return OrderedDict()
+        command_table = OrderedDict()
+        for name, command in commands.items():
+            if isinstance(command, CLICommand):
+                # Already a valid command, no need to fake one
+                command_table[name] = command
+            else:
+                command_table[name] = command_creator(name, command)
+        return command_table
+
+    def create_argument_table(self, arguments):
+        if not arguments:
+            return OrderedDict()
+        argument_table = OrderedDict()
+        for arg in arguments:
+            if isinstance(arg, BaseCLIArgument):
+                argument_table[arg.name] = arg
+            else:
+                argument_table[arg] = BaseCLIArgument(arg)
+        return argument_table

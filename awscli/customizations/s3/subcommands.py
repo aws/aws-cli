@@ -660,7 +660,11 @@ class S3TransferCommand(S3Command):
                                      ' E.g. s3://%s' % bucket)
                 path = 's3://' + bucket
                 del_objects = RmCommand(self._session)
-                del_objects([path, '--recursive'], parsed_globals)
+                rc = del_objects([path, '--recursive'], parsed_globals)
+                if rc != 0:
+                    raise RuntimeError(
+                        "Unable to delete all objects in the bucket, "
+                        "bucket will not be deleted.")
 
 
 class CpCommand(S3TransferCommand):

@@ -126,7 +126,9 @@ COMPLETIONS = [
 
 
 def check_completer(cmdline, results, expected_results):
-    if not results == expected_results:
+    # Use <= to check that the expected results are a subset of the actual
+    # results, allowing for adding flags / services in the future.
+    if not expected_results <= results:
         # Borrowed from assertDictEqual, though this doesn't
         # handle the case when unicode literals are used in one
         # dict but not in the other (and we want to consider them
@@ -135,7 +137,7 @@ def check_completer(cmdline, results, expected_results):
         pretty_d2 = pprint.pformat(expected_results, width=1).splitlines()
         diff = ('\n' + '\n'.join(difflib.ndiff(pretty_d1, pretty_d2)))
         raise AssertionError("Results are not equal:\n%s" % diff)
-    assert results == expected_results
+    assert expected_results <= results
 
 
 def test_completions():

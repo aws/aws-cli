@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.10.10
+=======
 * feature:``aws ec2``: Add support for VPC peering with security groups.
 * feature:``aws ds``: Add support for SNS event notifications.
 * bugfix:``aws s3 rb``: Fix issue where bucket is still attempted to be

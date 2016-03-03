@@ -235,6 +235,45 @@ class TestCPCommand(BaseAWSCommandParamsTest):
             _, err, _ = self.run_cmd(cmdline, expected_rc=1)
             self.assertIn('attempting to modify the utime', err)
 
+    def test_recursive_glacier_download_with_force_glacier(self):
+        self.parsed_responses = [
+            {
+                'Contents': [
+                    {'Key': 'foo/bar.txt', 'ContentLength': '100',
+                     'LastModified': '00:00:00Z',
+                     'StorageClass': 'GLACIER',
+                     'Size': 100},
+                ],
+                'CommonPrefixes': []
+            },
+            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')},
+        ]
+        cmdline = '%s s3://bucket/foo %s --recursive --force-glacier-transfer'\
+                  % (self.prefix, self.files.rootdir)
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 2, self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+
+    def test_recursive_glacier_download_without_force_glacier(self):
+        self.parsed_responses = [
+            {
+                'Contents': [
+                    {'Key': 'foo/bar.txt', 'ContentLength': '100',
+                     'LastModified': '00:00:00Z',
+                     'StorageClass': 'GLACIER',
+                     'Size': 100},
+                ],
+                'CommonPrefixes': []
+            }
+        ]
+        cmdline = '%s s3://bucket/foo %s --recursive' % (
+            self.prefix, self.files.rootdir)
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=2)
+        self.assertEqual(len(self.operations_called), 1, self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertIn('GLACIER', stderr)
+
     def test_warns_on_glacier_incompatible_operation(self):
         self.parsed_responses = [
             {'ContentLength': '100', 'LastModified': '00:00:00Z',

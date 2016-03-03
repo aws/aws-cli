@@ -392,6 +392,15 @@ IGNORE_GLACIER_WARNINGS = {
 }
 
 
+FORCE_GLACIER_TRANSFER = {
+    'name': 'force-glacier-transfer', 'action': 'store_true',
+    'help_text': (
+        'Forces a transfer request on all Glacier objects in a sync or '
+        'recursive copy.'
+    )
+}
+
+
 TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
                  SSE, SSE_C, SSE_C_KEY, SSE_KMS_KEY_ID, SSE_C_COPY_SOURCE,
@@ -399,7 +408,7 @@ TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  WEBSITE_REDIRECT, CONTENT_TYPE, CACHE_CONTROL,
                  CONTENT_DISPOSITION, CONTENT_ENCODING, CONTENT_LANGUAGE,
                  EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS,
-                 PAGE_SIZE, IGNORE_GLACIER_WARNINGS]
+                 PAGE_SIZE, IGNORE_GLACIER_WARNINGS, FORCE_GLACIER_TRANSFER]
 
 
 def get_client(session, region, endpoint_url, verify, config=None):

@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+* feature:``aws ec2``: Add support for VPC peering with security groups.
+* feature:``aws ds``: Add support for SNS event notifications.
+* bugfix:``aws s3 rb``: Fix issue where bucket is still attempted to be
+  removed when the preceding delete requests failed.
+  (`issue 1827 <https://github.com/aws/aws-cli/pull/1827>`__)
+* bugfix:``aws storagegateway``: Fix issue in aliasing required args.
+  (`issue 1790 <https://github.com/aws/aws-cli/issues/1790>`__)
+
+
 1.10.9
 ======
 * bugfix:``aws s3``: Avoid MD5 checksumming if unavailable.

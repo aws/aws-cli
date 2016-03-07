@@ -32,7 +32,7 @@ Command::
 
 **[EC2-VPC] To add a rule that allows inbound HTTP traffic from another security group**
 
-This example enables inbound access on TCP port 80 from the source security group sg-1a2b3c4d. Note that for EC2-VPC, the source group must be in the same VPC. If the command succeeds, no output is returned.
+This example enables inbound access on TCP port 80 from the source security group sg-1a2b3c4d. Note that for EC2-VPC, the source group must be in the same VPC or in a peer VPC (requires a VPC peering connection). If the command succeeds, no output is returned.
 
 Command::
 

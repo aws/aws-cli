@@ -1048,12 +1048,14 @@ class CommandParameters(object):
     def _validate_streaming_paths(self):
         self.parameters['is_stream'] = False
         if self.parameters['src'] == '-' or self.parameters['dest'] == '-':
+            if self.cmd != 'cp' or self.parameters.get('dir_op'):
+                raise ValueError(
+                    "Streaming currently is only compatible with "
+                    "non-recursive cp commands"
+                )
             self.parameters['is_stream'] = True
             self.parameters['dir_op'] = False
             self.parameters['only_show_errors'] = True
-        if self.parameters['is_stream'] and self.cmd != 'cp':
-            raise ValueError("Streaming currently is only compatible with "
-                             "single file cp commands")
 
     def _validate_path_args(self):
         # If we're using a mv command, you can't copy the object onto itself.

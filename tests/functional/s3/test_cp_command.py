@@ -394,3 +394,10 @@ class TestCPCommand(BaseAWSCommandParamsTest):
              'ContentType': 'text/plain',
              'SSEKMSKeyId': 'foo', 'ServerSideEncryption': 'aws:kms'}
         )
+
+    def test_cannot_use_recursive_with_stream(self):
+        cmdline = '%s - s3://bucket/key.txt --recursive' % self.prefix
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=255)
+        self.assertIn(
+            'Streaming currently is only compatible with non-recursive cp '
+            'commands', stderr)

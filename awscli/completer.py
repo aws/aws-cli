@@ -43,7 +43,7 @@ class Completer(object):
         if cmd_name is None:
             # If we didn't find any command names in the cmdline
             # lets try to complete provider options
-            return self._complete_provider(current_arg)
+            return self._complete_provider(current_arg, opts)
         elif subcmd_name is None:
             return self._complete_command(cmd_name, cmd, current_arg, opts)
         return self._complete_subcommand(subcmd_name, subcmd, current_arg, opts)
@@ -76,10 +76,9 @@ class Completer(object):
             return self.driver.session.available_profiles
         return []
 
-    def _complete_provider(self, current_arg):
+    def _complete_provider(self, current_arg, opts):
         if current_arg.startswith('-'):
-            cw = current_arg.lstrip('-')
-            return ['--' + n for n in self.main_options if n.startswith(cw)]
+            return self._find_possible_options(current_arg, opts)
         elif current_arg == 'aws':
             return self._get_documented_completions(
                 self.main_help.command_table)

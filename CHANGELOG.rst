@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.10.11
+=======
 
 * feature:``acm``: Update ``acm`` command to latest version
 * feature:``codecommit``: Update ``codecommit`` model to latest version

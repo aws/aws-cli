@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``acm``: Update ``acm`` command to latest version
+* feature:``codecommit``: Update ``codecommit`` model to latest version
+* feature:``config``: Update ``config`` command to latest version
+* feature:``devicefarm``: Update ``devicefarm`` command to latest version
+* feature:``directconnect``: Update ``directconnect`` command to latest version
+* feature:``events``: Update ``events`` command to latest version
+* bugfix:``aws s3 cp``: Add error checking when attempting
+  recursive copies or syncs with streaming output
+  (`issue 1771 <https://github.com/aws/aws-cli/issues/1771>`__)
+
+
 1.10.10
 =======
 * feature:``aws ec2``: Add support for VPC peering with security groups.

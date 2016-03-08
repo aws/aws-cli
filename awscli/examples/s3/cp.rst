@@ -145,8 +145,8 @@ The following ``cp`` command uploads a local file stream from standard input to 
     aws s3 cp - s3://mybucket/stream.txt
 
 
-**Downloading a S3 object as a local file stream**
+**Downloading an S3 object as a local file stream**
 
-The following ``cp`` command downloads a S3 object locally as a stream to standard output::
+The following ``cp`` command downloads a S3 object locally as a stream to standard output. Downloading as a stream is not currently compatible with the ``--recursive`` parameter::
 
     aws s3 cp s3://mybucket/stream.txt -

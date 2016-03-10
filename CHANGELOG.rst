@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``gamelift``: Update command to latest version
+* feature:``iam``: Update command to latest version
+* feature:``redshift``: Update command to latest version
+
+
 1.10.11
 =======
 

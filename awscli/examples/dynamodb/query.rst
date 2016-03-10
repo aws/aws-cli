@@ -4,35 +4,32 @@ This example queries items in the *MusicCollection* table. The table has a hash-
 
 Command::
 
-  aws dynamodb query --table-name MusicCollection --key-conditions file://key-conditions.json --projection-expression "SongTitle"
+  aws dynamodb query --table-name MusicCollection --key-condition-expression "Artist = :v1 AND SongTitle = :v2" --expression-attribute-values file://expression-attributes.json
 
-The arguments for ``--key-conditions`` are stored in a JSON file, ``key-conditions.json``.  Here are the contents of that file::
+The arguments for ``--expression-attribute-values`` are stored in a JSON file named ``expression-attributes.json``::
 
-  { 
-      "Artist": { 
-          "AttributeValueList": [ 
-              {"S": "No One You Know"}
-          ],  
-          "ComparisonOperator": "EQ" 
-      } 
+  {
+    ":v1": {"S": "No One You Know"},
+    ":v2": {"S": "Call Me Today"}
   }
 
 Output::
 
   {
-      "Count": 2, 
+      "Count": 1,
       "Items": [
           {
+              "AlbumTitle": {
+                  "S": "Somewhat Famous"
+              },
               "SongTitle": {
                   "S": "Call Me Today"
-              }
-          }, 
-          {
-              "SongTitle": {
-                  "S": "Scared of My Shadow"
+              },
+              "Artist": {
+                  "S": "No One You Know"
               }
           }
-      ], 
-      "ScannedCount": 2, 
+      ],
+      "ScannedCount": 1,
       "ConsumedCapacity": null
   }

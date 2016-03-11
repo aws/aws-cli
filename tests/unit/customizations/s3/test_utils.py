@@ -478,6 +478,29 @@ class TestRequestParamsMapperSSE(unittest.TestCase):
              'SSECustomerKey': 'my-sse-c-key'})
 
 
+class MockPipedStdout(io.BytesIO):
+    '''Mocks `sys.stdout`.
+    We can't use `TextIOWrapper` because calling
+    `TextIOWrapper(.., encoding=None)` sets the ``encoding`` attribute to
+    `UTF-8`.
+    The attribute is also `readonly` in `TextIOWrapper` and `TextIOBase` so it
+    cannot be overwritten in subclasses. For these reasons we mock `sys.stdout`.
+    '''
+    def __init__(self):
+        self.encoding = None
+
+        super(MockPipedStdout, self).__init__()
+
+    def write(self, str):
+        # sys.stdout.write() will default to encoding to ascii, when its
+        # `encoding` is `None`.
+        if self.encoding is None:
+            str = str.encode('ascii')
+        else:
+            str = str.encode(self.encoding)
+        super(MockPipedStdout, self).write(str)
+
+
 class TestUniPrint(unittest.TestCase):
 
     def test_out_file_with_encoding_attribute(self):
@@ -485,6 +508,13 @@ class TestUniPrint(unittest.TestCase):
         out = io.TextIOWrapper(buf, encoding='utf-8')
         uni_print(u'\u2713', out)
         self.assertEqual(buf.getvalue(), u'\u2713'.encode('utf-8'))
+
+    def test_encoding_with_encoding_none(self):
+        '''When the output of the aws command is being piped,
+        the `encoding` attribute of `sys.stdout` is `None`.'''
+        out = MockPipedStdout()
+        uni_print(u'SomeChars\u2713\u2714OtherChars', out)
+        self.assertEqual(out.getvalue(), b'SomeChars??OtherChars')
 
     def test_encoding_statement_fails_are_replaced(self):
         buf = io.BytesIO()

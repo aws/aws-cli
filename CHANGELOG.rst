@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.10.12
+=======
 
 * feature:``gamelift``: Update command to latest version
 * feature:``iam``: Update command to latest version

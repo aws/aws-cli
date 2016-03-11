@@ -228,6 +228,29 @@ Example configuration::
 Service Specific Configuration
 ==============================
 
+API Versions
+------------
+
+The API version to use for a service can be set using the ``api_versions``
+key. To specify an API version, set the API version to the name of the service
+as a sub value for ``api_versions``.
+
+Example configuration::
+
+    [profile development]
+    aws_access_key_id=foo
+    aws_secret_access_key=bar
+    api_versions =
+        ec2 = 2015-03-01
+        cloudfront = 2015-09-17
+
+By setting an API version for a service, it ensures that the interface for
+that service's commands is representative of the specified API version.
+
+In the example configuration, the ``ec2`` CLI commands will be representative
+of Amazon EC2's ``2015-03-01`` API version and the ``cloudfront`` CLI commands
+will be representative of Amazon CloudFront's ``2015-09-17`` API version.
+
 
 aws s3
 ------

@@ -2,12 +2,12 @@
 aws-cli
 =======
 
-.. image:: https://travis-ci.org/aws/aws-cli.png?branch=develop
+.. image:: https://travis-ci.org/aws/aws-cli.svg?branch=develop
    :target: https://travis-ci.org/aws/aws-cli
    :alt: Build Status
 
 
-.. image:: https://coveralls.io/repos/aws/aws-cli/badge.png
+.. image:: https://coveralls.io/repos/aws/aws-cli/badge.svg
   :target: https://coveralls.io/r/aws/aws-cli
 
 

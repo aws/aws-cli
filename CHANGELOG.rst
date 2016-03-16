@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.10.13
+=======
 
 * feature:``DMS``: Added support for AWS Database Migration Service
 * feature:``SES``: Added support for white-labeling

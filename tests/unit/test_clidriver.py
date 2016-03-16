@@ -95,6 +95,7 @@ GET_DATA = {
 GET_VARIABLE = {
     'provider': 'aws',
     'output': 'json',
+    'api_versions': {}
 }
 
 
@@ -203,9 +204,9 @@ class FakeSession(object):
     def get_config_variable(self, name):
         return GET_VARIABLE[name]
 
-    def get_service_model(self, name):
-        return botocore.model.ServiceModel(MINI_SERVICE,
-                                           service_name='s3')
+    def get_service_model(self, name, api_version=None):
+        return botocore.model.ServiceModel(
+            MINI_SERVICE, service_name='s3')
 
     def user_agent(self):
         return 'user_agent'

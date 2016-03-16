@@ -363,8 +363,10 @@ class ServiceCommand(CLICommand):
 
     def _get_service_model(self):
         if self._service_model is None:
+            api_version = self.session.get_config_variable('api_versions').get(
+                self._service_name, None)
             self._service_model = self.session.get_service_model(
-                self._service_name)
+                self._service_name, api_version=api_version)
         return self._service_model
 
     def __call__(self, args, parsed_globals):

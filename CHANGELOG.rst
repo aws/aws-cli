@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.10.13
+=======
+
+* feature:``DMS``: Added support for AWS Database Migration Service
+* feature:``SES``: Added support for white-labeling
+* feature:``CodeDeploy``: Added support for BatchGetDeploymentGroups
+* feature:``endpoints``: Updated endpoints to latest version
+* bugfix:``groff``: Fix groff command which was causing issues on some systems
+* bugfix:``shorthand``: Allow ``#`` in keys in the shorthand parser
+
+
 1.10.12
 =======
 

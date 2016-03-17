@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.10.14
+=======
 
 * feature:``meteringmarketplace``: The AWS Marketplace Metering Service enables
   sellers to price their products along new pricing dimensions. After a

@@ -85,7 +85,7 @@ def get_model_location(session, service_definition, service_name=None):
 
 class AddModelCommand(BasicCommand):
     NAME = 'add-model'
-    DESCRITPION = (
+    DESCRIPTION = (
         'Adds a service JSON model to the appropriate location in '
         '~/.aws/models. Once the model gets added, CLI commands and Boto3 '
         'clients will be immediately available for the service JSON model '

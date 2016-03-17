@@ -64,7 +64,8 @@ class S3Handler(object):
             'content_language': None, 'expires': None, 'grants': None,
             'only_show_errors': False, 'is_stream': False,
             'paths_type': None, 'expected_size': None, 'metadata': None,
-            'metadata_directive': None, 'ignore_glacier_warnings': False
+            'metadata_directive': None, 'ignore_glacier_warnings': False,
+            'force_glacier_transfer': False
         }
         self.params['region'] = params['region']
         for key in self.params.keys():
@@ -186,7 +187,8 @@ class S3Handler(object):
                                          message=warning_message)
                 self.result_queue.put(warning)
             # Warn and skip over glacier incompatible tasks.
-            elif not filename.is_glacier_compatible():
+            elif not self.params.get('force_glacier_transfer') and \
+                    not filename.is_glacier_compatible():
                 LOGGER.debug(
                     'Encountered glacier object s3://%s. Not performing '
                     '%s on object.' % (filename.src, filename.operation_name))

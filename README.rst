@@ -7,10 +7,6 @@ aws-cli
    :alt: Build Status
 
 
-.. image:: https://coveralls.io/repos/aws/aws-cli/badge.svg
-  :target: https://coveralls.io/r/aws/aws-cli
-
-
 This package provides a unified command line interface to Amazon Web Services.
 
 The aws-cli package works on Python versions:

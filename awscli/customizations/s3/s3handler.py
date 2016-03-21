@@ -184,7 +184,7 @@ class S3Handler(object):
             if too_large and filename.operation_name == 'upload':
                 warning_message = "File exceeds s3 upload limit of 5 TB."
                 warning = create_warning(relative_path(filename.src),
-                                         message=warning_message)
+                                         warning_message)
                 self.result_queue.put(warning)
             # Warn and skip over glacier incompatible tasks.
             elif not self.params.get('force_glacier_transfer') and \

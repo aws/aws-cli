@@ -9,22 +9,22 @@ The file ``table-mappings.json`` is a JSON document in the current folder that s
       {
         "Type": "Include",
         "SourceSchema": "company",
-        "SourceTable": “emp%"
+        "SourceTable": "emp%"
       },
       {
         "Type": "Include",
-        "SourceSchema": “employees",
-        "SourceTable": “%"
+        "SourceSchema": "employees",
+        "SourceTable": "%"
       },
       {
         "Type": "Exclude",
-        "SourceSchema": “source101",
-        "SourceTable": “dep%"
+        "SourceSchema": "source101",
+        "SourceTable": "dep%"
       },
       {
         "Type": "Exclude",
-        "SourceSchema": “source102",
-        "SourceTable": “%"
+        "SourceSchema": "source102",
+        "SourceTable": "%"
       },
       {
         "Type": "Explicit",

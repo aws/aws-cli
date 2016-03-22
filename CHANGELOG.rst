@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.10.15
+=======
+
+* feature:``aws devicefarm``: Add support to pay a flat monthly fee for
+  unlimited testing of your Android and iOS apps with AWS Device Farm device
+  slots
+* feature:``aws rds``: Add support for customizing the order in which Aurora
+  Replicas are promoted to primary instance during a failover
+
+
 1.10.14
 =======
 

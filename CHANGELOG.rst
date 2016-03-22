@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.10.15
+=======
 
 * feature:``aws devicefarm``: Add support to pay a flat monthly fee for
   unlimited testing of your Android and iOS apps with AWS Device Farm device

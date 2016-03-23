@@ -15,7 +15,7 @@ This example updates the desired capacity, default cooldown, placement group, te
 This example enables the instance protection setting for the specified Auto Scaling group::
 
     aws autoscaling update-auto-scaling-group --auto-scaling-group-name my-auto-scaling-group --new-instances-protected-from-scale-in
-    
+
 This example disables the instance protection setting for the specified Auto Scaling group::
 
     aws autoscaling update-auto-scaling-group --auto-scaling-group-name my-auto-scaling-group --no-new-instances-protected-from-scale-in

@@ -2,23 +2,23 @@
 
 This example describes the available adjustment types::
 
-	aws autoscaling describe-adjustment-types
+    aws autoscaling describe-adjustment-types
 
 The following is example output::
 
-  {
-    "AdjustmentTypes": [
-      {
-        "AdjustmentType": "ChangeInCapacity"
-      }
-      {
-        "AdjustmentType": "ExactCapcity"
-      }
-      {
-        "AdjustmentType": "PercentChangeInCapacity"
-      }
-    ]
-  }
+    {
+        "AdjustmentTypes": [
+            {
+                "AdjustmentType": "ChangeInCapacity"
+            }
+            {
+                "AdjustmentType": "ExactCapcity"
+            }
+            {
+                "AdjustmentType": "PercentChangeInCapacity"
+            }
+        ]
+    }
 
 For more information, see `Scaling Adjustment Types`_ in the *Auto Scaling Developer Guide*.
 

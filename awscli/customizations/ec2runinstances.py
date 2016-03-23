@@ -91,20 +91,27 @@ def _fix_args(params, **kwargs):
     # allows them to specify the security group by name or by id.
     # However, in this scenario we can only support id because
     # we can't place a group name in the NetworkInterfaces structure.
+    network_interface_params = [
+        'PrivateIpAddresses',
+        'SecondaryPrivateIpAddressCount',
+        'AssociatePublicIpAddress'
+    ]
     if 'NetworkInterfaces' in params:
         ni = params['NetworkInterfaces']
-        if 'AssociatePublicIpAddress' in ni[0]:
-            if 'SubnetId' in params:
-                ni[0]['SubnetId'] = params['SubnetId']
-                del params['SubnetId']
-            if 'SecurityGroupIds' in params:
-                ni[0]['Groups'] = params['SecurityGroupIds']
-                del params['SecurityGroupIds']
-            if 'PrivateIpAddress' in params:
-                ip_addr = {'PrivateIpAddress': params['PrivateIpAddress'],
-                           'Primary': True}
-                ni[0]['PrivateIpAddresses'] = [ip_addr]
-                del params['PrivateIpAddress']
+        for network_interface_param in network_interface_params:
+            if network_interface_param in ni[0]:
+                if 'SubnetId' in params:
+                    ni[0]['SubnetId'] = params['SubnetId']
+                    del params['SubnetId']
+                if 'SecurityGroupIds' in params:
+                    ni[0]['Groups'] = params['SecurityGroupIds']
+                    del params['SecurityGroupIds']
+                if 'PrivateIpAddress' in params:
+                    ip_addr = {'PrivateIpAddress': params['PrivateIpAddress'],
+                               'Primary': True}
+                    ni[0]['PrivateIpAddresses'] = [ip_addr]
+                    del params['PrivateIpAddress']
+                return
 
 
 EVENTS = [

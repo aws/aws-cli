@@ -45,7 +45,7 @@ To return a specific number of scheduled actions, use the ``max-items`` paramete
 The following is example output::
 
     {
-        "NextToken": "None___1",
+        "NextToken": "Z3M3LMPEXAMPLE",
         "NotificationConfigurations": [
             {
                 "AutoScalingGroupName": "my-auto-scaling-group",
@@ -57,7 +57,7 @@ The following is example output::
 
 Use the ``NextToken`` field with the ``starting-token`` parameter in a subsequent call to get the additional scheduled actions::
 
-    aws autoscaling describe-scheduled-actions --auto-scaling-group-name my-auto-scaling-group --starting-token None___1
+    aws autoscaling describe-scheduled-actions --auto-scaling-group-name my-auto-scaling-group —-starting-token Z3M3LMPEXAMPLE
 
 For more information, see `Scheduled Scaling`_ in the *Auto Scaling Developer Guide*.
 

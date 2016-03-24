@@ -25,7 +25,7 @@ from awscli.customizations.s3.s3handler import S3Handler, S3StreamHandler
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.tasks import CreateMultipartUploadTask, \
     UploadPartTask, CreateLocalFileTask
-from awscli.customizations.s3.utils import MAX_PARTS
+from awscli.customizations.s3.utils import MAX_PARTS, MAX_UPLOAD_SIZE
 from awscli.customizations.s3.transferconfig import RuntimeConfig
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     MockStdIn, S3HandlerBaseTest
@@ -194,6 +194,28 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
         ]
         stdout, stderr, rc = self.run_s3_handler(self.s3_handler, tasks)
         self.assertEqual(rc.num_tasks_failed, 1)
+
+    def test_max_size_limit(self):
+        """
+        This test verifies that we're warning on file uploads which are greater
+        than the max upload size (5TB currently).
+        """
+        tasks = [FileInfo(
+            src=self.loc_files[0],
+            dest=self.bucket + '/test1.txt',
+            compare_key=None,
+            src_type='local',
+            dest_type='s3',
+            operation_name='upload',
+            size=MAX_UPLOAD_SIZE+1,
+            last_update=None,
+            client=self.client
+        )]
+        self.parsed_responses = []
+        _, _, rc = self.run_s3_handler(self.s3_handler, tasks)
+        # The task should *warn*, not fail
+        self.assertEqual(rc.num_tasks_failed, 0)
+        self.assertEqual(rc.num_tasks_warned, 1)
 
     def test_multi_upload(self):
         """

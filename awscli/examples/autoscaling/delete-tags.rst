@@ -2,7 +2,7 @@
 
 This example deletes the specified tag from the specified Auto Scaling group::
 
-	aws autoscaling delete-tags --tags ResourceId=my-auto-scaling-group,ResourceType=auto-scaling-group,Key=Dept,Value=Research
+    aws autoscaling delete-tags --tags ResourceId=my-auto-scaling-group,ResourceType=auto-scaling-group,Key=Dept,Value=Research
 
 For more information, see `Tagging Auto Scaling Groups and Instances`_ in the *Auto Scaling Developer Guide*.
 

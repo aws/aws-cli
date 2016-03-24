@@ -2,7 +2,7 @@
 
 This example deletes the specified launch configuration::
 
-	aws autoscaling delete-launch-configuration --launch-configuration-name my-launch-config
+    aws autoscaling delete-launch-configuration --launch-configuration-name my-launch-config
 
 For more information, see `Shut Down Auto Scaling Processes`_ in the *Auto Scaling Developer Guide*.
 

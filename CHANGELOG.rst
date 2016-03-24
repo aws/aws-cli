@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.10.16
+=======
+
+* feature:``elasticache``: Update command to latest version
+* feature:``rds``: Update command to latest version
+* feature:``storagegateway``: Update command to latest version
+
+
 1.10.15
 =======
 

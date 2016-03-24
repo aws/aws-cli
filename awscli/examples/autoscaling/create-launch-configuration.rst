@@ -2,7 +2,7 @@
 
 This example creates a launch configuration::
 
-     aws autoscaling create-launch-configuration --launch-configuration-name my-launch-config --image-id ami-c6169af6 --instance-type m1.medium
+    aws autoscaling create-launch-configuration --launch-configuration-name my-launch-config --image-id ami-c6169af6 --instance-type m1.medium
 
 This example creates a launch configuration that uses Spot Instances::
 
@@ -20,16 +20,16 @@ Add the following parameter to add an Amazon EBS volume with the device name ``/
 
 Parameter::
 
-  --block-device-mappings "[{\"DeviceName\": \"/dev/sdh\",\"Ebs\":{\"VolumeSize\":100}}]"
+    --block-device-mappings "[{\"DeviceName\": \"/dev/sdh\",\"Ebs\":{\"VolumeSize\":100}}]"
 
 Add the following parameter to add ``ephemeral1`` as an instance store volume with the device name ``/dev/sdc``.
 
 Parameter::
 
-  --block-device-mappings "[{\"DeviceName\": \"/dev/sdc\",\"VirtualName\":\"ephemeral1\"}]"
+    --block-device-mappings "[{\"DeviceName\": \"/dev/sdc\",\"VirtualName\":\"ephemeral1\"}]"
 
 Add the following parameter to omit a device included on the instance (for example, ``/dev/sdf``).
 
 Parameter::
 
-  --block-device-mappings "[{\"DeviceName\": \"/dev/sdf\",\"NoDevice\":\"\"}]"
+    --block-device-mappings "[{\"DeviceName\": \"/dev/sdf\",\"NoDevice\":\"\"}]"

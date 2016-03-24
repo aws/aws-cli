@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.10.16
+=======
 
 * feature:``elasticache``: Update command to latest version
 * feature:``rds``: Update command to latest version

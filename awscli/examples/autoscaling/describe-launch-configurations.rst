@@ -38,7 +38,7 @@ To return a specific number of launch configurations, use the ``max-items`` para
 The following is example output::
 
     {
-        "NextToken": "None___1",
+        "NextToken": "Z3M3LMPEXAMPLE",
         "LaunchConfigurations": [
             {
                 "UserData": null,
@@ -65,4 +65,4 @@ The following is example output::
 
 If the output includes a ``NextToken`` field, there are more launch configurations. To get the additional launch configurations, use the value of this field with the ``starting-token`` parameter in a subsequent call as follows::
 
-    aws autoscaling describe-launch-configurations --starting-token None___1
+    aws autoscaling describe-launch-configurations —-starting-token Z3M3LMPEXAMPLE

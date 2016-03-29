@@ -36,7 +36,7 @@ To return a specific number of tags, use the ``max-items`` parameter::
 The following is example output::
 
     {
-        "NextToken": "None___1",
+        "NextToken": "Z3M3LMPEXAMPLE",
         "Tags": [
             {
                 "ResourceType": "auto-scaling-group",
@@ -50,7 +50,7 @@ The following is example output::
 
 Use the ``NextToken`` field with the ``starting-token`` parameter in a subsequent call to get the additional tags::
 
-    aws autoscaling describe-tags --filters Name=auto-scaling-group,Values=my-auto-scaling-group --starting-token None___1
+    aws autoscaling describe-tags --filters Name=auto-scaling-group,Values=my-auto-scaling-group —-starting-token Z3M3LMPEXAMPLE
 
 For more information, see `Tagging Auto Scaling Groups and Instances`_ in the *Auto Scaling Developer Guide*.
 

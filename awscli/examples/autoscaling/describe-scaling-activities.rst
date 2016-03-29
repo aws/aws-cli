@@ -32,4 +32,4 @@ To return a specific number of activities, use the ``max-items`` parameter::
 
 If the output includes a ``NextToken`` field, there are more activities. To get the additional activities, use the value of this field with the ``starting-token`` parameter in a subsequent call as follows::
 
-    aws autoscaling describe-scaling-activities --starting-token None___1
+    aws autoscaling describe-scaling-activities —-starting-token Z3M3LMPEXAMPLE

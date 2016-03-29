@@ -50,4 +50,4 @@ To return a specific number of Auto Scaling groups, use the ``max-items`` parame
 
 If the output includes a ``NextToken`` field, there are more groups. To get the additional groups, use the value of this field with the ``starting-token`` parameter in a subsequent call as follows::
 
-    aws autoscaling describe-auto-scaling-groups --starting-token None___1
+    aws autoscaling describe-auto-scaling-groups —-starting-token Z3M3LMPEXAMPLE

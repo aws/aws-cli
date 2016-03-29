@@ -28,7 +28,7 @@ To return a specific number of notification configurations, use the ``max-items`
 The following is example output::
 
     {
-        "NextToken": "None___1",
+        "NextToken": "Z3M3LMPEXAMPLE",
         "NotificationConfigurations": [
             {
                 "AutoScalingGroupName": "my-auto-scaling-group",
@@ -40,7 +40,7 @@ The following is example output::
 
 Use the ``NextToken`` field with the ``starting-token`` parameter in a subsequent call to get additional notification configurations::
 
-    aws autoscaling describe-notification-configurations --auto-scaling-group-name my-auto-scaling-group --starting-token None___1
+    aws autoscaling describe-notification-configurations --auto-scaling-group-name my-auto-scaling-group —-starting-token Z3M3LMPEXAMPLE
 
 For more information, see `Getting Notifications When Your Auto Scaling Group Changes`_ in the *Auto Scaling Developer Guide*.
 

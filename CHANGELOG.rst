@@ -2,6 +2,33 @@
 CHANGELOG
 =========
 
+1.10.17
+=======
+
+* feature:``acm``: Update command to latest version
+* feature:``cloudformation``: Update command to latest version
+* feature:``codedeploy``: Update command to latest version
+* feature:``dms``: Update command to latest version
+* feature:``elasticache``: Update command to latest version
+* feature:``elasticbeanstalk``: Update command to latest version
+* feature:``redshift``: Update command to latest version
+* feature:``waf``: Update command to latest version
+* bugfix:Pagintor: Fix regression when providing a starting token
+  for a paginated command
+  (`botocore issue 849 <https://github.com/boto/botocore/pull/849>`__)
+* bugfix:Response Parsing: Handle case when generic HTML error
+  response is received
+  (`botocore issue 850 <https://github.com/boto/botocore/pull/850>`__)
+* bugfix:Request serialization: Handle case when non str values
+  are provided for header values when using signature version 4
+  (`botocore issue 852 <https://github.com/boto/botocore/pull/852>`__)
+* bugfix:Retry: Retry HTTP responses with status code 502
+  (`botocore issue 853 <https://github.com/boto/botocore/pull/853>`__)
+* bugfix:``ec2 run-instances``: Fix issue when providing
+  ``--secondary-private-ip-address-count`` argument
+  (`issue 1874 <https://github.com/aws/aws-cli/pull/1874>`__)
+
+
 1.10.16
 =======
 

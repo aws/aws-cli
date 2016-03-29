@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.10.17
+=======
 
 * feature:``acm``: Update command to latest version
 * feature:``cloudformation``: Update command to latest version

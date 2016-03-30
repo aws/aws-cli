@@ -21,6 +21,7 @@ at the man output, we look one step before at the generated rst output
 (it's easier to verify).
 
 """
+import os
 from awscli.testutils import BaseAWSHelpOutputTest
 
 
@@ -48,6 +49,41 @@ def test_examples():
     for command, subcommands in COMMAND_EXAMPLES.items():
         for subcommand in subcommands:
             yield verify_has_examples, command, subcommand
+
+
+def test_all_examples_have_only_ascii():
+    # Verify that all the example *.rst file contain ascii only characters.
+    # Otherwise this will break downstream doc generation.
+    _dname = os.path.dirname
+    examples_dir = os.path.join(
+        _dname(_dname(_dname(_dname(os.path.abspath(__file__))))),
+        'awscli', 'examples')
+    for rootdir, _, filenames in os.walk(examples_dir):
+        for filename in filenames:
+            if not filename.endswith('.rst'):
+                continue
+            full_path = os.path.join(rootdir, filename)
+            yield verify_has_only_ascii_chars, full_path
+
+
+def verify_has_only_ascii_chars(filename):
+    with open(filename, 'rb') as f:
+        bytes_content = f.read()
+        try:
+            bytes_content.decode('ascii')
+        except UnicodeDecodeError as e:
+            # The test has failed so we'll try to provide a useful error
+            # message.
+            offset = e.start
+            spread = 20
+            bad_text = bytes_content[offset-spread:e.start+spread]
+            underlined = ' ' * spread + '^'
+            error_text = '\n'.join([bad_text, underlined])
+            line_number = bytes_content[:offset].count(b'\n') + 1
+            raise AssertionError(
+                "Non ascii characters found in the examples file %s, line %s:"
+                "\n\n%s\n" % (filename, line_number, error_text))
+
 
 
 def verify_has_examples(command, subcommand):

@@ -10,5 +10,5 @@ If the hosted zone contains more than 100 resource record sets, or if you want t
 
 To view information about the next resource record set in the hosted zone, take the value of ``NextToken`` from the response to the previous command, and include it in the ``--starting-token`` parameter, for example::
 
-  aws route53 list-resource-record-sets --hosted-zone-id Z2LD58HEXAMPLE --max-items 1 —-starting-token Z3M3LMPEXAMPLE
+  aws route53 list-resource-record-sets --hosted-zone-id Z2LD58HEXAMPLE --max-items 1 --starting-token Z3M3LMPEXAMPLE
 

@@ -332,9 +332,7 @@ class ListRunsCommand(BasicCommand):
              'specified statuses. '
              'The valid statuses are as follows: waiting, pending, cancelled, '
              'running, finished, failed, waiting_for_runner, '
-             'and waiting_on_dependencies. You can combine statuses as a '
-             'comma-separated list.  For example: '
-             '<code>--status pending,waiting_on_dependencies</code>'),
+             'and waiting_on_dependencies.'),
          'action': 'store'},
         {'name': 'start-interval',
          'help_text': (

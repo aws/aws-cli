@@ -1,5 +1,7 @@
-The following command creates an alias for a customer master key::
+The following command creates an alias named ``example-alias`` for the customer master key (CMK) identified by key ID ``1234abcd-12ab-34cd-56ef-1234567890ab``.
 
-    $ aws kms create-alias --alias-name alias/my-alias --target-key-id arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012
+.. code::
 
-Note that all alias names must begin with ``alias/``.
+    aws kms create-alias --alias-name alias/example-alias --target-key-id 1234abcd-12ab-34cd-56ef-1234567890ab
+
+Alias names must begin with ``alias/``. Do not use alias names that begin with ``alias/aws``; these are reserved for use by AWS.

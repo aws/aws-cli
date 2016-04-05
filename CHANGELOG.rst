@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.10.18
+=======
 
 * feature:``apigateway``: Added support for API Import
 * feature:``route53``: Added support for metric-based health checks and regional

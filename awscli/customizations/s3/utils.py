@@ -396,6 +396,10 @@ def uni_print(statement, out_file=None):
         # we want to pick an encoding that has the highest
         # chance of printing successfully.
         new_encoding = getattr(out_file, 'encoding', 'ascii')
+        # When the output of the aws command is being piped,
+        # ``sys.stdout.encoding`` is ``None``.
+        if new_encoding is None:
+            new_encoding = 'ascii'
         new_statement = statement.encode(
             new_encoding, 'replace').decode(new_encoding)
         out_file.write(new_statement)

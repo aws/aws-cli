@@ -65,4 +65,4 @@ The following is example output::
 
 If the output includes a ``NextToken`` field, there are more launch configurations. To get the additional launch configurations, use the value of this field with the ``starting-token`` parameter in a subsequent call as follows::
 
-    aws autoscaling describe-launch-configurations —-starting-token Z3M3LMPEXAMPLE
+    aws autoscaling describe-launch-configurations --starting-token Z3M3LMPEXAMPLE

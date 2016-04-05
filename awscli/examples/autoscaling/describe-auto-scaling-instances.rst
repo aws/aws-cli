@@ -39,4 +39,4 @@ The following is example output::
 
 If the output includes a ``NextToken`` field, there are more instances. To get the additional instances, use the value of this field with the ``starting-token`` parameter in a subsequent call as follows::
 
-    aws autoscaling describe-auto-scaling-instances —-starting-token Z3M3LMPEXAMPLE
+    aws autoscaling describe-auto-scaling-instances --starting-token Z3M3LMPEXAMPLE

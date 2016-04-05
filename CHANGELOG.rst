@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+1.10.18
+=======
+
+* feature:``apigateway``: Added support for API Import
+* feature:``route53``: Added support for metric-based health checks and regional
+  health checks.
+* feature:``sts``: Added support for GetCallerIdentity, which returns details
+  about the credentials used to make the API call. The details include name and
+  account, as well as the type of entity making the call, such as an IAM user
+  vs. federated user.
+* feature:``s3api``: Added support for VersionId in PutObjectAcl
+  (`issue 856 <https://github.com/boto/botocore/pull/856>`__)
+* bugfix:``s3api``: Add validation to enforce S3 metadata only contains ASCII.
+  (`issue 861 <https://github.com/boto/botocore/pull/861>`__)
+* bugfix:Exceptions: Consistently parse errors with no body
+  (`issue 859 <https://github.com/boto/botocore/pull/859>`__)
+* bugfix:Config: Handle case where S3 config key is not a dict
+  (`issue 858 <https://github.com/boto/botocore/pull/858>`__)
+
+
 1.10.17
 =======
 

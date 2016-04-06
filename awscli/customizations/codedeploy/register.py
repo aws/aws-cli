@@ -117,7 +117,7 @@ class Register(BasicCommand):
         sys.stdout.write('Creating the IAM user... ')
         params.user_name = params.instance_name
         response = self.iam.create_user(
-            Path='/AWS/CodeDeploy/',
+            Path='/',
             UserName=params.user_name
         )
         params.iam_user_arn = response['User']['Arn']

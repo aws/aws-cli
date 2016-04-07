@@ -41,6 +41,15 @@ class UploadBuildCommand(BasicCommand):
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl
         )
+        # Validate a build directory
+        if not validate_directory(args.build_root):
+            sys.stderr.write(
+                'Fail to upload %s. '
+                'The build root directory is empty or does not exist.\n'
+                % (args.build_root)
+            )
+
+            return 255
         # Create a build.
         response = gamelift_client.create_build(
             Name=args.name, Version=args.build_version)
@@ -100,6 +109,13 @@ def zip_directory(zipfile_name, source_root):
                     relative_path = os.path.relpath(
                         full_path, source_root)
                     zf.write(full_path, relative_path)
+
+
+def validate_directory(source_root):
+    for path, dirs, files in os.walk(source_root):
+        if files:
+            return True
+    return False
 
 
 # TODO: Remove this class once available to CLI from s3transfer

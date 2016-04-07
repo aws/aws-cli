@@ -358,6 +358,11 @@ class DownloadPartTask(OrderableTask):
             LOGGER.debug(
                 'Exception caught downloading byte range: %s',
                 e, exc_info=True)
+            message = print_operation(self._filename, failed=True,
+                                      dryrun=False)
+            message += '\n' + str(e)
+            result = {'message': message, 'error': True}
+            self._result_queue.put(PrintTask(**result))
             self._context.cancel()
             raise e
 

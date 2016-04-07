@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``lambda``: Added support for setting the function runtime as
+  nodejs4.3, as well as updating function configuration to set the runtime.
+* feature:``ds``: Added support for Directory Service Conditional Forwarder
+  APIs.
+* feature:``elasticbeanstalk``: Adds support for three additional elements
+  in AWS Elasticbeanstalk's DescribeInstancesHealthResponse: Deployment,
+  AvailabilityZone, and InstanceType. Additionally adds support for increased
+  EnvironmentName length from 23 to 40.
+* bugfix:Paginator: Allow non-specified input tokens in old starting token
+  format.
+
+
 1.10.18
 =======
 

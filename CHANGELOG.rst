@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.10.19
+=======
 
 * feature:``lambda``: Added support for setting the function runtime as
   nodejs4.3, as well as updating function configuration to set the runtime.

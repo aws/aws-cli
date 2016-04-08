@@ -54,6 +54,8 @@ class TestArgumentTableModifications(TestPaginateBase):
             'foo': mock.Mock(),
             'bar': mock.Mock(),
         }
+        # Default to false
+        argument_table['foo']._UNDOCUMENTED = False
         paginate.unify_paging_params(argument_table, self.operation_model,
                                      'building-argument-table.foo.bar',
                                      self.session)
@@ -72,6 +74,24 @@ class TestArgumentTableModifications(TestPaginateBase):
                               paginate.PageArgument)
         self.assertIsInstance(argument_table['page-size'],
                               paginate.PageArgument)
+
+    def test_shows_public_paging_args(self):
+        argument_table = {
+            'foo': mock.Mock(),
+            'bar': mock.Mock(),
+        }
+
+        # Default to false
+        argument_table['foo']._UNDOCUMENTED = False
+        service_name = 'foo_service'
+        self.operation_model.service_model.service_name = service_name
+        public_args = 'awscli.customizations.paginate.PUBLIC_PAGINATION_TOKENS'
+        with mock.patch(public_args, {service_name: ['foo']}):
+            paginate.unify_paging_params(
+                argument_table, self.operation_model,
+                'building-argument-table.foo.bar', self.session)
+        # This time it should not be marked as hidden
+        self.assertFalse(argument_table['foo']._UNDOCUMENTED)
 
     def test_operation_with_no_paginate(self):
         # Operations that don't paginate are left alone.

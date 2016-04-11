@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.10.20
+=======
 
 * feature:``iot``: Add commands for managing CA certificates.
 * bugfix:``ec2 wait``: Fix issues with waiting on incorrect error code.

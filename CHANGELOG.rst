@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``iot``: Add commands for managing CA certificates.
+* bugfix:``ec2 wait``: Fix issues with waiting on incorrect error code.
+* bugfix:``s3``: Fix issue where multipart uploads were not being properly
+  aborted after Cntrl-C.
+  (`issue 1905 <https://github.com/aws/aws-cli/pull/1905>`__)
+
+
 1.10.19
 =======
 

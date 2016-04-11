@@ -28,8 +28,6 @@ import tempfile
 import shutil
 import copy
 
-import botocore.session
-from botocore.exceptions import ClientError
 from awscli.compat import six
 from nose.plugins.attrib import attr
 
@@ -60,6 +58,19 @@ def aws(command, collect_memory=False, env_vars=None, wait_for_finish=True,
     return _aws(command, collect_memory=collect_memory, env_vars=env_vars,
                 wait_for_finish=wait_for_finish, input_data=input_data,
                 input_file=input_file)
+
+
+def wait_for_process_exit(process, timeout=60):
+    deadline = time.time() + timeout
+    while time.time() < deadline:
+        rc = process.poll()
+        if rc is not None:
+            break
+        time.sleep(1)
+    else:
+        process.kill()
+        raise AssertionError("CLI did not exist within %s seconds of "
+                             "receiving a Ctrl+C" % timeout)
 
 
 def _running_on_rhel():
@@ -351,25 +362,38 @@ class TestCp(BaseS3CLICommand):
         process = aws('s3 cp s3://%s/foo.txt %s' %
                       (bucket_name, local_foo_txt), wait_for_finish=False)
         # Give it some time to start up and enter it's main task loop.
-        time.sleep(1)
+        time.sleep(2)
         # The process has 60 seconds to finish after being sent a Ctrl+C,
         # otherwise the test fails.
         process.send_signal(signal.SIGINT)
-        deadline = time.time() + 60
-        while time.time() < deadline:
-            rc = process.poll()
-            if rc is not None:
-                break
-            time.sleep(1)
-        else:
-            process.kill()
-            self.fail("CLI did not exist within 30 seconds of "
-                      "receiving a Ctrl+C")
+        wait_for_process_exit(process, timeout=60)
         # A Ctrl+C should have a non-zero RC.
         # We either caught the process in
         # its main polling loop (rc=1), or it was successfully terminated by
         # the SIGINT (rc=-2).
         self.assertIn(process.returncode, [1, -2])
+
+    @attr('slow')
+    @skip_if_windows('SIGINT not supported on Windows.')
+    def test_cleans_up_aborted_uploads(self):
+        bucket_name = self.create_bucket()
+        foo_txt = self.files.create_file('foo.txt', '')
+        with open(foo_txt, 'wb') as f:
+            for i in range(20):
+                f.write(b'a' * 1024 * 1024)
+
+        process = aws('s3 cp %s s3://%s/' % (foo_txt, bucket_name),
+                      wait_for_finish=False)
+        time.sleep(3)
+        # The process has 60 seconds to finish after being sent a Ctrl+C,
+        # otherwise the test fails.
+        process.send_signal(signal.SIGINT)
+        wait_for_process_exit(process, timeout=60)
+        uploads_after = self.client.list_multipart_uploads(
+            Bucket=bucket_name).get('Uploads', [])
+        self.assertEqual(uploads_after, [],
+                         "Not all multipart uploads were properly "
+                         "aborted after receiving Ctrl-C: %s" % uploads_after)
 
     def test_cp_to_nonexistent_bucket(self):
         foo_txt = self.files.create_file('foo.txt', 'this is foo.txt')

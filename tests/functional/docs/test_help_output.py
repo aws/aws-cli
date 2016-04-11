@@ -326,6 +326,7 @@ class TestParamRename(BaseAWSHelpOutputTest):
         self.assert_not_contains('no-no-reboot')
         self.assert_contains('--reboot')
 
+
 class TestCustomCommandDocsFromFile(BaseAWSHelpOutputTest):
     def test_description_from_rst_file(self):
         # The description for the configure command
@@ -336,6 +337,7 @@ class TestCustomCommandDocsFromFile(BaseAWSHelpOutputTest):
         self.assert_contains('metadata_service_timeout')
         self.assert_contains('metadata_service_num_attempts')
         self.assert_contains('aws_access_key_id')
+
 
 class TestEnumDocsArentDuplicated(BaseAWSHelpOutputTest):
     def test_enum_docs_arent_duplicated(self):

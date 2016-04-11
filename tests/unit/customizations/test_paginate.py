@@ -54,15 +54,14 @@ class TestArgumentTableModifications(TestPaginateBase):
             'foo': mock.Mock(),
             'bar': mock.Mock(),
         }
-        # Default to false
-        argument_table['foo']._UNDOCUMENTED = False
         paginate.unify_paging_params(argument_table, self.operation_model,
                                      'building-argument-table.foo.bar',
                                      self.session)
-        # We should mark the built in input_token as 'hidden'.
-        self.assertTrue(argument_table['foo']._UNDOCUMENTED)
-        # Also need to hide the limit key.
-        self.assertTrue(argument_table['bar']._UNDOCUMENTED)
+        # Using assertEqual here rather than assertTrue because we want the
+        # literal value 'True', not just any truthy value.
+        self.assertEqual(argument_table['foo']._UNDOCUMENTED, True)
+        self.assertEqual(argument_table['bar']._UNDOCUMENTED, True)
+
         # We also need to inject startin-token and max-items.
         self.assertIn('starting-token', argument_table)
         self.assertIn('max-items', argument_table)
@@ -81,7 +80,6 @@ class TestArgumentTableModifications(TestPaginateBase):
             'bar': mock.Mock(),
         }
 
-        # Default to false
         argument_table['foo']._UNDOCUMENTED = False
         service_name = 'foo_service'
         self.operation_model.service_model.service_name = service_name
@@ -90,8 +88,10 @@ class TestArgumentTableModifications(TestPaginateBase):
             paginate.unify_paging_params(
                 argument_table, self.operation_model,
                 'building-argument-table.foo.bar', self.session)
-        # This time it should not be marked as hidden
-        self.assertFalse(argument_table['foo']._UNDOCUMENTED)
+
+        # Using assertEqual here rather than assertTrue because we want the
+        # literal value 'False', not just any falsey value.
+        self.assertEqual(argument_table['foo']._UNDOCUMENTED, False)
 
     def test_operation_with_no_paginate(self):
         # Operations that don't paginate are left alone.

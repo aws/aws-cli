@@ -101,28 +101,35 @@ class S3Handler(object):
             self.executor.print_thread.set_total_files(total_files)
             self.executor.print_thread.set_total_parts(total_parts)
             self.executor.initiate_shutdown()
-            self.executor.wait_until_shutdown()
-            self._shutdown()
+            self._finalize_shutdown()
         except Exception as e:
             LOGGER.debug('Exception caught during task execution: %s',
                          str(e), exc_info=True)
             self.result_queue.put(PrintTask(message=str(e), error=True))
             self.executor.initiate_shutdown(
                 priority=self.executor.IMMEDIATE_PRIORITY)
-            self._shutdown()
-            self.executor.wait_until_shutdown()
+            self._finalize_shutdown()
         except KeyboardInterrupt:
             self.result_queue.put(PrintTask(message=("Cleaning up. "
                                                      "Please wait..."),
                                             error=True))
             self.executor.initiate_shutdown(
                 priority=self.executor.IMMEDIATE_PRIORITY)
-            self._shutdown()
-            self.executor.wait_until_shutdown()
+            self._finalize_shutdown()
         return CommandResult(self.executor.num_tasks_failed,
                              self.executor.num_tasks_warned)
 
-    def _shutdown(self):
+    def _finalize_shutdown(self):
+        # Run all remaining tasks needed to completely shutdown the
+        # S3 handler.  This method will block until shutdown is complete.
+        # The order here is important.  We need to wait until all the
+        # tasks have been completed before we can cleanup.  Otherwise
+        # we can have race conditions where we're trying to cleanup
+        # uploads/downloads that are still in progress.
+        self.executor.wait_until_shutdown()
+        self._cleanup()
+
+    def _cleanup(self):
         # And finally we need to make a pass through all the existing
         # multipart uploads and abort any pending multipart uploads.
         self._abort_pending_multipart_uploads()

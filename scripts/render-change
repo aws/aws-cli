@@ -6,10 +6,11 @@ Usage
 
 ::
 
-    $ scripts/gen-change --format rst
+    $ scripts/render-change --format rst
     # Or:
-    $ scripts/gen-change --format single-html -r 2.0.0
+    $ scripts/render-change --format single-html -r 2.0.0
 
+The generated contents are written to stdout.
 
 """
 import os
@@ -61,7 +62,12 @@ def generate_rst_changelog(args, changedir=CHANGEDIR):
     if not os.path.isdir(changedir):
         sys.stderr.write("Changedir does not exist: %s\n" % changedir)
         return
-    contents = []
+    contents = [
+        '=========',
+        'CHANGELOG',
+        '=========',
+        '',
+    ]
     for release_filename in sorted_releases(changedir):
         with open(os.path.join(changedir, release_filename)) as f:
             data = json.load(f)

@@ -60,15 +60,14 @@ type: {change_type}
 # Category is the high level feature area.
 # This can be a service identifier (e.g ``s3``),
 # or something like: Paginator.
-category:
+category: {category}
 
 # A brief description of the change.  You can
 # use github style references to issues such as
 # "fixes #489", "boto/boto3#100", etc.  These
 # will get automatically replaced with the correct
 # link.
-description:
-
+description: {description}
 """
 
 
@@ -85,12 +84,19 @@ def new_changelog_entry(args):
         }
     else:
         parsed_values = get_values_from_editor(args)
-    if not parsed_values:
+    if has_empty_values(parsed_values):
         sys.stderr.write(
-            "Empty changelog values receive, skipping entry creation.\n")
-        return
+            "Empty changelog values received, skipping entry creation.\n")
+        return 1
     replace_issue_references(parsed_values, args.repo)
     write_new_change(parsed_values)
+    return 0
+
+
+def has_empty_values(parsed_values):
+    return not (parsed_values.get('type') and
+                parsed_values.get('category') and
+                parsed_values.get('description'))
 
 
 def all_values_provided(args):
@@ -102,6 +108,7 @@ def get_values_from_editor(args):
         contents = TEMPLATE.format(
             change_type=args.change_type,
             category=args.category,
+            description=args.description,
         )
         f.write(contents)
         f.flush()
@@ -142,10 +149,11 @@ def write_new_change(parsed_values):
     filename = '{type_name}-{summary}'.format(
         type_name=parsed_values['type'],
         summary=short_summary)
-    possible_filename = filename
+    possible_filename = os.path.join(dirname, filename) + '.json'
     while os.path.isfile(possible_filename):
-        possible_filename = filename + str(random.randint(1, 100000))
-    with open(os.path.join(dirname, possible_filename), 'w') as f:
+        possible_filename = os.path.join(
+            dirname, '%s-%s.json' % (filename, str(random.randint(1, 100000))))
+    with open(possible_filename, 'w') as f:
         f.write(json.dumps(parsed_values, indent=2))
 
 
@@ -178,7 +186,7 @@ def parse_filled_in_contents(contents):
             # remaining lines.
             first_line = line.split(':')[1].strip()
             full_description = '\n'.join([first_line] + list(lines))
-            parsed['description'] = full_description
+            parsed['description'] = full_description.strip()
             break
     return parsed
 
@@ -194,7 +202,7 @@ def main():
     parser.add_argument('-r', '--repo', default='aws/aws-cli',
                         help='Optional repo name, e.g: aws/aws-cli')
     args = parser.parse_args()
-    new_changelog_entry(args)
+    sys.exit(new_changelog_entry(args))
 
 
 if __name__ == '__main__':

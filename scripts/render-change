@@ -1,0 +1,125 @@
+#!/usr/bin/env python
+"""Generate a changelog file.
+
+Usage
+=====
+
+::
+
+    $ scripts/gen-change --format rst
+    # Or:
+    $ scripts/gen-change --format single-html -r 2.0.0
+
+
+"""
+import os
+import sys
+import json
+import argparse
+
+
+ROOTDIR = os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__)))
+CHANGEDIR = os.path.join(ROOTDIR, '.changes')
+SINGLE_HTML_TEMPLATE = """
+%s
+
+.. list-table::
+   :header-rows: 1
+
+%s
+
+"""
+
+
+def sorted_releases(changedir):
+    def key(filename):
+        filename = filename[:-len('.json')]
+        parts = tuple(int(i) for i in filename.split('.'))
+        return parts
+    releases = sorted(os.listdir(changedir), key=key, reverse=True)
+    return releases
+
+
+def _generate_single_release_rst(release_identifier, data, contents):
+    contents.append(release_identifier)
+    contents.append('=' * len(release_identifier))
+    contents.append('')
+    for change in data:
+        line = '* %s:%s: %s' % (change['type'], change['category'],
+                                change['description'])
+        contents.append(line)
+    contents.append('')
+    contents.append('')
+
+
+def generate_rst_changelog(args, changedir=CHANGEDIR):
+    if not os.path.isdir(changedir):
+        sys.stderr.write("Changedir does not exist: %s\n" % changedir)
+        return
+    contents = []
+    for release_filename in sorted_releases(changedir):
+        with open(os.path.join(changedir, release_filename)) as f:
+            data = json.load(f)
+        release_identifier = release_filename[:-len('.json')]
+        _generate_single_release_rst(release_identifier, data, contents)
+    sys.stdout.write('\n'.join(contents).encode("utf-8"))
+
+
+def generate_html_snippet_changelog(args):
+    with open(os.path.join(CHANGEDIR, args.release_version + '.json')) as f:
+        changes = json.load(f)
+
+    features = [ch for ch in changes if ch['type'] == 'feature']
+    fixes = [ch for ch in changes if ch['type'] == 'bugfix']
+
+    feature_contents = _gen_contents_for(features)
+    fixes_contents = _gen_contents_for(fixes)
+    if feature_contents:
+        title = 'New Features'
+        title += '\n%s' % ('-' * len(title))
+        rendered = SINGLE_HTML_TEMPLATE % (title, feature_contents)
+        sys.stdout.write(rendered)
+    if fixes_contents:
+        title = 'Resolved Issues'
+        title += '\n%s' % ('-' * len(title))
+        rendered = SINGLE_HTML_TEMPLATE % (title, fixes_contents)
+        sys.stdout.write(rendered)
+
+
+def _gen_contents_for(changes):
+    if not changes:
+        return ''
+    lines = []
+    lines.extend(_entry('Change', 'Description'))
+    for change in changes:
+        lines.extend(_entry(change['category'], change['description']))
+    return '\n'.join(lines)
+
+
+def _entry(title, description):
+    return [
+        '    * - %s' % title,
+        '      - %s' % description,
+    ]
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--format', default='rst',
+                        dest='output_format',
+                        choices=('rst', 'single-html'),
+                        help=('The output format to generate.  By '
+                              'default this is rst (CHANGELOG.rst)'))
+    parser.add_argument('-r', '--release-version',
+                        help=('The release version to generate.  Only '
+                              'needed if --format is single-html.'))
+    args = parser.parse_args()
+    if args.output_format == 'rst':
+        generate_rst_changelog(args)
+    elif args.output_format == 'single-html':
+        generate_html_snippet_changelog(args)
+
+
+if __name__ == '__main__':
+    main()

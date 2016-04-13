@@ -112,6 +112,10 @@ def zip_directory(zipfile_name, source_root):
 
 
 def validate_directory(source_root):
+    # For Python26 on Windows, passing an empty string equates to the
+    # current directory, which is not intended behavior.
+    if not source_root:
+        return False
     # We walk the root because we want to validate there's at least one file
     # that exists recursively from the root directory
     for path, dirs, files in os.walk(source_root):

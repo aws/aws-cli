@@ -1,0 +1,67 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""Convert next release changes to version releases.
+
+At any given time, the ``.changes/`` directory looks like::
+
+    .changes
+    |
+    └── next-release
+        ├── bugfix-Pagination
+        └── feature-Configure
+    ├── 1.1.0.json
+    ├── 1.1.1.json
+    ├── 1.1.2.json
+
+This script takes everything in ``next-release`` and aggregates them all
+together in a single JSON file for that release (e.g ``1.12.0.json``).  This
+JSON file is a list of all the individual JSON files from ``next-release``.
+
+This is done to simplify changelog generation.  Rather than have hundreds of
+individual files, we now have 1 file per release.  This also makes the
+rendering process for changelogs easier.
+
+Usage
+=====
+
+::
+
+    $ scripts/release-change 2.0.0
+
+"""
+import os
+import json
+import argparse
+
+CHANGES_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    '.changes'
+)
+NEXT_RELEASE_DIR = os.path.join(CHANGES_DIR, 'next-release')
+
+
+def convert_to_release_json(args):
+    changes = []
+    for filename in os.listdir(NEXT_RELEASE_DIR):
+        full_path = os.path.join(NEXT_RELEASE_DIR, filename)
+        with open(full_path) as f:
+            changes.append(json.load(f))
+    release_json_filename = os.path.join(
+        CHANGES_DIR, '%s.json' % args.release_version)
+    with open(release_json_filename, 'w') as f:
+        f.write(json.dumps(changes, indent=2, sort_keys=True))
+    for filename in os.listdir(NEXT_RELEASE_DIR):
+        full_path = os.path.join(NEXT_RELEASE_DIR, filename)
+        os.remove(full_path)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('release_version',
+                        help='The version being released.')
+    args = parser.parse_args()
+    convert_to_release_json(args)
+
+
+if __name__ == '__main__':
+    main()

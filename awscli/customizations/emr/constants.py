@@ -55,7 +55,7 @@ EMRFS_CSE_KEY = 'fs.s3.cse.enabled'
 EMRFS_CSE_KMS_KEY_ID_KEY = 'fs.s3.cse.kms.keyId'
 EMRFS_CSE_ENCRYPTION_MATERIALS_PROVIDER_KEY = \
     'fs.s3.cse.encryptionMaterialsProvider'
-EMRFS_CSE_CUSTOM_PROVIDER_URI_KEY = 'fs.s3.cse.custom.provider.uri'
+EMRFS_CSE_CUSTOM_PROVIDER_URI_KEY = 'fs.s3.cse.encryptionMaterialsProvider.uri'
 
 EMRFS_CSE_KMS_PROVIDER_FULL_CLASS_NAME = ('com.amazon.ws.emr.hadoop.fs.cse.'
                                           'KMSEncryptionMaterialsProvider')

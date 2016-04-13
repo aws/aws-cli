@@ -37,7 +37,11 @@ def sorted_releases(changedir):
         filename = filename[:-len('.json')]
         parts = tuple(int(i) for i in filename.split('.'))
         return parts
-    releases = sorted(os.listdir(changedir), key=key, reverse=True)
+    releases = sorted(
+        (name for name in os.listdir(changedir)
+         if os.path.isfile(os.path.join(changedir, name))),
+        key=key,
+        reverse=True)
     return releases
 
 

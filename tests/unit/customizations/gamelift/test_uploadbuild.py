@@ -18,9 +18,11 @@ import zipfile
 from botocore.session import get_session
 from botocore.exceptions import ClientError
 
+from awscli.compat import six
 from awscli.testutils import unittest, mock, FileCreator
 from awscli.customizations.gamelift.uploadbuild import UploadBuildCommand
 from awscli.customizations.gamelift.uploadbuild import zip_directory
+from awscli.customizations.gamelift.uploadbuild import validate_directory
 
 
 class TestGetGameSessionLogCommand(unittest.TestCase):
@@ -94,8 +96,8 @@ class TestGetGameSessionLogCommand(unittest.TestCase):
         }
 
     def test_upload_build(self):
+        self.file_creator.create_file('tmpfile', 'Some contents')
         self.cmd(self.args, self.global_args)
-
         # Ensure the clients were instantiated correctly.
         client_creation_args = self.mock_create_client.call_args_list
         self.assertEqual(
@@ -124,10 +126,54 @@ class TestGetGameSessionLogCommand(unittest.TestCase):
         # Ensure the temporary zipfile is deleted at the end.
         self.assertFalse(os.path.exists(tempfile_path))
 
+    def test_error_message_when_directory_is_empty(self):
+        with mock.patch('sys.stderr', six.StringIO()) as mock_stderr:
+            self.cmd(self.args, self.global_args)
+            self.assertEqual(
+                mock_stderr.getvalue(),
+                'Fail to upload %s. '
+                'The build root directory is empty or does not exist.\n'
+                % (self.build_root)
+            )
+
+    def test_error_message_when_directory_is_not_provided(self):
+        self.args = [
+            '--name', self.build_name,
+            '--build-version', self.build_version,
+            '--build-root', ''
+        ]
+
+        with mock.patch('sys.stderr', six.StringIO()) as mock_stderr:
+            self.cmd(self.args, self.global_args)
+            self.assertEqual(
+                mock_stderr.getvalue(),
+                'Fail to upload %s. '
+                'The build root directory is empty or does not exist.\n' % ('')
+            )
+
+    def test_error_message_when_directory_does_not_exist(self):
+        dir_not_exist = os.path.join(self.build_root, 'does_not_exist')
+
+        self.args = [
+            '--name', self.build_name,
+            '--build-version', self.build_version,
+            '--build-root', dir_not_exist
+        ]
+
+        with mock.patch('sys.stderr', six.StringIO()) as mock_stderr:
+            self.cmd(self.args, self.global_args)
+            self.assertEqual(
+                mock_stderr.getvalue(),
+                'Fail to upload %s. '
+                'The build root directory is empty or does not exist.\n'
+                % (dir_not_exist)
+            )
+
     def test_temporary_file_does_exist_when_fails(self):
         self.upload_file_mock.side_effect = ClientError(
             {'Error': {'Code': 403, 'Message': 'No Access'}}, 'PutObject')
         with self.assertRaises(ClientError):
+            self.file_creator.create_file('tmpfile', 'Some contents')
             self.cmd(self.args, self.global_args)
             tempfile_path = self.upload_file_mock.call_args[0][0]
             # Make sure the temporary file is removed.
@@ -183,3 +229,41 @@ class TestZipDirectory(unittest.TestCase):
         self.add_to_directory(filename)
         zip_directory(self.zip_file, self.dir_root)
         self.assert_contents_of_zip_file([filename])
+
+
+class TestValidateDirectory(unittest.TestCase):
+    def setUp(self):
+        self.file_creator = FileCreator()
+        self.dir_root = self.file_creator.rootdir
+
+    def tearDown(self):
+        self.file_creator.remove_all()
+
+    def test_directory_contains_single_file(self):
+        self.file_creator.create_file('foo', '')
+        self.assertTrue(validate_directory(self.dir_root))
+
+    def test_directory_contains_file_and_empty_directory(self):
+        dirname = os.path.join(self.dir_root, 'foo')
+        os.makedirs(dirname)
+        self.file_creator.create_file('bar', '')
+        self.assertTrue(validate_directory(self.dir_root))
+
+    def test_nested_file(self):
+        self.file_creator.create_file('mydir/bar', '')
+        self.assertTrue(validate_directory(self.dir_root))
+
+    def test_empty_directory(self):
+        self.assertFalse(validate_directory(self.dir_root))
+
+    def test_nonexistent_directory(self):
+        dir_not_exist = os.path.join(self.dir_root, 'does_not_exist')
+        self.assertFalse(validate_directory(dir_not_exist))
+
+    def test_nonprovided_directory(self):
+        self.assertFalse(validate_directory(''))
+
+    def test_empty_nested_directory(self):
+        dirname = os.path.join(self.dir_root, 'foo')
+        os.makedirs(dirname)
+        self.assertFalse(validate_directory(self.dir_root))

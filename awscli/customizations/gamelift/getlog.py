@@ -13,7 +13,6 @@
 import sys
 from functools import partial
 
-from botocore.compat import six
 from six.moves.urllib.request import urlopen
 from awscli.customizations.commands import BasicCommand
 
@@ -47,7 +46,7 @@ class GetGameSessionLogCommand(BasicCommand):
             'Downloading log archive for game session %s...\r' %
             args.game_session_id
         )
- 
+
         with open(args.save_as, 'wb') as f:
             for chunk in iter(partial(contents.read, 1024), b''):
                 f.write(chunk)

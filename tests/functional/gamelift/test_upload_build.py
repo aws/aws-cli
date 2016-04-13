@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, mock
 
 
@@ -26,6 +27,7 @@ class TestUploadBuild(BaseAWSCommandParamsTest):
         self.files.remove_all()
 
     def test_upload_build(self):
+        self.files.create_file('tmpfile', 'Some contents')
         cmdline = self.prefix
         cmdline += ' --name mybuild --build-version myversion'
         cmdline += ' --build-root %s' % self.files.rootdir
@@ -70,3 +72,80 @@ class TestUploadBuild(BaseAWSCommandParamsTest):
             'Successfully uploaded %s to AWS GameLift' % self.files.rootdir,
             stdout)
         self.assertIn('Build ID: myid', stdout)
+
+    def test_upload_build_with_empty_directory(self):
+        cmdline = self.prefix
+        cmdline += ' --name mybuild --build-version myversion'
+        cmdline += ' --build-root %s' % self.files.rootdir
+
+        self.parsed_responses = [
+            {'Build': {'BuildId': 'myid'}},
+            {'StorageLocation': {
+                'Bucket': 'mybucket',
+                'Key': 'mykey'},
+             'UploadCredentials': {
+                'AccessKeyId': 'myaccesskey',
+                'SecretAccessKey': 'mysecretkey',
+                'SessionToken': 'mytoken'}},
+            {}
+            ]
+
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+
+        self.assertIn(
+            'Fail to upload %s. '
+            'The build root directory is empty or does not exist.\n'
+            % self.files.rootdir,
+            stderr)
+
+    def test_upload_build_with_nonexistent_directory(self):
+        dir_not_exist = os.path.join(self.files.rootdir, 'does_not_exist')
+
+        cmdline = self.prefix
+        cmdline += ' --name mybuild --build-version myversion'
+        cmdline += ' --build-root %s' % dir_not_exist
+
+        self.parsed_responses = [
+            {'Build': {'BuildId': 'myid'}},
+            {'StorageLocation': {
+                'Bucket': 'mybucket',
+                'Key': 'mykey'},
+             'UploadCredentials': {
+                'AccessKeyId': 'myaccesskey',
+                'SecretAccessKey': 'mysecretkey',
+                'SessionToken': 'mytoken'}},
+            {}
+            ]
+
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+
+        self.assertIn(
+            'Fail to upload %s. '
+            'The build root directory is empty or does not exist.\n'
+            % dir_not_exist,
+            stderr)
+
+    def test_upload_build_with_nonprovided_directory(self):
+        cmdline = self.prefix
+        cmdline += ' --name mybuild --build-version myversion'
+        cmdline += ' --build-root %s' % '""'
+
+        self.parsed_responses = [
+            {'Build': {'BuildId': 'myid'}},
+            {'StorageLocation': {
+                'Bucket': 'mybucket',
+                'Key': 'mykey'},
+             'UploadCredentials': {
+                'AccessKeyId': 'myaccesskey',
+                'SecretAccessKey': 'mysecretkey',
+                'SessionToken': 'mytoken'}},
+            {}
+            ]
+
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+
+        self.assertIn(
+            'Fail to upload %s. '
+            'The build root directory is empty or does not exist.\n'
+            % '""',
+            stderr)

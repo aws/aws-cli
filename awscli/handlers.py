@@ -16,7 +16,7 @@ This is a collection of built in CLI extensions that can be automatically
 registered with the event system.
 
 """
-from awscli.argprocess import ParamShorthand
+from awscli.argprocess import ParamShorthandParser
 from awscli.argprocess import uri_param
 from awscli.customizations import datapipeline
 from awscli.customizations.addexamples import add_examples
@@ -76,7 +76,7 @@ from awscli.errorhandler import ErrorHandler
 
 def awscli_initialize(event_handlers):
     event_handlers.register('load-cli-arg', uri_param)
-    param_shorthand = ParamShorthand()
+    param_shorthand = ParamShorthandParser()
     event_handlers.register('process-cli-arg', param_shorthand)
     # The s3 error mesage needs to registered before the
     # generic error handler.

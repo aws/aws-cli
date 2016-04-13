@@ -59,7 +59,7 @@ class TestRecursiveShapes(unittest.TestCase):
 
         self.arg_table['arg-name'] = mock.Mock(argument_model=shape)
         self.operation_handler.doc_option_example(
-            'arg-name', self.help_command)
+            'arg-name', self.help_command, 'process-cli-arg.foo.bar')
         self.assert_rendered_docs_contain('{ ... recursive ... }')
 
     def test_handle_recursive_output(self):

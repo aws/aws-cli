@@ -23,7 +23,7 @@ from awscli.testutils import temporary_file
 from awscli.help import OperationHelpCommand
 from awscli.argprocess import detect_shape_structure
 from awscli.argprocess import unpack_cli_arg
-from awscli.argprocess import ParamShorthand
+from awscli.argprocess import ParamShorthandParser
 from awscli.argprocess import ParamShorthandDocGen
 from awscli.argprocess import ParamError
 from awscli.argprocess import ParamUnknownKeyError
@@ -54,6 +54,17 @@ class BaseArgProcessTest(BaseCLIDriverTest):
         else:
             cls = CLIArgument
         return cls(cli_arg_name, member_shape, mock.Mock(), is_required)
+
+    def create_argument(self, argument_model, argument_name=None):
+        if argument_name is None:
+            argument_name = 'foo'
+        argument = mock.Mock()
+        m = model.DenormalizedStructureBuilder().with_members(
+            argument_model)
+        argument.argument_model = m.build_model()
+        argument.name = argument_name
+        argument.cli_name = "--" + argument_name
+        return argument
 
 
 class TestURIParams(BaseArgProcessTest):
@@ -177,16 +188,60 @@ class TestParamShorthand(BaseArgProcessTest):
 
     def setUp(self):
         super(TestParamShorthand, self).setUp()
-        self.simplify = ParamShorthand()
+        self._shorthand = ParamShorthandParser()
+
+    def parse_shorthand(self, cli_argument, value, event_name=None):
+        event = event_name
+        if event is None:
+            event = 'process-cli-arg.foo.bar'
+        return self._shorthand(cli_argument, value, event)
 
     def test_simplify_structure_scalars(self):
         p = self.get_param_model(
             'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
         value = 'ApplicationName=foo,TemplateName=bar'
         json_value = '{"ApplicationName": "foo", "TemplateName": "bar"}'
-        returned = self.simplify(p, value)
+        returned = self.parse_shorthand(p, value)
         json_version = unpack_cli_arg(p, json_value)
         self.assertEqual(returned, json_version)
+
+    def test_flattens_marked_single_member_structure_list(self):
+        argument = self.create_argument({
+            'Arg': {
+                'type': 'list',
+                'member': {
+                    'type': 'structure',
+                    'members': {
+                        'Bar': {'type': 'string'}
+                    }
+                }
+            }
+        }, 'arg')
+        argument.argument_model = argument.argument_model.members['Arg']
+        value = ['foo', 'baz']
+        uses_old_list = 'awscli.argprocess.ParamShorthand._uses_old_list_case'
+        with mock.patch(uses_old_list, mock.Mock(return_value=True)):
+            returned = self.parse_shorthand(argument, value)
+        self.assertEqual(returned, [{"Bar": "foo"}, {"Bar": "baz"}])
+
+    def test_does_not_flatten_unmarked_single_member_structure_list(self):
+        argument = self.create_argument({
+            'Arg': {
+                'type': 'list',
+                'member': {
+                    'type': 'structure',
+                    'members': {
+                        'Bar': {'type': 'string'}
+                    }
+                }
+            }
+        }, 'arg')
+        argument.argument_model = argument.argument_model.members['Arg']
+        value = ['Bar=foo', 'Bar=baz']
+        uses_old_list = 'awscli.argprocess.ParamShorthand._uses_old_list_case'
+        with mock.patch(uses_old_list, mock.Mock(return_value=False)):
+            returned = self.parse_shorthand(argument, value)
+        self.assertEqual(returned, [{"Bar": "foo"}, {"Bar": "baz"}])
 
     def test_parse_boolean_shorthand(self):
         bool_param = mock.Mock()
@@ -202,7 +257,7 @@ class TestParamShorthand(BaseArgProcessTest):
 
     def test_simplify_map_scalar(self):
         p = self.get_param_model('sqs.SetQueueAttributes.Attributes')
-        returned = self.simplify(p, 'VisibilityTimeout=15')
+        returned = self.parse_shorthand(p, 'VisibilityTimeout=15')
         json_version = unpack_cli_arg(p, '{"VisibilityTimeout": "15"}')
         self.assertEqual(returned, {'VisibilityTimeout': '15'})
         self.assertEqual(returned, json_version)
@@ -210,10 +265,13 @@ class TestParamShorthand(BaseArgProcessTest):
     def test_list_structure_scalars(self):
         p = self.get_param_model(
             'elb.RegisterInstancesWithLoadBalancer.Instances')
+        event_name = ('process-cli-arg.elb'
+                      '.register-instances-with-load-balancer')
         # Because this is a list type param, we'll use nargs
         # with argparse which means the value will be presented
         # to us as a list.
-        returned = self.simplify(p, ['instance-1',  'instance-2'])
+        returned = self.parse_shorthand(
+            p, ['instance-1', 'instance-2'], event_name)
         self.assertEqual(returned, [{'InstanceId': 'instance-1'},
                                     {'InstanceId': 'instance-2'}])
 
@@ -221,19 +279,19 @@ class TestParamShorthand(BaseArgProcessTest):
         p = self.get_param_model('ec2.DescribeInstances.Filters')
         expected = [{"Name": "instance-id", "Values": ["i-1", "i-2"]},
                     {"Name": "architecture", "Values": ["i386"]}]
-        returned = self.simplify(
+        returned = self.parse_shorthand(
             p, ["Name=instance-id,Values=i-1,i-2",
                 "Name=architecture,Values=i386"])
         self.assertEqual(returned, expected)
 
         # With spaces around the comma.
-        returned2 = self.simplify(
+        returned2 = self.parse_shorthand(
             p, ["Name=instance-id, Values=i-1,i-2",
                 "Name=architecture, Values=i386"])
         self.assertEqual(returned2, expected)
 
         # Strip off leading/trailing spaces.
-        returned3 = self.simplify(
+        returned3 = self.parse_shorthand(
             p, ["Name = instance-id, Values = i-1,i-2",
                 "Name = architecture, Values = i386"])
         self.assertEqual(returned3, expected)
@@ -243,7 +301,7 @@ class TestParamShorthand(BaseArgProcessTest):
         p = self.get_param_model('ec2.DescribeInstances.Filters')
         expected = [{"Name": "", "Values": ["i-1", "i-2"]},
                     {"Name": "architecture", "Values": ['']}]
-        returned = self.simplify(
+        returned = self.parse_shorthand(
             p, ["Name=,Values=i-1,i-2",
                 "Name=architecture,Values="])
         self.assertEqual(returned, expected)
@@ -257,7 +315,7 @@ class TestParamShorthand(BaseArgProcessTest):
              "InstanceCount": 1}
         ]
 
-        simplified = self.simplify(p, [
+        simplified = self.parse_shorthand(p, [
             "InstanceGroupId=foo,InstanceCount=4",
             "InstanceGroupId=bar,InstanceCount=1"
         ])
@@ -267,13 +325,13 @@ class TestParamShorthand(BaseArgProcessTest):
     def test_empty_value_of_list_structure(self):
         p = self.get_param_model('emr.ModifyInstanceGroups.InstanceGroups')
         expected = []
-        simplified = self.simplify(p, [])
+        simplified = self.parse_shorthand(p, [])
         self.assertEqual(simplified, expected)
 
     def test_list_structure_list_multiple_scalar(self):
         p = self.get_param_model(
             'emr.ModifyInstanceGroups.InstanceGroups')
-        returned = self.simplify(
+        returned = self.parse_shorthand(
             p,
             ['InstanceGroupId=foo,InstanceCount=3,'
              'EC2InstanceIdsToTerminate=i-12345,i-67890'])
@@ -308,7 +366,7 @@ class TestParamShorthand(BaseArgProcessTest):
                 '"ssl_certificate_id2"}',
             ])
         self.assertEqual(returned, expected)
-        simplified = self.simplify(p, [
+        simplified = self.parse_shorthand(p, [
             'Protocol=protocol1,LoadBalancerPort=1,'
             'InstanceProtocol=instance_protocol1,'
             'InstancePort=2,SSLCertificateId=ssl_certificate_id1',
@@ -322,7 +380,7 @@ class TestParamShorthand(BaseArgProcessTest):
         p = self.get_param_model(
             'dynamodb.UpdateTable.ProvisionedThroughput')
         value = 'WriteCapacityUnits=10,ReadCapacityUnits=10'
-        returned = self.simplify(p, value)
+        returned = self.parse_shorthand(p, value)
         self.assertEqual(returned, {'WriteCapacityUnits': 10,
                                     'ReadCapacityUnits': 10})
 
@@ -332,7 +390,7 @@ class TestParamShorthand(BaseArgProcessTest):
         value = 'ApplicationName:foo,TemplateName=bar'
         error_msg = "Error parsing parameter '--source-configuration'.*Expected"
         with self.assertRaisesRegexp(ParamError, error_msg):
-            self.simplify(p, value)
+            self.parse_shorthand(p, value)
 
     def test_improper_separator(self):
         # If the user uses ':' instead of '=', we should give a good
@@ -342,17 +400,17 @@ class TestParamShorthand(BaseArgProcessTest):
         value = 'ApplicationName:foo,TemplateName:bar'
         error_msg = "Error parsing parameter '--source-configuration'.*Expected"
         with self.assertRaisesRegexp(ParamError, error_msg):
-            self.simplify(p, value)
+            self.parse_shorthand(p, value)
 
     def test_improper_separator_for_filters_param(self):
         p = self.get_param_model('ec2.DescribeInstances.Filters')
         error_msg = "Error parsing parameter '--filters'.*Expected"
         with self.assertRaisesRegexp(ParamError, error_msg):
-            self.simplify(p, ["Name:tag:Name,Values:foo"])
+            self.parse_shorthand(p, ["Name:tag:Name,Values:foo"])
 
     def test_csv_syntax_escaped(self):
         p = self.get_param_model('cloudformation.CreateStack.Parameters')
-        returned = self.simplify(
+        returned = self.parse_shorthand(
             p, ["ParameterKey=key,ParameterValue=foo\,bar"])
         expected = [{"ParameterKey": "key",
                      "ParameterValue": "foo,bar"}]
@@ -360,7 +418,7 @@ class TestParamShorthand(BaseArgProcessTest):
 
     def test_csv_syntax_double_quoted(self):
         p = self.get_param_model('cloudformation.CreateStack.Parameters')
-        returned = self.simplify(
+        returned = self.parse_shorthand(
             p, ['ParameterKey=key,ParameterValue="foo,bar"'])
         expected = [{"ParameterKey": "key",
                      "ParameterValue": "foo,bar"}]
@@ -368,7 +426,7 @@ class TestParamShorthand(BaseArgProcessTest):
 
     def test_csv_syntax_single_quoted(self):
         p = self.get_param_model('cloudformation.CreateStack.Parameters')
-        returned = self.simplify(
+        returned = self.parse_shorthand(
             p, ["ParameterKey=key,ParameterValue='foo,bar'"])
         expected = [{"ParameterKey": "key",
                      "ParameterValue": "foo,bar"}]
@@ -378,20 +436,20 @@ class TestParamShorthand(BaseArgProcessTest):
         p = self.get_param_model('cloudformation.CreateStack.Parameters')
         error_msg = "Error parsing parameter '--parameters'.*Expected"
         with self.assertRaisesRegexp(ParamError, error_msg):
-            self.simplify(p, ['ParameterKey=key,ParameterValue="foo,bar'])
+            self.parse_shorthand(p, ['ParameterKey=key,ParameterValue="foo,bar'])
         with self.assertRaisesRegexp(ParamError, error_msg):
-            self.simplify(p, ['ParameterKey=key,ParameterValue=foo,bar"'])
+            self.parse_shorthand(p, ['ParameterKey=key,ParameterValue=foo,bar"'])
         with self.assertRaisesRegexp(ParamError, error_msg):
-            self.simplify(p, ['ParameterKey=key,ParameterValue=""foo,bar"'])
+            self.parse_shorthand(p, ['ParameterKey=key,ParameterValue=""foo,bar"'])
         with self.assertRaisesRegexp(ParamError, error_msg):
-            self.simplify(p, ['ParameterKey=key,ParameterValue="foo,bar\''])
+            self.parse_shorthand(p, ['ParameterKey=key,ParameterValue="foo,bar\''])
 
 
 class TestParamShorthandCustomArguments(BaseArgProcessTest):
 
     def setUp(self):
         super(TestParamShorthandCustomArguments, self).setUp()
-        self.simplify = ParamShorthand()
+        self.shorthand = ParamShorthandParser()
 
     def test_list_structure_list_scalar_custom_arg(self):
         schema = {
@@ -425,12 +483,12 @@ class TestParamShorthandCustomArguments(BaseArgProcessTest):
              "Args": ["value"]}
         ]
 
-        simplified = self.simplify(cli_argument, [
+        simplified = self.shorthand(cli_argument, [
             "Name=foo,Args=[a,k1=v1,b]",
             "Name=bar,Args=baz",
             "Name=single_kv,Args=[key=value]",
             "Name=single_v,Args=[value]"
-        ])
+        ], 'process-cli-arg.foo.bar')
 
         self.assertEqual(simplified, expected)
 
@@ -452,7 +510,9 @@ class TestParamShorthandCustomArguments(BaseArgProcessTest):
         argument_model = create_argument_model_from_schema(schema)
         cli_argument = CustomArgument('test', argument_model=argument_model)
 
-        returned = self.simplify(cli_argument, 'Consistent=true,Args=foo1,foo2')
+        returned = self.shorthand(
+            cli_argument, 'Consistent=true,Args=foo1,foo2',
+            'process-cli-arg.foo.bar')
         self.assertEqual(returned, {'Consistent': True,
                                     'Args': ['foo1', 'foo2']})
 
@@ -464,11 +524,13 @@ class TestDocGen(BaseArgProcessTest):
     def setUp(self):
         super(TestDocGen, self).setUp()
         self.shorthand_documenter = ParamShorthandDocGen()
+        self.service_name = 'foo'
+        self.operation_name = 'bar'
 
     def get_generated_example_for(self, argument):
         # Returns a string containing the generated documentation.
         return self.shorthand_documenter.generate_shorthand_example(
-            argument.cli_name, argument.argument_model)
+            argument, self.service_name, self.operation_name)
 
     def assert_generated_example_is(self, argument, expected_docs):
         generated_docs = self.get_generated_example_for(argument)
@@ -488,10 +550,46 @@ class TestDocGen(BaseArgProcessTest):
         self.assert_generated_example_contains(argument, expected_example_str)
 
     def test_gen_list_scalar_docs(self):
+        self.service_name = 'elb'
+        self.operation_name = 'register-instances-with-load-balancer'
         argument = self.get_param_model(
             'elb.RegisterInstancesWithLoadBalancer.Instances')
         doc_string = '--instances InstanceId1 InstanceId2 InstanceId3'
         self.assert_generated_example_is(argument, doc_string)
+
+    def test_flattens_marked_single_member_structure_list(self):
+        argument = self.create_argument({
+            'Arg': {
+                'type': 'list',
+                'member': {
+                    'type': 'structure',
+                    'members': {
+                        'Bar': {'type': 'string'}
+                    }
+                }
+            }
+        }, 'arg')
+        argument.argument_model = argument.argument_model.members['Arg']
+        uses_old_list = 'awscli.argprocess.ParamShorthand._uses_old_list_case'
+        with mock.patch(uses_old_list, mock.Mock(return_value=True)):
+            self.assert_generated_example_is(argument, '--arg Bar1 Bar2 Bar3')
+
+    def test_does_not_flatten_unmarked_single_member_structure_list(self):
+        argument = self.create_argument({
+            'Arg': {
+                'type': 'list',
+                'member': {
+                    'type': 'structure',
+                    'members': {
+                        'Bar': {'type': 'string'}
+                    }
+                }
+            }
+        }, 'arg')
+        argument.argument_model = argument.argument_model.members['Arg']
+        uses_old_list = 'awscli.argprocess.ParamShorthand._uses_old_list_case'
+        with mock.patch(uses_old_list, mock.Mock(return_value=False)):
+            self.assert_generated_example_is(argument, 'Bar=string ...')
 
     def test_gen_list_structure_of_scalars_docs(self):
         argument = self.get_param_model('elb.CreateLoadBalancer.Listeners')
@@ -508,7 +606,7 @@ class TestDocGen(BaseArgProcessTest):
             'Scalar2=string,'
             'List1=string,string ...'
         )
-        arg = model.DenormalizedStructureBuilder().with_members(OrderedDict([
+        m = model.DenormalizedStructureBuilder().with_members(OrderedDict([
             ('List', {'type': 'list',
                       'member': {
                           'type': 'structure',
@@ -522,9 +620,12 @@ class TestDocGen(BaseArgProcessTest):
                           ]),
                       }}),
         ])).build_model().members['List']
-        rendered = self.shorthand_documenter.generate_shorthand_example(
-            '--foo', arg)
-        self.assertIn(expected, rendered)
+        argument = mock.Mock()
+        argument.argument_model = m
+        argument.name = 'foo'
+        argument.cli_name = '--foo'
+        generated_example = self.get_generated_example_for(argument)
+        self.assertIn(expected, generated_example)
 
     def test_gen_list_structure_list_scalar_scalar_docs(self):
         # Verify that we have *two* top level list items displayed,
@@ -535,27 +636,11 @@ class TestDocGen(BaseArgProcessTest):
                       generated_example)
 
     def test_gen_structure_list_scalar_docs(self):
-        schema = {
-            "type": "object",
-            "properties": {
-                "Consistent": {
-                    "type": "boolean",
-                },
-                "Args": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            }
-        }
-        argument_model = create_argument_model_from_schema(schema)
-        m = model.DenormalizedStructureBuilder().with_members(OrderedDict([
+        argument = self.create_argument(OrderedDict([
             ('Consistent', {'type': 'boolean'}),
-            ('Args', { 'type': 'list', 'member': { 'type': 'string', }}),
-        ])).build_model()
-        generated_example = self.shorthand_documenter.generate_shorthand_example(
-            '--foo', m)
+            ('Args', {'type': 'list', 'member': {'type': 'string'}}),
+        ]), 'foo')
+        generated_example = self.get_generated_example_for(argument)
         self.assertIn('Consistent=boolean,Args=string,string',
                       generated_example)
 
@@ -569,7 +654,7 @@ class TestDocGen(BaseArgProcessTest):
         self.assertIn('Ebs={SnapshotId=string', generated_example)
 
     def test_can_document_nested_lists(self):
-        m = model.DenormalizedStructureBuilder().with_members({
+        argument = self.create_argument({
             'A': {
                 'type': 'list',
                 'member': {
@@ -577,21 +662,19 @@ class TestDocGen(BaseArgProcessTest):
                     'member': {'type': 'string'},
                 },
             },
-        }).build_model()
-        generated_example = self.shorthand_documenter.generate_shorthand_example(
-            '--foo', m)
+        })
+        generated_example = self.get_generated_example_for(argument)
         self.assertIn('A=[[string,string],[string,string]]', generated_example)
 
     def test_can_generated_nested_maps(self):
-        m = model.DenormalizedStructureBuilder().with_members({
+        argument = self.create_argument({
             'A': {
                 'type': 'map',
                 'key': {'type': 'string'},
                 'value': {'type': 'string'}
             },
-        }).build_model()
-        generated_example = self.shorthand_documenter.generate_shorthand_example(
-            '--foo', m)
+        })
+        generated_example = self.get_generated_example_for(argument)
         self.assertIn('A={KeyName1=string,KeyName2=string}', generated_example)
 
     def test_list_of_structures_with_triple_dots(self):
@@ -614,16 +697,18 @@ class TestDocGen(BaseArgProcessTest):
             shape_name='Top',
             shape_model=list_shape,
             shape_resolver=model.ShapeResolver(shapes))
-        generated_example = self.shorthand_documenter.generate_shorthand_example(
-            '--foo', m)
+        argument = mock.Mock()
+        argument.argument_model = m
+        argument.name = 'foo'
+        argument.cli_name = '--foo'
+        generated_example = self.get_generated_example_for(argument)
         self.assertIn('A=string,B=string ...', generated_example)
 
     def test_handle_special_case_value_struct_not_documented(self):
-        m = model.DenormalizedStructureBuilder().with_members({
+        argument = self.create_argument({
             'Value': {'type': 'string'}
-        }).build_model()
-        generated_example = self.shorthand_documenter.generate_shorthand_example(
-            '--foo', m)
+        })
+        generated_example = self.get_generated_example_for(argument)
         # This is one of the special cases, we shouldn't generate any
         # shorthand example for this shape.
         self.assertIsNone(generated_example)
@@ -654,8 +739,11 @@ class TestDocGen(BaseArgProcessTest):
             shape_name='Top',
             shape_model=struct_shape,
             shape_resolver=model.ShapeResolver(shapes))
-        generated_example = self.shorthand_documenter.generate_shorthand_example(
-            '--foo', m)
+        argument = mock.Mock()
+        argument.argument_model = m
+        argument.name = 'foo'
+        argument.cli_name = '--foo'
+        generated_example = self.get_generated_example_for(argument)
         self.assertIn(
             'Recurse={SubRecurse={( ... recursive ... ),Scalar=string},'
             'Scalar=string},Scalar=string',
@@ -665,7 +753,7 @@ class TestDocGen(BaseArgProcessTest):
         # The eventual goal is to have a better way to document
         # deeply nested shorthand params, but for now, we'll
         # only document shorthand params up to a certain stack level.
-        m = model.DenormalizedStructureBuilder().with_members({
+        argument = self.create_argument({
             'A': {
                 'type': 'structure',
                 'members': {
@@ -682,16 +770,15 @@ class TestDocGen(BaseArgProcessTest):
                     }
                 }
             },
-        }).build_model()
-        generated_example = self.shorthand_documenter.generate_shorthand_example(
-            '--foo', m)
+        })
+        generated_example = self.get_generated_example_for(argument)
         self.assertEqual(generated_example, '')
 
 
 class TestUnpackJSONParams(BaseArgProcessTest):
     def setUp(self):
         super(TestUnpackJSONParams, self).setUp()
-        self.simplify = ParamShorthand()
+        self.simplify = ParamShorthandParser()
 
     def test_json_with_spaces(self):
         p = self.get_param_model('ec2.RunInstances.BlockDeviceMappings')

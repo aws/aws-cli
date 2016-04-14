@@ -14,6 +14,7 @@ import json
 
 import mock
 from botocore.model import ShapeResolver, StructureShape, StringShape
+from botocore.model import DenormalizedStructureBuilder
 from botocore.docs.bcdoc.restdoc import ReSTDocument
 
 from awscli.testutils import unittest, FileCreator
@@ -80,6 +81,40 @@ class TestRecursiveShapes(unittest.TestCase):
         self.help_command.obj = operation_model
         self.operation_handler.doc_output(self.help_command, 'event-name')
         self.assert_rendered_docs_contain('( ... recursive ... )')
+
+
+class TestTranslationMap(unittest.TestCase):
+    def setUp(self):
+        self.arg_table = {}
+        self.help_command = mock.Mock()
+        self.help_command.event_class = 'custom'
+        self.help_command.arg_table = self.arg_table
+        self.operation_model = mock.Mock()
+        self.operation_model.service_model.operation_names = []
+        self.help_command.obj = self.operation_model
+        self.operation_handler = OperationDocumentEventHandler(
+            self.help_command)
+
+    def assert_rendered_docs_contain(self, expected):
+        writes = [args[0][0] for args in
+                  self.help_command.doc.write.call_args_list]
+        writes = '\n'.join(writes)
+        self.assertIn(expected, writes)
+
+    def test_boolean_arg_groups(self):
+        builder = DenormalizedStructureBuilder()
+        input_model = builder.with_members({
+            'Flag': {'type': 'boolean'}
+        }).build_model()
+        argument_model = input_model.members['Flag']
+        argument_model.name = 'Flag'
+        self.arg_table['flag'] = mock.Mock(argument_model=argument_model)
+        self.arg_table['no-flag'] = mock.Mock(argument_model=argument_model)
+        # The --no-flag should not be used in the translation.
+        self.assertEqual(
+            self.operation_handler.build_translation_map(),
+            {'Flag': 'flag'}
+        )
 
 
 class TestCLIDocumentEventHandler(unittest.TestCase):

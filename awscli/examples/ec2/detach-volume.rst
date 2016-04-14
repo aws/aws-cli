@@ -10,7 +10,7 @@ Output::
 
    {
        "AttachTime": "2014-02-27T19:23:06.000Z",
-       "InstanceId": "i-0751440e",
+       "InstanceId": "i-1234567890abcdef0",
        "VolumeId": "vol-1234abcd",
        "State": "detaching",
        "Device": "/dev/sdb"

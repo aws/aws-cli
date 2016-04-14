@@ -17,7 +17,7 @@ Output::
           "Message": "Your Spot request is fulfilled."
         },
         "ProductDescription": "Linux/UNIX",
-        "InstanceId": "i-20170a7c",
+        "InstanceId": "i-1234567890abcdef0",
         "SpotInstanceRequestId": "sir-08b93456",
         "State": "active",
         "LaunchedAvailabilityZone": "us-west-1b",
@@ -54,7 +54,7 @@ Output::
           "Message": "Your Spot request is fulfilled."
         },
         "ProductDescription": "Linux/UNIX",
-        "InstanceId": "i-894f53d5",
+        "InstanceId": "i-1234567890abcdef1",
         "SpotInstanceRequestId": "sir-285b1e56",
         "State": "active",
         "LaunchedAvailabilityZone": "us-west-1b",

@@ -14,7 +14,7 @@ Output::
         "Status": "attached",
         "DeviceIndex": 0,
         "AttachTime": "2015-05-21T20:02:20.000Z",
-        "InstanceId": "i-d5652e23",
+        "InstanceId": "i-1234567890abcdef0",
         "DeleteOnTermination": true,
         "AttachmentId": "eni-attach-43348162",
         "InstanceOwnerId": "123456789012"

@@ -4,7 +4,7 @@ This example modifies the instance type of the specified instance. The instance 
 
 Command::
 
-  aws ec2 modify-instance-attribute --instance-id i-5203422c --instance-type "{\"Value\": \"m1.small\"}"
+  aws ec2 modify-instance-attribute --instance-id i-1234567890abcdef0 --instance-type "{\"Value\": \"m1.small\"}"
 
 **To enable enhanced networking on an instance**
 
@@ -12,7 +12,7 @@ This example enables enhanced networking for the specified instance. The instanc
 
 Command::
 
-  aws ec2 modify-instance-attribute --instance-id i-1a2b3c4d --sriov-net-support simple
+  aws ec2 modify-instance-attribute --instance-id i-1234567890abcdef0 --sriov-net-support simple
 
 **To modify the sourceDestCheck attribute**
 
@@ -20,7 +20,7 @@ This example sets the ``sourceDestCheck`` attribute of the specified instance to
 
 Command::
 
-  aws ec2 modify-instance-attribute --instance-id i-5203422c --source-dest-check "{\"Value\": true}"
+  aws ec2 modify-instance-attribute --instance-id i-1234567890abcdef0 --source-dest-check "{\"Value\": true}"
 
 **To modify the deleteOnTermination attribute of the root volume**
 
@@ -28,4 +28,4 @@ This example sets the ``deleteOnTermination`` attribute for the root volume of t
 
 Command::
 
-  aws ec2 modify-instance-attribute --instance-id i-5203422c --block-device-mappings "[{\"DeviceName\": \"/dev/sda1\",\"Ebs\":{\"DeleteOnTermination\":false}}]"
+  aws ec2 modify-instance-attribute --instance-id i-1234567890abcdef0 --block-device-mappings "[{\"DeviceName\": \"/dev/sda1\",\"Ebs\":{\"DeleteOnTermination\":false}}]"

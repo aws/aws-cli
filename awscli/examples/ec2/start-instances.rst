@@ -4,14 +4,14 @@ This example starts the specified Amazon EBS-backed instance.
 
 Command::
 
-  aws ec2 start-instances --instance-ids i-1a2b3c4d
+  aws ec2 start-instances --instance-ids i-1234567890abcdef0
 
 Output::
 
     {
         "StartingInstances": [
             {
-                "InstanceId": "i-1a2b3c4d",
+                "InstanceId": "i-1234567890abcdef0",
                 "CurrentState": {
                     "Code": 0,
                     "Name": "pending"

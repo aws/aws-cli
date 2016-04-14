@@ -154,7 +154,7 @@ GRANTS = {
         'writeacl, or full.</li><li><code>Grantee_Type</code> - '
         'Specifies how the grantee is to be identified, and can be set '
         'to uri, emailaddress, or id.</li><li><code>Grantee_ID</code> - '
-        'Specifies the grantee based on Grantee_Type.</li></ul>The '
+        'Specifies the grantee based on Grantee_Type. The '
         '<code>Grantee_ID</code> value can be one of:<ul><li><b>uri</b> '
         '- The group\'s URI. For more information, see '
         '<a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/'

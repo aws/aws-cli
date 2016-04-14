@@ -427,8 +427,8 @@ class S3Command(BasicCommand):
 class ListCommand(S3Command):
     NAME = 'ls'
     DESCRIPTION = ("List S3 objects and common prefixes under a prefix or "
-                   "all S3 buckets. Note that the --output argument "
-                   "is ignored for this command.")
+                   "all S3 buckets. Note that the --output and --no-paginate "
+                   "arguments are ignored for this command.")
     USAGE = "<S3Uri> or NONE"
     ARG_TABLE = [{'name': 'paths', 'nargs': '?', 'default': 's3://',
                   'positional_arg': True, 'synopsis': USAGE}, RECURSIVE,

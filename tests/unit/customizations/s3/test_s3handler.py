@@ -340,20 +340,25 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
         ]
         self.parsed_responses = [
             {'UploadId': 'foo'},
-            {}
+            {'ETag': 'abcd'},
+            {'ETag': 'abcd'},
+            {},
         ]
-        expected_calls = [
-            ('CreateMultipartUpload',
-             {'Bucket': 'mybucket', 'ContentType': 'text/plain',
-              'Key': 'text1.txt', 'ACL': 'private'}),
-            # Because the CreateMultipartUpload started, we should expect
-            # to see an AbortMultipartUpload call as well.
-            ('AbortMultipartUpload',
-             {'Bucket': 'mybucket', 'Key': 'text1.txt', 'UploadId': 'foo'}),
-        ]
-        self.assert_operations_for_s3_handler(self.s3_handler_multi, tasks,
-                                              expected_calls,
-                                              verify_no_failed_tasked=False)
+        self.run_s3_handler(self.s3_handler_multi, tasks)
+        # There are several ways this code can be executed that will
+        # vary every time the test is run.  Examples:
+        # <exception propogates>
+        # Create, <exception propogates>
+        # Create, Upload, <exception propogates>
+        # Create, Upload, Upload, <exception propogates>
+        # We can't use assert_operation_for_s3_handler because the list of
+        # API calls is not deterministic.
+        # We can however assert an invariant on the test.  An exception
+        # will always be raised on enqueuing, so if a CreateMultipartUpload was executed
+        # we must *always* see an AbortMultipartUpload as the last operation
+        if self.operations_called:
+            self.assertEqual(self.operations_called[0][0].name, 'CreateMultipartUpload')
+            self.assertEqual(self.operations_called[-1][0].name, 'AbortMultipartUpload')
 
 
 class S3HandlerTestMvLocalS3(S3HandlerBaseTest):

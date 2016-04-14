@@ -11,7 +11,7 @@ Output::
 	{
 		"Instances": [
 			{
-				"InstanceId": "i-1a2b3c4d", 
+				"InstanceId": "i-1234567890abcdef0", 
 				"VpcId": "vpc-88888888", 
 				"Groups": [
 					{
@@ -26,7 +26,7 @@ Output::
 				]
 			}, 
 			{
-				"InstanceId": "i-ab12cd34", 
+				"InstanceId": "i-0598c7d356eba48d7", 
 				"VpcId": "vpc-12312312", 
 				"Groups": [
 					{
@@ -54,7 +54,7 @@ Output::
 	{
 		"Instances": [
 			{
-				"InstanceId": "i-1a2b3c4d", 
+				"InstanceId": "i-1234567890abcdef0", 
 				"VpcId": "vpc-88888888", 
 				"Groups": [
 					{

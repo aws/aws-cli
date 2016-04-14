@@ -1,17 +1,17 @@
 **To bundle an instance**
 
-This example bundles instance ``i-1a2b3c4d`` to a bucket called ``bundletasks``. Before you specify values for your access key IDs, review and follow the guidance in `Best Practices for Managing AWS Access Keys`_.
+This example bundles instance ``i-1234567890abcdef0`` to a bucket called ``bundletasks``. Before you specify values for your access key IDs, review and follow the guidance in `Best Practices for Managing AWS Access Keys`_.
 
 Command::
 
-  aws ec2 bundle-instance --instance-id i-1a2b3c4d --bucket bundletasks --prefix winami --owner-akid AK12AJEXAMPLE --owner-sak example123example
+  aws ec2 bundle-instance --instance-id i-1234567890abcdef0 --bucket bundletasks --prefix winami --owner-akid AK12AJEXAMPLE --owner-sak example123example
 
 Output::
 
   {
     "BundleTask": {
       "UpdateTime": "2015-09-15T13:30:35.000Z", 
-      "InstanceId": "i-1a2b3c4d", 
+      "InstanceId": "i-1234567890abcdef0", 
       "Storage": {
         "S3": {
           "Prefix": "winami", 

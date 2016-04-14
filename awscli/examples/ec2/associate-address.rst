@@ -4,7 +4,7 @@ This example associates an Elastic IP address with an instance in EC2-Classic. I
 
 Command::
 
-  aws ec2 associate-address --instance-id i-5203422c --public-ip 198.51.100.0
+  aws ec2 associate-address --instance-id i-07ffe74c7330ebf53 --public-ip 198.51.100.0
 
 **To associate an Elastic IP address in EC2-VPC**
 
@@ -12,7 +12,7 @@ This example associates an Elastic IP address with an instance in a VPC.
 
 Command::
 
-  aws ec2 associate-address --instance-id i-43a4412a --allocation-id eipalloc-64d5890a
+  aws ec2 associate-address --instance-id i-0b263919b6498b123 --allocation-id eipalloc-64d5890a
 
 Output::
 

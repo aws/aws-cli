@@ -4,12 +4,12 @@ This example gets the encrypted password.
 
 Command::
 
-  aws ec2 get-password-data --instance-id i-5203422c
+  aws ec2 get-password-data --instance-id i-1234567890abcdef0
 
 Output::
 
   {
-      "InstanceId": "i-5203422c",
+      "InstanceId": "i-1234567890abcdef0",
       "Timestamp": "2013-08-07T22:18:38.000Z",
       "PasswordData": "gSlJFq+VpcZXqy+iktxMF6NyxQ4qCrT4+gaOuNOenX1MmgXPTj7XEXAMPLE
   UQ+YeFfb+L1U4C4AKv652Ux1iRB3CPTYP7WmU3TUnhsuBd+p6LVk7T2lKUml6OXbk6WPW1VYYm/TRPB1
@@ -24,12 +24,12 @@ This example gets the decrypted password.
 
 Command::
 
-  aws ec2 get-password-data --instance-id  i-5203422c --priv-launch-key C:\Keys\MyKeyPair.pem
+  aws ec2 get-password-data --instance-id  i-1234567890abcdef0 --priv-launch-key C:\Keys\MyKeyPair.pem
 
 Output::
 
   {
-      "InstanceId": "i-5203422c",
+      "InstanceId": "i-1234567890abcdef0",
       "Timestamp": "2013-08-30T23:18:05.000Z",
       "PasswordData": "&ViJ652e*u"
   }

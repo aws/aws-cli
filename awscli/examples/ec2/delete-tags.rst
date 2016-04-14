@@ -11,13 +11,13 @@ It's optional to specify the value for any tag with a value. If you specify a va
 
 Command::
 
-  aws ec2 delete-tags --resources i-12345678 --tags Key=Name,Value=
+  aws ec2 delete-tags --resources i-1234567890abcdef0 --tags Key=Name,Value=
  
 This example deletes the tag with the ``purpose`` key from the specified instance, regardless of the tag's value.
 
 Command::
 
-  aws ec2 delete-tags --resources i-12345678 --tags Key=purpose
+  aws ec2 delete-tags --resources i-1234567890abcdef0 --tags Key=purpose
   
 **To delete a tag from multiple resources**
   
@@ -25,4 +25,4 @@ This example deletes the ``Purpose=Test`` tag from a specified instance and AMI.
 
 Command::
 
-  aws ec2 delete-tags --resources i-12345678 ami-78a54011 --tags Key=Purpose
+  aws ec2 delete-tags --resources i-1234567890abcdef0 ami-78a54011 --tags Key=Purpose

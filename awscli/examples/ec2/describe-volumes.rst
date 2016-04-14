@@ -15,7 +15,7 @@ Output::
                "Attachments": [
                    {
                        "AttachTime": "2013-12-18T22:35:00.000Z",
-                       "InstanceId": "i-abe041d4",
+                       "InstanceId": "i-1234567890abcdef0",
                        "VolumeId": "vol-21083656",
                        "State": "attached",
                        "DeleteOnTermination": true,
@@ -45,11 +45,11 @@ Output::
 
 **To describe volumes that are attached to a specific instance**
 
-This example command describes all volumes that are both attached to the instance with the ID i-abe041d4 and set to delete when the instance terminates.
+This example command describes all volumes that are both attached to the instance with the ID i-1234567890abcdef0 and set to delete when the instance terminates.
 
 Command::
 
-  aws ec2 describe-volumes --region us-east-1 --filters Name=attachment.instance-id,Values=i-abe041d4 Name=attachment.delete-on-termination,Values=true
+  aws ec2 describe-volumes --region us-east-1 --filters Name=attachment.instance-id,Values=i-1234567890abcdef0 Name=attachment.delete-on-termination,Values=true
 
 Output::
 
@@ -60,7 +60,7 @@ Output::
                "Attachments": [
                    {
                        "AttachTime": "2013-12-18T22:35:00.000Z",
-                       "InstanceId": "i-abe041d4",
+                       "InstanceId": "i-1234567890abcdef0",
                        "VolumeId": "vol-21083656",
                        "State": "attached",
                        "DeleteOnTermination": true,

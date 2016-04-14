@@ -12,7 +12,7 @@ This example adds (or overwrites) two tags for an AMI and an instance. One of th
 
 Command::
 
-  aws ec2 create-tags --resources ami-1a2b3c4d i-10a64379 --tags Key=webserver,Value=   Key=stack,Value=Production
+  aws ec2 create-tags --resources ami-1a2b3c4d i-1234567890abcdef0 --tags Key=webserver,Value=   Key=stack,Value=Production
 
 **To add tags with special characters**
 
@@ -20,17 +20,17 @@ This example adds the tag ``[Group]=test`` for an instance. The square brackets 
 
 Command::
 
-  aws ec2 create-tags --resources i-1a2b3c4d --tags Key=\"[Group]\",Value=test
+  aws ec2 create-tags --resources i-1234567890abcdef0 --tags Key=\"[Group]\",Value=test
 
 If you are using Windows PowerShell, break out the characters with a backslash (\\), surround them with double quotes ("), and then surround the entire key and value structure with single quotes ('):
 
 Command::
 
-  aws ec2 create-tags --resources i-1a2b3c4d --tags 'Key=\"[Group]\",Value=test'
+  aws ec2 create-tags --resources i-1234567890abcdef0 --tags 'Key=\"[Group]\",Value=test'
 
 If you are using Linux or OS X, enclose the entire key and value structure with single quotes ('), and then enclose the element with the special character with double quotes ("):
 
 Command::
 
-  aws ec2 create-tags --resources i-1a2b3c4d --tags 'Key="[Group]",Value=test'
+  aws ec2 create-tags --resources i-1234567890abcdef0 --tags 'Key="[Group]",Value=test'
 

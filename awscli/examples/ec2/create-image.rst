@@ -4,12 +4,24 @@ This example creates an AMI from the specified instance.
 
 Command::
 
-  aws ec2 create-image --instance-id i-10a64379 --name "My server" --description "An AMI for my server"
+  aws ec2 create-image --instance-id i-1234567890abcdef0 --name "My server" --description "An AMI for my server"
 
 Output::
 
   {
       "ImageId": "ami-5731123e"
+  }
+
+This example creates an AMI and sets the --no-reboot parameter, so that the instance is not rebooted before the image is created.
+
+Command::
+
+  aws ec2 create-image --instance-id i-0b09a25c58929de26 --name "My server" --no-reboot
+
+Output::
+
+  {
+    "ImageId": "ami-1a2b3c4d"
   }
 
 **To create an AMI using a block device mapping**

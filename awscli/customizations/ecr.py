@@ -52,6 +52,6 @@ class ECRLogin(BasicCommand):
         for auth in result['authorizationData']:
             auth_token = b64decode(auth['authorizationToken']).decode()
             username, password = auth_token.split(':')
-            sys.stdout.write('docker login -u %s -p %s -e none %s\n'
+            sys.stdout.write('docker login -u %s -p %s %s\n'
                              % (username, password, auth['proxyEndpoint']))
         return 0

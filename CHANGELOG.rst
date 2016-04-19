@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.10.21
+=======
+
+* feature:``aws ec2``: Add support for two new EBS volume types
+* feature:``aws cognito-idp``: Add support for new service, ``aws cognito-idp``
+* feature:``aws kinesis``: Update ``aws kinesis`` command to latest version
+* feature:``aws elasticbeanstalk``: Add support for automatic platform version upgrades with managed updates
+* feature:``aws devicefarm``: Update ``aws devicefarm`` command to latest version
+* feature:``aws s3``: Add support for Amazon S3 Transfer Acceleration
+* feature:``aws firehose``: Update ``firehose`` command to latest version
+
+
 1.10.20
 =======
 

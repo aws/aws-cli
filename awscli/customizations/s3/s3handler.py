@@ -136,20 +136,12 @@ class S3Handler(object):
         self._remove_pending_downloads()
 
     def _abort_pending_multipart_uploads(self):
-        # For the purpose of aborting uploads, we consider any
-        # upload context with an upload id.
+        # precondition: this method is assumed to be called when there are no ongoing
+        # uploads (the executor has been shutdown).
         for upload, filename in self._multipart_uploads:
-            if upload.is_cancelled():
-                try:
-                    upload.wait_for_upload_id()
-                except tasks.UploadCancelledError:
-                    pass
-                else:
-                    # This means that the upload went from STARTED -> CANCELLED.
-                    # This could happen if a part thread decided to cancel the
-                    # upload.  We need to explicitly abort the upload here.
-                    self._cancel_upload(upload.wait_for_upload_id(), filename)
-            upload.cancel_upload(self._cancel_upload, args=(filename,))
+            if upload.is_cancelled() or upload.in_progress():
+                # Cancel any upload that's not unstarted and not complete.
+                upload.cancel_upload(self._cancel_upload, args=(filename,))
 
     def _remove_pending_downloads(self):
         # The downloads case is easier than the uploads case because we don't
@@ -342,6 +334,7 @@ class S3Handler(object):
             parameters=self.params,
             result_queue=self.result_queue, upload_context=upload_context)
         self.executor.submit(create_multipart_upload_task)
+        self._multipart_uploads.append((upload_context, filename))
         return upload_context
 
     def _enqueue_upload_tasks(self, num_uploads, chunksize, upload_context,
@@ -372,7 +365,6 @@ class S3Handler(object):
             session=self.session, filename=filename, parameters=self.params,
             result_queue=self.result_queue, upload_context=upload_context)
         self.executor.submit(complete_multipart_upload_task)
-        self._multipart_uploads.append((upload_context, filename))
 
 
 class S3StreamHandler(S3Handler):

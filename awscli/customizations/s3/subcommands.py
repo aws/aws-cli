@@ -154,7 +154,7 @@ GRANTS = {
         'writeacl, or full.</li><li><code>Grantee_Type</code> - '
         'Specifies how the grantee is to be identified, and can be set '
         'to uri, emailaddress, or id.</li><li><code>Grantee_ID</code> - '
-        'Specifies the grantee based on Grantee_Type.</li></ul>The '
+        'Specifies the grantee based on Grantee_Type. The '
         '<code>Grantee_ID</code> value can be one of:<ul><li><b>uri</b> '
         '- The group\'s URI. For more information, see '
         '<a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/'
@@ -427,8 +427,8 @@ class S3Command(BasicCommand):
 class ListCommand(S3Command):
     NAME = 'ls'
     DESCRIPTION = ("List S3 objects and common prefixes under a prefix or "
-                   "all S3 buckets. Note that the --output argument "
-                   "is ignored for this command.")
+                   "all S3 buckets. Note that the --output and --no-paginate "
+                   "arguments are ignored for this command.")
     USAGE = "<S3Uri> or NONE"
     ARG_TABLE = [{'name': 'paths', 'nargs': '?', 'default': 's3://',
                   'positional_arg': True, 'synopsis': USAGE}, RECURSIVE,

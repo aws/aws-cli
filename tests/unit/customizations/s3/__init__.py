@@ -54,7 +54,8 @@ class S3HandlerBaseTest(BaseAWSCommandParamsTest):
         return stdout, stderr, rc
 
     def assert_operations_for_s3_handler(self, s3_handler, tasks,
-                                         ref_operations):
+                                         ref_operations,
+                                         verify_no_failed_tasked=True):
         """Assert API operations based on tasks given to s3 handler
 
         :param s3_handler: A S3Handler object
@@ -64,7 +65,8 @@ class S3HandlerBaseTest(BaseAWSCommandParamsTest):
             parameters passed to it (as it would be passed to botocore).
         """
         stdout, stderr, rc = self.run_s3_handler(s3_handler, tasks)
-        self.assertEqual(rc.num_tasks_failed, 0)
+        if verify_no_failed_tasked:
+            self.assertEqual(rc.num_tasks_failed, 0)
         self.assertEqual(len(self.operations_called), len(ref_operations))
         for i, ref_operation in enumerate(ref_operations):
             self.assertEqual(self.operations_called[i][0].name,

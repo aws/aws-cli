@@ -13,7 +13,7 @@ Output::
           {
               "ConversionTaskId": "import-i-ffvko9js",
               "ImportInstance": {
-                  "InstanceId": "i-6cc70a3f",
+                  "InstanceId": "i-1234567890abcdef0",
                   "Volumes": [
                       {
                           "Volume": {

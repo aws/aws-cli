@@ -24,8 +24,9 @@ from awscli.compat import six
 from awscli.customizations.s3.s3handler import S3Handler, S3StreamHandler
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.tasks import CreateMultipartUploadTask, \
-    UploadPartTask, CreateLocalFileTask
+    UploadPartTask, CreateLocalFileTask, CompleteMultipartUploadTask
 from awscli.customizations.s3.utils import MAX_PARTS, MAX_UPLOAD_SIZE
+from awscli.customizations.s3.utils import StablePriorityQueue
 from awscli.customizations.s3.transferconfig import RuntimeConfig
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     MockStdIn, S3HandlerBaseTest
@@ -33,6 +34,18 @@ from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
 
 def runtime_config(**kwargs):
     return RuntimeConfig().build_config(**kwargs)
+
+
+# The point of this class is some condition where an error
+# occurs during the enqueueing of tasks.
+class CompleteTaskNotAllowedQueue(StablePriorityQueue):
+    def _put(self, item):
+        if isinstance(item, CompleteMultipartUploadTask):
+            # Raising this exception will trigger the
+            # "error" case shutdown in the executor.
+            raise RuntimeError(
+                "Forced error on enqueue of complete task.")
+        return StablePriorityQueue._put(self, item)
 
 
 class S3HandlerTestDelete(S3HandlerBaseTest):
@@ -277,19 +290,19 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
             # This will cause a failure for the second part upload because
             # it does not have an ETag.
             {},
+            # This is for the final AbortMultipartUpload call.
+            {},
         ]
         stdout, stderr, rc = self.run_s3_handler(self.s3_handler_multi, tasks)
         self.assertEqual(rc.num_tasks_failed, 1)
 
     def test_multiupload_abort_in_s3_handler(self):
-        files = [self.loc_files[0]]
-        tasks = []
-        for i in range(len(files)):
-            tasks.append(FileInfo(
-                src=self.loc_files[i],
-                dest=self.s3_files[i], size=15,
-                operation_name='upload',
-                client=self.client))
+        tasks = [
+            FileInfo(src=self.loc_files[0],
+                     dest=self.s3_files[0], size=15,
+                     operation_name='upload',
+                     client=self.client)
+        ]
         self.parsed_responses = [
             {'UploadId': 'foo'},
             {'ETag': '"120ea8a25e5d487bf68b5f7096440019"'},
@@ -298,16 +311,54 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
             {},
             {}
         ]
-        context_path = 'awscli.customizations.s3.tasks.MultipartUploadContext'
-        with mock.patch(context_path) as mock_context:
-            mock_context.return_value.wait_for_upload_id.return_value = 'foo'
-            stdout, stderr, rc = self.run_s3_handler(self.s3_handler_multi,
-                                                     tasks)
-            # Ensure multipart upload is called in case cancelling of
-            # task in s3handler if the task is in the middle of transitioning
-            # from STARTED -> COMPLETED
-            self.assertEqual(self.operations_called[-1][0].name,
-                             'AbortMultipartUpload')
+        expected_calls = [
+            ('CreateMultipartUpload',
+             {'Bucket': 'mybucket', 'ContentType': 'text/plain',
+              'Key': 'text1.txt', 'ACL': 'private'}),
+            ('UploadPart',
+             {'Body': mock.ANY, 'Bucket': 'mybucket', 'PartNumber': 1,
+              'UploadId': 'foo', 'Key': 'text1.txt'}),
+            # Here we'll see an error because of a msising ETag.
+            ('UploadPart',
+             {'Body': mock.ANY, 'Bucket': 'mybucket', 'PartNumber': 2,
+              'UploadId': 'foo', 'Key': 'text1.txt'}),
+            # And we should have the final call be an AbortMultipartUpload.
+            ('AbortMultipartUpload',
+             {'Bucket': 'mybucket', 'Key': 'text1.txt', 'UploadId': 'foo'}),
+        ]
+        self.assert_operations_for_s3_handler(self.s3_handler_multi, tasks,
+                                              expected_calls,
+                                              verify_no_failed_tasked=False)
+
+    def test_multipart_abort_for_half_queues(self):
+        self.s3_handler_multi.executor.queue = CompleteTaskNotAllowedQueue()
+        tasks = [
+            FileInfo(src=self.loc_files[0],
+                     dest=self.s3_files[0], size=15,
+                     operation_name='upload',
+                     client=self.client)
+        ]
+        self.parsed_responses = [
+            {'UploadId': 'foo'},
+            {'ETag': 'abcd'},
+            {'ETag': 'abcd'},
+            {},
+        ]
+        self.run_s3_handler(self.s3_handler_multi, tasks)
+        # There are several ways this code can be executed that will
+        # vary every time the test is run.  Examples:
+        # <exception propogates>
+        # Create, <exception propogates>
+        # Create, Upload, <exception propogates>
+        # Create, Upload, Upload, <exception propogates>
+        # We can't use assert_operation_for_s3_handler because the list of
+        # API calls is not deterministic.
+        # We can however assert an invariant on the test.  An exception
+        # will always be raised on enqueuing, so if a CreateMultipartUpload was executed
+        # we must *always* see an AbortMultipartUpload as the last operation
+        if self.operations_called:
+            self.assertEqual(self.operations_called[0][0].name, 'CreateMultipartUpload')
+            self.assertEqual(self.operations_called[-1][0].name, 'AbortMultipartUpload')
 
 
 class S3HandlerTestMvLocalS3(S3HandlerBaseTest):

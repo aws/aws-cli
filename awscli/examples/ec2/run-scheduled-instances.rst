@@ -29,7 +29,7 @@ Output::
 
   {
     "InstanceIdSet": [
-        "i-1a2b3c4d"
+        "i-1234567890abcdef0"
     ]
   }
 
@@ -58,6 +58,6 @@ Output::
 
   {
     "InstanceIdSet": [
-        "i-1a2b3c4d"
+        "i-1234567890abcdef0"
     ]
   }

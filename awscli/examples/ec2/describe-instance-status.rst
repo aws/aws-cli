@@ -4,14 +4,14 @@ This example describes the current status of the specified instance.
 
 Command::
 
-  aws ec2 describe-instance-status --instance-id i-5203422c
+  aws ec2 describe-instance-status --instance-id i-1234567890abcdef0
 
 Output::
 
   {
       "InstanceStatuses": [
           {
-              "InstanceId": "i-5203422c",
+              "InstanceId": "i-1234567890abcdef0",
               "InstanceState": {
                   "Code": 16,
                   "Name": "running"

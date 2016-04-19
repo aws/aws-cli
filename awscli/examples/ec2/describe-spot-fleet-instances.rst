@@ -11,7 +11,7 @@ Output::
   {
     "ActiveInstances": [
         {
-            "InstanceId": "i-3852c1cf",
+            "InstanceId": "i-1234567890abcdef0",
             "InstanceType": "m3.medium",
             "SpotInstanceRequestId": "sir-08b93456"
         },

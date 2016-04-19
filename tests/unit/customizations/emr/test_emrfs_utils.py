@@ -156,7 +156,7 @@ class TestEmrfsUtils(BaseAWSCommandParamsTest):
         expected_emrfs_properties = {
             'fs.s3.cse.enabled': 'true',
             'fs.s3.cse.encryptionMaterialsProvider': 'my_class',
-            'fs.s3.cse.custom.provider.uri': 'my_location'}
+            'fs.s3.cse.encryptionMaterialsProvider.uri': 'my_location'}
 
         self._assert_bootstrap_actions(
             emrfs_option_value, expected_emrfs_ba_key_values,

@@ -731,7 +731,7 @@ class TestCloudTrailCommand(BaseAWSCommandParamsTest):
         session = Mock()
         command = CloudTrailValidateLogs(session)
         parsed_globals = Mock(region=None, verify_ssl=None, endpoint_url=None)
-        command.setup_services(None, parsed_globals)
+        command.setup_services(parsed_globals)
         create_client_calls = session.create_client.call_args_list
         self.assertEqual(
             create_client_calls,
@@ -744,7 +744,7 @@ class TestCloudTrailCommand(BaseAWSCommandParamsTest):
         command = CloudTrailValidateLogs(session)
         parsed_globals = Mock(region='foo', verify_ssl=None,
                               endpoint_url=endpoint_url)
-        command.setup_services(None, parsed_globals)
+        command.setup_services(parsed_globals)
         create_client_calls = session.create_client.call_args_list
         self.assertEqual(
             create_client_calls,

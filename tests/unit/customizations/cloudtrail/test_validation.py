@@ -487,7 +487,9 @@ class TestDigestTraverser(unittest.TestCase):
         start_date = START_DATE
         end_date = END_DATE
         key_name = end_date.strftime(DATE_FORMAT) + '.json.gz'
+        region = 'us-west-2'
         digest_provider = Mock()
+        digest_provider.trail_home_region = region
         digest_provider.load_digest_keys_in_range.return_value = [key_name]
         digest_provider.fetch_digest.return_value = (
             {'digestEndTime': 'foo',
@@ -512,7 +514,7 @@ class TestDigestTraverser(unittest.TestCase):
         self.assertEqual(1, len(calls))
         self.assertEqual(
             ('Digest file\ts3://1/%s\tINVALID: public key not '
-             'found for fingerprint abc' % key_name),
+             'found in region %s for fingerprint abc' % (key_name, region)),
             calls[0]['message'])
 
     def test_invokes_digest_validator(self):

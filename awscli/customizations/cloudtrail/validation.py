@@ -488,8 +488,10 @@ class DigestTraverser(object):
         fingerprint = digest_data['digestPublicKeyFingerprint']
         if fingerprint not in public_keys:
             raise DigestError(
-                ('Digest file\ts3://%s/%s\tINVALID: public key not found for '
-                 'fingerprint %s') % (bucket, key, fingerprint))
+                ('Digest file\ts3://%s/%s\tINVALID: public key not found in '
+                 'region %s for fingerprint %s') %
+                (bucket, key, self.digest_provider.trail_home_region,
+                 fingerprint))
         public_key_hex = public_keys[fingerprint]['Value']
         self._digest_validator.validate(
             bucket, key, public_key_hex, digest_data, digest)

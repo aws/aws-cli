@@ -40,9 +40,11 @@ def format_date(date):
     """Returns a formatted date string in a CloudTrail date format"""
     return date.strftime(DATE_FORMAT)
 
+
 def format_display_date(date):
     """Returns a formatted date string meant for CLI output"""
     return date.strftime(DISPLAY_DATE_FORMAT)
+
 
 def normalize_date(date):
     """Returns a normalized date using a UTC timezone"""
@@ -486,8 +488,10 @@ class DigestTraverser(object):
         fingerprint = digest_data['digestPublicKeyFingerprint']
         if fingerprint not in public_keys:
             raise DigestError(
-                ('Digest file\ts3://%s/%s\tINVALID: public key not found for '
-                 'fingerprint %s') % (bucket, key, fingerprint))
+                ('Digest file\ts3://%s/%s\tINVALID: public key not found in '
+                 'region %s for fingerprint %s') %
+                (bucket, key, self.digest_provider.trail_home_region,
+                 fingerprint))
         public_key_hex = public_keys[fingerprint]['Value']
         self._digest_validator.validate(
             bucket, key, public_key_hex, digest_data, digest)
@@ -652,7 +656,7 @@ class CloudTrailValidateLogs(BasicCommand):
 
     def _run_main(self, args, parsed_globals):
         self.handle_args(args)
-        self.setup_services(args, parsed_globals)
+        self.setup_services(parsed_globals)
         self._call()
         if self._invalid_digests > 0 or self._invalid_logs > 0:
             return 1
@@ -678,7 +682,7 @@ class CloudTrailValidateLogs(BasicCommand):
         # thereby setting self._found_end_time to a value.
         self._found_start_time = self.start_time
 
-    def setup_services(self, args, parsed_globals):
+    def setup_services(self, parsed_globals):
         self._source_region = parsed_globals.region
         # Use the the same region as the region of the CLI to get locations.
         self.s3_client_provider = S3ClientProvider(
@@ -710,7 +714,7 @@ class CloudTrailValidateLogs(BasicCommand):
             if not digest['logFiles']:
                 continue
             for log in digest['logFiles']:
-                self._download_log(log, digest)
+                self._download_log(log)
         self._write_summary_text()
 
     def _track_found_times(self, digest):
@@ -725,7 +729,7 @@ class CloudTrailValidateLogs(BasicCommand):
             digest_end_time = parse_date(digest['digestEndTime'])
             self._found_end_time = min(digest_end_time, self.end_time)
 
-    def _download_log(self, log, digest_data):
+    def _download_log(self, log):
         """ Download a log, decompress, and compare SHA256 checksums"""
         try:
             # Create a client that can work with this bucket.

@@ -503,14 +503,28 @@ class TestDocGen(BaseArgProcessTest):
         self.assertIn('SSLCertificateId=string', generated_example)
 
     def test_gen_list_structure_multiple_scalar_docs(self):
-        argument = self.get_param_model(
-            'emr.ModifyInstanceGroups.InstanceGroups')
         expected = (
-             'InstanceGroupId=string,'
-             'InstanceCount=integer,EC2InstanceIdsToTerminate=string,'
-             'string ...'
+            'Scalar1=string,'
+            'Scalar2=string,'
+            'List1=string,string ...'
         )
-        self.assert_generated_example_is(argument, expected)
+        arg = model.DenormalizedStructureBuilder().with_members(OrderedDict([
+            ('List', {'type': 'list',
+                      'member': {
+                          'type': 'structure',
+                          'members': OrderedDict([
+                              ('Scalar1', {'type': 'string'}),
+                              ('Scalar2', {'type': 'string'}),
+                              ('List1', {
+                                  'type': 'list',
+                                  'member': {'type': 'string'},
+                              }),
+                          ]),
+                      }}),
+        ])).build_model().members['List']
+        rendered = self.shorthand_documenter.generate_shorthand_example(
+            '--foo', arg)
+        self.assertIn(expected, rendered)
 
     def test_gen_list_structure_list_scalar_scalar_docs(self):
         # Verify that we have *two* top level list items displayed,

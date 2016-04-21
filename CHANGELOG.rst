@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.10.22
+=======
+
+* feature:emr: Add support for smart targeted resize feature
+* feature:iot: Add SQL RulesEngine version support
+* feature:acm: Add tagging support for ACM
+
+
 1.10.21
 =======
 

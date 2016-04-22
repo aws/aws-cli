@@ -1,4 +1,4 @@
-**To remove a tag from an ACM certificate**
+**To remove a tag from an ACM Certificate**
 
 The following ``remove-tags-from-certificate`` command removes two tags from the specified certificate. Use a space to separate multiple tags::
 

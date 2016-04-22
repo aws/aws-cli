@@ -1,4 +1,4 @@
-**To list the tags applied to an ACM certificate**
+**To list the tags applied to an ACM Certificate**
 
 The following ``list-tags-for-certificate`` command lists the tags applied to a certificate in your account::
 

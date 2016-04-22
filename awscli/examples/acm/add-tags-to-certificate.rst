@@ -1,4 +1,4 @@
-**To add tags to an existing ACM certificate**
+**To add tags to an existing ACM Certificate**
 
 The following ``add-tags-to-certificate`` command adds two tags to the specified certificate. Use a space to separate multiple tags::
 

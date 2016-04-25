@@ -12,7 +12,7 @@ Output::
 
   {
       "OwnerId": "123456789012",
-      "ReservationId": "r-5875ca20",
+      "ReservationId": "r-08626e73c547023b1",
       "Groups": [
           {
               "GroupName": "MySecurityGroup",
@@ -80,7 +80,7 @@ Output::
 
   {
       "OwnerId": "123456789012",
-      "ReservationId": "r-5875ca20",
+      "ReservationId": "r-08626e73c547023b2",
       "Groups": [],
       "Instances": [
           {
@@ -210,7 +210,7 @@ You can view only the Amazon EBS volumes in your block device mapping using the 
 
 Command::
 
-  GET http://169.254.169.254/latest/meta-data/block-device-mapping
+  curl http://169.254.169.254/latest/meta-data/block-device-mapping/
 
 Output::
 
@@ -221,7 +221,7 @@ Note that ``ami`` represents the root volume. To get details about the instance 
 
 Command::
 
-  GET http://169.254.169.254/latest/meta-data/block-device-mapping/ephemeral1
+  curl http://169.254.169.254/latest/meta-data/block-device-mapping/ephemeral1
 
 Output::
 

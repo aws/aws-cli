@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.10.23
+=======
+
+* feature:``ecr``: Update ecr command to latest version
+* feature:``acm``: Update acm command to latest version
+* feature:``ec2``: Update ec2 command to latest version
+* feature:``sts``: Update sts command to latest version
+* feature:``cognito-idp``: Update cognito-idp command to latest version
+
+
 1.10.22
 =======
 

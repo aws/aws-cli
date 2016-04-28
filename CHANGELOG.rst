@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.10.24
+=======
+
+* feature:``route53domains``: Update route53domains command to latest version
+* feature:``opsworks``: Update opsworks command to latest version
+
+
 1.10.23
 =======
 

@@ -226,3 +226,11 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         self.assertEqual(parsed_args.connect_timeout, None)
         self.assertEqual(
             session.get_default_client_config().connect_timeout, None)
+
+    def test_disable_validation(self):
+        parsed_args = FakeParsedArgs(param_validation=False)
+        session = get_session()
+        globalargs.resolve_cli_param_validation(parsed_args, session)
+
+        self.assertFalse(
+            session.get_default_client_config().parameter_validation)

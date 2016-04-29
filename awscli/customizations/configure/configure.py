@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+import sys
 import logging
 
 from botocore.exceptions import ProfileNotFound
@@ -39,7 +40,16 @@ class InteractivePrompter(object):
     def get_value(self, current_value, config_name, prompt_text=''):
         if config_name in ('aws_access_key_id', 'aws_secret_access_key'):
             current_value = mask_value(current_value)
-        response = raw_input("%s [%s]: " % (prompt_text, current_value))
+
+        # Many terminals will opt to print text as soon as possible, meaning
+        # we can use the 'prompt' parameter of raw_input without worry. However,
+        # There are some terminals that will only write to the screen when
+        # an explicit flush is called, such as MINGW. To support these systems,
+        # We need to explicitly flush each prompt we print.
+        sys.stdout.write("%s [%s]: " % (prompt_text, current_value))
+        sys.stdout.flush()
+        response = raw_input()
+
         if not response:
             # If the user hits enter, we return a value of None
             # instead of an empty string.  That way we can determine

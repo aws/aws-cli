@@ -15,6 +15,7 @@ import mock
 
 from awscli.customizations.configure import configure, ConfigValue, NOT_SET
 from awscli.testutils import unittest
+from awscli.compat import six
 
 from . import FakeSession
 
@@ -132,12 +133,16 @@ class TestConfigureCommand(unittest.TestCase):
 class TestInteractivePrompter(unittest.TestCase):
 
     def setUp(self):
-        self.patch = mock.patch(
+        self.input_patch = mock.patch(
             'awscli.customizations.configure.configure.raw_input')
-        self.mock_raw_input = self.patch.start()
+        self.mock_raw_input = self.input_patch.start()
+        self.stdout = six.StringIO()
+        self.stdout_patch = mock.patch('sys.stdout', self.stdout)
+        self.stdout_patch.start()
 
     def tearDown(self):
-        self.patch.stop()
+        self.input_patch.stop()
+        self.stdout_patch.stop()
 
     def test_access_key_is_masked(self):
         self.mock_raw_input.return_value = 'foo'
@@ -148,7 +153,7 @@ class TestInteractivePrompter(unittest.TestCase):
         # First we should return the value from raw_input.
         self.assertEqual(response, 'foo')
         # We should also not display the entire access key.
-        prompt_text = self.mock_raw_input.call_args[0][0]
+        prompt_text = self.stdout.getvalue()
         self.assertNotIn('myaccesskey', prompt_text)
         self.assertRegexpMatches(prompt_text, r'\[\*\*\*\*.*\]')
 
@@ -160,7 +165,7 @@ class TestInteractivePrompter(unittest.TestCase):
             prompt_text='Access key')
         # First we should return the value from raw_input.
         self.assertEqual(response, 'foo')
-        prompt_text = self.mock_raw_input.call_args[0][0]
+        prompt_text = self.stdout.getvalue()
         self.assertIn('[None]', prompt_text)
 
     def test_secret_key_is_masked(self):
@@ -170,7 +175,7 @@ class TestInteractivePrompter(unittest.TestCase):
             config_name='aws_secret_access_key',
             prompt_text='Secret Key')
         # We should also not display the entire secret key.
-        prompt_text = self.mock_raw_input.call_args[0][0]
+        prompt_text = self.stdout.getvalue()
         self.assertNotIn('mysupersecretkey', prompt_text)
         self.assertRegexpMatches(prompt_text, r'\[\*\*\*\*.*\]')
 
@@ -180,7 +185,7 @@ class TestInteractivePrompter(unittest.TestCase):
             current_value='mycurrentvalue', config_name='not_a_secret_key',
             prompt_text='Enter value')
         # We should also not display the entire secret key.
-        prompt_text = self.mock_raw_input.call_args[0][0]
+        prompt_text = self.stdout.getvalue()
         self.assertIn('mycurrentvalue', prompt_text)
         self.assertRegexpMatches(prompt_text, r'\[mycurrentvalue\]')
 
@@ -195,6 +200,27 @@ class TestInteractivePrompter(unittest.TestCase):
         # We convert the empty string to None to indicate that there
         # was no input.
         self.assertIsNone(response)
+
+    def test_prompter_flushes_after_each_prompt(self):
+        # Clear out the default patch
+        self.stdout_patch.stop()
+
+        # Create a mock stdout to record flush calls and replace stdout_patch
+        self.stdout = mock.Mock()
+        self.stdout_patch = mock.patch('sys.stdout', self.stdout)
+        self.stdout_patch.start()
+
+        # Make sure flush called at least once
+        prompter = configure.InteractivePrompter()
+        prompter.get_value(current_value='foo', config_name='bar',
+                           prompt_text='baz')
+        self.assertTrue(self.stdout.flush.called)
+
+        # Make sure flush is called after *every* prompt
+        self.stdout.reset_mock()
+        prompter.get_value(current_value='foo2', config_name='bar2',
+                           prompt_text='baz2')
+        self.assertTrue(self.stdout.flush.called)
 
 
 class TestConfigValueMasking(unittest.TestCase):

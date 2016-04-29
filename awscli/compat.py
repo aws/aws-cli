@@ -105,3 +105,20 @@ else:
         if 'b' not in mode:
             encoding = locale.getpreferredencoding()
         return io.open(filename, mode, encoding=encoding)
+
+
+def compat_input(prompt):
+    """
+    Cygwin's pty's are based on pipes. Therefore, when it interacts with a Win32
+    program (such as Win32 python), what that program sees is a pipe instead of
+    a console. This is important because python buffers pipes, and so on a
+    pty-based terminal, text will not necessarily appear immediately. In most
+    cases, this isn't a big deal. But when we're doing an interactive prompt,
+    the result is that the prompts won't display until we fill the buffer. Since
+    raw_input does not flush the prompt, we need to manually write and flush it.
+
+    See https://github.com/mintty/mintty/issues/56 for more details.
+    """
+    sys.stdout.write(prompt)
+    sys.stdout.flush()
+    return raw_input()

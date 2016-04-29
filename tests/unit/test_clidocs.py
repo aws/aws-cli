@@ -108,8 +108,10 @@ class TestTranslationMap(unittest.TestCase):
         }).build_model()
         argument_model = input_model.members['Flag']
         argument_model.name = 'Flag'
-        self.arg_table['flag'] = mock.Mock(argument_model=argument_model)
-        self.arg_table['no-flag'] = mock.Mock(argument_model=argument_model)
+        self.arg_table['flag'] = mock.Mock(
+            cli_type_name='boolean', argument_model=argument_model)
+        self.arg_table['no-flag'] = mock.Mock(
+            cli_type_name='boolean', argument_model=argument_model)
         # The --no-flag should not be used in the translation.
         self.assertEqual(
             self.operation_handler.build_translation_map(),

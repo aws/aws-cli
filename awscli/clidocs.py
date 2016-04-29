@@ -314,7 +314,8 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
                     # results in the new proposed cli argument name. If it
                     # does, we assume we have the postive form of the argument
                     # which is the name we want to use in doc translations.
-                    if previous_mapping.startswith('no-') and \
+                    if cli_argument.cli_type_name == 'boolean' and \
+                            previous_mapping.startswith('no-') and \
                             cli_name == previous_mapping[3:]:
                         d[argument_name] = cli_name
                 else:

@@ -105,7 +105,7 @@ class TestCreateFunction(BaseLambdaTests):
         cmdline += ' --role myrole --handler myhandler'
         cmdline += ' --zip-file filename_instead_of_contents.zip'
         stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
-        self.assertIn('must be a file with the fileb:// prefix', stderr)
+        self.assertIn('must be a zip file with the fileb:// prefix', stderr)
         # Should also give a pointer to fileb:// for them.
         self.assertIn('fileb://', stderr)
 
@@ -129,7 +129,7 @@ class TestUpdateFunctionCode(BaseLambdaTests):
         cmdline = self.prefix + ' --function-name foo'
         cmdline += ' --zip-file filename_instead_of_contents.zip'
         stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
-        self.assertIn('must be a file with the fileb:// prefix', stderr)
+        self.assertIn('must be a zip file with the fileb:// prefix', stderr)
         # Should also give a pointer to fileb:// for them.
         self.assertIn('fileb://', stderr)
 

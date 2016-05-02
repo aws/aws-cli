@@ -1,6 +1,6 @@
 **To provision a public virtual interface**
 
-The following ``allocate-public-virtual-interface`` command provisions a public virtual interface to be owned by a different customer..::
+The following ``allocate-public-virtual-interface`` command provisions a public virtual interface to be owned by a different customer::
 
   aws directconnect allocate-public-virtual-interface --connection-id dxcon-ffjrkx17 --owner-account 123456789012 --new-public-virtual-interface-allocation virtualInterfaceName=PublicVirtualInterface,vlan=2000,asn=65000,authKey=asdf34example,amazonAddress=203.0.113.1/30,customerAddress=203.0.113.2/30,routeFilterPrefixes=[{cidr=203.0.113.0/30},{cidr=203.0.113.4/30}]
 

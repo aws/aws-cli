@@ -1,6 +1,6 @@
 **To list all connections in the current region**
 
-The following ``describe-connections`` command lists all connections in the current region.::
+The following ``describe-connections`` command lists all connections in the current region::
 
   aws directconnect describe-connections
 

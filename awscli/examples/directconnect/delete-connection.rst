@@ -1,6 +1,6 @@
 **To delete a connection**
 
-The following ``delete-connection`` command deletes the specified connection.::
+The following ``delete-connection`` command deletes the specified connection::
 
   aws directconnect delete-connection --connection-id dxcon-fg31dyv6
 

@@ -1,6 +1,6 @@
 **To list all virtual interfaces**
 
-The following ``describe-virtual-interfaces`` command lists the information about all virtual interfaces associated with your AWS account.::
+The following ``describe-virtual-interfaces`` command lists the information about all virtual interfaces associated with your AWS account::
 
   aws directconnect describe-virtual-interfaces --connection-id dxcon-ffjrkx17
 

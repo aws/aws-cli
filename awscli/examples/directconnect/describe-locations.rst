@@ -1,6 +1,6 @@
 **To list AWS Direct Connect partners and locations**
 
-The following ``describe-locations`` command lists AWS Direct Connect partners and locations in the current region.::
+The following ``describe-locations`` command lists AWS Direct Connect partners and locations in the current region::
 
   aws directconnect describe-locations
 

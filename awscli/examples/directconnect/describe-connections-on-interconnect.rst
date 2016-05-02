@@ -1,6 +1,6 @@
 **To list connections on an interconnect**
 
-The following ``describe-connections-on-interconnect`` command lists connections that have been provisioned on the given interconnect.::
+The following ``describe-connections-on-interconnect`` command lists connections that have been provisioned on the given interconnect::
 
   aws directconnect describe-connections-on-interconnect --interconnect-id dxcon-fgktov66
 

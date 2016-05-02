@@ -1,6 +1,6 @@
 **To create a private virtual interface**
 
-The following ``create-private-virtual-interface`` command creates a private virtual interface.::
+The following ``create-private-virtual-interface`` command creates a private virtual interface::
 
   aws directconnect create-private-virtual-interface --connection-id dxcon-ffjrkx17 --new-private-virtual-interface virtualInterfaceName=PrivateVirtualInterface,vlan=101,asn=65000,authKey=asdf34example,amazonAddress=192.168.1.1/30,customerAddress=192.168.1.2/30,virtualGatewayId=vgw-aba37db6
 

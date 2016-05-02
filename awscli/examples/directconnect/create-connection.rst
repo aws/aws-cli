@@ -1,6 +1,6 @@
 **To create a connection from your network to an AWS Direct Connect location**
 
-The following ``create-connection`` command creates a connection from your network to an AWS Direct Connect location.::
+The following ``create-connection`` command creates a connection from your network to an AWS Direct Connect location::
 
   aws directconnect create-connection --location TIVIT --bandwidth 1Gbps --connection-name "Connection to AWS"
 

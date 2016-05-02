@@ -1,6 +1,6 @@
 **To create a public virtual interface**
 
-The following ``create-public-virtual-interface`` command creates a public virtual interface.::
+The following ``create-public-virtual-interface`` command creates a public virtual interface::
 
   aws directconnect create-public-virtual-interface --connection-id dxcon-ffjrkx17 --new-public-virtual-interface virtualInterfaceName=PublicVirtualInterface,vlan=2000,asn=65000,authKey=asdf34example,amazonAddress=203.0.113.1/30,customerAddress=203.0.113.2/30,routeFilterPrefixes=[{cidr=203.0.113.0/30},{cidr=203.0.113.4/30}]
 

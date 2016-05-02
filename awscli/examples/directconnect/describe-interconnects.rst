@@ -1,6 +1,6 @@
 **To list interconnects**
 
-The following ``describe-interconnects`` command lists the interconnects owned by your AWS account.::
+The following ``describe-interconnects`` command lists the interconnects owned by your AWS account::
 
   aws directconnect describe-interconnects
 

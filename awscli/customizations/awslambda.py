@@ -20,7 +20,7 @@ from awscli.arguments import CustomArgument, CLIArgument
 from awscli.customizations import utils
 
 ERROR_MSG = (
-    "--zip-file must be a file with the fileb:// prefix.\n"
+    "--zip-file must be a zip file with the fileb:// prefix.\n"
     "Example usage:  --zip-file fileb://path/to/file.zip")
 
 ZIP_DOCSTRING = ('<p>The path to the zip file of the code you are uploading. '

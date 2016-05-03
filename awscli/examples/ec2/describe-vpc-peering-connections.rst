@@ -28,31 +28,34 @@ Output::
                 },
                 "VpcPeeringConnectionId": "pcx-11122233",
                 "RequesterVpcInfo": {
+                    "PeeringOptions": {
+                        "AllowEgressFromLocalVpcToRemoteClassicLink": false, 
+                        "AllowEgressFromLocalClassicLinkToRemoteVpc": false
+                    },
                     "OwnerId": "444455556666",
                     "VpcId": "vpc-123abc45",
-                    "CidrBlock": "10.0.0.0/28"
+                    "CidrBlock": "192.168.0.0/16"
                 }
             },
             {
                 "Status": {
-                    "Message": "Pending Acceptance by 123456789123",
+                    "Message": "Pending Acceptance by 444455556666",
                     "Code": "pending-acceptance"
                 },
-                "Tags": [
-                    {
-                        "Value": null,
-                        "Key": "Name"
-                    }
-                ],
+                "Tags": [],
                 "RequesterVpcInfo": {
-                    "OwnerId": "123456789123",
+                    "PeeringOptions": {
+                        "AllowEgressFromLocalVpcToRemoteClassicLink": false, 
+                        "AllowEgressFromLocalClassicLinkToRemoteVpc": false
+                    },
+                    "OwnerId": "444455556666",
                     "VpcId": "vpc-11aa22bb",
                     "CidrBlock": "10.0.0.0/28"
                 },
                 "VpcPeeringConnectionId": "pcx-abababab",
                 "ExpirationTime": "2014-04-03T09:12:43.000Z",
                 "AccepterVpcInfo": {
-                    "OwnerId": "123456789123",
+                    "OwnerId": "444455556666",
                     "VpcId": "vpc-33cc44dd"
                 }
             }

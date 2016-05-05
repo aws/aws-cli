@@ -143,7 +143,7 @@ class Push(BasicCommand):
         ) as bundle:
             try:
                 upload_response = self._upload_to_s3(params, bundle)
-                params.eTag = upload_response['ETag']
+                params.eTag = upload_response['ETag'].replace('"', "")
                 if 'VersionId' in upload_response:
                     params.version = upload_response['VersionId']
             except Exception as e:

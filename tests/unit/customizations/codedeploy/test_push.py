@@ -155,6 +155,16 @@ class TestPush(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.push._push(self.args)
 
+    def test_push_strips_quotes_from_etag(self):
+        self.args.bucket = self.bucket
+        self.args.key = self.key
+        self.push._compress = MagicMock(return_value=self.bundle_mock)
+        self.push._upload_to_s3 = MagicMock(return_value=self.upload_response)
+        self.push._register_revision = MagicMock()
+        self.push._push(self.args)
+        self.push._register_revision.assert_called_with(self.args)
+        self.assertEquals(str(self.args.eTag), self.upload_response['ETag'].replace('"',""))
+
     @patch('sys.stdout', new_callable=StringIO)
     def test_push_output_message(self, stdout_mock):
         self.args.bucket = self.bucket
@@ -169,7 +179,7 @@ class TestPush(unittest.TestCase):
             'bundleType=zip,eTag={2},version={3}'.format(
                 self.bucket,
                 self.key,
-                self.eTag,
+                self.eTag.replace('"',""),
                 self.version_id)
         )
         expected_output = (

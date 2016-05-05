@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.10.26
+=======
+
+* feature:``kms``: Update kms command to latest version
+* feature:``sts``: Update sts command to latest version
+* feature:``apigateway``: Update apigateway command to latest version
+* feature:``ecs``: Update ecs command to latest version
+* feature:``s3``: Update s3 command to latest version
+* feature:``cloudtrail``: Update cloudtrail command to latest version
+
+
 1.10.25
 =======
 

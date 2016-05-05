@@ -27,7 +27,7 @@ import logging
 from functools import partial
 
 from botocore import xform_name
-from botocore.exceptions import DataNotFoundError
+from botocore.exceptions import DataNotFoundError, PaginationError
 from botocore import model
 
 from awscli.arguments import BaseCLIArgument
@@ -173,7 +173,8 @@ def check_should_enable_pagination(input_tokens, shadowed_args, argument_table,
             logger.debug("User has specified a manual pagination arg. "
                          "Automatically setting --no-paginate.")
             parsed_globals.paginate = False
-            # Because we've now disabled pagination, there's a chance that
+
+            # Because pagination is now disabled, there's a chance that
             # we were shadowing arguments.  For example, we inject a
             # --max-items argument in unify_paging_params().  If the
             # the operation also provides its own MaxItems (which we
@@ -183,6 +184,23 @@ def check_should_enable_pagination(input_tokens, shadowed_args, argument_table,
             # what we're doing here.
             for key, value in shadowed_args.items():
                 argument_table[key] = value
+    
+    if not parsed_globals.paginate:
+        ensure_paging_params_not_set(parsed_args, shadowed_args)
+
+
+def ensure_paging_params_not_set(parsed_args, shadowed_args):
+    paging_params = ['starting_token', 'page_size', 'max_items']
+    shadowed_params = [p.replace('-', '_') for p in shadowed_args.keys()]
+    params_used = [p for p in paging_params if
+                   p not in shadowed_params and getattr(parsed_args, p)]
+
+    if len(params_used) > 0:
+        converted_params = ', '.join(
+            ["--" + p.replace('_', '-') for p in params_used])
+        raise PaginationError(
+            message="Cannot specify --no-paginate along with pagination "
+                    "arguments: %s" % converted_params)
 
 
 def _remove_existing_paging_arguments(argument_table, pagination_config):

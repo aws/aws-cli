@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest
 
-from botocore.exceptions import DataNotFoundError
+from botocore.exceptions import DataNotFoundError, PaginationError
 from botocore.model import OperationModel
 from awscli.help import OperationHelpCommand, OperationDocumentEventHandler
 
@@ -209,6 +209,9 @@ class TestShouldEnablePagination(TestPaginateBase):
         super(TestShouldEnablePagination, self).setUp()
         self.parsed_globals = mock.Mock()
         self.parsed_args = mock.Mock()
+        self.parsed_args.starting_token = None
+        self.parsed_args.page_size = None
+        self.parsed_args.max_items = None
 
     def test_should_not_enable_pagination(self):
         # Here the user has specified a manual pagination argument,
@@ -253,7 +256,7 @@ class TestShouldEnablePagination(TestPaginateBase):
         self.assertTrue(self.parsed_globals.paginate,
                         "Pagination was not enabled.")
 
-    def test_shadowed_args_are_replaced_when_pagination_off(self):
+    def test_shadowed_args_are_replaced_when_pagination_turned_off(self):
         input_tokens = ['foo', 'bar']
         self.parsed_globals.paginate = True
         # Corresponds to --bar 10
@@ -268,3 +271,35 @@ class TestShouldEnablePagination(TestPaginateBase):
         # user specified --bar 10
         self.assertFalse(self.parsed_globals.paginate)
         self.assertEqual(arg_table['foo'], mock.sentinel.ORIGINAL_ARG)
+
+    def test_shadowed_args_are_replaced_when_pagination_set_off(self):
+        input_tokens = ['foo', 'bar']
+        self.parsed_globals.paginate = False
+        # Corresponds to --bar 10
+        self.parsed_args.foo = None
+        self.parsed_args.bar = 10
+        shadowed_args = {'foo': mock.sentinel.ORIGINAL_ARG}
+        arg_table = {'foo': mock.sentinel.PAGINATION_ARG}
+        paginate.check_should_enable_pagination(
+            input_tokens, shadowed_args, arg_table,
+            self.parsed_args, self.parsed_globals)
+        # We should have turned paginate off because the
+        # user specified --bar 10
+        self.assertFalse(self.parsed_globals.paginate)
+        self.assertEqual(arg_table['foo'], mock.sentinel.ORIGINAL_ARG)
+
+
+class TestEnsurePagingParamsNotSet(TestPaginateBase):
+    def setUp(self):
+        super(TestEnsurePagingParamsNotSet, self).setUp()
+        self.parsed_args = mock.Mock()
+
+        self.parsed_args.starting_token = None
+        self.parsed_args.page_size = None
+        self.parsed_args.max_items = None
+
+    def test_pagination_params_raise_error_with_no_paginate(self):
+        self.parsed_args.max_items = 100
+
+        with self.assertRaises(PaginationError):
+            paginate.ensure_paging_params_not_set(self.parsed_args, {})

@@ -44,6 +44,7 @@ from awscli.customizations.ec2.decryptpassword import ec2_add_priv_launch_key
 from awscli.customizations.ec2.protocolarg import register_protocol_args
 from awscli.customizations.ec2.runinstances import register_runinstances
 from awscli.customizations.ec2.secgroupsimplify import register_secgroup
+from awscli.customizations.ec2.paginate import set_max_results_default
 from awscli.customizations.ecr import register_ecr_commands
 from awscli.customizations.emr.emr import emr_initialize
 from awscli.customizations.gamelift import register_gamelift_commands
@@ -102,6 +103,7 @@ def awscli_initialize(event_handlers):
                             ec2_add_priv_launch_key)
     register_parse_global_args(event_handlers)
     register_pagination(event_handlers)
+    event_handlers.register('operation-args-parsed.ec2.*', set_max_results_default)
     register_secgroup(event_handlers)
     register_bundleinstance(event_handlers)
     s3_plugin_initialize(event_handlers)

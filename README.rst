@@ -40,6 +40,14 @@ you can run::
 
     $ pip install --upgrade awscli
 
+.. note::
+
+    On OS X, if you see an error regarding the version of six that came with
+    distutils in El Capitan, use the ``--ignore-installed option``::
+
+        $ sudo pip install awscli --ignore-installed six
+
+
 This will install the aws-cli package as well as all dependencies.  You can
 also just `download the tarball`_.  Once you have the
 awscli directory structure on your workstation, you can just run::

@@ -11,15 +11,16 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import BaseAWSCommandParamsTest
-import awscli.customizations.ec2bundleinstance
-
-import datetime
 import base64
+import datetime
 
-from awscli.compat import six
-from six.moves import cStringIO
 import mock
+from six.moves import cStringIO
+
+import awscli.customizations.ec2.bundleinstance
+from awscli.compat import six
+from awscli.testutils import BaseAWSCommandParamsTest
+
 
 class TestBundleInstance(BaseAWSCommandParamsTest):
 
@@ -39,7 +40,7 @@ class TestBundleInstance(BaseAWSCommandParamsTest):
         # don't what the policy or its signature to change each time
         # we run the test.
         self.datetime_patcher = mock.patch.object(
-            awscli.customizations.ec2bundleinstance.datetime, 'datetime',
+            awscli.customizations.ec2.bundleinstance.datetime, 'datetime',
             mock.Mock(wraps=datetime.datetime)
         )
         mocked_datetime = self.datetime_patcher.start()

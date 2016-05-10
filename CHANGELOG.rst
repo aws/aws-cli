@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.10.27
+=======
+
+* feature:``storagegateway``: Update storagegateway command to latest version
+* feature:``directconnect``: Update directconnect command to latest version
+* feature:``emr``: Update emr command to latest version
+* feature:``sqs``: Update sqs command to latest version
+* feature:``iam``: Update iam command to latest version
+
+
 1.10.26
 =======
 

@@ -4,10 +4,10 @@ Building The Documentation
 
 Before building the documentation, make sure you have Python 2.7,
 the awscli, and all the necessary dependencies installed.  You can
-install dependencies by using the requirements.txt file at the
+install dependencies by using the requirements-docs.txt file at the
 root of this repo::
 
-    pip install -r requirements.txt
+    pip install -r requirements-docs.txt
 
 The process for building the documentation is:
 

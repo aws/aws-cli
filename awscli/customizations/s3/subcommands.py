@@ -186,7 +186,7 @@ SSE_C = {
         'of the the object in S3. ``AES256`` is the only valid value. '
         'If the parameter is specified but no value is provided, '
         '``AES256`` is used. If you provide this value, ``--sse-c-key`` '
-        'be specfied as well.'
+        'must be specfied as well.'
     )
 }
 
@@ -196,7 +196,7 @@ SSE_C_KEY = {
     'help_text': (
         'The customer-provided encryption key to use to server-side '
         'encrypt the object in S3. If you provide this value, '
-        '``--sse-c`` be specfied as well. The key provided should '
+        '``--sse-c`` must be specfied as well. The key provided should '
         '**not** be base64 encoded.'
     )
 }
@@ -223,7 +223,7 @@ SSE_C_COPY_SOURCE = {
         'object. ``AES256`` is the only valid '
         'value. If the parameter is specified but no value is provided, '
         '``AES256`` is used. If you provide this value, '
-        '``--sse-c-copy-source-key`` be specfied as well. '
+        '``--sse-c-copy-source-key`` must be specfied as well. '
     )
 }
 
@@ -311,9 +311,9 @@ METADATA = {
     },
     'help_text': (
         "A map of metadata to store with the objects in S3. This will be "
-        "applied to every object which is part of this request. In a sync, this"
-        "means that files which haven't changed won't receive the new metadata."
-        " When copying between two s3 locations, the metadata-directive "
+        "applied to every object which is part of this request. In a sync, this "
+        "means that files which haven't changed won't receive the new metadata. "
+        "When copying between two s3 locations, the metadata-directive "
         "argument will default to 'REPLACE' unless otherwise specified."
     )
 }
@@ -334,7 +334,7 @@ METADATA_DIRECTIVE = {
         ' specified by the CLI command. Note that if you are '
         'using any of the following parameters: ``--content-type``, '
         '``content-language``, ``--content-encoding``, '
-        '``--content-disposition``, ``-cache-control``, or ``--expires``, you '
+        '``--content-disposition``, ``--cache-control``, or ``--expires``, you '
         'will need to specify ``--metadata-directive REPLACE`` for '
         'non-multipart copies if you want the copied objects to have the '
         'specified metadata values.')
@@ -370,7 +370,7 @@ EXPECTED_SIZE = {'name': 'expected-size',
                      'in terms of bytes. Note that this argument is needed '
                      'only when a stream is being uploaded to s3 and the size '
                      'is larger than 5GB.  Failure to include this argument '
-                     'under these conditions may result in a failed upload. '
+                     'under these conditions may result in a failed upload '
                      'due to too many parts in upload.')}
 
 
@@ -384,7 +384,7 @@ PAGE_SIZE = {'name': 'page-size', 'cli_type_name': 'integer',
 IGNORE_GLACIER_WARNINGS = {
     'name': 'ignore-glacier-warnings', 'action': 'store_true',
     'help_text': (
-        'Turns off glacier warnings. Warnings about operations that cannot '
+        'Turns off glacier warnings. Warnings about an operation that cannot '
         'be performed because it involves copying, downloading, or moving '
         'a glacier object will no longer be printed to standard error and '
         'will no longer cause the return code of the command to be ``2``.'

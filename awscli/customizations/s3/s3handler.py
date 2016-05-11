@@ -381,12 +381,13 @@ class S3StreamHandler(S3Handler):
     def __init__(self, session, params, result_queue=None,
                  runtime_config=None):
         if runtime_config is None:
-            # Rather than using the .defaults(), streaming
-            # has different default values so that it does not
-            # consume large amounts of memory.
-            runtime_config = RuntimeConfig().build_config(
-                max_queue_size=self.MAX_EXECUTOR_QUEUE_SIZE,
-                max_concurrent_requests=self.EXECUTOR_NUM_THREADS)
+            runtime_config = RuntimeConfig.defaults()
+        # Streaming needs different default values so that it does
+        # not consume large amounts of memory. These are overlaid
+        # on the specified runtime_config.
+        runtime_config.update(
+            max_queue_size=self.MAX_EXECUTOR_QUEUE_SIZE,
+            max_concurrent_requests=self.EXECUTOR_NUM_THREADS)
         super(S3StreamHandler, self).__init__(session, params, result_queue,
                                               runtime_config)
 

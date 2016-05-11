@@ -936,8 +936,9 @@ class CommandArchitecture(object):
         s3handler = S3Handler(self.session, self.parameters,
                               runtime_config=self._runtime_config,
                               result_queue=result_queue)
-        s3_stream_handler = S3StreamHandler(self.session, self.parameters,
-                                            result_queue=result_queue)
+        s3_stream_handler = S3StreamHandler(
+            self.session, self.parameters, runtime_config=self._runtime_config,
+            result_queue=result_queue)
 
         sync_strategies = self.choose_sync_strategies()
 

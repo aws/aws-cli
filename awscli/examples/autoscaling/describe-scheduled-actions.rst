@@ -46,11 +46,17 @@ The following is example output::
 
     {
         "NextToken": "Z3M3LMPEXAMPLE",
-        "NotificationConfigurations": [
+        "ScheduledUpdateGroupActions": [
             {
+                "MinSize": 2,
+                "DesiredCapacity": 4,
                 "AutoScalingGroupName": "my-auto-scaling-group",
-                "NotificationType": "autoscaling:TEST_NOTIFICATION",
-                "TopicARN": "arn:aws:sns:us-west-2:123456789012:my-sns-topic"
+                "MaxSize": 6,
+                "Recurrence": "30 0 1 12 0",
+                "ScheduledActionARN": "arn:aws:autoscaling:us-west-2:123456789012:scheduledUpdateGroupAction:8e86b655-b2e6-4410-8f29-b4f094d6871c:autoScalingGroupName/my-auto-scaling-group:scheduledActionName/my-scheduled-action",
+                "ScheduledActionName": "my-scheduled-action",
+                "StartTime": "2019-12-01T00:30:00Z",
+                "Time": "2019-12-01T00:30:00Z"
             }
         ]
     }

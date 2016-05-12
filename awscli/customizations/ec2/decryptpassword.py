@@ -36,9 +36,9 @@ def ec2_add_priv_launch_key(argument_table, operation_model, session,
     operation has been created.  It's job is to add the
     ``priv-launch-key`` parameter.
     """
-    argument_table['priv-launch-key'] = LaunchKeyArgument(session,
-                                                          operation_model,
-                                                          'priv-launch-key')
+    argument_table['priv-launch-key'] = LaunchKeyArgument(
+        session, operation_model, 'priv-launch-key')
+
 
 class LaunchKeyArgument(BaseCLIArgument):
 

@@ -11,7 +11,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest, TestEventHandler
 import os
 
 
@@ -77,3 +77,13 @@ class TestRegisterInstancesWithLoadBalancer(BaseAWSCommandParamsTest):
         cmdline += ' --load-balancer-name my-lb'
         cmdline += ' --instances i-12345678 i-87654321'
         self.assert_params_for_cmd(cmdline, TWO_INSTANCE_EXPECTED)
+
+    def test_unpack_event_uses_service_name(self):
+        cmdline = self.prefix
+        cmdline += ' --load-balancer-name my-lb'
+        cmdline += ' --instances {"InstanceId":"i-12345678"}'
+        handler = TestEventHandler()
+        event = 'process-cli-arg.elb.register-instances-with-load-balancer'
+        self.driver.session.register(event, handler.handler)
+        self.run_cmd(cmdline)
+        self.assertTrue(handler.called, "Expected event not called.")

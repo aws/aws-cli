@@ -456,7 +456,7 @@ class CLIArgument(BaseCLIArgument):
             parameters[self._serialized_name] = unpacked
 
     def _unpack_argument(self, value):
-        service_name = self._operation_model.service_model.endpoint_prefix
+        service_name = self._operation_model.service_model.service_name
         operation_name = xform_name(self._operation_model.name, '-')
         override = self._emit_first_response('process-cli-arg.%s.%s' % (
             service_name, operation_name), param=self.argument_model,

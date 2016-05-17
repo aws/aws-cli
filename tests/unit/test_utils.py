@@ -15,7 +15,8 @@ import platform
 import os
 
 from awscli.testutils import unittest, skip_if_windows
-from awscli.utils import split_on_commas, ignore_ctrl_c
+from awscli.utils import (split_on_commas, ignore_ctrl_c,
+                          find_service_and_method_in_event_name)
 
 
 class TestCSVSplit(unittest.TestCase):
@@ -100,3 +101,22 @@ class TestIgnoreCtrlC(unittest.TestCase):
             # And if we actually try to sigint ourselves, an exception
             # should not propogate.
             os.kill(os.getpid(), signal.SIGINT)
+
+
+class TestFindServiceAndOperationNameFromEvent(unittest.TestCase):
+    def test_finds_service_and_operation_name(self):
+        event_name = "foo.bar.baz"
+        service, operation = find_service_and_method_in_event_name(event_name)
+        self.assertEqual(service, "bar")
+        self.assertEqual(operation, "baz")
+
+    def test_returns_none_if_event_is_too_short(self):
+        event_name = "foo.bar"
+        service, operation = find_service_and_method_in_event_name(event_name)
+        self.assertEqual(service, "bar")
+        self.assertIs(operation, None)
+
+        event_name = "foo"
+        service, operation = find_service_and_method_in_event_name(event_name)
+        self.assertIs(service, None)
+        self.assertIs(operation, None)

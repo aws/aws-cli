@@ -11,6 +11,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from awscli.customizations.ec2.paginate import DEFAULT_MAX_RESULTS
 from awscli.testutils import BaseAWSCommandParamsTest
 
 
@@ -20,26 +21,35 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
 
     def test_no_params(self):
         cmdline = self.prefix
-        result = {}
+        result = {'MaxResults': DEFAULT_MAX_RESULTS}
         self.assert_params_for_cmd(cmdline, result)
 
     def test_instance_id(self):
         args = ' --instance-ids i-12345678'
         cmdline = self.prefix + args
-        result = {'InstanceIds': ['i-12345678']}
+        result = {
+            'InstanceIds': ['i-12345678'],
+            'MaxResults': DEFAULT_MAX_RESULTS
+        }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_instance_ids(self):
         args = ' --instance-ids i-12345678 i-87654321'
         cmdline = self.prefix + args
-        result = {'InstanceIds': ['i-12345678', 'i-87654321']}
+        result = {
+            'InstanceIds': ['i-12345678', 'i-87654321'],
+            'MaxResults': DEFAULT_MAX_RESULTS
+        }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_instance_ids_alternate(self):
         # Not required, but will still work if you use JSON.
         args = ' --instance-ids ["i-12345678","i-87654321"]'
         cmdline = self.prefix + args
-        result = {'InstanceIds': ['i-12345678', 'i-87654321']}
+        result = {
+            'InstanceIds': ['i-12345678', 'i-87654321'],
+            'MaxResults': DEFAULT_MAX_RESULTS
+        }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_filter_json(self):
@@ -50,6 +60,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
                 {'Name': 'group-name',
                  'Values': ['foobar']},
             ],
+            'MaxResults': DEFAULT_MAX_RESULTS
         }
         self.assert_params_for_cmd(cmdline, result)
 
@@ -61,6 +72,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
                 {'Name': 'group-name',
                  'Values': ['foobar']},
             ],
+            'MaxResults': DEFAULT_MAX_RESULTS
         }
         self.assert_params_for_cmd(cmdline, result)
 
@@ -72,6 +84,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
                 {'Name': 'group-name',
                  'Values': ['foobar', 'fiebaz']},
             ],
+            'MaxResults': DEFAULT_MAX_RESULTS
         }
         self.assert_params_for_cmd(cmdline, result)
 
@@ -86,6 +99,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
                 {'Name': 'instance-id',
                  'Values': ['i-12345']},
             ],
+            'MaxResults': DEFAULT_MAX_RESULTS
         }
         self.assert_params_for_cmd(cmdline, result)
 
@@ -101,6 +115,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
                 {'Name': 'instance-id',
                  'Values': ['i-12345']},
             ],
+            'MaxResults': DEFAULT_MAX_RESULTS
         }
         self.assert_params_for_cmd(cmdlist, result)
 
@@ -108,6 +123,11 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         args = ' --page-size 10'
         cmdline = self.prefix + args
         result = {'MaxResults': 10}
+        self.assert_params_for_cmd(cmdline, result)
+
+    def test_page_size_default(self):
+        cmdline = self.prefix
+        result = {'MaxResults': DEFAULT_MAX_RESULTS}
         self.assert_params_for_cmd(cmdline, result)
 
 

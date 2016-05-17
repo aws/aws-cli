@@ -28,7 +28,7 @@ from awscli.clidocs import ServiceDocumentEventHandler
 from awscli.clidocs import OperationDocumentEventHandler
 from awscli.clidocs import TopicListerDocumentEventHandler
 from awscli.clidocs import TopicDocumentEventHandler
-from awscli.argprocess import ParamShorthand
+from awscli.argprocess import ParamShorthandParser
 from awscli.argparser import ArgTableArgParser
 from awscli.topictags import TopicTagDB
 from awscli.utils import ignore_ctrl_c
@@ -353,7 +353,7 @@ class OperationHelpCommand(HelpCommand):
     def __init__(self, session, operation_model, arg_table, name,
                  event_class):
         HelpCommand.__init__(self, session, operation_model, None, arg_table)
-        self.param_shorthand = ParamShorthand()
+        self.param_shorthand = ParamShorthandParser()
         self._name = name
         self._event_class = event_class
 

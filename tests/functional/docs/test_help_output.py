@@ -177,6 +177,10 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         # .. _`:
         self.assert_not_contains('.. _`:')
 
+    def test_shorthand_flattens_list_of_single_member_structures(self):
+        self.driver.main(['elb', 'remove-tags', 'help'])
+        self.assert_contains("--tags Key1 Key2 Key3")
+
 
 class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
     def assert_command_does_not_exist(self, service, command):

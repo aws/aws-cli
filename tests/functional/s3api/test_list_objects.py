@@ -81,3 +81,12 @@ class TestListObjects(BaseAWSCommandParamsTest):
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+
+    def test_pagination_params_cannot_be_supplied_with_no_paginate(self):
+        cmdline = self.prefix + ' --bucket mybucket --no-paginate ' \
+                                '--max-items 100'
+        self.assert_params_for_cmd(
+            cmdline, expected_rc=255,
+            stderr_contains="Error during pagination: Cannot specify "
+                            "--no-paginate along with pagination arguments: "
+                            "--max-items")

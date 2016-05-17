@@ -742,3 +742,18 @@ class BaseS3CLICommand(unittest.TestCase):
 class StringIOWithFileNo(StringIO):
     def fileno(self):
         return 0
+
+
+class TestEventHandler(object):
+    def __init__(self, handler=None):
+        self._handler = handler
+        self._called = False
+
+    @property
+    def called(self):
+        return self._called
+
+    def handler(self, **kwargs):
+        self._called = True
+        if self._handler is not None:
+            self._handler(**kwargs)

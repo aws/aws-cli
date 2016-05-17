@@ -516,8 +516,9 @@ class ServiceOperation(object):
                                                  self._name)
         self._emit(event, parsed_args=parsed_args,
                    parsed_globals=parsed_globals)
-        call_parameters = self._build_call_parameters(parsed_args,
-                                                      self.arg_table)
+        call_parameters = self._build_call_parameters(
+            parsed_args, self.arg_table)
+
         event = 'calling-command.%s.%s' % (self._parent_name,
                                            self._name)
         override = self._emit_first_non_none_response(

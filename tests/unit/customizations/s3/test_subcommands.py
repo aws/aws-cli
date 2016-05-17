@@ -377,7 +377,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         self.patch_make_request()
         cmd_arc.run()
         output_str = "Completed 1 part(s) with ... file(s) remaining"
-        self.assertIn("nono", self.output.getvalue())
+        self.assertIn(output_str, self.output.getvalue())
 
     def test_error_on_same_line_as_status(self):
         s3_file = 's3://' + 'bucket-does-not-exist' + '/' + 'text1.txt'

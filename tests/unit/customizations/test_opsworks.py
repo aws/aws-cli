@@ -51,6 +51,7 @@ class TestOpsWorksRegister(TestOpsWorksBase):
             "private_key": None,
             "ssh": None,
             "target": None,
+            "use_instance_profile": False,
         }, **kwargs))
 
     def test_create_clients_simple(self):
@@ -215,7 +216,7 @@ class TestOpsWorksRegister(TestOpsWorksBase):
                 StackId="STACKID", Name="STACKNAME", Arn="ARN")
             self.register._name_for_iam = "HOSTNAME"
 
-            self.register.create_iam_entities()
+            self.register.create_iam_entities(self._build_args())
 
             mock_iam.create_group.assert_any_call(
                 Path="/AWS/OpsWorks/", GroupName="OpsWorks-STACKID")
@@ -237,7 +238,7 @@ class TestOpsWorksRegister(TestOpsWorksBase):
             mock_iam.create_group.side_effect = opsworks.ClientError(
                 "EntityAlreadyExists", None, None, None, None)
 
-            self.register.create_iam_entities()
+            self.register.create_iam_entities(self._build_args())
 
             mock_iam.create_group.assert_any_call(
                 Path="/AWS/OpsWorks/", GroupName="OpsWorks-STACKID")
@@ -265,7 +266,7 @@ class TestOpsWorksRegister(TestOpsWorksBase):
                     None
                 ])
 
-            self.register.create_iam_entities()
+            self.register.create_iam_entities(self._build_args())
 
             mock_iam.create_group.assert_any_call(
                 Path="/AWS/OpsWorks/", GroupName="OpsWorks-STACKID")
@@ -296,7 +297,7 @@ class TestOpsWorksRegister(TestOpsWorksBase):
                 Arn="ARN")
             self.register._name_for_iam = long_hostname
 
-            self.register.create_iam_entities()
+            self.register.create_iam_entities(self._build_args())
 
             mock_iam.create_group.assert_any_call(
                 Path="/AWS/OpsWorks/", GroupName="OpsWorks-STACKID")
@@ -308,6 +309,19 @@ class TestOpsWorksRegister(TestOpsWorksBase):
                 GroupName="OpsWorks-STACKID")
             mock_iam.create_access_key.assert_any_call(
                 UserName=shortened_username)
+
+    def test_create_no_iam_entities(self):
+        """Should not create IAM entities when using instance profiles."""
+
+        with mock.patch.object(self.register, "iam", create=True) as mock_iam:
+            self.register.create_iam_entities(self._build_args(
+                use_instance_profile=True
+            ))
+
+            self.assertFalse(mock_iam.create_group.called)
+            self.assertFalse(mock_iam.create_user.called)
+            self.assertFalse(mock_iam.add_user_to_group.called)
+            self.assertFalse(mock_iam.create_access_key.called)
 
     def test_validate_unique_hostname(self):
         """Should detect duplicate host names in the stack early."""
@@ -512,8 +526,7 @@ class TestOpsWorksRegister(TestOpsWorksBase):
         self.register._stack = {"StackId": "Foo"}
         self.register._prov_params = {
             "Parameters": {"foo": "Bar", "bar": "Baz"}}
-        self.register.access_key = {
-            "AccessKeyId": "Bar", "SecretAccessKey": "Baz"}
+        self.register.access_key = None
         self.register._use_hostname = None
 
         pre_config = self.register._pre_config_document(
@@ -522,11 +535,9 @@ class TestOpsWorksRegister(TestOpsWorksBase):
 
         self.assertEqual(
             pre_config, {
-                "access_key_id": "Bar",
                 "bar": "Baz",
                 "foo": "Bar",
                 "import": False,
-                "secret_access_key": "Baz",
                 "stack_id": "Foo",
             }
         )
@@ -574,6 +585,7 @@ class TestOpsWorksRegisterEc2(TestOpsWorksBase):
             "private_key": None,
             "ssh": None,
             "target": None,
+            "use_instance_profile": None,
         }, **kwargs))
 
     @mock.patch.object(opsworks, "subprocess")
@@ -1023,6 +1035,7 @@ class TestOpsWorksRegisterOnPremises(TestOpsWorksBase):
             "private_key": None,
             "ssh": None,
             "target": None,
+            "use_instance_profile": None,
         }, **kwargs))
 
     @mock.patch.object(opsworks, "subprocess")
@@ -1072,6 +1085,14 @@ class TestOpsWorksRegisterOnPremises(TestOpsWorksBase):
         mock_iam.create_access_key.assert_called_with(
             UserName="OpsWorks-STACKNAME-HOSTNAME")
         self.assertTrue(mock_subprocess.check_call.calls)
+
+    def test_prevalidate_arguments_no_instance_profile(self):
+        """Shouldn't allow using an instance profile on-premises."""
+
+        with self.assertRaises(ValueError):
+            self.register.prevalidate_arguments(
+                self._build_args(
+                    target="target", use_instance_profile=True))
 
     def test_determine_details_simple(self):
         """Should determine names and address for a basic instance."""

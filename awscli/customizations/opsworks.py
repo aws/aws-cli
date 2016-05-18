@@ -110,6 +110,9 @@ class OpsWorksRegister(BasicCommand):
          'help_text': """If given, instead of a remote machine, the local
                          machine will be imported. Cannot be used together
                          with `target`."""},
+        {'name': 'use-instance-profile', 'action': 'store_true',
+         'help_text': """Use the instance profile instead of creating an IAM
+                         user."""},
         {'name': 'target', 'positional_arg': True, 'nargs': '?',
          'synopsis': '[<target>]',
          'help_text': """Either the EC2 instance ID or the hostname of the
@@ -125,6 +128,7 @@ class OpsWorksRegister(BasicCommand):
         self._use_address = None
         self._use_hostname = None
         self._name_for_iam = None
+        self.access_key = None
 
     def _create_clients(self, args, parsed_globals):
         self.iam = self._session.create_client('iam')
@@ -138,7 +142,7 @@ class OpsWorksRegister(BasicCommand):
         self.retrieve_stack(args)
         self.validate_arguments(args)
         self.determine_details(args)
-        self.create_iam_entities()
+        self.create_iam_entities(args)
         self.setup_target_machine(args)
 
     def prevalidate_arguments(self, args):
@@ -167,6 +171,11 @@ class OpsWorksRegister(BasicCommand):
             if args.public_ip:
                 raise ValueError(
                     "--override-public-ip is not supported for EC2.")
+
+        if args.infrastructure_class == 'on-premises' and \
+                args.use_instance_profile:
+            raise ValueError(
+                "--use-instance-profile is only supported for EC2.")
 
         if args.hostname:
             if not HOSTNAME_RE.match(args.hostname):
@@ -312,12 +321,17 @@ class OpsWorksRegister(BasicCommand):
             self._use_hostname = None
             self._name_for_iam = args.target
 
-    def create_iam_entities(self):
+    def create_iam_entities(self, args):
         """
         Creates an IAM group, user and corresponding credentials.
 
         Provides `self.access_key`.
         """
+
+        if args.use_instance_profile:
+            LOG.debug("Skipping IAM entity creation")
+            self.access_key = None
+            return
 
         LOG.debug("Creating the IAM group if necessary")
         group_name = "OpsWorks-%s" % clean_for_iam(self._stack['StackId'])
@@ -436,11 +450,13 @@ class OpsWorksRegister(BasicCommand):
 
     def _pre_config_document(self, args):
         parameters = dict(
-            access_key_id=self.access_key['AccessKeyId'],
-            secret_access_key=self.access_key['SecretAccessKey'],
             stack_id=self._stack['StackId'],
             **self._prov_params["Parameters"]
         )
+        if self.access_key:
+            parameters['access_key_id'] = self.access_key['AccessKeyId']
+            parameters['secret_access_key'] = \
+                self.access_key['SecretAccessKey']
         if self._use_hostname:
             parameters['hostname'] = self._use_hostname
         if args.private_ip:

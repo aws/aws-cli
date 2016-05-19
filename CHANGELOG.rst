@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.10.32
+=======
+
+* feature:``firehose``: Update firehose command to latest version
+* bugfix:Table: Fix rendering of tables with double-width characters.
+* feature:``ec2``: Update ec2 command to latest version
+* feature:``ecs``: Update ecs command to latest version
+
+
 1.10.31
 =======
 

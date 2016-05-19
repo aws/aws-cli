@@ -65,6 +65,10 @@ class TestSection(unittest.TestCase):
         widths = self.section.calculate_column_widths(max_width=41)
         self.assertEqual(widths, [13, 14, 14])
 
+    def test_width_with_full_width_characters(self):
+        self.section.add_row([u'\u4e00', u'one'])
+        self.assertEqual(self.section.calculate_column_widths(), [2, 3])
+
     def test_max_width_scaling_is_negative(self):
         self.section.add_row(['12345', '12345'])
         widths = self.section.calculate_column_widths(max_width=17)

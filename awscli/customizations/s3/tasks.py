@@ -517,6 +517,10 @@ class CompleteMultipartUploadTask(BasicTask):
         try:
             response_data = self.filename.client.complete_multipart_upload(
                 **params)
+            if (self.parameters['copy_acl'] and
+                        self.filename.src_type == 's3' and
+                        self.filename.dest_type == 's3'):
+                self.filename.copy_acl()
         except Exception as e:
             LOGGER.debug("Error trying to complete multipart upload: %s",
                          e, exc_info=True)

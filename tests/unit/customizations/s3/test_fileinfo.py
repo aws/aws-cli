@@ -14,7 +14,6 @@ import os
 import tempfile
 import shutil
 from datetime import datetime
-from hashlib import md5
 
 from awscli.compat import six
 import mock
@@ -30,17 +29,37 @@ class TestSaveFile(unittest.TestCase):
     def setUp(self):
         self.tempdir = tempfile.mkdtemp()
         self.filename = os.path.join(self.tempdir, 'dir1', 'dir2', 'foo.txt')
-        etag = md5()
-        etag.update(b'foobar')
-        etag = etag.hexdigest()
+        etag = '3858f62230ac3c915f300c664312c63f'
         self.response_data = {
             'Body': six.BytesIO(b'foobar'),
             'ETag': '"%s"' % etag,
         }
         self.last_update = datetime.now()
 
+        # Setup MD5 patches
+        self.md5_object = mock.Mock()
+        self.md5_object.hexdigest.return_value = etag
+        md5_builder = mock.Mock(return_value=self.md5_object)
+        self.md5_patch = mock.patch('hashlib.md5', md5_builder)
+        self.md5_patch.start()
+        self._md5_available_patch = None
+        self.set_md5_available()
+
     def tearDown(self):
         shutil.rmtree(self.tempdir)
+
+        # Tear down MD5 patches
+        self.md5_patch.stop()
+        if self._md5_available_patch:
+            self._md5_available_patch.stop()
+
+    def set_md5_available(self, is_available=True):
+        if self._md5_available_patch:
+            self._md5_available_patch.stop()
+
+        self._md5_available_patch = mock.patch(
+            'awscli.customizations.s3.fileinfo.MD5_AVAILABLE', is_available)
+        self._md5_available_patch.start()
 
     def test_save_file(self):
         fileinfo.save_file(self.filename, self.response_data, self.last_update)
@@ -90,6 +109,15 @@ class TestSaveFile(unittest.TestCase):
         # Ensure MD5 is not checked when kms is used by providing a bad MD5.
         self.response_data['ETag'] = '"0"'
         self.response_data['ServerSideEncryption'] = 'aws:kms'
+        # Should not raise any md5 error.
+        fileinfo.save_file(self.filename, self.response_data, self.last_update)
+        # The file should have been saved.
+        self.assertTrue(os.path.isfile(self.filename))
+
+    def test_no_raise_md5_when_md5_unavailable(self):
+        self.response_data['ETag'] = '"0"'
+        self.response_data['ServerSideEncryption'] = 'AES256'
+        self.set_md5_available(False)
         # Should not raise any md5 error.
         fileinfo.save_file(self.filename, self.response_data, self.last_update)
         # The file should have been saved.

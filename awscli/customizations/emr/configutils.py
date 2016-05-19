@@ -13,7 +13,7 @@
 import logging
 import os
 
-from awscli.customizations.configure import ConfigFileWriter
+from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.emr.constants import EC2_ROLE_NAME
 from awscli.customizations.emr.constants import EMR_ROLE_NAME
 
@@ -41,8 +41,8 @@ def _get_profile_str(session, separator):
 
 def is_any_role_configured(session):
     parsed_configs = get_configs(session)
-    return True if ('instance_profile' in parsed_configs
-                    or 'service_role' in parsed_configs) \
+    return True if ('instance_profile' in parsed_configs or
+                    'service_role' in parsed_configs) \
         else False
 
 

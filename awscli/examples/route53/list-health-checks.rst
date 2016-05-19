@@ -10,6 +10,6 @@ If you have more than 100 health checks, or if you want to list them in groups s
 
 To view the next health check, take the value of ``NextToken`` from the response to the previous command, and include it in the ``--starting-token`` parameter, for example::
 
-  aws route53 list-health-checks --max-items 1 --starting-token 02ec8401-9879-4259-91fa-094674111111
+  aws route53 list-health-checks --max-items 1 --starting-token Z3M3LMPEXAMPLE
 
 

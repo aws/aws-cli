@@ -4,4 +4,4 @@ This example command reports status feedback for the specified instance.
 
 Command::
 
-  aws ec2 report-instance-status --instances i-570e5a28 --status impaired --reason-codes unresponsive
+  aws ec2 report-instance-status --instances i-1234567890abcdef0 --status impaired --reason-codes unresponsive

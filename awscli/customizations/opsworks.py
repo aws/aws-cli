@@ -35,7 +35,7 @@ IAM_USER_POLICY_TIMEOUT = datetime.timedelta(minutes=15)
 IAM_PATH = '/AWS/OpsWorks/'
 
 HOSTNAME_RE = re.compile(r"^(?!-)[a-z0-9-]{1,63}(?<!-)$", re.I)
-INSTANCE_ID_RE = re.compile(r"^i-[0-9a-f]{8}$")
+INSTANCE_ID_RE = re.compile(r"^i-[0-9a-f]+$")
 IP_ADDRESS_RE = re.compile(r"^\d+\.\d+\.\d+\.\d+$")
 
 IDENTITY_URL = \

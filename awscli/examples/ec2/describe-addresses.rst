@@ -55,7 +55,7 @@ Output::
         "Addresses": [
             {
                 "Domain": "vpc",
-                "InstanceId": "i-10a64379",
+                "InstanceId": "i-1234567890abcdef0",
                 "NetworkInterfaceId": "eni-1a2b3c4d",
                 "AssociationId": "eipassoc-123abc12",
                 "NetworkInterfaceOwnerId": "1234567891012",
@@ -103,7 +103,7 @@ Output::
     {
         "Addresses": [
             {
-                "InstanceId": "i-1a2b3c4d", 
+                "InstanceId": "i-0598c7d356eba48d7", 
                 "PublicIp": "203.0.110.25", 
                 "Domain": "standard"
             }

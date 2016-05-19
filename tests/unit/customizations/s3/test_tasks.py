@@ -21,6 +21,7 @@ import shutil
 from six.moves import queue
 
 from botocore.exceptions import IncompleteReadError
+from botocore.exceptions import ClientError
 from botocore.vendored.requests.packages.urllib3.exceptions import \
     ReadTimeoutError
 
@@ -473,6 +474,21 @@ class TestDownloadPartTask(unittest.TestCase):
         self.assertEqual(call_args_list[0],
                          mock.call(('local/file', 0, b'foobar', True)))
         success_body.read.assert_called_with()
+
+    def test_failed_downloads_add_error_to_result_queue(self):
+        self.client.get_object.side_effect = ClientError(
+            {'Error': {'Code': 'BadRequest'}}, 'get_object'
+        )
+        task = DownloadPartTask(0, 1024 * 1024, self.result_queue,
+                                self.filename,
+                                self.context, self.io_queue,
+                                self.params)
+        with self.assertRaises(ClientError):
+            task()
+        # Should have queued a task marked as an error.
+        self.assertEqual(self.result_queue.put.call_count, 1)
+        print_task = self.result_queue.put.call_args[0][0]
+        self.assertTrue(print_task.error)
 
 
 class TestMultipartDownloadContext(unittest.TestCase):

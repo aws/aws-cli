@@ -123,7 +123,7 @@ INCLUDE = {'name': 'include', 'action': AppendFilter, 'nargs': 1,
 
 ACL = {'name': 'acl',
        'choices': ['private', 'public-read', 'public-read-write',
-                   'authenticated-read', 'bucket-owner-read',
+                   'authenticated-read', 'aws-exec-read', 'bucket-owner-read',
                    'bucket-owner-full-control', 'log-delivery-write'],
        'help_text': (
            "Sets the ACL for the object when the command is "
@@ -131,7 +131,7 @@ ACL = {'name': 'acl',
            '"s3:PutObjectAcl" permission included in the list of actions '
            "for your IAM policy. "
            "Only accepts values of ``private``, ``public-read``, "
-           "``public-read-write``, ``authenticated-read``, "
+           "``public-read-write``, ``authenticated-read``, ``aws-exec-read``, "
            "``bucket-owner-read``, ``bucket-owner-full-control`` and "
            "``log-delivery-write``. "
            'See <a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/'
@@ -163,7 +163,7 @@ GRANTS = {
         'writeacl, or full.</li><li><code>Grantee_Type</code> - '
         'Specifies how the grantee is to be identified, and can be set '
         'to uri, emailaddress, or id.</li><li><code>Grantee_ID</code> - '
-        'Specifies the grantee based on Grantee_Type.</li></ul>The '
+        'Specifies the grantee based on Grantee_Type. The '
         '<code>Grantee_ID</code> value can be one of:<ul><li><b>uri</b> '
         '- The group\'s URI. For more information, see '
         '<a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/'
@@ -195,7 +195,7 @@ SSE_C = {
         'of the the object in S3. ``AES256`` is the only valid value. '
         'If the parameter is specified but no value is provided, '
         '``AES256`` is used. If you provide this value, ``--sse-c-key`` '
-        'be specfied as well.'
+        'must be specfied as well.'
     )
 }
 
@@ -205,7 +205,8 @@ SSE_C_KEY = {
     'help_text': (
         'The customer-provided encryption key to use to server-side '
         'encrypt the object in S3. If you provide this value, '
-        '``--sse-c`` be specfied as well.'
+        '``--sse-c`` must be specfied as well. The key provided should '
+        '**not** be base64 encoded.'
     )
 }
 
@@ -231,7 +232,7 @@ SSE_C_COPY_SOURCE = {
         'object. ``AES256`` is the only valid '
         'value. If the parameter is specified but no value is provided, '
         '``AES256`` is used. If you provide this value, '
-        '``--sse-c-copy-source-key`` be specfied as well. '
+        '``--sse-c-copy-source-key`` must be specfied as well. '
     )
 }
 
@@ -245,7 +246,7 @@ SSE_C_COPY_SOURCE_KEY = {
         'to use to decrypt the source object. The encryption key provided '
         'must be one that was used when the source object was created. '
         'If you provide this value, ``--sse-c-copy-source`` be specfied as '
-        'well.'
+        'well. The key provided should **not** be base64 encoded.'
     )
 }
 
@@ -319,9 +320,9 @@ METADATA = {
     },
     'help_text': (
         "A map of metadata to store with the objects in S3. This will be "
-        "applied to every object which is part of this request. In a sync, this"
-        "means that files which haven't changed won't receive the new metadata."
-        " When copying between two s3 locations, the metadata-directive "
+        "applied to every object which is part of this request. In a sync, this "
+        "means that files which haven't changed won't receive the new metadata. "
+        "When copying between two s3 locations, the metadata-directive "
         "argument will default to 'REPLACE' unless otherwise specified."
     )
 }
@@ -342,7 +343,7 @@ METADATA_DIRECTIVE = {
         ' specified by the CLI command. Note that if you are '
         'using any of the following parameters: ``--content-type``, '
         '``content-language``, ``--content-encoding``, '
-        '``--content-disposition``, ``-cache-control``, or ``--expires``, you '
+        '``--content-disposition``, ``--cache-control``, or ``--expires``, you '
         'will need to specify ``--metadata-directive REPLACE`` for '
         'non-multipart copies if you want the copied objects to have the '
         'specified metadata values.')
@@ -378,7 +379,7 @@ EXPECTED_SIZE = {'name': 'expected-size',
                      'in terms of bytes. Note that this argument is needed '
                      'only when a stream is being uploaded to s3 and the size '
                      'is larger than 5GB.  Failure to include this argument '
-                     'under these conditions may result in a failed upload. '
+                     'under these conditions may result in a failed upload '
                      'due to too many parts in upload.')}
 
 
@@ -392,10 +393,19 @@ PAGE_SIZE = {'name': 'page-size', 'cli_type_name': 'integer',
 IGNORE_GLACIER_WARNINGS = {
     'name': 'ignore-glacier-warnings', 'action': 'store_true',
     'help_text': (
-        'Turns off glacier warnings. Warnings about operations that cannot '
+        'Turns off glacier warnings. Warnings about an operation that cannot '
         'be performed because it involves copying, downloading, or moving '
         'a glacier object will no longer be printed to standard error and '
         'will no longer cause the return code of the command to be ``2``.'
+    )
+}
+
+
+FORCE_GLACIER_TRANSFER = {
+    'name': 'force-glacier-transfer', 'action': 'store_true',
+    'help_text': (
+        'Forces a transfer request on all Glacier objects in a sync or '
+        'recursive copy.'
     )
 }
 
@@ -407,7 +417,7 @@ TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  WEBSITE_REDIRECT, CONTENT_TYPE, CACHE_CONTROL,
                  CONTENT_DISPOSITION, CONTENT_ENCODING, CONTENT_LANGUAGE,
                  EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS,
-                 PAGE_SIZE, IGNORE_GLACIER_WARNINGS]
+                 PAGE_SIZE, IGNORE_GLACIER_WARNINGS, FORCE_GLACIER_TRANSFER]
 
 
 def get_client(session, region, endpoint_url, verify, config=None):
@@ -426,8 +436,8 @@ class S3Command(BasicCommand):
 class ListCommand(S3Command):
     NAME = 'ls'
     DESCRIPTION = ("List S3 objects and common prefixes under a prefix or "
-                   "all S3 buckets. Note that the --output argument "
-                   "is ignored for this command.")
+                   "all S3 buckets. Note that the --output and --no-paginate "
+                   "arguments are ignored for this command.")
     USAGE = "<S3Uri> or NONE"
     ARG_TABLE = [{'name': 'paths', 'nargs': '?', 'default': 's3://',
                   'positional_arg': True, 'synopsis': USAGE}, RECURSIVE,
@@ -668,7 +678,11 @@ class S3TransferCommand(S3Command):
                                      ' E.g. s3://%s' % bucket)
                 path = 's3://' + bucket
                 del_objects = RmCommand(self._session)
-                del_objects([path, '--recursive'], parsed_globals)
+                rc = del_objects([path, '--recursive'], parsed_globals)
+                if rc != 0:
+                    raise RuntimeError(
+                        "Unable to delete all objects in the bucket, "
+                        "bucket will not be deleted.")
 
 
 class CpCommand(S3TransferCommand):
@@ -1053,12 +1067,14 @@ class CommandParameters(object):
     def _validate_streaming_paths(self):
         self.parameters['is_stream'] = False
         if self.parameters['src'] == '-' or self.parameters['dest'] == '-':
+            if self.cmd != 'cp' or self.parameters.get('dir_op'):
+                raise ValueError(
+                    "Streaming currently is only compatible with "
+                    "non-recursive cp commands"
+                )
             self.parameters['is_stream'] = True
             self.parameters['dir_op'] = False
             self.parameters['only_show_errors'] = True
-        if self.parameters['is_stream'] and self.cmd != 'cp':
-            raise ValueError("Streaming currently is only compatible with "
-                             "single file cp commands")
 
     def _validate_path_args(self):
         # If we're using a mv command, you can't copy the object onto itself.

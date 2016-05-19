@@ -78,6 +78,26 @@ class TestSyncCommand(BaseAWSCommandParamsTest):
         # Make sure the file now exists.
         self.assertTrue(
             os.path.exists(os.path.join(non_existant_directory, key)))
+
+    def test_glacier_sync_with_force_glacier(self):
+        self.parsed_responses = [
+            {
+                'Contents': [
+                    {'Key': 'foo/bar.txt', 'ContentLength': '100',
+                     'LastModified': '00:00:00Z',
+                     'StorageClass': 'GLACIER',
+                     'Size': 100},
+                ],
+                'CommonPrefixes': []
+            },
+            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')},
+        ]
+        cmdline = '%s s3://bucket/foo %s --force-glacier-transfer' % (
+            self.prefix, self.files.rootdir)
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 2, self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
     
     def test_handles_glacier_incompatible_operations(self):
         self.parsed_responses = [

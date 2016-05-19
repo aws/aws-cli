@@ -1,41 +1,40 @@
-**To describe Auto Scaling process types**
+**To describe the Auto Scaling process types**
 
-The following ``describe-scaling-process-types`` command returns Auto Scaling process types::
+This example describes the Auto Scaling process types::
 
-	aws autoscaling describe-scaling-process-types
+    aws autoscaling describe-scaling-process-types
 
-The output of this command lists the processes, similar to the following::
+The following is example output::
 
-  {
-    "Processes": [
-      {
-        "ProcessName": "AZRebalance"
-      },
-      {
-        "ProcessName": "AddToLoadBalancer"
-      },
-      {
-        "ProcessName": "AlarmNotification"
-      },
-      {
-        "ProcessName": "HealthCheck"
-      },
-      {
-        "ProcessName": "Launch"
-      },
-      {
-        "ProcessName": "ReplaceUnhealthy"
-      },
-      {
-        "ProcessName": "ScheduledActions"
-      },
-      {
-        "ProcessName": "Terminate"
-      }
-    ]
-  }
+    {
+        "Processes": [
+            {
+                "ProcessName": "AZRebalance"
+            },
+            {
+                "ProcessName": "AddToLoadBalancer"
+            },
+            {
+                "ProcessName": "AlarmNotification"
+            },
+            {
+                "ProcessName": "HealthCheck"
+            },
+            {
+                "ProcessName": "Launch"
+            },
+            {
+                "ProcessName": "ReplaceUnhealthy"
+            },
+            {
+                "ProcessName": "ScheduledActions"
+            },
+            {
+                "ProcessName": "Terminate"
+            }
+        ]
+    }
 
-For more information, see `Suspend and Resume Auto Scaling Process`_ in the *Auto Scaling Developer Guide*.
+For more information, see `Suspend and Resume Auto Scaling Processes`_ in the *Auto Scaling Developer Guide*.
 
-.. _`Suspend and Resume Auto Scaling Process`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/US_SuspendResume.html
-
+.. _`Suspend and Resume Auto Scaling Processes`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/US_SuspendResume.html

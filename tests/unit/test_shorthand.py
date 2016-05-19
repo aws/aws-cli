@@ -56,6 +56,9 @@ def test_parse():
     # Dots are allowed.
     yield (_can_parse, 'with.dot=bar', {'with.dot': 'bar'})
 
+    # Pound signs are allowed.
+    yield (_can_parse, '#key=value', {'#key': 'value'})
+
     # Explicit lists.
     yield (_can_parse, 'foo=[]', {'foo': []})
     yield (_can_parse, 'foo=[a]', {'foo': ['a']})

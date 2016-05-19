@@ -68,7 +68,7 @@ Output::
     upload: test2.txt to s3://mybucket/test2.txt
 
 The following ``sync`` command syncs files under a local directory to objects under a specified prefix and bucket by
-downloading the local files to s3.  This example uses the ``--exclude`` parameter flag to exclude a specified directory
+downloading s3 objects.  This example uses the ``--exclude`` parameter flag to exclude a specified directory
 and s3 prefix from the ``sync`` command.  In this example, the user syncs the local current directory to the bucket
 ``mybucket``.  The local current directory contains the files ``test.txt`` and ``another/test2.txt``.  The bucket
 ``mybucket`` contains the objects ``another/test5.txt`` and ``test1.txt``::

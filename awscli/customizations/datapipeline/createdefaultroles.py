@@ -51,8 +51,11 @@ class CreateDefaultRoles(BasicCommand):
         self._region = get_region(self._session, parsed_globals)
         self._endpoint_url = parsed_globals.endpoint_url
         self._iam_client = self._session.create_client(
-            'iam', self._region, self._endpoint_url,
-            parsed_globals.verify_ssl)
+            'iam', 
+            region_name=self._region, 
+            endpoint_url=self._endpoint_url,
+            verify=parsed_globals.verify_ssl
+        )
         remove_cli_error_event(self._iam_client)
         return self._create_default_roles(parsed_args, parsed_globals)
 

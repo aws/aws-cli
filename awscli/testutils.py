@@ -211,13 +211,8 @@ class BaseCLIDriverTest(unittest.TestCase):
         }
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
-        emitter = HierarchicalEmitter()
-        session = Session(EnvironmentVariables, emitter)
-        session.register_component('data_loader', _LOADER)
-        load_plugins({}, event_hooks=emitter)
-        driver = CLIDriver(session=session)
-        self.session = session
-        self.driver = driver
+        self.driver = create_clidriver()
+        self.session = self.driver.session
 
     def tearDown(self):
         self.environ_patch.stop()
@@ -632,6 +627,7 @@ class BaseS3CLICommand(unittest.TestCase):
     and more streamlined.
 
     """
+
     def setUp(self):
         self.files = FileCreator()
         self.session = botocore.session.get_session()
@@ -651,6 +647,11 @@ class BaseS3CLICommand(unittest.TestCase):
     def extra_teardown(self):
         # Subclasses can use this to define extra teardown steps.
         pass
+
+    def create_client_for_bucket(self, bucket_name):
+        region = self.regions.get(bucket_name, self.region)
+        client = self.session.create_client('s3', region_name=region)
+        return client
 
     def assert_key_contents_equal(self, bucket, key, expected_contents):
         if isinstance(expected_contents, six.BytesIO):
@@ -672,8 +673,7 @@ class BaseS3CLICommand(unittest.TestCase):
         return bucket_name
 
     def put_object(self, bucket_name, key_name, contents='', extra_args=None):
-        client = self.session.create_client(
-            's3', region_name=self.regions[bucket_name])
+        client = self.create_client_for_bucket(bucket_name)
         call_args = {
             'Bucket': bucket_name,
             'Key': key_name, 'Body': contents
@@ -685,14 +685,12 @@ class BaseS3CLICommand(unittest.TestCase):
 
     def delete_bucket(self, bucket_name):
         self.remove_all_objects(bucket_name)
-        client = self.session.create_client(
-            's3', region_name=self.regions[bucket_name])
+        client = self.create_client_for_bucket(bucket_name)
         response = client.delete_bucket(Bucket=bucket_name)
-        del self.regions[bucket_name]
+        self.regions.pop(bucket_name, None)
 
     def remove_all_objects(self, bucket_name):
-        client = self.session.create_client(
-            's3', region_name=self.regions[bucket_name])
+        client = self.create_client_for_bucket(bucket_name)
         paginator = client.get_paginator('list_objects')
         pages = paginator.paginate(Bucket=bucket_name)
         key_names = []
@@ -702,19 +700,16 @@ class BaseS3CLICommand(unittest.TestCase):
             self.delete_key(bucket_name, key_name)
 
     def delete_key(self, bucket_name, key_name):
-        client = self.session.create_client(
-            's3', region_name=self.regions[bucket_name])
+        client = self.create_client_for_bucket(bucket_name)
         response = client.delete_object(Bucket=bucket_name, Key=key_name)
 
     def get_key_contents(self, bucket_name, key_name):
-        client = self.session.create_client(
-            's3', region_name=self.regions[bucket_name])
+        client = self.create_client_for_bucket(bucket_name)
         response = client.get_object(Bucket=bucket_name, Key=key_name)
         return response['Body'].read().decode('utf-8')
 
     def key_exists(self, bucket_name, key_name):
-        client = self.session.create_client(
-            's3', region_name=self.regions[bucket_name])
+        client = self.create_client_for_bucket(bucket_name)
         try:
             client.head_object(Bucket=bucket_name, Key=key_name)
             return True
@@ -730,8 +725,7 @@ class BaseS3CLICommand(unittest.TestCase):
         return parsed['ContentType']
 
     def head_object(self, bucket_name, key_name):
-        client = self.session.create_client(
-            's3', region_name=self.regions[bucket_name])
+        client = self.create_client_for_bucket(bucket_name)
         response = client.head_object(Bucket=bucket_name, Key=key_name)
         return response
 
@@ -748,3 +742,18 @@ class BaseS3CLICommand(unittest.TestCase):
 class StringIOWithFileNo(StringIO):
     def fileno(self):
         return 0
+
+
+class TestEventHandler(object):
+    def __init__(self, handler=None):
+        self._handler = handler
+        self._called = False
+
+    @property
+    def called(self):
+        return self._called
+
+    def handler(self, **kwargs):
+        self._called = True
+        if self._handler is not None:
+            self._handler(**kwargs)

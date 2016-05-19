@@ -16,8 +16,9 @@ import math
 import os
 import sys
 
-from awscli.customizations.s3.utils import find_chunksize, \
-    find_bucket_key, relative_path, PrintTask, create_warning
+from awscli.customizations.s3.utils import (
+    find_chunksize, adjust_chunksize_to_upload_limits, MAX_UPLOAD_SIZE,
+    find_bucket_key, relative_path, PrintTask, create_warning)
 from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3 import tasks
 from awscli.customizations.s3.transferconfig import RuntimeConfig
@@ -26,9 +27,6 @@ from awscli.compat import queue
 
 
 LOGGER = logging.getLogger(__name__)
-# Maximum object size allowed in S3.
-# See: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
-MAX_UPLOAD_SIZE = 5 * (1024 ** 4)
 
 CommandResult = namedtuple('CommandResult',
                            ['num_tasks_failed', 'num_tasks_warned'])
@@ -67,7 +65,7 @@ class S3Handler(object):
             'only_show_errors': False, 'is_stream': False,
             'paths_type': None, 'expected_size': None, 'metadata': None,
             'metadata_directive': None, 'ignore_glacier_warnings': False,
-            'copy_acl': None
+            'force_glacier_transfer': False, 'copy_acl': None
         }
         self.params['region'] = params['region']
         for key in self.params.keys():
@@ -103,48 +101,47 @@ class S3Handler(object):
             self.executor.print_thread.set_total_files(total_files)
             self.executor.print_thread.set_total_parts(total_parts)
             self.executor.initiate_shutdown()
-            self.executor.wait_until_shutdown()
-            self._shutdown()
+            self._finalize_shutdown()
         except Exception as e:
             LOGGER.debug('Exception caught during task execution: %s',
                          str(e), exc_info=True)
             self.result_queue.put(PrintTask(message=str(e), error=True))
             self.executor.initiate_shutdown(
                 priority=self.executor.IMMEDIATE_PRIORITY)
-            self._shutdown()
-            self.executor.wait_until_shutdown()
+            self._finalize_shutdown()
         except KeyboardInterrupt:
             self.result_queue.put(PrintTask(message=("Cleaning up. "
                                                      "Please wait..."),
                                             error=True))
             self.executor.initiate_shutdown(
                 priority=self.executor.IMMEDIATE_PRIORITY)
-            self._shutdown()
-            self.executor.wait_until_shutdown()
+            self._finalize_shutdown()
         return CommandResult(self.executor.num_tasks_failed,
                              self.executor.num_tasks_warned)
 
-    def _shutdown(self):
+    def _finalize_shutdown(self):
+        # Run all remaining tasks needed to completely shutdown the
+        # S3 handler.  This method will block until shutdown is complete.
+        # The order here is important.  We need to wait until all the
+        # tasks have been completed before we can cleanup.  Otherwise
+        # we can have race conditions where we're trying to cleanup
+        # uploads/downloads that are still in progress.
+        self.executor.wait_until_shutdown()
+        self._cleanup()
+
+    def _cleanup(self):
         # And finally we need to make a pass through all the existing
         # multipart uploads and abort any pending multipart uploads.
         self._abort_pending_multipart_uploads()
         self._remove_pending_downloads()
 
     def _abort_pending_multipart_uploads(self):
-        # For the purpose of aborting uploads, we consider any
-        # upload context with an upload id.
+        # precondition: this method is assumed to be called when there are no ongoing
+        # uploads (the executor has been shutdown).
         for upload, filename in self._multipart_uploads:
-            if upload.is_cancelled():
-                try:
-                    upload.wait_for_upload_id()
-                except tasks.UploadCancelledError:
-                    pass
-                else:
-                    # This means that the upload went from STARTED -> CANCELLED.
-                    # This could happen if a part thread decided to cancel the
-                    # upload.  We need to explicitly abort the upload here.
-                    self._cancel_upload(upload.wait_for_upload_id(), filename)
-            upload.cancel_upload(self._cancel_upload, args=(filename,))
+            if upload.is_cancelled() or upload.in_progress():
+                # Cancel any upload that's not unstarted and not complete.
+                upload.cancel_upload(self._cancel_upload, args=(filename,))
 
     def _remove_pending_downloads(self):
         # The downloads case is easier than the uploads case because we don't
@@ -186,10 +183,11 @@ class S3Handler(object):
             if too_large and filename.operation_name == 'upload':
                 warning_message = "File exceeds s3 upload limit of 5 TB."
                 warning = create_warning(relative_path(filename.src),
-                                         message=warning_message)
+                                         warning_message)
                 self.result_queue.put(warning)
             # Warn and skip over glacier incompatible tasks.
-            elif not filename.is_glacier_compatible():
+            elif not self.params.get('force_glacier_transfer') and \
+                    not filename.is_glacier_compatible():
                 LOGGER.debug(
                     'Encountered glacier object s3://%s. Not performing '
                     '%s on object.' % (filename.src, filename.operation_name))
@@ -261,15 +259,14 @@ class S3Handler(object):
         return num_uploads
 
     def _enqueue_range_download_tasks(self, filename, remove_remote_file=False):
-        chunksize = find_chunksize(filename.size, self.chunksize)
-        num_downloads = int(filename.size / chunksize)
+        num_downloads = int(filename.size / self.chunksize)
         context = tasks.MultipartDownloadContext(num_downloads)
         create_file_task = tasks.CreateLocalFileTask(
             context=context, filename=filename,
             result_queue=self.result_queue)
         self.executor.submit(create_file_task)
         self._do_enqueue_range_download_tasks(
-            filename=filename, chunksize=chunksize,
+            filename=filename, chunksize=self.chunksize,
             num_downloads=num_downloads, context=context,
             remove_remote_file=remove_remote_file
         )
@@ -337,6 +334,7 @@ class S3Handler(object):
             parameters=self.params,
             result_queue=self.result_queue, upload_context=upload_context)
         self.executor.submit(create_multipart_upload_task)
+        self._multipart_uploads.append((upload_context, filename))
         return upload_context
 
     def _enqueue_upload_tasks(self, num_uploads, chunksize, upload_context,
@@ -367,7 +365,6 @@ class S3Handler(object):
             session=self.session, filename=filename, parameters=self.params,
             result_queue=self.result_queue, upload_context=upload_context)
         self.executor.submit(complete_multipart_upload_task)
-        self._multipart_uploads.append((upload_context, filename))
 
 
 class S3StreamHandler(S3Handler):
@@ -456,8 +453,7 @@ class S3StreamHandler(S3Handler):
     def _enqueue_range_download_tasks(self, filename, remove_remote_file=False):
 
         # Create the context for the multipart download.
-        chunksize = find_chunksize(filename.size, self.chunksize)
-        num_downloads = int(filename.size / chunksize)
+        num_downloads = int(filename.size / self.chunksize)
         context = tasks.MultipartDownloadContext(num_downloads)
 
         # No file is needed for downloading a stream.  So just announce
@@ -467,7 +463,7 @@ class S3StreamHandler(S3Handler):
 
         # Submit download part tasks to the executor.
         self._do_enqueue_range_download_tasks(
-            filename=filename, chunksize=chunksize,
+            filename=filename, chunksize=self.chunksize,
             num_downloads=num_downloads, context=context,
             remove_remote_file=remove_remote_file
         )
@@ -477,12 +473,15 @@ class S3StreamHandler(S3Handler):
         # First we need to create a CreateMultipartUpload task,
         # then create UploadTask objects for each of the parts.
         # And finally enqueue a CompleteMultipartUploadTask.
-
-        chunksize = self.chunksize
-        # Determine an appropriate chunksize if given an expected size.
         if self.params['expected_size']:
+            # If we have the expected size, we can calculate an appropriate
+            # chunksize based on max parts and chunksize limits
             chunksize = find_chunksize(int(self.params['expected_size']),
                                        self.chunksize)
+        else:
+            # Otherwise, we can still adjust for chunksize limits
+            chunksize = adjust_chunksize_to_upload_limits(self.chunksize)
+
         num_uploads = '...'
 
         # Submit a task to begin the multipart upload.

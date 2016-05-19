@@ -107,17 +107,24 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         args += '--secondary-private-ip-addresses 10.0.2.106'
         args_list = (self.prefix + args).split()
         result = {
-            'NetworkInterface.1.DeviceIndex': 0,
-            'NetworkInterface.1.PrivateIpAddresses.1.Primary': 'false',
-            'NetworkInterface.1.PrivateIpAddresses.1.PrivateIpAddress': '10.0.2.106',
             'ImageId': 'ami-foobar',
+            'NetworkInterfaces': [
+                {'DeviceIndex': 0,
+                 'PrivateIpAddresses': [
+                     {'Primary': False, 'PrivateIpAddress': '10.0.2.106'}]}],
             'MaxCount': 1,
-            'MinCount': 1
-        }
+            'MinCount': 1}
+        self.assert_params_for_cmd(args_list, result)
+
+    def test_secondary_ip_address_with_subnet(self):
+        args = ' --image-id ami-foobar --count 1 --subnet subnet-12345678 '
+        args += '--secondary-private-ip-addresses 10.0.2.106'
+        args_list = (self.prefix + args).split()
         result = {
             'ImageId': 'ami-foobar',
             'NetworkInterfaces': [
                 {'DeviceIndex': 0,
+                 'SubnetId': 'subnet-12345678',
                  'PrivateIpAddresses': [
                      {'Primary': False, 'PrivateIpAddress': '10.0.2.106'}]}],
             'MaxCount': 1,
@@ -145,6 +152,20 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         args_list = (self.prefix + args).split()
         result = {
             'NetworkInterfaces': [{'DeviceIndex': 0,
+                                   'SecondaryPrivateIpAddressCount': 4}],
+            'ImageId': 'ami-foobar',
+            'MaxCount': 1,
+            'MinCount': 1
+        }
+        self.assert_params_for_cmd(args_list, result)
+
+    def test_secondary_ip_address_count_with_subnet(self):
+        args = ' --image-id ami-foobar --count 1 --subnet subnet-12345678 '
+        args += '--secondary-private-ip-address-count 4'
+        args_list = (self.prefix + args).split()
+        result = {
+            'NetworkInterfaces': [{'DeviceIndex': 0,
+                                   'SubnetId': 'subnet-12345678',
                                    'SecondaryPrivateIpAddressCount': 4}],
             'ImageId': 'ami-foobar',
             'MaxCount': 1,

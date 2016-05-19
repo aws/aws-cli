@@ -13,7 +13,7 @@ Output::
           {
               "State": "active",
               "InstanceExportDetails": {
-                  "InstanceId": "i-38e485d8",
+                  "InstanceId": "i-1234567890abcdef0",
                   "TargetEnvironment": "vmware"
               },
               "ExportToS3Task": {

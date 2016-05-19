@@ -19,6 +19,7 @@ from botocore.model import StringShape
 from awscli import SCALAR_TYPES
 from awscli.argprocess import ParamShorthandDocGen
 from awscli.topictags import TopicTagDB
+from awscli.utils import find_service_and_method_in_event_name
 
 LOG = logging.getLogger(__name__)
 
@@ -127,7 +128,8 @@ class CLIDocumentEventHandler(object):
             self._documented_arg_groups.append(argument.group_name)
         else:
             option_str = '%s <value>' % argument.cli_name
-        if not argument.required:
+        if not (argument.required
+                or getattr(argument, '_DOCUMENT_AS_REQUIRED', False)):
             option_str = '[%s]' % option_str
         doc.writeln('%s' % option_str)
 
@@ -303,7 +305,22 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         d = {}
         for cli_name, cli_argument in self.help_command.arg_table.items():
             if cli_argument.argument_model is not None:
-                d[cli_argument.argument_model.name] = cli_name
+                argument_name = cli_argument.argument_model.name
+                if argument_name in d:
+                    previous_mapping = d[argument_name]
+                    # If the argument name is a boolean argument, we want the
+                    # the translation to default to the one that does not start
+                    # with --no-. So we check if the cli parameter currently
+                    # being used starts with no- and if stripping off the no-
+                    # results in the new proposed cli argument name. If it
+                    # does, we assume we have the postive form of the argument
+                    # which is the name we want to use in doc translations.
+                    if cli_argument.cli_type_name == 'boolean' and \
+                            previous_mapping.startswith('no-') and \
+                            cli_name == previous_mapping[3:]:
+                        d[argument_name] = cli_name
+                else:
+                    d[argument_name] = cli_name
         for operation_name in operation_model.service_model.operation_names:
             d[operation_name] = xform_name(operation_name, '-')
         return d
@@ -402,7 +419,9 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
                 doc.style.new_line()
         doc.write('}')
 
-    def doc_option_example(self, arg_name, help_command, **kwargs):
+    def doc_option_example(self, arg_name, help_command, event_name, **kwargs):
+        service_name, operation_name = \
+            find_service_and_method_in_event_name(event_name)
         doc = help_command.doc
         cli_argument = help_command.arg_table[arg_name]
         if cli_argument.group_name in self._arg_groups:
@@ -414,7 +433,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         docgen = ParamShorthandDocGen()
         if docgen.supports_shorthand(cli_argument.argument_model):
             example_shorthand_syntax = docgen.generate_shorthand_example(
-                cli_argument.cli_name, cli_argument.argument_model)
+                cli_argument, service_name, operation_name)
             if example_shorthand_syntax is None:
                 # If the shorthand syntax returns a value of None,
                 # this indicates to us that there is no example

@@ -132,13 +132,18 @@ class TestCloudTrailCommand(unittest.TestCase):
 
         self.subscribe.setup_new_bucket('test', 'logs')
 
-        iam.get_user.assert_called()
+        iam.get_user.assert_called_with()
 
-        s3.get_object.assert_called()
-        s3.create_bucket.assert_called()
-        s3.put_bucket_policy.assert_called()
+        s3.get_object.assert_called_with(
+            Bucket='awscloudtrail-policy-us-east-1',
+            Key='policy/S3/AWSCloudTrail-S3BucketPolicy-2014-12-17.json',
+        )
+        s3.create_bucket.assert_called_with(Bucket='test')
+        s3.put_bucket_policy.assert_called_with(
+            Bucket='test', Policy=u'{"Statement": []}'
+        )
 
-        s3.delete_bucket.assert_not_called()
+        self.assertFalse(s3.delete_bucket.called)
 
         args, kwargs = s3.create_bucket.call_args
         self.assertNotIn('create_bucket_configuration', kwargs)
@@ -192,12 +197,6 @@ class TestCloudTrailCommand(unittest.TestCase):
         with self.assertRaises(Exception):
             self.subscribe.setup_new_bucket('test', 'logs')
 
-        s3.create_bucket.assert_called()
-        s3.put_bucket_policy.assert_called()
-        s3.DeleteBucket.assert_called()
-
-        s3.put_bucket_policy = orig
-
     def test_s3_get_policy_fail(self):
         self.subscribe.s3.get_object = Mock(side_effect=Exception('Foo!'))
 
@@ -231,12 +230,19 @@ class TestCloudTrailCommand(unittest.TestCase):
 
         self.subscribe.setup_new_topic('test')
 
-        s3.get_object.assert_called()
-        sns.list_topics.assert_called()
-        sns.create_topic.assert_called()
-        sns.set_topic_attributes.assert_called()
+        s3.get_object.assert_called_with(
+            Bucket='awscloudtrail-policy-us-east-1',
+            Key='policy/SNS/AWSCloudTrail-SnsTopicPolicy-2014-12-17.json',
+        )
+        sns.list_topics.assert_called_with()
+        sns.create_topic.assert_called_with(Name='test')
+        sns.set_topic_attributes.assert_called_with(
+            AttributeName='Policy',
+            AttributeValue='{"Statement": []}',
+            TopicArn='foo',
+        )
 
-        sns.delete_topic.assert_not_called()
+        self.assertFalse(sns.delete_topic.called)
 
     def test_sns_uses_regionalized_policy(self):
         s3 = self.subscribe.s3

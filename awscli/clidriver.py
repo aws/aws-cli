@@ -363,8 +363,10 @@ class ServiceCommand(CLICommand):
 
     def _get_service_model(self):
         if self._service_model is None:
+            api_version = self.session.get_config_variable('api_versions').get(
+                self._service_name, None)
             self._service_model = self.session.get_service_model(
-                self._service_name)
+                self._service_name, api_version=api_version)
         return self._service_model
 
     def __call__(self, args, parsed_globals):
@@ -514,8 +516,9 @@ class ServiceOperation(object):
                                                  self._name)
         self._emit(event, parsed_args=parsed_args,
                    parsed_globals=parsed_globals)
-        call_parameters = self._build_call_parameters(parsed_args,
-                                                      self.arg_table)
+        call_parameters = self._build_call_parameters(
+            parsed_args, self.arg_table)
+
         event = 'calling-command.%s.%s' % (self._parent_name,
                                            self._name)
         override = self._emit_first_non_none_response(

@@ -1,48 +1,47 @@
 **To describe the Auto Scaling notification configurations**
 
-The following ``describe-notification-configurations`` command returns the notification configurations for an Auto Scaling group::
+This example describes the notification configurations for the specified Auto Scaling group::
 
-	aws autoscaling describe-notification-configurations --auto-scaling-group-name basic-auto-scaling-group
+    aws autoscaling describe-notification-configurations --auto-scaling-group-name my-auto-scaling-group
 
-The output of this command is a JSON block that describes the notification configurations, similar to the following::
+The following is example output::
 
-  {
-    "NotificationConfigurations": [
-      {
-        "AutoScalingGroupName": "basic-auto-scaling-group",
-        "NotificationType": "autoscaling:TEST_NOTIFICATION",
-        "TopicARN": "arn:aws:sns:us-west-2:123456789012:second-test-topic"
-      },
-      {
-        "AutoScalingGroupName": "basic-auto-scaling-group",
-        "NotificationType": "autoscaling:TEST_NOTIFICATION",
-        "TopicARN": "arn:aws:sns:us-west-2:123456789012:test-topic"
-      }
-    ]
-  }
+    {
+        "NotificationConfigurations": [
+            {
+                "AutoScalingGroupName": "my-auto-scaling-group",
+                "NotificationType": "autoscaling:TEST_NOTIFICATION",
+                "TopicARN": "arn:aws:sns:us-west-2:123456789012:my-sns-topic-2"
+            },
+            {
+                "AutoScalingGroupName": "my-auto-scaling-group",
+                "NotificationType": "autoscaling:TEST_NOTIFICATION",
+                "TopicARN": "arn:aws:sns:us-west-2:123456789012:my-sns-topic"
+            }
+        ]
+    }
 
-To return a specific number of notification configurations with this command, use the ``max-items`` parameter::
+To return a specific number of notification configurations, use the ``max-items`` parameter::
 
-	aws autoscaling describe-notification-configurations --auto-scaling-group-name basic-auto-scaling-group --max-items 1
+    aws autoscaling describe-notification-configurations --auto-scaling-group-name my-auto-scaling-group --max-items 1
 
-In this example, the output of this command is a JSON block that describes the first notification configuration::
+The following is example output::
 
-  {
-    "NextToken": "None___1",
-    "NotificationConfigurations": [
-      {
-        "AutoScalingGroupName": "basic-auto-scaling-group",
-        "NotificationType": "autoscaling:TEST_NOTIFICATION",
-        "TopicARN": "arn:aws:sns:us-west-2:123456789012:second-test-topic"
-      }
-    ]
-  }
+    {
+        "NextToken": "Z3M3LMPEXAMPLE",
+        "NotificationConfigurations": [
+            {
+                "AutoScalingGroupName": "my-auto-scaling-group",
+                "NotificationType": "autoscaling:TEST_NOTIFICATION",
+                "TopicARN": "arn:aws:sns:us-west-2:123456789012:my-sns-topic-2"
+            }
+        ]
+    }
 
-This JSON block includes a ``NextToken`` field. You can use the value of this field with the ``starting-token`` parameter to return additional notification configurations::
+Use the ``NextToken`` field with the ``starting-token`` parameter in a subsequent call to get additional notification configurations::
 
-    aws autoscaling describe-notification-configurations --auto-scaling-group-name basic-auto-scaling-group --starting-token None___1
+    aws autoscaling describe-notification-configurations --auto-scaling-group-name my-auto-scaling-group --starting-token Z3M3LMPEXAMPLE
 
 For more information, see `Getting Notifications When Your Auto Scaling Group Changes`_ in the *Auto Scaling Developer Guide*.
 
 .. _`Getting Notifications When Your Auto Scaling Group Changes`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/ASGettingNotifications.html
-

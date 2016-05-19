@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
@@ -30,6 +29,7 @@ PARAMFILE_DISABLED = set([
     'apigateway.put-integration.uri',
     'cloudformation.create-stack.template-url',
     'cloudformation.update-stack.template-url',
+    'cloudformation.create-change-set.template-url',
     'cloudformation.validate-template.template-url',
     'cloudformation.estimate-template-cost.template-url',
 

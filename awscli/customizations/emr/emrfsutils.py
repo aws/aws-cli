@@ -176,10 +176,10 @@ def _need_to_configure_sse(emrfs_args):
 
 
 def _need_to_configure_cse(emrfs_args, cse_type):
-    return ('Encryption' in emrfs_args
-            and emrfs_args['Encryption'].upper() == constants.EMRFS_CLIENT_SIDE
-            and 'ProviderType' in emrfs_args
-            and emrfs_args['ProviderType'].upper() == cse_type)
+    return ('Encryption' in emrfs_args and
+            emrfs_args['Encryption'].upper() == constants.EMRFS_CLIENT_SIDE and
+            'ProviderType' in emrfs_args and
+            emrfs_args['ProviderType'].upper() == cse_type)
 
 
 def _update_properties_for_consistent_view(emrfs_properties, emrfs_args):

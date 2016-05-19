@@ -14,6 +14,7 @@ import os
 
 from mock import patch, Mock
 
+import awscli.customizations.s3.utils as utils
 from awscli.compat import six
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, \
     capture_output
@@ -29,10 +30,13 @@ class S3HandlerBaseTest(BaseAWSCommandParamsTest):
         self.client = self.session.create_client('s3', 'us-east-1')
         self.source_client = self.session.create_client('s3', 'us-east-1')
         self.file_creator = FileCreator()
+        self._saved_min_chunksize = utils.MIN_UPLOAD_CHUNKSIZE
+        utils.MIN_UPLOAD_CHUNKSIZE = 1
 
     def tearDown(self):
         super(S3HandlerBaseTest, self).tearDown()
         clean_loc_files(self.file_creator)
+        utils.MIN_UPLOAD_CHUNKSIZE = self._saved_min_chunksize
 
     def run_s3_handler(self, s3_handler, tasks):
         self.patch_make_request()
@@ -50,7 +54,8 @@ class S3HandlerBaseTest(BaseAWSCommandParamsTest):
         return stdout, stderr, rc
 
     def assert_operations_for_s3_handler(self, s3_handler, tasks,
-                                         ref_operations):
+                                         ref_operations,
+                                         verify_no_failed_tasked=True):
         """Assert API operations based on tasks given to s3 handler
 
         :param s3_handler: A S3Handler object
@@ -60,7 +65,8 @@ class S3HandlerBaseTest(BaseAWSCommandParamsTest):
             parameters passed to it (as it would be passed to botocore).
         """
         stdout, stderr, rc = self.run_s3_handler(s3_handler, tasks)
-        self.assertEqual(rc.num_tasks_failed, 0)
+        if verify_no_failed_tasked:
+            self.assertEqual(rc.num_tasks_failed, 0)
         self.assertEqual(len(self.operations_called), len(ref_operations))
         for i, ref_operation in enumerate(ref_operations):
             self.assertEqual(self.operations_called[i][0].name,
@@ -68,13 +74,16 @@ class S3HandlerBaseTest(BaseAWSCommandParamsTest):
             self.assertEqual(self.operations_called[i][1], ref_operation[1])
 
 
-def make_loc_files(file_creator):
+def make_loc_files(file_creator, size=None):
     """
     This sets up the test by making a directory named some_directory.  It
     has the file text1.txt and the directory another_directory inside.  Inside
     of another_directory it creates the file text2.txt.
     """
-    body = 'This is a test.'
+    if size:
+        body = "*" * size
+    else:
+        body = 'This is a test.'
 
     filename1 = file_creator.create_file(
         os.path.join('some_directory', 'text1.txt'), body)

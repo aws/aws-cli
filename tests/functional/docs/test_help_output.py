@@ -177,6 +177,10 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         # .. _`:
         self.assert_not_contains('.. _`:')
 
+    def test_shorthand_flattens_list_of_single_member_structures(self):
+        self.driver.main(['elb', 'remove-tags', 'help'])
+        self.assert_contains("--tags Key1 Key2 Key3")
+
 
 class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
     def assert_command_does_not_exist(self, service, command):
@@ -373,6 +377,19 @@ class TestParametersCanBeHidden(BaseAWSHelpOutputTest):
                                      self.mark_as_undocumented)
         self.driver.main(['kinesis', 'get-shard-iterator', 'help'])
         self.assert_not_contains('--starting-sequence-number')
+
+
+class TestCanDocumentAsRequired(BaseAWSHelpOutputTest):
+    def test_can_doc_as_required(self):
+        # This param is already marked as required, but to be
+        # explicit this is repeated here to make it more clear.
+        def doc_as_required(argument_table, **kwargs):
+            arg = argument_table['volume-arns']
+        self.driver.session.register('building-argument-table',
+                                     doc_as_required)
+        self.driver.main(['storagegateway', 'describe-cached-iscsi-volumes',
+                          'help'])
+        self.assert_not_contains('[--volume-arns <value>]')
 
 
 class TestEC2AuthorizeSecurityGroupNotRendered(BaseAWSHelpOutputTest):

@@ -12,7 +12,7 @@ Output::
 
   {
       "OwnerId": "123456789012",
-      "ReservationId": "r-5875ca20",
+      "ReservationId": "r-08626e73c547023b1",
       "Groups": [
           {
               "GroupName": "MySecurityGroup",
@@ -34,7 +34,7 @@ Output::
               "LaunchTime": "2013-07-19T02:42:39.000Z",
               "ProductCodes": [],
               "StateTransitionReason": null, 
-              "InstanceId": "i-123abc45",
+              "InstanceId": "i-1234567890abcdef0",
               "ImageId": "ami-1a2b3c4d",
               "PrivateDnsName": null,
               "KeyName": "MyKeyPair",
@@ -80,7 +80,7 @@ Output::
 
   {
       "OwnerId": "123456789012",
-      "ReservationId": "r-5875ca20",
+      "ReservationId": "r-08626e73c547023b2",
       "Groups": [],
       "Instances": [
           {
@@ -98,7 +98,7 @@ Output::
               "PrivateIpAddress": "10.0.1.114",
               "ProductCodes": [],
               "VpcId": "vpc-1a2b3c4d",
-              "InstanceId": "i-5203422c",
+              "InstanceId": "i-1234567890abcdef5",
               "ImageId": "ami-abc12345",
               "PrivateDnsName": "ip-10-0-1-114.ec2.internal",
               "KeyName": "MyKeyPair",
@@ -210,7 +210,7 @@ You can view only the Amazon EBS volumes in your block device mapping using the 
 
 Command::
 
-  GET http://169.254.169.254/latest/meta-data/block-device-mapping
+  curl http://169.254.169.254/latest/meta-data/block-device-mapping/
 
 Output::
 
@@ -221,7 +221,7 @@ Note that ``ami`` represents the root volume. To get details about the instance 
 
 Command::
 
-  GET http://169.254.169.254/latest/meta-data/block-device-mapping/ephemeral1
+  curl http://169.254.169.254/latest/meta-data/block-device-mapping/ephemeral1
 
 Output::
 
@@ -261,6 +261,14 @@ Where mapping.json contains the following::
       }
     }
   ]
+
+**To launch an instance with user data**
+
+You can launch an instance and specify user data that performs instance configuration, or that runs a script. The user data needs to be passed as normal string, base64 encoding is handled internally. The following example passes user data in a file called ``my_script.txt`` that contains a configuration script for your instance. The script runs at launch.
+
+Command::
+
+  aws ec2 run-instances --image-id ami-abc1234 --count 1 --instance-type m4.large --key-name keypair --user-data file://my_script.txt --subnet-id subnet-abcd1234 --security-group-ids sg-abcd1234 
 
 For more information about launching instances, see `Using Amazon EC2 Instances`_ in the *AWS Command Line Interface User Guide*.
 

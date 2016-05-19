@@ -63,8 +63,13 @@ class TestRbCommand(unittest.TestCase):
     def test_rb_command_with_force_deletes_objects_in_bucket(self):
         with mock.patch(self.cmd_name) as rm_command:
             with mock.patch(self.arch_name):
+                # RmCommand returns an RmCommand instance whose __call__
+                # should be the RC of the command.
+                # In this case we'll have it return an RC of 0 which indicates
+                # success.
+                rm_command.return_value.return_value = 0
                 self.rb_command._run_main(self.parsed_args,
-                                     parsed_globals=self.parsed_globals)
+                                    parsed_globals=self.parsed_globals)
             # Because of --force we should have called the
             # rm_command with the --recursive option.
             rm_command.return_value.assert_called_with(

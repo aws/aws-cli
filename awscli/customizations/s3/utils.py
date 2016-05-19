@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import argparse
+import logging
 from datetime import datetime
 import mimetypes
 import hashlib
@@ -29,6 +30,7 @@ from awscli.compat import six
 from awscli.compat import PY3
 from awscli.compat import queue
 
+LOGGER = logging.getLogger(__name__)
 HUMANIZE_SUFFIXES = ('KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB')
 MAX_PARTS = 10000
 EPOCH_TIME = datetime(1970, 1, 1, tzinfo=tzutc())
@@ -36,6 +38,10 @@ EPOCH_TIME = datetime(1970, 1, 1, tzinfo=tzutc())
 # See: http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html
 # and: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
 MAX_SINGLE_UPLOAD_SIZE = 5 * (1024 ** 3)
+MIN_UPLOAD_CHUNKSIZE = 5 * (1024 ** 2)
+# Maximum object size allowed in S3.
+# See: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
+MAX_UPLOAD_SIZE = 5 * (1024 ** 4)
 SIZE_SUFFIX = {
     'kb': 1024,
     'mb': 1024 ** 2,
@@ -278,20 +284,73 @@ def create_warning(path, error_message, skip_file=True):
 
 def find_chunksize(size, current_chunksize):
     """
-    The purpose of this function is determine a chunksize so that
-    the number of parts in a multipart upload is not greater than
-    the ``MAX_PARTS``.  If the ``chunksize`` is greater than
-    ``MAX_SINGLE_UPLOAD_SIZE`` it returns ``MAX_SINGLE_UPLOAD_SIZE``.
+    The purpose of this function is determine a chunksize so that the number of
+    parts in a multipart upload is not greater than the ``MAX_PARTS``, and that
+    the chunksize is not less than the minimum chunksize.
+
+    :param size: The size of the file to upload
+    :param current_chunksize: The currently configured chunksize
+    :return: If the given chunksize is valid, it is returned. Otherwise a valid
+        chunksize is calculated and returned.
+    :raises: ValueError: if the file size exceeds the max size of 5TB
+    """
+    if size > MAX_UPLOAD_SIZE:
+        raise ValueError("File size exceeds maximum upload size.")
+    size = adjust_chunksize_for_max_parts(size, current_chunksize)
+    return adjust_chunksize_to_upload_limits(size)
+
+
+def adjust_chunksize_to_upload_limits(current_chunksize):
+    """
+    Given a chunksize, verifies that the chunksize is within max and min
+    chunksize for uploads. If it is not, a valid chunksize will be returned.
+
+    :param current_chunksize: The current configured chunksize.
+    :return: If the given chunksize is valid, it is returned. Otherwise a valid
+        chunksize, which is a close to the given as possible, is returned.
+    """
+    chunksize = current_chunksize
+    chunksize_human = human_readable_size(chunksize)
+    if chunksize > MAX_SINGLE_UPLOAD_SIZE:
+        LOGGER.debug(
+            "Chunksize greater than maximum chunksize. Setting to %s from %s."
+            % (human_readable_size(MAX_SINGLE_UPLOAD_SIZE), chunksize_human))
+        return MAX_SINGLE_UPLOAD_SIZE
+    elif chunksize < MIN_UPLOAD_CHUNKSIZE:
+        LOGGER.debug(
+            "Chunksize less than minimum chunksize. Setting to %s from %s." %
+            (human_readable_size(MIN_UPLOAD_CHUNKSIZE), chunksize_human))
+        return MIN_UPLOAD_CHUNKSIZE
+    else:
+        return chunksize
+
+
+def adjust_chunksize_for_max_parts(size, current_chunksize):
+    """
+    Given a chunksize and file size, verifies that the upload will not exceed
+    the maximum parts for a multipart upload. If it will, a valid chunksize
+    is calculated and returned.
+
+    :param size: The size of the file to upload
+    :param current_chunksize: The currently configured chunksize
+    :return: If the given chunksize is valid, it is returned. Otherwise a valid
+        chunksize is calculated and returned.
     """
     chunksize = current_chunksize
     num_parts = int(math.ceil(size / float(chunksize)))
+
     while num_parts > MAX_PARTS:
         chunksize *= 2
         num_parts = int(math.ceil(size / float(chunksize)))
-    if chunksize > MAX_SINGLE_UPLOAD_SIZE:
-        return MAX_SINGLE_UPLOAD_SIZE
-    else:
-        return chunksize
+
+    if chunksize != current_chunksize:
+        chunksize_human = human_readable_size(chunksize)
+        LOGGER.debug(
+            "Chunksize would result in the number of parts exceeding the "
+            "maximum. Setting to %s from %s." %
+            (chunksize_human, human_readable_size(current_chunksize)))
+
+    return chunksize
 
 
 class MultiCounter(object):
@@ -312,18 +371,38 @@ def uni_print(statement, out_file=None):
     """
     if out_file is None:
         out_file = sys.stdout
-    # Check for an encoding on the file.
-    encoding = getattr(out_file, 'encoding', None)
-    if encoding is not None and not PY3:
-        out_file.write(statement.encode(out_file.encoding))
-    else:
-        try:
-            out_file.write(statement)
-        except UnicodeEncodeError:
-            # Some file like objects like cStringIO will
-            # try to decode as ascii.  Interestingly enough
-            # this works with a normal StringIO.
-            out_file.write(statement.encode('utf-8'))
+    try:
+        # Otherwise we assume that out_file is a
+        # text writer type that accepts str/unicode instead
+        # of bytes.
+        out_file.write(statement)
+    except UnicodeEncodeError:
+        # Some file like objects like cStringIO will
+        # try to decode as ascii on python2.
+        #
+        # This can also fail if our encoding associated
+        # with the text writer cannot encode the unicode
+        # ``statement`` we've been given.  This commonly
+        # happens on windows where we have some S3 key
+        # previously encoded with utf-8 that can't be
+        # encoded using whatever codepage the user has
+        # configured in their console.
+        #
+        # At this point we've already failed to do what's
+        # been requested.  We now try to make a best effort
+        # attempt at printing the statement to the outfile.
+        # We're using 'ascii' as the default because if the
+        # stream doesn't give us any encoding information
+        # we want to pick an encoding that has the highest
+        # chance of printing successfully.
+        new_encoding = getattr(out_file, 'encoding', 'ascii')
+        # When the output of the aws command is being piped,
+        # ``sys.stdout.encoding`` is ``None``.
+        if new_encoding is None:
+            new_encoding = 'ascii'
+        new_statement = statement.encode(
+            new_encoding, 'replace').decode(new_encoding)
+        out_file.write(new_statement)
     out_file.flush()
 
 

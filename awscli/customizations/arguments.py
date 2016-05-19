@@ -15,7 +15,6 @@ import os
 from awscli.arguments import CustomArgument
 import jmespath
 
-
 def resolve_given_outfile_path(path):
     """Asserts that a path is writable and returns the expanded path"""
     if path is None:
@@ -90,11 +89,12 @@ class StatefulArgument(CustomArgument):
 class QueryOutFileArgument(StatefulArgument):
     """An argument that write a JMESPath query result to a file"""
 
-    def __init__(self, session, name, query, after_call_event,
+    def __init__(self, session, name, query, after_call_event, perm,
                  *args, **kwargs):
         self._session = session
         self._query = query
         self._after_call_event = after_call_event
+        self._perm = perm
         # Generate default help_text if text was not provided.
         if 'help_text' not in kwargs:
             kwargs['help_text'] = ('Saves the command output contents of %s '
@@ -104,6 +104,10 @@ class QueryOutFileArgument(StatefulArgument):
     @property
     def query(self):
         return self._query
+
+    @property
+    def perm(self):
+        return self._perm
 
     def add_to_params(self, parameters, value):
         value = resolve_given_outfile_path(value)
@@ -126,3 +130,4 @@ class QueryOutFileArgument(StatefulArgument):
                     fp.write('')
                 else:
                     fp.write(contents)
+                os.chmod(self.value, self.perm)

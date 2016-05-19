@@ -16,6 +16,8 @@ import os
 
 
 from botocore.compat import json
+from tests.unit.customizations.emr import test_constants as \
+    CONSTANTS
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
 from mock import patch
@@ -981,6 +983,83 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             ADDITIONAL_SLAVE_SECURITY_GROUPS
 
         self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_group_with_ebs_config(self):
+        cmd = (self.prefix + '--release-label emr-4.2.0 --instance-groups ' +
+               CONSTANTS.INSTANCE_GROUPS_WITH_EBS_VOLUME_ARG)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceGroups': CONSTANTS.INSTANCE_GROUPS_WITH_EBS
+                              },
+                'ReleaseLabel': 'emr-4.2.0',
+                'VisibleToAllUsers': True,
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_groups_with_ebs_config_missing_volume_type(self):
+        cmd = (self.prefix + '--release-label emr-4.2.0 --instance-groups ' +
+               CONSTANTS.INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_VOLTYPE_ARG)
+        stderr = self.run_cmd(cmd, 255)[1]
+        self.assert_error_message_has_field_name(stderr, 'VolumeType')
+
+    def test_instance_groups_with_ebs_config_missing_size(self):
+        cmd = (self.prefix + '--release-label emr-4.2.0 --instance-groups ' +
+               CONSTANTS.INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_SIZE_ARG)
+        stderr = self.run_cmd(cmd, 255)[1]
+        self.assert_error_message_has_field_name(stderr, 'SizeInGB')
+
+    def test_instance_groups_with_ebs_config_missing_volume_spec(self):
+        cmd = (self.prefix + '--release-label emr-4.2.0 --instance-groups ' +
+               CONSTANTS.INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_VOLSPEC_ARG)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceGroups': CONSTANTS.INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_VOLSPEC
+                              },
+                'ReleaseLabel': 'emr-4.2.0',
+                'VisibleToAllUsers': True,
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_groups_with_ebs_config_missing_iops(self):
+        cmd = (self.prefix + '--release-label emr-4.2.0 --instance-groups ' +
+               CONSTANTS.INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_IOPS_ARG)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceGroups': CONSTANTS.INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_IOPS
+                              },
+                'ReleaseLabel': 'emr-4.2.0',
+                'VisibleToAllUsers': True,
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_groups_with_ebs_config_multiple_instance_groups(self):
+        cmd = (self.prefix + '--release-label emr-4.2.0 --instance-groups ' +
+               CONSTANTS.MULTIPLE_INSTANCE_GROUPS_WITH_EBS_VOLUMES_VOLUME_ARG)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceGroups': CONSTANTS.MULTIPLE_INSTANCE_GROUPS_WITH_EBS_VOLUMES
+                              },
+                'ReleaseLabel': 'emr-4.2.0',
+                'VisibleToAllUsers': True,
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
 
 if __name__ == "__main__":
     unittest.main()

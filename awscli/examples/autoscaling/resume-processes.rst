@@ -1,10 +1,9 @@
 **To resume Auto Scaling processes**
 
-The following ``resume-processes`` command resumes a suspended scaling process for an Auto Scaling group::
+This example resumes the specified suspended scaling process for the specified Auto Scaling group::
 
-	aws autoscaling resume-processes --auto-scaling-group-name basic-auto-scaling-group --scaling-processes AlarmNotification
+    aws autoscaling resume-processes --auto-scaling-group-name my-auto-scaling-group --scaling-processes AlarmNotification
 
-For more information, see `Suspend and Resume Auto Scaling Process`_ in the *Auto Scaling Developer Guide*.
+For more information, see `Suspend and Resume Auto Scaling Processes`_ in the *Auto Scaling Developer Guide*.
 
-.. _`Suspend and Resume Auto Scaling Process`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/US_SuspendResume.html
-
+.. _`Suspend and Resume Auto Scaling Processes`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/US_SuspendResume.html

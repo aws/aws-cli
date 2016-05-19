@@ -1,10 +1,9 @@
 **To add an Auto Scaling notification**
 
-The following ``put-notification-configuration`` command adds a notification to an Auto Scaling group::
+This example adds the specified notification to the specified Auto Scaling group::
 
-	--auto-scaling-group-name my-auto-scaling-group --topic-arn arn:aws:sns:us-west-2:123456789012:test-topic --notification-type autoscaling:TEST_NOTIFICATION
+    aws autoscaling put-notification-configuration --auto-scaling-group-name my-auto-scaling-group --topic-arn arn:aws:sns:us-west-2:123456789012:my-sns-topic --notification-type autoscaling:TEST_NOTIFICATION
 
-For more information, see the `Configure your Auto Scaling Group to Send Notifications`_ section in the Getting Notifications When Your Auto Scaling Group Changes topic, in the *Auto Scaling Developer Guide*.
+For more information, see `Configure Your Auto Scaling Group to Send Notifications`_ in the *Auto Scaling Developer Guide*.
 
-.. _`Configure your Auto Scaling Group to Send Notifications`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/ASGettingNotifications.html#as-configure-asg-for-sns
-
+.. _`Configure Your Auto Scaling Group to Send Notifications`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/ASGettingNotifications.html#as-configure-asg-for-sns

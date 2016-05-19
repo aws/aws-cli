@@ -161,7 +161,7 @@ class CopyPartTask(OrderableTask):
             params = {'Bucket': bucket, 'Key': key,
                       'PartNumber': self._part_number,
                       'UploadId': upload_id,
-                      'CopySource': '%s/%s' % (src_bucket, src_key),
+                      'CopySource': {'Bucket': src_bucket, 'Key': src_key},
                       'CopySourceRange': range_param}
             RequestParamsMapper.map_upload_part_copy_params(
                 params, self._params)
@@ -358,6 +358,11 @@ class DownloadPartTask(OrderableTask):
             LOGGER.debug(
                 'Exception caught downloading byte range: %s',
                 e, exc_info=True)
+            message = print_operation(self._filename, failed=True,
+                                      dryrun=False)
+            message += '\n' + str(e)
+            result = {'message': message, 'error': True}
+            self._result_queue.put(PrintTask(**result))
             self._context.cancel()
             raise e
 
@@ -631,18 +636,17 @@ class MultipartUploadContext(object):
     def cancel_upload(self, canceller=None, args=None, kwargs=None):
         """Cancel the upload.
 
-        If the upload is already in progress (via ``self.in_progress()``)
-        you can provide a ``canceller`` argument that can be used to cancel
-        the multipart upload request (typically this would call something like
-        AbortMultipartUpload.  The canceller argument is a function that takes
-        a single argument, which is the upload id::
+        If the upload is not unstarted and not complete you can provide a
+        ``canceller`` argument that can be used to cancel the multipart upload
+        request (typically this would call something like AbortMultipartUpload.
+        The canceller argument is a function that takes a single argument,
+        which is the upload id::
 
             def my_canceller(upload_id):
-                cancel.upload(bucket, key, upload_id)
+                abort_multipart_upload(bucket, key, upload_id)
 
         The ``canceller`` callable will only be called if the
-        task is in progress.  If the task has not been started or is
-        complete, then ``canceller`` will not be called.
+        the task has not been started or is complete.
 
         Note that ``canceller`` is called while an exclusive lock is held,
         so you cannot make any calls into the MultipartUploadContext object
@@ -650,7 +654,15 @@ class MultipartUploadContext(object):
 
         """
         with self._lock:
-            if self._state == self._STARTED and canceller is not None:
+            # An easy way to think of this is the case where we want to abort
+            # any multipart uploads that have been started but not completed.
+            # There are two states that correspond to not being in progress:
+            # _UNSTARTED and _COMPLETED.  The reason _CANCELLED is not
+            # considered is because a part task can cancel an upload, yet does
+            # not have enough context to be able to abort the upload (other
+            # tasks may be executing upload parts).
+            if self._state not in [self._UNSTARTED, self._COMPLETED] and \
+                    canceller is not None:
                 if args is None:
                     args = ()
                 if kwargs is None:

@@ -2,7 +2,7 @@
 
 Command::
 
-  aws ec2 describe-instances --instance-ids i-5203422c
+  aws ec2 describe-instances --instance-ids i-1234567890abcdef0
 
 **To describe all instances with the instance type m1.small**
 

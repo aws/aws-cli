@@ -392,6 +392,7 @@ class CLIArgument(BaseCLIArgument):
         self._required = is_required
         self._operation_model = operation_model
         self._event_emitter = event_emitter
+        self._documentation = argument_model.documentation
 
     @property
     def py_name(self):
@@ -407,7 +408,11 @@ class CLIArgument(BaseCLIArgument):
 
     @property
     def documentation(self):
-        return self.argument_model.documentation
+        return self._documentation
+
+    @documentation.setter
+    def documentation(self, value):
+        self._documentation = value
 
     @property
     def cli_type_name(self):
@@ -451,7 +456,7 @@ class CLIArgument(BaseCLIArgument):
             parameters[self._serialized_name] = unpacked
 
     def _unpack_argument(self, value):
-        service_name = self._operation_model.service_model.endpoint_prefix
+        service_name = self._operation_model.service_model.service_name
         operation_name = xform_name(self._operation_model.name, '-')
         override = self._emit_first_response('process-cli-arg.%s.%s' % (
             service_name, operation_name), param=self.argument_model,

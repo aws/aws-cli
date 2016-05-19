@@ -16,65 +16,66 @@ This is a collection of built in CLI extensions that can be automatically
 registered with the event system.
 
 """
-from awscli.argprocess import ParamShorthand
+from awscli.argprocess import ParamShorthandParser
 from awscli.argprocess import uri_param
-from awscli.errorhandler import ErrorHandler
-from awscli.customizations.streamingoutputarg import add_streaming_output_arg
-from awscli.customizations.addexamples import add_examples
-from awscli.customizations.removals import register_removals
-from awscli.customizations.ec2addcount import register_count_events
-from awscli.customizations.paginate import register_pagination
-from awscli.customizations.ec2decryptpassword import ec2_add_priv_launch_key
-from awscli.customizations.ec2secgroupsimplify import register_secgroup
-from awscli.customizations.preview import register_preview_commands
-from awscli.customizations.ec2bundleinstance import register_bundleinstance
-from awscli.customizations.s3.s3 import s3_plugin_initialize
-from awscli.customizations.ec2runinstances import register_runinstances
-from awscli.customizations.rds import register_rds_modify_split
-from awscli.customizations.putmetricdata import register_put_metric_data
-from awscli.customizations.sessendemail import register_ses_send_email
-from awscli.customizations.cloudfront import register as register_cloudfront
-from awscli.customizations.iamvirtmfa import IAMVMFAWrapper
-from awscli.customizations.argrename import register_arg_renames
-from awscli.customizations.configure import register_configure_cmd
-from awscli.customizations.cloudtrail import initialize as cloudtrail_init
-from awscli.customizations.ecr import register_ecr_commands
-from awscli.customizations.toplevelbool import register_bool_params
-from awscli.customizations.ec2protocolarg import register_protocol_args
 from awscli.customizations import datapipeline
-from awscli.customizations.globalargs import register_parse_global_args
-from awscli.customizations.cloudsearch import initialize as cloudsearch_init
-from awscli.customizations.emr.emr import emr_initialize
-from awscli.customizations.cloudsearchdomain import register_cloudsearchdomain
-from awscli.customizations.s3endpoint import register_s3_endpoint
-from awscli.customizations.s3errormsg import register_s3_error_msg
-from awscli.customizations.cliinputjson import register_cli_input_json
-from awscli.customizations.generatecliskeleton import \
-    register_generate_cli_skeleton
+from awscli.customizations.addexamples import add_examples
+from awscli.customizations.argrename import register_arg_renames
 from awscli.customizations.assumerole import register_assume_role_provider
-from awscli.customizations.waiters import register_add_waiters
+from awscli.customizations.awslambda import register_lambda_create_function
+from awscli.customizations.cliinputjson import register_cli_input_json
+from awscli.customizations.cloudfront import register as register_cloudfront
+from awscli.customizations.cloudsearch import initialize as cloudsearch_init
+from awscli.customizations.cloudsearchdomain import register_cloudsearchdomain
+from awscli.customizations.cloudtrail import initialize as cloudtrail_init
+from awscli.customizations.codecommit import initialize as codecommit_init
 from awscli.customizations.codedeploy.codedeploy import initialize as \
     codedeploy_init
-from awscli.customizations.configservice.subscribe import register_subscribe
 from awscli.customizations.configservice.getstatus import register_get_status
-from awscli.customizations.configservice.rename_cmd import \
-    register_rename_config
 from awscli.customizations.configservice.putconfigurationrecorder import \
     register_modify_put_configuration_recorder
-from awscli.customizations.scalarparse import register_scalar_parser
-from awscli.customizations.opsworks import initialize as opsworks_init
-from awscli.customizations.awslambda import register_lambda_create_function
-from awscli.customizations.kms import register_fix_kms_create_grant_docs
-from awscli.customizations.route53 import register_create_hosted_zone_doc_fix
-from awscli.customizations.codecommit import initialize as codecommit_init
-from awscli.customizations.iot_data import register_custom_endpoint_note
+from awscli.customizations.configservice.rename_cmd import \
+    register_rename_config
+from awscli.customizations.configservice.subscribe import register_subscribe
+from awscli.customizations.configure.configure import register_configure_cmd
+from awscli.customizations.ec2.addcount import register_count_events
+from awscli.customizations.ec2.bundleinstance import register_bundleinstance
+from awscli.customizations.ec2.decryptpassword import ec2_add_priv_launch_key
+from awscli.customizations.ec2.protocolarg import register_protocol_args
+from awscli.customizations.ec2.runinstances import register_runinstances
+from awscli.customizations.ec2.secgroupsimplify import register_secgroup
+from awscli.customizations.ecr import register_ecr_commands
+from awscli.customizations.emr.emr import emr_initialize
+from awscli.customizations.gamelift import register_gamelift_commands
+from awscli.customizations.generatecliskeleton import \
+    register_generate_cli_skeleton
+from awscli.customizations.globalargs import register_parse_global_args
+from awscli.customizations.iamvirtmfa import IAMVMFAWrapper
 from awscli.customizations.iot import register_create_keys_and_cert_arguments
 from awscli.customizations.iot import register_create_keys_from_csr_arguments
+from awscli.customizations.iot_data import register_custom_endpoint_note
+from awscli.customizations.kms import register_fix_kms_create_grant_docs
+from awscli.customizations.opsworks import initialize as opsworks_init
+from awscli.customizations.paginate import register_pagination
+from awscli.customizations.preview import register_preview_commands
+from awscli.customizations.putmetricdata import register_put_metric_data
+from awscli.customizations.rds import register_rds_modify_split
+from awscli.customizations.removals import register_removals
+from awscli.customizations.route53 import register_create_hosted_zone_doc_fix
+from awscli.customizations.s3.s3 import s3_plugin_initialize
+from awscli.customizations.s3endpoint import register_s3_endpoint
+from awscli.customizations.s3errormsg import register_s3_error_msg
+from awscli.customizations.scalarparse import register_scalar_parser
+from awscli.customizations.sessendemail import register_ses_send_email
+from awscli.customizations.streamingoutputarg import add_streaming_output_arg
+from awscli.customizations.toplevelbool import register_bool_params
+from awscli.customizations.waiters import register_add_waiters
+from awscli.errorhandler import ErrorHandler
 
 
 def awscli_initialize(event_handlers):
     event_handlers.register('load-cli-arg', uri_param)
-    param_shorthand = ParamShorthand()
+    param_shorthand = ParamShorthandParser()
     event_handlers.register('process-cli-arg', param_shorthand)
     # The s3 error mesage needs to registered before the
     # generic error handler.
@@ -144,3 +145,4 @@ def awscli_initialize(event_handlers):
         'building-argument-table.iot.create-certificate-from-csr',
         register_create_keys_from_csr_arguments)
     register_cloudfront(event_handlers)
+    register_gamelift_commands(event_handlers)

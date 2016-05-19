@@ -2,4 +2,4 @@
 
 This example deletes the specified lifecycle hook::
 
-   aws autoscaling delete-lifecycle-hook --lifecycle-hook-name my-lifecycle-hook --auto-scaling-group-name my-asg
+    aws autoscaling delete-lifecycle-hook --lifecycle-hook-name my-lifecycle-hook --auto-scaling-group-name my-auto-scaling-group

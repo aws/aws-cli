@@ -2,13 +2,9 @@
 aws-cli
 =======
 
-.. image:: https://travis-ci.org/aws/aws-cli.png?branch=develop
+.. image:: https://travis-ci.org/aws/aws-cli.svg?branch=develop
    :target: https://travis-ci.org/aws/aws-cli
    :alt: Build Status
-
-
-.. image:: https://coveralls.io/repos/aws/aws-cli/badge.png
-  :target: https://coveralls.io/r/aws/aws-cli
 
 
 This package provides a unified command line interface to Amazon Web Services.
@@ -19,6 +15,7 @@ The aws-cli package works on Python versions:
 * 2.7.x and greater
 * 3.3.x and greater
 * 3.4.x and greater
+* 3.5.x and greater
 
 .. attention::
    We recommend that all customers regularly monitor the
@@ -42,6 +39,14 @@ If you have the aws-cli installed and want to upgrade to the latest version
 you can run::
 
     $ pip install --upgrade awscli
+
+.. note::
+
+    On OS X, if you see an error regarding the version of six that came with
+    distutils in El Capitan, use the ``--ignore-installed option``::
+
+        $ sudo pip install awscli --ignore-installed six
+
 
 This will install the aws-cli package as well as all dependencies.  You can
 also just `download the tarball`_.  Once you have the
@@ -98,6 +103,7 @@ Before using aws-cli, you need to tell it about your AWS credentials.  You
 can do this in several ways:
 
 * Environment variables
+* Shared credentials file
 * Config file
 * IAM Role
 
@@ -114,6 +120,24 @@ To use environment variables, do the following::
     $ export AWS_ACCESS_KEY_ID=<access_key>
     $ export AWS_SECRET_ACCESS_KEY=<secret_key>
 
+To use the shared credentials file, create an INI formatted file like this::
+
+    [default]
+    aws_access_key_id=foo
+    aws_secret_access_key=bar
+
+    [testing]
+    aws_access_key_id=foo
+    aws_secret_access_key=bar
+
+and place it in ``~/.aws/credentials`` (or in
+``%UserProfile%\.aws/credentials`` on Windows). If you wish to place the
+shared credentials file in a different location than the one specified above,
+you need to tell aws-cli where to find it.  Do this by setting
+the appropriate environment variable::
+
+    $ export AWS_SHARED_CREDENTIALS_FILE=/path/to/shared_credentials_file
+
 To use a config file, create a configuration file like this::
 
     [default]
@@ -127,20 +151,21 @@ To use a config file, create a configuration file like this::
     aws_secret_access_key=<testing secret key>
     region=us-west-2
 
-and place it in ``~/.aws/config`` (or in ``%UserProfile%\.aws\config`` on Windows).
-
-As you can see, you can have multiple ``profiles`` defined in this
-configuration file and specify which profile to use by using the ``--profile``
-option.  If no profile is specified the ``default`` profile is used.  Except
-for the default profile, you **must** prefix each config section of a profile
-group with ``profile``.  For example, if you have a profile named "testing" the
-section header would be ``[profile testing]``.
-
-If you wish to place the config file in a different location than the one
+and place it in ``~/.aws/config`` (or in ``%UserProfile%\.aws\config`` on Windows). If you wish to place the config file in a different location than the one
 specified above, you need to tell aws-cli where to find it.  Do this by setting
 the appropriate environment variable::
 
     $ export AWS_CONFIG_FILE=/path/to/config_file
+
+As you can see, you can have multiple ``profiles`` defined in both the shared
+credentials file and the  configuration file. You can then specify which
+profile to use by using the ``--profile`` option. If no profile is specified
+the ``default`` profile is used.
+
+In the config file, except for the default profile, you
+**must** prefix each config section of a profile group with ``profile``.
+For example, if you have a profile named "testing" the section header would
+be ``[profile testing]``.
 
 The final option for credentials is highly recommended if you are
 using aws-cli on an EC2 instance.  IAM Roles are
@@ -203,6 +228,15 @@ if one is not explicitly specified on the command line via the
 The ``profile`` variable can not be specified in the configuration file
 since it would have to be associated with a profile and would defeat the
 purpose.
+
+^^^^^^^^^^^^^^^^^^^
+Further Information
+^^^^^^^^^^^^^^^^^^^
+
+For more information about configuration options, please refer the
+`AWS CLI Configuration Variables topic <http://docs.aws.amazon.com/cli/latest/topic/config-vars.html#cli-aws-help-config-vars>`_. You can access this topic
+from the CLI as well by running ``aws help config-vars``.
+
 
 ----------------------------------------
 Accessing Services With Global Endpoints

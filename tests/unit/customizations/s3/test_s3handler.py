@@ -17,14 +17,16 @@ import sys
 
 import mock
 
+import awscli.customizations.s3.utils
 from awscli.testutils import unittest
 from awscli import EnvironmentVariables
 from awscli.compat import six
 from awscli.customizations.s3.s3handler import S3Handler, S3StreamHandler
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.tasks import CreateMultipartUploadTask, \
-    UploadPartTask, CreateLocalFileTask
-from awscli.customizations.s3.utils import MAX_PARTS
+    UploadPartTask, CreateLocalFileTask, CompleteMultipartUploadTask
+from awscli.customizations.s3.utils import MAX_PARTS, MAX_UPLOAD_SIZE
+from awscli.customizations.s3.utils import StablePriorityQueue
 from awscli.customizations.s3.transferconfig import RuntimeConfig
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     MockStdIn, S3HandlerBaseTest
@@ -32,6 +34,18 @@ from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
 
 def runtime_config(**kwargs):
     return RuntimeConfig().build_config(**kwargs)
+
+
+# The point of this class is some condition where an error
+# occurs during the enqueueing of tasks.
+class CompleteTaskNotAllowedQueue(StablePriorityQueue):
+    def _put(self, item):
+        if isinstance(item, CompleteMultipartUploadTask):
+            # Raising this exception will trigger the
+            # "error" case shutdown in the executor.
+            raise RuntimeError(
+                "Forced error on enqueue of complete task.")
+        return StablePriorityQueue._put(self, item)
 
 
 class S3HandlerTestDelete(S3HandlerBaseTest):
@@ -194,6 +208,28 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
         stdout, stderr, rc = self.run_s3_handler(self.s3_handler, tasks)
         self.assertEqual(rc.num_tasks_failed, 1)
 
+    def test_max_size_limit(self):
+        """
+        This test verifies that we're warning on file uploads which are greater
+        than the max upload size (5TB currently).
+        """
+        tasks = [FileInfo(
+            src=self.loc_files[0],
+            dest=self.bucket + '/test1.txt',
+            compare_key=None,
+            src_type='local',
+            dest_type='s3',
+            operation_name='upload',
+            size=MAX_UPLOAD_SIZE+1,
+            last_update=None,
+            client=self.client
+        )]
+        self.parsed_responses = []
+        _, _, rc = self.run_s3_handler(self.s3_handler, tasks)
+        # The task should *warn*, not fail
+        self.assertEqual(rc.num_tasks_failed, 0)
+        self.assertEqual(rc.num_tasks_warned, 1)
+
     def test_multi_upload(self):
         """
         This test only checks that the multipart upload process works.
@@ -254,19 +290,19 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
             # This will cause a failure for the second part upload because
             # it does not have an ETag.
             {},
+            # This is for the final AbortMultipartUpload call.
+            {},
         ]
         stdout, stderr, rc = self.run_s3_handler(self.s3_handler_multi, tasks)
         self.assertEqual(rc.num_tasks_failed, 1)
 
     def test_multiupload_abort_in_s3_handler(self):
-        files = [self.loc_files[0]]
-        tasks = []
-        for i in range(len(files)):
-            tasks.append(FileInfo(
-                src=self.loc_files[i],
-                dest=self.s3_files[i], size=15,
-                operation_name='upload',
-                client=self.client))
+        tasks = [
+            FileInfo(src=self.loc_files[0],
+                     dest=self.s3_files[0], size=15,
+                     operation_name='upload',
+                     client=self.client)
+        ]
         self.parsed_responses = [
             {'UploadId': 'foo'},
             {'ETag': '"120ea8a25e5d487bf68b5f7096440019"'},
@@ -275,16 +311,54 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
             {},
             {}
         ]
-        context_path = 'awscli.customizations.s3.tasks.MultipartUploadContext'
-        with mock.patch(context_path) as mock_context:
-            mock_context.return_value.wait_for_upload_id.return_value = 'foo'
-            stdout, stderr, rc = self.run_s3_handler(self.s3_handler_multi,
-                                                     tasks)
-            # Ensure multipart upload is called in case cancelling of
-            # task in s3handler if the task is in the middle of transitioning
-            # from STARTED -> COMPLETED
-            self.assertEqual(self.operations_called[-1][0].name,
-                             'AbortMultipartUpload')
+        expected_calls = [
+            ('CreateMultipartUpload',
+             {'Bucket': 'mybucket', 'ContentType': 'text/plain',
+              'Key': 'text1.txt', 'ACL': 'private'}),
+            ('UploadPart',
+             {'Body': mock.ANY, 'Bucket': 'mybucket', 'PartNumber': 1,
+              'UploadId': 'foo', 'Key': 'text1.txt'}),
+            # Here we'll see an error because of a msising ETag.
+            ('UploadPart',
+             {'Body': mock.ANY, 'Bucket': 'mybucket', 'PartNumber': 2,
+              'UploadId': 'foo', 'Key': 'text1.txt'}),
+            # And we should have the final call be an AbortMultipartUpload.
+            ('AbortMultipartUpload',
+             {'Bucket': 'mybucket', 'Key': 'text1.txt', 'UploadId': 'foo'}),
+        ]
+        self.assert_operations_for_s3_handler(self.s3_handler_multi, tasks,
+                                              expected_calls,
+                                              verify_no_failed_tasked=False)
+
+    def test_multipart_abort_for_half_queues(self):
+        self.s3_handler_multi.executor.queue = CompleteTaskNotAllowedQueue()
+        tasks = [
+            FileInfo(src=self.loc_files[0],
+                     dest=self.s3_files[0], size=15,
+                     operation_name='upload',
+                     client=self.client)
+        ]
+        self.parsed_responses = [
+            {'UploadId': 'foo'},
+            {'ETag': 'abcd'},
+            {'ETag': 'abcd'},
+            {},
+        ]
+        self.run_s3_handler(self.s3_handler_multi, tasks)
+        # There are several ways this code can be executed that will
+        # vary every time the test is run.  Examples:
+        # <exception propogates>
+        # Create, <exception propogates>
+        # Create, Upload, <exception propogates>
+        # Create, Upload, Upload, <exception propogates>
+        # We can't use assert_operation_for_s3_handler because the list of
+        # API calls is not deterministic.
+        # We can however assert an invariant on the test.  An exception
+        # will always be raised on enqueuing, so if a CreateMultipartUpload was executed
+        # we must *always* see an AbortMultipartUpload as the last operation
+        if self.operations_called:
+            self.assertEqual(self.operations_called[0][0].name, 'CreateMultipartUpload')
+            self.assertEqual(self.operations_called[-1][0].name, 'AbortMultipartUpload')
 
 
 class S3HandlerTestMvLocalS3(S3HandlerBaseTest):
@@ -392,7 +466,11 @@ class S3HandlerTestMvS3S3(S3HandlerBaseTest):
         ref_calls = [
             ('CopyObject',
              {'Bucket': self.bucket, 'Key': u'\u2713',
-              'CopySource': self.bucket2 + '/' + u'\u2713', 'ACL': 'private'}),
+              # Implementation detail, but the botocore handler
+              # now fixes up CopySource in before-call so it will
+              # show up in the operations_called.
+              'CopySource': u'mybucket2/%E2%9C%93',
+              'ACL': 'private'}),
             ('DeleteObject',
              {'Bucket': self.bucket2, 'Key': u'\u2713'})
         ]
@@ -535,6 +613,7 @@ class S3HandlerTestCpS3S3(S3HandlerBaseTest):
     def test_multi_copy(self):
         # Create file info objects to perform move.
         tasks = []
+        self.s3_files2[0] = 'mybucket2/destkey2.txt'
         tasks.append(FileInfo(src=self.s3_files[0], src_type='s3',
                               dest=self.s3_files2[0], dest_type='s3',
                               operation_name='copy', size=15,
@@ -550,20 +629,20 @@ class S3HandlerTestCpS3S3(S3HandlerBaseTest):
 
         ref_calls = [
             ('CreateMultipartUpload',
-             {'Bucket': self.bucket2, 'Key': 'text1.txt',
+             {'Bucket': self.bucket2, 'Key': 'destkey2.txt',
               'ContentType': 'text/plain'}),
             ('UploadPartCopy',
-             {'Bucket': self.bucket2, 'Key': 'text1.txt',
+             {'Bucket': self.bucket2, 'Key': 'destkey2.txt',
               'PartNumber': 1, 'UploadId': 'foo',
               'CopySourceRange': 'bytes=0-4',
               'CopySource': self.bucket + '/text1.txt'}),
             ('UploadPartCopy',
-             {'Bucket': self.bucket2, 'Key': 'text1.txt',
+             {'Bucket': self.bucket2, 'Key': 'destkey2.txt',
               'PartNumber': 2, 'UploadId': 'foo',
               'CopySourceRange': 'bytes=5-9',
               'CopySource': self.bucket + '/text1.txt'}),
             ('UploadPartCopy',
-             {'Bucket': self.bucket2, 'Key': 'text1.txt',
+             {'Bucket': self.bucket2, 'Key': 'destkey2.txt',
               'PartNumber': 3, 'UploadId': 'foo',
               'CopySourceRange': 'bytes=10-14',
               'CopySource': self.bucket + '/text1.txt'}),
@@ -574,7 +653,7 @@ class S3HandlerTestCpS3S3(S3HandlerBaseTest):
                                              'ETag': mock.ANY},
                                             {'PartNumber': 3,
                                              'ETag': mock.ANY}]},
-              'Bucket': self.bucket2, 'UploadId': 'foo', 'Key': 'text1.txt'})
+              'Bucket': self.bucket2, 'UploadId': 'foo', 'Key': 'destkey2.txt'})
         ]
 
         # Perform the copy.
@@ -890,7 +969,7 @@ class TestStreams(S3HandlerBaseTest):
         self.assertEqual(submitted_tasks[2][0][0]._payload.read(),
                          b'ar')
 
-    def test_upload_stream_with_expected_size(self):
+    def test_upload_stream_with_expected_parts(self):
         self.params['expected_size'] = 100000
         # With this large of expected size, the chunksize of 2 will have
         # to change.
@@ -908,6 +987,25 @@ class TestStreams(S3HandlerBaseTest):
         changed_chunk_size = submitted_tasks[1][0][0]._chunk_size
         # New chunksize should have a total parts under 1000.
         self.assertTrue(100000 / float(changed_chunk_size) <= MAX_PARTS)
+
+    def test_upload_stream_with_expected_size(self):
+        minimum_chunksize = 10
+        awscli.customizations.s3.utils.MIN_UPLOAD_CHUNKSIZE = minimum_chunksize
+        s3handler = S3StreamHandler(
+            self.session, self.params,
+            runtime_config=runtime_config(
+                multipart_threshold=1, multipart_chunksize=2))
+        s3handler.executor = mock.Mock()
+        fileinfo = FileInfo('filename', operation_name='upload',
+                            is_stream=True)
+        with MockStdIn(b'bar'):
+            s3handler._enqueue_multipart_upload_tasks(fileinfo, b'')
+        submitted_tasks = s3handler.executor.submit.call_args_list
+        # Determine what the chunksize was changed to from one of the
+        # UploadPartTasks.
+        changed_chunk_size = submitted_tasks[1][0][0]._chunk_size
+        # New chunksize should be equal to the minimum
+        self.assertEqual(changed_chunk_size, minimum_chunksize)
 
     def test_upload_stream_enqueue_upload_task(self):
         s3handler = S3StreamHandler(self.session, self.params)

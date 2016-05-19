@@ -4,14 +4,14 @@ This example terminates the specified instance.
 
 Command::
 
-  aws ec2 terminate-instances --instance-ids i-5203422c
+  aws ec2 terminate-instances --instance-ids i-1234567890abcdef0
 
 Output::
 
   {
       "TerminatingInstances": [
           {
-              "InstanceId": "i-5203422c",
+              "InstanceId": "i-1234567890abcdef0",
               "CurrentState": {
                   "Code": 32,
                   "Name": "shutting-down"

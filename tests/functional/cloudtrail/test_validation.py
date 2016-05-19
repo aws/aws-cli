@@ -262,36 +262,39 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
         self.assertIn('start-time must occur before end-time', stderr)
 
     def test_fails_when_digest_not_from_same_location_as_json_contents(self):
+        key_name = END_TIME_ARG + '.json.gz'
         digest = {'digestPublicKeyFingerprint': 'a',
                   'digestS3Bucket': 'not_same',
-                  'digestS3Object': 'abc',
+                  'digestS3Object': key_name,
                   'previousDigestSignature': '...',
                   'digestStartTime': '...',
                   'digestEndTime': '...'}
         digest_provider = Mock()
-        digest_provider.load_digest_keys_in_range.return_value = ['abc']
-        digest_provider.fetch_digest.return_value = (digest, 'abc')
+        digest_provider.load_digest_keys_in_range.return_value = [key_name]
+        digest_provider.fetch_digest.return_value = (digest, key_name)
         _setup_mock_traverser(self._mock_traverser, Mock(),
                               digest_provider, Mock())
         stdout, stderr, rc = self.run_cmd(
             "cloudtrail validate-logs --trail-arn %s --start-time %s"
             % (TEST_TRAIL_ARN, START_TIME_ARG), 1)
         self.assertIn(
-            ('Digest file\ts3://1/abc\tINVALID: has been moved from its '
-             'original location'), stderr)
+            ('Digest file\ts3://1/%s\tINVALID: has been moved from its '
+             'original location' % key_name), stderr)
 
     def test_fails_when_digest_is_missing_keys_before_validation(self):
         digest = {}
         digest_provider = Mock()
-        digest_provider.load_digest_keys_in_range.return_value = ['abc']
-        digest_provider.fetch_digest.return_value = (digest, 'abc')
+        key_name = END_TIME_ARG + '.json.gz'
+        digest_provider.load_digest_keys_in_range.return_value = [key_name]
+        digest_provider.fetch_digest.return_value = (digest, key_name)
         _setup_mock_traverser(self._mock_traverser, Mock(),
                               digest_provider, Mock())
         stdout, stderr, rc = self.run_cmd(
             "cloudtrail validate-logs --trail-arn %s --start-time %s"
             % (TEST_TRAIL_ARN, START_TIME_ARG), 1)
         self.assertIn(
-            'Digest file\ts3://1/abc\tINVALID: invalid format', stderr)
+            'Digest file\ts3://1/%s\tINVALID: invalid format' % key_name,
+            stderr)
 
     def test_fails_when_digest_metadata_is_missing(self):
         key = MockDigestProvider([]).get_key_at_position(1)

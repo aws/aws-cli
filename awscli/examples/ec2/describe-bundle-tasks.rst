@@ -12,7 +12,7 @@ Output::
     "BundleTasks": [
       {
         "UpdateTime": "2015-09-15T13:26:54.000Z", 
-        "InstanceId": "i-1a2b3c4d", 
+        "InstanceId": "i-1234567890abcdef0", 
         "Storage": {
           "S3": {
               "Prefix": "winami", 

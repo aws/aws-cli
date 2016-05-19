@@ -29,7 +29,7 @@ Output::
         {
             "Timestamp": "2015-05-26T23:21:21.712Z",
             "EventInformation": {
-                "InstanceId": "i-3a52c1cd",
+                "InstanceId": "i-1234567890abcdef0",
                 "EventSubType": "launched"
             },
             "EventType": "instanceChange"
@@ -37,7 +37,7 @@ Output::
         {
             "Timestamp": "2015-05-26T23:21:21.816Z",
             "EventInformation": {
-                "InstanceId": "i-3852c1cf",
+                "InstanceId": "i-1234567890abcdef1",
                 "EventSubType": "launched"
             },
             "EventType": "instanceChange"

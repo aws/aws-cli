@@ -1,4 +1,4 @@
-# Copyright 2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -85,7 +85,7 @@ def get_model_location(session, service_definition, service_name=None):
 
 class AddModelCommand(BasicCommand):
     NAME = 'add-model'
-    DESCRITPION = (
+    DESCRIPTION = (
         'Adds a service JSON model to the appropriate location in '
         '~/.aws/models. Once the model gets added, CLI commands and Boto3 '
         'clients will be immediately available for the service JSON model '

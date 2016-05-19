@@ -10,14 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import random
-import string
-
 from botocore.exceptions import ClientError
 from awscli.testutils import create_bucket
 
 
-def make_s3_files(session, key1='text1.txt', key2='text2.txt'):
+def make_s3_files(session, key1='text1.txt', key2='text2.txt', size=None):
     """
     Creates a randomly generated bucket in s3 with the files text1.txt and
     another_directory/text2.txt inside. The directory is manually created
@@ -25,8 +22,14 @@ def make_s3_files(session, key1='text1.txt', key2='text2.txt'):
     """
     region = 'us-west-2'
     bucket = create_bucket(session)
-    string1 = "This is a test."
-    string2 = "This is another test."
+
+    if size:
+        string1 = "*" * size
+        string2 = string1
+    else:
+        string1 = "This is a test."
+        string2 = "This is another test."
+
     client = session.create_client('s3', region_name=region)
     client.put_object(Bucket=bucket, Key=key1, Body=string1)
     if key2 is not None:

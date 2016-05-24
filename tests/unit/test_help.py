@@ -19,6 +19,7 @@ import os
 
 import mock
 
+from awscli.compat import six
 from awscli.help import PosixHelpRenderer, ExecutableNotFoundError
 from awscli.help import WindowsHelpRenderer, ProviderHelpCommand, HelpCommand
 from awscli.help import TopicListerCommand, TopicHelpCommand
@@ -40,11 +41,15 @@ class HelpSpyMixin(object):
 
 
 class FakePosixHelpRenderer(HelpSpyMixin, PosixHelpRenderer):
-    pass
+    def __init__(self, output_stream=sys.stdout):
+        HelpSpyMixin.__init__(self)
+        PosixHelpRenderer.__init__(self, output_stream)
 
 
 class FakeWindowsHelpRenderer(HelpSpyMixin, WindowsHelpRenderer):
-    pass
+    def __init__(self, output_stream=sys.stdout):
+        HelpSpyMixin.__init__(self)
+        WindowsHelpRenderer.__init__(self, output_stream)
 
 
 class TestHelpPager(unittest.TestCase):
@@ -96,9 +101,22 @@ class TestHelpPager(unittest.TestCase):
     def test_no_groff_exists(self):
         renderer = FakePosixHelpRenderer()
         renderer.exists_on_path['groff'] = False
-        with self.assertRaisesRegexp(ExecutableNotFoundError,
-                                     'Could not find executable named "groff"'):
+        expected_error = 'Could not find executable named "groff"'
+        with self.assertRaisesRegexp(ExecutableNotFoundError, expected_error):
             renderer.render('foo')
+
+    @skip_if_windows('Requires POSIX system.')
+    def test_no_pager_exists(self):
+        fake_pager = 'foobar'
+        os.environ['MANPAGER'] = fake_pager
+        stdout = six.StringIO()
+        renderer = FakePosixHelpRenderer(output_stream=stdout)
+        renderer.exists_on_path[fake_pager] = False
+
+        renderer.exists_on_path['groff'] = True
+        renderer.mock_popen.communicate.return_value = (b'foo', '')
+        renderer.render('foo')
+        self.assertEqual(stdout.getvalue(), 'foo\n')
 
     def test_shlex_split_for_pager_var(self):
         pager_cmd = '/bin/sh -c "col -bx | vim -c \'set ft=man\' -"'
@@ -109,6 +127,7 @@ class TestHelpPager(unittest.TestCase):
     def test_can_render_contents(self):
         renderer = FakePosixHelpRenderer()
         renderer.exists_on_path['groff'] = True
+        renderer.exists_on_path['less'] = True
         renderer.mock_popen.communicate.return_value = ('rendered', '')
         renderer.render('foo')
         self.assertEqual(renderer.popen_calls[-1][0], (['less', '-R'],))
@@ -133,6 +152,7 @@ class TestHelpPager(unittest.TestCase):
         renderer = CtrlCRenderer()
         renderer.mock_popen.communicate.return_value = ('send to pager', '')
         renderer.exists_on_path['groff'] = True
+        renderer.exists_on_path['less'] = True
         renderer.render('foo')
         last_call = renderer.mock_popen.communicate.call_args_list[-1]
         self.assertEqual(last_call, mock.call(input='send to pager'))

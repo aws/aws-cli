@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import logging
 import os
+import sys
 import platform
 import shlex
 from subprocess import Popen, PIPE
@@ -62,6 +63,8 @@ class PagingHelpRenderer(object):
     a particular platform.
 
     """
+    def __init__(self, output_stream=sys.stdout):
+        self.output_stream = output_stream
 
     PAGER = None
 
@@ -114,6 +117,12 @@ class PosixHelpRenderer(PagingHelpRenderer):
 
     def _send_output_to_pager(self, output):
         cmdline = self.get_pager_cmdline()
+        if not self._exists_on_path(cmdline[0]):
+            LOG.debug("Pager '%s' not found in PATH, printing raw help." %
+                      cmdline[0])
+            self.output_stream.write(output.decode('utf-8') + "\n")
+            self.output_stream.flush()
+            return
         LOG.debug("Running command: %s", cmdline)
         with ignore_ctrl_c():
             # We can't rely on the KeyboardInterrupt from

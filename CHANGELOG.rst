@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.10.33
+=======
+
+* feature:``rds``: Update rds command to latest version
+* feature:``ec2``: Update ec2 command to latest version
+* bugfix:help: Write help content to stdout if less is not installed. Fixes `#1957 <https://github.com/aws/aws-cli/issues/1957>`__
+
+
 1.10.32
 =======
 

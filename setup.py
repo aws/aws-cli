@@ -9,7 +9,7 @@ import awscli
 requires = ['botocore==1.4.22',
             'colorama>=0.2.5,<=0.3.3',
             'docutils>=0.10',
-            'rsa>=3.1.2,<=3.3.0',
+            'rsa>=3.1.2,<=3.5.0',
             's3transfer==0.0.1']
 
 

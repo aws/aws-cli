@@ -275,7 +275,9 @@ and ``aws s3api``:
 * ``use_accelerate_endpoint`` - Use the Amazon S3 Accelerate endpoint for
   all ``s3`` and ``s3api`` commands. You **must** first enable S3 Accelerate
   on your bucket before attempting to use the endpoint.
-
+* ``addressing_style`` - Specifies which addressing style to use. This controls
+  if the bucket name is in the hostname or part of the URL. Value values are:
+  ``path``, ``virtual``, and ``auto``.  The default value is ``auto``.
 
 Here is an example config for all of these configuration options::
 
@@ -288,6 +290,7 @@ Here is an example config for all of these configuration options::
       multipart_threshold = 64MB
       multipart_chunksize = 16MB
       use_accelerate_endpoint = true
+      addressing_style = path
 
 
 For a more in depth discussion of these S3 configuration values, see ``aws help

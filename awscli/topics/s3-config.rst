@@ -36,6 +36,9 @@ and ``aws s3api``:
 * ``use_accelerate_endpoint`` - Use the Amazon S3 Accelerate endpoint for
   all ``s3`` and ``s3api`` commands. You **must** first enable S3 Accelerate
   on your bucket before attempting to use the endpoint.
+* ``addressing_style`` - Specifies which addressing style to use. This controls
+  if the bucket name is in the hostname or part of the URL. Value values are:
+  ``path``, ``virtual``, and ``auto``.  The default value is ``auto``.
 
 
 These values must be set under the top level ``s3`` key in the AWS Config File,
@@ -51,6 +54,7 @@ configuration::
       multipart_threshold = 64MB
       multipart_chunksize = 16MB
       use_accelerate_endpoint = true
+      addressing_style = path
 
 
 Note that all the S3 configuration values are indented and nested under the top
@@ -65,6 +69,7 @@ could instead run these commands::
     $ aws configure set default.s3.multipart_threshold 64MB
     $ aws configure set default.s3.multipart_chunksize 16MB
     $ aws configure set default.s3.use_accelerate_endpoint true
+    $ aws configure set default.s3.addressing_style path
 
 
 max_concurrent_requests
@@ -163,3 +168,19 @@ be sent to the Accelerate endpoint as the endpoint does not support those
 operations. This behavior can also be set if ``--endpoint-url`` parameter
 is set to ``https://s3-accelerate.amazonaws.com`` or
 ``http://s3-accelerate.amazonaws.com`` for any ``s3`` or ``s3api`` command.
+
+addressing_style
+----------------
+
+There's two styles of constructing an S3 endpoint.  The first is with
+the bucket included as part of the hostname.  This corresponds to the
+addressing style of ``virtual``.  The second is with the bucket included
+as part of the path of the URI, corresponding to the addressing style
+of ``path``.  The default value in the CLI is to use ``auto``, which
+will attempt to use ``virtual`` where possible, but will fall back to
+``path`` style if necessary.  For example, if your bucket name is not
+DNS compatible, the bucket name cannot be part of the hostname and
+must be in the path.  With ``auto``, the CLI will detect this condition
+and automatically switch to ``path`` style for you.  If you set the
+addressing style to ``path``, you must ensure that the AWS region you
+configured in the AWS CLI matches the same region of your bucket.

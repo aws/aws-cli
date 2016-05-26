@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.10.34
+=======
+
+* feature:``elasticache``: Update elasticache command to latest version
+
+
 1.10.33
 =======
 

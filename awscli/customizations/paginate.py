@@ -193,7 +193,7 @@ def ensure_paging_params_not_set(parsed_args, shadowed_args):
     paging_params = ['starting_token', 'page_size', 'max_items']
     shadowed_params = [p.replace('-', '_') for p in shadowed_args.keys()]
     params_used = [p for p in paging_params if
-                   p not in shadowed_params and getattr(parsed_args, p)]
+                   p not in shadowed_params and getattr(parsed_args, p, False)]
 
     if len(params_used) > 0:
         converted_params = ', '.join(

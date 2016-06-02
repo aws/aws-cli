@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.10.35
+=======
+
+* feature:``ec2``: Update ec2 command to latest version
+* feature:``application-autoscaling``: Update application-autoscaling command to latest version
+
+
 1.10.34
 =======
 

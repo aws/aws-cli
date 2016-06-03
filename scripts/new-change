@@ -148,7 +148,8 @@ def write_new_change(parsed_values):
     filename = '{type_name}-{summary}'.format(
         type_name=parsed_values['type'],
         summary=short_summary)
-    possible_filename = os.path.join(dirname, filename) + '.json'
+    possible_filename = os.path.join(
+        dirname, '%s-%s.json' % (filename, str(random.randint(1, 100000))))
     while os.path.isfile(possible_filename):
         possible_filename = os.path.join(
             dirname, '%s-%s.json' % (filename, str(random.randint(1, 100000))))

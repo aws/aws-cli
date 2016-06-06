@@ -303,3 +303,9 @@ class TestEnsurePagingParamsNotSet(TestPaginateBase):
 
         with self.assertRaises(PaginationError):
             paginate.ensure_paging_params_not_set(self.parsed_args, {})
+
+    def test_can_handle_missing_page_size(self):
+        # Not all pagination operations have a page_size.
+        del self.parsed_args.page_size
+        self.assertIsNone(paginate.ensure_paging_params_not_set(
+            self.parsed_args, {}))

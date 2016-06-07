@@ -5,6 +5,10 @@ aws-cli
 .. image:: https://travis-ci.org/aws/aws-cli.svg?branch=develop
    :target: https://travis-ci.org/aws/aws-cli
    :alt: Build Status
+   
+.. image:: https://badges.gitter.im/aws/aws-cli.svg
+   :target: https://gitter.im/aws/aws-cli
+   :alt: Gitter
 
 
 This package provides a unified command line interface to Amazon Web Services.

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.10.36
+=======
+
+* feature:``dynamodbstreams``: Update dynamodbstreams command to latest version
+* feature:``machinelearning``: Update machinelearning command to latest version
+* feature:``iot``: Update iot command to latest version
+* bugfix:Pagination: Fix regression with --no-paginate introduced in `#1958 <https://github.com/aws/aws-cli/issues/1958>`__ (fixes `#1993 <https://github.com/aws/aws-cli/issues/1993>`__)
+
+
 1.10.35
 =======
 

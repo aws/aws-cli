@@ -237,7 +237,7 @@ Use the ``describe-images`` command with the image ID of the AMI you want to use
     "DeviceName": "/dev/sda1",
     "Ebs": {
       "DeleteOnTermination": true,
-      "SnapshotId": "snap-b047276d",
+      "SnapshotId": "snap-1234567890abcdef0",
       "VolumeSize": 8,
       "VolumeType": "standard",
       "Encrypted": false
@@ -255,7 +255,7 @@ Where mapping.json contains the following::
       "DeviceName": "/dev/sda1",
       "Ebs": {
         "DeleteOnTermination": true,
-        "SnapshotId": "snap-b047276d", 
+        "SnapshotId": "snap-1234567890abcdef0", 
         "VolumeSize": 100,
         "VolumeType": "gp2"
       }

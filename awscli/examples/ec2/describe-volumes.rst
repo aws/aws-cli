@@ -16,16 +16,16 @@ Output::
                    {
                        "AttachTime": "2013-12-18T22:35:00.000Z",
                        "InstanceId": "i-1234567890abcdef0",
-                       "VolumeId": "vol-21083656",
+                       "VolumeId": "vol-049df61146c4d7901",
                        "State": "attached",
                        "DeleteOnTermination": true,
                        "Device": "/dev/sda1"
                    }
                ],
                "VolumeType": "standard",
-               "VolumeId": "vol-21083656",
+               "VolumeId": "vol-049df61146c4d7901",
                "State": "in-use",
-               "SnapshotId": "snap-b4ef17a9",
+               "SnapshotId": "snap-1234567890abcdef0",
                "CreateTime": "2013-12-18T22:35:00.084Z",
                "Size": 8
            },
@@ -33,7 +33,7 @@ Output::
                "AvailabilityZone": "us-east-1a",
                "Attachments": [],
                "VolumeType": "io1",
-               "VolumeId": "vol-2725bc51",
+               "VolumeId": "vol-1234567890abcdef0",
                "State": "available",
                "Iops": 1000,
                "SnapshotId": null,
@@ -61,16 +61,16 @@ Output::
                    {
                        "AttachTime": "2013-12-18T22:35:00.000Z",
                        "InstanceId": "i-1234567890abcdef0",
-                       "VolumeId": "vol-21083656",
+                       "VolumeId": "vol-049df61146c4d7901",
                        "State": "attached",
                        "DeleteOnTermination": true,
                        "Device": "/dev/sda1"
                    }
                ],
                "VolumeType": "standard",
-               "VolumeId": "vol-21083656",
+               "VolumeId": "vol-049df61146c4d7901",
                "State": "in-use",
-               "SnapshotId": "snap-b4ef17a9",
+               "SnapshotId": "snap-1234567890abcdef0",
                "CreateTime": "2013-12-18T22:35:00.084Z",
                "Size": 8
            }
@@ -95,7 +95,7 @@ Output::
                 "Key": "Name"
             }
         ], 
-        "ID": "vol-9de9e9d9"
+        "ID": "vol-1234567890abcdef0"
     }, 
     {
         "Tag": [
@@ -104,7 +104,7 @@ Output::
                 "Key": "Name"
             }
         ], 
-        "ID": "vol-b2242df9"
+        "ID": "vol-049df61146c4d7901"
      }
    ]
 

@@ -50,7 +50,7 @@ Output::
               "Ebs": {
                   "Status": "attached",
                   "DeleteOnTermination": true,
-                  "VolumeId": "vol-615a1339",
+                  "VolumeId": "vol-049df61146c4d7901",
                   "AttachTime": "2013-05-17T22:42:34.000Z"
               }
           },
@@ -59,7 +59,7 @@ Output::
               "Ebs": {
                   "Status": "attached",
                   "DeleteOnTermination": false,
-                  "VolumeId": "vol-9f54b8dc",
+                  "VolumeId": "vol-049df61146c4d7901",
                   "AttachTime": "2013-09-10T23:07:00.000Z"
               }
           }

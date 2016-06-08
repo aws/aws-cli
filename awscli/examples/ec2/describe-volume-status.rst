@@ -1,10 +1,10 @@
 **To describe the status of a single volume**
 
-This example command describes the status for the volume ``vol-2725bc51``.
+This example command describes the status for the volume ``vol-1234567890abcdef0``.
 
 Command::
 
-  aws ec2 describe-volume-status --volume-ids vol-2725bc51
+  aws ec2 describe-volume-status --volume-ids vol-1234567890abcdef0
 
 Output::
 
@@ -25,7 +25,7 @@ Output::
                    ]
                },
                "AvailabilityZone": "us-east-1a",
-               "VolumeId": "vol-2725bc51",
+               "VolumeId": "vol-1234567890abcdef0",
                "Actions": [],
                "Events": []
            }

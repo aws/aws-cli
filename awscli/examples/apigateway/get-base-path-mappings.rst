@@ -1,4 +1,4 @@
-**To get the per-region base path mapping for a custom domain name**
+**To get the per-region base path mappings for a custom domain name**
 
 Command::
 

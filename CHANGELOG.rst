@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.10.37
+=======
+
+* feature:``s3``: Update s3 command to latest version
+
+
 1.10.36
 =======
 

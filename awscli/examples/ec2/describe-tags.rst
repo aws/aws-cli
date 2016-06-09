@@ -42,13 +42,13 @@ Output::
           },
           {
               "ResourceType": "volume",
-              "ResourceId": "vol-1a2b3c4d",
+              "ResourceId": "vol-049df61146c4d7901",
               "Value": "Project1",
               "Key": "Purpose"
           },
           {
               "ResourceType": "volume",
-              "ResourceId": "vol-87654321",
+              "ResourceId": "vol-1234567890abcdef0",
               "Value": "Logs",
               "Key": "Purpose"
           }
@@ -96,13 +96,13 @@ Output::
       "Tags": [
           {
               "ResourceType": "volume",
-              "ResourceId": "vol-1a2b3c4d",
+              "ResourceId": "vol-1234567890abcdef0",
               "Value": "Project1",
               "Key": "Purpose"
           },
           {
               "ResourceType": "volume",
-              "ResourceId": "vol-87654321",
+              "ResourceId": "vol-049df61146c4d7901",
               "Value": "Logs",
               "Key": "Purpose"
           }

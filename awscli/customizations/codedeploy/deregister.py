@@ -13,10 +13,11 @@
 
 import sys
 
+from botocore.exceptions import ClientError
+
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.codedeploy.utils import \
     validate_region, validate_instance_name, INSTANCE_NAME_ARG
-from awscli.errorhandler import ClientError, ServerError
 
 
 class Deregister(BasicCommand):
@@ -53,10 +54,12 @@ class Deregister(BasicCommand):
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl
         )
+        self.codedeploy.meta.events.unregister('after-call', unique_id='awscli-error-handler')
         self.iam = self._session.create_client(
             'iam',
             region_name=params.region
         )
+        self.iam.meta.events.unregister('after-call', unique_id='awscli-error-handler')
 
         try:
             self._get_instance_info(params)
@@ -132,8 +135,8 @@ class Deregister(BasicCommand):
                         UserName=params.user_name,
                         PolicyName=policy_name
                     )
-        except (ServerError, ClientError) as e:
-            if e.error_code != 'NoSuchEntity':
+        except ClientError as e:
+            if e.response.get('Error', {}).get('Code') != 'NoSuchEntity':
                 raise e
         sys.stdout.write('DONE\n')
 
@@ -148,8 +151,8 @@ class Deregister(BasicCommand):
                         UserName=params.user_name,
                         AccessKeyId=access_key['AccessKeyId']
                     )
-        except (ServerError, ClientError) as e:
-            if e.error_code != 'NoSuchEntity':
+        except ClientError as e:
+            if e.response.get('Error', {}).get('Code') != 'NoSuchEntity':
                 raise e
         sys.stdout.write('DONE\n')
 
@@ -159,7 +162,7 @@ class Deregister(BasicCommand):
         ))
         try:
             self.iam.delete_user(UserName=params.user_name)
-        except (ServerError, ClientError) as e:
-            if e.error_code != 'NoSuchEntity':
+        except ClientError as e:
+            if e.response.get('Error', {}).get('Code') != 'NoSuchEntity':
                 raise e
         sys.stdout.write('DONE\n')

@@ -70,7 +70,6 @@ from awscli.customizations.sessendemail import register_ses_send_email
 from awscli.customizations.streamingoutputarg import add_streaming_output_arg
 from awscli.customizations.toplevelbool import register_bool_params
 from awscli.customizations.waiters import register_add_waiters
-from awscli.errorhandler import ErrorHandler
 
 
 def awscli_initialize(event_handlers):
@@ -80,9 +79,6 @@ def awscli_initialize(event_handlers):
     # The s3 error mesage needs to registered before the
     # generic error handler.
     register_s3_error_msg(event_handlers)
-    error_handler = ErrorHandler()
-    event_handlers.register('after-call', error_handler,
-                            unique_id='awscli-error-handler')
 #    # The following will get fired for every option we are
 #    # documenting.  It will attempt to add an example_fn on to
 #    # the parameter object if the parameter supports shorthand

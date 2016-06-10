@@ -22,10 +22,11 @@ import subprocess
 import tempfile
 import textwrap
 
+from botocore.exceptions import ClientError
+
 from awscli.compat import shlex_quote, urlopen
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import create_client_from_parsed_globals
-from awscli.errorhandler import ClientError
 
 
 LOG = logging.getLogger(__name__)
@@ -128,8 +129,12 @@ class OpsWorksRegister(BasicCommand):
 
     def _create_clients(self, args, parsed_globals):
         self.iam = self._session.create_client('iam')
+        self.iam.meta.events.unregister(
+            'after-call', unique_id='awscli-error-handler')
         self.opsworks = create_client_from_parsed_globals(
             self._session, 'opsworks', parsed_globals)
+        self.opsworks.meta.events.unregister(
+            'after-call', unique_id='awscli-error-handler')
 
     def _run_main(self, args, parsed_globals):
         self._create_clients(args, parsed_globals)
@@ -325,7 +330,7 @@ class OpsWorksRegister(BasicCommand):
             self.iam.create_group(GroupName=group_name, Path=IAM_PATH)
             LOG.debug("Created IAM group %s", group_name)
         except ClientError as e:
-            if e.error_code == 'EntityAlreadyExists':
+            if e.response.get('Error', {}).get('Code') == 'EntityAlreadyExists':
                 LOG.debug("IAM group %s exists, continuing", group_name)
                 # group already exists, good
                 pass
@@ -343,7 +348,7 @@ class OpsWorksRegister(BasicCommand):
             try:
                 self.iam.create_user(UserName=username, Path=IAM_PATH)
             except ClientError as e:
-                if e.error_code == 'EntityAlreadyExists':
+                if e.response.get('Error', {}).get('Code') == 'EntityAlreadyExists':
                     LOG.debug(
                         "IAM user %s already exists, trying another name",
                         username

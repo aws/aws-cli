@@ -13,7 +13,7 @@
 import sys
 from functools import partial
 
-from six.moves.urllib.request import urlopen
+from awscli.compat import urlopen
 from awscli.customizations.commands import BasicCommand
 
 

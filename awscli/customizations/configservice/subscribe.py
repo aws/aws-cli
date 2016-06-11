@@ -145,9 +145,6 @@ class S3BucketHelper(object):
         return bucket, key
 
     def _check_bucket_exists(self, bucket):
-        self._s3_client.meta.events.unregister(
-            'after-call',
-            unique_id='awscli-error-handler')
         return s3_bucket_exists(self._s3_client, bucket)
 
     def _create_bucket(self, bucket):

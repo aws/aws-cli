@@ -54,12 +54,10 @@ class Deregister(BasicCommand):
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl
         )
-        self.codedeploy.meta.events.unregister('after-call', unique_id='awscli-error-handler')
         self.iam = self._session.create_client(
             'iam',
             region_name=params.region
         )
-        self.iam.meta.events.unregister('after-call', unique_id='awscli-error-handler')
 
         try:
             self._get_instance_info(params)

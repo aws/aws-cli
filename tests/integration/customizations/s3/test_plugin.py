@@ -473,7 +473,7 @@ class TestCp(BaseS3IntegrationTest):
         p = aws('s3 cp s3://jasoidfjasdjfasdofijasdf/foo.txt foo.txt')
         self.assertEqual(p.rc, 1)
         expected_err_msg = (
-            'A client error (404) occurred when calling the '
+            'An error occurred (404) when calling the '
             'HeadObject operation: Key "foo.txt" does not exist')
         self.assertIn(expected_err_msg, p.stderr)
 
@@ -1100,7 +1100,7 @@ class TestLs(BaseS3IntegrationTest):
         p = aws('s3 ls s3://foobara99842u4wbts829381')
         self.assertEqual(p.rc, 255)
         self.assertIn(
-            ('A client error (NoSuchBucket) occurred when calling the '
+            ('An error occurred (NoSuchBucket) when calling the '
              'ListObjects operation: The specified bucket does not exist'),
             p.stderr)
         # There should be no stdout if we can't find the bucket.

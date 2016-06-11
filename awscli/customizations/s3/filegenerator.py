@@ -118,8 +118,6 @@ class FileGenerator(object):
     def __init__(self, client, operation_name, follow_symlinks=True,
                  page_size=None, result_queue=None, request_parameters=None):
         self._client = client
-        self._client.meta.events.unregister(
-            'after-call', unique_id='awscli-error-handler')
         self.operation_name = operation_name
         self.follow_symlinks = follow_symlinks
         self.page_size = page_size

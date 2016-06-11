@@ -198,8 +198,6 @@ class WaiterCaller(object):
         self._waiter_name = waiter_name
 
     def invoke(self, service_name, operation_name, parameters, parsed_globals):
-        self._session.unregister(
-            'after-call', unique_id='awscli-error-handler')
         client = self._session.create_client(
             service_name, region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,

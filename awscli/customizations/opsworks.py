@@ -129,12 +129,8 @@ class OpsWorksRegister(BasicCommand):
 
     def _create_clients(self, args, parsed_globals):
         self.iam = self._session.create_client('iam')
-        self.iam.meta.events.unregister(
-            'after-call', unique_id='awscli-error-handler')
         self.opsworks = create_client_from_parsed_globals(
             self._session, 'opsworks', parsed_globals)
-        self.opsworks.meta.events.unregister(
-            'after-call', unique_id='awscli-error-handler')
 
     def _run_main(self, args, parsed_globals):
         self._create_clients(args, parsed_globals)

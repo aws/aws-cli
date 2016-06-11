@@ -108,22 +108,16 @@ class Push(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         self._validate_args(parsed_args)
-
         self.codedeploy = self._session.create_client(
             'codedeploy',
             region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl
         )
-        self.codedeploy.meta.events.unregister(
-            'after-call', unique_id='awscli-error-handler')
         self.s3 = self._session.create_client(
             's3',
             region_name=parsed_globals.region
         )
-        self.s3.meta.events.unregister('after-call',
-                                       unique_id='awscli-error-handler')
-
         self._push(parsed_args)
 
     def _validate_args(self, parsed_args):

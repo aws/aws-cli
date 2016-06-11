@@ -37,16 +37,6 @@ def get_region(session, parsed_globals):
     return region
 
 
-def remove_cli_error_event(client):
-    """This unregister call will go away once the client switchover
-    is done, but for now we're relying on S3 catching a ClientError
-    when we check if a bucket exists, so we need to ensure the
-    botocore ClientError is raised instead of the CLI's error handler.
-    """
-    client.meta.events.unregister(
-        'after-call', unique_id='awscli-error-handler')
-
-
 # Method to display the response for a particular CLI operation
 def display_response(session, operation_name, result, parsed_globals):
     cli_operation_caller = CLIOperationCaller(session)

@@ -47,7 +47,7 @@ you can run::
 .. note::
 
     On OS X, if you see an error regarding the version of six that came with
-    distutils in El Capitan, use the ``--ignore-installed option``::
+    distutils in El Capitan, use the ``--ignore-installed`` option::
 
         $ sudo pip install awscli --ignore-installed six
 

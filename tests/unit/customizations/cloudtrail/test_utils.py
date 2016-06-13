@@ -28,14 +28,6 @@ class TestCloudTrailUtils(unittest.TestCase):
         arn = 'foo:bar:baz:qux:1234'
         self.assertEqual('1234', utils.get_account_id_from_arn(arn))
 
-    def test_removes_cli_error_event(self):
-        mock_events = Mock()
-        mock_client = Mock()
-        mock_client.meta.events = mock_events
-        utils.remove_cli_error_event(mock_client)
-        mock_events.unregister.assert_called_with(
-            'after-call', unique_id='awscli-error-handler')
-
     def test_gets_trail_by_arn(self):
         cloudtrail_client = Mock()
         cloudtrail_client.describe_trails.return_value = {'trailList': [

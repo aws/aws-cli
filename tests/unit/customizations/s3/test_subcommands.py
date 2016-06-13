@@ -379,7 +379,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         # Also, we need to verify that the error message is on the *same* line
         # as the upload failed line, to make it easier to track.
         output_str = (
-            "upload failed: %s to %s A client error" % (
+            "upload failed: %s to %s An error" % (
                 rel_local_file, s3_file))
         self.assertIn(output_str, self.err_output.getvalue())
 

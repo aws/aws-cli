@@ -18,10 +18,11 @@ import tempfile
 import contextlib
 from datetime import datetime
 
+from botocore.exceptions import ClientError
+
 from awscli.compat import six
 from awscli.customizations.codedeploy.utils import validate_s3_location
 from awscli.customizations.commands import BasicCommand
-from awscli.errorhandler import ServerError, ClientError
 from awscli.compat import ZIP_COMPRESSION_MODE
 
 
@@ -107,7 +108,6 @@ class Push(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         self._validate_args(parsed_args)
-
         self.codedeploy = self._session.create_client(
             'codedeploy',
             region_name=parsed_globals.region,
@@ -118,7 +118,6 @@ class Push(BasicCommand):
             's3',
             region_name=parsed_globals.region
         )
-
         self._push(parsed_args)
 
     def _validate_args(self, parsed_args):
@@ -261,7 +260,7 @@ class Push(BasicCommand):
                 UploadId=upload_id,
                 MultipartUpload={'Parts': multipart_list}
             )
-        except (ServerError, ClientError) as e:
+        except ClientError as e:
             self.s3.abort_multipart_upload(
                 Bucket=params.bucket,
                 Key=params.key,

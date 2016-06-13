@@ -16,11 +16,11 @@ import stat
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
+from botocore.exceptions import ClientError
 
 from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
 from awscli.customizations.s3.utils import BucketLister, create_warning, \
     find_dest_path_comp_key, EPOCH_TIME
-from awscli.errorhandler import ClientError
 from awscli.compat import six
 from awscli.compat import queue
 
@@ -345,19 +345,13 @@ class FileGenerator(object):
             # We want to try to give a more helpful error message.
             # This is what the customer is going to see so we want to
             # give as much detail as we have.
-            copy_fields = e.__dict__.copy()
-            if not e.error_message == 'Not Found':
+            if not e.response['Error']['Code'] == '404':
                 raise
-            if e.http_status_code == 404:
-                # The key does not exist so we'll raise a more specific
-                # error message here.
-                copy_fields['error_message'] = 'Key "%s" does not exist' % key
-            else:
-                reason = six.moves.http_client.responses[
-                    e.http_status_code]
-                copy_fields['error_code'] = reason
-                copy_fields['error_message'] = reason
-            raise ClientError(**copy_fields)
+            # The key does not exist so we'll raise a more specific
+            # error message here.
+            response = e.response.copy()
+            response['Error']['Message'] = 'Key "%s" does not exist' % key
+            raise ClientError(response, 'HeadObject')
         response['Size'] = int(response.pop('ContentLength'))
         last_update = parse(response['LastModified'])
         response['LastModified'] = last_update.astimezone(tzlocal())

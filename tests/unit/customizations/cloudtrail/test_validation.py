@@ -837,5 +837,3 @@ class TestS3ClientProvider(BaseAWSCommandParamsTest):
         s3_client.get_bucket_location.return_value = {'LocationConstraint': ''}
         provider = S3ClientProvider(session)
         client = provider.get_client('foo')
-        client.meta.events.unregister.assert_called_with(
-            'after-call', unique_id='awscli-error-handler')

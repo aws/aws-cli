@@ -23,7 +23,7 @@ from awscli.customizations.datapipeline.constants \
     DATAPIPELINE_DEFAULT_RESOURCE_ROLE_ASSUME_POLICY
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.datapipeline.translator \
-    import display_response, dict_to_string, get_region, remove_cli_error_event
+    import display_response, dict_to_string, get_region
 from botocore.exceptions import ClientError
 
 LOG = logging.getLogger(__name__)
@@ -56,7 +56,6 @@ class CreateDefaultRoles(BasicCommand):
             endpoint_url=self._endpoint_url,
             verify=parsed_globals.verify_ssl
         )
-        remove_cli_error_event(self._iam_client)
         return self._create_default_roles(parsed_args, parsed_globals)
 
     def _create_role(self, role_name, role_arn, role_policy):

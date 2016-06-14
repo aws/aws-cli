@@ -100,10 +100,6 @@ class TestCloudTrailCommand(unittest.TestCase):
                 call('cloudtrail', verify=None, region_name=None),
             ]
         )
-        # We should also remove the error handler for S3.
-        # This can be removed once the client switchover is done.
-        subscribe_command.s3.meta.events.unregister.assert_called_with(
-            'after-call', unique_id='awscli-error-handler')
 
     def test_endpoint_url_is_only_used_for_cloudtrail(self):
         endpoint_url = 'https://mycloudtrail.awsamazon.com/'

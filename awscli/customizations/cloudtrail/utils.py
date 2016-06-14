@@ -30,13 +30,3 @@ def get_trail_by_arn(cloudtrail_client, trail_arn):
         if trail.get('TrailARN', None) == trail_arn:
             return trail
     raise ValueError('A trail could not be found for %s' % trail_arn)
-
-
-def remove_cli_error_event(client):
-    """This unregister call will go away once the client switchover
-    is done, but for now we're relying on S3 catching a ClientError
-    when we check if a bucket exists, so we need to ensure the
-    botocore ClientError is raised instead of the CLI's error handler.
-    """
-    client.meta.events.unregister(
-        'after-call', unique_id='awscli-error-handler')

@@ -26,7 +26,7 @@ from pyasn1.error import PyAsn1Error
 import rsa
 
 from awscli.customizations.cloudtrail.utils import get_trail_by_arn, \
-    get_account_id_from_arn, remove_cli_error_event
+    get_account_id_from_arn
 from awscli.customizations.commands import BasicCommand
 from botocore.exceptions import ClientError
 
@@ -166,7 +166,6 @@ class S3ClientProvider(object):
         if region_name not in self._client_cache:
             client = self._session.create_client('s3', region_name)
             # Remove the CLI error event that prevents exceptions.
-            remove_cli_error_event(client)
             self._client_cache[region_name] = client
         return self._client_cache[region_name]
 

@@ -16,6 +16,8 @@ import datetime
 import json
 import mock
 
+from botocore.exceptions import ClientError
+
 from awscli.customizations import opsworks
 from awscli.testutils import unittest
 
@@ -234,8 +236,9 @@ class TestOpsWorksRegister(TestOpsWorksBase):
             self.register._stack = dict(
                 StackId="STACKID", Name="STACKNAME", Arn="ARN")
             self.register._name_for_iam = "HOSTNAME"
-            mock_iam.create_group.side_effect = opsworks.ClientError(
-                "EntityAlreadyExists", None, None, None, None)
+            mock_iam.create_group.side_effect = ClientError(
+                {'Error': {'Code': 'EntityAlreadyExists', 'Message': ''}},
+                'CreateGroup')
 
             self.register.create_iam_entities()
 
@@ -258,10 +261,14 @@ class TestOpsWorksRegister(TestOpsWorksBase):
             self.register._name_for_iam = "HOSTNAME"
             mock_iam.create_user = mock.Mock(
                 side_effect=[
-                    opsworks.ClientError(
-                        "EntityAlreadyExists", None, None, None, None),
-                    opsworks.ClientError(
-                        "EntityAlreadyExists", None, None, None, None),
+                    ClientError(
+                        {'Error': {'Code': 'EntityAlreadyExists', 'Message': ''}},
+                        'CreateUser'
+                    ),
+                    ClientError(
+                        {'Error': {'Code': 'EntityAlreadyExists', 'Message': ''}},
+                        'CreateUser'
+                    ),
                     None
                 ])
 

@@ -19,10 +19,10 @@ import tempfile
 import shutil
 import socket
 
+from botocore.exceptions import ClientError
 from awscli.compat import six
 import mock
 
-from awscli.errorhandler import ClientError
 from awscli.customizations.s3.filegenerator import FileGenerator, \
     FileDecodingError, FileStat, is_special_file, is_readable
 from awscli.customizations.s3.utils import get_file_stat, EPOCH_TIME
@@ -524,7 +524,10 @@ class S3FileGeneratorTest(BaseAWSCommandParamsTest):
         params = {'region': 'us-east-1'}
         self.client = mock.Mock()
         self.client.head_object.side_effect = \
-            ClientError(404, 'Not Found', '404', 'HeadObject', 404)
+                ClientError(
+                    {'Error': {'Code': '404', 'Message': 'Not Found'}},
+                    'HeadObject',
+                )
         file_gen = FileGenerator(self.client, '')
         files = file_gen.call(input_s3_file)
         # The error should include 404 and should include the key name.

@@ -16,9 +16,9 @@ import awscli
 from argparse import Namespace
 from mock import MagicMock, patch, ANY, call
 from six import StringIO
+from botocore.exceptions import ClientError
 
 from awscli.customizations.codedeploy.push import Push
-from awscli.errorhandler import ClientError
 from awscli.testutils import unittest
 from awscli.compat import ZIP_COMPRESSION_MODE
 
@@ -282,11 +282,8 @@ class TestPush(unittest.TestCase):
         self.bundle_mock.tell.return_value = (6 << 20)
         self.bundle_mock.read.return_value = b'a' * (6 << 20)
         self.push.s3.upload_part.side_effect = ClientError(
-            error_code='Error',
-            error_message='Error',
-            error_type='error',
-            operation_name='UploadPart',
-            http_status_code=400
+            {'Error': {'Code': 'Error', 'Message': 'Error'}},
+            'UploadPart'
         )
         with self.assertRaises(ClientError):
             self.push._upload_to_s3(self.args, self.bundle_mock)

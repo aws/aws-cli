@@ -14,7 +14,7 @@ import json
 import logging
 import sys
 
-from .utils import get_account_id, remove_cli_error_event
+from .utils import get_account_id
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import s3_bucket_exists
 from botocore.exceptions import ClientError
@@ -83,7 +83,6 @@ class CloudTrailSubscribe(BasicCommand):
         self.iam = self._session.create_client('iam', **client_args)
         self.s3 = self._session.create_client('s3', **client_args)
         self.sns = self._session.create_client('sns', **client_args)
-        remove_cli_error_event(self.s3)
         self.region_name = self.s3.meta.region_name
 
         # If the endpoint is specified, it is designated for the cloudtrail

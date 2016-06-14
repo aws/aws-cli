@@ -129,7 +129,7 @@ def _run_error_aws_command(command_string):
     result = aws(command_string)
     assert_equal(result.rc, 255)
     error_message = re.compile(
-        'A \w+ error \(.+\) occurred when calling the \w+ operation: \w+')
+        'An error occurred \(.+\) when calling the \w+ operation: \w+')
     match = error_message.search(result.stderr)
     if match is None:
         raise AssertionError(

@@ -1,4 +1,4 @@
-**To describe scalable targets**
+**To apply a scaling policy to an Amazon ECS service**
 
 This example command applies a scaling policy to an Amazon ECS service called `web-app` in the `default` cluster. The policy increases the desired count of the service by 200%, with a cool down period of 60 seconds.
 

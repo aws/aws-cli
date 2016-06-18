@@ -800,16 +800,6 @@ class TestSourceRegion(BaseS3IntegrationTest):
         self.src_bucket = self.create_bucket(self.src_name, self.src_region)
         self.dest_bucket = self.create_bucket(self.dest_name, self.dest_region)
 
-    def test_fail_without_region(self):
-        self.files.create_file('foo.txt', 'foo')
-        p = aws('s3 sync %s s3://%s/ --region %s' %
-                (self.files.rootdir, self.src_bucket, self.src_region))
-        self.assert_no_errors(p)
-        p2 = aws('s3 sync s3://%s/ s3://%s/ --region %s' %
-                 (self.src_bucket, self.dest_bucket, self.src_region))
-        self.assertEqual(p2.rc, 1, p2.stdout)
-        self.assertIn('PermanentRedirect', p2.stderr)
-
     def test_cp_region(self):
         self.files.create_file('foo.txt', 'foo')
         p = aws('s3 sync %s s3://%s/ --region %s' %

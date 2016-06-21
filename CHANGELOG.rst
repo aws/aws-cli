@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.10.39
+=======
+
+* feature:``codepipeline``: Update codepipeline command to latest version
+* feature:opsworks: Instead of always creating an IAM user for instance registration, allow using credentials from the instance profile
+* feature:``opsworks``: Update opsworks command to latest version
+
+
 1.10.38
 =======
 

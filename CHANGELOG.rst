@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.10.40
+=======
+
+* bugfix:AssumeRole: Fix regression in assume role where cached credentials were not valid JSON (`botocore #962 <https://github.com/boto/botocore/pull/962>`__)
+
+
 1.10.39
 =======
 

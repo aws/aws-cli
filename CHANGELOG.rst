@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+1.10.41
+=======
+
+* feature:``iam``: Update iam command to latest version
+* feature:``ec2``: Update ec2 command to latest version
+* feature:``rds``: Update rds command to latest version
+* feature:``cognito-identity``: Update cognito-identity command to latest version
+* feature:``directconnect``: Update directconnect command to latest version
+
+
+1.10.40
+=======
+
+* bugfix:AssumeRole: Fix regression in assume role where cached credentials were not valid JSON (`botocore #962 <https://github.com/boto/botocore/pull/962>`__)
+
+
 1.10.39
 =======
 

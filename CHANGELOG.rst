@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.10.41
+=======
+
+* feature:``iam``: Update iam command to latest version
+* feature:``ec2``: Update ec2 command to latest version
+* feature:``rds``: Update rds command to latest version
+* feature:``cognito-identity``: Update cognito-identity command to latest version
+* feature:``directconnect``: Update directconnect command to latest version
+
+
 1.10.40
 =======
 

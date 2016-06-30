@@ -35,7 +35,7 @@ class Push(BasicCommand):
 
     DESCRIPTION = (
         'Bundles and uploads to Amazon Simple Storage Service (Amazon S3) an '
-        'application revision, which is an archive file that contains '
+        'application revision, which is a zip archive file that contains '
         'deployable content and an accompanying Application Specification '
         'file (AppSpec file). If the upload is successful, a message is '
         'returned that describes how to call the create-deployment command to '
@@ -61,8 +61,8 @@ class Push(BasicCommand):
                 'Required. Information about the location of the application '
                 'revision to be uploaded to Amazon S3. You must specify both '
                 'a bucket and a key that represent the Amazon S3 bucket name '
-                'and the object key name. Use the format '
-                's3://\<bucket\>/\<key\>'
+                'and the object key name. Content will be zipped before '
+                'uploading. Use the format s3://\<bucket\>/\<key\>'
             )
         },
         {
@@ -90,7 +90,7 @@ class Push(BasicCommand):
             'help_text': (
                 'Optional. The location of the deployable content and the '
                 'accompanying AppSpec file on the development machine to be '
-                'bundled and uploaded to Amazon S3. If not specified, the '
+                'zipped and uploaded to Amazon S3. If not specified, the '
                 'current directory is used.'
             )
         },

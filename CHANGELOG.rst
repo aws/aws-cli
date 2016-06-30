@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.10.44
+=======
+
+* feature:``ssm``: Update ssm command to latest version
+* feature:``dms``: Update dms command to latest version
+
+
 1.10.43
 =======
 

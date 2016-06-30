@@ -4,7 +4,8 @@ The following ``describe-instances`` commmand describes the instances in a speci
 
   aws opsworks --region us-east-1 describe-instances --stack-id 8c428b08-a1a1-46ce-a5f8-feddc43771b8
 
-**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
+**Note**: AWS OpsWorks CLI commands should set the region to either ``us-east-1`` or ``ap-south-1``. 
+All regions except ``ap-south-1`` are associated with the ``us-east-1`` endpoint.
 
 *Output*: The following output example is for a stack with two instances. The first is a registered
 EC2 instance, and the second was created by AWS OpsWorks.

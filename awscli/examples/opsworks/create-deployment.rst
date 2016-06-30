@@ -5,7 +5,8 @@ quote (``"``) characters in the JSON object that specifies the command are all p
 escape characters (\). Without the escape characters, the command might
 return an invalid JSON error.
 
-**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
+**Note**: AWS OpsWorks CLI commands should set the region to either ``us-east-1`` or ``ap-south-1``.
+All regions except ``ap-south-1`` are associated with the ``us-east-1`` endpoint.
 
 **Deploy an App**
 
@@ -39,7 +40,7 @@ For more information on deployment, see `Deploying Apps`_ in the *AWS OpsWorks U
 The following ``create-deployment`` command runs a custom recipe, ``phpapp::appsetup``, on the instances in a specified
 stack. ::
 
-  aws opsworks --region us-east-1 create-deployment --stack-id 935450cc-61e0-4b03-a3e0-160ac817d2bb --command "{\"Name\":\"execute_recipes\", \"Args\":{\"recipes\":[\"phpapp::appsetup\"]}}
+  aws opsworks --region ap-south-1 create-deployment --stack-id 935450cc-61e0-4b03-a3e0-160ac817d2bb --command "{\"Name\":\"execute_recipes\", \"Args\":{\"recipes\":[\"phpapp::appsetup\"]}}
 
 *Output*::
 
@@ -54,7 +55,7 @@ For more information, see `Run Stack Commands`_ in the *AWS OpsWorks User Guide*
 The following ``create-deployment`` command installs dependencies, such as packages or Ruby gems, on the instances in a
 specified stack. ::
 
-  aws opsworks --region us-east-1 create-deployment --stack-id 935450cc-61e0-4b03-a3e0-160ac817d2bb --command "{\"Name\":\"install_dependencies\"}"
+  aws opsworks --region ap-south-1 create-deployment --stack-id 935450cc-61e0-4b03-a3e0-160ac817d2bb --command "{\"Name\":\"install_dependencies\"}"
 
 *Output*::
 

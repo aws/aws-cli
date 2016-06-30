@@ -5,7 +5,8 @@ The command uses the shorthand form of the application source definition. ::
 
   aws opsworks --region us-east-1 create-app --stack-id f6673d70-32e6-4425-8999-265dd002fec7 --name SimplePHPApp --type php --app-source Type=git,Url=git://github.com/amazonwebservices/opsworks-demo-php-simple-app.git,Revision=version1
 
-**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
+**Note**: AWS OpsWorks CLI commands should set the region to either ``us-east-1`` or ``ap-south-1``. 
+All regions except ``ap-south-1`` are associated with the ``us-east-1`` endpoint.
 
 *Output*::
 

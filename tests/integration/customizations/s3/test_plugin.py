@@ -1413,7 +1413,7 @@ class TestMemoryUtilization(BaseS3IntegrationTest):
 
 class TestWebsiteConfiguration(BaseS3IntegrationTest):
     def test_create_website_index_configuration(self):
-        bucket_name = _SHARED_BUCKET
+        bucket_name = self.create_bucket()
         # Supply only --index-document argument.
         full_command = 's3 website %s --index-document index.html' % \
             (bucket_name)
@@ -1428,7 +1428,7 @@ class TestWebsiteConfiguration(BaseS3IntegrationTest):
         self.assertNotIn('RedirectAllRequestsTo', parsed)
 
     def test_create_website_index_and_error_configuration(self):
-        bucket_name = _SHARED_BUCKET
+        bucket_name = self.create_bucket()
         # Supply both --index-document and --error-document arguments.
         p = aws('s3 website %s --index-document index.html '
                 '--error-document error.html' % bucket_name)

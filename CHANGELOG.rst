@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.10.45
+=======
+
+* feature:``iam``: Update iam command to latest version
+* feature:``codepipeline``: Update codepipeline command to latest version
+* feature:``efs``: Update efs command to latest version
+
+
 1.10.44
 =======
 

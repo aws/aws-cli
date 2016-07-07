@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.10.46
+=======
+
+* feature:``config``: Update config command to latest version
+* feature:``ds``: Update ds command to latest version
+* feature:``opsworks``: Update opsworks command to latest version
+* feature:``servicecatalog``: Update servicecatalog command to latest version
+
+
 1.10.45
 =======
 

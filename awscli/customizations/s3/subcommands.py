@@ -27,6 +27,7 @@ from awscli.customizations.s3.filegenerator import FileGenerator
 from awscli.customizations.s3.fileinfo import TaskInfo, FileInfo
 from awscli.customizations.s3.filters import create_filter
 from awscli.customizations.s3.s3handler import S3Handler, S3StreamHandler
+from awscli.customizations.s3.s3handler import S3TransferStreamHandler
 from awscli.customizations.s3.utils import find_bucket_key, uni_print, \
     AppendFilter, find_dest_path_comp_key, human_readable_size, \
     RequestParamsMapper
@@ -936,8 +937,8 @@ class CommandArchitecture(object):
         s3handler = S3Handler(self.session, self.parameters,
                               runtime_config=self._runtime_config,
                               result_queue=result_queue)
-        s3_stream_handler = S3StreamHandler(self.session, self.parameters,
-                                            result_queue=result_queue)
+        s3_stream_handler = S3TransferStreamHandler(
+            self.session, self.parameters, result_queue=result_queue)
 
         sync_strategies = self.choose_sync_strategies()
 

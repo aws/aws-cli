@@ -26,7 +26,7 @@ from awscli.customizations.s3.fileformat import FileFormat
 from awscli.customizations.s3.filegenerator import FileGenerator
 from awscli.customizations.s3.fileinfo import TaskInfo, FileInfo
 from awscli.customizations.s3.filters import create_filter
-from awscli.customizations.s3.s3handler import S3Handler, S3StreamHandler
+from awscli.customizations.s3.s3handler import S3Handler
 from awscli.customizations.s3.s3handler import S3TransferStreamHandler
 from awscli.customizations.s3.utils import find_bucket_key, uni_print, \
     AppendFilter, find_dest_path_comp_key, human_readable_size, \

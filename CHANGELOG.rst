@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.10.47
+=======
+
+* feature:Credential Provider: Add support for ECS metadata credential provider.
+* feature:``dms``: Update dms command to latest version
+* feature:``rds``: Update rds command to latest version
+* feature:``efs``: Remove preview status from ``aws efs`` command
+* feature:``ecs``: Update ecs command to latest version
+
+
 1.10.46
 =======
 

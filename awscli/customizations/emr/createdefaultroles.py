@@ -148,7 +148,7 @@ class CreateDefaultRoles(Command):
 
         # Check if the default EC2 Role for EMR exists.
         role_name = EC2_ROLE_NAME
-        if self._check_if_role_exists(role_name, parsed_globals):
+        if self.check_if_role_exists(role_name, parsed_globals):
             LOG.debug('Role ' + role_name + ' exists.')
         else:
             LOG.debug('Role ' + role_name + ' does not exist.'
@@ -160,8 +160,8 @@ class CreateDefaultRoles(Command):
 
         # Check if the default EC2 Instance Profile for EMR exists.
         instance_profile_name = EC2_ROLE_NAME
-        if self._check_if_instance_profile_exists(instance_profile_name,
-                                                  parsed_globals):
+        if self.check_if_instance_profile_exists(instance_profile_name,
+                                                 parsed_globals):
             LOG.debug('Instance Profile ' + instance_profile_name + ' exists.')
         else:
             LOG.debug('Instance Profile ' + instance_profile_name +
@@ -173,7 +173,7 @@ class CreateDefaultRoles(Command):
 
         # Check if the default EMR Role exists.
         role_name = EMR_ROLE_NAME
-        if self._check_if_role_exists(role_name, parsed_globals):
+        if self.check_if_role_exists(role_name, parsed_globals):
             LOG.debug('Role ' + role_name + ' exists.')
         else:
             LOG.debug('Role ' + role_name + ' does not exist.'
@@ -215,14 +215,15 @@ class CreateDefaultRoles(Command):
             list.append({'Role': response['Role'], 'RolePolicy': policy})
             return list
 
-    def _check_if_role_exists(self, role_name, parsed_globals):
+    def check_if_role_exists(self, role_name, parsed_globals):
         parameters = {'RoleName': role_name}
         try:
             self._call_iam_operation('GetRole', parameters, parsed_globals)
-        except Exception as e:
-            role_not_found_msg = 'The role with name ' + role_name +\
-                                 ' cannot be found'
-            if role_not_found_msg in e.error_message:
+        except botocore.exceptions.ClientError as e:
+            role_not_found_msg = \
+                'The role with name %s cannot be found.' % role_name
+            error_message = e.response.get('Error', {}).get('Message', '')
+            if role_not_found_msg in error_message:
                 # No role error.
                 return False
             else:
@@ -231,17 +232,17 @@ class CreateDefaultRoles(Command):
 
         return True
 
-    def _check_if_instance_profile_exists(self, instance_profile_name,
-                                          parsed_globals):
+    def check_if_instance_profile_exists(self, instance_profile_name,
+                                         parsed_globals):
         parameters = {'InstanceProfileName': instance_profile_name}
         try:
             self._call_iam_operation('GetInstanceProfile', parameters,
                                      parsed_globals)
-        except Exception as e:
-            profile_not_found_msg = 'Instance Profile ' +\
-                                    instance_profile_name +\
-                                    ' cannot be found.'
-            if profile_not_found_msg in e.error_message:
+        except botocore.exceptions.ClientError as e:
+            profile_not_found_msg = \
+                'Instance Profile %s cannot be found.' % instance_profile_name
+            error_message = e.response.get('Error', {}).get('Message')
+            if profile_not_found_msg in error_message:
                 # No instance profile error.
                 return False
             else:

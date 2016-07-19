@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.10.48
+=======
+
+* feature:``devicefarm``: Update devicefarm command to latest version
+* feature:``ssm``: Update ssm command to latest version
+* bugfix:emr: Fixes a bug in exception handling which was causing create-default-roles to break.
+
+
 1.10.47
 =======
 

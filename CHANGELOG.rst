@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.10.49
+=======
+
+* feature:``cloudformation``: Update cloudformation command to latest version
+* feature:``elastictranscoder``: Update elastictranscoder command to latest version
+* feature:``config``: Update config command to latest version
+* feature:``application-autoscaling``: Update application-autoscaling command to latest version
+* feature:``acm``: Update acm command to latest version
+
+
 1.10.48
 =======
 

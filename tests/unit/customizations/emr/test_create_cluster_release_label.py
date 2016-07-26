@@ -984,6 +984,46 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
         self.assert_params_for_cmd(cmd, result)
 
+    def test_instance_group_with_autoscaling_policy(self):
+        cmd = (self.prefix + '--release-label emr-4.2.0 --auto-scaling-role EMR_AUTOSCALING_ROLE --instance-groups ' +
+               CONSTANTS.INSTANCE_GROUPS_WITH_AUTOSCALING_POLICY_ARG)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceGroups': CONSTANTS.INSTANCE_GROUPS_WITH_AUTOSCALING_POLICY
+                              },
+                'ReleaseLabel': 'emr-4.2.0',
+                'AutoScalingRole': 'EMR_AUTOSCALING_ROLE',
+                'VisibleToAllUsers': True,
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_group_with_autoscaling_policy_missing_autoscaling_role(self):
+        cmd = (self.prefix + '--release-label emr-4.2.0 --instance-groups ' +
+               CONSTANTS.INSTANCE_GROUPS_WITH_AUTOSCALING_POLICY_ARG)
+        expected_error_msg = (
+            '\naws: error: Must specify --auto-scaling-role when'
+            ' configuring an AutoScaling policy for an instance group.\n')
+        result = self.run_cmd(cmd, 255)
+        self.assertEquals(expected_error_msg, result[1])
+        
+    def test_scale_down_behavior(self):
+        cmd = (self.prefix + '--release-label emr-4.0.0 --scale-down-behavior TERMINATE_AT_INSTANCE_HOUR '
+                             '--instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': DEFAULT_INSTANCES,
+                'ReleaseLabel': 'emr-4.0.0',
+                'VisibleToAllUsers': True,
+                'ScaleDownBehavior': 'TERMINATE_AT_INSTANCE_HOUR',
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
     def test_instance_group_with_ebs_config(self):
         cmd = (self.prefix + '--release-label emr-4.2.0 --instance-groups ' +
                CONSTANTS.INSTANCE_GROUPS_WITH_EBS_VOLUME_ARG)

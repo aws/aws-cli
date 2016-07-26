@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.10.50
+=======
+
+* feature:``iot``: Update iot command to latest version
+* feature:``s3``: Update s3 command to latest version
+
+
 1.10.49
 =======
 

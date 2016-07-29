@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.10.51
+=======
+
+* feature:``sts``: Update sts command to latest version
+* feature:``ds``: Update ds command to latest version
+* feature:``ec2``: Update ec2 command to latest version
+* feature:``es``: Update es command to latest version
+* feature:``apigateway``: Update apigateway command to latest version
+* feature:``cognito-idp``: Update cognito-idp command to latest version
+* feature:``ses``: Update ses command to latest version
+
+
 1.10.50
 =======
 

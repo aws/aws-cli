@@ -336,3 +336,8 @@ CREATE_CLUSTER_DESCRIPTION = (
     'Values for variables Instance Profile (under EC2 Attributes),'
     ' Service Role, Log URI, and Key Name (under EC2 Attributes) can be set in'
     ' the AWS CLI config file using the "aws configure set" command.\n')
+
+SECURITY_CONFIG = (
+    '<p>The name of a security configuration in the AWS account. '
+    'Use <code>list-security-configurations</code> to get a list of available '
+    'security configurations.</p>')

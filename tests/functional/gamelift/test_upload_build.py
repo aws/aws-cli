@@ -73,6 +73,55 @@ class TestUploadBuild(BaseAWSCommandParamsTest):
             stdout)
         self.assertIn('Build ID: myid', stdout)
 
+    def test_upload_build_with_operating_system_param(self):
+        self.files.create_file('tmpfile', 'Some contents')
+        cmdline = self.prefix
+        cmdline += ' --name mybuild --build-version myversion'
+        cmdline += ' --build-root %s' % self.files.rootdir
+        cmdline += ' --operating-system WINDOWS_2012'
+
+        self.parsed_responses = [
+            {'Build': {'BuildId': 'myid'}},
+            {'StorageLocation': {
+                'Bucket': 'mybucket',
+                'Key': 'mykey'},
+             'UploadCredentials': {
+                'AccessKeyId': 'myaccesskey',
+                'SecretAccessKey': 'mysecretkey',
+                'SessionToken': 'mytoken'}},
+            {}
+        ]
+
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
+
+        # First the build is created.
+        self.assertEqual(len(self.operations_called), 3)
+        self.assertEqual(self.operations_called[0][0].name, 'CreateBuild')
+        self.assertEqual(
+            self.operations_called[0][1],
+            {'Name': 'mybuild', 'Version': 'myversion',
+             'OperatingSystem': 'WINDOWS_2012'}
+        )
+
+        # Second the credentials are requested.
+        self.assertEqual(
+            self.operations_called[1][0].name, 'RequestUploadCredentials')
+        self.assertEqual(
+            self.operations_called[1][1], {'BuildId': 'myid'})
+
+        # The build is then uploaded to S3.
+        self.assertEqual(self.operations_called[2][0].name, 'PutObject')
+        self.assertEqual(
+            self.operations_called[2][1],
+            {'Body': mock.ANY, 'Bucket': 'mybucket', 'Key': 'mykey'}
+        )
+
+        # Check the output of the command.
+        self.assertIn(
+            'Successfully uploaded %s to AWS GameLift' % self.files.rootdir,
+            stdout)
+        self.assertIn('Build ID: myid', stdout)
+
     def test_upload_build_with_empty_directory(self):
         cmdline = self.prefix
         cmdline += ' --name mybuild --build-version myversion'

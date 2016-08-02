@@ -126,6 +126,21 @@ class TestGetGameSessionLogCommand(unittest.TestCase):
         # Ensure the temporary zipfile is deleted at the end.
         self.assertFalse(os.path.exists(tempfile_path))
 
+    def test_upload_build_when_operating_system_is_provided(self):
+        operating_system = 'WINDOWS_2012'
+        self.file_creator.create_file('tmpfile', 'Some contents')
+        self.args = [
+            '--name', self.build_name, '--build-version', self.build_version,
+            '--build-root', self.build_root,
+            '--operating-system', operating_system
+        ]
+        self.cmd(self.args, self.global_args)
+
+        # Ensure the GameLift client was called correctly.
+        self.gamelift_client.create_build.assert_called_once_with(
+            Name=self.build_name, Version=self.build_version,
+            OperatingSystem=operating_system)
+
     def test_error_message_when_directory_is_empty(self):
         with mock.patch('sys.stderr', six.StringIO()) as mock_stderr:
             self.cmd(self.args, self.global_args)

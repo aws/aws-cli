@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.10.52
+=======
+
+* feature:``rds``: Update rds command to latest version
+* feature:``route53domains``: Update route53domains command to latest version
+* feature:``cloudwatch``: Update cloudwatch command to latest version
+* feature:``machinelearning``: Update machinelearning command to latest version
+* feature:``meteringmarketplace``: Update meteringmarketplace command to latest version
+* feature:``iot``: Update iot command to latest version
+* feature:``application-autoscaling``: Update application-autoscaling command to latest version
+* feature:``emr``: Update emr command to latest version
+* feature:``ds``: Update ds command to latest version
+* feature:``logs``: Update logs command to latest version
+
+
 1.10.51
 =======
 

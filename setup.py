@@ -6,11 +6,11 @@ from setuptools import setup, find_packages
 import awscli
 
 
-requires = ['botocore==1.4.41',
+requires = ['botocore==1.4.42',
             'colorama>=0.2.5,<=0.3.7',
             'docutils>=0.10',
             'rsa>=3.1.2,<=3.5.0',
-            's3transfer==0.0.1']
+            's3transfer>=0.1.0,<0.2.0']
 
 
 if sys.version_info[:2] == (2, 6):

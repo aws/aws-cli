@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.10.53
+=======
+
+* feature:``lambda``: Update lambda command to latest version
+* feature:``gamelift``: Update gamelift command to latest version
+* feature:``rds``: Update rds command to latest version
+
+
 1.10.52
 =======
 

@@ -13,23 +13,52 @@
 from awscli.testutils import unittest, aws
 
 
-class BaseEC2Test(unittest.TestCase):
-    def assert_dry_run_success(self, command):
-        result = aws(command)
-        expected_response = ('Request would have succeeded, '
-                             'but DryRun flag is set.')
-        self.assertIn(expected_response, result.stderr)
-
-
-class TestDescribeInstances(BaseEC2Test):
+class TestDescribeInstances(unittest.TestCase):
     def setUp(self):
-        self.prefix = 'ec2 describe-instances --region us-west-2 --dry-run'
+        self.prefix = 'ec2 describe-instances --region us-west-2'
 
     def test_describe_instances_with_id(self):
-        command = self.prefix + ' --instance-ids id-example'
-        self.assert_dry_run_success(command)
+        command = self.prefix + ' --instance-ids malformed-id'
+        result = aws(command)
+        self.assertIn('InvalidInstanceID.Malformed', result.stderr)
 
     def test_describe_instances_with_filter(self):
-        command = self.prefix + ' --filters Name=private-dns-name,Values='
-        command += 'sample-dns-name'
-        self.assert_dry_run_success(command)
+        command = self.prefix + ' --filters Name=instance-id,Values='
+        command += 'malformed-id'
+        result = aws(command)
+        reservations = result.json["Reservations"]
+        self.assertEqual(len(reservations), 0)
+
+
+class TestDescribeSnapshots(unittest.TestCase):
+    def setUp(self):
+        self.prefix = 'ec2 describe-snapshots --region us-west-2'
+
+    def test_describe_snapshot_with_snapshot_id(self):
+        command = self.prefix + ' --snapshot-ids malformed-id'
+        result = aws(command)
+        self.assertIn('InvalidParameterValue', result.stderr)
+
+    def test_describe_snapshots_with_filter(self):
+        command = self.prefix
+        command += ' --filters Name=snapshot-id,Values=malformed-id'
+        result = aws(command)
+        snapshots = result.json['Snapshots']
+        self.assertEqual(len(snapshots), 0)
+
+
+class TestDescribeVolumes(unittest.TestCase):
+    def setUp(self):
+        self.prefix = 'ec2 describe-volumes --region us-west-2'
+
+    def test_describe_volumes_with_volume_id(self):
+        command = self.prefix + ' --volume-ids malformed-id'
+        result = aws(command)
+        self.assertIn('InvalidParameterValue', result.stderr)
+
+    def test_describe_volumes_with_filter(self):
+        command = self.prefix
+        command += ' --filters Name=volume-id,Values=malformed-id'
+        result = aws(command)
+        volumes = result.json['Volumes']
+        self.assertEqual(len(volumes), 0)

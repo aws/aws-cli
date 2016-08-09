@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.10.54
+=======
+
+* feature:``ecr``: Update ecr command to latest version
+* feature:``cloudfront``: Update cloudfront command to latest version
+* feature:``marketplacecommerceanalytics``: Update marketplacecommerceanalytics command to latest version
+
+
 1.10.53
 =======
 

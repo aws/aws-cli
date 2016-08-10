@@ -59,3 +59,19 @@ class TestTransferConfig(unittest.TestCase):
         runtime_config = self.build_config_with(multipart_threshold="10MB")
         self.assertEqual(runtime_config['multipart_threshold'],
                          10 * 1024 * 1024)
+
+
+class TestConvertToS3TransferConfig(unittest.TestCase):
+    def test_convert(self):
+        runtime_config = {
+            'multipart_threshold': 1,
+            'multipart_chunksize': 2,
+            'max_concurrent_requests': 3,
+            'max_queue_size': 4
+        }
+        result = transferconfig.create_transfer_config_from_runtime_config(
+            runtime_config)
+        self.assertEqual(result.multipart_threshold, 1)
+        self.assertEqual(result.multipart_chunksize, 2)
+        self.assertEqual(result.max_request_concurrency, 3)
+        self.assertEqual(result.max_request_queue_size, 4)

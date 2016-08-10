@@ -289,6 +289,19 @@ def capture_output():
             yield CapturedOutput(stdout, stderr)
 
 
+@contextlib.contextmanager
+def capture_input(input_bytes=b''):
+    input_data = six.BytesIO(input_bytes)
+    if six.PY3:
+        mock_object = mock.Mock()
+        mock_object.buffer = input_data
+    else:
+        mock_object = input_data
+
+    with mock.patch('sys.stdin', mock_object):
+        yield input_data
+
+
 class BaseAWSCommandParamsTest(unittest.TestCase):
     maxDiff = None
 

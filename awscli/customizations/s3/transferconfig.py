@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from s3transfer.manager import TransferConfig
+
 from awscli.customizations.s3.utils import human_readable_to_bytes
 # If the user does not specify any overrides,
 # these are the default values we use for the s3 transfer
@@ -74,3 +76,26 @@ class RuntimeConfig(object):
     def _error_positive_value(self, name, value):
         raise InvalidConfigError(
             "Value for %s must be a positive integer: %s" % (name, value))
+
+
+def create_transfer_config_from_runtime_config(runtime_config):
+    """
+    Creates an equivalent s3transfer TransferConfig
+
+    :type runtime_config: dict
+    :argument runtime_config: A valid RuntimeConfig-generated dict.
+
+    :returns: A TransferConfig with the same configuration as the runtime
+        config.
+    """
+    translation_map = {
+        'max_concurrent_requests': 'max_request_concurrency',
+        'max_queue_size': 'max_request_queue_size'
+    }
+    kwargs = {}
+
+    for key, value in runtime_config.items():
+        new_key = translation_map.get(key, key)
+        kwargs[new_key] = value
+
+    return TransferConfig(**kwargs)

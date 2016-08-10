@@ -37,7 +37,7 @@ except ImportError:
     ZIP_COMPRESSION_MODE = zipfile.ZIP_STORED
 
 
-class BinaryStdout(object):
+class NonTranslatedStdout(object):
     """ This context manager sets the line-end translation mode for stdout.
 
     It is deliberately set to binary mode so that `\r` does not get added to

@@ -22,7 +22,7 @@ from botocore.auth import SigV4Auth
 from botocore.awsrequest import AWSRequest
 from botocore.compat import urlsplit
 from awscli.customizations.commands import BasicCommand
-from awscli.compat import BinaryStdout
+from awscli.compat import NonTranslatedStdout
 
 logger = logging.getLogger('botocore.credentials')
 
@@ -110,7 +110,7 @@ class CodeCommitGetCommand(BasicCommand):
             username += "%" + self._session.get_credentials().token
         # Python will add a \r to the line ending for a text stdout in Windows.
         # Git does not like the \r, so switch to binary
-        with BinaryStdout() as binary_stdout:
+        with NonTranslatedStdout() as binary_stdout:
             binary_stdout.write('username={0}\n'.format(username))
             logger.debug('username\n%s', username)
             binary_stdout.write('password={0}\n'.format(signature))

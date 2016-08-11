@@ -27,6 +27,7 @@ from awscli.customizations.s3.syncstrategy.base import \
 from awscli.testutils import unittest, BaseAWSHelpOutputTest, \
     BaseAWSCommandParamsTest, FileCreator
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files
+from awscli.customizations.s3.transferconfig import RuntimeConfig
 from awscli.compat import StringIO
 
 
@@ -354,6 +355,28 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         self.patch_make_request()
         cmd_arc.run()
         output_str = "(dryrun) upload: %s to %s" % (rel_local_file, s3_file)
+        self.assertIn(output_str, self.output.getvalue())
+
+    @patch('sys.stdin', new_callable=StringIO)
+    def test_run_cp_streaming_put(self, mock_stdin):
+        s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
+        local_file = self.loc_files[0]
+        mock_stdin.write(open(local_file).read())
+        filters = [['--include', '*']]
+        params = {'dir_op': False, 'dryrun': True, 'quiet': False,
+                  'src': '-', 'dest': s3_file, 'filters': filters,
+                  'paths_type': 'locals3', 'region': 'us-east-1',
+                  'endpoint_url': None, 'verify_ssl': None,
+                  'follow_symlinks': True, 'page_size': None,
+                  'is_stream': True}
+        config = RuntimeConfig().build_config(
+            multipart_threshold=1, multipart_chunksize=2)
+        cmd_arc = CommandArchitecture(
+            self.session, 'cp', params, runtime_config=config)
+        cmd_arc.create_instructions()
+        self.patch_make_request()
+        cmd_arc.run()
+        output_str = "Completed 1 part(s) with ... file(s) remaining"
         self.assertIn(output_str, self.output.getvalue())
 
     def test_error_on_same_line_as_status(self):

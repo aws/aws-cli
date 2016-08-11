@@ -1125,5 +1125,38 @@ class TestS3HandlerInitialization(unittest.TestCase):
         self.assertEqual(handler.multi_threshold, 10000)
 
 
+class TestS3StreamHandlerInitialization(unittest.TestCase):
+
+    def setUp(self):
+        self.arbitrary_params = {'region': 'us-west-2'}
+
+    def test_runtime_config_overlay_plumbed_through(self):
+        """Streaming-specific options are overlaid on given config."""
+        config = runtime_config(
+            multipart_chunksize=1000,
+            multipart_threshold=10000)
+        handler = S3StreamHandler(session=None, params=self.arbitrary_params,
+                                  runtime_config=config)
+
+        self.assertEqual(handler.chunksize, 1000)
+        self.assertEqual(handler.multi_threshold, 10000)
+        self.assertEqual(
+            handler.executor.queue.maxsize,
+            S3StreamHandler.MAX_EXECUTOR_QUEUE_SIZE)
+        self.assertEqual(
+            handler.executor.num_threads, S3StreamHandler.EXECUTOR_NUM_THREADS)
+
+    def test_runtime_config_default_overlay_plumbed_through(self):
+        """Streaming-specific options are overlaid on default config."""
+        handler = S3StreamHandler(session=None, params=self.arbitrary_params,
+                                  runtime_config=runtime_config())
+
+        self.assertEqual(
+            handler.executor.queue.maxsize,
+            S3StreamHandler.MAX_EXECUTOR_QUEUE_SIZE)
+        self.assertEqual(
+            handler.executor.num_threads, S3StreamHandler.EXECUTOR_NUM_THREADS)
+
+
 if __name__ == "__main__":
     unittest.main()

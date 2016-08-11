@@ -16,6 +16,7 @@ from collections import namedtuple
 from s3transfer.subscribers import BaseSubscriber
 
 from awscli.customizations.s3.utils import relative_path
+from awscli.customizations.s3.utils import WarningResult
 
 
 LOGGER = logging.getLogger(__name__)
@@ -121,3 +122,77 @@ class CopyResultSubscriber(BaseResultSubscriber):
         src = 's3://' + copy_source['Bucket'] + '/' + copy_source['Key']
         dest = 's3://' + call_args.bucket + '/' + call_args.key
         return src, dest
+
+
+class ResultRecorder(object):
+    """Records and track transfer statistics based on results receieved"""
+    def __init__(self):
+        self.bytes_transferred = 0
+        self.bytes_failed_to_transfer = 0
+        self.files_transferred = 0
+        self.files_failed = 0
+        self.files_warned = 0
+        self.expected_bytes_transferred = 0
+        self.expected_files_transferred = 0
+
+        # Keys: result from _get_progress_cache_key()
+        # Values: number of bytes left for a particular transfer
+        self._progress_remaining_cache = {}
+
+        self._result_handler_map = {
+            QueuedResult: self._record_queued_result,
+            ProgressResult: self._record_progress_result,
+            SuccessResult: self._record_success_result,
+            FailureResult: self._record_failure_result,
+            WarningResult: self._record_warning_result,
+        }
+
+    def record_result(self, result):
+        """Record the result of an individual Result object"""
+        self._result_handler_map.get(type(result), self._record_noop)(
+            result=result)
+
+    def _get_progress_cache_key(self, result):
+        return ':'.join([result.transfer_type, result.src, result.dest])
+
+    def _pop_result_from_caches(self, result):
+        total_progress = self._progress_cache.pop(
+            self._get_progress_cache_key(result))
+        total_file_size = self._total_size_cache.pop(
+            self._get_progress_cache_key(result))
+        return total_progress, total_file_size
+
+    def _record_noop(self, **kwargs):
+        # If the result does not have a handler, then do nothing with it.
+        pass
+
+    def _record_queued_result(self, result, **kwargs):
+        self._progress_remaining_cache[
+            self._get_progress_cache_key(result)] = result.total_transfer_size
+        self.expected_files_transferred += 1
+        self.expected_bytes_transferred += result.total_transfer_size
+
+    def _record_progress_result(self, result, **kwargs):
+        self._progress_remaining_cache[
+            self._get_progress_cache_key(result)] -= result.bytes_transferred
+        self.bytes_transferred += result.bytes_transferred
+
+    def _record_success_result(self, result, **kwargs):
+        self._progress_remaining_cache.pop(
+            self._get_progress_cache_key(result))
+        self.files_transferred += 1
+
+    def _record_failure_result(self, result, **kwargs):
+        # If there was a failure, we want to account for the failure in
+        # the count for bytes transferred by just adding on the remaining bytes
+        # that did not get transferred.
+        progress_left = self._progress_remaining_cache.pop(
+            self._get_progress_cache_key(result))
+
+        self.bytes_failed_to_transfer += progress_left
+
+        self.files_failed += 1
+        self.files_transferred += 1
+
+    def _record_warning_result(self, **kwargs):
+        self.files_warned += 1

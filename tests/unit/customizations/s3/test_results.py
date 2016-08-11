@@ -21,7 +21,9 @@ from awscli.customizations.s3.results import UploadStreamResultSubscriber
 from awscli.customizations.s3.results import DownloadResultSubscriber
 from awscli.customizations.s3.results import DownloadStreamResultSubscriber
 from awscli.customizations.s3.results import CopyResultSubscriber
+from awscli.customizations.s3.results import ResultRecorder
 from awscli.customizations.s3.utils import relative_path
+from awscli.customizations.s3.utils import WarningResult
 
 
 class FakeTransferFuture(object):
@@ -200,3 +202,235 @@ class TestCopyResultSubscriber(TestUploadResultSubscriber):
     def _get_transfer_future_call_args(self):
         return FakeTransferFutureCallArgs(
             copy_source=self.copy_source, key=self.key, bucket=self.bucket)
+
+
+class ResultRecorderTest(unittest.TestCase):
+    def setUp(self):
+        self.transfer_type = 'upload'
+        self.src = 'file'
+        self.dest = 's3://mybucket/mykey'
+        self.total_transfer_size = 20 * (1024 ** 1024)  # 20MB
+        self.warning_message = 'a dummy warning message'
+        self.exception_message = 'a dummy exception message'
+        self.exception = Exception(self.exception_message)
+        self.result_recorder = ResultRecorder()
+
+    def test_queued_result(self):
+        self.result_recorder.record_result(
+            QueuedResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, total_transfer_size=self.total_transfer_size
+            )
+        )
+        self.assertEqual(
+            self.result_recorder.expected_bytes_transferred,
+            self.total_transfer_size
+        )
+        self.assertEqual(self.result_recorder.expected_files_transferred, 1)
+
+    def test_multiple_queued_results(self):
+        num_results = 5
+        for i in range(num_results):
+            self.result_recorder.record_result(
+                QueuedResult(
+                    transfer_type=self.transfer_type,
+                    src=self.src + str(i),
+                    dest=self.dest + str(i),
+                    total_transfer_size=self.total_transfer_size
+                )
+            )
+
+        self.assertEqual(
+            self.result_recorder.expected_bytes_transferred,
+            num_results * self.total_transfer_size
+        )
+        self.assertEqual(
+            self.result_recorder.expected_files_transferred, num_results)
+
+    def test_progress_result(self):
+        self.result_recorder.record_result(
+            QueuedResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, total_transfer_size=self.total_transfer_size
+            )
+        )
+
+        bytes_transferred = 1024 * 1024  # 1MB
+        self.result_recorder.record_result(
+            ProgressResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, bytes_transferred=bytes_transferred,
+                total_transfer_size=self.total_transfer_size
+            )
+        )
+
+        self.assertEqual(
+            self.result_recorder.bytes_transferred, bytes_transferred)
+
+    def test_multiple_progress_results(self):
+        self.result_recorder.record_result(
+            QueuedResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, total_transfer_size=self.total_transfer_size
+            )
+        )
+
+        bytes_transferred = 1024 * 1024  # 1MB
+        num_results = 5
+        for _ in range(num_results):
+            self.result_recorder.record_result(
+                ProgressResult(
+                    transfer_type=self.transfer_type, src=self.src,
+                    dest=self.dest, bytes_transferred=bytes_transferred,
+                    total_transfer_size=self.total_transfer_size
+                )
+            )
+
+        self.assertEqual(
+            self.result_recorder.bytes_transferred,
+            num_results * bytes_transferred
+        )
+
+    def test_success_result(self):
+        self.result_recorder.record_result(
+            QueuedResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, total_transfer_size=self.total_transfer_size
+            )
+        )
+
+        self.result_recorder.record_result(
+            SuccessResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest
+            )
+        )
+        self.assertEqual(self.result_recorder.files_transferred, 1)
+        self.assertEqual(self.result_recorder.files_failed, 0)
+
+    def test_multiple_success_results(self):
+        num_results = 5
+        for i in range(num_results):
+            self.result_recorder.record_result(
+                QueuedResult(
+                    transfer_type=self.transfer_type,
+                    src=self.src + str(i),
+                    dest=self.dest + str(i),
+                    total_transfer_size=self.total_transfer_size
+                )
+            )
+
+        for i in range(num_results):
+            self.result_recorder.record_result(
+                SuccessResult(
+                    transfer_type=self.transfer_type,
+                    src=self.src + str(i),
+                    dest=self.dest + str(i),
+                )
+            )
+
+        self.assertEqual(self.result_recorder.files_transferred, num_results)
+        self.assertEqual(self.result_recorder.files_failed, 0)
+
+    def test_failure_result(self):
+        self.result_recorder.record_result(
+            QueuedResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, total_transfer_size=self.total_transfer_size
+            )
+        )
+
+        self.result_recorder.record_result(
+            FailureResult(
+                transfer_type=self.transfer_type, src=self.src, dest=self.dest,
+                exception=self.exception
+            )
+        )
+
+        self.assertEqual(self.result_recorder.files_transferred, 1)
+        self.assertEqual(self.result_recorder.files_failed, 1)
+        self.assertEqual(
+            self.result_recorder.bytes_failed_to_transfer,
+            self.total_transfer_size)
+        self.assertEqual(self.result_recorder.bytes_transferred, 0)
+
+    def test_multiple_failure_results(self):
+        num_results = 5
+        for i in range(num_results):
+            self.result_recorder.record_result(
+                QueuedResult(
+                    transfer_type=self.transfer_type,
+                    src=self.src + str(i),
+                    dest=self.dest + str(i),
+                    total_transfer_size=self.total_transfer_size
+                )
+            )
+
+        for i in range(num_results):
+            self.result_recorder.record_result(
+                FailureResult(
+                    transfer_type=self.transfer_type,
+                    src=self.src + str(i),
+                    dest=self.dest + str(i),
+                    exception=self.exception
+                )
+            )
+
+        self.assertEqual(self.result_recorder.files_transferred, num_results)
+        self.assertEqual(self.result_recorder.files_failed, num_results)
+        self.assertEqual(
+            self.result_recorder.bytes_failed_to_transfer,
+            self.total_transfer_size * num_results)
+        self.assertEqual(self.result_recorder.bytes_transferred, 0)
+
+    def test_failure_result_mid_progress(self):
+        self.result_recorder.record_result(
+            QueuedResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, total_transfer_size=self.total_transfer_size
+            )
+        )
+
+        bytes_transferred = 1024 * 1024  # 1MB
+        self.result_recorder.record_result(
+            ProgressResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, bytes_transferred=bytes_transferred,
+                total_transfer_size=self.total_transfer_size
+            )
+        )
+
+        self.result_recorder.record_result(
+            FailureResult(
+                transfer_type=self.transfer_type, src=self.src, dest=self.dest,
+                exception=self.exception
+            )
+        )
+
+        self.assertEqual(self.result_recorder.files_transferred, 1)
+        self.assertEqual(self.result_recorder.files_failed, 1)
+        self.assertEqual(
+            self.result_recorder.bytes_failed_to_transfer,
+            self.total_transfer_size - bytes_transferred)
+        self.assertEqual(
+            self.result_recorder.bytes_transferred, bytes_transferred)
+
+    def test_warning_result(self):
+        self.result_recorder.record_result(
+            WarningResult(message=self.warning_message))
+        self.assertEqual(self.result_recorder.files_warned, 1)
+
+    def test_multiple_warning_results(self):
+        num_results = 5
+        for _ in range(num_results):
+            self.result_recorder.record_result(
+                WarningResult(message=self.warning_message))
+        self.assertEqual(self.result_recorder.files_warned, num_results)
+
+    def test_unknown_result_object(self):
+        self.result_recorder.record_result(object())
+        # Nothing should have been affected
+        self.assertEqual(self.result_recorder.bytes_transferred, 0)
+        self.assertEqual(self.result_recorder.expected_bytes_transferred, 0)
+        self.assertEqual(self.result_recorder.expected_files_transferred, 0)
+        self.assertEqual(self.result_recorder.files_transferred, 0)

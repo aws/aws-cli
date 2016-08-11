@@ -2,19 +2,6 @@
 CHANGELOG
 =========
 
-1.10.55
-=======
-
-* feature:``s3``: Add support for dualstack configuration
-* feature:``ecs``: Update ecs command to latest version
-* feature:``autoscaling``: Update autoscaling command to latest version
-* feature:``elbv2``: Update elbv2 command to latest version
-* feature:``kms``: Update kms command to latest version
-* feature:``kinesisanalytics``: Update kinesisanalytics command to latest version
-* feature:``snowball``: Update snowball command to latest version
-* feature:``elb``: Update elb command to latest version
-
-
 1.10.54
 =======
 

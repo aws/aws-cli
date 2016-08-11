@@ -651,7 +651,7 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
     def setUp(self):
         super(TestHowClientIsCreated, self).setUp()
         self.endpoint_creator_patch = mock.patch(
-            'botocore.args.EndpointCreator')
+            'botocore.client.EndpointCreator')
         self.endpoint_creator = self.endpoint_creator_patch.start()
         self.create_endpoint = \
                 self.endpoint_creator.return_value.create_endpoint

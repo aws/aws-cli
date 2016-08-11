@@ -318,6 +318,24 @@ class FileInfo(TaskInfo):
         RequestParamsMapper.map_copy_object_params(params, self.parameters)
         response_data = self.client.copy_object(**params)
 
+        if self.parameters['copy_acl']:
+            self.copy_acl()
+
+    def copy_acl(self):
+        """
+        Copies an object's ACL in s3 to the copied object in another location
+        in s3.
+        """
+
+        src_bucket, src_key = find_bucket_key(self.src)
+        bucket, key = find_bucket_key(self.dest)
+        src_acl = self.client.get_object_acl(Bucket=src_bucket, Key=src_key)
+        acl = {'Grants': src_acl['Grants'], 'Owner': src_acl['Owner']}
+
+        self.client.put_object_acl(
+            Bucket=bucket, Key=key, AccessControlPolicy=acl
+        )
+
     def delete(self):
         """
         Deletes the file from s3 or local.  The src file and type is used

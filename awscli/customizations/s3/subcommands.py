@@ -138,6 +138,15 @@ ACL = {'name': 'acl',
            'acl-overview.html#canned-acl">Canned ACL</a> for details')}
 
 
+COPY_ACL = {'name': 'copy-acl', 'action': 'store_true', 'dest': 'copy_acl',
+            'default': False, 'group_name': 'copy_acl',
+            'help_text': (
+                "Copies the ACL from the source object to the destination. "
+                "This will result in slower transfers, as it involves two "
+                "additional requests per object. This will override any ACL "
+                "set with the ``--acl`` or ``--grants`` options.")}
+
+
 GRANTS = {
     'name': 'grants', 'nargs': '+',
     'help_text': (
@@ -684,7 +693,8 @@ class CpCommand(S3TransferCommand):
             "or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
-                [METADATA, METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE]
+                [METADATA, METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE,
+                 COPY_ACL]
 
 
 class MvCommand(S3TransferCommand):
@@ -695,7 +705,7 @@ class MvCommand(S3TransferCommand):
             "or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS +\
-                [METADATA, METADATA_DIRECTIVE, RECURSIVE]
+                [METADATA, METADATA_DIRECTIVE, RECURSIVE, COPY_ACL]
 
 class RmCommand(S3TransferCommand):
     NAME = 'rm'
@@ -716,7 +726,7 @@ class SyncCommand(S3TransferCommand):
             "<LocalPath> or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
-                [METADATA, METADATA_DIRECTIVE]
+                [METADATA, METADATA_DIRECTIVE, COPY_ACL]
 
 
 class MbCommand(S3TransferCommand):

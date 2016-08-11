@@ -440,3 +440,24 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         self.assertIn(
             'Streaming currently is only compatible with non-recursive cp '
             'commands', stderr)
+
+    def test_with_copy_acl_option(self):
+        self.parsed_responses = [
+            # HeadObject
+            {"ContentLength": '0', 'LastModified': '00:00:00Z'},
+            # CopyObject
+            {"ContentLength": '0'},
+            # GetObjectAcl
+            {'ContentLength': '100', 'Grants': [], 'Owner': {}},
+            # PutObjectAcl
+            {'ContentLength': '0'}
+        ]
+        cmdline = ('%s s3://bucket/key.txt s3://bucket/key2.txt --copy-acl' %
+                   self.prefix)
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 4)
+        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
+        self.assertEqual(self.operations_called[2][0].name, 'GetObjectAcl')
+        self.assertEqual(self.operations_called[3][0].name, 'PutObjectAcl')
+

@@ -20,7 +20,8 @@ from s3transfer.manager import TransferManager
 
 from awscli.customizations.s3.utils import (
     find_chunksize, adjust_chunksize_to_upload_limits, MAX_UPLOAD_SIZE,
-    find_bucket_key, relative_path, PrintTask, create_warning)
+    find_bucket_key, relative_path, PrintTask, create_warning,
+    NonSeekableStream)
 from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3 import tasks
 from awscli.customizations.s3.transferconfig import RuntimeConfig, \
@@ -486,9 +487,10 @@ class S3TransferStreamHandler(BaseS3Handler):
         params = {}
         RequestParamsMapper.map_put_object_params(params, self.params)
 
+        fileobj = NonSeekableStream(binary_stdin)
         with manager:
             future = manager.upload(
-                fileobj=binary_stdin, bucket=bucket,
+                fileobj=fileobj, bucket=bucket,
                 key=key, extra_args=params, subscribers=subscribers)
 
             return self._process_transfer(future)

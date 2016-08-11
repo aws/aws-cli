@@ -757,3 +757,31 @@ class ProvideSizeSubscriber(BaseSubscriber):
 
     def on_queued(self, future, **kwargs):
         future.meta.provide_transfer_size(self.size)
+
+
+class NonSeekableStream(object):
+    """Wrap a file like object as a non seekable stream.
+
+    This class is used to wrap an existing file like object
+    such that it only has a ``.read()`` method.
+
+    There are some file like objects that aren't truly seekable
+    but appear to be.  For example, on windows, sys.stdin has
+    a ``seek()`` method, and calling ``seek(0)`` even appears
+    to work.  However, subsequent ``.read()`` calls will just
+    return an empty string.
+
+    Consumers of these file like object have no way of knowing
+    if these files are truly seekable or not, so this class
+    can be used to force non-seekable behavior when you know
+    for certain that a fileobj is non seekable.
+
+    """
+    def __init__(self, fileobj):
+        self._fileobj = fileobj
+
+    def read(self, amt=None):
+        if amt is None:
+            return self._fileobj.read()
+        else:
+            return self._fileobj.read(amt)

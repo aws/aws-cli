@@ -239,6 +239,8 @@ class CLIDriver(object):
                                            format_string=LOG_FORMAT)
             self.session.set_stream_logger('awscli', logging.DEBUG,
                                            format_string=LOG_FORMAT)
+            self.session.set_stream_logger('s3transfer', logging.DEBUG,
+                                           format_string=LOG_FORMAT)
             LOG.debug("CLI version: %s", self.session.user_agent())
             LOG.debug("Arguments entered to CLI: %s", sys.argv[1:])
 

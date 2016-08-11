@@ -16,14 +16,22 @@ import math
 import os
 import sys
 
+from s3transfer.manager import TransferManager
+
 from awscli.customizations.s3.utils import (
     find_chunksize, adjust_chunksize_to_upload_limits, MAX_UPLOAD_SIZE,
-    find_bucket_key, relative_path, PrintTask, create_warning)
+    find_bucket_key, relative_path, PrintTask, create_warning,
+    NonSeekableStream)
 from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3 import tasks
-from awscli.customizations.s3.transferconfig import RuntimeConfig
-from awscli.compat import six
+from awscli.customizations.s3.transferconfig import RuntimeConfig, \
+    create_transfer_config_from_runtime_config
+from awscli.customizations.s3.utils import RequestParamsMapper
+from awscli.customizations.s3.utils import StdoutBytesWriter
+from awscli.customizations.s3.utils import ProvideSizeSubscriber
+from awscli.customizations.s3.utils import uni_print
 from awscli.compat import queue
+from awscli.compat import binary_stdin
 
 
 LOGGER = logging.getLogger(__name__)
@@ -32,27 +40,17 @@ CommandResult = namedtuple('CommandResult',
                            ['num_tasks_failed', 'num_tasks_warned'])
 
 
-class S3Handler(object):
-    """
-    This class sets up the process to perform the tasks sent to it.  It
-    sources the ``self.executor`` from which threads inside the
-    class pull tasks from to complete.
-    """
-    MAX_IO_QUEUE_SIZE = 20
-
+class BaseS3Handler(object):
     def __init__(self, session, params, result_queue=None,
                  runtime_config=None):
         self.session = session
         if runtime_config is None:
             runtime_config = RuntimeConfig.defaults()
         self._runtime_config = runtime_config
-        # The write_queue has potential for optimizations, so the constant
-        # for maxsize is scoped to this class (as opposed to constants.py)
-        # so we have the ability to change this value later.
-        self.write_queue = queue.Queue(maxsize=self.MAX_IO_QUEUE_SIZE)
         self.result_queue = result_queue
         if not self.result_queue:
             self.result_queue = queue.Queue()
+
         self.params = {
             'dryrun': False, 'quiet': False, 'acl': None,
             'guess_mime_type': True, 'sse_c_copy_source': None,
@@ -71,6 +69,24 @@ class S3Handler(object):
         for key in self.params.keys():
             if key in params:
                 self.params[key] = params[key]
+
+
+class S3Handler(BaseS3Handler):
+    """
+    This class sets up the process to perform the tasks sent to it.  It
+    sources the ``self.executor`` from which threads inside the
+    class pull tasks from to complete.
+    """
+    MAX_IO_QUEUE_SIZE = 20
+
+    def __init__(self, session, params, result_queue=None,
+                 runtime_config=None):
+        super(S3Handler, self).__init__(
+            session, params, result_queue, runtime_config)
+        # The write_queue has potential for optimizations, so the constant
+        # for maxsize is scoped to this class (as opposed to constants.py)
+        # so we have the ability to change this value later.
+        self.write_queue = queue.Queue(maxsize=self.MAX_IO_QUEUE_SIZE)
         self.multi_threshold = self._runtime_config['multipart_threshold']
         self.chunksize = self._runtime_config['multipart_chunksize']
         LOGGER.debug("Using a multipart threshold of %s and a part size of %s",
@@ -367,169 +383,133 @@ class S3Handler(object):
         self.executor.submit(complete_multipart_upload_task)
 
 
-class S3StreamHandler(S3Handler):
+class S3TransferStreamHandler(BaseS3Handler):
     """
     This class is an alternative ``S3Handler`` to be used when the operation
     involves a stream since the logic is different when uploading and
     downloading streams.
     """
-    # This ensures that the number of multipart chunks waiting in the
-    # executor queue and in the threads is limited.
-    MAX_EXECUTOR_QUEUE_SIZE = 2
-    EXECUTOR_NUM_THREADS = 6
+    MAX_IN_MEMORY_CHUNKS = 6
 
     def __init__(self, session, params, result_queue=None,
-                 runtime_config=None):
-        if runtime_config is None:
-            # Rather than using the .defaults(), streaming
-            # has different default values so that it does not
-            # consume large amounts of memory.
-            runtime_config = RuntimeConfig().build_config(
-                max_queue_size=self.MAX_EXECUTOR_QUEUE_SIZE,
-                max_concurrent_requests=self.EXECUTOR_NUM_THREADS)
-        super(S3StreamHandler, self).__init__(session, params, result_queue,
-                                              runtime_config)
+                 runtime_config=None, manager=None):
+        super(S3TransferStreamHandler, self).__init__(
+            session, params, result_queue, runtime_config)
+        self.config = create_transfer_config_from_runtime_config(
+            self._runtime_config)
 
-    def _enqueue_tasks(self, files):
-        total_files = 0
-        total_parts = 0
-        for filename in files:
-            num_uploads = 1
-            # If uploading stream, it is required to read from the stream
-            # to determine if the stream needs to be multipart uploaded.
-            payload = None
-            if filename.operation_name == 'upload':
-                payload, is_multipart_task = \
-                    self._pull_from_stream(self.multi_threshold)
-            else:
-                # Set the file size for the ``FileInfo`` object since
-                # streams do not use a ``FileGenerator`` that usually
-                # determines the size.
-                filename.set_size_from_s3()
-                is_multipart_task = self._is_multipart_task(filename)
-            if is_multipart_task and not self.params['dryrun']:
-                # If we're in dryrun mode, then we don't need the
-                # real multipart tasks.  We can just use a BasicTask
-                # in the else clause below, which will print out the
-                # fact that it's transferring a file rather than
-                # the specific part tasks required to perform the
-                # transfer.
-                num_uploads = self._enqueue_multipart_tasks(filename, payload)
-            else:
-                task = tasks.BasicTask(
-                    session=self.session, filename=filename,
-                    parameters=self.params,
-                    result_queue=self.result_queue,
-                    payload=payload)
-                self.executor.submit(task)
-            total_files += 1
-            total_parts += num_uploads
-        return total_files, total_parts
+        # Restrict the maximum chunks to 1 per thread.
+        self.config.max_in_memory_upload_chunks = \
+            self.MAX_IN_MEMORY_CHUNKS
+        self.config.max_in_memory_download_chunks = \
+            self.MAX_IN_MEMORY_CHUNKS
 
-    def _pull_from_stream(self, amount_requested):
+        self._manager = manager
+
+    def call(self, files):
+        # There is only ever one file in a stream transfer.
+        file = files[0]
+        if self._manager is not None:
+            manager = self._manager
+        else:
+            manager = TransferManager(file.client, self.config)
+
+        if file.operation_name == 'upload':
+            bucket, key = find_bucket_key(file.dest)
+            return self._upload(manager, bucket, key)
+        elif file.operation_name == 'download':
+            bucket, key = find_bucket_key(file.src)
+            return self._download(manager, bucket, key)
+
+    def _download(self, manager, bucket, key):
         """
-        This function pulls data from stdin until it hits the amount
-        requested or there is no more left to pull in from stdin.  The
-        function wraps the data into a ``BytesIO`` object that is returned
-        along with a boolean telling whether the amount requested is
-        the amount returned.
+        Download the specified object and print it to stdout.
+
+        :type manager: s3transfer.manager.TransferManager
+        :param manager: The transfer manager to use for the download.
+
+        :type bucket: str
+        :param bucket: The bucket to download the object from.
+
+        :type key: str
+        :param key: The name of the key to download.
+
+        :return: A CommandResult representing the download status.
         """
-        stream_filein = sys.stdin
-        if six.PY3:
-            stream_filein = sys.stdin.buffer
-        payload = stream_filein.read(amount_requested)
-        payload_file = six.BytesIO(payload)
-        return payload_file, len(payload) == amount_requested
+        params = {}
+        # `download` performs the head_object as well, but the params are
+        # the same for both operations, so there's nothing missing here.
+        RequestParamsMapper.map_get_object_params(params, self.params)
 
-    def _enqueue_multipart_tasks(self, filename, payload=None):
-        num_uploads = 1
-        if filename.operation_name == 'upload':
-            num_uploads = self._enqueue_multipart_upload_tasks(filename,
-                                                               payload=payload)
-        elif filename.operation_name == 'download':
-            num_uploads = self._enqueue_range_download_tasks(filename)
-        return num_uploads
+        with manager:
+            future = manager.download(
+                fileobj=StdoutBytesWriter(), bucket=bucket,
+                key=key, extra_args=params)
 
-    def _enqueue_range_download_tasks(self, filename, remove_remote_file=False):
+            return self._process_transfer(future)
 
-        # Create the context for the multipart download.
-        num_downloads = int(filename.size / self.chunksize)
-        context = tasks.MultipartDownloadContext(num_downloads)
+    def _upload(self, manager, bucket, key):
+        """
+        Upload stdin using to the specified location.
 
-        # No file is needed for downloading a stream.  So just announce
-        # that it has been made since it is required for the context to
-        # begin downloading.
-        context.announce_file_created()
+        :type manager: s3transfer.manager.TransferManager
+        :param manager: The transfer manager to use for the upload.
 
-        # Submit download part tasks to the executor.
-        self._do_enqueue_range_download_tasks(
-            filename=filename, chunksize=self.chunksize,
-            num_downloads=num_downloads, context=context,
-            remove_remote_file=remove_remote_file
-        )
-        return num_downloads
+        :type bucket: str
+        :param bucket: The bucket to upload the stream to.
 
-    def _enqueue_multipart_upload_tasks(self, filename, payload=None):
-        # First we need to create a CreateMultipartUpload task,
-        # then create UploadTask objects for each of the parts.
-        # And finally enqueue a CompleteMultipartUploadTask.
-        if self.params['expected_size']:
+        :type key: str
+        :param key: The name of the key to upload the stream to.
+
+        :return: A CommandResult representing the upload status.
+        """
+        expected_size = self.params.get('expected_size', None)
+        subscribers = None
+        if expected_size is not None:
+            # `expected_size` comes in as a string
+            expected_size = int(expected_size)
+
+            # set the size of the transfer if we know it ahead of time.
+            subscribers = [ProvideSizeSubscriber(expected_size)]
+
+            # TODO: remove when this happens in s3transfer
             # If we have the expected size, we can calculate an appropriate
             # chunksize based on max parts and chunksize limits
-            chunksize = find_chunksize(int(self.params['expected_size']),
-                                       self.chunksize)
+            chunksize = find_chunksize(
+                expected_size, self.config.multipart_chunksize)
         else:
+            # TODO: remove when this happens in s3transfer
             # Otherwise, we can still adjust for chunksize limits
-            chunksize = adjust_chunksize_to_upload_limits(self.chunksize)
+            chunksize = adjust_chunksize_to_upload_limits(
+                self.config.multipart_chunksize)
+        self.config.multipart_chunksize = chunksize
 
-        num_uploads = '...'
+        params = {}
+        RequestParamsMapper.map_put_object_params(params, self.params)
 
-        # Submit a task to begin the multipart upload.
-        upload_context = self._enqueue_upload_start_task(
-            chunksize, num_uploads, filename)
+        fileobj = NonSeekableStream(binary_stdin)
+        with manager:
+            future = manager.upload(
+                fileobj=fileobj, bucket=bucket,
+                key=key, extra_args=params, subscribers=subscribers)
 
-        # Now submit a task to upload the initial chunk of data pulled
-        # from the stream that was used to determine if a multipart upload
-        # was needed.
-        self._enqueue_upload_single_part_task(
-            part_number=1, chunk_size=chunksize,
-            upload_context=upload_context, filename=filename,
-            task_class=tasks.UploadPartTask, payload=payload
-        )
+            return self._process_transfer(future)
 
-        # Submit tasks to upload the rest of the chunks of the data coming in
-        # from standard input.
-        num_uploads = self._enqueue_upload_tasks(
-            num_uploads, chunksize, upload_context,
-            filename, tasks.UploadPartTask
-        )
+    def _process_transfer(self, future):
+        """
+        Execute and process a transfer future.
 
-        # Submit a task to notify the multipart upload is complete.
-        self._enqueue_upload_end_task(filename, upload_context)
+        :type future: s3transfer.futures.TransferFuture
+        :param future: A future representing an S3 Transfer
 
-        return num_uploads
-
-    def _enqueue_upload_tasks(self, num_uploads, chunksize, upload_context,
-                              filename, task_class):
-        # The previous upload occured right after the multipart
-        # upload started for a stream.
-        num_uploads = 1
-        while True:
-            # Pull more data from standard input.
-            payload, is_remaining = self._pull_from_stream(chunksize)
-            # Submit an upload part task for the recently pulled data.
-            self._enqueue_upload_single_part_task(
-                part_number=num_uploads+1,
-                chunk_size=chunksize,
-                upload_context=upload_context,
-                filename=filename,
-                task_class=task_class,
-                payload=payload
-            )
-            num_uploads += 1
-            if not is_remaining:
-                break
-        # Once there is no more data left, announce to the context how
-        # many parts are being uploaded so it knows when it can quit.
-        upload_context.announce_total_parts(num_uploads)
-        return num_uploads
+        :return: A CommandResult representing the transfer status.
+        """
+        try:
+            future.result()
+            return CommandResult(0, 0)
+        except Exception as e:
+            LOGGER.debug('Exception caught during task execution: %s',
+                         str(e), exc_info=True)
+            # TODO: Update when S3Handler is refactored
+            uni_print("Transfer failed: %s \n" % str(e))
+            return CommandResult(1, 0)

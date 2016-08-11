@@ -25,9 +25,9 @@ from functools import partial
 from dateutil.parser import parse
 from dateutil.tz import tzlocal, tzutc
 from botocore.compat import unquote_str
+from s3transfer.subscribers import BaseSubscriber
 
-from awscli.compat import six
-from awscli.compat import PY3
+from awscli.compat import bytes_print
 from awscli.compat import queue
 
 LOGGER = logging.getLogger(__name__)
@@ -406,19 +406,21 @@ def uni_print(statement, out_file=None):
     out_file.flush()
 
 
-def bytes_print(statement):
+class StdoutBytesWriter(object):
     """
-    This function is used to properly write bytes to standard out.
+    This class acts as a file-like object that performs the bytes_print
+    function on write.
     """
-    if PY3:
-        if getattr(sys.stdout, 'buffer', None):
-            sys.stdout.buffer.write(statement)
-        else:
-            # If it is not possible to write to the standard out buffer.
-            # The next best option is to decode and write to standard out.
-            sys.stdout.write(statement.decode('utf-8'))
-    else:
-        sys.stdout.write(statement)
+    def __init__(self, stdout=None):
+        self._stdout = stdout
+
+    def write(self, b):
+        """
+        Writes data to stdout as bytes.
+
+        :param b: data to write
+        """
+        bytes_print(b, self._stdout)
 
 
 def guess_content_type(filename):
@@ -744,3 +746,42 @@ class RequestParamsMapper(object):
                                                   cli_params):
         cls._set_sse_c_request_params(request_params, cli_params)
         cls._set_sse_c_copy_source_request_params(request_params, cli_params)
+
+
+class ProvideSizeSubscriber(BaseSubscriber):
+    """
+    A subscriber which provides the transfer size before it's queued.
+    """
+    def __init__(self, size):
+        self.size = size
+
+    def on_queued(self, future, **kwargs):
+        future.meta.provide_transfer_size(self.size)
+
+
+class NonSeekableStream(object):
+    """Wrap a file like object as a non seekable stream.
+
+    This class is used to wrap an existing file like object
+    such that it only has a ``.read()`` method.
+
+    There are some file like objects that aren't truly seekable
+    but appear to be.  For example, on windows, sys.stdin has
+    a ``seek()`` method, and calling ``seek(0)`` even appears
+    to work.  However, subsequent ``.read()`` calls will just
+    return an empty string.
+
+    Consumers of these file like object have no way of knowing
+    if these files are truly seekable or not, so this class
+    can be used to force non-seekable behavior when you know
+    for certain that a fileobj is non seekable.
+
+    """
+    def __init__(self, fileobj):
+        self._fileobj = fileobj
+
+    def read(self, amt=None):
+        if amt is None:
+            return self._fileobj.read()
+        else:
+            return self._fileobj.read(amt)

@@ -25,9 +25,9 @@ from functools import partial
 from dateutil.parser import parse
 from dateutil.tz import tzlocal, tzutc
 from botocore.compat import unquote_str
-from s3transfer.subscribers import BaseSubscriber
 
-from awscli.compat import bytes_print
+from awscli.compat import six
+from awscli.compat import PY3
 from awscli.compat import queue
 
 LOGGER = logging.getLogger(__name__)
@@ -406,21 +406,19 @@ def uni_print(statement, out_file=None):
     out_file.flush()
 
 
-class StdoutBytesWriter(object):
+def bytes_print(statement):
     """
-    This class acts as a file-like object that performs the bytes_print
-    function on write.
+    This function is used to properly write bytes to standard out.
     """
-    def __init__(self, stdout=None):
-        self._stdout = stdout
-
-    def write(self, b):
-        """
-        Writes data to stdout as bytes.
-
-        :param b: data to write
-        """
-        bytes_print(b, self._stdout)
+    if PY3:
+        if getattr(sys.stdout, 'buffer', None):
+            sys.stdout.buffer.write(statement)
+        else:
+            # If it is not possible to write to the standard out buffer.
+            # The next best option is to decode and write to standard out.
+            sys.stdout.write(statement.decode('utf-8'))
+    else:
+        sys.stdout.write(statement)
 
 
 def guess_content_type(filename):
@@ -746,14 +744,3 @@ class RequestParamsMapper(object):
                                                   cli_params):
         cls._set_sse_c_request_params(request_params, cli_params)
         cls._set_sse_c_copy_source_request_params(request_params, cli_params)
-
-
-class ProvideSizeSubscriber(BaseSubscriber):
-    """
-    A subscriber which provides the transfer size before it's queued.
-    """
-    def __init__(self, size):
-        self.size = size
-
-    def on_queued(self, future, **kwargs):
-        future.meta.provide_transfer_size(self.size)

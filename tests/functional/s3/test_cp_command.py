@@ -11,10 +11,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
-
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
-from awscli.testutils import capture_input
+
+import mock
 from awscli.compat import six
 
 
@@ -441,120 +440,3 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         self.assertIn(
             'Streaming currently is only compatible with non-recursive cp '
             'commands', stderr)
-
-
-class TestStreamingCPCommand(BaseAWSCommandParamsTest):
-    def test_streaming_upload(self):
-        command = "s3 cp - s3://bucket/streaming.txt"
-        self.parsed_responses = [{
-            'ETag': '"c8afdb36c52cf4727836669019e69222"'
-        }]
-
-        binary_stdin = six.BytesIO(b'foo\n')
-        location = "awscli.customizations.s3.s3handler.binary_stdin"
-        with mock.patch(location, binary_stdin):
-            self.run_cmd(command)
-
-        self.assertEqual(len(self.operations_called), 1)
-        model, args = self.operations_called[0]
-        expected_args = {
-            'Bucket': 'bucket',
-            'Key': 'streaming.txt',
-            'Body': mock.ANY
-        }
-
-        self.assertEqual(model.name, 'PutObject')
-        self.assertEqual(args, expected_args)
-
-    def test_streaming_upload_with_expected_size(self):
-        command = "s3 cp - s3://bucket/streaming.txt --expected-size 4"
-        self.parsed_responses = [{
-            'ETag': '"c8afdb36c52cf4727836669019e69222"'
-        }]
-
-        binary_stdin = six.BytesIO(b'foo\n')
-        location = "awscli.customizations.s3.s3handler.binary_stdin"
-        with mock.patch(location, binary_stdin):
-            self.run_cmd(command)
-
-        self.assertEqual(len(self.operations_called), 1)
-        model, args = self.operations_called[0]
-        expected_args = {
-            'Bucket': 'bucket',
-            'Key': 'streaming.txt',
-            'Body': mock.ANY
-        }
-
-        self.assertEqual(model.name, 'PutObject')
-        self.assertEqual(args, expected_args)
-
-    def test_streaming_upload_error(self):
-        command = "s3 cp - s3://bucket/streaming.txt"
-        self.parsed_responses = [{
-            'Error': {
-                'Code': 'NoSuchBucket',
-                'Message': 'The specified bucket does not exist',
-                'BucketName': 'bucket'
-            }
-        }]
-        self.http_response.status_code = 404
-
-        binary_stdin = six.BytesIO(b'foo\n')
-        location = "awscli.customizations.s3.s3handler.binary_stdin"
-        with mock.patch(location, binary_stdin):
-            stdout, _, _ = self.run_cmd(command, expected_rc=1)
-
-        error_message = (
-            'Transfer failed: An error occurred (NoSuchBucket) when calling '
-            'the PutObject operation: The specified bucket does not exist'
-        )
-        self.assertIn(error_message, stdout)
-
-    def test_streaming_download(self):
-        command = "s3 cp s3://bucket/streaming.txt -"
-        self.parsed_responses = [
-            {
-                "AcceptRanges": "bytes",
-                "LastModified": "Tue, 12 Jul 2016 21:26:07 GMT",
-                "ContentLength": 4,
-                "ETag": '"d3b07384d113edec49eaa6238ad5ff00"',
-                "Metadata": {},
-                "ContentType": "binary/octet-stream"
-            },
-            {
-                "AcceptRanges": "bytes",
-                "Metadata": {},
-                "ContentType": "binary/octet-stream",
-                "ContentLength": 4,
-                "ETag": '"d3b07384d113edec49eaa6238ad5ff00"',
-                "LastModified": "Tue, 12 Jul 2016 21:26:07 GMT",
-                "Body": six.BytesIO(b'foo\n')
-            }
-        ]
-
-        stdout, stderr, rc = self.run_cmd(command)
-        self.assertEqual(stdout, 'foo\n')
-
-        # Ensures no extra operations were called
-        self.assertEqual(len(self.operations_called), 2)
-        ops = [op[0].name for op in self.operations_called]
-        expected_ops = ['HeadObject', 'GetObject']
-        self.assertEqual(ops, expected_ops)
-
-    def test_streaming_download_error(self):
-        command = "s3 cp s3://bucket/streaming.txt -"
-        self.parsed_responses = [{
-            'Error': {
-                'Code': 'NoSuchBucket',
-                'Message': 'The specified bucket does not exist',
-                'BucketName': 'bucket'
-            }
-        }]
-        self.http_response.status_code = 404
-
-        stdout, _, _ = self.run_cmd(command, expected_rc=1)
-        error_message = (
-            'Transfer failed: An error occurred (NoSuchBucket) when calling '
-            'the HeadObject operation: The specified bucket does not exist'
-        )
-        self.assertIn(error_message, stdout)

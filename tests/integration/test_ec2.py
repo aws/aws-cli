@@ -15,51 +15,23 @@ import botocore.session
 from awscli.testutils import unittest, aws
 
 
-class TestDescribeInstances(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        # Create an instance in the scope of a class so that only one needs to
-        # be created during the full test run.
-        cls.session = botocore.session.get_session()
-        cls.region = 'us-west-2'
-        cls.client = cls.session.create_client('ec2', cls.region)
-        response = cls.client.run_instances(
-            ImageId='ami-7172b611', MinCount=1, MaxCount=1,
-            InstanceType='t2.micro'
-        )
-        cls.instance = response['Instances'][0]
-        cls.instance_id = cls.instance['InstanceId']
+class BaseEC2Test(unittest.TestCase):
+    def assert_dry_run_success(self, command):
+        result = aws(command)
+        expected_response = ('Request would have succeeded, '
+                             'but DryRun flag is set.')
+        self.assertIn(expected_response, result.stderr)
 
-        # Wait for the instance to 'exist' so it can be used in tests.
-        cls.client.get_waiter('instance_exists').wait(
-            InstanceIds=[cls.instance_id]
-        )
 
-    @classmethod
-    def tearDownClass(cls):
-        cls.client.terminate_instances(InstanceIds=[cls.instance_id])
-
-    def assert_instance_in_response(self, response):
-        reservations = response['Reservations']
-        self.assertEqual(len(reservations), 1)
-
-        instances = reservations[0]['Instances']
-        self.assertEqual(len(instances), 1)
-
-        instance_id = instances[0]['InstanceId']
-        self.assertEqual(instance_id, self.instance_id)
+class TestDescribeInstances(BaseEC2Test):
+    def setUp(self):
+        self.prefix = 'ec2 describe-instances --region us-west-2 --dry-run'
 
     def test_describe_instances_with_id(self):
-        command = 'ec2 describe-instances --region %s' % self.region
-        command += ' --instance-ids %s' % self.instance_id
-        result = aws(command)
-        self.assertEqual(result.rc, 0)
-        self.assert_instance_in_response(result.json)
+        command = self.prefix + ' --instance-ids id-example'
+        self.assert_dry_run_success(command)
 
     def test_describe_instances_with_filter(self):
-        command = 'ec2 describe-instances --region %s' % self.region
-        command += ' --filters Name=private-dns-name,Values='
-        command += self.instance['PrivateDnsName']
-        result = aws(command)
-        self.assertEqual(result.rc, 0)
-        self.assert_instance_in_response(result.json)
+        command = self.prefix + ' --filters Name=private-dns-name,Values='
+        command += 'sample-dns-name'
+        self.assert_dry_run_success(command)

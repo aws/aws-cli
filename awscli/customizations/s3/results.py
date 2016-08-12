@@ -49,7 +49,6 @@ class BaseResultSubscriber(BaseSubscriber):
             on.
         """
         self._result_queue = result_queue
-        self._transfer_type = None
 
     def on_queued(self, future, **kwargs):
         src, dest = self._get_src_dest(future)

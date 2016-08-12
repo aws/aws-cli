@@ -91,40 +91,6 @@ class BaseResultSubscriberTest(unittest.TestCase):
     def assert_result_queue_is_empty(self):
         self.assertTrue(self.result_queue.empty())
 
-    def assert_expected_transfer_type(self, result):
-        self.assertEqual(result.transfer_type, self.transfer_type)
-
-    def assert_expected_src_and_dest(self, result):
-        self.assertEqual(result.src, self.src)
-        self.assertEqual(result.dest, self.dest)
-
-    def assert_expected_total_transfer_size(self, result):
-        self.assertEqual(result.total_transfer_size, self.size)
-
-    def assert_correct_queued_result(self, result):
-        self.assertIsInstance(result, QueuedResult)
-        self.assert_expected_transfer_type(result)
-        self.assert_expected_src_and_dest(result)
-        self.assert_expected_total_transfer_size(result)
-
-    def assert_correct_progress_result(self, result, ref_bytes_transferred):
-        self.assertIsInstance(result, ProgressResult)
-        self.assert_expected_transfer_type(result)
-        self.assert_expected_src_and_dest(result)
-        self.assertEqual(result.bytes_transferred, ref_bytes_transferred)
-        self.assert_expected_total_transfer_size(result)
-
-    def assert_correct_success_result(self, result):
-        self.assertIsInstance(result, SuccessResult)
-        self.assert_expected_transfer_type(result)
-        self.assert_expected_src_and_dest(result)
-
-    def assert_correct_exception_result(self, result, ref_exception):
-        self.assertIsInstance(result, FailureResult)
-        self.assert_expected_transfer_type(result)
-        self.assert_expected_src_and_dest(result)
-        self.assertEqual(result.exception, ref_exception)
-
 
 class TestUploadResultSubscriber(BaseResultSubscriberTest):
     def setUp(self):
@@ -138,26 +104,58 @@ class TestUploadResultSubscriber(BaseResultSubscriberTest):
         self.result_subscriber.on_queued(self.future)
         result = self.get_queued_result()
         self.assert_result_queue_is_empty()
-        self.assert_correct_queued_result(result)
+        self.assertEqual(
+            result,
+            QueuedResult(
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=self.size
+            )
+        )
 
     def test_on_progress(self):
         ref_bytes_transferred = 1024 * 1024  # 1MB
         self.result_subscriber.on_progress(self.future, ref_bytes_transferred)
         result = self.get_queued_result()
         self.assert_result_queue_is_empty()
-        self.assert_correct_progress_result(result, ref_bytes_transferred)
+        self.assertEqual(
+            result,
+            ProgressResult(
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                bytes_transferred=ref_bytes_transferred,
+                total_transfer_size=self.size
+            )
+        )
 
     def test_on_done_success(self):
         self.result_subscriber.on_done(self.future)
         result = self.get_queued_result()
         self.assert_result_queue_is_empty()
-        self.assert_correct_success_result(result)
+        self.assertEqual(
+            result,
+            SuccessResult(
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+            )
+        )
 
     def test_on_done_failure(self):
         self.result_subscriber.on_done(self.failure_future)
         result = self.get_queued_result()
         self.assert_result_queue_is_empty()
-        self.assert_correct_exception_result(result, self.ref_exception)
+        self.assertEqual(
+            result,
+            FailureResult(
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                exception=self.ref_exception
+            )
+        )
 
 
 class TestUploadStreamResultSubscriber(TestUploadResultSubscriber):

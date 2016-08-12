@@ -74,7 +74,7 @@ class BaseResultSubscriber(BaseSubscriber):
                 FailureResult(self.TRANSFER_TYPE, src, dest, e))
 
     def _get_src_dest(self, future):
-        raise NotImplementedError('must implement _get_src_dest()')
+        raise NotImplementedError('_get_src_dest()')
 
 
 class UploadResultSubscriber(BaseResultSubscriber):

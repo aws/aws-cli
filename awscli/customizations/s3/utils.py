@@ -277,8 +277,8 @@ def create_warning(path, error_message, skip_file=True):
     if skip_file:
         print_string = print_string + "Skipping file " + path + ". "
     print_string = print_string + error_message
-    warning_message = PrintTask(message=print_string, error=False,
-                                warning=True)
+    warning_message = WarningResult(message=print_string, error=False,
+                                    warning=True)
     return warning_message
 
 
@@ -568,6 +568,7 @@ class PrintTask(namedtuple('PrintTask',
         return super(PrintTask, cls).__new__(cls, message, error, total_parts,
                                              warning)
 
+WarningResult = PrintTask
 
 IORequest = namedtuple('IORequest',
                        ['filename', 'offset', 'data', 'is_stream'])

@@ -18,6 +18,7 @@ from dateutil.parser import parse
 from dateutil.tz import tzlocal
 from botocore.exceptions import ClientError
 
+from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
 from awscli.customizations.s3.utils import BucketLister, create_warning, \
     find_dest_path_comp_key, EPOCH_TIME
@@ -116,7 +117,8 @@ class FileGenerator(object):
     ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
     def __init__(self, client, operation_name, follow_symlinks=True,
-                 page_size=None, result_queue=None, request_parameters=None):
+                 page_size=None, result_queue=None, request_parameters=None,
+                 file_filter=None):
         self._client = client
         self.operation_name = operation_name
         self.follow_symlinks = follow_symlinks
@@ -127,6 +129,7 @@ class FileGenerator(object):
         self.request_parameters = {}
         if request_parameters is not None:
             self.request_parameters = request_parameters
+        self.file_filter = file_filter
 
     def call(self, files):
         """
@@ -272,6 +275,10 @@ class FileGenerator(object):
             path = path[:-1]
         if not self.follow_symlinks:
             if os.path.islink(path):
+                return True
+        if self.file_filter is not None:
+            # We received a file_filter. Let's see if the path matches:
+            if not list(self.file_filter.call([FileInfo(path)])):
                 return True
         warning_triggered = self.triggers_warning(path)
         if warning_triggered:

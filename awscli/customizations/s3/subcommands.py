@@ -605,6 +605,36 @@ class WebsiteCommand(S3Command):
         return path
 
 
+class PresignCommand(S3Command):
+    NAME = 'presign'
+    DESCRIPTION = ("Generate a pre-signed URL for an Amazon S3 object. "
+                   "This allows anyone who receives the pre-signed URL "
+                   "to retrieve the S3 object with an HTTP GET request.")
+    USAGE = "<S3Uri>"
+    ARG_TABLE = [{'name': 'path',
+                  'positional_arg': True, 'synopsis': USAGE},
+                 {'name': 'expires-in', 'nargs': '?',
+                  'default': 3600, 'cli_type_name': 'integer',
+                  'help_text': (
+                      'Number of seconds until the pre-signed '
+                      'URL expires.  Default is 3600 seconds.')}]
+
+    def _run_main(self, parsed_args, parsed_globals):
+        super(PresignCommand, self)._run_main(parsed_args, parsed_globals)
+        path = parsed_args.path
+        if path.startswith('s3://'):
+            path = path[5:]
+        bucket, key = find_bucket_key(path)
+        url = self.client.generate_presigned_url(
+            'get_object',
+            {'Bucket': bucket, 'Key': key},
+            ExpiresIn=parsed_args.expires_in
+        )
+        uni_print(url)
+        uni_print('\n')
+        return 0
+
+
 class S3TransferCommand(S3Command):
     def _run_main(self, parsed_args, parsed_globals):
         super(S3TransferCommand, self)._run_main(parsed_args, parsed_globals)

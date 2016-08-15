@@ -22,20 +22,21 @@ from awscli.customizations.s3.utils import WarningResult
 LOGGER = logging.getLogger(__name__)
 
 
-def _create_new_result_cls(name, extra_fields=None):
+BaseResult = namedtuple('BaseResult', ['transfer_type', 'src', 'dest'])
+
+
+def _create_new_result_cls(name, extra_fields=None, base_cls=BaseResult):
     # Creates a new namedtuple class that subclasses from BaseResult for the
     # benefit of filtering by type and ensuring particular base attrs.
 
     # NOTE: _fields is a public attribute that has an underscore to avoid
     # naming collisions for namedtuples:
     # https://docs.python.org/2/library/collections.html#collections.somenamedtuple._fields
-    fields = list(BaseResult._fields)
+    fields = list(base_cls._fields)
     if extra_fields:
         fields += extra_fields
-    return type(name, (namedtuple(name, fields), BaseResult), {})
+    return type(name, (namedtuple(name, fields), base_cls), {})
 
-
-BaseResult = namedtuple('BaseResult', ['transfer_type', 'src', 'dest'])
 
 QueuedResult = _create_new_result_cls('QueuedResult', ['total_transfer_size'])
 

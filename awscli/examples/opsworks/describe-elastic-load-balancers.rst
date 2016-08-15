@@ -4,8 +4,6 @@ The following ``describe-elastic-load-balancers`` command describes a specified 
 
   aws opsworks --region us-west-1 describe-elastic-load-balancers --stack-id d72553d4-8727-448c-9b00-f024f0ba1b06
 
-**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
-
 *Output*: This particular stack has one app.
 
 ::

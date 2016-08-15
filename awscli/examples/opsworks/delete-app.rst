@@ -6,8 +6,6 @@ running the ``describe-apps`` command. ::
 
   aws opsworks delete-app --region us-east-1 --app-id 577943b9-2ec1-4baf-a7bf-1d347601edc5
 
-**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
-
 *Output*: None.
 
 **More Information**

@@ -5,8 +5,6 @@ of the AWS Identity and Access Management (IAM) user that is running the command
 
   aws opsworks --region us-east-1 describe-user-profile
 
-**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
-
 *Output*: For brevity, most of the user's SSH public key is replaced by an ellipsis (...). ::
 
   {

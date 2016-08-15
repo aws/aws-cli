@@ -4,8 +4,6 @@ The following example disassociates an Elastic IP address from a specified insta
 
   aws opsworks --region us-east-1 disassociate-elastic-ip --elastic-ip 54.148.130.96
 
-**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
-
 *Output*: None.
 
 **More Information**

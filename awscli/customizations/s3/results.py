@@ -11,11 +11,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
+import sys
 from collections import namedtuple
 
 from s3transfer.subscribers import BaseSubscriber
 
 from awscli.customizations.s3.utils import relative_path
+from awscli.customizations.s3.utils import human_readable_size
+from awscli.customizations.s3.utils import uni_print
 from awscli.customizations.s3.utils import WarningResult
 
 
@@ -212,3 +215,144 @@ class ResultRecorder(object):
 
     def _record_warning_result(self, **kwargs):
         self.files_warned += 1
+
+
+class ResultPrinter(object):
+    PROGRESS_FORMAT = (
+        'Completed {bytes_completed}/{expected_bytes_completed} with '
+        '{remaining_files} files remaining.'
+    )
+    SUCCESS_FORMAT = (
+        '{transfer_type}: {src} to {dest}'
+    )
+    FAILURE_FORMAT = (
+        '{transfer_type} failed: {src} to {dest} {exception}'
+    )
+    WARNING_FORMAT = (
+        'warning: {message}'
+    )
+
+    def __init__(self, result_recorder, out_file=sys.stdout,
+                 error_file=sys.stderr):
+        """Prints status of ongoing transfer
+
+        :type result_recorder: ResultRecorder
+        :param result_recorder: The associated result recorder
+
+        :type only_show_errors: bool
+        :param only_show_errors: True if to only print out errors. Otherwise,
+            print out everything.
+
+        :type out_file: file-like obj
+        :param out_file: Location to write progress and success statements
+
+        :type error_file: file-like obj
+        :param error_file: Location to write warnings and errors
+        """
+        self._result_recorder = result_recorder
+        self._out_file = out_file
+        self._error_file = error_file
+        self._progress_length = 0
+        self._result_handler_map = {
+            ProgressResult: self._print_progress,
+            SuccessResult: self._print_success,
+            FailureResult: self._print_failure,
+            WarningResult: self._print_warning,
+        }
+
+    def print_result(self, result):
+        """Print the progress of the ongoing transfer based on a result"""
+        self._result_handler_map.get(type(result), self._print_noop)(
+            result=result)
+
+    def _print_noop(self, **kwargs):
+        # If the result does not have a handler, then do nothing with it.
+        pass
+
+    def _print_success(self, result, **kwargs):
+        success_statement = self.SUCCESS_FORMAT.format(
+            transfer_type=result.transfer_type, src=result.src,
+            dest=result.dest)
+        success_statement = self._adjust_statement_padding(success_statement)
+        self._print_to_out_file(success_statement)
+        self._redisplay_progress()
+
+    def _print_failure(self, result, **kwargs):
+        failure_statement = self.FAILURE_FORMAT.format(
+            transfer_type=result.transfer_type, src=result.src,
+            dest=result.dest, exception=result.exception)
+        failure_statement = self._adjust_statement_padding(failure_statement)
+        self._print_to_error_file(failure_statement)
+        self._redisplay_progress()
+
+    def _print_warning(self, result, **kwargs):
+        warning_statement = self.WARNING_FORMAT.format(message=result.message)
+        warning_statement = self._adjust_statement_padding(warning_statement)
+        self._print_to_error_file(warning_statement)
+        self._redisplay_progress()
+
+    def _redisplay_progress(self):
+        # Reset to zero because done statements are printed with new lines
+        # meaning there are no carriage returns to take into account when
+        # printing the next line.
+        self._progress_length = 0
+        self._add_progress_if_needed()
+
+    def _add_progress_if_needed(self):
+        if not self._has_remaining_progress():
+            self._print_progress()
+
+    def _print_progress(self, **kwargs):
+        # Get all of the statistics in the correct form.
+        bytes_completed = human_readable_size(
+            self._result_recorder.bytes_transferred +
+            self._result_recorder.bytes_failed_to_transfer
+        )
+        expected_bytes_completed = human_readable_size(
+            self._result_recorder.expected_bytes_transferred)
+        remaining_files = str(
+            self._result_recorder.expected_files_transferred -
+            self._result_recorder.files_transferred
+        )
+
+        # Create the display statement.
+        progress_statement = self.PROGRESS_FORMAT.format(
+            bytes_completed=bytes_completed,
+            expected_bytes_completed=expected_bytes_completed,
+            remaining_files=remaining_files
+        )
+
+        # Make sure that it overrides any previous progress bar.
+        progress_statement = self._adjust_statement_padding(
+                progress_statement, ending_char='\r')
+        # We do not want to include the carriage return in this calculation
+        # as progress length is used for determining whitespace padding.
+        # So we subtract one off of the length.
+        self._progress_length = len(progress_statement) - 1
+
+        # Print the progress out.
+        self._print_to_out_file(progress_statement)
+
+    def _adjust_statement_padding(self, print_statement, ending_char='\n'):
+        print_statement = print_statement.ljust(self._progress_length, ' ')
+        return print_statement + ending_char
+
+    def _has_remaining_progress(self):
+        actual = self._result_recorder.files_transferred
+        expected = self._result_recorder.expected_files_transferred
+        return actual == expected
+
+    def _print_to_out_file(self, statement):
+        uni_print(statement, self._out_file)
+
+    def _print_to_error_file(self, statement):
+        uni_print(statement, self._error_file)
+
+
+class OnlyShowErrorsResultPrinter(ResultPrinter):
+    """A result printer that only prints out errors"""
+    def _print_progress(self, **kwargs):
+        pass
+
+    def _print_success(self, result, **kwargs):
+        pass

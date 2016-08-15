@@ -21,21 +21,31 @@ from awscli.customizations.s3.utils import WarningResult
 
 LOGGER = logging.getLogger(__name__)
 
-QueuedResult = namedtuple(
-    'QueuedResult',
-    ['transfer_type', 'src', 'dest', 'total_transfer_size']
-)
-ProgressResult = namedtuple(
-    'ProgressResult',
-    ['transfer_type', 'src', 'dest', 'bytes_transferred',
-     'total_transfer_size']
-)
-SuccessResult = namedtuple(
-    'SuccessResult', ['transfer_type', 'src', 'dest']
-)
-FailureResult = namedtuple(
-    'FailureResult', ['transfer_type', 'src', 'dest', 'exception']
-)
+
+def _create_new_result_cls(name, extra_fields=None):
+    # Creates a new namedtuple class that subclasses from BaseResult for the
+    # benefit of filtering by type and ensuring particular base attrs.
+
+    # NOTE: _fields is a public attribute that has an underscore to avoid
+    # naming collisions for namedtuples:
+    # https://docs.python.org/2/library/collections.html#collections.somenamedtuple._fields
+    fields = list(BaseResult._fields)
+    if extra_fields:
+        fields += extra_fields
+    return type(name, (namedtuple(name, fields), BaseResult), {})
+
+
+BaseResult = namedtuple('BaseResult', ['transfer_type', 'src', 'dest'])
+
+QueuedResult = _create_new_result_cls('QueuedResult', ['total_transfer_size'])
+
+ProgressResult = _create_new_result_cls(
+    'ProgressResult', ['bytes_transferred', 'total_transfer_size'])
+
+SuccessResult = _create_new_result_cls('SuccessResult')
+
+FailureResult = _create_new_result_cls('FailureResult', ['exception'])
+
 CommandResult = namedtuple(
     'CommandResult', ['num_tasks_failed', 'num_tasks_warned'])
 
@@ -153,6 +163,11 @@ class ResultRecorder(object):
             result=result)
 
     def _get_progress_cache_key(self, result):
+        if not isinstance(result, BaseResult):
+            raise ValueError(
+                'Any result using _get_progress_cache_key must subclass from '
+                'BaseResult. Provided result is of type: %s' % type(result)
+            )
         return ':'.join([result.transfer_type, result.src, result.dest])
 
     def _pop_result_from_caches(self, result):

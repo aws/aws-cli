@@ -16,7 +16,7 @@ class EC2PageSizeInjector(object):
 
     DEFAULT_TARGET_OPERATIONS = {
         "describe-volumes": [],
-        "describe-snapshots": ['owner-ids', 'restorable_by_user_ids']
+        "describe-snapshots": ['owner_ids', 'restorable_by_user_ids']
     }
 
     DEFAULT_GLOBAL_WHITELIST = [
@@ -79,12 +79,6 @@ class EC2PageSizeInjector(object):
         attrs = dir(namespace)
         params = []
         for attr in attrs:
-            # The default value of generate_cli_skeleton is False where
-            # usually a boolean argument still defaults to None. Therefore
-            # it must be specifically ignored.
-            if attr == 'generate_cli_skeleton':
-                continue
-
             if attr[0] != '_' and getattr(namespace, attr) is not None:
                 params.append(attr)
 

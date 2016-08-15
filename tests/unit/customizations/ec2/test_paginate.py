@@ -23,7 +23,8 @@ class TestEC2PageSizeInjector(unittest.TestCase):
             'foo': [],
             'bar': []
         }
-        injector = EC2PageSizeInjector(target_operations=target_operations)
+        injector = EC2PageSizeInjector()
+        injector.TARGET_OPERATIONS = target_operations
         event_emitter = mock.Mock()
         injector.register(event_emitter)
 
@@ -37,10 +38,9 @@ class TestEC2PageSizeInjector(unittest.TestCase):
 
     def test_inject(self):
         target_operations = {'foo': []}
-        injector = EC2PageSizeInjector(
-            target_operations=target_operations,
-            default_page_size=5
-        )
+        injector = EC2PageSizeInjector()
+        injector.DEFAULT_PAGE_SIZE = 5
+        injector.TARGET_OPERATIONS = target_operations
         parsed_globals = Namespace(paginate=True)
         parsed_args = Namespace(page_size=None)
         event_name = 'operation-args-parsed.ec2.foo'
@@ -49,7 +49,8 @@ class TestEC2PageSizeInjector(unittest.TestCase):
 
     def test_no_paginate(self):
         target_operations = {'foo': []}
-        injector = EC2PageSizeInjector(target_operations=target_operations)
+        injector = EC2PageSizeInjector()
+        injector.TARGET_OPERATIONS = target_operations
         parsed_globals = Namespace(paginate=False)
         parsed_args = Namespace(page_size=None)
         event_name = 'operation-args-parsed.ec2.foo'
@@ -58,10 +59,9 @@ class TestEC2PageSizeInjector(unittest.TestCase):
 
     def test_global_whitelist(self):
         target_operations = {'foo': []}
-        injector = EC2PageSizeInjector(
-            target_operations=target_operations,
-            global_whitelist=['bar']
-        )
+        injector = EC2PageSizeInjector()
+        injector.GLOBAL_WHITELIST = ['bar']
+        injector.TARGET_OPERATIONS = target_operations
         parsed_globals = Namespace(paginate=True)
         parsed_args = Namespace(page_size=None, baz=True)
         event_name = 'operation-args-parsed.ec2.foo'
@@ -70,10 +70,9 @@ class TestEC2PageSizeInjector(unittest.TestCase):
 
     def test_operation_whitelist(self):
         target_operations = {'foo': ['bar']}
-        injector = EC2PageSizeInjector(
-            target_operations=target_operations,
-            global_whitelist=[]
-        )
+        injector = EC2PageSizeInjector()
+        injector.GLOBAL_WHITELIST = []
+        injector.TARGET_OPERATIONS = target_operations
         parsed_globals = Namespace(paginate=True)
         parsed_args = Namespace(page_size=None, baz=True)
         event_name = 'operation-args-parsed.ec2.foo'
@@ -82,7 +81,8 @@ class TestEC2PageSizeInjector(unittest.TestCase):
 
     def test_non_target_operation(self):
         target_operations = {'foo': []}
-        injector = EC2PageSizeInjector(target_operations=target_operations)
+        injector = EC2PageSizeInjector()
+        injector.TARGET_OPERATIONS = target_operations
         parsed_globals = Namespace(paginate=True)
         parsed_args = Namespace(page_size=None)
         event_name = 'operation-args-parsed.ec2.bar'

@@ -14,44 +14,27 @@
 
 class EC2PageSizeInjector(object):
 
-    DEFAULT_TARGET_OPERATIONS = {
+    # Operations to auto-paginate and their specific whitelists.
+    # Format:
+    #    Key:   Operation
+    #    Value: List of parameters to add to whitelist for that operation.
+    TARGET_OPERATIONS = {
         "describe-volumes": [],
         "describe-snapshots": ['owner_ids', 'restorable_by_user_ids']
     }
 
-    DEFAULT_GLOBAL_WHITELIST = [
+    # Parameters which should be whitelisted for every operation.
+    GLOBAL_WHITELIST = [
         'cli_input_json', 'generate_cli_skeleton', 'help', 'max_items',
         'next_token', 'dry_run', 'starting_token'
     ]
 
-    def __init__(self, default_page_size=1000, target_operations=None,
-                 global_whitelist=None):
-        """
-        :type default_page_size: int
-        :param default_page_size: The value to inject for page_size.
-
-        :type target_operations: dict
-        :param target_operations: A dictionary whose keys are operations and
-            whose values are parameters that are white-listed for that
-            operation. If a parameter is specified that is not in that list,
-            page_size will not be set.
-
-        :type global_whitelist: list of str
-        :param global_whitelist: A list of parameters that should be
-            whitelisted for every operation.
-        """
-        self._default_page_size = default_page_size
-        self._target_operations = target_operations
-        if self._target_operations is None:
-            self._target_operations = self.DEFAULT_TARGET_OPERATIONS
-        self._global_whitelist = global_whitelist
-        if self._global_whitelist is None:
-            self._global_whitelist = self.DEFAULT_GLOBAL_WHITELIST
+    DEFAULT_PAGE_SIZE = 1000
 
     def register(self, event_emitter):
         """ Register `inject` for each target operation. """
         event_template = "operation-args-parsed.ec2.%s"
-        for operation in self._target_operations.keys():
+        for operation in self.TARGET_OPERATIONS.keys():
             event = event_template % operation
             event_emitter.register(event, self.inject)
 
@@ -62,18 +45,18 @@ class EC2PageSizeInjector(object):
 
         operation_name = event_name.split('.')[-1]
 
-        whitelisted_params = self._target_operations.get(operation_name, None)
+        whitelisted_params = self.TARGET_OPERATIONS.get(operation_name, None)
         if whitelisted_params is None:
             return
 
-        whitelisted_params += self._global_whitelist
+        whitelisted_params += self.GLOBAL_WHITELIST
         specified_params = self._get_specified_params(parsed_args)
 
         for param in specified_params:
             if param not in whitelisted_params:
                 return
 
-        parsed_args.page_size = self._default_page_size
+        parsed_args.page_size = self.DEFAULT_PAGE_SIZE
 
     def _get_specified_params(self, namespace):
         attrs = dir(namespace)

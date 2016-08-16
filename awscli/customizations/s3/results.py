@@ -12,10 +12,13 @@
 # language governing permissions and limitations under the License.
 import logging
 import sys
+import threading
 from collections import namedtuple
 
 from s3transfer.subscribers import BaseSubscriber
 
+from awscli.compat import queue
+from awscli.customizations.s3.executor import ShutdownThreadRequest
 from awscli.customizations.s3.utils import relative_path
 from awscli.customizations.s3.utils import human_readable_size
 from awscli.customizations.s3.utils import uni_print
@@ -356,3 +359,43 @@ class OnlyShowErrorsResultPrinter(ResultPrinter):
 
     def _print_success(self, result, **kwargs):
         pass
+
+
+class ResultProcessor(threading.Thread):
+    def __init__(self, result_queue, result_recorder, result_printer=None):
+        """Thread to process results from result queue
+
+        This includes recording statistics and printing transfer status
+
+        :param result_queue: The result queue to process results from
+        :param result_recorder: The result recorder to record results
+        :param result_printer: The result printer to print out transfer
+            status from results
+        """
+        threading.Thread.__init__(self)
+        self._result_queue = result_queue
+        self._result_recorder = result_recorder
+        self._result_printer = result_printer
+
+    def run(self):
+        while True:
+            try:
+                result = self._result_queue.get(True)
+                if isinstance(result, ShutdownThreadRequest):
+                    LOGGER.debug(
+                        'Shutdown request received in result processing '
+                        'thread, shutting down result thread.')
+                    break
+                LOGGER.debug('Received result: %s', result)
+                try:
+                    self._process_result(result)
+                except Exception as e:
+                    LOGGER.debug(
+                        'Error processing result: %s', e, exc_info=True)
+            except queue.Empty:
+                pass
+
+    def _process_result(self, result):
+        self._result_recorder.record_result(result)
+        if self._result_printer:
+            self._result_printer.print_result(result)

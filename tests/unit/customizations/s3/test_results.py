@@ -11,8 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest
+from awscli.testutils import mock
 from awscli.compat import queue
 from awscli.compat import StringIO
+from awscli.customizations.s3.executor import ShutdownThreadRequest
 from awscli.customizations.s3.results import QueuedResult
 from awscli.customizations.s3.results import ProgressResult
 from awscli.customizations.s3.results import SuccessResult
@@ -25,6 +27,7 @@ from awscli.customizations.s3.results import CopyResultSubscriber
 from awscli.customizations.s3.results import ResultRecorder
 from awscli.customizations.s3.results import ResultPrinter
 from awscli.customizations.s3.results import OnlyShowErrorsResultPrinter
+from awscli.customizations.s3.results import ResultProcessor
 from awscli.customizations.s3.utils import relative_path
 from awscli.customizations.s3.utils import WarningResult
 
@@ -696,3 +699,100 @@ class TestOnlyShowErrorsResultPrinter(BaseResultPrinterTest):
         self.result_printer.print_result(WarningResult('my warning'))
         ref_warning_statement = 'warning: my warning\n'
         self.assertEqual(self.error_file.getvalue(), ref_warning_statement)
+
+
+class TestResultProcessor(unittest.TestCase):
+    def setUp(self):
+        self.result_queue = queue.Queue()
+        self.result_recorder = mock.Mock()
+        self.result_printer = mock.Mock()
+        self.result_processor = ResultProcessor(
+            self.result_queue, self.result_recorder, self.result_printer)
+
+        self.results_recorded = []
+        self.results_printed = []
+
+        self.result_recorder.record_result = self.results_recorded.append
+        self.result_printer.print_result = self.results_printed.append
+
+    def test_run(self):
+        transfer_type = 'upload'
+        src = 'src'
+        dest = 'dest'
+        total_transfer_size = 1024 * 1024
+        results_to_process = [
+            QueuedResult(transfer_type, src, dest, total_transfer_size),
+            SuccessResult(transfer_type, src, dest)
+        ]
+        results_with_shutdown = results_to_process + [ShutdownThreadRequest()]
+
+        for result in results_with_shutdown:
+            self.result_queue.put(result)
+        self.result_processor.run()
+
+        self.assertEqual(self.results_recorded, results_to_process)
+        self.assertEqual(self.results_printed, results_to_process)
+
+    def test_run_without_result_printer(self):
+        transfer_type = 'upload'
+        src = 'src'
+        dest = 'dest'
+        total_transfer_size = 1024 * 1024
+        results_to_process = [
+            QueuedResult(transfer_type, src, dest, total_transfer_size),
+            SuccessResult(transfer_type, src, dest)
+        ]
+        results_with_shutdown = results_to_process + [ShutdownThreadRequest()]
+
+        for result in results_with_shutdown:
+            self.result_queue.put(result)
+        self.result_processor = ResultProcessor(
+            self.result_queue, self.result_recorder)
+        self.result_processor.run()
+
+        self.assertEqual(self.results_recorded, results_to_process)
+        self.assertEqual(self.results_printed, [])
+
+    def test_exception_handled_in_loop(self):
+        transfer_type = 'upload'
+        src = 'src'
+        dest = 'dest'
+        total_transfer_size = 1024 * 1024
+        results_to_process = [
+            QueuedResult(transfer_type, src, dest, total_transfer_size),
+            SuccessResult(transfer_type, src, dest)
+        ]
+        results_with_shutdown = results_to_process + [ShutdownThreadRequest()]
+
+        for result in results_with_shutdown:
+            self.result_queue.put(result)
+        self.result_printer.print_result = mock.Mock()
+        self.result_printer.print_result.side_effect = Exception(
+            'Some raised exception')
+        self.result_processor.run()
+
+        self.assertEqual(self.results_recorded, results_to_process)
+        # The exception happens in the ResultPrinter, the exception being
+        # thrown should result in the ResultProcessor and ResultRecorder to
+        # continue to process through the result queue despite the exception.
+        self.assertEqual(self.results_printed, [])
+
+    def test_does_not_process_results_after_shutdown(self):
+        transfer_type = 'upload'
+        src = 'src'
+        dest = 'dest'
+        total_transfer_size = 1024 * 1024
+        results_to_process = [
+            QueuedResult(transfer_type, src, dest, total_transfer_size),
+            SuccessResult(transfer_type, src, dest)
+        ]
+        results_with_shutdown = results_to_process + [
+            ShutdownThreadRequest(), WarningResult('my warning')]
+
+        for result in results_with_shutdown:
+            self.result_queue.put(result)
+        self.result_processor.run()
+        # Because a ShutdownThreadRequest was sent the processor should
+        # not have processed anymore results stored after it.
+        self.assertEqual(self.results_recorded, results_to_process)
+        self.assertEqual(self.results_printed, results_to_process)

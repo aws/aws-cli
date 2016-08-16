@@ -318,6 +318,8 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
             'AWS_DEFAULT_REGION': 'us-east-1',
             'AWS_ACCESS_KEY_ID': 'access_key',
             'AWS_SECRET_ACCESS_KEY': 'secret_key',
+            'AWS_CONFIG_FILE': '',
+            'AWS_SHARED_CREDENTIALS_FILE': '',
         }
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()

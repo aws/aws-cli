@@ -220,7 +220,7 @@ class ResultRecorder(object):
 class ResultPrinter(object):
     PROGRESS_FORMAT = (
         'Completed {bytes_completed}/{expected_bytes_completed} with '
-        '{remaining_files} files remaining.'
+        '{remaining_files} file(s) remaining.'
     )
     SUCCESS_FORMAT = (
         '{transfer_type}: {src} to {dest}'

@@ -4,8 +4,6 @@ The following example registers an Amazon EBS volume, identified by its volume I
 
   aws opsworks register-volume --region us-east-1 --stack-id d72553d4-8727-448c-9b00-f024f0ba1b06 --ec-2-volume-id vol-295c1638
 
-**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
-
 *Output*::
 
   {

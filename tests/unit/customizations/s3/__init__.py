@@ -12,8 +12,6 @@
 # language governing permissions and limitations under the License.
 import os
 
-from mock import patch, Mock
-
 import awscli.customizations.s3.utils as utils
 from awscli.compat import six
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, \
@@ -116,24 +114,3 @@ def compare_files(self, result_file, ref_file):
     self.assertEqual(result_file.src_type, ref_file.src_type)
     self.assertEqual(result_file.dest_type, ref_file.dest_type)
     self.assertEqual(result_file.operation_name, ref_file.operation_name)
-
-
-class MockStdIn(object):
-    """
-    This class patches stdin in order to write a stream of bytes into
-    stdin.
-    """
-    def __init__(self, input_bytes=b''):
-        input_data = six.BytesIO(input_bytes)
-        if six.PY3:
-            mock_object = Mock()
-            mock_object.buffer = input_data
-        else:
-            mock_object = input_data
-        self._patch = patch('sys.stdin', mock_object)
-
-    def __enter__(self):
-        self._patch.__enter__()
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        self._patch.__exit__()

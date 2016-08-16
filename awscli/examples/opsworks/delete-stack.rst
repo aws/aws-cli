@@ -9,8 +9,6 @@ to delete all of the stack's apps, instances, and layers. ::
 
   aws opsworks delete-stack --region us-east-1 --stack-id 154a9d89-7e9e-433b-8de8-617e53756c84
 
-**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
-
 *Output*: None.
 
 **More Information**

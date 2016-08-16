@@ -4,8 +4,6 @@ The following example updates a specified instance's type. ::
 
   aws opsworks --region us-east-1 update-instance --instance-id dfe18b02-5327-493d-91a4-c5c0c448927f --instance-type c3.xlarge
 
-**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
-
 *Output*: None.
 
 **More Information**

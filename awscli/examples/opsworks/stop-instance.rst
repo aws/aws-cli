@@ -6,8 +6,6 @@ running the ``describe-instances`` command. ::
 
   aws opsworks stop-instance --region us-east-1 --instance-id 3a21cfac-4a1f-4ce2-a921-b2cfba6f7771
 
-**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
-
 You can restart a stopped instance by calling ``start-instance`` or by deleting the instance by calling
 ``delete-instance``.
 

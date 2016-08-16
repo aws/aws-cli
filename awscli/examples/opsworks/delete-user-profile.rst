@@ -7,8 +7,6 @@ does not delete the IAM user. You must use the IAM console, CLI, or API for that
 
   aws opsworks --region us-east-1 delete-user-profile --iam-user-arn arn:aws:iam::123456789102:user/cli-user-test
 
-**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
-
 *Output*: None.
 
 **More Information**

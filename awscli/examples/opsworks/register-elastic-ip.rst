@@ -6,8 +6,6 @@ The following example registers an Elastic IP address, identified by its IP addr
 
   aws opsworks register-elastic-ip --region us-east-1 --stack-id d72553d4-8727-448c-9b00-f024f0ba1b06 --elastic-ip 54.148.130.96 
 
-**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
-
 *Output* ::
 
   {

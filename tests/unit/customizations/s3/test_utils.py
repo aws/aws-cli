@@ -23,14 +23,18 @@ import io
 import mock
 from dateutil.tz import tzlocal
 from nose.tools import assert_equal
-
+from s3transfer.futures import TransferMeta, TransferFuture
+from s3transfer.compat import seekable
 from botocore.hooks import HierarchicalEmitter
+
+from awscli.compat import StringIO
 from awscli.customizations.s3.utils import (
     find_bucket_key, find_chunksize, ReadFileChunk, relative_path,
     StablePriorityQueue, BucketLister, get_file_stat, AppendFilter,
     create_warning, human_readable_size, human_readable_to_bytes,
     MAX_SINGLE_UPLOAD_SIZE, MIN_UPLOAD_CHUNKSIZE, MAX_UPLOAD_SIZE,
-    set_file_utime, SetFileUtimeError, RequestParamsMapper, uni_print)
+    set_file_utime, SetFileUtimeError, RequestParamsMapper, uni_print,
+    StdoutBytesWriter, ProvideSizeSubscriber, NonSeekableStream)
 
 
 def test_human_readable_size():
@@ -523,3 +527,41 @@ class TestUniPrint(unittest.TestCase):
         # We replace the characters that can't be encoded
         # with '?'.
         self.assertEqual(buf.getvalue(), b'SomeChars??OtherChars')
+
+
+class TestBytesPrint(unittest.TestCase):
+    def setUp(self):
+        self.stdout = mock.Mock()
+        self.stdout.buffer = self.stdout
+
+    def test_stdout_wrapper(self):
+        wrapper = StdoutBytesWriter(self.stdout)
+        wrapper.write(b'foo')
+        self.assertTrue(self.stdout.write.called)
+        self.assertEqual(self.stdout.write.call_args[0][0], b'foo')
+
+
+class TestProvideSizeSubscriber(unittest.TestCase):
+    def setUp(self):
+        self.transfer_future = mock.Mock(spec=TransferFuture)
+        self.transfer_meta = TransferMeta()
+        self.transfer_future.meta = self.transfer_meta
+
+    def test_size_set(self):
+        self.transfer_meta.provide_transfer_size(5)
+        subscriber = ProvideSizeSubscriber(10)
+        subscriber.on_queued(self.transfer_future)
+        self.assertEqual(self.transfer_meta.size, 10)
+
+
+class TestNonSeekableStream(unittest.TestCase):
+    def test_can_make_stream_unseekable(self):
+        fileobj = StringIO('foobar')
+        self.assertTrue(seekable(fileobj))
+        nonseekable_fileobj = NonSeekableStream(fileobj)
+        self.assertFalse(seekable(nonseekable_fileobj))
+        self.assertEqual(nonseekable_fileobj.read(), 'foobar')
+
+    def test_can_specify_amount_for_nonseekable_stream(self):
+        nonseekable_fileobj = NonSeekableStream(StringIO('foobar'))
+        self.assertEqual(nonseekable_fileobj.read(3), 'foo')

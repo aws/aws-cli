@@ -6,8 +6,6 @@ You must use ``create-instance`` to add load-based instances to the layer. ::
 
   aws opsworks --region us-east-1 set-load-based-auto-scaling --layer-id 523569ae-2faf-47ac-b39e-f4c4b381f36d --enable --up-scaling file://upscale.json --down-scaling file://downscale.json
 
-**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
-
 The example puts the upscaling threshold settings in a separate file in the working directory named ``upscale.json``, which contains the following. ::
 
   {

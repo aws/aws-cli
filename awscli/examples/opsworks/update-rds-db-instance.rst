@@ -8,8 +8,6 @@ your application will not be able to connect to the database. ::
 
   aws opsworks --region us-east-1 update-rds-db-instance --db-password 123456789
 
-**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
-
 *Output*: None.
 
 **More Information**

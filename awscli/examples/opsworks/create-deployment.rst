@@ -5,9 +5,6 @@ quote (``"``) characters in the JSON object that specifies the command are all p
 escape characters (\). Without the escape characters, the command might
 return an invalid JSON error.
 
-**Note**: AWS OpsWorks CLI commands should set the region to either ``us-east-1`` or ``ap-south-1``.
-All regions except ``ap-south-1`` are associated with the ``us-east-1`` endpoint.
-
 **Deploy an App**
 
 The following ``create-deployment`` command deploys an app to a specified stack. ::

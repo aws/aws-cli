@@ -4,8 +4,6 @@ The following example describes the RAID arrays attached to the instances in a s
 
   aws opsworks --region us-east-1 describe-raid-arrays --stack-id d72553d4-8727-448c-9b00-f024f0ba1b06
 
-**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
-
 *Output*: The following is the output for a stack with one RAID array. ::
 
   {

@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.10.57
+=======
+
+* feature:``ecs``: Update ecs command to latest version
+* feature:``apigateway``: Update apigateway command to latest version
+* feature:``acm``: Update acm command to latest version
+* feature:``kms``: Update kms command to latest version
+* feature:``elbv2``: Update elbv2 command to latest version
+
+
 1.10.55
 =======
 

@@ -6,8 +6,6 @@ details page or by running ``describe-layers``. ::
 
   aws opsworks describe-load-based-auto-scaling --region us-east-1 --layer-ids 6bec29c9-c866-41a0-aba5-fa3e374ce2a1
 
-**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
-
 *Output*: The example layer has a single load-based instance. :: 
 
   {

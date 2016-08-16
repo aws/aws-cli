@@ -478,7 +478,7 @@ class TestResultPrinter(BaseResultPrinterTest):
         progress_result = self.get_progress_result()
         self.result_printer.print_result(progress_result)
         ref_progress_statement = (
-            'Completed 1.0 MiB/20.0 MiB with 3 files remaining.\r')
+            'Completed 1.0 MiB/20.0 MiB with 3 file(s) remaining.\r')
         self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
 
     def test_progress_then_more_progress(self):
@@ -494,7 +494,7 @@ class TestResultPrinter(BaseResultPrinterTest):
 
         self.result_printer.print_result(progress_result)
         ref_progress_statement = (
-            'Completed 1.0 MiB/20.0 MiB with 3 files remaining.\r')
+            'Completed 1.0 MiB/20.0 MiB with 3 file(s) remaining.\r')
         self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
 
         # Add the second progress update
@@ -503,8 +503,8 @@ class TestResultPrinter(BaseResultPrinterTest):
 
         # The result should be the combination of the two
         ref_progress_statement = (
-            'Completed 1.0 MiB/20.0 MiB with 3 files remaining.\r'
-            'Completed 2.0 MiB/20.0 MiB with 3 files remaining.\r'
+            'Completed 1.0 MiB/20.0 MiB with 3 file(s) remaining.\r'
+            'Completed 2.0 MiB/20.0 MiB with 3 file(s) remaining.\r'
         )
         self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
 
@@ -549,9 +549,9 @@ class TestResultPrinter(BaseResultPrinterTest):
         # * The success statement
         # * And the progress again since the transfer is still ongoing
         ref_statement = (
-            'Completed 1.0 MiB/20.0 MiB with 3 files remaining.\r'
-            'upload: file to s3://mybucket/mykey               \n'
-            'Completed 1.0 MiB/20.0 MiB with 2 files remaining.\r'
+            'Completed 1.0 MiB/20.0 MiB with 3 file(s) remaining.\r'
+            'upload: file to s3://mybucket/mykey                 \n'
+            'Completed 1.0 MiB/20.0 MiB with 2 file(s) remaining.\r'
         )
         self.assertEqual(self.out_file.getvalue(), ref_statement)
 
@@ -607,9 +607,9 @@ class TestResultPrinter(BaseResultPrinterTest):
         # * The failure statement
         # * And the progress again since the transfer is still ongoing
         ref_statement = (
-            'Completed 1.0 MiB/20.0 MiB with 3 files remaining.\r'
+            'Completed 1.0 MiB/20.0 MiB with 3 file(s) remaining.\r'
             'upload failed: file to s3://mybucket/mykey my exception\n'
-            'Completed 4.0 MiB/20.0 MiB with 2 files remaining.\r'
+            'Completed 4.0 MiB/20.0 MiB with 2 file(s) remaining.\r'
         )
         self.assertEqual(shared_file.getvalue(), ref_statement)
 
@@ -645,9 +645,9 @@ class TestResultPrinter(BaseResultPrinterTest):
         # * The warning statement
         # * And the progress again since the transfer is still ongoing
         ref_statement = (
-            'Completed 1.0 MiB/20.0 MiB with 3 files remaining.\r'
-            'warning: my warning                               \n'
-            'Completed 1.0 MiB/20.0 MiB with 3 files remaining.\r'
+            'Completed 1.0 MiB/20.0 MiB with 3 file(s) remaining.\r'
+            'warning: my warning                                 \n'
+            'Completed 1.0 MiB/20.0 MiB with 3 file(s) remaining.\r'
         )
 
         self.assertEqual(shared_file.getvalue(), ref_statement)

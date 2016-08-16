@@ -4,9 +4,6 @@ The following ``start-instance`` command starts a specified 24/7 instance. ::
 
   aws opsworks start-instance --instance-id f705ee48-9000-4890-8bd3-20eb05825aaf
 
-**Note**: AWS OpsWorks CLI commands should set the region to either ``us-east-1`` or ``ap-south-1``. 
-All regions except ``ap-south-1`` are associated with the ``us-east-1`` endpoint.
-
 *Output*: None. Use describe-instances_ to check the instance's status.
 
 .. _describe-instances: http://docs.aws.amazon.com/cli/latest/reference/opsworks/describe-instances.html

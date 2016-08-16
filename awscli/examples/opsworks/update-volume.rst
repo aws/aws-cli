@@ -6,8 +6,6 @@ you register it with a stack, not the Amazon Elastic Compute Cloud (Amazon EC2) 
 
   aws opsworks --region us-east-1 update-volume --volume-id 8430177d-52b7-4948-9c62-e195af4703df --mount-point /mnt/myvol
 
-**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
-
 *Output*: None.
 
 **More Information**

@@ -6,8 +6,6 @@ details page or by running ``describe-instances``. ::
 
   aws opsworks describe-time-based-auto-scaling --region us-east-1 --instance-ids 701f2ffe-5d8e-4187-b140-77b75f55de8d
 
-**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
-
 *Output*: The example has a single time-based instance. :: 
 
   {

@@ -4,8 +4,6 @@ The following ``describe-user-profiles`` command describes the account's user pr
 
   aws opsworks --region us-east-1 describe-user-profiles
 
-**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
-
 *Output*::
 
   {

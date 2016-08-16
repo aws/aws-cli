@@ -4,9 +4,6 @@ The following ``create-stack`` command creates a stack named CLI Stack. ::
 
   aws opsworks create-stack --name "CLI Stack" --stack-region "us-east-1" --service-role-arn arn:aws:iam::123456789012:role/aws-opsworks-service-role --default-instance-profile-arn arn:aws:iam::123456789012:instance-profile/aws-opsworks-ec2-role --region us-east-1
 
-**Note**: AWS OpsWorks CLI commands should set the region to either ``us-east-1`` or ``ap-south-1``. 
-All regions except ``ap-south-1`` are associated with the ``us-east-1`` endpoint.
-
 The ``service-role-arn`` and ``default-instance-profile-arn`` parameters are required. You typically
 use the ones that AWS OpsWorks
 creates for you when you create your first stack. To get the Amazon Resource Names (ARNs) for your

@@ -6,8 +6,6 @@ The user's AWS credentials are represented by the ``development`` profile in the
 
   aws opsworks --region us-east-1 --profile development update-my-user-profile --ssh-public-key file://development_key.pem
 
-**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
-
 *Output*: None.
 
 **More Information**

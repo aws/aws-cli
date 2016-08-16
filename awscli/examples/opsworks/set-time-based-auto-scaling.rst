@@ -5,8 +5,6 @@ You must first use ``create-instance`` to add the instance to the layer. ::
 
   aws opsworks --region us-east-1 set-time-based-auto-scaling --instance-id 69b6237c-08c0-4edb-a6af-78f3d01cedf2 --auto-scaling-schedule file://schedule.json
 
-**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
-
 The example puts the schedule in a separate file in the working directory named ``schedule.json``.
 For this example, the instance is on for a few hours around midday UTC (Coordinated Universal Time) on Monday and Tuesday. ::
 

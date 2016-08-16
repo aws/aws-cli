@@ -307,6 +307,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
 
     def setUp(self):
         self.last_params = {}
+        self.last_kwargs = None
         # awscli/__init__.py injects AWS_DATA_PATH at import time
         # so that we can find cli.json.  This might be fixed in the
         # future, but for now we just grab that value out of the real

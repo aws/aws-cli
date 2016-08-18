@@ -19,6 +19,7 @@ import math
 import errno
 import os
 import sys
+import time
 from collections import namedtuple, deque
 from functools import partial
 
@@ -142,6 +143,10 @@ class MD5Error(Exception):
     """
     Exception for md5's that do not match.
     """
+    pass
+
+
+class CreateDirectoryError(Exception):
     pass
 
 
@@ -785,6 +790,60 @@ class OnDoneFilteredSubscriber(BaseSubscriber):
 
     def on_failure(self, future, e):
         pass
+
+
+class BaseProvideContentTypeSubscriber(BaseSubscriber):
+    """A subscriber that provides content type when creating s3 objects"""
+
+    def on_queued(self, future, **kwargs):
+        guessed_type = guess_content_type(self._get_filename(future))
+        if guessed_type is not None:
+            future.meta.call_args.extra_args['ContentType'] = guessed_type
+
+    def _get_filename(self, future):
+        raise NotImplementedError('must implement _get_filename()')
+
+
+class ProvideUploadContentTypeSubscriber(BaseProvideContentTypeSubscriber):
+    def _get_filename(self, future):
+        return future.meta.call_args.fileobj
+
+
+class ProvideCopyContentTypeSubscriber(BaseProvideContentTypeSubscriber):
+    def _get_filename(self, future):
+        return future.meta.call_args.copy_source['Key']
+
+
+class ProvideLastModifiedTimeSubscriber(OnDoneFilteredSubscriber):
+    """Sets utime for a downloaded file"""
+    def __init__(self, last_modified_time, result_queue):
+        self._last_modified_time = last_modified_time
+        self._result_queue = result_queue
+
+    def on_success(self, future, **kwargs):
+        filename = future.meta.call_args.fileobj
+        try:
+            last_update_tuple = self._last_modified_time.timetuple()
+            mod_timestamp = time.mktime(last_update_tuple)
+            set_file_utime(filename, int(mod_timestamp))
+        except Exception as e:
+            warning_message = (
+                'Successfully Downloaded %s but was unable to update the '
+                'last modified time. %s' % (filename, e))
+            self._result_queue.put(create_warning(filename, warning_message))
+
+
+class DirectoryCreatorSubscriber(BaseSubscriber):
+    """Creates a directory to download if it does not exist"""
+    def on_queued(self, future, **kwargs):
+        d = os.path.dirname(future.meta.call_args.fileobj)
+        try:
+            if not os.path.exists(d):
+                os.makedirs(d)
+        except OSError as e:
+            if not e.errno == errno.EEXIST:
+                raise CreateDirectoryError(
+                    "Could not create directory %s: %s" % (d, e))
 
 
 class NonSeekableStream(object):

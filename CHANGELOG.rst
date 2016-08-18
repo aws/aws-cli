@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.10.58
+=======
+
+* feature:``ec2``: Update ec2 command to latest version
+* feature:``workspaces``: Update workspaces command to latest version
+* feature:``iam``: Update iam command to latest version
+
+
 1.10.57
 =======
 

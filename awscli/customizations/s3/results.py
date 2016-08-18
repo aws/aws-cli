@@ -141,7 +141,13 @@ class CopyResultSubscriber(BaseResultSubscriber):
         return src, dest
 
 
-class ResultRecorder(object):
+class BaseResultHandler(object):
+    """Base handler class to be called in the ResultProcessor"""
+    def __call__(self, result):
+        raise NotImplementedError('__call__()')
+
+
+class ResultRecorder(BaseResultHandler):
     """Records and track transfer statistics based on results receieved"""
     def __init__(self):
         self.bytes_transferred = 0
@@ -164,7 +170,7 @@ class ResultRecorder(object):
             WarningResult: self._record_warning_result,
         }
 
-    def record_result(self, result):
+    def __call__(self, result):
         """Record the result of an individual Result object"""
         self._result_handler_map.get(type(result), self._record_noop)(
             result=result)
@@ -220,7 +226,7 @@ class ResultRecorder(object):
         self.files_warned += 1
 
 
-class ResultPrinter(object):
+class ResultPrinter(BaseResultHandler):
     PROGRESS_FORMAT = (
         'Completed {bytes_completed}/{expected_bytes_completed} with '
         '{remaining_files} file(s) remaining.'
@@ -263,7 +269,7 @@ class ResultPrinter(object):
             WarningResult: self._print_warning,
         }
 
-    def print_result(self, result):
+    def __call__(self, result):
         """Print the progress of the ongoing transfer based on a result"""
         self._result_handler_map.get(type(result), self._print_noop)(
             result=result)

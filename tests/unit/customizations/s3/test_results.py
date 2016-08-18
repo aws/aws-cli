@@ -706,14 +706,13 @@ class TestResultProcessor(unittest.TestCase):
         self.result_queue = queue.Queue()
         self.result_recorder = mock.Mock()
         self.result_printer = mock.Mock()
+        self.results_handled = []
+
         self.result_processor = ResultProcessor(
-            self.result_queue, self.result_recorder, self.result_printer)
+            self.result_queue, [self.results_handled.append])
 
-        self.results_recorded = []
-        self.results_printed = []
-
-        self.result_recorder.record_result = self.results_recorded.append
-        self.result_printer.print_result = self.results_printed.append
+    def _handle_result_with_exception(self, result):
+        raise Exception()
 
     def test_run(self):
         transfer_type = 'upload'
@@ -730,10 +729,9 @@ class TestResultProcessor(unittest.TestCase):
             self.result_queue.put(result)
         self.result_processor.run()
 
-        self.assertEqual(self.results_recorded, results_to_process)
-        self.assertEqual(self.results_printed, results_to_process)
+        self.assertEqual(self.results_handled, results_to_process)
 
-    def test_run_without_result_printer(self):
+    def test_run_without_result_handlers(self):
         transfer_type = 'upload'
         src = 'src'
         dest = 'dest'
@@ -746,12 +744,12 @@ class TestResultProcessor(unittest.TestCase):
 
         for result in results_with_shutdown:
             self.result_queue.put(result)
-        self.result_processor = ResultProcessor(
-            self.result_queue, self.result_recorder)
+        self.result_processor = ResultProcessor(self.result_queue)
         self.result_processor.run()
 
-        self.assertEqual(self.results_recorded, results_to_process)
-        self.assertEqual(self.results_printed, [])
+        # Ensure that the entire result queue got processed even though
+        # there was no handlers provided.
+        self.assertTrue(self.result_queue.empty())
 
     def test_exception_handled_in_loop(self):
         transfer_type = 'upload'
@@ -766,16 +764,23 @@ class TestResultProcessor(unittest.TestCase):
 
         for result in results_with_shutdown:
             self.result_queue.put(result)
-        self.result_printer.print_result = mock.Mock()
-        self.result_printer.print_result.side_effect = Exception(
-            'Some raised exception')
+
+        results_handled_after_exception = []
+        self.result_processor = ResultProcessor(
+            self.result_queue,
+            [self.results_handled.append, self._handle_result_with_exception,
+             results_handled_after_exception.append])
+
         self.result_processor.run()
 
-        self.assertEqual(self.results_recorded, results_to_process)
-        # The exception happens in the ResultPrinter, the exception being
-        # thrown should result in the ResultProcessor and ResultRecorder to
-        # continue to process through the result queue despite the exception.
-        self.assertEqual(self.results_printed, [])
+        self.assertEqual(self.results_handled, results_to_process)
+        # The exception happens in the second handler, the exception being
+        # thrown should result in the first handler and the ResultProcessor
+        # continuing to process through the result queue despite the exception.
+        # However, any handlers after the exception should not be run just
+        # in case order of the handlers mattering and an unhandled exception
+        # in one affects another handler.
+        self.assertEqual(results_handled_after_exception, results_to_process)
 
     def test_does_not_process_results_after_shutdown(self):
         transfer_type = 'upload'
@@ -794,5 +799,4 @@ class TestResultProcessor(unittest.TestCase):
         self.result_processor.run()
         # Because a ShutdownThreadRequest was sent the processor should
         # not have processed anymore results stored after it.
-        self.assertEqual(self.results_recorded, results_to_process)
-        self.assertEqual(self.results_printed, results_to_process)
+        self.assertEqual(self.results_handled, results_to_process)

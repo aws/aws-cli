@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest, temporary_file
 import argparse
+import errno
 import os
 import tempfile
 import shutil
@@ -27,7 +28,9 @@ from s3transfer.futures import TransferMeta, TransferFuture
 from s3transfer.compat import seekable
 from botocore.hooks import HierarchicalEmitter
 
+from awscli.compat import queue
 from awscli.compat import StringIO
+from awscli.testutils import FileCreator
 from awscli.customizations.s3.utils import (
     find_bucket_key, find_chunksize, ReadFileChunk, relative_path,
     StablePriorityQueue, BucketLister, get_file_stat, AppendFilter,
@@ -35,8 +38,14 @@ from awscli.customizations.s3.utils import (
     MAX_SINGLE_UPLOAD_SIZE, MIN_UPLOAD_CHUNKSIZE, MAX_UPLOAD_SIZE,
     set_file_utime, SetFileUtimeError, RequestParamsMapper, uni_print,
     StdoutBytesWriter, ProvideSizeSubscriber, OnDoneFilteredSubscriber,
-    NonSeekableStream)
+    ProvideUploadContentTypeSubscriber, ProvideCopyContentTypeSubscriber,
+    ProvideLastModifiedTimeSubscriber, DirectoryCreatorSubscriber,
+    NonSeekableStream, CreateDirectoryError)
+from awscli.customizations.s3.results import WarningResult
 from tests.unit.customizations.s3 import FakeTransferFuture
+from tests.unit.customizations.s3 import FakeTransferFutureMeta
+from tests.unit.customizations.s3 import FakeTransferFutureCallArgs
+
 
 
 def test_human_readable_size():
@@ -583,6 +592,137 @@ class TestOnDoneFilteredSubscriber(unittest.TestCase):
         subscriber.on_done(future)
         self.assertEqual(subscriber.on_failure_calls, [(future, exception)])
         self.assertEqual(subscriber.on_success_calls, [])
+
+
+class TestProvideUploadContentTypeSubscriber(unittest.TestCase):
+    def setUp(self):
+        self.filename = 'myfile.txt'
+        self.extra_args = {}
+        self.future = self.set_future()
+        self.subscriber = ProvideUploadContentTypeSubscriber()
+
+    def set_future(self):
+        call_args = FakeTransferFutureCallArgs(
+            fileobj=self.filename, extra_args=self.extra_args)
+        meta = FakeTransferFutureMeta(call_args=call_args)
+        return FakeTransferFuture(meta=meta)
+
+    def test_on_queued_provides_content_type(self):
+        self.subscriber.on_queued(self.future)
+        self.assertEqual(self.extra_args, {'ContentType': 'text/plain'})
+
+    def test_on_queued_does_not_provide_content_type_when_unknown(self):
+        self.filename = 'file-with-no-extension'
+        self.future = self.set_future()
+        self.subscriber.on_queued(self.future)
+        self.assertEqual(self.extra_args, {})
+
+
+class TestProvideCopyContentTypeSubscriber(
+        TestProvideUploadContentTypeSubscriber):
+    def setUp(self):
+        self.filename = 'myfile.txt'
+        self.extra_args = {}
+        self.future = self.set_future()
+        self.subscriber = ProvideCopyContentTypeSubscriber()
+
+    def set_future(self):
+        copy_source = {'Bucket': 'mybucket', 'Key': self.filename}
+        call_args = FakeTransferFutureCallArgs(
+            copy_source=copy_source, extra_args=self.extra_args)
+        meta = FakeTransferFutureMeta(call_args=call_args)
+        return FakeTransferFuture(meta=meta)
+
+
+class BaseTestWithFileCreator(unittest.TestCase):
+    def setUp(self):
+        self.file_creator = FileCreator()
+
+    def tearDown(self):
+        self.file_creator.remove_all()
+
+
+class TestProvideLastModifiedTimeSubscriber(BaseTestWithFileCreator):
+    def setUp(self):
+        super(TestProvideLastModifiedTimeSubscriber, self).setUp()
+        self.filename = self.file_creator.create_file('myfile', 'my contents')
+        self.desired_utime = datetime.datetime(
+            2016, 1, 18, 7, 0, 0, tzinfo=tzlocal())
+        self.result_queue = queue.Queue()
+        self.subscriber = ProvideLastModifiedTimeSubscriber(
+            self.desired_utime, self.result_queue)
+
+        call_args = FakeTransferFutureCallArgs(fileobj=self.filename)
+        meta = FakeTransferFutureMeta(call_args=call_args)
+        self.future = FakeTransferFuture(meta=meta)
+
+    def test_on_success_modifies_utime(self):
+        self.subscriber.on_success(self.future)
+        _, utime = get_file_stat(self.filename)
+        self.assertEqual(utime, self.desired_utime)
+
+    def test_on_success_failure_in_utime_mod_raises_warning(self):
+        self.subscriber = ProvideLastModifiedTimeSubscriber(
+            None, self.result_queue)
+        self.subscriber.on_success(self.future)
+        # Because the time to provide was None it will throw an exception
+        # which results in the a warning about the utime not being able
+        # to be set being placed in the result queue.
+        result = self.result_queue.get()
+        self.assertIsInstance(result, WarningResult)
+        self.assertIn(
+            'unable to update the last modified time', result.message)
+
+
+class TestDirectoryCreatorSubscriber(BaseTestWithFileCreator):
+    def setUp(self):
+        super(TestDirectoryCreatorSubscriber, self).setUp()
+        self.directory_to_create = os.path.join(
+            self.file_creator.rootdir, 'new-directory')
+        self.filename = os.path.join(self.directory_to_create, 'myfile')
+
+        call_args = FakeTransferFutureCallArgs(fileobj=self.filename)
+        meta = FakeTransferFutureMeta(call_args=call_args)
+        self.future = FakeTransferFuture(meta=meta)
+
+        self.subscriber = DirectoryCreatorSubscriber()
+
+    def test_on_queued_creates_directories_if_do_not_exist(self):
+        self.subscriber.on_queued(self.future)
+        self.assertTrue(os.path.exists(self.directory_to_create))
+
+    def test_on_queued_does_not_create_directories_if_exist(self):
+        os.makedirs(self.directory_to_create)
+        # This should not cause any issues if the directory already exists
+        self.subscriber.on_queued(self.future)
+        # The directory should still exist
+        self.assertTrue(os.path.exists(self.directory_to_create))
+
+    def test_on_queued_failure_propogates_create_directory_error(self):
+        # If makedirs() raises an OSError of exception, we should
+        # propogate the exception with a better worded CreateDirectoryError.
+        with mock.patch('os.makedirs') as makedirs_patch:
+            makedirs_patch.side_effect = OSError()
+            with self.assertRaises(CreateDirectoryError):
+                self.subscriber.on_queued(self.future)
+        self.assertFalse(os.path.exists(self.directory_to_create))
+
+    def test_on_queued_failure_propogates_clear_error_message(self):
+        # If makedirs() raises an OSError of exception, we should
+        # propogate the exception.
+        with mock.patch('os.makedirs') as makedirs_patch:
+            os_error = OSError()
+            os_error.errno = errno.EEXIST
+            makedirs_patch.side_effect = os_error
+            # The on_queued should not raise an error if the directory
+            # already exists
+            try:
+                self.subscriber.on_queued(self.future)
+            except Exception as e:
+                self.fail(
+                    'on_queued should not have raised an exception related '
+                    'to directory creation especially if one already existed '
+                    'but got %s' % e)
 
 
 class TestNonSeekableStream(unittest.TestCase):

@@ -613,8 +613,8 @@ class PresignCommand(S3Command):
     USAGE = "<S3Uri>"
     ARG_TABLE = [{'name': 'path',
                   'positional_arg': True, 'synopsis': USAGE},
-                 {'name': 'expires-in', 'nargs': '?',
-                  'default': 3600, 'cli_type_name': 'integer',
+                 {'name': 'expires-in', 'default': 3600,
+                  'cli_type_name': 'integer',
                   'help_text': (
                       'Number of seconds until the pre-signed '
                       'URL expires.  Default is 3600 seconds.')}]

@@ -362,20 +362,20 @@ class OnlyShowErrorsResultPrinter(ResultPrinter):
 
 
 class ResultProcessor(threading.Thread):
-    def __init__(self, result_queue, result_recorder, result_printer=None):
+    def __init__(self, result_queue, result_handlers=None):
         """Thread to process results from result queue
 
         This includes recording statistics and printing transfer status
 
         :param result_queue: The result queue to process results from
-        :param result_recorder: The result recorder to record results
-        :param result_printer: The result printer to print out transfer
-            status from results
+        :param result_handlers: A list of callables that take a result in as
+            a parameter to process the result for that handler.
         """
         threading.Thread.__init__(self)
         self._result_queue = result_queue
-        self._result_recorder = result_recorder
-        self._result_printer = result_printer
+        self._result_handlers = result_handlers
+        if self._result_handlers is None:
+            self._result_handlers = []
 
     def run(self):
         while True:
@@ -387,15 +387,16 @@ class ResultProcessor(threading.Thread):
                         'thread, shutting down result thread.')
                     break
                 LOGGER.debug('Received result: %s', result)
-                try:
-                    self._process_result(result)
-                except Exception as e:
-                    LOGGER.debug(
-                        'Error processing result: %s', e, exc_info=True)
+                self._process_result(result)
             except queue.Empty:
                 pass
 
     def _process_result(self, result):
-        self._result_recorder.record_result(result)
-        if self._result_printer:
-            self._result_printer.print_result(result)
+        for result_handler in self._result_handlers:
+            try:
+                LOGGER.debug('Processing %s with %s', result, result_handler)
+                result_handler(result)
+            except Exception as e:
+                LOGGER.debug(
+                    'Error processing result %s with handler %s: %s',
+                    result, result_handler, e, exc_info=True)

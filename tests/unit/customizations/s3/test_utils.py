@@ -34,7 +34,9 @@ from awscli.customizations.s3.utils import (
     create_warning, human_readable_size, human_readable_to_bytes,
     MAX_SINGLE_UPLOAD_SIZE, MIN_UPLOAD_CHUNKSIZE, MAX_UPLOAD_SIZE,
     set_file_utime, SetFileUtimeError, RequestParamsMapper, uni_print,
-    StdoutBytesWriter, ProvideSizeSubscriber, NonSeekableStream)
+    StdoutBytesWriter, ProvideSizeSubscriber, OnDoneFilteredSubscriber,
+    NonSeekableStream)
+from tests.unit.customizations.s3 import FakeTransferFuture
 
 
 def test_human_readable_size():
@@ -552,6 +554,35 @@ class TestProvideSizeSubscriber(unittest.TestCase):
         subscriber = ProvideSizeSubscriber(10)
         subscriber.on_queued(self.transfer_future)
         self.assertEqual(self.transfer_meta.size, 10)
+
+
+class OnDoneFilteredRecordingSubscriber(OnDoneFilteredSubscriber):
+    def __init__(self):
+        self.on_success_calls = []
+        self.on_failure_calls = []
+
+    def on_success(self, future):
+        self.on_success_calls.append(future)
+
+    def on_failure(self, future, exception):
+        self.on_failure_calls.append((future, exception))
+
+
+class TestOnDoneFilteredSubscriber(unittest.TestCase):
+    def test_on_success(self):
+        subscriber = OnDoneFilteredRecordingSubscriber()
+        future = FakeTransferFuture('return-value')
+        subscriber.on_done(future)
+        self.assertEqual(subscriber.on_success_calls, [future])
+        self.assertEqual(subscriber.on_failure_calls, [])
+
+    def test_on_failure(self):
+        subscriber = OnDoneFilteredRecordingSubscriber()
+        exception = Exception('my exception')
+        future = FakeTransferFuture(exception=exception)
+        subscriber.on_done(future)
+        self.assertEqual(subscriber.on_failure_calls, [(future, exception)])
+        self.assertEqual(subscriber.on_success_calls, [])
 
 
 class TestNonSeekableStream(unittest.TestCase):

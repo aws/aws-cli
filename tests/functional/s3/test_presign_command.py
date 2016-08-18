@@ -28,14 +28,17 @@ FROZEN_DATETIME = mock.Mock(
 
 class TestPresignCommand(BaseAWSCommandParamsTest):
 
-    maxDiff = None
     prefix = 's3 presign '
 
-    def setUp(self):
-        super(TestPresignCommand, self).setUp()
-
-    def tearDown(self):
-        super(TestPresignCommand, self).tearDown()
+    def enable_addressing_mode_in_config(self, fileobj, mode):
+        fileobj.write(
+            "[default]\n"
+            "s3 =\n"
+            "    addressing_style = %s\n" % mode
+        )
+        fileobj.flush()
+        self.environ['AWS_CONFIG_FILE'] = fileobj.name
+        self.driver = create_clidriver()
 
     def enable_sigv4_from_config_file(self, fileobj):
         fileobj.write(
@@ -158,6 +161,23 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
             stdout, {
                 'hostname': 'bucket.s3.amazonaws.com',
                 'path': '/key',
+                'query_params': {
+                    'AWSAccessKeyId': 'access_key',
+                    'Expires': str(FROZEN_TIMESTAMP + DEFAULT_EXPIRES),
+                    'Signature': '2m9M0eLB%2BqI0nUpkyTskKmHd0Ig%3D',
+                }
+            }
+        )
+
+    def test_can_support_addressing_mode_config(self):
+        with temporary_file('w') as f:
+            self.enable_addressing_mode_in_config(f, 'path')
+            stdout = self.get_presigned_url_for_cmd(
+                self.prefix + 's3://bucket/key')
+        self.assert_presigned_url_matches(
+            stdout, {
+                'hostname': 's3.amazonaws.com',
+                'path': '/bucket/key',
                 'query_params': {
                     'AWSAccessKeyId': 'access_key',
                     'Expires': str(FROZEN_TIMESTAMP + DEFAULT_EXPIRES),

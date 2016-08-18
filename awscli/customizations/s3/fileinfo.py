@@ -8,16 +8,12 @@ import hashlib
 
 from botocore.compat import MD5_AVAILABLE
 from awscli.customizations.s3.utils import (
-    find_bucket_key, guess_content_type, MD5Error, bytes_print, set_file_utime,
-    RequestParamsMapper)
+    find_bucket_key, guess_content_type, CreateDirectoryError, MD5Error,
+    bytes_print, set_file_utime, RequestParamsMapper)
 from awscli.compat import bytes_print
 
 
 LOGGER = logging.getLogger(__name__)
-
-
-class CreateDirectoryError(Exception):
-    pass
 
 
 def read_file(filename):

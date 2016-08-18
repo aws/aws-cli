@@ -760,6 +760,33 @@ class ProvideSizeSubscriber(BaseSubscriber):
         future.meta.provide_transfer_size(self.size)
 
 
+class OnDoneFilteredSubscriber(BaseSubscriber):
+    """Subscriber that differentiates between successes and failures
+
+    It is really a convenience class so developers do not have to have
+    to constantly remember to have a general try/except around future.result()
+    """
+    def on_done(self, future, **kwargs):
+        future_exception = None
+        try:
+
+            future.result()
+        except Exception as e:
+            future_exception = e
+        # If the result propogates an error, call the on_failure
+        # method instead.
+        if future_exception:
+            self.on_failure(future, future_exception)
+        else:
+            self.on_success(future)
+
+    def on_success(self, future):
+        pass
+
+    def on_failure(self, future, e):
+        pass
+
+
 class NonSeekableStream(object):
     """Wrap a file like object as a non seekable stream.
 

@@ -12,6 +12,10 @@
 # language governing permissions and limitations under the License.
 
 
+def register_ec2_page_size_injector(event_emitter):
+    EC2PageSizeInjector().register(event_emitter)
+
+
 class EC2PageSizeInjector(object):
 
     # Operations to auto-paginate and their specific whitelists.
@@ -20,50 +24,42 @@ class EC2PageSizeInjector(object):
     #    Value: List of parameters to add to whitelist for that operation.
     TARGET_OPERATIONS = {
         "describe-volumes": [],
-        "describe-snapshots": ['owner_ids', 'restorable_by_user_ids']
+        "describe-snapshots": ['OwnerIds', 'RestorableByUserIds']
     }
 
     # Parameters which should be whitelisted for every operation.
-    GLOBAL_WHITELIST = [
-        'cli_input_json', 'generate_cli_skeleton', 'help', 'max_items',
-        'next_token', 'dry_run', 'starting_token'
-    ]
+    GLOBAL_WHITELIST = ['NextToken', 'DryRun', 'PaginationConfig']
 
     DEFAULT_PAGE_SIZE = 1000
 
     def register(self, event_emitter):
-        """ Register `inject` for each target operation. """
-        event_template = "operation-args-parsed.ec2.%s"
-        for operation in self.TARGET_OPERATIONS.keys():
+        """Register `inject` for each target operation."""
+        event_template = "calling-command.ec2.%s"
+        for operation in self.TARGET_OPERATIONS:
             event = event_template % operation
-            event_emitter.register(event, self.inject)
+            event_emitter.register_last(event, self.inject)
 
-    def inject(self, event_name, parsed_args, parsed_globals, **kwargs):
-        """ Conditionally inject page_size. """
+    def inject(self, event_name, parsed_globals, call_parameters, **kwargs):
+        """Conditionally inject PageSize."""
         if not parsed_globals.paginate:
+            return
+
+        pagination_config = call_parameters.get('PaginationConfig', {})
+        if 'PageSize' in pagination_config:
             return
 
         operation_name = event_name.split('.')[-1]
 
-        whitelisted_params = self.TARGET_OPERATIONS.get(operation_name, None)
+        whitelisted_params = self.TARGET_OPERATIONS.get(operation_name)
         if whitelisted_params is None:
             return
 
         whitelisted_params += self.GLOBAL_WHITELIST
-        specified_params = self._get_specified_params(parsed_args)
 
-        for param in specified_params:
+        for param in call_parameters:
             if param not in whitelisted_params:
                 return
 
-        parsed_args.page_size = self.DEFAULT_PAGE_SIZE
-
-    def _get_specified_params(self, namespace):
-        attrs = dir(namespace)
-        params = []
-        for attr in attrs:
-            if attr[0] != '_' and getattr(namespace, attr) is not None:
-                params.append(attr)
-
-        return params
+        pagination_config['PageSize'] = self.DEFAULT_PAGE_SIZE
+        call_parameters['PaginationConfig'] = pagination_config
 

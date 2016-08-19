@@ -28,11 +28,11 @@ class TestEC2PageSizeInjector(unittest.TestCase):
         event_emitter = mock.Mock()
         injector.register(event_emitter)
 
-        call_args = event_emitter.register.call_args_list
+        call_args = event_emitter.register_last.call_args_list
         events_registered = sorted([c[0][0] for c in call_args])
         expected_events = sorted([
-            'operation-args-parsed.ec2.bar',
-            'operation-args-parsed.ec2.foo'
+            'calling-command.ec2.bar',
+            'calling-command.ec2.foo'
         ])
         self.assertEqual(events_registered, expected_events)
 
@@ -42,20 +42,30 @@ class TestEC2PageSizeInjector(unittest.TestCase):
         injector.DEFAULT_PAGE_SIZE = 5
         injector.TARGET_OPERATIONS = target_operations
         parsed_globals = Namespace(paginate=True)
-        parsed_args = Namespace(page_size=None)
+        call_parameters = {}
         event_name = 'operation-args-parsed.ec2.foo'
-        injector.inject(event_name, parsed_args, parsed_globals)
-        self.assertEqual(parsed_args.page_size, 5)
+        injector.inject(
+            event_name=event_name,
+            parsed_globals=parsed_globals,
+            call_parameters=call_parameters
+        )
+        page_size = call_parameters.get('PaginationConfig', {}).get('PageSize')
+        self.assertEqual(page_size, 5)
 
     def test_no_paginate(self):
         target_operations = {'foo': []}
         injector = EC2PageSizeInjector()
         injector.TARGET_OPERATIONS = target_operations
         parsed_globals = Namespace(paginate=False)
-        parsed_args = Namespace(page_size=None)
+        call_parameters = {}
         event_name = 'operation-args-parsed.ec2.foo'
-        injector.inject(event_name, parsed_args, parsed_globals)
-        self.assertIsNone(parsed_args.page_size)
+        injector.inject(
+            event_name=event_name,
+            parsed_globals=parsed_globals,
+            call_parameters=call_parameters
+        )
+        page_size = call_parameters.get('PaginationConfig', {}).get('PageSize')
+        self.assertIsNone(page_size)
 
     def test_global_whitelist(self):
         target_operations = {'foo': []}
@@ -63,10 +73,15 @@ class TestEC2PageSizeInjector(unittest.TestCase):
         injector.GLOBAL_WHITELIST = ['bar']
         injector.TARGET_OPERATIONS = target_operations
         parsed_globals = Namespace(paginate=True)
-        parsed_args = Namespace(page_size=None, baz=True)
+        call_parameters = {'baz': True}
         event_name = 'operation-args-parsed.ec2.foo'
-        injector.inject(event_name, parsed_args, parsed_globals)
-        self.assertIsNone(parsed_args.page_size)
+        injector.inject(
+            event_name=event_name,
+            parsed_globals=parsed_globals,
+            call_parameters=call_parameters
+        )
+        page_size = call_parameters.get('PaginationConfig', {}).get('PageSize')
+        self.assertIsNone(page_size)
 
     def test_operation_whitelist(self):
         target_operations = {'foo': ['bar']}
@@ -74,17 +89,27 @@ class TestEC2PageSizeInjector(unittest.TestCase):
         injector.GLOBAL_WHITELIST = []
         injector.TARGET_OPERATIONS = target_operations
         parsed_globals = Namespace(paginate=True)
-        parsed_args = Namespace(page_size=None, baz=True)
+        call_parameters = {'baz': True}
         event_name = 'operation-args-parsed.ec2.foo'
-        injector.inject(event_name, parsed_args, parsed_globals)
-        self.assertIsNone(parsed_args.page_size)
+        injector.inject(
+            event_name=event_name,
+            parsed_globals=parsed_globals,
+            call_parameters=call_parameters
+        )
+        page_size = call_parameters.get('PaginationConfig', {}).get('PageSize')
+        self.assertIsNone(page_size)
 
     def test_non_target_operation(self):
         target_operations = {'foo': []}
         injector = EC2PageSizeInjector()
         injector.TARGET_OPERATIONS = target_operations
         parsed_globals = Namespace(paginate=True)
-        parsed_args = Namespace(page_size=None)
-        event_name = 'operation-args-parsed.ec2.bar'
-        injector.inject(event_name, parsed_args, parsed_globals)
-        self.assertIsNone(parsed_args.page_size)
+        call_parameters = {}
+        event_name = 'operation-args-parsed.ec2.baz'
+        injector.inject(
+            event_name=event_name,
+            parsed_globals=parsed_globals,
+            call_parameters=call_parameters
+        )
+        page_size = call_parameters.get('PaginationConfig', {}).get('PageSize')
+        self.assertIsNone(page_size)

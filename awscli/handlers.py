@@ -44,7 +44,7 @@ from awscli.customizations.ec2.decryptpassword import ec2_add_priv_launch_key
 from awscli.customizations.ec2.protocolarg import register_protocol_args
 from awscli.customizations.ec2.runinstances import register_runinstances
 from awscli.customizations.ec2.secgroupsimplify import register_secgroup
-from awscli.customizations.ec2.paginate import EC2PageSizeInjector
+from awscli.customizations.ec2.paginate import register_ec2_page_size_injector
 from awscli.customizations.ecr import register_ecr_commands
 from awscli.customizations.emr.emr import emr_initialize
 from awscli.customizations.gamelift import register_gamelift_commands
@@ -143,4 +143,4 @@ def awscli_initialize(event_handlers):
         register_create_keys_from_csr_arguments)
     register_cloudfront(event_handlers)
     register_gamelift_commands(event_handlers)
-    EC2PageSizeInjector().register(event_handlers)
+    register_ec2_page_size_injector(event_handlers)

@@ -32,7 +32,8 @@ from awscli.compat import queue
 from awscli.compat import StringIO
 from awscli.testutils import FileCreator
 from awscli.customizations.s3.utils import (
-    find_bucket_key, find_chunksize, ReadFileChunk, relative_path,
+    find_bucket_key, find_chunksize, ReadFileChunk,
+    guess_content_type, relative_path,
     StablePriorityQueue, BucketLister, get_file_stat, AppendFilter,
     create_warning, human_readable_size, human_readable_to_bytes,
     MAX_SINGLE_UPLOAD_SIZE, MIN_UPLOAD_CHUNKSIZE, MAX_UPLOAD_SIZE,
@@ -237,6 +238,20 @@ class TestReadFileChunk(unittest.TestCase):
         self.assertEqual(chunk.tell(), 3)
         chunk.seek(0)
         self.assertEqual(chunk.tell(), 0)
+
+
+class TestGuessContentType(unittest.TestCase):
+    def test_guess_content_type(self):
+        self.assertEqual(guess_content_type('foo.txt'), 'text/plain')
+
+    def test_guess_content_type_with_no_valid_matches(self):
+        self.assertEqual(guess_content_type('no-extension'), None)
+
+    def test_guess_content_type_with_unicode_error_returns_no_match(self):
+        with mock.patch('mimetypes.guess_type') as guess_type_patch:
+            # This should throw a UnicodeDecodeError.
+            guess_type_patch.side_effect = lambda x: b'\xe2'.decode('ascii')
+            self.assertEqual(guess_content_type('foo.txt'), None)
 
 
 class TestRelativePath(unittest.TestCase):

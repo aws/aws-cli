@@ -25,12 +25,12 @@ import copy
 import shutil
 import time
 import json
-import random
 import logging
 import tempfile
 import platform
 import contextlib
 import string
+import binascii
 from pprint import pformat
 from subprocess import Popen, PIPE
 
@@ -152,7 +152,7 @@ def temporary_file(mode):
 
     """
     temporary_directory = tempfile.mkdtemp()
-    basename = 'tmpfile-%s-%s' % (int(time.time()), random.randint(1, 1000))
+    basename = 'tmpfile-%s' % random_chars(8)
     full_filename = os.path.join(temporary_directory, basename)
     open(full_filename, 'w').close()
     try:
@@ -173,9 +173,7 @@ def create_bucket(session, name=None, region=None):
     if name:
         bucket_name = name
     else:
-        rand1 = ''.join(random.sample(string.ascii_lowercase + string.digits,
-                                      10))
-        bucket_name = 'awscli-s3test-' + str(rand1)
+        bucket_name = 'awscli-s3test-' + random_chars(10)
     params = {'Bucket': bucket_name}
     if region != 'us-east-1':
         params['CreateBucketConfiguration'] = {'LocationConstraint': region}
@@ -190,6 +188,15 @@ def create_bucket(session, name=None, region=None):
         else:
             raise
     return bucket_name
+
+
+def random_chars(num_chars):
+    """Returns random hex characters.
+
+    Useful for creating resources with random names.
+
+    """
+    return binascii.hexlify(os.urandom(int(num_chars / 2))).decode('ascii')
 
 
 class BaseCLIDriverTest(unittest.TestCase):

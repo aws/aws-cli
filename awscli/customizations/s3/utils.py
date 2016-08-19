@@ -433,7 +433,21 @@ def guess_content_type(filename):
 
     If the type cannot be guessed, a value of None is returned.
     """
-    return mimetypes.guess_type(filename)[0]
+    try:
+        return mimetypes.guess_type(filename)[0]
+    # This catches a bug in the mimetype libary where some MIME types
+    # specifically on windows machines cause a UnicodeDecodeError
+    # because the MIME type in the Windows registery has an encoding
+    # that cannot be properly encoded using the default system encoding.
+    # https://bugs.python.org/issue9291
+    #
+    # So instead of hard failing, just log the issue and fall back to the
+    # default guessed content type of None.
+    except UnicodeDecodeError:
+        LOGGER.debug(
+            'Unable to guess content type for %s due to '
+            'UnicodeDecodeError: ', filename, exc_info=True
+        )
 
 
 def relative_path(filename, start=os.path.curdir):

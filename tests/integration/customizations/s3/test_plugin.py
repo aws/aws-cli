@@ -29,7 +29,7 @@ import shutil
 import copy
 import logging
 
-from awscli.compat import six
+from awscli.compat import six, urlopen
 from nose.plugins.attrib import attr
 import botocore.session
 
@@ -2089,3 +2089,16 @@ class TestSSECRelatedParams(BaseS3IntegrationTest):
         self.assertTrue(os.path.isfile(file_name))
         with open(file_name, 'r') as f:
             self.assertEqual(f.read(), contents)
+
+
+class TestPresignCommand(BaseS3IntegrationTest):
+
+    def test_can_retrieve_presigned_url(self):
+        bucket_name = _SHARED_BUCKET
+        original_contents = b'this is foo.txt'
+        self.put_object(bucket_name, 'foo.txt', original_contents)
+        p = aws('s3 presign s3://%s/foo.txt' % (bucket_name,))
+        self.assert_no_errors(p)
+        url = p.stdout.strip()
+        contents = urlopen(url).read()
+        self.assertEqual(contents, original_contents)

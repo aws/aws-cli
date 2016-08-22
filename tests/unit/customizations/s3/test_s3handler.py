@@ -36,6 +36,7 @@ from awscli.customizations.s3.results import DownloadResultSubscriber
 from awscli.customizations.s3.results import CopyResultSubscriber
 from awscli.customizations.s3.utils import MAX_PARTS, MAX_UPLOAD_SIZE
 from awscli.customizations.s3.utils import StablePriorityQueue
+from awscli.customizations.s3.utils import WarningResult
 from awscli.customizations.s3.utils import ProvideSizeSubscriber
 from awscli.customizations.s3.utils import ProvideUploadContentTypeSubscriber
 from awscli.customizations.s3.utils import ProvideCopyContentTypeSubscriber
@@ -1206,6 +1207,20 @@ class TestUploadRequestSubmitter(BaseTransferRequestSubmitterTest):
         for i, actual_subscriber in enumerate(actual_subscribers):
             self.assertIsInstance(actual_subscriber, ref_subscribers[i])
 
+    def test_warn_on_too_large_transfer(self):
+        fileinfo = FileInfo(
+            src=self.filename, dest=self.bucket+'/'+self.key,
+            size=MAX_UPLOAD_SIZE+1)
+        self.transfer_request_submitter.submit(fileinfo)
+
+        # A warning should have been submitted because it is too large.
+        warning_result = self.result_queue.get()
+        self.assertIsInstance(warning_result, WarningResult)
+        self.assertIn('exceeds s3 upload limit', warning_result.message)
+
+        # Make sure that the transfer was still attempted
+        self.assertEqual(len(self.transfer_manager.upload.call_args_list), 1)
+
 
 class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
     def setUp(self):
@@ -1260,6 +1275,78 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
             download_call_kwargs['extra_args'],
             {'SSECustomerAlgorithm': 'AES256', 'SSECustomerKey': 'mykey'}
         )
+
+    def test_warn_glacier_for_incompatible(self):
+        fileinfo = FileInfo(
+            src=self.bucket+'/'+self.key, dest=self.filename,
+            operation_name='download',
+            associated_response_data={
+                'StorageClass': 'GLACIER',
+            }
+        )
+        self.transfer_request_submitter.submit(fileinfo)
+
+        # A warning should have been submitted because it is a non-restored
+        # glacier object.
+        warning_result = self.result_queue.get()
+        self.assertIsInstance(warning_result, WarningResult)
+        self.assertIn(
+            'Unable to perform download operations on GLACIER objects',
+            warning_result.message)
+
+        # The transfer should have been skipped.
+        self.assertEqual(len(self.transfer_manager.download.call_args_list), 0)
+
+    def test_not_warn_glacier_for_compatible(self):
+        fileinfo = FileInfo(
+            src=self.bucket+'/'+self.key, dest=self.filename,
+            operation_name='download',
+            associated_response_data={
+                'StorageClass': 'GLACIER',
+                'Restore': 'ongoing-request="false"'
+            }
+        )
+        self.transfer_request_submitter.submit(fileinfo)
+
+        # A warning should have not been submitted because it is a restored
+        # glacier object.
+        self.assertTrue(self.result_queue.empty())
+
+        # And the transfer should not have been skipped.
+        self.assertEqual(len(self.transfer_manager.download.call_args_list), 1)
+
+    def test_warn_glacier_force_glacier(self):
+        self.cli_params['force_glacier_transfer'] = True
+        fileinfo = FileInfo(
+            src=self.bucket+'/'+self.key, dest=self.filename,
+            operation_name='download',
+            associated_response_data={
+                'StorageClass': 'GLACIER',
+            }
+        )
+        self.transfer_request_submitter.submit(fileinfo)
+
+        # A warning should have not been submitted because it is glacier
+        # transfers were forced.
+        self.assertTrue(self.result_queue.empty())
+        self.assertEqual(len(self.transfer_manager.download.call_args_list), 1)
+
+    def test_warn_glacier_ignore_glacier_warnings(self):
+        self.cli_params['ignore_glacier_warnings'] = True
+        fileinfo = FileInfo(
+            src=self.bucket+'/'+self.key, dest=self.filename,
+            operation_name='download',
+            associated_response_data={
+                'StorageClass': 'GLACIER',
+            }
+        )
+        self.transfer_request_submitter.submit(fileinfo)
+
+        # A warning should have not been submitted because it was specified
+        # to ignore glacier warnings.
+        self.assertTrue(self.result_queue.empty())
+        # But the transfer still should have been skipped.
+        self.assertEqual(len(self.transfer_manager.download.call_args_list), 0)
 
 
 class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
@@ -1354,6 +1441,82 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertEqual(len(ref_subscribers), len(actual_subscribers))
         for i, actual_subscriber in enumerate(actual_subscribers):
             self.assertIsInstance(actual_subscriber, ref_subscribers[i])
+
+    def test_warn_glacier_for_incompatible(self):
+        fileinfo = FileInfo(
+            src=self.source_bucket+'/'+self.source_key,
+            dest=self.bucket+'/'+self.key,
+            operation_name='copy',
+            associated_response_data={
+                'StorageClass': 'GLACIER',
+            }
+        )
+        self.transfer_request_submitter.submit(fileinfo)
+
+        # A warning should have been submitted because it is a non-restored
+        # glacier object.
+        warning_result = self.result_queue.get()
+        self.assertIsInstance(warning_result, WarningResult)
+        self.assertIn(
+            'Unable to perform copy operations on GLACIER objects',
+            warning_result.message)
+
+        # The transfer should have been skipped.
+        self.assertEqual(len(self.transfer_manager.copy.call_args_list), 0)
+
+    def test_not_warn_glacier_for_compatible(self):
+        fileinfo = FileInfo(
+            src=self.source_bucket+'/'+self.source_key,
+            dest=self.bucket+'/'+self.key,
+            operation_name='copy',
+            associated_response_data={
+                'StorageClass': 'GLACIER',
+                'Restore': 'ongoing-request="false"'
+            }
+        )
+        self.transfer_request_submitter.submit(fileinfo)
+
+        # A warning should have not been submitted because it is a restored
+        # glacier object.
+        self.assertTrue(self.result_queue.empty())
+
+        # And the transfer should not have been skipped.
+        self.assertEqual(len(self.transfer_manager.copy.call_args_list), 1)
+
+    def test_warn_glacier_force_glacier(self):
+        self.cli_params['force_glacier_transfer'] = True
+        fileinfo = FileInfo(
+            src=self.source_bucket+'/'+self.source_key,
+            dest=self.bucket+'/'+self.key,
+            operation_name='copy',
+            associated_response_data={
+                'StorageClass': 'GLACIER',
+            }
+        )
+        self.transfer_request_submitter.submit(fileinfo)
+
+        # A warning should have not been submitted because it is glacier
+        # transfers were forced.
+        self.assertTrue(self.result_queue.empty())
+        self.assertEqual(len(self.transfer_manager.copy.call_args_list), 1)
+
+    def test_warn_glacier_ignore_glacier_warnings(self):
+        self.cli_params['ignore_glacier_warnings'] = True
+        fileinfo = FileInfo(
+            src=self.source_bucket+'/'+self.source_key,
+            dest=self.bucket+'/'+self.key,
+            operation_name='copy',
+            associated_response_data={
+                'StorageClass': 'GLACIER',
+            }
+        )
+        self.transfer_request_submitter.submit(fileinfo)
+
+        # A warning should have not been submitted because it was specified
+        # to ignore glacier warnings.
+        self.assertTrue(self.result_queue.empty())
+        # But the transfer still should have been skipped.
+        self.assertEqual(len(self.transfer_manager.copy.call_args_list), 0)
 
 
 if __name__ == "__main__":

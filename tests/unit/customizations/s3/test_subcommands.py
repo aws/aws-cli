@@ -22,6 +22,7 @@ from awscli.customizations.s3.s3 import S3
 from awscli.customizations.s3.subcommands import CommandParameters, \
     CommandArchitecture, CpCommand, SyncCommand, ListCommand, \
     RbCommand, get_client
+from awscli.customizations.s3.transferconfig import RuntimeConfig
 from awscli.customizations.s3.syncstrategy.base import \
     SizeAndLastModifiedSync, NeverSync, MissingFileSync
 from awscli.testutils import unittest, BaseAWSHelpOutputTest, \
@@ -371,7 +372,8 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         self.parsed_responses = [{'Error': {
                                   'Code': 'BucketNotExists',
                                   'Message': 'Bucket does not exist'}}]
-        cmd_arc = CommandArchitecture(self.session, 'cp', params)
+        cmd_arc = CommandArchitecture(
+            self.session, 'cp', params, RuntimeConfig().build_config())
         cmd_arc.set_clients()
         cmd_arc.create_instructions()
         self.patch_make_request()

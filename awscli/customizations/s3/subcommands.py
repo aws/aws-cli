@@ -11,11 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+import logging
 import sys
 
 from botocore.client import Config
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
+from s3transfer.manager import TransferManager
 
 from awscli.compat import six
 from awscli.compat import queue
@@ -26,14 +28,24 @@ from awscli.customizations.s3.fileformat import FileFormat
 from awscli.customizations.s3.filegenerator import FileGenerator
 from awscli.customizations.s3.fileinfo import TaskInfo, FileInfo
 from awscli.customizations.s3.filters import create_filter
+from awscli.customizations.s3.results import ResultRecorder
+from awscli.customizations.s3.results import OnlyShowErrorsResultPrinter
+from awscli.customizations.s3.results import ResultPrinter
+from awscli.customizations.s3.results import ResultProcessor
 from awscli.customizations.s3.s3handler import S3Handler
 from awscli.customizations.s3.s3handler import S3TransferStreamHandler
+from awscli.customizations.s3.s3handler import S3TransferHandler
 from awscli.customizations.s3.utils import find_bucket_key, uni_print, \
     AppendFilter, find_dest_path_comp_key, human_readable_size, \
     RequestParamsMapper
 from awscli.customizations.s3.syncstrategy.base import MissingFileSync, \
     SizeAndLastModifiedSync, NeverSync
 from awscli.customizations.s3 import transferconfig
+from awscli.customizations.s3.transferconfig import \
+    create_transfer_config_from_runtime_config
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 RECURSIVE = {'name': 'recursive', 'action': 'store_true', 'dest': 'dir_op',
@@ -940,6 +952,10 @@ class CommandArchitecture(object):
         s3_stream_handler = S3TransferStreamHandler(
             self.session, self.parameters, result_queue=result_queue)
 
+        s3_transfer_hanlder = s3handler
+        if self.cmd == 'cp' and not self.parameters.get('dryrun'):
+            s3_transfer_hanlder = self._get_s3_transfer_handler(result_queue)
+
         sync_strategies = self.choose_sync_strategies()
 
         command_dict = {}
@@ -960,7 +976,7 @@ class CommandArchitecture(object):
                             'file_generator': [file_generator],
                             'filters': [create_filter(self.parameters)],
                             'file_info_builder': [file_info_builder],
-                            's3_handler': [s3handler]}
+                            's3_handler': [s3_transfer_hanlder]}
         elif self.cmd == 'rm':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],
@@ -1007,6 +1023,37 @@ class CommandArchitecture(object):
         if files[0].num_tasks_warned > 0:
             rc = 2
         return rc
+
+    def _get_s3_transfer_handler(self, result_queue):
+        transfer_config = create_transfer_config_from_runtime_config(
+            self._runtime_config)
+        transfer_manager = TransferManager(self._client, transfer_config)
+
+        LOGGER.debug(
+            "Using a multipart threshold of %s and a part size of %s",
+            transfer_config.multipart_threshold,
+            transfer_config.multipart_chunksize
+        )
+        result_recorder = ResultRecorder()
+        result_processor_handlers = [result_recorder]
+        self._add_result_printer(result_recorder, result_processor_handlers)
+        result_processor = ResultProcessor(
+            result_queue, result_processor_handlers)
+
+        return S3TransferHandler(
+            transfer_manager, self.parameters, result_queue, result_recorder,
+            result_processor
+        )
+
+    def _add_result_printer(self, result_recorder, result_processor_handlers):
+        result_printer = None
+        if self.parameters.get('quiet'):
+            return
+        elif self.parameters.get('only_show_errors'):
+            result_printer = OnlyShowErrorsResultPrinter(result_recorder)
+        else:
+            result_printer = ResultPrinter(result_recorder)
+        result_processor_handlers.append(result_printer)
 
 
 class CommandParameters(object):

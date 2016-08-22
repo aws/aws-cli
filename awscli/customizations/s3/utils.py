@@ -818,7 +818,7 @@ class BaseProvideContentTypeSubscriber(BaseSubscriber):
             future.meta.call_args.extra_args['ContentType'] = guessed_type
 
     def _get_filename(self, future):
-        raise NotImplementedError('must implement _get_filename()')
+        raise NotImplementedError('_get_filename()')
 
 
 class ProvideUploadContentTypeSubscriber(BaseProvideContentTypeSubscriber):

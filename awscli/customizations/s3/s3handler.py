@@ -26,9 +26,16 @@ from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3 import tasks
 from awscli.customizations.s3.transferconfig import RuntimeConfig, \
     create_transfer_config_from_runtime_config
+from awscli.customizations.s3.results import UploadResultSubscriber
+from awscli.customizations.s3.results import DownloadResultSubscriber
+from awscli.customizations.s3.results import CopyResultSubscriber
 from awscli.customizations.s3.utils import RequestParamsMapper
 from awscli.customizations.s3.utils import StdoutBytesWriter
 from awscli.customizations.s3.utils import ProvideSizeSubscriber
+from awscli.customizations.s3.utils import ProvideUploadContentTypeSubscriber
+from awscli.customizations.s3.utils import ProvideCopyContentTypeSubscriber
+from awscli.customizations.s3.utils import ProvideLastModifiedTimeSubscriber
+from awscli.customizations.s3.utils import DirectoryCreatorSubscriber
 from awscli.customizations.s3.utils import uni_print
 from awscli.compat import queue
 from awscli.compat import binary_stdin
@@ -513,3 +520,87 @@ class S3TransferStreamHandler(BaseS3Handler):
             # TODO: Update when S3Handler is refactored
             uni_print("Transfer failed: %s \n" % str(e))
             return CommandResult(1, 0)
+
+
+class BaseTransferRequestSubmitter(object):
+    REQUEST_MAPPER_METHOD = None
+    RESULT_SUBSCRIBER_CLASS = None
+
+    def __init__(self, transfer_manager, result_queue, cli_params):
+        self._transfer_manager = transfer_manager
+        self._result_queue = result_queue
+        self._cli_params = cli_params
+
+    def submit(self, fileinfo):
+        extra_args = {}
+        self.REQUEST_MAPPER_METHOD(extra_args, self._cli_params)
+        subscribers = [self.RESULT_SUBSCRIBER_CLASS(self._result_queue)]
+        self._add_additional_subscribers(subscribers, fileinfo)
+        self._submit_transfer_request(fileinfo, extra_args, subscribers)
+
+    def _add_additional_subscribers(self, subscribers, fileinfo):
+        pass
+
+    def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
+        raise NotImplementedError('_submit_transfer_request()')
+
+    def _should_inject_content_type(self):
+        return (
+            self._cli_params.get('guess_mime_type') and
+            not self._cli_params.get('content_type')
+        )
+
+
+class UploadRequestSubmitter(BaseTransferRequestSubmitter):
+    REQUEST_MAPPER_METHOD = RequestParamsMapper.map_put_object_params
+    RESULT_SUBSCRIBER_CLASS = UploadResultSubscriber
+
+    def _add_additional_subscribers(self, subscribers, fileinfo):
+        subscribers.insert(0, ProvideSizeSubscriber(fileinfo.size))
+        if self._should_inject_content_type():
+            subscribers.insert(0, ProvideUploadContentTypeSubscriber())
+
+    def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
+        bucket, key = find_bucket_key(fileinfo.dest)
+        self._transfer_manager.upload(
+            fileobj=fileinfo.src, bucket=bucket, key=key,
+            extra_args=extra_args, subscribers=subscribers
+        )
+
+
+class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
+    REQUEST_MAPPER_METHOD = RequestParamsMapper.map_get_object_params
+    RESULT_SUBSCRIBER_CLASS = DownloadResultSubscriber
+
+    def _add_additional_subscribers(self, subscribers, fileinfo):
+        subscribers.insert(0, ProvideSizeSubscriber(fileinfo.size))
+        subscribers.insert(0, DirectoryCreatorSubscriber())
+        subscribers.insert(0, ProvideLastModifiedTimeSubscriber(
+            fileinfo.last_update, self._result_queue))
+
+    def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
+        bucket, key = find_bucket_key(fileinfo.src)
+        self._transfer_manager.download(
+            fileobj=fileinfo.dest, bucket=bucket, key=key,
+            extra_args=extra_args, subscribers=subscribers
+        )
+
+
+class CopyRequestSubmitter(BaseTransferRequestSubmitter):
+    REQUEST_MAPPER_METHOD = RequestParamsMapper.map_copy_object_params
+    RESULT_SUBSCRIBER_CLASS = CopyResultSubscriber
+
+    def _add_additional_subscribers(self, subscribers, fileinfo):
+        subscribers.insert(0, ProvideSizeSubscriber(fileinfo.size))
+        if self._should_inject_content_type():
+            subscribers.insert(0, ProvideCopyContentTypeSubscriber())
+
+    def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
+        bucket, key = find_bucket_key(fileinfo.dest)
+        source_bucket, source_key = find_bucket_key(fileinfo.src)
+        copy_source = {'Bucket': source_bucket, 'Key': source_key}
+        self._transfer_manager.copy(
+            bucket=bucket, key=key, copy_source=copy_source,
+            extra_args=extra_args, subscribers=subscribers,
+            source_client=fileinfo.source_client
+        )

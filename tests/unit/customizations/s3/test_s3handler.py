@@ -25,6 +25,7 @@ from awscli.compat import six
 from awscli.compat import queue
 from awscli.customizations.s3.s3handler import S3Handler
 from awscli.customizations.s3.s3handler import S3TransferStreamHandler
+from awscli.customizations.s3.s3handler import S3TransferHandler
 from awscli.customizations.s3.s3handler import UploadRequestSubmitter
 from awscli.customizations.s3.s3handler import DownloadRequestSubmitter
 from awscli.customizations.s3.s3handler import CopyRequestSubmitter
@@ -34,6 +35,8 @@ from awscli.customizations.s3.tasks import CreateMultipartUploadTask, \
 from awscli.customizations.s3.results import UploadResultSubscriber
 from awscli.customizations.s3.results import DownloadResultSubscriber
 from awscli.customizations.s3.results import CopyResultSubscriber
+from awscli.customizations.s3.results import ResultRecorder
+from awscli.customizations.s3.results import ResultProcessor
 from awscli.customizations.s3.utils import MAX_PARTS, MAX_UPLOAD_SIZE
 from awscli.customizations.s3.utils import StablePriorityQueue
 from awscli.customizations.s3.utils import WarningResult
@@ -889,9 +892,9 @@ class S3HandlerTestBucket(S3HandlerBaseTest):
                                               ref_calls)
 
 
-class TestS3TransferHandler(S3HandlerBaseTest):
+class TestS3TransferStreamHandler(S3HandlerBaseTest):
     def setUp(self):
-        super(TestS3TransferHandler, self).setUp()
+        super(TestS3TransferStreamHandler, self).setUp()
         self.params = {'is_stream': True, 'region': 'us-east-1'}
         self.transfer_manager = mock.Mock(spec=TransferManager)
         self.transfer_manager.__enter__ = mock.Mock()
@@ -1081,6 +1084,82 @@ class TestS3HandlerInitialization(unittest.TestCase):
 
         self.assertEqual(handler.chunksize, 1000)
         self.assertEqual(handler.multi_threshold, 10000)
+
+
+class TestS3TransferHandler(unittest.TestCase):
+    def setUp(self):
+        self.result_queue = queue.Queue()
+        self.result_recorder = ResultRecorder()
+        self.processed_results = []
+        self.result_processor = ResultProcessor(
+            self.result_queue,
+            [self.result_recorder, self.processed_results.append]
+        )
+
+        self.transfer_manager = mock.Mock(spec=TransferManager)
+        self.transfer_manager.__enter__ = mock.Mock()
+        self.transfer_manager.__exit__ = mock.Mock()
+        self.parameters = {}
+        self.s3_transfer_handler = S3TransferHandler(
+            self.transfer_manager, self.parameters, self.result_queue,
+            self.result_recorder, self.result_processor
+        )
+
+    def test_call_return_command_result(self):
+        num_failures = 5
+        num_warnings = 3
+        self.result_recorder.files_failed = num_failures
+        self.result_recorder.files_warned = num_warnings
+        command_result = self.s3_transfer_handler.call([])
+        self.assertEqual(command_result, (num_failures, num_warnings))
+
+    def test_enqueue_uploads(self):
+        fileinfos = []
+        num_transfers = 5
+        for _ in range(num_transfers):
+            fileinfos.append(
+                FileInfo(src='filename', dest='bucket/key',
+                         operation_name='upload'))
+
+        self.s3_transfer_handler.call(fileinfos)
+        self.assertEqual(
+            self.transfer_manager.upload.call_count, num_transfers)
+
+    def test_enqueue_downloads(self):
+        fileinfos = []
+        num_transfers = 5
+        for _ in range(num_transfers):
+            fileinfos.append(
+                FileInfo(src='bucket/key', dest='filename',
+                         operation_name='download'))
+
+        self.s3_transfer_handler.call(fileinfos)
+        self.assertEqual(
+            self.transfer_manager.download.call_count, num_transfers)
+
+    def test_enqueue_copies(self):
+        fileinfos = []
+        num_transfers = 5
+        for _ in range(num_transfers):
+            fileinfos.append(
+                FileInfo(src='sourcebucket/sourcekey', dest='bucket/key',
+                         operation_name='copy'))
+
+        self.s3_transfer_handler.call(fileinfos)
+        self.assertEqual(
+            self.transfer_manager.copy.call_count, num_transfers)
+
+    def test_exception_when_enqueuing(self):
+        fileinfos = [
+            FileInfo(src='filename', dest='bucket/key',
+                     operation_name='upload')
+        ]
+        self.transfer_manager.__exit__.side_effect = Exception(
+            'some exception')
+        command_result = self.s3_transfer_handler.call(fileinfos)
+        # Exception should have been raised casing the command result to
+        # have failed results of one.
+        self.assertEqual(command_result, (1, 0))
 
 
 class BaseTransferRequestSubmitterTest(unittest.TestCase):

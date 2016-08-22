@@ -527,11 +527,23 @@ class BaseTransferRequestSubmitter(object):
     RESULT_SUBSCRIBER_CLASS = None
 
     def __init__(self, transfer_manager, result_queue, cli_params):
+        """Submits transfer requests to the TransferManager
+
+        Given a FileInfo object and provided CLI parameters, it will add the
+        necessary extra arguments and subscribers in making a call to the
+        TransferManager.
+
+        :param transfer_manager: The underlying transfer manager
+        :param result queue: The result queue to use
+        :param cli_params: The associated CLI parameters passed in to the
+            command.
+        """
         self._transfer_manager = transfer_manager
         self._result_queue = result_queue
         self._cli_params = cli_params
 
     def submit(self, fileinfo):
+        """Submits a transfer request based on the FileInfo provided"""
         extra_args = {}
         self.REQUEST_MAPPER_METHOD(extra_args, self._cli_params)
         subscribers = [self.RESULT_SUBSCRIBER_CLASS(self._result_queue)]

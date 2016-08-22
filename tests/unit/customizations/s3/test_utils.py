@@ -585,10 +585,10 @@ class OnDoneFilteredRecordingSubscriber(OnDoneFilteredSubscriber):
         self.on_success_calls = []
         self.on_failure_calls = []
 
-    def on_success(self, future):
+    def _on_success(self, future):
         self.on_success_calls.append(future)
 
-    def on_failure(self, future, exception):
+    def _on_failure(self, future, exception):
         self.on_failure_calls.append((future, exception))
 
 
@@ -672,14 +672,14 @@ class TestProvideLastModifiedTimeSubscriber(BaseTestWithFileCreator):
         self.future = FakeTransferFuture(meta=meta)
 
     def test_on_success_modifies_utime(self):
-        self.subscriber.on_success(self.future)
+        self.subscriber.on_done(self.future)
         _, utime = get_file_stat(self.filename)
         self.assertEqual(utime, self.desired_utime)
 
     def test_on_success_failure_in_utime_mod_raises_warning(self):
         self.subscriber = ProvideLastModifiedTimeSubscriber(
             None, self.result_queue)
-        self.subscriber.on_success(self.future)
+        self.subscriber.on_done(self.future)
         # Because the time to provide was None it will throw an exception
         # which results in the a warning about the utime not being able
         # to be set being placed in the result queue.

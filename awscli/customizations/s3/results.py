@@ -81,12 +81,12 @@ class BaseResultSubscriber(OnDoneFilteredSubscriber):
             self.TRANSFER_TYPE, src, dest, bytes_transferred, future.meta.size)
         self._result_queue.put(progress_result)
 
-    def on_success(self, future):
+    def _on_success(self, future):
         src, dest = self._get_src_dest(future)
         self._result_queue.put(
             SuccessResult(self.TRANSFER_TYPE, src, dest))
 
-    def on_failure(self, future, e):
+    def _on_failure(self, future, e):
         src, dest = self._get_src_dest(future)
         self._result_queue.put(
             FailureResult(self.TRANSFER_TYPE, src, dest, e))

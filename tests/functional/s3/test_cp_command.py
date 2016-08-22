@@ -233,7 +233,7 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         ]
         with mock.patch('os.utime') as mock_utime:
             mock_utime.side_effect = OSError(1, '')
-            _, err, _ = self.run_cmd(cmdline, expected_rc=1)
+            _, err, _ = self.run_cmd(cmdline, expected_rc=2)
             self.assertIn('attempting to modify the utime', err)
 
     def test_recursive_glacier_download_with_force_glacier(self):

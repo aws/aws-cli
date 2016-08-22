@@ -30,30 +30,9 @@ from awscli.customizations.s3.results import OnlyShowErrorsResultPrinter
 from awscli.customizations.s3.results import ResultProcessor
 from awscli.customizations.s3.utils import relative_path
 from awscli.customizations.s3.utils import WarningResult
-
-
-class FakeTransferFuture(object):
-    def __init__(self, result=None, exception=None, meta=None):
-        self._result = result
-        self._exception = exception
-        self.meta = meta
-
-    def result(self):
-        if self._exception:
-            raise self._exception
-        return self._result
-
-
-class FakeTransferFutureMeta(object):
-    def __init__(self, size=None, call_args=None):
-        self.size = size
-        self.call_args = call_args
-
-
-class FakeTransferFutureCallArgs(object):
-    def __init__(self, **kwargs):
-        for kwarg, val in kwargs.items():
-            setattr(self, kwarg, val)
+from tests.unit.customizations.s3 import FakeTransferFuture
+from tests.unit.customizations.s3 import FakeTransferFutureMeta
+from tests.unit.customizations.s3 import FakeTransferFutureCallArgs
 
 
 class BaseResultSubscriberTest(unittest.TestCase):

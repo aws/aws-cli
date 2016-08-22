@@ -23,6 +23,7 @@ from awscli.customizations.s3.utils import relative_path
 from awscli.customizations.s3.utils import human_readable_size
 from awscli.customizations.s3.utils import uni_print
 from awscli.customizations.s3.utils import WarningResult
+from awscli.customizations.s3.utils import OnDoneFilteredSubscriber
 
 
 LOGGER = logging.getLogger(__name__)
@@ -57,7 +58,7 @@ CommandResult = namedtuple(
     'CommandResult', ['num_tasks_failed', 'num_tasks_warned'])
 
 
-class BaseResultSubscriber(BaseSubscriber):
+class BaseResultSubscriber(OnDoneFilteredSubscriber):
     TRANSFER_TYPE = None
 
     def __init__(self, result_queue):
@@ -80,15 +81,15 @@ class BaseResultSubscriber(BaseSubscriber):
             self.TRANSFER_TYPE, src, dest, bytes_transferred, future.meta.size)
         self._result_queue.put(progress_result)
 
-    def on_done(self, future, **kwargs):
+    def _on_success(self, future):
         src, dest = self._get_src_dest(future)
-        try:
-            future.result()
-            self._result_queue.put(
-                SuccessResult(self.TRANSFER_TYPE, src, dest))
-        except Exception as e:
-            self._result_queue.put(
-                FailureResult(self.TRANSFER_TYPE, src, dest, e))
+        self._result_queue.put(
+            SuccessResult(self.TRANSFER_TYPE, src, dest))
+
+    def _on_failure(self, future, e):
+        src, dest = self._get_src_dest(future)
+        self._result_queue.put(
+            FailureResult(self.TRANSFER_TYPE, src, dest, e))
 
     def _get_src_dest(self, future):
         raise NotImplementedError('_get_src_dest()')

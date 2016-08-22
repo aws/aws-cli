@@ -19,6 +19,7 @@ import math
 import errno
 import os
 import sys
+import time
 from collections import namedtuple, deque
 from functools import partial
 
@@ -142,6 +143,10 @@ class MD5Error(Exception):
     """
     Exception for md5's that do not match.
     """
+    pass
+
+
+class CreateDirectoryError(Exception):
     pass
 
 
@@ -428,7 +433,21 @@ def guess_content_type(filename):
 
     If the type cannot be guessed, a value of None is returned.
     """
-    return mimetypes.guess_type(filename)[0]
+    try:
+        return mimetypes.guess_type(filename)[0]
+    # This catches a bug in the mimetype libary where some MIME types
+    # specifically on windows machines cause a UnicodeDecodeError
+    # because the MIME type in the Windows registery has an encoding
+    # that cannot be properly encoded using the default system encoding.
+    # https://bugs.python.org/issue9291
+    #
+    # So instead of hard failing, just log the issue and fall back to the
+    # default guessed content type of None.
+    except UnicodeDecodeError:
+        LOGGER.debug(
+            'Unable to guess content type for %s due to '
+            'UnicodeDecodeError: ', filename, exc_info=True
+        )
 
 
 def relative_path(filename, start=os.path.curdir):
@@ -758,6 +777,90 @@ class ProvideSizeSubscriber(BaseSubscriber):
 
     def on_queued(self, future, **kwargs):
         future.meta.provide_transfer_size(self.size)
+
+
+# TODO: Eventually port this down to the BaseSubscriber or a new subscriber
+# class in s3transfer. The functionality is very convenient but may need
+# some further design decisions to make it a feature in s3transfer.
+class OnDoneFilteredSubscriber(BaseSubscriber):
+    """Subscriber that differentiates between successes and failures
+
+    It is really a convenience class so developers do not have to have
+    to constantly remember to have a general try/except around future.result()
+    """
+    def on_done(self, future, **kwargs):
+        future_exception = None
+        try:
+
+            future.result()
+        except Exception as e:
+            future_exception = e
+        # If the result propogates an error, call the on_failure
+        # method instead.
+        if future_exception:
+            self._on_failure(future, future_exception)
+        else:
+            self._on_success(future)
+
+    def _on_success(self, future):
+        pass
+
+    def _on_failure(self, future, e):
+        pass
+
+
+class BaseProvideContentTypeSubscriber(BaseSubscriber):
+    """A subscriber that provides content type when creating s3 objects"""
+
+    def on_queued(self, future, **kwargs):
+        guessed_type = guess_content_type(self._get_filename(future))
+        if guessed_type is not None:
+            future.meta.call_args.extra_args['ContentType'] = guessed_type
+
+    def _get_filename(self, future):
+        raise NotImplementedError('_get_filename()')
+
+
+class ProvideUploadContentTypeSubscriber(BaseProvideContentTypeSubscriber):
+    def _get_filename(self, future):
+        return future.meta.call_args.fileobj
+
+
+class ProvideCopyContentTypeSubscriber(BaseProvideContentTypeSubscriber):
+    def _get_filename(self, future):
+        return future.meta.call_args.copy_source['Key']
+
+
+class ProvideLastModifiedTimeSubscriber(OnDoneFilteredSubscriber):
+    """Sets utime for a downloaded file"""
+    def __init__(self, last_modified_time, result_queue):
+        self._last_modified_time = last_modified_time
+        self._result_queue = result_queue
+
+    def _on_success(self, future, **kwargs):
+        filename = future.meta.call_args.fileobj
+        try:
+            last_update_tuple = self._last_modified_time.timetuple()
+            mod_timestamp = time.mktime(last_update_tuple)
+            set_file_utime(filename, int(mod_timestamp))
+        except Exception as e:
+            warning_message = (
+                'Successfully Downloaded %s but was unable to update the '
+                'last modified time. %s' % (filename, e))
+            self._result_queue.put(create_warning(filename, warning_message))
+
+
+class DirectoryCreatorSubscriber(BaseSubscriber):
+    """Creates a directory to download if it does not exist"""
+    def on_queued(self, future, **kwargs):
+        d = os.path.dirname(future.meta.call_args.fileobj)
+        try:
+            if not os.path.exists(d):
+                os.makedirs(d)
+        except OSError as e:
+            if not e.errno == errno.EEXIST:
+                raise CreateDirectoryError(
+                    "Could not create directory %s: %s" % (d, e))
 
 
 class NonSeekableStream(object):

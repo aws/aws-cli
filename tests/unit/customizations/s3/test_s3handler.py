@@ -1098,6 +1098,16 @@ class TestUploadRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.transfer_request_submitter = UploadRequestSubmitter(
             self.transfer_manager, self.result_queue, self.cli_params)
 
+    def test_is_valid_submission(self):
+        fileinfo = FileInfo(
+            src=self.filename, dest=self.bucket+'/'+self.key,
+            operation_name='upload')
+        self.assertTrue(
+            self.transfer_request_submitter.is_valid_submission(fileinfo))
+        fileinfo.operation_name = 'foo'
+        self.assertFalse(
+            self.transfer_request_submitter.is_valid_submission(fileinfo))
+
     def test_submit(self):
         fileinfo = FileInfo(
             src=self.filename, dest=self.bucket+'/'+self.key)
@@ -1174,6 +1184,16 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.transfer_request_submitter = DownloadRequestSubmitter(
             self.transfer_manager, self.result_queue, self.cli_params)
 
+    def test_is_valid_submission(self):
+        fileinfo = FileInfo(
+            src=self.bucket+'/'+self.key, dest=self.filename,
+            operation_name='download')
+        self.assertTrue(
+            self.transfer_request_submitter.is_valid_submission(fileinfo))
+        fileinfo.operation_name = 'foo'
+        self.assertFalse(
+            self.transfer_request_submitter.is_valid_submission(fileinfo))
+
     def test_submit(self):
         fileinfo = FileInfo(
             src=self.bucket+'/'+self.key, dest=self.filename)
@@ -1220,6 +1240,16 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.source_key = 'mysourcekey'
         self.transfer_request_submitter = CopyRequestSubmitter(
             self.transfer_manager, self.result_queue, self.cli_params)
+
+    def test_is_valid_submission(self):
+        fileinfo = FileInfo(
+            src=self.source_bucket+'/'+self.source_key,
+            dest=self.bucket+'/'+self.key, operation_name='copy')
+        self.assertTrue(
+            self.transfer_request_submitter.is_valid_submission(fileinfo))
+        fileinfo.operation_name = 'foo'
+        self.assertFalse(
+            self.transfer_request_submitter.is_valid_submission(fileinfo))
 
     def test_submit(self):
         fileinfo = FileInfo(

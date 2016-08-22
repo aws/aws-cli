@@ -543,12 +543,27 @@ class BaseTransferRequestSubmitter(object):
         self._cli_params = cli_params
 
     def submit(self, fileinfo):
-        """Submits a transfer request based on the FileInfo provided"""
+        """Submits a transfer request based on the FileInfo provided
+
+        :param fileinfo: The FileInfo to be used to submit a transfer
+            request to the underlying transfer manager.
+        """
         extra_args = {}
         self.REQUEST_MAPPER_METHOD(extra_args, self._cli_params)
         subscribers = [self.RESULT_SUBSCRIBER_CLASS(self._result_queue)]
         self._add_additional_subscribers(subscribers, fileinfo)
         self._submit_transfer_request(fileinfo, extra_args, subscribers)
+
+    def is_valid_submission(self, fileinfo):
+        """Checks whether it is valid to submit a particular FileInfo
+
+        :param fileinfo: The FileInfo to check if the transfer request
+            submitter can handle.
+
+        :returns: True if it can use the provided FileInfo to make a transfer
+            request to the underlying transfer manager. False, otherwise.
+        """
+        raise NotImplementedError('is_valid_to_submit()')
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
         pass
@@ -567,6 +582,9 @@ class UploadRequestSubmitter(BaseTransferRequestSubmitter):
     REQUEST_MAPPER_METHOD = RequestParamsMapper.map_put_object_params
     RESULT_SUBSCRIBER_CLASS = UploadResultSubscriber
 
+    def is_valid_submission(self, fileinfo):
+        return fileinfo.operation_name == 'upload'
+
     def _add_additional_subscribers(self, subscribers, fileinfo):
         subscribers.insert(0, ProvideSizeSubscriber(fileinfo.size))
         if self._should_inject_content_type():
@@ -583,6 +601,9 @@ class UploadRequestSubmitter(BaseTransferRequestSubmitter):
 class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
     REQUEST_MAPPER_METHOD = RequestParamsMapper.map_get_object_params
     RESULT_SUBSCRIBER_CLASS = DownloadResultSubscriber
+
+    def is_valid_submission(self, fileinfo):
+        return fileinfo.operation_name == 'download'
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
         subscribers.insert(0, ProvideSizeSubscriber(fileinfo.size))
@@ -601,6 +622,9 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
 class CopyRequestSubmitter(BaseTransferRequestSubmitter):
     REQUEST_MAPPER_METHOD = RequestParamsMapper.map_copy_object_params
     RESULT_SUBSCRIBER_CLASS = CopyResultSubscriber
+
+    def is_valid_submission(self, fileinfo):
+        return fileinfo.operation_name == 'copy'
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
         subscribers.insert(0, ProvideSizeSubscriber(fileinfo.size))

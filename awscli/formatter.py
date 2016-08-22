@@ -85,15 +85,37 @@ class FullyBufferedFormatter(Formatter):
 
 class JSONFormatter(FullyBufferedFormatter):
 
+    def __init__(self, args):
+        super(JSONFormatter, self).__init__(args)
+
+        self.colorize = False
+        try:
+            if args.color == 'on':
+                self.colorize = True
+        except:
+            pass
+
     def _format_response(self, command_name, response, stream):
         # For operations that have no response body (e.g. s3 put-object)
         # the response will be an empty string.  We don't want to print
         # that out to the user but other "falsey" values like an empty
         # dictionary should be printed.
         if response != {}:
-            json.dump(response, stream, indent=4, default=json_encoder,
-                    ensure_ascii=False)
-            stream.write('\n')
+            if self.colorize:
+                from pygments import highlight, lexers, formatters
+                from StringIO import StringIO
+                io = StringIO()
+                json.dump(response, io, indent=4, default=json_encoder,
+                        ensure_ascii=False)
+                colorful_json = highlight(io.getvalue(), lexers.JsonLexer(), formatters.TerminalFormatter())
+
+                stream.write(colorful_json)
+                stream.write('\n')
+            else:
+                json.dump(response, stream, indent=4, default=json_encoder,
+                        ensure_ascii=False)
+
+                stream.write('\n')
 
 
 class TableFormatter(FullyBufferedFormatter):

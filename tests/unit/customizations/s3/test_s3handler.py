@@ -22,14 +22,25 @@ import awscli.customizations.s3.utils
 from awscli.testutils import unittest, capture_input
 from awscli import EnvironmentVariables
 from awscli.compat import six
+from awscli.compat import queue
 from awscli.customizations.s3.s3handler import S3Handler
 from awscli.customizations.s3.s3handler import S3TransferStreamHandler
+from awscli.customizations.s3.s3handler import UploadRequestSubmitter
+from awscli.customizations.s3.s3handler import DownloadRequestSubmitter
+from awscli.customizations.s3.s3handler import CopyRequestSubmitter
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.tasks import CreateMultipartUploadTask, \
     UploadPartTask, CreateLocalFileTask, CompleteMultipartUploadTask
+from awscli.customizations.s3.results import UploadResultSubscriber
+from awscli.customizations.s3.results import DownloadResultSubscriber
+from awscli.customizations.s3.results import CopyResultSubscriber
 from awscli.customizations.s3.utils import MAX_PARTS, MAX_UPLOAD_SIZE
 from awscli.customizations.s3.utils import StablePriorityQueue
 from awscli.customizations.s3.utils import ProvideSizeSubscriber
+from awscli.customizations.s3.utils import ProvideUploadContentTypeSubscriber
+from awscli.customizations.s3.utils import ProvideCopyContentTypeSubscriber
+from awscli.customizations.s3.utils import ProvideLastModifiedTimeSubscriber
+from awscli.customizations.s3.utils import DirectoryCreatorSubscriber
 from awscli.customizations.s3.transferconfig import RuntimeConfig
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     S3HandlerBaseTest
@@ -1098,6 +1109,221 @@ class TestS3HandlerInitialization(unittest.TestCase):
 
         self.assertEqual(handler.chunksize, 1000)
         self.assertEqual(handler.multi_threshold, 10000)
+
+
+class BaseTransferRequestSubmitterTest(unittest.TestCase):
+    def setUp(self):
+        self.transfer_manager = mock.Mock(spec=TransferManager)
+        self.result_queue = queue.Queue()
+        self.cli_params = {}
+        self.filename = 'myfile'
+        self.bucket = 'mybucket'
+        self.key = 'mykey'
+
+
+class TestUploadRequestSubmitter(BaseTransferRequestSubmitterTest):
+    def setUp(self):
+        super(TestUploadRequestSubmitter, self).setUp()
+        self.transfer_request_submitter = UploadRequestSubmitter(
+            self.transfer_manager, self.result_queue, self.cli_params)
+
+    def test_submit(self):
+        fileinfo = FileInfo(
+            src=self.filename, dest=self.bucket+'/'+self.key)
+        self.cli_params['guess_mime_type'] = True  # Default settings
+        self.transfer_request_submitter.submit(fileinfo)
+
+        upload_call_kwargs = self.transfer_manager.upload.call_args[1]
+        self.assertEqual(upload_call_kwargs['fileobj'], self.filename)
+        self.assertEqual(upload_call_kwargs['bucket'], self.bucket)
+        self.assertEqual(upload_call_kwargs['key'], self.key)
+        self.assertEqual(upload_call_kwargs['extra_args'], {})
+
+        # Make sure the subscriber applied are of the correct type and order
+        ref_subscribers = [
+            ProvideUploadContentTypeSubscriber,
+            ProvideSizeSubscriber,
+            UploadResultSubscriber
+        ]
+        actual_subscribers = upload_call_kwargs['subscribers']
+        self.assertEqual(len(ref_subscribers), len(actual_subscribers))
+        for i, actual_subscriber in enumerate(actual_subscribers):
+            self.assertIsInstance(actual_subscriber, ref_subscribers[i])
+
+    def test_submit_with_extra_args(self):
+        fileinfo = FileInfo(
+            src=self.filename, dest=self.bucket+'/'+self.key)
+        # Set some extra argument like storage_class to make sure cli
+        # params get mapped to request parameters.
+        self.cli_params['storage_class'] = 'STANDARD_IA'
+        self.transfer_request_submitter.submit(fileinfo)
+
+        upload_call_kwargs = self.transfer_manager.upload.call_args[1]
+        self.assertEqual(
+            upload_call_kwargs['extra_args'], {'StorageClass': 'STANDARD_IA'})
+
+    def test_submit_when_content_type_specified(self):
+        fileinfo = FileInfo(
+            src=self.filename, dest=self.bucket+'/'+self.key)
+        self.cli_params['content_type'] = 'text/plain'
+        self.transfer_request_submitter.submit(fileinfo)
+
+        upload_call_kwargs = self.transfer_manager.upload.call_args[1]
+        self.assertEqual(
+            upload_call_kwargs['extra_args'], {'ContentType': 'text/plain'})
+        ref_subscribers = [
+            ProvideSizeSubscriber,
+            UploadResultSubscriber
+        ]
+        actual_subscribers = upload_call_kwargs['subscribers']
+        self.assertEqual(len(ref_subscribers), len(actual_subscribers))
+        for i, actual_subscriber in enumerate(actual_subscribers):
+            self.assertIsInstance(actual_subscriber, ref_subscribers[i])
+
+    def test_submit_when_no_guess_content_mime_type(self):
+        fileinfo = FileInfo(
+            src=self.filename, dest=self.bucket+'/'+self.key)
+        self.cli_params['guess_mime_type'] = False
+        self.transfer_request_submitter.submit(fileinfo)
+
+        upload_call_kwargs = self.transfer_manager.upload.call_args[1]
+        ref_subscribers = [
+            ProvideSizeSubscriber,
+            UploadResultSubscriber
+        ]
+        actual_subscribers = upload_call_kwargs['subscribers']
+        self.assertEqual(len(ref_subscribers), len(actual_subscribers))
+        for i, actual_subscriber in enumerate(actual_subscribers):
+            self.assertIsInstance(actual_subscriber, ref_subscribers[i])
+
+
+class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
+    def setUp(self):
+        super(TestDownloadRequestSubmitter, self).setUp()
+        self.transfer_request_submitter = DownloadRequestSubmitter(
+            self.transfer_manager, self.result_queue, self.cli_params)
+
+    def test_submit(self):
+        fileinfo = FileInfo(
+            src=self.bucket+'/'+self.key, dest=self.filename)
+        self.transfer_request_submitter.submit(fileinfo)
+
+        download_call_kwargs = self.transfer_manager.download.call_args[1]
+        self.assertEqual(download_call_kwargs['fileobj'], self.filename)
+        self.assertEqual(download_call_kwargs['bucket'], self.bucket)
+        self.assertEqual(download_call_kwargs['key'], self.key)
+        self.assertEqual(download_call_kwargs['extra_args'], {})
+
+        # Make sure the subscriber applied are of the correct type and order
+        ref_subscribers = [
+            ProvideLastModifiedTimeSubscriber,
+            DirectoryCreatorSubscriber,
+            ProvideSizeSubscriber,
+            DownloadResultSubscriber
+        ]
+        actual_subscribers = download_call_kwargs['subscribers']
+        self.assertEqual(len(ref_subscribers), len(actual_subscribers))
+        for i, actual_subscriber in enumerate(actual_subscribers):
+            self.assertIsInstance(actual_subscriber, ref_subscribers[i])
+
+    def test_submit_with_extra_args(self):
+        fileinfo = FileInfo(
+            src=self.bucket+'/'+self.key, dest=self.filename)
+        self.cli_params['sse_c'] = 'AES256'
+        self.cli_params['sse_c_key'] = 'mykey'
+        self.transfer_request_submitter.submit(fileinfo)
+
+        # Set some extra argument like sse_c to make sure cli
+        # params get mapped to request parameters.
+        download_call_kwargs = self.transfer_manager.download.call_args[1]
+        self.assertEqual(
+            download_call_kwargs['extra_args'],
+            {'SSECustomerAlgorithm': 'AES256', 'SSECustomerKey': 'mykey'}
+        )
+
+
+class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
+    def setUp(self):
+        super(TestCopyRequestSubmitter, self).setUp()
+        self.source_bucket = 'mysourcebucket'
+        self.source_key = 'mysourcekey'
+        self.transfer_request_submitter = CopyRequestSubmitter(
+            self.transfer_manager, self.result_queue, self.cli_params)
+
+    def test_submit(self):
+        fileinfo = FileInfo(
+            src=self.source_bucket+'/'+self.source_key,
+            dest=self.bucket+'/'+self.key)
+        self.cli_params['guess_mime_type'] = True  # Default settings
+        self.transfer_request_submitter.submit(fileinfo)
+
+        copy_call_kwargs = self.transfer_manager.copy.call_args[1]
+        self.assertEqual(
+            copy_call_kwargs['copy_source'],
+            {'Bucket': self.source_bucket, 'Key': self.source_key})
+        self.assertEqual(copy_call_kwargs['bucket'], self.bucket)
+        self.assertEqual(copy_call_kwargs['key'], self.key)
+        self.assertEqual(copy_call_kwargs['extra_args'], {})
+
+        # Make sure the subscriber applied are of the correct type and order
+        ref_subscribers = [
+            ProvideCopyContentTypeSubscriber,
+            ProvideSizeSubscriber,
+            CopyResultSubscriber
+        ]
+        actual_subscribers = copy_call_kwargs['subscribers']
+        self.assertEqual(len(ref_subscribers), len(actual_subscribers))
+        for i, actual_subscriber in enumerate(actual_subscribers):
+            self.assertIsInstance(actual_subscriber, ref_subscribers[i])
+
+    def test_submit_with_extra_args(self):
+        fileinfo = FileInfo(
+            src=self.source_bucket+'/'+self.source_key,
+            dest=self.bucket+'/'+self.key)
+        # Set some extra argument like storage_class to make sure cli
+        # params get mapped to request parameters.
+        self.cli_params['storage_class'] = 'STANDARD_IA'
+        self.transfer_request_submitter.submit(fileinfo)
+
+        copy_call_kwargs = self.transfer_manager.copy.call_args[1]
+        self.assertEqual(
+            copy_call_kwargs['extra_args'], {'StorageClass': 'STANDARD_IA'})
+
+    def test_submit_when_content_type_specified(self):
+        fileinfo = FileInfo(
+            src=self.source_bucket+'/'+self.source_key,
+            dest=self.bucket+'/'+self.key)
+        self.cli_params['content_type'] = 'text/plain'
+        self.transfer_request_submitter.submit(fileinfo)
+
+        copy_call_kwargs = self.transfer_manager.copy.call_args[1]
+        self.assertEqual(
+            copy_call_kwargs['extra_args'], {'ContentType': 'text/plain'})
+        ref_subscribers = [
+            ProvideSizeSubscriber,
+            CopyResultSubscriber
+        ]
+        actual_subscribers = copy_call_kwargs['subscribers']
+        self.assertEqual(len(ref_subscribers), len(actual_subscribers))
+        for i, actual_subscriber in enumerate(actual_subscribers):
+            self.assertIsInstance(actual_subscriber, ref_subscribers[i])
+
+    def test_submit_when_no_guess_content_mime_type(self):
+        fileinfo = FileInfo(
+            src=self.source_bucket+'/'+self.source_key,
+            dest=self.bucket+'/'+self.key)
+        self.cli_params['guess_mime_type'] = False
+        self.transfer_request_submitter.submit(fileinfo)
+
+        copy_call_kwargs = self.transfer_manager.copy.call_args[1]
+        ref_subscribers = [
+            ProvideSizeSubscriber,
+            CopyResultSubscriber
+        ]
+        actual_subscribers = copy_call_kwargs['subscribers']
+        self.assertEqual(len(ref_subscribers), len(actual_subscribers))
+        for i, actual_subscriber in enumerate(actual_subscribers):
+            self.assertIsInstance(actual_subscriber, ref_subscribers[i])
 
 
 if __name__ == "__main__":

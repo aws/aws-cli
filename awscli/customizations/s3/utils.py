@@ -779,6 +779,9 @@ class ProvideSizeSubscriber(BaseSubscriber):
         future.meta.provide_transfer_size(self.size)
 
 
+# TODO: Eventually port this down to the BaseSubscriber or a new subscriber
+# class in s3transfer. The functionality is very convenient but may need
+# some further design decisions to make it a feature in s3transfer.
 class OnDoneFilteredSubscriber(BaseSubscriber):
     """Subscriber that differentiates between successes and failures
 
@@ -795,14 +798,14 @@ class OnDoneFilteredSubscriber(BaseSubscriber):
         # If the result propogates an error, call the on_failure
         # method instead.
         if future_exception:
-            self.on_failure(future, future_exception)
+            self._on_failure(future, future_exception)
         else:
-            self.on_success(future)
+            self._on_success(future)
 
-    def on_success(self, future):
+    def _on_success(self, future):
         pass
 
-    def on_failure(self, future, e):
+    def _on_failure(self, future, e):
         pass
 
 
@@ -834,7 +837,7 @@ class ProvideLastModifiedTimeSubscriber(OnDoneFilteredSubscriber):
         self._last_modified_time = last_modified_time
         self._result_queue = result_queue
 
-    def on_success(self, future, **kwargs):
+    def _on_success(self, future, **kwargs):
         filename = future.meta.call_args.fileobj
         try:
             last_update_tuple = self._last_modified_time.timetuple()

@@ -173,7 +173,7 @@ def create_bucket(session, name=None, region=None):
     if name:
         bucket_name = name
     else:
-        bucket_name = 'awscli-s3test-' + random_chars(10)
+        bucket_name = random_bucket_name()
     params = {'Bucket': bucket_name}
     if region != 'us-east-1':
         params['CreateBucketConfiguration'] = {'LocationConstraint': region}
@@ -197,6 +197,20 @@ def random_chars(num_chars):
 
     """
     return binascii.hexlify(os.urandom(int(num_chars / 2))).decode('ascii')
+
+
+def random_bucket_name(prefix='awscli-s3integ-', num_random=10):
+    """Generate a random S3 bucket name.
+
+    :param prefix: A prefix to use in the bucket name.  Useful
+        for tracking resources.  This default value makes it easy
+        to see which buckets were created from CLI integ tests.
+    :param num_random: Number of random chars to include in the bucket name.
+
+    :returns: The name of a randomly generated bucket name as a string.
+
+    """
+    return prefix + random_chars(num_random)
 
 
 class BaseCLIDriverTest(unittest.TestCase):

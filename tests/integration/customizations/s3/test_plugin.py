@@ -927,7 +927,7 @@ class TestUnableToWriteToFile(BaseS3IntegrationTest):
         # which effectively disables the expect 100 continue logic.
         # This will result in a test error because we won't follow
         # the temporary redirect for the newly created bucket.
-        contents = six.StringIO('a' * 10 * 1024 * 1024)
+        contents = six.BytesIO(b'a' * 10 * 1024 * 1024)
         self.put_object(bucket_name, 'foo.txt',
                         contents=contents)
         os.chmod(self.files.rootdir, 0o444)

@@ -24,12 +24,14 @@ from awscli.customizations.s3.utils import (
     find_bucket_key, relative_path, PrintTask, create_warning,
     NonSeekableStream)
 from awscli.customizations.s3.executor import Executor
+from awscli.customizations.s3.executor import ShutdownThreadRequest
 from awscli.customizations.s3 import tasks
 from awscli.customizations.s3.transferconfig import RuntimeConfig, \
     create_transfer_config_from_runtime_config
 from awscli.customizations.s3.results import UploadResultSubscriber
 from awscli.customizations.s3.results import DownloadResultSubscriber
 from awscli.customizations.s3.results import CopyResultSubscriber
+from awscli.customizations.s3.results import ErrorResult
 from awscli.customizations.s3.utils import RequestParamsMapper
 from awscli.customizations.s3.utils import StdoutBytesWriter
 from awscli.customizations.s3.utils import ProvideSizeSubscriber
@@ -521,6 +523,80 @@ class S3TransferStreamHandler(BaseS3Handler):
             # TODO: Update when S3Handler is refactored
             uni_print("Transfer failed: %s \n" % str(e))
             return CommandResult(1, 0)
+
+
+class S3TransferHandler(object):
+    def __init__(self, transfer_manager, cli_params, result_queue,
+                 result_recorder, result_processor):
+        """Backend for performing S3 transfers
+
+        :type transfer_manager: s3transfer.manager.TransferManager
+        :param transfer_manager: Transfer manager to use for transfers
+
+        :type cli_params: dict
+        :param cli_params: The parameters passed to the CLI command in the
+            form of a dictionary
+
+        :type result_queue: queue.Queue
+        :param result_queue: The queue to process results
+
+        :type result_recorder: ResultRecorder
+        :param result_recorder: Result recorder to get status of transfer
+
+        :type result_processor: ResultProcessor
+        :param result_processor: Result processor to process status updates
+            of transfer
+        """
+        self._transfer_manager = transfer_manager
+        self._result_queue = result_queue
+        self._result_recorder = result_recorder
+        self._result_processor = result_processor
+
+        submitter_args = (
+            self._transfer_manager, self._result_queue, cli_params)
+        self._submitters = [
+            UploadRequestSubmitter(*submitter_args),
+            DownloadRequestSubmitter(*submitter_args),
+            CopyRequestSubmitter(*submitter_args),
+        ]
+
+    def call(self, fileinfos):
+        """Process iterable of FileInfos for transfer
+
+        :type fileinfos: iterable of FileInfos
+        param fileinfos: Set of FileInfos to submit to underlying transfer
+            request submitters to make transfer API calls to S3
+
+        :rtype: CommandResult
+        :returns: The result of the command that specifies the number of
+            failures and warnings encountered.
+        """
+        self._result_processor.start()
+        try:
+            with self._transfer_manager:
+                self._enqueue(fileinfos)
+        except Exception as e:
+            LOGGER.debug('Exception caught during task execution: %s',
+                         str(e), exc_info=True)
+            self._result_queue.put(ErrorResult(exception=e))
+        finally:
+            self._shutdown()
+            return CommandResult(
+                self._result_recorder.files_failed +
+                self._result_recorder.errors,
+                self._result_recorder.files_warned
+            )
+
+    def _shutdown(self):
+        self._result_queue.put(ShutdownThreadRequest())
+        self._result_processor.join()
+
+    def _enqueue(self, fileinfos):
+        for fileinfo in fileinfos:
+            for submitter in self._submitters:
+                if submitter.is_valid_submission(fileinfo):
+                    submitter.submit(fileinfo)
+                    break
 
 
 class BaseTransferRequestSubmitter(object):

@@ -16,7 +16,6 @@
 # It does not check every possible parameter that can be thrown as
 # those are checked by tests in other classes
 import os
-import random
 import platform
 import contextlib
 import time
@@ -37,14 +36,14 @@ from awscli.testutils import unittest, get_stdout_encoding
 from awscli.testutils import skip_if_windows
 from awscli.testutils import aws as _aws
 from awscli.testutils import BaseS3CLICommand
+from awscli.testutils import random_chars, random_bucket_name
 from awscli.customizations.s3.transferconfig import DEFAULTS
 from awscli.customizations.scalarparse import add_scalar_parsers
 
 
 # Using the same log name as testutils.py
 LOG = logging.getLogger('awscli.tests.integration')
-_SHARED_BUCKET = 'awscli-s3shared-' + ''.join(
-    random.sample(string.ascii_lowercase + string.digits, 10))
+_SHARED_BUCKET = random_bucket_name()
 _DEFAULT_REGION = 'us-west-2'
 
 
@@ -787,13 +786,11 @@ class TestSourceRegion(BaseS3IntegrationTest):
         # sequences of characters and joining them with a period and
         # adding a .com at the end.
         for i in range(2):
-            name_comp.append(''.join(random.sample(string.ascii_lowercase +
-                                                   string.digits, 10)))
+            name_comp.append(random_chars(10))
         self.src_name = '.'.join(name_comp + ['com'])
         name_comp = []
         for i in range(2):
-            name_comp.append(''.join(random.sample(string.ascii_lowercase +
-                                                   string.digits, 10)))
+            name_comp.append(random_chars(10))
         self.dest_name = '.'.join(name_comp + ['com'])
         self.src_region = 'us-west-1'
         self.dest_region = 'us-east-1'
@@ -1159,7 +1156,7 @@ class TestMbRb(BaseS3IntegrationTest):
     Tests primarily using ``rb`` and ``mb`` command.
     """
     def extra_setup(self):
-        self.bucket_name = 'awscli-s3integ-' + str(random.randint(1, 1000))
+        self.bucket_name = random_bucket_name()
 
     def test_mb_rb(self):
         p = aws('s3 mb s3://%s' % self.bucket_name)

@@ -242,26 +242,27 @@ class ResultPrinter(BaseResultHandler):
         'warning: {message}'
     )
 
-    def __init__(self, result_recorder, out_file=sys.stdout,
-                 error_file=sys.stderr):
+    def __init__(self, result_recorder, out_file=None, error_file=None):
         """Prints status of ongoing transfer
 
         :type result_recorder: ResultRecorder
         :param result_recorder: The associated result recorder
 
-        :type only_show_errors: bool
-        :param only_show_errors: True if to only print out errors. Otherwise,
-            print out everything.
-
         :type out_file: file-like obj
-        :param out_file: Location to write progress and success statements
+        :param out_file: Location to write progress and success statements.
+            By default, the location is sys.stdout.
 
         :type error_file: file-like obj
-        :param error_file: Location to write warnings and errors
+        :param error_file: Location to write warnings and errors.
+            By default, the location is sys.stderr.
         """
         self._result_recorder = result_recorder
         self._out_file = out_file
+        if self._out_file is None:
+            self._out_file = sys.stdout
         self._error_file = error_file
+        if self._error_file is None:
+            self._error_file = sys.stderr
         self._progress_length = 0
         self._result_handler_map = {
             ProgressResult: self._print_progress,

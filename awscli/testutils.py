@@ -25,12 +25,12 @@ import copy
 import shutil
 import time
 import json
-import random
 import logging
 import tempfile
 import platform
 import contextlib
 import string
+import binascii
 from pprint import pformat
 from subprocess import Popen, PIPE
 
@@ -152,7 +152,7 @@ def temporary_file(mode):
 
     """
     temporary_directory = tempfile.mkdtemp()
-    basename = 'tmpfile-%s-%s' % (int(time.time()), random.randint(1, 1000))
+    basename = 'tmpfile-%s' % str(random_chars(8))
     full_filename = os.path.join(temporary_directory, basename)
     open(full_filename, 'w').close()
     try:
@@ -173,9 +173,7 @@ def create_bucket(session, name=None, region=None):
     if name:
         bucket_name = name
     else:
-        rand1 = ''.join(random.sample(string.ascii_lowercase + string.digits,
-                                      10))
-        bucket_name = 'awscli-s3test-' + str(rand1)
+        bucket_name = random_bucket_name()
     params = {'Bucket': bucket_name}
     if region != 'us-east-1':
         params['CreateBucketConfiguration'] = {'LocationConstraint': region}
@@ -190,6 +188,29 @@ def create_bucket(session, name=None, region=None):
         else:
             raise
     return bucket_name
+
+
+def random_chars(num_chars):
+    """Returns random hex characters.
+
+    Useful for creating resources with random names.
+
+    """
+    return binascii.hexlify(os.urandom(int(num_chars / 2))).decode('ascii')
+
+
+def random_bucket_name(prefix='awscli-s3integ-', num_random=10):
+    """Generate a random S3 bucket name.
+
+    :param prefix: A prefix to use in the bucket name.  Useful
+        for tracking resources.  This default value makes it easy
+        to see which buckets were created from CLI integ tests.
+    :param num_random: Number of random chars to include in the bucket name.
+
+    :returns: The name of a randomly generated bucket name as a string.
+
+    """
+    return prefix + random_chars(num_random)
 
 
 class BaseCLIDriverTest(unittest.TestCase):
@@ -307,6 +328,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
 
     def setUp(self):
         self.last_params = {}
+        self.last_kwargs = None
         # awscli/__init__.py injects AWS_DATA_PATH at import time
         # so that we can find cli.json.  This might be fixed in the
         # future, but for now we just grab that value out of the real
@@ -317,6 +339,8 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
             'AWS_DEFAULT_REGION': 'us-east-1',
             'AWS_ACCESS_KEY_ID': 'access_key',
             'AWS_SECRET_ACCESS_KEY': 'secret_key',
+            'AWS_CONFIG_FILE': '',
+            'AWS_SHARED_CREDENTIALS_FILE': '',
         }
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()

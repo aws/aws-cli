@@ -13,7 +13,8 @@
 from awscli.customizations import utils
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.s3.subcommands import ListCommand, WebsiteCommand, \
-    CpCommand, MvCommand, RmCommand, SyncCommand, MbCommand, RbCommand
+    CpCommand, MvCommand, RmCommand, SyncCommand, MbCommand, RbCommand, \
+    PresignCommand
 from awscli.customizations.s3.syncstrategy.register import \
     register_sync_strategies
 
@@ -58,7 +59,8 @@ class S3(BasicCommand):
         {'name': 'rm', 'command_class': RmCommand},
         {'name': 'sync', 'command_class': SyncCommand},
         {'name': 'mb', 'command_class': MbCommand},
-        {'name': 'rb', 'command_class': RbCommand}
+        {'name': 'rb', 'command_class': RbCommand},
+        {'name': 'presign', 'command_class': PresignCommand},
     ]
 
     def _run_main(self, parsed_args, parsed_globals):

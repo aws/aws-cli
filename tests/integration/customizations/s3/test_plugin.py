@@ -16,7 +16,6 @@
 # It does not check every possible parameter that can be thrown as
 # those are checked by tests in other classes
 import os
-import random
 import platform
 import contextlib
 import time
@@ -29,7 +28,7 @@ import shutil
 import copy
 import logging
 
-from awscli.compat import six
+from awscli.compat import six, urlopen
 from nose.plugins.attrib import attr
 import botocore.session
 
@@ -37,14 +36,14 @@ from awscli.testutils import unittest, get_stdout_encoding
 from awscli.testutils import skip_if_windows
 from awscli.testutils import aws as _aws
 from awscli.testutils import BaseS3CLICommand
+from awscli.testutils import random_chars, random_bucket_name
 from awscli.customizations.s3.transferconfig import DEFAULTS
 from awscli.customizations.scalarparse import add_scalar_parsers
 
 
 # Using the same log name as testutils.py
 LOG = logging.getLogger('awscli.tests.integration')
-_SHARED_BUCKET = 'awscli-s3shared-' + ''.join(
-    random.sample(string.ascii_lowercase + string.digits, 10))
+_SHARED_BUCKET = random_bucket_name()
 _DEFAULT_REGION = 'us-west-2'
 
 
@@ -787,13 +786,11 @@ class TestSourceRegion(BaseS3IntegrationTest):
         # sequences of characters and joining them with a period and
         # adding a .com at the end.
         for i in range(2):
-            name_comp.append(''.join(random.sample(string.ascii_lowercase +
-                                                   string.digits, 10)))
+            name_comp.append(random_chars(10))
         self.src_name = '.'.join(name_comp + ['com'])
         name_comp = []
         for i in range(2):
-            name_comp.append(''.join(random.sample(string.ascii_lowercase +
-                                                   string.digits, 10)))
+            name_comp.append(random_chars(10))
         self.dest_name = '.'.join(name_comp + ['com'])
         self.src_region = 'us-west-1'
         self.dest_region = 'us-east-1'
@@ -927,7 +924,7 @@ class TestUnableToWriteToFile(BaseS3IntegrationTest):
         # which effectively disables the expect 100 continue logic.
         # This will result in a test error because we won't follow
         # the temporary redirect for the newly created bucket.
-        contents = six.StringIO('a' * 10 * 1024 * 1024)
+        contents = six.BytesIO(b'a' * 10 * 1024 * 1024)
         self.put_object(bucket_name, 'foo.txt',
                         contents=contents)
         os.chmod(self.files.rootdir, 0o444)
@@ -1159,7 +1156,7 @@ class TestMbRb(BaseS3IntegrationTest):
     Tests primarily using ``rb`` and ``mb`` command.
     """
     def extra_setup(self):
-        self.bucket_name = 'awscli-s3integ-' + str(random.randint(1, 1000))
+        self.bucket_name = random_bucket_name()
 
     def test_mb_rb(self):
         p = aws('s3 mb s3://%s' % self.bucket_name)
@@ -2089,3 +2086,16 @@ class TestSSECRelatedParams(BaseS3IntegrationTest):
         self.assertTrue(os.path.isfile(file_name))
         with open(file_name, 'r') as f:
             self.assertEqual(f.read(), contents)
+
+
+class TestPresignCommand(BaseS3IntegrationTest):
+
+    def test_can_retrieve_presigned_url(self):
+        bucket_name = _SHARED_BUCKET
+        original_contents = b'this is foo.txt'
+        self.put_object(bucket_name, 'foo.txt', original_contents)
+        p = aws('s3 presign s3://%s/foo.txt' % (bucket_name,))
+        self.assert_no_errors(p)
+        url = p.stdout.strip()
+        contents = urlopen(url).read()
+        self.assertEqual(contents, original_contents)

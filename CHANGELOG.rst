@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.10.59
+=======
+
+* feature:``opsworks``: Update opsworks command to latest version
+* feature:``rds``: Update rds command to latest version
+* feature:``s3``: Add a new ``aws s3 presign`` command, closes `#462 <https://github.com/aws/aws-cli/issues/462>`__
+
+
 1.10.58
 =======
 

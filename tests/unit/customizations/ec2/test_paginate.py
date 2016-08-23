@@ -70,7 +70,7 @@ class TestEC2PageSizeInjector(unittest.TestCase):
     def test_global_whitelist(self):
         target_operations = {'foo': []}
         injector = EC2PageSizeInjector()
-        injector.GLOBAL_WHITELIST = ['bar']
+        injector.UNIVERSAL_WHITELIST = ['bar']
         injector.TARGET_OPERATIONS = target_operations
         parsed_globals = Namespace(paginate=True)
         call_parameters = {'baz': True}
@@ -86,7 +86,7 @@ class TestEC2PageSizeInjector(unittest.TestCase):
     def test_operation_whitelist(self):
         target_operations = {'foo': ['bar']}
         injector = EC2PageSizeInjector()
-        injector.GLOBAL_WHITELIST = []
+        injector.UNIVERSAL_WHITELIST = []
         injector.TARGET_OPERATIONS = target_operations
         parsed_globals = Namespace(paginate=True)
         call_parameters = {'baz': True}

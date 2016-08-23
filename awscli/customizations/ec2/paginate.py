@@ -28,7 +28,7 @@ class EC2PageSizeInjector(object):
     }
 
     # Parameters which should be whitelisted for every operation.
-    GLOBAL_WHITELIST = ['NextToken', 'DryRun', 'PaginationConfig']
+    UNIVERSAL_WHITELIST = ['NextToken', 'DryRun', 'PaginationConfig']
 
     DEFAULT_PAGE_SIZE = 1000
 
@@ -54,7 +54,7 @@ class EC2PageSizeInjector(object):
         if whitelisted_params is None:
             return
 
-        whitelisted_params = whitelisted_params + self.GLOBAL_WHITELIST
+        whitelisted_params = whitelisted_params + self.UNIVERSAL_WHITELIST
 
         for param in call_parameters:
             if param not in whitelisted_params:

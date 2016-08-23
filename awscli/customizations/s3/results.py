@@ -54,6 +54,8 @@ SuccessResult = _create_new_result_cls('SuccessResult')
 
 FailureResult = _create_new_result_cls('FailureResult', ['exception'])
 
+ErrorResult = namedtuple('ErrorResult', ['exception'])
+
 CommandResult = namedtuple(
     'CommandResult', ['num_tasks_failed', 'num_tasks_warned'])
 
@@ -156,6 +158,7 @@ class ResultRecorder(BaseResultHandler):
         self.files_transferred = 0
         self.files_failed = 0
         self.files_warned = 0
+        self.errors = 0
         self.expected_bytes_transferred = 0
         self.expected_files_transferred = 0
 
@@ -169,6 +172,7 @@ class ResultRecorder(BaseResultHandler):
             SuccessResult: self._record_success_result,
             FailureResult: self._record_failure_result,
             WarningResult: self._record_warning_result,
+            ErrorResult: self._record_error_result
         }
 
     def __call__(self, result):
@@ -226,6 +230,9 @@ class ResultRecorder(BaseResultHandler):
     def _record_warning_result(self, **kwargs):
         self.files_warned += 1
 
+    def _record_error_result(self, **kwargs):
+        self.errors += 1
+
 
 class ResultPrinter(BaseResultHandler):
     PROGRESS_FORMAT = (
@@ -240,6 +247,9 @@ class ResultPrinter(BaseResultHandler):
     )
     WARNING_FORMAT = (
         'warning: {message}'
+    )
+    ERROR_FORMAT = (
+        '{exception}'
     )
 
     def __init__(self, result_recorder, out_file=None, error_file=None):
@@ -269,6 +279,7 @@ class ResultPrinter(BaseResultHandler):
             SuccessResult: self._print_success,
             FailureResult: self._print_failure,
             WarningResult: self._print_warning,
+            ErrorResult: self._print_error,
         }
 
     def __call__(self, result):
@@ -301,6 +312,11 @@ class ResultPrinter(BaseResultHandler):
         warning_statement = self._adjust_statement_padding(warning_statement)
         self._print_to_error_file(warning_statement)
         self._redisplay_progress()
+
+    def _print_error(self, result, **kwargs):
+        error_statement = self.ERROR_FORMAT.format(exception=result.exception)
+        error_statement = self._adjust_statement_padding(error_statement)
+        self._print_to_error_file(error_statement)
 
     def _redisplay_progress(self):
         # Reset to zero because done statements are printed with new lines

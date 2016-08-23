@@ -542,7 +542,6 @@ class BaseTransferRequestSubmitter(object):
         self._transfer_manager = transfer_manager
         self._result_queue = result_queue
         self._cli_params = cli_params
-        self._warning_hanlders = []
 
     def submit(self, fileinfo):
         """Submits a transfer request based on the FileInfo provided
@@ -567,7 +566,7 @@ class BaseTransferRequestSubmitter(object):
         :returns: True if it can use the provided FileInfo to make a transfer
             request to the underlying transfer manager. False, otherwise.
         """
-        raise NotImplementedError('is_valid_to_submit()')
+        raise NotImplementedError('is_valid_submission()')
 
     def _do_submit(self, fileinfo):
         extra_args = {}

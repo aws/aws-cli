@@ -534,10 +534,15 @@ class BaseTransferRequestSubmitter(object):
         necessary extra arguments and subscribers in making a call to the
         TransferManager.
 
+        :type transfer_manager: s3transfer.manager.TransferManager
         :param transfer_manager: The underlying transfer manager
+
+        :type result_queue: queue.Queue
         :param result queue: The result queue to use
+
+        :type cli_params: dict
         :param cli_params: The associated CLI parameters passed in to the
-            command.
+            command as a dictionary.
         """
         self._transfer_manager = transfer_manager
         self._result_queue = result_queue
@@ -550,6 +555,7 @@ class BaseTransferRequestSubmitter(object):
         behalf of the fileinfo as a fileinfo may be skipped based on
         circumstances in which the transfer is not possible.
 
+        :type fileinfo: awscli.customizations.s3.fileinfo.FileInfo
         :param fileinfo: The FileInfo to be used to submit a transfer
             request to the underlying transfer manager.
         """
@@ -560,6 +566,7 @@ class BaseTransferRequestSubmitter(object):
     def is_valid_submission(self, fileinfo):
         """Checks whether it is valid to submit a particular FileInfo
 
+        :type fileinfo: awscli.customizations.s3.fileinfo.FileInfo
         :param fileinfo: The FileInfo to check if the transfer request
             submitter can handle.
 

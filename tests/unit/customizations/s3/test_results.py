@@ -19,6 +19,7 @@ from awscli.customizations.s3.results import QueuedResult
 from awscli.customizations.s3.results import ProgressResult
 from awscli.customizations.s3.results import SuccessResult
 from awscli.customizations.s3.results import FailureResult
+from awscli.customizations.s3.results import ErrorResult
 from awscli.customizations.s3.results import UploadResultSubscriber
 from awscli.customizations.s3.results import UploadStreamResultSubscriber
 from awscli.customizations.s3.results import DownloadResultSubscriber
@@ -412,6 +413,10 @@ class ResultRecorderTest(unittest.TestCase):
                 WarningResult(message=self.warning_message))
         self.assertEqual(self.result_recorder.files_warned, num_results)
 
+    def test_error_result(self):
+        self.result_recorder(ErrorResult(exception=self.exception))
+        self.assertEqual(self.result_recorder.errors, 1)
+
     def test_unknown_result_object(self):
         self.result_recorder(object())
         # Nothing should have been affected
@@ -633,6 +638,25 @@ class TestResultPrinter(BaseResultPrinterTest):
         )
 
         self.assertEqual(shared_file.getvalue(), ref_statement)
+
+    def test_error(self):
+        self.result_printer(ErrorResult(Exception('my exception')))
+        ref_error_statement = 'my exception\n'
+        self.assertEqual(self.error_file.getvalue(), ref_error_statement)
+
+    def test_error_while_progress(self):
+        mb = 1024 * 1024
+        self.result_recorder.expected_bytes_transferred = 20 * mb
+        self.result_recorder.expected_files_transferred = 4
+        self.result_recorder.bytes_transferred = mb
+        self.result_recorder.files_transferred = 1
+
+        self.result_printer(ErrorResult(Exception('my exception')))
+        ref_error_statement = 'my exception\n'
+        # Even though there was progress, we do not want to print the
+        # progress because errors are really only seen when the entire
+        # s3 command fails.
+        self.assertEqual(self.error_file.getvalue(), ref_error_statement)
 
 
 class TestOnlyShowErrorsResultPrinter(BaseResultPrinterTest):

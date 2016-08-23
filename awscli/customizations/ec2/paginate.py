@@ -54,7 +54,7 @@ class EC2PageSizeInjector(object):
         if whitelisted_params is None:
             return
 
-        whitelisted_params += self.GLOBAL_WHITELIST
+        whitelisted_params = whitelisted_params + self.GLOBAL_WHITELIST
 
         for param in call_parameters:
             if param not in whitelisted_params:
@@ -62,4 +62,3 @@ class EC2PageSizeInjector(object):
 
         pagination_config['PageSize'] = self.DEFAULT_PAGE_SIZE
         call_parameters['PaginationConfig'] = pagination_config
-

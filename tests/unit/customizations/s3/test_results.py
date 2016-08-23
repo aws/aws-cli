@@ -601,7 +601,7 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.assertEqual(shared_file.getvalue(), ref_statement)
 
     def test_warning(self):
-        self.result_printer(WarningResult('my warning'))
+        self.result_printer(WarningResult('warning: my warning'))
         ref_warning_statement = 'warning: my warning\n'
         self.assertEqual(self.error_file.getvalue(), ref_warning_statement)
 
@@ -625,7 +625,7 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_recorder.files_transferred = 1
         self.result_printer(progress_result)
 
-        self.result_printer(WarningResult('my warning'))
+        self.result_printer(WarningResult('warning: my warning'))
 
         # The statement should consist of:
         # * The first progress statement
@@ -699,7 +699,7 @@ class TestOnlyShowErrorsResultPrinter(BaseResultPrinterTest):
         self.assertEqual(self.error_file.getvalue(), ref_failure_statement)
 
     def test_print_warnings_result(self):
-        self.result_printer(WarningResult('my warning'))
+        self.result_printer(WarningResult('warning: my warning'))
         ref_warning_statement = 'warning: my warning\n'
         self.assertEqual(self.error_file.getvalue(), ref_warning_statement)
 

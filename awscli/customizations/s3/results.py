@@ -246,7 +246,7 @@ class ResultPrinter(BaseResultHandler):
         '{transfer_type} failed: {src} to {dest} {exception}'
     )
     WARNING_FORMAT = (
-        'warning: {message}'
+        '{message}'
     )
     ERROR_FORMAT = (
         '{exception}'

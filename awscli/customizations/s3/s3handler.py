@@ -578,8 +578,12 @@ class BaseTransferRequestSubmitter(object):
     def _do_submit(self, fileinfo):
         extra_args = {}
         self.REQUEST_MAPPER_METHOD(extra_args, self._cli_params)
-        subscribers = [self.RESULT_SUBSCRIBER_CLASS(self._result_queue)]
+        subscribers = []
         self._add_additional_subscribers(subscribers, fileinfo)
+        # The result subscriber class should always be the last registered
+        # subscriber to ensure it is not missing any information that
+        # may have been added in a different subscriber such as size.
+        subscribers.append(self.RESULT_SUBSCRIBER_CLASS(self._result_queue))
         self._submit_transfer_request(fileinfo, extra_args, subscribers)
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
@@ -638,9 +642,9 @@ class UploadRequestSubmitter(BaseTransferRequestSubmitter):
         return fileinfo.operation_name == 'upload'
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
-        subscribers.insert(0, ProvideSizeSubscriber(fileinfo.size))
+        subscribers.append(ProvideSizeSubscriber(fileinfo.size))
         if self._should_inject_content_type():
-            subscribers.insert(0, ProvideUploadContentTypeSubscriber())
+            subscribers.append(ProvideUploadContentTypeSubscriber())
 
     def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
         bucket, key = find_bucket_key(fileinfo.dest)
@@ -671,9 +675,9 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
         return fileinfo.operation_name == 'download'
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
-        subscribers.insert(0, ProvideSizeSubscriber(fileinfo.size))
-        subscribers.insert(0, DirectoryCreatorSubscriber())
-        subscribers.insert(0, ProvideLastModifiedTimeSubscriber(
+        subscribers.append(ProvideSizeSubscriber(fileinfo.size))
+        subscribers.append(DirectoryCreatorSubscriber())
+        subscribers.append(ProvideLastModifiedTimeSubscriber(
             fileinfo.last_update, self._result_queue))
 
     def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
@@ -695,9 +699,9 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
         return fileinfo.operation_name == 'copy'
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
-        subscribers.insert(0, ProvideSizeSubscriber(fileinfo.size))
+        subscribers.append(ProvideSizeSubscriber(fileinfo.size))
         if self._should_inject_content_type():
-            subscribers.insert(0, ProvideCopyContentTypeSubscriber())
+            subscribers.append(ProvideCopyContentTypeSubscriber())
 
     def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
         bucket, key = find_bucket_key(fileinfo.dest)

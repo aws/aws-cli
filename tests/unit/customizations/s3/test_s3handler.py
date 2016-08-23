@@ -1123,8 +1123,8 @@ class TestUploadRequestSubmitter(BaseTransferRequestSubmitterTest):
 
         # Make sure the subscriber applied are of the correct type and order
         ref_subscribers = [
-            ProvideUploadContentTypeSubscriber,
             ProvideSizeSubscriber,
+            ProvideUploadContentTypeSubscriber,
             UploadResultSubscriber
         ]
         actual_subscribers = upload_call_kwargs['subscribers']
@@ -1222,9 +1222,9 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
 
         # Make sure the subscriber applied are of the correct type and order
         ref_subscribers = [
-            ProvideLastModifiedTimeSubscriber,
-            DirectoryCreatorSubscriber,
             ProvideSizeSubscriber,
+            DirectoryCreatorSubscriber,
+            ProvideLastModifiedTimeSubscriber,
             DownloadResultSubscriber
         ]
         actual_subscribers = download_call_kwargs['subscribers']
@@ -1355,8 +1355,8 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
 
         # Make sure the subscriber applied are of the correct type and order
         ref_subscribers = [
-            ProvideCopyContentTypeSubscriber,
             ProvideSizeSubscriber,
+            ProvideCopyContentTypeSubscriber,
             CopyResultSubscriber
         ]
         actual_subscribers = copy_call_kwargs['subscribers']

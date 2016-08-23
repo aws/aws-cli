@@ -245,6 +245,8 @@ class ResultPrinter(BaseResultHandler):
     FAILURE_FORMAT = (
         '{transfer_type} failed: {src} to {dest} {exception}'
     )
+    # TODO: Add "warning: " prefix once all commands are converted to using
+    # result printer and remove "warning: " prefix from ``create_warning``.
     WARNING_FORMAT = (
         '{message}'
     )

@@ -152,7 +152,7 @@ def temporary_file(mode):
 
     """
     temporary_directory = tempfile.mkdtemp()
-    basename = 'tmpfile-%s' % random_chars(8)
+    basename = 'tmpfile-%s' % str(random_chars(8))
     full_filename = os.path.join(temporary_directory, basename)
     open(full_filename, 'w').close()
     try:

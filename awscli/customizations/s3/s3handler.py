@@ -19,16 +19,24 @@ import sys
 from s3transfer.manager import TransferManager
 
 from awscli.customizations.s3.utils import (
-    find_chunksize, adjust_chunksize_to_upload_limits, MAX_UPLOAD_SIZE,
+    find_chunksize, human_readable_size,
+    adjust_chunksize_to_upload_limits, MAX_UPLOAD_SIZE,
     find_bucket_key, relative_path, PrintTask, create_warning,
     NonSeekableStream)
 from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3 import tasks
 from awscli.customizations.s3.transferconfig import RuntimeConfig, \
     create_transfer_config_from_runtime_config
+from awscli.customizations.s3.results import UploadResultSubscriber
+from awscli.customizations.s3.results import DownloadResultSubscriber
+from awscli.customizations.s3.results import CopyResultSubscriber
 from awscli.customizations.s3.utils import RequestParamsMapper
 from awscli.customizations.s3.utils import StdoutBytesWriter
 from awscli.customizations.s3.utils import ProvideSizeSubscriber
+from awscli.customizations.s3.utils import ProvideUploadContentTypeSubscriber
+from awscli.customizations.s3.utils import ProvideCopyContentTypeSubscriber
+from awscli.customizations.s3.utils import ProvideLastModifiedTimeSubscriber
+from awscli.customizations.s3.utils import DirectoryCreatorSubscriber
 from awscli.customizations.s3.utils import uni_print
 from awscli.compat import queue
 from awscli.compat import binary_stdin
@@ -513,3 +521,197 @@ class S3TransferStreamHandler(BaseS3Handler):
             # TODO: Update when S3Handler is refactored
             uni_print("Transfer failed: %s \n" % str(e))
             return CommandResult(1, 0)
+
+
+class BaseTransferRequestSubmitter(object):
+    REQUEST_MAPPER_METHOD = None
+    RESULT_SUBSCRIBER_CLASS = None
+
+    def __init__(self, transfer_manager, result_queue, cli_params):
+        """Submits transfer requests to the TransferManager
+
+        Given a FileInfo object and provided CLI parameters, it will add the
+        necessary extra arguments and subscribers in making a call to the
+        TransferManager.
+
+        :type transfer_manager: s3transfer.manager.TransferManager
+        :param transfer_manager: The underlying transfer manager
+
+        :type result_queue: queue.Queue
+        :param result queue: The result queue to use
+
+        :type cli_params: dict
+        :param cli_params: The associated CLI parameters passed in to the
+            command as a dictionary.
+        """
+        self._transfer_manager = transfer_manager
+        self._result_queue = result_queue
+        self._cli_params = cli_params
+
+    def submit(self, fileinfo):
+        """Submits a transfer request based on the FileInfo provided
+
+        There is no guarantee that the transfer request will be made on
+        behalf of the fileinfo as a fileinfo may be skipped based on
+        circumstances in which the transfer is not possible.
+
+        :type fileinfo: awscli.customizations.s3.fileinfo.FileInfo
+        :param fileinfo: The FileInfo to be used to submit a transfer
+            request to the underlying transfer manager.
+        """
+        should_skip = self._warn_and_signal_if_skip(fileinfo)
+        if not should_skip:
+            self._do_submit(fileinfo)
+
+    def is_valid_submission(self, fileinfo):
+        """Checks whether it is valid to submit a particular FileInfo
+
+        :type fileinfo: awscli.customizations.s3.fileinfo.FileInfo
+        :param fileinfo: The FileInfo to check if the transfer request
+            submitter can handle.
+
+        :returns: True if it can use the provided FileInfo to make a transfer
+            request to the underlying transfer manager. False, otherwise.
+        """
+        raise NotImplementedError('is_valid_submission()')
+
+    def _do_submit(self, fileinfo):
+        extra_args = {}
+        self.REQUEST_MAPPER_METHOD(extra_args, self._cli_params)
+        subscribers = []
+        self._add_additional_subscribers(subscribers, fileinfo)
+        # The result subscriber class should always be the last registered
+        # subscriber to ensure it is not missing any information that
+        # may have been added in a different subscriber such as size.
+        subscribers.append(self.RESULT_SUBSCRIBER_CLASS(self._result_queue))
+        self._submit_transfer_request(fileinfo, extra_args, subscribers)
+
+    def _add_additional_subscribers(self, subscribers, fileinfo):
+        pass
+
+    def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
+        raise NotImplementedError('_submit_transfer_request()')
+
+    def _warn_and_signal_if_skip(self, fileinfo):
+        for warning_handler in self._get_warning_handlers():
+            if warning_handler(fileinfo):
+                # On the first warning handler that returns a signal to skip
+                # immediately propogate this signal and no longer check
+                # the other warning handlers as no matter what the file will
+                # be skipped.
+                return True
+
+    def _get_warning_handlers(self):
+        # Returns a list of warning handlers, which are callables that
+        # take in a single parameter representing a FileInfo. It will then
+        # add a warning to result_queue if needed and return True if
+        # that FileInfo should be skipped.
+        return []
+
+    def _should_inject_content_type(self):
+        return (
+            self._cli_params.get('guess_mime_type') and
+            not self._cli_params.get('content_type')
+        )
+
+    def _warn_glacier(self, fileinfo):
+        if not self._cli_params.get('force_glacier_transfer'):
+            if not fileinfo.is_glacier_compatible():
+                LOGGER.debug(
+                    'Encountered glacier object s3://%s. Not performing '
+                    '%s on object.' % (fileinfo.src, fileinfo.operation_name))
+                if not self._cli_params.get('ignore_glacier_warnings'):
+                    warning = create_warning(
+                        's3://'+fileinfo.src,
+                        'Object is of storage class GLACIER. Unable to '
+                        'perform %s operations on GLACIER objects. You must '
+                        'restore the object to be able to the perform '
+                        'operation.' %
+                        fileinfo.operation_name
+                    )
+                    self._result_queue.put(warning)
+                return True
+        return False
+
+
+class UploadRequestSubmitter(BaseTransferRequestSubmitter):
+    REQUEST_MAPPER_METHOD = RequestParamsMapper.map_put_object_params
+    RESULT_SUBSCRIBER_CLASS = UploadResultSubscriber
+
+    def is_valid_submission(self, fileinfo):
+        return fileinfo.operation_name == 'upload'
+
+    def _add_additional_subscribers(self, subscribers, fileinfo):
+        subscribers.append(ProvideSizeSubscriber(fileinfo.size))
+        if self._should_inject_content_type():
+            subscribers.append(ProvideUploadContentTypeSubscriber())
+
+    def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
+        bucket, key = find_bucket_key(fileinfo.dest)
+        self._transfer_manager.upload(
+            fileobj=fileinfo.src, bucket=bucket, key=key,
+            extra_args=extra_args, subscribers=subscribers
+        )
+
+    def _get_warning_handlers(self):
+        return [self._warn_if_too_large]
+
+    def _warn_if_too_large(self, fileinfo):
+        if getattr(fileinfo, 'size') and fileinfo.size > MAX_UPLOAD_SIZE:
+            file_path = relative_path(fileinfo.src)
+            warning_message = (
+                "File %s exceeds s3 upload limit of %s." % (
+                    file_path, human_readable_size(MAX_UPLOAD_SIZE)))
+            warning = create_warning(
+                file_path, warning_message, skip_file=False)
+            self._result_queue.put(warning)
+
+
+class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
+    REQUEST_MAPPER_METHOD = RequestParamsMapper.map_get_object_params
+    RESULT_SUBSCRIBER_CLASS = DownloadResultSubscriber
+
+    def is_valid_submission(self, fileinfo):
+        return fileinfo.operation_name == 'download'
+
+    def _add_additional_subscribers(self, subscribers, fileinfo):
+        subscribers.append(ProvideSizeSubscriber(fileinfo.size))
+        subscribers.append(DirectoryCreatorSubscriber())
+        subscribers.append(ProvideLastModifiedTimeSubscriber(
+            fileinfo.last_update, self._result_queue))
+
+    def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
+        bucket, key = find_bucket_key(fileinfo.src)
+        self._transfer_manager.download(
+            fileobj=fileinfo.dest, bucket=bucket, key=key,
+            extra_args=extra_args, subscribers=subscribers
+        )
+
+    def _get_warning_handlers(self):
+        return [self._warn_glacier]
+
+
+class CopyRequestSubmitter(BaseTransferRequestSubmitter):
+    REQUEST_MAPPER_METHOD = RequestParamsMapper.map_copy_object_params
+    RESULT_SUBSCRIBER_CLASS = CopyResultSubscriber
+
+    def is_valid_submission(self, fileinfo):
+        return fileinfo.operation_name == 'copy'
+
+    def _add_additional_subscribers(self, subscribers, fileinfo):
+        subscribers.append(ProvideSizeSubscriber(fileinfo.size))
+        if self._should_inject_content_type():
+            subscribers.append(ProvideCopyContentTypeSubscriber())
+
+    def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
+        bucket, key = find_bucket_key(fileinfo.dest)
+        source_bucket, source_key = find_bucket_key(fileinfo.src)
+        copy_source = {'Bucket': source_bucket, 'Key': source_key}
+        self._transfer_manager.copy(
+            bucket=bucket, key=key, copy_source=copy_source,
+            extra_args=extra_args, subscribers=subscribers,
+            source_client=fileinfo.source_client
+        )
+
+    def _get_warning_handlers(self):
+        return [self._warn_glacier]

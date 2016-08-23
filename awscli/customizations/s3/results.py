@@ -54,6 +54,8 @@ SuccessResult = _create_new_result_cls('SuccessResult')
 
 FailureResult = _create_new_result_cls('FailureResult', ['exception'])
 
+ErrorResult = namedtuple('ErrorResult', ['exception'])
+
 CommandResult = namedtuple(
     'CommandResult', ['num_tasks_failed', 'num_tasks_warned'])
 
@@ -156,6 +158,7 @@ class ResultRecorder(BaseResultHandler):
         self.files_transferred = 0
         self.files_failed = 0
         self.files_warned = 0
+        self.errors = 0
         self.expected_bytes_transferred = 0
         self.expected_files_transferred = 0
 
@@ -169,6 +172,7 @@ class ResultRecorder(BaseResultHandler):
             SuccessResult: self._record_success_result,
             FailureResult: self._record_failure_result,
             WarningResult: self._record_warning_result,
+            ErrorResult: self._record_error_result
         }
 
     def __call__(self, result):
@@ -226,6 +230,9 @@ class ResultRecorder(BaseResultHandler):
     def _record_warning_result(self, **kwargs):
         self.files_warned += 1
 
+    def _record_error_result(self, **kwargs):
+        self.errors += 1
+
 
 class ResultPrinter(BaseResultHandler):
     PROGRESS_FORMAT = (
@@ -238,36 +245,43 @@ class ResultPrinter(BaseResultHandler):
     FAILURE_FORMAT = (
         '{transfer_type} failed: {src} to {dest} {exception}'
     )
+    # TODO: Add "warning: " prefix once all commands are converted to using
+    # result printer and remove "warning: " prefix from ``create_warning``.
     WARNING_FORMAT = (
-        'warning: {message}'
+        '{message}'
+    )
+    ERROR_FORMAT = (
+        '{exception}'
     )
 
-    def __init__(self, result_recorder, out_file=sys.stdout,
-                 error_file=sys.stderr):
+    def __init__(self, result_recorder, out_file=None, error_file=None):
         """Prints status of ongoing transfer
 
         :type result_recorder: ResultRecorder
         :param result_recorder: The associated result recorder
 
-        :type only_show_errors: bool
-        :param only_show_errors: True if to only print out errors. Otherwise,
-            print out everything.
-
         :type out_file: file-like obj
-        :param out_file: Location to write progress and success statements
+        :param out_file: Location to write progress and success statements.
+            By default, the location is sys.stdout.
 
         :type error_file: file-like obj
-        :param error_file: Location to write warnings and errors
+        :param error_file: Location to write warnings and errors.
+            By default, the location is sys.stderr.
         """
         self._result_recorder = result_recorder
         self._out_file = out_file
+        if self._out_file is None:
+            self._out_file = sys.stdout
         self._error_file = error_file
+        if self._error_file is None:
+            self._error_file = sys.stderr
         self._progress_length = 0
         self._result_handler_map = {
             ProgressResult: self._print_progress,
             SuccessResult: self._print_success,
             FailureResult: self._print_failure,
             WarningResult: self._print_warning,
+            ErrorResult: self._print_error,
         }
 
     def __call__(self, result):
@@ -300,6 +314,11 @@ class ResultPrinter(BaseResultHandler):
         warning_statement = self._adjust_statement_padding(warning_statement)
         self._print_to_error_file(warning_statement)
         self._redisplay_progress()
+
+    def _print_error(self, result, **kwargs):
+        error_statement = self.ERROR_FORMAT.format(exception=result.exception)
+        error_statement = self._adjust_statement_padding(error_statement)
+        self._print_to_error_file(error_statement)
 
     def _redisplay_progress(self):
         # Reset to zero because done statements are printed with new lines

@@ -14,6 +14,7 @@ import logging
 import sys
 import threading
 from collections import namedtuple
+from collections import defaultdict
 
 from s3transfer.subscribers import BaseSubscriber
 
@@ -163,8 +164,11 @@ class ResultRecorder(BaseResultHandler):
         self.expected_files_transferred = 0
 
         # Keys: result from _get_progress_cache_key()
-        # Values: number of bytes left for a particular transfer
-        self._progress_remaining_cache = {}
+        # Values: number of bytes that have been transferred for that key
+        self._progress_cache = defaultdict(int)
+        # Keys: result from _get_progress_cache_key()
+        # Values: number of bytes that is expected for the particular transfer
+        self._total_size_cache = {}
 
         self._result_handler_map = {
             QueuedResult: self._record_queued_result,
@@ -180,19 +184,18 @@ class ResultRecorder(BaseResultHandler):
         self._result_handler_map.get(type(result), self._record_noop)(
             result=result)
 
-    def _get_progress_cache_key(self, result):
+    def _get_cache_key(self, result):
         if not isinstance(result, BaseResult):
             raise ValueError(
-                'Any result using _get_progress_cache_key must subclass from '
+                'Any result using _get_cache_key must subclass from '
                 'BaseResult. Provided result is of type: %s' % type(result)
             )
         return ':'.join([result.transfer_type, result.src, result.dest])
 
     def _pop_result_from_caches(self, result):
-        total_progress = self._progress_cache.pop(
-            self._get_progress_cache_key(result))
-        total_file_size = self._total_size_cache.pop(
-            self._get_progress_cache_key(result))
+        cache_key = self._get_cache_key(result)
+        total_progress = self._progress_cache.pop(cache_key, 0)
+        total_file_size = self._total_size_cache.pop(cache_key, None)
         return total_progress, total_file_size
 
     def _record_noop(self, **kwargs):
@@ -200,29 +203,59 @@ class ResultRecorder(BaseResultHandler):
         pass
 
     def _record_queued_result(self, result, **kwargs):
-        self._progress_remaining_cache[
-            self._get_progress_cache_key(result)] = result.total_transfer_size
+        total_transfer_size = result.total_transfer_size
+        self._total_size_cache[
+            self._get_cache_key(result)] = total_transfer_size
+        # The total transfer size can be None if we do not know the size
+        # immediately so do not add to the total right away.
+        if total_transfer_size:
+            self.expected_bytes_transferred += total_transfer_size
         self.expected_files_transferred += 1
-        self.expected_bytes_transferred += result.total_transfer_size
 
     def _record_progress_result(self, result, **kwargs):
-        self._progress_remaining_cache[
-            self._get_progress_cache_key(result)] -= result.bytes_transferred
-        self.bytes_transferred += result.bytes_transferred
+        bytes_transferred = result.bytes_transferred
+        self._account_for_updated_total_transfer_size_if_needed(result)
+        self._progress_cache[self._get_cache_key(result)] += bytes_transferred
+        self.bytes_transferred += bytes_transferred
+
+    def _account_for_updated_total_transfer_size_if_needed(self, result):
+        # This is a special case when the transfer size was previous not
+        # known but was provided in a progress result.
+        cache_key = self._get_cache_key(result)
+
+        # First, check if the total size is None, meaning its size is
+        # currently unknown.
+        if self._total_size_cache[cache_key] is None:
+            total_transfer_size = result.total_transfer_size
+            # If the total size is no longer None that means we just learned
+            # of the size so let's update the appropriate places with this
+            # knowledge
+            if result.total_transfer_size is not None:
+                self._total_size_cache[cache_key] = total_transfer_size
+                # Figure out how many bytes have been unaccounted for as
+                # the recorder has been keeping track of how many bytes
+                # it has seen so far and add it to the total expected amount.
+                unaccounted_bytes = total_transfer_size - self._progress_cache[
+                    cache_key]
+                self.expected_bytes_transferred += unaccounted_bytes
+            # If we still do not know what the total transfer size is
+            # just update the expected bytes with the know bytes transferred
+            # as we know at the very least, those bytes are expected.
+            else:
+                self.expected_bytes_transferred += result.bytes_transferred
 
     def _record_success_result(self, result, **kwargs):
-        self._progress_remaining_cache.pop(
-            self._get_progress_cache_key(result))
+        self._pop_result_from_caches(result)
         self.files_transferred += 1
 
     def _record_failure_result(self, result, **kwargs):
         # If there was a failure, we want to account for the failure in
         # the count for bytes transferred by just adding on the remaining bytes
         # that did not get transferred.
-        progress_left = self._progress_remaining_cache.pop(
-            self._get_progress_cache_key(result))
-
-        self.bytes_failed_to_transfer += progress_left
+        total_progress, total_file_size = self._pop_result_from_caches(result)
+        if total_file_size is not None:
+            progress_left = total_file_size - total_progress
+            self.bytes_failed_to_transfer += progress_left
 
         self.files_failed += 1
         self.files_transferred += 1

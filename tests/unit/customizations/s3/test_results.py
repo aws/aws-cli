@@ -233,6 +233,20 @@ class ResultRecorderTest(unittest.TestCase):
         self.assertEqual(
             self.result_recorder.expected_files_transferred, num_results)
 
+    def test_queued_result_with_no_full_transfer_size(self):
+        self.result_recorder(
+            QueuedResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, total_transfer_size=None
+            )
+        )
+        # Since we do not know how many bytes are expected to be transferred
+        # do not incremenent the count as we have no idea how much it may be.
+        self.assertEqual(
+            self.result_recorder.expected_bytes_transferred, 0)
+        self.assertEqual(
+            self.result_recorder.expected_files_transferred, 1)
+
     def test_progress_result(self):
         self.result_recorder(
             QueuedResult(
@@ -276,6 +290,54 @@ class ResultRecorderTest(unittest.TestCase):
             self.result_recorder.bytes_transferred,
             num_results * bytes_transferred
         )
+
+    def test_progress_result_with_no_known_transfer_size(self):
+        self.result_recorder(
+            QueuedResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, total_transfer_size=None
+            )
+        )
+
+        bytes_transferred = 1024 * 1024  # 1MB
+        self.result_recorder(
+            ProgressResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, bytes_transferred=bytes_transferred,
+                total_transfer_size=None
+            )
+        )
+        # Because the transfer size is still not known, update the
+        # expected bytes transferred with what was actually transferred.
+        self.assertEqual(
+            self.result_recorder.bytes_transferred, bytes_transferred)
+        self.assertEqual(
+            self.result_recorder.expected_bytes_transferred, bytes_transferred)
+
+    def test_progress_result_with_transfer_size_provided_during_progress(self):
+        self.result_recorder(
+            QueuedResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, total_transfer_size=None
+            )
+        )
+
+        bytes_transferred = 1024 * 1024  # 1MB
+        self.result_recorder(
+            ProgressResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, bytes_transferred=bytes_transferred,
+                total_transfer_size=self.total_transfer_size
+            )
+        )
+
+        self.assertEqual(
+            self.result_recorder.bytes_transferred, bytes_transferred)
+        # With the total size provided in the progress result, it should
+        # accurately be reflected in the expected bytes transferred.
+        self.assertEqual(
+            self.result_recorder.expected_bytes_transferred,
+            self.total_transfer_size)
 
     def test_success_result(self):
         self.result_recorder(
@@ -400,6 +462,58 @@ class ResultRecorderTest(unittest.TestCase):
             self.total_transfer_size - bytes_transferred)
         self.assertEqual(
             self.result_recorder.bytes_transferred, bytes_transferred)
+
+    def test_failure_result_still_did_not_know_transfer_size(self):
+        self.result_recorder(
+            QueuedResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, total_transfer_size=None
+            )
+        )
+        self.result_recorder(
+            FailureResult(
+                transfer_type=self.transfer_type, src=self.src, dest=self.dest,
+                exception=self.exception
+            )
+        )
+        self.assertEqual(self.result_recorder.files_transferred, 1)
+        self.assertEqual(self.result_recorder.files_failed, 1)
+        # Because we never knew how many bytes to expect, do not make
+        # any adjustments to bytes failed to transfer because it is impossible
+        # to know that.
+        self.assertEqual(
+            self.result_recorder.bytes_failed_to_transfer, 0)
+
+    def test_failure_result_and_learned_of_transfer_size_in_progress(self):
+        self.result_recorder(
+            QueuedResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, total_transfer_size=None
+            )
+        )
+
+        bytes_transferred = 1024 * 1024  # 1MB
+        self.result_recorder(
+            ProgressResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, bytes_transferred=bytes_transferred,
+                total_transfer_size=self.total_transfer_size
+            )
+        )
+        self.result_recorder(
+            FailureResult(
+                transfer_type=self.transfer_type, src=self.src, dest=self.dest,
+                exception=self.exception
+            )
+        )
+        self.assertEqual(self.result_recorder.files_transferred, 1)
+        self.assertEqual(self.result_recorder.files_failed, 1)
+        # Since we knew how many bytes to expect at some point, it should
+        # be accurately reflected in the amount failed to send when the
+        # failure result is processed.
+        self.assertEqual(
+            self.result_recorder.bytes_failed_to_transfer,
+            self.total_transfer_size - bytes_transferred)
 
     def test_warning_result(self):
         self.result_recorder(

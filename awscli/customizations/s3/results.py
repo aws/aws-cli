@@ -457,3 +457,59 @@ class ResultProcessor(threading.Thread):
                 LOGGER.debug(
                     'Error processing result %s with handler %s: %s',
                     result, result_handler, e, exc_info=True)
+
+
+class CommandResultRecorder(object):
+    def __init__(self, result_queue, result_recorder, result_processor):
+        """Records the result for an entire command
+
+        It will fully process all results in a result queue and determine
+        a CommandResult representing the entire command.
+
+        :type result_queue: queue.Queue
+        :param result_queue: The result queue in which results are placed on
+            and processed from
+
+        :type result_recorder: ResultRecorder
+        :param result_recorder: The result recorder to track the various
+            results sent through the result queue
+
+        :type result_processor: ResultProcessor
+        :param result_processor: The result processor to process results
+            placed on the queue
+        """
+        self._result_queue = result_queue
+        self._result_recorder = result_recorder
+        self._result_processor = result_processor
+
+    def start(self):
+        self._result_processor.start()
+
+    def shutdown(self):
+        self._result_queue.put(ShutdownThreadRequest())
+        self._result_processor.join()
+
+    def get_command_result(self):
+        """Get the CommandResult representing the result of a command
+
+        :rtype: CommandResult
+        :returns: The CommandResult representing the total result from running
+            a particular command
+        """
+        return CommandResult(
+            self._result_recorder.files_failed + self._result_recorder.errors,
+            self._result_recorder.files_warned
+        )
+
+    def __enter__(self):
+        self.start()
+        return self
+
+    def __exit__(self, exc_type, exc_value, *args):
+        if exc_type:
+            LOGGER.debug('Exception caught during command execution: %s',
+                         exc_value, exc_info=True)
+            self._result_queue.put(ErrorResult(exception=exc_value))
+            self.shutdown()
+            return True
+        self.shutdown()

@@ -37,6 +37,7 @@ from awscli.customizations.s3.results import DownloadResultSubscriber
 from awscli.customizations.s3.results import CopyResultSubscriber
 from awscli.customizations.s3.results import ResultRecorder
 from awscli.customizations.s3.results import ResultProcessor
+from awscli.customizations.s3.results import CommandResultRecorder
 from awscli.customizations.s3.utils import MAX_PARTS, MAX_UPLOAD_SIZE
 from awscli.customizations.s3.utils import StablePriorityQueue
 from awscli.customizations.s3.utils import WarningResult
@@ -1095,14 +1096,16 @@ class TestS3TransferHandler(unittest.TestCase):
             self.result_queue,
             [self.result_recorder, self.processed_results.append]
         )
+        self.command_result_recorder = CommandResultRecorder(
+            self.result_queue, self.result_recorder, self.result_processor)
 
         self.transfer_manager = mock.Mock(spec=TransferManager)
         self.transfer_manager.__enter__ = mock.Mock()
         self.transfer_manager.__exit__ = mock.Mock()
         self.parameters = {}
         self.s3_transfer_handler = S3TransferHandler(
-            self.transfer_manager, self.parameters, self.result_queue,
-            self.result_recorder, self.result_processor
+            self.transfer_manager, self.parameters,
+            self.command_result_recorder
         )
 
     def test_call_return_command_result(self):

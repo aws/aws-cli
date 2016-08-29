@@ -299,7 +299,7 @@ class ResultRecorderTest(unittest.TestCase):
             )
         )
 
-        bytes_transferred = 1024 * 1024  # 1MB
+        bytes_transferred = 1024 * 1024
         self.result_recorder(
             ProgressResult(
                 transfer_type=self.transfer_type, src=self.src,
@@ -322,7 +322,7 @@ class ResultRecorderTest(unittest.TestCase):
             )
         )
 
-        bytes_transferred = 1024 * 1024  # 1MB
+        bytes_transferred = 1024 * 1024
         self.result_recorder(
             ProgressResult(
                 transfer_type=self.transfer_type, src=self.src,
@@ -492,7 +492,7 @@ class ResultRecorderTest(unittest.TestCase):
             )
         )
 
-        bytes_transferred = 1024 * 1024  # 1MB
+        bytes_transferred = 1024 * 1024
         self.result_recorder(
             ProgressResult(
                 transfer_type=self.transfer_type, src=self.src,

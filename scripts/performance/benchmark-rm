@@ -1,0 +1,22 @@
+#!/usr/bin/env python
+from benchmark_utils import benchmark_command, get_transfer_command
+from benchmark_utils import backup, copy, clean, get_default_argparser
+
+
+def benchmark_rm(args):
+    command = get_transfer_command(
+        'rm %s' % args.target, args.recursive, args.quiet)
+    backup_path = backup(args.target, args.recursive)
+
+    benchmark_command(
+        command, args.benchmark_script,  args.summarize_script,
+        args.result_dir, args.num_iterations, args.dry_run,
+        upkeep=lambda: copy(backup_path, args.target, args.recursive),
+        cleanup=lambda: clean(backup_path, args.recursive)
+    )
+
+
+if __name__ == "__main__":
+    parser = get_default_argparser()
+    parser.add_argument('-t', '--target', required=True, help='An S3 path.')
+    benchmark_rm(parser.parse_args())

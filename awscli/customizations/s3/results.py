@@ -210,12 +210,12 @@ class ResultRecorder(BaseResultHandler):
 
     def _record_progress_result(self, result, **kwargs):
         bytes_transferred = result.bytes_transferred
-        self._account_for_updated_total_transfer_size_if_needed(result)
+        self._update_ongoing_transfer_size_if_unknown(result)
         self._ongoing_progress[
             self._get_ongoing_dict_key(result)] += bytes_transferred
         self.bytes_transferred += bytes_transferred
 
-    def _account_for_updated_total_transfer_size_if_needed(self, result):
+    def _update_ongoing_transfer_size_if_unknown(self, result):
         # This is a special case when the transfer size was previous not
         # known but was provided in a progress result.
         ongoing_key = self._get_ongoing_dict_key(result)

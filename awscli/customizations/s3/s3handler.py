@@ -32,6 +32,7 @@ from awscli.customizations.s3.results import UploadResultSubscriber
 from awscli.customizations.s3.results import DownloadResultSubscriber
 from awscli.customizations.s3.results import CopyResultSubscriber
 from awscli.customizations.s3.results import ErrorResult
+from awscli.customizations.s3.results import CommandResult
 from awscli.customizations.s3.utils import RequestParamsMapper
 from awscli.customizations.s3.utils import StdoutBytesWriter
 from awscli.customizations.s3.utils import ProvideSizeSubscriber
@@ -45,9 +46,6 @@ from awscli.compat import binary_stdin
 
 
 LOGGER = logging.getLogger(__name__)
-
-CommandResult = namedtuple('CommandResult',
-                           ['num_tasks_failed', 'num_tasks_warned'])
 
 
 class BaseS3Handler(object):
@@ -526,8 +524,7 @@ class S3TransferStreamHandler(BaseS3Handler):
 
 
 class S3TransferHandler(object):
-    def __init__(self, transfer_manager, cli_params, result_queue,
-                 result_recorder, result_processor):
+    def __init__(self, transfer_manager, cli_params, result_command_recorder):
         """Backend for performing S3 transfers
 
         :type transfer_manager: s3transfer.manager.TransferManager
@@ -537,23 +534,23 @@ class S3TransferHandler(object):
         :param cli_params: The parameters passed to the CLI command in the
             form of a dictionary
 
-        :type result_queue: queue.Queue
-        :param result_queue: The queue to process results
-
-        :type result_recorder: ResultRecorder
-        :param result_recorder: Result recorder to get status of transfer
-
-        :type result_processor: ResultProcessor
-        :param result_processor: Result processor to process status updates
-            of transfer
+        :type result_command_recorder: ResultCommandRecorder
+        :param result_command_recorder: The result command recorder to be
+            used to get the final result of the transfer
         """
         self._transfer_manager = transfer_manager
-        self._result_queue = result_queue
-        self._result_recorder = result_recorder
-        self._result_processor = result_processor
+        # TODO: Ideally the s3 transfer handler should not need to know
+        # about the result command recorder. It really only needs an interface
+        # for adding results to the queue. When all of the commands have
+        # converted to use this transfer handler, an effort should be made
+        # to replace the passing of a result command recorder with an
+        # abstraction to enqueue results.
+        self._result_command_recorder = result_command_recorder
 
         submitter_args = (
-            self._transfer_manager, self._result_queue, cli_params)
+            self._transfer_manager, self._result_command_recorder.result_queue,
+            cli_params
+        )
         self._submitters = [
             UploadRequestSubmitter(*submitter_args),
             DownloadRequestSubmitter(*submitter_args),
@@ -571,32 +568,14 @@ class S3TransferHandler(object):
         :returns: The result of the command that specifies the number of
             failures and warnings encountered.
         """
-        self._result_processor.start()
-        try:
+        with self._result_command_recorder:
             with self._transfer_manager:
-                self._enqueue(fileinfos)
-        except Exception as e:
-            LOGGER.debug('Exception caught during task execution: %s',
-                         str(e), exc_info=True)
-            self._result_queue.put(ErrorResult(exception=e))
-        finally:
-            self._shutdown()
-            return CommandResult(
-                self._result_recorder.files_failed +
-                self._result_recorder.errors,
-                self._result_recorder.files_warned
-            )
-
-    def _shutdown(self):
-        self._result_queue.put(ShutdownThreadRequest())
-        self._result_processor.join()
-
-    def _enqueue(self, fileinfos):
-        for fileinfo in fileinfos:
-            for submitter in self._submitters:
-                if submitter.is_valid_submission(fileinfo):
-                    submitter.submit(fileinfo)
-                    break
+                for fileinfo in fileinfos:
+                    for submitter in self._submitters:
+                        if submitter.is_valid_submission(fileinfo):
+                            submitter.submit(fileinfo)
+                            break
+        return self._result_command_recorder.get_command_result()
 
 
 class BaseTransferRequestSubmitter(object):

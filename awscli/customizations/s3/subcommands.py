@@ -32,6 +32,7 @@ from awscli.customizations.s3.results import ResultRecorder
 from awscli.customizations.s3.results import OnlyShowErrorsResultPrinter
 from awscli.customizations.s3.results import ResultPrinter
 from awscli.customizations.s3.results import ResultProcessor
+from awscli.customizations.s3.results import CommandResultRecorder
 from awscli.customizations.s3.s3handler import S3Handler
 from awscli.customizations.s3.s3handler import S3TransferStreamHandler
 from awscli.customizations.s3.s3handler import S3TransferHandler
@@ -1088,11 +1089,11 @@ class CommandArchitecture(object):
         self._add_result_printer(result_recorder, result_processor_handlers)
         result_processor = ResultProcessor(
             result_queue, result_processor_handlers)
+        command_result_recorder = CommandResultRecorder(
+            result_queue, result_recorder, result_processor)
 
         return S3TransferHandler(
-            transfer_manager, self.parameters, result_queue, result_recorder,
-            result_processor
-        )
+            transfer_manager, self.parameters, command_result_recorder)
 
     def _add_result_printer(self, result_recorder, result_processor_handlers):
         result_printer = None

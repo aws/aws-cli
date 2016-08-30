@@ -631,7 +631,7 @@ class S3TransferHandler(object):
             with self._transfer_manager:
                 for fileinfo in fileinfos:
                     for submitter in self._submitters:
-                        if submitter.is_valid_submission(fileinfo):
+                        if submitter.can_submit(fileinfo):
                             submitter.submit(fileinfo)
                             break
         return self._result_command_recorder.get_command_result()
@@ -677,8 +677,8 @@ class BaseTransferRequestSubmitter(object):
         if not should_skip:
             self._do_submit(fileinfo)
 
-    def is_valid_submission(self, fileinfo):
-        """Checks whether it is valid to submit a particular FileInfo
+    def can_submit(self, fileinfo):
+        """Checks whether it can submit a particular FileInfo
 
         :type fileinfo: awscli.customizations.s3.fileinfo.FileInfo
         :param fileinfo: The FileInfo to check if the transfer request
@@ -687,7 +687,7 @@ class BaseTransferRequestSubmitter(object):
         :returns: True if it can use the provided FileInfo to make a transfer
             request to the underlying transfer manager. False, otherwise.
         """
-        raise NotImplementedError('is_valid_submission()')
+        raise NotImplementedError('can_submit()')
 
     def _do_submit(self, fileinfo):
         extra_args = {}
@@ -752,7 +752,7 @@ class UploadRequestSubmitter(BaseTransferRequestSubmitter):
     REQUEST_MAPPER_METHOD = RequestParamsMapper.map_put_object_params
     RESULT_SUBSCRIBER_CLASS = UploadResultSubscriber
 
-    def is_valid_submission(self, fileinfo):
+    def can_submit(self, fileinfo):
         return fileinfo.operation_name == 'upload'
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
@@ -785,7 +785,7 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
     REQUEST_MAPPER_METHOD = RequestParamsMapper.map_get_object_params
     RESULT_SUBSCRIBER_CLASS = DownloadResultSubscriber
 
-    def is_valid_submission(self, fileinfo):
+    def can_submit(self, fileinfo):
         return fileinfo.operation_name == 'download'
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
@@ -809,7 +809,7 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
     REQUEST_MAPPER_METHOD = RequestParamsMapper.map_copy_object_params
     RESULT_SUBSCRIBER_CLASS = CopyResultSubscriber
 
-    def is_valid_submission(self, fileinfo):
+    def can_submit(self, fileinfo):
         return fileinfo.operation_name == 'copy'
 
     def _add_additional_subscribers(self, subscribers, fileinfo):

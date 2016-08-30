@@ -26,6 +26,7 @@ from awscli.compat import queue
 from awscli.customizations.s3.s3handler import S3Handler
 from awscli.customizations.s3.s3handler import S3TransferStreamHandler
 from awscli.customizations.s3.s3handler import S3TransferHandler
+from awscli.customizations.s3.s3handler import S3TransferHandlerFactory
 from awscli.customizations.s3.s3handler import UploadRequestSubmitter
 from awscli.customizations.s3.s3handler import DownloadRequestSubmitter
 from awscli.customizations.s3.s3handler import CopyRequestSubmitter
@@ -1114,6 +1115,20 @@ class TestS3HandlerInitialization(unittest.TestCase):
 
         self.assertEqual(handler.chunksize, 1000)
         self.assertEqual(handler.multi_threshold, 10000)
+
+
+class TestS3TransferHandlerFactory(unittest.TestCase):
+    def setUp(self):
+        self.cli_params = {}
+        self.runtime_config = runtime_config()
+        self.client = mock.Mock()
+        self.result_queue = queue.Queue()
+
+    def test_call(self):
+        factory = S3TransferHandlerFactory(
+            self.cli_params, self.runtime_config)
+        self.assertIsInstance(
+            factory(self.client, self.result_queue), S3TransferHandler)
 
 
 class TestS3TransferHandler(unittest.TestCase):

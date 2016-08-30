@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.10.60
+=======
+
+* feature:``route53``: Update route53 command to latest version
+* feature:``codepipeline``: Update codepipeline command to latest version
+* feature:``autoscaling``: Update autoscaling command to latest version
+* feature:``ssm``: Update ssm command to latest version
+* bugfix:ec2: Set MaxResults to 1000 by default for DescribeSnapshots and DescribeVolumes.
+* feature:``cloudfront``: Update cloudfront command to latest version
+
+
 1.10.59
 =======
 

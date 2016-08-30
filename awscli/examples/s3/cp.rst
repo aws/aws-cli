@@ -65,7 +65,7 @@ this example, the directory ``myDir`` has the files ``test1.txt`` and ``test2.jp
 
 Output::
 
-    upload: myDir/test1.txt to s3://mybucket2/test1.txt
+    upload: myDir/test1.txt to s3://mybucket/test1.txt
 
 **Recursively copying S3 objects to another bucket**
 

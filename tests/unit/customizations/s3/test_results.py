@@ -29,6 +29,7 @@ from awscli.customizations.s3.results import ResultRecorder
 from awscli.customizations.s3.results import ResultPrinter
 from awscli.customizations.s3.results import OnlyShowErrorsResultPrinter
 from awscli.customizations.s3.results import ResultProcessor
+from awscli.customizations.s3.results import CommandResultRecorder
 from awscli.customizations.s3.utils import relative_path
 from awscli.customizations.s3.utils import WarningResult
 from tests.unit.customizations.s3 import FakeTransferFuture
@@ -917,3 +918,66 @@ class TestResultProcessor(unittest.TestCase):
         # Because a ShutdownThreadRequest was sent the processor should
         # not have processed anymore results stored after it.
         self.assertEqual(self.results_handled, results_to_process)
+
+
+class TestCommandResultRecorder(unittest.TestCase):
+    def setUp(self):
+        self.result_queue = queue.Queue()
+        self.result_recorder = ResultRecorder()
+        self.result_processor = ResultProcessor(
+            self.result_queue, [self.result_recorder])
+        self.command_result_recorder = CommandResultRecorder(
+            self.result_queue, self.result_recorder, self.result_processor)
+
+        self.transfer_type = 'upload'
+        self.src = 'file'
+        self.dest = 's3://mybucket/mykey'
+        self.total_transfer_size = 20 * (1024 ** 1024)
+
+    def test_success(self):
+        with self.command_result_recorder:
+            self.result_queue.put(
+                QueuedResult(
+                    transfer_type=self.transfer_type, src=self.src,
+                    dest=self.dest,
+                    total_transfer_size=self.total_transfer_size
+                )
+            )
+            self.result_queue.put(
+                SuccessResult(
+                    transfer_type=self.transfer_type, src=self.src,
+                    dest=self.dest
+                )
+            )
+        self.assertEqual(
+            self.command_result_recorder.get_command_result(), (0, 0))
+
+    def test_fail(self):
+        with self.command_result_recorder:
+            self.result_queue.put(
+                QueuedResult(
+                    transfer_type=self.transfer_type, src=self.src,
+                    dest=self.dest,
+                    total_transfer_size=self.total_transfer_size
+                )
+            )
+            self.result_queue.put(
+                FailureResult(
+                    transfer_type=self.transfer_type, src=self.src,
+                    dest=self.dest, exception=Exception('my exception')
+                )
+            )
+        self.assertEqual(
+            self.command_result_recorder.get_command_result(), (1, 0))
+
+    def test_warning(self):
+        with self.command_result_recorder:
+            self.result_queue.put(WarningResult(message='my warning'))
+        self.assertEqual(
+            self.command_result_recorder.get_command_result(), (0, 1))
+
+    def test_error(self):
+        with self.command_result_recorder:
+            raise Exception('my exception')
+        self.assertEqual(
+            self.command_result_recorder.get_command_result(), (1, 0))

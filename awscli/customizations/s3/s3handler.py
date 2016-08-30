@@ -10,7 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from collections import namedtuple
 import logging
 import math
 import os
@@ -24,15 +23,18 @@ from awscli.customizations.s3.utils import (
     find_bucket_key, relative_path, PrintTask, create_warning,
     NonSeekableStream)
 from awscli.customizations.s3.executor import Executor
-from awscli.customizations.s3.executor import ShutdownThreadRequest
 from awscli.customizations.s3 import tasks
 from awscli.customizations.s3.transferconfig import RuntimeConfig, \
     create_transfer_config_from_runtime_config
 from awscli.customizations.s3.results import UploadResultSubscriber
 from awscli.customizations.s3.results import DownloadResultSubscriber
 from awscli.customizations.s3.results import CopyResultSubscriber
-from awscli.customizations.s3.results import ErrorResult
 from awscli.customizations.s3.results import CommandResult
+from awscli.customizations.s3.results import ResultRecorder
+from awscli.customizations.s3.results import ResultPrinter
+from awscli.customizations.s3.results import OnlyShowErrorsResultPrinter
+from awscli.customizations.s3.results import ResultProcessor
+from awscli.customizations.s3.results import CommandResultRecorder
 from awscli.customizations.s3.utils import RequestParamsMapper
 from awscli.customizations.s3.utils import StdoutBytesWriter
 from awscli.customizations.s3.utils import ProvideSizeSubscriber
@@ -521,6 +523,63 @@ class S3TransferStreamHandler(BaseS3Handler):
             # TODO: Update when S3Handler is refactored
             uni_print("Transfer failed: %s \n" % str(e))
             return CommandResult(1, 0)
+
+
+class S3TransferHandlerFactory(object):
+    def __init__(self, cli_params, runtime_config):
+        """Factory for S3TransferHandlers
+
+        :type cli_params: dict
+        :param cli_params: The parameters provide to the CLI command
+
+        :type runtime_config: RuntimeConfig
+        :param runtime_config: The runtime config for the CLI command
+            being run
+        """
+        self._cli_params = cli_params
+        self._runtime_config = runtime_config
+
+    def __call__(self, client, result_queue):
+        """Creates a S3TransferHandler instance
+
+        :type client: botocore.client.Client
+        :param client: The client to power the S3TransferHandler
+
+        :type result_queue: queue.Queue
+        :param result_queue: The result queue to be used to process results
+            for the S3TransferHandler
+
+        :returns: A S3TransferHandler instance
+        """
+        transfer_config = create_transfer_config_from_runtime_config(
+            self._runtime_config)
+        transfer_manager = TransferManager(client, transfer_config)
+
+        LOGGER.debug(
+            "Using a multipart threshold of %s and a part size of %s",
+            transfer_config.multipart_threshold,
+            transfer_config.multipart_chunksize
+        )
+        result_recorder = ResultRecorder()
+        result_processor_handlers = [result_recorder]
+        self._add_result_printer(result_recorder, result_processor_handlers)
+        result_processor = ResultProcessor(
+            result_queue, result_processor_handlers)
+        command_result_recorder = CommandResultRecorder(
+            result_queue, result_recorder, result_processor)
+
+        return S3TransferHandler(
+            transfer_manager, self._cli_params, command_result_recorder)
+
+    def _add_result_printer(self, result_recorder, result_processor_handlers):
+        result_printer = None
+        if self._cli_params.get('quiet'):
+            return
+        elif self._cli_params.get('only_show_errors'):
+            result_printer = OnlyShowErrorsResultPrinter(result_recorder)
+        else:
+            result_printer = ResultPrinter(result_recorder)
+        result_processor_handlers.append(result_printer)
 
 
 class S3TransferHandler(object):

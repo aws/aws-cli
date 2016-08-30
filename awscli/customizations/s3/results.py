@@ -478,7 +478,7 @@ class CommandResultRecorder(object):
         :param result_processor: The result processor to process results
             placed on the queue
         """
-        self._result_queue = result_queue
+        self.result_queue = result_queue
         self._result_recorder = result_recorder
         self._result_processor = result_processor
 
@@ -486,7 +486,7 @@ class CommandResultRecorder(object):
         self._result_processor.start()
 
     def shutdown(self):
-        self._result_queue.put(ShutdownThreadRequest())
+        self.result_queue.put(ShutdownThreadRequest())
         self._result_processor.join()
 
     def get_command_result(self):
@@ -509,7 +509,7 @@ class CommandResultRecorder(object):
         if exc_type:
             LOGGER.debug('Exception caught during command execution: %s',
                          exc_value, exc_info=True)
-            self._result_queue.put(ErrorResult(exception=exc_value))
+            self.result_queue.put(ErrorResult(exception=exc_value))
             self.shutdown()
             return True
         self.shutdown()

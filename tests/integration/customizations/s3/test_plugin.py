@@ -420,7 +420,9 @@ class TestCp(BaseS3IntegrationTest):
         self.put_object(bucket_name, key_name='foo.txt',
                         contents=foo_contents)
         local_foo_txt = self.files.full_path('foo.txt')
-        process = aws('s3 cp s3://%s/foo.txt %s' %
+        # --quiet is added to make sure too much output is not communicated
+        # to the PIPE, causing a deadlock when not consumed.
+        process = aws('s3 cp s3://%s/foo.txt %s --quiet' %
                       (bucket_name, local_foo_txt), wait_for_finish=False)
         # Give it some time to start up and enter it's main task loop.
         time.sleep(2)
@@ -442,8 +444,9 @@ class TestCp(BaseS3IntegrationTest):
         with open(foo_txt, 'wb') as f:
             for i in range(20):
                 f.write(b'a' * 1024 * 1024)
-
-        process = aws('s3 cp %s s3://%s/' % (foo_txt, bucket_name),
+        # --quiet is added to make sure too much output is not communicated
+        # to the PIPE, causing a deadlock when not consumed.
+        process = aws('s3 cp %s s3://%s/ --quiet' % (foo_txt, bucket_name),
                       wait_for_finish=False)
         time.sleep(3)
         # The process has 60 seconds to finish after being sent a Ctrl+C,

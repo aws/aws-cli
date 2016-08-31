@@ -10,7 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from collections import namedtuple
 import logging
 import math
 import os
@@ -30,6 +29,12 @@ from awscli.customizations.s3.transferconfig import RuntimeConfig, \
 from awscli.customizations.s3.results import UploadResultSubscriber
 from awscli.customizations.s3.results import DownloadResultSubscriber
 from awscli.customizations.s3.results import CopyResultSubscriber
+from awscli.customizations.s3.results import CommandResult
+from awscli.customizations.s3.results import ResultRecorder
+from awscli.customizations.s3.results import ResultPrinter
+from awscli.customizations.s3.results import OnlyShowErrorsResultPrinter
+from awscli.customizations.s3.results import ResultProcessor
+from awscli.customizations.s3.results import CommandResultRecorder
 from awscli.customizations.s3.utils import RequestParamsMapper
 from awscli.customizations.s3.utils import StdoutBytesWriter
 from awscli.customizations.s3.utils import ProvideSizeSubscriber
@@ -43,9 +48,6 @@ from awscli.compat import binary_stdin
 
 
 LOGGER = logging.getLogger(__name__)
-
-CommandResult = namedtuple('CommandResult',
-                           ['num_tasks_failed', 'num_tasks_warned'])
 
 
 class BaseS3Handler(object):
@@ -523,6 +525,118 @@ class S3TransferStreamHandler(BaseS3Handler):
             return CommandResult(1, 0)
 
 
+class S3TransferHandlerFactory(object):
+    def __init__(self, cli_params, runtime_config):
+        """Factory for S3TransferHandlers
+
+        :type cli_params: dict
+        :param cli_params: The parameters provide to the CLI command
+
+        :type runtime_config: RuntimeConfig
+        :param runtime_config: The runtime config for the CLI command
+            being run
+        """
+        self._cli_params = cli_params
+        self._runtime_config = runtime_config
+
+    def __call__(self, client, result_queue):
+        """Creates a S3TransferHandler instance
+
+        :type client: botocore.client.Client
+        :param client: The client to power the S3TransferHandler
+
+        :type result_queue: queue.Queue
+        :param result_queue: The result queue to be used to process results
+            for the S3TransferHandler
+
+        :returns: A S3TransferHandler instance
+        """
+        transfer_config = create_transfer_config_from_runtime_config(
+            self._runtime_config)
+        transfer_manager = TransferManager(client, transfer_config)
+
+        LOGGER.debug(
+            "Using a multipart threshold of %s and a part size of %s",
+            transfer_config.multipart_threshold,
+            transfer_config.multipart_chunksize
+        )
+        result_recorder = ResultRecorder()
+        result_processor_handlers = [result_recorder]
+        self._add_result_printer(result_recorder, result_processor_handlers)
+        result_processor = ResultProcessor(
+            result_queue, result_processor_handlers)
+        command_result_recorder = CommandResultRecorder(
+            result_queue, result_recorder, result_processor)
+
+        return S3TransferHandler(
+            transfer_manager, self._cli_params, command_result_recorder)
+
+    def _add_result_printer(self, result_recorder, result_processor_handlers):
+        result_printer = None
+        if self._cli_params.get('quiet'):
+            return
+        elif self._cli_params.get('only_show_errors'):
+            result_printer = OnlyShowErrorsResultPrinter(result_recorder)
+        else:
+            result_printer = ResultPrinter(result_recorder)
+        result_processor_handlers.append(result_printer)
+
+
+class S3TransferHandler(object):
+    def __init__(self, transfer_manager, cli_params, result_command_recorder):
+        """Backend for performing S3 transfers
+
+        :type transfer_manager: s3transfer.manager.TransferManager
+        :param transfer_manager: Transfer manager to use for transfers
+
+        :type cli_params: dict
+        :param cli_params: The parameters passed to the CLI command in the
+            form of a dictionary
+
+        :type result_command_recorder: ResultCommandRecorder
+        :param result_command_recorder: The result command recorder to be
+            used to get the final result of the transfer
+        """
+        self._transfer_manager = transfer_manager
+        # TODO: Ideally the s3 transfer handler should not need to know
+        # about the result command recorder. It really only needs an interface
+        # for adding results to the queue. When all of the commands have
+        # converted to use this transfer handler, an effort should be made
+        # to replace the passing of a result command recorder with an
+        # abstraction to enqueue results.
+        self._result_command_recorder = result_command_recorder
+
+        submitter_args = (
+            self._transfer_manager, self._result_command_recorder.result_queue,
+            cli_params
+        )
+        self._submitters = [
+            UploadRequestSubmitter(*submitter_args),
+            DownloadRequestSubmitter(*submitter_args),
+            CopyRequestSubmitter(*submitter_args),
+        ]
+
+    def call(self, fileinfos):
+        """Process iterable of FileInfos for transfer
+
+        :type fileinfos: iterable of FileInfos
+        param fileinfos: Set of FileInfos to submit to underlying transfer
+            request submitters to make transfer API calls to S3
+
+        :rtype: CommandResult
+        :returns: The result of the command that specifies the number of
+            failures and warnings encountered.
+        """
+        with self._result_command_recorder:
+            with self._transfer_manager:
+                for fileinfo in fileinfos:
+                    for submitter in self._submitters:
+                        if submitter.can_submit(fileinfo):
+                            submitter.submit(fileinfo)
+                            break
+        return self._result_command_recorder.get_command_result()
+
+
 class BaseTransferRequestSubmitter(object):
     REQUEST_MAPPER_METHOD = None
     RESULT_SUBSCRIBER_CLASS = None
@@ -563,8 +677,8 @@ class BaseTransferRequestSubmitter(object):
         if not should_skip:
             self._do_submit(fileinfo)
 
-    def is_valid_submission(self, fileinfo):
-        """Checks whether it is valid to submit a particular FileInfo
+    def can_submit(self, fileinfo):
+        """Checks whether it can submit a particular FileInfo
 
         :type fileinfo: awscli.customizations.s3.fileinfo.FileInfo
         :param fileinfo: The FileInfo to check if the transfer request
@@ -573,7 +687,7 @@ class BaseTransferRequestSubmitter(object):
         :returns: True if it can use the provided FileInfo to make a transfer
             request to the underlying transfer manager. False, otherwise.
         """
-        raise NotImplementedError('is_valid_submission()')
+        raise NotImplementedError('can_submit()')
 
     def _do_submit(self, fileinfo):
         extra_args = {}
@@ -638,7 +752,7 @@ class UploadRequestSubmitter(BaseTransferRequestSubmitter):
     REQUEST_MAPPER_METHOD = RequestParamsMapper.map_put_object_params
     RESULT_SUBSCRIBER_CLASS = UploadResultSubscriber
 
-    def is_valid_submission(self, fileinfo):
+    def can_submit(self, fileinfo):
         return fileinfo.operation_name == 'upload'
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
@@ -671,7 +785,7 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
     REQUEST_MAPPER_METHOD = RequestParamsMapper.map_get_object_params
     RESULT_SUBSCRIBER_CLASS = DownloadResultSubscriber
 
-    def is_valid_submission(self, fileinfo):
+    def can_submit(self, fileinfo):
         return fileinfo.operation_name == 'download'
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
@@ -695,7 +809,7 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
     REQUEST_MAPPER_METHOD = RequestParamsMapper.map_copy_object_params
     RESULT_SUBSCRIBER_CLASS = CopyResultSubscriber
 
-    def is_valid_submission(self, fileinfo):
+    def can_submit(self, fileinfo):
         return fileinfo.operation_name == 'copy'
 
     def _add_additional_subscribers(self, subscribers, fileinfo):

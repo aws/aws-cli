@@ -29,6 +29,8 @@ from awscli.customizations.s3.transferconfig import RuntimeConfig, \
 from awscli.customizations.s3.results import UploadResultSubscriber
 from awscli.customizations.s3.results import DownloadResultSubscriber
 from awscli.customizations.s3.results import CopyResultSubscriber
+from awscli.customizations.s3.results import UploadStreamResultSubscriber
+from awscli.customizations.s3.results import DownloadStreamResultSubscriber
 from awscli.customizations.s3.results import CommandResult
 from awscli.customizations.s3.results import ResultRecorder
 from awscli.customizations.s3.results import ResultPrinter
@@ -526,6 +528,8 @@ class S3TransferStreamHandler(BaseS3Handler):
 
 
 class S3TransferHandlerFactory(object):
+    MAX_IN_MEMORY_CHUNKS = 6
+
     def __init__(self, cli_params, runtime_config):
         """Factory for S3TransferHandlers
 
@@ -553,6 +557,10 @@ class S3TransferHandlerFactory(object):
         """
         transfer_config = create_transfer_config_from_runtime_config(
             self._runtime_config)
+        transfer_config.max_in_memory_upload_chunks = self.MAX_IN_MEMORY_CHUNKS
+        transfer_config.max_in_memory_download_chunks = \
+            self.MAX_IN_MEMORY_CHUNKS
+
         transfer_manager = TransferManager(client, transfer_config)
 
         LOGGER.debug(
@@ -576,6 +584,8 @@ class S3TransferHandlerFactory(object):
         if self._cli_params.get('quiet'):
             return
         elif self._cli_params.get('only_show_errors'):
+            result_printer = OnlyShowErrorsResultPrinter(result_recorder)
+        elif self._cli_params.get('is_stream'):
             result_printer = OnlyShowErrorsResultPrinter(result_recorder)
         else:
             result_printer = ResultPrinter(result_recorder)
@@ -611,6 +621,8 @@ class S3TransferHandler(object):
             cli_params
         )
         self._submitters = [
+            UploadStreamRequestSubmitter(*submitter_args),
+            DownloadStreamRequestSubmitter(*submitter_args),
             UploadRequestSubmitter(*submitter_args),
             DownloadRequestSubmitter(*submitter_args),
             CopyRequestSubmitter(*submitter_args),
@@ -762,10 +774,14 @@ class UploadRequestSubmitter(BaseTransferRequestSubmitter):
 
     def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
         bucket, key = find_bucket_key(fileinfo.dest)
+        filein = self._get_filein(fileinfo)
         self._transfer_manager.upload(
-            fileobj=fileinfo.src, bucket=bucket, key=key,
+            fileobj=filein, bucket=bucket, key=key,
             extra_args=extra_args, subscribers=subscribers
         )
+
+    def _get_filein(self, fileinfo):
+        return fileinfo.src
 
     def _get_warning_handlers(self):
         return [self._warn_if_too_large]
@@ -796,10 +812,14 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
 
     def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
         bucket, key = find_bucket_key(fileinfo.src)
+        fileout = self._get_fileout(fileinfo)
         self._transfer_manager.download(
-            fileobj=fileinfo.dest, bucket=bucket, key=key,
+            fileobj=fileout, bucket=bucket, key=key,
             extra_args=extra_args, subscribers=subscribers
         )
+
+    def _get_fileout(self, fileinfo):
+        return fileinfo.dest
 
     def _get_warning_handlers(self):
         return [self._warn_glacier]
@@ -829,3 +849,37 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
 
     def _get_warning_handlers(self):
         return [self._warn_glacier]
+
+
+class UploadStreamRequestSubmitter(UploadRequestSubmitter):
+    RESULT_SUBSCRIBER_CLASS = UploadStreamResultSubscriber
+
+    def can_submit(self, fileinfo):
+        return (
+            fileinfo.operation_name == 'upload' and
+            self._cli_params.get('is_stream')
+        )
+
+    def _add_additional_subscribers(self, subscribers, fileinfo):
+        expected_size = self._cli_params.get('expected_size', None)
+        if expected_size is not None:
+            subscribers.append(ProvideSizeSubscriber(int(expected_size)))
+
+    def _get_filein(self, fileinfo):
+        return NonSeekableStream(binary_stdin)
+
+
+class DownloadStreamRequestSubmitter(DownloadRequestSubmitter):
+    RESULT_SUBSCRIBER_CLASS = DownloadStreamResultSubscriber
+
+    def can_submit(self, fileinfo):
+        return (
+            fileinfo.operation_name == 'download' and
+            self._cli_params.get('is_stream')
+        )
+
+    def _add_additional_subscribers(self, subscribers, fileinfo):
+        pass
+
+    def _get_fileout(self, fileinfo):
+        return StdoutBytesWriter()

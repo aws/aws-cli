@@ -30,17 +30,23 @@ from awscli.customizations.s3.s3handler import S3TransferHandlerFactory
 from awscli.customizations.s3.s3handler import UploadRequestSubmitter
 from awscli.customizations.s3.s3handler import DownloadRequestSubmitter
 from awscli.customizations.s3.s3handler import CopyRequestSubmitter
+from awscli.customizations.s3.s3handler import UploadStreamRequestSubmitter
+from awscli.customizations.s3.s3handler import DownloadStreamRequestSubmitter
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.tasks import CreateMultipartUploadTask, \
     UploadPartTask, CreateLocalFileTask, CompleteMultipartUploadTask
 from awscli.customizations.s3.results import UploadResultSubscriber
 from awscli.customizations.s3.results import DownloadResultSubscriber
 from awscli.customizations.s3.results import CopyResultSubscriber
+from awscli.customizations.s3.results import UploadStreamResultSubscriber
+from awscli.customizations.s3.results import DownloadStreamResultSubscriber
 from awscli.customizations.s3.results import ResultRecorder
 from awscli.customizations.s3.results import ResultProcessor
 from awscli.customizations.s3.results import CommandResultRecorder
 from awscli.customizations.s3.utils import MAX_PARTS, MAX_UPLOAD_SIZE
 from awscli.customizations.s3.utils import StablePriorityQueue
+from awscli.customizations.s3.utils import NonSeekableStream
+from awscli.customizations.s3.utils import StdoutBytesWriter
 from awscli.customizations.s3.utils import WarningResult
 from awscli.customizations.s3.utils import ProvideSizeSubscriber
 from awscli.customizations.s3.utils import ProvideUploadContentTypeSubscriber
@@ -1179,6 +1185,26 @@ class TestS3TransferHandler(unittest.TestCase):
         # have failed results of one.
         self.assertEqual(command_result, (1, 0))
 
+    def test_enqueue_upload_stream(self):
+        self.parameters['is_stream'] = True
+        self.s3_transfer_handler.call(
+            [FileInfo(src='-', dest='bucket/key', operation_name='upload')])
+        self.assertEqual(
+            self.transfer_manager.upload.call_count, 1)
+        upload_call_kwargs = self.transfer_manager.upload.call_args[1]
+        self.assertIsInstance(
+            upload_call_kwargs['fileobj'], NonSeekableStream)
+
+    def test_enqueue_dowload_stream(self):
+        self.parameters['is_stream'] = True
+        self.s3_transfer_handler.call(
+            [FileInfo(src='bucket/key', dest='-', operation_name='download')])
+        self.assertEqual(
+            self.transfer_manager.download.call_count, 1)
+        download_call_kwargs = self.transfer_manager.download.call_args[1]
+        self.assertIsInstance(
+            download_call_kwargs['fileobj'], StdoutBytesWriter)
+
 
 class BaseTransferRequestSubmitterTest(unittest.TestCase):
     def setUp(self):
@@ -1585,6 +1611,102 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertTrue(self.result_queue.empty())
         # But the transfer still should have been skipped.
         self.assertEqual(len(self.transfer_manager.copy.call_args_list), 0)
+
+
+class TestUploadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
+    def setUp(self):
+        super(TestUploadStreamRequestSubmitter, self).setUp()
+        self.filename = '-'
+        self.cli_params['is_stream'] = True
+        self.transfer_request_submitter = UploadStreamRequestSubmitter(
+            self.transfer_manager, self.result_queue, self.cli_params)
+
+    def test_can_submit(self):
+        fileinfo = FileInfo(
+            src=self.filename, dest=self.bucket+'/'+self.key,
+            operation_name='upload')
+        self.assertTrue(
+            self.transfer_request_submitter.can_submit(fileinfo))
+        self.cli_params['is_stream'] = False
+        self.assertFalse(
+            self.transfer_request_submitter.can_submit(fileinfo))
+
+    def test_submit(self):
+        fileinfo = FileInfo(
+            src=self.filename, dest=self.bucket+'/'+self.key)
+        self.transfer_request_submitter.submit(fileinfo)
+        upload_call_kwargs = self.transfer_manager.upload.call_args[1]
+        self.assertIsInstance(
+            upload_call_kwargs['fileobj'], NonSeekableStream)
+        self.assertEqual(upload_call_kwargs['bucket'], self.bucket)
+        self.assertEqual(upload_call_kwargs['key'], self.key)
+        self.assertEqual(upload_call_kwargs['extra_args'], {})
+
+        ref_subscribers = [
+            UploadStreamResultSubscriber
+        ]
+        actual_subscribers = upload_call_kwargs['subscribers']
+        self.assertEqual(len(ref_subscribers), len(actual_subscribers))
+        for i, actual_subscriber in enumerate(actual_subscribers):
+            self.assertIsInstance(actual_subscriber, ref_subscribers[i])
+
+    def test_submit_with_expected_size_provided(self):
+        provided_size = 100
+        self.cli_params['expected_size'] = provided_size
+        fileinfo = FileInfo(
+            src=self.filename, dest=self.bucket+'/'+self.key)
+        self.transfer_request_submitter.submit(fileinfo)
+        upload_call_kwargs = self.transfer_manager.upload.call_args[1]
+
+        ref_subscribers = [
+            ProvideSizeSubscriber,
+            UploadStreamResultSubscriber
+        ]
+        actual_subscribers = upload_call_kwargs['subscribers']
+        self.assertEqual(len(ref_subscribers), len(actual_subscribers))
+        for i, actual_subscriber in enumerate(actual_subscribers):
+            self.assertIsInstance(actual_subscriber, ref_subscribers[i])
+        # The ProvideSizeSubscriber should be providing the correct size
+        self.assertEqual(actual_subscribers[0].size, provided_size)
+
+
+class TestDownloadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
+    def setUp(self):
+        super(TestDownloadStreamRequestSubmitter, self).setUp()
+        self.filename = '-'
+        self.cli_params['is_stream'] = True
+        self.transfer_request_submitter = DownloadStreamRequestSubmitter(
+            self.transfer_manager, self.result_queue, self.cli_params)
+
+    def test_can_submit(self):
+        fileinfo = FileInfo(
+            src=self.bucket+'/'+self.key, dest=self.filename,
+            operation_name='download')
+        self.assertTrue(
+            self.transfer_request_submitter.can_submit(fileinfo))
+        self.cli_params['is_stream'] = False
+        self.assertFalse(
+            self.transfer_request_submitter.can_submit(fileinfo))
+
+    def test_submit(self):
+        fileinfo = FileInfo(
+            src=self.bucket+'/'+self.key, dest=self.filename)
+        self.transfer_request_submitter.submit(fileinfo)
+
+        download_call_kwargs = self.transfer_manager.download.call_args[1]
+        self.assertIsInstance(
+            download_call_kwargs['fileobj'], StdoutBytesWriter)
+        self.assertEqual(download_call_kwargs['bucket'], self.bucket)
+        self.assertEqual(download_call_kwargs['key'], self.key)
+        self.assertEqual(download_call_kwargs['extra_args'], {})
+
+        ref_subscribers = [
+            DownloadStreamResultSubscriber
+        ]
+        actual_subscribers = download_call_kwargs['subscribers']
+        self.assertEqual(len(ref_subscribers), len(actual_subscribers))
+        for i, actual_subscriber in enumerate(actual_subscribers):
+            self.assertIsInstance(actual_subscriber, ref_subscribers[i])
 
 
 if __name__ == "__main__":

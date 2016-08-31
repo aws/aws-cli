@@ -502,13 +502,13 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
         binary_stdin = six.BytesIO(b'foo\n')
         location = "awscli.customizations.s3.s3handler.binary_stdin"
         with mock.patch(location, binary_stdin):
-            stdout, _, _ = self.run_cmd(command, expected_rc=1)
+            _, stderr, _ = self.run_cmd(command, expected_rc=1)
 
         error_message = (
-            'Transfer failed: An error occurred (NoSuchBucket) when calling '
+            'An error occurred (NoSuchBucket) when calling '
             'the PutObject operation: The specified bucket does not exist'
         )
-        self.assertIn(error_message, stdout)
+        self.assertIn(error_message, stderr)
 
     def test_streaming_download(self):
         command = "s3 cp s3://bucket/streaming.txt -"
@@ -552,9 +552,9 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
         }]
         self.http_response.status_code = 404
 
-        stdout, _, _ = self.run_cmd(command, expected_rc=1)
+        _, stderr, _ = self.run_cmd(command, expected_rc=1)
         error_message = (
-            'Transfer failed: An error occurred (NoSuchBucket) when calling '
+            'An error occurred (NoSuchBucket) when calling '
             'the HeadObject operation: The specified bucket does not exist'
         )
-        self.assertIn(error_message, stdout)
+        self.assertIn(error_message, stderr)

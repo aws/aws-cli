@@ -19,8 +19,7 @@ from s3transfer.manager import TransferManager
 
 from awscli.customizations.s3.utils import (
     find_chunksize, human_readable_size,
-    adjust_chunksize_to_upload_limits, MAX_UPLOAD_SIZE,
-    find_bucket_key, relative_path, PrintTask, create_warning,
+    MAX_UPLOAD_SIZE, find_bucket_key, relative_path, PrintTask, create_warning,
     NonSeekableStream)
 from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3 import tasks
@@ -44,7 +43,6 @@ from awscli.customizations.s3.utils import ProvideUploadContentTypeSubscriber
 from awscli.customizations.s3.utils import ProvideCopyContentTypeSubscriber
 from awscli.customizations.s3.utils import ProvideLastModifiedTimeSubscriber
 from awscli.customizations.s3.utils import DirectoryCreatorSubscriber
-from awscli.customizations.s3.utils import uni_print
 from awscli.compat import queue
 from awscli.compat import binary_stdin
 
@@ -393,138 +391,6 @@ class S3Handler(BaseS3Handler):
             session=self.session, filename=filename, parameters=self.params,
             result_queue=self.result_queue, upload_context=upload_context)
         self.executor.submit(complete_multipart_upload_task)
-
-
-class S3TransferStreamHandler(BaseS3Handler):
-    """
-    This class is an alternative ``S3Handler`` to be used when the operation
-    involves a stream since the logic is different when uploading and
-    downloading streams.
-    """
-    MAX_IN_MEMORY_CHUNKS = 6
-
-    def __init__(self, session, params, result_queue=None,
-                 runtime_config=None, manager=None):
-        super(S3TransferStreamHandler, self).__init__(
-            session, params, result_queue, runtime_config)
-        self.config = create_transfer_config_from_runtime_config(
-            self._runtime_config)
-
-        # Restrict the maximum chunks to 1 per thread.
-        self.config.max_in_memory_upload_chunks = \
-            self.MAX_IN_MEMORY_CHUNKS
-        self.config.max_in_memory_download_chunks = \
-            self.MAX_IN_MEMORY_CHUNKS
-
-        self._manager = manager
-
-    def call(self, files):
-        # There is only ever one file in a stream transfer.
-        file = files[0]
-        if self._manager is not None:
-            manager = self._manager
-        else:
-            manager = TransferManager(file.client, self.config)
-
-        if file.operation_name == 'upload':
-            bucket, key = find_bucket_key(file.dest)
-            return self._upload(manager, bucket, key)
-        elif file.operation_name == 'download':
-            bucket, key = find_bucket_key(file.src)
-            return self._download(manager, bucket, key)
-
-    def _download(self, manager, bucket, key):
-        """
-        Download the specified object and print it to stdout.
-
-        :type manager: s3transfer.manager.TransferManager
-        :param manager: The transfer manager to use for the download.
-
-        :type bucket: str
-        :param bucket: The bucket to download the object from.
-
-        :type key: str
-        :param key: The name of the key to download.
-
-        :return: A CommandResult representing the download status.
-        """
-        params = {}
-        # `download` performs the head_object as well, but the params are
-        # the same for both operations, so there's nothing missing here.
-        RequestParamsMapper.map_get_object_params(params, self.params)
-
-        with manager:
-            future = manager.download(
-                fileobj=StdoutBytesWriter(), bucket=bucket,
-                key=key, extra_args=params)
-
-            return self._process_transfer(future)
-
-    def _upload(self, manager, bucket, key):
-        """
-        Upload stdin using to the specified location.
-
-        :type manager: s3transfer.manager.TransferManager
-        :param manager: The transfer manager to use for the upload.
-
-        :type bucket: str
-        :param bucket: The bucket to upload the stream to.
-
-        :type key: str
-        :param key: The name of the key to upload the stream to.
-
-        :return: A CommandResult representing the upload status.
-        """
-        expected_size = self.params.get('expected_size', None)
-        subscribers = None
-        if expected_size is not None:
-            # `expected_size` comes in as a string
-            expected_size = int(expected_size)
-
-            # set the size of the transfer if we know it ahead of time.
-            subscribers = [ProvideSizeSubscriber(expected_size)]
-
-            # TODO: remove when this happens in s3transfer
-            # If we have the expected size, we can calculate an appropriate
-            # chunksize based on max parts and chunksize limits
-            chunksize = find_chunksize(
-                expected_size, self.config.multipart_chunksize)
-        else:
-            # TODO: remove when this happens in s3transfer
-            # Otherwise, we can still adjust for chunksize limits
-            chunksize = adjust_chunksize_to_upload_limits(
-                self.config.multipart_chunksize)
-        self.config.multipart_chunksize = chunksize
-
-        params = {}
-        RequestParamsMapper.map_put_object_params(params, self.params)
-
-        fileobj = NonSeekableStream(binary_stdin)
-        with manager:
-            future = manager.upload(
-                fileobj=fileobj, bucket=bucket,
-                key=key, extra_args=params, subscribers=subscribers)
-
-            return self._process_transfer(future)
-
-    def _process_transfer(self, future):
-        """
-        Execute and process a transfer future.
-
-        :type future: s3transfer.futures.TransferFuture
-        :param future: A future representing an S3 Transfer
-
-        :return: A CommandResult representing the transfer status.
-        """
-        try:
-            future.result()
-            return CommandResult(0, 0)
-        except Exception as e:
-            LOGGER.debug('Exception caught during task execution: %s',
-                         str(e), exc_info=True)
-            # TODO: Update when S3Handler is refactored
-            uni_print("Transfer failed: %s \n" % str(e))
-            return CommandResult(1, 0)
 
 
 class S3TransferHandlerFactory(object):

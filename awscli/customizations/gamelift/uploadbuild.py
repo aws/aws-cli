@@ -32,7 +32,10 @@ class UploadBuildCommand(BasicCommand):
         {'name': 'build-version', 'required': True,
          'help_text': 'The version of the build'},
         {'name': 'build-root', 'required': True,
-         'help_text': 'The root directory of build to upload'}
+         'help_text':
+         'The path to the directory containing the build to upload'},
+        {'name': 'operating-system', 'required': False,
+         'help_text': 'The operating system the build runs on'}
     ]
 
     def _run_main(self, args, parsed_globals):
@@ -50,9 +53,15 @@ class UploadBuildCommand(BasicCommand):
             )
 
             return 255
-        # Create a build.
-        response = gamelift_client.create_build(
-            Name=args.name, Version=args.build_version)
+        # Create a build based on the operating system given.
+        create_build_kwargs = {
+            'Name': args.name,
+            'Version': args.build_version
+        }
+        if args.operating_system:
+            create_build_kwargs['OperatingSystem'] = args.operating_system
+
+        response = gamelift_client.create_build(**create_build_kwargs)
         build_id = response['Build']['BuildId']
 
         # Retrieve a set of credentials and the s3 bucket and key.

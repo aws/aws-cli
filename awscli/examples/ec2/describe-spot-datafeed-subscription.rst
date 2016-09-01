@@ -1,6 +1,6 @@
 **To describe Spot Instance datafeed subscription for an account**
 
-This example command describes the data feed for the the account.
+This example command describes the data feed for the account.
 
 Command::
 
@@ -10,9 +10,9 @@ Output::
 
   {
       "SpotDatafeedSubscription": {
-          "OwnerId": "<account-id>",
+          "OwnerId": "123456789012",
           "Prefix": "spotdata",
-          "Bucket": "<s3-bucket-name>",
+          "Bucket": "my-s3-bucket",
           "State": "Active"
       }
   }

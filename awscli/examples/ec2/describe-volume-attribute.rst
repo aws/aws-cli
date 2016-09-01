@@ -12,6 +12,5 @@ Output::
        "AutoEnableIO": {
            "Value": false
        },
-       "ProductCodes": [],
        "VolumeId": "vol-049df61146c4d7901"
    }

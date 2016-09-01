@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.10.61
+=======
+
+* feature:``cognito-idp``: Update cognito-idp command to latest version
+* feature:``rds``: Update rds command to latest version
+* feature:``application-autoscaling``: Update application-autoscaling command to latest version
+* feature:``gamelift``: Update gamelift command to latest version
+* feature:``config``: Update config command to latest version
+* bugfix:``s3``: Fix issue where setting ``addressing_style`` and ``use_accelerate_endpoint`` in your config file would cause ``aws s3`` commands using S3 streams to fail (`#2146 <https://github.com/aws/aws-cli/issues/2146>`__)
+
+
 1.10.60
 =======
 

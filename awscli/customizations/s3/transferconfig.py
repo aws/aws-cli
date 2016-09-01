@@ -91,12 +91,13 @@ def create_transfer_config_from_runtime_config(runtime_config):
     """
     translation_map = {
         'max_concurrent_requests': 'max_request_concurrency',
-        'max_queue_size': 'max_request_queue_size'
+        'max_queue_size': 'max_request_queue_size',
+        'multipart_threshold': 'multipart_threshold',
+        'multipart_chunksize': 'multipart_chunksize',
     }
     kwargs = {}
-
     for key, value in runtime_config.items():
-        new_key = translation_map.get(key, key)
-        kwargs[new_key] = value
-
+        if key not in translation_map:
+            continue
+        kwargs[translation_map[key]] = value
     return TransferConfig(**kwargs)

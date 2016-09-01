@@ -1,4 +1,4 @@
-**To describe the specified policy used for SSL negotiation**
+**To describe a policy used for SSL negotiation**
 
 This example describes the specified policy used for SSL negotiation.
 

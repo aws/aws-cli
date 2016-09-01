@@ -1048,6 +1048,17 @@ class TestS3TransferHandler(unittest.TestCase):
         self.assertIsInstance(
             download_call_kwargs['fileobj'], StdoutBytesWriter)
 
+    def test_enqueue_deletes(self):
+        fileinfos = []
+        num_transfers = 5
+        for _ in range(num_transfers):
+            fileinfos.append(
+                FileInfo(src='bucket/key', dest=None, operation_name='delete'))
+
+        self.s3_transfer_handler.call(fileinfos)
+        self.assertEqual(
+            self.transfer_manager.delete.call_count, num_transfers)
+
 
 class BaseTransferRequestSubmitterTest(unittest.TestCase):
     def setUp(self):

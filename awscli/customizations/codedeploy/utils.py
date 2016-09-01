@@ -101,7 +101,8 @@ def validate_instance(params):
     if platform.system() == 'Linux':
         if 'Ubuntu' in platform.linux_distribution()[0]:
             params.system = Ubuntu(params)
-        if 'Red Hat Enterprise Linux Server' in platform.linux_distribution()[0]:
+        if 'Red Hat Enterprise Linux Server' in platform.linux_distribution()[0]
+            or 'CentOS Linux' in platform.linux_distribution()[0]:
             params.system = RHEL(params)
     elif platform.system() == 'Windows':
         params.system = Windows(params)

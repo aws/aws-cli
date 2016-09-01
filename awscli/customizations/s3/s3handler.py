@@ -493,6 +493,7 @@ class S3TransferHandler(object):
             UploadRequestSubmitter(*submitter_args),
             DownloadRequestSubmitter(*submitter_args),
             CopyRequestSubmitter(*submitter_args),
+            DeleteRequestSubmitter(*submitter_args),
         ]
 
     def call(self, fileinfos):

@@ -995,7 +995,7 @@ class CommandArchitecture(object):
                               result_queue=result_queue)
 
         s3_transfer_handler = s3handler
-        if self.cmd == 'cp' and not self.parameters.get('dryrun'):
+        if self.cmd in ['cp', 'rm'] and not self.parameters.get('dryrun'):
             s3_transfer_handler = S3TransferHandlerFactory(
                 self.parameters, self._runtime_config)(
                     self._client, result_queue)
@@ -1026,7 +1026,7 @@ class CommandArchitecture(object):
                             'file_generator': [file_generator],
                             'filters': [create_filter(self.parameters)],
                             'file_info_builder': [file_info_builder],
-                            's3_handler': [s3handler]}
+                            's3_handler': [s3_transfer_handler]}
         elif self.cmd == 'mv':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],

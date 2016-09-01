@@ -30,6 +30,7 @@ from awscli.customizations.s3.results import DownloadResultSubscriber
 from awscli.customizations.s3.results import CopyResultSubscriber
 from awscli.customizations.s3.results import UploadStreamResultSubscriber
 from awscli.customizations.s3.results import DownloadStreamResultSubscriber
+from awscli.customizations.s3.results import DeleteResultSubscriber
 from awscli.customizations.s3.results import CommandResult
 from awscli.customizations.s3.results import ResultRecorder
 from awscli.customizations.s3.results import ResultPrinter
@@ -569,7 +570,8 @@ class BaseTransferRequestSubmitter(object):
 
     def _do_submit(self, fileinfo):
         extra_args = {}
-        self.REQUEST_MAPPER_METHOD(extra_args, self._cli_params)
+        if self.REQUEST_MAPPER_METHOD:
+            self.REQUEST_MAPPER_METHOD(extra_args, self._cli_params)
         subscribers = []
         self._add_additional_subscribers(subscribers, fileinfo)
         # The result subscriber class should always be the last registered
@@ -749,3 +751,17 @@ class DownloadStreamRequestSubmitter(DownloadRequestSubmitter):
 
     def _get_fileout(self, fileinfo):
         return StdoutBytesWriter()
+
+
+class DeleteRequestSubmitter(BaseTransferRequestSubmitter):
+    REQUEST_MAPPER_METHOD = None
+    RESULT_SUBSCRIBER_CLASS = DeleteResultSubscriber
+
+    def can_submit(self, fileinfo):
+        return fileinfo.operation_name == 'delete'
+
+    def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
+        bucket, key = find_bucket_key(fileinfo.src)
+        self._transfer_manager.delete(
+            bucket=bucket, key=key, extra_args=extra_args,
+            subscribers=subscribers)

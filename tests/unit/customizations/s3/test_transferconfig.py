@@ -77,7 +77,12 @@ class TestConvertToS3TransferConfig(unittest.TestCase):
             'multipart_threshold': 1,
             'multipart_chunksize': 2,
             'max_concurrent_requests': 3,
-            'max_queue_size': 4
+            'max_queue_size': 4,
+            'addressing_style': 'path',
+            'use_accelerate_endpoint': True,
+            # This is a TransferConfig only option, it should
+            # just be ignored if it's in the ~/.aws/config for now.
+            'max_in_memory_upload_chunks': 1000,
         }
         result = transferconfig.create_transfer_config_from_runtime_config(
             runtime_config)
@@ -85,3 +90,4 @@ class TestConvertToS3TransferConfig(unittest.TestCase):
         self.assertEqual(result.multipart_chunksize, 2)
         self.assertEqual(result.max_request_concurrency, 3)
         self.assertEqual(result.max_request_queue_size, 4)
+        self.assertNotEqual(result.max_in_memory_upload_chunks, 1000)

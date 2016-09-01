@@ -10,10 +10,10 @@ The following is example output::
         "AdjustmentTypes": [
             {
                 "AdjustmentType": "ChangeInCapacity"
-            }
+            },
             {
                 "AdjustmentType": "ExactCapcity"
-            }
+            },
             {
                 "AdjustmentType": "PercentChangeInCapacity"
             }

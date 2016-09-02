@@ -16,7 +16,7 @@ The following is example output::
                 "StartTime": "2013-08-19T20:53:29.930Z",
                 "Progress": 100,
                 "EndTime": "2013-08-19T20:54:02Z",
-                "Cause": "At 2013-08-19T20:53:25Z a user request created an AutoScalingGroup changing the desired capacity from 0 to 1.  At 2013-08-19T20:53:29Z an instance was started in response to a difference between desired and actual capa city, increasing the capacity from 0 to 1.",
+                "Cause": "At 2013-08-19T20:53:25Z a user request created an AutoScalingGroup changing the desired capacity from 0 to 1.  At 2013-08-19T20:53:29Z an instance was started in response to a difference between desired and actual capacity, increasing the capacity from 0 to 1.",
                 "StatusCode": "Successful"
             }
         ]

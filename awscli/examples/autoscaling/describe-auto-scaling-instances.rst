@@ -9,11 +9,13 @@ The following is example output::
     {
         "AutoScalingInstances": [
             {
-                "InstanceId": "i-4ba0837f",
-                "HealthStatus": "HEALTHY",
+                "ProtectedFromScaleIn": false,
                 "AvailabilityZone": "us-west-2c",
+                "InstanceId": "i-4ba0837f",
                 "AutoScalingGroupName": "my-auto-scaling-group",
-                "LifecycleState": "InService"
+                "HealthStatus": "HEALTHY",
+                "LifecycleState": "InService",
+                "LaunchConfigurationName": "my-launch-config"
             }
         ]
     }
@@ -28,11 +30,13 @@ The following is example output::
         "NextToken": "Z3M3LMPEXAMPLE",
         "AutoScalingInstances": [
             {
-                "InstanceId": "i-4ba0837f",
-                "HealthStatus": "HEALTHY",
+                "ProtectedFromScaleIn": false,
                 "AvailabilityZone": "us-west-2c",
+                "InstanceId": "i-4ba0837f",
                 "AutoScalingGroupName": "my-auto-scaling-group",
-                "LifecycleState": "InService"
+                "HealthStatus": "HEALTHY",
+                "LifecycleState": "InService",
+                "LaunchConfigurationName": "my-launch-config"
             }
         ]
     }

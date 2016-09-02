@@ -27,6 +27,9 @@ The following is example output::
                 "Metric": "GroupTerminatingInstances"
             },
             {
+                "Metric": "GroupStandbyInstances"
+            },
+            {
                 "Metric": "GroupTotalInstances"
             }
         ],

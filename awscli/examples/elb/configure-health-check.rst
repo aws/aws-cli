@@ -16,5 +16,6 @@ Output::
           "Target": "HTTP:80/png",
           "Timeout": 3,
           "UnhealthyThreshold": 2
-    }
+      }
+   }
 

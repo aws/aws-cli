@@ -11,14 +11,19 @@ Output::
   {
       "Addresses": [
           {
-              "InstanceId": null,
+              "InstanceId": "i-1234567890abcdef0",
               "PublicIp": "198.51.100.0",
               "Domain": "standard"
           },
           {
-              "PublicIp": "203.0.113.0",
               "Domain": "vpc",
-              "AllocationId": "eipalloc-64d5890a"
+              "InstanceId": "i-1234567890abcdef0",
+              "NetworkInterfaceId": "eni-12345678",
+              "AssociationId": "eipassoc-12345678",
+              "NetworkInterfaceOwnerId": "123456789012",
+              "PublicIp": "203.0.113.0",
+              "AllocationId": "eipalloc-12345678",
+              "PrivateIpAddress": "10.0.1.241"
           }
       ]
   }
@@ -36,9 +41,14 @@ Output::
   {
       "Addresses": [
           {
-              "PublicIp": "203.0.113.0",
               "Domain": "vpc",
-              "AllocationId": "eipalloc-64d5890a"
+              "InstanceId": "i-1234567890abcdef0",
+              "NetworkInterfaceId": "eni-12345678",
+              "AssociationId": "eipassoc-12345678",
+              "NetworkInterfaceOwnerId": "123456789012",
+              "PublicIp": "203.0.113.0",
+              "AllocationId": "eipalloc-12345678",
+              "PrivateIpAddress": "10.0.1.241"
           }
       ]
   }
@@ -85,7 +95,7 @@ Output::
     {
         "Addresses": [
             {
-                "InstanceId": null, 
+                "InstanceId": "i-1234567890abcdef0", 
                 "PublicIp": "203.0.110.25", 
                 "Domain": "standard"
             }
@@ -103,7 +113,7 @@ Output::
     {
         "Addresses": [
             {
-                "InstanceId": "i-0598c7d356eba48d7", 
+                "InstanceId": "i-1234567890abcdef0", 
                 "PublicIp": "203.0.110.25", 
                 "Domain": "standard"
             }

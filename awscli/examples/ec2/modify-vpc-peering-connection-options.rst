@@ -1,32 +1,47 @@
-**To modify requester options for a VPC peering connection**
+**To enable communication over a VPC peering connection from your local ClassicLink connection**
 
-In this example, for peering connection ``pcx-aaaabbb``, the owner of the requester VPC modifies the VPC peering connection options to enable a local ClassicLink connection to communicate with the peer VPC. You must specify both options for ``--requester-peering-connection-options`` in the command.
+In this example, for peering connection ``pcx-aaaabbb``, the owner of the requester VPC modifies the VPC peering connection options to enable a local ClassicLink connection to communicate with the peer VPC.
 
 Command::
 
-  aws ec2 modify-vpc-peering-connection-options --vpc-peering-connection-id pcx-aaaabbbb --requester-peering-connection-options AllowEgressFromLocalClassicLinkToRemoteVpc=true,AllowEgressFromLocalVpcToRemoteClassicLink=false
+  aws ec2 modify-vpc-peering-connection-options --vpc-peering-connection-id pcx-aaaabbbb --requester-peering-connection-options AllowEgressFromLocalClassicLinkToRemoteVpc=true
   
 Output::
 
   {
     "RequesterPeeringConnectionOptions": {
-      "AllowEgressFromLocalVpcToRemoteClassicLink": false, 
-      "AllowEgressFromLocalClassicLinkToRemoteVpc": true
+        "AllowEgressFromLocalClassicLinkToRemoteVpc": true
     }
   }
 
-**To modify accepter options for a VPC peering connection**
+**To enable communication over a VPC peering connection from your local VPC to a remote ClassicLink connection**
 
-In this example, the owner of the accepter VPC modifies the VPC peering connection options to enable the local VPC to communicate with the ClassicLink connection in the peer VPC. You must specify both options for ``--accepter-peering-connection-options`` in the command.
+In this example, the owner of the accepter VPC modifies the VPC peering connection options to enable the local VPC to communicate with the ClassicLink connection in the peer VPC. 
+
 Command::
 
-  aws ec2 modify-vpc-peering-connection-options --vpc-peering-connection-id pcx-aaaabbbb --accepter-peering-connection-options AllowEgressFromLocalVpcToRemoteClassicLink=true,AllowEgressFromLocalClassicLinkToRemoteVpc=false
+  aws ec2 modify-vpc-peering-connection-options --vpc-peering-connection-id pcx-aaaabbbb --accepter-peering-connection-options AllowEgressFromLocalVpcToRemoteClassicLink=true
 
 Output::
 
   {
     "AccepterPeeringConnectionOptions": {
-      "AllowEgressFromLocalVpcToRemoteClassicLink": true, 
-      "AllowEgressFromLocalClassicLinkToRemoteVpc": false
+      "AllowEgressFromLocalVpcToRemoteClassicLink": true
+    }
+  }
+
+**To enable DNS resolution support for the VPC peering connection**
+
+In this example, the owner of the requester VPC modifies the VPC peering connection options for ``pcx-aaaabbbb`` to enable the local VPC to resolve public DNS hostnames to private IP addresses when queried from instances in the peer VPC.
+
+Command::
+
+  aws ec2 modify-vpc-peering-connection-options --vpc-peering-connection-id pcx-aaaabbbb --requester-peering-connection-options AllowDnsResolutionFromRemoteVpc=true
+  
+Output::
+
+  {
+    "RequesterPeeringConnectionOptions": {
+        "AllowDnsResolutionFromRemoteVpc": true
     }
   }

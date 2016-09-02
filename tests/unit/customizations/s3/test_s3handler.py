@@ -31,6 +31,7 @@ from awscli.customizations.s3.s3handler import DownloadRequestSubmitter
 from awscli.customizations.s3.s3handler import CopyRequestSubmitter
 from awscli.customizations.s3.s3handler import UploadStreamRequestSubmitter
 from awscli.customizations.s3.s3handler import DownloadStreamRequestSubmitter
+from awscli.customizations.s3.s3handler import DeleteRequestSubmitter
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.tasks import CreateMultipartUploadTask, \
     UploadPartTask, CreateLocalFileTask, CompleteMultipartUploadTask
@@ -39,6 +40,7 @@ from awscli.customizations.s3.results import DownloadResultSubscriber
 from awscli.customizations.s3.results import CopyResultSubscriber
 from awscli.customizations.s3.results import UploadStreamResultSubscriber
 from awscli.customizations.s3.results import DownloadStreamResultSubscriber
+from awscli.customizations.s3.results import DeleteResultSubscriber
 from awscli.customizations.s3.results import ResultRecorder
 from awscli.customizations.s3.results import ResultProcessor
 from awscli.customizations.s3.results import CommandResultRecorder
@@ -1075,6 +1077,17 @@ class TestS3TransferHandler(unittest.TestCase):
         self.assertIsInstance(
             download_call_kwargs['fileobj'], StdoutBytesWriter)
 
+    def test_enqueue_deletes(self):
+        fileinfos = []
+        num_transfers = 5
+        for _ in range(num_transfers):
+            fileinfos.append(
+                FileInfo(src='bucket/key', dest=None, operation_name='delete'))
+
+        self.s3_transfer_handler.call(fileinfos)
+        self.assertEqual(
+            self.transfer_manager.delete.call_count, num_transfers)
+
 
 class BaseTransferRequestSubmitterTest(unittest.TestCase):
     def setUp(self):
@@ -1574,6 +1587,40 @@ class TestDownloadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
             DownloadStreamResultSubscriber
         ]
         actual_subscribers = download_call_kwargs['subscribers']
+        self.assertEqual(len(ref_subscribers), len(actual_subscribers))
+        for i, actual_subscriber in enumerate(actual_subscribers):
+            self.assertIsInstance(actual_subscriber, ref_subscribers[i])
+
+
+class TestDeleteRequestSubmitter(BaseTransferRequestSubmitterTest):
+    def setUp(self):
+        super(TestDeleteRequestSubmitter, self).setUp()
+        self.transfer_request_submitter = DeleteRequestSubmitter(
+            self.transfer_manager, self.result_queue, self.cli_params)
+
+    def test_can_submit(self):
+        fileinfo = FileInfo(
+            src=self.bucket+'/'+self.key, dest=None, operation_name='delete')
+        self.assertTrue(
+            self.transfer_request_submitter.can_submit(fileinfo))
+        fileinfo.operation_name = 'foo'
+        self.assertFalse(
+            self.transfer_request_submitter.can_submit(fileinfo))
+
+    def test_submit(self):
+        fileinfo = FileInfo(
+            src=self.bucket+'/'+self.key, dest=None, operation_name='delete')
+        self.transfer_request_submitter.submit(fileinfo)
+
+        delete_call_kwargs = self.transfer_manager.delete.call_args[1]
+        self.assertEqual(delete_call_kwargs['bucket'], self.bucket)
+        self.assertEqual(delete_call_kwargs['key'], self.key)
+        self.assertEqual(delete_call_kwargs['extra_args'], {})
+
+        ref_subscribers = [
+            DeleteResultSubscriber
+        ]
+        actual_subscribers = delete_call_kwargs['subscribers']
         self.assertEqual(len(ref_subscribers), len(actual_subscribers))
         for i, actual_subscriber in enumerate(actual_subscribers):
             self.assertIsInstance(actual_subscriber, ref_subscribers[i])

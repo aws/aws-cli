@@ -145,6 +145,15 @@ class CopyResultSubscriber(BaseResultSubscriber):
         return src, dest
 
 
+class DeleteResultSubscriber(BaseResultSubscriber):
+    TRANSFER_TYPE = 'delete'
+
+    def _get_src_dest(self, future):
+        call_args = future.meta.call_args
+        src = 's3://' + call_args.bucket + '/' + call_args.key
+        return src, None
+
+
 class BaseResultHandler(object):
     """Base handler class to be called in the ResultProcessor"""
     def __call__(self, result):
@@ -186,7 +195,8 @@ class ResultRecorder(BaseResultHandler):
                 'Any result using _get_ongoing_dict_key must subclass from '
                 'BaseResult. Provided result is of type: %s' % type(result)
             )
-        return ':'.join([result.transfer_type, result.src, result.dest])
+        return ':'.join(
+            str(el) for el in [result.transfer_type, result.src, result.dest])
 
     def _pop_result_from_ongoing_dicts(self, result):
         ongoing_key = self._get_ongoing_dict_key(result)
@@ -271,10 +281,10 @@ class ResultPrinter(BaseResultHandler):
         '{remaining_files} file(s) remaining.'
     )
     SUCCESS_FORMAT = (
-        '{transfer_type}: {src} to {dest}'
+        '{transfer_type}: {transfer_location}'
     )
     FAILURE_FORMAT = (
-        '{transfer_type} failed: {src} to {dest} {exception}'
+        '{transfer_type} failed: {transfer_location} {exception}'
     )
     # TODO: Add "warning: " prefix once all commands are converted to using
     # result printer and remove "warning: " prefix from ``create_warning``.
@@ -284,6 +294,9 @@ class ResultPrinter(BaseResultHandler):
     ERROR_FORMAT = (
         '{exception}'
     )
+
+    SRC_DEST_TRANSFER_LOCATION_FORMAT = '{src} to {dest}'
+    SRC_TRANSFER_LOCATION_FORMAT = '{src}'
 
     def __init__(self, result_recorder, out_file=None, error_file=None):
         """Prints status of ongoing transfer
@@ -326,16 +339,19 @@ class ResultPrinter(BaseResultHandler):
 
     def _print_success(self, result, **kwargs):
         success_statement = self.SUCCESS_FORMAT.format(
-            transfer_type=result.transfer_type, src=result.src,
-            dest=result.dest)
+            transfer_type=result.transfer_type,
+            transfer_location=self._get_transfer_location(result)
+        )
         success_statement = self._adjust_statement_padding(success_statement)
         self._print_to_out_file(success_statement)
         self._redisplay_progress()
 
     def _print_failure(self, result, **kwargs):
         failure_statement = self.FAILURE_FORMAT.format(
-            transfer_type=result.transfer_type, src=result.src,
-            dest=result.dest, exception=result.exception)
+            transfer_type=result.transfer_type,
+            transfer_location=self._get_transfer_location(result),
+            exception=result.exception
+        )
         failure_statement = self._adjust_statement_padding(failure_statement)
         self._print_to_error_file(failure_statement)
         self._redisplay_progress()
@@ -350,6 +366,12 @@ class ResultPrinter(BaseResultHandler):
         error_statement = self.ERROR_FORMAT.format(exception=result.exception)
         error_statement = self._adjust_statement_padding(error_statement)
         self._print_to_error_file(error_statement)
+
+    def _get_transfer_location(self, result):
+        if result.dest is None:
+            return self.SRC_TRANSFER_LOCATION_FORMAT.format(src=result.src)
+        return self.SRC_DEST_TRANSFER_LOCATION_FORMAT.format(
+            src=result.src, dest=result.dest)
 
     def _redisplay_progress(self):
         # Reset to zero because done statements are printed with new lines

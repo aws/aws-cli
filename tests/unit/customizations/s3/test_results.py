@@ -25,6 +25,7 @@ from awscli.customizations.s3.results import UploadStreamResultSubscriber
 from awscli.customizations.s3.results import DownloadResultSubscriber
 from awscli.customizations.s3.results import DownloadStreamResultSubscriber
 from awscli.customizations.s3.results import CopyResultSubscriber
+from awscli.customizations.s3.results import DeleteResultSubscriber
 from awscli.customizations.s3.results import ResultRecorder
 from awscli.customizations.s3.results import ResultPrinter
 from awscli.customizations.s3.results import OnlyShowErrorsResultPrinter
@@ -189,6 +190,19 @@ class TestCopyResultSubscriber(TestUploadResultSubscriber):
     def _get_transfer_future_call_args(self):
         return FakeTransferFutureCallArgs(
             copy_source=self.copy_source, key=self.key, bucket=self.bucket)
+
+
+class TestDeleteResultSubscriber(TestUploadResultSubscriber):
+    def setUp(self):
+        super(TestDeleteResultSubscriber, self).setUp()
+        self.src = 's3://' + self.bucket + '/' + self.key
+        self.dest = None
+        self.transfer_type = 'delete'
+        self.result_subscriber = DeleteResultSubscriber(self.result_queue)
+
+    def _get_transfer_future_call_args(self):
+        return FakeTransferFutureCallArgs(
+            bucket=self.bucket, key=self.key)
 
 
 class ResultRecorderTest(unittest.TestCase):
@@ -516,6 +530,20 @@ class ResultRecorderTest(unittest.TestCase):
             self.result_recorder.bytes_failed_to_transfer,
             self.total_transfer_size - bytes_transferred)
 
+    def test_can_handle_results_with_no_dest(self):
+        # This is just a quick smoke test to make sure that a result with
+        # no destination like deletes can be handled for the lifecycle of
+        # a transfer (i.e. being queued and finishing)
+        self.result_recorder(
+            QueuedResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=None, total_transfer_size=None))
+        self.result_recorder(
+            SuccessResult(
+                transfer_type=self.transfer_type, src=self.src, dest=None))
+        self.assertEqual(self.result_recorder.expected_files_transferred, 1)
+        self.assertEqual(self.result_recorder.files_transferred, 1)
+
     def test_warning_result(self):
         self.result_recorder(
             WarningResult(message=self.warning_message))
@@ -657,6 +685,19 @@ class TestResultPrinter(BaseResultPrinterTest):
         )
         self.assertEqual(self.out_file.getvalue(), ref_statement)
 
+    def test_success_for_delete(self):
+        transfer_type = 'delete'
+        src = 's3://mybucket/mykey'
+        success_result = SuccessResult(
+            transfer_type=transfer_type, src=src, dest=None)
+
+        self.result_printer(success_result)
+
+        ref_success_statement = (
+            'delete: s3://mybucket/mykey\n'
+        )
+        self.assertEqual(self.out_file.getvalue(), ref_success_statement)
+
     def test_failure(self):
         transfer_type = 'upload'
         src = 'file'
@@ -714,6 +755,20 @@ class TestResultPrinter(BaseResultPrinterTest):
             'Completed 4.0 MiB/20.0 MiB with 2 file(s) remaining.\r'
         )
         self.assertEqual(shared_file.getvalue(), ref_statement)
+
+    def test_failure_for_delete(self):
+        transfer_type = 'delete'
+        src = 's3://mybucket/mykey'
+        failure_result = FailureResult(
+            transfer_type=transfer_type, src=src, dest=None,
+            exception=Exception('my exception'))
+
+        self.result_printer(failure_result)
+
+        ref_failure_statement = (
+            'delete failed: s3://mybucket/mykey my exception\n'
+        )
+        self.assertEqual(self.error_file.getvalue(), ref_failure_statement)
 
     def test_warning(self):
         self.result_printer(WarningResult('warning: my warning'))

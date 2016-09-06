@@ -134,17 +134,6 @@ class TaskInfo(object):
         self.operation_name = operation_name
         self.client = client
 
-    def make_bucket(self):
-        """
-        This opereation makes a bucket.
-        """
-        bucket, key = find_bucket_key(self.src)
-        bucket_config = {'LocationConstraint': self.client.meta.region_name}
-        params = {'Bucket': bucket}
-        if self.client.meta.region_name != 'us-east-1':
-            params['CreateBucketConfiguration'] = bucket_config
-        self.client.create_bucket(**params)
-
     def remove_bucket(self):
         """
         This operation removes a bucket.

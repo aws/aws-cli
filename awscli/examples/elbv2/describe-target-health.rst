@@ -58,7 +58,7 @@ Output::
     ]
   }
 
-The following is an example response for a target whose target group is not specified in an action for a listener. This target can't received traffic from the load balancer.
+The following is an example response for a target whose target group is not specified in an action for a listener. This target can't receive traffic from the load balancer.
 
 Output::
 
@@ -105,7 +105,6 @@ Output::
   {
     "TargetHealthDescriptions": [
         {
-            "HealthCheckPort": "80",
             "Target": {
                 "Id": "i-0f76fade",
                 "Port": 80

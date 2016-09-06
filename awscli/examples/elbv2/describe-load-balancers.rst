@@ -37,7 +37,8 @@ Output::
                 }
             ]
         }
-    ]  }
+    ]  
+  }
 
 **To describe all load balancers**
 

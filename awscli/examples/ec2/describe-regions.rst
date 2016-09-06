@@ -83,3 +83,25 @@ Output::
           },
       ]
   }
+
+**To describe region names only**
+
+This example uses the ``--query`` parameter to filter the output and return the names of the regions only. The output is returned as tab-delimited lines.
+
+Command::
+
+  aws ec2 describe-regions --query 'Regions[].{Name:RegionName}' --output text
+  
+Output::
+
+  ap-south-1
+  eu-west-1
+  ap-southeast-1
+  ap-southeast-2
+  eu-central-1
+  ap-northeast-2
+  ap-northeast-1
+  us-east-1
+  sa-east-1
+  us-west-1
+  us-west-2

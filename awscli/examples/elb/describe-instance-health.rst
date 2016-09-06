@@ -1,4 +1,4 @@
-**To describe the health the instances for a load balancer**
+**To describe the health of the instances for a load balancer**
 
 This example describes the health of the instances for the specified load balancer.
 
@@ -21,7 +21,7 @@ Output::
             "ReasonCode": "N/A",
             "State": "InService",
             "Description": "N/A"
-        },
+        }
     ]
   }
 

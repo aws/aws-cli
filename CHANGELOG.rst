@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.10.62
+=======
+
+* feature:``ecr``: Update ecr command to latest version
+* feature:``rds``: Update rds command to latest version
+* feature:``ec2``: Update ec2 command to latest version
+* feature:``codepipeline``: Update codepipeline command to latest version
+* feature:``sns``: Update sns command to latest version
+
+
 1.10.61
 =======
 

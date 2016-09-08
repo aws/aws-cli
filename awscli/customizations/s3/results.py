@@ -71,28 +71,42 @@ class BaseResultSubscriber(OnDoneFilteredSubscriber):
             on.
         """
         self._result_queue = result_queue
+        self._result_kwargs_cache = {}
 
     def on_queued(self, future, **kwargs):
-        src, dest = self._get_src_dest(future)
-        queued_result = QueuedResult(
-            self.TRANSFER_TYPE, src, dest, future.meta.size)
+        self._add_to_result_kwargs_cache(future)
+        result_kwargs = self._result_kwargs_cache[future.meta.transfer_id]
+        queued_result = QueuedResult(**result_kwargs)
         self._result_queue.put(queued_result)
 
     def on_progress(self, future, bytes_transferred, **kwargs):
-        src, dest = self._get_src_dest(future)
+        result_kwargs = self._result_kwargs_cache[future.meta.transfer_id]
         progress_result = ProgressResult(
-            self.TRANSFER_TYPE, src, dest, bytes_transferred, future.meta.size)
+            bytes_transferred=bytes_transferred, **result_kwargs)
         self._result_queue.put(progress_result)
 
     def _on_success(self, future):
-        src, dest = self._get_src_dest(future)
-        self._result_queue.put(
-            SuccessResult(self.TRANSFER_TYPE, src, dest))
+        result_kwargs = self._on_done_pop_from_result_kwargs_cache(future)
+        self._result_queue.put(SuccessResult(**result_kwargs))
 
     def _on_failure(self, future, e):
+        result_kwargs = self._on_done_pop_from_result_kwargs_cache(future)
+        self._result_queue.put(FailureResult(exception=e, **result_kwargs))
+
+    def _add_to_result_kwargs_cache(self, future):
         src, dest = self._get_src_dest(future)
-        self._result_queue.put(
-            FailureResult(self.TRANSFER_TYPE, src, dest, e))
+        result_kwargs = {
+            'transfer_type': self.TRANSFER_TYPE,
+            'src': src,
+            'dest': dest,
+            'total_transfer_size': future.meta.size
+        }
+        self._result_kwargs_cache[future.meta.transfer_id] = result_kwargs
+
+    def _on_done_pop_from_result_kwargs_cache(self, future):
+        result_kwargs = self._result_kwargs_cache.pop(future.meta.transfer_id)
+        result_kwargs.pop('total_transfer_size')
+        return result_kwargs
 
     def _get_src_dest(self, future):
         raise NotImplementedError('_get_src_dest()')

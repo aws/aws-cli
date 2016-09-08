@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.10.63
+=======
+
+* feature:``sns``: Update sns command to latest version
+* feature:``support``: Update support command to latest version
+* feature:``cloudfront``: Update cloudfront command to latest version
+
+
 1.10.62
 =======
 

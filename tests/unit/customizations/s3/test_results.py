@@ -105,6 +105,20 @@ class TestUploadResultSubscriber(BaseResultSubscriberTest):
         )
 
     def test_on_progress(self):
+        # Simulate a queue result (i.e. submitting and processing the result)
+        # before processing the progress result.
+        self.result_subscriber.on_queued(self.future)
+        self.assertEqual(
+            self.get_queued_result(),
+            QueuedResult(
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=self.size
+            )
+        )
+        self.assert_result_queue_is_empty()
+
         ref_bytes_transferred = 1024 * 1024  # 1MB
         self.result_subscriber.on_progress(self.future, ref_bytes_transferred)
         result = self.get_queued_result()
@@ -121,6 +135,20 @@ class TestUploadResultSubscriber(BaseResultSubscriberTest):
         )
 
     def test_on_done_success(self):
+        # Simulate a queue result (i.e. submitting and processing the result)
+        # before processing the progress result.
+        self.result_subscriber.on_queued(self.future)
+        self.assertEqual(
+            self.get_queued_result(),
+            QueuedResult(
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=self.size
+            )
+        )
+        self.assert_result_queue_is_empty()
+
         self.result_subscriber.on_done(self.future)
         result = self.get_queued_result()
         self.assert_result_queue_is_empty()
@@ -134,6 +162,20 @@ class TestUploadResultSubscriber(BaseResultSubscriberTest):
         )
 
     def test_on_done_failure(self):
+        # Simulate a queue result (i.e. submitting and processing the result)
+        # before processing the progress result.
+        self.result_subscriber.on_queued(self.future)
+        self.assertEqual(
+            self.get_queued_result(),
+            QueuedResult(
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=self.size
+            )
+        )
+        self.assert_result_queue_is_empty()
+
         self.result_subscriber.on_done(self.failure_future)
         result = self.get_queued_result()
         self.assert_result_queue_is_empty()

@@ -31,9 +31,10 @@ class FakeTransferFuture(object):
 
 
 class FakeTransferFutureMeta(object):
-    def __init__(self, size=None, call_args=None):
+    def __init__(self, size=None, call_args=None, transfer_id=None):
         self.size = size
         self.call_args = call_args
+        self.transfer_id = transfer_id
 
 
 class FakeTransferFutureCallArgs(object):

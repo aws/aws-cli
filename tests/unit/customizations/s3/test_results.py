@@ -108,7 +108,15 @@ class TestUploadResultSubscriber(BaseResultSubscriberTest):
         # Simulate a queue result (i.e. submitting and processing the result)
         # before processing the progress result.
         self.result_subscriber.on_queued(self.future)
-        self.get_queued_result()
+        self.assertEqual(
+            self.get_queued_result(),
+            QueuedResult(
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=self.size
+            )
+        )
         self.assert_result_queue_is_empty()
 
         ref_bytes_transferred = 1024 * 1024  # 1MB
@@ -130,7 +138,15 @@ class TestUploadResultSubscriber(BaseResultSubscriberTest):
         # Simulate a queue result (i.e. submitting and processing the result)
         # before processing the progress result.
         self.result_subscriber.on_queued(self.future)
-        self.get_queued_result()
+        self.assertEqual(
+            self.get_queued_result(),
+            QueuedResult(
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=self.size
+            )
+        )
         self.assert_result_queue_is_empty()
 
         self.result_subscriber.on_done(self.future)
@@ -149,7 +165,15 @@ class TestUploadResultSubscriber(BaseResultSubscriberTest):
         # Simulate a queue result (i.e. submitting and processing the result)
         # before processing the progress result.
         self.result_subscriber.on_queued(self.future)
-        self.get_queued_result()
+        self.assertEqual(
+            self.get_queued_result(),
+            QueuedResult(
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=self.size
+            )
+        )
         self.assert_result_queue_is_empty()
 
         self.result_subscriber.on_done(self.failure_future)

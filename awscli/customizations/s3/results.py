@@ -465,7 +465,6 @@ class ResultProcessor(threading.Thread):
                         'Shutdown request received in result processing '
                         'thread, shutting down result thread.')
                     break
-                LOGGER.debug('Received result: %s', result)
                 self._process_result(result)
             except queue.Empty:
                 pass
@@ -473,7 +472,6 @@ class ResultProcessor(threading.Thread):
     def _process_result(self, result):
         for result_handler in self._result_handlers:
             try:
-                LOGGER.debug('Processing %s with %s', result, result_handler)
                 result_handler(result)
             except Exception as e:
                 LOGGER.debug(

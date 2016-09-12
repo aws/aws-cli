@@ -864,35 +864,6 @@ class S3HandlerTestBucket(S3HandlerBaseTest):
         self.params = {'region': 'us-east-1'}
         self.bucket = 'mybucket'
 
-    def test_make_bucket(self):
-        file_info = FileInfo(
-            src=self.bucket,
-            operation_name='make_bucket',
-            size=0, client=self.client, source_client=self.source_client)
-        s3_handler = S3Handler(self.session, self.params)
-        ref_calls = [
-            ('CreateBucket', {'Bucket': self.bucket})
-        ]
-        self.assert_operations_for_s3_handler(s3_handler, [file_info],
-                                              ref_calls)
-
-    def test_make_bucket_non_us_east_1(self):
-        self.params = {'region': 'us-west-2'}
-        self.client = self.session.create_client('s3', 'us-west-2')
-        self.source_client = self.session.create_client('s3', 'us-west-2')
-        file_info = FileInfo(
-            src=self.bucket,
-            operation_name='make_bucket',
-            size=0, client=self.client, source_client=self.source_client)
-        s3_handler = S3Handler(self.session, self.params)
-        ref_calls = [
-            ('CreateBucket',
-             {'Bucket': self.bucket,
-              'CreateBucketConfiguration':
-              {'LocationConstraint': 'us-west-2'}})]
-        self.assert_operations_for_s3_handler(s3_handler, [file_info],
-                                              ref_calls)
-
     def test_remove_bucket(self):
         file_info = FileInfo(
             src=self.bucket,

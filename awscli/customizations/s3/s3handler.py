@@ -13,7 +13,6 @@
 import logging
 import math
 import os
-import sys
 
 from s3transfer.manager import TransferManager
 
@@ -447,7 +446,6 @@ class S3TransferHandlerFactory(object):
             transfer_manager, self._cli_params, command_result_recorder)
 
     def _add_result_printer(self, result_recorder, result_processor_handlers):
-        result_printer = None
         if self._cli_params.get('quiet'):
             return
         elif self._cli_params.get('only_show_errors'):
@@ -532,7 +530,7 @@ class BaseTransferRequestSubmitter(object):
         :param transfer_manager: The underlying transfer manager
 
         :type result_queue: queue.Queue
-        :param result queue: The result queue to use
+        :param result_queue: The result queue to use
 
         :type cli_params: dict
         :param cli_params: The associated CLI parameters passed in to the

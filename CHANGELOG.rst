@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.10.64
+=======
+
+* feature:``ec2``: Update ec2 command to latest version
+* feature:``servicecatalog``: Update servicecatalog command to latest version
+
+
 1.10.63
 =======
 

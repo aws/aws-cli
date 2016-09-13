@@ -14,8 +14,9 @@ before_install:
       echo "No pull requests can be sent to the master branch" 1>&2;
       exit 1;
     fi
+  - pip install codecov
 install:
   - python scripts/ci/install
 script: python scripts/ci/run-tests
 after_success:
-  - pip install python-coveralls && cd tests && coveralls
+  - rm tests/coverage.xml && mv tests/.coverage ./ && codecov

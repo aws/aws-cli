@@ -245,7 +245,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         This tests to make sure the instructions for any command is generated
         properly.
         """
-        cmds = ['cp', 'mv', 'rm', 'sync', 'mb', 'rb']
+        cmds = ['cp', 'mv', 'rm', 'sync', 'rb']
 
         instructions = {'cp': ['file_generator', 'file_info_builder',
                                's3_handler'],
@@ -255,7 +255,6 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                                's3_handler'],
                         'sync': ['file_generator', 'comparator',
                                  'file_info_builder', 's3_handler'],
-                        'mb': ['s3_handler'],
                         'rb': ['s3_handler']}
 
         params = {'filters': True, 'region': 'us-east-1', 'endpoint_url': None,
@@ -500,22 +499,6 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         self.patch_make_request()
         cmd_arc.run()
         output_str = "(dryrun) upload: %s to %s" % (rel_local_file, s3_file)
-        self.assertIn(output_str, self.output.getvalue())
-
-    def test_run_mb(self):
-        # This ensures that the architecture sets up correctly for a ``rb``
-        # command.  It is just just a dry run, but all of the components need
-        # to be wired correctly for it to work.
-        s3_prefix = 's3://' + self.bucket + '/'
-        params = {'dir_op': True, 'dryrun': True, 'quiet': False,
-                  'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
-                  'region': 'us-east-1', 'endpoint_url': None,
-                  'verify_ssl': None, 'follow_symlinks': True,
-                  'page_size': None, 'is_stream': False}
-        cmd_arc = CommandArchitecture(self.session, 'mb', params)
-        cmd_arc.create_instructions()
-        cmd_arc.run()
-        output_str = "(dryrun) make_bucket: %s" % s3_prefix
         self.assertIn(output_str, self.output.getvalue())
 
     def test_run_rb(self):

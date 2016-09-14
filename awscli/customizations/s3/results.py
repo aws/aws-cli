@@ -290,9 +290,13 @@ class ResultRecorder(BaseResultHandler):
 
 
 class ResultPrinter(BaseResultHandler):
-    PROGRESS_FORMAT = (
+    _FILES_REMAINING = "{remaining_files} file(s) remaining"
+    BYTE_PROGRESS_FORMAT = (
         'Completed {bytes_completed}/{expected_bytes_completed} with '
-        '{remaining_files} file(s) remaining.'
+        + _FILES_REMAINING
+    )
+    FILE_PROGRESS_FORMAT = (
+        'Completed {files_completed} file(s) with ' + _FILES_REMAINING
     )
     SUCCESS_FORMAT = (
         '{transfer_type}: {transfer_location}'
@@ -400,23 +404,32 @@ class ResultPrinter(BaseResultHandler):
 
     def _print_progress(self, **kwargs):
         # Get all of the statistics in the correct form.
-        bytes_completed = human_readable_size(
-            self._result_recorder.bytes_transferred +
-            self._result_recorder.bytes_failed_to_transfer
-        )
-        expected_bytes_completed = human_readable_size(
-            self._result_recorder.expected_bytes_transferred)
         remaining_files = str(
             self._result_recorder.expected_files_transferred -
             self._result_recorder.files_transferred
         )
 
         # Create the display statement.
-        progress_statement = self.PROGRESS_FORMAT.format(
-            bytes_completed=bytes_completed,
-            expected_bytes_completed=expected_bytes_completed,
-            remaining_files=remaining_files
-        )
+        if self._result_recorder.expected_bytes_transferred > 0:
+            bytes_completed = human_readable_size(
+                self._result_recorder.bytes_transferred +
+                self._result_recorder.bytes_failed_to_transfer
+            )
+            expected_bytes_completed = human_readable_size(
+                self._result_recorder.expected_bytes_transferred)
+
+            progress_statement = self.BYTE_PROGRESS_FORMAT.format(
+                bytes_completed=bytes_completed,
+                expected_bytes_completed=expected_bytes_completed,
+                remaining_files=remaining_files
+            )
+        else:
+            # We're not expecting any bytes to be transferred, so we should
+            # only print of information about number of files transferred.
+            progress_statement = self.FILE_PROGRESS_FORMAT.format(
+                files_completed=self._result_recorder.files_transferred,
+                remaining_files=remaining_files
+            )
 
         # Make sure that it overrides any previous progress bar.
         progress_statement = self._adjust_statement_padding(

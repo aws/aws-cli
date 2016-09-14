@@ -16,6 +16,7 @@ import threading
 from collections import namedtuple
 from collections import defaultdict
 
+from s3transfer.exceptions import CancelledError
 from s3transfer.subscribers import BaseSubscriber
 
 from awscli.compat import queue
@@ -91,7 +92,10 @@ class BaseResultSubscriber(OnDoneFilteredSubscriber):
 
     def _on_failure(self, future, e):
         result_kwargs = self._on_done_pop_from_result_kwargs_cache(future)
-        self._result_queue.put(FailureResult(exception=e, **result_kwargs))
+        if isinstance(e, CancelledError):
+            self._result_queue.put(ErrorResult(exception=e))
+        else:
+            self._result_queue.put(FailureResult(exception=e, **result_kwargs))
 
     def _add_to_result_kwargs_cache(self, future):
         src, dest = self._get_src_dest(future)
@@ -310,7 +314,7 @@ class ResultPrinter(BaseResultHandler):
         '{message}'
     )
     ERROR_FORMAT = (
-        '{exception}'
+        'fatal error: {exception}'
     )
 
     SRC_DEST_TRANSFER_LOCATION_FORMAT = '{src} to {dest}'
@@ -482,6 +486,7 @@ class ResultProcessor(threading.Thread):
         self._result_handlers = result_handlers
         if self._result_handlers is None:
             self._result_handlers = []
+        self._result_handlers_enabled = True
 
     def run(self):
         while True:
@@ -492,7 +497,15 @@ class ResultProcessor(threading.Thread):
                         'Shutdown request received in result processing '
                         'thread, shutting down result thread.')
                     break
-                self._process_result(result)
+                if self._result_handlers_enabled:
+                    self._process_result(result)
+                # ErrorResults are fatal to the command. If a fatal error
+                # is seen, we know that the command is trying to shutdown
+                # so disable all of the handlers and quickly consume all
+                # of the results in the result queue in order to get to
+                # the shutdown request to clean up the process.
+                if isinstance(result, ErrorResult):
+                    self._result_handlers_enabled = False
             except queue.Empty:
                 pass
 

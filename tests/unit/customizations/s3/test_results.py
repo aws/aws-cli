@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from s3transfer.exceptions import CancelledError
+
 from awscli.testutils import unittest
 from awscli.testutils import mock
 from awscli.compat import queue
@@ -188,6 +190,28 @@ class TestUploadResultSubscriber(BaseResultSubscriberTest):
                 exception=self.ref_exception
             )
         )
+
+    def test_on_done_cancelled(self):
+        # Simulate a queue result (i.e. submitting and processing the result)
+        # before processing the progress result.
+        self.result_subscriber.on_queued(self.future)
+        self.assertEqual(
+            self.get_queued_result(),
+            QueuedResult(
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=self.size
+            )
+        )
+        self.assert_result_queue_is_empty()
+
+        cancelled_exception = CancelledError('keyboard interrupt')
+        cancelled_future = self.get_failed_transfer_future(cancelled_exception)
+        self.result_subscriber.on_done(cancelled_future)
+        result = self.get_queued_result()
+        self.assert_result_queue_is_empty()
+        self.assertEqual(result, ErrorResult(exception=cancelled_exception))
 
 
 class TestUploadStreamResultSubscriber(TestUploadResultSubscriber):
@@ -865,7 +889,7 @@ class TestResultPrinter(BaseResultPrinterTest):
 
     def test_error(self):
         self.result_printer(ErrorResult(Exception('my exception')))
-        ref_error_statement = 'my exception\n'
+        ref_error_statement = 'fatal error: my exception\n'
         self.assertEqual(self.error_file.getvalue(), ref_error_statement)
 
     def test_error_while_progress(self):
@@ -876,7 +900,7 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_recorder.files_transferred = 1
 
         self.result_printer(ErrorResult(Exception('my exception')))
-        ref_error_statement = 'my exception\n'
+        ref_error_statement = 'fatal error: my exception\n'
         # Even though there was progress, we do not want to print the
         # progress because errors are really only seen when the entire
         # s3 command fails.
@@ -1008,6 +1032,31 @@ class TestResultProcessor(unittest.TestCase):
         # in case order of the handlers mattering and an unhandled exception
         # in one affects another handler.
         self.assertEqual(results_handled_after_exception, results_to_process)
+
+    def test_does_not_handle_results_after_receiving_error_result(self):
+        transfer_type = 'upload'
+        src = 'src'
+        dest = 'dest'
+        results_to_be_handled = [
+            SuccessResult(transfer_type, src, dest),
+            ErrorResult(Exception('my exception'))
+        ]
+        result_not_to_be_handled = [
+            ErrorResult(Exception('my second exception'))
+        ]
+        results_with_shutdown = results_to_be_handled + \
+            result_not_to_be_handled + [ShutdownThreadRequest()]
+
+        for result in results_with_shutdown:
+            self.result_queue.put(result)
+
+        self.result_processor.run()
+        # Only the results including and before the first the ErrorResult
+        # should be handled. Any results after the first ErrorResult should
+        # be ignored because ErrorResults are considered fatal meaning the
+        # ResultProcessor needs to consume through the rest of result queue
+        # to shutdown as quickly as possible.
+        self.assertEqual(self.results_handled, results_to_be_handled)
 
     def test_does_not_process_results_after_shutdown(self):
         transfer_type = 'upload'

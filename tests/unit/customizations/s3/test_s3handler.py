@@ -1059,6 +1059,38 @@ class TestS3TransferHandler(unittest.TestCase):
         self.assertEqual(
             self.transfer_manager.delete.call_count, num_transfers)
 
+    def test_notifies_total_submissions(self):
+        fileinfos = []
+        num_transfers = 5
+        for _ in range(num_transfers):
+            fileinfos.append(
+                FileInfo(src='bucket/key', dest='filename',
+                         operation_name='download'))
+
+        self.s3_transfer_handler.call(fileinfos)
+        self.result_recorder.expected_files_transferred = num_transfers
+        self.assertTrue(self.result_recorder.expected_totals_are_final())
+
+    def test_notifies_total_submissions_accounts_for_skips(self):
+        fileinfos = []
+        num_transfers = 5
+        for _ in range(num_transfers):
+            fileinfos.append(
+                FileInfo(src='bucket/key', dest='filename',
+                         operation_name='download'))
+
+        # Add a fileinfo that should get skipped. To skip, we do a glacier
+        # download.
+        fileinfos.append(FileInfo(
+            src='bucket/key', dest='filename', operation_name='download',
+            associated_response_data={'StorageClass': 'GLACIER'}))
+        self.s3_transfer_handler.call(fileinfos)
+        # Since the last glacier download was skipped the final expected
+        # total should be equal to the number of transfers provided in the
+        # for loop.
+        self.result_recorder.expected_files_transferred = num_transfers
+        self.assertTrue(self.result_recorder.expected_totals_are_final())
+
 
 class BaseTransferRequestSubmitterTest(unittest.TestCase):
     def setUp(self):

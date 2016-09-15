@@ -507,11 +507,15 @@ class S3TransferHandler(object):
         """
         with self._result_command_recorder:
             with self._transfer_manager:
+                total_submissions = 0
                 for fileinfo in fileinfos:
                     for submitter in self._submitters:
                         if submitter.can_submit(fileinfo):
-                            submitter.submit(fileinfo)
+                            if submitter.submit(fileinfo):
+                                total_submissions += 1
                             break
+                self._result_command_recorder.notify_total_submissions(
+                    total_submissions)
         return self._result_command_recorder.get_command_result()
 
 

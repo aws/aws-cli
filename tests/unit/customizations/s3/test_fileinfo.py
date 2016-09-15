@@ -22,7 +22,6 @@ from awscli.testutils import unittest
 from awscli.customizations.s3 import fileinfo
 from awscli.customizations.s3.utils import MD5Error
 from awscli.customizations.s3.fileinfo import FileInfo
-from awscli.customizations.s3.fileinfo import TaskInfo
 
 
 class TestSaveFile(unittest.TestCase):
@@ -172,10 +171,6 @@ class TestIsGlacierCompatible(unittest.TestCase):
     def test_response_missing_storage_class(self):
         self.file_info.associated_response_data = {'Key': 'Foo'}
         self.assertTrue(self.file_info.is_glacier_compatible())
-
-    def test_task_info_glacier_compatibility(self):
-        task_info = TaskInfo('bucket/key', 's3', 'remove_bucket', None)
-        self.assertTrue(task_info.is_glacier_compatible())
 
     def test_restored_object_is_glacier_compatible(self):
         self.file_info.operation_name = 'download'

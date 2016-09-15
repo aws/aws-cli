@@ -1090,8 +1090,9 @@ class TestUploadRequestSubmitter(BaseTransferRequestSubmitterTest):
         fileinfo = FileInfo(
             src=self.filename, dest=self.bucket+'/'+self.key)
         self.cli_params['guess_mime_type'] = True  # Default settings
-        self.transfer_request_submitter.submit(fileinfo)
+        future = self.transfer_request_submitter.submit(fileinfo)
 
+        self.assertIs(self.transfer_manager.upload.return_value, future)
         upload_call_kwargs = self.transfer_manager.upload.call_args[1]
         self.assertEqual(upload_call_kwargs['fileobj'], self.filename)
         self.assertEqual(upload_call_kwargs['bucket'], self.bucket)
@@ -1159,7 +1160,7 @@ class TestUploadRequestSubmitter(BaseTransferRequestSubmitterTest):
         fileinfo = FileInfo(
             src=self.filename, dest=self.bucket+'/'+self.key,
             size=MAX_UPLOAD_SIZE+1)
-        self.transfer_request_submitter.submit(fileinfo)
+        future = self.transfer_request_submitter.submit(fileinfo)
 
         # A warning should have been submitted because it is too large.
         warning_result = self.result_queue.get()
@@ -1167,6 +1168,7 @@ class TestUploadRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertIn('exceeds s3 upload limit', warning_result.message)
 
         # Make sure that the transfer was still attempted
+        self.assertIs(self.transfer_manager.upload.return_value, future)
         self.assertEqual(len(self.transfer_manager.upload.call_args_list), 1)
 
 
@@ -1189,8 +1191,9 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
     def test_submit(self):
         fileinfo = FileInfo(
             src=self.bucket+'/'+self.key, dest=self.filename)
-        self.transfer_request_submitter.submit(fileinfo)
+        future = self.transfer_request_submitter.submit(fileinfo)
 
+        self.assertIs(self.transfer_manager.download.return_value, future)
         download_call_kwargs = self.transfer_manager.download.call_args[1]
         self.assertEqual(download_call_kwargs['fileobj'], self.filename)
         self.assertEqual(download_call_kwargs['bucket'], self.bucket)
@@ -1232,7 +1235,7 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
                 'StorageClass': 'GLACIER',
             }
         )
-        self.transfer_request_submitter.submit(fileinfo)
+        future = self.transfer_request_submitter.submit(fileinfo)
 
         # A warning should have been submitted because it is a non-restored
         # glacier object.
@@ -1243,6 +1246,7 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
             warning_result.message)
 
         # The transfer should have been skipped.
+        self.assertIsNone(future)
         self.assertEqual(len(self.transfer_manager.download.call_args_list), 0)
 
     def test_not_warn_glacier_for_compatible(self):
@@ -1254,13 +1258,14 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
                 'Restore': 'ongoing-request="false"'
             }
         )
-        self.transfer_request_submitter.submit(fileinfo)
+        future = self.transfer_request_submitter.submit(fileinfo)
 
         # A warning should have not been submitted because it is a restored
         # glacier object.
         self.assertTrue(self.result_queue.empty())
 
         # And the transfer should not have been skipped.
+        self.assertIs(self.transfer_manager.download.return_value, future)
         self.assertEqual(len(self.transfer_manager.download.call_args_list), 1)
 
     def test_warn_glacier_force_glacier(self):
@@ -1272,11 +1277,12 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
                 'StorageClass': 'GLACIER',
             }
         )
-        self.transfer_request_submitter.submit(fileinfo)
+        future = self.transfer_request_submitter.submit(fileinfo)
 
         # A warning should have not been submitted because it is glacier
         # transfers were forced.
         self.assertTrue(self.result_queue.empty())
+        self.assertIs(self.transfer_manager.download.return_value, future)
         self.assertEqual(len(self.transfer_manager.download.call_args_list), 1)
 
     def test_warn_glacier_ignore_glacier_warnings(self):
@@ -1288,12 +1294,13 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
                 'StorageClass': 'GLACIER',
             }
         )
-        self.transfer_request_submitter.submit(fileinfo)
+        future = self.transfer_request_submitter.submit(fileinfo)
 
         # A warning should have not been submitted because it was specified
         # to ignore glacier warnings.
         self.assertTrue(self.result_queue.empty())
         # But the transfer still should have been skipped.
+        self.assertIsNone(future)
         self.assertEqual(len(self.transfer_manager.download.call_args_list), 0)
 
 
@@ -1320,8 +1327,8 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
             src=self.source_bucket+'/'+self.source_key,
             dest=self.bucket+'/'+self.key)
         self.cli_params['guess_mime_type'] = True  # Default settings
-        self.transfer_request_submitter.submit(fileinfo)
-
+        future = self.transfer_request_submitter.submit(fileinfo)
+        self.assertIs(self.transfer_manager.copy.return_value, future)
         copy_call_kwargs = self.transfer_manager.copy.call_args[1]
         self.assertEqual(
             copy_call_kwargs['copy_source'],
@@ -1399,7 +1406,7 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
                 'StorageClass': 'GLACIER',
             }
         )
-        self.transfer_request_submitter.submit(fileinfo)
+        future = self.transfer_request_submitter.submit(fileinfo)
 
         # A warning should have been submitted because it is a non-restored
         # glacier object.
@@ -1409,6 +1416,9 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
             'Unable to perform copy operations on GLACIER objects',
             warning_result.message)
 
+        # The transfer request should have never been sent therefore return
+        # no future.
+        self.assertIsNone(future)
         # The transfer should have been skipped.
         self.assertEqual(len(self.transfer_manager.copy.call_args_list), 0)
 
@@ -1422,7 +1432,8 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
                 'Restore': 'ongoing-request="false"'
             }
         )
-        self.transfer_request_submitter.submit(fileinfo)
+        future = self.transfer_request_submitter.submit(fileinfo)
+        self.assertIs(self.transfer_manager.copy.return_value, future)
 
         # A warning should have not been submitted because it is a restored
         # glacier object.
@@ -1441,7 +1452,8 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
                 'StorageClass': 'GLACIER',
             }
         )
-        self.transfer_request_submitter.submit(fileinfo)
+        future = self.transfer_request_submitter.submit(fileinfo)
+        self.assertIs(self.transfer_manager.copy.return_value, future)
 
         # A warning should have not been submitted because it is glacier
         # transfers were forced.
@@ -1458,8 +1470,11 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
                 'StorageClass': 'GLACIER',
             }
         )
-        self.transfer_request_submitter.submit(fileinfo)
+        future = self.transfer_request_submitter.submit(fileinfo)
 
+        # The transfer request should have never been sent therefore return
+        # no future.
+        self.assertIsNone(future)
         # A warning should have not been submitted because it was specified
         # to ignore glacier warnings.
         self.assertTrue(self.result_queue.empty())
@@ -1488,7 +1503,9 @@ class TestUploadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
     def test_submit(self):
         fileinfo = FileInfo(
             src=self.filename, dest=self.bucket+'/'+self.key)
-        self.transfer_request_submitter.submit(fileinfo)
+        future = self.transfer_request_submitter.submit(fileinfo)
+        self.assertIs(self.transfer_manager.upload.return_value, future)
+
         upload_call_kwargs = self.transfer_manager.upload.call_args[1]
         self.assertIsInstance(
             upload_call_kwargs['fileobj'], NonSeekableStream)
@@ -1545,7 +1562,8 @@ class TestDownloadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
     def test_submit(self):
         fileinfo = FileInfo(
             src=self.bucket+'/'+self.key, dest=self.filename)
-        self.transfer_request_submitter.submit(fileinfo)
+        future = self.transfer_request_submitter.submit(fileinfo)
+        self.assertIs(self.transfer_manager.download.return_value, future)
 
         download_call_kwargs = self.transfer_manager.download.call_args[1]
         self.assertIsInstance(
@@ -1581,7 +1599,8 @@ class TestDeleteRequestSubmitter(BaseTransferRequestSubmitterTest):
     def test_submit(self):
         fileinfo = FileInfo(
             src=self.bucket+'/'+self.key, dest=None, operation_name='delete')
-        self.transfer_request_submitter.submit(fileinfo)
+        future = self.transfer_request_submitter.submit(fileinfo)
+        self.assertIs(self.transfer_manager.delete.return_value, future)
 
         delete_call_kwargs = self.transfer_manager.delete.call_args[1]
         self.assertEqual(delete_call_kwargs['bucket'], self.bucket)

@@ -550,10 +550,15 @@ class BaseTransferRequestSubmitter(object):
         :type fileinfo: awscli.customizations.s3.fileinfo.FileInfo
         :param fileinfo: The FileInfo to be used to submit a transfer
             request to the underlying transfer manager.
+
+        :rtype: s3transfer.futures.TransferFuture
+        :returns: A TransferFuture representing the transfer if it the
+            transfer was submitted. If it was not submitted nothing
+            is returned.
         """
         should_skip = self._warn_and_signal_if_skip(fileinfo)
         if not should_skip:
-            self._do_submit(fileinfo)
+            return self._do_submit(fileinfo)
 
     def can_submit(self, fileinfo):
         """Checks whether it can submit a particular FileInfo
@@ -577,7 +582,7 @@ class BaseTransferRequestSubmitter(object):
         # subscriber to ensure it is not missing any information that
         # may have been added in a different subscriber such as size.
         subscribers.append(self.RESULT_SUBSCRIBER_CLASS(self._result_queue))
-        self._submit_transfer_request(fileinfo, extra_args, subscribers)
+        return self._submit_transfer_request(fileinfo, extra_args, subscribers)
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
         pass
@@ -642,7 +647,7 @@ class UploadRequestSubmitter(BaseTransferRequestSubmitter):
     def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
         bucket, key = find_bucket_key(fileinfo.dest)
         filein = self._get_filein(fileinfo)
-        self._transfer_manager.upload(
+        return self._transfer_manager.upload(
             fileobj=filein, bucket=bucket, key=key,
             extra_args=extra_args, subscribers=subscribers
         )
@@ -680,7 +685,7 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
     def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
         bucket, key = find_bucket_key(fileinfo.src)
         fileout = self._get_fileout(fileinfo)
-        self._transfer_manager.download(
+        return self._transfer_manager.download(
             fileobj=fileout, bucket=bucket, key=key,
             extra_args=extra_args, subscribers=subscribers
         )
@@ -708,7 +713,7 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
         bucket, key = find_bucket_key(fileinfo.dest)
         source_bucket, source_key = find_bucket_key(fileinfo.src)
         copy_source = {'Bucket': source_bucket, 'Key': source_key}
-        self._transfer_manager.copy(
+        return self._transfer_manager.copy(
             bucket=bucket, key=key, copy_source=copy_source,
             extra_args=extra_args, subscribers=subscribers,
             source_client=fileinfo.source_client
@@ -761,6 +766,6 @@ class DeleteRequestSubmitter(BaseTransferRequestSubmitter):
 
     def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
         bucket, key = find_bucket_key(fileinfo.src)
-        self._transfer_manager.delete(
+        return self._transfer_manager.delete(
             bucket=bucket, key=key, extra_args=extra_args,
             subscribers=subscribers)

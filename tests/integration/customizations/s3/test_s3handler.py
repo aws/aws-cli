@@ -350,46 +350,5 @@ class S3HandlerTestDownload(unittest.TestCase):
             self.assertEqual(filename.read(), b'This is another test.')
 
 
-class S3HandlerTestBucket(unittest.TestCase):
-    """
-    Test the ability to make a bucket then remove it.
-    """
-    def setUp(self):
-        self.session = botocore.session.get_session(EnvironmentVariables)
-        self.client = self.session.create_client('s3', 'us-west-2')
-        self.source_client = self.session.create_client('s3', 'us-west-2')
-        self.params = {'region': 'us-west-2'}
-        self.s3_handler = S3Handler(self.session, self.params)
-        self.bucket = None
-
-    def tearDown(self):
-        s3_cleanup(self.bucket, self.session)
-
-    def test_bucket(self):
-        rand1 = random.randrange(5000)
-        rand2 = random.randrange(5000)
-        self.bucket = str(rand1) + 'mybucket' + str(rand2)
-
-        self.client.create_bucket(
-            Bucket=self.bucket,
-            CreateBucketConfiguration={
-                'LocationConstraint': 'us-west-2'
-            }
-        )
-        buckets_list = []
-        for bucket in self.client.list_buckets().get('Buckets', []):
-            buckets_list.append(bucket['Name'])
-        self.assertIn(self.bucket, buckets_list)
-
-        file_info = FileInfo(
-            src=self.bucket, operation_name='remove_bucket', size=0,
-            client=self.client, source_client=self.source_client)
-        S3Handler(self.session, self.params).call([file_info])
-        buckets_list = []
-        for bucket in self.client.list_buckets().get('Buckets', []):
-            buckets_list.append(bucket['Name'])
-        self.assertNotIn(self.bucket, buckets_list)
-
-
 if __name__ == "__main__":
     unittest.main()

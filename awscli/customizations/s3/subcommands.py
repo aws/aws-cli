@@ -897,10 +897,7 @@ class CommandArchitecture(object):
         self.instructions.append('s3_handler')
 
     def needs_filegenerator(self):
-        if self.cmd == 'rb' or self.parameters['is_stream']:
-            return False
-        else:
-            return True
+        return not self.parameters['is_stream']
 
     def choose_sync_strategies(self):
         """Determines the sync strategy for the command.
@@ -963,10 +960,7 @@ class CommandArchitecture(object):
         cmd_translation['s3s3'] = {'cp': 'copy', 'sync': 'copy', 'mv': 'move'}
         cmd_translation['s3local'] = {'cp': 'download', 'sync': 'download',
                                       'mv': 'move'}
-        cmd_translation['s3'] = {
-            'rm': 'delete',
-            'rb': 'remove_bucket'
-        }
+        cmd_translation['s3'] = {'rm': 'delete'}
         result_queue = queue.Queue()
         operation_name = cmd_translation[paths_type][self.cmd]
 
@@ -1006,10 +1000,6 @@ class CommandArchitecture(object):
 
         file_generator = FileGenerator(**fgen_kwargs)
         rev_generator = FileGenerator(**rgen_kwargs)
-        taskinfo = [TaskInfo(src=files['src']['path'],
-                             src_type='s3',
-                             operation_name=operation_name,
-                             client=self._client)]
         stream_dest_path, stream_compare_key = find_dest_path_comp_key(files)
         stream_file_info = [FileInfo(src=files['src']['path'],
                                      dest=stream_dest_path,
@@ -1063,9 +1053,6 @@ class CommandArchitecture(object):
                             'file_generator': [file_generator],
                             'filters': [create_filter(self.parameters)],
                             'file_info_builder': [file_info_builder],
-                            's3_handler': [s3handler]}
-        elif self.cmd == 'rb':
-            command_dict = {'setup': [taskinfo],
                             's3_handler': [s3handler]}
 
         files = command_dict['setup']

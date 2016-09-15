@@ -198,7 +198,7 @@ class ResultRecorder(BaseResultHandler):
         self.errors = 0
         self.expected_bytes_transferred = 0
         self.expected_files_transferred = 0
-        self._final_expected_files_transferred = None
+        self.final_expected_files_transferred = None
 
         self._ongoing_progress = defaultdict(int)
         self._ongoing_total_sizes = {}
@@ -215,7 +215,7 @@ class ResultRecorder(BaseResultHandler):
 
     def expected_totals_are_final(self):
         return (
-            self._final_expected_files_transferred ==
+            self.final_expected_files_transferred ==
             self.expected_files_transferred
         )
 
@@ -310,7 +310,7 @@ class ResultRecorder(BaseResultHandler):
         self.errors += 1
 
     def _record_final_expected_files(self, result, **kwargs):
-        self._final_expected_files_transferred = result.total_submissions
+        self.final_expected_files_transferred = result.total_submissions
 
 
 class ResultPrinter(BaseResultHandler):

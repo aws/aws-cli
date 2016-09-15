@@ -733,6 +733,7 @@ class TestResultPrinter(BaseResultPrinterTest):
 
         self.result_recorder.expected_bytes_transferred = 20 * mb
         self.result_recorder.expected_files_transferred = 4
+        self.result_recorder.final_expected_files_transferred = 4
         self.result_recorder.bytes_transferred = mb
         self.result_recorder.files_transferred = 1
 
@@ -745,6 +746,7 @@ class TestResultPrinter(BaseResultPrinterTest):
     def test_progress_with_no_expected_transfer_bytes(self):
         self.result_recorder.files_transferred = 1
         self.result_recorder.expected_files_transferred = 4
+        self.result_recorder.final_expected_files_transferred = 4
         self.result_recorder.bytes_transferred = 0
         self.result_recorder.expected_bytes_transferred = 0
 
@@ -762,6 +764,7 @@ class TestResultPrinter(BaseResultPrinterTest):
         # Add the first progress update and print it out
         self.result_recorder.expected_bytes_transferred = 20 * mb
         self.result_recorder.expected_files_transferred = 4
+        self.result_recorder.final_expected_files_transferred = 4
         self.result_recorder.bytes_transferred = mb
         self.result_recorder.files_transferred = 1
 
@@ -779,6 +782,33 @@ class TestResultPrinter(BaseResultPrinterTest):
             'Completed 1.0 MiB/20.0 MiB with 3 file(s) remaining\r'
             'Completed 2.0 MiB/20.0 MiB with 3 file(s) remaining\r'
         )
+        self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
+
+    def test_progress_still_calculating_totals(self):
+        mb = 1024 * 1024
+
+        self.result_recorder.expected_bytes_transferred = 20 * mb
+        self.result_recorder.expected_files_transferred = 4
+        self.result_recorder.bytes_transferred = mb
+        self.result_recorder.files_transferred = 1
+
+        progress_result = self.get_progress_result()
+        self.result_printer(progress_result)
+        ref_progress_statement = (
+            'Completed 1.0 MiB/~20.0 MiB with ~3 file(s) '
+            'remaining (calculating...)\r')
+        self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
+
+    def test_progress_still_calculating_totals_no_bytes(self):
+        self.result_recorder.expected_bytes_transferred = 0
+        self.result_recorder.expected_files_transferred = 4
+        self.result_recorder.bytes_transferred = 0
+        self.result_recorder.files_transferred = 1
+
+        progress_result = self.get_progress_result()
+        self.result_printer(progress_result)
+        ref_progress_statement = (
+            'Completed 1 file(s) with ~3 file(s) remaining (calculating...)\r')
         self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
 
     def test_success(self):
@@ -803,6 +833,7 @@ class TestResultPrinter(BaseResultPrinterTest):
         # Add the first progress update and print it out
         self.result_recorder.expected_bytes_transferred = 20 * mb
         self.result_recorder.expected_files_transferred = 4
+        self.result_recorder.final_expected_files_transferred = 4
         self.result_recorder.bytes_transferred = mb
         self.result_recorder.files_transferred = 1
         self.result_printer(progress_result)
@@ -872,6 +903,7 @@ class TestResultPrinter(BaseResultPrinterTest):
         # Add the first progress update and print it out
         self.result_recorder.expected_bytes_transferred = 20 * mb
         self.result_recorder.expected_files_transferred = 4
+        self.result_recorder.final_expected_files_transferred = 4
         self.result_recorder.bytes_transferred = mb
         self.result_recorder.files_transferred = 1
         self.result_printer(progress_result)
@@ -934,6 +966,7 @@ class TestResultPrinter(BaseResultPrinterTest):
         # Add the first progress update and print it out
         self.result_recorder.expected_bytes_transferred = 20 * mb
         self.result_recorder.expected_files_transferred = 4
+        self.result_recorder.final_expected_files_transferred = 4
         self.result_recorder.bytes_transferred = mb
         self.result_recorder.files_transferred = 1
         self.result_printer(progress_result)
@@ -966,6 +999,7 @@ class TestResultPrinter(BaseResultPrinterTest):
         mb = 1024 * 1024
         self.result_recorder.expected_bytes_transferred = 20 * mb
         self.result_recorder.expected_files_transferred = 4
+        self.result_recorder.final_expected_files_transferred = 4
         self.result_recorder.bytes_transferred = mb
         self.result_recorder.files_transferred = 1
 

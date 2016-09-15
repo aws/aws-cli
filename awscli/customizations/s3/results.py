@@ -315,6 +315,8 @@ class ResultRecorder(BaseResultHandler):
 
 class ResultPrinter(BaseResultHandler):
     _FILES_REMAINING = "{remaining_files} file(s) remaining"
+    _ESTIMATED_EXPECTED_TOTAL = "~{expected_total}"
+    _STILL_CALCULATING_TOTALS = " (calculating...)"
     BYTE_PROGRESS_FORMAT = (
         'Completed {bytes_completed}/{expected_bytes_completed} with '
         + _FILES_REMAINING
@@ -436,9 +438,9 @@ class ResultPrinter(BaseResultHandler):
 
     def _print_progress(self, **kwargs):
         # Get all of the statistics in the correct form.
-        remaining_files = str(
-            self._result_recorder.expected_files_transferred -
-            self._result_recorder.files_transferred
+        remaining_files = self._get_expected_total(
+            str(self._result_recorder.expected_files_transferred -
+                self._result_recorder.files_transferred)
         )
 
         # Create the display statement.
@@ -447,8 +449,9 @@ class ResultPrinter(BaseResultHandler):
                 self._result_recorder.bytes_transferred +
                 self._result_recorder.bytes_failed_to_transfer
             )
-            expected_bytes_completed = human_readable_size(
-                self._result_recorder.expected_bytes_transferred)
+            expected_bytes_completed = self._get_expected_total(
+                human_readable_size(
+                    self._result_recorder.expected_bytes_transferred))
 
             progress_statement = self.BYTE_PROGRESS_FORMAT.format(
                 bytes_completed=bytes_completed,
@@ -463,6 +466,9 @@ class ResultPrinter(BaseResultHandler):
                 remaining_files=remaining_files
             )
 
+        if not self._result_recorder.expected_totals_are_final():
+            progress_statement += self._STILL_CALCULATING_TOTALS
+
         # Make sure that it overrides any previous progress bar.
         progress_statement = self._adjust_statement_padding(
                 progress_statement, ending_char='\r')
@@ -473,6 +479,12 @@ class ResultPrinter(BaseResultHandler):
 
         # Print the progress out.
         self._print_to_out_file(progress_statement)
+
+    def _get_expected_total(self, expected_total):
+        if not self._result_recorder.expected_totals_are_final():
+            return self._ESTIMATED_EXPECTED_TOTAL.format(
+                expected_total=expected_total)
+        return expected_total
 
     def _adjust_statement_padding(self, print_statement, ending_char='\n'):
         print_statement = print_statement.ljust(self._progress_length, ' ')

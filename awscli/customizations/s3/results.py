@@ -64,6 +64,9 @@ CtrlCResult = _create_new_result_cls('CtrlCResult', base_cls=ErrorResult)
 CommandResult = namedtuple(
     'CommandResult', ['num_tasks_failed', 'num_tasks_warned'])
 
+FinalTotalSubmissionsResult = namedtuple(
+    'FinalTotalSubmissionsResult', ['total_submissions'])
+
 
 class BaseResultSubscriber(OnDoneFilteredSubscriber):
     TRANSFER_TYPE = None
@@ -195,6 +198,7 @@ class ResultRecorder(BaseResultHandler):
         self.errors = 0
         self.expected_bytes_transferred = 0
         self.expected_files_transferred = 0
+        self._final_expected_files_transferred = None
 
         self._ongoing_progress = defaultdict(int)
         self._ongoing_total_sizes = {}
@@ -205,8 +209,15 @@ class ResultRecorder(BaseResultHandler):
             SuccessResult: self._record_success_result,
             FailureResult: self._record_failure_result,
             WarningResult: self._record_warning_result,
-            ErrorResult: self._record_error_result
+            ErrorResult: self._record_error_result,
+            FinalTotalSubmissionsResult: self._record_final_expected_files,
         }
+
+    def expected_totals_are_final(self):
+        return (
+            self._final_expected_files_transferred ==
+            self.expected_files_transferred
+        )
 
     def __call__(self, result):
         """Record the result of an individual Result object"""
@@ -297,6 +308,9 @@ class ResultRecorder(BaseResultHandler):
 
     def _record_error_result(self, **kwargs):
         self.errors += 1
+
+    def _record_final_expected_files(self, result, **kwargs):
+        self._final_expected_files_transferred = result.total_submissions
 
 
 class ResultPrinter(BaseResultHandler):
@@ -574,6 +588,9 @@ class CommandResultRecorder(object):
             self._result_recorder.files_failed + self._result_recorder.errors,
             self._result_recorder.files_warned
         )
+
+    def notify_total_submissions(self, total):
+        self.result_queue.put(FinalTotalSubmissionsResult(total))
 
     def __enter__(self):
         self.start()

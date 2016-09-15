@@ -674,7 +674,6 @@ class S3TransferCommand(S3Command):
         cmd_params.add_verify_ssl(parsed_globals)
         cmd_params.add_page_size(parsed_args)
         cmd_params.add_paths(parsed_args.paths)
-        self._handle_rm_force(parsed_globals, cmd_params.parameters)
 
         runtime_config = transferconfig.RuntimeConfig().build_config(
             **self._session.get_scoped_config().get('s3', {}))
@@ -704,34 +703,6 @@ class S3TransferCommand(S3Command):
                 enc_path = dec_path.encode('utf-8')
                 new_path = enc_path.decode('utf-8')
                 parsed_args.paths[i] = new_path
-
-    def _handle_rm_force(self, parsed_globals, parameters):
-        """
-        This function recursively deletes objects in a bucket if the force
-        parameter was thrown when using the remove bucket command. It will
-        refuse to delete if a key is specified in the s3path.
-        """
-        # XXX: This shouldn't really be here.  This was originally moved from
-        # the CommandParameters class to here, but this is still not the ideal
-        # place for this code.  This should be moved
-        # to either the CommandArchitecture class, or the RbCommand class where
-        # the actual operations against S3 are performed.  This may require
-        # some refactoring though to move this to either of those classes.
-        # For now, moving this out of CommandParameters allows for that class
-        # to be kept simple.
-        if 'force' in parameters:
-            if parameters['force']:
-                bucket, key = find_bucket_key(parameters['src'][5:])
-                if key:
-                    raise ValueError('Please specify a valid bucket name only.'
-                                     ' E.g. s3://%s' % bucket)
-                path = 's3://' + bucket
-                del_objects = RmCommand(self._session)
-                rc = del_objects([path, '--recursive'], parsed_globals)
-                if rc != 0:
-                    raise RuntimeError(
-                        "Unable to delete all objects in the bucket, "
-                        "bucket will not be deleted.")
 
 
 class CpCommand(S3TransferCommand):

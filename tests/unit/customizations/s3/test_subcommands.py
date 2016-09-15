@@ -54,7 +54,7 @@ class TestRbCommand(unittest.TestCase):
         self.session = mock.Mock()
         self.session.get_scoped_config.return_value = {}
         self.rb_command = RbCommand(self.session)
-        self.parsed_args = FakeArgs(paths='s3://mybucket/',
+        self.parsed_args = FakeArgs(path='s3://mybucket/',
                                     force=True, dir_op=False)
         self.parsed_globals = FakeArgs(region=None, endpoint_url=None,
                                        verify_ssl=None)
@@ -70,15 +70,15 @@ class TestRbCommand(unittest.TestCase):
                 # success.
                 rm_command.return_value.return_value = 0
                 self.rb_command._run_main(self.parsed_args,
-                                    parsed_globals=self.parsed_globals)
+                                          parsed_globals=self.parsed_globals)
             # Because of --force we should have called the
             # rm_command with the --recursive option.
             rm_command.return_value.assert_called_with(
-                ['s3://mybucket', '--recursive'], mock.ANY)
+                ['s3://mybucket/', '--recursive'], mock.ANY)
 
     def test_rb_command_with_force_requires_strict_path(self):
         with self.assertRaises(ValueError):
-            self.parsed_args.paths = 's3://mybucket/mykey'
+            self.parsed_args.path = 's3://mybucket/mykey'
             self.rb_command._run_main(self.parsed_args,
                                       parsed_globals=self.parsed_globals)
 

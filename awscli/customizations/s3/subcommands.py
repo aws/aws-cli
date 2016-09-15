@@ -808,7 +808,7 @@ class MbCommand(S3Command):
             return 1
 
 
-class RbCommand(S3TransferCommand):
+class RbCommand(S3Command):
     NAME = 'rb'
     DESCRIPTION = (
         "Deletes an empty S3 bucket. A bucket must be completely empty "
@@ -818,8 +818,45 @@ class RbCommand(S3TransferCommand):
         "deleted."
     )
     USAGE = "<S3Uri>"
-    ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
+    ARG_TABLE = [{'name': 'path', 'positional_arg': True,
                   'synopsis': USAGE}, FORCE]
+
+    def _run_main(self, parsed_args, parsed_globals):
+        super(RbCommand, self)._run_main(parsed_args, parsed_globals)
+
+        if not parsed_args.path.startswith('s3://'):
+            raise TypeError("%s\nError: Invalid argument type" % self.USAGE)
+        bucket, key = split_s3_bucket_key(parsed_args.path)
+
+        if parsed_args.force:
+            # TODO: always validate or never validate
+            # This is currently placed here to preserve behavior with the
+            # previous implementation which only validated key existence when
+            # --force is provided.
+            if key:
+                raise ValueError('Please specify a valid bucket name only.'
+                                 ' E.g. s3://%s' % bucket)
+            self._force(parsed_args.path, parsed_globals)
+
+        try:
+            self.client.delete_bucket(Bucket=bucket)
+            uni_print("remove_bucket: %s\n" % bucket)
+            return 0
+        except Exception as e:
+            uni_print(
+                "remove_bucket failed: %s %s\n" % (parsed_args.path, e),
+                sys.stderr
+            )
+            return 1
+
+    def _force(self, path, parsed_globals):
+        """Calls rm --recursive on the given path."""
+        rm = RmCommand(self._session)
+        rc = rm([path, '--recursive'], parsed_globals)
+        if rc != 0:
+            raise RuntimeError(
+                "Unable to delete all objects in the bucket, "
+                "bucket will not be deleted.")
 
 
 class CommandArchitecture(object):

@@ -659,6 +659,8 @@ class ResultRecorderTest(unittest.TestCase):
             )
         )
         self.result_recorder(FinalTotalSubmissionsResult(1))
+        self.assertEqual(
+            self.result_recorder.final_expected_files_transferred, 1)
         self.assertTrue(self.result_recorder.expected_totals_are_final())
 
     def test_expected_totals_are_final_reaches_final_after_notification(self):
@@ -673,6 +675,8 @@ class ResultRecorderTest(unittest.TestCase):
         self.assertTrue(self.result_recorder.expected_totals_are_final())
 
     def test_expected_totals_are_final_is_false_with_no_notification(self):
+        self.assertIsNone(
+            self.result_recorder.final_expected_files_transferred)
         self.assertFalse(self.result_recorder.expected_totals_are_final())
         self.result_recorder(
             QueuedResult(
@@ -680,8 +684,11 @@ class ResultRecorderTest(unittest.TestCase):
                 dest=self.dest, total_transfer_size=self.total_transfer_size
             )
         )
-        # It should still be False because it has not yet been notified
+        # It should still be None because it has not yet been notified
         # of finals.
+        self.assertIsNone(
+            self.result_recorder.final_expected_files_transferred)
+        # This should remain False as well.
         self.assertFalse(self.result_recorder.expected_totals_are_final())
 
     def test_unknown_result_object(self):

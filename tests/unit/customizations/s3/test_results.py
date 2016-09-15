@@ -24,6 +24,7 @@ from awscli.customizations.s3.results import SuccessResult
 from awscli.customizations.s3.results import FailureResult
 from awscli.customizations.s3.results import ErrorResult
 from awscli.customizations.s3.results import CtrlCResult
+from awscli.customizations.s3.results import FinalTotalSubmissionsResult
 from awscli.customizations.s3.results import UploadResultSubscriber
 from awscli.customizations.s3.results import UploadStreamResultSubscriber
 from awscli.customizations.s3.results import DownloadResultSubscriber
@@ -650,6 +651,39 @@ class ResultRecorderTest(unittest.TestCase):
         self.result_recorder(ErrorResult(exception=self.exception))
         self.assertEqual(self.result_recorder.errors, 1)
 
+    def test_expected_totals_are_final(self):
+        self.result_recorder(
+            QueuedResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, total_transfer_size=self.total_transfer_size
+            )
+        )
+        self.result_recorder(FinalTotalSubmissionsResult(1))
+        self.assertTrue(self.result_recorder.expected_totals_are_final())
+
+    def test_expected_totals_are_final_reaches_final_after_notification(self):
+        self.result_recorder(FinalTotalSubmissionsResult(1))
+        self.assertFalse(self.result_recorder.expected_totals_are_final())
+        self.result_recorder(
+            QueuedResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, total_transfer_size=self.total_transfer_size
+            )
+        )
+        self.assertTrue(self.result_recorder.expected_totals_are_final())
+
+    def test_expected_totals_are_final_is_false_with_no_notification(self):
+        self.assertFalse(self.result_recorder.expected_totals_are_final())
+        self.result_recorder(
+            QueuedResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, total_transfer_size=self.total_transfer_size
+            )
+        )
+        # It should still be False because it has not yet been notified
+        # of finals.
+        self.assertFalse(self.result_recorder.expected_totals_are_final())
+
     def test_unknown_result_object(self):
         self.result_recorder(object())
         # Nothing should have been affected
@@ -1168,3 +1202,9 @@ class TestCommandResultRecorder(unittest.TestCase):
             raise Exception('my exception')
         self.assertEqual(
             self.command_result_recorder.get_command_result(), (1, 0))
+
+    def test_notify_total_submissions(self):
+        total = 5
+        self.command_result_recorder.notify_total_submissions(total)
+        self.assertEqual(
+            self.result_queue.get(), FinalTotalSubmissionsResult(total))

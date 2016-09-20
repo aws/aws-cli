@@ -11,8 +11,9 @@ import random
 import argparse
 
 TEST_BUCKET = os.environ.get('PERF_TEST_BUCKET')
-MANY_FILES_DIR = "files/10k"
-LARGE_FILE_DIR = "files/10gb"
+WORKDIR = os.environ.get('PERF_WORKDIR', 'workdir')
+MANY_FILES_DIR = 'many'
+LARGE_FILE_DIR = 'large'
 
 
 def run(command):
@@ -26,30 +27,34 @@ def generate_run_id():
 
 
 def initialize_files(num_files, file_size):
-    if not os.path.exists(MANY_FILES_DIR):
-        os.makedirs(MANY_FILES_DIR)
+    many_files_dir = os.path.join(WORKDIR, MANY_FILES_DIR)
+    if not os.path.exists(many_files_dir):
+        os.makedirs(many_files_dir)
         run('caf gen --file-size 4kb --max-files %s --directory %s' %
-            (num_files, MANY_FILES_DIR))
-    if not os.path.exists(LARGE_FILE_DIR):
-        os.makedirs(LARGE_FILE_DIR)
+            (num_files, many_files_dir))
+
+    large_file_dir = os.path.join(WORKDIR, LARGE_FILE_DIR)
+    if not os.path.exists(large_file_dir):
+        os.makedirs(large_file_dir)
         run('caf gen --file-size %s --max-files 1 --directory %s' %
-            (file_size, LARGE_FILE_DIR))
+            (file_size, large_file_dir))
 
 
 def main(args):
     initialize_files(args.num_files, args.large_file_size)
     run_id = generate_run_id()
-    results_dir = os.path.join('results', run_id)
+    results_dir = os.path.join(WORKDIR, 'results', run_id)
     os.makedirs(results_dir)
     benchmark(args.bucket, results_dir, args.num_iterations)
     print("RUN ID: " + run_id)
 
 
 def benchmark(bucket, results_dir, num_iterations=1):
-    perf_dir = os.path.dirname(os.path.realpath(__file__))
-    perf_dir = os.path.join(perf_dir, os.pardir, 'performance')
+    perf_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    perf_dir = os.path.join(perf_dir, 'performance')
 
     s3_location = bucket + '/' + MANY_FILES_DIR
+    local_dir = os.path.join(WORKDIR, MANY_FILES_DIR)
     try:
         # 10k upload
         results = os.path.join(results_dir, 'upload-10k-small')
@@ -57,14 +62,14 @@ def benchmark(bucket, results_dir, num_iterations=1):
         benchmark_cp = os.path.join(perf_dir, 'benchmark-cp')
         run(benchmark_cp + ' --recursive --num-iterations %s '
             '--source %s --dest %s --result-dir %s --no-cleanup' % (
-                num_iterations, MANY_FILES_DIR, s3_location, results))
+                num_iterations, local_dir, s3_location, results))
 
         # 10k download
         results = os.path.join(results_dir, 'download-10k-small')
         os.makedirs(results)
         run(benchmark_cp + ' --recursive --num-iterations %s '
             '--source %s --dest %s --result-dir %s' % (
-                num_iterations, s3_location, MANY_FILES_DIR, results))
+                num_iterations, s3_location, local_dir, results))
 
         # 10k rm
         results = os.path.join(results_dir, 'delete-10k-small')
@@ -79,20 +84,21 @@ def benchmark(bucket, results_dir, num_iterations=1):
         raise
 
     s3_location = bucket + '/' + LARGE_FILE_DIR
+    local_dir = os.path.join(WORKDIR, LARGE_FILE_DIR)
     try:
         # 10gb upload
         results = os.path.join(results_dir, 'upload-10gb')
         os.makedirs(results)
         run(benchmark_cp + ' --recursive --num-iterations %s '
             '--source %s --dest %s --result-dir %s --no-cleanup' % (
-                num_iterations, LARGE_FILE_DIR, s3_location, results))
+                num_iterations, local_dir, s3_location, results))
 
         # 10gb download
         results = os.path.join(results_dir, 'download-10gb')
         os.makedirs(results)
         run(benchmark_cp + ' --recursive --num-iterations %s '
             '--source %s --dest %s --result-dir %s' % (
-                num_iterations, s3_location, LARGE_FILE_DIR, results))
+                num_iterations, s3_location, local_dir, results))
     finally:
         # Not benchmarking a single rm call since it's just a single call
         run('aws s3 rm --recursive ' + s3_location)
@@ -106,7 +112,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         '-b', '--bucket', default=TEST_BUCKET,
-        required=TEST_BUCKET is None
+        required=TEST_BUCKET is None,
         help='The bucket to use for testing as an s3 uri.'
     )
     parser.add_argument(

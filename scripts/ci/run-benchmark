@@ -9,6 +9,7 @@ from subprocess import check_call
 from datetime import datetime
 import random
 import argparse
+import shutil
 
 TEST_BUCKET = os.environ.get('PERF_TEST_BUCKET')
 WORKDIR = os.environ.get('PERF_WORKDIR', 'workdir')
@@ -45,8 +46,11 @@ def main(args):
     run_id = generate_run_id()
     results_dir = os.path.join(WORKDIR, 'results', run_id)
     os.makedirs(results_dir)
-    benchmark(args.bucket, results_dir, args.num_iterations)
-    print("RUN ID: " + run_id)
+    try:
+        benchmark(args.bucket, results_dir, args.num_iterations)
+        print("RUN ID: " + run_id)
+    except Exception:
+        shutil.rmtree(results_dir)
 
 
 def benchmark(bucket, results_dir, num_iterations=1):

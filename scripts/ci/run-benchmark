@@ -104,6 +104,12 @@ def benchmark(bucket, results_dir, num_iterations=1):
         run('aws s3 rm --recursive ' + s3_location)
 
 
+def s3_uri(value):
+    if not value.startswith('s3://'):
+        return 's3://' + value
+    return value
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -111,7 +117,7 @@ if __name__ == "__main__":
         help='The number of times to run each test.'
     )
     parser.add_argument(
-        '-b', '--bucket', default=TEST_BUCKET,
+        '-b', '--bucket', default=TEST_BUCKET, type=s3_uri,
         required=TEST_BUCKET is None,
         help='The bucket to use for testing as an s3 uri. This can also be '
              'set by the environment variable PERF_TEST_BUCKET. If the '

@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+"""Script to upload benchmark results to an s3 location."""
+import os
+import argparse
+from subprocess import check_call
+
+DEFAULT_BUCKET = os.environ.get('PERF_RESULTS_BUCKET')
+
+
+def main(args):
+    source = args.directory
+    destination = args.s3_location
+    check_call('aws s3 cp %s %s' % (source, destination), shell=True)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-d', '--directory', default='results',
+        help='The directory where test results were placed.')
+    parser.add_argument(
+        '-s', '--s3-location', default=DEFAULT_BUCKET,
+        required=DEFAULT_BUCKET is None,
+        help='An s3uri to upload the results to.')
+    main(parser.parse_args())

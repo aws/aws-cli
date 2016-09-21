@@ -22,6 +22,7 @@ from awscli.customizations.s3.results import ProgressResult
 from awscli.customizations.s3.results import SuccessResult
 from awscli.customizations.s3.results import FailureResult
 from awscli.customizations.s3.results import ErrorResult
+from awscli.customizations.s3.results import CntrlCResult
 from awscli.customizations.s3.results import UploadResultSubscriber
 from awscli.customizations.s3.results import UploadStreamResultSubscriber
 from awscli.customizations.s3.results import DownloadResultSubscriber
@@ -206,12 +207,34 @@ class TestUploadResultSubscriber(BaseResultSubscriberTest):
         )
         self.assert_result_queue_is_empty()
 
-        cancelled_exception = CancelledError('keyboard interrupt')
+        cancelled_exception = CancelledError('some error')
         cancelled_future = self.get_failed_transfer_future(cancelled_exception)
         self.result_subscriber.on_done(cancelled_future)
         result = self.get_queued_result()
         self.assert_result_queue_is_empty()
         self.assertEqual(result, ErrorResult(exception=cancelled_exception))
+
+    def test_on_done_cancelled_for_cntrl_c(self):
+        # Simulate a queue result (i.e. submitting and processing the result)
+        # before processing the progress result.
+        self.result_subscriber.on_queued(self.future)
+        self.assertEqual(
+            self.get_queued_result(),
+            QueuedResult(
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=self.size
+            )
+        )
+        self.assert_result_queue_is_empty()
+
+        cancelled_exception = CancelledError('KeyboardInterrupt()')
+        cancelled_future = self.get_failed_transfer_future(cancelled_exception)
+        self.result_subscriber.on_done(cancelled_future)
+        result = self.get_queued_result()
+        self.assert_result_queue_is_empty()
+        self.assertEqual(result, CntrlCResult(exception=cancelled_exception))
 
 
 class TestUploadStreamResultSubscriber(TestUploadResultSubscriber):
@@ -890,6 +913,11 @@ class TestResultPrinter(BaseResultPrinterTest):
     def test_error(self):
         self.result_printer(ErrorResult(Exception('my exception')))
         ref_error_statement = 'fatal error: my exception\n'
+        self.assertEqual(self.error_file.getvalue(), ref_error_statement)
+
+    def test_cntrl_c_error(self):
+        self.result_printer(CntrlCResult(Exception()))
+        ref_error_statement = 'cancelled: ctrl-c received\n'
         self.assertEqual(self.error_file.getvalue(), ref_error_statement)
 
     def test_error_while_progress(self):

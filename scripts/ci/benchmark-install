@@ -27,9 +27,8 @@ def clone_s3_transfer_repo():
     if os.path.isdir('s3transfer'):
         shutil.rmtree('s3transfer')
     check_call('git clone https://github.com/%s/s3transfer.git' % GIT_OWNER,
-            shell=True)
-    if PERF_BRANCH != 'develop':
-        check_call('git checkout %s' % PERF_BRANCH, shell=True)
+               shell=True)
+    check_call('git checkout %s' % PERF_BRANCH, shell=True)
 
 
 def pip_install_s3transfer_and_deps():

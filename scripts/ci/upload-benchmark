@@ -2,16 +2,41 @@
 """Script to upload benchmark results to an s3 location."""
 import os
 import argparse
+from datetime import datetime
 from subprocess import check_call
 
 DEFAULT_BUCKET = os.environ.get('PERF_RESULTS_BUCKET')
+DATE_FORMAT = "%Y-%m-%d-%H-%M-%S-"
 
 
 def main(args):
-    source = args.directory
+    source = get_latest_results_directory(args.directory)
     destination = args.s3_location
     check_call(
-        'aws s3 sync --recursive %s %s' % (source, destination), shell=True)
+        'aws s3 cp --recursive %s %s' % (source, destination), shell=True)
+
+
+def get_latest_results_directory(parent):
+    # Check to see if the given directory is a valid directory
+    if _is_result_dir_format(os.path.split(parent)[-1]):
+        return parent
+
+    # Find the latest valid subdirectory
+    for d in sorted(os.listdir(parent), reverse=True):
+        directory = os.path.join(parent, d)
+        if os.path.isdir(directory) and _is_result_dir_format(d):
+            return directory
+
+    raise ValueError("No valid result directories found in %s" % parent)
+
+
+def _is_result_dir_format(directory):
+    try:
+        datetime.strptime(directory[:20], DATE_FORMAT)
+        int(directory[20:])
+        return True
+    except Exception:
+        return False
 
 
 if __name__ == "__main__":

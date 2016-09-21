@@ -5,11 +5,18 @@ As of now this benchmarks `cp` and `rm` with test cases for multiple 4kb files
 (default 10000 files) and a single large file (default 10gb, `cp` only).
 """
 import os
-from subprocess import check_call
+import json
+from subprocess import check_call, Popen, PIPE
 from datetime import datetime
 import random
 import argparse
+import inspect
 import shutil
+import platform
+
+import awscli
+import s3transfer
+
 
 TEST_BUCKET = os.environ.get('PERF_TEST_BUCKET')
 WORKDIR = os.environ.get('PERF_WORKDIR', 'workdir')
@@ -45,11 +52,48 @@ def initialize_files(num_files, file_size):
             (file_size, large_file_dir))
 
 
+def write_metadata_file(filename):
+    metadata = _collect_metadata()
+    with open(filename, 'w') as f:
+        f.write(json.dumps(metadata, indent=2))
+
+
+def _collect_metadata():
+    # We want to track things like the machine where the benchmark was run,
+    # and which version of the aws-cli/s3transfer code is being run.
+    # This helps us make more meaningful comparison.
+    metadata = {
+        'python_version': platform.python_version(),
+        'os': '%s/%s' % (platform.system(), platform.release()),
+    }
+    _inject_package_info(awscli, metadata)
+    _inject_package_info(s3transfer, metadata)
+    return metadata
+
+
+def _inject_package_info(package, metadata):
+    name = package.__name__
+    metadata[name + '_version'] = package.__version__
+    metadata[name + '_git_version'] = _get_git_version(package)
+
+
+def _get_git_version(package):
+    dname = os.path.dirname(inspect.getfile(package))
+    git_sha = Popen(
+        'git rev-parse HEAD',
+        cwd=dname, shell=True, stdout=PIPE).communicate()[0].strip()
+    git_branch = Popen(
+        'git rev-parse --abbrev-ref HEAD',
+        cwd=dname, shell=True, stdout=PIPE).communicate()[0].strip()
+    return '%s (%s)' % (git_sha, git_branch)
+
+
 def main(args):
     initialize_files(args.num_files, args.large_file_size)
     run_id = generate_run_id()
     results_dir = os.path.join(WORKDIR, 'results', run_id)
     os.makedirs(results_dir)
+    write_metadata_file(os.path.join(results_dir, 'metadata.json'))
     try:
         benchmark(args.bucket, results_dir, args.num_iterations)
         print("RUN ID: " + run_id)

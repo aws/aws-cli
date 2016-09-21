@@ -58,6 +58,8 @@ FailureResult = _create_new_result_cls('FailureResult', ['exception'])
 
 ErrorResult = namedtuple('ErrorResult', ['exception'])
 
+CntrlCResult = _create_new_result_cls('CntrlCResult', base_cls=ErrorResult)
+
 CommandResult = namedtuple(
     'CommandResult', ['num_tasks_failed', 'num_tasks_warned'])
 
@@ -93,7 +95,10 @@ class BaseResultSubscriber(OnDoneFilteredSubscriber):
     def _on_failure(self, future, e):
         result_kwargs = self._on_done_pop_from_result_kwargs_cache(future)
         if isinstance(e, CancelledError):
-            self._result_queue.put(ErrorResult(exception=e))
+            error_result_cls = ErrorResult
+            if 'KeyboardInterrupt' in str(e):
+                error_result_cls = CntrlCResult
+            self._result_queue.put(error_result_cls(exception=e))
         else:
             self._result_queue.put(FailureResult(exception=e, **result_kwargs))
 
@@ -316,6 +321,7 @@ class ResultPrinter(BaseResultHandler):
     ERROR_FORMAT = (
         'fatal error: {exception}'
     )
+    CNTRL_C_MSG = 'cancelled: ctrl-c received'
 
     SRC_DEST_TRANSFER_LOCATION_FORMAT = '{src} to {dest}'
     SRC_TRANSFER_LOCATION_FORMAT = '{src}'
@@ -348,6 +354,7 @@ class ResultPrinter(BaseResultHandler):
             FailureResult: self._print_failure,
             WarningResult: self._print_warning,
             ErrorResult: self._print_error,
+            CntrlCResult: self._print_cntrl_c,
         }
 
     def __call__(self, result):
@@ -385,7 +392,13 @@ class ResultPrinter(BaseResultHandler):
         self._redisplay_progress()
 
     def _print_error(self, result, **kwargs):
-        error_statement = self.ERROR_FORMAT.format(exception=result.exception)
+        self._flush_error_statement(
+            self.ERROR_FORMAT.format(exception=result.exception))
+
+    def _print_cntrl_c(self, result, **kwargs):
+        self._flush_error_statement(self.CNTRL_C_MSG)
+
+    def _flush_error_statement(self, error_statement):
         error_statement = self._adjust_statement_padding(error_statement)
         self._print_to_error_file(error_statement)
 

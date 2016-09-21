@@ -5,6 +5,7 @@ import argparse
 from datetime import datetime
 from subprocess import check_call
 
+WORKDIR = os.environ.get('PERF_WORKDIR', 'workdir')
 DEFAULT_BUCKET = os.environ.get('PERF_RESULTS_BUCKET')
 DATE_FORMAT = "%Y-%m-%d-%H-%M-%S-"
 
@@ -42,7 +43,7 @@ def _is_result_dir_format(directory):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '-d', '--directory', default='results',
+        '-d', '--directory', default=os.path.join(WORKDIR, 'results'),
         help='The directory where test results were placed.')
     parser.add_argument(
         '-s', '--s3-location', default=DEFAULT_BUCKET,

@@ -19,3 +19,4 @@
      [--bootstrap-actions <value>]
      [--steps <value>]
      [--restore-from-hbase-backup <value>]
+     [--security-configuration <value>]

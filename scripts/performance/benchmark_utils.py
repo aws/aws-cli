@@ -119,7 +119,7 @@ def create_random_subfolder(destination):
     else:
         parts = list(os.path.split(destination))
         parts.append(folder_name)
-        path = os.path.join(parts)
+        path = os.path.join(*parts)
         os.makedirs(path)
         return path
 

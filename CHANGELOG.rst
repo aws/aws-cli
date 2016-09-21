@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.10.66
+=======
+
+* feature:``codedeploy``: Update codedeploy command to latest version
+* feature:``emr``: Update emr command to latest version
+* feature:``rds``: Update rds command to latest version
+* feature:``redshift``: Update redshift command to latest version
+
+
 1.10.65
 =======
 

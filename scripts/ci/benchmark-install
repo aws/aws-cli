@@ -28,7 +28,7 @@ def clone_s3_transfer_repo():
         shutil.rmtree('s3transfer')
     check_call('git clone https://github.com/%s/s3transfer.git' % GIT_OWNER,
                shell=True)
-    check_call('git checkout %s' % PERF_BRANCH, shell=True)
+    check_call('cd s3transfer && git checkout %s' % PERF_BRANCH, shell=True)
 
 
 def pip_install_s3transfer_and_deps():
@@ -36,6 +36,7 @@ def pip_install_s3transfer_and_deps():
     check_call('cd s3transfer && pip install -r requirements-dev.txt',
                shell=True)
     check_call('pip install "caf>=0.1.0,<1.0.0"', shell=True)
+    check_call('cd ../ && pip install -e .', shell=True)
 
 
 def create_workdir():

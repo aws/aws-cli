@@ -17,6 +17,7 @@ from collections import namedtuple
 from collections import defaultdict
 
 from s3transfer.exceptions import CancelledError
+from s3transfer.exceptions import FatalError
 from s3transfer.subscribers import BaseSubscriber
 
 from awscli.compat import queue
@@ -95,9 +96,9 @@ class BaseResultSubscriber(OnDoneFilteredSubscriber):
     def _on_failure(self, future, e):
         result_kwargs = self._on_done_pop_from_result_kwargs_cache(future)
         if isinstance(e, CancelledError):
-            error_result_cls = ErrorResult
-            if 'KeyboardInterrupt' in str(e):
-                error_result_cls = CntrlCResult
+            error_result_cls = CntrlCResult
+            if isinstance(e, FatalError):
+                error_result_cls = ErrorResult
             self._result_queue.put(error_result_cls(exception=e))
         else:
             self._result_queue.put(FailureResult(exception=e, **result_kwargs))

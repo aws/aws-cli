@@ -59,7 +59,7 @@ FailureResult = _create_new_result_cls('FailureResult', ['exception'])
 
 ErrorResult = namedtuple('ErrorResult', ['exception'])
 
-CntrlCResult = _create_new_result_cls('CntrlCResult', base_cls=ErrorResult)
+CtrlCResult = _create_new_result_cls('CtrlCResult', base_cls=ErrorResult)
 
 CommandResult = namedtuple(
     'CommandResult', ['num_tasks_failed', 'num_tasks_warned'])
@@ -96,7 +96,7 @@ class BaseResultSubscriber(OnDoneFilteredSubscriber):
     def _on_failure(self, future, e):
         result_kwargs = self._on_done_pop_from_result_kwargs_cache(future)
         if isinstance(e, CancelledError):
-            error_result_cls = CntrlCResult
+            error_result_cls = CtrlCResult
             if isinstance(e, FatalError):
                 error_result_cls = ErrorResult
             self._result_queue.put(error_result_cls(exception=e))
@@ -322,7 +322,7 @@ class ResultPrinter(BaseResultHandler):
     ERROR_FORMAT = (
         'fatal error: {exception}'
     )
-    CNTRL_C_MSG = 'cancelled: ctrl-c received'
+    CTRL_C_MSG = 'cancelled: ctrl-c received'
 
     SRC_DEST_TRANSFER_LOCATION_FORMAT = '{src} to {dest}'
     SRC_TRANSFER_LOCATION_FORMAT = '{src}'
@@ -355,7 +355,7 @@ class ResultPrinter(BaseResultHandler):
             FailureResult: self._print_failure,
             WarningResult: self._print_warning,
             ErrorResult: self._print_error,
-            CntrlCResult: self._print_cntrl_c,
+            CtrlCResult: self._print_ctrl_c,
         }
 
     def __call__(self, result):
@@ -396,8 +396,8 @@ class ResultPrinter(BaseResultHandler):
         self._flush_error_statement(
             self.ERROR_FORMAT.format(exception=result.exception))
 
-    def _print_cntrl_c(self, result, **kwargs):
-        self._flush_error_statement(self.CNTRL_C_MSG)
+    def _print_ctrl_c(self, result, **kwargs):
+        self._flush_error_statement(self.CTRL_C_MSG)
 
     def _flush_error_statement(self, error_statement):
         error_statement = self._adjust_statement_padding(error_statement)

@@ -16,6 +16,8 @@ import threading
 from collections import namedtuple
 from collections import defaultdict
 
+from s3transfer.exceptions import CancelledError
+from s3transfer.exceptions import FatalError
 from s3transfer.subscribers import BaseSubscriber
 
 from awscli.compat import queue
@@ -57,6 +59,8 @@ FailureResult = _create_new_result_cls('FailureResult', ['exception'])
 
 ErrorResult = namedtuple('ErrorResult', ['exception'])
 
+CtrlCResult = _create_new_result_cls('CtrlCResult', base_cls=ErrorResult)
+
 CommandResult = namedtuple(
     'CommandResult', ['num_tasks_failed', 'num_tasks_warned'])
 
@@ -91,7 +95,13 @@ class BaseResultSubscriber(OnDoneFilteredSubscriber):
 
     def _on_failure(self, future, e):
         result_kwargs = self._on_done_pop_from_result_kwargs_cache(future)
-        self._result_queue.put(FailureResult(exception=e, **result_kwargs))
+        if isinstance(e, CancelledError):
+            error_result_cls = CtrlCResult
+            if isinstance(e, FatalError):
+                error_result_cls = ErrorResult
+            self._result_queue.put(error_result_cls(exception=e))
+        else:
+            self._result_queue.put(FailureResult(exception=e, **result_kwargs))
 
     def _add_to_result_kwargs_cache(self, future):
         src, dest = self._get_src_dest(future)
@@ -310,8 +320,9 @@ class ResultPrinter(BaseResultHandler):
         '{message}'
     )
     ERROR_FORMAT = (
-        '{exception}'
+        'fatal error: {exception}'
     )
+    CTRL_C_MSG = 'cancelled: ctrl-c received'
 
     SRC_DEST_TRANSFER_LOCATION_FORMAT = '{src} to {dest}'
     SRC_TRANSFER_LOCATION_FORMAT = '{src}'
@@ -344,6 +355,7 @@ class ResultPrinter(BaseResultHandler):
             FailureResult: self._print_failure,
             WarningResult: self._print_warning,
             ErrorResult: self._print_error,
+            CtrlCResult: self._print_ctrl_c,
         }
 
     def __call__(self, result):
@@ -381,7 +393,13 @@ class ResultPrinter(BaseResultHandler):
         self._redisplay_progress()
 
     def _print_error(self, result, **kwargs):
-        error_statement = self.ERROR_FORMAT.format(exception=result.exception)
+        self._flush_error_statement(
+            self.ERROR_FORMAT.format(exception=result.exception))
+
+    def _print_ctrl_c(self, result, **kwargs):
+        self._flush_error_statement(self.CTRL_C_MSG)
+
+    def _flush_error_statement(self, error_statement):
         error_statement = self._adjust_statement_padding(error_statement)
         self._print_to_error_file(error_statement)
 
@@ -482,6 +500,7 @@ class ResultProcessor(threading.Thread):
         self._result_handlers = result_handlers
         if self._result_handlers is None:
             self._result_handlers = []
+        self._result_handlers_enabled = True
 
     def run(self):
         while True:
@@ -492,7 +511,15 @@ class ResultProcessor(threading.Thread):
                         'Shutdown request received in result processing '
                         'thread, shutting down result thread.')
                     break
-                self._process_result(result)
+                if self._result_handlers_enabled:
+                    self._process_result(result)
+                # ErrorResults are fatal to the command. If a fatal error
+                # is seen, we know that the command is trying to shutdown
+                # so disable all of the handlers and quickly consume all
+                # of the results in the result queue in order to get to
+                # the shutdown request to clean up the process.
+                if isinstance(result, ErrorResult):
+                    self._result_handlers_enabled = False
             except queue.Empty:
                 pass
 

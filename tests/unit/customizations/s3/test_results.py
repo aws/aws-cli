@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from s3transfer.exceptions import CancelledError
+from s3transfer.exceptions import FatalError
 
 from awscli.testutils import unittest
 from awscli.testutils import mock
@@ -192,7 +193,7 @@ class TestUploadResultSubscriber(BaseResultSubscriberTest):
             )
         )
 
-    def test_on_done_cancelled(self):
+    def test_on_done_unexpected_cancelled(self):
         # Simulate a queue result (i.e. submitting and processing the result)
         # before processing the progress result.
         self.result_subscriber.on_queued(self.future)
@@ -207,7 +208,7 @@ class TestUploadResultSubscriber(BaseResultSubscriberTest):
         )
         self.assert_result_queue_is_empty()
 
-        cancelled_exception = CancelledError('some error')
+        cancelled_exception = FatalError('some error')
         cancelled_future = self.get_failed_transfer_future(cancelled_exception)
         self.result_subscriber.on_done(cancelled_future)
         result = self.get_queued_result()

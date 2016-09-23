@@ -20,7 +20,9 @@ GIT_OWNER = os.environ.get('GIT_OWNER', 'boto')
 # is set by jenkins to the branch that's been checked out via
 # git.
 PERF_BRANCH = os.environ.get('PERF_BRANCH', 'develop')
-WORKDIR = os.environ.get('PERF_WORKDIR', 'workdir')
+REPO_ROOT = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+WORKDIR = os.environ.get('PERF_WORKDIR', os.path.join(REPO_ROOT, 'workdir'))
 
 
 def clone_s3_transfer_repo():
@@ -36,7 +38,7 @@ def pip_install_s3transfer_and_deps():
     check_call('cd s3transfer && pip install -r requirements-dev.txt',
                shell=True)
     check_call('pip install "caf>=0.1.0,<1.0.0"', shell=True)
-    check_call('cd ../ && pip install -e .', shell=True)
+    check_call('cd %s && pip install -e .' % REPO_ROOT, shell=True)
 
 
 def create_workdir():

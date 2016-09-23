@@ -19,7 +19,9 @@ import s3transfer
 
 
 TEST_BUCKET = os.environ.get('PERF_TEST_BUCKET')
-WORKDIR = os.environ.get('PERF_WORKDIR', 'workdir')
+REPO_ROOT = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+WORKDIR = os.environ.get('PERF_WORKDIR', os.path.join(REPO_ROOT, 'workdir'))
 MANY_FILES_DIR = 'many'
 LARGE_FILE_DIR = 'large'
 

@@ -133,10 +133,12 @@ def benchmark(bucket, results_dir, num_iterations=1):
         run(benchmark_rm + ' --recursive --num-iterations %s '
             '--target %s --result-dir %s' % (
                 num_iterations, s3_location, results))
-    except Exception:
-        # Just in case
+    finally:
+        # Note that the delete-10k-small benchmark restores
+        # the files it's deleted once the script is finished.
+        # Therefore we need to explicitly cleanup any files
+        # we've created.
         run('aws s3 rm --recursive ' + s3_location)
-        raise
 
     s3_location = bucket + '/' + LARGE_FILE_DIR
     local_dir = os.path.join(WORKDIR, LARGE_FILE_DIR)

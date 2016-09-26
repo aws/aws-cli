@@ -1,0 +1,152 @@
+#!/usr/bin/env python
+"""Compare 2 perf runs.
+
+To use, specify the local directories that contain
+the run information::
+
+    $ ./perfcmp /results/2016-01-01-1111/ /results/2016-01-01-2222/
+
+"""
+import os
+import json
+import argparse
+
+from colorama import Fore, Style
+from tabulate import tabulate
+
+
+class RunComparison(object):
+
+    MEMORY_FIELDS = ['average_memory', 'max_memory']
+    TIME_FIELDS = ['total_time']
+    # Fields that aren't memory or time fields, they require
+    # no special formatting.
+    OTHER_FIELDS = ['average_cpu']
+
+    def __init__(self, old_summary, new_summary):
+        self.old_summary = old_summary
+        self.new_summary = new_summary
+
+    def iter_field_names(self):
+        for field in self.TIME_FIELDS + self.MEMORY_FIELDS + self.OTHER_FIELDS:
+            yield field
+
+    def old(self, field):
+        value = self.old_summary[field]
+        return self._format(field, value)
+
+    def old_suffix(self, field):
+        value = self.old_summary[field]
+        return self._format_suffix(field, value)
+
+    def new_suffix(self, field):
+        value = self.new_summary[field]
+        return self._format_suffix(field, value)
+
+    def _format_suffix(self, field, value):
+        if field in self.TIME_FIELDS:
+            return 'sec'
+        elif field in self.OTHER_FIELDS:
+            return ''
+        else:
+            # The suffix depends on the actual value.
+            return self._human_readable_size(value)[1]
+
+    def old_stddev(self, field):
+        real_field = 'std_dev_%s' % field
+        return self.old(real_field)
+
+    def new(self, field):
+        value = self.new_summary[field]
+        return self._format(field, value)
+
+    def new_stddev(self, field):
+        real_field = 'std_dev_%s' % field
+        return self.new(real_field)
+
+    def _format(self, field, value):
+        if field.startswith('std_dev_'):
+            field = field[len('std_dev_'):]
+        if field in self.MEMORY_FIELDS:
+            return self._human_readable_size(value)[0]
+        elif field in self.TIME_FIELDS:
+            return '%-3.2f' % value
+        else:
+            return '%.2f' % value
+
+    def _human_readable_size(self, value):
+        hummanize_suffixes = ('KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB')
+        base = 1024
+        bytes_int = float(value)
+
+        if bytes_int == 1:
+            return '1 Byte'
+        elif bytes_int < base:
+            return '%d Bytes' % bytes_int
+
+        for i, suffix in enumerate(hummanize_suffixes):
+            unit = base ** (i+2)
+            if round((bytes_int / unit) * base) < base:
+                return ['%.2f' % (base * bytes_int / unit), suffix]
+
+    def diff_percent(self, field):
+        diff_percent = (
+            (self.new_summary[field] - self.old_summary[field]) /
+            float(self.old_summary[field])) * 100
+        return diff_percent
+
+
+def compare_runs(old_dir, new_dir):
+    for dirname in os.listdir(old_dir):
+        old_run_dir = os.path.join(old_dir, dirname)
+        new_run_dir = os.path.join(new_dir, dirname)
+        if not os.path.isdir(old_run_dir):
+            continue
+        old_summary = get_summary(old_run_dir)
+        new_summary = get_summary(new_run_dir)
+        comp = RunComparison(old_summary, new_summary)
+        header = [Style.BRIGHT + dirname + Style.RESET_ALL,
+                  Style.BRIGHT + 'old' + Style.RESET_ALL,
+                  # Numeric suffix (MiB, GiB, sec).
+                  '',
+                  'std_dev',
+                  Style.BRIGHT + 'new' + Style.RESET_ALL,
+                  # Numeric suffix (MiB, GiB, sec).
+                  '',
+                  'std_dev',
+                  Style.BRIGHT + 'delta' + Style.RESET_ALL]
+        rows = []
+        for field in comp.iter_field_names():
+            row = [field, comp.old(field), comp.old_suffix(field),
+                   comp.old_stddev(field), comp.new(field),
+                   comp.new_suffix(field), comp.new_stddev(field)]
+            diff_percent = comp.diff_percent(field)
+            diff_percent_str = '%.2f%%' % diff_percent
+            if diff_percent < 0:
+                diff_percent_str = (
+                    Fore.GREEN + diff_percent_str + Style.RESET_ALL)
+            else:
+                diff_percent_str = (
+                    Fore.RED + diff_percent_str + Style.RESET_ALL)
+            row.append(diff_percent_str)
+            rows.append(row)
+        print(tabulate(rows, headers=header, tablefmt='plain'))
+        print('')
+
+
+def get_summary(benchmark_dir):
+    summary_json = os.path.join(benchmark_dir, 'summary.json')
+    with open(summary_json) as f:
+        return json.load(f)
+
+
+def main():
+    parser = argparse.ArgumentParser(description='__doc__')
+    parser.add_argument('oldrunid', help='Path to old run idir')
+    parser.add_argument('newrunid', help='Local to new run dir')
+    args = parser.parse_args()
+    compare_runs(args.oldrunid, args.newrunid)
+
+
+if __name__ == '__main__':
+    main()

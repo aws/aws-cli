@@ -96,7 +96,8 @@ EVENTS = [
 ]
 PROTOCOL_DOCS = ('<p>The IP protocol of this permission.</p>'
                  '<p>Valid protocol values: <code>tcp</code>, '
-                 '<code>udp</code>, <code>icmp</code></p>')
+                 '<code>udp</code>, <code>icmp</code>, '
+                 '<code>all</code></p>')
 PORT_DOCS = ('<p>For TCP or UDP: The range of ports to allow.'
              '  A single integer or a range (<code>min-max</code>).</p>'
              '<p>For ICMP: A single integer or a range (<code>type-code</code>)'

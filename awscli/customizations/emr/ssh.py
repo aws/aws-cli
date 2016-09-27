@@ -21,8 +21,8 @@ from awscli.customizations.emr import sshutils
 from awscli.customizations.emr.command import Command
 
 KEY_PAIR_FILE_HELP_TEXT = '\nA value for the variable Key Pair File ' \
-    'can be set in the AWS CLI config file using the "aws configure set" ' \
-    'command.\n'
+    'can be set in the AWS CLI config file using the ' \
+    '"aws configure set emr.key_pair_file <value>" command.\n'
 
 
 class Socks(Command):

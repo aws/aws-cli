@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.10.67
+=======
+
+* feature:``codepipeline``: Update codepipeline command to latest version
+* feature:``kms``: Update kms command to latest version
+* feature:``efs``: Update efs command to latest version
+* feature:``cloudformation``: Update cloudformation command to latest version
+
+
 1.10.66
 =======
 

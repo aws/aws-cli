@@ -134,7 +134,14 @@ class TestSyncCommand(BaseAWSCommandParamsTest):
 
         # Set the update time to a value that will raise a ValueError when
         # converting to datetime
-        os.utime(full_path, (-1, -100000000000))
+        try:
+            os.utime(full_path, (-1, -100000000000))
+        except WindowsError:
+            # Windows throws an error for trying to set a last modified time
+            # of that size. So if an error is thrown, set it to just a
+            # negative time which will trigger the warning as well for
+            # Windows.
+            os.utime(full_path, (-1, -1))
         cmdline = '%s %s s3://bucket/key.txt' % \
                   (self.prefix, self.files.rootdir)
         self.parsed_responses = [

@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from awscli.testutils import set_invalid_utime
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 import os
 
@@ -134,14 +135,7 @@ class TestSyncCommand(BaseAWSCommandParamsTest):
 
         # Set the update time to a value that will raise a ValueError when
         # converting to datetime
-        try:
-            os.utime(full_path, (-1, -100000000000))
-        except WindowsError:
-            # Windows throws an error for trying to set a last modified time
-            # of that size. So if an error is thrown, set it to just a
-            # negative time which will trigger the warning as well for
-            # Windows.
-            os.utime(full_path, (-1, -1))
+        set_invalid_utime(full_path)
         cmdline = '%s %s s3://bucket/key.txt' % \
                   (self.prefix, self.files.rootdir)
         self.parsed_responses = [

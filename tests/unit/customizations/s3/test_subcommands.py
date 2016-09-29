@@ -95,7 +95,7 @@ class TestLSCommand(unittest.TestCase):
         ls_command = ListCommand(self.session)
         parsed_args = FakeArgs(paths='s3://mybucket/', dir_op=False,
                                page_size='5', human_readable=False,
-                               summarize=False)
+                               summarize=False, request_payer=None)
         parsed_globals = mock.Mock()
         ls_command._run_main(parsed_args, parsed_globals)
         call = self.session.create_client.return_value.list_objects
@@ -117,7 +117,8 @@ class TestLSCommand(unittest.TestCase):
         parsed_global = FakeArgs(region=None, endpoint_url=None,
                                  verify_ssl=None)
         parsed_args = FakeArgs(dir_op=False, paths='s3://',
-                               human_readable=False, summarize=False)
+                               human_readable=False, summarize=False,
+                               request_payer=None)
         ls_command._run_main(parsed_args, parsed_global)
         # We should only be a single call.
         call = self.session.create_client.return_value.list_buckets
@@ -137,7 +138,8 @@ class TestLSCommand(unittest.TestCase):
         parsed_global = FakeArgs(region='us-west-2', endpoint_url=None,
                                  verify_ssl=False)
         parsed_args = FakeArgs(paths='s3://', dir_op=False,
-                               human_readable=False, summarize=False)
+                               human_readable=False, summarize=False,
+                               request_payer=None)
         ls_command._run_main(parsed_args, parsed_global)
         # Verify get_client
         get_client = self.session.create_client
@@ -145,6 +147,29 @@ class TestLSCommand(unittest.TestCase):
         self.assertEqual(args, mock.call(
             's3', region_name='us-west-2', endpoint_url=None, verify=False,
             config=None))
+
+    def test_ls_with_requester_pays(self):
+        ls_command = ListCommand(self.session)
+        parsed_args = FakeArgs(paths='s3://mybucket/', dir_op=False,
+                               human_readable=False, summarize=False,
+                               request_payer='requester', page_size='5')
+        parsed_globals = mock.Mock()
+        ls_command._run_main(parsed_args, parsed_globals)
+        call = self.session.create_client.return_value.list_objects
+        paginate = self.session.create_client.return_value.get_paginator\
+            .return_value.paginate
+        # We should make no operation calls.
+        self.assertEqual(call.call_count, 0)
+        # And only a single pagination call to ListObjects.
+        self.session.create_client.return_value.get_paginator.\
+            assert_called_with('list_objects')
+        ref_call_args = {
+            'Bucket': u'mybucket', 'Delimiter': '/',
+            'Prefix': u'', 'PaginationConfig': {'PageSize': '5'},
+            'RequestPayer': 'requester',
+        }
+
+        paginate.assert_called_with(**ref_call_args)
 
 
 class CommandArchitectureTest(BaseAWSCommandParamsTest):

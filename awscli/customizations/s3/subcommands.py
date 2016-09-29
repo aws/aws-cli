@@ -405,6 +405,18 @@ FORCE_GLACIER_TRANSFER = {
     )
 }
 
+REQUEST_PAYER = {
+    'name': 'request-payer', 'choices': ['requester'],
+    'nargs': '?', 'const': 'requester',
+    'help_text': (
+        'Confirms that the requester knows that she or he will be charged '
+        'for the request. Bucket owners need not specify this parameter in '
+        'their requests. Documentation on downloading objects from requester '
+        'pays buckets can be found at '
+        'http://docs.aws.amazon.com/AmazonS3/latest/dev/'
+        'ObjectsinRequesterPaysBuckets.html'
+    )
+}
 
 TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
@@ -437,7 +449,7 @@ class ListCommand(S3Command):
     USAGE = "<S3Uri> or NONE"
     ARG_TABLE = [{'name': 'paths', 'nargs': '?', 'default': 's3://',
                   'positional_arg': True, 'synopsis': USAGE}, RECURSIVE,
-                 PAGE_SIZE, HUMAN_READABLE, SUMMARIZE]
+                 PAGE_SIZE, HUMAN_READABLE, SUMMARIZE, REQUEST_PAYER]
 
     def _run_main(self, parsed_args, parsed_globals):
         super(ListCommand, self)._run_main(parsed_args, parsed_globals)
@@ -454,10 +466,11 @@ class ListCommand(S3Command):
             self._list_all_buckets()
         elif parsed_args.dir_op:
             # Then --recursive was specified.
-            self._list_all_objects_recursive(bucket, key,
-                                             parsed_args.page_size)
+            self._list_all_objects_recursive(
+                bucket, key, parsed_args.page_size, parsed_args.request_payer)
         else:
-            self._list_all_objects(bucket, key, parsed_args.page_size)
+            self._list_all_objects(
+                bucket, key, parsed_args.page_size, parsed_args.request_payer)
         if parsed_args.summarize:
             self._print_summary()
         if key:
@@ -474,11 +487,16 @@ class ListCommand(S3Command):
             # thrown before reaching the automatic return of rc of zero.
             return 0
 
-    def _list_all_objects(self, bucket, key, page_size=None):
+    def _list_all_objects(self, bucket, key, page_size=None,
+                          request_payer=None):
         paginator = self.client.get_paginator('list_objects')
-        iterator = paginator.paginate(Bucket=bucket,
-                                      Prefix=key, Delimiter='/',
-                                      PaginationConfig={'PageSize': page_size})
+        paging_args = {
+            'Bucket': bucket, 'Prefix': key, 'Delimiter': '/',
+            'PaginationConfig': {'PageSize': page_size}
+        }
+        if request_payer is not None:
+            paging_args['RequestPayer'] = request_payer
+        iterator = paginator.paginate(**paging_args)
         for response_data in iterator:
             self._display_page(response_data)
 
@@ -517,11 +535,16 @@ class ListCommand(S3Command):
             print_str = last_mod_str + ' ' + bucket['Name'] + '\n'
             uni_print(print_str)
 
-    def _list_all_objects_recursive(self, bucket, key, page_size=None):
+    def _list_all_objects_recursive(self, bucket, key, page_size=None,
+                                    request_payer=None):
         paginator = self.client.get_paginator('list_objects')
-        iterator = paginator.paginate(Bucket=bucket,
-                                      Prefix=key,
-                                      PaginationConfig={'PageSize': page_size})
+        paging_args = {
+            'Bucket': bucket, 'Prefix': key,
+            'PaginationConfig': {'PageSize': page_size}
+        }
+        if request_payer is not None:
+            paging_args['RequestPayer'] = request_payer
+        iterator = paginator.paginate(**paging_args)
         for response_data in iterator:
             self._display_page(response_data, use_basename=False)
 

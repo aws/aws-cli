@@ -175,6 +175,30 @@ class TestLSCommand(BaseAWSCommandParamsTest):
         self.assertIn('Total Objects: 6\n', stdout)
         self.assertIn('Total Size: 1.0 PiB\n', stdout)
 
+    def test_requester_pays(self):
+        time_utc = "2014-01-09T20:45:49.000Z"
+        self.parsed_responses = [{"CommonPrefixes": [], "Contents": [
+            {"Key": "onebyte.txt", "Size": 1, "LastModified": time_utc},
+        ]}]
+        command = 's3 ls s3://mybucket/foo/ --request-payer requester'
+        self.assert_params_for_cmd(command, {
+            'Bucket': 'mybucket', 'Delimiter': '/',
+            'RequestPayer': 'requester', 'EncodingType': 'url',
+            'Prefix': 'foo/'
+        })
+
+    def test_requester_pays_with_no_args(self):
+        time_utc = "2014-01-09T20:45:49.000Z"
+        self.parsed_responses = [{"CommonPrefixes": [], "Contents": [
+            {"Key": "onebyte.txt", "Size": 1, "LastModified": time_utc},
+        ]}]
+        command = 's3 ls s3://mybucket/foo/ --request-payer'
+        self.assert_params_for_cmd(command, {
+            'Bucket': 'mybucket', 'Delimiter': '/',
+            'RequestPayer': 'requester', 'EncodingType': 'url',
+            'Prefix': 'foo/'
+        })
+
 
 if __name__ == "__main__":
     unittest.main()

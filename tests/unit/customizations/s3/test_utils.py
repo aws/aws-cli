@@ -367,6 +367,15 @@ class TestGetFileStat(unittest.TestCase):
                 size, update_time = get_file_stat(temp_file.name)
                 self.assertIsNone(update_time)
 
+    def test_get_file_stat_returns_epoch_on_invalid_timestamp_os_error(self):
+        patch_attribute = 'awscli.customizations.s3.utils.datetime'
+        with mock.patch(patch_attribute) as datetime_mock:
+            with temporary_file('w') as temp_file:
+                temp_file.write('foo')
+                temp_file.flush()
+                datetime_mock.fromtimestamp.side_effect = OSError()
+                size, update_time = get_file_stat(temp_file.name)
+                self.assertIsNone(update_time)
 
 
 class TestSetsFileUtime(unittest.TestCase):

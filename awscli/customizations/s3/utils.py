@@ -229,7 +229,7 @@ def get_file_stat(path):
 
     try:
         update_time = datetime.fromtimestamp(stats.st_mtime, tzlocal())
-    except ValueError:
+    except (ValueError, OSError):
         # Python's fromtimestamp raises value errors when the timestamp is out
         # of range of the platform's C localtime() function. This can cause
         # issues when syncing from systems with a wide range of valid timestamps

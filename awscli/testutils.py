@@ -97,6 +97,18 @@ def skip_if_windows(reason):
     return decorator
 
 
+def set_invalid_utime(path):
+    """Helper function to set an invalid last modified time"""
+    try:
+        os.utime(path, (-1, -100000000000))
+    except OSError:
+        # Some OS's such as Windows throws an error for trying to set a
+        # last modified time of that size. So if an error is thrown, set it
+        # to just a negative time which will trigger the warning as well for
+        # Windows.
+        os.utime(path, (-1, -1))
+
+
 def create_clidriver():
     driver = awscli.clidriver.create_clidriver()
     session = driver.session

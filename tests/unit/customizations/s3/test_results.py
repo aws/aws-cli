@@ -651,6 +651,10 @@ class ResultRecorderTest(unittest.TestCase):
         self.result_recorder(ErrorResult(exception=self.exception))
         self.assertEqual(self.result_recorder.errors, 1)
 
+    def test_ctrl_c_result(self):
+        self.result_recorder(CtrlCResult(Exception()))
+        self.assertEqual(self.result_recorder.errors, 1)
+
     def test_expected_totals_are_final(self):
         self.result_recorder(
             QueuedResult(

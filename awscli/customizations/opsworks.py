@@ -278,7 +278,8 @@ class OpsWorksRegister(BasicCommand):
 
         if args.infrastructure_class == 'ec2' and args.local:
             # make sure the regions match
-            region = json.loads(urlopen(IDENTITY_URL).read())['region']
+            response = urlopen(IDENTITY_URL).read()
+            region = json.loads(response.decode("utf8") if type(response) == bytes else response)['region']
             if region != self._stack['Region']:
                 raise ValueError(
                     "The stack's and the instance's region must match.")

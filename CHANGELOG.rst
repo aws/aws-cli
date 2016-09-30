@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.11.0
+======
+
+* feature:``snowball``: Update snowball command to latest version
+* feature:``s3``: Update s3 command to latest version
+* feature:``ec2``: Update ec2 command to latest version
+* feature:s3: Port cp and rm to s3transfer. Improve progress for those commands, showing byte progress.
+
+
 1.10.67
 =======
 

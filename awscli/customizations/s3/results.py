@@ -210,6 +210,7 @@ class ResultRecorder(BaseResultHandler):
             FailureResult: self._record_failure_result,
             WarningResult: self._record_warning_result,
             ErrorResult: self._record_error_result,
+            CtrlCResult: self._record_error_result,
             FinalTotalSubmissionsResult: self._record_final_expected_files,
         }
 

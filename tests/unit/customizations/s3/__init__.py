@@ -18,6 +18,31 @@ from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, \
     capture_output
 
 
+class FakeTransferFuture(object):
+    def __init__(self, result=None, exception=None, meta=None):
+        self._result = result
+        self._exception = exception
+        self.meta = meta
+
+    def result(self):
+        if self._exception:
+            raise self._exception
+        return self._result
+
+
+class FakeTransferFutureMeta(object):
+    def __init__(self, size=None, call_args=None, transfer_id=None):
+        self.size = size
+        self.call_args = call_args
+        self.transfer_id = transfer_id
+
+
+class FakeTransferFutureCallArgs(object):
+    def __init__(self, **kwargs):
+        for kwarg, val in kwargs.items():
+            setattr(self, kwarg, val)
+
+
 class S3HandlerBaseTest(BaseAWSCommandParamsTest):
     def setUp(self):
         super(S3HandlerBaseTest, self).setUp()

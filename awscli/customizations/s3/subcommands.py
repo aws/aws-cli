@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+import logging
 import sys
 
 from botocore.client import Config
@@ -27,13 +28,16 @@ from awscli.customizations.s3.filegenerator import FileGenerator
 from awscli.customizations.s3.fileinfo import TaskInfo, FileInfo
 from awscli.customizations.s3.filters import create_filter
 from awscli.customizations.s3.s3handler import S3Handler
-from awscli.customizations.s3.s3handler import S3TransferStreamHandler
+from awscli.customizations.s3.s3handler import S3TransferHandlerFactory
 from awscli.customizations.s3.utils import find_bucket_key, uni_print, \
     AppendFilter, find_dest_path_comp_key, human_readable_size, \
     RequestParamsMapper, split_s3_bucket_key
 from awscli.customizations.s3.syncstrategy.base import MissingFileSync, \
     SizeAndLastModifiedSync, NeverSync
 from awscli.customizations.s3 import transferconfig
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 RECURSIVE = {'name': 'recursive', 'action': 'store_true', 'dest': 'dir_op',
@@ -401,6 +405,18 @@ FORCE_GLACIER_TRANSFER = {
     )
 }
 
+REQUEST_PAYER = {
+    'name': 'request-payer', 'choices': ['requester'],
+    'nargs': '?', 'const': 'requester',
+    'help_text': (
+        'Confirms that the requester knows that she or he will be charged '
+        'for the request. Bucket owners need not specify this parameter in '
+        'their requests. Documentation on downloading objects from requester '
+        'pays buckets can be found at '
+        'http://docs.aws.amazon.com/AmazonS3/latest/dev/'
+        'ObjectsinRequesterPaysBuckets.html'
+    )
+}
 
 TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
@@ -433,7 +449,7 @@ class ListCommand(S3Command):
     USAGE = "<S3Uri> or NONE"
     ARG_TABLE = [{'name': 'paths', 'nargs': '?', 'default': 's3://',
                   'positional_arg': True, 'synopsis': USAGE}, RECURSIVE,
-                 PAGE_SIZE, HUMAN_READABLE, SUMMARIZE]
+                 PAGE_SIZE, HUMAN_READABLE, SUMMARIZE, REQUEST_PAYER]
 
     def _run_main(self, parsed_args, parsed_globals):
         super(ListCommand, self)._run_main(parsed_args, parsed_globals)
@@ -450,10 +466,11 @@ class ListCommand(S3Command):
             self._list_all_buckets()
         elif parsed_args.dir_op:
             # Then --recursive was specified.
-            self._list_all_objects_recursive(bucket, key,
-                                             parsed_args.page_size)
+            self._list_all_objects_recursive(
+                bucket, key, parsed_args.page_size, parsed_args.request_payer)
         else:
-            self._list_all_objects(bucket, key, parsed_args.page_size)
+            self._list_all_objects(
+                bucket, key, parsed_args.page_size, parsed_args.request_payer)
         if parsed_args.summarize:
             self._print_summary()
         if key:
@@ -470,11 +487,16 @@ class ListCommand(S3Command):
             # thrown before reaching the automatic return of rc of zero.
             return 0
 
-    def _list_all_objects(self, bucket, key, page_size=None):
+    def _list_all_objects(self, bucket, key, page_size=None,
+                          request_payer=None):
         paginator = self.client.get_paginator('list_objects')
-        iterator = paginator.paginate(Bucket=bucket,
-                                      Prefix=key, Delimiter='/',
-                                      PaginationConfig={'PageSize': page_size})
+        paging_args = {
+            'Bucket': bucket, 'Prefix': key, 'Delimiter': '/',
+            'PaginationConfig': {'PageSize': page_size}
+        }
+        if request_payer is not None:
+            paging_args['RequestPayer'] = request_payer
+        iterator = paginator.paginate(**paging_args)
         for response_data in iterator:
             self._display_page(response_data)
 
@@ -513,11 +535,16 @@ class ListCommand(S3Command):
             print_str = last_mod_str + ' ' + bucket['Name'] + '\n'
             uni_print(print_str)
 
-    def _list_all_objects_recursive(self, bucket, key, page_size=None):
+    def _list_all_objects_recursive(self, bucket, key, page_size=None,
+                                    request_payer=None):
         paginator = self.client.get_paginator('list_objects')
-        iterator = paginator.paginate(Bucket=bucket,
-                                      Prefix=key,
-                                      PaginationConfig={'PageSize': page_size})
+        paging_args = {
+            'Bucket': bucket, 'Prefix': key,
+            'PaginationConfig': {'PageSize': page_size}
+        }
+        if request_payer is not None:
+            paging_args['RequestPayer'] = request_payer
+        iterator = paginator.paginate(**paging_args)
         for response_data in iterator:
             self._display_page(response_data, use_basename=False)
 
@@ -989,8 +1016,12 @@ class CommandArchitecture(object):
         s3handler = S3Handler(self.session, self.parameters,
                               runtime_config=self._runtime_config,
                               result_queue=result_queue)
-        s3_stream_handler = S3TransferStreamHandler(
-            self.session, self.parameters, result_queue=result_queue)
+
+        s3_transfer_handler = s3handler
+        if self.cmd in ['cp', 'rm'] and not self.parameters.get('dryrun'):
+            s3_transfer_handler = S3TransferHandlerFactory(
+                self.parameters, self._runtime_config)(
+                    self._client, result_queue)
 
         sync_strategies = self.choose_sync_strategies()
 
@@ -1006,19 +1037,19 @@ class CommandArchitecture(object):
                             's3_handler': [s3handler]}
         elif self.cmd == 'cp' and self.parameters['is_stream']:
             command_dict = {'setup': [stream_file_info],
-                            's3_handler': [s3_stream_handler]}
+                            's3_handler': [s3_transfer_handler]}
         elif self.cmd == 'cp':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],
                             'filters': [create_filter(self.parameters)],
                             'file_info_builder': [file_info_builder],
-                            's3_handler': [s3handler]}
+                            's3_handler': [s3_transfer_handler]}
         elif self.cmd == 'rm':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],
                             'filters': [create_filter(self.parameters)],
                             'file_info_builder': [file_info_builder],
-                            's3_handler': [s3handler]}
+                            's3_handler': [s3_transfer_handler]}
         elif self.cmd == 'mv':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],

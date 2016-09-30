@@ -10,34 +10,44 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from collections import namedtuple
 import logging
 import math
 import os
-import sys
 
 from s3transfer.manager import TransferManager
 
 from awscli.customizations.s3.utils import (
-    find_chunksize, adjust_chunksize_to_upload_limits, MAX_UPLOAD_SIZE,
-    find_bucket_key, relative_path, PrintTask, create_warning,
+    find_chunksize, human_readable_size,
+    MAX_UPLOAD_SIZE, find_bucket_key, relative_path, PrintTask, create_warning,
     NonSeekableStream)
 from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3 import tasks
 from awscli.customizations.s3.transferconfig import RuntimeConfig, \
     create_transfer_config_from_runtime_config
+from awscli.customizations.s3.results import UploadResultSubscriber
+from awscli.customizations.s3.results import DownloadResultSubscriber
+from awscli.customizations.s3.results import CopyResultSubscriber
+from awscli.customizations.s3.results import UploadStreamResultSubscriber
+from awscli.customizations.s3.results import DownloadStreamResultSubscriber
+from awscli.customizations.s3.results import DeleteResultSubscriber
+from awscli.customizations.s3.results import CommandResult
+from awscli.customizations.s3.results import ResultRecorder
+from awscli.customizations.s3.results import ResultPrinter
+from awscli.customizations.s3.results import OnlyShowErrorsResultPrinter
+from awscli.customizations.s3.results import ResultProcessor
+from awscli.customizations.s3.results import CommandResultRecorder
 from awscli.customizations.s3.utils import RequestParamsMapper
 from awscli.customizations.s3.utils import StdoutBytesWriter
 from awscli.customizations.s3.utils import ProvideSizeSubscriber
-from awscli.customizations.s3.utils import uni_print
+from awscli.customizations.s3.utils import ProvideUploadContentTypeSubscriber
+from awscli.customizations.s3.utils import ProvideCopyContentTypeSubscriber
+from awscli.customizations.s3.utils import ProvideLastModifiedTimeSubscriber
+from awscli.customizations.s3.utils import DirectoryCreatorSubscriber
 from awscli.compat import queue
 from awscli.compat import binary_stdin
 
 
 LOGGER = logging.getLogger(__name__)
-
-CommandResult = namedtuple('CommandResult',
-                           ['num_tasks_failed', 'num_tasks_warned'])
 
 
 class BaseS3Handler(object):
@@ -383,133 +393,383 @@ class S3Handler(BaseS3Handler):
         self.executor.submit(complete_multipart_upload_task)
 
 
-class S3TransferStreamHandler(BaseS3Handler):
-    """
-    This class is an alternative ``S3Handler`` to be used when the operation
-    involves a stream since the logic is different when uploading and
-    downloading streams.
-    """
+class S3TransferHandlerFactory(object):
     MAX_IN_MEMORY_CHUNKS = 6
 
-    def __init__(self, session, params, result_queue=None,
-                 runtime_config=None, manager=None):
-        super(S3TransferStreamHandler, self).__init__(
-            session, params, result_queue, runtime_config)
-        self.config = create_transfer_config_from_runtime_config(
+    def __init__(self, cli_params, runtime_config):
+        """Factory for S3TransferHandlers
+
+        :type cli_params: dict
+        :param cli_params: The parameters provide to the CLI command
+
+        :type runtime_config: RuntimeConfig
+        :param runtime_config: The runtime config for the CLI command
+            being run
+        """
+        self._cli_params = cli_params
+        self._runtime_config = runtime_config
+
+    def __call__(self, client, result_queue):
+        """Creates a S3TransferHandler instance
+
+        :type client: botocore.client.Client
+        :param client: The client to power the S3TransferHandler
+
+        :type result_queue: queue.Queue
+        :param result_queue: The result queue to be used to process results
+            for the S3TransferHandler
+
+        :returns: A S3TransferHandler instance
+        """
+        transfer_config = create_transfer_config_from_runtime_config(
             self._runtime_config)
-
-        # Restrict the maximum chunks to 1 per thread.
-        self.config.max_in_memory_upload_chunks = \
-            self.MAX_IN_MEMORY_CHUNKS
-        self.config.max_in_memory_download_chunks = \
+        transfer_config.max_in_memory_upload_chunks = self.MAX_IN_MEMORY_CHUNKS
+        transfer_config.max_in_memory_download_chunks = \
             self.MAX_IN_MEMORY_CHUNKS
 
-        self._manager = manager
+        transfer_manager = TransferManager(client, transfer_config)
 
-    def call(self, files):
-        # There is only ever one file in a stream transfer.
-        file = files[0]
-        if self._manager is not None:
-            manager = self._manager
+        LOGGER.debug(
+            "Using a multipart threshold of %s and a part size of %s",
+            transfer_config.multipart_threshold,
+            transfer_config.multipart_chunksize
+        )
+        result_recorder = ResultRecorder()
+        result_processor_handlers = [result_recorder]
+        self._add_result_printer(result_recorder, result_processor_handlers)
+        result_processor = ResultProcessor(
+            result_queue, result_processor_handlers)
+        command_result_recorder = CommandResultRecorder(
+            result_queue, result_recorder, result_processor)
+
+        return S3TransferHandler(
+            transfer_manager, self._cli_params, command_result_recorder)
+
+    def _add_result_printer(self, result_recorder, result_processor_handlers):
+        if self._cli_params.get('quiet'):
+            return
+        elif self._cli_params.get('only_show_errors'):
+            result_printer = OnlyShowErrorsResultPrinter(result_recorder)
+        elif self._cli_params.get('is_stream'):
+            result_printer = OnlyShowErrorsResultPrinter(result_recorder)
         else:
-            manager = TransferManager(file.client, self.config)
+            result_printer = ResultPrinter(result_recorder)
+        result_processor_handlers.append(result_printer)
 
-        if file.operation_name == 'upload':
-            bucket, key = find_bucket_key(file.dest)
-            return self._upload(manager, bucket, key)
-        elif file.operation_name == 'download':
-            bucket, key = find_bucket_key(file.src)
-            return self._download(manager, bucket, key)
 
-    def _download(self, manager, bucket, key):
+class S3TransferHandler(object):
+    def __init__(self, transfer_manager, cli_params, result_command_recorder):
+        """Backend for performing S3 transfers
+
+        :type transfer_manager: s3transfer.manager.TransferManager
+        :param transfer_manager: Transfer manager to use for transfers
+
+        :type cli_params: dict
+        :param cli_params: The parameters passed to the CLI command in the
+            form of a dictionary
+
+        :type result_command_recorder: ResultCommandRecorder
+        :param result_command_recorder: The result command recorder to be
+            used to get the final result of the transfer
         """
-        Download the specified object and print it to stdout.
+        self._transfer_manager = transfer_manager
+        # TODO: Ideally the s3 transfer handler should not need to know
+        # about the result command recorder. It really only needs an interface
+        # for adding results to the queue. When all of the commands have
+        # converted to use this transfer handler, an effort should be made
+        # to replace the passing of a result command recorder with an
+        # abstraction to enqueue results.
+        self._result_command_recorder = result_command_recorder
 
-        :type manager: s3transfer.manager.TransferManager
-        :param manager: The transfer manager to use for the download.
+        submitter_args = (
+            self._transfer_manager, self._result_command_recorder.result_queue,
+            cli_params
+        )
+        self._submitters = [
+            UploadStreamRequestSubmitter(*submitter_args),
+            DownloadStreamRequestSubmitter(*submitter_args),
+            UploadRequestSubmitter(*submitter_args),
+            DownloadRequestSubmitter(*submitter_args),
+            CopyRequestSubmitter(*submitter_args),
+            DeleteRequestSubmitter(*submitter_args),
+        ]
 
-        :type bucket: str
-        :param bucket: The bucket to download the object from.
+    def call(self, fileinfos):
+        """Process iterable of FileInfos for transfer
 
-        :type key: str
-        :param key: The name of the key to download.
+        :type fileinfos: iterable of FileInfos
+        param fileinfos: Set of FileInfos to submit to underlying transfer
+            request submitters to make transfer API calls to S3
 
-        :return: A CommandResult representing the download status.
+        :rtype: CommandResult
+        :returns: The result of the command that specifies the number of
+            failures and warnings encountered.
         """
-        params = {}
-        # `download` performs the head_object as well, but the params are
-        # the same for both operations, so there's nothing missing here.
-        RequestParamsMapper.map_get_object_params(params, self.params)
+        with self._result_command_recorder:
+            with self._transfer_manager:
+                total_submissions = 0
+                for fileinfo in fileinfos:
+                    for submitter in self._submitters:
+                        if submitter.can_submit(fileinfo):
+                            if submitter.submit(fileinfo):
+                                total_submissions += 1
+                            break
+                self._result_command_recorder.notify_total_submissions(
+                    total_submissions)
+        return self._result_command_recorder.get_command_result()
 
-        with manager:
-            future = manager.download(
-                fileobj=StdoutBytesWriter(), bucket=bucket,
-                key=key, extra_args=params)
 
-            return self._process_transfer(future)
+class BaseTransferRequestSubmitter(object):
+    REQUEST_MAPPER_METHOD = None
+    RESULT_SUBSCRIBER_CLASS = None
 
-    def _upload(self, manager, bucket, key):
+    def __init__(self, transfer_manager, result_queue, cli_params):
+        """Submits transfer requests to the TransferManager
+
+        Given a FileInfo object and provided CLI parameters, it will add the
+        necessary extra arguments and subscribers in making a call to the
+        TransferManager.
+
+        :type transfer_manager: s3transfer.manager.TransferManager
+        :param transfer_manager: The underlying transfer manager
+
+        :type result_queue: queue.Queue
+        :param result_queue: The result queue to use
+
+        :type cli_params: dict
+        :param cli_params: The associated CLI parameters passed in to the
+            command as a dictionary.
         """
-        Upload stdin using to the specified location.
+        self._transfer_manager = transfer_manager
+        self._result_queue = result_queue
+        self._cli_params = cli_params
 
-        :type manager: s3transfer.manager.TransferManager
-        :param manager: The transfer manager to use for the upload.
+    def submit(self, fileinfo):
+        """Submits a transfer request based on the FileInfo provided
 
-        :type bucket: str
-        :param bucket: The bucket to upload the stream to.
+        There is no guarantee that the transfer request will be made on
+        behalf of the fileinfo as a fileinfo may be skipped based on
+        circumstances in which the transfer is not possible.
 
-        :type key: str
-        :param key: The name of the key to upload the stream to.
+        :type fileinfo: awscli.customizations.s3.fileinfo.FileInfo
+        :param fileinfo: The FileInfo to be used to submit a transfer
+            request to the underlying transfer manager.
 
-        :return: A CommandResult representing the upload status.
+        :rtype: s3transfer.futures.TransferFuture
+        :returns: A TransferFuture representing the transfer if it the
+            transfer was submitted. If it was not submitted nothing
+            is returned.
         """
-        expected_size = self.params.get('expected_size', None)
-        subscribers = None
+        should_skip = self._warn_and_signal_if_skip(fileinfo)
+        if not should_skip:
+            return self._do_submit(fileinfo)
+
+    def can_submit(self, fileinfo):
+        """Checks whether it can submit a particular FileInfo
+
+        :type fileinfo: awscli.customizations.s3.fileinfo.FileInfo
+        :param fileinfo: The FileInfo to check if the transfer request
+            submitter can handle.
+
+        :returns: True if it can use the provided FileInfo to make a transfer
+            request to the underlying transfer manager. False, otherwise.
+        """
+        raise NotImplementedError('can_submit()')
+
+    def _do_submit(self, fileinfo):
+        extra_args = {}
+        if self.REQUEST_MAPPER_METHOD:
+            self.REQUEST_MAPPER_METHOD(extra_args, self._cli_params)
+        subscribers = []
+        self._add_additional_subscribers(subscribers, fileinfo)
+        # The result subscriber class should always be the last registered
+        # subscriber to ensure it is not missing any information that
+        # may have been added in a different subscriber such as size.
+        subscribers.append(self.RESULT_SUBSCRIBER_CLASS(self._result_queue))
+        return self._submit_transfer_request(fileinfo, extra_args, subscribers)
+
+    def _add_additional_subscribers(self, subscribers, fileinfo):
+        pass
+
+    def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
+        raise NotImplementedError('_submit_transfer_request()')
+
+    def _warn_and_signal_if_skip(self, fileinfo):
+        for warning_handler in self._get_warning_handlers():
+            if warning_handler(fileinfo):
+                # On the first warning handler that returns a signal to skip
+                # immediately propogate this signal and no longer check
+                # the other warning handlers as no matter what the file will
+                # be skipped.
+                return True
+
+    def _get_warning_handlers(self):
+        # Returns a list of warning handlers, which are callables that
+        # take in a single parameter representing a FileInfo. It will then
+        # add a warning to result_queue if needed and return True if
+        # that FileInfo should be skipped.
+        return []
+
+    def _should_inject_content_type(self):
+        return (
+            self._cli_params.get('guess_mime_type') and
+            not self._cli_params.get('content_type')
+        )
+
+    def _warn_glacier(self, fileinfo):
+        if not self._cli_params.get('force_glacier_transfer'):
+            if not fileinfo.is_glacier_compatible():
+                LOGGER.debug(
+                    'Encountered glacier object s3://%s. Not performing '
+                    '%s on object.' % (fileinfo.src, fileinfo.operation_name))
+                if not self._cli_params.get('ignore_glacier_warnings'):
+                    warning = create_warning(
+                        's3://'+fileinfo.src,
+                        'Object is of storage class GLACIER. Unable to '
+                        'perform %s operations on GLACIER objects. You must '
+                        'restore the object to be able to the perform '
+                        'operation.' %
+                        fileinfo.operation_name
+                    )
+                    self._result_queue.put(warning)
+                return True
+        return False
+
+
+class UploadRequestSubmitter(BaseTransferRequestSubmitter):
+    REQUEST_MAPPER_METHOD = RequestParamsMapper.map_put_object_params
+    RESULT_SUBSCRIBER_CLASS = UploadResultSubscriber
+
+    def can_submit(self, fileinfo):
+        return fileinfo.operation_name == 'upload'
+
+    def _add_additional_subscribers(self, subscribers, fileinfo):
+        subscribers.append(ProvideSizeSubscriber(fileinfo.size))
+        if self._should_inject_content_type():
+            subscribers.append(ProvideUploadContentTypeSubscriber())
+
+    def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
+        bucket, key = find_bucket_key(fileinfo.dest)
+        filein = self._get_filein(fileinfo)
+        return self._transfer_manager.upload(
+            fileobj=filein, bucket=bucket, key=key,
+            extra_args=extra_args, subscribers=subscribers
+        )
+
+    def _get_filein(self, fileinfo):
+        return fileinfo.src
+
+    def _get_warning_handlers(self):
+        return [self._warn_if_too_large]
+
+    def _warn_if_too_large(self, fileinfo):
+        if getattr(fileinfo, 'size') and fileinfo.size > MAX_UPLOAD_SIZE:
+            file_path = relative_path(fileinfo.src)
+            warning_message = (
+                "File %s exceeds s3 upload limit of %s." % (
+                    file_path, human_readable_size(MAX_UPLOAD_SIZE)))
+            warning = create_warning(
+                file_path, warning_message, skip_file=False)
+            self._result_queue.put(warning)
+
+
+class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
+    REQUEST_MAPPER_METHOD = RequestParamsMapper.map_get_object_params
+    RESULT_SUBSCRIBER_CLASS = DownloadResultSubscriber
+
+    def can_submit(self, fileinfo):
+        return fileinfo.operation_name == 'download'
+
+    def _add_additional_subscribers(self, subscribers, fileinfo):
+        subscribers.append(ProvideSizeSubscriber(fileinfo.size))
+        subscribers.append(DirectoryCreatorSubscriber())
+        subscribers.append(ProvideLastModifiedTimeSubscriber(
+            fileinfo.last_update, self._result_queue))
+
+    def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
+        bucket, key = find_bucket_key(fileinfo.src)
+        fileout = self._get_fileout(fileinfo)
+        return self._transfer_manager.download(
+            fileobj=fileout, bucket=bucket, key=key,
+            extra_args=extra_args, subscribers=subscribers
+        )
+
+    def _get_fileout(self, fileinfo):
+        return fileinfo.dest
+
+    def _get_warning_handlers(self):
+        return [self._warn_glacier]
+
+
+class CopyRequestSubmitter(BaseTransferRequestSubmitter):
+    REQUEST_MAPPER_METHOD = RequestParamsMapper.map_copy_object_params
+    RESULT_SUBSCRIBER_CLASS = CopyResultSubscriber
+
+    def can_submit(self, fileinfo):
+        return fileinfo.operation_name == 'copy'
+
+    def _add_additional_subscribers(self, subscribers, fileinfo):
+        subscribers.append(ProvideSizeSubscriber(fileinfo.size))
+        if self._should_inject_content_type():
+            subscribers.append(ProvideCopyContentTypeSubscriber())
+
+    def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
+        bucket, key = find_bucket_key(fileinfo.dest)
+        source_bucket, source_key = find_bucket_key(fileinfo.src)
+        copy_source = {'Bucket': source_bucket, 'Key': source_key}
+        return self._transfer_manager.copy(
+            bucket=bucket, key=key, copy_source=copy_source,
+            extra_args=extra_args, subscribers=subscribers,
+            source_client=fileinfo.source_client
+        )
+
+    def _get_warning_handlers(self):
+        return [self._warn_glacier]
+
+
+class UploadStreamRequestSubmitter(UploadRequestSubmitter):
+    RESULT_SUBSCRIBER_CLASS = UploadStreamResultSubscriber
+
+    def can_submit(self, fileinfo):
+        return (
+            fileinfo.operation_name == 'upload' and
+            self._cli_params.get('is_stream')
+        )
+
+    def _add_additional_subscribers(self, subscribers, fileinfo):
+        expected_size = self._cli_params.get('expected_size', None)
         if expected_size is not None:
-            # `expected_size` comes in as a string
-            expected_size = int(expected_size)
+            subscribers.append(ProvideSizeSubscriber(int(expected_size)))
 
-            # set the size of the transfer if we know it ahead of time.
-            subscribers = [ProvideSizeSubscriber(expected_size)]
+    def _get_filein(self, fileinfo):
+        return NonSeekableStream(binary_stdin)
 
-            # TODO: remove when this happens in s3transfer
-            # If we have the expected size, we can calculate an appropriate
-            # chunksize based on max parts and chunksize limits
-            chunksize = find_chunksize(
-                expected_size, self.config.multipart_chunksize)
-        else:
-            # TODO: remove when this happens in s3transfer
-            # Otherwise, we can still adjust for chunksize limits
-            chunksize = adjust_chunksize_to_upload_limits(
-                self.config.multipart_chunksize)
-        self.config.multipart_chunksize = chunksize
 
-        params = {}
-        RequestParamsMapper.map_put_object_params(params, self.params)
+class DownloadStreamRequestSubmitter(DownloadRequestSubmitter):
+    RESULT_SUBSCRIBER_CLASS = DownloadStreamResultSubscriber
 
-        fileobj = NonSeekableStream(binary_stdin)
-        with manager:
-            future = manager.upload(
-                fileobj=fileobj, bucket=bucket,
-                key=key, extra_args=params, subscribers=subscribers)
+    def can_submit(self, fileinfo):
+        return (
+            fileinfo.operation_name == 'download' and
+            self._cli_params.get('is_stream')
+        )
 
-            return self._process_transfer(future)
+    def _add_additional_subscribers(self, subscribers, fileinfo):
+        pass
 
-    def _process_transfer(self, future):
-        """
-        Execute and process a transfer future.
+    def _get_fileout(self, fileinfo):
+        return StdoutBytesWriter()
 
-        :type future: s3transfer.futures.TransferFuture
-        :param future: A future representing an S3 Transfer
 
-        :return: A CommandResult representing the transfer status.
-        """
-        try:
-            future.result()
-            return CommandResult(0, 0)
-        except Exception as e:
-            LOGGER.debug('Exception caught during task execution: %s',
-                         str(e), exc_info=True)
-            # TODO: Update when S3Handler is refactored
-            uni_print("Transfer failed: %s \n" % str(e))
-            return CommandResult(1, 0)
+class DeleteRequestSubmitter(BaseTransferRequestSubmitter):
+    REQUEST_MAPPER_METHOD = None
+    RESULT_SUBSCRIBER_CLASS = DeleteResultSubscriber
+
+    def can_submit(self, fileinfo):
+        return fileinfo.operation_name == 'delete'
+
+    def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
+        bucket, key = find_bucket_key(fileinfo.src)
+        return self._transfer_manager.delete(
+            bucket=bucket, key=key, extra_args=extra_args,
+            subscribers=subscribers)

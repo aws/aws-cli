@@ -8,16 +8,12 @@ import hashlib
 
 from botocore.compat import MD5_AVAILABLE
 from awscli.customizations.s3.utils import (
-    find_bucket_key, guess_content_type, MD5Error, bytes_print, set_file_utime,
-    RequestParamsMapper)
+    find_bucket_key, guess_content_type, CreateDirectoryError, MD5Error,
+    bytes_print, set_file_utime, RequestParamsMapper)
 from awscli.compat import bytes_print
 
 
 LOGGER = logging.getLogger(__name__)
-
-
-class CreateDirectoryError(Exception):
-    pass
 
 
 def read_file(filename):
@@ -265,23 +261,9 @@ class FileInfo(TaskInfo):
             return
         filename = self.src
         # Add a content type param if we can guess the type.
-        try:
-            guessed_type = guess_content_type(filename)
-            if guessed_type is not None:
-                params['ContentType'] = guessed_type
-        # This catches a bug in the mimetype libary where some MIME types
-        # specifically on windows machines cause a UnicodeDecodeError
-        # because the MIME type in the Windows registery has an encoding
-        # that cannot be properly encoded using the default system encoding.
-        # https://bugs.python.org/issue9291
-        #
-        # So instead of hard failing, just log the issue and fall back to the
-        # default guessed content type of None.
-        except UnicodeDecodeError:
-            LOGGER.debug(
-                'Unable to guess content type for %s due to '
-                'UnicodeDecodeError: ', filename, exc_info=True
-            )
+        guessed_type = guess_content_type(filename)
+        if guessed_type is not None:
+            params['ContentType'] = guessed_type
 
     def download(self):
         """

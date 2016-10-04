@@ -497,6 +497,18 @@ class TestCp(BaseS3IntegrationTest):
         with open(local_filename, 'r') as f:
             self.assertEqual(f.read(), contents)
 
+    def test_download_empty_object(self):
+        bucket_name = _SHARED_BUCKET
+        object_name = 'empty-object'
+        self.put_object(bucket_name, object_name, '')
+        local_filename = self.files.full_path('empty.txt')
+        p = aws('s3 cp s3://%s/%s %s' % (
+            bucket_name, object_name, local_filename))
+        self.assertEqual(p.rc, 0)
+        # Assert that the file was downloaded and has no content.
+        with open(local_filename, 'r') as f:
+            self.assertEqual(f.read(), '')
+
     def test_website_redirect_ignore_paramfile(self):
         bucket_name = _SHARED_BUCKET
         foo_txt = self.files.create_file('foo.txt', 'bar')

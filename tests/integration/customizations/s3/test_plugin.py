@@ -498,7 +498,7 @@ class TestCp(BaseS3IntegrationTest):
             self.assertEqual(f.read(), contents)
 
     def test_download_empty_object(self):
-        bucket_name = self.create_bucket()
+        bucket_name = _SHARED_BUCKET
         object_name = 'empty-object'
         self.put_object(bucket_name, object_name, '')
         local_filename = self.files.full_path('empty.txt')

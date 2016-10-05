@@ -47,7 +47,9 @@ ARGUMENT_RENAMES = {
     'route53.get-traffic-policy.version': 'traffic-policy-version',
     'route53.update-traffic-policy-comment.version': 'traffic-policy-version',
     'gamelift.create-build.version': 'build-version',
-    'gamelift.update-build.version': 'build-version'
+    'gamelift.update-build.version': 'build-version',
+    'route53domains.view-billing.start': 'start-time',
+    'route53domains.view-billing.end': 'end-time',
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,
@@ -62,6 +64,7 @@ HIDDEN_ALIASES = {
     'storagegateway.describe-vtl-devices.vtl-device-arns': 'vtl-device-ar-ns',
     'storagegateway.describe-cached-iscsi-volumes.volume-arns': 'volume-ar-ns',
     'storagegateway.describe-stored-iscsi-volumes.volume-arns': 'volume-ar-ns',
+    'route53domains.view-billing.start-time': 'start',
 }
 
 

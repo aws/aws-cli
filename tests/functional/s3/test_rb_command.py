@@ -67,6 +67,5 @@ class TestRb(BaseAWSCommandParamsTest):
         command = self.prefix + 's3://bucket/key --force'
         self.run_cmd(command, expected_rc=255)
 
-        # Currently we allow a key to be specified when force isn't provided.
         command = self.prefix + 's3://bucket/key'
-        self.run_cmd(command, expected_rc=0)
+        self.run_cmd(command, expected_rc=255)

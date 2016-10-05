@@ -799,14 +799,11 @@ class RbCommand(S3Command):
             raise TypeError("%s\nError: Invalid argument type" % self.USAGE)
         bucket, key = split_s3_bucket_key(parsed_args.path)
 
+        if key:
+            raise ValueError('Please specify a valid bucket name only.'
+                             ' E.g. s3://%s' % bucket)
+
         if parsed_args.force:
-            # TODO: always validate or never validate
-            # This is currently placed here to preserve behavior with the
-            # previous implementation which only validated key existence when
-            # --force is provided.
-            if key:
-                raise ValueError('Please specify a valid bucket name only.'
-                                 ' E.g. s3://%s' % bucket)
             self._force(parsed_args.path, parsed_globals)
 
         try:

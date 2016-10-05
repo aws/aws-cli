@@ -823,8 +823,8 @@ class RbCommand(S3Command):
         rc = rm([path, '--recursive'], parsed_globals)
         if rc != 0:
             raise RuntimeError(
-                "Unable to delete all objects in the bucket, "
-                "bucket will not be deleted.")
+                "remove_bucket failed: Unable to delete all objects in the "
+                "bucket, bucket will not be deleted.")
 
 
 class CommandArchitecture(object):

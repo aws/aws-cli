@@ -50,12 +50,14 @@ class TestRb(BaseAWSCommandParamsTest):
     def test_rb_failed_rc(self):
         command = self.prefix + 's3://bucket'
         self.http_response.status_code = 500
-        self.run_cmd(command, expected_rc=1)
+        _, stderr, _ = self.run_cmd(command, expected_rc=1)
+        self.assertIn('remove_bucket failed:', stderr)
 
     def test_rb_force_with_failed_rm(self):
         command = self.prefix + 's3://bucket --force'
         self.http_response.status_code = 500
-        self.run_cmd(command, expected_rc=255)
+        _, stderr, _ = self.run_cmd(command, expected_rc=255)
+        self.assertIn('remove_bucket failed:', stderr)
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
 

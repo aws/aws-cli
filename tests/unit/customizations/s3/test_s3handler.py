@@ -879,28 +879,6 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
             self.assertEqual(filename.read(), b'This is a test.')
 
 
-class S3HandlerTestBucket(S3HandlerBaseTest):
-    """
-    Test the ability to make a bucket then remove it.
-    """
-    def setUp(self):
-        super(S3HandlerTestBucket, self).setUp()
-        self.params = {'region': 'us-east-1'}
-        self.bucket = 'mybucket'
-
-    def test_remove_bucket(self):
-        file_info = FileInfo(
-            src=self.bucket,
-            operation_name='remove_bucket',
-            size=0, client=self.client)
-        s3_handler = S3Handler(self.session, self.params)
-        ref_calls = [
-            ('DeleteBucket', {'Bucket': self.bucket})
-        ]
-        self.assert_operations_for_s3_handler(s3_handler, [file_info],
-                                              ref_calls)
-
-
 class TestS3HandlerInitialization(unittest.TestCase):
     def setUp(self):
         self.arbitrary_params = {'region': 'us-west-2'}

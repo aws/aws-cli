@@ -54,7 +54,7 @@ class TestRbCommand(unittest.TestCase):
         self.session = mock.Mock()
         self.session.get_scoped_config.return_value = {}
         self.rb_command = RbCommand(self.session)
-        self.parsed_args = FakeArgs(paths='s3://mybucket/',
+        self.parsed_args = FakeArgs(path='s3://mybucket/',
                                     force=True, dir_op=False)
         self.parsed_globals = FakeArgs(region=None, endpoint_url=None,
                                        verify_ssl=None)
@@ -70,15 +70,15 @@ class TestRbCommand(unittest.TestCase):
                 # success.
                 rm_command.return_value.return_value = 0
                 self.rb_command._run_main(self.parsed_args,
-                                    parsed_globals=self.parsed_globals)
+                                          parsed_globals=self.parsed_globals)
             # Because of --force we should have called the
             # rm_command with the --recursive option.
             rm_command.return_value.assert_called_with(
-                ['s3://mybucket', '--recursive'], mock.ANY)
+                ['s3://mybucket/', '--recursive'], mock.ANY)
 
     def test_rb_command_with_force_requires_strict_path(self):
         with self.assertRaises(ValueError):
-            self.parsed_args.paths = 's3://mybucket/mykey'
+            self.parsed_args.path = 's3://mybucket/mykey'
             self.rb_command._run_main(self.parsed_args,
                                       parsed_globals=self.parsed_globals)
 
@@ -271,7 +271,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         This tests to make sure the instructions for any command is generated
         properly.
         """
-        cmds = ['cp', 'mv', 'rm', 'sync', 'rb']
+        cmds = ['cp', 'mv', 'rm', 'sync']
 
         instructions = {'cp': ['file_generator', 'file_info_builder',
                                's3_handler'],
@@ -280,8 +280,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                         'rm': ['file_generator', 'file_info_builder',
                                's3_handler'],
                         'sync': ['file_generator', 'comparator',
-                                 'file_info_builder', 's3_handler'],
-                        'rb': ['s3_handler']}
+                                 'file_info_builder', 's3_handler']}
 
         params = {'filters': True, 'region': 'us-east-1', 'endpoint_url': None,
                   'verify_ssl': None, 'is_stream': False}
@@ -527,43 +526,6 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         cmd_arc.run()
         output_str = "(dryrun) upload: %s to %s" % (rel_local_file, s3_file)
         self.assertIn(output_str, self.output.getvalue())
-
-    def test_run_rb(self):
-        # This ensures that the architecture sets up correctly for a ``rb``
-        # command.  It is just just a dry run, but all of the components need
-        # to be wired correctly for it to work.
-        s3_prefix = 's3://' + self.bucket + '/'
-        params = {'dir_op': True, 'dryrun': True, 'quiet': False,
-                  'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
-                  'region': 'us-east-1', 'endpoint_url': None,
-                  'verify_ssl': None, 'follow_symlinks': True,
-                  'page_size': None, 'is_stream': False, 'source_region': None}
-        cmd_arc = CommandArchitecture(self.session, 'rb', params)
-        cmd_arc.create_instructions()
-        self.patch_make_request()
-        rc = cmd_arc.run()
-        output_str = "(dryrun) remove_bucket: %s" % s3_prefix
-        self.assertIn(output_str, self.output.getvalue())
-        self.assertEqual(rc, 0)
-
-    def test_run_rb_nonzero_rc(self):
-        # This ensures that the architecture sets up correctly for a ``rb``
-        # command.  It is just just a dry run, but all of the components need
-        # to be wired correctly for it to work.
-        s3_prefix = 's3://' + self.bucket + '/'
-        params = {'dir_op': True, 'dryrun': False, 'quiet': False,
-                  'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
-                  'region': 'us-east-1', 'endpoint_url': None,
-                  'verify_ssl': None, 'follow_symlinks': True,
-                  'page_size': None, 'is_stream': False}
-        self.http_response.status_code = 400
-        cmd_arc = CommandArchitecture(self.session, 'rb', params)
-        cmd_arc.create_instructions()
-        self.patch_make_request()
-        rc = cmd_arc.run()
-        output_str = "remove_bucket failed: %s" % s3_prefix
-        self.assertIn(output_str, self.err_output.getvalue())
-        self.assertEqual(rc, 1)
 
 
 class CommandParametersTest(unittest.TestCase):

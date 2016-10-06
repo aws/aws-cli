@@ -25,7 +25,7 @@ from awscli.customizations.s3.comparator import Comparator
 from awscli.customizations.s3.fileinfobuilder import FileInfoBuilder
 from awscli.customizations.s3.fileformat import FileFormat
 from awscli.customizations.s3.filegenerator import FileGenerator
-from awscli.customizations.s3.fileinfo import TaskInfo, FileInfo
+from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.filters import create_filter
 from awscli.customizations.s3.s3handler import S3Handler
 from awscli.customizations.s3.s3handler import S3TransferHandlerFactory
@@ -674,7 +674,6 @@ class S3TransferCommand(S3Command):
         cmd_params.add_verify_ssl(parsed_globals)
         cmd_params.add_page_size(parsed_args)
         cmd_params.add_paths(parsed_args.paths)
-        self._handle_rm_force(parsed_globals, cmd_params.parameters)
 
         runtime_config = transferconfig.RuntimeConfig().build_config(
             **self._session.get_scoped_config().get('s3', {}))
@@ -704,34 +703,6 @@ class S3TransferCommand(S3Command):
                 enc_path = dec_path.encode('utf-8')
                 new_path = enc_path.decode('utf-8')
                 parsed_args.paths[i] = new_path
-
-    def _handle_rm_force(self, parsed_globals, parameters):
-        """
-        This function recursively deletes objects in a bucket if the force
-        parameter was thrown when using the remove bucket command. It will
-        refuse to delete if a key is specified in the s3path.
-        """
-        # XXX: This shouldn't really be here.  This was originally moved from
-        # the CommandParameters class to here, but this is still not the ideal
-        # place for this code.  This should be moved
-        # to either the CommandArchitecture class, or the RbCommand class where
-        # the actual operations against S3 are performed.  This may require
-        # some refactoring though to move this to either of those classes.
-        # For now, moving this out of CommandParameters allows for that class
-        # to be kept simple.
-        if 'force' in parameters:
-            if parameters['force']:
-                bucket, key = find_bucket_key(parameters['src'][5:])
-                if key:
-                    raise ValueError('Please specify a valid bucket name only.'
-                                     ' E.g. s3://%s' % bucket)
-                path = 's3://' + bucket
-                del_objects = RmCommand(self._session)
-                rc = del_objects([path, '--recursive'], parsed_globals)
-                if rc != 0:
-                    raise RuntimeError(
-                        "Unable to delete all objects in the bucket, "
-                        "bucket will not be deleted.")
 
 
 class CpCommand(S3TransferCommand):
@@ -808,7 +779,7 @@ class MbCommand(S3Command):
             return 1
 
 
-class RbCommand(S3TransferCommand):
+class RbCommand(S3Command):
     NAME = 'rb'
     DESCRIPTION = (
         "Deletes an empty S3 bucket. A bucket must be completely empty "
@@ -818,8 +789,42 @@ class RbCommand(S3TransferCommand):
         "deleted."
     )
     USAGE = "<S3Uri>"
-    ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
+    ARG_TABLE = [{'name': 'path', 'positional_arg': True,
                   'synopsis': USAGE}, FORCE]
+
+    def _run_main(self, parsed_args, parsed_globals):
+        super(RbCommand, self)._run_main(parsed_args, parsed_globals)
+
+        if not parsed_args.path.startswith('s3://'):
+            raise TypeError("%s\nError: Invalid argument type" % self.USAGE)
+        bucket, key = split_s3_bucket_key(parsed_args.path)
+
+        if key:
+            raise ValueError('Please specify a valid bucket name only.'
+                             ' E.g. s3://%s' % bucket)
+
+        if parsed_args.force:
+            self._force(parsed_args.path, parsed_globals)
+
+        try:
+            self.client.delete_bucket(Bucket=bucket)
+            uni_print("remove_bucket: %s\n" % bucket)
+            return 0
+        except Exception as e:
+            uni_print(
+                "remove_bucket failed: %s %s\n" % (parsed_args.path, e),
+                sys.stderr
+            )
+            return 1
+
+    def _force(self, path, parsed_globals):
+        """Calls rm --recursive on the given path."""
+        rm = RmCommand(self._session)
+        rc = rm([path, '--recursive'], parsed_globals)
+        if rc != 0:
+            raise RuntimeError(
+                "remove_bucket failed: Unable to delete all objects in the "
+                "bucket, bucket will not be deleted.")
 
 
 class CommandArchitecture(object):
@@ -889,10 +894,7 @@ class CommandArchitecture(object):
         self.instructions.append('s3_handler')
 
     def needs_filegenerator(self):
-        if self.cmd == 'rb' or self.parameters['is_stream']:
-            return False
-        else:
-            return True
+        return not self.parameters['is_stream']
 
     def choose_sync_strategies(self):
         """Determines the sync strategy for the command.
@@ -955,10 +957,7 @@ class CommandArchitecture(object):
         cmd_translation['s3s3'] = {'cp': 'copy', 'sync': 'copy', 'mv': 'move'}
         cmd_translation['s3local'] = {'cp': 'download', 'sync': 'download',
                                       'mv': 'move'}
-        cmd_translation['s3'] = {
-            'rm': 'delete',
-            'rb': 'remove_bucket'
-        }
+        cmd_translation['s3'] = {'rm': 'delete'}
         result_queue = queue.Queue()
         operation_name = cmd_translation[paths_type][self.cmd]
 
@@ -998,10 +997,6 @@ class CommandArchitecture(object):
 
         file_generator = FileGenerator(**fgen_kwargs)
         rev_generator = FileGenerator(**rgen_kwargs)
-        taskinfo = [TaskInfo(src=files['src']['path'],
-                             src_type='s3',
-                             operation_name=operation_name,
-                             client=self._client)]
         stream_dest_path, stream_compare_key = find_dest_path_comp_key(files)
         stream_file_info = [FileInfo(src=files['src']['path'],
                                      dest=stream_dest_path,
@@ -1055,9 +1050,6 @@ class CommandArchitecture(object):
                             'file_generator': [file_generator],
                             'filters': [create_filter(self.parameters)],
                             'file_info_builder': [file_info_builder],
-                            's3_handler': [s3handler]}
-        elif self.cmd == 'rb':
-            command_dict = {'setup': [taskinfo],
                             's3_handler': [s3handler]}
 
         files = command_dict['setup']

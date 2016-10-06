@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+1.11.2
+======
+
+* feature:``s3``: Update s3 command to latest version
+* feature:``waf``: Update waf command to latest version
+* feature:``devicefarm``: Update devicefarm command to latest version
+* feature:``kms``: Update kms command to latest version
+* feature:``opsworks``: Update opsworks command to latest version
+* bugfix:s3: Refactor rb into its own command. In addition, validate that no key is supplied regardless of whether or not the force argument is supplied.
+* bugfix:route53domains: Rename `--end` to `--end-time` to fix a bug relating to argparse prefix expansion. Alias `--start` to `--start-time` to maintain a consistent interface while keeping the old parameter.
+* feature:``cognito-idp``: Update cognito-idp command to latest version
+
+
+1.11.1
+======
+
+* bugfix:``s3``: Fix regression when downloading empty files.
+
+
 1.11.0
 ======
 

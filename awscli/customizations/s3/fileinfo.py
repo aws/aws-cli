@@ -103,53 +103,12 @@ def _is_multipart_etag(etag):
     return '-' in etag
 
 
-class TaskInfo(object):
-    """
-    This class contains important details related to performing a task.  This
-    object is usually only used for creating buckets, removing buckets, and
-    listing objects/buckets.  This object contains the attributes and
-    functions needed to perform the task.  Note that just instantiating one
-    of these objects will not be enough to run a listing or bucket command.
-    unless ``session`` and ``region`` are specified upon instantiation.
+class FileInfo(object):
+    """This class contains important details related to performing a task.
 
-    :param src: the source path
-    :type src: string
-    :param src_type: if the source file is s3 or local.
-    :type src_type: string
-    :param operation: the operation being performed.
-    :type operation: string
-    :param session: ``botocore.session`` object
-    :param region: The region for the endpoint
-
-    Note that a local file will always have its absolute path, and a s3 file
-    will have its path in the form of bucket/key
-    """
-    def __init__(self, src, src_type, operation_name, client):
-        self.src = src
-        self.src_type = src_type
-        self.operation_name = operation_name
-        self.client = client
-
-    def remove_bucket(self):
-        """
-        This operation removes a bucket.
-        """
-        bucket, key = find_bucket_key(self.src)
-        self.client.delete_bucket(Bucket=bucket)
-
-    def is_glacier_compatible(self):
-        # These operations do not involving transferring glacier objects
-        # so they are always glacier compatible.
-        return True
-
-
-class FileInfo(TaskInfo):
-    """
-    This is a child object of the ``TaskInfo`` object.  It can perform more
-    operations such as ``upload``, ``download``, ``copy``, ``delete``,
-    ``move``.  Similiarly to
-    ``TaskInfo`` objects attributes like ``session`` need to be set in order
-    to perform operations.
+    It can perform operations such as ``upload``, ``download``, ``copy``,
+    ``delete``, ``move``.  Similarly to ``TaskInfo`` objects attributes
+    like ``session`` need to be set in order to perform operations.
 
     :param dest: the destination path
     :type dest: string
@@ -175,9 +134,10 @@ class FileInfo(TaskInfo):
                  operation_name=None, client=None, parameters=None,
                  source_client=None, is_stream=False,
                  associated_response_data=None):
-        super(FileInfo, self).__init__(src, src_type=src_type,
-                                       operation_name=operation_name,
-                                       client=client)
+        self.src = src
+        self.src_type = src_type
+        self.operation_name = operation_name
+        self.client = client
         self.dest = dest
         self.dest_type = dest_type
         self.compare_key = compare_key

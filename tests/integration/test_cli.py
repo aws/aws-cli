@@ -25,7 +25,7 @@ from awscli.clidriver import create_clidriver
 
 
 def test_no_shadowed_builtins():
-    """Verify no command params are shadowed by the built in param.
+    """Verify no command params are shadowed or prefixed by the built in param.
 
     The CLI parses all command line options into a single namespace.
     This means that option names must be unique and cannot conflict
@@ -35,6 +35,11 @@ def test_no_shadowed_builtins():
     operation for a service also provides a ``--version`` option,
     it can never be called because we'll assume the user meant
     the top level ``--version`` param.
+
+    Beyond just direct shadowing, a param which prefixes a builtin
+    is also effectively shadowed because argparse will expand
+    prefixes of arguments. So `--end` would expand to `--endpoint-url`
+    for instance.
 
     In order to ensure this doesn't happen, this test will go
     through every command table and ensure we're not shadowing
@@ -56,11 +61,12 @@ def test_no_shadowed_builtins():
                 op_help = sub_command.create_help_command()
                 arg_table = op_help.arg_table
                 for arg_name in arg_table:
-                    if arg_name in top_level_params:
-                        # Then we're shadowing a built in argument.
+                    if any(p.startswith(arg_name) for p in top_level_params):
+                        # Then we are shadowing or prefixing a top level
+                        # argument.
                         errors.append(
-                            'Shadowing a top level option: %s.%s.%s' % (
-                                command_name, sub_name, arg_name))
+                            'Shadowing/Prefixing a top level option: '
+                            '%s.%s.%s' % (command_name, sub_name, arg_name))
 
     if errors:
         raise AssertionError('\n' + '\n'.join(errors))

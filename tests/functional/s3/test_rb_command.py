@@ -10,82 +10,64 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import BaseCLIDriverTest, capture_output
-
-from awscli.customizations.s3.subcommands import RbCommand
+from awscli.testutils import BaseAWSCommandParamsTest
 
 
-class FakeArgs(object):
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
-
-    def __contains__(self, key):
-        return hasattr(self, key)
-
-
-class StatusCode(object):
-    def __init__(self, status_code):
-        self.status_code = status_code
-
-
-class TestRbCommand(BaseCLIDriverTest):
+class TestRb(BaseAWSCommandParamsTest):
 
     prefix = 's3 rb '
 
-    def setUp(self):
-        super(TestRbCommand, self).setUp()
-        self.responses = {}
-        self.method_calls = []
+    def test_rb(self):
+        command = self.prefix + 's3://bucket'
+        self.run_cmd(command)
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'DeleteBucket')
 
-    def tearDown(self):
-        super(TestRbCommand, self).tearDown()
+    def test_rb_force_empty_bucket(self):
+        command = self.prefix + 's3://bucket --force'
+        self.run_cmd(command)
+        self.assertEqual(len(self.operations_called), 2)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[1][0].name, 'DeleteBucket')
 
-    def handler(self, model, **kwargs):
-        name = model.name
-        if name in self.responses:
-            self.method_calls.append(name)
-            return self.responses[name].pop()
-        raise RuntimeError("No response for: %s" % name)
+    def test_rb_force_non_empty_bucket(self):
+        command = self.prefix + 's3://bucket --force'
+        self.parsed_responses = [{
+            'Contents': [
+                {
+                    'Key': 'foo',
+                    'Size': 100,
+                    'LastModified': '2016-03-01T23:50:13.000Z'
+                }
+            ]
+        }, {}, {}]
+        self.run_cmd(command)
+        self.assertEqual(len(self.operations_called), 3)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[1][0].name, 'DeleteObject')
+        self.assertEqual(self.operations_called[2][0].name, 'DeleteBucket')
 
-    def test_rb_force_deletes_bucket_on_success(self):
-        cmd = RbCommand(self.session)
-        self.session.register('before-call', self.handler)
+    def test_rb_failed_rc(self):
+        command = self.prefix + 's3://bucket'
+        self.http_response.status_code = 500
+        _, stderr, _ = self.run_cmd(command, expected_rc=1)
+        self.assertIn('remove_bucket failed:', stderr)
 
-        self.responses['ListObjects'] = [
-            (StatusCode(200), {'Contents': [
-                {'Key': 'foo',
-                 'Size': 100,
-                 'LastModified': '2016-03-01T23:50:13.000Z'}]})
-        ]
-        self.responses['DeleteObject'] = [
-            (StatusCode(200), {})
-        ]
-        self.responses['DeleteBucket'] = [
-            (StatusCode(200), {})
-        ]
+    def test_rb_force_with_failed_rm(self):
+        command = self.prefix + 's3://bucket --force'
+        self.http_response.status_code = 500
+        _, stderr, _ = self.run_cmd(command, expected_rc=255)
+        self.assertIn('remove_bucket failed:', stderr)
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
 
-        global_args = FakeArgs(endpoint_url=None,
-                               region=None,
-                               verify_ssl=None)
-        rc = cmd(['s3://bucket/', '--force'], global_args)
-        self.assertEqual(self.method_calls,
-                         ['ListObjects', 'DeleteObject', 'DeleteBucket'])
-        self.assertEqual(rc, 0)
+    def test_nonzero_exit_if_uri_scheme_not_provided(self):
+        command = self.prefix + 'bucket'
+        self.run_cmd(command, expected_rc=255)
 
-    def test_rb_force_does_not_delete_bucket_on_failure(self):
-        cmd = RbCommand(self.session)
-        self.session.register('before-call', self.handler)
-        self.responses['ListObjects'] = [
-            (StatusCode(500), {})
-        ]
+    def test_nonzero_exit_if_key_provided(self):
+        command = self.prefix + 's3://bucket/key --force'
+        self.run_cmd(command, expected_rc=255)
 
-        global_args = FakeArgs(endpoint_url=None,
-                               region=None,
-                               verify_ssl=None)
-        with self.assertRaisesRegexp(
-                RuntimeError, "Unable to delete all objects in the bucket"):
-            with capture_output():
-                cmd(['s3://bucket/', '--force'], global_args)
-        # Note there's no DeleteObject nor DeleteBucket calls
-        # because the ListOBjects call failed.
-        self.assertEqual(self.method_calls, ['ListObjects'])
+        command = self.prefix + 's3://bucket/key'
+        self.run_cmd(command, expected_rc=255)

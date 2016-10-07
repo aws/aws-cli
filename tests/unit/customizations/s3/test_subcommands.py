@@ -203,7 +203,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                                        'verify_ssl': None,
                                        'source_region': None})
         cmd_arc.set_clients()
-        self.assertEqual( session.create_client.call_count, 2)
+        self.assertEqual(session.create_client.call_count, 2)
         self.assertEqual(
             session.create_client.call_args_list[0],
             mock.call(
@@ -372,8 +372,10 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                   'paths_type': 'locals3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
-                  'is_stream': False}
-        cmd_arc = CommandArchitecture(self.session, 'cp', params)
+                  'is_stream': False, 'source_region': None, 'metadata': None}
+        config = RuntimeConfig().build_config()
+        cmd_arc = CommandArchitecture(self.session, 'cp', params, config)
+        cmd_arc.set_clients()
         cmd_arc.create_instructions()
         self.patch_make_request()
         cmd_arc.run()
@@ -424,7 +426,8 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                   'is_stream': False, 'source_region': None}
         self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
                                   "LastModified": "2014-01-09T20:45:49.000Z"}]
-        cmd_arc = CommandArchitecture(self.session, 'cp', params)
+        config = RuntimeConfig().build_config()
+        cmd_arc = CommandArchitecture(self.session, 'cp', params, config)
         cmd_arc.set_clients()
         cmd_arc.create_instructions()
         self.patch_make_request()
@@ -446,7 +449,8 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                   'is_stream': False, 'source_region': None}
         self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
                                   "LastModified": "2014-01-09T20:45:49.000Z"}]
-        cmd_arc = CommandArchitecture(self.session, 'cp', params)
+        config = RuntimeConfig().build_config()
+        cmd_arc = CommandArchitecture(self.session, 'cp', params, config)
         cmd_arc.set_clients()
         cmd_arc.create_instructions()
         self.patch_make_request()
@@ -490,7 +494,8 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                   'is_stream': False, 'source_region': None}
         self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
                                   "LastModified": "2014-01-09T20:45:49.000Z"}]
-        cmd_arc = CommandArchitecture(self.session, 'rm', params)
+        config = RuntimeConfig().build_config()
+        cmd_arc = CommandArchitecture(self.session, 'rm', params, config)
         cmd_arc.set_clients()
         cmd_arc.create_instructions()
         self.patch_make_request()

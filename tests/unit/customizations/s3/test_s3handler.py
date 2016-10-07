@@ -44,6 +44,7 @@ from awscli.customizations.s3.results import DeleteResultSubscriber
 from awscli.customizations.s3.results import ResultRecorder
 from awscli.customizations.s3.results import ResultProcessor
 from awscli.customizations.s3.results import CommandResultRecorder
+from awscli.customizations.s3.results import DryRunResult
 from awscli.customizations.s3.utils import MAX_PARTS, MAX_UPLOAD_SIZE
 from awscli.customizations.s3.utils import StablePriorityQueue
 from awscli.customizations.s3.utils import NonSeekableStream
@@ -1185,6 +1186,21 @@ class TestUploadRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertIs(self.transfer_manager.upload.return_value, future)
         self.assertEqual(len(self.transfer_manager.upload.call_args_list), 1)
 
+    def test_dry_run(self):
+        self.cli_params['dryrun'] = True
+        self.transfer_request_submitter = UploadRequestSubmitter(
+            self.transfer_manager, self.result_queue, self.cli_params)
+        fileinfo = FileInfo(
+            src=self.filename, src_type='local', operation_name='upload',
+            dest=self.bucket + '/' + self.key, dest_type='s3')
+        self.transfer_request_submitter.submit(fileinfo)
+
+        result = self.result_queue.get()
+        self.assertIsInstance(result, DryRunResult)
+        self.assertEqual(result.transfer_type, 'upload')
+        self.assertTrue(result.src.endswith(self.filename))
+        self.assertEqual(result.dest, 's3://' + self.bucket + '/' + self.key)
+
 
 class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
     def setUp(self):
@@ -1316,6 +1332,21 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         # But the transfer still should have been skipped.
         self.assertIsNone(future)
         self.assertEqual(len(self.transfer_manager.download.call_args_list), 0)
+
+    def test_dry_run(self):
+        self.cli_params['dryrun'] = True
+        self.transfer_request_submitter = DownloadRequestSubmitter(
+            self.transfer_manager, self.result_queue, self.cli_params)
+        fileinfo = FileInfo(
+            dest=self.filename, dest_type='local', operation_name='download',
+            src=self.bucket + '/' + self.key, src_type='s3')
+        self.transfer_request_submitter.submit(fileinfo)
+
+        result = self.result_queue.get()
+        self.assertIsInstance(result, DryRunResult)
+        self.assertEqual(result.transfer_type, 'download')
+        self.assertTrue(result.dest.endswith(self.filename))
+        self.assertEqual(result.src, 's3://' + self.bucket + '/' + self.key)
 
 
 class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
@@ -1495,6 +1526,23 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         # But the transfer still should have been skipped.
         self.assertEqual(len(self.transfer_manager.copy.call_args_list), 0)
 
+    def test_dry_run(self):
+        self.cli_params['dryrun'] = True
+        self.transfer_request_submitter = CopyRequestSubmitter(
+            self.transfer_manager, self.result_queue, self.cli_params)
+        fileinfo = FileInfo(
+            src=self.source_bucket + '/' + self.source_key, src_type='s3',
+            dest=self.bucket + '/' + self.key, dest_type='s3',
+            operation_name='copy')
+        self.transfer_request_submitter.submit(fileinfo)
+
+        result = self.result_queue.get()
+        self.assertIsInstance(result, DryRunResult)
+        self.assertEqual(result.transfer_type, 'copy')
+        source = 's3://' + self.source_bucket + '/' + self.source_key
+        self.assertEqual(result.src, source)
+        self.assertEqual(result.dest, 's3://' + self.bucket + '/' + self.key)
+
 
 class TestUploadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
     def setUp(self):
@@ -1554,6 +1602,21 @@ class TestUploadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
         # The ProvideSizeSubscriber should be providing the correct size
         self.assertEqual(actual_subscribers[0].size, provided_size)
 
+    def test_dry_run(self):
+        self.cli_params['dryrun'] = True
+        self.transfer_request_submitter = UploadStreamRequestSubmitter(
+            self.transfer_manager, self.result_queue, self.cli_params)
+        fileinfo = FileInfo(
+            src=self.filename, src_type='local', operation_name='upload',
+            dest=self.bucket + '/' + self.key, dest_type='s3')
+        self.transfer_request_submitter.submit(fileinfo)
+
+        result = self.result_queue.get()
+        self.assertIsInstance(result, DryRunResult)
+        self.assertEqual(result.transfer_type, 'upload')
+        self.assertEqual(result.dest, 's3://' + self.bucket + '/' + self.key)
+        self.assertEqual(result.src, '-')
+
 
 class TestDownloadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
     def setUp(self):
@@ -1594,6 +1657,21 @@ class TestDownloadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
         for i, actual_subscriber in enumerate(actual_subscribers):
             self.assertIsInstance(actual_subscriber, ref_subscribers[i])
 
+    def test_dry_run(self):
+        self.cli_params['dryrun'] = True
+        self.transfer_request_submitter = DownloadStreamRequestSubmitter(
+            self.transfer_manager, self.result_queue, self.cli_params)
+        fileinfo = FileInfo(
+            dest=self.filename, dest_type='local', operation_name='download',
+            src=self.bucket + '/' + self.key, src_type='s3')
+        self.transfer_request_submitter.submit(fileinfo)
+
+        result = self.result_queue.get()
+        self.assertIsInstance(result, DryRunResult)
+        self.assertEqual(result.transfer_type, 'download')
+        self.assertEqual(result.src, 's3://' + self.bucket + '/' + self.key)
+        self.assertEqual(result.dest, '-')
+
 
 class TestDeleteRequestSubmitter(BaseTransferRequestSubmitterTest):
     def setUp(self):
@@ -1628,6 +1706,22 @@ class TestDeleteRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertEqual(len(ref_subscribers), len(actual_subscribers))
         for i, actual_subscriber in enumerate(actual_subscribers):
             self.assertIsInstance(actual_subscriber, ref_subscribers[i])
+
+    def test_dry_run(self):
+        self.cli_params['dryrun'] = True
+        self.transfer_request_submitter = DeleteRequestSubmitter(
+            self.transfer_manager, self.result_queue, self.cli_params)
+        fileinfo = FileInfo(
+            src=self.bucket + '/' + self.key, src_type='s3',
+            dest=self.bucket + '/' + self.key, dest_type='s3',
+            operation_name='delete')
+        self.transfer_request_submitter.submit(fileinfo)
+
+        result = self.result_queue.get()
+        self.assertIsInstance(result, DryRunResult)
+        self.assertEqual(result.transfer_type, 'delete')
+        self.assertEqual(result.src, 's3://' + self.bucket + '/' + self.key)
+        self.assertIsNone(result.dest)
 
 
 if __name__ == "__main__":

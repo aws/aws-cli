@@ -31,6 +31,7 @@ from awscli.customizations.s3.results import UploadStreamResultSubscriber
 from awscli.customizations.s3.results import DownloadStreamResultSubscriber
 from awscli.customizations.s3.results import DeleteResultSubscriber
 from awscli.customizations.s3.results import CommandResult
+from awscli.customizations.s3.results import DryRunResult
 from awscli.customizations.s3.results import ResultRecorder
 from awscli.customizations.s3.results import ResultPrinter
 from awscli.customizations.s3.results import OnlyShowErrorsResultPrinter
@@ -43,6 +44,7 @@ from awscli.customizations.s3.utils import ProvideUploadContentTypeSubscriber
 from awscli.customizations.s3.utils import ProvideCopyContentTypeSubscriber
 from awscli.customizations.s3.utils import ProvideLastModifiedTimeSubscriber
 from awscli.customizations.s3.utils import DirectoryCreatorSubscriber
+from awscli.customizations.s3.utils import format_fileinfo_src_dest
 from awscli.compat import queue
 from awscli.compat import binary_stdin
 
@@ -586,7 +588,16 @@ class BaseTransferRequestSubmitter(object):
         # subscriber to ensure it is not missing any information that
         # may have been added in a different subscriber such as size.
         subscribers.append(self.RESULT_SUBSCRIBER_CLASS(self._result_queue))
-        return self._submit_transfer_request(fileinfo, extra_args, subscribers)
+        if not self._cli_params.get('dryrun'):
+            return self._submit_transfer_request(
+                fileinfo, extra_args, subscribers)
+        else:
+            self._submit_dryrun(fileinfo)
+
+    def _submit_dryrun(self, fileinfo):
+        src, dest = format_fileinfo_src_dest(fileinfo)
+        self._result_queue.put(DryRunResult(
+            transfer_type=fileinfo.operation_name, src=src, dest=dest))
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
         pass

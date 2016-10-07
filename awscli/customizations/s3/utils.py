@@ -55,7 +55,6 @@ SIZE_SUFFIX = {
 }
 
 
-
 def human_readable_size(value):
     """Convert an size in bytes into a human readable format.
 
@@ -889,3 +888,24 @@ class NonSeekableStream(object):
             return self._fileobj.read()
         else:
             return self._fileobj.read(amt)
+
+
+def format_fileinfo_src_dest(fileinfo):
+    """Returns formatted versions of a fileinfo's source and destination."""
+    src = format_path(fileinfo.src, fileinfo.src_type)
+    dest = None
+    if fileinfo.operation_name != 'delete':
+        dest = format_path(fileinfo.dest, fileinfo.dest_type)
+    return src, dest
+
+
+def format_path(path, path_type):
+    """Formats a path to be relative or use s3uri format."""
+    if path_type == 's3':
+        if path.startswith('s3://'):
+            return path
+        return 's3://' + path
+    elif path_type == 'local':
+        if path == '-':
+            return path
+        return relative_path(path)

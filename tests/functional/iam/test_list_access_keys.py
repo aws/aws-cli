@@ -13,11 +13,11 @@
 from awscli.testutils import BaseAWSCommandParamsTest
 
 
-class TestCreateOpenIDConnectProvider(BaseAWSCommandParamsTest):
+class TestListAccessKeys(BaseAWSCommandParamsTest):
 
     prefix = 'iam list-access-keys'
 
-    def test_create_open_id_connect_provider(self):
+    def test_list_access_keys_with_no_paginate(self):
         cmdline = self.prefix
         cmdline += '  --no-paginate --max-items 1'
         result = {

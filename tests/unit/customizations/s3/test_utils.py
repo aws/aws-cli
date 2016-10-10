@@ -41,8 +41,7 @@ from awscli.customizations.s3.utils import (
     StdoutBytesWriter, ProvideSizeSubscriber, OnDoneFilteredSubscriber,
     ProvideUploadContentTypeSubscriber, ProvideCopyContentTypeSubscriber,
     ProvideLastModifiedTimeSubscriber, DirectoryCreatorSubscriber,
-    NonSeekableStream, CreateDirectoryError, format_path,
-    format_fileinfo_src_dest)
+    NonSeekableStream, CreateDirectoryError)
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.results import WarningResult
 from tests.unit.customizations.s3 import FakeTransferFuture
@@ -761,40 +760,3 @@ class TestNonSeekableStream(unittest.TestCase):
     def test_can_specify_amount_for_nonseekable_stream(self):
         nonseekable_fileobj = NonSeekableStream(StringIO('foobar'))
         self.assertEqual(nonseekable_fileobj.read(3), 'foo')
-
-
-class TestFormatFileinfoSrcDest(unittest.TestCase):
-    def test_format(self):
-        initial_src = 'myfile'
-        initial_dest = 'foo/bar'
-        fileinfo = FileInfo(
-            src=initial_src, src_type='local', operation_name='upload',
-            dest_type='s3', dest=initial_dest)
-        src, dest = format_fileinfo_src_dest(fileinfo)
-        self.assertTrue(src.endswith(initial_src))
-        self.assertNotEqual(src, initial_src)
-        self.assertEqual(dest, 's3://foo/bar')
-
-    def test_format_delete(self):
-        fileinfo = FileInfo(
-            src='foo/bar', src_type='s3', operation_name='delete',
-            dest='foo/bar', dest_type='s3')
-        src, dest = format_fileinfo_src_dest(fileinfo)
-        self.assertIsNone(dest)
-        self.assertEqual(src, 's3://foo/bar')
-
-
-class TestFormatPath(unittest.TestCase):
-    def test_s3_path(self):
-        given = 'mybucket/mykey'
-        expected = 's3://mybucket/mykey'
-        self.assertEqual(format_path(given, 's3'), expected)
-        self.assertEqual(format_path(expected, 's3'), expected)
-
-    def test_local_path(self):
-        result = format_path('myfile', 'local')
-        self.assertTrue(result.endswith('myfile'))
-        self.assertNotEqual(result, 'myfile')
-
-    def test_stream_path(self):
-        self.assertEqual(format_path('-', 'local'), '-')

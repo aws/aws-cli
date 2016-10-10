@@ -44,7 +44,6 @@ from awscli.customizations.s3.utils import ProvideUploadContentTypeSubscriber
 from awscli.customizations.s3.utils import ProvideCopyContentTypeSubscriber
 from awscli.customizations.s3.utils import ProvideLastModifiedTimeSubscriber
 from awscli.customizations.s3.utils import DirectoryCreatorSubscriber
-from awscli.customizations.s3.utils import format_fileinfo_src_dest
 from awscli.compat import queue
 from awscli.compat import binary_stdin
 
@@ -595,7 +594,7 @@ class BaseTransferRequestSubmitter(object):
             self._submit_dryrun(fileinfo)
 
     def _submit_dryrun(self, fileinfo):
-        src, dest = format_fileinfo_src_dest(fileinfo)
+        src, dest = self._format_fileinfo_src_dest(fileinfo)
         self._result_queue.put(DryRunResult(
             transfer_type=fileinfo.operation_name, src=src, dest=dest))
 
@@ -645,6 +644,23 @@ class BaseTransferRequestSubmitter(object):
                     self._result_queue.put(warning)
                 return True
         return False
+
+    def _format_fileinfo_src_dest(self, fileinfo):
+        """Returns formatted versions of a fileinfos source and destination."""
+        src = self._format_path(fileinfo.src, fileinfo.src_type)
+        dest = self._format_path(fileinfo.dest, fileinfo.dest_type)
+        return src, dest
+
+    def _format_path(self, path, path_type):
+        """Formats a path to be relative or use s3uri format."""
+        if path_type == 's3':
+            if path.startswith('s3://'):
+                return path
+            return 's3://' + path
+        elif path_type == 'local':
+            if path == '-':
+                return path
+            return relative_path(path)
 
 
 class UploadRequestSubmitter(BaseTransferRequestSubmitter):
@@ -784,3 +800,6 @@ class DeleteRequestSubmitter(BaseTransferRequestSubmitter):
         return self._transfer_manager.delete(
             bucket=bucket, key=key, extra_args=extra_args,
             subscribers=subscribers)
+
+    def _format_fileinfo_src_dest(self, fileinfo):
+        return self._format_path(fileinfo.src, fileinfo.src_type), None

@@ -31,6 +31,7 @@ from awscli.customizations.s3.results import UploadStreamResultSubscriber
 from awscli.customizations.s3.results import DownloadStreamResultSubscriber
 from awscli.customizations.s3.results import DeleteResultSubscriber
 from awscli.customizations.s3.results import CommandResult
+from awscli.customizations.s3.results import DryRunResult
 from awscli.customizations.s3.results import ResultRecorder
 from awscli.customizations.s3.results import ResultPrinter
 from awscli.customizations.s3.results import OnlyShowErrorsResultPrinter
@@ -586,7 +587,16 @@ class BaseTransferRequestSubmitter(object):
         # subscriber to ensure it is not missing any information that
         # may have been added in a different subscriber such as size.
         subscribers.append(self.RESULT_SUBSCRIBER_CLASS(self._result_queue))
-        return self._submit_transfer_request(fileinfo, extra_args, subscribers)
+        if not self._cli_params.get('dryrun'):
+            return self._submit_transfer_request(
+                fileinfo, extra_args, subscribers)
+        else:
+            self._submit_dryrun(fileinfo)
+
+    def _submit_dryrun(self, fileinfo):
+        src, dest = self._format_src_dest(fileinfo)
+        self._result_queue.put(DryRunResult(
+            transfer_type=fileinfo.operation_name, src=src, dest=dest))
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
         pass
@@ -635,6 +645,18 @@ class BaseTransferRequestSubmitter(object):
                 return True
         return False
 
+    def _format_src_dest(self, fileinfo):
+        """Returns formatted versions of a fileinfos source and destination."""
+        raise NotImplementedError('_format_src_dest')
+
+    def _format_local_path(self, path):
+        return relative_path(path)
+
+    def _format_s3_path(self, path):
+        if path.startswith('s3://'):
+            return path
+        return 's3://' + path
+
 
 class UploadRequestSubmitter(BaseTransferRequestSubmitter):
     REQUEST_MAPPER_METHOD = RequestParamsMapper.map_put_object_params
@@ -672,6 +694,11 @@ class UploadRequestSubmitter(BaseTransferRequestSubmitter):
                 file_path, warning_message, skip_file=False)
             self._result_queue.put(warning)
 
+    def _format_src_dest(self, fileinfo):
+        src = self._format_local_path(fileinfo.src)
+        dest = self._format_s3_path(fileinfo.dest)
+        return src, dest
+
 
 class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
     REQUEST_MAPPER_METHOD = RequestParamsMapper.map_get_object_params
@@ -700,6 +727,11 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
     def _get_warning_handlers(self):
         return [self._warn_glacier]
 
+    def _format_src_dest(self, fileinfo):
+        src = self._format_s3_path(fileinfo.src)
+        dest = self._format_local_path(fileinfo.dest)
+        return src, dest
+
 
 class CopyRequestSubmitter(BaseTransferRequestSubmitter):
     REQUEST_MAPPER_METHOD = RequestParamsMapper.map_copy_object_params
@@ -726,6 +758,11 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
     def _get_warning_handlers(self):
         return [self._warn_glacier]
 
+    def _format_src_dest(self, fileinfo):
+        src = self._format_s3_path(fileinfo.src)
+        dest = self._format_s3_path(fileinfo.dest)
+        return src, dest
+
 
 class UploadStreamRequestSubmitter(UploadRequestSubmitter):
     RESULT_SUBSCRIBER_CLASS = UploadStreamResultSubscriber
@@ -744,6 +781,9 @@ class UploadStreamRequestSubmitter(UploadRequestSubmitter):
     def _get_filein(self, fileinfo):
         return NonSeekableStream(binary_stdin)
 
+    def _format_local_path(self, path):
+        return '-'
+
 
 class DownloadStreamRequestSubmitter(DownloadRequestSubmitter):
     RESULT_SUBSCRIBER_CLASS = DownloadStreamResultSubscriber
@@ -760,6 +800,9 @@ class DownloadStreamRequestSubmitter(DownloadRequestSubmitter):
     def _get_fileout(self, fileinfo):
         return StdoutBytesWriter()
 
+    def _format_local_path(self, path):
+        return '-'
+
 
 class DeleteRequestSubmitter(BaseTransferRequestSubmitter):
     REQUEST_MAPPER_METHOD = None
@@ -773,3 +816,6 @@ class DeleteRequestSubmitter(BaseTransferRequestSubmitter):
         return self._transfer_manager.delete(
             bucket=bucket, key=key, extra_args=extra_args,
             subscribers=subscribers)
+
+    def _format_src_dest(self, fileinfo):
+        return self._format_s3_path(fileinfo.src), None

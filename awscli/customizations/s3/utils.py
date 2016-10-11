@@ -55,7 +55,6 @@ SIZE_SUFFIX = {
 }
 
 
-
 def human_readable_size(value):
     """Convert an size in bytes into a human readable format.
 

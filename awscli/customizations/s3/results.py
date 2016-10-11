@@ -57,6 +57,8 @@ SuccessResult = _create_new_result_cls('SuccessResult')
 
 FailureResult = _create_new_result_cls('FailureResult', ['exception'])
 
+DryRunResult = _create_new_result_cls('DryRunResult')
+
 ErrorResult = namedtuple('ErrorResult', ['exception'])
 
 CtrlCResult = _create_new_result_cls('CtrlCResult', base_cls=ErrorResult)
@@ -328,6 +330,7 @@ class ResultPrinter(BaseResultHandler):
     SUCCESS_FORMAT = (
         '{transfer_type}: {transfer_location}'
     )
+    DRY_RUN_FORMAT = '(dryrun) ' + SUCCESS_FORMAT
     FAILURE_FORMAT = (
         '{transfer_type} failed: {transfer_location} {exception}'
     )
@@ -373,6 +376,7 @@ class ResultPrinter(BaseResultHandler):
             WarningResult: self._print_warning,
             ErrorResult: self._print_error,
             CtrlCResult: self._print_ctrl_c,
+            DryRunResult: self._print_dry_run,
         }
 
     def __call__(self, result):
@@ -383,6 +387,14 @@ class ResultPrinter(BaseResultHandler):
     def _print_noop(self, **kwargs):
         # If the result does not have a handler, then do nothing with it.
         pass
+
+    def _print_dry_run(self, result, **kwargs):
+        statement = self.DRY_RUN_FORMAT.format(
+            transfer_type=result.transfer_type,
+            transfer_location=self._get_transfer_location(result)
+        )
+        statement = self._adjust_statement_padding(statement)
+        self._print_to_out_file(statement)
 
     def _print_success(self, result, **kwargs):
         success_statement = self.SUCCESS_FORMAT.format(

@@ -24,6 +24,7 @@ from awscli.customizations.s3.results import SuccessResult
 from awscli.customizations.s3.results import FailureResult
 from awscli.customizations.s3.results import ErrorResult
 from awscli.customizations.s3.results import CtrlCResult
+from awscli.customizations.s3.results import DryRunResult
 from awscli.customizations.s3.results import FinalTotalSubmissionsResult
 from awscli.customizations.s3.results import UploadResultSubscriber
 from awscli.customizations.s3.results import UploadStreamResultSubscriber
@@ -1013,6 +1014,16 @@ class TestResultPrinter(BaseResultPrinterTest):
         # progress because errors are really only seen when the entire
         # s3 command fails.
         self.assertEqual(self.error_file.getvalue(), ref_error_statement)
+
+    def test_dry_run(self):
+        result = DryRunResult(
+            transfer_type='upload',
+            src='s3://mybucket/key',
+            dest='./local/file'
+        )
+        self.result_printer(result)
+        expected = '(dryrun) upload: s3://mybucket/key to ./local/file\n'
+        self.assertEqual(self.out_file.getvalue(), expected)
 
 
 class TestOnlyShowErrorsResultPrinter(BaseResultPrinterTest):

@@ -42,11 +42,11 @@ from awscli.customizations.s3.utils import (
     ProvideUploadContentTypeSubscriber, ProvideCopyContentTypeSubscriber,
     ProvideLastModifiedTimeSubscriber, DirectoryCreatorSubscriber,
     NonSeekableStream, CreateDirectoryError)
+from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.results import WarningResult
 from tests.unit.customizations.s3 import FakeTransferFuture
 from tests.unit.customizations.s3 import FakeTransferFutureMeta
 from tests.unit.customizations.s3 import FakeTransferFutureCallArgs
-
 
 
 def test_human_readable_size():

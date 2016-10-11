@@ -1013,7 +1013,7 @@ class CommandArchitecture(object):
                               result_queue=result_queue)
 
         s3_transfer_handler = s3handler
-        if self.cmd in ['cp', 'rm'] and not self.parameters.get('dryrun'):
+        if self.cmd in ['cp', 'rm']:
             s3_transfer_handler = S3TransferHandlerFactory(
                 self.parameters, self._runtime_config)(
                     self._client, result_queue)

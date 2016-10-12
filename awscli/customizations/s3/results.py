@@ -446,7 +446,7 @@ class ResultPrinter(BaseResultHandler):
         self._add_progress_if_needed()
 
     def _add_progress_if_needed(self):
-        if not self._has_remaining_progress():
+        if self._has_remaining_progress():
             self._print_progress()
 
     def _print_progress(self, **kwargs):
@@ -504,9 +504,11 @@ class ResultPrinter(BaseResultHandler):
         return print_statement + ending_char
 
     def _has_remaining_progress(self):
+        if not self._result_recorder.expected_totals_are_final():
+            return True
         actual = self._result_recorder.files_transferred
         expected = self._result_recorder.expected_files_transferred
-        return actual == expected
+        return actual != expected
 
     def _print_to_out_file(self, statement):
         uni_print(statement, self._out_file)

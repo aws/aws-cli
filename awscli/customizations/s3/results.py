@@ -377,6 +377,8 @@ class ResultPrinter(BaseResultHandler):
             ErrorResult: self._print_error,
             CtrlCResult: self._print_ctrl_c,
             DryRunResult: self._print_dry_run,
+            FinalTotalSubmissionsResult:
+                self._clear_progress_if_no_more_expected_transfers,
         }
 
     def __call__(self, result):
@@ -515,6 +517,11 @@ class ResultPrinter(BaseResultHandler):
 
     def _print_to_error_file(self, statement):
         uni_print(statement, self._error_file)
+
+    def _clear_progress_if_no_more_expected_transfers(self, **kwargs):
+        if self._result_recorder.final_expected_files_transferred \
+                and not self._has_remaining_progress():
+            uni_print(self._adjust_statement_padding(''), self._out_file)
 
 
 class OnlyShowErrorsResultPrinter(ResultPrinter):

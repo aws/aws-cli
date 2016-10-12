@@ -1259,6 +1259,51 @@ class TestResultPrinter(BaseResultPrinterTest):
         expected = '(dryrun) upload: s3://mybucket/key to ./local/file\n'
         self.assertEqual(self.out_file.getvalue(), expected)
 
+    def test_final_total_notification_with_no_more_expected_progress(self):
+        transfer_type = 'upload'
+        src = 'file'
+        dest = 's3://mybucket/mykey'
+
+        mb = 1024 * 1024
+        self.result_recorder.expected_files_transferred = 1
+        self.result_recorder.files_transferred = 1
+        self.result_recorder.expected_bytes_transferred = mb
+        self.result_recorder.bytes_transferred = mb
+
+        success_result = SuccessResult(
+            transfer_type=transfer_type, src=src, dest=dest)
+
+        self.result_printer(success_result)
+
+        ref_success_statement = (
+            'upload: file to s3://mybucket/mykey\n'
+            'Completed 1.0 MiB/~1.0 MiB with ~0 file(s) remaining '
+            '(calculating...)\r'
+        )
+        self.assertEqual(self.out_file.getvalue(), ref_success_statement)
+
+        # Now the result recorder/printer is notified it was just
+        # there will be no more queueing. Therefore it should
+        # clear out remaining progress if the expected number of files
+        # transferred is equal to the number of files that has completed
+        # because this is the final task meaning we want to clear any progress
+        # that is displayed.
+        self.result_recorder.final_expected_files_transferred = 1
+        self.result_printer(FinalTotalSubmissionsResult(1))
+        ref_success_statement = (
+            'upload: file to s3://mybucket/mykey\n'
+            'Completed 1.0 MiB/~1.0 MiB with ~0 file(s) remaining '
+            '(calculating...)\r'
+            '                                                     '
+            '                \n'
+        )
+        self.assertEqual(self.out_file.getvalue(), ref_success_statement)
+
+    def test_final_total_does_not_print_out_newline_for_no_transfers(self):
+        self.result_recorder.final_expected_files_transferred = 0
+        self.result_printer(FinalTotalSubmissionsResult(0))
+        self.assertEqual(self.out_file.getvalue(), '')
+
 
 class TestOnlyShowErrorsResultPrinter(BaseResultPrinterTest):
     def setUp(self):

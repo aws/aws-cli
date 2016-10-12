@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.11.3
+======
+
+* bugfix:Pagination: Fix validation error when providing ``--no-paginate`` with normalized paging argument.
+* feature:``apigateway``: Update apigateway command to latest version
+* feature:``cloudfront``: Update cloudfront command to latest version
+* feature:``gamelift``: Update gamelift command to latest version
+* feature:``rds``: Update rds command to latest version
+* feature:``codedeploy``: Update codedeploy command to latest version
+* feature:``sns``: Update sns command to latest version
+* feature:``kms``: Update kms command to latest version
+* feature:``elasticache``: Update elasticache command to latest version
+* feature:``ecr``: Update ecr command to latest version
+
+
 1.11.2
 ======
 

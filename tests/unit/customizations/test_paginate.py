@@ -256,6 +256,21 @@ class TestShouldEnablePagination(TestPaginateBase):
         self.assertTrue(self.parsed_globals.paginate,
                         "Pagination was not enabled.")
 
+    def test_fall_back_to_original_max_items_when_pagination_turned_off(self):
+        input_tokens = ['max-items']
+        # User specifies --no-paginate.
+        self.parsed_globals.paginate = False
+        # But also specifies --max-items 10, which is normally a pagination arg
+        # we replace.  However, because they've explicitly turned off
+        # pagination, we should put back the original arg.
+        self.parsed_args.max_items = 10
+        shadowed_args = {'max-items': mock.sentinel.ORIGINAL_ARG}
+        arg_table = {'max-items': mock.sentinel.PAGINATION_ARG}
+
+        paginate.check_should_enable_pagination(
+            input_tokens, shadowed_args, arg_table,
+            self.parsed_args, self.parsed_globals)
+
     def test_shadowed_args_are_replaced_when_pagination_turned_off(self):
         input_tokens = ['foo', 'bar']
         self.parsed_globals.paginate = True

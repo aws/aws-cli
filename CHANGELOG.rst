@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.11.4
+======
+
+* feature:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* feature:``gamelift``: Update gamelift command to latest version
+* feature:``s3``: Integrate sync command with s3transfer
+* feature:``acm``: Update acm command to latest version
+* feature:``s3``: Output progress even when discovering new files to transfer
+
+
 1.11.3
 ======
 

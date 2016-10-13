@@ -1013,7 +1013,7 @@ class CommandArchitecture(object):
                               result_queue=result_queue)
 
         s3_transfer_handler = s3handler
-        if self.cmd in ['cp', 'rm']:
+        if self.cmd in ['cp', 'rm', 'sync']:
             s3_transfer_handler = S3TransferHandlerFactory(
                 self.parameters, self._runtime_config)(
                     self._client, result_queue)
@@ -1029,7 +1029,7 @@ class CommandArchitecture(object):
                                         create_filter(self.parameters)],
                             'comparator': [Comparator(**sync_strategies)],
                             'file_info_builder': [file_info_builder],
-                            's3_handler': [s3handler]}
+                            's3_handler': [s3_transfer_handler]}
         elif self.cmd == 'cp' and self.parameters['is_stream']:
             command_dict = {'setup': [stream_file_info],
                             's3_handler': [s3_transfer_handler]}

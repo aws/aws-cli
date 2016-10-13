@@ -820,6 +820,13 @@ class TestResultPrinter(BaseResultPrinterTest):
         transfer_type = 'upload'
         src = 'file'
         dest = 's3://mybucket/mykey'
+
+        # Pretend that this is the final result in the result queue that
+        # is processed.
+        self.result_recorder.final_expected_files_transferred = 1
+        self.result_recorder.expected_files_transferred = 1
+        self.result_recorder.files_transferred = 1
+
         success_result = SuccessResult(
             transfer_type=transfer_type, src=src, dest=dest)
 
@@ -864,9 +871,62 @@ class TestResultPrinter(BaseResultPrinterTest):
         )
         self.assertEqual(self.out_file.getvalue(), ref_statement)
 
+    def test_success_with_files_remaining(self):
+        transfer_type = 'upload'
+        src = 'file'
+        dest = 's3://mybucket/mykey'
+
+        mb = 1024 * 1024
+        self.result_recorder.expected_files_transferred = 4
+        self.result_recorder.files_transferred = 1
+        self.result_recorder.expected_bytes_transferred = 4 * mb
+        self.result_recorder.bytes_transferred = mb
+
+        success_result = SuccessResult(
+            transfer_type=transfer_type, src=src, dest=dest)
+
+        self.result_printer(success_result)
+
+        ref_success_statement = (
+            'upload: file to s3://mybucket/mykey\n'
+            'Completed 1.0 MiB/~4.0 MiB with ~3 file(s) remaining '
+            '(calculating...)\r'
+        )
+        self.assertEqual(self.out_file.getvalue(), ref_success_statement)
+
+    def test_success_but_no_expected_files_transferred_provided(self):
+        transfer_type = 'upload'
+        src = 'file'
+        dest = 's3://mybucket/mykey'
+
+        mb = 1024 * 1024
+        self.result_recorder.expected_files_transferred = 1
+        self.result_recorder.files_transferred = 1
+        self.result_recorder.expected_bytes_transferred = mb
+        self.result_recorder.bytes_transferred = mb
+
+        success_result = SuccessResult(
+            transfer_type=transfer_type, src=src, dest=dest)
+
+        self.result_printer(success_result)
+
+        ref_success_statement = (
+            'upload: file to s3://mybucket/mykey\n'
+            'Completed 1.0 MiB/~1.0 MiB with ~0 file(s) remaining '
+            '(calculating...)\r'
+        )
+        self.assertEqual(self.out_file.getvalue(), ref_success_statement)
+
     def test_success_for_delete(self):
         transfer_type = 'delete'
         src = 's3://mybucket/mykey'
+
+        # Pretend that this is the final result in the result queue that
+        # is processed.
+        self.result_recorder.final_expected_files_transferred = 1
+        self.result_recorder.expected_files_transferred = 1
+        self.result_recorder.files_transferred = 1
+
         success_result = SuccessResult(
             transfer_type=transfer_type, src=src, dest=None)
 
@@ -877,10 +937,53 @@ class TestResultPrinter(BaseResultPrinterTest):
         )
         self.assertEqual(self.out_file.getvalue(), ref_success_statement)
 
+    def test_delete_success_with_files_remaining(self):
+        transfer_type = 'delete'
+        src = 's3://mybucket/mykey'
+
+        self.result_recorder.expected_files_transferred = 4
+        self.result_recorder.files_transferred = 1
+
+        success_result = SuccessResult(
+            transfer_type=transfer_type, src=src, dest=None)
+
+        self.result_printer(success_result)
+
+        ref_success_statement = (
+            'delete: s3://mybucket/mykey\n'
+            'Completed 1 file(s) with ~3 file(s) remaining (calculating...)\r'
+        )
+        self.assertEqual(self.out_file.getvalue(), ref_success_statement)
+
+    def test_delete_success_but_no_expected_files_transferred_provided(self):
+        transfer_type = 'delete'
+        src = 's3://mybucket/mykey'
+
+        self.result_recorder.expected_files_transferred = 1
+        self.result_recorder.files_transferred = 1
+
+        success_result = SuccessResult(
+            transfer_type=transfer_type, src=src, dest=None)
+
+        self.result_printer(success_result)
+
+        ref_success_statement = (
+            'delete: s3://mybucket/mykey\n'
+            'Completed 1 file(s) with ~0 file(s) remaining (calculating...)\r'
+        )
+        self.assertEqual(self.out_file.getvalue(), ref_success_statement)
+
     def test_failure(self):
         transfer_type = 'upload'
         src = 'file'
         dest = 's3://mybucket/mykey'
+
+        # Pretend that this is the final result in the result queue that
+        # is processed.
+        self.result_recorder.final_expected_files_transferred = 1
+        self.result_recorder.expected_files_transferred = 1
+        self.result_recorder.files_transferred = 1
+
         failure_result = FailureResult(
             transfer_type=transfer_type, src=src, dest=dest,
             exception=Exception('my exception'))
@@ -891,6 +994,69 @@ class TestResultPrinter(BaseResultPrinterTest):
             'upload failed: file to s3://mybucket/mykey my exception\n'
         )
         self.assertEqual(self.error_file.getvalue(), ref_failure_statement)
+        self.assertEqual(self.out_file.getvalue(), '')
+
+    def test_failure_with_files_remaining(self):
+        shared_file = self.out_file
+        self.result_printer = ResultPrinter(
+            result_recorder=self.result_recorder,
+            out_file=shared_file,
+            error_file=shared_file
+        )
+
+        transfer_type = 'upload'
+        src = 'file'
+        dest = 's3://mybucket/mykey'
+
+        mb = 1024 * 1024
+        self.result_recorder.expected_files_transferred = 4
+        self.result_recorder.files_transferred = 1
+        self.result_recorder.expected_bytes_transferred = 4 * mb
+        self.result_recorder.bytes_transferred = mb
+
+        failure_result = FailureResult(
+            transfer_type=transfer_type, src=src, dest=dest,
+            exception=Exception('my exception'))
+
+        self.result_printer(failure_result)
+
+        ref_statement = (
+            'upload failed: file to s3://mybucket/mykey my exception\n'
+            'Completed 1.0 MiB/~4.0 MiB with ~3 file(s) remaining '
+            '(calculating...)\r'
+        )
+        self.assertEqual(self.out_file.getvalue(), ref_statement)
+
+    def test_failure_but_no_expected_files_transferred_provided(self):
+        shared_file = self.out_file
+        self.result_printer = ResultPrinter(
+            result_recorder=self.result_recorder,
+            out_file=shared_file,
+            error_file=shared_file
+        )
+
+        transfer_type = 'upload'
+        src = 'file'
+        dest = 's3://mybucket/mykey'
+
+        mb = 1024 * 1024
+        self.result_recorder.expected_files_transferred = 1
+        self.result_recorder.files_transferred = 1
+        self.result_recorder.expected_bytes_transferred = mb
+        self.result_recorder.bytes_transferred = mb
+
+        failure_result = FailureResult(
+            transfer_type=transfer_type, src=src, dest=dest,
+            exception=Exception('my exception'))
+
+        self.result_printer(failure_result)
+
+        ref_statement = (
+            'upload failed: file to s3://mybucket/mykey my exception\n'
+            'Completed 1.0 MiB/~1.0 MiB with ~0 file(s) remaining '
+            '(calculating...)\r'
+        )
+        self.assertEqual(self.out_file.getvalue(), ref_statement)
 
     def test_failure_with_progress(self):
         # Make errors and regular outprint go to the same file to track order.
@@ -939,6 +1105,13 @@ class TestResultPrinter(BaseResultPrinterTest):
     def test_failure_for_delete(self):
         transfer_type = 'delete'
         src = 's3://mybucket/mykey'
+
+        # Pretend that this is the final result in the result queue that
+        # is processed.
+        self.result_recorder.final_expected_files_transferred = 1
+        self.result_recorder.expected_files_transferred = 1
+        self.result_recorder.files_transferred = 1
+
         failure_result = FailureResult(
             transfer_type=transfer_type, src=src, dest=None,
             exception=Exception('my exception'))
@@ -949,11 +1122,72 @@ class TestResultPrinter(BaseResultPrinterTest):
             'delete failed: s3://mybucket/mykey my exception\n'
         )
         self.assertEqual(self.error_file.getvalue(), ref_failure_statement)
+        self.assertEqual(self.out_file.getvalue(), '')
+
+    def test_delete_failure_with_files_remaining(self):
+        shared_file = self.out_file
+        self.result_printer = ResultPrinter(
+            result_recorder=self.result_recorder,
+            out_file=shared_file,
+            error_file=shared_file
+        )
+
+        transfer_type = 'delete'
+        src = 's3://mybucket/mykey'
+
+        self.result_recorder.expected_files_transferred = 4
+        self.result_recorder.expected_files_transferred = 4
+        self.result_recorder.files_transferred = 1
+
+        failure_result = FailureResult(
+            transfer_type=transfer_type, src=src, dest=None,
+            exception=Exception('my exception'))
+
+        self.result_printer(failure_result)
+
+        ref_statement = (
+            'delete failed: s3://mybucket/mykey my exception\n'
+            'Completed 1 file(s) with ~3 file(s) remaining (calculating...)\r'
+        )
+        self.assertEqual(self.out_file.getvalue(), ref_statement)
+
+    def test_delete_failure_but_no_expected_files_transferred_provided(self):
+        shared_file = self.out_file
+        self.result_printer = ResultPrinter(
+            result_recorder=self.result_recorder,
+            out_file=shared_file,
+            error_file=shared_file
+        )
+
+        transfer_type = 'delete'
+        src = 's3://mybucket/mykey'
+
+        self.result_recorder.expected_files_transferred = 1
+        self.result_recorder.files_transferred = 1
+
+        failure_result = FailureResult(
+            transfer_type=transfer_type, src=src, dest=None,
+            exception=Exception('my exception'))
+
+        self.result_printer(failure_result)
+
+        ref_statement = (
+            'delete failed: s3://mybucket/mykey my exception\n'
+            'Completed 1 file(s) with ~0 file(s) remaining (calculating...)\r'
+        )
+        self.assertEqual(self.out_file.getvalue(), ref_statement)
 
     def test_warning(self):
+        # Pretend that this is the final result in the result queue that
+        # is processed.
+        self.result_recorder.final_expected_files_transferred = 1
+        self.result_recorder.expected_files_transferred = 1
+        self.result_recorder.files_transferred = 1
+
         self.result_printer(WarningResult('warning: my warning'))
         ref_warning_statement = 'warning: my warning\n'
         self.assertEqual(self.error_file.getvalue(), ref_warning_statement)
+        self.assertEqual(self.out_file.getvalue(), '')
 
     def test_warning_with_progress(self):
         # Make errors and regular outprint go to the same file to track order.
@@ -1025,6 +1259,51 @@ class TestResultPrinter(BaseResultPrinterTest):
         expected = '(dryrun) upload: s3://mybucket/key to ./local/file\n'
         self.assertEqual(self.out_file.getvalue(), expected)
 
+    def test_final_total_notification_with_no_more_expected_progress(self):
+        transfer_type = 'upload'
+        src = 'file'
+        dest = 's3://mybucket/mykey'
+
+        mb = 1024 * 1024
+        self.result_recorder.expected_files_transferred = 1
+        self.result_recorder.files_transferred = 1
+        self.result_recorder.expected_bytes_transferred = mb
+        self.result_recorder.bytes_transferred = mb
+
+        success_result = SuccessResult(
+            transfer_type=transfer_type, src=src, dest=dest)
+
+        self.result_printer(success_result)
+
+        ref_success_statement = (
+            'upload: file to s3://mybucket/mykey\n'
+            'Completed 1.0 MiB/~1.0 MiB with ~0 file(s) remaining '
+            '(calculating...)\r'
+        )
+        self.assertEqual(self.out_file.getvalue(), ref_success_statement)
+
+        # Now the result recorder/printer is notified it was just
+        # there will be no more queueing. Therefore it should
+        # clear out remaining progress if the expected number of files
+        # transferred is equal to the number of files that has completed
+        # because this is the final task meaning we want to clear any progress
+        # that is displayed.
+        self.result_recorder.final_expected_files_transferred = 1
+        self.result_printer(FinalTotalSubmissionsResult(1))
+        ref_success_statement = (
+            'upload: file to s3://mybucket/mykey\n'
+            'Completed 1.0 MiB/~1.0 MiB with ~0 file(s) remaining '
+            '(calculating...)\r'
+            '                                                     '
+            '                \n'
+        )
+        self.assertEqual(self.out_file.getvalue(), ref_success_statement)
+
+    def test_final_total_does_not_print_out_newline_for_no_transfers(self):
+        self.result_recorder.final_expected_files_transferred = 0
+        self.result_printer(FinalTotalSubmissionsResult(0))
+        self.assertEqual(self.out_file.getvalue(), '')
+
 
 class TestOnlyShowErrorsResultPrinter(BaseResultPrinterTest):
     def setUp(self):
@@ -1069,6 +1348,29 @@ class TestOnlyShowErrorsResultPrinter(BaseResultPrinterTest):
         self.result_printer(WarningResult('warning: my warning'))
         ref_warning_statement = 'warning: my warning\n'
         self.assertEqual(self.error_file.getvalue(), ref_warning_statement)
+
+    def test_final_total_does_not_try_to_clear_empty_progress(self):
+        transfer_type = 'upload'
+        src = 'file'
+        dest = 's3://mybucket/mykey'
+
+        mb = 1024 * 1024
+        self.result_recorder.expected_files_transferred = 1
+        self.result_recorder.files_transferred = 1
+        self.result_recorder.expected_bytes_transferred = mb
+        self.result_recorder.bytes_transferred = mb
+
+        success_result = SuccessResult(
+            transfer_type=transfer_type, src=src, dest=dest)
+        self.result_printer(success_result)
+        ref_statement = ''
+        self.assertEqual(self.out_file.getvalue(), ref_statement)
+
+        self.result_recorder.final_expected_files_transferred = 1
+        self.result_printer(FinalTotalSubmissionsResult(1))
+        # The final total submission result should be a noop and
+        # not print anything out.
+        self.assertEqual(self.out_file.getvalue(), ref_statement)
 
 
 class TestResultProcessor(unittest.TestCase):

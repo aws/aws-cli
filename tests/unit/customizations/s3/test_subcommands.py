@@ -524,7 +524,8 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                 {"Key": "text1.txt", "Size": 100,
                  "LastModified": "2014-01-09T20:45:49.000Z"}]},
             {"CommonPrefixes": [], "Contents": []}]
-        cmd_arc = CommandArchitecture(self.session, 'sync', params)
+        config = RuntimeConfig().build_config()
+        cmd_arc = CommandArchitecture(self.session, 'sync', params, config)
         cmd_arc.create_instructions()
         cmd_arc.set_clients()
         self.patch_make_request()

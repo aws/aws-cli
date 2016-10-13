@@ -1349,6 +1349,29 @@ class TestOnlyShowErrorsResultPrinter(BaseResultPrinterTest):
         ref_warning_statement = 'warning: my warning\n'
         self.assertEqual(self.error_file.getvalue(), ref_warning_statement)
 
+    def test_final_total_does_not_try_to_clear_empty_progress(self):
+        transfer_type = 'upload'
+        src = 'file'
+        dest = 's3://mybucket/mykey'
+
+        mb = 1024 * 1024
+        self.result_recorder.expected_files_transferred = 1
+        self.result_recorder.files_transferred = 1
+        self.result_recorder.expected_bytes_transferred = mb
+        self.result_recorder.bytes_transferred = mb
+
+        success_result = SuccessResult(
+            transfer_type=transfer_type, src=src, dest=dest)
+        self.result_printer(success_result)
+        ref_statement = ''
+        self.assertEqual(self.out_file.getvalue(), ref_statement)
+
+        self.result_recorder.final_expected_files_transferred = 1
+        self.result_printer(FinalTotalSubmissionsResult(1))
+        # The final total submission result should be a noop and
+        # not print anything out.
+        self.assertEqual(self.out_file.getvalue(), ref_statement)
+
 
 class TestResultProcessor(unittest.TestCase):
     def setUp(self):

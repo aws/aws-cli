@@ -20,6 +20,7 @@ from s3transfer.manager import TransferManager
 
 import awscli.customizations.s3.utils
 from awscli.testutils import unittest
+from awscli.testutils import FileCreator
 from awscli import EnvironmentVariables
 from awscli.compat import six
 from awscli.compat import queue
@@ -32,9 +33,13 @@ from awscli.customizations.s3.s3handler import CopyRequestSubmitter
 from awscli.customizations.s3.s3handler import UploadStreamRequestSubmitter
 from awscli.customizations.s3.s3handler import DownloadStreamRequestSubmitter
 from awscli.customizations.s3.s3handler import DeleteRequestSubmitter
+from awscli.customizations.s3.s3handler import LocalDeleteRequestSubmitter
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.tasks import CreateMultipartUploadTask, \
     UploadPartTask, CreateLocalFileTask, CompleteMultipartUploadTask
+from awscli.customizations.s3.results import QueuedResult
+from awscli.customizations.s3.results import SuccessResult
+from awscli.customizations.s3.results import FailureResult
 from awscli.customizations.s3.results import UploadResultSubscriber
 from awscli.customizations.s3.results import DownloadResultSubscriber
 from awscli.customizations.s3.results import CopyResultSubscriber
@@ -1032,11 +1037,37 @@ class TestS3TransferHandler(unittest.TestCase):
         num_transfers = 5
         for _ in range(num_transfers):
             fileinfos.append(
-                FileInfo(src='bucket/key', dest=None, operation_name='delete'))
+                FileInfo(src='bucket/key', dest=None, operation_name='delete',
+                         src_type='s3'))
 
         self.s3_transfer_handler.call(fileinfos)
         self.assertEqual(
             self.transfer_manager.delete.call_count, num_transfers)
+
+    def test_enqueue_local_deletes(self):
+        fileinfos = []
+        num_transfers = 5
+        for _ in range(num_transfers):
+            fileinfos.append(
+                FileInfo(src='myfile', dest=None, operation_name='delete',
+                         src_type='local'))
+
+        self.s3_transfer_handler.call(fileinfos)
+        # The number of processed results will be equal to:
+        # number_of_local_deletes * 2 + 1
+        # The 2 represents the QueuedResult and SuccessResult/FailureResult
+        # for each transfer
+        # The 1 represents the TotalFinalSubmissionResult
+        self.assertEqual(len(self.processed_results), 11)
+
+        # Make sure that the results are as expected by checking just one
+        # of them
+        first_submitted_result = self.processed_results[0]
+        self.assertEqual(first_submitted_result.transfer_type, 'delete')
+        self.assertTrue(first_submitted_result.src.endswith('myfile'))
+
+        # Also make sure that transfer manager's delete() was never called
+        self.assertEqual(self.transfer_manager.delete.call_count, 0)
 
     def test_notifies_total_submissions(self):
         fileinfos = []
@@ -1681,10 +1712,18 @@ class TestDeleteRequestSubmitter(BaseTransferRequestSubmitterTest):
 
     def test_can_submit(self):
         fileinfo = FileInfo(
-            src=self.bucket+'/'+self.key, dest=None, operation_name='delete')
+            src=self.bucket+'/'+self.key, dest=None, operation_name='delete',
+            src_type='s3')
         self.assertTrue(
             self.transfer_request_submitter.can_submit(fileinfo))
         fileinfo.operation_name = 'foo'
+        self.assertFalse(
+            self.transfer_request_submitter.can_submit(fileinfo))
+
+    def test_cannot_submit_local_deletes(self):
+        fileinfo = FileInfo(
+            src=self.bucket+'/'+self.key, dest=None, operation_name='delete',
+            src_type='local')
         self.assertFalse(
             self.transfer_request_submitter.can_submit(fileinfo))
 
@@ -1724,5 +1763,90 @@ class TestDeleteRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertIsNone(result.dest)
 
 
-if __name__ == "__main__":
-    unittest.main()
+class TestLocalDeleteRequestSubmitter(BaseTransferRequestSubmitterTest):
+    def setUp(self):
+        super(TestLocalDeleteRequestSubmitter, self).setUp()
+        self.transfer_request_submitter = LocalDeleteRequestSubmitter(
+            self.transfer_manager, self.result_queue, self.cli_params)
+        self.file_creator = FileCreator()
+        self.filename = self.file_creator.create_file(self.filename, 'content')
+
+    def tearDown(self):
+        super(TestLocalDeleteRequestSubmitter, self).tearDown()
+        self.file_creator.remove_all()
+
+    def test_can_submit(self):
+        fileinfo = FileInfo(
+            src=self.filename, dest=None, operation_name='delete',
+            src_type='local')
+        self.assertTrue(
+            self.transfer_request_submitter.can_submit(fileinfo))
+        fileinfo.operation_name = 'foo'
+        self.assertFalse(
+            self.transfer_request_submitter.can_submit(fileinfo))
+
+    def test_cannot_submit_remote_deletes(self):
+        fileinfo = FileInfo(
+            src=self.filename, dest=None, operation_name='delete',
+            src_type='s3')
+        self.assertFalse(
+            self.transfer_request_submitter.can_submit(fileinfo))
+
+    def test_submit(self):
+        fileinfo = FileInfo(
+            src=self.filename, dest=None, operation_name='delete',
+            src_type='local')
+        rval = self.transfer_request_submitter.submit(fileinfo)
+        self.assertTrue(rval)
+
+        queued_result = self.result_queue.get()
+        self.assertIsInstance(queued_result, QueuedResult)
+        self.assertEqual(queued_result.transfer_type, 'delete')
+        self.assertTrue(queued_result.src.endswith(self.filename))
+        self.assertIsNone(queued_result.dest)
+        self.assertEqual(queued_result.total_transfer_size, 0)
+
+        failure_result = self.result_queue.get()
+        self.assertIsInstance(failure_result, SuccessResult)
+        self.assertEqual(failure_result.transfer_type, 'delete')
+        self.assertTrue(failure_result.src.endswith(self.filename))
+        self.assertIsNone(failure_result.dest)
+
+        self.assertFalse(os.path.exists(self.filename))
+
+    def test_submit_with_exception(self):
+        fileinfo = FileInfo(
+            src=self.filename, dest=None, operation_name='delete',
+            src_type='local')
+        # Remove the file to trigger an exception when it is attempted to
+        # be deleted in the submitter.
+        os.remove(self.filename)
+        rval = self.transfer_request_submitter.submit(fileinfo)
+        self.assertTrue(rval)
+
+        queued_result = self.result_queue.get()
+        self.assertIsInstance(queued_result, QueuedResult)
+        self.assertEqual(queued_result.transfer_type, 'delete')
+        self.assertTrue(queued_result.src.endswith(self.filename))
+        self.assertIsNone(queued_result.dest)
+        self.assertEqual(queued_result.total_transfer_size, 0)
+
+        failure_result = self.result_queue.get()
+        self.assertIsInstance(failure_result, FailureResult)
+        self.assertEqual(failure_result.transfer_type, 'delete')
+        self.assertTrue(failure_result.src.endswith(self.filename))
+        self.assertIsNone(failure_result.dest)
+
+    def test_dry_run(self):
+        self.cli_params['dryrun'] = True
+        fileinfo = FileInfo(
+            src=self.filename, src_type='local',
+            dest=self.filename, dest_type='local',
+            operation_name='delete')
+        self.transfer_request_submitter.submit(fileinfo)
+
+        result = self.result_queue.get()
+        self.assertIsInstance(result, DryRunResult)
+        self.assertEqual(result.transfer_type, 'delete')
+        self.assertTrue(result.src.endswith(self.filename))
+        self.assertIsNone(result.dest)

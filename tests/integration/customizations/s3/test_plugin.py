@@ -793,6 +793,22 @@ class TestSync(BaseS3IntegrationTest):
         self.assertFalse(self.key_exists(src_bucket, dst_key_name))
         self.assertFalse(self.key_exists(dst_bucket, dst_key_name))
 
+    def test_sync_delete_locally(self):
+        bucket_name = _SHARED_BUCKET
+        file_to_delete = self.files.create_file(
+            'foo.txt', contents='foo contents')
+        self.put_object(bucket_name, 'bar.txt', contents='bar contents')
+
+        p = aws('s3 sync s3://%s/ %s --delete' % (
+            bucket_name, self.files.rootdir))
+        self.assert_no_errors(p)
+
+        # Make sure the uploaded file got downloaded and the previously
+        # existing local file got deleted
+        self.assertTrue(os.path.exists(
+            os.path.join(self.files.rootdir, 'bar.txt')))
+        self.assertFalse(os.path.exists(file_to_delete))
+
 
 class TestSourceRegion(BaseS3IntegrationTest):
     def extra_setup(self):

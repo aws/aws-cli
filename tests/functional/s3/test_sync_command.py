@@ -148,3 +148,19 @@ class TestSyncCommand(BaseAWSCommandParamsTest):
         self.assertEqual(len(self.operations_called), 2, self.operations_called)
         self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
         self.assertEqual(self.operations_called[1][0].name, 'PutObject')
+
+    def test_sync_with_delete_on_downloads(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = '%s s3://bucket %s --delete' % (
+            self.prefix, self.files.rootdir)
+        self.parsed_responses = [
+            {"CommonPrefixes": [], "Contents": []},
+            {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+
+        # The only operations we should have called are ListObjects.
+        self.assertEqual(len(self.operations_called), 1, self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+
+        self.assertFalse(os.path.exists(full_path))

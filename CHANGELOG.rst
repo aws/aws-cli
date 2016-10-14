@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.5
+======
+
+* bugfix:``s3 sync --delete``: Fix regression where ``--delete`` would not delete local files
+
+
 1.11.4
 ======
 

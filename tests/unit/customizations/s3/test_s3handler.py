@@ -1769,7 +1769,6 @@ class TestLocalDeleteRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.transfer_request_submitter = LocalDeleteRequestSubmitter(
             self.transfer_manager, self.result_queue, self.cli_params)
         self.file_creator = FileCreator()
-        self.filename = self.file_creator.create_file(self.filename, 'content')
 
     def tearDown(self):
         super(TestLocalDeleteRequestSubmitter, self).tearDown()
@@ -1793,8 +1792,9 @@ class TestLocalDeleteRequestSubmitter(BaseTransferRequestSubmitterTest):
             self.transfer_request_submitter.can_submit(fileinfo))
 
     def test_submit(self):
+        full_filename = self.file_creator.create_file(self.filename, 'content')
         fileinfo = FileInfo(
-            src=self.filename, dest=None, operation_name='delete',
+            src=full_filename, dest=None, operation_name='delete',
             src_type='local')
         rval = self.transfer_request_submitter.submit(fileinfo)
         self.assertTrue(rval)
@@ -1812,15 +1812,14 @@ class TestLocalDeleteRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertTrue(failure_result.src.endswith(self.filename))
         self.assertIsNone(failure_result.dest)
 
-        self.assertFalse(os.path.exists(self.filename))
+        self.assertFalse(os.path.exists(full_filename))
 
     def test_submit_with_exception(self):
         fileinfo = FileInfo(
             src=self.filename, dest=None, operation_name='delete',
             src_type='local')
-        # Remove the file to trigger an exception when it is attempted to
-        # be deleted in the submitter.
-        os.remove(self.filename)
+        # The file was never created so it should trigger an exception
+        # when it is attempted to be deleted in the submitter.
         rval = self.transfer_request_submitter.submit(fileinfo)
         self.assertTrue(rval)
 

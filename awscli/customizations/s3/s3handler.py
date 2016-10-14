@@ -30,6 +30,9 @@ from awscli.customizations.s3.results import CopyResultSubscriber
 from awscli.customizations.s3.results import UploadStreamResultSubscriber
 from awscli.customizations.s3.results import DownloadStreamResultSubscriber
 from awscli.customizations.s3.results import DeleteResultSubscriber
+from awscli.customizations.s3.results import QueuedResult
+from awscli.customizations.s3.results import SuccessResult
+from awscli.customizations.s3.results import FailureResult
 from awscli.customizations.s3.results import CommandResult
 from awscli.customizations.s3.results import DryRunResult
 from awscli.customizations.s3.results import ResultRecorder
@@ -493,6 +496,7 @@ class S3TransferHandler(object):
             DownloadRequestSubmitter(*submitter_args),
             CopyRequestSubmitter(*submitter_args),
             DeleteRequestSubmitter(*submitter_args),
+            LocalDeleteRequestSubmitter(*submitter_args)
         ]
 
     def call(self, fileinfos):
@@ -586,7 +590,9 @@ class BaseTransferRequestSubmitter(object):
         # The result subscriber class should always be the last registered
         # subscriber to ensure it is not missing any information that
         # may have been added in a different subscriber such as size.
-        subscribers.append(self.RESULT_SUBSCRIBER_CLASS(self._result_queue))
+        if self.RESULT_SUBSCRIBER_CLASS:
+            subscribers.append(
+                self.RESULT_SUBSCRIBER_CLASS(self._result_queue))
         if not self._cli_params.get('dryrun'):
             return self._submit_transfer_request(
                 fileinfo, extra_args, subscribers)
@@ -809,7 +815,8 @@ class DeleteRequestSubmitter(BaseTransferRequestSubmitter):
     RESULT_SUBSCRIBER_CLASS = DeleteResultSubscriber
 
     def can_submit(self, fileinfo):
-        return fileinfo.operation_name == 'delete'
+        return fileinfo.operation_name == 'delete' and \
+            fileinfo.src_type == 's3'
 
     def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
         bucket, key = find_bucket_key(fileinfo.src)
@@ -819,3 +826,46 @@ class DeleteRequestSubmitter(BaseTransferRequestSubmitter):
 
     def _format_src_dest(self, fileinfo):
         return self._format_s3_path(fileinfo.src), None
+
+
+class LocalDeleteRequestSubmitter(BaseTransferRequestSubmitter):
+    REQUEST_MAPPER_METHOD = None
+    RESULT_SUBSCRIBER_CLASS = None
+
+    def can_submit(self, fileinfo):
+        return fileinfo.operation_name == 'delete' and \
+            fileinfo.src_type == 'local'
+
+    def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
+        # This is quirky but essentially instead of relying on a built-in
+        # method of s3 transfer, the logic lives directly in the submitter.
+        # The reason a explicit delete local file does not
+        # live in s3transfer is because it is outside the scope of s3transfer;
+        # it should only have interfaces for interacting with S3. Therefore,
+        # the burden of this functionality should live in the CLI.
+
+        # The main downsides in doing this is that delete and the result
+        # creation happens in the main thread as opposed to a seperate thread
+        # in s3transfer. However, this is not too big of a downside because
+        # deleting a local file only happens for sync --delete downloads and
+        # is very fast compared to all of the other types of transfers.
+        src, dest = self._format_src_dest(fileinfo)
+        result_kwargs = {
+            'transfer_type': 'delete',
+            'src': src,
+            'dest': dest
+        }
+        try:
+            self._result_queue.put(QueuedResult(
+                total_transfer_size=0, **result_kwargs))
+            os.remove(fileinfo.src)
+            self._result_queue.put(SuccessResult(**result_kwargs))
+        except Exception as e:
+            self._result_queue.put(
+                FailureResult(exception=e, **result_kwargs))
+        finally:
+            # Return True to indicate that the transfer was submitted
+            return True
+
+    def _format_src_dest(self, fileinfo):
+        return self._format_local_path(fileinfo.src), None

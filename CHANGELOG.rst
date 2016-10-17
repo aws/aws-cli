@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.6
+======
+
+* feature:``route53``: Update route53 command to latest version
+* feature:``--region``: Add support for us-east-2
+
+
 1.11.5
 ======
 

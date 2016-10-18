@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.11.7
+======
+
+* feature:``cloudfront``: Update cloudfront command to latest version
+* feature:``iot``: Update iot command to latest version
+* feature:``config``: Update config command to latest version
+* feature:``kinesisanalytics``: Update kinesisanalytics command to latest version
+* feature:``rds``: Update rds command to latest version
+
+
 1.11.6
 ======
 

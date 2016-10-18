@@ -283,6 +283,21 @@ class TestCopyResultSubscriber(TestUploadResultSubscriber):
         return FakeTransferFutureCallArgs(
             copy_source=self.copy_source, key=self.key, bucket=self.bucket)
 
+    def test_transfer_type_override(self):
+        new_transfer_type = 'move'
+        self.result_subscriber = CopyResultSubscriber(
+            self.result_queue, new_transfer_type)
+        self.result_subscriber.on_queued(self.future)
+        result = self.get_queued_result()
+        self.assert_result_queue_is_empty()
+        expected = QueuedResult(
+            transfer_type=new_transfer_type,
+            src=self.src,
+            dest=self.dest,
+            total_transfer_size=self.size
+        )
+        self.assertEqual(result, expected)
+
 
 class TestDeleteResultSubscriber(TestUploadResultSubscriber):
     def setUp(self):

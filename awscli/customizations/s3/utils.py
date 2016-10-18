@@ -808,6 +808,52 @@ class OnDoneFilteredSubscriber(BaseSubscriber):
         pass
 
 
+class DeleteSourceSubscriber(OnDoneFilteredSubscriber):
+    """A subscriber which deletes the source of the transfer."""
+    def _on_success(self, future):
+        try:
+            self._delete_source(future)
+        except Exception as e:
+            future.set_exception(e)
+
+    def _delete_source(self, future):
+        raise NotImplementedError('_delete_source()')
+
+
+class DeleteSourceObjectSubscriber(DeleteSourceSubscriber):
+    """A subscriber which deletes an object."""
+    def __init__(self, client):
+        self._client = client
+
+    def _get_bucket(self, call_args):
+        return call_args.bucket
+
+    def _get_key(self, call_args):
+        return call_args.key
+
+    def _delete_source(self, future):
+        call_args = future.meta.call_args
+        self._client.delete_object(
+            Bucket=self._get_bucket(call_args),
+            Key=self._get_key(call_args)
+        )
+
+
+class DeleteCopySourceObjectSubscriber(DeleteSourceObjectSubscriber):
+    """A subscriber which deletes the copy source."""
+    def _get_bucket(self, call_args):
+        return call_args.copy_source['Bucket']
+
+    def _get_key(self, call_args):
+        return call_args.copy_source['Key']
+
+
+class DeleteSourceFileSubscriber(DeleteSourceSubscriber):
+    """A subscriber which deletes a file."""
+    def _delete_source(self, future):
+        os.remove(future.meta.call_args.fileobj)
+
+
 class BaseProvideContentTypeSubscriber(BaseSubscriber):
     """A subscriber that provides content type when creating s3 objects"""
 

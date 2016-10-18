@@ -951,27 +951,26 @@ class CommandArchitecture(object):
         files = FileFormat().format(src, dest, self.parameters)
         rev_files = FileFormat().format(dest, src, self.parameters)
 
-        cmd_translation = {}
-        cmd_translation['locals3'] = {'cp': 'upload', 'sync': 'upload',
-                                      'mv': 'move'}
-        cmd_translation['s3s3'] = {'cp': 'copy', 'sync': 'copy', 'mv': 'move'}
-        cmd_translation['s3local'] = {'cp': 'download', 'sync': 'download',
-                                      'mv': 'move'}
-        cmd_translation['s3'] = {'rm': 'delete'}
+        cmd_translation = {
+            'locals3': 'upload',
+            's3s3': 'copy',
+            's3local': 'download',
+            's3': 'delete'
+        }
         result_queue = queue.Queue()
-        operation_name = cmd_translation[paths_type][self.cmd]
+        operation_name = cmd_translation[paths_type]
 
         fgen_kwargs = {
             'client': self._source_client, 'operation_name': operation_name,
             'follow_symlinks': self.parameters['follow_symlinks'],
             'page_size': self.parameters['page_size'],
-            'result_queue': result_queue
+            'result_queue': result_queue,
         }
         rgen_kwargs = {
             'client': self._client, 'operation_name': '',
             'follow_symlinks': self.parameters['follow_symlinks'],
             'page_size': self.parameters['page_size'],
-            'result_queue': result_queue
+            'result_queue': result_queue,
         }
 
         fgen_request_parameters = {}
@@ -1013,7 +1012,7 @@ class CommandArchitecture(object):
                               result_queue=result_queue)
 
         s3_transfer_handler = s3handler
-        if self.cmd in ['cp', 'rm', 'sync']:
+        if self.cmd in ['cp', 'rm', 'sync', 'mv']:
             s3_transfer_handler = S3TransferHandlerFactory(
                 self.parameters, self._runtime_config)(
                     self._client, result_queue)
@@ -1050,7 +1049,7 @@ class CommandArchitecture(object):
                             'file_generator': [file_generator],
                             'filters': [create_filter(self.parameters)],
                             'file_info_builder': [file_info_builder],
-                            's3_handler': [s3handler]}
+                            's3_handler': [s3_transfer_handler]}
 
         files = command_dict['setup']
         while self.instructions:
@@ -1107,6 +1106,10 @@ class CommandParameters(object):
             self.parameters['source_region'] = None
         if self.cmd in ['sync', 'mb', 'rb']:
             self.parameters['dir_op'] = True
+        if self.cmd == 'mv':
+            self.parameters['is_move'] = True
+        else:
+            self.parameters['is_move'] = False
 
     def add_paths(self, paths):
         """

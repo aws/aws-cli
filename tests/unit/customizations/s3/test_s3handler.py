@@ -60,6 +60,8 @@ from awscli.customizations.s3.utils import ProvideUploadContentTypeSubscriber
 from awscli.customizations.s3.utils import ProvideCopyContentTypeSubscriber
 from awscli.customizations.s3.utils import ProvideLastModifiedTimeSubscriber
 from awscli.customizations.s3.utils import DirectoryCreatorSubscriber
+from awscli.customizations.s3.utils import DeleteSourceFileSubscriber
+from awscli.customizations.s3.utils import DeleteSourceObjectSubscriber
 from awscli.customizations.s3.transferconfig import RuntimeConfig
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     S3HandlerBaseTest
@@ -1232,6 +1234,24 @@ class TestUploadRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertTrue(result.src.endswith(self.filename))
         self.assertEqual(result.dest, 's3://' + self.bucket + '/' + self.key)
 
+    def test_submit_move_adds_delete_source_subscriber(self):
+        fileinfo = FileInfo(
+            src=self.filename, dest=self.bucket+'/'+self.key)
+        self.cli_params['guess_mime_type'] = True  # Default settings
+        self.cli_params['is_move'] = True
+        self.transfer_request_submitter.submit(fileinfo)
+        ref_subscribers = [
+            ProvideSizeSubscriber,
+            ProvideUploadContentTypeSubscriber,
+            DeleteSourceFileSubscriber,
+            UploadResultSubscriber,
+        ]
+        upload_call_kwargs = self.transfer_manager.upload.call_args[1]
+        actual_subscribers = upload_call_kwargs['subscribers']
+        self.assertEqual(len(ref_subscribers), len(actual_subscribers))
+        for i, actual_subscriber in enumerate(actual_subscribers):
+            self.assertIsInstance(actual_subscriber, ref_subscribers[i])
+
 
 class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
     def setUp(self):
@@ -1378,6 +1398,25 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertEqual(result.transfer_type, 'download')
         self.assertTrue(result.dest.endswith(self.filename))
         self.assertEqual(result.src, 's3://' + self.bucket + '/' + self.key)
+
+    def test_submit_move_adds_delete_source_subscriber(self):
+        fileinfo = FileInfo(
+            dest=self.filename, src=self.bucket+'/'+self.key)
+        self.cli_params['guess_mime_type'] = True  # Default settings
+        self.cli_params['is_move'] = True
+        self.transfer_request_submitter.submit(fileinfo)
+        ref_subscribers = [
+            ProvideSizeSubscriber,
+            DirectoryCreatorSubscriber,
+            ProvideLastModifiedTimeSubscriber,
+            DeleteSourceObjectSubscriber,
+            DownloadResultSubscriber,
+        ]
+        download_call_kwargs = self.transfer_manager.download.call_args[1]
+        actual_subscribers = download_call_kwargs['subscribers']
+        self.assertEqual(len(ref_subscribers), len(actual_subscribers))
+        for i, actual_subscriber in enumerate(actual_subscribers):
+            self.assertIsInstance(actual_subscriber, ref_subscribers[i])
 
 
 class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
@@ -1573,6 +1612,25 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         source = 's3://' + self.source_bucket + '/' + self.source_key
         self.assertEqual(result.src, source)
         self.assertEqual(result.dest, 's3://' + self.bucket + '/' + self.key)
+
+    def test_submit_move_adds_delete_source_subscriber(self):
+        fileinfo = FileInfo(
+            dest=self.source_bucket + '/' + self.source_key,
+            src=self.bucket + '/' + self.key)
+        self.cli_params['guess_mime_type'] = True  # Default settings
+        self.cli_params['is_move'] = True
+        self.transfer_request_submitter.submit(fileinfo)
+        ref_subscribers = [
+            ProvideSizeSubscriber,
+            ProvideCopyContentTypeSubscriber,
+            DeleteSourceObjectSubscriber,
+            CopyResultSubscriber,
+        ]
+        copy_call_kwargs = self.transfer_manager.copy.call_args[1]
+        actual_subscribers = copy_call_kwargs['subscribers']
+        self.assertEqual(len(ref_subscribers), len(actual_subscribers))
+        for i, actual_subscriber in enumerate(actual_subscribers):
+            self.assertIsInstance(actual_subscriber, ref_subscribers[i])
 
 
 class TestUploadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):

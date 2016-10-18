@@ -41,7 +41,8 @@ from awscli.customizations.s3.utils import (
     StdoutBytesWriter, ProvideSizeSubscriber, OnDoneFilteredSubscriber,
     ProvideUploadContentTypeSubscriber, ProvideCopyContentTypeSubscriber,
     ProvideLastModifiedTimeSubscriber, DirectoryCreatorSubscriber,
-    NonSeekableStream, CreateDirectoryError)
+    DeleteSourceObjectSubscriber, DeleteSourceFileSubscriber,
+    DeleteCopySourceObjectSubscriber, NonSeekableStream, CreateDirectoryError)
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.results import WarningResult
 from tests.unit.customizations.s3 import FakeTransferFuture
@@ -747,6 +748,84 @@ class TestDirectoryCreatorSubscriber(BaseTestWithFileCreator):
                     'on_queued should not have raised an exception related '
                     'to directory creation especially if one already existed '
                     'but got %s' % e)
+
+
+class TestDeleteSourceObjectSubscriber(unittest.TestCase):
+    def setUp(self):
+        self.client = mock.Mock()
+        self.bucket = 'mybucket'
+        self.key = 'mykey'
+        call_args = FakeTransferFutureCallArgs(
+            bucket=self.bucket, key=self.key)
+        meta = FakeTransferFutureMeta(call_args=call_args)
+        self.future = mock.Mock()
+        self.future.meta = meta
+
+    def test_deletes_object(self):
+        DeleteSourceObjectSubscriber(self.client).on_done(self.future)
+        self.client.delete_object.assert_called_once_with(
+            Bucket=self.bucket, Key=self.key)
+        self.future.set_exception.assert_not_called()
+
+    def test_sets_exception_on_error(self):
+        exception = ValueError()
+        self.client.delete_object.side_effect = exception
+        DeleteSourceObjectSubscriber(self.client).on_done(self.future)
+        self.client.delete_object.assert_called_once_with(
+            Bucket=self.bucket, Key=self.key)
+        self.future.set_exception.assert_called_once_with(exception)
+
+
+class TestDeleteCopySourceObjectSubscriber(unittest.TestCase):
+    def setUp(self):
+        self.client = mock.Mock()
+        self.bucket = 'mybucket'
+        self.key = 'mykey'
+        copy_source = {'Bucket': self.bucket, 'Key': self.key}
+        call_args = FakeTransferFutureCallArgs(copy_source=copy_source)
+        meta = FakeTransferFutureMeta(call_args=call_args)
+        self.future = mock.Mock()
+        self.future.meta = meta
+
+    def test_deletes_object(self):
+        DeleteCopySourceObjectSubscriber(self.client).on_done(self.future)
+        self.client.delete_object.assert_called_once_with(
+            Bucket=self.bucket, Key=self.key)
+        self.future.set_exception.assert_not_called()
+
+    def test_sets_exception_on_error(self):
+        exception = ValueError()
+        self.client.delete_object.side_effect = exception
+        DeleteCopySourceObjectSubscriber(self.client).on_done(self.future)
+        self.client.delete_object.assert_called_once_with(
+            Bucket=self.bucket, Key=self.key)
+        self.future.set_exception.assert_called_once_with(exception)
+
+
+class TestDeleteSourceFileSubscriber(unittest.TestCase):
+    def setUp(self):
+        self.tempdir = tempfile.mkdtemp()
+        self.filename = os.path.join(self.tempdir, 'myfile')
+        call_args = FakeTransferFutureCallArgs(fileobj=self.filename)
+        meta = FakeTransferFutureMeta(call_args=call_args)
+        self.future = mock.Mock()
+        self.future.meta = meta
+
+    def tearDown(self):
+        shutil.rmtree(self.tempdir)
+
+    def test_deletes_file(self):
+        with open(self.filename, 'w') as f:
+            f.write('data')
+        DeleteSourceFileSubscriber().on_done(self.future)
+        self.assertFalse(os.path.exists(self.filename))
+        self.future.set_exception.assert_not_called()
+
+    def test_sets_exception_on_error(self):
+        DeleteSourceFileSubscriber().on_done(self.future)
+        self.assertFalse(os.path.exists(self.filename))
+        call_args = self.future.set_exception.call_args[0]
+        self.assertIsInstance(call_args[0], EnvironmentError)
 
 
 class TestNonSeekableStream(unittest.TestCase):

@@ -17,10 +17,14 @@ def benchmark_mv(args):
             clean(destination, args.recursive)
         clean(backup_path, args.recursive)
 
+    def upkeep():
+        clean(args.source, args.recursive)
+        copy(backup_path, args.source, args.recursive)
+
     benchmark_command(
         command, args.benchmark_script,  args.summarize_script,
         args.result_dir, args.num_iterations, args.dry_run,
-        upkeep=lambda: copy(backup_path, args.source, args.recursive),
+        upkeep=upkeep,
         cleanup=cleanup
     )
 

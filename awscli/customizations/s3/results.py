@@ -73,7 +73,7 @@ FinalTotalSubmissionsResult = namedtuple(
 class BaseResultSubscriber(OnDoneFilteredSubscriber):
     TRANSFER_TYPE = None
 
-    def __init__(self, result_queue):
+    def __init__(self, result_queue, transfer_type=None):
         """Subscriber to send result notifications during transfer process
 
         :param result_queue: The queue to place results to be processed later
@@ -81,6 +81,9 @@ class BaseResultSubscriber(OnDoneFilteredSubscriber):
         """
         self._result_queue = result_queue
         self._result_kwargs_cache = {}
+        self._transfer_type = transfer_type
+        if transfer_type is None:
+            self._transfer_type = self.TRANSFER_TYPE
 
     def on_queued(self, future, **kwargs):
         self._add_to_result_kwargs_cache(future)
@@ -111,7 +114,7 @@ class BaseResultSubscriber(OnDoneFilteredSubscriber):
     def _add_to_result_kwargs_cache(self, future):
         src, dest = self._get_src_dest(future)
         result_kwargs = {
-            'transfer_type': self.TRANSFER_TYPE,
+            'transfer_type': self._transfer_type,
             'src': src,
             'dest': dest,
             'total_transfer_size': future.meta.size

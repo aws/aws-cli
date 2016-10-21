@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.8
+======
+
+* feature:``waf``: Update waf command to latest version
+* feature:s3: Port mv to s3transfer.
+* feature:``budgets``: Update budgets command to latest version
+
+
 1.11.7
 ======
 

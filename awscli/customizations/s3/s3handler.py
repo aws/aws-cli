@@ -47,6 +47,9 @@ from awscli.customizations.s3.utils import ProvideUploadContentTypeSubscriber
 from awscli.customizations.s3.utils import ProvideCopyContentTypeSubscriber
 from awscli.customizations.s3.utils import ProvideLastModifiedTimeSubscriber
 from awscli.customizations.s3.utils import DirectoryCreatorSubscriber
+from awscli.customizations.s3.utils import DeleteSourceFileSubscriber
+from awscli.customizations.s3.utils import DeleteSourceObjectSubscriber
+from awscli.customizations.s3.utils import DeleteCopySourceObjectSubscriber
 from awscli.compat import queue
 from awscli.compat import binary_stdin
 
@@ -591,8 +594,11 @@ class BaseTransferRequestSubmitter(object):
         # subscriber to ensure it is not missing any information that
         # may have been added in a different subscriber such as size.
         if self.RESULT_SUBSCRIBER_CLASS:
-            subscribers.append(
-                self.RESULT_SUBSCRIBER_CLASS(self._result_queue))
+            result_kwargs = {'result_queue': self._result_queue}
+            if self._cli_params.get('is_move', False):
+                result_kwargs['transfer_type'] = 'move'
+            subscribers.append(self.RESULT_SUBSCRIBER_CLASS(**result_kwargs))
+
         if not self._cli_params.get('dryrun'):
             return self._submit_transfer_request(
                 fileinfo, extra_args, subscribers)
@@ -600,9 +606,12 @@ class BaseTransferRequestSubmitter(object):
             self._submit_dryrun(fileinfo)
 
     def _submit_dryrun(self, fileinfo):
+        transfer_type = fileinfo.operation_name
+        if self._cli_params.get('is_move', False):
+            transfer_type = 'move'
         src, dest = self._format_src_dest(fileinfo)
         self._result_queue.put(DryRunResult(
-            transfer_type=fileinfo.operation_name, src=src, dest=dest))
+            transfer_type=transfer_type, src=src, dest=dest))
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
         pass
@@ -675,6 +684,8 @@ class UploadRequestSubmitter(BaseTransferRequestSubmitter):
         subscribers.append(ProvideSizeSubscriber(fileinfo.size))
         if self._should_inject_content_type():
             subscribers.append(ProvideUploadContentTypeSubscriber())
+        if self._cli_params.get('is_move', False):
+            subscribers.append(DeleteSourceFileSubscriber())
 
     def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
         bucket, key = find_bucket_key(fileinfo.dest)
@@ -718,6 +729,9 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
         subscribers.append(DirectoryCreatorSubscriber())
         subscribers.append(ProvideLastModifiedTimeSubscriber(
             fileinfo.last_update, self._result_queue))
+        if self._cli_params.get('is_move', False):
+            subscribers.append(DeleteSourceObjectSubscriber(
+                fileinfo.source_client))
 
     def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
         bucket, key = find_bucket_key(fileinfo.src)
@@ -750,6 +764,9 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
         subscribers.append(ProvideSizeSubscriber(fileinfo.size))
         if self._should_inject_content_type():
             subscribers.append(ProvideCopyContentTypeSubscriber())
+        if self._cli_params.get('is_move', False):
+            subscribers.append(DeleteCopySourceObjectSubscriber(
+                fileinfo.source_client))
 
     def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
         bucket, key = find_bucket_key(fileinfo.dest)

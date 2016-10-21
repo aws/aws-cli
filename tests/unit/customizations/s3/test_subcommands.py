@@ -469,10 +469,12 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                   'paths_type': 's3s3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
-                  'is_stream': False, 'source_region': None}
+                  'is_stream': False, 'source_region': None,
+                  'is_move': True}
         self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
                                   "LastModified": "2014-01-09T20:45:49.000Z"}]
-        cmd_arc = CommandArchitecture(self.session, 'mv', params)
+        config = RuntimeConfig().build_config()
+        cmd_arc = CommandArchitecture(self.session, 'mv', params, config)
         cmd_arc.set_clients()
         cmd_arc.create_instructions()
         self.patch_make_request()
@@ -684,6 +686,16 @@ class CommandParametersTest(unittest.TestCase):
         with self.assertRaisesRegexp(ValueError,
                                      'only supported for copy operations'):
             cmd_param.add_paths(paths)
+
+    def test_adds_is_move(self):
+        params = {}
+        CommandParameters('mv', params, '')
+        self.assertTrue(params.get('is_move'))
+
+        # is_move should only be true for mv
+        params = {}
+        CommandParameters('cp', params, '')
+        self.assertFalse(params.get('is_move'))
 
 
 class HelpDocTest(BaseAWSHelpOutputTest):

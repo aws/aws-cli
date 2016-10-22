@@ -36,7 +36,7 @@ class TestCreateSubscription(BaseAWSCommandParamsTest):
     def test_policy_from_paramfile(self, create_client_mock):
         client = Mock()
         # S3 mock calls
-        client.get_user.return_value = {'User': {'Arn': ':::::'}}
+        client.get_caller_identity.return_value = {'Account': ''}
         client.head_bucket.side_effect = ClientError(
             {'Error': {'Code': 404, 'Message': ''}}, 'HeadBucket')
         # CloudTrail mock call
@@ -65,9 +65,9 @@ class TestCloudTrailCommand(unittest.TestCase):
         self.subscribe = CloudTrailSubscribe(self.session)
         self.subscribe.region_name = 'us-east-1'
 
-        self.subscribe.iam = Mock()
-        self.subscribe.iam.get_user = Mock(
-            return_value={'User': {'Arn': '::::123:456'}})
+        self.subscribe.sts = Mock()
+        self.subscribe.sts.get_caller_identity = Mock(
+            return_value={'Account': '123456'})
 
         self.subscribe.s3 = Mock()
         self.subscribe.s3.meta.region_name = 'us-east-1'
@@ -94,7 +94,7 @@ class TestCloudTrailCommand(unittest.TestCase):
         create_client_calls = session.create_client.call_args_list
         self.assertEqual(
             create_client_calls, [
-                call('iam', verify=None, region_name=None),
+                call('sts', verify=None, region_name=None),
                 call('s3', verify=None, region_name=None),
                 call('sns', verify=None, region_name=None),
                 call('cloudtrail', verify=None, region_name=None),
@@ -111,7 +111,7 @@ class TestCloudTrailCommand(unittest.TestCase):
         create_client_calls = session.create_client.call_args_list
         self.assertEqual(
             create_client_calls, [
-                call('iam', verify=None, region_name=None),
+                call('sts', verify=None, region_name=None),
                 call('s3', verify=None, region_name=None),
                 call('sns', verify=None, region_name=None),
                 # Here we should inject the endpoint_url only for cloudtrail.
@@ -121,14 +121,14 @@ class TestCloudTrailCommand(unittest.TestCase):
         )
 
     def test_s3_create(self):
-        iam = self.subscribe.iam
+        sts = self.subscribe.sts
         s3 = self.subscribe.s3
         s3.head_bucket.side_effect = ClientError(
             {'Error': {'Code': '404', 'Message': ''}}, 'HeadBucket')
 
         self.subscribe.setup_new_bucket('test', 'logs')
 
-        iam.get_user.assert_called_with()
+        sts.get_caller_identity.assert_called_with()
 
         s3.get_object.assert_called_with(
             Bucket='awscloudtrail-policy-us-east-1',

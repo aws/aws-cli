@@ -32,18 +32,16 @@ from awscli.compat import queue
 from awscli.compat import StringIO
 from awscli.testutils import FileCreator
 from awscli.customizations.s3.utils import (
-    find_bucket_key, find_chunksize, ReadFileChunk,
+    find_bucket_key,
     guess_content_type, relative_path,
     StablePriorityQueue, BucketLister, get_file_stat, AppendFilter,
     create_warning, human_readable_size, human_readable_to_bytes,
-    MAX_SINGLE_UPLOAD_SIZE, MIN_UPLOAD_CHUNKSIZE, MAX_UPLOAD_SIZE,
     set_file_utime, SetFileUtimeError, RequestParamsMapper, uni_print,
     StdoutBytesWriter, ProvideSizeSubscriber, OnDoneFilteredSubscriber,
     ProvideUploadContentTypeSubscriber, ProvideCopyContentTypeSubscriber,
     ProvideLastModifiedTimeSubscriber, DirectoryCreatorSubscriber,
     DeleteSourceObjectSubscriber, DeleteSourceFileSubscriber,
     DeleteCopySourceObjectSubscriber, NonSeekableStream, CreateDirectoryError)
-from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.results import WarningResult
 from tests.unit.customizations.s3 import FakeTransferFuture
 from tests.unit.customizations.s3 import FakeTransferFutureMeta
@@ -127,118 +125,6 @@ class TestCreateWarning(unittest.TestCase):
                          'warning: Skipping file /foo/. There was an error')
         self.assertFalse(warning_message.error)
         self.assertTrue(warning_message.warning)
-
-
-class FindChunksizeTest(unittest.TestCase):
-    """
-    This test ensures that the ``find_chunksize`` function works
-    as expected.
-    """
-    def test_valid_chunk(self):
-        """
-        This test ensures if the ``chunksize`` is appropriate to begin with,
-        it does not change.
-        """
-        chunksize = 7 * (1024 ** 2)
-        size = 8 * (1024 ** 2)
-        self.assertEqual(find_chunksize(size, chunksize), chunksize)
-
-    def test_small_chunk(self):
-        """
-        This test ensures that if the ``chunksize`` is below the minimum
-        threshold, it is automatically raised to the minimum.
-        """
-        chunksize = MIN_UPLOAD_CHUNKSIZE - 1
-        size = 3 * MIN_UPLOAD_CHUNKSIZE
-        self.assertEqual(find_chunksize(size, chunksize), MIN_UPLOAD_CHUNKSIZE)
-
-    def test_large_chunk(self):
-        """
-        This test ensures if the ``chunksize`` adapts to an appropriate
-        size because the original ``chunksize`` is too small.
-        """
-        chunksize = 7 * (1024 ** 2)
-        size = 5 * (1024 ** 4)
-        # If we try to upload a 5TB file, we'll need to use 896MB part
-        # sizes.
-        self.assertEqual(find_chunksize(size, chunksize), 896 * (1024 ** 2))
-
-    def test_super_chunk(self):
-        """
-        This tests to ensure that the ``chunksize can never be larger than
-        the ``MAX_SINGLE_UPLOAD_SIZE``
-        """
-        chunksize = MAX_SINGLE_UPLOAD_SIZE + 1
-        size = MAX_SINGLE_UPLOAD_SIZE * 2
-        self.assertEqual(find_chunksize(size, chunksize),
-                         MAX_SINGLE_UPLOAD_SIZE)
-
-    def test_file_too_large(self):
-        size = MAX_UPLOAD_SIZE + 1
-        chunksize = 1
-        with self.assertRaises(ValueError):
-            find_chunksize(size, chunksize)
-
-
-class TestReadFileChunk(unittest.TestCase):
-    def setUp(self):
-        self.tempdir = tempfile.mkdtemp()
-
-    def tearDown(self):
-        shutil.rmtree(self.tempdir)
-
-    def test_read_entire_chunk(self):
-        filename = os.path.join(self.tempdir, 'foo')
-        f = open(filename, 'wb')
-        f.write(b'onetwothreefourfivesixseveneightnineten')
-        f.flush()
-        chunk = ReadFileChunk(filename, start_byte=0, size=3)
-        self.assertEqual(chunk.read(), b'one')
-        self.assertEqual(chunk.read(), b'')
-
-    def test_read_with_amount_size(self):
-        filename = os.path.join(self.tempdir, 'foo')
-        f = open(filename, 'wb')
-        f.write(b'onetwothreefourfivesixseveneightnineten')
-        f.flush()
-        chunk = ReadFileChunk(filename, start_byte=11, size=4)
-        self.assertEqual(chunk.read(1), b'f')
-        self.assertEqual(chunk.read(1), b'o')
-        self.assertEqual(chunk.read(1), b'u')
-        self.assertEqual(chunk.read(1), b'r')
-        self.assertEqual(chunk.read(1), b'')
-
-    def test_reset_stream_emulation(self):
-        filename = os.path.join(self.tempdir, 'foo')
-        f = open(filename, 'wb')
-        f.write(b'onetwothreefourfivesixseveneightnineten')
-        f.flush()
-        chunk = ReadFileChunk(filename, start_byte=11, size=4)
-        self.assertEqual(chunk.read(), b'four')
-        chunk.seek(0)
-        self.assertEqual(chunk.read(), b'four')
-
-    def test_read_past_end_of_file(self):
-        filename = os.path.join(self.tempdir, 'foo')
-        f = open(filename, 'wb')
-        f.write(b'onetwothreefourfivesixseveneightnineten')
-        f.flush()
-        chunk = ReadFileChunk(filename, start_byte=36, size=100000)
-        self.assertEqual(chunk.read(), b'ten')
-        self.assertEqual(chunk.read(), b'')
-        self.assertEqual(len(chunk), 3)
-
-    def test_tell_and_seek(self):
-        filename = os.path.join(self.tempdir, 'foo')
-        f = open(filename, 'wb')
-        f.write(b'onetwothreefourfivesixseveneightnineten')
-        f.flush()
-        chunk = ReadFileChunk(filename, start_byte=36, size=100000)
-        self.assertEqual(chunk.tell(), 0)
-        self.assertEqual(chunk.read(), b'ten')
-        self.assertEqual(chunk.tell(), 3)
-        chunk.seek(0)
-        self.assertEqual(chunk.tell(), 0)
 
 
 class TestGuessContentType(unittest.TestCase):

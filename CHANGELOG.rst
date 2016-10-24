@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.9
+======
+
+* feature:``ecs``: Update ecs command to latest version
+* feature:``sms``: Update sms command to latest version
+
+
 1.11.8
 ======
 

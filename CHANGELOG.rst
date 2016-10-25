@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.10
+=======
+
+* feature:``autoscaling``: Update autoscaling command to latest version
+* feature:``elbv2``: Update elbv2 command to latest version
+
+
 1.11.9
 ======
 

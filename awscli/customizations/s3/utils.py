@@ -14,18 +14,14 @@ import argparse
 import logging
 from datetime import datetime
 import mimetypes
-import hashlib
-import math
 import errno
 import os
 import sys
 import time
 from collections import namedtuple, deque
-from functools import partial
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal, tzutc
-from botocore.compat import unquote_str
 from s3transfer.subscribers import BaseSubscriber
 
 from awscli.compat import bytes_print
@@ -33,13 +29,7 @@ from awscli.compat import queue
 
 LOGGER = logging.getLogger(__name__)
 HUMANIZE_SUFFIXES = ('KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB')
-MAX_PARTS = 10000
 EPOCH_TIME = datetime(1970, 1, 1, tzinfo=tzutc())
-# The maximum file size you can upload via S3 per request.
-# See: http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html
-# and: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
-MAX_SINGLE_UPLOAD_SIZE = 5 * (1024 ** 3)
-MIN_UPLOAD_CHUNKSIZE = 5 * (1024 ** 2)
 # Maximum object size allowed in S3.
 # See: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
 MAX_UPLOAD_SIZE = 5 * (1024 ** 4)
@@ -136,13 +126,6 @@ class AppendFilter(argparse.Action):
         else:
             filter_list = [[option_string, values[0]]]
         setattr(namespace, self.dest, filter_list)
-
-
-class MD5Error(Exception):
-    """
-    Exception for md5's that do not match.
-    """
-    pass
 
 
 class CreateDirectoryError(Exception):
@@ -286,87 +269,6 @@ def create_warning(path, error_message, skip_file=True):
     return warning_message
 
 
-def find_chunksize(size, current_chunksize):
-    """
-    The purpose of this function is determine a chunksize so that the number of
-    parts in a multipart upload is not greater than the ``MAX_PARTS``, and that
-    the chunksize is not less than the minimum chunksize.
-
-    :param size: The size of the file to upload
-    :param current_chunksize: The currently configured chunksize
-    :return: If the given chunksize is valid, it is returned. Otherwise a valid
-        chunksize is calculated and returned.
-    :raises: ValueError: if the file size exceeds the max size of 5TB
-    """
-    if size > MAX_UPLOAD_SIZE:
-        raise ValueError("File size exceeds maximum upload size.")
-    size = adjust_chunksize_for_max_parts(size, current_chunksize)
-    return adjust_chunksize_to_upload_limits(size)
-
-
-def adjust_chunksize_to_upload_limits(current_chunksize):
-    """
-    Given a chunksize, verifies that the chunksize is within max and min
-    chunksize for uploads. If it is not, a valid chunksize will be returned.
-
-    :param current_chunksize: The current configured chunksize.
-    :return: If the given chunksize is valid, it is returned. Otherwise a valid
-        chunksize, which is a close to the given as possible, is returned.
-    """
-    chunksize = current_chunksize
-    chunksize_human = human_readable_size(chunksize)
-    if chunksize > MAX_SINGLE_UPLOAD_SIZE:
-        LOGGER.debug(
-            "Chunksize greater than maximum chunksize. Setting to %s from %s."
-            % (human_readable_size(MAX_SINGLE_UPLOAD_SIZE), chunksize_human))
-        return MAX_SINGLE_UPLOAD_SIZE
-    elif chunksize < MIN_UPLOAD_CHUNKSIZE:
-        LOGGER.debug(
-            "Chunksize less than minimum chunksize. Setting to %s from %s." %
-            (human_readable_size(MIN_UPLOAD_CHUNKSIZE), chunksize_human))
-        return MIN_UPLOAD_CHUNKSIZE
-    else:
-        return chunksize
-
-
-def adjust_chunksize_for_max_parts(size, current_chunksize):
-    """
-    Given a chunksize and file size, verifies that the upload will not exceed
-    the maximum parts for a multipart upload. If it will, a valid chunksize
-    is calculated and returned.
-
-    :param size: The size of the file to upload
-    :param current_chunksize: The currently configured chunksize
-    :return: If the given chunksize is valid, it is returned. Otherwise a valid
-        chunksize is calculated and returned.
-    """
-    chunksize = current_chunksize
-    num_parts = int(math.ceil(size / float(chunksize)))
-
-    while num_parts > MAX_PARTS:
-        chunksize *= 2
-        num_parts = int(math.ceil(size / float(chunksize)))
-
-    if chunksize != current_chunksize:
-        chunksize_human = human_readable_size(chunksize)
-        LOGGER.debug(
-            "Chunksize would result in the number of parts exceeding the "
-            "maximum. Setting to %s from %s." %
-            (chunksize_human, human_readable_size(current_chunksize)))
-
-    return chunksize
-
-
-class MultiCounter(object):
-    """
-    This class is used as a way to keep track of how many multipart
-    operations are in progress.  It also is used to track how many
-    part operations are occuring.
-    """
-    def __init__(self):
-        self.count = 0
-
-
 def uni_print(statement, out_file=None):
     """
     This function is used to properly write unicode to a file, usually
@@ -489,66 +391,6 @@ class SetFileUtimeError(Exception):
     pass
 
 
-class ReadFileChunk(object):
-    def __init__(self, filename, start_byte, size):
-        self._filename = filename
-        self._start_byte = start_byte
-        self._fileobj = open(self._filename, 'rb')
-        self._size = self._calculate_file_size(self._fileobj, requested_size=size,
-                                               start_byte=start_byte)
-        self._fileobj.seek(self._start_byte)
-        self._amount_read = 0
-
-    def _calculate_file_size(self, fileobj, requested_size, start_byte):
-        actual_file_size = os.fstat(fileobj.fileno()).st_size
-        max_chunk_size = actual_file_size - start_byte
-        return min(max_chunk_size, requested_size)
-
-    def read(self, amount=None):
-        if amount is None:
-            remaining = self._size - self._amount_read
-            data = self._fileobj.read(remaining)
-            self._amount_read += remaining
-            return data
-        else:
-            actual_amount = min(self._size - self._amount_read, amount)
-            data = self._fileobj.read(actual_amount)
-            self._amount_read += actual_amount
-            return data
-
-    def seek(self, where):
-        self._fileobj.seek(self._start_byte + where)
-        self._amount_read = where
-
-    def close(self):
-        self._fileobj.close()
-
-    def tell(self):
-        return self._amount_read
-
-    def __len__(self):
-        # __len__ is defined because requests will try to determine the length
-        # of the stream to set a content length.  In the normal case
-        # of the file it will just stat the file, but we need to change that
-        # behavior.  By providing a __len__, requests will use that instead
-        # of stat'ing the file.
-        return self._size
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *args, **kwargs):
-        self._fileobj.close()
-
-    def __iter__(self):
-        # This is a workaround for http://bugs.python.org/issue17575
-        # Basically httplib will try to iterate over the contents, even
-        # if its a file like object.  This wasn't noticed because we've
-        # already exhausted the stream so iterating over the file immediately
-        # steps, which is what we're simulating here.
-        return iter([])
-
-
 def _date_parser(date_string):
     return parse(date_string).astimezone(tzlocal())
 
@@ -589,15 +431,6 @@ class PrintTask(namedtuple('PrintTask',
                                              warning)
 
 WarningResult = PrintTask
-
-IORequest = namedtuple('IORequest',
-                       ['filename', 'offset', 'data', 'is_stream'])
-# Used to signal that IO for the filename is finished, and that
-# any associated resources may be cleaned up.
-_IOCloseRequest = namedtuple('IOCloseRequest', ['filename', 'desired_mtime'])
-class IOCloseRequest(_IOCloseRequest):
-    def __new__(cls, filename, desired_mtime=None):
-        return super(IOCloseRequest, cls).__new__(cls, filename, desired_mtime)
 
 
 class RequestParamsMapper(object):

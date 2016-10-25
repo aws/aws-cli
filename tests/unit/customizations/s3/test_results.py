@@ -17,7 +17,7 @@ from awscli.testutils import unittest
 from awscli.testutils import mock
 from awscli.compat import queue
 from awscli.compat import StringIO
-from awscli.customizations.s3.executor import ShutdownThreadRequest
+from awscli.customizations.s3.results import ShutdownThreadRequest
 from awscli.customizations.s3.results import QueuedResult
 from awscli.customizations.s3.results import ProgressResult
 from awscli.customizations.s3.results import SuccessResult

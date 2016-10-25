@@ -291,3 +291,18 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         }
         self.assert_params_for_cmd(args_list, result)
 
+    def test_ipv6_address_count_and_associate_public_ip_address(self):
+        command = self.prefix + ' --associate-public-ip-address'
+        command += ' --ipv6-address-count 5 --image-id ami-foobar --count 1'
+        expected = {
+            'NetworkInterfaces': [{
+                'DeviceIndex': 0,
+                'AssociatePublicIpAddress': True,
+                'Ipv6AddressCount': 5
+            }],
+            'ImageId': 'ami-foobar',
+            'MaxCount': 1,
+            'MinCount': 1
+        }
+        self.assert_params_for_cmd(command, expected)
+

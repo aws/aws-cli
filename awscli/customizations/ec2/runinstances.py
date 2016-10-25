@@ -111,6 +111,9 @@ def _fix_args(params, **kwargs):
                            'Primary': True}
                 interface['PrivateIpAddresses'] = [ip_addr]
                 del params['PrivateIpAddress']
+            if 'Ipv6AddressCount' in params:
+                interface['Ipv6AddressCount'] = params['Ipv6AddressCount']
+                del params['Ipv6AddressCount']
 
 
 EVENTS = [

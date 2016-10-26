@@ -28,7 +28,7 @@ Output::
 
 The following ``sync`` command syncs files in a local directory to objects under a specified prefix and bucket by
 downloading s3 objects.  A s3 object will require downloading if the size of the s3 object differs from the size of the
-local file, the last modified time of the s3 object is older than the last modified time of the local file, or the s3
+local file, the last modified time of the s3 object is newer than the last modified time of the local file, or the s3
 object does not exist in the local directory.  Take note that when objects are downloaded from s3, the last modified
 time of the local file is changed to the last modified time of the s3 object.  In this example, the user syncs the
 current local directory to the bucket ``mybucket``.  The bucket ``mybucket`` contains the objects ``test.txt`` and

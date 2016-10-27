@@ -114,6 +114,9 @@ def _fix_args(params, **kwargs):
             if 'Ipv6AddressCount' in params:
                 interface['Ipv6AddressCount'] = params['Ipv6AddressCount']
                 del params['Ipv6AddressCount']
+            if 'Ipv6Addresses' in params:
+                interface['Ipv6Addresses'] = params['Ipv6Addresses']
+                del params['Ipv6Addresses']
 
 
 EVENTS = [

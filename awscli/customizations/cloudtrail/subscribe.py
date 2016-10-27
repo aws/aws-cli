@@ -80,7 +80,7 @@ class CloudTrailSubscribe(BasicCommand):
 
         # Initialize services
         LOG.debug('Initializing S3, SNS and CloudTrail...')
-        self.iam = self._session.create_client('iam', **client_args)
+        self.sts = self._session.create_client('sts', **client_args)
         self.s3 = self._session.create_client('s3', **client_args)
         self.sns = self._session.create_client('sns', **client_args)
         self.region_name = self.s3.meta.region_name
@@ -187,7 +187,7 @@ class CloudTrailSubscribe(BasicCommand):
         sys.stdout.write(
             'Setting up new S3 bucket {bucket}...\n'.format(bucket=bucket))
 
-        account_id = get_account_id(self.iam)
+        account_id = get_account_id(self.sts)
 
         # Clean up the prefix - it requires a trailing slash if set
         if prefix and not prefix.endswith('/'):
@@ -239,7 +239,7 @@ class CloudTrailSubscribe(BasicCommand):
         sys.stdout.write(
             'Setting up new SNS topic {topic}...\n'.format(topic=topic))
 
-        account_id = get_account_id(self.iam)
+        account_id = get_account_id(self.sts)
 
         # Make sure topic doesn't already exist
         # Warn but do not fail if ListTopics permissions

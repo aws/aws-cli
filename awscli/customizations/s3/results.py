@@ -21,7 +21,6 @@ from s3transfer.exceptions import FatalError
 from s3transfer.subscribers import BaseSubscriber
 
 from awscli.compat import queue
-from awscli.customizations.s3.executor import ShutdownThreadRequest
 from awscli.customizations.s3.utils import relative_path
 from awscli.customizations.s3.utils import human_readable_size
 from awscli.customizations.s3.utils import uni_print
@@ -68,6 +67,10 @@ CommandResult = namedtuple(
 
 FinalTotalSubmissionsResult = namedtuple(
     'FinalTotalSubmissionsResult', ['total_submissions'])
+
+
+class ShutdownThreadRequest(object):
+    pass
 
 
 class BaseResultSubscriber(OnDoneFilteredSubscriber):

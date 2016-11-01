@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.11
+=======
+
+* bugfix:``cloudtrail``: Use STS instead of IAM in CreateSubscription
+* feature:``cloudformation``: Update cloudformation command to latest version
+
+
 1.11.10
 =======
 

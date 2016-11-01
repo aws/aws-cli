@@ -12,10 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 
-import awscli.customizations.s3.utils as utils
 from awscli.compat import six
-from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, \
-    capture_output
 
 
 class FakeTransferFuture(object):
@@ -41,60 +38,6 @@ class FakeTransferFutureCallArgs(object):
     def __init__(self, **kwargs):
         for kwarg, val in kwargs.items():
             setattr(self, kwarg, val)
-
-
-class S3HandlerBaseTest(BaseAWSCommandParamsTest):
-    def setUp(self):
-        super(S3HandlerBaseTest, self).setUp()
-        self.session = self.driver.session
-        self.driver.session.register('before-call', self.before_call)
-        self.driver.session.register('before-parameter-build',
-                                     self.before_parameter_build)
-        self.client = self.session.create_client('s3', 'us-east-1')
-        self.source_client = self.session.create_client('s3', 'us-east-1')
-        self.file_creator = FileCreator()
-        self._saved_min_chunksize = utils.MIN_UPLOAD_CHUNKSIZE
-        utils.MIN_UPLOAD_CHUNKSIZE = 1
-
-    def tearDown(self):
-        super(S3HandlerBaseTest, self).tearDown()
-        clean_loc_files(self.file_creator)
-        utils.MIN_UPLOAD_CHUNKSIZE = self._saved_min_chunksize
-
-    def run_s3_handler(self, s3_handler, tasks):
-        self.patch_make_request()
-        with capture_output() as captured:
-            try:
-                rc = s3_handler.call(tasks)
-            except SystemExit as e:
-                # We need to catch SystemExit so that we
-                # can get a proper rc and still present the
-                # stdout/stderr to the test runner so we can
-                # figure out what went wrong.
-                rc = e.code
-        stderr = captured.stderr.getvalue()
-        stdout = captured.stdout.getvalue()
-        return stdout, stderr, rc
-
-    def assert_operations_for_s3_handler(self, s3_handler, tasks,
-                                         ref_operations,
-                                         verify_no_failed_tasked=True):
-        """Assert API operations based on tasks given to s3 handler
-
-        :param s3_handler: A S3Handler object
-        :param tasks: An iterable of tasks
-        :param ref_operations: A list of tuples where the first element is
-            the name of the API operation and the second element is the
-            parameters passed to it (as it would be passed to botocore).
-        """
-        stdout, stderr, rc = self.run_s3_handler(s3_handler, tasks)
-        if verify_no_failed_tasked:
-            self.assertEqual(rc.num_tasks_failed, 0)
-        self.assertEqual(len(self.operations_called), len(ref_operations))
-        for i, ref_operation in enumerate(ref_operations):
-            self.assertEqual(self.operations_called[i][0].name,
-                             ref_operation[0])
-            self.assertEqual(self.operations_called[i][1], ref_operation[1])
 
 
 def make_loc_files(file_creator, size=None):

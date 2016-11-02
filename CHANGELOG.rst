@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.12
+=======
+
+* feature:``ses``: Update ses command to latest version
+
+
 1.11.11
 =======
 

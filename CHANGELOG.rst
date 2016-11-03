@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.13
+=======
+
+* feature:``directconnect``: Update directconnect command to latest version
+
+
 1.11.12
 =======
 

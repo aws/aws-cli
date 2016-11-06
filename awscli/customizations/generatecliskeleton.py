@@ -13,8 +13,11 @@
 import json
 import sys
 
+from botocore import xform_name
+from botocore.stub import Stubber
 from botocore.utils import ArgumentGenerator
 
+from awscli.clidriver import CLIOperationCaller
 from awscli.customizations.arguments import OverrideRequiredArgsArgument
 
 
@@ -36,18 +39,20 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
 
     The argument, if present in the command line, will prevent the intended
     command from taking place. Instead, it will generate a JSON skeleton and
-    print it to standard output. This JSON skeleton then can be filled out
-    and can be used as input to ``--input-cli-json`` in order to run the
-    command with the filled out JSON skeleton.
+    print it to standard output.
     """
     ARG_DATA = {
         'name': 'generate-cli-skeleton',
-        'help_text': 'Prints a sample input JSON to standard output. Note the '
-                     'specified operation is not run if this argument is '
-                     'specified. The sample input can be used as an argument '
-                     'for ``--cli-input-json``.',
-        'action': 'store_true',
-        'group_name': 'generate_cli_skeleton'
+        'help_text': (
+            'Prints a JSON skeleton to standard output without sending '
+            'an API request. If provided with no value or the value '
+            '``input``, prints a sample input JSON that can be used as an '
+            'argument for ``--cli-input-json``. If provided with the value '
+            '``output``, it validates the command inputs and returns a '
+            'sample output JSON for that command.'
+        ),
+        'nargs': '?', 'const': 'input',
+        'choices': ['input', 'output'],
     }
 
     def __init__(self, session, operation_model):
@@ -59,29 +64,64 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
             'calling-command.*', self.generate_json_skeleton)
         super(GenerateCliSkeletonArgument, self)._register_argument_action()
 
+    def override_required_args(self, argument_table, args, **kwargs):
+        arg_name = '--' + self.name
+        if arg_name in args:
+            arg_location = args.index(arg_name)
+            try:
+                # If the argument immediately preceeding
+                # --generate-cli-skeleton is output, then do not mark
+                # all of the other arguments as not required because
+                # output allows does parameter validation.
+                if args[arg_location + 1] == 'output':
+                    return
+            except IndexError:
+                pass
+            super(GenerateCliSkeletonArgument, self).override_required_args(
+                argument_table, args, **kwargs)
+
     def generate_json_skeleton(self, call_parameters, parsed_args,
                                parsed_globals, **kwargs):
-
-        # Only perform the method if the ``--generate-cli-skeleton`` was
-        # included in the command line.
-        if getattr(parsed_args, 'generate_cli_skeleton', False):
-
-            # Obtain the model of the operation
+        if getattr(parsed_args, 'generate_cli_skeleton', None):
+            for_output = parsed_args.generate_cli_skeleton == 'output'
             operation_model = self._operation_model
 
-            # Generate the skeleton based on the ``input_shape``.
-            argument_generator = ArgumentGenerator()
-            operation_input_shape = operation_model.input_shape
-            # If the ``input_shape`` is ``None``, generate an empty
-            # dictionary.
-            if operation_input_shape is None:
-                skeleton = {}
+            if for_output:
+                service_name = operation_model.service_model.service_name
+                operation_name = operation_model.name
+                return StubbedCLIOperationCaller(self._session).invoke(
+                    service_name, operation_name, call_parameters,
+                    parsed_globals)
             else:
-                skeleton = argument_generator.generate_skeleton(
-                    operation_input_shape)
+                argument_generator = ArgumentGenerator()
+                operation_input_shape = operation_model.input_shape
+                if operation_input_shape is None:
+                    skeleton = {}
+                else:
+                    skeleton = argument_generator.generate_skeleton(
+                        operation_input_shape)
 
-            # Write the generated skeleton to standard output.
-            sys.stdout.write(json.dumps(skeleton, indent=4))
-            sys.stdout.write('\n')
-            # This is the return code
-            return 0
+                sys.stdout.write(json.dumps(skeleton, indent=4))
+                sys.stdout.write('\n')
+                return 0
+
+
+class StubbedCLIOperationCaller(CLIOperationCaller):
+    """A stubbed CLIOperationCaller
+
+    It generates a fake response and uses the response and provided parameters
+    to make a stubbed client call for an operation command.
+    """
+    def _make_client_call(self, client, operation_name, parameters,
+                          parsed_globals):
+        method_name = xform_name(operation_name)
+        operation_model = client.meta.service_model.operation_model(
+            operation_name)
+        fake_response = {}
+        if operation_model.output_shape:
+            argument_generator = ArgumentGenerator(use_member_names=True)
+            fake_response = argument_generator.generate_skeleton(
+                operation_model.output_shape)
+        with Stubber(client) as stubber:
+            stubber.add_response(method_name, fake_response)
+            return getattr(client, method_name)(**parameters)

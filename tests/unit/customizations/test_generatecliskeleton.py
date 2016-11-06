@@ -51,9 +51,36 @@ class TestGenerateCliSkeleton(unittest.TestCase):
         self.assertEqual(register_args[0][0][1],
                          self.argument.generate_json_skeleton)
 
+    def test_no_override_required_args_when_output(self):
+        argument_table = {}
+        mock_arg = mock.Mock()
+        mock_arg.required = True
+        argument_table['required-arg'] = mock_arg
+        args = ['--generate-cli-skeleton', 'output']
+        self.argument.override_required_args(argument_table, args)
+        self.assertTrue(argument_table['required-arg'].required)
+
+    def test_override_required_args_when_input(self):
+        argument_table = {}
+        mock_arg = mock.Mock()
+        mock_arg.required = True
+        argument_table['required-arg'] = mock_arg
+        args = ['--generate-cli-skeleton']
+        self.argument.override_required_args(argument_table, args)
+        self.assertFalse(argument_table['required-arg'].required)
+
+    def test_override_required_args_when_output_present_but_not_value(self):
+        argument_table = {}
+        mock_arg = mock.Mock()
+        mock_arg.required = True
+        argument_table['required-arg'] = mock_arg
+        args = ['--generate-cli-skeleton', '--some-other-param', 'output']
+        self.argument.override_required_args(argument_table, args)
+        self.assertFalse(argument_table['required-arg'].required)
+
     def test_generate_json_skeleton(self):
         parsed_args = mock.Mock()
-        parsed_args.generate_cli_skeleton = True
+        parsed_args.generate_cli_skeleton = 'input'
         with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
             rc = self.argument.generate_json_skeleton(
                 service_operation=self.service_operation, call_parameters=None,
@@ -66,7 +93,7 @@ class TestGenerateCliSkeleton(unittest.TestCase):
 
     def test_no_generate_json_skeleton(self):
         parsed_args = mock.Mock()
-        parsed_args.generate_cli_skeleton = False
+        parsed_args.generate_cli_skeleton = None
         with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
             rc = self.argument.generate_json_skeleton(
                 service_operation=self.service_operation, call_parameters=None,
@@ -80,7 +107,7 @@ class TestGenerateCliSkeleton(unittest.TestCase):
 
     def test_generate_json_skeleton_no_input_shape(self):
         parsed_args = mock.Mock()
-        parsed_args.generate_cli_skeleton = True
+        parsed_args.generate_cli_skeleton = 'input'
         # Set the input shape to ``None``.
         self.argument = GenerateCliSkeletonArgument(
             self.session, mock.Mock(input_shape=None))

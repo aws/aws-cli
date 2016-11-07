@@ -97,6 +97,8 @@ PARAMFILE_DISABLED = set([
 
     # Double check that this has been renamed!
     'sns.subscribe.notification-endpoint',
+
+    'iot.create-job.document-source',
 ])
 
 

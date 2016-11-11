@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.14
+=======
+
+* feature:``cloudformation``: Update cloudformation command to latest version
+* feature:``logs``: Update logs command to latest version
+
+
 1.11.13
 =======
 

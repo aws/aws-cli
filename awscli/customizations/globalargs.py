@@ -27,6 +27,7 @@ def register_parse_global_args(cli):
     cli.register('top-level-args-parsed', resolve_verify_ssl)
     cli.register('top-level-args-parsed', resolve_cli_read_timeout)
     cli.register('top-level-args-parsed', resolve_cli_connect_timeout)
+    cli.register('top-level-args-parsed', resolve_cli_param_validation)
 
 
 def resolve_types(parsed_args, **kwargs):
@@ -91,6 +92,11 @@ def resolve_cli_connect_timeout(parsed_args, session, **kwargs):
 def resolve_cli_read_timeout(parsed_args, session, **kwargs):
     arg_name = 'read_timeout'
     _resolve_timeout(session, parsed_args, arg_name)
+
+
+def resolve_cli_param_validation(parsed_args, session, **kwargs):
+    if not parsed_args.param_validation:
+        _update_default_client_config(session, 'parameter_validation', False)
 
 
 def _resolve_timeout(session, parsed_args, arg_name):

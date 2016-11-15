@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.15
+=======
+
+* feature:``cognito-idp``: Update cognito-idp command to latest version
+
+
 1.11.14
 =======
 

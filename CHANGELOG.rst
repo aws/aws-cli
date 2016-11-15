@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.16
+=======
+
+* feature:``kinesis``: Update kinesis command to latest version
+* feature:``ds``: Update ds command to latest version
+* feature:``elasticache``: Update elasticache command to latest version
+
+
 1.11.15
 =======
 

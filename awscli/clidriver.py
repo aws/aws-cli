@@ -38,6 +38,10 @@ from awscli.arguments import BooleanArgument
 from awscli.arguments import CLIArgument
 from awscli.arguments import UnknownArgumentError
 from awscli.argprocess import unpack_argument
+from awscli.alias import AliasLoader
+from awscli.alias import ServiceAliasCommand
+from awscli.alias import ExternalAliasCommand
+from awscli.utils import emit_top_level_args_parsed_event
 
 
 LOG = logging.getLogger('awscli.clidriver')
@@ -77,6 +81,7 @@ class CLIDriver(object):
         self._cli_data = None
         self._command_table = None
         self._argument_table = None
+        self._command_table_with_aliases = None
 
     def _get_cli_data(self):
         # Not crazy about this but the data in here is needed in
@@ -95,6 +100,12 @@ class CLIDriver(object):
         if self._argument_table is None:
             self._argument_table = self._build_argument_table()
         return self._argument_table
+
+    def _get_command_table_with_aliases(self):
+        if self._command_table_with_aliases is None:
+            self._command_table_with_aliases = \
+                self._build_command_table_with_aliases()
+        return self._command_table_with_aliases
 
     def _build_command_table(self):
         """
@@ -119,6 +130,26 @@ class CLIDriver(object):
                                                     session=self.session,
                                                     service_name=service_name)
         return commands
+
+    def _build_command_table_with_aliases(self):
+        command_table_with_aliases = OrderedDict()
+        command_table = self._get_command_table()
+        parser = self._create_parser(command_table)
+
+        for command_name, command_obj in command_table.items():
+            command_table_with_aliases[command_name] = command_obj
+
+        alias_loader = AliasLoader()
+        for alias_name, alias_value in alias_loader.get_aliases().items():
+            if alias_value.startswith('!'):
+                alias_cmd = ExternalAliasCommand(alias_name, alias_value)
+            else:
+                alias_cmd = ServiceAliasCommand(
+                    alias_name, alias_value, self.session, command_table,
+                    parser)
+            command_table_with_aliases[alias_name] = alias_cmd
+
+        return command_table_with_aliases
 
     def _build_argument_table(self):
         argument_table = OrderedDict()
@@ -152,9 +183,8 @@ class CLIDriver(object):
                                    cli_data.get('synopsis', None),
                                    cli_data.get('help_usage', None))
 
-    def _create_parser(self):
+    def _create_parser(self, command_table):
         # Also add a 'help' command.
-        command_table = self._get_command_table()
         command_table['help'] = self.create_help_command()
         cli_data = self._get_cli_data()
         parser = MainArgParser(
@@ -173,8 +203,8 @@ class CLIDriver(object):
         """
         if args is None:
             args = sys.argv[1:]
-        parser = self._create_parser()
-        command_table = self._get_command_table()
+        command_table = self._get_command_table_with_aliases()
+        parser = self._create_parser(command_table)
         parsed_args, remaining = parser.parse_known_args(args)
         try:
             # Because _handle_top_level_args emits events, it's possible
@@ -226,8 +256,7 @@ class CLIDriver(object):
         sys.stderr.write('\n')
 
     def _handle_top_level_args(self, args):
-        self.session.emit(
-            'top-level-args-parsed', parsed_args=args, session=self.session)
+        emit_top_level_args_parsed_event(self.session, args)
         if args.profile:
             self.session.set_config_variable('profile', args.profile)
         if args.debug:

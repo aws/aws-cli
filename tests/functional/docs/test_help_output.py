@@ -22,6 +22,7 @@ at the man output, we look one step before at the generated rst output
 
 """
 from awscli.testutils import BaseAWSHelpOutputTest
+from awscli.testutils import FileCreator
 
 from awscli.compat import six
 import mock
@@ -432,3 +433,54 @@ class TestIotData(BaseAWSHelpOutputTest):
         self.assert_contains(
             'The default endpoint data.iot.[region].amazonaws.com is '
             'intended for testing purposes only.')
+
+
+class TestAliases(BaseAWSHelpOutputTest):
+    def setUp(self):
+        super(TestAliases, self).setUp()
+        self.files = FileCreator()
+        self.alias_file = self.files.create_file('alias', '[toplevel]\n')
+
+        # TODO: If an environment variable is ever exposed to
+        # modify the alias file location, remove this patch
+        # and use that environment variable because patching of specific
+        # classes properties should be avoided for functional tests but
+        # there is not really any other way to hook in...
+        self.alias_file_location_patch = mock.patch(
+            'awscli.alias.AliasLoader.ALIAS_FILENAME', self.alias_file)
+        self.alias_file_location_patch.start()
+
+    def tearDown(self):
+        super(TestAliases, self).tearDown()
+        self.files.remove_all()
+        self.alias_file_location_patch.stop()
+
+    def add_alias(self, alias_name, alias_value):
+        with open(self.alias_file, 'a+') as f:
+            f.write('%s = %s\n' % (alias_name, alias_value))
+
+    def test_alias_not_in_main_help(self):
+        self.add_alias('my-alias', 'ec2 describe-regions')
+        self.driver.main(['help'])
+        self.assert_not_contains('my-alias')
+
+    def test_alias_proxies_to_service_help(self):
+        self.add_alias('my-alias', 'ec2')
+        self.driver.main(['my-alias', 'help'])
+        self.assert_contains('ec2')
+        self.assert_contains('run-instances')
+        self.assert_not_contains('my-alias')
+
+    def test_alias_then_operation_proxies_to_operation_help(self):
+        self.add_alias('my-alias', 'ec2')
+        self.driver.main(['my-alias', 'describe-regions', 'help'])
+        self.assert_contains('describe-regions')
+        self.assert_contains('--region-names')
+        self.assert_not_contains('my-alias')
+
+    def test_alias_with_operation_proxies_to_operation_help(self):
+        self.add_alias('my-alias', 'ec2 describe-regions')
+        self.driver.main(['my-alias', 'help'])
+        self.assert_contains('describe-regions')
+        self.assert_contains('--region-names')
+        self.assert_not_contains('my-alias')

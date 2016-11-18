@@ -57,6 +57,10 @@ SERVICE_ROLE = (
     'This command will also create the default EC2 instance profile '
     '<code>' + EC2_ROLE_NAME + '</code>.')
 
+AUTOSCALING_ROLE = (
+    '<p>Allows EMR to call other service such as AnyScale and CloudWatch on your behalf.</p>'
+)
+
 USE_DEFAULT_ROLES = (
     '<p>Uses --service-role=<code>' + EMR_ROLE_NAME + '</code>, and '
     '--ec2-attributes InstanceProfile=<code>' + EC2_ROLE_NAME + '</code>'
@@ -112,12 +116,19 @@ INSTANCE_GROUPS = (
     ' of Amazon EC2 instances to create instance groups in a cluster.</p>'
     '<p> Each instance group takes the following parameters: '
     '<code>[Name], InstanceGroupType, InstanceType, InstanceCount,'
-    ' [BidPrice], [EbsConfiguration]</code>. [EbsConfiguration] is optional.'
-    ' EbsConfiguration takes the following parameters: <code>EbsOptimized</code>'
+    ' [BidPrice], [EbsConfiguration], [AutoScalingPolicy]</code>. [EbsConfiguration] and [AutoScalingPolicy]'
+    ' are optional. EbsConfiguration takes the following parameters: <code>EbsOptimized</code>'
     ' and <code>EbsBlockDeviceConfigs</code>. EbsBlockDeviceConfigs is an array of EBS volume'
     ' specifications, which takes the following parameters : <code>([VolumeType], '
     ' [SizeInGB], Iops)</code> and VolumesPerInstance which is the count of EBS volumes'
-    ' per instance with this specification.</p>')
+    ' per instance with this specification.</p>'
+    '<p> AutoScalingPolicy takes the following parameters: <code>Constraints</code> and <code>Rules</code>.'
+    ' Constraints takes the following parameters: <code>MinCapacity, MaxCapacity</code>. Rules is a list of AutoScaling'
+    ' rules associated to the policy. Each rule has the following parameters: <code> Name, [Description], Action, '
+    ' Trigger</code>. Action takes the following parameters: <code>Market, SimpleScalingPolicyConfiguration'
+    ' (AdjustmentType, ScalingAdjustment)</code>. Trigger takes <code>CloudWatchAlarmDefinition(AlarmNamePrefix,'
+    ' ComparisonOperator, EvaluationPeriods, MetricName, Namespace, Period, Statistic, Threshold, Unit,'
+    ' [Dimensions])</code>.</p>')
 
 INSTANCE_TYPE = (
     '<p>Shortcut option for --instance-groups. A specification of the '
@@ -179,6 +190,12 @@ TERMINATION_PROTECTED = (
     'user intervention, or in the event of an error. Termination protection '
     'is off by default.</p>')
 
+SCALE_DOWN_BEHAVIOR = (
+    '<p>Specifies the Scale down behavior for the cluster.</p>'
+    '<p>The valid values are:'
+    '<li>TERMINATE_AT_TASK_COMPLETION</li>'
+    '<li>TERMINATE_AT_INSTANCE_HOUR</li></p>'
+)
 VISIBILITY = (
     '<p>Specifies whether the cluster is visible to all IAM users of'
     ' the AWS account associated with the cluster. If set to '

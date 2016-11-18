@@ -334,3 +334,8 @@ class UnsupportedCommandWithReleaseError(EmrError):
 
     fmt = ("aws: error: {command} is not supported with "
            "'{release_label}' release.")
+
+class MissingAutoScalingRoleError(EmrError):
+
+    fmt = ("aws: error: Must specify --auto-scaling-role when configuring an "
+           "AutoScaling policy for an instance group.")

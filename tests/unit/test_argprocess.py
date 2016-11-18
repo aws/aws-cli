@@ -545,7 +545,6 @@ class TestDocGen(BaseArgProcessTest):
         expected_example_str = (
             "KeyName1=string,KeyName2=string\n\n"
             "Where valid key names are:\n"
-            "  Policy"
         )
         self.assert_generated_example_contains(argument, expected_example_str)
 

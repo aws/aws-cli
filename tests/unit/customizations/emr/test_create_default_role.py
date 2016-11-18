@@ -25,6 +25,7 @@ from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
 
 EC2_ROLE_NAME = "EMR_EC2_DefaultRole"
 EMR_ROLE_NAME = "EMR_DefaultRole"
+EMR_AUTOSCALING_ROLE_NAME = "EMR_AutoScaling_DefaultRole"
 
 EC2_ROLE_POLICY = {
     "Statement": [
@@ -96,6 +97,12 @@ US_GOV_EMR_ROLE_ARN = ('arn:aws-us-gov:iam::aws:policy/'
 EMR_ROLE_ARN = ('arn:aws:iam::aws:policy/service-role/'
                 'AmazonElasticMapReduceRole')
 
+CN_EMR_AUTOSCALING_ROLE_ARN = 'arn:aws-cn:iam::aws:policy/service-role/AmazonElasticMapReduceforAutoScalingRole'
+
+US_GOV_EMR_AUTOSCALING_ROLE_ARN = 'arn:aws-us-gov:iam::aws:policy/service-role/' \
+                                  'AmazonElasticMapReduceforAutoScalingRole'
+
+EMR_AUTOSCALING_ROLE_ARN = 'arn:aws:iam::aws:policy/service-role/AmazonElasticMapReduceforAutoScalingRole'
 
 class TestCreateDefaultRole(BaseAWSCommandParamsTest):
     prefix = 'emr create-default-roles'
@@ -124,11 +131,28 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
         ]
     }
 
+    emr_autoscaling_role_policy_document = {
+        "Version": "2008-10-17",
+        "Statement": [
+            {
+                "Sid": "",
+                "Effect": "Allow",
+                "Principal": {
+                    "Service": [
+                        "elasticmapreduce.amazonaws.com.cn",
+                        "application-autoscaling.amazonaws.com.cn"
+                    ]
+                },
+                "Action": "sts:AssumeRole"
+            }
+        ]
+    }
+
     def test_default_roles_exist(self):
         cmdline = self.prefix
 
         self.run_cmd(cmdline, expected_rc=0)
-        self.assertEqual(len(self.operations_called), 3)
+        self.assertEqual(len(self.operations_called), 4)
 
         self.assertEqual(self.operations_called[0][0].name, 'GetRole')
         self.assertEqual(self.operations_called[0][1]['RoleName'],
@@ -141,6 +165,10 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
         self.assertEqual(self.operations_called[2][0].name, 'GetRole')
         self.assertEqual(self.operations_called[2][1]['RoleName'],
                          EMR_ROLE_NAME)
+
+        self.assertEquals(self.operations_called[3][0].name, 'GetRole')
+        self.assertEqual(self.operations_called[3][1]['RoleName'],
+                         EMR_AUTOSCALING_ROLE_NAME)
 
     @mock.patch('awscli.customizations.emr.emr.'
                 'CreateDefaultRoles._construct_result')
@@ -165,7 +193,7 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
 
         # Only 8 operations will be called as we are mocking
         # check_if_role_exists and check_if_instance_profile_exists methods.
-        self.assertEqual(len(self.operations_called), 6)
+        self.assertEqual(len(self.operations_called), 8)
 
         self.assertEqual(self.operations_called[0][0].name, 'CreateRole')
         self.assertEqual(self.operations_called[0][1]['RoleName'],
@@ -205,6 +233,19 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
                          CN_EMR_ROLE_ARN)
         self.assertEqual(self.operations_called[5][1]['RoleName'],
                          EMR_ROLE_NAME)
+
+        self.assertEqual(self.operations_called[6][0].name, 'CreateRole')
+        self.assertEqual(self.operations_called[6][1]['RoleName'],
+                         EMR_AUTOSCALING_ROLE_NAME)
+        self.assertEqual(
+            self.operations_called[6][1]['AssumeRolePolicyDocument'],
+            emrutils.dict_to_string(self.emr_autoscaling_role_policy_document))
+
+        self.assertEqual(self.operations_called[7][0].name, 'AttachRolePolicy')
+        self.assertEqual(self.operations_called[7][1]['PolicyArn'],
+                         CN_EMR_AUTOSCALING_ROLE_ARN)
+        self.assertEqual(self.operations_called[7][1]['RoleName'],
+                         EMR_AUTOSCALING_ROLE_NAME)
 
     @mock.patch('awscli.customizations.emr.emr.'
                 'CreateDefaultRoles._construct_result')
@@ -279,23 +320,33 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
 
     def test_policy_arn_construction(self):
         self.assertEquals(
-            createdefaultroles.get_ec2_role_policy_arn("cn-north-1"),
+            createdefaultroles.get_role_policy_arn("cn-north-1", createdefaultroles.EC2_ROLE_POLICY_NAME),
             CN_EC2_ROLE_ARN)
         self.assertEquals(
-            createdefaultroles.get_ec2_role_policy_arn("us-gov-west-1"),
+            createdefaultroles.get_role_policy_arn("us-gov-west-1", createdefaultroles.EC2_ROLE_POLICY_NAME),
             US_GOV_EC2_ROLE_ARN)
         self.assertEquals(
-            createdefaultroles.get_ec2_role_policy_arn("eu-west-1"),
+            createdefaultroles.get_role_policy_arn("eu-west-1", createdefaultroles.EC2_ROLE_POLICY_NAME),
             EC2_ROLE_ARN)
         self.assertEquals(
-            createdefaultroles.get_service_role_policy_arn("cn-north-1"),
+            createdefaultroles.get_role_policy_arn("cn-north-1", createdefaultroles.EMR_ROLE_POLICY_NAME),
             CN_EMR_ROLE_ARN)
         self.assertEquals(
-            createdefaultroles.get_service_role_policy_arn("us-gov-west-1"),
+            createdefaultroles.get_role_policy_arn("us-gov-west-1", createdefaultroles.EMR_ROLE_POLICY_NAME),
             US_GOV_EMR_ROLE_ARN)
         self.assertEquals(
-            createdefaultroles.get_service_role_policy_arn("eu-west-1"),
+            createdefaultroles.get_role_policy_arn("eu-west-1", createdefaultroles.EMR_ROLE_POLICY_NAME),
             EMR_ROLE_ARN)
+        self.assertEquals(
+            createdefaultroles.get_role_policy_arn("cn-north-1", createdefaultroles.EMR_AUTOSCALING_ROLE_POLICY_NAME),
+            CN_EMR_AUTOSCALING_ROLE_ARN)
+        self.assertEquals(
+            createdefaultroles.get_role_policy_arn("us-gov-west-1",
+                                                   createdefaultroles.EMR_AUTOSCALING_ROLE_POLICY_NAME),
+            US_GOV_EMR_AUTOSCALING_ROLE_ARN)
+        self.assertEquals(
+            createdefaultroles.get_role_policy_arn("eu-west-1", createdefaultroles.EMR_AUTOSCALING_ROLE_POLICY_NAME),
+            EMR_AUTOSCALING_ROLE_ARN)
 
 
 class TestCreateDefaultRoles(unittest.TestCase):
@@ -312,8 +363,7 @@ class TestCreateDefaultRoles(unittest.TestCase):
     def testcheck_if_role_exists_raises_client_error(self):
         error_response = {
             'Error': {
-                'Code': 400,
-                'Message': 'foo'
+                'Code': 'foo'
             }
         }
         error = ClientError(error_response, 'GetRole')
@@ -322,11 +372,20 @@ class TestCreateDefaultRoles(unittest.TestCase):
         with self.assertRaises(ClientError):
             self.command.check_if_role_exists('role', self.parsed_globals)
 
+    def test_check_role_not_found(self):
+        error_response = {
+            'Error': {
+                'Code': 'NoSuchEntity'
+            }
+        }
+        error = ClientError(error_response, 'GetRole')
+        self.client.get_role.side_effect = error
+        self.assertFalse(self.command.check_if_role_exists('role', self.parsed_globals))
+
     def test_check_instance_profile_exists_raises_client_error(self):
         error_response = {
             'Error': {
-                'Code': 400,
-                'Message': 'foo'
+                'Code': 'foo'
             }
         }
         error = ClientError(error_response, 'GetInstanceProfile')
@@ -336,6 +395,15 @@ class TestCreateDefaultRoles(unittest.TestCase):
             self.command.check_if_instance_profile_exists(
                 'role', self.parsed_globals)
 
+    def test_check_instance_profile_not_found(self):
+        error_response = {
+            'Error': {
+                'Code': 'NoSuchEntity'
+            }
+        }
+        error = ClientError(error_response, 'GetInstanceProfile')
+        self.client.get_instance_profile.side_effect = error
+        self.assertFalse(self.command.check_if_instance_profile_exists('role', self.parsed_globals))
 
 def side_effect_ofcheck_if_role_exists(*args, **kwargs):
     if args[0] == EC2_ROLE_NAME:

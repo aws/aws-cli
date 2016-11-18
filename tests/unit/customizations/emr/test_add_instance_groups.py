@@ -19,6 +19,16 @@ import json
 from mock import patch
 from botocore.vendored import requests
 
+INSTANCE_GROUPS_WITH_AUTOSCALING_POLICY = (
+    ' InstanceGroupType=TASK,InstanceType=d2.xlarge,InstanceCount=2,'
+    'AutoScalingPolicy={Constraints={MinCapacity=1,MaxCapacity=2},'
+    'Rules=[{Name=TestRule,Description=TestDescription,Action={Market=ON_DEMAND,'
+    'SimpleScalingPolicyConfiguration={AdjustmentType=EXACT_CAPACITY,ScalingAdjustment=2,CoolDown=5}},'
+    'Trigger={CloudWatchAlarmDefinition={ComparisonOperator=GREATER_THAN,'
+    'EvaluationPeriods=5,MetricName=TestMetric,Namespace=EMR,Period=3,Statistic=MAXIMUM,'
+    'Threshold=4.565,Unit=NONE,Dimensions=[{Key=TestKey,Value=TestValue}]}}}]}'
+)
+
 INSTANCE_GROUPS_WITH_EBS_VOLUME_ARG = (
     ' InstanceGroupType=TASK,InstanceType=d2.xlarge,InstanceCount=2,EbsConfiguration={EbsOptimized=true,EbsBlockDeviceConfigs=[{VolumeSpecification={VolumeType=gp2,SizeInGB=100,Iops=100},VolumesPerInstance=4},{VolumeSpecification={VolumeType=gp2,SizeInGB=100,Iops=100}}]}')
 
@@ -88,6 +98,51 @@ DEFAULT_INSTANCE_GROUPS_WITH_EBS_CONFIG_MISSING_VOLSPEC = \
     'Market': 'ON_DEMAND',
     'Name': 'TASK'}]
 
+DEFAULT_INSTANCE_GROUPS_WITH_AUTOSCALING_POLICY = \
+[{'InstanceCount': 2,
+  'InstanceRole': 'TASK',
+  'InstanceType': 'd2.xlarge',
+  'Market': 'ON_DEMAND',
+  'Name': 'TASK',
+  'AutoScalingPolicy': {
+      'Constraints': {
+          'MinCapacity': 1,
+          'MaxCapacity': 2
+      },
+      'Rules': [
+          {
+             'Name': 'TestRule',
+             'Description': 'TestDescription',
+             'Action': {
+                 'Market': 'ON_DEMAND',
+                 'SimpleScalingPolicyConfiguration': {
+                     'AdjustmentType': 'EXACT_CAPACITY',
+                     'ScalingAdjustment': 2,
+                     'CoolDown': 5
+                 }
+             },
+             'Trigger': {
+                 'CloudWatchAlarmDefinition': {
+                     'ComparisonOperator': 'GREATER_THAN',
+                     'Dimensions': [
+                         {
+                             'Key': 'TestKey',
+                             'Value': 'TestValue'
+                         }],
+                     'EvaluationPeriods': 5,
+                     'MetricName': 'TestMetric',
+                     'Namespace': 'EMR',
+                     'Period': 3,
+                     'Statistic': 'MAXIMUM',
+                     'Threshold': 4.565,
+                     'Unit': 'NONE'
+                 }
+             }
+          }
+      ]
+  }
+  }]
+
 DEFAULT_MULTIPLE_INSTANCE_GROUPS_WITH_EBS_CONFIG = \
     [{'EbsConfiguration': 
         {'EbsOptimized': True,
@@ -137,6 +192,13 @@ CONSTRUCTED_RESULT = {
 
 class TestAddInstanceGroups(BaseAWSCommandParamsTest):
     prefix = 'emr add-instance-groups --cluster-id J-ABCD --instance-groups'
+
+    def test_instance_groups_with_autoscaling_policy(self):
+        cmd = self.prefix
+        cmd += INSTANCE_GROUPS_WITH_AUTOSCALING_POLICY
+        result = {'JobFlowId': 'J-ABCD',
+                  'InstanceGroups': DEFAULT_INSTANCE_GROUPS_WITH_AUTOSCALING_POLICY}
+        self.assert_params_for_cmd(cmd, result)
 
     def assert_error_message_has_field_name(self, error_msg, field_name):
         self.assertIn('Missing required parameter', error_msg)

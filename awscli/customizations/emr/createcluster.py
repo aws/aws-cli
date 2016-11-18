@@ -57,6 +57,8 @@ class CreateCluster(Command):
          'help_text': helptext.LOG_URI},
         {'name': 'service-role',
          'help_text': helptext.SERVICE_ROLE},
+        {'name': 'auto-scaling-role',
+         'help_text': helptext.AUTOSCALING_ROLE},
         {'name': 'use-default-roles', 'action': 'store_true',
          'help_text': helptext.USE_DEFAULT_ROLES},
         {'name': 'configurations',
@@ -69,6 +71,8 @@ class CreateCluster(Command):
          'help_text': helptext.TERMINATION_PROTECTED},
         {'name': 'no-termination-protected', 'action': 'store_true',
          'group_name': 'termination_protected'},
+        {'name': 'scale-down-behavior',
+         'help_text': helptext.SCALE_DOWN_BEHAVIOR},
         {'name': 'visible-to-all-users', 'action': 'store_true',
          'group_name': 'visibility',
          'help_text': helptext.VISIBILITY},
@@ -165,6 +169,16 @@ class CreateCluster(Command):
             parsed_args.ec2_attributes['InstanceProfile'] = EC2_ROLE_NAME
 
         emrutils.apply_dict(params, 'ServiceRole', parsed_args.service_role)
+
+        for instance_group in instances_config['InstanceGroups']:
+            if 'AutoScalingPolicy' in instance_group.keys():
+                if parsed_args.auto_scaling_role is None:
+                    raise exceptions.MissingAutoScalingRoleError()
+
+        emrutils.apply_dict(params, 'AutoScalingRole', parsed_args.auto_scaling_role)
+
+        if parsed_args.scale_down_behavior is not None:
+            emrutils.apply_dict(params, 'ScaleDownBehavior', parsed_args.scale_down_behavior)
 
         if (
                 parsed_args.no_auto_terminate is False and

@@ -169,6 +169,12 @@ NOTE: JSON arguments must include options and values as their own items in the l
     
     VolumeType, SizeInGB if EbsBlockDeviceConfigs specified
 
+- Create a cluster with an Auto Scaling policy attached to the CORE instance group. The Auto Scaling policy can be attached to CORE and TASK instance groups. For instance groups with an Auto Scaling policy attached, you should enclose the entire instance group argument with single quotes. For instance groups with no Auto Scaling policy, using single quotes is optional.
+
+- Command::
+
+    aws emr create-cluster --release-label emr-5.0.0 --use-default-roles --auto-scaling-role EMR_AutoScaling_DefaultRole --instance-groups InstanceGroupType=MASTER,InstanceType=d2.xlarge,InstanceCount=1 'InstanceGroupType=CORE,InstanceType=d2.xlarge,InstanceCount=2,AutoScalingPolicy={Constraints={MinCapacity=1,MaxCapacity=5},Rules=[{Name=TestRule,Description=TestDescription,Action={Market=ON_DEMAND,SimpleScalingPolicyConfiguration={AdjustmentType=EXACT_CAPACITY,ScalingAdjustment=2}},Trigger={CloudWatchAlarmDefinition={ComparisonOperator=GREATER_THAN,EvaluationPeriods=5,MetricName=TestMetric,Namespace=EMR,Period=3,Statistic=MAXIMUM,Threshold=4.5,Unit=NONE,Dimensions=[{Key=TestKey,Value=TestValue}]}}}]}'
+
 **13. To add custom JAR steps to a cluster when creating an Amazon EMR cluster**
 
 - Command::

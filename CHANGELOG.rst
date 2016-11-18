@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.11.19
+=======
+
+* feature:``cloudformation deploy``: Add command to simplify deployments of cloudformation stack changes.
+* feature:``emr``: Update emr command to latest version
+* feature:``lambda``: Update lambda command to latest version
+* feature:``elastictranscoder``: Update elastictranscoder command to latest version
+* feature:``cloudformation package``: Add command to package source code for cloudfromation template.
+* feature:``gamelift``: Update gamelift command to latest version
+* feature:``application-autoscaling``: Update application-autoscaling command to latest version
+
+
 1.11.18
 =======
 

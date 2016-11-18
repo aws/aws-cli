@@ -15,10 +15,11 @@
 
 EC2_ROLE_NAME = "EMR_EC2_DefaultRole"
 EMR_ROLE_NAME = "EMR_DefaultRole"
-EC2_ROLE_ARN_PATTERN = ("arn:{{region_suffix}}:iam::aws:policy/service-role/"
-                        "AmazonElasticMapReduceforEC2Role")
-EMR_ROLE_ARN_PATTERN = ("arn:{{region_suffix}}:iam::aws:policy/service-role/"
-                        "AmazonElasticMapReduceRole")
+EMR_AUTOSCALING_ROLE_NAME = "EMR_AutoScaling_DefaultRole"
+ROLE_ARN_PATTERN = "arn:{{region_suffix}}:iam::aws:policy/service-role/{{policy_name}}"
+EC2_ROLE_POLICY_NAME = "AmazonElasticMapReduceforEC2Role"
+EMR_ROLE_POLICY_NAME = "AmazonElasticMapReduceRole"
+EMR_AUTOSCALING_ROLE_POLICY_NAME = "AmazonElasticMapReduceforAutoScalingRole"
 
 # Action on failure
 CONTINUE = 'CONTINUE'
@@ -174,7 +175,7 @@ FALSE = 'false'
 
 EC2 = 'ec2'
 EMR = 'elasticmapreduce'
-
+APPLICATION_AUTOSCALING = 'application-autoscaling'
 LATEST = 'latest'
 
 APPLICATIONS = ["HIVE", "PIG", "HBASE", "GANGLIA", "IMPALA", "SPARK", "MAPR",

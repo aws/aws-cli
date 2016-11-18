@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.11.18
+=======
+
+* bugfix:Powershell: Properly set return code on Powershell.
+* feature:``cloudwatch``: Update cloudwatch command to latest version
+* feature:``sqs``: Update sqs command to latest version
+* feature:``apigateway``: Update apigateway command to latest version
+* feature:``meteringmarketplace``: Update meteringmarketplace command to latest version
+
+
 1.11.17
 =======
 

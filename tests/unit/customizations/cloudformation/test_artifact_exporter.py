@@ -632,7 +632,7 @@ class TestArtifactExporter(unittest.TestCase):
 
         dirname = test_file_creator.rootdir
 
-        expected_files = {'index.js'}
+        expected_files = set(['index.js'])
 
         random_name = ''.join(random.choice(string.ascii_letters) for _ in range(10))
         outfile = os.path.join(tempfile.gettempdir(), random_name)

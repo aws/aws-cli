@@ -10,11 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
 import mock
 import random
 import string
 import tempfile
 import hashlib
+import shutil
 from mock import patch, Mock
 
 import botocore
@@ -244,13 +246,16 @@ class TestS3Uploader(unittest.TestCase):
         md5.update(data)
         expected_checksum = md5.hexdigest()
 
-        with tempfile.NamedTemporaryFile() as handle:
-            handle.write(data)
-            handle.flush()
+        tempdir = tempfile.mkdtemp()
+        try:
+            filename = os.path.join(tempdir, 'tempfile')
+            with open(filename, 'wb') as f:
+                f.write(data)
 
-            filename = handle.name
             actual_checksum = self.s3uploader.file_checksum(filename)
             self.assertEqual(expected_checksum, actual_checksum)
+        finally:
+            shutil.rmtree(tempdir)
 
     def test_make_url(self):
         path = "Hello/how/are/you"

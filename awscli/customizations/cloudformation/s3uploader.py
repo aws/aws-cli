@@ -12,14 +12,16 @@
 # language governing permissions and limitations under the License.
 
 import hashlib
-import botocore
 import logging
 import threading
 import os
 import sys
 
+import botocore
+import botocore.exceptions
 from s3transfer.manager import TransferManager
 from s3transfer.subscribers import BaseSubscriber
+
 from awscli.customizations.cloudformation import exceptions
 
 LOG = logging.getLogger(__name__)
@@ -98,7 +100,6 @@ class S3Uploader(object):
         """
         Makes and returns name of the S3 object based on the file's MD5 sum
 
-        :param uploader: Instance of S3Uploader
         :param file_name: file to upload
         :param extension: String of file extension to append to the object
         :return: S3 URL of the uploaded object

@@ -11,7 +11,7 @@ requires = ['botocore==1.4.76',
             'docutils>=0.10',
             'rsa>=3.1.2,<=3.5.0',
             's3transfer>=0.1.9,<0.2.0',
-            'PyYAML==3.12']
+            'PyYAML>=3.10,<=3.12']
 
 
 if sys.version_info[:2] == (2, 6):

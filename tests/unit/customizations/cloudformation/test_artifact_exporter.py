@@ -342,13 +342,12 @@ class TestArtifactExporter(unittest.TestCase):
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.make_zip")
     def test_zip_folder(self, make_zip_mock):
-        my_zip_file_name = "some name"
+        zip_file_name = "name.zip"
+        make_zip_mock.return_value = zip_file_name
 
-        make_zip_mock.return_value = my_zip_file_name
         with self.make_temp_dir() as dirname:
-
-            generator = zip_folder(dirname)
-            self.assertEquals(generator.__enter__(), my_zip_file_name)
+            with zip_folder(dirname) as actual_zip_file_name:
+                self.assertEqual(actual_zip_file_name, zip_file_name)
 
         make_zip_mock.assert_called_once_with(mock.ANY, dirname)
 
@@ -632,7 +631,7 @@ class TestArtifactExporter(unittest.TestCase):
 
         dirname = test_file_creator.rootdir
 
-        expected_files = {'index.js'}
+        expected_files = set(['index.js'])
 
         random_name = ''.join(random.choice(string.ascii_letters) for _ in range(10))
         outfile = os.path.join(tempfile.gettempdir(), random_name)

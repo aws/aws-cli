@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.11.21
+=======
+
+* feature:``s3``: Update s3 command to latest version
+* feature:``glacier``: Update glacier command to latest version
+* feature:``cloudformation``: Update cloudformation command to latest version
+* feature:``route53``: Update route53 command to latest version
+
+
 1.11.20
 =======
 

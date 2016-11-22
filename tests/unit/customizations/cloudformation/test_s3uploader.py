@@ -10,20 +10,24 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
 import mock
 import random
 import string
-import botocore
 import tempfile
 import hashlib
+import shutil
+from mock import patch, Mock
 
+import botocore
+import botocore.session
+import botocore.exceptions
 from botocore.stub import Stubber
-from mock import patch, Mock, MagicMock
+from s3transfer import S3Transfer
+
 from awscli.testutils import unittest
 from awscli.customizations.cloudformation.s3uploader import S3Uploader
 from awscli.customizations.cloudformation import exceptions
-from awscli.customizations.cloudformation.s3uploader import ProgressPercentage
-from s3transfer import S3Transfer
 
 
 class TestS3Uploader(unittest.TestCase):
@@ -37,7 +41,9 @@ class TestS3Uploader(unittest.TestCase):
         self.bucket_name = "bucketname"
         self.prefix = None
 
-        self.s3uploader = S3Uploader(self.s3client, self.bucket_name, self.prefix, None, False, self.transfer_manager_mock)
+        self.s3uploader = S3Uploader(
+            self.s3client, self.bucket_name, self.prefix, None, False,
+            self.transfer_manager_mock)
 
     @patch("awscli.customizations.cloudformation.s3uploader.ProgressPercentage")
     def test_upload_successful(self, progress_percentage_mock):
@@ -45,10 +51,11 @@ class TestS3Uploader(unittest.TestCase):
         remote_path = "remotepath"
         prefix = "SomePrefix"
         remote_path_with_prefix = "{0}/{1}".format(prefix, remote_path)
-        s3uploader = S3Uploader(self.s3client, self.bucket_name, prefix, None, False, self.transfer_manager_mock)
-        expected_upload_url = "s3://{0}/{1}/{2}".format(self.bucket_name,
-                                                    prefix,
-                                                    remote_path)
+        s3uploader = S3Uploader(
+            self.s3client, self.bucket_name, prefix, None, False,
+            self.transfer_manager_mock)
+        expected_upload_url = "s3://{0}/{1}/{2}".format(
+            self.bucket_name, prefix, remote_path)
 
         # Setup mock to fake that file does not exist
         s3uploader.file_exists = Mock()
@@ -87,8 +94,9 @@ class TestS3Uploader(unittest.TestCase):
                                                     remote_path)
 
         # Set ForceUpload = True
-        self.s3uploader = S3Uploader(self.s3client, self.bucket_name, self.prefix,
-                                     None, True, self.transfer_manager_mock)
+        self.s3uploader = S3Uploader(
+            self.s3client, self.bucket_name, self.prefix,
+            None, True, self.transfer_manager_mock)
 
         # Pretend file already exists
         self.s3uploader.file_exists = Mock()
@@ -116,8 +124,9 @@ class TestS3Uploader(unittest.TestCase):
         expected_upload_url = "s3://{0}/{1}".format(self.bucket_name,
                                                     remote_path)
         # Set KMS Key Id
-        self.s3uploader = S3Uploader(self.s3client, self.bucket_name, self.prefix,
-                                     kms_key_id, False, self.transfer_manager_mock)
+        self.s3uploader = S3Uploader(
+            self.s3client, self.bucket_name, self.prefix,
+            kms_key_id, False, self.transfer_manager_mock)
 
         # Setup mock to fake that file does not exist
         self.s3uploader.file_exists = Mock()
@@ -152,7 +161,6 @@ class TestS3Uploader(unittest.TestCase):
         with self.assertRaises(exceptions.NoSuchBucketError):
             self.s3uploader.upload(file_name, remote_path)
 
-
     @patch("awscli.customizations.cloudformation.s3uploader.ProgressPercentage")
     def test_upload_successful_exceptions(self, progress_percentage_mock):
         file_name = "filename"
@@ -175,7 +183,6 @@ class TestS3Uploader(unittest.TestCase):
         with self.assertRaises(FloatingPointError):
             self.s3uploader.upload(file_name, remote_path)
 
-
     def test_upload_with_dedup(self):
 
         checksum = "some md5 checksum"
@@ -191,7 +198,6 @@ class TestS3Uploader(unittest.TestCase):
 
         remotepath = "{0}.{1}".format(checksum, extension)
         self.s3uploader.upload.assert_called_once_with(filename, remotepath)
-
 
     def test_file_exists(self):
         key = "some/path"
@@ -218,7 +224,8 @@ class TestS3Uploader(unittest.TestCase):
             self.assertTrue(self.s3uploader.file_exists(key))
 
         # Let's pretend file does not exist
-        self.s3client_stub.add_client_error('head_object', "ClientError", "some error")
+        self.s3client_stub.add_client_error(
+            'head_object', "ClientError", "some error")
         with self.s3client_stub:
             self.assertFalse(self.s3uploader.file_exists(key))
 
@@ -231,21 +238,24 @@ class TestS3Uploader(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             uploader.file_exists(key)
 
-
     def test_file_checksum(self):
         num_chars = 4096*5
-        data = ''.join(random.choice(string.ascii_uppercase) for _ in range(num_chars)).encode('utf-8')
+        data = ''.join(random.choice(string.ascii_uppercase)
+                       for _ in range(num_chars)).encode('utf-8')
         md5 = hashlib.md5()
         md5.update(data)
         expected_checksum = md5.hexdigest()
 
-        with tempfile.NamedTemporaryFile() as handle:
-            handle.write(data)
-            handle.flush()
+        tempdir = tempfile.mkdtemp()
+        try:
+            filename = os.path.join(tempdir, 'tempfile')
+            with open(filename, 'wb') as f:
+                f.write(data)
 
-            filename = handle.name
             actual_checksum = self.s3uploader.file_checksum(filename)
             self.assertEqual(expected_checksum, actual_checksum)
+        finally:
+            shutil.rmtree(tempdir)
 
     def test_make_url(self):
         path = "Hello/how/are/you"

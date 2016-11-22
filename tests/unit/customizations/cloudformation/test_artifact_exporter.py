@@ -551,12 +551,11 @@ class TestArtifactExporter(unittest.TestCase):
                 stack_resource.export(resource_id, resource_dict, "dir")
                 self.s3_uploader_mock.upload_with_dedup.assert_not_called()
 
-
     @patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
     def test_template_export(self, yaml_parse_mock):
-        template_path = "foo/bar/path"
-        parent_dir = "/"
-        template_dir = "/foo/bar"
+        parent_dir = os.path.sep
+        template_dir = os.path.join(parent_dir, 'foo', 'bar')
+        template_path = os.path.join(template_dir, 'path')
         template_str = self.example_yaml_template()
 
         resource_type1_class = Mock()
@@ -592,13 +591,14 @@ class TestArtifactExporter(unittest.TestCase):
         open_mock = mock.mock_open()
         yaml_parse_mock.return_value = template_dict
 
-
         # Patch the file open method to return template string
         with patch(
                 "awscli.customizations.cloudformation.artifact_exporter.open",
                 open_mock(read_data=template_str)) as open_mock:
 
-            template_exporter = Template(template_path, parent_dir, self.s3_uploader_mock, resources_to_export)
+            template_exporter = Template(
+                template_path, parent_dir, self.s3_uploader_mock,
+                resources_to_export)
             exported_template = template_exporter.export()
             self.assertEquals(exported_template, template_dict)
 
@@ -608,9 +608,11 @@ class TestArtifactExporter(unittest.TestCase):
             self.assertEquals(1, yaml_parse_mock.call_count)
 
             resource_type1_class.assert_called_once_with(self.s3_uploader_mock)
-            resource_type1_instance.export.assert_called_once_with("Resource1", mock.ANY, template_dir)
+            resource_type1_instance.export.assert_called_once_with(
+                "Resource1", mock.ANY, template_dir)
             resource_type2_class.assert_called_once_with(self.s3_uploader_mock)
-            resource_type2_instance.export.assert_called_once_with("Resource2", mock.ANY, template_dir)
+            resource_type2_instance.export.assert_called_once_with(
+                "Resource2", mock.ANY, template_dir)
 
     def test_template_export_path_be_folder(self):
 

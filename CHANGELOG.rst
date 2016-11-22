@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.20
+=======
+
+* feature:``ecs``: Update ecs command to latest version
+* feature:``cloudtrail``: Update cloudtrail command to latest version
+
+
 1.11.19
 =======
 

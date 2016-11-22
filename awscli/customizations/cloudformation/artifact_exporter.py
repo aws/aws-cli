@@ -166,7 +166,7 @@ def zip_folder(folder_path):
     try:
         yield zipfile_name
     finally:
-        if zipfile_name:
+        if os.path.exists(zipfile_name):
             os.remove(zipfile_name)
 
 

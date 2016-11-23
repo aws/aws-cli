@@ -211,8 +211,8 @@ class ResultRecorder(BaseResultHandler):
         self.expected_files_transferred = 0
         self.final_expected_files_transferred = None
 
-        self.transfer_speed = 0
-        self._start_time = None
+        self.start_time = None
+        self.bytes_transfer_speed = 0
 
         self._ongoing_progress = defaultdict(int)
         self._ongoing_total_sizes = {}
@@ -259,6 +259,8 @@ class ResultRecorder(BaseResultHandler):
         pass
 
     def _record_queued_result(self, result, **kwargs):
+        if self.start_time is None:
+            self.start_time = time.time()
         total_transfer_size = result.total_transfer_size
         self._ongoing_total_sizes[
             self._get_ongoing_dict_key(result)] = total_transfer_size
@@ -274,11 +276,9 @@ class ResultRecorder(BaseResultHandler):
         self._ongoing_progress[
             self._get_ongoing_dict_key(result)] += bytes_transferred
         self.bytes_transferred += bytes_transferred
-        if self._start_time is None:
-            self._start_time = result.timestamp
-        else:
-            self.transfer_speed = 1.0 * self.bytes_transferred / (
-                result.timestamp - self._start_time)
+        if result.timestamp > self.start_time:
+            self.bytes_transfer_speed = 1.0 * self.bytes_transferred / (
+                result.timestamp - self.start_time)
 
     def _update_ongoing_transfer_size_if_unknown(self, result):
         # This is a special case when the transfer size was previous not
@@ -486,7 +486,7 @@ class ResultPrinter(BaseResultHandler):
                     self._result_recorder.expected_bytes_transferred))
 
             transfer_speed = human_readable_size(
-                self._result_recorder.transfer_speed) + '/s'
+                self._result_recorder.bytes_transfer_speed) + '/s'
             progress_statement = self.BYTE_PROGRESS_FORMAT.format(
                 bytes_completed=bytes_completed,
                 expected_bytes_completed=expected_bytes_completed,

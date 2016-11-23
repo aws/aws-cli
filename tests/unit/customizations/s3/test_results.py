@@ -323,6 +323,7 @@ class ResultRecorderTest(unittest.TestCase):
         self.exception_message = 'a dummy exception message'
         self.exception = Exception(self.exception_message)
         self.result_recorder = ResultRecorder()
+        self.result_recorder.start_time = 0
 
     def test_queued_result(self):
         self.result_recorder(
@@ -465,8 +466,20 @@ class ResultRecorderTest(unittest.TestCase):
             self.result_recorder.expected_bytes_transferred,
             self.total_transfer_size)
 
+    def test_captures_start_time_on_queued(self):
+        result_recorder = ResultRecorder()
+        self.assertIsNone(result_recorder.start_time)
+        result_recorder(
+            QueuedResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, total_transfer_size=self.total_transfer_size
+            )
+        )
+        self.assertIsInstance(result_recorder.start_time, float)
+
     def test_progress_calculates_transfer_speed(self):
         start_time = 0
+        self.result_recorder.start_time = start_time
         self.total_transfer_size = 10
         self.result_recorder(
             QueuedResult(
@@ -474,20 +487,21 @@ class ResultRecorderTest(unittest.TestCase):
                 dest=self.dest, total_transfer_size=self.total_transfer_size
             )
         )
-        self.assertEqual(self.result_recorder.transfer_speed, 0)
+        # At this point nothing should have been uploaded so transfer speed
+        # is zero
+        self.assertEqual(self.result_recorder.bytes_transfer_speed, 0)
 
         self.result_recorder(
             ProgressResult(
                 transfer_type=self.transfer_type, src=self.src,
                 dest=self.dest, bytes_transferred=1,
                 total_transfer_size=self.total_transfer_size,
-                timestamp=start_time
+                timestamp=(start_time + 1)
             )
         )
-        # For the very first progress result we do not have another
-        # progress result to compare timestamps to get a transfer speed
-        # so the recorded transfer speed should stay at 0
-        self.assertEqual(self.result_recorder.transfer_speed, 0)
+
+        # One bytes has been transferred in one second
+        self.assertEqual(self.result_recorder.bytes_transfer_speed, 1)
 
         self.result_recorder(
             ProgressResult(
@@ -499,7 +513,7 @@ class ResultRecorderTest(unittest.TestCase):
         )
 
         # Five bytes have been transferred in two seconds
-        self.assertEqual(self.result_recorder.transfer_speed, 2.5)
+        self.assertEqual(self.result_recorder.bytes_transfer_speed, 2.5)
 
         self.result_recorder(
             ProgressResult(
@@ -511,7 +525,7 @@ class ResultRecorderTest(unittest.TestCase):
         )
 
         # Six bytes have been transferred in three seconds
-        self.assertEqual(self.result_recorder.transfer_speed, 2.0)
+        self.assertEqual(self.result_recorder.bytes_transfer_speed, 2.0)
 
     def test_success_result(self):
         self.result_recorder(
@@ -895,7 +909,7 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_recorder.final_expected_files_transferred = 4
         self.result_recorder.bytes_transferred = mb
         self.result_recorder.files_transferred = 1
-        self.result_recorder.transfer_speed = 1024 * 7
+        self.result_recorder.bytes_transfer_speed = 1024 * 7
 
         progress_result = self.get_progress_result()
         self.result_printer(progress_result)

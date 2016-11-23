@@ -136,7 +136,8 @@ class TestUploadResultSubscriber(BaseResultSubscriberTest):
                 src=self.src,
                 dest=self.dest,
                 bytes_transferred=ref_bytes_transferred,
-                total_transfer_size=self.size
+                total_transfer_size=self.size,
+                timestamp=mock.ANY
             )
         )
 
@@ -382,7 +383,8 @@ class ResultRecorderTest(unittest.TestCase):
             ProgressResult(
                 transfer_type=self.transfer_type, src=self.src,
                 dest=self.dest, bytes_transferred=bytes_transferred,
-                total_transfer_size=self.total_transfer_size
+                total_transfer_size=self.total_transfer_size,
+                timestamp=0
             )
         )
 
@@ -399,12 +401,13 @@ class ResultRecorderTest(unittest.TestCase):
 
         bytes_transferred = 1024 * 1024  # 1MB
         num_results = 5
-        for _ in range(num_results):
+        for i in range(num_results):
             self.result_recorder(
                 ProgressResult(
                     transfer_type=self.transfer_type, src=self.src,
                     dest=self.dest, bytes_transferred=bytes_transferred,
-                    total_transfer_size=self.total_transfer_size
+                    total_transfer_size=self.total_transfer_size,
+                    timestamp=i
                 )
             )
 
@@ -426,7 +429,7 @@ class ResultRecorderTest(unittest.TestCase):
             ProgressResult(
                 transfer_type=self.transfer_type, src=self.src,
                 dest=self.dest, bytes_transferred=bytes_transferred,
-                total_transfer_size=None
+                total_transfer_size=None, timestamp=0
             )
         )
         # Because the transfer size is still not known, update the
@@ -449,7 +452,8 @@ class ResultRecorderTest(unittest.TestCase):
             ProgressResult(
                 transfer_type=self.transfer_type, src=self.src,
                 dest=self.dest, bytes_transferred=bytes_transferred,
-                total_transfer_size=self.total_transfer_size
+                total_transfer_size=self.total_transfer_size,
+                timestamp=0
             )
         )
 
@@ -566,7 +570,8 @@ class ResultRecorderTest(unittest.TestCase):
             ProgressResult(
                 transfer_type=self.transfer_type, src=self.src,
                 dest=self.dest, bytes_transferred=bytes_transferred,
-                total_transfer_size=self.total_transfer_size
+                total_transfer_size=self.total_transfer_size,
+                timestamp=0
             )
         )
 
@@ -619,7 +624,8 @@ class ResultRecorderTest(unittest.TestCase):
             ProgressResult(
                 transfer_type=self.transfer_type, src=self.src,
                 dest=self.dest, bytes_transferred=bytes_transferred,
-                total_transfer_size=self.total_transfer_size
+                total_transfer_size=self.total_transfer_size,
+                timestamp=0
             )
         )
         self.result_recorder(
@@ -737,7 +743,7 @@ class BaseResultPrinterTest(unittest.TestCase):
         # the ResultRecorder to determine what to print out on progress.
         return ProgressResult(
             transfer_type=None, src=None, dest=None, bytes_transferred=None,
-            total_transfer_size=None
+            total_transfer_size=None, timestamp=0
         )
 
 
@@ -760,7 +766,8 @@ class TestResultPrinter(BaseResultPrinterTest):
         progress_result = self.get_progress_result()
         self.result_printer(progress_result)
         ref_progress_statement = (
-            'Completed 1.0 MiB/20.0 MiB with 3 file(s) remaining\r')
+            'Completed 1.0 MiB/20.0 MiB (0 Bytes/s) with 3 file(s) '
+            'remaining\r')
         self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
 
     def test_progress_with_no_expected_transfer_bytes(self):
@@ -790,7 +797,8 @@ class TestResultPrinter(BaseResultPrinterTest):
 
         self.result_printer(progress_result)
         ref_progress_statement = (
-            'Completed 1.0 MiB/20.0 MiB with 3 file(s) remaining\r')
+            'Completed 1.0 MiB/20.0 MiB (0 Bytes/s) with 3 file(s) remaining\r'
+        )
         self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
 
         # Add the second progress update
@@ -799,8 +807,8 @@ class TestResultPrinter(BaseResultPrinterTest):
 
         # The result should be the combination of the two
         ref_progress_statement = (
-            'Completed 1.0 MiB/20.0 MiB with 3 file(s) remaining\r'
-            'Completed 2.0 MiB/20.0 MiB with 3 file(s) remaining\r'
+            'Completed 1.0 MiB/20.0 MiB (0 Bytes/s) with 3 file(s) remaining\r'
+            'Completed 2.0 MiB/20.0 MiB (0 Bytes/s) with 3 file(s) remaining\r'
         )
         self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
 
@@ -815,7 +823,7 @@ class TestResultPrinter(BaseResultPrinterTest):
         progress_result = self.get_progress_result()
         self.result_printer(progress_result)
         ref_progress_statement = (
-            'Completed 1.0 MiB/~20.0 MiB with ~3 file(s) '
+            'Completed 1.0 MiB/~20.0 MiB (0 Bytes/s) with ~3 file(s) '
             'remaining (calculating...)\r')
         self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
 
@@ -880,9 +888,9 @@ class TestResultPrinter(BaseResultPrinterTest):
         # * The success statement
         # * And the progress again since the transfer is still ongoing
         ref_statement = (
-            'Completed 1.0 MiB/20.0 MiB with 3 file(s) remaining\r'
-            'upload: file to s3://mybucket/mykey                \n'
-            'Completed 1.0 MiB/20.0 MiB with 2 file(s) remaining\r'
+            'Completed 1.0 MiB/20.0 MiB (0 Bytes/s) with 3 file(s) remaining\r'
+            'upload: file to s3://mybucket/mykey                            \n'
+            'Completed 1.0 MiB/20.0 MiB (0 Bytes/s) with 2 file(s) remaining\r'
         )
         self.assertEqual(self.out_file.getvalue(), ref_statement)
 
@@ -904,8 +912,8 @@ class TestResultPrinter(BaseResultPrinterTest):
 
         ref_success_statement = (
             'upload: file to s3://mybucket/mykey\n'
-            'Completed 1.0 MiB/~4.0 MiB with ~3 file(s) remaining '
-            '(calculating...)\r'
+            'Completed 1.0 MiB/~4.0 MiB (0 Bytes/s) with ~3 file(s) '
+            'remaining (calculating...)\r'
         )
         self.assertEqual(self.out_file.getvalue(), ref_success_statement)
 
@@ -927,8 +935,8 @@ class TestResultPrinter(BaseResultPrinterTest):
 
         ref_success_statement = (
             'upload: file to s3://mybucket/mykey\n'
-            'Completed 1.0 MiB/~1.0 MiB with ~0 file(s) remaining '
-            '(calculating...)\r'
+            'Completed 1.0 MiB/~1.0 MiB (0 Bytes/s) with ~0 file(s) '
+            'remaining (calculating...)\r'
         )
         self.assertEqual(self.out_file.getvalue(), ref_success_statement)
 
@@ -1037,8 +1045,8 @@ class TestResultPrinter(BaseResultPrinterTest):
 
         ref_statement = (
             'upload failed: file to s3://mybucket/mykey my exception\n'
-            'Completed 1.0 MiB/~4.0 MiB with ~3 file(s) remaining '
-            '(calculating...)\r'
+            'Completed 1.0 MiB/~4.0 MiB (0 Bytes/s) with ~3 file(s) '
+            'remaining (calculating...)\r'
         )
         self.assertEqual(self.out_file.getvalue(), ref_statement)
 
@@ -1068,8 +1076,8 @@ class TestResultPrinter(BaseResultPrinterTest):
 
         ref_statement = (
             'upload failed: file to s3://mybucket/mykey my exception\n'
-            'Completed 1.0 MiB/~1.0 MiB with ~0 file(s) remaining '
-            '(calculating...)\r'
+            'Completed 1.0 MiB/~1.0 MiB (0 Bytes/s) with ~0 file(s) '
+            'remaining (calculating...)\r'
         )
         self.assertEqual(self.out_file.getvalue(), ref_statement)
 
@@ -1111,9 +1119,9 @@ class TestResultPrinter(BaseResultPrinterTest):
         # * The failure statement
         # * And the progress again since the transfer is still ongoing
         ref_statement = (
-            'Completed 1.0 MiB/20.0 MiB with 3 file(s) remaining\r'
-            'upload failed: file to s3://mybucket/mykey my exception\n'
-            'Completed 4.0 MiB/20.0 MiB with 2 file(s) remaining\r'
+            'Completed 1.0 MiB/20.0 MiB (0 Bytes/s) with 3 file(s) remaining\r'
+            'upload failed: file to s3://mybucket/mykey my exception        \n'
+            'Completed 4.0 MiB/20.0 MiB (0 Bytes/s) with 2 file(s) remaining\r'
         )
         self.assertEqual(shared_file.getvalue(), ref_statement)
 
@@ -1232,9 +1240,9 @@ class TestResultPrinter(BaseResultPrinterTest):
         # * The warning statement
         # * And the progress again since the transfer is still ongoing
         ref_statement = (
-            'Completed 1.0 MiB/20.0 MiB with 3 file(s) remaining\r'
-            'warning: my warning                                \n'
-            'Completed 1.0 MiB/20.0 MiB with 3 file(s) remaining\r'
+            'Completed 1.0 MiB/20.0 MiB (0 Bytes/s) with 3 file(s) remaining\r'
+            'warning: my warning                                            \n'
+            'Completed 1.0 MiB/20.0 MiB (0 Bytes/s) with 3 file(s) remaining\r'
         )
 
         self.assertEqual(shared_file.getvalue(), ref_statement)
@@ -1292,8 +1300,8 @@ class TestResultPrinter(BaseResultPrinterTest):
 
         ref_success_statement = (
             'upload: file to s3://mybucket/mykey\n'
-            'Completed 1.0 MiB/~1.0 MiB with ~0 file(s) remaining '
-            '(calculating...)\r'
+            'Completed 1.0 MiB/~1.0 MiB (0 Bytes/s) with ~0 file(s) '
+            'remaining (calculating...)\r'
         )
         self.assertEqual(self.out_file.getvalue(), ref_success_statement)
 
@@ -1307,10 +1315,10 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_printer(FinalTotalSubmissionsResult(1))
         ref_success_statement = (
             'upload: file to s3://mybucket/mykey\n'
-            'Completed 1.0 MiB/~1.0 MiB with ~0 file(s) remaining '
-            '(calculating...)\r'
-            '                                                     '
-            '                \n'
+            'Completed 1.0 MiB/~1.0 MiB (0 Bytes/s) '
+            'with ~0 file(s) remaining (calculating...)\r'
+            '                                             '
+            '                                    \n'
         )
         self.assertEqual(self.out_file.getvalue(), ref_success_statement)
 

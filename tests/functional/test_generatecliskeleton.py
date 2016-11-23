@@ -64,6 +64,16 @@ class TestGenerateCliSkeletonOutput(BaseAWSCommandParamsTest):
         # There should be no output as the command has no output shape
         self.assertEqual('', stdout)
 
+    def test_can_handle_timestamps(self):
+        cmdline = 's3api list-buckets --generate-cli-skeleton output'
+        stdout, _, _ = self.run_cmd(cmdline)
+        skeleton_output = json.loads(stdout)
+        # The CreationDate has the type of timestamp
+        self.assertEqual(
+            skeleton_output['Buckets'][0]['CreationDate'],
+            '1970-01-01T00:00:00'
+        )
+
     def test_respects_formatting(self):
         cmdline = 'ec2 describe-regions --generate-cli-skeleton output '
         cmdline += ' --query Regions[].RegionName --output text'

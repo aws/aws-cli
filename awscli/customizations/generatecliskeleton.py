@@ -19,6 +19,7 @@ from botocore.utils import ArgumentGenerator
 
 from awscli.clidriver import CLIOperationCaller
 from awscli.customizations.arguments import OverrideRequiredArgsArgument
+from awscli.utils import json_encoder
 
 
 def register_generate_cli_skeleton(cli):
@@ -101,7 +102,9 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
                     skeleton = argument_generator.generate_skeleton(
                         operation_input_shape)
 
-                sys.stdout.write(json.dumps(skeleton, indent=4))
+                sys.stdout.write(
+                    json.dumps(skeleton, indent=4, default=json_encoder)
+                )
                 sys.stdout.write('\n')
                 return 0
 

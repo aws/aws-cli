@@ -121,3 +121,32 @@ class TestGenerateCliSkeleton(unittest.TestCase):
             self.assertEqual('{}\n', mock_stdout.getvalue())
             # Ensure it is the correct return code of zero.
             self.assertEqual(rc, 0)
+
+    def test_generate_json_skeleton_with_timestamp(self):
+        parsed_args = mock.Mock()
+        parsed_args.generate_cli_skeleton = 'input'
+        input_shape = {
+            'A': {
+                'type': 'structure',
+                'members': {
+                    'B': {'type': 'timestamp'},
+                }
+            }
+        }
+        shape = DenormalizedStructureBuilder().with_members(
+            input_shape).build_model()
+        operation_model = mock.Mock(input_shape=shape)
+        argument = GenerateCliSkeletonArgument(
+            self.session, operation_model)
+        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+            rc = argument.generate_json_skeleton(
+                call_parameters=None, parsed_args=parsed_args,
+                parsed_globals=None
+            )
+            self.assertEqual(
+                '{\n'
+                '    "A": {\n'
+                '        "B": "1970-01-01T00:00:00"\n'
+                '    }\n'
+                '}\n', mock_stdout.getvalue())
+            self.assertEqual(rc, 0)

@@ -465,6 +465,54 @@ class ResultRecorderTest(unittest.TestCase):
             self.result_recorder.expected_bytes_transferred,
             self.total_transfer_size)
 
+    def test_progress_calculates_transfer_speed(self):
+        start_time = 0
+        self.total_transfer_size = 10
+        self.result_recorder(
+            QueuedResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, total_transfer_size=self.total_transfer_size
+            )
+        )
+        self.assertEqual(self.result_recorder.transfer_speed, 0)
+
+        self.result_recorder(
+            ProgressResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, bytes_transferred=1,
+                total_transfer_size=self.total_transfer_size,
+                timestamp=start_time
+            )
+        )
+        # For the very first progress result we do not have another
+        # progress result to compare timestamps to get a transfer speed
+        # so the recorded transfer speed should stay at 0
+        self.assertEqual(self.result_recorder.transfer_speed, 0)
+
+        self.result_recorder(
+            ProgressResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, bytes_transferred=4,
+                total_transfer_size=self.total_transfer_size,
+                timestamp=(start_time + 2)
+            )
+        )
+
+        # Five bytes have been transferred in two seconds
+        self.assertEqual(self.result_recorder.transfer_speed, 2.5)
+
+        self.result_recorder(
+            ProgressResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, bytes_transferred=1,
+                total_transfer_size=self.total_transfer_size,
+                timestamp=(start_time + 3)
+            )
+        )
+
+        # Six bytes have been transferred in three seconds
+        self.assertEqual(self.result_recorder.transfer_speed, 2.0)
+
     def test_success_result(self):
         self.result_recorder(
             QueuedResult(
@@ -837,6 +885,23 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_printer(progress_result)
         ref_progress_statement = (
             'Completed 1 file(s) with ~3 file(s) remaining (calculating...)\r')
+        self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
+
+    def test_progress_with_transfer_speed_reporting(self):
+        mb = 1024 * 1024
+
+        self.result_recorder.expected_bytes_transferred = 20 * mb
+        self.result_recorder.expected_files_transferred = 4
+        self.result_recorder.final_expected_files_transferred = 4
+        self.result_recorder.bytes_transferred = mb
+        self.result_recorder.files_transferred = 1
+        self.result_recorder.transfer_speed = 1024 * 7
+
+        progress_result = self.get_progress_result()
+        self.result_printer(progress_result)
+        ref_progress_statement = (
+            'Completed 1.0 MiB/20.0 MiB (7.0 KiB/s) with 3 file(s) '
+            'remaining\r')
         self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
 
     def test_success(self):

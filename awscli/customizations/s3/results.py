@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from __future__ import division
 import logging
 import sys
 import threading
@@ -277,7 +278,7 @@ class ResultRecorder(BaseResultHandler):
             self._get_ongoing_dict_key(result)] += bytes_transferred
         self.bytes_transferred += bytes_transferred
         if result.timestamp > self.start_time:
-            self.bytes_transfer_speed = 1.0 * self.bytes_transferred / (
+            self.bytes_transfer_speed = self.bytes_transferred / (
                 result.timestamp - self.start_time)
 
     def _update_ongoing_transfer_size_if_unknown(self, result):

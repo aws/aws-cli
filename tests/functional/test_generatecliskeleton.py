@@ -74,6 +74,12 @@ class TestGenerateCliSkeletonOutput(BaseAWSCommandParamsTest):
             '1970-01-01T00:00:00'
         )
 
+    def test_can_handle_lists_with_strings_that_have_a_min_length(self):
+        cmdline = 'dynamodb list-tables --generate-cli-skeleton output'
+        stdout, _, _ = self.run_cmd(cmdline)
+        skeleton_output = json.loads(stdout)
+        self.assertEqual(skeleton_output['TableNames'], ['TableName'])
+
     def test_respects_formatting(self):
         cmdline = 'ec2 describe-regions --generate-cli-skeleton output '
         cmdline += ' --query Regions[].RegionName --output text'

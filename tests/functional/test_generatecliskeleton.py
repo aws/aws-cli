@@ -89,7 +89,8 @@ class TestGenerateCliSkeletonOutput(BaseAWSCommandParamsTest):
     def test_validates_at_command_line_level(self):
         cmdline = 'ec2 create-vpc --generate-cli-skeleton output'
         stdout, stderr, _ = self.run_cmd(cmdline, expected_rc=2)
-        self.assertIn('--cidr-block is required', stderr)
+        self.assertIn('required', stderr)
+        self.assertIn('--cidr-block', stderr)
         self.assertEqual('', stdout)
 
     def test_validates_at_client_level(self):

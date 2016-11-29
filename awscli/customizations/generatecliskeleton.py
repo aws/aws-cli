@@ -52,7 +52,8 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
             '``output``, it validates the command inputs and returns a '
             'sample output JSON for that command.'
         ),
-        'nargs': '?', 'const': 'input',
+        'nargs': '?',
+        'const': 'input',
         'choices': ['input', 'output'],
     }
 
@@ -70,10 +71,10 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
         if arg_name in args:
             arg_location = args.index(arg_name)
             try:
-                # If the argument immediately preceeding
-                # --generate-cli-skeleton is output, then do not mark
-                # all of the other arguments as not required because
-                # output allows does parameter validation.
+                # If the value of --generate-cli-skeleton is ``output``,
+                # do not force required arguments to be optional as
+                # ``--generate-cli-skeleton output`` validates commands
+                # as well as print out the sample output.
                 if args[arg_location + 1] == 'output':
                     return
             except IndexError:

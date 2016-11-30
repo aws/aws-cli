@@ -17,6 +17,7 @@ import subprocess
 
 from botocore.configloader import raw_config_parse
 
+from awscli.commands import CLICommand
 from awscli.utils import emit_top_level_args_parsed_event
 
 
@@ -95,7 +96,7 @@ class AliasCommandInjector(object):
             command_table[alias_name] = alias_cmd
 
 
-class BaseAliasCommand(object):
+class BaseAliasCommand(CLICommand):
     _UNDOCUMENTED = True
 
     def __init__(self, alias_name, alias_value):

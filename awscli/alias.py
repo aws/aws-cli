@@ -233,9 +233,10 @@ class ServiceAliasCommand(BaseAliasCommand):
         global_params_to_update = []
         for parsed_param, value in vars(parsed_alias_args).items():
             # To determine which parameters in the alias were global values
-            # compare the parsed parameter to its default as specified by
-            # the parser. If the parsed value differs from the default value
-            # that global parameter must have been provided.
+            # compare the parsed alias parameters to the default as
+            # specified by the parser. If the parsed values from the alias
+            # differs from the default value in the parser,
+            # that global parameter must have been provided in the alias.
             if self._parser.get_default(parsed_param) != value:
                 if parsed_param in self.UNSUPPORTED_GLOBAL_PARAMETERS:
                     raise InvalidAliasException(

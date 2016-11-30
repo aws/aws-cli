@@ -455,24 +455,3 @@ class TestAliases(BaseAWSHelpOutputTest):
         self.add_alias('my-alias', 'ec2 describe-regions')
         self.driver.main(['help'])
         self.assert_not_contains('my-alias')
-
-    def test_alias_proxies_to_service_help(self):
-        self.add_alias('my-alias', 'ec2')
-        self.driver.main(['my-alias', 'help'])
-        self.assert_contains('ec2')
-        self.assert_contains('run-instances')
-        self.assert_not_contains('my-alias')
-
-    def test_alias_then_operation_proxies_to_operation_help(self):
-        self.add_alias('my-alias', 'ec2')
-        self.driver.main(['my-alias', 'describe-regions', 'help'])
-        self.assert_contains('describe-regions')
-        self.assert_contains('--region-names')
-        self.assert_not_contains('my-alias')
-
-    def test_alias_with_operation_proxies_to_operation_help(self):
-        self.add_alias('my-alias', 'ec2 describe-regions')
-        self.driver.main(['my-alias', 'help'])
-        self.assert_contains('describe-regions')
-        self.assert_contains('--region-names')
-        self.assert_not_contains('my-alias')

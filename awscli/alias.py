@@ -28,20 +28,20 @@ class InvalidAliasException(Exception):
 
 
 class AliasLoader(object):
-    ALIAS_FILENAME = os.path.expanduser(
-        os.path.join('~', '.aws', 'cli', 'alias'))
-
-    def __init__(self, alias_filename=None):
+    def __init__(self,
+                 alias_filename=os.path.expanduser(
+                     os.path.join('~', '.aws', 'cli', 'alias'))):
         """Interface for loading and interacting with alias file
 
         :param alias_filename: The name of the file to load aliases from.
             This file must be an INI file.
         """
         self._filename = alias_filename
-        if alias_filename is None:
-            self._filename = self.ALIAS_FILENAME
+        self._aliases = None
+
+    def _build_aliases(self):
         self._aliases = self._load_aliases()
-        self._cleanup_alias_values()
+        self._cleanup_alias_values(self._aliases['toplevel'])
 
     def _load_aliases(self):
         if os.path.exists(self._filename):
@@ -49,14 +49,15 @@ class AliasLoader(object):
                 self._filename, parse_subsections=False)
         return {'toplevel': {}}
 
-    def _cleanup_alias_values(self):
-        aliases = self.get_aliases()
+    def _cleanup_alias_values(self, aliases):
         for alias in aliases:
             # Beginning and end line separators should not be included
             # in the internal representation of the alias value.
             aliases[alias] = aliases[alias].strip(os.linesep)
 
     def get_aliases(self):
+        if self._aliases is None:
+            self._build_aliases()
         return self._aliases.get('toplevel', {})
 
 

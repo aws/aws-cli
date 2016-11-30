@@ -80,7 +80,7 @@ class CLIDriver(object):
         self._cli_data = None
         self._command_table = None
         self._argument_table = None
-        self._command_table_with_aliases = None
+        self.alias_loader = AliasLoader()
 
     def _get_cli_data(self):
         # Not crazy about this but the data in here is needed in
@@ -99,12 +99,6 @@ class CLIDriver(object):
         if self._argument_table is None:
             self._argument_table = self._build_argument_table()
         return self._argument_table
-
-    def _get_command_table_with_aliases(self):
-        if self._command_table_with_aliases is None:
-            self._command_table_with_aliases = \
-                self._build_command_table_with_aliases()
-        return self._command_table_with_aliases
 
     def _build_command_table(self):
         """
@@ -131,7 +125,6 @@ class CLIDriver(object):
         return commands
 
     def _add_aliases(self, command_table, parser):
-        alias_loader = AliasLoader()
         parser = self._create_parser(command_table)
         injector = AliasCommandInjector(
             self.session, self.alias_loader)

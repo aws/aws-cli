@@ -13,7 +13,6 @@
 import os
 
 from awscli.alias import AliasLoader
-from awscli.testutils import mock
 from awscli.testutils import FileCreator
 from awscli.testutils import BaseAWSCommandParamsTest
 
@@ -38,6 +37,10 @@ class TestAliases(BaseAWSCommandParamsTest):
         cmdline = 'my-alias'
         self.assert_params_for_cmd(cmdline, {})
         self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(
+            self.operations_called[0][0].service_model.service_name,
+            'ec2'
+        )
         self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
 
     def test_subcommand_alias_with_additonal_params(self):
@@ -46,6 +49,10 @@ class TestAliases(BaseAWSCommandParamsTest):
         cmdline = 'my-alias'
         self.assert_params_for_cmd(cmdline, {'RegionNames': ['us-east-1']})
         self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(
+            self.operations_called[0][0].service_model.service_name,
+            'ec2'
+        )
         self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
 
     def test_subcommand_alias_then_additonal_params(self):
@@ -53,6 +60,10 @@ class TestAliases(BaseAWSCommandParamsTest):
         cmdline = 'my-alias describe-regions --region-names us-east-1'
         self.assert_params_for_cmd(cmdline, {'RegionNames': ['us-east-1']})
         self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(
+            self.operations_called[0][0].service_model.service_name,
+            'ec2'
+        )
         self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
 
     def test_subcommand_alias_with_global_params(self):
@@ -72,6 +83,10 @@ class TestAliases(BaseAWSCommandParamsTest):
         cmdline = 'my-alias'
         stdout, _, _ = self.assert_params_for_cmd(cmdline, {})
         self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(
+            self.operations_called[0][0].service_model.service_name,
+            'ec2'
+        )
         self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
         self.assertEqual(stdout.strip(), 'us-east-1')
 
@@ -92,6 +107,10 @@ class TestAliases(BaseAWSCommandParamsTest):
         cmdline += '--output=text'
         stdout, _, _ = self.assert_params_for_cmd(cmdline, {})
         self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(
+            self.operations_called[0][0].service_model.service_name,
+            'ec2'
+        )
         self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
         self.assertEqual(stdout.strip(), 'us-east-1')
 
@@ -112,6 +131,10 @@ class TestAliases(BaseAWSCommandParamsTest):
         cmdline += 'my-alias'
         stdout, _, _ = self.assert_params_for_cmd(cmdline, {})
         self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(
+            self.operations_called[0][0].service_model.service_name,
+            'ec2'
+        )
         self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
         self.assertEqual(stdout.strip(), 'us-east-1')
 
@@ -127,6 +150,10 @@ class TestAliases(BaseAWSCommandParamsTest):
         cmdline = 'ec2 describe-regions'
         stdout, _, _ = self.assert_params_for_cmd(cmdline, {})
         self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(
+            self.operations_called[0][0].service_model.service_name,
+            'ec2'
+        )
         self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
 
     def test_alias_chaining(self):
@@ -136,6 +163,10 @@ class TestAliases(BaseAWSCommandParamsTest):
         cmdline = 'wrapper-alias'
         self.assert_params_for_cmd(cmdline, {'RegionNames': ['us-east-1']})
         self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(
+            self.operations_called[0][0].service_model.service_name,
+            'ec2'
+        )
         self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
 
     def test_alias_chaining_with_globals(self):
@@ -156,6 +187,10 @@ class TestAliases(BaseAWSCommandParamsTest):
         ]
         stdout, _, _ = self.assert_params_for_cmd(cmdline, {})
         self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(
+            self.operations_called[0][0].service_model.service_name,
+            'ec2'
+        )
         self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
         self.assertEqual(stdout.strip(), 'us-east-1')
 

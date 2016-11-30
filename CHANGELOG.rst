@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.11.23
+=======
+
+* feature:``polly``: Update polly command to latest version
+* feature:``snowball``: Update snowball command to latest version
+* feature:``rekognition``: Update rekognition command to latest version
+* feature:``lightsail``: Update lightsail command to latest version
+* feature:``--generate-cli-skeleton output``: Add support for generating sample output for command
+
+
 1.11.22
 =======
 

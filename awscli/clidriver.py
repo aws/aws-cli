@@ -666,6 +666,13 @@ class CLIOperationCaller(object):
             service_name, region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl)
+        response = self._make_client_call(
+            client, operation_name, parameters, parsed_globals)
+        self._display_response(operation_name, response, parsed_globals)
+        return 0
+
+    def _make_client_call(self, client, operation_name, parameters,
+                          parsed_globals):
         py_operation_name = xform_name(operation_name)
         if client.can_paginate(py_operation_name) and parsed_globals.paginate:
             paginator = client.get_paginator(py_operation_name)
@@ -673,8 +680,7 @@ class CLIOperationCaller(object):
         else:
             response = getattr(client, xform_name(operation_name))(
                 **parameters)
-        self._display_response(operation_name, response, parsed_globals)
-        return 0
+        return response
 
     def _display_response(self, command_name, response,
                           parsed_globals):

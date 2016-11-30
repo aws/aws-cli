@@ -35,8 +35,7 @@ class AliasLoader(object):
         """Interface for loading and interacting with alias file
 
         :param alias_filename: The name of the file to load aliases from.
-            This file must be an INI file. If no filename is provided,
-            the value of ALIAS_FILENAME will be used.
+            This file must be an INI file.
         """
         self._filename = alias_filename
         if alias_filename is None:
@@ -59,6 +58,40 @@ class AliasLoader(object):
 
     def get_aliases(self):
         return self._aliases.get('toplevel', {})
+
+
+class AliasCommandInjector(object):
+    def __init__(self, session, alias_loader):
+        """Injects alias commands for a command table
+
+        :type session: botocore.session.Session
+        :param session: The botocore session
+
+        :type alias_loader: awscli.alias.AliasLoader
+        :param alias_loader: The alias loader to use
+        """
+        self._session = session
+        self._alias_loader = alias_loader
+
+    def inject_aliases(self, command_table, parser):
+        for alias_name, alias_value in \
+                self._alias_loader.get_aliases().items():
+            if alias_value.startswith('!'):
+                alias_cmd = ExternalAliasCommand(alias_name, alias_value)
+            else:
+                service_alias_cmd_args = [
+                    alias_name, alias_value, self._session, command_table,
+                    parser
+                ]
+                # If the alias name matches something already in the
+                # command table provide the command it is about
+                # to clobber as a possible reference that it will
+                # need to proxy to.
+                if alias_name in command_table:
+                    service_alias_cmd_args.append(
+                        command_table[alias_name])
+                alias_cmd = ServiceAliasCommand(*service_alias_cmd_args)
+            command_table[alias_name] = alias_cmd
 
 
 class BaseAliasCommand(object):
@@ -96,7 +129,7 @@ class ServiceAliasCommand(BaseAliasCommand):
     ]
 
     def __init__(self, alias_name, alias_value, session, command_table,
-                 parser):
+                 parser, shadow_proxy_command=None):
         """Command for a `toplevel` subcommand alias
 
         :type alias_name: string
@@ -119,11 +152,19 @@ class ServiceAliasCommand(BaseAliasCommand):
             of a CLI command which includes service commands and global
             parameters. This is used to parse the service commmand and any
             global parameters from the alias's value.
+
+        :type shadow_proxy_command: CLICommand
+        :param shadow_proxy_command: A built-in command that
+            potentially shadows the alias in name. If the alias
+            references this command in its value, the alias should proxy
+            to this command as oppposed to proxy to itself in the command
+            table
         """
         super(ServiceAliasCommand, self).__init__(alias_name, alias_value)
         self._session = session
         self._command_table = command_table
         self._parser = parser
+        self._shadow_proxy_command = shadow_proxy_command
 
     def __call__(self, args, parsed_globals):
         alias_args = self._get_alias_args()
@@ -138,8 +179,20 @@ class ServiceAliasCommand(BaseAliasCommand):
             self._alias_name, remaining, parsed_alias_args.command)
         # Pass the update remaing args and global args to the service command
         # the alias proxied to.
-        return self._command_table[parsed_alias_args.command](
-            remaining, parsed_globals)
+        command = self._command_table[parsed_alias_args.command]
+        if self._shadow_proxy_command:
+            shadow_name = self._shadow_proxy_command.name
+            # Use the shadow command only if the aliases value
+            # uses that command indicating it needs to proxy over to
+            # a built-in command.
+            if shadow_name == parsed_alias_args.command:
+                LOG.debug(
+                    'Using shadowed command object: %s '
+                    'for alias: %s', self._shadow_proxy_command,
+                    self._alias_name
+                )
+                command = self._shadow_proxy_command
+        return command(remaining, parsed_globals)
 
     def _get_alias_args(self):
         try:

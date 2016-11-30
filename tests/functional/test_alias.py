@@ -130,6 +130,43 @@ class TestAliases(BaseAWSCommandParamsTest):
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'ListBuckets')
 
+    def test_alias_proxies_to_shadowed_command(self):
+        self.add_alias('ec2', 'ec2')
+        cmdline = 'ec2 describe-regions'
+        stdout, _, _ = self.assert_params_for_cmd(cmdline, {})
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
+
+    def test_alias_chaining(self):
+        self.add_alias('base-alias', 'ec2 describe-regions')
+        self.add_alias(
+            'wrapper-alias', 'base-alias --region-names us-east-1')
+        cmdline = 'wrapper-alias'
+        self.assert_params_for_cmd(cmdline, {'RegionNames': ['us-east-1']})
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
+
+    def test_alias_chaining_with_globals(self):
+        self.add_alias('base-alias', 'ec2 describe-regions')
+        self.add_alias(
+            'wrapper-alias',
+            'base-alias --query Regions[].RegionName --output text')
+        cmdline = 'wrapper-alias'
+        self.parsed_responses = [
+            {
+                'Regions': [
+                    {
+                        'Endpoint': 'ec2.us-east-1.amazonaws.com',
+                        'RegionName': 'us-east-1'
+                    }
+                ]
+            }
+        ]
+        stdout, _, _ = self.assert_params_for_cmd(cmdline, {})
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
+        self.assertEqual(stdout.strip('\n'), 'us-east-1')
+
     def test_external_alias(self):
         # The external alias is tested by using mkdir; a command that
         # is universal for the various OS's we support

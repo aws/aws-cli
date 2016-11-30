@@ -39,8 +39,7 @@ from awscli.arguments import CLIArgument
 from awscli.arguments import UnknownArgumentError
 from awscli.argprocess import unpack_argument
 from awscli.alias import AliasLoader
-from awscli.alias import ServiceAliasCommand
-from awscli.alias import ExternalAliasCommand
+from awscli.alias import AliasCommandInjector
 from awscli.utils import emit_top_level_args_parsed_event
 
 
@@ -131,25 +130,12 @@ class CLIDriver(object):
                                                     service_name=service_name)
         return commands
 
-    def _build_command_table_with_aliases(self):
-        command_table_with_aliases = OrderedDict()
-        command_table = self._get_command_table()
-        parser = self._create_parser(command_table)
-
-        for command_name, command_obj in command_table.items():
-            command_table_with_aliases[command_name] = command_obj
-
+    def _add_aliases(self, command_table, parser):
         alias_loader = AliasLoader()
-        for alias_name, alias_value in alias_loader.get_aliases().items():
-            if alias_value.startswith('!'):
-                alias_cmd = ExternalAliasCommand(alias_name, alias_value)
-            else:
-                alias_cmd = ServiceAliasCommand(
-                    alias_name, alias_value, self.session, command_table,
-                    parser)
-            command_table_with_aliases[alias_name] = alias_cmd
-
-        return command_table_with_aliases
+        parser = self._create_parser(command_table)
+        injector = AliasCommandInjector(
+            self.session, self.alias_loader)
+        injector.inject_aliases(command_table, parser)
 
     def _build_argument_table(self):
         argument_table = OrderedDict()
@@ -203,8 +189,9 @@ class CLIDriver(object):
         """
         if args is None:
             args = sys.argv[1:]
-        command_table = self._get_command_table_with_aliases()
+        command_table = self._get_command_table()
         parser = self._create_parser(command_table)
+        self._add_aliases(command_table, parser)
         parsed_args, remaining = parser.parse_known_args(args)
         try:
             # Because _handle_top_level_args emits events, it's possible

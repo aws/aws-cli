@@ -17,6 +17,7 @@ from awscli.testutils import mock
 from awscli.testutils import FileCreator
 from awscli.alias import InvalidAliasException
 from awscli.alias import AliasLoader
+from awscli.alias import AliasCommandInjector
 from awscli.alias import BaseAliasCommand
 from awscli.alias import ServiceAliasCommand
 from awscli.alias import ExternalAliasCommand
@@ -113,6 +114,77 @@ class TestAliasLoader(unittest.TestCase):
              'my-second-alias': 'my-second-alias-value'})
 
 
+class TestAliasCommandInjector(unittest.TestCase):
+    def setUp(self):
+        self.files = FileCreator()
+        self.alias_file = self.files.create_file('alias', '[toplevel]\n')
+        self.alias_loader = AliasLoader(self.alias_file)
+        self.session = mock.Mock()
+        self.alias_cmd_injector = AliasCommandInjector(
+            self.session, self.alias_loader)
+        self.command_table = {}
+        self.parser = MainArgParser(
+            command_table=self.command_table,
+            version_string='version',
+            description='description',
+            argument_table={}
+        )
+
+    def tearDown(self):
+        self.files.remove_all()
+
+    def test_service_alias_command(self):
+        with open(self.alias_file, 'a+') as f:
+            f.write('my-alias = my-alias-value\n')
+
+        self.alias_cmd_injector.inject_aliases(
+            self.command_table, self.parser)
+        self.assertIn('my-alias', self.command_table)
+        self.assertIsInstance(
+            self.command_table['my-alias'], ServiceAliasCommand)
+
+    def test_external_alias_command(self):
+        with open(self.alias_file, 'a+') as f:
+            f.write('my-alias = !my-alias-value\n')
+
+        self.alias_cmd_injector.inject_aliases(
+            self.command_table, self.parser)
+        self.assertIn('my-alias', self.command_table)
+        self.assertIsInstance(
+            self.command_table['my-alias'], ExternalAliasCommand)
+
+    def test_clobbers_builtins(self):
+        builtin_cmd = mock.Mock()
+        self.command_table['builtin'] = builtin_cmd
+
+        with open(self.alias_file, 'a+') as f:
+            f.write('builtin = my-alias-value\n')
+
+        self.alias_cmd_injector.inject_aliases(
+            self.command_table, self.parser)
+        self.assertIn('builtin', self.command_table)
+        self.assertIsInstance(
+            self.command_table['builtin'], ServiceAliasCommand)
+
+    def test_shadow_proxy_command(self):
+        builtin_cmd = mock.Mock()
+        builtin_cmd.name = 'builtin'
+        self.command_table['builtin'] = builtin_cmd
+
+        with open(self.alias_file, 'a+') as f:
+            f.write('builtin = builtin\n')
+
+        self.alias_cmd_injector.inject_aliases(
+            self.command_table, self.parser)
+
+        self.command_table['builtin'](
+            [], FakeParsedArgs(command='builtin'))
+        # The builtin command should be passed to the alias
+        # command when added to the table.
+        builtin_cmd.assert_called_with(
+            [], FakeParsedArgs(command='builtin'))
+
+
 class TestBaseAliasCommand(unittest.TestCase):
     def test_name(self):
         alias_cmd = BaseAliasCommand('alias-name', 'alias-value')
@@ -155,6 +227,47 @@ class TestServiceAliasCommand(unittest.TestCase):
         alias_cmd([], FakeParsedArgs(command=self.alias_name))
         command_table['myservice'].assert_called_with(
             [], FakeParsedArgs(command='myservice'))
+
+    def tests_alias_with_shadow_proxy_command(self):
+        alias_value = 'some-service'
+        self.alias_name = alias_value
+
+        shadow_proxy_command = mock.Mock()
+        shadow_proxy_command.name = alias_value
+
+        command_table = {}
+        parser = self.create_parser(command_table)
+
+        alias_cmd = ServiceAliasCommand(
+            self.alias_name, alias_value, self.session, command_table,
+            parser, shadow_proxy_command)
+        command_table[self.alias_name] = alias_cmd
+
+        alias_cmd([], FakeParsedArgs(command=self.alias_name))
+        shadow_proxy_command.assert_called_with(
+            [], FakeParsedArgs(command=alias_value))
+
+    def test_alias_with_shadow_proxy_command_no_match(self):
+        alias_value = 'some-other-command'
+        self.alias_name = 'some-service'
+
+        shadow_proxy_command = mock.Mock()
+        shadow_proxy_command.name = 'some-service'
+
+        command_table = self.create_command_table(['some-other-command'])
+        parser = self.create_parser(command_table)
+
+        alias_cmd = ServiceAliasCommand(
+            self.alias_name, alias_value, self.session, command_table,
+            parser, shadow_proxy_command)
+        command_table[self.alias_name] = alias_cmd
+
+        alias_cmd([], FakeParsedArgs(command=self.alias_name))
+        command_table['some-other-command'].assert_called_with(
+            [], FakeParsedArgs(command=alias_value))
+        # Even though it was provided, it should not be called because
+        # the alias value did not match the shadow command name.
+        self.assertFalse(shadow_proxy_command.called)
 
     def test_alias_with_operation_command(self):
         alias_value = 'myservice myoperation'

@@ -13,6 +13,7 @@
 import os
 
 from awscli.alias import AliasLoader
+from awscli.testutils import skip_if_windows
 from awscli.testutils import FileCreator
 from awscli.testutils import BaseAWSCommandParamsTest
 
@@ -207,5 +208,14 @@ class TestAliases(BaseAWSCommandParamsTest):
         # is universal for the various OS's we support
         directory_to_make = os.path.join(self.files.rootdir, 'newdir')
         self.add_alias('mkdir', '!mkdir')
+        self.run_cmd('mkdir %s' % directory_to_make)
+        self.assertTrue(os.path.isdir(directory_to_make))
+
+    @skip_if_windows('Windows does not support BASH functions')
+    def test_external_alias_with_wrapper_bash_function(self):
+        # The external alias is tested by using mkdir; a command that
+        # is universal for the various OS's we support
+        directory_to_make = os.path.join(self.files.rootdir, 'newdir')
+        self.add_alias('mkdir', '!f() { mkdir "${1}"; }; f')
         self.run_cmd('mkdir %s' % directory_to_make)
         self.assertTrue(os.path.isdir(directory_to_make))

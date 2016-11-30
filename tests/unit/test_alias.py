@@ -12,6 +12,8 @@
 # language governing permissions and limitations under the License.
 import os
 
+from botocore.session import Session
+
 from awscli.testutils import unittest
 from awscli.testutils import mock
 from awscli.testutils import FileCreator
@@ -22,6 +24,7 @@ from awscli.alias import BaseAliasCommand
 from awscli.alias import ServiceAliasCommand
 from awscli.alias import ExternalAliasCommand
 from awscli.argparser import MainArgParser
+from awscli.commands import CLICommand
 
 
 class FakeParsedArgs(object):
@@ -119,7 +122,7 @@ class TestAliasCommandInjector(unittest.TestCase):
         self.files = FileCreator()
         self.alias_file = self.files.create_file('alias', '[toplevel]\n')
         self.alias_loader = AliasLoader(self.alias_file)
-        self.session = mock.Mock()
+        self.session = mock.Mock(spec=Session)
         self.alias_cmd_injector = AliasCommandInjector(
             self.session, self.alias_loader)
         self.command_table = {}
@@ -154,7 +157,7 @@ class TestAliasCommandInjector(unittest.TestCase):
             self.command_table['my-alias'], ExternalAliasCommand)
 
     def test_clobbers_builtins(self):
-        builtin_cmd = mock.Mock()
+        builtin_cmd = mock.Mock(spec=CLICommand)
         self.command_table['builtin'] = builtin_cmd
 
         with open(self.alias_file, 'a+') as f:
@@ -167,7 +170,7 @@ class TestAliasCommandInjector(unittest.TestCase):
             self.command_table['builtin'], ServiceAliasCommand)
 
     def test_shadow_proxy_command(self):
-        builtin_cmd = mock.Mock()
+        builtin_cmd = mock.Mock(spec=CLICommand)
         builtin_cmd.name = 'builtin'
         self.command_table['builtin'] = builtin_cmd
 
@@ -196,12 +199,12 @@ class TestBaseAliasCommand(unittest.TestCase):
 class TestServiceAliasCommand(unittest.TestCase):
     def setUp(self):
         self.alias_name = 'myalias'
-        self.session = mock.Mock()
+        self.session = mock.Mock(spec=Session)
 
     def create_command_table(self, services):
         command_table = {}
         for service in services:
-            command_table[service] = mock.Mock()
+            command_table[service] = mock.Mock(spec=CLICommand)
         return command_table
 
     def create_parser(self, command_table, extra_params=None):
@@ -232,7 +235,7 @@ class TestServiceAliasCommand(unittest.TestCase):
         alias_value = 'some-service'
         self.alias_name = alias_value
 
-        shadow_proxy_command = mock.Mock()
+        shadow_proxy_command = mock.Mock(spec=CLICommand)
         shadow_proxy_command.name = alias_value
 
         command_table = {}
@@ -251,7 +254,7 @@ class TestServiceAliasCommand(unittest.TestCase):
         alias_value = 'some-other-command'
         self.alias_name = 'some-service'
 
-        shadow_proxy_command = mock.Mock()
+        shadow_proxy_command = mock.Mock(spec=CLICommand)
         shadow_proxy_command.name = 'some-service'
 
         command_table = self.create_command_table([alias_value])

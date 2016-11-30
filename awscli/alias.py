@@ -41,7 +41,7 @@ class AliasLoader(object):
 
     def _build_aliases(self):
         self._aliases = self._load_aliases()
-        self._cleanup_alias_values(self._aliases['toplevel'])
+        self._cleanup_alias_values(self._aliases.get('toplevel', {}))
 
     def _load_aliases(self):
         if os.path.exists(self._filename):
@@ -53,7 +53,7 @@ class AliasLoader(object):
         for alias in aliases:
             # Beginning and end line separators should not be included
             # in the internal representation of the alias value.
-            aliases[alias] = aliases[alias].strip(os.linesep)
+            aliases[alias] = aliases[alias].strip()
 
     def get_aliases(self):
         if self._aliases is None:
@@ -250,7 +250,7 @@ class ExternalAliasCommand(BaseAliasCommand):
     """Command for `toplevel` external alias"""
     def __call__(self, args, parsed_globals):
         command_components = [
-            self._alias_value.lstrip('!')
+            self._alias_value[1:]
         ]
         command_components.extend(args)
         command = ' '.join(command_components)

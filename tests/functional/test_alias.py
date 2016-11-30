@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 
+from awscli.alias import AliasLoader
 from awscli.testutils import mock
 from awscli.testutils import FileCreator
 from awscli.testutils import BaseAWSCommandParamsTest
@@ -72,7 +73,7 @@ class TestAliases(BaseAWSCommandParamsTest):
         stdout, _, _ = self.assert_params_for_cmd(cmdline, {})
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
-        self.assertEqual(stdout.strip('\n'), 'us-east-1')
+        self.assertEqual(stdout.strip(), 'us-east-1')
 
     def test_subcommand_alias_then_global_params(self):
         self.add_alias('my-alias', 'ec2 describe-regions')
@@ -92,7 +93,7 @@ class TestAliases(BaseAWSCommandParamsTest):
         stdout, _, _ = self.assert_params_for_cmd(cmdline, {})
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
-        self.assertEqual(stdout.strip('\n'), 'us-east-1')
+        self.assertEqual(stdout.strip(), 'us-east-1')
 
     def test_global_params_then_subcommand_alias(self):
         self.add_alias('my-alias', 'ec2 describe-regions')
@@ -112,7 +113,7 @@ class TestAliases(BaseAWSCommandParamsTest):
         stdout, _, _ = self.assert_params_for_cmd(cmdline, {})
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
-        self.assertEqual(stdout.strip('\n'), 'us-east-1')
+        self.assertEqual(stdout.strip(), 'us-east-1')
 
     def test_alias_overrides_builtin_command(self):
         self.add_alias('ec2', 's3api')
@@ -156,7 +157,7 @@ class TestAliases(BaseAWSCommandParamsTest):
         stdout, _, _ = self.assert_params_for_cmd(cmdline, {})
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
-        self.assertEqual(stdout.strip('\n'), 'us-east-1')
+        self.assertEqual(stdout.strip(), 'us-east-1')
 
     def test_external_alias(self):
         # The external alias is tested by using mkdir; a command that

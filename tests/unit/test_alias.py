@@ -219,7 +219,7 @@ class TestServiceAliasCommand(unittest.TestCase):
     def test_alias_with_only_service_command(self):
         alias_value = 'myservice'
 
-        command_table = self.create_command_table(['myservice'])
+        command_table = self.create_command_table([alias_value])
         parser = self.create_parser(command_table)
         alias_cmd = ServiceAliasCommand(
             self.alias_name, alias_value, self.session, command_table, parser)
@@ -254,7 +254,7 @@ class TestServiceAliasCommand(unittest.TestCase):
         shadow_proxy_command = mock.Mock()
         shadow_proxy_command.name = 'some-service'
 
-        command_table = self.create_command_table(['some-other-command'])
+        command_table = self.create_command_table([alias_value])
         parser = self.create_parser(command_table)
 
         alias_cmd = ServiceAliasCommand(
@@ -263,7 +263,7 @@ class TestServiceAliasCommand(unittest.TestCase):
         command_table[self.alias_name] = alias_cmd
 
         alias_cmd([], FakeParsedArgs(command=self.alias_name))
-        command_table['some-other-command'].assert_called_with(
+        command_table[alias_value].assert_called_with(
             [], FakeParsedArgs(command=alias_value))
         # Even though it was provided, it should not be called because
         # the alias value did not match the shadow command name.

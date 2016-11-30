@@ -91,6 +91,10 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
             if for_output:
                 service_name = operation_model.service_model.service_name
                 operation_name = operation_model.name
+                # TODO: It would be better to abstract this logic into
+                # classes for both the input and output option such that
+                # a similar set of inputs are taken in and output
+                # similar functionality.
                 return StubbedCLIOperationCaller(self._session).invoke(
                     service_name, operation_name, call_parameters,
                     parsed_globals)

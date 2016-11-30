@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+import subprocess
 
 from botocore.session import Session
 
@@ -513,20 +514,23 @@ class TestServiceAliasCommand(unittest.TestCase):
 
 
 class TestExternalAliasCommand(unittest.TestCase):
+    def setUp(self):
+        self.subprocess_call = mock.Mock(spec=subprocess.call)
+
     def test_run_external_command(self):
         alias_value = '!ls'
-        alias_cmd = ExternalAliasCommand('alias-name', alias_value)
-        with mock.patch('subprocess.call') as subprocess_call:
-            alias_cmd([], FakeParsedArgs(command='alias-name'))
-            subprocess_call.assert_called_with('ls', shell=True)
+        alias_cmd = ExternalAliasCommand(
+            'alias-name', alias_value, invoker=self.subprocess_call)
+        alias_cmd([], FakeParsedArgs(command='alias-name'))
+        self.subprocess_call.assert_called_with('ls', shell=True)
 
     def test_external_command_returns_rc_of_subprocess_call(self):
         alias_value = '!ls'
-        alias_cmd = ExternalAliasCommand('alias-name', alias_value)
-        with mock.patch('subprocess.call') as subprocess_call:
-            subprocess_call.return_value = 1
-            self.assertEqual(
-                alias_cmd([], FakeParsedArgs(command='alias-name')), 1)
+        alias_cmd = ExternalAliasCommand(
+            'alias-name', alias_value, invoker=self.subprocess_call)
+        self.subprocess_call.return_value = 1
+        self.assertEqual(
+            alias_cmd([], FakeParsedArgs(command='alias-name')), 1)
 
     def test_external_command_uses_literal_alias_value(self):
         alias_value = (
@@ -534,15 +538,15 @@ class TestExternalAliasCommand(unittest.TestCase):
             '  ls .\n'
             '}; f'
         )
-        alias_cmd = ExternalAliasCommand('alias-name', alias_value)
-        with mock.patch('subprocess.call') as subprocess_call:
-            alias_cmd([], FakeParsedArgs(command='alias-name'))
-            subprocess_call.assert_called_with(alias_value[1:], shell=True)
+        alias_cmd = ExternalAliasCommand(
+            'alias-name', alias_value, invoker=self.subprocess_call)
+        alias_cmd([], FakeParsedArgs(command='alias-name'))
+        self.subprocess_call.assert_called_with(alias_value[1:], shell=True)
 
     def test_external_command_then_additional_args(self):
         alias_value = '!f () { ls "$1" }; f'
-        alias_cmd = ExternalAliasCommand('alias-name', alias_value)
-        with mock.patch('subprocess.call') as subprocess_call:
-            alias_cmd(['extra'], FakeParsedArgs(command='alias-name'))
-            subprocess_call.assert_called_with(
-                'f () { ls "$1" }; f extra', shell=True)
+        alias_cmd = ExternalAliasCommand(
+            'alias-name', alias_value, invoker=self.subprocess_call)
+        alias_cmd(['extra'], FakeParsedArgs(command='alias-name'))
+        self.subprocess_call.assert_called_with(
+            'f () { ls "$1" }; f extra', shell=True)

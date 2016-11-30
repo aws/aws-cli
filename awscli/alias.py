@@ -248,7 +248,27 @@ class ServiceAliasCommand(BaseAliasCommand):
 
 
 class ExternalAliasCommand(BaseAliasCommand):
-    """Command for `toplevel` external alias"""
+    def __init__(self, alias_name, alias_value, invoker=subprocess.call):
+        """Command for external aliases
+
+        Executes command external of CLI as opposed to being a proxy
+        to another command.
+
+        :type alias_name: string
+        :param alias_name: The name of the alias
+
+        :type alias_value: string
+        :param alias_value: The parsed value of the alias. This can be
+            retrieved from `AliasLoader.get_aliases()[alias_name]`
+
+        :type invoker: callable
+        :param invoker: Callable to run arguments of external alias. The
+            signature should match that of ``subprocess.call``
+        """
+        self._alias_name = alias_name
+        self._alias_value = alias_value
+        self._invoker = invoker
+
     def __call__(self, args, parsed_globals):
         command_components = [
             self._alias_value[1:]
@@ -258,4 +278,4 @@ class ExternalAliasCommand(BaseAliasCommand):
         LOG.debug(
             'Using external alias %r with value: %r to run: %r',
             self._alias_name, self._alias_value, command)
-        return subprocess.call(command, shell=True)
+        return self._invoker(command, shell=True)

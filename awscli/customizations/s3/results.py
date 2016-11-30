@@ -277,6 +277,13 @@ class ResultRecorder(BaseResultHandler):
         self._ongoing_progress[
             self._get_ongoing_dict_key(result)] += bytes_transferred
         self.bytes_transferred += bytes_transferred
+        # Since the start time is captured in the result recorder and
+        # capture timestamps in the subscriber, there is a chance that if
+        # a progress result gets created right after the queued result
+        # gets created that the timestamp on the progress result is less
+        # than the timestamp of when the result processor actually
+        # processes that initial queued result. So this will avoid
+        # negative progress being displayed or zero divison occuring.
         if result.timestamp > self.start_time:
             self.bytes_transfer_speed = self.bytes_transferred / (
                 result.timestamp - self.start_time)

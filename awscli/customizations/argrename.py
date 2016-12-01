@@ -50,6 +50,10 @@ ARGUMENT_RENAMES = {
     'gamelift.update-build.version': 'build-version',
     'route53domains.view-billing.start': 'start-time',
     'route53domains.view-billing.end': 'end-time',
+    'apigateway.create-rest-api.version': 'api-version',
+    'pinpoint.get-campaign-version.version': 'campaign-version',
+    'pinpoint.get-segment-version.version': 'segment-version',
+    'stepfunctions.send-task-success.output': 'task-output',
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,

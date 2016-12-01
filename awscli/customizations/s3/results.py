@@ -10,9 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from __future__ import division
 import logging
 import sys
 import threading
+import time
 from collections import namedtuple
 from collections import defaultdict
 
@@ -50,7 +52,8 @@ def _create_new_result_cls(name, extra_fields=None, base_cls=BaseResult):
 QueuedResult = _create_new_result_cls('QueuedResult', ['total_transfer_size'])
 
 ProgressResult = _create_new_result_cls(
-    'ProgressResult', ['bytes_transferred', 'total_transfer_size'])
+    'ProgressResult', ['bytes_transferred', 'total_transfer_size',
+                       'timestamp'])
 
 SuccessResult = _create_new_result_cls('SuccessResult')
 
@@ -97,7 +100,8 @@ class BaseResultSubscriber(OnDoneFilteredSubscriber):
     def on_progress(self, future, bytes_transferred, **kwargs):
         result_kwargs = self._result_kwargs_cache[future.meta.transfer_id]
         progress_result = ProgressResult(
-            bytes_transferred=bytes_transferred, **result_kwargs)
+            bytes_transferred=bytes_transferred, timestamp=time.time(),
+            **result_kwargs)
         self._result_queue.put(progress_result)
 
     def _on_success(self, future):
@@ -208,6 +212,9 @@ class ResultRecorder(BaseResultHandler):
         self.expected_files_transferred = 0
         self.final_expected_files_transferred = None
 
+        self.start_time = None
+        self.bytes_transfer_speed = 0
+
         self._ongoing_progress = defaultdict(int)
         self._ongoing_total_sizes = {}
 
@@ -253,6 +260,8 @@ class ResultRecorder(BaseResultHandler):
         pass
 
     def _record_queued_result(self, result, **kwargs):
+        if self.start_time is None:
+            self.start_time = time.time()
         total_transfer_size = result.total_transfer_size
         self._ongoing_total_sizes[
             self._get_ongoing_dict_key(result)] = total_transfer_size
@@ -268,6 +277,16 @@ class ResultRecorder(BaseResultHandler):
         self._ongoing_progress[
             self._get_ongoing_dict_key(result)] += bytes_transferred
         self.bytes_transferred += bytes_transferred
+        # Since the start time is captured in the result recorder and
+        # capture timestamps in the subscriber, there is a chance that if
+        # a progress result gets created right after the queued result
+        # gets created that the timestamp on the progress result is less
+        # than the timestamp of when the result processor actually
+        # processes that initial queued result. So this will avoid
+        # negative progress being displayed or zero divison occuring.
+        if result.timestamp > self.start_time:
+            self.bytes_transfer_speed = self.bytes_transferred / (
+                result.timestamp - self.start_time)
 
     def _update_ongoing_transfer_size_if_unknown(self, result):
         # This is a special case when the transfer size was previous not
@@ -327,8 +346,8 @@ class ResultPrinter(BaseResultHandler):
     _ESTIMATED_EXPECTED_TOTAL = "~{expected_total}"
     _STILL_CALCULATING_TOTALS = " (calculating...)"
     BYTE_PROGRESS_FORMAT = (
-        'Completed {bytes_completed}/{expected_bytes_completed} with '
-        + _FILES_REMAINING
+        'Completed {bytes_completed}/{expected_bytes_completed} '
+        '({transfer_speed}) with ' + _FILES_REMAINING
     )
     FILE_PROGRESS_FORMAT = (
         'Completed {files_completed} file(s) with ' + _FILES_REMAINING
@@ -474,9 +493,12 @@ class ResultPrinter(BaseResultHandler):
                 human_readable_size(
                     self._result_recorder.expected_bytes_transferred))
 
+            transfer_speed = human_readable_size(
+                self._result_recorder.bytes_transfer_speed) + '/s'
             progress_statement = self.BYTE_PROGRESS_FORMAT.format(
                 bytes_completed=bytes_completed,
                 expected_bytes_completed=expected_bytes_completed,
+                transfer_speed=transfer_speed,
                 remaining_files=remaining_files
             )
         else:

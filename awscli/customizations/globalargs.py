@@ -22,11 +22,16 @@ from awscli.compat import urlparse
 
 
 def register_parse_global_args(cli):
-    cli.register('top-level-args-parsed', resolve_types)
-    cli.register('top-level-args-parsed', no_sign_request)
-    cli.register('top-level-args-parsed', resolve_verify_ssl)
-    cli.register('top-level-args-parsed', resolve_cli_read_timeout)
-    cli.register('top-level-args-parsed', resolve_cli_connect_timeout)
+    cli.register('top-level-args-parsed', resolve_types,
+                 unique_id='resolve-types')
+    cli.register('top-level-args-parsed', no_sign_request,
+                 unique_id='no-sign')
+    cli.register('top-level-args-parsed', resolve_verify_ssl,
+                 unique_id='resolve-verify-ssl')
+    cli.register('top-level-args-parsed', resolve_cli_read_timeout,
+                 unique_id='resolve-cli-read-timeout')
+    cli.register('top-level-args-parsed', resolve_cli_connect_timeout,
+                 unique_id='resolve-cli-connect-timeout')
 
 
 def resolve_types(parsed_args, **kwargs):
@@ -80,7 +85,8 @@ def no_sign_request(parsed_args, session, **kwargs):
     if not parsed_args.sign_request:
         # In order to make signing disabled for all requests
         # we need to use botocore's ``disable_signing()`` handler.
-        session.register('choose-signer', disable_signing)
+        session.register(
+            'choose-signer', disable_signing, unique_id='disable-signing')
 
 
 def resolve_cli_connect_timeout(parsed_args, session, **kwargs):

@@ -31,7 +31,8 @@ from botocore.utils import fix_s3_host
 
 def register_s3_endpoint(cli):
     handler = partial(on_top_level_args_parsed, event_handler=cli)
-    cli.register('top-level-args-parsed', handler)
+    cli.register(
+        'top-level-args-parsed', handler, unique_id='s3-endpoint')
 
 
 def on_top_level_args_parsed(parsed_args, event_handler, **kwargs):

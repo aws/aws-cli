@@ -141,3 +141,8 @@ def ignore_ctrl_c():
         yield
     finally:
         signal.signal(signal.SIGINT, original)
+
+
+def emit_top_level_args_parsed_event(session, args):
+    session.emit(
+        'top-level-args-parsed', parsed_args=args, session=session)

@@ -48,7 +48,8 @@ def register(event_handler):
             'default-root-object', CreateDefaultRootObject(argument_table)))
 
     context = {}
-    event_handler.register('top-level-args-parsed', context.update)
+    event_handler.register(
+        'top-level-args-parsed', context.update, unique_id='cloudfront')
     event_handler.register(
         'operation-args-parsed.cloudfront.update-distribution',
         validate_mutually_exclusive_handler(

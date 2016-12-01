@@ -42,6 +42,7 @@ ASSOCIATE_PUBLIC_IP_ADDRESS_DOCS = (
     '[EC2-VPC] If specified a public IP address will be assigned '
     'to the new instance in a VPC.')
 
+
 def _add_params(argument_table, **kwargs):
     arg = SecondaryPrivateIpAddressesArgument(
         name='secondary-private-ip-addresses',
@@ -97,28 +98,32 @@ def _fix_args(params, **kwargs):
         'AssociatePublicIpAddress'
     ]
     if 'NetworkInterfaces' in params:
-        ni = params['NetworkInterfaces']
-        for network_interface_param in network_interface_params:
-            if network_interface_param in ni[0]:
-                if 'SubnetId' in params:
-                    ni[0]['SubnetId'] = params['SubnetId']
-                    del params['SubnetId']
-                if 'SecurityGroupIds' in params:
-                    ni[0]['Groups'] = params['SecurityGroupIds']
-                    del params['SecurityGroupIds']
-                if 'PrivateIpAddress' in params:
-                    ip_addr = {'PrivateIpAddress': params['PrivateIpAddress'],
-                               'Primary': True}
-                    ni[0]['PrivateIpAddresses'] = [ip_addr]
-                    del params['PrivateIpAddress']
-                return
+        interface = params['NetworkInterfaces'][0]
+        if any(param in interface for param in network_interface_params):
+            if 'SubnetId' in params:
+                interface['SubnetId'] = params['SubnetId']
+                del params['SubnetId']
+            if 'SecurityGroupIds' in params:
+                interface['Groups'] = params['SecurityGroupIds']
+                del params['SecurityGroupIds']
+            if 'PrivateIpAddress' in params:
+                ip_addr = {'PrivateIpAddress': params['PrivateIpAddress'],
+                           'Primary': True}
+                interface['PrivateIpAddresses'] = [ip_addr]
+                del params['PrivateIpAddress']
+            if 'Ipv6AddressCount' in params:
+                interface['Ipv6AddressCount'] = params['Ipv6AddressCount']
+                del params['Ipv6AddressCount']
+            if 'Ipv6Addresses' in params:
+                interface['Ipv6Addresses'] = params['Ipv6Addresses']
+                del params['Ipv6Addresses']
 
 
 EVENTS = [
     ('building-argument-table.ec2.run-instances', _add_params),
     ('operation-args-parsed.ec2.run-instances', _check_args),
     ('before-parameter-build.ec2.RunInstances', _fix_args),
-    ]
+]
 
 
 def register_runinstances(event_handler):
@@ -147,11 +152,9 @@ class SecondaryPrivateIpAddressesArgument(CustomArgument):
 
     def add_to_params(self, parameters, value):
         if value:
-            value = [{'PrivateIpAddress': v, 'Primary': False} for
-                     v in value]
-            _build_network_interfaces(parameters,
-                                      'PrivateIpAddresses',
-                                      value)
+            value = [{'PrivateIpAddress': v, 'Primary': False} for v in value]
+            _build_network_interfaces(
+                parameters, 'PrivateIpAddresses', value)
 
 
 class SecondaryPrivateIpAddressCountArgument(CustomArgument):
@@ -162,24 +165,21 @@ class SecondaryPrivateIpAddressCountArgument(CustomArgument):
 
     def add_to_params(self, parameters, value):
         if value:
-            _build_network_interfaces(parameters,
-                                      'SecondaryPrivateIpAddressCount',
-                                      value)
+            _build_network_interfaces(
+                parameters, 'SecondaryPrivateIpAddressCount', value)
 
 
 class AssociatePublicIpAddressArgument(CustomArgument):
 
     def add_to_params(self, parameters, value):
         if value is True:
-            _build_network_interfaces(parameters,
-                                      'AssociatePublicIpAddress',
-                                      value)
+            _build_network_interfaces(
+                parameters, 'AssociatePublicIpAddress', value)
 
 
 class NoAssociatePublicIpAddressArgument(CustomArgument):
 
     def add_to_params(self, parameters, value):
         if value is False:
-            _build_network_interfaces(parameters,
-                                      'AssociatePublicIpAddress',
-                                      value)
+            _build_network_interfaces(
+                parameters, 'AssociatePublicIpAddress', value)

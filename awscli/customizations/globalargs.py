@@ -85,7 +85,8 @@ def no_sign_request(parsed_args, session, **kwargs):
     if not parsed_args.sign_request:
         # In order to make signing disabled for all requests
         # we need to use botocore's ``disable_signing()`` handler.
-        session.register('choose-signer', disable_signing)
+        session.register(
+            'choose-signer', disable_signing, unique_id='disable-signing')
 
 
 def resolve_cli_connect_timeout(parsed_args, session, **kwargs):

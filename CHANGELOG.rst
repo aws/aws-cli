@@ -2,6 +2,27 @@
 CHANGELOG
 =========
 
+1.11.24
+=======
+
+* feature:``pinpoint``: Update pinpoint command to latest version
+* feature:``lambda``: Update lambda command to latest version
+* feature:``directconnect``: Update directconnect command to latest version
+* feature:alias: Add ability to alias commands in the CLI
+* feature:``xray``: Update xray command to latest version
+* feature:``s3``: Display transfer speed for s3 commands
+* feature:``ssm``: Update ssm command to latest version
+* feature:``apigateway``: Update apigateway command to latest version
+* feature:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* feature:``codebuild``: Update codebuild command to latest version
+* feature:``opsworkscm``: Update opsworkscm command to latest version
+* feature:``shield``: Update shield command to latest version
+* feature:``stepfunctions``: Update stepfunctions command to latest version
+* feature:``appstream``: Update appstream command to latest version
+* feature:``health``: Update health command to latest version
+* feature:``ec2``: Update ec2 command to latest version
+
+
 1.11.23
 =======
 

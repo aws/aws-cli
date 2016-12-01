@@ -22,8 +22,10 @@ at the man output, we look one step before at the generated rst output
 
 """
 from awscli.testutils import BaseAWSHelpOutputTest
+from awscli.testutils import FileCreator
 
 from awscli.compat import six
+from awscli.alias import AliasLoader
 import mock
 
 
@@ -432,3 +434,24 @@ class TestIotData(BaseAWSHelpOutputTest):
         self.assert_contains(
             'The default endpoint data.iot.[region].amazonaws.com is '
             'intended for testing purposes only.')
+
+
+class TestAliases(BaseAWSHelpOutputTest):
+    def setUp(self):
+        super(TestAliases, self).setUp()
+        self.files = FileCreator()
+        self.alias_file = self.files.create_file('alias', '[toplevel]\n')
+        self.driver.alias_loader = AliasLoader(self.alias_file)
+
+    def tearDown(self):
+        super(TestAliases, self).tearDown()
+        self.files.remove_all()
+
+    def add_alias(self, alias_name, alias_value):
+        with open(self.alias_file, 'a+') as f:
+            f.write('%s = %s\n' % (alias_name, alias_value))
+
+    def test_alias_not_in_main_help(self):
+        self.add_alias('my-alias', 'ec2 describe-regions')
+        self.driver.main(['help'])
+        self.assert_not_contains('my-alias')

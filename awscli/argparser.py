@@ -29,6 +29,35 @@ USAGE = (
 )
 
 
+class CommandAction(argparse.Action):
+    """Custom action for CLI command arguments
+
+    Allows the choices for the argument to be mutable. The choices
+    are dynamically retrieved from the keys of the referenced command
+    table
+    """
+    def __init__(self, option_strings, dest, command_table, **kwargs):
+        self.command_table = command_table
+        super(CommandAction, self).__init__(
+            option_strings, dest, choices=self.choices, **kwargs
+        )
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        setattr(namespace, self.dest, values)
+
+    @property
+    def choices(self):
+        return list(self.command_table.keys())
+
+    @choices.setter
+    def choices(self, val):
+        # argparse.Action will always try to set this value upon
+        # instantiation, but this value should be dynamically
+        # generated from the command table keys. So make this a
+        # NOOP if argparse.Action tries to set this value.
+        pass
+
+
 class CLIArgParser(argparse.ArgumentParser):
     Formatter = argparse.RawTextHelpFormatter
 
@@ -106,7 +135,8 @@ class MainArgParser(CLIArgParser):
         self.add_argument('--version', action="version",
                           version=version_string,
                           help='Display the version of this tool')
-        self.add_argument('command', choices=list(command_table.keys()))
+        self.add_argument('command', action=CommandAction,
+                          command_table=command_table)
 
 
 class ServiceArgParser(CLIArgParser):
@@ -121,7 +151,8 @@ class ServiceArgParser(CLIArgParser):
         self._service_name = service_name
 
     def _build(self, operations_table):
-        self.add_argument('operation', choices=list(operations_table.keys()))
+        self.add_argument('operation', action=CommandAction,
+                          command_table=operations_table)
 
 
 class ArgTableArgParser(CLIArgParser):
@@ -145,8 +176,8 @@ class ArgTableArgParser(CLIArgParser):
             argument = argument_table[arg_name]
             argument.add_to_parser(self)
         if command_table:
-            self.add_argument('subcommand', choices=list(command_table.keys()),
-                              nargs='?')
+            self.add_argument('subcommand', action=CommandAction,
+                              command_table=command_table, nargs='?')
 
     def parse_known_args(self, args, namespace=None):
         if len(args) == 1 and args[0] == 'help':

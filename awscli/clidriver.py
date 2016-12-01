@@ -25,6 +25,7 @@ from botocore.exceptions import NoRegionError
 from awscli import EnvironmentVariables, __version__
 from awscli.formatter import get_formatter
 from awscli.plugin import load_plugins
+from awscli.commands import CLICommand
 from awscli.argparser import MainArgParser
 from awscli.argparser import ServiceArgParser
 from awscli.argparser import ArgTableArgParser
@@ -38,6 +39,9 @@ from awscli.arguments import BooleanArgument
 from awscli.arguments import CLIArgument
 from awscli.arguments import UnknownArgumentError
 from awscli.argprocess import unpack_argument
+from awscli.alias import AliasLoader
+from awscli.alias import AliasCommandInjector
+from awscli.utils import emit_top_level_args_parsed_event
 
 
 LOG = logging.getLogger('awscli.clidriver')
@@ -77,6 +81,7 @@ class CLIDriver(object):
         self._cli_data = None
         self._command_table = None
         self._argument_table = None
+        self.alias_loader = AliasLoader()
 
     def _get_cli_data(self):
         # Not crazy about this but the data in here is needed in
@@ -120,6 +125,12 @@ class CLIDriver(object):
                                                     service_name=service_name)
         return commands
 
+    def _add_aliases(self, command_table, parser):
+        parser = self._create_parser(command_table)
+        injector = AliasCommandInjector(
+            self.session, self.alias_loader)
+        injector.inject_aliases(command_table, parser)
+
     def _build_argument_table(self):
         argument_table = OrderedDict()
         cli_data = self._get_cli_data()
@@ -152,9 +163,8 @@ class CLIDriver(object):
                                    cli_data.get('synopsis', None),
                                    cli_data.get('help_usage', None))
 
-    def _create_parser(self):
+    def _create_parser(self, command_table):
         # Also add a 'help' command.
-        command_table = self._get_command_table()
         command_table['help'] = self.create_help_command()
         cli_data = self._get_cli_data()
         parser = MainArgParser(
@@ -173,8 +183,9 @@ class CLIDriver(object):
         """
         if args is None:
             args = sys.argv[1:]
-        parser = self._create_parser()
         command_table = self._get_command_table()
+        parser = self._create_parser(command_table)
+        self._add_aliases(command_table, parser)
         parsed_args, remaining = parser.parse_known_args(args)
         try:
             # Because _handle_top_level_args emits events, it's possible
@@ -226,8 +237,7 @@ class CLIDriver(object):
         sys.stderr.write('\n')
 
     def _handle_top_level_args(self, args):
-        self.session.emit(
-            'top-level-args-parsed', parsed_args=args, session=self.session)
+        emit_top_level_args_parsed_event(self.session, args)
         if args.profile:
             self.session.set_config_variable('profile', args.profile)
         if args.debug:
@@ -247,64 +257,6 @@ class CLIDriver(object):
         else:
             self.session.set_stream_logger(logger_name='awscli',
                                            log_level=logging.ERROR)
-
-
-class CLICommand(object):
-
-    """Interface for a CLI command.
-
-    This class represents a top level CLI command
-    (``aws ec2``, ``aws s3``, ``aws config``).
-
-    """
-
-    @property
-    def name(self):
-        # Subclasses must implement a name.
-        raise NotImplementedError("name")
-
-    @name.setter
-    def name(self, value):
-        # Subclasses must implement setting/changing the cmd name.
-        raise NotImplementedError("name")
-
-    @property
-    def lineage(self):
-        # Represents how to get to a specific command using the CLI.
-        # It includes all commands that came before it and itself in
-        # a list.
-        return [self]
-
-    @property
-    def lineage_names(self):
-        # Represents the lineage of a command in terms of command ``name``
-        return [cmd.name for cmd in self.lineage]
-
-    def __call__(self, args, parsed_globals):
-        """Invoke CLI operation.
-
-        :type args: str
-        :param args: The remaining command line args.
-
-        :type parsed_globals: ``argparse.Namespace``
-        :param parsed_globals: The parsed arguments so far.
-
-        :rtype: int
-        :return: The return code of the operation.  This will be used
-            as the RC code for the ``aws`` process.
-
-        """
-        # Subclasses are expected to implement this method.
-        pass
-
-    def create_help_command(self):
-        # Subclasses are expected to implement this method if they want
-        # help docs.
-        return None
-
-    @property
-    def arg_table(self):
-        return {}
 
 
 class ServiceCommand(CLICommand):

@@ -26,6 +26,14 @@ def rename_argument(argument_table, existing_name, new_name):
     del argument_table[existing_name]
 
 
+def _copy_argument(argument_table, current_name, copy_name):
+    current = argument_table[current_name]
+    copy_arg = copy.copy(current)
+    copy_arg.name = copy_name
+    argument_table[copy_name] = copy_arg
+    return copy_arg
+
+
 def make_hidden_alias(argument_table, existing_name, alias_name):
     """Create a hidden alias for an existing argument.
 
@@ -39,9 +47,8 @@ def make_hidden_alias(argument_table, existing_name, alias_name):
 
     """
     current = argument_table[existing_name]
-    copy_arg = copy.copy(current)
+    copy_arg = _copy_argument(argument_table, existing_name, alias_name)
     copy_arg._UNDOCUMENTED = True
-    copy_arg.name = alias_name
     if current.required:
         # If the current argument is required, then
         # we'll mark both as not required, but
@@ -50,7 +57,6 @@ def make_hidden_alias(argument_table, existing_name, alias_name):
         copy_arg.required = False
         current.required = False
         current._DOCUMENT_AS_REQUIRED = True
-    argument_table[alias_name] = copy_arg
 
 
 def rename_command(command_table, existing_name, new_name):
@@ -58,6 +64,13 @@ def rename_command(command_table, existing_name, new_name):
     command_table[new_name] = current
     current.name = new_name
     del command_table[existing_name]
+
+
+def alias_command(command_table, existing_name, new_name):
+    """Moves an argument to a new name, keeping the old as a hidden alias."""
+    current = command_table[existing_name]
+    _copy_argument(command_table, existing_name, new_name)
+    current._UNDOCUMENTED = True
 
 
 def validate_mutually_exclusive_handler(*groups):

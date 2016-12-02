@@ -40,6 +40,29 @@ class TestCommandTableRenames(BaseAWSHelpOutputTest):
         self.assert_contains('run-instances')
 
 
+class TestCommandTableAlias(BaseAWSHelpOutputTest):
+
+    def test_alias_command_table(self):
+        handler = lambda command_table, **kwargs: utils.alias_command(
+            command_table, 'ec2', 'foo')
+        # Verify that we can alias a top level command.
+        self.session.register('building-command-table.main', handler)
+        self.driver.main(['foo', 'help'])
+        self.assert_contains('foo')
+
+        # We can also see subcommands help as well.
+        self.driver.main(['foo', 'run-instances', 'help'])
+        self.assert_contains('run-instances')
+
+        # Verify that the old is still available
+        self.session.register('building-command-table.main', handler)
+        self.driver.main(['ec2', 'help'])
+        self.assert_contains('ec2')
+
+        self.driver.main(['ec2', 'run-instances', 'help'])
+        self.assert_contains('run-instances')
+
+
 class TestHiddenAlias(unittest.TestCase):
     def test_not_marked_as_required_if_not_needed(self):
         original_arg_required = mock.Mock()

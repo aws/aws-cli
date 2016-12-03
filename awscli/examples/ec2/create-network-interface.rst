@@ -24,6 +24,7 @@ Output::
           ],
           "RequesterManaged": false,
           "AvailabilityZone": "us-east-1d",
+          "Ipv6Addresses": [], 
           "Groups": [
               {
                   "GroupName": "default",

@@ -31,7 +31,24 @@ Output::
               "DhcpOptionsId": "dopt-97eb5efa",
               "CidrBlock": "10.50.0.0/16",
               "IsDefault": false
-          }
+          },
+          {
+            "VpcId": "vpc-a45db1c0", 
+            "InstanceTenancy": "default", 
+            "Ipv6CidrBlockAssociationSet": [
+                {
+                    "Ipv6CidrBlock": "2001:db8:1234:8800::/56", 
+                    "AssociationId": "vpc-cidr-assoc-e5a5408c", 
+                    "Ipv6CidrBlockState": {
+                        "State": "ASSOCIATED"
+                    }
+                }
+            ], 
+            "State": "available", 
+            "DhcpOptionsId": "dopt-dbedadb2", 
+            "CidrBlock": "198.168.0.0/24", 
+            "IsDefault": false
+        }
       ]  
   }
   

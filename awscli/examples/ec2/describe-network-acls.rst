@@ -117,6 +117,57 @@ Output::
                   }
               ],
               "IsDefault": true
-          }          
+          },
+          {
+            "Associations": [], 
+            "NetworkAclId": "acl-6da75208", 
+            "VpcId": "vpc-4e20d42b", 
+            "Tags": [], 
+            "Entries": [
+                {
+                    "CidrBlock": "0.0.0.0/0", 
+                    "RuleNumber": 32767, 
+                    "Protocol": "-1", 
+                    "Egress": true, 
+                    "RuleAction": "deny"
+                }, 
+                {
+                    "Ipv6CidrBlock": "::/0", 
+                    "RuleNumber": 32768, 
+                    "Protocol": "-1", 
+                    "Egress": true, 
+                    "RuleAction": "deny"
+                }, 
+                {
+                    "CidrBlock": "0.0.0.0/0", 
+                    "RuleNumber": 100, 
+                    "Protocol": "-1", 
+                    "Egress": false, 
+                    "RuleAction": "allow"
+                }, 
+                {
+                    "Ipv6CidrBlock": "::/0", 
+                    "RuleNumber": 101, 
+                    "Protocol": "-1", 
+                    "Egress": false, 
+                    "RuleAction": "allow"
+                }, 
+                {
+                    "CidrBlock": "0.0.0.0/0", 
+                    "RuleNumber": 32767, 
+                    "Protocol": "-1", 
+                    "Egress": false, 
+                    "RuleAction": "deny"
+                }, 
+                {
+                    "Ipv6CidrBlock": "::/0", 
+                    "RuleNumber": 32768, 
+                    "Protocol": "-1", 
+                    "Egress": false, 
+                    "RuleAction": "deny"
+                }
+            ], 
+            "IsDefault": true
+        }          
       ]
   }

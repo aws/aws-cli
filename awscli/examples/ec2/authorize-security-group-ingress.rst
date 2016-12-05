@@ -46,6 +46,14 @@ Command::
 
   aws ec2 authorize-security-group-ingress --group-id sg-123abc12 --ip-permissions '[{"IpProtocol": "icmp", "FromPort": 3, "ToPort": 4, "IpRanges": [{"CidrIp": "0.0.0.0/0"}]}]' 
 
+**[EC2-VPC] To add a rule for IPv6 traffic**
+
+This example grants SSH access (port 22) from the IPv6 range ``2001:db8:1234:1a00::/64``.
+
+Command::
+
+  aws ec2 authorize-security-group-ingress --group-id sg-9bf6ceff --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "Ipv6Ranges": [{"CidrIpv6": "2001:db8:1234:1a00::/64"}]}]'
+
 For more information, see `Using Security Groups`_ in the *AWS Command Line Interface User Guide*.
 
 .. _`Using Security Groups`: http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-sg.html

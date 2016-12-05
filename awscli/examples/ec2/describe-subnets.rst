@@ -12,24 +12,36 @@ Output::
       "Subnets": [
           {
               "VpcId": "vpc-a01106c2",
-              "CidrBlock": "10.0.1.0/24",
+              "AvailableIpAddressCount": 251,
               "MapPublicIpOnLaunch": false,
               "DefaultForAz": false,
+              "Ipv6CidrBlockAssociationSet": [],
               "State": "available",
               "AvailabilityZone": "us-east-1c",
               "SubnetId": "subnet-9d4a7b6c",
-              "AvailableIpAddressCount": 251
+              "CidrBlock": "10.0.1.0/24",
+              "AssignIpv6AddressOnCreation": false
           },
           {
-              "VpcId": "vpc-b61106d4",
-              "CidrBlock": "10.0.0.0/24",
-              "MapPublicIpOnLaunch": false,
-              "DefaultForAz": false,
-              "State": "available",
-              "AvailabilityZone": "us-east-1d",
-              "SubnetId": "subnet-65ea5f08",
-              "AvailableIpAddressCount": 251
-          }
+            "VpcId": "vpc-31896b55", 
+            "AvailableIpAddressCount": 251, 
+            "MapPublicIpOnLaunch": false, 
+            "DefaultForAz": false, 
+            "Ipv6CidrBlockAssociationSet": [
+                {
+                    "Ipv6CidrBlock": "2001:db8:1234:a101::/64", 
+                    "AssociationId": "subnet-cidr-assoc-30e7e348", 
+                    "Ipv6CidrBlockState": {
+                        "State": "ASSOCIATED"
+                    }
+                }
+            ], 
+            "State": "available", 
+            "AvailabilityZone": "us-east-1a", 
+            "SubnetId": "subnet-4204d234", 
+            "CidrBlock": "10.0.1.0/24", 
+            "AssignIpv6AddressOnCreation": false
+        }
       ]  
   }
   
@@ -41,23 +53,6 @@ Command::
 
   aws ec2 describe-subnets --filters "Name=vpc-id,Values=vpc-a01106c2"
 
-Output::
-
-  {
-      "Subnets": [
-          {
-              "VpcId": "vpc-a01106c2",
-              "CidrBlock": "10.0.1.0/24",
-              "MapPublicIpOnLaunch": false,
-              "DefaultForAz": false,
-              "State": "available",
-              "AvailabilityZone": "us-east-1c",
-              "SubnetId": "subnet-9d4a7b6c",
-              "AvailableIpAddressCount": 251
-          }
-      ]  
-  }
-  
 **To describe subnets with a specific tag**
 
 This example lists subnets with the tag ``Name=MySubnet`` and returns the output in text format.
@@ -68,5 +63,5 @@ Command::
 
 Output::
 
-  SUBNETS	us-east-1a	251	10.0.1.0/24	False	False	available	subnet-1a2b3c4d	vpc-11223344
+  SUBNETS	False	us-east-1a	251	10.0.1.0/24	False	False	available	subnet-5f46ec3b	vpc-a034d6c4
   TAGS	Name	MySubnet

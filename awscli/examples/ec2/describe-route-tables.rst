@@ -26,7 +26,8 @@ Output::
                   {
                       "GatewayId": "local",
                       "DestinationCidrBlock": "10.0.0.0/16",
-                      "State": "active"
+                      "State": "active",
+                      "Origin": "CreateRouteTable"
                   }
               ]
           },
@@ -35,6 +36,7 @@ Output::
                   {
                       "SubnetId": "subnet-b61f49f0",
                       "RouteTableAssociationId": "rtbassoc-781d0d1a",
+                      "Main": false,
                       "RouteTableId": "rtb-22574640"
                   }
               ],
@@ -50,14 +52,55 @@ Output::
                   {
                       "GatewayId": "local",
                       "DestinationCidrBlock": "10.0.0.0/16",
-                      "State": "active"
+                      "State": "active",
+                      "Origin": "CreateRouteTable"
                   },
                   {
                       "GatewayId": "igw-046d7966",
                       "DestinationCidrBlock": "0.0.0.0/0",
-                      "State": "active"
+                      "State": "active",
+                      "Origin": "CreateRoute"
                   }
               ]
-          }          
-      ]
-  }
+          },
+          {
+            "Associations": [
+                {
+                    "RouteTableAssociationId": "rtbassoc-91fbacf5", 
+                    "Main": true, 
+                    "RouteTableId": "rtb-1a459c7e"
+                }
+            ], 
+            "RouteTableId": "rtb-1a459c7e", 
+            "VpcId": "vpc-31896b55", 
+            "PropagatingVgws": [], 
+            "Tags": [], 
+            "Routes": [
+                {
+                    "GatewayId": "local", 
+                    "DestinationCidrBlock": "10.0.0.0/16", 
+                    "State": "active", 
+                    "Origin": "CreateRouteTable"
+                }, 
+                {
+                    "GatewayId": "igw-2fa4e34a", 
+                    "DestinationCidrBlock": "0.0.0.0/0", 
+                    "State": "active", 
+                    "Origin": "CreateRoute"
+                }, 
+                {
+                    "GatewayId": "local", 
+                    "Origin": "CreateRouteTable", 
+                    "State": "active", 
+                    "DestinationIpv6CidrBlock": "2001:db8:1234:a100::/56"
+                }, 
+                {
+                    "GatewayId": "igw-2fa4e34a", 
+                    "Origin": "CreateRoute", 
+                    "State": "active", 
+                    "DestinationIpv6CidrBlock": "::/0"
+                }
+            ]
+        }
+    ]
+  }          

@@ -1,12 +1,12 @@
 **To launch an instance in EC2-Classic**
 
-This example launches a single instance of type ``t1.micro``.
+This example launches a single instance of type ``c3.large``.
 
 The key pair and security group, named ``MyKeyPair`` and ``MySecurityGroup``, must exist.
 
 Command::
 
-  aws ec2 run-instances --image-id ami-1a2b3c4d --count 1 --instance-type t1.micro --key-name MyKeyPair --security-groups MySecurityGroup
+  aws ec2 run-instances --image-id ami-1a2b3c4d --count 1 --instance-type c3.large --key-name MyKeyPair --security-groups MySecurityGroup
 
 Output::
 
@@ -45,7 +45,7 @@ Output::
                   }
               ],
               "ClientToken": null,
-              "InstanceType": "t1.micro",
+              "InstanceType": "c3.large",
               "NetworkInterfaces": [],
               "Placement": {
                   "Tenancy": "default",
@@ -126,6 +126,7 @@ Output::
                               "PrivateIpAddress": "10.0.1.114"
                           }
                       ],
+                      "Ipv6Addresses": [],
                       "PrivateDnsName": "ip-10-0-1-114.ec2.internal",
                       "Attachment": {
                           "Status": "attached",
@@ -169,7 +170,7 @@ The following example requests a public IP address for an instance that you're l
 
 Command::
 
-  aws ec2 run-instances --image-id ami-c3b8d6aa --count 1 --instance-type t1.micro --key-name MyKeyPair --security-group-ids sg-903004f8 --subnet-id subnet-6e7f829e --associate-public-ip-address
+  aws ec2 run-instances --image-id ami-c3b8d6aa --count 1 --instance-type t2.medium --key-name MyKeyPair --security-group-ids sg-903004f8 --subnet-id subnet-6e7f829e --associate-public-ip-address
 
 **To launch an instance using a block device mapping**
 

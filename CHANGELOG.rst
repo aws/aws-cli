@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.11.26
+=======
+
+* feature:``sts``: Update sts command to latest version
+* feature:``config``: Update config command to latest version
+* feature:``ec2``: Update ec2 command to latest version
+* feature:``pinpoint``: Update pinpoint command to latest version
+
+
 1.11.25
 =======
 

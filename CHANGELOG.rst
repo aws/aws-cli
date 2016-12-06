@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.25
+=======
+
+* bugfix:opsworks-cm: Rename opsworkscm to opsworks-cm, keeping support for opsworkscm.
+
+
 1.11.24
 =======
 

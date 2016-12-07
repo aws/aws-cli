@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.27
+=======
+
+* feature:``config``: Update config command to latest version
+* feature:``sqs``: Update sqs command to latest version
+* feature:``s3``: Update s3 command to latest version
+
+
 1.11.26
 =======
 

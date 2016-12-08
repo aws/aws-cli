@@ -24,7 +24,7 @@ import textwrap
 
 from botocore.exceptions import ClientError
 
-from awscli.compat import shlex_quote, urlopen
+from awscli.compat import shlex_quote, urlopen, ensure_text_type
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import create_client_from_parsed_globals
 
@@ -278,7 +278,8 @@ class OpsWorksRegister(BasicCommand):
 
         if args.infrastructure_class == 'ec2' and args.local:
             # make sure the regions match
-            region = json.loads(urlopen(IDENTITY_URL).read())['region']
+            region = json.loads(
+                ensure_text_type(urlopen(IDENTITY_URL).read()))['region']
             if region != self._stack['Region']:
                 raise ValueError(
                     "The stack's and the instance's region must match.")

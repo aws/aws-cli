@@ -57,12 +57,12 @@ class NonTranslatedStdout(object):
             import msvcrt
             msvcrt.setmode(sys.stdout.fileno(), self.previous_mode)
 
-def ensure_text_type(s, encoding='utf-8', errors='strict'):
+def ensure_text_type(s):
     if isinstance(s, six.text_type):
         return s
     if isinstance(s, six.binary_type):
-        return s.decode(encoding, errors)
-    raise ValueError("Expected str or unicode, received %s." % type(s))
+        return s.decode('utf-8', 'strict')
+    raise ValueError("Expected str, unicode or bytes, received %s." % type(s))
 
 if six.PY3:
     import locale

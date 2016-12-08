@@ -736,20 +736,18 @@ class TestOpsWorksRegisterEc2(TestOpsWorksBase):
 
     @mock.patch.object(opsworks, "urlopen")
     def test_validate_same_region_bytes(self, mock_urlopen):
-        """Same as the above test, on some OSes urlopen.read returns a bytes"""
+        """Check that register can handle bytes returned by urlopen.read"""
 
         self.register._stack = {"Region": "mars-east-1"}
 
         mock_urlopen.return_value.read.return_value = \
             b'{"region": "mars-east-1"}'
-        self.register.validate_arguments(
-            self._build_args(hostname=None, local=True))
-
-        with self.assertRaises(ValueError):
-            mock_urlopen.return_value.read.return_value = \
-                b'{"region": "mars-west-1"}'
+        try:
             self.register.validate_arguments(
                 self._build_args(hostname=None, local=True))
+        except Exception:
+            self.fail(
+                'Register should work with bytes response from urlopen.read.')
 
     def test_retrieve_stack_ec2(self):
         """Should retrieve an EC2 stack and the matching instance."""

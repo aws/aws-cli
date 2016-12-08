@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.11.28
+=======
+
+* feature:cloudfront: Add lambda function associations to cache behaviors.
+* feature:rds: Add cluster create data to DBCluster APIs.
+* bugfix:opsworks: This fixes an issue with opsworks register --local and python3 on some versions of linux.
+* feature:waf-regional: With this new feature, customers can use AWS WAF directly on Application Load Balancers in a VPC within available regions to protect their websites and web services from malicious attacks such as SQL injection, Cross Site Scripting, bad bots, etc.
+
+
 1.11.27
 =======
 

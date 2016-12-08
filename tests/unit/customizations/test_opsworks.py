@@ -745,9 +745,10 @@ class TestOpsWorksRegisterEc2(TestOpsWorksBase):
         try:
             self.register.validate_arguments(
                 self._build_args(hostname=None, local=True))
-        except Exception:
+        except Exception as e:
             self.fail(
-                'Register should work with bytes response from urlopen.read.')
+                'Register should work with bytes response from urlopen.read. '
+                'Got exception: %s' % e)
 
     def test_retrieve_stack_ec2(self):
         """Should retrieve an EC2 stack and the matching instance."""

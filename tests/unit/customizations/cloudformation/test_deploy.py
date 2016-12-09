@@ -234,13 +234,18 @@ class TestDeployCommand(unittest.TestCase):
         """
         template = {
             "Parameters": {
-                "Key1": {"Type": "String"}, "Key2": {"Type": "String"},
-                "Key3": "Something", "Key4": {"Type": "Number"},
+                "Key1": {"Type": "String"},
+                "Key2": {"Type": "String"},
+                "Key3": "Something",
+                "Key4": {"Type": "Number"},
+                "KeyWithDefaultValue": {"Type": "String", "Default": "something"},
+                "KeyWithDefaultValueButOverridden": {"Type": "String", "Default": "something"}
             }
         }
         overrides = {
             "Key1": "Value1",
-            "Key3": "Value3"
+            "Key3": "Value3",
+            "KeyWithDefaultValueButOverridden": "Value4"
         }
 
         expected_result = [
@@ -248,9 +253,14 @@ class TestDeployCommand(unittest.TestCase):
             {"ParameterKey": "Key1", "ParameterValue": "Value1"},
             {"ParameterKey": "Key3", "ParameterValue": "Value3"},
 
+            # Parameter contains default value, but overridden with new value
+            {"ParameterKey": "KeyWithDefaultValueButOverridden", "ParameterValue": "Value4"},
+
             # non-overriden values
             {"ParameterKey": "Key2", "UsePreviousValue": True},
             {"ParameterKey": "Key4", "UsePreviousValue": True},
+
+            # Parameter with default value is NOT sent to CloudFormation
         ]
 
         self.assertItemsEqual(

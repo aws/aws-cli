@@ -2,7 +2,7 @@
 
 The following ``put-event-selectors`` command configures an event selector for ``Trail1``::
 
-  aws cloudtrail put-event-selectors --trail-name Trail1 --event-selectors '[{ "ReadWriteType": "All", "IncludeManagementEvents":true, "DataResources": [{ "Type": "AWS::S3::Object", "Values": ["arn:aws:s3:::mybucket/prefix"] }] }]'electors --trail-name Trail1
+  aws cloudtrail put-event-selectors --trail-name Trail1 --event-selectors '[{ "ReadWriteType": "All", "IncludeManagementEvents":true, "DataResources": [{ "Type": "AWS::S3::Object", "Values": ["arn:aws:s3:::mybucket/prefix"] }] }]'
 
 Output::
 

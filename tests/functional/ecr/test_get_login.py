@@ -29,7 +29,7 @@ class TestGetLoginCommand(BaseAWSCommandParamsTest):
         ]
         stdout, _, rc = self.run_cmd("ecr get-login")
         self.assertIn(
-            'docker login -u foo -p bar -e none 1235.ecr.us-east-1.io', stdout)
+            'docker login -u foo -p bar 1235.ecr.us-east-1.io', stdout)
         self.assertEquals(1, len(self.operations_called))
         self.assertNotIn('registryIds', self.operations_called[0][1])
 
@@ -52,10 +52,10 @@ class TestGetLoginCommand(BaseAWSCommandParamsTest):
         ]
         stdout, _, rc = self.run_cmd("ecr get-login --registry-ids 1234 5678")
         self.assertIn(
-            'docker login -u foo -p bar -e none 1235.ecr.us-east-1.io\n',
+            'docker login -u foo -p bar 1235.ecr.us-east-1.io\n',
             stdout)
         self.assertIn(
-            'docker login -u abc -p 123 -e none 4567.ecr.us-east-1.io\n',
+            'docker login -u abc -p 123 4567.ecr.us-east-1.io\n',
             stdout)
         self.assertEquals(1, len(self.operations_called))
         self.assertEquals([u'1234', u'5678'],

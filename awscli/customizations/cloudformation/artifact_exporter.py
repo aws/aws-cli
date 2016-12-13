@@ -205,6 +205,7 @@ class Resource(object):
     """
 
     PROPERTY_NAME = None
+    PACKAGE_NULL_PROPERTY = True
 
     def __init__(self, uploader):
         self.uploader = uploader
@@ -214,6 +215,9 @@ class Resource(object):
             return
 
         property_value = resource_dict.get(self.PROPERTY_NAME, None)
+
+        if not property_value and not self.PACKAGE_NULL_PROPERTY:
+            return
 
         if isinstance(property_value, dict):
             LOG.debug("Property {0} of {1} resource is not a URL"
@@ -290,6 +294,7 @@ class LambdaFunctionResource(ResourceWithS3UrlDict):
 
 class ApiGatewayRestApiResource(ResourceWithS3UrlDict):
     PROPERTY_NAME = "BodyS3Location"
+    PACKAGE_NULL_PROPERTY = False
     BUCKET_NAME_PROPERTY = "Bucket"
     OBJECT_KEY_PROPERTY = "Key"
     VERSION_PROPERTY = "Version"

@@ -106,7 +106,9 @@ def _helper_verify_export_resources(
     upload_local_artifacts_mock.reset_mock()
 
     resource_id = "id"
-    resource_dict = {}
+    resource_dict = {
+        test_class.PROPERTY_NAME: "foo"
+    }
     parent_dir = "dir"
 
     upload_local_artifacts_mock.return_value = uploaded_s3_url
@@ -423,6 +425,26 @@ class TestArtifactExporter(unittest.TestCase):
         upload_local_artifacts_mock.assert_not_called()
         self.assertEquals(resource_dict, {"foo": {"a": "b"}})
 
+    @patch("awscli.customizations.cloudformation.artifact_exporter.upload_local_artifacts")
+    def test_resource_has_package_null_property_to_false(self, upload_local_artifacts_mock):
+        # Should not upload anything if PACKAGE_NULL_PROPERTY is set to False
+
+        class MockResource(Resource):
+            PROPERTY_NAME = "foo"
+            PACKAGE_NULL_PROPERTY = False
+
+        resource = MockResource(self.s3_uploader_mock)
+        resource_id = "id"
+        resource_dict = {}
+        parent_dir = "dir"
+        s3_url = "s3://foo/bar"
+
+        upload_local_artifacts_mock.return_value = s3_url
+
+        resource.export(resource_id, resource_dict, parent_dir)
+
+        upload_local_artifacts_mock.assert_not_called()
+        self.assertNotIn(resource.PROPERTY_NAME, resource_dict)
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.upload_local_artifacts")
     def test_resource_export_fails(self, upload_local_artifacts_mock):

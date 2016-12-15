@@ -28,7 +28,7 @@ from awscli.clidriver import ServiceOperation
 from awscli.clidriver import CLIOperationCaller
 from awscli.customizations import utils
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.s3.utils import uni_print
+from awscli.customizations.utils import uni_print
 
 
 def register_rds_modify_split(cli):

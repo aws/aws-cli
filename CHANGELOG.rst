@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.11.29
+=======
+
+* feature:``batch``: Update batch command to latest version
+* feature:``logs``: Update logs command to latest version
+* feature:``rds``: Update rds command to latest version
+* feature:``dms``: Update dms command to latest version
+* feature:``marketplacecommerceanalytics``: Update marketplacecommerceanalytics command to latest version
+* feature:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* feature:``sts``: Update sts command to latest version
+
+
 1.11.28
 =======
 

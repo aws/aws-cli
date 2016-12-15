@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.30
+=======
+
+* feature:``ssm``: Update ssm command to latest version
+* feature:``cognito-idp``: Update cognito-idp command to latest version
+
+
 1.11.29
 =======
 

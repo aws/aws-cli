@@ -1,7 +1,7 @@
 **To describe account attributes**
 
 The following ``describe-account-attributes`` command returns information about your
-account's usage of AWS OpsWorks for Chef Automate resources.::
+account's usage of AWS OpsWorks for Chef Automate resources::
 
   aws opsworks-cm describe-account-attributes --region us-east-1 --endpoint 'https://opsworks-cm.us-east-1.amazonaws.com'
 

@@ -2,7 +2,7 @@
 
 The following ``update-server-engine-attributes`` command updates the value of the 
 ``CHEF_PIVOTAL_KEY`` engine attribute for a Chef Automate server named ``automate-06``.
-It is currently not possible to change the value of other engine attributes.::
+It is currently not possible to change the value of other engine attributes::
 
   aws opsworks-cm update-server-engine-attributes --attribute-name CHEF_PIVOTAL_KEY --attribute-value "new key value" --server-name "automate-06" --region us-east-1 --endpoint 'https://opsworks-cm.us-east-1.amazonaws.com'
 

@@ -2,7 +2,7 @@
 
 The following ``delete-server`` command deletes a Chef Automate server, identified
 by the server's name. After the server is deleted, it is no longer returned by
-``DescribeServer`` requests.::
+``DescribeServer`` requests::
 
   aws opsworks-cm delete-server --region us-east-1 --endpoint 'https://opsworks-cm.us-east-1.amazonaws.com' --server-name "automate-06"
 

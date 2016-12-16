@@ -1,7 +1,7 @@
 **To describe backups**
 
 The following ``describe-backups`` command returns information about all backups
-associated with your account in the region ``us-east-1``.::
+associated with your account in the region ``us-east-1``::
 
   aws opsworks-cm describe-backups --region us-east-1 --endpoint 'https://opsworks-cm.us-east-1.amazonaws.com'
 

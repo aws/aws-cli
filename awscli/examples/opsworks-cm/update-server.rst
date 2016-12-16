@@ -2,7 +2,7 @@
 
 The following ``update-server`` command updates the maintenance start time of a Chef Automate server
 named ``automate-06`` in the ``us-east-1`` region. The ``--preferred-maintenance-window`` parameter is
-added to change the start day and time of server maintenance to Mondays at 9:15 a.m. UTC.::
+added to change the start day and time of server maintenance to Mondays at 9:15 a.m. UTC::
 
   aws opsworks-cm update-server --region us-east-1 --endpoint 'https://opsworks-cm.us-east-1.amazonaws.com' --server-name "automate-06" --preferred-maintenance-window "Mon:09:15"
 

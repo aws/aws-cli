@@ -13,7 +13,7 @@ Output::
             "creationDate": 1429203623.625,
             "defaultBranch": "master",
             "repositoryName": "MyDemoRepo",
-            "cloneUrlSsh": "ssh://ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos//v1/repos/MyDemoRepo",
+            "cloneUrlSsh": "ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/v1/repos/MyDemoRepo",
             "lastModifiedDate": 1430783812.0869999,
             "repositoryDescription": "My demonstration repository",
             "cloneUrlHttp": "https://codecommit.us-east-1.amazonaws.com/v1/repos/MyDemoRepo",

@@ -14,8 +14,8 @@ from awscli.testutils import unittest, FileCreator
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.artifact_exporter \
     import is_s3_url, parse_s3_url, is_local_file, is_local_folder, \
-    upload_local_artifacts, zip_folder, make_abs_path, make_zip, \
-    Template, Resource, ResourceWithS3UrlDict, ServerlessApiResource, \
+    upload_local_artifacts, zip_folder, make_abs_path, make_zip, s3_url_to_https, \
+    is_https_s3_url, Template, Resource, ResourceWithS3UrlDict, ServerlessApiResource, \
     ServerlessFunctionResource, LambdaFunctionResource, ApiGatewayRestApiResource, \
     ElasticBeanstalkApplicationVersion, CloudFormationStackResource
 
@@ -174,6 +174,37 @@ class TestArtifactExporter(unittest.TestCase):
         for url in invalid:
             with self.assertRaises(ValueError):
                 parse_s3_url(url)
+
+    def test_s3_url_to_https(self):
+        valid = [
+            {
+                "url": "s3://foo/bar",
+                "result": "https://s3.amazonaws.com/foo/bar"
+            },
+            {
+                "url": "s3://foo/bar/cat/dog",
+                "result": "https://s3.amazonaws.com/foo/bar/cat/dog"
+            },
+        ]
+
+        invalid = [
+            "https://www.amazon.com"
+        ]
+
+        for config in valid:
+            result = s3_url_to_https(config["url"])
+            self.assertEquals(result, config["result"])
+        
+        for url in invalid:
+            with self.assertRaises(ValueError):
+                s3_url_to_https(url)
+
+    def test_is_https_s3_url(self):
+        valid = "https://s3.amazonaws.com/foo/bar"
+        invalid = "s3://foo/bar"
+
+        self.assertTrue(is_https_s3_url(valid))
+        self.assertFalse(is_https_s3_url(invalid))
 
     def test_is_local_file(self):
         with tempfile.NamedTemporaryFile() as handle:
@@ -493,6 +524,7 @@ class TestArtifactExporter(unittest.TestCase):
         property_name = stack_resource.PROPERTY_NAME
         exported_template_dict = {"foo": "bar"}
         result_s3_url = "s3://hello/world"
+        expected_url = "https://s3.amazonaws.com/hello/world"
 
         template_instance_mock = Mock()
         TemplateMock.return_value = template_instance_mock
@@ -507,7 +539,7 @@ class TestArtifactExporter(unittest.TestCase):
 
             stack_resource.export(resource_id, resource_dict, parent_dir)
 
-            self.assertEquals(resource_dict[property_name], result_s3_url)
+            self.assertEquals(resource_dict[property_name], expected_url)
 
             TemplateMock.assert_called_once_with(template_path, parent_dir, self.s3_uploader_mock)
             template_instance_mock.export.assert_called_once_with()
@@ -550,6 +582,18 @@ class TestArtifactExporter(unittest.TestCase):
             with self.assertRaises(exceptions.ExportFailedError):
                 stack_resource.export(resource_id, resource_dict, "dir")
                 self.s3_uploader_mock.upload_with_dedup.assert_not_called()
+
+    def test_export_cloudformation_stack_no_upload_path_is_https_s3_url(self):
+        stack_resource = CloudFormationStackResource(self.s3_uploader_mock)
+        resource_id = "id"
+        property_name = stack_resource.PROPERTY_NAME
+        s3_url = "https://s3.amazonaws.com/foo/bar"
+        resource_dict = {property_name: s3_url}
+
+        # Case 4: Path is already an S3 https url
+        stack_resource.export(resource_id, resource_dict, "dir")
+        self.assertEquals(resource_dict[property_name], s3_url)
+        self.s3_uploader_mock.upload_with_dedup.assert_not_called()
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
     def test_template_export(self, yaml_parse_mock):

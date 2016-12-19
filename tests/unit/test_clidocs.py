@@ -128,6 +128,17 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         self.name = 'my-command'
         self.event_class = 'aws'
 
+    def create_help_command(self):
+        help_command = mock.Mock()
+        help_command.doc = ReSTDocument()
+        help_command.event_class = 'custom'
+        help_command.arg_table = {}
+        operation_model = mock.Mock()
+        operation_model.documentation = 'description'
+        operation_model.service_model.operation_names = []
+        help_command.obj = operation_model
+        return help_command
+
     def test_breadcrumbs_man(self):
         # Create an arbitrary help command class. This was chosen
         # because it is fairly easy to instantiate.
@@ -214,6 +225,30 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         self.assertIn('Possible values', rendered)
         self.assertIn('FOO', rendered)
         self.assertIn('BAZ', rendered)
+
+    def test_description_only_for_crosslink_manpage(self):
+        help_command = self.create_help_command()
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_description(help_command=help_command)
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        # The links are generated in the "man" mode.
+        self.assertIn('See also: AWS API Documentation', rendered)
+
+    def test_includes_webapi_crosslink_in_html(self):
+        help_command = self.create_help_command()
+        # Configure this for 'html' generation:
+        help_command.obj.service_model.metadata = {'uid': 'service-1-2-3'}
+        help_command.obj.name = 'myoperation'
+        help_command.doc.target = 'html'
+
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_description(help_command=help_command)
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        # Should expect an externa link because we're generating html.
+        self.assertIn(
+            'See also: `AWS API Documentation '
+            '<http://docs.aws.amazon.com/goto/'
+            'WebAPI/service-1-2-3/myoperation>`_', rendered)
 
 
 class TestTopicDocumentEventHandlerBase(unittest.TestCase):

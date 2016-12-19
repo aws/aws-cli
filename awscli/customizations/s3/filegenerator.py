@@ -172,9 +172,13 @@ class FileGenerator(object):
         error, listdir = os.error, os.listdir
         if not self.should_ignore_file(path):
             if not dir_op:
-                size, last_update = get_file_stat(path)
-                last_update = self._validate_update_time(last_update, path)
-                yield path, {'Size': size, 'LastModified': last_update}
+                try:
+                    size, last_update = get_file_stat(path)
+                except OSError:
+                    self.triggers_warning(file_path)
+                else:
+                    last_update = self._validate_update_time(last_update, path)
+                    yield path, {'Size': size, 'LastModified': last_update}
 
             else:
                 # We need to list files in byte order based on the full
@@ -208,13 +212,17 @@ class FileGenerator(object):
                         for x in self.list_files(file_path, dir_op):
                             yield x
                     else:
-                        size, last_update = get_file_stat(file_path)
-                        last_update = self._validate_update_time(
-                            last_update, path)
-                        yield (
-                            file_path,
-                            {'Size': size, 'LastModified': last_update}
-                        )
+                        try:
+                            size, last_update = get_file_stat(file_path)
+                        except OSError:
+                            self.triggers_warning(file_path)
+                        else:
+                            last_update = self._validate_update_time(
+                                last_update, path)
+                            yield (
+                                file_path,
+                                {'Size': size, 'LastModified': last_update}
+                            )
 
     def _validate_update_time(self, update_time, path):
         # If the update time is None we know we ran into an invalid tiemstamp.

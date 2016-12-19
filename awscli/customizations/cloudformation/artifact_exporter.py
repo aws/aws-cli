@@ -17,6 +17,7 @@ import tempfile
 import zipfile
 import contextlib
 import uuid
+import shutil
 from awscli.compat import six
 
 from six.moves.urllib.parse import urlparse, parse_qs
@@ -199,12 +200,20 @@ def mktempfile():
             os.remove(filename)
 
 
+def copy_to_temp_dir(filepath):
+    tmp_dir = tempfile.mkdtemp()
+    dst = os.path.join(tmp_dir, os.path.basename(filepath))
+    shutil.copyfile(filepath, dst)
+    return tmp_dir
+ 
+
 class Resource(object):
     """
     Base class representing a CloudFormation resource that can be exported
     """
 
     PROPERTY_NAME = None
+    FORCE_ZIP = False
 
     def __init__(self, uploader):
         self.uploader = uploader
@@ -219,7 +228,14 @@ class Resource(object):
             LOG.debug("Property {0} of {1} resource is not a URL"
                       .format(self.PROPERTY_NAME, resource_id))
             return
-
+        
+        # if property is a file and must be zipped, place file in temp
+        # folder and send the temp folder to be zipped
+        temp_dir = None
+        if is_local_file(property_value) and self.FORCE_ZIP:
+            temp_dir = copy_to_temp_dir(property_value)
+            resource_dict[self.PROPERTY_NAME] = temp_dir
+       
         try:
             self.do_export(resource_id, resource_dict, parent_dir)
 
@@ -230,6 +246,9 @@ class Resource(object):
                     property_name=self.PROPERTY_NAME,
                     property_value=property_value,
                     ex=ex)
+        finally:
+            if temp_dir:
+                shutil.rmtree(temp_dir)
 
     def do_export(self, resource_id, resource_dict, parent_dir):
         """
@@ -275,6 +294,7 @@ class ResourceWithS3UrlDict(Resource):
 
 class ServerlessFunctionResource(Resource):
     PROPERTY_NAME = "CodeUri"
+    FORCE_ZIP = True
 
 
 class ServerlessApiResource(Resource):
@@ -286,6 +306,7 @@ class LambdaFunctionResource(ResourceWithS3UrlDict):
     BUCKET_NAME_PROPERTY = "S3Bucket"
     OBJECT_KEY_PROPERTY = "S3Key"
     VERSION_PROPERTY = "S3ObjectVersion"
+    FORCE_ZIP = True
 
 
 class ApiGatewayRestApiResource(ResourceWithS3UrlDict):

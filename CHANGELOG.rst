@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.11.31
+=======
+
+* feature:``cognito-identity``: Update cognito-identity command to latest version
+* feature:``inspector``: Update inspector command to latest version
+* feature:``cloudformation``: Update cloudformation command to latest version
+* feature:``sqs``: Update sqs command to latest version
+* feature:``discovery``: Update discovery command to latest version
+
+
 1.11.30
 =======
 

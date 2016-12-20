@@ -247,7 +247,7 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         # Should expect an externa link because we're generating html.
         self.assertIn(
             'See also: `AWS API Documentation '
-            '<http://docs.aws.amazon.com/goto/'
+            '<https://docs.aws.amazon.com/goto/'
             'WebAPI/service-1-2-3/myoperation>`_', rendered)
 
 

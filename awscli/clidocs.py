@@ -300,7 +300,7 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
 
 class OperationDocumentEventHandler(CLIDocumentEventHandler):
 
-    AWS_DOC_BASE = 'http://docs.aws.amazon.com/goto/WebAPI'
+    AWS_DOC_BASE = 'https://docs.aws.amazon.com/goto/WebAPI'
 
     def build_translation_map(self):
         operation_model = self.help_command.obj

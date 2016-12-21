@@ -300,6 +300,8 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
 
 class OperationDocumentEventHandler(CLIDocumentEventHandler):
 
+    AWS_DOC_BASE = 'https://docs.aws.amazon.com/goto/WebAPI'
+
     def build_translation_map(self):
         operation_model = self.help_command.obj
         d = {}
@@ -330,6 +332,24 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         operation_model = help_command.obj
         doc.style.h2('Description')
         doc.include_doc_string(operation_model.documentation)
+        self._add_webapi_crosslink(help_command)
+
+    def _add_webapi_crosslink(self, help_command):
+        doc = help_command.doc
+        operation_model = help_command.obj
+        service_model = operation_model.service_model
+        service_uid = service_model.metadata.get('uid')
+        if service_uid is None:
+            # If there's no service_uid in the model, we can't
+            # be certain if the generated cross link will work
+            # so we don't generate any crosslink info.
+            return
+        doc.style.new_paragraph()
+        doc.write("See also: ")
+        link = '%s/%s/%s' % (self.AWS_DOC_BASE, service_uid,
+                             operation_model.name)
+        doc.style.external_link(title="AWS API Documentation", link=link)
+        doc.writeln('')
 
     def _json_example_value_name(self, argument_model, include_enum_values=True):
         # If include_enum_values is True, then the valid enum values

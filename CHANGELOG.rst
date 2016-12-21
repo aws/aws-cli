@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.33
+=======
+
+* feature:``rds``: Update rds command to latest version
+* feature:``ecr``: Update ecr command to latest version
+
+
 1.11.32
 =======
 

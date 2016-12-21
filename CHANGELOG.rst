@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.32
+=======
+
+* feature:``storagegateway``: Update storagegateway command to latest version
+* feature:``firehose``: Update firehose command to latest version
+* feature:``route53``: Update route53 command to latest version
+
+
 1.11.31
 =======
 

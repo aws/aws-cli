@@ -31,8 +31,9 @@ the local path with the S3 location: ``CodeUri: s3://mybucket/lambdafunction.zip
 
 If you specify a file, the command directly uploads it to the S3 bucket. If you
 specify a folder, the command zips the folder and then uploads the .zip file.
-If you don't specify a path, the command zips and uploads the current working
-directory.
+For most resources, if you don't specify a path, the command zips and uploads the
+current working directory. The exception is ``AWS::ApiGateway::RestApi``;
+if you don't specify a ``BodyS3Location``, this command will not upload an artifact to S3.
 
 Before the command uploads artifacts, it checks if the artifacts are already
 present in the S3 bucket to prevent unnecessary uploads. The command uses MD5

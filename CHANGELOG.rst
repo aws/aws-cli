@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.11.34
+=======
+
+* feature:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* feature:``ds``: Update ds command to latest version
+* feature:``iam``: Update iam command to latest version
+* feature:``kms``: Update kms command to latest version
+* feature:``apigateway``: Update apigateway command to latest version
+
+
 1.11.33
 =======
 

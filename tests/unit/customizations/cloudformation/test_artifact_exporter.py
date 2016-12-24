@@ -484,7 +484,6 @@ class TestArtifactExporter(unittest.TestCase):
             "v": "SomeVersionNumber"
         })
 
-
     @patch("awscli.customizations.cloudformation.artifact_exporter.Template")
     def test_export_cloudformation_stack(self, TemplateMock):
         stack_resource = CloudFormationStackResource(self.s3_uploader_mock)
@@ -500,6 +499,10 @@ class TestArtifactExporter(unittest.TestCase):
 
         self.s3_uploader_mock.upload_with_dedup.return_value = result_s3_url
 
+        test_parameters = {"Parameter1": "Parameter1Value"}
+        stack_resource.get_params = Mock()
+        stack_resource.get_params.return_value = {"Parameter1": "Parameter1Value"}
+
         with tempfile.NamedTemporaryFile() as handle:
             template_path = handle.name
             resource_dict = {property_name: template_path}
@@ -509,7 +512,10 @@ class TestArtifactExporter(unittest.TestCase):
 
             self.assertEquals(resource_dict[property_name], result_s3_url)
 
-            TemplateMock.assert_called_once_with(template_path, parent_dir, self.s3_uploader_mock)
+            stack_resource.get_params.assert_called_once_with(resource_dict, parent_dir)
+
+            TemplateMock.assert_called_once_with(template_path, parent_dir, self.s3_uploader_mock,
+                                                 template_params=test_parameters)
             template_instance_mock.export.assert_called_once_with()
             self.s3_uploader_mock.upload_with_dedup.assert_called_once_with(mock.ANY, "template")
 
@@ -551,6 +557,40 @@ class TestArtifactExporter(unittest.TestCase):
                 stack_resource.export(resource_id, resource_dict, "dir")
                 self.s3_uploader_mock.upload_with_dedup.assert_not_called()
 
+    def test_export_cloudformation_stack_get_params_relative_path(self):
+        test_template_params = {
+            "Parameter1": "./relative/filepath.txt"
+        }
+        stack_resource = CloudFormationStackResource(self.s3_uploader_mock, template_params=test_template_params)
+
+        test_resource_dict = {
+            "Parameters": {
+                "Parameter1Ref": {
+                    "Ref": "Parameter1"
+                }
+            }
+        }
+        returned_params = stack_resource.get_params(test_resource_dict, '/path/to/folder')
+
+        self.assertEquals(returned_params["Parameter1Ref"], "/path/to/folder/relative/filepath.txt")
+
+    def test_export_cloudformation_stack_get_params_relative_path(self):
+        test_template_params = {
+            "Parameter1": "/absolute/filepath.txt"
+        }
+        stack_resource = CloudFormationStackResource(self.s3_uploader_mock, template_params=test_template_params)
+
+        test_resource_dict = {
+            "Parameters": {
+                "Parameter1Ref": {
+                    "Ref": "Parameter1"
+                }
+            }
+        }
+        returned_params = stack_resource.get_params(test_resource_dict, '/path/to/folder')
+
+        self.assertEquals(returned_params["Parameter1Ref"], "/absolute/filepath.txt")
+
     @patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
     def test_template_export(self, yaml_parse_mock):
         parent_dir = os.path.sep
@@ -591,6 +631,10 @@ class TestArtifactExporter(unittest.TestCase):
         open_mock = mock.mock_open()
         yaml_parse_mock.return_value = template_dict
 
+        test_params = {
+            "Paramter1": "Parameter1Value"
+        }
+
         # Patch the file open method to return template string
         with patch(
                 "awscli.customizations.cloudformation.artifact_exporter.open",
@@ -598,7 +642,7 @@ class TestArtifactExporter(unittest.TestCase):
 
             template_exporter = Template(
                 template_path, parent_dir, self.s3_uploader_mock,
-                resources_to_export)
+                resources_to_export, test_params)
             exported_template = template_exporter.export()
             self.assertEquals(exported_template, template_dict)
 
@@ -607,10 +651,10 @@ class TestArtifactExporter(unittest.TestCase):
 
             self.assertEquals(1, yaml_parse_mock.call_count)
 
-            resource_type1_class.assert_called_once_with(self.s3_uploader_mock)
+            resource_type1_class.assert_called_once_with(self.s3_uploader_mock, test_params)
             resource_type1_instance.export.assert_called_once_with(
                 "Resource1", mock.ANY, template_dir)
-            resource_type2_class.assert_called_once_with(self.s3_uploader_mock)
+            resource_type2_class.assert_called_once_with(self.s3_uploader_mock, test_params)
             resource_type2_instance.export.assert_called_once_with(
                 "Resource2", mock.ANY, template_dir)
 
@@ -654,6 +698,59 @@ class TestArtifactExporter(unittest.TestCase):
             if zipfile_name:
                 os.remove(zipfile_name)
             test_file_creator.remove_all()
+
+    def test_resource_export_resolves_params(self):
+        parameter_key = "Parameter1"
+        test_template_params = {
+            parameter_key: "Parameter1Value"
+        }
+
+        test_resource = Resource(self.s3_uploader_mock, template_params=test_template_params)
+
+        test_resource.export = Mock()
+
+    def test_resource_resolve_param_reference(self):
+        parameter_key = "Parameter1"
+        test_template_params = {
+            parameter_key: "Parameter1Value"
+        }
+        test_property_value = {
+            "Ref": parameter_key
+        }
+        test_resource = Resource(self.s3_uploader_mock, template_params=test_template_params)
+
+        returned_property = test_resource.resolve_param_reference(test_property_value)
+
+        self.assertEquals(returned_property, test_template_params[parameter_key])
+
+    def test_resource_resolve_param_reference_not_ref(self):
+        parameter_key = "Parameter1"
+        test_template_params = {
+            parameter_key: "Parameter1Value"
+        }
+        test_property_value = parameter_key
+        test_resource = Resource(self.s3_uploader_mock, template_params=test_template_params)
+
+        returned_property = test_resource.resolve_param_reference(test_property_value)
+
+        self.assertEquals(returned_property, test_property_value)
+
+    def test_resource_resolve_param_reference_returns_another_function(self):
+        parameter_key = "Parameter1"
+        test_template_params = {
+            parameter_key: {
+                "Ref": "Property/Parameter"
+            }
+        }
+        test_property_value = {
+            "Ref": parameter_key
+        }
+        test_resource = Resource(self.s3_uploader_mock, template_params=test_template_params)
+
+        returned_property = test_resource.resolve_param_reference(test_property_value)
+
+        self.assertEquals(returned_property, test_property_value)
+
 
     @contextmanager
     def make_temp_dir(self):

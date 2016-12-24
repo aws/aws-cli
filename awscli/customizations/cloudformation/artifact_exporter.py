@@ -206,14 +206,18 @@ class Resource(object):
 
     PROPERTY_NAME = None
 
-    def __init__(self, uploader):
+    def __init__(self, uploader, template_params={}):
         self.uploader = uploader
+        self.template_params = template_params
 
     def export(self, resource_id, resource_dict, parent_dir):
         if resource_dict is None:
             return
 
         property_value = resource_dict.get(self.PROPERTY_NAME, None)
+        property_value = self.resolve_param_reference(property_value)
+        if property_value:
+            resource_dict[self.PROPERTY_NAME] = property_value
 
         if isinstance(property_value, dict):
             LOG.debug("Property {0} of {1} resource is not a URL"
@@ -241,6 +245,29 @@ class Resource(object):
                                    self.PROPERTY_NAME,
                                    parent_dir, self.uploader)
 
+    def resolve_param_reference(self, property_value):
+        """
+        Resolves a reference to parameter in a property value
+
+        :param property_value: string
+        :return: value of the template parameter referenced by the property.
+                 If the property is  not a Ref to a parameter the original
+                 property value is returned.
+        """
+        if not isinstance(property_value, dict):
+            # Not a intrinsic function
+            return property_value
+
+        ref = property_value.get("Ref", None)
+
+        parameter = self.template_params.get(ref, None)
+
+        # return property_value if parameter isn't a string
+        if not isinstance(parameter, six.string_types):
+            return property_value
+
+        return parameter
+
 
 class ResourceWithS3UrlDict(Resource):
     """
@@ -251,9 +278,6 @@ class ResourceWithS3UrlDict(Resource):
     BUCKET_NAME_PROPERTY = None
     OBJECT_KEY_PROPERTY = None
     VERSION_PROPERTY = None
-
-    def __init__(self, uploader):
-        super(ResourceWithS3UrlDict, self).__init__(uploader)
 
     def do_export(self, resource_id, resource_dict, parent_dir):
         """
@@ -309,9 +333,6 @@ class CloudFormationStackResource(Resource):
     """
     PROPERTY_NAME = "TemplateURL"
 
-    def __init__(self, uploader):
-        super(CloudFormationStackResource, self).__init__(uploader)
-
     def do_export(self, resource_id, resource_dict, parent_dir):
         """
         If the nested stack template is valid, this method will
@@ -332,8 +353,10 @@ class CloudFormationStackResource(Resource):
                     resource_id=resource_id,
                     template_path=abs_template_path)
 
+        stack_params = self.get_params(resource_dict, parent_dir)
+
         exported_template_dict = \
-            Template(template_path, parent_dir, self.uploader).export()
+            Template(template_path, parent_dir, self.uploader, template_params=stack_params).export()
 
         exported_template_str = yaml_dump(exported_template_dict)
 
@@ -345,6 +368,26 @@ class CloudFormationStackResource(Resource):
                     temporary_file.name, "template")
 
             resource_dict[self.PROPERTY_NAME] = url
+
+    def get_params(self, resource_dict, parent_dir):
+        """
+        Parses the Parameters resource, resolves them to the template parameters and
+        makes them an absolute path relative to the current template's parent directory
+
+        :param resource_dict: dict
+        :param parent_dir: dict
+        :return: dict of parsed parameters and their values
+        """
+        parameters = resource_dict.get("Parameters", {})
+
+        for parameter_id, parameter in parameters.items():
+            # resolve reference to template parameter
+            parameter = self.resolve_param_reference(parameter)
+
+            # make any path passed to stack relative to the current template
+            parameters[parameter_id] = make_abs_path(parent_dir, parameter)
+
+        return parameters
 
 
 EXPORT_DICT = {
@@ -364,7 +407,7 @@ class Template(object):
     """
 
     def __init__(self, template_path, parent_dir, uploader,
-                 resources_to_export=EXPORT_DICT):
+                 resources_to_export=EXPORT_DICT, template_params={}):
         """
         Reads the template and makes it ready for export
         """
@@ -384,6 +427,7 @@ class Template(object):
         self.template_dir = template_dir
         self.resources_to_export = resources_to_export
         self.uploader = uploader
+        self.template_params = template_params
 
     def export(self):
         """
@@ -404,7 +448,7 @@ class Template(object):
             if resource_type in self.resources_to_export:
                 # Export code resources
                 exporter = self.resources_to_export[resource_type](
-                        self.uploader)
+                        self.uploader, self.template_params)
                 exporter.export(resource_id, resource_dict, self.template_dir)
 
         return self.template_dict

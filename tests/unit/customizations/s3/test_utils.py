@@ -270,7 +270,7 @@ class TestGetFileStat(unittest.TestCase):
             with self.assertRaisesRegexp(ValueError, 'myfilename\.txt'):
                 get_file_stat('myfilename.txt')
 
-    def assert_handles_error(self, error):
+    def assert_handles_fromtimestamp_error(self, error):
         patch_attribute = 'awscli.customizations.s3.utils.datetime'
         with mock.patch(patch_attribute) as datetime_mock:
             with temporary_file('w') as temp_file:
@@ -281,13 +281,13 @@ class TestGetFileStat(unittest.TestCase):
                 self.assertIsNone(update_time)
 
     def test_returns_epoch_on_invalid_timestamp(self):
-        self.assert_handles_error(ValueError())
+        self.assert_handles_fromtimestamp_error(ValueError())
 
     def test_returns_epoch_on_invalid_timestamp_os_error(self):
-        self.assert_handles_error(OSError())
+        self.assert_handles_fromtimestamp_error(OSError())
 
     def test_returns_epoch_on_invalid_timestamp_overflow_error(self):
-        self.assert_handles_error(OverflowError())
+        self.assert_handles_fromtimestamp_error(OverflowError())
 
 
 class TestSetsFileUtime(unittest.TestCase):

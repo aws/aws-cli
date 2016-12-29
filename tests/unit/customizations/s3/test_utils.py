@@ -265,30 +265,29 @@ class TestGetFileStat(unittest.TestCase):
             self.assertEqual(size, 3)
             self.assertEqual(time.mktime(update_time.timetuple()), epoch_now)
 
-    def test_get_file_stat_error_message(self):
+    def test_error_message(self):
         with mock.patch('os.stat', mock.Mock(side_effect=IOError('msg'))):
             with self.assertRaisesRegexp(ValueError, 'myfilename\.txt'):
                 get_file_stat('myfilename.txt')
 
-    def test_get_file_stat_returns_epoch_on_invalid_timestamp(self):
+    def assert_handles_fromtimestamp_error(self, error):
         patch_attribute = 'awscli.customizations.s3.utils.datetime'
         with mock.patch(patch_attribute) as datetime_mock:
             with temporary_file('w') as temp_file:
                 temp_file.write('foo')
                 temp_file.flush()
-                datetime_mock.fromtimestamp.side_effect = ValueError()
+                datetime_mock.fromtimestamp.side_effect = error
                 size, update_time = get_file_stat(temp_file.name)
                 self.assertIsNone(update_time)
 
-    def test_get_file_stat_returns_epoch_on_invalid_timestamp_os_error(self):
-        patch_attribute = 'awscli.customizations.s3.utils.datetime'
-        with mock.patch(patch_attribute) as datetime_mock:
-            with temporary_file('w') as temp_file:
-                temp_file.write('foo')
-                temp_file.flush()
-                datetime_mock.fromtimestamp.side_effect = OSError()
-                size, update_time = get_file_stat(temp_file.name)
-                self.assertIsNone(update_time)
+    def test_returns_epoch_on_invalid_timestamp(self):
+        self.assert_handles_fromtimestamp_error(ValueError())
+
+    def test_returns_epoch_on_invalid_timestamp_os_error(self):
+        self.assert_handles_fromtimestamp_error(OSError())
+
+    def test_returns_epoch_on_invalid_timestamp_overflow_error(self):
+        self.assert_handles_fromtimestamp_error(OverflowError())
 
 
 class TestSetsFileUtime(unittest.TestCase):

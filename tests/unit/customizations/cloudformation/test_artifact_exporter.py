@@ -561,7 +561,9 @@ class TestArtifactExporter(unittest.TestCase):
         test_template_params = {
             "Parameter1": "./relative/filepath.txt"
         }
-        stack_resource = CloudFormationStackResource(self.s3_uploader_mock, template_params=test_template_params)
+        stack_resource = CloudFormationStackResource(
+            self.s3_uploader_mock,
+            template_params=test_template_params)
 
         test_resource_dict = {
             "Parameters": {
@@ -570,15 +572,19 @@ class TestArtifactExporter(unittest.TestCase):
                 }
             }
         }
-        returned_params = stack_resource.get_params(test_resource_dict, '/path/to/folder')
+        returned_params = stack_resource.get_params(test_resource_dict,
+                                                    '/path/to/folder')
 
-        self.assertEquals(returned_params["Parameter1Ref"], "/path/to/folder/relative/filepath.txt")
+        self.assertEquals(returned_params["Parameter1Ref"],
+                          "/path/to/folder/relative/filepath.txt")
 
-    def test_export_cloudformation_stack_get_params_relative_path(self):
+    def test_export_cloudformation_stack_get_params_absolute_path(self):
         test_template_params = {
             "Parameter1": "/absolute/filepath.txt"
         }
-        stack_resource = CloudFormationStackResource(self.s3_uploader_mock, template_params=test_template_params)
+        stack_resource = CloudFormationStackResource(
+            self.s3_uploader_mock,
+            template_params=test_template_params)
 
         test_resource_dict = {
             "Parameters": {
@@ -587,9 +593,11 @@ class TestArtifactExporter(unittest.TestCase):
                 }
             }
         }
-        returned_params = stack_resource.get_params(test_resource_dict, '/path/to/folder')
+        returned_params = stack_resource.get_params(test_resource_dict,
+                                                    '/path/to/folder')
 
-        self.assertEquals(returned_params["Parameter1Ref"], "/absolute/filepath.txt")
+        self.assertEquals(returned_params["Parameter1Ref"],
+                          "/absolute/filepath.txt")
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
     def test_template_export(self, yaml_parse_mock):
@@ -705,7 +713,8 @@ class TestArtifactExporter(unittest.TestCase):
             parameter_key: "Parameter1Value"
         }
 
-        test_resource = Resource(self.s3_uploader_mock, template_params=test_template_params)
+        test_resource = Resource(self.s3_uploader_mock,
+                                 template_params=test_template_params)
 
         test_resource.export = Mock()
 
@@ -717,7 +726,8 @@ class TestArtifactExporter(unittest.TestCase):
         test_property_value = {
             "Ref": parameter_key
         }
-        test_resource = Resource(self.s3_uploader_mock, template_params=test_template_params)
+        test_resource = Resource(self.s3_uploader_mock,
+                                 template_params=test_template_params)
 
         returned_property = test_resource.resolve_param_reference(test_property_value)
 

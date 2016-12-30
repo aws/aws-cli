@@ -206,9 +206,9 @@ class Resource(object):
 
     PROPERTY_NAME = None
 
-    def __init__(self, uploader, template_params={}):
+    def __init__(self, uploader, template_params=None):
         self.uploader = uploader
-        self.template_params = template_params
+        self.template_params = template_params if template_params else {}
 
     def export(self, resource_id, resource_dict, parent_dir):
         if resource_dict is None:
@@ -356,7 +356,8 @@ class CloudFormationStackResource(Resource):
         stack_params = self.get_params(resource_dict, parent_dir)
 
         exported_template_dict = \
-            Template(template_path, parent_dir, self.uploader, template_params=stack_params).export()
+            Template(template_path, parent_dir, self.uploader,
+                     template_params=stack_params).export()
 
         exported_template_str = yaml_dump(exported_template_dict)
 
@@ -407,7 +408,7 @@ class Template(object):
     """
 
     def __init__(self, template_path, parent_dir, uploader,
-                 resources_to_export=EXPORT_DICT, template_params={}):
+                 resources_to_export=EXPORT_DICT, template_params=None):
         """
         Reads the template and makes it ready for export
         """
@@ -427,7 +428,7 @@ class Template(object):
         self.template_dir = template_dir
         self.resources_to_export = resources_to_export
         self.uploader = uploader
-        self.template_params = template_params
+        self.template_params = template_params if template_params else {}
 
     def export(self):
         """

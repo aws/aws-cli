@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.35
+=======
+
+* feature:``codedeploy``: Update codedeploy command to latest version
+* bugfix:s3: Catch and warn on overflow errors when getting a file stat.
+* feature:``ecs``: Update ecs command to latest version
+
+
 1.11.34
 =======
 

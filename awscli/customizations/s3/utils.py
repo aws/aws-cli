@@ -216,13 +216,13 @@ def get_file_stat(path):
 
     try:
         update_time = datetime.fromtimestamp(stats.st_mtime, tzlocal())
-    except (ValueError, OSError):
+    except (ValueError, OSError, OverflowError):
         # Python's fromtimestamp raises value errors when the timestamp is out
         # of range of the platform's C localtime() function. This can cause
-        # issues when syncing from systems with a wide range of valid timestamps
-        # to systems with a lower range. Some systems support 64-bit timestamps,
-        # for instance, while others only support 32-bit. We don't want to fail
-        # in these cases, so instead we pass along none.
+        # issues when syncing from systems with a wide range of valid
+        # timestamps to systems with a lower range. Some systems support
+        # 64-bit timestamps, for instance, while others only support 32-bit.
+        # We don't want to fail in these cases, so instead we pass along none.
         update_time = None
 
     return stats.st_size, update_time

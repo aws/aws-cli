@@ -775,6 +775,16 @@ class BaseS3CLICommand(unittest.TestCase):
         response = client.head_object(Bucket=bucket_name, Key=key_name)
         return response
 
+    def wait_until_key_exists(self, bucket_name, key_name, extra_params=None,
+                              min_successes=3):
+        client = self.create_client_for_bucket(bucket_name)
+        waiter = client.get_waiter('object_exists')
+        params = {'Bucket': bucket_name, 'Key': key_name}
+        if extra_params is not None:
+            params.update(extra_params)
+        for _ in range(min_successes):
+            waiter.wait(**params)
+
     def assert_no_errors(self, p):
         self.assertEqual(
             p.rc, 0,

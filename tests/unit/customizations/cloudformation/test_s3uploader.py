@@ -302,6 +302,3 @@ class TestS3Uploader(unittest.TestCase):
                 result,
                 "https://s3-{0}.amazonaws.com/{1}/{2}".format(
                         region, self.bucket_name, key))
-
-
-

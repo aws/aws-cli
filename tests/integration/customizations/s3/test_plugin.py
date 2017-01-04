@@ -1817,6 +1817,7 @@ class TestHonorsEndpointUrl(BaseS3IntegrationTest):
 
 class TestSSERelatedParams(BaseS3IntegrationTest):
     def download_and_assert_kms_object_integrity(self, bucket, key, contents):
+        self.wait_until_key_exists(bucket, key)
         # Ensure the kms object can be download it by downloading it
         # with --sse aws:kms is enabled to ensure sigv4 is used on the
         # download, as it is required for kms.
@@ -2011,6 +2012,9 @@ class TestSSECRelatedParams(BaseS3IntegrationTest):
 
     def download_and_assert_sse_c_object_integrity(
             self, bucket, key, encrypt_key, contents):
+        self.wait_until_key_exists(bucket, key,
+                                   {'SSECustomerKey': encrypt_key,
+                                    'SSECustomerAlgorithm': 'AES256'})
         download_filename = os.path.join(self.files.rootdir, 'tmp', key)
         p = aws('s3 cp s3://%s/%s %s --sse-c AES256 --sse-c-key %s' % (
             bucket, key, download_filename, encrypt_key))

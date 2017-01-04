@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.11.36
+=======
+
+* feature:``config``: Update config command to latest version
+* feature:``rds``: Update rds command to latest version
+* feature:``efs``: Update efs command to latest version
+* feature:``marketplacecommerceanalytics``: Update marketplacecommerceanalytics command to latest version
+* feature:``lambda``: Update lambda command to latest version
+* feature:``dynamodbstreams``: Update dynamodbstreams command to latest version
+* feature:``rekognition``: Update rekognition command to latest version
+* feature:``iam``: Update iam command to latest version
+
+
 1.11.35
 =======
 

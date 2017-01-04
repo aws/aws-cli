@@ -19,7 +19,7 @@ import contextlib
 import uuid
 from awscli.compat import six
 
-from six.moves.urllib.parse import urlparse, parse_qs
+from six.moves.urllib.parse import urlparse, parse_qs, urljoin
 from contextlib import contextmanager
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump, \
@@ -45,6 +45,13 @@ def is_s3_url(url):
         return True
     except ValueError:
         return False
+
+
+def is_https_s3_url(url):
+    if isinstance(url, six.string_types) \
+        and url.startswith("https://s3.amazonaws.com/"):
+        return True
+    return False
 
 
 def is_local_folder(path):
@@ -84,6 +91,17 @@ def parse_s3_url(url,
             return result
 
     raise ValueError("URL given to the parse method is not a valid S3 url "
+                     "{0}".format(url))
+
+
+def s3_url_to_https(url):
+    if is_s3_url(url):
+        parsed = urlparse(url[3:])
+
+        if parsed.netloc and parsed.path:
+            return urljoin("https://s3.amazonaws.com", url[4:])
+    
+    raise ValueError("URL given to the convert to https method is not a valid S3 url "
                      "{0}".format(url))
 
 
@@ -321,7 +339,8 @@ class CloudFormationStackResource(Resource):
 
         template_path = resource_dict.get(self.PROPERTY_NAME, None)
 
-        if template_path is None or is_s3_url(template_path):
+        if template_path is None or is_s3_url(template_path) \
+                or is_https_s3_url(template_path):
             # Nothing to do
             return
 
@@ -341,10 +360,11 @@ class CloudFormationStackResource(Resource):
             temporary_file.write(exported_template_str)
             temporary_file.flush()
 
-            url = self.uploader.upload_with_dedup(
+            artifact_s3_url = self.uploader.upload_with_dedup(
                     temporary_file.name, "template")
 
-            resource_dict[self.PROPERTY_NAME] = url
+        url = s3_url_to_https(artifact_s3_url)
+        resource_dict[self.PROPERTY_NAME] = url
 
 
 EXPORT_DICT = {

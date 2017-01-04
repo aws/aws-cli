@@ -2,7 +2,7 @@
 
 The following ``create-stacks`` command creates a stack with the name ``myteststack`` using the ``sampletemplate.json`` template::
 
-  aws cloudformation create-stack --stack-name myteststack --template-body file:////home//local//test//sampletemplate.json
+  aws cloudformation create-stack --stack-name myteststack --template-body file:////home//local//test//sampletemplate.json --parameters ParameterKey=KeyPairName,ParameterValue=TestKey ParameterKey=SubnetIDs,ParameterValue=SubnetID1\\,SubnetID2
 
 Output::
 

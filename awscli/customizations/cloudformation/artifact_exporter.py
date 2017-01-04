@@ -344,7 +344,10 @@ class CloudFormationStackResource(Resource):
             url = self.uploader.upload_with_dedup(
                     temporary_file.name, "template")
 
-            resource_dict[self.PROPERTY_NAME] = url
+            # TemplateUrl property requires S3 URL to be in path-style format
+            parts = parse_s3_url(url, version_property="Version")
+            resource_dict[self.PROPERTY_NAME] = self.uploader.to_path_style_s3_url(
+                    parts["Key"], parts.get("Version", None))
 
 
 EXPORT_DICT = {

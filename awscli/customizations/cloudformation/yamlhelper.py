@@ -35,7 +35,7 @@ def intrinsics_multi_constructor(loader, tag_prefix, node):
         # ShortHand notation for !GetAtt accepts Resource.Attribute format
         # while the standard notation is to use an array
         # [Resource, Attribute]. Convert shorthand to standard format
-        value = node.value.split(".")
+        value = node.value.split(".", 1)
 
     elif isinstance(node, ScalarNode):
         # Value of this node is scalar

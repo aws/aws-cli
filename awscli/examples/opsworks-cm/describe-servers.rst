@@ -1,9 +1,9 @@
 **To describe servers**
 
 The following ``describe-servers`` command returns information about all servers 
-that are associated with your account, and in the ``us-east-1`` region::
+that are associated with your account, and in your default region.::
 
-  aws opsworks-cm describe-servers --region us-east-1 --endpoint 'https://opsworks-cm.us-east-1.amazonaws.com'
+  aws opsworks-cm describe-servers
 
 The output for each server entry returned by the command resembles the following.
 *Output*::

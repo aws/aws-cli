@@ -1,10 +1,10 @@
 **To start maintenance**
 
 The following ``start-maintenance`` command manually starts maintenance on a Chef Automate server 
-named ``automate-06`` in the ``us-east-1`` region. This command can be useful if an earlier, automated 
-maintenance attempt failed, and the underlying cause of maintenance failure has been resolved::
+named ``automate-06`` in your default region. This command can be useful if an earlier, automated 
+maintenance attempt failed, and the underlying cause of maintenance failure has been resolved.::
 
-  aws opsworks-cm start-maintenance --region us-east-1 --endpoint 'https://opsworks-cm.us-east-1.amazonaws.com' --server-name 'automate-06'
+  aws opsworks-cm start-maintenance --server-name 'automate-06'
 
 The output shows you information similar to the following about the maintenance request.
 *Output*::

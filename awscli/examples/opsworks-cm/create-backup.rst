@@ -2,9 +2,9 @@
 
 The following ``create-backup`` command starts a manual backup of a Chef Automate server
 named ``automate-06`` in the ``us-east-1`` region. The command adds a descriptive message to
-the backup in the ``--description`` parameter::
+the backup in the ``--description`` parameter.::
 
-  aws opsworks-cm create-backup --region us-east-1 --endpoint 'https://opsworks-cm.us-east-1.amazonaws.com' --server-name 'automate-06' --description "state of my infrastructure at launch"
+  aws opsworks-cm create-backup --server-name 'automate-06' --description "state of my infrastructure at launch"
 
 The output shows you information similar to the following about the new backup.
 *Output*::

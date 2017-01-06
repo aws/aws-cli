@@ -5,7 +5,7 @@ named ``automate-06`` in your default region. Note that defaults are used for
 most other settings, such as number of backups to retain, and maintenance and backup
 start times. Before you run a ``create-server`` command, complete prerequisites in
 .. _`Getting Started with AWS OpsWorks for Chef Automate`: http://docs.aws.amazon.com/opsworks/latest/userguide/gettingstarted-opscm.html
-::
+.::
 
   aws opsworks-cm create-server --engine "Chef" --engine-model "Single" --engine-version "12" --server-name "automate-06" --instance-profile-arn "arn:aws:iam::1019881987024:instance-profile/aws-opsworks-cm-ec2-role" --instance-type "t2.medium" --key-pair "amazon-test" --service-role-arn "arn:aws:iam::044726508045:role/aws-opsworks-cm-service-role"
 

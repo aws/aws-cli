@@ -3,9 +3,9 @@
 The following ``associate-node`` command associates a node named ``i-44de882p`` with
 a Chef Automate server named ``automate-06``, meaning that the ``automate-06`` server
 manages the node, and communicates recipe commands to the node through ``chef-client`` agent software
-that is installed on the node by the associate-node command. Valid node names are EC2 instance IDs::
+that is installed on the node by the associate-node command. Valid node names are EC2 instance IDs.::
 
-  aws opsworks-cm disassociate-node --region us-east-1 --endpoint 'https://opsworks-cm.us-east-1.amazonaws.com' --server-name "automate-06" --node-name "i-43de882p" --engine-attributes "Name=CHEF_ORGANIZATION,Value='default'"
+  aws opsworks-cm disassociate-node --server-name "automate-06" --node-name "i-43de882p" --engine-attributes "Name=CHEF_ORGANIZATION,Value='default'"
 
 The output returned by the command resembles the following.
 *Output*::

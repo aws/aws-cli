@@ -1,9 +1,9 @@
 **To describe events**
 
 The following ``describe-events`` command returns information about all events
-that are associated with a Chef Automate server named ``automate-06``::
+that are associated with a Chef Automate server named ``automate-06``.::
 
-  aws opsworks-cm describe-events --region us-east-1 --endpoint 'https://opsworks-cm.us-east-1.amazonaws.com' --server-name 'automate-06'
+  aws opsworks-cm describe-events --server-name 'automate-06'
 
 The output for each event entry returned by the command resembles the following.
 *Output*::

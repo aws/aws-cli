@@ -559,6 +559,7 @@ class TestCp(BaseS3IntegrationTest):
         bucket_name = _SHARED_BUCKET
         original_key = 'foo.txt'
         new_key = 'bar.txt'
+
         metadata = {
             'ContentType': 'foo',
             'ContentDisposition': 'foo',
@@ -575,7 +576,7 @@ class TestCp(BaseS3IntegrationTest):
         response = self.head_object(bucket_name, new_key)
         # These values should have the metadata of the source object
         metadata_ref = copy.copy(metadata)
-        metadata_ref['Expires'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+        metadata_ref['Expires'] = '1970-01-01T00:00:00+00:00'
         for name, value in metadata_ref.items():
             self.assertEqual(response[name], value)
 

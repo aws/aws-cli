@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
@@ -278,6 +279,15 @@ class TestCliDriver(unittest.TestCase):
         driver.session.create_client = mock.Mock(return_value=fake_client)
         rc = driver.main('s3 list-objects --bucket foo'.split())
         self.assertEqual(rc, 130)
+
+    def test_error_unicode(self):
+        driver = CLIDriver(session=self.session)
+        fake_client = mock.Mock()
+        fake_client.list_objects.side_effect = Exception(u"☃")
+        fake_client.can_paginate.return_value = False
+        driver.session.create_client = mock.Mock(return_value=fake_client)
+        rc = driver.main('s3 list-objects --bucket foo'.split())
+        self.assertEqual(rc, 255)
 
 
 class TestCliDriverHooks(unittest.TestCase):

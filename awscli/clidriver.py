@@ -220,7 +220,7 @@ class CLIDriver(object):
             LOG.debug("Exception caught in main()", exc_info=True)
             LOG.debug("Exiting with rc 255")
             sys.stderr.write("\n")
-            sys.stderr.write("%s\n" % e)
+            sys.stderr.write(u"%s\n" % e)
             return 255
 
     def _emit_session_event(self):

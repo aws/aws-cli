@@ -197,6 +197,11 @@ class DeployCommand(BasicCommand):
 
         for key, value in template_dict["Parameters"].items():
 
+            if key not in parameter_overrides and "Default" in value:
+                # Parameters that have default value and not overridden, should not be
+                # passed to CloudFormation
+                continue
+
             obj = {
                 "ParameterKey": key
             }

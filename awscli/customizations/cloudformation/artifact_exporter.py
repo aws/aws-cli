@@ -205,6 +205,7 @@ class Resource(object):
     """
 
     PROPERTY_NAME = None
+    PACKAGE_NULL_PROPERTY = True
 
     def __init__(self, uploader):
         self.uploader = uploader
@@ -214,6 +215,9 @@ class Resource(object):
             return
 
         property_value = resource_dict.get(self.PROPERTY_NAME, None)
+
+        if not property_value and not self.PACKAGE_NULL_PROPERTY:
+            return
 
         if isinstance(property_value, dict):
             LOG.debug("Property {0} of {1} resource is not a URL"
@@ -290,6 +294,7 @@ class LambdaFunctionResource(ResourceWithS3UrlDict):
 
 class ApiGatewayRestApiResource(ResourceWithS3UrlDict):
     PROPERTY_NAME = "BodyS3Location"
+    PACKAGE_NULL_PROPERTY = False
     BUCKET_NAME_PROPERTY = "Bucket"
     OBJECT_KEY_PROPERTY = "Key"
     VERSION_PROPERTY = "Version"
@@ -344,7 +349,10 @@ class CloudFormationStackResource(Resource):
             url = self.uploader.upload_with_dedup(
                     temporary_file.name, "template")
 
-            resource_dict[self.PROPERTY_NAME] = url
+            # TemplateUrl property requires S3 URL to be in path-style format
+            parts = parse_s3_url(url, version_property="Version")
+            resource_dict[self.PROPERTY_NAME] = self.uploader.to_path_style_s3_url(
+                    parts["Key"], parts.get("Version", None))
 
 
 EXPORT_DICT = {

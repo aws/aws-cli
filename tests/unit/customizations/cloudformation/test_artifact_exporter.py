@@ -106,7 +106,9 @@ def _helper_verify_export_resources(
     upload_local_artifacts_mock.reset_mock()
 
     resource_id = "id"
-    resource_dict = {}
+    resource_dict = {
+        test_class.PROPERTY_NAME: "foo"
+    }
     parent_dir = "dir"
 
     upload_local_artifacts_mock.return_value = uploaded_s3_url
@@ -423,6 +425,26 @@ class TestArtifactExporter(unittest.TestCase):
         upload_local_artifacts_mock.assert_not_called()
         self.assertEquals(resource_dict, {"foo": {"a": "b"}})
 
+    @patch("awscli.customizations.cloudformation.artifact_exporter.upload_local_artifacts")
+    def test_resource_has_package_null_property_to_false(self, upload_local_artifacts_mock):
+        # Should not upload anything if PACKAGE_NULL_PROPERTY is set to False
+
+        class MockResource(Resource):
+            PROPERTY_NAME = "foo"
+            PACKAGE_NULL_PROPERTY = False
+
+        resource = MockResource(self.s3_uploader_mock)
+        resource_id = "id"
+        resource_dict = {}
+        parent_dir = "dir"
+        s3_url = "s3://foo/bar"
+
+        upload_local_artifacts_mock.return_value = s3_url
+
+        resource.export(resource_id, resource_dict, parent_dir)
+
+        upload_local_artifacts_mock.assert_not_called()
+        self.assertNotIn(resource.PROPERTY_NAME, resource_dict)
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.upload_local_artifacts")
     def test_resource_export_fails(self, upload_local_artifacts_mock):
@@ -493,12 +515,14 @@ class TestArtifactExporter(unittest.TestCase):
         property_name = stack_resource.PROPERTY_NAME
         exported_template_dict = {"foo": "bar"}
         result_s3_url = "s3://hello/world"
+        result_path_style_s3_url = "http://s3.amazonws.com/hello/world"
 
         template_instance_mock = Mock()
         TemplateMock.return_value = template_instance_mock
         template_instance_mock.export.return_value = exported_template_dict
 
         self.s3_uploader_mock.upload_with_dedup.return_value = result_s3_url
+        self.s3_uploader_mock.to_path_style_s3_url.return_value = result_path_style_s3_url
 
         with tempfile.NamedTemporaryFile() as handle:
             template_path = handle.name
@@ -507,11 +531,12 @@ class TestArtifactExporter(unittest.TestCase):
 
             stack_resource.export(resource_id, resource_dict, parent_dir)
 
-            self.assertEquals(resource_dict[property_name], result_s3_url)
+            self.assertEquals(resource_dict[property_name], result_path_style_s3_url)
 
             TemplateMock.assert_called_once_with(template_path, parent_dir, self.s3_uploader_mock)
             template_instance_mock.export.assert_called_once_with()
             self.s3_uploader_mock.upload_with_dedup.assert_called_once_with(mock.ANY, "template")
+            self.s3_uploader_mock.to_path_style_s3_url.assert_called_once_with("world", None)
 
     def test_export_cloudformation_stack_no_upload_path_is_s3url(self):
         stack_resource = CloudFormationStackResource(self.s3_uploader_mock)

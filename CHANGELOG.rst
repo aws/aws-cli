@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.11.37
+=======
+
+* feature:``cur``: Update cur command to latest version
+* bugfix:``cloudformation deploy``: ``deploy`` command must not override parameters with default values
+* feature:``dynamodb``: Update dynamodb command to latest version
+* bug:``cloudformation package``: Only generate S3BodyLocation when needed `#2320 <https://github.com/aws/aws-cli/issues/2320>`__
+* feature:``elasticache``: Update elasticache command to latest version
+* feature:``config``: Update config command to latest version
+* bugfix:``cloudformation``: Fix yaml parsing error for ``!GetAtt`` `#2332 <https://github.com/aws/aws-cli/issues/2332>`__
+* bugfix:``cloudformation package``: ``package`` command must use Path-style S3 URL when packaging AWS
+
+
 1.11.36
 =======
 

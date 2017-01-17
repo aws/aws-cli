@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.11.38
+=======
+
+* feature:``dynamodb``: Update dynamodb command to latest version
+* feature:``polly``: Update polly command to latest version
+* feature:``glacier``: Update glacier command to latest version
+* feature:``route53``: Update route53 command to latest version
+* feature:``rekognition``: Update rekognition command to latest version
+
+
 1.11.37
 =======
 

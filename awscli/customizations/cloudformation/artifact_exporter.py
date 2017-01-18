@@ -19,7 +19,7 @@ import contextlib
 import uuid
 from awscli.compat import six
 
-from six.moves.urllib.parse import urlparse, parse_qs
+from awscli.compat import urlparse
 from contextlib import contextmanager
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump, \
@@ -66,8 +66,8 @@ def parse_s3_url(url,
         # Python < 2.7.10 don't parse query parameters from URI with custom
         # scheme such as s3://blah/blah. As a workaround, remove scheme
         # altogether to trigger the parser "s3://foo/bar?v=1" =>"//foo/bar?v=1"
-        parsed = urlparse(url[3:])
-        query = parse_qs(parsed.query)
+        parsed = urlparse.urlparse(url[3:])
+        query = urlparse.parse_qs(parsed.query)
 
         if parsed.netloc and parsed.path:
             result = dict()

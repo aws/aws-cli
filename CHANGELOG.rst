@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.39
+=======
+
+* feature:``rds``: Update rds command to latest version
+
+
 1.11.38
 =======
 

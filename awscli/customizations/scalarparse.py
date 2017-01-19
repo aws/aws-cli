@@ -27,6 +27,9 @@ There's nothing currently done for timestamps, but this will change
 in the future.
 
 """
+from botocore.utils import parse_timestamp
+
+
 def register_scalar_parser(event_handlers):
     event_handlers.register_first(
         'session-initialized', add_scalar_parsers)
@@ -36,13 +39,29 @@ def identity(x):
     return x
 
 
+def iso_format(value):
+    return parse_timestamp(value).isoformat()
+
+
+def choose_default_parsers(timestamp_format):
+    parsers = dict(blob_parser=identity)
+    if timestamp_format == 'none':
+        # For backwards compatibility reasons, we replace botocore's timestamp
+        # parser (which parses to a datetime.datetime object) with the
+        # identity function which prints the date exactly the same as it comes
+        # across the wire.
+        parsers['timestamp_parser'] = identity
+    elif timestamp_format == 'iso8601':
+        parsers['timestamp_parser'] = iso_format
+    else:
+        raise ValueError('Unknown cli_timestamp_format value: %s, valid values'
+                         ' are "none" or "iso8601"' % timestamp_format)
+    return parsers
+
+
 def add_scalar_parsers(session, **kwargs):
     factory = session.get_component('response_parser_factory')
-    # For backwards compatibility reasons, we replace botocore's timestamp
-    # parser (which parsers to a datetime.datetime object) with the identity
-    # function which prints the date exactly the same as it comes across the
-    # wire.  We will eventually add a config option that allows for a user to
-    # have normalized datetime representation, but we can't change the default.
-    factory.set_parser_defaults(
-        blob_parser=identity,
-        timestamp_parser=identity)
+    timestamp_format = session.get_scoped_config().get('cli_timestamp_format',
+                                                       'none')
+    parser_defaults = choose_default_parsers(timestamp_format)
+    factory.set_parser_defaults(**parser_defaults)

@@ -10,23 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-"""Change the scalar response parsing behavior for the AWS CLI.
-
-The underlying library used by botocore has some response parsing
-behavior that we'd like to modify in the AWS CLI.  There are two:
-
-    * Parsing binary content.
-    * Parsing timestamps (dates)
-
-For the first option we can't print binary content to the terminal,
-so this customization leaves the binary content base64 encoded.  If the
-user wants the binary content, they can then base64 decode the appropriate
-fields as needed.
-
-There's nothing currently done for timestamps, but this will change
-in the future.
-
-"""
 import os
 import mock
 import datetime

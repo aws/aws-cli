@@ -694,6 +694,10 @@ class BaseS3CLICommand(unittest.TestCase):
         # Subclasses can use this to define extra teardown steps.
         pass
 
+    def override_parser(self, **kwargs):
+        factory = self.session.get_component('response_parser_factory')
+        factory.set_parser_defaults(**kwargs)
+
     def create_client_for_bucket(self, bucket_name):
         region = self.regions.get(bucket_name, self.region)
         client = self.session.create_client('s3', region_name=region)

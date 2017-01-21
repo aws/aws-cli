@@ -42,6 +42,10 @@ class TestParsers(unittest.TestCase):
         self.driver.session.emit('session-initialized',
                                  session=self.driver.session)
 
+    def tearDown(self):
+        self.environ_patch.stop()
+        self.files.remove_all()
+
     def test_iso_parser(self):
         response_dict = {
             'headers': '',

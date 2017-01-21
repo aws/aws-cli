@@ -28,6 +28,7 @@ in the future.
 
 """
 from botocore.utils import parse_timestamp
+from botocore.exceptions import ProfileNotFound
 
 
 def register_scalar_parser(event_handlers):
@@ -43,25 +44,36 @@ def iso_format(value):
     return parse_timestamp(value).isoformat()
 
 
-def choose_default_parsers(timestamp_format):
-    parsers = dict(blob_parser=identity)
+def add_timestamp_parser(session):
+    factory = session.get_component('response_parser_factory')
+    # If a --profile is provided that does not exist, loading
+    # a value from get_scoped_config will crash the CLI.
+    # This function can be called as the first handler for
+    # the session-initialized event, which happens before a
+    # profile can be created, even if the command would have
+    # successfully created a profile. Instead of crashing here
+    # on a ProfileNotFound the CLI should just use 'none'.
+    try:
+        timestamp_format = session.get_scoped_config().get(
+            'cli_timestamp_format',
+            'none')
+    except ProfileNotFound:
+        timestamp_format = 'none'
     if timestamp_format == 'none':
         # For backwards compatibility reasons, we replace botocore's timestamp
         # parser (which parses to a datetime.datetime object) with the
         # identity function which prints the date exactly the same as it comes
         # across the wire.
-        parsers['timestamp_parser'] = identity
+        timestamp_parser = identity
     elif timestamp_format == 'iso8601':
-        parsers['timestamp_parser'] = iso_format
+        timestamp_parser = iso_format
     else:
         raise ValueError('Unknown cli_timestamp_format value: %s, valid values'
                          ' are "none" or "iso8601"' % timestamp_format)
-    return parsers
+    factory.set_parser_defaults(timestamp_parser=timestamp_parser)
 
 
 def add_scalar_parsers(session, **kwargs):
     factory = session.get_component('response_parser_factory')
-    timestamp_format = session.get_scoped_config().get('cli_timestamp_format',
-                                                       'none')
-    parser_defaults = choose_default_parsers(timestamp_format)
-    factory.set_parser_defaults(**parser_defaults)
+    factory.set_parser_defaults(blob_parser=identity)
+    add_timestamp_parser(session)

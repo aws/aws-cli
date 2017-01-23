@@ -11,7 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest
-import mock
+from mock import call, Mock, patch
+from botocore.exceptions import ProfileNotFound
 
 from awscli.customizations import scalarparse
 
@@ -24,7 +25,7 @@ class TestScalarParse(unittest.TestCase):
                                        timestamp_parser=scalarparse.iso_format)
 
     def test_register_scalar_parser(self):
-        event_handers = mock.Mock()
+        event_handers = Mock()
         scalarparse.register_scalar_parser(event_handers)
         event_handers.register_first.assert_called_with(
             'session-initialized', scalarparse.add_scalar_parsers)
@@ -34,21 +35,43 @@ class TestScalarParse(unittest.TestCase):
         self.assertEqual(scalarparse.identity(10), 10)
 
     def test_scalar_parsers_set(self):
-        session = mock.Mock()
+        session = Mock()
         session.get_scoped_config.return_value.get.return_value = 'none'
         scalarparse.add_scalar_parsers(session)
         session.get_component.assert_called_with('response_parser_factory')
         factory = session.get_component.return_value
+        expected = [call(blob_parser=scalarparse.identity),
+                    call(timestamp_parser=scalarparse.identity)]
+        self.assertEqual(factory.set_parser_defaults.mock_calls,
+                         expected)
+
+    def test_choose_none_timestamp_formatter(self):
+        session = Mock()
+        session.get_scoped_config.return_value.get.return_value = 'none'
+        factory = session.get_component.return_value
+        scalarparse.add_scalar_parsers(session)
         factory.set_parser_defaults.assert_called_with(
-            blob_parser=scalarparse.identity,
             timestamp_parser=scalarparse.identity)
 
-    def test_choose_default_formatters(self):
-        self.assertEqual(self.formatter_dict_ident,
-                         scalarparse.choose_default_parsers('none'))
-        self.assertEqual(self.formatter_dict_iso,
-                         scalarparse.choose_default_parsers('iso8601'))
+    def test_choose_iso_timestamp_formatter(self):
+        session = Mock()
+        session.get_scoped_config.return_value.get.return_value = 'iso8601'
+        factory = session.get_component.return_value
+        scalarparse.add_scalar_parsers(session)
+        factory.set_parser_defaults.assert_called_with(
+            timestamp_parser=scalarparse.iso_format)
 
-    def test_choose_default_formatters_invalid_parser(self):
+    def test_choose_invalid_timestamp_formatter(self):
+        session = Mock()
+        session.get_scoped_config.return_value.get.return_value = 'foobar'
+        factory = session.get_component.return_value
         with self.assertRaises(ValueError):
-            scalarparse.choose_default_parsers('foobar')
+            scalarparse.add_scalar_parsers(session)
+
+    def test_choose_timestamp_parser_profile_not_found(self):
+        session = Mock()
+        session.get_scoped_config.side_effect = ProfileNotFound(profile='foo')
+        factory = session.get_component.return_value
+        scalarparse.add_scalar_parsers(session)
+        factory.set_parser_defaults.assert_called_with(
+            timestamp_parser=scalarparse.identity)

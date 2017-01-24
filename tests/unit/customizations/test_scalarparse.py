@@ -1,4 +1,4 @@
-# Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -10,20 +10,21 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest
-from mock import call, Mock, patch
+import datetime
+import json
+import os
+
 from botocore.exceptions import ProfileNotFound
+from botocore.session import Session
+from dateutil.tz import tzlocal
+from mock import Mock, call, patch
 
 from awscli.customizations import scalarparse
+from awscli.testutils import capture_output, create_clidriver, \
+    unittest, FileCreator
 
 
 class TestScalarParse(unittest.TestCase):
-    def setUp(self):
-        self.formatter_dict_ident = dict(blob_parser=scalarparse.identity,
-                                        timestamp_parser=scalarparse.identity)
-        self.formatter_dict_iso = dict(blob_parser=scalarparse.identity,
-                                       timestamp_parser=scalarparse.iso_format)
-
     def test_register_scalar_parser(self):
         event_handers = Mock()
         scalarparse.register_scalar_parser(event_handers)
@@ -36,7 +37,8 @@ class TestScalarParse(unittest.TestCase):
 
     def test_scalar_parsers_set(self):
         session = Mock()
-        session.get_scoped_config.return_value.get.return_value = 'none'
+        session.get_scoped_config.return_value = {'cli_timestamp_format':
+                                                  'none'}
         scalarparse.add_scalar_parsers(session)
         session.get_component.assert_called_with('response_parser_factory')
         factory = session.get_component.return_value
@@ -46,32 +48,77 @@ class TestScalarParse(unittest.TestCase):
                          expected)
 
     def test_choose_none_timestamp_formatter(self):
-        session = Mock()
-        session.get_scoped_config.return_value.get.return_value = 'none'
+        session = Mock(spec=Session)
+        session.get_scoped_config.return_value = {'cli_timestamp_format':
+                                                  'none'}
         factory = session.get_component.return_value
         scalarparse.add_scalar_parsers(session)
         factory.set_parser_defaults.assert_called_with(
             timestamp_parser=scalarparse.identity)
 
     def test_choose_iso_timestamp_formatter(self):
-        session = Mock()
-        session.get_scoped_config.return_value.get.return_value = 'iso8601'
+        session = Mock(spec=Session)
+        session.get_scoped_config.return_value = {'cli_timestamp_format':
+                                                  'iso8601'}
         factory = session.get_component.return_value
         scalarparse.add_scalar_parsers(session)
         factory.set_parser_defaults.assert_called_with(
             timestamp_parser=scalarparse.iso_format)
 
     def test_choose_invalid_timestamp_formatter(self):
-        session = Mock()
-        session.get_scoped_config.return_value.get.return_value = 'foobar'
-        factory = session.get_component.return_value
+        session = Mock(spec=Session)
+        session.get_scoped_config.return_value = {'cli_timestamp_format':
+                                                  'foobar'}
+        session.get_component.return_value
         with self.assertRaises(ValueError):
             scalarparse.add_scalar_parsers(session)
 
     def test_choose_timestamp_parser_profile_not_found(self):
-        session = Mock()
+        session = Mock(spec=Session)
         session.get_scoped_config.side_effect = ProfileNotFound(profile='foo')
         factory = session.get_component.return_value
         scalarparse.add_scalar_parsers(session)
         factory.set_parser_defaults.assert_called_with(
             timestamp_parser=scalarparse.identity)
+
+
+class TestCLITimestampParser(unittest.TestCase):
+    def setUp(self):
+        self.files = FileCreator()
+        self.files.create_file('config',
+                               '[default]\ncli_timestamp_format = iso8601\n')
+
+        self.environ = {
+            'AWS_DATA_PATH': os.environ['AWS_DATA_PATH'],
+            'AWS_DEFAULT_REGION': 'us-east-1',
+            'AWS_ACCESS_KEY_ID': 'access_key',
+            'AWS_SECRET_ACCESS_KEY': 'secret_key',
+            'AWS_CONFIG_FILE': self.files.full_path('config')
+        }
+        self.environ_patch = patch('os.environ', self.environ)
+        self.environ_patch.start()
+        self.driver = create_clidriver()
+
+        self.epoch = datetime.datetime.fromtimestamp(0)
+
+    def tearDown(self):
+        self.environ_patch.stop()
+        self.files.remove_all()
+
+    def test_iso_round_trip(self):
+        wire_response = json.dumps({
+            'builds': [{
+                'startTime': 0,
+            }]
+        })
+        expected_time = self.epoch.replace(tzinfo=tzlocal()).isoformat()
+
+        with capture_output() as captured:
+            with patch('botocore.endpoint.Session.send') as _send:
+                _send.return_value = Mock(status_code=200, headers={},
+                                          content=wire_response.encode())
+                self.driver.main(['codebuild', 'batch-get-builds',
+                                  '--ids', 'foo'])
+                json_response = json.loads(captured.stdout.getvalue())
+                start_time = json_response["builds"][0]["startTime"]
+                self.assertEqual(expected_time, start_time)

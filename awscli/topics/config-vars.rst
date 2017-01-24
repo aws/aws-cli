@@ -86,7 +86,7 @@ The valid values of the ``output`` configuration variable are:
 ``cli_timestamp_format`` controls the format of timestamps displayed by the AWS CLI.
 The valid values of the ``cli_timestamp_format`` configuration varaible are:
 
-* none - Display the timestamp exactly as recieved from the HTTP response.
+* none - Display the timestamp exactly as received from the HTTP response.
 * iso8601 - Reformat timestamp using iso8601.
 
 When you specify a profile, either using ``--profile profile-name`` or by

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """Script to create self contained install.
 
 The goal of this script is simple:
@@ -12,171 +12,268 @@ interface for those not familiar with the python
 ecosystem.
 
 """
-import os
-import sys
-import time
-import subprocess
+
+import argparse
+import os.path
+import re
+import shlex
 import shutil
+import subprocess
+import sys
 import tempfile
 import zipfile
-from contextlib import contextmanager
-# These are package versions that are needed to boostrap
-# the installation process.  It is *not* the deps required
-# by awscli/botocore.
-PACKAGE_VERSION = {
-    'virtualenv': '15.1.0',
-    # These packages are included because they are required for
-    # python2.6, but our normal dependency downloading via pip
-    # only works if you use python2.6.  To fix this issue, we're
-    # explicitly saying that we need to download these packages
-    # even if pip doesn't think we need them.  That way we can
-    # run make-bundle in python versions besides 2.6.
-    'ordereddict': '1.1',
-    'simplejson': '3.3.0',
-    'argparse': '1.2.1',
-}
-INSTALL_ARGS = '--allow-all-external --no-use-wheel'
 
 
-class BadRCError(Exception):
+if sys.version_info[:2] < (3, 5):
+    sys.exit("Must use Python >= 3.5 to run this script.")
+
+
+PYTHON_VERSIONS = ["2.6", "2.7", "3.3", "3.4", "3.5", "3.6"]
+
+VIRTUALENV_VERSION = "15.1.0"
+
+
+class MissingPythonVersion(Exception):
     pass
 
 
-@contextmanager
-def cd(dirname):
-    original = os.getcwd()
-    os.chdir(dirname)
-    try:
-        yield
-    finally:
-        os.chdir(original)
+def pip(python_version):
+    if python_version == "2.6":
+        return "pip.__main__"
+    return "pip"
 
 
-def run(cmd):
-    sys.stdout.write("Running cmd: %s\n" % cmd)
-    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
-    stdout, stderr = p.communicate()
-    rc = p.wait()
-    if p.returncode != 0:
-        raise BadRCError("Bad rc (%s) for cmd '%s': %s" % (
-            rc, cmd, stderr + stdout))
-    return stdout
+def run_command(command, **kwargs):
+    print("  + {}".format(" ".join([shlex.quote(c) for c in command])))
+
+    kwargs["stdin"] = subprocess.PIPE
+    kwargs["stdout"] = subprocess.PIPE
+    kwargs["stderr"] = subprocess.STDOUT
+    kwargs.setdefault("encoding", sys.stdout.encoding)
+
+    with subprocess.Popen(command, **kwargs) as process:
+        # Close the stdin to make it an error for the subprocess to prompt.
+        process.stdin.close()
+
+        # Read lines off of the stdout and print them with a bit of whitespace
+        # added to the front to differentiate it from this script's output.
+        # Note: We're doing this instead of using process.communicate() because
+        #       we want the lines of output as they are produced rather than
+        #       when the process is finished.
+        for line in process.stdout:
+            print("      {}".format(line), end="")
+
+        # Now that we've gotten here, the process should be finished so we'll
+        # go ahead and fetch the return code.
+        retcode = process.poll()
+
+        if retcode:
+            raise subprocess.CalledProcessError(retcode, process.args)
+
+        return subprocess.CompletedProcess(process.args, retcode)
 
 
-def create_scratch_dir():
-    # This creates the dir where all the bundling occurs.
-    # First we need a top level dir.
-    dirname = tempfile.mkdtemp(prefix='bundle')
-    # Then we need to create a dir where all the packages
-    # will come from.
-    os.mkdir(os.path.join(dirname, 'packages'))
-    return dirname
+def ensure_packages(requirements, *, output_dir, pythons=None,
+                    virtualenv=None):
+    if pythons is None:
+        pythons = PYTHON_VERSIONS
+
+    # Before we do anything, try and determine if the version of Pythons that
+    # we're building for is installed on this machine.
+    # Note: We do this here, before the main loop over the Pythons so we bail
+    #       out early on any missing versions instead of do needless work.
+    for python in sorted(pythons, reverse=True):
+        try:
+            subprocess.run(
+                ["python{}".format(python), "-c", ""],
+                stdout=subprocess.PIPE,
+                check=True,
+            )
+        except FileNotFoundError:
+            raise MissingPythonVersion(
+                "Missing Python version {}.".format(python)
+            ) from None
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        # We want to loop over every version of Python we support and download
+        # or build wheels for them.
+        first = False
+        for python in sorted(pythons, reverse=True):
+            print("Downloading Dependencies for {}".format(python))
+
+            # Create our virtual environment.
+            venv_path = os.path.abspath(os.path.join(tmpdir, python))
+            python_path = os.path.join(venv_path, "bin", "python")
+            run_command(["virtualenv", "-ppython{}".format(python), venv_path])
+
+            # Ensure that we have the latest versions of all of our tools
+            # installed in the virtual environment.
+            run_command([
+                python_path, "-m", pip(python), "install", "--upgrade",
+                "pip"
+            ])
+            run_command([
+                python_path, "-m", pip(python), "install", "--upgrade",
+                "setuptools", "wheel",
+            ])
+
+            if not first:
+                first = True
+                # We need to download and bundle virtualenv, but we need it to
+                # be the sdist since it won't actually be installed.
+                run_command([
+                    python_path, "-m", pip(python), "download",
+                    "--no-cache-dir", "--no-binary=virtualenv",
+                    "-d", output_dir, virtualenv,
+                ])
+
+            # Use the virtual environment to build our wheels, doing this
+            # inside of a virtual environment ensures that we don't pollute the
+            # outer environment.
+            env = os.environ.copy()
+            env["CC"] = "/bin/false"
+            run_command(
+                [
+                    python_path, "-m", pip(python), "wheel", "-w", output_dir,
+                    "--no-cache-dir"
+                ] + requirements,
+                env=env,
+            )
+
+            # We need to rename the PyYAML file, we've disabled the building of
+            # it's C extension so it is now pure Python, HOWEVER, because of
+            # the way it works wheel still thinks it is a binary file.
+            # TODO: It'd be great if this wasn't required.
+            for filename in os.listdir(output_dir):
+                m = re.search(r"^PyYAML-([^-]+)-cp", filename)
+                if m is not None:
+                    shutil.move(
+                        os.path.join(output_dir, filename),
+                        os.path.join(
+                            output_dir,
+                            "PyYAML-{}-py{}-none-any.whl".format(
+                                m.group(1),
+                                python[0],
+                            ),
+                        ),
+                    )
 
 
-def download_package_tarballs(dirname, packages):
-    with cd(dirname):
-        for package in packages:
-            run('pip install -d . %s==%s %s' % (
-                package, PACKAGE_VERSION[package], INSTALL_ARGS))
-
-
-def download_cli_deps(scratch_dir):
-    # As far as i can tell this is a bug in pip.
-    # Running 'pip intall -d . ~/clidir' does not work.
-    # Running 'pip install -d foo ~/clidir' results
-    # in python consuming 100% CPU.
-    # This problem is surprisingly hard, specifically that
-    # of downloading all the dependent python packages of
-    # the awscli as tarballs.
-    # So here's what we do.
-    # Step one create a virtualenv.
-    venv_dir = tempfile.mkdtemp()
-    run('virtualenv %s' % venv_dir)
-    pip = os.path.join(venv_dir, 'bin', 'pip')
-    assert os.path.isfile(pip)
-    awscli_dir = os.path.dirname(
-        os.path.dirname(os.path.abspath(__file__)))
-    with cd(scratch_dir):
-        run('%s install %s -d . -e %s' % (pip, INSTALL_ARGS, awscli_dir))
-    # Remove the awscli package, we'll create our own sdist.
-    _remove_cli_zip(scratch_dir)
-
-
-def _remove_cli_zip(scratch_dir):
-    clidir = [f for f in os.listdir(scratch_dir) if f.startswith('awscli')]
-    assert len(clidir) == 1
-    os.remove(os.path.join(scratch_dir, clidir[0]))
-
-
-def add_cli_sdist(scratch_dir):
-    awscli_dir = os.path.dirname(
-        os.path.dirname(os.path.abspath(__file__)))
-    if os.path.exists(os.path.join(awscli_dir, 'dist')):
-        shutil.rmtree(os.path.join(awscli_dir, 'dist'))
-    with cd(awscli_dir):
-        run('python setup.py sdist')
-        filename = os.listdir('dist')[0]
-        shutil.move(os.path.join('dist', filename),
-                    os.path.join(scratch_dir, filename))
-
-
-def create_bootstrap_script(scratch_dir):
+def create_bootstrap_script(output_dir):
+    print("Creating Bootstrap Script")
     install_script = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), 'install')
-    shutil.copy(install_script, os.path.join(scratch_dir, 'install'))
+        os.path.dirname(os.path.abspath(__file__)), "install")
+    shutil.copy(install_script, os.path.join(output_dir, "install"))
 
 
-def zip_dir(scratch_dir):
-    basename = 'awscli-bundle.zip'
-    dirname, tmpdir = os.path.split(scratch_dir)
-    final_dir_name = os.path.join(dirname, 'awscli-bundle')
-    if os.path.isdir(final_dir_name):
-        shutil.rmtree(final_dir_name)
-    shutil.move(scratch_dir, final_dir_name)
-    with cd(dirname):
-        with zipfile.ZipFile(basename, 'w', zipfile.ZIP_DEFLATED) as zipped:
-            for root, dirnames, filenames in os.walk('awscli-bundle'):
-                for filename in filenames:
-                    zipped.write(os.path.join(root, filename))
-    return os.path.join(dirname, basename)
+def zip_dir(bundle_dir, output):
+    print("Creating Bundle")
+    tmpdir, dirname = os.path.split(bundle_dir)
+    with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as zfp:
+        for root, dirnames, filenames in os.walk(bundle_dir):
+            base = os.path.commonpath([tmpdir, root])
+            for filename in filenames:
+                path = os.path.join(root, filename)
+                zfp.write(path, arcname=os.path.relpath(path, base))
 
 
-def verify_preconditions():
-    # The pip version looks like:
-    # 'pip 1.4.1 from ....'
-    pip_version = run('pip --version').strip().split()[1]
-    # Virtualenv version just has the version string: '1.14.5\n'
-    virtualenv_version = run('virtualenv --version').strip()
-    _min_version_required('1.5.0', pip_version, 'pip')
-    _min_version_required('1.11.4', virtualenv_version, 'virtualenv')
+def create_bundled_installer(aws_cli=".", botocore=None, virtualenv=None,
+                             pythons=None, output_dir="."):
+    """
+    Create a bundled installer.
 
+    :param str aws_cli: The pip-like requirement for where awscli will be
+                        installed from. Defaults to the current directory.
+    :param str botocore: The pip-like requirement for where botocore will be
+                         installed from. Defaults to PyPI.
+    :param str virtualenv: The pip-like requirement or version number for what
+                           virtualenv will be installed.
+    :param list pythons: A list of Python versions the bundled installer should
+                         be valid for. Versions should be strs of the form
+                         X.Y. Defaults to 2.6, 2.7, and 3.3+.
+    :param str output_dir: The directory to place the final awscli-bundle.zip
+                           file when it has been created. Defaults to the
+                           current directory.
+    """
+    requirements = [aws_cli]
+    if botocore is not None:
+        requirements.append(botocore)
 
-def _min_version_required(min_version, actual_version, name):
-    # precondition: min_version is major.minor.patch
-    #               actual_version is major.minor.patch
-    min_split = map(int, min_version.split('.'))
-    actual_split = map(int, actual_version.split('.'))
-    if actual_split < min_split:
-        raise ValueError("%s requires at least version %s, but "
-                         "version %s was found." % (name, min_version,
-                                                    actual_version))
+    if virtualenv is None:
+        virtualenv = VIRTUALENV_VERSION
+
+    # This pattern relies on the fact that I know that virtualenv verisons will
+    # pretty much always take this form. If one doesn't then a user will have
+    # to explicitly use ``virtualenv==$VERSION`` rather than just ``$VERSION``.
+    if re.search(r"^\d+(\.\d+)*$", virtualenv):
+        virtualenv = "virtualenv=={}".format(virtualenv)
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        bundle_dir = os.path.abspath(os.path.join(tmpdir, "awscli-bundle"))
+        os.makedirs(bundle_dir)
+
+        ensure_packages(
+            requirements,
+            virtualenv=virtualenv,
+            output_dir=os.path.join(bundle_dir, "packages"),
+            pythons=pythons,
+        )
+
+        create_bootstrap_script(bundle_dir)
+
+        output = os.path.abspath(os.path.join(tmpdir, "awscli-bundle.zip"))
+        zip_dir(bundle_dir, output)
+
+        os.makedirs(output_dir, exist_ok=True)
+        if os.path.exists(os.path.join(output_dir, os.path.basename(output))):
+            os.remove(os.path.join(output_dir, os.path.basename(output)))
+        shutil.move(output, output_dir)
+
+        print("Stored {} at {}".format(os.path.basename(output), output_dir))
 
 
 def main():
-    verify_preconditions()
-    scratch_dir = create_scratch_dir()
-    package_dir = os.path.join(scratch_dir, 'packages')
-    print("Bundle dir at: %s" % scratch_dir)
-    download_package_tarballs(
-        package_dir,
-        packages=['virtualenv', 'ordereddict', 'simplejson', 'argparse'])
-    download_cli_deps(package_dir)
-    add_cli_sdist(package_dir)
-    create_bootstrap_script(scratch_dir)
-    zip_filename = zip_dir(scratch_dir)
-    print("Zipped bundle installer is at: %s" % zip_filename)
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--aws-cli",
+        metavar="REQUIREMENT",
+        help="A pip requirement for what AWS CLI to install.",
+        default=".",
+    )
+    parser.add_argument(
+        "--botocore",
+        metavar="REQUIREMENT",
+        help="A pip requirement for what botocore to install.",
+    )
+    parser.add_argument(
+        "--virtualenv",
+        metavar="REQUIREMENT",
+        help="A pip requirement for what virtualenv to use.",
+        default=VIRTUALENV_VERSION,
+    )
+    parser.add_argument(
+        "--python", "-p",
+        metavar="Python",
+        action="append",
+        choices=PYTHON_VERSIONS,
+        help=("A version of Python (X.Y) that this bundle will be valid for. "
+              "Can be specified multiple times for multiple versions."),
+    )
+    parser.add_argument("--output-dir", default=".")
+
+    args = parser.parse_args()
+
+    try:
+        create_bundled_installer(
+            aws_cli=args.aws_cli,
+            botocore=args.botocore,
+            virtualenv=args.virtualenv,
+            pythons=args.python,
+            output_dir=args.output_dir,
+        )
+    except MissingPythonVersion as exc:
+        sys.exit(str(exc))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

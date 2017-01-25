@@ -87,15 +87,10 @@ def create_working_dir():
 
 
 def pip_install_packages(install_dir):
-    cli_tarball = [p for p in os.listdir(PACKAGES_DIR)
-                   if p.startswith('awscli')]
-    assert len(cli_tarball) == 1
-    cli_tarball = cli_tarball[0]
     pip_script = os.path.join(install_dir, bin_path(), 'pip')
 
-    with cd(PACKAGES_DIR):
-        run('%s install --no-index --find-links file://%s %s' % (
-            pip_script, PACKAGES_DIR, cli_tarball))
+    run('%s install --no-index --find-links file://%s awscli' % (
+        pip_script, PACKAGES_DIR))
 
 
 def create_symlink(real_location, symlink_name):
@@ -125,7 +120,7 @@ def main():
                       "add INSTALL_DIR/bin to your PATH.")
     opts = parser.parse_args()[0]
     working_dir = create_working_dir()
-    create_install_structure(working_dir, opts.install_dir)
+    create_install_structure(working_dir, os.path.abspath(opts.install_dir))
     pip_install_packages(opts.install_dir)
     real_location = os.path.join(opts.install_dir, bin_path(), 'aws')
     if opts.bin_location and create_symlink(real_location, opts.bin_location):

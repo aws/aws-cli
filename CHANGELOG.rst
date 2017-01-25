@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.43
+=======
+
+* feature:``elbv2``: Update elbv2 command to latest version
+* feature:``rds``: Update rds command to latest version
+
+
 1.11.42
 =======
 

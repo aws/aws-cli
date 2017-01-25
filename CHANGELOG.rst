@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.42
+=======
+
+* feature:``codecommit``: Update codecommit command to latest version
+* feature:``ecs``: Update ecs command to latest version
+* feature:``codebuild``: Update codebuild command to latest version
+
+
 1.11.41
 =======
 

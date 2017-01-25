@@ -10,18 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import datetime
-import json
-import os
-
 from botocore.exceptions import ProfileNotFound
 from botocore.session import Session
-from dateutil.tz import tzlocal
-from mock import Mock, call, patch
+from mock import Mock, call
 
 from awscli.customizations import scalarparse
-from awscli.testutils import capture_output, create_clidriver, \
-    unittest, FileCreator
+from awscli.testutils import unittest
 
 
 class TestScalarParse(unittest.TestCase):
@@ -80,45 +74,3 @@ class TestScalarParse(unittest.TestCase):
         scalarparse.add_scalar_parsers(session)
         factory.set_parser_defaults.assert_called_with(
             timestamp_parser=scalarparse.identity)
-
-
-class TestCLITimestampParser(unittest.TestCase):
-    def setUp(self):
-        self.files = FileCreator()
-        self.files.create_file('config',
-                               '[default]\ncli_timestamp_format = iso8601\n')
-
-        self.environ = {
-            'AWS_DATA_PATH': os.environ['AWS_DATA_PATH'],
-            'AWS_DEFAULT_REGION': 'us-east-1',
-            'AWS_ACCESS_KEY_ID': 'access_key',
-            'AWS_SECRET_ACCESS_KEY': 'secret_key',
-            'AWS_CONFIG_FILE': self.files.full_path('config')
-        }
-        self.environ_patch = patch('os.environ', self.environ)
-        self.environ_patch.start()
-        self.driver = create_clidriver()
-
-        self.epoch = datetime.datetime.fromtimestamp(0)
-
-    def tearDown(self):
-        self.environ_patch.stop()
-        self.files.remove_all()
-
-    def test_iso_round_trip(self):
-        wire_response = json.dumps({
-            'builds': [{
-                'startTime': 0,
-            }]
-        })
-        expected_time = self.epoch.replace(tzinfo=tzlocal()).isoformat()
-
-        with capture_output() as captured:
-            with patch('botocore.endpoint.Session.send') as _send:
-                _send.return_value = Mock(status_code=200, headers={},
-                                          content=wire_response.encode())
-                self.driver.main(['codebuild', 'batch-get-builds',
-                                  '--ids', 'foo'])
-                json_response = json.loads(captured.stdout.getvalue())
-                start_time = json_response["builds"][0]["startTime"]
-                self.assertEqual(expected_time, start_time)

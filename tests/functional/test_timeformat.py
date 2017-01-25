@@ -12,54 +12,85 @@
 # language governing permissions and limitations under the License.
 import os
 import mock
+import json
 import datetime
 from dateutil.tz import tzlocal
-from awscli.testutils import unittest, FileCreator
+from awscli.testutils import unittest, FileCreator, capture_output
 from awscli.clidriver import create_clidriver
 
 
-class TestParsers(unittest.TestCase):
+class TestCLITimestampParser(unittest.TestCase):
     def setUp(self):
+        self.files = FileCreator()
+        self.files.create_file('iso',
+                               '[default]\ncli_timestamp_format = iso8601\n')
+        self.files.create_file('none',
+                               '[default]\ncli_timestamp_format = none\n')
+        self.files.create_file('blank', '')
+
         self.environ = {
             'AWS_DATA_PATH': os.environ['AWS_DATA_PATH'],
             'AWS_DEFAULT_REGION': 'us-east-1',
             'AWS_ACCESS_KEY_ID': 'access_key',
             'AWS_SECRET_ACCESS_KEY': 'secret_key',
-            'AWS_CONFIG_FILE': '',
-            'AWS_SHARED_CREDENTIALS_FILE': '',
+            'AWS_CONFIG_FILE': ''
         }
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
 
-        self.files = FileCreator()
-        config_contents = (
-            '[default]\n'
-            'cli_timestamp_format = iso8601\n'
-        )
-        self.environ['AWS_CONFIG_FILE'] = self.files.create_file(
-            'myconfig', config_contents)
-        self.driver = create_clidriver()
-        self.driver.session.emit('session-initialized',
-                                 session=self.driver.session)
+        self.epoch = datetime.datetime.fromtimestamp(0)
+        self.wire_response = json.dumps({
+            'builds': [{
+                'startTime': 0,
+            }]
+        })
 
     def tearDown(self):
         self.environ_patch.stop()
         self.files.remove_all()
 
-    def test_iso_parser(self):
-        response_dict = {
-            'headers': '',
-            'status_code': 200,
-            'body': b'0'
-        }
-        factory = self.driver.session.get_component('response_parser_factory')
-        parser = factory.create_parser('json')
-        mock_shape = mock.MagicMock()
-        mock_shape.type_name = 'timestamp'
+    def load_config(self, config_name):
+        self.environ['AWS_CONFIG_FILE'] = self.files.full_path(config_name)
+        self.driver = create_clidriver()
 
-        parsed_response = parser.parse(
-            response_dict, mock_shape)
-        self.assertEqual(parsed_response,
-                         datetime.datetime.fromtimestamp(
-                             0.0,
-                             tzlocal()).isoformat())
+    def test_iso(self):
+        self.load_config('iso')
+        expected_time = self.epoch.replace(tzinfo=tzlocal()).isoformat()
+
+        with capture_output() as captured:
+            with mock.patch('botocore.endpoint.Session.send') as _send:
+                _send.return_value = mock.Mock(status_code=200, headers={},
+                                               content=self.wire_response.encode())
+                self.driver.main(['codebuild', 'batch-get-builds',
+                                  '--ids', 'foo'])
+                json_response = json.loads(captured.stdout.getvalue())
+                start_time = json_response["builds"][0]["startTime"]
+                self.assertEqual(expected_time, start_time)
+
+    def test_none(self):
+        self.load_config('none')
+        expected_time = 0
+
+        with capture_output() as captured:
+            with mock.patch('botocore.endpoint.Session.send') as _send:
+                _send.return_value = mock.Mock(status_code=200, headers={},
+                                               content=self.wire_response.encode())
+                self.driver.main(['codebuild', 'batch-get-builds',
+                                  '--ids', 'foo'])
+                json_response = json.loads(captured.stdout.getvalue())
+                start_time = json_response["builds"][0]["startTime"]
+                self.assertEqual(expected_time, start_time)
+
+    def test_absent(self):
+        self.load_config('blank')
+        expected_time = 0
+
+        with capture_output() as captured:
+            with mock.patch('botocore.endpoint.Session.send') as _send:
+                _send.return_value = mock.Mock(status_code=200, headers={},
+                                               content=self.wire_response.encode())
+                self.driver.main(['codebuild', 'batch-get-builds',
+                                  '--ids', 'foo'])
+                json_response = json.loads(captured.stdout.getvalue())
+                start_time = json_response["builds"][0]["startTime"]
+                self.assertEqual(expected_time, start_time)

@@ -60,15 +60,17 @@ General Options
 
 The AWS CLI has a few general options:
 
-=========== ========= ===================== ===================== ============================
-Variable    Option    Config Entry          Environment Variable  Description
-=========== ========= ===================== ===================== ============================
-profile     --profile N/A                   AWS_DEFAULT_PROFILE   Default profile name
------------ --------- --------------------- --------------------- ----------------------------
-region      --region  region                AWS_DEFAULT_REGION    Default AWS Region
------------ --------- --------------------- --------------------- ----------------------------
-output      --output  output                AWS_DEFAULT_OUTPUT    Default output style
-=========== ========= ===================== ===================== ============================
+==================== ========= ===================== ===================== ============================
+Variable             Option    Config Entry          Environment Variable  Description
+==================== ========= ===================== ===================== ============================
+profile              --profile N/A                   AWS_DEFAULT_PROFILE   Default profile name
+-------------------- --------- --------------------- --------------------- ----------------------------
+region               --region  region                AWS_DEFAULT_REGION    Default AWS Region
+-------------------- --------- --------------------- --------------------- ----------------------------
+output               --output  output                AWS_DEFAULT_OUTPUT    Default output style
+-------------------- --------- --------------------- --------------------- ----------------------------
+cli_timestamp_format N/A       cli_timestamp_format  N/A                   Output format of timestamps
+==================== ========= ===================== ===================== ============================
 
 The third column, Config Entry, is the value you would specify in the AWS CLI
 config file.  By default, this location is ``~/.aws/config``.  If you need to
@@ -80,6 +82,12 @@ The valid values of the ``output`` configuration variable are:
 * json
 * table
 * text
+
+``cli_timestamp_format`` controls the format of timestamps displayed by the AWS CLI.
+The valid values of the ``cli_timestamp_format`` configuration varaible are:
+
+* none - Display the timestamp exactly as received from the HTTP response.
+* iso8601 - Reformat timestamp using iso8601 and your local timezone.
 
 When you specify a profile, either using ``--profile profile-name`` or by
 setting a value for the ``AWS_DEFAULT_PROFILE`` environment variable, profile

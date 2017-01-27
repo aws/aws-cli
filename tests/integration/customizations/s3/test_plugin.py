@@ -38,7 +38,7 @@ from awscli.testutils import aws as _aws
 from awscli.testutils import BaseS3CLICommand
 from awscli.testutils import random_chars, random_bucket_name
 from awscli.customizations.s3.transferconfig import DEFAULTS
-from awscli.customizations.scalarparse import add_scalar_parsers
+from awscli.customizations.scalarparse import add_scalar_parsers, identity
 
 
 # Using the same log name as testutils.py
@@ -555,7 +555,7 @@ class TestCp(BaseS3IntegrationTest):
     def test_copy_metadata_directive(self):
         # Copy the same style of parsing as the CLI session. This is needed
         # For comparing expires timestamp.
-        add_scalar_parsers(self.session)
+        self.override_parser(timestamp_parser=identity)
         bucket_name = _SHARED_BUCKET
         original_key = 'foo.txt'
         new_key = 'bar.txt'

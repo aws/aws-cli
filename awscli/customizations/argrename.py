@@ -54,6 +54,7 @@ ARGUMENT_RENAMES = {
     'pinpoint.get-campaign-version.version': 'campaign-version',
     'pinpoint.get-segment-version.version': 'segment-version',
     'stepfunctions.send-task-success.output': 'task-output',
+    'clouddirectory.publish-schema.version': 'schema-version',
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,

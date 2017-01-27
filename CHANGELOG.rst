@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.11.44
+=======
+
+* feature:``clouddirectory``: Update clouddirectory command to latest version
+* feature:Configuration: Adds a new option to the configuration file 'cli_timestamp_format' to change the timestamp output format displayed by the CLI.
+* feature:``ec2``: Update ec2 command to latest version
+* feature:``codedeploy``: Update codedeploy command to latest version
+* feature:``rds``: Update rds command to latest version
+
+
 1.11.43
 =======
 

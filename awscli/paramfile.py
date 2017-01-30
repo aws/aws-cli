@@ -52,6 +52,9 @@ PARAMFILE_DISABLED = set([
 
     'machinelearning.predict.predict-endpoint',
 
+    'rds.copy-db-snapshot.pre-signed-url',
+    'rds.create-db-instance-read-replica.pre-signed-url',
+
     'sqs.add-permission.queue-url',
     'sqs.change-message-visibility.queue-url',
     'sqs.change-message-visibility-batch.queue-url',

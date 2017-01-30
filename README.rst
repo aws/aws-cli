@@ -414,7 +414,7 @@ bandwidth to address them. Please use these community resources for getting
 help:
 
 * Ask a question on `Stack Overflow <https://stackoverflow.com/>`__ and tag it with `aws-cli <https://stackoverflow.com/questions/tagged/aws-cli>`__
-* Chat with us on `gitter <https://gitter.im/aws/aws-cli>`__
+* Come join the AWS CLI community chat on `gitter <https://gitter.im/aws/aws-cli>`__
 * Open a support ticket with `AWS Support <https://console.aws.amazon.com/support/home#/>`__
 * If it turns out that you may have found a bug, please `open an issue <https://github.com/aws/aws-cli/issues/new>`__
 

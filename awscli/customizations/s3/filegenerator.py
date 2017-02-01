@@ -172,14 +172,9 @@ class FileGenerator(object):
         error, listdir = os.error, os.listdir
         if not self.should_ignore_file(path):
             if not dir_op:
-                try:
-                    size, last_update = get_file_stat(path)
-                except OSError:
-                    self.triggers_warning(file_path)
-                else:
-                    last_update = self._validate_update_time(last_update, path)
-                    yield path, {'Size': size, 'LastModified': last_update}
-
+                stats = self._safely_get_file_stats(path)
+                if stats:
+                    yield stats
             else:
                 # We need to list files in byte order based on the full
                 # expanded path of the key: 'test/1/2/3.txt'  However,
@@ -212,17 +207,19 @@ class FileGenerator(object):
                         for x in self.list_files(file_path, dir_op):
                             yield x
                     else:
-                        try:
-                            size, last_update = get_file_stat(file_path)
-                        except OSError:
-                            self.triggers_warning(file_path)
-                        else:
-                            last_update = self._validate_update_time(
-                                last_update, path)
-                            yield (
-                                file_path,
-                                {'Size': size, 'LastModified': last_update}
-                            )
+                        stats = self._safely_get_file_stats(path, file_name=name)
+                        if stats:
+                            yield stats
+
+    def _safely_get_file_stats(self, path, file_name=None):
+        file_path = path if file_name is None else os.path.join(path, file_name)
+        try:
+            size, last_update = get_file_stat(file_path)
+        except OSError:
+            self.triggers_warning(file_path)
+        else:
+            last_update = self._validate_update_time(last_update, path)
+            return file_path, {'Size': size, 'LastModified': last_update}
 
     def _validate_update_time(self, update_time, path):
         # If the update time is None we know we ran into an invalid tiemstamp.

@@ -106,3 +106,56 @@ Output::
         }
     ]
   }
+
+
+This example describes network interfaces that have a tag with the key ``Purpose`` and the value ``Prod``.
+
+Command::
+
+  aws ec2 describe-network-interfaces --filters Name=tag:Purpose,Values=Prod
+
+Output::
+
+  {
+    "NetworkInterfaces": [
+        {
+            "Status": "available", 
+            "MacAddress": "12:2c:bd:f9:bf:17", 
+            "SourceDestCheck": true, 
+            "VpcId": "vpc-8941ebec", 
+            "Description": "ProdENI", 
+            "NetworkInterfaceId": "eni-b9a5ac93", 
+            "PrivateIpAddresses": [
+                {
+                    "PrivateDnsName": "ip-10-0-1-55.ec2.internal", 
+                    "Primary": true, 
+                    "PrivateIpAddress": "10.0.1.55"
+                }, 
+                {
+                    "PrivateDnsName": "ip-10-0-1-117.ec2.internal", 
+                    "Primary": false, 
+                    "PrivateIpAddress": "10.0.1.117"
+                }
+            ], 
+            "RequesterManaged": false, 
+            "PrivateDnsName": "ip-10-0-1-55.ec2.internal", 
+            "AvailabilityZone": "us-east-1d", 
+            "Ipv6Addresses": [], 
+            "Groups": [
+                {
+                    "GroupName": "MySG", 
+                    "GroupId": "sg-905002f5"
+                }
+            ], 
+            "SubnetId": "subnet-31d6c219", 
+            "OwnerId": "123456789012", 
+            "TagSet": [
+                {
+                    "Value": "Prod", 
+                    "Key": "Purpose"
+                }
+            ], 
+            "PrivateIpAddress": "10.0.1.55"
+        }
+    ]
+  }

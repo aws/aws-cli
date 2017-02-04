@@ -2,6 +2,129 @@
 CHANGELOG
 =========
 
+1.11.44
+=======
+
+* feature:``clouddirectory``: Update clouddirectory command to latest version
+* feature:Configuration: Adds a new option to the configuration file 'cli_timestamp_format' to change the timestamp output format displayed by the CLI.
+* feature:``ec2``: Update ec2 command to latest version
+* feature:``codedeploy``: Update codedeploy command to latest version
+* feature:``rds``: Update rds command to latest version
+
+
+1.11.43
+=======
+
+* feature:``elbv2``: Update elbv2 command to latest version
+* feature:``rds``: Update rds command to latest version
+
+
+1.11.42
+=======
+
+* feature:``codecommit``: Update codecommit command to latest version
+* feature:``ecs``: Update ecs command to latest version
+* feature:``codebuild``: Update codebuild command to latest version
+
+
+1.11.41
+=======
+
+* feature:``acm``: Update acm command to latest version
+* feature:``health``: Update health command to latest version
+
+
+1.11.40
+=======
+
+* feature:``ec2``: Update ec2 command to latest version
+
+
+1.11.39
+=======
+
+* feature:``rds``: Update rds command to latest version
+
+
+1.11.38
+=======
+
+* feature:``dynamodb``: Update dynamodb command to latest version
+* feature:``polly``: Update polly command to latest version
+* feature:``glacier``: Update glacier command to latest version
+* feature:``route53``: Update route53 command to latest version
+* feature:``rekognition``: Update rekognition command to latest version
+
+
+1.11.37
+=======
+
+* feature:``cur``: Update cur command to latest version
+* bugfix:``cloudformation deploy``: ``deploy`` command must not override parameters with default values
+* feature:``dynamodb``: Update dynamodb command to latest version
+* bug:``cloudformation package``: Only generate S3BodyLocation when needed `#2320 <https://github.com/aws/aws-cli/issues/2320>`__
+* feature:``elasticache``: Update elasticache command to latest version
+* feature:``config``: Update config command to latest version
+* bugfix:``cloudformation``: Fix yaml parsing error for ``!GetAtt`` `#2332 <https://github.com/aws/aws-cli/issues/2332>`__
+* bugfix:``cloudformation package``: ``package`` command must use Path-style S3 URL when packaging AWS
+
+
+1.11.36
+=======
+
+* feature:``config``: Update config command to latest version
+* feature:``rds``: Update rds command to latest version
+* feature:``efs``: Update efs command to latest version
+* feature:``marketplacecommerceanalytics``: Update marketplacecommerceanalytics command to latest version
+* feature:``lambda``: Update lambda command to latest version
+* feature:``dynamodbstreams``: Update dynamodbstreams command to latest version
+* feature:``rekognition``: Update rekognition command to latest version
+* feature:``iam``: Update iam command to latest version
+
+
+1.11.35
+=======
+
+* feature:``codedeploy``: Update codedeploy command to latest version
+* bugfix:s3: Catch and warn on overflow errors when getting a file stat.
+* feature:``ecs``: Update ecs command to latest version
+
+
+1.11.34
+=======
+
+* feature:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* feature:``ds``: Update ds command to latest version
+* feature:``iam``: Update iam command to latest version
+* feature:``kms``: Update kms command to latest version
+* feature:``apigateway``: Update apigateway command to latest version
+
+
+1.11.33
+=======
+
+* feature:``rds``: Update rds command to latest version
+* feature:``ecr``: Update ecr command to latest version
+
+
+1.11.32
+=======
+
+* feature:``storagegateway``: Update storagegateway command to latest version
+* feature:``firehose``: Update firehose command to latest version
+* feature:``route53``: Update route53 command to latest version
+
+
+1.11.31
+=======
+
+* feature:``cognito-identity``: Update cognito-identity command to latest version
+* feature:``inspector``: Update inspector command to latest version
+* feature:``cloudformation``: Update cloudformation command to latest version
+* feature:``sqs``: Update sqs command to latest version
+* feature:``discovery``: Update discovery command to latest version
+
+
 1.11.30
 =======
 

@@ -463,6 +463,58 @@ class BaseAWSPreviewCommandParamsTest(BaseAWSCommandParamsTest):
         super(BaseAWSPreviewCommandParamsTest, self).tearDown()
 
 
+class BaseCLIWireResponseTest(unittest.TestCase):
+    def setUp(self):
+        self.environ = {
+            'AWS_DATA_PATH': os.environ['AWS_DATA_PATH'],
+            'AWS_DEFAULT_REGION': 'us-east-1',
+            'AWS_ACCESS_KEY_ID': 'access_key',
+            'AWS_SECRET_ACCESS_KEY': 'secret_key',
+            'AWS_CONFIG_FILE': ''
+        }
+        self.environ_patch = mock.patch('os.environ', self.environ)
+        self.environ_patch.start()
+        self.send_patch = mock.patch('botocore.endpoint.Session.send')
+        self.send_is_patched = False
+        self.driver = create_clidriver()
+
+    def tearDown(self):
+        self.environ_patch.stop()
+        if self.send_is_patched:
+            self.send_patch.stop()
+            self.send_is_patched = False
+
+    def patch_send(self, status_code=200, headers={}, content=b''):
+        if self.send_is_patched:
+            self.patch_send.stop()
+            self.send_is_patched = False
+        send_patch = self.send_patch.start()
+        send_patch.return_value = mock.Mock(status_code=status_code,
+                                            headers=headers,
+                                            content=content)
+        self.send_is_patched = True
+
+    def run_cmd(self, cmd, expected_rc=0):
+        if not isinstance(cmd, list):
+            cmdlist = cmd.split()
+        else:
+            cmdlist = cmd
+        with capture_output() as captured:
+            try:
+                rc = self.driver.main(cmdlist)
+            except SystemExit as e:
+                rc = e.code
+        stderr = captured.stderr.getvalue()
+        stdout = captured.stdout.getvalue()
+        self.assertEqual(
+            rc, expected_rc,
+            "Unexpected rc (expected: %s, actual: %s) for command: %s\n"
+            "stdout:\n%sstderr:\n%s" % (
+                expected_rc, rc, cmd, stdout, stderr))
+        return stdout, stderr, rc
+
+
+
 class FileCreator(object):
     def __init__(self):
         self.rootdir = tempfile.mkdtemp()
@@ -694,6 +746,10 @@ class BaseS3CLICommand(unittest.TestCase):
         # Subclasses can use this to define extra teardown steps.
         pass
 
+    def override_parser(self, **kwargs):
+        factory = self.session.get_component('response_parser_factory')
+        factory.set_parser_defaults(**kwargs)
+
     def create_client_for_bucket(self, bucket_name):
         region = self.regions.get(bucket_name, self.region)
         client = self.session.create_client('s3', region_name=region)
@@ -774,6 +830,16 @@ class BaseS3CLICommand(unittest.TestCase):
         client = self.create_client_for_bucket(bucket_name)
         response = client.head_object(Bucket=bucket_name, Key=key_name)
         return response
+
+    def wait_until_key_exists(self, bucket_name, key_name, extra_params=None,
+                              min_successes=3):
+        client = self.create_client_for_bucket(bucket_name)
+        waiter = client.get_waiter('object_exists')
+        params = {'Bucket': bucket_name, 'Key': key_name}
+        if extra_params is not None:
+            params.update(extra_params)
+        for _ in range(min_successes):
+            waiter.wait(**params)
 
     def assert_no_errors(self, p):
         self.assertEqual(

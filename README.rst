@@ -5,7 +5,7 @@ aws-cli
 .. image:: https://travis-ci.org/aws/aws-cli.svg?branch=develop
    :target: https://travis-ci.org/aws/aws-cli
    :alt: Build Status
-   
+
 .. image:: https://badges.gitter.im/aws/aws-cli.svg
    :target: https://gitter.im/aws/aws-cli
    :alt: Gitter
@@ -20,6 +20,7 @@ The aws-cli package works on Python versions:
 * 3.3.x and greater
 * 3.4.x and greater
 * 3.5.x and greater
+* 3.6.x and greater
 
 .. attention::
    We recommend that all customers regularly monitor the
@@ -185,25 +186,27 @@ In addition to credentials, a number of other variables can be
 configured either with environment variables, configuration file
 entries or both.  The following table documents these.
 
-=========== =========== ===================== ===================== ============================
-Variable    Option      Config Entry          Environment Variable  Description
-=========== =========== ===================== ===================== ============================
-profile     --profile   profile               AWS_DEFAULT_PROFILE   Default profile name
------------ ----------- --------------------- --------------------- ----------------------------
-region      --region    region                AWS_DEFAULT_REGION    Default AWS Region
------------ ----------- --------------------- --------------------- ----------------------------
-config_file                                   AWS_CONFIG_FILE       Alternate location of config
------------ ----------- --------------------- --------------------- ----------------------------
-output      --output    output                AWS_DEFAULT_OUTPUT    Default output style
------------ ----------- --------------------- --------------------- ----------------------------
-ca_bundle   --ca-bundle ca_bundle             AWS_CA_BUNDLE         CA Certificate Bundle
------------ ----------- --------------------- --------------------- ----------------------------
-access_key              aws_access_key_id     AWS_ACCESS_KEY_ID     AWS Access Key
------------ ----------- --------------------- --------------------- ----------------------------
-secret_key              aws_secret_access_key AWS_SECRET_ACCESS_KEY AWS Secret Key
------------ ----------- --------------------- --------------------- ----------------------------
-token                   aws_session_token     AWS_SESSION_TOKEN     AWS Token (temp credentials)
-=========== =========== ===================== ===================== ============================
+==================== =========== ===================== ===================== ============================
+Variable             Option      Config Entry          Environment Variable  Description
+==================== =========== ===================== ===================== ============================
+profile              --profile   profile               AWS_DEFAULT_PROFILE   Default profile name
+-------------------- ----------- --------------------- --------------------- ----------------------------
+region               --region    region                AWS_DEFAULT_REGION    Default AWS Region
+-------------------- ----------- --------------------- --------------------- ----------------------------
+config_file                                            AWS_CONFIG_FILE       Alternate location of config
+-------------------- ----------- --------------------- --------------------- ----------------------------
+output               --output    output                AWS_DEFAULT_OUTPUT    Default output style
+-------------------- ----------- --------------------- --------------------- ----------------------------
+ca_bundle            --ca-bundle ca_bundle             AWS_CA_BUNDLE         CA Certificate Bundle
+-------------------- ----------- --------------------- --------------------- ----------------------------
+access_key                       aws_access_key_id     AWS_ACCESS_KEY_ID     AWS Access Key
+-------------------- ----------- --------------------- --------------------- ----------------------------
+secret_key                       aws_secret_access_key AWS_SECRET_ACCESS_KEY AWS Secret Key
+-------------------- ----------- --------------------- --------------------- ----------------------------
+token                            aws_session_token     AWS_SESSION_TOKEN     AWS Token (temp credentials)
+-------------------- ----------- --------------------- --------------------- ----------------------------
+cli_timestamp_format             cli_timestamp_format                        Ouput format of timestamps
+==================== =========== ===================== ===================== ============================
 
 ^^^^^^^^
 Examples
@@ -402,6 +405,21 @@ for each repository::
     pip install -e . && cd ..
     git clone <awscli> && cd aws-cli/
     pip install -e .
+
+
+------------
+Getting Help
+------------
+
+We use GitHub issues for tracking bugs and feature requests and have limited
+bandwidth to address them. Please use these community resources for getting
+help:
+
+* Ask a question on `Stack Overflow <https://stackoverflow.com/>`__ and tag it with `aws-cli <https://stackoverflow.com/questions/tagged/aws-cli>`__
+* Come join the AWS CLI community chat on `gitter <https://gitter.im/aws/aws-cli>`__
+* Open a support ticket with `AWS Support <https://console.aws.amazon.com/support/home#/>`__
+* If it turns out that you may have found a bug, please `open an issue <https://github.com/aws/aws-cli/issues/new>`__
+
 
 
 .. _`Amazon Web Services Security Bulletins website`: https://aws.amazon.com/security/security-bulletins

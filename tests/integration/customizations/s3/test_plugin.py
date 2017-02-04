@@ -38,7 +38,7 @@ from awscli.testutils import aws as _aws
 from awscli.testutils import BaseS3CLICommand
 from awscli.testutils import random_chars, random_bucket_name
 from awscli.customizations.s3.transferconfig import DEFAULTS
-from awscli.customizations.scalarparse import add_scalar_parsers
+from awscli.customizations.scalarparse import add_scalar_parsers, identity
 
 
 # Using the same log name as testutils.py
@@ -555,7 +555,7 @@ class TestCp(BaseS3IntegrationTest):
     def test_copy_metadata_directive(self):
         # Copy the same style of parsing as the CLI session. This is needed
         # For comparing expires timestamp.
-        add_scalar_parsers(self.session)
+        self.override_parser(timestamp_parser=identity)
         bucket_name = _SHARED_BUCKET
         original_key = 'foo.txt'
         new_key = 'bar.txt'
@@ -1817,6 +1817,7 @@ class TestHonorsEndpointUrl(BaseS3IntegrationTest):
 
 class TestSSERelatedParams(BaseS3IntegrationTest):
     def download_and_assert_kms_object_integrity(self, bucket, key, contents):
+        self.wait_until_key_exists(bucket, key)
         # Ensure the kms object can be download it by downloading it
         # with --sse aws:kms is enabled to ensure sigv4 is used on the
         # download, as it is required for kms.
@@ -2011,6 +2012,9 @@ class TestSSECRelatedParams(BaseS3IntegrationTest):
 
     def download_and_assert_sse_c_object_integrity(
             self, bucket, key, encrypt_key, contents):
+        self.wait_until_key_exists(bucket, key,
+                                   {'SSECustomerKey': encrypt_key,
+                                    'SSECustomerAlgorithm': 'AES256'})
         download_filename = os.path.join(self.files.rootdir, 'tmp', key)
         p = aws('s3 cp s3://%s/%s %s --sse-c AES256 --sse-c-key %s' % (
             bucket, key, download_filename, encrypt_key))

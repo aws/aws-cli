@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+
+
 import os
 import sys
 import struct
@@ -40,7 +42,7 @@ def determine_terminal_width(default_width=80):
         return default_width
     try:
         height, width = struct.unpack('hhhh', ioctl(sys.stdout,
-                                                    TIOCGWINSZ, '\000' * 8))[0:2]
+                                      TIOCGWINSZ, '\000' * 8))[0:2]
     except Exception:
         return default_width
     else:
@@ -83,8 +85,8 @@ def align_left(text, length, left_edge='|', right_edge='|', text_length=None,
     if text_length is None:
         text_length = get_text_length(text)
     computed_length = (
-        text_length + left_padding + \
-        get_text_length(left_edge) + get_text_length(right_edge))
+        text_length + left_padding + get_text_length(
+            left_edge) + get_text_length(right_edge))
     if length - computed_length >= 0:
         padding = left_padding
     else:
@@ -168,7 +170,7 @@ class ColorizedStyler(Styler):
     def style_title(self, text):
         # Originally bold + underline
         return text
-        #return colorama.Style.BOLD + text + colorama.Style.RESET_ALL
+        # return colorama.Style.BOLD + text + colorama.Style.RESET_ALL
 
     def style_header_column(self, text):
         # Originally underline
@@ -386,8 +388,8 @@ class Section(object):
         if with_border:
             total += border_padding
         total += outer_padding + outer_padding
-        return max(get_text_length(self.title) + border_padding + outer_padding +
-                   outer_padding, total)
+        return max(get_text_length(
+            self.title) + border_padding + outer_padding + outer_padding, total)
 
     def add_title(self, title):
         self.title = title
@@ -419,4 +421,5 @@ class Section(object):
             self._max_widths = [get_text_length(el) for el in row]
         else:
             for i, el in enumerate(row):
-                self._max_widths[i] = max(get_text_length(el), self._max_widths[i])
+                self._max_widths[i] = max(
+                    get_text_length(el), self._max_widths[i])

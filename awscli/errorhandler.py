@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+
+
 import logging
 
 LOG = logging.getLogger(__name__)
@@ -59,7 +61,8 @@ class ErrorHandler(object):
         if http_response.status_code >= 500:
             error_type = 'server'
             error_class = ServerError
-        elif http_response.status_code >= 400 or http_response.status_code == 301:
+        elif (http_response.status_code >= 400 or
+                http_response.status_code == 301):
             error_type = 'client'
             error_class = ClientError
         if error_class is not None:

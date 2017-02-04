@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+
+
 import logging
 from botocore.compat import json
 
@@ -92,7 +94,7 @@ class JSONFormatter(FullyBufferedFormatter):
         # dictionary should be printed.
         if response != {}:
             json.dump(response, stream, indent=4, default=json_encoder,
-                    ensure_ascii=False)
+                      ensure_ascii=False)
             stream.write('\n')
 
 
@@ -126,8 +128,8 @@ class TableFormatter(FullyBufferedFormatter):
                 self.table.render(stream)
             except IOError:
                 # If they're piping stdout to another process which exits before
-                # we're done writing all of our output, we'll get an error about a
-                # closed pipe which we can safely ignore.
+                # we're done writing all of our output, we'll get an error about
+                # a closed pipe which we can safely ignore.
                 pass
 
     def _build_table(self, title, current, indent_level=0):
@@ -187,7 +189,7 @@ class TableFormatter(FullyBufferedFormatter):
                 # check this condition before recursing.
                 if remaining in element:
                     self._build_table(remaining, element[remaining],
-                                    indent_level=indent_level + 1)
+                                      indent_level=indent_level + 1)
 
     def _scalar_type(self, element):
         return not isinstance(element, (list, dict))

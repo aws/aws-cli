@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+
+
 import sys
 import signal
 import logging
@@ -594,18 +596,18 @@ class CLIOperationCaller(object):
         """Invoke an operation and format the response.
 
         :type service_name: str
-        :param service_name: The name of the service.  Note this is the service name,
-            not the endpoint prefix (e.g. ``ses`` not ``email``).
+        :param service_name: The name of the service.  Note this is the service
+            name, not the endpoint prefix (e.g. ``ses`` not ``email``).
 
         :type operation_name: str
         :param operation_name: The operation name of the service.  The casing
-            of the operation name should match the exact casing used by the service,
-            e.g. ``DescribeInstances``, not ``describe-instances`` or
+            of the operation name should match the exact casing used by the
+            service, e.g. ``DescribeInstances``, not ``describe-instances`` or
             ``describe_instances``.
 
         :type parameters: dict
-        :param parameters: The parameters for the operation call.  Again, these values
-            have the same casing used by the service.
+        :param parameters: The parameters for the operation call.  Again, these
+            values have the same casing used by the service.
 
         :type parsed_globals: Namespace
         :param parsed_globals: The parsed globals from the command line.

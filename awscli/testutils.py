@@ -19,17 +19,19 @@ package so that code that is not part of the CLI can still take
 advantage of all the testing utilities we provide.
 
 """
+
+
 import os
 import sys
 import copy
 import shutil
-import time
+# import time       imported but unused
 import json
 import logging
 import tempfile
 import platform
 import contextlib
-import string
+# import string     imported but unused
 import binascii
 from pprint import pformat
 from subprocess import Popen, PIPE
@@ -47,16 +49,16 @@ except ImportError as e:
     # different story.
     mock = None
 from awscli.compat import six
-from botocore.hooks import HierarchicalEmitter
-from botocore.session import Session
+# from botocore.hooks import HierarchicalEmitter      imported but unused
+# from botocore.session import Session                imported but unused
 from botocore.exceptions import ClientError
 import botocore.loaders
 from botocore.vendored import requests
 
 import awscli.clidriver
-from awscli.plugin import load_plugins
-from awscli.clidriver import CLIDriver
-from awscli import EnvironmentVariables
+# from awscli.plugin import load_plugins              imported but unused
+# from awscli.clidriver import CLIDriver              imported but unused
+# from awscli import EnvironmentVariables             imported but unused
 
 
 # The unittest module got a significant overhaul
@@ -272,7 +274,8 @@ class BaseAWSHelpOutputTest(BaseCLIDriverTest):
             self.fail("The expected contents:\n%s\n, with the "
                       "count:\n%d\nwere not in the actual rendered "
                       " contents:\n%s\nwith count:\n%d" % (
-                          contains, count, self.renderer.rendered_contents, r_count))
+                          contains, count, self.renderer.rendered_contents,
+                          r_count))
 
     def assert_not_contains(self, contents):
         if contents in self.renderer.rendered_contents:
@@ -294,8 +297,9 @@ class BaseAWSHelpOutputTest(BaseCLIDriverTest):
                 self.fail('The string %r was not found in the contents: %s'
                           % (args[index], contents))
             if index < previous:
-                self.fail('The string %r came before %r, but was suppose to come '
-                          'after it.\n%s' % (args[i], args[i - 1], contents))
+                self.fail('The string %r came before %r, but was suppose to '
+                          'come after it.\n%s' % (args[i], args[i - 1],
+                                                  contents))
             previous = index
 
 
@@ -359,7 +363,8 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         self.http_response = requests.models.Response()
         self.http_response.status_code = 200
         self.parsed_response = {}
-        self.make_request_patch = mock.patch('botocore.endpoint.Endpoint.make_request')
+        self.make_request_patch = mock.patch(
+            'botocore.endpoint.Endpoint.make_request')
         self.make_request_is_patched = False
         self.operations_called = []
         self.parsed_responses = None
@@ -392,7 +397,8 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
             make_request_patch.side_effect = lambda *args, **kwargs: \
                 (self.http_response, self.parsed_responses.pop(0))
         else:
-            make_request_patch.return_value = (self.http_response, self.parsed_response)
+            make_request_patch.return_value = (self.http_response,
+                                               self.parsed_response)
         self.make_request_is_patched = True
 
     def assert_params_for_cmd(self, cmd, params=None, expected_rc=0,
@@ -426,7 +432,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         self.patch_make_request()
         self.driver.session.register('before-call', self.before_call)
         self.driver.session.register('before-parameter-build',
-                                self.before_parameter_build)
+                                     self.before_parameter_build)
         if not isinstance(cmd, list):
             cmdlist = cmd.split()
         else:
@@ -512,7 +518,6 @@ class BaseCLIWireResponseTest(unittest.TestCase):
             "stdout:\n%sstderr:\n%s" % (
                 expected_rc, rc, cmd, stdout, stderr))
         return stdout, stderr, rc
-
 
 
 class FileCreator(object):
@@ -783,12 +788,14 @@ class BaseS3CLICommand(unittest.TestCase):
         if extra_args is not None:
             call_args.update(extra_args)
         response = client.put_object(**call_args)
+        # variable response assigned to but never used
         self.addCleanup(self.delete_key, bucket_name, key_name)
 
     def delete_bucket(self, bucket_name):
         self.remove_all_objects(bucket_name)
         client = self.create_client_for_bucket(bucket_name)
         response = client.delete_bucket(Bucket=bucket_name)
+        # variable response assigned to but never used
         self.regions.pop(bucket_name, None)
 
     def remove_all_objects(self, bucket_name):
@@ -804,6 +811,7 @@ class BaseS3CLICommand(unittest.TestCase):
     def delete_key(self, bucket_name, key_name):
         client = self.create_client_for_bucket(bucket_name)
         response = client.delete_object(Bucket=bucket_name, Key=key_name)
+        # variable response assigned to but never used
 
     def get_key_contents(self, bucket_name, key_name):
         client = self.create_client_for_bucket(bucket_name)

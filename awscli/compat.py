@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+
+
 import sys
 import os
 import zipfile
@@ -57,12 +59,14 @@ class NonTranslatedStdout(object):
             import msvcrt
             msvcrt.setmode(sys.stdout.fileno(), self.previous_mode)
 
+
 def ensure_text_type(s):
     if isinstance(s, six.text_type):
         return s
     if isinstance(s, six.binary_type):
         return s.decode('utf-8')
     raise ValueError("Expected str, unicode or bytes, received %s." % type(s))
+
 
 if six.PY3:
     import locale

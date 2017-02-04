@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+
+
 import argparse
 import sys
 from awscli.compat import six
@@ -88,7 +90,8 @@ class CLIArgParser(argparse.ArgumentParser):
             raise argparse.ArgumentError(action, '\n'.join(msg))
 
     def parse_known_args(self, args, namespace=None):
-        parsed, remaining = super(CLIArgParser, self).parse_known_args(args, namespace)
+        parsed, remaining = super(CLIArgParser, self).parse_known_args(
+                args, namespace)
         terminal_encoding = getattr(sys.stdin, 'encoding', 'utf-8')
         if terminal_encoding is None:
             # In some cases, sys.stdin won't have an encoding set,

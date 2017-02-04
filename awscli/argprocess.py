@@ -11,6 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 """Module for processing CLI args."""
+
+
 import os
 import logging
 from awscli.compat import six
@@ -124,7 +126,7 @@ def _detect_shape_structure(param, stack):
             return 'scalar'
         elif param.type_name == 'structure':
             sub_types = [_detect_shape_structure(p, stack)
-                        for p in param.members.values()]
+                         for p in param.members.values()]
             # We're distinguishing between structure(scalar)
             # and structure(scalars), because for the case of
             # a single scalar in a structure we can simplify
@@ -216,9 +218,11 @@ def _unpack_complex_cli_arg(argument_model, value, cli_name):
 def unpack_scalar_cli_arg(argument_model, value, cli_name=''):
     # Note the cli_name is used strictly for error reporting.  It's
     # not required to use unpack_scalar_cli_arg
-    if argument_model.type_name == 'integer' or argument_model.type_name == 'long':
+    if (argument_model.type_name == 'integer' or
+            argument_model.type_name == 'long'):
         return int(value)
-    elif argument_model.type_name == 'float' or argument_model.type_name == 'double':
+    elif (argument_model.type_name == 'float' or
+            argument_model.type_name == 'double'):
         # TODO: losing precision on double types
         return float(value)
     elif argument_model.type_name == 'blob' and \
@@ -319,8 +323,7 @@ class ParamShorthandParser(ParamShorthand):
     def _parse_as_shorthand(self, cli_argument, value, service_name,
                             operation_name):
         try:
-            LOG.debug("Parsing param %s as shorthand",
-                        cli_argument.cli_name)
+            LOG.debug("Parsing param %s as shorthand", cli_argument.cli_name)
             handled_value = self._handle_special_cases(
                 cli_argument, value, service_name, operation_name)
             if handled_value is not None:
@@ -355,7 +358,8 @@ class ParamShorthandParser(ParamShorthand):
         if model.type_name == 'list' and \
            model.member.type_name == 'structure' and \
            len(model.member.members) == 1 and \
-           self._uses_old_list_case(service_name, operation_name, cli_argument.name):
+           self._uses_old_list_case(service_name, operation_name,
+                                    cli_argument.name):
             # First special case is handling a list of structures
             # of a single element such as:
             #
@@ -390,8 +394,8 @@ class ParamShorthandParser(ParamShorthand):
             check_val = value[0]
         else:
             check_val = value
-        if isinstance(check_val, six.string_types) and check_val.strip().startswith(
-                ('[', '{')):
+        if (isinstance(check_val, six.string_types) and
+                check_val.strip().startswith(('[', '{'))):
             LOG.debug("Param %s looks like JSON, not considered for "
                       "param shorthand.", cli_argument.py_name)
             return False

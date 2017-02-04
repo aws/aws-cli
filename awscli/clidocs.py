@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+
+
 import logging
 import os
 from botocore import xform_name
@@ -128,8 +130,8 @@ class CLIDocumentEventHandler(object):
             self._documented_arg_groups.append(argument.group_name)
         else:
             option_str = '%s <value>' % argument.cli_name
-        if not (argument.required
-                or getattr(argument, '_DOCUMENT_AS_REQUIRED', False)):
+        if (not (argument.required or
+                 getattr(argument, '_DOCUMENT_AS_REQUIRED', False))):
             option_str = '[%s]' % option_str
         doc.writeln('%s' % option_str)
 
@@ -351,7 +353,8 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         doc.style.external_link(title="AWS API Documentation", link=link)
         doc.writeln('')
 
-    def _json_example_value_name(self, argument_model, include_enum_values=True):
+    def _json_example_value_name(self, argument_model,
+                                 include_enum_values=True):
         # If include_enum_values is True, then the valid enum values
         # are included as the sample JSON value.
         if isinstance(argument_model, StringShape):
@@ -383,7 +386,8 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         if argument_model.type_name == 'list':
             doc.write('[')
             if argument_model.member.type_name in SCALAR_TYPES:
-                doc.write('%s, ...' % self._json_example_value_name(argument_model.member))
+                doc.write('%s, ...' % self._json_example_value_name(
+                        argument_model.member))
             else:
                 doc.style.indent()
                 doc.style.new_line()
@@ -421,7 +425,8 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             member_type_name = member_model.type_name
             if member_type_name in SCALAR_TYPES:
                 doc.write('"%s": %s' % (member_name,
-                    self._json_example_value_name(member_model)))
+                                        self._json_example_value_name(
+                                                member_model)))
             elif member_type_name == 'structure':
                 doc.write('"%s": ' % member_name)
                 self._json_example(doc, member_model, stack)
@@ -467,8 +472,9 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
                 for example_line in example_shorthand_syntax.splitlines():
                     doc.writeln(example_line)
                 doc.style.end_codeblock()
-        if argument_model is not None and argument_model.type_name == 'list' and \
-                argument_model.member.type_name in SCALAR_TYPES:
+        if (argument_model is not None and
+                argument_model.type_name == 'list' and
+                argument_model.member.type_name in SCALAR_TYPES):
             # A list of scalars is special.  While you *can* use
             # JSON ( ["foo", "bar", "baz"] ), you can also just
             # use the argparse behavior of space separated lists.
@@ -511,7 +517,8 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             doc.write('None')
         else:
             for member_name, member_shape in output_shape.members.items():
-                self._doc_member_for_output(doc, member_name, member_shape, stack=[])
+                self._doc_member_for_output(doc, member_name, member_shape,
+                                            stack=[])
 
     def _doc_member_for_output(self, doc, member_name, member_shape, stack):
         if member_shape.name in stack:

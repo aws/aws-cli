@@ -131,6 +131,9 @@ class TestGuessContentType(unittest.TestCase):
     def test_guess_content_type(self):
         self.assertEqual(guess_content_type('foo.txt'), 'text/plain')
 
+    def test_guess_content_type_with_html_charset(self):
+        self.assertEqual(guess_content_type('foo.html'), 'text/html; charset=utf-8')
+
     def test_guess_content_type_with_no_valid_matches(self):
         self.assertEqual(guess_content_type('no-extension'), None)
 

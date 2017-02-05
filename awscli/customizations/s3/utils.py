@@ -335,7 +335,10 @@ def guess_content_type(filename):
     If the type cannot be guessed, a value of None is returned.
     """
     try:
-        return mimetypes.guess_type(filename)[0]
+        guessed_type = mimetypes.guess_type(filename)[0]
+        if guessed_type == 'text/html':
+            return 'text/html; charset=utf-8'
+        return guessed_type
     # This catches a bug in the mimetype libary where some MIME types
     # specifically on windows machines cause a UnicodeDecodeError
     # because the MIME type in the Windows registery has an encoding

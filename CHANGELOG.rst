@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.45
+=======
+
+* feature:``lex-runtime``: Update lex-runtime command to latest version
+
+
 1.11.44
 =======
 

@@ -8,7 +8,7 @@ The following ``describe-elastic-load-balancers`` command describes a specified 
 
 ::
 
-{
+  {
     "ElasticLoadBalancers": [
         {
             "SubnetIds": [
@@ -28,7 +28,7 @@ The following ``describe-elastic-load-balancers`` command describes a specified 
             "DnsName": "my-balancer-2094040179.us-west-2.elb.amazonaws.com"
         }
     ]
-}
+  }
 
 **More Information**
 

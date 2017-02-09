@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.46
+=======
+
+* feature:``ec2``: Update ec2 command to latest version
+* feature:``rekognition``: Update rekognition command to latest version
+
+
 1.11.45
 =======
 

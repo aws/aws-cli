@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.47
+=======
+
+* feature:``clouddirectory``: Update clouddirectory command to latest version
+* feature:``lex-runtime``: Update lex-runtime command to latest version
+* feature:``storagegateway``: Update storagegateway command to latest version
+
+
 1.11.46
 =======
 

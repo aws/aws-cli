@@ -171,10 +171,9 @@ class TestSyncCommand(BaseAWSCommandParamsTest):
         cmdline = '%s %s s3://bucket/' % (
             self.prefix, self.files.rootdir)
 
-        # monkey patch FileGenerator._safely_get_file_stats to delete the file before getting its stats
-        # this will cause an OSError, but the sync should just skip over the file as a result.
-        with patch('awscli.customizations.s3.filegenerator.FileGenerator._safely_get_file_stats',
-                side_effect=(lambda *args, **kwargs: os.remove(self.files.full_path("foo.txt")))):
+        # FileGenerator.list_files should skip over files that cause an OSError to be raised
+        # because they are missing when we try to get their stats.
+        with patch('awscli.customizations.s3.filegenerator.get_file_stat', side_effect=OSError()):
             self.run_cmd(cmdline, expected_rc=0)
 
         # We should not call PutObject because the file was deleted before we could transfer it

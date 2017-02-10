@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import set_invalid_utime
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
+from mock import patch
 import os
 
 from awscli.compat import six
@@ -99,7 +100,7 @@ class TestSyncCommand(BaseAWSCommandParamsTest):
         self.assertEqual(len(self.operations_called), 2, self.operations_called)
         self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
         self.assertEqual(self.operations_called[1][0].name, 'GetObject')
-    
+
     def test_handles_glacier_incompatible_operations(self):
         self.parsed_responses = [
             {'Contents': [
@@ -164,3 +165,18 @@ class TestSyncCommand(BaseAWSCommandParamsTest):
         self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
 
         self.assertFalse(os.path.exists(full_path))
+
+    def test_sync_skips_over_files_deleted_between_listing_and_transfer_attempt(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = '%s %s s3://bucket/' % (
+            self.prefix, self.files.rootdir)
+
+        # monkey patch FileGenerator._safely_get_file_stats to delete the file before getting its stats
+        # this will cause an OSError, but the sync should just skip over the file as a result.
+        with patch('awscli.customizations.s3.filegenerator.FileGenerator._safely_get_file_stats',
+                side_effect=(lambda *args, **kwargs: os.remove(self.files.full_path("foo.txt")))):
+            self.run_cmd(cmdline, expected_rc=0)
+
+        # We should not call PutObject because the file was deleted before we could transfer it
+        self.assertEqual(len(self.operations_called), 1, self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.48
+=======
+
+* feature:``ec2``: Update ec2 command to latest version
+
+
 1.11.47
 =======
 

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.49
+=======
+
+* feature:``kms``: Update kms command to latest version
+
+
 1.11.48
 =======
 

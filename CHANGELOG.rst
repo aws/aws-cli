@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.50
+=======
+
+* api-change:``config``: Update config command to latest version
+* api-change:``cognito-identity``: Update cognito-identity command to latest version
+
+
 1.11.49
 =======
 

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.51
+=======
+
+* api-change:``directconnect``: Update directconnect command to latest version
+
+
 1.11.50
 =======
 

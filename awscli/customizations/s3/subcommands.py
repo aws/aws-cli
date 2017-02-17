@@ -190,7 +190,7 @@ SSE_C = {
         'of the the object in S3. ``AES256`` is the only valid value. '
         'If the parameter is specified but no value is provided, '
         '``AES256`` is used. If you provide this value, ``--sse-c-key`` '
-        'must be specfied as well.'
+        'must be specified as well.'
     )
 }
 
@@ -200,7 +200,7 @@ SSE_C_KEY = {
     'help_text': (
         'The customer-provided encryption key to use to server-side '
         'encrypt the object in S3. If you provide this value, '
-        '``--sse-c`` must be specfied as well. The key provided should '
+        '``--sse-c`` must be specified as well. The key provided should '
         '**not** be base64 encoded.'
     )
 }

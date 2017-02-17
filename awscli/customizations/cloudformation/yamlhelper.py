@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 
 import yaml
-import six
+from awscli.compat import six
 from yaml.resolver import ScalarNode, SequenceNode
 
 

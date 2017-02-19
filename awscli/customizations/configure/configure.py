@@ -21,6 +21,7 @@ from awscli.customizations.configure.addmodel import AddModelCommand
 from awscli.customizations.configure.set import ConfigureSetCommand
 from awscli.customizations.configure.get import ConfigureGetCommand
 from awscli.customizations.configure.list import ConfigureListCommand
+from awscli.customizations.configure.export import ConfigureExportCommand
 from awscli.customizations.configure.writer import ConfigFileWriter
 
 from . import mask_value
@@ -73,6 +74,7 @@ class ConfigureCommand(BasicCommand):
         {'name': 'list', 'command_class': ConfigureListCommand},
         {'name': 'get', 'command_class': ConfigureGetCommand},
         {'name': 'set', 'command_class': ConfigureSetCommand},
+        {'name': 'export', 'command_class': ConfigureExportCommand},
         {'name': 'add-model', 'command_class': AddModelCommand}
     ]
 

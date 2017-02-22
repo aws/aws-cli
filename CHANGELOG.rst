@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.11.53
+=======
+
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``clouddirectory``: Update clouddirectory command to latest version
+
+
 1.11.52
 =======
 

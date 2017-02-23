@@ -166,16 +166,24 @@ class TestSyncCommand(BaseAWSCommandParamsTest):
 
         self.assertFalse(os.path.exists(full_path))
 
-    def test_sync_skips_over_files_deleted_between_listing_and_transfer_attempt(self):
+    def test_sync_skips_over_files_deleted_between_listing_and_transfer(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
         cmdline = '%s %s s3://bucket/' % (
             self.prefix, self.files.rootdir)
 
-        # FileGenerator.list_files should skip over files that cause an OSError to be raised
-        # because they are missing when we try to get their stats.
-        with patch('awscli.customizations.s3.filegenerator.get_file_stat', side_effect=OSError()):
-            self.run_cmd(cmdline, expected_rc=0)
+        # FileGenerator.list_files should skip over files that cause an
+        # OSError to be raised because they are missing when we try to
+        # get their stats.
+        def side_effect(_):
+            os.remove(full_path)
+            raise OSError()
+        with patch(
+                'awscli.customizations.s3.filegenerator.get_file_stat',
+                side_effect=side_effect
+                ):
+            self.run_cmd(cmdline, expected_rc=2)
 
-        # We should not call PutObject because the file was deleted before we could transfer it
+        # We should not call PutObject because the file was deleted
+        # before we could transfer it
         self.assertEqual(len(self.operations_called), 1, self.operations_called)
         self.assertEqual(self.operations_called[0][0].name, 'ListObjects')

@@ -283,7 +283,9 @@ class ServerlessFunctionResource(Resource):
 
 class ServerlessApiResource(Resource):
     PROPERTY_NAME = "DefinitionUri"
-
+    # Don't package the directory if DefinitionUri is omitted.
+    # Necessary to support DefinitionBody
+    PACKAGE_NULL_PROPERTY = False
 
 class LambdaFunctionResource(ResourceWithS3UrlDict):
     PROPERTY_NAME = "Code"

@@ -207,18 +207,17 @@ class FileGenerator(object):
                         for x in self.list_files(file_path, dir_op):
                             yield x
                     else:
-                        stats = self._safely_get_file_stats(path, file_name=name)
+                        stats = self._safely_get_file_stats(file_path)
                         if stats:
                             yield stats
 
-    def _safely_get_file_stats(self, path, file_name=None):
-        file_path = path if file_name is None else os.path.join(path, file_name)
+    def _safely_get_file_stats(self, file_path):
         try:
             size, last_update = get_file_stat(file_path)
         except OSError:
             self.triggers_warning(file_path)
         else:
-            last_update = self._validate_update_time(last_update, path)
+            last_update = self._validate_update_time(last_update, file_path)
             return file_path, {'Size': size, 'LastModified': last_update}
 
     def _validate_update_time(self, update_time, path):

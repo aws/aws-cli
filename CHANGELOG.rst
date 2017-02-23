@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.54
+=======
+
+* bugfix:cloudformation: Fixes awslabs/serverless-application-model`#93 <https://github.com/aws/aws-cli/issues/93>`__
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.11.53
 =======
 

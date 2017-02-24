@@ -32,14 +32,6 @@ Output::
   }
 
 
-**To list all patch baselines in a Region**
-
-This example lists all patch baselines in Region ``us-west-1``.
-
-Command::
-
-  aws ssm describe-patch-baselines --region "us-west-1" --filters "Key=OWNER,Values=[All]"
-  
 **To list all AWS provided patch baselines**
 
 This example lists all patch baselines provided by AWS.

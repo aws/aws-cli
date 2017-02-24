@@ -20,14 +20,6 @@ Output::
     ]
   }
 
-**To list all maintenance windows in a region**
-
-This example lists all maintenance windows in the ``us-west-1`` region.
-
-Command::
-
-  aws ssm describe-maintenance-windows --region "us-west-1"
-  
 **To list all enabled maintenance windows**
   
 This example lists all enabled maintenance windows.
@@ -35,3 +27,4 @@ This example lists all enabled maintenance windows.
 Command::
 
   aws ssm describe-maintenance-windows --filters "Key=Enabled,Values=true"
+  

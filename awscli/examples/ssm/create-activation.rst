@@ -4,7 +4,7 @@ This example creates a managed instance.
 
 Command::
 
-  aws ssm create-activation --default-instance-name "MyWebServers" --iam-role "AutomationRole" --registration-limit 10 --region "us-west-2"
+  aws ssm create-activation --default-instance-name "MyWebServers" --iam-role "AutomationRole" --registration-limit 10
 
 Output::
 

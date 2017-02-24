@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """Script to create self contained install.
 
 The goal of this script is simple:
@@ -13,6 +13,8 @@ ecosystem.
 
 """
 
+from __future__ import print_function
+
 import argparse
 import os.path
 import re
@@ -24,13 +26,67 @@ import tempfile
 import zipfile
 
 
-if sys.version_info[:2] < (3, 5):
-    sys.exit("Must use Python >= 3.5 to run this script.")
-
-
 PYTHON_VERSIONS = ["2.6", "2.7", "3.3", "3.4", "3.5", "3.6"]
 
 VIRTUALENV_VERSION = "15.1.0"
+
+
+if sys.version_info[0] == 2:
+    PY2 = True
+    FileNotFoundError = OSError
+
+    _find_unsafe = re.compile(r'[^\w@%+=:,./-]').search
+
+    def shlex_quote(s):
+        """Return a shell-escaped version of the string *s*."""
+        if not s:
+            return "''"
+        if _find_unsafe(s) is None:
+            return s
+
+        # use single quotes, and put single quotes into double quotes
+        # the string $'b is then quoted as '$'"'"'b'
+        return "'" + s.replace("'", "'\"'\"'") + "'"
+
+    class subprocess_CompletedProcess(object):
+        """A process that has finished running.
+
+        This is returned by run().
+
+        Attributes:
+          args: The list or str args passed to run().
+          returncode: The exit code of the process, negative for signals.
+          stdout: The standard output (None if not captured).
+          stderr: The standard error (None if not captured).
+        """
+        def __init__(self, args, returncode, stdout=None, stderr=None):
+            self.args = args
+            self.returncode = returncode
+            self.stdout = stdout
+            self.stderr = stderr
+
+        def __repr__(self):
+            args = ['args={!r}'.format(self.args),
+                    'returncode={!r}'.format(self.returncode)]
+            if self.stdout is not None:
+                args.append('stdout={!r}'.format(self.stdout))
+            if self.stderr is not None:
+                args.append('stderr={!r}'.format(self.stderr))
+            return "{}({})".format(type(self).__name__, ', '.join(args))
+
+        def check_returncode(self):
+            """Raise CalledProcessError if the exit code is non-zero."""
+            if self.returncode:
+                raise subprocess.CalledProcessError(
+                    self.returncode,
+                    self.args,
+                    self.stdout,
+                    self.stderr,
+                )
+else:
+    PY2 = False
+    shlex_quote = shlex.quote
+    subprocess_CompletedProcess = subprocess.CompletedProcess
 
 
 class MissingPythonVersion(Exception):
@@ -44,14 +100,16 @@ def pip(python_version):
 
 
 def run_command(command, **kwargs):
-    print("  + {}".format(" ".join([shlex.quote(c) for c in command])))
+    print("  + {}".format(" ".join([shlex_quote(c) for c in command])))
 
     kwargs["stdin"] = subprocess.PIPE
     kwargs["stdout"] = subprocess.PIPE
     kwargs["stderr"] = subprocess.STDOUT
-    kwargs.setdefault("encoding", sys.stdout.encoding)
+    if not PY2:
+        kwargs.setdefault("encoding", sys.stdout.encoding)
 
-    with subprocess.Popen(command, **kwargs) as process:
+    process = subprocess.Popen(command, **kwargs)
+    try:
         # Close the stdin to make it an error for the subprocess to prompt.
         process.stdin.close()
 
@@ -68,13 +126,26 @@ def run_command(command, **kwargs):
         retcode = process.poll()
 
         if retcode:
-            raise subprocess.CalledProcessError(retcode, process.args)
+            raise subprocess.CalledProcessError(retcode, command)
 
-        return subprocess.CompletedProcess(process.args, retcode)
+        return subprocess_CompletedProcess(command, retcode)
+    finally:
+        # If we switch to Py3, this can be replaced by a context manager, but
+        # for now we'll copy Process.__exit__ to here so it works on Py2.
+
+        if process.stdout:
+            process.stdout.close()
+        if process.stderr:
+            process.stderr.close()
+        try:  # Flushing a BufferedWriter may raise an error
+            if process.stdin:
+                process.stdin.close()
+        finally:
+            # Wait for the process to terminate, to avoid zombies.
+            process.wait()
 
 
-def ensure_packages(requirements, *, output_dir, pythons=None,
-                    virtualenv=None):
+def ensure_packages(requirements, output_dir, pythons=None, virtualenv=None):
     if pythons is None:
         pythons = PYTHON_VERSIONS
 
@@ -84,17 +155,14 @@ def ensure_packages(requirements, *, output_dir, pythons=None,
     #       out early on any missing versions instead of do needless work.
     for python in sorted(pythons, reverse=True):
         try:
-            subprocess.run(
-                ["python{}".format(python), "-c", ""],
-                stdout=subprocess.PIPE,
-                check=True,
-            )
+            subprocess.check_output(["python{}".format(python), "-c", ""])
         except FileNotFoundError:
             raise MissingPythonVersion(
                 "Missing Python version {}.".format(python)
-            ) from None
+            )
 
-    with tempfile.TemporaryDirectory() as tmpdir:
+    tmpdir = tempfile.mkdtemp()
+    try:
         # We want to loop over every version of Python we support and download
         # or build wheels for them.
         first = False
@@ -157,6 +225,8 @@ def ensure_packages(requirements, *, output_dir, pythons=None,
                             ),
                         ),
                     )
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
 
 
 def create_bootstrap_script(output_dir):
@@ -171,7 +241,7 @@ def zip_dir(bundle_dir, output):
     tmpdir, dirname = os.path.split(bundle_dir)
     with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as zfp:
         for root, dirnames, filenames in os.walk(bundle_dir):
-            base = os.path.commonpath([tmpdir, root])
+            base = os.path.commonprefix([tmpdir, root])
             for filename in filenames:
                 path = os.path.join(root, filename)
                 zfp.write(path, arcname=os.path.relpath(path, base))
@@ -208,7 +278,8 @@ def create_bundled_installer(aws_cli=".", botocore=None, virtualenv=None,
     if re.search(r"^\d+(\.\d+)*$", virtualenv):
         virtualenv = "virtualenv=={}".format(virtualenv)
 
-    with tempfile.TemporaryDirectory() as tmpdir:
+    tmpdir = tempfile.mkdtemp()
+    try:
         bundle_dir = os.path.abspath(os.path.join(tmpdir, "awscli-bundle"))
         os.makedirs(bundle_dir)
 
@@ -224,12 +295,15 @@ def create_bundled_installer(aws_cli=".", botocore=None, virtualenv=None,
         output = os.path.abspath(os.path.join(tmpdir, "awscli-bundle.zip"))
         zip_dir(bundle_dir, output)
 
-        os.makedirs(output_dir, exist_ok=True)
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
         if os.path.exists(os.path.join(output_dir, os.path.basename(output))):
             os.remove(os.path.join(output_dir, os.path.basename(output)))
         shutil.move(output, output_dir)
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
 
-        print("Stored {} at {}".format(os.path.basename(output), output_dir))
+    print("Stored {} at {}".format(os.path.basename(output), output_dir))
 
 
 def main():

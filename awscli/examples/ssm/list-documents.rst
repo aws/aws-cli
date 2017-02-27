@@ -8,13 +8,29 @@ Command::
 
 Output::
 
- {
-    "DocumentIdentifiers": [
-        {
-            "Name": "Config_2"
-        }, 
-        {
-            "Name": "My_Config_Document"
-        }
-    ]
- }
+  {
+	"DocumentIdentifiers": [
+		{
+			"Name": "AWS-ApplyPatchBaseline",
+			"PlatformTypes": [
+				"Windows"
+			],
+			"DocumentVersion": "1",
+			"DocumentType": "Command",
+			"Owner": "Amazon",
+			"SchemaVersion": "1.2"
+		},
+		{
+			"Name": "AWS-ConfigureAWSPackage",
+			"PlatformTypes": [
+				"Windows",
+				"Linux"
+			],
+			"DocumentVersion": "1",
+			"DocumentType": "Command",
+			"Owner": "Amazon",
+			"SchemaVersion": "2.0"
+		},
+		...
+	]
+  }

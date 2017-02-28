@@ -55,6 +55,7 @@ ARGUMENT_RENAMES = {
     'pinpoint.get-segment-version.version': 'segment-version',
     'stepfunctions.send-task-success.output': 'task-output',
     'clouddirectory.publish-schema.version': 'schema-version',
+    'mturk.list-qualification-types.query': 'types-query',
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,

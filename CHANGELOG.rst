@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.11.56
+=======
+
+* api-change:``mturk``: Update mturk command to latest version
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``waf``: Update waf command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``dynamodbstreams``: Update dynamodbstreams command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+* api-change:``waf-regional``: Update waf-regional command to latest version
+* api-change:``iam``: Update iam command to latest version
+
+
 1.11.55
 =======
 

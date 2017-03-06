@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.57
+=======
+
+* api-change:``cloudtrail``: Update cloudtrail command to latest version
+* api-change:``budgets``: Update budgets command to latest version
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+
+
 1.11.56
 =======
 

@@ -304,8 +304,10 @@ class BaseTransferRequestSubmitter(object):
                         'Object is of storage class GLACIER. Unable to '
                         'perform %s operations on GLACIER objects. You must '
                         'restore the object to be able to the perform '
-                        'operation.' %
-                        fileinfo.operation_name
+                        'operation. See aws s3 %s help for additional '
+                        'parameter options to ignore or force these '
+                        'transfers.' %
+                        (fileinfo.operation_name, fileinfo.operation_name)
                     )
                     self._result_queue.put(warning)
                 return True

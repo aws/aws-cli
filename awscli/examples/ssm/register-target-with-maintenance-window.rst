@@ -1,6 +1,6 @@
 **To register a single target with a maintenance window**
 
-This example registers instance ``i-0000293ffd8c57862`` with maintenance window ``mw-06cf17cbefcb4bf4f``.
+This example registers an instance with a maintenance window.
 
 Command::
 
@@ -14,7 +14,7 @@ Output::
 
 **To register multiple targets with a maintenance window**
 	
-This example registers two instances, with Ids ``i-0000293ffd8c57862`` and ``i-0cb2b964d3e14fd9f`` with maintenance window ``mw-06cf17cbefcb4bf4f``.
+This example registers two instances with a maintenance window.
 
 Command::
 
@@ -22,7 +22,7 @@ Command::
 
 **To register a target with a maintenance window using EC2 tags**
 
-This example registers instance ``i-0000293ffd8c57862`` with maintenance window ``mw-06cf17cbefcb4bf4f`` using EC2 tags.
+This example registers an instance with a maintenance window using EC2 tags.
 
 Command::
 

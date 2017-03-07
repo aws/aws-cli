@@ -1,6 +1,6 @@
 **To list all the configuration documents in your account**
 
-This example lists all the configuration documents in your account.
+This example lists all the documents in your account.
 
 Command::
 

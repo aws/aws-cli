@@ -1,7 +1,6 @@
 **To create a maintenance window**
 
-This example creates a new maintenance window named ``My-First-Maintenance-Window`` that runs at 
-4 PM on every Tuesday for 4 hours, with a 1 hour cutoff, and that allows unassociated targets.
+This example creates a new maintenance window with the specified name that runs at 4 PM on every Tuesday for 4 hours, with a 1 hour cutoff, and that allows unassociated targets.
 
 Command::
 

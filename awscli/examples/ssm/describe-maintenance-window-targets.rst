@@ -1,6 +1,6 @@
 **To list all targets for a maintenance window**
 
-This example lists all of the targets for a specified maintenance window.
+This example lists all of the targets for a maintenance window.
 
 Command::
 
@@ -44,7 +44,7 @@ Output::
 
 **To list all targets for a maintenance window matching a specific owner information value**
 
-This example lists all of the targets for maintenance window ``mw-ab12cd34ef56gh78`` with value ``Single instance``.
+This example lists all of the targets for a maintenance window with a specific value.
 
 Command::
 

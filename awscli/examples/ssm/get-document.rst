@@ -1,6 +1,6 @@
 **To get the contents of a document**
 
-This example gets the contents of the document called ``RunShellScript``.
+This example returns the content of a document.
 
 Command::
 

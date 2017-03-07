@@ -1,6 +1,6 @@
-**To get information about a Maintenance Window**
+**To get information about a maintenance window**
 
-This example gets details about Maintenance Window ``mw-03eb9db42890fb82d``.
+This example gets details about a maintenance window.
 
 Command::
 

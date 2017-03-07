@@ -1,6 +1,6 @@
 **To get details about all active and terminated Automation executions**
 
-This example describes all active and terminated Automation executions associated with your account.
+This example displays the details of all Automation Execution.
 
 Command::
 
@@ -29,7 +29,7 @@ Output::
 
 **To get details of a specific Automation execution**
 
-This example shows the details about Automation execution ID ``4105a4fc-f944-11e6-9d32-8fb2db27a909``.
+This example shows the details about a specific Automation Execution.
 
 Command::
 

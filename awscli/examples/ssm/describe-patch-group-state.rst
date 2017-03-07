@@ -1,6 +1,6 @@
 **To get the state of a patch group**
 
-This example gets the high-level patch compliance summary for patch group ``Production``.
+This example gets the high-level patch compliance summary for a patch group.
 
 Command::
 

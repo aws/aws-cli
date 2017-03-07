@@ -1,6 +1,6 @@
 **To create multiple associations**
 
-This example associates the configuration document ``AWS-UpdateSSMAgent`` with instances ``i-0cb2b964d3e14fd9f`` and ``i-0000293ffd8c57862``. The output returns a list of successful and failed operations, if applicable.
+This example associates a configuration document with multiple instances. The output returns a list of successful and failed operations, if applicable.
 
 Command::
 

@@ -9,5 +9,5 @@ Command::
 Output::
 
   {
-    "BaselineId":"arn:aws:ssm:us-west-1:<aws_account_id>:patchbaseline/pb-0ca44a362f8afc725"
+    "BaselineId":"arn:aws:ssm:us-west-1:812345678901:patchbaseline/pb-0ca44a362f8afc725"
   }

@@ -1,6 +1,6 @@
 **To list your associations for a specific instance**
 
-This example lists all the associations for instance ``i-0000293ffd8c57862``.
+This example lists all the associations for an instance.
 
 Command::
 
@@ -33,9 +33,9 @@ Output::
     ]
   }
 
-**To list your associations for a specific configuration document**
+**To list your associations for a specific document**
 
-This example lists all associations for the configuration document ``AWS-UpdateSSMAgent``.
+This example lists all associations for the a document.
 
 Command::
 

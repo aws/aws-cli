@@ -1,6 +1,6 @@
 **To display the patch baseline for a patch group**
 
-This example displays the patch baseline for patch group ``Production``.
+This example displays the patch baseline for a patch group.
 
 Command::
 

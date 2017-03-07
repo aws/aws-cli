@@ -1,6 +1,6 @@
 **To remove a target from a maintenance window**
 
-This example removes target ``1a2b3c4d-1a2b-1a2b-1a2b-1a2b3c4d-1a2`` from maintenance window ``mw-ab12cd34ef56gh78``.
+This example removes a target from a maintenance window.
 
 Command::
 

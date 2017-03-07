@@ -48,7 +48,7 @@ Output::
 
 **To get the status of a specific command**
 
-This example gets the status of Command ID ``0831e1a8-a1ac-4257-a1fd-c831b48c4107``.
+This example gets the status of a command.
 
 Command::
 

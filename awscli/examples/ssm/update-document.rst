@@ -1,6 +1,6 @@
 **To create a new version of a document**
 
-This creates a new version of Document ``RunShellScript`` with the updated contents of ``RunShellScript.json``. The document must be in JSON format. Note that ``file://`` must be referenced followed by the path of the content file.
+This creates a new version of a document. The document must be in JSON format. Note that ``file://`` must be referenced followed by the path of the content file.
 
 Command::
 

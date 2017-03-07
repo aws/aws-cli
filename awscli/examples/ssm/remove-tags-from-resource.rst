@@ -1,6 +1,6 @@
 **To remove a tag from a patch baseline**
 
-This example removes the tags from patch baseline ``pb-0869b5cf84fa07081``. There is no output if the command succeeds.
+This example removes the tags from a patch baseline. There is no output if the command succeeds.
 
 Command::
 

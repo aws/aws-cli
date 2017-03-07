@@ -1,6 +1,6 @@
 **To display the details of an Automation Execution**
 
-This example displays the details of Automation Execution ``4105a4fc-f944-11e6-9d32-8fb2db27a909``.
+This example displays the details of an Automation Execution.
 
 Command::
 
@@ -16,7 +16,7 @@ Output::
                 "ami-f173cc91"
             ],
             "AutomationAssumeRole": [
-                "arn:aws:iam::<aws_account_id>:role/SSMAutomationRole"
+                "arn:aws:iam::812345678901:role/SSMAutomationRole"
             ],
             "InstanceIamRole": [
                 "EC2InstanceRole"

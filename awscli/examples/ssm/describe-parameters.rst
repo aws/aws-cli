@@ -21,7 +21,7 @@ Output::
 
 **To list all Parameters matching specific metadata**
 
-This example lists all parameters matching ``Name`` value ``helloWorld``.
+This example lists all parameters matching a filter.
 
 Command::
 

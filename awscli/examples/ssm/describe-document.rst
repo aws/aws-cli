@@ -1,6 +1,6 @@
 **To describe a configuration document**
 
-This example returns information about a document called ``RunShellScript``.
+This example returns the content of a document.
 
 Command::
 

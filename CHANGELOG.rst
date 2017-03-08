@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.59
+=======
+
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``workdocs``: Update workdocs command to latest version
+
+
 1.11.58
 =======
 

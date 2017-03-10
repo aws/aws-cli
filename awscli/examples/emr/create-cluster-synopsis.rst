@@ -1,7 +1,6 @@
   create-cluster
-     --release-label <value> | --ami-version <value> 
-     --instance-type <value> | --instance-groups <value>
-     --instance-count <value>
+     --release-label <value>   | --ami-version <value>
+     --instance-fleets <value> | --instance-groups <value> | --instance-type <value> --instance-count <value>  
      [--auto-terminate | --no-auto-terminate]
      [--use-default-roles]
      [--service-role <value>]

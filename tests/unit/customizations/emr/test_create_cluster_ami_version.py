@@ -15,6 +15,8 @@ from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
 from tests.unit.customizations.emr import test_constants as \
     CONSTANTS
+from tests.unit.customizations.emr import test_constants_instance_fleets as \
+    CONSTANTS_FLEET
 import copy
 import os
 import json
@@ -1464,6 +1466,142 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
            ]
            self.assert_params_for_cmd(cmd, result)
 
+    def test_instance_fleets_with_on_demand_master_only(self):
+        cmd = (self.prefix + '--ami-version 3.1.0 --instance-fleets ' +
+               CONSTANTS_FLEET.INSTANCE_FLEETS_WITH_ON_DEMAND_MASTER_ONLY)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceFleets':
+                                                CONSTANTS_FLEET.RES_INSTANCE_FLEETS_WITH_ON_DEMAND_MASTER_ONLY
+                            },
+                'AmiVersion': '3.1.0',
+                'VisibleToAllUsers': True,
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_fleets_with_spot_master_only(self):
+        cmd = (self.prefix + '--ami-version 3.1.0 --instance-fleets ' +
+               CONSTANTS_FLEET.INSTANCE_FLEETS_WITH_SPOT_MASTER_ONLY)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceFleets':
+                                                CONSTANTS_FLEET.RES_INSTANCE_FLEETS_WITH_SPOT_MASTER_ONLY
+                            },
+                'AmiVersion': '3.1.0',
+                'VisibleToAllUsers': True,
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_fleets_with_spot_master_only_with_ebs_conf(self):
+        cmd = (self.prefix + '--ami-version 3.1.0 --instance-fleets ' +
+               CONSTANTS_FLEET.INSTANCE_FLEETS_WITH_SPOT_MASTER_ONLY_WITH_EBS_CONF)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceFleets':
+                                                CONSTANTS_FLEET.RES_INSTANCE_FLEETS_WITH_SPOT_MASTER_ONLY_WITH_EBS_CONF
+                            },
+                'AmiVersion': '3.1.0',
+                'VisibleToAllUsers': True,
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_fleets_with_spot_master_specific_azs(self):
+        cmd = (self.prefix + '--ami-version 3.1.0 --instance-fleets ' +
+               CONSTANTS_FLEET.INSTANCE_FLEETS_WITH_SPOT_MASTER_ONLY +
+               ' --ec2-attributes AvailabilityZones=[us-east-1a,us-east-1b]')
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceFleets':
+                                                CONSTANTS_FLEET.RES_INSTANCE_FLEETS_WITH_SPOT_MASTER_ONLY,
+                              'Placement': {'AvailabilityZones': ['us-east-1a','us-east-1b']}
+                            },
+                'AmiVersion': '3.1.0',
+                'VisibleToAllUsers': True,
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_fleets_with_spot_master_subnet_ids(self):
+        cmd = (self.prefix + '--ami-version 3.1.0 --instance-fleets ' +
+               CONSTANTS_FLEET.INSTANCE_FLEETS_WITH_SPOT_MASTER_ONLY +
+               ' --ec2-attributes SubnetIds=[subnetid-1,subnetid-2]')
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceFleets':
+                                                CONSTANTS_FLEET.RES_INSTANCE_FLEETS_WITH_SPOT_MASTER_ONLY,
+                              'Ec2SubnetIds': ['subnetid-1','subnetid-2']
+                            },
+                'AmiVersion': '3.1.0',
+                'VisibleToAllUsers': True,
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_fleets_with_spot_master_core_cluster_multiple_instance_types(self):
+        cmd = (self.prefix + '--ami-version 3.1.0 --instance-fleets ' +
+               CONSTANTS_FLEET.INSTANCE_FLEETS_WITH_SPOT_MASTER_CORE_CLUSTER)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceFleets':
+                                                CONSTANTS_FLEET.RES_INSTANCE_FLEETS_WITH_SPOT_MASTER_CORE_CLUSTER
+                            },
+                'AmiVersion': '3.1.0',
+                'VisibleToAllUsers': True,
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_fleets_with_complex_config_from_json(self):
+        data_path = os.path.join(
+            os.path.dirname(__file__), 'input_instance_fleets.json')
+        cmd = ('emr create-cluster --use-default-roles --ami-version 3.1.0  '
+                '--instance-fleets file://' + data_path)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceFleets':
+                                                CONSTANTS_FLEET.RES_INSTANCE_FLEETS_WITH_COMPLEX_CONFIG_FROM_JSON
+                            },
+                'AmiVersion': '3.1.0',
+                'VisibleToAllUsers': True,
+                'Tags': [],
+                'JobFlowRole': 'EMR_EC2_DefaultRole',
+                'ServiceRole': 'EMR_DefaultRole'
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_fleets_with_both_az_azs_specified(self):
+        cmd = (self.prefix + '--ami-version 3.1.0 --instance-fleets ' +
+               CONSTANTS_FLEET.INSTANCE_FLEETS_WITH_SPOT_MASTER_ONLY +
+               ' --ec2-attributes AvailabilityZone=us-east-1a,AvailabilityZones=[us-east-1a,us-east-1b]')
+        expected_error_msg = (
+            '\naws: error: You cannot specify both AvailabilityZone'
+            ' and AvailabilityZones options together.\n')
+        result = self.run_cmd(cmd, 255)
+        self.assertEquals(expected_error_msg, result[1])
 
 if __name__ == "__main__":
     unittest.main()

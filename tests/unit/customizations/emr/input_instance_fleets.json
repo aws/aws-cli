@@ -1,0 +1,85 @@
+[
+  {
+    "Name": "master-fleet",
+    "InstanceFleetType": "MASTER",
+    "TargetSpotCapacity": 1,
+    "LaunchSpecifications": {
+      "SpotSpecification": {
+        "TimeoutDurationMinutes": 20,
+        "TimeoutAction": "TERMINATE_CLUSTER"
+      }
+    },
+    "InstanceTypeConfigs": [
+      {
+        "InstanceType": "m3.xlarge",
+        "BidPrice": "1",
+        "EbsConfiguration": {
+          "EbsOptimized": true,
+          "EbsBlockDeviceConfigs": [
+            {
+              "VolumeSpecification": {
+                "VolumeType": "gp2",
+                "SizeInGB": 100
+              },
+              "VolumesPerInstance": 2
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "Name": "core-fleet",
+    "InstanceFleetType": "CORE",
+    "TargetSpotCapacity": 10,
+    "LaunchSpecifications": {
+      "SpotSpecification": {
+        "TimeoutDurationMinutes": 20,
+        "TimeoutAction": "TERMINATE_CLUSTER"
+      }
+    },
+    "InstanceTypeConfigs": [
+      {
+        "InstanceType": "m3.xlarge",
+        "WeightedCapacity": 1,
+        "BidPrice": "1",
+        "EbsConfiguration": {
+          "EbsOptimized": true,
+          "EbsBlockDeviceConfigs": [
+            {
+              "VolumeSpecification": {
+                "VolumeType": "gp2",
+                "SizeInGB": 100
+              },
+              "VolumesPerInstance": 2
+            }
+          ]
+        }
+      },
+      {
+        "InstanceType": "m3.large",
+        "WeightedCapacity": 2,
+        "BidPrice": "1",
+        "EbsConfiguration": {
+          "EbsOptimized": false,
+          "EbsBlockDeviceConfigs": [
+            {
+              "VolumeSpecification": {
+                "VolumeType": "gp2",
+                "SizeInGB": 100
+              },
+              "VolumesPerInstance": 2
+            },
+            {
+              "VolumeSpecification": {
+                "VolumeType": "gp2",
+                "SizeInGB": 500
+              },
+              "VolumesPerInstance": 1
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

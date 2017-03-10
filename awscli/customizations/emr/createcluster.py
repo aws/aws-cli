@@ -23,6 +23,7 @@ from awscli.customizations.emr import exceptions
 from awscli.customizations.emr import hbaseutils
 from awscli.customizations.emr import helptext
 from awscli.customizations.emr import instancegroupsutils
+from awscli.customizations.emr import instancefleetsutils
 from awscli.customizations.emr import steputils
 from awscli.customizations.emr.command import Command
 from awscli.customizations.emr.constants import EC2_ROLE_NAME
@@ -50,6 +51,9 @@ class CreateCluster(Command):
          'help_text': helptext.AUTO_TERMINATE},
         {'name': 'no-auto-terminate', 'action': 'store_true',
          'group_name': 'auto_terminate'},
+        {'name': 'instance-fleets',
+         'schema': argumentschema.INSTANCE_FLEETS_SCHEMA,
+         'help_text': helptext.INSTANCE_FLEETS},
         {'name': 'name',
          'default': 'Development Cluster',
          'help_text': helptext.CLUSTER_NAME},
@@ -134,12 +138,23 @@ class CreateCluster(Command):
                 option2="--ec2-attributes InstanceProfile",
                 message=service_role_validation_message)
 
+        if parsed_args.instance_groups is not None and \
+                parsed_args.instance_fleets is not None:
+            raise exceptions.MutualExclusiveOptionError(
+                option1="--instance-groups",
+                option2="--instance-fleets")
+
         instances_config = {}
-        instances_config['InstanceGroups'] = \
-            instancegroupsutils.validate_and_build_instance_groups(
-                instance_groups=parsed_args.instance_groups,
-                instance_type=parsed_args.instance_type,
-                instance_count=parsed_args.instance_count)
+        if parsed_args.instance_fleets is not None:
+            instances_config['InstanceFleets'] = \
+                instancefleetsutils.validate_and_build_instance_fleets(
+                    parsed_args.instance_fleets)
+        else:
+            instances_config['InstanceGroups'] = \
+                instancegroupsutils.validate_and_build_instance_groups(
+                    instance_groups=parsed_args.instance_groups,
+                    instance_type=parsed_args.instance_type,
+                    instance_count=parsed_args.instance_count)
 
         if parsed_args.release_label is not None:
             params["ReleaseLabel"] = parsed_args.release_label
@@ -170,10 +185,11 @@ class CreateCluster(Command):
 
         emrutils.apply_dict(params, 'ServiceRole', parsed_args.service_role)
 
-        for instance_group in instances_config['InstanceGroups']:
-            if 'AutoScalingPolicy' in instance_group.keys():
-                if parsed_args.auto_scaling_role is None:
-                    raise exceptions.MissingAutoScalingRoleError()
+        if parsed_args.instance_groups is not None:
+            for instance_group in instances_config['InstanceGroups']:
+                if 'AutoScalingPolicy' in instance_group.keys():
+                    if parsed_args.auto_scaling_role is None:
+                        raise exceptions.MissingAutoScalingRoleError()
 
         emrutils.apply_dict(params, 'AutoScalingRole', parsed_args.auto_scaling_role)
 
@@ -312,7 +328,19 @@ class CreateCluster(Command):
     def _build_ec2_attributes(self, cluster, parsed_attrs):
         keys = parsed_attrs.keys()
         instances = cluster['Instances']
-        if 'AvailabilityZone' in keys and 'SubnetId' in keys:
+
+        if ('SubnetId' in keys and 'SubnetIds' in keys):
+            raise exceptions.MutualExclusiveOptionError(
+                option1="SubnetId",
+                option2="SubnetIds")
+
+        if ('AvailabilityZone' in keys and 'AvailabilityZones' in keys):
+            raise exceptions.MutualExclusiveOptionError(
+                option1="AvailabilityZone",
+                option2="AvailabilityZones")
+
+        if ('SubnetId' in keys or 'SubnetIds' in keys) \
+                and ('AvailabilityZone' in keys or 'AvailabilityZones' in keys):
             raise exceptions.SubnetAndAzValidationError
 
         emrutils.apply_params(
@@ -321,6 +349,9 @@ class CreateCluster(Command):
         emrutils.apply_params(
             src_params=parsed_attrs, src_key='SubnetId',
             dest_params=instances, dest_key='Ec2SubnetId')
+        emrutils.apply_params(
+            src_params=parsed_attrs, src_key='SubnetIds',
+            dest_params=instances, dest_key='Ec2SubnetIds')
 
         if 'AvailabilityZone' in keys:
             instances['Placement'] = dict()
@@ -328,6 +359,13 @@ class CreateCluster(Command):
                 src_params=parsed_attrs, src_key='AvailabilityZone',
                 dest_params=instances['Placement'],
                 dest_key='AvailabilityZone')
+
+        if 'AvailabilityZones' in keys:
+            instances['Placement'] = dict()
+            emrutils.apply_params(
+                src_params=parsed_attrs, src_key='AvailabilityZones',
+                dest_params=instances['Placement'],
+                dest_key='AvailabilityZones')
 
         emrutils.apply_params(
             src_params=parsed_attrs, src_key='InstanceProfile',

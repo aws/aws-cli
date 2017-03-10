@@ -32,12 +32,35 @@ class DescribeCluster(Command):
 
     def _run_main_command(self, parsed_args, parsed_globals):
         parameters = {'ClusterId': parsed_args.cluster_id}
+        list_instance_fleets_result = None
+        list_instance_groups_result = None
+        is_fleet_based_cluster = False
 
         describe_cluster_result = self._call(
             self._session, 'describe_cluster', parameters, parsed_globals)
 
-        list_instance_groups_result = self._call(
-            self._session, 'list_instance_groups', parameters, parsed_globals)
+
+        if 'Cluster' in describe_cluster_result:
+            describe_cluster = describe_cluster_result['Cluster']
+            if describe_cluster.get('InstanceCollectionType') == constants.INSTANCE_FLEET_TYPE:
+                is_fleet_based_cluster = True
+
+            if 'Ec2InstanceAttributes' in describe_cluster:
+                ec2_instance_attr_keys = \
+                    describe_cluster['Ec2InstanceAttributes'].keys()
+                ec2_instance_attr = \
+                    describe_cluster['Ec2InstanceAttributes']
+        else:
+            ec2_instance_attr_keys = {}
+
+        if is_fleet_based_cluster:
+            list_instance_fleets_result = self._call(
+                self._session, 'list_instance_fleets', parameters,
+                parsed_globals)
+        else:
+            list_instance_groups_result = self._call(
+                self._session, 'list_instance_groups', parameters,
+                parsed_globals)
 
         list_bootstrap_actions_result = self._call(
             self._session, 'list_bootstrap_actions',
@@ -45,6 +68,7 @@ class DescribeCluster(Command):
 
         constructed_result = self._construct_result(
             describe_cluster_result,
+            list_instance_fleets_result,
             list_instance_groups_result,
             list_bootstrap_actions_result)
 
@@ -67,12 +91,15 @@ class DescribeCluster(Command):
                 return key
 
     def _construct_result(
-            self, describe_cluster_result, list_instance_groups_result,
-            list_bootstrap_actions_result):
+            self, describe_cluster_result, list_instance_fleets_result,
+            list_instance_groups_result, list_bootstrap_actions_result):
         result = describe_cluster_result
-        result['Cluster']['InstanceGroups'] = []
         result['Cluster']['BootstrapActions'] = []
 
+        if (list_instance_fleets_result is not None and
+                list_instance_fleets_result.get('InstanceFleets') is not None):
+            result['Cluster']['InstanceFleets'] = \
+                list_instance_fleets_result.get('InstanceFleets')
         if (list_instance_groups_result is not None and
                 list_instance_groups_result.get('InstanceGroups') is not None):
             result['Cluster']['InstanceGroups'] = \

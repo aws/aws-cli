@@ -130,6 +130,18 @@ INSTANCE_GROUPS = (
     ' ComparisonOperator, EvaluationPeriods, MetricName, Namespace, Period, Statistic, Threshold, Unit,'
     ' [Dimensions])</code>.</p>')
 
+INSTANCE_FLEETS = (
+    '<p> A specification of the number and type'
+    ' of Amazon EC2 instances used to create instance fleets in a cluster.</p>'
+    '<p> Each instance fleet takes the following parameters: '
+    '<code>[Name], InstanceFleetType, InstanceTypeConfigs, TargetOnDemandCapacity or TargetSpotCapacity,'
+    ' [BidPrice], [EbsConfiguration]</code>. [EbsConfiguration] is optional.'
+    ' EbsConfiguration takes the following parameters: <code>EbsOptimized</code>'
+    ' and <code>EbsBlockDeviceConfigs</code>. EbsBlockDeviceConfigs is an array of EBS volume'
+    ' specifications, which takes the following parameters : <code>([VolumeType],'
+    ' [SizeInGB], Iops)</code> and VolumesPerInstance. VolumesPerInstance is the count of EBS'
+    ' volumes per instance with this specification.</p>')
+
 INSTANCE_TYPE = (
     '<p>Shortcut option for --instance-groups. A specification of the '
     'type of Amazon EC2 instances used together with --instance-count '

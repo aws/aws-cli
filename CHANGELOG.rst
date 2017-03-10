@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.61
+=======
+
+* api-change:``emr``: Update emr command to latest version
+* api-change:``codedeploy``: Update codedeploy command to latest version
+
+
 1.11.60
 =======
 

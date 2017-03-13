@@ -1,6 +1,6 @@
 **To remove a task from a maintenance window**
 
-This example removes task ``1a2b3c4d-1a2b-1a2b-1a2b-1a2b3c4d5e6c`` from Maintenance Window ``mw-ab12cd34ef56gh78``.
+This example removes a task from a maintenance window.
 
 Command::
 

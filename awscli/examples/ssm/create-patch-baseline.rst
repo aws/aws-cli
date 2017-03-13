@@ -1,6 +1,6 @@
 **To create a patch baseline**
 
-This example creates a patch baseline named ``Production-Baseline`` that approves patches for a production environment seven days after they are released by Microsoft.
+This example creates a patch baseline that approves patches for a production environment seven days after they are released by Microsoft.
 
 Command::
 

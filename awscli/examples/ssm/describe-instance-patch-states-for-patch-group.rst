@@ -1,6 +1,6 @@
 **To get the instance states for a patch group**
 
-This example gets the patch summary states per-instance for patch group ``Production``.
+This example gets the patch summary states per-instance for a patch group.
 
 Command::
 

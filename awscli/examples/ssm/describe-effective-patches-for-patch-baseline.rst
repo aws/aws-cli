@@ -1,6 +1,6 @@
 **To get all patches defined by a patch baseline**
 
-This example returns the patches defined by patch baseline ``pb-08b654cf9b9681f04``.
+This example returns the patches defined by a patch baseline.
 
 Command::
 

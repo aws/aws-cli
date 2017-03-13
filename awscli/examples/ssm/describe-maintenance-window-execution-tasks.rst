@@ -1,6 +1,6 @@
 **To list all tasks associated with a Maintenance Window Execution**
 
-This example lists the tasks associated with Maintenance Window Execution ID ``518d5565-5969-4cca-8f0e-da3b2a638355``.
+This example lists the tasks associated with a maintenance window execution.
 
 Command::
 

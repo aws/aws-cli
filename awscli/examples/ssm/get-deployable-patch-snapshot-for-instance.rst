@@ -1,6 +1,6 @@
 **To retrieve the current snapshot for the patch baseline an instance uses**
 
-This example displays the current snapshot for patch baseline used by Instance ``i-0cb2b964d3e14fd9f``. This command must be run from Instance ``i-0cb2b964d3e14fd9f`` using the instance credentials. To ensure it uses the instance credentials, run ``aws configure`` and only specify the region of your instance but leave the other fields blank.
+This example displays the current snapshot for the patch baseline used by an Instance. This command must be run from the instance using the instance credentials. To ensure it uses the instance credentials, run ``aws configure`` and only specify the region of your instance but leave the ``Access Key`` and ``Secret Key`` fields blank.
 
 Use ``uuidgen`` to generate a ``snapshot-id``.
 

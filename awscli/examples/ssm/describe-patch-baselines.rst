@@ -14,7 +14,7 @@ Output::
             "BaselineName": "AWS-DefaultPatchBaseline",
             "DefaultBaseline": true,
             "BaselineDescription": "Default Patch Baseline Provided by AWS.",
-            "BaselineId": "arn:aws:ssm:us-west-2:280605243866:patchbaseline/pb-04fb4ae6142167966"
+            "BaselineId": "arn:aws:ssm:us-west-2:812345678901:patchbaseline/pb-04fb4ae6142167966"
         },
         {
             "BaselineName": "Production-Baseline",

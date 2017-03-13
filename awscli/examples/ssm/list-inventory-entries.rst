@@ -1,6 +1,6 @@
 **To view custom inventory entries for an instance**
 
-This example lists all the custom inventory entries for instance ``i-0cb2b964d3e14fd9f``.
+This example lists all the custom inventory entries for an instance.
 
 Command::
 

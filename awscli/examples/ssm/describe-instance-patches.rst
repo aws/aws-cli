@@ -1,6 +1,6 @@
 **To get the patch compliance details for an instance**
 
-This example gets the patch compliance details for instance ``i-08ee91c0b17045407``.
+This example gets the patch compliance details for an instance.
 
 Command::
 

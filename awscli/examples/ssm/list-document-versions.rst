@@ -1,6 +1,6 @@
 **To view details about existing document versions**
 
-This example lists all the versions for Document ``patchWindowsAmi``.
+This example lists all the versions for a document.
 
 Command::
 

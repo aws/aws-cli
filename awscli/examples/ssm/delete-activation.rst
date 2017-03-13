@@ -1,6 +1,6 @@
 **To delete an activation**
 
-This example deletes activation. There is no output if the command succeeds.
+This example deletes an activation. There is no output if the command succeeds.
 
 Command::
 

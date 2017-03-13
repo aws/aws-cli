@@ -1,6 +1,6 @@
 **To list the tags for a patch baseline**
 
-This example lists the tags for patch baseline ``pb-0869b5cf84fa07081``.
+This example lists the tags for a patch baseline.
 
 Command::
 

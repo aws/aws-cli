@@ -1,6 +1,6 @@
 **To get information about a Maintenance Window task execution**
 
-This example lists information about a task executed as part of Maintenance Window Execution ID ``518d5565-5969-4cca-8f0e-da3b2a638355``.
+This example lists information about a task executed as part of a maintenance window execution.
 
 Command::
 

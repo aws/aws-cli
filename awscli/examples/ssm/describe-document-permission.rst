@@ -1,6 +1,6 @@
 **To get the permissions of a document**
 
-This example returns the permission list for document ``RunShellScript``.
+This example lists all the versions for a document.
 
 Command::
 

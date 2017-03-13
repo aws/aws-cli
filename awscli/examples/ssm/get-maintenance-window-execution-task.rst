@@ -1,6 +1,6 @@
 **To get information about a Maintenance Window task execution**
 
-This example lists information about task ``ac0c6ae1-daa3-4a89-832e-d384503b6586`` that was part of Maintenance Window execution ``518d5565-5969-4cca-8f0e-da3b2a638355``.
+This example lists information about a task that was part of a maintenance window execution.
 
 Command::
 
@@ -13,7 +13,7 @@ Output::
     "MaxErrors": "1",
     "TaskArn": "AWS-RunShellScript",
     "MaxConcurrency": "1",
-    "ServiceRole": "arn:aws:iam::<aws_account_id>:role/MaintenanceWindowsRole",
+    "ServiceRole": "arn:aws:iam::812345678901:role/MaintenanceWindowsRole",
     "WindowExecutionId": "518d5565-5969-4cca-8f0e-da3b2a638355",
     "Priority": 10,
     "StartTime": 1487692834.684,

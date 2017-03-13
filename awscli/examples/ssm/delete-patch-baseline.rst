@@ -1,6 +1,6 @@
 **To delete a patch baseline**
 
-This example deletes patch baseline ``pb-045f10b4f382baeda``.
+This example deletes a patch baseline.
 
 Command::
 

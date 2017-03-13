@@ -1,6 +1,6 @@
 **To display a patch baseline**
 
-This example displays the details for patch baseline ``pb-00dbb759999aa2bc3``.
+This example displays the details for a patch baseline.
 
 Command::
 

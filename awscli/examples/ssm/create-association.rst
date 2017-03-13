@@ -1,6 +1,6 @@
 **To associate a document using instance IDs**
 
-This example associates configuration document ``AWS-UpdateSSMAgent`` with instance ``i-0cb2b964d3e14fd9f``.
+This example associates a configuration document with an instance, using instance IDs.
 
 Command::
 
@@ -38,7 +38,7 @@ Output::
 
 **To associate a document using targets**
 
-This example associates configuration document ``AWS-UpdateSSMAgent`` with ``instanceids`` ``i-0cb2b964d3e14fd9f``.
+This example associates a configuration document with an instance, using targets.
 
 Command::
 

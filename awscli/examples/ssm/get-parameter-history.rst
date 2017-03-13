@@ -1,6 +1,6 @@
 **To get a value history for a parameter**
 
-This example lists the value history for Parameter ``welcome``.
+This example lists the value history for a parameter.
 
 Command::
 
@@ -11,7 +11,7 @@ Output::
   {
     "Parameters": [
         {
-            "LastModifiedUser": "arn:aws:iam::<aws_account_id>:user/admin",
+            "LastModifiedUser": "arn:aws:iam::812345678901:user/admin",
             "LastModifiedDate": 1487880053.085,
             "Type": "String",
             "Name": "welcome",

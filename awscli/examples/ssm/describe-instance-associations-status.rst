@@ -1,6 +1,6 @@
 **To describe the status of an instance's associations**
 
-This example shows details of the associations for instance ``i-0000293ffd8c57862``.
+This example shows details of the associations for an instance.
 
 Command::
 

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.62
+=======
+
+* api-change:``events``: Update events command to latest version
+* api-change:``devicefarm``: Update devicefarm command to latest version
+
+
 1.11.61
 =======
 

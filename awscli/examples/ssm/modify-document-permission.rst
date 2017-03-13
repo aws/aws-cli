@@ -1,6 +1,6 @@
 **To modify the permissions for a document**
 
-This example adds ``Share`` permissions to ``All`` accounts for document ``RunShellScript``. There is no output if the command succeeds.
+This example modifies the permissions for a document. There is no output if the command succeeds.
 
 Command::
 

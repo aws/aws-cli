@@ -1,6 +1,6 @@
 **To get details of an association**
 
-This example describes the association between instance ``i-0000293ffd8c57862`` and ``AWS-UpdateSSMAgent``.
+This example describes the association between an instance and a document.
 
 Command::
 

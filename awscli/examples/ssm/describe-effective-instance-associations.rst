@@ -1,6 +1,6 @@
 **To get details of the effective associations for an instance**
 
-This example describes the effective associations for instance ``i-0000293ffd8c57862``.
+This example describes the effective associations for an instance.
 
 Command::
 

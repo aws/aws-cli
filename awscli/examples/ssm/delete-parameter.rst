@@ -1,6 +1,6 @@
 **To delete a parameter**
 
-This example deletes Parameter ``helloWorld``. There is no output if the command succeeds.
+This example deletes a parameter. There is no output if the command succeeds.
 
 Command::
 

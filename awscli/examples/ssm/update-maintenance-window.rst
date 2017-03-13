@@ -1,6 +1,6 @@
 **To update a maintenance window**
 
-This example updates the name of maintenance window ``mw-1a2b3c4d5e6f7g8h9`` to ``My-Renamed-MW``.
+This example updates the name of a maintenance window.
 
 Command::
 
@@ -20,7 +20,7 @@ Output::
 
 **To enable a maintenance window**
 
-This example enables maintenance window ``mw-1a2b3c4d5e6f7g8h9``.
+This example enables a maintenance window.
 
 Command::
 
@@ -28,7 +28,7 @@ Command::
   
 **To disable a maintenance window**
   
-This example disables maintenance window ``mw-1a2b3c4d5e6f7g8h9``.
+This example disables a maintenance window.
 
 Command::
 

@@ -1,6 +1,6 @@
 **To deregister a managed instance**
 
-This example deregisters managed instance ``mi-08ab247cdf1046573``. There is no output if the command succeeds.
+This example deregisters a managed instance. There is no output if the command succeeds.
 
 Command::
 

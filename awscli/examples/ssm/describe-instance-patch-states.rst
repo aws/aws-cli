@@ -1,6 +1,6 @@
 **To get the patch summary states for instances**
 
-This example gets the patch summary states for instances ``i-08ee91c0b17045407`` and  ``i-09a618aec652973a9``.
+This example gets the patch summary states for an instance.
 
 Command::
 

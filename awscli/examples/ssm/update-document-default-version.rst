@@ -1,6 +1,6 @@
 **To update the default version of a Document**
 
-This updates the default version of Document ``patchWindowsAmi`` to ``2``. There is no output if the command succeeds.
+This updates the default version of a document. There is no output if the command succeeds.
 
 Command::
 

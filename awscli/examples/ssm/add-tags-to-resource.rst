@@ -1,6 +1,6 @@
 **To add tags to a resource**
 
-This example updates Maintenance Window ``mw-03eb9db42890fb82d`` with new tags. There is no output if the command succeeds.
+This example updates a maintenance window with new tags. There is no output if the command succeeds.
 
 Command::
 

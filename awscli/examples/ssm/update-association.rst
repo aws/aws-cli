@@ -1,6 +1,6 @@
 **To update a document association**
 
-This example updates the association ``4cc73e42-d5ae-4879-84f8-57e09c0efcd0`` with a new document version.
+This example updates an association with a new document version.
 
 Command::
 

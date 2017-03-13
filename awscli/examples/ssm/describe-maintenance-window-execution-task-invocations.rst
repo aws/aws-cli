@@ -1,6 +1,6 @@
 **To get the specific task invocations performed for a task execution**
 
-This example lists the invocations for task ``ac0c6ae1-daa3-4a89-832e-d384503b6586`` executed as part of Maintenance Window Execution ID ``518d5565-5969-4cca-8f0e-da3b2a638355``.
+This example lists the invocations for a task executed as part of a maintenance window execution.
 
 Command::
 

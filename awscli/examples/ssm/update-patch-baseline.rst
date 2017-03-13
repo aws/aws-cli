@@ -1,6 +1,6 @@
 **To update a patch baseline**
 
-This example adds two patches as rejected and one patch as approved to existing patch baseline ``pb-045f10b4f382baeda``.
+This example adds two patches as rejected and one patch as approved to a patch baseline.
 
 Command::
 
@@ -56,8 +56,9 @@ Output::
 
 **To rename a patch baseline**
 
-This example renames patch baseline ``pb-00dbb759999aa2bc3`` to ``Windows-Server-2012-R2-Important-and-Critical-Security-Updates``.
+This example renames a patch baseline.
 
 Command::
 
   aws ssm update-patch-baseline --baseline-id "pb-00dbb759999aa2bc3" --name "Windows-Server-2012-R2-Important-and-Critical-Security-Updates"
+  

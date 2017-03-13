@@ -1,6 +1,6 @@
 **To list the values for a parameter**
 
-This example lists the values for Parameter ``helloWorld``.
+This example lists the values for a parameter.
 
 Command::
 

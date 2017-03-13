@@ -1,6 +1,6 @@
 **To execute a command on one or more remote instances**
 
-This example runs an echo command on target instance ``i-0cb2b964d3e14fd9f``.
+This example runs an echo command on a target instance.
 
 Command::
 
@@ -49,8 +49,8 @@ Output::
 
 **To get IP information about an instance**
 
-This example gets the IP information about instance ``i-0cb2b964d3e14fd9f``.
+This example gets the IP information about an instance.
 
 Command::
 
-  aws ssm send-command --instance-ids "i-0cb2b964d3e14fd9f" --document-name "AWS-RunShellScript" --comment "IP config" --parameters commands=ifconfig --output text
+  aws ssm send-command --instance-ids "i-0cb2b964d3e14fd9f" --document-name "AWS-RunShellScript" --comment "IP config" --parameters "commands=ifconfig" --output text

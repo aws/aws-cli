@@ -1,6 +1,6 @@
 **To update the association status**
 
-This example updates the association status of the association between instance ``i-0000293ffd8c57862`` and configuration document ``AWS-UpdateSSMAgent``.
+This example updates the association status of the association between an instance and a document.
 
 Command::
 

@@ -1,6 +1,6 @@
 **To list the invocations of a specific command**
 
-This example lists all the invocations of command ``b8eac879-0541-439d-94ec-47a80d554f44``.
+This example lists all the invocations of a command.
 
 Command::
 

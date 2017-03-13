@@ -1,6 +1,6 @@
 **To assign customer metadata to an instance**
 
-This example assigns rack location information to instance ``i-0cb2b964d3e14fd9f``. There is no output if the command succeeds.
+This example assigns rack location information to an instance. There is no output if the command succeeds.
 
 Command::
 

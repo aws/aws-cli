@@ -1,6 +1,6 @@
 **To describe an activation**
 
-This example provides details about the activations.
+This example provides details about the activations on your account.
 
 Command::
 

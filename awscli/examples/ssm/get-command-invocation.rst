@@ -1,6 +1,6 @@
 **To display the details of a command invocation**
 
-This example displays the details of Command ID ``bca3371c-3fdf-43f1-9323-7a7780b1b4db`` executed on Instance ID ``i-0000293ffd8c57862``.
+This example lists all the invocations of a command on an instance.
 
 Command::
 

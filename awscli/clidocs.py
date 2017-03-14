@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import json
 import logging
 import os
 from botocore import xform_name
@@ -313,6 +314,19 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         operation_model = self.help_command.obj
         d = {}
         for cli_name, cli_argument in self.help_command.arg_table.items():
+            # print(cli_name,
+            #       type(cli_argument),
+            #       cli_argument.)
+            # Some arguments map directly to basic shapes which results in the
+            # translation mapping containing parameter names that map directly
+            # to basic types. For example dry-run/no-dry-run maps to 'Boolean'
+            # rather than an intermediate type that can be safely
+            # search/replaced. Since we do not want to replace all occurrences
+            # of basic types in the raw documentation with parameter names
+            # we need to skip any mappings that map a parameter name
+            # directly to a base scalar type.
+#            if cli_argument.cli_type_name in SCALAR_TYPES:
+#                continue
             if cli_argument.argument_model is not None:
                 argument_name = cli_argument.argument_model.name
                 if argument_name in d:

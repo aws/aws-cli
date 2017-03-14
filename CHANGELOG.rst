@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.11.63
+=======
+
+* api-change:``events``: Update events command to latest version
+* api-change:``budgets``: Update budgets command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``codedeploy``: Update codedeploy command to latest version
+
+
 1.11.62
 =======
 

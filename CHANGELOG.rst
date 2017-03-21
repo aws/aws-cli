@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.11.64
+=======
+
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``directconnect``: Update directconnect command to latest version
+* api-change:``marketplacecommerceanalytics``: Update marketplacecommerceanalytics command to latest version
+
+
 1.11.63
 =======
 

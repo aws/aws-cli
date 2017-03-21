@@ -1,6 +1,6 @@
 **To view a list of branch names**
 
-This example lists all branch names in an AWS CoceCommit repository.
+This example lists all branch names in an AWS CodeCommit repository.
 
 Command::
 

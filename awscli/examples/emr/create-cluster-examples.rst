@@ -347,3 +347,22 @@ NOTE: JSON arguments must include options and values as their own items in the l
        SECURITY,
        NONE
     }
+
+
+**21. To create an Amazon EMR cluster with Kerberos configured**
+
+- Command::
+
+    aws emr create-cluster --instance-type m3.xlarge --release-label emr-5.10.0 --service-role EMR_DefaultRole --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole --security-configuration mySecurityConfiguration --kerberos-attributes Realm=EC2.INTERNAL,KdcAdminPassword=123,CrossRealmTrustPrincipalPassword=123
+
+- JSON equivalent (contents of kerberos_attributes.json)::
+
+    {
+      "Realm": "EC2.INTERNAL",
+      "KdcAdminPassword": "123",
+      "CrossRealmTrustPrincipalPassword": "123",
+    }
+
+- Command (Using kerberos_attributes.json)::
+
+    aws emr create-cluster --instance-type m3.xlarge --release-label emr-5.10.0 --service-role EMR_DefaultRole --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole --security-configuration mySecurityConfiguration --kerberos-attributes file://kerberos_attributes.json

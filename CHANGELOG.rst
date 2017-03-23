@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.66
+=======
+
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``cloudtrail``: Update cloudtrail command to latest version
+
+
 1.11.65
 =======
 

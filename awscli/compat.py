@@ -90,6 +90,8 @@ if six.PY3:
         """
         if 'b' not in mode:
             encoding = locale.getpreferredencoding()
+            if encoding == '':
+                encoding = locale.getpreferredencoding(do_setlocale=False)
         return open(filename, mode, encoding=encoding)
 
     def bytes_print(statement, stdout=None):
@@ -129,12 +131,17 @@ else:
         # unicode to the returned stream.  Note that get_stdout_text_writer
         # just returns sys.stdout in the PY3 section above because python3
         # handles this.
-        return codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
+        encoding = locale.getpreferredencoding()
+        if encoding == '':
+            encoding = locale.getpreferredencoding(do_setlocale=False)
+        return codecs.getwriter(encoding)(sys.stdout)
 
     def compat_open(filename, mode='r', encoding=None):
         # See docstring for compat_open in the PY3 section above.
         if 'b' not in mode:
-            encoding = locale.getpreferredencoding()
+            encoding = locale.getpreferredencoding(do_setlocale=False)
+            if encoding == '':
+                encoding = locale.getpreferredencoding(do_setlocale=False)
         return io.open(filename, mode, encoding=encoding)
 
     def bytes_print(statement, stdout=None):

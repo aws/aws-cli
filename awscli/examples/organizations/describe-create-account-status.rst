@@ -4,7 +4,7 @@ The following example shows how to request the latest status for a previous requ
 
 Command::
 
-  aws organizations describe-create-account-request --create-account-request-id car-examplecreateaccountrequestid111
+  aws organizations describe-create-account-status --create-account-request-id car-examplecreateaccountrequestid111
   
 Output::
 

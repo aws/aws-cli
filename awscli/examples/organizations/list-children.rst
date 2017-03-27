@@ -1,43 +1,21 @@
-**To list all of the completed account creation requests for an organization**
+**To retrieve a list of all of the child accounts and OUs in a parent root or OU**
 
-The following example shows how to request a list of account creation requests for an organization that have completed successfully.  
-
-Command::
-
-  aws organizations list-create-account-status --states SUCCEEDED
-  
-Output::
-
-  {
-    "CreateAccountStatuses": [
-      {
-        "AccountId": "444444444444",
-        "AccountName": "Developer Test Account",
-        "CompletedTimeStamp": 1481835812.143,
-        "Id": "car-examplecreateaccountrequestid111",
-        "RequestedTimeStamp": 1481829432.531,
-        "State": "SUCCEEDED"
-      }
-    ]
-  }
-  
-**To list all of the in-progress account creation requests for an organization**
-
-The following example gets a list of account creation requests that are still in-progress for an organization.  
+The following example shows how to request a list of all of the child OUs in a parent root or OU.  
 
 Command::
 
-  aws organizations list-create-account-status --states IN_PROGRESS
+  aws organizations list-children --child-type ORGANIZATIONAL_UNIT --parent-id ou-examplerootid111-exampleouid111
   
 Output::
-
   {
-    "CreateAccountStatuses": [
+    "Children": [
       {
-        "State": "IN_PROGRESS",
-        "Id": "car-examplecreateaccountrequestid111",
-        "RequestedTimeStamp": 1481829432.531,
-        "AccountName": "Production Account"
+        "Id": "ou-examplerootid111-exampleouid111",
+        "Type": "ORGANIZATIONAL_UNIT"
+      },
+      {
+        "Id": "ou-examplerootid111-exampleouid222",
+        "Type":"ORGANIZATIONAL_UNIT"
       }
     ]
   }

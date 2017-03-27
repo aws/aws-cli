@@ -50,7 +50,7 @@ class CliInputJSONArgument(OverrideRequiredArgsArgument):
 
     def _register_argument_action(self):
         self._session.register(
-            'calling-command', self.add_to_call_parameters)
+            'calling-command.*', self.add_to_call_parameters)
         super(CliInputJSONArgument, self)._register_argument_action()
 
     def add_to_call_parameters(self, call_parameters, parsed_args,

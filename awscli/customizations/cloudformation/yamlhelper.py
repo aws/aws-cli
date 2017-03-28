@@ -56,7 +56,7 @@ def intrinsics_multi_constructor(loader, tag_prefix, node):
 
 def str_representer(dumper, node):
 
-    if re.match(r'[-+]?0[0-9_]+', node):
+    if re.match(r'[-+]?[0-9][0-9_]*', node):
         return ScalarNode(tag='tag:yaml.org,2002:str', value=node, style='\'')
 
     return ScalarNode(tag='tag:yaml.org,2002:str', value=node)

@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 
 import yaml
+import re
 from awscli.compat import six
 from yaml.resolver import ScalarNode, SequenceNode
 
@@ -53,12 +54,22 @@ def intrinsics_multi_constructor(loader, tag_prefix, node):
     return {cfntag: value}
 
 
+def str_representer(dumper, node):
+
+    if re.match(r'[-+]?0[0-7_]+', node):
+        return ScalarNode(tag='tag:yaml.org,2002:str', value=node, style='\'')
+
+    return ScalarNode(tag='tag:yaml.org,2002:str', value=node)
+
 def yaml_dump(dict_to_dump):
     """
     Dumps the dictionary as a YAML document
     :param dict_to_dump:
     :return:
     """
+
+    yaml.SafeDumper.add_representer(str, str_representer)
+
     return yaml.safe_dump(dict_to_dump, default_flow_style=False)
 
 

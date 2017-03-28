@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.68
+=======
+
+* bugfix:ec2: Fixed a bug causing some ec2 commands to fail with an invalid parameter combination error when arguments were supplied via --cli-input-json. Resolves `#2452 <https://github.com/aws/aws-cli/issues/2452>`__
+* api-change:``batch``: Update batch command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.11.67
 =======
 

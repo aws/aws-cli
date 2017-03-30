@@ -72,7 +72,10 @@ if six.PY3:
 
     raw_input = input
 
-    binary_stdin = sys.stdin.buffer
+    if sys.stdin:
+        binary_stdin = sys.stdin.buffer
+    else:
+        binary_stdin = None
 
     def get_stdout_text_writer():
         return sys.stdout

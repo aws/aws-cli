@@ -166,8 +166,19 @@ def unpack_cli_arg(cli_argument, value):
                            cli_argument.cli_name)
 
 
+def _special_type(model):
+    # check if model is jsonvalue header and that value is serializable
+    if model.serialization.get('jsonvalue') and \
+       model.serialization.get('location') == 'header' and \
+       model.type_name == 'string':
+        return True
+    return False
+
+
 def _unpack_cli_arg(argument_model, value, cli_name):
-    if argument_model.type_name in SCALAR_TYPES:
+    if _special_type(argument_model):
+        return _unpack_special_cli_arg(argument_model, value, cli_name)
+    elif argument_model.type_name in SCALAR_TYPES:
         return unpack_scalar_cli_arg(
             argument_model, value, cli_name)
     elif argument_model.type_name in COMPLEX_TYPES:
@@ -175,6 +186,15 @@ def _unpack_cli_arg(argument_model, value, cli_name):
             argument_model, value, cli_name)
     else:
         return six.text_type(value)
+
+
+def _unpack_special_cli_arg(argument_model, value, cli_name):
+    try:
+        return json.loads(value, object_pairs_hook=OrderedDict)
+    except ValueError as e:
+        raise ParamError(
+            cli_name, "Invalid JSON: %s\nJSON received: %s"
+            % (e, value))
 
 
 def _unpack_complex_cli_arg(argument_model, value, cli_name):

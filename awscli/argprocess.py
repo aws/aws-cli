@@ -22,7 +22,7 @@ from awscli.paramfile import get_paramfile, ResourceLoadingError
 from awscli.paramfile import PARAMFILE_DISABLED
 from awscli import shorthand
 from awscli.utils import find_service_and_method_in_event_name
-
+from botocore.utils import is_json_value_header
 
 LOG = logging.getLogger('awscli.argprocess')
 
@@ -176,8 +176,8 @@ def _special_type(model):
 
 
 def _unpack_cli_arg(argument_model, value, cli_name):
-    if _special_type(argument_model):
-        return _unpack_special_cli_arg(argument_model, value, cli_name)
+    if is_json_value_header(argument_model):
+        return _unpack_json_cli_arg(argument_model, value, cli_name)
     elif argument_model.type_name in SCALAR_TYPES:
         return unpack_scalar_cli_arg(
             argument_model, value, cli_name)
@@ -188,7 +188,7 @@ def _unpack_cli_arg(argument_model, value, cli_name):
         return six.text_type(value)
 
 
-def _unpack_special_cli_arg(argument_model, value, cli_name):
+def _unpack_json_cli_arg(argument_model, value, cli_name):
     try:
         return json.loads(value, object_pairs_hook=OrderedDict)
     except ValueError as e:

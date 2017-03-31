@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.11.69
+=======
+
+* api-change:``config``: Update config command to latest version
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``cloudformation``: Update cloudformation command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+
+
 1.11.68
 =======
 

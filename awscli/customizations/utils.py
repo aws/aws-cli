@@ -66,11 +66,30 @@ def rename_command(command_table, existing_name, new_name):
     del command_table[existing_name]
 
 
-def alias_command(command_table, existing_name, new_name):
-    """Moves an argument to a new name, keeping the old as a hidden alias."""
+def alias_command(command_table, existing_name, new_name, hide_current=True):
+    """Moves an argument to a new name, keeping the old as a hidden alias.
+
+    :type command_table: dict
+    :param command_table: The full command table for the CLI or a service.
+
+    :type existing_name: str
+    :param existing_name: The current name of the command.
+
+    :type new_name: str
+    :param new_name: The new name for the command.
+
+    :type hide_current: bool
+    :param hide_current: Whether to hide the current command name or the new
+        command name. If True, the current name is hidden. If False, the ne
+        name is hidden.
+    """
     current = command_table[existing_name]
-    _copy_argument(command_table, existing_name, new_name)
-    current._UNDOCUMENTED = True
+    new = _copy_argument(command_table, existing_name, new_name)
+
+    if hide_current:
+        current._UNDOCUMENTED = True
+    else:
+        new._UNDOCUMENTED = True
 
 
 def validate_mutually_exclusive_handler(*groups):

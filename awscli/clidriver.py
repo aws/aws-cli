@@ -26,6 +26,7 @@ from awscli import EnvironmentVariables, __version__
 from awscli.formatter import get_formatter
 from awscli.plugin import load_plugins
 from awscli.commands import CLICommand
+from awscli.compat import six
 from awscli.argparser import MainArgParser
 from awscli.argparser import ServiceArgParser
 from awscli.argparser import ArgTableArgParser
@@ -220,7 +221,13 @@ class CLIDriver(object):
             LOG.debug("Exception caught in main()", exc_info=True)
             LOG.debug("Exiting with rc 255")
             sys.stderr.write("\n")
-            sys.stderr.write(u"%s\n" % e)
+            if six.PY3:
+                sys.stderr.write(six.text_type(e))
+            else:
+                sys.stderr.write(six.text_type(e).encode(
+                    getattr(sys.stderr, "encoding", None) or "ascii",
+                    "replace"))
+            sys.stderr.write("\n")
             return 255
 
     def _emit_session_event(self):

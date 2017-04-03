@@ -15,6 +15,7 @@ import os
 from botocore import xform_name
 from botocore.docs.bcdoc.docevents import DOC_EVENTS
 from botocore.model import StringShape
+from botocore.utils import is_json_value_header
 
 from awscli import SCALAR_TYPES
 from awscli.argprocess import ParamShorthandDocGen
@@ -42,6 +43,11 @@ class CLIDocumentEventHandler(object):
 
     def build_translation_map(self):
         return dict()
+
+    def _get_argument_type_name(self, shape, default):
+        if is_json_value_header(shape):
+            return 'JSON'
+        return default
 
     def _map_handlers(self, session, event_class, mapfn):
         for event in DOC_EVENTS:
@@ -160,7 +166,8 @@ class CLIDocumentEventHandler(object):
             self._documented_arg_groups.append(argument.group_name)
         else:
             name = '``%s``' % argument.cli_name
-        doc.write('%s (%s)\n' % (name, argument.cli_type_name))
+        doc.write('%s (%s)\n' % (name, self._get_argument_type_name(
+            argument.argument_model, argument.cli_type_name)))
         doc.style.indent()
         doc.include_doc_string(argument.documentation)
         self._document_enums(argument, doc)
@@ -531,7 +538,8 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
     def _do_doc_member_for_output(self, doc, member_name, member_shape, stack):
         docs = member_shape.documentation
         if member_name:
-            doc.write('%s -> (%s)' % (member_name, member_shape.type_name))
+            doc.write('%s -> (%s)' % (member_name, self._get_argument_type_name(
+                                      member_shape, member_shape.type_name)))
         else:
             doc.write('(%s)' % member_shape.type_name)
         doc.style.indent()

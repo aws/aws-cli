@@ -804,5 +804,48 @@ class TestUnpackJSONParams(BaseArgProcessTest):
         self.assertIn('[{', str(e.exception))
 
 
+class TestJSONValueHeaderParams(BaseArgProcessTest):
+    def setUp(self):
+        super(TestJSONValueHeaderParams, self).setUp()
+        self.p = self.get_param_model(
+            'lex-runtime.PostContent.sessionAttributes')
+
+    def test_json_value_dict(self):
+        value = '{"foo": "bar"}'
+        self.assertEqual(unpack_cli_arg(self.p, value),
+                         OrderedDict([('foo', 'bar')]))
+
+    def test_json_value_list(self):
+        value = '["foo", "bar"]'
+        self.assertEqual(unpack_cli_arg(self.p, value), ['foo', 'bar'])
+
+    def test_json_value_int(self):
+        value = "5"
+        self.assertEqual(unpack_cli_arg(self.p, value), 5)
+
+    def test_json_value_float(self):
+        value = "1.2"
+        self.assertEqual(unpack_cli_arg(self.p, value), 1.2)
+
+    def test_json_value_string(self):
+        value = '"5"'
+        self.assertEqual(unpack_cli_arg(self.p, value), '5')
+
+    def test_json_value_boolean(self):
+        value = "true"
+        self.assertEqual(unpack_cli_arg(self.p, value), True)
+        value = "false"
+        self.assertEqual(unpack_cli_arg(self.p, value), False)
+
+    def test_json_value_null(self):
+        value = 'null'
+        self.assertEqual(unpack_cli_arg(self.p, value), None)
+
+    def test_json_value_decode_error(self):
+        value = 'invalid string to be serialized'
+        with self.assertRaises(ParamError):
+            unpack_cli_arg(self.p, value)
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -205,6 +205,27 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
              ' . :ref:`wait <cli:aws s3api wait>` ]')
         )
 
+    def test_documents_json_header_shape(self):
+        shape = {
+            'type': 'string',
+            'jsonvalue': True,
+            'location': 'header',
+            'locationName': 'X-Amz-Header-Name'
+        }
+        shape = StringShape('JSONValueArg', shape)
+        arg_table = {'arg-name': mock.Mock(argument_model=shape)}
+        help_command = mock.Mock()
+        help_command.doc = ReSTDocument()
+        help_command.event_class = 'custom'
+        help_command.arg_table = arg_table
+        operation_model = mock.Mock()
+        operation_model.service_model.operation_names = []
+        help_command.obj = operation_model
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_option('arg-name', help_command)
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        self.assertIn('(JSON)', rendered)
+
     def test_documents_enum_values(self):
         shape = {
             'type': 'string',

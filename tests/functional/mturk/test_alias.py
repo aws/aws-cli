@@ -16,8 +16,8 @@ from awscli.testutils import BaseAWSCommandParamsTest
 class TestAlias(BaseAWSCommandParamsTest):
     def test_alias(self):
         # This command was aliased, both should work
-        command_tempalte = 'mturk %s --qualification-type-id foo'
-        old_command = command_tempalte % 'list-hi-ts-for-qualification-type'
-        new_command = command_tempalte % 'list-hits-for-qualification-type'
+        command_template = 'mturk %s --qualification-type-id foo'
+        old_command = command_template % 'list-hi-ts-for-qualification-type'
+        new_command = command_template % 'list-hits-for-qualification-type'
         self.run_cmd(old_command, expected_rc=0)
         self.run_cmd(new_command, expected_rc=0)

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.73
+=======
+
+* api-change:``elasticache``: Update elasticache command to latest version
+
+
 1.11.72
 =======
 

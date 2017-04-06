@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.74
+=======
+
+* api-change:``elbv2``: Update elbv2 command to latest version
+
+
 1.11.73
 =======
 

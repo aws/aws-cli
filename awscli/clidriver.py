@@ -23,6 +23,7 @@ from botocore.exceptions import NoCredentialsError
 from botocore.exceptions import NoRegionError
 
 from awscli import EnvironmentVariables, __version__
+from awscli.compat import get_text_writer
 from awscli.formatter import get_formatter
 from awscli.plugin import load_plugins
 from awscli.commands import CLICommand
@@ -220,14 +221,10 @@ class CLIDriver(object):
         except Exception as e:
             LOG.debug("Exception caught in main()", exc_info=True)
             LOG.debug("Exiting with rc 255")
-            sys.stderr.write("\n")
-            if six.PY3:
-                sys.stderr.write(six.text_type(e))
-            else:
-                sys.stderr.write(six.text_type(e).encode(
-                    getattr(sys.stderr, "encoding", None) or "ascii",
-                    "replace"))
-            sys.stderr.write("\n")
+            err = get_text_writer(sys.stderr)
+            err.write("\n")
+            err.write(six.text_type(e))
+            err.write("\n")
             return 255
 
     def _emit_session_event(self):

@@ -129,7 +129,23 @@ else:
         # unicode to the returned stream.  Note that get_text_writer
         # just returns the stream in the PY3 section above because python3
         # handles this.
-        return codecs.getwriter(locale.getpreferredencoding())(stream)
+
+        # Selecting which encoding we want to use here is a bit tricky in some
+        # cases. First we want to prefer the encoding of the stream itself,
+        # because the stream likely knows better than anything else what
+        # encoding it should be, if that doesn't work we'll try to get the
+        # preferred encoding of the locale itself, and finally we'll fall back
+        # to plain old ascii. Note that if we don't get an encoding from the
+        # stream itself, then we want to use the replace handler because we
+        # don't want to have an error, and the stream may be in a different
+        # encoding.
+        encoding, errors = getattr(stream, "encoding", None), None
+        if encoding is None:
+            encoding, errors = locale.getpreferredencoding(), "replace"
+        if encoding is None:
+            encoding, errors = "ascii", "replace"
+
+        return codecs.getwriter(encoding)(stream, errors)
 
     def compat_open(filename, mode='r', encoding=None):
         # See docstring for compat_open in the PY3 section above.

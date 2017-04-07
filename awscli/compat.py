@@ -74,8 +74,8 @@ if six.PY3:
 
     binary_stdin = sys.stdin.buffer
 
-    def get_stdout_text_writer():
-        return sys.stdout
+    def get_text_writer(stream):
+        return stream
 
     def compat_open(filename, mode='r', encoding=None):
         """Back-port open() that accepts an encoding argument.
@@ -118,18 +118,18 @@ else:
 
     binary_stdin = sys.stdin
 
-    def get_stdout_text_writer():
+    def get_text_writer(stream):
         # In python3, all the sys.stdout/sys.stderr streams are in text
         # mode.  This means they expect unicode, and will encode the
         # unicode automatically before actually writing to stdout/stderr.
         # In python2, that's not the case.  In order to provide a consistent
         # interface, we can create a wrapper around sys.stdout that will take
         # unicode, and automatically encode it to the preferred encoding.
-        # That way consumers can just call get_stdout_text_writer() and write
-        # unicode to the returned stream.  Note that get_stdout_text_writer
-        # just returns sys.stdout in the PY3 section above because python3
+        # That way consumers can just call get_text_writer(stream) and write
+        # unicode to the returned stream.  Note that get_text_writer
+        # just returns the stream in the PY3 section above because python3
         # handles this.
-        return codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
+        return codecs.getwriter(locale.getpreferredencoding())(stream)
 
     def compat_open(filename, mode='r', encoding=None):
         # See docstring for compat_open in the PY3 section above.

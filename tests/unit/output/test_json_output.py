@@ -14,12 +14,13 @@
 from botocore.compat import json
 import platform
 import mock
+import sys
 from awscli.compat import six
 from awscli.formatter import JSONFormatter
 
 from awscli.testutils import BaseAWSCommandParamsTest, unittest
 from awscli.testutils import skip_if_windows
-from awscli.compat import get_stdout_text_writer
+from awscli.compat import get_text_writer
 
 
 class TestGetPasswordData(BaseAWSCommandParamsTest):
@@ -107,7 +108,7 @@ class TestListUsers(BaseAWSCommandParamsTest):
         self.parsed_response['Users'][1]['UserId'] = u'\u2713'
         output = self.run_cmd('iam list-users', expected_rc=0)[0]
         with mock.patch('sys.stdout', six.StringIO()) as f:
-            out = get_stdout_text_writer()
+            out = get_text_writer(sys.stdout)
             out.write(u'\u2713')
             expected = f.getvalue()
         # We should not see the '\u<hex>' for of the unicode character.

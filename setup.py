@@ -1,9 +1,26 @@
 #!/usr/bin/env python
+import codecs
+import os.path
+import re
 import sys
 
 from setuptools import setup, find_packages
 
-import awscli
+
+here = os.path.abspath(os.path.dirname(__file__))
+
+
+def read(*parts):
+    return codecs.open(os.path.join(here, *parts), 'r').read()
+
+
+def find_version(*file_paths):
+    version_file = read(*file_paths)
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
+                              version_file, re.M)
+    if version_match:
+        return version_match.group(1)
+    raise RuntimeError("Unable to find version string.")
 
 
 requires = ['botocore==1.5.37',
@@ -22,7 +39,7 @@ if sys.version_info[:2] == (2, 6):
 
 setup_options = dict(
     name='awscli',
-    version=awscli.__version__,
+    version=find_version("awscli", "__init__.py"),
     description='Universal Command Line Environment for AWS.',
     long_description=open('README.rst').read(),
     author='Amazon Web Services',

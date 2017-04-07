@@ -14,8 +14,10 @@
 from awscli.testutils import unittest
 from awscli.testutils import BaseAWSCommandParamsTest
 import logging
+import sys
 
 import mock
+import nose
 from awscli.compat import six
 from botocore.vendored.requests import models
 from botocore.exceptions import NoCredentialsError
@@ -281,6 +283,11 @@ class TestCliDriver(unittest.TestCase):
         self.assertEqual(rc, 130)
 
     def test_error_unicode(self):
+        # Nose on Python 2.6 does not support _any_ non ASCII charactes being
+        # written to stdout/stderr, which makes it impossible for this test
+        # to actually succeed on 2.6.
+        if sys.version_info < (2, 7):
+            raise nose.SkipTest
         driver = CLIDriver(session=self.session)
         fake_client = mock.Mock()
         fake_client.list_objects.side_effect = Exception(u"☃")

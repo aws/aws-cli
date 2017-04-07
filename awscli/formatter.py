@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
-import sys
 
 from botocore.compat import json
 
@@ -48,7 +47,7 @@ class Formatter(object):
                 del response_data['ResponseMetadata']
 
     def _get_default_stream(self):
-        return compat.get_text_writer(sys.stdout)
+        return compat.get_stdout_text_writer()
 
     def _flush_stream(self, stream):
         try:

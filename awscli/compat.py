@@ -74,7 +74,7 @@ if six.PY3:
 
     binary_stdin = sys.stdin.buffer
 
-    def get_text_writer(stream):
+    def _get_text_writer(stream, errors):
         return stream
 
     def compat_open(filename, mode='r', encoding=None):
@@ -118,7 +118,7 @@ else:
 
     binary_stdin = sys.stdin
 
-    def get_text_writer(stream):
+    def _get_text_writer(stream, errors):
         # In python3, all the sys.stdout/sys.stderr streams are in text
         # mode.  This means they expect unicode, and will encode the
         # unicode automatically before actually writing to stdout/stderr.
@@ -139,11 +139,11 @@ else:
         # stream itself, then we want to use the replace handler because we
         # don't want to have an error, and the stream may be in a different
         # encoding.
-        encoding, errors = getattr(stream, "encoding", None), None
+        encoding = getattr(stream, "encoding", None)
         if encoding is None:
-            encoding, errors = locale.getpreferredencoding(), "replace"
+            encoding = locale.getpreferredencoding()
         if encoding is None:
-            encoding, errors = "ascii", "replace"
+            encoding = "ascii"
 
         return codecs.getwriter(encoding)(stream, errors)
 
@@ -158,6 +158,14 @@ else:
             stdout = sys.stdout
 
         stdout.write(statement)
+
+
+def get_stdout_text_writer():
+    return _get_text_writer(sys.stdout, errors="strict")
+
+
+def get_stderr_text_writer():
+    return _get_text_writer(sys.stderr, errors="replace")
 
 
 def compat_input(prompt):

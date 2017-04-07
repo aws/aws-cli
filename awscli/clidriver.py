@@ -23,7 +23,7 @@ from botocore.exceptions import NoCredentialsError
 from botocore.exceptions import NoRegionError
 
 from awscli import EnvironmentVariables, __version__
-from awscli.compat import get_text_writer
+from awscli.compat import get_stderr_text_writer
 from awscli.formatter import get_formatter
 from awscli.plugin import load_plugins
 from awscli.commands import CLICommand
@@ -221,7 +221,7 @@ class CLIDriver(object):
         except Exception as e:
             LOG.debug("Exception caught in main()", exc_info=True)
             LOG.debug("Exiting with rc 255")
-            err = get_text_writer(sys.stderr)
+            err = get_stderr_text_writer()
             err.write("\n")
             err.write(six.text_type(e))
             err.write("\n")

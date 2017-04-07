@@ -14,6 +14,7 @@
 from awscli.testutils import unittest
 from awscli.testutils import BaseAWSCommandParamsTest
 import logging
+import io
 import sys
 
 import mock
@@ -283,18 +284,24 @@ class TestCliDriver(unittest.TestCase):
         self.assertEqual(rc, 130)
 
     def test_error_unicode(self):
-        # Nose on Python 2.6 does not support _any_ non ASCII charactes being
-        # written to stdout/stderr, which makes it impossible for this test
-        # to actually succeed on 2.6.
-        if sys.version_info < (2, 7):
-            raise nose.SkipTest
+        # We need a different type for Py3 and Py2 because on Py3 six.StringIO
+        # doesn't let us set the encoding and returns a string.
+        if six.PY3:
+            stderr_b = io.BytesIO()
+            stderr = io.TextIOWrapper(stderr_b, encoding="UTF-8")
+        else:
+            stderr = stderr_b = six.StringIO()
+            stderr.encoding = "UTF-8"
         driver = CLIDriver(session=self.session)
         fake_client = mock.Mock()
         fake_client.list_objects.side_effect = Exception(u"☃")
         fake_client.can_paginate.return_value = False
         driver.session.create_client = mock.Mock(return_value=fake_client)
-        rc = driver.main('s3 list-objects --bucket foo'.split())
+        with mock.patch("sys.stderr", stderr):
+            rc = driver.main('s3 list-objects --bucket foo'.split())
+        stderr.flush()
         self.assertEqual(rc, 255)
+        self.assertEqual(stderr_b.getvalue(), u"\n☃\n".encode("UTF-8"))
 
 
 class TestCliDriverHooks(unittest.TestCase):

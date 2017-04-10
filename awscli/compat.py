@@ -130,18 +130,14 @@ else:
         # just returns the stream in the PY3 section above because python3
         # handles this.
 
-        # Selecting which encoding we want to use here is a bit tricky in some
-        # cases. First we want to prefer the encoding of the stream itself,
-        # because the stream likely knows better than anything else what
-        # encoding it should be, if that doesn't work we'll try to get the
-        # preferred encoding of the locale itself, and finally we'll fall back
-        # to plain old ascii. Note that if we don't get an encoding from the
-        # stream itself, then we want to use the replace handler because we
-        # don't want to have an error, and the stream may be in a different
-        # encoding.
-        encoding = getattr(stream, "encoding", None)
-        if encoding is None:
-            encoding = locale.getpreferredencoding()
+        # We're going to use the preferred encoding, but in cases that there is
+        # no preferred encoding we're going to fall back to assuming ASCII is
+        # what we should use. This will currently break the use of
+        # PYTHONIOENCODING, which would require checking stream.encoding first,
+        # however, the existing behavior is to only use
+        # locale.getpreferredencoding() and so in the hope of not breaking what
+        # is currently working, we will continue to only use that.
+        encoding = locale.getpreferredencoding()
         if encoding is None:
             encoding = "ascii"
 

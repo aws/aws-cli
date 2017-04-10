@@ -102,3 +102,14 @@ class TestConfigureGetCommand(unittest.TestCase):
                    parsed_globals=None)
         rendered = stream.getvalue()
         self.assertEqual(rendered.strip(), '')
+
+    def test_get_nested_attribute_from_implicit_default(self):
+        session = FakeSession({})
+        session.full_config = {
+            'profiles': {'default': {'s3': {'signature_version': 's3v4'}}}}
+        stream = six.StringIO()
+        config_get = ConfigureGetCommand(session, stream)
+        config_get(args=['s3.signature_version'],
+                   parsed_globals=None)
+        rendered = stream.getvalue()
+        self.assertEqual(rendered.strip(), 's3v4')

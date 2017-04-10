@@ -76,6 +76,8 @@ class ConfigureGetCommand(BasicCommand):
             remaining = parts[2:]
         else:
             profile_name = self._session.get_config_variable('profile')
+            if profile_name is None:
+                profile_name = 'default'
             config_name = parts[0]
             remaining = parts[1:]
 

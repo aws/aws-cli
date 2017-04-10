@@ -63,29 +63,22 @@ class TestCommandTableAlias(BaseAWSHelpOutputTest):
         def handler(command_table, **kwargs):
             utils.alias_command(command_table, old_name, new_name, False)
 
-        self._assert_commands_exist(old_name, new_name, handler)
+        self._assert_command_exists(old_name, handler)
+        self._assert_command_exists(new_name, handler)
 
         # Verify that the new isn't documented
         self.driver.main(['help'])
         self.assert_not_contains(new_name)
         self.assert_contains(old_name)
 
-    def _assert_commands_exist(self, old_name, new_name, handler):
+    def _assert_command_exists(self, command_name, handler):
         # Verify that we can alias a top level command.
         self.session.register('building-command-table.main', handler)
-        self.driver.main([new_name, 'help'])
-        self.assert_contains(new_name)
+        self.driver.main([command_name, 'help'])
+        self.assert_contains(command_name)
 
         # We can also see subcommands help as well.
-        self.driver.main([new_name, 'run-instances', 'help'])
-        self.assert_contains('run-instances')
-
-        # Verify that the old is still available
-        self.session.register('building-command-table.main', handler)
-        self.driver.main([old_name, 'help'])
-        self.assert_contains(old_name)
-
-        self.driver.main([new_name, 'run-instances', 'help'])
+        self.driver.main([command_name, 'run-instances', 'help'])
         self.assert_contains('run-instances')
 
 

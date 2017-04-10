@@ -80,7 +80,7 @@ def alias_command(command_table, existing_name, new_name, hide_current=True):
 
     :type hide_current: bool
     :param hide_current: Whether to hide the current command name or the new
-        command name. If True, the current name is hidden. If False, the ne
+        command name. If True, the current name is hidden. If False, the new
         name is hidden.
     """
     current = command_table[existing_name]

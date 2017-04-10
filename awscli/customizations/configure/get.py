@@ -21,7 +21,7 @@ class ConfigureGetCommand(BasicCommand):
     NAME = 'get'
     DESCRIPTION = BasicCommand.FROM_FILE('configure', 'get',
                                          '_description.rst')
-    SYNOPSIS = ('aws configure get varname [--profile profile-name]')
+    SYNOPSIS = 'aws configure get varname [--profile profile-name]'
     EXAMPLES = BasicCommand.FROM_FILE('configure', 'get', '_examples.rst')
     ARG_TABLE = [
         {'name': 'varname',
@@ -36,7 +36,7 @@ class ConfigureGetCommand(BasicCommand):
 
     def _run_main(self, args, parsed_globals):
         varname = args.varname
-        value = None
+
         if '.' not in varname:
             # get_scoped_config() returns the config variables in the config
             # file (not the logical_var names), which is what we want.
@@ -44,6 +44,7 @@ class ConfigureGetCommand(BasicCommand):
             value = config.get(varname)
         else:
             value = self._get_dotted_config_value(varname)
+
         if value is not None:
             self._stream.write(value)
             self._stream.write('\n')
@@ -54,7 +55,9 @@ class ConfigureGetCommand(BasicCommand):
     def _get_dotted_config_value(self, varname):
         parts = varname.split('.')
         num_dots = varname.count('.')
-        # Logic to deal with predefined sections like [preview], [plugin] and etc.
+
+        # Logic to deal with predefined sections like [preview], [plugin] and
+        # etc.
         if num_dots == 1 and parts[0] in PREDEFINED_SECTION_NAMES:
             full_config = self._session.full_config
             section, config_name = varname.split('.')
@@ -64,13 +67,16 @@ class ConfigureGetCommand(BasicCommand):
                 value = full_config['profiles'].get(
                     section, {}).get(config_name)
             return value
+
         if parts[0] == 'profile':
             profile_name = parts[1]
             config_name = parts[2]
             remaining = parts[3:]
-        # Check if varname starts with 'default' profile (e.g. default.emr-dev.emr.instance_profile)
-        # If not, go further to check if varname starts with a known profile name
-        elif parts[0] == 'default' or (parts[0] in self._session.full_config['profiles']):
+        # Check if varname starts with 'default' profile (e.g.
+        # default.emr-dev.emr.instance_profile) If not, go further to check
+        # if varname starts with a known profile name
+        elif parts[0] == 'default' or (
+                parts[0] in self._session.full_config['profiles']):
             profile_name = parts[0]
             config_name = parts[1]
             remaining = parts[2:]

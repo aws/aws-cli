@@ -11,10 +11,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sys
+import logging
 
 from awscli.customizations.commands import BasicCommand
+from awscli.compat import six
 
 from . import PREDEFINED_SECTION_NAMES
+
+LOG = logging.getLogger(__name__)
 
 
 class ConfigureGetCommand(BasicCommand):
@@ -30,9 +34,10 @@ class ConfigureGetCommand(BasicCommand):
          'cli_type_name': 'string', 'positional_arg': True},
     ]
 
-    def __init__(self, session, stream=sys.stdout):
+    def __init__(self, session, stream=sys.stdout, error_stream=sys.stderr):
         super(ConfigureGetCommand, self).__init__(session)
         self._stream = stream
+        self._error_stream = error_stream
 
     def _run_main(self, args, parsed_globals):
         varname = args.varname
@@ -45,10 +50,20 @@ class ConfigureGetCommand(BasicCommand):
         else:
             value = self._get_dotted_config_value(varname)
 
-        if value is not None:
+        LOG.debug(u'Config value retrieved: %s' % value)
+
+        if isinstance(value, six.string_types):
             self._stream.write(value)
             self._stream.write('\n')
             return 0
+        elif isinstance(value, dict):
+            # TODO: add support for this. We would need to print it off in
+            # the same format as the config file.
+            self._error_stream.write(
+                'varname (%s) must reference a value, not a section or '
+                'sub-section.' % varname
+            )
+            return 1
         else:
             return 1
 

@@ -298,7 +298,8 @@ class TestCliDriver(unittest.TestCase):
         fake_client.can_paginate.return_value = False
         driver.session.create_client = mock.Mock(return_value=fake_client)
         with mock.patch("sys.stderr", stderr):
-            rc = driver.main('s3 list-objects --bucket foo'.split())
+            with mock.patch("locale.getpreferredencoding", lambda: "UTF-8"):
+                rc = driver.main('s3 list-objects --bucket foo'.split())
         stderr.flush()
         self.assertEqual(rc, 255)
         self.assertEqual(stderr_b.getvalue(), u"\n☃\n".encode("UTF-8"))

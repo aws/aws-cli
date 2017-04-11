@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.11.76
+=======
+
+* api-change:``opsworks``: Update opsworks command to latest version
+* api-change:``batch``: Update batch command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``gamelift``: Update gamelift command to latest version
+
+
 1.11.75
 =======
 

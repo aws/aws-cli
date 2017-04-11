@@ -302,7 +302,7 @@ class TestCliDriver(unittest.TestCase):
                 rc = driver.main('s3 list-objects --bucket foo'.split())
         stderr.flush()
         self.assertEqual(rc, 255)
-        self.assertEqual(stderr_b.getvalue(), u"\n☃\n".encode("UTF-8"))
+        self.assertEqual(stderr_b.getvalue().strip(), u"☃".encode("UTF-8"))
 
 
 class TestCliDriverHooks(unittest.TestCase):

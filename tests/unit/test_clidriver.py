@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
@@ -13,8 +14,11 @@
 from awscli.testutils import unittest
 from awscli.testutils import BaseAWSCommandParamsTest
 import logging
+import io
+import sys
 
 import mock
+import nose
 from awscli.compat import six
 from botocore.vendored.requests import models
 from botocore.exceptions import NoCredentialsError
@@ -278,6 +282,27 @@ class TestCliDriver(unittest.TestCase):
         driver.session.create_client = mock.Mock(return_value=fake_client)
         rc = driver.main('s3 list-objects --bucket foo'.split())
         self.assertEqual(rc, 130)
+
+    def test_error_unicode(self):
+        # We need a different type for Py3 and Py2 because on Py3 six.StringIO
+        # doesn't let us set the encoding and returns a string.
+        if six.PY3:
+            stderr_b = io.BytesIO()
+            stderr = io.TextIOWrapper(stderr_b, encoding="UTF-8")
+        else:
+            stderr = stderr_b = six.StringIO()
+            stderr.encoding = "UTF-8"
+        driver = CLIDriver(session=self.session)
+        fake_client = mock.Mock()
+        fake_client.list_objects.side_effect = Exception(u"☃")
+        fake_client.can_paginate.return_value = False
+        driver.session.create_client = mock.Mock(return_value=fake_client)
+        with mock.patch("sys.stderr", stderr):
+            with mock.patch("locale.getpreferredencoding", lambda: "UTF-8"):
+                rc = driver.main('s3 list-objects --bucket foo'.split())
+        stderr.flush()
+        self.assertEqual(rc, 255)
+        self.assertEqual(stderr_b.getvalue().strip(), u"☃".encode("UTF-8"))
 
 
 class TestCliDriverHooks(unittest.TestCase):

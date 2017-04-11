@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.customizations.utils import alias_command
+from awscli.customizations.utils import make_hidden_command_alias
 
 
 def register_alias_mturk_command(event_emitter):
@@ -21,9 +21,8 @@ def register_alias_mturk_command(event_emitter):
 
 
 def alias_mturk_command(command_table, **kwargs):
-    alias_command(
+    make_hidden_command_alias(
         command_table,
         existing_name='list-hits-for-qualification-type',
-        new_name='list-hi-ts-for-qualification-type',
-        hide_current=False
+        alias_name='list-hi-ts-for-qualification-type',
     )

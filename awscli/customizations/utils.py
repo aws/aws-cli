@@ -66,7 +66,7 @@ def rename_command(command_table, existing_name, new_name):
     del command_table[existing_name]
 
 
-def alias_command(command_table, existing_name, new_name, hide_current=True):
+def alias_command(command_table, existing_name, new_name):
     """Moves an argument to a new name, keeping the old as a hidden alias.
 
     :type command_table: dict
@@ -77,19 +77,33 @@ def alias_command(command_table, existing_name, new_name, hide_current=True):
 
     :type new_name: str
     :param new_name: The new name for the command.
-
-    :type hide_current: bool
-    :param hide_current: Whether to hide the current command name or the new
-        command name. If True, the current name is hidden. If False, the new
-        name is hidden.
     """
     current = command_table[existing_name]
-    new = _copy_argument(command_table, existing_name, new_name)
+    _copy_argument(command_table, existing_name, new_name)
+    current._UNDOCUMENTED = True
 
-    if hide_current:
-        current._UNDOCUMENTED = True
-    else:
-        new._UNDOCUMENTED = True
+
+def make_hidden_command_alias(command_table, existing_name, alias_name):
+    """Create a hidden alias for an exiting command.
+
+    This will copy an existing command object in a command table and add a new
+    entry to the command table with a different name. The new command will
+    be undocumented.
+
+    This is needed if you want to change an existing command, but you still
+    need the old name to work for backwards compatibility reasons.
+
+    :type command_table: dict
+    :param command_table: The full command table for the CLI or a service.
+
+    :type existing_name: str
+    :param existing_name: The current name of the command.
+
+    :type alias_name: str
+    :param alias_name: The new name for the command.
+    """
+    new = _copy_argument(command_table, existing_name, alias_name)
+    new._UNDOCUMENTED = True
 
 
 def validate_mutually_exclusive_handler(*groups):

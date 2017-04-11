@@ -49,19 +49,20 @@ class TestCommandTableAlias(BaseAWSHelpOutputTest):
         def handler(command_table, **kwargs):
             utils.alias_command(command_table, old_name, new_name)
 
-        self._assert_commands_exist(old_name, new_name, handler)
+        self._assert_command_exists(old_name, handler)
+        self._assert_command_exists(new_name, handler)
 
         # Verify that the new name is documented
         self.driver.main(['help'])
         self.assert_contains(new_name)
         self.assert_not_contains(old_name)
 
-    def test_hide_new_command_name(self):
+    def test_make_hidden_alias(self):
         old_name = 'ec2'
         new_name = 'nopossiblewaythisisalreadythere'
 
         def handler(command_table, **kwargs):
-            utils.alias_command(command_table, old_name, new_name, False)
+            utils.make_hidden_command_alias(command_table, old_name, new_name)
 
         self._assert_command_exists(old_name, handler)
         self._assert_command_exists(new_name, handler)

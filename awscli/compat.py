@@ -74,8 +74,8 @@ if six.PY3:
 
     binary_stdin = sys.stdin.buffer
 
-    def get_stdout_text_writer():
-        return sys.stdout
+    def _get_text_writer(stream, errors):
+        return stream
 
     def compat_open(filename, mode='r', encoding=None):
         """Back-port open() that accepts an encoding argument.
@@ -118,18 +118,30 @@ else:
 
     binary_stdin = sys.stdin
 
-    def get_stdout_text_writer():
+    def _get_text_writer(stream, errors):
         # In python3, all the sys.stdout/sys.stderr streams are in text
         # mode.  This means they expect unicode, and will encode the
         # unicode automatically before actually writing to stdout/stderr.
         # In python2, that's not the case.  In order to provide a consistent
         # interface, we can create a wrapper around sys.stdout that will take
         # unicode, and automatically encode it to the preferred encoding.
-        # That way consumers can just call get_stdout_text_writer() and write
-        # unicode to the returned stream.  Note that get_stdout_text_writer
-        # just returns sys.stdout in the PY3 section above because python3
+        # That way consumers can just call get_text_writer(stream) and write
+        # unicode to the returned stream.  Note that get_text_writer
+        # just returns the stream in the PY3 section above because python3
         # handles this.
-        return codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
+
+        # We're going to use the preferred encoding, but in cases that there is
+        # no preferred encoding we're going to fall back to assuming ASCII is
+        # what we should use. This will currently break the use of
+        # PYTHONIOENCODING, which would require checking stream.encoding first,
+        # however, the existing behavior is to only use
+        # locale.getpreferredencoding() and so in the hope of not breaking what
+        # is currently working, we will continue to only use that.
+        encoding = locale.getpreferredencoding()
+        if encoding is None:
+            encoding = "ascii"
+
+        return codecs.getwriter(encoding)(stream, errors)
 
     def compat_open(filename, mode='r', encoding=None):
         # See docstring for compat_open in the PY3 section above.
@@ -142,6 +154,14 @@ else:
             stdout = sys.stdout
 
         stdout.write(statement)
+
+
+def get_stdout_text_writer():
+    return _get_text_writer(sys.stdout, errors="strict")
+
+
+def get_stderr_text_writer():
+    return _get_text_writer(sys.stderr, errors="replace")
 
 
 def compat_input(prompt):

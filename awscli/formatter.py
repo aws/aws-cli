@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
+
 from botocore.compat import json
 
 from botocore.utils import set_value_from_jmespath

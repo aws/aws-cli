@@ -76,7 +76,7 @@ class DeployCommand(BasicCommand):
                 'A list of parameter structures that specify input parameters'
                 ' for your stack template. If you\'re updating a stack and you'
                 ' don\'t specify a parameter, the command uses the stack\'s'
-                ' exisiting value. For new stacks, you must specify'
+                ' existing value. For new stacks, you must specify'
                 ' parameters that don\'t have a default value.'
                 ' Syntax: ParameterKey1=ParameterValue1'
                 ' ParameterKey2=ParameterValue2 ...'

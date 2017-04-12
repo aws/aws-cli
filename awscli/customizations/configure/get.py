@@ -11,17 +11,21 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sys
+import logging
 
 from awscli.customizations.commands import BasicCommand
+from awscli.compat import six
 
 from . import PREDEFINED_SECTION_NAMES
+
+LOG = logging.getLogger(__name__)
 
 
 class ConfigureGetCommand(BasicCommand):
     NAME = 'get'
     DESCRIPTION = BasicCommand.FROM_FILE('configure', 'get',
                                          '_description.rst')
-    SYNOPSIS = ('aws configure get varname [--profile profile-name]')
+    SYNOPSIS = 'aws configure get varname [--profile profile-name]'
     EXAMPLES = BasicCommand.FROM_FILE('configure', 'get', '_examples.rst')
     ARG_TABLE = [
         {'name': 'varname',
@@ -30,13 +34,14 @@ class ConfigureGetCommand(BasicCommand):
          'cli_type_name': 'string', 'positional_arg': True},
     ]
 
-    def __init__(self, session, stream=sys.stdout):
+    def __init__(self, session, stream=sys.stdout, error_stream=sys.stderr):
         super(ConfigureGetCommand, self).__init__(session)
         self._stream = stream
+        self._error_stream = error_stream
 
     def _run_main(self, args, parsed_globals):
         varname = args.varname
-        value = None
+
         if '.' not in varname:
             # get_scoped_config() returns the config variables in the config
             # file (not the logical_var names), which is what we want.
@@ -44,17 +49,30 @@ class ConfigureGetCommand(BasicCommand):
             value = config.get(varname)
         else:
             value = self._get_dotted_config_value(varname)
-        if value is not None:
+
+        LOG.debug(u'Config value retrieved: %s' % value)
+
+        if isinstance(value, six.string_types):
             self._stream.write(value)
             self._stream.write('\n')
             return 0
+        elif isinstance(value, dict):
+            # TODO: add support for this. We would need to print it off in
+            # the same format as the config file.
+            self._error_stream.write(
+                'varname (%s) must reference a value, not a section or '
+                'sub-section.' % varname
+            )
+            return 1
         else:
             return 1
 
     def _get_dotted_config_value(self, varname):
         parts = varname.split('.')
         num_dots = varname.count('.')
-        # Logic to deal with predefined sections like [preview], [plugin] and etc.
+
+        # Logic to deal with predefined sections like [preview], [plugin] and
+        # etc.
         if num_dots == 1 and parts[0] in PREDEFINED_SECTION_NAMES:
             full_config = self._session.full_config
             section, config_name = varname.split('.')
@@ -64,18 +82,23 @@ class ConfigureGetCommand(BasicCommand):
                 value = full_config['profiles'].get(
                     section, {}).get(config_name)
             return value
+
         if parts[0] == 'profile':
             profile_name = parts[1]
             config_name = parts[2]
             remaining = parts[3:]
-        # Check if varname starts with 'default' profile (e.g. default.emr-dev.emr.instance_profile)
-        # If not, go further to check if varname starts with a known profile name
-        elif parts[0] == 'default' or (parts[0] in self._session.full_config['profiles']):
+        # Check if varname starts with 'default' profile (e.g.
+        # default.emr-dev.emr.instance_profile) If not, go further to check
+        # if varname starts with a known profile name
+        elif parts[0] == 'default' or (
+                parts[0] in self._session.full_config['profiles']):
             profile_name = parts[0]
             config_name = parts[1]
             remaining = parts[2:]
         else:
             profile_name = self._session.get_config_variable('profile')
+            if profile_name is None:
+                profile_name = 'default'
             config_name = parts[0]
             remaining = parts[1:]
 

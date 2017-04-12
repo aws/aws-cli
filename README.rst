@@ -186,27 +186,35 @@ In addition to credentials, a number of other variables can be
 configured either with environment variables, configuration file
 entries or both.  The following table documents these.
 
-==================== =========== ===================== ===================== ============================
-Variable             Option      Config Entry          Environment Variable  Description
-==================== =========== ===================== ===================== ============================
-profile              --profile   profile               AWS_DEFAULT_PROFILE   Default profile name
--------------------- ----------- --------------------- --------------------- ----------------------------
-region               --region    region                AWS_DEFAULT_REGION    Default AWS Region
--------------------- ----------- --------------------- --------------------- ----------------------------
-config_file                                            AWS_CONFIG_FILE       Alternate location of config
--------------------- ----------- --------------------- --------------------- ----------------------------
-output               --output    output                AWS_DEFAULT_OUTPUT    Default output style
--------------------- ----------- --------------------- --------------------- ----------------------------
-ca_bundle            --ca-bundle ca_bundle             AWS_CA_BUNDLE         CA Certificate Bundle
--------------------- ----------- --------------------- --------------------- ----------------------------
-access_key                       aws_access_key_id     AWS_ACCESS_KEY_ID     AWS Access Key
--------------------- ----------- --------------------- --------------------- ----------------------------
-secret_key                       aws_secret_access_key AWS_SECRET_ACCESS_KEY AWS Secret Key
--------------------- ----------- --------------------- --------------------- ----------------------------
-token                            aws_session_token     AWS_SESSION_TOKEN     AWS Token (temp credentials)
--------------------- ----------- --------------------- --------------------- ----------------------------
-cli_timestamp_format             cli_timestamp_format                        Ouput format of timestamps
-==================== =========== ===================== ===================== ============================
+============================= =========== ============================= ================================= ==================================
+Variable                      Option      Config Entry                  Environment Variable              Description
+============================= =========== ============================= ================================= ==================================
+profile                       --profile   profile                       AWS_DEFAULT_PROFILE               Default profile name
+----------------------------- ----------- ----------------------------- --------------------------------- ----------------------------------
+region                        --region    region                        AWS_DEFAULT_REGION                Default AWS Region
+----------------------------- ----------- ----------------------------- --------------------------------- ----------------------------------
+config_file                                                             AWS_CONFIG_FILE                   Alternate location of config
+----------------------------- ----------- ----------------------------- --------------------------------- ----------------------------------
+credentials_file                                                        AWS_SHARED_CREDENTIALS_FILE       Alternate location of credentials
+----------------------------- ----------- ----------------------------- --------------------------------- ----------------------------------
+output                        --output    output                        AWS_DEFAULT_OUTPUT                Default output style
+----------------------------- ----------- ----------------------------- --------------------------------- ----------------------------------
+ca_bundle                     --ca-bundle ca_bundle                     AWS_CA_BUNDLE                     CA Certificate Bundle
+----------------------------- ----------- ----------------------------- --------------------------------- ----------------------------------
+access_key                                aws_access_key_id             AWS_ACCESS_KEY_ID                 AWS Access Key
+----------------------------- ----------- ----------------------------- --------------------------------- ----------------------------------
+secret_key                                aws_secret_access_key         AWS_SECRET_ACCESS_KEY             AWS Secret Key
+----------------------------- ----------- ----------------------------- --------------------------------- ----------------------------------
+token                                     aws_session_token             AWS_SESSION_TOKEN                 AWS Token (temp credentials)
+----------------------------- ----------- ----------------------------- --------------------------------- ----------------------------------
+cli_timestamp_format                      cli_timestamp_format                                            Output format of timestamps
+----------------------------- ----------- ----------------------------- --------------------------------- ----------------------------------
+metadata_service_timeout                  metadata_service_timeout      AWS_METADATA_SERVICE_TIMEOUT      EC2 metadata timeout
+----------------------------- ----------- ----------------------------- --------------------------------- ----------------------------------
+metadata_service_num_attempts             metadata_service_num_attempts AWS_METADATA_SERVICE_NUM_ATTEMPTS EC2 metadata retry count
+----------------------------- ----------- ----------------------------- --------------------------------- ----------------------------------
+parameter_validation                      parameter_validation                                            Toggles local parameter validation
+============================= =========== ============================= ================================= ==================================
 
 ^^^^^^^^
 Examples

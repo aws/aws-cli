@@ -25,7 +25,7 @@ parameter ``--recursive`` while excluding some objects by using an ``--exclude``
 
 Output::
 
-    delete: myDir/test1.txt to s3://mybucket/test1.txt
+    delete: s3://mybucket/test1.txt
 
 The following ``rm`` command recursively deletes all objects under a specified bucket and prefix when passed with the
 parameter ``--recursive`` while excluding all objects under a particular prefix by using an ``--exclude`` parameter.  In
@@ -35,4 +35,4 @@ this example, the bucket ``mybucket`` has the objects ``test1.txt`` and ``anothe
 
 Output::
 
-    delete: myDir/test1.txt to s3://mybucket/test1.txt
+    delete: s3://mybucket/test1.txt

@@ -20,11 +20,16 @@ from . import FakeSession
 
 class TestConfigureGetCommand(unittest.TestCase):
 
+    def create_command(self, session):
+        stdout = six.StringIO()
+        stderr = six.StringIO()
+        command = ConfigureGetCommand(session, stdout, stderr)
+        return stdout, stderr, command
+
     def test_configure_get_command(self):
         session = FakeSession({})
         session.config['region'] = 'us-west-2'
-        stream = six.StringIO()
-        config_get = ConfigureGetCommand(session, stream)
+        stream, error_stream, config_get = self.create_command(session)
         config_get(args=['region'], parsed_globals=None)
         rendered = stream.getvalue()
         self.assertEqual(rendered.strip(), 'us-west-2')
@@ -32,8 +37,7 @@ class TestConfigureGetCommand(unittest.TestCase):
     def test_configure_get_command_no_exist(self):
         no_vars_defined = {}
         session = FakeSession(no_vars_defined)
-        stream = six.StringIO()
-        config_get = ConfigureGetCommand(session, stream)
+        stream, error_stream, config_get = self.create_command(session)
         rc = config_get(args=['region'], parsed_globals=None)
         rendered = stream.getvalue()
         # If a config value does not exist, we don't print any output.
@@ -44,8 +48,7 @@ class TestConfigureGetCommand(unittest.TestCase):
     def test_dotted_get(self):
         session = FakeSession({})
         session.full_config = {'preview': {'emr': 'true'}}
-        stream = six.StringIO()
-        config_get = ConfigureGetCommand(session, stream)
+        stream, error_stream, config_get = self.create_command(session)
         config_get(args=['preview.emr'], parsed_globals=None)
         rendered = stream.getvalue()
         self.assertEqual(rendered.strip(), 'true')
@@ -55,16 +58,16 @@ class TestConfigureGetCommand(unittest.TestCase):
         session.full_config = {'profiles': {'emr-dev': {
             'emr': {'instance_profile': 'my_ip'}}}}
         session.config = {'emr': {'instance_profile': 'my_ip'}}
-        stream = six.StringIO()
-        config_get = ConfigureGetCommand(session, stream)
+        stream, error_stream, config_get = self.create_command(session)
         config_get(args=['emr-dev.emr.instance_profile'], parsed_globals=None)
         rendered = stream.getvalue()
         self.assertEqual(rendered.strip(), 'my_ip')
 
     def test_get_from_profile(self):
         session = FakeSession({})
-        session.full_config = {'profiles': {'testing': {'aws_access_key_id': 'access_key'}}}
-        stream = six.StringIO()
+        session.full_config = {
+            'profiles': {'testing': {'aws_access_key_id': 'access_key'}}}
+        stream, error_stream, config_get = self.create_command(session)
         config_get = ConfigureGetCommand(session, stream)
         config_get(args=['profile.testing.aws_access_key_id'],
                    parsed_globals=None)
@@ -75,8 +78,7 @@ class TestConfigureGetCommand(unittest.TestCase):
         session = FakeSession({})
         session.full_config = {
             'profiles': {'testing': {'s3': {'signature_version': 's3v4'}}}}
-        stream = six.StringIO()
-        config_get = ConfigureGetCommand(session, stream)
+        stream, error_stream, config_get = self.create_command(session)
         config_get(args=['profile.testing.s3.signature_version'],
                    parsed_globals=None)
         rendered = stream.getvalue()
@@ -86,8 +88,7 @@ class TestConfigureGetCommand(unittest.TestCase):
         session = FakeSession({})
         session.full_config = {
             'profiles': {'default': {'s3': {'signature_version': 's3v4'}}}}
-        stream = six.StringIO()
-        config_get = ConfigureGetCommand(session, stream)
+        stream, error_stream, config_get = self.create_command(session)
         config_get(args=['default.s3.signature_version'],
                    parsed_globals=None)
         rendered = stream.getvalue()
@@ -96,9 +97,46 @@ class TestConfigureGetCommand(unittest.TestCase):
     def test_get_nested_attribute_from_default_does_not_exist(self):
         session = FakeSession({})
         session.full_config = {'profiles': {}}
-        stream = six.StringIO()
-        config_get = ConfigureGetCommand(session, stream)
+        stream, error_stream, config_get = self.create_command(session)
         config_get(args=['default.s3.signature_version'],
                    parsed_globals=None)
         rendered = stream.getvalue()
         self.assertEqual(rendered.strip(), '')
+
+    def test_get_nested_attribute_from_implicit_default(self):
+        session = FakeSession({})
+        session.full_config = {
+            'profiles': {'default': {'s3': {'signature_version': 's3v4'}}}}
+        stream, error_stream, config_get = self.create_command(session)
+        config_get(args=['s3.signature_version'],
+                   parsed_globals=None)
+        rendered = stream.getvalue()
+        self.assertEqual(rendered.strip(), 's3v4')
+
+    def test_get_section_returns_error(self):
+        session = FakeSession({})
+        session.full_config = {
+            'profiles': {'default': {'s3': {'signature_version': 's3v4'}}}}
+        session.config = {'s3': {'signature_version': 's3v4'}}
+        stream, error_stream, config_get = self.create_command(session)
+        rc = config_get(args=['s3'], parsed_globals=None)
+        self.assertEqual(rc, 1)
+
+        error_message = error_stream.getvalue()
+        expected_message = (
+            'varname (s3) must reference a value, not a section or '
+            'sub-section.')
+        self.assertEqual(error_message, expected_message)
+        self.assertEqual(stream.getvalue(), '')
+
+    def test_get_non_string_returns_error(self):
+        # This should never happen, but we handle this case so we should
+        # test it.
+        session = FakeSession({})
+        session.full_config = {
+            'profiles': {'default': {'foo': object()}}}
+        stream, error_stream, config_get = self.create_command(session)
+        rc = config_get(args=['foo'], parsed_globals=None)
+        self.assertEqual(rc, 1)
+        self.assertEqual(stream.getvalue(), '')
+        self.assertEqual(error_stream.getvalue(), '')

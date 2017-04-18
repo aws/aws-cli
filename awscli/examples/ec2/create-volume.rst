@@ -42,3 +42,11 @@ Output::
        "CreateTime": "YYYY-MM-DDTHH:MM:SS.000Z",
        "Size": 500
    }
+
+**To create a volume with tags**
+
+This example creates a volume and applies two tags: ``purpose`` = ``production``, and ``cost-center`` = ``cc123``.
+
+Command::
+
+  aws ec2 create-volume --availability-zone us-east-1a --volume-type gp2 --size 80 --tag-specifications 'ResourceType=volume,Tags=[{Key=purpose,Value=production},{Key=cost-center,Value=cc123}]'

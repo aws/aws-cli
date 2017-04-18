@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.77
+=======
+
+* api-change:``lambda``: Update lambda command to latest version
+* bugfix:configure: Properly use the default profile in ``configure get``
+
+
 1.11.76
 =======
 

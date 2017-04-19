@@ -71,12 +71,13 @@ class TestPackageCommand(unittest.TestCase):
         # Create a temporary file and make this my template
         with tempfile.NamedTemporaryFile() as handle:
             filename = handle.name
+            use_yaml = self.parsed_args.use_yaml
             self.parsed_args.template_file = filename
 
             rc = self.package_command._run_main(self.parsed_args, self.parsed_globals)
             self.assertEquals(rc, 0)
 
-            self.package_command._export.assert_called_once_with(filename)
+            self.package_command._export.assert_called_once_with(filename, use_yaml)
             self.package_command.write_output.assert_called_once_with(
                     self.parsed_args.output_template_file, mock.ANY)
 

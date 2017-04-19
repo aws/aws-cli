@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.11.78
+=======
+
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``polly``: Update polly command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``iam``: Update iam command to latest version
+* api-change:``codestar``: Update codestar command to latest version
+
+
 1.11.77
 =======
 

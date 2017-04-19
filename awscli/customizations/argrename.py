@@ -58,7 +58,12 @@ ARGUMENT_RENAMES = {
     'mturk.list-qualification-types.query': 'types-query',
     'workdocs.create-notification-subscription.endpoint':
         'notification-endpoint',
-    'workdocs.describe-users.query': 'user-query'
+    'workdocs.describe-users.query': 'user-query',
+    'lex-models.delete-bot.version': 'bot-version',
+    'lex-models.delete-intent.version': 'intent-version',
+    'lex-models.delete-slot-type.version': 'slot-type-version',
+    'lex-models.get-intent.version': 'intent-version',
+    'lex-models.get-slot-type.version': 'slot-type-version',
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,

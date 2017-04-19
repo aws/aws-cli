@@ -53,12 +53,18 @@ def intrinsics_multi_constructor(loader, tag_prefix, node):
     return {cfntag: value}
 
 
+def str_representer(dumper, node):
+    return ScalarNode(tag='tag:yaml.org,2002:str', value=node, style='\'')
+    
+
 def yaml_dump(dict_to_dump):
     """
     Dumps the dictionary as a YAML document
     :param dict_to_dump:
     :return:
     """
+    yaml.SafeDumper.add_representer(str, str_representer)
+
     return yaml.safe_dump(dict_to_dump, default_flow_style=False)
 
 

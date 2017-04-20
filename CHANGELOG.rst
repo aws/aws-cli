@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.11.79
+=======
+
+* api-change:``directconnect``: Update directconnect command to latest version
+* api-change:``kms``: Update kms command to latest version
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``devicefarm``: Update devicefarm command to latest version
+* api-change:``route53domains``: Update route53domains command to latest version
+
+
 1.11.78
 =======
 

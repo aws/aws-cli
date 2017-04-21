@@ -113,13 +113,14 @@ class MainArgParser(CLIArgParser):
     Formatter = argparse.RawTextHelpFormatter
 
     def __init__(self, command_table, version_string,
-                 description, argument_table):
+                 description, argument_table, prog=None):
         super(MainArgParser, self).__init__(
             formatter_class=self.Formatter,
             add_help=False,
             conflict_handler='resolve',
             description=description,
-            usage=USAGE)
+            usage=USAGE,
+            prog=prog)
         self._build(command_table, version_string, argument_table)
 
     def _create_choice_help(self, choices):

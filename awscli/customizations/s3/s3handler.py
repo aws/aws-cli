@@ -313,6 +313,19 @@ class BaseTransferRequestSubmitter(object):
                 return True
         return False
 
+    def _warn_parent_reference(self, fileinfo):
+        # normpath() will use the OS path separator so we
+        # need to take that into account when checking for a parent prefix.
+        parent_prefix = '..' + os.path.sep
+        escapes_cwd = os.path.normpath(fileinfo.compare_key).startswith(
+            parent_prefix)
+        if escapes_cwd:
+            warning = create_warning(
+                fileinfo.compare_key, "File references a parent directory.")
+            self._result_queue.put(warning)
+            return True
+        return False
+
     def _format_src_dest(self, fileinfo):
         """Returns formatted versions of a fileinfos source and destination."""
         raise NotImplementedError('_format_src_dest')
@@ -398,7 +411,7 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
         return fileinfo.dest
 
     def _get_warning_handlers(self):
-        return [self._warn_glacier]
+        return [self._warn_glacier, self._warn_parent_reference]
 
     def _format_src_dest(self, fileinfo):
         src = self._format_s3_path(fileinfo.src)

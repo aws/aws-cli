@@ -172,7 +172,8 @@ class CLIDriver(object):
         parser = MainArgParser(
             command_table, self.session.user_agent(),
             cli_data.get('description', None),
-            self._get_argument_table())
+            self._get_argument_table(),
+            prog="aws")
         return parser
 
     def main(self, args=None):

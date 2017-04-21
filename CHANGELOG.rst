@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.80
+=======
+
+* api-change:``kinesis``: Update kinesis command to latest version
+* api-change:``appstream``: Update appstream command to latest version
+
+
 1.11.79
 =======
 

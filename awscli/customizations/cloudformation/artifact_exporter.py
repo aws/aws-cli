@@ -60,28 +60,47 @@ def parse_s3_url(url,
                  object_key_property="Key",
                  version_property=None):
 
-    if isinstance(url, six.string_types) \
-            and url.startswith("s3://"):
+    if isinstance(url, six.string_types):
+        if url.startswith("s3://"):
+            # Python < 2.7.10 don't parse query parameters from URI with custom
+            # scheme such as s3://blah/blah. As a workaround, remove scheme
+            # altogether to trigger the parser "s3://foo/bar?v=1" =>"//foo/bar?v=1"
+            parsed = urlparse.urlparse(url[3:])
+            query = urlparse.parse_qs(parsed.query)
 
-        # Python < 2.7.10 don't parse query parameters from URI with custom
-        # scheme such as s3://blah/blah. As a workaround, remove scheme
-        # altogether to trigger the parser "s3://foo/bar?v=1" =>"//foo/bar?v=1"
-        parsed = urlparse.urlparse(url[3:])
-        query = urlparse.parse_qs(parsed.query)
+            if parsed.netloc and parsed.path:
+                result = dict()
+                result[bucket_name_property] = parsed.netloc
+                result[object_key_property] = parsed.path.lstrip('/')
 
-        if parsed.netloc and parsed.path:
-            result = dict()
-            result[bucket_name_property] = parsed.netloc
-            result[object_key_property] = parsed.path.lstrip('/')
+                # If there is a query string that has a single versionId field,
+                # set the object version and return
+                if version_property is not None \
+                        and 'versionId' in query \
+                        and len(query['versionId']) == 1:
+                    result[version_property] = query['versionId'][0]
 
-            # If there is a query string that has a single versionId field,
-            # set the object version and return
-            if version_property is not None \
-                    and 'versionId' in query \
-                    and len(query['versionId']) == 1:
-                result[version_property] = query['versionId'][0]
+                return result
 
-            return result
+        elif url.startswith("https://s3.amazonaws.com/"):
+            parsed = urlparse.urlparse(url)
+            query = urlparse.parse_qs(parsed.query)
+
+            folders = parsed.path.lstrip('/').split('/')
+
+            if len(folders) >= 2:
+                result = dict()
+                result[bucket_name_property] = folders[0]
+                result[object_key_property] = '/'.join(folders[1:])
+
+                # If there is a query string that has a single versionId field,
+                # set the object version and return
+                if version_property is not None \
+                        and 'versionId' in query \
+                        and len(query['versionId']) == 1:
+                    result[version_property] = query['versionId'][0]
+
+                return result
 
     raise ValueError("URL given to the parse method is not a valid S3 url "
                      "{0}".format(url))

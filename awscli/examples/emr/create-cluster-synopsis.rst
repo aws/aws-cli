@@ -19,3 +19,6 @@
      [--steps <value>]
      [--restore-from-hbase-backup <value>]
      [--security-configuration <value>]
+     [--custom-ami-id <value>]
+     [--ebs-root-volume-size <value>]
+     [--repo-upgrade-on-boot <value>]

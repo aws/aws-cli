@@ -65,4 +65,5 @@ class TestGenerateDBAuthToken(BaseAWSCommandParamsTest):
             '36c6c9a0c5e0e362'
         )
 
-        self.assert_url_equal(stdout.strip('\n'), expected)
+        self.assert_url_equal(
+            'https://' + stdout.strip('\n'), 'https://' + expected)

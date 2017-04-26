@@ -89,8 +89,17 @@ class TestDeployer(unittest.TestCase):
     def test_create_changeset_success(self):
         stack_name = "stack_name"
         template = "template"
-        parameters = [{"ParameterKey": "Key1", "ParameterValue": "Value",
-                       "UsePreviousValue": True}]
+        parameters = [
+            {"ParameterKey": "Key1", "ParameterValue": "Value"},
+            {"ParameterKey": "Key2", "UsePreviousValue": True},
+            {"ParameterKey": "Key3", "UsePreviousValue": False},
+        ]
+        # Parameters that Use Previous Value will be removed on stack creation
+        # to either force CloudFormation to use the Default value, or ask user to specify a parameter
+        filtered_parameters = [
+            {"ParameterKey": "Key1", "ParameterValue": "Value"},
+            {"ParameterKey": "Key3", "UsePreviousValue": False},
+        ]
         capabilities = ["capabilities"]
 
         # Case 1: Stack DOES NOT exist
@@ -102,7 +111,7 @@ class TestDeployer(unittest.TestCase):
             "StackName": stack_name,
             "TemplateBody": template,
             "ChangeSetType": "CREATE",
-            "Parameters": parameters,
+            "Parameters": filtered_parameters,
             "Capabilities": capabilities,
             "Description": botocore.stub.ANY
         }
@@ -122,6 +131,7 @@ class TestDeployer(unittest.TestCase):
         # Case 2: Stack exists. We are updating it
         self.deployer.has_stack.return_value = True
         expected_params["ChangeSetType"] = "UPDATE"
+        expected_params["Parameters"] = parameters
         self.stub_client.add_response("create_change_set", response,
                                       expected_params)
         with self.stub_client:

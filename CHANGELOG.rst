@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.81
+=======
+
+* api-change:``rds``: Update rds command to latest version
+* enhancement:rds: Add command to generate IAM database auth tokens.
+
+
 1.11.80
 =======
 

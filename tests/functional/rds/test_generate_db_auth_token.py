@@ -59,10 +59,10 @@ class TestGenerateDBAuthToken(BaseAWSCommandParamsTest):
         expected = (
             'host.us-east-1.amazonaws.com:3306/?DBUser=mySQLUser&'
             'Action=connect&X-Amz-Credential=access_key%2F20161107%2Fus-east-1'
-            '%2Frds%2Faws4_request&X-Amz-Expires=900&X-Amz-Date=20161107T173'
+            '%2Frds-db%2Faws4_request&X-Amz-Expires=900&X-Amz-Date=20161107T173'
             '933Z&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-SignedHeaders=host&'
-            'X-Amz-Signature=ac83ced89e97082c6de930250bb9923fad0154347ce2464'
-            'b0225ec84537a2024'
+            'X-Amz-Signature=87ab58107ef49f1c311a412f98b7f976b0b5152ffb559f0d'
+            '36c6c9a0c5e0e362'
         )
 
         self.assert_url_equal(stdout.strip('\n'), expected)

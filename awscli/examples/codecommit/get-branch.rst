@@ -1,6 +1,6 @@
 **To get information about a branch**
 
-This example gets information about a branch in an AWS CoceCommit repository.
+This example gets information about a branch in an AWS CodeCommit repository.
 
 Command::
 

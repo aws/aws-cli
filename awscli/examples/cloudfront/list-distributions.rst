@@ -10,6 +10,7 @@ Output::
           "Items": [
               {
                   "Status": "Deployed",
+                  "ARN": "arn:aws:cloudfront::123456789012:distribution/EDFDVBD632BHDS5",
                   "CacheBehaviors": {
                       "Quantity": 0
                   },

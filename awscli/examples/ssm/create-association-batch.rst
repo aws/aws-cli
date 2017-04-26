@@ -1,35 +1,65 @@
 **To create multiple associations**
 
-This example associates the configuration document ``My_Config_1`` with instance ``i-aabb2233``, and associates the configuration document ``My_Config_2`` with instance ``i-cdcd2233``. The output returns a list of successful and unsuccessful operations, if applicable.
+This example associates a configuration document with multiple instances. The output returns a list of successful and failed operations, if applicable.
 
 Command::
 
-  aws ssm create-association-batch --entries Name=My_Config_1,InstanceId=i-aabb2233 Name=My_Config_2,InstanceId=1-cdcd2233
+  aws ssm create-association-batch --entries "Name=AWS-UpdateSSMAgent,InstanceId=i-0cb2b964d3e14fd9f" "Name=AWS-UpdateSSMAgent,InstanceId=i-0000293ffd8c57862"
 
 Output::
 
-
- {
+  {
     "Successful": [
         {
-            "InstanceId": "i-aabb2233", 
-            "Date": 1424421071.939, 
-            "Name": My_Config_1", 
             "Status": {
-                "Date": 1424421071.939, 
-                "Message": "Associated with My_Config_1", 
+                "Date": 1487876122.564,
+                "Message": "Associated with AWS-UpdateSSMAgent",
                 "Name": "Associated"
-            }
-        }
-    ], 
-    "Failed": [
+            },
+            "Name": "AWS-UpdateSSMAgent",
+            "InstanceId": "i-0000293ffd8c57862",
+            "Overview": {
+                "Status": "Pending",
+                "DetailedStatus": "Creating"
+            },
+            "AssociationId": "d8617c07-2079-4c18-9847-1655fc2698b0",
+            "DocumentVersion": "$DEFAULT",
+            "LastUpdateAssociationDate": 1487876122.564,
+            "Date": 1487876122.564,
+            "Targets": [
+                {
+                    "Values": [
+                        "i-0000293ffd8c57862"
+                    ],
+                    "Key": "InstanceIds"
+                }
+            ]
+        },
         {
-            "Entry": {
-                "InstanceId": "i-cdcd2233", 
-                "Name": "My_Config_2"
-            }, 
-            "Message": "Association Already Exists", 
-            "Fault": "Client"
+            "Status": {
+                "Date": 1487876122.595,
+                "Message": "Associated with AWS-UpdateSSMAgent",
+                "Name": "Associated"
+            },
+            "Name": "AWS-UpdateSSMAgent",
+            "InstanceId": "i-0cb2b964d3e14fd9f",
+            "Overview": {
+                "Status": "Pending",
+                "DetailedStatus": "Creating"
+            },
+            "AssociationId": "2ccfbc46-5fe4-4e5c-ba46-70b56cc93f53",
+            "DocumentVersion": "$DEFAULT",
+            "LastUpdateAssociationDate": 1487876122.595,
+            "Date": 1487876122.595,
+            "Targets": [
+                {
+                    "Values": [
+                        "i-0cb2b964d3e14fd9f"
+                    ],
+                    "Key": "InstanceIds"
+                }
+            ]
         }
-    ]
- }
+    ],
+    "Failed": []
+  }

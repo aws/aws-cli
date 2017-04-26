@@ -1,29 +1,16 @@
-**To get the contents of a configuration document**
+**To get the contents of a document**
 
-This example gets the contents of the document called ``My_Config_Document``.
+This example returns the content of a document.
 
 Command::
 
-  aws ssm get-document --name "My_Config_Document"
-
+  aws ssm get-document --name "RunShellScript"
 
 Output::
 
- {
-     "Content": "{\n
-   \"schemaVersion\": \"1.0\",\n
-   \"description\": \"Sample configuration to join an instance to a domain\",\n
-   \"runtimeConfig\": {\n
-     \"aws:domainJoin\": {\n
-        \"properties\": [\n
-          {\n
-            \"directoryId\": \"d-1234567890\",\n
-            \"directoryName\": \"test.example.com\",\n
-            \"dnsIpAddresses\": [\"198.51.100.1\",\"198.51.100.2\"]\n
-          }\n
-        ]\n
-     }\n
-   }\n
- }", 
-     "Name": "My_Config_Document"
- }
+  {
+    "Content": "{\n   \"schemaVersion\":\"2.0\",\n   \"description\":\"Run a script\",\n   \"parameters\":{\n      \"commands\":{\n         \"type\":\"StringList\",\n         \"description\":\"(Required) Specify a shell script or a command to run.\",\n         \"minItems\":1,\n         \"displayType\":\"textarea\"\n      }\n   },\n   \"mainSteps\":[\n      {\n         \"action\":\"aws:runShellScript\",\n         \"name\":\"runShellScript\",\n         \"inputs\":{\n            \"commands\":\"{{ commands }}\"\n         }\n      },\n      {\n         \"action\":\"aws:runPowerShellScript\",\n         \"name\":\"runPowerShellScript\",\n         \"inputs\":{\n            \"commands\":\"{{ commands }}\"\n         }\n      }\n   ]\n}\n",
+    "Name": "RunShellScript.json",
+    "DocumentVersion": "1",
+    "DocumentType": "Command"
+  }

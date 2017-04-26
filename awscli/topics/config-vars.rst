@@ -60,17 +60,21 @@ General Options
 
 The AWS CLI has a few general options:
 
-==================== ========= ===================== ===================== ============================
-Variable             Option    Config Entry          Environment Variable  Description
-==================== ========= ===================== ===================== ============================
-profile              --profile N/A                   AWS_DEFAULT_PROFILE   Default profile name
--------------------- --------- --------------------- --------------------- ----------------------------
-region               --region  region                AWS_DEFAULT_REGION    Default AWS Region
--------------------- --------- --------------------- --------------------- ----------------------------
-output               --output  output                AWS_DEFAULT_OUTPUT    Default output style
--------------------- --------- --------------------- --------------------- ----------------------------
-cli_timestamp_format N/A       cli_timestamp_format  N/A                   Output format of timestamps
-==================== ========= ===================== ===================== ============================
+==================== =========== ===================== ===================== ============================
+Variable             Option      Config Entry          Environment Variable  Description
+==================== =========== ===================== ===================== ============================
+profile              --profile   N/A                   AWS_DEFAULT_PROFILE   Default profile name
+-------------------- ----------- --------------------- --------------------- ----------------------------
+region               --region    region                AWS_DEFAULT_REGION    Default AWS Region
+-------------------- ----------- --------------------- --------------------- ----------------------------
+output               --output    output                AWS_DEFAULT_OUTPUT    Default output style
+-------------------- ----------- --------------------- --------------------- ----------------------------
+cli_timestamp_format N/A         cli_timestamp_format  N/A                   Output format of timestamps
+-------------------- ----------- --------------------- --------------------- ----------------------------
+ca_bundle            --ca-bundle ca_bundle             AWS_CA_BUNDLE         CA Certificate Bundle
+-------------------- ----------- --------------------- --------------------- ----------------------------
+parameter_validation             parameter_validation                        Toggles parameter validation
+==================== =========== ===================== ===================== ============================
 
 The third column, Config Entry, is the value you would specify in the AWS CLI
 config file.  By default, this location is ``~/.aws/config``.  If you need to
@@ -88,6 +92,11 @@ The valid values of the ``cli_timestamp_format`` configuration varaible are:
 
 * none - Display the timestamp exactly as received from the HTTP response.
 * iso8601 - Reformat timestamp using iso8601 and your local timezone.
+
+``parameter_validation`` controls whether parameter validation should occur
+when serializing requests. The default is True. You can disable parameter
+validation for performance reasons. Otherwise, it's recommended to leave
+parameter validation enabled.
 
 When you specify a profile, either using ``--profile profile-name`` or by
 setting a value for the ``AWS_DEFAULT_PROFILE`` environment variable, profile
@@ -115,15 +124,19 @@ Credentials can be specified in several ways:
 * The AWS Shared Credential File
 * The AWS CLI config file
 
-=========== ===================== ===================== ============================
-Variable    Creds/Config Entry    Environment Variable  Description
-=========== ===================== ===================== ============================
-access_key  aws_access_key_id     AWS_ACCESS_KEY_ID     AWS Access Key
------------ --------------------- --------------------- ----------------------------
-secret_key  aws_secret_access_key AWS_SECRET_ACCESS_KEY AWS Secret Key
------------ --------------------- --------------------- ----------------------------
-token       aws_session_token     AWS_SESSION_TOKEN     AWS Token (temp credentials)
-=========== ===================== ===================== ============================
+============================= ============================= ================================= ==============================
+Variable                      Creds/Config Entry            Environment Variable              Description
+============================= ============================= ================================= ==============================
+access_key                    aws_access_key_id             AWS_ACCESS_KEY_ID                 AWS Access Key
+----------------------------- ----------------------------- --------------------------------- ------------------------------
+secret_key                    aws_secret_access_key         AWS_SECRET_ACCESS_KEY             AWS Secret Key
+----------------------------- ----------------------------- --------------------------------- ------------------------------
+token                         aws_session_token             AWS_SESSION_TOKEN                 AWS Token (temp credentials)
+----------------------------- ----------------------------- --------------------------------- ------------------------------
+metadata_service_timeout      metadata_service_timeout      AWS_METADATA_SERVICE_TIMEOUT      EC2 metadata creds timeout
+----------------------------- ----------------------------- --------------------------------- ------------------------------
+metadata_service_num_attempts metadata_service_num_attempts AWS_METADATA_SERVICE_NUM_ATTEMPTS EC2 metadata creds retry count
+============================= ============================= ================================= ==============================
 
 The second column specifies the name that you can specify in either the AWS CLI
 config file or the AWS Shared credentials file (``~/.aws/credentials``).
@@ -263,43 +276,5 @@ will be representative of Amazon CloudFront's ``2015-09-17`` API version.
 Amazon S3
 ---------
 
-These values are only applicable for the ``aws s3`` and ``aws s3api`` commands.
-These configuration values are sub values that must be specified under the
-top level ``s3`` key.
-
-These are the configuration values that will only be used for ``aws s3``:
-
-* ``max_concurrent_requests`` - The maximum number of concurrent requests.
-* ``max_queue_size`` - The maximum number of tasks in the task queue.
-* ``multipart_threshold`` - The size threshold where the CLI uses multipart
-  transfers.
-* ``multipart_chunksize`` - When using multipart transfers, this is the chunk
-  size that will be used.
-
-
-These are the configuration values that can be used for both ``aws s3``
-and ``aws s3api``:
-
-* ``use_accelerate_endpoint`` - Use the Amazon S3 Accelerate endpoint for
-  all ``s3`` and ``s3api`` commands. You **must** first enable S3 Accelerate
-  on your bucket before attempting to use the endpoint.
-* ``addressing_style`` - Specifies which addressing style to use. This controls
-  if the bucket name is in the hostname or part of the URL. Value values are:
-  ``path``, ``virtual``, and ``auto``.  The default value is ``auto``.
-
-Here is an example config for all of these configuration options::
-
-    [profile development]
-    aws_access_key_id=foo
-    aws_secret_access_key=bar
-    s3 =
-      max_concurrent_requests = 20
-      max_queue_size = 10000
-      multipart_threshold = 64MB
-      multipart_chunksize = 16MB
-      use_accelerate_endpoint = true
-      addressing_style = path
-
-
-For a more in depth discussion of these S3 configuration values, see ``aws help
-s3-config``.
+There are a number of configuration variables specific to the S3 commands. See
+:doc:`s3-config` (``aws help topics s3-config``) for more details.

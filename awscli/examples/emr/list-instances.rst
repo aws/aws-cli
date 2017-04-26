@@ -4,7 +4,8 @@ The following command lists all of the instances in a cluster with the cluster I
 
 Output::
 
-  {
+  For a uniform instance group based cluster
+    {
       "Instances": [
            {
               "Status": {
@@ -55,4 +56,34 @@ Output::
               "PrivateIpAddress": "172.21.11.214"
           }
       ]
-  }
+    }
+
+
+  For a fleet based cluster:
+     {
+        "Instances": [
+            {
+                "Status": {
+                    "Timeline": {
+                        "ReadyDateTime": 1487810810.878,
+                        "CreationDateTime": 1487810588.367,
+                        "EndDateTime": 1488022990.924
+                    },
+                    "State": "TERMINATED",
+                    "StateChangeReason": {
+                        "Message": "Instance was terminated."
+                    }
+                },
+                "Ec2InstanceId": "i-xxxxx",
+                "InstanceFleetId": "if-xxxxx",
+                "EbsVolumes": [],
+                "PublicDnsName": "ec2-xx-xxx-xxx-xxx.compute-1.amazonaws.com",
+                "InstanceType": "m3.xlarge",
+                "PrivateDnsName": "ip-xx-xx-xxx-xx.ec2.internal",
+                "Market": "SPOT",
+                "PublicIpAddress": "xx.xx.xxx.xxx",
+                "Id": "ci-xxxxx",
+                "PrivateIpAddress": "10.47.191.80"
+            }
+        ]
+    }

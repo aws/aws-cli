@@ -40,7 +40,7 @@ class TestCliInputJSONArgument(unittest.TestCase):
 
     def test_register_argument_action(self):
         register_args = self.session.register.call_args_list
-        self.assertEqual(register_args[0][0][0], 'calling-command')
+        self.assertEqual(register_args[0][0][0], 'calling-command.*')
         self.assertEqual(register_args[0][0][1],
                          self.argument.add_to_call_parameters)
 

@@ -63,3 +63,24 @@ class TestYaml(unittest.TestCase):
         formatted_str = yaml_dump(output)
         output_again = yaml_parse(formatted_str)
         self.assertEquals(output, output_again)
+
+    def test_yaml_getatt(self):
+        # This is an invalid syntax for !GetAtt. But make sure the code does not crash when we encouter this syntax
+        # Let CloudFormation interpret this value at runtime
+        input = """
+        Resource:
+            Key: !GetAtt ["a", "b"]
+        """
+
+        output = {
+            "Resource": {
+               "Key": {
+                "Fn::GetAtt": ["a", "b"]
+               }
+
+            }
+        }
+
+        actual_output = yaml_parse(input)
+        self.assertEquals(actual_output, output)
+

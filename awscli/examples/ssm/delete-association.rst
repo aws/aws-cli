@@ -1,8 +1,7 @@
 **To delete an association**
 
-This example deletes the association between instance ``i-bbcc3344`` and the configuration document ``Test_config``. If the command succeeds, no output is returned.
+This example deletes the association between an instance and a document. There is no output if the command succeeds.
 
 Command::
 
-  aws ssm delete-association --instance-id i-bbcc3344 --name Test_config
-
+  aws ssm delete-association --instance-id "i-0cb2b964d3e14fd9f" --name "AWS-UpdateSSMAgent"

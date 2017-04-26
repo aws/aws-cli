@@ -43,23 +43,43 @@ class TestCommandTableRenames(BaseAWSHelpOutputTest):
 class TestCommandTableAlias(BaseAWSHelpOutputTest):
 
     def test_alias_command_table(self):
-        handler = lambda command_table, **kwargs: utils.alias_command(
-            command_table, 'ec2', 'foo')
+        old_name = 'ec2'
+        new_name = 'nopossiblewaythisisalreadythere'
+
+        def handler(command_table, **kwargs):
+            utils.alias_command(command_table, old_name, new_name)
+
+        self._assert_command_exists(old_name, handler)
+        self._assert_command_exists(new_name, handler)
+
+        # Verify that the new name is documented
+        self.driver.main(['help'])
+        self.assert_contains(new_name)
+        self.assert_not_contains(old_name)
+
+    def test_make_hidden_alias(self):
+        old_name = 'ec2'
+        new_name = 'nopossiblewaythisisalreadythere'
+
+        def handler(command_table, **kwargs):
+            utils.make_hidden_command_alias(command_table, old_name, new_name)
+
+        self._assert_command_exists(old_name, handler)
+        self._assert_command_exists(new_name, handler)
+
+        # Verify that the new isn't documented
+        self.driver.main(['help'])
+        self.assert_not_contains(new_name)
+        self.assert_contains(old_name)
+
+    def _assert_command_exists(self, command_name, handler):
         # Verify that we can alias a top level command.
         self.session.register('building-command-table.main', handler)
-        self.driver.main(['foo', 'help'])
-        self.assert_contains('foo')
+        self.driver.main([command_name, 'help'])
+        self.assert_contains(command_name)
 
         # We can also see subcommands help as well.
-        self.driver.main(['foo', 'run-instances', 'help'])
-        self.assert_contains('run-instances')
-
-        # Verify that the old is still available
-        self.session.register('building-command-table.main', handler)
-        self.driver.main(['ec2', 'help'])
-        self.assert_contains('ec2')
-
-        self.driver.main(['ec2', 'run-instances', 'help'])
+        self.driver.main([command_name, 'run-instances', 'help'])
         self.assert_contains('run-instances')
 
 

@@ -52,6 +52,8 @@ PARAMFILE_DISABLED = set([
 
     'machinelearning.predict.predict-endpoint',
 
+    'rds.copy-db-cluster-snapshot.pre-signed-url',
+    'rds.create-db-cluster.pre-signed-url',
     'rds.copy-db-snapshot.pre-signed-url',
     'rds.create-db-instance-read-replica.pre-signed-url',
 

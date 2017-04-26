@@ -241,6 +241,139 @@ INSTANCE_GROUPS_SCHEMA = {
     }
 }
 
+INSTANCE_FLEETS_SCHEMA = {
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "Name": {
+                "type": "string",
+                "description": "Friendly name given to the instance fleet."
+            },
+            "InstanceFleetType": {
+                "type": "string",
+                "description": "The type of the instance fleet in the cluster.",
+                "enum": ["MASTER", "CORE", "TASK"],
+                "required": True
+            },
+            "TargetOnDemandCapacity": {
+                "type": "integer",
+                "description": "Target on-demand capacity for the instance fleet."
+            },
+            "TargetSpotCapacity": {
+                "type": "integer",
+                "description": "Target spot capacity for the instance fleet."
+            },
+            "InstanceTypeConfigs": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "InstanceType": {
+                            "type": "string",
+                            "description": "The Amazon EC2 instance type for the instance fleet.",
+                            "required": True
+                        },
+                        "WeightedCapacity": {
+                            "type": "integer",
+                            "description": "The weight assigned to an instance type, which will impact the overall fulfillment of the capacity."
+                        },
+                        "BidPrice": {
+                            "type": "string",
+                            "description": "Bid price for each Amazon EC2 instance in the "
+                                "instance fleet when launching nodes as Spot Instances, "
+                                "expressed in USD."
+                        },
+                        "BidPriceAsPercentageOfOnDemandPrice": {
+                            "type": "double",
+                            "description": "Bid price as percentage of on-demand price."
+                        },
+                        "EbsConfiguration": {
+                            "type": "object",
+                            "description": "EBS configuration that is associated with the instance group.",
+                            "properties": {
+                                "EbsOptimized": {
+                                    "type": "boolean",
+                                    "description": "Boolean flag used to tag EBS-optimized instances.",
+                                },
+                                "EbsBlockDeviceConfigs": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "VolumeSpecification" : {
+                                                "type": "object",
+                                                "description": "The EBS volume specification that is created "
+                                                    "and attached to each instance in the instance group.",
+                                                "properties": {
+                                                    "VolumeType": {
+                                                        "type": "string",
+                                                        "description": "The EBS volume type that is attached to all "
+                                                            "the instances in the instance group. Valid types are: "
+                                                            "gp2, io1, and standard.",
+                                                            "required": True
+                                                    },
+                                                    "SizeInGB": {
+                                                        "type": "integer",
+                                                        "description": "The EBS volume size, in GB, that is attached "
+                                                            "to all the instances in the instance group.",
+                                                        "required": True
+                                                    },
+                                                    "Iops": {
+                                                        "type": "integer",
+                                                        "description": "The IOPS of the EBS volume that is attached to "
+                                                            "all the instances in the instance group.",
+                                                    }
+                                                }
+                                            },
+                                            "VolumesPerInstance": {
+                                                "type": "integer",
+                                                "description": "The number of EBS volumes that will be created and "
+                                                    "attached to each instance in the instance group.",
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+
+                        "Configurations": {
+                            "type": "string",
+                            "description":
+                                "Additional configiration data."
+                        }
+                    }
+                }
+            },
+            "LaunchSpecifications": {
+                "type": "object",
+                "properties" : {
+                    "SpotSpecification": {
+                        "type": "object",
+                        "properties": {
+                            "TimeoutDurationMinutes": {
+                                "type": "integer",
+                                "description": "The time, in minutes, after which the action specified in TimeoutAction field will be performed if requested resources are unavailable."
+                            },
+                            "TimeoutAction": {
+                                "type": "string",
+                                "description": "The action that is performed after TimeoutDurationMinutes.",
+                                "enum": [
+                                    "TERMINATE_CLUSTER",
+                                    "SWITCH_TO_ONDEMAND"
+                                ]
+                            },
+                            "BlockDurationMinutes": {
+                                "type": "integer",
+                                "description": "Block duration in minutes."
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 EC2_ATTRIBUTES_SCHEMA = {
     "type": "object",
@@ -261,9 +394,24 @@ EC2_ATTRIBUTES_SCHEMA = {
                 "the cluster is launched in the normal Amazon Web Services "
                 "cloud, outside of an Amazon VPC. "
         },
+        "SubnetIds": {
+            "type": "array",
+            "description":
+                "List of SubnetIds.",
+            "items": {
+                "type": "string"
+            }
+        },
         "AvailabilityZone": {
             "type": "string",
             "description": "The Availability Zone the cluster will run in."
+        },
+        "AvailabilityZones": {
+            "type": "array",
+            "description": "List of AvailabilityZones.",
+            "items": {
+                "type": "string"
+            }
         },
         "InstanceProfile": {
             "type": "string",

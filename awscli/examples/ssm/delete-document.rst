@@ -1,6 +1,6 @@
-**To delete a configuration document**
+**To delete a document**
 
-This example deletes the configuration document called ``Config_2``. If the command succeeds, no output is returned.
+This example deletes a document. There is no output if the command succeeds.
 
 Command::
 

@@ -1,23 +1,40 @@
-**To describe an association**
+**To get details of an association**
 
-This example describes the association between instance ``i-1a2b3c4d`` and ``My_Config_File``.
+This example describes the association between an instance and a document.
 
 Command::
 
-  aws ssm describe-association --instance-id i-1a2b3c4d --name "My_Config_File"
+  aws ssm describe-association --instance-id "i-0000293ffd8c57862" --name "AWS-UpdateSSMAgent"
 
 Output::
 
- {
+  {
     "AssociationDescription": {
-        "InstanceId": "i-1a2b3c4d", 
-        "Date": 1424419009.036, 
-        "Name": "My_Config_File", 
         "Status": {
-            "Date": 1424419196.804, 
-            "AdditionalInfo": "{agent=EC2Config,ver=3.0.54,osver=6.3.9600,os=Windows Server 2012 R2 Standard,lang=en-US}", 
-            "Message": "RunId=0198dadc-aaaa-4150-875f-exampleba3d, status:InProgress, code:0, message:RuntimeStatusCounts=[PassedAndReboot=1], RuntimeStatus=[aws:domainJoin={PassedAndReboot,Domain join Succeeded to domain: test.ssm.com}]", 
-            "Name": "Pending"
-         }
-     }
- }
+            "Date": 1487876122.564,
+            "Message": "Associated with AWS-UpdateSSMAgent",
+            "Name": "Associated"
+        },
+        "Name": "AWS-UpdateSSMAgent",
+        "InstanceId": "i-0000293ffd8c57862",
+        "Overview": {
+            "Status": "Pending",
+            "DetailedStatus": "Associated",
+            "AssociationStatusAggregatedCount": {
+                "Pending": 1
+            }
+        },
+        "AssociationId": "d8617c07-2079-4c18-9847-1655fc2698b0",
+        "DocumentVersion": "$DEFAULT",
+        "LastUpdateAssociationDate": 1487876122.564,
+        "Date": 1487876122.564,
+        "Targets": [
+            {
+                "Values": [
+                    "i-0000293ffd8c57862"
+                ],
+                "Key": "InstanceIds"
+            }
+        ]
+    }
+  }

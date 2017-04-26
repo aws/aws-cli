@@ -23,9 +23,11 @@ from botocore.exceptions import NoCredentialsError
 from botocore.exceptions import NoRegionError
 
 from awscli import EnvironmentVariables, __version__
+from awscli.compat import get_stderr_text_writer
 from awscli.formatter import get_formatter
 from awscli.plugin import load_plugins
 from awscli.commands import CLICommand
+from awscli.compat import six
 from awscli.argparser import MainArgParser
 from awscli.argparser import ServiceArgParser
 from awscli.argparser import ArgTableArgParser
@@ -170,7 +172,8 @@ class CLIDriver(object):
         parser = MainArgParser(
             command_table, self.session.user_agent(),
             cli_data.get('description', None),
-            self._get_argument_table())
+            self._get_argument_table(),
+            prog="aws")
         return parser
 
     def main(self, args=None):
@@ -219,8 +222,10 @@ class CLIDriver(object):
         except Exception as e:
             LOG.debug("Exception caught in main()", exc_info=True)
             LOG.debug("Exiting with rc 255")
-            sys.stderr.write("\n")
-            sys.stderr.write("%s\n" % e)
+            err = get_stderr_text_writer()
+            err.write("\n")
+            err.write(six.text_type(e))
+            err.write("\n")
             return 255
 
     def _emit_session_event(self):

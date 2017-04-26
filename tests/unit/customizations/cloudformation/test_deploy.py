@@ -260,7 +260,9 @@ class TestDeployCommand(unittest.TestCase):
             {"ParameterKey": "Key2", "UsePreviousValue": True},
             {"ParameterKey": "Key4", "UsePreviousValue": True},
 
-            # Parameter with default value is NOT sent to CloudFormation
+            # Parameter with default value but NOT overridden.
+            # Use previous value, but this gets removed later when we are creating stack for first time
+            {"ParameterKey": "KeyWithDefaultValue", "UsePreviousValue": True},
         ]
 
         self.assertItemsEqual(

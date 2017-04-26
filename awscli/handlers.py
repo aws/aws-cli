@@ -62,6 +62,7 @@ from awscli.customizations.paginate import register_pagination
 from awscli.customizations.preview import register_preview_commands
 from awscli.customizations.putmetricdata import register_put_metric_data
 from awscli.customizations.rds import register_rds_modify_split
+from awscli.customizations.rds import register_add_generate_db_auth_token
 from awscli.customizations.removals import register_removals
 from awscli.customizations.route53 import register_create_hosted_zone_doc_fix
 from awscli.customizations.s3.s3 import s3_plugin_initialize
@@ -109,6 +110,7 @@ def awscli_initialize(event_handlers):
     register_removals(event_handlers)
     register_preview_commands(event_handlers)
     register_rds_modify_split(event_handlers)
+    register_add_generate_db_auth_token(event_handlers)
     register_put_metric_data(event_handlers)
     register_ses_send_email(event_handlers)
     IAMVMFAWrapper(event_handlers)

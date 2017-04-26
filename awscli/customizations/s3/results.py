@@ -25,7 +25,7 @@ from s3transfer.subscribers import BaseSubscriber
 from awscli.compat import queue
 from awscli.customizations.s3.utils import relative_path
 from awscli.customizations.s3.utils import human_readable_size
-from awscli.customizations.s3.utils import uni_print
+from awscli.customizations.utils import uni_print
 from awscli.customizations.s3.utils import WarningResult
 from awscli.customizations.s3.utils import OnDoneFilteredSubscriber
 

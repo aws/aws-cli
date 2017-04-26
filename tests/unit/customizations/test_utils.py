@@ -10,14 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest
-from awscli.testutils import BaseAWSHelpOutputTest
-
+import io
 import argparse
 import mock
 from botocore.exceptions import ClientError
 
 from awscli.customizations import utils
+from awscli.testutils import unittest
+from awscli.testutils import BaseAWSHelpOutputTest
 
 
 class FakeParsedArgs(object):
@@ -208,3 +208,50 @@ class TestClientCreationFromGlobals(unittest.TestCase):
             self.session, 'ec2', argparse.Namespace())
         self.assertEqual(self.fake_client, client)
         self.session.create_client.assert_called_once_with('ec2')
+
+
+class MockPipedStdout(io.BytesIO):
+    """Mocks `sys.stdout`.
+
+    We can't use `TextIOWrapper` because calling
+    `TextIOWrapper(.., encoding=None)` sets the ``encoding`` attribute to
+    `UTF-8`. The attribute is also `readonly` in `TextIOWrapper` and
+    `TextIOBase` so it cannot be overwritten in subclasses.
+    """
+    def __init__(self):
+        self.encoding = None
+
+        super(MockPipedStdout, self).__init__()
+
+    def write(self, data):
+        # sys.stdout.write() will default to encoding to ascii, when its
+        # `encoding` is `None`.
+        if self.encoding is None:
+            data = data.encode('ascii')
+        else:
+            data = data.encode(self.encoding)
+        super(MockPipedStdout, self).write(data)
+
+
+class TestUniPrint(unittest.TestCase):
+
+    def test_out_file_with_encoding_attribute(self):
+        buf = io.BytesIO()
+        out = io.TextIOWrapper(buf, encoding='utf-8')
+        utils.uni_print(u'\u2713', out)
+        self.assertEqual(buf.getvalue(), u'\u2713'.encode('utf-8'))
+
+    def test_encoding_with_encoding_none(self):
+        '''When the output of the aws command is being piped,
+        the `encoding` attribute of `sys.stdout` is `None`.'''
+        out = MockPipedStdout()
+        utils.uni_print(u'SomeChars\u2713\u2714OtherChars', out)
+        self.assertEqual(out.getvalue(), b'SomeChars??OtherChars')
+
+    def test_encoding_statement_fails_are_replaced(self):
+        buf = io.BytesIO()
+        out = io.TextIOWrapper(buf, encoding='ascii')
+        utils.uni_print(u'SomeChars\u2713\u2714OtherChars', out)
+        # We replace the characters that can't be encoded
+        # with '?'.
+        self.assertEqual(buf.getvalue(), b'SomeChars??OtherChars')

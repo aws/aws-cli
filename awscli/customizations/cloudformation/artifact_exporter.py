@@ -91,16 +91,19 @@ def parse_s3_url(url,
             if len(folders) >= 2:
                 result = dict()
                 result[bucket_name_property] = folders[0]
-                result[object_key_property] = '/'.join(folders[1:])
 
-                # If there is a query string that has a single versionId field,
-                # set the object version and return
-                if version_property is not None \
-                        and 'versionId' in query \
-                        and len(query['versionId']) == 1:
-                    result[version_property] = query['versionId'][0]
+                object_key = '/'.join(folders[1:])
+                if object_key:
+                    result[object_key_property] = object_key
 
-                return result
+                    # If there is a query string that has a single versionId field,
+                    # set the object version and return
+                    if version_property is not None \
+                            and 'versionId' in query \
+                            and len(query['versionId']) == 1:
+                        result[version_property] = query['versionId'][0]
+
+                    return result
 
     raise ValueError("URL given to the parse method is not a valid S3 url "
                      "{0}".format(url))

@@ -82,7 +82,7 @@ def parse_s3_url(url,
 
                 return result
 
-        elif url.startswith("https://s3.amazonaws.com/"):
+        elif url.startswith("https://s3."):
             parsed = urlparse.urlparse(url)
             query = urlparse.parse_qs(parsed.query)
 

@@ -52,6 +52,7 @@ class TestPackageCommand(unittest.TestCase):
                                     s3_prefix="s3prefix",
                                     kms_key_id="kmskeyid",
                                     output_template_file="./oputput",
+                                    use_json=False,
                                     force_upload=False)
         self.parsed_globals = FakeArgs(region="us-east-1", endpoint_url=None,
                                        verify_ssl=None)
@@ -60,7 +61,6 @@ class TestPackageCommand(unittest.TestCase):
 
     @patch("awscli.customizations.cloudformation.package.yaml_dump")
     def test_main(self, mock_yaml_dump):
-        exported_template = {}
         exported_template_str = "hello"
 
         self.package_command.write_output = Mock()
@@ -69,15 +69,22 @@ class TestPackageCommand(unittest.TestCase):
 
         # Create a temporary file and make this my template
         with tempfile.NamedTemporaryFile() as handle:
-            filename = handle.name
-            self.parsed_args.template_file = filename
+            for use_json in (False, True):
+                filename = handle.name
+                self.parsed_args.template_file = filename
+                self.parsed_args.use_json=use_json
 
-            rc = self.package_command._run_main(self.parsed_args, self.parsed_globals)
-            self.assertEquals(rc, 0)
+                rc = self.package_command._run_main(self.parsed_args, self.parsed_globals)
+                self.assertEquals(rc, 0)
 
-            self.package_command._export.assert_called_once_with(filename)
-            self.package_command.write_output.assert_called_once_with(
-                    self.parsed_args.output_template_file, mock.ANY)
+                self.package_command._export.assert_called_once_with(filename, use_json)
+                self.package_command.write_output.assert_called_once_with(
+                        self.parsed_args.output_template_file, mock.ANY)
+
+                self.package_command._export.reset_mock()
+                self.package_command.write_output.reset_mock()
+
+
 
     def test_main_error(self):
 

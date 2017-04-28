@@ -15,6 +15,8 @@ import os
 import logging
 import sys
 
+import json
+
 from botocore.client import Config
 
 from awscli.customizations.cloudformation.s3uploader import S3Uploader
@@ -91,6 +93,15 @@ class PackageCommand(BasicCommand):
         },
 
         {
+            "name": "use-json",
+            "action": "store_true",
+            "help_text": (
+                "Indicates whether to use JSON as the format for the output AWS"
+                " CloudFormation template. YAML is used by default."
+            )
+        },
+
+        {
             "name": "force-upload",
             "action": "store_true",
             "help_text": (
@@ -123,7 +134,8 @@ class PackageCommand(BasicCommand):
                                       parsed_args.force_upload)
 
         output_file = parsed_args.output_template_file
-        exported_str = self._export(template_path)
+        use_json = parsed_args.use_json
+        exported_str = self._export(template_path, use_json)
 
         sys.stdout.write("\n")
         self.write_output(output_file, exported_str)
@@ -137,10 +149,15 @@ class PackageCommand(BasicCommand):
         sys.stdout.flush()
         return 0
 
-    def _export(self, template_path):
+    def _export(self, template_path, use_json):
         template = Template(template_path, os.getcwd(), self.s3_uploader)
         exported_template = template.export()
-        exported_str = yaml_dump(exported_template)
+
+        if use_json:
+            exported_str = json.dumps(exported_template, indent=4, ensure_ascii=False)
+        else:
+            exported_str = yaml_dump(exported_template)
+
         return exported_str
 
     def write_output(self, output_file_name, data):

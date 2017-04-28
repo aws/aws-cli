@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.11.82
+=======
+
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``snowball``: Update snowball command to latest version
+* api-change:``sqs``: Update sqs command to latest version
+* api-change:``cloudformation``: Update cloudformation command to latest version
+
+
 1.11.81
 =======
 

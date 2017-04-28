@@ -90,6 +90,11 @@ class Deployer(object):
         changeset_type = "UPDATE"
         if not self.has_stack(stack_name):
             changeset_type = "CREATE"
+            # When creating a new stack, UsePreviousValue=True is invalid.
+            # For such parameters, users should either override with new value,
+            # or set a Default value in template to successfully create a stack.
+            parameter_values = [x for x in parameter_values
+                                if not x.get("UsePreviousValue", False)]
 
         try:
             resp = self._client.create_change_set(

@@ -94,10 +94,9 @@ EVENTS = [
     ('doc-description.ec2.revoke-security-group-ingress', _add_docs),
     ('doc-description.ec2.revoke-security-groupdoc-ingress', _add_docs),
 ]
-PROTOCOL_DOCS = ('<p>The IP protocol of this permission.</p>'
-                 '<p>Valid protocol values: <code>tcp</code>, '
-                 '<code>udp</code>, <code>icmp</code>, '
-                 '<code>all</code></p>'
+PROTOCOL_DOCS = ('<p>The IP protocol: <code>tcp</code> | '
+                 '<code>udp</code> | <code>icmp</code></p> '
+                 '<p>(VPC only) Use <code>all</code> to specify all protocols.</p>'
                  '<p>If this argument is provided without also providing the '
                  '<code>port</code> argument, then it will be applied to all '
                  'ports for the specified protocol.</p>')

@@ -44,13 +44,13 @@ setup_options = dict(
     long_description=open('README.rst').read(),
     author='Amazon Web Services',
     url='http://aws.amazon.com/cli/',
-    scripts=['bin/aws', 'bin/aws.cmd',
-             'bin/aws_completer', 'bin/aws_zsh_completer.sh',
+    scripts=['bin/aws_completer', 'bin/aws_zsh_completer.sh',
              'bin/aws_bash_completer'],
     packages=find_packages(exclude=['tests*']),
     package_data={'awscli': ['data/*.json', 'examples/*/*.rst',
                              'examples/*/*/*.rst', 'topics/*.rst',
                              'topics/*.json']},
+    entry_points={"console_scripts": ["aws = awscli.clidriver:main"]},
     install_requires=requires,
     extras_require={
         ':python_version=="2.6"': [

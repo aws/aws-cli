@@ -19,6 +19,16 @@ import os
 
 __version__ = '1.11.82'
 
+
+#
+# Account for LC_CTYPE of UTF-8
+# For more information see:
+#   * http://bugs.python.org/issue18378
+#   * #945
+#
+if os.environ.get('LC_CTYPE', '') == 'UTF-8':
+    os.environ['LC_CTYPE'] = 'en_US.UTF-8'
+
 #
 # Get our data path to be added to botocore's search path
 #

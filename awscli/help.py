@@ -258,7 +258,8 @@ class HelpCommand(object):
 
     def __call__(self, args, parsed_globals):
         if args:
-            subcommand_parser = ArgTableArgParser({}, self.subcommand_table)
+            subcommand_parser = ArgTableArgParser({}, self.subcommand_table,
+                                                  prog="aws")
             parsed, remaining = subcommand_parser.parse_known_args(args)
             if getattr(parsed, 'subcommand', None) is not None:
                 return self.subcommand_table[parsed.subcommand](remaining,

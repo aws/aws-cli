@@ -142,12 +142,13 @@ class MainArgParser(CLIArgParser):
 
 class ServiceArgParser(CLIArgParser):
 
-    def __init__(self, operations_table, service_name):
+    def __init__(self, operations_table, service_name, prog=None):
         super(ServiceArgParser, self).__init__(
             formatter_class=argparse.RawTextHelpFormatter,
             add_help=False,
             conflict_handler='resolve',
-            usage=USAGE)
+            usage=USAGE,
+            prog=prog)
         self._build(operations_table)
         self._service_name = service_name
 
@@ -159,7 +160,7 @@ class ServiceArgParser(CLIArgParser):
 class ArgTableArgParser(CLIArgParser):
     """CLI arg parser based on an argument table."""
 
-    def __init__(self, argument_table, command_table=None):
+    def __init__(self, argument_table, command_table=None, prog=None):
         # command_table is an optional subcommand_table.  If it's passed
         # in, then we'll update the argparse to parse a 'subcommand' argument
         # and populate the choices field with the command table keys.
@@ -167,7 +168,8 @@ class ArgTableArgParser(CLIArgParser):
             formatter_class=self.Formatter,
             add_help=False,
             usage=USAGE,
-            conflict_handler='resolve')
+            conflict_handler='resolve',
+            prog=prog)
         if command_table is None:
             command_table = {}
         self._build(argument_table, command_table)

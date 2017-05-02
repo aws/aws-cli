@@ -376,7 +376,8 @@ class ServiceCommand(CLICommand):
         # Also add a 'help' command.
         command_table['help'] = self.create_help_command()
         return ServiceArgParser(
-            operations_table=command_table, service_name=self._name)
+            operations_table=command_table, service_name=self._name,
+            prog="aws")
 
 
 class ServiceOperation(object):
@@ -584,7 +585,7 @@ class ServiceOperation(object):
             name, **kwargs)
 
     def _create_operation_parser(self, arg_table):
-        parser = ArgTableArgParser(arg_table)
+        parser = ArgTableArgParser(arg_table, prog="aws")
         return parser
 
 

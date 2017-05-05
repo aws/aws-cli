@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.11.83
+=======
+
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``marketplace-entitlement``: Update marketplace-entitlement command to latest version
+* bugfix:``s3``: Fixed possible security issue where files could be downloaded to a directory outside the destination directory if the key contained relative paths when downloading files recursively.
+* api-change:``lambda``: Update lambda command to latest version
+
+
 1.11.82
 =======
 

@@ -120,6 +120,7 @@ class TestS3TransferHandler(unittest.TestCase):
         for _ in range(num_transfers):
             fileinfos.append(
                 FileInfo(src='bucket/key', dest='filename',
+                         compare_key='key',
                          operation_name='download'))
 
         self.s3_transfer_handler.call(fileinfos)
@@ -132,6 +133,7 @@ class TestS3TransferHandler(unittest.TestCase):
         for _ in range(num_transfers):
             fileinfos.append(
                 FileInfo(src='sourcebucket/sourcekey', dest='bucket/key',
+                         compare_key='key',
                          operation_name='copy'))
 
         self.s3_transfer_handler.call(fileinfos)
@@ -163,7 +165,9 @@ class TestS3TransferHandler(unittest.TestCase):
     def test_enqueue_dowload_stream(self):
         self.parameters['is_stream'] = True
         self.s3_transfer_handler.call(
-            [FileInfo(src='bucket/key', dest='-', operation_name='download')])
+            [FileInfo(src='bucket/key', dest='-',
+                      compare_key='key',
+                      operation_name='download')])
         self.assertEqual(
             self.transfer_manager.download.call_count, 1)
         download_call_kwargs = self.transfer_manager.download.call_args[1]
@@ -213,6 +217,7 @@ class TestS3TransferHandler(unittest.TestCase):
         for _ in range(num_transfers):
             fileinfos.append(
                 FileInfo(src='bucket/key', dest='filename',
+                         compare_key='key',
                          operation_name='download'))
 
         self.s3_transfer_handler.call(fileinfos)
@@ -227,12 +232,14 @@ class TestS3TransferHandler(unittest.TestCase):
         for _ in range(num_transfers):
             fileinfos.append(
                 FileInfo(src='bucket/key', dest='filename',
+                         compare_key='key',
                          operation_name='download'))
 
         # Add a fileinfo that should get skipped. To skip, we do a glacier
         # download.
         fileinfos.append(FileInfo(
             src='bucket/key', dest='filename', operation_name='download',
+            compare_key='key',
             associated_response_data={'StorageClass': 'GLACIER'}))
         self.s3_transfer_handler.call(fileinfos)
         # Since the last glacier download was skipped the final expected
@@ -395,6 +402,22 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.transfer_request_submitter = DownloadRequestSubmitter(
             self.transfer_manager, self.result_queue, self.cli_params)
 
+    def assert_no_downloads_happened(self):
+        self.assertEqual(len(self.transfer_manager.download.call_args_list), 0)
+
+    def create_file_info(self, key, associated_response_data=None):
+        kwargs = {
+            'src': self.bucket + '/' + key,
+            'src_type': 's3',
+            'dest': self.filename,
+            'dest_type': 'local',
+            'operation_name': 'download',
+            'compare_key': key,
+        }
+        if associated_response_data is not None:
+            kwargs['associated_response_data'] = associated_response_data
+        return FileInfo(**kwargs)
+
     def test_can_submit(self):
         fileinfo = FileInfo(
             src=self.bucket+'/'+self.key, dest=self.filename,
@@ -406,8 +429,7 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
             self.transfer_request_submitter.can_submit(fileinfo))
 
     def test_submit(self):
-        fileinfo = FileInfo(
-            src=self.bucket+'/'+self.key, dest=self.filename)
+        fileinfo = self.create_file_info(self.key)
         future = self.transfer_request_submitter.submit(fileinfo)
 
         self.assertIs(self.transfer_manager.download.return_value, future)
@@ -430,8 +452,7 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
             self.assertIsInstance(actual_subscriber, ref_subscribers[i])
 
     def test_submit_with_extra_args(self):
-        fileinfo = FileInfo(
-            src=self.bucket+'/'+self.key, dest=self.filename)
+        fileinfo = self.create_file_info(self.key)
         self.cli_params['sse_c'] = 'AES256'
         self.cli_params['sse_c_key'] = 'mykey'
         self.transfer_request_submitter.submit(fileinfo)
@@ -464,13 +485,11 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
 
         # The transfer should have been skipped.
         self.assertIsNone(future)
-        self.assertEqual(len(self.transfer_manager.download.call_args_list), 0)
+        self.assert_no_downloads_happened()
 
     def test_not_warn_glacier_for_compatible(self):
-        fileinfo = FileInfo(
-            src=self.bucket+'/'+self.key, dest=self.filename,
-            operation_name='download',
-            associated_response_data={
+        fileinfo = self.create_file_info(
+            self.key, associated_response_data={
                 'StorageClass': 'GLACIER',
                 'Restore': 'ongoing-request="false"'
             }
@@ -487,9 +506,8 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
 
     def test_warn_glacier_force_glacier(self):
         self.cli_params['force_glacier_transfer'] = True
-        fileinfo = FileInfo(
-            src=self.bucket+'/'+self.key, dest=self.filename,
-            operation_name='download',
+        fileinfo = self.create_file_info(
+            self.key,
             associated_response_data={
                 'StorageClass': 'GLACIER',
             }
@@ -518,15 +536,34 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertTrue(self.result_queue.empty())
         # But the transfer still should have been skipped.
         self.assertIsNone(future)
-        self.assertEqual(len(self.transfer_manager.download.call_args_list), 0)
+        self.assert_no_downloads_happened()
+
+    def test_warn_and_ignore_on_parent_dir_reference(self):
+        fileinfo = self.create_file_info('../foo.txt')
+        future = self.transfer_request_submitter.submit(fileinfo)
+        warning_result = self.result_queue.get()
+        self.assertIsInstance(warning_result, WarningResult)
+        self.assert_no_downloads_happened()
+
+    def test_warn_and_ignore_with_leading_chars(self):
+        fileinfo = self.create_file_info('a/../../foo.txt')
+        future = self.transfer_request_submitter.submit(fileinfo)
+        warning_result = self.result_queue.get()
+        self.assertIsInstance(warning_result, WarningResult)
+        self.assert_no_downloads_happened()
+
+    def test_allow_double_dots_that_dont_escape_cwd(self):
+        self.cli_params['dryrun'] = True
+        # This is fine because it's 'foo.txt'.
+        fileinfo = self.create_file_info('a/../foo.txt')
+        future = self.transfer_request_submitter.submit(fileinfo)
+        self.assertIsInstance(self.result_queue.get(), DryRunResult)
 
     def test_dry_run(self):
         self.cli_params['dryrun'] = True
         self.transfer_request_submitter = DownloadRequestSubmitter(
             self.transfer_manager, self.result_queue, self.cli_params)
-        fileinfo = FileInfo(
-            dest=self.filename, dest_type='local', operation_name='download',
-            src=self.bucket + '/' + self.key, src_type='s3')
+        fileinfo = self.create_file_info(self.key)
         self.transfer_request_submitter.submit(fileinfo)
 
         result = self.result_queue.get()
@@ -536,8 +573,7 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertEqual(result.src, 's3://' + self.bucket + '/' + self.key)
 
     def test_submit_move_adds_delete_source_subscriber(self):
-        fileinfo = FileInfo(
-            dest=self.filename, src=self.bucket+'/'+self.key)
+        fileinfo = self.create_file_info(self.key)
         self.cli_params['guess_mime_type'] = True  # Default settings
         self.cli_params['is_move'] = True
         self.transfer_request_submitter.submit(fileinfo)
@@ -863,7 +899,8 @@ class TestDownloadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
 
     def test_submit(self):
         fileinfo = FileInfo(
-            src=self.bucket+'/'+self.key, dest=self.filename)
+            src=self.bucket+'/'+self.key, dest=self.filename,
+            compare_key=self.key)
         future = self.transfer_request_submitter.submit(fileinfo)
         self.assertIs(self.transfer_manager.download.return_value, future)
 
@@ -888,7 +925,8 @@ class TestDownloadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
             self.transfer_manager, self.result_queue, self.cli_params)
         fileinfo = FileInfo(
             dest=self.filename, dest_type='local', operation_name='download',
-            src=self.bucket + '/' + self.key, src_type='s3')
+            src=self.bucket + '/' + self.key, src_type='s3',
+            compare_key=self.key)
         self.transfer_request_submitter.submit(fileinfo)
 
         result = self.result_queue.get()

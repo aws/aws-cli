@@ -135,8 +135,7 @@ class BasicCommand(CLICommand):
             ".".join(self.lineage_names)
         self._session.emit(event, argument_table=self._arg_table, args=args,
                            session=self._session)
-        parser = ArgTableArgParser(self.arg_table, self.subcommand_table,
-                                   prog="aws")
+        parser = ArgTableArgParser(self.arg_table, self.subcommand_table)
         parsed_args, remaining = parser.parse_known_args(args)
 
         # Unpack arguments

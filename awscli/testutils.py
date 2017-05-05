@@ -23,11 +23,13 @@ import os
 import sys
 import copy
 import shutil
+import time
 import json
 import logging
 import tempfile
 import platform
 import contextlib
+import string
 import binascii
 from pprint import pformat
 from subprocess import Popen, PIPE
@@ -116,6 +118,37 @@ def create_clidriver():
     _LOADER.search_paths.extend(data_path)
     session.register_component('data_loader', _LOADER)
     return driver
+
+
+def get_aws_cmd():
+    global AWS_CMD
+    import awscli
+    if AWS_CMD is None:
+        # Try <repo>/bin/aws
+        repo_root = os.path.dirname(os.path.abspath(awscli.__file__))
+        aws_cmd = os.path.join(repo_root, 'bin', 'aws')
+        if not os.path.isfile(aws_cmd):
+            aws_cmd = _search_path_for_cmd('aws')
+            if aws_cmd is None:
+                raise ValueError('Could not find "aws" executable.  Either '
+                                 'make sure it is on your PATH, or you can '
+                                 'explicitly set this value using '
+                                 '"set_aws_cmd()"')
+        AWS_CMD = aws_cmd
+    return AWS_CMD
+
+
+def _search_path_for_cmd(cmd_name):
+    for path in os.environ.get('PATH', '').split(os.pathsep):
+        full_cmd_path = os.path.join(path, cmd_name)
+        if os.path.isfile(full_cmd_path):
+            return full_cmd_path
+    return None
+
+
+def set_aws_cmd(aws_cmd):
+    global AWS_CMD
+    AWS_CMD = aws_cmd
 
 
 @contextlib.contextmanager
@@ -606,8 +639,11 @@ def aws(command, collect_memory=False, env_vars=None,
     """
     if platform.system() == 'Windows':
         command = _escape_quotes(command)
-    module = "awscli" if sys.version_info[:2] >= (2, 7) else "awscli.__main__"
-    full_command = '%s -m %s %s' % (sys.executable, module, command)
+    if 'AWS_TEST_COMMAND' in os.environ:
+        aws_command = os.environ['AWS_TEST_COMMAND']
+    else:
+        aws_command = 'python %s' % get_aws_cmd()
+    full_command = '%s %s' % (aws_command, command)
     stdout_encoding = get_stdout_encoding()
     if isinstance(full_command, six.text_type) and not six.PY3:
         full_command = full_command.encode(stdout_encoding)

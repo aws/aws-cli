@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.84
+=======
+
+* api-change:``codestar``: Update codestar command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+
+
 1.11.83
 =======
 

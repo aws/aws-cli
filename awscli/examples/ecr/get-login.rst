@@ -9,7 +9,7 @@ Command::
 
 Output::
 
-  docker login -u AWS -p <password> -e none https://<aws_account_id>.dkr.ecr.<region>.amazonaws.com
+  docker login -u AWS -p <password> https://<aws_account_id>.dkr.ecr.<region>.amazonaws.com
 
 **To log in to another account's registry**
 
@@ -22,5 +22,5 @@ Command::
 
 Output::
 
-  docker login -u <username> -p <token-1> -e none <endpoint-1>
-  docker login -u <username> -p <token-2> -e none <endpoint-2>
+  docker login -u <username> -p <token-1> <endpoint-1>
+  docker login -u <username> -p <token-2> <endpoint-2>

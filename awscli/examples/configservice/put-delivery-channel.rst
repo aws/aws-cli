@@ -12,7 +12,7 @@ The ``deliveryChannel.json`` file specifies the delivery channel attributes::
         "snsTopicARN": "arn:aws:sns:us-east-1:123456789012:config-topic",
         "configSnapshotDeliveryProperties": {
             "deliveryFrequency": "Twelve_Hours"
-        },
+        }
     }
 
 This example sets the following attributes:

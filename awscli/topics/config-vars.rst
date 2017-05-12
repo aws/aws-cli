@@ -63,7 +63,7 @@ The AWS CLI has a few general options:
 ==================== =========== ===================== ===================== ============================
 Variable             Option      Config Entry          Environment Variable  Description
 ==================== =========== ===================== ===================== ============================
-profile              --profile   N/A                   AWS_DEFAULT_PROFILE   Default profile name
+profile              --profile   N/A                   AWS_PROFILE           Default profile name
 -------------------- ----------- --------------------- --------------------- ----------------------------
 region               --region    region                AWS_DEFAULT_REGION    Default AWS Region
 -------------------- ----------- --------------------- --------------------- ----------------------------
@@ -99,7 +99,7 @@ validation for performance reasons. Otherwise, it's recommended to leave
 parameter validation enabled.
 
 When you specify a profile, either using ``--profile profile-name`` or by
-setting a value for the ``AWS_DEFAULT_PROFILE`` environment variable, profile
+setting a value for the ``AWS_PROFILE`` environment variable, profile
 name you provide is used to find the corresponding section in the AWS CLI
 config file.  For example, specifying ``--profile development`` will instruct
 the AWS CLI to look for a section in the AWS CLI config file of
@@ -177,11 +177,11 @@ Precedence
 Credentials from environment variables have precedence over credentials from
 the shared credentials and AWS CLI config file.  Credentials specified in the
 shared credentials file have precedence over credentials in the AWS CLI config
-file. If ``AWS_DEFAULT_PROFILE`` environment variable is set and the
+file. If ``AWS_PROFILE`` environment variable is set and the
 ``AWS_ACCESS_KEY_ID`` and ``AWS_SECRET_ACCESS_KEY`` environment variables are
 set, then the credentials provided by  ``AWS_ACCESS_KEY_ID`` and
 ``AWS_SECRET_ACCESS_KEY`` will override the credentials located in the
-profile provided by ``AWS_DEFAULT_PROFILE``.
+profile provided by ``AWS_PROFILE``.
 
 
 Using AWS IAM Roles

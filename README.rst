@@ -189,7 +189,7 @@ entries or both.  The following table documents these.
 ============================= =========== ============================= ================================= ==================================
 Variable                      Option      Config Entry                  Environment Variable              Description
 ============================= =========== ============================= ================================= ==================================
-profile                       --profile   profile                       AWS_DEFAULT_PROFILE               Default profile name
+profile                       --profile   profile                       AWS_PROFILE                       Default profile name
 ----------------------------- ----------- ----------------------------- --------------------------------- ----------------------------------
 region                        --region    region                        AWS_DEFAULT_REGION                Default AWS Region
 ----------------------------- ----------- ----------------------------- --------------------------------- ----------------------------------
@@ -238,7 +238,7 @@ Similarly, the ``profile`` variable can be used to specify which profile to use
 if one is not explicitly specified on the command line via the
 ``--profile`` option.  To set this via environment variable::
 
-    $ export AWS_DEFAULT_PROFILE=testing
+    $ export AWS_PROFILE=testing
 
 The ``profile`` variable can not be specified in the configuration file
 since it would have to be associated with a profile and would defeat the

@@ -1,3 +1,4 @@
+
 **To start the configuration recorder**
 
 The following command starts the default configuration recorder::

@@ -186,13 +186,17 @@ class DeployCommand(BasicCommand):
     def deploy(self, deployer, stack_name, template_str,
                parameters, capabilities, execute_changeset, role_arn,
                notification_arns):
-        result = deployer.create_and_wait_for_changeset(
-                stack_name=stack_name,
-                cfn_template=template_str,
-                parameter_values=parameters,
-                capabilities=capabilities,
-                role_arn=role_arn,
-                notification_arns=notification_arns)
+        try:
+            result = deployer.create_and_wait_for_changeset(
+                    stack_name=stack_name,
+                    cfn_template=template_str,
+                    parameter_values=parameters,
+                    capabilities=capabilities,
+                    role_arn=role_arn,
+                    notification_arns=notification_arns)
+        except exceptions.ChangeEmptyError as ex:
+            sys.stdout.write("%s\n" % ex)
+            return 0
 
         if execute_changeset:
             deployer.execute_changeset(result.changeset_id, stack_name)

@@ -243,7 +243,7 @@ class TestDeployer(unittest.TestCase):
 
         response = {
             "Status": "FAILED",
-            "StatusReason": "No updates are to be performed"
+            "StatusReason": "The submitted information didn't contain changes."
         }
 
         waiter_error = botocore.exceptions.WaiterError(name="name",

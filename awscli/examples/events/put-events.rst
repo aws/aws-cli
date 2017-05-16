@@ -6,23 +6,23 @@ This example sends a custom event to CloudWatch Events. The event is contained w
 
 Here are the contents of the putevents.json file::
 
-[
-  {
-    "Source": "com.mycompany.myapp",
-    "Detail": "{ \"key1\": \"value1\", \"key2\": \"value2\" }",
-    "Resources": [
-      "resource1",
-      "resource2"
-    ],
-    "DetailType": "myDetailType"
-  },
-  {
-    "Source": "com.mycompany.myapp",
-    "Detail": "{ \"key1\": \"value3\", \"key2\": \"value4\" }",
-    "Resources": [
-      "resource1",
-      "resource2"
-    ],
-    "DetailType": "myDetailType"
-   }
-]
+  [
+    {
+      "Source": "com.mycompany.myapp",
+      "Detail": "{ \"key1\": \"value1\", \"key2\": \"value2\" }",
+      "Resources": [
+        "resource1",
+        "resource2"
+      ],
+      "DetailType": "myDetailType"
+    },
+    {
+      "Source": "com.mycompany.myapp",
+      "Detail": "{ \"key1\": \"value3\", \"key2\": \"value4\" }",
+      "Resources": [
+        "resource1",
+        "resource2"
+      ],
+      "DetailType": "myDetailType"
+     }
+  ]

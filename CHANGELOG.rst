@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.11.87
+=======
+
+* api-change:``kms``: Update kms command to latest version
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``inspector``: Update inspector command to latest version
+* api-change:``codedeploy``: Update codedeploy command to latest version
+
+
 1.11.86
 =======
 

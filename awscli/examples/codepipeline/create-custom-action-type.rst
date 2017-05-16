@@ -9,38 +9,33 @@ Command::
 JSON file sample contents::
   
   {
-   "actionType": {
-    "actionConfigurationProperties": [
-      {
-        "description": "The name of the build project must be provided when this action is added to the pipeline.",
-        "key": true,
-        "name": "MyJenkinsExampleBuildProject",
-        "queryable": false,
-        "required": true,
-        "secret": false
-      }
-    ],
-    "id": {
-      "__type": "ActionTypeId",
-      "category": "Build",
-      "owner": "Custom",
-      "provider": "MyJenkinsProviderName",
-      "version": "1"
+    "category": "Build",
+    "provider": "MyJenkinsProviderName",
+    "version": "1",
+    "settings": {
+        "entityUrlTemplate": "https://192.0.2.4/job/{Config:ProjectName}/",
+        "executionUrlTemplate": "https://192.0.2.4/job/{Config:ProjectName}/lastSuccessfulBuild/{ExternalExecutionId}/"
     },
+    "configurationProperties": [
+        {
+            "name": "MyJenkinsExampleBuildProject",
+            "required": true,
+            "key": true,
+            "secret": false,
+            "queryable": false,
+            "description": "The name of the build project must be provided when this action is added to the pipeline.",
+            "type": "String"
+        }
+    ],
     "inputArtifactDetails": {
-      "maximumCount": 1,
-      "minimumCount": 0
+        "maximumCount": 1,
+        "minimumCount": 0
     },
     "outputArtifactDetails": {
-      "maximumCount": 1,
-      "minimumCount": 0
-    },
-    "settings": {
-      "entityUrlTemplate": "https://192.0.2.4/job/{Config:ProjectName}/",
-      "executionUrlTemplate": "https://192.0.2.4/job/{Config:ProjectName}/lastSuccessfulBuild/{ExternalExecutionId}/"
+        "maximumCount": 1,
+        "minimumCount": 0
     }
-   }
-  }
+}
 
 Output::
 

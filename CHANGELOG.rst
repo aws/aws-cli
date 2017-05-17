@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.11.88
+=======
+
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``events``: Update events command to latest version
+* api-change:``polly``: Update polly command to latest version
+* api-change:``logs``: Update logs command to latest version
+
+
 1.11.87
 =======
 

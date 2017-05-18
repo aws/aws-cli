@@ -8,4 +8,4 @@ This example displays all CloudWatch Events rules in the region::
 
 This example displays all CloudWatch Events rules in the region that have a name starting with "Daily"::
 
-  aws events list-rules -–name-prefix "Daily"
+  aws events list-rules --name-prefix "Daily"

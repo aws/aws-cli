@@ -1,8 +1,8 @@
-**To get the per-region list of stages for a REST API**
+**To get the list of stages for a REST API**
 
 Command::
 
-  aws apigateway get-stages --rest-api-id 1234123412 --region us-west-2
+  aws apigateway get-stages --rest-api-id 1234123412
 
 Output::
 
@@ -31,4 +31,3 @@ Output::
           }
       ]
   }
-

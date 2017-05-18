@@ -1,8 +1,8 @@
-**To get the per-region list of resources for a REST API**
+**To get a list of resources for a REST API**
 
 Command::
 
-  aws apigateway get-resources --rest-api-id 1234123412 --region us-west-2
+  aws apigateway get-resources --rest-api-id 1234123412
 
 Output::
 
@@ -19,4 +19,3 @@ Output::
           }
       ]
   }
-

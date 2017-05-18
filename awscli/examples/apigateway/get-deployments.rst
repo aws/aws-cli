@@ -1,8 +1,8 @@
-**To get the per-region list of deployments for a REST API**
+**To get a list of deployments for a REST API**
 
 Command::
 
-  aws apigateway get-deployments --rest-api-id 1234123412 --region us-west-2
+  aws apigateway get-deployments --rest-api-id 1234123412
 
 Output::
 

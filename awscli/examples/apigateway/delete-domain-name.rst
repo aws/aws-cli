@@ -1,6 +1,5 @@
-**To delete a custom domain name in the specified region**
+**To delete a custom domain name**
 
 Command::
 
-  aws apigateway delete-domain-name --domain-name 'api.domain.tld' --region us-west-2
-
+  aws apigateway delete-domain-name --domain-name 'api.domain.tld'

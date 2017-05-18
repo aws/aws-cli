@@ -1,8 +1,8 @@
-**To get the per-region list of client certificates**
+**To get a list of client certificates**
 
 Command::
 
-  aws apigateway get-client-certificates --region us-west-2
+  aws apigateway get-client-certificates
 
 Output::
 

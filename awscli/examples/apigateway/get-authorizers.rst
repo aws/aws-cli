@@ -1,8 +1,8 @@
-**To get the per-region list of authorizers for a REST API**
+**To get the list of authorizers for a REST API**
 
 Command::
 
-  aws apigateway get-authorizers --rest-api-id 1234123412 --region us-west-2
+  aws apigateway get-authorizers --rest-api-id 1234123412
 
 Output::
 
@@ -18,4 +18,3 @@ Output::
           }
       ]
   }
-

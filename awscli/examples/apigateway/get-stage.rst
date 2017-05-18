@@ -2,7 +2,7 @@
 
 Command::
 
-  aws apigateway get-stage --rest-api-id 1234123412 --stage-name dev --region us-west-2
+  aws apigateway get-stage --rest-api-id 1234123412 --stage-name dev
 
 Output::
 
@@ -41,4 +41,3 @@ Output::
           }
       }
   }
-

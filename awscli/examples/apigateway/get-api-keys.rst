@@ -1,8 +1,8 @@
-**To get the per-region list of API keys**
+**To get the list of API keys**
 
 Command::
 
-  aws apigateway get-api-keys --region us-west-2
+  aws apigateway get-api-keys
 
 Output::
 
@@ -22,4 +22,3 @@ Output::
           }
       ]
   }
-

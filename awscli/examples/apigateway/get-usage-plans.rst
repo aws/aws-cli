@@ -1,6 +1,5 @@
-**To get the details of all Usage Plans in a region**
+**To get the details of all Usage Plans**
 
 Command::
 
-  aws apigateway get-usage-plans --region us-west-2
-
+  aws apigateway get-usage-plans

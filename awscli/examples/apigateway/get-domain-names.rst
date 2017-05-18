@@ -1,8 +1,8 @@
-**To get the per-region list of custom domain names**
+**To get a list of custom domain names**
 
 Command::
 
-  aws apigateway get-domain-names --region us-west-2
+  aws apigateway get-domain-names
 
 Output::
 
@@ -16,4 +16,3 @@ Output::
           }
       ]
   }
-

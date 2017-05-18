@@ -2,7 +2,7 @@
 
 Command::
 
-  aws apigateway get-deployment --rest-api-id 1234123412 --deployment-id ztt4m2 --region us-west-2
+  aws apigateway get-deployment --rest-api-id 1234123412 --deployment-id ztt4m2
 
 Output::
 
@@ -11,4 +11,3 @@ Output::
       "id": "ztt4m2",
       "createdDate": 1455218022
   }
-

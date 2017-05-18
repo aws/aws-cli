@@ -1,8 +1,8 @@
-**To get the per-region list of models for a REST API**
+**To get a list of models for a REST API**
 
 Command::
 
-  aws apigateway get-models --rest-api-id 1234123412 --region us-west-2
+  aws apigateway get-models --rest-api-id 1234123412
 
 Output::
 
@@ -24,4 +24,3 @@ Output::
           }
       ]
   }
-

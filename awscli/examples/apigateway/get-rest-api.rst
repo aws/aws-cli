@@ -2,7 +2,7 @@
 
 Command::
 
-  aws apigateway get-rest-api --rest-api-id 1234123412 --region us-west-2
+  aws apigateway get-rest-api --rest-api-id 1234123412
 
 Output::
 
@@ -11,4 +11,3 @@ Output::
       "id": "o1y243m4f5", 
       "createdDate": 1453416433
   }
-

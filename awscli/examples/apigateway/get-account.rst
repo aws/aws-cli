@@ -1,8 +1,8 @@
-**To get the API Gateway per-region account settings**
+**To get API Gateway account settings**
 
 Command::
 
-  aws apigateway get-account --region us-west-2
+  aws apigateway get-account
 
 Output::
 
@@ -13,4 +13,3 @@ Output::
           "burstLimit": 1000
       }
   }
-

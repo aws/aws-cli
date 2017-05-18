@@ -1,8 +1,8 @@
-**To get the per-region base path mappings for a custom domain name**
+**To get the base path mappings for a custom domain name**
 
 Command::
 
-  aws apigateway get-base-path-mappings --domain-name subdomain.domain.tld --region us-west-2
+  aws apigateway get-base-path-mappings --domain-name subdomain.domain.tld
 
 Output::
 
@@ -20,4 +20,3 @@ Output::
           }
       ]
   }
-

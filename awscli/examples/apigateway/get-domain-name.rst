@@ -2,7 +2,7 @@
 
 Command::
 
-  aws apigateway get-domain-name --domain-name api.domain.tld --region us-west-2
+  aws apigateway get-domain-name --domain-name api.domain.tld
 
 Output::
 
@@ -12,4 +12,3 @@ Output::
       "certificateName": "uploadedCertificate", 
       "certificateUploadDate": 1462565487
   }
-

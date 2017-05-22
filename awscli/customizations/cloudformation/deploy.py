@@ -216,6 +216,35 @@ class DeployCommand(BasicCommand):
                 'changes to be made to the stack.'
             )
         }
+            'name': 'tags',
+            'action': 'store',
+            'required': False,
+            'default': [],
+            'schema': {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "Key": {
+                            "description": "The tag key.",
+                            "type": "string",
+                            "required": True
+                        },
+                        "Value": {
+                            "description": "The tag value.",
+                            "type": "string",
+                            "required": True
+                        }
+                    }
+                }
+            },
+            'help_text': (
+                'Key-value pairs to associate with the stack,'
+                ' that is created or updated by the changeset.'
+                ' AWS CloudFormation also propagates these tags'
+                ' to resources in the stack.'
+            )
+        },
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
@@ -267,22 +296,25 @@ class DeployCommand(BasicCommand):
         return self.deploy(deployer, stack_name, template_str,
                            parameters, parsed_args.capabilities,
                            parsed_args.execute_changeset, parsed_args.role_arn,
-                           parsed_args.notification_arns,
-                           s3_uploader,
+                           parsed_args.notification_arns, s3_uploader,
+                           parsed_args.tags,
                            parsed_args.fail_on_empty_changeset)
 
     def deploy(self, deployer, stack_name, template_str,
                parameters, capabilities, execute_changeset, role_arn,
-               notification_arns, s3_uploader, fail_on_empty_changeset=True):
+               notification_arns, s3_uploader, tags
+               fail_on_empty_changeset=True):
         try:
             result = deployer.create_and_wait_for_changeset(
-                    stack_name=stack_name,
-                    cfn_template=template_str,
-                    parameter_values=parameters,
-                    capabilities=capabilities,
-                    role_arn=role_arn,
-                    notification_arns=notification_arns,
-                    s3_uploader=s3_uploader)
+                stack_name=stack_name,
+                cfn_template=template_str,
+                parameter_values=parameters,
+                capabilities=capabilities,
+                role_arn=role_arn,
+                notification_arns=notification_arns,
+                s3_uploader=s3_uploader,
+                tags=tags
+            )
         except exceptions.ChangeEmptyError as ex:
             if fail_on_empty_changeset:
                 raise

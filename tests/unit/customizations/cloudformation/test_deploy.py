@@ -61,7 +61,8 @@ class TestDeployCommand(unittest.TestCase):
                                     s3_bucket=None,
                                     s3_prefix="some prefix",
                                     kms_key_id="some kms key id",
-                                    force_upload=True)
+                                    force_upload=True,
+                                    tags=[{"Key": "key1", "Value": "val1"}])
         self.parsed_globals = FakeArgs(region="us-east-1", endpoint_url=None,
                                        verify_ssl=None)
         self.deploy_command = DeployCommand(self.session)
@@ -114,9 +115,12 @@ class TestDeployCommand(unittest.TestCase):
                         None,
                         not self.parsed_args.no_execute_changeset,
                         None,
-                        [], 
+                        [],
                         None,
+                        mock.Any,
                         True)
+                        [],
+                        mock.ANY)
 
                 self.deploy_command.parse_parameter_arg.assert_called_once_with(
                         self.parsed_args.parameter_overrides)
@@ -158,7 +162,7 @@ class TestDeployCommand(unittest.TestCase):
     @patch('awscli.customizations.cloudformation.deploy.os.path.getsize')
     @patch('awscli.customizations.cloudformation.deploy.DeployCommand.deploy')
     @patch('awscli.customizations.cloudformation.deploy.S3Uploader')
-    def test_s3_uploader_is_configured_properly(self, s3UploaderMock, 
+    def test_s3_uploader_is_configured_properly(self, s3UploaderMock,
         deploy_method_mock, mock_getsize, mock_yaml_parse, mock_isfile):
         """
         Tests that large templates are detected prior to deployment
@@ -190,12 +194,12 @@ class TestDeployCommand(unittest.TestCase):
                     None,
                     not self.parsed_args.no_execute_changeset,
                     None,
-                    [], 
+                    [],
                     s3UploaderObject,
                     True)
 
-            s3UploaderMock.assert_called_once_with(mock.ANY, 
-                    bucket_name, 
+            s3UploaderMock.assert_called_once_with(mock.ANY,
+                    bucket_name,
                     mock.ANY,
                     self.parsed_args.s3_prefix,
                     self.parsed_args.kms_key_id,
@@ -216,6 +220,7 @@ class TestDeployCommand(unittest.TestCase):
         role_arn = "arn:aws:iam::1234567890:role"
         notification_arns = ["arn:aws:sns:region:1234567890:notify"]
         s3_uploader = None
+        tags = [{"Key":"key1", "Value": "val1"}]
 
         # Set the mock to return this fake changeset_id
         self.deployer.create_and_wait_for_changeset.return_value = ChangeSetResult(changeset_id, changeset_type)
@@ -228,7 +233,8 @@ class TestDeployCommand(unittest.TestCase):
                                    execute_changeset,
                                    role_arn,
                                    notification_arns,
-                                   s3_uploader)
+                                   s3_uploader,
+                                   tags)
         self.assertEqual(rc, 0)
 
 
@@ -238,7 +244,8 @@ class TestDeployCommand(unittest.TestCase):
                                                      capabilities=capabilities,
                                                      role_arn=role_arn,
                                                      notification_arns=notification_arns,
-                                                     s3_uploader=s3_uploader)
+                                                     s3_uploader=s3_uploader,
+                                                     tags=tags)
 
         # since execute_changeset is set to True, deploy() will execute changeset
         self.deployer.execute_changeset.assert_called_once_with(changeset_id, stack_name)
@@ -255,6 +262,7 @@ class TestDeployCommand(unittest.TestCase):
         role_arn = "arn:aws:iam::1234567890:role"
         notification_arns = ["arn:aws:sns:region:1234567890:notify"]
         s3_uploader = None
+        tags = [{"Key":"key1", "Value": "val1"}]
 
 
         self.deployer.create_and_wait_for_changeset.return_value = ChangeSetResult(changeset_id, "CREATE")
@@ -266,7 +274,8 @@ class TestDeployCommand(unittest.TestCase):
                                             execute_changeset,
                                             role_arn,
                                             notification_arns,
-                                            s3_uploader)
+                                            s3_uploader,
+                                            tags)
         self.assertEqual(rc, 0)
 
         self.deployer.create_and_wait_for_changeset.assert_called_once_with(stack_name=stack_name,
@@ -275,7 +284,8 @@ class TestDeployCommand(unittest.TestCase):
                                                      capabilities=capabilities,
                                                      role_arn=role_arn,
                                                      notification_arns=notification_arns,
-                                                     s3_uploader=s3_uploader)
+                                                     s3_uploader=s3_uploader,
+                                                     tags=tags)
 
         # since execute_changeset is set to True, deploy() will execute changeset
         self.deployer.execute_changeset.assert_not_called()
@@ -291,6 +301,7 @@ class TestDeployCommand(unittest.TestCase):
         role_arn = "arn:aws:iam::1234567890:role"
         notification_arns = ["arn:aws:sns:region:1234567890:notify"]
         s3_uploader = None
+        tags = [{"Key":"key1", "Value": "val1"}]
 
         self.deployer.wait_for_execute.side_effect = RuntimeError("Some error")
         with self.assertRaises(RuntimeError):
@@ -302,7 +313,8 @@ class TestDeployCommand(unittest.TestCase):
                                        execute_changeset,
                                        role_arn,
                                        notification_arns,
-                                       s3_uploader)
+                                       s3_uploader,
+                                       tags)
 
     def test_deploy_raises_exception_on_empty_changeset(self):
         stack_name = "stack_name"

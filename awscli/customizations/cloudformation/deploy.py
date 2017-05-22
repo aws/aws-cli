@@ -215,7 +215,8 @@ class DeployCommand(BasicCommand):
                 'Causes the CLI to return an exit code of 0 if there are no '
                 'changes to be made to the stack.'
             )
-        }
+        },
+        {
             'name': 'tags',
             'action': 'store',
             'required': False,
@@ -302,7 +303,7 @@ class DeployCommand(BasicCommand):
 
     def deploy(self, deployer, stack_name, template_str,
                parameters, capabilities, execute_changeset, role_arn,
-               notification_arns, s3_uploader, tags
+               notification_arns, s3_uploader, tags,
                fail_on_empty_changeset=True):
         try:
             result = deployer.create_and_wait_for_changeset(

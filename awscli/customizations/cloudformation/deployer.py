@@ -73,7 +73,7 @@ class Deployer(object):
 
     def create_changeset(self, stack_name, cfn_template,
                          parameter_values, capabilities, role_arn,
-                         notification_arns, s3_uploader):
+                         notification_arns, s3_uploader, tags):
         """
         Call Cloudformation to create a changeset and wait for it to complete
 
@@ -81,6 +81,7 @@ class Deployer(object):
         :param cfn_template: CloudFormation template string
         :param parameter_values: Template parameters object
         :param capabilities: Array of capabilities passed to CloudFormation
+        :param tags: Array of tags passed to CloudFormation
         :return:
         """
 
@@ -216,12 +217,11 @@ class Deployer(object):
 
     def create_and_wait_for_changeset(self, stack_name, cfn_template,
                                       parameter_values, capabilities, role_arn,
-                                      notification_arns, s3_uploader):
+                                      notification_arns, s3_uploader, tags):
 
         result = self.create_changeset(
                 stack_name, cfn_template, parameter_values, capabilities,
-                role_arn, notification_arns, s3_uploader)
-
+                role_arn, notification_arns, s3_uploader, tags)
         self.wait_for_changeset(result.changeset_id, stack_name)
 
         return result

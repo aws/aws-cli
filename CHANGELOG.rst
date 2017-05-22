@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.90
+=======
+
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+
+
 1.11.89
 =======
 

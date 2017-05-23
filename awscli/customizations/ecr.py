@@ -38,7 +38,31 @@ class ECRLogin(BasicCommand):
                          'Amazon ECR registries that you want to log in to.',
             'required': False,
             'nargs': '+'
-        }
+        },
+        {
+            'name': 'include-email',
+            'action': 'store_true',
+            'group_name': 'include-email',
+            'dest': 'include_email',
+            'default': True,
+            'required': False,
+            'help_text': (
+                "Specify if the '-e' flag should be included in the "
+                "'docker login' command.  The '-e' option has been deprecated "
+                "and is removed in docker version 17.06 and later.  You must "
+                "specify --no-include-email if you're using docker version "
+                "17.06 or later.  The default behavior is to include the "
+                "'-e' flag in the 'docker login' output."),
+        },
+        {
+            'name': 'no-include-email',
+            'help_text': 'Include email arg',
+            'action': 'store_false',
+            'default': True,
+            'group_name': 'include-email',
+            'dest': 'include_email',
+            'required': False,
+        },
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
@@ -52,6 +76,10 @@ class ECRLogin(BasicCommand):
         for auth in result['authorizationData']:
             auth_token = b64decode(auth['authorizationToken']).decode()
             username, password = auth_token.split(':')
-            sys.stdout.write('docker login -u %s -p %s -e none %s\n'
-                             % (username, password, auth['proxyEndpoint']))
+            command = ['docker', 'login', '-u', username, '-p', password]
+            if parsed_args.include_email:
+                command.extend(['-e', 'none'])
+            command.append(auth['proxyEndpoint'])
+            sys.stdout.write(' '.join(command))
+            sys.stdout.write('\n')
         return 0

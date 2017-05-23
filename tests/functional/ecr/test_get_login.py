@@ -15,7 +15,8 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestGetLoginCommand(BaseAWSCommandParamsTest):
-    def test_prints_get_login_command(self):
+    def setUp(self):
+        super(TestGetLoginCommand, self).setUp()
         self.parsed_responses = [
             {
                 'authorizationData': [
@@ -27,11 +28,21 @@ class TestGetLoginCommand(BaseAWSCommandParamsTest):
                 ]
             },
         ]
-        stdout, _, rc = self.run_cmd("ecr get-login")
+
+    def test_prints_get_login_command(self):
+        stdout = self.run_cmd("ecr get-login")[0]
         self.assertIn(
             'docker login -u foo -p bar -e none 1235.ecr.us-east-1.io', stdout)
         self.assertEquals(1, len(self.operations_called))
         self.assertNotIn('registryIds', self.operations_called[0][1])
+
+    def test_prints_login_command_with_no_email(self):
+        stdout = self.run_cmd("ecr get-login --no-include-email")[0]
+        self.assertNotIn('-e none', stdout)
+
+    def test_prints_login_with_email_flag(self):
+        stdout = self.run_cmd("ecr get-login --include-email")[0]
+        self.assertIn('-e none', stdout)
 
     def test_prints_multiple_get_login_commands(self):
         self.parsed_responses = [
@@ -50,7 +61,7 @@ class TestGetLoginCommand(BaseAWSCommandParamsTest):
                 ]
             },
         ]
-        stdout, _, rc = self.run_cmd("ecr get-login --registry-ids 1234 5678")
+        stdout = self.run_cmd("ecr get-login --registry-ids 1234 5678")[0]
         self.assertIn(
             'docker login -u foo -p bar -e none 1235.ecr.us-east-1.io\n',
             stdout)

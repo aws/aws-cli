@@ -50,7 +50,7 @@ nothing with this information, but ``docker login`` required the email field).
 
 Command::
 
-  docker login -u AWS -p <my_decoded_password> -e <any_email_address> <aws_account_id>.dkr.ecr.us-west-2.amazonaws.com
+  docker login -u AWS -p <my_decoded_password> <aws_account_id>.dkr.ecr.us-west-2.amazonaws.com
 
 Output::
 

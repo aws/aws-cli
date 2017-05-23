@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.91
+=======
+
+* api-change:``dms``: Update dms command to latest version
+* enhancement:``ecr``: Add ``--include-email/--no-include-email`` to the ``get-login`` command.
+
+
 1.11.90
 =======
 

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.92
+=======
+
+* api-change:``iam``: Update iam command to latest version
+* api-change:``sts``: Update sts command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+
+
 1.11.91
 =======
 

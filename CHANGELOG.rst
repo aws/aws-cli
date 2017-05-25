@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.93
+=======
+
+* api-change:``appstream``: Update appstream command to latest version
+* api-change:``rekognition``: Update rekognition command to latest version
+
+
 1.11.92
 =======
 

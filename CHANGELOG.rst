@@ -986,7 +986,7 @@ CHANGELOG
 
 * feature:``ec2``: Update ec2 command to latest version
 * feature:``gamelift``: Update gamelift command to latest version
-* feature:``efs``: Update efs command to latest version
+* feature:``efs``: Amazon EFS is now generally available to all users in the US East (N. Virginia), US West (Oregon), and EU (Ireland) regions.
 * feature:``iot``: Update iot command to latest version
 * feature:``route53``: Update route53 command to latest version
 * feature:``sns``: Update sns command to latest version

@@ -29,14 +29,6 @@ def test_is_s3_url():
         "s3://foo/bar/baz?versionId=abc",
         "s3://www.amazon.com/foo/bar",
         "s3://my-new-bucket/foo/bar?a=1&a=2&a=3&b=1",
-
-        "https://s3.amazonaws.com/foo/bar",
-        "https://s3.amazonaws.com/foo/bar/baz/cat/dog",
-        "https://s3.amazonaws.com/foo/bar?versionId=abc",
-        "https://s3.amazonaws.com/foo/bar/baz?versionId=abc&versionId=123",
-        "https://s3.amazonaws.com/foo/bar/baz?versionId=abc",
-        "https://s3.amazonaws.com/www.amazon.com/foo/bar",
-        "https://s3.amazonaws.com/my-new-bucket/foo/bar?a=1&a=2&a=3&b=1",
     ]
 
     invalid = [
@@ -44,10 +36,6 @@ def test_is_s3_url():
         # For purposes of exporter, we need S3 URLs to point to an object
         # and not a bucket
         "s3://foo",
-        "https://s3.amazonaws.com/foo",
-        "https://s3.amazonaws.com/foo/",
-        "https://s3.us-west-2.amazonaws.com/",
-
 
         # two versionIds is invalid
         "https://s3-eu-west-1.amazonaws.com/bucket/key",
@@ -64,19 +52,10 @@ def _assert_is_valid_s3_url(url):
     assert_true(is_s3_url(url), "{0} should be valid".format(url))
 
 def _assert_is_invalid_s3_url(url):
-    assert_false(is_s3_url(url), "{0} should be invalid".format(url))
+    assert_false(is_s3_url(url), "{0} should be valid".format(url))
 
-def test_all_resources_export_s3():
+def test_all_resources_export():
     uploaded_s3_url = "s3://foo/bar?versionId=baz"
-
-    _helper_all_resources_export(uploaded_s3_url)
-
-def test_all_resources_export_https():
-    uploaded_s3_url = "https://s3.amazonaws.com/foo/bar?versionId=baz"
-
-    _helper_all_resources_export(uploaded_s3_url)
-
-def _helper_all_resources_export(uploaded_s3_url):
 
     setup = [
         {
@@ -180,60 +159,6 @@ class TestArtifactExporter(unittest.TestCase):
             # For purposes of exporter, we need S3 URLs to point to an object
             # and not a bucket
             "s3://foo",
-            "https://s3.amazonaws.com/foo",
-            "https://s3.amazonaws.com/foo/",
-            "https://s3.us-west-2.amazonaws.com/",
-
-
-            # two versionIds is invalid
-            "https://s3-eu-west-1.amazonaws.com/bucket/key",
-            "https://www.amazon.com"
-        ]
-
-        for config in valid:
-            result = parse_s3_url(config["url"],
-                                  bucket_name_property="Bucket",
-                                  object_key_property="Key",
-                                  version_property="VersionId")
-
-            self.assertEquals(result, config["result"])
-
-        for url in invalid:
-            with self.assertRaises(ValueError):
-                parse_s3_url(url)
-
-    def test_parse_https_s3_url(self):
-
-        valid = [
-            {
-                "url": "https://s3.amazonaws.com/foo/bar",
-                "result": {"Bucket": "foo", "Key": "bar"}
-            },
-            {
-                "url": "https://s3.amazonaws.com/foo/bar/cat/dog",
-                "result": {"Bucket": "foo", "Key": "bar/cat/dog"}
-            },
-            {
-                "url": "https://s3.amazonaws.com/foo/bar/baz?versionId=abc&param1=val1&param2=val2",
-                "result": {"Bucket": "foo", "Key": "bar/baz", "VersionId": "abc"}
-            },
-            {
-                # VersionId is not returned if there are more than one versionId
-                # keys in query parameter
-                "url": "https://s3.amazonaws.com/foo/bar/baz?versionId=abc&versionId=123",
-                "result": {"Bucket": "foo", "Key": "bar/baz"}
-            }
-        ]
-
-        invalid = [
-
-            # For purposes of exporter, we need S3 URLs to point to an object
-            # and not a bucket
-            "s3://foo",
-            "https://s3.amazonaws.com/foo",
-            "https://s3.amazonaws.com/foo/",
-            "https://s3.us-west-2.amazonaws.com/",
-
 
             # two versionIds is invalid
             "https://s3-eu-west-1.amazonaws.com/bucket/key",

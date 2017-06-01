@@ -35,6 +35,9 @@ from awscli.arguments import BaseCLIArgument
 
 logger = logging.getLogger(__name__)
 
+# There are some services where the pagination params need to be unhiden
+PUBLIC_PAGINATION_TOKENS = {'route53': ['start-record-name']}
+
 
 STARTING_TOKEN_HELP = """
 <p>A token to specify where to start paginating.  This is the
@@ -112,7 +115,12 @@ def unify_paging_params(argument_table, operation_model, event_name,
         return
     logger.debug("Modifying paging parameters for operation: %s",
                  operation_model.name)
-    _remove_existing_paging_arguments(argument_table, paginator_config)
+
+    service_name = operation_model.service_model.service_name
+    public_tokens = PUBLIC_PAGINATION_TOKENS.get(service_name, [])
+    _remove_existing_paging_arguments(
+        argument_table, paginator_config, public_tokens)
+
     parsed_args_event = event_name.replace('building-argument-table.',
                                            'operation-args-parsed.')
     shadowed_args = {}
@@ -202,9 +210,11 @@ def ensure_paging_params_not_set(parsed_args, shadowed_args):
                     "arguments: %s" % converted_params)
 
 
-def _remove_existing_paging_arguments(argument_table, pagination_config):
+def _remove_existing_paging_arguments(
+        argument_table, pagination_config, public_arguments):
     for cli_name in _get_all_cli_input_tokens(pagination_config):
-        argument_table[cli_name]._UNDOCUMENTED = True
+        if cli_name not in public_arguments:
+            argument_table[cli_name]._UNDOCUMENTED = True
 
 
 def _get_all_cli_input_tokens(pagination_config):

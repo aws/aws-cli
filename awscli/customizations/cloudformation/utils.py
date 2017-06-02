@@ -8,7 +8,7 @@ def hash_file(filepath):
 
     # Hash filename
     filename = os.path.basename(filepath)
-    md5.update(filename)
+    md5.update(filename.encode('UTF-8'))
 
     # md5 file 4096 bytes at a time
     with open(filepath, "rb") as f:
@@ -32,7 +32,7 @@ def hash_dir(base_dirpath):
 
     # hash name of directory
     dirname = os.path.basename(base_dirpath)
-    md5.update(dirname)
+    md5.update(dirname.encode('UTF-8'))
 
     # hash directory contents
     for root, dirs, files in os.walk(base_dirpath):
@@ -40,12 +40,12 @@ def hash_dir(base_dirpath):
         for nested_dir in sorted(dirs):
             dirpath = os.path.join(root, nested_dir)
             dirhash = hash_dir(dirpath)
-            md5.update(dirhash)
+            md5.update(dirhash.encode('UTF-8'))
 
         # hash all files in the root directory
         for nested_file in sorted(files):
             filepath = os.path.join(root, nested_file)
             filehash = hash_file(filepath)
-            md5.update(filehash)
+            md5.update(filehash.encode('UTF-8'))
 
     return md5.hexdigest()

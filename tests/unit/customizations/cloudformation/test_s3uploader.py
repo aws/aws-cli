@@ -245,7 +245,7 @@ class TestS3Uploader(unittest.TestCase):
         data = ''.join(random.choice(string.ascii_uppercase)
                        for _ in range(num_chars)).encode('utf-8')
         md5 = hashlib.md5()
-        md5.update(filename)
+        md5.update(filename.encode('UTF-8'))
         md5.update(data)
         expected_checksum = md5.hexdigest()
 

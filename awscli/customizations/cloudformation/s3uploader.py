@@ -23,6 +23,7 @@ from s3transfer.manager import TransferManager
 from s3transfer.subscribers import BaseSubscriber
 
 from awscli.customizations.cloudformation import exceptions
+from awscli.customizations.cloudformation import utils
 
 LOG = logging.getLogger(__name__)
 
@@ -142,25 +143,7 @@ class S3Uploader(object):
             self.bucket_name, obj_path)
 
     def file_checksum(self, file_name):
-
-        with open(file_name, "rb") as file_handle:
-            md5 = hashlib.md5()
-            # Read file in chunks of 4096 bytes
-            block_size = 4096
-
-            # Save current cursor position and reset cursor to start of file
-            curpos = file_handle.tell()
-            file_handle.seek(0)
-
-            buf = file_handle.read(block_size)
-            while len(buf) > 0:
-                md5.update(buf)
-                buf = file_handle.read(block_size)
-
-            # Restore file cursor's position
-            file_handle.seek(curpos)
-
-            return md5.hexdigest()
+        return utils.hash_file(file_name)
 
     def to_path_style_s3_url(self, key, version=None):
         """

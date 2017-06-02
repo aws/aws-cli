@@ -341,17 +341,18 @@ class TestArtifactExporter(unittest.TestCase):
         zip_and_upload_mock.assert_not_called()
         self.s3_uploader_mock.upload_with_dedup.assert_not_called()
 
-
-    @patch("awscli.customizations.cloudformation.artifact_exporter.make_zip")
-    def test_zip_folder(self, make_zip_mock):
-        zip_file_name = "name.zip"
-        make_zip_mock.return_value = zip_file_name
+    @patch("awscli.customizations.cloudformation.artifact_exporter.utils")
+    def test_zip_folder(self, utils):
+        zip_file_name = "name"
+        utils.hash_dir = Mock()
+        utils.hash_dir.return_value = zip_file_name
 
         with self.make_temp_dir() as dirname:
-            with zip_folder(dirname) as actual_zip_file_name:
-                self.assertEqual(actual_zip_file_name, zip_file_name)
+            with zip_folder(dirname) as actual_zip_folder:
+                actual_zip_file_name = os.path.basename(actual_zip_folder)
+                self.assertEqual(actual_zip_file_name, zip_file_name + '.zip')
 
-        make_zip_mock.assert_called_once_with(mock.ANY, dirname)
+        utils.hash_dir.assert_called_once_with(dirname)
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.upload_local_artifacts")
     def test_resource(self, upload_local_artifacts_mock):

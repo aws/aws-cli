@@ -240,16 +240,18 @@ class TestS3Uploader(unittest.TestCase):
             uploader.file_exists(key)
 
     def test_file_checksum(self):
+        filename = 'tempfile'
         num_chars = 4096*5
         data = ''.join(random.choice(string.ascii_uppercase)
                        for _ in range(num_chars)).encode('utf-8')
         md5 = hashlib.md5()
+        md5.update(filename)
         md5.update(data)
         expected_checksum = md5.hexdigest()
 
         tempdir = tempfile.mkdtemp()
         try:
-            filename = os.path.join(tempdir, 'tempfile')
+            filename = os.path.join(tempdir, filename)
             with open(filename, 'wb') as f:
                 f.write(data)
 

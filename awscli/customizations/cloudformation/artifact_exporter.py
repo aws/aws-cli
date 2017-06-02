@@ -21,6 +21,7 @@ from awscli.compat import six
 
 from awscli.compat import urlparse
 from contextlib import contextmanager
+from awscli.customizations.cloudformation import utils
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump, \
     yaml_parse
@@ -146,7 +147,7 @@ def upload_local_artifacts(resource_id, resource_dict, property_name,
 
 def zip_and_upload(local_path, uploader):
     with zip_folder(local_path) as zipfile:
-            return uploader.upload_with_dedup(zipfile)
+            return uploader.upload(local_path, zipfile)
 
 
 @contextmanager
@@ -160,7 +161,7 @@ def zip_folder(folder_path):
     """
 
     filename = os.path.join(
-        tempfile.gettempdir(), "data-" + uuid.uuid4().hex)
+        tempfile.gettempdir(), utils.hash_dir(folder_path))
 
     zipfile_name = make_zip(filename, folder_path)
     try:

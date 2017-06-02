@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.97
+=======
+
+* api-change:``kinesisanalytics``: Update kinesisanalytics command to latest version
+* api-change:``workdocs``: Update workdocs command to latest version
+
+
 1.11.96
 =======
 

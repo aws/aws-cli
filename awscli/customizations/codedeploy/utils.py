@@ -99,9 +99,12 @@ def validate_iam_user_arn(params):
 
 def validate_instance(params):
     if platform.system() == 'Linux':
-        if 'Ubuntu' in platform.linux_distribution()[0]:
+        distribution = platform.linux_distribution()[0]
+
+        if 'Ubuntu' in distribution:
             params.system = Ubuntu(params)
-        if 'Red Hat Enterprise Linux Server' in platform.linux_distribution()[0]:
+        if 'Red Hat Enterprise Linux Server' in distribution \
+           or 'CentOS Linux' in distribution:
             params.system = RHEL(params)
     elif platform.system() == 'Windows':
         params.system = Windows(params)

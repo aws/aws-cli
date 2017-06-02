@@ -20,7 +20,7 @@ DEFAULT_CONFIG_FILE = 'codedeploy.onpremises.yml'
 
 class System:
     UNSUPPORTED_SYSTEM_MSG = (
-        'Only Ubuntu Server, Red Hat Enterprise Linux Server and '
+        'Only Ubuntu Server, Red Hat Enterprise Linux Server, CentOS and '
         'Windows Server operating systems are supported.'
     )
 

@@ -28,7 +28,7 @@ def random_string(n=10):
 def new_temp_file(tempdir):
     filepath = os.path.join(tempdir, random_string())
     with open(filepath, "wb") as f:
-        f.write(random_string(100))
+        f.write(random_string(100).encode('UTF-8'))
     return filepath
 
 

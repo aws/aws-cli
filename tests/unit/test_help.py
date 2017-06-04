@@ -99,8 +99,8 @@ class TestHelpPager(unittest.TestCase):
     def test_no_groff_exists(self):
         renderer = FakePosixHelpRenderer()
         renderer.exists_on_path['groff'] = False
-        expected_error = 'Could not find executable named "groff"'
-        with self.assertRaisesRegex(ExecutableNotFoundError, expected_error):
+        expected_error = 'Could not find executable named "groff or mandoc"'
+        with self.assertRaisesRegexp(ExecutableNotFoundError, expected_error):
             renderer.render('foo')
 
     @skip_if_windows('Requires POSIX system.')

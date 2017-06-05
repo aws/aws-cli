@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.98
+=======
+
+* api-change:``appstream``: Update appstream command to latest version
+* api-change:``iot``: Update iot command to latest version
+
+
 1.11.97
 =======
 

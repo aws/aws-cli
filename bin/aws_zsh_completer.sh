@@ -12,9 +12,6 @@
 # https://github.com/zsh-users/zsh/commit/edab1d3dbe61da7efe5f1ac0e40444b2ec9b9570
 #
 # zsh relases prior to that version do not export the required env variables!
-#
-# It is planned to write a proper zsh auto completion soon. Please talk
-# to Frank Becker <fb@alien8.de>.
 
 autoload -Uz bashcompinit
 bashcompinit -i

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.99
+=======
+
+* api-change:``iot``: Update iot command to latest version
+* api-change:``acm``: Update acm command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+
+
 1.11.98
 =======
 

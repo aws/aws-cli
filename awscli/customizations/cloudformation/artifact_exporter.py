@@ -173,6 +173,8 @@ def zip_folder(folder_path):
 def make_zip(filename, source_root):
     zipfile_name = "{0}.zip".format(filename)
     source_root = os.path.abspath(source_root)
+    time_1980 = 315532800
+    
     with open(zipfile_name, 'wb') as f:
         zip_file = zipfile.ZipFile(f, 'w', zipfile.ZIP_DEFLATED)
         with contextlib.closing(zip_file) as zf:
@@ -181,6 +183,15 @@ def make_zip(filename, source_root):
                     full_path = os.path.join(root, filename)
                     relative_path = os.path.relpath(
                         full_path, source_root)
+                    
+                    stat_info = os.stat(full_path)
+                    if stat_info.st_atime < time_1980 or stat_info.st_mtime < time_1980:
+                        try:
+                            os.utime(full_path, (time_1980, time_1980))
+                        except OSError:
+                            raise ValueError('Cannot modify file timestamps for {} '
+                            '(ZIP does not support timestamps before 1980)'.format(full_path))
+
                     zf.write(full_path, relative_path)
 
     return zipfile_name

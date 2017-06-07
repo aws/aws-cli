@@ -86,6 +86,7 @@ The valid values of the ``output`` configuration variable are:
 * json
 * table
 * text
+* count
 
 ``cli_timestamp_format`` controls the format of timestamps displayed by the AWS CLI.
 The valid values of the ``cli_timestamp_format`` configuration varaible are:

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.11.101
+========
+
+* api-change:``rekognition``: Update rekognition command to latest version
+* enhancement:cloudformation: Added support for S3 HTTPS urls.
+* api-change:``iot``: Update iot command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+
+
 1.11.100
 ========
 

@@ -88,7 +88,6 @@ class Deployer(object):
         # Each changeset will get a unique name based on time
         changeset_name = self.changeset_prefix + str(int(time.time()))
 
-        changeset_type = "UPDATE"
         if not self.has_stack(stack_name):
             changeset_type = "CREATE"
             # When creating a new stack, UsePreviousValue=True is invalid.
@@ -96,6 +95,15 @@ class Deployer(object):
             # or set a Default value in template to successfully create a stack.
             parameter_values = [x for x in parameter_values
                                 if not x.get("UsePreviousValue", False)]
+        else:
+            changeset_type = "UPDATE"
+            # UsePreviousValue not valid if parameter is new
+            summary = self._client.get_template_summary(StackName=stack_name)
+            existing_parameters = [parameter['ParameterKey'] for parameter in \
+                                   summary['Parameters']]
+            parameter_values = [x for x in parameter_values
+                                if not (x.get("UsePreviousValue", False) and \
+                                x["ParameterKey"] not in existing_parameters)]
 
         kwargs = {
             'ChangeSetName': changeset_name,

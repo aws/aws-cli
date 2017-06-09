@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.102
+========
+
+* api-change:``opsworks``: Update opsworks command to latest version
+
+
 1.11.101
 ========
 

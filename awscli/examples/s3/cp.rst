@@ -73,7 +73,7 @@ When passed with the parameter ``--recursive``, the following ``cp`` command rec
 specifed bucket to another bucket while excluding some objects by using an ``--exclude`` parameter.  In this example,
 the bucket ``mybucket`` has the objects ``test1.txt`` and ``another/test1.txt``::
 
-    aws s3 cp s3://mybucket/ s3://mybucket2/ --recursive --exclude "mybucket/another/*"
+    aws s3 cp s3://mybucket/ s3://mybucket2/ --recursive --exclude "another/*"
 
 Output::
 

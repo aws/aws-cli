@@ -185,14 +185,13 @@ def make_zip(filename, source_root):
                         full_path, source_root)
                     
                     stat_info = os.stat(full_path)
-                    if stat_info.st_atime < time_1980 or stat_info.st_mtime < time_1980:
-                        try:
-                            os.utime(full_path, (time_1980, time_1980))
-                        except OSError:
-                            raise ValueError('Cannot modify file timestamps for {} '
-                            '(ZIP does not support timestamps before 1980)'.format(full_path))
-
-                    zf.write(full_path, relative_path)
+                    if stat_info.st_mtime < time_1980:
+                        with open(full_path, mode='rb') as file:
+                            data = file.read()
+                            zf.writestr(relative_path, data)
+                            
+                    else:
+                        zf.write(full_path, relative_path)
 
     return zipfile_name
 

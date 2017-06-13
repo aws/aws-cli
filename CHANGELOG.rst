@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.104
+========
+
+* api-change:``config``: Update config command to latest version
+
+
 1.11.103
 ========
 

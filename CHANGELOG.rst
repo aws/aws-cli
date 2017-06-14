@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.105
+========
+
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``clouddirectory``: Update clouddirectory command to latest version
+
+
 1.11.104
 ========
 

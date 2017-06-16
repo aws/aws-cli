@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.11.106
+========
+
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.11.105
 ========
 

@@ -415,7 +415,7 @@ class TestCp(BaseS3IntegrationTest):
     @skip_if_windows('SIGINT not supported on Windows.')
     def test_download_ctrl_c_does_not_hang(self):
         bucket_name = _SHARED_BUCKET
-        foo_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 20))
+        foo_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 40))
         self.put_object(bucket_name, key_name='foo.txt',
                         contents=foo_contents)
         local_foo_txt = self.files.full_path('foo.txt')

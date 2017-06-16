@@ -819,6 +819,14 @@ class BaseS3CLICommand(unittest.TestCase):
         except (ClientError, WaiterError):
             return False
 
+    def key_not_exists(self, bucket_name, key_name, min_successes=3):
+        try:
+            self.wait_until_key_not_exists(
+                    bucket_name, key_name, min_successes=min_successes)
+            return True
+        except (ClientError, WaiterError):
+            return False
+
     def list_buckets(self):
         response = self.client.list_buckets()
         return response['Buckets']
@@ -834,8 +842,21 @@ class BaseS3CLICommand(unittest.TestCase):
 
     def wait_until_key_exists(self, bucket_name, key_name, extra_params=None,
                               min_successes=3):
+        self._wait_for_key(bucket_name, key_name, extra_params,
+                           min_successes, exists=True)
+
+    def wait_until_key_not_exists(self, bucket_name, key_name, extra_params=None,
+                                  min_successes=3):
+        self._wait_for_key(bucket_name, key_name, extra_params,
+                           min_successes, exists=False)
+
+    def _wait_for_key(self, bucket_name, key_name, extra_params=None,
+                      min_successes=3, exists=True):
         client = self.create_client_for_bucket(bucket_name)
-        waiter = client.get_waiter('object_exists')
+        if exists:
+            waiter = client.get_waiter('object_exists')
+        else:
+            waiter = client.get_waiter('object_not_exists')
         params = {'Bucket': bucket_name, 'Key': key_name}
         if extra_params is not None:
             params.update(extra_params)

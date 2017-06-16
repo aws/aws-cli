@@ -50,6 +50,7 @@ from awscli.compat import six
 from botocore.hooks import HierarchicalEmitter
 from botocore.session import Session
 from botocore.exceptions import ClientError
+from botocore.exceptions import WaiterError
 import botocore.loaders
 from botocore.vendored import requests
 
@@ -810,12 +811,12 @@ class BaseS3CLICommand(unittest.TestCase):
         response = client.get_object(Bucket=bucket_name, Key=key_name)
         return response['Body'].read().decode('utf-8')
 
-    def key_exists(self, bucket_name, key_name):
-        client = self.create_client_for_bucket(bucket_name)
+    def key_exists(self, bucket_name, key_name, min_successes=3):
         try:
-            client.head_object(Bucket=bucket_name, Key=key_name)
+            self.wait_until_key_exists(
+                    bucket_name, key_name, min_successes=min_successes)
             return True
-        except ClientError:
+        except (ClientError, WaiterError):
             return False
 
     def list_buckets(self):

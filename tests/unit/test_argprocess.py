@@ -650,7 +650,7 @@ class TestDocGen(BaseArgProcessTest):
     def test_can_document_nested_structs(self):
         argument = self.get_param_model('ec2.RunInstances.BlockDeviceMappings')
         generated_example = self.get_generated_example_for(argument)
-        self.assertIn('Ebs={SnapshotId=string', generated_example)
+        self.assertRegexpMatches(generated_example, 'Ebs={\w+=\w+')
 
     def test_can_document_nested_lists(self):
         argument = self.create_argument({

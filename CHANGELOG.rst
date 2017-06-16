@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.107
+========
+
+* api-change:``xray``: Update xray command to latest version
+
+
 1.11.106
 ========
 

@@ -151,8 +151,8 @@ class FileGenerator(object):
 
     def _inject_extra_information(self, file_stat_kwargs, extra_information):
         src_type = file_stat_kwargs['src_type']
-        file_stat_kwargs['size'] = extra_information.get('Size')
-        file_stat_kwargs['last_update'] = extra_information.get('LastModified')
+        file_stat_kwargs['size'] = extra_information['Size']
+        file_stat_kwargs['last_update'] = extra_information['LastModified']
 
         # S3 objects require the response data retrieved from HeadObject
         # and ListObject
@@ -345,7 +345,7 @@ class FileGenerator(object):
             # no need to run HeadObject on the S3 object as none of the
             # information gained from HeadObject is required to delete the
             # object.
-            return s3_path, {}
+            return s3_path, {'Size': None, 'LastModified': None}
         bucket, key = find_bucket_key(s3_path)
         try:
             params = {'Bucket': bucket, 'Key': key}

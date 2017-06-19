@@ -164,7 +164,7 @@ class TestMoveCommand(BaseS3IntegrationTest):
         with open(full_path, 'r') as f:
             self.assertEqual(f.read(), 'this is foo.txt')
         # The s3 file should not be there anymore.
-        self.assertTrue(not self.key_exists(bucket_name, key_name='foo.txt'))
+        self.assertTrue(self.key_not_exists(bucket_name, key_name='foo.txt'))
 
     def test_mv_s3_to_s3(self):
         from_bucket = _SHARED_BUCKET
@@ -177,7 +177,7 @@ class TestMoveCommand(BaseS3IntegrationTest):
         contents = self.get_key_contents(to_bucket, 'foo.txt')
         self.assertEqual(contents, 'this is foo.txt')
         # And verify that the object no longer exists in the from_bucket.
-        self.assertTrue(not self.key_exists(from_bucket, key_name='foo.txt'))
+        self.assertTrue(self.key_not_exists(from_bucket, key_name='foo.txt'))
 
     @attr('slow')
     def test_mv_s3_to_s3_multipart(self):
@@ -191,7 +191,7 @@ class TestMoveCommand(BaseS3IntegrationTest):
         self.assert_no_errors(p)
         self.assert_key_contents_equal(to_bucket, 'foo.txt', file_contents)
         # And verify that the object no longer exists in the from_bucket.
-        self.assertTrue(not self.key_exists(from_bucket, key_name='foo.txt'))
+        self.assertTrue(self.key_not_exists(from_bucket, key_name='foo.txt'))
 
     def test_mv_s3_to_s3_multipart_recursive(self):
         from_bucket = _SHARED_BUCKET
@@ -206,9 +206,9 @@ class TestMoveCommand(BaseS3IntegrationTest):
                                                          to_bucket))
         self.assert_no_errors(p)
         # Nothing's in the from_bucket.
-        self.assertTrue(not self.key_exists(from_bucket,
+        self.assertTrue(self.key_not_exists(from_bucket,
                                             key_name='largefile'))
-        self.assertTrue(not self.key_exists(from_bucket,
+        self.assertTrue(self.key_not_exists(from_bucket,
                                             key_name='smallfile'))
 
         # And both files are in the to_bucket.
@@ -238,7 +238,7 @@ class TestMoveCommand(BaseS3IntegrationTest):
                         file_name))
         self.assert_no_errors(p)
 
-        self.assertFalse(self.key_exists(from_bucket, file_name))
+        self.assertTrue(self.key_not_exists(from_bucket, file_name))
         self.assertTrue(self.key_exists(to_bucket, file_name))
 
     @attr('slow')
@@ -312,7 +312,7 @@ class TestRm(BaseS3IntegrationTest):
         p = aws('s3 rm s3://%s/ --recursive' % (bucket_name,))
 
         # And verify it's gone.
-        self.assertFalse(self.key_exists(bucket_name, key_name='foo\r.txt'))
+        self.assertTrue(self.key_not_exists(bucket_name, key_name='foo\r.txt'))
 
     def test_rm_with_page_size(self):
         bucket_name = _SHARED_BUCKET
@@ -321,8 +321,8 @@ class TestRm(BaseS3IntegrationTest):
         p = aws('s3 rm s3://%s/ --recursive --page-size 1' % bucket_name)
         self.assert_no_errors(p)
 
-        self.assertFalse(self.key_exists(bucket_name, key_name='foo.txt'))
-        self.assertFalse(self.key_exists(bucket_name, key_name='bar.txt'))
+        self.assertTrue(self.key_not_exists(bucket_name, key_name='foo.txt'))
+        self.assertTrue(self.key_not_exists(bucket_name, key_name='bar.txt'))
 
 
 class TestCp(BaseS3IntegrationTest):
@@ -415,7 +415,7 @@ class TestCp(BaseS3IntegrationTest):
     @skip_if_windows('SIGINT not supported on Windows.')
     def test_download_ctrl_c_does_not_hang(self):
         bucket_name = _SHARED_BUCKET
-        foo_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 20))
+        foo_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 40))
         self.put_object(bucket_name, key_name='foo.txt',
                         contents=foo_contents)
         local_foo_txt = self.files.full_path('foo.txt')
@@ -781,7 +781,7 @@ class TestSync(BaseS3IntegrationTest):
                 (self.files.rootdir, dst_bucket, dst_region))
         self.assert_no_errors(p)
         self.assertTrue(self.key_exists(dst_bucket, dst_key_name))
-        self.assertFalse(self.key_exists(dst_bucket, src_key_name))
+        self.assertTrue(self.key_not_exists(dst_bucket, src_key_name))
 
         p = aws('s3 sync --delete s3://%s s3://%s '
                 '--source-region %s --region %s' %
@@ -790,8 +790,8 @@ class TestSync(BaseS3IntegrationTest):
 
         self.assertTrue(self.key_exists(src_bucket, src_key_name))
         self.assertTrue(self.key_exists(dst_bucket, src_key_name))
-        self.assertFalse(self.key_exists(src_bucket, dst_key_name))
-        self.assertFalse(self.key_exists(dst_bucket, dst_key_name))
+        self.assertTrue(self.key_not_exists(src_bucket, dst_key_name))
+        self.assertTrue(self.key_not_exists(dst_bucket, dst_key_name))
 
     def test_sync_delete_locally(self):
         bucket_name = _SHARED_BUCKET
@@ -865,8 +865,9 @@ class TestSourceRegion(BaseS3IntegrationTest):
         self.assertEqual(p2.rc, 0, p2.stdout)
         self.assertTrue(
             self.key_exists(bucket_name=self.dest_bucket, key_name='foo.txt'))
-        self.assertFalse(
-            self.key_exists(bucket_name=self.src_bucket, key_name='foo.txt'))
+        self.assertTrue(
+            self.key_not_exists(
+                bucket_name=self.src_bucket, key_name='foo.txt'))
 
     @attr('slow')
     def test_mv_large_file_region(self):
@@ -883,8 +884,9 @@ class TestSourceRegion(BaseS3IntegrationTest):
         self.assert_no_errors(p2)
         self.assertTrue(
             self.key_exists(bucket_name=self.dest_bucket, key_name='foo.txt'))
-        self.assertFalse(
-            self.key_exists(bucket_name=self.src_bucket, key_name='foo.txt'))
+        self.assertTrue(
+            self.key_not_exists(
+                bucket_name=self.src_bucket, key_name='foo.txt'))
 
 
 class TestWarnings(BaseS3IntegrationTest):
@@ -991,11 +993,11 @@ class TestSymlinks(BaseS3IntegrationTest):
         p = aws('s3 sync %s s3://%s/ --no-follow-symlinks' % (
             self.files.rootdir, self.bucket_name))
         self.assert_no_errors(p)
-        self.assertTrue(not self.key_exists(self.bucket_name,
+        self.assertTrue(self.key_not_exists(self.bucket_name,
                         'a-goodsymlink'))
-        self.assertTrue(not self.key_exists(self.bucket_name,
+        self.assertTrue(self.key_not_exists(self.bucket_name,
                         'b-badsymlink'))
-        self.assertTrue(not self.key_exists(self.bucket_name,
+        self.assertTrue(self.key_not_exists(self.bucket_name,
                         'c-goodsymlink/foo.txt'))
         self.assertEqual(self.get_key_contents(self.bucket_name,
                                                key_name='realfiles/foo.txt'),
@@ -1010,7 +1012,7 @@ class TestSymlinks(BaseS3IntegrationTest):
         self.assertEqual(self.get_key_contents(self.bucket_name,
                                                key_name='a-goodsymlink'),
                          'foo.txt contents')
-        self.assertTrue(not self.key_exists(self.bucket_name,
+        self.assertTrue(self.key_not_exists(self.bucket_name,
                         'b-badsymlink'))
         self.assertEqual(
             self.get_key_contents(self.bucket_name,
@@ -1029,7 +1031,7 @@ class TestSymlinks(BaseS3IntegrationTest):
         self.assertEqual(self.get_key_contents(self.bucket_name,
                                                key_name='a-goodsymlink'),
                          'foo.txt contents')
-        self.assertTrue(not self.key_exists(self.bucket_name,
+        self.assertTrue(self.key_not_exists(self.bucket_name,
                         'b-badsymlink'))
         self.assertEqual(
             self.get_key_contents(self.bucket_name,
@@ -1318,7 +1320,7 @@ class TestDryrun(BaseS3IntegrationTest):
         p = aws('s3 cp %s s3://%s/ --dryrun' % (foo_txt, bucket_name))
         self.assertEqual(p.rc, 0)
         self.assert_no_errors(p)
-        self.assertFalse(self.key_exists(bucket_name, 'foo.txt'))
+        self.assertTrue(self.key_not_exists(bucket_name, 'foo.txt'))
 
     def test_dryrun_large_files(self):
         bucket_name = _SHARED_BUCKET
@@ -1328,8 +1330,8 @@ class TestDryrun(BaseS3IntegrationTest):
         p = aws('s3 cp %s s3://%s/ --dryrun' % (foo_txt, bucket_name))
         self.assertEqual(p.rc, 0)
         self.assert_no_errors(p)
-        self.assertFalse(
-            self.key_exists(bucket_name, 'foo.txt'),
+        self.assertTrue(
+            self.key_not_exists(bucket_name, 'foo.txt'),
             "The key 'foo.txt' exists in S3. It looks like the --dryrun "
             "argument was not obeyed.")
 
@@ -2036,6 +2038,20 @@ class TestSSECRelatedParams(BaseS3IntegrationTest):
 
         self.download_and_assert_sse_c_object_integrity(
             self.bucket, key, self.encrypt_key, contents)
+
+    def test_can_delete_single_sse_c_object(self):
+        key = 'foo.txt'
+        contents = 'contents'
+        self.put_object(
+            self.bucket, key, contents,
+            extra_args={
+                'SSECustomerKey': self.encrypt_key,
+                'SSECustomerAlgorithm': 'AES256'
+            }
+        )
+        p = aws('s3 rm s3://%s/%s' % (self.bucket, key))
+        self.assert_no_errors(p)
+        self.assertFalse(self.key_exists(self.bucket, key))
 
     def test_sse_c_upload_and_download_large_file(self):
         key = 'foo.txt'

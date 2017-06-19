@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.108
+========
+
+* bugfix:``s3 rm``: Remove unnecessary HeadObject call for non-recursive ``s3 rm``. This caused errors when a remote S3 object was encrypted with SSE-C as HeadObject call requires the SSE-C key but DeleteObject does not (`#2494 <https://github.com/aws/aws-cli/issues/2494>`__)
+* api-change:``organizations``: Update organizations command to latest version
+
+
 1.11.107
 ========
 

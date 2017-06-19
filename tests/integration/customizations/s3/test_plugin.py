@@ -2039,6 +2039,20 @@ class TestSSECRelatedParams(BaseS3IntegrationTest):
         self.download_and_assert_sse_c_object_integrity(
             self.bucket, key, self.encrypt_key, contents)
 
+    def test_can_delete_single_sse_c_object(self):
+        key = 'foo.txt'
+        contents = 'contents'
+        self.put_object(
+            self.bucket, key, contents,
+            extra_args={
+                'SSECustomerKey': self.encrypt_key,
+                'SSECustomerAlgorithm': 'AES256'
+            }
+        )
+        p = aws('s3 rm s3://%s/%s' % (self.bucket, key))
+        self.assert_no_errors(p)
+        self.assertFalse(self.key_exists(self.bucket, key))
+
     def test_sse_c_upload_and_download_large_file(self):
         key = 'foo.txt'
         contents = 'a' * (10 * (1024 * 1024))

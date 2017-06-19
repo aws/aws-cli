@@ -340,6 +340,12 @@ class FileGenerator(object):
         # a ListObjects operation (which causes concern for anyone setting
         # IAM policies with the smallest set of permissions needed) and
         # instead use a HeadObject request.
+        if self.operation_name == 'delete':
+            # If the operation is just a single remote delete, there is
+            # no need to run HeadObject on the S3 object as none of the
+            # information gained from HeadObject is required to delete the
+            # object.
+            return s3_path, {'Size': None, 'LastModified': None}
         bucket, key = find_bucket_key(s3_path)
         try:
             params = {'Bucket': bucket, 'Key': key}

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.109
+========
+
+* api-change:``workdocs``: Update workdocs command to latest version
+
+
 1.11.108
 ========
 

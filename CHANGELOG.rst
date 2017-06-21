@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.11.110
+========
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``waf``: Update waf command to latest version
+* api-change:``waf-regional``: Update waf-regional command to latest version
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``dax``: Update dax command to latest version
+
+
 1.11.109
 ========
 

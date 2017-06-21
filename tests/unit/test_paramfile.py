@@ -67,7 +67,7 @@ class TestParamFile(unittest.TestCase):
         contents = b'\xe9\x96\xa2\xe6\x88\xb8\xe3\x81\xa6\xe3\x81\x99\xe3\x81\xa8'
         filename = self.files.create_file('foo', contents, mode='wb')
         data = get_file('', filename, 'r')
-        self.assertEqual(data, u'関戸てすと')
+        self.assertEqual(data, u'\u95a2\u6238\u3066\u3059\u3068')
         self.assertIsInstance(data, six.string_types)
 
     @unittest.skipIf(locale.getpreferredencoding() != 'cp932',
@@ -76,7 +76,7 @@ class TestParamFile(unittest.TestCase):
         contents = b'\x8a\xd6\x8c\xcb\x82\xc4\x82\xb7\x82\xc6'
         filename = self.files.create_file('foo', contents, mode='wb')
         data = get_file('', filename, 'r')
-        self.assertEqual(data, u'関戸てすと')
+        self.assertEqual(data, u'\u95a2\u6238\u3066\u3059\u3068')
         self.assertIsInstance(data, six.string_types)
 
 

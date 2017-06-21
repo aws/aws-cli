@@ -88,7 +88,9 @@ if six.PY3:
         encoding.
 
         """
-        if 'b' not in mode:
+        if 'b' in mode:
+            encoding = None
+        elif encoding is None:
             encoding = locale.getpreferredencoding()
         return open(filename, mode, encoding=encoding)
 
@@ -145,7 +147,9 @@ else:
 
     def compat_open(filename, mode='r', encoding=None):
         # See docstring for compat_open in the PY3 section above.
-        if 'b' not in mode:
+        if 'b' in mode:
+            encoding = None
+        elif encoding is None:
             encoding = locale.getpreferredencoding()
         return io.open(filename, mode, encoding=encoding)
 

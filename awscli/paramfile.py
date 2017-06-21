@@ -116,8 +116,14 @@ def get_paramfile(path):
 def get_file(prefix, path, mode):
     file_path = os.path.expandvars(os.path.expanduser(path[len(prefix):]))
     try:
-        with compat_open(file_path, mode) as f:
-            return f.read()
+        try:
+            # almost utf-8
+            with compat_open(file_path, mode, 'utf-8') as f:
+                return f.read()
+        except UnicodeDecodeError:
+            # system default encoding
+            with compat_open(file_path, mode) as f:
+                return f.read()
     except UnicodeDecodeError:
         raise ResourceLoadingError(
             'Unable to load paramfile (%s), text contents could '

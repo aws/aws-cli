@@ -12,12 +12,13 @@
 # language governing permissions and limitations under the License.
 import platform
 
+import locale
 import mock
 from awscli.compat import six
 from awscli.testutils import unittest, FileCreator
 from awscli.testutils import skip_if_windows
 
-from awscli.paramfile import get_paramfile, ResourceLoadingError
+from awscli.paramfile import get_paramfile, get_file, ResourceLoadingError
 
 
 class TestParamFile(unittest.TestCase):
@@ -61,6 +62,22 @@ class TestParamFile(unittest.TestCase):
 
     def test_non_string_type_returns_none(self):
         self.assertIsNone(get_paramfile(100))
+
+    def test_get_file_utf8_text(self):
+        contents = b'\xe9\x96\xa2\xe6\x88\xb8\xe3\x81\xa6\xe3\x81\x99\xe3\x81\xa8'
+        filename = self.files.create_file('foo', contents, mode='wb')
+        data = get_file('', filename, 'r')
+        self.assertEqual(data, u'関戸てすと')
+        self.assertIsInstance(data, six.string_types)
+
+    @unittest.skipIf(locale.getpreferredencoding() != 'cp932',
+            'encoding fallback test with cp932 system')
+    def test_get_file_fallback_platformdefault_in_cp932(self):
+        contents = b'\x8a\xd6\x8c\xcb\x82\xc4\x82\xb7\x82\xc6'
+        filename = self.files.create_file('foo', contents, mode='wb')
+        data = get_file('', filename, 'r')
+        self.assertEqual(data, u'関戸てすと')
+        self.assertIsInstance(data, six.string_types)
 
 
 class TestHTTPBasedResourceLoading(unittest.TestCase):

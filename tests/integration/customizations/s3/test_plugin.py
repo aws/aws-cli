@@ -424,7 +424,7 @@ class TestCp(BaseS3IntegrationTest):
         process = aws('s3 cp s3://%s/foo.txt %s --quiet' %
                       (bucket_name, local_foo_txt), wait_for_finish=False)
         # Give it some time to start up and enter it's main task loop.
-        time.sleep(2)
+        time.sleep(3)
         # The process has 60 seconds to finish after being sent a Ctrl+C,
         # otherwise the test fails.
         process.send_signal(signal.SIGINT)
@@ -433,7 +433,13 @@ class TestCp(BaseS3IntegrationTest):
         # We either caught the process in
         # its main polling loop (rc=1), or it was successfully terminated by
         # the SIGINT (rc=-2).
-        self.assertIn(process.returncode, [1, -2])
+        #
+        # There is also the chance the interrupt happened before the transfer
+        # process started or even after transfer process finished. So the
+        # signal may have never been encountered, resulting in an rc of 0.
+        # Therefore, it is acceptable to have an rc of 0 as the important part
+        # about this test is that it does not hang.
+        self.assertIn(process.returncode, [0, 1, -2])
 
     @attr('slow')
     @skip_if_windows('SIGINT not supported on Windows.')

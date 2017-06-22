@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.11.111
+========
+
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``dms``: Update dms command to latest version
+
+
 1.11.110
 ========
 

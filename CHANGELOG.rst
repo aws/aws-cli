@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.112
+========
+
+* api-change:``lambda``: Update lambda command to latest version
+
+
 1.11.111
 ========
 

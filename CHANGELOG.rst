@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.114
+========
+
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``events``: Update events command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
 1.11.113
 ========
 

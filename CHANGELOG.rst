@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.115
+========
+
+* api-change:``marketplacecommerceanalytics``: Update marketplacecommerceanalytics command to latest version
+* api-change:``s3``: Update s3 command to latest version
+
+
 1.11.114
 ========
 

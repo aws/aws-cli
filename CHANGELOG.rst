@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.116
+========
+
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+
+
 1.11.115
 ========
 

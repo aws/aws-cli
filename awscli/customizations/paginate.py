@@ -39,7 +39,7 @@ logger = logging.getLogger(__name__)
 STARTING_TOKEN_HELP = """
 <p>A token to specify where to start paginating.  This is the
 <code>NextToken</code> from a previously truncated response.</p>
-<p>For more information, see <a
+<p>For usage examples, see <a
 href="https://docs.aws.amazon.com/cli/latest/userguide/pagination.html"
 >Pagination</a> in the <i>AWS Command Line Interface User
 Guide</i>.</p>
@@ -54,7 +54,7 @@ output.  To resume pagination, provide the
 argument of a subsequent command.  <b>Do not</b> use the
 <code>NextToken</code> response element directly outside of the
 AWS CLI.</p>
-<p>For more information, see <a
+<p>For usage examples, see <a
 href="https://docs.aws.amazon.com/cli/latest/userguide/pagination.html"
 >Pagination</a> in the <i>AWS Command Line Interface User
 Guide</i>.</p>
@@ -66,7 +66,7 @@ does not affect the number of items returned in the command's
 output.  Setting a smaller page size results in more calls to
 the AWS service, retrieving fewer items in each call.  This can
 help prevent the AWS service calls from timing out.</p>
-<p>For more information, see <a
+<p>For usage examples, see <a
 href="https://docs.aws.amazon.com/cli/latest/userguide/pagination.html"
 >Pagination</a> in the <i>AWS Command Line Interface User
 Guide</i>.</p>

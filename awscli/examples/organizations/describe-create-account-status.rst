@@ -9,7 +9,7 @@ Command::
 Output::
 
   {
-    "CreateAccountStatusRequest": {
+    "CreateAccountStatus": {
       "State": "SUCCEEDED",
       "AccountId": "555555555555",
       "AccountName": "Beta account",

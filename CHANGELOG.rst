@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.11.117
+========
+
+* api-change:``kinesis``: Update kinesis command to latest version
+* api-change:``kms``: Update kms command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``ds``: Update ds command to latest version
+
+
 1.11.116
 ========
 

@@ -124,8 +124,8 @@ class Deployer(object):
 
         # Wait for changeset to be created
         waiter = self._client.get_waiter("change_set_create_complete")
-        # Poll every 10 seconds. Changeset creation should be fast
-        waiter.config.delay = 10
+        # Poll every 5 seconds. Changeset creation should be fast
+        waiter.config.delay = 5
         try:
             waiter.wait(ChangeSetName=changeset_id, StackName=stack_name)
         except botocore.exceptions.WaiterError as ex:
@@ -168,6 +168,10 @@ class Deployer(object):
         else:
             raise RuntimeError("Invalid changeset type {0}"
                                .format(changeset_type))
+
+        # Poll every 5 seconds. Optimizing for the case when the stack has only
+        # minimal changes, such the Code for Lambda Function
+        waiter.config.delay = 5
 
         try:
             waiter.wait(StackName=stack_name)

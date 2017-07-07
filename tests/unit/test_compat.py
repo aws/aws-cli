@@ -10,10 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-
-from awscli.compat import ensure_text_type
+from nose.tools import assert_equal
 from botocore.compat import six
 
+from awscli.compat import ensure_text_type
+from awscli.compat import compat_shell_quote
 from awscli.testutils import unittest
 
 
@@ -46,3 +47,39 @@ class TestEnsureText(unittest.TestCase):
         value = 500
         with self.assertRaises(ValueError):
             ensure_text_type(value)
+
+
+def test_compat_shell_quote_windows():
+    windows_cases = {
+        '': '""',
+        '"': '\\"',
+        '\\': '\\',
+        '\\a': '\\a',
+        '\\\\': '\\\\',
+        '\\"': '\\\\\\"',
+        '\\\\"': '\\\\\\\\\\"',
+        'foo bar': '"foo bar"',
+        'foo\tbar': '"foo\tbar"',
+    }
+    for input_string, expected_output in windows_cases.items():
+        yield ShellQuoteTestCase().run, input_string, expected_output, "win32"
+
+
+def test_comat_shell_quote_unix():
+    unix_cases = {
+        "": "''",
+        "*": "'*'",
+        "foo": "foo",
+        "foo bar": "'foo bar'",
+        "foo\tbar": "'foo\tbar'",
+        "foo\nbar": "'foo\nbar'",
+        "foo'bar": "'foo'\"'\"'bar'",
+    }
+    for input_string, expected_output in unix_cases.items():
+        yield ShellQuoteTestCase().run, input_string, expected_output, "linux2"
+        yield ShellQuoteTestCase().run, input_string, expected_output, "darwin"
+
+
+class ShellQuoteTestCase(object):
+    def run(self, s, expected, platform=None):
+        assert_equal(compat_shell_quote(s, platform), expected)

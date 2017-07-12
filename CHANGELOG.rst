@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.11.118
+========
+
+* bugfix:Aliases: Properly quote alias parameters that have spaces in them. Fixes `#2653 <https://github.com/aws/aws-cli/issues/2653>`__.
+* api-change:``swf``: Update swf command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* enhancement:Cloudformation: Reduce polling delay for `cloudformation deploy`.
+
+
 1.11.117
 ========
 

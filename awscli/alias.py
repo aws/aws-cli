@@ -17,6 +17,7 @@ import subprocess
 
 from botocore.configloader import raw_config_parse
 
+from awscli.compat import compat_shell_quote
 from awscli.commands import CLICommand
 from awscli.utils import emit_top_level_args_parsed_event
 
@@ -274,7 +275,7 @@ class ExternalAliasCommand(BaseAliasCommand):
         command_components = [
             self._alias_value[1:]
         ]
-        command_components.extend(args)
+        command_components.extend(compat_shell_quote(a) for a in args)
         command = ' '.join(command_components)
         LOG.debug(
             'Using external alias %r with value: %r to run: %r',

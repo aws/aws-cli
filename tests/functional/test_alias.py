@@ -211,6 +211,12 @@ class TestAliases(BaseAWSCommandParamsTest):
         self.run_cmd('mkdir %s' % directory_to_make)
         self.assertTrue(os.path.isdir(directory_to_make))
 
+    def test_external_alias_with_quoted_arguments(self):
+        directory_to_make = os.path.join(self.files.rootdir, 'new dir')
+        self.add_alias('mkdir', '!mkdir')
+        self.run_cmd(['mkdir', directory_to_make])
+        self.assertTrue(os.path.isdir(directory_to_make))
+
     @skip_if_windows('Windows does not support BASH functions')
     def test_external_alias_with_wrapper_bash_function(self):
         # The external alias is tested by using mkdir; a command that

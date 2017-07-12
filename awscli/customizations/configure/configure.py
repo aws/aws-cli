@@ -19,6 +19,7 @@ from awscli.compat import compat_input
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure.addmodel import AddModelCommand
 from awscli.customizations.configure.set import ConfigureSetCommand
+from awscli.customizations.configure.rotate import ConfigureRotateCommand
 from awscli.customizations.configure.get import ConfigureGetCommand
 from awscli.customizations.configure.list import ConfigureListCommand
 from awscli.customizations.configure.writer import ConfigFileWriter
@@ -72,6 +73,7 @@ class ConfigureCommand(BasicCommand):
     SUBCOMMANDS = [
         {'name': 'list', 'command_class': ConfigureListCommand},
         {'name': 'get', 'command_class': ConfigureGetCommand},
+        {'name': 'rotate-access-key', 'command_class': ConfigureRotateCommand},
         {'name': 'set', 'command_class': ConfigureSetCommand},
         {'name': 'add-model', 'command_class': AddModelCommand}
     ]

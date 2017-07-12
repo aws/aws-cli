@@ -66,8 +66,13 @@ class TestIntegGenerateCliSkeleton(unittest.TestCase):
         self.assertEqual(p.rc, 0)
         self.assertEqual(
             json.loads(p.stdout),
-            {'Bucket': '','Key': '', 'MFA': '', 'VersionId': '',
-             'RequestPayer': ''}
+            {
+                'Bucket': '',
+                'Key': '',
+                'MFA': '',
+                'VersionId': '',
+                'RequestPayer': 'requester',
+            }
         )
 
     def test_generate_cli_skeleton_sqs(self):

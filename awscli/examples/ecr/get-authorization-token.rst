@@ -32,8 +32,8 @@ returns the decoded password for you to use in a ``docker login`` command.
 Command::
 
   aws ecr get-authorization-token --output text \
-  --query authorizationData[].authorizationToken \
-  | base64 -d | cut -d: -f2
+  --query 'authorizationData[].authorizationToken' \
+  | base64 -D | cut -d: -f2
 
 
 **To `docker login` with your decoded password**

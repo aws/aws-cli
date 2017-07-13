@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.119
+========
+
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+
+
 1.11.118
 ========
 

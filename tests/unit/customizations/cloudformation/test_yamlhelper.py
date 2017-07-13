@@ -84,3 +84,8 @@ class TestYaml(unittest.TestCase):
         actual_output = yaml_parse(input)
         self.assertEquals(actual_output, output)
 
+    def test_parse_json_with_tabs(self):
+        template = '{\n\t"foo": "bar"\n}'
+        output = yaml_parse(template)
+        self.assertEqual(output, {'foo': 'bar'})
+

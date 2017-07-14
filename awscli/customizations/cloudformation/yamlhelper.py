@@ -10,10 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-
+import json
 import yaml
-from awscli.compat import six
 from yaml.resolver import ScalarNode, SequenceNode
+
+from awscli.compat import six
 
 
 def intrinsics_multi_constructor(loader, tag_prefix, node):
@@ -63,7 +64,13 @@ def yaml_dump(dict_to_dump):
 
 
 def yaml_parse(yamlstr):
-
-    yaml.SafeLoader.add_multi_constructor("!", intrinsics_multi_constructor)
-
-    return yaml.safe_load(yamlstr)
+    """Parse a yaml string"""
+    try:
+        # PyYAML doesn't support json as well as it should, so if the input
+        # is actually just json it is better to parse it with the standard
+        # json parser.
+        return json.loads(yamlstr)
+    except ValueError:
+        yaml.SafeLoader.add_multi_constructor(
+            "!", intrinsics_multi_constructor)
+        return yaml.safe_load(yamlstr)

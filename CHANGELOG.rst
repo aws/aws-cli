@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.11.120
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``discovery``: Update discovery command to latest version
+* api-change:``marketplacecommerceanalytics``: Update marketplacecommerceanalytics command to latest version
+* bugfix:Cloudformation: Fix a bug causing json templates containing tabs to fail to parse. Fixes `#2663 <https://github.com/aws/aws-cli/issues/2663>`__.
+
+
 1.11.119
 ========
 

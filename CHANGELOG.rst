@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.121
+========
+
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+
+
 1.11.120
 ========
 

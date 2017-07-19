@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.122
+========
+
+* api-change:``budgets``: Update budgets command to latest version
+
+
 1.11.121
 ========
 

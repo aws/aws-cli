@@ -108,7 +108,14 @@ class CreateCluster(Command):
          'schema': argumentschema.HBASE_RESTORE_FROM_BACKUP_SCHEMA,
          'help_text': helptext.RESTORE_FROM_HBASE},
         {'name': 'security-configuration',
-         'help_text': helptext.SECURITY_CONFIG}
+         'help_text': helptext.SECURITY_CONFIG},
+        {'name': 'custom-ami-id',
+         'help_text' : helptext.CUSTOM_AMI_ID},
+        {'name': 'ebs-root-volume-size',
+         'help_text' : helptext.EBS_ROOT_VOLUME_SIZE},
+        {'name': 'repo-upgrade-on-boot',
+         'help_text' : helptext.REPO_UPGRADE_ON_BOOT}
+
     ]
     SYNOPSIS = BasicCommand.FROM_FILE('emr', 'create-cluster-synopsis.rst')
     EXAMPLES = BasicCommand.FROM_FILE('emr', 'create-cluster-examples.rst')
@@ -302,6 +309,21 @@ class CreateCluster(Command):
         if parsed_args.security_configuration is not None:
             emrutils.apply_dict(
                 params, 'SecurityConfiguration', parsed_args.security_configuration)
+
+        if parsed_args.custom_ami_id is not None:
+            emrutils.apply_dict(
+                params, 'CustomAmiId', parsed_args.custom_ami_id
+            )
+        if parsed_args.ebs_root_volume_size is not None:
+            emrutils.apply_dict(
+                params, 'EbsRootVolumeSize', int(parsed_args.ebs_root_volume_size)
+            )
+
+        if parsed_args.repo_upgrade_on_boot is not None:
+            emrutils.apply_dict(
+                params, 'RepoUpgradeOnBoot', parsed_args.repo_upgrade_on_boot
+            )
+
 
         self._validate_required_applications(parsed_args)
 

@@ -330,3 +330,20 @@ NOTE: JSON arguments must include options and values as their own items in the l
 - Command (Using emrfs.json)::
 
     aws emr create-cluster --instance-type m3.xlarge --release-label emr-5.3.1 --emrfs file://emrfs.json
+
+- Command (Using custom ami id)::
+
+    aws emr create-cluster --instance-type m3.xlarge --release-label emr-5.3.1 --custom-ami-id ami-9be6f38c
+
+- Command (Using custom EBS root volume)::
+
+    aws emr create-cluster --instance-type m3.xlarge --release-label emr-5.3.1 --ebs-root-volume-size 20
+
+- Command (Repo upgrade option on instance boot. This can be used only with custom AMIs)::
+
+    aws emr create-cluster --instance-type m3.xlarge --release-label emr-5.3.1 --repo-upgrade-on-boot ${RepoUpgrade}
+
+    RepoUpgrade {
+       SECURITY,
+       NONE
+    }

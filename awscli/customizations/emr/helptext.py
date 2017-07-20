@@ -370,3 +370,14 @@ SECURITY_CONFIG = (
     '<p>The name of a security configuration in the AWS account. '
     'Use <code>list-security-configurations</code> to get a list of available '
     'security configurations.</p>')
+
+CUSTOM_AMI_ID = (
+    '<p>Use custom AMI ID to launch cluster</p>')
+
+EBS_ROOT_VOLUME_SIZE = (
+    '<p>Customize EBS root volume size.</p>'
+)
+
+REPO_UPGRADE_ON_BOOT = (
+    '<p>Repo upgrade option on instance boot. This can be used only with custom AMIs</p>'
+)

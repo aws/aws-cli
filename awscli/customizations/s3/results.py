@@ -353,24 +353,24 @@ class ResultPrinter(BaseResultHandler):
         'Completed {files_completed} file(s) with ' + _FILES_REMAINING
     )
     SUCCESS_FORMAT = (
-        '{transfer_type}: {transfer_location}'
+        u'{transfer_type}: {transfer_location}'
     )
-    DRY_RUN_FORMAT = '(dryrun) ' + SUCCESS_FORMAT
+    DRY_RUN_FORMAT = u'(dryrun) ' + SUCCESS_FORMAT
     FAILURE_FORMAT = (
-        '{transfer_type} failed: {transfer_location} {exception}'
+        u'{transfer_type} failed: {transfer_location} {exception}'
     )
     # TODO: Add "warning: " prefix once all commands are converted to using
     # result printer and remove "warning: " prefix from ``create_warning``.
     WARNING_FORMAT = (
-        '{message}'
+        u'{message}'
     )
     ERROR_FORMAT = (
-        'fatal error: {exception}'
+        u'fatal error: {exception}'
     )
     CTRL_C_MSG = 'cancelled: ctrl-c received'
 
-    SRC_DEST_TRANSFER_LOCATION_FORMAT = '{src} to {dest}'
-    SRC_TRANSFER_LOCATION_FORMAT = '{src}'
+    SRC_DEST_TRANSFER_LOCATION_FORMAT = u'{src} to {dest}'
+    SRC_TRANSFER_LOCATION_FORMAT = u'{src}'
 
     def __init__(self, result_recorder, out_file=None, error_file=None):
         """Prints status of ongoing transfer

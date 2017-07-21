@@ -39,19 +39,37 @@ logger = logging.getLogger(__name__)
 STARTING_TOKEN_HELP = """
 <p>A token to specify where to start paginating.  This is the
 <code>NextToken</code> from a previously truncated response.</p>
+<p>For usage examples, see <a
+href="https://docs.aws.amazon.com/cli/latest/userguide/pagination.html"
+>Pagination</a> in the <i>AWS Command Line Interface User
+Guide</i>.</p>
 """
 
 MAX_ITEMS_HELP = """
-<p>The total number of items to return.  If the total number
-of items available is more than the value specified in
-max-items then a <code>NextToken</code> will
-be provided in the output that you can use to resume pagination.
-This <code>NextToken</code> response element should <b>not</b> be
-used directly outside of the AWS CLI.</p>
+<p>The total number of items to return in the command's output.
+If the total number of items available is more than the value
+specified, a <code>NextToken</code> is provided in the command's
+output.  To resume pagination, provide the
+<code>NextToken</code> value in the <code>starting-token</code>
+argument of a subsequent command.  <b>Do not</b> use the
+<code>NextToken</code> response element directly outside of the
+AWS CLI.</p>
+<p>For usage examples, see <a
+href="https://docs.aws.amazon.com/cli/latest/userguide/pagination.html"
+>Pagination</a> in the <i>AWS Command Line Interface User
+Guide</i>.</p>
 """
 
 PAGE_SIZE_HELP = """
-<p>The size of each page.<p>
+<p>The size of each page to get in the AWS service call.  This
+does not affect the number of items returned in the command's
+output.  Setting a smaller page size results in more calls to
+the AWS service, retrieving fewer items in each call.  This can
+help prevent the AWS service calls from timing out.</p>
+<p>For usage examples, see <a
+href="https://docs.aws.amazon.com/cli/latest/userguide/pagination.html"
+>Pagination</a> in the <i>AWS Command Line Interface User
+Guide</i>.</p>
 """
 
 

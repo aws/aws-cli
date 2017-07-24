@@ -97,15 +97,15 @@ class Deployer(object):
             parameter_values = [x for x in parameter_values
                                 if not x.get("UsePreviousValue", False)]
 
-        kwargs = dict(
-            ChangeSetName=changeset_name,
-            StackName=stack_name,
-            TemplateBody=cfn_template,
-            ChangeSetType=changeset_type,
-            Parameters=parameter_values,
-            Capabilities=capabilities,
-            Description=description,
-        )
+        kwargs = {
+            'ChangeSetName': changeset_name,
+            'StackName': stack_name,
+            'TemplateBody': cfn_template,
+            'ChangeSetType': changeset_type,
+            'Parameters': parameter_values,
+            'Capabilities': capabilities,
+            'Description': description,
+        }
         # don't set these arguments if not specified to use existing values
         if role_arn is not None:
             kwargs['RoleARN'] = role_arn

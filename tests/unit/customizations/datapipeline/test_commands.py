@@ -173,6 +173,7 @@ class FakeParsedArgs(object):
         self.region = None
         self.verify_ssl = None
         self.output = None
+        self.color = None
         self.query = None
         self.__dict__.update(kwargs)
 

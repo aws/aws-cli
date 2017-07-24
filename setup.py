@@ -25,6 +25,7 @@ def find_version(*file_paths):
 
 requires = ['botocore==1.5.86',
             'colorama>=0.2.5,<=0.3.7',
+            'pygments==2.1.3',
             'docutils>=0.10',
             'rsa>=3.1.2,<=3.5.0',
             's3transfer>=0.1.9,<0.2.0',

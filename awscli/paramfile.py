@@ -29,6 +29,8 @@ PARAMFILE_DISABLED = set([
     'apigateway.put-integration.uri',
     'cloudformation.create-stack.template-url',
     'cloudformation.update-stack.template-url',
+    'cloudformation.create-stack-set.template-url',
+    'cloudformation.update-stack-set.template-url',
     'cloudformation.create-change-set.template-url',
     'cloudformation.validate-template.template-url',
     'cloudformation.estimate-template-cost.template-url',

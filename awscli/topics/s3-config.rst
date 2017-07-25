@@ -98,7 +98,8 @@ You may need to change this value for a few reasons:
   requests can overwhelm a system.  This may cause connection timeouts or
   slow the responsiveness of the system.  Lowering this value will make the
   S3 transfer commands less resource intensive.  The tradeoff is that
-  S3 transfers may take longer to complete.
+  S3 transfers may take longer to complete. Lowering this value may be
+  necessary if using a tool such as ``trickle`` to limit bandwidth.
 * Increasing this value - In some scenarios, you may want the S3 transfers
   to complete as quickly as possible, using as much network bandwidth
   as necessary.  In this scenario, the default number of concurrent requests

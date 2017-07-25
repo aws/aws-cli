@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.125
+========
+
+* api-change:``clouddirectory``: Update clouddirectory command to latest version
+* api-change:``cloudformation``: Update cloudformation command to latest version
+
+
 1.11.124
 ========
 

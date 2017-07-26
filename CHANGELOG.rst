@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.126
+========
+
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+
+
 1.11.125
 ========
 

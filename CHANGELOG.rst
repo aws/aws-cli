@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.127
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``kinesisanalytics``: Update kinesisanalytics command to latest version
+
+
 1.11.126
 ========
 

@@ -442,6 +442,23 @@ class TestCPCommand(BaseAWSCommandParamsTest):
             'Streaming currently is only compatible with non-recursive cp '
             'commands', stderr)
 
+    def test_upload_unicode_path(self):
+        self.parsed_responses = [
+            {'ContentLength': 10,
+             'LastModified': '00:00:00Z'},  # HeadObject
+            {'ETag': '"foo"'}  # PutObject
+        ]
+        command = u's3 cp s3://bucket/\u2603 s3://bucket/\u2713'
+        stdout, stderr, rc = self.run_cmd(command, expected_rc=0)
+
+        success_message = (
+            u'copy: s3://bucket/\u2603 to s3://bucket/\u2713'
+        )
+        self.assertIn(success_message, stdout)
+
+        progress_message = 'Completed 10 Bytes'
+        self.assertIn(progress_message, stdout)
+
 
 class TestStreamingCPCommand(BaseAWSCommandParamsTest):
     def test_streaming_upload(self):

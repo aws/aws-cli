@@ -22,7 +22,7 @@ from s3transfer.exceptions import CancelledError
 from s3transfer.exceptions import FatalError
 from s3transfer.subscribers import BaseSubscriber
 
-from awscli.compat import queue
+from awscli.compat import queue, six
 from awscli.customizations.s3.utils import relative_path
 from awscli.customizations.s3.utils import human_readable_size
 from awscli.customizations.utils import uni_print
@@ -246,8 +246,8 @@ class ResultRecorder(BaseResultHandler):
                 'Any result using _get_ongoing_dict_key must subclass from '
                 'BaseResult. Provided result is of type: %s' % type(result)
             )
-        return ':'.join(
-            str(el) for el in [result.transfer_type, result.src, result.dest])
+        properties = [result.transfer_type, result.src, result.dest]
+        return u':'.join(six.text_type(p) for p in properties)
 
     def _pop_result_from_ongoing_dicts(self, result):
         ongoing_key = self._get_ongoing_dict_key(result)

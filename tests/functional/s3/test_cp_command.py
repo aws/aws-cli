@@ -316,7 +316,7 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
         self.assertEqual('', stderr)
-    
+
     def test_cp_with_sse_flag(self):
         full_path = self.files.create_file('foo.txt', 'contents')
         cmdline = (

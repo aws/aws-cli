@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.128
+========
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``inspector``: Update inspector command to latest version
+
+
 1.11.127
 ========
 

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.11.129
+========
+
+* api-change:``config``: Update config command to latest version
+* api-change:``codedeploy``: Update codedeploy command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``ses``: Update ses command to latest version
+
+
 1.11.128
 ========
 

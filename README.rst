@@ -416,12 +416,6 @@ for each repository::
 
 
 ------------
-Feature Requests
-------------
-
-We use UserVoice for collecting and tracking feature requests.  Please let us know how we can improve via our `UserVoice <https://aws.uservoice.com/forums/598381>`__ 
-
-------------
 Getting Help
 ------------
 
@@ -429,6 +423,7 @@ We use GitHub issues for tracking bugs and have limited
 bandwidth to address them. Please use these community resources for getting
 help:
 
+* Look for, or create, a feature request on the `AWS-CLI UserVoice <https://aws.uservoice.com/forums/598381>`__ 
 * Ask a question on `Stack Overflow <https://stackoverflow.com/>`__ and tag it with `aws-cli <https://stackoverflow.com/questions/tagged/aws-cli>`__
 * Come join the AWS CLI community chat on `gitter <https://gitter.im/aws/aws-cli>`__
 * Open a support ticket with `AWS Support <https://console.aws.amazon.com/support/home#/>`__

@@ -369,6 +369,11 @@ ONLY_SHOW_ERRORS = {'name': 'only-show-errors', 'action': 'store_true',
                         'output is suppressed.')}
 
 
+NO_PROGRESS = {'name': 'no-progress', 'action': 'store_true',
+                    'help_text': (
+                        'File transfer progress is not displayed.')}
+
+
 EXPECTED_SIZE = {'name': 'expected-size',
                  'help_text': (
                      'This argument specifies the expected size of a stream '
@@ -424,7 +429,7 @@ TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  SSE_C_COPY_SOURCE_KEY, STORAGE_CLASS, GRANTS,
                  WEBSITE_REDIRECT, CONTENT_TYPE, CACHE_CONTROL,
                  CONTENT_DISPOSITION, CONTENT_ENCODING, CONTENT_LANGUAGE,
-                 EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS,
+                 EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS, NO_PROGRESS,
                  PAGE_SIZE, IGNORE_GLACIER_WARNINGS, FORCE_GLACIER_TRANSFER]
 
 

@@ -554,6 +554,12 @@ class ResultPrinter(BaseResultHandler):
             uni_print(self._adjust_statement_padding(''), self._out_file)
 
 
+class NoProgressResultPrinter(ResultPrinter):
+    """A result printer that doesn't print progress"""
+    def _print_progress(self, **kwargs):
+        pass
+
+
 class OnlyShowErrorsResultPrinter(ResultPrinter):
     """A result printer that only prints out errors"""
     def _print_progress(self, **kwargs):

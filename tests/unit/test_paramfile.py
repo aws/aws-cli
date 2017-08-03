@@ -70,15 +70,14 @@ class TestParamFile(unittest.TestCase):
         self.assertEqual(data, u'\u95a2\u6238\u3066\u3059\u3068')
         self.assertIsInstance(data, six.string_types)
 
-    @unittest.skipIf(locale.getpreferredencoding() != 'cp932',
-            'encoding fallback test with cp932 system')
     def test_get_file_fallback_platformdefault_in_cp932(self):
-        contents = b'\x8a\xd6\x8c\xcb\x82\xc4\x82\xb7\x82\xc6'
-        filename = self.files.create_file('foo', contents, mode='wb')
-        data = get_file('', filename, 'r')
-        self.assertEqual(data, u'\u95a2\u6238\u3066\u3059\u3068')
-        self.assertIsInstance(data, six.string_types)
-
+        with mock.patch('locale.getpreferredencoding') as mock_getpreferredencoding:
+            mock_getpreferredencoding.return_value = 'cp932'
+            contents = b'\x8a\xd6\x8c\xcb\x82\xc4\x82\xb7\x82\xc6'
+            filename = self.files.create_file('foo', contents, mode='wb')
+            data = get_file('', filename, 'r')
+            self.assertEqual(data, u'\u95a2\u6238\u3066\u3059\u3068')
+            self.assertIsInstance(data, six.string_types)
 
 class TestHTTPBasedResourceLoading(unittest.TestCase):
     def setUp(self):

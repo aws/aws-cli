@@ -28,6 +28,7 @@ class TestYaml(unittest.TestCase):
         Key3: !FooBar [!Baz YetAnother, "hello"]
         Key4: !SomeTag {"a": "1"}
         Key5: !GetAtt OneMore.Outputs.Arn
+        Key6: !Condition OtherCondition
     """
 
     parsed_yaml_dict = {
@@ -51,6 +52,9 @@ class TestYaml(unittest.TestCase):
             },
             "Key5": {
                 "Fn::GetAtt": ["OneMore", "Outputs.Arn"]
+            },
+            "Key6": {
+                "Condition": "OtherCondition"
             }
         }
     }

@@ -28,7 +28,7 @@ def intrinsics_multi_constructor(loader, tag_prefix, node):
 
     # All CloudFormation intrinsics have prefix Fn:: except Ref
     prefix = "Fn::"
-    if tag == "Ref":
+    if tag in ["Ref", "Condition"]:
         prefix = ""
 
     cfntag = prefix + tag

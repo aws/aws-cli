@@ -1255,6 +1255,17 @@ class TestOutput(BaseS3IntegrationTest):
         # Check that nothing was printed to stdout.
         self.assertEqual('', p.stdout)
 
+    def test_normal_output_no_progress(self):
+        bucket_name = _SHARED_BUCKET
+        foo_txt = self.files.create_file('foo.txt', 'foo contents')
+
+        # Copy file into bucket.
+        p = aws('s3 cp %s s3://%s/ --no-progress' % (foo_txt, bucket_name))
+        self.assertEqual(p.rc, 0)
+        # Ensure success message was printed
+        self.assertIn('upload', p.stdout)
+        self.assertIn('s3://%s/foo.txt' % bucket_name, p.stdout)
+
     def test_error_output(self):
         foo_txt = self.files.create_file('foo.txt', 'foo contents')
 

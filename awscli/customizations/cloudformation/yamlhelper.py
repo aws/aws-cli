@@ -26,7 +26,7 @@ def intrinsics_multi_constructor(loader, tag_prefix, node):
     # Get the actual tag name excluding the first exclamation
     tag = node.tag[1:]
 
-    # All CloudFormation intrinsics have prefix Fn:: except Ref
+    # Some intrinsic functions doesn't support prefix "Fn::"
     prefix = "Fn::"
     if tag in ["Ref", "Condition"]:
         prefix = ""

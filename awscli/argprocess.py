@@ -13,6 +13,7 @@
 """Module for processing CLI args."""
 import os
 import logging
+import yaml
 from awscli.compat import six
 
 from botocore.compat import OrderedDict, json
@@ -177,7 +178,7 @@ def _special_type(model):
 
 def _unpack_cli_arg(argument_model, value, cli_name):
     if is_json_value_header(argument_model):
-        return _unpack_json_cli_arg(argument_model, value, cli_name)
+        return _unpack_json_or_yaml_cli_arg(value, cli_name)
     elif argument_model.type_name in SCALAR_TYPES:
         return unpack_scalar_cli_arg(
             argument_model, value, cli_name)
@@ -188,34 +189,27 @@ def _unpack_cli_arg(argument_model, value, cli_name):
         return six.text_type(value)
 
 
-def _unpack_json_cli_arg(argument_model, value, cli_name):
+def _unpack_json_or_yaml_cli_arg(value, cli_name):
     try:
         return json.loads(value, object_pairs_hook=OrderedDict)
     except ValueError as e:
-        raise ParamError(
-            cli_name, "Invalid JSON: %s\nJSON received: %s"
-            % (e, value))
+        try:
+            return yaml.load(value)
+        except Exception:
+            raise ParamError(cli_name, "Invalid JSON or YAML: %s\nReceived: %s"
+                             % (e, value))
 
 
 def _unpack_complex_cli_arg(argument_model, value, cli_name):
     type_name = argument_model.type_name
     if type_name == 'structure' or type_name == 'map':
-        if value.lstrip()[0] == '{':
-            try:
-                return json.loads(value, object_pairs_hook=OrderedDict)
-            except ValueError as e:
-                raise ParamError(
-                    cli_name, "Invalid JSON: %s\nJSON received: %s"
-                    % (e, value))
-        raise ParamError(cli_name, "Invalid JSON:\n%s" % value)
+        if value.lstrip().startswith('{') or value.lstrip().startswith('---'):
+            return _unpack_json_or_yaml_cli_arg(value, cli_name)
     elif type_name == 'list':
-        if isinstance(value, six.string_types):
-            if value.lstrip()[0] == '[':
-                return json.loads(value, object_pairs_hook=OrderedDict)
-        elif isinstance(value, list) and len(value) == 1:
-            single_value = value[0].strip()
-            if single_value and single_value[0] == '[':
-                return json.loads(value[0], object_pairs_hook=OrderedDict)
+        if isinstance(value, six.string_types) or \
+                isinstance(value, list):
+            return _unpack_json_or_yaml_cli_arg(value, cli_name)
+
         try:
             # There's a couple of cases remaining here.
             # 1. It's possible that this is just a list of strings, i.e
@@ -410,11 +404,14 @@ class ParamShorthandParser(ParamShorthand):
             check_val = value[0]
         else:
             check_val = value
-        if isinstance(check_val, six.string_types) and check_val.strip().startswith(
-                ('[', '{')):
-            LOG.debug("Param %s looks like JSON, not considered for "
-                      "param shorthand.", cli_argument.py_name)
-            return False
+        if isinstance(check_val, six.string_types):
+            if check_val.strip().startswith(('[', '{')):
+                LOG.debug("Param %s looks like JSON, not considered for "
+                          "param shorthand.", cli_argument.py_name)
+                return False
+            if check_val.strip().startswith('---'):
+                LOG.debug("Param %s looks like YAML, ignoring shorthand", cli_argument.py_name)
+                return False
         model = cli_argument.argument_model
         # The second case is to make sure the argument is sufficiently
         # complex, that is, it's base type is a complex type *and*

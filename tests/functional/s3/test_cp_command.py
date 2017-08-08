@@ -316,7 +316,7 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
         self.assertEqual('', stderr)
-    
+
     def test_cp_with_sse_flag(self):
         full_path = self.files.create_file('foo.txt', 'contents')
         cmdline = (
@@ -441,6 +441,23 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         self.assertIn(
             'Streaming currently is only compatible with non-recursive cp '
             'commands', stderr)
+
+    def test_upload_unicode_path(self):
+        self.parsed_responses = [
+            {'ContentLength': 10,
+             'LastModified': '00:00:00Z'},  # HeadObject
+            {'ETag': '"foo"'}  # PutObject
+        ]
+        command = u's3 cp s3://bucket/\u2603 s3://bucket/\u2713'
+        stdout, stderr, rc = self.run_cmd(command, expected_rc=0)
+
+        success_message = (
+            u'copy: s3://bucket/\u2603 to s3://bucket/\u2713'
+        )
+        self.assertIn(success_message, stdout)
+
+        progress_message = 'Completed 10 Bytes'
+        self.assertIn(progress_message, stdout)
 
 
 class TestStreamingCPCommand(BaseAWSCommandParamsTest):

@@ -787,6 +787,34 @@ class ResultRecorderTest(unittest.TestCase):
         self.assertEqual(self.result_recorder.expected_files_transferred, 0)
         self.assertEqual(self.result_recorder.files_transferred, 0)
 
+    def test_result_with_unicode(self):
+        unicode_source = u'\u2713'
+        self.result_recorder(
+            QueuedResult(
+                transfer_type=self.transfer_type, src=unicode_source,
+                dest=self.dest, total_transfer_size=self.total_transfer_size
+            )
+        )
+        self.assertEqual(
+            self.result_recorder.expected_bytes_transferred,
+            self.total_transfer_size
+        )
+        self.assertEqual(self.result_recorder.expected_files_transferred, 1)
+
+    def test_result_with_encoded_unicode(self):
+        unicode_source = u'\u2713'.encode('utf-8')
+        self.result_recorder(
+            QueuedResult(
+                transfer_type=self.transfer_type, src=unicode_source,
+                dest=self.dest, total_transfer_size=self.total_transfer_size
+            )
+        )
+        self.assertEqual(
+            self.result_recorder.expected_bytes_transferred,
+            self.total_transfer_size
+        )
+        self.assertEqual(self.result_recorder.expected_files_transferred, 1)
+
 
 class BaseResultPrinterTest(unittest.TestCase):
     def setUp(self):

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.130
+========
+
+* bugfix:s3: Fixed bug causing progress to not display if unicode characters appeared in the path. Fixes `#2738 <https://github.com/aws/aws-cli/issues/2738>`__.
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+
+
 1.11.129
 ========
 

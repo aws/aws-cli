@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.133
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``codedeploy``: Update codedeploy command to latest version
+
+
 1.11.132
 ========
 

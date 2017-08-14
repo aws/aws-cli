@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.11.134
+========
+
+* api-change:``batch``: Update batch command to latest version
+* api-change:``cloudhsmv2``: Update cloudhsmv2 command to latest version
+* api-change:``efs``: Update efs command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``mgh``: Update mgh command to latest version
+* api-change:``glue``: Update glue command to latest version
+
+
 1.11.133
 ========
 

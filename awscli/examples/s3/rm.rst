@@ -31,7 +31,7 @@ The following ``rm`` command recursively deletes all objects under a specified b
 parameter ``--recursive`` while excluding all objects under a particular prefix by using an ``--exclude`` parameter.  In
 this example, the bucket ``mybucket`` has the objects ``test1.txt`` and ``another/test.txt``::
 
-    aws s3 rm s3://mybucket/ --recursive --exclude "mybucket/another/*"
+    aws s3 rm s3://mybucket/ --recursive --exclude "another/*"
 
 Output::
 

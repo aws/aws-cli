@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.136
+========
+
+* api-change:``gamelift``: Update gamelift command to latest version
+
+
 1.11.135
 ========
 

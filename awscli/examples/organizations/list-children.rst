@@ -1,21 +1,20 @@
-**To retrieve a list of all of the child accounts and OUs in a parent root or OU**
+**To retrieve the child accounts and OUs of a parent OU or root**
 
-The following example shows how to request a list of all of the child OUs in a parent root or OU.  
+The following example you how to list the root or OU that contains that account 444444444444: ::
 
-Command::
-
-  aws organizations list-children --child-type ORGANIZATIONAL_UNIT --parent-id ou-examplerootid111-exampleouid111
+	aws organizations list-children --child-type ORGANIZATIONAL_UNIT --parent-id ou-examplerootid111-exampleouid111
   
-Output::
-  {
-    "Children": [
-      {
-        "Id": "ou-examplerootid111-exampleouid111",
-        "Type": "ORGANIZATIONAL_UNIT"
-      },
-      {
-        "Id": "ou-examplerootid111-exampleouid222",
-        "Type":"ORGANIZATIONAL_UNIT"
-      }
-    ]
-  }
+The output shows the two child OUs that are contained by the parent: ::
+
+	{
+		"Children": [
+			{ 
+				"Id": "ou-examplerootid111-exampleouid111",
+				"Type":"ORGANIZATIONAL_UNIT"
+			},
+			{
+				"Id":"ou-examplerootid111-exampleouid222",
+				"Type":"ORGANIZATIONAL_UNIT"
+			}
+		]
+	}

@@ -1,7 +1,6 @@
-**To leave an organization**
 
-The following example shows how to remove your member account from an organization.  
+**To leave an organization as a member account**
 
-Command::
+The following example shows the administrator of a member account requesting to leave the organization it is currently a member of: ::
 
-  aws organizations leave-organization
+	aws organizations leave-organization

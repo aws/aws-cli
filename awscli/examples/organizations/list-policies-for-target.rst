@@ -4,7 +4,7 @@ The following example shows how to get a list of all service control policies (S
 
 	aws organizations list-policies-for-target --filter SERVICE_CONTROL_POLICY --target-id 444444444444
   
-The output includes a list of policy structures with summary information about the policies. The list does not include policies that apply to the account because of inheritance from its location in an OU hierarchy:
+The output includes a list of policy structures with summary information about the policies. The list does not include policies that apply to the account because of inheritance from its location in an OU hierarchy: ::
 
 	{
 		"Policies": [

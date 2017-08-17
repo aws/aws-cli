@@ -43,6 +43,6 @@ The output includes an organization object with details about the new organizati
 		}
 	}
 
-	For more information, see `Creating an Organization` in the *AWS Organizations Users Guide*.
+For more information, see `Creating an Organization` in the *AWS Organizations Users Guide*.
 
 .. _`Creating an Organization`: http://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_create.html

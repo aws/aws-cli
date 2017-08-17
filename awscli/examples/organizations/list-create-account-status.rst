@@ -4,7 +4,7 @@ The following example shows how to request a list of account creation requests f
 
 	aws organizations list-create-account-status --states SUCCEEDED
   
-The output includes an array of objects with information about each request.
+The output includes an array of objects with information about each request. ::
 
 	{
 		"CreateAccountStatuses": [
@@ -25,7 +25,7 @@ The following example gets a list of in-progress account creation requests for a
 
 	aws organizations list-create-account-status --states IN_PROGRESS
   
-The output includes an array of objects with information about each request.
+The output includes an array of objects with information about each request. ::
 
 	{
 		"CreateAccountStatuses": [

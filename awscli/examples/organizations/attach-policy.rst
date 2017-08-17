@@ -1,15 +1,17 @@
-**To attach a policy to an OU**
+**To attach a policy to a root, OU, or account**
 
-The following example shows how to attach a service control policy (SCP) to an OU.
+**Example 1**
 
-Command::
+The following example shows how to attach a service control policy (SCP) to an OU: ::
 
-  aws organizations attach-policy --target-id ou-examplerootid111-exampleouid111 --policy-id p-examplepolicyid111
+	aws organizations attach-policy 
+			--policy-id p-examplepolicyid111
+			--target-id ou-examplerootid111-exampleouid111
+			
+**Example 2**
 
-**To attach a policy directly to an AWS account**
-  
-The following example shows how to attach a service control policy directly to an account.
+The following example shows how to attach a service control policy directly to an account: ::
 
-Command::
-
-  aws organizations attach-policy --target-id 333333333333 --policy-id p-examplepolicyid111
+	aws organizations attach-policy 
+			--policy-id p-examplepolicyid111
+			--target-id = 333333333333

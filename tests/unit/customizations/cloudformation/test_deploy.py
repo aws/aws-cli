@@ -54,7 +54,9 @@ class TestDeployCommand(unittest.TestCase):
                                                          "Key2=Value2"],
                                     no_execute_changeset=False,
                                     execute_changeset=True,
-                                    capabilities=None)
+                                    capabilities=None,
+                                    role_arn=None,
+                                    notification_arns=[])
         self.parsed_globals = FakeArgs(region="us-east-1", endpoint_url=None,
                                        verify_ssl=None)
         self.deploy_command = DeployCommand(self.session)
@@ -105,7 +107,9 @@ class TestDeployCommand(unittest.TestCase):
                         mock.ANY,
                         fake_parameters,
                         None,
-                        not self.parsed_args.no_execute_changeset)
+                        not self.parsed_args.no_execute_changeset,
+                        None,
+                        [])
 
                 self.deploy_command.parse_parameter_arg.assert_called_once_with(
                         self.parsed_args.parameter_overrides)
@@ -134,6 +138,9 @@ class TestDeployCommand(unittest.TestCase):
         capabilities = ["foo", "bar"]
         execute_changeset = True
         changeset_type = "CREATE"
+        role_arn = "arn:aws:iam::1234567890:role"
+        notification_arns = ["arn:aws:sns:region:1234567890:notify"]
+
 
         # Set the mock to return this fake changeset_id
         self.deployer.create_and_wait_for_changeset.return_value = ChangeSetResult(changeset_id, changeset_type)
@@ -143,14 +150,18 @@ class TestDeployCommand(unittest.TestCase):
                                    template,
                                    parameters,
                                    capabilities,
-                                   execute_changeset)
+                                   execute_changeset,
+                                   role_arn,
+                                   notification_arns)
         self.assertEqual(rc, 0)
 
 
         self.deployer.create_and_wait_for_changeset.assert_called_once_with(stack_name=stack_name,
                                                      cfn_template=template,
                                                      parameter_values=parameters,
-                                                     capabilities=capabilities)
+                                                     capabilities=capabilities,
+                                                     role_arn=role_arn,
+                                                     notification_arns=notification_arns)
 
         # since execute_changeset is set to True, deploy() will execute changeset
         self.deployer.execute_changeset.assert_called_once_with(changeset_id, stack_name)
@@ -164,6 +175,8 @@ class TestDeployCommand(unittest.TestCase):
         template = "cloudformation template"
         capabilities = ["foo", "bar"]
         execute_changeset = False
+        role_arn = "arn:aws:iam::1234567890:role"
+        notification_arns = ["arn:aws:sns:region:1234567890:notify"]
 
 
         self.deployer.create_and_wait_for_changeset.return_value = ChangeSetResult(changeset_id, "CREATE")
@@ -172,13 +185,17 @@ class TestDeployCommand(unittest.TestCase):
                                             template,
                                             parameters,
                                             capabilities,
-                                            execute_changeset)
+                                            execute_changeset,
+                                            role_arn,
+                                            notification_arns)
         self.assertEqual(rc, 0)
 
         self.deployer.create_and_wait_for_changeset.assert_called_once_with(stack_name=stack_name,
                                                      cfn_template=template,
                                                      parameter_values=parameters,
-                                                     capabilities=capabilities)
+                                                     capabilities=capabilities,
+                                                     role_arn=role_arn,
+                                                     notification_arns=notification_arns)
 
         # since execute_changeset is set to True, deploy() will execute changeset
         self.deployer.execute_changeset.assert_not_called()
@@ -191,6 +208,9 @@ class TestDeployCommand(unittest.TestCase):
         template = "cloudformation template"
         capabilities = ["foo", "bar"]
         execute_changeset = True
+        role_arn = "arn:aws:iam::1234567890:role"
+        notification_arns = ["arn:aws:sns:region:1234567890:notify"]
+
 
         self.deployer.wait_for_execute.side_effect = RuntimeError("Some error")
         with self.assertRaises(RuntimeError):
@@ -199,7 +219,9 @@ class TestDeployCommand(unittest.TestCase):
                                        template,
                                        parameters,
                                        capabilities,
-                                       execute_changeset)
+                                       execute_changeset,
+                                       role_arn,
+                                       notification_arns)
 
 
     def test_parse_parameter_arg_success(self):

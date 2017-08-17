@@ -15,6 +15,6 @@ The output includes a request object that shows that the status is now ``IN_PROG
 
 You can later query the current status of the request by providing the Id response value to the describe-create-account-status command as the value for the create-account-request-id parameter.
   
-For more information, see `Creating an AWS Account in Your Organization` in the *AWS Organizations Users Guide*.
+For more information, see `Creating an AWS Account in Your Organization`_ in the *AWS Organizations Users Guide*.
 
 .. _`Creating an AWS Account in Your Organization`: http://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_create.html

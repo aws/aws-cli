@@ -28,7 +28,7 @@ Command::
 
   aws ec2 describe-instances --instance-id i-1234567890abcdef0 --query 'Reservations[*].Instances[*].[ImageId,Tags[*]]'
 
-**To describe all instances, and return all instance IDs and AMI IDs, but only show the tag value where the tag key is “Application”.**
+**To describe all instances, and return all instance IDs and AMI IDs, but only show the tag value where the tag key is "Application".**
 
 Command::
 

@@ -24,7 +24,7 @@ The following commands would have the corresponding output::
     testing_access_key
 
     $ aws configure get profile.testing.aws_access_key_id
-    default_access_key
+    testing_access_key
 
     $ aws configure get preview.cloudsearch
     true

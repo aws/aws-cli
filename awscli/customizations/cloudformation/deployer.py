@@ -18,6 +18,8 @@ import botocore
 import collections
 
 from awscli.customizations.cloudformation import exceptions
+from awscli.customizations.cloudformation.artifact_exporter import mktempfile
+
 from datetime import datetime
 
 LOG = logging.getLogger(__name__)
@@ -71,7 +73,7 @@ class Deployer(object):
 
     def create_changeset(self, stack_name, cfn_template,
                          parameter_values, capabilities, role_arn,
-                         notification_arns):
+                         notification_arns, s3_uploader):
         """
         Call Cloudformation to create a changeset and wait for it to complete
 
@@ -106,6 +108,26 @@ class Deployer(object):
             'Capabilities': capabilities,
             'Description': description,
         }
+
+        # CloudFormation requires template bodies to be less than 51200 bytes
+        # if they are deployed from a file. It supports much larger templates
+        # if the templates exist in s3. If this is a 'big' template, throw it
+        # into s3 first.
+        cfn_template_length = len(cfn_template.encode('utf-8'))
+        if cfn_template_length > 51200:
+            if s3_uploader:
+                with mktempfile() as temporary_file:
+                    temporary_file.write(kwargs.pop('TemplateBody'))
+                    temporary_file.flush()
+                    url = s3_uploader.upload_with_dedup(
+                            temporary_file.name, "template")
+                    kwargs['TemplateURL'] = s3_uploader.to_path_style_s3_url(url.split('/')[-1])
+            else:
+                LOG.debug("Template size is too large and S3 bucket not given")
+                raise ValueError(("A template with a size greater than 51200 "
+                                  "requires an S3 bucket set. Please add the "
+                                  "--s3-bucket parameter to your command."))
+
         # don't set these arguments if not specified to use existing values
         if role_arn is not None:
             kwargs['RoleARN'] = role_arn
@@ -189,11 +211,11 @@ class Deployer(object):
 
     def create_and_wait_for_changeset(self, stack_name, cfn_template,
                                       parameter_values, capabilities, role_arn,
-                                      notification_arns):
+                                      notification_arns, s3_uploader):
 
         result = self.create_changeset(
                 stack_name, cfn_template, parameter_values, capabilities,
-                role_arn, notification_arns)
+                role_arn, notification_arns, s3_uploader)
 
         self.wait_for_changeset(result.changeset_id, stack_name)
 

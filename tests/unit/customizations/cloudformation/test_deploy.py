@@ -217,7 +217,7 @@ class TestDeployCommand(unittest.TestCase):
         execute_changeset = True
         role_arn = "arn:aws:iam::1234567890:role"
         notification_arns = ["arn:aws:sns:region:1234567890:notify"]
-        s3_bucket = "somebucketname"
+        s3_uploader = None
 
         self.deployer.wait_for_execute.side_effect = RuntimeError("Some error")
         with self.assertRaises(RuntimeError):
@@ -229,7 +229,7 @@ class TestDeployCommand(unittest.TestCase):
                                        execute_changeset,
                                        role_arn,
                                        notification_arns,
-                                       s3_bucket)
+                                       s3_uploader)
 
 
     def test_parse_parameter_arg_success(self):

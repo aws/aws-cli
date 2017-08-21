@@ -10,7 +10,7 @@ The following command disables a CloudFront distribution with the ID ``S11A16G5K
 
 The distribution ID is available in the output of ``create-distribution`` and ``list-distributions``. The ETag value ``E37HOT42DHPVYH`` for the ``if-match`` parameter is available in the output of ``create-distribution``, ``get-distribution`` or ``get-distribution-config``.
 
-The file ``distconfig-disabled.json`` is a JSON document in the current folder that modifies the existing distribution config for ``S11A16G5KZMEQD`` to disable the distribution. This file was created by taking the existing config from the output of ``get-distribution-config`` and changing the ``Enabled`` key's value to ``false``::
+The file ``distconfig-disabled.json`` is a JSON document in the current folder that modifies the existing distribution config for ``S11A16G5KZMEQD`` to disable the distribution. This file was created by taking the existing config from the ``DistributionConfig`` key in the output of ``get-distribution-config`` and changing the ``Enabled`` key's value to ``false``::
 
   {
     "Comment": "",

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.137
+========
+
+* api-change:``route53``: Update route53 command to latest version
+* enhancement:Cloudformation: Add `--role-arn` and `--notification-arns` parameters to cloudformation deploy.
+* api-change:``firehose``: Update firehose command to latest version
+
+
 1.11.136
 ========
 

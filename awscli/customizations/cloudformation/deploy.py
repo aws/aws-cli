@@ -127,6 +127,29 @@ class DeployCommand(BasicCommand):
                 ' executing the change set. After you view the change set,'
                 ' execute it to implement your changes.'
             )
+        },
+        {
+            'name': 'role-arn',
+            'required': False,
+            'help_text': (
+                'The Amazon Resource Name (ARN) of an AWS Identity and Access '
+                'Management (IAM) role that AWS CloudFormation assumes when '
+                'executing the change set.'
+            )
+        },
+        {
+            'name': 'notification-arns',
+            'required': False,
+            'schema': {
+                'type': 'array',
+                'items': {
+                    'type': 'string'
+                }
+            },
+            'help_text': (
+                'Amazon Simple Notification Service topic Amazon Resource Names'
+                ' (ARNs) that AWS CloudFormation associates with the stack.'
+            )
         }
     ]
 
@@ -157,15 +180,19 @@ class DeployCommand(BasicCommand):
         deployer = Deployer(cloudformation_client)
         return self.deploy(deployer, stack_name, template_str,
                            parameters, parsed_args.capabilities,
-                           parsed_args.execute_changeset)
+                           parsed_args.execute_changeset, parsed_args.role_arn,
+                           parsed_args.notification_arns)
 
     def deploy(self, deployer, stack_name, template_str,
-               parameters, capabilities, execute_changeset):
+               parameters, capabilities, execute_changeset, role_arn,
+               notification_arns):
         result = deployer.create_and_wait_for_changeset(
                 stack_name=stack_name,
                 cfn_template=template_str,
                 parameter_values=parameters,
-                capabilities=capabilities)
+                capabilities=capabilities,
+                role_arn=role_arn,
+                notification_arns=notification_arns)
 
         if execute_changeset:
             deployer.execute_changeset(result.changeset_id, stack_name)

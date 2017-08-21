@@ -4,7 +4,7 @@ This example returns information about a specified job, including the status of 
 
 Command::
 
-  aws codecommit acknowledge-job --job-id f4f4ff82-2d11-EXAMPLE --nonce 3
+  aws codepipeline acknowledge-job --job-id f4f4ff82-2d11-EXAMPLE --nonce 3
 
 Output::
 

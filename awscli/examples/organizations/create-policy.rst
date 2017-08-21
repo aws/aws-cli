@@ -1,37 +1,29 @@
-**To create an SCP**
+**Example 1: To create a policy with a text source file for the JSON policy**
 
-The following example shows how to create a service control policy (SCP) that is named AllowAllS3Actions. In this example, we pass the new content as a reference to a file that has the new text.
+The following example shows you how to create an service control policy (SCP) named ``AllowAllS3Actions``. The policy contents are taken from a file on the local computer called ``policy.json``. ::
 
-Command::
+	aws organizations create-policy --content file://policy.json --name AllowAllS3Actions, --type SERVICE_CONTROL_POLICY --description "Allows delegation of all S3 actions"
+	
+The output includes a policy object with details about the new policy: ::
 
-  aws organizations create-policy --type SERVICE_CONTROL_POLICY --description "Enables admins of attached accounts to delegate all S3 permissions" --name AllowAllS3Actions --content file://policy-content.json
+	{
+		"Policy": {
+			"Content": "{\"Version\":\"2012-10-17\",\"Statement\":{\"Effect\":\"Allow\",\"Action\":\"s3:*\"}}",
+			"PolicySummary": {
+				"Arn": "arn:aws:organizations::o-exampleorgid:policy/service_control_policy/p-examplepolicyid111",
+				"Description": "Allows delegation of all S3 actions",
+				"Name": "AllowAllS3Actions",
+				"Type":"SERVICE_CONTROL_POLICY"
+			}
+		}
+	}
+	
+**Example 2: To create a policy with a JSON policy as a parameter**
 
-The file ``policy-content.json`` is a JSON document in the current folder that contains the following text::
-  
-  {
-    "Version": "2012-10-17",
-    "Statement": {
-      "Effect": "Allow",
-      "Action": "s3:*"
-    }
-  }
+The following example shows you how to create the same SCP, this time by embedding the policy contents as a JSON string in the parameter. The string must be escaped with backslashes before the double quotes to ensure that they are treated as literals in the parameter, which itself is surrounded by double quotes: ::
 
-The output includes a Policy structure that contains details about the new policy.
+	aws organizations create-policy --content "{\"Version\":\"2012-10-17\",\"Statement\":{\"Effect\":\"Allow\",\"Action\":\"s3:*\"}}" --name AllowAllS3Actions, --type SERVICE_CONTROL_POLICY --description "Allows delegation of all S3 actions"
 
-Output::
-
-  {
-    "Policy": {
-      "Content": "{\"Version\":\"2012-10-17\",\"Statement\":{\"Effect\":\"Allow\",\"Action\":\"s3:*\"}}",
-      "PolicySummary": {
-        "Arn": "arn:aws:organizations::o-exampleorgid:policy/service_control_policy/p-examplepolicyid111",
-        "Description": "Enables admins of attached accounts to delegate all S3 permissions",
-        "Name": "AllowAllS3Actions",
-        "Type":"SERVICE_CONTROL_POLICY"
-      }
-    }
-  }
-  
 For more information about creating and using policies in your organization, see `Managing Organization Policies`_ in the *AWS Organizations User Guide*.
 
 .. _`Managing Organization Policies`: http://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies.html

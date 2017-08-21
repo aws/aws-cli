@@ -1,22 +1,20 @@
-**To list all of the OUs in a specified parent**
+**To retrieve a list of the OUs in a parent OU or root**
 
-The following example shows how to get a list of OUs in a specified root.  
+The following example shows you how to get a list of OUs in a specified root: ::
 
-Command::
+	aws organizations list-organizational-units --parent-id r-examplerootid111
+  
+The output shows that the specified root contains two OUs and shows details of each: ::
 
-  aws organizations list-organizational-units-for-parent --parent-id r-examplerootid111
-
-Output::
-
-  {
-    "OrganizationalUnits": [
-      {
-        "Name": "AccountingDepartment",
-        "Arn": "arn:aws:organizations::o-exampleorgid:ou/r-examplerootid111/ou-examplerootid111-exampleouid111"
-      },
-      {
-        "Name": "ProductionDepartment",
-        "Arn": "arn:aws:organizations::o-exampleorgid:ou/r-examplerootid111/ou-examplerootid111-exampleouid222"
-      }
-    ]
-  }
+	{
+		"OrganizationalUnits": [
+			{
+				"Name": "AccountingDepartment",
+				"Arn": "arn:aws:organizations::o-exampleorgid:ou/r-examplerootid111/ou-examplerootid111-exampleouid111"
+			},
+			{
+				"Name": "ProductionDepartment",
+				"Arn": "arn:aws:organizations::o-exampleorgid:ou/r-examplerootid111/ou-examplerootid111-exampleouid222"
+			}
+		]
+	}

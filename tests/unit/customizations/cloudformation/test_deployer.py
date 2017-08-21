@@ -101,6 +101,8 @@ class TestDeployer(unittest.TestCase):
             {"ParameterKey": "Key3", "UsePreviousValue": False},
         ]
         capabilities = ["capabilities"]
+        role_arn = "arn:aws:iam::1234567890:role"
+        notification_arns = ["arn:aws:sns:region:1234567890:notify"]
 
         # Case 1: Stack DOES NOT exist
         self.deployer.has_stack = Mock()
@@ -113,7 +115,9 @@ class TestDeployer(unittest.TestCase):
             "ChangeSetType": "CREATE",
             "Parameters": filtered_parameters,
             "Capabilities": capabilities,
-            "Description": botocore.stub.ANY
+            "Description": botocore.stub.ANY,
+            "RoleARN": role_arn,
+            "NotificationARNs": notification_arns
         }
 
         response = {
@@ -124,7 +128,8 @@ class TestDeployer(unittest.TestCase):
                                       expected_params)
         with self.stub_client:
             result = self.deployer.create_changeset(
-                    stack_name, template, parameters, capabilities)
+                    stack_name, template, parameters, capabilities, role_arn,
+                    notification_arns)
             self.assertEquals(response["Id"], result.changeset_id)
             self.assertEquals("CREATE", result.changeset_type)
 
@@ -136,7 +141,8 @@ class TestDeployer(unittest.TestCase):
                                       expected_params)
         with self.stub_client:
             result = self.deployer.create_changeset(
-                    stack_name, template, parameters, capabilities)
+                    stack_name, template, parameters, capabilities, role_arn,
+                    notification_arns)
             self.assertEquals(response["Id"], result.changeset_id)
             self.assertEquals("UPDATE", result.changeset_type)
 
@@ -146,6 +152,8 @@ class TestDeployer(unittest.TestCase):
         parameters = [{"ParameterKey": "Key1", "ParameterValue": "Value",
                        "UsePreviousValue": True}]
         capabilities = ["capabilities"]
+        role_arn = "arn:aws:iam::1234567890:role"
+        notification_arns = ["arn:aws:sns:region:1234567890:notify"]
 
         self.deployer.has_stack = Mock()
         self.deployer.has_stack.return_value = False
@@ -154,7 +162,8 @@ class TestDeployer(unittest.TestCase):
                 'create_change_set', "Somethign is wrong", "Service is bad")
         with self.stub_client:
             with self.assertRaises(botocore.exceptions.ClientError):
-                self.deployer.create_changeset(stack_name, template, parameters, capabilities)
+                self.deployer.create_changeset(stack_name, template, parameters,
+                capabilities, role_arn, notification_arns)
 
     def test_execute_changeset(self):
         stack_name = "stack_name"
@@ -187,6 +196,8 @@ class TestDeployer(unittest.TestCase):
         capabilities = ["capabilities"]
         changeset_id = "changeset id"
         changeset_type = "changeset type"
+        role_arn = "arn:aws:iam::1234567890:role"
+        notification_arns = ["arn:aws:sns:region:1234567890:notify"]
 
         self.deployer.create_changeset = Mock()
         self.deployer.create_changeset.return_value = ChangeSetResult(changeset_id, changeset_type)
@@ -194,7 +205,8 @@ class TestDeployer(unittest.TestCase):
         self.deployer.wait_for_changeset = Mock()
 
         result = self.deployer.create_and_wait_for_changeset(
-                stack_name, template, parameters, capabilities)
+                stack_name, template, parameters, capabilities, role_arn,
+                notification_arns)
         self.assertEquals(result.changeset_id, changeset_id)
         self.assertEquals(result.changeset_type, changeset_type)
 
@@ -206,6 +218,8 @@ class TestDeployer(unittest.TestCase):
         capabilities = ["capabilities"]
         changeset_id = "changeset id"
         changeset_type = "changeset type"
+        role_arn = "arn:aws:iam::1234567890:role"
+        notification_arns = ["arn:aws:sns:region:1234567890:notify"]
 
         self.deployer.create_changeset = Mock()
         self.deployer.create_changeset.return_value = ChangeSetResult(changeset_id, changeset_type)
@@ -215,7 +229,8 @@ class TestDeployer(unittest.TestCase):
 
         with self.assertRaises(RuntimeError):
             result = self.deployer.create_and_wait_for_changeset(
-                    stack_name, template, parameters, capabilities)
+                    stack_name, template, parameters, capabilities, role_arn,
+                    notification_arns)
 
     def test_wait_for_changeset_no_changes(self):
         stack_name = "stack_name"

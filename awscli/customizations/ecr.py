@@ -44,7 +44,7 @@ class ECRLogin(BasicCommand):
             'action': 'store_true',
             'group_name': 'include-email',
             'dest': 'include_email',
-            'default': True,
+            'default': False,
             'required': False,
             'help_text': (
                 "Specify if the '-e' flag should be included in the "

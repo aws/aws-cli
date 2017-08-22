@@ -89,7 +89,7 @@ EC2 instance, and the second was created by AWS OpsWorks.
 
 **More Information**
 
-For more information, see Instances_ in the *AWS OpsWorks User Guide*.
+For more information, see `Instances`_ in the *AWS OpsWorks User Guide*.
 
-.. _Instances: http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances.html
+.. _`Instances`: http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances.html
 

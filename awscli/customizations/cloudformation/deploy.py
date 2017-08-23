@@ -68,8 +68,9 @@ class DeployCommand(BasicCommand):
             'name': 's3-bucket',
             'required': False,
             'help_text': (
-                'The name of the S3 bucket where this command uploads'
-                ' your template if required.'
+                'The name of the S3 bucket where this command uploads your '
+                'CloudFormation template. This is required the deployments of '
+                'templates sized greater than 51,200 bytes'
             )
         },
         {
@@ -213,6 +214,10 @@ class DeployCommand(BasicCommand):
         template_dict = yaml_parse(template_str)
 
         parameters = self.merge_parameters(template_dict, parameter_overrides)
+
+        template_size = os.path.getsize(parsed_args.template_file)
+        if template_size > 51200 and not parsed_args.s3_bucket:
+            raise exceptions.DeployBucketRequiredError()
 
         bucket = parsed_args.s3_bucket
         if bucket:

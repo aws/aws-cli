@@ -127,6 +127,27 @@ class TestDeployCommand(unittest.TestCase):
             result = self.deploy_command._run_main(self.parsed_args,
                                                   parsed_globals=self.parsed_globals)
 
+    @patch('awscli.customizations.cloudformation.deploy.os.path.isfile')
+    @patch('awscli.customizations.cloudformation.deploy.yaml_parse')
+    @patch('awscli.customizations.cloudformation.deploy.os.path.getsize')
+    def test_s3_upload_required_but_missing_bucket(self, mock_getsize, mock_yaml_parse, mock_isfile):
+        """
+        Tests that large templates are detected prior to deployment
+        """
+        template_str = get_example_template()
+
+        mock_getsize.return_value = 51201
+        mock_isfile.return_value = True
+        mock_yaml_parse.return_value = template_str
+        open_mock = mock.mock_open()
+
+        with patch(
+                "awscli.customizations.cloudformation.deploy.open",
+                open_mock(read_data=template_str)) as open_mock:
+            with self.assertRaises(exceptions.DeployBucketRequiredError):
+                result = self.deploy_command._run_main(self.parsed_args,
+                                parsed_globals=self.parsed_globals)
+
 
     def test_deploy_success(self):
         """

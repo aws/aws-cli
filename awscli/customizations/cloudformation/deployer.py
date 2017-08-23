@@ -109,24 +109,15 @@ class Deployer(object):
             'Description': description,
         }
 
-        # CloudFormation requires template bodies to be less than 51200 bytes
-        # if they are deployed from a file. It supports much larger templates
-        # if the templates exist in s3. If this is a 'big' template, throw it
-        # into s3 first.
-        cfn_template_length = len(cfn_template.encode('utf-8'))
-        if cfn_template_length > 51200:
-            if s3_uploader:
-                with mktempfile() as temporary_file:
-                    temporary_file.write(kwargs.pop('TemplateBody'))
-                    temporary_file.flush()
-                    url = s3_uploader.upload_with_dedup(
-                            temporary_file.name, "template")
-                    kwargs['TemplateURL'] = s3_uploader.to_path_style_s3_url(url.split('/')[-1])
-            else:
-                LOG.debug("Template size is too large and S3 bucket not given")
-                raise ValueError(("A template with a size greater than 51200 "
-                                  "requires an S3 bucket set. Please add the "
-                                  "--s3-bucket parameter to your command."))
+        # If an S3 uploader is available, use TemplateURL to deploy rather than
+        # TemplateBody. This is required for large templates.
+        if s3_uploader:
+            with mktempfile() as temporary_file:
+                temporary_file.write(kwargs.pop('TemplateBody'))
+                temporary_file.flush()
+                url = s3_uploader.upload_with_dedup(
+                        temporary_file.name, "template")
+                kwargs['TemplateURL'] = s3_uploader.to_path_style_s3_url(url.split('/')[-1])
 
         # don't set these arguments if not specified to use existing values
         if role_arn is not None:
@@ -148,7 +139,7 @@ class Deployer(object):
         :param stack_name:   Stack name
         :return: Latest status of the create-change-set operation
         """
-        sys.stdout.write("Waiting for changeset to be created..\n")
+        sys.stdout.write("\nWaiting for changeset to be created..\n")
         sys.stdout.flush()
 
         # Wait for changeset to be created

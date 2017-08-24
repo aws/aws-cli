@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.140
+========
+
+* api-change:``rekognition``: Update rekognition command to latest version
+
+
 1.11.139
 ========
 

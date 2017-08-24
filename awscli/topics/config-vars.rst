@@ -200,8 +200,18 @@ You can specify the following configuration values for configuring an IAM role
 in the AWS CLI config file:
 
 * ``role_arn`` - The ARN of the role you want to assume.
-* ``source_profile`` - The AWS CLI profile that contains credentials we should
-  use for the initial ``assume-role`` call.
+* ``source_profile`` - The AWS CLI profile that contains credentials /
+  configuration the CLI should use for the initial ``assume-role`` call. This
+  profile may be another profile configured to use ``assume-role``, though
+  if static credentials are present in the profile they will take precedence.
+  This parameter cannot be provided alongside ``credential_source``.
+* ``credential_source`` - The credential provider to use to get credentials for
+  the initial ``assume-role`` call. This parameter cannot be provided
+  alongside ``source_profile``. Valid values are:
+  * ``Environment`` to pull source credentials from environment variables.
+  * ``Ec2InstanceMetadata`` to use the EC2 instance role as source credentials.
+  * ``EcsContainer`` to use the ECS container credentials as the source
+    credentials.
 * ``external_id`` - A unique identifier that is used by third parties to assume
   a role in their customers' accounts.  This maps to the ``ExternalId``
   parameter in the ``AssumeRole`` operation.  This is an optional parameter.
@@ -219,7 +229,7 @@ in the AWS CLI config file:
   session name will be automatically generated.
 
 If you do not have MFA authentication required, then you only need to specify a
-``role_arn`` and a ``source_profile``.
+``role_arn`` and either a ``source_profile`` or a ``credential_source``.
 
 When you specify a profile that has IAM role configuration, the AWS CLI
 will make an ``AssumeRole`` call to retrieve temporary credentials.  These
@@ -233,7 +243,7 @@ the cached temporary credentials.  However, when the temporary credentials
 expire, you will be re-prompted for another MFA code.
 
 
-Example configuration::
+Example configuration using ``source_profile``::
 
   # In ~/.aws/credentials:
   [development]
@@ -244,6 +254,14 @@ Example configuration::
   [profile crossaccount]
   role_arn=arn:aws:iam:...
   source_profile=development
+
+Example configuration using ``credential_source`` to use the instance role as
+the source credentials for the assume role call::
+
+  # In ~/.aws/config
+  [profile crossaccount]
+  role_arn=arn:aws:iam:...
+  credential_source=Ec2InstanceMetadata
 
 
 Service Specific Configuration

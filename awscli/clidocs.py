@@ -416,12 +416,12 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             doc.style.dedent()
             doc.write('}')
         elif argument_model.type_name == 'structure':
-            doc.write('{')
-            doc.style.indent()
-            doc.style.new_line()
             self._doc_input_structure_members(doc, argument_model, stack)
 
     def _doc_input_structure_members(self, doc, argument_model, stack):
+        doc.write('{')
+        doc.style.indent()
+        doc.style.new_line()
         members = argument_model.members
         for i, member_name in enumerate(members):
             member_model = members[member_name]
@@ -441,9 +441,8 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             if i < len(members) - 1:
                 doc.write(',')
                 doc.style.new_line()
-            else:
-                doc.style.dedent()
-                doc.style.new_line()
+        doc.style.dedent()
+        doc.style.new_line()
         doc.write('}')
 
     def doc_option_example(self, arg_name, help_command, event_name, **kwargs):

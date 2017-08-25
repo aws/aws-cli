@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.141
+========
+
+* api-change:``cloudformation``: Update cloudformation command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``gamelift``: Update gamelift command to latest version
+
+
 1.11.140
 ========
 

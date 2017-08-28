@@ -11,7 +11,7 @@ Output::
       {
         "UserName": "Bob",
         "SerialNumber": "arn:aws:iam::123456789012:mfa/BobsMFADevice",
-        "EnablDate": "2015-06-16T22:36:37Z"
+        "EnableDate": "2015-06-16T22:36:37Z"
       }
     ]
   }

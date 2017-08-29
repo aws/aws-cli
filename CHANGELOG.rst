@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.142
+========
+
+* api-change:``config``: Update config command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.11.141
 ========
 

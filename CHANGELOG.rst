@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.143
+========
+
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+
+
 1.11.142
 ========
 

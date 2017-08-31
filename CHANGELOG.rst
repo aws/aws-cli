@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.11.144
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+
+
 1.11.143
 ========
 

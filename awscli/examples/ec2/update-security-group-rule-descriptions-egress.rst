@@ -1,6 +1,6 @@
 **To update an outbound security group rule description**
 
-This example updates the description for the security group rule that allows outbound access over port 80 to the ``205.192.0.0/16`` IPv4 address range. The description '``Outbound HTTP access to server 2``' replaces any existing description for the rule. If the command succeeds, no output is returned.
+This example updates the description for the security group rule that allows outbound access over port 80 to the ``203.0.113.0/24`` IPv4 address range. The description '``Outbound HTTP access to server 2``' replaces any existing description for the rule. If the command succeeds, no output is returned.
 
 Command::
 

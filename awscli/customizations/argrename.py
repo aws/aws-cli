@@ -67,6 +67,7 @@ ARGUMENT_RENAMES = {
     'lex-models.delete-bot-version.version': 'bot-version',
     'lex-models.delete-intent-version.version': 'intent-version',
     'lex-models.delete-slot-type-version.version': 'slot-type-version',
+    'mobile.create-project.region': 'project-region',
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,

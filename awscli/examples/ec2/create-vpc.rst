@@ -9,16 +9,25 @@ Command::
 Output::
 
   {
-      "Vpc": {
-        "VpcId": "vpc-145db170", 
+    "Vpc": {
+        "VpcId": "vpc-ff7bbf86", 
         "InstanceTenancy": "default", 
-        "CidrBlockAssociationSet": [], 
+        "Tags": [], 
+        "CidrBlockAssociations": [
+            {
+                "AssociationId": "vpc-cidr-assoc-6e42b505", 
+                "CidrBlock": "10.0.0.0/16", 
+                "CidrBlockState": {
+                    "State": "associated"
+                }
+            }
+        ], 
         "Ipv6CidrBlockAssociationSet": [], 
         "State": "pending", 
-        "DhcpOptionsId": "dopt-dbedadb2", 
+        "DhcpOptionsId": "dopt-38f7a057", 
         "CidrBlock": "10.0.0.0/16", 
         "IsDefault": false
-      }
+    }
   }
   
 **To create a VPC with dedicated tenancy**
@@ -32,17 +41,26 @@ Command::
 Output::
 
   {
-      "Vpc": {
-        "VpcId": "vpc-145db170", 
+    "Vpc": {
+        "VpcId": "vpc-848344fd", 
         "InstanceTenancy": "dedicated", 
-        "CidrBlockAssociationSet": [], 
+        "Tags": [], 
+        "CidrBlockAssociations": [
+            {
+                "AssociationId": "vpc-cidr-assoc-8c4fb8e7", 
+                "CidrBlock": "10.0.0.0/16", 
+                "CidrBlockState": {
+                    "State": "associated"
+                }
+            }
+        ], 
         "Ipv6CidrBlockAssociationSet": [], 
         "State": "pending", 
-        "DhcpOptionsId": "dopt-dbedadb2", 
+        "DhcpOptionsId": "dopt-38f7a057", 
         "CidrBlock": "10.0.0.0/16", 
         "IsDefault": false
-      }
-  }  
+    }
+  } 
   
 **To create a VPC with an IPv6 CIDR block**
 
@@ -56,20 +74,29 @@ Output::
 
   {
     "Vpc": {
-        "VpcId": "vpc-31896b55", 
+        "VpcId": "vpc-4b804732", 
         "InstanceTenancy": "default", 
-        "CidrBlockAssociationSet": [], 
+        "Tags": [], 
+        "CidrBlockAssociations": [
+            {
+                "AssociationId": "vpc-cidr-assoc-6c4dba07", 
+                "CidrBlock": "10.0.0.0/16", 
+                "CidrBlockState": {
+                    "State": "associated"
+                }
+            }
+        ], 
         "Ipv6CidrBlockAssociationSet": [
             {
                 "Ipv6CidrBlock": "", 
-                "AssociationId": "vpc-cidr-assoc-17a5407e", 
+                "AssociationId": "vpc-cidr-assoc-634dba08", 
                 "Ipv6CidrBlockState": {
                     "State": "associating"
                 }
             }
         ], 
         "State": "pending", 
-        "DhcpOptionsId": "dopt-dbedadb2", 
+        "DhcpOptionsId": "dopt-38f7a057", 
         "CidrBlock": "10.0.0.0/16", 
         "IsDefault": false
     }

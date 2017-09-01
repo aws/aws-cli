@@ -43,7 +43,8 @@ Output::
                     "UserIdGroupPairs": [
                         {
                             "VpcId": "vpc-7a20e51f", 
-                            "GroupId": "sg-279ab042", 
+                            "GroupId": "sg-279ab042",
+                            "Description": "Access from pcx-b04deed9", 
                             "VpcPeeringConnectionId": "pcx-b04deed9", 
                             "PeeringStatus": "active"
                         }

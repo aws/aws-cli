@@ -368,6 +368,11 @@ ONLY_SHOW_ERRORS = {'name': 'only-show-errors', 'action': 'store_true',
                         'Only errors and warnings are displayed. All other '
                         'output is suppressed.')}
 
+HIDE_PROGRESS = {'name': 'hide-progress', 'action': 'store_true',
+                 'help_text': (
+                     'Suppress transfer progress messages, but still list '
+                     'files transferred.')}
+
 
 EXPECTED_SIZE = {'name': 'expected-size',
                  'help_text': (
@@ -424,7 +429,7 @@ TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  SSE_C_COPY_SOURCE_KEY, STORAGE_CLASS, GRANTS,
                  WEBSITE_REDIRECT, CONTENT_TYPE, CACHE_CONTROL,
                  CONTENT_DISPOSITION, CONTENT_ENCODING, CONTENT_LANGUAGE,
-                 EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS,
+                 EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS, HIDE_PROGRESS,
                  PAGE_SIZE, IGNORE_GLACIER_WARNINGS, FORCE_GLACIER_TRANSFER]
 
 
@@ -735,7 +740,7 @@ class RmCommand(S3TransferCommand):
     USAGE = "<S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
                   'synopsis': USAGE}, DRYRUN, QUIET, RECURSIVE, INCLUDE,
-                 EXCLUDE, ONLY_SHOW_ERRORS, PAGE_SIZE]
+                 EXCLUDE, ONLY_SHOW_ERRORS, HIDE_PROGRESS, PAGE_SIZE]
 
 
 class SyncCommand(S3TransferCommand):

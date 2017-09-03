@@ -33,6 +33,7 @@ from awscli.customizations.s3.results import DryRunResult
 from awscli.customizations.s3.results import ResultRecorder
 from awscli.customizations.s3.results import ResultPrinter
 from awscli.customizations.s3.results import OnlyShowErrorsResultPrinter
+from awscli.customizations.s3.results import HideProgressResultPrinter
 from awscli.customizations.s3.results import ResultProcessor
 from awscli.customizations.s3.results import CommandResultRecorder
 from awscli.customizations.s3.utils import RequestParamsMapper
@@ -110,6 +111,8 @@ class S3TransferHandlerFactory(object):
             result_printer = OnlyShowErrorsResultPrinter(result_recorder)
         elif self._cli_params.get('is_stream'):
             result_printer = OnlyShowErrorsResultPrinter(result_recorder)
+        elif self._cli_params.get('hide_progress'):
+            result_printer = HideProgressResultPrinter(result_recorder)
         else:
             result_printer = ResultPrinter(result_recorder)
         result_processor_handlers.append(result_printer)

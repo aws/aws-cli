@@ -563,6 +563,12 @@ class OnlyShowErrorsResultPrinter(ResultPrinter):
         pass
 
 
+class HideProgressResultPrinter(ResultPrinter):
+    """A result printer that only lists files transferred upon completion"""
+    def _print_progress(self, **kwargs):
+        pass
+
+
 class ResultProcessor(threading.Thread):
     def __init__(self, result_queue, result_handlers=None):
         """Thread to process results from result queue

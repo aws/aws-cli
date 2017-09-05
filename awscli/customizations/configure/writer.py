@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+import shlex
 import re
 
 from . import SectionNotFoundError
@@ -52,6 +53,10 @@ class ConfigFileWriter(object):
 
         """
         section_name = new_values.pop('__section__', 'default')
+        parts = shlex.split(section_name)
+        head, rest = parts[0], ' '.join(parts[1:])
+        if ' ' in rest:
+            section_name = "{} '{}'".format(head, rest)
         if not os.path.isfile(config_filename):
             self._create_file(config_filename)
             self._write_new_section(section_name, new_values, config_filename)

@@ -278,3 +278,19 @@ Amazon S3
 
 There are a number of configuration variables specific to the S3 commands. See
 :doc:`s3-config` (``aws help topics s3-config``) for more details.
+
+
+OS Specific Configuration
+=========================
+
+Locale
+------
+
+If you have data stored in AWS that uses a particular encoding, you should make
+sure that your systems are configured to accept that encoding. For instance, if
+you have unicode characters as part of a key on EC2 you will need to make sure
+that your locale is set to a unicode-compatible locale. How you configure your
+locale will depend on your operating system and your specific IT requirements.
+One option for UNIX systems is the ``LC_ALL`` environment variable. Setting
+``LC_ALL=en_US.UTF-8``, for instance, would give you a United States English
+locale which is compatible with unicode.

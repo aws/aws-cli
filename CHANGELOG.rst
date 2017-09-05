@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.146
+========
+
+* api-change:``codestar``: Update codestar command to latest version
+
+
 1.11.145
 ========
 

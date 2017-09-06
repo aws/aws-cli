@@ -56,7 +56,7 @@ class ConfigFileWriter(object):
         parts = shlex.split(section_name)
         head, rest = parts[0], ' '.join(parts[1:])
         if ' ' in rest:
-            section_name = "{} '{}'".format(head, rest)
+            section_name = "{0} '{1}'".format(head, rest)
         if not os.path.isfile(config_filename):
             self._create_file(config_filename)
             self._write_new_section(section_name, new_values, config_filename)

@@ -53,7 +53,7 @@ class ConfigFileWriter(object):
 
         """
         section_name = new_values.pop('__section__', 'default')
-        parts = shlex.split(section_name)
+        parts = section_name.split(' ')
         head, rest = parts[0], ' '.join(parts[1:])
         if ' ' in rest:
             section_name = "{0} '{1}'".format(head, rest)

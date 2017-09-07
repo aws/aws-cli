@@ -44,14 +44,14 @@ class ECRLogin(BasicCommand):
             'action': 'store_true',
             'group_name': 'include-email',
             'dest': 'include_email',
-            'default': True,
+            'default': False,
             'required': False,
             'help_text': (
                 "Specify if the '-e' flag should be included in the "
                 "'docker login' command.  The '-e' option has been deprecated "
                 "and is removed in docker version 17.06 and later.  You must "
                 "specify --no-include-email if you're using docker version "
-                "17.06 or later.  The default behavior is to include the "
+                "17.06 or later.  The default behavior is to not include the "
                 "'-e' flag in the 'docker login' output."),
         },
         {

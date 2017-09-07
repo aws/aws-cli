@@ -39,48 +39,48 @@ class TestPreviewMode(BaseAWSCommandParamsTest):
         # We check this to make sure we fail loudly if we
         # ever mark cloudfront as not being a preview service
         # by default.
-        self.assertIn('cloudfront', preview.PREVIEW_SERVICES)
-        rc = self.driver.main('cloudfront list-distributions'.split())
+        self.assertIn('sdb', preview.PREVIEW_SERVICES)
+        rc = self.driver.main('sdb list-domains'.split())
         self.assertEqual(rc, 1)
         self.assertIn(preview.PreviewModeCommandMixin.HELP_SNIPPET,
                       self.stderr.getvalue())
 
     def test_preview_service_not_true(self):
         # If it's not "true" then we still make it a preview service.
-        self.full_config['preview'] = {'cloudfront': 'false'}
-        rc = self.driver.main('cloudfront list-distributions'.split())
+        self.full_config['preview'] = {'sdb': 'false'}
+        rc = self.driver.main('sdb list-domains'.split())
         self.assertEqual(rc, 1)
         self.assertIn(preview.PreviewModeCommandMixin.HELP_SNIPPET,
                       self.stderr.getvalue())
 
     def test_preview_service_enabled_makes_call(self):
-        self.full_config['preview'] = {'cloudfront': 'true'}
-        self.assert_params_for_cmd('cloudfront list-distributions', params={})
+        self.full_config['preview'] = {'sdb': 'true'}
+        self.assert_params_for_cmd('sdb list-domains', params={})
 
     @mock.patch('awscli.help.get_renderer')
     def test_can_still_document_preview_service(self, get_renderer):
         # Even if a service is still marked as being in preview,
         # you can still pull up its documentation.
-        self.full_config['preview'] = {'cloudfront': 'false'}
-        self.driver.main('cloudfront help'.split())
+        self.full_config['preview'] = {'sdb': 'false'}
+        self.driver.main('sdb help'.split())
         # In this case, the normal help processing should have occurred
         # and we check that we rendered the contents correctly.
         self.assertTrue(get_renderer.return_value.render.called)
         contents = get_renderer.return_value.render.call_args[0][0]
-        self.assertIn('aws configure set preview.cloudfront true',
+        self.assertIn('aws configure set preview.sdb true',
                       contents.decode('utf-8'))
 
     @mock.patch('awscli.help.get_renderer')
     def test_document_preview_service_operation(self, get_renderer):
         # Even if a service is still marked as being in preview,
         # you can still pull up its documentation for its operations.
-        self.full_config['preview'] = {'cloudfront': 'false'}
-        self.driver.main('cloudfront create-distribution help'.split())
+        self.full_config['preview'] = {'sdb': 'false'}
+        self.driver.main('sdb list-domains help'.split())
         # The contents should be have the correct way to set the command
         # out of preview in the config file.
         self.assertTrue(get_renderer.return_value.render.called)
         contents = get_renderer.return_value.render.call_args[0][0]
-        self.assertIn('aws configure set preview.cloudfront true',
+        self.assertIn('aws configure set preview.sdb true',
                       contents.decode('utf-8'))
 
     @mock.patch('awscli.help.get_renderer')

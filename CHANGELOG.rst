@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.11.148
+========
+
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+
+
 1.11.147
 ========
 

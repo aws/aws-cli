@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.149
+========
+
+* api-change:``logs``: Update logs command to latest version
+
+
 1.11.148
 ========
 

@@ -25,7 +25,7 @@ Order of Path Arguments
 Every command takes one or two positional path arguments.  The first path
 argument represents the source, which is the local file/directory or S3
 object/prefix/bucket that is being referenced.  If there is a second path
-argument, it represents the destination, which is is the local file/directory
+argument, it represents the destination, which is the local file/directory
 or S3 object/prefix/bucket that is being operated on.  Commands with only
 one path argument do not have a destination because the operation is being
 performed only on the source.

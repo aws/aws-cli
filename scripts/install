@@ -76,9 +76,10 @@ def _create_virtualenv(location, working_dir):
         # We know that virtualenv is the only dir in this directory
         # so we can listdir()[0] it.
         with cd(os.listdir('.')[0]):
-            run('%s virtualenv.py --python %s %s' % (sys.executable,
-                                                     sys.executable,
-                                                     location))
+            run(('%s virtualenv.py --no-download '
+                 '--python %s %s') % (sys.executable,
+                                      sys.executable,
+                                      location))
 
 
 def create_working_dir():

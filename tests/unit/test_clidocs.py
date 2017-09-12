@@ -125,7 +125,7 @@ class TestTranslationMap(unittest.TestCase):
         writes = '\n'.join(writes)
         self.assertIn(expected, writes)
 
-    def test_boolean_arg_groups(self):
+    def test_no_scalar_types(self):
         builder = DenormalizedStructureBuilder()
         input_model = builder.with_members({
             'Flag': {'type': 'boolean'}
@@ -136,11 +136,24 @@ class TestTranslationMap(unittest.TestCase):
             cli_type_name='boolean', argument_model=argument_model)
         self.arg_table['no-flag'] = mock.Mock(
             cli_type_name='boolean', argument_model=argument_model)
-        # The --no-flag should not be used in the translation.
-        self.assertEqual(
-            self.operation_handler.build_translation_map(),
-            {'Flag': 'flag'}
-        )
+        self.assertEqual({}, self.operation_handler.build_translation_map())
+
+    def test_translation_map_normal_remapping(self):
+        builder = DenormalizedStructureBuilder()
+        input_model = builder.with_members({
+            'ItemHolder': {
+                'type': 'structure',
+                'members': {
+                    'TheItem': {'type': 'string'}
+                }
+            }
+        }).build_model()
+        argument_model = input_model.members['ItemHolder']
+        argument_model.name = 'ItemHolder'
+        self.arg_table['item-holder'] = mock.Mock(
+            cli_type_name='structure', argument_model=argument_model)
+        self.assertEqual({'ItemHolder': 'item-holder'},
+                         self.operation_handler.build_translation_map())
 
 
 class TestCLIDocumentEventHandler(unittest.TestCase):

@@ -404,6 +404,15 @@ class TestEC2AuthorizeSecurityGroupNotRendered(BaseAWSHelpOutputTest):
         self.assert_not_contains('--source-security-group-owner-id')
 
 
+class TestEC2DescribeImages(BaseAWSHelpOutputTest):
+    def test_basic_types_not_replaced(self):
+        self.driver.main(['ec2', 'describe-images', 'help'])
+        # Ensure that boolean was not replaced with dry-run
+        self.assert_not_contains('is-public - A dry-run that indicates')
+        self.assert_not_contains('ena-support - A dry-run that indicates')
+        self.assert_not_contains('block-device-mapping.delete-on-termination '
+                                 '- A dry-run value')
+
 class TestKMSCreateGrant(BaseAWSHelpOutputTest):
     def test_proper_casing(self):
         self.driver.main(['kms', 'create-grant', 'help'])

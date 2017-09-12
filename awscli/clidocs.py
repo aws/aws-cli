@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import json
 import logging
 import os
 from botocore import xform_name
@@ -313,22 +314,19 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         operation_model = self.help_command.obj
         d = {}
         for cli_name, cli_argument in self.help_command.arg_table.items():
+            # Some arguments map directly to basic shapes which results in the
+            # translation mapping containing parameter names that map directly
+            # to basic types. For example dry-run/no-dry-run maps to 'Boolean'
+            # rather than an intermediate type that can be safely
+            # search/replaced. Since we do not want to replace all occurrences
+            # of basic types in the raw documentation with parameter names
+            # we need to skip any mappings that map a parameter name
+            # directly to a base scalar type.
+            if cli_argument.cli_type_name in SCALAR_TYPES:
+                continue
             if cli_argument.argument_model is not None:
                 argument_name = cli_argument.argument_model.name
-                if argument_name in d:
-                    previous_mapping = d[argument_name]
-                    # If the argument name is a boolean argument, we want the
-                    # the translation to default to the one that does not start
-                    # with --no-. So we check if the cli parameter currently
-                    # being used starts with no- and if stripping off the no-
-                    # results in the new proposed cli argument name. If it
-                    # does, we assume we have the postive form of the argument
-                    # which is the name we want to use in doc translations.
-                    if cli_argument.cli_type_name == 'boolean' and \
-                            previous_mapping.startswith('no-') and \
-                            cli_name == previous_mapping[3:]:
-                        d[argument_name] = cli_name
-                else:
+                if argument_name not in d:
                     d[argument_name] = cli_name
         for operation_name in operation_model.service_model.operation_names:
             d[operation_name] = xform_name(operation_name, '-')

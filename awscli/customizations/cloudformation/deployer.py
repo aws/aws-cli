@@ -176,9 +176,8 @@ class Deployer(object):
             raise RuntimeError("Invalid changeset type {0}"
                                .format(changeset_type))
 
-        # Poll every 5 seconds. Optimizing for the case when the stack has only
-        # minimal changes, such the Code for Lambda Function
-        waiter.config.delay = 5
+        # Changing the polling from 5 seconds to 10 seconds as other services can take longer than 10 minutes to create.
+        waiter.config.delay = 10
 
         try:
             waiter.wait(StackName=stack_name)

@@ -1,10 +1,10 @@
 **To list your available container instances in a cluster**
 
-This example command lists all of your available container instances in the specified cluster in your default region.
+This example command lists all of your available container instances in the specified cluster (`my_cluster`) in your default region.
 
 Command::
 
-  aws ecs list-container-instances --cluster default
+  aws ecs list-container-instances --cluster my_cluster
 
 Output::
 

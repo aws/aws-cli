@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.11.152
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``events``: Update events command to latest version
+* bugfix:CloudFormation: CloudFormation will no longer fail for deploys that take longer than 10 minutes. Fixes `#2754 <https://github.com/aws/aws-cli/issues/2754>`__
+* api-change:``batch``: Update batch command to latest version
+
+
 1.11.151
 ========
 

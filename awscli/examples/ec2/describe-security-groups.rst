@@ -83,6 +83,7 @@ Output::
                       "FromPort": 22, 
                       "IpRanges": [
                           {
+                              "Description": "Access from NY office",
                               "CidrIp": "203.0.113.0/24"
                           }
                       ], 

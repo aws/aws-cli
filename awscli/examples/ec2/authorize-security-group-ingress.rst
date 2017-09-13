@@ -8,7 +8,7 @@ Command::
 
 **[EC2-Classic] To add a rule that allows inbound HTTP traffic from a security group in another account**
 
-This example enables inbound traffic on TCP port 80 from a source security group (otheraccountgroup) in a different AWS account (123456789012). If the command succeeds, no output is returned.
+This example enables inbound traffic on TCP port 80 from a source security group (otheraccountgroup) in a different AWS account (123456789012). Incoming traffic is allowed based on the private IP addresses of instances that are associated with the source security group (not the public IP or Elastic IP addresses). If the command succeeds, no output is returned.
 
 Command::
 
@@ -32,7 +32,7 @@ Command::
 
 **[EC2-VPC] To add a rule that allows inbound HTTP traffic from another security group**
 
-This example enables inbound access on TCP port 80 from the source security group sg-1a2b3c4d. Note that for EC2-VPC, the source group must be in the same VPC or in a peer VPC (requires a VPC peering connection). If the command succeeds, no output is returned.
+This example enables inbound access on TCP port 80 from the source security group sg-1a2b3c4d. Note that for EC2-VPC, the source group must be in the same VPC or in a peer VPC (requires a VPC peering connection). Incoming traffic is allowed based on the private IP addresses of instances that are associated with the source security group (not the public IP or Elastic IP addresses). If the command succeeds, no output is returned.
 
 Command::
 
@@ -53,6 +53,14 @@ This example grants SSH access (port 22) from the IPv6 range ``2001:db8:1234:1a0
 Command::
 
   aws ec2 authorize-security-group-ingress --group-id sg-9bf6ceff --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "Ipv6Ranges": [{"CidrIpv6": "2001:db8:1234:1a00::/64"}]}]'
+
+**Add a rule with a description**
+
+This example uses the ``ip-permissions`` parameter to add an inbound rule that allows RDP traffic from a specific IPv4 address range. The rule includes a description to help you identify it later.
+
+Command::
+
+  aws ec2 authorize-security-group-ingress --group-id sg-123abc12 --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 3389, "ToPort": 3389, "IpRanges": [{"CidrIp": "203.0.113.0/24", "Description": "RDP access from NY office"}]}]'
 
 For more information, see `Using Security Groups`_ in the *AWS Command Line Interface User Guide*.
 

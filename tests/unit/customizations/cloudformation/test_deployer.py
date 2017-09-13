@@ -254,8 +254,10 @@ class TestDeployer(unittest.TestCase):
         with self.assertRaises(exceptions.ChangeEmptyError):
             mock_deployer.wait_for_changeset(changeset_id, stack_name)
 
+        waiter_config = {'Delay': 5}
         mock_waiter.wait.assert_called_once_with(ChangeSetName=changeset_id,
-                                                 StackName=stack_name)
+                                                 StackName=stack_name,
+                                                 WaiterConfig=waiter_config)
 
         mock_client.get_waiter.assert_called_once_with(
                 "change_set_create_complete")
@@ -282,8 +284,10 @@ class TestDeployer(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             mock_deployer.wait_for_changeset(changeset_id, stack_name)
 
+        waiter_config = {'Delay': 5}
         mock_waiter.wait.assert_called_once_with(ChangeSetName=changeset_id,
-                                            StackName=stack_name)
+                                                 StackName=stack_name,
+                                                 WaiterConfig=waiter_config)
 
         mock_client.get_waiter.assert_called_once_with(
                 "change_set_create_complete")
@@ -305,7 +309,12 @@ class TestDeployer(unittest.TestCase):
         with self.assertRaises(exceptions.DeployFailedError):
             mock_deployer.wait_for_execute(stack_name, changeset_type)
 
-        mock_waiter.wait.assert_called_once_with(StackName=stack_name)
+        waiter_config = {
+            'Delay': 5,
+            'MaxAttempts': 720,
+        }
+        mock_waiter.wait.assert_called_once_with(StackName=stack_name,
+                                                 WaiterConfig=waiter_config)
 
         mock_client.get_waiter.assert_called_once_with(
                 "stack_create_complete")

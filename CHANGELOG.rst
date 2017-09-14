@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.153
+========
+
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+
+
 1.11.152
 ========
 

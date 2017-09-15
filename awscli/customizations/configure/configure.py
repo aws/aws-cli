@@ -115,8 +115,12 @@ class ConfigureCommand(BasicCommand):
             self._write_out_creds_file_values(new_values,
                                               parsed_globals.profile)
             if parsed_globals.profile is not None:
-                new_values['__section__'] = (
-                    'profile \'%s\'' % parsed_globals.profile)
+                if ' ' in parsed_globals.profile:
+                    new_values['__section__'] = (
+                        'profile \'%s\'' % parsed_globals.profile)
+                else:
+                    new_values['__section__'] = (
+                        'profile %s' % parsed_globals.profile)
             self._config_writer.update_config(new_values, config_filename)
 
     def _write_out_creds_file_values(self, new_values, profile_name):

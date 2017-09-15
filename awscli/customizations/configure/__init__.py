@@ -10,8 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import string
+from botocore.vendored.six.moves import shlex_quote
+
 NOT_SET = '<not set>'
 PREDEFINED_SECTION_NAMES = ('preview', 'plugins')
+_WHITESPACE = ' \t'
 
 
 class ConfigValue(object):
@@ -36,3 +40,10 @@ def mask_value(current_value):
         return 'None'
     else:
         return ('*' * 16) + current_value[-4:]
+
+
+def profile_to_section(profile_name):
+    """Converts a profile name to a section header to be used in the config."""
+    if any(c in _WHITESPACE for c in profile_name):
+        profile_name = shlex_quote(profile_name)
+    return 'profile %s' % profile_name

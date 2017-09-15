@@ -42,7 +42,7 @@ Output::
     move: s3://mybucket/test2.txt to test2.txt
 
 When passed with the parameter ``--recursive``, the following ``mv`` command recursively moves all files under a
-specifed directory to a specified bucket and prefix while excluding some files by using an ``--exclude`` parameter. In
+specified directory to a specified bucket and prefix while excluding some files by using an ``--exclude`` parameter. In
 this example, the directory ``myDir`` has the files ``test1.txt`` and ``test2.jpg``::
 
     aws s3 mv myDir s3://mybucket/ --recursive --exclude "*.jpg"
@@ -52,7 +52,7 @@ Output::
     move: myDir/test1.txt to s3://mybucket2/test1.txt
 
 When passed with the parameter ``--recursive``, the following ``mv`` command recursively moves all objects under a
-specifed bucket to another bucket while excluding some objects by using an ``--exclude`` parameter.  In this example,
+specified bucket to another bucket while excluding some objects by using an ``--exclude`` parameter.  In this example,
 the bucket ``mybucket`` has the objects ``test1.txt`` and ``another/test1.txt``::
 
     aws s3 mv s3://mybucket/ s3://mybucket2/ --recursive --exclude "mybucket/another/*"

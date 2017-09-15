@@ -67,7 +67,7 @@ configuration::
 Note that all the S3 configuration values are indented and nested under the top
 level ``s3`` key.
 
-You can also set these values programatically using the ``aws configure set``
+You can also set these values programmatically using the ``aws configure set``
 command.  For example, to set the above values for the default profile, you
 could instead run these commands::
 

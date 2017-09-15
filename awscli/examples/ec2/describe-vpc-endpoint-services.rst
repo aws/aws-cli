@@ -10,6 +10,7 @@ Output::
 
   {
     "ServiceNames": [
-      "com.amazonaws.us-east-1.s3"
+        "com.amazonaws.us-east-1.dynamodb", 
+        "com.amazonaws.us-east-1.s3"
     ]
   }

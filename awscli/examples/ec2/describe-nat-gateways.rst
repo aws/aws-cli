@@ -20,6 +20,12 @@ Output::
           }
         ], 
         "VpcId": "vpc-1a2b3c4d", 
+        "Tags": [
+                {
+                    "Value": "IT", 
+                    "Key": "Department"
+                }
+        ],
         "State": "available", 
         "NatGatewayId": "nat-05dba92075d71c408", 
         "SubnetId": "subnet-847e4dc2", 
@@ -34,11 +40,16 @@ Output::
             "PrivateIp": "10.0.0.77"
           }
         ], 
-        "VpcId": "vpc-11aa22bb", 
-        "State": "deleting", 
+        "VpcId": "vpc-11aa22bb",
+        "Tags": [
+                {
+                    "Value": "Finance", 
+                    "Key": "Department"
+                }
+        ], 
+        "State": "available", 
         "NatGatewayId": "nat-0a93acc57881d4199", 
-        "SubnetId": "subnet-7f7e4d39", 
-        "DeleteTime": "2015-12-17T12:26:14.564Z", 
+        "SubnetId": "subnet-7f7e4d39",  
         "CreateTime": "2015-12-01T12:09:22.040Z"
       }
     ]

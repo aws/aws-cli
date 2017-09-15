@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.154
+========
+
+* api-change:``apigateway``: Update apigateway command to latest version
+
+
 1.11.153
 ========
 

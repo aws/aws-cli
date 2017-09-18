@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.155
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``iam``: Update iam command to latest version
+* api-change:``ses``: Update ses command to latest version
+
+
 1.11.154
 ========
 

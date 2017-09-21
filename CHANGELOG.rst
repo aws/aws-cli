@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.11.157
+========
+
+* api-change:``greengrass``: Update greengrass command to latest version
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``appstream``: Update appstream command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``lex-runtime``: Update lex-runtime command to latest version
+
+
 1.11.156
 ========
 

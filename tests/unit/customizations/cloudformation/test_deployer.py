@@ -167,11 +167,11 @@ class TestDeployer(unittest.TestCase):
         notification_arns = ["arn:aws:sns:region:1234567890:notify"]
 
         s3_uploader = Mock()
-        def to_path_style_s3_url(some_string):
+        def to_path_style_s3_url(some_string, Version=None):
             return "https://s3.amazonaws.com/bucket/file"
         s3_uploader.to_path_style_s3_url = to_path_style_s3_url
         def upload_with_dedup(filename,extension):
-            return "https://s3.amazonaws.com/bucket/file"
+            return "s3://bucket/file"
         s3_uploader.upload_with_dedup = upload_with_dedup
 
         # Case 1: Stack DOES NOT exist

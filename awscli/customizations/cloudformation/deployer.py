@@ -18,7 +18,7 @@ import botocore
 import collections
 
 from awscli.customizations.cloudformation import exceptions
-from awscli.customizations.cloudformation.artifact_exporter import mktempfile
+from awscli.customizations.cloudformation.artifact_exporter import mktempfile, parse_s3_url
 
 from datetime import datetime
 
@@ -117,7 +117,9 @@ class Deployer(object):
                 temporary_file.flush()
                 url = s3_uploader.upload_with_dedup(
                         temporary_file.name, "template")
-                kwargs['TemplateURL'] = s3_uploader.to_path_style_s3_url(url.split('/')[-1])
+                # TemplateUrl property requires S3 URL to be in path-style format
+                parts = parse_s3_url(url, version_property="Version")
+                kwargs['TemplateURL'] = s3_uploader.to_path_style_s3_url(parts["Key"], parts.get("Version", None))
 
         # don't set these arguments if not specified to use existing values
         if role_arn is not None:

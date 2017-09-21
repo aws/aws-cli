@@ -369,9 +369,13 @@ ONLY_SHOW_ERRORS = {'name': 'only-show-errors', 'action': 'store_true',
                         'output is suppressed.')}
 
 
-NO_PROGRESS = {'name': 'no-progress', 'action': 'store_true',
-                    'help_text': (
-                        'File transfer progress is not displayed.')}
+NO_PROGRESS = {'name': 'no-progress',
+               'action': 'store_false',
+               'dest': 'progress',
+               'help_text': (
+                   'File transfer progress is not displayed. This flag '
+                   'is only applied when the quiet and only-show-errors '
+                   'flags are not provided.')}
 
 
 EXPECTED_SIZE = {'name': 'expected-size',

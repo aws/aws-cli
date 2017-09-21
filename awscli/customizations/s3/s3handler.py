@@ -111,7 +111,7 @@ class S3TransferHandlerFactory(object):
             result_printer = OnlyShowErrorsResultPrinter(result_recorder)
         elif self._cli_params.get('is_stream'):
             result_printer = OnlyShowErrorsResultPrinter(result_recorder)
-        elif self._cli_params.get('no_progress'):
+        elif not self._cli_params.get('progress'):
             result_printer = NoProgressResultPrinter(result_recorder)
         else:
             result_printer = ResultPrinter(result_recorder)

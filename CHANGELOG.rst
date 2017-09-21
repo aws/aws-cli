@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.158
+========
+
+* api-change:``budgets``: Update budgets command to latest version
+* api-change:``logs``: Update logs command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.11.157
 ========
 

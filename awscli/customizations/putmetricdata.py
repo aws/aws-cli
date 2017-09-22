@@ -76,6 +76,12 @@ def _promote_args(argument_table, **kwargs):
     argument_table['statistic-values'] = PutMetricArgument(
         'statistic-values', help_text='A set of statistical values describing '
                                       'the metric.')
+    
+        argument_table['storage-resolution'] = PutMetricArgument(
+        'storage-resolution', help_text='Valid values are 1 and 60. Setting this to 1 specifies '
+            'this metric as a high-resolution metric, so that CloudWatch stores the metric with '
+            'sub-minute resolution down to one second. Setting this to 60 specifies this metric '
+            ' as a regular-resolution metric, which CloudWatch stores at 1-minute resolution. ')
 
 
 def insert_first_element(name):

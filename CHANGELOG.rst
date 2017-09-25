@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.159
+========
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
 1.11.158
 ========
 

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.160
+========
+
+* api-change:``cloudformation``: Update cloudformation command to latest version
+
+
 1.11.159
 ========
 

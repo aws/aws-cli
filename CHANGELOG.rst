@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.161
+========
+
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* bugfix:Config: Properly handle spaces in profile names when being written out via the configure command, fixes `#2806 <https://github.com/aws/aws-cli/issues/2806>`__
+
+
 1.11.160
 ========
 

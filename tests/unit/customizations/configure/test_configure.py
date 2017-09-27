@@ -14,6 +14,7 @@ import os
 import mock
 
 from awscli.customizations.configure import configure, ConfigValue, NOT_SET
+from awscli.customizations.configure import profile_to_section
 from awscli.testutils import unittest
 from awscli.compat import six
 
@@ -236,6 +237,29 @@ class TestConfigValueMasking(unittest.TestCase):
         self.assertEqual(no_config.value, NOT_SET)
         no_config.mask_value()
         self.assertEqual(no_config.value, NOT_SET)
+
+
+class TestProfileToSection(unittest.TestCase):
+
+    def test_normal_profile(self):
+        profile = 'my-profile'
+        section = profile_to_section(profile)
+        self.assertEqual('profile my-profile', section)
+
+    def test_profile_with_spaces(self):
+        profile = 'my spaced profile'
+        section = profile_to_section(profile)
+        self.assertEqual('profile \'my spaced profile\'', section)
+
+    def test_profile_with_tab(self):
+        profile = 'tab\ts'
+        section = profile_to_section(profile)
+        self.assertEqual('profile \'tab\ts\'', section)
+
+    def test_profile_with_consecutive_spaces(self):
+        profile = '    '
+        section = profile_to_section(profile)
+        self.assertEqual('profile \'    \'', section)
 
 
 class PrecannedPrompter(object):

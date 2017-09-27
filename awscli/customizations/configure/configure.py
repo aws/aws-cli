@@ -23,7 +23,7 @@ from awscli.customizations.configure.get import ConfigureGetCommand
 from awscli.customizations.configure.list import ConfigureListCommand
 from awscli.customizations.configure.writer import ConfigFileWriter
 
-from . import mask_value
+from . import mask_value, profile_to_section
 
 
 logger = logging.getLogger(__name__)
@@ -115,8 +115,8 @@ class ConfigureCommand(BasicCommand):
             self._write_out_creds_file_values(new_values,
                                               parsed_globals.profile)
             if parsed_globals.profile is not None:
-                new_values['__section__'] = (
-                    'profile %s' % parsed_globals.profile)
+                section = profile_to_section(parsed_globals.profile)
+                new_values['__section__'] = section
             self._config_writer.update_config(new_values, config_filename)
 
     def _write_out_creds_file_values(self, new_values, profile_name):

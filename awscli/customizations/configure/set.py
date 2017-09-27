@@ -15,7 +15,7 @@ import os
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure.writer import ConfigFileWriter
 
-from . import PREDEFINED_SECTION_NAMES
+from . import PREDEFINED_SECTION_NAMES, profile_to_section
 
 
 class ConfigureSetCommand(BasicCommand):
@@ -60,7 +60,7 @@ class ConfigureSetCommand(BasicCommand):
             # profile (or leave it as the 'default' section if
             # no profile is set).
             if self._session.profile is not None:
-                section = 'profile %s' % self._session.profile
+                section = profile_to_section(self._session.profile)
         else:
             # First figure out if it's been scoped to a profile.
             parts = varname.split('.')
@@ -71,14 +71,14 @@ class ConfigureSetCommand(BasicCommand):
                     remaining = parts[1:]
                 else:
                     # [profile, profile_name, ...]
-                    section = "profile %s" % parts[1]
+                    section = profile_to_section(parts[1])
                     remaining = parts[2:]
                 varname = remaining[0]
                 if len(remaining) == 2:
                     value = {remaining[1]: value}
             elif parts[0] not in PREDEFINED_SECTION_NAMES:
                 if self._session.profile is not None:
-                    section = 'profile %s' % self._session.profile
+                    section = profile_to_section(self._session.profile)
                 else:
                     profile_name = self._session.get_config_variable('profile')
                     if profile_name is not None:

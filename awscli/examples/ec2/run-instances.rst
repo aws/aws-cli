@@ -39,10 +39,7 @@ Output::
               "PrivateDnsName": null,
               "KeyName": "MyKeyPair",
               "SecurityGroups": [
-                  {
-                      "GroupName": "MySecurityGroup",
-                      "GroupId": "sg-903004f8"
-                  }
+                  "sg-903004f8"
               ],
               "ClientToken": null,
               "InstanceType": "c3.large",
@@ -103,10 +100,7 @@ Output::
               "PrivateDnsName": "ip-10-0-1-114.ec2.internal",
               "KeyName": "MyKeyPair",
               "SecurityGroups": [
-                  {
-                      "GroupName": "MySecurityGroup",
-                      "GroupId": "sg-903004f8"
-                  }
+                  "GroupId": "sg-903004f8"
               ],
               "ClientToken": null,
               "SubnetId": "subnet-6e7f829e",
@@ -291,4 +285,4 @@ You can launch an instance and specify tags for the instance, volumes, or both. 
 
 Command::
 
-  aws ec2 run-instances --image-id ami-abc12345 --count 1 --instance-type t2.micro --key-name MyKeyPair --subnet-id subnet-6e7f829e --tag-specifications 'ResourceType=instance,Tags=[{Key=webserver,Value=production}]' 'ResourceType=volume,Tags=[{Key=cost-center,Value=cc123}]' 
+  aws ec2 run-instances --image-id ami-abc12345 --count 1 --instance-type t2.micro --key-name MyKeyPair --subnet-id subnet-6e7f829e --tag-specifications 'ResourceType=instance,Tags=[{Key=webserver,Value=production}]' 'ResourceType=volume,Tags=[{Key=cost-center,Value=cc123}]'

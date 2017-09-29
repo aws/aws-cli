@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.11.162
+========
+
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``mturk``: Update mturk command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``appstream``: Update appstream command to latest version
+
+
 1.11.161
 ========
 

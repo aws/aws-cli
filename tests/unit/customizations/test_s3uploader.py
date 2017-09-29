@@ -26,8 +26,8 @@ from botocore.stub import Stubber
 from s3transfer import S3Transfer
 
 from awscli.testutils import unittest
-from awscli.customizations.cloudformation.s3uploader import S3Uploader
-from awscli.customizations.cloudformation import exceptions
+from awscli.customizations.s3uploader import S3Uploader
+from awscli.customizations.s3uploader import NoSuchBucketError
 
 
 class TestS3Uploader(unittest.TestCase):
@@ -46,8 +46,9 @@ class TestS3Uploader(unittest.TestCase):
             self.s3client, self.bucket_name, self.region, self.prefix, None, False,
             self.transfer_manager_mock)
 
-    @patch("awscli.customizations.cloudformation.s3uploader.ProgressPercentage")
-    def test_upload_successful(self, progress_percentage_mock):
+    @patch('os.path.getsize', return_value=1)
+    @patch("awscli.customizations.s3uploader.ProgressPercentage")
+    def test_upload_successful(self, progress_percentage_mock, get_size_patch):
         file_name = "filename"
         remote_path = "remotepath"
         prefix = "SomePrefix"
@@ -73,7 +74,7 @@ class TestS3Uploader(unittest.TestCase):
                 expected_encryption_args, mock.ANY)
         s3uploader.file_exists.assert_called_once_with(remote_path_with_prefix)
 
-    @patch("awscli.customizations.cloudformation.s3uploader.ProgressPercentage")
+    @patch("awscli.customizations.s3uploader.ProgressPercentage")
     def test_upload_idempotency(self, progress_percentage_mock):
         file_name = "filename"
         remote_path = "remotepath"
@@ -87,8 +88,9 @@ class TestS3Uploader(unittest.TestCase):
         self.transfer_manager_mock.upload.assert_not_called()
         self.s3uploader.file_exists.assert_called_once_with(remote_path)
 
-    @patch("awscli.customizations.cloudformation.s3uploader.ProgressPercentage")
-    def test_upload_force_upload(self, progress_percentage_mock):
+    @patch('os.path.getsize', return_value=1)
+    @patch("awscli.customizations.s3uploader.ProgressPercentage")
+    def test_upload_force_upload(self, progress_percentage_mock, get_size_patch):
         file_name = "filename"
         remote_path = "remotepath"
         expected_upload_url = "s3://{0}/{1}".format(self.bucket_name,
@@ -117,8 +119,9 @@ class TestS3Uploader(unittest.TestCase):
         # Since ForceUpload=True, we should NEVER do the file-exists check
         self.s3uploader.file_exists.assert_not_called()
 
-    @patch("awscli.customizations.cloudformation.s3uploader.ProgressPercentage")
-    def test_upload_successful_custom_kms_key(self, progress_percentage_mock):
+    @patch('os.path.getsize', return_value=1)
+    @patch("awscli.customizations.s3uploader.ProgressPercentage")
+    def test_upload_successful_custom_kms_key(self, progress_percentage_mock, get_size_patch):
         file_name = "filename"
         remote_path = "remotepath"
         kms_key_id = "kms_id"
@@ -145,8 +148,9 @@ class TestS3Uploader(unittest.TestCase):
                 expected_encryption_args, mock.ANY)
         self.s3uploader.file_exists.assert_called_once_with(remote_path)
 
-    @patch("awscli.customizations.cloudformation.s3uploader.ProgressPercentage")
-    def test_upload_successful_nobucket(self, progress_percentage_mock):
+    @patch('os.path.getsize', return_value=1)
+    @patch("awscli.customizations.s3uploader.ProgressPercentage")
+    def test_upload_successful_nobucket(self, progress_percentage_mock, get_size_patch):
         file_name = "filename"
         remote_path = "remotepath"
 
@@ -159,11 +163,12 @@ class TestS3Uploader(unittest.TestCase):
                 {"Error": {"Code": "NoSuchBucket"}}, "OpName")
         self.transfer_manager_mock.upload.side_effect = exception
 
-        with self.assertRaises(exceptions.NoSuchBucketError):
+        with self.assertRaises(NoSuchBucketError):
             self.s3uploader.upload(file_name, remote_path)
 
-    @patch("awscli.customizations.cloudformation.s3uploader.ProgressPercentage")
-    def test_upload_successful_exceptions(self, progress_percentage_mock):
+    @patch('os.path.getsize', return_value=1)
+    @patch("awscli.customizations.s3uploader.ProgressPercentage")
+    def test_upload_successful_exceptions(self, progress_percentage_mock, get_size_patch):
         file_name = "filename"
         remote_path = "remotepath"
 

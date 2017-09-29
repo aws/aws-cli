@@ -12,13 +12,6 @@ class InvalidTemplatePathError(CloudFormationCommandError):
     fmt = "Invalid template path {template_path}"
 
 
-class NoSuchBucketError(CloudFormationCommandError):
-    fmt = ("S3 Bucket does not exist. "
-           "Execute the command to create a new bucket"
-           "\n"
-           "aws s3 mb s3://{bucket_name}")
-
-
 class ChangeEmptyError(CloudFormationCommandError):
     fmt = "No changes to deploy. Stack {stack_name} is up to date"
 

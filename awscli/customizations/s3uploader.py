@@ -22,9 +22,20 @@ import botocore.exceptions
 from s3transfer.manager import TransferManager
 from s3transfer.subscribers import BaseSubscriber
 
-from awscli.customizations.cloudformation import exceptions
-
 LOG = logging.getLogger(__name__)
+
+
+class NoSuchBucketError(Exception):
+    def __init__(self, **kwargs):
+        msg = self.fmt.format(**kwargs)
+        Exception.__init__(self, msg)
+        self.kwargs = kwargs
+
+
+    fmt = ("S3 Bucket does not exist. "
+           "Execute the command to create a new bucket"
+           "\n"
+           "aws s3 mb s3://{bucket_name}")
 
 
 class S3Uploader(object):
@@ -94,8 +105,7 @@ class S3Uploader(object):
         except botocore.exceptions.ClientError as ex:
             error_code = ex.response["Error"]["Code"]
             if error_code == "NoSuchBucket":
-                raise exceptions.NoSuchBucketError(
-                        bucket_name=self.bucket_name)
+                raise NoSuchBucketError(bucket_name=self.bucket_name)
             raise ex
 
     def upload_with_dedup(self, file_name, extension=None):

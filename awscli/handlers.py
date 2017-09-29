@@ -75,6 +75,7 @@ from awscli.customizations.toplevelbool import register_bool_params
 from awscli.customizations.waiters import register_add_waiters
 from awscli.customizations.opsworkscm import register_alias_opsworks_cm
 from awscli.customizations.mturk import register_alias_mturk_command
+from awscli.customizations.servicecatalog import register_servicecatalog_commands
 
 
 def awscli_initialize(event_handlers):
@@ -152,3 +153,4 @@ def awscli_initialize(event_handlers):
     cloudformation_init(event_handlers)
     register_alias_opsworks_cm(event_handlers)
     register_alias_mturk_command(event_handlers)
+    register_servicecatalog_commands(event_handlers)

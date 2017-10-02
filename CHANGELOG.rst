@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.163
+========
+
+* api-change:``cloudhsm``: Update cloudhsm command to latest version
+
+
 1.11.162
 ========
 

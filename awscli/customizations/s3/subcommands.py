@@ -86,7 +86,7 @@ FOLLOW_SYMLINKS = {'name': 'follow-symlinks', 'action': 'store_true',
                        "Note that S3 does not support symbolic links, so the "
                        "contents of the link target are uploaded under the "
                        "name of the link. When neither ``--follow-symlinks`` "
-                       "nor ``--no-follow-symlinks`` is specifed, the default "
+                       "nor ``--no-follow-symlinks`` is specified, the default "
                        "is to follow symlinks.")}
 
 

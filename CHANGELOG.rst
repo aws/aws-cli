@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.165
+========
+
+* api-change:``kinesisanalytics``: Update kinesisanalytics command to latest version
+* api-change:``route53domains``: Update route53domains command to latest version
+
+
 1.11.164
 ========
 

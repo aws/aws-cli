@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.166
+========
+
+* api-change:``redshift``: Update redshift command to latest version
+
+
 1.11.165
 ========
 

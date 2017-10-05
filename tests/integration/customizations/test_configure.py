@@ -189,7 +189,7 @@ class TestConfigureCommand(unittest.TestCase):
             'region = us-west-1\n', self.get_config_file_contents())
 
     def test_set_with_profile_spaces(self):
-        p = aws('configure set region us-west-1 --profile "test with spaces"',
+        p = aws("configure set region us-west-1 --profile 'test with spaces'",
                 env_vars=self.env_vars)
         self.assert_no_errors(p)
         self.assertEqual(
@@ -197,7 +197,7 @@ class TestConfigureCommand(unittest.TestCase):
             'region = us-west-1\n', self.get_config_file_contents())
 
     def test_set_with_profile_unknown_nested_key(self):
-        p = aws('configure set un.known us-west-1 --profile "space test"',
+        p = aws("configure set un.known us-west-1 --profile 'space test'",
                 env_vars=self.env_vars)
         self.assert_no_errors(p)
         self.assertEqual(
@@ -205,7 +205,7 @@ class TestConfigureCommand(unittest.TestCase):
             'un =\n    known = us-west-1\n', self.get_config_file_contents())
 
     def test_set_with_profile_spaces_scoped(self):
-        p = aws('configure set profile."test with spaces".region us-west-1',
+        p = aws("configure set profile.'test with spaces'.region us-west-1",
                 env_vars=self.env_vars)
         self.assert_no_errors(p)
         self.assertEqual(

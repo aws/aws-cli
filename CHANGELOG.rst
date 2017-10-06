@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.167
+========
+
+* api-change:``sqs``: Update sqs command to latest version
+
+
 1.11.166
 ========
 

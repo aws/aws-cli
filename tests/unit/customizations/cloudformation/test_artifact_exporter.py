@@ -17,7 +17,7 @@ from awscli.customizations.cloudformation.artifact_exporter \
     upload_local_artifacts, zip_folder, make_abs_path, make_zip, \
     Template, Resource, ResourceWithS3UrlDict, ServerlessApiResource, \
     ServerlessFunctionResource, LambdaFunctionResource, ApiGatewayRestApiResource, \
-    ElasticBeanstalkApplicationVersion, CloudFormationStackResource
+    ElasticBeanstalkApplicationVersion, CloudFormationStackResource, copy_to_temp_dir
 
 
 def test_is_s3_url():
@@ -379,6 +379,40 @@ class TestArtifactExporter(unittest.TestCase):
                                                             self.s3_uploader_mock)
 
         self.assertEquals(resource_dict[resource.PROPERTY_NAME], s3_url)
+    
+    @patch("shutil.rmtree")
+    @patch("awscli.customizations.cloudformation.artifact_exporter.copy_to_temp_dir")
+    @patch("awscli.customizations.cloudformation.artifact_exporter.zip_and_upload")
+    @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_file")
+    def test_resource_with_force_zip(self, is_local_file_mock, \
+        zip_and_upload_mock, copy_to_temp_dir_mock, rmtree_mock):
+        # Property value is a path to file and FORCE_ZIP is True
+
+        class MockResource(Resource):
+            PROPERTY_NAME = "foo"
+            FORCE_ZIP = True
+
+        resource = MockResource(self.s3_uploader_mock)
+
+        resource_id = "id"
+        resource_dict = {}
+        original_path = "/path/to/file"
+        resource_dict[resource.PROPERTY_NAME] = original_path
+        parent_dir = "dir"
+        s3_url = "s3://foo/bar"
+
+        zip_and_upload_mock.return_value = s3_url
+        is_local_file_mock.return_value = True
+
+        with self.make_temp_dir() as tmp_dir:
+            copy_to_temp_dir_mock.return_value = tmp_dir
+        
+            resource.export(resource_id, resource_dict, parent_dir)
+
+            zip_and_upload_mock.assert_called_once_with(tmp_dir, mock.ANY)
+
+            rmtree_mock.assert_called_once_with(tmp_dir)
+
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.upload_local_artifacts")
     def test_resource_empty_property_value(self, upload_local_artifacts_mock):
@@ -691,6 +725,19 @@ class TestArtifactExporter(unittest.TestCase):
             if zipfile_name:
                 os.remove(zipfile_name)
             test_file_creator.remove_all()
+
+    @patch("shutil.copyfile")
+    @patch("tempfile.mkdtemp")
+    def test_copy_to_temp_dir(self, mkdtemp_mock, copyfile_mock):
+        temp_dir = "/tmp/foo/"
+        filename = "test.js"
+        mkdtemp_mock.return_value = temp_dir
+
+        returned_dir = copy_to_temp_dir(filename)
+        
+        self.assertEqual(returned_dir, temp_dir)
+        copyfile_mock.assert_called_once_with(filename, temp_dir + filename)
+
 
     @contextmanager
     def make_temp_dir(self):

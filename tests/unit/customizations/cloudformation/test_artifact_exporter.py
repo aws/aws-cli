@@ -379,7 +379,7 @@ class TestArtifactExporter(unittest.TestCase):
                                                             self.s3_uploader_mock)
 
         self.assertEquals(resource_dict[resource.PROPERTY_NAME], s3_url)
-    
+
     @patch("shutil.rmtree")
     @patch("zipfile.is_zipfile")
     @patch("awscli.customizations.cloudformation.artifact_exporter.copy_to_temp_dir")
@@ -418,7 +418,7 @@ class TestArtifactExporter(unittest.TestCase):
             rmtree_mock.assert_called_once_with(tmp_dir)
             is_zipfile_mock.assert_called_once_with(original_path)
             assert_equal(resource_dict[resource.PROPERTY_NAME], s3_url)
-                
+
     @patch("shutil.rmtree")
     @patch("zipfile.is_zipfile")
     @patch("awscli.customizations.cloudformation.artifact_exporter.copy_to_temp_dir")
@@ -455,7 +455,7 @@ class TestArtifactExporter(unittest.TestCase):
         rmtree_mock.assert_not_called()
         is_zipfile_mock.assert_called_once_with(original_path)
         assert_equal(resource_dict[resource.PROPERTY_NAME], s3_url)
- 
+
 
     @patch("shutil.rmtree")
     @patch("zipfile.is_zipfile")
@@ -490,7 +490,7 @@ class TestArtifactExporter(unittest.TestCase):
         rmtree_mock.assert_not_called()
         is_zipfile_mock.assert_called_once_with(original_path)
         assert_equal(resource_dict[resource.PROPERTY_NAME], s3_url)
- 
+
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.upload_local_artifacts")
     def test_resource_empty_property_value(self, upload_local_artifacts_mock):
@@ -812,7 +812,7 @@ class TestArtifactExporter(unittest.TestCase):
         mkdtemp_mock.return_value = temp_dir
 
         returned_dir = copy_to_temp_dir(filename)
-        
+
         self.assertEqual(returned_dir, temp_dir)
         copyfile_mock.assert_called_once_with(filename, temp_dir + filename)
 

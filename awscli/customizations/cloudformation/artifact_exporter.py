@@ -55,8 +55,12 @@ def is_local_folder(path):
 def is_local_file(path):
     return is_path_value_valid(path) and os.path.isfile(path)
 
+
 def is_zip_file(path):
-    return is_path_value_valid(path) and zipfile.is_zipfile(path)
+    return (
+        is_path_value_valid(path) and
+        zipfile.is_zipfile(path))
+
 
 def parse_s3_url(url,
                  bucket_name_property="Bucket",
@@ -207,7 +211,7 @@ def copy_to_temp_dir(filepath):
     dst = os.path.join(tmp_dir, os.path.basename(filepath))
     shutil.copyfile(filepath, dst)
     return tmp_dir
- 
+
 
 class Resource(object):
     """
@@ -216,9 +220,8 @@ class Resource(object):
 
     PROPERTY_NAME = None
     PACKAGE_NULL_PROPERTY = True
-
-    # Set this property to True in base class if you want the exporter to zip up the file before uploading
-    # This is useful for Lambda functions.
+    # Set this property to True in base class if you want the exporter to zip
+    # up the file before uploading This is useful for Lambda functions.
     FORCE_ZIP = False
 
     def __init__(self, uploader):
@@ -237,14 +240,15 @@ class Resource(object):
             LOG.debug("Property {0} of {1} resource is not a URL"
                       .format(self.PROPERTY_NAME, resource_id))
             return
-        
-        # if property is a file but not a zip file, place file in temp
+
+        # If property is a file but not a zip file, place file in temp
         # folder and send the temp folder to be zipped
         temp_dir = None
-        if is_local_file(property_value) and not is_zip_file(property_value) and self.FORCE_ZIP:
+        if is_local_file(property_value) and not \
+                is_zip_file(property_value) and self.FORCE_ZIP:
             temp_dir = copy_to_temp_dir(property_value)
             resource_dict[self.PROPERTY_NAME] = temp_dir
-       
+
         try:
             self.do_export(resource_id, resource_dict, parent_dir)
 
@@ -312,6 +316,7 @@ class ServerlessApiResource(Resource):
     # Necessary to support DefinitionBody
     PACKAGE_NULL_PROPERTY = False
 
+
 class LambdaFunctionResource(ResourceWithS3UrlDict):
     PROPERTY_NAME = "Code"
     BUCKET_NAME_PROPERTY = "S3Bucket"
@@ -354,7 +359,8 @@ class CloudFormationStackResource(Resource):
 
         template_path = resource_dict.get(self.PROPERTY_NAME, None)
 
-        if template_path is None or is_s3_url(template_path) or template_path.startswith("https://s3.amazonaws.com/"):
+        if template_path is None or is_s3_url(template_path) or \
+                template_path.startswith("https://s3.amazonaws.com/"):
             # Nothing to do
             return
 

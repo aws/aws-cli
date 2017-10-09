@@ -17,6 +17,7 @@ import tempfile
 import zipfile
 import contextlib
 import uuid
+import shutil
 from awscli.compat import six
 
 from awscli.compat import urlparse
@@ -53,6 +54,12 @@ def is_local_folder(path):
 
 def is_local_file(path):
     return is_path_value_valid(path) and os.path.isfile(path)
+
+
+def is_zip_file(path):
+    return (
+        is_path_value_valid(path) and
+        zipfile.is_zipfile(path))
 
 
 def parse_s3_url(url,
@@ -199,6 +206,13 @@ def mktempfile():
             os.remove(filename)
 
 
+def copy_to_temp_dir(filepath):
+    tmp_dir = tempfile.mkdtemp()
+    dst = os.path.join(tmp_dir, os.path.basename(filepath))
+    shutil.copyfile(filepath, dst)
+    return tmp_dir
+
+
 class Resource(object):
     """
     Base class representing a CloudFormation resource that can be exported
@@ -206,6 +220,9 @@ class Resource(object):
 
     PROPERTY_NAME = None
     PACKAGE_NULL_PROPERTY = True
+    # Set this property to True in base class if you want the exporter to zip
+    # up the file before uploading This is useful for Lambda functions.
+    FORCE_ZIP = False
 
     def __init__(self, uploader):
         self.uploader = uploader
@@ -224,6 +241,14 @@ class Resource(object):
                       .format(self.PROPERTY_NAME, resource_id))
             return
 
+        # If property is a file but not a zip file, place file in temp
+        # folder and send the temp folder to be zipped
+        temp_dir = None
+        if is_local_file(property_value) and not \
+                is_zip_file(property_value) and self.FORCE_ZIP:
+            temp_dir = copy_to_temp_dir(property_value)
+            resource_dict[self.PROPERTY_NAME] = temp_dir
+
         try:
             self.do_export(resource_id, resource_dict, parent_dir)
 
@@ -234,6 +259,9 @@ class Resource(object):
                     property_name=self.PROPERTY_NAME,
                     property_value=property_value,
                     ex=ex)
+        finally:
+            if temp_dir:
+                shutil.rmtree(temp_dir)
 
     def do_export(self, resource_id, resource_dict, parent_dir):
         """
@@ -279,6 +307,7 @@ class ResourceWithS3UrlDict(Resource):
 
 class ServerlessFunctionResource(Resource):
     PROPERTY_NAME = "CodeUri"
+    FORCE_ZIP = True
 
 
 class ServerlessApiResource(Resource):
@@ -287,11 +316,13 @@ class ServerlessApiResource(Resource):
     # Necessary to support DefinitionBody
     PACKAGE_NULL_PROPERTY = False
 
+
 class LambdaFunctionResource(ResourceWithS3UrlDict):
     PROPERTY_NAME = "Code"
     BUCKET_NAME_PROPERTY = "S3Bucket"
     OBJECT_KEY_PROPERTY = "S3Key"
     VERSION_PROPERTY = "S3ObjectVersion"
+    FORCE_ZIP = True
 
 
 class ApiGatewayRestApiResource(ResourceWithS3UrlDict):
@@ -328,7 +359,8 @@ class CloudFormationStackResource(Resource):
 
         template_path = resource_dict.get(self.PROPERTY_NAME, None)
 
-        if template_path is None or is_s3_url(template_path) or template_path.startswith("https://s3.amazonaws.com/"):
+        if template_path is None or is_s3_url(template_path) or \
+                template_path.startswith("https://s3.amazonaws.com/"):
             # Nothing to do
             return
 

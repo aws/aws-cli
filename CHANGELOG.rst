@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.11.168
+========
+
+* enhancement:``aws cloudformation``: Add support for forcing files to be zipped when uploaded
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+
+
 1.11.167
 ========
 

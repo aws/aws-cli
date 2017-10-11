@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.169
+========
+
+* api-change:``ses``: Update ses command to latest version
+* api-change:``ecr``: Update ecr command to latest version
+
+
 1.11.168
 ========
 

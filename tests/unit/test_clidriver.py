@@ -873,7 +873,10 @@ class TestServiceCommand(unittest.TestCase):
 class TestServiceOperation(unittest.TestCase):
     def setUp(self):
         self.name = 'foo'
-        self.cmd = ServiceOperation(self.name, None, None, None, None)
+        operation = mock.Mock(spec=botocore.model.OperationModel)
+        operation.deprecated = False
+        self.mock_operation = operation
+        self.cmd = ServiceOperation(self.name, None, None, operation, None)
 
     def test_name(self):
         self.assertEqual(self.cmd.name, self.name)
@@ -888,6 +891,12 @@ class TestServiceOperation(unittest.TestCase):
 
     def test_lineage_names(self):
         self.assertEqual(self.cmd.lineage_names, ['foo'])
+
+    def test_deprecated_operation(self):
+        self.mock_operation.deprecated = True
+        cmd = ServiceOperation(self.name, None, None, self.mock_operation,
+                               None)
+        self.assertTrue(getattr(cmd, '_UNDOCUMENTED'))
 
 
 if __name__ == '__main__':

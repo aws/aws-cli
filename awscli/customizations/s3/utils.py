@@ -414,7 +414,7 @@ class RequestParamsMapper(object):
         >>> print(request_params)
         {'StorageClass': 'GLACIER', 'ServerSideEncryption': 'AES256'}
 
-    Note that existing parameters in ``request_params`` will be overriden if
+    Note that existing parameters in ``request_params`` will be overridden if
     a parameter in ``cli_params`` maps to the existing parameter.
     """
     @classmethod
@@ -467,7 +467,7 @@ class RequestParamsMapper(object):
 
     @classmethod
     def _set_general_object_params(cls, request_params, cli_params):
-        # Paramters set in this method should be applicable to the following
+        # Parameters set in this method should be applicable to the following
         # operations involving objects: PutObject, CopyObject, and
         # CreateMultipartUpload.
         general_param_translation = {
@@ -583,7 +583,7 @@ class OnDoneFilteredSubscriber(BaseSubscriber):
             future.result()
         except Exception as e:
             future_exception = e
-        # If the result propogates an error, call the on_failure
+        # If the result propagates an error, call the on_failure
         # method instead.
         if future_exception:
             self._on_failure(future, future_exception)

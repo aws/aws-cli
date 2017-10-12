@@ -361,7 +361,7 @@ class ParamShorthandParser(ParamShorthand):
             raise ParamError(cli_argument.cli_name, str(e))
         except (ParamError, ParamUnknownKeyError) as e:
             # The shorthand parse methods don't have the cli_name,
-            # so any ParamError won't have this value.  To accomodate
+            # so any ParamError won't have this value.  To accommodate
             # this, ParamErrors are caught and reraised with the cli_name
             # injected.
             raise ParamError(cli_argument.cli_name, str(e))

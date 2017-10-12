@@ -69,7 +69,7 @@ class TestYaml(unittest.TestCase):
         self.assertEquals(output, output_again)
 
     def test_yaml_getatt(self):
-        # This is an invalid syntax for !GetAtt. But make sure the code does not crash when we encouter this syntax
+        # This is an invalid syntax for !GetAtt. But make sure the code does not crash when we encounter this syntax
         # Let CloudFormation interpret this value at runtime
         input = """
         Resource:

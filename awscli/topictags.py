@@ -185,7 +185,7 @@ class TopicTagDB(object):
             if tag in self.VALID_TAGS:
                 # Get the value of the tag.
                 values = field_body.childNodes[0].firstChild.nodeValue
-                # Seperate values into a list by splitting at commas
+                # Separate values into a list by splitting at commas
                 tag_values = values.split(',')
                 # Strip the white space around each of these values.
                 for i in range(len(tag_values)):

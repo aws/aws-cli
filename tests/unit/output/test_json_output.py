@@ -89,7 +89,7 @@ class TestListUsers(BaseAWSCommandParamsTest):
     def test_zero_value_is_printed(self):
         # Even though the integer 0 is false-like, we still
         # should be printing it to stdout if a jmespath query
-        # evalutes to 0.
+        # evaluates to 0.
         jmespath_query = '`0`'
         output = self.run_cmd('iam list-users --query %s' % jmespath_query,
                               expected_rc=0)[0]
@@ -125,7 +125,7 @@ class TestFormattersHandleClosedPipes(unittest.TestCase):
         fake_closed_stream.flush.side_effect = IOError
         formatter = JSONFormatter(args)
         formatter('command_name', response, stream=fake_closed_stream)
-        # We should not have let the IOError propogate, but
+        # We should not have let the IOError propagate, but
         # we still should have called the flush() on the
         # stream.
         fake_closed_stream.flush.assert_called_with()

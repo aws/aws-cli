@@ -70,7 +70,7 @@ class TestJSONCache(unittest.TestCase):
 
     def test_supports_contains_check(self):
         # By default the cache is empty because we're
-        # using a new temp dir everytime.
+        # using a new temp dir every time.
         self.assertTrue('mykey' not in self.cache)
 
     def test_add_key_and_contains_check(self):

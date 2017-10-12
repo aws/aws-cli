@@ -322,7 +322,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
                     # with --no-. So we check if the cli parameter currently
                     # being used starts with no- and if stripping off the no-
                     # results in the new proposed cli argument name. If it
-                    # does, we assume we have the postive form of the argument
+                    # does, we assume we have the positive form of the argument
                     # which is the name we want to use in doc translations.
                     if cli_argument.cli_type_name == 'boolean' and \
                             previous_mapping.startswith('no-') and \

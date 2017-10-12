@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.11.170
+========
+
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* api-change:``polly``: Update polly command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``codecommit``: Update codecommit command to latest version
+* api-change:``dms``: Update dms command to latest version
+
+
 1.11.169
 ========
 

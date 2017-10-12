@@ -925,7 +925,7 @@ class TestWarnings(BaseS3IntegrationTest):
         bucket_name = _SHARED_BUCKET
         filename = os.path.join(self.files.rootdir, "no-exists-file")
         p = aws('s3 cp %s s3://%s/' % (filename, bucket_name))
-        # If the local path provided by the user is nonexistant for an
+        # If the local path provided by the user is nonexistent for an
         # upload, this should error out.
         self.assertEqual(p.rc, 255, p.stderr)
         self.assertIn('The user-provided path %s does not exist.' %
@@ -1479,7 +1479,7 @@ class TestMemoryUtilization(BaseS3IntegrationTest):
         full_command = 's3 cp s3://%s/foo.txt - > %s' % (bucket_name, foo_txt)
         p = aws(full_command, collect_memory=True)
         self.assert_no_errors(p)
-        # Use the ususal bar for maximum memory usage since a streaming
+        # Use the usual bar for maximum memory usage since a streaming
         # download's memory usage should be comparable to non-streaming
         # transfers.
         self.assert_max_memory_used(p, self.max_mem_allowed, full_command)
@@ -1780,7 +1780,7 @@ class TestStreams(BaseS3IntegrationTest):
     def test_multipart_download(self):
         """
         This tests the ability to multipart download streams to stdout.
-        The data has some unicode in it to avoid having to do a seperate
+        The data has some unicode in it to avoid having to do a separate
         multipart download test just for unicode.
         """
         bucket_name = _SHARED_BUCKET

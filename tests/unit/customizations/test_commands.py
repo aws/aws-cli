@@ -92,7 +92,7 @@ class TestBasicCommand(unittest.TestCase):
         sub_help_command = subcommand.create_help_command()
         # Note that the name of this Subcommand was never changed even
         # though it was put into the table as ``basic``. If no name
-        # is overriden it uses the name ``commandname``.
+        # is overridden it uses the name ``commandname``.
         self.assertEqual(sub_help_command.event_class, 'mock.commandname')
 
 

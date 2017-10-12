@@ -339,7 +339,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                                       {'region': 'us-east-1',
                                        'endpoint_url': None,
                                        'verify_ssl': None})
-        # Check that the default sync strategy is overwritted if a plugin
+        # Check that the default sync strategy is overwritten if a plugin
         # returns its sync strategy.
         mock_strategy = Mock()
         mock_strategy.sync_type = 'file_at_src_and_dest'

@@ -828,7 +828,7 @@ class TestUnpackJSONParams(BaseArgProcessTest):
         # Parameter name should be in error message.
         self.assertIn('--block-device-mappings', str(e.exception))
         # The actual JSON itself should be in the error message.
-        # Becaues this is a list, only the first element in the JSON
+        # Because this is a list, only the first element in the JSON
         # will show.  This will at least let customers know what
         # we tried to parse.
         self.assertIn('[{', str(e.exception))

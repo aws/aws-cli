@@ -607,6 +607,61 @@ class TestCp(BaseS3IntegrationTest):
         for name, value in metadata_ref.items():
             self.assertNotEqual(response.get(name), value)
 
+    def test_copy_tagging(self):
+        # Copy the same style of parsing as the CLI session. This is needed
+        # For comparing expires timestamp.
+        add_scalar_parsers(self.session)
+        bucket_name = _SHARED_BUCKET
+        key = 'foo.txt'
+        filename = self.files.create_file(key, contents='')
+        p = aws('s3 cp %s s3://%s/%s --tagging keyname=value' %
+                (filename, bucket_name, key))
+        self.assert_no_errors(p)
+        response = self.head_object(bucket_name, key)
+        # These values should have the metadata of the source object
+        self.assertEqual(response['Tagging'], 'keyname=value')
+
+    def test_copy_tagging_directive(self):
+        # Copy the same style of parsing as the CLI session. This is needed
+        # For comparing expires timestamp.
+        self.override_parser(timestamp_parser=identity)
+        bucket_name = _SHARED_BUCKET
+        original_key = 'foo.txt'
+        new_key = 'bar.txt'
+        metadata = {
+            'Tagging': 'foo=bar',
+        }
+        self.put_object(bucket_name, original_key, contents='foo',
+                        extra_args=metadata)
+        p = aws('s3 cp s3://%s/%s s3://%s/%s' %
+                (bucket_name, original_key, bucket_name, new_key))
+        self.assert_no_errors(p)
+        response = self.head_object(bucket_name, new_key)
+        # These values should have the tagging of the source object
+        metadata_ref = copy.copy(metadata)
+        metadata_ref['Expires'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+        for name, value in metadata_ref.items():
+            self.assertEqual(response[name], value)
+
+        # Use REPLACE to wipe out all of the tags.
+        p = aws('s3 cp s3://%s/%s s3://%s/%s --tagging-directive REPLACE' %
+                (bucket_name, original_key, bucket_name, new_key))
+        self.assert_no_errors(p)
+        response = self.head_object(bucket_name, new_key)
+        # Make sure all of the original metadata is gone.
+        for name, value in metadata_ref.items():
+            self.assertNotEqual(response.get(name), value)
+
+        # Use REPLACE to wipe out all of the tags but include a new
+        # tag value.
+        p = aws('s3 cp s3://%s/%s s3://%s/%s --tagging-directive REPLACE '
+                '--tagging NewKeyName=NewValue' %
+                (bucket_name, original_key, bucket_name, new_key))
+        self.assert_no_errors(p)
+        response = self.head_object(bucket_name, new_key)
+        # Make sure the new tag is included
+        self.assertEqual(response['Tagging'], 'NewKeyName=NewValue')
+
 
 class TestSync(BaseS3IntegrationTest):
     def test_sync_with_plus_chars_paginate(self):

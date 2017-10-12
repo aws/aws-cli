@@ -211,6 +211,81 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
         self.assertNotIn('MetadataDirective', self.operations_called[0][1])
 
+    def test_tagging_copy(self):
+        self.parsed_responses = [
+            {"ContentLength": "100", "LastModified": "00:00:00Z"},
+            {'ETag': '"foo-1"'},
+        ]
+        cmdline = ('%s s3://bucket/key.txt s3://bucket/key2.txt'
+                   ' --tagging KeyName=Value' % self.prefix)
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 2,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
+        self.assertEqual(self.operations_called[1][1]['Tagging'],
+                         "KeyName=Value")
+
+    def test_tagging_copy_with_put_object(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        self.parsed_responses = [
+            {"ContentLength": "100", "LastModified": "00:00:00Z"},
+            {'ETag': '"foo-1"'},
+        ]
+        cmdline = ('%s %s s3://bucket/key2.txt'
+                   ' --tagging KeyName=Value' % (self.prefix, full_path))
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[0][1]['Tagging'],
+                         "KeyName=Value")
+
+    def test_tagging_copy_with_multipart_upload(self):
+        full_path = self.files.create_file('foo.txt', 'a' * 10 * (1024 ** 2))
+        self.parsed_responses = [
+            {'UploadId': 'foo'},
+            {'ETag': '"foo-1"'},
+            {'ETag': '"foo-2"'},
+            {}
+        ]
+        cmdline = ('%s %s s3://bucket/key2.txt'
+                   ' --tagging KeyName=Value' % (self.prefix, full_path))
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 4,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name,
+                         'CreateMultipartUpload')
+        self.assertEqual(self.operations_called[0][1]['Tagging'],
+                         "KeyName=Value")
+
+    def test_tagging_directive_copy(self):
+        self.parsed_responses = [
+            {"ContentLength": "100", "LastModified": "00:00:00Z"},
+            {'ETag': '"foo-1"'},
+        ]
+        cmdline = ('%s s3://bucket/key.txt s3://bucket/key2.txt'
+                   ' --tagging-directive REPLACE' % self.prefix)
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 2,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
+        self.assertEqual(self.operations_called[1][1]['TaggingDirective'],
+                         'REPLACE')
+
+    def test_no_tagging_directive_for_non_copy(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = '%s %s s3://bucket --tagging-directive REPLACE' % \
+            (self.prefix, full_path)
+        self.parsed_responses = \
+            [{'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertNotIn('TaggingDirective', self.operations_called[0][1])
+
     def test_cp_succeeds_with_mimetype_errors(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
         cmdline = '%s %s s3://bucket/key.txt' % (self.prefix, full_path)

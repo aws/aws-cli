@@ -422,6 +422,7 @@ class RequestParamsMapper(object):
         """Map CLI params to PutObject request params"""
         cls._set_general_object_params(request_params, cli_params)
         cls._set_metadata_params(request_params, cli_params)
+        cls._set_tagging_param(request_params, cli_params)
         cls._set_sse_request_params(request_params, cli_params)
         cls._set_sse_c_request_params(request_params, cli_params)
 
@@ -437,6 +438,9 @@ class RequestParamsMapper(object):
         cls._set_metadata_directive_param(request_params, cli_params)
         cls._set_metadata_params(request_params, cli_params)
         cls._auto_populate_metadata_directive(request_params)
+        cls._set_tagging_directive_param(request_params, cli_params)
+        cls._set_tagging_param(request_params, cli_params)
+        cls._auto_populate_tagging_directive(request_params)
         cls._set_sse_request_params(request_params, cli_params)
         cls._set_sse_c_and_copy_source_request_params(
             request_params, cli_params)
@@ -453,6 +457,7 @@ class RequestParamsMapper(object):
         cls._set_sse_request_params(request_params, cli_params)
         cls._set_sse_c_request_params(request_params, cli_params)
         cls._set_metadata_params(request_params, cli_params)
+        cls._set_tagging_param(request_params, cli_params)
 
     @classmethod
     def map_upload_part_params(cls, request_params, cli_params):
@@ -527,6 +532,22 @@ class RequestParamsMapper(object):
         if cli_params.get('metadata_directive'):
             request_params['MetadataDirective'] = cli_params[
                 'metadata_directive']
+
+    @classmethod
+    def _set_tagging_param(cls, request_params, cli_params):
+        if cli_params.get('tagging'):
+            request_params['Tagging'] = cli_params['tagging']
+
+    @classmethod
+    def _auto_populate_tagging_directive(cls, request_params):
+        if request_params.get('Tagging') and \
+                not request_params.get('TaggingDirective'):
+            request_params['TaggingDirective'] = 'COPY'
+
+    @classmethod
+    def _set_tagging_directive_param(cls, request_params, cli_params):
+        if cli_params.get('tagging_directive'):
+            request_params['TaggingDirective'] = cli_params['tagging_directive']
 
     @classmethod
     def _set_sse_request_params(cls, request_params, cli_params):

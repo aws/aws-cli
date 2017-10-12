@@ -346,6 +346,26 @@ METADATA_DIRECTIVE = {
 }
 
 
+TAGGING = {'name': 'tagging',
+           'help_text': (
+               'The tag-set for the object destination object this '
+               'value must be used in conjunction with the TaggingDirective. '
+               'The tag-set must be encoded as URL Query parameters')
+}
+
+
+TAGGING_DIRECTIVE = {
+    'name': 'tagging-directive', 'choices': ['COPY', 'REPLACE'],
+    'help_text': (
+        'Specifies whether the tagging is copied from the source object '
+        'or replaced with tag-set provided when copying S3 objects. Valid '
+        'values are ``COPY`` and ``REPLACE``. If this parameter is not '
+        'specified, ``COPY`` will be used by default. If ``REPLACE`` is used, '
+        'the copied object will only have the metadata values that were '
+        'specified by the CLI command.')
+}
+
+
 INDEX_DOCUMENT = {'name': 'index-document',
                   'help_text': (
                       'A suffix that is appended to a request that is for '
@@ -716,7 +736,8 @@ class CpCommand(S3TransferCommand):
             "or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
-                [METADATA, METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE]
+                [METADATA, METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE,
+                 TAGGING, TAGGING_DIRECTIVE]
 
 
 class MvCommand(S3TransferCommand):
@@ -727,7 +748,8 @@ class MvCommand(S3TransferCommand):
             "or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS +\
-                [METADATA, METADATA_DIRECTIVE, RECURSIVE]
+                [METADATA, METADATA_DIRECTIVE, RECURSIVE, TAGGING,
+                 TAGGING_DIRECTIVE]
 
 class RmCommand(S3TransferCommand):
     NAME = 'rm'
@@ -748,7 +770,7 @@ class SyncCommand(S3TransferCommand):
             "<LocalPath> or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
-                [METADATA, METADATA_DIRECTIVE]
+                [METADATA, METADATA_DIRECTIVE, TAGGING, TAGGING_DIRECTIVE]
 
 
 class MbCommand(S3Command):

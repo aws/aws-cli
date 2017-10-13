@@ -1265,6 +1265,8 @@ class TestOutput(BaseS3IntegrationTest):
         # Ensure success message was printed
         self.assertIn('upload', p.stdout)
         self.assertIn('s3://%s/foo.txt' % bucket_name, p.stdout)
+        self.assertNotIn('Completed ', p.stdout)
+        self.assertNotIn('calculating', p.stdout)
 
     def test_error_output(self):
         foo_txt = self.files.create_file('foo.txt', 'foo contents')

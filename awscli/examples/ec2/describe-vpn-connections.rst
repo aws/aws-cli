@@ -8,7 +8,7 @@ Command::
 
 Output::
 
-{
+  {
       "VpnConnections": {
           "VpnConnectionId": "vpn-40f41529",
           "Tags": [

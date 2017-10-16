@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.11.171
+========
+
+* api-change:``waf-regional``: Update waf-regional command to latest version
+* api-change:``cloudhsm``: Update cloudhsm command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``waf``: Update waf command to latest version
+* enhancement:s3: Add a no-progress flag to s3 transfer commands. Resolves `#519 <https://github.com/aws/aws-cli/issues/519>`__.
+* enchancement:cloudwatch: Extract ``--storage-resolution`` in put-metric-data as a top level argument.
+
+
 1.11.170
 ========
 

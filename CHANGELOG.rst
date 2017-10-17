@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.172
+========
+
+* api-change:``es``: Update es command to latest version
+
+
 1.11.171
 ========
 

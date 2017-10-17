@@ -43,7 +43,7 @@ except ImportError as e:
     # In the off chance something imports this module
     # that's not suppose to, we should not stop the CLI
     # by raising an ImportError.  Now if anything actually
-    # *uses* this module that isn't suppose to, that's s
+    # *uses* this module that isn't suppose to, that's a
     # different story.
     mock = None
 from awscli.compat import six
@@ -650,7 +650,8 @@ def aws(command, collect_memory=False, env_vars=None,
         full_command = full_command.encode(stdout_encoding)
     INTEG_LOG.debug("Running command: %s", full_command)
     env = os.environ.copy()
-    env['AWS_DEFAULT_REGION'] = "us-east-1"
+    if 'AWS_DEFAULT_REGION' not in env:
+        env['AWS_DEFAULT_REGION'] = "us-east-1"
     if env_vars is not None:
         env = env_vars
     if input_file is None:

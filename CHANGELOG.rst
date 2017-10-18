@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.173
+========
+
+* api-change:``lightsail``: Update lightsail command to latest version
+
+
 1.11.172
 ========
 

@@ -89,7 +89,7 @@ USE_DEFAULT_ROLES = (
     ' use the <code>create-default-roles</code> command.</p>'
     ' <p>Specifying <code>--use-default-roles</code> does not include the'
     ' <code>EMR_AutoScaling_DefaultRole</code>. Use <code>--autoscaling-role'
-    ' =EMR_AutoScaling_DefaultRole</code> to specify the autoscaling '
+    ' EMR_AutoScaling_DefaultRole</code> to specify the autoscaling'
     ' role individually if you use an automatic scaling policy with instance groups in Amazon EMR.</p>')
 
 AMI_VERSION = (
@@ -99,8 +99,7 @@ AMI_VERSION = (
     ' to use when launching Amazon EC2 instances in the cluster.'
     ' For example, <code>--ami-version 3.1.0</code>.'
     ' For more information about compatible AMIs in earlier versions of'
-    ' Amazon EMR, see http://docs.aws.amazon.com/emr/latest/DeveloperGuide'
-    '/emr-dg.pdf.</p>')
+    ' Amazon EMR, see http://docs.aws.amazon.com/emr/latest/DeveloperGuide/emr-dg.pdf.</p>')
 
 RELEASE_LABEL = (
     '<p>Specifies the Amazon EMR release version, which determines'
@@ -123,7 +122,7 @@ CONFIGURATIONS = (
     ' or stored in Amazon S3 (for example, <code>--configurations'
     ' https://s3.amazonaws.com/myBucket/configurations.json</code>).'
     ' Each classification usually corresponds to the xml configuration'
-    ' file for an application (such as <code>yarn-site</code> for YARN). For a list of'
+    ' file for an application, such as <code>yarn-site</code> for YARN. For a list of'
     ' available configuration classifications and example JSON, see'
     ' http://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-configure-apps.html.</p>')
 
@@ -147,8 +146,7 @@ INSTANCE_GROUPS = (
     '<li><code>[Name]</code> - An optional friendly name for the instance group.</li>'
     '<li><code>InstanceGroupType</code> - <code>MASTER</code>, <code>CORE</code>, or <code>TASK</code>.</li>'
     '<li><code>InstanceType</code> - The type of EC2 instance, for'
-    ' example <code>m3.xlarge</code>,'
-    ' to use for all nodes in the instance group.</li>'
+    ' example <code>m3.xlarge</code>, to use for all nodes in the instance group.</li>'
     '<li><code>InstanceCount</code> - The number of EC2 instances to provision in the instance group.</li>'
     '<li><code>[BidPrice]</code> - If specified, indicates that the instance group uses Spot instances,'
     ' and establishes the bid price for the instances.</li>'
@@ -173,16 +171,18 @@ INSTANCE_FLEETS = (
     ' instance fleet, one for a <code>CORE</code> instance fleet,'
     ' and an optional <code>TASK</code> instance fleet.</p>'
     ' <p>The following arguments can be specified for each instance fleet. Optional arguments are shown in [square brackets].</p>'
-    '<li><code>[Name]</code> - An optional friendly name for the instance group.</li>'
+    '<li><code>[Name]</code> - An optional friendly name for the instance fleet.</li>'
     '<li><code>InstanceFleetType</code> - <code>MASTER</code>, <code>CORE</code>, or <code>TASK</code>.</li>'
     '<li><code>TargetOnDemandCapacity</code> - The target capacity of On-Demand units'
     ' for the instance fleet, which determines how many On-Demand instances to provision.'
     ' The <code>WeightedCapacity</code> specified for an instance type within'
-    ' <code>InstanceTypeConfigs</code> counts toward this total when that instance type launches.</li>'
+    ' <code>InstanceTypeConfigs</code> counts toward this total when an instance type '
+    ' with the On-Demand purchasing option launches.</li>'
     '<li><code>TargetSpotCapacity</code> - The target capacity of Spot units'
     ' for the instance fleet, which determines how many Spot instances to provision.'
     ' The <code>WeightedCapacity</code> specified for an instance type within'
-    ' <code>InstanceTypeConfigs</code> counts toward this total when that instance type launches.</li>'
+    ' <code>InstanceTypeConfigs</code> counts toward this total when an instance type'
+    ' with the Spot purchasing option launches.</li>'
     '<li><code>[LaunchSpecifications]</code> - When <code>TargetSpotCapacity</code> is specified,'
     ' specifies the block duration and timeout action for Spot instances.'
     '<li><code>InstanceTypeConfigs</code> - Specifies up to five EC2 instance types to'
@@ -190,7 +190,7 @@ INSTANCE_FLEETS = (
 
 INSTANCE_TYPE = (
     '<p>Shortcut parameter as an alternative to <code>--instance-groups</code>.'
-    ' Specifies the the type of Amazon EC2 instance to use in a cluster.'
+    ' Specifies the type of Amazon EC2 instance to use in a cluster.'
     ' If used without the <code>--instance-count</code> parameter,'
     ' the cluster consists of a single master node running on the EC2 instance type'
     ' specified. When used together with <code>--instance-count</code>,'
@@ -198,8 +198,8 @@ INSTANCE_TYPE = (
     ' are used for the core node type.</p>')
 
 INSTANCE_COUNT = (
-    '<p>Shortcut parameter as an alternative to <code>--instance-groups</code>.'
-    ' When used together with <code>--instance-type</code>, specifies the'
+    '<p>Shortcut parameter as an alternative to <code>--instance-groups</code>'
+    ' when used together with <code>--instance-type</code>. Specifies the'
     ' number of Amazon EC2 instances to create for a cluster.'
     ' One instance is used for the master node, and the remainder'
     ' are used for the core node type.</p>')
@@ -214,7 +214,7 @@ EC2_ATTRIBUTES = (
     ' SSH connections to the master node and other instances on the cluster.</li>'
     '<li><code>AvailabilityZone</code> - Specifies the availability zone in which to launch'
     ' the cluster. For example, <code>us-west-1b</code>.</li>'
-    '<li><code>SubnetId</code> - Specifies the VPC subnet in which to create the cluster. </li>'
+    '<li><code>SubnetId</code> - Specifies the VPC subnet in which to create the cluster.</li>'
     '<li><code>InstanceProfile</code> - An IAM role that allows EC2 instances to'
     ' access other AWS services, such as Amazon S3, that'
     ' are required for operations.</li>'
@@ -222,8 +222,8 @@ EC2_ATTRIBUTES = (
     ' security group for the master node.</li>'
     '<li><code>EmrManagedSlaveSecurityGroup</code> - The security group ID of the Amazon EC2'
     ' security group for the slave nodes.</li>'
-    '<li><code>ServiceAccessSecurityGroup</code> - The security group ID of the Amazon EC2 '
-    'security group for Amazon EMR access to clusters in VPC private subnets </li>'
+    '<li><code>ServiceAccessSecurityGroup</code> - The security group ID of the Amazon EC2'
+    ' security group for Amazon EMR access to clusters in VPC private subnets.</li>'
     '<li><code>AdditionalMasterSecurityGroups</code> - A list of additional Amazon EC2'
     ' security group IDs for the master node.</li>'
     '<li><code>AdditionalSlaveSecurityGroups</code> - A list of additional Amazon EC2'
@@ -243,26 +243,26 @@ SCALE_DOWN_BEHAVIOR = (
     ' when an automatic scale-in activity occurs or an instance group is resized.</p>'
     '<p>Accepted values:</p>'
     '<li><code>TERMINATE_AT_TASK_COMPLETION</code> - Specifies that Amazon EMR'
-    ' blacklists and drains tasks from nodes before terminating the instance. </li>'
+    ' blacklists and drains tasks from nodes before terminating the instance.</li>'
     '<li><code>TERMINATE_AT_INSTANCE_HOUR</code> - Specifies that Amazon EMR'
     ' terminate EC2 instances at the instance-hour boundary, regardless of when'
     ' the request to terminate was submitted.</li>'
 )
 VISIBILITY = (
     '<p>Specifies whether the cluster is visible to all IAM users of'
-    ' the AWS account associated with the cluster. If set to '
-    '<code>--visible-to-all-users</code>, all IAM users of that AWS account'
+    ' the AWS account associated with the cluster. If set to'
+    ' <code>--visible-to-all-users</code>, all IAM users of that AWS account'
     ' can view and, if they have the proper policy permisions set, manage'
     ' the cluster. If it is set to <code>--no-visible-to-all-users</code>,'
     ' only the IAM user that created the cluster can view and manage it. '
-    ' Clusters are visible by default. </p>')
+    ' Clusters are visible by default.</p>')
 
 DEBUGGING = (
     '<p>Specifies that the debugging tool is enabled for the cluster,'
     ' which allows you to browse log files using the EMR console.'
     ' Turning debugging on requires that you specify <code>--log-uri</code>'
-    ' because Amazon EMR must save the log files to Amazon S3 to index'
-    ' the files for viewing in the console.</p>')
+    ' because log files must be stored in Amazon S3 so that'
+    ' Amazon EMR can index them for viewing in the console.</p>')
 
 TAGS = (
     '<p>A list of tags to associate with a cluster, which apply to'
@@ -284,7 +284,7 @@ BOOTSTRAP_ACTIONS = (
     ' enclosed in single quotation marks, or you can use a shorthand'
     ' syntax, specifying multiple bootstrap actions, each separated'
     ' by a space. When using the shorthand syntax, each bootstrap'
-    ' action takes the following parameters, each separated by'
+    ' action takes the following parameters, separated by'
     ' commas with no trailing space. Optional parameters'
     ' are shown in [square brackets].</p>'
     '<li><code>Path</code> - The path and file name of the script'
@@ -305,7 +305,7 @@ APPLICATIONS = (
     ' Available applications and their respective versions vary'
     ' by EMR release. For more information, see the'
     ' Amazon EMR Release Guide (http://docs.aws.amazon.com/emr/latest/ReleaseGuide/).</p>'
-    ' <p>When using versions of Amazon EMR earlier than 4.0,'
+    '<p>When using versions of Amazon EMR earlier than 4.0,'
     ' some applications take optional arguments for configuration.'
     ' Arguments should either be a comma-separated list of values'
     ' (e.g. Args=arg1,arg2,arg3) or a bracket-enclosed list of values'
@@ -318,8 +318,8 @@ EMR_FS = (
     ' and Amazon S3 encryption parameters. For more information about'
     ' configuring consistent view, see http://docs.aws.amazon.com/emr/'
     'latest/ManagementGuide/emrfs-configure-consistent-view.html. When using'
-    ' Amazon EMR version 4.8.0 or later, configuring data encryption using'
-    ' security configurations is recommended. For more information'
+    ' Amazon EMR version 4.8.0 or later, we recommend configuring data encryption'
+    ' using security configurations instead. For more information'
     ' about using <code>--emrfs</code> to configure data encryption, see'
     ' http://integ-docs-aws.amazon.com/emr/latest/ReleaseGuide/emr-encryption-enable-security-configuration.html.</p>')
 
@@ -333,11 +333,11 @@ RESTORE_FROM_HBASE = (
 STEPS = (
     '<p>A list of steps to be executed by the cluster. A step can be'
     ' specified using the shorthand syntax, by referencing a JSON file'
-    ' or by specifying an inline JSON structure. [Args] supplied with steps'
-    ' should be acomma-separated list of values--for example'
-    ' <code>Args=arg1,arg2,arg3</code>--or'
+    ' or by specifying an inline JSON structure. <code>Args</code> supplied with steps'
+    ' should be acomma-separated list of values (for example,'
+    ' <code>Args=arg1,arg2,arg3</code>) or'
     ' a bracket-enclosed list of values and/or key-value'
-    ' pairs--for example <code>Args=[arg1,arg2=arg3,arg4</code>.</p>')
+    ' pairs (for example, <code>Args=[arg1,arg2=value,arg4</code>.)</p>')
 
 INSTALL_APPLICATIONS = (
     '<p>The applications to be installed.'
@@ -354,7 +354,7 @@ SECURITY_CONFIG = (
     ' A security configuration defines data encryption settings and'
     ' other security options. For more information, see'
     ' http://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-encryption-enable-security-configuration.html.'
-    ' Use <code>list-security-configurations</code> to get a list of available '
+    ' Use <code>list-security-configurations</code> to get a list of available'
     ' security configurations in the active account.</p>')
 
 CUSTOM_AMI_ID = (
@@ -382,21 +382,21 @@ LIST_CLUSTERS_CLUSTER_STATES = (
     ' listed. Alternatively, you can use the shorthand'
     ' form for single states or a group of states.</p>'
     '<p>Takes the following state values:</p>'
-    '<li><code>STARTING (shorthand is --active)</code></li>'
+    '<li><code>STARTING</code></li>'
     '<li><code>BOOTSTRAPPING</code></li>'
     '<li><code>RUNNING</code></li>'
     '<li><code>WAITING</code></li>'
     '<li><code>TERMINATING</code></li>'
     '<li><code>TERMINATED</code></li>'
-    '<li><code>TERMINATED_WITH_ERRORS</code> (shorthand is --failed)</li>')
+    '<li><code>TERMINATED_WITH_ERRORS</code></li>')
 
 LIST_CLUSTERS_STATE_FILTERS = (
     '<p>Shortcut options for --cluster-states. The'
     ' following shortcut options can be specified:</p>'
     '<li><code>--active</code> - list only clusters that'
-    ' are <code>STARTING</code>,'
-    ' <code>BOOTSTRAPPING</code>, <code>RUNNING</code>, <code>WAITING</code>, or <code>TERMINATING</code>. </li>'
-    '<li><code>--terminated</code> - list only clusters that are TERMINATED. </li>'
+    ' are <code>STARTING</code>, <code>BOOTSTRAPPING</code>,'
+    ' <code>RUNNING</code>, <code>WAITING</code>, or <code>TERMINATING</code>.</li>'
+    '<li><code>--terminated</code> - list only clusters that are TERMINATED.</li>'
     '<li><code>--failed</code> - list only clusters that are TERMINATED_WITH_ERRORS.</li>')
 
 LIST_CLUSTERS_CREATED_AFTER = (

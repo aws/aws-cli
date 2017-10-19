@@ -5,7 +5,7 @@ This example creates a lifecycle policy defined by ``policy.json` for a reposito
 
 Command::
 
-  aws ecr put-lifecycle-policy --repository-name “project-a/amazon-ecs-sample" --lifecycle-policy-text "file://policy.json"
+  aws ecr put-lifecycle-policy --repository-name "project-a/amazon-ecs-sample" --lifecycle-policy-text "file://policy.json"
 
 JSON file format::
 
@@ -31,6 +31,6 @@ Output::
 
   {
     "registryId": "<aws_account_id>",
-    "repositoryName": “project-a/amazon-ecs-sample",
+    "repositoryName": "project-a/amazon-ecs-sample",
     "lifecyclePolicyText": "{\"rules\":[{\"rulePriority\":1,\"description\":\"Expire images older than 14 days\",\"selection\":{\"tagStatus\":\"untagged\",\"countType\":\"sinceImagePushed\",\"countUnit\":\"days\",\"countNumber\":14},\"action\":{\"type\":\"expire\"}}]}"
    }

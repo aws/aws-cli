@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.174
+========
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``sqs``: Update sqs command to latest version
+
+
 1.11.173
 ========
 

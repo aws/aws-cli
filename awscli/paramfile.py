@@ -73,6 +73,9 @@ PARAMFILE_DISABLED = set([
     'sqs.send-message-batch.queue-url',
     'sqs.set-queue-attributes.queue-url',
     'sqs.purge-queue.queue-url',
+    'sqs.list-queue-tags.queue-url',
+    'sqs.tag-queue.queue-url',
+    'sqs.untag-queue.queue-url',
 
     's3.copy-object.website-redirect-location',
     's3.create-multipart-upload.website-redirect-location',

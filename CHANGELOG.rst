@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.175
+========
+
+* bugfix:sqs: Fixed an issue where the queue-url for an sqs operation was being fetched rather than used transparently.
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.11.174
 ========
 

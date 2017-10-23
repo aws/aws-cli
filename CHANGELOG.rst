@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.176
+========
+
+* api-change:``organizations``: Update organizations command to latest version
+
+
 1.11.175
 ========
 

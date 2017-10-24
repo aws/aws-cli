@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.11.177
+========
+
+* api-change:``glue``: Update glue command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+
+
 1.11.176
 ========
 

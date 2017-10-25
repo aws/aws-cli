@@ -56,7 +56,8 @@ class TestDeployCommand(unittest.TestCase):
                                     execute_changeset=True,
                                     capabilities=None,
                                     role_arn=None,
-                                    notification_arns=[])
+                                    notification_arns=[],
+                                    fail_on_empty_changeset=True)
         self.parsed_globals = FakeArgs(region="us-east-1", endpoint_url=None,
                                        verify_ssl=None)
         self.deploy_command = DeployCommand(self.session)
@@ -109,7 +110,7 @@ class TestDeployCommand(unittest.TestCase):
                         None,
                         not self.parsed_args.no_execute_changeset,
                         None,
-                        [])
+                        [], True)
 
                 self.deploy_command.parse_parameter_arg.assert_called_once_with(
                         self.parsed_args.parameter_overrides)
@@ -223,6 +224,41 @@ class TestDeployCommand(unittest.TestCase):
                                        role_arn,
                                        notification_arns)
 
+    def test_deploy_raises_exception_on_empty_changeset(self):
+        stack_name = "stack_name"
+        parameters = ["a", "b"]
+        template = "cloudformation template"
+        capabilities = ["foo", "bar"]
+        execute_changeset = True
+        role_arn = "arn:aws:iam::1234567890:role"
+        notification_arns = ["arn:aws:sns:region:1234567890:notify"]
+
+        empty_changeset = exceptions.ChangeEmptyError(stack_name=stack_name)
+        changeset_func = self.deployer.create_and_wait_for_changeset
+        changeset_func.side_effect = empty_changeset
+        with self.assertRaises(exceptions.ChangeEmptyError):
+            self.deploy_command.deploy(
+                self.deployer, stack_name, template, parameters, capabilities,
+                execute_changeset, role_arn, notification_arns
+            )
+
+    def test_deploy_does_not_raise_exception_on_empty_changeset(self):
+        stack_name = "stack_name"
+        parameters = ["a", "b"]
+        template = "cloudformation template"
+        capabilities = ["foo", "bar"]
+        execute_changeset = True
+        role_arn = "arn:aws:iam::1234567890:role"
+        notification_arns = ["arn:aws:sns:region:1234567890:notify"]
+
+        empty_changeset = exceptions.ChangeEmptyError(stack_name=stack_name)
+        changeset_func = self.deployer.create_and_wait_for_changeset
+        changeset_func.side_effect = empty_changeset
+        self.deploy_command.deploy(
+            self.deployer, stack_name, template, parameters, capabilities,
+            execute_changeset, role_arn, notification_arns,
+            fail_on_empty_changeset=False
+        )
 
     def test_parse_parameter_arg_success(self):
         """

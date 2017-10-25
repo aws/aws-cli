@@ -223,9 +223,9 @@ If you do not have MFA authentication required, then you only need to specify a
 
 When you specify a profile that has IAM role configuration, the AWS CLI
 will make an ``AssumeRole`` call to retrieve temporary credentials.  These
-credentials are then stored (in ``~/.aws/cache``).  Subsequent AWS CLI commands
-will use the cached temporary credentials until they expire, in which case the
-AWS CLI will automatically refresh credentials.
+credentials are then stored (in ``~/.aws/cli/cache``).  Subsequent AWS CLI
+commands will use the cached temporary credentials until they expire, in which
+case the AWS CLI will automatically refresh credentials.
 
 If you specify an ``mfa_serial``, then the first time an ``AssumeRole`` call is
 made, you will be prompted to enter the MFA code.  Subsequent commands will use

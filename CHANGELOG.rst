@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.178
+========
+
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.11.177
 ========
 

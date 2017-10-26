@@ -390,8 +390,7 @@ class ListRunsCommand(BasicCommand):
     def _list_runs(self, parsed_args, parsed_globals):
         query = QueryArgBuilder().build_query(parsed_args)
         object_ids = self._query_objects(parsed_args.pipeline_id, query)
-        objects = self._describe_objects(parsed_args.pipeline_id, object_ids)[
-            'pipelineObjects']
+        objects = self._describe_objects(parsed_args.pipeline_id, object_ids)
         converted = convert_described_objects(
             objects,
             sort_key_func=lambda x: (x.get('@scheduledStartTime'),
@@ -400,9 +399,18 @@ class ListRunsCommand(BasicCommand):
         formatter(self.NAME, converted)
 
     def _describe_objects(self, pipeline_id, object_ids):
-        parsed = self.client.describe_objects(
-            pipelineId=pipeline_id, objectIds=object_ids)
-        return parsed
+        # DescribeObjects will only accept 100 objectIds at a time,
+        # so we need to break up the list passed in into chunks that are at
+        # most that size. We then aggregate the results to return.
+        objects = []
+        max_items_per_describe = 100
+        for i in range(0, len(object_ids), max_items_per_describe):
+            current_object_ids = object_ids[i:i + max_items_per_describe]
+            result = self.client.describe_objects(
+                pipelineId=pipeline_id, objectIds=current_object_ids)
+            objects.extend(result['pipelineObjects'])
+
+        return objects
 
     def _query_objects(self, pipeline_id, query):
         paginator = self.client.get_paginator('query_objects').paginate(

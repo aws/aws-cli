@@ -50,6 +50,7 @@ are separated by a space. For list type parameter values
 you can use the same key name and specify each value as
 a key value pair. e.g. arrayValue=value1 arrayValue=value2
 """
+MAX_ITEMS_PER_DESCRIBE = 100
 
 
 class DocSectionNotFoundError(Exception):
@@ -403,9 +404,8 @@ class ListRunsCommand(BasicCommand):
         # so we need to break up the list passed in into chunks that are at
         # most that size. We then aggregate the results to return.
         objects = []
-        max_items_per_describe = 100
-        for i in range(0, len(object_ids), max_items_per_describe):
-            current_object_ids = object_ids[i:i + max_items_per_describe]
+        for i in range(0, len(object_ids), MAX_ITEMS_PER_DESCRIBE):
+            current_object_ids = object_ids[i:i + MAX_ITEMS_PER_DESCRIBE]
             result = self.client.describe_objects(
                 pipelineId=pipeline_id, objectIds=current_object_ids)
             objects.extend(result['pipelineObjects'])

@@ -108,6 +108,7 @@ class Deployer(object):
             'Parameters': parameter_values,
             'Capabilities': capabilities,
             'Description': description,
+            'Tags': tags,
         }
 
         # If an S3 uploader is available, use TemplateURL to deploy rather than

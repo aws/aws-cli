@@ -106,6 +106,7 @@ class Deployer(object):
             'Parameters': parameter_values,
             'Capabilities': capabilities,
             'Description': description,
+            'Tags': tags,
         }
         # don't set these arguments if not specified to use existing values
         if role_arn is not None:

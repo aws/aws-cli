@@ -34,6 +34,7 @@ PARAMFILE_DISABLED = set([
     'cloudformation.create-change-set.template-url',
     'cloudformation.validate-template.template-url',
     'cloudformation.estimate-template-cost.template-url',
+    'cloudformation.get-template-summary.template-url',
 
     'cloudformation.create-stack.stack-policy-url',
     'cloudformation.update-stack.stack-policy-url',

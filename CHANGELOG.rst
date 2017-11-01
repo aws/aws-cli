@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.179
+========
+
+* api-change:``cloudhsmv2``: Update cloudhsmv2 command to latest version
+* api-change:``acm``: Update acm command to latest version
+* api-change:``directconnect``: Update directconnect command to latest version
+
+
 1.11.178
 ========
 

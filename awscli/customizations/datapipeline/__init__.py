@@ -50,6 +50,7 @@ are separated by a space. For list type parameter values
 you can use the same key name and specify each value as
 a key value pair. e.g. arrayValue=value1 arrayValue=value2
 """
+MAX_ITEMS_PER_DESCRIBE = 100
 
 
 class DocSectionNotFoundError(Exception):
@@ -390,8 +391,7 @@ class ListRunsCommand(BasicCommand):
     def _list_runs(self, parsed_args, parsed_globals):
         query = QueryArgBuilder().build_query(parsed_args)
         object_ids = self._query_objects(parsed_args.pipeline_id, query)
-        objects = self._describe_objects(parsed_args.pipeline_id, object_ids)[
-            'pipelineObjects']
+        objects = self._describe_objects(parsed_args.pipeline_id, object_ids)
         converted = convert_described_objects(
             objects,
             sort_key_func=lambda x: (x.get('@scheduledStartTime'),
@@ -400,9 +400,17 @@ class ListRunsCommand(BasicCommand):
         formatter(self.NAME, converted)
 
     def _describe_objects(self, pipeline_id, object_ids):
-        parsed = self.client.describe_objects(
-            pipelineId=pipeline_id, objectIds=object_ids)
-        return parsed
+        # DescribeObjects will only accept 100 objectIds at a time,
+        # so we need to break up the list passed in into chunks that are at
+        # most that size. We then aggregate the results to return.
+        objects = []
+        for i in range(0, len(object_ids), MAX_ITEMS_PER_DESCRIBE):
+            current_object_ids = object_ids[i:i + MAX_ITEMS_PER_DESCRIBE]
+            result = self.client.describe_objects(
+                pipelineId=pipeline_id, objectIds=current_object_ids)
+            objects.extend(result['pipelineObjects'])
+
+        return objects
 
     def _query_objects(self, pipeline_id, query):
         paginator = self.client.get_paginator('query_objects').paginate(

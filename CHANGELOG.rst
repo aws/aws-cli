@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.11.180
+========
+
+* api-change:``apigateway``: Update apigateway command to latest version
+* bugfix:datapipeline: Fixed a bug in datapipeline where list-runs could only handle 100 runs.
+
+
 1.11.179
 ========
 

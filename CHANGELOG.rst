@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.11.181
+========
+
+* api-change:``ecs``: Update ecs command to latest version
+
+
 1.11.180
 ========
 

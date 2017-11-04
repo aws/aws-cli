@@ -57,7 +57,8 @@ class TestDeployCommand(unittest.TestCase):
                                     capabilities=None,
                                     role_arn=None,
                                     notification_arns=[],
-                                    fail_on_empty_changeset=True)
+                                    fail_on_empty_changeset=True,
+                                    no_reuse_parameters=False)
         self.parsed_globals = FakeArgs(region="us-east-1", endpoint_url=None,
                                        verify_ssl=None)
         self.deploy_command = DeployCommand(self.session)
@@ -116,9 +117,45 @@ class TestDeployCommand(unittest.TestCase):
                         self.parsed_args.parameter_overrides)
 
                 self.deploy_command.merge_parameters.assert_called_once_with(
-                        fake_template, fake_parameter_overrides)
+                        fake_template, fake_parameter_overrides, False)
 
                 self.assertEquals(1, mock_yaml_parse.call_count)
+
+    @patch("awscli.customizations.cloudformation.deploy.yaml_parse")
+    def test_with_no_reuse_parameters(self, mock_yaml_parse):
+        """
+        Tests that no_reuse_parameters is passed correctly
+        """
+        fake_parameter_overrides = []
+        fake_parameters = "some return value"
+        template_str = "some template"
+
+        with tempfile.NamedTemporaryFile() as handle:
+            file_path = handle.name
+
+            open_mock = mock.mock_open()
+            # Patch the file open method to return template string
+            with patch(
+                    "awscli.customizations.cloudformation.deploy.open",
+                    open_mock(read_data=template_str)) as open_mock:
+
+                fake_template = get_example_template()
+                mock_yaml_parse.return_value = fake_template
+
+                self.deploy_command.deploy = MagicMock()
+                self.deploy_command.parse_parameter_arg = MagicMock(
+                        return_value=fake_parameter_overrides)
+                self.deploy_command.merge_parameters = MagicMock(
+                        return_value=fake_parameters)
+
+                self.parsed_args.template_file = file_path
+                self.parsed_args.no_reuse_parameters = True
+                result = self.deploy_command._run_main(self.parsed_args,
+                                              parsed_globals=self.parsed_globals)
+
+                self.deploy_command.merge_parameters.assert_called_once_with(
+                        fake_template, fake_parameter_overrides, True)
+
 
     def test_invalid_template_file(self):
         self.parsed_args.template_file = "sometemplate"
@@ -360,6 +397,36 @@ class TestDeployCommand(unittest.TestCase):
         result = self.deploy_command.merge_parameters({"Parameters": {}},
                                                       overrides)
         self.assertEqual(result, [])
+
+    def test_merge_parameters_success_with_no_reuse_parameters(self):
+        """
+        Tests that template parameters not provided at runtime are not 
+        automatically set to use previous value when 'no_reuse_parameters'
+        is true.
+        """
+        template = {
+            "Parameters": {
+                "Key1": {"Type": "String"}, "Key2": {"Type": "String"},
+                "Key3": "Something", "Key4": {"Type": "Number"},
+            }
+        }
+
+        overrides = {
+            "Key3": "Apple",
+            "Key4": "Orange",
+            # Parameters not belonging to the template should always be skipped.
+            "Key5": "Banana",
+        }
+
+        expected_result = [
+            {"ParameterKey": "Key3", "ParameterValue": "Apple"},
+            {"ParameterKey": "Key4", "ParameterValue": "Orange"},
+        ]
+
+        self.assertItemsEqual(
+            self.deploy_command.merge_parameters(template, overrides, True),
+            expected_result
+        )
 
     def test_merge_parameters_invalid_input(self):
 

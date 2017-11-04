@@ -177,6 +177,16 @@ class DeployCommand(BasicCommand):
                 'Causes the CLI to return an exit code of 0 if there are no '
                 'changes to be made to the stack.'
             )
+        },
+        {
+            'name': 'no-reuse-parameters',
+            'action': 'store_true',
+            'required': False,
+            'default': False,
+            'help_text': (
+                'Do not automatically re-use a previous parameter value'
+                ' where a value has not been provided.'
+            )
         }
     ]
 
@@ -202,7 +212,10 @@ class DeployCommand(BasicCommand):
 
         template_dict = yaml_parse(template_str)
 
-        parameters = self.merge_parameters(template_dict, parameter_overrides)
+        parameters = self.merge_parameters(
+                    template_dict,
+                    parameter_overrides,
+                    parsed_args.no_reuse_parameters)
 
         deployer = Deployer(cloudformation_client)
         return self.deploy(deployer, stack_name, template_str,
@@ -240,13 +253,14 @@ class DeployCommand(BasicCommand):
         sys.stdout.flush()
         return 0
 
-    def merge_parameters(self, template_dict, parameter_overrides):
+    def merge_parameters(self, template_dict, parameter_overrides, no_reuse_parameters=False):
         """
         CloudFormation CreateChangeset requires a value for every parameter
         from the template, either specifying a new value or use previous value.
         For convenience, this method will accept new parameter values and
         generates a dict of all parameters in a format that ChangeSet API
-        will accept
+        will accept, unless no_reuse_parameters is true in which case all template
+        parameters lacking a default value must be provided at runtime.
 
         :param parameter_overrides:
         :return:
@@ -265,7 +279,10 @@ class DeployCommand(BasicCommand):
             if key in parameter_overrides:
                 obj["ParameterValue"] = parameter_overrides[key]
             else:
-                obj["UsePreviousValue"] = True
+                if no_reuse_parameters:
+                    continue
+                else:
+                    obj["UsePreviousValue"] = True
 
             parameter_values.append(obj)
 

@@ -203,8 +203,7 @@ class DeployCommand(BasicCommand):
                     template_path=template_path)
 
         # Parse parameters
-        with open(template_path, "r") as handle:
-            template_str = handle.read()
+        template_str = self.read_template(template_path);
 
         stack_name = parsed_args.stack_name
         parameter_overrides = self.parse_parameter_arg(
@@ -303,3 +302,7 @@ class DeployCommand(BasicCommand):
             result[key_value_pair[0]] = key_value_pair[1]
 
         return result
+
+    def read_template(self, template_path):
+        with open(template_path, "r") as handle:
+            return handle.read()

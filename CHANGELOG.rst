@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.11.183
+========
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``s3``: Update s3 command to latest version
+
+
 1.11.182
 ========
 

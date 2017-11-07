@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.11.182
+========
+
+* api-change:``kms``: Update kms command to latest version
+* api-change:``stepfunctions``: Update stepfunctions command to latest version
+* api-change:``pricing``: Update pricing command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+
+
 1.11.181
 ========
 

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.11.184
+========
+
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``batch``: Update batch command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+
+
 1.11.183
 ========
 

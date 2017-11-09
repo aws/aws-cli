@@ -912,7 +912,7 @@ class CommandArchitecture(object):
         """Determines the sync strategy for the command.
 
         It defaults to the default sync strategies but a customizable sync
-        strategy can overide the default strategy if it returns the instance
+        strategy can override the default strategy if it returns the instance
         of its self when the event is emitted.
         """
         sync_strategies = {}
@@ -922,7 +922,7 @@ class CommandArchitecture(object):
         sync_strategies['file_not_at_dest_sync_strategy'] = MissingFileSync()
         sync_strategies['file_not_at_src_sync_strategy'] = NeverSync()
 
-        # Determine what strategies to overide if any.
+        # Determine what strategies to override if any.
         responses = self.session.emit(
             'choosing-s3-sync-strategy', params=self.parameters)
         if responses is not None:

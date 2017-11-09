@@ -87,8 +87,8 @@ RELEASE_LABEL = (
     '<p>For details about the releases available in Amazon Elastic MapReduce,'
     ' go to Releases Available in Amazon Elastic MapReduce in the'
     ' Amazon Elastic MapReduce Documentation.</p>'
-    '<p>http://docs.aws.amazon.com/ElasticMapReduce/latest/Applications/'
-    'emr-release.html</p><p>Please use ami-version if you want to specify AMI'
+    '<p>http://docs.aws.amazon.com/emr/latest/ReleaseGuide/'
+    'emr-release-components.html</p><p>Please use ami-version if you want to specify AMI'
     ' Versions for your Amazon EMR cluster (3.x and 2.x)</p>')
 
 CONFIGURATIONS = (

@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import os
 import sys
 import time
 import logging
@@ -24,6 +25,10 @@ LOG = logging.getLogger(__name__)
 
 ChangeSetResult = collections.namedtuple(
                 "ChangeSetResult", ["changeset_id", "changeset_type"])
+
+
+waiter_delay = int(os.environ.get('AWS_WAITER_DELAY', 5))
+waiter_max_attempts = int(os.environ.get('AWS_WAITER_MAX_ATTEMPTS', 720))
 
 
 class Deployer(object):
@@ -132,7 +137,7 @@ class Deployer(object):
         # Wait for changeset to be created
         waiter = self._client.get_waiter("change_set_create_complete")
         # Poll every 5 seconds. Changeset creation should be fast
-        waiter_config = {'Delay': 5}
+        waiter_config = {'Delay': waiter_delay}
         try:
             waiter.wait(ChangeSetName=changeset_id, StackName=stack_name,
                         WaiterConfig=waiter_config)
@@ -180,8 +185,8 @@ class Deployer(object):
         # Poll every 5 seconds. Optimizing for the case when the stack has only
         # minimal changes, such the Code for Lambda Function
         waiter_config = {
-            'Delay': 5,
-            'MaxAttempts': 720,
+            'Delay': waiter_delay,
+            'MaxAttempts': waiter_max_attempts,
         }
 
         try:

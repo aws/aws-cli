@@ -86,7 +86,7 @@ FOLLOW_SYMLINKS = {'name': 'follow-symlinks', 'action': 'store_true',
                        "Note that S3 does not support symbolic links, so the "
                        "contents of the link target are uploaded under the "
                        "name of the link. When neither ``--follow-symlinks`` "
-                       "nor ``--no-follow-symlinks`` is specifed, the default "
+                       "nor ``--no-follow-symlinks`` is specified, the default "
                        "is to follow symlinks.")}
 
 
@@ -228,7 +228,7 @@ SSE_C_COPY_SOURCE = {
         'object. ``AES256`` is the only valid '
         'value. If the parameter is specified but no value is provided, '
         '``AES256`` is used. If you provide this value, '
-        '``--sse-c-copy-source-key`` must be specfied as well. '
+        '``--sse-c-copy-source-key`` must be specified as well. '
     )
 }
 
@@ -241,7 +241,7 @@ SSE_C_COPY_SOURCE_KEY = {
         'key. Specifies the customer-provided encryption key for Amazon S3 '
         'to use to decrypt the source object. The encryption key provided '
         'must be one that was used when the source object was created. '
-        'If you provide this value, ``--sse-c-copy-source`` be specfied as '
+        'If you provide this value, ``--sse-c-copy-source`` be specified as '
         'well. The key provided should **not** be base64 encoded.'
     )
 }
@@ -846,7 +846,7 @@ class CommandArchitecture(object):
     instructions identifies which type of components are required based on the
     name of the command and the parameters passed to the command line.  After
     the instructions are generated the second step involves using the
-    lsit of instructions to wire together an assortment of generators to
+    list of instructions to wire together an assortment of generators to
     perform the command.
     """
     def __init__(self, session, cmd, parameters, runtime_config=None):
@@ -912,7 +912,7 @@ class CommandArchitecture(object):
         """Determines the sync strategy for the command.
 
         It defaults to the default sync strategies but a customizable sync
-        strategy can overide the default strategy if it returns the instance
+        strategy can override the default strategy if it returns the instance
         of its self when the event is emitted.
         """
         sync_strategies = {}
@@ -922,7 +922,7 @@ class CommandArchitecture(object):
         sync_strategies['file_not_at_dest_sync_strategy'] = MissingFileSync()
         sync_strategies['file_not_at_src_sync_strategy'] = NeverSync()
 
-        # Determine what strategies to overide if any.
+        # Determine what strategies to override if any.
         responses = self.session.emit(
             'choosing-s3-sync-strategy', params=self.parameters)
         if responses is not None:

@@ -86,7 +86,7 @@ FOLLOW_SYMLINKS = {'name': 'follow-symlinks', 'action': 'store_true',
                        "Note that S3 does not support symbolic links, so the "
                        "contents of the link target are uploaded under the "
                        "name of the link. When neither ``--follow-symlinks`` "
-                       "nor ``--no-follow-symlinks`` is specifed, the default "
+                       "nor ``--no-follow-symlinks`` is specified, the default "
                        "is to follow symlinks.")}
 
 
@@ -228,7 +228,7 @@ SSE_C_COPY_SOURCE = {
         'object. ``AES256`` is the only valid '
         'value. If the parameter is specified but no value is provided, '
         '``AES256`` is used. If you provide this value, '
-        '``--sse-c-copy-source-key`` must be specfied as well. '
+        '``--sse-c-copy-source-key`` must be specified as well. '
     )
 }
 
@@ -241,7 +241,7 @@ SSE_C_COPY_SOURCE_KEY = {
         'key. Specifies the customer-provided encryption key for Amazon S3 '
         'to use to decrypt the source object. The encryption key provided '
         'must be one that was used when the source object was created. '
-        'If you provide this value, ``--sse-c-copy-source`` be specfied as '
+        'If you provide this value, ``--sse-c-copy-source`` be specified as '
         'well. The key provided should **not** be base64 encoded.'
     )
 }
@@ -846,7 +846,7 @@ class CommandArchitecture(object):
     instructions identifies which type of components are required based on the
     name of the command and the parameters passed to the command line.  After
     the instructions are generated the second step involves using the
-    lsit of instructions to wire together an assortment of generators to
+    list of instructions to wire together an assortment of generators to
     perform the command.
     """
     def __init__(self, session, cmd, parameters, runtime_config=None):

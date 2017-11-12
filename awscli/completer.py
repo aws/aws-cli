@@ -131,7 +131,7 @@ class Completer(object):
 
 def complete(cmdline, point):
     choices = Completer().complete(cmdline, point)
-    print(' \n'.join(choices))
+    print('\n'.join(choices))
 
 
 if __name__ == '__main__':

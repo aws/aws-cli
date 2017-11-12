@@ -83,7 +83,8 @@ class TestCompleter(BaseCompleterTest):
         self.assert_completion(completer, 'aws cloudf', [
             'cloudfront', 'cloudformation'])
         self.assert_completion(completer, 'aws cloudfr', ['cloudfront'])
-        self.assert_completion(completer, 'aws cloudfront', [])
+        self.assert_completion(completer, 'aws cloudfront', ['cloudfront'])
+        self.assert_completion(completer, 'aws cloudfront ', [])
 
     def test_complete_on_invalid_service(self):
         commands = {
@@ -174,7 +175,8 @@ class TestCompleter(BaseCompleterTest):
         self.assert_completion(completer, 'aws foo b', ['barb', 'baz', 'biz'])
         self.assert_completion(completer, 'aws foo ba', ['barb', 'baz'])
         self.assert_completion(completer, 'aws foo bar', ['barb'])
-        self.assert_completion(completer, 'aws foo barb', [])
+        self.assert_completion(completer, 'aws foo barb', ['barb'])
+        self.assert_completion(completer, 'aws foo barb ', [])
 
     def test_complete_service_arguments(self):
         commands = {
@@ -335,6 +337,9 @@ class TestCompleteCustomCommands(BaseCompleterTest):
 
     def test_complete_partial_custom_command(self):
         self.assert_completion(self.completer, 'aws s3 m', ['mb', 'mv'])
+
+    def test_complete_full_custom_command(self):
+        self.assert_completion(self.completer, 'aws s3 mv', ['mv'])
 
     def test_complete_custom_command_arguments(self):
         self.assert_completion(self.completer, 'aws s3 cp --', [

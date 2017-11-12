@@ -32,9 +32,9 @@ class Completer(object):
         if point is None:
             point = len(cmdline)
 
-        args = cmdline[0:point].split()
+        args = cmdline[0:point].split(' ')
         current_arg = args[-1]
-        cmd_args = [w for w in args if not w.startswith('-')]
+        cmd_args = [w for w in args[:-1] if not w.startswith('-')]
         opts = [w for w in args if w.startswith('-')]
 
         cmd_name, cmd = self._get_command(self.main_help, cmd_args)

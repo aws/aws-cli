@@ -34,7 +34,8 @@ class TestAssumeRolePlugin(unittest.TestCase):
         session.get_component.assert_called_with('credential_provider')
         credential_provider = session.get_component.return_value
         get_provider = credential_provider.get_provider
-        get_provider.assert_called_with('assume-role')
+        get_provider.assert_has_calls([
+            mock.call('assume-role'), mock.call('assume-role-with-saml')])
         self.assertIsInstance(get_provider.return_value.cache,
                               assumerole.JSONFileCache)
 

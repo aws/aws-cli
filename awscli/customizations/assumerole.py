@@ -36,8 +36,8 @@ def inject_assume_role_provider_cache(session, **kwargs):
                   "assume-role cred provider cache.  Not configuring "
                   "JSONFileCache for assume-role.")
         return
-    provider = cred_chain.get_provider('assume-role')
-    provider.cache = JSONFileCache()
+    cred_chain.get_provider('assume-role').cache = JSONFileCache()
+    cred_chain.get_provider('assume-role-with-saml').cache = JSONFileCache()
 
 
 class JSONFileCache(object):

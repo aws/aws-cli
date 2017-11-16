@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.11.188
+========
+
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+* api-change:``glue``: Update glue command to latest version
+
+
 1.11.187
 ========
 

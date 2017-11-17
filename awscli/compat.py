@@ -11,7 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sys
+import shlex
 import os
+import platform
 import zipfile
 
 from botocore.compat import six
@@ -25,7 +27,9 @@ PY3 = six.PY3
 queue = six.moves.queue
 shlex_quote = six.moves.shlex_quote
 StringIO = six.StringIO
+BytesIO = six.BytesIO
 urlopen = six.moves.urllib.request.urlopen
+binary_type = six.binary_type
 
 # Most, but not all, python installations will have zlib. This is required to
 # compress any files we send via a push. If we can't compress, we can still
@@ -35,6 +39,21 @@ try:
     ZIP_COMPRESSION_MODE = zipfile.ZIP_DEFLATED
 except ImportError:
     ZIP_COMPRESSION_MODE = zipfile.ZIP_STORED
+
+
+try:
+    import sqlite3
+except ImportError:
+    sqlite3 = None
+
+
+is_windows = sys.platform == 'win32'
+
+
+if is_windows:
+    default_pager = 'more'
+else:
+    default_pager = 'less -R'
 
 
 class NonTranslatedStdout(object):
@@ -73,6 +92,9 @@ if six.PY3:
     raw_input = input
 
     binary_stdin = sys.stdin.buffer
+
+    def get_binary_stdout():
+        return sys.stdout.buffer
 
     def _get_text_writer(stream, errors):
         return stream
@@ -117,6 +139,9 @@ else:
     raw_input = raw_input
 
     binary_stdin = sys.stdin
+
+    def get_binary_stdout():
+        return sys.stdout
 
     def _get_text_writer(stream, errors):
         # In python3, all the sys.stdout/sys.stderr streams are in text
@@ -199,7 +224,7 @@ def compat_shell_quote(s, platform=None):
 def _windows_shell_quote(s):
     """Return a Windows shell-escaped version of the string *s*
 
-    Windows has potentially bizarre rules depending on where you look. When 
+    Windows has potentially bizarre rules depending on where you look. When
     spawning a process via the Windows C runtime the rules are as follows:
 
     https://docs.microsoft.com/en-us/cpp/cpp/parsing-cpp-command-line-arguments
@@ -208,7 +233,7 @@ def _windows_shell_quote(s):
 
     * Only space and tab are valid delimiters
     * Double quotes are the only valid quotes
-    * Backslash is interpreted literally unless it is part of a chain that 
+    * Backslash is interpreted literally unless it is part of a chain that
       leads up to a double quote. Then the backslashes escape the backslashes,
       and if there is an odd number the final backslash escapes the quote.
 
@@ -257,3 +282,23 @@ def _windows_shell_quote(s):
         # quoted.
         return '"%s"' % new_s
     return new_s
+
+
+def get_popen_kwargs_for_pager_cmd(pager_cmd=None):
+    """Returns the default pager to use dependent on platform
+
+    :rtype: str
+    :returns: A string represent the paging command to run based on the
+        platform being used.
+    """
+    popen_kwargs = {}
+    if pager_cmd is None:
+        pager_cmd = default_pager
+    # Similar to what we do with the help command, we need to specify
+    # shell as True to make it work in the pager for Windows
+    if is_windows:
+        popen_kwargs = {'shell': True}
+    else:
+        pager_cmd = shlex.split(pager_cmd)
+    popen_kwargs['args'] = pager_cmd
+    return popen_kwargs

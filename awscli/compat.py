@@ -37,6 +37,12 @@ except ImportError:
     ZIP_COMPRESSION_MODE = zipfile.ZIP_STORED
 
 
+try:
+    import sqlite3
+except ImportError:
+    sqlite3 = None
+
+
 class NonTranslatedStdout(object):
     """ This context manager sets the line-end translation mode for stdout.
 

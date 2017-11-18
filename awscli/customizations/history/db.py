@@ -88,8 +88,6 @@ class DatabaseConnection(object):
 
 
 class PayloadSerializer(json.JSONEncoder):
-    _DEFAULT_TYPES = set(['str', 'int', 'list', 'dict', 'float'])
-
     def _process_CaseInsensitiveDict(self, obj, type_name):
         return dict(obj)
 
@@ -120,8 +118,6 @@ class PayloadSerializer(json.JSONEncoder):
 
     def default(self, obj):
         type_name = type(obj).__name__
-        if type_name in self._DEFAULT_TYPES:
-            return obj
         return getattr(
             self, '_process_%s' % type_name, self._unknown
         )(obj, type_name)

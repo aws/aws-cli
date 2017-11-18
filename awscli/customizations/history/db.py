@@ -58,13 +58,13 @@ class DatabaseConnection(object):
         self._try_to_enable_wal()
 
     def _create_record_table(self):
-        cursor = self._connection.cursor()
+        cursor = self.cursor()
         cursor.execute(self._CREATE_TABLE)
         self._connection.commit()
 
     def _try_to_enable_wal(self):
         try:
-            cursor = self._connection.cursor()
+            cursor = self.cursor()
             cursor.execute(self._ENABLE_WAL)
             self._connection.commit()
         except sqlite3.Error:

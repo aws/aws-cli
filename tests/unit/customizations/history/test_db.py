@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
 import re
 import json
 import threading
@@ -21,6 +22,7 @@ from collections import Mapping
 import mock
 
 from awscli.compat import queue
+from awscli.customizations.history.db import DatabaseConnection
 from awscli.customizations.history.db import DatabaseHistoryHandler
 from awscli.customizations.history.db import DatabaseRecordWriter
 from awscli.customizations.history.db import DatabaseRecordReader
@@ -87,6 +89,62 @@ class FakeDatabaseConnection(object):
 
     def commit(self):
         self.commits += 1
+
+
+class TestDatabaseConnection(unittest.TestCase):
+    @mock.patch('awscli.compat.sqlite3.connect')
+    def test_does_connect_to_default_storage_location(self, mock_connect):
+        expected_location = os.path.expanduser(os.path.join(
+            '~', '.aws', 'cli', 'history', 'history.db'))
+        DatabaseConnection()
+        mock_connect.assert_called_with(
+            expected_location, check_same_thread=False)
+
+    @mock.patch('awscli.compat.sqlite3.connect')
+    def test_can_connect_to_argument_file(self, mock_connect):
+        expected_location = os.path.expanduser(os.path.join(
+            '~', 'foo', 'bar', 'baz.db'))
+        DatabaseConnection(expected_location)
+        mock_connect.assert_called_with(
+            expected_location, check_same_thread=False)
+
+    @mock.patch('awscli.compat.sqlite3.connect')
+    def test_can_connect_to_env_variable_file(self, mock_connect):
+        expected_path = os.path.expanduser(os.path.join(
+            '~', 'foo', 'bar'))
+        environment = {
+            'AWS_HISTORY_PATH': expected_path
+        }
+        with mock.patch('os.environ', environment):
+            DatabaseConnection()
+        expected_location = os.path.join(expected_path, 'history.db')
+        mock_connect.assert_called_with(
+            expected_location, check_same_thread=False)
+
+    @mock.patch('awscli.compat.sqlite3.connect')
+    def test_does_try_to_enable_wal(self, mock_connect):
+        mock_cursor = mock.Mock()
+        mock_connect.cursor.return_value = mock_cursor
+        conn = DatabaseConnection()
+        cursor = conn.cursor()
+        cursor.execute.assert_any_call('PRAGMA journal_mode=WAL')
+
+    @mock.patch('awscli.compat.sqlite3.connect')
+    def test_does_ensure_table_created_first(self, mock_connect):
+        mock_cursor = mock.Mock()
+        mock_connect.cursor.return_value = mock_cursor
+        conn = DatabaseConnection()
+        cursor = conn.cursor()
+        first_statement = cursor.execute.call_args_list[0][0][0].strip()
+        self.assertEqual(first_statement, """
+    CREATE TABLE IF NOT EXISTS records (
+      id TEXT,
+      request_id TEXT,
+      source TEXT,
+      event_type TEXT,
+      timestamp INTEGER,
+      payload TEXT
+    ) """.strip())
 
 
 class TestDatabaseHistoryHandler(unittest.TestCase):

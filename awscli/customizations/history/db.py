@@ -88,7 +88,7 @@ class DatabaseConnection(object):
 
 
 class PayloadSerializer(json.JSONEncoder):
-    DEFAULT_TYPES = set(['str', 'int', 'list', 'dict', 'float'])
+    _DEFAULT_TYPES = set(['str', 'int', 'list', 'dict', 'float'])
 
     def _process_CaseInsensitiveDict(self, obj, type_name):
         return dict(obj)
@@ -97,15 +97,30 @@ class PayloadSerializer(json.JSONEncoder):
         encoded = base64.b64encode(obj)
         return ensure_text_type(encoded)
 
-    def _process_timestamp(self, obj, type_name):
+    def _process_datetime(self, obj, type_name):
         return obj.isoformat()
 
     def _unknown(self, obj, type_name):
         return type_name
 
+    def encode(self, obj):
+        # The default method is not called in PY2 where the JSONEncoder thinks
+        # it can handle a bytes object becausae it can't tell it apart from a
+        # str object. In PY3 this is handled by the _process_bytes method.
+        # For PY2 we have to override the encode method where the encoding of
+        # a bytes-like string will fail, catch the UnicodeDecodeError and
+        # then call _process_bytes and retry the encoding.
+        try:
+            encoded = super(PayloadSerializer, self).encode(obj)
+            return encoded
+        except UnicodeDecodeError:
+            b64encoded = self._process_bytes(obj, 'bytes')
+            encoded = self.encode(b64encoded)
+            return encoded
+
     def default(self, obj):
         type_name = type(obj).__name__
-        if type_name in self.DEFAULT_TYPES:
+        if type_name in self._DEFAULT_TYPES:
             return obj
         return getattr(
             self, '_process_%s' % type_name, self._unknown

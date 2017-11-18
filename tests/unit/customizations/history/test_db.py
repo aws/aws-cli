@@ -13,14 +13,68 @@
 import re
 import json
 import threading
-import queue
+import base64
+import datetime
+from collections import MutableMapping
+from collections import Mapping
 
 import mock
 
+from awscli.compat import queue
 from awscli.customizations.history.db import DatabaseHistoryHandler
 from awscli.customizations.history.db import DatabaseRecordWriter
 from awscli.customizations.history.db import DatabaseRecordReader
+from awscli.customizations.history.db import PayloadSerializer
 from awscli.testutils import unittest
+
+
+# CaseInsensitiveDict from requests that must be serializble.
+class CaseInsensitiveDict(MutableMapping):
+    def __init__(self, data=None, **kwargs):
+        self._store = dict()
+        if data is None:
+            data = {}
+        self.update(data, **kwargs)
+
+    def __setitem__(self, key, value):
+        # Use the lowercased key for lookups, but store the actual
+        # key alongside the value.
+        self._store[key.lower()] = (key, value)
+
+    def __getitem__(self, key):
+        return self._store[key.lower()][1]
+
+    def __delitem__(self, key):
+        del self._store[key.lower()]
+
+    def __iter__(self):
+        return (casedkey for casedkey, mappedvalue in self._store.values())
+
+    def __len__(self):
+        return len(self._store)
+
+    def lower_items(self):
+        """Like iteritems(), but with all lowercase keys."""
+        return (
+            (lowerkey, keyval[1])
+            for (lowerkey, keyval)
+            in self._store.items()
+        )
+
+    def __eq__(self, other):
+        if isinstance(other, Mapping):
+            other = CaseInsensitiveDict(other)
+        else:
+            return NotImplemented
+        # Compare insensitively
+        return dict(self.lower_items()) == dict(other.lower_items())
+
+    # Copy is required
+    def copy(self):
+        return CaseInsensitiveDict(self._store.values())
+
+    def __repr__(self):
+        return str(dict(self.items()))
 
 
 class FakeDatabaseConnection(object):
@@ -559,3 +613,41 @@ class TestDatabaseRecordReader(BaseDatabaseRecordTester):
 
     def test_yield_records(self):
         pass
+
+
+class TestPayloadSerialzier(unittest.TestCase):
+    def test_can_serialize_basic_types(self):
+        original = {
+            'string': 'foo',
+            'int': 4,
+            'list': [1, 2, 'bar'],
+            'dict': {
+                'sun': 'moon'
+            },
+            'float': 1.2
+        }
+        string_value = json.dumps(original, cls=PayloadSerializer)
+        reloaded = json.loads(string_value)
+        self.assertEqual(original, reloaded)
+
+    def test_can_serialize_datetime(self):
+        now = datetime.datetime.now()
+        iso_now = now.isoformat()
+        string_value = json.dumps(now, cls=PayloadSerializer)
+        reloaded = json.loads(string_value)
+        self.assertEqual(iso_now, reloaded)
+
+    def test_can_serialize_case_insensitive_dict(self):
+        original = CaseInsensitiveDict({
+            'fOo': 'bar'
+        })
+        string_value = json.dumps(original, cls=PayloadSerializer)
+        reloaded = json.loads(string_value)
+        self.assertEqual(original, reloaded)
+
+    def test_can_serialize_case_bytes(self):
+        original = b'\xfe\xed'
+        encoded = base64.b64encode(original).decode('utf-8')
+        string_value = json.dumps(original, cls=PayloadSerializer)
+        reloaded = json.loads(string_value)
+        self.assertEqual(encoded, reloaded)

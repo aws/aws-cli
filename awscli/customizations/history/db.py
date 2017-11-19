@@ -15,12 +15,19 @@ import uuid
 import time
 import json
 import base64
+import datetime
 import threading
+import logging
+from collections import MutableMapping
 
 from botocore.history import BaseHistoryHandler
 
 from awscli.compat import sqlite3
 from awscli.compat import ensure_text_type
+from awscli.compat import binary_type
+
+
+LOG = logging.getLogger('awscli.history.db')
 
 
 class DatabaseConnection(object):
@@ -88,14 +95,22 @@ class DatabaseConnection(object):
 
 
 class PayloadSerializer(json.JSONEncoder):
-    def _process_CaseInsensitiveDict(self, obj, type_name):
+    def _encode_mutable_mapping(self, obj):
         return dict(obj)
 
-    def _process_bytes(self, obj, type_name):
-        encoded = base64.b64encode(obj)
-        return ensure_text_type(encoded)
+    def _encode_binary(self, obj):
+        # On PY3 a bytes like object that contains entirely valid utf-8 bytes
+        # will be routed here instead of the encode method. In the case of
+        # utf-8 bytes we want to make the stored data as readble as possible so
+        # first we try to decode it as utf-8, if that fails we will fall back
+        # to using a base64 encoded string.
+        try:
+            encoded = obj.decode('utf-8')
+        except UnicodeDecodeError:
+            encoded = ensure_text_type(base64.b64encode(obj))
+        return encoded
 
-    def _process_datetime(self, obj, type_name):
+    def _encode_datetime(self, obj):
         return obj.isoformat()
 
     def _unknown(self, obj, type_name):
@@ -103,7 +118,7 @@ class PayloadSerializer(json.JSONEncoder):
 
     def encode(self, obj):
         # The default method is not called in PY2 where the JSONEncoder thinks
-        # it can handle a bytes object becausae it can't tell it apart from a
+        # it can handle a bytes object because it can't tell it apart from a
         # str object. In PY3 this is handled by the _process_bytes method.
         # For PY2 we have to override the encode method where the encoding of
         # a bytes-like string will fail, catch the UnicodeDecodeError and
@@ -112,15 +127,19 @@ class PayloadSerializer(json.JSONEncoder):
             encoded = super(PayloadSerializer, self).encode(obj)
             return encoded
         except UnicodeDecodeError:
-            b64encoded = self._process_bytes(obj, 'bytes')
+            b64encoded = self._process_bytes(obj)
             encoded = self.encode(b64encoded)
             return encoded
 
     def default(self, obj):
-        type_name = type(obj).__name__
-        return getattr(
-            self, '_process_%s' % type_name, self._unknown
-        )(obj, type_name)
+        if isinstance(obj, binary_type):
+            return self._encode_binary(obj)
+        elif isinstance(obj, datetime.datetime):
+            return self._encode_datetime(obj)
+        elif isinstance(obj, MutableMapping):
+            return self._encode_mutable_mapping(obj)
+        else:
+            return type(obj).__name__
 
 
 class DatabaseRecordWriter(object):
@@ -139,6 +158,9 @@ class DatabaseRecordWriter(object):
         self._identifier = None
 
     def write_record(self, record):
+        # This method is not threadsafe by itself, it is only threadsafe when
+        # used inside a handler bound to the HistoryRecorder in botocore which
+        # is protected by a lock.
         cursor = self._connection.cursor()
         db_record = self._create_db_record(record)
         cursor.execute(self._WRITE_RECORD, db_record)
@@ -149,7 +171,7 @@ class DatabaseRecordWriter(object):
             self._start_http_lifecycle()
         if event_type in self._REQUEST_LIFECYCLE_EVENTS:
             thread_id = threading.current_thread().ident
-            request_id = self._request_ids.get(thread_id, '')
+            request_id = self._request_ids.get(thread_id)
         else:
             request_id = ''
         return request_id

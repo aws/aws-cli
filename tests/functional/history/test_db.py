@@ -10,16 +10,44 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import threading
 import tempfile
 import shutil
 import json
 import os
 
+from awscli.compat import queue
 from awscli.customizations.history.db import DatabaseConnection
 from awscli.customizations.history.db import DatabaseRecordWriter
 from awscli.customizations.history.db import DatabaseRecordReader
 from awscli.testutils import unittest
 from awscli.compat import sqlite3
+
+
+class ThreadedRecordWriter(object):
+    def __init__(self, writer, lock):
+        self._read_q = queue.Queue()
+        self._thread = threading.Thread(
+            target=self._threaded_record_writer,
+            args=(writer, lock))
+
+    def _threaded_record_writer(self, writer, lock):
+        while True:
+            record = self._read_q.get()
+            if record is False:
+                return
+            with lock:
+                writer.write_record(record)
+
+    def write_record(self, record):
+        self._read_q.put_nowait(record)
+
+    def start(self):
+        self._thread.start()
+
+    def close(self):
+        self._read_q.put_nowait(False)
+        self._thread.join()
 
 
 class BaseDatabaseTest(unittest.TestCase):
@@ -34,6 +62,78 @@ class BaseDatabaseTest(unittest.TestCase):
 
     def _get_cursor(self):
         return self.connection.cursor()
+
+
+class BaseThreadedDatabaseWriter(BaseDatabaseTest):
+    def setUp(self):
+        super(BaseThreadedDatabaseWriter, self).setUp()
+        self.threads = []
+        self.writer = DatabaseRecordWriter(self.connection)
+
+    def start_n_threads(self, n, lock):
+        for _ in range(n):
+            t = ThreadedRecordWriter(self.writer, lock)
+            t.start()
+            self.threads.append(t)
+
+    def tearDown(self):
+        for t in self.threads:
+            t.close()
+        super(BaseThreadedDatabaseWriter, self).tearDown()
+
+
+@unittest.skipIf(sqlite3 is None,
+                 "sqlite3 not supported in this python")
+class TestMultithreadedDatabaseWriter(BaseThreadedDatabaseWriter):
+    def _write_records(self, thread_number, records):
+        t = self.threads[thread_number]
+        for record in records:
+            t.write_record(record)
+
+    def test_bulk_writes_all_succeed(self):
+        thread_count = 10
+        lock = threading.Lock()
+        self.start_n_threads(thread_count, lock)
+        for i in range(thread_count):
+            self._write_records(i, [
+                {
+                    'event_type': 'API_CALL',
+                    'payload': i,
+                    'source': 'TEST',
+                    'timestamp': 1234
+                }, {
+                    'event_type': 'HTTP_REQUEST',
+                    'payload': i,
+                    'source': 'TEST',
+                    'timestamp': 1234
+                }, {
+                    'event_type': 'HTTP_RESPONSE',
+                    'payload': i,
+                    'source': 'TEST',
+                    'timestamp': 1234
+                }, {
+                    'event_type': 'PARSED_RESPONSE',
+                    'payload': i,
+                    'source': 'TEST',
+                    'timestamp': 1234
+                }
+            ])
+        for t in self.threads:
+            t.close()
+        thread_id_to_request_id = {}
+        cursor = self.connection.cursor()
+        cursor.execute('select request_id, payload from records')
+        records = 0
+        for record in cursor:
+            records += 1
+            request_id = record['request_id']
+            thread_id = record['payload']
+            if thread_id not in thread_id_to_request_id:
+                thread_id_to_request_id[thread_id] = request_id
+            else:
+                prior_request_id = thread_id_to_request_id[thread_id]
+                self.assertEqual(request_id, prior_request_id)
+        self.assertEqual(records, 4 * thread_count)
 
 
 @unittest.skipIf(sqlite3 is None,
@@ -71,7 +171,7 @@ class TestDatabaseRecordWriter(BaseDatabaseTest):
             # the payload.
             if col_name == 'payload':
                 record[col_name] = json.loads(record[col_name])
-            self.assertEqual(record[col_name], row_value)
+                self.assertEqual(record[col_name], row_value)
 
         self.assertIn('id', record.keys())
         self.assertIn('request_id', record.keys())

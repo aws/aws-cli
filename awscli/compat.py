@@ -26,6 +26,7 @@ queue = six.moves.queue
 shlex_quote = six.moves.shlex_quote
 StringIO = six.StringIO
 urlopen = six.moves.urllib.request.urlopen
+binary_type = six.binary_type
 
 # Most, but not all, python installations will have zlib. This is required to
 # compress any files we send via a push. If we can't compress, we can still

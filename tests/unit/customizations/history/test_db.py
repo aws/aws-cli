@@ -81,7 +81,7 @@ class CaseInsensitiveDict(MutableMapping):
 
 class FakeDatabaseConnection(object):
     def __init__(self):
-        self.mock_cursor = mock.Mock()
+        self.mock_cursor = mock.MagicMock()
         self.commits = 0
 
     def cursor(self):
@@ -314,7 +314,7 @@ class TestDatabaseRecordWriter(BaseDatabaseRecordWriterTester):
             'event_type': 'HTTP_REQUEST',
             'payload': {
                 'method': 'GET',
-                'headers': {},
+                'headers': CaseInsensitiveDict({}),
                 'body': '...',
             },
             'source': 'TEST',
@@ -376,6 +376,107 @@ class TestDatabaseRecordWriter(BaseDatabaseRecordWriterTester):
         )
         identifier, request_id = written_record[:2]
         self.assertTrue(self.UUID_PATTERN.match(identifier))
+
+    def test_can_write_http_request_record_after_api_call(self):
+        self._write_record({
+            'event_type': 'API_CALL',
+            'payload': {
+                'service': 's3',
+                'operation': 'ListBuckets',
+                'params': {},
+            },
+            'source': 'TEST',
+            'timestamp': 1234
+        })
+        insert_stmt, written_record = self._write_record({
+            'event_type': 'HTTP_REQUEST',
+            'payload': {
+                'method': 'GET',
+                'headers': CaseInsensitiveDict({}),
+                'body': '...',
+            },
+            'source': 'TEST',
+            'timestamp': 1234
+        })
+
+        self.assert_insert_statement_structure_correct(insert_stmt)
+        self.assertEqual(
+            written_record[2:],
+            ('TEST', 'HTTP_REQUEST', 1234, json.dumps({
+                'method': 'GET',
+                'headers': {},
+                'body': '...',
+            }))
+        )
+        identifier, request_id = written_record[:2]
+        self.assertTrue(self.UUID_PATTERN.match(identifier))
+        self.assertTrue(self.UUID_PATTERN.match(request_id))
+
+    def test_can_write_http_response_record_after_api_call(self):
+        self._write_record({
+            'event_type': 'API_CALL',
+            'payload': {
+                'service': 's3',
+                'operation': 'ListBuckets',
+                'params': {},
+            },
+            'source': 'TEST',
+            'timestamp': 1234
+        })
+        insert_stmt, written_record = self._write_record({
+            'event_type': 'HTTP_RESPONSE',
+            'payload': {
+                'streaming': False,
+                'headers': {},
+                'body': '...',
+                'status_code': 200,
+                'request_id': '1234abcd'
+            },
+            'source': 'TEST',
+            'timestamp': 1234
+        })
+
+        self.assert_insert_statement_structure_correct(insert_stmt)
+        self.assertEqual(
+            written_record[2:],
+            ('TEST', 'HTTP_RESPONSE', 1234, json.dumps({
+                'streaming': False,
+                'headers': {},
+                'body': '...',
+                'status_code': 200,
+                'request_id': '1234abcd'
+            }))
+        )
+        identifier, request_id = written_record[:2]
+        self.assertTrue(self.UUID_PATTERN.match(identifier))
+        self.assertTrue(self.UUID_PATTERN.match(request_id))
+
+    def test_can_write_parsed_response_record_after_api_cal(self):
+        self._write_record({
+            'event_type': 'API_CALL',
+            'payload': {
+                'service': 's3',
+                'operation': 'ListBuckets',
+                'params': {},
+            },
+            'source': 'TEST',
+            'timestamp': 1234
+        })
+        insert_stmt, written_record = self._write_record({
+            'event_type': 'PARSED_RESPONSE',
+            'payload': {},
+            'source': 'TEST',
+            'timestamp': 1234
+        })
+
+        self.assert_insert_statement_structure_correct(insert_stmt)
+        self.assertEqual(
+            written_record[2:],
+            ('TEST', 'PARSED_RESPONSE', 1234, '{}')
+        )
+        identifier, request_id = written_record[:2]
+        self.assertTrue(self.UUID_PATTERN.match(identifier))
+        self.assertTrue(self.UUID_PATTERN.match(request_id))
 
     def test_can_write_cli_rc_record(self):
         insert_stmt, written_record = self._write_record({
@@ -552,7 +653,6 @@ class ThreadedRecordWriter(object):
         self._thread = threading.Thread(
             target=self._threaded_record_writer,
             args=(writer, fake_connection))
-        self._thread.start()
 
     def _threaded_record_writer(self, writer, fake_connection):
         while True:
@@ -571,6 +671,9 @@ class ThreadedRecordWriter(object):
     def write_record(self, record):
         self._read_q.put_nowait(record)
 
+    def start(self):
+        self._thread.start()
+
     def close(self):
         self._read_q.put_nowait(False)
         self._thread.join()
@@ -579,44 +682,48 @@ class ThreadedRecordWriter(object):
 class TestMultithreadRequestId(TestIdentifierLifecycles):
     def setUp(self):
         super(TestMultithreadRequestId, self).setUp()
-        self.thread_a = ThreadedRecordWriter(
-            self.writer, self.fake_connection)
-        self.thread_b = ThreadedRecordWriter(
-            self.writer, self.fake_connection)
+        self.threads = []
 
     def tearDown(self):
-        self.thread_a.close()
-        self.thread_b.close()
+        for t in self.threads:
+            t.close()
+
+    def start_n_threads(self, n):
+        for _ in range(n):
+            t = ThreadedRecordWriter(self.writer, self.fake_connection)
+            t.start()
+            self.threads.append(t)
 
     def test_each_thread_has_separate_request_id(self):
-        self.thread_a.write_record({
+        self.start_n_threads(2)
+        self.threads[0].write_record({
             'event_type': 'API_CALL',
             'payload': '',
             'source': 'TEST_a',
             'timestamp': 1234
         })
-        self.thread_a.write_record({
+        self.threads[0].write_record({
             'event_type': 'HTTP_REQUEST',
             'payload': '',
             'source': 'TEST_a',
             'timestamp': 1234
         })
 
-        self.thread_b.write_record({
+        self.threads[1].write_record({
             'event_type': 'API_CALL',
             'payload': '',
             'source': 'TEST_b',
             'timestamp': 1234
         })
-        self.thread_b.write_record({
+        self.threads[1].write_record({
             'event_type': 'HTTP_REQUEST',
             'payload': '',
             'source': 'TEST_b',
             'timestamp': 1234
         })
 
-        a_records = self.thread_a.read_n_records(2)
-        b_records = self.thread_b.read_n_records(2)
+        a_records = self.threads[0].read_n_records(2)
+        b_records = self.threads[1].read_n_records(2)
 
         # Each thread should have its own set of request_ids so the request
         # ids in each set of records should match, but should not match the
@@ -639,20 +746,20 @@ class TestMultithreadRequestId(TestIdentifierLifecycles):
         # we will write another record in thread a and ensure that it's
         # request_id matches the previous ones from thread a rather than then
         # thread b request_id
-        self.thread_a.write_record({
+        self.threads[0].write_record({
             'event_type': 'HTTP_RESPONSE',
             'payload': '',
             'source': 'TEST_a',
             'timestamp': 1234
         })
-        self.thread_b.write_record({
+        self.threads[1].write_record({
             'event_type': 'HTTP_RESPONSE',
             'payload': '',
             'source': 'TEST_b',
             'timestamp': 1234
         })
-        a_record = self.thread_a.read_n_records(1)[0]
-        b_record = self.thread_b.read_n_records(1)[0]
+        a_record = self.threads[0].read_n_records(1)[0]
+        b_record = self.threads[1].read_n_records(1)[0]
         self.assertEqual(a_record[1], thread_a_request_id)
         self.assertEqual(b_record[1], thread_b_request_id)
 
@@ -666,11 +773,39 @@ class TestDatabaseRecordReader(BaseDatabaseRecordTester):
         self.assertEqual(self.fake_connection.row_factory,
                          self.reader._row_factory)
 
-    def test_yield_latest_records(self):
-        pass
+    def test_yield_latest_records_performs_correct_query(self):
+        expected_query = (
+            '    SELECT * FROM records\n'
+            '    WHERE id =\n'
+            '    (SELECT id FROM records WHERE timestamp =\n'
+            '    (SELECT max(timestamp) FROM records)) ORDER BY timestamp;'
+        )
+        [ _ for _ in self.reader.yield_latest_records()]
+        self.assertEqual(
+            self.fake_connection.cursor().execute.call_args[0][0].strip(),
+            expected_query.strip())
 
-    def test_yield_records(self):
-        pass
+    def test_yield_latest_records_does_yield_records(self):
+        records_to_get = [1, 2, 3]
+        self.fake_connection.cursor().__iter__.return_value = iter(
+            records_to_get)
+        records = [r for r in self.reader.yield_latest_records()]
+        self.assertEqual(records, records_to_get)
+
+    def test_yield_records_performs_correct_query(self):
+        expected_query = ('SELECT * from records where id = ? '
+                          'ORDER BY timestamp')
+        records = [r for r in self.reader.yield_records('fake_id')]
+        self.assertEqual(
+            self.fake_connection.cursor().execute.call_args[0][0].strip(),
+            expected_query.strip())
+
+    def test_yield_records_does_yield_records(self):
+        records_to_get = [1, 2, 3]
+        self.fake_connection.cursor().__iter__.return_value = iter(
+            records_to_get)
+        records = [r for r in self.reader.yield_records('fake_id')]
+        self.assertEqual(records, records_to_get)
 
 
 class TestPayloadSerialzier(unittest.TestCase):
@@ -707,5 +842,30 @@ class TestPayloadSerialzier(unittest.TestCase):
         original = b'\xfe\xed'
         encoded = base64.b64encode(original).decode('utf-8')
         string_value = json.dumps(original, cls=PayloadSerializer)
+        reloaded = json.loads(string_value)
+        self.assertEqual(encoded, reloaded)
+
+    def test_can_serialize_case_bytes_that_are_valid_utf8(self):
+        original = b'foobar'
+        encoded = 'foobar'
+        string_value = json.dumps(original, cls=PayloadSerializer)
+        reloaded = json.loads(string_value)
+        self.assertEqual(encoded, reloaded)
+
+    def test_can_serialize_unknown_type(self):
+        original = queue.Queue()
+        encoded = 'Queue'
+        string_value = json.dumps(original, cls=PayloadSerializer)
+        reloaded = json.loads(string_value)
+        self.assertEqual(encoded, reloaded)
+
+    def test_can_serialize_only_bytes_in_nested_structure(self):
+        original = {
+            'foo': b'\xfe\xed',
+            'bar': 'baz'
+        }
+        string_value = json.dumps(original, cls=PayloadSerializer)
+        encoded = original.copy()
+        encoded['foo'] = base64.b64encode(original['foo']).decode('utf-8')
         reloaded = json.loads(string_value)
         self.assertEqual(encoded, reloaded)

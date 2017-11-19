@@ -10,3 +10,59 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from botocore.history import get_global_history_recorder
+
+from awscli.compat import sqlite3
+from awscli.customizations.commands import BasicCommand
+from awscli.customizations.history.db import DatabaseHistoryHandler
+from awscli.customizations.history.show import ShowCommand
+
+
+def register_history_mode(event_handlers):
+    event_handlers.register(
+        'session-initialized', attach_history_handler)
+
+
+def register_history_commands(event_handlers):
+    event_handlers.register(
+        "building-command-table.main", add_history_commands)
+
+
+def attach_history_handler(session, parsed_args, **kwargs):
+    if _should_enable_cli_history(session, parsed_args):
+        history_recorder = get_global_history_recorder()
+        history_recorder.add_handler(DatabaseHistoryHandler())
+        history_recorder.enable()
+
+
+def _should_enable_cli_history(session, parsed_args):
+    if parsed_args.command == 'history':
+        return False
+    elif sqlite3 is None:
+        return False
+    else:
+        scoped_config = session.get_scoped_config()
+        return scoped_config.get('cli_history') == 'enabled'
+
+
+def add_history_commands(command_table, session, **kwargs):
+    command_table['history'] = HistoryCommand(session)
+
+
+class HistoryCommand(BasicCommand):
+    NAME = 'history'
+    DESCRIPTION = (
+        'Commands to interact with the history of AWS CLI commands ran '
+        'over time. To record the history of AWS CLI commands set '
+        '``cli_history`` to ``enabled`` in the ``~/.aws/config`` file. '
+        'This can be done by running:\n\n'
+        '``$ aws configure set cli_history enabled``'
+    )
+    SUBCOMMANDS = [
+        {'name': 'show', 'command_class': ShowCommand}
+    ]
+
+    def _run_main(self, parsed_args, parsed_globals):
+        if parsed_args.subcommand is None:
+            raise ValueError("usage: aws [options] <command> <subcommand> "
+                             "[parameters]\naws: error: too few arguments")

@@ -39,6 +39,8 @@ from awscli.customizations.configservice.rename_cmd import \
     register_rename_config
 from awscli.customizations.configservice.subscribe import register_subscribe
 from awscli.customizations.configure.configure import register_configure_cmd
+from awscli.customizations.history import register_history_mode
+from awscli.customizations.history import register_history_commands
 from awscli.customizations.ec2.addcount import register_count_events
 from awscli.customizations.ec2.bundleinstance import register_bundleinstance
 from awscli.customizations.ec2.decryptpassword import ec2_add_priv_launch_key
@@ -154,3 +156,5 @@ def awscli_initialize(event_handlers):
     register_alias_opsworks_cm(event_handlers)
     register_alias_mturk_command(event_handlers)
     register_servicecatalog_commands(event_handlers)
+    register_history_mode(event_handlers)
+    register_history_commands(event_handlers)

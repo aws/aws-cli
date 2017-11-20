@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.11.190
+========
+
+* api-change:``kinesis``: Update kinesis command to latest version
+* api-change:``codecommit``: Update codecommit command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``firehose``: Update firehose command to latest version
+* api-change:``workdocs``: Update workdocs command to latest version
+
+
 1.11.189
 ========
 

@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import sys
 import os
+import platform
 import zipfile
 
 from botocore.compat import six
@@ -25,6 +26,7 @@ PY3 = six.PY3
 queue = six.moves.queue
 shlex_quote = six.moves.shlex_quote
 StringIO = six.StringIO
+BytesIO = six.BytesIO
 urlopen = six.moves.urllib.request.urlopen
 binary_type = six.binary_type
 
@@ -81,6 +83,9 @@ if six.PY3:
 
     binary_stdin = sys.stdin.buffer
 
+    def get_binary_stdout():
+        return sys.stdout.buffer
+
     def _get_text_writer(stream, errors):
         return stream
 
@@ -124,6 +129,9 @@ else:
     raw_input = raw_input
 
     binary_stdin = sys.stdin
+    
+    def get_binary_stdout():
+        return sys.stdout
 
     def _get_text_writer(stream, errors):
         # In python3, all the sys.stdout/sys.stderr streams are in text
@@ -264,3 +272,16 @@ def _windows_shell_quote(s):
         # quoted.
         return '"%s"' % new_s
     return new_s
+
+
+def get_default_platform_pager():
+    """Returns the default pager to use dependent on platform
+
+    :rtype: str
+    :returns: A string represent the paging command to run based on the
+        platform being used.
+    """
+    if platform.system() == 'Windows':
+        return 'more'
+    else:
+        return 'less -R'

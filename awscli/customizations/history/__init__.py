@@ -10,12 +10,17 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import logging
+
 from botocore.history import get_global_history_recorder
 
 from awscli.compat import sqlite3
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.history.db import DatabaseHistoryHandler
 from awscli.customizations.history.show import ShowCommand
+
+
+LOG = logging.getLogger(__name__)
 
 
 def register_history_mode(event_handlers):
@@ -30,6 +35,7 @@ def register_history_commands(event_handlers):
 
 def attach_history_handler(session, parsed_args, **kwargs):
     if _should_enable_cli_history(session, parsed_args):
+        LOG.debug('Enabling CLI history')
         history_recorder = get_global_history_recorder()
         history_recorder.add_handler(DatabaseHistoryHandler())
         history_recorder.enable()
@@ -39,6 +45,8 @@ def _should_enable_cli_history(session, parsed_args):
     if parsed_args.command == 'history':
         return False
     elif sqlite3 is None:
+        LOG.debug(
+            'sqlite3 is not available. Skipping check to enable CLI history.')
         return False
     else:
         scoped_config = session.get_scoped_config()

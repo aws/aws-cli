@@ -25,6 +25,7 @@ from awscli.compat import binary_type
 
 
 LOG = logging.getLogger(__name__)
+HISTORY_LOCATION_ENV_VAR = 'AWS_CLI_HISTORY_FILE'
 
 
 class DatabaseConnection(object):
@@ -244,7 +245,9 @@ class RecordBuilder(object):
 class DatabaseHistoryHandler(BaseHistoryHandler):
     def __init__(self, writer=None, record_builder=None):
         if writer is None:
-            writer = DatabaseRecordWriter()
+            connection = DatabaseConnection(
+                os.environ.get(HISTORY_LOCATION_ENV_VAR, None))
+            writer = DatabaseRecordWriter(connection)
         self._writer = writer
         if record_builder is None:
             record_builder = RecordBuilder()

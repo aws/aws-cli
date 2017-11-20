@@ -15,7 +15,8 @@ from botocore.compat import six
 
 from awscli.compat import ensure_text_type
 from awscli.compat import compat_shell_quote
-from awscli.testutils import unittest
+from awscli.compat import get_default_platform_pager
+from awscli.testutils import mock, unittest
 
 
 class TestEnsureText(unittest.TestCase):
@@ -83,3 +84,15 @@ def test_comat_shell_quote_unix():
 class ShellQuoteTestCase(object):
     def run(self, s, expected, platform=None):
         assert_equal(compat_shell_quote(s, platform), expected)
+
+
+class TestGetDefaultPlatformPager(unittest.TestCase):
+    @mock.patch('platform.system')
+    def test_windows(self, mock_system):
+        mock_system.return_value = 'Windows'
+        self.assertEqual(get_default_platform_pager(), 'more')
+
+    @mock.patch('platform.system')
+    def test_non_windows(self, mock_system):
+        mock_system.return_value = 'Darwin'
+        self.assertEqual(get_default_platform_pager(), 'less -R')

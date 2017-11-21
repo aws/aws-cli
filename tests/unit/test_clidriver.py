@@ -663,12 +663,12 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
 
     def test_help_blurb_in_operation_error_message(self):
         with self.assertRaises(SystemExit):
-            self.driver.main(['ec2', 'run-instances'])
+            self.driver.main(['s3api', 'list-objects'])
         self.assertIn(HELP_BLURB, self.stderr.getvalue())
 
     def test_help_blurb_in_unknown_argument_error_message(self):
         with self.assertRaises(SystemExit):
-            self.driver.main(['ec2', 'run-instances', '--help'])
+            self.driver.main(['s3api', 'list-objects', '--help'])
         self.assertIn(HELP_BLURB, self.stderr.getvalue())
 
 

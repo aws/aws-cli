@@ -121,6 +121,15 @@ MINI_SERVICE = {
       "input":{"shape":"ListObjectsRequest"},
       "output":{"shape":"ListObjectsOutput"},
     },
+    "IdempotentOperation":{
+      "name":"IdempotentOperation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/{Bucket}"
+      },
+      "input":{"shape":"IdempotentOperationRequest"},
+      "output":{"shape":"ListObjectsOutput"},
+    },
   },
   "shapes":{
     "ListObjectsOutput":{
@@ -134,6 +143,16 @@ MINI_SERVICE = {
           "shape":"NextMarker",
         },
         "Contents":{"shape":"Contents"},
+      },
+    },
+    "IdempotentOperationRequest":{
+      "type":"structure",
+      "required": "token",
+      "members":{
+        "token":{
+          "shape":"Token",
+          "idempotencyToken": True,
+        },
       }
     },
     "ListObjectsRequest":{
@@ -163,6 +182,7 @@ MINI_SERVICE = {
     "IsTruncated":{"type":"boolean"},
     "NextMarker":{"type":"string"},
     "Contents":{"type":"string"},
+    "Token":{"type":"string"},
   }
 }
 
@@ -671,6 +691,10 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             self.driver.main(['ec2', 'run-instances', '--help'])
         self.assertIn(HELP_BLURB, self.stderr.getvalue())
 
+    def test_idempotency_token_is_not_required_in_help_text(self):
+        with self.assertRaises(SystemExit):
+            self.driver.main(['servicecatalog', 'create-constraint'])
+        self.assertNotIn('--idempotency-token', self.stderr.getvalue())
 
 class TestHowClientIsCreated(BaseAWSCommandParamsTest):
     def setUp(self):
@@ -897,6 +921,17 @@ class TestServiceOperation(unittest.TestCase):
         cmd = ServiceOperation(self.name, None, None, self.mock_operation,
                                None)
         self.assertTrue(getattr(cmd, '_UNDOCUMENTED'))
+
+    def test_idempotency_token_is_not_required(self):
+        session = FakeSession()
+        name = 'IdempotentOperation'
+        service_model = session.get_service_model('s3')
+        operation_model = service_model.operation_model(name)
+        cmd = ServiceOperation(name, None, None, operation_model, session)
+        arg_table = cmd.arg_table
+        token_argument = arg_table.get('token')
+        self.assertFalse(token_argument.required,
+                         'Idempotency tokens should not be required')
 
 
 if __name__ == '__main__':

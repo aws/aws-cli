@@ -200,8 +200,18 @@ You can specify the following configuration values for configuring an IAM role
 in the AWS CLI config file:
 
 * ``role_arn`` - The ARN of the role you want to assume.
-* ``source_profile`` - The AWS CLI profile that contains credentials we should
-  use for the initial ``assume-role`` call.
+* ``source_profile`` - The AWS CLI profile that contains credentials /
+  configuration the CLI should use for the initial ``assume-role`` call. This
+  profile may be another profile configured to use ``assume-role``, though
+  if static credentials are present in the profile they will take precedence.
+  This parameter cannot be provided alongside ``credential_source``.
+* ``credential_source`` - The credential provider to use to get credentials for
+  the initial ``assume-role`` call. This parameter cannot be provided
+  alongside ``source_profile``. Valid values are:
+  * ``Environment`` to pull source credentials from environment variables.
+  * ``Ec2InstanceMetadata`` to use the EC2 instance role as source credentials.
+  * ``EcsContainer`` to use the ECS container credentials as the source
+    credentials.
 * ``external_id`` - A unique identifier that is used by third parties to assume
   a role in their customers' accounts.  This maps to the ``ExternalId``
   parameter in the ``AssumeRole`` operation.  This is an optional parameter.
@@ -219,7 +229,7 @@ in the AWS CLI config file:
   session name will be automatically generated.
 
 If you do not have MFA authentication required, then you only need to specify a
-``role_arn`` and a ``source_profile``.
+``role_arn`` and either a ``source_profile`` or a ``credential_source``.
 
 When you specify a profile that has IAM role configuration, the AWS CLI
 will make an ``AssumeRole`` call to retrieve temporary credentials.  These
@@ -233,7 +243,7 @@ the cached temporary credentials.  However, when the temporary credentials
 expire, you will be re-prompted for another MFA code.
 
 
-Example configuration::
+Example configuration using ``source_profile``::
 
   # In ~/.aws/credentials:
   [development]
@@ -244,6 +254,67 @@ Example configuration::
   [profile crossaccount]
   role_arn=arn:aws:iam:...
   source_profile=development
+
+Example configuration using ``credential_source`` to use the instance role as
+the source credentials for the assume role call::
+
+  # In ~/.aws/config
+  [profile crossaccount]
+  role_arn=arn:aws:iam:...
+  credential_source=Ec2InstanceMetadata
+
+
+Sourcing Credentials From External Processes
+--------------------------------------------
+
+.. warning::
+
+    The following describes a method of sourcing credentials from an external
+    process. This can potentially be dangerous, so proceed with caution. Other
+    credential providers should be preferred if at all possible. If using
+    this option, you should make sure that the config file is as locked down
+    as possible using security best practices for your operating system.
+
+If you have a method of sourcing credentials that isn't built in to the AWS
+CLI, you can integrate it by using ``credential_process`` in the config file.
+The AWS CLI will call that command exactly as given and then read json data
+from stdout. The process must write credentials to stdout in the following
+format::
+
+    {
+      "Version": 1,
+      "AccessKeyId": "",
+      "SecretAccessKey": "",
+      "SessionToken": "",
+      "Expiration": ""
+    }
+
+The ``Version`` key must be set to ``1``. This value may be bumped over time
+as the payload structure evolves.
+
+The ``Expiration`` key is an ISO8601 formatted timestamp. If the ``Expiration``
+key is not returned in stdout, the credentials are long term credentials that
+do not refresh. Otherwise the credentials are considered refreshable
+credentials and will be refreshed automatically. NOTE: Unlike with assume role
+credentials, the AWS CLI will NOT cache process credentials. If caching is
+needed, it must be implemented in the external process.
+
+The process can return a non-zero RC to indicate that an error occurred while
+retrieving credentials.
+
+Some process providers may need additional information in order to retrieve the
+appropriate credentials. This can be done via command line arguments. NOTE:
+command line options may be visible to process running on the same machine.
+
+Example configuration::
+
+    [profile dev]
+    credential_process = /opt/bin/awscreds-custom
+
+Example configuration with parameters::
+
+    [profile dev]
+    credential_process = /opt/bin/awscreds-custom --username monty
 
 
 Service Specific Configuration

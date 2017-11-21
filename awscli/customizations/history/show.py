@@ -111,7 +111,7 @@ class DetailedFormatter(Formatter):
     _CLI_RC_TITLE = 'AWS CLI command exited'
     _CLI_RC_DESC = 'with return code'
 
-    _TITLE_COLOR = colorama.Style.BRIGHT + colorama.Fore.WHITE
+    _TITLE_COLOR = colorama.Style.BRIGHT
     _DESCRIPTION_COLOR = colorama.Fore.CYAN
     _DESCRIPTION_VALUE_COLOR = colorama.Style.NORMAL
 

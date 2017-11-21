@@ -130,7 +130,7 @@ class TestDetailedFormatter(unittest.TestCase):
         }
         self.formatter.display(event)
         collected_output = ensure_text_type(self.output.getvalue())
-        self.assertIn('\x1b[37mAWS CLI command entered', collected_output)
+        self.assertIn('\x1b[1mAWS CLI command entered', collected_output)
         self.assertIn('\x1b[36mwith AWS CLI version:', collected_output)
 
     def test_display_cli_arguments(self):

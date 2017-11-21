@@ -22,6 +22,7 @@ from collections import MutableMapping
 from botocore.history import BaseHistoryHandler
 
 from awscli.compat import sqlite3
+from awscli.compat import ensure_text_type
 
 
 LOG = logging.getLogger('awscli.history.db')
@@ -211,7 +212,7 @@ class RecordBuilder(object):
         # The payload body key here is in bytes in python 3 and needs to be
         # decoded.
         if event_type in self._BYTES_BODY_PAYLOADS:
-            payload['body'] = payload['body'].decode('utf-8')
+            payload['body'] = ensure_text_type(payload['body'])
         return payload
 
     def build_record(self, event_type, payload, source):

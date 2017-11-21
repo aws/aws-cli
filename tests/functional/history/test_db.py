@@ -182,7 +182,7 @@ class TestDatabaseRecordWriter(BaseDatabaseTest):
             'source': 'TEST',
             'event_type': 'foo',
             'payload': '',
-            'timestamp': 12334
+            'timestamp': 1234
         }
         records_to_write = 40
         for _ in range(records_to_write):
@@ -203,12 +203,12 @@ class TestDatabaseRecordReader(BaseDatabaseTest):
 
     def test_yields_nothing_if_no_matching_record_id(self):
         reader = DatabaseRecordReader(self.connection)
-        records = [record for record in reader.yield_records('fake_id')]
+        records = [record for record in reader.iter_records('fake_id')]
         self.assertEqual(len(records), 0)
 
     def test_yields_nothing_no_recent_records(self):
         reader = DatabaseRecordReader(self.connection)
-        records = [record for record in reader.yield_latest_records()]
+        records = [record for record in reader.iter_latest_records()]
         self.assertEqual(len(records), 0)
 
     def test_can_read_record(self):
@@ -257,7 +257,7 @@ class TestDatabaseRecordReader(BaseDatabaseTest):
         # This should select only the three records from writer_a since we
         # are explicitly looking for the records that match the id of the
         # foo event record.
-        records = [record for record in reader.yield_records(identifier)]
+        records = [record for record in reader.iter_records(identifier)]
         self.assertEqual(len(records), 3)
         for record in records:
             record_id = record['id']
@@ -295,5 +295,5 @@ class TestDatabaseRecordReader(BaseDatabaseTest):
         # foo and bar records only.
         reader = DatabaseRecordReader(self.connection)
         records = set([record['event_type'] for record
-                       in reader.yield_latest_records()])
+                       in reader.iter_latest_records()])
         self.assertEqual(set(['foo', 'bar']), records)

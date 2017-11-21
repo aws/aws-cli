@@ -14,7 +14,6 @@ import os
 import uuid
 import time
 import json
-import base64
 import datetime
 import threading
 import logging
@@ -23,8 +22,6 @@ from collections import MutableMapping
 from botocore.history import BaseHistoryHandler
 
 from awscli.compat import sqlite3
-from awscli.compat import ensure_text_type
-from awscli.compat import binary_type
 
 
 LOG = logging.getLogger('awscli.history.db')
@@ -54,36 +51,33 @@ class DatabaseConnection(object):
         else:
             self._db_filename = self._DEFAULT_DATABASE_FILENAME
 
-        if not os.path.isdir(os.path.dirname(self._db_filename)):
+        if self._db_filename != ':memory:' and \
+           not os.path.isdir(os.path.dirname(self._db_filename)):
             os.makedirs(os.path.dirname(self._db_filename))
         self._connection = sqlite3.connect(
-            self._db_filename, check_same_thread=False)
+            self._db_filename, check_same_thread=False, isolation_level=None)
         self._ensure_database_setup()
+
+    def execute(self, query, *parameters):
+        self._connection.execute(query, *parameters)
+
+    def cursor(self):
+        return self._connection.cursor()
 
     def _ensure_database_setup(self):
         self._create_record_table()
         self._try_to_enable_wal()
 
     def _create_record_table(self):
-        cursor = self.cursor()
-        cursor.execute(self._CREATE_TABLE)
-        self._connection.commit()
+        self.execute(self._CREATE_TABLE)
 
     def _try_to_enable_wal(self):
         try:
-            cursor = self.cursor()
-            cursor.execute(self._ENABLE_WAL)
-            self._connection.commit()
+            self.execute(self._ENABLE_WAL)
         except sqlite3.Error:
             # This is just a performance enhancement so it is optional. Not all
             # systems will have a sqlite compiled with the WAL enabled.
             pass
-
-    def cursor(self):
-        return self._connection.cursor()
-
-    def commit(self):
-        self._connection.commit()
 
     @property
     def row_factory(self):
@@ -98,88 +92,38 @@ class PayloadSerializer(json.JSONEncoder):
     def _encode_mutable_mapping(self, obj):
         return dict(obj)
 
-    def _encode_binary(self, obj):
-        # On PY3 a bytes like object that contains entirely valid utf-8 bytes
-        # will be routed here instead of the encode method. In the case of
-        # utf-8 bytes we want to make the stored data as readble as possible so
-        # first we try to decode it as utf-8, if that fails we will fall back
-        # to using a base64 encoded string.
-        try:
-            encoded = obj.decode('utf-8')
-        except UnicodeDecodeError:
-            encoded = ensure_text_type(base64.b64encode(obj))
-        return encoded
-
     def _encode_datetime(self, obj):
         return obj.isoformat()
 
     def _unknown(self, obj, type_name):
         return type_name
 
-    def encode(self, obj):
-        # The default method is not called in PY2 where the JSONEncoder thinks
-        # it can handle a bytes object because it can't tell it apart from a
-        # str object. In PY3 this is handled by the _process_bytes method.
-        # For PY2 we have to override the encode method where the encoding of
-        # a bytes-like string will fail, catch the UnicodeDecodeError and
-        # then call _process_bytes and retry the encoding.
-        try:
-            encoded = super(PayloadSerializer, self).encode(obj)
-            return encoded
-        except UnicodeDecodeError:
-            b64encoded = self._process_bytes(obj)
-            encoded = self.encode(b64encoded)
-            return encoded
-
     def default(self, obj):
-        if isinstance(obj, binary_type):
-            return self._encode_binary(obj)
-        elif isinstance(obj, datetime.datetime):
+        if isinstance(obj, datetime.datetime):
             return self._encode_datetime(obj)
         elif isinstance(obj, MutableMapping):
             return self._encode_mutable_mapping(obj)
         else:
-            return type(obj).__name__
+            return repr(obj)
 
 
 class DatabaseRecordWriter(object):
     _WRITE_RECORD = """
     INSERT INTO records(id, request_id, source, event_type, timestamp, payload)
     VALUES (?,?,?,?,?,?)"""
-    _REQUEST_LIFECYCLE_EVENTS = set(
-        ['API_CALL', 'HTTP_REQUEST', 'HTTP_RESPONSE', 'PARSED_RESPONSE'])
-    _START_OF_REQUEST_LIFECYCLE_EVENT = 'API_CALL'
 
     def __init__(self, connection=None):
         if connection is None:
             connection = DatabaseConnection()
         self._connection = connection
-        self._request_ids = {}
         self._identifier = None
 
     def write_record(self, record):
         # This method is not threadsafe by itself, it is only threadsafe when
         # used inside a handler bound to the HistoryRecorder in botocore which
         # is protected by a lock.
-        cursor = self._connection.cursor()
         db_record = self._create_db_record(record)
-        cursor.execute(self._WRITE_RECORD, db_record)
-        self._connection.commit()
-
-    def _get_request_id(self, event_type):
-        if event_type == self._START_OF_REQUEST_LIFECYCLE_EVENT:
-            self._start_http_lifecycle()
-        if event_type in self._REQUEST_LIFECYCLE_EVENTS:
-            thread_id = threading.current_thread().ident
-            request_id = self._request_ids.get(thread_id)
-        else:
-            request_id = ''
-        return request_id
-
-    def _start_http_lifecycle(self):
-        thread_id = threading.current_thread().ident
-        new_identifier = str(uuid.uuid4())
-        self._request_ids[thread_id] = new_identifier
+        self._connection.execute(self._WRITE_RECORD, db_record)
 
     def _get_identifier(self):
         if self._identifier is None:
@@ -189,12 +133,11 @@ class DatabaseRecordWriter(object):
     def _create_db_record(self, record):
         uid = self._get_identifier()
         event_type = record['event_type']
-        request_id = self._get_request_id(event_type)
         json_serialized_payload = json.dumps(record['payload'],
                                              cls=PayloadSerializer)
         db_record = (
             uid,
-            request_id,
+            record.get('request_id'),
             record['source'],
             event_type,
             record['timestamp'],
@@ -227,30 +170,73 @@ class DatabaseRecordReader(object):
             d[col[0]] = val
         return d
 
-    def yield_latest_records(self):
+    def iter_latest_records(self):
         cursor = self._connection.cursor()
         cursor.execute(self._GET_LAST_ID_RECORDS)
         for row in cursor:
             yield row
 
-    def yield_records(self, record_id):
+    def iter_records(self, record_id):
         cursor = self._connection.cursor()
         cursor.execute(self._GET_RECORDS_BY_ID, [record_id])
         for row in cursor:
             yield row
 
 
-class DatabaseHistoryHandler(BaseHistoryHandler):
-    def __init__(self, writer=None):
-        if writer is None:
-            writer = DatabaseRecordWriter()
-        self._writer = writer
+class RecordBuilder(object):
+    _REQUEST_LIFECYCLE_EVENTS = set(
+        ['API_CALL', 'HTTP_REQUEST', 'HTTP_RESPONSE', 'PARSED_RESPONSE'])
+    _START_OF_REQUEST_LIFECYCLE_EVENT = 'API_CALL'
+    _BYTES_BODY_PAYLOADS = set(['HTTP_REQUEST', 'HTTP_RESPONSE'])
 
-    def emit(self, event_type, payload, source):
+    def __init__(self):
+        self._locals = threading.local()
+
+    def _get_current_thread_request_id(self):
+        request_id = getattr(self._locals, 'request_id', None)
+        return request_id
+
+    def _start_http_lifecycle(self):
+        setattr(self._locals, 'request_id', str(uuid.uuid4()))
+
+    def _get_request_id(self, event_type):
+        if event_type == self._START_OF_REQUEST_LIFECYCLE_EVENT:
+            self._start_http_lifecycle()
+        if event_type in self._REQUEST_LIFECYCLE_EVENTS:
+            request_id = self._get_current_thread_request_id()
+            return request_id
+        return None
+
+    def _format_payload(self, event_type, payload):
+        # The payload body key here is in bytes in python 3 and needs to be
+        # decoded.
+        if event_type in self._BYTES_BODY_PAYLOADS:
+            payload['body'] = payload['body'].decode('utf-8')
+        return payload
+
+    def build_record(self, event_type, payload, source):
+        payload = self._format_payload(event_type, payload)
         record = {
             'event_type': event_type,
             'payload': payload,
             'source': source,
             'timestamp': int(time.time() * 1000)
         }
+        request_id = self._get_request_id(event_type)
+        if request_id:
+            record['request_id'] = request_id
+        return record
+
+
+class DatabaseHistoryHandler(BaseHistoryHandler):
+    def __init__(self, writer=None, record_builder=None):
+        if writer is None:
+            writer = DatabaseRecordWriter()
+        self._writer = writer
+        if record_builder is None:
+            record_builder = RecordBuilder()
+        self._record_builder = record_builder
+
+    def emit(self, event_type, payload, source):
+        record = self._record_builder.build_record(event_type, payload, source)
         self._writer.write_record(record)

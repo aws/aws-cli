@@ -117,7 +117,6 @@ class DatabaseRecordWriter(object):
         if connection is None:
             connection = DatabaseConnection()
         self._connection = connection
-        self._identifier = None
 
     def write_record(self, record):
         # This method is not threadsafe by itself, it is only threadsafe when
@@ -126,18 +125,12 @@ class DatabaseRecordWriter(object):
         db_record = self._create_db_record(record)
         self._connection.execute(self._WRITE_RECORD, db_record)
 
-    def _get_identifier(self):
-        if self._identifier is None:
-            self._identifier = str(uuid.uuid4())
-        return self._identifier
-
     def _create_db_record(self, record):
-        uid = self._get_identifier()
         event_type = record['event_type']
         json_serialized_payload = json.dumps(record['payload'],
                                              cls=PayloadSerializer)
         db_record = (
-            uid,
+            record['command_id'],
             record.get('request_id'),
             record['source'],
             event_type,
@@ -191,6 +184,7 @@ class RecordBuilder(object):
     _BYTES_BODY_PAYLOADS = set(['HTTP_REQUEST', 'HTTP_RESPONSE'])
 
     def __init__(self):
+        self._identifier = None
         self._locals = threading.local()
 
     def _get_current_thread_request_id(self):
@@ -215,9 +209,16 @@ class RecordBuilder(object):
             payload['body'] = ensure_text_type(payload['body'])
         return payload
 
+    def _get_identifier(self):
+        if self._identifier is None:
+            self._identifier = str(uuid.uuid4())
+        return self._identifier
+
     def build_record(self, event_type, payload, source):
+        uid = self._get_identifier()
         payload = self._format_payload(event_type, payload)
         record = {
+            'command_id': uid,
             'event_type': event_type,
             'payload': payload,
             'source': source,

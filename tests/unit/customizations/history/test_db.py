@@ -14,7 +14,6 @@ import os
 import re
 import json
 import threading
-import base64
 import datetime
 from collections import MutableMapping
 from collections import Mapping
@@ -131,24 +130,117 @@ class TestDatabaseConnection(unittest.TestCase):
 
 
 class TestDatabaseHistoryHandler(unittest.TestCase):
-    def test_history_creates_record_for_writer(self):
+    UUID_PATTERN = re.compile(
+        '^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$',
+        re.I
+    )
+
+    def test_emit_does_write_cli_rc_record(self):
         writer = mock.Mock(DatabaseRecordWriter)
         handler = DatabaseHistoryHandler(writer)
         handler.emit('CLI_RC', 0, 'CLI')
-        self.assertEqual(
-            writer.write_record.call_args_list,
-            [
-                mock.call({
+        call = writer.write_record.call_args[0][0]
+        self.assertEqual(call, {
+                    'command_id': mock.ANY,
                     'event_type': 'CLI_RC',
                     'payload': 0,
                     'source': 'CLI',
                     'timestamp': mock.ANY
-                })
-            ]
-        )
-        # Also make sure the timestamp is of the correct type
-        self.assertIsInstance(
-            writer.write_record.call_args[0][0]['timestamp'], int)
+        })
+        self.assertTrue(self.UUID_PATTERN.match(call['command_id']))
+        self.assertIsInstance(call['timestamp'], int)
+
+    def test_emit_does_write_cli_version_record(self):
+        writer = mock.Mock(DatabaseRecordWriter)
+        handler = DatabaseHistoryHandler(writer)
+        handler.emit('CLI_VERSION', 'Version Info', 'CLI')
+        call = writer.write_record.call_args[0][0]
+        self.assertEqual(call, {
+                    'command_id': mock.ANY,
+                    'event_type': 'CLI_VERSION',
+                    'payload': 'Version Info',
+                    'source': 'CLI',
+                    'timestamp': mock.ANY
+        })
+        self.assertTrue(self.UUID_PATTERN.match(call['command_id']))
+        self.assertIsInstance(call['timestamp'], int)
+
+    def test_emit_does_write_api_call_record(self):
+        writer = mock.Mock(DatabaseRecordWriter)
+        handler = DatabaseHistoryHandler(writer)
+        payload = {'foo': 'bar'}
+        handler.emit('API_CALL', payload, 'BOTOCORE')
+        call = writer.write_record.call_args[0][0]
+        self.assertEqual(call, {
+                    'command_id': mock.ANY,
+                    'request_id': mock.ANY,
+                    'event_type': 'API_CALL',
+                    'payload': payload,
+                    'source': 'BOTOCORE',
+                    'timestamp': mock.ANY
+        })
+        self.assertTrue(self.UUID_PATTERN.match(call['command_id']))
+        self.assertTrue(self.UUID_PATTERN.match(call['request_id']))
+
+    def test_emit_does_write_http_request_record(self):
+        writer = mock.Mock(DatabaseRecordWriter)
+        handler = DatabaseHistoryHandler(writer)
+        payload = {'body': b'data'}
+        # In order for an http_request to have a request_id it must have been
+        # preceeded by an api_call record.
+        handler.emit('API_CALL', '', 'BOTOCORE')
+        handler.emit('HTTP_REQUEST', payload, 'BOTOCORE')
+        call = writer.write_record.call_args[0][0]
+        self.assertEqual(call, {
+                    'command_id': mock.ANY,
+                    'request_id': mock.ANY,
+                    'event_type': 'HTTP_REQUEST',
+                    'payload': payload,
+                    'source': 'BOTOCORE',
+                    'timestamp': mock.ANY
+        })
+        self.assertTrue(self.UUID_PATTERN.match(call['command_id']))
+        self.assertTrue(self.UUID_PATTERN.match(call['request_id']))
+
+    def test_emit_does_write_http_response_record(self):
+        writer = mock.Mock(DatabaseRecordWriter)
+        handler = DatabaseHistoryHandler(writer)
+        payload = {'body': b'data'}
+        # In order for an http_response to have a request_id it must have been
+        # preceeded by an api_call record.
+        handler.emit('API_CALL', '', 'BOTOCORE')
+        handler.emit('HTTP_RESPONSE', payload, 'BOTOCORE')
+        call = writer.write_record.call_args[0][0]
+        self.assertEqual(call, {
+                    'command_id': mock.ANY,
+                    'request_id': mock.ANY,
+                    'event_type': 'HTTP_RESPONSE',
+                    'payload': payload,
+                    'source': 'BOTOCORE',
+                    'timestamp': mock.ANY
+        })
+        self.assertTrue(self.UUID_PATTERN.match(call['command_id']))
+        self.assertTrue(self.UUID_PATTERN.match(call['request_id']))
+
+    def test_emit_does_write_parsed_response_record(self):
+        writer = mock.Mock(DatabaseRecordWriter)
+        handler = DatabaseHistoryHandler(writer)
+        payload = {'metadata': {'data': 'foobar'}}
+        # In order for an http_response to have a request_id it must have been
+        # preceeded by an api_call record.
+        handler.emit('API_CALL', '', 'BOTOCORE')
+        handler.emit('PARSED_RESPONSE', payload, 'BOTOCORE')
+        call = writer.write_record.call_args[0][0]
+        self.assertEqual(call, {
+                    'command_id': mock.ANY,
+                    'request_id': mock.ANY,
+                    'event_type': 'PARSED_RESPONSE',
+                    'payload': payload,
+                    'source': 'BOTOCORE',
+                    'timestamp': mock.ANY
+        })
+        self.assertTrue(self.UUID_PATTERN.match(call['command_id']))
+        self.assertTrue(self.UUID_PATTERN.match(call['request_id']))
 
 
 class BaseDatabaseRecordTester(unittest.TestCase):
@@ -169,19 +261,6 @@ class BaseDatabaseRecordWriterTester(BaseDatabaseRecordTester):
         self.db = DatabaseConnection(':memory:')
         self.writer = DatabaseRecordWriter(self.db)
 
-    def assert_insert_statement_structure_correct(self, stmt):
-        # Make sure the columns are in the expected order.
-        self.assert_contains_lines_in_order(['insert into records',
-                                            '(',
-                                             'id',
-                                             'request_id',
-                                             'source',
-                                             'event_type',
-                                             'timestamp',
-                                             'payload',
-                                             ')',
-                                             'values'], stmt.lower())
-
 
 class TestDatabaseRecordWriter(BaseDatabaseRecordWriterTester):
     def setUp(self):
@@ -195,6 +274,7 @@ class TestDatabaseRecordWriter(BaseDatabaseRecordWriterTester):
 
     def test_can_write_record(self):
         self.writer.write_record({
+            'command_id': 'command',
             'event_type': 'FOO',
             'payload': 'bar',
             'source': 'TEST',
@@ -204,25 +284,16 @@ class TestDatabaseRecordWriter(BaseDatabaseRecordWriterTester):
         # Now that we have verified the order of the fields in the insert
         # statement we can verify that the record values are in the correct
         # order in the tuple.
-        # The written records first two fields are an id and the request_id
-        # which are generated uuid4s. The rest of the fields should be the
-        # ones from the above record in the order:
-        # (source, event_type, timestamp, payload)
+        # (command_id, request_id, source, event_type, timestamp, payload)
         written_record = self._read_last_record()
-        self.assertEqual(written_record[2:], ('TEST', 'FOO', 1234, '"bar"'))
-
-        # The id will always be present and will be a uuid4 and the request_id
-        # will either be blank or a valid uuid4. In this case since the
-        # event_type TEST is not a known http lifecycle event it will not have
-        # a request_id.
-        identifier, request_id = written_record[:2]
-        self.assertTrue(self.UUID_PATTERN.match(identifier))
-        self.assertEqual(request_id, None)
+        self.assertEqual(written_record,
+                         ('command', None, 'TEST', 'FOO', 1234, '"bar"'))
 
     def test_commit_count_matches_write_count(self):
         records_to_write = 10
         for _ in range(records_to_write):
             self.writer.write_record({
+                'command_id': 'command',
                 'event_type': 'foo',
                 'payload': '',
                 'source': 'TEST',
@@ -236,6 +307,7 @@ class TestDatabaseRecordWriter(BaseDatabaseRecordWriterTester):
 
     def test_can_write_cli_version_record(self):
         self.writer.write_record({
+            'command_id': 'command',
             'event_type': 'CLI_VERSION',
             'payload': ('aws-cli/1.11.184 Python/3.6.2 Darwin/15.6.0 '
                         'botocore/1.7.42'),
@@ -245,16 +317,14 @@ class TestDatabaseRecordWriter(BaseDatabaseRecordWriterTester):
         written_record = self._read_last_record()
 
         self.assertEqual(
-            written_record[2:],
-            ('TEST', 'CLI_VERSION', 1234,
+            written_record,
+            ('command', None, 'TEST', 'CLI_VERSION', 1234,
              '"aws-cli/1.11.184 Python/3.6.2 Darwin/15.6.0 botocore/1.7.42"')
         )
-        identifier, request_id = written_record[:2]
-        self.assertTrue(self.UUID_PATTERN.match(identifier))
-        self.assertEqual(request_id, None)
 
     def test_can_write_cli_arguments_record(self):
         self.writer.write_record({
+            'command_id': 'command',
             'event_type': 'CLI_ARGUMENTS',
             'payload': ['s3', 'ls'],
             'source': 'TEST',
@@ -263,15 +333,13 @@ class TestDatabaseRecordWriter(BaseDatabaseRecordWriterTester):
 
         written_record = self._read_last_record()
         self.assertEqual(
-            written_record[2:],
-            ('TEST', 'CLI_ARGUMENTS', 1234, '["s3", "ls"]')
+            written_record,
+            ('command', None, 'TEST', 'CLI_ARGUMENTS', 1234, '["s3", "ls"]')
         )
-        identifier, request_id = written_record[:2]
-        self.assertTrue(self.UUID_PATTERN.match(identifier))
-        self.assertEqual(request_id, None)
 
     def test_can_write_api_call_record(self):
         self.writer.write_record({
+            'command_id': 'command',
             'event_type': 'API_CALL',
             'payload': {
                 'service': 's3',
@@ -284,18 +352,17 @@ class TestDatabaseRecordWriter(BaseDatabaseRecordWriterTester):
 
         written_record = self._read_last_record()
         self.assertEqual(
-            written_record[2:],
-            ('TEST', 'API_CALL', 1234, json.dumps({
+            written_record,
+            ('command', None, 'TEST', 'API_CALL', 1234, json.dumps({
                 'service': 's3',
                 'operation': 'ListBuckets',
                 'params': {},
             }))
         )
-        identifier, request_id = written_record[:2]
-        self.assertTrue(self.UUID_PATTERN.match(identifier))
 
     def test_can_write_http_request_record(self):
         self.writer.write_record({
+            'command_id': 'command',
             'event_type': 'HTTP_REQUEST',
             'payload': {
                 'method': 'GET',
@@ -308,18 +375,17 @@ class TestDatabaseRecordWriter(BaseDatabaseRecordWriterTester):
 
         written_record = self._read_last_record()
         self.assertEqual(
-            written_record[2:],
-            ('TEST', 'HTTP_REQUEST', 1234, json.dumps({
+            written_record,
+            ('command', None, 'TEST', 'HTTP_REQUEST', 1234, json.dumps({
                 'method': 'GET',
                 'headers': {},
                 'body': '...',
             }))
         )
-        identifier, request_id = written_record[:2]
-        self.assertTrue(self.UUID_PATTERN.match(identifier))
 
     def test_can_write_http_response_record(self):
         self.writer.write_record({
+            'command_id': 'command',
             'event_type': 'HTTP_RESPONSE',
             'payload': {
                 'streaming': False,
@@ -334,8 +400,8 @@ class TestDatabaseRecordWriter(BaseDatabaseRecordWriterTester):
 
         written_record = self._read_last_record()
         self.assertEqual(
-            written_record[2:],
-            ('TEST', 'HTTP_RESPONSE', 1234, json.dumps({
+            written_record,
+            ('command', None, 'TEST', 'HTTP_RESPONSE', 1234, json.dumps({
                 'streaming': False,
                 'headers': {},
                 'body': '...',
@@ -343,11 +409,10 @@ class TestDatabaseRecordWriter(BaseDatabaseRecordWriterTester):
                 'request_id': '1234abcd'
             }))
         )
-        identifier, request_id = written_record[:2]
-        self.assertTrue(self.UUID_PATTERN.match(identifier))
 
     def test_can_write_parsed_response_record(self):
         self.writer.write_record({
+            'command_id': 'command',
             'event_type': 'PARSED_RESPONSE',
             'payload': {},
             'source': 'TEST',
@@ -356,14 +421,13 @@ class TestDatabaseRecordWriter(BaseDatabaseRecordWriterTester):
 
         written_record = self._read_last_record()
         self.assertEqual(
-            written_record[2:],
-            ('TEST', 'PARSED_RESPONSE', 1234, '{}')
+            written_record,
+            ('command', None, 'TEST', 'PARSED_RESPONSE', 1234, '{}')
         )
-        identifier, request_id = written_record[:2]
-        self.assertTrue(self.UUID_PATTERN.match(identifier))
 
     def test_can_write_cli_rc_record(self):
         self.writer.write_record({
+            'command_id': 'command',
             'event_type': 'CLI_RC',
             'payload': 0,
             'source': 'TEST',
@@ -372,12 +436,9 @@ class TestDatabaseRecordWriter(BaseDatabaseRecordWriterTester):
 
         written_record = self._read_last_record()
         self.assertEqual(
-            written_record[2:],
-            ('TEST', 'CLI_RC', 1234, '0')
+            written_record,
+            ('command', None, 'TEST', 'CLI_RC', 1234, '0')
         )
-        identifier, request_id = written_record[:2]
-        self.assertTrue(self.UUID_PATTERN.match(identifier))
-        self.assertEqual(request_id, None)
 
 
 class ThreadedRecordBuilder(object):

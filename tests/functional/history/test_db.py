@@ -97,21 +97,25 @@ class TestMultithreadedDatabaseWriter(BaseThreadedDatabaseWriter):
         for i in range(thread_count):
             self._write_records(i, [
                 {
+                    'command_id': 'command',
                     'event_type': 'API_CALL',
                     'payload': i,
                     'source': 'TEST',
                     'timestamp': 1234
                 }, {
+                    'command_id': 'command',
                     'event_type': 'HTTP_REQUEST',
                     'payload': i,
                     'source': 'TEST',
                     'timestamp': 1234
                 }, {
+                    'command_id': 'command',
                     'event_type': 'HTTP_RESPONSE',
                     'payload': i,
                     'source': 'TEST',
                     'timestamp': 1234
                 }, {
+                    'command_id': 'command',
                     'event_type': 'PARSED_RESPONSE',
                     'payload': i,
                     'source': 'TEST',
@@ -152,6 +156,7 @@ class TestDatabaseRecordWriter(BaseDatabaseTest):
     def test_can_write_record(self):
         writer = DatabaseRecordWriter(connection=self.connection)
         known_record_fields = {
+            'command_id': 'command',
             'source': 'TEST',
             'event_type': 'foo',
             'payload': {"foo": "bar"},
@@ -179,6 +184,7 @@ class TestDatabaseRecordWriter(BaseDatabaseTest):
     def test_can_write_many_records(self):
         writer = DatabaseRecordWriter(connection=self.connection)
         known_record_fields = {
+            'command_id': 'command',
             'source': 'TEST',
             'event_type': 'foo',
             'payload': '',
@@ -212,36 +218,40 @@ class TestDatabaseRecordReader(BaseDatabaseTest):
         self.assertEqual(len(records), 0)
 
     def test_can_read_record(self):
-        writer_a = DatabaseRecordWriter(self.connection)
-        writer_b = DatabaseRecordWriter(self.connection)
-        self._write_sequence_of_records(writer_a, [
+        writer = DatabaseRecordWriter(self.connection)
+        self._write_sequence_of_records(writer, [
             {
+                'command_id': 'command a',
                 'source': 'TEST',
                 'event_type': 'foo',
                 'payload': '',
                 'timestamp': 3
             },
             {
+                'command_id': 'command a',
                 'source': 'TEST',
                 'event_type': 'bar',
                 'payload': '',
                 'timestamp': 1
             },
             {
+                'command_id': 'command a',
                 'source': 'TEST',
                 'event_type': 'baz',
                 'payload': '',
                 'timestamp': 4
             }
         ])
-        self._write_sequence_of_records(writer_b, [
+        self._write_sequence_of_records(writer, [
             {
+                'command_id': 'command b',
                 'source': 'TEST',
                 'event_type': 'qux',
                 'payload': '',
                 'timestamp': 2
             },
             {
+                'command_id': 'command b',
                 'source': 'TEST',
                 'event_type': 'zip',
                 'payload': '',
@@ -264,24 +274,26 @@ class TestDatabaseRecordReader(BaseDatabaseTest):
             self.assertEqual(record_id, identifier)
 
     def test_can_read_most_recent_records(self):
-        writer_a = DatabaseRecordWriter(self.connection)
-        writer_b = DatabaseRecordWriter(self.connection)
-        self._write_sequence_of_records(writer_a, [
+        writer = DatabaseRecordWriter(self.connection)
+        self._write_sequence_of_records(writer, [
             {
+                'command_id': 'command a',
                 'source': 'TEST',
                 'event_type': 'foo',
                 'payload': '',
                 'timestamp': 3
             },
             {
+                'command_id': 'command a',
                 'source': 'TEST',
                 'event_type': 'bar',
                 'payload': '',
                 'timestamp': 1
             }
         ])
-        self._write_sequence_of_records(writer_b, [
+        self._write_sequence_of_records(writer, [
             {
+                'command_id': 'command b',
                 'source': 'TEST',
                 'event_type': 'baz',
                 'payload': '',

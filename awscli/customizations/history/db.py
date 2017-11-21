@@ -203,10 +203,12 @@ class RecordBuilder(object):
         return None
 
     def _format_payload(self, event_type, payload):
-        # The payload body key here is in bytes in python 3 and needs to be
-        # decoded.
+        # If the payload has a body key it can be in bytes, so it needs to be
+        # converted to utf-8 if possible so it can be serialized as JSON later.
         if event_type in self._BYTES_BODY_PAYLOADS:
-            payload['body'] = ensure_text_type(payload['body'])
+            body = payload.get('body')
+            if body is not None:
+                payload['body'] = ensure_text_type(body)
         return payload
 
     def _get_identifier(self):

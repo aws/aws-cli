@@ -607,7 +607,7 @@ class TestPayloadSerialzier(unittest.TestCase):
         self.assertEqual(encoded, reloaded)
 
 
-class TestRequestTracker(unittest.TestCase):
+class TestRequestBuilder(unittest.TestCase):
     UUID_PATTERN = re.compile(
         '^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$',
         re.I
@@ -616,6 +616,20 @@ class TestRequestTracker(unittest.TestCase):
     def _get_request_id_for_event_type(self, builder, event_type):
         record = builder.build_record(event_type, {'body': b''}, '')
         return record.get('request_id')
+
+    def test_can_process_http_request_with_no_body(self):
+        builder = RecordBuilder()
+        try:
+            builder.build_record('HTTP_REQUEST', {}, '')
+        except ValueError:
+            self.fail("Should not raise value error")
+
+    def test_can_process_http_response_with_no_body(self):
+        builder = RecordBuilder()
+        try:
+            builder.build_record('HTTP_RESPONSE', {}, '')
+        except ValueError:
+            self.fail("Should not raise value error")
 
     def test_can_get_request_id_from_api_call(self):
         builder = RecordBuilder()

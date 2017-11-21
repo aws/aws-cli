@@ -183,6 +183,13 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.driver.main(['elb', 'remove-tags', 'help'])
         self.assert_contains("--tags Key1 Key2 Key3")
 
+    def test_deprecated_operations_not_documented(self):
+        self.driver.main(['s3api', 'help'])
+        self.assert_not_contains('get-bucket-lifecycle\n')
+        self.assert_not_contains('put-bucket-lifecycle\n')
+        self.assert_not_contains('get-bucket-notification\n')
+        self.assert_not_contains('put-bucket-notification\n')
+
 
 class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
     def assert_command_does_not_exist(self, service, command):

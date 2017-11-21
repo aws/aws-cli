@@ -425,6 +425,8 @@ class ServiceOperation(object):
         self._lineage = [self]
         self._operation_model = operation_model
         self._session = session
+        if operation_model.deprecated:
+            self._UNDOCUMENTED = True
 
     @property
     def name(self):

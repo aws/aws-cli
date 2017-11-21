@@ -93,14 +93,6 @@ class FakeDatabaseConnection(object):
 
 class TestDatabaseConnection(unittest.TestCase):
     @mock.patch('awscli.compat.sqlite3.connect')
-    def test_does_connect_to_default_storage_location(self, mock_connect):
-        expected_location = os.path.expanduser(os.path.join(
-            '~', '.aws', 'cli', 'history', 'history.db'))
-        DatabaseConnection()
-        mock_connect.assert_called_with(
-            expected_location, check_same_thread=False, isolation_level=None)
-
-    @mock.patch('awscli.compat.sqlite3.connect')
     def test_can_connect_to_argument_file(self, mock_connect):
         expected_location = os.path.expanduser(os.path.join(
             '~', 'foo', 'bar', 'baz.db'))
@@ -110,11 +102,11 @@ class TestDatabaseConnection(unittest.TestCase):
 
     @mock.patch('awscli.compat.sqlite3.connect')
     def test_does_try_to_enable_wal(self, mock_connect):
-        conn = DatabaseConnection()
+        conn = DatabaseConnection(':memory:')
         conn._connection.execute.assert_any_call('PRAGMA journal_mode=WAL')
 
     def test_does_ensure_table_created_first(self):
-        db = DatabaseConnection(db_filename=":memory:")
+        db = DatabaseConnection(":memory:")
         cursor = db.cursor()
         cursor.execute('PRAGMA table_info(records);')
         schema = [col[:3] for col in cursor.fetchall()]
@@ -537,9 +529,9 @@ class TestDatabaseRecordReader(BaseDatabaseRecordTester):
     def test_iter_latest_records_performs_correct_query(self):
         expected_query = (
             '    SELECT * FROM records\n'
-            '    WHERE id =\n'
-            '    (SELECT id FROM records WHERE timestamp =\n'
-            '    (SELECT max(timestamp) FROM records)) ORDER BY timestamp;'
+            '        WHERE id =\n'
+            '        (SELECT id FROM records WHERE timestamp =\n'
+            '        (SELECT max(timestamp) FROM records)) ORDER BY timestamp;'
         )
         [_ for _ in self.reader.iter_latest_records()]
         self.assertEqual(
@@ -607,81 +599,89 @@ class TestPayloadSerialzier(unittest.TestCase):
         self.assertEqual(encoded, reloaded)
 
 
-class TestRequestBuilder(unittest.TestCase):
+class TestRecordBuilder(unittest.TestCase):
     UUID_PATTERN = re.compile(
         '^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$',
         re.I
     )
 
-    def _get_request_id_for_event_type(self, builder, event_type):
-        record = builder.build_record(event_type, {'body': b''}, '')
+    def setUp(self):
+        self.builder = RecordBuilder()
+
+    def _get_request_id_for_event_type(self, event_type):
+        record = self.builder.build_record(event_type, {'body': b''}, '')
         return record.get('request_id')
 
-    def test_can_process_http_request_with_no_body(self):
-        builder = RecordBuilder()
+    def test_does_inject_timestamp(self):
+        record = self.builder.build_record('TEST', '', '')
+        self.assertTrue('timestamp' in record)
+        self.assertTrue(isinstance(record['timestamp'], int))
+
+    def test_does_inject_command_id(self):
+        record = self.builder.build_record('TEST', '', '')
+        self.assertTrue('timestamp' in record)
+        self.assertTrue(isinstance(record['timestamp'], int))
+        self.assertTrue('command_id' in record)
+        self.assertTrue(self.UUID_PATTERN.match(record['command_id']))
+
+    def test_does_create_record_with_correct_fields(self):
+        record = self.builder.build_record('type', 'payload', 'source')
+        self.assertEqual(record['event_type'], 'type')
+        self.assertEqual(record['payload'], 'payload')
+        self.assertEqual(record['source'], 'source')
+        self.assertTrue('command_id' in record)
+        self.assertTrue('timestamp' in record)
+
+    def test_can_process_http_request_with_noone_body(self):
         try:
-            builder.build_record('HTTP_REQUEST', {}, '')
+            self.builder.build_record('HTTP_REQUEST', {'body': None}, '')
         except ValueError:
             self.fail("Should not raise value error")
 
-    def test_can_process_http_response_with_no_body(self):
-        builder = RecordBuilder()
+    def test_can_process_http_response_with_nono_body(self):
         try:
-            builder.build_record('HTTP_RESPONSE', {}, '')
+            self.builder.build_record('HTTP_RESPONSE', {'body': None}, '')
         except ValueError:
             self.fail("Should not raise value error")
 
     def test_can_get_request_id_from_api_call(self):
-        builder = RecordBuilder()
-        identifier = self._get_request_id_for_event_type(builder, 'API_CALL')
+        identifier = self._get_request_id_for_event_type('API_CALL')
         self.assertTrue(self.UUID_PATTERN.match(identifier))
 
     def test_does_get_id_for_http_request_with_api_call(self):
-        builder = RecordBuilder()
-        call_identifier = self._get_request_id_for_event_type(
-            builder, 'API_CALL')
+        call_identifier = self._get_request_id_for_event_type('API_CALL')
         request_identifier = self._get_request_id_for_event_type(
-            builder, 'HTTP_REQUEST')
+            'HTTP_REQUEST')
 
         self.assertEqual(call_identifier, request_identifier)
         self.assertTrue(self.UUID_PATTERN.match(call_identifier))
 
     def test_does_get_id_for_http_response_with_api_call(self):
-        builder = RecordBuilder()
-        call_identifier = self._get_request_id_for_event_type(
-            builder, 'API_CALL')
+        call_identifier = self._get_request_id_for_event_type('API_CALL')
         response_identifier = self._get_request_id_for_event_type(
-            builder, 'HTTP_RESPONSE')
+            'HTTP_RESPONSE')
 
         self.assertEqual(call_identifier, response_identifier)
         self.assertTrue(self.UUID_PATTERN.match(call_identifier))
 
     def test_does_get_id_for_parsed_response_with_api_call(self):
-        builder = RecordBuilder()
-        call_identifier = self._get_request_id_for_event_type(
-            builder, 'API_CALL')
+        call_identifier = self._get_request_id_for_event_type('API_CALL')
         response_identifier = self._get_request_id_for_event_type(
-            builder, 'PARSED_RESPONSE')
+            'PARSED_RESPONSE')
 
         self.assertEqual(call_identifier, response_identifier)
         self.assertTrue(self.UUID_PATTERN.match(call_identifier))
 
     def test_does_not_get_id_for_http_request_without_api_call(self):
-        builder = RecordBuilder()
-        identifier = self._get_request_id_for_event_type(
-            builder, 'HTTP_REQUEST')
+        identifier = self._get_request_id_for_event_type('HTTP_REQUEST')
         self.assertIsNone(identifier)
 
     def test_does_not_get_id_for_http_response_without_api_call(self):
-        builder = RecordBuilder()
-        identifier = self._get_request_id_for_event_type(
-            builder, 'HTTP_RESPONSE')
+        identifier = self._get_request_id_for_event_type('HTTP_RESPONSE')
         self.assertIsNone(identifier)
 
     def test_does_not_get_id_for_parsed_response_without_api_call(self):
-        builder = RecordBuilder()
-        identifier = self._get_request_id_for_event_type(
-            builder, 'PARSED_RESPONSE')
+        identifier = self._get_request_id_for_event_type('PARSED_RESPONSE')
         self.assertIsNone(identifier)
 
 

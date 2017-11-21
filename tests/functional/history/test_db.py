@@ -52,13 +52,8 @@ class ThreadedRecordWriter(object):
 
 class BaseDatabaseTest(unittest.TestCase):
     def setUp(self):
-        self.tempdir = tempfile.mkdtemp()
-        self.db_filename = os.path.join(self.tempdir, 'history.db')
-        self.connection = DatabaseConnection(db_filename=self.db_filename)
+        self.connection = DatabaseConnection(':memory:')
         self.connection.row_factory = sqlite3.Row
-
-    def tearDown(self):
-        shutil.rmtree(self.tempdir)
 
     def _get_cursor(self):
         return self.connection.cursor()
@@ -143,9 +138,6 @@ class TestMultithreadedDatabaseWriter(BaseThreadedDatabaseWriter):
 @unittest.skipIf(sqlite3 is None,
                  "sqlite3 not supported in this python")
 class TestDatabaseRecordWriter(BaseDatabaseTest):
-    def test_does_create_database(self):
-        self.assertTrue(os.path.isfile(self.db_filename))
-
     def test_does_create_table(self):
         cursor = self._get_cursor()
         cursor.execute("SELECT COUNT(*) FROM sqlite_master WHERE "
@@ -178,8 +170,8 @@ class TestDatabaseRecordWriter(BaseDatabaseTest):
                 record[col_name] = json.loads(record[col_name])
                 self.assertEqual(record[col_name], row_value)
 
-        self.assertIn('id', record.keys())
-        self.assertIn('request_id', record.keys())
+        self.assertTrue('id' in record.keys())
+        self.assertTrue('request_id' in record.keys())
 
     def test_can_write_many_records(self):
         writer = DatabaseRecordWriter(connection=self.connection)

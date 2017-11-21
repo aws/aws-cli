@@ -25,38 +25,25 @@ from awscli.compat import sqlite3
 from awscli.compat import ensure_text_type
 
 
-LOG = logging.getLogger('awscli.history.db')
+LOG = logging.getLogger(__name__)
 
 
 class DatabaseConnection(object):
     _CREATE_TABLE = """
-    CREATE TABLE IF NOT EXISTS records (
-      id TEXT,
-      request_id TEXT,
-      source TEXT,
-      event_type TEXT,
-      timestamp INTEGER,
-      payload TEXT
-    )"""
-    _ENABLE_WAL = """PRAGMA journal_mode=WAL"""
-    _DATABASE_NAME = 'history.db'
-    _DEFAULT_DATABASE_FILENAME = os.path.expanduser(
-        os.path.join('~', '.aws', 'cli', 'history', _DATABASE_NAME))
+        CREATE TABLE IF NOT EXISTS records (
+          id TEXT,
+          request_id TEXT,
+          source TEXT,
+          event_type TEXT,
+          timestamp INTEGER,
+          payload TEXT
+        )"""
+    _ENABLE_WAL = 'PRAGMA journal_mode=WAL'
+    _DEFAULT_DATABASE_NAME = 'history.db'
 
-    def __init__(self, db_filename=None):
-        if db_filename:
-            self._db_filename = db_filename
-        elif os.environ.get('AWS_HISTORY_PATH'):
-            self._db_filename = os.path.join(
-                os.environ.get('AWS_HISTORY_PATH'), self._DATABASE_NAME)
-        else:
-            self._db_filename = self._DEFAULT_DATABASE_FILENAME
-
-        if self._db_filename != ':memory:' and \
-           not os.path.isdir(os.path.dirname(self._db_filename)):
-            os.makedirs(os.path.dirname(self._db_filename))
+    def __init__(self, db_filename):
         self._connection = sqlite3.connect(
-            self._db_filename, check_same_thread=False, isolation_level=None)
+            db_filename, check_same_thread=False, isolation_level=None)
         self._ensure_database_setup()
 
     def execute(self, query, *parameters):
@@ -78,7 +65,7 @@ class DatabaseConnection(object):
         except sqlite3.Error:
             # This is just a performance enhancement so it is optional. Not all
             # systems will have a sqlite compiled with the WAL enabled.
-            pass
+            LOG.debug('Failed to enable sqlite WAL.')
 
     @property
     def row_factory(self):
@@ -96,9 +83,6 @@ class PayloadSerializer(json.JSONEncoder):
     def _encode_datetime(self, obj):
         return obj.isoformat()
 
-    def _unknown(self, obj, type_name):
-        return type_name
-
     def default(self, obj):
         if isinstance(obj, datetime.datetime):
             return self._encode_datetime(obj)
@@ -110,8 +94,9 @@ class PayloadSerializer(json.JSONEncoder):
 
 class DatabaseRecordWriter(object):
     _WRITE_RECORD = """
-    INSERT INTO records(id, request_id, source, event_type, timestamp, payload)
-    VALUES (?,?,?,?,?,?)"""
+        INSERT INTO records(
+            id, request_id, source, event_type, timestamp, payload)
+        VALUES (?,?,?,?,?,?) """
 
     def __init__(self, connection=None):
         if connection is None:
@@ -143,10 +128,10 @@ class DatabaseRecordWriter(object):
 class DatabaseRecordReader(object):
     _ORDERING = 'ORDER BY timestamp'
     _GET_LAST_ID_RECORDS = """
-    SELECT * FROM records
-    WHERE id =
-    (SELECT id FROM records WHERE timestamp =
-    (SELECT max(timestamp) FROM records)) %s;""" % _ORDERING
+        SELECT * FROM records
+        WHERE id =
+        (SELECT id FROM records WHERE timestamp =
+        (SELECT max(timestamp) FROM records)) %s;""" % _ORDERING
     _GET_RECORDS_BY_ID = 'SELECT * from records where id = ? %s' % _ORDERING
 
     def __init__(self, connection=None):
@@ -206,7 +191,7 @@ class RecordBuilder(object):
         # If the payload has a body key it can be in bytes, so it needs to be
         # converted to utf-8 if possible so it can be serialized as JSON later.
         if event_type in self._BYTES_BODY_PAYLOADS:
-            body = payload.get('body')
+            body = payload['body']
             if body is not None:
                 payload['body'] = ensure_text_type(body)
         return payload

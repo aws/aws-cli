@@ -13,6 +13,9 @@
 import os
 
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.configure.mfa import \
+    CONFIG_KEY_MFA_SERIAL_NUMBER, CONFIG_KEY_ACCESS_KEY_ID_SAVED, \
+    CONFIG_KEY_SECRET_ACCESS_KEY_SAVED
 from awscli.customizations.configure.writer import ConfigFileWriter
 
 from . import PREDEFINED_SECTION_NAMES, profile_to_section
@@ -38,7 +41,10 @@ class ConfigureSetCommand(BasicCommand):
     # Any variables specified in this list will be written to
     # the ~/.aws/credentials file instead of ~/.aws/config.
     _WRITE_TO_CREDS_FILE = ['aws_access_key_id', 'aws_secret_access_key',
-                            'aws_session_token']
+                            'aws_session_token',
+                            CONFIG_KEY_MFA_SERIAL_NUMBER,
+                            CONFIG_KEY_ACCESS_KEY_ID_SAVED,
+                            CONFIG_KEY_SECRET_ACCESS_KEY_SAVED]
 
     def __init__(self, session, config_writer=None):
         super(ConfigureSetCommand, self).__init__(session)

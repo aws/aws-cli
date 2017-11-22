@@ -18,6 +18,7 @@ from botocore.exceptions import ProfileNotFound
 from awscli.compat import compat_input
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure.addmodel import AddModelCommand
+from awscli.customizations.configure.mfa import ConfigureMfaCommand
 from awscli.customizations.configure.set import ConfigureSetCommand
 from awscli.customizations.configure.get import ConfigureGetCommand
 from awscli.customizations.configure.list import ConfigureListCommand
@@ -73,7 +74,8 @@ class ConfigureCommand(BasicCommand):
         {'name': 'list', 'command_class': ConfigureListCommand},
         {'name': 'get', 'command_class': ConfigureGetCommand},
         {'name': 'set', 'command_class': ConfigureSetCommand},
-        {'name': 'add-model', 'command_class': AddModelCommand}
+        {'name': 'add-model', 'command_class': AddModelCommand},
+        {'name': 'mfa', 'command_class': ConfigureMfaCommand},
     ]
 
     # If you want to add new values to prompt, update this list here.

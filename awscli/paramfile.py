@@ -99,6 +99,7 @@ PARAMFILE_DISABLED = set([
     'sns.subscribe.notification-endpoint',
 
     'iot.create-job.document-source',
+    'translate.translate-text.text',
 ])
 
 

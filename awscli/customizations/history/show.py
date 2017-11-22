@@ -14,7 +14,6 @@ import contextlib
 import datetime
 import json
 import os
-import shlex
 import subprocess
 import sys
 import xml.parsers.expat
@@ -23,8 +22,9 @@ import xml.dom.minidom
 import colorama
 
 from awscli.compat import six
+from awscli.compat import is_windows
 from awscli.compat import get_binary_stdout
-from awscli.compat import get_default_platform_pager
+from awscli.compat import get_popen_pager_cmd_with_kwargs
 from awscli.utils import is_a_tty
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.history.db import HISTORY_LOCATION_ENV_VAR
@@ -65,8 +65,10 @@ class Formatter(object):
         :param event_record: The event record to format and display.
         """
         if self._should_display(event_record):
-            getattr(self, '_display_' + event_record['event_type'].lower(),
-                    self._display_noop)(event_record)
+            self._display(event_record)
+
+    def _display(self, event_record):
+        raise NotImplementedError('display()')
 
     def _should_display(self, event_record):
         if self._include:
@@ -82,36 +84,99 @@ class Formatter(object):
         else:
             return True
 
-    def _display_noop(self, event_record):
-        pass
-
 
 class DetailedFormatter(Formatter):
-    _CLI_COMMAND_TITLE = 'AWS CLI command entered'
-    _CLI_VERSION_DESC = 'with AWS CLI version'
-    _CLI_ARGUMENTS_DESC = 'with arguments'
+    _SECTIONS = {
+        'CLI_VERSION': {
+            'title': 'AWS CLI command entered',
+            'values': [
+                {'description': 'with AWS CLI version'}
+            ]
+        },
+        'CLI_ARGUMENTS': {
+            'values': [
+                {'description': 'with arguments'}
+            ]
+        },
+        'API_CALL': {
+            'title': 'API call made',
+            'values': [
+                {
+                    'description': 'to service',
+                    'payload_key': 'service'
+                },
+                {
+                    'description': 'using operation',
+                    'payload_key': 'operation'
+                },
+                {
+                    'description': 'with parameters',
+                    'payload_key': 'params',
+                    'value_format': 'dictionary'
+                }
+            ]
+        },
+        'HTTP_REQUEST': {
+            'title': 'HTTP request sent',
+            'values': [
+                {
+                    'description': 'to URL',
+                    'payload_key': 'url'
+                },
+                {
+                    'description': 'with method',
+                    'payload_key': 'method'
+                },
+                {
+                    'description': 'with headers',
+                    'payload_key': 'headers',
+                    'value_format': 'dictionary'
+                },
+                {
+                    'description': 'with body',
+                    'payload_key': 'body',
+                    'value_format': 'http_body'
+                }
 
-    _API_CALL_TITLE = 'API call made'
-    _API_CALL_SERVICE_DESC = 'to service'
-    _API_CALL_OPERATION_DESC = 'using operation'
-    _API_CALL_PARAMS_DESC = 'with parameters'
+            ]
+        },
+        'HTTP_RESPONSE': {
+            'title': 'HTTP response received',
+            'values': [
+                {
+                    'description': 'with status code',
+                    'payload_key': 'status_code'
+                },
+                {
+                    'description': 'with headers',
+                    'payload_key': 'headers',
+                    'value_format': 'dictionary'
+                },
+                {
+                    'description': 'with body',
+                    'payload_key': 'body',
+                    'value_format': 'http_body'
+                }
+            ]
+        },
+        'PARSED_RESPONSE': {
+            'title': 'HTTP response parsed',
+            'values': [
+                {
+                    'description': 'parsed to',
+                    'value_format': 'dictionary'
+                }
+            ]
+        },
+        'CLI_RC': {
+            'title': 'AWS CLI command exited',
+            'values': [
+                {'description': 'with return code'}
+            ]
+        },
+    }
 
-    _HTTP_REQUEST_TITLE = 'HTTP request sent'
-    _ENDPOINT_URL_DESC = 'to URL'
-    _HTTP_METHOD_DESC = 'with method'
-    _HTTP_HEADERS_DESC = 'with headers'
-    _HTTP_BODY_DESC = 'with body'
-
-    _HTTP_RESPONSE_TITLE = 'HTTP response received'
-    _HTTP_STATUS_CODE_DESC = 'with status code'
-
-    _PARSED_RESPONSE_TITLE = 'HTTP response parsed'
-    _PARSED_RESPONSE_DESC = 'parsed to'
-
-    _CLI_RC_TITLE = 'AWS CLI command exited'
-    _CLI_RC_DESC = 'with return code'
-
-    _TITLE_COLOR = colorama.Style.BRIGHT
+    _TITLE_COLOR = colorama.Fore.YELLOW + colorama.Style.BRIGHT
     _DESCRIPTION_COLOR = colorama.Fore.CYAN
     _DESCRIPTION_VALUE_COLOR = colorama.Style.NORMAL
 
@@ -123,84 +188,32 @@ class DetailedFormatter(Formatter):
         if self._colorize:
             colorama.init(autoreset=True, strip=False)
 
-    def _display_cli_version(self, event_record):
-        self._write_formatted_title(self._CLI_COMMAND_TITLE, event_record)
-        self._write_formatted_description_with_value(
-            self._CLI_VERSION_DESC, event_record['payload']
-        )
+    def _display(self, event_record):
+        section_definition = self._SECTIONS.get(event_record['event_type'])
+        if section_definition:
+            self._display_section(event_record, section_definition)
 
-    def _display_cli_arguments(self, event_record):
-        self._write_formatted_description_with_value(
-            self._CLI_ARGUMENTS_DESC, event_record['payload']
-        )
+    def _display_section(self, event_record, section_definition):
+        if 'title' in section_definition:
+            self._display_title(section_definition['title'], event_record)
+        for value_definition in section_definition['values']:
+            self._display_value(value_definition, event_record)
 
-    def _display_api_call(self, event_record):
-        self._write_formatted_title(self._API_CALL_TITLE, event_record)
-        payload = event_record['payload']
-        self._write_formatted_description_with_value(
-            self._API_CALL_SERVICE_DESC, payload['service']
-        )
-        self._write_formatted_description_with_value(
-            self._API_CALL_OPERATION_DESC, payload['operation']
-        )
-        self._write_formatted_description_with_value(
-            self._API_CALL_PARAMS_DESC,
-            self._format_dictionary(payload['params'])
-        )
+    def _display_title(self, title, event_record):
+        formatted_title = self._format_section_title(title, event_record)
+        self._write_output(formatted_title)
 
-    def _display_http_request(self, event_record):
-        self._write_formatted_title(self._HTTP_REQUEST_TITLE, event_record)
-        payload = event_record['payload']
-        self._write_formatted_description_with_value(
-            self._ENDPOINT_URL_DESC, payload['url']
+    def _display_value(self, value_definition, event_record):
+        value_description = value_definition['description']
+        event_record_payload = event_record['payload']
+        value = event_record_payload
+        if 'payload_key' in value_definition:
+            value = event_record_payload[value_definition['payload_key']]
+        formatted_value = self._format_value_with_description(
+            value, value_description, event_record,
+            value_definition.get('value_format')
         )
-        self._write_formatted_description_with_value(
-            self._HTTP_METHOD_DESC, payload['method']
-        )
-        self._write_formatted_description_with_value(
-            self._HTTP_HEADERS_DESC,
-            self._format_dictionary(payload['headers'])
-        )
-        self._write_formatted_description_with_value(
-            self._HTTP_BODY_DESC,
-            self._format_body(payload['body'], payload.get('streaming', False))
-        )
-
-    def _display_http_response(self, event_record):
-        self._write_formatted_title(self._HTTP_RESPONSE_TITLE, event_record)
-        payload = event_record['payload']
-        self._write_formatted_description_with_value(
-            self._HTTP_STATUS_CODE_DESC,
-            self._format_dictionary(payload['status_code'])
-        )
-        self._write_formatted_description_with_value(
-            self._HTTP_HEADERS_DESC,
-            self._format_dictionary(payload['headers'])
-        )
-        self._write_formatted_description_with_value(
-            self._HTTP_BODY_DESC,
-            self._format_body(payload['body'], payload.get('streaming', False))
-        )
-
-    def _display_parsed_response(self, event_record):
-        self._write_formatted_title(self._PARSED_RESPONSE_TITLE, event_record)
-        self._write_formatted_description_with_value(
-            self._PARSED_RESPONSE_DESC,
-            self._format_dictionary(event_record['payload'])
-        )
-
-    def _display_cli_rc(self, event_record):
-        self._write_formatted_title(self._CLI_RC_TITLE, event_record)
-        self._write_formatted_description_with_value(
-            self._CLI_RC_DESC, event_record['payload']
-        )
-
-    def _write_formatted_title(self, title, event_record):
-        self._write_output(self._format_section_title(title, event_record))
-
-    def _write_formatted_description_with_value(self, desc, value):
-        self._write_output(
-            self._format_description_with_value(desc, value))
+        self._write_output(formatted_value)
 
     def _write_output(self, content):
         if isinstance(content, six.text_type):
@@ -208,21 +221,18 @@ class DetailedFormatter(Formatter):
         self._output.write(content)
 
     def _format_section_title(self, title, event_record):
-        formatted_title = ''
+        formatted_title = title
         api_num = self._get_api_num(event_record)
         if api_num is not None:
-            formatted_title += '[%s] ' % api_num
-        formatted_title += title + ' at: '
+            formatted_title = ('[%s] ' % api_num) + formatted_title
         formatted_title = self._color_title(formatted_title)
+        formatted_title += '\n'
 
-        formatted_timestamp = self._color_description_value(
-            self._format_timestamp(event_record['timestamp']))
+        formatted_timestamp = self._format_value_with_description(
+            event_record['timestamp'], 'at time', event_record,
+            value_format='timestamp')
 
-        return '\n' + formatted_title + formatted_timestamp + '\n'
-
-    def _format_timestamp(self, event_timestamp):
-        return datetime.datetime.fromtimestamp(
-            event_timestamp/1000.0).strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+        return '\n' + formatted_title + formatted_timestamp
 
     def _get_api_num(self, event_record):
         request_id = event_record['request_id']
@@ -233,12 +243,50 @@ class DetailedFormatter(Formatter):
                 self._num_api_calls += 1
             return self._request_id_to_api_num[request_id]
 
-    def _format_description_with_value(self, desc, value,
+    def _format_value_with_description(self, value, value_description,
+                                       event_record, value_format=None,
                                        description_color=_DESCRIPTION_COLOR):
-        formatted_str = self._color_description(desc + ': ', description_color)
-        formatted_str += self._color_description_value(str(value))
-        formatted_str += '\n'
-        return formatted_str
+        formatted_value_with_description = self._color_description(
+            value_description + ': ', description_color)
+        formatted_value = self._format_value(value, event_record, value_format)
+        formatted_value_with_description += self._color_description_value(
+            formatted_value)
+        formatted_value_with_description += '\n'
+        return formatted_value_with_description
+
+    def _format_value(self, value, event_record, value_format=None):
+        if value_format:
+            return getattr(self, '_format_' + value_format)(
+                value, event_record)
+        return str(value)
+
+    def _format_timestamp(self, event_timestamp, event_record=None):
+        return datetime.datetime.fromtimestamp(
+            event_timestamp/1000.0).strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+
+    def _format_dictionary(self, obj, event_record=None):
+        return json.dumps(obj=obj, sort_keys=True, indent=4)
+
+    def _format_http_body(self, body, event_record):
+        if not body:
+            return 'There is no associated body'
+        elif event_record['payload'].get('streaming', False):
+            return 'The body is a stream and will not be displayed'
+        elif self._is_xml(body):
+            return self._format_http_body_xml(body)
+        elif self._is_json_structure(body):
+            return self._format_http_body_json(body)
+        else:
+            return body
+
+    def _format_http_body_xml(self, body):
+        stripped_body = self._strip_whitespace(body)
+        xml_dom = xml.dom.minidom.parseString(stripped_body)
+        return xml_dom.toprettyxml(indent=' '*4, newl='\n')
+
+    def _format_http_body_json(self, body):
+        obj = json.loads(body)
+        return self._format_dictionary(obj)
 
     def _color_title(self, text):
         return self._color_if_configured(text, self._TITLE_COLOR)
@@ -254,32 +302,12 @@ class DetailedFormatter(Formatter):
             return color + text + colorama.Style.RESET_ALL
         return text
 
-    def _format_dictionary(self, obj):
-        return json.dumps(obj=obj, sort_keys=True, indent=4)
-
-    def _format_body(self, body, is_streaming):
-        if not body:
-            return 'There is no associated body'
-        elif is_streaming:
-            return 'The body is a stream and will not be displayed'
-        elif self._is_xml(body):
-            return self._format_xml(body)
-        elif self._is_json_structure(body):
-            return self._format_json_structure_string(body)
-        else:
-            return body
-
     def _is_xml(self, body):
         try:
             xml.dom.minidom.parseString(body)
         except xml.parsers.expat.ExpatError:
             return False
         return True
-
-    def _format_xml(self, body):
-        stripped_body = self._strip_whitespace(body)
-        xml_dom = xml.dom.minidom.parseString(stripped_body)
-        return xml_dom.toprettyxml(indent=' '*4, newl='\n')
 
     def _strip_whitespace(self, xml_string):
         xml_dom = xml.dom.minidom.parseString(xml_string)
@@ -295,10 +323,6 @@ class DetailedFormatter(Formatter):
             except json.decoder.JSONDecodeError:
                 return False
         return False
-
-    def _format_json_structure_string(self, body):
-        obj = json.loads(body)
-        return self._format_dictionary(obj)
 
 
 class OutputStreamFactory(object):
@@ -325,8 +349,8 @@ class OutputStreamFactory(object):
 
     @contextlib.contextmanager
     def _get_pager_stream(self):
-        pager_cmd = self._get_pager_cmd()
-        process = self._popen(pager_cmd, stdin=subprocess.PIPE)
+        pager_cmd, kwargs = self._get_process_pager_with_kwargs()
+        process = self._popen(pager_cmd, **kwargs)
         yield process.stdin
         process.stdin.close()
         process.wait()
@@ -335,11 +359,11 @@ class OutputStreamFactory(object):
     def _get_stdout_stream(self):
         yield get_binary_stdout()
 
-    def _get_pager_cmd(self):
-        pager = get_default_platform_pager()
-        if 'PAGER' in os.environ:
-            pager = os.environ['PAGER']
-        return shlex.split(pager)
+    def _get_process_pager_with_kwargs(self):
+        pager_cmd, kwargs = get_popen_pager_cmd_with_kwargs(
+            os.environ.get('PAGER'))
+        kwargs['stdin'] = subprocess.PIPE
+        return pager_cmd, kwargs
 
 
 class ShowCommand(BasicCommand):
@@ -388,7 +412,8 @@ class ShowCommand(BasicCommand):
     def _run_main(self, parsed_args, parsed_globals):
         self._validate_args(parsed_args)
         with self._get_output_stream() as output_stream:
-            formatter = self._get_formatter(parsed_args, output_stream)
+            formatter = self._get_formatter(
+                parsed_args, parsed_globals, output_stream)
             for record in self._get_record_iterator(parsed_args):
                 formatter.display(record)
         return 0
@@ -398,7 +423,7 @@ class ShowCommand(BasicCommand):
             raise ValueError(
                 'Either --exclude or --include can be provided but not both')
 
-    def _get_formatter(self, parsed_args, output_stream):
+    def _get_formatter(self, parsed_args, parsed_globals, output_stream):
         format_type = parsed_args.format
         formatter_kwargs = {
             'include': parsed_args.include,
@@ -406,11 +431,16 @@ class ShowCommand(BasicCommand):
             'output': output_stream
         }
         if format_type == 'detailed':
-            formatter_kwargs['colorize'] = self._should_use_color()
+            formatter_kwargs['colorize'] = self._should_use_color(
+                parsed_globals)
         return self.FORMATTERS[format_type](**formatter_kwargs)
 
-    def _should_use_color(self):
-        return is_a_tty()
+    def _should_use_color(self, parsed_globals):
+        if parsed_globals.color == 'on':
+            return True
+        elif parsed_globals.color == 'off':
+            return False
+        return is_a_tty() and not is_windows()
 
     def _get_output_stream(self):
         if is_a_tty():

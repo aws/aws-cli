@@ -15,7 +15,8 @@ from botocore.compat import six
 
 from awscli.compat import ensure_text_type
 from awscli.compat import compat_shell_quote
-from awscli.compat import get_default_platform_pager
+from awscli.compat import is_windows
+from awscli.compat import get_popen_pager_cmd_with_kwargs
 from awscli.testutils import mock, unittest
 
 
@@ -86,13 +87,43 @@ class ShellQuoteTestCase(object):
         assert_equal(compat_shell_quote(s, platform), expected)
 
 
-class TestGetDefaultPlatformPager(unittest.TestCase):
+class TestIsWindows(unittest.TestCase):
+    @mock.patch('platform.system')
+    def test_is_windows(self, mock_system):
+        mock_system.return_value = 'Windows'
+        self.assertTrue(is_windows())
+
+    @mock.patch('platform.system')
+    def test_is_non_windows(self, mock_system):
+        mock_system.return_value = 'Darwin'
+        self.assertFalse(is_windows())
+
+
+class TestGetPopenPagerCmd(unittest.TestCase):
     @mock.patch('platform.system')
     def test_windows(self, mock_system):
         mock_system.return_value = 'Windows'
-        self.assertEqual(get_default_platform_pager(), 'more')
+        popen_cmd, kwargs = get_popen_pager_cmd_with_kwargs()
+        self.assertEqual('more', popen_cmd)
+        self.assertEqual({'shell': True}, kwargs)
+
+    @mock.patch('platform.system')
+    def test_windows_with_specific_pager(self, mock_system):
+        mock_system.return_value = 'Windows'
+        popen_cmd, kwargs = get_popen_pager_cmd_with_kwargs('less -R')
+        self.assertEqual('less -R', popen_cmd)
+        self.assertEqual({'shell': True}, kwargs)
 
     @mock.patch('platform.system')
     def test_non_windows(self, mock_system):
         mock_system.return_value = 'Darwin'
-        self.assertEqual(get_default_platform_pager(), 'less -R')
+        popen_cmd, kwargs = get_popen_pager_cmd_with_kwargs()
+        self.assertEqual(['less', '-R'], popen_cmd)
+        self.assertEqual({}, kwargs)
+
+    @mock.patch('platform.system')
+    def test_non_windows_specific_pager(self, mock_system):
+        mock_system.return_value = 'Darwin'
+        popen_cmd, kwargs = get_popen_pager_cmd_with_kwargs('more')
+        self.assertEqual(['more'], popen_cmd)
+        self.assertEqual({}, kwargs)

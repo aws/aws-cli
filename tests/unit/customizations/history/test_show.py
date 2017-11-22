@@ -32,15 +32,12 @@ class RecordingFormatter(Formatter):
             output=output, include=include, exclude=exclude)
         self.history = []
 
-    def _display_my_event(self, event_record):
-        self.history.append(('my_event', event_record))
-
-    def _display_my_other_event(self, event_record):
-        self.history.append(('my_other_event', event_record))
+    def _display(self, event_record):
+        self.history.append(event_record)
 
 
 class TestFormatter(unittest.TestCase):
-    def test_display_known_event_type(self):
+    def test_display_no_filters(self):
         formatter = RecordingFormatter()
         event_record = {'event_type': 'my_event'}
         other_event_record = {'event_type': 'my_other_event'}
@@ -49,28 +46,16 @@ class TestFormatter(unittest.TestCase):
         self.assertEqual(
             formatter.history,
             [
-                ('my_event', event_record),
-                ('my_other_event', other_event_record)
+                event_record,
+                other_event_record
             ]
         )
-
-    def test_display_known_event_type_case_insensitive(self):
-        formatter = RecordingFormatter()
-        event_record = {'event_type': 'MY_EVENT'}
-        formatter.display(event_record)
-        self.assertEqual(formatter.history, [('my_event', event_record)])
-
-    def test_display_unknown_event_type(self):
-        formatter = RecordingFormatter()
-        event_record = {'event_type': 'unknown'}
-        formatter.display(event_record)
-        self.assertEqual(formatter.history, [])
 
     def test_include_specified_event_type(self):
         formatter = RecordingFormatter(include=['my_event'])
         event_record = {'event_type': 'my_event'}
         formatter.display(event_record)
-        self.assertEqual(formatter.history, [('my_event', event_record)])
+        self.assertEqual(formatter.history, [event_record])
 
     def test_include_on_unspecified_event_type(self):
         formatter = RecordingFormatter(include=['my_event'])
@@ -89,7 +74,7 @@ class TestFormatter(unittest.TestCase):
         other_event_record = {'event_type': 'my_other_event'}
         formatter.display(other_event_record)
         self.assertEqual(
-            formatter.history, [('my_other_event', other_event_record)])
+            formatter.history, [other_event_record])
 
     def test_raises_error_when_both_include_and_exclude(self):
         with self.assertRaises(ValueError):
@@ -224,7 +209,7 @@ class TestDetailedFormatter(unittest.TestCase):
             collected_output
         )
 
-    def test_display_http_request_with_streamming_body(self):
+    def test_display_http_request_with_streaming_body(self):
         event = {
             'event_type': 'HTTP_REQUEST',
             'id': 'my-id',
@@ -399,7 +384,7 @@ class TestDetailedFormatter(unittest.TestCase):
             collected_output
         )
 
-    def test_display_http_response_with_streamming_body(self):
+    def test_display_http_response_with_streaming_body(self):
         event = {
             'event_type': 'HTTP_RESPONSE',
             'id': 'my-id',
@@ -542,6 +527,18 @@ class TestDetailedFormatter(unittest.TestCase):
         self.assertIn('AWS CLI command exited', collected_output)
         self.assertIn('with return code: 0', collected_output)
 
+    def test_display_unknown_type(self):
+        event = {
+            'event_type': 'UNKNOWN',
+            'id': 'my-id',
+            'payload': 'foo',
+            'timestamp': 0,
+            'request_id': None
+        }
+        self.formatter.display(event)
+        collected_output = ensure_text_type(self.output.getvalue())
+        self.assertEqual('', collected_output)
+
 
 class TestOutputStreamFactory(unittest.TestCase):
     def setUp(self):
@@ -553,23 +550,44 @@ class TestOutputStreamFactory(unittest.TestCase):
             self.stream_factory.get_output_stream('unknown')
 
     @mock.patch(
-        'awscli.customizations.history.show.get_default_platform_pager')
-    def test_platform_specific_pager(self, mock_get_pager):
-        mock_get_pager.return_value = 'mypager --option'
+        'awscli.customizations.history.show.get_popen_pager_cmd_with_kwargs')
+    def test_pager(self, mock_get_popen_pager):
+        mock_get_popen_pager.return_value = (
+            ['mypager', '--option'], {})
         with mock.patch('os.environ', {}):
             with self.stream_factory.get_output_stream('pager'):
+                mock_get_popen_pager.assert_called_with(None)
                 self.assertEqual(
                     self.popen.call_args_list,
                     [mock.call(['mypager', '--option'], stdin=subprocess.PIPE)]
                 )
 
-    def test_env_configured_pager(self):
+    @mock.patch(
+        'awscli.customizations.history.show.get_popen_pager_cmd_with_kwargs')
+    def test_env_configured_pager(self, mock_get_popen_pager):
         environ = {'PAGER': 'mypager --option'}
+        mock_get_popen_pager.return_value = (
+            ['mypager', '--option'], {})
         with mock.patch('os.environ', environ):
             with self.stream_factory.get_output_stream('pager'):
+                mock_get_popen_pager.assert_called_with('mypager --option')
                 self.assertEqual(
                     self.popen.call_args_list,
                     [mock.call(['mypager', '--option'], stdin=subprocess.PIPE)]
+                )
+
+    @mock.patch(
+        'awscli.customizations.history.show.get_popen_pager_cmd_with_kwargs')
+    def test_pager_using_shell(self, mock_get_popen_pager):
+        mock_get_popen_pager.return_value = (
+            'mypager --option', {'shell': True})
+        with mock.patch('os.environ', {}):
+            with self.stream_factory.get_output_stream('pager'):
+                mock_get_popen_pager.assert_called_with(None)
+                self.assertEqual(
+                    self.popen.call_args_list,
+                    [mock.call(
+                        'mypager --option', stdin=subprocess.PIPE, shell=True)]
                 )
 
     def test_exit_of_context_manager_for_pager(self):
@@ -611,10 +629,12 @@ class TestShowCommand(unittest.TestCase):
         self.add_formatter('mock', self.formatter)
 
         self.parsed_args = argparse.Namespace()
-        self.parsed_globals = argparse.Namespace()
         self.parsed_args.format = 'mock'
         self.parsed_args.include = None
         self.parsed_args.exclude = None
+
+        self.parsed_globals = argparse.Namespace()
+        self.parsed_globals.color = 'auto'
 
     def add_formatter(self, formatter_name, formatter):
         # We do not want to be adding to the dictionary directly because
@@ -686,9 +706,11 @@ class TestShowCommand(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
 
+    @mock.patch('awscli.customizations.history.show.is_windows')
     @mock.patch('awscli.customizations.history.show.is_a_tty')
-    def test_detailed_formatter_is_a_tty(self, mock_is_a_tty):
+    def test_detailed_formatter_is_a_tty(self, mock_is_a_tty, mock_is_windows):
         mock_is_a_tty.return_value = True
+        mock_is_windows.return_value = False
         self.formatter = mock.Mock(DetailedFormatter)
         self.add_formatter('detailed', self.formatter)
         self.parsed_args.format = 'detailed'
@@ -705,9 +727,12 @@ class TestShowCommand(unittest.TestCase):
             )
         )
 
+    @mock.patch('awscli.customizations.history.show.is_windows')
     @mock.patch('awscli.customizations.history.show.is_a_tty')
-    def test_detailed_formatter_not_a_tty(self, mock_is_a_tty):
+    def test_detailed_formatter_not_a_tty(self, mock_is_a_tty,
+                                          mock_is_windows):
         mock_is_a_tty.return_value = False
+        mock_is_windows.return_value = False
         self.formatter = mock.Mock(DetailedFormatter)
         self.add_formatter('detailed', self.formatter)
         self.parsed_args.format = 'detailed'
@@ -716,6 +741,69 @@ class TestShowCommand(unittest.TestCase):
         self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
         self.output_stream_factory.get_output_stream.assert_called_with(
             'stdout')
+        self.assertEqual(
+            self.formatter.call_args,
+            mock.call(
+                include=None, exclude=None,
+                output=self.output_stream, colorize=False
+            )
+        )
+
+    @mock.patch('awscli.customizations.history.show.is_windows')
+    def test_detailed_formatter_no_color_for_windows(self, mock_is_windows):
+        mock_is_windows.return_value = True
+        self.formatter = mock.Mock(DetailedFormatter)
+        self.add_formatter('detailed', self.formatter)
+        self.parsed_args.format = 'detailed'
+        self.parsed_args.command_id = 'latest'
+
+        self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
+        self.assertEqual(
+            self.formatter.call_args,
+            mock.call(
+                include=None, exclude=None,
+                output=self.output_stream, colorize=False
+            )
+        )
+
+    @mock.patch('awscli.customizations.history.show.is_windows')
+    @mock.patch('awscli.customizations.history.show.is_a_tty')
+    def test_force_color(self, mock_is_a_tty, mock_is_windows):
+        self.formatter = mock.Mock(DetailedFormatter)
+        self.add_formatter('detailed', self.formatter)
+        self.parsed_args.format = 'detailed'
+        self.parsed_args.command_id = 'latest'
+
+        self.parsed_globals.color = 'on'
+        # Even with settings that would typically turn off color, it
+        # should be turned on because it was explicitly turned on
+        mock_is_a_tty.return_value = False
+        mock_is_windows.return_value = True
+
+        self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
+        self.assertEqual(
+            self.formatter.call_args,
+            mock.call(
+                include=None, exclude=None,
+                output=self.output_stream, colorize=True
+            )
+        )
+
+    @mock.patch('awscli.customizations.history.show.is_windows')
+    @mock.patch('awscli.customizations.history.show.is_a_tty')
+    def test_disable_color(self, mock_is_a_tty, mock_is_windows):
+        self.formatter = mock.Mock(DetailedFormatter)
+        self.add_formatter('detailed', self.formatter)
+        self.parsed_args.format = 'detailed'
+        self.parsed_args.command_id = 'latest'
+
+        self.parsed_globals.color = 'off'
+        # Even with settings that would typically enable color, it
+        # should be turned off because it was explicitly turned off
+        mock_is_a_tty.return_value = True
+        mock_is_windows.return_value = False
+
+        self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
         self.assertEqual(
             self.formatter.call_args,
             mock.call(

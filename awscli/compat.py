@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sys
+import shlex
 import os
 import platform
 import zipfile
@@ -274,14 +275,26 @@ def _windows_shell_quote(s):
     return new_s
 
 
-def get_default_platform_pager():
+def is_windows():
+    return platform.system() == 'Windows'
+
+
+def get_popen_pager_cmd_with_kwargs(pager_cmd=None):
     """Returns the default pager to use dependent on platform
 
     :rtype: str
     :returns: A string represent the paging command to run based on the
         platform being used.
     """
-    if platform.system() == 'Windows':
-        return 'more'
+    popen_kwargs = {}
+    if pager_cmd is None:
+        pager_cmd = 'less -R'
+        if is_windows():
+            pager_cmd = 'more'
+    # Similar to what we do with the help command, we need to specify
+    # shell as True to make it work in the pager for Windows
+    if is_windows():
+        popen_kwargs = {'shell': True}
     else:
-        return 'less -R'
+        pager_cmd = shlex.split(pager_cmd)
+    return pager_cmd, popen_kwargs

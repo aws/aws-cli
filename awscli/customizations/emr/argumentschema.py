@@ -635,3 +635,29 @@ TAGS_SCHEMA = {
         "type": "string"
     }
 }
+
+KERBEROS_ATTRIBUTES_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "Realm": {
+            "type": "string",
+            "description": "The name of Kerberos realm."
+        },
+        "KdcAdminPassword": {
+            "type": "string",
+            "description": "The password of Kerberos administrator."
+        },
+        "CrossRealmTrustPrincipalPassword": {
+            "type": "string",
+            "description": "The password to establish cross-realm trusts."
+        },
+        "ADDomainJoinUser": {
+            "type": "string",
+            "description": "The name of the user with privileges to join instances to Active Directory."
+        },
+        "ADDomainJoinPassword": {
+            "type": "string",
+            "description": "The password of the user with privileges to join instances to Active Directory."
+        }
+    }
+}

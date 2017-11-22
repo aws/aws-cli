@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+1.12.0
+======
+
+* enhancement:documentation: Deprecated operations will no longer appear in help documentation or be suggested in autocompletion results.
+* feature:Credentials: When creating an assume role profile, you can now specify a credential source outside of the config file using the `credential_source` key.
+* feature:Credentials: Adds support for the process credential provider, allowing users to specify a process to call to get credentials.
+* feature:Credentials: When creating an assume role profile, you can now specify another assume role profile as the source. This allows for chaining assume role calls.
+* api-change:``emr``: Update emr command to latest version
+* api-change:``shield``: Update shield command to latest version
+* api-change:``xray``: Update xray command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+* enhancement:Arguments: Idempotency tokens are no longer marked as a required argument.
+* api-change:``cloudformation``: Update cloudformation command to latest version
+
+
 1.11.190
 ========
 

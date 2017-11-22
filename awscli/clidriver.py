@@ -425,6 +425,8 @@ class ServiceOperation(object):
         self._lineage = [self]
         self._operation_model = operation_model
         self._session = session
+        if operation_model.deprecated:
+            self._UNDOCUMENTED = True
 
     @property
     def name(self):
@@ -557,7 +559,8 @@ class ServiceOperation(object):
             cli_arg_name = xform_name(arg_name, '-')
             arg_class = self.ARG_TYPES.get(arg_shape.type_name,
                                            self.DEFAULT_ARG_CLASS)
-            is_required = arg_name in required_arguments
+            is_token = arg_shape.metadata.get('idempotencyToken', False)
+            is_required = arg_name in required_arguments and not is_token
             event_emitter = self._session.get_component('event_emitter')
             arg_object = arg_class(
                 name=cli_arg_name,

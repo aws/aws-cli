@@ -121,6 +121,15 @@ MINI_SERVICE = {
       "input":{"shape":"ListObjectsRequest"},
       "output":{"shape":"ListObjectsOutput"},
     },
+    "IdempotentOperation":{
+      "name":"IdempotentOperation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/{Bucket}"
+      },
+      "input":{"shape":"IdempotentOperationRequest"},
+      "output":{"shape":"ListObjectsOutput"},
+    },
   },
   "shapes":{
     "ListObjectsOutput":{
@@ -134,6 +143,16 @@ MINI_SERVICE = {
           "shape":"NextMarker",
         },
         "Contents":{"shape":"Contents"},
+      },
+    },
+    "IdempotentOperationRequest":{
+      "type":"structure",
+      "required": "token",
+      "members":{
+        "token":{
+          "shape":"Token",
+          "idempotencyToken": True,
+        },
       }
     },
     "ListObjectsRequest":{
@@ -163,6 +182,7 @@ MINI_SERVICE = {
     "IsTruncated":{"type":"boolean"},
     "NextMarker":{"type":"string"},
     "Contents":{"type":"string"},
+    "Token":{"type":"string"},
   }
 }
 
@@ -663,14 +683,18 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
 
     def test_help_blurb_in_operation_error_message(self):
         with self.assertRaises(SystemExit):
-            self.driver.main(['ec2', 'run-instances'])
+            self.driver.main(['s3api', 'list-objects'])
         self.assertIn(HELP_BLURB, self.stderr.getvalue())
 
     def test_help_blurb_in_unknown_argument_error_message(self):
         with self.assertRaises(SystemExit):
-            self.driver.main(['ec2', 'run-instances', '--help'])
+            self.driver.main(['s3api', 'list-objects', '--help'])
         self.assertIn(HELP_BLURB, self.stderr.getvalue())
 
+    def test_idempotency_token_is_not_required_in_help_text(self):
+        with self.assertRaises(SystemExit):
+            self.driver.main(['servicecatalog', 'create-constraint'])
+        self.assertNotIn('--idempotency-token', self.stderr.getvalue())
 
 class TestHowClientIsCreated(BaseAWSCommandParamsTest):
     def setUp(self):
@@ -873,7 +897,10 @@ class TestServiceCommand(unittest.TestCase):
 class TestServiceOperation(unittest.TestCase):
     def setUp(self):
         self.name = 'foo'
-        self.cmd = ServiceOperation(self.name, None, None, None, None)
+        operation = mock.Mock(spec=botocore.model.OperationModel)
+        operation.deprecated = False
+        self.mock_operation = operation
+        self.cmd = ServiceOperation(self.name, None, None, operation, None)
 
     def test_name(self):
         self.assertEqual(self.cmd.name, self.name)
@@ -888,6 +915,23 @@ class TestServiceOperation(unittest.TestCase):
 
     def test_lineage_names(self):
         self.assertEqual(self.cmd.lineage_names, ['foo'])
+
+    def test_deprecated_operation(self):
+        self.mock_operation.deprecated = True
+        cmd = ServiceOperation(self.name, None, None, self.mock_operation,
+                               None)
+        self.assertTrue(getattr(cmd, '_UNDOCUMENTED'))
+
+    def test_idempotency_token_is_not_required(self):
+        session = FakeSession()
+        name = 'IdempotentOperation'
+        service_model = session.get_service_model('s3')
+        operation_model = service_model.operation_model(name)
+        cmd = ServiceOperation(name, None, None, operation_model, session)
+        arg_table = cmd.arg_table
+        token_argument = arg_table.get('token')
+        self.assertFalse(token_argument.required,
+                         'Idempotency tokens should not be required')
 
 
 if __name__ == '__main__':

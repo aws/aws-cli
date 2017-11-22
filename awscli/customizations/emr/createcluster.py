@@ -114,8 +114,10 @@ class CreateCluster(Command):
         {'name': 'ebs-root-volume-size',
          'help_text' : helptext.EBS_ROOT_VOLUME_SIZE},
         {'name': 'repo-upgrade-on-boot',
-         'help_text' : helptext.REPO_UPGRADE_ON_BOOT}
-
+         'help_text' : helptext.REPO_UPGRADE_ON_BOOT},
+        {'name': 'kerberos-attributes',
+         'schema': argumentschema.KERBEROS_ATTRIBUTES_SCHEMA,
+         'help_text': helptext.KERBEROS_ATTRIBUTES}
     ]
     SYNOPSIS = BasicCommand.FROM_FILE('emr', 'create-cluster-synopsis.rst')
     EXAMPLES = BasicCommand.FROM_FILE('emr', 'create-cluster-examples.rst')
@@ -324,6 +326,9 @@ class CreateCluster(Command):
                 params, 'RepoUpgradeOnBoot', parsed_args.repo_upgrade_on_boot
             )
 
+        if parsed_args.kerberos_attributes is not None:
+            emrutils.apply_dict(
+                params, 'KerberosAttributes', parsed_args.kerberos_attributes)
 
         self._validate_required_applications(parsed_args)
 

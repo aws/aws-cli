@@ -11,17 +11,19 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import threading
-import tempfile
-import shutil
 import json
-import os
+import re
+
+import mock
 
 from awscli.compat import queue
 from awscli.customizations.history.db import DatabaseConnection
 from awscli.customizations.history.db import DatabaseRecordWriter
 from awscli.customizations.history.db import DatabaseRecordReader
+from awscli.customizations.history.db import DatabaseHistoryHandler
 from awscli.testutils import unittest
 from awscli.compat import sqlite3
+from tests import CaseInsensitiveDict
 
 
 class ThreadedRecordWriter(object):
@@ -54,9 +56,6 @@ class BaseDatabaseTest(unittest.TestCase):
     def setUp(self):
         self.connection = DatabaseConnection(':memory:')
         self.connection.row_factory = sqlite3.Row
-
-    def _get_cursor(self):
-        return self.connection.cursor()
 
 
 class BaseThreadedDatabaseWriter(BaseDatabaseTest):
@@ -120,8 +119,9 @@ class TestMultithreadedDatabaseWriter(BaseThreadedDatabaseWriter):
         for t in self.threads:
             t.close()
         thread_id_to_request_id = {}
-        cursor = self.connection.cursor()
-        cursor.execute('select request_id, payload from records')
+        cursor = self.connection.execute(
+            'SELECT request_id, payload FROM records'
+        )
         records = 0
         for record in cursor:
             records += 1
@@ -139,9 +139,10 @@ class TestMultithreadedDatabaseWriter(BaseThreadedDatabaseWriter):
                  "sqlite3 not supported in this python")
 class TestDatabaseRecordWriter(BaseDatabaseTest):
     def test_does_create_table(self):
-        cursor = self._get_cursor()
-        cursor.execute("SELECT COUNT(*) FROM sqlite_master WHERE "
-                       "type='table' AND name='records';")
+        cursor = self.connection.execute(
+            "SELECT COUNT(*) FROM sqlite_master WHERE "
+            "type='table' AND name='records'"
+        )
         result = cursor.fetchone()
         self.assertEqual(result[0], 1)
 
@@ -156,12 +157,11 @@ class TestDatabaseRecordWriter(BaseDatabaseTest):
         }
         writer.write_record(known_record_fields)
 
-        cursor = self._get_cursor()
-        cursor.execute("SELECT COUNT(*) FROM records;")
+        cursor = self.connection.execute("SELECT COUNT(*) FROM records")
         num_records = cursor.fetchone()
         self.assertEqual(num_records[0], 1)
 
-        cursor.execute("SELECT * FROM records;")
+        cursor.execute("SELECT * FROM records")
         record = dict(cursor.fetchone())
         for col_name, row_value in known_record_fields.items():
             # Normally our reader would take care of parsing the JSON from
@@ -186,8 +186,7 @@ class TestDatabaseRecordWriter(BaseDatabaseTest):
         for _ in range(records_to_write):
             writer.write_record(known_record_fields)
 
-        cursor = self._get_cursor()
-        cursor.execute("SELECT COUNT(*) FROM records;")
+        cursor = self.connection.execute("SELECT COUNT(*) FROM records")
         num_records = cursor.fetchone()
         self.assertEqual(num_records[0], records_to_write)
 
@@ -251,8 +250,7 @@ class TestDatabaseRecordReader(BaseDatabaseTest):
             }
         ])
         reader = DatabaseRecordReader(self.connection)
-        cursor = self._get_cursor()
-        cursor.execute(
+        cursor = self.connection.execute(
             'select id from records where event_type = "foo" limit 1')
         identifier = cursor.fetchone()['id']
 
@@ -301,3 +299,168 @@ class TestDatabaseRecordReader(BaseDatabaseTest):
         records = set([record['event_type'] for record
                        in reader.iter_latest_records()])
         self.assertEqual(set(['foo', 'bar']), records)
+
+
+class TestDatabaseHistoryHandler(unittest.TestCase):
+    UUID_PATTERN = re.compile(
+        '^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$',
+        re.I
+    )
+
+    def setUp(self):
+        self.db = DatabaseConnection(':memory:')
+        self.writer = DatabaseRecordWriter(connection=self.db)
+        self.handler = DatabaseHistoryHandler(writer=self.writer)
+
+    def _assert_last_record_structure(self, event_type, payload, source,
+                                      check_request_id=False):
+        record = self.db.execute('select * from records').fetchone()
+        identifier = record[0]
+        self.assertTrue(self.UUID_PATTERN.match(identifier))
+        if check_request_id:
+            identifier = record[1]
+            self.assertTrue(self.UUID_PATTERN.match(identifier))
+        self.assertEqual(
+            record,
+            (mock.ANY, mock.ANY, source, event_type, mock.ANY, mock.ANY)
+        )
+        loaded_payload = json.loads(record[-1])
+        self.assertEqual(loaded_payload, payload)
+
+    def test_does_emit_write_record(self):
+        self.handler.emit('event_type', 'payload', 'source')
+        self._assert_last_record_structure('event_type', 'payload', 'source')
+
+    def test_can_emit_write_record_with_structure(self):
+        self.handler.emit('event_type', {'foo': 'bar'}, 'source')
+        self._assert_last_record_structure(
+            'event_type', {"foo": "bar"}, 'source')
+
+    def test_can_emit_cli_version_record(self):
+        # CLI_VERSION records have a list of strings payload
+        self.handler.emit('CLI_VERSION', 'foobarbaz', 'CLI')
+        self._assert_last_record_structure(
+            'CLI_VERSION', 'foobarbaz', 'CLI')
+
+    def test_can_emit_cli_arguments_record(self):
+        # CLI_ARGUMENTS records have a list of strings payload
+        self.handler.emit('CLI_ARGUMENTS', ['foo', 'bar', 'baz'], 'CLI')
+        self._assert_last_record_structure(
+            'CLI_ARGUMENTS', ["foo", "bar", "baz"], 'CLI')
+
+    def test_can_emit_api_call_record(self):
+        # API_CALL records have a dictionary based payload
+        self.handler.emit('API_CALL', {
+            'service': 's3',
+            'operation': 'ListBuckets',
+            'params': {}
+        }, 'BOTOCORE')
+        self._assert_last_record_structure(
+            'API_CALL',
+            {
+                "service": "s3",
+                "operation": "ListBuckets",
+                "params": {}
+            },
+            'BOTOCORE', check_request_id=True)
+
+    def test_can_emit_api_call_record_with_binary_param(self):
+        # API_CALL records have a dictionary based payload
+        payload = {
+            'service': 'lambda',
+            'operation': 'CreateFunction',
+            'params': {
+                "FunctionName": "Name",
+                "Handler": "mod.fn",
+                "Role": "foobar",
+                "Runtime": "python3",
+                "Code": {
+                    "ZipFile": b'zipfile binary content \xfe\xed'
+                }
+            }
+        }
+        self.handler.emit('API_CALL', payload, 'BOTOCORE')
+        parsed_payload = payload.copy()
+        parsed_payload['params']['Code']['ZipFile'] = \
+            '<Byte sequence>'
+        self._assert_last_record_structure(
+            'API_CALL', parsed_payload, 'BOTOCORE', check_request_id=True
+        )
+
+    def test_can_emit_http_request_record(self):
+        # HTTP_REQUEST records have have their entire body field as a binary
+        # blob, howver it will all be utf-8 valid since the binary fields
+        # from the api call will have been b64 encoded.
+        payload = {
+            'url': ('https://lambda.us-west-2.amazonaws.com/2015-03-31/'
+                    'functions'),
+            'method': 'POST',
+            'headers': CaseInsensitiveDict({
+                'foo': 'bar'
+            }),
+            'body': b'body with no invalid utf-8 bytes in it',
+            'streaming': False
+        }
+        self.handler.emit('HTTP_REQUEST', payload, 'BOTOCORE')
+        parsed_payload = payload.copy()
+        parsed_payload['headers'] = dict(parsed_payload['headers'])
+        self._assert_last_record_structure(
+            'HTTP_REQUEST', parsed_payload, 'BOTOCORE'
+        )
+
+    def test_can_emit_http_response_record(self):
+        # HTTP_RESPONSE also contains a binary response in its body, but it
+        # will not contain any non-unicode characters
+        payload = {
+            'status_code': 200,
+            'headers': CaseInsensitiveDict({
+                'foo': 'bar'
+            }),
+            'body': b'body with no invalid utf-8 bytes in it',
+            'streaming': False
+        }
+        self.handler.emit('HTTP_RESPONSE', payload, 'BOTOCORE')
+        parsed_payload = payload.copy()
+        parsed_payload['headers'] = dict(parsed_payload['headers'])
+        self._assert_last_record_structure(
+            'HTTP_RESPONSE', parsed_payload, 'BOTOCORE'
+        )
+
+    def test_can_emit_parsed_response_record_with(self):
+        payload = {
+            "Count": 1,
+            "Items": [
+                {
+                    "strkey": {
+                        "S": "string"
+                    }
+                }
+            ],
+            "ScannedCount": 1,
+            "ConsumedCapacity": None
+        }
+        self.handler.emit('PARSED_RESPONSE', payload, 'BOTOCORE')
+        self._assert_last_record_structure(
+            'PARSED_RESPONSE', payload, 'BOTOCORE'
+        )
+
+    def test_can_emit_parsed_response_record_with_binary(self):
+        # PARSED_RESPONSE can also contain raw bytes
+        payload = {
+            "Count": 1,
+            "Items": [
+                {
+                    "bitkey": {
+                        "B": b"binary data \xfe\ed"
+                    }
+                }
+            ],
+            "ScannedCount": 1,
+            "ConsumedCapacity": None
+        }
+        self.handler.emit('PARSED_RESPONSE', payload, 'BOTOCORE')
+        parsed_payload = payload.copy()
+        parsed_payload['Items'][0]['bitkey']['B'] = "<Byte sequence>"
+        self._assert_last_record_structure(
+            'PARSED_RESPONSE', parsed_payload, 'BOTOCORE'
+        )

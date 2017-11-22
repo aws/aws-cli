@@ -15,8 +15,6 @@ import re
 import json
 import threading
 import datetime
-from collections import MutableMapping
-from collections import Mapping
 
 import mock
 
@@ -28,67 +26,12 @@ from awscli.customizations.history.db import DatabaseRecordReader
 from awscli.customizations.history.db import PayloadSerializer
 from awscli.customizations.history.db import RecordBuilder
 from awscli.testutils import unittest
-
-
-# CaseInsensitiveDict from requests that must be serializble.
-class CaseInsensitiveDict(MutableMapping):
-    def __init__(self, data=None, **kwargs):
-        self._store = dict()
-        if data is None:
-            data = {}
-        self.update(data, **kwargs)
-
-    def __setitem__(self, key, value):
-        # Use the lowercased key for lookups, but store the actual
-        # key alongside the value.
-        self._store[key.lower()] = (key, value)
-
-    def __getitem__(self, key):
-        return self._store[key.lower()][1]
-
-    def __delitem__(self, key):
-        del self._store[key.lower()]
-
-    def __iter__(self):
-        return (casedkey for casedkey, mappedvalue in self._store.values())
-
-    def __len__(self):
-        return len(self._store)
-
-    def lower_items(self):
-        """Like iteritems(), but with all lowercase keys."""
-        return (
-            (lowerkey, keyval[1])
-            for (lowerkey, keyval)
-            in self._store.items()
-        )
-
-    def __eq__(self, other):
-        if isinstance(other, Mapping):
-            other = CaseInsensitiveDict(other)
-        else:
-            return NotImplemented
-        # Compare insensitively
-        return dict(self.lower_items()) == dict(other.lower_items())
-
-    # Copy is required
-    def copy(self):
-        return CaseInsensitiveDict(self._store.values())
-
-    def __repr__(self):
-        return str(dict(self.items()))
+from tests import CaseInsensitiveDict
 
 
 class FakeDatabaseConnection(object):
     def __init__(self):
-        self.mock_cursor = mock.MagicMock()
-        self.commits = 0
-
-    def cursor(self):
-        return self.mock_cursor
-
-    def commit(self):
-        self.commits += 1
+        self.execute = mock.MagicMock()
 
 
 class TestDatabaseConnection(unittest.TestCase):
@@ -107,8 +50,7 @@ class TestDatabaseConnection(unittest.TestCase):
 
     def test_does_ensure_table_created_first(self):
         db = DatabaseConnection(":memory:")
-        cursor = db.cursor()
-        cursor.execute('PRAGMA table_info(records);')
+        cursor = db.execute('PRAGMA table_info(records)')
         schema = [col[:3] for col in cursor.fetchall()]
         expected_schema = [
             (0, 'id', 'TEXT'),
@@ -259,8 +201,7 @@ class TestDatabaseRecordWriter(BaseDatabaseRecordWriterTester):
         super(TestDatabaseRecordWriter, self).setUp()
 
     def _read_last_record(self):
-        cursor = self.db.cursor()
-        cursor.execute('SELECT * FROM records')
+        cursor = self.db.execute('SELECT * FROM records')
         written_record = cursor.fetchone()
         return written_record
 
@@ -291,8 +232,7 @@ class TestDatabaseRecordWriter(BaseDatabaseRecordWriterTester):
                 'source': 'TEST',
                 'timestamp': 1234
             })
-        cursor = self.db.cursor()
-        cursor.execute('SELECT COUNT(*) FROM records')
+        cursor = self.db.execute('SELECT COUNT(*) FROM records')
         record_count = cursor.fetchone()[0]
 
         self.assertEqual(record_count, records_to_write)
@@ -535,12 +475,12 @@ class TestDatabaseRecordReader(BaseDatabaseRecordTester):
         )
         [_ for _ in self.reader.iter_latest_records()]
         self.assertEqual(
-            self.fake_connection.cursor().execute.call_args[0][0].strip(),
+            self.fake_connection.execute.call_args[0][0].strip(),
             expected_query.strip())
 
     def test_iter_latest_records_does_iter_records(self):
         records_to_get = [1, 2, 3]
-        self.fake_connection.cursor().__iter__.return_value = iter(
+        self.fake_connection.execute.return_value.__iter__.return_value = iter(
             records_to_get)
         records = [r for r in self.reader.iter_latest_records()]
         self.assertEqual(records, records_to_get)
@@ -550,12 +490,12 @@ class TestDatabaseRecordReader(BaseDatabaseRecordTester):
                           'ORDER BY timestamp')
         [_ for _ in self.reader.iter_records('fake_id')]
         self.assertEqual(
-            self.fake_connection.cursor().execute.call_args[0][0].strip(),
+            self.fake_connection.execute.call_args[0][0].strip(),
             expected_query.strip())
 
     def test_iter_records_does_iter_records(self):
         records_to_get = [1, 2, 3]
-        self.fake_connection.cursor().__iter__.return_value = iter(
+        self.fake_connection.execute.return_value.__iter__.return_value = iter(
             records_to_get)
         records = [r for r in self.reader.iter_records('fake_id')]
         self.assertEqual(records, records_to_get)
@@ -594,6 +534,64 @@ class TestPayloadSerialzier(unittest.TestCase):
     def test_can_serialize_unknown_type(self):
         original = queue.Queue()
         encoded = repr(original)
+        string_value = json.dumps(original, cls=PayloadSerializer)
+        reloaded = json.loads(string_value)
+        self.assertEqual(encoded, reloaded)
+
+    def test_can_serialize_non_utf_8_bytes_type(self):
+        original = b'\xfe\xed'  # Non utf-8 byte squence
+        encoded = '<Byte sequence>'
+        string_value = json.dumps(original, cls=PayloadSerializer)
+        reloaded = json.loads(string_value)
+        self.assertEqual(encoded, reloaded)
+
+    def test_does_preserve_utf_8_bytes_type(self):
+        original = b'foobar'  # utf-8 byte squence
+        encoded = 'foobar'
+        string_value = json.dumps(original, cls=PayloadSerializer)
+        reloaded = json.loads(string_value)
+        self.assertEqual(encoded, reloaded)
+
+    def test_can_serialize_non_utf_8_bytes_type_in_dict(self):
+        original = {'foo': 'bar', 'bytes': b'\xfe\xed'}
+        encoded = {'foo': 'bar', 'bytes': '<Byte sequence>'}
+        string_value = json.dumps(original, cls=PayloadSerializer)
+        reloaded = json.loads(string_value)
+        self.assertEqual(encoded, reloaded)
+
+    def test_can_serialize_non_utf_8_bytes_type_in_list(self):
+        original = ['foo', b'\xfe\xed']
+        encoded = ['foo', '<Byte sequence>']
+        string_value = json.dumps(original, cls=PayloadSerializer)
+        reloaded = json.loads(string_value)
+        self.assertEqual(encoded, reloaded)
+
+    def test_can_serialize_non_utf_8_bytes_type_in_tuple(self):
+        original = ('foo', b'\xfe\xed')
+        encoded = ['foo', '<Byte sequence>']
+        string_value = json.dumps(original, cls=PayloadSerializer)
+        reloaded = json.loads(string_value)
+        self.assertEqual(encoded, reloaded)
+
+    def test_can_serialize_non_utf_8_bytes_nested(self):
+        original = {
+            'foo': 'bar',
+            'bytes': b'\xfe\xed',
+            'list': ['foo', b'\xfe\xed'],
+            'more_nesting': {
+                'bytes': b'\xfe\xed',
+                'tuple': ('bar', 'baz', b'\xfe\ed')
+            }
+        }
+        encoded = {
+            'foo': 'bar',
+            'bytes': '<Byte sequence>',
+            'list': ['foo', '<Byte sequence>'],
+            'more_nesting': {
+                'bytes': '<Byte sequence>',
+                'tuple': ['bar', 'baz', '<Byte sequence>']
+            }
+        }
         string_value = json.dumps(original, cls=PayloadSerializer)
         reloaded = json.loads(string_value)
         self.assertEqual(encoded, reloaded)

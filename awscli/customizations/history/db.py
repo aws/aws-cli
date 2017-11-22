@@ -10,7 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
 import uuid
 import time
 import json
@@ -22,7 +21,7 @@ from collections import MutableMapping
 from botocore.history import BaseHistoryHandler
 
 from awscli.compat import sqlite3
-from awscli.compat import ensure_text_type
+from awscli.compat import binary_type
 
 
 LOG = logging.getLogger(__name__)
@@ -47,10 +46,7 @@ class DatabaseConnection(object):
         self._ensure_database_setup()
 
     def execute(self, query, *parameters):
-        self._connection.execute(query, *parameters)
-
-    def cursor(self):
-        return self._connection.cursor()
+        return self._connection.execute(query, *parameters)
 
     def _ensure_database_setup(self):
         self._create_record_table()
@@ -83,11 +79,53 @@ class PayloadSerializer(json.JSONEncoder):
     def _encode_datetime(self, obj):
         return obj.isoformat()
 
+    def _try_encode(self, obj):
+        try:
+            obj = obj.decode('utf-8')
+        except UnicodeDecodeError:
+            obj = '<Byte sequence>'
+        return obj
+
+    def _remove_non_unicode_stings(self, obj):
+        if isinstance(obj, str):
+            obj = self._try_encode(obj)
+        elif isinstance(obj, dict):
+            obj = dict((k, self._remove_non_unicode_stings(v)) for k, v
+                       in obj.items())
+        elif isinstance(obj, (list, tuple)):
+            obj = [self._remove_non_unicode_stings(o) for o in obj]
+        return obj
+
+    def encode(self, obj):
+        try:
+            return super(PayloadSerializer, self).encode(obj)
+        except UnicodeDecodeError:
+            # This happens in PY2 in the case where a record payload has some
+            # binary data in it that is not utf-8 encodable. PY2 will not call
+            # the default method on the individual field with bytes in it since
+            # it thinks it can handle it with the normal string serialization
+            # method. Since it cannot tell the difference between a utf-8 str
+            # and a str with raw bytes in it we will get a UnicodeDecodeError
+            # here at the top level. There are no hooks into the serialization
+            # process in PY2 that allow us to fix this behavior, so instead
+            # when we encounter the unicode error we climb the structure
+            # ourselves and replace all strings that are not utf-8 decodable
+            # and try to encode again.
+            scrubbed_obj = self._remove_non_unicode_stings(obj)
+            return super(PayloadSerializer, self).encode(scrubbed_obj)
+
     def default(self, obj):
         if isinstance(obj, datetime.datetime):
             return self._encode_datetime(obj)
         elif isinstance(obj, MutableMapping):
             return self._encode_mutable_mapping(obj)
+        elif isinstance(obj, binary_type):
+            # In PY3 the bytes type differs from the str type so the default
+            # method will be called when a bytes object is encountered.
+            # We call the same _try_encode method that either decodes it to a
+            # utf-8 string and continues serialization, or removes the value
+            # if it is not valid utf-8 string.
+            return self._try_encode(obj)
         else:
             return repr(obj)
 
@@ -150,14 +188,12 @@ class DatabaseRecordReader(object):
         return d
 
     def iter_latest_records(self):
-        cursor = self._connection.cursor()
-        cursor.execute(self._GET_LAST_ID_RECORDS)
+        cursor = self._connection.execute(self._GET_LAST_ID_RECORDS)
         for row in cursor:
             yield row
 
     def iter_records(self, record_id):
-        cursor = self._connection.cursor()
-        cursor.execute(self._GET_RECORDS_BY_ID, [record_id])
+        cursor = self._connection.execute(self._GET_RECORDS_BY_ID, [record_id])
         for row in cursor:
             yield row
 
@@ -166,7 +202,6 @@ class RecordBuilder(object):
     _REQUEST_LIFECYCLE_EVENTS = set(
         ['API_CALL', 'HTTP_REQUEST', 'HTTP_RESPONSE', 'PARSED_RESPONSE'])
     _START_OF_REQUEST_LIFECYCLE_EVENT = 'API_CALL'
-    _BYTES_BODY_PAYLOADS = set(['HTTP_REQUEST', 'HTTP_RESPONSE'])
 
     def __init__(self):
         self._identifier = None
@@ -187,15 +222,6 @@ class RecordBuilder(object):
             return request_id
         return None
 
-    def _format_payload(self, event_type, payload):
-        # If the payload has a body key it can be in bytes, so it needs to be
-        # converted to utf-8 if possible so it can be serialized as JSON later.
-        if event_type in self._BYTES_BODY_PAYLOADS:
-            body = payload['body']
-            if body is not None:
-                payload['body'] = ensure_text_type(body)
-        return payload
-
     def _get_identifier(self):
         if self._identifier is None:
             self._identifier = str(uuid.uuid4())
@@ -203,7 +229,6 @@ class RecordBuilder(object):
 
     def build_record(self, event_type, payload, source):
         uid = self._get_identifier()
-        payload = self._format_payload(event_type, payload)
         record = {
             'command_id': uid,
             'event_type': event_type,

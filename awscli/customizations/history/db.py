@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
 import uuid
 import time
 import json
@@ -25,7 +26,18 @@ from awscli.compat import binary_type
 
 
 LOG = logging.getLogger(__name__)
-HISTORY_LOCATION_ENV_VAR = 'AWS_CLI_HISTORY_FILE'
+
+HISTORY_FILENAME_ENV_VAR = 'AWS_CLI_HISTORY_FILE'
+DEFAULT_HISTORY_FILENAME = os.path.expanduser(
+    os.path.join('~', '.aws', 'history', 'history.db'))
+
+
+def get_history_db_filename():
+    history_db_filename = os.environ.get(
+        HISTORY_FILENAME_ENV_VAR, DEFAULT_HISTORY_FILENAME)
+    if not os.path.isdir(os.path.dirname(history_db_filename)):
+        os.makedirs(os.path.dirname(history_db_filename))
+    return history_db_filename
 
 
 class DatabaseConnection(object):
@@ -245,8 +257,8 @@ class RecordBuilder(object):
 class DatabaseHistoryHandler(BaseHistoryHandler):
     def __init__(self, writer=None, record_builder=None):
         if writer is None:
-            connection = DatabaseConnection(
-                os.environ.get(HISTORY_LOCATION_ENV_VAR, None))
+            db_filename = get_history_db_filename()
+            connection = DatabaseConnection(db_filename)
             writer = DatabaseRecordWriter(connection)
         self._writer = writer
         if record_builder is None:

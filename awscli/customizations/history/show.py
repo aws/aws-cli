@@ -27,7 +27,7 @@ from awscli.compat import get_binary_stdout
 from awscli.compat import get_popen_pager_cmd_with_kwargs
 from awscli.utils import is_a_tty
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.history.db import HISTORY_LOCATION_ENV_VAR
+from awscli.customizations.history.db import get_history_db_filename
 from awscli.customizations.history.db import DatabaseRecordReader
 from awscli.customizations.history.db import DatabaseConnection
 
@@ -402,8 +402,7 @@ class ShowCommand(BasicCommand):
         super(ShowCommand, self).__init__(session)
         self._db_reader = db_reader
         if db_reader is None:
-            connection = DatabaseConnection(
-                os.environ.get(HISTORY_LOCATION_ENV_VAR, None))
+            connection = DatabaseConnection(get_history_db_filename())
             self._db_reader = DatabaseRecordReader(connection)
         self._output_stream_factory = output_stream_factory
         if output_stream_factory is None:

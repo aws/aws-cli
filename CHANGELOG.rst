@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.12.1
+======
+
+* bugfix:Credentials: Fixes a bug causing cached credentials to break in the CLI on Windows. Fixes aws/aws-cli`#2978 <https://github.com/boto/botocore/issues/2978>`__
+* api-change:``acm``: Update acm command to latest version
+
+
 1.12.0
 ======
 

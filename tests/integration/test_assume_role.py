@@ -98,7 +98,7 @@ class TestAssumeRoleCredentials(unittest.TestCase):
         return creds
 
     def wait_for_assume_role(self, role_arn, access_key, secret_key,
-                             token=None, attempts=20, delay=5):
+                             token=None, attempts=30, delay=10):
         # "Why not use the policy simulator?" you might ask. The answer is
         # that the policy simulator will return success far before you can
         # actually make the calls.

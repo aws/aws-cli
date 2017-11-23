@@ -14,8 +14,6 @@ import threading
 import json
 import re
 
-import mock
-
 from awscli.compat import queue
 from awscli.customizations.history.db import DatabaseConnection
 from awscli.customizations.history.db import DatabaseRecordWriter
@@ -312,57 +310,79 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
         self.writer = DatabaseRecordWriter(connection=self.db)
         self.handler = DatabaseHistoryHandler(writer=self.writer)
 
-    def _assert_last_record_structure(self, event_type, payload, source,
-                                      check_request_id=False):
-        record = self.db.execute('select * from records').fetchone()
+    def _get_last_record(self):
+        record = self.db.execute('SELECT * FROM records').fetchone()
+        return record
+
+    def _assert_expected_event_type(self, source, record):
+        self.assertEqual(source, record[3])
+
+    def _assert_expected_payload(self, source, record):
+        loaded_payload = json.loads(record[-1])
+        self.assertEqual(source, loaded_payload)
+
+    def _assert_expected_source(self, source, record):
+        self.assertEqual(source, record[2])
+
+    def _assert_has_request_id(self, record):
+        identifier = record[1]
+        self.assertTrue(self.UUID_PATTERN.match(identifier))
+
+    def _assert_record_has_command_id(self, record):
         identifier = record[0]
         self.assertTrue(self.UUID_PATTERN.match(identifier))
-        if check_request_id:
-            identifier = record[1]
-            self.assertTrue(self.UUID_PATTERN.match(identifier))
-        self.assertEqual(
-            record,
-            (mock.ANY, mock.ANY, source, event_type, mock.ANY, mock.ANY)
-        )
-        loaded_payload = json.loads(record[-1])
-        self.assertEqual(loaded_payload, payload)
 
     def test_does_emit_write_record(self):
         self.handler.emit('event_type', 'payload', 'source')
-        self._assert_last_record_structure('event_type', 'payload', 'source')
+        record = self._get_last_record()
+        self._assert_record_has_command_id(record)
+        self._assert_expected_event_type('event_type', record)
+        self._assert_expected_payload('payload', record)
+        self._assert_expected_source('source', record)
 
     def test_can_emit_write_record_with_structure(self):
-        self.handler.emit('event_type', {'foo': 'bar'}, 'source')
-        self._assert_last_record_structure(
-            'event_type', {"foo": "bar"}, 'source')
+        payload = {'foo': 'bar'}
+        self.handler.emit('event_type', payload, 'source')
+        record = self._get_last_record()
+        self._assert_record_has_command_id(record)
+        self._assert_expected_event_type('event_type', record)
+        self._assert_expected_payload(payload, record)
+        self._assert_expected_source('source', record)
 
     def test_can_emit_cli_version_record(self):
         # CLI_VERSION records have a list of strings payload
-        self.handler.emit('CLI_VERSION', 'foobarbaz', 'CLI')
-        self._assert_last_record_structure(
-            'CLI_VERSION', 'foobarbaz', 'CLI')
+        payload = 'foobarbaz'
+        self.handler.emit('CLI_VERSION', payload, 'CLI')
+        record = self._get_last_record()
+        self._assert_record_has_command_id(record)
+        self._assert_expected_event_type('CLI_VERSION', record)
+        self._assert_expected_payload(payload, record)
+        self._assert_expected_source('CLI', record)
 
     def test_can_emit_cli_arguments_record(self):
         # CLI_ARGUMENTS records have a list of strings payload
-        self.handler.emit('CLI_ARGUMENTS', ['foo', 'bar', 'baz'], 'CLI')
-        self._assert_last_record_structure(
-            'CLI_ARGUMENTS', ["foo", "bar", "baz"], 'CLI')
+        payload = ['foo', 'bar', 'baz']
+        self.handler.emit('CLI_ARGUMENTS', payload, 'CLI')
+        record = self._get_last_record()
+        self._assert_record_has_command_id(record)
+        self._assert_expected_event_type('CLI_ARGUMENTS', record)
+        self._assert_expected_payload(payload, record)
+        self._assert_expected_source('CLI', record)
 
     def test_can_emit_api_call_record(self):
         # API_CALL records have a dictionary based payload
-        self.handler.emit('API_CALL', {
+        payload = {
             'service': 's3',
             'operation': 'ListBuckets',
             'params': {}
-        }, 'BOTOCORE')
-        self._assert_last_record_structure(
-            'API_CALL',
-            {
-                "service": "s3",
-                "operation": "ListBuckets",
-                "params": {}
-            },
-            'BOTOCORE', check_request_id=True)
+        }
+        self.handler.emit('API_CALL', payload, 'BOTOCORE')
+        record = self._get_last_record()
+        self._assert_record_has_command_id(record)
+        self._assert_has_request_id(record)
+        self._assert_expected_event_type('API_CALL', record)
+        self._assert_expected_payload(payload, record)
+        self._assert_expected_source('BOTOCORE', record)
 
     def test_can_emit_api_call_record_with_binary_param(self):
         # API_CALL records have a dictionary based payload
@@ -380,12 +400,15 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
             }
         }
         self.handler.emit('API_CALL', payload, 'BOTOCORE')
+        record = self._get_last_record()
         parsed_payload = payload.copy()
         parsed_payload['params']['Code']['ZipFile'] = \
             '<Byte sequence>'
-        self._assert_last_record_structure(
-            'API_CALL', parsed_payload, 'BOTOCORE', check_request_id=True
-        )
+        self._assert_record_has_command_id(record)
+        self._assert_has_request_id(record)
+        self._assert_expected_event_type('API_CALL', record)
+        self._assert_expected_payload(parsed_payload, record)
+        self._assert_expected_source('BOTOCORE', record)
 
     def test_can_emit_http_request_record(self):
         # HTTP_REQUEST records have have their entire body field as a binary
@@ -402,11 +425,14 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
             'streaming': False
         }
         self.handler.emit('HTTP_REQUEST', payload, 'BOTOCORE')
+        record = self._get_last_record()
         parsed_payload = payload.copy()
         parsed_payload['headers'] = dict(parsed_payload['headers'])
-        self._assert_last_record_structure(
-            'HTTP_REQUEST', parsed_payload, 'BOTOCORE'
-        )
+        parsed_payload['body'] = 'body with no invalid utf-8 bytes in it'
+        self._assert_record_has_command_id(record)
+        self._assert_expected_event_type('HTTP_REQUEST', record)
+        self._assert_expected_payload(parsed_payload, record)
+        self._assert_expected_source('BOTOCORE', record)
 
     def test_can_emit_http_response_record(self):
         # HTTP_RESPONSE also contains a binary response in its body, but it
@@ -420,13 +446,16 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
             'streaming': False
         }
         self.handler.emit('HTTP_RESPONSE', payload, 'BOTOCORE')
+        record = self._get_last_record()
         parsed_payload = payload.copy()
         parsed_payload['headers'] = dict(parsed_payload['headers'])
-        self._assert_last_record_structure(
-            'HTTP_RESPONSE', parsed_payload, 'BOTOCORE'
-        )
+        parsed_payload['body'] = 'body with no invalid utf-8 bytes in it'
+        self._assert_record_has_command_id(record)
+        self._assert_expected_event_type('HTTP_RESPONSE', record)
+        self._assert_expected_payload(parsed_payload, record)
+        self._assert_expected_source('BOTOCORE', record)
 
-    def test_can_emit_parsed_response_record_with(self):
+    def test_can_emit_parsed_response_record(self):
         payload = {
             "Count": 1,
             "Items": [
@@ -440,9 +469,11 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
             "ConsumedCapacity": None
         }
         self.handler.emit('PARSED_RESPONSE', payload, 'BOTOCORE')
-        self._assert_last_record_structure(
-            'PARSED_RESPONSE', payload, 'BOTOCORE'
-        )
+        record = self._get_last_record()
+        self._assert_record_has_command_id(record)
+        self._assert_expected_event_type('PARSED_RESPONSE', record)
+        self._assert_expected_payload(payload, record)
+        self._assert_expected_source('BOTOCORE', record)
 
     def test_can_emit_parsed_response_record_with_binary(self):
         # PARSED_RESPONSE can also contain raw bytes
@@ -451,7 +482,7 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
             "Items": [
                 {
                     "bitkey": {
-                        "B": b"binary data \xfe\ed"
+                        "B": b"binary data \xfe\xed"
                     }
                 }
             ],
@@ -459,8 +490,24 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
             "ConsumedCapacity": None
         }
         self.handler.emit('PARSED_RESPONSE', payload, 'BOTOCORE')
+        record = self._get_last_record()
         parsed_payload = payload.copy()
         parsed_payload['Items'][0]['bitkey']['B'] = "<Byte sequence>"
-        self._assert_last_record_structure(
-            'PARSED_RESPONSE', parsed_payload, 'BOTOCORE'
-        )
+        self._assert_record_has_command_id(record)
+        self._assert_expected_event_type('PARSED_RESPONSE', record)
+        self._assert_expected_payload(payload, record)
+        self._assert_expected_source('BOTOCORE', record)
+
+    def test_does_not_mutate_dict(self):
+        payload = {
+            "bitkey": b"binary data \xfe\xed"
+        }
+        copy_payload = payload.copy()
+        self.handler.emit('test', payload, 'BOTOCORE')
+        self.assertEqual(payload, copy_payload)
+
+    def test_does_not_mutate_list(self):
+        payload = ['non binary data', b"binary data \xfe\xed"]
+        copy_payload = list(payload)
+        self.handler.emit('test', payload, 'BOTOCORE')
+        self.assertEqual(payload, copy_payload)

@@ -38,7 +38,6 @@ class DatabaseConnection(object):
           payload TEXT
         )"""
     _ENABLE_WAL = 'PRAGMA journal_mode=WAL'
-    _DEFAULT_DATABASE_NAME = 'history.db'
 
     def __init__(self, db_filename):
         self._connection = sqlite3.connect(
@@ -79,7 +78,7 @@ class PayloadSerializer(json.JSONEncoder):
     def _encode_datetime(self, obj):
         return obj.isoformat()
 
-    def _try_encode(self, obj):
+    def _try_decode_bytes(self, obj):
         try:
             obj = obj.decode('utf-8')
         except UnicodeDecodeError:
@@ -88,7 +87,7 @@ class PayloadSerializer(json.JSONEncoder):
 
     def _remove_non_unicode_stings(self, obj):
         if isinstance(obj, str):
-            obj = self._try_encode(obj)
+            obj = self._try_decode_bytes(obj)
         elif isinstance(obj, dict):
             obj = dict((k, self._remove_non_unicode_stings(v)) for k, v
                        in obj.items())
@@ -122,10 +121,10 @@ class PayloadSerializer(json.JSONEncoder):
         elif isinstance(obj, binary_type):
             # In PY3 the bytes type differs from the str type so the default
             # method will be called when a bytes object is encountered.
-            # We call the same _try_encode method that either decodes it to a
-            # utf-8 string and continues serialization, or removes the value
-            # if it is not valid utf-8 string.
-            return self._try_encode(obj)
+            # We call the same _try_decode_bytes method that either decodes it
+            # to a utf-8 string and continues serialization, or removes the
+            # value if it is not valid utf-8 string.
+            return self._try_decode_bytes(obj)
         else:
             return repr(obj)
 

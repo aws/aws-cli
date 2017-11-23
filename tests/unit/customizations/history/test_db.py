@@ -630,7 +630,7 @@ class TestRecordBuilder(unittest.TestCase):
         self.assertTrue('command_id' in record)
         self.assertTrue('timestamp' in record)
 
-    def test_can_process_http_request_with_noone_body(self):
+    def test_can_process_http_request_with_none_body(self):
         try:
             self.builder.build_record('HTTP_REQUEST', {'body': None}, '')
         except ValueError:

@@ -391,7 +391,21 @@ class ShowCommand(BasicCommand):
         {'name': 'format', 'choices': FORMATTERS.keys(),
          'default': 'detailed', 'help_text': (
             'Specifies which format to use in showing the events for '
-            'the specified CLI command.')}
+            'the specified CLI command. The following formats are '
+            'supported:\n\n'
+            '<ul>'
+            '<li> detailed - This the default format. It prints out a '
+            'detailed overview of the CLI command ran. It displays all '
+            'of the key events in the command lifecycle where each '
+            'important event has a title and its important values '
+            'underneath. The events are ordered by timestamp and events of '
+            'the same API call are associated together with the '
+            '[``api_id``] notation where events that share the same '
+            '``api_id`` belong to the lifecycle of the same API call.'
+            '</li>'
+            '</ul>'
+            )
+         }
     ]
 
     def __init__(self, session, db_reader=None, output_stream_factory=None):

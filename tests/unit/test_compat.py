@@ -88,42 +88,36 @@ class ShellQuoteTestCase(object):
 
 
 class TestIsWindows(unittest.TestCase):
-    @mock.patch('platform.system')
-    def test_is_windows(self, mock_system):
-        mock_system.return_value = 'Windows'
+    @mock.patch('os.name', 'nt')
+    def test_is_windows(self):
         self.assertTrue(is_windows())
 
-    @mock.patch('platform.system')
-    def test_is_non_windows(self, mock_system):
-        mock_system.return_value = 'Darwin'
+    @mock.patch('os.name', 'posix')
+    def test_is_non_windows(self):
         self.assertFalse(is_windows())
 
 
 class TestGetPopenPagerCmd(unittest.TestCase):
-    @mock.patch('platform.system')
-    def test_windows(self, mock_system):
-        mock_system.return_value = 'Windows'
+    @mock.patch('os.name', 'nt')
+    def test_windows(self):
         popen_cmd, kwargs = get_popen_pager_cmd_with_kwargs()
         self.assertEqual('more', popen_cmd)
         self.assertEqual({'shell': True}, kwargs)
 
-    @mock.patch('platform.system')
-    def test_windows_with_specific_pager(self, mock_system):
-        mock_system.return_value = 'Windows'
+    @mock.patch('os.name', 'nt')
+    def test_windows_with_specific_pager(self):
         popen_cmd, kwargs = get_popen_pager_cmd_with_kwargs('less -R')
         self.assertEqual('less -R', popen_cmd)
         self.assertEqual({'shell': True}, kwargs)
 
-    @mock.patch('platform.system')
-    def test_non_windows(self, mock_system):
-        mock_system.return_value = 'Darwin'
+    @mock.patch('os.name', 'posix')
+    def test_non_windows(self):
         popen_cmd, kwargs = get_popen_pager_cmd_with_kwargs()
         self.assertEqual(['less', '-R'], popen_cmd)
         self.assertEqual({}, kwargs)
 
-    @mock.patch('platform.system')
-    def test_non_windows_specific_pager(self, mock_system):
-        mock_system.return_value = 'Darwin'
+    @mock.patch('os.name', 'posix')
+    def test_non_windows_specific_pager(self):
         popen_cmd, kwargs = get_popen_pager_cmd_with_kwargs('more')
         self.assertEqual(['more'], popen_cmd)
         self.assertEqual({}, kwargs)

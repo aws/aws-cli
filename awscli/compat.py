@@ -276,7 +276,7 @@ def _windows_shell_quote(s):
 
 
 def is_windows():
-    return platform.system() == 'Windows'
+    return os.name == 'nt'
 
 
 def get_popen_pager_cmd_with_kwargs(pager_cmd=None):

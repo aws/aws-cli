@@ -29,7 +29,7 @@ LOG = logging.getLogger(__name__)
 
 HISTORY_FILENAME_ENV_VAR = 'AWS_CLI_HISTORY_FILE'
 DEFAULT_HISTORY_FILENAME = os.path.expanduser(
-    os.path.join('~', '.aws', 'history', 'history.db'))
+    os.path.join('~', '.aws', 'cli', 'history', 'history.db'))
 
 
 def get_history_db_filename():

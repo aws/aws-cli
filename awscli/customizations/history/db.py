@@ -174,6 +174,18 @@ class DatabaseRecordReader(object):
         (SELECT id FROM records WHERE timestamp =
         (SELECT max(timestamp) FROM records)) %s;""" % _ORDERING
     _GET_RECORDS_BY_ID = 'SELECT * from records where id = ? %s' % _ORDERING
+    _GET_ALL_RECORDS = (
+        'SELECT a.id AS id_a, '
+        '    b.id AS id_b, '
+        '    a.timestamp as timestamp, '
+        '    a.payload AS args, '
+        '    b.payload AS rc '
+        'FROM records a, records b '
+        'where a.event_type == "CLI_ARGUMENTS" AND '
+        '    b.event_type = "CLI_RC" AND '
+        '    id_a == id_b '
+        '%s DESC' % _ORDERING
+    )
 
     def __init__(self, connection):
         self._connection = connection
@@ -198,6 +210,11 @@ class DatabaseRecordReader(object):
 
     def iter_records(self, record_id):
         cursor = self._connection.execute(self._GET_RECORDS_BY_ID, [record_id])
+        for row in cursor:
+            yield row
+
+    def iter_all_records(self):
+        cursor = self._connection.execute(self._GET_ALL_RECORDS)
         for row in cursor:
             yield row
 

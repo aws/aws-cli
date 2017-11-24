@@ -16,8 +16,11 @@ import datetime
 import contextlib
 import os
 import sys
+import subprocess
 
 from awscli.compat import six
+from awscli.compat import get_binary_stdout
+from awscli.compat import get_popen_kwargs_for_pager_cmd
 
 
 def split_on_commas(value):
@@ -155,3 +158,32 @@ def is_a_tty():
         return os.isatty(sys.stdout.fileno())
     except Exception as e:
         return False
+
+
+class OutputStreamFactory(object):
+    def __init__(self, popen=None):
+        self._popen = popen
+        if popen is None:
+            self._popen = subprocess.Popen
+
+    @contextlib.contextmanager
+    def get_pager_stream(self, preferred_pager=None):
+        popen_kwargs = self._get_process_pager_kwargs(preferred_pager)
+        try:
+            process = self._popen(**popen_kwargs)
+            yield process.stdin
+        except IOError:
+            # Ignore IOError since this can commonly be raised when a pager
+            # is closed abruptly and causes a broken pipe.
+            pass
+        finally:
+            process.communicate()
+
+    @contextlib.contextmanager
+    def get_stdout_stream(self):
+        yield get_binary_stdout()
+
+    def _get_process_pager_kwargs(self, pager_cmd):
+        kwargs = get_popen_kwargs_for_pager_cmd(pager_cmd)
+        kwargs['stdin'] = subprocess.PIPE
+        return kwargs

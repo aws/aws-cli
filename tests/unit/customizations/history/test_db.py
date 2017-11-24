@@ -15,6 +15,7 @@ import re
 import json
 import threading
 import datetime
+import numbers
 
 import mock
 
@@ -103,7 +104,7 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
                     'timestamp': mock.ANY
         })
         self.assertTrue(self.UUID_PATTERN.match(call['command_id']))
-        self.assertIsInstance(call['timestamp'], int)
+        self.assertIsInstance(call['timestamp'], numbers.Number)
 
     def test_emit_does_write_cli_version_record(self):
         writer = mock.Mock(DatabaseRecordWriter)
@@ -119,7 +120,7 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
                     'timestamp': mock.ANY
         })
         self.assertTrue(self.UUID_PATTERN.match(call['command_id']))
-        self.assertIsInstance(call['timestamp'], int)
+        self.assertIsInstance(call['timestamp'], numbers.Number)
 
     def test_emit_does_write_api_call_record(self):
         writer = mock.Mock(DatabaseRecordWriter)
@@ -649,12 +650,12 @@ class TestRecordBuilder(unittest.TestCase):
     def test_does_inject_timestamp(self):
         record = self.builder.build_record('TEST', '', '')
         self.assertTrue('timestamp' in record)
-        self.assertTrue(isinstance(record['timestamp'], int))
+        self.assertTrue(isinstance(record['timestamp'], numbers.Number))
 
     def test_does_inject_command_id(self):
         record = self.builder.build_record('TEST', '', '')
         self.assertTrue('timestamp' in record)
-        self.assertTrue(isinstance(record['timestamp'], int))
+        self.assertTrue(isinstance(record['timestamp'], numbers.Number))
         self.assertTrue('command_id' in record)
         self.assertTrue(self.UUID_PATTERN.match(record['command_id']))
 

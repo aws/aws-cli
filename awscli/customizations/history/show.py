@@ -10,11 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import contextlib
 import datetime
 import json
-import os
-import subprocess
 import sys
 import xml.parsers.expat
 import xml.dom.minidom
@@ -22,15 +19,7 @@ import xml.dom.minidom
 import colorama
 
 from awscli.compat import six
-from awscli.compat import is_windows
-from awscli.compat import get_binary_stdout
-from awscli.compat import get_popen_kwargs_for_pager_cmd
-from awscli.utils import is_a_tty
-from awscli.customizations.commands import BasicCommand
-from awscli.customizations.history.constants import HISTORY_FILENAME_ENV_VAR
-from awscli.customizations.history.constants import DEFAULT_HISTORY_FILENAME
-from awscli.customizations.history.db import DatabaseRecordReader
-from awscli.customizations.history.db import DatabaseConnection
+from awscli.customizations.history.commands import HistorySubcommand
 
 
 class Formatter(object):
@@ -328,51 +317,7 @@ class SectionValuePrettyFormatter(object):
         return False
 
 
-class OutputStreamFactory(object):
-    def __init__(self, popen=None):
-        self._popen = popen
-        if popen is None:
-            self._popen = subprocess.Popen
-
-    def get_output_stream(self, stream_type):
-        """Get an output stream to write to
-
-        The value is wrapped in a context manager so make sure to use
-        a with statement.
-
-        :type stream_type: string
-        :param stream_type: The name of the stream to get. Valid values
-             consist of pager and stdout.
-        """
-        if stream_type == 'pager':
-            return self._get_pager_stream()
-        elif stream_type == 'stdout':
-            return self._get_stdout_stream()
-        else:
-            raise ValueError(
-                'Stream type of %s is not supported' % stream_type)
-
-    @contextlib.contextmanager
-    def _get_pager_stream(self):
-        popen_kwargs = self._get_process_pager_kwargs()
-        try:
-            process = self._popen(**popen_kwargs)
-            yield process.stdin
-        finally:
-            process.communicate()
-
-    @contextlib.contextmanager
-    def _get_stdout_stream(self):
-        yield get_binary_stdout()
-
-    def _get_process_pager_kwargs(self):
-        kwargs = get_popen_kwargs_for_pager_cmd(
-            os.environ.get('PAGER'))
-        kwargs['stdin'] = subprocess.PIPE
-        return kwargs
-
-
-class ShowCommand(BasicCommand):
+class ShowCommand(HistorySubcommand):
     NAME = 'show'
     DESCRIPTION = (
         'Shows the various events related to running a specific CLI command. '
@@ -418,13 +363,6 @@ class ShowCommand(BasicCommand):
          }
     ]
 
-    def __init__(self, session, db_reader=None, output_stream_factory=None):
-        super(ShowCommand, self).__init__(session)
-        self._db_reader = db_reader
-        self._output_stream_factory = output_stream_factory
-        if output_stream_factory is None:
-            self._output_stream_factory = OutputStreamFactory()
-
     def _run_main(self, parsed_args, parsed_globals):
         self._connect_to_history_db()
         try:
@@ -438,23 +376,8 @@ class ShowCommand(BasicCommand):
             self._close_history_db()
         return 0
 
-    def _connect_to_history_db(self):
-        if self._db_reader is None:
-            connection = DatabaseConnection(self._get_history_db_filename())
-            self._db_reader = DatabaseRecordReader(connection)
-
     def _close_history_db(self):
         self._db_reader.close()
-
-    def _get_history_db_filename(self):
-        filename = os.environ.get(
-            HISTORY_FILENAME_ENV_VAR, DEFAULT_HISTORY_FILENAME)
-        if not os.path.exists(filename):
-            raise RuntimeError(
-                'Could not locate history. Make sure cli_history is set to '
-                'enabled in the ~/.aws/config file'
-            )
-        return filename
 
     def _validate_args(self, parsed_args):
         if parsed_args.exclude and parsed_args.include:
@@ -472,18 +395,6 @@ class ShowCommand(BasicCommand):
             formatter_kwargs['colorize'] = self._should_use_color(
                 parsed_globals)
         return self.FORMATTERS[format_type](**formatter_kwargs)
-
-    def _should_use_color(self, parsed_globals):
-        if parsed_globals.color == 'on':
-            return True
-        elif parsed_globals.color == 'off':
-            return False
-        return is_a_tty() and not is_windows
-
-    def _get_output_stream(self):
-        if is_a_tty():
-            return self._output_stream_factory.get_output_stream('pager')
-        return self._output_stream_factory.get_output_stream('stdout')
 
     def _get_record_iterator(self, parsed_args):
         if parsed_args.command_id == 'latest':

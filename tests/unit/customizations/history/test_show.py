@@ -12,18 +12,17 @@
 # language governing permissions and limitations under the License.
 import os
 import argparse
-import subprocess
 import xml.dom.minidom
 
 from botocore.session import Session
 
 from awscli.compat import ensure_text_type
 from awscli.compat import BytesIO
+from awscli.utils import OutputStreamFactory
 from awscli.testutils import unittest, mock, FileCreator
 from awscli.customizations.history.show import ShowCommand
 from awscli.customizations.history.show import Formatter
 from awscli.customizations.history.show import DetailedFormatter
-from awscli.customizations.history.show import OutputStreamFactory
 from awscli.customizations.history.db import DatabaseRecordReader
 
 
@@ -556,77 +555,6 @@ class TestDetailedFormatter(unittest.TestCase):
         self.assertEqual('', collected_output)
 
 
-class TestOutputStreamFactory(unittest.TestCase):
-    def setUp(self):
-        self.popen = mock.Mock(subprocess.Popen)
-        self.stream_factory = OutputStreamFactory(self.popen)
-
-    def test_unknown_option(self):
-        with self.assertRaises(ValueError):
-            self.stream_factory.get_output_stream('unknown')
-
-    @mock.patch(
-        'awscli.customizations.history.show.get_popen_kwargs_for_pager_cmd')
-    def test_pager(self, mock_get_popen_pager):
-        mock_get_popen_pager.return_value = {
-                'args': ['mypager', '--option']
-        }
-        with mock.patch('os.environ', {}):
-            with self.stream_factory.get_output_stream('pager'):
-                mock_get_popen_pager.assert_called_with(None)
-                self.assertEqual(
-                    self.popen.call_args_list,
-                    [mock.call(
-                        args=['mypager', '--option'],
-                        stdin=subprocess.PIPE)]
-                )
-
-    @mock.patch(
-        'awscli.customizations.history.show.get_popen_kwargs_for_pager_cmd')
-    def test_env_configured_pager(self, mock_get_popen_pager):
-        environ = {'PAGER': 'mypager --option'}
-        mock_get_popen_pager.return_value = {
-            'args': ['mypager', '--option']
-        }
-        with mock.patch('os.environ', environ):
-            with self.stream_factory.get_output_stream('pager'):
-                mock_get_popen_pager.assert_called_with('mypager --option')
-                self.assertEqual(
-                    self.popen.call_args_list,
-                    [mock.call(
-                        args=['mypager', '--option'],
-                        stdin=subprocess.PIPE)]
-                )
-
-    @mock.patch(
-        'awscli.customizations.history.show.get_popen_kwargs_for_pager_cmd')
-    def test_pager_using_shell(self, mock_get_popen_pager):
-        mock_get_popen_pager.return_value = {
-            'args': 'mypager --option', 'shell': True
-        }
-        with mock.patch('os.environ', {}):
-            with self.stream_factory.get_output_stream('pager'):
-                mock_get_popen_pager.assert_called_with(None)
-                self.assertEqual(
-                    self.popen.call_args_list,
-                    [mock.call(
-                        args='mypager --option',
-                        stdin=subprocess.PIPE,
-                        shell=True)]
-                )
-
-    def test_exit_of_context_manager_for_pager(self):
-        with self.stream_factory.get_output_stream('pager'):
-            pass
-        returned_process = self.popen.return_value
-        self.assertTrue(returned_process.communicate.called)
-
-    @mock.patch('awscli.customizations.history.show.get_binary_stdout')
-    def test_stdout(self, mock_binary_out):
-        with self.stream_factory.get_output_stream('stdout'):
-            self.assertTrue(mock_binary_out.called)
-
-
 class TestShowCommand(unittest.TestCase):
     def setUp(self):
         self.session = mock.Mock(Session)
@@ -639,7 +567,10 @@ class TestShowCommand(unittest.TestCase):
         self.output_stream = mock.Mock()
         output_stream_context.__enter__.return_value = self.output_stream
 
-        self.output_stream_factory.get_output_stream.return_value = \
+        self.output_stream_factory.get_pager_stream.return_value = \
+            output_stream_context
+
+        self.output_stream_factory.get_stdout_stream.return_value = \
             output_stream_context
 
         self.db_reader = mock.Mock(DatabaseRecordReader)
@@ -672,7 +603,7 @@ class TestShowCommand(unittest.TestCase):
 
     def test_does_close_connection_with_error(self):
         self.parsed_args.command_id = 'latest'
-        self.output_stream_factory.get_output_stream.side_effect = FakeError
+        self.db_reader.iter_latest_records.side_effect = FakeError('ERROR')
         with self.assertRaises(FakeError):
             self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
         self.assertTrue(self.db_reader.close.called)
@@ -757,8 +688,8 @@ class TestShowCommand(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
 
-    @mock.patch('awscli.customizations.history.show.is_windows', False)
-    @mock.patch('awscli.customizations.history.show.is_a_tty')
+    @mock.patch('awscli.customizations.history.commands.is_windows', False)
+    @mock.patch('awscli.customizations.history.commands.is_a_tty')
     def test_detailed_formatter_is_a_tty(self, mock_is_a_tty):
         mock_is_a_tty.return_value = True
         self.formatter = mock.Mock(DetailedFormatter)
@@ -767,8 +698,7 @@ class TestShowCommand(unittest.TestCase):
         self.parsed_args.command_id = 'latest'
 
         self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
-        self.output_stream_factory.get_output_stream.assert_called_with(
-            'pager')
+        call = self.output_stream_factory.get_pager_stream.call_args
         self.assertEqual(
             self.formatter.call_args,
             mock.call(
@@ -777,8 +707,8 @@ class TestShowCommand(unittest.TestCase):
             )
         )
 
-    @mock.patch('awscli.customizations.history.show.is_windows', False)
-    @mock.patch('awscli.customizations.history.show.is_a_tty')
+    @mock.patch('awscli.customizations.history.commands.is_windows', False)
+    @mock.patch('awscli.customizations.history.commands.is_a_tty')
     def test_detailed_formatter_not_a_tty(self, mock_is_a_tty):
         mock_is_a_tty.return_value = False
         self.formatter = mock.Mock(DetailedFormatter)
@@ -787,8 +717,8 @@ class TestShowCommand(unittest.TestCase):
         self.parsed_args.command_id = 'latest'
 
         self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
-        self.output_stream_factory.get_output_stream.assert_called_with(
-            'stdout')
+        self.assertTrue(
+            self.output_stream_factory.get_stdout_stream.called)
         self.assertEqual(
             self.formatter.call_args,
             mock.call(
@@ -797,7 +727,7 @@ class TestShowCommand(unittest.TestCase):
             )
         )
 
-    @mock.patch('awscli.customizations.history.show.is_windows', True)
+    @mock.patch('awscli.customizations.history.commands.is_windows', True)
     def test_detailed_formatter_no_color_for_windows(self):
         self.formatter = mock.Mock(DetailedFormatter)
         self.add_formatter('detailed', self.formatter)
@@ -813,8 +743,8 @@ class TestShowCommand(unittest.TestCase):
             )
         )
 
-    @mock.patch('awscli.customizations.history.show.is_windows', True)
-    @mock.patch('awscli.customizations.history.show.is_a_tty')
+    @mock.patch('awscli.customizations.history.commands.is_windows', True)
+    @mock.patch('awscli.customizations.history.commands.is_a_tty')
     def test_force_color(self, mock_is_a_tty):
         self.formatter = mock.Mock(DetailedFormatter)
         self.add_formatter('detailed', self.formatter)
@@ -835,8 +765,8 @@ class TestShowCommand(unittest.TestCase):
             )
         )
 
-    @mock.patch('awscli.customizations.history.show.is_windows', False)
-    @mock.patch('awscli.customizations.history.show.is_a_tty')
+    @mock.patch('awscli.customizations.history.commands.is_windows', False)
+    @mock.patch('awscli.customizations.history.commands.is_a_tty')
     def test_disable_color(self, mock_is_a_tty):
         self.formatter = mock.Mock(DetailedFormatter)
         self.add_formatter('detailed', self.formatter)
@@ -856,3 +786,21 @@ class TestShowCommand(unittest.TestCase):
                 output=self.output_stream, colorize=False
             )
         )
+
+    @mock.patch('awscli.customizations.history.commands.is_windows', False)
+    @mock.patch('awscli.customizations.history.commands.is_a_tty')
+    def test_environment_pager_is_used(self, mock_is_a_tty):
+        mock_is_a_tty.return_value = True
+        self.formatter = mock.Mock(DetailedFormatter)
+        self.add_formatter('detailed', self.formatter)
+        self.parsed_args.format = 'detailed'
+        self.parsed_args.command_id = 'latest'
+
+        env = {
+            'PAGER': 'pager --options'
+        }
+        with mock.patch(
+                'awscli.customizations.history.commands.os.environ', env):
+            self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
+        self.output_stream_factory.get_pager_stream.assert_called_with(
+            'pager --options')

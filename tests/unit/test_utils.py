@@ -12,11 +12,13 @@
 # language governing permissions and limitations under the License.
 import signal
 import platform
+import subprocess
 import os
 
-from awscli.testutils import unittest, skip_if_windows
+from awscli.testutils import unittest, skip_if_windows, mock
 from awscli.utils import (split_on_commas, ignore_ctrl_c,
-                          find_service_and_method_in_event_name)
+                          find_service_and_method_in_event_name,
+                          OutputStreamFactory)
 
 
 class TestCSVSplit(unittest.TestCase):
@@ -120,3 +122,84 @@ class TestFindServiceAndOperationNameFromEvent(unittest.TestCase):
         service, operation = find_service_and_method_in_event_name(event_name)
         self.assertIs(service, None)
         self.assertIs(operation, None)
+
+
+class MockProcess(object):
+    @property
+    def stdin(self):
+        raise IOError('broken pipe')
+
+    def communicate(self):
+        pass
+
+
+class TestOutputStreamFactory(unittest.TestCase):
+    def setUp(self):
+        self.popen = mock.Mock(subprocess.Popen)
+        self.stream_factory = OutputStreamFactory(self.popen)
+
+    @mock.patch('awscli.utils.get_popen_kwargs_for_pager_cmd')
+    def test_pager(self, mock_get_popen_pager):
+        mock_get_popen_pager.return_value = {
+                'args': ['mypager', '--option']
+        }
+        with self.stream_factory.get_pager_stream():
+            mock_get_popen_pager.assert_called_with(None)
+            self.assertEqual(
+                self.popen.call_args_list,
+                [mock.call(
+                    args=['mypager', '--option'],
+                    stdin=subprocess.PIPE)]
+            )
+
+    @mock.patch('awscli.utils.get_popen_kwargs_for_pager_cmd')
+    def test_env_configured_pager(self, mock_get_popen_pager):
+        mock_get_popen_pager.return_value = {
+            'args': ['mypager', '--option']
+        }
+        with self.stream_factory.get_pager_stream('mypager --option'):
+            mock_get_popen_pager.assert_called_with('mypager --option')
+            self.assertEqual(
+                self.popen.call_args_list,
+                [mock.call(
+                    args=['mypager', '--option'],
+                    stdin=subprocess.PIPE)]
+            )
+
+    @mock.patch('awscli.utils.get_popen_kwargs_for_pager_cmd')
+    def test_pager_using_shell(self, mock_get_popen_pager):
+        mock_get_popen_pager.return_value = {
+            'args': 'mypager --option', 'shell': True
+        }
+        with self.stream_factory.get_pager_stream():
+            mock_get_popen_pager.assert_called_with(None)
+            self.assertEqual(
+                self.popen.call_args_list,
+                [mock.call(
+                    args='mypager --option',
+                    stdin=subprocess.PIPE,
+                    shell=True)]
+            )
+
+    def test_exit_of_context_manager_for_pager(self):
+        with self.stream_factory.get_pager_stream():
+            pass
+        returned_process = self.popen.return_value
+        self.assertTrue(returned_process.communicate.called)
+
+    @mock.patch('awscli.utils.get_binary_stdout')
+    def test_stdout(self, mock_binary_out):
+        with self.stream_factory.get_stdout_stream():
+            self.assertTrue(mock_binary_out.called)
+
+    def test_can_silence_io_error_from_pager(self):
+        self.popen.return_value = MockProcess()
+        try:
+            # RuntimeError is caught here since a runtime error is raised
+            # when an IOError is raised before the context manager yields.
+            # If we ignore it like this we will actually see the IOError.
+            with self.assertRaises(RuntimeError):
+                with self.stream_factory.get_pager_stream():
+                    pass
+        except IOError:
+            self.fail('Should not raise IOError')

@@ -176,9 +176,10 @@ class DetailedFormatter(Formatter):
         },
     }
 
-    _TITLE_COLOR = colorama.Fore.YELLOW + colorama.Style.BRIGHT
-    _DESCRIPTION_COLOR = colorama.Fore.CYAN
-    _DESCRIPTION_VALUE_COLOR = colorama.Style.NORMAL
+    _COMPONENT_COLORS = {
+        'title': colorama.Style.BRIGHT,
+        'description': colorama.Fore.CYAN
+    }
 
     def __init__(self, output=None, include=None, exclude=None, colorize=True):
         super(DetailedFormatter, self).__init__(output, include, exclude)
@@ -209,9 +210,9 @@ class DetailedFormatter(Formatter):
         value = event_record_payload
         if 'payload_key' in value_definition:
             value = event_record_payload[value_definition['payload_key']]
-        formatted_value = self._format_value_with_description(
-            value, value_description, event_record,
-            value_definition.get('value_format')
+        formatted_value = self._format_description(value_description)
+        formatted_value += self._format_value(
+            value, event_record, value_definition.get('value_format')
         )
         self._write_output(formatted_value)
 
@@ -225,12 +226,12 @@ class DetailedFormatter(Formatter):
         api_num = self._get_api_num(event_record)
         if api_num is not None:
             formatted_title = ('[%s] ' % api_num) + formatted_title
-        formatted_title = self._color_title(formatted_title)
+        formatted_title = self._color_if_configured(formatted_title, 'title')
         formatted_title += '\n'
 
-        formatted_timestamp = self._format_value_with_description(
-            event_record['timestamp'], 'at time', event_record,
-            value_format='timestamp')
+        formatted_timestamp = self._format_description('at time')
+        formatted_timestamp += self._format_value(
+            event_record['timestamp'], event_record, value_format='timestamp')
 
         return '\n' + formatted_title + formatted_timestamp
 
@@ -243,22 +244,17 @@ class DetailedFormatter(Formatter):
                 self._num_api_calls += 1
             return self._request_id_to_api_num[request_id]
 
-    def _format_value_with_description(self, value, value_description,
-                                       event_record, value_format=None,
-                                       description_color=_DESCRIPTION_COLOR):
-        formatted_value_with_description = self._color_description(
-            value_description + ': ', description_color)
-        formatted_value = self._format_value(value, event_record, value_format)
-        formatted_value_with_description += self._color_description_value(
-            formatted_value)
-        formatted_value_with_description += '\n'
-        return formatted_value_with_description
+    def _format_description(self, value_description):
+        return self._color_if_configured(
+            value_description + ': ', 'description')
 
     def _format_value(self, value, event_record, value_format=None):
         if value_format:
-            return getattr(self, '_format_' + value_format)(
+            formatted_value = getattr(self, '_format_' + value_format)(
                 value, event_record)
-        return str(value)
+        else:
+            formatted_value = str(value)
+        return formatted_value + '\n'
 
     def _format_timestamp(self, event_timestamp, event_record=None):
         return datetime.datetime.fromtimestamp(
@@ -280,25 +276,25 @@ class DetailedFormatter(Formatter):
             return body
 
     def _format_http_body_xml(self, body):
+        # The body is parsed and whitespace is stripped because some services
+        # like ec2 already return pretty XML and if toprettyxml() was applied
+        # to it, it will add even more newlines and spaces on top of it.
+        # So this just removes all whitespace from the start to prevent the
+        # chance of adding to much newlines and spaces when toprettyxml()
+        # is called.
         stripped_body = self._strip_whitespace(body)
         xml_dom = xml.dom.minidom.parseString(stripped_body)
         return xml_dom.toprettyxml(indent=' '*4, newl='\n')
 
     def _format_http_body_json(self, body):
+        # The json body is loaded so it can be dumped in a format that
+        # is desired.
         obj = json.loads(body)
         return self._format_dictionary(obj)
 
-    def _color_title(self, text):
-        return self._color_if_configured(text, self._TITLE_COLOR)
-
-    def _color_description(self, text, color=_DESCRIPTION_COLOR):
-        return self._color_if_configured(text, color)
-
-    def _color_description_value(self, text):
-        return self._color_if_configured(text, self._DESCRIPTION_VALUE_COLOR)
-
-    def _color_if_configured(self, text, color):
+    def _color_if_configured(self, text, component):
         if self._colorize:
+            color = self._COMPONENT_COLORS[component]
             return color + text + colorama.Style.RESET_ALL
         return text
 

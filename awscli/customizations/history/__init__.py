@@ -28,6 +28,7 @@ from awscli.customizations.history.show import ShowCommand
 
 
 LOG = logging.getLogger(__name__)
+HISTORY_RECORDER = get_global_history_recorder()
 
 
 def register_history_mode(event_handlers):
@@ -54,9 +55,8 @@ def attach_history_handler(session, parsed_args, **kwargs):
         record_builder = RecordBuilder()
         db_handler = DatabaseHistoryHandler(writer, record_builder)
 
-        history_recorder = get_global_history_recorder()
-        history_recorder.add_handler(db_handler)
-        history_recorder.enable()
+        HISTORY_RECORDER.add_handler(db_handler)
+        HISTORY_RECORDER.enable()
 
 
 def _should_enable_cli_history(session, parsed_args):

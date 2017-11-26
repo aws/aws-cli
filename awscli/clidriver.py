@@ -50,12 +50,13 @@ from awscli.utils import emit_top_level_args_parsed_event
 LOG = logging.getLogger('awscli.clidriver')
 LOG_FORMAT = (
     '%(asctime)s - %(threadName)s - %(name)s - %(levelname)s - %(message)s')
+HISTORY_RECORDER = get_global_history_recorder()
 
 
 def main():
     driver = create_clidriver()
     rc = driver.main()
-    get_global_history_recorder().record('CLI_RC', rc, 'CLI')
+    HISTORY_RECORDER.record('CLI_RC', rc, 'CLI')
     return rc
 
 
@@ -200,10 +201,9 @@ class CLIDriver(object):
             # command table.  This is why it's in the try/except clause.
             self._handle_top_level_args(parsed_args)
             self._emit_session_event(parsed_args)
-            history_recorder = get_global_history_recorder()
-            history_recorder.record(
+            HISTORY_RECORDER.record(
                 'CLI_VERSION', self.session.user_agent(), 'CLI')
-            history_recorder.record('CLI_ARGUMENTS', args, 'CLI')
+            HISTORY_RECORDER.record('CLI_ARGUMENTS', args, 'CLI')
             return command_table[parsed_args.command](remaining, parsed_args)
         except UnknownArgumentError as e:
             sys.stderr.write("usage: %s\n" % USAGE)

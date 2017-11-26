@@ -47,11 +47,21 @@ class TestShowCommand(BaseAWSCommandParamsTest):
         # runs could have injected handlers onto it as all of the tests
         # are ran in the same process.
         history_recorder = HistoryRecorder()
-        patch_get_history_recorder = mock.patch(
-            'botocore.history.get_global_history_recorder', history_recorder)
-        get_history_recorder_mock = patch_get_history_recorder.start()
-        get_history_recorder_mock.return_value = history_recorder
-        self.addCleanup(patch_get_history_recorder.stop)
+
+        # The HISTORY_RECORDER is instantiated on module import before we
+        # doing any patching which means we cannot simply patch
+        # botocore.get_global_history_recorder as the objects are already
+        # instantiated as so we have to individually patch each one of these...
+        self._apply_history_recorder_patch(
+            'awscli.clidriver', history_recorder)
+        self._apply_history_recorder_patch(
+            'awscli.customizations.history', history_recorder)
+
+    def _apply_history_recorder_patch(self, module, history_recorder):
+        patch_history_recorder = mock.patch(
+            module + '.HISTORY_RECORDER', history_recorder)
+        patch_history_recorder.start()
+        self.addCleanup(patch_history_recorder.stop)
 
     def tearDown(self):
         super(TestShowCommand, self).tearDown()

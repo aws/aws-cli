@@ -278,7 +278,7 @@ def _windows_shell_quote(s):
     return new_s
 
 
-def get_popen_pager_cmd_with_kwargs(pager_cmd=None):
+def get_popen_kwargs_for_pager_cmd(pager_cmd=None):
     """Returns the default pager to use dependent on platform
 
     :rtype: str
@@ -296,4 +296,5 @@ def get_popen_pager_cmd_with_kwargs(pager_cmd=None):
         popen_kwargs = {'shell': True}
     else:
         pager_cmd = shlex.split(pager_cmd)
-    return pager_cmd, popen_kwargs
+    popen_kwargs['args'] = pager_cmd
+    return popen_kwargs

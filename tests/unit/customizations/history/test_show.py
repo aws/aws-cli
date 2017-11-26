@@ -550,44 +550,53 @@ class TestOutputStreamFactory(unittest.TestCase):
             self.stream_factory.get_output_stream('unknown')
 
     @mock.patch(
-        'awscli.customizations.history.show.get_popen_pager_cmd_with_kwargs')
+        'awscli.customizations.history.show.get_popen_kwargs_for_pager_cmd')
     def test_pager(self, mock_get_popen_pager):
-        mock_get_popen_pager.return_value = (
-            ['mypager', '--option'], {})
-        with mock.patch('os.environ', {}):
-            with self.stream_factory.get_output_stream('pager'):
-                mock_get_popen_pager.assert_called_with(None)
-                self.assertEqual(
-                    self.popen.call_args_list,
-                    [mock.call(['mypager', '--option'], stdin=subprocess.PIPE)]
-                )
-
-    @mock.patch(
-        'awscli.customizations.history.show.get_popen_pager_cmd_with_kwargs')
-    def test_env_configured_pager(self, mock_get_popen_pager):
-        environ = {'PAGER': 'mypager --option'}
-        mock_get_popen_pager.return_value = (
-            ['mypager', '--option'], {})
-        with mock.patch('os.environ', environ):
-            with self.stream_factory.get_output_stream('pager'):
-                mock_get_popen_pager.assert_called_with('mypager --option')
-                self.assertEqual(
-                    self.popen.call_args_list,
-                    [mock.call(['mypager', '--option'], stdin=subprocess.PIPE)]
-                )
-
-    @mock.patch(
-        'awscli.customizations.history.show.get_popen_pager_cmd_with_kwargs')
-    def test_pager_using_shell(self, mock_get_popen_pager):
-        mock_get_popen_pager.return_value = (
-            'mypager --option', {'shell': True})
+        mock_get_popen_pager.return_value = {
+                'args': ['mypager', '--option']
+        }
         with mock.patch('os.environ', {}):
             with self.stream_factory.get_output_stream('pager'):
                 mock_get_popen_pager.assert_called_with(None)
                 self.assertEqual(
                     self.popen.call_args_list,
                     [mock.call(
-                        'mypager --option', stdin=subprocess.PIPE, shell=True)]
+                        args=['mypager', '--option'],
+                        stdin=subprocess.PIPE)]
+                )
+
+    @mock.patch(
+        'awscli.customizations.history.show.get_popen_kwargs_for_pager_cmd')
+    def test_env_configured_pager(self, mock_get_popen_pager):
+        environ = {'PAGER': 'mypager --option'}
+        mock_get_popen_pager.return_value = {
+            'args': ['mypager', '--option']
+        }
+        with mock.patch('os.environ', environ):
+            with self.stream_factory.get_output_stream('pager'):
+                mock_get_popen_pager.assert_called_with('mypager --option')
+                self.assertEqual(
+                    self.popen.call_args_list,
+                    [mock.call(
+                        args=['mypager', '--option'],
+                        stdin=subprocess.PIPE)]
+                )
+
+    @mock.patch(
+        'awscli.customizations.history.show.get_popen_kwargs_for_pager_cmd')
+    def test_pager_using_shell(self, mock_get_popen_pager):
+        mock_get_popen_pager.return_value = {
+            'args': 'mypager --option', 'shell': True
+        }
+        with mock.patch('os.environ', {}):
+            with self.stream_factory.get_output_stream('pager'):
+                mock_get_popen_pager.assert_called_with(None)
+                self.assertEqual(
+                    self.popen.call_args_list,
+                    [mock.call(
+                        args='mypager --option',
+                        stdin=subprocess.PIPE,
+                        shell=True)]
                 )
 
     def test_exit_of_context_manager_for_pager(self):

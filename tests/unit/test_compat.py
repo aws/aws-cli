@@ -15,7 +15,7 @@ from botocore.compat import six
 
 from awscli.compat import ensure_text_type
 from awscli.compat import compat_shell_quote
-from awscli.compat import get_popen_pager_cmd_with_kwargs
+from awscli.compat import get_popen_kwargs_for_pager_cmd
 from awscli.testutils import mock, unittest
 
 
@@ -89,24 +89,20 @@ class ShellQuoteTestCase(object):
 class TestGetPopenPagerCmd(unittest.TestCase):
     @mock.patch('awscli.compat.is_windows', True)
     def test_windows(self):
-        popen_cmd, kwargs = get_popen_pager_cmd_with_kwargs()
-        self.assertEqual('more', popen_cmd)
-        self.assertEqual({'shell': True}, kwargs)
+        kwargs = get_popen_kwargs_for_pager_cmd()
+        self.assertEqual({'args': 'more', 'shell': True}, kwargs)
 
     @mock.patch('awscli.compat.is_windows', True)
     def test_windows_with_specific_pager(self):
-        popen_cmd, kwargs = get_popen_pager_cmd_with_kwargs('less -R')
-        self.assertEqual('less -R', popen_cmd)
-        self.assertEqual({'shell': True}, kwargs)
+        kwargs = get_popen_kwargs_for_pager_cmd('less -R')
+        self.assertEqual({'args': 'less -R', 'shell': True}, kwargs)
 
     @mock.patch('awscli.compat.is_windows', False)
     def test_non_windows(self):
-        popen_cmd, kwargs = get_popen_pager_cmd_with_kwargs()
-        self.assertEqual(['less', '-R'], popen_cmd)
-        self.assertEqual({}, kwargs)
+        kwargs = get_popen_kwargs_for_pager_cmd()
+        self.assertEqual({'args': ['less', '-R']}, kwargs)
 
     @mock.patch('awscli.compat.is_windows', False)
     def test_non_windows_specific_pager(self):
-        popen_cmd, kwargs = get_popen_pager_cmd_with_kwargs('more')
-        self.assertEqual(['more'], popen_cmd)
-        self.assertEqual({}, kwargs)
+        kwargs = get_popen_kwargs_for_pager_cmd('more')
+        self.assertEqual({'args': ['more']}, kwargs)

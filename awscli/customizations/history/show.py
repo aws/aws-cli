@@ -24,7 +24,7 @@ import colorama
 from awscli.compat import six
 from awscli.compat import is_windows
 from awscli.compat import get_binary_stdout
-from awscli.compat import get_popen_pager_cmd_with_kwargs
+from awscli.compat import get_popen_kwargs_for_pager_cmd
 from awscli.utils import is_a_tty
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.history.db import get_history_db_filename
@@ -345,8 +345,8 @@ class OutputStreamFactory(object):
 
     @contextlib.contextmanager
     def _get_pager_stream(self):
-        pager_cmd, kwargs = self._get_process_pager_with_kwargs()
-        process = self._popen(pager_cmd, **kwargs)
+        popen_kwargs = self._get_process_pager_kwargs()
+        process = self._popen(**popen_kwargs)
         yield process.stdin
         process.stdin.close()
         process.wait()
@@ -355,11 +355,11 @@ class OutputStreamFactory(object):
     def _get_stdout_stream(self):
         yield get_binary_stdout()
 
-    def _get_process_pager_with_kwargs(self):
-        pager_cmd, kwargs = get_popen_pager_cmd_with_kwargs(
+    def _get_process_pager_kwargs(self):
+        kwargs = get_popen_kwargs_for_pager_cmd(
             os.environ.get('PAGER'))
         kwargs['stdin'] = subprocess.PIPE
-        return pager_cmd, kwargs
+        return kwargs
 
 
 class ShowCommand(BasicCommand):

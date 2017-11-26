@@ -17,6 +17,7 @@ from botocore.session import Session
 from botocore.history import HistoryRecorder
 
 from awscli.testutils import unittest, mock, FileCreator
+from awscli.compat import StringIO
 from awscli.customizations.history import attach_history_handler
 from awscli.customizations.history import add_history_commands
 from awscli.customizations.history import HistoryCommand
@@ -89,7 +90,11 @@ class TestAttachHistoryHander(unittest.TestCase):
         parsed_args = argparse.Namespace()
         parsed_args.command = 's3'
 
-        attach_history_handler(session=mock_session, parsed_args=parsed_args)
+        with mock.patch('sys.stderr', StringIO()) as mock_stderr:
+            attach_history_handler(
+                session=mock_session, parsed_args=parsed_args)
+            self.assertIn(
+                'enabled but sqlite3 is unavailable', mock_stderr.getvalue())
         self.assertFalse(mock_get_recorder.called)
 
     @mock.patch('awscli.customizations.history.sqlite3')

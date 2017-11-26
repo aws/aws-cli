@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+import sys
 import logging
 
 from botocore.history import get_global_history_recorder
@@ -61,14 +62,16 @@ def attach_history_handler(session, parsed_args, **kwargs):
 def _should_enable_cli_history(session, parsed_args):
     if parsed_args.command == 'history':
         return False
-    elif sqlite3 is None:
-        LOG.debug(
-            'sqlite3 is not available. Skipping check to enable CLI history.')
+    scoped_config = session.get_scoped_config()
+    has_history_enabled = scoped_config.get('cli_history') == 'enabled'
+    if has_history_enabled and sqlite3 is None:
+        if has_history_enabled:
+            sys.stderr.write(
+                'cli_history is enabled but sqlite3 is unavailable. '
+                'Unable to collect CLI history.\n'
+            )
         return False
-    else:
-        scoped_config = session.get_scoped_config()
-        return scoped_config.get('cli_history') == 'enabled'
-
+    return has_history_enabled
 
 def add_history_commands(command_table, session, **kwargs):
     command_table['history'] = HistoryCommand(session)

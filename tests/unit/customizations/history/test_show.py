@@ -91,67 +91,75 @@ class TestDetailedFormatter(unittest.TestCase):
         xml_dom = xml.dom.minidom.parseString(xml_str)
         return xml_dom.toprettyxml(indent=' '*4, newl='\n')
 
-    def test_display_cli_version(self):
-        event = {
-            'event_type': 'CLI_VERSION',
-            'id': 'my-id',
-            'payload': 'aws-cli/1.11.188',
-            'timestamp': 0,
-            'request_id': None
-        }
-        self.formatter.display(event)
+    def assert_output(self, for_event, contains):
+        self.formatter.display(for_event)
         collected_output = ensure_text_type(self.output.getvalue())
-        self.assertIn('AWS CLI command entered', collected_output)
-        self.assertIn(
-            'with AWS CLI version: aws-cli/1.11.188', collected_output)
+        for line in contains:
+            self.assertIn(line, collected_output)
+
+    def test_display_cli_version(self):
+        self.assert_output(
+            for_event={
+                'event_type': 'CLI_VERSION',
+                'id': 'my-id',
+                'payload': 'aws-cli/1.11.188',
+                'timestamp': 0,
+                'request_id': None
+            },
+            contains=[
+                'AWS CLI command entered',
+                'with AWS CLI version: aws-cli/1.11.188'
+            ]
+        )
 
     def test_can_use_color(self):
         self.formatter = DetailedFormatter(self.output, colorize=True)
-        event = {
-            'event_type': 'CLI_VERSION',
-            'id': 'my-id',
-            'payload': 'aws-cli/1.11.188',
-            'timestamp': 0,
-            'request_id': None
-        }
-        self.formatter.display(event)
-        collected_output = ensure_text_type(self.output.getvalue())
-        self.assertIn('\x1b[1mAWS CLI command entered', collected_output)
-        self.assertIn('\x1b[36mwith AWS CLI version:', collected_output)
+        self.assert_output(
+            for_event={
+                'event_type': 'CLI_VERSION',
+                'id': 'my-id',
+                'payload': 'aws-cli/1.11.188',
+                'timestamp': 0,
+                'request_id': None
+            },
+            contains=[
+                '\x1b[1mAWS CLI command entered',
+                '\x1b[36mwith AWS CLI version:'
+            ]
+        )
 
     def test_display_cli_arguments(self):
-        event = {
-            'event_type': 'CLI_ARGUMENTS',
-            'id': 'my-id',
-            'payload': ['ec2', 'describe-regions'],
-            'timestamp': 0,
-            'request_id': None
-        }
-        self.formatter.display(event)
-        collected_output = ensure_text_type(self.output.getvalue())
-        self.assertIn(
-            "with arguments: ['ec2', 'describe-regions']", collected_output)
+        self.assert_output(
+            for_event={
+                'event_type': 'CLI_ARGUMENTS',
+                'id': 'my-id',
+                'payload': ['ec2', 'describe-regions'],
+                'timestamp': 0,
+                'request_id': None
+            },
+            contains=[
+                 "with arguments: ['ec2', 'describe-regions']"
+            ]
+        )
 
     def test_display_api_call(self):
-        event = {
-            'event_type': 'API_CALL',
-            'id': 'my-id',
-            'request_id': 'some-id',
-            'payload': {
-                'service': 'ec2',
-                'operation': 'DescribeRegions',
-                'params': {}
+        self.assert_output(
+            for_event={
+                'event_type': 'API_CALL',
+                'id': 'my-id',
+                'request_id': 'some-id',
+                'payload': {
+                    'service': 'ec2',
+                    'operation': 'DescribeRegions',
+                    'params': {}
+                },
+                'timestamp': 0,
             },
-            'timestamp': 0,
-        }
-        self.formatter.display(event)
-        collected_output = ensure_text_type(self.output.getvalue())
-        self.assertIn('[0] API call made', collected_output)
-        self.assertIn(
-            ('to service: ec2\n'
-             'using operation: DescribeRegions\n'
-             'with parameters: {}\n'),
-            collected_output
+            contains=[
+                'to service: ec2\n',
+                'using operation: DescribeRegions\n',
+                'with parameters: {}\n'
+            ]
         )
 
     def test_two_different_api_calls_have_different_numbers(self):
@@ -187,346 +195,349 @@ class TestDetailedFormatter(unittest.TestCase):
         self.assertIn('[1] API call made', new_output)
 
     def test_display_http_request(self):
-        event = {
-            'event_type': 'HTTP_REQUEST',
-            'id': 'my-id',
-            'request_id': 'some-id',
-            'payload': {
-                'method': 'GET',
-                'url': 'https://myservice.us-west-2.amazonaws.com',
-                'headers': {},
-                'body': 'This is my body'
+        self.assert_output(
+            for_event={
+                'event_type': 'HTTP_REQUEST',
+                'id': 'my-id',
+                'request_id': 'some-id',
+                'payload': {
+                    'method': 'GET',
+                    'url': 'https://myservice.us-west-2.amazonaws.com',
+                    'headers': {},
+                    'body': 'This is my body'
+                },
+                'timestamp': 0,
             },
-            'timestamp': 0,
-        }
-        self.formatter.display(event)
-        collected_output = ensure_text_type(self.output.getvalue())
-        self.assertIn('[0] HTTP request sent', collected_output)
-        self.assertIn(
-            ('to URL: https://myservice.us-west-2.amazonaws.com\n'
-             'with method: GET\n'
-             'with headers: {}\n'
-             'with body: This is my body\n'),
-            collected_output
+            contains=[
+                'to URL: https://myservice.us-west-2.amazonaws.com\n',
+                'with method: GET\n',
+                'with headers: {}\n',
+                'with body: This is my body\n'
+            ]
         )
 
     def test_display_http_request_with_streaming_body(self):
-        event = {
-            'event_type': 'HTTP_REQUEST',
-            'id': 'my-id',
-            'request_id': 'some-id',
-            'payload': {
-                'method': 'GET',
-                'url': 'https://myservice.us-west-2.amazonaws.com',
-                'headers': {},
-                'body': 'This should not be printed out',
-                'streaming': True
+        self.assert_output(
+            for_event={
+                'event_type': 'HTTP_REQUEST',
+                'id': 'my-id',
+                'request_id': 'some-id',
+                'payload': {
+                    'method': 'GET',
+                    'url': 'https://myservice.us-west-2.amazonaws.com',
+                    'headers': {},
+                    'body': 'This should not be printed out',
+                    'streaming': True
+                },
+                'timestamp': 0,
             },
-            'timestamp': 0,
-        }
-        self.formatter.display(event)
-        collected_output = ensure_text_type(self.output.getvalue())
-        self.assertIn(
-            'with body: The body is a stream and will not be displayed',
-            collected_output
+            contains=[
+                'with body: The body is a stream and will not be displayed',
+            ]
         )
 
     def test_display_http_request_with_no_payload(self):
-        event = {
-            'event_type': 'HTTP_REQUEST',
-            'id': 'my-id',
-            'request_id': 'some-id',
-            'payload': {
-                'method': 'GET',
-                'url': 'https://myservice.us-west-2.amazonaws.com',
-                'headers': {},
-                'body': None
+        self.assert_output(
+            for_event={
+                'event_type': 'HTTP_REQUEST',
+                'id': 'my-id',
+                'request_id': 'some-id',
+                'payload': {
+                    'method': 'GET',
+                    'url': 'https://myservice.us-west-2.amazonaws.com',
+                    'headers': {},
+                    'body': None
+                },
+                'timestamp': 0,
             },
-            'timestamp': 0,
-        }
-        self.formatter.display(event)
-        collected_output = ensure_text_type(self.output.getvalue())
-        self.assertIn(
-            'with body: There is no associated body', collected_output)
+            contains=[
+                'with body: There is no associated body'
+            ]
+        )
 
     def test_display_http_request_with_empty_string_payload(self):
-        event = {
-            'event_type': 'HTTP_REQUEST',
-            'id': 'my-id',
-            'request_id': 'some-id',
-            'payload': {
-                'method': 'GET',
-                'url': 'https://myservice.us-west-2.amazonaws.com',
-                'headers': {},
-                'body': ''
+        self.assert_output(
+            for_event={
+                'event_type': 'HTTP_REQUEST',
+                'id': 'my-id',
+                'request_id': 'some-id',
+                'payload': {
+                    'method': 'GET',
+                    'url': 'https://myservice.us-west-2.amazonaws.com',
+                    'headers': {},
+                    'body': ''
+                },
+                'timestamp': 0,
             },
-            'timestamp': 0,
-        }
-        self.formatter.display(event)
-        collected_output = ensure_text_type(self.output.getvalue())
-        self.assertIn(
-            'with body: There is no associated body', collected_output)
+            contains=[
+                'with body: There is no associated body'
+            ]
+        )
 
     def test_display_http_request_with_xml_payload(self):
         xml_body = '<?xml version="1.0" ?><foo><bar>text</bar></foo>'
-        event = {
-            'event_type': 'HTTP_REQUEST',
-            'id': 'my-id',
-            'request_id': 'some-id',
-            'payload': {
-                'method': 'GET',
-                'url': 'https://myservice.us-west-2.amazonaws.com',
-                'headers': {},
-                'body': xml_body
+        self.assert_output(
+            for_event={
+                'event_type': 'HTTP_REQUEST',
+                'id': 'my-id',
+                'request_id': 'some-id',
+                'payload': {
+                    'method': 'GET',
+                    'url': 'https://myservice.us-west-2.amazonaws.com',
+                    'headers': {},
+                    'body': xml_body
+                },
+                'timestamp': 0,
             },
-            'timestamp': 0,
-        }
-        self.formatter.display(event)
-        collected_output = ensure_text_type(self.output.getvalue())
-        self.assertIn(
-            'with body: ' + self.get_pretty_xml(xml_body),
-            collected_output
+            contains=[
+                'with body: ' + self.get_pretty_xml(xml_body)
+            ]
         )
 
     def test_display_http_request_with_xml_payload_and_whitespace(self):
         xml_body = '<?xml version="1.0" ?><foo><bar>text</bar></foo>'
-        event = {
-            'event_type': 'HTTP_REQUEST',
-            'id': 'my-id',
-            'request_id': 'some-id',
-            'payload': {
-                'method': 'GET',
-                'url': 'https://myservice.us-west-2.amazonaws.com',
-                'headers': {},
-                'body': self.get_pretty_xml(xml_body)
+        self.assert_output(
+            for_event={
+                'event_type': 'HTTP_REQUEST',
+                'id': 'my-id',
+                'request_id': 'some-id',
+                'payload': {
+                    'method': 'GET',
+                    'url': 'https://myservice.us-west-2.amazonaws.com',
+                    'headers': {},
+                    'body': self.get_pretty_xml(xml_body)
+                },
+                'timestamp': 0,
             },
-            'timestamp': 0,
-        }
-        self.formatter.display(event)
-        collected_output = ensure_text_type(self.output.getvalue())
-        # The XML should not be prettified more than once if the body
-        # of the request was already prettied.
-        self.assertIn(
-            'with body: ' + self.get_pretty_xml(xml_body),
-            collected_output
+            # The XML should not be prettified more than once if the body
+            # of the request was already prettied.
+            contains=[
+                'with body: ' + self.get_pretty_xml(xml_body)
+            ]
         )
 
     def test_display_http_request_with_json_struct_payload(self):
-        event = {
-            'event_type': 'HTTP_REQUEST',
-            'id': 'my-id',
-            'request_id': 'some-id',
-            'payload': {
-                'method': 'GET',
-                'url': 'https://myservice.us-west-2.amazonaws.com',
-                'headers': {},
-                'body': '{"foo": "bar"}'
+        self.assert_output(
+            for_event={
+                'event_type': 'HTTP_REQUEST',
+                'id': 'my-id',
+                'request_id': 'some-id',
+                'payload': {
+                    'method': 'GET',
+                    'url': 'https://myservice.us-west-2.amazonaws.com',
+                    'headers': {},
+                    'body': '{"foo": "bar"}'
+                },
+                'timestamp': 0,
             },
-            'timestamp': 0,
-        }
-        self.formatter.display(event)
-        collected_output = ensure_text_type(self.output.getvalue())
-        self.assertIn(
-            ('with body: {\n'
-             '    "foo": "bar"\n'
-             '}'),
-            collected_output
+            contains=[
+                'with body: {\n'
+                '    "foo": "bar"\n'
+                '}'
+            ]
         )
 
     def test_shares_api_number_across_events_of_same_api_call(self):
-        api_event = {
-            'event_type': 'API_CALL',
-            'id': 'my-id',
-            'request_id': 'some-id',
-            'payload': {
-                'service': 'ec2',
-                'operation': 'DescribeRegions',
-                'params': {}
+        self.assert_output(
+            for_event={
+                'event_type': 'API_CALL',
+                'id': 'my-id',
+                'request_id': 'some-id',
+                'payload': {
+                    'service': 'ec2',
+                    'operation': 'DescribeRegions',
+                    'params': {}
+                },
+                'timestamp': 0,
             },
-            'timestamp': 0,
-        }
-        http_event = {
-            'event_type': 'HTTP_REQUEST',
-            'id': 'my-id',
-            'request_id': 'some-id',
-            'payload': {
-                'method': 'GET',
-                'url': 'https://myservice.us-west-2.amazonaws.com',
-                'headers': {},
-                'body': 'This is my body'
+            contains=[
+                '[0] API call made'
+            ]
+        )
+        self.assert_output(
+            for_event={
+                'event_type': 'HTTP_REQUEST',
+                'id': 'my-id',
+                'request_id': 'some-id',
+                'payload': {
+                    'method': 'GET',
+                    'url': 'https://myservice.us-west-2.amazonaws.com',
+                    'headers': {},
+                    'body': 'This is my body'
+                },
+                'timestamp': 0,
             },
-            'timestamp': 0,
-        }
-        self.formatter.display(api_event)
-        self.formatter.display(http_event)
-        collected_output = ensure_text_type(self.output.getvalue())
-        self.assertIn('[0] API call made', collected_output)
-        self.assertIn('[0] HTTP request sent', collected_output)
+            contains=[
+                '[0] HTTP request sent'
+            ]
+        )
 
     def test_display_http_response(self):
-        event = {
-            'event_type': 'HTTP_RESPONSE',
-            'id': 'my-id',
-            'request_id': 'some-id',
-            'payload': {
-                'status_code': 200,
-                'headers': {},
-                'body': 'This is my body'
+        self.assert_output(
+            for_event={
+                'event_type': 'HTTP_RESPONSE',
+                'id': 'my-id',
+                'request_id': 'some-id',
+                'payload': {
+                    'status_code': 200,
+                    'headers': {},
+                    'body': 'This is my body'
+                },
+                'timestamp': 0,
             },
-            'timestamp': 0,
-        }
-        self.formatter.display(event)
-        collected_output = ensure_text_type(self.output.getvalue())
-        self.assertIn('[0] HTTP response received', collected_output)
-        self.assertIn(
-            ('with status code: 200\n'
-             'with headers: {}\n'
-             'with body: This is my body\n'),
-            collected_output
+            contains=[
+                '[0] HTTP response received',
+                'with status code: 200\n',
+                'with headers: {}\n',
+                'with body: This is my body\n'
+
+            ]
         )
 
     def test_display_http_response_with_streaming_body(self):
-        event = {
-            'event_type': 'HTTP_RESPONSE',
-            'id': 'my-id',
-            'request_id': 'some-id',
-            'payload': {
-                'status_code': 200,
-                'headers': {},
-                'body': 'This should not be printed out',
-                'streaming': True
+        self.assert_output(
+            for_event={
+                'event_type': 'HTTP_RESPONSE',
+                'id': 'my-id',
+                'request_id': 'some-id',
+                'payload': {
+                    'status_code': 200,
+                    'headers': {},
+                    'body': 'This should not be printed out',
+                    'streaming': True
+                },
+                'timestamp': 0,
             },
-            'timestamp': 0,
-        }
-        self.formatter.display(event)
-        collected_output = ensure_text_type(self.output.getvalue())
-        self.assertIn(
-            'with body: The body is a stream and will not be displayed',
-            collected_output
+            contains=[
+                'with body: The body is a stream and will not be displayed'
+            ]
         )
 
     def test_display_http_response_with_no_payload(self):
-        event = {
-            'event_type': 'HTTP_RESPONSE',
-            'id': 'my-id',
-            'request_id': 'some-id',
-            'payload': {
-                'status_code': 200,
-                'headers': {},
-                'body': None
+        self.assert_output(
+            for_event={
+                'event_type': 'HTTP_RESPONSE',
+                'id': 'my-id',
+                'request_id': 'some-id',
+                'payload': {
+                    'status_code': 200,
+                    'headers': {},
+                    'body': None
+                },
+                'timestamp': 0,
             },
-            'timestamp': 0,
-        }
-        self.formatter.display(event)
-        collected_output = ensure_text_type(self.output.getvalue())
-        self.assertIn(
-            'with body: There is no associated body', collected_output)
+            contains=[
+                'with body: There is no associated body'
+            ]
+        )
 
     def test_display_http_response_with_empty_string_payload(self):
-        event = {
-            'event_type': 'HTTP_RESPONSE',
-            'id': 'my-id',
-            'request_id': 'some-id',
-            'payload': {
-                'status_code': 200,
-                'headers': {},
-                'body': ''
+        self.assert_output(
+            for_event={
+                'event_type': 'HTTP_RESPONSE',
+                'id': 'my-id',
+                'request_id': 'some-id',
+                'payload': {
+                    'status_code': 200,
+                    'headers': {},
+                    'body': ''
+                },
+                'timestamp': 0,
             },
-            'timestamp': 0,
-        }
-        self.formatter.display(event)
-        collected_output = ensure_text_type(self.output.getvalue())
-        self.assertIn(
-            'with body: There is no associated body', collected_output)
+            contains=[
+                'with body: There is no associated body'
+            ]
+        )
 
     def test_display_http_response_with_xml_payload(self):
         xml_body = '<?xml version="1.0" ?><foo><bar>text</bar></foo>'
-        event = {
-            'event_type': 'HTTP_RESPONSE',
-            'id': 'my-id',
-            'request_id': 'some-id',
-            'payload': {
-                'status_code': 200,
-                'headers': {},
-                'body': xml_body
+        self.assert_output(
+            for_event={
+                'event_type': 'HTTP_RESPONSE',
+                'id': 'my-id',
+                'request_id': 'some-id',
+                'payload': {
+                    'status_code': 200,
+                    'headers': {},
+                    'body': xml_body
+                },
+                'timestamp': 0,
             },
-            'timestamp': 0,
-        }
-        self.formatter.display(event)
-        collected_output = ensure_text_type(self.output.getvalue())
-        self.assertIn(
-            'with body: ' + self.get_pretty_xml(xml_body),
-            collected_output
+            contains=[
+                'with body: ' + self.get_pretty_xml(xml_body)
+            ]
         )
 
     def test_display_http_response_with_xml_payload_and_whitespace(self):
         xml_body = '<?xml version="1.0" ?><foo><bar>text</bar></foo>'
-        event = {
-            'event_type': 'HTTP_RESPONSE',
-            'id': 'my-id',
-            'request_id': 'some-id',
-            'payload': {
-                'status_code': 200,
-                'headers': {},
-                'body': self.get_pretty_xml(xml_body)
+        self.assert_output(
+            for_event={
+                'event_type': 'HTTP_RESPONSE',
+                'id': 'my-id',
+                'request_id': 'some-id',
+                'payload': {
+                    'status_code': 200,
+                    'headers': {},
+                    'body': self.get_pretty_xml(xml_body)
+                },
+                'timestamp': 0,
             },
-            'timestamp': 0,
-        }
-        self.formatter.display(event)
-        collected_output = ensure_text_type(self.output.getvalue())
-        # The XML should not be prettified more than once if the body
-        # of the response was already prettied.
-        self.assertIn(
-            'with body: ' + self.get_pretty_xml(xml_body),
-            collected_output
+            # The XML should not be prettified more than once if the body
+            # of the response was already prettied.
+            contains=[
+                'with body: ' + self.get_pretty_xml(xml_body)
+            ]
         )
 
     def test_display_http_response_with_json_struct_payload(self):
-        event = {
-            'event_type': 'HTTP_RESPONSE',
-            'id': 'my-id',
-            'request_id': 'some-id',
-            'payload': {
-                'status_code': 200,
-                'headers': {},
-                'body': '{"foo": "bar"}'
+        self.assert_output(
+            for_event={
+                'event_type': 'HTTP_RESPONSE',
+                'id': 'my-id',
+                'request_id': 'some-id',
+                'payload': {
+                    'status_code': 200,
+                    'headers': {},
+                    'body': '{"foo": "bar"}'
+                },
+                'timestamp': 0,
             },
-            'timestamp': 0,
-        }
-        self.formatter.display(event)
-        collected_output = ensure_text_type(self.output.getvalue())
-        self.assertIn(
-            ('with body: {\n'
-             '    "foo": "bar"\n'
-             '}'),
-            collected_output
+            contains=[
+                'with body: {\n',
+                '    "foo": "bar"\n',
+                '}',
+            ]
         )
 
     def test_display_parsed_response(self):
-        event = {
-            'event_type': 'PARSED_RESPONSE',
-            'id': 'my-id',
-            'request_id': 'some-id',
-            'payload': {},
-            'timestamp': 0,
-        }
-        self.formatter.display(event)
-        collected_output = ensure_text_type(self.output.getvalue())
-        self.assertIn('[0] HTTP response parsed', collected_output)
-        self.assertIn('parsed to: {}', collected_output)
+        self.assert_output(
+            for_event={
+                'event_type': 'PARSED_RESPONSE',
+                'id': 'my-id',
+                'request_id': 'some-id',
+                'payload': {},
+                'timestamp': 0,
+            },
+            contains=[
+                '[0] HTTP response parsed',
+                'parsed to: {}'
+            ]
+        )
 
     def test_display_cli_rc(self):
-        event = {
-            'event_type': 'CLI_RC',
-            'id': 'my-id',
-            'payload': 0,
-            'timestamp': 0,
-            'request_id': None
-        }
-        self.formatter.display(event)
-        collected_output = ensure_text_type(self.output.getvalue())
-        self.assertIn('AWS CLI command exited', collected_output)
-        self.assertIn('with return code: 0', collected_output)
+        self.assert_output(
+            for_event={
+                'event_type': 'CLI_RC',
+                'id': 'my-id',
+                'payload': 0,
+                'timestamp': 0,
+                'request_id': None
+            },
+            contains=[
+                'AWS CLI command exited',
+                'with return code: 0'
+            ]
+        )
 
     def test_display_unknown_type(self):
         event = {

@@ -47,6 +47,9 @@ except ImportError:
     sqlite3 = None
 
 
+is_windows = sys.platform == 'win32'
+
+
 class NonTranslatedStdout(object):
     """ This context manager sets the line-end translation mode for stdout.
 
@@ -275,10 +278,6 @@ def _windows_shell_quote(s):
     return new_s
 
 
-def is_windows():
-    return os.name == 'nt'
-
-
 def get_popen_pager_cmd_with_kwargs(pager_cmd=None):
     """Returns the default pager to use dependent on platform
 
@@ -289,11 +288,11 @@ def get_popen_pager_cmd_with_kwargs(pager_cmd=None):
     popen_kwargs = {}
     if pager_cmd is None:
         pager_cmd = 'less -R'
-        if is_windows():
+        if is_windows:
             pager_cmd = 'more'
     # Similar to what we do with the help command, we need to specify
     # shell as True to make it work in the pager for Windows
-    if is_windows():
+    if is_windows:
         popen_kwargs = {'shell': True}
     else:
         pager_cmd = shlex.split(pager_cmd)

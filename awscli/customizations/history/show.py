@@ -449,7 +449,7 @@ class ShowCommand(BasicCommand):
             return True
         elif parsed_globals.color == 'off':
             return False
-        return is_a_tty() and not is_windows()
+        return is_a_tty() and not is_windows
 
     def _get_output_stream(self):
         if is_a_tty():

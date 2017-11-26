@@ -706,11 +706,10 @@ class TestShowCommand(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
 
-    @mock.patch('awscli.customizations.history.show.is_windows')
+    @mock.patch('awscli.customizations.history.show.is_windows', False)
     @mock.patch('awscli.customizations.history.show.is_a_tty')
-    def test_detailed_formatter_is_a_tty(self, mock_is_a_tty, mock_is_windows):
+    def test_detailed_formatter_is_a_tty(self, mock_is_a_tty):
         mock_is_a_tty.return_value = True
-        mock_is_windows.return_value = False
         self.formatter = mock.Mock(DetailedFormatter)
         self.add_formatter('detailed', self.formatter)
         self.parsed_args.format = 'detailed'
@@ -727,12 +726,10 @@ class TestShowCommand(unittest.TestCase):
             )
         )
 
-    @mock.patch('awscli.customizations.history.show.is_windows')
+    @mock.patch('awscli.customizations.history.show.is_windows', False)
     @mock.patch('awscli.customizations.history.show.is_a_tty')
-    def test_detailed_formatter_not_a_tty(self, mock_is_a_tty,
-                                          mock_is_windows):
+    def test_detailed_formatter_not_a_tty(self, mock_is_a_tty):
         mock_is_a_tty.return_value = False
-        mock_is_windows.return_value = False
         self.formatter = mock.Mock(DetailedFormatter)
         self.add_formatter('detailed', self.formatter)
         self.parsed_args.format = 'detailed'
@@ -749,9 +746,8 @@ class TestShowCommand(unittest.TestCase):
             )
         )
 
-    @mock.patch('awscli.customizations.history.show.is_windows')
-    def test_detailed_formatter_no_color_for_windows(self, mock_is_windows):
-        mock_is_windows.return_value = True
+    @mock.patch('awscli.customizations.history.show.is_windows', True)
+    def test_detailed_formatter_no_color_for_windows(self):
         self.formatter = mock.Mock(DetailedFormatter)
         self.add_formatter('detailed', self.formatter)
         self.parsed_args.format = 'detailed'
@@ -766,9 +762,9 @@ class TestShowCommand(unittest.TestCase):
             )
         )
 
-    @mock.patch('awscli.customizations.history.show.is_windows')
+    @mock.patch('awscli.customizations.history.show.is_windows', True)
     @mock.patch('awscli.customizations.history.show.is_a_tty')
-    def test_force_color(self, mock_is_a_tty, mock_is_windows):
+    def test_force_color(self, mock_is_a_tty):
         self.formatter = mock.Mock(DetailedFormatter)
         self.add_formatter('detailed', self.formatter)
         self.parsed_args.format = 'detailed'
@@ -778,7 +774,6 @@ class TestShowCommand(unittest.TestCase):
         # Even with settings that would typically turn off color, it
         # should be turned on because it was explicitly turned on
         mock_is_a_tty.return_value = False
-        mock_is_windows.return_value = True
 
         self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
         self.assertEqual(
@@ -789,9 +784,9 @@ class TestShowCommand(unittest.TestCase):
             )
         )
 
-    @mock.patch('awscli.customizations.history.show.is_windows')
+    @mock.patch('awscli.customizations.history.show.is_windows', False)
     @mock.patch('awscli.customizations.history.show.is_a_tty')
-    def test_disable_color(self, mock_is_a_tty, mock_is_windows):
+    def test_disable_color(self, mock_is_a_tty):
         self.formatter = mock.Mock(DetailedFormatter)
         self.add_formatter('detailed', self.formatter)
         self.parsed_args.format = 'detailed'
@@ -801,7 +796,6 @@ class TestShowCommand(unittest.TestCase):
         # Even with settings that would typically enable color, it
         # should be turned off because it was explicitly turned off
         mock_is_a_tty.return_value = True
-        mock_is_windows.return_value = False
 
         self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
         self.assertEqual(

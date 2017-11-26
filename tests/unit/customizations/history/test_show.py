@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
 import argparse
 import subprocess
 import xml.dom.minidom
@@ -18,7 +19,7 @@ from botocore.session import Session
 
 from awscli.compat import ensure_text_type
 from awscli.compat import BytesIO
-from awscli.testutils import unittest, mock
+from awscli.testutils import unittest, mock, FileCreator
 from awscli.customizations.history.show import ShowCommand
 from awscli.customizations.history.show import Formatter
 from awscli.customizations.history.show import DetailedFormatter
@@ -643,6 +644,21 @@ class TestShowCommand(unittest.TestCase):
 
         self.parsed_globals = argparse.Namespace()
         self.parsed_globals.color = 'auto'
+
+        self.files = FileCreator()
+
+    def tearDown(self):
+        self.files.remove_all()
+
+    def test_detects_if_history_exists(self):
+        self.show_cmd = ShowCommand(self.session)
+        self.parsed_args.command_id = 'latest'
+
+        db_filename = os.path.join(self.files.rootdir, 'name.db')
+        with mock.patch('os.environ', {'AWS_CLI_HISTORY_FILE': db_filename}):
+            with self.assertRaisesRegexp(
+                    RuntimeError, 'Could not locate history'):
+                self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
 
     def add_formatter(self, formatter_name, formatter):
         # We do not want to be adding to the dictionary directly because

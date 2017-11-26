@@ -10,7 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
 import uuid
 import time
 import json
@@ -26,18 +25,6 @@ from awscli.compat import binary_type
 
 
 LOG = logging.getLogger(__name__)
-
-HISTORY_FILENAME_ENV_VAR = 'AWS_CLI_HISTORY_FILE'
-DEFAULT_HISTORY_FILENAME = os.path.expanduser(
-    os.path.join('~', '.aws', 'cli', 'history', 'history.db'))
-
-
-def get_history_db_filename():
-    history_db_filename = os.environ.get(
-        HISTORY_FILENAME_ENV_VAR, DEFAULT_HISTORY_FILENAME)
-    if not os.path.isdir(os.path.dirname(history_db_filename)):
-        os.makedirs(os.path.dirname(history_db_filename))
-    return history_db_filename
 
 
 class DatabaseConnection(object):
@@ -148,9 +135,7 @@ class DatabaseRecordWriter(object):
             id, request_id, source, event_type, timestamp, payload)
         VALUES (?,?,?,?,?,?) """
 
-    def __init__(self, connection=None):
-        if connection is None:
-            connection = DatabaseConnection()
+    def __init__(self, connection):
         self._connection = connection
 
     def write_record(self, record):
@@ -184,9 +169,7 @@ class DatabaseRecordReader(object):
         (SELECT max(timestamp) FROM records)) %s;""" % _ORDERING
     _GET_RECORDS_BY_ID = 'SELECT * from records where id = ? %s' % _ORDERING
 
-    def __init__(self, connection=None):
-        if connection is None:
-            connection = DatabaseConnection()
+    def __init__(self, connection):
         self._connection = connection
         self._connection.row_factory = self._row_factory
 
@@ -255,14 +238,8 @@ class RecordBuilder(object):
 
 
 class DatabaseHistoryHandler(BaseHistoryHandler):
-    def __init__(self, writer=None, record_builder=None):
-        if writer is None:
-            db_filename = get_history_db_filename()
-            connection = DatabaseConnection(db_filename)
-            writer = DatabaseRecordWriter(connection)
+    def __init__(self, writer, record_builder):
         self._writer = writer
-        if record_builder is None:
-            record_builder = RecordBuilder()
         self._record_builder = record_builder
 
     def emit(self, event_type, payload, source):

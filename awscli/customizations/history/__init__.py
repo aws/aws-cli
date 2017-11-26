@@ -10,12 +10,18 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
 import logging
 
 from botocore.history import get_global_history_recorder
 
 from awscli.compat import sqlite3
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.history.constants import HISTORY_FILENAME_ENV_VAR
+from awscli.customizations.history.constants import DEFAULT_HISTORY_FILENAME
+from awscli.customizations.history.db import DatabaseConnection
+from awscli.customizations.history.db import DatabaseRecordWriter
+from awscli.customizations.history.db import RecordBuilder
 from awscli.customizations.history.db import DatabaseHistoryHandler
 from awscli.customizations.history.show import ShowCommand
 
@@ -36,8 +42,19 @@ def register_history_commands(event_handlers):
 def attach_history_handler(session, parsed_args, **kwargs):
     if _should_enable_cli_history(session, parsed_args):
         LOG.debug('Enabling CLI history')
+
+        history_filename = os.environ.get(
+            HISTORY_FILENAME_ENV_VAR, DEFAULT_HISTORY_FILENAME)
+        if not os.path.isdir(os.path.dirname(history_filename)):
+            os.makedirs(os.path.dirname(history_filename))
+
+        connection = DatabaseConnection(history_filename)
+        writer = DatabaseRecordWriter(connection)
+        record_builder = RecordBuilder()
+        db_handler = DatabaseHistoryHandler(writer, record_builder)
+
         history_recorder = get_global_history_recorder()
-        history_recorder.add_handler(DatabaseHistoryHandler())
+        history_recorder.add_handler(db_handler)
         history_recorder.enable()
 
 

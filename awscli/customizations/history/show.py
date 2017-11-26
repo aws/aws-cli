@@ -27,7 +27,8 @@ from awscli.compat import get_binary_stdout
 from awscli.compat import get_popen_kwargs_for_pager_cmd
 from awscli.utils import is_a_tty
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.history.db import get_history_db_filename
+from awscli.customizations.history.constants import HISTORY_FILENAME_ENV_VAR
+from awscli.customizations.history.constants import DEFAULT_HISTORY_FILENAME
 from awscli.customizations.history.db import DatabaseRecordReader
 from awscli.customizations.history.db import DatabaseConnection
 
@@ -420,14 +421,12 @@ class ShowCommand(BasicCommand):
     def __init__(self, session, db_reader=None, output_stream_factory=None):
         super(ShowCommand, self).__init__(session)
         self._db_reader = db_reader
-        if db_reader is None:
-            connection = DatabaseConnection(get_history_db_filename())
-            self._db_reader = DatabaseRecordReader(connection)
         self._output_stream_factory = output_stream_factory
         if output_stream_factory is None:
             self._output_stream_factory = OutputStreamFactory()
 
     def _run_main(self, parsed_args, parsed_globals):
+        self._connect_to_history_db()
         self._validate_args(parsed_args)
         with self._get_output_stream() as output_stream:
             formatter = self._get_formatter(
@@ -435,6 +434,21 @@ class ShowCommand(BasicCommand):
             for record in self._get_record_iterator(parsed_args):
                 formatter.display(record)
         return 0
+
+    def _connect_to_history_db(self):
+        if self._db_reader is None:
+            connection = DatabaseConnection(self._get_history_db_filename())
+            self._db_reader = DatabaseRecordReader(connection)
+
+    def _get_history_db_filename(self):
+        filename = os.environ.get(
+            HISTORY_FILENAME_ENV_VAR, DEFAULT_HISTORY_FILENAME)
+        if not os.path.exists(filename):
+            raise RuntimeError(
+                'Could not locate history. Make sure cli_history is set to '
+                'enabled in the ~/.aws/config file'
+            )
+        return filename
 
     def _validate_args(self, parsed_args):
         if parsed_args.exclude and parsed_args.include:

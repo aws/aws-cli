@@ -19,7 +19,6 @@ import datetime
 import mock
 
 from awscli.compat import queue
-from awscli.customizations.history.db import get_history_db_filename
 from awscli.customizations.history.db import DatabaseConnection
 from awscli.customizations.history.db import DatabaseHistoryHandler
 from awscli.customizations.history.db import DatabaseRecordWriter
@@ -41,20 +40,6 @@ class TestGetHistoryDBFilename(unittest.TestCase):
 
     def tearDown(self):
         self.files.remove_all()
-
-    def test_get_history_db_filename_env_var(self):
-        db_filename = os.path.join(self.files.rootdir, 'name.db')
-        with mock.patch('os.environ', {'AWS_CLI_HISTORY_FILE': db_filename}):
-            self.assertEqual(get_history_db_filename(), db_filename)
-
-    def test_get_history_db_filename_create_directory_if_no_exists(self):
-        directory_to_create = os.path.join(self.files.rootdir, 'create-dir')
-        db_filename = os.path.join(directory_to_create, 'name.db')
-        with mock.patch('os.environ', {'AWS_CLI_HISTORY_FILE': db_filename}):
-            self.assertEqual(get_history_db_filename(), db_filename)
-            # Is should create any missing parent directories of the
-            # file as well.
-            self.assertTrue(os.path.exists(directory_to_create))
 
 
 class TestDatabaseConnection(unittest.TestCase):
@@ -94,7 +79,8 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
 
     def test_emit_does_write_cli_rc_record(self):
         writer = mock.Mock(DatabaseRecordWriter)
-        handler = DatabaseHistoryHandler(writer)
+        record_builder = RecordBuilder()
+        handler = DatabaseHistoryHandler(writer, record_builder)
         handler.emit('CLI_RC', 0, 'CLI')
         call = writer.write_record.call_args[0][0]
         self.assertEqual(call, {
@@ -109,7 +95,8 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
 
     def test_emit_does_write_cli_version_record(self):
         writer = mock.Mock(DatabaseRecordWriter)
-        handler = DatabaseHistoryHandler(writer)
+        record_builder = RecordBuilder()
+        handler = DatabaseHistoryHandler(writer, record_builder)
         handler.emit('CLI_VERSION', 'Version Info', 'CLI')
         call = writer.write_record.call_args[0][0]
         self.assertEqual(call, {
@@ -124,7 +111,8 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
 
     def test_emit_does_write_api_call_record(self):
         writer = mock.Mock(DatabaseRecordWriter)
-        handler = DatabaseHistoryHandler(writer)
+        record_builder = RecordBuilder()
+        handler = DatabaseHistoryHandler(writer, record_builder)
         payload = {'foo': 'bar'}
         handler.emit('API_CALL', payload, 'BOTOCORE')
         call = writer.write_record.call_args[0][0]
@@ -141,7 +129,8 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
 
     def test_emit_does_write_http_request_record(self):
         writer = mock.Mock(DatabaseRecordWriter)
-        handler = DatabaseHistoryHandler(writer)
+        record_builder = RecordBuilder()
+        handler = DatabaseHistoryHandler(writer, record_builder)
         payload = {'body': b'data'}
         # In order for an http_request to have a request_id it must have been
         # preceeded by an api_call record.
@@ -161,7 +150,8 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
 
     def test_emit_does_write_http_response_record(self):
         writer = mock.Mock(DatabaseRecordWriter)
-        handler = DatabaseHistoryHandler(writer)
+        record_builder = RecordBuilder()
+        handler = DatabaseHistoryHandler(writer, record_builder)
         payload = {'body': b'data'}
         # In order for an http_response to have a request_id it must have been
         # preceeded by an api_call record.
@@ -181,7 +171,8 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
 
     def test_emit_does_write_parsed_response_record(self):
         writer = mock.Mock(DatabaseRecordWriter)
-        handler = DatabaseHistoryHandler(writer)
+        record_builder = RecordBuilder()
+        handler = DatabaseHistoryHandler(writer, record_builder)
         payload = {'metadata': {'data': 'foobar'}}
         # In order for an http_response to have a request_id it must have been
         # preceeded by an api_call record.

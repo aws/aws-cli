@@ -180,12 +180,13 @@ class DetailedFormatter(Formatter):
         self._request_id_to_api_num = {}
         self._num_api_calls = 0
         self._colorize = colorize
+        self._value_pformatter = SectionValuePrettyFormatter()
         if self._colorize:
             colorama.init(autoreset=True, strip=False)
 
     def _display(self, event_record):
         section_definition = self._SECTIONS.get(event_record['event_type'])
-        if section_definition:
+        if section_definition is not None:
             self._display_section(event_record, section_definition)
 
     def _display_section(self, event_record, section_definition):
@@ -244,32 +245,49 @@ class DetailedFormatter(Formatter):
 
     def _format_value(self, value, event_record, value_format=None):
         if value_format:
-            formatted_value = getattr(self, '_format_' + value_format)(
-                value, event_record)
+            formatted_value = self._value_pformatter.pformat(
+                value, value_format, event_record)
         else:
             formatted_value = str(value)
         return formatted_value + '\n'
 
-    def _format_timestamp(self, event_timestamp, event_record=None):
+    def _color_if_configured(self, text, component):
+        if self._colorize:
+            color = self._COMPONENT_COLORS[component]
+            return color + text + colorama.Style.RESET_ALL
+        return text
+
+
+class SectionValuePrettyFormatter(object):
+    def pformat(self, value, value_format, event_record):
+        return getattr(self, '_pformat_' + value_format)(value, event_record)
+
+    def _pformat_timestamp(self, event_timestamp, event_record=None):
         return datetime.datetime.fromtimestamp(
             event_timestamp/1000.0).strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
 
-    def _format_dictionary(self, obj, event_record=None):
+    def _pformat_dictionary(self, obj, event_record=None):
         return json.dumps(obj=obj, sort_keys=True, indent=4)
 
-    def _format_http_body(self, body, event_record):
+    def _pformat_http_body(self, body, event_record):
         if not body:
             return 'There is no associated body'
         elif event_record['payload'].get('streaming', False):
             return 'The body is a stream and will not be displayed'
         elif self._is_xml(body):
-            return self._format_http_body_xml(body)
+            # TODO: Figure out a way to minimize the number of times we have
+            # to parse the XML. Currently at worst, it will take three times.
+            # One to determine if it is XML, another to stip whitespace, and
+            # a third to convert to make it pretty. This is an issue as it
+            # can cause issues when there are large XML payloads such as
+            # an s3 ListObjects call.
+            return self._get_pretty_xml(body)
         elif self._is_json_structure(body):
-            return self._format_http_body_json(body)
+            return self._get_pretty_json(body)
         else:
             return body
 
-    def _format_http_body_xml(self, body):
+    def _get_pretty_xml(self, body):
         # The body is parsed and whitespace is stripped because some services
         # like ec2 already return pretty XML and if toprettyxml() was applied
         # to it, it will add even more newlines and spaces on top of it.
@@ -280,17 +298,11 @@ class DetailedFormatter(Formatter):
         xml_dom = xml.dom.minidom.parseString(stripped_body)
         return xml_dom.toprettyxml(indent=' '*4, newl='\n')
 
-    def _format_http_body_json(self, body):
+    def _get_pretty_json(self, body):
         # The json body is loaded so it can be dumped in a format that
         # is desired.
         obj = json.loads(body)
-        return self._format_dictionary(obj)
-
-    def _color_if_configured(self, text, component):
-        if self._colorize:
-            color = self._COMPONENT_COLORS[component]
-            return color + text + colorama.Style.RESET_ALL
-        return text
+        return self._pformat_dictionary(obj)
 
     def _is_xml(self, body):
         try:

@@ -68,19 +68,13 @@ class Formatter(object):
             self._display(event_record)
 
     def _display(self, event_record):
-        raise NotImplementedError('display()')
+        raise NotImplementedError('_display()')
 
     def _should_display(self, event_record):
         if self._include:
-            if event_record['event_type'] in self._include:
-                return True
-            else:
-                return False
+            return event_record['event_type'] in self._include
         elif self._exclude:
-            if event_record['event_type'] in self._exclude:
-                return False
-            else:
-                return True
+            return event_record['event_type'] not in self._exclude
         else:
             return True
 

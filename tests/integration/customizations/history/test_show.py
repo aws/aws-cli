@@ -28,7 +28,8 @@ class TestShow(unittest.TestCase):
         )
         self.environ['AWS_DEFAULT_PROFILE'] = 'default'
         self.environ['AWS_DEFAULT_REGION'] = 'us-west-2'
-        self.environ['AWS_HISTORY_PATH'] = self.files.rootdir
+        self.environ['AWS_CLI_HISTORY_FILE'] = os.path.join(
+            self.files.rootdir, 'history.db')
 
     def tearDown(self):
         self.files.remove_all()

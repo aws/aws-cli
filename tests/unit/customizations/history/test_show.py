@@ -603,8 +603,7 @@ class TestOutputStreamFactory(unittest.TestCase):
         with self.stream_factory.get_output_stream('pager'):
             pass
         returned_process = self.popen.return_value
-        self.assertTrue(returned_process.stdin.close.called)
-        self.assertTrue(returned_process.wait.called)
+        self.assertTrue(returned_process.communicate.called)
 
     @mock.patch('awscli.customizations.history.show.get_binary_stdout')
     def test_stdout(self, mock_binary_out):

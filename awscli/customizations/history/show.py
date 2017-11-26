@@ -343,19 +343,22 @@ class OutputStreamFactory(object):
         :param stream_type: The name of the stream to get. Valid values
              consist of pager and stdout.
         """
-        stream_getter = getattr(self, '_get_' + stream_type + '_stream', None)
-        if stream_getter is None:
+        if stream_type == 'pager':
+            return self._get_pager_stream()
+        elif stream_type == 'stdout':
+            return self._get_stdout_stream()
+        else:
             raise ValueError(
                 'Stream type of %s is not supported' % stream_type)
-        return stream_getter()
 
     @contextlib.contextmanager
     def _get_pager_stream(self):
         popen_kwargs = self._get_process_pager_kwargs()
-        process = self._popen(**popen_kwargs)
-        yield process.stdin
-        process.stdin.close()
-        process.wait()
+        try:
+            process = self._popen(**popen_kwargs)
+            yield process.stdin
+        finally:
+            process.communicate()
 
     @contextlib.contextmanager
     def _get_stdout_stream(self):

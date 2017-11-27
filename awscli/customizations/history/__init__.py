@@ -15,6 +15,7 @@ import sys
 import logging
 
 from botocore.history import get_global_history_recorder
+from botocore.exceptions import ProfileNotFound
 
 from awscli.compat import sqlite3
 from awscli.customizations.commands import BasicCommand
@@ -62,7 +63,14 @@ def attach_history_handler(session, parsed_args, **kwargs):
 def _should_enable_cli_history(session, parsed_args):
     if parsed_args.command == 'history':
         return False
-    scoped_config = session.get_scoped_config()
+    try:
+        scoped_config = session.get_scoped_config()
+    except ProfileNotFound:
+        # If the profile does not exist, cli history is definitely not
+        # enabled, but don't let the error get propogated as commands down
+        # the road may handle this such as the configure set command with
+        # a --profile flag set.
+        return False
     has_history_enabled = scoped_config.get('cli_history') == 'enabled'
     if has_history_enabled and sqlite3 is None:
         if has_history_enabled:
@@ -72,6 +80,7 @@ def _should_enable_cli_history(session, parsed_args):
             )
         return False
     return has_history_enabled
+
 
 def add_history_commands(command_table, session, **kwargs):
     command_table['history'] = HistoryCommand(session)

@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.12.2
+======
+
+* api-change:``mediastore``: Update mediastore command to latest version
+* api-change:``mediastore-data``: Update mediastore-data command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``mediapackage``: Update mediapackage command to latest version
+
+
 1.12.1
 ======
 

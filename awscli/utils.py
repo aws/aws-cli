@@ -14,6 +14,8 @@ import csv
 import signal
 import datetime
 import contextlib
+import os
+import sys
 
 from awscli.compat import six
 
@@ -146,3 +148,10 @@ def ignore_ctrl_c():
 def emit_top_level_args_parsed_event(session, args):
     session.emit(
         'top-level-args-parsed', parsed_args=args, session=session)
+
+
+def is_a_tty():
+    try:
+        return os.isatty(sys.stdout.fileno())
+    except Exception as e:
+        return False

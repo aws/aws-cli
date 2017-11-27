@@ -25,13 +25,21 @@ from awscli.customizations.history.db import DatabaseRecordWriter
 from awscli.customizations.history.db import DatabaseRecordReader
 from awscli.customizations.history.db import PayloadSerializer
 from awscli.customizations.history.db import RecordBuilder
-from awscli.testutils import unittest
+from awscli.testutils import unittest, FileCreator
 from tests import CaseInsensitiveDict
 
 
 class FakeDatabaseConnection(object):
     def __init__(self):
         self.execute = mock.MagicMock()
+
+
+class TestGetHistoryDBFilename(unittest.TestCase):
+    def setUp(self):
+        self.files = FileCreator()
+
+    def tearDown(self):
+        self.files.remove_all()
 
 
 class TestDatabaseConnection(unittest.TestCase):
@@ -71,7 +79,8 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
 
     def test_emit_does_write_cli_rc_record(self):
         writer = mock.Mock(DatabaseRecordWriter)
-        handler = DatabaseHistoryHandler(writer)
+        record_builder = RecordBuilder()
+        handler = DatabaseHistoryHandler(writer, record_builder)
         handler.emit('CLI_RC', 0, 'CLI')
         call = writer.write_record.call_args[0][0]
         self.assertEqual(call, {
@@ -86,7 +95,8 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
 
     def test_emit_does_write_cli_version_record(self):
         writer = mock.Mock(DatabaseRecordWriter)
-        handler = DatabaseHistoryHandler(writer)
+        record_builder = RecordBuilder()
+        handler = DatabaseHistoryHandler(writer, record_builder)
         handler.emit('CLI_VERSION', 'Version Info', 'CLI')
         call = writer.write_record.call_args[0][0]
         self.assertEqual(call, {
@@ -101,7 +111,8 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
 
     def test_emit_does_write_api_call_record(self):
         writer = mock.Mock(DatabaseRecordWriter)
-        handler = DatabaseHistoryHandler(writer)
+        record_builder = RecordBuilder()
+        handler = DatabaseHistoryHandler(writer, record_builder)
         payload = {'foo': 'bar'}
         handler.emit('API_CALL', payload, 'BOTOCORE')
         call = writer.write_record.call_args[0][0]
@@ -118,7 +129,8 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
 
     def test_emit_does_write_http_request_record(self):
         writer = mock.Mock(DatabaseRecordWriter)
-        handler = DatabaseHistoryHandler(writer)
+        record_builder = RecordBuilder()
+        handler = DatabaseHistoryHandler(writer, record_builder)
         payload = {'body': b'data'}
         # In order for an http_request to have a request_id it must have been
         # preceeded by an api_call record.
@@ -138,7 +150,8 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
 
     def test_emit_does_write_http_response_record(self):
         writer = mock.Mock(DatabaseRecordWriter)
-        handler = DatabaseHistoryHandler(writer)
+        record_builder = RecordBuilder()
+        handler = DatabaseHistoryHandler(writer, record_builder)
         payload = {'body': b'data'}
         # In order for an http_response to have a request_id it must have been
         # preceeded by an api_call record.
@@ -158,7 +171,8 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
 
     def test_emit_does_write_parsed_response_record(self):
         writer = mock.Mock(DatabaseRecordWriter)
-        handler = DatabaseHistoryHandler(writer)
+        record_builder = RecordBuilder()
+        handler = DatabaseHistoryHandler(writer, record_builder)
         payload = {'metadata': {'data': 'foobar'}}
         # In order for an http_response to have a request_id it must have been
         # preceeded by an api_call record.

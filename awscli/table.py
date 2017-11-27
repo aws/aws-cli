@@ -10,12 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
 import sys
 import struct
 import unicodedata
 
 import colorama
+
+from awscli.utils import is_a_tty
 from awscli.compat import six
 
 
@@ -45,13 +46,6 @@ def determine_terminal_width(default_width=80):
         return default_width
     else:
         return width
-
-
-def is_a_tty():
-    try:
-        return os.isatty(sys.stdout.fileno())
-    except Exception:
-        return False
 
 
 def center_text(text, length=80, left_edge='|', right_edge='|',

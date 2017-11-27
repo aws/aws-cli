@@ -16,6 +16,7 @@ import re
 
 from awscli.compat import queue
 from awscli.customizations.history.db import DatabaseConnection
+from awscli.customizations.history.db import RecordBuilder
 from awscli.customizations.history.db import DatabaseRecordWriter
 from awscli.customizations.history.db import DatabaseRecordReader
 from awscli.customizations.history.db import DatabaseHistoryHandler
@@ -308,7 +309,9 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
     def setUp(self):
         self.db = DatabaseConnection(':memory:')
         self.writer = DatabaseRecordWriter(connection=self.db)
-        self.handler = DatabaseHistoryHandler(writer=self.writer)
+        self.record_builder = RecordBuilder()
+        self.handler = DatabaseHistoryHandler(
+            writer=self.writer, record_builder=self.record_builder)
 
     def _get_last_record(self):
         record = self.db.execute('SELECT * FROM records').fetchone()

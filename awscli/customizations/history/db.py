@@ -135,9 +135,7 @@ class DatabaseRecordWriter(object):
             id, request_id, source, event_type, timestamp, payload)
         VALUES (?,?,?,?,?,?) """
 
-    def __init__(self, connection=None):
-        if connection is None:
-            connection = DatabaseConnection()
+    def __init__(self, connection):
         self._connection = connection
 
     def write_record(self, record):
@@ -171,9 +169,7 @@ class DatabaseRecordReader(object):
         (SELECT max(timestamp) FROM records)) %s;""" % _ORDERING
     _GET_RECORDS_BY_ID = 'SELECT * from records where id = ? %s' % _ORDERING
 
-    def __init__(self, connection=None):
-        if connection is None:
-            connection = DatabaseConnection()
+    def __init__(self, connection):
         self._connection = connection
         self._connection.row_factory = self._row_factory
 
@@ -242,12 +238,8 @@ class RecordBuilder(object):
 
 
 class DatabaseHistoryHandler(BaseHistoryHandler):
-    def __init__(self, writer=None, record_builder=None):
-        if writer is None:
-            writer = DatabaseRecordWriter()
+    def __init__(self, writer, record_builder):
         self._writer = writer
-        if record_builder is None:
-            record_builder = RecordBuilder()
         self._record_builder = record_builder
 
     def emit(self, event_type, payload, source):

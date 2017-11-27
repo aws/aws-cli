@@ -15,6 +15,7 @@ import os
 
 from botocore.session import Session
 from botocore.history import HistoryRecorder
+from botocore.exceptions import ProfileNotFound
 
 from awscli.testutils import unittest, mock, FileCreator
 from awscli.compat import StringIO
@@ -119,6 +120,20 @@ class TestAttachHistoryHander(unittest.TestCase):
             # Is should create any missing parent directories of the
             # file as well.
             self.assertTrue(os.path.exists(directory_to_create))
+
+    @mock.patch('awscli.customizations.history.sqlite3')
+    @mock.patch('awscli.customizations.history.HISTORY_RECORDER',
+                spec=HistoryRecorder)
+    def test_profile_does_not_exist(self, mock_recorder, mock_sqlite3):
+        mock_session = mock.Mock(Session)
+        mock_session.get_scoped_config.side_effect = ProfileNotFound(
+            profile='no-exist')
+
+        parsed_args = argparse.Namespace()
+        parsed_args.command = 'configure'
+
+        attach_history_handler(session=mock_session, parsed_args=parsed_args)
+        self.assertFalse(mock_recorder.add_handler.called)
 
 
 class TestAddHistoryCommand(unittest.TestCase):

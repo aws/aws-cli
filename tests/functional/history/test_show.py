@@ -19,8 +19,9 @@ from awscli.compat import BytesIO
 
 class TestShowCommand(BaseAWSCommandParamsTest):
     def setUp(self):
-        self._make_clean_history_recorder()
+        history_recorder = self._make_clean_history_recorder()
         super(TestShowCommand, self).setUp()
+        self.history_recorder = history_recorder
         self.files = FileCreator()
         config_contents = (
             '[default]\n'
@@ -56,6 +57,7 @@ class TestShowCommand(BaseAWSCommandParamsTest):
             'awscli.clidriver', history_recorder)
         self._apply_history_recorder_patch(
             'awscli.customizations.history', history_recorder)
+        return history_recorder
 
     def _apply_history_recorder_patch(self, module, history_recorder):
         patch_history_recorder = mock.patch(
@@ -63,8 +65,17 @@ class TestShowCommand(BaseAWSCommandParamsTest):
         patch_history_recorder.start()
         self.addCleanup(patch_history_recorder.stop)
 
+    def _close_db_writers(self):
+        # Reaching into private data to close out the database connection.
+        # Windows won't let us delete the tempdir until these connections are
+        # closed in the tearDown step and we have no other way of forcing
+        # them to close.
+        for handler in self.history_recorder._handlers:
+            handler._writer.close()
+
     def tearDown(self):
         super(TestShowCommand, self).tearDown()
+        self._close_db_writers()
         self.files.remove_all()
         self.binary_stdout_patch.stop()
 

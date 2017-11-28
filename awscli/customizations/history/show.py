@@ -427,18 +427,24 @@ class ShowCommand(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         self._connect_to_history_db()
-        self._validate_args(parsed_args)
-        with self._get_output_stream() as output_stream:
-            formatter = self._get_formatter(
-                parsed_args, parsed_globals, output_stream)
-            for record in self._get_record_iterator(parsed_args):
-                formatter.display(record)
+        try:
+            self._validate_args(parsed_args)
+            with self._get_output_stream() as output_stream:
+                formatter = self._get_formatter(
+                    parsed_args, parsed_globals, output_stream)
+                for record in self._get_record_iterator(parsed_args):
+                    formatter.display(record)
+        finally:
+            self._close_history_db()
         return 0
 
     def _connect_to_history_db(self):
         if self._db_reader is None:
             connection = DatabaseConnection(self._get_history_db_filename())
             self._db_reader = DatabaseRecordReader(connection)
+
+    def _close_history_db(self):
+        self._db_reader.close()
 
     def _get_history_db_filename(self):
         filename = os.environ.get(

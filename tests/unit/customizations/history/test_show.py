@@ -27,6 +27,10 @@ from awscli.customizations.history.show import OutputStreamFactory
 from awscli.customizations.history.db import DatabaseRecordReader
 
 
+class FakeError(Exception):
+    pass
+
+
 class RecordingFormatter(Formatter):
     def __init__(self, output=None, include=None, exclude=None):
         super(RecordingFormatter, self).__init__(
@@ -103,7 +107,7 @@ class TestDetailedFormatter(unittest.TestCase):
                 'event_type': 'CLI_VERSION',
                 'id': 'my-id',
                 'payload': 'aws-cli/1.11.188',
-                'timestamp': 0,
+                'timestamp': 86400000,
                 'request_id': None
             },
             contains=[
@@ -119,7 +123,7 @@ class TestDetailedFormatter(unittest.TestCase):
                 'event_type': 'CLI_VERSION',
                 'id': 'my-id',
                 'payload': 'aws-cli/1.11.188',
-                'timestamp': 0,
+                'timestamp': 86400000,
                 'request_id': None
             },
             contains=[
@@ -134,7 +138,7 @@ class TestDetailedFormatter(unittest.TestCase):
                 'event_type': 'CLI_ARGUMENTS',
                 'id': 'my-id',
                 'payload': ['ec2', 'describe-regions'],
-                'timestamp': 0,
+                'timestamp': 86400000,
                 'request_id': None
             },
             contains=[
@@ -153,7 +157,7 @@ class TestDetailedFormatter(unittest.TestCase):
                     'operation': 'DescribeRegions',
                     'params': {}
                 },
-                'timestamp': 0,
+                'timestamp': 86400000,
             },
             contains=[
                 'to service: ec2\n',
@@ -172,7 +176,7 @@ class TestDetailedFormatter(unittest.TestCase):
                 'operation': 'DescribeRegions',
                 'params': {}
             },
-            'timestamp': 0,
+            'timestamp': 86400000,
         }
         self.formatter.display(event)
         collected_output = ensure_text_type(self.output.getvalue())
@@ -187,7 +191,7 @@ class TestDetailedFormatter(unittest.TestCase):
                 'operation': 'DescribeRegions',
                 'params': {}
             },
-            'timestamp': 0,
+            'timestamp': 86400000,
         }
         self.formatter.display(other_event)
         new_output = ensure_text_type(self.output.getvalue())[
@@ -206,7 +210,7 @@ class TestDetailedFormatter(unittest.TestCase):
                     'headers': {},
                     'body': 'This is my body'
                 },
-                'timestamp': 0,
+                'timestamp': 86400000,
             },
             contains=[
                 'to URL: https://myservice.us-west-2.amazonaws.com\n',
@@ -229,7 +233,7 @@ class TestDetailedFormatter(unittest.TestCase):
                     'body': 'This should not be printed out',
                     'streaming': True
                 },
-                'timestamp': 0,
+                'timestamp': 86400000,
             },
             contains=[
                 'with body: The body is a stream and will not be displayed',
@@ -248,7 +252,7 @@ class TestDetailedFormatter(unittest.TestCase):
                     'headers': {},
                     'body': None
                 },
-                'timestamp': 0,
+                'timestamp': 86400000,
             },
             contains=[
                 'with body: There is no associated body'
@@ -267,7 +271,7 @@ class TestDetailedFormatter(unittest.TestCase):
                     'headers': {},
                     'body': ''
                 },
-                'timestamp': 0,
+                'timestamp': 86400000,
             },
             contains=[
                 'with body: There is no associated body'
@@ -287,7 +291,7 @@ class TestDetailedFormatter(unittest.TestCase):
                     'headers': {},
                     'body': xml_body
                 },
-                'timestamp': 0,
+                'timestamp': 86400000,
             },
             contains=[
                 'with body: ' + self.get_pretty_xml(xml_body)
@@ -307,7 +311,7 @@ class TestDetailedFormatter(unittest.TestCase):
                     'headers': {},
                     'body': self.get_pretty_xml(xml_body)
                 },
-                'timestamp': 0,
+                'timestamp': 86400000,
             },
             # The XML should not be prettified more than once if the body
             # of the request was already prettied.
@@ -328,7 +332,7 @@ class TestDetailedFormatter(unittest.TestCase):
                     'headers': {},
                     'body': '{"foo": "bar"}'
                 },
-                'timestamp': 0,
+                'timestamp': 86400000,
             },
             contains=[
                 'with body: {\n'
@@ -348,7 +352,7 @@ class TestDetailedFormatter(unittest.TestCase):
                     'operation': 'DescribeRegions',
                     'params': {}
                 },
-                'timestamp': 0,
+                'timestamp': 86400000,
             },
             contains=[
                 '[0] API call made'
@@ -365,7 +369,7 @@ class TestDetailedFormatter(unittest.TestCase):
                     'headers': {},
                     'body': 'This is my body'
                 },
-                'timestamp': 0,
+                'timestamp': 86400000,
             },
             contains=[
                 '[0] HTTP request sent'
@@ -383,7 +387,7 @@ class TestDetailedFormatter(unittest.TestCase):
                     'headers': {},
                     'body': 'This is my body'
                 },
-                'timestamp': 0,
+                'timestamp': 86400000,
             },
             contains=[
                 '[0] HTTP response received',
@@ -406,7 +410,7 @@ class TestDetailedFormatter(unittest.TestCase):
                     'body': 'This should not be printed out',
                     'streaming': True
                 },
-                'timestamp': 0,
+                'timestamp': 86400000,
             },
             contains=[
                 'with body: The body is a stream and will not be displayed'
@@ -424,7 +428,7 @@ class TestDetailedFormatter(unittest.TestCase):
                     'headers': {},
                     'body': None
                 },
-                'timestamp': 0,
+                'timestamp': 86400000,
             },
             contains=[
                 'with body: There is no associated body'
@@ -442,7 +446,7 @@ class TestDetailedFormatter(unittest.TestCase):
                     'headers': {},
                     'body': ''
                 },
-                'timestamp': 0,
+                'timestamp': 86400000,
             },
             contains=[
                 'with body: There is no associated body'
@@ -461,7 +465,7 @@ class TestDetailedFormatter(unittest.TestCase):
                     'headers': {},
                     'body': xml_body
                 },
-                'timestamp': 0,
+                'timestamp': 86400000,
             },
             contains=[
                 'with body: ' + self.get_pretty_xml(xml_body)
@@ -480,7 +484,7 @@ class TestDetailedFormatter(unittest.TestCase):
                     'headers': {},
                     'body': self.get_pretty_xml(xml_body)
                 },
-                'timestamp': 0,
+                'timestamp': 86400000,
             },
             # The XML should not be prettified more than once if the body
             # of the response was already prettied.
@@ -500,7 +504,7 @@ class TestDetailedFormatter(unittest.TestCase):
                     'headers': {},
                     'body': '{"foo": "bar"}'
                 },
-                'timestamp': 0,
+                'timestamp': 86400000,
             },
             contains=[
                 'with body: {\n',
@@ -516,7 +520,7 @@ class TestDetailedFormatter(unittest.TestCase):
                 'id': 'my-id',
                 'request_id': 'some-id',
                 'payload': {},
-                'timestamp': 0,
+                'timestamp': 86400000,
             },
             contains=[
                 '[0] HTTP response parsed',
@@ -530,7 +534,7 @@ class TestDetailedFormatter(unittest.TestCase):
                 'event_type': 'CLI_RC',
                 'id': 'my-id',
                 'payload': 0,
-                'timestamp': 0,
+                'timestamp': 86400000,
                 'request_id': None
             },
             contains=[
@@ -544,7 +548,7 @@ class TestDetailedFormatter(unittest.TestCase):
             'event_type': 'UNKNOWN',
             'id': 'my-id',
             'payload': 'foo',
-            'timestamp': 0,
+            'timestamp': 86400000,
             'request_id': None
         }
         self.formatter.display(event)
@@ -660,6 +664,18 @@ class TestShowCommand(unittest.TestCase):
 
     def tearDown(self):
         self.files.remove_all()
+
+    def test_does_close_connection(self):
+        self.parsed_args.command_id = 'latest'
+        self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
+        self.assertTrue(self.db_reader.close.called)
+
+    def test_does_close_connection_with_error(self):
+        self.parsed_args.command_id = 'latest'
+        self.output_stream_factory.get_output_stream.side_effect = FakeError
+        with self.assertRaises(FakeError):
+            self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
+        self.assertTrue(self.db_reader.close.called)
 
     def test_detects_if_history_exists(self):
         self.show_cmd = ShowCommand(self.session)

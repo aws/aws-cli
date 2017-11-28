@@ -44,6 +44,9 @@ class DatabaseConnection(object):
             db_filename, check_same_thread=False, isolation_level=None)
         self._ensure_database_setup()
 
+    def close(self):
+        self._connection.close()
+
     def execute(self, query, *parameters):
         return self._connection.execute(query, *parameters)
 
@@ -138,6 +141,9 @@ class DatabaseRecordWriter(object):
     def __init__(self, connection):
         self._connection = connection
 
+    def close(self):
+        self._connection.close()
+
     def write_record(self, record):
         # This method is not threadsafe by itself, it is only threadsafe when
         # used inside a handler bound to the HistoryRecorder in botocore which
@@ -172,6 +178,9 @@ class DatabaseRecordReader(object):
     def __init__(self, connection):
         self._connection = connection
         self._connection.row_factory = self._row_factory
+
+    def close(self):
+        self._connection.close()
 
     def _row_factory(self, cursor, row):
         d = {}

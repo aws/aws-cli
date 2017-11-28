@@ -55,9 +55,6 @@ class HistorySubcommand(BasicCommand):
 
     def _get_output_stream(self, preferred_pager=None):
         if is_a_tty():
-            env_pager = os.environ.get('PAGER')
-            if env_pager is not None:
-                preferred_pager = env_pager
             return self._output_stream_factory.get_pager_stream(
                 preferred_pager)
         return self._output_stream_factory.get_stdout_stream()

@@ -786,21 +786,3 @@ class TestShowCommand(unittest.TestCase):
                 output=self.output_stream, colorize=False
             )
         )
-
-    @mock.patch('awscli.customizations.history.commands.is_windows', False)
-    @mock.patch('awscli.customizations.history.commands.is_a_tty')
-    def test_environment_pager_is_used(self, mock_is_a_tty):
-        mock_is_a_tty.return_value = True
-        self.formatter = mock.Mock(DetailedFormatter)
-        self.add_formatter('detailed', self.formatter)
-        self.parsed_args.format = 'detailed'
-        self.parsed_args.command_id = 'latest'
-
-        env = {
-            'PAGER': 'pager --options'
-        }
-        with mock.patch(
-                'awscli.customizations.history.commands.os.environ', env):
-            self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
-        self.output_stream_factory.get_pager_stream.assert_called_with(
-            'pager --options')

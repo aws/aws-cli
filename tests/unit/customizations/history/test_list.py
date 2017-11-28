@@ -170,31 +170,13 @@ class TestListCommand(unittest.TestCase):
 
     @mock.patch('awscli.customizations.history.commands.is_windows', False)
     @mock.patch('awscli.customizations.history.commands.is_a_tty')
-    def test_environment_pager_is_used(self, mock_is_a_tty):
-        mock_is_a_tty.return_value = True
-        self.db_reader.iter_all_records.return_value = iter([
-            self._make_record('abc', 1511376242067, '["s3", "ls"]', '0')
-        ])
-        env = {
-            'PAGER': 'pager --options'
-        }
-        with mock.patch(
-                'awscli.customizations.history.commands.os.environ', env):
-            self.list_cmd._run_main(self.parsed_args, self.parsed_globals)
-        self.output_stream_factory.get_pager_stream.assert_called_with(
-            'pager --options')
-
-    @mock.patch('awscli.customizations.history.commands.is_windows', False)
-    @mock.patch('awscli.customizations.history.commands.is_a_tty')
     @mock.patch('awscli.customizations.history.list.default_pager', 'less -R')
     def test_default_pager_has_correct_args_non_windows(self, mock_is_a_tty):
         mock_is_a_tty.return_value = True
         self.db_reader.iter_all_records.return_value = iter([
             self._make_record('abc', 1511376242067, '["s3", "ls"]', '0')
         ])
-        with mock.patch(
-                'awscli.customizations.history.commands.os.environ', {}):
-            self.list_cmd._run_main(self.parsed_args, self.parsed_globals)
+        self.list_cmd._run_main(self.parsed_args, self.parsed_globals)
         self.output_stream_factory.get_pager_stream.assert_called_with(
             'less -SR')
 
@@ -206,8 +188,6 @@ class TestListCommand(unittest.TestCase):
         self.db_reader.iter_all_records.return_value = iter([
             self._make_record('abc', 1511376242067, '["s3", "ls"]', '0')
         ])
-        with mock.patch(
-                'awscli.customizations.history.commands.os.environ', {}):
-            self.list_cmd._run_main(self.parsed_args, self.parsed_globals)
+        self.list_cmd._run_main(self.parsed_args, self.parsed_globals)
         self.output_stream_factory.get_pager_stream.assert_called_with(
             'more')

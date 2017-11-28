@@ -25,7 +25,7 @@ from awscli.customizations.history import HistoryCommand
 from awscli.customizations.history.db import DatabaseHistoryHandler
 
 
-class TestAttachHistoryHander(unittest.TestCase):
+class TestAttachHistoryHandler(unittest.TestCase):
     def setUp(self):
         self.files = FileCreator()
 
@@ -100,9 +100,11 @@ class TestAttachHistoryHander(unittest.TestCase):
         self.assertFalse(mock_recorder.add_handler.called)
 
     @mock.patch('awscli.customizations.history.sqlite3')
+    @mock.patch('awscli.customizations.history.db.sqlite3')
     @mock.patch('awscli.customizations.history.HISTORY_RECORDER',
                 spec=HistoryRecorder)
-    def test_create_directory_no_exists(self, mock_recorder, mock_sqlite3):
+    def test_create_directory_no_exists(self, mock_recorder,
+                                        mock_db_sqlite3, mock_sqlite3):
         mock_session = mock.Mock(Session)
         mock_session.get_scoped_config.return_value = {
             'cli_history': 'enabled'

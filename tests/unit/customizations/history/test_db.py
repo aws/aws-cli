@@ -32,6 +32,10 @@ from tests import CaseInsensitiveDict
 class FakeDatabaseConnection(object):
     def __init__(self):
         self.execute = mock.MagicMock()
+        self.closed = False
+
+    def close(self):
+        self.closed = True
 
 
 class TestGetHistoryDBFilename(unittest.TestCase):
@@ -69,6 +73,14 @@ class TestDatabaseConnection(unittest.TestCase):
             (5, 'payload', 'TEXT'),
         ]
         self.assertEqual(expected_schema, schema)
+
+    @mock.patch('awscli.compat.sqlite3.connect')
+    def test_can_close(self, mock_connect):
+        connection = mock.Mock()
+        mock_connect.return_value = connection
+        conn = DatabaseConnection(':memory:')
+        conn.close()
+        self.assertTrue(connection.close.ecalled)
 
 
 class TestDatabaseHistoryHandler(unittest.TestCase):
@@ -218,6 +230,12 @@ class TestDatabaseRecordWriter(BaseDatabaseRecordWriterTester):
         cursor = self.db.execute('SELECT * FROM records')
         written_record = cursor.fetchone()
         return written_record
+
+    def test_can_close(self):
+        connection = mock.Mock()
+        writer = DatabaseRecordWriter(connection)
+        writer.close()
+        self.assertTrue(connection.close.called)
 
     def test_can_write_record(self):
         self.writer.write_record({
@@ -475,6 +493,10 @@ class TestDatabaseRecordReader(BaseDatabaseRecordTester):
     def setUp(self):
         self.fake_connection = FakeDatabaseConnection()
         self.reader = DatabaseRecordReader(self.fake_connection)
+
+    def test_can_close(self):
+        self.reader.close()
+        self.assertTrue(self.fake_connection.closed)
 
     def test_row_factory_set(self):
         self.assertEqual(self.fake_connection.row_factory,

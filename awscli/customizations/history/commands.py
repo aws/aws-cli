@@ -36,6 +36,9 @@ class HistorySubcommand(BasicCommand):
             connection = DatabaseConnection(self._get_history_db_filename())
             self._db_reader = DatabaseRecordReader(connection)
 
+    def _close_history_db(self):
+        self._db_reader.close()
+
     def _get_history_db_filename(self):
         filename = os.environ.get(
             HISTORY_FILENAME_ENV_VAR, DEFAULT_HISTORY_FILENAME)

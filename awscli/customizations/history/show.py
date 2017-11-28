@@ -376,9 +376,6 @@ class ShowCommand(HistorySubcommand):
             self._close_history_db()
         return 0
 
-    def _close_history_db(self):
-        self._db_reader.close()
-
     def _validate_args(self, parsed_args):
         if parsed_args.exclude and parsed_args.include:
             raise ValueError(

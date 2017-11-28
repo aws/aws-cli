@@ -35,18 +35,21 @@ class ListCommand(HistorySubcommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         self._connect_to_history_db()
-        raw_records = self._db_reader.iter_all_records()
-        records = RecordAdapter(raw_records)
-        if not records.has_next():
-            raise RuntimeError(
-                'No commands were found in your history. Make sure you have '
-                'enabled history mode by adding "cli_history = enabled" '
-                'to the config file.')
+        try:
+            raw_records = self._db_reader.iter_all_records()
+            records = RecordAdapter(raw_records)
+            if not records.has_next():
+                raise RuntimeError(
+                    'No commands were found in your history. Make sure you have '
+                    'enabled history mode by adding "cli_history = enabled" '
+                    'to the config file.')
 
-        preferred_pager = self._get_preferred_pager()
-        with self._get_output_stream(preferred_pager) as output_stream:
-            formatter = TextFormatter(self._COL_WIDTHS, output_stream)
-            formatter(records)
+            preferred_pager = self._get_preferred_pager()
+            with self._get_output_stream(preferred_pager) as output_stream:
+                formatter = TextFormatter(self._COL_WIDTHS, output_stream)
+                formatter(records)
+        finally:
+            self._close_history_db()
         return 0
 
     def _get_preferred_pager(self):

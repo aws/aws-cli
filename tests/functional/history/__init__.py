@@ -21,8 +21,9 @@ from awscli.compat import BytesIO
 
 class BaseHistoryCommandParamsTest(BaseAWSCommandParamsTest):
     def setUp(self):
-        self._make_clean_history_recorder()
+        history_recorder = self._make_clean_history_recorder()
         super(BaseHistoryCommandParamsTest, self).setUp()
+        self.history_recorder = history_recorder
         self.files = FileCreator()
         config_contents = (
             '[default]\n'
@@ -30,9 +31,8 @@ class BaseHistoryCommandParamsTest(BaseAWSCommandParamsTest):
         )
         self.environ['AWS_CONFIG_FILE'] = self.files.create_file(
             'config', config_contents)
-        filename_suffix = str(uuid.uuid4())
         self.environ['AWS_CLI_HISTORY_FILE'] = self.files.create_file(
-            'history-%s.db' % filename_suffix, '')
+            'history.db', '')
         self.driver = create_clidriver()
         # The run_cmd patches stdout with a StringIO object (similar to what
         # nose does). Therefore it will run into issues when
@@ -59,6 +59,7 @@ class BaseHistoryCommandParamsTest(BaseAWSCommandParamsTest):
             'awscli.clidriver', history_recorder)
         self._apply_history_recorder_patch(
             'awscli.customizations.history', history_recorder)
+        return history_recorder
 
     def _apply_history_recorder_patch(self, module, history_recorder):
         patch_history_recorder = mock.patch(

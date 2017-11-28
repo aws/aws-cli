@@ -80,7 +80,7 @@ class TestDatabaseConnection(unittest.TestCase):
         mock_connect.return_value = connection
         conn = DatabaseConnection(':memory:')
         conn.close()
-        self.assertTrue(connection.close.ecalled)
+        self.assertTrue(connection.close.called)
 
 
 class TestDatabaseHistoryHandler(unittest.TestCase):

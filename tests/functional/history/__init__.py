@@ -67,7 +67,17 @@ class BaseHistoryCommandParamsTest(BaseAWSCommandParamsTest):
         patch_history_recorder.start()
         self.addCleanup(patch_history_recorder.stop)
 
+    def _cleanup_db_connections(self):
+        # Reaching into private data to close out the database connection.
+        # Windows won't let us delete the tempdir until these connections are
+        # closed in the tearDown step and we have no other way of forcing
+        # them to close.
+        handlers = self.history_recorder._handlers
+        for handler in handlers:
+            handler._writer.close()
+
     def tearDown(self):
         super(BaseHistoryCommandParamsTest, self).tearDown()
+        self._cleanup_db_connections()
         self.files.remove_all()
         self.binary_stdout_patch.stop()

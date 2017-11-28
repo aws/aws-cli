@@ -72,7 +72,7 @@ if six.PY3:
 
     raw_input = input
 
-    binary_stdin = sys.stdin.buffer
+    binary_stdin = sys.stdin.buffer if sys.stdin is not None else None
 
     def _get_text_writer(stream, errors):
         return stream

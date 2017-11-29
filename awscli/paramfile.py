@@ -51,6 +51,11 @@ PARAMFILE_DISABLED = set([
     'custom.mv.website-redirect',
     'custom.sync.website-redirect',
 
+    'guardduty.create-ip-set.location',
+    'guardduty.update-ip-set.location',
+    'guardduty.create-threat-intel-set.location',
+    'guardduty.update-threat-intel-set.location',
+
     'iam.create-open-id-connect-provider.url',
 
     'machinelearning.predict.predict-endpoint',

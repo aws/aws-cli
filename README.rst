@@ -68,9 +68,7 @@ If you want to run the ``develop`` branch of the CLI, see the
 CLI Releases
 ------------
 
-The release notes for the AWS CLI can be found `here <http://aws.amazon.com/releasenotes/CLI>`__.
-You can also find a `CHANGELOG <https://github.com/aws/aws-cli/blob/develop/CHANGELOG.rst>`__
-in the github repo.
+The release notes for the AWS CLI can be found `here <https://github.com/aws/aws-cli/blob/develop/CHANGELOG.rst>`__.
 
 
 ------------------

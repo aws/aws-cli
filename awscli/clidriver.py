@@ -21,6 +21,7 @@ from botocore import xform_name
 from botocore.compat import copy_kwargs, OrderedDict
 from botocore.exceptions import NoCredentialsError
 from botocore.exceptions import NoRegionError
+from botocore.history import get_global_history_recorder
 
 from awscli import EnvironmentVariables, __version__
 from awscli.compat import get_stderr_text_writer
@@ -49,11 +50,14 @@ from awscli.utils import emit_top_level_args_parsed_event
 LOG = logging.getLogger('awscli.clidriver')
 LOG_FORMAT = (
     '%(asctime)s - %(threadName)s - %(name)s - %(levelname)s - %(message)s')
+HISTORY_RECORDER = get_global_history_recorder()
 
 
 def main():
     driver = create_clidriver()
-    return driver.main()
+    rc = driver.main()
+    HISTORY_RECORDER.record('CLI_RC', rc, 'CLI')
+    return rc
 
 
 def create_clidriver():
@@ -196,7 +200,10 @@ class CLIDriver(object):
             # general exception handling logic as calling into the
             # command table.  This is why it's in the try/except clause.
             self._handle_top_level_args(parsed_args)
-            self._emit_session_event()
+            self._emit_session_event(parsed_args)
+            HISTORY_RECORDER.record(
+                'CLI_VERSION', self.session.user_agent(), 'CLI')
+            HISTORY_RECORDER.record('CLI_ARGUMENTS', args, 'CLI')
             return command_table[parsed_args.command](remaining, parsed_args)
         except UnknownArgumentError as e:
             sys.stderr.write("usage: %s\n" % USAGE)
@@ -228,13 +235,15 @@ class CLIDriver(object):
             err.write("\n")
             return 255
 
-    def _emit_session_event(self):
+    def _emit_session_event(self, parsed_args):
         # This event is guaranteed to run after the session has been
         # initialized and a profile has been set.  This was previously
         # problematic because if something in CLIDriver caused the
         # session components to be reset (such as session.profile = foo)
         # then all the prior registered components would be removed.
-        self.session.emit('session-initialized', session=self.session)
+        self.session.emit(
+            'session-initialized', session=self.session,
+            parsed_args=parsed_args)
 
     def _show_error(self, msg):
         LOG.debug(msg, exc_info=True)

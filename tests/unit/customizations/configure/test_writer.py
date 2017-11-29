@@ -356,3 +356,16 @@ class TestConfigFileWriter(unittest.TestCase):
             '[preview]\n'
             'cloudfront = true\n'
         )
+
+    def test_appends_newline_on_new_section(self):
+        original = (
+            '[preview]\n'
+            'cloudfront = true'
+        )
+        self.assert_update_config(
+            original, {'region': 'us-west-2', '__section__': 'new-section'},
+            '[preview]\n'
+            'cloudfront = true\n'
+            '[new-section]\n'
+            'region = us-west-2\n'
+        )

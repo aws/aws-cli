@@ -28,6 +28,8 @@ command set:
   transfers of individual files.
 * ``multipart_chunksize`` - When using multipart transfers, this is the chunk
   size that the CLI uses for multipart transfers of individual files.
+* ``max_bandwidth`` - The maximum bandwidth that will be consumed for uploading
+  and downloading data to and from Amazon S3.
 
 
 These are the configuration values that can be set for both ``aws s3``
@@ -60,6 +62,7 @@ configuration::
       max_queue_size = 10000
       multipart_threshold = 64MB
       multipart_chunksize = 16MB
+      max_bandwidth = 50MB/s
       use_accelerate_endpoint = true
       addressing_style = path
 
@@ -75,6 +78,7 @@ could instead run these commands::
     $ aws configure set default.s3.max_queue_size 10000
     $ aws configure set default.s3.multipart_threshold 64MB
     $ aws configure set default.s3.multipart_chunksize 16MB
+    $ aws configure set default.s3.max_bandwidth 50MB/s
     $ aws configure set default.s3.use_accelerate_endpoint true
     $ aws configure set default.s3.addressing_style path
 
@@ -162,6 +166,33 @@ the chunk size (also referred to as the part size) should be.  This
 value can specified using the same semantics as ``multipart_threshold``,
 that is either as the number of bytes as an integer, or using a size
 suffix.
+
+
+max_bandwidth
+-------------
+
+**Default** - None
+
+This controls the maximum bandwidth that the S3 commands will
+utilize when streaming content data to and from S3. Thus, this value only
+applies for uploads and downloads. It does not apply to copies nor deletes
+because those data transfers take place server side. The value is
+in terms of **bytes** per second. The value can be specified as:
+
+* An integer. For example, ``1048576`` would set the maximum bandwidth usage
+  to 1 megabyte per second.
+* A rate suffix. You can specify rate suffixes using: ``KB/s``, ``MB/s``,
+  ``GB/s``, etc. For example: ``300KB/s``, ``10MB/s``.
+
+In general, it is recommended to first use ``max_concurrent_requests`` to lower
+transfers to the desired bandwidth consumption. The ``max_bandwidth`` setting
+should then be used to further limit bandwidth consumption if setting
+``max_concurrent_requests`` is unable to lower bandwidth consumption to the
+desired rate. This is recommended because ``max_concurrent_requests`` controls
+how many threads are currently running. So if a high ``max_concurrent_requests``
+value is set and a low ``max_bandwidth`` value is set, it may result in
+threads having to wait unneccessarily which can lead to excess resource
+consumption and connection timeouts.
 
 
 use_accelerate_endpoint

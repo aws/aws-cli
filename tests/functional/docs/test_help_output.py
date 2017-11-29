@@ -310,10 +310,10 @@ class TestStructureScalarHasNoExamples(BaseAWSHelpOutputTest):
         # Verify that if a structure does match our special case
         # (single element named "Value"), then we still document
         # the example syntax.
-        self.driver.main(['s3api', 'restore-object', 'help'])
-        self.assert_contains('Days=integer')
+        self.driver.main(['s3api', 'create-bucket', 'help'])
+        self.assert_contains('LocationConstraint=string')
         # Also should see the JSON syntax in the help output.
-        self.assert_contains('"Days": integer')
+        self.assert_contains('"LocationConstraint": ')
 
 
 class TestJSONListScalarDocs(BaseAWSHelpOutputTest):

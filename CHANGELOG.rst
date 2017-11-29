@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+1.13.0
+======
+
+* feature:``cli_history``: Setting the value of ``cli_history`` to ``enabled`` in the shared config file enables the CLI to keep history of all commands ran.
+* api-change:``appsync``: Update appsync command to latest version
+* feature:``history list``: Lists all of the commands that have been run via the stored history of the CLI.
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``mq``: Update mq command to latest version
+* api-change:``batch``: Update batch command to latest version
+* feature:``history show``: Shows the important events related to running a command that was recorded in the CLI history.
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* bugfix:Configure: Fix a bug where the configure command would write to the incorrect profile, fixes `#2970 <https://github.com/aws/aws-cli/issues/2970>`__.
+* api-change:``codedeploy``: Update codedeploy command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.12.2
 ======
 

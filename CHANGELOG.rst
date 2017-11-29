@@ -2,6 +2,27 @@
 CHANGELOG
 =========
 
+1.14.0
+======
+
+* api-change:``iot``: Update iot command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``greengrass``: Update greengrass command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``translate``: Update translate command to latest version
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``runtime.sagemaker``: Update runtime.sagemaker command to latest version
+* api-change:``iot-jobs-data``: Update iot-jobs-data command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+* api-change:``kinesisvideo``: Update kinesisvideo command to latest version
+* api-change:``kinesis-video-archived-media``: Update kinesis-video-archived-media command to latest version
+* api-change:``glacier``: Update glacier command to latest version
+* feature:``max_bandwidth``: Add the ability to set maximum bandwidth consumption for ``s3`` commands. (`issue 1090 <https://github.com/aws/aws-cli/issues/1090>`__)
+* api-change:``kinesis-video-media``: Update kinesis-video-media command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+
+
 1.13.0
 ======
 

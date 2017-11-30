@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.14.1
+======
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``waf``: Update waf command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``resource-groups``: Update resource-groups command to latest version
+* api-change:``waf-regional``: Update waf-regional command to latest version
+
+
 1.14.0
 ======
 

@@ -208,10 +208,12 @@ in the AWS CLI config file:
 * ``credential_source`` - The credential provider to use to get credentials for
   the initial ``assume-role`` call. This parameter cannot be provided
   alongside ``source_profile``. Valid values are:
+
   * ``Environment`` to pull source credentials from environment variables.
   * ``Ec2InstanceMetadata`` to use the EC2 instance role as source credentials.
   * ``EcsContainer`` to use the ECS container credentials as the source
     credentials.
+
 * ``external_id`` - A unique identifier that is used by third parties to assume
   a role in their customers' accounts.  This maps to the ``ExternalId``
   parameter in the ``AssumeRole`` operation.  This is an optional parameter.

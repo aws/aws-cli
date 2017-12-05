@@ -725,7 +725,7 @@ class CpCommand(S3TransferCommand):
             "or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
-                [METADATA, METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE]
+                [METADATA, METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE, REQUEST_PAYER]
 
 
 class MvCommand(S3TransferCommand):
@@ -744,7 +744,7 @@ class RmCommand(S3TransferCommand):
     USAGE = "<S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
                   'synopsis': USAGE}, DRYRUN, QUIET, RECURSIVE, INCLUDE,
-                 EXCLUDE, ONLY_SHOW_ERRORS, PAGE_SIZE]
+                 EXCLUDE, ONLY_SHOW_ERRORS, PAGE_SIZE, REQUEST_PAYER]
 
 
 class SyncCommand(S3TransferCommand):
@@ -757,7 +757,7 @@ class SyncCommand(S3TransferCommand):
             "<LocalPath> or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
-                [METADATA, METADATA_DIRECTIVE]
+                [METADATA, METADATA_DIRECTIVE, REQUEST_PAYER]
 
 
 class MbCommand(S3Command):
@@ -985,10 +985,17 @@ class CommandArchitecture(object):
             'result_queue': result_queue,
         }
 
-        fgen_request_parameters = {}
+        fgen_request_parameters = {
+            'RequestPayer': self.parameters.get('request_payer'),
+        }
         fgen_head_object_params = {}
         fgen_request_parameters['HeadObject'] = fgen_head_object_params
         fgen_kwargs['request_parameters'] = fgen_request_parameters
+
+        rgen_request_parameters = {
+            'RequestPayer': self.parameters.get('request_payer'),
+        }
+        rgen_kwargs['request_parameters'] = rgen_request_parameters
 
         # SSE-C may be neaded for HeadObject for copies/downloads/deletes
         # If the operation is s3 to s3, the FileGenerator should use the
@@ -1111,6 +1118,8 @@ class CommandParameters(object):
             self.parameters['follow_symlinks'] = True
         if 'source_region' not in parameters:
             self.parameters['source_region'] = None
+        if 'request_payer' not in parameters:
+            self.parameters['request_payer'] = None
         if self.cmd in ['sync', 'mb', 'rb']:
             self.parameters['dir_op'] = True
         if self.cmd == 'mv':

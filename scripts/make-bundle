@@ -92,15 +92,18 @@ def download_cli_deps(scratch_dir):
     # So here's what we do.
     # Step one create a virtualenv.
     venv_dir = tempfile.mkdtemp()
-    run('virtualenv %s' % venv_dir)
-    pip = os.path.join(venv_dir, 'bin', 'pip')
-    assert os.path.isfile(pip)
-    awscli_dir = os.path.dirname(
-        os.path.dirname(os.path.abspath(__file__)))
-    with cd(scratch_dir):
-        run('%s install %s -d . -e %s' % (pip, INSTALL_ARGS, awscli_dir))
-    # Remove the awscli package, we'll create our own sdist.
-    _remove_cli_zip(scratch_dir)
+    try:
+        run('virtualenv %s' % venv_dir)
+        pip = os.path.join(venv_dir, 'bin', 'pip')
+        assert os.path.isfile(pip)
+        awscli_dir = os.path.dirname(
+            os.path.dirname(os.path.abspath(__file__)))
+        with cd(scratch_dir):
+            run('%s install %s -d . -e %s' % (pip, INSTALL_ARGS, awscli_dir))
+        # Remove the awscli package, we'll create our own sdist.
+        _remove_cli_zip(scratch_dir)
+    finally:
+        shutil.rmtree(venv_dir)
 
 
 def _remove_cli_zip(scratch_dir):

@@ -357,10 +357,12 @@ class BucketLister(object):
         self._client = client
         self._date_parser = date_parser
 
-    def list_objects(self, bucket, prefix=None, page_size=None):
+    def list_objects(self, bucket, prefix=None, page_size=None, request_payer=None):
         kwargs = {'Bucket': bucket, 'PaginationConfig': {'PageSize': page_size}}
         if prefix is not None:
             kwargs['Prefix'] = prefix
+        if request_payer is not None:
+            kwargs['RequestPayer'] = request_payer
 
         paginator = self._client.get_paginator('list_objects')
         pages = paginator.paginate(**kwargs)
@@ -424,11 +426,13 @@ class RequestParamsMapper(object):
         cls._set_metadata_params(request_params, cli_params)
         cls._set_sse_request_params(request_params, cli_params)
         cls._set_sse_c_request_params(request_params, cli_params)
+        cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod
     def map_get_object_params(cls, request_params, cli_params):
         """Map CLI params to GetObject request params"""
         cls._set_sse_c_request_params(request_params, cli_params)
+        cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod
     def map_copy_object_params(cls, request_params, cli_params):
@@ -440,11 +444,13 @@ class RequestParamsMapper(object):
         cls._set_sse_request_params(request_params, cli_params)
         cls._set_sse_c_and_copy_source_request_params(
             request_params, cli_params)
+        cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod
     def map_head_object_params(cls, request_params, cli_params):
         """Map CLI params to HeadObject request params"""
         cls._set_sse_c_request_params(request_params, cli_params)
+        cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod
     def map_create_multipart_upload_params(cls, request_params, cli_params):
@@ -453,21 +459,33 @@ class RequestParamsMapper(object):
         cls._set_sse_request_params(request_params, cli_params)
         cls._set_sse_c_request_params(request_params, cli_params)
         cls._set_metadata_params(request_params, cli_params)
+        cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod
     def map_upload_part_params(cls, request_params, cli_params):
         """Map CLI params to UploadPart request params"""
         cls._set_sse_c_request_params(request_params, cli_params)
+        cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod
     def map_upload_part_copy_params(cls, request_params, cli_params):
         """Map CLI params to UploadPartCopy request params"""
         cls._set_sse_c_and_copy_source_request_params(
             request_params, cli_params)
+        cls._set_request_payer_param(request_params, cli_params)
+
+    @classmethod
+    def map_delete_params(cls, request_params, cli_params):
+        cls._set_request_payer_param(request_params, cli_params)
+
+    @classmethod
+    def _set_request_payer_param(cls, request_params, cli_params):
+        if cli_params.get('request_payer'):
+            request_params['RequestPayer'] = cli_params['request_payer']
 
     @classmethod
     def _set_general_object_params(cls, request_params, cli_params):
-        # Paramters set in this method should be applicable to the following
+        # Parameters set in this method should be applicable to the following
         # operations involving objects: PutObject, CopyObject, and
         # CreateMultipartUpload.
         general_param_translation = {

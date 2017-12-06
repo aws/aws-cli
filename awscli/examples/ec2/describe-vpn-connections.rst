@@ -8,32 +8,43 @@ Command::
 
 Output::
 
-  {
-      "VpnConnections": {
-          "VpnConnectionId": "vpn-40f41529"
-          "CustomerGatewayConfiguration": "...configuration information...",
-          "VgwTelemetry": [
-              {
-                  "Status": "DOWN",
-                  "AcceptedRouteCount": 0,
-                  "OutsideIpAddress": "72.21.209.192",
-                  "LastStatusChange": "2013-02-04T20:19:34.000Z",
-                  "StatusMessage": "IPSEC IS DOWN"
+    {
+        "VpnConnections": {
+            "VpnConnectionId": "vpn-40f41529",
+            "Tags": [
+                  {
+                      "Value": "MyBGPVPN", 
+                      "Key": "Name"
+                  }
+              ],
+            "CustomerGatewayConfiguration": "...configuration information...",
+            "Routes": [],
+            "State": "available",
+            "VpnGatewayId": "vgw-9a4cacf3",
+            "CustomerGatewayId": "cgw-0e11f167",
+            "Type": "ipsec.1",
+            "Options": {
+                  "StaticRoutesOnly": false
               },
-              {
-                  "Status": "DOWN",
-                  "AcceptedRouteCount": 0,
-                  "OutsideIpAddress": "72.21.209.224",
-                  "LastStatusChange": "2013-02-04T20:19:34.000Z",
-                  "StatusMessage": "IPSEC IS DOWN"
-              }
-          ],
-          "State": "available",
-          "VpnGatewayId": "vgw-9a4cacf3",
-          "CustomerGatewayId": "cgw-0e11f167"
-          "Type": "ipsec.1"
-      }
-  }
+            "Category": "VPN",
+            "VgwTelemetry": [
+                {
+                    "Status": "DOWN",
+                    "AcceptedRouteCount": 0,
+                    "OutsideIpAddress": "72.21.209.192",
+                    "LastStatusChange": "2013-02-04T20:19:34.000Z",
+                    "StatusMessage": "IPSEC IS DOWN"
+                },
+                {
+                    "Status": "DOWN",
+                    "AcceptedRouteCount": 0,
+                    "OutsideIpAddress": "72.21.209.224",
+                    "LastStatusChange": "2013-02-04T20:19:34.000Z",
+                    "StatusMessage": "IPSEC IS DOWN"
+                }
+            ]
+        }
+    }
   
 **To describe your available VPN connections**
 

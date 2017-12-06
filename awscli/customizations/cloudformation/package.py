@@ -22,6 +22,7 @@ import uuid
 import json
 
 from botocore.client import Config
+from botocore.exceptions import ClientError
 
 from awscli.customizations.cloudformation.artifact_exporter import Template
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump
@@ -116,26 +117,43 @@ class PackageCommand(BasicCommand):
         }
     ]
 
+    def _does_bucket_exist(self, bucket, s3_client):
+        try:
+            s3_client.head_bucket(Bucket=bucket)
+        except ClientError as e:
+            if e.response['Error']['Code'] == 404:
+                return False
+        
+        return True
+
+    def _does_deploy_region_match(self, deploy_region, s3_client):
+        # pass
+        s3_loc = s3_client.get_bucket_location(Bucket=bucket)["LocationConstraint"]
+        return s3_loc == deploy_region
+
+    # ***REMOVED***
+
+
     def _run_main(self, parsed_args, parsed_globals):
         region = parsed_globals.region if parsed_globals.region else "us-east-1"
         s3_client = self._session.create_client(
             "s3",
             config=Config(signature_version='s3v4'),
-            region_name=region, # Changed from parsed_globals.region
+            region_name=region,
             verify=parsed_globals.verify_ssl)
 
         template_path = parsed_args.template_file
         if not os.path.isfile(template_path):
             raise exceptions.InvalidTemplatePathError(
-                    template_path=template_path)
- 
+                template_path=template_path)
+
         if(parsed_args.s3_bucket is not None):
             bucket = parsed_args.s3_bucket
-            if parsed_globals.region==s3_client.get_bucket_location(Bucket=bucket)["LocationConstraint"]:
-                print("Bucket specified it's on the same region as the deployment. Nothing to do here.")
+            if parsed_globals.region == s3_client.get_bucket_location(Bucket=bucket)["LocationConstraint"]:
+                print(
+                    "Bucket specified it's on the same region as the deployment. Nothing to do here.")
             else:
                 print("Not cool. Bucket it's on a different region")
-                           
         else:
             print("Bucket not specified.")
             sts_client = self._session.create_client(
@@ -143,27 +161,85 @@ class PackageCommand(BasicCommand):
                 config=Config(signature_version='s3v4'),
                 verify=parsed_globals.verify_ssl
             )
-            bucket="sam-{region}{hash}".format(
-                hash=str(hash((sts_client.get_caller_identity()['UserId'].split(':')[0]))),
+            bucket = "sam-{region}{account}".format(
+                account=str(sts_client.get_caller_identity()["Account"]),
                 region=region
             )
+            #If they have already created the bucket, we need to find it out.
+            try:
+                print("Checking bucket -> ", bucket)
+                s3_client.head_bucket(Bucket=bucket)
+            except ClientError as e:
+                if e.response["Error"]["Code"] == "404":
+                    print("Bucket doesn't exist")
+                    # print("Unexpected error:", sys.exc_info())
+                    #region = parsed_globals.region if parsed_globals.region else "EU"
+                    #print(region)
+                    if parsed_globals.region:
+                        s3_client.create_bucket(
+                            Bucket=str(bucket),
+                            CreateBucketConfiguration={
+                                'LocationConstraint': str(region)}
+                        )
+                    else:
+                        s3_client.create_bucket(
+                            Bucket=str(bucket)
+                        )
+                    # continue
+        # region = parsed_globals.region if parsed_globals.region else "us-east-1"
+        # s3_client = self._session.create_client(
+        #     "s3",
+        #     config=Config(signature_version='s3v4'),
+        #     region_name=region,
+        #     verify=parsed_globals.verify_ssl)
+
+        # template_path = parsed_args.template_file
+        # if not os.path.isfile(template_path):
+        #     raise exceptions.InvalidTemplatePathError(
+        #             template_path=template_path)
+ 
+        # if(parsed_args.s3_bucket is not None):
+        #     bucket = parsed_args.s3_bucket
+        #     if not self._does_bucket_exist(bucket, s3_client):
+        #         raise exceptions.PackageFailedInvalidBucketError(
+        #             bucket_region=s3_loc
+        #         )
+
+        #     if not _does_deploy_region_match(region, s3_client):
+        #         raise exceptions.PackageFailedRegionMismatchError(
+        #             bucket_region=s3_loc,
+        #             deploy_region=deploy_region
+        #         )
+
+        #     raise Exception("Tested ;)")
+        # else:
+        #     print("Bucket not specified.")
+        #     sts_client = self._session.create_client(
+        #         "sts",
+        #         config=Config(signature_version='s3v4'),
+        #         verify=parsed_globals.verify_ssl
+        #     )
+        #     bucket="sam-{region}{hash}".format(
+        #         hash=str(hash((sts_client.get_caller_identity()['UserId'].split(':')[0]))),
+        #         region=region
+        #     )
 
 
-            print("Name of the bucket to be created: ", bucket)            
-            #region = parsed_globals.region if parsed_globals.region else "EU"
-            #print(region)
-            if parsed_globals.region:     
-                response = s3_client.create_bucket(
-                    Bucket=str(bucket),
-                    CreateBucketConfiguration={'LocationConstraint':str(region)}
-                )
-            else:
-                print("we didn't add region")
-                response = s3_client.create_bucket(
-                    Bucket=str(bucket)
-                )        
+        #     print("Name of the bucket to be created: ", bucket)            
+        #     #region = parsed_globals.region if parsed_globals.region else "EU"
+        #     #print(region)
+        #     if parsed_globals.region:     
+        #         response = s3_client.create_bucket(
+        #             Bucket=str(bucket),
+        #             CreateBucketConfiguration={'LocationConstraint':str(region)}
+        #         )
+        #     else:
+        #         print("we didn't add region")
+        #         response = s3_client.create_bucket(
+        #             Bucket=str(bucket)
+        #         )        
 
-            print(response)
+        #     print(response)
 
 
         self.s3_uploader = S3Uploader(s3_client,

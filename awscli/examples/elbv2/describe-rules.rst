@@ -24,7 +24,7 @@ Output::
             "IsDefault": false,
             "Actions": [
                 {
-                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067",
+                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets-2/113872332242cd5b",
                     "Type": "forward"
                 }
             ]
@@ -45,7 +45,34 @@ Output::
   {
     "Rules": [
         {
+            "Priority": "5",
+            "IsDefault": false,
+            "Actions": [
+                {
+                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets-1/b6bba954d1361c78",
+                    "Type": "forward"
+                }
+            ],
+            "RuleArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener-rule/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2/db8b4ff9007785e9",
+            "Conditions": [
+                {
+                    "Field": "host-header",
+                    "Values": [
+                        "*.example.com"
+                    ]
+                }
+            ]
+        },
+        {
             "Priority": "10",
+            "IsDefault": false,
+            "Actions": [
+                {
+                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets-2/113872332242cd5b",
+                    "Type": "forward"
+                }
+            ],
+            "RuleArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener-rule/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2/9683b2d02a6cabee",
             "Conditions": [
                 {
                     "Field": "path-pattern",
@@ -53,27 +80,19 @@ Output::
                         "/img/*"
                     ]
                 }
-            ],
-            "RuleArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener-rule/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2/9683b2d02a6cabee",
-            "IsDefault": false,
-            "Actions": [
-                {
-                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067",
-                    "Type": "forward"
-                }
             ]
         },
         {
             "Priority": "default",
-            "Conditions": [],
-            "RuleArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener-rule/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2/fd906cf3d7a9d36d",
             "IsDefault": true,
             "Actions": [
                 {
-                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067",
+                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-default-targets/a8173c00fbbe7b8d",
                     "Type": "forward"
                 }
-            ]
+            ],
+            "RuleArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener-rule/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2/fd906cf3d7a9d36d",
+            "Conditions": []
         }
     ]
   }

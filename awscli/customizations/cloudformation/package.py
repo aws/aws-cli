@@ -161,7 +161,7 @@ class PackageCommand(BasicCommand):
                 config=Config(signature_version='s3v4'),
                 verify=parsed_globals.verify_ssl
             )
-            bucket = "sam-{region}{account}".format(
+            bucket = "sam-{region}-{account}".format(
                 account=str(sts_client.get_caller_identity()["Account"]),
                 region=region
             )

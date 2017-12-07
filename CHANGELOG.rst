@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.14.6
+======
+
+* api-change:``es``: Update es command to latest version
+* api-change:``ses``: Update ses command to latest version
+
+
 1.14.5
 ======
 

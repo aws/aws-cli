@@ -15,8 +15,8 @@ Output::
 The following ``sync`` command syncs objects under a specified prefix and bucket to objects under another specified
 prefix and bucket by copying s3 objects.  A s3 object will require copying if the sizes of the two s3 objects differ,
 the last modified time of the source is newer than the last modified time of the destination, or the s3 object does not
-exist under the specified bucket and prefix destination.  In this example, the user syncs the bucket ``mybucket2`` to
-the bucket ``mybucket``.  The bucket ``mybucket`` contains the objects ``test.txt`` and ``test2.txt``.  The bucket
+exist under the specified bucket and prefix destination.  In this example, the user syncs the bucket ``mybucket`` to
+the bucket ``mybucket2``.  The bucket ``mybucket`` contains the objects ``test.txt`` and ``test2.txt``.  The bucket
 ``mybucket2`` contains no objects::
 
     aws s3 sync s3://mybucket s3://mybucket2

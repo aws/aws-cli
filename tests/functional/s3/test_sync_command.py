@@ -176,7 +176,7 @@ class TestSyncCommand(BaseAWSCommandParamsTest):
         # get their stats.
         def side_effect(_):
             os.remove(full_path)
-            raise OSError()
+            raise ValueError()
         with patch(
                 'awscli.customizations.s3.filegenerator.get_file_stat',
                 side_effect=side_effect

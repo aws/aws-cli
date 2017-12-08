@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.14.7
+======
+
+* bugfix:S3: S3 commands that encountered both an error and warning will now return the RC for error instead of warning.
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``appstream``: Update appstream command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
 1.14.6
 ======
 

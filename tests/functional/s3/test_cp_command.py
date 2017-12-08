@@ -14,7 +14,7 @@
 import mock
 
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
-from awscli.testutils import capture_input
+from awscli.testutils import capture_input, set_invalid_utime
 from awscli.compat import six
 
 
@@ -458,6 +458,23 @@ class TestCPCommand(BaseAWSCommandParamsTest):
 
         progress_message = 'Completed 10 Bytes'
         self.assertIn(progress_message, stdout)
+
+    def test_cp_with_error_and_warning(self):
+        command = "s3 cp %s s3://bucket/foo.txt"
+        self.parsed_responses = [{
+            'Error': {
+                'Code': 'NoSuchBucket',
+                'Message': 'The specified bucket does not exist',
+                'BucketName': 'bucket'
+            }
+        }]
+        self.http_response.status_code = 404
+
+        full_path = self.files.create_file('foo.txt', 'bar')
+        set_invalid_utime(full_path)
+        _, stderr, rc = self.run_cmd(command % full_path, expected_rc=1)
+        self.assertIn('upload failed', stderr)
+        self.assertIn('warning: File has an invalid timestamp.', stderr)
 
 
 class TestStreamingCPCommand(BaseAWSCommandParamsTest):

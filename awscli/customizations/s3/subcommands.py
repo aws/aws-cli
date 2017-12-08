@@ -1082,7 +1082,7 @@ class CommandArchitecture(object):
         rc = 0
         if files[0].num_tasks_failed > 0:
             rc = 1
-        if files[0].num_tasks_warned > 0:
+        elif files[0].num_tasks_warned > 0:
             rc = 2
         return rc
 

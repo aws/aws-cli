@@ -176,7 +176,9 @@ class TestSyncCommand(BaseAWSCommandParamsTest):
         # get their stats.
         def side_effect(_):
             os.remove(full_path)
-            raise OSError()
+            # PEP 3151: Python 3.3+ translate this into a FileNotFoundError.
+            # This matches the behaviour of os.stat across Python versions.
+            raise OSError(2, "file not found", "foo.txt")
         with patch(
                 'awscli.customizations.s3.filegenerator.get_file_stat',
                 side_effect=side_effect

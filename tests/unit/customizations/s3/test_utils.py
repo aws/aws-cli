@@ -264,11 +264,6 @@ class TestGetFileStat(unittest.TestCase):
             self.assertEqual(size, 3)
             self.assertEqual(time.mktime(update_time.timetuple()), epoch_now)
 
-    def test_error_message(self):
-        with mock.patch('os.stat', mock.Mock(side_effect=IOError('msg'))):
-            with self.assertRaisesRegexp(ValueError, 'myfilename\.txt'):
-                get_file_stat('myfilename.txt')
-
     def assert_handles_fromtimestamp_error(self, error):
         patch_attribute = 'awscli.customizations.s3.utils.datetime'
         with mock.patch(patch_attribute) as datetime_mock:

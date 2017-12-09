@@ -11,24 +11,18 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import os
+import json
 import logging
+import os
 import sys
 
-#import random
-#import string
-import uuid
-
-import json
-
-from botocore.client import Config
-from botocore.exceptions import ClientError
-
+from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.artifact_exporter import Template
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump
-from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.s3uploader import S3Uploader
+from botocore.client import Config
+from botocore.exceptions import ClientError
 
 LOG = logging.getLogger(__name__)
 
@@ -44,7 +38,6 @@ class PackageCommand(BasicCommand):
         "aws cloudformation deploy --template-file {output_file_path} "
         "--stack-name <YOUR STACK NAME>"
         "\n")
-
 
     MSG_PACKAGE_S3_BUCKET_CREATION = (
         "Bucket {bucket} doesn't exist.\n"
@@ -123,9 +116,9 @@ class PackageCommand(BasicCommand):
     ]
 
     def _does_deploy_region_match(self, s3_bucket, deploy_region, s3_client):
-        s3_loc = s3_client.get_bucket_location(Bucket=s3_bucket)["LocationConstraint"]
+        s3_loc = s3_client.get_bucket_location(Bucket=s3_bucket)[
+            "LocationConstraint"]
         return s3_loc == deploy_region
-
 
     def _run_main(self, parsed_args, parsed_globals):
         region = parsed_globals.region if parsed_globals.region else "us-east-1"
@@ -158,14 +151,15 @@ class PackageCommand(BasicCommand):
                 region=region
             )
 
-            # Check whether SAM deployment bucket already exists otherwise create it
+            # Check if SAM deployment bucket already exists otherwise create it
             try:
                 s3_client.head_bucket(Bucket=bucket)
             except ClientError as e:
                 if e.response["Error"]["Code"] == "404":
-                    sys.stdout.write(self.MSG_PACKAGE_S3_BUCKET_CREATION.format(
-                        bucket=bucket, region=region))
-                    
+                    sys.stdout.write(
+                        self.MSG_PACKAGE_S3_BUCKET_CREATION.format(
+                            bucket=bucket, region=region))
+
                     _s3_params = {
                         "all_regions": {
                             "Bucket": bucket
@@ -200,8 +194,8 @@ class PackageCommand(BasicCommand):
 
         if output_file:
             msg = self.MSG_PACKAGED_TEMPLATE_WRITTEN.format(
-                    output_file_name=output_file,
-                    output_file_path=os.path.abspath(output_file))
+                output_file_name=output_file,
+                output_file_path=os.path.abspath(output_file))
             sys.stdout.write(msg)
 
         sys.stdout.flush()
@@ -212,7 +206,8 @@ class PackageCommand(BasicCommand):
         exported_template = template.export()
 
         if use_json:
-            exported_str = json.dumps(exported_template, indent=4, ensure_ascii=False)
+            exported_str = json.dumps(
+                exported_template, indent=4, ensure_ascii=False)
         else:
             exported_str = yaml_dump(exported_template)
 

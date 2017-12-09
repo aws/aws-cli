@@ -48,10 +48,6 @@ class DeployFailedError(CloudFormationCommandError):
          "aws cloudformation describe-stack-events --stack-name {stack_name}")
 
 
-class PackageFailedInvalidBucketError(CloudFormationCommandError):
-    fmt = "S3 Bucket is invalid or does not exist: {s3_bucket}"
-
-
 class PackageFailedRegionMismatchError(CloudFormationCommandError):
     fmt = \
         ("Failed to create package as deployment and S3 bucket region mismatch"

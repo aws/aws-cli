@@ -122,15 +122,6 @@ class PackageCommand(BasicCommand):
         }
     ]
 
-    def _does_bucket_exist(self, bucket, s3_client):
-        try:
-            s3_client.head_bucket(Bucket=bucket)
-        except ClientError as e:
-            if e.response['Error']['Code'] == 404:
-                return False
-        
-        return True
-
     def _does_deploy_region_match(self, s3_bucket, deploy_region, s3_client):
         s3_loc = s3_client.get_bucket_location(Bucket=s3_bucket)["LocationConstraint"]
         return s3_loc == deploy_region

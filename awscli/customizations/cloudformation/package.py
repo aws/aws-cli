@@ -126,12 +126,9 @@ class PackageCommand(BasicCommand):
         
         return True
 
-    def _does_deploy_region_match(self, deploy_region, s3_client):
-        # pass
-        s3_loc = s3_client.get_bucket_location(Bucket=bucket)["LocationConstraint"]
+    def _does_deploy_region_match(self, s3_bucket, deploy_region, s3_client):
+        s3_loc = s3_client.get_bucket_location(Bucket=s3_bucket)["LocationConstraint"]
         return s3_loc == deploy_region
-
-    # ***REMOVED***
 
 
     def _run_main(self, parsed_args, parsed_globals):
@@ -149,11 +146,16 @@ class PackageCommand(BasicCommand):
 
         if(parsed_args.s3_bucket is not None):
             bucket = parsed_args.s3_bucket
-            if parsed_globals.region == s3_client.get_bucket_location(Bucket=bucket)["LocationConstraint"]:
-                print(
-                    "Bucket specified it's on the same region as the deployment. Nothing to do here.")
-            else:
-                print("Not cool. Bucket it's on a different region")
+            if not _does_deploy_region_match(bucket, region, s3_client):
+                raise exceptions.PackageFailedRegionMismatchError(
+                    bucket_region=s3_loc,
+                    deploy_region=deploy_region
+                )
+            # if parsed_globals.region == s3_client.get_bucket_location(Bucket=bucket)["LocationConstraint"]:
+            #     print(
+            #         "Bucket specified it's on the same region as the deployment. Nothing to do here.")
+            # else:
+            #     print("Not cool. Bucket it's on a different region")
         else:
             print("Bucket not specified.")
             sts_client = self._session.create_client(

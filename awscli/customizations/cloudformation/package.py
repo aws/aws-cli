@@ -135,7 +135,7 @@ class PackageCommand(BasicCommand):
 
         if (parsed_args.s3_bucket is not None):
             bucket = parsed_args.s3_bucket
-            if not _does_deploy_region_match(bucket, region, s3_client):
+            if not self._does_deploy_region_match(bucket, region, s3_client):
                 raise exceptions.PackageFailedRegionMismatchError(
                     bucket_region=s3_loc,
                     deploy_region=deploy_region

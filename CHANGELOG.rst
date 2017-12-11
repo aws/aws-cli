@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.14.8
+======
+
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+
+
 1.14.7
 ======
 

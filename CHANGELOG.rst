@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.14.9
+======
+
+* api-change:``codedeploy``: Update codedeploy command to latest version
+* bugfix:sagemaker-runtime: Renamed the runtime.sagemaker service to sagemaker-runtime to be more consistent with existing services. The old service name is now aliased to sagemaker-runtime to maintain backwards compatibility.
+* api-change:``workmail``: Update workmail command to latest version
+
+
 1.14.8
 ======
 

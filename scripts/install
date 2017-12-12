@@ -6,8 +6,9 @@
 import optparse
 import os
 import platform
-import sys
+import shutil
 import subprocess
+import sys
 import tarfile
 import tempfile
 
@@ -126,13 +127,16 @@ def main():
                       "add INSTALL_DIR/bin to your PATH.")
     opts = parser.parse_args()[0]
     working_dir = create_working_dir()
-    create_install_structure(working_dir, opts.install_dir)
-    pip_install_packages(opts.install_dir)
-    real_location = os.path.join(opts.install_dir, bin_path(), 'aws')
-    if opts.bin_location and create_symlink(real_location, opts.bin_location):
-        print("You can now run: %s --version" % opts.bin_location)
-    else:
-        print("You can now run: %s --version" % real_location)
+    try:
+        create_install_structure(working_dir, opts.install_dir)
+        pip_install_packages(opts.install_dir)
+        real_location = os.path.join(opts.install_dir, bin_path(), 'aws')
+        if opts.bin_location and create_symlink(real_location, opts.bin_location):
+            print("You can now run: %s --version" % opts.bin_location)
+        else:
+            print("You can now run: %s --version" % real_location)
+    finally:
+        shutil.rmtree(working_dir)
 
 
 if __name__ == '__main__':

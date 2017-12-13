@@ -24,7 +24,7 @@ will produce the following config file::
 
 Then the following commands::
 
-    $ aws --profile=test configure rotate-access-key
+    $ aws --profile=other configure rotate-access-key
 
 will produce the following config file::
 

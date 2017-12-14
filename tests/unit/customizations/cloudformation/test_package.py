@@ -74,6 +74,8 @@ class TestPackageCommand(unittest.TestCase):
                 self.parsed_args.template_file = filename
                 self.parsed_args.use_json=use_json
 
+                self.package_command._get_bucket_region = MagicMock(return_value="us-east-1")
+
                 rc = self.package_command._run_main(self.parsed_args, self.parsed_globals)
                 self.assertEquals(rc, 0)
 
@@ -95,6 +97,9 @@ class TestPackageCommand(unittest.TestCase):
         with tempfile.NamedTemporaryFile() as handle:
             filename = handle.name
             self.parsed_args.template_file = filename
+
+            self.package_command._get_bucket_region = MagicMock(
+                    return_value="us-east-1")
 
             with self.assertRaises(RuntimeError):
                 self.package_command._run_main(self.parsed_args, self.parsed_globals)

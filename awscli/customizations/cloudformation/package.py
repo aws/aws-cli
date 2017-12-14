@@ -15,16 +15,8 @@ import json
 import logging
 import os
 import sys
-<<<<<<< HEAD
-import json
-
-from botocore.client import Config
-from botocore.exceptions import ClientError
-
-=======
 
 from awscli.customizations.cloudformation import exceptions
->>>>>>> lessa-clean-code
 from awscli.customizations.cloudformation.artifact_exporter import Template
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump
 from awscli.customizations.commands import BasicCommand
@@ -134,14 +126,15 @@ class PackageCommand(BasicCommand):
             config=Config(signature_version='s3v4'),
             region_name=region,
             verify=parsed_globals.verify_ssl)
+
         template_path = parsed_args.template_file
         if not os.path.isfile(template_path):
             raise exceptions.InvalidTemplatePathError(
                 template_path=template_path)
 
         if (parsed_args.s3_bucket is not None):
-            s3_bucket = parsed_args.s3_bucket
-            s3_bucket_region = self._get_bucket_region(s3_bucket, s3_client)
+            bucket = parsed_args.s3_bucket
+            s3_bucket_region = self._get_bucket_region(bucket, s3_client)
             if not s3_bucket_region == region:
                 raise exceptions.PackageFailedRegionMismatchError(
                     bucket_region=s3_bucket_region,
@@ -183,13 +176,7 @@ class PackageCommand(BasicCommand):
                     if parsed_globals.region:
                         s3_client.create_bucket(**_s3_params['all_regions'])
                     else:
-<<<<<<< HEAD
-                        s3_client.create_bucket(
-                            Bucket=str(bucket)
-                        )
-=======
                         s3_client.create_bucket(**_s3_params['us_standard'])
->>>>>>> lessa-clean-code
 
         self.s3_uploader = S3Uploader(s3_client,
                                       bucket,

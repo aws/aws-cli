@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.14.10
+=======
+
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``ses``: Update ses command to latest version
+* bugfix:s3: Fixes a bug where calling the CLI from a context that has no stdin resulted in every command failing instead of only commands that required stdin.
+
+
 1.14.9
 ======
 

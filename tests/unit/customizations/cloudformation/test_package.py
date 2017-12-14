@@ -21,6 +21,7 @@ from awscli.testutils import unittest, BaseAWSCommandParamsTest
 from awscli.customizations.cloudformation.package import PackageCommand
 from awscli.customizations.cloudformation.artifact_exporter import Template
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump
+from awscli.customizations.cloudformation.exceptions import PackageFailedRegionMismatchError
 
 
 class FakeArgs(object):
@@ -86,7 +87,63 @@ class TestPackageCommand(unittest.TestCase):
                 self.package_command._export.reset_mock()
                 self.package_command.write_output.reset_mock()
 
+    @patch("awscli.customizations.cloudformation.package.yaml_dump")
+    def test_main_without_bucket(self, mock_yaml_dump):
+        exported_template_str = "hello"
 
+        self.package_command.write_output = Mock()
+        self.package_command._export = Mock()
+        mock_yaml_dump.return_value = exported_template_str
+
+        # Create a temporary file and make this my template
+        with tempfile.NamedTemporaryFile() as handle:
+            for use_json in (False, True):
+                filename = handle.name
+                self.parsed_args.template_file = filename
+                self.parsed_args.use_json = use_json
+
+                self.package_command._get_bucket_region = MagicMock(
+                    return_value="us-east-1")
+                self.parsed_args.s3_bucket = None
+
+                rc = self.package_command._run_main(
+                    self.parsed_args, self.parsed_globals)
+                self.assertEquals(rc, 0)
+
+                self.package_command._export.assert_called_once_with(
+                    filename, use_json)
+                self.package_command.write_output.assert_called_once_with(
+                    self.parsed_args.output_template_file, mock.ANY)
+
+                self.package_command._export.reset_mock()
+                self.package_command.write_output.reset_mock()
+
+    @patch("awscli.customizations.cloudformation.package.yaml_dump")
+    def test_main_bucket_different_deployment_region(self, mock_yaml_dump):
+        exported_template_str = "hello"
+
+        self.package_command.write_output = Mock()
+        self.package_command._export = Mock()
+        mock_yaml_dump.return_value = exported_template_str
+
+        # Create a temporary file and make this my template
+        with tempfile.NamedTemporaryFile() as handle:
+            for use_json in (False, True):
+                filename = handle.name
+                self.parsed_args.template_file = filename
+                self.parsed_args.use_json = use_json
+
+                self.package_command._get_bucket_region = MagicMock(
+                    return_value="us-east-1")
+                self.parsed_args.s3_bucket = "bucket-in-different-region"
+                self.parsed_globals.region = "eu-west-1"
+
+                with self.assertRaises(PackageFailedRegionMismatchError):
+                    self.package_command._run_main(
+                        self.parsed_args, self.parsed_globals)
+
+                self.package_command._export.reset_mock()
+                self.package_command.write_output.reset_mock()
 
     def test_main_error(self):
 

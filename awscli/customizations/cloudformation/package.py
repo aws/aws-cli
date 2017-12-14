@@ -115,10 +115,9 @@ class PackageCommand(BasicCommand):
         }
     ]
 
-    def _does_deploy_region_match(self, s3_bucket, deploy_region, s3_client):
-        s3_loc = s3_client.get_bucket_location(Bucket=s3_bucket)[
-            "LocationConstraint"]
-        return s3_loc == deploy_region
+    def _get_bucket_region(self, s3_bucket, s3_client):
+        s3_loc = s3_client.get_bucket_location(Bucket=s3_bucket)
+        return s3_loc.get("LocationConstraint", "us-east-1")
 
     def _run_main(self, parsed_args, parsed_globals):
         region = parsed_globals.region if parsed_globals.region else "us-east-1"
@@ -127,18 +126,18 @@ class PackageCommand(BasicCommand):
             config=Config(signature_version='s3v4'),
             region_name=region,
             verify=parsed_globals.verify_ssl)
-
         template_path = parsed_args.template_file
         if not os.path.isfile(template_path):
             raise exceptions.InvalidTemplatePathError(
                 template_path=template_path)
 
         if (parsed_args.s3_bucket is not None):
-            bucket = parsed_args.s3_bucket
-            if not self._does_deploy_region_match(bucket, region, s3_client):
+            s3_bucket = parsed_args.s3_bucket
+            s3_bucket_region = self._get_bucket_region(s3_bucket, s3_client)
+            if not s3_bucket_region == region:
                 raise exceptions.PackageFailedRegionMismatchError(
-                    bucket_region=s3_loc,
-                    deploy_region=deploy_region
+                    bucket_region=s3_bucket_region,
+                    deploy_region=region
                 )
         else:
             sts_client = self._session.create_client(

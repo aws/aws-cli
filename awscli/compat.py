@@ -56,6 +56,14 @@ else:
     default_pager = 'less -R'
 
 
+class StdinMissingError(Exception):
+    def __init__(self):
+        message = (
+            'stdin is required for this operation, but is not available.'
+        )
+        super(StdinMissingError, self).__init__(message)
+
+
 class NonTranslatedStdout(object):
     """ This context manager sets the line-end translation mode for stdout.
 
@@ -76,12 +84,14 @@ class NonTranslatedStdout(object):
             import msvcrt
             msvcrt.setmode(sys.stdout.fileno(), self.previous_mode)
 
+
 def ensure_text_type(s):
     if isinstance(s, six.text_type):
         return s
     if isinstance(s, six.binary_type):
         return s.decode('utf-8')
     raise ValueError("Expected str, unicode or bytes, received %s." % type(s))
+
 
 if six.PY3:
     import locale
@@ -91,7 +101,10 @@ if six.PY3:
 
     raw_input = input
 
-    binary_stdin = sys.stdin.buffer
+    def get_binary_stdin():
+        if sys.stdin is None:
+            raise StdinMissingError()
+        return sys.stdin.buffer
 
     def get_binary_stdout():
         return sys.stdout.buffer
@@ -138,7 +151,10 @@ else:
 
     raw_input = raw_input
 
-    binary_stdin = sys.stdin
+    def get_binary_stdin():
+        if sys.stdin is None:
+            raise StdinMissingError()
+        return sys.stdin
 
     def get_binary_stdout():
         return sys.stdout

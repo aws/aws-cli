@@ -214,7 +214,7 @@ class FileGenerator(object):
     def _safely_get_file_stats(self, file_path):
         try:
             size, last_update = get_file_stat(file_path)
-        except OSError:
+        except (OSError, ValueError):
             self.triggers_warning(file_path)
         else:
             last_update = self._validate_update_time(last_update, file_path)

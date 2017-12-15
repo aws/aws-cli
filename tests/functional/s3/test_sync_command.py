@@ -166,7 +166,37 @@ class TestSyncCommand(BaseAWSCommandParamsTest):
 
         self.assertFalse(os.path.exists(full_path))
 
-    def test_sync_skips_over_files_deleted_between_listing_and_transfer(self):
+    # When a file has been deleted after listing,
+    # awscli.customizations.s3.utils.get_file_stat may raise either some kind
+    # of OSError, or a ValueError, depending on the environment. In both cases,
+    # the behaviour should be the same: skip the file and emit a warning.
+    #
+    # This test covers the case where a ValueError is emitted.
+    def test_sync_skips_over_files_deleted_between_listing_and_transfer_valueerror(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = '%s %s s3://bucket/' % (
+            self.prefix, self.files.rootdir)
+
+        # FileGenerator.list_files should skip over files that cause an
+        # IOError to be raised because they are missing when we try to
+        # get their stats. This IOError is translated to a ValueError in
+        # awscli.customizations.s3.utils.get_file_stat.
+        def side_effect(_):
+            os.remove(full_path)
+            raise ValueError()
+        with patch(
+                'awscli.customizations.s3.filegenerator.get_file_stat',
+                side_effect=side_effect
+                ):
+            self.run_cmd(cmdline, expected_rc=2)
+
+        # We should not call PutObject because the file was deleted
+        # before we could transfer it
+        self.assertEqual(len(self.operations_called), 1, self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+
+    # This test covers the case where an OSError is emitted.
+    def test_sync_skips_over_files_deleted_between_listing_and_transfer_oserror(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
         cmdline = '%s %s s3://bucket/' % (
             self.prefix, self.files.rootdir)

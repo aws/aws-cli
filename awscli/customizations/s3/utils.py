@@ -207,11 +207,7 @@ def get_file_stat(path):
     This is a helper function that given a local path return the size of
     the file in bytes and time of last modification.
     """
-    try:
-        stats = os.stat(path)
-    except IOError as e:
-        raise ValueError('Could not retrieve file stat of "%s": %s' % (
-            path, e))
+    stats = os.stat(path)
 
     try:
         update_time = datetime.fromtimestamp(stats.st_mtime, tzlocal())

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.14.13
+=======
+
+* api-change:``mediastore-data``: Update mediastore-data command to latest version
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+
+
 1.14.12
 =======
 

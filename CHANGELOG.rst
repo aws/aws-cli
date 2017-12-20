@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.14.14
+=======
+
+* api-change:``config``: Update config command to latest version
+* api-change:``iot``: Update iot command to latest version
+
+
 1.14.13
 =======
 

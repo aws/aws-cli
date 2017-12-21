@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.14.15
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``kinesisanalytics``: Update kinesisanalytics command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+
+
 1.14.14
 =======
 

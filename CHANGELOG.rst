@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.14.16
+=======
+
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``inspector``: Update inspector command to latest version
+
+
 1.14.15
 =======
 

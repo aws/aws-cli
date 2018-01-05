@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.14.19
+=======
+
+* api-change:``snowball``: Update snowball command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``inspector``: Update inspector command to latest version
+
+
 1.14.18
 =======
 

@@ -571,6 +571,9 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         doc.style.dedent()
         doc.style.new_paragraph()
 
+    def doc_options_end(self, help_command, **kwargs):
+        self._add_top_level_args_reference(help_command)
+
 
 class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
     DESCRIPTION = (

@@ -441,3 +441,6 @@ class BasicDocHandler(OperationDocumentEventHandler):
 
     def doc_output(self, help_command, event_name, **kwargs):
         pass
+
+    def doc_options_end(self, help_command, **kwargs):
+        self._add_top_level_args_reference(help_command)

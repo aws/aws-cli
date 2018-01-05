@@ -14,7 +14,9 @@ import sys
 import time
 import random
 
-import rsa
+from cryptography.hazmat.primitives import serialization, hashes
+from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.backends import default_backend
 from botocore.utils import parse_to_aware_datetime
 from botocore.signers import CloudFrontSigner
 
@@ -254,7 +256,10 @@ class SignCommand(BasicCommand):
 
 class RSASigner(object):
     def __init__(self, private_key):
-        self.priv_key = rsa.PrivateKey.load_pkcs1(private_key.encode('utf8'))
+        self.priv_key = serialization.load_pem_private_key(
+            private_key.encode('utf8'), password=None,
+            backend=default_backend())
 
     def sign(self, message):
-        return rsa.sign(message, self.priv_key, 'SHA-1')
+        return self.priv_key.sign(
+            message, padding.PKCS1v15(), hashes.SHA1())

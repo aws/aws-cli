@@ -349,7 +349,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             title="'aws help'",
             page='/reference/index'
         )
-        help_command.doc.writeln(' for descriptions of universal parameters.')
+        help_command.doc.writeln(' for descriptions of global parameters.')
 
     def _add_webapi_crosslink(self, help_command):
         doc = help_command.doc

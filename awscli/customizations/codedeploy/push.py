@@ -230,7 +230,7 @@ class Push(BasicCommand):
                             zip_info = zipfile.ZipInfo(arcname)
                             zip_info.create_system = 3
                             # long type of hex val of '0xA1ED0000L', say, symlink attr magic...
-                            zip_info.external_attr = 2716663808L
+                            zip_info.external_attr = 2716663808
                             zf.writestr(zip_info, os.readlink(filename))
                         else:
                             zf.write(filename, arcname, ZIP_COMPRESSION_MODE)

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.14.22
+=======
+
+* api-change:``kms``: Update kms command to latest version
+
+
 1.14.21
 =======
 

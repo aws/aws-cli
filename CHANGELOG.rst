@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.14.21
+=======
+
+* api-change:``ds``: Update ds command to latest version
+
+
 1.14.20
 =======
 

@@ -132,7 +132,7 @@ class PackageCommand(BasicCommand):
             raise exceptions.InvalidTemplatePathError(
                 template_path=template_path)
 
-        if (parsed_args.s3_bucket is not None):
+        if parsed_args.s3_bucket is not None:
             bucket = parsed_args.s3_bucket
             s3_bucket_region = self._get_bucket_region(bucket, s3_client)
             if not s3_bucket_region == region:

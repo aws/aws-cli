@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.14.23
+=======
+
+* api-change:``elb``: Update elb command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
 1.14.22
 =======
 

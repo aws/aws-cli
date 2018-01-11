@@ -116,9 +116,8 @@ class PackageCommand(BasicCommand):
     ]
 
     def _get_bucket_region(self, s3_bucket, s3_client):
-        s3_loc = s3_client.get_bucket_location(
-            Bucket=s3_bucket).get("LocationConstraint", "us-east-1")
-        return s3_loc.get
+        s3_loc = s3_client.get_bucket_location(Bucket=s3_bucket)
+        return s3_loc.get("LocationConstraint", "us-east-1")
 
     def _run_main(self, parsed_args, parsed_globals):
         region = parsed_globals.region if parsed_globals.region else "us-east-1"

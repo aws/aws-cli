@@ -48,6 +48,10 @@ class DeployFailedError(CloudFormationCommandError):
          "aws cloudformation describe-stack-events --stack-name {stack_name}")
 
 
+class PackageEmptyRegionError(CloudFormationCommandError):
+    fmt = "Failed to create package as AWS Region has not been defined"
+
+
 class PackageFailedRegionMismatchError(CloudFormationCommandError):
     fmt = \
         ("Failed to create package as deployment and S3 bucket region mismatch"

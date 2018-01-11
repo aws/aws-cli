@@ -120,11 +120,13 @@ class PackageCommand(BasicCommand):
         return s3_loc.get("LocationConstraint", "us-east-1")
 
     def _run_main(self, parsed_args, parsed_globals):
-        region = parsed_globals.region if parsed_globals.region else "us-east-1"
+        if not parsed_globals.region:
+            raise exceptions.PackageEmptyRegionError()
+
         s3_client = self._session.create_client(
             "s3",
             config=Config(signature_version='s3v4'),
-            region_name=region,
+            region_name=parsed_globals.region,
             verify=parsed_globals.verify_ssl)
 
         template_path = parsed_args.template_file
@@ -135,10 +137,10 @@ class PackageCommand(BasicCommand):
         if parsed_args.s3_bucket is not None:
             bucket = parsed_args.s3_bucket
             s3_bucket_region = self._get_bucket_region(bucket, s3_client)
-            if not s3_bucket_region == region:
+            if not s3_bucket_region == parsed_globals.region:
                 raise exceptions.PackageFailedRegionMismatchError(
                     bucket_region=s3_bucket_region,
-                    deploy_region=region
+                    deploy_region=parsed_globals.region
                 )
         else:
             sts_client = self._session.create_client(
@@ -149,7 +151,7 @@ class PackageCommand(BasicCommand):
             account = sts_client.get_caller_identity().get('Account', "")
             bucket = "sam-{region}-{account}".format(
                 account=account,
-                region=region
+                region=parsed_globals.region
             )
 
             # Check if SAM deployment bucket already exists otherwise create it
@@ -159,25 +161,25 @@ class PackageCommand(BasicCommand):
                 if e.response["Error"]["Code"] == "404":
                     sys.stdout.write(
                         self.MSG_PACKAGE_S3_BUCKET_CREATION.format(
-                            bucket=bucket, region=region))
+                            bucket=bucket, region=parsed_globals.region))
 
                     _s3_params = {
                         "all_regions": {
-                            "Bucket": bucket
+                            "Bucket": bucket,
+                            "CreateBucketConfiguration": {
+                                "LocationConstraint": parsed_globals.region
+                            }
                         },
                         "us_standard": {
                             "Bucket": bucket,
-                            "CreateBucketConfiguration": {
-                                "LocationConstraint": region
-                            }
                         }
                     }
 
-                    # Create bucket in specified region or else use us-east-1
-                    if parsed_globals.region:
-                        s3_client.create_bucket(**_s3_params['all_regions'])
-                    else:
+                    # US Standard doesn't require CreateBucketConfiguration
+                    if parsed_globals.region == "us-east-1":
                         s3_client.create_bucket(**_s3_params['us_standard'])
+                    else:
+                        s3_client.create_bucket(**_s3_params['all_regions'])
 
         self.s3_uploader = S3Uploader(s3_client,
                                       bucket,

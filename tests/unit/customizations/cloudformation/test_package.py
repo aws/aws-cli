@@ -21,7 +21,7 @@ from awscli.testutils import unittest, BaseAWSCommandParamsTest
 from awscli.customizations.cloudformation.package import PackageCommand
 from awscli.customizations.cloudformation.artifact_exporter import Template
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump
-from awscli.customizations.cloudformation.exceptions import PackageFailedRegionMismatchError
+from awscli.customizations.cloudformation.exceptions import PackageFailedRegionMismatchError, PackageEmptyRegionError
 
 
 class FakeArgs(object):
@@ -142,8 +142,19 @@ class TestPackageCommand(unittest.TestCase):
                     self.package_command._run_main(
                         self.parsed_args, self.parsed_globals)
 
-                self.package_command._export.reset_mock()
-                self.package_command.write_output.reset_mock()
+    def test_main_empty_region_error(self):
+        # Create a temporary file and make this my template
+        with tempfile.NamedTemporaryFile() as handle:
+            for use_json in (False, True):
+                filename = handle.name
+                self.parsed_args.template_file = filename
+                self.parsed_args.use_json = use_json
+                # None is what package receives if no --region is defined/passed
+                self.parsed_globals.region = None 
+
+            with self.assertRaises(PackageEmptyRegionError):
+                self.package_command._run_main(
+                    self.parsed_args, self.parsed_globals)
 
     def test_main_error(self):
 

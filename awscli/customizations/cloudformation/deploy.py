@@ -20,6 +20,8 @@ from awscli.customizations.cloudformation.deployer import Deployer
 from awscli.customizations.cloudformation.yamlhelper import yaml_parse
 
 from awscli.customizations.commands import BasicCommand
+from awscli.compat import get_stdout_text_writer
+from awscli.utils import write_exception
 
 LOG = logging.getLogger(__name__)
 
@@ -223,7 +225,7 @@ class DeployCommand(BasicCommand):
         except exceptions.ChangeEmptyError as ex:
             if fail_on_empty_changeset:
                 raise
-            sys.stdout.write("%s\n" % ex)
+            write_exception(ex, outfile=get_stdout_text_writer())
             return 0
 
         if execute_changeset:

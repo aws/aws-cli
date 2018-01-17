@@ -46,3 +46,10 @@ class DeployFailedError(CloudFormationCommandError):
          "to fetch the list of events leading up to the failure"
          "\n"
          "aws cloudformation describe-stack-events --stack-name {stack_name}")
+
+class DeployBucketRequiredError(CloudFormationCommandError):
+    fmt = \
+        ("Templates with a size greater than 51,200 bytes must be deployed "
+         "via an S3 Bucket. Please add the --s3-bucket parameter to your "
+         "command. The local template will be copied to that S3 bucket and "
+         "then deployed.")

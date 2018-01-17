@@ -20,6 +20,8 @@ from awscli.customizations.cloudformation.deployer import Deployer
 from awscli.customizations.cloudformation.yamlhelper import yaml_parse
 
 from awscli.customizations.commands import BasicCommand
+from awscli.compat import get_stdout_text_writer
+from awscli.utils import write_exception
 
 LOG = logging.getLogger(__name__)
 
@@ -150,6 +152,31 @@ class DeployCommand(BasicCommand):
                 'Amazon Simple Notification Service topic Amazon Resource Names'
                 ' (ARNs) that AWS CloudFormation associates with the stack.'
             )
+        },
+        {
+            'name': 'fail-on-empty-changeset',
+            'required': False,
+            'action': 'store_true',
+            'group_name': 'fail-on-empty-changeset',
+            'dest': 'fail_on_empty_changeset',
+            'default': True,
+            'help_text': (
+                'Specify if the CLI should return a non-zero exit code if '
+                'there are no changes to be made to the stack. The default '
+                'behavior is to return a non-zero exit code.'
+            )
+        },
+        {
+            'name': 'no-fail-on-empty-changeset',
+            'required': False,
+            'action': 'store_false',
+            'group_name': 'fail-on-empty-changeset',
+            'dest': 'fail_on_empty_changeset',
+            'default': True,
+            'help_text': (
+                'Causes the CLI to return an exit code of 0 if there are no '
+                'changes to be made to the stack.'
+            )
         }
     ]
 
@@ -181,18 +208,25 @@ class DeployCommand(BasicCommand):
         return self.deploy(deployer, stack_name, template_str,
                            parameters, parsed_args.capabilities,
                            parsed_args.execute_changeset, parsed_args.role_arn,
-                           parsed_args.notification_arns)
+                           parsed_args.notification_arns,
+                           parsed_args.fail_on_empty_changeset)
 
     def deploy(self, deployer, stack_name, template_str,
                parameters, capabilities, execute_changeset, role_arn,
-               notification_arns):
-        result = deployer.create_and_wait_for_changeset(
-                stack_name=stack_name,
-                cfn_template=template_str,
-                parameter_values=parameters,
-                capabilities=capabilities,
-                role_arn=role_arn,
-                notification_arns=notification_arns)
+               notification_arns, fail_on_empty_changeset=True):
+        try:
+            result = deployer.create_and_wait_for_changeset(
+                    stack_name=stack_name,
+                    cfn_template=template_str,
+                    parameter_values=parameters,
+                    capabilities=capabilities,
+                    role_arn=role_arn,
+                    notification_arns=notification_arns)
+        except exceptions.ChangeEmptyError as ex:
+            if fail_on_empty_changeset:
+                raise
+            write_exception(ex, outfile=get_stdout_text_writer())
+            return 0
 
         if execute_changeset:
             deployer.execute_changeset(result.changeset_id, stack_name)

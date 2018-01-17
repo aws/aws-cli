@@ -45,6 +45,7 @@ from awscli.argprocess import unpack_argument
 from awscli.alias import AliasLoader
 from awscli.alias import AliasCommandInjector
 from awscli.utils import emit_top_level_args_parsed_event
+from awscli.utils import write_exception
 
 
 LOG = logging.getLogger('awscli.clidriver')
@@ -229,10 +230,7 @@ class CLIDriver(object):
         except Exception as e:
             LOG.debug("Exception caught in main()", exc_info=True)
             LOG.debug("Exiting with rc 255")
-            err = get_stderr_text_writer()
-            err.write("\n")
-            err.write(six.text_type(e))
-            err.write("\n")
+            write_exception(e, outfile=get_stderr_text_writer())
             return 255
 
     def _emit_session_event(self, parsed_args):

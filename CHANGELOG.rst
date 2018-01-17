@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.14.27
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``autoscaling-plans``: Update autoscaling-plans command to latest version
+
+
 1.14.26
 =======
 

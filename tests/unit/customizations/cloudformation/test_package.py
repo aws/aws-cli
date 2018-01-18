@@ -134,8 +134,6 @@ class TestPackageCommand(unittest.TestCase):
                 self.parsed_args.template_file = filename
                 self.parsed_args.use_json = use_json
 
-                self.package_command._get_bucket_region = MagicMock(
-                    return_value="us-east-1")
                 self.parsed_args.s3_bucket = "bucket-in-different-region"
                 self.parsed_globals.region = "eu-west-1"
 

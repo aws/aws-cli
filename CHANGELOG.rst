@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.14.28
+=======
+
+* api-change:``sagemaker``: Update sagemaker command to latest version
+
+
 1.14.27
 =======
 

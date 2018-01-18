@@ -187,3 +187,9 @@ class OutputStreamFactory(object):
         kwargs = get_popen_kwargs_for_pager_cmd(pager_cmd)
         kwargs['stdin'] = subprocess.PIPE
         return kwargs
+
+
+def write_exception(ex, outfile):
+    outfile.write("\n")
+    outfile.write(six.text_type(ex))
+    outfile.write("\n")

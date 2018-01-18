@@ -182,10 +182,16 @@ class TestPackageCommand(unittest.TestCase):
         s3_client.head_bucket.side_effect = ClientError(
             error_response=err_response, operation_name='HeadBucket')
 
-        rc = self.package_command._create_sam_bucket(
+        rc_default_region = self.package_command._create_sam_bucket(
             s3_client, sts_client, self.parsed_globals)
-        # Test whether S3 Bucket Name has a 'sam-' prefix
-        self.assertIn("sam-", rc)
+
+        self.parsed_globals.region = "eu-west-1"
+        rc_custom_region = self.package_command._create_sam_bucket(
+            s3_client, sts_client, self.parsed_globals)
+
+        self.assertIn("sam-", rc_default_region)
+        self.assertIn("sam-", rc_custom_region)
+
 
     @patch("awscli.customizations.cloudformation.package.sys.stdout")
     def test_write_output_to_stdout(self, stdoutmock):

@@ -60,7 +60,6 @@ class TestPackageCommand(unittest.TestCase):
                                        verify_ssl=None)
         self.package_command = PackageCommand(self.session)
 
-
     @patch("awscli.customizations.cloudformation.package.yaml_dump")
     def test_main(self, mock_yaml_dump):
         exported_template_str = "hello"
@@ -74,16 +73,19 @@ class TestPackageCommand(unittest.TestCase):
             for use_json in (False, True):
                 filename = handle.name
                 self.parsed_args.template_file = filename
-                self.parsed_args.use_json=use_json
+                self.parsed_args.use_json = use_json
 
-                self.package_command._get_bucket_region = MagicMock(return_value="us-east-1")
+                self.package_command._get_bucket_region = MagicMock(
+                    return_value="us-east-1")
 
-                rc = self.package_command._run_main(self.parsed_args, self.parsed_globals)
+                rc = self.package_command._run_main(
+                    self.parsed_args, self.parsed_globals)
                 self.assertEquals(rc, 0)
 
-                self.package_command._export.assert_called_once_with(filename, use_json)
+                self.package_command._export.assert_called_once_with(
+                    filename, use_json)
                 self.package_command.write_output.assert_called_once_with(
-                        self.parsed_args.output_template_file, mock.ANY)
+                    self.parsed_args.output_template_file, mock.ANY)
 
                 self.package_command._export.reset_mock()
                 self.package_command.write_output.reset_mock()
@@ -103,6 +105,7 @@ class TestPackageCommand(unittest.TestCase):
                 self.parsed_args.template_file = filename
                 self.parsed_args.use_json = use_json
 
+                # This can be deleted as it's not needed...
                 self.package_command._get_bucket_region = MagicMock(
                     return_value="us-east-1")
                 self.parsed_args.s3_bucket = None
@@ -149,9 +152,26 @@ class TestPackageCommand(unittest.TestCase):
                 self.parsed_args.template_file = filename
                 self.parsed_args.use_json = use_json
                 # None is what package receives if no --region is defined/passed
-                self.parsed_globals.region = None 
+                self.parsed_globals.region = None
 
             with self.assertRaises(PackageEmptyRegionError):
+                self.package_command._run_main(
+                    self.parsed_args, self.parsed_globals)
+
+    def test_main_error(self):
+
+        self.package_command._export = Mock()
+        self.package_command._export.side_effect = RuntimeError()
+
+        # Create a temporary file and make this my template
+        with tempfile.NamedTemporaryFile() as handle:
+            filename = handle.name
+            self.parsed_args.template_file = filename
+
+            self.package_command._get_bucket_region = MagicMock(
+                return_value="us-east-1")
+
+            with self.assertRaises(RuntimeError):
                 self.package_command._run_main(
                     self.parsed_args, self.parsed_globals)
 
@@ -166,23 +186,6 @@ class TestPackageCommand(unittest.TestCase):
             s3_client, sts_client, self.parsed_globals)
         # Test whether S3 Bucket Name has a 'sam-' prefix
         self.assertIn("sam-", rc)
-
-    def test_main_error(self):
-
-        self.package_command._export = Mock()
-        self.package_command._export.side_effect = RuntimeError()
-
-        # Create a temporary file and make this my template
-        with tempfile.NamedTemporaryFile() as handle:
-            filename = handle.name
-            self.parsed_args.template_file = filename
-
-            self.package_command._get_bucket_region = MagicMock(
-                    return_value="us-east-1")
-
-            with self.assertRaises(RuntimeError):
-                self.package_command._run_main(self.parsed_args, self.parsed_globals)
-
 
     @patch("awscli.customizations.cloudformation.package.sys.stdout")
     def test_write_output_to_stdout(self, stdoutmock):

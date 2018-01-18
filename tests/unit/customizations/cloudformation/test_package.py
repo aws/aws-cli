@@ -22,6 +22,7 @@ from awscli.customizations.cloudformation.package import PackageCommand
 from awscli.customizations.cloudformation.artifact_exporter import Template
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump
 from awscli.customizations.cloudformation.exceptions import PackageFailedRegionMismatchError, PackageEmptyRegionError
+from botocore.exceptions import ClientError
 
 
 class FakeArgs(object):
@@ -155,6 +156,18 @@ class TestPackageCommand(unittest.TestCase):
             with self.assertRaises(PackageEmptyRegionError):
                 self.package_command._run_main(
                     self.parsed_args, self.parsed_globals)
+
+    def test_bucket_already_exist_catch(self):
+        sts_client = Mock()
+        s3_client = Mock()
+        err_response = {'Error': {'Code': '404', 'Message': 'Not Found'}}
+        s3_client.head_bucket.side_effect = ClientError(
+            error_response=err_response, operation_name='HeadBucket')
+
+        rc = self.package_command._create_sam_bucket(
+            s3_client, sts_client, self.parsed_globals)
+        # Test whether S3 Bucket Name has a 'sam-' prefix
+        self.assertIn("sam-", rc)
 
     def test_main_error(self):
 

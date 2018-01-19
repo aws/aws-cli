@@ -15,8 +15,11 @@ import os
 import sys
 import logging
 
+from botocore.client import Config
+
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.deployer import Deployer
+from awscli.customizations.s3uploader import S3Uploader
 from awscli.customizations.cloudformation.yamlhelper import yaml_parse
 
 from awscli.customizations.commands import BasicCommand
@@ -61,6 +64,41 @@ class DeployCommand(BasicCommand):
                 'The name of the AWS CloudFormation stack you\'re deploying to.'
                 ' If you specify an existing stack, the command updates the'
                 ' stack. If you specify a new stack, the command creates it.'
+            )
+        },
+        {
+            'name': 's3-bucket',
+            'required': False,
+            'help_text': (
+                'The name of the S3 bucket where this command uploads your '
+                'CloudFormation template. This is required the deployments of '
+                'templates sized greater than 51,200 bytes'
+            )
+        },
+        {
+            "name": "force-upload",
+            "action": "store_true",
+            "help_text": (
+                'Indicates whether to override existing files in the S3 bucket.'
+                ' Specify this flag to upload artifacts even if they '
+                ' match existing artifacts in the S3 bucket.'
+            )
+        },
+        {
+            'name': 's3-prefix',
+            'help_text': (
+                'A prefix name that the command adds to the'
+                ' artifacts\' name when it uploads them to the S3 bucket.'
+                ' The prefix name is a path name (folder name) for'
+                ' the S3 bucket.'
+            )
+        },
+
+        {
+            'name': 'kms-key-id',
+            'help_text': (
+                'The ID of an AWS KMS key that the command uses'
+                ' to encrypt artifacts that are at rest in the S3 bucket.'
             )
         },
         {
@@ -204,16 +242,38 @@ class DeployCommand(BasicCommand):
 
         parameters = self.merge_parameters(template_dict, parameter_overrides)
 
+        template_size = os.path.getsize(parsed_args.template_file)
+        if template_size > 51200 and not parsed_args.s3_bucket:
+            raise exceptions.DeployBucketRequiredError()
+
+        bucket = parsed_args.s3_bucket
+        if bucket:
+            s3_client = self._session.create_client(
+                "s3",
+                config=Config(signature_version='s3v4'),
+                region_name=parsed_globals.region,
+                verify=parsed_globals.verify_ssl)
+
+            s3_uploader = S3Uploader(s3_client,
+                                      bucket,
+                                      parsed_globals.region,
+                                      parsed_args.s3_prefix,
+                                      parsed_args.kms_key_id,
+                                      parsed_args.force_upload)
+        else:
+            s3_uploader = None
+
         deployer = Deployer(cloudformation_client)
         return self.deploy(deployer, stack_name, template_str,
                            parameters, parsed_args.capabilities,
                            parsed_args.execute_changeset, parsed_args.role_arn,
                            parsed_args.notification_arns,
+                           s3_uploader,
                            parsed_args.fail_on_empty_changeset)
 
     def deploy(self, deployer, stack_name, template_str,
                parameters, capabilities, execute_changeset, role_arn,
-               notification_arns, fail_on_empty_changeset=True):
+               notification_arns, s3_uploader, fail_on_empty_changeset=True):
         try:
             result = deployer.create_and_wait_for_changeset(
                     stack_name=stack_name,
@@ -221,7 +281,8 @@ class DeployCommand(BasicCommand):
                     parameter_values=parameters,
                     capabilities=capabilities,
                     role_arn=role_arn,
-                    notification_arns=notification_arns)
+                    notification_arns=notification_arns,
+                    s3_uploader=s3_uploader)
         except exceptions.ChangeEmptyError as ex:
             if fail_on_empty_changeset:
                 raise

@@ -91,7 +91,7 @@ The valid values of the ``output`` configuration variable are:
 The valid values of the ``cli_timestamp_format`` configuration varaible are:
 
 * none - Display the timestamp exactly as received from the HTTP response.
-* iso8601 - Reformat timestamp using iso8601 and your local timezone.
+* iso8601 - Reformat timestamp using iso8601 in the UTC timezone.
 
 ``parameter_validation`` controls whether parameter validation should occur
 when serializing requests. The default is True. You can disable parameter

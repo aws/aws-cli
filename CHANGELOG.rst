@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.14.29
+=======
+
+* api-change:``glue``: Update glue command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+
+
 1.14.28
 =======
 

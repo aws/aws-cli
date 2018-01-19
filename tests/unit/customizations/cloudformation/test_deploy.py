@@ -57,7 +57,7 @@ class TestDeployCommand(unittest.TestCase):
                                     capabilities=None,
                                     role_arn=None,
                                     notification_arns=[],
-                                    fail_on_empty_changeset=True
+                                    fail_on_empty_changeset=True,
                                     s3_bucket=None)
         self.parsed_globals = FakeArgs(region="us-east-1", endpoint_url=None,
                                        verify_ssl=None)
@@ -112,8 +112,8 @@ class TestDeployCommand(unittest.TestCase):
                         not self.parsed_args.no_execute_changeset,
                         None,
                         [], 
-                        True
-                        mock.ANY)
+                        mock.ANY,
+                        True)
 
                 self.deploy_command.parse_parameter_arg.assert_called_once_with(
                         self.parsed_args.parameter_overrides)
@@ -269,8 +269,8 @@ class TestDeployCommand(unittest.TestCase):
         with self.assertRaises(exceptions.ChangeEmptyError):
             self.deploy_command.deploy(
                 self.deployer, stack_name, template, parameters, capabilities,
-                execute_changeset, role_arn, notification_arns
-            )
+                execute_changeset, role_arn, notification_arns,
+                s3_uploader=None)
 
     def test_deploy_does_not_raise_exception_on_empty_changeset(self):
         stack_name = "stack_name"
@@ -287,6 +287,7 @@ class TestDeployCommand(unittest.TestCase):
         self.deploy_command.deploy(
             self.deployer, stack_name, template, parameters, capabilities,
             execute_changeset, role_arn, notification_arns,
+            s3_uploader=None,
             fail_on_empty_changeset=False
         )
 

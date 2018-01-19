@@ -373,6 +373,7 @@ class BasicDocHandler(OperationDocumentEventHandler):
         self.doc.style.h2('Description')
         self.doc.write(help_command.description)
         self.doc.style.new_paragraph()
+        self._add_top_level_args_reference(help_command)
 
     def doc_synopsis_start(self, help_command, **kwargs):
         if not help_command.synopsis:
@@ -440,3 +441,6 @@ class BasicDocHandler(OperationDocumentEventHandler):
 
     def doc_output(self, help_command, event_name, **kwargs):
         pass
+
+    def doc_options_end(self, help_command, **kwargs):
+        self._add_top_level_args_reference(help_command)

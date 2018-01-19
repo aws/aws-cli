@@ -295,6 +295,48 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
             '<https://docs.aws.amazon.com/goto/'
             'WebAPI/service-1-2-3/myoperation>`_', rendered)
 
+    def test_includes_global_args_ref_in_man_description(self):
+        help_command = self.create_help_command()
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_description(help_command=help_command)
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        # The links aren't generated in the "man" mode.
+        self.assertIn(
+            "See 'aws help' for descriptions of global parameters", rendered
+        )
+
+    def test_includes_global_args_ref_in_html_description(self):
+        help_command = self.create_help_command()
+        help_command.doc.target = 'html'
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_description(help_command=help_command)
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        self.assertIn(
+            "See :doc:`'aws help' </reference/index>` for descriptions of "
+            "global parameters", rendered
+        )
+
+    def test_includes_global_args_ref_in_man_options(self):
+        help_command = self.create_help_command()
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_options_end(help_command=help_command)
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        # The links aren't generated in the "man" mode.
+        self.assertIn(
+            "See 'aws help' for descriptions of global parameters", rendered
+        )
+
+    def test_includes_global_args_ref_in_html_options(self):
+        help_command = self.create_help_command()
+        help_command.doc.target = 'html'
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_options_end(help_command=help_command)
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        self.assertIn(
+            "See :doc:`'aws help' </reference/index>` for descriptions of "
+            "global parameters", rendered
+        )
+
 
 class TestTopicDocumentEventHandlerBase(unittest.TestCase):
     def setUp(self):

@@ -58,7 +58,10 @@ class TestDeployCommand(unittest.TestCase):
                                     role_arn=None,
                                     notification_arns=[],
                                     fail_on_empty_changeset=True,
-                                    s3_bucket=None)
+                                    s3_bucket=None,
+                                    s3_prefix="some prefix",
+                                    kms_key_id="some kms key id",
+                                    force_upload=True)
         self.parsed_globals = FakeArgs(region="us-east-1", endpoint_url=None,
                                        verify_ssl=None)
         self.deploy_command = DeployCommand(self.session)
@@ -112,7 +115,7 @@ class TestDeployCommand(unittest.TestCase):
                         not self.parsed_args.no_execute_changeset,
                         None,
                         [], 
-                        mock.ANY,
+                        None,
                         True)
 
                 self.deploy_command.parse_parameter_arg.assert_called_once_with(
@@ -150,6 +153,53 @@ class TestDeployCommand(unittest.TestCase):
                 result = self.deploy_command._run_main(self.parsed_args,
                                 parsed_globals=self.parsed_globals)
 
+    @patch('awscli.customizations.cloudformation.deploy.os.path.isfile')
+    @patch('awscli.customizations.cloudformation.deploy.yaml_parse')
+    @patch('awscli.customizations.cloudformation.deploy.os.path.getsize')
+    @patch('awscli.customizations.cloudformation.deploy.DeployCommand.deploy')
+    @patch('awscli.customizations.cloudformation.deploy.S3Uploader')
+    def test_s3_uploader_is_configured_properly(self, s3UploaderMock, 
+        deploy_method_mock, mock_getsize, mock_yaml_parse, mock_isfile):
+        """
+        Tests that large templates are detected prior to deployment
+        """
+        bucket_name = "mybucket"
+        template_str = get_example_template()
+
+        mock_getsize.return_value = 1024
+        mock_isfile.return_value = True
+        mock_yaml_parse.return_value = template_str
+        open_mock = mock.mock_open()
+
+        with patch(
+                "awscli.customizations.cloudformation.deploy.open",
+                open_mock(read_data=template_str)) as open_mock:
+
+            self.parsed_args.s3_bucket = bucket_name
+            s3UploaderObject = Mock()
+            s3UploaderMock.return_value = s3UploaderObject
+
+            result = self.deploy_command._run_main(self.parsed_args,
+                            parsed_globals=self.parsed_globals)
+
+            self.deploy_command.deploy.assert_called_once_with(
+                    mock.ANY,
+                    self.parsed_args.stack_name,
+                    mock.ANY,
+                    mock.ANY,
+                    None,
+                    not self.parsed_args.no_execute_changeset,
+                    None,
+                    [], 
+                    s3UploaderObject,
+                    True)
+
+            s3UploaderMock.assert_called_once_with(mock.ANY, 
+                    bucket_name, 
+                    mock.ANY,
+                    self.parsed_args.s3_prefix,
+                    self.parsed_args.kms_key_id,
+                    self.parsed_args.force_upload)
 
     def test_deploy_success(self):
         """

@@ -2,6 +2,186 @@
 CHANGELOG
 =========
 
+1.14.29
+=======
+
+* api-change:``glue``: Update glue command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+
+
+1.14.28
+=======
+
+* api-change:``sagemaker``: Update sagemaker command to latest version
+
+
+1.14.27
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``autoscaling-plans``: Update autoscaling-plans command to latest version
+
+
+1.14.26
+=======
+
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``autoscaling-plans``: Update autoscaling-plans command to latest version
+
+
+1.14.25
+=======
+
+* api-change:``lambda``: Update lambda command to latest version
+
+
+1.14.24
+=======
+
+* api-change:``glue``: Update glue command to latest version
+
+
+1.14.23
+=======
+
+* api-change:``elb``: Update elb command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
+1.14.22
+=======
+
+* api-change:``kms``: Update kms command to latest version
+
+
+1.14.21
+=======
+
+* api-change:``ds``: Update ds command to latest version
+
+
+1.14.20
+=======
+
+* api-change:``discovery``: Update discovery command to latest version
+* api-change:``codedeploy``: Update codedeploy command to latest version
+* api-change:``route53``: Update route53 command to latest version
+
+
+1.14.19
+=======
+
+* api-change:``snowball``: Update snowball command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``inspector``: Update inspector command to latest version
+
+
+1.14.18
+=======
+
+* api-change:``rds``: Update rds command to latest version
+
+
+1.14.17
+=======
+
+* api-change:``workspaces``: Update workspaces command to latest version
+
+
+1.14.16
+=======
+
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``inspector``: Update inspector command to latest version
+
+
+1.14.15
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``kinesisanalytics``: Update kinesisanalytics command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+
+
+1.14.14
+=======
+
+* api-change:``config``: Update config command to latest version
+* api-change:``iot``: Update iot command to latest version
+
+
+1.14.13
+=======
+
+* api-change:``mediastore-data``: Update mediastore-data command to latest version
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+
+
+1.14.12
+=======
+
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+
+
+1.14.11
+=======
+
+* api-change:``appstream``: Update appstream command to latest version
+
+
+1.14.10
+=======
+
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``ses``: Update ses command to latest version
+* bugfix:s3: Fixes a bug where calling the CLI from a context that has no stdin resulted in every command failing instead of only commands that required stdin.
+
+
+1.14.9
+======
+
+* api-change:``codedeploy``: Update codedeploy command to latest version
+* bugfix:sagemaker-runtime: Renamed the runtime.sagemaker service to sagemaker-runtime to be more consistent with existing services. The old service name is now aliased to sagemaker-runtime to maintain backwards compatibility.
+* api-change:``workmail``: Update workmail command to latest version
+
+
+1.14.8
+======
+
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+
+
+1.14.7
+======
+
+* bugfix:S3: S3 commands that encountered both an error and warning will now return the RC for error instead of warning.
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``appstream``: Update appstream command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
+1.14.6
+======
+
+* api-change:``es``: Update es command to latest version
+* api-change:``ses``: Update ses command to latest version
+
+
+1.14.5
+======
+
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* api-change:``clouddirectory``: Update clouddirectory command to latest version
+
+
 1.14.4
 ======
 

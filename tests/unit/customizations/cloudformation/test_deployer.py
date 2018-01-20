@@ -103,6 +103,7 @@ class TestDeployer(unittest.TestCase):
         capabilities = ["capabilities"]
         role_arn = "arn:aws:iam::1234567890:role"
         notification_arns = ["arn:aws:sns:region:1234567890:notify"]
+        s3_uploader = None
 
         # Case 1: Stack DOES NOT exist
         self.deployer.has_stack = Mock()
@@ -129,7 +130,7 @@ class TestDeployer(unittest.TestCase):
         with self.stub_client:
             result = self.deployer.create_changeset(
                     stack_name, template, parameters, capabilities, role_arn,
-                    notification_arns)
+                    notification_arns, s3_uploader)
             self.assertEquals(response["Id"], result.changeset_id)
             self.assertEquals("CREATE", result.changeset_type)
 
@@ -142,7 +143,76 @@ class TestDeployer(unittest.TestCase):
         with self.stub_client:
             result = self.deployer.create_changeset(
                     stack_name, template, parameters, capabilities, role_arn,
-                    notification_arns)
+                    notification_arns, s3_uploader)
+            self.assertEquals(response["Id"], result.changeset_id)
+            self.assertEquals("UPDATE", result.changeset_type)
+
+    def test_create_changeset_success_s3_bucket(self):
+        stack_name = "stack_name"
+        template = "template"
+        template_url = "https://s3.amazonaws.com/bucket/file"
+        parameters = [
+            {"ParameterKey": "Key1", "ParameterValue": "Value"},
+            {"ParameterKey": "Key2", "UsePreviousValue": True},
+            {"ParameterKey": "Key3", "UsePreviousValue": False},
+        ]
+        # Parameters that Use Previous Value will be removed on stack creation
+        # to either force CloudFormation to use the Default value, or ask user to specify a parameter
+        filtered_parameters = [
+            {"ParameterKey": "Key1", "ParameterValue": "Value"},
+            {"ParameterKey": "Key3", "UsePreviousValue": False},
+        ]
+        capabilities = ["capabilities"]
+        role_arn = "arn:aws:iam::1234567890:role"
+        notification_arns = ["arn:aws:sns:region:1234567890:notify"]
+
+        s3_uploader = Mock()
+        def to_path_style_s3_url(some_string, Version=None):
+            return "https://s3.amazonaws.com/bucket/file"
+        s3_uploader.to_path_style_s3_url = to_path_style_s3_url
+        def upload_with_dedup(filename,extension):
+            return "s3://bucket/file"
+        s3_uploader.upload_with_dedup = upload_with_dedup
+
+        # Case 1: Stack DOES NOT exist
+        self.deployer.has_stack = Mock()
+        self.deployer.has_stack.return_value = False
+
+        expected_params = {
+            "ChangeSetName": botocore.stub.ANY,
+            "StackName": stack_name,
+            "TemplateURL": template_url,
+            "ChangeSetType": "CREATE",
+            "Parameters": filtered_parameters,
+            "Capabilities": capabilities,
+            "Description": botocore.stub.ANY,
+            "RoleARN": role_arn,
+            "NotificationARNs": notification_arns
+        }
+
+        response = {
+            "Id": "changeset ID"
+        }
+
+        self.stub_client.add_response("create_change_set", response,
+                                      expected_params)
+        with self.stub_client:
+            result = self.deployer.create_changeset(
+                    stack_name, template, parameters, capabilities, role_arn,
+                    notification_arns, s3_uploader)
+            self.assertEquals(response["Id"], result.changeset_id)
+            self.assertEquals("CREATE", result.changeset_type)
+
+        # Case 2: Stack exists. We are updating it
+        self.deployer.has_stack.return_value = True
+        expected_params["ChangeSetType"] = "UPDATE"
+        expected_params["Parameters"] = parameters
+        self.stub_client.add_response("create_change_set", response,
+                                      expected_params)
+        with self.stub_client:
+            result = self.deployer.create_changeset(
+                    stack_name, template, parameters, capabilities, role_arn,
+                    notification_arns, s3_uploader)
             self.assertEquals(response["Id"], result.changeset_id)
             self.assertEquals("UPDATE", result.changeset_type)
 
@@ -154,6 +224,7 @@ class TestDeployer(unittest.TestCase):
         capabilities = ["capabilities"]
         role_arn = "arn:aws:iam::1234567890:role"
         notification_arns = ["arn:aws:sns:region:1234567890:notify"]
+        s3_uploader = None
 
         self.deployer.has_stack = Mock()
         self.deployer.has_stack.return_value = False
@@ -163,7 +234,7 @@ class TestDeployer(unittest.TestCase):
         with self.stub_client:
             with self.assertRaises(botocore.exceptions.ClientError):
                 self.deployer.create_changeset(stack_name, template, parameters,
-                capabilities, role_arn, notification_arns)
+                capabilities, role_arn, notification_arns, None)
 
     def test_execute_changeset(self):
         stack_name = "stack_name"
@@ -198,6 +269,7 @@ class TestDeployer(unittest.TestCase):
         changeset_type = "changeset type"
         role_arn = "arn:aws:iam::1234567890:role"
         notification_arns = ["arn:aws:sns:region:1234567890:notify"]
+        s3_uploader = None
 
         self.deployer.create_changeset = Mock()
         self.deployer.create_changeset.return_value = ChangeSetResult(changeset_id, changeset_type)
@@ -206,7 +278,7 @@ class TestDeployer(unittest.TestCase):
 
         result = self.deployer.create_and_wait_for_changeset(
                 stack_name, template, parameters, capabilities, role_arn,
-                notification_arns)
+                notification_arns, s3_uploader)
         self.assertEquals(result.changeset_id, changeset_id)
         self.assertEquals(result.changeset_type, changeset_type)
 
@@ -220,6 +292,7 @@ class TestDeployer(unittest.TestCase):
         changeset_type = "changeset type"
         role_arn = "arn:aws:iam::1234567890:role"
         notification_arns = ["arn:aws:sns:region:1234567890:notify"]
+        s3_uploader = None
 
         self.deployer.create_changeset = Mock()
         self.deployer.create_changeset.return_value = ChangeSetResult(changeset_id, changeset_type)
@@ -230,7 +303,7 @@ class TestDeployer(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             result = self.deployer.create_and_wait_for_changeset(
                     stack_name, template, parameters, capabilities, role_arn,
-                    notification_arns)
+                    notification_arns, s3_uploader)
 
     def test_wait_for_changeset_no_changes(self):
         stack_name = "stack_name"
@@ -243,7 +316,7 @@ class TestDeployer(unittest.TestCase):
 
         response = {
             "Status": "FAILED",
-            "StatusReason": "No updates are to be performed"
+            "StatusReason": "The submitted information didn't contain changes."
         }
 
         waiter_error = botocore.exceptions.WaiterError(name="name",

@@ -14,8 +14,14 @@
 import mock
 
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
-from awscli.testutils import capture_input
+from awscli.testutils import capture_input, set_invalid_utime
 from awscli.compat import six
+
+
+class BufferedBytesIO(six.BytesIO):
+    @property
+    def buffer(self):
+        return self
 
 
 class TestCPCommand(BaseAWSCommandParamsTest):
@@ -459,6 +465,23 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         progress_message = 'Completed 10 Bytes'
         self.assertIn(progress_message, stdout)
 
+    def test_cp_with_error_and_warning(self):
+        command = "s3 cp %s s3://bucket/foo.txt"
+        self.parsed_responses = [{
+            'Error': {
+                'Code': 'NoSuchBucket',
+                'Message': 'The specified bucket does not exist',
+                'BucketName': 'bucket'
+            }
+        }]
+        self.http_response.status_code = 404
+
+        full_path = self.files.create_file('foo.txt', 'bar')
+        set_invalid_utime(full_path)
+        _, stderr, rc = self.run_cmd(command % full_path, expected_rc=1)
+        self.assertIn('upload failed', stderr)
+        self.assertIn('warning: File has an invalid timestamp.', stderr)
+
 
 class TestStreamingCPCommand(BaseAWSCommandParamsTest):
     def test_streaming_upload(self):
@@ -467,9 +490,8 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
             'ETag': '"c8afdb36c52cf4727836669019e69222"'
         }]
 
-        binary_stdin = six.BytesIO(b'foo\n')
-        location = "awscli.customizations.s3.s3handler.binary_stdin"
-        with mock.patch(location, binary_stdin):
+        binary_stdin = BufferedBytesIO(b'foo\n')
+        with mock.patch('sys.stdin', binary_stdin):
             self.run_cmd(command)
 
         self.assertEqual(len(self.operations_called), 1)
@@ -489,9 +511,8 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
             'ETag': '"c8afdb36c52cf4727836669019e69222"'
         }]
 
-        binary_stdin = six.BytesIO(b'foo\n')
-        location = "awscli.customizations.s3.s3handler.binary_stdin"
-        with mock.patch(location, binary_stdin):
+        binary_stdin = BufferedBytesIO(b'foo\n')
+        with mock.patch('sys.stdin', binary_stdin):
             self.run_cmd(command)
 
         self.assertEqual(len(self.operations_called), 1)
@@ -516,9 +537,8 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
         }]
         self.http_response.status_code = 404
 
-        binary_stdin = six.BytesIO(b'foo\n')
-        location = "awscli.customizations.s3.s3handler.binary_stdin"
-        with mock.patch(location, binary_stdin):
+        binary_stdin = BufferedBytesIO(b'foo\n')
+        with mock.patch('sys.stdin', binary_stdin):
             _, stderr, _ = self.run_cmd(command, expected_rc=1)
 
         error_message = (
@@ -526,6 +546,20 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
             'the PutObject operation: The specified bucket does not exist'
         )
         self.assertIn(error_message, stderr)
+
+    def test_streaming_upload_when_stdin_unavailable(self):
+        command = "s3 cp - s3://bucket/streaming.txt"
+        self.parsed_responses = [{
+            'ETag': '"c8afdb36c52cf4727836669019e69222"'
+        }]
+
+        with mock.patch('sys.stdin', None):
+            _, stderr, _ = self.run_cmd(command, expected_rc=1)
+
+        expected_message = (
+            'stdin is required for this operation, but is not available'
+        )
+        self.assertIn(expected_message, stderr)
 
     def test_streaming_download(self):
         command = "s3 cp s3://bucket/streaming.txt -"

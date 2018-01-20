@@ -55,7 +55,7 @@ class TestPackageCommand(unittest.TestCase):
                                     s3_bucket="s3bucket",
                                     s3_prefix="s3prefix",
                                     kms_key_id="kmskeyid",
-                                    output_template_file="./oputput",
+                                    output_template_file="./output",
                                     use_json=False,
                                     force_upload=False)
         self.parsed_globals = FakeArgs(region="us-east-1", endpoint_url=None,

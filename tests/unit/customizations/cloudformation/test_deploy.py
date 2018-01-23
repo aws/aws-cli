@@ -124,7 +124,6 @@ class TestDeployCommand(unittest.TestCase):
                     True
                 )
 
-                print self.deploy_command.parse_key_value_arg.call_args_list
                 self.deploy_command.parse_key_value_arg.assert_has_calls([
                     call(
                         self.parsed_args.parameter_overrides,

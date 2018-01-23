@@ -13,7 +13,7 @@
 import mock
 import tempfile
 import six
-from mock import patch, Mock, MagicMock
+from mock import patch, Mock, MagicMock, call
 import collections
 
 from awscli.testutils import unittest
@@ -62,7 +62,7 @@ class TestDeployCommand(unittest.TestCase):
                                     s3_prefix="some prefix",
                                     kms_key_id="some kms key id",
                                     force_upload=True,
-                                    tags=[{"Key": "key1", "Value": "val1"}])
+                                    tags=["tagkey1=tagvalue1"])
         self.parsed_globals = FakeArgs(region="us-east-1", endpoint_url=None,
                                        verify_ssl=None)
         self.deploy_command = DeployCommand(self.session)
@@ -78,6 +78,8 @@ class TestDeployCommand(unittest.TestCase):
         Tests that deploy method is invoked when command is run
         """
         fake_parameter_overrides = []
+        fake_tags_dict = {"tagkey1": "tagvalue1"}
+        fake_tags = [{"Key": "tagkey1", "Value": "tagvalue1"}]
         fake_parameters = "some return value"
         template_str = "some template"
 
@@ -95,8 +97,9 @@ class TestDeployCommand(unittest.TestCase):
 
                 self.deploy_command.deploy = MagicMock()
                 self.deploy_command.deploy.return_value = 0
-                self.deploy_command.parse_parameter_arg = MagicMock(
-                        return_value=fake_parameter_overrides)
+                self.deploy_command.parse_key_value_arg = Mock()
+                self.deploy_command.parse_key_value_arg.side_effect = [
+                    fake_parameter_overrides, fake_tags_dict]
                 self.deploy_command.merge_parameters = MagicMock(
                         return_value=fake_parameters)
 
@@ -117,11 +120,21 @@ class TestDeployCommand(unittest.TestCase):
                     None,
                     [],
                     None,
-                    mock.ANY,
+                    fake_tags,
                     True
                 )
-                self.deploy_command.parse_parameter_arg.assert_called_once_with(
-                        self.parsed_args.parameter_overrides)
+
+                print self.deploy_command.parse_key_value_arg.call_args_list
+                self.deploy_command.parse_key_value_arg.assert_has_calls([
+                    call(
+                        self.parsed_args.parameter_overrides,
+                         "parameter-overrides"
+                    ),
+                    call(
+                        self.parsed_args.tags,
+                        "tags"
+                    )
+                ])
 
                 self.deploy_command.merge_parameters.assert_called_once_with(
                         fake_template, fake_parameter_overrides)
@@ -194,7 +207,7 @@ class TestDeployCommand(unittest.TestCase):
                 None,
                 [],
                 s3UploaderObject,
-                [{'Key': 'key1', 'Value': 'val1'}],
+                [{"Key": "tagkey1", "Value": "tagvalue1"}],
                 True
             )
 
@@ -354,30 +367,32 @@ class TestDeployCommand(unittest.TestCase):
             fail_on_empty_changeset=False
         )
 
-    def test_parse_parameter_arg_success(self):
+    def test_parse_key_value_arg_success(self):
         """
         Tests that we can parse parameter arguments provided in proper format
         Expected format: ["Key=Value", "Key=Value"]
         :return:
         """
+        argname = "parameter-overrides"
         data = ["Key1=Value1", 'Key2=[1,2,3]', 'Key3={"a":"val", "b": 2}']
         output = {"Key1": "Value1", "Key2": '[1,2,3]', "Key3": '{"a":"val", "b": 2}'}
 
-        result = self.deploy_command.parse_parameter_arg(data)
+        result = self.deploy_command.parse_key_value_arg(data, argname)
         self.assertEqual(result, output)
 
         # Empty input should return empty output
-        result = self.deploy_command.parse_parameter_arg([])
+        result = self.deploy_command.parse_key_value_arg([], argname)
         self.assertEqual(result, {})
 
-    def test_parse_parameter_arg_invalid_input(self):
+    def test_parse_key_value_arg_invalid_input(self):
         # non-list input
-        with self.assertRaises(exceptions.InvalidParameterOverrideArgumentError):
-            self.deploy_command.parse_parameter_arg("hello=world")
+        argname = "parameter-overrides"
+        with self.assertRaises(exceptions.InvalidKeyValuePairArgumentError):
+            self.deploy_command.parse_key_value_arg("hello=world", argname)
 
         # missing equal to sign
-        with self.assertRaises(exceptions.InvalidParameterOverrideArgumentError):
-            self.deploy_command.parse_parameter_arg(["hello world"])
+        with self.assertRaises(exceptions.InvalidKeyValuePairArgumentError):
+            self.deploy_command.parse_key_value_arg(["hello world"], argname)
 
     def test_merge_parameters_success(self):
         """

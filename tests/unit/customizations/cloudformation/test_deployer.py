@@ -217,8 +217,16 @@ class TestDeployer(unittest.TestCase):
 
         # Case 2: Stack exists. We are updating it
         self.deployer.has_stack.return_value = True
+        self.stub_client.add_response("get_template_summary",
+            {"Parameters": [{"ParameterKey": parameter["ParameterKey"]}
+                for parameter in parameters]},
+            {"StackName": stack_name})
         expected_params["ChangeSetType"] = "UPDATE"
         expected_params["Parameters"] = parameters
+        # template has new parameter but should not be included in
+        # expected_params as no previous value
+        parameters = list(parameters) + \
+            [{"ParameterKey": "New", "UsePreviousValue": True}]
         self.stub_client.add_response("create_change_set", response,
                                       expected_params)
         with self.stub_client:

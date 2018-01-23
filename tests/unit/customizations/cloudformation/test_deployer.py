@@ -190,6 +190,7 @@ class TestDeployer(unittest.TestCase):
             "Capabilities": capabilities,
             "Description": botocore.stub.ANY,
             "RoleARN": role_arn,
+            "Tags": [],
             "NotificationARNs": notification_arns
         }
 
@@ -201,8 +202,8 @@ class TestDeployer(unittest.TestCase):
                                       expected_params)
         with self.stub_client:
             result = self.deployer.create_changeset(
-                    stack_name, template, parameters, capabilities, role_arn,
-                    notification_arns, s3_uploader)
+                stack_name, template, parameters, capabilities, role_arn,
+                notification_arns, s3_uploader, [])
             self.assertEquals(response["Id"], result.changeset_id)
             self.assertEquals("CREATE", result.changeset_type)
 
@@ -215,7 +216,7 @@ class TestDeployer(unittest.TestCase):
         with self.stub_client:
             result = self.deployer.create_changeset(
                     stack_name, template, parameters, capabilities, role_arn,
-                    notification_arns, s3_uploader)
+                    notification_arns, s3_uploader, [])
             self.assertEquals(response["Id"], result.changeset_id)
             self.assertEquals("UPDATE", result.changeset_type)
 

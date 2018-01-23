@@ -108,20 +108,18 @@ class TestDeployCommand(unittest.TestCase):
                 open_mock.assert_called_once_with(file_path, "r")
 
                 self.deploy_command.deploy.assert_called_once_with(
-                        mock.ANY,
-                        self.parsed_args.stack_name,
-                        mock.ANY,
-                        fake_parameters,
-                        None,
-                        not self.parsed_args.no_execute_changeset,
-                        None,
-                        [],
-                        None,
-                        mock.Any,
-                        True)
-                        [],
-                        mock.ANY)
-
+                    mock.ANY,
+                    'some_stack_name',
+                    mock.ANY,
+                    fake_parameters,
+                    None,
+                    not self.parsed_args.no_execute_changeset,
+                    None,
+                    [],
+                    None,
+                    mock.ANY,
+                    True
+                )
                 self.deploy_command.parse_parameter_arg.assert_called_once_with(
                         self.parsed_args.parameter_overrides)
 
@@ -187,16 +185,18 @@ class TestDeployCommand(unittest.TestCase):
                             parsed_globals=self.parsed_globals)
 
             self.deploy_command.deploy.assert_called_once_with(
-                    mock.ANY,
-                    self.parsed_args.stack_name,
-                    mock.ANY,
-                    mock.ANY,
-                    None,
-                    not self.parsed_args.no_execute_changeset,
-                    None,
-                    [],
-                    s3UploaderObject,
-                    True)
+                mock.ANY,
+                self.parsed_args.stack_name,
+                mock.ANY,
+                mock.ANY,
+                None,
+                not self.parsed_args.no_execute_changeset,
+                None,
+                [],
+                s3UploaderObject,
+                [{'Key': 'key1', 'Value': 'val1'}],
+                True
+            )
 
             s3UploaderMock.assert_called_once_with(mock.ANY,
                     bucket_name,
@@ -324,6 +324,7 @@ class TestDeployCommand(unittest.TestCase):
         execute_changeset = True
         role_arn = "arn:aws:iam::1234567890:role"
         notification_arns = ["arn:aws:sns:region:1234567890:notify"]
+        tags = []
 
         empty_changeset = exceptions.ChangeEmptyError(stack_name=stack_name)
         changeset_func = self.deployer.create_and_wait_for_changeset
@@ -332,7 +333,7 @@ class TestDeployCommand(unittest.TestCase):
             self.deploy_command.deploy(
                 self.deployer, stack_name, template, parameters, capabilities,
                 execute_changeset, role_arn, notification_arns,
-                s3_uploader=None)
+                None, tags)
 
     def test_deploy_does_not_raise_exception_on_empty_changeset(self):
         stack_name = "stack_name"
@@ -349,7 +350,7 @@ class TestDeployCommand(unittest.TestCase):
         self.deploy_command.deploy(
             self.deployer, stack_name, template, parameters, capabilities,
             execute_changeset, role_arn, notification_arns,
-            s3_uploader=None,
+            s3_uploader=None, tags=[],
             fail_on_empty_changeset=False
         )
 

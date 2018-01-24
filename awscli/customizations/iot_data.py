@@ -25,6 +25,7 @@ def add_custom_endpoint_url_note(help_command, **kwargs):
         'for testing purposes only. For production code it is strongly '
         'recommended to use the custom endpoint for your account '
         ' (retrievable via the iot describe-endpoint command) to ensure best '
-        'availability and reachability of the service.'
+        'availability and reachability of the service. Set the endpoint with '
+        '--endpoint-url flag to aws-cli.'
     )
     style.end_note()

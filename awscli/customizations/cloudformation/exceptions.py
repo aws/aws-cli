@@ -34,9 +34,9 @@ class ExportFailedError(CloudFormationCommandError):
            "{ex}")
 
 
-class InvalidParameterOverrideArgumentError(CloudFormationCommandError):
+class InvalidKeyValuePairArgumentError(CloudFormationCommandError):
     fmt = ("{value} value passed to --{argname} must be of format "
-           "ParameterKey=ParameterValue")
+           "Key=Value")
 
 
 class DeployFailedError(CloudFormationCommandError):

@@ -42,6 +42,7 @@ class DeployCommand(BasicCommand):
     MSG_EXECUTE_SUCCESS = "Successfully created/updated stack - {stack_name}\n"
 
     PARAMETER_OVERRIDE_CMD = "parameter-overrides"
+    TAGS_CMD = "tags"
 
     NAME = 'deploy'
     DESCRIPTION = BasicCommand.FROM_FILE("cloudformation",
@@ -215,6 +216,24 @@ class DeployCommand(BasicCommand):
                 'Causes the CLI to return an exit code of 0 if there are no '
                 'changes to be made to the stack.'
             )
+        },
+        {
+            'name': TAGS_CMD,
+            'action': 'store',
+            'required': False,
+            'schema': {
+                'type': 'array',
+                'items': {
+                    'type': 'string'
+                }
+            },
+            'default': [],
+            'help_text': (
+                'A list of tags to associate with the stack that is created'
+                ' or updated. AWS CloudFormation also propagates these tags'
+                ' to resources in the stack if the resource supports it.'
+                ' Syntax: TagKey1=TagValue1 TagKey2=TagValue2 ...'
+            )
         }
     ]
 
@@ -235,8 +254,13 @@ class DeployCommand(BasicCommand):
             template_str = handle.read()
 
         stack_name = parsed_args.stack_name
-        parameter_overrides = self.parse_parameter_arg(
-                parsed_args.parameter_overrides)
+        parameter_overrides = self.parse_key_value_arg(
+                parsed_args.parameter_overrides,
+                self.PARAMETER_OVERRIDE_CMD)
+
+        tags_dict = self.parse_key_value_arg(parsed_args.tags, self.TAGS_CMD)
+        tags = [{"Key": key, "Value": value}
+                for key, value in tags_dict.items()]
 
         template_dict = yaml_parse(template_str)
 
@@ -267,22 +291,25 @@ class DeployCommand(BasicCommand):
         return self.deploy(deployer, stack_name, template_str,
                            parameters, parsed_args.capabilities,
                            parsed_args.execute_changeset, parsed_args.role_arn,
-                           parsed_args.notification_arns,
-                           s3_uploader,
+                           parsed_args.notification_arns, s3_uploader,
+                           tags,
                            parsed_args.fail_on_empty_changeset)
 
     def deploy(self, deployer, stack_name, template_str,
                parameters, capabilities, execute_changeset, role_arn,
-               notification_arns, s3_uploader, fail_on_empty_changeset=True):
+               notification_arns, s3_uploader, tags,
+               fail_on_empty_changeset=True):
         try:
             result = deployer.create_and_wait_for_changeset(
-                    stack_name=stack_name,
-                    cfn_template=template_str,
-                    parameter_values=parameters,
-                    capabilities=capabilities,
-                    role_arn=role_arn,
-                    notification_arns=notification_arns,
-                    s3_uploader=s3_uploader)
+                stack_name=stack_name,
+                cfn_template=template_str,
+                parameter_values=parameters,
+                capabilities=capabilities,
+                role_arn=role_arn,
+                notification_arns=notification_arns,
+                s3_uploader=s3_uploader,
+                tags=tags
+            )
         except exceptions.ChangeEmptyError as ex:
             if fail_on_empty_changeset:
                 raise
@@ -332,18 +359,30 @@ class DeployCommand(BasicCommand):
 
         return parameter_values
 
-    def parse_parameter_arg(self, parameter_arg):
+    def parse_key_value_arg(self, arg_value, argname):
+        """
+        Converts arguments that are passed as list of "Key=Value" strings
+        into a real dictionary.
+
+        :param arg_value list: Array of strings, where each string is of
+            form Key=Value
+        :param argname string: Name of the argument that contains the value
+        :return dict: Dictionary representing the key/value pairs
+        """
         result = {}
-        for data in parameter_arg:
+        for data in arg_value:
 
             # Split at first '=' from left
             key_value_pair = data.split("=", 1)
 
             if len(key_value_pair) != 2:
-                raise exceptions.InvalidParameterOverrideArgumentError(
-                        argname=self.PARAMETER_OVERRIDE_CMD,
+                raise exceptions.InvalidKeyValuePairArgumentError(
+                        argname=argname,
                         value=key_value_pair)
 
             result[key_value_pair[0]] = key_value_pair[1]
 
         return result
+
+
+

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.14.31
+=======
+
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+
+
 1.14.30
 =======
 

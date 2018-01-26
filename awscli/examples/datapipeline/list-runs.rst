@@ -22,7 +22,7 @@ Use the **list-runs** command with the **--start-interval** parameter:
 
    aws datapipeline list-runs --pipeline-id {#PIPELINE_ID} --start-interval {#TIME},{#TIME}
 
-For example, to list the pipeline runs between 2017-10-07T00:00:00 and 2017-10-08T00:00:00, run:
+For example, to list the pipeline runs between 2017-10-07T00:00:00 and 2017-10-08T00:00:00, run::
  
    aws datapipeline list-runs --pipeline-id df-01434553B58A2SHZUKO5 --start-interval 2017-10-07T00:00:00,2017-10-08T00:00:00
    

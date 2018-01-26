@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.14.32
+=======
+
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``devicefarm``: Update devicefarm command to latest version
+* api-change:``mturk``: Update mturk command to latest version
+
+
 1.14.31
 =======
 

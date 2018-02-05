@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.14.33
+=======
+
+* api-change:``cloud9``: Update cloud9 command to latest version
+* api-change:``acm``: Update acm command to latest version
+* api-change:``kinesis``: Update kinesis command to latest version
+* api-change:``opsworks``: Update opsworks command to latest version
+
+
 1.14.32
 =======
 

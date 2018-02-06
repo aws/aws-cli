@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.14.34
+=======
+
+* api-change:``glue``: Update glue command to latest version
+* api-change:``servicediscovery``: Update servicediscovery command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
 1.14.33
 =======
 

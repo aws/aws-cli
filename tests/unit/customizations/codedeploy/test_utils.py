@@ -115,6 +115,11 @@ class TestUtils(unittest.TestCase):
                 'tags.'.format(MAX_TAGS_PER_INSTANCE)):
             validate_tags(self.params)
 
+    def test_validate_tags_throws_on_max_key_not_accepted(self):
+        key = 'k' * 128
+        self.params.tags = [{'Key': key, 'Value': 'v1'}]
+        validate_tags(self.params)
+
     def test_validate_tags_throws_on_long_key(self):
         key = 'k' * 129
         self.params.tags = [{'Key': key, 'Value': 'v1'}]
@@ -123,6 +128,11 @@ class TestUtils(unittest.TestCase):
                 'Tag Key cannot be longer than {0} characters.'.format(
                     MAX_TAG_KEY_LENGTH)):
             validate_tags(self.params)
+
+    def test_validate_tags_throws_on_max_value_not_accepted(self):
+        value = 'v' * 256
+        self.params.tags = [{'Key': 'k1', 'Value': value}]
+        validate_tags(self.params)
 
     def test_validate_tags_throws_on_long_value(self):
         value = 'v' * 257

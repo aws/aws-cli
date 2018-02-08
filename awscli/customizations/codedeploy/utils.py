@@ -83,7 +83,7 @@ def validate_tags(params):
                         MAX_TAG_KEY_LENGTH
                     )
                 )
-            if len(tag['Value']) > MAX_TAG_KEY_LENGTH:
+            if len(tag['Value']) > MAX_TAG_VALUE_LENGTH:
                 raise ValueError(
                     'Tag Value cannot be longer than {0} characters.'.format(
                         MAX_TAG_VALUE_LENGTH

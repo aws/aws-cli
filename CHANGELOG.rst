@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.14.35
+=======
+
+* api-change:``budgets``: Update budgets command to latest version
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``ds``: Update ds command to latest version
+* api-change:``mediastore``: Update mediastore command to latest version
+* api-change:``appstream``: Update appstream command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``dms``: Update dms command to latest version
+
+
 1.14.34
 =======
 

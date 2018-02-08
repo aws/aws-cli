@@ -78,7 +78,7 @@ class ConfigFileWriter(object):
 
     def _write_new_section(self, section_name, new_values, config_filename):
         with open(config_filename, 'a') as f:
-            f.write('[%s]\n' % section_name)
+            f.write('\n[%s]\n' % section_name)
             contents = []
             self._insert_new_values(line_number=0,
                                     contents=contents,

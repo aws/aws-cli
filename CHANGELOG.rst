@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.14.37
+=======
+
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``kms``: Update kms command to latest version
+
+
 1.14.36
 =======
 

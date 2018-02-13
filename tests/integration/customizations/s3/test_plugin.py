@@ -607,6 +607,28 @@ class TestCp(BaseS3IntegrationTest):
         for name, value in metadata_ref.items():
             self.assertNotEqual(response.get(name), value)
 
+    def test_cp_with_request_payer(self):
+        bucket_name = _SHARED_BUCKET
+
+        foo_txt = self.files.create_file('foo.txt', 'this is foo.txt')
+        p = aws('s3 cp %s s3://%s/mykey --request-payer' % (
+                foo_txt, bucket_name))
+
+        # From the S3 API, the only way to for sure know that request payer is
+        # working is to set up a bucket with request payer and have another
+        # account with permissions make a request to that bucket. If they
+        # do not include request payer, they will get an access denied error.
+        # Setting this up for an integration test would be tricky as it
+        # requires having/creating another account outside of the one running
+        # the integration tests. So instead at the very least we want to
+        # make sure we can use the parameter, have the command run
+        # successfully, and correctly upload the key to S3.
+        self.assert_no_errors(p)
+        self.assertTrue(self.key_exists(bucket_name, key_name='mykey'))
+        self.assertEqual(
+            self.get_key_contents(bucket_name, key_name='mykey'),
+            'this is foo.txt')
+
 
 class TestSync(BaseS3IntegrationTest):
     def test_sync_with_plus_chars_paginate(self):

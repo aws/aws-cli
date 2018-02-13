@@ -357,12 +357,13 @@ class BucketLister(object):
         self._client = client
         self._date_parser = date_parser
 
-    def list_objects(self, bucket, prefix=None, page_size=None, request_payer=None):
+    def list_objects(self, bucket, prefix=None, page_size=None,
+                     extra_args=None):
         kwargs = {'Bucket': bucket, 'PaginationConfig': {'PageSize': page_size}}
         if prefix is not None:
             kwargs['Prefix'] = prefix
-        if request_payer is not None:
-            kwargs['RequestPayer'] = request_payer
+        if extra_args is not None:
+            kwargs.update(extra_args)
 
         paginator = self._client.get_paginator('list_objects')
         pages = paginator.paginate(**kwargs)
@@ -475,7 +476,11 @@ class RequestParamsMapper(object):
         cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod
-    def map_delete_params(cls, request_params, cli_params):
+    def map_delete_object_params(cls, request_params, cli_params):
+        cls._set_request_payer_param(request_params, cli_params)
+
+    @classmethod
+    def map_list_objects_params(cls, request_params, cli_params):
         cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod
@@ -640,10 +645,14 @@ class DeleteSourceObjectSubscriber(DeleteSourceSubscriber):
 
     def _delete_source(self, future):
         call_args = future.meta.call_args
-        self._client.delete_object(
-            Bucket=self._get_bucket(call_args),
-            Key=self._get_key(call_args)
-        )
+        delete_object_kwargs = {
+            'Bucket': self._get_bucket(call_args),
+            'Key': self._get_key(call_args)
+        }
+        if call_args.extra_args.get('RequestPayer'):
+            delete_object_kwargs['RequestPayer'] = call_args.extra_args[
+                'RequestPayer']
+        self._client.delete_object(**delete_object_kwargs)
 
 
 class DeleteCopySourceObjectSubscriber(DeleteSourceObjectSubscriber):

@@ -11,24 +11,16 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import set_invalid_utime
-from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 from mock import patch
 import os
 
 from awscli.compat import six
+from tests.functional.s3 import BaseS3TransferCommandTest
 
 
-class TestSyncCommand(BaseAWSCommandParamsTest):
+class TestSyncCommand(BaseS3TransferCommandTest):
 
     prefix = 's3 sync '
-
-    def setUp(self):
-        super(TestSyncCommand, self).setUp()
-        self.files = FileCreator()
-
-    def tearDown(self):
-        super(TestSyncCommand, self).tearDown()
-        self.files.remove_all()
 
     def test_website_redirect_ignore_paramfile(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
@@ -217,3 +209,93 @@ class TestSyncCommand(BaseAWSCommandParamsTest):
         # before we could transfer it
         self.assertEqual(len(self.operations_called), 1, self.operations_called)
         self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+
+    def test_request_payer(self):
+        cmdline = '%s s3://sourcebucket/ s3://mybucket --request-payer' % (
+            self.prefix)
+        self.parsed_responses = [
+            # Response for ListObjects on source bucket
+            {
+                'Contents': [
+                    {'Key': 'mykey',
+                     'LastModified': '00:00:00Z',
+                     'Size': 100},
+                ],
+                'CommonPrefixes': []
+            },
+            # Response for ListObjects on destination bucket
+            {
+                'Contents': [],
+                'CommonPrefixes': []
+            },
+            # Response from copy object
+            {},
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('ListObjects', {
+                    'Bucket': 'sourcebucket',
+                    'Prefix': '',
+                    'EncodingType': 'url',
+                    'RequestPayer': 'requester',
+                }),
+                ('ListObjects', {
+                    'Bucket': 'mybucket',
+                    'Prefix': '',
+                    'EncodingType': 'url',
+                    'RequestPayer': 'requester',
+                }),
+                ('CopyObject', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'CopySource': 'sourcebucket/mykey',
+                    'RequestPayer': 'requester',
+                })
+            ]
+        )
+
+    def test_request_payer_with_deletes(self):
+        cmdline = '%s s3://sourcebucket/ s3://mybucket' % self.prefix
+        cmdline += ' --request-payer'
+        cmdline += ' --delete'
+        self.parsed_responses = [
+            # Response for ListObjects on source bucket
+            {
+                'Contents': [],
+                'CommonPrefixes': []
+            },
+            # Response for ListObjects on destination bucket
+            {
+                'Contents': [
+                    {'Key': 'key-to-delete',
+                     'LastModified': '00:00:00Z',
+                     'Size': 100},
+                ],
+                'CommonPrefixes': []
+            },
+            # Response from copy object
+            {},
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('ListObjects', {
+                    'Bucket': 'sourcebucket',
+                    'Prefix': '',
+                    'EncodingType': 'url',
+                    'RequestPayer': 'requester',
+                }),
+                ('ListObjects', {
+                    'Bucket': 'mybucket',
+                    'Prefix': '',
+                    'EncodingType': 'url',
+                    'RequestPayer': 'requester',
+                }),
+                ('DeleteObject', {
+                    'Bucket': 'mybucket',
+                    'Key': 'key-to-delete',
+                    'RequestPayer': 'requester',
+                })
+            ]
+        )

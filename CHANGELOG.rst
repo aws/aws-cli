@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.14.40
+=======
+
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+
+
 1.14.39
 =======
 

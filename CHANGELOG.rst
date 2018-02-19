@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.14.42
+=======
+
+* api-change:``config``: Update config command to latest version
+* enhancement:``s3``: Expose ``--request-payer`` to ``cp``, ``sync``, ``mv`, and ``rm`` commands.
+
+
 1.14.41
 =======
 

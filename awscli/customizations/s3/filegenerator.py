@@ -31,7 +31,7 @@ def is_special_file(path):
     """
     This function checks to see if a special file.  It checks if the
     file is a character special device, block special device, FIFO, or
-    socket. 
+    socket.
     """
     mode = os.stat(path).st_mode
     # Character special device.
@@ -318,8 +318,10 @@ class FileGenerator(object):
             yield self._list_single_object(s3_path)
         else:
             lister = BucketLister(self._client)
+            extra_args = self.request_parameters.get('ListObjects', {})
             for key in lister.list_objects(bucket=bucket, prefix=prefix,
-                                           page_size=self.page_size):
+                                           page_size=self.page_size,
+                                           extra_args=extra_args):
                 source_path, response_data = key
                 if response_data['Size'] == 0 and source_path.endswith('/'):
                     if self.operation_name == 'delete':

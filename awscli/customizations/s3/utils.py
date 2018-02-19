@@ -357,10 +357,13 @@ class BucketLister(object):
         self._client = client
         self._date_parser = date_parser
 
-    def list_objects(self, bucket, prefix=None, page_size=None):
+    def list_objects(self, bucket, prefix=None, page_size=None,
+                     extra_args=None):
         kwargs = {'Bucket': bucket, 'PaginationConfig': {'PageSize': page_size}}
         if prefix is not None:
             kwargs['Prefix'] = prefix
+        if extra_args is not None:
+            kwargs.update(extra_args)
 
         paginator = self._client.get_paginator('list_objects')
         pages = paginator.paginate(**kwargs)
@@ -424,11 +427,13 @@ class RequestParamsMapper(object):
         cls._set_metadata_params(request_params, cli_params)
         cls._set_sse_request_params(request_params, cli_params)
         cls._set_sse_c_request_params(request_params, cli_params)
+        cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod
     def map_get_object_params(cls, request_params, cli_params):
         """Map CLI params to GetObject request params"""
         cls._set_sse_c_request_params(request_params, cli_params)
+        cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod
     def map_copy_object_params(cls, request_params, cli_params):
@@ -440,11 +445,13 @@ class RequestParamsMapper(object):
         cls._set_sse_request_params(request_params, cli_params)
         cls._set_sse_c_and_copy_source_request_params(
             request_params, cli_params)
+        cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod
     def map_head_object_params(cls, request_params, cli_params):
         """Map CLI params to HeadObject request params"""
         cls._set_sse_c_request_params(request_params, cli_params)
+        cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod
     def map_create_multipart_upload_params(cls, request_params, cli_params):
@@ -453,21 +460,37 @@ class RequestParamsMapper(object):
         cls._set_sse_request_params(request_params, cli_params)
         cls._set_sse_c_request_params(request_params, cli_params)
         cls._set_metadata_params(request_params, cli_params)
+        cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod
     def map_upload_part_params(cls, request_params, cli_params):
         """Map CLI params to UploadPart request params"""
         cls._set_sse_c_request_params(request_params, cli_params)
+        cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod
     def map_upload_part_copy_params(cls, request_params, cli_params):
         """Map CLI params to UploadPartCopy request params"""
         cls._set_sse_c_and_copy_source_request_params(
             request_params, cli_params)
+        cls._set_request_payer_param(request_params, cli_params)
+
+    @classmethod
+    def map_delete_object_params(cls, request_params, cli_params):
+        cls._set_request_payer_param(request_params, cli_params)
+
+    @classmethod
+    def map_list_objects_params(cls, request_params, cli_params):
+        cls._set_request_payer_param(request_params, cli_params)
+
+    @classmethod
+    def _set_request_payer_param(cls, request_params, cli_params):
+        if cli_params.get('request_payer'):
+            request_params['RequestPayer'] = cli_params['request_payer']
 
     @classmethod
     def _set_general_object_params(cls, request_params, cli_params):
-        # Paramters set in this method should be applicable to the following
+        # Parameters set in this method should be applicable to the following
         # operations involving objects: PutObject, CopyObject, and
         # CreateMultipartUpload.
         general_param_translation = {
@@ -622,10 +645,14 @@ class DeleteSourceObjectSubscriber(DeleteSourceSubscriber):
 
     def _delete_source(self, future):
         call_args = future.meta.call_args
-        self._client.delete_object(
-            Bucket=self._get_bucket(call_args),
-            Key=self._get_key(call_args)
-        )
+        delete_object_kwargs = {
+            'Bucket': self._get_bucket(call_args),
+            'Key': self._get_key(call_args)
+        }
+        if call_args.extra_args.get('RequestPayer'):
+            delete_object_kwargs['RequestPayer'] = call_args.extra_args[
+                'RequestPayer']
+        self._client.delete_object(**delete_object_kwargs)
 
 
 class DeleteCopySourceObjectSubscriber(DeleteSourceObjectSubscriber):

@@ -498,7 +498,7 @@ class DownloadStreamRequestSubmitter(DownloadRequestSubmitter):
 
 
 class DeleteRequestSubmitter(BaseTransferRequestSubmitter):
-    REQUEST_MAPPER_METHOD = None
+    REQUEST_MAPPER_METHOD = RequestParamsMapper.map_delete_object_params
     RESULT_SUBSCRIBER_CLASS = DeleteResultSubscriber
 
     def can_submit(self, fileinfo):

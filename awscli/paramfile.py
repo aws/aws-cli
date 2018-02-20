@@ -102,6 +102,8 @@ PARAMFILE_DISABLED = set([
 
     'iot.create-job.document-source',
     'translate.translate-text.text',
+
+    'workdocs.create-notification-subscription.notification-endpoint',
 ])
 
 

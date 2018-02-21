@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.14.44
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``serverlessrepo``: Update serverlessrepo command to latest version
+* api-change:``codecommit``: Update codecommit command to latest version
+
+
 1.14.43
 =======
 

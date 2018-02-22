@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.14.45
+=======
+
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``ce``: Update ce command to latest version
+
+
 1.14.44
 =======
 

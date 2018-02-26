@@ -1,14 +1,15 @@
-**To describe the ID format for your resources**
+**To describe the longer ID format settings for all resource types in a specific region**
 
-This example describes the ID format for all resource types that support longer IDs. The output indicates that the bundle, conversion-task, dhcp-options, elastic-ip-allocation, elastic-ip-association, export-task, flow-log, image, import-task, internet-gateway, network-acl, network-acl-association, network-interface, network-interface-attachment, prefix-list, route-table, route-table-association, security-group, subnet, subnet-cidr-block-association, vpc, vpc-cidr-block-association, and vpc-peering-connection resource types can be enabled or disabled for longer IDs. The Deadline for the reservation, instance, volume, and snapshot resource types indicate that the deadline for those resources expired at 00:00 UTC on December 15, 2016. It also shows that all of the resource types, except vpc, subnet, and security-group, are configured to use longer IDs. 
+This example describes the overall longer ID format settings for the eu-west-1 region. The output indicates that the bundle, conversion-task, dhcp-options, elastic-ip-allocation, elastic-ip-association, export-task, flow-log, image, import-task, internet-gateway, network-acl, network-acl-association, network-interface, network-interface-attachment, prefix-list, route-table, route-table-association, security-group, subnet, subnet-cidr-block-association, vpc, vpc-cidr-block-association, and vpc-peering-connection resource types can be enabled or disabled for longer IDs. The Deadline for the reservation, instance, volume, and snapshot resource types indicate that the deadline for those resources expired at 00:00 UTC on December 15, 2016. It also shows that all IAM users and IAM roles are configured to use longer IDs for all resource types, except vpc and subnet. One or more IAM users or IAM roles are not configured to use longer IDs for vpc and subnet resource types. ``UseLongIdsAggregated`` is ``false`` because not all IAM users and IAM roles are configured to use longer IDs for all resource types in the region.
 
 Command::
 
-  aws ec2 describe-id-format
+  aws ec2 describe-aggregate-id-format --region eu-west-1
 
 Output::
 
-  {
+{
+    "UseLongIdsAggregated": false,
     "Statuses": [
       {
         "Resource": "reservation",
@@ -95,7 +96,7 @@ Output::
         "Resource": "vpc-peering-connection"
       },
       {
-        "UseLongIds": false,
+        "UseLongIds": true,
         "Resource": "security-group"
       },
       {

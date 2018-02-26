@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.14.47
+=======
+
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``sts``: Update sts command to latest version
+
+
 1.14.46
 =======
 

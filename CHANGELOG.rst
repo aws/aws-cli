@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.14.48
+=======
+
+* api-change:``ecr``: Update ecr command to latest version
+
+
 1.14.47
 =======
 

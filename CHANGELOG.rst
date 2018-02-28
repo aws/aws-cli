@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.14.49
+=======
+
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+
+
 1.14.48
 =======
 

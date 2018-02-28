@@ -1,6 +1,6 @@
 **To describe the ID format for your resources**
 
-This example describes the ID format for all resource types that support longer IDs. The output indicates that the bundle, conversion-task, dhcp-options, elastic-ip-allocation, elastic-ip-association, export-task, flow-log, image, import-task, internet-gateway, network-acl, network-acl-association, network-interface, network-interface-attachment, prefix-list, route-table, route-table-association, security-group, subnet, subnet-cidr-block-association, vpc, vpc-cidr-block-association, and vpc-peering-connection resource types can be enabled or disabled for longer IDs. The Deadline for the reservation, instance, volume, and snapshot resource types indicate that the deadline for those resources expired at 00:00 UTC on December 15, 2016. It also shows that all of the resource types, except vpc, subnet, and security-group, are configured to use longer IDs. 
+This example describes the ID format for all resource types that support longer IDs. The output indicates that the bundle, conversion-task, customer-gateway, dhcp-options, elastic-ip-allocation, elastic-ip-association, export-task, flow-log, image, import-task, internet-gateway, network-acl, network-acl-association, network-interface, network-interface-attachment, prefix-list, route-table, route-table-association, security-group, subnet, subnet-cidr-block-association, vpc, vpc-cidr-block-association, vpc-endpoint, vpc-peering-connection, vpn-connection, and vpn-gateway resource types can be enabled or disabled for longer IDs. The Deadline for the reservation, instance, volume, and snapshot resource types indicate that the deadline for those resources expired at 00:00 UTC on December 15, 2016. It also shows that all of the resource types, except vpc, subnet, and security-group, are configured to use longer IDs. 
 
 Command::
 
@@ -121,6 +121,22 @@ Output::
       {
         "UseLongIds": true,
         "Resource": "bundle"
+      },
+      {
+        "UseLongIds": true,
+        "Resource": "vpc-endpoint"
+      },
+      {
+        "UseLongIds": true,
+        "Resource": "customer-gateway"
+      },
+      {
+        "UseLongIds": true,
+        "Resource": "vpn-connection"
+      },
+      {
+        "UseLongIds": true,
+        "Resource": "vpn-gateway"
       }
     ]
   }

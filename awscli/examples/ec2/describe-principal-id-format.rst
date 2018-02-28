@@ -1,6 +1,6 @@
 **To describe the longer ID settings for the root user and all IAM roles and IAM users that have explicitly specified a longer ID preference.
 
-This example describes ID format for the root user and all IAM roles and IAM users that have explicitly specified a longer ID preference. The output indicates that the bundle, conversion-task, dhcp-options, elastic-ip-allocation, elastic-ip-association, export-task, flow-log, image, import-task, internet-gateway, network-acl, network-acl-association, network-interface, network-interface-attachment, prefix-list, route-table, route-table-association, security-group, subnet, subnet-cidr-block-association, vpc, vpc-cidr-block-association, and vpc-peering-connection resource types can be enabled or disabled for longer IDs. The Deadline for the reservation, instance, volume, and snapshot resource types indicate that the deadline for those resources expired at 00:00 UTC on December 15, 2016. It also shows that the root account has enabled longer IDs for all supported resource types, while the ``user1`` IAM user has disabled longer IDs or image and bundle resource types, and the ``Admin`` IAM role has disable longer IDs for vpc and subnet resource types.
+This example describes ID format for the root user and all IAM roles and IAM users that have explicitly specified a longer ID preference. The output indicates that the bundle, conversion-task, customer-gateway, dhcp-options, elastic-ip-allocation, elastic-ip-association, export-task, flow-log, image, import-task, internet-gateway, network-acl, network-acl-association, network-interface, network-interface-attachment, prefix-list, route-table, route-table-association, security-group, subnet, subnet-cidr-block-association, vpc, vpc-cidr-block-association, vpc-endpoint, vpc-peering-connection, vpn-connection, and vpn-gateway resource types can be enabled or disabled for longer IDs. The Deadline for the reservation, instance, volume, and snapshot resource types indicate that the deadline for those resources expired at 00:00 UTC on December 15, 2016. It also shows that the root account has enabled longer IDs for all supported resource types, while the ``user1`` IAM user has disabled longer IDs or image and bundle resource types, and the ``Admin`` IAM role has disable longer IDs for vpc and subnet resource types.
 
 Command::
 
@@ -121,6 +121,22 @@ Output::
       {
         "UseLongIds": true,
         "Resource": "bundle"
+      },
+      {
+        "UseLongIds": true,
+        "Resource": "vpc-endpoint"
+      },
+      {
+        "UseLongIds": true,
+        "Resource": "customer-gateway"
+      },
+      {
+        "UseLongIds": true,
+        "Resource": "vpn-connection"
+      },
+      {
+        "UseLongIds": true,
+        "Resource": "vpn-gateway"
       }
     ],
     "Arn": "arn:aws:iam::123456789098:root"
@@ -238,6 +254,22 @@ Output::
       {
         "UseLongIds": false,
         "Resource": "bundle"
+      },
+      {
+        "UseLongIds": true,
+        "Resource": "vpc-endpoint"
+      },
+      {
+        "UseLongIds": true,
+        "Resource": "customer-gateway"
+      },
+      {
+        "UseLongIds": true,
+        "Resource": "vpn-connection"
+      },
+      {
+        "UseLongIds": true,
+        "Resource": "vpn-gateway"
       }
     ],
     "Arn": "arn:aws:iam::123456789098:user/user1"
@@ -355,6 +387,22 @@ Output::
       {
         "UseLongIds": true,
         "Resource": "bundle"
+      },
+      {
+        "UseLongIds": true,
+        "Resource": "vpc-endpoint"
+      },
+      {
+        "UseLongIds": true,
+        "Resource": "customer-gateway"
+      },
+      {
+        "UseLongIds": true,
+        "Resource": "vpn-connection"
+      },
+      {
+        "UseLongIds": true,
+        "Resource": "vpn-gateway"
       }
     ],
     "Arn": "arn:aws:iam::123456789098:role/Admin"

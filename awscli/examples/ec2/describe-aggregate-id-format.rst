@@ -1,6 +1,6 @@
 **To describe the longer ID format settings for all resource types in a specific region**
 
-This example describes the overall longer ID format settings for the eu-west-1 region. The output indicates that the bundle, conversion-task, dhcp-options, elastic-ip-allocation, elastic-ip-association, export-task, flow-log, image, import-task, internet-gateway, network-acl, network-acl-association, network-interface, network-interface-attachment, prefix-list, route-table, route-table-association, security-group, subnet, subnet-cidr-block-association, vpc, vpc-cidr-block-association, and vpc-peering-connection resource types can be enabled or disabled for longer IDs. The Deadline for the reservation, instance, volume, and snapshot resource types indicate that the deadline for those resources expired at 00:00 UTC on December 15, 2016. It also shows that all IAM users and IAM roles are configured to use longer IDs for all resource types, except vpc and subnet. One or more IAM users or IAM roles are not configured to use longer IDs for vpc and subnet resource types. ``UseLongIdsAggregated`` is ``false`` because not all IAM users and IAM roles are configured to use longer IDs for all resource types in the region.
+This example describes the overall longer ID format settings for the eu-west-1 region. The output indicates that the bundle, conversion-task, customer-gateway, dhcp-options, elastic-ip-allocation, elastic-ip-association, export-task, flow-log, image, import-task, internet-gateway, network-acl, network-acl-association, network-interface, network-interface-attachment, prefix-list, route-table, route-table-association, security-group, subnet, subnet-cidr-block-association, vpc, vpc-cidr-block-association, vpc-endpoint, vpc-peering-connection, vpn-connection, and vpn-gateway resource types can be enabled or disabled for longer IDs. The Deadline for the reservation, instance, volume, and snapshot resource types indicate that the deadline for those resources expired at 00:00 UTC on December 15, 2016. It also shows that all IAM users and IAM roles are configured to use longer IDs for all resource types, except vpc and subnet. One or more IAM users or IAM roles are not configured to use longer IDs for vpc and subnet resource types. ``UseLongIdsAggregated`` is ``false`` because not all IAM users and IAM roles are configured to use longer IDs for all resource types in the region.
 
 Command::
 
@@ -122,6 +122,22 @@ Output::
       {
         "UseLongIds": true,
         "Resource": "bundle"
+      },
+      {
+        "UseLongIds": true,
+        "Resource": "vpc-endpoint"
+      },
+      {
+        "UseLongIds": true,
+        "Resource": "customer-gateway"
+      },
+      {
+        "UseLongIds": true,
+        "Resource": "vpn-connection"
+      },
+      {
+        "UseLongIds": true,
+        "Resource": "vpn-gateway"
       }
     ]
   }

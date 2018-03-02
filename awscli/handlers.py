@@ -21,7 +21,7 @@ from awscli.argprocess import uri_param
 from awscli.customizations import datapipeline
 from awscli.customizations.addexamples import add_examples
 from awscli.customizations.argrename import register_arg_renames
-from awscli.customizations.assumerole import register_assume_role_provider
+from awscli.customizations.sessiontokenservice import register_session_token_provider
 from awscli.customizations.awslambda import register_lambda_create_function
 from awscli.customizations.cliinputjson import register_cli_input_json
 from awscli.customizations.cloudformation import initialize as cloudformation_init
@@ -130,7 +130,7 @@ def awscli_initialize(event_handlers):
     register_cloudsearchdomain(event_handlers)
     register_s3_endpoint(event_handlers)
     register_generate_cli_skeleton(event_handlers)
-    register_assume_role_provider(event_handlers)
+    register_session_token_provider(event_handlers)
     register_add_waiters(event_handlers)
     codedeploy_init(event_handlers)
     register_subscribe(event_handlers)

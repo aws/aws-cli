@@ -8,13 +8,13 @@ LOG = logging.getLogger(__name__)
 CACHE_DIR = os.path.expanduser(os.path.join('~', '.aws', 'cli', 'cache'))
 
 
-def register_assume_role_provider(event_handlers):
+def register_session_token_provider(event_handlers):
     event_handlers.register('session-initialized',
-                            inject_assume_role_provider_cache,
-                            unique_id='inject_assume_role_cred_provider_cache')
+                            inject_session_token_provider_cache,
+                            unique_id='inject_session_token_cred_provider_cache')
 
 
-def inject_assume_role_provider_cache(session, **kwargs):
+def inject_session_token_provider_cache(session, **kwargs):
     try:
         cred_chain = session.get_component('credential_provider')
     except ProfileNotFound:
@@ -34,8 +34,9 @@ def inject_assume_role_provider_cache(session, **kwargs):
         # up the stack will raise ProfileNotFound, otherwise
         # the configure (and other) commands will work as expected.
         LOG.debug("ProfileNotFound caught when trying to inject "
-                  "assume-role cred provider cache.  Not configuring "
-                  "JSONFileCache for assume-role.")
+                  "assume-role and shared-credentials-file cred provider cache. "
+                  "Not configuring JSONFileCache for assume-role and shared-credentials-file.")
         return
-    provider = cred_chain.get_provider('assume-role')
-    provider.cache = JSONFileCache(CACHE_DIR)
+    for provider_name in ['assume-role', 'shared-credentials-file']:
+        provider = cred_chain.get_provider(provider_name)
+        provider.cache = JSONFileCache(CACHE_DIR)

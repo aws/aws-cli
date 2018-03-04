@@ -306,7 +306,10 @@ class ParameterValuesInlineArgument(CustomArgument):
                 key = argument_components[0]
                 value = argument_components[1]
                 if key in parameter_object:
-                    parameter_object[key] = [parameter_object[key], value]
+                    if isinstance(parameter_object[key], list):
+                        parameter_object[key].append(value)
+                    else:
+                        parameter_object[key] = [parameter_object[key], value]
                 else:
                     parameter_object[key] = value
             except IndexError:

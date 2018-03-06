@@ -1,6 +1,11 @@
 **To update the structure of a pipeline**
 
-This example updates the structure of a pipeline by using a pre-defined JSON file (MyFirstPipeline.json) to supply the new structure.
+This example uses the update-pipeline command with the --cli-input-json argument. This example uses a pre-defined JSON file (MyFirstPipeline.json) to update the structure of a pipeline. AWS CodePipeline recognizes the pipeline name contained in the JSON file, and then applies any changes from modified fields in the pipeline structure to update the pipeline.
+
+Use the following guidelines when creating the pre-defined JSON file: 
+
+- If you are working with a pipeline structure retrieved using the get-pipeline command, you must remove the metadata section from the pipeline structure in the JSON file (the "metadata": { } lines and the "created," "pipelineARN," and "updated" fields within).
+- The pipeline name cannot be changed.
 
 Command::
 

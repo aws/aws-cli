@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.14.51
+=======
+
+* api-change:``ecs``: Update ecs command to latest version
+
+
 1.14.50
 =======
 

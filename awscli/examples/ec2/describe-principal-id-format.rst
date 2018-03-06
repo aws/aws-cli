@@ -140,8 +140,8 @@ Output::
         }
     ],
     "Arn": "arn:aws:iam::123456789098:root"
-},
-{
+  },
+  {
     "Statuses": [
         {
             "Resource": "reservation",
@@ -273,8 +273,8 @@ Output::
         }
     ],
     "Arn": "arn:aws:iam::123456789098:user/user1"
-},
-{
+  },
+  {
     "Statuses": [
         {
             "Resource": "reservation",

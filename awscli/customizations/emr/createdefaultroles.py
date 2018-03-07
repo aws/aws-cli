@@ -16,6 +16,7 @@ import re
 import botocore.exceptions
 from botocore import xform_name
 
+from awscli.customizations.utils import get_policy_arn_suffix
 from awscli.customizations.emr import configutils
 from awscli.customizations.emr import emrutils
 from awscli.customizations.emr import exceptions
@@ -51,19 +52,10 @@ def assume_role_policy(serviceprincipal):
 
 
 def get_role_policy_arn(region, policy_name):
-    region_suffix = _get_policy_arn_suffix(region)
+    region_suffix = get_policy_arn_suffix(region)
     role_arn = ROLE_ARN_PATTERN.replace("{{region_suffix}}", region_suffix)
     role_arn = role_arn.replace("{{policy_name}}", policy_name)
     return role_arn
-
-def _get_policy_arn_suffix(region):
-    region_string = region.lower()
-    if region_string.startswith("cn-"):
-        return "aws-cn"
-    elif region_string.startswith("us-gov"):
-        return "aws-us-gov"
-    else:
-        return "aws"
 
 
 def get_service_principal(service, endpoint_host):

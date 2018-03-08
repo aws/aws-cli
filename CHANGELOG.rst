@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.14.52
+=======
+
+* api-change:``medialive``: Update medialive command to latest version
+
+
 1.14.51
 =======
 

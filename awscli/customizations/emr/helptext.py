@@ -323,8 +323,8 @@ EMR_FS = (
     ' Amazon EMR version 4.8.0 or later, we recommend configuring data encryption'
     ' using security configurations instead. For more information'
     ' about using <code>--emrfs</code> to configure data encryption, see'
-    ' Specifying Encryption Options Using a Security Configuration'
-    ' (http://integ-docs-aws.amazon.com/emr/latest/ReleaseGuide/emr-encryption-enable-security-configuration.html.</p>')
+    ' Specifying Amazon S3 Encryption Using EMRFS Properties'
+    ' (https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-emrfs-encryption.html.</p>')
 
 RESTORE_FROM_HBASE = (
     '<p>Available only when using Amazon EMR versions earlier than 4.x.'

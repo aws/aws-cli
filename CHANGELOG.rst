@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.14.53
+=======
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``mgh``: Update mgh command to latest version
+
+
 1.14.52
 =======
 

@@ -5,7 +5,7 @@ This example retrieves the result of a lifecycle policy preview for a repository
 
 Command::
 
-  aws ecr get-lifecycle-policy --repository-name "project-a/amazon-ecs-sample"
+  aws ecr get-lifecycle-policy-preview --repository-name "project-a/amazon-ecs-sample"
 
 Output::
 

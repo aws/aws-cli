@@ -26,12 +26,12 @@ class TestDeployer(unittest.TestCase):
         }
 
         response = {
-            "Stacks": [
-                make_stack_obj(stack_name)
+            "StackResources": [
+                make_stack_resources_obj(stack_name)
             ]
         }
 
-        self.stub_client.add_response('describe_stacks', response,
+        self.stub_client.add_response('describe_stack_resources', response,
                                       expected_params)
 
         with self.stub_client:
@@ -44,18 +44,8 @@ class TestDeployer(unittest.TestCase):
             "StackName": stack_name
         }
 
-        # Response contains NO stack
-        no_stack_response = {
-            "Stacks": []
-        }
-        self.stub_client.add_response('describe_stacks', no_stack_response,
-                                      expected_params)
-        with self.stub_client:
-            response = self.deployer.has_stack(stack_name)
-            self.assertFalse(response)
-
         # Response is a ClientError with a message that the stack does not exist
-        self.stub_client.add_client_error('describe_stacks', "ClientError",
+        self.stub_client.add_client_error('describe_stack_resources', "ClientError",
                                           "Stack with id {0} does not exist"
                                           .format(stack_name))
         with self.stub_client:
@@ -68,11 +58,11 @@ class TestDeployer(unittest.TestCase):
             "StackName": stack_name
         }
 
-        # Response contains NO stack
+        # Response contains NO stack resources
         review_in_progress_response = {
-            "Stacks": [make_stack_obj(stack_name, "REVIEW_IN_PROGRESS")]
+            "StackResources": []
         }
-        self.stub_client.add_response('describe_stacks',
+        self.stub_client.add_response('describe_stack_resources',
                                       review_in_progress_response,
                                       expected_params)
         with self.stub_client:
@@ -80,7 +70,7 @@ class TestDeployer(unittest.TestCase):
             self.assertFalse(response)
 
     def test_has_stack_exception(self):
-        self.stub_client.add_client_error('describe_stacks', "ValidationError",
+        self.stub_client.add_client_error('describe_stack_resources', "ValidationError",
                                           "Service is bad")
         with self.stub_client:
             with self.assertRaises(botocore.exceptions.ClientError):
@@ -446,10 +436,13 @@ class TestDeployer(unittest.TestCase):
                 "stack_create_complete")
 
 
-def make_stack_obj(stack_name, status="CREATE_COMPLETE"):
+def make_stack_resources_obj(stack_name, status="CREATE_COMPLETE"):
     return {
         "StackId": stack_name,
         "StackName": stack_name,
-        "CreationTime": "2013-08-23T01:02:15.422Z",
-        "StackStatus": status
+        "LogicalResourceId": "Test",
+        "PhysicalResourceId": "a9984e36-262c-49a7-9b57-f7f1c45ce890",
+        "ResourceType": "Custom::Test",
+        "Timestamp": "2013-08-23T01:02:15.422Z",
+        "ResourceStatus": status
     }

@@ -43,21 +43,18 @@ class Deployer(object):
         :return: True if stack exists. False otherwise
         """
         try:
-            resp = self._client.describe_stacks(StackName=stack_name)
-            if len(resp["Stacks"]) != 1:
-                return False
+            resp = self._client.describe_stack_resources(StackName=stack_name)
 
-            # When you run CreateChangeSet on a a stack that does not exist,
-            # CloudFormation will create a stack and set it's status
-            # REVIEW_IN_PROGRESS. However this stack is cannot be manipulated
-            # by "update" commands. Under this circumstances, we treat like
-            # this stack does not exist and call CreateChangeSet will
+            # When you run CreateChangeSet on a stack that does not exist,
+            # CloudFormation will create an empty stack and set its status to
+            # REVIEW_IN_PROGRESS. However this stack cannot be manipulated by
+            # "update" commands. Under these circumstances, we treat it like
+            # this stack does not exist and call CreateChangeSet with the
             # ChangeSetType set to CREATE and not UPDATE.
-            stack = resp["Stacks"][0]
-            return stack["StackStatus"] != "REVIEW_IN_PROGRESS"
+            return len(resp["StackResources"]) != 0
 
         except botocore.exceptions.ClientError as e:
-            # If a stack does not exist, describe_stacks will throw an
+            # If a stack does not exist, describe_stack_resources will throw an
             # exception. Unfortunately we don't have a better way than parsing
             # the exception msg to understand the nature of this exception.
             msg = str(e)

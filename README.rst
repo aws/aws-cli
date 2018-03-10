@@ -47,7 +47,7 @@ you can run::
 
 .. note::
 
-    On OS X, if you see an error regarding the version of six that came with
+    On macOS, if you see an error regarding the version of six that came with
     distutils in El Capitan, use the ``--ignore-installed`` option::
 
         $ sudo pip install awscli --ignore-installed six
@@ -62,6 +62,10 @@ awscli directory structure on your workstation, you can just run::
 
 If you want to run the ``develop`` branch of the CLI, see the
 "CLI Dev Version" section below.
+
+Althought not officially maintained by AWS, for macOS users, you can also use  `Homebrew`_::
+
+    $ brew install awscli
 
 
 ------------
@@ -431,4 +435,5 @@ help:
 
 .. _`Amazon Web Services Security Bulletins website`: https://aws.amazon.com/security/security-bulletins
 .. _pip: http://www.pip-installer.org/en/latest/
+.. _Homebrew: https://brew.sh/
 .. _`download the tarball`: https://pypi.python.org/pypi/awscli

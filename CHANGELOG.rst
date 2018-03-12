@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.14.54
+=======
+
+* api-change:``cloudhsmv2``: Update cloudhsmv2 command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``discovery``: Update discovery command to latest version
+* api-change:``iot``: Update iot command to latest version
+
+
 1.14.53
 =======
 

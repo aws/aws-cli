@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.14.55
+=======
+
+* api-change:``servicediscovery``: Update servicediscovery command to latest version
+
+
 1.14.54
 =======
 

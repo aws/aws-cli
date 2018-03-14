@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.14.56
+=======
+
+* api-change:``lightsail``: Update lightsail command to latest version
+
+
 1.14.55
 =======
 

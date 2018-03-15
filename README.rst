@@ -63,7 +63,7 @@ awscli directory structure on your workstation, you can just run::
 If you want to run the ``develop`` branch of the CLI, see the
 "CLI Dev Version" section below.
 
-Althought not officially maintained by AWS, for macOS users, you can also use  `Homebrew`_::
+Although not officially maintained by AWS, for macOS users, you can also use  `Homebrew`_::
 
     $ brew install awscli
 

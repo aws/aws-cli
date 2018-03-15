@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.14.57
+=======
+
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+
+
 1.14.56
 =======
 

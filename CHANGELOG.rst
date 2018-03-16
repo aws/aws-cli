@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.14.58
+=======
+
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+
+
 1.14.57
 =======
 

@@ -47,6 +47,21 @@ class TestParamFile(unittest.TestCase):
         self.assertEqual(data, b'This is a test')
         self.assertIsInstance(data, six.binary_type)
 
+    def test_pipe_file(self):
+        contents = 'This is a test'
+        filename = self.files.create_file('foo', contents)
+        prefixed_filename = 'pipe://' + filename
+        data = get_paramfile(prefixed_filename)
+        self.assertEqual(data, contents)
+        self.assertIsInstance(data, six.string_types)
+
+        # simulate a second read (where the pipeline will have been depleated)
+        filename = self.files.create_file('foo', '')
+        prefixed_filename = 'pipe://' + filename
+        data = get_paramfile(prefixed_filename)
+        self.assertEqual(data, contents)
+        self.assertIsInstance(data, six.string_types)
+
     @skip_if_windows('Binary content error only occurs '
                      'on non-Windows platforms.')
     def test_cannot_load_text_file(self):

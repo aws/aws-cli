@@ -260,17 +260,22 @@ def get_uri(prefix, uri):
     except Exception as e:
         raise ResourceLoadingError('Unable to retrieve %s: %s' % (uri, e))
 
-STDIN_CACHE = None
-def get_stdin(prefix, path):
-    global STDIN_CACHE
-    if STDIN_CACHE is None:
-        STDIN_CACHE = get_file(prefix, prefix + '/dev/stdin', mode = 'r')
-    return STDIN_CACHE
+PIPE_CACHE = {}
+def get_pipe(prefix, path):
+    """Pipes can only be read once, to completion...
+
+    To facilitate this, we will maintain a cache of pipes that have been read.
+    Expected use includes /dev/stdin
+    """
+    global PIPE_CACHE
+    if path not in PIPE_CACHE:
+        PIPE_CACHE[path] = get_file(prefix, path, mode = 'r')
+    return PIPE_CACHE[path]
 
 LOCAL_PREFIX_MAP = {
     'file://': (get_file, {'mode': 'r'}),
     'fileb://': (get_file, {'mode': 'rb'}),
-    'stdin://': (get_stdin, {}),
+    'pipe://': (get_pipe, {}),
 }
 
 

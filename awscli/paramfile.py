@@ -260,10 +260,17 @@ def get_uri(prefix, uri):
     except Exception as e:
         raise ResourceLoadingError('Unable to retrieve %s: %s' % (uri, e))
 
+STDIN_CACHE = None
+def get_stdin(prefix, path):
+    global STDIN_CACHE
+    if STDIN_CACHE is None:
+        STDIN_CACHE = get_file(prefix, prefix + '/dev/stdin', mode = 'r')
+    return STDIN_CACHE
 
 LOCAL_PREFIX_MAP = {
     'file://': (get_file, {'mode': 'r'}),
     'fileb://': (get_file, {'mode': 'rb'}),
+    'stdin://': (get_stdin, {}),
 }
 
 

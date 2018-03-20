@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.14.59
+=======
+
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* api-change:``events``: Update events command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``ce``: Update ce command to latest version
+
+
 1.14.58
 =======
 

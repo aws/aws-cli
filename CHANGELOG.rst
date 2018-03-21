@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.14.60
+=======
+
+* api-change:``serverlessrepo``: Update serverlessrepo command to latest version
+
+
 1.14.59
 =======
 

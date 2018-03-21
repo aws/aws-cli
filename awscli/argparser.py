@@ -11,10 +11,16 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import argparse
+import math
 import sys
 from awscli.compat import six
 from difflib import get_close_matches
-
+from itertools import chain
+try:
+    from itertools import zip_longest
+except ImportError:
+    # Python 2
+    from itertools import izip_longest as zip_longest
 
 HELP_BLURB = (
     "To see help text, you can run:\n"
@@ -74,9 +80,13 @@ class CLIArgParser(argparse.ArgumentParser):
         # converted value must be one of the choices (if specified)
         if action.choices is not None and value not in action.choices:
             msg = ['Invalid choice, valid choices are:\n']
-            for i in range(len(action.choices))[::self.ChoicesPerLine]:
+            # Sort the list so it is in order by columns instead of rows
+            size = int(math.ceil(len(action.choices) / float(self.ChoicesPerLine)))
+            chunks = [action.choices[i:i + size] for i in range(0, len(action.choices), size)]
+            choices = list(chain(*zip_longest(*chunks, fillvalue="")))
+            for i in range(len(choices))[::self.ChoicesPerLine]:
                 current = []
-                for choice in action.choices[i:i+self.ChoicesPerLine]:
+                for choice in choices[i:i+self.ChoicesPerLine]:
                     current.append('%-40s' % choice)
                 msg.append(' | '.join(current))
             possible = get_close_matches(value, action.choices, cutoff=0.8)

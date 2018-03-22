@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.14.62
+=======
+
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``appstream``: Update appstream command to latest version
+
+
 1.14.60
 =======
 

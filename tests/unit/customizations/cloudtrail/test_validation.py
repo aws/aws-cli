@@ -18,7 +18,10 @@ import gzip
 from datetime import datetime, timedelta
 from dateutil import parser, tz
 
-import rsa
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization, hashes
+from cryptography.hazmat.primitives.asymmetric import rsa, padding
+
 from mock import Mock, call
 from argparse import Namespace
 
@@ -278,7 +281,12 @@ class TestSha256RSADigestValidator(unittest.TestCase):
         self._digest_data['_signature'] = 'aeff'
 
     def test_validates_digests(self):
-        (public_key, private_key) = rsa.newkeys(512)
+        private_key = rsa.generate_private_key(
+            public_exponent=65537,
+            key_size=512,
+            backend=default_backend()
+        )
+        public_key = private_key.public_key()
         sha256_hash = hashlib.sha256(self._inflated_digest)
         string_to_sign = "%s\n%s/%s\n%s\n%s" % (
             self._digest_data['digestEndTime'],
@@ -286,10 +294,10 @@ class TestSha256RSADigestValidator(unittest.TestCase):
             self._digest_data['digestS3Object'],
             sha256_hash.hexdigest(),
             self._digest_data['previousDigestSignature'])
-        signature = rsa.sign(string_to_sign.encode(), private_key, 'SHA-256')
+        signature = private_key.sign(string_to_sign.encode(), padding.PKCS1v15(), hashes.SHA256())
         self._digest_data['_signature'] = binascii.hexlify(signature)
         validator = Sha256RSADigestValidator()
-        public_key_b64 = base64.b64encode(public_key.save_pkcs1(format='DER'))
+        public_key_b64 = base64.b64encode(public_key.public_bytes(encoding=serialization.Encoding.DER, format=serialization.PublicFormat.SubjectPublicKeyInfo))
         validator.validate('b', 'k', public_key_b64, self._digest_data,
                            self._inflated_digest)
 
@@ -724,7 +732,7 @@ class TestDigestTraverser(unittest.TestCase):
         digest_iter = traverser.traverse(start_date, end_date)
         next(digest_iter, None)
         self.assertEquals(
-            'Digest file\ts3://1/%s\tINVALID: Incorrect padding' % end_timestamp,
+            'Digest file\ts3://1/%s\tINVALID: Unable to load PKCS #1 key with fingerprint a' % end_timestamp,
             calls[0]['message'])
 
 

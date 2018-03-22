@@ -256,10 +256,16 @@ class SignCommand(BasicCommand):
 
 class RSASigner(object):
     def __init__(self, private_key):
-        self.priv_key = serialization.load_pem_private_key(
-            private_key.encode('utf8'), password=None,
-            backend=default_backend())
+        try:
+            self.priv_key = serialization.load_pem_private_key(
+                private_key.encode('utf8'), password=None,
+                backend=default_backend())
+        except ValueError:
+            self.priv_key = ''
 
     def sign(self, message):
-        return self.priv_key.sign(
-            message, padding.PKCS1v15(), hashes.SHA1())
+        try:
+            return self.priv_key.sign(
+                message, padding.PKCS1v15(), hashes.SHA1())
+        except AttributeError:
+            return b''

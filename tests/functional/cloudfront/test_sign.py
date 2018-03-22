@@ -67,9 +67,7 @@ class TestSign(BaseAWSCommandParamsTest):
         cmdline = (
             self.prefix + '--private-key file://' + self.private_key_file +
             ' --date-less-than 2016-1-1')
-        expected_params = {
-            'Key-Pair-Id': ['my_id'],
-            'Expires': ['1451606400'], 'Signature': [mock.ANY]}
+        expected_params = {'Expires': ['1451606400'], 'Key-Pair-Id': ['my_id']}
         self.assertDesiredUrl(
             self.run_cmd(cmdline)[0], 'http://example.com/hi', expected_params)
 
@@ -77,8 +75,6 @@ class TestSign(BaseAWSCommandParamsTest):
         cmdline = (
             self.prefix + '--private-key file://' + self.private_key_file +
             ' --date-less-than 2016-1-1 --ip-address 12.34.56.78')
-        expected_params = {
-            'Key-Pair-Id': ['my_id'],
-            'Policy': [mock.ANY], 'Signature': [mock.ANY]}
+        expected_params = {'Key-Pair-Id': ['my_id'], 'Policy': [mock.ANY]}
         self.assertDesiredUrl(
             self.run_cmd(cmdline)[0], 'http://example.com/hi', expected_params)

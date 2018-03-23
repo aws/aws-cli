@@ -16,7 +16,7 @@ Output::
 The ``get-login-profile`` command can be used to verify that an IAM user has a password. The command returns a ``NoSuchEntity``
 error if no password is defined for the user.
 
-You cannot recover a password using this command. If the password is lost, you must delete the login profile (``delete-login-profile``) for the user and then create a new one (``create-login-profile``).
+You cannot view a password using this command. If the password is lost, you can reset the password (``update-login-profile``) for the user. Alternatively, you can delete the login profile (``delete-login-profile``) for the user and then create a new one (``create-login-profile``).
 
 For more information, see `Managing Passwords`_ in the *Using IAM* guide.
 

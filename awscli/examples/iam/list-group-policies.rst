@@ -10,7 +10,7 @@ Output::
   {
       "PolicyNames": [
           "AdminRoot",
-          "ExamplepPolicy"
+          "ExamplePolicy"
       ]
   }
 

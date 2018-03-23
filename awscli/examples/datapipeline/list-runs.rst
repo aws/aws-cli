@@ -15,3 +15,15 @@ The following is example output::
    3.  S3OutputLocation           2015-04-12T17:33:02    WAITING_ON_DEPENDENCIES    @S3OutputLocation_2015-04-12T17:33:02           2015-04-12T17:33:09
 
    4.  ShellCommandActivityObj    2015-04-12T17:33:02    WAITING_FOR_RUNNER         @ShellCommandActivityObj_2015-04-12T17:33:02    2015-04-12T17:33:09
+
+**To list the pipeline runs between the specified dates**
+
+Use the ``list-runs`` command with the ``--start-interval`` parameter::
+
+   aws datapipeline list-runs`` --pipeline-id {#PIPELINE_ID} --start-interval {#TIME},{#TIME}
+
+For example, to list the pipeline runs between 2017-10-07T00:00:00 and 2017-10-08T00:00:00, run::
+ 
+   aws datapipeline list-runs --pipeline-id df-01434553B58A2SHZUKO5 --start-interval 2017-10-07T00:00:00,2017-10-08T00:00:00
+   
+   

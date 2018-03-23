@@ -183,6 +183,13 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.driver.main(['elb', 'remove-tags', 'help'])
         self.assert_contains("--tags Key1 Key2 Key3")
 
+    def test_deprecated_operations_not_documented(self):
+        self.driver.main(['s3api', 'help'])
+        self.assert_not_contains('get-bucket-lifecycle\n')
+        self.assert_not_contains('put-bucket-lifecycle\n')
+        self.assert_not_contains('get-bucket-notification\n')
+        self.assert_not_contains('put-bucket-notification\n')
+
 
 class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
     def assert_command_does_not_exist(self, service, command):
@@ -303,10 +310,10 @@ class TestStructureScalarHasNoExamples(BaseAWSHelpOutputTest):
         # Verify that if a structure does match our special case
         # (single element named "Value"), then we still document
         # the example syntax.
-        self.driver.main(['s3api', 'restore-object', 'help'])
-        self.assert_contains('Days=integer')
+        self.driver.main(['s3api', 'create-bucket', 'help'])
+        self.assert_contains('LocationConstraint=string')
         # Also should see the JSON syntax in the help output.
-        self.assert_contains('"Days": integer')
+        self.assert_contains('"LocationConstraint": ')
 
 
 class TestJSONListScalarDocs(BaseAWSHelpOutputTest):

@@ -13,23 +13,23 @@
 # language governing permissions and limitations under the License.
 import mock
 
-from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
-from awscli.testutils import capture_input
+from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.testutils import capture_input, set_invalid_utime
 from awscli.compat import six
+from tests.functional.s3 import BaseS3TransferCommandTest
 
 
-class TestCPCommand(BaseAWSCommandParamsTest):
+class BufferedBytesIO(six.BytesIO):
+    @property
+    def buffer(self):
+        return self
 
+
+class BaseCPCommandTest(BaseS3TransferCommandTest):
     prefix = 's3 cp '
 
-    def setUp(self):
-        super(TestCPCommand, self).setUp()
-        self.files = FileCreator()
 
-    def tearDown(self):
-        super(TestCPCommand, self).tearDown()
-        self.files.remove_all()
-
+class TestCPCommand(BaseCPCommandTest):
     def test_operations_used_in_upload(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
         cmdline = '%s %s s3://bucket/key.txt' % (self.prefix, full_path)
@@ -534,6 +534,23 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         progress_message = 'Completed 10 Bytes'
         self.assertIn(progress_message, stdout)
 
+    def test_cp_with_error_and_warning(self):
+        command = "s3 cp %s s3://bucket/foo.txt"
+        self.parsed_responses = [{
+            'Error': {
+                'Code': 'NoSuchBucket',
+                'Message': 'The specified bucket does not exist',
+                'BucketName': 'bucket'
+            }
+        }]
+        self.http_response.status_code = 404
+
+        full_path = self.files.create_file('foo.txt', 'bar')
+        set_invalid_utime(full_path)
+        _, stderr, rc = self.run_cmd(command % full_path, expected_rc=1)
+        self.assertIn('upload failed', stderr)
+        self.assertIn('warning: File has an invalid timestamp.', stderr)
+
 
 class TestStreamingCPCommand(BaseAWSCommandParamsTest):
     def test_streaming_upload(self):
@@ -542,9 +559,8 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
             'ETag': '"c8afdb36c52cf4727836669019e69222"'
         }]
 
-        binary_stdin = six.BytesIO(b'foo\n')
-        location = "awscli.customizations.s3.s3handler.binary_stdin"
-        with mock.patch(location, binary_stdin):
+        binary_stdin = BufferedBytesIO(b'foo\n')
+        with mock.patch('sys.stdin', binary_stdin):
             self.run_cmd(command)
 
         self.assertEqual(len(self.operations_called), 1)
@@ -564,9 +580,8 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
             'ETag': '"c8afdb36c52cf4727836669019e69222"'
         }]
 
-        binary_stdin = six.BytesIO(b'foo\n')
-        location = "awscli.customizations.s3.s3handler.binary_stdin"
-        with mock.patch(location, binary_stdin):
+        binary_stdin = BufferedBytesIO(b'foo\n')
+        with mock.patch('sys.stdin', binary_stdin):
             self.run_cmd(command)
 
         self.assertEqual(len(self.operations_called), 1)
@@ -591,9 +606,8 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
         }]
         self.http_response.status_code = 404
 
-        binary_stdin = six.BytesIO(b'foo\n')
-        location = "awscli.customizations.s3.s3handler.binary_stdin"
-        with mock.patch(location, binary_stdin):
+        binary_stdin = BufferedBytesIO(b'foo\n')
+        with mock.patch('sys.stdin', binary_stdin):
             _, stderr, _ = self.run_cmd(command, expected_rc=1)
 
         error_message = (
@@ -601,6 +615,20 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
             'the PutObject operation: The specified bucket does not exist'
         )
         self.assertIn(error_message, stderr)
+
+    def test_streaming_upload_when_stdin_unavailable(self):
+        command = "s3 cp - s3://bucket/streaming.txt"
+        self.parsed_responses = [{
+            'ETag': '"c8afdb36c52cf4727836669019e69222"'
+        }]
+
+        with mock.patch('sys.stdin', None):
+            _, stderr, _ = self.run_cmd(command, expected_rc=1)
+
+        expected_message = (
+            'stdin is required for this operation, but is not available'
+        )
+        self.assertIn(expected_message, stderr)
 
     def test_streaming_download(self):
         command = "s3 cp s3://bucket/streaming.txt -"
@@ -650,3 +678,298 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
             'the HeadObject operation: The specified bucket does not exist'
         )
         self.assertIn(error_message, stderr)
+
+
+class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
+    def test_single_upload(self):
+        full_path = self.files.create_file('myfile', 'mycontent')
+        cmdline = (
+            '%s %s s3://mybucket/mykey --request-payer' % (
+                self.prefix, full_path
+            )
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('PutObject', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'RequestPayer': 'requester',
+                    'Body': mock.ANY,
+                })
+            ]
+        )
+
+    def test_multipart_upload(self):
+        full_path = self.files.create_file('myfile', 'a' * 10 * (1024 ** 2))
+        cmdline = (
+            '%s %s s3://mybucket/mykey --request-payer' % (
+                self.prefix, full_path))
+
+        self.parsed_responses = [
+            {'UploadId': 'myid'},      # CreateMultipartUpload
+            {'ETag': '"myetag"'},      # UploadPart
+            {'ETag': '"myetag"'},      # UploadPart
+            {}                         # CompleteMultipartUpload
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('CreateMultipartUpload', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'RequestPayer': 'requester',
+                }),
+                ('UploadPart', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'RequestPayer': 'requester',
+                    'UploadId': 'myid',
+                    'PartNumber': mock.ANY,
+                    'Body': mock.ANY,
+                }),
+                ('UploadPart', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'RequestPayer': 'requester',
+                    'UploadId': 'myid',
+                    'PartNumber': mock.ANY,
+                    'Body': mock.ANY,
+
+                }),
+                ('CompleteMultipartUpload', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'RequestPayer': 'requester',
+                    'UploadId': 'myid',
+                    'MultipartUpload': {'Parts': [
+                        {'ETag': '"myetag"', 'PartNumber': 1},
+                        {'ETag': '"myetag"', 'PartNumber': 2}]
+                    }
+                })
+            ]
+        )
+
+    def test_recursive_upload(self):
+        self.files.create_file('myfile', 'mycontent')
+        cmdline = (
+            '%s %s s3://mybucket/ --request-payer --recursive' % (
+                self.prefix, self.files.rootdir
+            )
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('PutObject', {
+                    'Bucket': 'mybucket',
+                    'Key': 'myfile',
+                    'RequestPayer': 'requester',
+                    'Body': mock.ANY,
+                })
+            ]
+        )
+
+    def test_single_download(self):
+        cmdline = '%s s3://mybucket/mykey %s --request-payer' % (
+            self.prefix, self.files.rootdir)
+
+        self.parsed_responses = [
+            {"ContentLength": 100, "LastModified": "00:00:00Z"},
+            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')},
+        ]
+
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('HeadObject', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'RequestPayer': 'requester',
+                }),
+                ('GetObject', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'RequestPayer': 'requester',
+                })
+            ]
+        )
+
+    def test_ranged_download(self):
+        cmdline = '%s s3://mybucket/mykey %s --request-payer' % (
+            self.prefix, self.files.rootdir)
+
+        self.parsed_responses = [
+            {"ContentLength": 10 * (1024 ** 2), "LastModified": "00:00:00Z"},
+            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')},
+            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')}
+        ]
+
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('HeadObject', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'RequestPayer': 'requester',
+                }),
+                ('GetObject', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'RequestPayer': 'requester',
+                    'Range': mock.ANY,
+                }),
+                ('GetObject', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'RequestPayer': 'requester',
+                    'Range': mock.ANY,
+                })
+            ]
+        )
+
+    def test_recursive_download(self):
+        cmdline = '%s s3://mybucket/ %s --request-payer --recursive' % (
+            self.prefix, self.files.rootdir)
+        self.parsed_responses = [
+            {
+                'Contents': [
+                    {'Key': 'mykey',
+                     'LastModified': '00:00:00Z',
+                     'Size': 100},
+                ],
+                'CommonPrefixes': []
+            },
+            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')},
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('ListObjects', {
+                    'Bucket': 'mybucket',
+                    'Prefix': '',
+                    'EncodingType': 'url',
+                    'RequestPayer': 'requester',
+                }),
+                ('GetObject', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'RequestPayer': 'requester',
+                })
+            ]
+        )
+
+    def test_single_copy(self):
+        cmdline = self.prefix
+        cmdline += ' s3://sourcebucket/sourcekey s3://mybucket/mykey'
+        cmdline += ' --request-payer'
+        self.parsed_responses = [
+            {'ContentLength': 5, 'LastModified': '00:00:00Z'},
+            {}
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('HeadObject', {
+                    'Bucket': 'sourcebucket',
+                    'Key': 'sourcekey',
+                    'RequestPayer': 'requester',
+                }),
+                ('CopyObject', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'CopySource': 'sourcebucket/sourcekey',
+                    'RequestPayer': 'requester',
+                })
+            ]
+        )
+
+    def test_multipart_copy(self):
+        cmdline = self.prefix
+        cmdline += ' s3://sourcebucket/sourcekey s3://mybucket/mykey'
+        cmdline += ' --request-payer'
+        self.parsed_responses = [
+            {'ContentLength': 10 * (1024 ** 2),
+             'LastModified': '00:00:00Z'},           # HeadObject
+            {'UploadId': 'myid'},                    # CreateMultipartUpload
+            {'CopyPartResult': {'ETag': '"etag"'}},  # UploadPartCopy
+            {'CopyPartResult': {'ETag': '"etag"'}},  # UploadPartCopy
+            {}                                       # CompleteMultipartUpload
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('HeadObject', {
+                    'Bucket': 'sourcebucket',
+                    'Key': 'sourcekey',
+                    'RequestPayer': 'requester',
+                }),
+                ('CreateMultipartUpload', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'RequestPayer': 'requester'
+                }),
+                ('UploadPartCopy', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'CopySource': 'sourcebucket/sourcekey',
+                    'UploadId': 'myid',
+                    'RequestPayer': 'requester',
+                    'PartNumber': mock.ANY,
+                    'CopySourceRange': mock.ANY,
+
+                }),
+                ('UploadPartCopy', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'CopySource': 'sourcebucket/sourcekey',
+                    'UploadId': 'myid',
+                    'RequestPayer': 'requester',
+                    'PartNumber': mock.ANY,
+                    'CopySourceRange': mock.ANY,
+                }),
+                ('CompleteMultipartUpload', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'UploadId': 'myid',
+                    'RequestPayer': 'requester',
+                    'MultipartUpload': {'Parts': [
+                        {'ETag': '"etag"', 'PartNumber': 1},
+                        {'ETag': '"etag"', 'PartNumber': 2}]
+                    }
+                })
+            ]
+        )
+
+    def test_recursive_copy(self):
+        cmdline = self.prefix
+        cmdline += ' s3://sourcebucket/ s3://mybucket/'
+        cmdline += ' --request-payer'
+        cmdline += ' --recursive'
+        self.parsed_responses = [
+            {
+                'Contents': [
+                    {'Key': 'mykey',
+                     'LastModified': '00:00:00Z',
+                     'Size': 100},
+                ],
+                'CommonPrefixes': []
+            },
+            {},
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('ListObjects', {
+                    'Bucket': 'sourcebucket',
+                    'Prefix': '',
+                    'EncodingType': 'url',
+                    'RequestPayer': 'requester',
+                }),
+                ('CopyObject', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'CopySource': 'sourcebucket/mykey',
+                    'RequestPayer': 'requester',
+                })
+            ]
+        )

@@ -241,7 +241,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         self.assertIn('aws: error', p.stderr)
 
     def test_help_usage_operation_level(self):
-        p = aws('ec2 run-instances')
+        p = aws('ec2 start-instances')
         self.assertIn('usage: aws [options] <command> '
                       '<subcommand> [<subcommand> ...] [parameters]', p.stderr)
 

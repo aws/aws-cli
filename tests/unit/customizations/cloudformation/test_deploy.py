@@ -13,7 +13,7 @@
 import mock
 import tempfile
 import six
-from mock import patch, Mock, MagicMock
+from mock import patch, Mock, MagicMock, call
 import collections
 
 from awscli.testutils import unittest
@@ -56,7 +56,13 @@ class TestDeployCommand(unittest.TestCase):
                                     execute_changeset=True,
                                     capabilities=None,
                                     role_arn=None,
-                                    notification_arns=[])
+                                    notification_arns=[],
+                                    fail_on_empty_changeset=True,
+                                    s3_bucket=None,
+                                    s3_prefix="some prefix",
+                                    kms_key_id="some kms key id",
+                                    force_upload=True,
+                                    tags=["tagkey1=tagvalue1"])
         self.parsed_globals = FakeArgs(region="us-east-1", endpoint_url=None,
                                        verify_ssl=None)
         self.deploy_command = DeployCommand(self.session)
@@ -72,6 +78,8 @@ class TestDeployCommand(unittest.TestCase):
         Tests that deploy method is invoked when command is run
         """
         fake_parameter_overrides = []
+        fake_tags_dict = {"tagkey1": "tagvalue1"}
+        fake_tags = [{"Key": "tagkey1", "Value": "tagvalue1"}]
         fake_parameters = "some return value"
         template_str = "some template"
 
@@ -89,8 +97,9 @@ class TestDeployCommand(unittest.TestCase):
 
                 self.deploy_command.deploy = MagicMock()
                 self.deploy_command.deploy.return_value = 0
-                self.deploy_command.parse_parameter_arg = MagicMock(
-                        return_value=fake_parameter_overrides)
+                self.deploy_command.parse_key_value_arg = Mock()
+                self.deploy_command.parse_key_value_arg.side_effect = [
+                    fake_parameter_overrides, fake_tags_dict]
                 self.deploy_command.merge_parameters = MagicMock(
                         return_value=fake_parameters)
 
@@ -102,17 +111,29 @@ class TestDeployCommand(unittest.TestCase):
                 open_mock.assert_called_once_with(file_path, "r")
 
                 self.deploy_command.deploy.assert_called_once_with(
-                        mock.ANY,
-                        self.parsed_args.stack_name,
-                        mock.ANY,
-                        fake_parameters,
-                        None,
-                        not self.parsed_args.no_execute_changeset,
-                        None,
-                        [])
+                    mock.ANY,
+                    'some_stack_name',
+                    mock.ANY,
+                    fake_parameters,
+                    None,
+                    not self.parsed_args.no_execute_changeset,
+                    None,
+                    [],
+                    None,
+                    fake_tags,
+                    True
+                )
 
-                self.deploy_command.parse_parameter_arg.assert_called_once_with(
-                        self.parsed_args.parameter_overrides)
+                self.deploy_command.parse_key_value_arg.assert_has_calls([
+                    call(
+                        self.parsed_args.parameter_overrides,
+                         "parameter-overrides"
+                    ),
+                    call(
+                        self.parsed_args.tags,
+                        "tags"
+                    )
+                ])
 
                 self.deploy_command.merge_parameters.assert_called_once_with(
                         fake_template, fake_parameter_overrides)
@@ -125,6 +146,76 @@ class TestDeployCommand(unittest.TestCase):
             result = self.deploy_command._run_main(self.parsed_args,
                                                   parsed_globals=self.parsed_globals)
 
+    @patch('awscli.customizations.cloudformation.deploy.os.path.isfile')
+    @patch('awscli.customizations.cloudformation.deploy.yaml_parse')
+    @patch('awscli.customizations.cloudformation.deploy.os.path.getsize')
+    def test_s3_upload_required_but_missing_bucket(self, mock_getsize, mock_yaml_parse, mock_isfile):
+        """
+        Tests that large templates are detected prior to deployment
+        """
+        template_str = get_example_template()
+
+        mock_getsize.return_value = 51201
+        mock_isfile.return_value = True
+        mock_yaml_parse.return_value = template_str
+        open_mock = mock.mock_open()
+
+        with patch(
+                "awscli.customizations.cloudformation.deploy.open",
+                open_mock(read_data=template_str)) as open_mock:
+            with self.assertRaises(exceptions.DeployBucketRequiredError):
+                result = self.deploy_command._run_main(self.parsed_args,
+                                parsed_globals=self.parsed_globals)
+
+    @patch('awscli.customizations.cloudformation.deploy.os.path.isfile')
+    @patch('awscli.customizations.cloudformation.deploy.yaml_parse')
+    @patch('awscli.customizations.cloudformation.deploy.os.path.getsize')
+    @patch('awscli.customizations.cloudformation.deploy.DeployCommand.deploy')
+    @patch('awscli.customizations.cloudformation.deploy.S3Uploader')
+    def test_s3_uploader_is_configured_properly(self, s3UploaderMock,
+        deploy_method_mock, mock_getsize, mock_yaml_parse, mock_isfile):
+        """
+        Tests that large templates are detected prior to deployment
+        """
+        bucket_name = "mybucket"
+        template_str = get_example_template()
+
+        mock_getsize.return_value = 1024
+        mock_isfile.return_value = True
+        mock_yaml_parse.return_value = template_str
+        open_mock = mock.mock_open()
+
+        with patch(
+                "awscli.customizations.cloudformation.deploy.open",
+                open_mock(read_data=template_str)) as open_mock:
+
+            self.parsed_args.s3_bucket = bucket_name
+            s3UploaderObject = Mock()
+            s3UploaderMock.return_value = s3UploaderObject
+
+            result = self.deploy_command._run_main(self.parsed_args,
+                            parsed_globals=self.parsed_globals)
+
+            self.deploy_command.deploy.assert_called_once_with(
+                mock.ANY,
+                self.parsed_args.stack_name,
+                mock.ANY,
+                mock.ANY,
+                None,
+                not self.parsed_args.no_execute_changeset,
+                None,
+                [],
+                s3UploaderObject,
+                [{"Key": "tagkey1", "Value": "tagvalue1"}],
+                True
+            )
+
+            s3UploaderMock.assert_called_once_with(mock.ANY,
+                    bucket_name,
+                    mock.ANY,
+                    self.parsed_args.s3_prefix,
+                    self.parsed_args.kms_key_id,
+                    self.parsed_args.force_upload)
 
     def test_deploy_success(self):
         """
@@ -140,7 +231,8 @@ class TestDeployCommand(unittest.TestCase):
         changeset_type = "CREATE"
         role_arn = "arn:aws:iam::1234567890:role"
         notification_arns = ["arn:aws:sns:region:1234567890:notify"]
-
+        s3_uploader = None
+        tags = [{"Key":"key1", "Value": "val1"}]
 
         # Set the mock to return this fake changeset_id
         self.deployer.create_and_wait_for_changeset.return_value = ChangeSetResult(changeset_id, changeset_type)
@@ -152,7 +244,9 @@ class TestDeployCommand(unittest.TestCase):
                                    capabilities,
                                    execute_changeset,
                                    role_arn,
-                                   notification_arns)
+                                   notification_arns,
+                                   s3_uploader,
+                                   tags)
         self.assertEqual(rc, 0)
 
 
@@ -161,7 +255,9 @@ class TestDeployCommand(unittest.TestCase):
                                                      parameter_values=parameters,
                                                      capabilities=capabilities,
                                                      role_arn=role_arn,
-                                                     notification_arns=notification_arns)
+                                                     notification_arns=notification_arns,
+                                                     s3_uploader=s3_uploader,
+                                                     tags=tags)
 
         # since execute_changeset is set to True, deploy() will execute changeset
         self.deployer.execute_changeset.assert_called_once_with(changeset_id, stack_name)
@@ -177,6 +273,8 @@ class TestDeployCommand(unittest.TestCase):
         execute_changeset = False
         role_arn = "arn:aws:iam::1234567890:role"
         notification_arns = ["arn:aws:sns:region:1234567890:notify"]
+        s3_uploader = None
+        tags = [{"Key":"key1", "Value": "val1"}]
 
 
         self.deployer.create_and_wait_for_changeset.return_value = ChangeSetResult(changeset_id, "CREATE")
@@ -187,7 +285,9 @@ class TestDeployCommand(unittest.TestCase):
                                             capabilities,
                                             execute_changeset,
                                             role_arn,
-                                            notification_arns)
+                                            notification_arns,
+                                            s3_uploader,
+                                            tags)
         self.assertEqual(rc, 0)
 
         self.deployer.create_and_wait_for_changeset.assert_called_once_with(stack_name=stack_name,
@@ -195,7 +295,9 @@ class TestDeployCommand(unittest.TestCase):
                                                      parameter_values=parameters,
                                                      capabilities=capabilities,
                                                      role_arn=role_arn,
-                                                     notification_arns=notification_arns)
+                                                     notification_arns=notification_arns,
+                                                     s3_uploader=s3_uploader,
+                                                     tags=tags)
 
         # since execute_changeset is set to True, deploy() will execute changeset
         self.deployer.execute_changeset.assert_not_called()
@@ -210,7 +312,8 @@ class TestDeployCommand(unittest.TestCase):
         execute_changeset = True
         role_arn = "arn:aws:iam::1234567890:role"
         notification_arns = ["arn:aws:sns:region:1234567890:notify"]
-
+        s3_uploader = None
+        tags = [{"Key":"key1", "Value": "val1"}]
 
         self.deployer.wait_for_execute.side_effect = RuntimeError("Some error")
         with self.assertRaises(RuntimeError):
@@ -221,33 +324,74 @@ class TestDeployCommand(unittest.TestCase):
                                        capabilities,
                                        execute_changeset,
                                        role_arn,
-                                       notification_arns)
+                                       notification_arns,
+                                       s3_uploader,
+                                       tags)
 
+    def test_deploy_raises_exception_on_empty_changeset(self):
+        stack_name = "stack_name"
+        parameters = ["a", "b"]
+        template = "cloudformation template"
+        capabilities = ["foo", "bar"]
+        execute_changeset = True
+        role_arn = "arn:aws:iam::1234567890:role"
+        notification_arns = ["arn:aws:sns:region:1234567890:notify"]
+        tags = []
 
-    def test_parse_parameter_arg_success(self):
+        empty_changeset = exceptions.ChangeEmptyError(stack_name=stack_name)
+        changeset_func = self.deployer.create_and_wait_for_changeset
+        changeset_func.side_effect = empty_changeset
+        with self.assertRaises(exceptions.ChangeEmptyError):
+            self.deploy_command.deploy(
+                self.deployer, stack_name, template, parameters, capabilities,
+                execute_changeset, role_arn, notification_arns,
+                None, tags)
+
+    def test_deploy_does_not_raise_exception_on_empty_changeset(self):
+        stack_name = "stack_name"
+        parameters = ["a", "b"]
+        template = "cloudformation template"
+        capabilities = ["foo", "bar"]
+        execute_changeset = True
+        role_arn = "arn:aws:iam::1234567890:role"
+        notification_arns = ["arn:aws:sns:region:1234567890:notify"]
+
+        empty_changeset = exceptions.ChangeEmptyError(stack_name=stack_name)
+        changeset_func = self.deployer.create_and_wait_for_changeset
+        changeset_func.side_effect = empty_changeset
+        self.deploy_command.deploy(
+            self.deployer, stack_name, template, parameters, capabilities,
+            execute_changeset, role_arn, notification_arns,
+            s3_uploader=None, tags=[],
+            fail_on_empty_changeset=False
+        )
+
+    def test_parse_key_value_arg_success(self):
         """
         Tests that we can parse parameter arguments provided in proper format
         Expected format: ["Key=Value", "Key=Value"]
         :return:
         """
+        argname = "parameter-overrides"
         data = ["Key1=Value1", 'Key2=[1,2,3]', 'Key3={"a":"val", "b": 2}']
         output = {"Key1": "Value1", "Key2": '[1,2,3]', "Key3": '{"a":"val", "b": 2}'}
 
-        result = self.deploy_command.parse_parameter_arg(data)
+        result = self.deploy_command.parse_key_value_arg(data, argname)
         self.assertEqual(result, output)
 
         # Empty input should return empty output
-        result = self.deploy_command.parse_parameter_arg([])
+        result = self.deploy_command.parse_key_value_arg([], argname)
         self.assertEqual(result, {})
 
-    def test_parse_parameter_arg_invalid_input(self):
+    def test_parse_key_value_arg_invalid_input(self):
         # non-list input
-        with self.assertRaises(exceptions.InvalidParameterOverrideArgumentError):
-            self.deploy_command.parse_parameter_arg("hello=world")
+        argname = "parameter-overrides"
+        with self.assertRaises(exceptions.InvalidKeyValuePairArgumentError):
+            self.deploy_command.parse_key_value_arg("hello=world", argname)
 
         # missing equal to sign
-        with self.assertRaises(exceptions.InvalidParameterOverrideArgumentError):
-            self.deploy_command.parse_parameter_arg(["hello world"])
+        with self.assertRaises(exceptions.InvalidKeyValuePairArgumentError):
+            self.deploy_command.parse_key_value_arg(["hello world"], argname)
 
     def test_merge_parameters_success(self):
         """

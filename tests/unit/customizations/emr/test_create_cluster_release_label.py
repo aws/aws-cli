@@ -67,6 +67,19 @@ DEFAULT_INSTANCES = {'KeepJobFlowAliveWhenNoSteps': True,
 EC2_ROLE_NAME = "EMR_EC2_DefaultRole"
 EMR_ROLE_NAME = "EMR_DefaultRole"
 
+DEFAULT_KERBEROS_ATTRIBUTES_ARGS = 'Realm=EC2.INTERNAL,' \
+                                   'KdcAdminPassword=123,' \
+                                   'CrossRealmTrustPrincipalPassword=123,' \
+                                   'ADDomainJoinUser=aws,' \
+                                   'ADDomainJoinPassword=123'
+
+KERBEROS_ATTRIBUTES = {'Realm': 'EC2.INTERNAL',
+                       'KdcAdminPassword': '123',
+                       'CrossRealmTrustPrincipalPassword': '123',
+                       'ADDomainJoinUser': 'aws',
+                       'ADDomainJoinPassword': '123'
+                      }
+
 TEST_BA = [
     {
         'ScriptBootstrapAction': {
@@ -1239,6 +1252,22 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             {
                 'Name': DEFAULT_CLUSTER_NAME,
                 'Instances': DEFAULT_INSTANCES,
+                'ReleaseLabel': 'emr-4.7.2',
+                'VisibleToAllUsers': True,
+                'Tags': [],
+                'SecurityConfiguration': 'MySecurityConfig'
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_with_security_config_and_kerberos_attributes(self):
+        cmd = (self.prefix + '--release-label emr-4.7.2 --security-configuration MySecurityConfig' +
+               ' --kerberos-attributes ' + DEFAULT_KERBEROS_ATTRIBUTES_ARGS +
+               ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': DEFAULT_INSTANCES,
+                'KerberosAttributes': KERBEROS_ATTRIBUTES,
                 'ReleaseLabel': 'emr-4.7.2',
                 'VisibleToAllUsers': True,
                 'Tags': [],

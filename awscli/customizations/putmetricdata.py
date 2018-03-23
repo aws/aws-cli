@@ -20,6 +20,7 @@ cloudwatch put-metric-data operation:
 * --value
 * --statistic-values
 * --unit
+* --storage-resolution
 
 """
 import decimal
@@ -30,8 +31,8 @@ from awscli.customizations.utils import validate_mutually_exclusive_handler
 
 
 def register_put_metric_data(event_handler):
-    event_handler.register('building-argument-table.cloudwatch.put-metric-data',
-                           _promote_args)
+    event_handler.register(
+        'building-argument-table.cloudwatch.put-metric-data', _promote_args)
     event_handler.register(
         'operation-args-parsed.cloudwatch.put-metric-data',
         validate_mutually_exclusive_handler(
@@ -39,7 +40,7 @@ def register_put_metric_data(event_handler):
                               'dimensions', 'statistic_values']))
 
 
-def _promote_args(argument_table, **kwargs):
+def _promote_args(argument_table, operation_model, **kwargs):
     # We're providing top level params for metric-data.  This means
     # that metric-data is now longer a required arg.  We do need
     # to check that either metric-data or the complex args we've added
@@ -69,13 +70,24 @@ def _promote_args(argument_table, **kwargs):
             'The --dimensions argument further expands '
             'on the identity of a metric using a Name=Value '
             'pair, separated by commas, for example: '
-            '<code>--dimensions InstanceID=1-23456789 InstanceType=m1.small</code>. '
-            'Note that the <code>--dimensions</code> argument has a different '
-            'format when used in <code>get-metric-data</code>, where for the same example you would '
-            'use the format <code>--dimensions Name=InstanceID,Value=i-aaba32d4 Name=InstanceType,value=m1.small </code>.'))
+            '<code>--dimensions InstanceID=1-23456789 '
+            'InstanceType=m1.small</code>. Note that the '
+            '<code>--dimensions</code> argument has a different format when '
+            'used in <code>get-metric-data</code>, where for the same example '
+            'you would use the format <code>--dimensions '
+            'Name=InstanceID,Value=i-aaba32d4 '
+            'Name=InstanceType,value=m1.small </code>.'
+        )
+    )
     argument_table['statistic-values'] = PutMetricArgument(
         'statistic-values', help_text='A set of statistical values describing '
                                       'the metric.')
+
+    metric_data = operation_model.input_shape.members['MetricData'].member
+    storage_resolution = metric_data.members['StorageResolution']
+    argument_table['storage-resolution'] = PutMetricArgument(
+        'storage-resolution', help_text=storage_resolution.documentation
+    )
 
 
 def insert_first_element(name):
@@ -141,3 +153,7 @@ class PutMetricArgument(CustomArgument):
             # convert these to a decimal value to preserve precision.
             statistics[key] = decimal.Decimal(value)
         first_element['StatisticValues'] = statistics
+
+    @insert_first_element('MetricData')
+    def _add_param_storage_resolution(self, first_element, value):
+        first_element['StorageResolution'] = int(value)

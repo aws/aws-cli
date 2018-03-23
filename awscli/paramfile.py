@@ -27,6 +27,8 @@ logger = logging.getLogger(__name__)
 # download the content (i.e TemplateURL in cloudformation).
 PARAMFILE_DISABLED = set([
     'apigateway.put-integration.uri',
+    'appstream2.create-stack.redirect-url',
+    'appstream2.update-stack.redirect-url',
     'cloudformation.create-stack.template-url',
     'cloudformation.update-stack.template-url',
     'cloudformation.create-stack-set.template-url',
@@ -34,6 +36,7 @@ PARAMFILE_DISABLED = set([
     'cloudformation.create-change-set.template-url',
     'cloudformation.validate-template.template-url',
     'cloudformation.estimate-template-cost.template-url',
+    'cloudformation.get-template-summary.template-url',
 
     'cloudformation.create-stack.stack-policy-url',
     'cloudformation.update-stack.stack-policy-url',
@@ -49,6 +52,19 @@ PARAMFILE_DISABLED = set([
     'custom.cp.website-redirect',
     'custom.mv.website-redirect',
     'custom.sync.website-redirect',
+
+    'guardduty.create-ip-set.location',
+    'guardduty.update-ip-set.location',
+    'guardduty.create-threat-intel-set.location',
+    'guardduty.update-threat-intel-set.location',
+    'comprehend.detect-dominant-language.text',
+    'comprehend.batch-detect-dominant-language.text-list',
+    'comprehend.detect-entities.text',
+    'comprehend.batch-detect-entities.text-list',
+    'comprehend.detect-key-phrases.text',
+    'comprehend.batch-detect-key-phrases.text-list',
+    'comprehend.detect-sentiment.text',
+    'comprehend.batch-detect-sentiment.text-list',
 
     'iam.create-open-id-connect-provider.url',
 
@@ -73,6 +89,9 @@ PARAMFILE_DISABLED = set([
     'sqs.send-message-batch.queue-url',
     'sqs.set-queue-attributes.queue-url',
     'sqs.purge-queue.queue-url',
+    'sqs.list-queue-tags.queue-url',
+    'sqs.tag-queue.queue-url',
+    'sqs.untag-queue.queue-url',
 
     's3.copy-object.website-redirect-location',
     's3.create-multipart-upload.website-redirect-location',
@@ -80,6 +99,11 @@ PARAMFILE_DISABLED = set([
 
     # Double check that this has been renamed!
     'sns.subscribe.notification-endpoint',
+
+    'iot.create-job.document-source',
+    'translate.translate-text.text',
+
+    'workdocs.create-notification-subscription.notification-endpoint',
 ])
 
 

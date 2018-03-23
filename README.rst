@@ -68,9 +68,7 @@ If you want to run the ``develop`` branch of the CLI, see the
 CLI Releases
 ------------
 
-The release notes for the AWS CLI can be found `here <http://aws.amazon.com/releasenotes/CLI>`__.
-You can also find a `CHANGELOG <https://github.com/aws/aws-cli/blob/develop/CHANGELOG.rst>`__
-in the github repo.
+The release notes for the AWS CLI can be found `here <https://github.com/aws/aws-cli/blob/develop/CHANGELOG.rst>`__.
 
 
 ------------------
@@ -419,10 +417,11 @@ for each repository::
 Getting Help
 ------------
 
-We use GitHub issues for tracking bugs and feature requests and have limited
+We use GitHub issues for tracking bugs and have limited
 bandwidth to address them. Please use these community resources for getting
 help:
 
+* Look for, or create, a feature request on the `AWS-CLI UserVoice <https://aws.uservoice.com/forums/598381>`__ 
 * Ask a question on `Stack Overflow <https://stackoverflow.com/>`__ and tag it with `aws-cli <https://stackoverflow.com/questions/tagged/aws-cli>`__
 * Come join the AWS CLI community chat on `gitter <https://gitter.im/aws/aws-cli>`__
 * Open a support ticket with `AWS Support <https://console.aws.amazon.com/support/home#/>`__

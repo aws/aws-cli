@@ -69,6 +69,7 @@ ARGUMENT_RENAMES = {
     'lex-models.delete-slot-type-version.version': 'slot-type-version',
     'lex-models.get-export.version': 'resource-version',
     'mobile.create-project.region': 'project-region',
+    'rekognition.create-stream-processor.output': 'stream-processor-output',
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,

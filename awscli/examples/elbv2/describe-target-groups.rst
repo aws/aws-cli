@@ -11,24 +11,25 @@ Output::
   {
     "TargetGroups": [
         {
-            "HealthCheckPath": "/",
-            "HealthCheckIntervalSeconds": 30,
-            "VpcId": "vpc-3ac0fb5f",
+            "TargetGroupName": "my-targets"
             "Protocol": "HTTP",
-            "HealthCheckTimeoutSeconds": 5,
-            "HealthCheckProtocol": "HTTP",
-            "LoadBalancerArns": [
-                "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188"
-            ],
-            "UnhealthyThresholdCount": 2,
+            "Port": 80,
+            "VpcId": "vpc-3ac0fb5f",
+            "TargetType": "instance",
             "HealthyThresholdCount": 5,
-            "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067",
             "Matcher": {
                 "HttpCode": "200"
             },
+            "UnhealthyThresholdCount": 2,
+            "HealthCheckPath": "/",
+            "HealthCheckProtocol": "HTTP",
             "HealthCheckPort": "traffic-port",
-            "Port": 80,
-            "TargetGroupName": "my-targets"
+            "HealthCheckIntervalSeconds": 30,
+            "HealthCheckTimeoutSeconds": 5,
+            "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067",
+            "LoadBalancerArns": [
+                "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188"
+            ]
         }
     ]
   }

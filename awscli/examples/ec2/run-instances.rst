@@ -292,3 +292,11 @@ You can launch an instance and specify tags for the instance, volumes, or both. 
 Command::
 
   aws ec2 run-instances --image-id ami-abc12345 --count 1 --instance-type t2.micro --key-name MyKeyPair --subnet-id subnet-6e7f829e --tag-specifications 'ResourceType=instance,Tags=[{Key=webserver,Value=production}]' 'ResourceType=volume,Tags=[{Key=cost-center,Value=cc123}]' 
+  
+**To launch an instance with the credit option for CPU usage of "unlimited"**
+  
+You can launch an instance and specify the credit option for CPU usage for the instance. If you do not specify the credit option, the instance launches with the default "standard" credit option. The following example launches a t2.micro instance with the "unlimited" credit option.
+  
+Command::
+  
+  aws ec2 run-instances --image-id ami-abc12345 --count 1 --instance-type t2.micro --key-name MyKeyPair --credit-specification CpuCredits=unlimited

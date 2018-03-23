@@ -2,7 +2,7 @@
 
 The following example uses the ``send-raw-email`` command to send an email with a TXT attachment::
 
-    aws ses send-raw-email --raw-message file://c:\temp\message.json
+    aws ses send-raw-email --raw-message file://message.json
 
 Output::
 
@@ -10,7 +10,7 @@ Output::
     "MessageId": "EXAMPLEf3f73d99b-c63fb06f-d263-41f8-a0fb-d0dc67d56c07-000000"
  }
 
-The raw message is a JSON data structure saved in the message.json file. It contains the following::
+The raw message is a JSON data structure saved in a file named ``message.json`` in the current directory. It contains the following::
 
  {
     "Data": "From: sender@example.com\nTo: recipient@example.com\nSubject: Test email sent using the AWS CLI (contains an attachment)\nMIME-Version: 1.0\nContent-type: Multipart/Mixed; boundary=\"NextPart\"\n\n--NextPart\nContent-Type: text/plain\n\nThis is the message body.\n\n--NextPart\nContent-Type: text/plain;\nContent-Disposition: attachment; filename=\"attachment.txt\"\n\nThis is the text in the attachment.\n\n--NextPart--"

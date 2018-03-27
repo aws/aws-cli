@@ -22,4 +22,4 @@
      [--custom-ami-id <value>]
      [--ebs-root-volume-size <value>]
      [--repo-upgrade-on-boot <value>]
-     [--kerberos--attributes <value>]
+     [--kerberos-attributes <value>]

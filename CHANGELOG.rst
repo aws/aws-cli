@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.14.66
+=======
+
+* api-change:``sts``: Update sts command to latest version
+* api-change:``iam``: Update iam command to latest version
+* api-change:``mturk``: Update mturk command to latest version
+
+
 1.14.65
 =======
 

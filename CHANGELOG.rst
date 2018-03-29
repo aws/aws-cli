@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.14.67
+=======
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``cloudformation``: Update cloudformation command to latest version
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+* api-change:``greengrass``: Update greengrass command to latest version
+
+
 1.14.66
 =======
 

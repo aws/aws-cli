@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.14.68
+=======
+
+* api-change:``connect``: Update connect command to latest version
+* api-change:``acm``: Update acm command to latest version
+
+
 1.14.67
 =======
 

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.14.69
+=======
+
+* api-change:``es``: Update es command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+
+
 1.14.68
 =======
 

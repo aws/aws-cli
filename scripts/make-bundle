@@ -158,12 +158,13 @@ def verify_preconditions():
 def _min_version_required(min_version, actual_version, name):
     # precondition: min_version is major.minor.patch
     #               actual_version is major.minor.patch
-    min_split = map(int, min_version.split('.'))
-    actual_split = map(int, actual_version.split('.'))
-    if actual_split < min_split:
-        raise ValueError("%s requires at least version %s, but "
-                         "version %s was found." % (name, min_version,
-                                                    actual_version))
+    min_split = min_version.split('.')
+    actual_split = actual_version.decode('utf-8').split('.')
+    for min_version_part, actual_version_part in zip(min_split, actual_split):
+        if int(actual_version_part) > int(min_version_part):
+            return
+    raise ValueError("%s requires at least version %s, but version %s was "
+                     "found." % (name, min_version, actual_version))
 
 
 def main():

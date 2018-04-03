@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.14.70
+=======
+
+* api-change:``translate``: Update translate command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``devicefarm``: Update devicefarm command to latest version
+
+
 1.14.69
 =======
 

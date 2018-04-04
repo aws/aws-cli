@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.15.0
+======
+
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``acm``: Update acm command to latest version
+* api-change:``fms``: Update fms command to latest version
+* feature:s3: Add support for S3 Select. Amazon S3 Select is an Amazon S3 feature that makes it easy to retrieve specific data from the contents of an object using simple SQL expressions without having to retrieve the entire object. With this release of the Amazon S3 SDK, S3 Select API (SelectObjectContent) is now generally available in all public regions. This release supports retrieval of a subset of data using SQL clauses, like SELECT and WHERE, from delimited text files and JSON objects in Amazon S3 through the SelectObjectContent API available in AWS S3 SDK.
+* api-change:``acm-pca``: Update acm-pca command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+
+
 1.14.70
 =======
 

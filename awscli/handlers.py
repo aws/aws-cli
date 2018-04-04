@@ -79,6 +79,7 @@ from awscli.customizations.opsworkscm import register_alias_opsworks_cm
 from awscli.customizations.mturk import register_alias_mturk_command
 from awscli.customizations.sagemaker import register_alias_sagemaker_runtime_command
 from awscli.customizations.servicecatalog import register_servicecatalog_commands
+from awscli.customizations.s3events import register_event_stream_arg
 
 
 def awscli_initialize(event_handlers):
@@ -160,3 +161,4 @@ def awscli_initialize(event_handlers):
     register_servicecatalog_commands(event_handlers)
     register_history_mode(event_handlers)
     register_history_commands(event_handlers)
+    register_event_stream_arg(event_handlers)

@@ -174,6 +174,12 @@ MINI_SERVICE = {
           "location":"querystring",
           "locationName":"max-keys",
         }),
+        ("Region", {
+            "shape":"Region",
+            "location":"querystring",
+            "locationName":"region",
+            "cliArgumentName":"bucket-region",
+        })
       ]),
     },
     "BucketName":{"type":"string"},
@@ -183,6 +189,7 @@ MINI_SERVICE = {
     "NextMarker":{"type":"string"},
     "Contents":{"type":"string"},
     "Token":{"type":"string"},
+    "Region":{"type":"string"},
   }
 }
 
@@ -370,6 +377,7 @@ class TestCliDriverHooks(unittest.TestCase):
             'process-cli-arg.s3.list-objects',
             'load-cli-arg.s3.list-objects.marker',
             'load-cli-arg.s3.list-objects.max-keys',
+            'load-cli-arg.s3.list-objects.bucket-region',
             'calling-command.s3.list-objects'
         ])
 
@@ -932,6 +940,17 @@ class TestServiceOperation(unittest.TestCase):
         token_argument = arg_table.get('token')
         self.assertFalse(token_argument.required,
                          'Idempotency tokens should not be required')
+
+    def test_cliargumentname_trait_overrides_default(self):
+        session = FakeSession()
+        name = "ListObjects"
+        service_model = session.get_service_model("s3")
+        operation_model = service_model.operation_model(name)
+        cmd = ServiceOperation(name, None, None, operation_model, session)
+        arg_table = cmd.arg_table
+
+        assert "bucket-region" in arg_table
+        assert "region" not in arg_table
 
 
 if __name__ == '__main__':

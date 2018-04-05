@@ -563,7 +563,8 @@ class ServiceOperation(object):
             required_arguments = input_shape.required_members
             arg_dict = input_shape.members
         for arg_name, arg_shape in arg_dict.items():
-            cli_arg_name = xform_name(arg_name, '-')
+            cli_arg_name = arg_shape.metadata.get("cliArgumentName",
+                                                  xform_name(arg_name, "-"))
             arg_class = self.ARG_TYPES.get(arg_shape.type_name,
                                            self.DEFAULT_ARG_CLASS)
             is_token = arg_shape.metadata.get('idempotencyToken', False)

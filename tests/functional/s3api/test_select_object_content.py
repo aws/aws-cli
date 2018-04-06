@@ -12,8 +12,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+import tempfile
+import shutil
 
-import awscli.clidriver
 from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.testutils import BaseAWSHelpOutputTest
 
@@ -25,34 +26,36 @@ class TestGetObject(BaseAWSCommandParamsTest):
     def setUp(self):
         super(TestGetObject, self).setUp()
         self.parsed_response = {'Payload': self.create_fake_payload()}
+        self._tempdir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        super(TestGetObject, self).tearDown()
+        shutil.rmtree(self._tempdir)
 
     def create_fake_payload(self):
-        yield {'Records': {'Payload': 'a,b,c,d\n'}}
+        yield {'Records': {'Payload': b'a,b,c,d\n'}}
         # These next two events are ignored because they aren't
         # "Records".
         yield {'Progress': {'Details': {'BytesScanned': 1048576,
                                         'BytesProcessed': 37748736}}}
-        yield {'Records': {'Payload': 'e,f,g,h\n'}}
+        yield {'Records': {'Payload': b'e,f,g,h\n'}}
         yield {'Stats': {'Details': {'BytesProcessed': 62605400,
                                      'BytesScanned': 1662276}}}
         yield {'End': {}}
 
-    def remove_file_if_exists(self, filename):
-        if os.path.isfile(filename):
-            os.remove(filename)
-
     def test_can_stream_to_file(self):
+        filename = os.path.join(self._tempdir, 'outfile')
         cmdline = self.prefix[::]
         cmdline.extend(['--bucket', 'mybucket'])
         cmdline.extend(['--key', 'mykey'])
         cmdline.extend(['--expression', 'SELECT * FROM S3Object'])
         cmdline.extend(['--expression-type', 'SQL'])
         cmdline.extend(['--request-progress', 'Enabled=True'])
-        cmdline.extend(['--input-serialization', '{"CSV": {}, "CompressionType": "GZIP"}'])
+        cmdline.extend(['--input-serialization',
+                        '{"CSV": {}, "CompressionType": "GZIP"}'])
         cmdline.extend(['--output-serialization', '{"CSV": {}}'])
-        cmdline.extend(['outfile'])
+        cmdline.extend([filename])
 
-        self.addCleanup(self.remove_file_if_exists, 'outfile')
         expected_params = {
             'Bucket': 'mybucket',
             'Key': u'mykey',
@@ -64,7 +67,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         }
         stdout = self.assert_params_for_cmd(cmdline, expected_params)[0]
         self.assertEqual(stdout, '')
-        with open('outfile', 'r') as f:
+        with open(filename, 'r') as f:
             contents = f.read()
             self.assertEqual(contents, (
                 'a,b,c,d\n'
@@ -87,7 +90,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
             '--request-progress', 'Enabled=True',
             '--input-serialization', '{"CSV": {}, "CompressionType": "GZIP"}',
             '--output-serialization', '{"CSV": {}}',
-            'outfile',
+            os.path.join(self._tempdir, 'outfile'),
         ]
         expected_params = {
             'Bucket': 'mybucket',

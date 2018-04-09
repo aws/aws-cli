@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.15.3
+======
+
+* api-change:``clouddirectory``: Update clouddirectory command to latest version
+
+
 1.15.2
 ======
 

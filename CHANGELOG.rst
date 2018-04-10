@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.15.4
+======
+
+* api-change:``glue``: Update glue command to latest version
+* api-change:``workmail``: Update workmail command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``mediapackage``: Update mediapackage command to latest version
+
+
 1.15.3
 ======
 

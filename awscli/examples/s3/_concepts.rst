@@ -1,5 +1,7 @@
 This section explains prominent concepts and notations in the set of high-level S3 commands provided.
 
+If you're looking for the low-level commands for the S3 CLI please see: https://docs.aws.amazon.com/cli/latest/reference/s3api/index.html
+
 Path Argument Type
 ++++++++++++++++++
 

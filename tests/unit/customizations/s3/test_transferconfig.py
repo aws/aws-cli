@@ -11,6 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest
+import mock
+import os
 
 from awscli.customizations.s3 import transferconfig
 from awscli.compat import six
@@ -43,6 +45,21 @@ class TestTransferConfig(unittest.TestCase):
         # And defaults were used for values not specified.
         self.assertEqual(runtime_config['max_queue_size'],
                          int(transferconfig.DEFAULTS['max_queue_size']))
+
+    @mock.patch('os.environ', {
+        'AWS_S3_MULTIPART_THRESHOLD': '10',
+        'AWS_S3_MULTIPART_CHUNKSIZE': '11',
+        'AWS_S3_MAX_CONCURRENT_REQUESTS': '12',
+        'AWS_S3_MAX_QUEUE_SIZE': '13',
+        'AWS_S3_MAX_BANDWIDTH': '10MB/s'})
+    def test_environmental_varlue_provides(self):
+        runtime_config = self.build_config_with()
+
+        self.assertEqual(runtime_config['multipart_threshold'], 10)
+        self.assertEqual(runtime_config['multipart_chunksize'], 11)
+        self.assertEqual(runtime_config['max_concurrent_requests'], 12)
+        self.assertEqual(runtime_config['max_queue_size'], 13)
+        self.assertEqual(runtime_config['max_bandwidth'], 10485760)
 
     def test_validates_integer_types(self):
         with self.assertRaises(transferconfig.InvalidConfigError):

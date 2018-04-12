@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
+
 from s3transfer.manager import TransferConfig
 
 from awscli.customizations.s3.utils import human_readable_to_bytes
@@ -56,10 +58,20 @@ class RuntimeConfig(object):
         runtime_config = DEFAULTS.copy()
         if kwargs:
             runtime_config.update(kwargs)
+        environment_config = self._config_from_environment()
+        runtime_config.update(**environment_config)
         self._convert_human_readable_sizes(runtime_config)
         self._convert_human_readable_rates(runtime_config)
         self._validate_config(runtime_config)
         return runtime_config
+
+    def _config_from_environment(self):
+        environment_config = {}
+        for name in DEFAULTS.keys():
+            value = os.environ.get('AWS_S3_' + name.upper(), None)
+            if value is not None:
+                environment_config[name] = value
+        return environment_config
 
     def _convert_human_readable_sizes(self, runtime_config):
         for attr in self.HUMAN_READABLE_SIZES:

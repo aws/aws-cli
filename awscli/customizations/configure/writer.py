@@ -77,8 +77,14 @@ class ConfigFileWriter(object):
             pass
 
     def _write_new_section(self, section_name, new_values, config_filename):
+        section_header = '[%s]\n' % section_name
+        if os.path.isfile(config_filename) and os.path.getsize(config_filename) > 0:
+             with open(config_filename, 'r') as f:
+                 f.seek(-1, 2)
+                 if f.read(1) != '\n':
+                     section_header = '\n' + section_header
         with open(config_filename, 'a') as f:
-            f.write('[%s]\n' % section_name)
+            f.write(section_header)
             contents = []
             self._insert_new_values(line_number=0,
                                     contents=contents,

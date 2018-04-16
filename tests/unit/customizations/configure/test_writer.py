@@ -68,6 +68,12 @@ class TestConfigFileWriter(unittest.TestCase):
             '[default]\nfoo=1\nbar=2',
             {'baz': 'newvalue'}, expected)
 
+    def test_handle_no_newline(self):
+        original = '[default]\nfoo=1\nbar=1'
+        updated = '[default]\nfoo=1\nbar=1\n[foo]\nbar = 1\n'
+        self.assert_update_config(
+            original, {'__section__': 'foo', 'bar': '1'}, updated)
+
     def test_insert_values_in_middle_section(self):
         original_contents = (
             '[a]\n'

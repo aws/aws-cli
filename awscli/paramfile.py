@@ -75,6 +75,16 @@ PARAMFILE_DISABLED = set([
     'rds.copy-db-snapshot.pre-signed-url',
     'rds.create-db-instance-read-replica.pre-signed-url',
 
+    'serverlessrepo.create-application.home-page-url',
+    'serverlessrepo.create-application.license-url',
+    'serverlessrepo.create-application.readme-url',
+    'serverlessrepo.create-application.source-code-url',
+    'serverlessrepo.create-application.template-url',
+    'serverlessrepo.create-application-version.source-code-url',
+    'serverlessrepo.create-application-version.template-url',
+    'serverlessrepo.update-application.home-page-url',
+    'serverlessrepo.update-application.readme-url',
+
     'sqs.add-permission.queue-url',
     'sqs.change-message-visibility.queue-url',
     'sqs.change-message-visibility-batch.queue-url',

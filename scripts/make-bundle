@@ -152,8 +152,8 @@ def verify_preconditions():
     pip_version = run('pip --version').strip().split()[1]
     # Virtualenv version just has the version string: '1.14.5\n'
     virtualenv_version = run('virtualenv --version').strip()
-    _min_version_required('1.5.0', pip_version, 'pip')
-    _min_version_required('1.11.4', virtualenv_version, 'virtualenv')
+    _min_version_required('9.0.1', pip_version, 'pip')
+    _min_version_required('15.1.0', virtualenv_version, 'virtualenv')
 
 
 def _min_version_required(min_version, actual_version, name):
@@ -162,7 +162,7 @@ def _min_version_required(min_version, actual_version, name):
     min_split = min_version.split('.')
     actual_split = actual_version.decode('utf-8').split('.')
     for min_version_part, actual_version_part in zip(min_split, actual_split):
-        if int(actual_version_part) > int(min_version_part):
+        if int(actual_version_part) >= int(min_version_part):
             return
     raise ValueError("%s requires at least version %s, but version %s was "
                      "found." % (name, min_version, actual_version))

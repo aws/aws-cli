@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.15.5
+======
+
+* api-change:``ce``: Update ce command to latest version
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``devicefarm``: Update devicefarm command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``codepipeline``: Update codepipeline command to latest version
+
+
 1.15.4
 ======
 

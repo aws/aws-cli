@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.15.7
+======
+
+* api-change:``iot``: Update iot command to latest version
+* api-change:``iotanalytics``: Update iotanalytics command to latest version
+* api-change:``autoscaling-plans``: Update autoscaling-plans command to latest version
+
+
 1.15.6
 ======
 

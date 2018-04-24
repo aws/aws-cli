@@ -98,6 +98,21 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertEqual(self.operations_called[0][1]['Bucket'], 'bucket')
         self.assertEqual(self.operations_called[0][1]['Expires'], '90')
 
+    def test_upload_onezone_ia(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = ('%s %s s3://bucket/key.txt --storage-class ONEZONE_IA' %
+                   (self.prefix, full_path))
+        self.parsed_responses = \
+            [{'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        args = self.operations_called[0][1]
+        self.assertEqual(args['Key'], 'key.txt')
+        self.assertEqual(args['Bucket'], 'bucket')
+        self.assertEqual(args['StorageClass'], 'ONEZONE_IA')
+
     def test_operations_used_in_download_file(self):
         self.parsed_responses = [
             {"ContentLength": "100", "LastModified": "00:00:00Z"},

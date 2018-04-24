@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.15.8
+======
+
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* bugfix:bundled-installer: Fixes a bug in the bundled installer caused by a dependency using `setup_requires`. pip doesn't manage these setup time dependencies, so we have to manually handle them. This fixes the issue where running the bundled installer on a machine without internet access would fail since we were not bundling all the transitive dependencies.
+
+
 1.15.7
 ======
 

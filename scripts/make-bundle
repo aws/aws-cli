@@ -35,6 +35,7 @@ PACKAGE_VERSION = {
     'simplejson': '3.3.0',
     'argparse': '1.2.1',
     'python-dateutil': '2.6.1',
+    'setuptools-scm': '2.0.0',
 }
 INSTALL_ARGS = '--allow-all-external --no-use-wheel'
 
@@ -72,6 +73,7 @@ def create_scratch_dir():
     # Then we need to create a dir where all the packages
     # will come from.
     os.mkdir(os.path.join(dirname, 'packages'))
+    os.mkdir(os.path.join(dirname, 'packages', 'setup'))
     return dirname
 
 
@@ -176,6 +178,17 @@ def main():
     download_package_tarballs(
         package_dir,
         packages=['virtualenv', 'ordereddict', 'simplejson', 'argparse', 'python-dateutil'])
+
+    # Some packages require setup time dependencies, and so we will need to
+    # manually install them. We isolate them to a particular directory so we
+    # can run the install before the things they're dependent on. We have to do
+    # this because pip won't actually find them since it doesn't handle build
+    # dependencies.
+    setup_dir = os.path.join(package_dir, 'setup')
+    download_package_tarballs(
+        setup_dir,
+        packages=['setuptools-scm']
+    )
     download_cli_deps(package_dir)
     add_cli_sdist(package_dir)
     create_bootstrap_script(scratch_dir)

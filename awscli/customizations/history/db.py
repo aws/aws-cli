@@ -140,16 +140,15 @@ class DatabaseRecordWriter(object):
 
     def __init__(self, connection):
         self._connection = connection
+        self._lock = threading.Lock()
 
     def close(self):
         self._connection.close()
 
     def write_record(self, record):
-        # This method is not threadsafe by itself, it is only threadsafe when
-        # used inside a handler bound to the HistoryRecorder in botocore which
-        # is protected by a lock.
         db_record = self._create_db_record(record)
-        self._connection.execute(self._WRITE_RECORD, db_record)
+        with self._lock:
+            self._connection.execute(self._WRITE_RECORD, db_record)
 
     def _create_db_record(self, record):
         event_type = record['event_type']

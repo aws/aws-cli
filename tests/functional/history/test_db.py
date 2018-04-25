@@ -26,19 +26,18 @@ from tests import CaseInsensitiveDict
 
 
 class ThreadedRecordWriter(object):
-    def __init__(self, writer, lock):
+    def __init__(self, writer):
         self._read_q = queue.Queue()
         self._thread = threading.Thread(
             target=self._threaded_record_writer,
-            args=(writer, lock))
+            args=(writer,))
 
-    def _threaded_record_writer(self, writer, lock):
+    def _threaded_record_writer(self, writer):
         while True:
             record = self._read_q.get()
             if record is False:
                 return
-            with lock:
-                writer.write_record(record)
+            writer.write_record(record)
 
     def write_record(self, record):
         self._read_q.put_nowait(record)
@@ -63,9 +62,9 @@ class BaseThreadedDatabaseWriter(BaseDatabaseTest):
         self.threads = []
         self.writer = DatabaseRecordWriter(self.connection)
 
-    def start_n_threads(self, n, lock):
+    def start_n_threads(self, n):
         for _ in range(n):
-            t = ThreadedRecordWriter(self.writer, lock)
+            t = ThreadedRecordWriter(self.writer)
             t.start()
             self.threads.append(t)
 
@@ -85,8 +84,7 @@ class TestMultithreadedDatabaseWriter(BaseThreadedDatabaseWriter):
 
     def test_bulk_writes_all_succeed(self):
         thread_count = 10
-        lock = threading.Lock()
-        self.start_n_threads(thread_count, lock)
+        self.start_n_threads(thread_count)
         for i in range(thread_count):
             self._write_records(i, [
                 {

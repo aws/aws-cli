@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.15.9
+======
+
+* api-change:``xray``: Update xray command to latest version
+* bugfix:bundled-installer: Fixes an issue causing the bundled installer to fail to build on python2.6.
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``codedeploy``: Update codedeploy command to latest version
+* enhancement:s3: Add ONEZONE_IA option to the --storage-class argument of the s3 transfer commands
+
+
 1.15.8
 ======
 

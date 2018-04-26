@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.15.10
+=======
+
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+* api-change:``glacier``: Update glacier command to latest version
+
+
 1.15.9
 ======
 

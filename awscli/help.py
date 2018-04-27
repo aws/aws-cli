@@ -15,6 +15,7 @@ import os
 import sys
 import platform
 import shlex
+import threading
 from subprocess import Popen, PIPE
 
 from docutils.core import publish_string
@@ -111,9 +112,28 @@ class PosixHelpRenderer(PagingHelpRenderer):
             raise ExecutableNotFoundError('groff')
         cmdline = ['groff', '-m', 'man', '-T', 'ascii']
         LOG.debug("Running command: %s", cmdline)
-        p3 = self._popen(cmdline, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        groff_output = p3.communicate(input=man_contents)[0]
-        return groff_output
+        groff = self._popen(cmdline, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        bag = []
+
+        read_thread = self._bg_unbuffered_reader(groff, bag)
+        read_thread.start()
+        groff.communicate(input=man_contents)
+        read_thread.join()
+
+        return bag[0]
+
+    # Attach an unbuffered sink and read in background to avoid pipe buffer deadlock.
+    # Allows for larger content (and commensurate memory consumption).
+    def _bg_unbuffered_reader(self, in_proc, bag):
+        cmdline = ['cat', '-u']
+        LOG.debug("Running command: %s", cmdline)
+        sink = self._popen(cmdline, stdin=in_proc.stdout, stdout=PIPE)
+
+        def _bg_communicate_out(proc, bag):
+            output = proc.communicate()[0]
+            bag.append(output)
+        read_thread = threading.Thread(target=_bg_communicate_out, args=(sink, bag))
+        return read_thread
 
     def _send_output_to_pager(self, output):
         cmdline = self.get_pager_cmdline()

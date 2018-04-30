@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.15.11
+=======
+
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``route53domains``: Update route53domains command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+
+
 1.15.10
 =======
 

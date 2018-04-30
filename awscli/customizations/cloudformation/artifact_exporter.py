@@ -317,6 +317,10 @@ class ServerlessApiResource(Resource):
     PACKAGE_NULL_PROPERTY = False
 
 
+class GraphQLSchemaResource(Resource):
+    PROPERTY_NAME = "DefinitionS3Location"
+
+
 class LambdaFunctionResource(ResourceWithS3UrlDict):
     PROPERTY_NAME = "Code"
     BUCKET_NAME_PROPERTY = "S3Bucket"
@@ -392,6 +396,7 @@ class CloudFormationStackResource(Resource):
 EXPORT_DICT = {
     "AWS::Serverless::Function": ServerlessFunctionResource,
     "AWS::Serverless::Api": ServerlessApiResource,
+    "AWS::AppSync::GraphQLSchema": GraphQLSchemaResource,
     "AWS::ApiGateway::RestApi": ApiGatewayRestApiResource,
     "AWS::Lambda::Function": LambdaFunctionResource,
     "AWS::ElasticBeanstalk::ApplicationVersion":

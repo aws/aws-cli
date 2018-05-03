@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.15.13
+=======
+
+* api-change:``appsync``: Update appsync command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+
+
 1.15.12
 =======
 

@@ -50,6 +50,7 @@ class TestPackageCommand(unittest.TestCase):
         self.parsed_args = FakeArgs(template_file='./foo',
                                     s3_bucket="s3bucket",
                                     s3_prefix="s3prefix",
+                                    s3_endpoint_url="http://localhost",
                                     kms_key_id="kmskeyid",
                                     output_template_file="./oputput",
                                     use_json=False,

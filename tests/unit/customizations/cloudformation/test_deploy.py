@@ -60,6 +60,7 @@ class TestDeployCommand(unittest.TestCase):
                                     fail_on_empty_changeset=True,
                                     s3_bucket=None,
                                     s3_prefix="some prefix",
+                                    s3_endpoint_url="http://localhost",
                                     kms_key_id="some kms key id",
                                     force_upload=True,
                                     tags=["tagkey1=tagvalue1"])

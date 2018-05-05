@@ -75,6 +75,16 @@ class PackageCommand(BasicCommand):
         },
 
         {
+            'name': 's3-endpoint-url',
+            'help_text': (
+                'URL of storage service where packaged templates and artifacts'
+                ' will be uploaded. Useful for testing and local development'
+                ' or when uploading to a non-AWS storage service that is'
+                ' nonetheless S3-compatible.'
+            )
+        },
+
+        {
             'name': 'kms-key-id',
             'help_text': (
                 'The ID of an AWS KMS key that the command uses'
@@ -128,7 +138,8 @@ class PackageCommand(BasicCommand):
             "s3",
             config=Config(signature_version='s3v4'),
             region_name=parsed_globals.region,
-            verify=parsed_globals.verify_ssl)
+            verify=parsed_globals.verify_ssl,
+            endpoint_url=parsed_args.s3_endpoint_url)
 
         template_path = parsed_args.template_file
         if not os.path.isfile(template_path):

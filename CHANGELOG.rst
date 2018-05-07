@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.15.15
+=======
+
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+* api-change:``budgets``: Update budgets command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``s3``: Update s3 command to latest version
+
+
 1.15.14
 =======
 

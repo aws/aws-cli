@@ -135,8 +135,8 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
                 self.prefix + 's3://bucket/key')
 
         expected = {
-            'hostname': 's3.amazonaws.com',
-            'path': '/bucket/key',
+            'hostname': 'bucket.s3.amazonaws.com',
+            'path': '/key',
             'query_params': {
                 'X-Amz-Algorithm': 'AWS4-HMAC-SHA256',
                 'X-Amz-Credential': (
@@ -145,8 +145,8 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
                 'X-Amz-Date': '20160818T143303Z',
                 'X-Amz-Expires': '3600',
                 'X-Amz-Signature': (
-                    'd20178280d7521b384730c678549f6344401ae040bec559ad0602'
-                    '0854c6c718f'),
+                    'd28b6c4a54f31196a6d49335556736a3fc29f036018c8e'
+                    '50775887299092d1a0'),
                 'X-Amz-SignedHeaders': 'host'
             }
         }

@@ -95,6 +95,16 @@ def pip_install_packages(install_dir):
     cli_tarball = cli_tarball[0]
     pip_script = os.path.join(install_dir, bin_path(), 'pip')
 
+    # Some packages declare `setup_requires`, which is a list of dependencies
+    # to be used at setup time. These need to be installed before anything
+    # else, and pip doesn't manage them.
+    setup_requires_dir = os.path.join(PACKAGES_DIR, 'setup')
+    with cd(setup_requires_dir):
+        for package in os.listdir(setup_requires_dir):
+            run('%s install --no-index --find-links file://%s %s' % (
+                pip_script, setup_requires_dir, package
+            ))
+
     with cd(PACKAGES_DIR):
         run('%s install --no-index --find-links file://%s %s' % (
             pip_script, PACKAGES_DIR, cli_tarball))

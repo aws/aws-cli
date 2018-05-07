@@ -12,7 +12,7 @@ This example creates a Secure String parameter. Singles quotes are used so that 
 
 Command::
 
-  aws ssm put-parameter --name 'password' --type "Secure String" --value 'a value, for example P@ssW%rd#1'
+  aws ssm put-parameter --name 'password' --type "SecureString" --value 'a value, for example P@ssW%rd#1'
 
 **To change a parameter value**
 

@@ -169,7 +169,8 @@ class Deployer(object):
             reason = resp["StatusReason"]
 
             if status == "FAILED" and \
-               "The submitted information didn't contain changes." in reason:
+               "The submitted information didn't contain changes." in reason or \
+                            "No updates are to be performed" in reason:
                     raise exceptions.ChangeEmptyError(stack_name=stack_name)
 
             raise RuntimeError("Failed to create the changeset: {0} "

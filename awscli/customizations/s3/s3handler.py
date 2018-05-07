@@ -306,7 +306,7 @@ class BaseTransferRequestSubmitter(object):
                         's3://'+fileinfo.src,
                         'Object is of storage class GLACIER. Unable to '
                         'perform %s operations on GLACIER objects. You must '
-                        'restore the object to be able to the perform '
+                        'restore the object to be able to perform the '
                         'operation. See aws s3 %s help for additional '
                         'parameter options to ignore or force these '
                         'transfers.' %
@@ -498,7 +498,7 @@ class DownloadStreamRequestSubmitter(DownloadRequestSubmitter):
 
 
 class DeleteRequestSubmitter(BaseTransferRequestSubmitter):
-    REQUEST_MAPPER_METHOD = None
+    REQUEST_MAPPER_METHOD = RequestParamsMapper.map_delete_object_params
     RESULT_SUBSCRIBER_CLASS = DeleteResultSubscriber
 
     def can_submit(self, fileinfo):

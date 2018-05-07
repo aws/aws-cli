@@ -250,6 +250,24 @@ class TestBucketList(unittest.TestCase):
         for individual_response in individual_response_elements:
             self.assertEqual(individual_response['LastModified'], now)
 
+    def test_list_objects_passes_in_extra_args(self):
+        self.client.get_paginator.return_value.paginate.return_value = [
+            {'Contents': [
+                {'LastModified': '2014-02-27T04:20:38.000Z',
+                 'Key': 'mykey', 'Size': 3}
+            ]}
+        ]
+        lister = BucketLister(self.client, self.date_parser)
+        list(
+            lister.list_objects(
+                bucket='mybucket', extra_args={'RequestPayer': 'requester'}
+            )
+        )
+        self.client.get_paginator.return_value.paginate.assert_called_with(
+            Bucket='mybucket', PaginationConfig={'PageSize': None},
+            RequestPayer='requester'
+        )
+
 
 class TestGetFileStat(unittest.TestCase):
 
@@ -400,6 +418,60 @@ class TestRequestParamsMapperSSE(unittest.TestCase):
              'CopySourceSSECustomerKey': 'my-sse-c-copy-source-key',
              'SSECustomerAlgorithm': 'AES256',
              'SSECustomerKey': 'my-sse-c-key'})
+
+
+class TestRequestParamsMapperRequestPayer(unittest.TestCase):
+    def setUp(self):
+        self.cli_params = {'request_payer': 'requester'}
+
+    def test_head_object(self):
+        params = {}
+        RequestParamsMapper.map_head_object_params(params, self.cli_params)
+        self.assertEqual(params, {'RequestPayer': 'requester'})
+
+    def test_put_object(self):
+        params = {}
+        RequestParamsMapper.map_put_object_params(params, self.cli_params)
+        self.assertEqual(params, {'RequestPayer': 'requester'})
+
+    def test_get_object(self):
+        params = {}
+        RequestParamsMapper.map_get_object_params(params, self.cli_params)
+        self.assertEqual(params, {'RequestPayer': 'requester'})
+
+    def test_copy_object(self):
+        params = {}
+        RequestParamsMapper.map_copy_object_params(params, self.cli_params)
+        self.assertEqual(params, {'RequestPayer': 'requester'})
+
+    def test_create_multipart_upload(self):
+        params = {}
+        RequestParamsMapper.map_create_multipart_upload_params(
+            params, self.cli_params)
+        self.assertEqual(params, {'RequestPayer': 'requester'})
+
+    def test_upload_part(self):
+        params = {}
+        RequestParamsMapper.map_upload_part_params(params, self.cli_params)
+        self.assertEqual(params, {'RequestPayer': 'requester'})
+
+    def test_upload_part_copy(self):
+        params = {}
+        RequestParamsMapper.map_upload_part_copy_params(
+            params, self.cli_params)
+        self.assertEqual(params, {'RequestPayer': 'requester'})
+
+    def test_delete_object(self):
+        params = {}
+        RequestParamsMapper.map_delete_object_params(
+            params, self.cli_params)
+        self.assertEqual(params, {'RequestPayer': 'requester'})
+
+    def test_list_objects(self):
+        params = {}
+        RequestParamsMapper.map_list_objects_params(
+            params, self.cli_params)
+        self.assertEqual(params, {'RequestPayer': 'requester'})
 
 
 class TestBytesPrint(unittest.TestCase):
@@ -593,7 +665,7 @@ class TestDeleteSourceObjectSubscriber(unittest.TestCase):
         self.bucket = 'mybucket'
         self.key = 'mykey'
         call_args = FakeTransferFutureCallArgs(
-            bucket=self.bucket, key=self.key)
+            bucket=self.bucket, key=self.key, extra_args={})
         meta = FakeTransferFutureMeta(call_args=call_args)
         self.future = mock.Mock()
         self.future.meta = meta
@@ -611,6 +683,12 @@ class TestDeleteSourceObjectSubscriber(unittest.TestCase):
         self.client.delete_object.assert_called_once_with(
             Bucket=self.bucket, Key=self.key)
         self.future.set_exception.assert_called_once_with(exception)
+
+    def test_with_request_payer(self):
+        self.future.meta.call_args.extra_args = {'RequestPayer': 'requester'}
+        DeleteSourceObjectSubscriber(self.client).on_done(self.future)
+        self.client.delete_object.assert_called_once_with(
+            Bucket=self.bucket, Key=self.key, RequestPayer='requester')
 
 
 class TestDeleteCopySourceObjectSubscriber(unittest.TestCase):
@@ -619,7 +697,8 @@ class TestDeleteCopySourceObjectSubscriber(unittest.TestCase):
         self.bucket = 'mybucket'
         self.key = 'mykey'
         copy_source = {'Bucket': self.bucket, 'Key': self.key}
-        call_args = FakeTransferFutureCallArgs(copy_source=copy_source)
+        call_args = FakeTransferFutureCallArgs(
+            copy_source=copy_source, extra_args={})
         meta = FakeTransferFutureMeta(call_args=call_args)
         self.future = mock.Mock()
         self.future.meta = meta
@@ -637,6 +716,12 @@ class TestDeleteCopySourceObjectSubscriber(unittest.TestCase):
         self.client.delete_object.assert_called_once_with(
             Bucket=self.bucket, Key=self.key)
         self.future.set_exception.assert_called_once_with(exception)
+
+    def test_with_request_payer(self):
+        self.future.meta.call_args.extra_args = {'RequestPayer': 'requester'}
+        DeleteCopySourceObjectSubscriber(self.client).on_done(self.future)
+        self.client.delete_object.assert_called_once_with(
+            Bucket=self.bucket, Key=self.key, RequestPayer='requester')
 
 
 class TestDeleteSourceFileSubscriber(unittest.TestCase):

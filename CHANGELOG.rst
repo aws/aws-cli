@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.15.17
+=======
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``budgets``: Update budgets command to latest version
+
+
 1.15.16
 =======
 

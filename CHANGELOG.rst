@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.15.19
+=======
+
+* api-change:``firehose``: Update firehose command to latest version
+
+
 1.15.18
 =======
 

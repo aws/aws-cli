@@ -24,7 +24,8 @@ def find_version(*file_paths):
 
 
 requires = ['botocore==1.10.19',
-            'colorama>=0.2.5,<=0.3.7',
+            # https://pypi.org/project/colorama/0.3.9/#history
+            'colorama>=0.2.5,<=0.3.9',
             'docutils>=0.10',
             'rsa>=3.1.2,<=3.5.0',
             's3transfer>=0.1.12,<0.2.0',

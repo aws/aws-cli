@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.15.20
+=======
+
+* api-change:``organizations``: Update organizations command to latest version
+* enhancement:colorama: Increased the upper bound on the colorama dependency to 0.3.9.
+* api-change:``iot1click-devices``: Update iot1click-devices command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``iot1click-projects``: Update iot1click-projects command to latest version
+
+
 1.15.19
 =======
 

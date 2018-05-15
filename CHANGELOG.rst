@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.15.21
+=======
+
+* api-change:``config``: Update config command to latest version
+
+
 1.15.20
 =======
 

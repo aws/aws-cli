@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.15.22
+=======
+
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+
+
 1.15.21
 =======
 

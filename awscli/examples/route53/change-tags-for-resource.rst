@@ -1,7 +1,27 @@
-The following command adds a tag named ``owner`` to a healthcheck resource specified by ID::
+**To add or delete tags for a health check or hosted zone**
 
-  aws route53 change-tags-for-resource --resource-type healthcheck --resource-id 6233434j-18c1-34433-ba8e-3443434 --add-tags Key=owner,Value=myboss
+The following ``change-tags-for-resource`` command adds and deletes tags using the settings in the file ``change-tags-for-resource.json`` (you can use any name for the file)::
 
-The following command removes a tag named ``owner`` from a hosted zone resource specified by ID::
+  aws route53 change-tags-for-resource --cli-input-json file://C:\temp\change-tags-for-resource.json
 
-  aws route53 change-tags-for-resource --resource-type hostedzone --resource-id Z1523434445 --remove-tag-keys owner 
+You can add and delete tags in only one health check or one hosted zone at a time.
+
+To change the value for a key, just include the key and the new value under ``AddTags``.
+
+Here's the syntax for the file that contains the tags that you want to add and delete::
+
+  {
+    "ResourceType": "healthcheck"|"hostedzone",
+    "ResourceId": "string",
+    "AddTags": [
+      {
+        "Key": "string",
+        "Value": "string"
+      },
+	  ...
+    ],
+    "RemoveTagKeys": [
+      "string",
+	  ...
+    ]
+  }

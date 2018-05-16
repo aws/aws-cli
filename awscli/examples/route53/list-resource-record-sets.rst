@@ -10,9 +10,9 @@ If the hosted zone contains more than 100 resource record sets, or if you want t
 
 To view information about the next resource record set in the hosted zone, take the value of ``NextToken`` from the response to the previous command, and include it in the ``--starting-token`` parameter, for example::
 
-  aws route53 list-resource-record-sets --hosted-zone-id Z2LD58HEXAMPLE --max-items 1 --starting-token Z3M3LMPEXAMPLE
+  aws route53 list-resource-record-sets --hosted-zone-id Z2LD58HEXAMPLE --max-items 1 --starting-token "eyJTdGFydFJlY29yZE5hbWUiOiBudWxsLCAiU3RhcnRSZWNvcmRJZGVudGlmaWVyIjogbnVsbCwgIlN0YXJ0UmVjb3JkVHlwZSI6IG51bGwsICJib3RvX3RydW5jYXRlX2Ftb3VudCI6IDF9"
 
-To view all the resource record sets of a particular name, use the ``--query`` parameter to filter them out. For example::
+To view all the resource record sets that have a specified name, use the --query parameter to get just those records. The "." after the domain name is required. For example:
 
-  aws route53 list-resource-record-sets --hosted-zone-id Z2LD58HEXAMPLE --query "ResourceRecordSets[?Name == 'example.domain.']"
+  aws route53 list-resource-record-sets --hosted-zone-id Z2LD58HEXAMPLE --query "ResourceRecordSets[?Name == 'example.com.']"
 

@@ -16,8 +16,10 @@ from awscli.customizations.cloudformation.artifact_exporter \
     import is_s3_url, parse_s3_url, is_local_file, is_local_folder, \
     upload_local_artifacts, zip_folder, make_abs_path, make_zip, \
     Template, Resource, ResourceWithS3UrlDict, ServerlessApiResource, \
-    ServerlessFunctionResource, LambdaFunctionResource, ApiGatewayRestApiResource, \
-    ElasticBeanstalkApplicationVersion, CloudFormationStackResource, copy_to_temp_dir
+    ServerlessFunctionResource, GraphQLSchemaResource, \
+    LambdaFunctionResource, ApiGatewayRestApiResource, \
+    ElasticBeanstalkApplicationVersion, CloudFormationStackResource, \
+    copy_to_temp_dir
 
 
 def test_is_s3_url():
@@ -65,6 +67,11 @@ def test_all_resources_export():
 
         {
             "class": ServerlessApiResource,
+            "expected_result": uploaded_s3_url
+        },
+
+        {
+            "class": GraphQLSchemaResource,
             "expected_result": uploaded_s3_url
         },
 

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.15.24
+=======
+
+* api-change:``iot``: Update iot command to latest version
+* api-change:``ses``: Update ses command to latest version
+
+
 1.15.23
 =======
 

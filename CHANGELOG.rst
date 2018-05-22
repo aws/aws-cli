@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.15.26
+=======
+
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``inspector``: Update inspector command to latest version
+
+
 1.15.25
 =======
 

@@ -14,6 +14,7 @@ import argparse
 import logging
 from datetime import datetime
 import mimetypes
+import filetype
 import errno
 import os
 import time
@@ -677,6 +678,10 @@ class BaseProvideContentTypeSubscriber(BaseSubscriber):
         guessed_type = guess_content_type(self._get_filename(future))
         if guessed_type is not None:
             future.meta.call_args.extra_args['ContentType'] = guessed_type
+        else:
+            fileType = filetype.guess(self._get_filename(future))
+            if fileType is not None:
+                future.meta.call_args.extra_args['ContentType'] = fileType.mime
 
     def _get_filename(self, future):
         raise NotImplementedError('_get_filename()')

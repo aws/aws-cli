@@ -679,9 +679,9 @@ class BaseProvideContentTypeSubscriber(BaseSubscriber):
         if guessed_type is not None:
             future.meta.call_args.extra_args['ContentType'] = guessed_type
         else:
-            fileType = filetype.guess(self._get_filename(future))
-            if fileType is not None:
-                future.meta.call_args.extra_args['ContentType'] = fileType.mime
+            file_type = filetype.guess(self._get_filename(future))
+            if file_type is not None:
+                future.meta.call_args.extra_args['ContentType'] = file_type.mime
 
     def _get_filename(self, future):
         raise NotImplementedError('_get_filename()')

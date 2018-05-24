@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.15.27
+=======
+
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
 1.15.26
 =======
 

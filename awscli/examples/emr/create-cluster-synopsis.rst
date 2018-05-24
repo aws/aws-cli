@@ -10,6 +10,7 @@
      [--additional-info <value>]
      [--ec2-attributes <value>]
      [--termination-protected | --no-termination-protected]
+     [--scale-down-behavior <value>]
      [--visible-to-all-users | --no-visible-to-all-users]
      [--enable-debugging | --no-enable-debugging]
      [--tags <value>]

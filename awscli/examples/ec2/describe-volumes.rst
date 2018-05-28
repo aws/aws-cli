@@ -22,7 +22,8 @@ Output::
                        "Device": "/dev/sda1"
                    }
                ],
-               "VolumeType": "standard",
+               "Encrypted": false,
+               "VolumeType": "gp2",
                "VolumeId": "vol-049df61146c4d7901",
                "State": "in-use",
                "SnapshotId": "snap-1234567890abcdef0",
@@ -32,7 +33,8 @@ Output::
            {
                "AvailabilityZone": "us-east-1a",
                "Attachments": [],
-               "VolumeType": "io1",
+               "Encrypted": false,
+               "VolumeType": "gp2",
                "VolumeId": "vol-1234567890abcdef0",
                "State": "available",
                "Iops": 1000,
@@ -67,7 +69,8 @@ Output::
                        "Device": "/dev/sda1"
                    }
                ],
-               "VolumeType": "standard",
+               "Encrypted": false,
+               "VolumeType": "gp2",
                "VolumeId": "vol-049df61146c4d7901",
                "State": "in-use",
                "SnapshotId": "snap-1234567890abcdef0",
@@ -76,7 +79,34 @@ Output::
            }
        ]
    }
- 
+
+**To describe available volumes in a specific Availability Zone**
+
+This example command describes all volumes that have a status of ``available`` and are in the ``us-east-1a`` Availability Zone.
+
+Command::
+
+  aws ec2 describe-volumes --filters Name=status,Values=available Name=availability-zone,Values=us-east-1a
+  
+Output::
+
+   {
+       "Volumes": [
+           {
+               "AvailabilityZone": "us-east-1a",
+               "Attachments": [],
+               "Encrypted": false,
+               "VolumeType": "gp2",
+               "VolumeId": "vol-1234567890abcdef0",
+               "State": "available",
+               "Iops": 1000,
+               "SnapshotId": null,
+               "CreateTime": "2014-02-27T00:02:41.791Z",
+               "Size": 100
+           }
+       ]
+   }
+
 **To describe tagged volumes and filter the output**
 
 This example command describes all volumes that have the tag key ``Name`` and a value that begins with ``Test``. The output is filtered to display only the tags and IDs of the volumes. 

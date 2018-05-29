@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.15.29
+=======
+
+* api-change:``pi``: Update pi command to latest version
+
+
 1.15.28
 =======
 

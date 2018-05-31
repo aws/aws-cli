@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.15.30
+=======
+
+* api-change:``neptune``: Update neptune command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+
+
 1.15.29
 =======
 

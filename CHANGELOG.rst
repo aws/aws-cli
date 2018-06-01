@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.15.31
+=======
+
+* api-change:``sns``: Update sns command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``ds``: Update ds command to latest version
+* api-change:``mediatailor``: Update mediatailor command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+
+
 1.15.30
 =======
 

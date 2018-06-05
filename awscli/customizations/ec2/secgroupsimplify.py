@@ -109,8 +109,7 @@ PORT_DOCS = ('<p>For TCP or UDP: The range of ports to allow.'
              ' all ICMP types. A value of -1 just for <code>type</code>'
              ' indicates all ICMP codes for the specified ICMP type.</p>')
 CIDR_DOCS = '<p>The CIDR IP range.</p>'
-SOURCEGROUP_DOCS = ('<p>The name or ID of the source security group. '
-                    'Cannot be used when specifying a CIDR IP address.')
+SOURCEGROUP_DOCS = ('<p>The name or ID of the source security group.</p>')
 GROUPOWNER_DOCS = ('<p>The AWS account ID that owns the source security '
                    'group. Cannot be used when specifying a CIDR IP '
                    'address.</p>')

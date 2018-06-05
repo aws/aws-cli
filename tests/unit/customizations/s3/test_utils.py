@@ -249,6 +249,27 @@ class TestBucketList(unittest.TestCase):
              ('foo/c', individual_response_elements[2])])
         for individual_response in individual_response_elements:
             self.assertEqual(individual_response['LastModified'], now)
+            
+    def test_list_objects_from_library_context(self):
+        self.client.get_paginator.return_value.paginate = self.fake_paginate
+        dt = datetime.datetime(2014, 2, 27, hour=4, minute=20, second=38)
+        individual_response_elements = [
+            {'LastModified': dt, 'Key': 'a', 'Size': 1},
+            {'LastModified': dt, 'Key': 'b', 'Size': 2},
+            {'LastModified': dt, 'Key': 'c', 'Size': 3}
+        ]
+        self.responses = [
+            {'Contents': individual_response_elements[0:2]},
+            {'Contents': [individual_response_elements[2]]}
+        ]
+        lister = BucketLister(self.client, self.date_parser)
+        objects = list(lister.list_objects(bucket='foo'))
+        self.assertEqual(objects,
+            [('foo/a', individual_response_elements[0]),
+             ('foo/b', individual_response_elements[1]),
+             ('foo/c', individual_response_elements[2])])
+        for individual_response in individual_response_elements:
+            self.assertEqual(individual_response['LastModified'], dt)
 
     def test_list_objects_passes_in_extra_args(self):
         self.client.get_paginator.return_value.paginate.return_value = [

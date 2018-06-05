@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.15.33
+=======
+
+* api-change:``polly``: Update polly command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``shield``: Update shield command to latest version
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+
+
 1.15.32
 =======
 

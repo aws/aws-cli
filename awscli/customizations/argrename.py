@@ -70,6 +70,7 @@ ARGUMENT_RENAMES = {
     'lex-models.get-export.version': 'resource-version',
     'mobile.create-project.region': 'project-region',
     'rekognition.create-stream-processor.output': 'stream-processor-output',
+    'eks.create-cluster.version': 'kubernetes-version',
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,

@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.15.32
+=======
+
+* api-change:``appstream``: Update appstream command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``mgh``: Update mgh command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.15.31
 =======
 

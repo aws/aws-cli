@@ -50,11 +50,11 @@ Command::
 
 **To describe tagged AMIs**
 
-This example describes all AMIs that have the tag ``Custom=Linux1`` or ``Custom=Ubuntu1``. The output is filtered to display only the AMI IDs.
+This example describes all AMIs that have the tag ``Custom=Linux1``. The output is filtered to display only the AMI IDs.
 
 Command::
 
-  aws ec2 describe-images --filters Name=tag-key,Values=Custom Name=tag-value,Values=Linux1,Ubuntu1 --query 'Images[*].{ID:ImageId}'
+  aws ec2 describe-images --filters "Name=tag:Custom,Values=Linux1" --query 'Images[*].{ID:ImageId}'
 
 Output::
 

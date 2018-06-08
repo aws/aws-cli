@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.15.35
+=======
+
+* api-change:``mediatailor``: Update mediatailor command to latest version
+
+
 1.15.34
 =======
 

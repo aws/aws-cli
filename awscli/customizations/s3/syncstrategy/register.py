@@ -14,8 +14,8 @@ from awscli.customizations.s3.syncstrategy.sizeonly import SizeOnlySync
 from awscli.customizations.s3.syncstrategy.exacttimestamps import \
     ExactTimestampsSync
 from awscli.customizations.s3.syncstrategy.delete import DeleteSync
-from awscli.customizations.s3.syncstrategy.transferonce import \
-    TransferOnceSync
+from awscli.customizations.s3.syncstrategy.ignoreexisting import \
+    IgnoreExistingSync
 
 
 def register_sync_strategy(session, strategy_cls,
@@ -49,6 +49,6 @@ def register_sync_strategies(command_table, session, **kwargs):
     register_sync_strategy(session, DeleteSync, 'file_not_at_src')
 
     # Register the sync once strategy.
-    register_sync_strategy(session, TransferOnceSync)
+    register_sync_strategy(session, IgnoreExistingSync)
 
     # Register additional sync strategies here...

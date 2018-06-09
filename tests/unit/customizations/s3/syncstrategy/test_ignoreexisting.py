@@ -13,14 +13,15 @@
 import datetime
 
 from awscli.customizations.s3.filegenerator import FileStat
-from awscli.customizations.s3.syncstrategy.transferonce import TransferOnceSync
+from awscli.customizations.s3.syncstrategy.ignoreexisting import \
+    IgnoreExistingSync
 
 from awscli.testutils import unittest
 
 
-class TestTransferOnceSync(unittest.TestCase):
+class TestIgnoreExistingSync(unittest.TestCase):
     def setUp(self):
-        self.sync_strategy = TransferOnceSync()
+        self.sync_strategy = IgnoreExistingSync()
 
     def test_same_name_download(self):
         """

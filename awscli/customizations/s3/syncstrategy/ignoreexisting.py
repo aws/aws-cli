@@ -18,17 +18,17 @@ from awscli.customizations.s3.syncstrategy.base import BaseSync
 LOG = logging.getLogger(__name__)
 
 
-TRANSFER_ONCE = {
-    'name': 'transfer_once',
+IGNORE_EXISTING = {
+    'name': 'ignore_existing',
     'action': 'store_true',
     'help_text': ('If the file exists, do not sync.')
 }
 
 
-class TransferOnceSync(BaseSync):
+class IgnoreExistingSync(BaseSync):
 
-    ARGUMENT = TRANSFER_ONCE
+    ARGUMENT = IGNORE_EXISTING
 
     def determine_should_sync(self, src_file, dest_file):
-        LOG.debug("not syncing %s", src_file)
+        LOG.debug("ignoring existing file %s", src_file)
         return False

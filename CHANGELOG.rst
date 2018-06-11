@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.15.36
+=======
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``clouddirectory``: Update clouddirectory command to latest version
+
+
 1.15.35
 =======
 

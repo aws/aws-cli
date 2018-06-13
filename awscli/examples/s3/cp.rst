@@ -9,6 +9,17 @@ Output::
 
     upload: test.txt to s3://mybucket/test2.txt
 
+**Copying a local file to S3 with an expiration date**
+
+The following ``cp`` command copies a single file to a specified
+bucket and key that expires at the specified ISO 8601 timestamp::
+
+    aws s3 cp test.txt s3://mybucket/test2.txt --expires 2014-10-01T20:30:00Z
+
+Output::
+
+    upload: test.txt to s3://mybucket/test2.txt
+
 
 **Copying a file from S3 to S3**
 

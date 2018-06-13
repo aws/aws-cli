@@ -128,7 +128,7 @@ This example describes all security groups that include ``test`` in the security
 
 Command::
 
-  aws ec2 describe-security-groups --filters Name=group-name,Values='*test*' Name=tag-key,Values=Test Name=tag-value,Values=To-delete --query 'SecurityGroups[*].{Name:GroupName,ID:GroupId}'
+  aws ec2 describe-security-groups --filters Name=group-name,Values=*test* Name=tag:Test,Values=To-delete --query 'SecurityGroups[*].{Name:GroupName,ID:GroupId}'
   
 Output::
 

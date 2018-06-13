@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.15.38
+=======
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+
+
 1.15.37
 =======
 

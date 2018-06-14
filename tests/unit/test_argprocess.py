@@ -27,7 +27,7 @@ from awscli.argprocess import ParamShorthandParser
 from awscli.argprocess import ParamShorthandDocGen
 from awscli.argprocess import ParamError
 from awscli.argprocess import ParamUnknownKeyError
-from awscli.argprocess import uri_param
+from awscli.paramfile import UriArgumentHandler
 from awscli.arguments import CustomArgument, CLIArgument
 from awscli.arguments import ListArgument, BooleanArgument
 from awscli.arguments import create_argument_model_from_schema
@@ -68,13 +68,19 @@ class BaseArgProcessTest(BaseCLIDriverTest):
 
 
 class TestURIParams(BaseArgProcessTest):
+    def setUp(self):
+        super(TestURIParams, self).setUp()
+        self.uri_param = UriArgumentHandler()
+
     def test_uri_param(self):
         p = self.get_param_model('ec2.DescribeInstances.Filters')
         with temporary_file('r+') as f:
-            json_argument = json.dumps([{"Name": "instance-id", "Values": ["i-1234"]}])
+            json_argument = json.dumps(
+                [{"Name": "instance-id", "Values": ["i-1234"]}]
+            )
             f.write(json_argument)
             f.flush()
-            result = uri_param('event-name', p, 'file://%s' % f.name)
+            result = self.uri_param('event-name', p, 'file://%s' % f.name)
         self.assertEqual(result, json_argument)
 
     def test_uri_param_no_paramfile_false(self):
@@ -84,7 +90,7 @@ class TestURIParams(BaseArgProcessTest):
             json_argument = json.dumps([{"Name": "instance-id", "Values": ["i-1234"]}])
             f.write(json_argument)
             f.flush()
-            result = uri_param('event-name', p, 'file://%s' % f.name)
+            result = self.uri_param('event-name', p, 'file://%s' % f.name)
         self.assertEqual(result, json_argument)
 
     def test_uri_param_no_paramfile_true(self):
@@ -94,7 +100,7 @@ class TestURIParams(BaseArgProcessTest):
             json_argument = json.dumps([{"Name": "instance-id", "Values": ["i-1234"]}])
             f.write(json_argument)
             f.flush()
-            result = uri_param('event-name', p, 'file://%s' % f.name)
+            result = self.uri_param('event-name', p, 'file://%s' % f.name)
         self.assertEqual(result, None)
 
 

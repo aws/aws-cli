@@ -511,8 +511,10 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(args_seen[0].unknown_arg, 'foo')
 
     def test_custom_arg_paramfile(self):
-        with mock.patch('awscli.handlers.uri_param',
-                        return_value=None) as uri_param_mock:
+        mock_paramfile_handler = mock.MagicMock()
+        mock_paramfile_handler.return_value = None
+        with mock.patch('awscli.paramfile.UriArgumentHandler',
+                        return_value=mock_paramfile_handler) as uri_param_mock:
             driver = create_clidriver()
             driver.session.register(
                 'building-argument-table', self.inject_new_param)
@@ -524,7 +526,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             self.assertEqual(rc, 0)
 
             # Make sure uri_param was called
-            uri_param_mock.assert_any_call(
+            mock_paramfile_handler.assert_any_call(
                 event_name='load-cli-arg.ec2.describe-instances.unknown-arg',
                 operation_name='describe-instances',
                 param=mock.ANY,
@@ -532,12 +534,15 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
                 value='file:///foo',
             )
             # Make sure it was called with our passed-in URI
-            self.assertEqual('file:///foo',
-                             uri_param_mock.call_args_list[-1][1]['value'])
+            self.assertEqual(
+                'file:///foo',
+                mock_paramfile_handler.call_args_list[-1][1]['value'])
 
     def test_custom_command_paramfile(self):
-        with mock.patch('awscli.handlers.uri_param',
-                        return_value=None) as uri_param_mock:
+        mock_paramfile_handler = mock.MagicMock()
+        mock_paramfile_handler.return_value = None
+        with mock.patch('awscli.paramfile.UriArgumentHandler',
+                        return_value=mock_paramfile_handler) as uri_param_mock:
             driver = create_clidriver()
             driver.session.register(
                 'building-command-table', self.inject_command)
@@ -548,7 +553,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
 
             self.assertEqual(rc, 0)
 
-            uri_param_mock.assert_any_call(
+            mock_paramfile_handler.assert_any_call(
                 event_name='load-cli-arg.custom.foo.bar',
                 operation_name='foo',
                 param=mock.ANY,

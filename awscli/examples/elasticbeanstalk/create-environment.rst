@@ -34,6 +34,31 @@ The following ``create-environment`` command specifies that a JSON file with the
 
   aws elasticbeanstalk create-environment --environment-name sample-env --application-name sampleapp --option-settings file://myoptions.json
 
+``myoptions.json`` is a JSON object defining several settings::
+
+  [
+    {
+      "Namespace": "aws:elb:healthcheck",
+      "OptionName": "Interval",
+      "Value": "15"
+    },
+    {
+      "Namespace": "aws:elb:healthcheck",
+      "OptionName": "Timeout",
+      "Value": "8"
+    },
+    {
+      "Namespace": "aws:elb:healthcheck",
+      "OptionName": "HealthyThreshold",
+      "Value": "2"
+    },
+    {
+      "Namespace": "aws:elb:healthcheck",
+      "OptionName": "UnhealthyThreshold",
+      "Value": "3"
+    }
+  ]
+
 For more information, see `Option Values`_ in the *AWS Elastic Beanstalk Developer Guide*.
 
 .. _`Option Values`: http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options.html

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.15.39
+=======
+
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+* api-change:``iotanalytics``: Update iotanalytics command to latest version
+
+
 1.15.38
 =======
 

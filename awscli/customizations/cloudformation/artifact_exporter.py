@@ -446,11 +446,14 @@ class Template(object):
         if "Resources" not in self.template_dict:
             return self.template_dict
 
-        globals_dict = self.template_dict.get("Globals", {})
-        global_function_upload_path = upload_local_artifacts(
-                "Globals", globals_dict.get("Function", {}), "CodeUri",
-                self.template_dir, self.uploader)
-        if global_function_upload_path:
+        try:
+            global_code_uri = self.template_dict["Globals"]["Function"]["CodeUri"]
+        except KeyError:
+            global_code_uri = None
+        if global_code_uri:
+            global_function_upload_path = upload_local_artifacts(
+                "Globals", self.template_dict["Globals"]["Function"],
+                "CodeUri", self.template_dir, self.uploader)
             self.template_dict["Globals"]["Function"]["CodeUri"] = global_function_upload_path
 
         for resource_id, resource in self.template_dict["Resources"].items():

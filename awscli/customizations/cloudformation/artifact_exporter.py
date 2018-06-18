@@ -308,7 +308,7 @@ class ResourceWithS3UrlDict(Resource):
 class ServerlessFunctionResource(Resource):
     PROPERTY_NAME = "CodeUri"
     FORCE_ZIP = True
-    # Don't package the directory if DefinitionUri is omitted.
+    # Don't package the directory if CodeUri is omitted.
     # Necessary to support CodeUri inherited from globals
     PACKAGE_NULL_PROPERTY = False
 

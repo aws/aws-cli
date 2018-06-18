@@ -2,6 +2,34 @@
 CHANGELOG
 =========
 
+1.15.40
+=======
+
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+
+
+1.15.39
+=======
+
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+* api-change:``iotanalytics``: Update iotanalytics command to latest version
+
+
+1.15.38
+=======
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+
+
+1.15.37
+=======
+
+* api-change:``devicefarm``: Update devicefarm command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
 1.15.36
 =======
 

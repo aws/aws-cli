@@ -136,11 +136,11 @@ def register_uri_param_handler(session, **kwargs):
 
 
 class UriArgumentHandler(object):
-    def __init__(self, cases=None):
-        if cases is None:
-            cases = copy.deepcopy(LOCAL_PREFIX_MAP)
-            cases.update(REMOTE_PREFIX_MAP)
-        self._cases = cases
+    def __init__(self, prefixes=None):
+        if prefixes is None:
+            prefixes = copy.deepcopy(LOCAL_PREFIX_MAP)
+            prefixes.update(REMOTE_PREFIX_MAP)
+        self._prefixes = prefixes
 
     def __call__(self, event_name, param, value, **kwargs):
         """Handler that supports param values from URIs."""
@@ -156,7 +156,7 @@ class UriArgumentHandler(object):
         if isinstance(value, list) and len(value) == 1:
             value = value[0]
         try:
-            return get_paramfile(value, self._cases)
+            return get_paramfile(value, self._prefixes)
         except ResourceLoadingError as e:
             raise ParamError(param.cli_name, six.text_type(e))
 

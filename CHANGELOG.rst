@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.15.42
+=======
+
+* api-change:``acm-pca``: Update acm-pca command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+
+
 1.15.41
 =======
 

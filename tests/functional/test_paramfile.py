@@ -10,94 +10,91 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import json
 import logging
 
-from mock import patch, Mock, mock_open
+from mock import patch, ANY
 
-from awscli.testutils import FileCreator, BaseCLIWireResponseTest
+from awscli.testutils import FileCreator, BaseAWSCommandParamsTest
 from awscli.clidriver import create_clidriver
-from botocore.vendored import requests
 
 logger = logging.getLogger(__name__)
 
 
 class FakeResponse(object):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, content):
         self.status_code = 200
-        self.text = 'function-name'
+        self.text = content
 
 
-class BaseTestCLIFollowParamURL(BaseCLIWireResponseTest):
+class BaseTestCLIFollowParamURL(BaseAWSCommandParamsTest):
     def setUp(self):
         super(BaseTestCLIFollowParamURL, self).setUp()
-        self.wire_response = json.dumps({}).encode('utf-8')
-        self.patch_send(content=self.wire_response)
         self.files = FileCreator()
-        self.command_prefix = ['lambda', 'get-function', '--function-name']
-        self.start_patches()
+        self.prefix = 'lambda get-function --function-name'
 
     def tearDown(self):
         super(BaseTestCLIFollowParamURL, self).tearDown()
         self.files.remove_all()
-        self.stop_patches()
 
-    def start_patches(self):
-        self.mock_open = mock_open(read_data='function-name')
-        self.open_patch = patch(
-            'awscli.paramfile.compat_open', self.mock_open
-        )
-        self.open_patch.start()
-
-        self.mock_get = Mock(spec=requests.get, side_effect=FakeResponse)
-        self.requests_patch = patch(
-            'awscli.paramfile.requests.get', self.mock_get
-        )
-        self.requests_patch.start()
-
-    def stop_patches(self):
-        self.requests_patch.stop()
-        self.open_patch.stop()
-
-    def run_cmd_with_arg(self, argument):
-        command = self.command_prefix + [argument]
-        self.run_cmd(command)
+    def assert_param_expansion_is_correct(self, provided_param, expected_param):
+        cmd = '%s %s' % (self.prefix, provided_param)
+        # We do not care about the return code here. All that is of interest
+        # is what happened to the arguments before they were passed to botocore
+        # which we get from the params={} key. For binary types we will fail in
+        # python 3 with an rc of 255 and get an rc of 0 in python 2 where it
+        # can't tell the difference, so we pass ANY here to ignore the rc.
+        self.assert_params_for_cmd(cmd,
+                                   params={'FunctionName': expected_param},
+                                   expected_rc=ANY)
 
 
 class TestCLIFollowParamURLDefault(BaseTestCLIFollowParamURL):
     def test_does_not_prefixes_when_none_in_param(self):
-        self.run_cmd_with_arg('foobar')
+        self.assert_param_expansion_is_correct(
+            provided_param='foobar',
+            expected_param='foobar'
+        )
 
-        self.assertFalse(self.mock_get.called)
-        self.assertFalse(self.mock_open.called)
-
-    def test_does_use_http_prefix(self):
+    @patch('awscli.paramfile.requests.get')
+    def test_does_use_http_prefix(self, mock_get):
+        content = 'http_content'
+        mock_get.return_value = FakeResponse(content=content)
         param = 'http://foobar.com'
-        self.run_cmd_with_arg(param)
+        self.assert_param_expansion_is_correct(
+            provided_param=param,
+            expected_param=content
+        )
+        mock_get.assert_called_with(param)
 
-        self.assertTrue(self.mock_get.called)
-        self.mock_get.assert_called_once_with(param)
-
-    def test_does_use_https_prefix(self):
+    @patch('awscli.paramfile.requests.get')
+    def test_does_use_https_prefix(self, mock_get):
+        content = 'https_content'
+        mock_get.return_value = FakeResponse(content=content)
         param = 'https://foobar.com'
-        self.run_cmd_with_arg(param)
-
-        self.assertTrue(self.mock_get.called)
-        self.mock_get.assert_called_once_with(param)
+        self.assert_param_expansion_is_correct(
+            provided_param=param,
+            expected_param=content
+        )
+        mock_get.assert_called_with(param)
 
     def test_does_use_file_prefix(self):
-        param = 'file://foobar.txt'
-        self.run_cmd_with_arg(param)
-
-        self.assertFalse(self.mock_get.called)
-        self.mock_open.assert_called_once_with('foobar.txt', 'r')
+        path = self.files.create_file('foobar.txt', 'file content')
+        param = 'file://%s' % path
+        self.assert_param_expansion_is_correct(
+            provided_param=param,
+            expected_param='file content'
+        )
 
     def test_does_use_fileb_prefix(self):
-        param = 'fileb://foobar.txt'
-        self.run_cmd_with_arg(param)
-
-        self.assertFalse(self.mock_get.called)
-        self.mock_open.assert_called_once_with('foobar.txt', 'rb')
+        # The command will fail with error code 255 since bytes type does
+        # not work for this parameter, however we still record the raw
+        # parameter that we passed, which is all this test is concerend about.
+        path = self.files.create_file('foobar.txt', b'file content', mode='wb')
+        param = 'fileb://%s' % path
+        self.assert_param_expansion_is_correct(
+            provided_param=param,
+            expected_param=b'file content'
+        )
 
 
 class TestCLIFollowParamURLDisabled(BaseTestCLIFollowParamURL):
@@ -109,38 +106,48 @@ class TestCLIFollowParamURLDisabled(BaseTestCLIFollowParamURL):
         self.driver = create_clidriver()
 
     def test_does_not_prefixes_when_none_in_param(self):
-        self.run_cmd_with_arg('foobar')
+        param = 'foobar'
+        self.assert_param_expansion_is_correct(
+            provided_param=param,
+            expected_param=param
+        )
 
-        self.assertFalse(self.mock_get.called)
-        self.assertFalse(self.mock_open.called)
+    @patch('awscli.paramfile.requests.get')
+    def test_does_not_use_http_prefix(self, mock_get):
+        param = 'http://foobar'
+        self.assert_param_expansion_is_correct(
+            provided_param=param,
+            expected_param=param
+        )
+        mock_get.assert_not_called()
 
-    def test_does_not_use_http_prefix(self):
-        param = 'http://foobar.com'
-        self.run_cmd_with_arg(param)
-
-        self.assertFalse(self.mock_get.called)
-        self.assertFalse(self.mock_open.called)
-
-    def test_does_not_use_https_prefix(self):
-        param = 'https://foobar.com'
-        self.run_cmd_with_arg(param)
-
-        self.assertFalse(self.mock_get.called)
-        self.assertFalse(self.mock_open.called)
+    @patch('awscli.paramfile.requests.get')
+    def test_does_not_use_https_prefix(self, mock_get):
+        param = 'https://foobar'
+        self.assert_param_expansion_is_correct(
+            provided_param=param,
+            expected_param=param
+        )
+        mock_get.assert_not_called()
 
     def test_does_use_file_prefix(self):
-        param = 'file://foobar.txt'
-        self.run_cmd_with_arg(param)
+        path = self.files.create_file('foobar.txt', 'file content')
+        param = 'file://%s' % path
+        self.assert_param_expansion_is_correct(
+            provided_param=param,
+            expected_param='file content'
+        )
 
-        self.assertFalse(self.mock_get.called)
-        self.mock_open.assert_called_once_with('foobar.txt', 'r')
-
-    def test_does_not_disable_fileb(self):
-        param = 'fileb://foobar.txt'
-        self.run_cmd_with_arg(param)
-
-        self.assertFalse(self.mock_get.called)
-        self.mock_open.assert_called_once_with('foobar.txt', 'rb')
+    def test_does_use_fileb_prefix(self):
+        # The command will fail with error code 255 since bytes type does
+        # not work for this parameter, however we still record the raw
+        # parameter that we passed, which is all this test is concerend about.
+        path = self.files.create_file('foobar.txt', b'file content', mode='wb')
+        param = 'fileb://%s' % path
+        self.assert_param_expansion_is_correct(
+            provided_param=param,
+            expected_param=b'file content'
+        )
 
 
 class TestCLIFollowParamURLEnabled(BaseTestCLIFollowParamURL):
@@ -152,35 +159,45 @@ class TestCLIFollowParamURLEnabled(BaseTestCLIFollowParamURL):
         self.driver = create_clidriver()
 
     def test_does_not_prefixes_when_none_in_param(self):
-        self.run_cmd_with_arg('foobar')
+        self.assert_param_expansion_is_correct('foobar', 'foobar')
 
-        self.assertFalse(self.mock_get.called)
-        self.assertFalse(self.mock_open.called)
-
-    def test_does_use_http_prefix(self):
+    @patch('awscli.paramfile.requests.get')
+    def test_does_use_http_prefix(self, mock_get):
+        content = 'http_content'
+        mock_get.return_value = FakeResponse(content=content)
         param = 'http://foobar.com'
-        self.run_cmd_with_arg(param)
+        self.assert_param_expansion_is_correct(
+            provided_param=param,
+            expected_param=content
+        )
+        mock_get.assert_called_with(param)
 
-        self.assertTrue(self.mock_get.called)
-        self.assertFalse(self.mock_open.called)
-
-    def test_does_use_https_prefix(self):
+    @patch('awscli.paramfile.requests.get')
+    def test_does_use_https_prefix(self, mock_get):
+        content = 'https_content'
+        mock_get.return_value = FakeResponse(content=content)
         param = 'https://foobar.com'
-        self.run_cmd_with_arg(param)
-
-        self.assertTrue(self.mock_get.called)
-        self.assertFalse(self.mock_open.called)
+        self.assert_param_expansion_is_correct(
+            provided_param=param,
+            expected_param=content
+        )
+        mock_get.assert_called_with(param)
 
     def test_does_use_file_prefix(self):
-        param = 'file://foobar.txt'
-        self.run_cmd_with_arg(param)
-
-        self.assertFalse(self.mock_get.called)
-        self.mock_open.assert_called_once_with('foobar.txt', 'r')
+        path = self.files.create_file('foobar.txt', 'file content')
+        param = 'file://%s' % path
+        self.assert_param_expansion_is_correct(
+            provided_param=param,
+            expected_param='file content'
+        )
 
     def test_does_use_fileb_prefix(self):
-        param = 'fileb://foobar.txt'
-        self.run_cmd_with_arg(param)
-
-        self.assertFalse(self.mock_get.called)
-        self.mock_open.assert_called_once_with('foobar.txt', 'rb')
+        # The command will fail with error code 255 since bytes type does
+        # not work for this parameter, however we still record the raw
+        # parameter that we passed, which is all this test is concerend about.
+        path = self.files.create_file('foobar.txt', b'file content', mode='wb')
+        param = 'fileb://%s' % path
+        self.assert_param_expansion_is_correct(
+            provided_param=param,
+            expected_param=b'file content'
+        )

@@ -32,7 +32,7 @@ from awscli.clidriver import CustomArgument
 from awscli.clidriver import CLICommand
 from awscli.clidriver import ServiceCommand
 from awscli.clidriver import ServiceOperation
-from awscli.paramfile import UriArgumentHandler
+from awscli.paramfile import URIArgumentHandler
 from awscli.customizations.commands import BasicCommand
 from awscli import formatter
 from awscli.argparser import HELP_BLURB
@@ -511,8 +511,8 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(len(args_seen), 1)
         self.assertEqual(args_seen[0].unknown_arg, 'foo')
 
-    @mock.patch('awscli.paramfile.UriArgumentHandler',
-                spec=UriArgumentHandler)
+    @mock.patch('awscli.paramfile.URIArgumentHandler',
+                spec=URIArgumentHandler)
     def test_custom_arg_paramfile(self, mock_handler):
         mock_paramfile = mock.Mock(autospec=True)
         mock_paramfile.return_value = None
@@ -541,8 +541,8 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             'file:///foo',
             mock_paramfile.call_args_list[-1][1]['value'])
 
-    @mock.patch('awscli.paramfile.UriArgumentHandler',
-                spec=UriArgumentHandler)
+    @mock.patch('awscli.paramfile.URIArgumentHandler',
+                spec=URIArgumentHandler)
     def test_custom_command_paramfile(self, mock_handler):
         mock_paramfile = mock.Mock(autospec=True)
         mock_paramfile.return_value = None

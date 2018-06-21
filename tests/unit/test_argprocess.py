@@ -27,7 +27,7 @@ from awscli.argprocess import ParamShorthandParser
 from awscli.argprocess import ParamShorthandDocGen
 from awscli.argprocess import ParamError
 from awscli.argprocess import ParamUnknownKeyError
-from awscli.paramfile import UriArgumentHandler
+from awscli.paramfile import URIArgumentHandler
 from awscli.arguments import CustomArgument, CLIArgument
 from awscli.arguments import ListArgument, BooleanArgument
 from awscli.arguments import create_argument_model_from_schema
@@ -70,7 +70,7 @@ class BaseArgProcessTest(BaseCLIDriverTest):
 class TestURIParams(BaseArgProcessTest):
     def setUp(self):
         super(TestURIParams, self).setUp()
-        self.uri_param = UriArgumentHandler()
+        self.uri_param = URIArgumentHandler()
 
     def test_uri_param(self):
         p = self.get_param_model('ec2.DescribeInstances.Filters')

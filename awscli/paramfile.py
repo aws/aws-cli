@@ -131,11 +131,11 @@ def register_uri_param_handler(session, **kwargs):
     if fetch_url:
         prefix_map.update(REMOTE_PREFIX_MAP)
 
-    handler = UriArgumentHandler(prefix_map)
+    handler = URIArgumentHandler(prefix_map)
     session.register('load-cli-arg', handler)
 
 
-class UriArgumentHandler(object):
+class URIArgumentHandler(object):
     def __init__(self, prefixes=None):
         if prefixes is None:
             prefixes = copy.deepcopy(LOCAL_PREFIX_MAP)

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.15.43
+=======
+
+* api-change:``macie``: Update macie command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``neptune``: Update neptune command to latest version
+
+
 1.15.42
 =======
 

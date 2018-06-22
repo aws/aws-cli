@@ -18,8 +18,6 @@ from awscli.compat import six
 from botocore.compat import OrderedDict, json
 
 from awscli import SCALAR_TYPES, COMPLEX_TYPES
-from awscli.paramfile import get_paramfile, ResourceLoadingError
-from awscli.paramfile import PARAMFILE_DISABLED
 from awscli import shorthand
 from awscli.utils import find_service_and_method_in_event_name
 from botocore.utils import is_json_value_header
@@ -86,27 +84,6 @@ def unpack_argument(session, service_name, operation_name, cli_argument, value):
         value = value_override
 
     return value
-
-
-def uri_param(event_name, param, value, **kwargs):
-    """Handler that supports param values from URIs.
-    """
-    cli_argument = param
-    qualified_param_name = '.'.join(event_name.split('.')[1:])
-    if qualified_param_name in PARAMFILE_DISABLED or \
-            getattr(cli_argument, 'no_paramfile', None):
-        return
-    else:
-        return _check_for_uri_param(cli_argument, value)
-
-
-def _check_for_uri_param(param, value):
-    if isinstance(value, list) and len(value) == 1:
-        value = value[0]
-    try:
-        return get_paramfile(value)
-    except ResourceLoadingError as e:
-        raise ParamError(param.cli_name, six.text_type(e))
 
 
 def detect_shape_structure(param):

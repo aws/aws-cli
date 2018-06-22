@@ -487,7 +487,7 @@ class BaseCLIWireResponseTest(unittest.TestCase):
 
     def patch_send(self, status_code=200, headers={}, content=b''):
         if self.send_is_patched:
-            self.send_patch.stop()
+            self.patch_send.stop()
             self.send_is_patched = False
         send_patch = self.send_patch.start()
         send_patch.return_value = mock.Mock(status_code=status_code,

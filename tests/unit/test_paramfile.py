@@ -10,16 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import platform
+
 import mock
 from awscli.compat import six
 from awscli.testutils import unittest, FileCreator
 from awscli.testutils import skip_if_windows
 
 from awscli.paramfile import get_paramfile, ResourceLoadingError
-from awscli.paramfile import URIArgumentHandler
-from awscli.paramfile import LOCAL_PREFIX_MAP, REMOTE_PREFIX_MAP
-from awscli.paramfile import register_uri_param_handler
-from botocore.hooks import HierarchicalEmitter
 
 
 class TestParamFile(unittest.TestCase):
@@ -29,14 +27,11 @@ class TestParamFile(unittest.TestCase):
     def tearDown(self):
         self.files.remove_all()
 
-    def get_paramfile(self, path):
-        return get_paramfile(path, LOCAL_PREFIX_MAP.copy())
-
     def test_text_file(self):
         contents = 'This is a test'
         filename = self.files.create_file('foo', contents)
         prefixed_filename = 'file://' + filename
-        data = self.get_paramfile(prefixed_filename)
+        data = get_paramfile(prefixed_filename)
         self.assertEqual(data, contents)
         self.assertIsInstance(data, six.string_types)
 
@@ -44,7 +39,7 @@ class TestParamFile(unittest.TestCase):
         contents = 'This is a test'
         filename = self.files.create_file('foo', contents)
         prefixed_filename = 'fileb://' + filename
-        data = self.get_paramfile(prefixed_filename)
+        data = get_paramfile(prefixed_filename)
         self.assertEqual(data, b'This is a test')
         self.assertIsInstance(data, six.binary_type)
 
@@ -55,17 +50,17 @@ class TestParamFile(unittest.TestCase):
         filename = self.files.create_file('foo', contents, mode='wb')
         prefixed_filename = 'file://' + filename
         with self.assertRaises(ResourceLoadingError):
-            self.get_paramfile(prefixed_filename)
+            get_paramfile(prefixed_filename)
 
     def test_file_does_not_exist_raises_error(self):
         with self.assertRaises(ResourceLoadingError):
-            self.get_paramfile('file://file/does/not/existsasdf.txt')
+            get_paramfile('file://file/does/not/existsasdf.txt')
 
     def test_no_match_uris_returns_none(self):
-        self.assertIsNone(self.get_paramfile('foobar://somewhere.bar'))
+        self.assertIsNone(get_paramfile('foobar://somewhere.bar'))
 
     def test_non_string_type_returns_none(self):
-        self.assertIsNone(self.get_paramfile(100))
+        self.assertIsNone(get_paramfile(100))
 
 
 class TestHTTPBasedResourceLoading(unittest.TestCase):
@@ -78,27 +73,24 @@ class TestHTTPBasedResourceLoading(unittest.TestCase):
     def tearDown(self):
         self.requests_patch.stop()
 
-    def get_paramfile(self, path):
-        return get_paramfile(path, REMOTE_PREFIX_MAP.copy())
-
     def test_resource_from_http(self):
         self.response.text = 'http contents'
-        loaded = self.get_paramfile('http://foo.bar.baz')
+        loaded = get_paramfile('http://foo.bar.baz')
         self.assertEqual(loaded, 'http contents')
         self.requests_mock.get.assert_called_with('http://foo.bar.baz')
 
     def test_resource_from_https(self):
         self.response.text = 'http contents'
-        loaded = self.get_paramfile('https://foo.bar.baz')
+        loaded = get_paramfile('https://foo.bar.baz')
         self.assertEqual(loaded, 'http contents')
         self.requests_mock.get.assert_called_with('https://foo.bar.baz')
 
     def test_non_200_raises_error(self):
         self.response.status_code = 500
         with self.assertRaisesRegexp(ResourceLoadingError, 'foo\.bar\.baz'):
-            self.get_paramfile('https://foo.bar.baz')
+            get_paramfile('https://foo.bar.baz')
 
     def test_connection_error_raises_error(self):
         self.requests_mock.get.side_effect = Exception("Connection error.")
         with self.assertRaisesRegexp(ResourceLoadingError, 'foo\.bar\.baz'):
-            self.get_paramfile('https://foo.bar.baz')
+            get_paramfile('https://foo.bar.baz')

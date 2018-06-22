@@ -71,8 +71,6 @@ output               --output    output                AWS_DEFAULT_OUTPUT    Def
 -------------------- ----------- --------------------- --------------------- ----------------------------
 cli_timestamp_format N/A         cli_timestamp_format  N/A                   Output format of timestamps
 -------------------- ----------- --------------------- --------------------- ----------------------------
-cli_follow_urlparam  N/A         cli_follow_urlparam   N/A                   Fetch URL url parameters
--------------------- ----------- --------------------- --------------------- ----------------------------
 ca_bundle            --ca-bundle ca_bundle             AWS_CA_BUNDLE         CA Certificate Bundle
 -------------------- ----------- --------------------- --------------------- ----------------------------
 parameter_validation             parameter_validation                        Toggles parameter validation
@@ -90,21 +88,10 @@ The valid values of the ``output`` configuration variable are:
 * text
 
 ``cli_timestamp_format`` controls the format of timestamps displayed by the AWS CLI.
-The valid values of the ``cli_timestamp_format`` configuration variable are:
+The valid values of the ``cli_timestamp_format`` configuration varaible are:
 
 * none - Display the timestamp exactly as received from the HTTP response.
 * iso8601 - Reformat timestamp using iso8601 in the UTC timezone.
-
-``cli_follow_urlparam`` controls whether or not the CLI will attempt to follow
-URL links in parameters that start with either prefix ``https://`` or
-``http://``.  The valid values of the ``cli_follow_urlparam`` configuration
-variable are:
-
-* true - This is the default value. With this configured the CLI will follow
-  any string parameters that start with ``https://`` or ``http://`` will be
-  fetched, and the downloaded content will be used as the parameter instead.
-* false - The CLI will not treat strings prefixed with ``https://`` or
-  ``http://`` any differently than normal string parameters.
 
 ``parameter_validation`` controls whether parameter validation should occur
 when serializing requests. The default is True. You can disable parameter

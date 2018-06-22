@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import json
 
-from awscli.paramfile import get_paramfile, LOCAL_PREFIX_MAP
+from awscli.paramfile import get_paramfile
 from awscli.argprocess import ParamError
 from awscli.customizations.arguments import OverrideRequiredArgsArgument
 
@@ -60,7 +60,7 @@ class CliInputJSONArgument(OverrideRequiredArgsArgument):
         input_json = getattr(parsed_args, 'cli_input_json', None)
         if input_json is not None:
             # Retrieve the JSON from the file if needed.
-            retrieved_json = get_paramfile(input_json, LOCAL_PREFIX_MAP)
+            retrieved_json = get_paramfile(input_json)
             # Nothing was retrieved from the file. So assume the argument
             # is already a JSON string.
             if retrieved_json is None:

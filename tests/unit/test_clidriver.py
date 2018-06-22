@@ -32,7 +32,6 @@ from awscli.clidriver import CustomArgument
 from awscli.clidriver import CLICommand
 from awscli.clidriver import ServiceCommand
 from awscli.clidriver import ServiceOperation
-from awscli.paramfile import URIArgumentHandler
 from awscli.customizations.commands import BasicCommand
 from awscli import formatter
 from awscli.argparser import HELP_BLURB
@@ -511,60 +510,51 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(len(args_seen), 1)
         self.assertEqual(args_seen[0].unknown_arg, 'foo')
 
-    @mock.patch('awscli.paramfile.URIArgumentHandler',
-                spec=URIArgumentHandler)
-    def test_custom_arg_paramfile(self, mock_handler):
-        mock_paramfile = mock.Mock(autospec=True)
-        mock_paramfile.return_value = None
-        mock_handler.return_value = mock_paramfile
+    def test_custom_arg_paramfile(self):
+        with mock.patch('awscli.handlers.uri_param',
+                        return_value=None) as uri_param_mock:
+            driver = create_clidriver()
+            driver.session.register(
+                'building-argument-table', self.inject_new_param)
 
-        driver = create_clidriver()
-        driver.session.register(
-            'building-argument-table', self.inject_new_param)
+            self.patch_make_request()
+            rc = driver.main(
+                'ec2 describe-instances --unknown-arg file:///foo'.split())
 
-        self.patch_make_request()
-        rc = driver.main(
-            'ec2 describe-instances --unknown-arg file:///foo'.split())
+            self.assertEqual(rc, 0)
 
-        self.assertEqual(rc, 0)
+            # Make sure uri_param was called
+            uri_param_mock.assert_any_call(
+                event_name='load-cli-arg.ec2.describe-instances.unknown-arg',
+                operation_name='describe-instances',
+                param=mock.ANY,
+                service_name='ec2',
+                value='file:///foo',
+            )
+            # Make sure it was called with our passed-in URI
+            self.assertEqual('file:///foo',
+                             uri_param_mock.call_args_list[-1][1]['value'])
 
-        # Make sure uri_param was called
-        mock_paramfile.assert_any_call(
-            event_name='load-cli-arg.ec2.describe-instances.unknown-arg',
-            operation_name='describe-instances',
-            param=mock.ANY,
-            service_name='ec2',
-            value='file:///foo',
-        )
-        # Make sure it was called with our passed-in URI
-        self.assertEqual(
-            'file:///foo',
-            mock_paramfile.call_args_list[-1][1]['value'])
+    def test_custom_command_paramfile(self):
+        with mock.patch('awscli.handlers.uri_param',
+                        return_value=None) as uri_param_mock:
+            driver = create_clidriver()
+            driver.session.register(
+                'building-command-table', self.inject_command)
 
-    @mock.patch('awscli.paramfile.URIArgumentHandler',
-                spec=URIArgumentHandler)
-    def test_custom_command_paramfile(self, mock_handler):
-        mock_paramfile = mock.Mock(autospec=True)
-        mock_paramfile.return_value = None
-        mock_handler.return_value = mock_paramfile
+            self.patch_make_request()
+            rc = driver.main(
+                'ec2 foo --bar file:///foo'.split())
 
-        driver = create_clidriver()
-        driver.session.register(
-            'building-command-table', self.inject_command)
+            self.assertEqual(rc, 0)
 
-        self.patch_make_request()
-        rc = driver.main(
-            'ec2 foo --bar file:///foo'.split())
-
-        self.assertEqual(rc, 0)
-
-        mock_paramfile.assert_any_call(
-            event_name='load-cli-arg.custom.foo.bar',
-            operation_name='foo',
-            param=mock.ANY,
-            service_name='custom',
-            value='file:///foo',
-        )
+            uri_param_mock.assert_any_call(
+                event_name='load-cli-arg.custom.foo.bar',
+                operation_name='foo',
+                param=mock.ANY,
+                service_name='custom',
+                value='file:///foo',
+            )
 
     @unittest.skip
     def test_custom_arg_no_paramfile(self):

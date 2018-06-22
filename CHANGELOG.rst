@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.15.45
+=======
+
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+* api-change:``appstream``: Update appstream command to latest version
+
+
 1.15.44
 =======
 

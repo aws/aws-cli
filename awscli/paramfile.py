@@ -15,6 +15,7 @@ import os
 import copy
 
 from botocore.vendored import requests
+from botocore.exceptions import ProfileNotFound
 from awscli.compat import six
 
 from awscli.compat import compat_open
@@ -125,8 +126,18 @@ class ResourceLoadingError(Exception):
 
 def register_uri_param_handler(session, **kwargs):
     prefix_map = copy.deepcopy(LOCAL_PREFIX_MAP)
-    fetch_url = session.get_scoped_config().get(
-        'cli_follow_urlparam', 'true') == 'true'
+    try:
+        fetch_url = session.get_scoped_config().get(
+            'cli_follow_urlparam', 'true') == 'true'
+    except ProfileNotFound:
+        # If a --profile is provided that does not exist, loading
+        # a value from get_scoped_config will crash the CLI.
+        # This function can be called as the first handler for
+        # the session-initialized event, which happens before a
+        # profile can be created, even if the command would have
+        # successfully created a profile. Instead of crashing here
+        # on a ProfileNotFound the CLI should just use 'none'.
+        fetch_url = True
 
     if fetch_url:
         prefix_map.update(REMOTE_PREFIX_MAP)

@@ -106,7 +106,7 @@ Output::
 
 Command::
 
-  aws ec2 describe-security-groups --filters Name=ip-permission.from-port,Values=22 Name=ip-permission.to-port,Values=22 Name=ip-permission.cidr,Values='0.0.0.0/0' --query 'SecurityGroups[*].{Name:GroupName}'
+  aws ec2 describe-security-groups --filters Name=ip-permission.from-port,Values=22 Name=ip-permission.to-port,Values=22 Name=ip-permission.cidr,Values='0.0.0.0/0' --query "SecurityGroups[*].{Name:GroupName}"
 
 Output::
 
@@ -128,7 +128,7 @@ This example describes all security groups that include ``test`` in the security
 
 Command::
 
-  aws ec2 describe-security-groups --filters Name=group-name,Values=*test* Name=tag:Test,Values=To-delete --query 'SecurityGroups[*].{Name:GroupName,ID:GroupId}'
+  aws ec2 describe-security-groups --filters Name=group-name,Values=*test* Name=tag:Test,Values=To-delete --query "SecurityGroups[*].{Name:GroupName,ID:GroupId}"
   
 Output::
 

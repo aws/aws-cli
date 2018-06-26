@@ -434,4 +434,4 @@ help:
 
 .. _`Amazon Web Services Security Bulletins website`: https://aws.amazon.com/security/security-bulletins
 .. _pip: http://www.pip-installer.org/en/latest/
-.. _`download the tarball`: https://pypi.python.org/pypi/awscli
+.. _`download the tarball`: https://pypi.org/project/awscli/

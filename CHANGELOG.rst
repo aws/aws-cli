@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.15.47
+=======
+
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+
+
 1.15.46
 =======
 

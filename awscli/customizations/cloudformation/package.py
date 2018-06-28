@@ -109,6 +109,17 @@ class PackageCommand(BasicCommand):
                 ' Specify this flag to upload artifacts even if they '
                 ' match existing artifacts in the S3 bucket.'
             )
+        },
+        {
+            "name": "metadata",
+            "cli_type_name": "map",
+            "schema": {
+                "type": "map",
+                "key": {"type": "string"},
+                "value": {"type": "string"}
+            },
+            "help_text": "A map of metadata to attach to *ALL* the artifacts that"
+            " are referenced in your template."
         }
     ]
 
@@ -132,6 +143,8 @@ class PackageCommand(BasicCommand):
                                       parsed_args.s3_prefix,
                                       parsed_args.kms_key_id,
                                       parsed_args.force_upload)
+        # attach the given metadata to the artifacts to be uploaded
+        self.s3_uploader.artifact_metadata = parsed_args.metadata
 
         output_file = parsed_args.output_template_file
         use_json = parsed_args.use_json

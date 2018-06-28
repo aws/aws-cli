@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.15.48
+=======
+
+* enhancement:Argument processing: Added cli_follow_urlparam option in the config file which can be set to false to disable the automatic following of string parameters prefixed with http:// or https://. closes #2507 #3076 #2577. Further discussion #3398.
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+
+
 1.15.47
 =======
 

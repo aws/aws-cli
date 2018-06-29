@@ -15,19 +15,19 @@ from awscli.customizations.emr.createdefaultroles import EMR_ROLE_NAME
 from awscli.customizations.emr.createdefaultroles import EC2_ROLE_NAME
 
 TERMINATE_CLUSTERS = (
-    '<p>Shuts down one or more clusters, each specified by cluster ID. '
+    'Shuts down one or more clusters, each specified by cluster ID. '
     'Use this command only on clusters that do not have termination '
     'protection enabled. Clusters with termination protection enabled '
     'are not terminated. When a cluster is shut '
     'down, any step not yet completed is canceled and the '
     'Amazon EC2 instances in the cluster are terminated. '
     'Any log files not already saved are uploaded to '
-    'Amazon S3 if a <code>--log-uri</code> was specified when the cluster was created. '
+    'Amazon S3 if a --log-uri was specified when the cluster was created. '
     'The maximum number of clusters allowed in the list is 10. '
-    '<code>--terminate-clusters</code> is asynchronous. Depending on the '
+    'The command is asynchronous. Depending on the '
     'configuration of the cluster, it may take from 5 to 20 minutes for the '
     'cluster to terminate completely and release allocated resources such as '
-    'Amazon EC2 instances.</p>')
+    'Amazon EC2 instances.')
 
 CLUSTER_ID = (
     '<p>A unique string that identifies a cluster. The '

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.15.49
+=======
+
+* enhancement:emr: Support on demand pricing for emr clusters.
+
+
 1.15.48
 =======
 

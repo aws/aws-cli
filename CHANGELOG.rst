@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.15.50
+=======
+
+* api-change:``ssm``: Update ssm command to latest version
+
+
 1.15.49
 =======
 

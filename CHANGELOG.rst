@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.15.51
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``acm``: Update acm command to latest version
+
+
 1.15.50
 =======
 

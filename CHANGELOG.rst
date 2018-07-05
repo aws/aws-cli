@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.15.52
+=======
+
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+
+
 1.15.51
 =======
 

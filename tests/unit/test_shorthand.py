@@ -59,6 +59,9 @@ def test_parse():
     # Pound signs are allowed.
     yield (_can_parse, '#key=value', {'#key': 'value'})
 
+    # Forward slashes are allowed in keys.
+    yield (_can_parse, 'some/thing=value', {'some/thing': 'value'})
+
     # Explicit lists.
     yield (_can_parse, 'foo=[]', {'foo': []})
     yield (_can_parse, 'foo=[a]', {'foo': ['a']})

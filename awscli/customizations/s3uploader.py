@@ -44,6 +44,19 @@ class S3Uploader(object):
     does not already use versioning, this class will turn on versioning.
     """
 
+    @property
+    def artifact_metadata(self):
+        """
+        Metadata to attach to the object(s) uploaded by the uploader.
+        """
+        return self._artifact_metadata
+
+    @artifact_metadata.setter
+    def artifact_metadata(self, val):
+        if val is not None and type(val) is not dict:
+            raise TypeError("Artifact metadata should be in dict type")
+        self._artifact_metadata = val
+
     def __init__(self, s3_client,
                  bucket_name,
                  region,
@@ -61,6 +74,8 @@ class S3Uploader(object):
         self.transfer_manager = transfer_manager
         if not transfer_manager:
             self.transfer_manager = TransferManager(self.s3)
+
+        self._artifact_metadata = None
 
     def upload(self, file_name, remote_path):
         """
@@ -90,6 +105,9 @@ class S3Uploader(object):
             if self.kms_key_id:
                 additional_args["ServerSideEncryption"] = "aws:kms"
                 additional_args["SSEKMSKeyId"] = self.kms_key_id
+
+            if self.artifact_metadata:
+                additional_args["Metadata"] = self.artifact_metadata
 
             print_progress_callback = \
                 ProgressPercentage(file_name, remote_path)

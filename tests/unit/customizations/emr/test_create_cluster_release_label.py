@@ -663,6 +663,36 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         ]
         self.assert_params_for_cmd(cmd, result)
 
+    def test_instance_groups_from_json_file_spot_bidprice_equals_ondemandprice(self):
+        data_path = os.path.join(
+            os.path.dirname(__file__), 'input_instance_groups_spot_bidprice_equals_ondemandprice.json')
+        cmd = ('emr create-cluster --use-default-roles'
+               ' --release-label emr-4.0.0  '
+               '--instance-groups file://' + data_path)
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['Instances']['InstanceGroups'] = \
+            [
+                {'InstanceRole': 'MASTER',
+                 'InstanceCount': 1,
+                 'Name': 'Master Instance Group',
+                 'Market': 'SPOT',
+                 'InstanceType': 'm1.large'
+                 },
+                {'InstanceRole': 'CORE',
+                 'InstanceCount': 2,
+                 'Name': 'Core Instance Group',
+                 'Market': 'SPOT',
+                 'InstanceType': 'm1.xlarge'
+                 },
+                {'InstanceRole': 'TASK',
+                 'InstanceCount': 3,
+                 'Name': 'Task Instance Group',
+                 'Market': 'SPOT',
+                 'InstanceType': 'm1.xlarge'
+                 }
+        ]
+        self.assert_params_for_cmd(cmd, result)
+
     def test_ec2_attributes_no_az(self):
         cmd = ('emr create-cluster --release-label emr-4.0.0 '
                '--instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG +

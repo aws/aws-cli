@@ -2,6 +2,239 @@
 CHANGELOG
 =========
 
+1.15.53
+=======
+
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``serverlessrepo``: Update serverlessrepo command to latest version
+
+
+1.15.52
+=======
+
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+
+
+1.15.51
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``acm``: Update acm command to latest version
+
+
+1.15.50
+=======
+
+* api-change:``ssm``: Update ssm command to latest version
+
+
+1.15.49
+=======
+
+* enhancement:emr: Support on demand pricing for emr clusters.
+
+
+1.15.48
+=======
+
+* enhancement:Argument processing: Added cli_follow_urlparam option in the config file which can be set to false to disable the automatic following of string parameters prefixed with http:// or https://. closes #2507 #3076 #2577. Further discussion #3398.
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+
+
+1.15.47
+=======
+
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+
+
+1.15.46
+=======
+
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``inspector``: Update inspector command to latest version
+
+
+1.15.45
+=======
+
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+* api-change:``appstream``: Update appstream command to latest version
+
+
+1.15.44
+=======
+
+* api-change:``clouddirectory``: Update clouddirectory command to latest version
+
+
+1.15.43
+=======
+
+* api-change:``macie``: Update macie command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``neptune``: Update neptune command to latest version
+
+
+1.15.42
+=======
+
+* api-change:``acm-pca``: Update acm-pca command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+
+
+1.15.41
+=======
+
+* api-change:``rekognition``: Update rekognition command to latest version
+
+
+1.15.40
+=======
+
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+
+
+1.15.39
+=======
+
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+* api-change:``iotanalytics``: Update iotanalytics command to latest version
+
+
+1.15.38
+=======
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+
+
+1.15.37
+=======
+
+* api-change:``devicefarm``: Update devicefarm command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
+1.15.36
+=======
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``clouddirectory``: Update clouddirectory command to latest version
+
+
+1.15.35
+=======
+
+* api-change:``mediatailor``: Update mediatailor command to latest version
+
+
+1.15.34
+=======
+
+* api-change:``medialive``: Update medialive command to latest version
+
+
+1.15.33
+=======
+
+* api-change:``polly``: Update polly command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``shield``: Update shield command to latest version
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+
+
+1.15.32
+=======
+
+* api-change:``appstream``: Update appstream command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``mgh``: Update mgh command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.15.31
+=======
+
+* api-change:``sns``: Update sns command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``ds``: Update ds command to latest version
+* api-change:``mediatailor``: Update mediatailor command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+
+
+1.15.30
+=======
+
+* api-change:``neptune``: Update neptune command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+
+
+1.15.29
+=======
+
+* api-change:``pi``: Update pi command to latest version
+
+
+1.15.28
+=======
+
+* api-change:``glue``: Update glue command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``appstream``: Update appstream command to latest version
+* api-change:``config``: Update config command to latest version
+
+
+1.15.27
+=======
+
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
+1.15.26
+=======
+
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``inspector``: Update inspector command to latest version
+
+
+1.15.25
+=======
+
+* api-change:``cloudformation``: Update cloudformation command to latest version
+
+
+1.15.24
+=======
+
+* api-change:``iot``: Update iot command to latest version
+* api-change:``ses``: Update ses command to latest version
+
+
+1.15.23
+=======
+
+* api-change:``codedeploy``: Update codedeploy command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+
+
 1.15.22
 =======
 

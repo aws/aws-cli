@@ -54,7 +54,7 @@ This example command describes all snapshots that have the tag ``Group=Prod``. T
 
 Command::
 
-  aws ec2 describe-snapshots --filters Name=tag-key,Values="Group" Name=tag-value,Values="Prod" --query 'Snapshots[*].{ID:SnapshotId,Time:StartTime}'
+  aws ec2 describe-snapshots --filters Name=tag:Group,Values=Prod --query "Snapshots[*].{ID:SnapshotId,Time:StartTime}"
 
 Output::
 

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.15.53
+=======
+
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``serverlessrepo``: Update serverlessrepo command to latest version
+
+
 1.15.52
 =======
 

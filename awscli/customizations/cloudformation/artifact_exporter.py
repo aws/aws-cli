@@ -210,6 +210,7 @@ def copy_to_temp_dir(filepath):
     tmp_dir = tempfile.mkdtemp()
     dst = os.path.join(tmp_dir, os.path.basename(filepath))
     shutil.copyfile(filepath, dst)
+    shutil.copystat(filepath, dst)
     return tmp_dir
 
 

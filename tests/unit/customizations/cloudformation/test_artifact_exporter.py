@@ -2,7 +2,9 @@ import mock
 import botocore.session
 import tempfile
 import os
+import shutil
 import string
+import time
 import random
 import zipfile
 
@@ -811,9 +813,46 @@ class TestArtifactExporter(unittest.TestCase):
                 os.remove(zipfile_name)
             test_file_creator.remove_all()
 
+    def test_make_idempotent_zip(self):
+        file_content = 'exports handler = (event, context, callback) => {callback(null, event);}'
+        test_file_creator = FileCreator()
+        test_file = test_file_creator.append_file('index.js', file_content)
+
+        def create_zip():
+            temp_dir = copy_to_temp_dir(test_file)
+            zipfile_name = None
+
+            try:
+                random_name = ''.join(random.choice(string.ascii_letters)
+                                      for _ in range(10))
+                outfile = os.path.join(tempfile.gettempdir(), random_name)
+
+                zipfile = make_zip(outfile, temp_dir)
+                with open(zipfile, mode='rb') as f:
+                    return f.read()
+
+            finally:
+                shutil.rmtree(temp_dir)
+                if zipfile:
+                    os.remove(zipfile)
+
+        try:
+            first_file_content = create_zip()
+
+            # We depend on system clock to achieve different modification times.
+            # Two seconds needed due to two-second precision in the zip file
+            time.sleep(2)
+
+            second_file_content = create_zip()
+            assert_equal(first_file_content, second_file_content)
+
+        finally:
+            test_file_creator.remove_all()
+
+    @patch("shutil.copystat")
     @patch("shutil.copyfile")
     @patch("tempfile.mkdtemp")
-    def test_copy_to_temp_dir(self, mkdtemp_mock, copyfile_mock):
+    def test_copy_to_temp_dir(self, mkdtemp_mock, copyfile_mock, copystat_mock):
         temp_dir = "/tmp/foo/"
         filename = "test.js"
         mkdtemp_mock.return_value = temp_dir
@@ -822,6 +861,7 @@ class TestArtifactExporter(unittest.TestCase):
 
         self.assertEqual(returned_dir, temp_dir)
         copyfile_mock.assert_called_once_with(filename, temp_dir + filename)
+        copystat_mock.assert_called_once_with(filename, temp_dir + filename)
 
 
     @contextmanager

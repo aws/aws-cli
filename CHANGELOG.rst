@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.15.54
+=======
+
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+
+
 1.15.53
 =======
 

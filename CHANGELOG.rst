@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.15.56
+=======
+
+* api-change:``glue``: Update glue command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``opsworks``: Update opsworks command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``appstream``: Update appstream command to latest version
+
+
 1.15.55
 =======
 

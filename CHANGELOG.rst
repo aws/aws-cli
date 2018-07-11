@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.15.57
+=======
+
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``s3``: Update s3 command to latest version
+
+
 1.15.56
 =======
 

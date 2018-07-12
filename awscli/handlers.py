@@ -59,6 +59,7 @@ from awscli.customizations.iot import register_create_keys_and_cert_arguments
 from awscli.customizations.iot import register_create_keys_from_csr_arguments
 from awscli.customizations.iot_data import register_custom_endpoint_note
 from awscli.customizations.kms import register_fix_kms_create_grant_docs
+from awscli.customizations.dlm.dlm import dlm_initialize
 from awscli.customizations.opsworks import initialize as opsworks_init
 from awscli.customizations.paginate import register_pagination
 from awscli.customizations.preview import register_preview_commands
@@ -162,3 +163,4 @@ def awscli_initialize(event_handlers):
     register_history_mode(event_handlers)
     register_history_commands(event_handlers)
     register_event_stream_arg(event_handlers)
+    dlm_initialize(event_handlers)

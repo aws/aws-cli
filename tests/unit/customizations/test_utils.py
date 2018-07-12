@@ -255,3 +255,15 @@ class TestUniPrint(unittest.TestCase):
         # We replace the characters that can't be encoded
         # with '?'.
         self.assertEqual(buf.getvalue(), b'SomeChars??OtherChars')
+
+
+class TestGetPolicyARNSuffix(unittest.TestCase):
+    def test_get_policy_arn_suffix(self):
+        self.assertEqual("aws-cn", utils.get_policy_arn_suffix("cn-northwest-1"))
+        self.assertEqual("aws-cn", utils.get_policy_arn_suffix("cn-northwest-2"))
+        self.assertEqual("aws-cn", utils.get_policy_arn_suffix("cn-north-1"))
+        self.assertEqual("aws-us-gov", utils.get_policy_arn_suffix("us-gov-west-1"))
+        self.assertEqual("aws", utils.get_policy_arn_suffix("ca-central-1"))
+        self.assertEqual("aws", utils.get_policy_arn_suffix("us-east-1"))
+        self.assertEqual("aws", utils.get_policy_arn_suffix("sa-east-1"))
+        self.assertEqual("aws", utils.get_policy_arn_suffix("ap-south-1"))

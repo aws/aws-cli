@@ -47,20 +47,21 @@ class PackageCommand(BasicCommand):
 
     ARG_TABLE = [
         {
-            'name': 'template-file',
-            'required': True,
-            'help_text': (
-                'The path where your AWS CloudFormation'
-                ' template is located.'
-            )
-        },
-
-        {
             'name': 's3-bucket',
             'required': True,
             'help_text': (
                 'The name of the S3 bucket where this command uploads'
                 ' the artifacts that are referenced in your template.'
+            )
+        },
+
+        {
+            'name': 'template-file',
+            'required': False,
+            'default': 'template.yaml',
+            'help_text': (
+                'The path where your AWS CloudFormation template is located.'
+                ' Defaults to template.yaml.'
             )
         },
 

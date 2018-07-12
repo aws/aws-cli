@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.15.58
+=======
+
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``iam``: Update iam command to latest version
+* api-change:``appsync``: Update appsync command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``efs``: Update efs command to latest version
+* api-change:``dlm``: Update dlm command to latest version
+
+
 1.15.57
 =======
 

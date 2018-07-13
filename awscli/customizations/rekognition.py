@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import re
+
 from awscli.arguments import CustomArgument
 
 
@@ -19,56 +21,45 @@ IMAGE_DOCSTRING_ADDENDUM = ('<p>To specify a local file use <code>--%s</code> '
                             'instead.</p>')
 
 
-class ParameterReplacement(object):
-    def __init__(self, source_param, target_param):
-        self.source_param = source_param
-        self.target_param = target_param
-
-
 FILE_PARAMETER_UPDATES = {
-    'compare-faces': [
-        ParameterReplacement('source-image', 'SourceImage'),
-        ParameterReplacement('target-image', 'TargetImage')
-    ],
-    'detect-faces': [ParameterReplacement('image', 'Image')],
-    'detect-labels': [ParameterReplacement('image', 'Image')],
-    'detect-moderation-labels': [ParameterReplacement('image', 'Image')],
-    'detect-text': [ParameterReplacement('image', 'Image')],
-    'index-faces': [ParameterReplacement('image', 'Image')],
-    'recognize-celebrities': [ParameterReplacement('image', 'Image')],
-    'search-faces-by-image': [ParameterReplacement('image', 'Image')],
+    'compare-faces.source-image': 'source-image-bytes',
+    'compare-faces.target-image': 'target-image-bytes',
+    '*.image': 'image-bytes',
 }
 
 
 def register_rekognition_detect_labels(cli):
-    for operation, params_to_update in FILE_PARAMETER_UPDATES.items():
+    for target, new_param in FILE_PARAMETER_UPDATES.items():
+        operation, old_param = target.split('.')
         cli.register('building-argument-table.rekognition.%s' % operation,
-                     ImageArgUpdater(params_to_update))
+                     ImageArgUpdater(old_param, new_param))
 
 
 class ImageArgUpdater(object):
-    def __init__(self, params_to_update):
-        self._params_to_update = params_to_update
+    def __init__(self, source_param, new_param):
+        self._source_param = source_param
+        self._new_param = new_param
 
     def __call__(self, session, argument_table, **kwargs):
-        for param_to_update in self._params_to_update:
-            self._update_param(param_to_update, argument_table)
+        if not self._source_param in argument_table:
+            return
+        self._update_param(
+            argument_table, self._source_param, self._new_param)
 
-    def _update_param(self, param_replacement, argument_table):
-        param = param_replacement.source_param
-        new_param = '%s-file' % param
+    def _update_param(self, argument_table, source_param, new_param):
         argument_table[new_param] = ImageArgument(
-            new_param, param_replacement.target_param,
+            new_param, source_param,
             help_text=IMAGE_FILE_DOCSTRING, cli_type_name='blob')
-        argument_table[param].required = False
+        argument_table[source_param].required = False
         doc_addendum = IMAGE_DOCSTRING_ADDENDUM % new_param
-        argument_table[param].documentation += doc_addendum
+        argument_table[source_param].documentation += doc_addendum
 
 
 class ImageArgument(CustomArgument):
-    def __init__(self, name, parameter_to_overwrite, **kwargs):
+    def __init__(self, name, source_param, **kwargs):
         super(ImageArgument, self).__init__(name, **kwargs)
-        self._parameter_to_overwrite = parameter_to_overwrite
+        self._parameter_to_overwrite = reverse_xform_name(source_param)
+        print(source_param, self._parameter_to_overwrite)
 
     def add_to_params(self, parameters, value):
         if value is None:
@@ -78,3 +69,11 @@ class ImageArgument(CustomArgument):
             parameters[self._parameter_to_overwrite].update(image_file_param)
         else:
             parameters[self._parameter_to_overwrite] = image_file_param
+
+
+def _upper(match):
+    return match.group(1).lstrip('-').upper()
+
+
+def reverse_xform_name(name):
+    return re.sub(r'(^.|-.)', _upper, name)

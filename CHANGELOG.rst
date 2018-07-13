@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.15.59
+=======
+
+* api-change:``kinesis-video-archived-media``: Update kinesis-video-archived-media command to latest version
+* api-change:``appstream``: Update appstream command to latest version
+* api-change:``kinesisvideo``: Update kinesisvideo command to latest version
+
+
 1.15.58
 =======
 

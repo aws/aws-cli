@@ -19,7 +19,7 @@ LIFECYCLE_DEFAULT_ROLE_NAME = "AWSDataLifecycleManagerDefaultRole"
 # Lifecycle role arn names
 LIFECYCLE_DEFAULT_MANAGED_POLICY_NAME = "AWSDataLifecycleManagerServiceRole"
 
-POLICY_ARN_PATTERN = "arn:{}:iam::aws:policy/service-role/{}"
+POLICY_ARN_PATTERN = "arn:{0}:iam::aws:policy/service-role/{1}"
 
 # Assume Role Policy definitions for roles
 LIFECYCLE_DEFAULT_ROLE_ASSUME_POLICY = {

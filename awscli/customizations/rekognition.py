@@ -15,7 +15,9 @@ import re
 from awscli.arguments import CustomArgument
 
 
-IMAGE_FILE_DOCSTRING = ('<p>The path to the image file you are uploading. '
+IMAGE_FILE_DOCSTRING = ('<p>The content of the image to be uploaded. '
+                        'To specify the content of a local file use the '
+                        'fileb:// prefix. '
                         'Example: fileb://image.png</p>')
 IMAGE_DOCSTRING_ADDENDUM = ('<p>To specify a local file use <code>--%s</code> '
                             'instead.</p>')
@@ -30,7 +32,7 @@ FILE_PARAMETER_UPDATES = {
 
 def register_rekognition_detect_labels(cli):
     for target, new_param in FILE_PARAMETER_UPDATES.items():
-        operation, old_param = target.split('.')
+        operation, old_param = target.rsplit('.', 1)
         cli.register('building-argument-table.rekognition.%s' % operation,
                      ImageArgUpdater(old_param, new_param))
 
@@ -41,10 +43,22 @@ class ImageArgUpdater(object):
         self._new_param = new_param
 
     def __call__(self, session, argument_table, **kwargs):
-        if not self._source_param in argument_table:
+        if not self._valid_target(argument_table):
             return
         self._update_param(
             argument_table, self._source_param, self._new_param)
+
+    def _valid_target(self, argument_table):
+        # We need to ensure that the target parameter is a shape that
+        # looks like it is the Image shape. This means checking that it
+        # has a member named Bytes of the blob type.
+        if self._source_param in argument_table:
+            param = argument_table[self._source_param]
+            input_model = param.argument_model
+            bytes_member = input_model.members.get('Bytes')
+            if bytes_member is not None and bytes_member.type_name == 'blob':
+                return True
+        return False
 
     def _update_param(self, argument_table, source_param, new_param):
         argument_table[new_param] = ImageArgument(
@@ -59,7 +73,6 @@ class ImageArgument(CustomArgument):
     def __init__(self, name, source_param, **kwargs):
         super(ImageArgument, self).__init__(name, **kwargs)
         self._parameter_to_overwrite = reverse_xform_name(source_param)
-        print(source_param, self._parameter_to_overwrite)
 
     def add_to_params(self, parameters, value):
         if value is None:

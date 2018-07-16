@@ -405,16 +405,16 @@ EXPORT_DICT = {
 }
 
 
-def includes_transform_export_handler(template_dict, s3_uploader):
+def include_transform_export_handler(template_dict, uploader):
     if template_dict.get("Name", None) != "AWS::Include":
         return template_dict
-    includes_location = template_dict.get("Parameters", {}).get("Location", {})
-    if (is_local_file(includes_location)):
-        template_dict["Parameters"]["Location"] = s3_uploader.upload_with_dedup(includes_location)
+    include_location = template_dict.get("Parameters", {}).get("Location", {})
+    if (is_local_file(include_location)):
+        template_dict["Parameters"]["Location"] = uploader.upload_with_dedup(include_location)
     return template_dict
 
 GLOBAL_EXPORT_DICT = {
-    "Fn::Transform": includes_transform_export_handler
+    "Fn::Transform": include_transform_export_handler
 }
 
 
@@ -454,9 +454,10 @@ class Template(object):
         """
         for key, val in template_dict.iteritems():
             if key in GLOBAL_EXPORT_DICT:
-                val = GLOBAL_EXPORT_DICT[key](val, self.uploader)
+                template_dict[key] = GLOBAL_EXPORT_DICT[key](val, self.uploader)
             elif type(val) is dict:
                 self.export_global_artifacts(val)
+        return self.template_dict
 
 
     def export(self):
@@ -470,7 +471,7 @@ class Template(object):
         if "Resources" not in self.template_dict:
             return self.template_dict
 
-        self.export_global_artifacts(self.template_dict)
+        self.template_dict = self.export_global_artifacts(self.template_dict)
 
         for resource_id, resource in self.template_dict["Resources"].items():
 

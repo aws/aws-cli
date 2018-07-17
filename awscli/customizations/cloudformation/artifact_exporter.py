@@ -452,7 +452,7 @@ class Template(object):
         here we iterate through the template dict and export params with a 
         handler defined in GLOBAL_EXPORT_DICT
         """
-        for key, val in template_dict.iteritems():
+        for key, val in iter(template_dict.items()):
             if key in GLOBAL_EXPORT_DICT:
                 template_dict[key] = GLOBAL_EXPORT_DICT[key](val, self.uploader)
             elif type(val) is dict:

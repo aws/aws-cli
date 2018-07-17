@@ -818,9 +818,10 @@ class TestArtifactExporter(unittest.TestCase):
                 exported_template = template_exporter.export_global_artifacts(template_exporter.template_dict)
 
                 first_call_args, kwargs = include_transform_export_handler_mock.call_args_list[0]
-                self.assertEquals(first_call_args[0], {"Name": "AWS::Include", "Parameters": {"Location": "foo.yaml"}})
                 second_call_args, kwargs = include_transform_export_handler_mock.call_args_list[1]
-                self.assertEquals(second_call_args[0], {"Name": "AWS::OtherTransform"})
+                call_args = [first_call_args[0], second_call_args[0]]
+                self.assertTrue({"Name": "AWS::Include", "Parameters": {"Location": "foo.yaml"}} in call_args)
+                self.assertTrue({"Name": "AWS::OtherTransform"} in call_args)
                 self.assertEquals(include_transform_export_handler_mock.call_count, 2)
                 #new s3 url is added to include location
                 self.assertEquals(exported_template["Resources"]["Resource1"]["Properties"]["Fn::Transform"], {"Name": "AWS::Include", "Parameters": {"Location": "s3://foo"}})

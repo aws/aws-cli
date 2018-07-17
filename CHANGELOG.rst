@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.15.60
+=======
+
+* api-change:``snowball``: Update snowball command to latest version
+* api-change:``polly``: Update polly command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+* enhancement:rekognition: Added top level parameters to rekognition to make it possible to supply images to the operations that require bytes.
+
+
 1.15.59
 =======
 

@@ -7,7 +7,7 @@ import random
 import zipfile
 
 from nose.tools import assert_true, assert_false, assert_equal
-from contextlib import contextmanager, closing, nested
+from contextlib import contextmanager, closing
 from mock import patch, Mock, MagicMock
 from botocore.stub import Stubber
 from awscli.testutils import unittest, FileCreator
@@ -807,25 +807,23 @@ class TestArtifactExporter(unittest.TestCase):
         include_transform_export_handler_mock.return_value = {"Name": "AWS::Include", "Parameters": {"Location": "s3://foo"}}
         yaml_parse_mock.return_value = template_dict
 
-        with nested(
-            patch("awscli.customizations.cloudformation.artifact_exporter.open",
-                open_mock(read_data=template_str)),
-            patch.dict(GLOBAL_EXPORT_DICT, {"Fn::Transform": include_transform_export_handler_mock})) as (open_mock):
+        with patch(
+                "awscli.customizations.cloudformation.artifact_exporter.open",
+                open_mock(read_data=template_str)) as open_mock:
+            with patch.dict(GLOBAL_EXPORT_DICT, {"Fn::Transform": include_transform_export_handler_mock}):
+                template_exporter = Template(
+                    template_path, parent_dir, self.s3_uploader_mock,
+                    resources_to_export)
 
-            dict_patch = patch.dict(GLOBAL_EXPORT_DICT)
-            template_exporter = Template(
-                template_path, parent_dir, self.s3_uploader_mock,
-                resources_to_export)
+                exported_template = template_exporter.export_global_artifacts(template_exporter.template_dict)
 
-            exported_template = template_exporter.export_global_artifacts(template_exporter.template_dict)
-
-            first_call_args, kwargs = include_transform_export_handler_mock.call_args_list[0]
-            self.assertEquals(first_call_args[0], {"Name": "AWS::Include", "Parameters": {"Location": "foo.yaml"}})
-            second_call_args, kwargs = include_transform_export_handler_mock.call_args_list[1]
-            self.assertEquals(second_call_args[0], {"Name": "AWS::OtherTransform"})
-            self.assertEquals(include_transform_export_handler_mock.call_count, 2)
-            #new s3 url is added to include location
-            self.assertEquals(exported_template["Resources"]["Resource1"]["Properties"]["Fn::Transform"], {"Name": "AWS::Include", "Parameters": {"Location": "s3://foo"}})
+                first_call_args, kwargs = include_transform_export_handler_mock.call_args_list[0]
+                self.assertEquals(first_call_args[0], {"Name": "AWS::Include", "Parameters": {"Location": "foo.yaml"}})
+                second_call_args, kwargs = include_transform_export_handler_mock.call_args_list[1]
+                self.assertEquals(second_call_args[0], {"Name": "AWS::OtherTransform"})
+                self.assertEquals(include_transform_export_handler_mock.call_count, 2)
+                #new s3 url is added to include location
+                self.assertEquals(exported_template["Resources"]["Resource1"]["Properties"]["Fn::Transform"], {"Name": "AWS::Include", "Parameters": {"Location": "s3://foo"}})
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_file")
     def test_include_transform_export_handler(self, is_local_file_mock):

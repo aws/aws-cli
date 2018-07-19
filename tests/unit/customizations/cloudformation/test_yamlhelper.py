@@ -30,6 +30,30 @@ class TestYaml(unittest.TestCase):
         Key5: !GetAtt OneMore.Outputs.Arn
         Key6: !Condition OtherCondition
     """
+    
+    yaml_with_aliases = """
+    Resource:
+        Foobar: &Foobar
+            Qux: Quux
+            Overridable: unknown
+        Baz:
+            <<: *Foobar
+            Overridable: True
+    """
+    
+    
+    parsed_yaml_with_aliases = {
+      "Resource": {
+        "Foobar": {
+          "Qux": "Quux", 
+          "Overridable": "unknown"
+        }, 
+        "Baz": {
+          "Qux": "Quux", 
+          "Overridable": True
+        }
+      }
+    }
 
     parsed_yaml_dict = {
         "Resource": {
@@ -68,6 +92,10 @@ class TestYaml(unittest.TestCase):
         output_again = yaml_parse(formatted_str)
         self.assertEquals(output, output_again)
 
+    def test_yaml_aliases_resolution(self):
+        output = yaml_parse(self.yaml_with_aliases)
+        self.assertEquals(self.parsed_yaml_with_aliases, output)
+        
     def test_yaml_getatt(self):
         # This is an invalid syntax for !GetAtt. But make sure the code does not crash when we encouter this syntax
         # Let CloudFormation interpret this value at runtime

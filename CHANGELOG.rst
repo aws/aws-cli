@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.15.62
+=======
+
+* bugfix:datapipeline: Fixed an issue with multiple values for the same key when using the parameter-values option for datapipeline commands.
+* api-change:``mediapackage``: Update mediapackage command to latest version
+
+
 1.15.61
 =======
 

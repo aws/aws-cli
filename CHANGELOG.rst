@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.15.63
+=======
+
+* api-change:``dlm``: Update dlm command to latest version
+* api-change:``config``: Update config command to latest version
+
+
 1.15.62
 =======
 

@@ -73,6 +73,10 @@ PARAMFILE_DISABLED = set([
 
     'machinelearning.predict.predict-endpoint',
 
+    'api.mediatailor.put-playback-configuration.ad-decision-server-url',
+    'api.mediatailor.put-playback-configuration.slate-ad-url',
+    'api.mediatailor.put-playback-configuration.video-content-source-url',
+
     'rds.copy-db-cluster-snapshot.pre-signed-url',
     'rds.create-db-cluster.pre-signed-url',
     'rds.copy-db-snapshot.pre-signed-url',

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.15.64
+=======
+
+* api-change:``dynamodb``: Update dynamodb command to latest version
+
+
 1.15.63
 =======
 

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.15.65
+=======
+
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.15.64
 =======
 

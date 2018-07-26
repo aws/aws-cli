@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.15.66
+=======
+
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``greengrass``: Update greengrass command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``inspector``: Update inspector command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+
+
 1.15.65
 =======
 

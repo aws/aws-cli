@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.15.67
+=======
+
+* api-change:``iot``: Update iot command to latest version
+* api-change:``directconnect``: Update directconnect command to latest version
+* api-change:``cloudhsmv2``: Update cloudhsmv2 command to latest version
+* api-change:``glacier``: Update glacier command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``mq``: Update mq command to latest version
+
+
 1.15.66
 =======
 

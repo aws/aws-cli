@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.15.68
+=======
+
+* api-change:``iot``: Update iot command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``kms``: Update kms command to latest version
+* api-change:``connect``: Update connect command to latest version
+
+
 1.15.67
 =======
 

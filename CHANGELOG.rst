@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.15.70
+=======
+
+* api-change:``polly``: Update polly command to latest version
+* api-change:``resource-groups``: Update resource-groups command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``kinesis``: Update kinesis command to latest version
+
+
 1.15.69
 =======
 

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.15.71
+=======
+
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+
+
 1.15.70
 =======
 

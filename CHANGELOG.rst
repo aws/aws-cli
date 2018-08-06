@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.15.72
+=======
+
+* api-change:``health``: Update health command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+
+
 1.15.71
 =======
 

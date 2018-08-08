@@ -212,6 +212,6 @@ class TestFlattenCommands(unittest.TestCase):
         self.assertEqual(False, argument_table['foo'].required)
         self.assertEqual(True, argument_table['bar'].required)
 
-        # Make sure docs can be overriden and get the defaults
+        # Make sure docs can be overridden and get the defaults
         self.assertEqual('Original docs', argument_table['foo'].documentation)
         self.assertEqual('Some help text', argument_table['bar'].documentation)

@@ -4,7 +4,7 @@ The following example creates a hosted connection on the specified interconnect.
 
 Command::
 
-  aws directconnect allocate-hosted-conection --bandwidth 500Mbps --connection-name mydcinterconnect --owner-account 123456789012 --connection-id dxcon-fgktov66 --vlan 101
+  aws directconnect allocate-hosted-connection --bandwidth 500Mbps --connection-name mydcinterconnect --owner-account 123456789012 --connection-id dxcon-fgktov66 --vlan 101
 
 Output::
 

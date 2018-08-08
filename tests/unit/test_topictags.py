@@ -393,7 +393,7 @@ class TestTopicTagDBQuery(TestTopicTagDB):
                               {'foo': ['topic-name-1'],
                                'bar': ['topic-name-1', 'topic-name-2']})
 
-    def topic_query_with_non_existant_tag(self):
+    def topic_query_with_non_existent_tag(self):
         tag_dict = {
             'topic-name-1': {
                 'category': ['foo']

@@ -191,7 +191,7 @@ should then be used to further limit bandwidth consumption if setting
 desired rate. This is recommended because ``max_concurrent_requests`` controls
 how many threads are currently running. So if a high ``max_concurrent_requests``
 value is set and a low ``max_bandwidth`` value is set, it may result in
-threads having to wait unneccessarily which can lead to excess resource
+threads having to wait unnecessarily which can lead to excess resource
 consumption and connection timeouts.
 
 

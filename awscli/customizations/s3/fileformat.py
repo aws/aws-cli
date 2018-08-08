@@ -65,7 +65,7 @@ class FileFormat(object):
         the editted path.
         Formatting Rules:
             1) If a destination file is taking on a source name, it must end
-               with the apporpriate operating system seperator
+               with the appropriate operating system separator
 
         General Options:
             1) If the operation is on a directory, the destination file will
@@ -73,11 +73,11 @@ class FileFormat(object):
             2) If the path of the destination exists and is a directory it
                will always use the name of the source file.
             3) If the destination path ends with the appropriate operating
-               system seperator but is not an existing directory, the
+               system separator but is not an existing directory, the
                appropriate directories will be made and the file will use the
                source's name.
             4) If the destination path does not end with the appropriate
-               operating system seperator and is not an existing directory, the
+               operating system separator and is not an existing directory, the
                appropriate directories will be created and the file name will
                be of the one provided.
         """

@@ -48,19 +48,19 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         # Return code will be 2 for invalid parameter ``--recursive``
         self.run_cmd(cmdline, expected_rc=2)
 
-    def test_sync_from_non_existant_directory(self):
-        non_existant_directory = os.path.join(self.files.rootdir, 'fakedir')
-        cmdline = '%s %s s3://bucket/' % (self.prefix, non_existant_directory)
+    def test_sync_from_non_existent_directory(self):
+        non_existent_directory = os.path.join(self.files.rootdir, 'fakedir')
+        cmdline = '%s %s s3://bucket/' % (self.prefix, non_existent_directory)
         self.parsed_responses = [
             {"CommonPrefixes": [], "Contents": []}
         ]
         _, stderr, _ = self.run_cmd(cmdline, expected_rc=255)
         self.assertIn('does not exist', stderr)
 
-    def test_sync_to_non_existant_directory(self):
+    def test_sync_to_non_existent_directory(self):
         key = 'foo.txt'
-        non_existant_directory = os.path.join(self.files.rootdir, 'fakedir')
-        cmdline = '%s s3://bucket/ %s' % (self.prefix, non_existant_directory)
+        non_existent_directory = os.path.join(self.files.rootdir, 'fakedir')
+        cmdline = '%s s3://bucket/ %s' % (self.prefix, non_existent_directory)
         self.parsed_responses = [
             {"CommonPrefixes": [], "Contents": [
                 {"Key": key, "Size": 3,
@@ -71,7 +71,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         self.run_cmd(cmdline, expected_rc=0)
         # Make sure the file now exists.
         self.assertTrue(
-            os.path.exists(os.path.join(non_existant_directory, key)))
+            os.path.exists(os.path.join(non_existent_directory, key)))
 
     def test_glacier_sync_with_force_glacier(self):
         self.parsed_responses = [

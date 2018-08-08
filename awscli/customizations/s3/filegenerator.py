@@ -234,7 +234,7 @@ class FileGenerator(object):
 
     def normalize_sort(self, names, os_sep, character):
         """
-        The purpose of this function is to ensure that the same path seperator
+        The purpose of this function is to ensure that the same path separator
         is used when sorting.  In windows, the path operator is a backslash as
         opposed to a forward slash which can lead to differences in sorting
         between s3 and a windows machine.

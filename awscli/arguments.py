@@ -234,7 +234,7 @@ class CustomArgument(BaseCLIArgument):
         self.argument_model = argument_model
 
         # If the top level element is a list then set nargs to
-        # accept multiple values seperated by a space.
+        # accept multiple values separated by a space.
         if self.argument_model is not None and \
                 self.argument_model.type_name == 'list':
             self._nargs = '+'

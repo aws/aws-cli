@@ -44,7 +44,7 @@ class TestAliases(BaseAWSCommandParamsTest):
         )
         self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
 
-    def test_subcommand_alias_with_additonal_params(self):
+    def test_subcommand_alias_with_additional_params(self):
         self.add_alias(
             'my-alias', 'ec2 describe-regions --region-names us-east-1')
         cmdline = 'my-alias'
@@ -56,7 +56,7 @@ class TestAliases(BaseAWSCommandParamsTest):
         )
         self.assertEqual(self.operations_called[0][0].name, 'DescribeRegions')
 
-    def test_subcommand_alias_then_additonal_params(self):
+    def test_subcommand_alias_then_additional_params(self):
         self.add_alias('my-alias', 'ec2')
         cmdline = 'my-alias describe-regions --region-names us-east-1'
         self.assert_params_for_cmd(cmdline, {'RegionNames': ['us-east-1']})
@@ -203,7 +203,7 @@ class TestAliases(BaseAWSCommandParamsTest):
         self.run_cmd('mkdir')
         self.assertTrue(os.path.isdir(directory_to_make))
 
-    def test_external_alias_then_additonal_args(self):
+    def test_external_alias_then_additional_args(self):
         # The external alias is tested by using mkdir; a command that
         # is universal for the various OS's we support
         directory_to_make = os.path.join(self.files.rootdir, 'newdir')

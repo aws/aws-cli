@@ -24,7 +24,7 @@ from awscli.testutils import unittest, aws
 class TestIntegCliInputJson(unittest.TestCase):
     """This tests to see if a service properly uses the generated input JSON.
 
-    The s3 service was chosen becuase its operations do not take a lot of time.
+    The s3 service was chosen because its operations do not take a lot of time.
     These tests are essentially smoke tests. They are testing that the
     ``--cli-input-json`` works. It is by no means exhaustive.
     """

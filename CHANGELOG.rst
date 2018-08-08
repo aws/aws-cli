@@ -1358,7 +1358,7 @@ CHANGELOG
 * api-change:``es``: Update es command to latest version
 * api-change:``waf``: Update waf command to latest version
 * enhancement:s3: Add a no-progress flag to s3 transfer commands. Resolves `#519 <https://github.com/aws/aws-cli/issues/519>`__.
-* enchancement:cloudwatch: Extract ``--storage-resolution`` in put-metric-data as a top level argument.
+* enhancement:cloudwatch: Extract ``--storage-resolution`` in put-metric-data as a top level argument.
 
 
 1.11.170
@@ -3227,7 +3227,7 @@ CHANGELOG
 ======
 
 * bug:``aws configure set``: Fix issue when adding entries to an empty profile section (`issue 1806 <https://github.com/aws/aws-cli/pull/1806>`__)
-* feature:``aws route53``: Add suport for SNI health checks
+* feature:``aws route53``: Add support for SNI health checks
 
 
 1.10.6
@@ -3280,7 +3280,7 @@ CHANGELOG
 * feature:``aws cloudfront create-distribution``: Adds support for --origin-domain-name and --default-root-object
 * feature:``aws cloudfront update-distribution``: Adds support for --default-root-object
 * feature:``aws iot``: adds support for topic rules
-* feature:``aws cloudformation``: adds suport for ContinueUpdateRollback
+* feature:``aws cloudformation``: adds support for ContinueUpdateRollback
 
 
 1.9.21
@@ -3356,7 +3356,7 @@ CHANGELOG
 * feature:``aws rds``: Added support for specifying port number.
 * feature:``aws ds``: Added support for Microsoft ActiveDirctory.
 * feature:``aws route53``: Added support for TrafficFlow, a new management and modeling layer for Route53.
-* feature:Timeouts: Added additonal options for configuring socket timeouts.
+* feature:Timeouts: Added additional options for configuring socket timeouts.
 
 
 1.9.10
@@ -4133,7 +4133,7 @@ CHANGELOG
 * feature:``aws cognito-sync``: Update ``aws cognito-sync`` command to latest version.
 * feature:``aws opsworks``: Update ``aws opsworks`` command to latest version.
 * feature:``aws elasticbeanstalk``: Add support for bundling logs.
-* feature:``aws kinesis``: Add suport for tagging.
+* feature:``aws kinesis``: Add support for tagging.
 * feature:Page Size: Add a ``--page-size`` option, that controls page size when perfoming an operation that uses pagination. (`issue 889 <https://github.com/aws/aws-cli/pull/889>`__)
 * bugfix:``aws s3``: Added support for ignoring and warning about files that do not exist, user does not have read permissions, or are special files (i.e. sockets, FIFOs, character special devices, and block special devices) (`issue 881 <https://github.com/aws/aws-cli/pull/881>`__)
 * feature:Parameter Shorthand: Added support for ``structure(list-scalar, scalar)`` parameter shorthand. (`issue 882 <https://github.com/aws/aws-cli/pull/882>`__)
@@ -4442,7 +4442,7 @@ CHANGELOG
 1.2.10
 ======
 
-* feature:``aws autoscaling``: Add support for creating launch configuration or Auto Scaling groups using an Amazon EC2 instance, for attaching Amazon EC2 isntances to an existing Auto Scaling group, and for describing the limits on the Auto Scaling resources in the ``aws autoscaling`` command
+* feature:``aws autoscaling``: Add support for creating launch configuration or Auto Scaling groups using an Amazon EC2 instance, for attaching Amazon EC2 instances to an existing Auto Scaling group, and for describing the limits on the Auto Scaling resources in the ``aws autoscaling`` command
 * feature:Documentation: Update documentation in the ``aws support`` command
 * bugfix:``aws ec2``: Allow the ``--protocol`` customization for ``CreateNetworkAclEntry`` to also work for ``ReplaceNetworkAclEntry`` (`issue 559 <https://github.com/aws/aws-cli/issues/559>`__)
 * bugfix:``aws s3``: Remove one second delay when tasks are finished running for several ``aws s3`` subcommands (`issue 551 <https://github.com/aws/aws-cli/pull/551>`__)

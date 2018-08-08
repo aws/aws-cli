@@ -115,7 +115,7 @@ class AppendFilter(argparse.Action):
     --exclude and the value will be the rule to apply.  This will
     format all of the rules inputted into the command line
     in a way compatible with the Filter class.  Note that rules that
-    appear later in the command line take preferance over rulers that
+    appear later in the command line take preference over rulers that
     appear earlier.
     """
     def __call__(self, parser, namespace, values, option_string=None):
@@ -292,9 +292,9 @@ def guess_content_type(filename):
     """
     try:
         return mimetypes.guess_type(filename)[0]
-    # This catches a bug in the mimetype libary where some MIME types
+    # This catches a bug in the mimetype library where some MIME types
     # specifically on windows machines cause a UnicodeDecodeError
-    # because the MIME type in the Windows registery has an encoding
+    # because the MIME type in the Windows registry has an encoding
     # that cannot be properly encoded using the default system encoding.
     # https://bugs.python.org/issue9291
     #
@@ -417,7 +417,7 @@ class RequestParamsMapper(object):
         >>> print(request_params)
         {'StorageClass': 'GLACIER', 'ServerSideEncryption': 'AES256'}
 
-    Note that existing parameters in ``request_params`` will be overriden if
+    Note that existing parameters in ``request_params`` will be overridden if
     a parameter in ``cli_params`` maps to the existing parameter.
     """
     @classmethod
@@ -606,7 +606,7 @@ class OnDoneFilteredSubscriber(BaseSubscriber):
             future.result()
         except Exception as e:
             future_exception = e
-        # If the result propogates an error, call the on_failure
+        # If the result propagates an error, call the on_failure
         # method instead.
         if future_exception:
             self._on_failure(future, future_exception)

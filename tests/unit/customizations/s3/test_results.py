@@ -1532,7 +1532,7 @@ class TestNoProgressResultPrinter(BaseResultPrinterTest):
         self.result_printer(progress_result)
         self.assertEqual(self.out_file.getvalue(), '')
 
-    def test_does_print_sucess_result(self):
+    def test_does_print_success_result(self):
         transfer_type = 'upload'
         src = 'file'
         dest = 's3://mybucket/mykey'
@@ -1599,7 +1599,7 @@ class TestOnlyShowErrorsResultPrinter(BaseResultPrinterTest):
         self.result_printer(progress_result)
         self.assertEqual(self.out_file.getvalue(), '')
 
-    def test_does_not_print_sucess_result(self):
+    def test_does_not_print_success_result(self):
         transfer_type = 'upload'
         src = 'file'
         dest = 's3://mybucket/mykey'

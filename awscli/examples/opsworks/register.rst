@@ -22,7 +22,7 @@ such as a default private SSH key. If that fails, ``register`` queries for the p
 
   aws opsworks register --infrastructure-class=ec2 --stack-id 935450cc-61e0-4b03-a3e0-160ac817d2bb i-12345678
 
-The following example registers an EC2 instance with the specifed stack from a separate workstation.
+The following example registers an EC2 instance with the specified stack from a separate workstation.
 It uses the ``--ssh-username`` and ``--ssh-private-key`` arguments to explicitly
 specify the SSH username and private key file that the command uses to log into the instance.
 ``ec2-user`` is the standard username for Amazon Linux instances. Use ``ubuntu`` for Ubuntu instances. ::

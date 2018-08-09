@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.15.75
+=======
+
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``dax``: Update dax command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
 1.15.74
 =======
 

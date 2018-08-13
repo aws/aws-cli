@@ -16,7 +16,7 @@ import logging
 
 import botocore.session
 from botocore import __version__ as botocore_version
-from botocore.hooks import HierarchicalEmitter
+from botocore.hooks import AliasedEventEmitter
 from botocore import xform_name
 from botocore.compat import copy_kwargs, OrderedDict
 from botocore.exceptions import NoCredentialsError
@@ -62,7 +62,7 @@ def main():
 
 
 def create_clidriver():
-    emitter = HierarchicalEmitter()
+    emitter = AliasedEventEmitter()
     session = botocore.session.Session(EnvironmentVariables, emitter)
     _set_user_agent_for_session(session)
     load_plugins(session.full_config.get('plugins', {}),

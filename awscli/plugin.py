@@ -13,6 +13,7 @@
 import logging
 
 from botocore.hooks import HierarchicalEmitter
+from botocore.hooks import AliasedEventEmitter
 
 log = logging.getLogger('awscli.plugin')
 
@@ -43,7 +44,7 @@ def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):
         plugin_mapping.update(BUILTIN_PLUGINS)
     modules = _import_plugins(plugin_mapping)
     if event_hooks is None:
-        event_hooks = HierarchicalEmitter()
+        event_hooks = AliasedEventEmitter()
     for name, plugin in zip(plugin_mapping.keys(), modules):
         log.debug("Initializing plugin %s: %s", name, plugin)
         plugin.awscli_initialize(event_hooks)

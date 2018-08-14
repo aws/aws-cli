@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.15.78
+=======
+
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``es``: Update es command to latest version
+
+
 1.15.77
 =======
 

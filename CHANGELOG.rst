@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.15.79
+=======
+
+* api-change:``devicefarm``: Update devicefarm command to latest version
+
+
 1.15.78
 =======
 

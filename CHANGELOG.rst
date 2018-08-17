@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.15.81
+=======
+
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+* api-change:``dax``: Update dax command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+
+
 1.15.80
 =======
 

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.15.84
+=======
+
+* api-change:``snowball``: Update snowball command to latest version
+
+
 1.15.83
 =======
 

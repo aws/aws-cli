@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.15.85
+=======
+
+* api-change:``iotanalytics``: Update iotanalytics command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+
+
 1.15.84
 =======
 

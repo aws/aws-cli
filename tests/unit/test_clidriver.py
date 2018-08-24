@@ -20,7 +20,7 @@ import sys
 import mock
 import nose
 from awscli.compat import six
-from botocore.vendored.requests import models
+from botocore.awsrequest import AWSResponse
 from botocore.exceptions import NoCredentialsError
 from botocore.compat import OrderedDict
 import botocore.model
@@ -717,8 +717,7 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
         self.endpoint = self.create_endpoint.return_value
         self.endpoint.host = 'https://example.com'
         # Have the endpoint give a dummy empty response.
-        http_response = models.Response()
-        http_response.status_code = 200
+        http_response = AWSResponse(None, 200, {}, None)
         self.endpoint.make_request.return_value = (
             http_response, {})
 
@@ -812,7 +811,7 @@ class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):
         error_msg = ("Error parsing parameter '--filters': "
                      "Unable to retrieve http://does/not/exist.json: "
                      "received non 200 status code of 404")
-        with mock.patch('botocore.vendored.requests.get') as get:
+        with mock.patch('awscli.paramfile.URLLib3Session.send') as get:
             get.return_value.status_code = 404
             self.assert_params_for_cmd(
                 'ec2 describe-instances --filters http://does/not/exist.json',

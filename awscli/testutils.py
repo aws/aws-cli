@@ -52,7 +52,7 @@ from botocore.session import Session
 from botocore.exceptions import ClientError
 from botocore.exceptions import WaiterError
 import botocore.loaders
-from botocore.vendored import requests
+from botocore.awsrequest import AWSResponse
 
 import awscli.clidriver
 from awscli.plugin import load_plugins
@@ -357,8 +357,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         }
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
-        self.http_response = requests.models.Response()
-        self.http_response.status_code = 200
+        self.http_response = AWSResponse(None, 200, {}, None)
         self.parsed_response = {}
         self.make_request_patch = mock.patch('botocore.endpoint.Endpoint.make_request')
         self.make_request_is_patched = False
@@ -475,7 +474,8 @@ class BaseCLIWireResponseTest(unittest.TestCase):
         }
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
-        self.send_patch = mock.patch('botocore.endpoint.Session.send')
+        # TODO: fix this patch when we have a better way to stub out responses
+        self.send_patch = mock.patch('botocore.endpoint.Endpoint._send')
         self.send_is_patched = False
         self.driver = create_clidriver()
 

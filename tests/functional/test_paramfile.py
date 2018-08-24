@@ -55,27 +55,25 @@ class TestCLIFollowParamURLDefault(BaseTestCLIFollowParamURL):
             expected_param='foobar'
         )
 
-    @patch('awscli.paramfile.requests.get')
-    def test_does_use_http_prefix(self, mock_get):
+    @patch('awscli.paramfile.URLLib3Session.send')
+    def test_does_use_http_prefix(self, mock_send):
         content = 'http_content'
-        mock_get.return_value = FakeResponse(content=content)
+        mock_send.return_value = FakeResponse(content=content)
         param = 'http://foobar.com'
         self.assert_param_expansion_is_correct(
             provided_param=param,
             expected_param=content
         )
-        mock_get.assert_called_with(param)
 
-    @patch('awscli.paramfile.requests.get')
-    def test_does_use_https_prefix(self, mock_get):
+    @patch('awscli.paramfile.URLLib3Session.send')
+    def test_does_use_https_prefix(self, mock_send):
         content = 'https_content'
-        mock_get.return_value = FakeResponse(content=content)
+        mock_send.return_value = FakeResponse(content=content)
         param = 'https://foobar.com'
         self.assert_param_expansion_is_correct(
             provided_param=param,
             expected_param=content
         )
-        mock_get.assert_called_with(param)
 
     def test_does_use_file_prefix(self):
         path = self.files.create_file('foobar.txt', 'file content')
@@ -112,23 +110,23 @@ class TestCLIFollowParamURLDisabled(BaseTestCLIFollowParamURL):
             expected_param=param
         )
 
-    @patch('awscli.paramfile.requests.get')
-    def test_does_not_use_http_prefix(self, mock_get):
+    @patch('awscli.paramfile.URLLib3Session.send')
+    def test_does_not_use_http_prefix(self, mock_send):
         param = 'http://foobar'
         self.assert_param_expansion_is_correct(
             provided_param=param,
             expected_param=param
         )
-        mock_get.assert_not_called()
+        mock_send.assert_not_called()
 
-    @patch('awscli.paramfile.requests.get')
-    def test_does_not_use_https_prefix(self, mock_get):
+    @patch('awscli.paramfile.URLLib3Session.send')
+    def test_does_not_use_https_prefix(self, mock_send):
         param = 'https://foobar'
         self.assert_param_expansion_is_correct(
             provided_param=param,
             expected_param=param
         )
-        mock_get.assert_not_called()
+        mock_send.assert_not_called()
 
     def test_does_use_file_prefix(self):
         path = self.files.create_file('foobar.txt', 'file content')
@@ -161,27 +159,25 @@ class TestCLIFollowParamURLEnabled(BaseTestCLIFollowParamURL):
     def test_does_not_prefixes_when_none_in_param(self):
         self.assert_param_expansion_is_correct('foobar', 'foobar')
 
-    @patch('awscli.paramfile.requests.get')
-    def test_does_use_http_prefix(self, mock_get):
+    @patch('awscli.paramfile.URLLib3Session.send')
+    def test_does_use_http_prefix(self, mock_send):
         content = 'http_content'
-        mock_get.return_value = FakeResponse(content=content)
+        mock_send.return_value = FakeResponse(content=content)
         param = 'http://foobar.com'
         self.assert_param_expansion_is_correct(
             provided_param=param,
             expected_param=content
         )
-        mock_get.assert_called_with(param)
 
-    @patch('awscli.paramfile.requests.get')
-    def test_does_use_https_prefix(self, mock_get):
+    @patch('awscli.paramfile.URLLib3Session.send')
+    def test_does_use_https_prefix(self, mock_send):
         content = 'https_content'
-        mock_get.return_value = FakeResponse(content=content)
+        mock_send.return_value = FakeResponse(content=content)
         param = 'https://foobar.com'
         self.assert_param_expansion_is_correct(
             provided_param=param,
             expected_param=content
         )
-        mock_get.assert_called_with(param)
 
     def test_does_use_file_prefix(self):
         path = self.files.create_file('foobar.txt', 'file content')

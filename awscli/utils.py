@@ -116,7 +116,7 @@ def _find_quote_char_in_part(part):
 
 def find_service_and_method_in_event_name(event_name):
     """
-    Grabs the service name and the operation name from an event name.
+    Grabs the service id and the operation name from an event name.
     This is making the assumption that the event name is in the form
     event.service.operation.
     """

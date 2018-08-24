@@ -62,11 +62,10 @@ def main():
 
 
 def create_clidriver():
-    emitter = HierarchicalEmitter()
-    session = botocore.session.Session(EnvironmentVariables, emitter)
+    session = botocore.session.Session(EnvironmentVariables)
     _set_user_agent_for_session(session)
     load_plugins(session.full_config.get('plugins', {}),
-                 event_hooks=emitter)
+                 event_hooks=session.get_component('event_emitter'))
     driver = CLIDriver(session=session)
     return driver
 

@@ -47,7 +47,6 @@ except ImportError as e:
     # different story.
     mock = None
 from awscli.compat import six
-from botocore.hooks import HierarchicalEmitter
 from botocore.session import Session
 from botocore.exceptions import ClientError
 from botocore.exceptions import WaiterError

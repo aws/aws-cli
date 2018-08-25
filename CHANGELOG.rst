@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.0
+======
+
+* api-change:``events``: Update events command to latest version
+* feature:urllib3: Add support for ipv6 proxies by upgrading urllib3 version.
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+
+
 1.15.85
 =======
 

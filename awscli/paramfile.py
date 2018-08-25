@@ -14,7 +14,8 @@ import logging
 import os
 import copy
 
-from botocore.vendored import requests
+from botocore.awsrequest import AWSRequest
+from botocore.httpsession import URLLib3Session
 from botocore.exceptions import ProfileNotFound
 from awscli.compat import six
 
@@ -225,7 +226,8 @@ def get_file(prefix, path, mode):
 
 def get_uri(prefix, uri):
     try:
-        r = requests.get(uri)
+        session = URLLib3Session()
+        r = session.send(AWSRequest('GET', uri).prepare())
         if r.status_code == 200:
             return r.text
         else:

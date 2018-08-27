@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.2
+======
+
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``iotanalytics``: Update iotanalytics command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``signer``: Update signer command to latest version
+
+
 1.16.1
 ======
 

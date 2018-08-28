@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.3
+======
+
+* api-change:``glue``: Update glue command to latest version
+* api-change:``xray``: Update xray command to latest version
+
+
 1.16.2
 ======
 

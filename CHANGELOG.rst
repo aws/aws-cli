@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.4
+======
+
+* api-change:``sagemaker-runtime``: Update sagemaker-runtime command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``mediapackage``: Update mediapackage command to latest version
+
+
 1.16.3
 ======
 

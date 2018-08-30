@@ -8,7 +8,7 @@ Command::
 
 Output::
 
-{
+  {
     "ShareResults": [
         {
             "PrincipalId": "anonymous",
@@ -18,4 +18,4 @@ Output::
             "StatusMessage": ""
         }
     ]
-}
+  }

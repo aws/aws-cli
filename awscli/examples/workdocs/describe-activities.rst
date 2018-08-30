@@ -8,7 +8,7 @@ Command::
 
 Output::
 
-{
+  {
     "UserActivities": [
         {
             "Type": "DOCUMENT_VERSION_DOWNLOADED",
@@ -48,4 +48,4 @@ Output::
         }
     ],
     "Marker": "DnF1ZXJ5VGhlbkZldGNoAgAAAAAAAAS7FmlTaU1OdlFTU1h1UU00VVFIbDlRWHcAAAAAAAAJTRY3bWh5eUgzaVF1ZXN2RUE5Wm8tTTdR"
-}
+  }

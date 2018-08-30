@@ -8,7 +8,7 @@ Command::
 
 Output::
 
-{
+  {
     "DocumentVersions": [
         {
             "Id": "1534452029587-15e129dfc187505c407588df255be83de2920d733859f1d2762411d22a83e3ef",
@@ -39,4 +39,4 @@ Output::
             }
         }
     ]
-}
+  }

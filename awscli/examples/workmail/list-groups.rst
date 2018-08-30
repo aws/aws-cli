@@ -8,7 +8,7 @@ Command::
 
 Output::
 
-{
+  {
     "Groups": [
 
         {
@@ -22,4 +22,4 @@ Output::
             "State": "ENABLED"
         }
     ]
-}
+  }

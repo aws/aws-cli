@@ -8,7 +8,7 @@ Command::
 
 Output::
 
-{
+  {
     "OrganizationSummaries": [
         {
             "OrganizationId": "m-d281d0a2fd824be5b6cd3d3ce909fd27",
@@ -16,4 +16,4 @@ Output::
             "State": "Active"
         }
     ]
-}
+  }

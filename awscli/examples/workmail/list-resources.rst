@@ -8,7 +8,7 @@ Command::
 
 Output::
 
-{
+  {
     "Resources": [
         {
             "Id": "r-7afe0efbade843a58cdc10251fce992c",
@@ -17,4 +17,4 @@ Output::
             "State": "ENABLED"
         }
     ]
-}
+  }

@@ -8,7 +8,7 @@ Command::
 
 Output::
 
-{
+  {
     "Path": {
         "Components": [
             {
@@ -25,4 +25,4 @@ Output::
             }
         ]
     }
-}
+  }

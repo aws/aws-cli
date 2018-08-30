@@ -8,7 +8,7 @@ Command::
 
 Output::
 
-{
+  {
     "Metadata": {
         "Id": "d90d93c1fe44bad0c8471e973ebaab339090401a95e777cffa58e977d2983b65",
         "CreatorId": "S-1-1-11-1111111111-2222222222-3333333333-3333&d-926726012c",
@@ -28,4 +28,4 @@ Output::
         },
         "ResourceState": "ACTIVE"
     }
-}
+  }

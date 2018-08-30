@@ -8,9 +8,9 @@ Command::
 
 Output::
 
-{
+  {
     "Aliases": [
         "exampleAlias@site.awsapps.com",
         "exampleAlias1@site.awsapps.com"
     ]
-}
+  }

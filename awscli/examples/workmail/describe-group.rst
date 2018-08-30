@@ -8,8 +8,8 @@ Command::
 
 Output::
 
-{
+  {
     "GroupId": "S-1-1-11-1122222222-2222233333-3333334444-4444",
     "Name": "exampleGroup1",
     "State": "ENABLED"
-}
+  }

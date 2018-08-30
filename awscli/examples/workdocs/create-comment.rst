@@ -8,7 +8,7 @@ Command::
 
 Output::
 
-{
+  {
     "Comment": {
         "CommentId": "1534799058197-c7f5c84de9115875bbca93e0367bbebac609541d461636b760849b88b1609dd5",
         "ThreadId": "1534799058197-c7f5c84de9115875bbca93e0367bbebac609541d461636b760849b88b1609dd5",
@@ -24,4 +24,4 @@ Output::
         "Status": "PUBLISHED",
         "Visibility": "PUBLIC"
     }
-}
+  }

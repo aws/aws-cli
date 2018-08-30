@@ -8,7 +8,7 @@ Command::
 
 Output::
 
-{
+  {
     "Principals": [
         {
             "Id": "anonymous",
@@ -41,4 +41,4 @@ Output::
             ]
         }
     ]
-}
+  }

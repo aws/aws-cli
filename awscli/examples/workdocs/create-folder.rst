@@ -8,7 +8,7 @@ Command::
 
 Output::
 
-{
+  {
     "Metadata": {
         "Id": "50893c0af679524d1a0e0651130ed6d073e1a05f95bd12c42dcde5d35634ed08",
         "Name": "documents",
@@ -21,4 +21,4 @@ Output::
         "Size": 0,
         "LatestVersionSize": 0
     }
-}
+  }

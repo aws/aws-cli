@@ -8,7 +8,7 @@ Command::
 
 Output::
 
-{
+  {
     "ResourceId": "r-7afe0efbade843a58cdc10251fce992c",
     "Name": "exampleRoom1",
     "Type": "ROOM",
@@ -18,4 +18,4 @@ Output::
         "AutoDeclineConflictingRequests": true
     },
     "State": "ENABLED"
-}
+  }

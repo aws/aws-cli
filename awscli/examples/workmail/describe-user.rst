@@ -8,7 +8,7 @@ Command::
 
 Output::
 
-{
+  {
     "UserId": "S-1-1-11-1111111111-2222222222-3333333333-3333",
     "Name": "exampleUser1",
     "Email": "exampleUser1@site.awsapps.com",
@@ -16,4 +16,4 @@ Output::
     "State": "ENABLED",
     "UserRole": "USER",
     "EnabledDate": 1532459261.827
-}
+  }

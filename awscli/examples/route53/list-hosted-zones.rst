@@ -4,7 +4,7 @@ The following ``list-hosted-zones`` command lists summary information about the 
 
   aws route53 list-hosted-zones
 
-If you have more than 100 hosted zones, or if you want to list them in groups smaller than 100, include the ``--maxitems`` parameter. For example, to list hosted zones one at a time, use the following command::
+If you have more than 100 hosted zones, or if you want to list them in groups smaller than 100, include the ``--max-items`` parameter. For example, to list hosted zones one at a time, use the following command::
 
   aws route53 list-hosted-zones --max-items 1
 

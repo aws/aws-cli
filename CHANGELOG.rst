@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.6
+======
+
+* api-change:``waf``: Update waf command to latest version
+* api-change:``waf-regional``: Update waf-regional command to latest version
+* api-change:``eks``: Update eks command to latest version
+
+
 1.16.5
 ======
 

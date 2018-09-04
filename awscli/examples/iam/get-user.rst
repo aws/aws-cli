@@ -11,7 +11,7 @@ Output::
           "UserName": "Bob",
           "Path": "/",
           "CreateDate": "2012-09-21T23:03:13Z",
-          "UserId": "AKIAIOSFODNN7EXAMPLE",
+          "UserId": "AIDAIOSFODNN7EXAMPLE",
           "Arn": "arn:aws:iam::123456789012:user/Bob"
       }
   }

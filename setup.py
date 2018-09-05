@@ -44,6 +44,10 @@ setup_options = dict(
     long_description=open('README.rst').read(),
     author='Amazon Web Services',
     url='http://aws.amazon.com/cli/',
+    project_urls={
+        'GitHub': 'https://github.com/aws/aws-cli',
+        'Changelog': 'https://github.com/aws/aws-cli/blob/master/CHANGELOG.rst',
+    },
     scripts=['bin/aws', 'bin/aws.cmd',
              'bin/aws_completer', 'bin/aws_zsh_completer.sh',
              'bin/aws_bash_completer'],

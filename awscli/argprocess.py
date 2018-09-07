@@ -245,7 +245,7 @@ def _is_complex_shape(model):
 
 class ParamShorthand(object):
 
-    def _uses_old_list_case(self, service_name, operation_name, argument_name):
+    def _uses_old_list_case(self, service_id, operation_name, argument_name):
         """
         Determines whether a given operation for a service needs to use the
         deprecated shorthand parsing case for lists of structures that only have
@@ -260,14 +260,14 @@ class ParamShorthand(object):
                 'rebuild-workspaces': ['rebuild-workspace-requests'],
                 'terminate-workspaces': ['terminate-workspace-requests']
             },
-            'elb': {
+            'elastic-load-balancing': {
                 'remove-tags': ['tags'],
                 'describe-instance-health': ['instances'],
                 'deregister-instances-from-load-balancer': ['instances'],
                 'register-instances-with-load-balancer': ['instances']
             }
         }
-        cases = cases.get(service_name, {}).get(operation_name, [])
+        cases = cases.get(service_id, {}).get(operation_name, [])
         return argument_name in cases
 
 
@@ -308,18 +308,18 @@ class ParamShorthandParser(ParamShorthand):
         if not self._should_parse_as_shorthand(cli_argument, value):
             return
         else:
-            service_name, operation_name = \
+            service_id, operation_name = \
                 find_service_and_method_in_event_name(event_name)
             return self._parse_as_shorthand(
-                cli_argument, value, service_name, operation_name)
+                cli_argument, value, service_id, operation_name)
 
-    def _parse_as_shorthand(self, cli_argument, value, service_name,
+    def _parse_as_shorthand(self, cli_argument, value, service_id,
                             operation_name):
         try:
             LOG.debug("Parsing param %s as shorthand",
                         cli_argument.cli_name)
             handled_value = self._handle_special_cases(
-                cli_argument, value, service_name, operation_name)
+                cli_argument, value, service_id, operation_name)
             if handled_value is not None:
                 return handled_value
             if isinstance(value, list):
@@ -344,7 +344,7 @@ class ParamShorthandParser(ParamShorthand):
             raise ParamError(cli_argument.cli_name, str(e))
         return parsed
 
-    def _handle_special_cases(self, cli_argument, value, service_name,
+    def _handle_special_cases(self, cli_argument, value, service_id,
                               operation_name):
         # We need to handle a few special cases that the previous
         # parser handled in order to stay backwards compatible.
@@ -352,7 +352,7 @@ class ParamShorthandParser(ParamShorthand):
         if model.type_name == 'list' and \
            model.member.type_name == 'structure' and \
            len(model.member.members) == 1 and \
-           self._uses_old_list_case(service_name, operation_name, cli_argument.name):
+           self._uses_old_list_case(service_id, operation_name, cli_argument.name):
             # First special case is handling a list of structures
             # of a single element such as:
             #
@@ -411,7 +411,7 @@ class ParamShorthandDocGen(ParamShorthand):
             return _is_complex_shape(argument_model)
         return False
 
-    def generate_shorthand_example(self, cli_argument, service_name,
+    def generate_shorthand_example(self, cli_argument, service_id,
                                    operation_name):
         """Generate documentation for a CLI argument.
 
@@ -427,7 +427,7 @@ class ParamShorthandDocGen(ParamShorthand):
 
         """
         docstring = self._handle_special_cases(
-            cli_argument, service_name, operation_name)
+            cli_argument, service_id, operation_name)
         if docstring is self._DONT_DOC:
             return None
         elif docstring:
@@ -445,13 +445,13 @@ class ParamShorthandDocGen(ParamShorthand):
         except TooComplexError:
             return ''
 
-    def _handle_special_cases(self, cli_argument, service_name, operation_name):
+    def _handle_special_cases(self, cli_argument, service_id, operation_name):
         model = cli_argument.argument_model
         if model.type_name == 'list' and \
                 model.member.type_name == 'structure' and \
                 len(model.member.members) == 1 and \
                 self._uses_old_list_case(
-                    service_name, operation_name, cli_argument.name):
+                    service_id, operation_name, cli_argument.name):
             member_name = list(model.member.members)[0]
             return '%s %s1 %s2 %s3' % (cli_argument.cli_name, member_name,
                                        member_name, member_name)

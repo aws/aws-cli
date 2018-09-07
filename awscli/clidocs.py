@@ -420,7 +420,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         doc.write('}')
 
     def doc_option_example(self, arg_name, help_command, event_name, **kwargs):
-        service_name, operation_name = \
+        service_id, operation_name = \
             find_service_and_method_in_event_name(event_name)
         doc = help_command.doc
         cli_argument = help_command.arg_table[arg_name]
@@ -433,7 +433,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         docgen = ParamShorthandDocGen()
         if docgen.supports_shorthand(cli_argument.argument_model):
             example_shorthand_syntax = docgen.generate_shorthand_example(
-                cli_argument, service_name, operation_name)
+                cli_argument, service_id, operation_name)
             if example_shorthand_syntax is None:
                 # If the shorthand syntax returns a value of None,
                 # this indicates to us that there is no example

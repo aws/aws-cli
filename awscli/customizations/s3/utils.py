@@ -365,7 +365,7 @@ class BucketLister(object):
         if extra_args is not None:
             kwargs.update(extra_args)
 
-        paginator = self._client.get_paginator('list_objects')
+        paginator = self._client.get_paginator('list_objects_v2')
         pages = paginator.paginate(**kwargs)
         for page in pages:
             contents = page.get('Contents', [])

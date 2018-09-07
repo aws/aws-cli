@@ -500,7 +500,7 @@ class ListCommand(S3Command):
 
     def _list_all_objects(self, bucket, key, page_size=None,
                           request_payer=None):
-        paginator = self.client.get_paginator('list_objects')
+        paginator = self.client.get_paginator('list_objects_v2')
         paging_args = {
             'Bucket': bucket, 'Prefix': key, 'Delimiter': '/',
             'PaginationConfig': {'PageSize': page_size}
@@ -548,7 +548,7 @@ class ListCommand(S3Command):
 
     def _list_all_objects_recursive(self, bucket, key, page_size=None,
                                     request_payer=None):
-        paginator = self.client.get_paginator('list_objects')
+        paginator = self.client.get_paginator('list_objects_v2')
         paging_args = {
             'Bucket': bucket, 'Prefix': key,
             'PaginationConfig': {'PageSize': page_size}

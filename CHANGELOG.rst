@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.11
+=======
+
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``cloudhsmv2``: Update cloudhsmv2 command to latest version
+
+
 1.16.10
 =======
 

@@ -1081,7 +1081,8 @@ class CommandArchitecture(object):
     def _get_file_generator_request_parameters_skeleton(self):
         return {
             'HeadObject': {},
-            'ListObjects': {}
+            'ListObjects': {},
+            'ListObjectsV2': {}
         }
 
     def _map_request_payer_params(self, request_parameters):
@@ -1092,6 +1093,11 @@ class CommandArchitecture(object):
         )
         RequestParamsMapper.map_list_objects_params(
             request_parameters['ListObjects'], {
+                'request_payer': self.parameters.get('request_payer')
+            }
+        )
+        RequestParamsMapper.map_list_objects_params(
+            request_parameters['ListObjectsV2'], {
                 'request_payer': self.parameters.get('request_payer')
             }
         )

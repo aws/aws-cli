@@ -319,6 +319,9 @@ class ServerlessApiResource(Resource):
 
 class GraphQLSchemaResource(Resource):
     PROPERTY_NAME = "DefinitionS3Location"
+    # Don't package the directory if DefinitionS3Location is omitted.
+    # Necessary to support Definition
+    PACKAGE_NULL_PROPERTY = False
 
 
 class LambdaFunctionResource(ResourceWithS3UrlDict):

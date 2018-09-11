@@ -15,6 +15,8 @@ This command can upload local artifacts specified by following properties of a r
     - ``Code`` property for the ``AWS::Lambda::Function`` resource
     - ``CodeUri`` property for the ``AWS::Serverless::Function`` resource
     - ``DefinitionS3Location`` property for the ``AWS::AppSync::GraphQLSchema`` resource
+    - ``RequestMappingTemplateS3Location`` property for the ``AWS::AppSync::Resolver`` resource
+    - ``ResponseMappingTemplateS3Location`` property for the ``AWS::AppSync::Resolver`` resource
     - ``DefinitionUri`` property for the ``AWS::Serverless::Api`` resource
     - ``SourceBundle`` property for the ``AWS::ElasticBeanstalk::ApplicationVersion`` resource
     - ``TemplateURL`` property for the ``AWS::CloudFormation::Stack`` resource

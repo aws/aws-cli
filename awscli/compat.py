@@ -15,6 +15,8 @@ import shlex
 import os
 import platform
 import zipfile
+import signal
+import contextlib
 
 from botocore.compat import six
 #import botocore.compat
@@ -318,3 +320,22 @@ def get_popen_kwargs_for_pager_cmd(pager_cmd=None):
         pager_cmd = shlex.split(pager_cmd)
     popen_kwargs['args'] = pager_cmd
     return popen_kwargs
+
+
+@contextlib.contextmanager
+def ignore_user_entered_signals():
+    """
+    Ignores user entered signals to avoid process getting killed.
+    """
+    if is_windows:
+        signal_list = [signal.SIGINT]
+    else:
+        signal_list = [signal.SIGINT, signal.SIGQUIT, signal.SIGTSTP]
+    actual_signals = []
+    for user_signal in signal_list:
+        actual_signals.append(signal.signal(user_signal, signal.SIG_IGN))
+    try:
+        yield
+    finally:
+        for sig, user_signal in enumerate(signal_list):
+            signal.signal(user_signal, actual_signals[sig])

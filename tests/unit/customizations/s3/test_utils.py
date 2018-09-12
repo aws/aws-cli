@@ -469,7 +469,7 @@ class TestRequestParamsMapperRequestPayer(unittest.TestCase):
 
     def test_list_objects(self):
         params = {}
-        RequestParamsMapper.map_list_objects_params(
+        RequestParamsMapper.map_list_objects_v2_params(
             params, self.cli_params)
         self.assertEqual(params, {'RequestPayer': 'requester'})
 

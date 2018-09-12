@@ -480,7 +480,7 @@ class RequestParamsMapper(object):
         cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod
-    def map_list_objects_params(cls, request_params, cli_params):
+    def map_list_objects_v2_params(cls, request_params, cli_params):
         cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod

@@ -1091,12 +1091,7 @@ class CommandArchitecture(object):
                 'request_payer': self.parameters.get('request_payer')
             }
         )
-        RequestParamsMapper.map_list_objects_params(
-            request_parameters['ListObjects'], {
-                'request_payer': self.parameters.get('request_payer')
-            }
-        )
-        RequestParamsMapper.map_list_objects_params(
+        RequestParamsMapper.map_list_objects_v2_params(
             request_parameters['ListObjectsV2'], {
                 'request_payer': self.parameters.get('request_payer')
             }

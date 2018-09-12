@@ -98,7 +98,7 @@ class TestLSCommand(unittest.TestCase):
                                summarize=False, request_payer=None)
         parsed_globals = mock.Mock()
         ls_command._run_main(parsed_args, parsed_globals)
-        call = self.session.create_client.return_value.list_objects
+        call = self.session.create_client.return_value.list_objects_v2
         paginate = self.session.create_client.return_value.get_paginator\
             .return_value.paginate
         # We should make no operation calls.

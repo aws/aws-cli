@@ -1149,7 +1149,7 @@ class TestLs(BaseS3IntegrationTest):
         self.assertEqual(p.rc, 255)
         self.assertIn(
             ('An error occurred (NoSuchBucket) when calling the '
-             'ListObjects operation: The specified bucket does not exist'),
+             'ListObjectsV2 operation: The specified bucket does not exist'),
             p.stderr)
         # There should be no stdout if we can't find the bucket.
         self.assertEqual(p.stdout, '')

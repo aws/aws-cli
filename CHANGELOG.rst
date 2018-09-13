@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.14
+=======
+
+* api-change:``polly``: Update polly command to latest version
+
+
 1.16.13
 =======
 

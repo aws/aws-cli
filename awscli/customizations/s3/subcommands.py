@@ -500,7 +500,7 @@ class ListCommand(S3Command):
 
     def _list_all_objects(self, bucket, key, page_size=None,
                           request_payer=None):
-        paginator = self.client.get_paginator('list_objects')
+        paginator = self.client.get_paginator('list_objects_v2')
         paging_args = {
             'Bucket': bucket, 'Prefix': key, 'Delimiter': '/',
             'PaginationConfig': {'PageSize': page_size}
@@ -548,7 +548,7 @@ class ListCommand(S3Command):
 
     def _list_all_objects_recursive(self, bucket, key, page_size=None,
                                     request_payer=None):
-        paginator = self.client.get_paginator('list_objects')
+        paginator = self.client.get_paginator('list_objects_v2')
         paging_args = {
             'Bucket': bucket, 'Prefix': key,
             'PaginationConfig': {'PageSize': page_size}
@@ -1081,7 +1081,8 @@ class CommandArchitecture(object):
     def _get_file_generator_request_parameters_skeleton(self):
         return {
             'HeadObject': {},
-            'ListObjects': {}
+            'ListObjects': {},
+            'ListObjectsV2': {}
         }
 
     def _map_request_payer_params(self, request_parameters):
@@ -1090,8 +1091,8 @@ class CommandArchitecture(object):
                 'request_payer': self.parameters.get('request_payer')
             }
         )
-        RequestParamsMapper.map_list_objects_params(
-            request_parameters['ListObjects'], {
+        RequestParamsMapper.map_list_objects_v2_params(
+            request_parameters['ListObjectsV2'], {
                 'request_payer': self.parameters.get('request_payer')
             }
         )

@@ -32,9 +32,9 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         ]
         self.run_cmd(cmdline, expected_rc=0)
 
-        # The only operations we should have called are ListObjects/PutObject.
+        # The only operations we should have called are ListObjectsV2/PutObject.
         self.assertEqual(len(self.operations_called), 2, self.operations_called)
-        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
         self.assertEqual(self.operations_called[1][0].name, 'PutObject')
         # Make sure that the specified web address is used as opposed to the
         # contents of the web address when uploading the object
@@ -90,7 +90,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             self.prefix, self.files.rootdir)
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(len(self.operations_called), 2, self.operations_called)
-        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
         self.assertEqual(self.operations_called[1][0].name, 'GetObject')
 
     def test_handles_glacier_incompatible_operations(self):
@@ -105,7 +105,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         # There should not have been a download attempted because the
         # operation was skipped because it is glacier incompatible.
         self.assertEqual(len(self.operations_called), 1)
-        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
         self.assertIn('GLACIER', stderr)
 
     def test_turn_off_glacier_warnings(self):
@@ -120,7 +120,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         # There should not have been a download attempted because the
         # operation was skipped because it is glacier incompatible.
         self.assertEqual(len(self.operations_called), 1)
-        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
         self.assertEqual('', stderr)
 
     def test_warning_on_invalid_timestamp(self):
@@ -139,7 +139,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
 
         # We should still have put the object
         self.assertEqual(len(self.operations_called), 2, self.operations_called)
-        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
         self.assertEqual(self.operations_called[1][0].name, 'PutObject')
 
     def test_sync_with_delete_on_downloads(self):
@@ -152,9 +152,9 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         ]
         self.run_cmd(cmdline, expected_rc=0)
 
-        # The only operations we should have called are ListObjects.
+        # The only operations we should have called are ListObjectsV2.
         self.assertEqual(len(self.operations_called), 1, self.operations_called)
-        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
 
         self.assertFalse(os.path.exists(full_path))
 
@@ -185,7 +185,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         # We should not call PutObject because the file was deleted
         # before we could transfer it
         self.assertEqual(len(self.operations_called), 1, self.operations_called)
-        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
 
     # This test covers the case where an OSError is emitted.
     def test_sync_skips_over_files_deleted_between_listing_and_transfer_oserror(self):
@@ -208,7 +208,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         # We should not call PutObject because the file was deleted
         # before we could transfer it
         self.assertEqual(len(self.operations_called), 1, self.operations_called)
-        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
 
     def test_request_payer(self):
         cmdline = '%s s3://sourcebucket/ s3://mybucket --request-payer' % (
@@ -234,13 +234,13 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                ('ListObjects', {
+                ('ListObjectsV2', {
                     'Bucket': 'sourcebucket',
                     'Prefix': '',
                     'EncodingType': 'url',
                     'RequestPayer': 'requester',
                 }),
-                ('ListObjects', {
+                ('ListObjectsV2', {
                     'Bucket': 'mybucket',
                     'Prefix': '',
                     'EncodingType': 'url',
@@ -280,13 +280,13 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                ('ListObjects', {
+                ('ListObjectsV2', {
                     'Bucket': 'sourcebucket',
                     'Prefix': '',
                     'EncodingType': 'url',
                     'RequestPayer': 'requester',
                 }),
-                ('ListObjects', {
+                ('ListObjectsV2', {
                     'Bucket': 'mybucket',
                     'Prefix': '',
                     'EncodingType': 'url',

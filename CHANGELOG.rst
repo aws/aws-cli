@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.16.15
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``elastictranscoder``: Update elastictranscoder command to latest version
+* enhancement:s3: ``aws s3`` subcommands that list objects will use ListObjectsV2 instead of ListObjects `#3549 <https://github.com/aws/aws-cli/issues/3549>`__.
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
 1.16.14
 =======
 

@@ -318,7 +318,7 @@ class FileGenerator(object):
             yield self._list_single_object(s3_path)
         else:
             lister = BucketLister(self._client)
-            extra_args = self.request_parameters.get('ListObjects', {})
+            extra_args = self.request_parameters.get('ListObjectsV2', {})
             for key in lister.list_objects(bucket=bucket, prefix=prefix,
                                            page_size=self.page_size,
                                            extra_args=extra_args):

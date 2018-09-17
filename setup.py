@@ -31,12 +31,6 @@ requires = ['botocore==1.12.38',
             'PyYAML>=3.10,<=3.13']
 
 
-if sys.version_info[:2] == (2, 6):
-    # For python2.6 we have to require argparse since it
-    # was not in stdlib until 2.7.
-    requires.append('argparse>=1.1')
-
-
 setup_options = dict(
     name='awscli',
     version=find_version("awscli", "__init__.py"),
@@ -52,11 +46,6 @@ setup_options = dict(
                              'examples/*/*/*.rst', 'topics/*.rst',
                              'topics/*.json']},
     install_requires=requires,
-    extras_require={
-        ':python_version=="2.6"': [
-            'argparse>=1.1',
-        ]
-    },
     license="Apache License 2.0",
     classifiers=(
         'Development Status :: 5 - Production/Stable',
@@ -66,11 +55,8 @@ setup_options = dict(
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',

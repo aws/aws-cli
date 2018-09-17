@@ -1,4 +1,4 @@
-# Copyright 2012-2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2012-2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -33,6 +33,8 @@ import string
 import binascii
 from pprint import pformat
 from subprocess import Popen, PIPE
+import unittest
+
 
 from awscli.compat import StringIO
 
@@ -57,15 +59,6 @@ import awscli.clidriver
 from awscli.plugin import load_plugins
 from awscli.clidriver import CLIDriver
 from awscli import EnvironmentVariables
-
-
-# The unittest module got a significant overhaul
-# in 2.7, so if we're in 2.6 we can use the backported
-# version unittest2.
-if sys.version_info[:2] == (2, 6):
-    import unittest2 as unittest
-else:
-    import unittest
 
 
 # In python 3, order matters when calling assertEqual to
@@ -715,7 +708,7 @@ def _get_memory_with_ps(pid):
     else:
         # Get the RSS from output that looks like this:
         # USER       PID  %CPU %MEM      VSZ    RSS   TT  STAT STARTED      TIME COMMAND
-        # user     47102   0.0  0.1  2437000   4496 s002  S+    7:04PM   0:00.12 python2.6
+        # user     47102   0.0  0.1  2437000   4496 s002  S+    7:04PM   0:00.12 python2
         return int(stdout.splitlines()[1].split()[5]) * 1024
 
 

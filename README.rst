@@ -72,6 +72,7 @@ Although not officially maintained by AWS, for macOS users, you can also use  `H
 
     $ brew install awscli
 
+Details here: https://formulae.brew.sh/formula/awscli
 
 ------------
 CLI Releases

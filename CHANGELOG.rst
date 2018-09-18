@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.16
+=======
+
+* api-change:``es``: Update es command to latest version
+* api-change:``rekognition``: Update rekognition command to latest version
+
+
 1.16.15
 =======
 

@@ -179,7 +179,7 @@ class TestEKSClient(unittest.TestCase):
                             "-i",
                             "ExampleCluster"
                         ]),
-                    ("command", AUTH_BIN)
+                    ("command", AUTH_BIN+".exe")
                 ]))
             ]))
         ])

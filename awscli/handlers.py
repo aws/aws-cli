@@ -50,7 +50,6 @@ from awscli.customizations.ec2.secgroupsimplify import register_secgroup
 from awscli.customizations.ec2.paginate import register_ec2_page_size_injector
 from awscli.customizations.ecr import register_ecr_commands
 from awscli.customizations.emr.emr import emr_initialize
-from awscli.customizations.eks import initialize as eks_initialize
 from awscli.customizations.gamelift import register_gamelift_commands
 from awscli.customizations.generatecliskeleton import \
     register_generate_cli_skeleton
@@ -133,7 +132,6 @@ def awscli_initialize(event_handlers):
     datapipeline.register_customizations(event_handlers)
     cloudsearch_init(event_handlers)
     emr_initialize(event_handlers)
-    eks_initialize(event_handlers)
     register_cloudsearchdomain(event_handlers)
     register_s3_endpoint(event_handlers)
     register_generate_cli_skeleton(event_handlers)

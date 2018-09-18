@@ -30,7 +30,6 @@ class CLIDocumentEventHandler(object):
     def __init__(self, help_command):
         self.help_command = help_command
         self.register(help_command.session, help_command.event_class)
-        self.help_command.doc.translation_map = self.build_translation_map()
         self._arg_groups = self._build_arg_table_groups(help_command)
         self._documented_arg_groups = []
 
@@ -40,9 +39,6 @@ class CLIDocumentEventHandler(object):
             if arg.group_name is not None:
                 arg_groups.setdefault(arg.group_name, []).append(arg)
         return arg_groups
-
-    def build_translation_map(self):
-        return dict()
 
     def _get_argument_type_name(self, shape, default):
         if is_json_value_header(shape):
@@ -249,13 +245,6 @@ class ProviderDocumentEventHandler(CLIDocumentEventHandler):
 
 class ServiceDocumentEventHandler(CLIDocumentEventHandler):
 
-    def build_translation_map(self):
-        d = {}
-        service_model = self.help_command.obj
-        for operation_name in service_model.operation_names:
-            d[operation_name] = xform_name(operation_name, '-')
-        return d
-
     # A service document has no synopsis.
     def doc_synopsis_start(self, help_command, **kwargs):
         pass
@@ -308,31 +297,6 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
 class OperationDocumentEventHandler(CLIDocumentEventHandler):
 
     AWS_DOC_BASE = 'https://docs.aws.amazon.com/goto/WebAPI'
-
-    def build_translation_map(self):
-        operation_model = self.help_command.obj
-        d = {}
-        for cli_name, cli_argument in self.help_command.arg_table.items():
-            if cli_argument.argument_model is not None:
-                argument_name = cli_argument.argument_model.name
-                if argument_name in d:
-                    previous_mapping = d[argument_name]
-                    # If the argument name is a boolean argument, we want the
-                    # the translation to default to the one that does not start
-                    # with --no-. So we check if the cli parameter currently
-                    # being used starts with no- and if stripping off the no-
-                    # results in the new proposed cli argument name. If it
-                    # does, we assume we have the postive form of the argument
-                    # which is the name we want to use in doc translations.
-                    if cli_argument.cli_type_name == 'boolean' and \
-                            previous_mapping.startswith('no-') and \
-                            cli_name == previous_mapping[3:]:
-                        d[argument_name] = cli_name
-                else:
-                    d[argument_name] = cli_name
-        for operation_name in operation_model.service_model.operation_names:
-            d[operation_name] = xform_name(operation_name, '-')
-        return d
 
     def doc_description(self, help_command, **kwargs):
         doc = help_command.doc
@@ -456,7 +420,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         doc.write('}')
 
     def doc_option_example(self, arg_name, help_command, event_name, **kwargs):
-        service_name, operation_name = \
+        service_id, operation_name = \
             find_service_and_method_in_event_name(event_name)
         doc = help_command.doc
         cli_argument = help_command.arg_table[arg_name]
@@ -469,7 +433,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         docgen = ParamShorthandDocGen()
         if docgen.supports_shorthand(cli_argument.argument_model):
             example_shorthand_syntax = docgen.generate_shorthand_example(
-                cli_argument, service_name, operation_name)
+                cli_argument, service_id, operation_name)
             if example_shorthand_syntax is None:
                 # If the shorthand syntax returns a value of None,
                 # this indicates to us that there is no example
@@ -587,7 +551,6 @@ class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
     def __init__(self, help_command):
         self.help_command = help_command
         self.register(help_command.session, help_command.event_class)
-        self.help_command.doc.translation_map = self.build_translation_map()
         self._topic_tag_db = TopicTagDB()
         self._topic_tag_db.load_json_index()
 

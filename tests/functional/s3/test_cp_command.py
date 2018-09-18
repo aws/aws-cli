@@ -98,6 +98,21 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertEqual(self.operations_called[0][1]['Bucket'], 'bucket')
         self.assertEqual(self.operations_called[0][1]['Expires'], '90')
 
+    def test_upload_onezone_ia(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = ('%s %s s3://bucket/key.txt --storage-class ONEZONE_IA' %
+                   (self.prefix, full_path))
+        self.parsed_responses = \
+            [{'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        args = self.operations_called[0][1]
+        self.assertEqual(args['Key'], 'key.txt')
+        self.assertEqual(args['Bucket'], 'bucket')
+        self.assertEqual(args['StorageClass'], 'ONEZONE_IA')
+
     def test_operations_used_in_download_file(self):
         self.parsed_responses = [
             {"ContentLength": "100", "LastModified": "00:00:00Z"},
@@ -118,10 +133,10 @@ class TestCPCommand(BaseCPCommandTest):
         cmdline = '%s s3://bucket/key.txt %s --recursive' % (
             self.prefix, self.files.rootdir)
         self.run_cmd(cmdline, expected_rc=0)
-        # We called ListObjects but had no objects to download, so
-        # we only have a single ListObjects operation being called.
+        # We called ListObjectsV2 but had no objects to download, so
+        # we only have a single ListObjectsV2 operation being called.
         self.assertEqual(len(self.operations_called), 1, self.operations_called)
-        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
 
     def test_website_redirect_ignore_paramfile(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
@@ -253,7 +268,7 @@ class TestCPCommand(BaseCPCommandTest):
                   % (self.prefix, self.files.rootdir)
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(len(self.operations_called), 2, self.operations_called)
-        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
         self.assertEqual(self.operations_called[1][0].name, 'GetObject')
 
     def test_recursive_glacier_download_without_force_glacier(self):
@@ -272,7 +287,7 @@ class TestCPCommand(BaseCPCommandTest):
             self.prefix, self.files.rootdir)
         _, stderr, _ = self.run_cmd(cmdline, expected_rc=2)
         self.assertEqual(len(self.operations_called), 1, self.operations_called)
-        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
         self.assertIn('GLACIER', stderr)
 
     def test_warns_on_glacier_incompatible_operation(self):
@@ -769,7 +784,7 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                ('ListObjects', {
+                ('ListObjectsV2', {
                     'Bucket': 'mybucket',
                     'Prefix': '',
                     'EncodingType': 'url',
@@ -884,7 +899,7 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                ('ListObjects', {
+                ('ListObjectsV2', {
                     'Bucket': 'sourcebucket',
                     'Prefix': '',
                     'EncodingType': 'url',

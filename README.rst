@@ -21,6 +21,7 @@ The aws-cli package works on Python versions:
 * 3.4.x and greater
 * 3.5.x and greater
 * 3.6.x and greater
+* 3.7.x and greater
 
 .. attention::
    We recommend that all customers regularly monitor the
@@ -32,13 +33,17 @@ The aws-cli package works on Python versions:
 Installation
 ------------
 
-The easiest way to install aws-cli is to use `pip`_::
+The easiest way to install aws-cli is to use `pip`_ in a ``virtualenv``::
 
     $ pip install awscli
 
-or, if you are not installing in a ``virtualenv``::
+or, if you are not installing in a ``virtualenv``, to install globally::
 
     $ sudo pip install awscli
+
+or for your user::
+
+    $ pip install --user awscli
 
 If you have the aws-cli installed and want to upgrade to the latest version
 you can run::
@@ -94,13 +99,13 @@ For tcsh::
 
 You should add this to your startup scripts to enable it for future sessions.
 
-For zsh please refer to bin/aws_zsh_completer.sh.  Source that file, e.g.
-from your `~/.zshrc`, and make sure you run `compinit` before::
+For zsh please refer to ``bin/aws_zsh_completer.sh``.  Source that file, e.g.
+from your ``~/.zshrc``, and make sure you run ``compinit`` before::
 
     $ source bin/aws_zsh_completer.sh
 
-For now the bash compatibility auto completion (bashcompinit) is used.
-For further details please refer to the top of bin/aws_zsh_completer.sh.
+For now the bash compatibility auto completion (``bashcompinit``) is used.
+For further details please refer to the top of ``bin/aws_zsh_completer.sh``.
 
 ---------------
 Getting Started
@@ -259,7 +264,7 @@ from the CLI as well by running ``aws help config-vars``.
 Accessing Services With Global Endpoints
 ----------------------------------------
 
-Some services, such as AWS Identity and Access Management (IAM)
+Some services, such as *AWS Identity and Access Management* (IAM)
 have a single, global endpoint rather than different endpoints for
 each region.
 
@@ -270,7 +275,7 @@ Therefore, the following::
 
     $ aws iam list-users
 
-Will automatically use the global endpoint for the IAM service
+will automatically use the global endpoint for the IAM service
 regardless of the value of the ``AWS_DEFAULT_REGION`` environment
 variable or the ``region`` variable specified in your profile.
 
@@ -300,7 +305,7 @@ entering the value directly on the command line.
 Let's use the ``authorize-security-group-ingress`` command shown above.
 Rather than provide the value of the ``--ip-permissions`` parameter directly
 in the command, you could first store the values in a file.  Let's call
-the file ip_perms.json::
+the file ``ip_perms.json``::
 
     {"FromPort":22,
      "ToPort":22,
@@ -314,7 +319,7 @@ Then, we could make the same call as above like this::
 
 The ``file://`` prefix on the parameter value signals that the parameter value
 is actually a reference to a file that contains the actual parameter value.
-aws-cli will open the file, read the value and pass use that value as the
+aws-cli will open the file, read the value and use that value as the
 parameter value.
 
 This is also useful when the parameter is really referring to file-based
@@ -376,7 +381,7 @@ CLI Dev Version
 ---------------
 
 If you are just interested in using the latest released version of the AWS CLI,
-please see the "Installation" section above.  This section is for anyone that
+please see the Installation_ section above.  This section is for anyone who
 wants to install the development version of the CLI.  You normally would not
 need to do this unless:
 
@@ -388,7 +393,7 @@ need to do this unless:
 The latest changes to the CLI are in the ``develop`` branch on github.  This is
 the default branch when you clone the git repository.
 
-Additionally, there are several other packages that are developed in tandem
+Additionally, there are several other packages that are developed in lockstep
 with the CLI.  This includes:
 
 * `botocore <https://github.com/boto/botocore>`__
@@ -421,11 +426,10 @@ for each repository::
 Getting Help
 ------------
 
-We use GitHub issues for tracking bugs and have limited
+We use GitHub issues for tracking bugs and feature requests and have limited
 bandwidth to address them. Please use these community resources for getting
 help:
 
-* Look for, or create, a feature request on the `AWS-CLI UserVoice <https://aws.uservoice.com/forums/598381>`__ 
 * Ask a question on `Stack Overflow <https://stackoverflow.com/>`__ and tag it with `aws-cli <https://stackoverflow.com/questions/tagged/aws-cli>`__
 * Come join the AWS CLI community chat on `gitter <https://gitter.im/aws/aws-cli>`__
 * Open a support ticket with `AWS Support <https://console.aws.amazon.com/support/home#/>`__
@@ -436,4 +440,4 @@ help:
 .. _`Amazon Web Services Security Bulletins website`: https://aws.amazon.com/security/security-bulletins
 .. _pip: http://www.pip-installer.org/en/latest/
 .. _Homebrew: https://brew.sh/
-.. _`download the tarball`: https://pypi.python.org/pypi/awscli
+.. _`download the tarball`: https://pypi.org/project/awscli/

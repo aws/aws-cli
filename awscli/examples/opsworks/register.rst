@@ -7,8 +7,7 @@ For more information, see `Registering Amazon EC2 and On-premises Instances`_ in
 .. _`Registering Amazon EC2 and On-premises Instances`: http://docs.aws.amazon.com/opsworks/latest/userguide/registered-instances-register-registering.html
 
 
-**Note**: For brevity, the examples omit the ``region`` argument. AWS OpsWorks CLI commands should set ``region``
-to us-east-1 regardless of the stack's location.
+**Note**: For brevity, the examples omit the ``region`` argument.
 
 *To register an Amazon EC2 instance*
 

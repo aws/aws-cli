@@ -17,7 +17,7 @@ registered with the event system.
 
 """
 from awscli.argprocess import ParamShorthandParser
-from awscli.argprocess import uri_param
+from awscli.paramfile import register_uri_param_handler
 from awscli.customizations import datapipeline
 from awscli.customizations.addexamples import add_examples
 from awscli.customizations.argrename import register_arg_renames
@@ -50,6 +50,7 @@ from awscli.customizations.ec2.secgroupsimplify import register_secgroup
 from awscli.customizations.ec2.paginate import register_ec2_page_size_injector
 from awscli.customizations.ecr import register_ecr_commands
 from awscli.customizations.emr.emr import emr_initialize
+from awscli.customizations.eks import initialize as eks_initialize
 from awscli.customizations.gamelift import register_gamelift_commands
 from awscli.customizations.generatecliskeleton import \
     register_generate_cli_skeleton
@@ -59,12 +60,14 @@ from awscli.customizations.iot import register_create_keys_and_cert_arguments
 from awscli.customizations.iot import register_create_keys_from_csr_arguments
 from awscli.customizations.iot_data import register_custom_endpoint_note
 from awscli.customizations.kms import register_fix_kms_create_grant_docs
+from awscli.customizations.dlm.dlm import dlm_initialize
 from awscli.customizations.opsworks import initialize as opsworks_init
 from awscli.customizations.paginate import register_pagination
 from awscli.customizations.preview import register_preview_commands
 from awscli.customizations.putmetricdata import register_put_metric_data
 from awscli.customizations.rds import register_rds_modify_split
 from awscli.customizations.rds import register_add_generate_db_auth_token
+from awscli.customizations.rekognition import register_rekognition_detect_labels
 from awscli.customizations.removals import register_removals
 from awscli.customizations.route53 import register_create_hosted_zone_doc_fix
 from awscli.customizations.s3.s3 import s3_plugin_initialize
@@ -79,10 +82,12 @@ from awscli.customizations.opsworkscm import register_alias_opsworks_cm
 from awscli.customizations.mturk import register_alias_mturk_command
 from awscli.customizations.sagemaker import register_alias_sagemaker_runtime_command
 from awscli.customizations.servicecatalog import register_servicecatalog_commands
+from awscli.customizations.s3events import register_event_stream_arg
+from awscli.customizations.sessionmanager import register_ssm_session
 
 
 def awscli_initialize(event_handlers):
-    event_handlers.register('load-cli-arg', uri_param)
+    event_handlers.register('session-initialized', register_uri_param_handler)
     param_shorthand = ParamShorthandParser()
     event_handlers.register('process-cli-arg', param_shorthand)
     # The s3 error mesage needs to registered before the
@@ -114,6 +119,7 @@ def awscli_initialize(event_handlers):
     register_removals(event_handlers)
     register_preview_commands(event_handlers)
     register_rds_modify_split(event_handlers)
+    register_rekognition_detect_labels(event_handlers)
     register_add_generate_db_auth_token(event_handlers)
     register_put_metric_data(event_handlers)
     register_ses_send_email(event_handlers)
@@ -127,6 +133,7 @@ def awscli_initialize(event_handlers):
     datapipeline.register_customizations(event_handlers)
     cloudsearch_init(event_handlers)
     emr_initialize(event_handlers)
+    eks_initialize(event_handlers)
     register_cloudsearchdomain(event_handlers)
     register_s3_endpoint(event_handlers)
     register_generate_cli_skeleton(event_handlers)
@@ -160,3 +167,6 @@ def awscli_initialize(event_handlers):
     register_servicecatalog_commands(event_handlers)
     register_history_mode(event_handlers)
     register_history_commands(event_handlers)
+    register_event_stream_arg(event_handlers)
+    dlm_initialize(event_handlers)
+    register_ssm_session(event_handlers)

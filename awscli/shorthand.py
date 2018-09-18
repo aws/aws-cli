@@ -162,8 +162,8 @@ class ShorthandParser(object):
         return {key: values}
 
     def _key(self):
-        # key = 1*(alpha / %x30-39 / %x5f / %x2e / %x23)  ; [a-zA-Z0-9\-_.#]
-        valid_chars = string.ascii_letters + string.digits + '-_.#'
+        # key = 1*(alpha / %x30-39 / %x5f / %x2e / %x23)  ; [a-zA-Z0-9\-_.#/]
+        valid_chars = string.ascii_letters + string.digits + '-_.#/'
         start = self._index
         while not self._at_eof():
             if self._current() not in valid_chars:

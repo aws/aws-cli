@@ -136,6 +136,11 @@ Output::
       ]
   }
 
+The following is an alternative syntax to describe resources with the key ``Stack`` and a value ``Test``.
+
+Command::
+  aws ec2 describe-tags --filters "Name=tag:Stack,Values=Test"
+
 This example describes the tags for all your instances that have a tag with the key ``Purpose`` and no value.
 
 Command::

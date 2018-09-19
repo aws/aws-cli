@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.17
+=======
+
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+
+
 1.16.16
 =======
 

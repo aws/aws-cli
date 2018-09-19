@@ -54,7 +54,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmdline, result)
 
     def test_filter_simple(self):
-        args = """ --filters Name=group-name,Values=foobar"""
+        args = """ --filters Name=group-name,Values=[foobar]"""
         cmdline = self.prefix + args
         result = {
             'Filters': [
@@ -76,8 +76,8 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmdline, result)
 
     def test_multiple_filters(self):
-        args = (' --filters Name=group-name,Values=foobar '
-                'Name=instance-id,Values=i-12345')
+        args = (' --filters Name=group-name,Values=[foobar] '
+                'Name=instance-id,Values=[i-12345]')
         cmdline = self.prefix + args
         result = {
             'Filters': [
@@ -92,8 +92,8 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
     def test_multiple_filters_alternate(self):
         cmdlist = 'ec2 describe-instances'.split()
         cmdlist.extend(['--filters',
-                        'Name = group-name, Values= foobar',
-                        'Name=instance-id,Values=i-12345'])
+                        'Name = group-name, Values= [foobar]',
+                        'Name=instance-id,Values=[i-12345]'])
         result = {
             'Filters': [
                 {'Name': 'group-name',

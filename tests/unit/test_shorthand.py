@@ -190,36 +190,6 @@ def _can_parse(data, expected):
 
 
 class TestModelVisitor(unittest.TestCase):
-    def test_promote_to_list_of_ints(self):
-        m = model.DenormalizedStructureBuilder().with_members({
-            'A': {
-                'type': 'list',
-                'member': {'type': 'string'}
-            },
-        }).build_model()
-        b = shorthand.BackCompatVisitor()
-
-        params = {'A': 'foo'}
-        b.visit(params, m)
-        self.assertEqual(params, {'A': ['foo']})
-
-    def test_dont_promote_list_if_none_value(self):
-        m = model.DenormalizedStructureBuilder().with_members({
-            'A': {
-                'type': 'list',
-                'member': {
-                    'type': 'structure',
-                    'members': {
-                        'Single': {'type': 'string'}
-                    },
-                },
-            },
-        }).build_model()
-        b = shorthand.BackCompatVisitor()
-        params = {}
-        b.visit(params, m)
-        self.assertEqual(params, {})
-
     def test_can_convert_scalar_types_from_string(self):
         m = model.DenormalizedStructureBuilder().with_members({
             'A': {'type': 'integer'},
@@ -228,7 +198,7 @@ class TestModelVisitor(unittest.TestCase):
             'D': {'type': 'boolean'},
             'E': {'type': 'boolean'},
         }).build_model()
-        b = shorthand.BackCompatVisitor()
+        b = shorthand.ModelVisitor()
 
         params = {'A': '24', 'B': '24', 'C': '24.12345',
                   'D': 'true', 'E': 'false'}
@@ -242,7 +212,7 @@ class TestModelVisitor(unittest.TestCase):
         m = model.DenormalizedStructureBuilder().with_members({
             'A': {'type': 'boolean'},
         }).build_model()
-        b = shorthand.BackCompatVisitor()
+        b = shorthand.ModelVisitor()
 
         params = {}
         b.visit(params, m)
@@ -257,7 +227,7 @@ class TestModelVisitor(unittest.TestCase):
                 },
             },
         }).build_model()
-        b = shorthand.BackCompatVisitor()
+        b = shorthand.ModelVisitor()
         params = {'A': ['1', '2']}
         b.visit(params, m)
         # We should have converted each list element to an integer

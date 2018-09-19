@@ -467,24 +467,34 @@ class TestAddSteps(BaseAWSCommandParamsTest):
             expected_result_release=expected_result_release)
 
     def test_empty_step_args(self):
-        cmd = self.prefix + 'Type=Streaming,Args='
-        expected_error_msg = ('\naws: error: The prameter Args cannot '
-                              'be an empty list.\n')
+        cmd = self.prefix + 'Type=Streaming,Args=[]'
+        expected_error_msg = (
+            '\naws: error: The following required parameters are missing '
+            'for StreamingStepConfig: Args.\n'
+        )
         self.assert_error_for_ami_and_release_based_clusters(
             cmd=cmd, expected_error_msg=expected_error_msg,
             expected_result_release=expected_error_msg)
 
-        cmd = self.prefix + 'Type=Pig,Args='
+        expected_error_msg = (
+            '\naws: error: The following required parameters are missing '
+            'for PigStepConfig: Args.\n'
+        )
+        cmd = self.prefix + 'Type=Pig,Args=[]'
         self.assert_error_for_ami_and_release_based_clusters(
             cmd=cmd, expected_error_msg=expected_error_msg,
             expected_result_release=expected_error_msg)
 
-        cmd = self.prefix + 'Type=Hive,Args='
+        expected_error_msg = (
+            '\naws: error: The following required parameters are missing '
+            'for HiveStepConfig: Args.\n'
+        )
+        cmd = self.prefix + 'Type=Hive,Args=[]'
         self.assert_error_for_ami_and_release_based_clusters(
             cmd=cmd, expected_error_msg=expected_error_msg,
             expected_result_release=expected_error_msg)
 
-        cmd = self.prefix + 'Args='
+        cmd = self.prefix + 'Args=[]'
         expected_error_msg = ('\naws: error: The following required parameters'
                               ' are missing for CustomJARStepConfig: Jar.\n')
         self.assert_error_for_ami_and_release_based_clusters(

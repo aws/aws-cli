@@ -805,29 +805,6 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
         self.assertEqual(call_args[1]['timeout'], (90, 70))
 
 
-class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):
-
-    def setUp(self):
-        super(TestHTTPParamFileDoesNotExist, self).setUp()
-        self.stderr = six.StringIO()
-        self.stderr_patch = mock.patch('sys.stderr', self.stderr)
-        self.stderr_patch.start()
-
-    def tearDown(self):
-        super(TestHTTPParamFileDoesNotExist, self).tearDown()
-        self.stderr_patch.stop()
-
-    def test_http_file_param_does_not_exist(self):
-        error_msg = ("Error parsing parameter '--filters': "
-                     "Unable to retrieve http://does/not/exist.json: "
-                     "received non 200 status code of 404")
-        with mock.patch('awscli.paramfile.URLLib3Session.send') as get:
-            get.return_value.status_code = 404
-            self.assert_params_for_cmd(
-                'ec2 describe-instances --filters http://does/not/exist.json',
-                expected_rc=255, stderr_contains=error_msg)
-
-
 class TestVerifyArgument(BaseAWSCommandParamsTest):
     def setUp(self):
         super(TestVerifyArgument, self).setUp()

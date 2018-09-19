@@ -16,7 +16,7 @@ from awscli.testutils import unittest, FileCreator
 from awscli.testutils import skip_if_windows
 
 from awscli.paramfile import get_paramfile, ResourceLoadingError
-from awscli.paramfile import LOCAL_PREFIX_MAP, REMOTE_PREFIX_MAP
+from awscli.paramfile import LOCAL_PREFIX_MAP
 from awscli.paramfile import register_uri_param_handler
 from botocore.session import Session
 from botocore.exceptions import ProfileNotFound
@@ -68,56 +68,10 @@ class TestParamFile(unittest.TestCase):
         self.assertIsNone(self.get_paramfile(100))
 
 
-class TestHTTPBasedResourceLoading(unittest.TestCase):
-    def setUp(self):
-        self.session_patch = mock.patch('awscli.paramfile.URLLib3Session.send')
-        self.session_mock = self.session_patch.start()
-        self.response = mock.Mock(status_code=200)
-        self.session_mock.return_value = self.response
-
-    def tearDown(self):
-        self.session_patch.stop()
-
-    def get_paramfile(self, path):
-        return get_paramfile(path, REMOTE_PREFIX_MAP.copy())
-
-    def test_resource_from_http(self):
-        self.response.text = 'http contents'
-        loaded = self.get_paramfile('http://foo.bar.baz')
-        self.assertEqual(loaded, 'http contents')
-
-    def test_resource_from_https(self):
-        self.response.text = 'http contents'
-        loaded = self.get_paramfile('https://foo.bar.baz')
-        self.assertEqual(loaded, 'http contents')
-
-    def test_non_200_raises_error(self):
-        self.response.status_code = 500
-        with self.assertRaisesRegexp(ResourceLoadingError, 'foo\.bar\.baz'):
-            self.get_paramfile('https://foo.bar.baz')
-
-    def test_connection_error_raises_error(self):
-        self.session_mock.side_effect = Exception("Connection error.")
-        with self.assertRaisesRegexp(ResourceLoadingError, 'foo\.bar\.baz'):
-            self.get_paramfile('https://foo.bar.baz')
-
-
 class TestConfigureURIArgumentHandler(unittest.TestCase):
-    @mock.patch('awscli.paramfile.URIArgumentHandler')
-    def test_profile_not_found(self, mock_handler_cls):
-        session = mock.Mock(spec=Session)
-        session.get_scoped_config.side_effect = ProfileNotFound(profile='foo')
-
-        register_uri_param_handler(session)
-        cases = mock_handler_cls.call_args[0][0]
-
-        self.assertIn('file://', cases)
-        self.assertIn('fileb://', cases)
-        self.assertIn('http://', cases)
-        self.assertIn('http://', cases)
 
     @mock.patch('awscli.paramfile.URIArgumentHandler')
-    def test_missing_config_value(self, mock_handler_cls):
+    def test_default_prefix_maps(self, mock_handler_cls):
         session = mock.Mock(spec=Session)
         session.get_scoped_config.return_value = {}
 
@@ -126,33 +80,3 @@ class TestConfigureURIArgumentHandler(unittest.TestCase):
 
         self.assertIn('file://', cases)
         self.assertIn('fileb://', cases)
-        self.assertIn('http://', cases)
-        self.assertIn('http://', cases)
-
-    @mock.patch('awscli.paramfile.URIArgumentHandler')
-    def test_config_value_true(self, mock_handler_cls):
-        session = mock.Mock(spec=Session)
-        session.get_scoped_config.return_value = {
-            'cli_follow_urlparam': 'true'}
-
-        register_uri_param_handler(session)
-        cases = mock_handler_cls.call_args[0][0]
-
-        self.assertIn('file://', cases)
-        self.assertIn('fileb://', cases)
-        self.assertIn('http://', cases)
-        self.assertIn('http://', cases)
-
-    @mock.patch('awscli.paramfile.URIArgumentHandler')
-    def test_config_value_false(self, mock_handler_cls):
-        session = mock.Mock(spec=Session)
-        session.get_scoped_config.return_value = {
-            'cli_follow_urlparam': 'false'}
-
-        register_uri_param_handler(session)
-        cases = mock_handler_cls.call_args[0][0]
-
-        self.assertIn('file://', cases)
-        self.assertIn('fileb://', cases)
-        self.assertNotIn('http://', cases)
-        self.assertNotIn('http://', cases)

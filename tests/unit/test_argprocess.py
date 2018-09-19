@@ -283,34 +283,20 @@ class TestParamShorthand(BaseArgProcessTest):
 
     def test_list_structure_list_scalar(self):
         p = self.get_param_model('ec2.DescribeInstances.Filters')
-        expected = [{"Name": "instance-id", "Values": ["i-1", "i-2"]},
-                    {"Name": "architecture", "Values": ["i386"]}]
+        expected = [{"Name": "instance-id", "Values": ["i-1", "i-2"]}]
         returned = self.parse_shorthand(
-            p, ["Name=instance-id,Values=i-1,i-2",
-                "Name=architecture,Values=i386"])
+            p, ["Name=instance-id,Values=i-1,i-2"])
         self.assertEqual(returned, expected)
 
         # With spaces around the comma.
         returned2 = self.parse_shorthand(
-            p, ["Name=instance-id, Values=i-1,i-2",
-                "Name=architecture, Values=i386"])
+            p, ["Name=instance-id, Values=i-1,i-2"])
         self.assertEqual(returned2, expected)
 
         # Strip off leading/trailing spaces.
         returned3 = self.parse_shorthand(
-            p, ["Name = instance-id, Values = i-1,i-2",
-                "Name = architecture, Values = i386"])
+            p, ["Name = instance-id, Values = i-1,i-2"])
         self.assertEqual(returned3, expected)
-
-    def test_parse_empty_values(self):
-        # A value can be omitted and will default to an empty string.
-        p = self.get_param_model('ec2.DescribeInstances.Filters')
-        expected = [{"Name": "", "Values": ["i-1", "i-2"]},
-                    {"Name": "architecture", "Values": ['']}]
-        returned = self.parse_shorthand(
-            p, ["Name=,Values=i-1,i-2",
-                "Name=architecture,Values="])
-        self.assertEqual(returned, expected)
 
     def test_list_structure_list_scalar_2(self):
         p = self.get_param_model('emr.ModifyInstanceGroups.InstanceGroups')
@@ -491,7 +477,7 @@ class TestParamShorthandCustomArguments(BaseArgProcessTest):
 
         simplified = self.shorthand(cli_argument, [
             "Name=foo,Args=[a,k1=v1,b]",
-            "Name=bar,Args=baz",
+            "Name=bar,Args=[baz]",
             "Name=single_kv,Args=[key=value]",
             "Name=single_v,Args=[value]"
         ], 'process-cli-arg.foo.bar')

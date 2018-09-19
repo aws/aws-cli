@@ -275,7 +275,7 @@ class ParamShorthandParser(ParamShorthand):
 
     def __init__(self):
         self._parser = shorthand.ShorthandParser()
-        self._visitor = shorthand.BackCompatVisitor()
+        self._visitor = shorthand.ModelVisitor()
 
     def __call__(self, cli_argument, value, event_name, **kwargs):
         """Attempt to parse shorthand syntax for values.

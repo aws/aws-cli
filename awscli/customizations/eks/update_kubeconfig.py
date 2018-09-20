@@ -12,25 +12,21 @@
 # language governing permissions and limitations under the License.
 
 import os
-import sys
-import errno
 import logging
-import subprocess
-import distutils
 
 from botocore.compat import OrderedDict
 
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import uni_print
 from awscli.compat import is_windows
+from awscli.compat import which
 from awscli.customizations.eks.exceptions import EKSClusterError
 from awscli.customizations.eks.kubeconfig import (Kubeconfig,
                                                   KubeconfigError,
                                                   KubeconfigLoader,
                                                   KubeconfigWriter,
                                                   KubeconfigValidator,
-                                                  KubeconfigAppender,
-                                                  _get_new_kubeconfig_content)
+                                                  KubeconfigAppender)
 from awscli.customizations.eks.ordered_yaml import ordered_yaml_dump
 
 LOG = logging.getLogger(__name__)
@@ -49,14 +45,7 @@ AUTH_GOGET_PATH = ("github.com/kubernetes-sigs/"
 
 
 def check_for_binary(binary):
-    try:
-        if distutils.spawn.find_executable(binary) is None:
-            return False
-    except KeyError:
-        LOG.warn("Your PATH variable might not be set.")
-        return False
-    return True
-
+    return which(binary) is not None
 
 def warn_of_missing_dependencies():
     """

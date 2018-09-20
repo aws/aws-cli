@@ -40,7 +40,7 @@ class TestDescribeVolumes(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(command, params)
 
     def test_max_results_not_set_with_filter(self):
-        command = self.prefix + ' --filters Name=volume-id,Values=id-volume'
+        command = self.prefix + ' --filters Name=volume-id,Values=[id-volume]'
         params = {'Filters': [{'Name': 'volume-id', 'Values': ['id-volume']}]}
         self.assert_params_for_cmd(command, params)
 

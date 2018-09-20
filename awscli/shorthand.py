@@ -384,21 +384,6 @@ class ModelVisitor(object):
             self._visit(value, value_shape, k, v)
 
     def _visit_scalar(self, parent, shape, name, value):
-        pass
-
-
-class BackCompatVisitor(ModelVisitor):
-    def _visit_list(self, parent, shape, name, value):
-        if not isinstance(value, list):
-            # Convert a -> [a] because they specified
-            # "foo=bar", but "bar" should really be ["bar"].
-            if value is not None:
-                parent[name] = [value]
-        else:
-            return super(BackCompatVisitor, self)._visit_list(
-                parent, shape, name, value)
-
-    def _visit_scalar(self, parent, shape, name, value):
         if value is None:
             return
         type_name = shape.type_name

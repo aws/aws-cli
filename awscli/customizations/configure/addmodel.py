@@ -13,6 +13,7 @@
 import json
 import os
 
+from botocore.compat import ensure_bytes
 from botocore.model import ServiceModel
 
 from awscli.customizations.commands import BasicCommand
@@ -115,6 +116,6 @@ class AddModelCommand(BasicCommand):
 
         # Write the model to the specified location
         with open(model_location, 'wb') as f:
-            f.write(parsed_args.service_model.encode('utf-8'))
+            f.write(ensure_bytes(parsed_args.service_model))
 
         return 0

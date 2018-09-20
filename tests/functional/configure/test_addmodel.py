@@ -61,15 +61,25 @@ class TestAddModel(BaseAWSCommandParamsTest):
                 'service-2.json')))
 
     def test_add_model_with_unicode(self):
-        cmdline = self.prefix + ' --service-model %s' % json.dumps(
-            self.service_unicode_definition, separators=(',', ':'))
+        definition = json.dumps(
+            self.service_unicode_definition, ensure_ascii=False,
+        )
+        definition = definition.encode('utf8')
+        filename = self.files.create_file('service-2.json', definition)
+        cmdline = self.prefix + ' --service-model fileb://%s' % filename
         self.run_cmd(cmdline)
 
         # Ensure that the model exists in the correct location.
-        self.assertTrue(
-            os.path.exists(os.path.join(
-                self.customer_data_root, 'myservice', '2015-12-02',
-                'service-2.json')))
+        filename = os.path.join(
+            self.customer_data_root, 'myservice', '2015-12-02',
+            'service-2.json'
+        )
+        self.assertTrue(os.path.exists(filename))
+
+        with open(filename, 'rb') as f:
+            loaded = json.load(f)
+
+        self.assertEqual(loaded['metadata']['keyWithUnicode'], u'\u2713')
 
     def test_add_model_with_service_name(self):
         cmdline = self.prefix + ' --service-model %s' % json.dumps(

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.19
+=======
+
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+
+
 1.16.18
 =======
 

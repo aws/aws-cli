@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.20
+=======
+
+* api-change:``connect``: Update connect command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
 1.16.19
 =======
 

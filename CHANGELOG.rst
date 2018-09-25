@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.21
+=======
+
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``ds``: Update ds command to latest version
+
+
 1.16.20
 =======
 

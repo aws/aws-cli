@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.22
+=======
+
+* api-change:``glue``: Update glue command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+* api-change:``sqs``: Update sqs command to latest version
+
+
 1.16.21
 =======
 

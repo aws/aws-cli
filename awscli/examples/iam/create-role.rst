@@ -9,7 +9,7 @@ Output::
   {
     "Role": {
         "AssumeRolePolicyDocument": "<URL-encoded-JSON>",
-        "RoleId": "AKIAIOSFODNN7EXAMPLE",
+        "RoleId": "AROAIOSFODNN7EXAMPLE",
         "CreateDate": "2013-06-07T20:43:32.821Z",
         "RoleName": "Test-Role",
         "Path": "/",

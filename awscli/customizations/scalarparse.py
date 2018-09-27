@@ -46,10 +46,12 @@ def iso_format(value):
 
 def add_timestamp_parser(session):
     factory = session.get_component('response_parser_factory')
+    default_format = 'iso8601'
     try:
         timestamp_format = session.get_scoped_config().get(
             'cli_timestamp_format',
-            'none')
+            default_format,
+        )
     except ProfileNotFound:
         # If a --profile is provided that does not exist, loading
         # a value from get_scoped_config will crash the CLI.
@@ -57,8 +59,9 @@ def add_timestamp_parser(session):
         # the session-initialized event, which happens before a
         # profile can be created, even if the command would have
         # successfully created a profile. Instead of crashing here
-        # on a ProfileNotFound the CLI should just use 'none'.
-        timestamp_format = 'none'
+        # on a ProfileNotFound the CLI should just use the default.
+        timestamp_format = default_format
+
     if timestamp_format == 'none':
         # For backwards compatibility reasons, we replace botocore's timestamp
         # parser (which parses to a datetime.datetime object) with the

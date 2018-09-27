@@ -60,7 +60,8 @@ class TestCLITimestampParser(BaseCLIWireResponseTest):
 
     def test_default(self):
         self.driver = create_clidriver()
-        expected_time = 0
+        expected_time = datetime.datetime.fromtimestamp(0).replace(
+            tzinfo=tzlocal()).isoformat()
 
         stdout, _, _ = self.run_cmd(self.command)
         json_response = json.loads(stdout)

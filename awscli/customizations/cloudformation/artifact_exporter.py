@@ -323,6 +323,9 @@ class ServerlessApiResource(Resource):
 class GraphQLSchemaResource(Resource):
     RESOURCE_TYPE = "AWS::AppSync::GraphQLSchema"
     PROPERTY_NAME = "DefinitionS3Location"
+    # Don't package the directory if DefinitionS3Location is omitted.
+    # Necessary to support Definition
+    PACKAGE_NULL_PROPERTY = False
 
 
 class AppSyncResolverRequestTemplateResource(Resource):

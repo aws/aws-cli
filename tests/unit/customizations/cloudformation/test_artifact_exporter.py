@@ -715,16 +715,18 @@ class TestArtifactExporter(unittest.TestCase):
         template_str = self.example_yaml_template()
 
         resource_type1_class = Mock()
+        resource_type1_class.RESOURCE_TYPE = "resource_type1"
         resource_type1_instance = Mock()
         resource_type1_class.return_value = resource_type1_instance
         resource_type2_class = Mock()
+        resource_type2_class.RESOURCE_TYPE = "resource_type2"
         resource_type2_instance = Mock()
         resource_type2_class.return_value = resource_type2_instance
 
-        resources_to_export = {
-            "resource_type1": resource_type1_class,
-            "resource_type2": resource_type2_class
-        }
+        resources_to_export = [
+            resource_type1_class,
+            resource_type2_class
+        ]
 
         properties = {"foo": "bar"}
         template_dict = {

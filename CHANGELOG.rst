@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.23
+=======
+
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``codecommit``: Update codecommit command to latest version
+* api-change:``mq``: Update mq command to latest version
+
+
 1.16.22
 =======
 

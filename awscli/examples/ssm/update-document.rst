@@ -4,7 +4,7 @@ This creates a new version of a document. The document must be in JSON format. N
 
 Command::
 
-  aws ssm update-document --name "RunShellScript" --content "file://RunShellScript.json" --document-version "\$LATEST"
+  aws ssm update-document --name "RunShellScript" --content "file://RunShellScript.json" --document-version "$LATEST"
   
 Output::
 

@@ -1731,7 +1731,7 @@ class TestStreams(BaseS3IntegrationTest):
     def test_multipart_upload(self):
         """
         This tests the ability to multipart upload streams from stdin.
-        The data has some unicode in it to avoid having to do a seperate
+        The data has some unicode in it to avoid having to do a separate
         multipart upload test just for unicode.
         """
         bucket_name = _SHARED_BUCKET

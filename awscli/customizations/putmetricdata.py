@@ -70,12 +70,11 @@ def _promote_args(argument_table, operation_model, **kwargs):
             'The --dimensions argument further expands '
             'on the identity of a metric using a Name=Value '
             'pair, separated by commas, for example: '
-            '<code>--dimensions InstanceID=1-23456789 '
-            'InstanceType=m1.small</code>. Note that the '
-            '<code>--dimensions</code> argument has a different format when '
-            'used in <code>get-metric-data</code>, where for the same example '
-            'you would use the format <code>--dimensions '
-            'Name=InstanceID,Value=i-aaba32d4 '
+            '<code>--dimensions InstanceID=1-23456789,InstanceType=m1.small'
+            '</code>. Note that the <code>--dimensions</code> argument has a '
+            'different format when used in <code>get-metric-data</code>, '
+            'where for the same example you would use the format '
+            '<code>--dimensions Name=InstanceID,Value=i-aaba32d4 '
             'Name=InstanceType,value=m1.small </code>.'
         )
     )

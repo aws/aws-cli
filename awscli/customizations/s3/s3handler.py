@@ -532,7 +532,7 @@ class LocalDeleteRequestSubmitter(BaseTransferRequestSubmitter):
         # the burden of this functionality should live in the CLI.
 
         # The main downsides in doing this is that delete and the result
-        # creation happens in the main thread as opposed to a seperate thread
+        # creation happens in the main thread as opposed to a separate thread
         # in s3transfer. However, this is not too big of a downside because
         # deleting a local file only happens for sync --delete downloads and
         # is very fast compared to all of the other types of transfers.

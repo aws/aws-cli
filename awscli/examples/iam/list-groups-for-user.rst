@@ -10,14 +10,14 @@ Output::
       {
           "Path": "/",
           "CreateDate": "2013-05-06T01:18:08Z",
-          "GroupId": "AKIAIOSFODNN7EXAMPLE",
+          "GroupId": "AGPAIOSFODNN7EXAMPLE",
           "Arn": "arn:aws:iam::123456789012:group/Admin",
           "GroupName": "Admin"
       },
       {
           "Path": "/",
           "CreateDate": "2013-05-06T01:37:28Z",
-          "GroupId": "AKIAI44QH8DHBEXAMPLE",
+          "GroupId": "AGPAI44QH8DHBEXAMPLE",
           "Arn": "arn:aws:iam::123456789012:group/s3-Users",
           "GroupName": "s3-Users"
       }

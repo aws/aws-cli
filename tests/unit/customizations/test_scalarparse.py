@@ -73,4 +73,4 @@ class TestScalarParse(unittest.TestCase):
         factory = session.get_component.return_value
         scalarparse.add_scalar_parsers(session)
         factory.set_parser_defaults.assert_called_with(
-            timestamp_parser=scalarparse.identity)
+            timestamp_parser=scalarparse.iso_format)

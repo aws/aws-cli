@@ -1,16 +1,17 @@
-**To describe a DB instance**
+**To reboot a DB instance**
 
-This example describes a single DB instance (*test-instance*)::
+This example reboots a DB instance::
 
-    aws rds describe-db-instances --db-instance-identifier test-instance
+    aws rds reboot-db-instance --db-instance-identifier test-instance
 
 Output::
+
 {
     "DBInstance": {
         "DBInstanceIdentifier": "test-instance",
         "DBInstanceClass": "db.m1.small",
         "Engine": "mysql",
-        "DBInstanceStatus": "available",
+        "DBInstanceStatus": "rebooting",
         "MasterUsername": "myawsuser",
         "Endpoint": {
             "Address": "test-instance.cdgmuqiadpid.us-east-1.rds.amazonaws.com",

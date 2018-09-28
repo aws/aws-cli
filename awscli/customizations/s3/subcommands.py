@@ -197,7 +197,7 @@ SSE_C = {
 
 
 SSE_C_KEY = {
-    'name': 'sse-c-key',
+    'name': 'sse-c-key', 'cli_type_name': 'blob',
     'help_text': (
         'The customer-provided encryption key to use to server-side '
         'encrypt the object in S3. If you provide this value, '
@@ -234,7 +234,7 @@ SSE_C_COPY_SOURCE = {
 
 
 SSE_C_COPY_SOURCE_KEY = {
-    'name': 'sse-c-copy-source-key',
+    'name': 'sse-c-copy-source-key', 'cli_type_name': 'blob',
     'help_text': (
         'This parameter should only be specified when copying an S3 object '
         'that was encrypted server-side with a customer-provided '

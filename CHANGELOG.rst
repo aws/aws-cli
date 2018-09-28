@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.24
+=======
+
+* api-change:``codestar``: Update codestar command to latest version
+* bugfix:s3: Fixed a bug where `--sse-c-key` and `--sse-c-copy-source-key` were modeled as string values rather than bytes values, which make them impossible to use on python 3 unless your key happened to be all unicode.
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.16.23
 =======
 

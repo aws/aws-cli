@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.25
+=======
+
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+
+
 1.16.24
 =======
 

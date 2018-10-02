@@ -10,31 +10,28 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-
 import os
-import sys
-import mock
-import glob
-import yaml
-import logging
-import botocore
-import tempfile
-import shutil
 import re
-from argparse import Namespace
-from mock import patch, Mock, MagicMock, call
+import shutil
+import sys
+import tempfile
 
+import mock
 from botocore.session import get_session
+from mock import patch, Mock
 
-from awscli.testutils import unittest, capture_output
-from awscli.customizations.eks.update_kubeconfig import UpdateKubeconfigCommand
 from awscli.customizations.eks.exceptions import EKSClusterError
-from awscli.customizations.eks.kubeconfig import (Kubeconfig,
-                                                  KubeconfigCorruptedError,
-                                                  KubeconfigInaccessableError)
-from tests.functional.eks.test_util import (describe_cluster_response,
-                                            describe_cluster_creating_response,
-                                            get_testdata)
+from awscli.customizations.eks.kubeconfig import (
+    KubeconfigCorruptedError,
+    KubeconfigInaccessableError
+)
+from awscli.customizations.eks.update_kubeconfig import UpdateKubeconfigCommand
+from awscli.testutils import unittest, capture_output
+from tests.functional.eks.test_util import (
+    describe_cluster_response,
+    describe_cluster_creating_response,
+    get_testdata
+)
 
 is_windows = sys.platform == 'win32'
 

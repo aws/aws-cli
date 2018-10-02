@@ -11,15 +11,17 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import os
-import yaml
-import logging
 import errno
+import os
+
+import ruamel.yaml as yaml
 from botocore.compat import OrderedDict
 
 from awscli.customizations.eks.exceptions import EKSError
-from awscli.customizations.eks.ordered_yaml import (ordered_yaml_load,
-                                                    ordered_yaml_dump)
+from awscli.customizations.eks.ordered_yaml import (
+    ordered_yaml_load,
+    ordered_yaml_dump
+)
 
 
 class KubeconfigError(EKSError):

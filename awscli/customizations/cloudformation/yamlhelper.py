@@ -11,8 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
-import yaml
-from yaml.resolver import ScalarNode, SequenceNode
+
+import ruamel.yaml as yaml
+from ruamel.yaml.resolver import ScalarNode, SequenceNode
 
 from awscli.compat import six
 

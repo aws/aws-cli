@@ -87,8 +87,7 @@ class ConfigureSetCommand(BasicCommand):
                 if len(parts) == 2:
                     value = {parts[1]: value}
             elif len(parts) == 2:
-                # Otherwise it's something like "set preview.service true"
-                # of something in the [plugin] section.
+                # Otherwise it's something in the [plugin] section
                 section, varname = parts
         config_filename = os.path.expanduser(
             self._session.get_config_variable('config_file'))

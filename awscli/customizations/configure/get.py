@@ -71,8 +71,7 @@ class ConfigureGetCommand(BasicCommand):
         parts = varname.split('.')
         num_dots = varname.count('.')
 
-        # Logic to deal with predefined sections like [preview], [plugin] and
-        # etc.
+        # Logic to deal with predefined sections like [plugin] etc.
         if num_dots == 1 and parts[0] in PREDEFINED_SECTION_NAMES:
             full_config = self._session.full_config
             section, config_name = varname.split('.')

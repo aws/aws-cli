@@ -14,7 +14,7 @@ import string
 from botocore.vendored.six.moves import shlex_quote
 
 NOT_SET = '<not set>'
-PREDEFINED_SECTION_NAMES = ('preview', 'plugins')
+PREDEFINED_SECTION_NAMES = ('plugins')
 _WHITESPACE = ' \t'
 
 

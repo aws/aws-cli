@@ -443,18 +443,6 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         return stdout, stderr, rc
 
 
-class BaseAWSPreviewCommandParamsTest(BaseAWSCommandParamsTest):
-    def setUp(self):
-        self.preview_patch = mock.patch(
-            'awscli.customizations.preview.mark_as_preview')
-        self.preview_patch.start()
-        super(BaseAWSPreviewCommandParamsTest, self).setUp()
-
-    def tearDown(self):
-        self.preview_patch.stop()
-        super(BaseAWSPreviewCommandParamsTest, self).tearDown()
-
-
 class BaseCLIWireResponseTest(unittest.TestCase):
     def setUp(self):
         self.environ = {

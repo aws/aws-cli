@@ -4,9 +4,6 @@ Suppose you had the following config file::
     aws_access_key_id=default_access_key
     aws_secret_access_key=default_secret_key
 
-    [preview]
-    cloudsearch=true
-
     [profile testing]
     aws_access_key_id=testing_access_key
     aws_secret_access_key=testing_secret_key
@@ -26,10 +23,7 @@ The following commands would have the corresponding output::
     $ aws configure get profile.testing.aws_access_key_id
     testing_access_key
 
-    $ aws configure get preview.cloudsearch
-    true
-
-    $ aws configure get preview.does-not-exist
+    $ aws configure get profile.does-not-exist
     $
     $ echo $?
     1

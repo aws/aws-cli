@@ -135,22 +135,6 @@ class TestConfigureCommand(unittest.TestCase):
         self.assert_no_errors(p)
         self.assertEqual(p.stdout.strip(), 'testing_access_key')
 
-    def test_get_fq_for_non_profile_configs(self):
-        self.set_config_file_contents(
-            '\n'
-            '[default]\n'
-            'aws_access_key_id=default_access_key\n'
-            '\n'
-            '[profile testing]\n'
-            'aws_access_key_id=testing_access_key\n'
-            '[preview]\n'
-            'emr=true'
-        )
-        p = aws('configure get preview.emr --profile default',
-                env_vars=self.env_vars)
-        self.assert_no_errors(p)
-        self.assertEqual(p.stdout.strip(), 'true')
-
     def test_set_with_config_file_no_exist(self):
         p = aws('configure set region us-west-1', env_vars=self.env_vars)
         self.assert_no_errors(p)
@@ -220,13 +204,6 @@ class TestConfigureCommand(unittest.TestCase):
             '[profile testing]\n'
             'region = us-west-1\n', self.get_config_file_contents())
 
-    def test_set_with_fq_single_dot(self):
-        p = aws('configure set preview.cloudsearch true', env_vars=self.env_vars)
-        self.assert_no_errors(p)
-        self.assertEqual(
-            '[preview]\n'
-            'cloudsearch = true\n', self.get_config_file_contents())
-
     def test_set_with_fq_double_dot(self):
         p = aws('configure set profile.testing.region us-west-2',
                 env_vars=self.env_vars)
@@ -234,18 +211,6 @@ class TestConfigureCommand(unittest.TestCase):
         self.assertEqual(
             '[profile testing]\n'
             'region = us-west-2\n', self.get_config_file_contents())
-
-    def test_set_with_commented_out_field(self):
-        self.set_config_file_contents(
-            '#[preview]\n'
-            ';cloudsearch = true\n')
-        p = aws('configure set preview.cloudsearch true', env_vars=self.env_vars)
-        self.assert_no_errors(p)
-        self.assertEqual(
-            '#[preview]\n'
-            ';cloudsearch = true\n'
-            '[preview]\n'
-            'cloudsearch = true\n', self.get_config_file_contents())
 
     def test_set_with_triple_nesting(self):
         p = aws('configure set default.s3.signature_version s3v4',
@@ -321,22 +286,6 @@ class TestConfigureCommand(unittest.TestCase):
                 env_vars=self.env_vars)
         self.assertEqual(p.rc, 1)
         self.assertEqual(p.stdout, '')
-
-    def test_can_handle_empty_section(self):
-        self.set_config_file_contents(
-            '[default]\n'
-        )
-        p = aws('configure set preview.cloudfront true',
-                env_vars=self.env_vars)
-        p = aws('configure set region us-west-2',
-                env_vars=self.env_vars)
-        self.assertEqual(
-            '[default]\n'
-            'region = us-west-2\n'
-            '[preview]\n'
-            'cloudfront = true\n',
-            self.get_config_file_contents(),
-        )
 
 
 class TestConfigureHasArgTable(unittest.TestCase):

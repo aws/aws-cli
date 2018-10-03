@@ -6,7 +6,6 @@ Given an empty config file, the following commands::
     $ aws configure set default.ca_bundle /path/to/ca-bundle.pem
     $ aws configure set region us-west-1 --profile testing
     $ aws configure set profile.testing2.region eu-west-1
-    $ aws configure set preview.cloudsearch true
 
 will produce the following config file::
 
@@ -19,9 +18,6 @@ will produce the following config file::
 
     [profile testing2]
     region = eu-west-1
-
-    [preview]
-    cloudsearch = true
 
 and the following ``~/.aws/credentials`` file::
 

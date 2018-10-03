@@ -12,8 +12,7 @@
 # language governing permissions and limitations under the License.
 import mock
 
-from awscli.testutils import BaseAWSPreviewCommandParamsTest as \
-    BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestUpdateDistribution(BaseAWSCommandParamsTest):

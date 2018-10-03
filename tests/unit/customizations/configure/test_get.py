@@ -47,9 +47,9 @@ class TestConfigureGetCommand(unittest.TestCase):
 
     def test_dotted_get(self):
         session = FakeSession({})
-        session.full_config = {'preview': {'emr': 'true'}}
+        session.full_config = {'plugins': {'bar': 'true'}}
         stream, error_stream, config_get = self.create_command(session)
-        config_get(args=['preview.emr'], parsed_globals=None)
+        config_get(args=['plugins.bar'], parsed_globals=None)
         rendered = stream.getvalue()
         self.assertEqual(rendered.strip(), 'true')
 

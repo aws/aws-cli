@@ -14,8 +14,7 @@ import mock
 from botocore.compat import urlparse, parse_qs
 
 from awscli.testutils import FileCreator
-from awscli.testutils import BaseAWSPreviewCommandParamsTest as \
-    BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestSign(BaseAWSCommandParamsTest):

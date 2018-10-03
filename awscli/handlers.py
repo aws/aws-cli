@@ -63,7 +63,6 @@ from awscli.customizations.kms import register_fix_kms_create_grant_docs
 from awscli.customizations.dlm.dlm import dlm_initialize
 from awscli.customizations.opsworks import initialize as opsworks_init
 from awscli.customizations.paginate import register_pagination
-from awscli.customizations.preview import register_preview_commands
 from awscli.customizations.putmetricdata import register_put_metric_data
 from awscli.customizations.rds import register_rds_modify_split
 from awscli.customizations.rds import register_add_generate_db_auth_token
@@ -117,7 +116,6 @@ def awscli_initialize(event_handlers):
     s3_plugin_initialize(event_handlers)
     register_runinstances(event_handlers)
     register_removals(event_handlers)
-    register_preview_commands(event_handlers)
     register_rds_modify_split(event_handlers)
     register_rekognition_detect_labels(event_handlers)
     register_add_generate_db_auth_token(event_handlers)

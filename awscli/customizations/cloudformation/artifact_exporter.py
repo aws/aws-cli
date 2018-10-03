@@ -370,6 +370,21 @@ class ElasticBeanstalkApplicationVersion(ResourceWithS3UrlDict):
     VERSION_PROPERTY = None
 
 
+class LambdaLayerVersionResource(ResourceWithS3UrlDict):
+    RESOURCE_TYPE = "AWS::Lambda::LayerVersion"
+    PROPERTY_NAME = "Content"
+    BUCKET_NAME_PROPERTY = "S3Bucket"
+    OBJECT_KEY_PROPERTY = "S3Key"
+    VERSION_PROPERTY = "S3ObjectVersion"
+    FORCE_ZIP = True
+
+
+class ServerlessLayerVersionResource(Resource):
+    RESOURCE_TYPE = "AWS::Serverless::LayerVersion"
+    PROPERTY_NAME = "ContentUri"
+    FORCE_ZIP = True
+
+
 class CloudFormationStackResource(Resource):
     """
     Represents CloudFormation::Stack resource that can refer to a nested
@@ -439,7 +454,8 @@ EXPORT_LIST = [
     LambdaFunctionResource,
     ElasticBeanstalkApplicationVersion,
     CloudFormationStackResource,
-    ServerlessApplicationResource
+    ServerlessApplicationResource,
+    LambdaLayerVersionResource,
 ]
 
 def include_transform_export_handler(template_dict, uploader):

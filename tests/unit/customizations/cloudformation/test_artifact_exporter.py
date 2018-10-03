@@ -19,8 +19,9 @@ from awscli.customizations.cloudformation.artifact_exporter \
     ServerlessFunctionResource, GraphQLSchemaResource, \
     LambdaFunctionResource, ApiGatewayRestApiResource, \
     ElasticBeanstalkApplicationVersion, CloudFormationStackResource, \
-    ServerlessApplicationResource, \
-    copy_to_temp_dir, include_transform_export_handler, GLOBAL_EXPORT_DICT
+    ServerlessApplicationResource, LambdaLayerVersionResource, \
+    copy_to_temp_dir, include_transform_export_handler, GLOBAL_EXPORT_DICT, \
+    ServerlessLayerVersionResource
 
 
 def test_is_s3_url():
@@ -95,6 +96,16 @@ def test_all_resources_export():
             "expected_result": {
                 "S3Bucket": "foo", "S3Key": "bar"
             }
+        },
+        {
+            "class": LambdaLayerVersionResource,
+            "expected_result": {
+                "S3Bucket": "foo", "S3Key": "bar", "S3ObjectVersion": "baz"
+            }
+        },
+        {
+            "class": ServerlessLayerVersionResource,
+            "expected_result": uploaded_s3_url
         },
     ]
 

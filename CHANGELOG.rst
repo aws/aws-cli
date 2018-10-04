@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.27
+=======
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+
+
 1.16.26
 =======
 

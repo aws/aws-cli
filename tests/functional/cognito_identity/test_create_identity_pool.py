@@ -17,19 +17,6 @@ class TestCreateIdentityPool(BaseAWSCommandParamsTest):
 
     PREFIX = 'cognito-identity create-identity-pool'
 
-    def test_accepts_old_argname(self):
-        cmdline = (
-            self.PREFIX + ' --identity-pool-name foo '
-            '--allow-unauthenticated-identities ' +
-            '--open-id-connect-provider-ar-ns aaaabbbbccccddddeeee'
-        )
-        params = {
-            'AllowUnauthenticatedIdentities': True,
-            'IdentityPoolName': 'foo',
-            'OpenIdConnectProviderARNs': ['aaaabbbbccccddddeeee']
-        }
-        self.assert_params_for_cmd(cmdline, params)
-
     def test_accepts_fixed_param_name(self):
         cmdline = (
             self.PREFIX + ' --identity-pool-name foo '

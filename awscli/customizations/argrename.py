@@ -77,32 +77,7 @@ ARGUMENT_RENAMES = {
 # an alias is created to the original arugment and marked as undocumented.
 # This is useful when you need to change the name of an argument but you
 # still need to support the old argument.
-HIDDEN_ALIASES = {
-    'cognito-identity.create-identity-pool.open-id-connect-provider-arns':
-        'open-id-connect-provider-ar-ns',
-    'storagegateway.describe-tapes.tape-arns': 'tape-ar-ns',
-    'storagegateway.describe-tape-archives.tape-arns': 'tape-ar-ns',
-    'storagegateway.describe-vtl-devices.vtl-device-arns': 'vtl-device-ar-ns',
-    'storagegateway.describe-cached-iscsi-volumes.volume-arns': 'volume-ar-ns',
-    'storagegateway.describe-stored-iscsi-volumes.volume-arns': 'volume-ar-ns',
-    'route53domains.view-billing.start-time': 'start',
-    # These come from the xform_name() changes that no longer separates words
-    # by numbers.
-    'deploy.create-deployment-group.ec2-tag-set': 'ec-2-tag-set',
-    'deploy.list-application-revisions.s3-bucket': 's-3-bucket',
-    'deploy.list-application-revisions.s3-key-prefix': 's-3-key-prefix',
-    'deploy.update-deployment-group.ec2-tag-set': 'ec-2-tag-set',
-    'iam.enable-mfa-device.authentication-code1': 'authentication-code-1',
-    'iam.enable-mfa-device.authentication-code2': 'authentication-code-2',
-    'iam.resync-mfa-device.authentication-code1': 'authentication-code-1',
-    'iam.resync-mfa-device.authentication-code2': 'authentication-code-2',
-    'importexport.get-shipping-label.street1': 'street-1',
-    'importexport.get-shipping-label.street2': 'street-2',
-    'importexport.get-shipping-label.street3': 'street-3',
-    'lambda.publish-version.code-sha256': 'code-sha-256',
-    'lightsail.import-key-pair.public-key-base64': 'public-key-base-64',
-    'opsworks.register-volume.ec2-volume-id': 'ec-2-volume-id',
-}
+HIDDEN_ALIASES = {}
 
 
 def register_arg_renames(cli):

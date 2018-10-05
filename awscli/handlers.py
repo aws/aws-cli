@@ -79,8 +79,6 @@ from awscli.customizations.streamingoutputarg import add_streaming_output_arg
 from awscli.customizations.toplevelbool import register_bool_params
 from awscli.customizations.waiters import register_add_waiters
 from awscli.customizations.opsworkscm import register_alias_opsworks_cm
-from awscli.customizations.mturk import register_alias_mturk_command
-from awscli.customizations.sagemaker import register_alias_sagemaker_runtime_command
 from awscli.customizations.servicecatalog import register_servicecatalog_commands
 from awscli.customizations.s3events import register_event_stream_arg
 from awscli.customizations.sessionmanager import register_ssm_session
@@ -162,8 +160,6 @@ def awscli_initialize(event_handlers):
     register_ec2_page_size_injector(event_handlers)
     cloudformation_init(event_handlers)
     register_alias_opsworks_cm(event_handlers)
-    register_alias_mturk_command(event_handlers)
-    register_alias_sagemaker_runtime_command(event_handlers)
     register_servicecatalog_commands(event_handlers)
     register_history_mode(event_handlers)
     register_history_commands(event_handlers)

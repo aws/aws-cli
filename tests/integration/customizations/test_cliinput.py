@@ -160,3 +160,45 @@ class TestIntegCliInputJson(unittest.TestCase):
             (self.region, self.bucket_name, self.obj_name))
         self.assertEqual(p.rc, 255)
         self.assertIn('Unknown', p.stderr)
+
+
+class TestCLIInputYAML(unittest.TestCase):
+    def setUp(self):
+        self.session = botocore.session.get_session()
+        self.region = _DEFAULT_REGION
+
+        # Set up a s3 bucket.
+        self.s3 = self.session.create_client('s3', region_name=self.region)
+        self.bucket_name = _SHARED_BUCKET
+
+        # Add an object to the bucket.
+        self.key = 'foo'
+        self.s3.put_object(
+            Bucket=self.bucket_name,
+            Key=self.key,
+            Body='bar'
+        )
+
+        self.input_yaml = 'Bucket: %s\nKey: %s' % (
+            self.bucket_name, self.key
+        )
+
+        self.temp_dir = tempfile.mkdtemp()
+        self.temp_file = os.path.join(self.temp_dir, 'foo.yaml')
+        with open(self.temp_file, 'w') as f:
+            f.write(self.input_yaml)
+
+    def tearDown(self):
+        self.s3.delete_object(
+            Bucket=self.bucket_name,
+            Key=self.key
+        )
+
+    def test_cli_input_yaml(self):
+        command = (
+            "s3api head-object --cli-input-yaml file://%s --region %s" % (
+                self.temp_file, self.region
+            )
+        )
+        p = aws(command)
+        self.assertEqual(p.rc, 0)

@@ -12,6 +12,9 @@
 # language governing permissions and limitations under the License.
 import json
 
+import ruamel.yaml as yaml
+from ruamel.yaml.error import YAMLError
+
 from awscli.paramfile import get_paramfile, LOCAL_PREFIX_MAP
 from awscli.argprocess import ParamError, ParamSyntaxError
 from awscli.customizations.arguments import OverrideRequiredArgsArgument
@@ -19,6 +22,7 @@ from awscli.customizations.arguments import OverrideRequiredArgsArgument
 
 def register_cli_input_json(cli):
     cli.register('building-argument-table', add_cli_input_json)
+    cli.register('building-argument-table', add_cli_input_yaml)
 
 
 def add_cli_input_json(session, argument_table, **kwargs):
@@ -27,6 +31,14 @@ def add_cli_input_json(session, argument_table, **kwargs):
     if 'outfile' not in argument_table:
         cli_input_json_argument = CliInputJSONArgument(session)
         cli_input_json_argument.add_to_arg_table(argument_table)
+
+
+def add_cli_input_yaml(session, argument_table, **kwargs):
+    # This argument cannot support operations with streaming output which
+    # is designated by the argument name `outfile`.
+    if 'outfile' not in argument_table:
+        cli_input_yaml_argument = CliInputYAMLArgument(session)
+        cli_input_yaml_argument.add_to_arg_table(argument_table)
 
 
 class CliInputArgument(OverrideRequiredArgsArgument):
@@ -61,6 +73,15 @@ class CliInputArgument(OverrideRequiredArgsArgument):
         arg_value = getattr(parsed_args, self.py_name, None)
         if arg_value is None:
             return
+
+        cli_input_args = [
+            k for k, v in vars(parsed_args).items()
+            if v is not None and k.startswith('cli_input')
+        ]
+        if len(cli_input_args) != 1:
+            raise ParamSyntaxError(
+                'Only one --cli-input- parameter may be specified.'
+            )
 
         # If the value starts with file:// or fileb://, return the contents
         # from the file.
@@ -106,4 +127,31 @@ class CliInputJSONArgument(CliInputArgument):
         try:
             return json.loads(arg_value)
         except ValueError:
-            raise ParamError(self.cli_name, "Invalid JSON received.")
+            raise ParamError(self.name, "Invalid JSON received.")
+
+
+class CliInputYAMLArgument(CliInputArgument):
+    ARG_DATA = {
+        'name': 'cli-input-yaml',
+        'group_name': 'cli_input',
+        'help_text': (
+            'Reads arguments from the YAML string provided. The YAML string '
+            'follows the format provided by ``--generate-cli-skeleton yaml``. '
+            'If other arguments are provided on the command line, those '
+            'values will override the YAML-provided values. This may not be '
+            'specified along with ``--cli-input-json``.'
+        )
+    }
+
+    def _load_parameters(self, arg_value):
+        # YAML doesn't support JSON as well as it should, so try using json
+        # first.
+        try:
+            return json.loads(arg_value)
+        except ValueError:
+            pass
+
+        try:
+            return yaml.safe_load(arg_value)
+        except YAMLError:
+            raise ParamError(self.name, "Invalid YAML received.")

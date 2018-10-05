@@ -23,7 +23,7 @@ from awscli.customizations.addexamples import add_examples
 from awscli.customizations.argrename import register_arg_renames
 from awscli.customizations.assumerole import register_assume_role_provider
 from awscli.customizations.awslambda import register_lambda_create_function
-from awscli.customizations.cliinputjson import register_cli_input_json
+from awscli.customizations.cliinput import register_cli_input_json
 from awscli.customizations.cloudformation import initialize as cloudformation_init
 from awscli.customizations.cloudfront import register as register_cloudfront
 from awscli.customizations.cloudsearch import initialize as cloudsearch_init

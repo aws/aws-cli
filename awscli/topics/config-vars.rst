@@ -75,7 +75,9 @@ cli_follow_urlparam  N/A         cli_follow_urlparam   N/A                   Fet
 -------------------- ----------- --------------------- --------------------- ----------------------------
 ca_bundle            --ca-bundle ca_bundle             AWS_CA_BUNDLE         CA Certificate Bundle
 -------------------- ----------- --------------------- --------------------- ----------------------------
-parameter_validation             parameter_validation                        Toggles parameter validation
+parameter_validation N/A         parameter_validation  N/A                   Toggles parameter validation
+-------------------- ----------- --------------------- --------------------- ----------------------------
+tcp_keepalive        N/A         tcp_keepalive         N/A                   Toggles TCP Keep-Alive
 ==================== =========== ===================== ===================== ============================
 
 The third column, Config Entry, is the value you would specify in the AWS CLI

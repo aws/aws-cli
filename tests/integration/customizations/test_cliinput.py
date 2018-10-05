@@ -10,15 +10,65 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import logging
 import os
-import time
 import tempfile
-import random
 import shutil
 
 import botocore.session
 
-from awscli.testutils import unittest, aws
+from awscli.testutils import unittest, aws, random_bucket_name
+
+
+LOG = logging.getLogger(__name__)
+_SHARED_BUCKET = random_bucket_name()
+_DEFAULT_REGION = 'us-west-2'
+
+
+def setup_module():
+    s3 = botocore.session.get_session().create_client('s3')
+    waiter = s3.get_waiter('bucket_exists')
+    params = {
+        'Bucket': _SHARED_BUCKET,
+        'CreateBucketConfiguration': {
+            'LocationConstraint': _DEFAULT_REGION,
+        }
+    }
+    try:
+        s3.create_bucket(**params)
+    except Exception as e:
+        # A create_bucket can fail for a number of reasons.
+        # We're going to defer to the waiter below to make the
+        # final call as to whether or not the bucket exists.
+        LOG.debug("create_bucket() raised an exception: %s", e, exc_info=True)
+    waiter.wait(Bucket=_SHARED_BUCKET)
+
+
+def clear_out_bucket(bucket, delete_bucket=False):
+    s3 = botocore.session.get_session().create_client(
+        's3', region_name=_DEFAULT_REGION)
+    page = s3.get_paginator('list_objects')
+    # Use pages paired with batch delete_objects().
+    for page in page.paginate(Bucket=bucket):
+        keys = [{'Key': obj['Key']} for obj in page.get('Contents', [])]
+        if keys:
+            s3.delete_objects(Bucket=bucket, Delete={'Objects': keys})
+    if delete_bucket:
+        try:
+            s3.delete_bucket(Bucket=bucket)
+        except Exception as e:
+            # We can sometimes get exceptions when trying to
+            # delete a bucket.  We'll let the waiter make
+            # the final call as to whether the bucket was able
+            # to be deleted.
+            LOG.debug("delete_bucket() raised an exception: %s",
+                      e, exc_info=True)
+            waiter = s3.get_waiter('bucket_not_exists')
+            waiter.wait(Bucket=bucket)
+
+
+def teardown_module():
+    clear_out_bucket(_SHARED_BUCKET, delete_bucket=True)
 
 
 class TestIntegCliInputJson(unittest.TestCase):
@@ -30,16 +80,11 @@ class TestIntegCliInputJson(unittest.TestCase):
     """
     def setUp(self):
         self.session = botocore.session.get_session()
-        self.region = 'us-west-2'
+        self.region = _DEFAULT_REGION
 
         # Set up a s3 bucket.
         self.s3 = self.session.create_client('s3', region_name=self.region)
-        self.bucket_name = 'cliinputjsontest%s-%s' % (
-            int(time.time()), random.randint(1, 1000000))
-        self.s3.create_bucket(
-            Bucket=self.bucket_name,
-            CreateBucketConfiguration={'LocationConstraint': self.region}
-        )
+        self.bucket_name = _SHARED_BUCKET
 
         # Add an object to the bucket.
         self.obj_name = 'foo'
@@ -64,7 +109,6 @@ class TestIntegCliInputJson(unittest.TestCase):
             Bucket=self.bucket_name,
             Key=self.obj_name
         )
-        self.s3.delete_bucket(Bucket=self.bucket_name)
 
     def test_cli_input_json_no_exta_args(self):
         # Run a head command using the input json

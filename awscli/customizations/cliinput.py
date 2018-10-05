@@ -49,6 +49,12 @@ class CliInputArgument(OverrideRequiredArgsArgument):
             return
 
         loaded_params = self._load_parameters(arg_value)
+        if not isinstance(loaded_params, dict):
+            raise ParamError(
+                self.cli_name,
+                "Invalid type: expecting map, "
+                "received %s" % type(loaded_params)
+            )
         self._update_call_parameters(call_parameters, loaded_params)
 
     def _get_arg_value(self, parsed_args):

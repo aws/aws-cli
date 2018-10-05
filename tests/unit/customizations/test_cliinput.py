@@ -98,3 +98,15 @@ class TestCliInputJSONArgument(unittest.TestCase):
         # Nothing should have been added to the call parameters because
         # ``cli_input_json`` is not in the ``parsed_args``
         self.assertEqual(call_parameters, {'A': 'baz'})
+
+    def test_input_is_not_a_map(self):
+        # These are still valid JSON, but they are not valid input for this
+        # argument
+        invalid_values = ['"foo"', '1', '[]', 'False', 'null']
+        for invalid_value in invalid_values:
+            parsed_args = self.create_args(invalid_value)
+            with self.assertRaises(ParamError):
+                self.argument.add_to_call_parameters(
+                    service_operation=None, call_parameters={},
+                    parsed_args=parsed_args, parsed_globals=None
+                )

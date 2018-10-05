@@ -17,7 +17,8 @@ import tempfile
 
 from awscli.testutils import unittest
 from awscli.argprocess import ParamError
-from awscli.customizations.cliinputjson import CliInputJSONArgument
+from awscli.customizations.cliinput import CliInputJSONArgument
+from awscli.customizations.cliinput import CliInputYAMLArgument
 
 
 class TestCliInputJSONArgument(unittest.TestCase):
@@ -99,3 +100,76 @@ class TestCliInputJSONArgument(unittest.TestCase):
         # Nothing should have been added to the call parameters because
         # ``cli_input_json`` is not in the ``parsed_args``
         self.assertEqual(call_parameters, {'A': 'baz'})
+
+    def test_input_is_not_a_map(self):
+        # These are still valid JSON, but they are not valid input for this
+        # argument
+        invalid_values = ['"foo"', '1', '[]', 'False', 'null']
+        for invalid_value in invalid_values:
+            parsed_args = self.create_args(invalid_value)
+            with self.assertRaises(ParamError):
+                self.argument.add_to_call_parameters(
+                    service_operation=None, call_parameters={},
+                    parsed_args=parsed_args, parsed_globals=None
+                )
+
+
+class TestCliInputYAMLArgument(TestCliInputJSONArgument):
+    def setUp(self):
+        super(TestCliInputYAMLArgument, self).setUp()
+        self.argument = CliInputYAMLArgument(self.session)
+        self.input_yaml = "A: foo\nB: bar"
+
+    def create_args(self, value):
+        parsed_args = mock.Mock()
+        parsed_args.cli_input_yaml = value
+        return parsed_args
+
+    def test_input_yaml_string(self):
+        parsed_args = self.create_args(self.input_yaml)
+        call_parameters = {}
+        self.argument.add_to_call_parameters(
+            service_operation=None, call_parameters=call_parameters,
+            parsed_args=parsed_args, parsed_globals=None
+        )
+        self.assertEqual(call_parameters, {'A': 'foo', 'B': 'bar'})
+
+    def test_input_yaml_bytes(self):
+        input_yaml = "A: !!binary Zm9v\nB: bar"
+        parsed_args = self.create_args(input_yaml)
+        call_parameters = {}
+        self.argument.add_to_call_parameters(
+            service_operation=None, call_parameters=call_parameters,
+            parsed_args=parsed_args, parsed_globals=None
+        )
+        self.assertEqual(call_parameters, {'A': b'foo', 'B': 'bar'})
+
+    def test_input_yaml_set(self):
+        input_yaml = "foo: !!set {1, 2, 3}"
+        parsed_args = self.create_args(input_yaml)
+        call_parameters = {}
+        self.argument.add_to_call_parameters(
+            service_operation=None, call_parameters=call_parameters,
+            parsed_args=parsed_args, parsed_globals=None
+        )
+        self.assertEqual(call_parameters, {'foo': set([1, 2, 3])})
+
+    def test_invalid_yaml(self):
+        parsed_args = self.create_args(self.input_yaml + '\n,')
+        call_parameters = {}
+        with self.assertRaises(ParamError):
+            self.argument.add_to_call_parameters(
+                service_operation=None, call_parameters=call_parameters,
+                parsed_args=parsed_args, parsed_globals=None
+            )
+            print(call_parameters)
+
+    def test_yaml_does_not_overwrite(self):
+        parsed_args = self.create_args(self.input_yaml)
+        # The value for ``A`` should not be clobbered by the input YAML
+        call_parameters = {'A': 'baz'}
+        self.argument.add_to_call_parameters(
+            service_operation=None, call_parameters=call_parameters,
+            parsed_args=parsed_args, parsed_globals=None
+        )
+        self.assertEqual(call_parameters, {'A': 'baz', 'B': 'bar'})

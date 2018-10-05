@@ -511,7 +511,8 @@ class ListCommand(S3Command):
         for response_data in iterator:
             self._display_page(response_data)
 
-    def _display_page(self, response_data, use_basename=True):
+    def _display_page(self, response_data, use_basename=True,
+                      strip_prefix=None):
         common_prefixes = response_data.get('CommonPrefixes', [])
         contents = response_data.get('Contents', [])
         if not contents and not common_prefixes:
@@ -533,6 +534,9 @@ class ListCommand(S3Command):
                 filename = filename_components[-1]
             else:
                 filename = content['Key']
+            if strip_prefix:
+                if filename.startswith(strip_prefix):
+                    filename = filename[len(strip_prefix) + 1:]
             print_str = last_mod_str + ' ' + size_str + ' ' + \
                 filename + '\n'
             uni_print(print_str)
@@ -557,7 +561,8 @@ class ListCommand(S3Command):
             paging_args['RequestPayer'] = request_payer
         iterator = paginator.paginate(**paging_args)
         for response_data in iterator:
-            self._display_page(response_data, use_basename=False)
+            self._display_page(response_data, use_basename=False,
+                               strip_prefix=key)
 
     def _check_no_objects(self):
         if self._empty_result and self._at_first_page:

@@ -57,21 +57,6 @@ class TestCommandTableAlias(BaseAWSHelpOutputTest):
         self.assert_contains(new_name)
         self.assert_not_contains(old_name)
 
-    def test_make_hidden_alias(self):
-        old_name = 'alexaforbusiness'
-        new_name = 'nopossiblewaythisisalreadythere'
-
-        def handler(command_table, **kwargs):
-            utils.make_hidden_command_alias(command_table, old_name, new_name)
-
-        self._assert_command_exists(old_name, handler)
-        self._assert_command_exists(new_name, handler)
-
-        # Verify that the new isn't documented
-        self.driver.main(['help'])
-        self.assert_not_contains(new_name)
-        self.assert_contains(old_name)
-
     def _assert_command_exists(self, command_name, handler):
         # Verify that we can alias a top level command.
         self.session.register('building-command-table.main', handler)
@@ -81,29 +66,6 @@ class TestCommandTableAlias(BaseAWSHelpOutputTest):
         # We can also see subcommands help as well.
         self.driver.main([command_name, 'get-room', 'help'])
         self.assert_contains('get-room')
-
-
-class TestHiddenAlias(unittest.TestCase):
-    def test_not_marked_as_required_if_not_needed(self):
-        original_arg_required = mock.Mock()
-        original_arg_required.required = False
-        arg_table = {'original': original_arg_required}
-        utils.make_hidden_alias(arg_table, 'original', 'new-name')
-        self.assertIn('new-name', arg_table)
-        # Note: the _DOCUMENT_AS_REQUIRED is tested as a functional
-        # test because it only affects how the doc synopsis is
-        # rendered.
-        self.assertFalse(arg_table['original'].required)
-        self.assertFalse(arg_table['new-name'].required)
-
-    def test_hidden_alias_marks_as_not_required(self):
-        original_arg_required = mock.Mock()
-        original_arg_required.required = True
-        arg_table = {'original': original_arg_required}
-        utils.make_hidden_alias(arg_table, 'original', 'new-name')
-        self.assertIn('new-name', arg_table)
-        self.assertFalse(arg_table['original'].required)
-        self.assertFalse(arg_table['new-name'].required)
 
 
 class TestValidateMututuallyExclusiveGroups(unittest.TestCase):

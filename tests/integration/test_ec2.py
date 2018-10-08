@@ -23,8 +23,8 @@ class TestDescribeInstances(unittest.TestCase):
         self.assertIn('InvalidInstanceID.Malformed', result.stderr)
 
     def test_describe_instances_with_filter(self):
-        command = self.prefix + ' --filters Name=instance-id,Values='
-        command += 'malformed-id'
+        command = self.prefix + ' --filters Name=instance-id,Values=['
+        command += 'malformed-id]'
         result = aws(command)
         reservations = result.json["Reservations"]
         self.assertEqual(len(reservations), 0)
@@ -41,7 +41,7 @@ class TestDescribeSnapshots(unittest.TestCase):
 
     def test_describe_snapshots_with_filter(self):
         command = self.prefix
-        command += ' --filters Name=snapshot-id,Values=malformed-id'
+        command += ' --filters Name=snapshot-id,Values=[malformed-id]'
         result = aws(command)
         snapshots = result.json['Snapshots']
         self.assertEqual(len(snapshots), 0)

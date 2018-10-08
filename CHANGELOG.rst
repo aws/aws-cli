@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.29
+=======
+
+* api-change:``iot``: Update iot command to latest version
+* api-change:``iot-jobs-data``: Update iot-jobs-data command to latest version
+
+
 1.16.28
 =======
 

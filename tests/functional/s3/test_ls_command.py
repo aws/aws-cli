@@ -59,7 +59,10 @@ class TestLSCommand(BaseAWSCommandParamsTest):
         self.parsed_responses = [{"CommonPrefixes": [], "Contents": [
             {"Key": "foo/bar.txt", "Size": 100,
              "LastModified": time_utc}]}]
-        stdout, _, _ = self.run_cmd('s3 ls s3://bucket/ --page-size 8 --recursive', expected_rc=0)
+        stdout, _, _ = self.run_cmd(
+            's3 ls s3://bucket/ --page-size 8 --recursive',
+            expected_rc=0
+        )
         call_args = self.operations_called[0][1]
         # We should not be calling the args with any delimiter because we
         # want a recursive listing.

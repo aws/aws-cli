@@ -475,13 +475,11 @@ class ListCommand(S3Command):
         bucket, key = find_bucket_key(path)
         if not bucket:
             self._list_all_buckets()
-        elif parsed_args.dir_op:
-            # Then --recursive was specified.
-            self._list_all_objects_recursive(
-                bucket, key, parsed_args.page_size, parsed_args.request_payer)
         else:
             self._list_all_objects(
-                bucket, key, parsed_args.page_size, parsed_args.request_payer)
+                bucket, key, parsed_args.page_size, parsed_args.request_payer,
+                recursive=parsed_args.dir_op
+            )
         if parsed_args.summarize:
             self._print_summary()
         if key:
@@ -499,17 +497,23 @@ class ListCommand(S3Command):
             return 0
 
     def _list_all_objects(self, bucket, key, page_size=None,
-                          request_payer=None):
+                          request_payer=None, recursive=False):
         paginator = self.client.get_paginator('list_objects_v2')
         paging_args = {
-            'Bucket': bucket, 'Prefix': key, 'Delimiter': '/',
+            'Bucket': bucket, 'Prefix': key,
             'PaginationConfig': {'PageSize': page_size}
         }
+        if not recursive:
+            # For non-recursive supply the Delimiter argument to the API call.
+            paging_args['Delimiter'] = '/'
         if request_payer is not None:
             paging_args['RequestPayer'] = request_payer
         iterator = paginator.paginate(**paging_args)
         for response_data in iterator:
-            self._display_page(response_data)
+            self._display_page(
+                response_data,
+                provided_prefix=key,
+            )
 
     def _display_page(self, response_data, provided_prefix=''):
         common_prefixes = response_data.get('CommonPrefixes', [])
@@ -551,21 +555,6 @@ class ListCommand(S3Command):
             print_str = last_mod_str + ' ' + bucket['Name'] + '\n'
             uni_print(print_str)
 
-    def _list_all_objects_recursive(self, bucket, key, page_size=None,
-                                    request_payer=None):
-        paginator = self.client.get_paginator('list_objects_v2')
-        paging_args = {
-            'Bucket': bucket, 'Prefix': key,
-            'PaginationConfig': {'PageSize': page_size}
-        }
-        if request_payer is not None:
-            paging_args['RequestPayer'] = request_payer
-        iterator = paginator.paginate(**paging_args)
-        for response_data in iterator:
-            self._display_page(
-                response_data,
-                provided_prefix=key,
-            )
 
     def _check_no_objects(self):
         if self._empty_result and self._at_first_page:

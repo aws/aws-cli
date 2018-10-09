@@ -62,7 +62,7 @@ def add_timestamp_parser(session):
         # on a ProfileNotFound the CLI should just use the default.
         timestamp_format = default_format
 
-    if timestamp_format == 'none':
+    if timestamp_format == 'wire':
         # For backwards compatibility reasons, we replace botocore's timestamp
         # parser (which parses to a datetime.datetime object) with the
         # identity function which prints the date exactly the same as it comes
@@ -72,7 +72,7 @@ def add_timestamp_parser(session):
         timestamp_parser = iso_format
     else:
         raise ValueError('Unknown cli_timestamp_format value: %s, valid values'
-                         ' are "none" or "iso8601"' % timestamp_format)
+                         ' are "wire" or "iso8601"' % timestamp_format)
     factory.set_parser_defaults(timestamp_parser=timestamp_parser)
 
 

@@ -1226,6 +1226,15 @@ class TestLs(BaseS3IntegrationTest):
         self.assertIn('foo.txt', p.stdout)
         self.assertNotIn('temp/foo.txt', p.stdout)
 
+    def test_ls_recursive_between(self):
+        bucket_name = _SHARED_BUCKET
+        self.put_object(bucket_name, 'temp/foo.txt', 'contents')
+        p = aws('s3 ls s3://%s/te --recursive' % bucket_name)
+        # Here we want to show the top level key prefix that matched
+        # if its a partial match. Otherwise we don't know which prefix
+        # got matched from our partial.
+        self.assertEqual(p.rc, 0)
+        self.assertIn('temp/foo.txt', p.stdout)
 
 
 class TestMbRb(BaseS3IntegrationTest):

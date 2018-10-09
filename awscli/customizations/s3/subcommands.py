@@ -511,8 +511,7 @@ class ListCommand(S3Command):
         for response_data in iterator:
             self._display_page(response_data)
 
-    def _display_page(self, response_data, use_basename=True,
-                      key=''):
+    def _display_page(self, response_data, provided_prefix=''):
         common_prefixes = response_data.get('CommonPrefixes', [])
         contents = response_data.get('Contents', [])
         if not contents and not common_prefixes:
@@ -529,11 +528,9 @@ class ListCommand(S3Command):
             self._size_accumulator += int(content['Size'])
             self._total_objects += 1
             size_str = self._make_size_str(content['Size'])
-            if use_basename:
-                filename_components = content['Key'].split('/')
-                filename = filename_components[-1]
-            else:
-                filename = self._get_relative_key(key, content['Key'])
+            filename = self._get_relative_key(
+                provided_prefix, content['Key']
+            )
             print_str = last_mod_str + ' ' + size_str + ' ' + \
                 filename + '\n'
             uni_print(print_str)
@@ -567,8 +564,7 @@ class ListCommand(S3Command):
         for response_data in iterator:
             self._display_page(
                 response_data,
-                use_basename=False,
-                key=key
+                provided_prefix=key,
             )
 
     def _check_no_objects(self):

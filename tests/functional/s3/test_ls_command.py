@@ -233,6 +233,20 @@ class TestLSCommand(BaseAWSCommandParamsTest):
         self.assertIn('foo/test.txt', stdout)
         self.assertIn('foo/bar/baz.txt', stdout)
 
+    def test_recursive_list_edge_case(self):
+        time_utc = "2014-01-09T20:45:49.000Z"
+        self.parsed_responses = [
+            {"Contents": [{"Key": "foo/bar/baz.txt", "Size": 100,
+                           "LastModified": time_utc},
+                          {"Key": "foo/test.txt", "Size": 100,
+                           "LastModified": time_utc}]}
+        ]
+        stdout, _, _ = self.run_cmd(
+            's3 ls s3://bucket/f --recursive', expected_rc=0
+        )
+        self.assertIn('foo/test.txt', stdout)
+        self.assertIn('foo/bar/baz.txt', stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

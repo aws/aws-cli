@@ -94,8 +94,10 @@ The valid values of the ``output`` configuration variable are:
 ``cli_timestamp_format`` controls the format of timestamps displayed by the AWS CLI.
 The valid values of the ``cli_timestamp_format`` configuration variable are:
 
-* none - Display the timestamp exactly as received from the HTTP response.
+* wire - Display the timestamp exactly as received from the HTTP response.
 * iso8601 - Reformat timestamp using iso8601 in the UTC timezone.
+
+The default value is ``iso8601``.
 
 ``cli_follow_urlparam`` controls whether or not the CLI will attempt to follow
 URL links in parameters that start with either prefix ``https://`` or

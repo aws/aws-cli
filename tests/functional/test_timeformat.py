@@ -49,7 +49,7 @@ class TestCLITimestampParser(BaseCLIWireResponseTest):
     def test_none(self):
         self.environ['AWS_CONFIG_FILE'] = self.files.create_file(
             'none',
-            '[default]\ncli_timestamp_format = none\n')
+            '[default]\ncli_timestamp_format = wire\n')
         self.driver = create_clidriver()
         expected_time = 0
 

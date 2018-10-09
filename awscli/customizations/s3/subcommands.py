@@ -512,7 +512,7 @@ class ListCommand(S3Command):
             self._display_page(response_data)
 
     def _display_page(self, response_data, use_basename=True,
-                      strip_prefix=None):
+                      key=''):
         common_prefixes = response_data.get('CommonPrefixes', [])
         contents = response_data.get('Contents', [])
         if not contents and not common_prefixes:
@@ -533,14 +533,18 @@ class ListCommand(S3Command):
                 filename_components = content['Key'].split('/')
                 filename = filename_components[-1]
             else:
-                filename = content['Key']
-            if strip_prefix:
-                if filename.startswith(strip_prefix):
-                    filename = filename[len(strip_prefix) + 1:]
+                filename = self._get_relative_key(key, content['Key'])
             print_str = last_mod_str + ' ' + size_str + ' ' + \
                 filename + '\n'
             uni_print(print_str)
         self._at_first_page = False
+
+    def _get_relative_key(self, key, response_key):
+        key_components = key.split('/')
+        num_components = len(key_components)
+        num_components_to_strip = num_components - 1
+        response_key_components = response_key.split('/')
+        return '/'.join(response_key_components[num_components_to_strip:])
 
     def _list_all_buckets(self):
         response_data = self.client.list_buckets()
@@ -561,8 +565,11 @@ class ListCommand(S3Command):
             paging_args['RequestPayer'] = request_payer
         iterator = paginator.paginate(**paging_args)
         for response_data in iterator:
-            self._display_page(response_data, use_basename=False,
-                               strip_prefix=key)
+            self._display_page(
+                response_data,
+                use_basename=False,
+                key=key
+            )
 
     def _check_no_objects(self):
         if self._empty_result and self._at_first_page:

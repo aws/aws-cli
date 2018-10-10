@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.31
+=======
+
+* api-change:``es``: Update es command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+
+
 1.16.30
 =======
 

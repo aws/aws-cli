@@ -286,25 +286,22 @@ class FakeCommandVerify(FakeCommand):
 class TestCliDriver(unittest.TestCase):
     def setUp(self):
         self.session = FakeSession()
+        self.driver = CLIDriver(session=self.session)
 
     def test_session_can_be_passed_in(self):
-        driver = CLIDriver(session=self.session)
-        self.assertEqual(driver.session, self.session)
+        self.assertEqual(self.driver.session, self.session)
 
     def test_paginate_rc(self):
-        driver = CLIDriver(session=self.session)
-        rc = driver.main('s3 list-objects --bucket foo'.split())
+        rc = self.driver.main('s3 list-objects --bucket foo'.split())
         self.assertEqual(rc, 0)
 
     def test_no_profile(self):
-        driver = CLIDriver(session=self.session)
-        driver.main('s3 list-objects --bucket foo'.split())
-        self.assertEqual(driver.session.profile, None)
+        self.driver.main('s3 list-objects --bucket foo'.split())
+        self.assertEqual(self.driver.session.profile, None)
 
     def test_profile(self):
-        driver = CLIDriver(session=self.session)
-        driver.main('s3 list-objects --bucket foo --profile foo'.split())
-        self.assertEqual(driver.session.profile, 'foo')
+        self.driver.main('s3 list-objects --bucket foo --profile foo'.split())
+        self.assertEqual(self.driver.session.profile, 'foo')
 
     def test_region_is_set_for_session(self):
         driver = CLIDriver(session=self.session)
@@ -313,18 +310,16 @@ class TestCliDriver(unittest.TestCase):
             driver.session.get_config_variable('region'), 'us-east-2')
 
     def test_error_logger(self):
-        driver = CLIDriver(session=self.session)
-        driver.main('s3 list-objects --bucket foo --profile foo'.split())
+        self.driver.main('s3 list-objects --bucket foo --profile foo'.split())
         expected = {'log_level': logging.ERROR, 'logger_name': 'awscli'}
-        self.assertEqual(driver.session.stream_logger_args[1], expected)
+        self.assertEqual(self.driver.session.stream_logger_args[1], expected)
 
     def test_ctrl_c_is_handled(self):
-        driver = CLIDriver(session=self.session)
         fake_client = mock.Mock()
         fake_client.list_objects.side_effect = KeyboardInterrupt
         fake_client.can_paginate.return_value = False
-        driver.session.create_client = mock.Mock(return_value=fake_client)
-        rc = driver.main('s3 list-objects --bucket foo'.split())
+        self.driver.session.create_client = mock.Mock(return_value=fake_client)
+        rc = self.driver.main('s3 list-objects --bucket foo'.split())
         self.assertEqual(rc, 130)
 
     def test_error_unicode(self):
@@ -336,14 +331,13 @@ class TestCliDriver(unittest.TestCase):
         else:
             stderr = stderr_b = six.StringIO()
             stderr.encoding = "UTF-8"
-        driver = CLIDriver(session=self.session)
         fake_client = mock.Mock()
         fake_client.list_objects.side_effect = Exception(u"☃")
         fake_client.can_paginate.return_value = False
-        driver.session.create_client = mock.Mock(return_value=fake_client)
+        self.driver.session.create_client = mock.Mock(return_value=fake_client)
         with mock.patch("sys.stderr", stderr):
             with mock.patch("locale.getpreferredencoding", lambda: "UTF-8"):
-                rc = driver.main('s3 list-objects --bucket foo'.split())
+                rc = self.driver.main('s3 list-objects --bucket foo'.split())
         stderr.flush()
         self.assertEqual(rc, 255)
         self.assertEqual(stderr_b.getvalue().strip(), u"☃".encode("UTF-8"))

@@ -20,6 +20,7 @@ import sys
 import mock
 import nose
 from awscli.compat import six
+from botocore import xform_name
 from botocore.awsrequest import AWSResponse
 from botocore.exceptions import NoCredentialsError
 from botocore.compat import OrderedDict
@@ -341,6 +342,15 @@ class TestCliDriver(unittest.TestCase):
         stderr.flush()
         self.assertEqual(rc, 255)
         self.assertEqual(stderr_b.getvalue().strip(), u"☃".encode("UTF-8"))
+
+    def test_can_access_subcommand_table(self):
+        table = self.driver.subcommand_table
+        self.assertEqual(list(table), self.session.get_available_services())
+
+    def test_can_access_argument_table(self):
+        arg_table = self.driver.arg_table
+        expected = list(GET_DATA['cli']['options'])
+        self.assertEqual(list(arg_table), expected)
 
 
 class TestCliDriverHooks(unittest.TestCase):
@@ -863,6 +873,17 @@ class TestServiceCommand(unittest.TestCase):
         self.session = FakeSession()
         self.cmd = ServiceCommand(self.name, self.session)
 
+    def test_can_access_subcommand_table(self):
+        table = self.cmd.subcommand_table
+        expected = [
+            xform_name(op, '-') for op in
+            self.session.get_service_model(self.name).operation_names
+        ]
+        self.assertEqual(set(table), set(expected))
+
+    def test_can_access_arg_table(self):
+        self.assertEqual(self.cmd.arg_table, {})
+
     def test_name(self):
         self.assertEqual(self.cmd.name, self.name)
         self.cmd.name = 'bar'
@@ -899,11 +920,20 @@ class TestServiceCommand(unittest.TestCase):
 
 class TestServiceOperation(unittest.TestCase):
     def setUp(self):
-        self.name = 'foo'
-        operation = mock.Mock(spec=botocore.model.OperationModel)
-        operation.deprecated = False
+        self.name = 'list-objects'
+        self.session = FakeSession()
+        operation = self.session.get_service_model(
+            's3').operation_model('ListObjects')
         self.mock_operation = operation
-        self.cmd = ServiceOperation(self.name, None, None, operation, None)
+        self.cmd = ServiceOperation(self.name, None, None, operation,
+                                    self.session)
+
+    def test_can_access_subcommand_table(self):
+        self.assertEqual(self.cmd.subcommand_table, {})
+
+    def test_can_access_arg_table(self):
+        self.assertEqual(set(self.cmd.arg_table),
+                         set(['bucket', 'marker', 'max-keys']))
 
     def test_name(self):
         self.assertEqual(self.cmd.name, self.name)
@@ -917,7 +947,7 @@ class TestServiceOperation(unittest.TestCase):
         self.assertEqual(self.cmd.lineage, [cmd])
 
     def test_lineage_names(self):
-        self.assertEqual(self.cmd.lineage_names, ['foo'])
+        self.assertEqual(self.cmd.lineage_names, ['list-objects'])
 
     def test_deprecated_operation(self):
         self.mock_operation.deprecated = True

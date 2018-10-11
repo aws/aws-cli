@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.16.32
+=======
+
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``directconnect``: Update directconnect command to latest version
+* api-change:``athena``: Update athena command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.16.31
 =======
 

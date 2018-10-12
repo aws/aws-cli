@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.33
+=======
+
+* api-change:``cloudtrail``: Update cloudtrail command to latest version
+
+
 1.16.32
 =======
 

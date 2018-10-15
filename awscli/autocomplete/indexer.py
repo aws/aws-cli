@@ -29,9 +29,10 @@ class ModelIndexer(object):
     def generate_index(self, clidriver):
         parent = 'aws'
         self._db_connection.execute(
-            'INSERT OR REPLACE INTO command_table (command)'
-            'VALUES (:command)',
-            command=parent
+            'INSERT OR REPLACE INTO command_table (command, parent)'
+            'VALUES (:command, :parent)',
+            command=parent,
+            parent='',
         )
         command_table = clidriver.subcommand_table
         self._generate_arg_index(command=parent, parent='',

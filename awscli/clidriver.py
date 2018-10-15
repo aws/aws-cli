@@ -89,6 +89,14 @@ class CLIDriver(object):
         self._argument_table = None
         self.alias_loader = AliasLoader()
 
+    @property
+    def subcommand_table(self):
+        return self._get_command_table()
+
+    @property
+    def arg_table(self):
+        return self._get_argument_table()
+
     def _get_cli_data(self):
         # Not crazy about this but the data in here is needed in
         # several places (e.g. MainArgParser, ProviderHelp) so
@@ -321,6 +329,16 @@ class ServiceCommand(CLICommand):
     def lineage(self, value):
         self._lineage = value
 
+    @property
+    def subcommand_table(self):
+        return self._get_command_table()
+
+    @property
+    def arg_table(self):
+        # No service level arguments so we just return an empty
+        # dictionary.
+        return {}
+
     def _get_command_table(self):
         if self._command_table is None:
             self._command_table = self._create_command_table()
@@ -454,6 +472,12 @@ class ServiceOperation(object):
     def lineage_names(self):
         # Represents the lineage of a command in terms of command ``name``
         return [cmd.name for cmd in self.lineage]
+
+    @property
+    def subcommand_table(self):
+        # There's no subcommands for an operation so we return an
+        # empty dictionary.
+        return {}
 
     @property
     def arg_table(self):

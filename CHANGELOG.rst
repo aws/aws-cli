@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.34
+=======
+
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
 1.16.33
 =======
 

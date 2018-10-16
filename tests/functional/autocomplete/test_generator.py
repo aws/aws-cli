@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest, create_clidriver, temporary_file
-from awscli.autocomplete import generator, model
+from awscli.autocomplete import generator, model, indexer
 
 
 class TestCanGenerateEntireIndex(unittest.TestCase):
@@ -24,7 +24,7 @@ class TestCanGenerateEntireIndex(unittest.TestCase):
         driver = create_clidriver()
         with temporary_file('w') as f:
             index_generator = generator.IndexGenerator(
-                generator.create_model_indexer(f.name))
+                indexer.create_model_indexer(f.name))
             index_generator.generate_index(driver)
 
             # Basic sanity checks.  Index generation for the entire CLI

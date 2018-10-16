@@ -124,7 +124,7 @@ class TestCanRetrieveCommands(unittest.TestCase):
     def test_can_retrieve_service_params(self):
         self.indexer.generate_index(self.aws_command)
         self.assertEqual(
-            set(self.query.arg_names(lineage=['aws.ec2'],
+            set(self.query.arg_names(lineage=['aws', 'ec2'],
                                      command_name='describe-instances')),
             set(['instance-ids', 'filters']),
         )

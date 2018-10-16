@@ -49,9 +49,9 @@ class ModelIndex(object):
         AWS CLI command classes, except that it explicitly
         uses ``aws`` as the first parent.  This is the list of
         parent commands for a given CLI command.  For example,
-        ``aws ec2 <here>`` has a lineage of ``['ec2']``.  The
-        command ``aws ec2 wait instance-running`` has a lineage
-        of ``['ec2', 'wait', 'instance-running']``.
+        ``aws ec2 <here>`` has a lineage of ``['aws', 'ec2']``.  The
+        command ``aws ec2 wait instance-running <here>`` has a lineage
+        of ``['aws', 'ec2', 'wait', 'instance-running']``.
 
         :return: A list of available commands.
         """
@@ -88,6 +88,16 @@ class ModelIndex(object):
 
     def get_argument_data(self, lineage, command_name, arg_name):
         """Return all metadata for a single argument.
+
+        For example, to get the arg data for::
+
+            $ aws s3api list-objects --bucket
+
+        You'd use:
+
+            * ``lineage=['aws', 's3api']``
+            * ``command_name='list-objects'``
+            * ``arg_name='bucket'``
 
         :return: A CLIArgument object.
 

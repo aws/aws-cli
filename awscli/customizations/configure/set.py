@@ -56,7 +56,7 @@ class ConfigureSetCommand(BasicCommand):
         profile = 'default'
         # Before handing things off to the config writer,
         # we need to find out three things:
-        # 1. What section we're writing to (section).
+        # 1. What section we're writing to (profile).
         # 2. The name of the config key (varname)
         # 3. The actual value (value).
         if '.' not in varname:

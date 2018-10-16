@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.35
+=======
+
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``resource-groups``: Update resource-groups command to latest version
+
+
 1.16.34
 =======
 

@@ -178,3 +178,11 @@ class TestCanRetrieveCommands(unittest.TestCase):
                 nargs='+',
             ),
         )
+
+
+class TestCanCreateModelIndexer(unittest.TestCase):
+
+    def test_can_create_model_indexer(self):
+        index = indexer.create_model_indexer('/tmp/a/b/c/d')
+        self.assertIsInstance(index, indexer.ModelIndexer)
+

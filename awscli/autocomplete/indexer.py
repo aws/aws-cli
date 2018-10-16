@@ -17,6 +17,11 @@ import sqlite3
 LOG = logging.getLogger(__name__)
 
 
+def create_model_indexer(filename):
+    index = ModelIndexer(DatabaseConnection(filename))
+    return index
+
+
 class ModelIndexer(object):
     def __init__(self, db_connection):
         self._db_connection = db_connection

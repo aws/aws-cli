@@ -14,13 +14,6 @@
 from awscli.autocomplete import indexer
 
 
-def create_model_indexer(filename):
-    index = indexer.ModelIndexer(
-        indexer.DatabaseConnection(filename)
-    )
-    return index
-
-
 class IndexGenerator(object):
     """Generates auto completion index.
 

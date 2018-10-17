@@ -452,12 +452,16 @@ class Template(object):
         here we iterate through the template dict and export params with a 
         handler defined in GLOBAL_EXPORT_DICT
         """
-        for key, val in iter(template_dict.items()):
+        for key, val in template_dict.items():
             if key in GLOBAL_EXPORT_DICT:
                 template_dict[key] = GLOBAL_EXPORT_DICT[key](val, self.uploader)
-            elif type(val) is dict:
+            elif isinstance(val, dict):
                 self.export_global_artifacts(val)
-        return self.template_dict
+            elif isinstance(val, list):
+                for item in val:
+                    if isinstance(item, dict):
+                        self.export_global_artifacts(item)
+        return template_dict
 
 
     def export(self):

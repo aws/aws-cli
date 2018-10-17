@@ -790,6 +790,7 @@ class TestArtifactExporter(unittest.TestCase):
         }
         properties1 = {"foo": "bar", "Fn::Transform": {"Name": "AWS::Include", "Parameters": {"Location": "foo.yaml"}}}
         properties2 = {"foo": "bar", "Fn::Transform": {"Name": "AWS::OtherTransform"}}
+        properties_in_list = {"Fn::Transform": {"Name": "AWS::Include", "Parameters": {"Location": "bar.yaml"}}}
         template_dict = {
             "Resources": {
                 "Resource1": {
@@ -798,9 +799,10 @@ class TestArtifactExporter(unittest.TestCase):
                 },
                 "Resource2": {
                     "Type": "resource_type2",
-                    "Properties": properties2
+                    "Properties": properties2,
                 }
-            }
+            },
+            "List": ["foo", properties_in_list]
         }
         open_mock = mock.mock_open()
         include_transform_export_handler_mock = Mock()
@@ -819,12 +821,15 @@ class TestArtifactExporter(unittest.TestCase):
 
                 first_call_args, kwargs = include_transform_export_handler_mock.call_args_list[0]
                 second_call_args, kwargs = include_transform_export_handler_mock.call_args_list[1]
-                call_args = [first_call_args[0], second_call_args[0]]
+                third_call_args, kwargs = include_transform_export_handler_mock.call_args_list[2]
+                call_args = [first_call_args[0], second_call_args[0], third_call_args[0]]
                 self.assertTrue({"Name": "AWS::Include", "Parameters": {"Location": "foo.yaml"}} in call_args)
                 self.assertTrue({"Name": "AWS::OtherTransform"} in call_args)
-                self.assertEquals(include_transform_export_handler_mock.call_count, 2)
+                self.assertTrue({"Name": "AWS::Include", "Parameters": {"Location": "bar.yaml"}} in call_args)
+                self.assertEquals(include_transform_export_handler_mock.call_count, 3)
                 #new s3 url is added to include location
                 self.assertEquals(exported_template["Resources"]["Resource1"]["Properties"]["Fn::Transform"], {"Name": "AWS::Include", "Parameters": {"Location": "s3://foo"}})
+                self.assertEquals(exported_template["List"][1]["Fn::Transform"], {"Name": "AWS::Include", "Parameters": {"Location": "s3://foo"}})
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_file")
     def test_include_transform_export_handler(self, is_local_file_mock):

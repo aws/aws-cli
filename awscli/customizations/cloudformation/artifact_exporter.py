@@ -432,6 +432,19 @@ EXPORT_LIST = [
     CloudFormationStackResource
 ]
 
+def include_transform_export_handler(template_dict, uploader):
+    if template_dict.get("Name", None) != "AWS::Include":
+        return template_dict
+    include_location = template_dict.get("Parameters", {}).get("Location", {})
+    if (is_local_file(include_location)):
+        template_dict["Parameters"]["Location"] = uploader.upload_with_dedup(include_location)
+    return template_dict
+
+GLOBAL_EXPORT_DICT = {
+    "Fn::Transform": include_transform_export_handler
+}
+
+
 class Template(object):
     """
     Class to export a CloudFormation template
@@ -459,6 +472,25 @@ class Template(object):
         self.resources_to_export = resources_to_export
         self.uploader = uploader
 
+    def export_global_artifacts(self, template_dict):
+        """
+        Template params such as AWS::Include transforms are not specific to 
+        any resource type but contain artifacts that should be exported,
+        here we iterate through the template dict and export params with a 
+        handler defined in GLOBAL_EXPORT_DICT
+        """
+        for key, val in template_dict.items():
+            if key in GLOBAL_EXPORT_DICT:
+                template_dict[key] = GLOBAL_EXPORT_DICT[key](val, self.uploader)
+            elif isinstance(val, dict):
+                self.export_global_artifacts(val)
+            elif isinstance(val, list):
+                for item in val:
+                    if isinstance(item, dict):
+                        self.export_global_artifacts(item)
+        return template_dict
+
+
     def export(self):
         """
         Exports the local artifacts referenced by the given template to an
@@ -469,6 +501,8 @@ class Template(object):
         """
         if "Resources" not in self.template_dict:
             return self.template_dict
+
+        self.template_dict = self.export_global_artifacts(self.template_dict)
 
         for resource_id, resource in self.template_dict["Resources"].items():
 

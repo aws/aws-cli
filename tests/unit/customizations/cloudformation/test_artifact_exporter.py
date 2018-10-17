@@ -566,6 +566,53 @@ class TestArtifactExporter(unittest.TestCase):
         self.assertNotIn(resource.PROPERTY_NAME, resource_dict)
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.upload_local_artifacts")
+    def test_resource_package_include_transform_true_no_transform(self, upload_local_artifacts_mock):
+        # Should not upload anything if PACKAGE_INCLUDE_TRANSFORM is set to True and transform is not present
+
+        class MockResource(Resource):
+            PROPERTY_NAME = "foo"
+            PACKAGE_NULL_PROPERTY = False
+            PACKAGE_INCLUDE_TRANSFORM = True
+
+        resource = MockResource(self.s3_uploader_mock)
+        resource_id = "id"
+        resource_dict = {}
+        parent_dir = "dir"
+        s3_url = "s3://foo/bar"
+
+        upload_local_artifacts_mock.return_value = s3_url
+
+        resource.export(resource_id, resource_dict, parent_dir)
+
+        upload_local_artifacts_mock.assert_not_called()
+        self.assertNotIn(resource.PROPERTY_NAME, resource_dict)
+    @patch("awscli.customizations.cloudformation.artifact_exporter.upload_local_artifacts")
+    def test_resource_package_include_transform_true_uploads_with_transform(self, upload_local_artifacts_mock):
+        # Location is updated to s3 url in resource with include transform
+
+        class MockResource(Resource):
+            PACKAGE_NULL_PROPERTY = False
+            PACKAGE_INCLUDE_TRANSFORM = True
+            INCLUDE_TRANSFORM_PROPERTY_NAME = "bar"
+
+        resource = MockResource(self.s3_uploader_mock)
+        resource_id = "id"
+        resource_dict = {"bar": {"Fn::Transform": {"Name": "AWS::Include", "Parameters": {"Location": "localfile.yaml"}}}}
+        parent_dir = "dir"
+        s3_url = "s3://foo/bar"
+
+        upload_local_artifacts_mock.return_value = s3_url
+
+        resource.export(resource_id, resource_dict, parent_dir)
+
+        upload_local_artifacts_mock.assert_called_once_with(resource_id,
+                                                            {"Location": s3_url},
+                                                            "Location",
+                                                            parent_dir,
+                                                            self.s3_uploader_mock)
+
+
+    @patch("awscli.customizations.cloudformation.artifact_exporter.upload_local_artifacts")
     def test_resource_export_fails(self, upload_local_artifacts_mock):
 
         class MockResource(Resource):

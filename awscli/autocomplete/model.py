@@ -19,6 +19,12 @@ in the `service-2.json` files.
 from collections import namedtuple
 from awscli.autocomplete import indexer
 
+# This module and the awscli.autocomplete.indexer are imported
+# when a user requests autocompletion.  We should avoid importing
+# awscli.clidriver or botocore, which have substantial import
+# times.  Autocompleting the command names only needs to load
+# the sqlite3 cache file.
+
 
 CLIArgument = namedtuple('CLIArgument', ['argname', 'type_name',
                                          'command', 'parent', 'nargs'])

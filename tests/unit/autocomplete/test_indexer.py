@@ -140,7 +140,7 @@ class TestCanRetrieveCommands(unittest.TestCase):
         # 's3' version should have no params because we didn't add an arg
         # table.
         self.assertEqual(
-            set(self.query.arg_names(lineage=['aws.s3'],
+            set(self.query.arg_names(lineage=['aws', 's3'],
                                      command_name='describe-instances')),
             set([]),
         )

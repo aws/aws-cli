@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.36
+=======
+
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``events``: Update events command to latest version
+
+
 1.16.35
 =======
 

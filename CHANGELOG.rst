@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.37
+=======
+
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``appstream``: Update appstream command to latest version
+* api-change:``route53``: Update route53 command to latest version
+
+
 1.16.36
 =======
 

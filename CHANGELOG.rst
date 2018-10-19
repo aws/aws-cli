@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.38
+=======
+
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
 1.16.37
 =======
 

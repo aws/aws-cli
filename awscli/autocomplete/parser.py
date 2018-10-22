@@ -112,7 +112,6 @@ class CLIParser(object):
         parsed = ParsedResult()
         parts = self._split_to_parts(command_line, location)
         state = ParseState()
-        deferred_args = []
         global_args = self._index.arg_names(lineage=[], command_name='aws')
         current_args = []
         current = None

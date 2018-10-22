@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.39
+=======
+
+* api-change:``shield``: Update shield command to latest version
+* api-change:``inspector``: Update inspector command to latest version
+
+
 1.16.38
 =======
 

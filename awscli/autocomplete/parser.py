@@ -126,7 +126,7 @@ class CLIParser(object):
             else:
                 current_args = self._handle_subcommand(current, state)
                 if current_args is None:
-                    if not parts and current:
+                    if not parts:
                         # If this is the last chunk of the command line but
                         # it's not a subcommand then we'll mark it as the last
                         # fragment.  This is likely a partially entered

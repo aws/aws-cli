@@ -14,7 +14,7 @@ import copy
 from functools import partial
 from nose.tools import assert_equal
 
-from awscli.testutils import unittest, mock
+from awscli.testutils import unittest
 from awscli.autocomplete import parser, model
 
 

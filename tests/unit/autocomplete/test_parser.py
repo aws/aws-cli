@@ -101,13 +101,13 @@ def test_can_handle_arbitrary_ordering():
                  '--instance-ids i-123 i-124 --foo-arg value '
                  '--endpoint-url https://foo')
     yield test, ('aws --endpoint-url https://foo --debug ec2 stop-instances '
-                 '--instance-ids i-123 i-124 --foo-arg value ')
+                 '--instance-ids i-123 i-124 --foo-arg value')
     yield test, ('aws ec2 --debug --endpoint-url https://foo stop-instances '
-                 '--instance-ids i-123 i-124 --foo-arg value ')
+                 '--instance-ids i-123 i-124 --foo-arg value')
     yield test, ('aws ec2 stop-instances --debug --endpoint-url https://foo '
-                 '--instance-ids i-123 i-124 --foo-arg value ')
+                 '--instance-ids i-123 i-124 --foo-arg value')
     yield test, ('aws ec2 --endpoint-url https://foo stop-instances --debug '
-                 '--instance-ids i-123 i-124 --foo-arg value ')
+                 '--instance-ids i-123 i-124 --foo-arg value')
 
 
 def _assert_parses_to(command_line, expected):
@@ -244,6 +244,15 @@ class TestCanParseCLICommand(unittest.TestCase):
         self.assertEqual(result.lineage, ['aws'])
         self.assertEqual(result.current_command, 'ec2')
         self.assertEqual(result.last_fragment, None)
+        self.assertEqual(result.unparsed_items, ['stop-', ''])
+
+    def test_last_fragment_populated_on_work_break(self):
+        result = self.cli_parser.parse('aws ec2 ')
+        self.assertEqual(result.global_params, {})
+        self.assertEqual(result.current_params, {})
+        self.assertEqual(result.lineage, ['aws'])
+        self.assertEqual(result.current_command, 'ec2')
+        self.assertEqual(result.last_fragment, '')
 
     def test_last_fragment_can_be_option(self):
         result = self.cli_parser.parse(

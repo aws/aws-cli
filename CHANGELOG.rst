@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.41
+=======
+
+* api-change:``codestar``: Update codestar command to latest version
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+
+
 1.16.40
 =======
 

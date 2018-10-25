@@ -251,6 +251,8 @@ class CLIDriver(object):
         emit_top_level_args_parsed_event(self.session, args)
         if args.profile:
             self.session.set_config_variable('profile', args.profile)
+        if args.region:
+            self.session.set_config_variable('region', args.region)
         if args.debug:
             # TODO:
             # Unfortunately, by setting debug mode here, we miss out

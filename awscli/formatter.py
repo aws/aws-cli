@@ -13,9 +13,9 @@
 import logging
 
 from botocore.compat import json
-
 from botocore.utils import set_value_from_jmespath
 from botocore.paginate import PageIterator
+from ruamel.yaml import YAML
 
 from awscli.table import MultiTable, Styler, ColorizedStyler
 from awscli import text
@@ -95,6 +95,33 @@ class JSONFormatter(FullyBufferedFormatter):
             json.dump(response, stream, indent=4, default=json_encoder,
                     ensure_ascii=False)
             stream.write('\n')
+
+
+class YAMLFormatter(FullyBufferedFormatter):
+    def __init__(self, args):
+        super(YAMLFormatter, self).__init__(args)
+        self._yaml = YAML(typ='safe')
+        # Encoding is set to None because we handle the encoding by
+        # wrapping the stream, so there's no need for the yaml library
+        # to do it.
+        self._yaml.encoding = None
+        self._yaml.default_flow_style = False
+
+    def _format_response(self, command_name, response, stream):
+        if response == {}:
+            return None
+        if isinstance(response, compat.six.string_types):
+            # The yaml library will try to disambiguate when you dump a
+            # string value in a variety of ways. By default it will add
+            # an elipsis on a new line at the end of the file. While
+            # this is valid YAML and it does have its benefits,
+            # it's more useful to us to omit that. Unfortunately the only
+            # supported way to do that is to change the default styling.
+            # This styling will double quote strings.
+            self._yaml.default_style = '"'
+        else:
+            self._yaml.default_style = ''
+        self._yaml.dump(response, stream)
 
 
 class TableFormatter(FullyBufferedFormatter):
@@ -269,4 +296,6 @@ def get_formatter(format_type, args):
         return TextFormatter(args)
     elif format_type == 'table':
         return TableFormatter(args)
+    elif format_type == 'yaml':
+        return YAMLFormatter(args)
     raise ValueError("Unknown output type: %s" % format_type)

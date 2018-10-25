@@ -219,6 +219,30 @@ class TestDetailedFormatter(unittest.TestCase):
             ]
         )
 
+    def test_display_http_request_filter_signature(self):
+        self.assert_output(
+            for_event={
+                'event_type': 'HTTP_REQUEST',
+                'id': 'my-id',
+                'request_id': 'some-id',
+                'payload': {
+                    'method': 'GET',
+                    'url': 'https://myservice.us-west-2.amazonaws.com',
+                    'headers': {
+                        'Authorization': (
+                            'Signature=d7fa4de082b598a0ac08b756db438c630a6'
+                            'cc79c4f3d1636cf69fac0e7c1abcd'
+                        )
+                    },
+                    'body': 'This is my body'
+                },
+                'timestamp': 86400000,
+            },
+            contains=[
+                '"Authorization": "Signature=d7fa..."'
+            ]
+        )
+
     def test_display_http_request_with_streaming_body(self):
         self.assert_output(
             for_event={

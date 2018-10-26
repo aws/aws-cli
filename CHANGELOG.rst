@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.43
+=======
+
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+
+
 1.16.42
 =======
 

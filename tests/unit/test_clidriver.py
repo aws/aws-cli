@@ -64,7 +64,6 @@ GET_DATA = {
                 "metavar": "profile_name"
             },
             "region": {
-                "choices": "{provider}/_regions",
                 "metavar": "region_name"
             },
             "endpoint-url": {
@@ -197,6 +196,7 @@ class FakeSession(object):
         self.profile = None
         self.stream_logger_args = None
         self.credentials = 'fakecredentials'
+        self.session_vars = {}
 
     def register(self, event_name, handler):
         self.emitter.register(event_name, handler)
@@ -227,7 +227,9 @@ class FakeSession(object):
         return GET_DATA[name]
 
     def get_config_variable(self, name):
-        return GET_VARIABLE[name]
+        if name in GET_VARIABLE:
+            return GET_VARIABLE[name]
+        return self.session_vars[name]
 
     def get_service_model(self, name, api_version=None):
         return botocore.model.ServiceModel(
@@ -245,6 +247,8 @@ class FakeSession(object):
     def set_config_variable(self, name, value):
         if name == 'profile':
             self.profile = value
+        else:
+            self.session_vars[name] = value
 
 
 class FakeCommand(BasicCommand):
@@ -288,6 +292,12 @@ class TestCliDriver(unittest.TestCase):
         driver = CLIDriver(session=self.session)
         driver.main('s3 list-objects --bucket foo --profile foo'.split())
         self.assertEqual(driver.session.profile, 'foo')
+
+    def test_region_is_set_for_session(self):
+        driver = CLIDriver(session=self.session)
+        driver.main('s3 list-objects --bucket foo --region us-east-2'.split())
+        self.assertEqual(
+            driver.session.get_config_variable('region'), 'us-east-2')
 
     def test_error_logger(self):
         driver = CLIDriver(session=self.session)

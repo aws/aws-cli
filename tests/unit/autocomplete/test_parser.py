@@ -44,6 +44,9 @@ class FakeModelIndex(model.ModelIndex):
 # This models an 'aws ec2 stop-instances' command
 # along with the 'region', 'endpoint-url', and 'debug' global params.
 SAMPLE_MODEL = FakeModelIndex(
+    # This format is intended to match the structure you'd get from
+    # querying the index db to minimize any parity issues between
+    # the tests and the real indexer.
     index={
         'arg_names': {
             '': {
@@ -123,6 +126,12 @@ class TestCanParseCLICommand(unittest.TestCase):
     def create_parser(self):
         return parser.CLIParser(SAMPLE_MODEL)
 
+    def assert_parsed_results_equal(self, actual, **expected):
+        # Asserts that every kwargs in expected matches what was actually
+        # parsed.
+        for key, value in expected.items():
+            self.assertEqual(getattr(actual, key), value)
+
     def test_parsed_result_not_equal(self):
         self.assertFalse(parser.ParsedResult(current_command='ec2') == 'ec2')
 
@@ -138,71 +147,95 @@ class TestCanParseCLICommand(unittest.TestCase):
     def test_can_parse_operation_command_accepts_single_value_arg(self):
         result = self.cli_parser.parse(
             'aws ec2 stop-instances --foo-arg bar')
-        self.assertEqual(result.current_command, 'stop-instances')
-        self.assertEqual(result.global_params, {})
-        self.assertEqual(result.current_params,
-                         {'foo-arg': 'bar'})
-        self.assertEqual(result.lineage, ['aws', 'ec2'])
+        self.assert_parsed_results_equal(
+            result,
+            current_command='stop-instances',
+            global_params={},
+            current_params={'foo-arg': 'bar'},
+            lineage=['aws', 'ec2']
+        )
 
     def test_can_parse_operation_command_with_param(self):
         result = self.cli_parser.parse(
             'aws ec2 stop-instances --instance-ids i-1')
-        self.assertEqual(result.current_command, 'stop-instances')
-        self.assertEqual(result.global_params, {})
-        self.assertEqual(result.current_params,
-                         {'instance-ids': ['i-1']})
-        self.assertEqual(result.lineage, ['aws', 'ec2'])
+        self.assert_parsed_results_equal(
+            result,
+            current_command='stop-instances',
+            global_params={},
+            current_params={'instance-ids': ['i-1']},
+            lineage=['aws', 'ec2']
+        )
 
     def test_can_parse_bool_param(self):
         result = self.cli_parser.parse(
             'aws --debug ec2 stop-instances --instance-ids i-1')
-        self.assertEqual(result.global_params, {'debug': None})
-        self.assertEqual(result.current_params, {'instance-ids': ['i-1']})
-        self.assertEqual(result.current_command, 'stop-instances')
-        self.assertEqual(result.lineage, ['aws', 'ec2'])
+        self.assert_parsed_results_equal(
+            result,
+            current_command='stop-instances',
+            global_params={'debug': None},
+            current_params={'instance-ids': ['i-1']},
+            lineage=['aws', 'ec2']
+        )
 
     def test_can_parse_bool_param_in_any_location(self):
         result = self.cli_parser.parse(
             'aws ec2 stop-instances --instance-ids i-1 --debug')
-        self.assertEqual(result.global_params, {'debug': None})
-        self.assertEqual(result.current_params, {'instance-ids': ['i-1']})
-        self.assertEqual(result.current_command, 'stop-instances')
-        self.assertEqual(result.lineage, ['aws', 'ec2'])
+        self.assert_parsed_results_equal(
+            result,
+            current_command='stop-instances',
+            global_params={'debug': None},
+            current_params={'instance-ids': ['i-1']},
+            lineage=['aws', 'ec2']
+        )
 
     def test_can_parse_operation_command(self):
         result = self.cli_parser.parse('aws ec2 stop-instances')
-        self.assertEqual(result.current_command, 'stop-instances')
-        self.assertEqual(result.global_params, {})
-        self.assertEqual(result.current_params, {})
-        self.assertEqual(result.lineage, ['aws', 'ec2'])
+        self.assert_parsed_results_equal(
+            result,
+            current_command='stop-instances',
+            global_params={},
+            current_params={},
+            lineage=['aws', 'ec2']
+        )
 
     def test_can_parse_service_command(self):
         result = self.cli_parser.parse('aws ec2')
-        self.assertEqual(result.current_params, {})
-        self.assertEqual(result.current_command, 'ec2')
-        self.assertEqual(result.lineage, ['aws'])
+        self.assert_parsed_results_equal(
+            result,
+            current_command='ec2',
+            current_params={},
+            lineage=['aws'],
+        )
 
     def test_can_parse_aws_command(self):
         result = self.cli_parser.parse('aws')
-        self.assertEqual(result.current_params, {})
-        self.assertEqual(result.global_params, {})
-        self.assertEqual(result.current_command, 'aws')
-        self.assertEqual(result.lineage, [])
+        self.assert_parsed_results_equal(
+            result,
+            current_command='aws',
+            current_params={},
+            global_params={},
+            lineage=[],
+        )
 
     def test_ignores_unknown_args(self):
         result = self.cli_parser.parse(
             'aws ec2 stop-instances --unknown-arg bar')
-        self.assertEqual(result.current_params, {})
-        self.assertEqual(result.current_command, 'stop-instances')
-        self.assertEqual(result.lineage, ['aws', 'ec2'])
+        self.assert_parsed_results_equal(
+            result,
+            current_command='stop-instances',
+            current_params={},
+            lineage=['aws', 'ec2'],
+        )
 
     def test_can_consume_one_or_more_nargs(self):
         result = self.cli_parser.parse(
             'aws ec2 stop-instances --instance-ids i-1 i-2 i-3')
-        self.assertEqual(result.current_params,
-                         {'instance-ids': ['i-1', 'i-2', 'i-3']})
-        self.assertEqual(result.current_command, 'stop-instances')
-        self.assertEqual(result.lineage, ['aws', 'ec2'])
+        self.assert_parsed_results_equal(
+            result,
+            current_command='stop-instances',
+            current_params={'instance-ids': ['i-1', 'i-2', 'i-3']},
+            lineage=['aws', 'ec2'],
+        )
 
     def test_can_consume_zero_or_one_nargs(self):
         model = copy.deepcopy(SAMPLE_MODEL)
@@ -225,48 +258,78 @@ class TestCanParseCLICommand(unittest.TestCase):
         result = self.cli_parser.parse(
             'aws ec2 stop-instances --instance-ids i-1 i-2 i-3', 22)
         # We should not have parsed the 'instance-ids'.
-        self.assertEqual(result.current_params, {})
-        self.assertEqual(result.current_command, 'stop-instances')
-        self.assertEqual(result.lineage, ['aws', 'ec2'])
+        self.assert_parsed_results_equal(
+            result,
+            current_command='stop-instances',
+            current_params={},
+            lineage=['aws', 'ec2'],
+        )
 
     def test_preserves_current_word(self):
         result = self.cli_parser.parse('aws ec2 stop-')
-        self.assertEqual(result.global_params, {})
-        self.assertEqual(result.current_params, {})
-        self.assertEqual(result.lineage, ['aws'])
-        self.assertEqual(result.current_command, 'ec2')
-        self.assertEqual(result.last_fragment, 'stop-')
+        self.assert_parsed_results_equal(
+            result,
+            current_command='ec2',
+            current_params={},
+            global_params={},
+            lineage=['aws'],
+            last_fragment='stop-',
+        )
 
     def test_word_not_preserved_if_not_adjacent_to_word(self):
         result = self.cli_parser.parse('aws ec2 stop- ')
-        self.assertEqual(result.global_params, {})
-        self.assertEqual(result.current_params, {})
-        self.assertEqual(result.lineage, ['aws'])
-        self.assertEqual(result.current_command, 'ec2')
-        self.assertEqual(result.last_fragment, None)
-        self.assertEqual(result.unparsed_items, ['stop-', ''])
+        self.assert_parsed_results_equal(
+            result,
+            current_command='ec2',
+            current_params={},
+            global_params={},
+            lineage=['aws'],
+            last_fragment=None,
+            unparsed_items=['stop-', ''],
+        )
 
     def test_last_fragment_populated_on_work_break(self):
         result = self.cli_parser.parse('aws ec2 ')
-        self.assertEqual(result.global_params, {})
-        self.assertEqual(result.current_params, {})
-        self.assertEqual(result.lineage, ['aws'])
-        self.assertEqual(result.current_command, 'ec2')
-        self.assertEqual(result.last_fragment, '')
+        self.assert_parsed_results_equal(
+            result,
+            current_command='ec2',
+            current_params={},
+            global_params={},
+            lineage=['aws'],
+            last_fragment='',
+        )
 
     def test_last_fragment_can_be_option(self):
         result = self.cli_parser.parse(
             'aws ec2 stop-instances --inst')
         # We should not have parsed the 'instance-ids'.
-        self.assertEqual(result.current_params, {})
-        self.assertEqual(result.current_command, 'stop-instances')
-        self.assertEqual(result.lineage, ['aws', 'ec2'])
-        self.assertEqual(result.last_fragment, '--inst')
+        self.assert_parsed_results_equal(
+            result,
+            current_command='stop-instances',
+            current_params={},
+            lineage=['aws', 'ec2'],
+            last_fragment='--inst',
+        )
+
+    def test_option_not_preserved_when_space_separated(self):
+        result = self.cli_parser.parse(
+            'aws ec2 stop-instances --inst ')
+        self.assert_parsed_results_equal(
+            result,
+            current_command='stop-instances',
+            current_params={},
+            lineage=['aws', 'ec2'],
+            last_fragment='',
+            unparsed_items=['--inst'],
+        )
 
     def test_can_handle_unparsed_values(self):
         result = self.cli_parser.parse('aws ec stop-insta')
-        self.assertEqual(result.current_command, 'aws')
-        self.assertEqual(result.unparsed_items, ['ec', 'stop-insta'])
+        self.assert_parsed_results_equal(
+            result,
+            current_command='aws',
+            unparsed_items=['ec', 'stop-insta']
+        )
 
 
 class TestParseState(unittest.TestCase):

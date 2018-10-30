@@ -14,6 +14,27 @@ class ParsedResult(object):
     def __init__(self, current_command=None,
                  global_params=None, current_params=None,
                  lineage=None, last_fragment=None, unparsed_items=None):
+        """
+
+        :param current_command: The name of the leaf command; the most
+            specific subcommand that was parsed.
+        :param global_params: A dictionary of global CLI params.
+        :param current_params: A dictionary of parameters that apply to
+            the current command (non global params).
+        :param lineage: A list of the lineage, with the ``aws`` portion
+            included as the first element if necessary.
+        :param last_fragment: The last fragment of a word that was not
+            parsed.  This can happen if the user types only part of a command.
+            The ``last_fragment`` is only populated if the cursor is on
+            the current word.  If there is a space between the last word
+            and the cursor it is not considered a fragment.  If this value
+            is non ``None``, it typically indicates the value that needs to
+            be auto-completed.
+        :param unparsed_items: A list of items that we were not able to
+            parse.  This can happen if the user types a command that's not
+            in the index (e.g ``aws foo bar``).
+
+        """
         # Example:
         #  aws --debug ec2 describe-instances --instance-ids i-123 i-124 \
         #    --region us-west-2
@@ -110,35 +131,49 @@ class CLIParser(object):
         # between option and value, e.g `--foo=bar`.  This is something
         # we should look into adding.
         parsed = ParsedResult()
-        parts = self._split_to_parts(command_line, location)
+        remaining_parts = self._split_to_parts(command_line, location)
         state = ParseState()
         global_args = self._index.arg_names(lineage=[], command_name='aws')
         current_args = []
         current = None
-        while parts:
-            current = parts.pop(0)
+        while remaining_parts:
+            current = remaining_parts.pop(0)
             if current.startswith('--'):
                 was_handled = self._handle_option(
-                    current, parts, current_args, global_args, parsed, state)
-                if not was_handled and not parts and current:
-                    parsed.last_fragment = current
+                    current, remaining_parts,
+                    current_args, global_args, parsed, state)
+                if not was_handled:
+                    # If the option wasn't handled, there's two cases.
+                    # Either it's the last word (without a space) so it's
+                    # something we should auto-complete.  In that case
+                    # we denote it as the last fragment.
+                    if not remaining_parts and current:
+                        parsed.last_fragment = current
+                    else:
+                        # Or it's an unknown option (not in our index).
+                        # We mark that as an unparsed_items.
+                        parsed.unparsed_items = [current]
             else:
                 current_args = self._handle_subcommand(current, state)
                 if current_args is None:
-                    if not parts:
+                    if not remaining_parts:
                         # If this is the last chunk of the command line but
                         # it's not a subcommand then we'll mark it as the last
                         # fragment.  This is likely a partially entered
                         # command, e.g 'aws ec2 run-instan'
                         parsed.last_fragment = current
                     elif current:
-                        parsed.unparsed_items = [current] + parts
+                        # Otherwise this is some command we don't know about
+                        # so we mark it as unparsed_items, e.g.
+                        # 'aws foo run-bar' -> ['foo', 'run-bar']
+                        parsed.unparsed_items = [current] + remaining_parts
                     break
         parsed.current_command = state.current_command
         parsed.lineage = state.lineage
         return parsed
 
-    def _consume_value(self, parts, option_name, lineage, current_command):
+    def _consume_value(self, remaining_parts, option_name,
+                       lineage, current_command):
         arg_data = self._index.get_argument_data(
             lineage=lineage,
             command_name=current_command,
@@ -159,20 +194,20 @@ class CLIParser(object):
             return None
         elif nargs is None:
             # The default behavior is to consume a single arg.
-            return parts.pop(0)
+            return remaining_parts.pop(0)
         elif nargs == '?':
-            if parts and not parts[0].startswith('--'):
-                return parts.pop(0)
+            if remaining_parts and not remaining_parts[0].startswith('--'):
+                return remaining_parts.pop(0)
         elif nargs in '+*':
             # Technically nargs='+' requires one or more args, but
             # we don't validate this.  This will just result in
             # an empty list being returned.  This is acceptable
             # for auto-completion purposes.
             value = []
-            while parts:
-                if parts[0].startswith('--'):
+            while remaining_parts:
+                if remaining_parts[0].startswith('--'):
                     break
-                value.append(parts.pop(0))
+                value.append(remaining_parts.pop(0))
             return value
 
     def _split_to_parts(self, command_line, location):
@@ -194,19 +229,20 @@ class CLIParser(object):
             parts.append('')
         return parts
 
-    def _handle_option(self, current, parts, current_args,
+    def _handle_option(self, current, remaining_parts, current_args,
                        global_args, parsed, state):
-        # This is a command line option.
+        # This is a command line option, remove the `--` portion so we
+        # just have the option name.
         option_name = current[2:]
         if option_name in global_args:
             value = self._consume_value(
-                parts, option_name, lineage=[],
+                remaining_parts, option_name, lineage=[],
                 current_command='aws')
             parsed.global_params[option_name] = value
             return True
         elif option_name in current_args:
             value = self._consume_value(
-                parts, option_name, state.lineage,
+                remaining_parts, option_name, state.lineage,
                 state.current_command
             )
             parsed.current_params[option_name] = value

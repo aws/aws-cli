@@ -136,12 +136,10 @@ class TestCanParseCLICommand(unittest.TestCase):
         self.assertFalse(parser.ParsedResult(current_command='ec2') == 'ec2')
 
     def test_no_result_if_not_aws_command(self):
-        result = self.cli_parser.parse('notaws ec2 foo')
-        self.assertEqual(
+        result = self.cli_parser.parse('notaws ec2 foo ')
+        self.assert_parsed_results_equal(
             result,
-            parser.ParsedResult(
-                unparsed_items=['notaws', 'ec2', 'foo'],
-            )
+            unparsed_items=['notaws', 'ec2', 'foo'],
         )
 
     def test_can_parse_operation_command_accepts_single_value_arg(self):
@@ -284,8 +282,8 @@ class TestCanParseCLICommand(unittest.TestCase):
             current_params={},
             global_params={},
             lineage=['aws'],
-            last_fragment=None,
-            unparsed_items=['stop-', ''],
+            last_fragment='',
+            unparsed_items=['stop-'],
         )
 
     def test_last_fragment_populated_on_work_break(self):
@@ -323,11 +321,52 @@ class TestCanParseCLICommand(unittest.TestCase):
             unparsed_items=['--inst'],
         )
 
+    def test_can_have_unparsed_option_with_last_fragment(self):
+        result = self.cli_parser.parse(
+            'aws ec2 stop-instances --inst foo')
+        self.assert_parsed_results_equal(
+            result,
+            current_command='stop-instances',
+            current_params={},
+            lineage=['aws', 'ec2'],
+            last_fragment='foo',
+            unparsed_items=['--inst'],
+        )
+
+    def test_unknown_option_does_not_consume_arg(self):
+        # In this case we're unlikely to offer any helpful
+        # auto-completion, but we still need to decided where
+        # we should put the 'foo' value.  I think it makes the
+        # most sense to put this under "unparsed_items".
+        result = self.cli_parser.parse(
+            'aws ec2 stop-instances --inst foo ')
+        self.assert_parsed_results_equal(
+            result,
+            current_command='stop-instances',
+            current_params={},
+            lineage=['aws', 'ec2'],
+            last_fragment='',
+            unparsed_items=['--inst', 'foo'],
+        )
+
+    def test_can_handle_multiple_unknown_options(self):
+        result = self.cli_parser.parse(
+            'aws ec2 stop-instances --inst --foo ')
+        self.assert_parsed_results_equal(
+            result,
+            current_command='stop-instances',
+            current_params={},
+            lineage=['aws', 'ec2'],
+            last_fragment='',
+            unparsed_items=['--inst', '--foo'],
+        )
+
     def test_can_handle_unparsed_values(self):
-        result = self.cli_parser.parse('aws ec stop-insta')
+        result = self.cli_parser.parse('aws ec stop-insta ')
         self.assert_parsed_results_equal(
             result,
             current_command='aws',
+            last_fragment='',
             unparsed_items=['ec', 'stop-insta']
         )
 

@@ -142,20 +142,8 @@ class CLIParser(object):
                 self._handle_option(current, remaining_parts,
                                     current_args, global_args, parsed, state)
             else:
-                current_args = self._handle_subcommand(current, state)
-                if current_args is None:
-                    if not remaining_parts:
-                        # If this is the last chunk of the command line but
-                        # it's not a subcommand then we'll mark it as the last
-                        # fragment.  This is likely a partially entered
-                        # command, e.g 'aws ec2 run-instan'
-                        parsed.last_fragment = current
-                    elif current:
-                        # Otherwise this is some command we don't know about
-                        # so we mark it as unparsed_items, e.g.
-                        # 'aws foo run-bar' -> ['foo', 'run-bar']
-                        parsed.unparsed_items = [current] + remaining_parts
-                    break
+                current_args = self._handle_subcommand(
+                    current, state, remaining_parts, parsed)
         parsed.current_command = state.current_command
         parsed.lineage = state.lineage
         return parsed
@@ -243,12 +231,12 @@ class CLIParser(object):
             # It's not a known option in our index and it's not
             # a partially completed words.  This goes into the
             # unparsed_items list.
-            parsed.unparsed_items = [current]
+            parsed.unparsed_items.append(current)
 
     def _is_last_word(self, remaining_parts, current):
         return not remaining_parts and current
 
-    def _handle_subcommand(self, current, state):
+    def _handle_subcommand(self, current, state, remaining_parts, parsed):
         # This is a subcommand so we can check if this is a valid
         # subcommand given our lineage.
         # We're one off here, we need to compute a new *potential*
@@ -261,3 +249,15 @@ class CLIParser(object):
                 lineage=state.lineage,
                 command_name=state.current_command)
             return current_args
+        else:
+            if not remaining_parts:
+                # If this is the last chunk of the command line but
+                # it's not a subcommand then we'll mark it as the last
+                # fragment.  This is likely a partially entered
+                # command, e.g 'aws ec2 run-instan'
+                parsed.last_fragment = current
+            elif current:
+                # Otherwise this is some command we don't know about
+                # so we add it to the list of unparsed_items.
+                parsed.unparsed_items.append(current)
+            return None

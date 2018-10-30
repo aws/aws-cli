@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.44
+=======
+
+* api-change:``chime``: Update chime command to latest version
+* bugfix:Credentials: Fix issue where incorrect region was being used when using assume role credentials outside of the `aws` partition.
+* api-change:``rds``: Update rds command to latest version
+* api-change:``dms``: Update dms command to latest version
+
+
 1.16.43
 =======
 

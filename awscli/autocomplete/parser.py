@@ -139,20 +139,8 @@ class CLIParser(object):
         while remaining_parts:
             current = remaining_parts.pop(0)
             if current.startswith('--'):
-                was_handled = self._handle_option(
-                    current, remaining_parts,
-                    current_args, global_args, parsed, state)
-                if not was_handled:
-                    # If the option wasn't handled, there's two cases.
-                    # Either it's the last word (without a space) so it's
-                    # something we should auto-complete.  In that case
-                    # we denote it as the last fragment.
-                    if not remaining_parts and current:
-                        parsed.last_fragment = current
-                    else:
-                        # Or it's an unknown option (not in our index).
-                        # We mark that as an unparsed_items.
-                        parsed.unparsed_items = [current]
+                self._handle_option(current, remaining_parts,
+                                    current_args, global_args, parsed, state)
             else:
                 current_args = self._handle_subcommand(current, state)
                 if current_args is None:
@@ -239,15 +227,26 @@ class CLIParser(object):
                 remaining_parts, option_name, lineage=[],
                 current_command='aws')
             parsed.global_params[option_name] = value
-            return True
         elif option_name in current_args:
             value = self._consume_value(
                 remaining_parts, option_name, state.lineage,
                 state.current_command
             )
             parsed.current_params[option_name] = value
-            return True
-        return False
+        elif self._is_last_word(remaining_parts, current):
+            # If the option wasn't handled, there's two cases.
+            # Either it's the last word (without a space) so it's
+            # something we should auto-complete.  In that case
+            # we denote it as the last fragment.
+            parsed.last_fragment = current
+        else:
+            # It's not a known option in our index and it's not
+            # a partially completed words.  This goes into the
+            # unparsed_items list.
+            parsed.unparsed_items = [current]
+
+    def _is_last_word(self, remaining_parts, current):
+        return not remaining_parts and current
 
     def _handle_subcommand(self, current, state):
         # This is a subcommand so we can check if this is a valid

@@ -15,7 +15,7 @@ from awscli.autocomplete import completer, parser, model
 from awscli.clidriver import CLIDriver
 
 
-class TestAutoCompelter(unittest.TestCase):
+class TestAutoCompleter(unittest.TestCase):
     def setUp(self):
         self.parser = mock.Mock(spec=parser.CLIParser)
         self.parsed_result = parser.ParsedResult()
@@ -55,7 +55,7 @@ class TestAutoCompelter(unittest.TestCase):
 
         auto_complete = completer.AutoCompleter(
             self.parser, completers=[first, second])
-        self.assertIsNone(auto_complete.autocomplete('aws e'))
+        self.assertEqual(auto_complete.autocomplete('aws e'), [])
 
         first.complete.assert_called_with(self.parsed_result)
         second.complete.assert_called_with(self.parsed_result)

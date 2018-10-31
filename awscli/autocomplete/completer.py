@@ -11,17 +11,35 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 class AutoCompleter(object):
-    """Main auto-completer object for the AWS CLI."""
+    """Main auto-completer object for the AWS CLI.
+
+    This object delegates to concrete completers that can perform
+    completions for specific cases (e.g model-based completions,
+    server-side completions, etc).
+    """
     def __init__(self, parser, completers):
+        """
+
+        :param parser: A parser.CLIParser instance.
+        :param completers: A list of ``BaseCompleter`` instances.
+
+        """
         self._parser = parser
         self._completers = completers
 
     def autocomplete(self, command_line, index=None):
+        """Attempt to find completion suggestions.
+
+        :param command_line: The currently entered command line as a string.
+        :param index: An optional integer that indicates the location where
+            the cursor is located (0 based index).
+        """
         parsed = self._parser.parse(command_line, index)
         for completer in self._completers:
             result = completer.complete(parsed)
             if result is not None:
                 return result
+        return []
 
 
 class BaseCompleter(object):

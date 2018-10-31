@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.45
+=======
+
+* api-change:``greengrass``: Update greengrass command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+* api-change:``mediastore-data``: Update mediastore-data command to latest version
+
+
 1.16.44
 =======
 

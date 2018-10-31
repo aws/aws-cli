@@ -150,6 +150,15 @@ class CLIParser(object):
 
     def _consume_value(self, remaining_parts, option_name,
                        lineage, current_command):
+        # We have a special case where a user is trying to complete
+        # a value for an option, which is the last fragment of the command,
+        # e.g. 'aws ec2 describe-instances --instance-ids '
+        # Note the space at the end.  In this case we don't have a value
+        # to consume so we special case this and short circuit.
+        if remaining_parts == ['']:
+            return ''
+        elif not remaining_parts:
+            return None
         arg_data = self._index.get_argument_data(
             lineage=lineage,
             command_name=current_command,
@@ -180,7 +189,7 @@ class CLIParser(object):
             # an empty list being returned.  This is acceptable
             # for auto-completion purposes.
             value = []
-            while remaining_parts:
+            while remaining_parts and not remaining_parts == ['']:
                 if remaining_parts[0].startswith('--'):
                     break
                 value.append(remaining_parts.pop(0))

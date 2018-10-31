@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import copy
 from functools import partial
-from nose.tools import assert_equal
+from nose.tools import assert_equal, assert_is_instance, assert_true
 
 from awscli.testutils import unittest
 from awscli.autocomplete import parser, model
@@ -117,6 +117,39 @@ def _assert_parses_to(command_line, expected):
     p = parser.CLIParser(SAMPLE_MODEL)
     result = p.parse(command_line)
     assert_equal(result, expected)
+
+
+def test_properties_of_unparsed_results():
+    # The parser should never raise an exception.  If it can't
+    # understand something it should still return a ParsedResult
+    # with the parts it doesn't understand addded to the unparsed_items
+    # attribute.  The ParsedResult should always have some basic invariants
+    # we can verify which are called out in the tests below.
+    # This test ensures that at every single slice of the full command_line
+    # we always produce a sensical ParsedResult.
+    command_line = (
+        'aws ec2 stop-instances --instance-ids i-123 i-124 '
+        '--foo-arg value --debug --endpoint-url https://foo'
+    )
+    cli_parser = parser.CLIParser(SAMPLE_MODEL)
+    for i in range(1, len(command_line)):
+        chunk = command_line[:i]
+        yield _assert_parsed_properties, chunk, cli_parser
+
+
+def _assert_parsed_properties(chunk, cli_parser):
+    result = cli_parser.parse(chunk)
+    assert_is_instance(result, parser.ParsedResult)
+    if chunk[-1].isspace():
+        # If there's a space as the last char, then we should have
+        # a last_fragment of an empty string.  This results in
+        # all results being returned from the prefix match in the
+        # auto-completer.
+        assert_equal(result.last_fragment, '')
+    elif result.last_fragment is not None:
+        # The last_fragment, if not None is always the last part
+        # of the command line.
+        assert_true(chunk.endswith(result.last_fragment))
 
 
 class TestCanParseCLICommand(unittest.TestCase):

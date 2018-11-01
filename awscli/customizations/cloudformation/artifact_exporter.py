@@ -420,6 +420,15 @@ class CloudFormationStackResource(Resource):
                     parts["Key"], parts.get("Version", None))
 
 
+class ServerlessApplicationResource(CloudFormationStackResource):
+    """
+    Represents Serverless::Application resource that can refer to a nested
+    app template via Location property.
+    """
+    RESOURCE_TYPE = "AWS::Serverless::Application"
+    PROPERTY_NAME = "Location"
+
+
 EXPORT_LIST = [
     ServerlessFunctionResource,
     ServerlessApiResource,
@@ -429,7 +438,8 @@ EXPORT_LIST = [
     ApiGatewayRestApiResource,
     LambdaFunctionResource,
     ElasticBeanstalkApplicationVersion,
-    CloudFormationStackResource
+    CloudFormationStackResource,
+    ServerlessApplicationResource
 ]
 
 def include_transform_export_handler(template_dict, uploader):
@@ -474,9 +484,9 @@ class Template(object):
 
     def export_global_artifacts(self, template_dict):
         """
-        Template params such as AWS::Include transforms are not specific to 
+        Template params such as AWS::Include transforms are not specific to
         any resource type but contain artifacts that should be exported,
-        here we iterate through the template dict and export params with a 
+        here we iterate through the template dict and export params with a
         handler defined in GLOBAL_EXPORT_DICT
         """
         for key, val in template_dict.items():

@@ -72,3 +72,15 @@ class TestCLIArgument(unittest.TestCase):
         actual_event_name = self.event_emitter.emit.call_args[0][0]
         self.assertEqual(actual_event_name, expected_event_name)
 
+    def test_list_type_has_correct_nargs_value(self):
+        # We don't actually care about the values, we just need a ListArgument
+        # type.
+        arg = arguments.ListArgument(
+            argument_model=self.argument_model,
+            event_emitter=self.event_emitter,
+            is_required=True,
+            name='test-nargs',
+            operation_model=None,
+            serialized_name='TestNargs'
+        )
+        self.assertEqual(arg.nargs, '*')

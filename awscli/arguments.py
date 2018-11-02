@@ -479,10 +479,14 @@ class CLIArgument(BaseCLIArgument):
 
 class ListArgument(CLIArgument):
 
+    @property
+    def nargs(self):
+        return '*'
+
     def add_to_parser(self, parser):
         cli_name = self.cli_name
         parser.add_argument(cli_name,
-                            nargs='*',
+                            nargs=self.nargs,
                             type=self.cli_type,
                             required=self.required)
 

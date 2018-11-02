@@ -29,7 +29,7 @@ INDEX_FILE = os.path.join(INDEX_DIR, '%s.index' % cli_version)
 
 
 def create_autocompleter(index_filename=INDEX_FILE):
-    index = model.ModelIndex(INDEX_FILE)
+    index = model.ModelIndex(index_filename)
     cli_parser = parser.CLIParser(index)
     cli_completer = completer.AutoCompleter(
         cli_parser,

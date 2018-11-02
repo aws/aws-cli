@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.47
+=======
+
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``clouddirectory``: Update clouddirectory command to latest version
+
+
 1.16.46
 =======
 

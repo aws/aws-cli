@@ -70,6 +70,23 @@ class TestAutoCompleter(unittest.TestCase):
         first.complete.assert_called_with(self.parsed_result)
         second.complete.assert_called_with(self.parsed_result)
 
+    def test_first_result_wins(self):
+        first = mock.Mock(spec=completer.BaseCompleter)
+        second = mock.Mock(spec=completer.BaseCompleter)
+
+        first.complete.return_value = [CompletionResult('ec2', -1)]
+        second.complete.return_value = [CompletionResult('ecs', -1)]
+
+        auto_complete = completer.AutoCompleter(
+            self.parser, completers=[first, second])
+        self.assertEqual(
+            auto_complete.autocomplete('aws e'),
+            [CompletionResult('ec2', -1)]
+        )
+
+        first.complete.assert_called_with(self.parsed_result)
+        self.assertFalse(second.complete.called)
+
 
 class TestModelIndexCompleter(unittest.TestCase):
     def setUp(self):

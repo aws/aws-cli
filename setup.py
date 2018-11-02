@@ -38,7 +38,7 @@ setup_options = dict(
     long_description=open('README.rst').read(),
     author='Amazon Web Services',
     url='http://aws.amazon.com/cli/',
-    scripts=['bin/aws', 'bin/aws.cmd',
+    scripts=['bin/aws', 'bin/aws.cmd', 'bin/aws_legacy_completer',
              'bin/aws_completer', 'bin/aws_zsh_completer.sh',
              'bin/aws_bash_completer'],
     packages=find_packages(exclude=['tests*']),

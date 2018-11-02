@@ -16,34 +16,12 @@ from nose.tools import assert_equal, assert_is_instance, assert_true
 
 from awscli.testutils import unittest
 from awscli.autocomplete import parser, model
-
-
-
-class FakeModelIndex(model.ModelIndex):
-    # An in-memory version of a model index.
-
-    def __init__(self, index):
-        self.index = index
-
-    def command_names(self, lineage):
-        parent = '.'.join(lineage)
-        return self.index['command_names'].get(parent, [])
-
-    def arg_names(self, lineage, command_name):
-        parent = '.'.join(lineage)
-        return self.index['arg_names'].get(parent, {}).get(command_name, [])
-
-    def get_argument_data(self, lineage, command_name, arg_name):
-        parent = '.'.join(lineage)
-        arg_data = self.index['arg_data'].get(parent, {}).get(
-            command_name, {}).get(arg_name)
-        if arg_data is not None:
-            return model.CLIArgument(*arg_data)
+from tests.unit.autocomplete import InMemoryIndex
 
 
 # This models an 'aws ec2 stop-instances' command
 # along with the 'region', 'endpoint-url', and 'debug' global params.
-SAMPLE_MODEL = FakeModelIndex(
+SAMPLE_MODEL = InMemoryIndex(
     # This format is intended to match the structure you'd get from
     # querying the index db to minimize any parity issues between
     # the tests and the real indexer.

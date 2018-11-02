@@ -10,6 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+WORD_BOUNDARY = ''
+
+
 class ParsedResult(object):
     def __init__(self, current_command=None,
                  global_params=None, current_params=None,
@@ -155,7 +158,7 @@ class CLIParser(object):
         # e.g. 'aws ec2 describe-instances --instance-ids '
         # Note the space at the end.  In this case we don't have a value
         # to consume so we special case this and short circuit.
-        if remaining_parts == ['']:
+        if remaining_parts == [WORD_BOUNDARY]:
             return ''
         elif not remaining_parts:
             return None
@@ -189,7 +192,7 @@ class CLIParser(object):
             # an empty list being returned.  This is acceptable
             # for auto-completion purposes.
             value = []
-            while remaining_parts and not remaining_parts == ['']:
+            while remaining_parts and not remaining_parts == [WORD_BOUNDARY]:
                 if remaining_parts[0].startswith('--'):
                     break
                 value.append(remaining_parts.pop(0))
@@ -211,7 +214,7 @@ class CLIParser(object):
             # because we can auto-complete a command such as:
             # "aws ec2 stop-<TAB>" but we can't auto-complete
             # a command like: "aws ec2 stop- <TAB>"
-            parts.append('')
+            parts.append(WORD_BOUNDARY)
         return parts
 
     def _handle_option(self, current, remaining_parts, current_args,

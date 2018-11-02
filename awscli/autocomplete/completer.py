@@ -33,6 +33,9 @@ class AutoCompleter(object):
         :param command_line: The currently entered command line as a string.
         :param index: An optional integer that indicates the location where
             the cursor is located (0 based index).
+
+        :return: A list of ``CompletionResult`` objects.
+
         """
         parsed = self._parser.parse(command_line, index)
         for completer in self._completers:
@@ -40,6 +43,29 @@ class AutoCompleter(object):
             if result is not None:
                 return result
         return []
+
+
+class CompletionResult(object):
+    """A data object for a single completion result.
+
+    In addition to storing the completion string, this object also
+    stores metadata about the completion.
+
+    """
+    def __init__(self, result, starting_index=0):
+        self.result = result
+        self.starting_index = starting_index
+
+    def __eq__(self, other):
+        return (
+            isinstance(other, self.__class__) and
+            self.result == other.result and
+            self.starting_index == other.starting_index
+        )
+
+    def __repr__(self):
+        return '%s(%s, %s)' % (self.__class__.__name__,
+                               self.result, self.starting_index)
 
 
 class BaseCompleter(object):
@@ -55,7 +81,7 @@ class BaseCompleter(object):
               complete the command, it should return ``None``.  This
               signals to the ``AutoCompleter`` that it should move on
               to the next completer.
-            * ``List[str]`` - If the completer is able to offer
+            * ``List[CompletionResult]`` - If the completer is able to offer
               auto-completions it should return a list of strings that
               are valid suggestions for completing the command.  This
               indicates to the ``AutoCompleter`` to immediately return
@@ -88,18 +114,23 @@ class ModelIndexCompleter(BaseCompleter):
 
     def _complete_command(self, parsed):
         lineage = parsed.lineage + [parsed.current_command]
-        result = [name for name in self._index.command_names(lineage)
+        offset = -len(parsed.last_fragment)
+        result = [CompletionResult(name, starting_index=offset)
+                  for name in self._index.command_names(lineage)
                   if name.startswith(parsed.last_fragment)]
         return result
 
     def _complete_options(self, parsed):
         # '--endpoint' -> 'endpoint'
+        offset = -len(parsed.last_fragment)
         fragment = parsed.last_fragment[2:]
         arg_names = self._index.arg_names(
             lineage=parsed.lineage, command_name=parsed.current_command)
         results = [
-            '--%s' % arg_name for arg_name in arg_names
-            if arg_name.startswith(fragment)]
+            CompletionResult('--%s' % arg_name, starting_index=offset)
+            for arg_name in arg_names
+            if arg_name.startswith(fragment)
+        ]
         # Global params apply to any scope, so if we're not
         # in the global scope, we need to add completions for
         # global params
@@ -112,9 +143,12 @@ class ModelIndexCompleter(BaseCompleter):
             parsed.current_command == 'aws'
         )
         if not is_in_global_scope:
+            offset = -len(parsed.last_fragment)
             global_params = self._index.arg_names(
                 lineage=[], command_name='aws')
             global_param_completions = [
-                '--%s' % arg_name for arg_name in global_params
-                if arg_name.startswith(fragment)]
+                CompletionResult('--%s' % arg_name, starting_index=offset)
+                for arg_name in global_params
+                if arg_name.startswith(fragment)
+            ]
             results.extend(global_param_completions)

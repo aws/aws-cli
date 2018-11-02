@@ -33,7 +33,7 @@ def test_smoke_test_completer():
     # We're more interested in the end to end flow.  The test_generator.py
     # file verifies that we can generate the entire index so we don't need
     # to do this twice (it takes a while).
-    with testutils.temporary_file('r+') as f:
+    with testutils.temporary_file('w') as f:
         _generate_index(f.name)
         completer = main.create_autocompleter(f.name)
         completions = completer.autocomplete('aws ec2 desc')

@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest, mock
 from awscli.autocomplete import completer, parser
+from awscli.autocomplete.completer import CompletionResult
 
 from tests.unit.autocomplete import InMemoryIndex
 
@@ -24,12 +25,16 @@ class TestAutoCompleter(unittest.TestCase):
 
     def test_delegates_to_autocompleters(self):
         mock_complete = mock.Mock(spec=completer.BaseCompleter)
-        mock_complete.complete.return_value = ['ec2', 'ecs']
+        expected = [
+            CompletionResult('ec2', -1),
+            CompletionResult('ecs', -1)
+        ]
+        mock_complete.complete.return_value = expected
         auto_complete = completer.AutoCompleter(
             self.parser, completers=[mock_complete])
 
         results = auto_complete.autocomplete('aws e')
-        self.assertEqual(results, ['ec2', 'ecs'])
+        self.assertEqual(results, expected)
         self.parser.parse.assert_called_with('aws e', None)
         mock_complete.complete.assert_called_with(self.parsed_result)
 
@@ -38,11 +43,15 @@ class TestAutoCompleter(unittest.TestCase):
         second = mock.Mock(spec=completer.BaseCompleter)
 
         first.complete.return_value = None
-        second.complete.return_value = ['ec2', 'ecs']
+        expected = [
+            CompletionResult('ec2', -1),
+            CompletionResult('ecs', -1)
+        ]
+        second.complete.return_value = expected
 
         auto_complete = completer.AutoCompleter(
             self.parser, completers=[first, second])
-        self.assertEqual(auto_complete.autocomplete('aws e'), ['ec2', 'ecs'])
+        self.assertEqual(auto_complete.autocomplete('aws e'), expected)
 
         first.complete.assert_called_with(self.parsed_result)
         second.complete.assert_called_with(self.parsed_result)
@@ -98,20 +107,39 @@ class TestModelIndexCompleter(unittest.TestCase):
             last_fragment='e',
         )
         parsed = self.parser.parse('aws e')
-        self.assertEqual(self.completer.complete(parsed), ['ec2', 'ecs'])
+        expected = [
+            # The -1 is because we need to replace the string starting
+            # 1 character back  (the last fragment is the string 'e').
+            CompletionResult('ec2', starting_index=-1),
+            CompletionResult('ecs', starting_index=-1),
+        ]
+        self.assertEqual(self.completer.complete(parsed), expected)
 
     def test_returns_all_results_when_last_fragment_empty(self):
         parsed = self.parser.parse('aws ')
-        self.assertEqual(self.completer.complete(parsed), ['ec2', 'ecs', 's3'])
+        expected = [
+            # The -1 is because we need to replace the string starting
+            # 1 character back  (the last fragment is the string 'e').
+            CompletionResult('ec2', starting_index=0),
+            CompletionResult('ecs', starting_index=0),
+            CompletionResult('s3', starting_index=0),
+        ]
+        self.assertEqual(self.completer.complete(parsed), expected)
 
     def test_can_autocomplete_global_param(self):
         parsed = self.parser.parse('aws --re')
-        self.assertEqual(self.completer.complete(parsed), ['--region'])
+        self.assertEqual(
+            self.completer.complete(parsed),
+            [CompletionResult('--region', -4)]
+        )
 
     def test_can_combine_global_and_command_params(self):
         parsed = self.parser.parse('aws ec2 describe-instances --r')
-        self.assertEqual(self.completer.complete(parsed),
-                         ['--reserve', '--region'])
+        self.assertEqual(
+            self.completer.complete(parsed),
+            [CompletionResult('--reserve', -3),
+             CompletionResult('--region', -3)]
+        )
 
     def test_no_autocompletions_if_nothing_matches(self):
         parsed = self.parser.parse('aws --foo')

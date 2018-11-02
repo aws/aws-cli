@@ -35,13 +35,17 @@ def test_smoke_test_completer():
     # to do this twice (it takes a while).
     with testutils.temporary_file('w') as f:
         _generate_index(f.name)
-        completer = main.create_autocompleter(f.name)
-        completions = completer.autocomplete('aws ec2 desc')
+        completions = _autocomplete(f.name, 'aws ec2 desc')
         # The API can change so we won't assert a specific list, but we'll
         # pick a few operations that we know will always be there.
         completion_strings = [c.result for c in completions]
         assert_in('describe-instances', completion_strings)
         assert_in('describe-regions', completion_strings)
+
+
+def _autocomplete(filename, command_line):
+    completer = main.create_autocompleter(filename)
+    return completer.autocomplete(command_line)
 
 
 def _generate_index(filename):

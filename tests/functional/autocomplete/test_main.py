@@ -18,7 +18,7 @@ from awscli import testutils
 
 
 def _ec2_only_command_table(command_table, **kwargs):
-    for key in command_table:
+    for key in list(command_table):
         if key != 'ec2':
             del command_table[key]
 

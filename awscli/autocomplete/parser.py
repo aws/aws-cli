@@ -219,6 +219,12 @@ class CLIParser(object):
 
     def _handle_option(self, current, remaining_parts, current_args,
                        global_args, parsed, state):
+        if current_args is None:
+            # If there are no arguments found for this current scope,
+            # it usually indicates we've encounted a command we don't know.
+            # In this case we don't try to handle this option.
+            parsed.unparsed_items.append(current)
+            return
         # This is a command line option, remove the `--` portion so we
         # just have the option name.
         option_name = current[2:]

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.48
+=======
+
+* api-change:``serverlessrepo``: Update serverlessrepo command to latest version
+* api-change:``eks``: Update eks command to latest version
+
+
 1.16.47
 =======
 

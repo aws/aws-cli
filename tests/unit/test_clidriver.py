@@ -37,6 +37,9 @@ from awscli.customizations.commands import BasicCommand
 from awscli import formatter
 from awscli.argparser import HELP_BLURB
 from botocore.hooks import HierarchicalEmitter
+from botocore.configprovider import create_botocore_default_config_mapping
+from botocore.configprovider import ConfigChainFactory
+from botocore.configprovider import ConfigValueStore
 
 
 GET_DATA = {
@@ -197,6 +200,14 @@ class FakeSession(object):
         self.stream_logger_args = None
         self.credentials = 'fakecredentials'
         self.session_vars = {}
+        self.config_store = self._register_config_store()
+
+    def _register_config_store(self):
+        chain_builder = ConfigChainFactory(session=self)
+        config_store = ConfigValueStore(
+            mapping=create_botocore_default_config_mapping(chain_builder)
+        )
+        return config_store
 
     def register(self, event_name, handler):
         self.emitter.register(event_name, handler)
@@ -213,6 +224,8 @@ class FakeSession(object):
     def get_component(self, name):
         if name == 'event_emitter':
             return self.emitter
+        if name == 'config_store':
+            return self.config_store
 
     def create_client(self, *args, **kwargs):
         client = mock.Mock()

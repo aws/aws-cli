@@ -13,12 +13,19 @@
 import signal
 import platform
 import subprocess
+import json
 import os
 
+import botocore
+import botocore.session as session
+from botocore.exceptions import ConnectionClosedError
 from awscli.testutils import unittest, skip_if_windows, mock
 from awscli.utils import (split_on_commas, ignore_ctrl_c,
                           find_service_and_method_in_event_name,
                           OutputStreamFactory)
+from awscli.utils import InstanceMetadataRegionFetcher
+from awscli.utils import IMDSRegionProvider
+from tests import RawResponse
 
 
 class TestCSVSplit(unittest.TestCase):
@@ -203,3 +210,155 @@ class TestOutputStreamFactory(unittest.TestCase):
                     pass
         except IOError:
             self.fail('Should not raise IOError')
+
+
+class TestInstanceMetadataRegionFetcher(unittest.TestCase):
+    def setUp(self):
+        urllib3_session_send = 'botocore.httpsession.URLLib3Session.send'
+        self._urllib3_patch = mock.patch(urllib3_session_send)
+        self._send = self._urllib3_patch.start()
+        self._imds_responses = []
+        self._send.side_effect = self.get_imds_response
+        self._region = 'us-mars-1a'
+
+    def tearDown(self):
+        self._urllib3_patch.stop()
+
+    def add_imds_response(self, body, status_code=200):
+        response = botocore.awsrequest.AWSResponse(
+            url='http://169.254.169.254/',
+            status_code=status_code,
+            headers={},
+            raw=RawResponse(body)
+        )
+        self._imds_responses.append(response)
+
+    def add_get_region_imds_response(self, region=None):
+        if region is None:
+            region = self._region
+        self.add_imds_response(body=region.encode('utf-8'))
+
+    def add_imds_connection_error(self, exception):
+        self._imds_responses.append(exception)
+
+    def get_imds_response(self, request):
+        response = self._imds_responses.pop(0)
+        if isinstance(response, Exception):
+            raise response
+        return response
+
+    def test_disabled_by_environment(self):
+        env = {'AWS_EC2_METADATA_DISABLED': 'true'}
+        fetcher = InstanceMetadataRegionFetcher(env=env)
+        result = fetcher.retrieve_region()
+        self.assertIsNone(result)
+        self._send.assert_not_called()
+
+    def test_disabled_by_environment_mixed_case(self):
+        env = {'AWS_EC2_METADATA_DISABLED': 'tRuE'}
+        fetcher = InstanceMetadataRegionFetcher(env=env)
+        result = fetcher.retrieve_region()
+        self.assertIsNone(result)
+        self._send.assert_not_called()
+
+    def test_disabling_env_var_not_true(self):
+        url = 'https://example.com/'
+        env = {'AWS_EC2_METADATA_DISABLED': 'false'}
+
+        self.add_get_region_imds_response()
+
+        fetcher = InstanceMetadataRegionFetcher(base_url=url, env=env)
+        result = fetcher.retrieve_region()
+
+        expected_result = 'us-mars-1'
+        self.assertEqual(result, expected_result)
+
+    def test_includes_user_agent_header(self):
+        user_agent = 'my-user-agent'
+        self.add_get_region_imds_response()
+
+        InstanceMetadataRegionFetcher(
+            user_agent=user_agent).retrieve_region()
+
+        headers = self._send.call_args[0][0].headers
+        self.assertEqual(headers['User-Agent'], user_agent)
+
+    def test_non_200_response_for_region_is_retried(self):
+        # Response for role name that have a non 200 status code should
+        # be retried.
+        self.add_imds_response(
+            status_code=429, body=b'{"message": "Slow down"}')
+        self.add_get_region_imds_response()
+        result = InstanceMetadataRegionFetcher(
+            num_attempts=2).retrieve_region()
+        expected_result = 'us-mars-1'
+        self.assertEqual(result, expected_result)
+
+    def test_empty_response_for_region_is_retried(self):
+        # Response for role name that have a non 200 status code should
+        # be retried.
+        self.add_imds_response(body=b'')
+        self.add_get_region_imds_response()
+        result = InstanceMetadataRegionFetcher(
+            num_attempts=2).retrieve_region()
+        expected_result = 'us-mars-1'
+        self.assertEqual(result, expected_result)
+
+    def test_non_200_response_is_retried(self):
+        # Response for creds that has a 200 status code but has an empty
+        # body should be retried.
+        self.add_imds_response(
+            status_code=429, body=b'{"message": "Slow down"}')
+        self.add_get_region_imds_response()
+        result = InstanceMetadataRegionFetcher(
+            num_attempts=2).retrieve_region()
+        expected_result = 'us-mars-1'
+        self.assertEqual(result, expected_result)
+
+    def test_http_connection_errors_is_retried(self):
+        # Connection related errors should be retried
+        self.add_imds_connection_error(ConnectionClosedError(endpoint_url=''))
+        self.add_get_region_imds_response()
+        result = InstanceMetadataRegionFetcher(
+            num_attempts=2).retrieve_region()
+        expected_result = 'us-mars-1'
+        self.assertEqual(result, expected_result)
+
+    def test_empty_response_is_retried(self):
+        # Response for creds that has a 200 status code but is empty.
+        # This should be retried.
+        self.add_imds_response(body=b'')
+        self.add_get_region_imds_response()
+        result = InstanceMetadataRegionFetcher(
+            num_attempts=2).retrieve_region()
+        expected_result = 'us-mars-1'
+        self.assertEqual(result, expected_result)
+
+    def test_exhaust_retries_on_region_request(self):
+        self.add_imds_response(status_code=400, body=b'')
+        result = InstanceMetadataRegionFetcher(
+            num_attempts=1).retrieve_region()
+        self.assertEqual(result, None)
+
+
+class TestIMDSRegionProvider(unittest.TestCase):
+    def assert_does_provide_expected_value(self, fetcher_region=None,
+                                           expected_result=None,):
+        fake_session = mock.Mock(spec=session.Session)
+        fake_fetcher = mock.Mock(spec=InstanceMetadataRegionFetcher)
+        fake_fetcher.retrieve_region.return_value = fetcher_region
+        provider = IMDSRegionProvider(fake_session, fetcher=fake_fetcher)
+        value = provider.provide()
+        self.assertEqual(value, expected_result)
+
+    def test_does_provide_region_when_present(self):
+        self.assert_does_provide_expected_value(
+            fetcher_region='us-mars-2',
+            expected_result='us-mars-2',
+        )
+
+    def test_does_provide_none(self):
+        self.assert_does_provide_expected_value(
+            fetcher_region=None,
+            expected_result=None,
+        )

@@ -58,7 +58,6 @@ from botocore.awsrequest import AWSResponse
 import awscli.clidriver
 from awscli.plugin import load_plugins
 from awscli.clidriver import CLIDriver
-from awscli import EnvironmentVariables
 
 
 # In python 3, order matters when calling assertEqual to

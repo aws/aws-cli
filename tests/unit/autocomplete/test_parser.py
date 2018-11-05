@@ -381,6 +381,20 @@ class TestCanParseCLICommand(unittest.TestCase):
             unparsed_items=['ec', 'stop-insta']
         )
 
+    def test_can_handle_error_cases_gracefully(self):
+        # The --foo-arg has nargs of None so this is an invalid command.
+        # It would normally generate a parser error.  We should make sure
+        # we handle this gracefully.
+        result = self.cli_parser.parse(
+            'aws ec2 stop-instances --foo-arg a b --')
+        self.assert_parsed_results_equal(
+            result,
+            current_command='stop-instances',
+            lineage=['aws', 'ec2'],
+            last_fragment=None,
+            unparsed_items=['b', '--'],
+        )
+
 
 class TestParseState(unittest.TestCase):
     def test_can_set_initial_state(self):

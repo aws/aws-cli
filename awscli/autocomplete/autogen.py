@@ -18,7 +18,7 @@ Resource = namedtuple('Resource', ['resource_name', 'ident_name',
 class ServerCompletionHeuristic(object):
     # Prefix that typically indicates listing resources,
     # e.g ListResources, DescribeResources, etc.
-    _RESOURCE_VERB_PREFIX = ('list', 'describe')
+    _RESOURCE_VERB_PREFIX = ('get', 'list', 'describe')
 
     def __init__(self, singularize=None):
         if singularize is None:

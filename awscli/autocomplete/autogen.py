@@ -72,24 +72,30 @@ class ServerCompletionHeuristic(object):
                 reverse_mapping[key] = name
         op_map = {}
         for op_name in op_names:
-            op_model = service_model.operation_model(op_name)
-            input_shape = op_model.input_shape
-            if not input_shape:
-                continue
-            for member in input_shape.members:
-                member_name = self._find_matching_member_name(
-                    member, reverse_mapping)
-                if member_name is None:
-                    continue
-                resource_name = reverse_mapping[member_name]
-                op = op_map.setdefault(op_name, {})
-                param = op.setdefault(member, {})
-                param['completions'] = [
-                    {'parameters': {},
-                     'resourceName': resource_name,
-                     'resourceIdentifier': member}
-                ]
+            self._add_completion_data_for_operation(
+                op_map, op_name, service_model, reverse_mapping
+            )
         return op_map
+
+    def _add_completion_data_for_operation(self, op_map, op_name,
+                                           service_model, reverse_mapping):
+        op_model = service_model.operation_model(op_name)
+        input_shape = op_model.input_shape
+        if not input_shape:
+            return
+        for member in input_shape.members:
+            member_name = self._find_matching_member_name(
+                member, reverse_mapping)
+            if member_name is None:
+                return
+            resource_name = reverse_mapping[member_name]
+            op = op_map.setdefault(op_name, {})
+            param = op.setdefault(member, {})
+            param['completions'] = [
+                {'parameters': {},
+                 'resourceName': resource_name,
+                 'resourceIdentifier': member}
+            ]
 
     def _find_matching_member_name(self, member, reverse_mapping):
         # Try to find something in the reverse mapping that's close
@@ -128,28 +134,39 @@ class ServerCompletionHeuristic(object):
             return
         resource_shape_name = list_members[0]
         list_member = output.members[resource_shape_name].member
-        op_with_prefix_removed = self._remove_verb_prefix(op_name)
         if list_member.type_name == 'structure':
-            candidates = list_member.members
-            best_match = max(
-                list(candidates),
-                key=lambda x: SequenceMatcher(
-                    None, op_with_prefix_removed, x).ratio())
-            singular_name = self._singularize.make_singular(
-                op_with_prefix_removed)
-            jp_expr = (
-                '{resource_shape_name}[].{best_match}').format(
-                    resource_shape_name=resource_shape_name,
-                    best_match=best_match)
-            r = Resource(singular_name, best_match, op_name, jp_expr)
-            return r
+            return self._resource_from_structure(
+                op_name, resource_shape_name, list_member)
         elif list_member.type_name == 'string':
-            singular_name = self._singularize.make_singular(
-                op_with_prefix_removed)
-            r = Resource(singular_name, resource_shape_name, op_name,
-                         '{resource_shape_name}[]'.format(
-                             resource_shape_name=resource_shape_name))
-            return r
+            return self._resource_from_string(
+                op_name, resource_shape_name,
+            )
+
+    def _resource_from_structure(self, op_name,
+                                 resource_shape_name, list_member):
+        candidates = list_member.members
+        op_with_prefix_removed = self._remove_verb_prefix(op_name)
+        best_match = max(
+            list(candidates),
+            key=lambda x: SequenceMatcher(
+                None, op_with_prefix_removed, x).ratio())
+        singular_name = self._singularize.make_singular(
+            op_with_prefix_removed)
+        jp_expr = (
+            '{resource_shape_name}[].{best_match}').format(
+                resource_shape_name=resource_shape_name,
+                best_match=best_match)
+        r = Resource(singular_name, best_match, op_name, jp_expr)
+        return r
+
+    def _resource_from_string(self, op_name, resource_shape_name):
+        op_with_prefix_removed = self._remove_verb_prefix(op_name)
+        singular_name = self._singularize.make_singular(
+            op_with_prefix_removed)
+        r = Resource(singular_name, resource_shape_name, op_name,
+                     '{resource_shape_name}[]'.format(
+                         resource_shape_name=resource_shape_name))
+        return r
 
     def _remove_verb_prefix(self, op_name):
         for prefix in self._RESOURCE_VERB_PREFIX:
@@ -157,14 +174,13 @@ class ServerCompletionHeuristic(object):
             if op_name.lower().startswith(prefix):
                 op_with_prefix_removed = op_name[len(prefix):]
                 return op_with_prefix_removed
-                break
 
 
 class BasicSingularize(object):
     """Simple implementation of making a word singular.
 
     Where possible, you should use nltk.stem.WordNetLemmatizer.
-    It's not included here as a default to avoid a hard dependenct
+    It's not included here as a default to avoid a hard dependency
     on nltk.
 
     """

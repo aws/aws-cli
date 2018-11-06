@@ -51,6 +51,7 @@ class ServerCompletionHeuristic(object):
                                                    all_resources,
                                                    service_model)
         return {
+            'version': '1.0',
             'resources': all_resources,
             'operations': all_operations,
         }
@@ -87,7 +88,7 @@ class ServerCompletionHeuristic(object):
             member_name = self._find_matching_member_name(
                 member, reverse_mapping)
             if member_name is None:
-                return
+                continue
             resource_name = reverse_mapping[member_name]
             op = op_map.setdefault(op_name, {})
             param = op.setdefault(member, {})

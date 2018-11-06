@@ -25,6 +25,10 @@ class BadRCError(Exception):
     pass
 
 
+class MultipleBundlesError(Exception):
+    pass
+
+
 @contextmanager
 def cd(dirname):
     original = os.getcwd()
@@ -91,7 +95,12 @@ def create_working_dir():
 def pip_install_packages(install_dir):
     cli_tarball = [p for p in os.listdir(PACKAGES_DIR)
                    if p.startswith('awscli')]
-    assert len(cli_tarball) == 1
+    if len(cli_tarball) != 1:
+        message = (
+            "Multiple versions of the CLI were found in %s. Please clear "
+            "out this directory before proceeding."
+        )
+        raise MultipleBundlesError(message % PACKAGES_DIR)
     cli_tarball = cli_tarball[0]
     pip_script = os.path.join(install_dir, bin_path(), 'pip')
 
@@ -101,12 +110,12 @@ def pip_install_packages(install_dir):
     setup_requires_dir = os.path.join(PACKAGES_DIR, 'setup')
     with cd(setup_requires_dir):
         for package in os.listdir(setup_requires_dir):
-            run('%s install --no-index --find-links file://%s %s' % (
+            run('%s install --no-cache-dir --no-index --find-links file://%s %s' % (
                 pip_script, setup_requires_dir, package
             ))
 
     with cd(PACKAGES_DIR):
-        run('%s install --no-index --find-links file://%s %s' % (
+        run('%s install --no-cache-dir --no-index --find-links file://%s %s' % (
             pip_script, PACKAGES_DIR, cli_tarball))
 
 

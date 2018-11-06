@@ -12,6 +12,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import mock
+import os
 
 from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.testutils import capture_input, set_invalid_utime
@@ -133,10 +134,10 @@ class TestCPCommand(BaseCPCommandTest):
         cmdline = '%s s3://bucket/key.txt %s --recursive' % (
             self.prefix, self.files.rootdir)
         self.run_cmd(cmdline, expected_rc=0)
-        # We called ListObjects but had no objects to download, so
-        # we only have a single ListObjects operation being called.
+        # We called ListObjectsV2 but had no objects to download, so
+        # we only have a single ListObjectsV2 operation being called.
         self.assertEqual(len(self.operations_called), 1, self.operations_called)
-        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
 
     def test_website_redirect_ignore_paramfile(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
@@ -268,7 +269,7 @@ class TestCPCommand(BaseCPCommandTest):
                   % (self.prefix, self.files.rootdir)
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(len(self.operations_called), 2, self.operations_called)
-        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
         self.assertEqual(self.operations_called[1][0].name, 'GetObject')
 
     def test_recursive_glacier_download_without_force_glacier(self):
@@ -287,7 +288,7 @@ class TestCPCommand(BaseCPCommandTest):
             self.prefix, self.files.rootdir)
         _, stderr, _ = self.run_cmd(cmdline, expected_rc=2)
         self.assertEqual(len(self.operations_called), 1, self.operations_called)
-        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
         self.assertIn('GLACIER', stderr)
 
     def test_warns_on_glacier_incompatible_operation(self):
@@ -362,6 +363,86 @@ class TestCPCommand(BaseCPCommandTest):
              'SSECustomerAlgorithm': 'AES256', 'SSECustomerKey': 'Zm9v',
              'SSECustomerKeyMD5': 'rL0Y20zC+Fzt72VPzMSk2A=='}
         )
+
+    def test_cp_with_sse_c_fileb(self):
+        file_path = self.files.create_file('foo.txt', 'contents')
+        key_path = self.files.create_file('foo.key', '')
+        with open(key_path, 'wb') as f:
+            f.write(
+                b'K\xc9G\xe1\xf9&\xee\xd1\x03\xf3\xd4\x10\x18o9E\xc2\xaeD'
+                b'\x89(\x18\xea\xda\xf6\x81\xc3\xd2\x9d\\\xa8\xe6'
+            )
+        cmdline = (
+            '%s %s s3://bucket/key.txt --sse-c --sse-c-key fileb://%s' % (
+                self.prefix, file_path, key_path
+            )
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+
+        expected_args = {
+            'Key': 'key.txt', 'Bucket': 'bucket',
+            'ContentType': 'text/plain',
+            'Body': mock.ANY,
+            'SSECustomerAlgorithm': 'AES256',
+            'SSECustomerKey': 'S8lH4fkm7tED89QQGG85RcKuRIkoGOra9oHD0p1cqOY=',
+            'SSECustomerKeyMD5': 'mL8/mshNgBObhAC1j5BOLw=='
+        }
+        self.assertDictEqual(self.operations_called[0][1], expected_args)
+
+    def test_cp_with_sse_c_copy_source_fileb(self):
+        self.parsed_responses = [
+            {
+                "AcceptRanges": "bytes",
+                "LastModified": "Tue, 12 Jul 2016 21:26:07 GMT",
+                "ContentLength": 4,
+                "ETag": '"d3b07384d113edec49eaa6238ad5ff00"',
+                "Metadata": {},
+                "ContentType": "binary/octet-stream"
+            },
+            {
+                "AcceptRanges": "bytes",
+                "Metadata": {},
+                "ContentType": "binary/octet-stream",
+                "ContentLength": 4,
+                "ETag": '"d3b07384d113edec49eaa6238ad5ff00"',
+                "LastModified": "Tue, 12 Jul 2016 21:26:07 GMT",
+                "Body": six.BytesIO(b'foo\n')
+            },
+            {}
+        ]
+
+        file_path = self.files.create_file('foo.txt', '')
+        key_path = self.files.create_file('foo.key', '')
+        with open(key_path, 'wb') as f:
+            f.write(
+                b'K\xc9G\xe1\xf9&\xee\xd1\x03\xf3\xd4\x10\x18o9E\xc2\xaeD'
+                b'\x89(\x18\xea\xda\xf6\x81\xc3\xd2\x9d\\\xa8\xe6'
+            )
+        cmdline = (
+            '%s s3://bucket-one/key.txt s3://bucket/key.txt '
+            '--sse-c-copy-source --sse-c-copy-source-key fileb://%s' % (
+                self.prefix, key_path
+            )
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 2)
+        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
+
+        expected_args = {
+            'Key': 'key.txt', 'Bucket': 'bucket',
+            'ContentType': 'text/plain',
+            'CopySource': 'bucket-one/key.txt',
+            'CopySourceSSECustomerAlgorithm': 'AES256',
+            'CopySourceSSECustomerKey': (
+                'S8lH4fkm7tED89QQGG85RcKuRIkoGOra9oHD0p1cqOY='
+            ),
+            'CopySourceSSECustomerKeyMD5': 'mL8/mshNgBObhAC1j5BOLw==',
+        }
+        self.assertDictEqual(self.operations_called[1][1], expected_args)
+
 
     # Note ideally the kms sse with a key id would be integration tests
     # However, you cannot delete kms keys so there would be no way to clean
@@ -784,7 +865,7 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                ('ListObjects', {
+                ('ListObjectsV2', {
                     'Bucket': 'mybucket',
                     'Prefix': '',
                     'EncodingType': 'url',
@@ -899,7 +980,7 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                ('ListObjects', {
+                ('ListObjectsV2', {
                     'Bucket': 'sourcebucket',
                     'Prefix': '',
                     'EncodingType': 'url',

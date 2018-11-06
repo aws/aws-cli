@@ -62,11 +62,10 @@ def main():
 
 
 def create_clidriver():
-    emitter = HierarchicalEmitter()
-    session = botocore.session.Session(EnvironmentVariables, emitter)
+    session = botocore.session.Session(EnvironmentVariables)
     _set_user_agent_for_session(session)
     load_plugins(session.full_config.get('plugins', {}),
-                 event_hooks=emitter)
+                 event_hooks=session.get_component('event_emitter'))
     driver = CLIDriver(session=session)
     return driver
 
@@ -252,6 +251,8 @@ class CLIDriver(object):
         emit_top_level_args_parsed_event(self.session, args)
         if args.profile:
             self.session.set_config_variable('profile', args.profile)
+        if args.region:
+            self.session.set_config_variable('region', args.region)
         if args.debug:
             # TODO:
             # Unfortunately, by setting debug mode here, we miss out

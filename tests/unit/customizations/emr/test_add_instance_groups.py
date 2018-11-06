@@ -17,7 +17,6 @@ from tests.unit.customizations.emr import test_constants as \
     CONSTANTS
 import json
 from mock import patch
-from botocore.vendored import requests
 
 INSTANCE_GROUPS_WITH_AUTOSCALING_POLICY = (
     ' InstanceGroupType=TASK,InstanceType=d2.xlarge,InstanceCount=2,'

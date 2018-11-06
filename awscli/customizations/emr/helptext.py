@@ -324,7 +324,7 @@ STEPS = (
     ' and are used to submit work to a cluster. A step can be'
     ' specified using the shorthand syntax, by referencing a JSON file'
     ' or by specifying an inline JSON structure. <code>Args</code> supplied with steps'
-    ' should be acomma-separated list of values (<code>Args=arg1,arg2,arg3</code>) or'
+    ' should be a comma-separated list of values (<code>Args=arg1,arg2,arg3</code>) or'
     ' a bracket-enclosed list of values and key-value'
     ' pairs (<code>Args=[arg1,arg2=value,arg4</code>).</p>')
 

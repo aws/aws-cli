@@ -14,7 +14,8 @@ import logging
 import os
 import copy
 
-from botocore.vendored import requests
+from botocore.awsrequest import AWSRequest
+from botocore.httpsession import URLLib3Session
 from botocore.exceptions import ProfileNotFound
 from awscli.compat import six
 
@@ -29,9 +30,9 @@ logger = logging.getLogger(__name__)
 # refers to an actual URI of some sort and we don't want to actually
 # download the content (i.e TemplateURL in cloudformation).
 PARAMFILE_DISABLED = set([
-    'apigateway.put-integration.uri',
-    'appstream2.create-stack.redirect-url',
-    'appstream2.update-stack.redirect-url',
+    'api-gateway.put-integration.uri',
+    'appstream.create-stack.redirect-url',
+    'appstream.update-stack.redirect-url',
     'cloudformation.create-stack.template-url',
     'cloudformation.update-stack.template-url',
     'cloudformation.create-stack-set.template-url',
@@ -71,22 +72,26 @@ PARAMFILE_DISABLED = set([
 
     'iam.create-open-id-connect-provider.url',
 
-    'machinelearning.predict.predict-endpoint',
+    'machine-learning.predict.predict-endpoint',
+
+    'mediatailor.put-playback-configuration.ad-decision-server-url',
+    'mediatailor.put-playback-configuration.slate-ad-url',
+    'mediatailor.put-playback-configuration.video-content-source-url',
 
     'rds.copy-db-cluster-snapshot.pre-signed-url',
     'rds.create-db-cluster.pre-signed-url',
     'rds.copy-db-snapshot.pre-signed-url',
     'rds.create-db-instance-read-replica.pre-signed-url',
 
-    'serverlessrepo.create-application.home-page-url',
-    'serverlessrepo.create-application.license-url',
-    'serverlessrepo.create-application.readme-url',
-    'serverlessrepo.create-application.source-code-url',
-    'serverlessrepo.create-application.template-url',
-    'serverlessrepo.create-application-version.source-code-url',
-    'serverlessrepo.create-application-version.template-url',
-    'serverlessrepo.update-application.home-page-url',
-    'serverlessrepo.update-application.readme-url',
+    'serverlessapplicationrepository.create-application.home-page-url',
+    'serverlessapplicationrepository.create-application.license-url',
+    'serverlessapplicationrepository.create-application.readme-url',
+    'serverlessapplicationrepository.create-application.source-code-url',
+    'serverlessapplicationrepository.create-application.template-url',
+    'serverlessapplicationrepository.create-application-version.source-code-url',
+    'serverlessapplicationrepository.create-application-version.template-url',
+    'serverlessapplicationrepository.update-application.home-page-url',
+    'serverlessapplicationrepository.update-application.readme-url',
 
     'sqs.add-permission.queue-url',
     'sqs.change-message-visibility.queue-url',
@@ -116,7 +121,7 @@ PARAMFILE_DISABLED = set([
     'iot.create-job.document-source',
     'translate.translate-text.text',
 
-    'workdocs.create-notification-subscription.notification-endpoint',
+    'workdocs.create-notification-subscription.notification-endpoint'
 ])
 
 
@@ -221,7 +226,8 @@ def get_file(prefix, path, mode):
 
 def get_uri(prefix, uri):
     try:
-        r = requests.get(uri)
+        session = URLLib3Session()
+        r = session.send(AWSRequest('GET', uri).prepare())
         if r.status_code == 200:
             return r.text
         else:

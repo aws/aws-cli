@@ -111,7 +111,8 @@ class TestSubscribe(BaseAWSCommandParamsTest):
         )
 
     def test_subscribe_when_bucket_needs_to_be_created(self):
-        with mock.patch('botocore.endpoint.Session.send') as \
+        # TODO: fix this patch when we have a better way to stub out responses
+        with mock.patch('botocore.endpoint.Endpoint._send') as \
                 http_session_send_patch:
             # Mock for HeadBucket request
             head_bucket_response = mock.Mock()

@@ -70,13 +70,13 @@ class TestParamFile(unittest.TestCase):
 
 class TestHTTPBasedResourceLoading(unittest.TestCase):
     def setUp(self):
-        self.requests_patch = mock.patch('awscli.paramfile.requests')
-        self.requests_mock = self.requests_patch.start()
+        self.session_patch = mock.patch('awscli.paramfile.URLLib3Session.send')
+        self.session_mock = self.session_patch.start()
         self.response = mock.Mock(status_code=200)
-        self.requests_mock.get.return_value = self.response
+        self.session_mock.return_value = self.response
 
     def tearDown(self):
-        self.requests_patch.stop()
+        self.session_patch.stop()
 
     def get_paramfile(self, path):
         return get_paramfile(path, REMOTE_PREFIX_MAP.copy())
@@ -85,13 +85,11 @@ class TestHTTPBasedResourceLoading(unittest.TestCase):
         self.response.text = 'http contents'
         loaded = self.get_paramfile('http://foo.bar.baz')
         self.assertEqual(loaded, 'http contents')
-        self.requests_mock.get.assert_called_with('http://foo.bar.baz')
 
     def test_resource_from_https(self):
         self.response.text = 'http contents'
         loaded = self.get_paramfile('https://foo.bar.baz')
         self.assertEqual(loaded, 'http contents')
-        self.requests_mock.get.assert_called_with('https://foo.bar.baz')
 
     def test_non_200_raises_error(self):
         self.response.status_code = 500
@@ -99,7 +97,7 @@ class TestHTTPBasedResourceLoading(unittest.TestCase):
             self.get_paramfile('https://foo.bar.baz')
 
     def test_connection_error_raises_error(self):
-        self.requests_mock.get.side_effect = Exception("Connection error.")
+        self.session_mock.side_effect = Exception("Connection error.")
         with self.assertRaisesRegexp(ResourceLoadingError, 'foo\.bar\.baz'):
             self.get_paramfile('https://foo.bar.baz')
 

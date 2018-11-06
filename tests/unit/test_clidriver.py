@@ -20,7 +20,7 @@ import sys
 import mock
 import nose
 from awscli.compat import six
-from botocore.vendored.requests import models
+from botocore.awsrequest import AWSResponse
 from botocore.exceptions import NoCredentialsError
 from botocore.compat import OrderedDict
 import botocore.model
@@ -64,7 +64,6 @@ GET_DATA = {
                 "metavar": "profile_name"
             },
             "region": {
-                "choices": "{provider}/_regions",
                 "metavar": "region_name"
             },
             "endpoint-url": {
@@ -197,6 +196,7 @@ class FakeSession(object):
         self.profile = None
         self.stream_logger_args = None
         self.credentials = 'fakecredentials'
+        self.session_vars = {}
 
     def register(self, event_name, handler):
         self.emitter.register(event_name, handler)
@@ -227,7 +227,9 @@ class FakeSession(object):
         return GET_DATA[name]
 
     def get_config_variable(self, name):
-        return GET_VARIABLE[name]
+        if name in GET_VARIABLE:
+            return GET_VARIABLE[name]
+        return self.session_vars[name]
 
     def get_service_model(self, name, api_version=None):
         return botocore.model.ServiceModel(
@@ -245,6 +247,8 @@ class FakeSession(object):
     def set_config_variable(self, name, value):
         if name == 'profile':
             self.profile = value
+        else:
+            self.session_vars[name] = value
 
 
 class FakeCommand(BasicCommand):
@@ -288,6 +292,12 @@ class TestCliDriver(unittest.TestCase):
         driver = CLIDriver(session=self.session)
         driver.main('s3 list-objects --bucket foo --profile foo'.split())
         self.assertEqual(driver.session.profile, 'foo')
+
+    def test_region_is_set_for_session(self):
+        driver = CLIDriver(session=self.session)
+        driver.main('s3 list-objects --bucket foo --region us-east-2'.split())
+        self.assertEqual(
+            driver.session.get_config_variable('region'), 'us-east-2')
 
     def test_error_logger(self):
         driver = CLIDriver(session=self.session)
@@ -717,8 +727,7 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
         self.endpoint = self.create_endpoint.return_value
         self.endpoint.host = 'https://example.com'
         # Have the endpoint give a dummy empty response.
-        http_response = models.Response()
-        http_response.status_code = 200
+        http_response = AWSResponse(None, 200, {}, None)
         self.endpoint.make_request.return_value = (
             http_response, {})
 
@@ -812,7 +821,7 @@ class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):
         error_msg = ("Error parsing parameter '--filters': "
                      "Unable to retrieve http://does/not/exist.json: "
                      "received non 200 status code of 404")
-        with mock.patch('botocore.vendored.requests.get') as get:
+        with mock.patch('awscli.paramfile.URLLib3Session.send') as get:
             get.return_value.status_code = 404
             self.assert_params_for_cmd(
                 'ec2 describe-instances --filters http://does/not/exist.json',

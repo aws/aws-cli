@@ -399,6 +399,7 @@ MODEL_WITH_STRING_LIST = {
 
 
 class TestCanGenerateCompletions(unittest.TestCase):
+
     def setUp(self):
         self.service_model = ServiceModel(BASIC_MODEL)
         self.heuristic = ServerCompletionHeuristic()
@@ -464,6 +465,7 @@ class TestCanGenerateCompletions(unittest.TestCase):
         completion_data = self.heuristic.generate_completion_descriptions(
             service_model)
         expected = {
+            'version': '1.0',
             'operations': {
                 'DeleteNamedQuery': {
                     'NamedQueryId': {

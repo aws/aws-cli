@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.16.49
+=======
+
+* api-change:``waf-regional``: Update waf-regional command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``pinpoint-email``: Update pinpoint-email command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.16.48
 =======
 

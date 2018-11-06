@@ -15,8 +15,10 @@ files.
 """
 import argparse
 import json
+import sys
 import os
 
+import nltk
 from nltk.stem import WordNetLemmatizer
 import botocore.session
 
@@ -45,9 +47,23 @@ class NLTKSingularize(BasicSingularize):
         return singular_name
 
 
+def create_singularizer():
+    lemmatizer = WordNetLemmatizer()
+    # nltk is a bit odd in that it needs large data files to operate.
+    # It will fail at runtime if these files aren't available, so we
+    # need to invoke one of its methods to see if we need to download the
+    # appropriate data set.
+    try:
+        lemmatizer.lemmatize('testing')
+    except LookupError:
+        sys.stderr.write("wordnet data file missing for nltk, downloading..."
+                         " (this is a one time setup).\n")
+        nltk.download('wordnet')
+    singularize = NLTKSingularize(lemmatizer)
+
 def generate_completion_data(args):
     session = botocore.session.get_session()
-    singularize = NLTKSingularize(WordNetLemmatizer())
+    singularize = create_singularizer()
     gen = ServerCompletionHeuristic(singularize=singularize)
     for service_name in session.get_available_services():
         model = session.get_service_model(service_name)

@@ -1,0 +1,59 @@
+{
+  "version": "1.0",
+  "resources": {
+    "Endpoint": {
+      "operation": "DescribeEndpoints",
+      "resourceIdentifier": {
+        "Url": "Endpoints[].Url"
+      }
+    },
+    "JobTemplate": {
+      "operation": "ListJobTemplates",
+      "resourceIdentifier": {
+        "CreatedAt": "JobTemplates[].CreatedAt"
+      }
+    },
+    "Job": {
+      "operation": "ListJobs",
+      "resourceIdentifier": {
+        "JobTemplate": "Jobs[].JobTemplate"
+      }
+    },
+    "Preset": {
+      "operation": "ListPresets",
+      "resourceIdentifier": {
+        "CreatedAt": "Presets[].CreatedAt"
+      }
+    },
+    "Queue": {
+      "operation": "ListQueues",
+      "resourceIdentifier": {
+        "Status": "Queues[].Status"
+      }
+    }
+  },
+  "operations": {
+    "CreateJob": {
+      "JobTemplate": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Job",
+            "resourceIdentifier": "JobTemplate"
+          }
+        ]
+      }
+    },
+    "UpdateQueue": {
+      "Status": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Queue",
+            "resourceIdentifier": "Status"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -12,7 +12,7 @@ from collections import namedtuple
 
 LOG = logging.getLogger(__name__)
 Resource = namedtuple('Resource', ['resource_name', 'ident_name',
-                                   'operation', 'jp_expr'])
+                                   'input_parameters', 'operation', 'jp_expr'])
 
 
 class ServerCompletionHeuristic(object):
@@ -67,8 +67,18 @@ class ServerCompletionHeuristic(object):
 
     def _generate_operations(self, op_names, resources, service_model):
         # member_name -> resource
+        # This is a simplification we're making for now, it's not at all
+        # an actual limitation of auto-generating completion data.
+        # If there is a resource that has ``inputParameters`` (i.e required
+        # params), then we don't generate completions for you.
         reverse_mapping = {}
         for name, identifier_map in resources.items():
+            if identifier_map.get('inputParameters', {}):
+                # If there are required inputParameters for a resource
+                # we're going to skip them for now.  We should come back
+                # to this, it's possible to auto generate these parameters
+                # in many cases.
+                continue
             for key in identifier_map['resourceIdentifier']:
                 reverse_mapping[key] = name
         op_map = {}
@@ -116,6 +126,8 @@ class ServerCompletionHeuristic(object):
         r = all_resources.setdefault(resource.resource_name, {})
         r['operation'] = resource.operation
         ident = r.setdefault('resourceIdentifier', {})
+        if resource.input_parameters:
+            r['inputParameters'] = resource.input_parameters
         ident[resource.ident_name] = resource.jp_expr
 
     def _resource_for_single_operation(self, op_name, service_model):
@@ -135,16 +147,20 @@ class ServerCompletionHeuristic(object):
             return
         resource_shape_name = list_members[0]
         list_member = output.members[resource_shape_name].member
+        required_members = []
+        if op_model.input_shape is not None:
+            required_members = op_model.input_shape.required_members
         if list_member.type_name == 'structure':
             return self._resource_from_structure(
-                op_name, resource_shape_name, list_member)
+                op_name, resource_shape_name, list_member, required_members)
         elif list_member.type_name == 'string':
             return self._resource_from_string(
-                op_name, resource_shape_name,
+                op_name, resource_shape_name, required_members,
             )
 
     def _resource_from_structure(self, op_name,
-                                 resource_shape_name, list_member):
+                                 resource_shape_name, list_member,
+                                 required_members):
         candidates = list_member.members
         op_with_prefix_removed = self._remove_verb_prefix(op_name)
         best_match = max(
@@ -157,14 +173,17 @@ class ServerCompletionHeuristic(object):
             '{resource_shape_name}[].{best_match}').format(
                 resource_shape_name=resource_shape_name,
                 best_match=best_match)
-        r = Resource(singular_name, best_match, op_name, jp_expr)
+        r = Resource(singular_name, best_match, required_members,
+                     op_name, jp_expr)
         return r
 
-    def _resource_from_string(self, op_name, resource_shape_name):
+    def _resource_from_string(self, op_name, resource_shape_name,
+                              required_members):
         op_with_prefix_removed = self._remove_verb_prefix(op_name)
         singular_name = self._singularize.make_singular(
             op_with_prefix_removed)
-        r = Resource(singular_name, resource_shape_name, op_name,
+        r = Resource(singular_name, resource_shape_name, required_members,
+                     op_name,
                      '{resource_shape_name}[]'.format(
                          resource_shape_name=resource_shape_name))
         return r

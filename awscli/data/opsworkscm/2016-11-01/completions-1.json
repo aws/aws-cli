@@ -1,0 +1,77 @@
+{
+  "version": "1.0",
+  "resources": {
+    "AccountAttribute": {
+      "operation": "DescribeAccountAttributes",
+      "resourceIdentifier": {
+        "Name": "Attributes[].Name"
+      }
+    },
+    "Backup": {
+      "operation": "DescribeBackups",
+      "resourceIdentifier": {
+        "BackupId": "Backups[].BackupId"
+      }
+    },
+    "Event": {
+      "operation": "DescribeEvents",
+      "resourceIdentifier": {
+        "Message": "ServerEvents[].Message"
+      },
+      "inputParameters": [
+        "ServerName"
+      ]
+    },
+    "NodeAssociationStatu": {
+      "operation": "DescribeNodeAssociationStatus",
+      "resourceIdentifier": {
+        "Name": "EngineAttributes[].Name"
+      },
+      "inputParameters": [
+        "NodeAssociationStatusToken",
+        "ServerName"
+      ]
+    },
+    "Server": {
+      "operation": "DescribeServers",
+      "resourceIdentifier": {
+        "ServerArn": "Servers[].ServerArn"
+      }
+    }
+  },
+  "operations": {
+    "CreateServer": {
+      "BackupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Backup",
+            "resourceIdentifier": "BackupId"
+          }
+        ]
+      }
+    },
+    "DeleteBackup": {
+      "BackupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Backup",
+            "resourceIdentifier": "BackupId"
+          }
+        ]
+      }
+    },
+    "RestoreServer": {
+      "BackupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Backup",
+            "resourceIdentifier": "BackupId"
+          }
+        ]
+      }
+    }
+  }
+}

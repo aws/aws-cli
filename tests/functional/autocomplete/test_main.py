@@ -12,7 +12,8 @@
 # language governing permissions and limitations under the License.
 from nose.tools import assert_in
 
-from awscli.autocomplete import indexer, main, generator
+from awscli.autocomplete import main, generator
+from awscli.autocomplete.local import indexer
 from awscli import clidriver
 from awscli import testutils
 

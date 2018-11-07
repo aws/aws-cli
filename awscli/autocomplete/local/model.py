@@ -17,9 +17,9 @@ in the `service-2.json` files.
 
 """
 from collections import namedtuple
-from awscli.autocomplete import indexer
+from awscli.autocomplete import db
 
-# This module and the awscli.autocomplete.indexer are imported
+# This module and the awscli.autocomplete.db module are imported
 # when a user requests autocompletion.  We should avoid importing
 # awscli.clidriver or botocore, which have substantial import
 # times.  Autocompleting the command names only needs to load
@@ -44,7 +44,7 @@ class ModelIndex(object):
 
     def _get_db_connection(self):
         if self._db_connection is None:
-            self._db_connection = indexer.DatabaseConnection(
+            self._db_connection = db.DatabaseConnection(
                 self._db_filename)
         return self._db_connection
 

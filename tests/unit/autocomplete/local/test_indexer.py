@@ -11,7 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest, mock
-from awscli.autocomplete import indexer, model, db
+from awscli.autocomplete import db
+from awscli.autocomplete.local import indexer, model
 import tempfile
 
 from botocore.session import Session

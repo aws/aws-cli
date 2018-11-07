@@ -18,7 +18,8 @@
 import os
 
 from awscli import __version__ as cli_version
-from awscli.autocomplete import model, parser, completer
+from awscli.autocomplete import parser, completer
+from awscli.autocomplete.local import model
 
 
 # We may eventually include a pre-generated version of this index as part

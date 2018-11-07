@@ -15,7 +15,7 @@ from functools import partial
 from nose.tools import assert_equal, assert_is_instance, assert_true
 
 from awscli.testutils import unittest
-from awscli.autocomplete import parser, model
+from awscli.autocomplete import parser
 from tests.unit.autocomplete import InMemoryIndex
 
 

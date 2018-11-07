@@ -10,6 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from awscli.customizations.paginate import (
+    MAX_ITEMS_HELP, PAGE_SIZE_HELP, STARTING_TOKEN_HELP
+)
+
+
 TABLE_NAME = {
     'name': 'table_name',
     'positional_arg': True,
@@ -160,4 +165,21 @@ NO_RETURN_CONSUMED_CAPACITY = {
     'name': 'no-return-consumed-capacity', 'action': 'store_false',
     'default': False, 'group_name': 'return_consumed_capacity',
     'dest': 'return_consumed_capacity',
+}
+
+MAX_ITEMS = {
+    'name': 'max-items',
+    'cli_type_name': 'integer',
+    'help_text': MAX_ITEMS_HELP,
+}
+
+PAGE_SIZE = {
+    'name': 'page-size',
+    'cli_type_name': 'integer',
+    'help_text': PAGE_SIZE_HELP,
+}
+
+STARTING_TOKEN = {
+    'name': 'starting-token',
+    'help_text': STARTING_TOKEN_HELP,
 }

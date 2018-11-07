@@ -39,6 +39,7 @@ from awscli.customizations.configservice.rename_cmd import \
     register_rename_config
 from awscli.customizations.configservice.subscribe import register_subscribe
 from awscli.customizations.configure.configure import register_configure_cmd
+from awscli.customizations.dynamodb.ddb import register_ddb
 from awscli.customizations.history import register_history_mode
 from awscli.customizations.history import register_history_commands
 from awscli.customizations.ec2.addcount import register_count_events
@@ -113,6 +114,7 @@ def awscli_initialize(event_handlers):
     register_secgroup(event_handlers)
     register_bundleinstance(event_handlers)
     s3_plugin_initialize(event_handlers)
+    register_ddb(event_handlers)
     register_runinstances(event_handlers)
     register_removals(event_handlers)
     register_rds_modify_split(event_handlers)

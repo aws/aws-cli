@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest, mock
-from awscli.autocomplete import indexer, model
+from awscli.autocomplete import indexer, model, db
 import tempfile
 
 from botocore.session import Session
@@ -93,7 +93,7 @@ class TestCanRetrieveCommands(unittest.TestCase):
         # I'd prefer not to have db connections as part of the
         # indexing interface.
         self.tempfile = tempfile.NamedTemporaryFile('w')
-        self.db_conn = indexer.DatabaseConnection(self.tempfile.name)
+        self.db_conn = db.DatabaseConnection(self.tempfile.name)
         self.indexer = indexer.ModelIndexer(self.db_conn)
         self.query = model.ModelIndex(self.tempfile.name)
 

@@ -92,6 +92,7 @@ class ParsedResult(object):
 class ParseState(object):
     def __init__(self):
         self._current_command = None
+        self.current_param = None
         self._lineage = []
 
     @property
@@ -154,11 +155,12 @@ class CLIParser(object):
                 current_args = self._handle_subcommand(
                     current, state, remaining_parts, parsed)
         parsed.current_command = state.current_command
+        parsed.current_param = state.current_param
         parsed.lineage = state.lineage
         return parsed
 
     def _consume_value(self, remaining_parts, option_name,
-                       lineage, current_command):
+                       lineage, current_command, state):
         # We have a special case where a user is trying to complete
         # a value for an option, which is the last fragment of the command,
         # e.g. 'aws ec2 describe-instances --instance-ids '
@@ -166,7 +168,7 @@ class CLIParser(object):
         # to consume so we special case this and short circuit.
         if remaining_parts == [WORD_BOUNDARY]:
             return ''
-        elif not remaining_parts:
+        elif len(remaining_parts) <= 1:
             return None
         arg_data = self._index.get_argument_data(
             lineage=lineage,
@@ -188,18 +190,24 @@ class CLIParser(object):
             return None
         elif nargs is None:
             # The default behavior is to consume a single arg.
-            return remaining_parts.pop(0)
+            result = remaining_parts.pop(0)
+            state.current_param = None
+            return result
         elif nargs == '?':
             if remaining_parts and not remaining_parts[0].startswith('--'):
-                return remaining_parts.pop(0)
+                result = remaining_parts.pop(0)
+                state.current_param = None
+                return result
         elif nargs in '+*':
             # Technically nargs='+' requires one or more args, but
             # we don't validate this.  This will just result in
             # an empty list being returned.  This is acceptable
             # for auto-completion purposes.
             value = []
-            while remaining_parts and not remaining_parts == [WORD_BOUNDARY]:
+            while len(remaining_parts) > 1 and \
+                    not remaining_parts == [WORD_BOUNDARY]:
                 if remaining_parts[0].startswith('--'):
+                    state.current_param = None
                     break
                 value.append(remaining_parts.pop(0))
             return value
@@ -235,14 +243,17 @@ class CLIParser(object):
         # just have the option name.
         option_name = current[2:]
         if option_name in global_args:
+            state.current_param = option_name
             value = self._consume_value(
                 remaining_parts, option_name, lineage=[],
+                state=state,
                 current_command='aws')
             parsed.global_params[option_name] = value
         elif option_name in current_args:
+            state.current_param = option_name
             value = self._consume_value(
                 remaining_parts, option_name, state.lineage,
-                state.current_command
+                state.current_command, state=state,
             )
             parsed.parsed_params[option_name] = value
         elif self._is_last_word(remaining_parts, current):

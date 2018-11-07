@@ -73,28 +73,32 @@ def test_can_handle_arbitrary_ordering():
         parsed_params={'instance-ids': ['i-123', 'i-124'],
                         'foo-arg': 'value'},
         lineage=['aws', 'ec2'],
+        current_fragment='',
     )
     test = partial(_assert_parses_to, expected=expected)
     yield test, ('aws ec2 stop-instances '
                  '--instance-ids i-123 i-124 --foo-arg value --debug '
-                 '--endpoint-url https://foo')
+                 '--endpoint-url https://foo ')
     yield test, ('aws --debug ec2 stop-instances '
                  '--instance-ids i-123 i-124 --foo-arg value '
-                 '--endpoint-url https://foo')
+                 '--endpoint-url https://foo ')
     yield test, ('aws --endpoint-url https://foo --debug ec2 stop-instances '
-                 '--instance-ids i-123 i-124 --foo-arg value')
+                 '--instance-ids i-123 i-124 --foo-arg value ')
     yield test, ('aws ec2 --debug --endpoint-url https://foo stop-instances '
-                 '--instance-ids i-123 i-124 --foo-arg value')
+                 '--instance-ids i-123 i-124 --foo-arg value ')
     yield test, ('aws ec2 stop-instances --debug --endpoint-url https://foo '
-                 '--instance-ids i-123 i-124 --foo-arg value')
+                 '--instance-ids i-123 i-124 --foo-arg value ')
     yield test, ('aws ec2 --endpoint-url https://foo stop-instances --debug '
-                 '--instance-ids i-123 i-124 --foo-arg value')
+                 '--instance-ids i-123 i-124 --foo-arg value ')
 
 
 def _assert_parses_to(command_line, expected):
     p = parser.CLIParser(SAMPLE_MODEL)
     result = p.parse(command_line)
-    assert_equal(result, expected)
+    for key, value in vars(expected).items():
+        actual = getattr(result, key)
+        assert_equal(getattr(result, key), value, '%r != %r for attribute: %r'
+                     % (actual, value, key))
 
 
 def test_properties_of_unparsed_results():
@@ -141,7 +145,9 @@ class TestCanParseCLICommand(unittest.TestCase):
         # Asserts that every kwargs in expected matches what was actually
         # parsed.
         for key, value in expected.items():
-            self.assertEqual(getattr(actual, key), value)
+            actual_value = getattr(actual, key)
+            self.assertEqual(actual_value, value, '%r != %r (attr: %r)'
+                             % (actual_value, value, key))
 
     def test_parsed_result_not_equal(self):
         self.assertFalse(parser.ParsedResult(current_command='ec2') == 'ec2')
@@ -155,7 +161,7 @@ class TestCanParseCLICommand(unittest.TestCase):
 
     def test_can_parse_operation_command_accepts_single_value_arg(self):
         result = self.cli_parser.parse(
-            'aws ec2 stop-instances --foo-arg bar')
+            'aws ec2 stop-instances --foo-arg bar ')
         self.assert_parsed_results_equal(
             result,
             current_command='stop-instances',
@@ -166,7 +172,7 @@ class TestCanParseCLICommand(unittest.TestCase):
 
     def test_can_parse_operation_command_with_param(self):
         result = self.cli_parser.parse(
-            'aws ec2 stop-instances --instance-ids i-1')
+            'aws ec2 stop-instances --instance-ids i-1 ')
         self.assert_parsed_results_equal(
             result,
             current_command='stop-instances',
@@ -177,7 +183,7 @@ class TestCanParseCLICommand(unittest.TestCase):
 
     def test_can_parse_bool_param(self):
         result = self.cli_parser.parse(
-            'aws --debug ec2 stop-instances --instance-ids i-1')
+            'aws --debug ec2 stop-instances --instance-ids i-1 ')
         self.assert_parsed_results_equal(
             result,
             current_command='stop-instances',
@@ -238,7 +244,7 @@ class TestCanParseCLICommand(unittest.TestCase):
 
     def test_can_consume_one_or_more_nargs(self):
         result = self.cli_parser.parse(
-            'aws ec2 stop-instances --instance-ids i-1 i-2 i-3')
+            'aws ec2 stop-instances --instance-ids i-1 i-2 i-3 ')
         self.assert_parsed_results_equal(
             result,
             current_command='stop-instances',
@@ -393,6 +399,56 @@ class TestCanParseCLICommand(unittest.TestCase):
             lineage=['aws', 'ec2'],
             current_fragment=None,
             unparsed_items=['b', '--'],
+        )
+
+    def test_current_fragment_populated_for_param_value(self):
+        result = self.cli_parser.parse(
+            'aws ec2 stop-instances --instance-ids i-'
+        )
+        self.assert_parsed_results_equal(
+            result,
+            current_command='stop-instances',
+            current_param='instance-ids',
+            parsed_params={'instance-ids': None},
+            lineage=['aws', 'ec2'],
+            current_fragment='i-',
+            unparsed_items=[],
+        )
+
+    def test_params_populated_unless_last_value(self):
+        result = self.cli_parser.parse(
+            'aws ec2 stop-instances --instance-ids i-1 i-'
+        )
+        self.assert_parsed_results_equal(
+            result,
+            current_command='stop-instances',
+            current_param='instance-ids',
+            # Here i-1 is in the parsed params because we've already moved
+            # on from that word, however, 'i-' is not added to the parsed
+            # params dict because we're still parsing that value.  It goes in
+            # the ``current_fragment`` attribute.
+            parsed_params={'instance-ids': ['i-1']},
+            lineage=['aws', 'ec2'],
+            current_fragment='i-',
+            unparsed_items=[],
+        )
+
+    def test_curent_fragment_works_for_global_params(self):
+        result = self.cli_parser.parse(
+            'aws --endpoint-url http',
+        )
+        self.assert_parsed_results_equal(
+            result,
+            current_command='aws',
+            current_param='endpoint-url',
+            # Here i-1 is in the parsed params because we've already moved
+            # on from that word, however, 'i-' is not added to the parsed
+            # params dict because we're still parsing that value.  It goes in
+            # the ``current_fragment`` attribute.
+            parsed_params={},
+            lineage=[],
+            current_fragment='http',
+            unparsed_items=[],
         )
 
 

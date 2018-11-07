@@ -20,13 +20,13 @@ class ModelIndexCompleter(BaseCompleter):
         self._index = index
 
     def complete(self, parsed):
-        if parsed.unparsed_items or parsed.last_fragment is None:
+        if parsed.unparsed_items or parsed.current_fragment is None:
             # If there's ever any unparsed items, then the parser
             # encountered something it didn't understand.  We won't
             # attempt to auto-complete anything here.
             return
-        last_fragment = parsed.last_fragment
-        if last_fragment.startswith('--'):
+        current_fragment = parsed.current_fragment
+        if current_fragment.startswith('--'):
             # We could technically offer completion of options
             # if the last fragment is an empty string, but to avoid
             # dumping too much information back to the user, we only
@@ -38,16 +38,16 @@ class ModelIndexCompleter(BaseCompleter):
 
     def _complete_command(self, parsed):
         lineage = parsed.lineage + [parsed.current_command]
-        offset = -len(parsed.last_fragment)
+        offset = -len(parsed.current_fragment)
         result = [CompletionResult(name, starting_index=offset)
                   for name in self._index.command_names(lineage)
-                  if name.startswith(parsed.last_fragment)]
+                  if name.startswith(parsed.current_fragment)]
         return result
 
     def _complete_options(self, parsed):
         # '--endpoint' -> 'endpoint'
-        offset = -len(parsed.last_fragment)
-        fragment = parsed.last_fragment[2:]
+        offset = -len(parsed.current_fragment)
+        fragment = parsed.current_fragment[2:]
         arg_names = self._index.arg_names(
             lineage=parsed.lineage, command_name=parsed.current_command)
         results = [
@@ -67,7 +67,7 @@ class ModelIndexCompleter(BaseCompleter):
             parsed.current_command == 'aws'
         )
         if not is_in_global_scope:
-            offset = -len(parsed.last_fragment)
+            offset = -len(parsed.current_fragment)
             global_params = self._index.arg_names(
                 lineage=[], command_name='aws')
             global_param_completions = [

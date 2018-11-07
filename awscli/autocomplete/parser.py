@@ -14,21 +14,26 @@ WORD_BOUNDARY = ''
 
 
 class ParsedResult(object):
-    def __init__(self, current_command=None,
-                 global_params=None, current_params=None,
-                 lineage=None, last_fragment=None, unparsed_items=None):
+    def __init__(self, current_command=None, current_param=None,
+                 global_params=None, parsed_params=None,
+                 lineage=None, current_fragment=None, unparsed_items=None):
         """
 
         :param current_command: The name of the leaf command; the most
             specific subcommand that was parsed.
+        :param current_param: The name of the current parameter; this is the
+            last known parameter we've parsed.  This value is set when we
+            have parsed a known parameter and are parsing values associated
+            with this parameter, and will be set to None once we're no longer
+            parsing parameter values for the param.
         :param global_params: A dictionary of global CLI params.
-        :param current_params: A dictionary of parameters that apply to
+        :param parsed_params: A dictionary of parameters that apply to
             the current command (non global params).
         :param lineage: A list of the lineage, with the ``aws`` portion
             included as the first element if necessary.
-        :param last_fragment: The last fragment of a word that was not
+        :param current_fragment: The last fragment of a word that was not
             parsed.  This can happen if the user types only part of a command.
-            The ``last_fragment`` is only populated if the cursor is on
+            The ``current_fragment`` is only populated if the cursor is on
             the current word.  If there is a space between the last word
             and the cursor it is not considered a fragment.  If this value
             is non ``None``, it typically indicates the value that needs to
@@ -46,9 +51,9 @@ class ParsedResult(object):
         # ParsedResult(
         #  current_command='describe-instances',
         #  global_params={'debug': None, 'region': 'us-west-2'},
-        #  current_params={'instance-ids': ['i-123', 'i-124']},
+        #  parsed_params={'instance-ids': ['i-123', 'i-124']},
         #  lineage=['aws', 'ec2'],
-        #  last_fragment=None
+        #  current_fragment=None
         # )
         #
         # An example of last fragment is:
@@ -58,21 +63,22 @@ class ParsedResult(object):
         # This would parse to:
         #
         # ParsedResult(current_command='ec2', lineage=['aws'],
-        #              last_fragment='describe-')
+        #              current_fragment='describe-')
         self.current_command = current_command
+        self.current_param = current_param
         if global_params is None:
             global_params = {}
         self.global_params = global_params
-        if current_params is None:
-            current_params = {}
-        self.current_params = current_params
+        if parsed_params is None:
+            parsed_params = {}
+        self.parsed_params = parsed_params
         if lineage is None:
             lineage = []
         self.lineage = lineage
-        # last_fragment is used to indicate that the value
+        # current_fragment is used to indicate that the value
         # is not a known subcommand/option.  It will only
         # ever apply to the last word in the command line.
-        self.last_fragment = last_fragment
+        self.current_fragment = current_fragment
         if unparsed_items is None:
             unparsed_items = []
         self.unparsed_items = unparsed_items
@@ -238,13 +244,13 @@ class CLIParser(object):
                 remaining_parts, option_name, state.lineage,
                 state.current_command
             )
-            parsed.current_params[option_name] = value
+            parsed.parsed_params[option_name] = value
         elif self._is_last_word(remaining_parts, current):
             # If the option wasn't handled, there's two cases.
             # Either it's the last word (without a space) so it's
             # something we should auto-complete.  In that case
             # we denote it as the last fragment.
-            parsed.last_fragment = current
+            parsed.current_fragment = current
         else:
             # It's not a known option in our index and it's not
             # a partially completed words.  This goes into the
@@ -273,7 +279,7 @@ class CLIParser(object):
                 # it's not a subcommand then we'll mark it as the last
                 # fragment.  This is likely a partially entered
                 # command, e.g 'aws ec2 run-instan'
-                parsed.last_fragment = current
+                parsed.current_fragment = current
             elif current:
                 # Otherwise this is some command we don't know about
                 # so we add it to the list of unparsed_items.

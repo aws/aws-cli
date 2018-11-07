@@ -11,7 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest, mock
-from awscli.autocomplete import generator, indexer
+from awscli.autocomplete import generator
+from awscli.autocomplete.local import indexer
 from awscli.clidriver import CLIDriver
 
 

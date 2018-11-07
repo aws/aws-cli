@@ -10,3 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from awscli.testutils import BaseAWSCommandParamsTest
+
+
+class TestDDB(BaseAWSCommandParamsTest):
+    def test_no_command_specified(self):
+        _, stderr, _ = self.run_cmd('ddb', expected_rc=255)
+        expected = (
+            "usage: aws [options] <command> <subcommand> "
+            "[parameters]\naws: error: too few arguments"
+        )
+        self.assertIn(expected, stderr)

@@ -484,3 +484,73 @@ class TestCanGenerateCompletions(unittest.TestCase):
                                    'NamedQueryIds': 'NamedQueryIds[]'}}}
         }
         self.assertEqual(completion_data, expected)
+
+    def test_resources_map_input_params_for_required_inputs(self):
+        model_dict = deepcopy(BASIC_MODEL)
+        # We're going to mark an input param of ListCertificates as required.
+        model_dict['shapes']['ListCertificatesRequest']['required'] = [
+            'CertificateStatuses']
+        service_model = ServiceModel(model_dict)
+        completion_data = self.heuristic.generate_completion_descriptions(
+            service_model)
+        resources = completion_data['resources']
+        self.assertEqual(
+            resources, {
+                'Certificate': {
+                    'operation': 'ListCertificates',
+                    'inputParameters': ['CertificateStatuses'],
+                    'resourceIdentifier': {
+                        'CertificateArn': (
+                            'CertificateSummaryList[].CertificateArn')
+                    }
+                }
+             }
+        )
+
+    def test_remove_operations_with_required_params(self):
+        # We can remove this test once we implement this functionality.
+        custom_model = {
+            'metadata': {},
+            'operations': {
+                'ListFooBarThings': {
+                    'input': {'shape': 'ListFooBarThingsRequest'},
+                    'output': {'shape': 'ListFooBarThingsResponse'},
+                },
+                'DeleteFooBarThing': {
+                    'input': {'shape': 'DeleteFooBarThingRequest'},
+                }
+            },
+            'shapes': {
+                'DeleteFooBarThingRequest': {
+                    'type': 'structure',
+                    'members': {
+                        'RequiredParam': {'shape': 'String'},
+                        'FooBarThing': {'shape': 'String'},
+                    }
+                },
+                'ListFooBarThingsRequest': {
+                    'members': {
+                        'RequiredParam': {'shape': 'String'},
+                    },
+                    'type': 'structure',
+                    'required': ['RequiredParam'],
+                },
+                'ListFooBarThingsResponse': {
+                    'type': 'structure',
+                    'members': {
+                        'FooBarThings': {'shape': 'FooBarThingList'},
+                    }
+                },
+                'FooBarThingList': {
+                    'type': 'list',
+                    'member': {'shape': 'String'}
+                },
+                'String': {'type': 'string'},
+            }
+        }
+        service_model = ServiceModel(custom_model)
+        completion_data = self.heuristic.generate_completion_descriptions(
+            service_model)
+        # The operations dict should be empty because the FooBarThing has
+        # a required parameter and we don't support that yet.
+        self.assertEqual(completion_data['operations'], {})

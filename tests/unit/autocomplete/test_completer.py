@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest, mock
 from awscli.autocomplete import completer, parser
+from awscli.autocomplete.local import basic
 from awscli.autocomplete.completer import CompletionResult
 
 from tests.unit.autocomplete import InMemoryIndex
@@ -108,7 +109,7 @@ class TestModelIndexCompleter(unittest.TestCase):
         self.parser = parser.CLIParser(self.index)
 
 
-        self.completer = completer.ModelIndexCompleter(self.index)
+        self.completer = basic.ModelIndexCompleter(self.index)
 
     def test_does_not_complete_if_unparsed_items(self):
         parsed = self.parser.parse('aws foo ')

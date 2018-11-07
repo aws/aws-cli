@@ -1,0 +1,63 @@
+{
+  "version": "1.0",
+  "resources": {
+    "AlarmHistory": {
+      "operation": "DescribeAlarmHistory",
+      "resourceIdentifier": {
+        "HistoryData": "AlarmHistoryItems[].HistoryData"
+      }
+    },
+    "Alarm": {
+      "operation": "DescribeAlarms",
+      "resourceIdentifier": {
+        "AlarmArn": "MetricAlarms[].AlarmArn"
+      }
+    },
+    "AlarmsForMetric": {
+      "operation": "DescribeAlarmsForMetric",
+      "resourceIdentifier": {
+        "AlarmArn": "MetricAlarms[].AlarmArn"
+      },
+      "inputParameters": [
+        "MetricName",
+        "Namespace"
+      ]
+    },
+    "Dashboard": {
+      "operation": "ListDashboards",
+      "resourceIdentifier": {
+        "DashboardArn": "DashboardEntries[].DashboardArn"
+      }
+    },
+    "Metric": {
+      "operation": "ListMetrics",
+      "resourceIdentifier": {
+        "MetricName": "Metrics[].MetricName"
+      }
+    }
+  },
+  "operations": {
+    "GetMetricStatistics": {
+      "MetricName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Metric",
+            "resourceIdentifier": "MetricName"
+          }
+        ]
+      }
+    },
+    "PutMetricAlarm": {
+      "MetricName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Metric",
+            "resourceIdentifier": "MetricName"
+          }
+        ]
+      }
+    }
+  }
+}

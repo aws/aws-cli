@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.50
+=======
+
+* api-change:``ce``: Update ce command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.16.49
 =======
 

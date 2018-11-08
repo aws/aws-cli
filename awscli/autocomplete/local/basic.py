@@ -20,7 +20,8 @@ class ModelIndexCompleter(BaseCompleter):
         self._index = index
 
     def complete(self, parsed):
-        if parsed.unparsed_items or parsed.current_fragment is None:
+        if parsed.unparsed_items or parsed.current_fragment is None or \
+                parsed.current_param:
             # If there's ever any unparsed items, then the parser
             # encountered something it didn't understand.  We won't
             # attempt to auto-complete anything here.

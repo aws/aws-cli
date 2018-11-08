@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.51
+=======
+
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``events``: Update events command to latest version
+* api-change:``dlm``: Update dlm command to latest version
+
+
 1.16.50
 =======
 

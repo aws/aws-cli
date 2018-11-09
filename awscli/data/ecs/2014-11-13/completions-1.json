@@ -13,41 +13,85 @@
     "Cluster": {
       "operation": "ListClusters",
       "resourceIdentifier": {
-        "clusterArns": "clusterArns[]"
+        "clusterArn": "clusterArns[]"
       }
     },
     "ContainerInstance": {
       "operation": "ListContainerInstances",
       "resourceIdentifier": {
-        "containerInstanceArns": "containerInstanceArns[]"
+        "containerInstanceArn": "containerInstanceArns[]"
       }
     },
     "Service": {
       "operation": "ListServices",
       "resourceIdentifier": {
-        "serviceArns": "serviceArns[]"
+        "serviceArn": "serviceArns[]"
       }
     },
     "TaskDefinitionFamily": {
       "operation": "ListTaskDefinitionFamilies",
       "resourceIdentifier": {
-        "families": "families[]"
+        "family": "families[]"
       }
     },
     "TaskDefinition": {
       "operation": "ListTaskDefinitions",
       "resourceIdentifier": {
-        "taskDefinitionArns": "taskDefinitionArns[]"
+        "taskDefinitionArn": "taskDefinitionArns[]"
       }
     },
     "Task": {
       "operation": "ListTasks",
       "resourceIdentifier": {
-        "taskArns": "taskArns[]"
+        "taskArn": "taskArns[]"
       }
     }
   },
   "operations": {
+    "CreateService": {
+      "taskDefinition": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TaskDefinition",
+            "resourceIdentifier": "taskDefinitionArn"
+          }
+        ]
+      }
+    },
+    "DeregisterContainerInstance": {
+      "containerInstance": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ContainerInstance",
+            "resourceIdentifier": "containerInstanceArn"
+          }
+        ]
+      }
+    },
+    "DeregisterTaskDefinition": {
+      "taskDefinition": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TaskDefinition",
+            "resourceIdentifier": "taskDefinitionArn"
+          }
+        ]
+      }
+    },
+    "DiscoverPollEndpoint": {
+      "containerInstance": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ContainerInstance",
+            "resourceIdentifier": "containerInstanceArn"
+          }
+        ]
+      }
+    },
     "RegisterContainerInstance": {
       "containerInstanceArn": {
         "completions": [
@@ -59,24 +103,57 @@
         ]
       }
     },
-    "StartTask": {
-      "containerInstances": {
+    "RegisterTaskDefinition": {
+      "family": {
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ContainerInstance",
-            "resourceIdentifier": "containerInstances"
+            "resourceName": "TaskDefinitionFamily",
+            "resourceIdentifier": "family"
           }
         ]
       }
     },
-    "UpdateContainerInstancesState": {
-      "containerInstances": {
+    "RunTask": {
+      "taskDefinition": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TaskDefinition",
+            "resourceIdentifier": "taskDefinitionArn"
+          }
+        ]
+      }
+    },
+    "StartTask": {
+      "taskDefinition": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TaskDefinition",
+            "resourceIdentifier": "taskDefinitionArn"
+          }
+        ]
+      }
+    },
+    "UpdateContainerAgent": {
+      "containerInstance": {
         "completions": [
           {
             "parameters": {},
             "resourceName": "ContainerInstance",
-            "resourceIdentifier": "containerInstances"
+            "resourceIdentifier": "containerInstanceArn"
+          }
+        ]
+      }
+    },
+    "UpdateService": {
+      "taskDefinition": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TaskDefinition",
+            "resourceIdentifier": "taskDefinitionArn"
           }
         ]
       }

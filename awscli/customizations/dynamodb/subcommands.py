@@ -12,9 +12,12 @@
 # language governing permissions and limitations under the License.
 import logging
 
-import awscli.customizations.dynamodb.params as params
-from awscli.clidriver import CLIOperationCaller
+import awscli.customizations.dynamodb.params as parameters
 from awscli.customizations.commands import BasicCommand, CustomArgument
+from awscli.customizations.dynamodb.transform import (
+    ParameterTransformer, TypeSerializer, TypeDeserializer
+)
+from awscli.customizations.dynamodb.formatter import DynamoYAMLFormatter
 from awscli.customizations.paginate import ensure_paging_params_not_set
 
 
@@ -23,22 +26,43 @@ LOGGER = logging.getLogger(__name__)
 
 class DDBCommand(BasicCommand):
     def _run_main(self, parsed_args, parsed_globals):
-        # Only YAML is supported because we need to support bytes and sets.
-        if parsed_globals.output != 'yaml':
-            LOGGER.debug(
-                'Output was %s, but only yaml is supported. Switching to '
-                'yaml.' % parsed_globals.output
-            )
-            parsed_globals.output = 'yaml'
-        self._caller = CLIOperationCaller(self._session)
+        factory = self._session.get_component('response_parser_factory')
+        factory.set_parser_defaults(blob_parser=None)
+        self._client = self._session.create_client(
+            'dynamodb', region_name=parsed_globals.region,
+            endpoint_url=parsed_globals.endpoint_url,
+            verify=parsed_globals.verify_ssl
+        )
+        self._transformer = ParameterTransformer()
+        self._serializer = TypeSerializer()
+        self._deserializer = TypeDeserializer()
 
-    def _run_operation(self, operation_name, parsed_args, parsed_globals):
-        if not parsed_globals.paginate:
+    def _deserialize(self, operation_name, data):
+        service_model = self._client.meta.service_model
+        operation_model = service_model.operation_model(
+            self._client.meta.method_to_api_mapping.get(operation_name)
+        )
+        self._transformer.transform(
+            data, operation_model.output_shape, self._deserializer.deserialize,
+            'AttributeValue'
+        )
+
+    def _make_api_call(self, operation_name, parsed_args, parsed_globals):
+        should_paginate = parsed_globals.paginate
+        if not should_paginate:
             ensure_paging_params_not_set(parsed_args, {})
         client_args = self._get_client_args(parsed_args)
-        self._caller.invoke(
-            'dynamodb', operation_name, client_args, parsed_globals
-        )
+
+        if self._client.can_paginate(operation_name) and should_paginate:
+            paginator = self._client.get_paginator(operation_name)
+            response = paginator.paginate(**client_args).build_full_result()
+        else:
+            response = getattr(self._client, operation_name)(**client_args)
+        return response
+
+    def _dump_yaml(self, operation_name, data, parsed_globals):
+        self._deserialize(operation_name, data)
+        DynamoYAMLFormatter(parsed_globals)(operation_name, data)
 
     def _get_client_args(self, parsed_args):
         raise NotImplementedError('_get_client_args')
@@ -46,7 +70,7 @@ class DDBCommand(BasicCommand):
 
 class PaginatedDDBCommand(DDBCommand):
     PAGING_ARGS = [
-        params.STARTING_TOKEN, params.MAX_ITEMS, params.PAGE_SIZE
+        parameters.STARTING_TOKEN, parameters.MAX_ITEMS, parameters.PAGE_SIZE
     ]
 
     def _build_arg_table(self):
@@ -79,14 +103,16 @@ class SelectCommand(PaginatedDDBCommand):
         '``--key-condition`` is specified, or ``scan`` otherwise.'
     )
     ARG_TABLE = [
-        params.TABLE_NAME,
-        params.INDEX_NAME,
-        params.PROJECTION_EXPRESSION,
-        params.FILTER_EXPRESSION,
-        params.KEY_CONDITION_EXPRESSION,
-        params.SELECT,
-        params.CONSISTENT_READ, params.NO_CONSISTENT_READ,
-        params.RETURN_CONSUMED_CAPACITY, params.NO_RETURN_CONSUMED_CAPACITY,
+        parameters.TABLE_NAME,
+        parameters.INDEX_NAME,
+        parameters.PROJECTION_EXPRESSION,
+        parameters.FILTER_EXPRESSION,
+        parameters.KEY_CONDITION_EXPRESSION,
+        parameters.SELECT,
+        parameters.CONSISTENT_READ,
+        parameters.NO_CONSISTENT_READ,
+        parameters.RETURN_CONSUMED_CAPACITY,
+        parameters.NO_RETURN_CONSUMED_CAPACITY,
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
@@ -107,7 +133,8 @@ class SelectCommand(PaginatedDDBCommand):
                 "specified"
             )
             operation = 'scan'
-        self._run_operation(operation, parsed_args, parsed_globals)
+        response = self._make_api_call(operation, parsed_args, parsed_globals)
+        self._dump_yaml(operation, response, parsed_globals)
 
     def _get_client_args(self, parsed_args):
         client_args = super(SelectCommand, self)._get_client_args(parsed_args)

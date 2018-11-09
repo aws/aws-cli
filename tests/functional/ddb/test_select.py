@@ -252,6 +252,23 @@ class TestSelect(BaseSelectTest):
         )
         self.assert_yaml_response_equal(stdout, self.parsed_response['Items'])
 
+    def test_select_bytes(self):
+        self.parsed_response = {
+            "Count": 1,
+            "Items": [{"foo": {"B": b"\xe2\x9c\x93"}}],
+            "ScannedCount": 1,
+            "ConsumedCapacity": None,
+        }
+        command = ['ddb', 'select', 'mytable']
+        stdout, _, _ = self.run_cmd(command, expected_rc=0)
+        expected = {
+            'Count': 1,
+            'Items': [{"foo": b'\xe2\x9c\x93'}],
+            "ScannedCount": 1,
+            "ConsumedCapacity": None,
+        }
+        self.assert_yaml_response_equal(stdout, expected)
+
 
 class TestSelectPagination(BaseSelectTest):
     def setUp(self):
@@ -281,8 +298,8 @@ class TestSelectPagination(BaseSelectTest):
             'ConsumedCapacity': None,
             'Count': 2,
             'Items': [
-                {'foo': {'N': '1'}},
-                {'foo': {'N': '2'}}
+                {'foo': 1},
+                {'foo': 2}
             ],
             'ScannedCount': 2
         }
@@ -295,12 +312,19 @@ class TestSelectPagination(BaseSelectTest):
         stdout, _, _ = self.run_cmd(command, expected_rc=0)
         expected_response = {
             "Count": 1,
-            "Items": [{"foo": {"N": "1"}}],
+            "Items": [{"foo": 1}],
             "ScannedCount": 1,
             "ConsumedCapacity": None,
-            "LastEvaluatedKey": {"foo": {"N": "1"}},
+            "LastEvaluatedKey": {"foo": 1},
         }
         self.assert_yaml_response_equal(stdout, expected_response)
+
+    def test_no_paginate_with_paging_params_set(self):
+        command = [
+            'ddb', 'select', 'mytable', '--no-paginate', '--max-items', '1'
+        ]
+        _, stderr, _ = self.run_cmd(command, expected_rc=255)
+        self.assertIn('Error during pagination', stderr)
 
     def test_max_items(self):
         command = [
@@ -311,7 +335,7 @@ class TestSelectPagination(BaseSelectTest):
             'ConsumedCapacity': None,
             'Count': 1,
             'Items': [
-                {'foo': {'N': '1'}},
+                {'foo': 1},
             ],
             'ScannedCount': 1,
             'NextToken': (
@@ -339,8 +363,8 @@ class TestSelectPagination(BaseSelectTest):
             'ConsumedCapacity': None,
             'Count': 2,
             'Items': [
-                {'foo': {'N': '1'}},
-                {'foo': {'N': '2'}}
+                {'foo': 1},
+                {'foo': 2}
             ],
             'ScannedCount': 2
         }
@@ -370,7 +394,7 @@ class TestSelectPagination(BaseSelectTest):
             'ConsumedCapacity': None,
             'Count': 0,
             'Items': [
-                {'foo': {'N': '2'}}
+                {'foo': 2}
             ],
             'ScannedCount': 0
         }

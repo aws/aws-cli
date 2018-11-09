@@ -106,7 +106,7 @@ class YAMLFormatter(FullyBufferedFormatter):
         # wrapping the stream, so there's no need for the yaml library
         # to do it.
         self._yaml.encoding = None
-        self._yaml.default_flow_style = False
+        self._yaml.representer.default_flow_style = False
 
     def _format_response(self, command_name, response, stream):
         if response == {}:

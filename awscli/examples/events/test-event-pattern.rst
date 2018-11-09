@@ -3,3 +3,9 @@
 This example tests whether the pattern "source:com.mycompany.myapp" matches the specified event. In this example, the output would be "true"::
 
   aws events test-event-pattern --event-pattern "{\"source\":[\"com.mycompany.myapp\"]}" --event "{\"id\":\"1\",\"source\":\"com.mycompany.myapp\",\"detail-type\":\"myDetailType\",\"account\":\"123456789012\",\"region\":\"us-east-1\",\"time\":\"2017-04-11T20:11:04Z\"}"
+
+**To use files for testing**
+
+Files can also be used instead of inline JSON::
+
+ aws events test-event-pattern --event-pattern "$(< pattern.json)" --event "$(< event.json)"

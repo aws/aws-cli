@@ -22,8 +22,9 @@ class IndexGenerator(object):
     indices.
 
     """
-    def __init__(self, model_indexer):
-        self._model_indexer = model_indexer
+    def __init__(self, indexers):
+        self._indexers = indexers
 
     def generate_index(self, clidriver):
-        self._model_indexer.generate_index(clidriver)
+        for indexer in self._indexers:
+            indexer.generate_index(clidriver)

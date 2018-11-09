@@ -5,8 +5,10 @@
 import os
 
 from awscli.autocomplete.local import indexer
+from awscli.autocomplete.serverside.indexer import APICallIndexer
 from awscli.autocomplete import db
 from awscli.autocomplete.main import INDEX_DIR, INDEX_FILE
+from awscli.autocomplete import generator
 from awscli import clidriver
 
 
@@ -18,10 +20,14 @@ def main():
     # index.
     temp_name = '%s.temp' % INDEX_FILE
     db_connection = db.DatabaseConnection(temp_name)
-    index = indexer.ModelIndexer(db_connection)
+    indexers = [
+        indexer.ModelIndexer(db_connection),
+        APICallIndexer(db_connection),
+    ]
     driver = clidriver.create_clidriver()
+    index_gen = generator.IndexGenerator(indexers=indexers)
     try:
-        index.generate_index(driver)
+        index_gen.generate_index(driver)
     finally:
         db_connection.close()
     os.rename(temp_name, INDEX_FILE)

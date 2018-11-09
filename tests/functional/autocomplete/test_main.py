@@ -52,7 +52,7 @@ def _autocomplete(filename, command_line):
 def _generate_index(filename):
     # This will eventually be moved into some utility function.
     index_generator = generator.IndexGenerator(
-        indexer.create_model_indexer(filename)
+        [indexer.create_model_indexer(filename)],
     )
     driver = clidriver.create_clidriver()
     driver.session.register('building-command-table.main',

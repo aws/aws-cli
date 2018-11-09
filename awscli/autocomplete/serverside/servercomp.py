@@ -15,7 +15,6 @@ import logging
 import jmespath
 
 from awscli.autocomplete.completer import BaseCompleter, CompletionResult
-from botocore import xform_name
 
 
 LOG = logging.getLogger(__name__)
@@ -103,21 +102,16 @@ class ServerSideCompleter(BaseCompleter):
     def _on_cli_option_value_fragment(self, parsed):
         if parsed.current_param is None or parsed.current_fragment is None:
             return False
-        # We're only handling the direct 1-1 mapped commands.  We could
-        # theoretically, but don't currently, handle modeled commands such
-        # as waiters.
-        if len(parsed.lineage) != 2:
-            return False
         return True
 
     def _retrieve_remote_completion_data(self, parsed, completion_data):
         # TODO: Handle global params that can affect how we create the client
         # (region, endpoint-url, profile, timeouts, etc).
-        service_name = self._get_service_name_from_command(parsed)
+        service_name = completion_data['service']
         client = self._client_creator.create_client(service_name)
-        py_name = xform_name(completion_data['operation'])
+        method_name = completion_data['operation']
         api_params = self._map_command_to_api_params(parsed, completion_data)
-        response = self._invoke_api(client, py_name, api_params)
+        response = self._invoke_api(client, method_name, api_params)
         if response:
             return jmespath.search(completion_data['jp_expr'], response)
         return []
@@ -132,17 +126,8 @@ class ServerSideCompleter(BaseCompleter):
                       client, py_name, exc_info=True)
             return []
 
-    def _get_method_name_from_command(self, parsed):
-        return parsed.current_command.replace('-', '_')
-
     def _map_command_to_api_params(self, parsed, completion_data):
         # Right now we don't autogenerate any completion with the 'parameters'
         # key populated, but we will eventually need to handle this once we
         # do so.
         return {}
-
-    def _get_service_name_from_command(self, parsed):
-        # We're not handling command renames.  We need some way to
-        # know what high level command maps to a client
-        # (i.e deploy -> codedeploy).
-        return parsed.lineage[-1]

@@ -55,7 +55,8 @@ class TestServerSideAutocompleter(unittest.TestCase):
             key: {
                 'completions': [{
                     "parameters": {},
-                    "operation": "ListPolicies",
+                    "service": "iam",
+                    "operation": "list_policies",
                     "jp_expr": "Policies[].PolicyName",
                 }]
             }

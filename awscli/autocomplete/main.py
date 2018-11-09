@@ -20,6 +20,7 @@ import os
 from awscli import __version__ as cli_version
 from awscli.autocomplete import parser, completer
 from awscli.autocomplete.local import model, basic
+from awscli.autocomplete import serverside
 
 
 # We may eventually include a pre-generated version of this index as part
@@ -34,7 +35,8 @@ def create_autocompleter(index_filename=INDEX_FILE):
     cli_parser = parser.CLIParser(index)
     cli_completer = completer.AutoCompleter(
         cli_parser,
-        [basic.ModelIndexCompleter(index)]
+        [basic.ModelIndexCompleter(index),
+         serverside.create_server_side_completer(index_filename)]
     )
     return cli_completer
 

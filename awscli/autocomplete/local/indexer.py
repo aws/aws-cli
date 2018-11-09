@@ -28,6 +28,7 @@ class ModelIndexer(object):
     """
     _CREATE_PARAM_TABLE = """\
         CREATE TABLE IF NOT EXISTS param_table (
+          param_id INTEGER PRIMARY KEY,
           argname TEXT,
           type_name TEXT,
           command TEXT,

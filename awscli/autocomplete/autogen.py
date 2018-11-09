@@ -105,7 +105,7 @@ class ServerCompletionHeuristic(object):
             param['completions'] = [
                 {'parameters': {},
                  'resourceName': resource_name,
-                 'resourceIdentifier': member}
+                 'resourceIdentifier': member_name}
             ]
 
     def _find_matching_member_name(self, member, reverse_mapping):
@@ -145,21 +145,21 @@ class ServerCompletionHeuristic(object):
             LOG.debug("Operation does not have exactly one list member, "
                       "skipping: %s (%s)", op_name, list_members)
             return
-        resource_shape_name = list_members[0]
-        list_member = output.members[resource_shape_name].member
+        resource_member_name = list_members[0]
+        list_member = output.members[resource_member_name].member
         required_members = []
         if op_model.input_shape is not None:
             required_members = op_model.input_shape.required_members
         if list_member.type_name == 'structure':
             return self._resource_from_structure(
-                op_name, resource_shape_name, list_member, required_members)
+                op_name, resource_member_name, list_member, required_members)
         elif list_member.type_name == 'string':
             return self._resource_from_string(
-                op_name, resource_shape_name, required_members,
+                op_name, resource_member_name, required_members,
             )
 
     def _resource_from_structure(self, op_name,
-                                 resource_shape_name, list_member,
+                                 resource_member_name, list_member,
                                  required_members):
         candidates = list_member.members
         op_with_prefix_removed = self._remove_verb_prefix(op_name)
@@ -170,22 +170,24 @@ class ServerCompletionHeuristic(object):
         singular_name = self._singularize.make_singular(
             op_with_prefix_removed)
         jp_expr = (
-            '{resource_shape_name}[].{best_match}').format(
-                resource_shape_name=resource_shape_name,
+            '{resource_member_name}[].{best_match}').format(
+                resource_member_name=resource_member_name,
                 best_match=best_match)
         r = Resource(singular_name, best_match, required_members,
                      op_name, jp_expr)
         return r
 
-    def _resource_from_string(self, op_name, resource_shape_name,
+    def _resource_from_string(self, op_name, resource_member_name,
                               required_members):
         op_with_prefix_removed = self._remove_verb_prefix(op_name)
         singular_name = self._singularize.make_singular(
             op_with_prefix_removed)
-        r = Resource(singular_name, resource_shape_name, required_members,
+        singular_member_name = self._singularize.make_singular(
+            resource_member_name)
+        r = Resource(singular_name, singular_member_name, required_members,
                      op_name,
-                     '{resource_shape_name}[]'.format(
-                         resource_shape_name=resource_shape_name))
+                     '{resource_member_name}[]'.format(
+                         resource_member_name=resource_member_name))
         return r
 
     def _remove_verb_prefix(self, op_name):

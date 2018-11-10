@@ -70,7 +70,9 @@ class TestCanGenerateServerIndex(unittest.TestCase):
 class TestCanHandleNoCompletionData(unittest.TestCase):
     def _disable_cli_loaders(self, event_name, session, **kwargs):
         loader = session.get_component('data_loader')
-        loader.search_paths.pop(0)
+        for path in loader.search_paths[::]:
+            if path.endswith('awscli/data'):
+                loader.search_paths.remove(path)
 
     def test_no_errors_when_missing_completion_data(self):
         with temporary_file('r+') as f:

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.52
+=======
+
+* api-change:``mediapackage``: Update mediapackage command to latest version
+
+
 1.16.51
 =======
 

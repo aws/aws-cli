@@ -39,17 +39,13 @@ class ServerCompletionHeuristic(object):
         # non_candidate -> a potential operation that can use
         #   auto-completion data (e.g DeleteResource, UpdateResource)
         candidates = []
-        non_candidates = []
         for op_name in service_model.operation_names:
             if op_name.lower().startswith(self._RESOURCE_VERB_PREFIX):
                 candidates.append(op_name)
-            else:
-                non_candidates.append(op_name)
         all_resources = self._generate_resource_descriptions(
             candidates, service_model)
-        all_operations = self._generate_operations(non_candidates,
-                                                   all_resources,
-                                                   service_model)
+        all_operations = self._generate_operations(
+            service_model.operation_names, all_resources, service_model)
         return {
             'version': '1.0',
             'resources': all_resources,

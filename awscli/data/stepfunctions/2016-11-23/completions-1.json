@@ -7,23 +7,37 @@
         "activityArn": "activities[].activityArn"
       }
     },
-    "Execution": {
-      "operation": "ListExecutions",
-      "resourceIdentifier": {
-        "executionArn": "executions[].executionArn"
-      },
-      "inputParameters": [
-        "stateMachineArn"
-      ]
-    },
     "StateMachine": {
       "operation": "ListStateMachines",
       "resourceIdentifier": {
-        "stateMachineArn": "stateMachines[].stateMachineArn"
+        "stateMachineArn": "stateMachines[].stateMachineArn",
+        "name": "stateMachines[].name"
       }
     }
   },
   "operations": {
+    "CreateActivity": {
+      "name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "StateMachine",
+            "resourceIdentifier": "name"
+          }
+        ]
+      }
+    },
+    "CreateStateMachine": {
+      "name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "StateMachine",
+            "resourceIdentifier": "name"
+          }
+        ]
+      }
+    },
     "DeleteActivity": {
       "activityArn": {
         "completions": [
@@ -97,6 +111,15 @@
             "parameters": {},
             "resourceName": "StateMachine",
             "resourceIdentifier": "stateMachineArn"
+          }
+        ]
+      },
+      "name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "StateMachine",
+            "resourceIdentifier": "name"
           }
         ]
       }

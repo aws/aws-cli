@@ -1,83 +1,24 @@
 {
   "version": "1.0",
   "resources": {
-    "ScheduledAudit": {
-      "operation": "ListScheduledAudits",
-      "resourceIdentifier": {
-        "targetCheckName": "targetCheckNames[]",
-        "scheduledAuditArn": "scheduledAudits[].scheduledAuditArn"
-      },
-      "inputParameters": [
-        "scheduledAuditName"
-      ]
-    },
-    "SecurityProfile": {
-      "operation": "ListSecurityProfiles",
-      "resourceIdentifier": {
-        "criteria": "behaviors[].criteria",
-        "arn": "securityProfileIdentifiers[].arn"
-      },
-      "inputParameters": [
-        "securityProfileName"
-      ]
-    },
     "ActiveViolation": {
       "operation": "ListActiveViolations",
       "resourceIdentifier": {
-        "violationId": "activeViolations[].violationId"
+        "securityProfileName": "activeViolations[].securityProfileName",
+        "behavior": "activeViolations[].behavior"
       }
-    },
-    "AttachedPolicy": {
-      "operation": "ListAttachedPolicies",
-      "resourceIdentifier": {
-        "policyName": "policies[].policyName"
-      },
-      "inputParameters": [
-        "target"
-      ]
     },
     "AuditFinding": {
       "operation": "ListAuditFindings",
       "resourceIdentifier": {
-        "findingTime": "findings[].findingTime"
+        "checkName": "findings[].checkName"
       }
-    },
-    "AuditTask": {
-      "operation": "ListAuditTasks",
-      "resourceIdentifier": {
-        "taskId": "tasks[].taskId"
-      },
-      "inputParameters": [
-        "startTime",
-        "endTime"
-      ]
     },
     "Authorizer": {
       "operation": "ListAuthorizers",
       "resourceIdentifier": {
-        "authorizerArn": "authorizers[].authorizerArn"
+        "authorizerName": "authorizers[].authorizerName"
       }
-    },
-    "CACertificate": {
-      "operation": "ListCACertificates",
-      "resourceIdentifier": {
-        "certificateId": "certificates[].certificateId"
-      }
-    },
-    "Certificate": {
-      "operation": "ListCertificates",
-      "resourceIdentifier": {
-        "certificateId": "certificates[].certificateId"
-      }
-    },
-    "CertificatesByCA": {
-      "operation": "ListCertificatesByCA",
-      "resourceIdentifier": {
-        "certificateArn": "certificates[].certificateArn"
-      },
-      "inputParameters": [
-        "caCertificateId"
-      ]
     },
     "Indice": {
       "operation": "ListIndices",
@@ -85,28 +26,13 @@
         "indexName": "indexNames[]"
       }
     },
-    "JobExecutionsForJob": {
-      "operation": "ListJobExecutionsForJob",
-      "resourceIdentifier": {
-        "jobExecutionSummary": "executionSummaries[].jobExecutionSummary"
-      },
-      "inputParameters": [
-        "jobId"
-      ]
-    },
-    "JobExecutionsForThing": {
-      "operation": "ListJobExecutionsForThing",
-      "resourceIdentifier": {
-        "jobExecutionSummary": "executionSummaries[].jobExecutionSummary"
-      },
-      "inputParameters": [
-        "thingName"
-      ]
-    },
     "Job": {
       "operation": "ListJobs",
       "resourceIdentifier": {
-        "jobId": "jobs[].jobId"
+        "jobId": "jobs[].jobId",
+        "thingGroupId": "jobs[].thingGroupId",
+        "targetSelection": "jobs[].targetSelection",
+        "status": "jobs[].status"
       }
     },
     "OTAUpdate": {
@@ -118,7 +44,8 @@
     "OutgoingCertificate": {
       "operation": "ListOutgoingCertificates",
       "resourceIdentifier": {
-        "certificateId": "outgoingCertificates[].certificateId"
+        "certificateId": "outgoingCertificates[].certificateId",
+        "transferMessage": "outgoingCertificates[].transferMessage"
       }
     },
     "Policy": {
@@ -127,114 +54,18 @@
         "policyName": "policies[].policyName"
       }
     },
-    "PolicyPrincipal": {
-      "operation": "ListPolicyPrincipals",
-      "resourceIdentifier": {
-        "principal": "principals[]"
-      },
-      "inputParameters": [
-        "policyName"
-      ]
-    },
-    "PolicyVersion": {
-      "operation": "ListPolicyVersions",
-      "resourceIdentifier": {
-        "isDefaultVersion": "policyVersions[].isDefaultVersion"
-      },
-      "inputParameters": [
-        "policyName"
-      ]
-    },
-    "PrincipalPolicy": {
-      "operation": "ListPrincipalPolicies",
-      "resourceIdentifier": {
-        "policyName": "policies[].policyName"
-      },
-      "inputParameters": [
-        "principal"
-      ]
-    },
-    "PrincipalThing": {
-      "operation": "ListPrincipalThings",
-      "resourceIdentifier": {
-        "thing": "things[]"
-      },
-      "inputParameters": [
-        "principal"
-      ]
-    },
     "RoleAliase": {
       "operation": "ListRoleAliases",
       "resourceIdentifier": {
         "roleAliase": "roleAliases[]"
       }
     },
-    "SecurityProfilesForTarget": {
-      "operation": "ListSecurityProfilesForTarget",
-      "resourceIdentifier": {
-        "securityProfileIdentifier": "securityProfileTargetMappings[].securityProfileIdentifier"
-      },
-      "inputParameters": [
-        "securityProfileTargetArn"
-      ]
-    },
     "Stream": {
       "operation": "ListStreams",
       "resourceIdentifier": {
-        "streamId": "streams[].streamId"
+        "streamId": "streams[].streamId",
+        "description": "streams[].description"
       }
-    },
-    "TargetsForPolicy": {
-      "operation": "ListTargetsForPolicy",
-      "resourceIdentifier": {
-        "target": "targets[]"
-      },
-      "inputParameters": [
-        "policyName"
-      ]
-    },
-    "TargetsForSecurityProfile": {
-      "operation": "ListTargetsForSecurityProfile",
-      "resourceIdentifier": {
-        "arn": "securityProfileTargets[].arn"
-      },
-      "inputParameters": [
-        "securityProfileName"
-      ]
-    },
-    "ThingGroup": {
-      "operation": "ListThingGroups",
-      "resourceIdentifier": {
-        "groupArn": "thingGroups[].groupArn"
-      }
-    },
-    "ThingGroupsForThing": {
-      "operation": "ListThingGroupsForThing",
-      "resourceIdentifier": {
-        "groupArn": "thingGroups[].groupArn"
-      },
-      "inputParameters": [
-        "thingName"
-      ]
-    },
-    "ThingPrincipal": {
-      "operation": "ListThingPrincipals",
-      "resourceIdentifier": {
-        "principal": "principals[]"
-      },
-      "inputParameters": [
-        "thingName"
-      ]
-    },
-    "ThingRegistrationTaskReport": {
-      "operation": "ListThingRegistrationTaskReports",
-      "resourceIdentifier": {
-        "resourceLink": "resourceLinks[]"
-      },
-      "inputParameters": [
-        "taskId",
-        "reportType"
-      ]
     },
     "ThingRegistrationTask": {
       "operation": "ListThingRegistrationTasks",
@@ -245,45 +76,30 @@
     "ThingType": {
       "operation": "ListThingTypes",
       "resourceIdentifier": {
-        "thingTypeArn": "thingTypes[].thingTypeArn"
+        "thingTypeProperties": "thingTypes[].thingTypeProperties"
       }
     },
     "Thing": {
       "operation": "ListThings",
       "resourceIdentifier": {
+        "thingName": "things[].thingName",
+        "thingTypeName": "things[].thingTypeName",
         "thingArn": "things[].thingArn"
       }
-    },
-    "ThingsInThingGroup": {
-      "operation": "ListThingsInThingGroup",
-      "resourceIdentifier": {
-        "thing": "things[]"
-      },
-      "inputParameters": [
-        "thingGroupName"
-      ]
     },
     "TopicRule": {
       "operation": "ListTopicRules",
       "resourceIdentifier": {
-        "topicPattern": "rules[].topicPattern"
+        "ruleName": "rules[].ruleName",
+        "ruleDisabled": "rules[].ruleDisabled"
       }
     },
     "V2LoggingLevel": {
       "operation": "ListV2LoggingLevels",
       "resourceIdentifier": {
+        "logTarget": "logTargetConfigurations[].logTarget",
         "logLevel": "logTargetConfigurations[].logLevel"
       }
-    },
-    "ViolationEvent": {
-      "operation": "ListViolationEvents",
-      "resourceIdentifier": {
-        "violationEventType": "violationEvents[].violationEventType"
-      },
-      "inputParameters": [
-        "startTime",
-        "endTime"
-      ]
     }
   },
   "operations": {
@@ -299,6 +115,15 @@
       }
     },
     "AddThingToThingGroup": {
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
+          }
+        ]
+      },
       "thingArn": {
         "completions": [
           {
@@ -338,6 +163,28 @@
             "parameters": {},
             "resourceName": "Policy",
             "resourceIdentifier": "policyName"
+          }
+        ]
+      }
+    },
+    "AttachSecurityProfile": {
+      "securityProfileName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ActiveViolation",
+            "resourceIdentifier": "securityProfileName"
+          }
+        ]
+      }
+    },
+    "AttachThingPrincipal": {
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
           }
         ]
       }
@@ -384,6 +231,35 @@
             "resourceIdentifier": "jobId"
           }
         ]
+      },
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
+          }
+        ]
+      }
+    },
+    "CreateAuthorizer": {
+      "authorizerName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Authorizer",
+            "resourceIdentifier": "authorizerName"
+          }
+        ]
+      },
+      "status": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Job",
+            "resourceIdentifier": "status"
+          }
+        ]
       }
     },
     "CreateJob": {
@@ -395,6 +271,24 @@
             "resourceIdentifier": "jobId"
           }
         ]
+      },
+      "description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Stream",
+            "resourceIdentifier": "description"
+          }
+        ]
+      },
+      "targetSelection": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Job",
+            "resourceIdentifier": "targetSelection"
+          }
+        ]
       }
     },
     "CreateOTAUpdate": {
@@ -404,6 +298,24 @@
             "parameters": {},
             "resourceName": "OTAUpdate",
             "resourceIdentifier": "otaUpdateId"
+          }
+        ]
+      },
+      "description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Stream",
+            "resourceIdentifier": "description"
+          }
+        ]
+      },
+      "targetSelection": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Job",
+            "resourceIdentifier": "targetSelection"
           }
         ]
       }
@@ -441,6 +353,26 @@
         ]
       }
     },
+    "CreateSecurityProfile": {
+      "securityProfileName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ActiveViolation",
+            "resourceIdentifier": "securityProfileName"
+          }
+        ]
+      },
+      "behaviors": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ActiveViolation",
+            "resourceIdentifier": "behavior"
+          }
+        ]
+      }
+    },
     "CreateStream": {
       "streamId": {
         "completions": [
@@ -448,6 +380,77 @@
             "parameters": {},
             "resourceName": "Stream",
             "resourceIdentifier": "streamId"
+          }
+        ]
+      },
+      "description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Stream",
+            "resourceIdentifier": "description"
+          }
+        ]
+      }
+    },
+    "CreateThing": {
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
+          }
+        ]
+      },
+      "thingTypeName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingTypeName"
+          }
+        ]
+      }
+    },
+    "CreateThingType": {
+      "thingTypeName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingTypeName"
+          }
+        ]
+      },
+      "thingTypeProperties": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ThingType",
+            "resourceIdentifier": "thingTypeProperties"
+          }
+        ]
+      }
+    },
+    "CreateTopicRule": {
+      "ruleName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TopicRule",
+            "resourceIdentifier": "ruleName"
+          }
+        ]
+      }
+    },
+    "DeleteAuthorizer": {
+      "authorizerName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Authorizer",
+            "resourceIdentifier": "authorizerName"
           }
         ]
       }
@@ -492,6 +495,15 @@
             "parameters": {},
             "resourceName": "Job",
             "resourceIdentifier": "jobId"
+          }
+        ]
+      },
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
           }
         ]
       }
@@ -540,6 +552,17 @@
         ]
       }
     },
+    "DeleteSecurityProfile": {
+      "securityProfileName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ActiveViolation",
+            "resourceIdentifier": "securityProfileName"
+          }
+        ]
+      }
+    },
     "DeleteStream": {
       "streamId": {
         "completions": [
@@ -551,6 +574,50 @@
         ]
       }
     },
+    "DeleteThing": {
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
+          }
+        ]
+      }
+    },
+    "DeleteThingType": {
+      "thingTypeName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingTypeName"
+          }
+        ]
+      }
+    },
+    "DeleteTopicRule": {
+      "ruleName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TopicRule",
+            "resourceIdentifier": "ruleName"
+          }
+        ]
+      }
+    },
+    "DeprecateThingType": {
+      "thingTypeName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingTypeName"
+          }
+        ]
+      }
+    },
     "DescribeAuditTask": {
       "taskId": {
         "completions": [
@@ -558,6 +625,17 @@
             "parameters": {},
             "resourceName": "ThingRegistrationTask",
             "resourceIdentifier": "taskId"
+          }
+        ]
+      }
+    },
+    "DescribeAuthorizer": {
+      "authorizerName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Authorizer",
+            "resourceIdentifier": "authorizerName"
           }
         ]
       }
@@ -615,6 +693,15 @@
             "resourceIdentifier": "jobId"
           }
         ]
+      },
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
+          }
+        ]
       }
     },
     "DescribeRoleAlias": {
@@ -624,6 +711,17 @@
             "parameters": {},
             "resourceName": "RoleAliase",
             "resourceIdentifier": "roleAliase"
+          }
+        ]
+      }
+    },
+    "DescribeSecurityProfile": {
+      "securityProfileName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ActiveViolation",
+            "resourceIdentifier": "securityProfileName"
           }
         ]
       }
@@ -639,6 +737,17 @@
         ]
       }
     },
+    "DescribeThing": {
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
+          }
+        ]
+      }
+    },
     "DescribeThingRegistrationTask": {
       "taskId": {
         "completions": [
@@ -646,6 +755,17 @@
             "parameters": {},
             "resourceName": "ThingRegistrationTask",
             "resourceIdentifier": "taskId"
+          }
+        ]
+      }
+    },
+    "DescribeThingType": {
+      "thingTypeName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingTypeName"
           }
         ]
       }
@@ -668,6 +788,61 @@
             "parameters": {},
             "resourceName": "Policy",
             "resourceIdentifier": "policyName"
+          }
+        ]
+      }
+    },
+    "DetachSecurityProfile": {
+      "securityProfileName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ActiveViolation",
+            "resourceIdentifier": "securityProfileName"
+          }
+        ]
+      }
+    },
+    "DetachThingPrincipal": {
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
+          }
+        ]
+      }
+    },
+    "DisableTopicRule": {
+      "ruleName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TopicRule",
+            "resourceIdentifier": "ruleName"
+          }
+        ]
+      }
+    },
+    "EnableTopicRule": {
+      "ruleName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TopicRule",
+            "resourceIdentifier": "ruleName"
+          }
+        ]
+      }
+    },
+    "GetEffectivePolicies": {
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
           }
         ]
       }
@@ -716,6 +891,37 @@
         ]
       }
     },
+    "GetTopicRule": {
+      "ruleName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TopicRule",
+            "resourceIdentifier": "ruleName"
+          }
+        ]
+      }
+    },
+    "ListActiveViolations": {
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
+          }
+        ]
+      },
+      "securityProfileName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ActiveViolation",
+            "resourceIdentifier": "securityProfileName"
+          }
+        ]
+      }
+    },
     "ListAuditFindings": {
       "taskId": {
         "completions": [
@@ -723,6 +929,26 @@
             "parameters": {},
             "resourceName": "ThingRegistrationTask",
             "resourceIdentifier": "taskId"
+          }
+        ]
+      },
+      "checkName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "AuditFinding",
+            "resourceIdentifier": "checkName"
+          }
+        ]
+      }
+    },
+    "ListAuthorizers": {
+      "status": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Job",
+            "resourceIdentifier": "status"
           }
         ]
       }
@@ -745,6 +971,64 @@
             "parameters": {},
             "resourceName": "Job",
             "resourceIdentifier": "jobId"
+          }
+        ]
+      },
+      "status": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Job",
+            "resourceIdentifier": "status"
+          }
+        ]
+      }
+    },
+    "ListJobExecutionsForThing": {
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
+          }
+        ]
+      },
+      "status": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Job",
+            "resourceIdentifier": "status"
+          }
+        ]
+      }
+    },
+    "ListJobs": {
+      "status": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Job",
+            "resourceIdentifier": "status"
+          }
+        ]
+      },
+      "targetSelection": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Job",
+            "resourceIdentifier": "targetSelection"
+          }
+        ]
+      },
+      "thingGroupId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Job",
+            "resourceIdentifier": "thingGroupId"
           }
         ]
       }
@@ -782,6 +1066,39 @@
         ]
       }
     },
+    "ListTargetsForSecurityProfile": {
+      "securityProfileName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ActiveViolation",
+            "resourceIdentifier": "securityProfileName"
+          }
+        ]
+      }
+    },
+    "ListThingGroupsForThing": {
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
+          }
+        ]
+      }
+    },
+    "ListThingPrincipals": {
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
+          }
+        ]
+      }
+    },
     "ListThingRegistrationTaskReports": {
       "taskId": {
         "completions": [
@@ -789,6 +1106,81 @@
             "parameters": {},
             "resourceName": "ThingRegistrationTask",
             "resourceIdentifier": "taskId"
+          }
+        ]
+      }
+    },
+    "ListThingRegistrationTasks": {
+      "status": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Job",
+            "resourceIdentifier": "status"
+          }
+        ]
+      }
+    },
+    "ListThingTypes": {
+      "thingTypeName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingTypeName"
+          }
+        ]
+      }
+    },
+    "ListThings": {
+      "thingTypeName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingTypeName"
+          }
+        ]
+      }
+    },
+    "ListTopicRules": {
+      "ruleDisabled": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TopicRule",
+            "resourceIdentifier": "ruleDisabled"
+          }
+        ]
+      }
+    },
+    "ListViolationEvents": {
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
+          }
+        ]
+      },
+      "securityProfileName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ActiveViolation",
+            "resourceIdentifier": "securityProfileName"
+          }
+        ]
+      }
+    },
+    "RegisterCertificate": {
+      "status": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Job",
+            "resourceIdentifier": "status"
           }
         ]
       }
@@ -805,12 +1197,32 @@
       }
     },
     "RemoveThingFromThingGroup": {
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
+          }
+        ]
+      },
       "thingArn": {
         "completions": [
           {
             "parameters": {},
             "resourceName": "Thing",
             "resourceIdentifier": "thingArn"
+          }
+        ]
+      }
+    },
+    "ReplaceTopicRule": {
+      "ruleName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TopicRule",
+            "resourceIdentifier": "ruleName"
           }
         ]
       }
@@ -822,6 +1234,17 @@
             "parameters": {},
             "resourceName": "Indice",
             "resourceIdentifier": "indexName"
+          }
+        ]
+      }
+    },
+    "SetDefaultAuthorizer": {
+      "authorizerName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Authorizer",
+            "resourceIdentifier": "authorizerName"
           }
         ]
       }
@@ -838,6 +1261,15 @@
       }
     },
     "SetV2LoggingLevel": {
+      "logTarget": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "V2LoggingLevel",
+            "resourceIdentifier": "logTarget"
+          }
+        ]
+      },
       "logLevel": {
         "completions": [
           {
@@ -859,6 +1291,17 @@
         ]
       }
     },
+    "TestInvokeAuthorizer": {
+      "authorizerName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Authorizer",
+            "resourceIdentifier": "authorizerName"
+          }
+        ]
+      }
+    },
     "TransferCertificate": {
       "certificateId": {
         "completions": [
@@ -866,6 +1309,35 @@
             "parameters": {},
             "resourceName": "OutgoingCertificate",
             "resourceIdentifier": "certificateId"
+          }
+        ]
+      },
+      "transferMessage": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "OutgoingCertificate",
+            "resourceIdentifier": "transferMessage"
+          }
+        ]
+      }
+    },
+    "UpdateAuthorizer": {
+      "authorizerName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Authorizer",
+            "resourceIdentifier": "authorizerName"
+          }
+        ]
+      },
+      "status": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Job",
+            "resourceIdentifier": "status"
           }
         ]
       }
@@ -903,6 +1375,26 @@
         ]
       }
     },
+    "UpdateSecurityProfile": {
+      "securityProfileName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ActiveViolation",
+            "resourceIdentifier": "securityProfileName"
+          }
+        ]
+      },
+      "behaviors": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ActiveViolation",
+            "resourceIdentifier": "behavior"
+          }
+        ]
+      }
+    },
     "UpdateStream": {
       "streamId": {
         "completions": [
@@ -910,6 +1402,57 @@
             "parameters": {},
             "resourceName": "Stream",
             "resourceIdentifier": "streamId"
+          }
+        ]
+      },
+      "description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Stream",
+            "resourceIdentifier": "description"
+          }
+        ]
+      }
+    },
+    "UpdateThing": {
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
+          }
+        ]
+      },
+      "thingTypeName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingTypeName"
+          }
+        ]
+      }
+    },
+    "UpdateThingGroupsForThing": {
+      "thingName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Thing",
+            "resourceIdentifier": "thingName"
+          }
+        ]
+      }
+    },
+    "ValidateSecurityProfileBehaviors": {
+      "behaviors": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ActiveViolation",
+            "resourceIdentifier": "behavior"
           }
         ]
       }

@@ -4,28 +4,16 @@
     "ActionType": {
       "operation": "ListActionTypes",
       "resourceIdentifier": {
-        "settings": "actionTypes[].settings"
+        "settings": "actionTypes[].settings",
+        "inputArtifactDetails": "actionTypes[].inputArtifactDetails",
+        "outputArtifactDetails": "actionTypes[].outputArtifactDetails"
       }
-    },
-    "PipelineExecution": {
-      "operation": "ListPipelineExecutions",
-      "resourceIdentifier": {
-        "pipelineExecutionId": "pipelineExecutionSummaries[].pipelineExecutionId"
-      },
-      "inputParameters": [
-        "pipelineName"
-      ]
     },
     "Pipeline": {
       "operation": "ListPipelines",
       "resourceIdentifier": {
+        "name": "pipelines[].name",
         "version": "pipelines[].version"
-      }
-    },
-    "Webhook": {
-      "operation": "ListWebhooks",
-      "resourceIdentifier": {
-        "errorCode": "webhooks[].errorCode"
       }
     }
   },
@@ -48,6 +36,24 @@
             "resourceIdentifier": "settings"
           }
         ]
+      },
+      "inputArtifactDetails": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ActionType",
+            "resourceIdentifier": "inputArtifactDetails"
+          }
+        ]
+      },
+      "outputArtifactDetails": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ActionType",
+            "resourceIdentifier": "outputArtifactDetails"
+          }
+        ]
       }
     },
     "DeleteCustomActionType": {
@@ -61,13 +67,66 @@
         ]
       }
     },
+    "DeletePipeline": {
+      "name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Pipeline",
+            "resourceIdentifier": "name"
+          }
+        ]
+      }
+    },
+    "DeleteWebhook": {
+      "name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Pipeline",
+            "resourceIdentifier": "name"
+          }
+        ]
+      }
+    },
     "GetPipeline": {
+      "name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Pipeline",
+            "resourceIdentifier": "name"
+          }
+        ]
+      },
       "version": {
         "completions": [
           {
             "parameters": {},
             "resourceName": "Pipeline",
             "resourceIdentifier": "version"
+          }
+        ]
+      }
+    },
+    "GetPipelineState": {
+      "name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Pipeline",
+            "resourceIdentifier": "name"
+          }
+        ]
+      }
+    },
+    "StartPipelineExecution": {
+      "name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Pipeline",
+            "resourceIdentifier": "name"
           }
         ]
       }

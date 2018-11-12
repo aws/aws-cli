@@ -1,25 +1,12 @@
 {
   "version": "1.0",
   "resources": {
-    "ElasticsearchDomain": {
-      "operation": "DescribeElasticsearchDomains",
-      "resourceIdentifier": {
-        "ElasticsearchVersion": "DomainStatusList[].ElasticsearchVersion"
-      },
-      "inputParameters": [
-        "DomainNames"
-      ]
-    },
-    "ReservedElasticsearchInstanceOffering": {
-      "operation": "DescribeReservedElasticsearchInstanceOfferings",
-      "resourceIdentifier": {
-        "ReservedElasticsearchInstanceOfferingId": "ReservedElasticsearchInstanceOfferings[].ReservedElasticsearchInstanceOfferingId"
-      }
-    },
     "ReservedElasticsearchInstance": {
       "operation": "DescribeReservedElasticsearchInstances",
       "resourceIdentifier": {
-        "ReservedElasticsearchInstanceId": "ReservedElasticsearchInstances[].ReservedElasticsearchInstanceId"
+        "ReservationName": "ReservedElasticsearchInstances[].ReservationName",
+        "ReservedElasticsearchInstanceId": "ReservedElasticsearchInstances[].ReservedElasticsearchInstanceId",
+        "ReservedElasticsearchInstanceOfferingId": "ReservedElasticsearchInstances[].ReservedElasticsearchInstanceOfferingId"
       }
     },
     "DomainName": {
@@ -28,29 +15,11 @@
         "DomainName": "DomainNames[].DomainName"
       }
     },
-    "ElasticsearchInstanceType": {
-      "operation": "ListElasticsearchInstanceTypes",
-      "resourceIdentifier": {
-        "ElasticsearchInstanceType": "ElasticsearchInstanceTypes[]"
-      },
-      "inputParameters": [
-        "ElasticsearchVersion"
-      ]
-    },
     "ElasticsearchVersion": {
       "operation": "ListElasticsearchVersions",
       "resourceIdentifier": {
         "ElasticsearchVersion": "ElasticsearchVersions[]"
       }
-    },
-    "Tag": {
-      "operation": "ListTags",
-      "resourceIdentifier": {
-        "Value": "TagList[].Value"
-      },
-      "inputParameters": [
-        "ARN"
-      ]
     }
   },
   "operations": {
@@ -143,7 +112,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ReservedElasticsearchInstanceOffering",
+            "resourceName": "ReservedElasticsearchInstance",
             "resourceIdentifier": "ReservedElasticsearchInstanceOfferingId"
           }
         ]
@@ -218,8 +187,17 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ReservedElasticsearchInstanceOffering",
+            "resourceName": "ReservedElasticsearchInstance",
             "resourceIdentifier": "ReservedElasticsearchInstanceOfferingId"
+          }
+        ]
+      },
+      "ReservationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReservedElasticsearchInstance",
+            "resourceIdentifier": "ReservationName"
           }
         ]
       }

@@ -4,40 +4,14 @@
     "ApplicationVersion": {
       "operation": "DescribeApplicationVersions",
       "resourceIdentifier": {
-        "ApplicationVersionArn": "ApplicationVersions[].ApplicationVersionArn"
+        "SourceBuildInformation": "ApplicationVersions[].SourceBuildInformation",
+        "SourceBundle": "ApplicationVersions[].SourceBundle"
       }
     },
     "Application": {
       "operation": "DescribeApplications",
       "resourceIdentifier": {
-        "ApplicationArn": "Applications[].ApplicationArn"
-      }
-    },
-    "ConfigurationOption": {
-      "operation": "DescribeConfigurationOptions",
-      "resourceIdentifier": {
-        "ValueOptions": "Options[].ValueOptions"
-      }
-    },
-    "ConfigurationSetting": {
-      "operation": "DescribeConfigurationSettings",
-      "resourceIdentifier": {
-        "OptionSettings": "ConfigurationSettings[].OptionSettings"
-      },
-      "inputParameters": [
-        "ApplicationName"
-      ]
-    },
-    "EnvironmentHealth": {
-      "operation": "DescribeEnvironmentHealth",
-      "resourceIdentifier": {
-        "Cause": "Causes[]"
-      }
-    },
-    "EnvironmentManagedActionHistory": {
-      "operation": "DescribeEnvironmentManagedActionHistory",
-      "resourceIdentifier": {
-        "ActionDescription": "ManagedActionHistoryItems[].ActionDescription"
+        "ResourceLifecycleConfig": "Applications[].ResourceLifecycleConfig"
       }
     },
     "EnvironmentManagedAction": {
@@ -49,19 +23,22 @@
     "Environment": {
       "operation": "DescribeEnvironments",
       "resourceIdentifier": {
-        "EnvironmentId": "Environments[].EnvironmentId"
+        "EnvironmentId": "Environments[].EnvironmentId",
+        "SolutionStackName": "Environments[].SolutionStackName",
+        "Description": "Environments[].Description",
+        "Status": "Environments[].Status",
+        "Tier": "Environments[].Tier"
       }
     },
     "Event": {
       "operation": "DescribeEvents",
       "resourceIdentifier": {
-        "EventDate": "Events[].EventDate"
-      }
-    },
-    "InstancesHealth": {
-      "operation": "DescribeInstancesHealth",
-      "resourceIdentifier": {
-        "InstanceType": "InstanceHealthList[].InstanceType"
+        "ApplicationName": "Events[].ApplicationName",
+        "VersionLabel": "Events[].VersionLabel",
+        "TemplateName": "Events[].TemplateName",
+        "EnvironmentName": "Events[].EnvironmentName",
+        "RequestId": "Events[].RequestId",
+        "Severity": "Events[].Severity"
       }
     },
     "PlatformVersion": {
@@ -69,15 +46,6 @@
       "resourceIdentifier": {
         "PlatformArn": "PlatformSummaryList[].PlatformArn"
       }
-    },
-    "TagsForResource": {
-      "operation": "ListTagsForResource",
-      "resourceIdentifier": {
-        "Value": "ResourceTags[].Value"
-      },
-      "inputParameters": [
-        "ResourceArn"
-      ]
     }
   },
   "operations": {
@@ -90,9 +58,27 @@
             "resourceIdentifier": "EnvironmentId"
           }
         ]
+      },
+      "EnvironmentName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EnvironmentName"
+          }
+        ]
       }
     },
     "ApplyEnvironmentManagedAction": {
+      "EnvironmentName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EnvironmentName"
+          }
+        ]
+      },
       "EnvironmentId": {
         "completions": [
           {
@@ -112,7 +98,130 @@
         ]
       }
     },
+    "ComposeEnvironments": {
+      "ApplicationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "ApplicationName"
+          }
+        ]
+      },
+      "VersionLabels": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "VersionLabel"
+          }
+        ]
+      }
+    },
+    "CreateApplication": {
+      "ApplicationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "ApplicationName"
+          }
+        ]
+      },
+      "Description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Environment",
+            "resourceIdentifier": "Description"
+          }
+        ]
+      },
+      "ResourceLifecycleConfig": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Application",
+            "resourceIdentifier": "ResourceLifecycleConfig"
+          }
+        ]
+      }
+    },
+    "CreateApplicationVersion": {
+      "ApplicationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "ApplicationName"
+          }
+        ]
+      },
+      "VersionLabel": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "VersionLabel"
+          }
+        ]
+      },
+      "Description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Environment",
+            "resourceIdentifier": "Description"
+          }
+        ]
+      },
+      "SourceBuildInformation": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ApplicationVersion",
+            "resourceIdentifier": "SourceBuildInformation"
+          }
+        ]
+      },
+      "SourceBundle": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ApplicationVersion",
+            "resourceIdentifier": "SourceBundle"
+          }
+        ]
+      }
+    },
     "CreateConfigurationTemplate": {
+      "ApplicationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "ApplicationName"
+          }
+        ]
+      },
+      "TemplateName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "TemplateName"
+          }
+        ]
+      },
+      "SolutionStackName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Environment",
+            "resourceIdentifier": "SolutionStackName"
+          }
+        ]
+      },
       "PlatformArn": {
         "completions": [
           {
@@ -130,15 +239,169 @@
             "resourceIdentifier": "EnvironmentId"
           }
         ]
+      },
+      "Description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Environment",
+            "resourceIdentifier": "Description"
+          }
+        ]
       }
     },
     "CreateEnvironment": {
+      "ApplicationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "ApplicationName"
+          }
+        ]
+      },
+      "EnvironmentName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EnvironmentName"
+          }
+        ]
+      },
+      "Description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Environment",
+            "resourceIdentifier": "Description"
+          }
+        ]
+      },
+      "Tier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Environment",
+            "resourceIdentifier": "Tier"
+          }
+        ]
+      },
+      "VersionLabel": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "VersionLabel"
+          }
+        ]
+      },
+      "TemplateName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "TemplateName"
+          }
+        ]
+      },
+      "SolutionStackName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Environment",
+            "resourceIdentifier": "SolutionStackName"
+          }
+        ]
+      },
       "PlatformArn": {
         "completions": [
           {
             "parameters": {},
             "resourceName": "PlatformVersion",
             "resourceIdentifier": "PlatformArn"
+          }
+        ]
+      }
+    },
+    "CreatePlatformVersion": {
+      "EnvironmentName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EnvironmentName"
+          }
+        ]
+      }
+    },
+    "DeleteApplication": {
+      "ApplicationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "ApplicationName"
+          }
+        ]
+      }
+    },
+    "DeleteApplicationVersion": {
+      "ApplicationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "ApplicationName"
+          }
+        ]
+      },
+      "VersionLabel": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "VersionLabel"
+          }
+        ]
+      }
+    },
+    "DeleteConfigurationTemplate": {
+      "ApplicationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "ApplicationName"
+          }
+        ]
+      },
+      "TemplateName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "TemplateName"
+          }
+        ]
+      }
+    },
+    "DeleteEnvironmentConfiguration": {
+      "ApplicationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "ApplicationName"
+          }
+        ]
+      },
+      "EnvironmentName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EnvironmentName"
           }
         ]
       }
@@ -154,7 +417,74 @@
         ]
       }
     },
+    "DescribeApplicationVersions": {
+      "ApplicationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "ApplicationName"
+          }
+        ]
+      },
+      "VersionLabels": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "VersionLabel"
+          }
+        ]
+      }
+    },
+    "DescribeApplications": {
+      "ApplicationNames": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "ApplicationName"
+          }
+        ]
+      }
+    },
     "DescribeConfigurationOptions": {
+      "ApplicationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "ApplicationName"
+          }
+        ]
+      },
+      "TemplateName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "TemplateName"
+          }
+        ]
+      },
+      "EnvironmentName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EnvironmentName"
+          }
+        ]
+      },
+      "SolutionStackName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Environment",
+            "resourceIdentifier": "SolutionStackName"
+          }
+        ]
+      },
       "PlatformArn": {
         "completions": [
           {
@@ -165,7 +495,45 @@
         ]
       }
     },
+    "DescribeConfigurationSettings": {
+      "ApplicationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "ApplicationName"
+          }
+        ]
+      },
+      "TemplateName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "TemplateName"
+          }
+        ]
+      },
+      "EnvironmentName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EnvironmentName"
+          }
+        ]
+      }
+    },
     "DescribeEnvironmentHealth": {
+      "EnvironmentName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EnvironmentName"
+          }
+        ]
+      },
       "EnvironmentId": {
         "completions": [
           {
@@ -185,15 +553,42 @@
             "resourceIdentifier": "EnvironmentId"
           }
         ]
+      },
+      "EnvironmentName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EnvironmentName"
+          }
+        ]
       }
     },
     "DescribeEnvironmentManagedActions": {
+      "EnvironmentName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EnvironmentName"
+          }
+        ]
+      },
       "EnvironmentId": {
         "completions": [
           {
             "parameters": {},
             "resourceName": "Environment",
             "resourceIdentifier": "EnvironmentId"
+          }
+        ]
+      },
+      "Status": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Environment",
+            "resourceIdentifier": "Status"
           }
         ]
       }
@@ -207,9 +602,36 @@
             "resourceIdentifier": "EnvironmentId"
           }
         ]
+      },
+      "EnvironmentName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EnvironmentName"
+          }
+        ]
       }
     },
     "DescribeEnvironments": {
+      "ApplicationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "ApplicationName"
+          }
+        ]
+      },
+      "VersionLabel": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "VersionLabel"
+          }
+        ]
+      },
       "EnvironmentIds": {
         "completions": [
           {
@@ -218,15 +640,60 @@
             "resourceIdentifier": "EnvironmentId"
           }
         ]
+      },
+      "EnvironmentNames": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EnvironmentName"
+          }
+        ]
       }
     },
     "DescribeEvents": {
+      "ApplicationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "ApplicationName"
+          }
+        ]
+      },
+      "VersionLabel": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "VersionLabel"
+          }
+        ]
+      },
+      "TemplateName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "TemplateName"
+          }
+        ]
+      },
       "EnvironmentId": {
         "completions": [
           {
             "parameters": {},
             "resourceName": "Environment",
             "resourceIdentifier": "EnvironmentId"
+          }
+        ]
+      },
+      "EnvironmentName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EnvironmentName"
           }
         ]
       },
@@ -238,9 +705,36 @@
             "resourceIdentifier": "PlatformArn"
           }
         ]
+      },
+      "RequestId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "RequestId"
+          }
+        ]
+      },
+      "Severity": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "Severity"
+          }
+        ]
       }
     },
     "DescribeInstancesHealth": {
+      "EnvironmentName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EnvironmentName"
+          }
+        ]
+      },
       "EnvironmentId": {
         "completions": [
           {
@@ -271,6 +765,15 @@
             "resourceIdentifier": "EnvironmentId"
           }
         ]
+      },
+      "EnvironmentName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EnvironmentName"
+          }
+        ]
       }
     },
     "RequestEnvironmentInfo": {
@@ -280,6 +783,15 @@
             "parameters": {},
             "resourceName": "Environment",
             "resourceIdentifier": "EnvironmentId"
+          }
+        ]
+      },
+      "EnvironmentName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EnvironmentName"
           }
         ]
       }
@@ -293,6 +805,15 @@
             "resourceIdentifier": "EnvironmentId"
           }
         ]
+      },
+      "EnvironmentName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EnvironmentName"
+          }
+        ]
       }
     },
     "RetrieveEnvironmentInfo": {
@@ -302,6 +823,15 @@
             "parameters": {},
             "resourceName": "Environment",
             "resourceIdentifier": "EnvironmentId"
+          }
+        ]
+      },
+      "EnvironmentName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EnvironmentName"
           }
         ]
       }
@@ -315,9 +845,125 @@
             "resourceIdentifier": "EnvironmentId"
           }
         ]
+      },
+      "EnvironmentName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EnvironmentName"
+          }
+        ]
+      }
+    },
+    "UpdateApplication": {
+      "ApplicationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "ApplicationName"
+          }
+        ]
+      },
+      "Description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Environment",
+            "resourceIdentifier": "Description"
+          }
+        ]
+      }
+    },
+    "UpdateApplicationResourceLifecycle": {
+      "ApplicationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "ApplicationName"
+          }
+        ]
+      },
+      "ResourceLifecycleConfig": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Application",
+            "resourceIdentifier": "ResourceLifecycleConfig"
+          }
+        ]
+      }
+    },
+    "UpdateApplicationVersion": {
+      "ApplicationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "ApplicationName"
+          }
+        ]
+      },
+      "VersionLabel": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "VersionLabel"
+          }
+        ]
+      },
+      "Description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Environment",
+            "resourceIdentifier": "Description"
+          }
+        ]
+      }
+    },
+    "UpdateConfigurationTemplate": {
+      "ApplicationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "ApplicationName"
+          }
+        ]
+      },
+      "TemplateName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "TemplateName"
+          }
+        ]
+      },
+      "Description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Environment",
+            "resourceIdentifier": "Description"
+          }
+        ]
       }
     },
     "UpdateEnvironment": {
+      "ApplicationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "ApplicationName"
+          }
+        ]
+      },
       "EnvironmentId": {
         "completions": [
           {
@@ -327,12 +973,95 @@
           }
         ]
       },
+      "EnvironmentName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EnvironmentName"
+          }
+        ]
+      },
+      "Description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Environment",
+            "resourceIdentifier": "Description"
+          }
+        ]
+      },
+      "Tier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Environment",
+            "resourceIdentifier": "Tier"
+          }
+        ]
+      },
+      "VersionLabel": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "VersionLabel"
+          }
+        ]
+      },
+      "TemplateName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "TemplateName"
+          }
+        ]
+      },
+      "SolutionStackName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Environment",
+            "resourceIdentifier": "SolutionStackName"
+          }
+        ]
+      },
       "PlatformArn": {
         "completions": [
           {
             "parameters": {},
             "resourceName": "PlatformVersion",
             "resourceIdentifier": "PlatformArn"
+          }
+        ]
+      }
+    },
+    "ValidateConfigurationSettings": {
+      "ApplicationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "ApplicationName"
+          }
+        ]
+      },
+      "TemplateName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "TemplateName"
+          }
+        ]
+      },
+      "EnvironmentName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EnvironmentName"
           }
         ]
       }

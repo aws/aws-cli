@@ -4,25 +4,16 @@
     "GeoLocation": {
       "operation": "ListGeoLocations",
       "resourceIdentifier": {
-        "ContinentCode": "GeoLocationDetailsList[].ContinentCode"
+        "ContinentCode": "GeoLocationDetailsList[].ContinentCode",
+        "CountryCode": "GeoLocationDetailsList[].CountryCode",
+        "SubdivisionCode": "GeoLocationDetailsList[].SubdivisionCode"
       }
     },
     "HealthCheck": {
       "operation": "ListHealthChecks",
       "resourceIdentifier": {
+        "HealthCheckConfig": "HealthChecks[].HealthCheckConfig",
         "HealthCheckVersion": "HealthChecks[].HealthCheckVersion"
-      }
-    },
-    "HostedZone": {
-      "operation": "ListHostedZones",
-      "resourceIdentifier": {
-        "LinkedService": "HostedZones[].LinkedService"
-      }
-    },
-    "HostedZonesByName": {
-      "operation": "ListHostedZonesByName",
-      "resourceIdentifier": {
-        "Name": "HostedZones[].Name"
       }
     },
     "QueryLoggingConfig": {
@@ -31,82 +22,53 @@
         "CloudWatchLogsLogGroupArn": "QueryLoggingConfigs[].CloudWatchLogsLogGroupArn"
       }
     },
-    "ResourceRecordSet": {
-      "operation": "ListResourceRecordSets",
-      "resourceIdentifier": {
-        "ResourceRecords": "ResourceRecordSets[].ResourceRecords"
-      },
-      "inputParameters": [
-        "HostedZoneId"
-      ]
-    },
     "ReusableDelegationSet": {
       "operation": "ListReusableDelegationSets",
       "resourceIdentifier": {
         "CallerReference": "DelegationSets[].CallerReference"
       }
     },
-    "TagsForResource": {
-      "operation": "ListTagsForResources",
-      "resourceIdentifier": {
-        "ResourceId": "ResourceTagSets[].ResourceId"
-      },
-      "inputParameters": [
-        "ResourceType",
-        "ResourceIds"
-      ]
-    },
     "TrafficPolicy": {
       "operation": "ListTrafficPolicies",
       "resourceIdentifier": {
-        "TrafficPolicyCount": "TrafficPolicySummaries[].TrafficPolicyCount"
+        "Type": "TrafficPolicySummaries[].Type"
       }
     },
     "TrafficPolicyInstance": {
       "operation": "ListTrafficPolicyInstances",
       "resourceIdentifier": {
-        "TrafficPolicyId": "TrafficPolicyInstances[].TrafficPolicyId"
+        "Id": "TrafficPolicyInstances[].Id",
+        "HostedZoneId": "TrafficPolicyInstances[].HostedZoneId",
+        "Name": "TrafficPolicyInstances[].Name",
+        "TTL": "TrafficPolicyInstances[].TTL",
+        "TrafficPolicyId": "TrafficPolicyInstances[].TrafficPolicyId",
+        "TrafficPolicyVersion": "TrafficPolicyInstances[].TrafficPolicyVersion"
       }
-    },
-    "TrafficPolicyInstancesByHostedZone": {
-      "operation": "ListTrafficPolicyInstancesByHostedZone",
-      "resourceIdentifier": {
-        "TrafficPolicyId": "TrafficPolicyInstances[].TrafficPolicyId"
-      },
-      "inputParameters": [
-        "HostedZoneId"
-      ]
-    },
-    "TrafficPolicyInstancesByPolicy": {
-      "operation": "ListTrafficPolicyInstancesByPolicy",
-      "resourceIdentifier": {
-        "TrafficPolicyId": "TrafficPolicyInstances[].TrafficPolicyId"
-      },
-      "inputParameters": [
-        "TrafficPolicyId",
-        "TrafficPolicyVersion"
-      ]
-    },
-    "TrafficPolicyVersion": {
-      "operation": "ListTrafficPolicyVersions",
-      "resourceIdentifier": {
-        "Version": "TrafficPolicies[].Version"
-      },
-      "inputParameters": [
-        "Id"
-      ]
-    },
-    "VPCAssociationAuthorization": {
-      "operation": "ListVPCAssociationAuthorizations",
-      "resourceIdentifier": {
-        "VPCRegion": "VPCs[].VPCRegion"
-      },
-      "inputParameters": [
-        "HostedZoneId"
-      ]
     }
   },
   "operations": {
+    "AssociateVPCWithHostedZone": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "HostedZoneId"
+          }
+        ]
+      }
+    },
+    "ChangeResourceRecordSets": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "HostedZoneId"
+          }
+        ]
+      }
+    },
     "CreateHealthCheck": {
       "CallerReference": {
         "completions": [
@@ -116,6 +78,15 @@
             "resourceIdentifier": "CallerReference"
           }
         ]
+      },
+      "HealthCheckConfig": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HealthCheck",
+            "resourceIdentifier": "HealthCheckConfig"
+          }
+        ]
       }
     },
     "CreateHostedZone": {
@@ -123,7 +94,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "HostedZonesByName",
+            "resourceName": "TrafficPolicyInstance",
             "resourceIdentifier": "Name"
           }
         ]
@@ -139,6 +110,15 @@
       }
     },
     "CreateQueryLoggingConfig": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "HostedZoneId"
+          }
+        ]
+      },
       "CloudWatchLogsLogGroupArn": {
         "completions": [
           {
@@ -158,6 +138,15 @@
             "resourceIdentifier": "CallerReference"
           }
         ]
+      },
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "HostedZoneId"
+          }
+        ]
       }
     },
     "CreateTrafficPolicy": {
@@ -165,19 +154,37 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "HostedZonesByName",
+            "resourceName": "TrafficPolicyInstance",
             "resourceIdentifier": "Name"
           }
         ]
       }
     },
     "CreateTrafficPolicyInstance": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "HostedZoneId"
+          }
+        ]
+      },
       "Name": {
         "completions": [
           {
             "parameters": {},
-            "resourceName": "HostedZonesByName",
+            "resourceName": "TrafficPolicyInstance",
             "resourceIdentifier": "Name"
+          }
+        ]
+      },
+      "TTL": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "TTL"
           }
         ]
       },
@@ -187,6 +194,136 @@
             "parameters": {},
             "resourceName": "TrafficPolicyInstance",
             "resourceIdentifier": "TrafficPolicyId"
+          }
+        ]
+      },
+      "TrafficPolicyVersion": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "TrafficPolicyVersion"
+          }
+        ]
+      }
+    },
+    "CreateTrafficPolicyVersion": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "CreateVPCAssociationAuthorization": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "HostedZoneId"
+          }
+        ]
+      }
+    },
+    "DeleteHostedZone": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DeleteQueryLoggingConfig": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DeleteReusableDelegationSet": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DeleteTrafficPolicy": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DeleteTrafficPolicyInstance": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DeleteVPCAssociationAuthorization": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "HostedZoneId"
+          }
+        ]
+      }
+    },
+    "DisassociateVPCFromHostedZone": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "HostedZoneId"
+          }
+        ]
+      }
+    },
+    "GetAccountLimit": {
+      "Type": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicy",
+            "resourceIdentifier": "Type"
+          }
+        ]
+      }
+    },
+    "GetChange": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "Id"
           }
         ]
       }
@@ -200,6 +337,154 @@
             "resourceIdentifier": "ContinentCode"
           }
         ]
+      },
+      "CountryCode": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GeoLocation",
+            "resourceIdentifier": "CountryCode"
+          }
+        ]
+      },
+      "SubdivisionCode": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GeoLocation",
+            "resourceIdentifier": "SubdivisionCode"
+          }
+        ]
+      }
+    },
+    "GetHostedZone": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "GetHostedZoneLimit": {
+      "Type": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicy",
+            "resourceIdentifier": "Type"
+          }
+        ]
+      },
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "HostedZoneId"
+          }
+        ]
+      }
+    },
+    "GetQueryLoggingConfig": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "GetReusableDelegationSet": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "GetReusableDelegationSetLimit": {
+      "Type": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicy",
+            "resourceIdentifier": "Type"
+          }
+        ]
+      }
+    },
+    "GetTrafficPolicy": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "GetTrafficPolicyInstance": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "ListHostedZonesByName": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "HostedZoneId"
+          }
+        ]
+      }
+    },
+    "ListQueryLoggingConfigs": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "HostedZoneId"
+          }
+        ]
+      }
+    },
+    "ListResourceRecordSets": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "HostedZoneId"
+          }
+        ]
+      }
+    },
+    "ListTrafficPolicyInstancesByHostedZone": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "HostedZoneId"
+          }
+        ]
       }
     },
     "ListTrafficPolicyInstancesByPolicy": {
@@ -209,6 +494,48 @@
             "parameters": {},
             "resourceName": "TrafficPolicyInstance",
             "resourceIdentifier": "TrafficPolicyId"
+          }
+        ]
+      },
+      "TrafficPolicyVersion": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "TrafficPolicyVersion"
+          }
+        ]
+      }
+    },
+    "ListTrafficPolicyVersions": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "ListVPCAssociationAuthorizations": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "HostedZoneId"
+          }
+        ]
+      }
+    },
+    "TestDNSAnswer": {
+      "HostedZoneId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "HostedZoneId"
           }
         ]
       }
@@ -224,13 +551,62 @@
         ]
       }
     },
+    "UpdateHostedZoneComment": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "UpdateTrafficPolicyComment": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
     "UpdateTrafficPolicyInstance": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      },
+      "TTL": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "TTL"
+          }
+        ]
+      },
       "TrafficPolicyId": {
         "completions": [
           {
             "parameters": {},
             "resourceName": "TrafficPolicyInstance",
             "resourceIdentifier": "TrafficPolicyId"
+          }
+        ]
+      },
+      "TrafficPolicyVersion": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TrafficPolicyInstance",
+            "resourceIdentifier": "TrafficPolicyVersion"
           }
         ]
       }

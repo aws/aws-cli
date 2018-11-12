@@ -1,142 +1,56 @@
 {
   "version": "1.0",
   "resources": {
-    "Product": {
-      "operation": "DescribeProduct",
-      "resourceIdentifier": {
-        "Id": "ProvisioningArtifacts[].Id"
-      },
-      "inputParameters": [
-        "Id"
-      ]
-    },
-    "ProductView": {
-      "operation": "DescribeProductView",
-      "resourceIdentifier": {
-        "CreatedTime": "ProvisioningArtifacts[].CreatedTime"
-      },
-      "inputParameters": [
-        "Id"
-      ]
-    },
-    "ProvisionedProduct": {
-      "operation": "DescribeProvisionedProduct",
-      "resourceIdentifier": {
-        "Name": "CloudWatchDashboards[].Name"
-      },
-      "inputParameters": [
-        "Id"
-      ]
-    },
-    "ProvisionedProductPlan": {
-      "operation": "ListProvisionedProductPlans",
-      "resourceIdentifier": {
-        "PhysicalResourceId": "ResourceChanges[].PhysicalResourceId",
-        "ProvisionProductName": "ProvisionedProductPlans[].ProvisionProductName"
-      },
-      "inputParameters": [
-        "PlanId"
-      ]
-    },
-    "Record": {
-      "operation": "DescribeRecord",
-      "resourceIdentifier": {
-        "Description": "RecordOutputs[].Description"
-      },
-      "inputParameters": [
-        "Id"
-      ]
-    },
-    "AcceptedPortfolioShare": {
-      "operation": "ListAcceptedPortfolioShares",
-      "resourceIdentifier": {
-        "CreatedTime": "PortfolioDetails[].CreatedTime"
-      }
-    },
-    "ConstraintsForPortfolio": {
-      "operation": "ListConstraintsForPortfolio",
-      "resourceIdentifier": {
-        "ConstraintId": "ConstraintDetails[].ConstraintId"
-      },
-      "inputParameters": [
-        "PortfolioId"
-      ]
-    },
-    "LaunchPath": {
-      "operation": "ListLaunchPaths",
-      "resourceIdentifier": {
-        "ConstraintSummaries": "LaunchPathSummaries[].ConstraintSummaries"
-      },
-      "inputParameters": [
-        "ProductId"
-      ]
-    },
-    "PortfolioAcces": {
-      "operation": "ListPortfolioAccess",
-      "resourceIdentifier": {
-        "AccountId": "AccountIds[]"
-      },
-      "inputParameters": [
-        "PortfolioId"
-      ]
-    },
     "Portfolio": {
       "operation": "ListPortfolios",
       "resourceIdentifier": {
-        "Description": "PortfolioDetails[].Description"
+        "DisplayName": "PortfolioDetails[].DisplayName",
+        "Description": "PortfolioDetails[].Description",
+        "ProviderName": "PortfolioDetails[].ProviderName"
       }
-    },
-    "PortfoliosForProduct": {
-      "operation": "ListPortfoliosForProduct",
-      "resourceIdentifier": {
-        "Description": "PortfolioDetails[].Description"
-      },
-      "inputParameters": [
-        "ProductId"
-      ]
-    },
-    "PrincipalsForPortfolio": {
-      "operation": "ListPrincipalsForPortfolio",
-      "resourceIdentifier": {
-        "PrincipalARN": "Principals[].PrincipalARN"
-      },
-      "inputParameters": [
-        "PortfolioId"
-      ]
-    },
-    "ProvisioningArtifact": {
-      "operation": "ListProvisioningArtifacts",
-      "resourceIdentifier": {
-        "Description": "ProvisioningArtifactDetails[].Description"
-      },
-      "inputParameters": [
-        "ProductId"
-      ]
     },
     "RecordHistory": {
       "operation": "ListRecordHistory",
       "resourceIdentifier": {
-        "RecordErrors": "RecordDetails[].RecordErrors"
+        "ProvisionedProductName": "RecordDetails[].ProvisionedProductName",
+        "ProvisionedProductId": "RecordDetails[].ProvisionedProductId",
+        "ProductId": "RecordDetails[].ProductId",
+        "ProvisioningArtifactId": "RecordDetails[].ProvisioningArtifactId",
+        "PathId": "RecordDetails[].PathId"
       }
-    },
-    "ResourcesForTagOption": {
-      "operation": "ListResourcesForTagOption",
-      "resourceIdentifier": {
-        "Description": "ResourceDetails[].Description"
-      },
-      "inputParameters": [
-        "TagOptionId"
-      ]
     },
     "TagOption": {
       "operation": "ListTagOptions",
       "resourceIdentifier": {
-        "Active": "TagOptionDetails[].Active"
+        "Key": "TagOptionDetails[].Key",
+        "Value": "TagOptionDetails[].Value",
+        "Active": "TagOptionDetails[].Active",
+        "Id": "TagOptionDetails[].Id"
       }
     }
   },
   "operations": {
+    "AssociateProductWithPortfolio": {
+      "ProductId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProductId"
+          }
+        ]
+      }
+    },
     "CreateConstraint": {
+      "ProductId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProductId"
+          }
+        ]
+      },
       "Description": {
         "completions": [
           {
@@ -148,12 +62,30 @@
       }
     },
     "CreatePortfolio": {
+      "DisplayName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Portfolio",
+            "resourceIdentifier": "DisplayName"
+          }
+        ]
+      },
       "Description": {
         "completions": [
           {
             "parameters": {},
             "resourceName": "Portfolio",
             "resourceIdentifier": "Description"
+          }
+        ]
+      },
+      "ProviderName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Portfolio",
+            "resourceIdentifier": "ProviderName"
           }
         ]
       }
@@ -169,7 +101,410 @@
         ]
       }
     },
+    "CreateProvisionedProductPlan": {
+      "PathId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "PathId"
+          }
+        ]
+      },
+      "ProductId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProductId"
+          }
+        ]
+      },
+      "ProvisionedProductName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProvisionedProductName"
+          }
+        ]
+      },
+      "ProvisioningArtifactId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProvisioningArtifactId"
+          }
+        ]
+      }
+    },
+    "CreateProvisioningArtifact": {
+      "ProductId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProductId"
+          }
+        ]
+      }
+    },
+    "CreateTagOption": {
+      "Key": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TagOption",
+            "resourceIdentifier": "Key"
+          }
+        ]
+      },
+      "Value": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TagOption",
+            "resourceIdentifier": "Value"
+          }
+        ]
+      }
+    },
+    "DeleteConstraint": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TagOption",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DeletePortfolio": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TagOption",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DeleteProduct": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TagOption",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DeleteProvisioningArtifact": {
+      "ProductId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProductId"
+          }
+        ]
+      },
+      "ProvisioningArtifactId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProvisioningArtifactId"
+          }
+        ]
+      }
+    },
+    "DeleteTagOption": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TagOption",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DescribeConstraint": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TagOption",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DescribePortfolio": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TagOption",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DescribeProduct": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TagOption",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DescribeProductAsAdmin": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TagOption",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DescribeProductView": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TagOption",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DescribeProvisionedProduct": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TagOption",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DescribeProvisioningArtifact": {
+      "ProvisioningArtifactId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProvisioningArtifactId"
+          }
+        ]
+      },
+      "ProductId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProductId"
+          }
+        ]
+      }
+    },
+    "DescribeProvisioningParameters": {
+      "ProductId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProductId"
+          }
+        ]
+      },
+      "ProvisioningArtifactId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProvisioningArtifactId"
+          }
+        ]
+      },
+      "PathId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "PathId"
+          }
+        ]
+      }
+    },
+    "DescribeRecord": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TagOption",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DescribeTagOption": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TagOption",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DisassociateProductFromPortfolio": {
+      "ProductId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProductId"
+          }
+        ]
+      }
+    },
+    "ListConstraintsForPortfolio": {
+      "ProductId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProductId"
+          }
+        ]
+      }
+    },
+    "ListLaunchPaths": {
+      "ProductId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProductId"
+          }
+        ]
+      }
+    },
+    "ListPortfoliosForProduct": {
+      "ProductId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProductId"
+          }
+        ]
+      }
+    },
+    "ListProvisionedProductPlans": {
+      "ProvisionProductId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProvisionedProductId"
+          }
+        ]
+      }
+    },
+    "ListProvisioningArtifacts": {
+      "ProductId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProductId"
+          }
+        ]
+      }
+    },
+    "ProvisionProduct": {
+      "ProductId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProductId"
+          }
+        ]
+      },
+      "ProvisioningArtifactId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProvisioningArtifactId"
+          }
+        ]
+      },
+      "PathId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "PathId"
+          }
+        ]
+      },
+      "ProvisionedProductName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProvisionedProductName"
+          }
+        ]
+      }
+    },
+    "TerminateProvisionedProduct": {
+      "ProvisionedProductName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProvisionedProductName"
+          }
+        ]
+      },
+      "ProvisionedProductId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProvisionedProductId"
+          }
+        ]
+      }
+    },
     "UpdateConstraint": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TagOption",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      },
       "Description": {
         "completions": [
           {
@@ -181,17 +516,53 @@
       }
     },
     "UpdatePortfolio": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TagOption",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      },
+      "DisplayName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Portfolio",
+            "resourceIdentifier": "DisplayName"
+          }
+        ]
+      },
       "Description": {
         "completions": [
           {
             "parameters": {},
             "resourceName": "Portfolio",
             "resourceIdentifier": "Description"
+          }
+        ]
+      },
+      "ProviderName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Portfolio",
+            "resourceIdentifier": "ProviderName"
           }
         ]
       }
     },
     "UpdateProduct": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TagOption",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      },
       "Description": {
         "completions": [
           {
@@ -202,7 +573,72 @@
         ]
       }
     },
+    "UpdateProvisionedProduct": {
+      "ProvisionedProductName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProvisionedProductName"
+          }
+        ]
+      },
+      "ProvisionedProductId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProvisionedProductId"
+          }
+        ]
+      },
+      "ProductId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProductId"
+          }
+        ]
+      },
+      "ProvisioningArtifactId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProvisioningArtifactId"
+          }
+        ]
+      },
+      "PathId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "PathId"
+          }
+        ]
+      }
+    },
     "UpdateProvisioningArtifact": {
+      "ProductId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProductId"
+          }
+        ]
+      },
+      "ProvisioningArtifactId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "RecordHistory",
+            "resourceIdentifier": "ProvisioningArtifactId"
+          }
+        ]
+      },
       "Description": {
         "completions": [
           {
@@ -223,6 +659,24 @@
       }
     },
     "UpdateTagOption": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TagOption",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      },
+      "Value": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TagOption",
+            "resourceIdentifier": "Value"
+          }
+        ]
+      },
       "Active": {
         "completions": [
           {

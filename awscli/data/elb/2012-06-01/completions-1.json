@@ -1,21 +1,6 @@
 {
   "version": "1.0",
   "resources": {
-    "AccountLimit": {
-      "operation": "DescribeAccountLimits",
-      "resourceIdentifier": {
-        "Name": "Limits[].Name"
-      }
-    },
-    "InstanceHealth": {
-      "operation": "DescribeInstanceHealth",
-      "resourceIdentifier": {
-        "InstanceId": "InstanceStates[].InstanceId"
-      },
-      "inputParameters": [
-        "LoadBalancerName"
-      ]
-    },
     "LoadBalancerPolicy": {
       "operation": "DescribeLoadBalancerPolicies",
       "resourceIdentifier": {
@@ -31,17 +16,14 @@
     "LoadBalancer": {
       "operation": "DescribeLoadBalancers",
       "resourceIdentifier": {
-        "LoadBalancerName": "LoadBalancerDescriptions[].LoadBalancerName"
+        "LoadBalancerName": "LoadBalancerDescriptions[].LoadBalancerName",
+        "AvailabilityZones": "LoadBalancerDescriptions[].AvailabilityZones",
+        "Subnets": "LoadBalancerDescriptions[].Subnets",
+        "Instances": "LoadBalancerDescriptions[].Instances",
+        "HealthCheck": "LoadBalancerDescriptions[].HealthCheck",
+        "SecurityGroups": "LoadBalancerDescriptions[].SecurityGroups",
+        "Scheme": "LoadBalancerDescriptions[].Scheme"
       }
-    },
-    "Tag": {
-      "operation": "DescribeTags",
-      "resourceIdentifier": {
-        "Tags": "TagDescriptions[].Tags"
-      },
-      "inputParameters": [
-        "LoadBalancerNames"
-      ]
     }
   },
   "operations": {
@@ -65,6 +47,15 @@
             "resourceIdentifier": "LoadBalancerName"
           }
         ]
+      },
+      "SecurityGroups": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LoadBalancer",
+            "resourceIdentifier": "SecurityGroups"
+          }
+        ]
       }
     },
     "AttachLoadBalancerToSubnets": {
@@ -76,6 +67,15 @@
             "resourceIdentifier": "LoadBalancerName"
           }
         ]
+      },
+      "Subnets": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LoadBalancer",
+            "resourceIdentifier": "Subnets"
+          }
+        ]
       }
     },
     "ConfigureHealthCheck": {
@@ -85,6 +85,15 @@
             "parameters": {},
             "resourceName": "LoadBalancer",
             "resourceIdentifier": "LoadBalancerName"
+          }
+        ]
+      },
+      "HealthCheck": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LoadBalancer",
+            "resourceIdentifier": "HealthCheck"
           }
         ]
       }
@@ -136,6 +145,42 @@
             "parameters": {},
             "resourceName": "LoadBalancer",
             "resourceIdentifier": "LoadBalancerName"
+          }
+        ]
+      },
+      "AvailabilityZones": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LoadBalancer",
+            "resourceIdentifier": "AvailabilityZones"
+          }
+        ]
+      },
+      "Subnets": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LoadBalancer",
+            "resourceIdentifier": "Subnets"
+          }
+        ]
+      },
+      "SecurityGroups": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LoadBalancer",
+            "resourceIdentifier": "SecurityGroups"
+          }
+        ]
+      },
+      "Scheme": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LoadBalancer",
+            "resourceIdentifier": "Scheme"
           }
         ]
       }
@@ -231,6 +276,15 @@
             "resourceIdentifier": "LoadBalancerName"
           }
         ]
+      },
+      "Instances": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LoadBalancer",
+            "resourceIdentifier": "Instances"
+          }
+        ]
       }
     },
     "DescribeInstanceHealth": {
@@ -240,6 +294,15 @@
             "parameters": {},
             "resourceName": "LoadBalancer",
             "resourceIdentifier": "LoadBalancerName"
+          }
+        ]
+      },
+      "Instances": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LoadBalancer",
+            "resourceIdentifier": "Instances"
           }
         ]
       }
@@ -317,6 +380,15 @@
             "resourceIdentifier": "LoadBalancerName"
           }
         ]
+      },
+      "Subnets": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LoadBalancer",
+            "resourceIdentifier": "Subnets"
+          }
+        ]
       }
     },
     "DisableAvailabilityZonesForLoadBalancer": {
@@ -328,6 +400,15 @@
             "resourceIdentifier": "LoadBalancerName"
           }
         ]
+      },
+      "AvailabilityZones": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LoadBalancer",
+            "resourceIdentifier": "AvailabilityZones"
+          }
+        ]
       }
     },
     "EnableAvailabilityZonesForLoadBalancer": {
@@ -337,6 +418,15 @@
             "parameters": {},
             "resourceName": "LoadBalancer",
             "resourceIdentifier": "LoadBalancerName"
+          }
+        ]
+      },
+      "AvailabilityZones": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LoadBalancer",
+            "resourceIdentifier": "AvailabilityZones"
           }
         ]
       }
@@ -359,6 +449,15 @@
             "parameters": {},
             "resourceName": "LoadBalancer",
             "resourceIdentifier": "LoadBalancerName"
+          }
+        ]
+      },
+      "Instances": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LoadBalancer",
+            "resourceIdentifier": "Instances"
           }
         ]
       }

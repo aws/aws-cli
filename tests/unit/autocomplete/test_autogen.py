@@ -437,7 +437,7 @@ class TestCanGenerateCompletions(unittest.TestCase):
         }
         self.assertEqual(
             list(sorted(operations)),
-            ['DeleteCertificate', 'ExportCertificate',
+            ['DeleteCertificate', 'DescribeCertificate', 'ExportCertificate',
              'GetCertificate', 'ImportCertificate'])
         for op in operations.values():
             self.assertEqual(op, completion_param)
@@ -456,10 +456,9 @@ class TestCanGenerateCompletions(unittest.TestCase):
              completion_data['resources']['Certificate']['operation'],
             'DescribeCertificates'
         )
-        # Ensure that 'DescribeCertificates' isn't in the list of operations.
         self.assertEqual(
             list(sorted(completion_data['operations'])),
-            ['DeleteCertificate', 'ExportCertificate',
+            ['DeleteCertificate', 'DescribeCertificate', 'ExportCertificate',
              'GetCertificate', 'ImportCertificate'])
 
     def test_can_generate_string_list_completions(self):
@@ -492,9 +491,10 @@ class TestCanGenerateCompletions(unittest.TestCase):
         # We're going to mark an input param of ListCertificates as required.
         model_dict['shapes']['ListCertificatesRequest']['required'] = [
             'CertificateStatuses']
+        # We also have to have an operation reference this
         service_model = ServiceModel(model_dict)
         completion_data = self.heuristic.generate_completion_descriptions(
-            service_model)
+            service_model, prune_completions=False)
         resources = completion_data['resources']
         self.assertEqual(
             resources, {
@@ -503,7 +503,10 @@ class TestCanGenerateCompletions(unittest.TestCase):
                     'inputParameters': ['CertificateStatuses'],
                     'resourceIdentifier': {
                         'CertificateArn': (
-                            'CertificateSummaryList[].CertificateArn')
+                            'CertificateSummaryList[].CertificateArn'),
+                        'DomainName': (
+                            'CertificateSummaryList[].DomainName'
+                        )
                     }
                 }
              }
@@ -556,3 +559,61 @@ class TestCanGenerateCompletions(unittest.TestCase):
         # The operations dict should be empty because the FooBarThing has
         # a required parameter and we don't support that yet.
         self.assertEqual(completion_data['operations'], {})
+
+    def test_can_reference_multiple_identifiers_if_used(self):
+        custom_model = {
+            'metadata': {},
+            'operations': {
+                'ListFooBarThings': {
+                    'output': {'shape': 'ListFooBarThingsResponse'},
+                },
+                'DeleteFooBarThing': {
+                    'input': {'shape': 'DeleteFooBarThingRequest'},
+                }
+            },
+            'shapes': {
+                'DeleteFooBarThingRequest': {
+                    'type': 'structure',
+                    'members': {
+                        'FooBarThingId': {'shape': 'String'},
+                        'FooBarThingArn': {'shape': 'String'},
+                    }
+                },
+                'ListFooBarThingsResponse': {
+                    'type': 'structure',
+                    'members': {
+                        'FooBarThings': {'shape': 'FooBarThingList'},
+                    }
+                },
+                'FooBarThingList': {
+                    'type': 'list',
+                    'member': {'shape': 'FooBarThingType'},
+                },
+                'FooBarThingType': {
+                    'type': 'structure',
+                    'members': {
+                        # The DeleteFooBarThing accepts either an Id
+                        # or an Arn.
+                        'FooBarThingId': {'shape': 'String'},
+                        'FooBarThingArn': {'shape': 'String'},
+                        # However it doesn't accept a "Name", so this
+                        # identifier will be pruned from the response.
+                        'FooBarThingName': {'shape': 'String'},
+                    }
+                },
+                'String': {'type': 'string'},
+            }
+        }
+        service_model = ServiceModel(custom_model)
+        completion_data = self.heuristic.generate_completion_descriptions(
+            service_model)
+        self.assertEqual(
+            completion_data['resources'],
+             {'FooBarThing': {
+                 'operation': 'ListFooBarThings',
+                 'resourceIdentifier': {
+                     'FooBarThingArn': 'FooBarThings[].FooBarThingArn',
+                     'FooBarThingId': 'FooBarThings[].FooBarThingId'
+                 }}
+             }
+        )

@@ -1,40 +1,54 @@
 {
   "version": "1.0",
   "resources": {
-    "User": {
-      "operation": "ListUsers",
-      "resourceIdentifier": {
-        "Group": "Groups[]",
-        "Username": "Users[].Username"
-      },
-      "inputParameters": [
-        "BrokerId"
-      ]
-    },
     "Broker": {
       "operation": "ListBrokers",
       "resourceIdentifier": {
-        "BrokerId": "BrokerSummaries[].BrokerId"
+        "BrokerId": "BrokerSummaries[].BrokerId",
+        "BrokerName": "BrokerSummaries[].BrokerName",
+        "DeploymentMode": "BrokerSummaries[].DeploymentMode",
+        "HostInstanceType": "BrokerSummaries[].HostInstanceType"
       }
-    },
-    "ConfigurationRevision": {
-      "operation": "ListConfigurationRevisions",
-      "resourceIdentifier": {
-        "Revision": "Revisions[].Revision"
-      },
-      "inputParameters": [
-        "ConfigurationId"
-      ]
     },
     "Configuration": {
       "operation": "ListConfigurations",
       "resourceIdentifier": {
-        "EngineVersion": "Configurations[].EngineVersion"
+        "Description": "Configurations[].Description",
+        "EngineType": "Configurations[].EngineType",
+        "EngineVersion": "Configurations[].EngineVersion",
+        "Name": "Configurations[].Name"
       }
     }
   },
   "operations": {
     "CreateBroker": {
+      "BrokerName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Broker",
+            "resourceIdentifier": "BrokerName"
+          }
+        ]
+      },
+      "DeploymentMode": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Broker",
+            "resourceIdentifier": "DeploymentMode"
+          }
+        ]
+      },
+      "EngineType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Configuration",
+            "resourceIdentifier": "EngineType"
+          }
+        ]
+      },
       "EngineVersion": {
         "completions": [
           {
@@ -43,15 +57,42 @@
             "resourceIdentifier": "EngineVersion"
           }
         ]
+      },
+      "HostInstanceType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Broker",
+            "resourceIdentifier": "HostInstanceType"
+          }
+        ]
       }
     },
     "CreateConfiguration": {
+      "EngineType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Configuration",
+            "resourceIdentifier": "EngineType"
+          }
+        ]
+      },
       "EngineVersion": {
         "completions": [
           {
             "parameters": {},
             "resourceName": "Configuration",
             "resourceIdentifier": "EngineVersion"
+          }
+        ]
+      },
+      "Name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Configuration",
+            "resourceIdentifier": "Name"
           }
         ]
       }
@@ -149,6 +190,17 @@
             "parameters": {},
             "resourceName": "Configuration",
             "resourceIdentifier": "EngineVersion"
+          }
+        ]
+      }
+    },
+    "UpdateConfiguration": {
+      "Description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Configuration",
+            "resourceIdentifier": "Description"
           }
         ]
       }

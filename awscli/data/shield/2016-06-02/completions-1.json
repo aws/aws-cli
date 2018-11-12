@@ -1,33 +1,33 @@
 {
   "version": "1.0",
   "resources": {
-    "DRTAcces": {
-      "operation": "DescribeDRTAccess",
-      "resourceIdentifier": {
-        "LogBucketList": "LogBucketList[]"
-      }
-    },
-    "EmergencyContactSetting": {
-      "operation": "DescribeEmergencyContactSettings",
-      "resourceIdentifier": {
-        "EmailAddress": "EmergencyContactList[].EmailAddress"
-      }
-    },
     "Attack": {
       "operation": "ListAttacks",
       "resourceIdentifier": {
-        "AttackId": "AttackSummaries[].AttackId"
+        "AttackId": "AttackSummaries[].AttackId",
+        "StartTime": "AttackSummaries[].StartTime",
+        "EndTime": "AttackSummaries[].EndTime"
       }
     },
     "Protection": {
       "operation": "ListProtections",
       "resourceIdentifier": {
+        "Name": "Protections[].Name",
         "ResourceArn": "Protections[].ResourceArn"
       }
     }
   },
   "operations": {
     "CreateProtection": {
+      "Name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Protection",
+            "resourceIdentifier": "Name"
+          }
+        ]
+      },
       "ResourceArn": {
         "completions": [
           {
@@ -56,6 +56,24 @@
             "parameters": {},
             "resourceName": "Protection",
             "resourceIdentifier": "ResourceArn"
+          }
+        ]
+      },
+      "StartTime": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Attack",
+            "resourceIdentifier": "StartTime"
+          }
+        ]
+      },
+      "EndTime": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Attack",
+            "resourceIdentifier": "EndTime"
           }
         ]
       }

@@ -1,39 +1,90 @@
 {
   "version": "1.0",
   "resources": {
-    "JobsByPipeline": {
-      "operation": "ListJobsByPipeline",
-      "resourceIdentifier": {
-        "PipelineId": "Jobs[].PipelineId"
-      },
-      "inputParameters": [
-        "PipelineId"
-      ]
-    },
-    "JobsByStatu": {
-      "operation": "ListJobsByStatus",
-      "resourceIdentifier": {
-        "Status": "Jobs[].Status"
-      },
-      "inputParameters": [
-        "Status"
-      ]
-    },
     "Pipeline": {
       "operation": "ListPipelines",
       "resourceIdentifier": {
-        "Notifications": "Pipelines[].Notifications"
+        "Status": "Pipelines[].Status",
+        "InputBucket": "Pipelines[].InputBucket",
+        "OutputBucket": "Pipelines[].OutputBucket",
+        "Role": "Pipelines[].Role",
+        "AwsKmsKeyArn": "Pipelines[].AwsKmsKeyArn",
+        "Notifications": "Pipelines[].Notifications",
+        "ContentConfig": "Pipelines[].ContentConfig",
+        "ThumbnailConfig": "Pipelines[].ThumbnailConfig"
       }
     },
     "Preset": {
       "operation": "ListPresets",
       "resourceIdentifier": {
-        "Description": "Presets[].Description"
+        "Id": "Presets[].Id",
+        "Name": "Presets[].Name",
+        "Description": "Presets[].Description",
+        "Container": "Presets[].Container",
+        "Audio": "Presets[].Audio",
+        "Video": "Presets[].Video",
+        "Thumbnails": "Presets[].Thumbnails"
       }
     }
   },
   "operations": {
+    "CancelJob": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Preset",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
     "CreatePipeline": {
+      "Name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Preset",
+            "resourceIdentifier": "Name"
+          }
+        ]
+      },
+      "InputBucket": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Pipeline",
+            "resourceIdentifier": "InputBucket"
+          }
+        ]
+      },
+      "OutputBucket": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Pipeline",
+            "resourceIdentifier": "OutputBucket"
+          }
+        ]
+      },
+      "Role": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Pipeline",
+            "resourceIdentifier": "Role"
+          }
+        ]
+      },
+      "AwsKmsKeyArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Pipeline",
+            "resourceIdentifier": "AwsKmsKeyArn"
+          }
+        ]
+      },
       "Notifications": {
         "completions": [
           {
@@ -42,9 +93,36 @@
             "resourceIdentifier": "Notifications"
           }
         ]
+      },
+      "ContentConfig": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Pipeline",
+            "resourceIdentifier": "ContentConfig"
+          }
+        ]
+      },
+      "ThumbnailConfig": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Pipeline",
+            "resourceIdentifier": "ThumbnailConfig"
+          }
+        ]
       }
     },
     "CreatePreset": {
+      "Name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Preset",
+            "resourceIdentifier": "Name"
+          }
+        ]
+      },
       "Description": {
         "completions": [
           {
@@ -53,9 +131,223 @@
             "resourceIdentifier": "Description"
           }
         ]
+      },
+      "Container": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Preset",
+            "resourceIdentifier": "Container"
+          }
+        ]
+      },
+      "Video": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Preset",
+            "resourceIdentifier": "Video"
+          }
+        ]
+      },
+      "Audio": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Preset",
+            "resourceIdentifier": "Audio"
+          }
+        ]
+      },
+      "Thumbnails": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Preset",
+            "resourceIdentifier": "Thumbnails"
+          }
+        ]
+      }
+    },
+    "DeletePipeline": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Preset",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "DeletePreset": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Preset",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "ListJobsByStatus": {
+      "Status": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Pipeline",
+            "resourceIdentifier": "Status"
+          }
+        ]
+      }
+    },
+    "ReadJob": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Preset",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "ReadPipeline": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Preset",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "ReadPreset": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Preset",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      }
+    },
+    "TestRole": {
+      "Role": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Pipeline",
+            "resourceIdentifier": "Role"
+          }
+        ]
+      },
+      "InputBucket": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Pipeline",
+            "resourceIdentifier": "InputBucket"
+          }
+        ]
+      },
+      "OutputBucket": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Pipeline",
+            "resourceIdentifier": "OutputBucket"
+          }
+        ]
       }
     },
     "UpdatePipeline": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Preset",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      },
+      "Name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Preset",
+            "resourceIdentifier": "Name"
+          }
+        ]
+      },
+      "InputBucket": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Pipeline",
+            "resourceIdentifier": "InputBucket"
+          }
+        ]
+      },
+      "Role": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Pipeline",
+            "resourceIdentifier": "Role"
+          }
+        ]
+      },
+      "AwsKmsKeyArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Pipeline",
+            "resourceIdentifier": "AwsKmsKeyArn"
+          }
+        ]
+      },
+      "Notifications": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Pipeline",
+            "resourceIdentifier": "Notifications"
+          }
+        ]
+      },
+      "ContentConfig": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Pipeline",
+            "resourceIdentifier": "ContentConfig"
+          }
+        ]
+      },
+      "ThumbnailConfig": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Pipeline",
+            "resourceIdentifier": "ThumbnailConfig"
+          }
+        ]
+      }
+    },
+    "UpdatePipelineNotifications": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Preset",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      },
       "Notifications": {
         "completions": [
           {
@@ -66,13 +358,22 @@
         ]
       }
     },
-    "UpdatePipelineNotifications": {
-      "Notifications": {
+    "UpdatePipelineStatus": {
+      "Id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Preset",
+            "resourceIdentifier": "Id"
+          }
+        ]
+      },
+      "Status": {
         "completions": [
           {
             "parameters": {},
             "resourceName": "Pipeline",
-            "resourceIdentifier": "Notifications"
+            "resourceIdentifier": "Status"
           }
         ]
       }

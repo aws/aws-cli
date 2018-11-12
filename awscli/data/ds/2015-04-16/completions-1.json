@@ -1,89 +1,51 @@
 {
   "version": "1.0",
   "resources": {
-    "ConditionalForwarder": {
-      "operation": "DescribeConditionalForwarders",
-      "resourceIdentifier": {
-        "ReplicationScope": "ConditionalForwarders[].ReplicationScope"
-      },
-      "inputParameters": [
-        "DirectoryId"
-      ]
-    },
     "Directory": {
       "operation": "DescribeDirectories",
       "resourceIdentifier": {
-        "DirectoryId": "DirectoryDescriptions[].DirectoryId"
+        "ShortName": "DirectoryDescriptions[].ShortName",
+        "Size": "DirectoryDescriptions[].Size",
+        "Edition": "DirectoryDescriptions[].Edition",
+        "Alias": "DirectoryDescriptions[].Alias",
+        "Description": "DirectoryDescriptions[].Description",
+        "DnsIpAddrs": "DirectoryDescriptions[].DnsIpAddrs",
+        "ShareMethod": "DirectoryDescriptions[].ShareMethod",
+        "ShareNotes": "DirectoryDescriptions[].ShareNotes",
+        "VpcSettings": "DirectoryDescriptions[].VpcSettings",
+        "ConnectSettings": "DirectoryDescriptions[].ConnectSettings",
+        "RadiusSettings": "DirectoryDescriptions[].RadiusSettings"
       }
-    },
-    "DomainController": {
-      "operation": "DescribeDomainControllers",
-      "resourceIdentifier": {
-        "DomainControllerId": "DomainControllers[].DomainControllerId"
-      },
-      "inputParameters": [
-        "DirectoryId"
-      ]
     },
     "EventTopic": {
       "operation": "DescribeEventTopics",
       "resourceIdentifier": {
-        "TopicArn": "EventTopics[].TopicArn"
+        "TopicName": "EventTopics[].TopicName"
       }
-    },
-    "SharedDirectory": {
-      "operation": "DescribeSharedDirectories",
-      "resourceIdentifier": {
-        "SharedDirectoryId": "SharedDirectories[].SharedDirectoryId"
-      },
-      "inputParameters": [
-        "OwnerDirectoryId"
-      ]
     },
     "Snapshot": {
       "operation": "DescribeSnapshots",
       "resourceIdentifier": {
-        "SnapshotId": "Snapshots[].SnapshotId"
+        "SnapshotId": "Snapshots[].SnapshotId",
+        "Name": "Snapshots[].Name"
       }
     },
     "Trust": {
       "operation": "DescribeTrusts",
       "resourceIdentifier": {
-        "TrustId": "Trusts[].TrustId"
+        "TrustId": "Trusts[].TrustId",
+        "RemoteDomainName": "Trusts[].RemoteDomainName",
+        "TrustType": "Trusts[].TrustType",
+        "TrustDirection": "Trusts[].TrustDirection",
+        "SelectiveAuth": "Trusts[].SelectiveAuth"
       }
-    },
-    "IpRoute": {
-      "operation": "ListIpRoutes",
-      "resourceIdentifier": {
-        "IpRouteStatusMsg": "IpRoutesInfo[].IpRouteStatusMsg"
-      },
-      "inputParameters": [
-        "DirectoryId"
-      ]
     },
     "LogSubscription": {
       "operation": "ListLogSubscriptions",
       "resourceIdentifier": {
-        "SubscriptionCreatedDateTime": "LogSubscriptions[].SubscriptionCreatedDateTime"
+        "DirectoryId": "LogSubscriptions[].DirectoryId",
+        "LogGroupName": "LogSubscriptions[].LogGroupName"
       }
-    },
-    "SchemaExtension": {
-      "operation": "ListSchemaExtensions",
-      "resourceIdentifier": {
-        "SchemaExtensionId": "SchemaExtensionsInfo[].SchemaExtensionId"
-      },
-      "inputParameters": [
-        "DirectoryId"
-      ]
-    },
-    "TagsForResource": {
-      "operation": "ListTagsForResource",
-      "resourceIdentifier": {
-        "Value": "Tags[].Value"
-      },
-      "inputParameters": [
-        "ResourceId"
-      ]
     }
   },
   "operations": {
@@ -92,7 +54,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
           }
         ]
@@ -103,8 +65,55 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
+          }
+        ]
+      }
+    },
+    "ConnectDirectory": {
+      "Name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "Name"
+          }
+        ]
+      },
+      "ShortName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Directory",
+            "resourceIdentifier": "ShortName"
+          }
+        ]
+      },
+      "Description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Directory",
+            "resourceIdentifier": "Description"
+          }
+        ]
+      },
+      "Size": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Directory",
+            "resourceIdentifier": "Size"
+          }
+        ]
+      },
+      "ConnectSettings": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Directory",
+            "resourceIdentifier": "ConnectSettings"
           }
         ]
       }
@@ -114,8 +123,17 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
+          }
+        ]
+      },
+      "Alias": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Directory",
+            "resourceIdentifier": "Alias"
           }
         ]
       }
@@ -125,7 +143,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
           }
         ]
@@ -136,8 +154,73 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
+          }
+        ]
+      },
+      "RemoteDomainName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Trust",
+            "resourceIdentifier": "RemoteDomainName"
+          }
+        ]
+      },
+      "DnsIpAddrs": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Directory",
+            "resourceIdentifier": "DnsIpAddrs"
+          }
+        ]
+      }
+    },
+    "CreateDirectory": {
+      "Name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "Name"
+          }
+        ]
+      },
+      "ShortName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Directory",
+            "resourceIdentifier": "ShortName"
+          }
+        ]
+      },
+      "Description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Directory",
+            "resourceIdentifier": "Description"
+          }
+        ]
+      },
+      "Size": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Directory",
+            "resourceIdentifier": "Size"
+          }
+        ]
+      },
+      "VpcSettings": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Directory",
+            "resourceIdentifier": "VpcSettings"
           }
         ]
       }
@@ -147,8 +230,64 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
+          }
+        ]
+      },
+      "LogGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogSubscription",
+            "resourceIdentifier": "LogGroupName"
+          }
+        ]
+      }
+    },
+    "CreateMicrosoftAD": {
+      "Name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "Name"
+          }
+        ]
+      },
+      "ShortName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Directory",
+            "resourceIdentifier": "ShortName"
+          }
+        ]
+      },
+      "Description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Directory",
+            "resourceIdentifier": "Description"
+          }
+        ]
+      },
+      "VpcSettings": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Directory",
+            "resourceIdentifier": "VpcSettings"
+          }
+        ]
+      },
+      "Edition": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Directory",
+            "resourceIdentifier": "Edition"
           }
         ]
       }
@@ -158,8 +297,17 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
+          }
+        ]
+      },
+      "Name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "Name"
           }
         ]
       }
@@ -169,8 +317,44 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
+          }
+        ]
+      },
+      "RemoteDomainName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Trust",
+            "resourceIdentifier": "RemoteDomainName"
+          }
+        ]
+      },
+      "TrustDirection": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Trust",
+            "resourceIdentifier": "TrustDirection"
+          }
+        ]
+      },
+      "TrustType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Trust",
+            "resourceIdentifier": "TrustType"
+          }
+        ]
+      },
+      "SelectiveAuth": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Trust",
+            "resourceIdentifier": "SelectiveAuth"
           }
         ]
       }
@@ -180,8 +364,17 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
+          }
+        ]
+      },
+      "RemoteDomainName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Trust",
+            "resourceIdentifier": "RemoteDomainName"
           }
         ]
       }
@@ -191,7 +384,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
           }
         ]
@@ -202,7 +395,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
           }
         ]
@@ -235,8 +428,17 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
+          }
+        ]
+      },
+      "TopicName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventTopic",
+            "resourceIdentifier": "TopicName"
           }
         ]
       }
@@ -246,8 +448,17 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
+          }
+        ]
+      },
+      "RemoteDomainNames": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Trust",
+            "resourceIdentifier": "RemoteDomainName"
           }
         ]
       }
@@ -257,7 +468,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
           }
         ]
@@ -268,7 +479,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
           }
         ]
@@ -279,8 +490,17 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
+          }
+        ]
+      },
+      "TopicNames": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventTopic",
+            "resourceIdentifier": "TopicName"
           }
         ]
       }
@@ -290,7 +510,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
           }
         ]
@@ -310,7 +530,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
           }
         ]
@@ -330,7 +550,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
           }
         ]
@@ -341,7 +561,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
           }
         ]
@@ -352,8 +572,17 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
+          }
+        ]
+      },
+      "RadiusSettings": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Directory",
+            "resourceIdentifier": "RadiusSettings"
           }
         ]
       }
@@ -363,7 +592,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
           }
         ]
@@ -374,7 +603,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
           }
         ]
@@ -385,7 +614,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
           }
         ]
@@ -396,7 +625,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
           }
         ]
@@ -407,7 +636,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
           }
         ]
@@ -418,8 +647,17 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
+          }
+        ]
+      },
+      "TopicName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventTopic",
+            "resourceIdentifier": "TopicName"
           }
         ]
       }
@@ -429,7 +667,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
           }
         ]
@@ -440,7 +678,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
           }
         ]
@@ -462,8 +700,26 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
+          }
+        ]
+      },
+      "ShareNotes": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Directory",
+            "resourceIdentifier": "ShareNotes"
+          }
+        ]
+      },
+      "ShareMethod": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Directory",
+            "resourceIdentifier": "ShareMethod"
           }
         ]
       }
@@ -473,8 +729,17 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
+          }
+        ]
+      },
+      "Description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Directory",
+            "resourceIdentifier": "Description"
           }
         ]
       }
@@ -484,7 +749,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
           }
         ]
@@ -495,8 +760,26 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
+          }
+        ]
+      },
+      "RemoteDomainName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Trust",
+            "resourceIdentifier": "RemoteDomainName"
+          }
+        ]
+      },
+      "DnsIpAddrs": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Directory",
+            "resourceIdentifier": "DnsIpAddrs"
           }
         ]
       }
@@ -506,7 +789,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
           }
         ]
@@ -517,8 +800,17 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Directory",
+            "resourceName": "LogSubscription",
             "resourceIdentifier": "DirectoryId"
+          }
+        ]
+      },
+      "RadiusSettings": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Directory",
+            "resourceIdentifier": "RadiusSettings"
           }
         ]
       }
@@ -530,6 +822,15 @@
             "parameters": {},
             "resourceName": "Trust",
             "resourceIdentifier": "TrustId"
+          }
+        ]
+      },
+      "SelectiveAuth": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Trust",
+            "resourceIdentifier": "SelectiveAuth"
           }
         ]
       }

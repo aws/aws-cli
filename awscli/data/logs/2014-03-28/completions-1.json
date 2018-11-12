@@ -4,50 +4,45 @@
     "Destination": {
       "operation": "DescribeDestinations",
       "resourceIdentifier": {
-        "destinationName": "destinations[].destinationName"
+        "destinationName": "destinations[].destinationName",
+        "targetArn": "destinations[].targetArn",
+        "roleArn": "destinations[].roleArn",
+        "accessPolicy": "destinations[].accessPolicy"
       }
     },
     "ExportTask": {
       "operation": "DescribeExportTasks",
       "resourceIdentifier": {
-        "taskId": "exportTasks[].taskId"
+        "taskId": "exportTasks[].taskId",
+        "taskName": "exportTasks[].taskName",
+        "from": "exportTasks[].from",
+        "to": "exportTasks[].to",
+        "destination": "exportTasks[].destination",
+        "destinationPrefix": "exportTasks[].destinationPrefix"
       }
     },
     "LogGroup": {
       "operation": "DescribeLogGroups",
       "resourceIdentifier": {
-        "logGroupName": "logGroups[].logGroupName"
+        "retentionInDays": "logGroups[].retentionInDays",
+        "kmsKeyId": "logGroups[].kmsKeyId"
       }
-    },
-    "LogStream": {
-      "operation": "DescribeLogStreams",
-      "resourceIdentifier": {
-        "logStreamName": "logStreams[].logStreamName"
-      },
-      "inputParameters": [
-        "logGroupName"
-      ]
     },
     "MetricFilter": {
       "operation": "DescribeMetricFilters",
       "resourceIdentifier": {
-        "filterName": "metricFilters[].filterName"
+        "filterName": "metricFilters[].filterName",
+        "filterPattern": "metricFilters[].filterPattern",
+        "metricTransformations": "metricFilters[].metricTransformations",
+        "logGroupName": "metricFilters[].logGroupName"
       }
     },
     "ResourcePolicy": {
       "operation": "DescribeResourcePolicies",
       "resourceIdentifier": {
-        "policyName": "resourcePolicies[].policyName"
+        "policyName": "resourcePolicies[].policyName",
+        "policyDocument": "resourcePolicies[].policyDocument"
       }
-    },
-    "SubscriptionFilter": {
-      "operation": "DescribeSubscriptionFilters",
-      "resourceIdentifier": {
-        "creationTime": "subscriptionFilters[].creationTime"
-      },
-      "inputParameters": [
-        "logGroupName"
-      ]
     }
   },
   "operations": {
@@ -56,8 +51,17 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LogGroup",
+            "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
+          }
+        ]
+      },
+      "kmsKeyId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogGroup",
+            "resourceIdentifier": "kmsKeyId"
           }
         ]
       }
@@ -74,12 +78,57 @@
       }
     },
     "CreateExportTask": {
+      "taskName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ExportTask",
+            "resourceIdentifier": "taskName"
+          }
+        ]
+      },
       "logGroupName": {
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LogGroup",
+            "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
+          }
+        ]
+      },
+      "from": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ExportTask",
+            "resourceIdentifier": "from"
+          }
+        ]
+      },
+      "to": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ExportTask",
+            "resourceIdentifier": "to"
+          }
+        ]
+      },
+      "destination": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ExportTask",
+            "resourceIdentifier": "destination"
+          }
+        ]
+      },
+      "destinationPrefix": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ExportTask",
+            "resourceIdentifier": "destinationPrefix"
           }
         ]
       }
@@ -89,8 +138,17 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LogGroup",
+            "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
+          }
+        ]
+      },
+      "kmsKeyId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogGroup",
+            "resourceIdentifier": "kmsKeyId"
           }
         ]
       }
@@ -100,7 +158,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LogGroup",
+            "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
           }
         ]
@@ -122,7 +180,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LogGroup",
+            "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
           }
         ]
@@ -133,7 +191,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LogGroup",
+            "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
           }
         ]
@@ -144,7 +202,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LogGroup",
+            "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
           }
         ]
@@ -175,7 +233,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LogGroup",
+            "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
           }
         ]
@@ -186,7 +244,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LogGroup",
+            "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
           }
         ]
@@ -217,7 +275,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LogGroup",
+            "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
           }
         ]
@@ -228,7 +286,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LogGroup",
+            "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
           }
         ]
@@ -239,7 +297,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LogGroup",
+            "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
           }
         ]
@@ -250,7 +308,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LogGroup",
+            "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
           }
         ]
@@ -261,8 +319,17 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LogGroup",
+            "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
+          }
+        ]
+      },
+      "filterPattern": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "MetricFilter",
+            "resourceIdentifier": "filterPattern"
           }
         ]
       }
@@ -272,7 +339,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LogGroup",
+            "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
           }
         ]
@@ -283,7 +350,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LogGroup",
+            "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
           }
         ]
@@ -298,6 +365,24 @@
             "resourceIdentifier": "destinationName"
           }
         ]
+      },
+      "targetArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Destination",
+            "resourceIdentifier": "targetArn"
+          }
+        ]
+      },
+      "roleArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Destination",
+            "resourceIdentifier": "roleArn"
+          }
+        ]
       }
     },
     "PutDestinationPolicy": {
@@ -309,6 +394,15 @@
             "resourceIdentifier": "destinationName"
           }
         ]
+      },
+      "accessPolicy": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Destination",
+            "resourceIdentifier": "accessPolicy"
+          }
+        ]
       }
     },
     "PutLogEvents": {
@@ -316,7 +410,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LogGroup",
+            "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
           }
         ]
@@ -327,7 +421,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LogGroup",
+            "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
           }
         ]
@@ -338,6 +432,24 @@
             "parameters": {},
             "resourceName": "MetricFilter",
             "resourceIdentifier": "filterName"
+          }
+        ]
+      },
+      "filterPattern": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "MetricFilter",
+            "resourceIdentifier": "filterPattern"
+          }
+        ]
+      },
+      "metricTransformations": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "MetricFilter",
+            "resourceIdentifier": "metricTransformations"
           }
         ]
       }
@@ -351,6 +463,15 @@
             "resourceIdentifier": "policyName"
           }
         ]
+      },
+      "policyDocument": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ResourcePolicy",
+            "resourceIdentifier": "policyDocument"
+          }
+        ]
       }
     },
     "PutRetentionPolicy": {
@@ -358,8 +479,17 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LogGroup",
+            "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
+          }
+        ]
+      },
+      "retentionInDays": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogGroup",
+            "resourceIdentifier": "retentionInDays"
           }
         ]
       }
@@ -369,7 +499,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LogGroup",
+            "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
           }
         ]
@@ -382,6 +512,24 @@
             "resourceIdentifier": "filterName"
           }
         ]
+      },
+      "filterPattern": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "MetricFilter",
+            "resourceIdentifier": "filterPattern"
+          }
+        ]
+      },
+      "roleArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Destination",
+            "resourceIdentifier": "roleArn"
+          }
+        ]
       }
     },
     "TagLogGroup": {
@@ -389,8 +537,19 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LogGroup",
+            "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
+          }
+        ]
+      }
+    },
+    "TestMetricFilter": {
+      "filterPattern": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "MetricFilter",
+            "resourceIdentifier": "filterPattern"
           }
         ]
       }
@@ -400,7 +559,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LogGroup",
+            "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
           }
         ]

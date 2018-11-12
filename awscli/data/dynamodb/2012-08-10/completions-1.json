@@ -1,31 +1,19 @@
 {
   "version": "1.0",
   "resources": {
-    "Endpoint": {
-      "operation": "DescribeEndpoints",
-      "resourceIdentifier": {
-        "CachePeriodInMinutes": "Endpoints[].CachePeriodInMinutes"
-      }
-    },
-    "GlobalTableSetting": {
-      "operation": "DescribeGlobalTableSettings",
-      "resourceIdentifier": {
-        "ReplicaGlobalSecondaryIndexSettings": "ReplicaSettings[].ReplicaGlobalSecondaryIndexSettings"
-      },
-      "inputParameters": [
-        "GlobalTableName"
-      ]
-    },
     "Backup": {
       "operation": "ListBackups",
       "resourceIdentifier": {
-        "BackupArn": "BackupSummaries[].BackupArn"
+        "BackupArn": "BackupSummaries[].BackupArn",
+        "BackupName": "BackupSummaries[].BackupName",
+        "BackupType": "BackupSummaries[].BackupType"
       }
     },
     "GlobalTable": {
       "operation": "ListGlobalTables",
       "resourceIdentifier": {
-        "GlobalTableName": "GlobalTables[].GlobalTableName"
+        "GlobalTableName": "GlobalTables[].GlobalTableName",
+        "ReplicationGroup": "GlobalTables[].ReplicationGroup"
       }
     },
     "Table": {
@@ -33,15 +21,6 @@
       "resourceIdentifier": {
         "TableName": "TableNames[]"
       }
-    },
-    "TagsOfResource": {
-      "operation": "ListTagsOfResource",
-      "resourceIdentifier": {
-        "Value": "Tags[].Value"
-      },
-      "inputParameters": [
-        "ResourceArn"
-      ]
     }
   },
   "operations": {
@@ -54,6 +33,15 @@
             "resourceIdentifier": "TableName"
           }
         ]
+      },
+      "BackupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Backup",
+            "resourceIdentifier": "BackupName"
+          }
+        ]
       }
     },
     "CreateGlobalTable": {
@@ -63,6 +51,15 @@
             "parameters": {},
             "resourceName": "GlobalTable",
             "resourceIdentifier": "GlobalTableName"
+          }
+        ]
+      },
+      "ReplicationGroup": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "GlobalTable",
+            "resourceIdentifier": "ReplicationGroup"
           }
         ]
       }
@@ -195,6 +192,15 @@
             "parameters": {},
             "resourceName": "Table",
             "resourceIdentifier": "TableName"
+          }
+        ]
+      },
+      "BackupType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Backup",
+            "resourceIdentifier": "BackupType"
           }
         ]
       }

@@ -4,19 +4,14 @@
     "CacheCluster": {
       "operation": "DescribeCacheClusters",
       "resourceIdentifier": {
-        "CacheClusterId": "CacheClusters[].CacheClusterId"
-      }
-    },
-    "CacheEngineVersion": {
-      "operation": "DescribeCacheEngineVersions",
-      "resourceIdentifier": {
-        "EngineVersion": "CacheEngineVersions[].EngineVersion"
+        "CacheSecurityGroups": "CacheClusters[].CacheSecurityGroups",
+        "SecurityGroups": "CacheClusters[].SecurityGroups"
       }
     },
     "CacheParameterGroup": {
       "operation": "DescribeCacheParameterGroups",
       "resourceIdentifier": {
-        "CacheParameterGroupName": "CacheParameterGroups[].CacheParameterGroupName"
+        "CacheParameterGroupFamily": "CacheParameterGroups[].CacheParameterGroupFamily"
       }
     },
     "CacheSecurityGroup": {
@@ -28,53 +23,64 @@
     "CacheSubnetGroup": {
       "operation": "DescribeCacheSubnetGroups",
       "resourceIdentifier": {
-        "CacheSubnetGroupName": "CacheSubnetGroups[].CacheSubnetGroupName"
+        "CacheSubnetGroupDescription": "CacheSubnetGroups[].CacheSubnetGroupDescription"
       }
     },
     "Event": {
       "operation": "DescribeEvents",
       "resourceIdentifier": {
-        "Message": "Events[].Message"
+        "SourceIdentifier": "Events[].SourceIdentifier",
+        "SourceType": "Events[].SourceType"
       }
     },
     "ReplicationGroup": {
       "operation": "DescribeReplicationGroups",
       "resourceIdentifier": {
-        "ReplicationGroupId": "ReplicationGroups[].ReplicationGroupId"
+        "Description": "ReplicationGroups[].Description",
+        "SnapshottingClusterId": "ReplicationGroups[].SnapshottingClusterId",
+        "TransitEncryptionEnabled": "ReplicationGroups[].TransitEncryptionEnabled",
+        "AtRestEncryptionEnabled": "ReplicationGroups[].AtRestEncryptionEnabled"
       }
     },
     "ReservedCacheNode": {
       "operation": "DescribeReservedCacheNodes",
       "resourceIdentifier": {
-        "ReservedCacheNodeId": "ReservedCacheNodes[].ReservedCacheNodeId"
+        "ReservedCacheNodeId": "ReservedCacheNodes[].ReservedCacheNodeId",
+        "StartTime": "ReservedCacheNodes[].StartTime",
+        "CacheNodeCount": "ReservedCacheNodes[].CacheNodeCount"
       }
     },
     "ReservedCacheNodesOffering": {
       "operation": "DescribeReservedCacheNodesOfferings",
       "resourceIdentifier": {
-        "ReservedCacheNodesOfferingId": "ReservedCacheNodesOfferings[].ReservedCacheNodesOfferingId"
+        "ReservedCacheNodesOfferingId": "ReservedCacheNodesOfferings[].ReservedCacheNodesOfferingId",
+        "Duration": "ReservedCacheNodesOfferings[].Duration",
+        "ProductDescription": "ReservedCacheNodesOfferings[].ProductDescription",
+        "OfferingType": "ReservedCacheNodesOfferings[].OfferingType"
       }
     },
     "Snapshot": {
       "operation": "DescribeSnapshots",
       "resourceIdentifier": {
-        "NodeSnapshots": "Snapshots[].NodeSnapshots"
+        "SnapshotName": "Snapshots[].SnapshotName",
+        "ReplicationGroupId": "Snapshots[].ReplicationGroupId",
+        "ReplicationGroupDescription": "Snapshots[].ReplicationGroupDescription",
+        "CacheClusterId": "Snapshots[].CacheClusterId",
+        "SnapshotSource": "Snapshots[].SnapshotSource",
+        "CacheNodeType": "Snapshots[].CacheNodeType",
+        "Engine": "Snapshots[].Engine",
+        "EngineVersion": "Snapshots[].EngineVersion",
+        "NumCacheNodes": "Snapshots[].NumCacheNodes",
+        "PreferredAvailabilityZone": "Snapshots[].PreferredAvailabilityZone",
+        "PreferredMaintenanceWindow": "Snapshots[].PreferredMaintenanceWindow",
+        "Port": "Snapshots[].Port",
+        "CacheParameterGroupName": "Snapshots[].CacheParameterGroupName",
+        "CacheSubnetGroupName": "Snapshots[].CacheSubnetGroupName",
+        "AutoMinorVersionUpgrade": "Snapshots[].AutoMinorVersionUpgrade",
+        "SnapshotRetentionLimit": "Snapshots[].SnapshotRetentionLimit",
+        "SnapshotWindow": "Snapshots[].SnapshotWindow",
+        "NumNodeGroups": "Snapshots[].NumNodeGroups"
       }
-    },
-    "AllowedNodeTypeModification": {
-      "operation": "ListAllowedNodeTypeModifications",
-      "resourceIdentifier": {
-        "ScaleUpModification": "ScaleUpModifications[]"
-      }
-    },
-    "TagsForResource": {
-      "operation": "ListTagsForResource",
-      "resourceIdentifier": {
-        "Value": "TagList[].Value"
-      },
-      "inputParameters": [
-        "ResourceName"
-      ]
     }
   },
   "operations": {
@@ -94,7 +100,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheCluster",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheClusterId"
           }
         ]
@@ -103,8 +109,53 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ReplicationGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "ReplicationGroupId"
+          }
+        ]
+      },
+      "PreferredAvailabilityZone": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "PreferredAvailabilityZone"
+          }
+        ]
+      },
+      "PreferredAvailabilityZones": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "PreferredAvailabilityZone"
+          }
+        ]
+      },
+      "NumCacheNodes": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "NumCacheNodes"
+          }
+        ]
+      },
+      "CacheNodeType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "CacheNodeType"
+          }
+        ]
+      },
+      "Engine": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "Engine"
           }
         ]
       },
@@ -112,7 +163,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheEngineVersion",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "EngineVersion"
           }
         ]
@@ -121,7 +172,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheParameterGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheParameterGroupName"
           }
         ]
@@ -130,7 +181,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheSubnetGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheSubnetGroupName"
           }
         ]
@@ -139,8 +190,71 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheSecurityGroup",
-            "resourceIdentifier": "CacheSecurityGroupName"
+            "resourceName": "CacheCluster",
+            "resourceIdentifier": "CacheSecurityGroups"
+          }
+        ]
+      },
+      "SecurityGroupIds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CacheCluster",
+            "resourceIdentifier": "SecurityGroups"
+          }
+        ]
+      },
+      "SnapshotName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "SnapshotName"
+          }
+        ]
+      },
+      "PreferredMaintenanceWindow": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "PreferredMaintenanceWindow"
+          }
+        ]
+      },
+      "Port": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "Port"
+          }
+        ]
+      },
+      "AutoMinorVersionUpgrade": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "AutoMinorVersionUpgrade"
+          }
+        ]
+      },
+      "SnapshotRetentionLimit": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "SnapshotRetentionLimit"
+          }
+        ]
+      },
+      "SnapshotWindow": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "SnapshotWindow"
           }
         ]
       }
@@ -150,8 +264,26 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheParameterGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheParameterGroupName"
+          }
+        ]
+      },
+      "CacheParameterGroupFamily": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CacheParameterGroup",
+            "resourceIdentifier": "CacheParameterGroupFamily"
+          }
+        ]
+      },
+      "Description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationGroup",
+            "resourceIdentifier": "Description"
           }
         ]
       }
@@ -165,6 +297,15 @@
             "resourceIdentifier": "CacheSecurityGroupName"
           }
         ]
+      },
+      "Description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationGroup",
+            "resourceIdentifier": "Description"
+          }
+        ]
       }
     },
     "CreateCacheSubnetGroup": {
@@ -172,8 +313,17 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheSubnetGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheSubnetGroupName"
+          }
+        ]
+      },
+      "CacheSubnetGroupDescription": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CacheSubnetGroup",
+            "resourceIdentifier": "CacheSubnetGroupDescription"
           }
         ]
       }
@@ -183,8 +333,44 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ReplicationGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "ReplicationGroupId"
+          }
+        ]
+      },
+      "ReplicationGroupDescription": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "ReplicationGroupDescription"
+          }
+        ]
+      },
+      "NumNodeGroups": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "NumNodeGroups"
+          }
+        ]
+      },
+      "CacheNodeType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "CacheNodeType"
+          }
+        ]
+      },
+      "Engine": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "Engine"
           }
         ]
       },
@@ -192,7 +378,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheEngineVersion",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "EngineVersion"
           }
         ]
@@ -201,7 +387,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheParameterGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheParameterGroupName"
           }
         ]
@@ -210,7 +396,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheSubnetGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheSubnetGroupName"
           }
         ]
@@ -219,8 +405,89 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheSecurityGroup",
-            "resourceIdentifier": "CacheSecurityGroupName"
+            "resourceName": "CacheCluster",
+            "resourceIdentifier": "CacheSecurityGroups"
+          }
+        ]
+      },
+      "SecurityGroupIds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CacheCluster",
+            "resourceIdentifier": "SecurityGroups"
+          }
+        ]
+      },
+      "SnapshotName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "SnapshotName"
+          }
+        ]
+      },
+      "PreferredMaintenanceWindow": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "PreferredMaintenanceWindow"
+          }
+        ]
+      },
+      "Port": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "Port"
+          }
+        ]
+      },
+      "AutoMinorVersionUpgrade": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "AutoMinorVersionUpgrade"
+          }
+        ]
+      },
+      "SnapshotRetentionLimit": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "SnapshotRetentionLimit"
+          }
+        ]
+      },
+      "SnapshotWindow": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "SnapshotWindow"
+          }
+        ]
+      },
+      "TransitEncryptionEnabled": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationGroup",
+            "resourceIdentifier": "TransitEncryptionEnabled"
+          }
+        ]
+      },
+      "AtRestEncryptionEnabled": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationGroup",
+            "resourceIdentifier": "AtRestEncryptionEnabled"
           }
         ]
       }
@@ -230,7 +497,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ReplicationGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "ReplicationGroupId"
           }
         ]
@@ -239,8 +506,17 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheCluster",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheClusterId"
+          }
+        ]
+      },
+      "SnapshotName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "SnapshotName"
           }
         ]
       }
@@ -250,7 +526,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ReplicationGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "ReplicationGroupId"
           }
         ]
@@ -261,7 +537,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheCluster",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheClusterId"
           }
         ]
@@ -272,7 +548,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheParameterGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheParameterGroupName"
           }
         ]
@@ -294,7 +570,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheSubnetGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheSubnetGroupName"
           }
         ]
@@ -305,8 +581,19 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ReplicationGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "ReplicationGroupId"
+          }
+        ]
+      }
+    },
+    "DeleteSnapshot": {
+      "SnapshotName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "SnapshotName"
           }
         ]
       }
@@ -316,19 +603,37 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheCluster",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheClusterId"
           }
         ]
       }
     },
     "DescribeCacheEngineVersions": {
+      "Engine": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "Engine"
+          }
+        ]
+      },
       "EngineVersion": {
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheEngineVersion",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "EngineVersion"
+          }
+        ]
+      },
+      "CacheParameterGroupFamily": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CacheParameterGroup",
+            "resourceIdentifier": "CacheParameterGroupFamily"
           }
         ]
       }
@@ -338,7 +643,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheParameterGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheParameterGroupName"
           }
         ]
@@ -349,7 +654,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheParameterGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheParameterGroupName"
           }
         ]
@@ -371,8 +676,57 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheSubnetGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheSubnetGroupName"
+          }
+        ]
+      }
+    },
+    "DescribeEngineDefaultParameters": {
+      "CacheParameterGroupFamily": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CacheParameterGroup",
+            "resourceIdentifier": "CacheParameterGroupFamily"
+          }
+        ]
+      }
+    },
+    "DescribeEvents": {
+      "SourceIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "SourceIdentifier"
+          }
+        ]
+      },
+      "SourceType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "SourceType"
+          }
+        ]
+      },
+      "StartTime": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReservedCacheNode",
+            "resourceIdentifier": "StartTime"
+          }
+        ]
+      },
+      "Duration": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReservedCacheNodesOffering",
+            "resourceIdentifier": "Duration"
           }
         ]
       }
@@ -382,7 +736,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ReplicationGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "ReplicationGroupId"
           }
         ]
@@ -406,6 +760,42 @@
             "resourceIdentifier": "ReservedCacheNodesOfferingId"
           }
         ]
+      },
+      "CacheNodeType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "CacheNodeType"
+          }
+        ]
+      },
+      "Duration": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReservedCacheNodesOffering",
+            "resourceIdentifier": "Duration"
+          }
+        ]
+      },
+      "ProductDescription": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReservedCacheNodesOffering",
+            "resourceIdentifier": "ProductDescription"
+          }
+        ]
+      },
+      "OfferingType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReservedCacheNodesOffering",
+            "resourceIdentifier": "OfferingType"
+          }
+        ]
       }
     },
     "DescribeReservedCacheNodesOfferings": {
@@ -417,6 +807,42 @@
             "resourceIdentifier": "ReservedCacheNodesOfferingId"
           }
         ]
+      },
+      "CacheNodeType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "CacheNodeType"
+          }
+        ]
+      },
+      "Duration": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReservedCacheNodesOffering",
+            "resourceIdentifier": "Duration"
+          }
+        ]
+      },
+      "ProductDescription": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReservedCacheNodesOffering",
+            "resourceIdentifier": "ProductDescription"
+          }
+        ]
+      },
+      "OfferingType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReservedCacheNodesOffering",
+            "resourceIdentifier": "OfferingType"
+          }
+        ]
       }
     },
     "DescribeSnapshots": {
@@ -424,7 +850,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ReplicationGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "ReplicationGroupId"
           }
         ]
@@ -433,8 +859,26 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheCluster",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheClusterId"
+          }
+        ]
+      },
+      "SnapshotName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "SnapshotName"
+          }
+        ]
+      },
+      "SnapshotSource": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "SnapshotSource"
           }
         ]
       }
@@ -444,7 +888,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ReplicationGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "ReplicationGroupId"
           }
         ]
@@ -455,7 +899,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheCluster",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheClusterId"
           }
         ]
@@ -464,7 +908,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ReplicationGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "ReplicationGroupId"
           }
         ]
@@ -475,8 +919,17 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheCluster",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheClusterId"
+          }
+        ]
+      },
+      "NumCacheNodes": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "NumCacheNodes"
           }
         ]
       },
@@ -484,8 +937,26 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheSecurityGroup",
-            "resourceIdentifier": "CacheSecurityGroupName"
+            "resourceName": "CacheCluster",
+            "resourceIdentifier": "CacheSecurityGroups"
+          }
+        ]
+      },
+      "SecurityGroupIds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CacheCluster",
+            "resourceIdentifier": "SecurityGroups"
+          }
+        ]
+      },
+      "PreferredMaintenanceWindow": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "PreferredMaintenanceWindow"
           }
         ]
       },
@@ -493,7 +964,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheParameterGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheParameterGroupName"
           }
         ]
@@ -502,8 +973,44 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheEngineVersion",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "EngineVersion"
+          }
+        ]
+      },
+      "AutoMinorVersionUpgrade": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "AutoMinorVersionUpgrade"
+          }
+        ]
+      },
+      "SnapshotRetentionLimit": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "SnapshotRetentionLimit"
+          }
+        ]
+      },
+      "SnapshotWindow": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "SnapshotWindow"
+          }
+        ]
+      },
+      "CacheNodeType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "CacheNodeType"
           }
         ]
       }
@@ -513,7 +1020,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheParameterGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheParameterGroupName"
           }
         ]
@@ -524,8 +1031,17 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheSubnetGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheSubnetGroupName"
+          }
+        ]
+      },
+      "CacheSubnetGroupDescription": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CacheSubnetGroup",
+            "resourceIdentifier": "CacheSubnetGroupDescription"
           }
         ]
       }
@@ -535,8 +1051,26 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ReplicationGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "ReplicationGroupId"
+          }
+        ]
+      },
+      "ReplicationGroupDescription": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "ReplicationGroupDescription"
+          }
+        ]
+      },
+      "SnapshottingClusterId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReplicationGroup",
+            "resourceIdentifier": "SnapshottingClusterId"
           }
         ]
       },
@@ -544,8 +1078,26 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheSecurityGroup",
-            "resourceIdentifier": "CacheSecurityGroupName"
+            "resourceName": "CacheCluster",
+            "resourceIdentifier": "CacheSecurityGroups"
+          }
+        ]
+      },
+      "SecurityGroupIds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "CacheCluster",
+            "resourceIdentifier": "SecurityGroups"
+          }
+        ]
+      },
+      "PreferredMaintenanceWindow": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "PreferredMaintenanceWindow"
           }
         ]
       },
@@ -553,7 +1105,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheParameterGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheParameterGroupName"
           }
         ]
@@ -562,8 +1114,44 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheEngineVersion",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "EngineVersion"
+          }
+        ]
+      },
+      "AutoMinorVersionUpgrade": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "AutoMinorVersionUpgrade"
+          }
+        ]
+      },
+      "SnapshotRetentionLimit": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "SnapshotRetentionLimit"
+          }
+        ]
+      },
+      "SnapshotWindow": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "SnapshotWindow"
+          }
+        ]
+      },
+      "CacheNodeType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Snapshot",
+            "resourceIdentifier": "CacheNodeType"
           }
         ]
       }
@@ -573,7 +1161,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ReplicationGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "ReplicationGroupId"
           }
         ]
@@ -597,6 +1185,15 @@
             "resourceIdentifier": "ReservedCacheNodeId"
           }
         ]
+      },
+      "CacheNodeCount": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReservedCacheNode",
+            "resourceIdentifier": "CacheNodeCount"
+          }
+        ]
       }
     },
     "RebootCacheCluster": {
@@ -604,7 +1201,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheCluster",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheClusterId"
           }
         ]
@@ -615,7 +1212,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "CacheParameterGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "CacheParameterGroupName"
           }
         ]
@@ -637,7 +1234,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ReplicationGroup",
+            "resourceName": "Snapshot",
             "resourceIdentifier": "ReplicationGroupId"
           }
         ]

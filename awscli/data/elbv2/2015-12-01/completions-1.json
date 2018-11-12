@@ -1,86 +1,58 @@
 {
   "version": "1.0",
   "resources": {
-    "AccountLimit": {
-      "operation": "DescribeAccountLimits",
-      "resourceIdentifier": {
-        "Name": "Limits[].Name"
-      }
-    },
-    "ListenerCertificate": {
-      "operation": "DescribeListenerCertificates",
-      "resourceIdentifier": {
-        "CertificateArn": "Certificates[].CertificateArn"
-      },
-      "inputParameters": [
-        "ListenerArn"
-      ]
-    },
     "Listener": {
       "operation": "DescribeListeners",
       "resourceIdentifier": {
-        "ListenerArn": "Listeners[].ListenerArn"
+        "ListenerArn": "Listeners[].ListenerArn",
+        "Certificates": "Listeners[].Certificates",
+        "SslPolicy": "Listeners[].SslPolicy",
+        "DefaultActions": "Listeners[].DefaultActions"
       }
-    },
-    "LoadBalancerAttribute": {
-      "operation": "DescribeLoadBalancerAttributes",
-      "resourceIdentifier": {
-        "Value": "Attributes[].Value"
-      },
-      "inputParameters": [
-        "LoadBalancerArn"
-      ]
     },
     "LoadBalancer": {
       "operation": "DescribeLoadBalancers",
       "resourceIdentifier": {
-        "LoadBalancerArn": "LoadBalancers[].LoadBalancerArn"
+        "LoadBalancerArn": "LoadBalancers[].LoadBalancerArn",
+        "Scheme": "LoadBalancers[].Scheme",
+        "Type": "LoadBalancers[].Type",
+        "SecurityGroups": "LoadBalancers[].SecurityGroups",
+        "IpAddressType": "LoadBalancers[].IpAddressType"
       }
     },
     "Rule": {
       "operation": "DescribeRules",
       "resourceIdentifier": {
-        "RuleArn": "Rules[].RuleArn"
+        "RuleArn": "Rules[].RuleArn",
+        "Priority": "Rules[].Priority",
+        "Conditions": "Rules[].Conditions",
+        "Actions": "Rules[].Actions"
       }
     },
     "SSLPolicy": {
       "operation": "DescribeSSLPolicies",
       "resourceIdentifier": {
-        "SslProtocols": "SslPolicies[].SslProtocols"
+        "Name": "SslPolicies[].Name"
       }
-    },
-    "Tag": {
-      "operation": "DescribeTags",
-      "resourceIdentifier": {
-        "Tags": "TagDescriptions[].Tags"
-      },
-      "inputParameters": [
-        "ResourceArns"
-      ]
-    },
-    "TargetGroupAttribute": {
-      "operation": "DescribeTargetGroupAttributes",
-      "resourceIdentifier": {
-        "Value": "Attributes[].Value"
-      },
-      "inputParameters": [
-        "TargetGroupArn"
-      ]
     },
     "TargetGroup": {
       "operation": "DescribeTargetGroups",
       "resourceIdentifier": {
-        "TargetGroupArn": "TargetGroups[].TargetGroupArn"
+        "TargetGroupArn": "TargetGroups[].TargetGroupArn",
+        "Protocol": "TargetGroups[].Protocol",
+        "Port": "TargetGroups[].Port",
+        "VpcId": "TargetGroups[].VpcId",
+        "HealthCheckProtocol": "TargetGroups[].HealthCheckProtocol",
+        "HealthCheckPort": "TargetGroups[].HealthCheckPort",
+        "HealthCheckIntervalSeconds": "TargetGroups[].HealthCheckIntervalSeconds",
+        "HealthCheckTimeoutSeconds": "TargetGroups[].HealthCheckTimeoutSeconds",
+        "HealthyThresholdCount": "TargetGroups[].HealthyThresholdCount",
+        "UnhealthyThresholdCount": "TargetGroups[].UnhealthyThresholdCount",
+        "HealthCheckPath": "TargetGroups[].HealthCheckPath",
+        "Matcher": "TargetGroups[].Matcher",
+        "LoadBalancerArns": "TargetGroups[].LoadBalancerArns",
+        "TargetType": "TargetGroups[].TargetType"
       }
-    },
-    "TargetHealth": {
-      "operation": "DescribeTargetHealth",
-      "resourceIdentifier": {
-        "TargetHealth": "TargetHealthDescriptions[].TargetHealth"
-      },
-      "inputParameters": [
-        "TargetGroupArn"
-      ]
     }
   },
   "operations": {
@@ -91,6 +63,15 @@
             "parameters": {},
             "resourceName": "Listener",
             "resourceIdentifier": "ListenerArn"
+          }
+        ]
+      },
+      "Certificates": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Listener",
+            "resourceIdentifier": "Certificates"
           }
         ]
       }
@@ -104,6 +85,51 @@
             "resourceIdentifier": "LoadBalancerArn"
           }
         ]
+      },
+      "Protocol": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "Protocol"
+          }
+        ]
+      },
+      "Port": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "Port"
+          }
+        ]
+      },
+      "SslPolicy": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Listener",
+            "resourceIdentifier": "SslPolicy"
+          }
+        ]
+      },
+      "Certificates": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Listener",
+            "resourceIdentifier": "Certificates"
+          }
+        ]
+      },
+      "DefaultActions": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Listener",
+            "resourceIdentifier": "DefaultActions"
+          }
+        ]
       }
     },
     "CreateLoadBalancer": {
@@ -111,8 +137,44 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "AccountLimit",
+            "resourceName": "SSLPolicy",
             "resourceIdentifier": "Name"
+          }
+        ]
+      },
+      "SecurityGroups": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LoadBalancer",
+            "resourceIdentifier": "SecurityGroups"
+          }
+        ]
+      },
+      "Scheme": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LoadBalancer",
+            "resourceIdentifier": "Scheme"
+          }
+        ]
+      },
+      "Type": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LoadBalancer",
+            "resourceIdentifier": "Type"
+          }
+        ]
+      },
+      "IpAddressType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LoadBalancer",
+            "resourceIdentifier": "IpAddressType"
           }
         ]
       }
@@ -126,6 +188,33 @@
             "resourceIdentifier": "ListenerArn"
           }
         ]
+      },
+      "Conditions": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Rule",
+            "resourceIdentifier": "Conditions"
+          }
+        ]
+      },
+      "Priority": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Rule",
+            "resourceIdentifier": "Priority"
+          }
+        ]
+      },
+      "Actions": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Rule",
+            "resourceIdentifier": "Actions"
+          }
+        ]
       }
     },
     "CreateTargetGroup": {
@@ -133,8 +222,116 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "AccountLimit",
+            "resourceName": "SSLPolicy",
             "resourceIdentifier": "Name"
+          }
+        ]
+      },
+      "Protocol": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "Protocol"
+          }
+        ]
+      },
+      "Port": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "Port"
+          }
+        ]
+      },
+      "VpcId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "VpcId"
+          }
+        ]
+      },
+      "HealthCheckProtocol": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "HealthCheckProtocol"
+          }
+        ]
+      },
+      "HealthCheckPort": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "HealthCheckPort"
+          }
+        ]
+      },
+      "HealthCheckPath": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "HealthCheckPath"
+          }
+        ]
+      },
+      "HealthCheckIntervalSeconds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "HealthCheckIntervalSeconds"
+          }
+        ]
+      },
+      "HealthCheckTimeoutSeconds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "HealthCheckTimeoutSeconds"
+          }
+        ]
+      },
+      "HealthyThresholdCount": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "HealthyThresholdCount"
+          }
+        ]
+      },
+      "UnhealthyThresholdCount": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "UnhealthyThresholdCount"
+          }
+        ]
+      },
+      "Matcher": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "Matcher"
+          }
+        ]
+      },
+      "TargetType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "TargetType"
           }
         ]
       }
@@ -241,8 +438,8 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "LoadBalancer",
-            "resourceIdentifier": "LoadBalancerArn"
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "LoadBalancerArns"
           }
         ]
       }
@@ -318,6 +515,51 @@
             "resourceIdentifier": "ListenerArn"
           }
         ]
+      },
+      "Port": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "Port"
+          }
+        ]
+      },
+      "Protocol": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "Protocol"
+          }
+        ]
+      },
+      "SslPolicy": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Listener",
+            "resourceIdentifier": "SslPolicy"
+          }
+        ]
+      },
+      "Certificates": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Listener",
+            "resourceIdentifier": "Certificates"
+          }
+        ]
+      },
+      "DefaultActions": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Listener",
+            "resourceIdentifier": "DefaultActions"
+          }
+        ]
       }
     },
     "ModifyLoadBalancerAttributes": {
@@ -340,6 +582,24 @@
             "resourceIdentifier": "RuleArn"
           }
         ]
+      },
+      "Conditions": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Rule",
+            "resourceIdentifier": "Conditions"
+          }
+        ]
+      },
+      "Actions": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Rule",
+            "resourceIdentifier": "Actions"
+          }
+        ]
       }
     },
     "ModifyTargetGroup": {
@@ -349,6 +609,78 @@
             "parameters": {},
             "resourceName": "TargetGroup",
             "resourceIdentifier": "TargetGroupArn"
+          }
+        ]
+      },
+      "HealthCheckProtocol": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "HealthCheckProtocol"
+          }
+        ]
+      },
+      "HealthCheckPort": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "HealthCheckPort"
+          }
+        ]
+      },
+      "HealthCheckPath": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "HealthCheckPath"
+          }
+        ]
+      },
+      "HealthCheckIntervalSeconds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "HealthCheckIntervalSeconds"
+          }
+        ]
+      },
+      "HealthCheckTimeoutSeconds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "HealthCheckTimeoutSeconds"
+          }
+        ]
+      },
+      "HealthyThresholdCount": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "HealthyThresholdCount"
+          }
+        ]
+      },
+      "UnhealthyThresholdCount": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "UnhealthyThresholdCount"
+          }
+        ]
+      },
+      "Matcher": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TargetGroup",
+            "resourceIdentifier": "Matcher"
           }
         ]
       }
@@ -384,6 +716,15 @@
             "resourceIdentifier": "ListenerArn"
           }
         ]
+      },
+      "Certificates": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Listener",
+            "resourceIdentifier": "Certificates"
+          }
+        ]
       }
     },
     "SetIpAddressType": {
@@ -395,6 +736,15 @@
             "resourceIdentifier": "LoadBalancerArn"
           }
         ]
+      },
+      "IpAddressType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LoadBalancer",
+            "resourceIdentifier": "IpAddressType"
+          }
+        ]
       }
     },
     "SetSecurityGroups": {
@@ -404,6 +754,15 @@
             "parameters": {},
             "resourceName": "LoadBalancer",
             "resourceIdentifier": "LoadBalancerArn"
+          }
+        ]
+      },
+      "SecurityGroups": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LoadBalancer",
+            "resourceIdentifier": "SecurityGroups"
           }
         ]
       }

@@ -10,38 +10,68 @@
     "ContinuousExport": {
       "operation": "DescribeContinuousExports",
       "resourceIdentifier": {
-        "exportId": "descriptions[].exportId"
-      }
-    },
-    "ExportConfiguration": {
-      "operation": "DescribeExportConfigurations",
-      "resourceIdentifier": {
-        "configurationsDownloadUrl": "exportsInfo[].configurationsDownloadUrl"
+        "startTime": "descriptions[].startTime"
       }
     },
     "ExportTask": {
       "operation": "DescribeExportTasks",
       "resourceIdentifier": {
-        "exportStatus": "exportsInfo[].exportStatus"
+        "exportId": "exportsInfo[].exportId"
       }
     },
     "Tag": {
       "operation": "DescribeTags",
       "resourceIdentifier": {
-        "value": "tags[].value"
+        "configurationType": "tags[].configurationType",
+        "configurationId": "tags[].configurationId"
       }
-    },
-    "ServerNeighbor": {
-      "operation": "ListServerNeighbors",
-      "resourceIdentifier": {
-        "sourceServerId": "neighbors[].sourceServerId"
-      },
-      "inputParameters": [
-        "configurationId"
-      ]
     }
   },
   "operations": {
+    "AssociateConfigurationItemsToApplication": {
+      "configurationIds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Tag",
+            "resourceIdentifier": "configurationId"
+          }
+        ]
+      }
+    },
+    "CreateTags": {
+      "configurationIds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Tag",
+            "resourceIdentifier": "configurationId"
+          }
+        ]
+      }
+    },
+    "DeleteApplications": {
+      "configurationIds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Tag",
+            "resourceIdentifier": "configurationId"
+          }
+        ]
+      }
+    },
+    "DeleteTags": {
+      "configurationIds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Tag",
+            "resourceIdentifier": "configurationId"
+          }
+        ]
+      }
+    },
     "DescribeAgents": {
       "agentIds": {
         "completions": [
@@ -53,12 +83,23 @@
         ]
       }
     },
+    "DescribeConfigurations": {
+      "configurationIds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Tag",
+            "resourceIdentifier": "configurationId"
+          }
+        ]
+      }
+    },
     "DescribeContinuousExports": {
       "exportIds": {
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ContinuousExport",
+            "resourceName": "ExportTask",
             "resourceIdentifier": "exportId"
           }
         ]
@@ -69,7 +110,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ContinuousExport",
+            "resourceName": "ExportTask",
             "resourceIdentifier": "exportId"
           }
         ]
@@ -80,8 +121,41 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ContinuousExport",
+            "resourceName": "ExportTask",
             "resourceIdentifier": "exportId"
+          }
+        ]
+      }
+    },
+    "DisassociateConfigurationItemsFromApplication": {
+      "configurationIds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Tag",
+            "resourceIdentifier": "configurationId"
+          }
+        ]
+      }
+    },
+    "ListConfigurations": {
+      "configurationType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Tag",
+            "resourceIdentifier": "configurationType"
+          }
+        ]
+      }
+    },
+    "ListServerNeighbors": {
+      "configurationId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Tag",
+            "resourceIdentifier": "configurationId"
           }
         ]
       }
@@ -97,12 +171,23 @@
         ]
       }
     },
+    "StartExportTask": {
+      "startTime": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ContinuousExport",
+            "resourceIdentifier": "startTime"
+          }
+        ]
+      }
+    },
     "StopContinuousExport": {
       "exportId": {
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ContinuousExport",
+            "resourceName": "ExportTask",
             "resourceIdentifier": "exportId"
           }
         ]
@@ -115,6 +200,17 @@
             "parameters": {},
             "resourceName": "Agent",
             "resourceIdentifier": "agentId"
+          }
+        ]
+      }
+    },
+    "UpdateApplication": {
+      "configurationId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Tag",
+            "resourceIdentifier": "configurationId"
           }
         ]
       }

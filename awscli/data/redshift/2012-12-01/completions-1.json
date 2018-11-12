@@ -4,23 +4,15 @@
     "ClusterDbRevision": {
       "operation": "DescribeClusterDbRevisions",
       "resourceIdentifier": {
-        "CurrentDatabaseRevision": "ClusterDbRevisions[].CurrentDatabaseRevision"
+        "RevisionTargets": "ClusterDbRevisions[].RevisionTargets"
       }
     },
     "ClusterParameterGroup": {
       "operation": "DescribeClusterParameterGroups",
       "resourceIdentifier": {
-        "ParameterGroupName": "ParameterGroups[].ParameterGroupName"
+        "ParameterGroupName": "ParameterGroups[].ParameterGroupName",
+        "ParameterGroupFamily": "ParameterGroups[].ParameterGroupFamily"
       }
-    },
-    "ClusterParameter": {
-      "operation": "DescribeClusterParameters",
-      "resourceIdentifier": {
-        "ParameterName": "Parameters[].ParameterName"
-      },
-      "inputParameters": [
-        "ParameterGroupName"
-      ]
     },
     "ClusterSecurityGroup": {
       "operation": "DescribeClusterSecurityGroups",
@@ -31,97 +23,114 @@
     "ClusterSnapshot": {
       "operation": "DescribeClusterSnapshots",
       "resourceIdentifier": {
-        "SnapshotType": "Snapshots[].SnapshotType"
-      }
-    },
-    "ClusterSubnetGroup": {
-      "operation": "DescribeClusterSubnetGroups",
-      "resourceIdentifier": {
-        "ClusterSubnetGroupName": "ClusterSubnetGroups[].ClusterSubnetGroupName"
-      }
-    },
-    "ClusterTrack": {
-      "operation": "DescribeClusterTracks",
-      "resourceIdentifier": {
-        "MaintenanceTrackName": "MaintenanceTracks[].MaintenanceTrackName"
+        "Port": "Snapshots[].Port",
+        "SnapshotType": "Snapshots[].SnapshotType",
+        "AccountsWithRestoreAccess": "Snapshots[].AccountsWithRestoreAccess",
+        "OwnerAccount": "Snapshots[].OwnerAccount"
       }
     },
     "ClusterVersion": {
       "operation": "DescribeClusterVersions",
       "resourceIdentifier": {
-        "ClusterVersion": "ClusterVersions[].ClusterVersion"
+        "ClusterParameterGroupFamily": "ClusterVersions[].ClusterParameterGroupFamily"
       }
     },
     "Cluster": {
       "operation": "DescribeClusters",
       "resourceIdentifier": {
-        "ClusterNodes": "Clusters[].ClusterNodes"
-      }
-    },
-    "EventCategory": {
-      "operation": "DescribeEventCategories",
-      "resourceIdentifier": {
-        "Events": "EventCategoriesMapList[].Events"
+        "MasterUsername": "Clusters[].MasterUsername",
+        "DBName": "Clusters[].DBName",
+        "AutomatedSnapshotRetentionPeriod": "Clusters[].AutomatedSnapshotRetentionPeriod",
+        "ClusterSecurityGroups": "Clusters[].ClusterSecurityGroups",
+        "VpcSecurityGroups": "Clusters[].VpcSecurityGroups",
+        "ClusterSubnetGroupName": "Clusters[].ClusterSubnetGroupName",
+        "AvailabilityZone": "Clusters[].AvailabilityZone",
+        "PreferredMaintenanceWindow": "Clusters[].PreferredMaintenanceWindow",
+        "AllowVersionUpgrade": "Clusters[].AllowVersionUpgrade",
+        "NumberOfNodes": "Clusters[].NumberOfNodes",
+        "PubliclyAccessible": "Clusters[].PubliclyAccessible",
+        "Encrypted": "Clusters[].Encrypted",
+        "EnhancedVpcRouting": "Clusters[].EnhancedVpcRouting",
+        "IamRoles": "Clusters[].IamRoles",
+        "MaintenanceTrackName": "Clusters[].MaintenanceTrackName"
       }
     },
     "EventSubscription": {
       "operation": "DescribeEventSubscriptions",
       "resourceIdentifier": {
-        "CustSubscriptionId": "EventSubscriptionsList[].CustSubscriptionId"
+        "SnsTopicArn": "EventSubscriptionsList[].SnsTopicArn",
+        "Enabled": "EventSubscriptionsList[].Enabled"
       }
     },
     "Event": {
       "operation": "DescribeEvents",
       "resourceIdentifier": {
-        "EventId": "Events[].EventId"
+        "SourceIdentifier": "Events[].SourceIdentifier",
+        "SourceType": "Events[].SourceType",
+        "EventCategories": "Events[].EventCategories",
+        "Severity": "Events[].Severity"
       }
     },
     "HsmClientCertificate": {
       "operation": "DescribeHsmClientCertificates",
       "resourceIdentifier": {
-        "HsmClientCertificatePublicKey": "HsmClientCertificates[].HsmClientCertificatePublicKey"
+        "HsmClientCertificateIdentifier": "HsmClientCertificates[].HsmClientCertificateIdentifier"
       }
     },
     "HsmConfiguration": {
       "operation": "DescribeHsmConfigurations",
       "resourceIdentifier": {
-        "HsmConfigurationIdentifier": "HsmConfigurations[].HsmConfigurationIdentifier"
+        "HsmConfigurationIdentifier": "HsmConfigurations[].HsmConfigurationIdentifier",
+        "Description": "HsmConfigurations[].Description",
+        "HsmIpAddress": "HsmConfigurations[].HsmIpAddress",
+        "HsmPartitionName": "HsmConfigurations[].HsmPartitionName"
       }
     },
     "OrderableClusterOption": {
       "operation": "DescribeOrderableClusterOptions",
       "resourceIdentifier": {
-        "ClusterVersion": "OrderableClusterOptions[].ClusterVersion"
-      }
-    },
-    "ReservedNodeOffering": {
-      "operation": "DescribeReservedNodeOfferings",
-      "resourceIdentifier": {
-        "ReservedNodeOfferingId": "ReservedNodeOfferings[].ReservedNodeOfferingId"
+        "ClusterVersion": "OrderableClusterOptions[].ClusterVersion",
+        "ClusterType": "OrderableClusterOptions[].ClusterType"
       }
     },
     "ReservedNode": {
       "operation": "DescribeReservedNodes",
       "resourceIdentifier": {
-        "ReservedNodeId": "ReservedNodes[].ReservedNodeId"
+        "ReservedNodeId": "ReservedNodes[].ReservedNodeId",
+        "ReservedNodeOfferingId": "ReservedNodes[].ReservedNodeOfferingId",
+        "NodeType": "ReservedNodes[].NodeType",
+        "StartTime": "ReservedNodes[].StartTime",
+        "Duration": "ReservedNodes[].Duration",
+        "NodeCount": "ReservedNodes[].NodeCount"
       }
     },
     "SnapshotCopyGrant": {
       "operation": "DescribeSnapshotCopyGrants",
       "resourceIdentifier": {
-        "SnapshotCopyGrantName": "SnapshotCopyGrants[].SnapshotCopyGrantName"
+        "SnapshotCopyGrantName": "SnapshotCopyGrants[].SnapshotCopyGrantName",
+        "KmsKeyId": "SnapshotCopyGrants[].KmsKeyId",
+        "Tags": "SnapshotCopyGrants[].Tags"
       }
     },
     "TableRestoreStatu": {
       "operation": "DescribeTableRestoreStatus",
       "resourceIdentifier": {
-        "TableRestoreRequestId": "TableRestoreStatusDetails[].TableRestoreRequestId"
+        "TableRestoreRequestId": "TableRestoreStatusDetails[].TableRestoreRequestId",
+        "ClusterIdentifier": "TableRestoreStatusDetails[].ClusterIdentifier",
+        "SnapshotIdentifier": "TableRestoreStatusDetails[].SnapshotIdentifier",
+        "SourceDatabaseName": "TableRestoreStatusDetails[].SourceDatabaseName",
+        "SourceSchemaName": "TableRestoreStatusDetails[].SourceSchemaName",
+        "SourceTableName": "TableRestoreStatusDetails[].SourceTableName",
+        "TargetDatabaseName": "TableRestoreStatusDetails[].TargetDatabaseName",
+        "TargetSchemaName": "TableRestoreStatusDetails[].TargetSchemaName",
+        "NewTableName": "TableRestoreStatusDetails[].NewTableName"
       }
     },
     "Tag": {
       "operation": "DescribeTags",
       "resourceIdentifier": {
-        "Tag": "TaggedResources[].Tag"
+        "ResourceName": "TaggedResources[].ResourceName",
+        "ResourceType": "TaggedResources[].ResourceType"
       }
     }
   },
@@ -148,13 +157,132 @@
         ]
       }
     },
+    "AuthorizeSnapshotAccess": {
+      "SnapshotIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "SnapshotIdentifier"
+          }
+        ]
+      },
+      "AccountWithRestoreAccess": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterSnapshot",
+            "resourceIdentifier": "AccountsWithRestoreAccess"
+          }
+        ]
+      }
+    },
     "CreateCluster": {
+      "DBName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "DBName"
+          }
+        ]
+      },
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
+          }
+        ]
+      },
+      "ClusterType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "OrderableClusterOption",
+            "resourceIdentifier": "ClusterType"
+          }
+        ]
+      },
+      "NodeType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReservedNode",
+            "resourceIdentifier": "NodeType"
+          }
+        ]
+      },
+      "MasterUsername": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "MasterUsername"
+          }
+        ]
+      },
+      "ClusterSecurityGroups": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClusterSecurityGroups"
+          }
+        ]
+      },
+      "VpcSecurityGroupIds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "VpcSecurityGroups"
+          }
+        ]
+      },
       "ClusterSubnetGroupName": {
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ClusterSubnetGroup",
+            "resourceName": "Cluster",
             "resourceIdentifier": "ClusterSubnetGroupName"
+          }
+        ]
+      },
+      "AvailabilityZone": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "AvailabilityZone"
+          }
+        ]
+      },
+      "PreferredMaintenanceWindow": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "PreferredMaintenanceWindow"
+          }
+        ]
+      },
+      "AutomatedSnapshotRetentionPeriod": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "AutomatedSnapshotRetentionPeriod"
+          }
+        ]
+      },
+      "Port": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterSnapshot",
+            "resourceIdentifier": "Port"
           }
         ]
       },
@@ -167,6 +295,51 @@
           }
         ]
       },
+      "AllowVersionUpgrade": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "AllowVersionUpgrade"
+          }
+        ]
+      },
+      "NumberOfNodes": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "NumberOfNodes"
+          }
+        ]
+      },
+      "PubliclyAccessible": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "PubliclyAccessible"
+          }
+        ]
+      },
+      "Encrypted": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "Encrypted"
+          }
+        ]
+      },
+      "HsmClientCertificateIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HsmClientCertificate",
+            "resourceIdentifier": "HsmClientCertificateIdentifier"
+          }
+        ]
+      },
       "HsmConfigurationIdentifier": {
         "completions": [
           {
@@ -176,11 +349,47 @@
           }
         ]
       },
+      "Tags": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SnapshotCopyGrant",
+            "resourceIdentifier": "Tags"
+          }
+        ]
+      },
+      "KmsKeyId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SnapshotCopyGrant",
+            "resourceIdentifier": "KmsKeyId"
+          }
+        ]
+      },
+      "EnhancedVpcRouting": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "EnhancedVpcRouting"
+          }
+        ]
+      },
+      "IamRoles": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "IamRoles"
+          }
+        ]
+      },
       "MaintenanceTrackName": {
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ClusterTrack",
+            "resourceName": "Cluster",
             "resourceIdentifier": "MaintenanceTrackName"
           }
         ]
@@ -195,6 +404,33 @@
             "resourceIdentifier": "ParameterGroupName"
           }
         ]
+      },
+      "ParameterGroupFamily": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterParameterGroup",
+            "resourceIdentifier": "ParameterGroupFamily"
+          }
+        ]
+      },
+      "Description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HsmConfiguration",
+            "resourceIdentifier": "Description"
+          }
+        ]
+      },
+      "Tags": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SnapshotCopyGrant",
+            "resourceIdentifier": "Tags"
+          }
+        ]
       }
     },
     "CreateClusterSecurityGroup": {
@@ -206,6 +442,53 @@
             "resourceIdentifier": "ClusterSecurityGroupName"
           }
         ]
+      },
+      "Description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HsmConfiguration",
+            "resourceIdentifier": "Description"
+          }
+        ]
+      },
+      "Tags": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SnapshotCopyGrant",
+            "resourceIdentifier": "Tags"
+          }
+        ]
+      }
+    },
+    "CreateClusterSnapshot": {
+      "SnapshotIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "SnapshotIdentifier"
+          }
+        ]
+      },
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
+          }
+        ]
+      },
+      "Tags": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SnapshotCopyGrant",
+            "resourceIdentifier": "Tags"
+          }
+        ]
       }
     },
     "CreateClusterSubnetGroup": {
@@ -213,8 +496,102 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ClusterSubnetGroup",
+            "resourceName": "Cluster",
             "resourceIdentifier": "ClusterSubnetGroupName"
+          }
+        ]
+      },
+      "Description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HsmConfiguration",
+            "resourceIdentifier": "Description"
+          }
+        ]
+      },
+      "Tags": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SnapshotCopyGrant",
+            "resourceIdentifier": "Tags"
+          }
+        ]
+      }
+    },
+    "CreateEventSubscription": {
+      "SnsTopicArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventSubscription",
+            "resourceIdentifier": "SnsTopicArn"
+          }
+        ]
+      },
+      "SourceType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "SourceType"
+          }
+        ]
+      },
+      "EventCategories": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EventCategories"
+          }
+        ]
+      },
+      "Severity": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "Severity"
+          }
+        ]
+      },
+      "Enabled": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventSubscription",
+            "resourceIdentifier": "Enabled"
+          }
+        ]
+      },
+      "Tags": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SnapshotCopyGrant",
+            "resourceIdentifier": "Tags"
+          }
+        ]
+      }
+    },
+    "CreateHsmClientCertificate": {
+      "HsmClientCertificateIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HsmClientCertificate",
+            "resourceIdentifier": "HsmClientCertificateIdentifier"
+          }
+        ]
+      },
+      "Tags": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SnapshotCopyGrant",
+            "resourceIdentifier": "Tags"
           }
         ]
       }
@@ -228,6 +605,42 @@
             "resourceIdentifier": "HsmConfigurationIdentifier"
           }
         ]
+      },
+      "Description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HsmConfiguration",
+            "resourceIdentifier": "Description"
+          }
+        ]
+      },
+      "HsmIpAddress": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HsmConfiguration",
+            "resourceIdentifier": "HsmIpAddress"
+          }
+        ]
+      },
+      "HsmPartitionName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HsmConfiguration",
+            "resourceIdentifier": "HsmPartitionName"
+          }
+        ]
+      },
+      "Tags": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SnapshotCopyGrant",
+            "resourceIdentifier": "Tags"
+          }
+        ]
       }
     },
     "CreateSnapshotCopyGrant": {
@@ -237,6 +650,55 @@
             "parameters": {},
             "resourceName": "SnapshotCopyGrant",
             "resourceIdentifier": "SnapshotCopyGrantName"
+          }
+        ]
+      },
+      "KmsKeyId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SnapshotCopyGrant",
+            "resourceIdentifier": "KmsKeyId"
+          }
+        ]
+      },
+      "Tags": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SnapshotCopyGrant",
+            "resourceIdentifier": "Tags"
+          }
+        ]
+      }
+    },
+    "CreateTags": {
+      "ResourceName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Tag",
+            "resourceIdentifier": "ResourceName"
+          }
+        ]
+      },
+      "Tags": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SnapshotCopyGrant",
+            "resourceIdentifier": "Tags"
+          }
+        ]
+      }
+    },
+    "DeleteCluster": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
           }
         ]
       }
@@ -263,13 +725,35 @@
         ]
       }
     },
+    "DeleteClusterSnapshot": {
+      "SnapshotIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "SnapshotIdentifier"
+          }
+        ]
+      }
+    },
     "DeleteClusterSubnetGroup": {
       "ClusterSubnetGroupName": {
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ClusterSubnetGroup",
+            "resourceName": "Cluster",
             "resourceIdentifier": "ClusterSubnetGroupName"
+          }
+        ]
+      }
+    },
+    "DeleteHsmClientCertificate": {
+      "HsmClientCertificateIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HsmClientCertificate",
+            "resourceIdentifier": "HsmClientCertificateIdentifier"
           }
         ]
       }
@@ -292,6 +776,28 @@
             "parameters": {},
             "resourceName": "SnapshotCopyGrant",
             "resourceIdentifier": "SnapshotCopyGrantName"
+          }
+        ]
+      }
+    },
+    "DeleteTags": {
+      "ResourceName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Tag",
+            "resourceIdentifier": "ResourceName"
+          }
+        ]
+      }
+    },
+    "DescribeClusterDbRevisions": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
           }
         ]
       }
@@ -330,12 +836,48 @@
       }
     },
     "DescribeClusterSnapshots": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
+          }
+        ]
+      },
+      "SnapshotIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "SnapshotIdentifier"
+          }
+        ]
+      },
       "SnapshotType": {
         "completions": [
           {
             "parameters": {},
             "resourceName": "ClusterSnapshot",
             "resourceIdentifier": "SnapshotType"
+          }
+        ]
+      },
+      "StartTime": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReservedNode",
+            "resourceIdentifier": "StartTime"
+          }
+        ]
+      },
+      "OwnerAccount": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterSnapshot",
+            "resourceIdentifier": "OwnerAccount"
           }
         ]
       }
@@ -345,7 +887,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ClusterSubnetGroup",
+            "resourceName": "Cluster",
             "resourceIdentifier": "ClusterSubnetGroupName"
           }
         ]
@@ -356,7 +898,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ClusterTrack",
+            "resourceName": "Cluster",
             "resourceIdentifier": "MaintenanceTrackName"
           }
         ]
@@ -369,6 +911,97 @@
             "parameters": {},
             "resourceName": "OrderableClusterOption",
             "resourceIdentifier": "ClusterVersion"
+          }
+        ]
+      },
+      "ClusterParameterGroupFamily": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterVersion",
+            "resourceIdentifier": "ClusterParameterGroupFamily"
+          }
+        ]
+      }
+    },
+    "DescribeClusters": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "DescribeDefaultClusterParameters": {
+      "ParameterGroupFamily": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterParameterGroup",
+            "resourceIdentifier": "ParameterGroupFamily"
+          }
+        ]
+      }
+    },
+    "DescribeEventCategories": {
+      "SourceType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "SourceType"
+          }
+        ]
+      }
+    },
+    "DescribeEvents": {
+      "SourceIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "SourceIdentifier"
+          }
+        ]
+      },
+      "SourceType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "SourceType"
+          }
+        ]
+      },
+      "StartTime": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReservedNode",
+            "resourceIdentifier": "StartTime"
+          }
+        ]
+      },
+      "Duration": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReservedNode",
+            "resourceIdentifier": "Duration"
+          }
+        ]
+      }
+    },
+    "DescribeHsmClientCertificates": {
+      "HsmClientCertificateIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HsmClientCertificate",
+            "resourceIdentifier": "HsmClientCertificateIdentifier"
           }
         ]
       }
@@ -384,6 +1017,17 @@
         ]
       }
     },
+    "DescribeLoggingStatus": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
+          }
+        ]
+      }
+    },
     "DescribeOrderableClusterOptions": {
       "ClusterVersion": {
         "completions": [
@@ -393,6 +1037,15 @@
             "resourceIdentifier": "ClusterVersion"
           }
         ]
+      },
+      "NodeType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReservedNode",
+            "resourceIdentifier": "NodeType"
+          }
+        ]
       }
     },
     "DescribeReservedNodeOfferings": {
@@ -400,7 +1053,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ReservedNodeOffering",
+            "resourceName": "ReservedNode",
             "resourceIdentifier": "ReservedNodeOfferingId"
           }
         ]
@@ -417,6 +1070,17 @@
         ]
       }
     },
+    "DescribeResize": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
+          }
+        ]
+      }
+    },
     "DescribeSnapshotCopyGrants": {
       "SnapshotCopyGrantName": {
         "completions": [
@@ -429,6 +1093,15 @@
       }
     },
     "DescribeTableRestoreStatus": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
+          }
+        ]
+      },
       "TableRestoreRequestId": {
         "completions": [
           {
@@ -439,13 +1112,86 @@
         ]
       }
     },
+    "DescribeTags": {
+      "ResourceName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Tag",
+            "resourceIdentifier": "ResourceName"
+          }
+        ]
+      },
+      "ResourceType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Tag",
+            "resourceIdentifier": "ResourceType"
+          }
+        ]
+      }
+    },
+    "DisableLogging": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "DisableSnapshotCopy": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "EnableLogging": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
+          }
+        ]
+      }
+    },
     "EnableSnapshotCopy": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
+          }
+        ]
+      },
       "SnapshotCopyGrantName": {
         "completions": [
           {
             "parameters": {},
             "resourceName": "SnapshotCopyGrant",
             "resourceIdentifier": "SnapshotCopyGrantName"
+          }
+        ]
+      }
+    },
+    "GetClusterCredentials": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
           }
         ]
       }
@@ -462,12 +1208,102 @@
       }
     },
     "ModifyCluster": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
+          }
+        ]
+      },
+      "ClusterType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "OrderableClusterOption",
+            "resourceIdentifier": "ClusterType"
+          }
+        ]
+      },
+      "NodeType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReservedNode",
+            "resourceIdentifier": "NodeType"
+          }
+        ]
+      },
+      "NumberOfNodes": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "NumberOfNodes"
+          }
+        ]
+      },
+      "ClusterSecurityGroups": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClusterSecurityGroups"
+          }
+        ]
+      },
+      "VpcSecurityGroupIds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "VpcSecurityGroups"
+          }
+        ]
+      },
+      "AutomatedSnapshotRetentionPeriod": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "AutomatedSnapshotRetentionPeriod"
+          }
+        ]
+      },
+      "PreferredMaintenanceWindow": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "PreferredMaintenanceWindow"
+          }
+        ]
+      },
       "ClusterVersion": {
         "completions": [
           {
             "parameters": {},
             "resourceName": "OrderableClusterOption",
             "resourceIdentifier": "ClusterVersion"
+          }
+        ]
+      },
+      "AllowVersionUpgrade": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "AllowVersionUpgrade"
+          }
+        ]
+      },
+      "HsmClientCertificateIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HsmClientCertificate",
+            "resourceIdentifier": "HsmClientCertificateIdentifier"
           }
         ]
       },
@@ -480,12 +1316,88 @@
           }
         ]
       },
+      "NewClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
+          }
+        ]
+      },
+      "PubliclyAccessible": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "PubliclyAccessible"
+          }
+        ]
+      },
+      "EnhancedVpcRouting": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "EnhancedVpcRouting"
+          }
+        ]
+      },
       "MaintenanceTrackName": {
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ClusterTrack",
+            "resourceName": "Cluster",
             "resourceIdentifier": "MaintenanceTrackName"
+          }
+        ]
+      },
+      "Encrypted": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "Encrypted"
+          }
+        ]
+      },
+      "KmsKeyId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SnapshotCopyGrant",
+            "resourceIdentifier": "KmsKeyId"
+          }
+        ]
+      }
+    },
+    "ModifyClusterDbRevision": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
+          }
+        ]
+      },
+      "RevisionTarget": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterDbRevision",
+            "resourceIdentifier": "RevisionTargets"
+          }
+        ]
+      }
+    },
+    "ModifyClusterIamRoles": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
           }
         ]
       }
@@ -506,8 +1418,75 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ClusterSubnetGroup",
+            "resourceName": "Cluster",
             "resourceIdentifier": "ClusterSubnetGroupName"
+          }
+        ]
+      },
+      "Description": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HsmConfiguration",
+            "resourceIdentifier": "Description"
+          }
+        ]
+      }
+    },
+    "ModifyEventSubscription": {
+      "SnsTopicArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventSubscription",
+            "resourceIdentifier": "SnsTopicArn"
+          }
+        ]
+      },
+      "SourceType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "SourceType"
+          }
+        ]
+      },
+      "EventCategories": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "EventCategories"
+          }
+        ]
+      },
+      "Severity": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Event",
+            "resourceIdentifier": "Severity"
+          }
+        ]
+      },
+      "Enabled": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "EventSubscription",
+            "resourceIdentifier": "Enabled"
+          }
+        ]
+      }
+    },
+    "ModifySnapshotCopyRetentionPeriod": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
           }
         ]
       }
@@ -517,8 +1496,28 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ReservedNodeOffering",
+            "resourceName": "ReservedNode",
             "resourceIdentifier": "ReservedNodeOfferingId"
+          }
+        ]
+      },
+      "NodeCount": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReservedNode",
+            "resourceIdentifier": "NodeCount"
+          }
+        ]
+      }
+    },
+    "RebootCluster": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
           }
         ]
       }
@@ -534,13 +1533,123 @@
         ]
       }
     },
+    "ResizeCluster": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
+          }
+        ]
+      },
+      "ClusterType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "OrderableClusterOption",
+            "resourceIdentifier": "ClusterType"
+          }
+        ]
+      },
+      "NodeType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReservedNode",
+            "resourceIdentifier": "NodeType"
+          }
+        ]
+      },
+      "NumberOfNodes": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "NumberOfNodes"
+          }
+        ]
+      }
+    },
     "RestoreFromClusterSnapshot": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
+          }
+        ]
+      },
+      "SnapshotIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "SnapshotIdentifier"
+          }
+        ]
+      },
+      "Port": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterSnapshot",
+            "resourceIdentifier": "Port"
+          }
+        ]
+      },
+      "AvailabilityZone": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "AvailabilityZone"
+          }
+        ]
+      },
+      "AllowVersionUpgrade": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "AllowVersionUpgrade"
+          }
+        ]
+      },
       "ClusterSubnetGroupName": {
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ClusterSubnetGroup",
+            "resourceName": "Cluster",
             "resourceIdentifier": "ClusterSubnetGroupName"
+          }
+        ]
+      },
+      "PubliclyAccessible": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "PubliclyAccessible"
+          }
+        ]
+      },
+      "OwnerAccount": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterSnapshot",
+            "resourceIdentifier": "OwnerAccount"
+          }
+        ]
+      },
+      "HsmClientCertificateIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "HsmClientCertificate",
+            "resourceIdentifier": "HsmClientCertificateIdentifier"
           }
         ]
       },
@@ -553,12 +1662,158 @@
           }
         ]
       },
+      "ClusterSecurityGroups": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "ClusterSecurityGroups"
+          }
+        ]
+      },
+      "VpcSecurityGroupIds": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "VpcSecurityGroups"
+          }
+        ]
+      },
+      "PreferredMaintenanceWindow": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "PreferredMaintenanceWindow"
+          }
+        ]
+      },
+      "AutomatedSnapshotRetentionPeriod": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "AutomatedSnapshotRetentionPeriod"
+          }
+        ]
+      },
+      "KmsKeyId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SnapshotCopyGrant",
+            "resourceIdentifier": "KmsKeyId"
+          }
+        ]
+      },
+      "NodeType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ReservedNode",
+            "resourceIdentifier": "NodeType"
+          }
+        ]
+      },
+      "EnhancedVpcRouting": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "EnhancedVpcRouting"
+          }
+        ]
+      },
+      "IamRoles": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Cluster",
+            "resourceIdentifier": "IamRoles"
+          }
+        ]
+      },
       "MaintenanceTrackName": {
         "completions": [
           {
             "parameters": {},
-            "resourceName": "ClusterTrack",
+            "resourceName": "Cluster",
             "resourceIdentifier": "MaintenanceTrackName"
+          }
+        ]
+      }
+    },
+    "RestoreTableFromClusterSnapshot": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
+          }
+        ]
+      },
+      "SnapshotIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "SnapshotIdentifier"
+          }
+        ]
+      },
+      "SourceDatabaseName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "SourceDatabaseName"
+          }
+        ]
+      },
+      "SourceSchemaName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "SourceSchemaName"
+          }
+        ]
+      },
+      "SourceTableName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "SourceTableName"
+          }
+        ]
+      },
+      "TargetDatabaseName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "TargetDatabaseName"
+          }
+        ]
+      },
+      "TargetSchemaName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "TargetSchemaName"
+          }
+        ]
+      },
+      "NewTableName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "NewTableName"
           }
         ]
       }
@@ -570,6 +1825,37 @@
             "parameters": {},
             "resourceName": "ClusterSecurityGroup",
             "resourceIdentifier": "ClusterSecurityGroupName"
+          }
+        ]
+      }
+    },
+    "RevokeSnapshotAccess": {
+      "SnapshotIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "SnapshotIdentifier"
+          }
+        ]
+      },
+      "AccountWithRestoreAccess": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ClusterSnapshot",
+            "resourceIdentifier": "AccountsWithRestoreAccess"
+          }
+        ]
+      }
+    },
+    "RotateEncryptionKey": {
+      "ClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "TableRestoreStatu",
+            "resourceIdentifier": "ClusterIdentifier"
           }
         ]
       }

@@ -25,10 +25,14 @@ class ServerCompletionHeuristic(object):
             singularize = BasicSingularize()
         self._singularize = singularize
 
-    def generate_completion_descriptions(self, service_model):
+    def generate_completion_descriptions(self, service_model,
+                                         prune_completions=True):
         """
 
         :param service_model: A botocore.model.ServiceModel.
+        :param prune_completions: If True, the generated file will be
+            pruned of unused resources not used by completion operations.
+
         """
         # This method is a best-effort attempt at generating server side
         # auto-completion data based on a set of heuristics.  It's not
@@ -46,6 +50,8 @@ class ServerCompletionHeuristic(object):
             candidates, service_model)
         all_operations = self._generate_operations(
             service_model.operation_names, all_resources, service_model)
+        if prune_completions:
+            self._prune_resource_identifiers(all_resources, all_operations)
         return {
             'version': '1.0',
             'resources': all_resources,
@@ -55,10 +61,11 @@ class ServerCompletionHeuristic(object):
     def _generate_resource_descriptions(self, candidates, service_model):
         all_resources = {}
         for op_name in candidates:
-            resource = self._resource_for_single_operation(
+            resources = self._resource_for_single_operation(
                 op_name, service_model)
-            if resource is not None:
-                self._inject_resource(all_resources, resource)
+            if resources is not None:
+                for resource in resources:
+                    self._inject_resource(all_resources, resource)
         return all_resources
 
     def _generate_operations(self, op_names, resources, service_model):
@@ -150,28 +157,26 @@ class ServerCompletionHeuristic(object):
             return self._resource_from_structure(
                 op_name, resource_member_name, list_member, required_members)
         elif list_member.type_name == 'string':
-            return self._resource_from_string(
+            return [self._resource_from_string(
                 op_name, resource_member_name, required_members,
-            )
+            )]
 
     def _resource_from_structure(self, op_name,
                                  resource_member_name, list_member,
                                  required_members):
-        candidates = list_member.members
         op_with_prefix_removed = self._remove_verb_prefix(op_name)
-        best_match = max(
-            list(candidates),
-            key=lambda x: SequenceMatcher(
-                None, op_with_prefix_removed, x).ratio())
         singular_name = self._singularize.make_singular(
             op_with_prefix_removed)
-        jp_expr = (
-            '{resource_member_name}[].{best_match}').format(
-                resource_member_name=resource_member_name,
-                best_match=best_match)
-        r = Resource(singular_name, best_match, required_members,
-                     op_name, jp_expr)
-        return r
+        resources = []
+        for member_name in list_member.members:
+            jp_expr = (
+                '{resource_member_name}[].{member_name}').format(
+                    resource_member_name=resource_member_name,
+                    member_name=member_name)
+            r = Resource(singular_name, member_name, required_members,
+                         op_name, jp_expr)
+            resources.append(r)
+        return resources
 
     def _resource_from_string(self, op_name, resource_member_name,
                               required_members):
@@ -192,6 +197,34 @@ class ServerCompletionHeuristic(object):
             if op_name.lower().startswith(prefix):
                 op_with_prefix_removed = op_name[len(prefix):]
                 return op_with_prefix_removed
+
+    def _prune_resource_identifiers(self, all_resources, all_operations):
+        used_identifiers = self._get_identifiers_referenced_by_operations(
+            all_operations)
+        for resource, resource_data in list(all_resources.items()):
+            identifiers = resource_data['resourceIdentifier']
+            known_ids_for_resource = used_identifiers.get(resource, set())
+            for identifier_name in list(identifiers):
+                if identifier_name not in known_ids_for_resource:
+                    del identifiers[identifier_name]
+            if not identifiers:
+                # If there's no identifiers used by an autocompletion
+                # operation, then we don't need the resource.
+                del all_resources[resource]
+
+    def _get_identifiers_referenced_by_operations(self, operations):
+        # Dict of resourceName -> Set[resourceIdentifiers]j
+        used_identifiers = {}
+        for completion in self._all_completions(operations):
+            used_identifiers.setdefault(completion['resourceName'], set()).add(
+                completion['resourceIdentifier'])
+        return used_identifiers
+
+    def _all_completions(self, operations):
+        for params in operations.values():
+            for completions in params.values():
+                for completion in completions['completions']:
+                    yield completion
 
 
 class BasicSingularize(object):

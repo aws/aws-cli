@@ -68,7 +68,7 @@ class ServerSideCompleter(BaseCompleter):
     def complete(self, parsed):
         """
 
-        :param parsed: The parsed CLI coommand the user has typed.
+        :param parsed: The parsed CLI command the user has typed.
         :type parsed:  awscli.autocomplete.parser.ParsedResult
         :return: A list of completion results, or None.
         :rtype: List[awscli.autocomplete.completer.CompletionResult]

@@ -17,6 +17,7 @@ import argparse
 import json
 import sys
 import os
+import re
 
 import nltk
 from nltk.stem import WordNetLemmatizer
@@ -38,13 +39,16 @@ class NLTKSingularize(BasicSingularize):
         # The WordNetLemmatizer only works with lower cased names,
         # so we need to first get the singular version of the lower
         # cased name:
-        result = self._lemmatizer.lemmatize(name.lower())
-        # And then reconvert the casing back to the original form.
-        singular_name = ''.join([
-            a for a, b in zip(name, result)
-            if a.lower() == b.lower()
-        ])
-        return singular_name
+        words = self._word_split(name)
+        singular = self._lemmatizer.lemmatize(words[-1].lower()).title()
+        recombined = ''.join(words[:-1] + [singular])
+        return recombined
+
+    def _word_split(self, name):
+        matches = re.finditer(
+            '.+?(?:(?<=[a-z])(?=[A-Z])'
+            '|(?<=[A-Z])(?=[A-Z][a-z])|$)', name)
+        return [m.group(0) for m in matches]
 
 
 def create_singularizer():
@@ -60,6 +64,8 @@ def create_singularizer():
                          " (this is a one time setup).\n")
         nltk.download('wordnet')
     singularize = NLTKSingularize(lemmatizer)
+    return singularize
+
 
 def generate_completion_data(args):
     session = botocore.session.get_session()

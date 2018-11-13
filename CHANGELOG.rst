@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.16.53
+=======
+
+* api-change:``budgets``: Update budgets command to latest version
+* api-change:``firehose``: Update firehose command to latest version
+* api-change:``cloudformation``: Update cloudformation command to latest version
+* api-change:``polly``: Update polly command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``batch``: Update batch command to latest version
+* api-change:``codepipeline``: Update codepipeline command to latest version
+
+
 1.16.52
 =======
 

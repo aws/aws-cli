@@ -11,6 +11,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import datetime
+
 import ruamel.yaml as yaml
 
 from awscli.compat import ensure_text_type
@@ -93,15 +95,67 @@ class TestYAMLOutput(BaseAWSCommandParamsTest):
         parsed_output = yaml.safe_load(stdout)
         self.assertEqual(parsed_output, ['testuser-50', 'testuser-51'])
 
-    def test_print_number(self):
+    def test_print_int(self):
         self.parsed_response = {
             'Count': 1
         }
-        stdout, _, _ = self.run_cmd(
-            'dynamodb scan --table-name foo --select COUNT --query Count',
-            expected_rc=0
+        command = (
+            'dynamodb scan --output yaml --table-name foo --select COUNT '
+            '--query Count'
         )
+        stdout, _, _ = self.run_cmd(command, expected_rc=0)
         self.assertEqual(stdout, '1\n')
+
+    def test_print_float(self):
+        self.parsed_response = {
+            'ConsumedCapacity': {
+                'CapacityUnits': 0.5
+            }
+        }
+        command = (
+            'dynamodb scan --output yaml --table-name foo '
+            '--query ConsumedCapacity.CapacityUnits'
+        )
+        stdout, _, _ = self.run_cmd(command, expected_rc=0)
+        self.assertEqual(stdout, '0.5\n')
+
+    def test_print_none(self):
+        self.parsed_response = {
+            'ConsumedCapacity': None
+        }
+        command = (
+            'dynamodb scan --output yaml --table-name foo --query '
+            'ConsumedCapacity'
+        )
+        stdout, _, _ = self.run_cmd(command, expected_rc=0)
+        self.assertEqual(stdout, 'null\n')
+
+    def test_print_bool(self):
+        self.parsed_response = {
+            "Contents": [],
+            "IsTruncated": False,
+        }
+        command = (
+            's3api list-objects --output yaml --no-paginate '
+            '--bucket foo --query IsTruncated'
+        )
+        stdout, _, _ = self.run_cmd(command, expected_rc=0)
+        self.assertEqual(stdout, 'false\n')
+
+    def test_print_timestamp_raises_error(self):
+        now = datetime.datetime.now()
+        self.parsed_response = {
+            "Buckets": [{
+                "CreationDate": now,
+                "Name": "foo",
+            }]
+        }
+        command = (
+            's3api list-buckets --output yaml --query Buckets[0].CreationDate'
+        )
+        _, stderr, _ = self.run_cmd(command, expected_rc=255)
+        expected = 'not JSON serializable'
+        self.assertIn(expected, stderr)
 
     def test_print_string_literal(self):
         jmespath_query = 'Users[0].UserName'

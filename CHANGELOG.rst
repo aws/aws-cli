@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.54
+=======
+
+* api-change:``chime``: Update chime command to latest version
+* api-change:``budgets``: Update budgets command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+
+
 1.16.53
 =======
 

@@ -608,7 +608,7 @@ class TestCanGenerateCompletions(unittest.TestCase):
                         'FooBarThingArn': {'shape': 'String'},
                         # However it doesn't accept a "Name", so this
                         # identifier will be pruned from the response.
-                        'FooBarThingName': {'shape': 'String'},
+                        'FooBarThingPruneId': {'shape': 'String'},
                     }
                 },
                 'String': {'type': 'string'},

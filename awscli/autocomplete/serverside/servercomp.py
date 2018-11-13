@@ -113,7 +113,9 @@ class ServerSideCompleter(BaseCompleter):
         api_params = self._map_command_to_api_params(parsed, completion_data)
         response = self._invoke_api(client, method_name, api_params)
         if response:
-            return jmespath.search(completion_data['jp_expr'], response)
+            result = jmespath.search(completion_data['jp_expr'], response)
+            if result:
+                return result
         return []
 
     def _invoke_api(self, client, py_name, api_params):

@@ -36,6 +36,11 @@ BASIC_MODEL = {
         "uid": "acm-2015-12-08",
     },
     "operations": {
+        "CreateCertificate": {
+            "http": {"method": "POST", "requestUri": "/"},
+            "input": {"shape": "CreateCertificateRequest"},
+            "name": "DeleteCertificate",
+        },
         "DeleteCertificate": {
             "http": {"method": "POST", "requestUri": "/"},
             "input": {"shape": "DeleteCertificateRequest"},
@@ -109,6 +114,11 @@ BASIC_MODEL = {
             "type": "list",
         },
         "CertificateType": {"type": "string"},
+        "CreateCertificateRequest": {
+            "members": {"CertificateArn": {"shape": "Arn"}},
+            "required": ["CertificateArn"],
+            "type": "structure",
+        },
         "DeleteCertificateRequest": {
             "members": {"CertificateArn": {"shape": "Arn"}},
             "required": ["CertificateArn"],

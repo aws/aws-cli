@@ -19,6 +19,7 @@ class ServerCompletionHeuristic(object):
     # Prefix that typically indicates listing resources,
     # e.g ListResources, DescribeResources, etc.
     _RESOURCE_VERB_PREFIX = ('list', 'describe')
+    _OPERATION_EXCLUDES = ('create',)
 
     def __init__(self, singularize=None):
         if singularize is None:
@@ -49,7 +50,8 @@ class ServerCompletionHeuristic(object):
         all_resources = self._generate_resource_descriptions(
             candidates, service_model)
         all_operations = self._generate_operations(
-            service_model.operation_names, all_resources, service_model)
+            self._filter_operation_names(service_model.operation_names),
+            all_resources, service_model)
         if prune_completions:
             self._prune_resource_identifiers(all_resources, all_operations)
         return {
@@ -57,6 +59,10 @@ class ServerCompletionHeuristic(object):
             'resources': all_resources,
             'operations': all_operations,
         }
+
+    def _filter_operation_names(self, op_names):
+        return [name for name in op_names
+                if not name.lower().startswith(self._OPERATION_EXCLUDES)]
 
     def _generate_resource_descriptions(self, candidates, service_model):
         all_resources = {}

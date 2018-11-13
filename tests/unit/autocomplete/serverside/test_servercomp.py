@@ -120,6 +120,14 @@ class TestServerSideAutocompleter(unittest.TestCase):
         results = self.completer.complete(parsed)
         self.assertEqual(results, [])
 
+    def test_returns_empty_list_when_jmespath_doesnt_match(self):
+        self.mock_client.list_policies.return_value = {
+            'WrongKeySomehow': [],
+        }
+        parsed = self.parser.parse('aws iam delete-user-policy --policy-name ')
+        results = self.completer.complete(parsed)
+        self.assertEqual(results, [])
+
 
 class TestLazyClientCreator(unittest.TestCase):
     def test_can_create_client(self):

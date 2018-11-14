@@ -21,10 +21,16 @@ from awscli.customizations.configure.writer import ConfigFileWriter
 
 class ConfigureImportCommand(BasicCommand):
     NAME = 'import'
-    DESCRIPTION = 'Import CSV credentials generated from the AWS web console.'
+    DESCRIPTION = (
+        'Import CSV credentials generated from the AWS web console. '
+        'Entries in the CSV will be imported as profiles in the AWS '
+        'credentials file, with the profile name matching the IAM User Name.'
+    )
     EXAMPLES = (
         'aws configure import --csv file://credentials.csv\n\n'
-        'aws configure import --csv file://credentials.csv --skip-invalid\n'
+        'aws configure import --csv file://credentials.csv --skip-invalid\n\n'
+        'aws configure import --csv file://credentials.csv '
+        '--profile-prefix test-\n\n'
     )
     ARG_TABLE = [
         {'name': 'csv',
@@ -41,6 +47,13 @@ class ConfigureImportCommand(BasicCommand):
          ),
          'default': False,
          'action': 'store_true'},
+        {'name': 'profile-prefix',
+         'dest': 'profile_prefix',
+         'help_text': (
+             'Adds the specified prefix to the beginning of all profile names.'
+         ),
+         'default': '',
+         'cli_type_name': 'string'},
     ]
 
     def __init__(self, session, csv_parser=None, importer=None,
@@ -67,12 +80,16 @@ class ConfigureImportCommand(BasicCommand):
         config_path = self._get_config_path()
         credentials = self._csv_parser.parse_credentials(contents)
         for credential in credentials:
-            self._importer.import_credential(credential, config_path)
+            self._importer.import_credential(
+                credential, config_path,
+                profile_prefix=self._profile_prefix,
+            )
         import_msg = 'Successfully imported %s profile(s)\n' % len(credentials)
         uni_print(import_msg, out_file=self._out_stream)
 
     def _run_main(self, parsed_args, parsed_globals):
         self._csv_parser.strict = not parsed_args.skip_invalid
+        self._profile_prefix = parsed_args.profile_prefix
         self._import_csv(parsed_args.csv)
 
 
@@ -88,10 +105,8 @@ class CSVCredentialParser(object):
 
     _EMPTY_CSV = 'Provided CSV contains no contents'
     _HEADER_NOT_FOUND = 'Expected header "%s" not found'
-    _INVALID_USERNAME = 'Failed to parse User Name for entry #%s'
-    _INVALID_SECRET = (
-        'Failed to parse Access Key ID or Secret Access Key for entry #%s'
-    )
+    _ROW_MISSING_HEADER = 'Row missing value for header "%s"'
+    _INVALID_ROW = 'Failed to parse entry #%s: %s'
 
     def __init__(self, strict=True):
         self.strict = strict
@@ -100,68 +115,78 @@ class CSVCredentialParser(object):
         return header.lower().strip()
 
     def _parse_csv_headers(self, header):
-        indices = []
-        parsed_headers = [self._format_header(h) for h in header.split(',')]
+        return [self._format_header(h) for h in header.split(',')]
 
+    def _extract_expected_header_indices(self, headers):
+        indices = {}
         for header in self._EXPECTED_HEADERS:
             formatted_header = self._format_header(header)
-            if formatted_header not in parsed_headers:
+            if formatted_header not in headers:
                 raise CredentialParserError(self._HEADER_NOT_FOUND % header)
-            indices.append(parsed_headers.index(formatted_header))
-
+            indices[header] = headers.index(formatted_header)
         return indices
 
-    def _parse_csv_rows(self, rows, headers):
-        credentials = []
-        username_index, akid_index, sak_index = headers
+    def _parse_csv_row(self, row, header_indices):
+        item = {}
+        cols = row.split(',')
+        for header, index in header_indices.items():
+            try:
+                item[header] = cols[index].strip()
+            except IndexError:
+                item[header] = None
+            if not item[header]:
+                raise CredentialParserError(self._ROW_MISSING_HEADER % header)
+        return item
 
+    def _parse_csv_rows(self, rows, header_indices):
         count = 0
-        for user in rows:
+        parsed_rows = []
+        for row in rows:
             count += 1
-            cols = user.split(',')
-            username = cols[username_index].strip()
-            akid = cols[akid_index].strip()
-            sak = cols[sak_index].strip()
-
-            if not username:
-                if self.strict:
-                    raise CredentialParserError(self._INVALID_USERNAME % count)
-                continue
-            if not akid or not sak:
-                if self.strict:
-                    raise CredentialParserError(self._INVALID_SECRET % count)
-                continue
-
-            credentials.append((username, akid, sak))
-
-        return credentials
+            try:
+                item = self._parse_csv_row(row, header_indices)
+            except CredentialParserError as e:
+                if not self.strict:
+                    continue
+                raise CredentialParserError(self._INVALID_ROW % (count, e))
+            parsed_rows.append(item)
+        return parsed_rows
 
     def _parse_csv(self, csv):
-        # Expected format is:
-        # User name,Password,Access key ID,Secret access key,Console login link
-        # username1,pw,akid,sak,https://console.link
-        # username2,pw,akid,sak,https://console.link
         if not csv.strip():
             raise CredentialParserError(self._EMPTY_CSV)
 
         lines = csv.splitlines()
         parsed_headers = self._parse_csv_headers(lines[0])
-        credentials = self._parse_csv_rows(lines[1:], parsed_headers)
+        header_indices = self._extract_expected_header_indices(parsed_headers)
+        return self._parse_csv_rows(lines[1:], header_indices)
 
+    def _convert_rows_to_credentials(self, parsed_rows):
+        credentials = []
+        for row in parsed_rows:
+            username = row.get(self._USERNAME_HEADER)
+            akid = row.get(self._AKID_HEADER)
+            sak = row.get(self._SAK_HEADER)
+            credentials.append((username, akid, sak))
         return credentials
 
     def parse_credentials(self, contents):
-        return self._parse_csv(contents)
+        # Expected format is:
+        # User name,Password,Access key ID,Secret access key,Console login link
+        # username1,pw,akid,sak,https://console.link
+        # username2,pw,akid,sak,https://console.link
+        parsed_rows = self._parse_csv(contents)
+        return self._convert_rows_to_credentials(parsed_rows)
 
 
 class CredentialImporter(object):
     def __init__(self, writer):
         self._config_writer = writer
 
-    def import_credential(self, credential, credentials_file):
+    def import_credential(self, credential, credentials_file, profile_prefix=''):
         name, akid, sak = credential
         config_profile = {
-            '__section__': name,
+            '__section__': profile_prefix + name,
             'aws_access_key_id': akid,
             'aws_secret_access_key': sak,
         }

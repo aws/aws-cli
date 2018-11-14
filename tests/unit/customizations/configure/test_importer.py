@@ -45,19 +45,33 @@ class TestConfigureImportCommand(unittest.TestCase):
             out_stream=self.stdout,
         )
 
+    def _assert_expected_profile(self, args, profile):
+        self.import_command(args=args, parsed_globals=None)
+        update_args, _ = self.mock_writer.update_config.call_args
+        self.assertEqual(update_args[0], profile)
+        self.assertIn('/fake_credentials_filename', update_args[1])
+        self.assertIn('Successfully imported 1 profile', self.stdout.getvalue())
+
     def test_import_downloaded_csv(self):
         row = 'PROFILENAME,PW,AKID,SAK,https://console.link\n'
         content = CSV_HEADERS + row
-        self.import_command(args=['--csv', content], parsed_globals=None)
-        update_args, _ = self.mock_writer.update_config.call_args
         expected_profile = {
             '__section__': 'PROFILENAME',
             'aws_access_key_id': 'AKID',
             'aws_secret_access_key': 'SAK',
         }
-        self.assertEqual(update_args[0], expected_profile)
-        self.assertIn('/fake_credentials_filename', update_args[1])
-        self.assertIn('Successfully imported 1 profile', self.stdout.getvalue())
+        self._assert_expected_profile(['--csv', content], expected_profile)
+
+    def test_import_downloaded_csv_custom_prefix(self):
+        row = 'PROFILENAME,PW,AKID,SAK,https://console.link\n'
+        content = CSV_HEADERS + row
+        args = ['--csv', content, '--profile-prefix', 'foo-']
+        expected_profile = {
+            '__section__': 'foo-PROFILENAME',
+            'aws_access_key_id': 'AKID',
+            'aws_secret_access_key': 'SAK',
+        }
+        self._assert_expected_profile(args, expected_profile)
 
     def test_import_downloaded_csv_multiple(self):
         content = (
@@ -197,6 +211,17 @@ class TestCredentialImporter(unittest.TestCase):
         self.importer.import_credential(credential, file)
         profile = {
             '__section__': 'USERNAME',
+            'aws_access_key_id': 'AKID',
+            'aws_secret_access_key': 'SAK',
+        }
+        self.mock_writer.update_config.assert_called_with(profile, file)
+
+    def test_import_profile_with_prefix(self):
+        file = 'credentials_file'
+        credential = ('USERNAME', 'AKID', 'SAK')
+        self.importer.import_credential(credential, file, profile_prefix='a-')
+        profile = {
+            '__section__': 'a-USERNAME',
             'aws_access_key_id': 'AKID',
             'aws_secret_access_key': 'SAK',
         }

@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.16.55
+=======
+
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``resource-groups``: Update resource-groups command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``mediatailor``: Update mediatailor command to latest version
+* api-change:``sns``: Update sns command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+
+
 1.16.54
 =======
 

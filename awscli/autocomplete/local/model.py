@@ -17,9 +17,9 @@ in the `service-2.json` files.
 
 """
 from collections import namedtuple
-from awscli.autocomplete import indexer
+from awscli.autocomplete import db
 
-# This module and the awscli.autocomplete.indexer are imported
+# This module and the awscli.autocomplete.db module are imported
 # when a user requests autocompletion.  We should avoid importing
 # awscli.clidriver or botocore, which have substantial import
 # times.  Autocompleting the command names only needs to load
@@ -38,13 +38,33 @@ class ModelIndex(object):
     the model based autocompleter.
 
     """
+    _COMMAND_NAME_QUERY = """
+        SELECT command FROM command_table
+        WHERE parent = :parent
+    """
+
+    _ARG_NAME_QUERY = """
+        SELECT argname FROM param_table
+        WHERE
+          parent = :parent AND
+          command = :command
+    """
+
+    _ARG_DATA_QUERY = """\
+        SELECT argname, type_name, command, parent, nargs FROM param_table
+        WHERE
+          parent = :parent AND
+          command = :command AND
+          argname = :argname
+    """
+
     def __init__(self, db_filename):
         self._db_filename = db_filename
         self._db_connection = None
 
     def _get_db_connection(self):
         if self._db_connection is None:
-            self._db_connection = indexer.DatabaseConnection(
+            self._db_connection = db.DatabaseConnection(
                 self._db_filename)
         return self._db_connection
 
@@ -63,11 +83,7 @@ class ModelIndex(object):
         """
         db = self._get_db_connection()
         parent = '.'.join(lineage)
-        results = db.execute(
-            'select command from command_table '
-            'where parent = :parent',
-            parent=parent,
-        )
+        results = db.execute(self._COMMAND_NAME_QUERY, parent=parent)
         return [row[0] for row in results]
 
     def arg_names(self, lineage, command_name):
@@ -83,13 +99,8 @@ class ModelIndex(object):
         """
         db = self._get_db_connection()
         parent = '.'.join(lineage)
-        results = db.execute(
-            'select argname from param_table '
-            'where parent = :parent and '
-            'command = :command',
-            parent=parent,
-            command=command_name,
-        )
+        results = db.execute(self._ARG_NAME_QUERY,
+                             parent=parent, command=command_name)
         return [row[0] for row in results]
 
     def get_argument_data(self, lineage, command_name, arg_name):
@@ -110,14 +121,8 @@ class ModelIndex(object):
         """
         db = self._get_db_connection()
         parent = '.'.join(lineage)
-        results = list(db.execute(
-            'select * from param_table '
-            'where parent = :parent and '
-            'command = :command and '
-            'argname = :argname',
-            parent=parent,
-            command=command_name,
-            argname=arg_name,
-        ))
-        if len(results) == 1:
-            return CLIArgument(*results[0])
+        results = db.execute(self._ARG_DATA_QUERY, parent=parent,
+                             command=command_name, argname=arg_name)
+        match = results.fetchone()
+        if match is not None:
+            return CLIArgument(*match)

@@ -17,9 +17,8 @@ import argparse
 import json
 import sys
 import os
+import re
 
-import nltk
-from nltk.stem import WordNetLemmatizer
 import botocore.session
 
 from awscli.autocomplete.autogen import ServerCompletionHeuristic
@@ -30,41 +29,9 @@ from awscli.autocomplete.autogen import BasicSingularize
 AWS_DATA_PATH = os.environ['AWS_DATA_PATH']
 
 
-class NLTKSingularize(BasicSingularize):
-    def __init__(self, lemmatizer):
-        self._lemmatizer = WordNetLemmatizer()
-
-    def make_singular(self, name):
-        # The WordNetLemmatizer only works with lower cased names,
-        # so we need to first get the singular version of the lower
-        # cased name:
-        result = self._lemmatizer.lemmatize(name.lower())
-        # And then reconvert the casing back to the original form.
-        singular_name = ''.join([
-            a for a, b in zip(name, result)
-            if a.lower() == b.lower()
-        ])
-        return singular_name
-
-
-def create_singularizer():
-    lemmatizer = WordNetLemmatizer()
-    # nltk is a bit odd in that it needs large data files to operate.
-    # It will fail at runtime if these files aren't available, so we
-    # need to invoke one of its methods to see if we need to download the
-    # appropriate data set.
-    try:
-        lemmatizer.lemmatize('testing')
-    except LookupError:
-        sys.stderr.write("wordnet data file missing for nltk, downloading..."
-                         " (this is a one time setup).\n")
-        nltk.download('wordnet')
-    singularize = NLTKSingularize(lemmatizer)
-
 def generate_completion_data(args):
     session = botocore.session.get_session()
-    singularize = create_singularizer()
-    gen = ServerCompletionHeuristic(singularize=singularize)
+    gen = ServerCompletionHeuristic()
     for service_name in session.get_available_services():
         model = session.get_service_model(service_name)
         completion_data = gen.generate_completion_descriptions(model)

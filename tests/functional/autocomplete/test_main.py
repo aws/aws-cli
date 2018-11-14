@@ -12,7 +12,8 @@
 # language governing permissions and limitations under the License.
 from nose.tools import assert_in
 
-from awscli.autocomplete import indexer, main, generator
+from awscli.autocomplete import main, generator
+from awscli.autocomplete.local import indexer
 from awscli import clidriver
 from awscli import testutils
 
@@ -51,7 +52,7 @@ def _autocomplete(filename, command_line):
 def _generate_index(filename):
     # This will eventually be moved into some utility function.
     index_generator = generator.IndexGenerator(
-        indexer.create_model_indexer(filename)
+        [indexer.create_model_indexer(filename)],
     )
     driver = clidriver.create_clidriver()
     driver.session.register('building-command-table.main',

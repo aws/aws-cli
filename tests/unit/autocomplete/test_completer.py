@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest, mock
 from awscli.autocomplete import completer, parser
+from awscli.autocomplete.local import basic
 from awscli.autocomplete.completer import CompletionResult
 
 from tests.unit.autocomplete import InMemoryIndex
@@ -108,20 +109,20 @@ class TestModelIndexCompleter(unittest.TestCase):
         self.parser = parser.CLIParser(self.index)
 
 
-        self.completer = completer.ModelIndexCompleter(self.index)
+        self.completer = basic.ModelIndexCompleter(self.index)
 
     def test_does_not_complete_if_unparsed_items(self):
         parsed = self.parser.parse('aws foo ')
         self.assertIsNone(self.completer.complete(parsed))
 
-    def test_does_complete_if_last_fragment_is_none(self):
+    def test_does_complete_if_current_fragment_is_none(self):
         parsed = self.parser.parse('aws')
         self.assertIsNone(self.completer.complete(parsed))
 
     def test_can_prefix_match_services(self):
         parsed = parser.ParsedResult(
             current_command='aws', lineage=[],
-            last_fragment='e',
+            current_fragment='e',
         )
         parsed = self.parser.parse('aws e')
         expected = [
@@ -132,7 +133,7 @@ class TestModelIndexCompleter(unittest.TestCase):
         ]
         self.assertEqual(self.completer.complete(parsed), expected)
 
-    def test_returns_all_results_when_last_fragment_empty(self):
+    def test_returns_all_results_when_current_fragment_empty(self):
         parsed = self.parser.parse('aws ')
         expected = [
             # The -1 is because we need to replace the string starting

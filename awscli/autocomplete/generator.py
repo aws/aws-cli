@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 """Generates auto completion index."""
-from awscli.autocomplete import indexer
 
 
 class IndexGenerator(object):
@@ -23,8 +22,9 @@ class IndexGenerator(object):
     indices.
 
     """
-    def __init__(self, model_indexer):
-        self._model_indexer = model_indexer
+    def __init__(self, indexers):
+        self._indexers = indexers
 
     def generate_index(self, clidriver):
-        self._model_indexer.generate_index(clidriver)
+        for indexer in self._indexers:
+            indexer.generate_index(clidriver)

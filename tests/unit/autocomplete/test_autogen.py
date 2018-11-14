@@ -400,6 +400,8 @@ MODEL_WITH_STRING_LIST = {
 
 class TestCanGenerateCompletions(unittest.TestCase):
 
+    maxDiff = None
+
     def setUp(self):
         self.service_model = ServiceModel(BASIC_MODEL)
         self.heuristic = ServerCompletionHeuristic()
@@ -481,7 +483,7 @@ class TestCanGenerateCompletions(unittest.TestCase):
             'resources': {
                 'NamedQuery': {'operation': 'ListNamedQueries',
                                'resourceIdentifier': {
-                                   'NamedQueryIds': 'NamedQueryIds[]'}}}
+                                   'NamedQueryId': 'NamedQueryIds[]'}}}
         }
         self.assertEqual(completion_data, expected)
 

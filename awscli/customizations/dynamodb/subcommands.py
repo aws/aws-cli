@@ -58,6 +58,9 @@ class DDBCommand(BasicCommand):
             response = paginator.paginate(**client_args).build_full_result()
         else:
             response = getattr(self._client, operation_name)(**client_args)
+        if 'ConsumedCapacity' in response and \
+                response['ConsumedCapacity'] is None:
+            del response['ConsumedCapacity']
         return response
 
     def _dump_yaml(self, operation_name, data, parsed_globals):

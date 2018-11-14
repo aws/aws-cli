@@ -32,7 +32,6 @@ class TestSelect(BaseSelectTest):
             "Count": 1,
             "Items": [{"foo": {"S": "spam"}}],
             "ScannedCount": 1,
-            "ConsumedCapacity": None,
         }
 
     def test_simple_select(self):
@@ -54,7 +53,6 @@ class TestSelect(BaseSelectTest):
             "Count": 1,
             "Items": [{"foo": {"N": "2"}}],
             "ScannedCount": 1,
-            "ConsumedCapacity": None,
         }
         command = [
             'ddb', 'select', 'mytable', '--key-condition', 'foo = 1'
@@ -97,7 +95,6 @@ class TestSelect(BaseSelectTest):
             "Count": 1,
             "Items": [{"foo": {"N": "2"}}],
             "ScannedCount": 1,
-            "ConsumedCapacity": None,
         }
         command = [
             'ddb', 'select', 'mytable', '--filter', 'foo BETWEEN 1 AND 3'
@@ -150,7 +147,6 @@ class TestSelect(BaseSelectTest):
         self.parsed_response = {
             "Count": 1,
             "ScannedCount": 1,
-            "ConsumedCapacity": None,
         }
         command = [
             'ddb', 'select', 'mytable', '--attributes', 'COUNT'
@@ -257,7 +253,6 @@ class TestSelect(BaseSelectTest):
             "Count": 1,
             "Items": [{"foo": {"B": b"\xe2\x9c\x93"}}],
             "ScannedCount": 1,
-            "ConsumedCapacity": None,
         }
         command = ['ddb', 'select', 'mytable']
         stdout, _, _ = self.run_cmd(command, expected_rc=0)
@@ -265,7 +260,22 @@ class TestSelect(BaseSelectTest):
             'Count': 1,
             'Items': [{"foo": b'\xe2\x9c\x93'}],
             "ScannedCount": 1,
+        }
+        self.assert_yaml_response_equal(stdout, expected)
+
+    def test_consumed_capacity_omitted_if_none(self):
+        self.parsed_response = {
+            "Count": 1,
+            "Items": [{"foo": {"S": "spam"}}],
+            "ScannedCount": 1,
             "ConsumedCapacity": None,
+        }
+        command = ['ddb', 'select', 'mytable']
+        stdout, _, _ = self.run_cmd(command, expected_rc=0)
+        expected = {
+            "Count": 1,
+            "Items": [{"foo": "spam"}],
+            "ScannedCount": 1,
         }
         self.assert_yaml_response_equal(stdout, expected)
 
@@ -278,14 +288,12 @@ class TestSelectPagination(BaseSelectTest):
                 "Count": 1,
                 "Items": [{"foo": {"N": "1"}}],
                 "ScannedCount": 1,
-                "ConsumedCapacity": None,
                 "LastEvaluatedKey": {"foo": {"N": "1"}},
             },
             {
                 "Count": 1,
                 "Items": [{"foo": {"N": "2"}}],
                 "ScannedCount": 1,
-                "ConsumedCapacity": None,
             },
         ]
 
@@ -295,7 +303,6 @@ class TestSelectPagination(BaseSelectTest):
         ]
         stdout, _, _ = self.run_cmd(command, expected_rc=0)
         expected_response = {
-            'ConsumedCapacity': None,
             'Count': 2,
             'Items': [
                 {'foo': 1},
@@ -314,7 +321,6 @@ class TestSelectPagination(BaseSelectTest):
             "Count": 1,
             "Items": [{"foo": 1}],
             "ScannedCount": 1,
-            "ConsumedCapacity": None,
             "LastEvaluatedKey": {"foo": 1},
         }
         self.assert_yaml_response_equal(stdout, expected_response)
@@ -332,7 +338,6 @@ class TestSelectPagination(BaseSelectTest):
         ]
         stdout, _, _ = self.run_cmd(command, expected_rc=0)
         expected_response = {
-            'ConsumedCapacity': None,
             'Count': 1,
             'Items': [
                 {'foo': 1},
@@ -360,7 +365,6 @@ class TestSelectPagination(BaseSelectTest):
         self.assertEqual(params, expected_initial_params)
 
         expected_response = {
-            'ConsumedCapacity': None,
             'Count': 2,
             'Items': [
                 {'foo': 1},
@@ -375,7 +379,6 @@ class TestSelectPagination(BaseSelectTest):
             "Count": 1,
             "Items": [{"foo": {"N": "2"}}],
             "ScannedCount": 1,
-            "ConsumedCapacity": None,
         }]
         command = [
             'ddb', 'select', 'mytable', '--starting-token',
@@ -391,7 +394,6 @@ class TestSelectPagination(BaseSelectTest):
             command, expected_params, expected_rc=0
         )
         expected_response = {
-            'ConsumedCapacity': None,
             'Count': 0,
             'Items': [
                 {'foo': 2}

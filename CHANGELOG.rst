@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+1.16.56
+=======
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``route53resolver``: Update route53resolver command to latest version
+* api-change:``s3control``: Update s3control command to latest version
+* api-change:``directconnect``: Update directconnect command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+* api-change:``ram``: Update ram command to latest version
+* api-change:``sms-voice``: Update sms-voice command to latest version
+* api-change:``iam``: Update iam command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
 1.16.55
 =======
 

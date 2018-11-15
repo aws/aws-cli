@@ -18,6 +18,7 @@ import zipfile
 import contextlib
 import uuid
 import shutil
+import json
 from awscli.compat import six
 
 from awscli.compat import urlparse
@@ -228,7 +229,7 @@ class Resource(object):
     def __init__(self, uploader):
         self.uploader = uploader
 
-    def export(self, resource_id, resource_dict, parent_dir):
+    def export(self, resource_id, resource_dict, parent_dir, use_json):
         if resource_dict is None:
             return
 
@@ -251,7 +252,7 @@ class Resource(object):
             resource_dict[self.PROPERTY_NAME] = temp_dir
 
         try:
-            self.do_export(resource_id, resource_dict, parent_dir)
+            self.do_export(resource_id, resource_dict, parent_dir, use_json)
 
         except Exception as ex:
             LOG.debug("Unable to export", exc_info=ex)
@@ -264,7 +265,7 @@ class Resource(object):
             if temp_dir:
                 shutil.rmtree(temp_dir)
 
-    def do_export(self, resource_id, resource_dict, parent_dir):
+    def do_export(self, resource_id, resource_dict, parent_dir, use_json):
         """
         Default export action is to upload artifacts and set the property to
         S3 URL of the uploaded object
@@ -288,7 +289,7 @@ class ResourceWithS3UrlDict(Resource):
     def __init__(self, uploader):
         super(ResourceWithS3UrlDict, self).__init__(uploader)
 
-    def do_export(self, resource_id, resource_dict, parent_dir):
+    def do_export(self, resource_id, resource_dict, parent_dir, use_json):
         """
         Upload to S3 and set property to an dict representing the S3 url
         of the uploaded object
@@ -381,7 +382,7 @@ class CloudFormationStackResource(Resource):
     def __init__(self, uploader):
         super(CloudFormationStackResource, self).__init__(uploader)
 
-    def do_export(self, resource_id, resource_dict, parent_dir):
+    def do_export(self, resource_id, resource_dict, parent_dir, use_json):
         """
         If the nested stack template is valid, this method will
         export on the nested template, upload the exported template to S3
@@ -405,7 +406,10 @@ class CloudFormationStackResource(Resource):
         exported_template_dict = \
             Template(template_path, parent_dir, self.uploader).export()
 
-        exported_template_str = yaml_dump(exported_template_dict)
+        if use_json:
+            exported_template_str = json.dumps(exported_template_dict, indent=4, ensure_ascii=False)
+        else:
+            exported_template_str = yaml_dump(exported_template_dict)
 
         with mktempfile() as temporary_file:
             temporary_file.write(exported_template_str)
@@ -491,7 +495,7 @@ class Template(object):
         return template_dict
 
 
-    def export(self):
+    def export(self, use_json=False):
         """
         Exports the local artifacts referenced by the given template to an
         s3 bucket.
@@ -515,6 +519,6 @@ class Template(object):
 
                 # Export code resources
                 exporter = exporter_class(self.uploader)
-                exporter.export(resource_id, resource_dict, self.template_dir)
+                exporter.export(resource_id, resource_dict, self.template_dir, use_json)
 
         return self.template_dict

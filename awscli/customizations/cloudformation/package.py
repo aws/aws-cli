@@ -164,7 +164,7 @@ class PackageCommand(BasicCommand):
 
     def _export(self, template_path, use_json):
         template = Template(template_path, os.getcwd(), self.s3_uploader)
-        exported_template = template.export()
+        exported_template = template.export(use_json)
 
         if use_json:
             exported_str = json.dumps(exported_template, indent=4, ensure_ascii=False)

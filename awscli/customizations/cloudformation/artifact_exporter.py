@@ -229,7 +229,7 @@ class Resource(object):
     def __init__(self, uploader):
         self.uploader = uploader
 
-    def export(self, resource_id, resource_dict, parent_dir, use_json):
+    def export(self, resource_id, resource_dict, parent_dir, use_json=False):
         if resource_dict is None:
             return
 
@@ -404,7 +404,7 @@ class CloudFormationStackResource(Resource):
                     template_path=abs_template_path)
 
         exported_template_dict = \
-            Template(template_path, parent_dir, self.uploader).export()
+            Template(template_path, parent_dir, self.uploader).export(use_json)
 
         if use_json:
             exported_template_str = json.dumps(exported_template_dict, indent=4, ensure_ascii=False)

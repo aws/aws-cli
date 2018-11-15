@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
+from datetime import datetime
 
 from botocore.compat import json
 from botocore.utils import set_value_from_jmespath
@@ -110,18 +111,24 @@ class YAMLFormatter(FullyBufferedFormatter):
     def _format_response(self, command_name, response, stream):
         if response == {}:
             return None
-        if isinstance(response, compat.six.string_types):
-            # The yaml library will try to disambiguate when you dump a
-            # string value in a variety of ways. By default it will add
-            # an elipsis on a new line at the end of the file. While
-            # this is valid YAML and it does have its benefits,
-            # it's more useful to us to omit that. Unfortunately the only
-            # supported way to do that is to change the default styling.
-            # This styling will double quote strings.
-            self._yaml.default_style = '"'
+        if self._is_json_scalar(response) or isinstance(response, datetime):
+            # YAML will attempt to disambiguate scalars by ending the stream
+            # with an elipsis. While this is technically valid YAML,
+            # it's not particularly useful. Unfortunately there's no
+            # universal way around this, so instead we just json dump the
+            # values. Also note that datetimes are explicitly not supported
+            # - the json dumper will complain if you pass them in. datetime
+            # values should respect the cli timestamp format, which is
+            # impossible to do from the Formatter.
+            json.dump(response, stream, ensure_ascii=False)
+            stream.write('\n')
         else:
-            self._yaml.default_style = ''
-        self._yaml.dump(response, stream)
+            self._yaml.dump(response, stream)
+
+    def _is_json_scalar(self, value):
+        if value is None:
+            return True
+        return isinstance(value, (int, float, bool, compat.six.string_types))
 
 
 class TableFormatter(FullyBufferedFormatter):

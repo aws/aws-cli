@@ -635,6 +635,7 @@ class TestArtifactExporter(unittest.TestCase):
         exported_template_dict = {"foo": "bar"}
         result_s3_url = "s3://hello/world"
         result_path_style_s3_url = "http://s3.amazonws.com/hello/world"
+        use_json = False
 
         template_instance_mock = Mock()
         TemplateMock.return_value = template_instance_mock
@@ -648,12 +649,12 @@ class TestArtifactExporter(unittest.TestCase):
             resource_dict = {property_name: template_path}
             parent_dir = tempfile.gettempdir()
 
-            stack_resource.export(resource_id, resource_dict, parent_dir)
+            stack_resource.export(resource_id, resource_dict, parent_dir, use_json)
 
             self.assertEquals(resource_dict[property_name], result_path_style_s3_url)
 
-            TemplateMock.assert_called_once_with(template_path, parent_dir, self.s3_uploader_mock)
-            template_instance_mock.export.assert_called_once_with()
+            TemplateMock.assert_called_once_with(template_path, parent_dir, self.s3_uploader_mock, use_json)
+            template_instance_mock.export.assert_called_once_with(use_json)
             self.s3_uploader_mock.upload_with_dedup.assert_called_once_with(mock.ANY, "template")
             self.s3_uploader_mock.to_path_style_s3_url.assert_called_once_with("world", None)
 
@@ -748,6 +749,7 @@ class TestArtifactExporter(unittest.TestCase):
 
         open_mock = mock.mock_open()
         yaml_parse_mock.return_value = template_dict
+        use_json = False
 
         # Patch the file open method to return template string
         with patch(
@@ -757,7 +759,7 @@ class TestArtifactExporter(unittest.TestCase):
             template_exporter = Template(
                 template_path, parent_dir, self.s3_uploader_mock,
                 resources_to_export)
-            exported_template = template_exporter.export()
+            exported_template = template_exporter.export(use_json)
             self.assertEquals(exported_template, template_dict)
 
             open_mock.assert_called_once_with(
@@ -765,12 +767,12 @@ class TestArtifactExporter(unittest.TestCase):
 
             self.assertEquals(1, yaml_parse_mock.call_count)
 
-            resource_type1_class.assert_called_once_with(self.s3_uploader_mock)
+            resource_type1_class.assert_called_once_with(self.s3_uploader_mock, use_json)
             resource_type1_instance.export.assert_called_once_with(
-                "Resource1", mock.ANY, template_dir)
-            resource_type2_class.assert_called_once_with(self.s3_uploader_mock)
+                "Resource1", mock.ANY, template_dir, use_json)
+            resource_type2_class.assert_called_once_with(self.s3_uploader_mock, use_json)
             resource_type2_instance.export.assert_called_once_with(
-                "Resource2", mock.ANY, template_dir)
+                "Resource2", mock.ANY, template_dir, use_json)
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
     def test_template_global_export(self, yaml_parse_mock):
@@ -849,7 +851,7 @@ class TestArtifactExporter(unittest.TestCase):
         handler_output = include_transform_export_handler({"Name": "AWS::Include", "Parameters": {"Location": "http://foo.yaml"}}, self.s3_uploader_mock)
         self.s3_uploader_mock.upload_with_dedup.assert_not_called()
         self.assertEquals(handler_output, {"Name": "AWS::Include", "Parameters": {"Location": "http://foo.yaml"}})
-    
+
     @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_file")
     def test_include_transform_export_handler_non_include_transform(self, is_local_file_mock):
         #ignores transform that is not aws::include

@@ -653,7 +653,7 @@ class TestArtifactExporter(unittest.TestCase):
 
             self.assertEquals(resource_dict[property_name], result_path_style_s3_url)
 
-            TemplateMock.assert_called_once_with(template_path, parent_dir, self.s3_uploader_mock, use_json)
+            TemplateMock.assert_called_once_with(template_path, parent_dir, self.s3_uploader_mock)
             template_instance_mock.export.assert_called_once_with(use_json)
             self.s3_uploader_mock.upload_with_dedup.assert_called_once_with(mock.ANY, "template")
             self.s3_uploader_mock.to_path_style_s3_url.assert_called_once_with("world", None)
@@ -767,10 +767,10 @@ class TestArtifactExporter(unittest.TestCase):
 
             self.assertEquals(1, yaml_parse_mock.call_count)
 
-            resource_type1_class.assert_called_once_with(self.s3_uploader_mock, use_json)
+            resource_type1_class.assert_called_once_with(self.s3_uploader_mock)
             resource_type1_instance.export.assert_called_once_with(
                 "Resource1", mock.ANY, template_dir, use_json)
-            resource_type2_class.assert_called_once_with(self.s3_uploader_mock, use_json)
+            resource_type2_class.assert_called_once_with(self.s3_uploader_mock)
             resource_type2_instance.export.assert_called_once_with(
                 "Resource2", mock.ANY, template_dir, use_json)
 

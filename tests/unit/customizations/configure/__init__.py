@@ -17,7 +17,7 @@ class FakeSession(object):
 
     def __init__(self, all_variables, profile_does_not_exist=False,
                  config_file_vars=None, environment_vars=None,
-                 credentials=None, profile=None):
+                 credentials=None, profile=None, available_profiles=None):
         self.variables = all_variables
         self.profile_does_not_exist = profile_does_not_exist
         self.config = {}
@@ -26,9 +26,16 @@ class FakeSession(object):
         self.config_file_vars = config_file_vars
         if environment_vars is None:
             environment_vars = {}
+        if available_profiles is None:
+            available_profiles = ['default']
+        self._available_profiles = available_profiles
         self.environment_vars = environment_vars
         self._credentials = credentials
         self.profile = profile
+
+    @property
+    def available_profiles(self):
+        return self._available_profiles
 
     def get_credentials(self):
         return self._credentials

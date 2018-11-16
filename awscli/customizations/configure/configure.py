@@ -23,6 +23,7 @@ from awscli.customizations.configure.get import ConfigureGetCommand
 from awscli.customizations.configure.list import ConfigureListCommand
 from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.configure.importer import ConfigureImportCommand
+from awscli.customizations.configure.listprofiles import ListProfilesCommand
 
 from . import mask_value, profile_to_section
 
@@ -76,6 +77,7 @@ class ConfigureCommand(BasicCommand):
         {'name': 'set', 'command_class': ConfigureSetCommand},
         {'name': 'add-model', 'command_class': AddModelCommand},
         {'name': 'import', 'command_class': ConfigureImportCommand},
+        {'name': 'list-profiles', 'command_class': ListProfilesCommand},
     ]
 
     # If you want to add new values to prompt, update this list here.

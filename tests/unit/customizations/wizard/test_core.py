@@ -240,7 +240,9 @@ class TestPlanner(unittest.TestCase):
         mock_client.list_policies.return_value = {
             'Policies': ['foo'],
         }
-        api_step = core.APICallStep(session=mock_session)
+        api_step = core.APICallStep(
+            api_invoker=core.APIInvoker(session=mock_session)
+        )
         planner = core.Planner(
             step_handlers={
                 'apicall': api_step,
@@ -267,7 +269,9 @@ class TestPlanner(unittest.TestCase):
         mock_client.list_policies.return_value = {
             'Policies': [{'Name': 'one'}, {'Name': 'two'}],
         }
-        api_step = core.APICallStep(session=mock_session)
+        api_step = core.APICallStep(
+            api_invoker=core.APIInvoker(session=mock_session)
+        )
         planner = core.Planner(
             step_handlers={
                 'apicall': api_step,
@@ -405,3 +409,160 @@ class TestPlanner(unittest.TestCase):
         """)
         parameters = custom_planner.run(loaded['plan'])
         self.assertEqual(parameters['name'], 'myreturnvalue')
+
+
+class TestExecutor(unittest.TestCase):
+    def setUp(self):
+        self.session = mock.Mock(spec=Session)
+        self.client = mock.Mock()
+        self.session.create_client.return_value = self.client
+        self.executor = core.Executor(
+            step_handlers={
+                'apicall': core.APICallExecutorStep(
+                    core.APIInvoker(session=self.session),
+                )
+            }
+        )
+
+    def test_can_make_api_call_with_params(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: apicall
+              operation: iam.CreateUser
+              params:
+                UserName: admin
+        """)
+        self.executor.run(loaded['execute'], {})
+        self.session.create_client.assert_called_with('iam')
+        self.client.create_user.assert_called_with(UserName='admin')
+
+    def test_can_make_api_call_with_optional_params(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: apicall
+              operation: iam.CreateUser
+              params:
+                UserName: admin
+              optional_params:
+                Path: "/foo"
+        """)
+        self.executor.run(loaded['execute'], {})
+        self.session.create_client.assert_called_with('iam')
+        self.client.create_user.assert_called_with(
+            UserName='admin', Path='/foo')
+
+    def test_optional_params_not_passed_if_none(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: apicall
+              operation: iam.CreateUser
+              params:
+                UserName: admin
+              optional_params:
+                # Omitted because the value is null.
+                Path: null
+        """)
+        self.executor.run(loaded['execute'], {})
+        self.session.create_client.assert_called_with('iam')
+        self.client.create_user.assert_called_with(UserName='admin')
+
+    def test_can_make_conditional_api_call(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: apicall
+              condition:
+                variable: should_invoke
+                equals: yes
+              operation: iam.CreateUser
+              params:
+                UserName: admin
+        """)
+        self.executor.run(loaded['execute'], {'should_invoke': 'no'})
+        self.assertFalse(self.session.create_client.called)
+        self.assertFalse(self.client.create_user.called)
+
+    def test_can_recursively_template_variables_in_params(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: apicall
+              operation: iam.CreateUser
+              params:
+                UserName: "{foo}"
+                Nested:
+                  Variable: "{foo}"
+                ListType:
+                  - one
+                  - "{foo}"
+                ComboNest:
+                  Foo:
+                    - Bar: "{foo}"
+                    - Baz: "{foo}"
+        """)
+        self.executor.run(loaded['execute'], {'foo': 'FOOVALUE'})
+        self.session.create_client.assert_called_with('iam')
+        expected_params = {
+            'UserName': 'FOOVALUE',
+            'Nested': {
+                'Variable': 'FOOVALUE',
+            },
+            'ListType': ['one', 'FOOVALUE'],
+            'ComboNest': {
+                'Foo': [
+                    {'Bar': 'FOOVALUE'},
+                    {'Baz': 'FOOVALUE'},
+                ]
+            }
+        }
+        self.client.create_user.assert_called_with(**expected_params)
+
+    def test_can_store_output_vars(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: apicall
+              operation: iam.CreateRole
+              params:
+                RoleName: admin
+              output_var: role_arn
+              query: Role.Arn
+        """)
+        params = {}
+        self.client.create_role.return_value = {
+            'Role': {'Arn': 'my-role-arn'},
+        }
+        self.executor.run(loaded['execute'], params)
+        self.client.create_role.assert_called_with(RoleName='admin')
+        # We should have added 'role_arn' to the params dict and also
+        # applied the jmespath query to the response before storing the
+        # value.
+        self.assertEqual(params['role_arn'], 'my-role-arn')
+
+    def test_executes_multiple_groups(self):
+        # We may introduce a 'next_step' similar to what you can do
+        # in the planner, but for now, we just execute all steps sequentially
+        # in the executor.
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: apicall
+              operation: iam.CreateUser
+              params:
+                UserName: admin
+          createrole:
+            - type: apicall
+              operation: iam.CreateRole
+              params:
+                RoleName: admin
+        """)
+        self.executor.run(loaded['execute'], {})
+        self.session.create_client.assert_called_with('iam')
+        self.assertEqual(
+            self.client.method_calls,
+            [mock.call.create_user(UserName='admin'),
+             mock.call.create_role(RoleName='admin')]
+        )

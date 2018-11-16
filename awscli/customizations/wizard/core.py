@@ -122,19 +122,116 @@ class TemplateStep(BaseStep):
 
 
 class APICallStep(BaseStep):
+    def __init__(self, api_invoker):
+        self._api_invoker = api_invoker
+
+    def run_step(self, step_definition, parameters):
+        service, op_name = step_definition['operation'].split('.', 1)
+        return self._api_invoker.invoke(
+            service=service, operation=op_name,
+            api_params=step_definition['params'],
+            plan_variables=parameters,
+            optional_api_params=step_definition.get('optional_params'),
+            query=step_definition.get('query'),
+        )
+
+
+class APIInvoker(object):
+    """This class contains shared logic for the apicall step.
+
+    The ``apicall`` in the planner and executor are slightly different
+    but share a lot of similar logic.  This class is used share logic
+    between the two steps.
+
+    """
     def __init__(self, session):
         self._session = session
 
-    def run_step(self, step_definition, parameters):
-        operation = step_definition['operation']
-        service, op_name = operation.split('.', 1)
-        method_name = xform_name(op_name)
-        params = step_definition['params']
-        response = self._invoke_apicall(service, method_name, params)
-        if 'query' in step_definition:
-            response = jmespath.search(step_definition['query'], response)
+    def invoke(self, service, operation, api_params, plan_variables,
+               optional_api_params=None, query=None):
+        client = self._session.create_client(service)
+        resolved_params = self._resolve_params(
+            api_params, optional_api_params, plan_variables)
+        response = getattr(client, xform_name(operation))(**resolved_params)
+        if query is not None:
+            response = jmespath.search(query, response)
         return response
 
-    def _invoke_apicall(self, service, method_name, params):
-        client = self._session.create_client(service)
-        return getattr(client, method_name)(**params)
+    def _resolve_params(self, api_params, optional_params, plan_vars):
+        api_params_resolved = self._resolve_vars(api_params, plan_vars)
+        if optional_params is not None:
+            optional_params_resolved = self._resolve_vars(optional_params,
+                                                          plan_vars)
+            for key, value in optional_params_resolved.items():
+                if key not in api_params_resolved and value is not None:
+                    api_params_resolved[key] = value
+        return api_params_resolved
+
+    def _resolve_vars(self, value, plan_vars):
+        if isinstance(value, str):
+            value = value.format(**plan_vars)
+            return value
+        elif isinstance(value, list):
+            final = []
+            for v in value:
+                final.append(self._resolve_vars(v, plan_vars))
+            return final
+        elif isinstance(value, dict):
+            final = {}
+            for k, v in value.items():
+                final[k] = self._resolve_vars(v, plan_vars)
+            return final
+        else:
+            return value
+
+
+class Executor(object):
+
+    def __init__(self, step_handlers):
+        self._step_handlers = step_handlers
+
+    def run(self, step, parameters):
+        # We may eventually support jumping around to different step
+        # names, but for now, we just iterate through the steps in order.
+        for group in step.values():
+            for step in group:
+                self._run_step(step, parameters)
+
+    def _run_step(self, step, parameters):
+        if 'condition' in step:
+            should_run = self._check_step_condition(step['condition'],
+                                                    parameters)
+            if not should_run:
+                return
+        step_type = step['type']
+        handler = self._step_handlers[step_type]
+        handler.run_step(step, parameters)
+
+    def _check_step_condition(self, condition, parameters):
+        varname = condition['variable']
+        if 'equals' in condition:
+            expected = condition['equals']
+            return parameters[varname] == expected
+        return False
+
+
+class ExecutorStep(object):
+    def run_step(self, step_definition, parameters):
+        raise NotImplementedError("run_step")
+
+
+class APICallExecutorStep(ExecutorStep):
+    def __init__(self, api_invoker):
+        self._api_invoker = api_invoker
+
+    def run_step(self, step_definition, parameters):
+        service, op_name = step_definition['operation'].split('.', 1)
+        response = self._api_invoker.invoke(
+            service=service, operation=op_name,
+            api_params=step_definition['params'],
+            plan_variables=parameters,
+            optional_api_params=step_definition.get('optional_params'),
+            query=step_definition.get('query'),
+        )
+        if 'output_var' in step_definition:
+            parameters[step_definition['output_var']] = response

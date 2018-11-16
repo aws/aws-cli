@@ -24,38 +24,42 @@ class Planner(object):
         # These will hold the values we store from
         # running through the plan steps.
         self._parameters = {}
+        self._current_step_index = -1
+        self._current_step_name = None
+        self._step_names = []
 
     def run(self, plan):
         self._parameters.clear()
-        steps_iter = self._steps(plan)
-        step = next(steps_iter)
+        self._current_step_index = -1
+        self._current_step_name = None
+        self._step_names = list(plan)
+        next_step_name = None
+        step = self._next_step(next_step_name, plan)
         while step is not self._STOP_RUNNING:
             next_step_name = self._run_step(step)
-            step = steps_iter.send(next_step_name)
+            step = self._next_step(next_step_name, plan)
         return self._parameters
 
-    def _steps(self, plan):
-        step_names = list(plan)
-        step_index = 0
-        step_name = step_names[step_index]
-        while True:
-            next_step_name = yield plan[step_name]
-            if next_step_name == self._DONE_STEP:
-                yield self._STOP_RUNNING
-            elif next_step_name is None:
-                # If no explicit step is given, we go on to the next
-                # sequential step.
-                step_index += 1
-                if step_index == len(step_names):
-                    # If this is the last step, we're done with the
-                    # plan phase.
-                    yield self._STOP_RUNNING
-                step_name = step_names[step_index]
-            else:
-                # If an explicit name is given we find the index
-                # of the step name and update accordingly.
-                step_index = step_names.index(next_step_name)
-                step_name = next_step_name
+    def _next_step(self, next_step_name, plan):
+        if next_step_name == self._DONE_STEP:
+            return self._STOP_RUNNING
+        elif next_step_name is None:
+            # If no explicit step is given, we go on to the next
+            # sequential step.
+            self._current_step_index += 1
+            if self._current_step_index == len(self._step_names):
+                # If this is the last step, we're done with the
+                # plan phase.
+                return self._STOP_RUNNING
+            self._current_step_name = self._step_names[
+                self._current_step_index]
+            return plan[self._current_step_name]
+        else:
+            # If an explicit name is given we find the index
+            # of the step name and update accordingly.
+            self._current_step_index = self._step_names.index(next_step_name)
+            self._current_step_name = next_step_name
+            return plan[self._current_step_name]
 
     def _run_step(self, step):
         # Running step consists of first fetching any values

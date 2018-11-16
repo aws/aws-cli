@@ -83,6 +83,7 @@ from awscli.customizations.servicecatalog import register_servicecatalog_command
 from awscli.customizations.s3events import register_event_stream_arg
 from awscli.customizations.sessionmanager import register_ssm_session
 from awscli.customizations.logs import register_logs_commands
+from awscli.customizations.devcommands import register_dev_commands
 
 
 def awscli_initialize(event_handlers):
@@ -168,3 +169,4 @@ def awscli_initialize(event_handlers):
     dlm_initialize(event_handlers)
     register_ssm_session(event_handlers)
     register_logs_commands(event_handlers)
+    register_dev_commands(event_handlers)

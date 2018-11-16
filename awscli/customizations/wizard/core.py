@@ -149,6 +149,11 @@ class APIInvoker(object):
 
     def invoke(self, service, operation, api_params, plan_variables,
                optional_api_params=None, query=None):
+        # TODO: All of the params that come from prompting the user
+        # are strings.  We need a way to convert values to their
+        # appropriate types.  We can either add typing into the wizard
+        # spec or we possibly auto-convert based on the service
+        # model (or both).
         client = self._session.create_client(service)
         resolved_params = self._resolve_params(
             api_params, optional_api_params, plan_variables)

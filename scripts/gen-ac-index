@@ -1,0 +1,37 @@
+#!/usr/bin/env python
+"""Generate the index used for the new auto-completion.
+
+"""
+import os
+
+from awscli.autocomplete.local import indexer
+from awscli.autocomplete.serverside.indexer import APICallIndexer
+from awscli.autocomplete import db
+from awscli.autocomplete.main import INDEX_DIR, INDEX_FILE
+from awscli.autocomplete import generator
+from awscli import clidriver
+
+
+def main():
+    if not os.path.isdir(INDEX_DIR):
+        os.makedirs(INDEX_DIR)
+    # Using a temporary name so if the index already exists, we'll
+    # only replace the entire file once we successfully regenerate the
+    # index.
+    temp_name = '%s.temp' % INDEX_FILE
+    db_connection = db.DatabaseConnection(temp_name)
+    indexers = [
+        indexer.ModelIndexer(db_connection),
+        APICallIndexer(db_connection),
+    ]
+    driver = clidriver.create_clidriver()
+    index_gen = generator.IndexGenerator(indexers=indexers)
+    try:
+        index_gen.generate_index(driver)
+    finally:
+        db_connection.close()
+    os.rename(temp_name, INDEX_FILE)
+
+
+if __name__ == '__main__':
+    main()

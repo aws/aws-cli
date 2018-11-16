@@ -1,0 +1,74 @@
+#!/usr/bin/env python
+"""Auto generate server side completions.
+
+This script will use the awscli.autocomplete.autogen module to
+auto-generate server side completion data.  It will then write out
+the completion data to JSON files in this repo.  The file structure is::
+
+  awscli/data/<service>/<api-version>/completions-1.json
+
+You can provide the `--only-print` option which will just write the
+name of the file followed by the completion data to stdout.  This is useful
+if you want to see the generated completion data without modifying existing
+files.
+
+"""
+import argparse
+import json
+import sys
+import os
+import re
+
+import botocore.session
+
+from awscli.autocomplete.autogen import ServerCompletionHeuristic
+from awscli.autocomplete.autogen import BasicSingularize
+
+# The awscli/__init__.py file sets the AWS_DATA_PATH env var, so as long
+# as we import from awscli we're ensured this env var exists.
+AWS_DATA_PATH = os.environ['AWS_DATA_PATH']
+
+
+def generate_completion_data(args):
+    session = botocore.session.get_session()
+    gen = ServerCompletionHeuristic()
+    for service_name in session.get_available_services():
+        model = session.get_service_model(service_name)
+        completion_data = gen.generate_completion_descriptions(model)
+        out_filename = os.path.join(
+            AWS_DATA_PATH, service_name,
+            model.api_version, 'completions-1.json'
+        )
+        to_json = _pretty_json_dump(completion_data)
+        if args.only_print:
+            print("File: %s" % out_filename)
+            print("Contents:\n%s\n" % to_json)
+        else:
+            _write_data_to_file(out_filename, to_json)
+
+
+def _write_data_to_file(out_filename, to_json):
+    # We're always writing completion data out to file even if there's
+    # no completion data.  I think this makes the future diffs easier to
+    # read (vs. a brand new file).
+    dirname = os.path.dirname(out_filename)
+    if not os.path.isdir(dirname):
+        os.makedirs(dirname)
+    with open(out_filename, 'w') as f:
+        f.write(to_json)
+
+
+def _pretty_json_dump(data):
+    return json.dumps(data, indent=2, separators=(',', ': ')) + '\n'
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--only-print', action='store_true')
+
+    args = parser.parse_args()
+    generate_completion_data(args)
+
+
+if __name__ == '__main__':
+    main()

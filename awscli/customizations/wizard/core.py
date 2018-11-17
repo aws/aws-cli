@@ -17,6 +17,17 @@ import os
 from botocore import xform_name
 
 
+
+class Runner(object):
+    def __init__(self, planner, executor):
+        self._planner = planner
+        self._executor = executor
+
+    def run(self, wizard_spec):
+        params = self._planner.run(wizard_spec['plan'])
+        self._executor.run(wizard_spec['execute'], params)
+
+
 class Planner(object):
     _DONE_STEP = 'DONE'
     _STOP_RUNNING = object()
@@ -264,16 +275,14 @@ class SharedConfigExecutorStep(ExecutorStep):
 
     def run_step(self, step_definition, parameters):
         config_params = {}
+        profile = None
         if 'profile' in step_definition:
-            section = step_definition['profile']
-            if section != 'default':
-                section = 'profile %s' % section
-            config_params['__section__'] = section
+            profile = self._resolve_params(step_definition['profile'],
+                                           parameters)
         config_params = self._resolve_params(
             step_definition['params'], parameters
         )
-        self._config_api.set_values(config_params,
-                                    profile=step_definition.get('profile'))
+        self._config_api.set_values(config_params, profile=profile)
 
     def _resolve_params(self, value, params):
         # TODO: remove duplication with APICallExecutorStep

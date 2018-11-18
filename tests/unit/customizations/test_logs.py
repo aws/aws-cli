@@ -294,7 +294,7 @@ class TestFollowLogEventsGenerator(BaseLogEventsGeneratorTest):
             log_events_iter = self.logs_generator.iter_log_events(
                 self.group_name, self.start, self.filter_pattern)
             actual_log_events = [event for event in log_events_iter]
-        self.mock_sleep.assert_called_once_with(1)
+        self.mock_sleep.assert_called_once_with(5)
         self.assertEqual(
             actual_log_events,
             [
@@ -356,7 +356,7 @@ class TestFollowLogEventsGenerator(BaseLogEventsGeneratorTest):
             log_events_iter = self.logs_generator.iter_log_events(
                 self.group_name)
             actual_log_events = [event for event in log_events_iter]
-        self.mock_sleep.assert_has_calls([mock.call(1), mock.call(1)])
+        self.mock_sleep.assert_has_calls([mock.call(5), mock.call(5)])
         self.assertEqual(
             actual_log_events,
             [
@@ -403,7 +403,7 @@ class TestFollowLogEventsGenerator(BaseLogEventsGeneratorTest):
             log_events_iter = self.logs_generator.iter_log_events(
                 self.group_name)
             actual_log_events = [event for event in log_events_iter]
-        self.mock_sleep.assert_has_calls([mock.call(1), mock.call(1)])
+        self.mock_sleep.assert_has_calls([mock.call(5), mock.call(5)])
         self.assertEqual(
             actual_log_events,
             [

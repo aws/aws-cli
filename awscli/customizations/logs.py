@@ -283,7 +283,7 @@ class NoFollowLogEventsGenerator(BaseLogEventsGenerator):
 
 
 class FollowLogEventsGenerator(BaseLogEventsGenerator):
-    _TIME_TO_SLEEP = 1
+    _TIME_TO_SLEEP = 5
 
     def __init__(self, client, timestamp_utils, sleep=None):
         super(FollowLogEventsGenerator, self).__init__(client, timestamp_utils)

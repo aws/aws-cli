@@ -264,16 +264,14 @@ class SharedConfigExecutorStep(ExecutorStep):
 
     def run_step(self, step_definition, parameters):
         config_params = {}
+        profile = None
         if 'profile' in step_definition:
-            section = step_definition['profile']
-            if section != 'default':
-                section = 'profile %s' % section
-            config_params['__section__'] = section
+            profile = self._resolve_params(step_definition['profile'],
+                                           parameters)
         config_params = self._resolve_params(
             step_definition['params'], parameters
         )
-        self._config_api.set_values(config_params,
-                                    profile=step_definition.get('profile'))
+        self._config_api.set_values(config_params, profile=profile)
 
     def _resolve_params(self, value, params):
         # TODO: remove duplication with APICallExecutorStep

@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.dynamodb.subcommands import (
-    SelectCommand,
+    SelectCommand, PutCommand,
 )
 
 
@@ -30,6 +30,7 @@ class DDB(BasicCommand):
     SYNOPSIS = "aws ddb <Command> [<Arg> ...]"
     SUBCOMMANDS = [
         {'name': 'select', 'command_class': SelectCommand},
+        {'name': 'put', 'command_class': PutCommand},
     ]
 
     def _run_main(self, parsed_args, parsed_globals):

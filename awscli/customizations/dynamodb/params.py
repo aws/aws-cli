@@ -87,6 +87,14 @@ FILTER_EXPRESSION = {
     )
 }
 
+CONDITION_EXPRESSION = {
+    'name': 'condition', 'nargs': '+',
+    'help_text': (
+        '<p>A condition that must be satisfied in order for a conditional '
+        '<code>put</code> operation to succeed.</p>'
+    )
+}
+
 KEY_CONDITION_EXPRESSION = {
     'name': 'key-condition', 'nargs': '+',
     'help_text': (
@@ -127,6 +135,15 @@ KEY_CONDITION_EXPRESSION = {
         'Number.) Note that the function name <code>begins_with</code> is '
         'case-sensitive.</p></li>'
         '</ul>'
+    )
+}
+
+ITEMS = {
+    'name': 'items',
+    'positional_arg': True,
+    'synopsis': '<items>',
+    'help_text': (
+        '<p>One or more items to put into the table.</p>'
     )
 }
 

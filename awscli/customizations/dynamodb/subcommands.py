@@ -14,6 +14,7 @@ import logging
 
 import awscli.customizations.dynamodb.params as parameters
 from awscli.customizations.commands import BasicCommand, CustomArgument
+from awscli.customizations.dynamodb.extractor import AttributeExtractor
 from awscli.customizations.dynamodb.transform import (
     ParameterTransformer, TypeSerializer, TypeDeserializer
 )
@@ -37,6 +38,16 @@ class DDBCommand(BasicCommand):
         self._serializer = TypeSerializer()
         self._deserializer = TypeDeserializer()
 
+    def _serialize(self, operation_name, data):
+        service_model = self._client.meta.service_model
+        operation_model = service_model.operation_model(
+            self._client.meta.method_to_api_mapping.get(operation_name)
+        )
+        self._transformer.transform(
+            data, operation_model.input_shape, self._serializer.serialize,
+            'AttributeValue'
+        )
+
     def _deserialize(self, operation_name, data):
         service_model = self._client.meta.service_model
         operation_model = service_model.operation_model(
@@ -52,6 +63,7 @@ class DDBCommand(BasicCommand):
         if not should_paginate:
             ensure_paging_params_not_set(parsed_args, {})
         client_args = self._get_client_args(parsed_args)
+        self._serialize(operation_name, client_args)
 
         if self._client.can_paginate(operation_name) and should_paginate:
             paginator = self._client.get_paginator(operation_name)
@@ -120,6 +132,7 @@ class SelectCommand(PaginatedDDBCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         super(SelectCommand, self)._run_main(parsed_args, parsed_globals)
+        self._extractor = AttributeExtractor()
         self._select(parsed_args, parsed_globals)
         return 0
 
@@ -145,14 +158,24 @@ class SelectCommand(PaginatedDDBCommand):
             'TableName': parsed_args.table_name,
             'ConsistentRead': parsed_args.consistent_read,
         })
+        substitution_count = 0
         if parsed_args.index_name is not None:
             client_args['IndexName'] = parsed_args.index_name
         if parsed_args.projection is not None:
-            client_args['ProjectionExpression'] = parsed_args.projection
+            substitution_count = self._add_expression_args(
+                'ProjectionExpression', parsed_args.projection, client_args,
+                substitution_count,
+            )
         if parsed_args.filter is not None:
-            client_args['FilterExpression'] = parsed_args.filter
+            substitution_count += self._add_expression_args(
+                'FilterExpression', parsed_args.filter, client_args,
+                substitution_count,
+            )
         if parsed_args.key_condition is not None:
-            client_args['KeyConditionExpression'] = parsed_args.key_condition
+            self._add_expression_args(
+                'KeyConditionExpression', parsed_args.key_condition,
+                client_args, substitution_count,
+            )
         if parsed_args.attributes is not None:
             select_map = {
                 'ALL': 'ALL_ATTRIBUTES',
@@ -171,3 +194,20 @@ class SelectCommand(PaginatedDDBCommand):
             client_args['ReturnConsumedCapacity'] = 'NONE'
 
         return client_args
+
+    def _add_expression_args(self, expression_name, expression, args,
+                             substitution_count=0):
+        result = self._extractor.extract(expression, substitution_count)
+        args[expression_name] = result['expression']
+
+        if result['identifiers']:
+            if 'ExpressionAttributeNames' not in args:
+                args['ExpressionAttributeNames'] = {}
+            args['ExpressionAttributeNames'].update(result['identifiers'])
+
+        if result['values']:
+            if 'ExpressionAttributeValues' not in args:
+                args['ExpressionAttributeValues'] = {}
+            args['ExpressionAttributeValues'].update(result['values'])
+
+        return result['substitution_count']

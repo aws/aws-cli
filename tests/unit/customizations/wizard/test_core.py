@@ -14,6 +14,7 @@ import ruamel.yaml as yaml
 
 from botocore.session import Session
 
+from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.wizard import core
 from awscli.testutils import unittest, mock
 
@@ -410,17 +411,72 @@ class TestPlanner(unittest.TestCase):
         parameters = custom_planner.run(loaded['plan'])
         self.assertEqual(parameters['name'], 'myreturnvalue')
 
+    def test_can_load_profiles(self):
+        loaded = load_wizard("""
+        plan:
+          start:
+            values:
+              foo:
+                type: sharedconfig
+                operation: ListProfiles
+        """)
+        config_api = mock.Mock(spec=core.SharedConfigAPI)
+        config_api.list_profiles.return_value = ['profile1', 'profile2']
+        sharedconfig = core.SharedConfigStep(
+            config_api=config_api,
+        )
+        planner = core.Planner(
+            step_handlers={
+                'sharedconfig': sharedconfig,
+            },
+        )
+        parameters = planner.run(loaded['plan'])
+        self.assertEqual(parameters['foo'], ['profile1', 'profile2'])
+
+    def test_can_read_config_profile_data(self):
+        loaded = load_wizard("""
+        plan:
+          start:
+            values:
+              foo:
+                type: sharedconfig
+                operation: GetValue
+                params:
+                  profile: devprofile
+                  value: region
+        """)
+        config_api = mock.Mock(spec=core.SharedConfigAPI)
+        config_api.get_value.return_value = 'us-west-2'
+        sharedconfig = core.SharedConfigStep(
+            config_api=config_api,
+        )
+        planner = core.Planner(
+            step_handlers={
+                'sharedconfig': sharedconfig,
+            },
+        )
+        parameters = planner.run(loaded['plan'])
+        self.assertEqual(parameters['foo'], 'us-west-2')
+        config_api.get_value.assert_called_with(profile='devprofile',
+                                                value='region')
+
 
 class TestExecutor(unittest.TestCase):
     def setUp(self):
         self.session = mock.Mock(spec=Session)
         self.client = mock.Mock()
         self.session.create_client.return_value = self.client
+        self.mock_config_writer = mock.Mock(spec=ConfigFileWriter)
+        self.shared_config_file = 'shared-config-file'
+        self.config_api = mock.Mock(spec=core.SharedConfigAPI)
         self.executor = core.Executor(
             step_handlers={
                 'apicall': core.APICallExecutorStep(
                     core.APIInvoker(session=self.session),
-                )
+                ),
+                'sharedconfig': core.SharedConfigExecutorStep(
+                    config_api=self.config_api,
+                ),
             }
         )
 
@@ -566,3 +622,76 @@ class TestExecutor(unittest.TestCase):
             [mock.call.create_user(UserName='admin'),
              mock.call.create_role(RoleName='admin')]
         )
+
+    def test_can_write_to_config_file(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: sharedconfig
+              operation: SetValues
+              profile: mydevprofile
+              params:
+                region: us-west-2
+                output: json
+        """)
+        self.executor.run(loaded['execute'], {})
+        self.config_api.set_values.assert_called_with(
+             {'region': 'us-west-2', 'output': 'json'},
+            profile='mydevprofile',
+        )
+
+    def test_writes_to_default_profile_if_omitted(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: sharedconfig
+              operation: SetValues
+              params:
+                region: us-west-2
+                output: json
+        """)
+        self.executor.run(loaded['execute'], {})
+        self.config_api.set_values.assert_called_with(
+            {'region': 'us-west-2', 'output': 'json'}, profile=None
+        )
+
+    def test_can_expand_vars(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: sharedconfig
+              operation: SetValues
+              params:
+                region: "{foo}"
+        """)
+        variables = {'foo': 'bar'}
+        self.executor.run(loaded['execute'], variables)
+        self.config_api.set_values.assert_called_with(
+            {'region': 'bar'}, profile=None)
+
+
+class TestSharedConfigAPI(unittest.TestCase):
+    def setUp(self):
+        self.mock_session = mock.Mock(spec=Session)
+        self.config_writer = mock.Mock(spec=ConfigFileWriter)
+        self.config_filename = 'foo'
+        self.mock_session.get_config_variable.return_value = \
+            self.config_filename
+        self.config_api = core.SharedConfigAPI(self.mock_session,
+                                               self.config_writer)
+
+    def test_delegates_to_config_writer(self):
+        self.config_api.set_values({'foo': 'bar'}, profile='bar')
+        self.config_writer.update_config.assert_called_with(
+            {'foo': 'bar', '__section__': 'profile bar'},
+             self.config_filename)
+
+    def test_can_get_config_values(self):
+        self.mock_session.get_config_variable.return_value = 'bar'
+        self.assertEqual(self.config_api.get_value('foo'), 'bar')
+        self.mock_session.get_config_variable.assert_called_with('foo')
+
+    def test_can_list_profiles(self):
+        self.mock_session.available_profiles = ['foo', 'bar']
+        result = self.config_api.list_profiles()
+        self.assertEqual(result, ['foo', 'bar'])

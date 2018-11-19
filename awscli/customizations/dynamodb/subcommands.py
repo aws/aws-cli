@@ -197,7 +197,10 @@ class SelectCommand(PaginatedDDBCommand):
 
     def _add_expression_args(self, expression_name, expression, args,
                              substitution_count=0):
-        result = self._extractor.extract(expression, substitution_count)
+        result = self._extractor.extract(
+            ' '.join(expression),
+            substitution_count
+        )
         args[expression_name] = result['expression']
 
         if result['identifiers']:

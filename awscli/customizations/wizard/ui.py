@@ -24,14 +24,17 @@ class Prompter(object):
 
 class UIPrompter(Prompter):
     def prompt(self, display_text, choices=None):
-        if choices is None:
+        if not choices:
             return prompt_toolkit.prompt('%s: ' % display_text)
         else:
             prompt_toolkit.print_formatted_text(display_text)
-            response = selectmenu.select_menu(
-                choices, display_format=self._display_text)
-            result = response['actual_value']
-            return result
+            if isinstance(choices[0], str):
+                return selectmenu.select_menu(choices)
+            else:
+                response = selectmenu.select_menu(
+                    choices, display_format=self._display_text)
+                result = response['actual_value']
+                return result
 
     def _display_text(self, obj):
         return obj['display']

@@ -56,7 +56,7 @@ SELECT = {
 }
 
 PROJECTION_EXPRESSION = {
-    'name': 'projection',
+    'name': 'projection', 'nargs': '+',
     'help_text': (
         '<p>A string that identifies one or more attributes to retrieve from '
         'the specified table or index. These attributes can include scalars, '
@@ -72,7 +72,7 @@ PROJECTION_EXPRESSION = {
 }
 
 FILTER_EXPRESSION = {
-    'name': 'filter',
+    'name': 'filter', 'nargs': '+',
     'help_text': (
         '<p>A string that contains conditions that DynamoDB applies after the '
         'operation, but before the data is returned to you. Items that do '
@@ -88,7 +88,7 @@ FILTER_EXPRESSION = {
 }
 
 KEY_CONDITION_EXPRESSION = {
-    'name': 'key-condition',
+    'name': 'key-condition', 'nargs': '+',
     'help_text': (
         '<p>The condition that specifies the key value(s) for items to be '
         'retrieved. Must perform an equality test on a single partition key '

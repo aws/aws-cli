@@ -12,6 +12,8 @@
 # language governing permissions and limitations under the License.
 """Core planner and executor for wizards."""
 import jmespath
+import os
+
 from botocore import xform_name
 
 
@@ -136,6 +138,20 @@ class APICallStep(BaseStep):
         )
 
 
+class SharedConfigStep(BaseStep):
+    def __init__(self, config_api):
+        self._config_api = config_api
+
+    def run_step(self, step_definition, parameters):
+        if step_definition['operation'] == 'ListProfiles':
+            return self._config_api.list_profiles()
+        elif step_definition['operation'] == 'GetValue':
+            return self._config_api.get_value(
+                profile=step_definition['params'].get('profile'),
+                value=step_definition['params']['value'],
+            )
+
+
 class APIInvoker(object):
     """This class contains shared logic for the apicall step.
 
@@ -240,3 +256,72 @@ class APICallExecutorStep(ExecutorStep):
         )
         if 'output_var' in step_definition:
             parameters[step_definition['output_var']] = response
+
+
+class SharedConfigExecutorStep(ExecutorStep):
+    def __init__(self, config_api):
+        self._config_api = config_api
+
+    def run_step(self, step_definition, parameters):
+        config_params = {}
+        if 'profile' in step_definition:
+            section = step_definition['profile']
+            if section != 'default':
+                section = 'profile %s' % section
+            config_params['__section__'] = section
+        config_params = self._resolve_params(
+            step_definition['params'], parameters
+        )
+        self._config_api.set_values(config_params,
+                                    profile=step_definition.get('profile'))
+
+    def _resolve_params(self, value, params):
+        # TODO: remove duplication with APICallExecutorStep
+        if isinstance(value, str):
+            value = value.format(**params)
+            return value
+        elif isinstance(value, list):
+            final = []
+            for v in value:
+                final.append(self._resolve_params(v, params))
+            return final
+        elif isinstance(value, dict):
+            final = {}
+            for k, v in value.items():
+                final[k] = self._resolve_params(v, params)
+            return final
+        else:
+            return value
+
+
+class SharedConfigAPI(object):
+    """Simplified interface to reading/writing the ~/.aws/config file.
+
+    This provides a simplified interface over the config file writer
+    and the config operations provided by a botocore session.
+
+    This allows similar logic to be shared by the planner and executor.
+
+    """
+    def __init__(self, session, config_writer):
+        self._session = session
+        self._config_writer = config_writer
+
+    def list_profiles(self):
+        return self._session.available_profiles
+
+    def get_value(self, value, profile=None):
+        # TODO: handle profile
+        return self._session.get_config_variable(value)
+
+    def set_values(self, values, profile=None):
+        config_params = {}
+        if profile is not None:
+            section = profile
+            if profile != 'default':
+                section = 'profile %s' % section
+            config_params['__section__'] = section
+        config_params.update(values)
+        config_filename = os.path.expanduser(
+            self._session.get_config_variable('config_file'))
+        self._config_writer.update_config(config_params, config_filename)

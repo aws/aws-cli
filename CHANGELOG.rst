@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+1.16.58
+=======
+
+* api-change:``config``: Update config command to latest version
+* api-change:``cloudformation``: Update cloudformation command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``cloudtrail``: Update cloudtrail command to latest version
+* api-change:``workdocs``: Update workdocs command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``devicefarm``: Update devicefarm command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``batch``: Update batch command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
 1.16.57
 =======
 

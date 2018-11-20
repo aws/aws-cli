@@ -347,6 +347,44 @@ class TestParser(unittest.TestCase):
         }
         self.assert_parse(tokens, expected)
 
+    def test_parse_subexpression_with_and(self):
+        tokens = [
+            {'type': 'lparen', 'value': '('},
+            {'type': 'identifier', 'value': 'foo'},
+            {'type': 'eq', 'value': '='},
+            {'type': 'literal', 'value': 'bar'},
+            {'type': 'and', 'value': 'and'},
+            {'type': 'identifier', 'value': 'baz'},
+            {'type': 'eq', 'value': '='},
+            {'type': 'literal', 'value': 'bam'},
+            {'type': 'rparen', 'value': ')'},
+            {'type': 'eof', 'value': ''},
+        ]
+        and_expression = {
+            'type': 'and_expression',
+            'children': [
+                {
+                    'type': 'comparator', 'value': 'eq',
+                    'children': [
+                        {'type': 'identifier', 'value': 'foo', 'children': []},
+                        {'type': 'literal', 'value': 'bar', 'children': []},
+                    ],
+                },
+                {
+                    'type': 'comparator', 'value': 'eq',
+                    'children': [
+                        {'type': 'identifier', 'value': 'baz', 'children': []},
+                        {'type': 'literal', 'value': 'bam', 'children': []},
+                    ],
+                },
+            ]
+        }
+        expected = {
+            'type': 'subexpression',
+            'children': [and_expression]
+        }
+        self.assert_parse(tokens, expected)
+
     def test_parse_subexpression_unmatched_paren(self):
         tokens = [
             {'type': 'lparen', 'value': '('},

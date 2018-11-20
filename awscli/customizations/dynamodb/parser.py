@@ -83,7 +83,7 @@ class Parser(object):
 
     def _parse_subexpression(self):
         self._advance_if_match('lparen')
-        expression = self._parse_simple_expression()
+        expression = self._parse_and_or()
         self._advance_if_match('rparen')
         return ast.subexpression(expression)
 

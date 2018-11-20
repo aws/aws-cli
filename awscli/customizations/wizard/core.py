@@ -232,7 +232,7 @@ class Executor(object):
         varname = condition['variable']
         if 'equals' in condition:
             expected = condition['equals']
-            return parameters[varname] == expected
+            return parameters.get(varname) == expected
         return False
 
 

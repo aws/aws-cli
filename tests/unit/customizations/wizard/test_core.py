@@ -541,6 +541,22 @@ class TestExecutor(unittest.TestCase):
         self.assertFalse(self.session.create_client.called)
         self.assertFalse(self.client.create_user.called)
 
+    def test_can_make_conditional_on_env_var_not_exists(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: apicall
+              condition:
+                variable: does_not_exist
+                equals: null
+              operation: iam.CreateUser
+              params:
+                UserName: admin
+        """)
+        self.executor.run(loaded['execute'], {})
+        self.assertTrue(self.session.create_client.called)
+        self.assertTrue(self.client.create_user.called)
+
     def test_can_recursively_template_variables_in_params(self):
         loaded = load_wizard("""
         execute:

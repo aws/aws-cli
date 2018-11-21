@@ -24,8 +24,9 @@ def register_translate_import_terminology(cli):
 
 
 def _hoist_file_parameter(session, argument_table, **kwargs):
-    argument_table['file'] = FileArgument(
-        'file', help_text=FILE_DOCSTRING, cli_type_name='blob')
+    argument_table['data-file'] = FileArgument(
+        'data-file', help_text=FILE_DOCSTRING, cli_type_name='blob',
+        required=True)
     file_argument = argument_table['terminology-data']
     file_model = copy.deepcopy(file_argument.argument_model)
     del file_model.members['File']
@@ -57,8 +58,8 @@ class TerminologyDataArgument(CLIArgument):
         unpacked = self._unpack_argument(value)
         if 'File' in unpacked:
             raise ValueError("File cannot be provided as part of the "
-                             "--terminology-data argument. Please use the "
-                             "'--file' option instead to specify a "
+                             "'--terminology-data' argument. Please use the "
+                             "'--data-file' option instead to specify a "
                              "file.")
         if parameters.get('TerminologyData'):
             parameters['TerminologyData'].update(unpacked)

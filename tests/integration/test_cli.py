@@ -126,7 +126,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
 
     def test_param_shorthand(self):
         p = aws(
-            'ec2 describe-instances --filters Name=instance-id,Values=i-123')
+            'ec2 describe-instances --filters Name=instance-id,Values=[i-123]')
         self.assertEqual(p.rc, 0)
         self.assertIn('Reservations', p.json)
 

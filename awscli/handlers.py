@@ -76,6 +76,7 @@ from awscli.customizations.s3errormsg import register_s3_error_msg
 from awscli.customizations.scalarparse import register_scalar_parser
 from awscli.customizations.sessendemail import register_ses_send_email
 from awscli.customizations.streamingoutputarg import add_streaming_output_arg
+from awscli.customizations.translate import register_translate_import_terminology
 from awscli.customizations.toplevelbool import register_bool_params
 from awscli.customizations.waiters import register_add_waiters
 from awscli.customizations.opsworkscm import register_alias_opsworks_cm
@@ -165,6 +166,7 @@ def awscli_initialize(event_handlers):
     register_alias_mturk_command(event_handlers)
     register_alias_sagemaker_runtime_command(event_handlers)
     register_servicecatalog_commands(event_handlers)
+    register_translate_import_terminology(event_handlers)
     register_history_mode(event_handlers)
     register_history_commands(event_handlers)
     register_event_stream_arg(event_handlers)

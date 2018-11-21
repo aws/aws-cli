@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from decimal import Decimal
+
 from awscli.customizations.dynamodb.extractor import AttributeExtractor
 from awscli.testutils import unittest
 
@@ -256,6 +258,64 @@ class TestExtractor(unittest.TestCase):
             'expression': 'myfunction(#n0, :n1)',
             'identifiers': {'#n0': 'spam'},
             'values': {':n1': 1},
+            'substitution_count': 2,
+        }
+        self.assertEqual(result, expected)
+
+    def test_represent_path_identifier(self):
+        parsed_result = {
+            'type': 'path_identifier',
+            'children': [
+                {'type': 'identifier', 'value': 'foo', 'children': []},
+                {'type': 'identifier', 'value': 'bar', 'children': []},
+            ]
+        }
+        parser = FakeParser(parsed_result)
+        extractor = AttributeExtractor(parser)
+        result = extractor.extract('foo.bar')
+        expected = {
+            'expression': '#n0.#n1',
+            'identifiers': {'#n0': 'foo', '#n1': 'bar'},
+            'values': {},
+            'substitution_count': 2,
+        }
+        self.assertEqual(result, expected)
+
+    def test_represent_index_identifier(self):
+        parsed_result = {
+            'type': 'index_identifier', 'value': Decimal(0),
+            'children': [
+                {'type': 'identifier', 'value': 'foo', 'children': []},
+            ]
+        }
+        parser = FakeParser(parsed_result)
+        extractor = AttributeExtractor(parser)
+        result = extractor.extract('foo[0]')
+        expected = {
+            'expression': '#n0[0]',
+            'identifiers': {'#n0': 'foo'},
+            'values': {},
+            'substitution_count': 1,
+        }
+        self.assertEqual(result, expected)
+
+    def test_represent_dotted_index_identifier(self):
+        parsed_result = {
+            'type': 'path_identifier',
+            'children': [
+                {'type': 'index_identifier', 'value': Decimal(0), 'children': [
+                    {'type': 'identifier', 'value': 'foo', 'children': []},
+                ]},
+                {'type': 'identifier', 'value': 'bar', 'children': []},
+            ]
+        }
+        parser = FakeParser(parsed_result)
+        extractor = AttributeExtractor(parser)
+        result = extractor.extract('foo[0].bar')
+        expected = {
+            'expression': '#n0[0].#n1',
+            'identifiers': {'#n0': 'foo', '#n1': 'bar'},
+            'values': {},
             'substitution_count': 2,
         }
         self.assertEqual(result, expected)

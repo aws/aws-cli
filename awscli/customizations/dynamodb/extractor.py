@@ -65,6 +65,15 @@ class AttributeExtractor(object):
         self._identifiers[identifier_replacement] = node['value']
         return '%s ' % identifier_replacement
 
+    def _visit_path_identifier(self, node):
+        left = self._visit(node['children'][0]).strip()
+        right = self._visit(node['children'][1])
+        return '%s.%s' % (left, right)
+
+    def _visit_index_identifier(self, node):
+        left = self._visit(node['children'][0]).strip()
+        return '%s[%s] ' % (left, node['value'])
+
     def _visit_literal(self, node):
         literal_replacement = ':n%s' % self._substitution_index()
         self._literals[literal_replacement] = node['value']

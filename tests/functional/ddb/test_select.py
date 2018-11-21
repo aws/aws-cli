@@ -433,6 +433,33 @@ class TestSelect(BaseSelectTest):
             command, expected, expected_rc=0
         )
 
+    def test_select_project_complex_identifier(self):
+        self.parsed_response = {
+            'Count': 1,
+            'Items': [{
+                'name': {'S': 'spam n eggs'},
+                'ingredients': {'L': [{'M': {'name': {'S': 'spam'}}}]},
+            }]
+        }
+        command = [
+            'ddb', 'select', 'recipes',
+            '--projection', 'name, ingredients[8].name',
+        ]
+        expected = {
+            'TableName': 'recipes',
+            'ReturnConsumedCapacity': 'NONE',
+            'ConsistentRead': True,
+            'ProjectionExpression': '#n0, #n1[8].#n2',
+            'ExpressionAttributeNames': {
+                '#n0': 'name',
+                '#n1': 'ingredients',
+                '#n2': 'name',
+            }
+        }
+        self.assert_params_for_cmd(
+            command, expected, expected_rc=0
+        )
+
 
 class TestSelectPagination(BaseSelectTest):
     def setUp(self):

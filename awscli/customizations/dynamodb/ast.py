@@ -20,6 +20,14 @@ def identifier(name):
     return {"type": "identifier", "children": [], "value": name}
 
 
+def path_identifier(left, right):
+    return {"type": "path_identifier", "children": [left, right]}
+
+
+def index_identifier(name, index):
+    return {"type": "index_identifier", "children": [name], "value": index}
+
+
 def sequence(elements):
     return {"type": "sequence", "children": elements}
 

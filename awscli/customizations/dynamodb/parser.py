@@ -55,13 +55,19 @@ class Parser(object):
         if self._match('eof') or self._current is None:
             raise EmptyExpressionError()
 
-        if self._match(['identifier', 'unquoted_identifier', 'literal']) and \
-                self._match_next(['comma', 'eof']):
-            return self._parse_sequence()
-        return self._parse_and_or()
-
-    def _parse_and_or(self):
         expression = self._parse_simple_expression()
+
+        identifier_types = [
+            'identifier', 'path_identifier', 'index_identifier'
+        ]
+        if expression['type'] in identifier_types and self._match('comma'):
+            self._advance()
+            return self._parse_sequence(expression)
+        else:
+            return self._parse_and_or(expression)
+
+    def _parse_and_or(self, left_expression):
+        expression = left_expression
 
         while self._match(['and', 'or']):
             conjunction_type = self._current['type']
@@ -83,7 +89,7 @@ class Parser(object):
 
     def _parse_subexpression(self):
         self._advance_if_match('lparen')
-        expression = self._parse_and_or()
+        expression = self._parse_expression()
         self._advance_if_match('rparen')
         return ast.subexpression(expression)
 
@@ -93,19 +99,31 @@ class Parser(object):
         return ast.not_expression(expression)
 
     def _parse_condition_expression(self):
+        # function names cannot be literals or complex identifiers, so there
+        # is no need to parse the name ahead of time
         if self._match_next('lparen'):
             return self._parse_function()
-        elif self._match_next('in'):
-            return self._parse_in_expression()
-        elif self._match_next('between'):
-            return self._parse_between_expression()
-        elif self._match_next(self.COMPARATORS):
-            return self._parse_comparison_expression()
-        else:
+
+        operand_types = [
+            'literal', 'identifier', 'unquoted_identifier',
+            'lbracket', 'lbrace',
+        ]
+        if not self._match(operand_types):
             raise UnknownExpressionError(
                 start_token=self._current,
                 expression=self._expression,
             )
+
+        left = self._parse_operand()
+
+        if self._match('in'):
+            return self._parse_in_expression(left)
+        elif self._match('between'):
+            return self._parse_between_expression(left)
+        elif self._match(self.COMPARATORS):
+            return self._parse_comparison_expression(left)
+
+        return left
 
     def _parse_function(self):
         function_name = self._current.get('value')
@@ -115,33 +133,31 @@ class Parser(object):
         self._advance_if_match('rparen')
         return ast.function_expression(function_name, arguments)
 
-    def _parse_in_expression(self):
-        left = self._parse_operand()
+    def _parse_in_expression(self, left):
         self._advance_if_match('in')
         self._advance_if_match('lparen')
         right = self._parse_sequence()
         self._advance_if_match('rparen')
         return ast.in_expression(left, right)
 
-    def _parse_between_expression(self):
-        left = self._parse_operand()
+    def _parse_between_expression(self, left):
         self._advance_if_match('between')
         middle = self._parse_operand()
         self._advance_if_match('and')
         right = self._parse_operand()
         return ast.between_expression(left, middle, right)
 
-    def _parse_comparison_expression(self):
-        left = self._parse_operand()
+    def _parse_comparison_expression(self, left):
         comparator = self._current['type']
         self._advance_if_match(self.COMPARATORS)
         right = self._parse_operand()
         return ast.comparison_expression(comparator, left, right)
 
-    def _parse_sequence(self):
-        # parses a sequence of literals or identifiers. There must be at
-        # least one.
+    def _parse_sequence(self, first_element=None):
         elements = []
+        if first_element:
+            elements = [first_element]
+
         while True:
             elements.append(self._parse_operand())
             if not self._match('comma'):
@@ -153,9 +169,7 @@ class Parser(object):
         if self._match(['literal', 'lbracket', 'lbrace']):
             return self._parse_literal()
         elif self._match(['identifier', 'unquoted_identifier']):
-            value = self._current['value']
-            self._advance()
-            return ast.identifier(value)
+            return self._parse_path_identifier()
         else:
             raise UnexpectedTokenError(
                 token=self._current,
@@ -165,6 +179,38 @@ class Parser(object):
                     'unquoted_identiifer',
                 ],
             )
+
+    def _parse_path_identifier(self):
+        identifier = self._parse_identifier()
+
+        while self._match('dot'):
+            self._advance()
+            right = self._parse_identifier()
+            identifier = ast.path_identifier(identifier, right)
+
+        return identifier
+
+    def _parse_identifier(self):
+        identifier = ast.identifier(self._current['value'])
+        self._advance()
+
+        if self._match('lbracket'):
+            self._advance()
+
+            index = self._parse_literal()
+            val = index['value']
+            if not isinstance(val, Decimal) or val.to_integral_value() != val:
+                raise InvalidLiteralValueError(
+                    token=self._current,
+                    expression=self._expression,
+                    message='List indices must be whole numbers.',
+                )
+            self._advance_if_match('rbracket')
+            identifier = ast.index_identifier(
+                name=identifier, index=index['value']
+            )
+
+        return identifier
 
     def _parse_literal(self):
         if self._match('literal'):

@@ -857,6 +857,17 @@ class TestParser(unittest.TestCase):
         }
         self.assert_parse(tokens, expected)
 
+    def test_index_identifier_must_be_whole_number(self):
+        tokens = [
+            {'type': 'identifier', 'value': 'foo'},
+            {'type': 'lbracket', 'value': '['},
+            {'type': 'literal', 'value': Decimal(1.1)},
+            {'type': 'rbracket', 'value': ']'},
+            {'type': 'eof', 'value': ''},
+        ]
+        with self.assertRaises(InvalidLiteralValueError):
+            self._parse(tokens)
+
     def test_dotted_index_identifier(self):
         tokens = [
             {'type': 'identifier', 'value': 'foo'},

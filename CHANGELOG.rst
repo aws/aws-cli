@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.60
+=======
+
+* api-change:``rekognition``: Update rekognition command to latest version
+
+
 1.16.59
 =======
 

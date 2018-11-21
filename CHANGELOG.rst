@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+1.16.59
+=======
+
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``autoscaling-plans``: Update autoscaling-plans command to latest version
+* api-change:``devicefarm``: Update devicefarm command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``rds-data``: Update rds-data command to latest version
+* api-change:``xray``: Update xray command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``appsync``: Update appsync command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+
+
 1.16.58
 =======
 

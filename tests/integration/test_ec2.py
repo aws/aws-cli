@@ -58,7 +58,7 @@ class TestDescribeVolumes(unittest.TestCase):
 
     def test_describe_volumes_with_filter(self):
         command = self.prefix
-        command += ' --filters Name=volume-id,Values=malformed-id'
+        command += ' --filters Name=volume-id,Values=[malformed-id]'
         result = aws(command)
         volumes = result.json['Volumes']
         self.assertEqual(len(volumes), 0)

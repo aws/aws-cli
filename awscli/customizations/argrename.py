@@ -43,6 +43,7 @@ ARGUMENT_RENAMES = {
     'codepipeline.create-custom-action-type.version': 'action-version',
     'codepipeline.delete-custom-action-type.version': 'action-version',
     'kinesisanalytics.add-application-output.output': 'application-output',
+    'kinesisanalyticsv2.add-application-output.output': 'application-output',
     'route53.delete-traffic-policy.version': 'traffic-policy-version',
     'route53.get-traffic-policy.version': 'traffic-policy-version',
     'route53.update-traffic-policy-comment.version': 'traffic-policy-version',

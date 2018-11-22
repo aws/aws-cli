@@ -89,6 +89,11 @@ class Lexer(object):
                 return self._consume_base64_string()
             elif self._current in self.VALID_IDENTIFIER:
                 buff += self._current
+            else:
+                return {
+                    'type': 'unquoted_identifier', 'value': buff,
+                    'start': start, 'end': start + 1,
+                }
 
         while self._next() in self.VALID_IDENTIFIER:
             buff += self._current

@@ -43,6 +43,12 @@ def test_lexer():
         ]),
         ('b"4pyT"', [{'type': 'literal', 'value': b'\xe2\x9c\x93'}]),
         ('boo', [{'type': 'unquoted_identifier', 'value': 'boo'}]),
+        ('b[0]', [
+            {'type': 'unquoted_identifier', 'value': 'b'},
+            {'type': 'lbracket', 'value': '['},
+            {'type': 'literal', 'value': Decimal('0')},
+            {'type': 'rbracket', 'value': ']'},
+        ])
     ]
 
     tester = LexTester()

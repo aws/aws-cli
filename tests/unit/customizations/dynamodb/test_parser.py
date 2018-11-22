@@ -75,12 +75,7 @@ class TestParser(unittest.TestCase):
             {'type': 'identifier', 'value': 'foo'},
             {'type': 'eof', 'value': ''},
         ]
-        expected = {
-            'type': 'sequence',
-            'children': [
-                {'type': 'identifier', 'value': 'foo', 'children': []},
-            ]
-        }
+        expected = {'type': 'identifier', 'value': 'foo', 'children': []}
         self.assert_parse(tokens, expected)
 
     def test_parse_and_expression(self):
@@ -829,3 +824,168 @@ class TestParser(unittest.TestCase):
         ]
         with self.assertRaises(UnexpectedTokenError):
             self._parse(tokens)
+
+    def test_dotted_identifier(self):
+        tokens = [
+            {'type': 'identifier', 'value': 'foo'},
+            {'type': 'dot', 'value': '.'},
+            {'type': 'identifier', 'value': 'bar'},
+            {'type': 'eof', 'value': ''},
+        ]
+        expected = {
+            'type': 'path_identifier',
+            'children': [
+                {'type': 'identifier', 'value': 'foo', 'children': []},
+                {'type': 'identifier', 'value': 'bar', 'children': []},
+            ]
+        }
+        self.assert_parse(tokens, expected)
+
+    def test_index_identifier(self):
+        tokens = [
+            {'type': 'identifier', 'value': 'foo'},
+            {'type': 'lbracket', 'value': '['},
+            {'type': 'literal', 'value': Decimal(0)},
+            {'type': 'rbracket', 'value': ']'},
+            {'type': 'eof', 'value': ''},
+        ]
+        expected = {
+            'type': 'index_identifier', 'value': Decimal(0),
+            'children': [
+                {'type': 'identifier', 'value': 'foo', 'children': []},
+            ]
+        }
+        self.assert_parse(tokens, expected)
+
+    def test_index_identifier_must_be_whole_number(self):
+        tokens = [
+            {'type': 'identifier', 'value': 'foo'},
+            {'type': 'lbracket', 'value': '['},
+            {'type': 'literal', 'value': Decimal(1.1)},
+            {'type': 'rbracket', 'value': ']'},
+            {'type': 'eof', 'value': ''},
+        ]
+        with self.assertRaises(InvalidLiteralValueError):
+            self._parse(tokens)
+
+    def test_dotted_index_identifier(self):
+        tokens = [
+            {'type': 'identifier', 'value': 'foo'},
+            {'type': 'lbracket', 'value': '['},
+            {'type': 'literal', 'value': Decimal(0)},
+            {'type': 'rbracket', 'value': ']'},
+            {'type': 'dot', 'value': '.'},
+            {'type': 'identifier', 'value': 'bar'},
+            {'type': 'eof', 'value': ''},
+        ]
+        expected = {
+            'type': 'path_identifier',
+            'children': [
+                {'type': 'index_identifier', 'value': Decimal(0), 'children': [
+                    {'type': 'identifier', 'value': 'foo', 'children': []},
+                ]},
+                {'type': 'identifier', 'value': 'bar', 'children': []},
+            ]
+        }
+        self.assert_parse(tokens, expected)
+
+    def test_parse_between_complex_identifier(self):
+        tokens = [
+            {'type': 'identifier', 'value': 'foo'},
+            {'type': 'dot', 'value': '.'},
+            {'type': 'identifier', 'value': 'bar'},
+            {'type': 'between', 'value': 'between'},
+            {'type': 'literal', 'value': 1},
+            {'type': 'and', 'value': 'and'},
+            {'type': 'literal', 'value': 3},
+            {'type': 'eof', 'value': ''},
+        ]
+        expected = {
+            'type': 'between_expression',
+            'children': [
+                {'type': 'path_identifier', 'children': [
+                    {'type': 'identifier', 'value': 'foo', 'children': []},
+                    {'type': 'identifier', 'value': 'bar', 'children': []},
+                ]},
+                {'type': 'literal', 'value': 1, 'children': []},
+                {'type': 'literal', 'value': 3, 'children': []},
+            ]
+        }
+        self.assert_parse(tokens, expected)
+
+    def test_parse_in_complex_identifier(self):
+        tokens = [
+            {'type': 'identifier', 'value': 'foo'},
+            {'type': 'lbracket', 'value': '['},
+            {'type': 'literal', 'value': Decimal(0)},
+            {'type': 'rbracket', 'value': ']'},
+            {'type': 'in', 'value': 'in'},
+            {'type': 'lparen', 'value': '('},
+            {'type': 'literal', 'value': 'bar'},
+            {'type': 'comma', 'value': ','},
+            {'type': 'literal', 'value': 'baz'},
+            {'type': 'rparen', 'value': ')'},
+            {'type': 'eof', 'value': ''},
+        ]
+        sequence = {
+            'type': 'sequence',
+            'children': [
+                {'type': 'literal', 'value': 'bar', 'children': []},
+                {'type': 'literal', 'value': 'baz', 'children': []},
+            ]
+        }
+        expected = {
+            'type': 'in_expression',
+            'children': [
+                {'type': 'index_identifier', 'value': Decimal(0), 'children': [
+                    {'type': 'identifier', 'value': 'foo', 'children': []},
+                ]},
+                sequence,
+            ]
+        }
+        self.assert_parse(tokens, expected)
+
+    def test_parse_compare_complex_identifier(self):
+        tokens = [
+            {'type': 'identifier', 'value': 'foo'},
+            {'type': 'dot', 'value': '.'},
+            {'type': 'identifier', 'value': 'bar'},
+            {'type': 'gte', 'value': '>='},
+            {'type': 'literal', 'value': 8},
+            {'type': 'eof', 'value': ''},
+        ]
+        expected = {
+            'type': 'comparator', 'value': 'gte',
+            'children': [
+                {'type': 'path_identifier', 'children': [
+                    {'type': 'identifier', 'value': 'foo', 'children': []},
+                    {'type': 'identifier', 'value': 'bar', 'children': []},
+                ]},
+                {'type': 'literal', 'value': 8, 'children': []},
+            ]
+        }
+        self.assert_parse(tokens, expected)
+
+    def test_parse_complex_identifier_sequence(self):
+        tokens = [
+            {'type': 'identifier', 'value': 'foo'},
+            {'type': 'dot', 'value': '.'},
+            {'type': 'identifier', 'value': 'bar'},
+            {'type': 'comma', 'value': ','},
+            {'type': 'identifier', 'value': 'baz'},
+            {'type': 'eof', 'value': ''},
+        ]
+        first = {
+            'type': 'path_identifier',
+            'children': [
+                {'type': 'identifier', 'value': 'foo', 'children': []},
+                {'type': 'identifier', 'value': 'bar', 'children': []},
+            ]
+        }
+        expected = {
+            'type': 'sequence', 'children': [
+                first,
+                {'type': 'identifier', 'value': 'baz', 'children': []},
+            ]
+        }
+        self.assert_parse(tokens, expected)

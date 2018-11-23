@@ -608,6 +608,23 @@ class TestParser(unittest.TestCase):
         }
         self.assert_parse(tokens, expected)
 
+    def test_parse_empty_list(self):
+        tokens = [
+            {'type': 'identifier', 'value': 'foo'},
+            {'type': 'eq', 'value': '='},
+            {'type': 'lbracket', 'value': '['},
+            {'type': 'rbracket', 'value': ']'},
+            {'type': 'eof', 'value': ''},
+        ]
+        expected = {
+            'type': 'comparator', 'value': 'eq',
+            'children': [
+                {'type': 'identifier', 'value': 'foo', 'children': []},
+                {'type': 'literal', 'children': [], 'value': []},
+            ]
+        }
+        self.assert_parse(tokens, expected)
+
     def test_parse_list_literal_can_only_contain_literals(self):
         tokens = [
             {'type': 'identifier', 'value': 'foo'},

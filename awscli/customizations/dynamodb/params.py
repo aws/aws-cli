@@ -68,6 +68,9 @@ PROJECTION_EXPRESSION = {
         'developerguide/Expressions.ProjectionExpressions.html">'
         'Accessing Item Attributes</a> in the <i>Amazon DynamoDB Developer '
         'Guide</i>.'
+        '<p>For CLI specific syntax see '
+        '<a href="https://docs.aws.amazon.com/cli/latest/topic/'
+        'ddb-expressions.html">aws help ddb-expressions</a></p>'
     )
 }
 
@@ -84,6 +87,9 @@ FILTER_EXPRESSION = {
         '<a href="http://docs.aws.amazon.com/amazondynamodb/latest/'
         'developerguide/QueryAndScan.html#FilteringResults">Filter '
         'Expressions</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p>'
+        '<p>For CLI specific syntax see '
+        '<a href="https://docs.aws.amazon.com/cli/latest/topic/'
+        'ddb-expressions.html">aws help ddb-expressions</a></p>'
     )
 }
 
@@ -92,6 +98,14 @@ CONDITION_EXPRESSION = {
     'help_text': (
         '<p>A condition that must be satisfied in order for a conditional '
         '<code>put</code> operation to succeed.</p>'
+        '<p>For more information, see '
+        '<a href="https://docs.aws.amazon.com/amazondynamodb/latest/'
+        'developerguide/Expressions.OperatorsAndFunctions.html">Comparison '
+        'Operator and Function Reference</a> in the <i>Amazon DynamoDB '
+        'Developer Guide</i></p>'
+        '<p>For CLI specific syntax see '
+        '<a href="https://docs.aws.amazon.com/cli/latest/topic/'
+        'ddb-expressions.html">aws help ddb-expressions</a></p>'
     )
 }
 
@@ -135,6 +149,9 @@ KEY_CONDITION_EXPRESSION = {
         'Number.) Note that the function name <code>begins_with</code> is '
         'case-sensitive.</p></li>'
         '</ul>'
+        '<p>For CLI specific syntax see '
+        '<a href="https://docs.aws.amazon.com/cli/latest/topic/'
+        'ddb-expressions.html">aws help ddb-expressions</a></p>'
     )
 }
 

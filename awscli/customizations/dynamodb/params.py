@@ -160,7 +160,7 @@ ITEMS = {
     'positional_arg': True,
     'synopsis': '<items>',
     'help_text': (
-        '<p>One or more items to put into the table.</p>'
+        '<p>One or more items to put into the table, in YAML format.</p>'
     )
 }
 

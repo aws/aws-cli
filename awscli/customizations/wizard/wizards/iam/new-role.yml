@@ -1,0 +1,146 @@
+version: "0.1"
+title: Create An IAM Role and Policy
+description: This wizard will create a new IAM role for you
+plan:
+  decide_role_type:
+    values:
+      # This will prompt the user using the 'description' value.
+      # The value the user enters is saved under the global variable
+      # 'name'.
+      role_type:
+        type: prompt
+        description: Select type of trusted entity
+        choices:
+          # There's also Web Identity and SAML but we're skipping that.
+          - display: AWS Service
+            actual_value: aws_service
+          - display: Another AWS Account
+            actual_value: aws_account
+    next_step:
+      switch: role_type
+      aws_service: get_role_service
+      aws_account: get_account_info
+  get_role_service:
+    values:
+      service_name:
+        type: prompt
+        description: Choose the service that will use this role
+        choices:
+          - display: Amazon EC2
+            actual_value: ec2
+          - display: AWS Lambda
+            actual_value: lambda
+      trust_policy:
+        type: template
+        value: |
+          {{
+            "Version": "2008-10-17",
+            "Statement": [
+                {{
+                    "Action": "sts:AssumeRole",
+                    "Principal": {{
+                        "Service": "{service_name}.amazonaws.com"
+                    }},
+                    "Effect": "Allow",
+                    "Sid": ""
+                }}
+            ]
+          }}
+    next_step: ask_role_permissions
+  get_account_info:
+    values:
+      account_id:
+        type: prompt
+        description: Enter the Account ID that can use this role
+      trust_policy:
+        type: template
+        value: |
+          {{
+            "Version": "2008-10-17",
+            "Statement": [
+                {{
+                    "Action": "sts:AssumeRole",
+                    "Principal": {{
+                        "AWS": "arn:aws:iam::{account_id}:root"
+                    }},
+                    "Effect": "Allow",
+                    "Sid": ""
+                    }}
+            ]
+          }}
+    next_step: ask_role_permissions
+  ask_role_permissions:
+    # The console by default asks you to pick an existing policy
+    # to attach to.  We'll just go with that behavior for now.
+    values:
+      existing_policies:
+        type: apicall
+        operation: iam.ListPolicies
+        params:
+          Scope: AWS
+        query: "sort_by(Policies[].{display: PolicyName, actual_value: Arn}, &display)"
+      policy_arn:
+        type: prompt
+        description: Choose a policy to attach to your new role
+        choices: existing_policies
+  ask_role_name:
+    values:
+      role_name:
+        type: prompt
+        description: Role name
+      role_description:
+        type: prompt
+        description: Role description
+  ask_profile_config:
+    values:
+      wants_config_profile:
+        type: prompt
+        description: Do you want to create a new CLI profile with this role?
+        choices:
+          - display: Yes
+            actual_value: yes
+          - display: No
+            actual_value: no
+    next_step:
+      switch: wants_config_profile
+      yes: get_profile_info
+      no: DONE
+  get_profile_info:
+    values:
+      new_profile_name:
+        type: prompt
+        description: Enter the name of the new profile
+      existing_profiles:
+        type: sharedconfig
+        operation: ListProfiles
+      source_profile:
+        type: prompt
+        description: Name of the source profile
+        choices: existing_profiles
+execute:
+  default:
+    - type: apicall
+      operation: iam.CreateRole
+      params:
+        RoleName: "{role_name}"
+        AssumeRolePolicyDocument: "{trust_policy}"
+        Description: "{role_description}"
+      output_var: role_arn
+      query: Role.Arn
+    - type: apicall
+      operation: iam.AttachRolePolicy
+      params:
+        RoleName: "{role_name}"
+        PolicyArn: "{policy_arn}"
+  write_config_file:
+    - type: sharedconfig
+      operation: SetValues
+      condition:
+        variable: wants_config_profile
+        equals: yes
+      profile: "{new_profile_name}"
+      params:
+        source_profile: "{source_profile}"
+        # This role_arn comes from the `output_var` in the previous
+        # executor step.
+        role_arn: "{role_arn}"

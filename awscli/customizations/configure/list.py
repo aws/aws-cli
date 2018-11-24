@@ -113,7 +113,12 @@ class ConfigureListCommand(BasicCommand):
         if region:
             # This makes the assumption that the only other possible place to
             # retrieve region in the CLI is via IMDS. If we add more region
-            # providers in the future this will have to be updated
+            # providers in the future this will have to be updated.
+            #
+            # TODO: Currently credentials use the value iam-role, but the
+            # region will return imds as region is not included in iam-role.
+            # Ideally both imds and credentials should return the same source
+            # value back if they both came from IMDS.
             return ConfigValue(region, 'imds', '')
         else:
             return ConfigValue(NOT_SET, None, None)

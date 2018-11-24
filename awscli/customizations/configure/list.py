@@ -65,7 +65,7 @@ class ConfigureListCommand(BasicCommand):
         self._display_config_value(access_key, 'access_key')
         self._display_config_value(secret_key, 'secret_key')
 
-        region = self._lookup_config('region')
+        region = self._lookup_region()
         self._display_config_value(region, 'region')
 
     def _display_config_value(self, config_value, config_name):
@@ -105,15 +105,40 @@ class ConfigureListCommand(BasicCommand):
                 secret_key.mask_value()
                 return access_key, secret_key
 
-    def _lookup_config(self, name):
+    def _lookup_region(self):
+        region = self._lookup_in_env_and_config('region')
+        if region:
+            return region
+        region = self._session.get_config_variable('region')
+        if region:
+            # This makes the assumption that the only other possible place to
+            # retrieve region in the CLI is via IMDS. If we add more region
+            # providers in the future this will have to be updated.
+            #
+            # TODO: Currently credentials use the value iam-role, but the
+            # region will return imds as region is not included in iam-role.
+            # Ideally both imds and credentials should return the same source
+            # value back if they both came from IMDS.
+            return ConfigValue(region, 'imds', '')
+        else:
+            return ConfigValue(NOT_SET, None, None)
+
+    def _lookup_in_env_and_config(self, name):
         # First try to look up the variable in the env.
         value = self._session.get_config_variable(name, methods=('env',))
         if value is not None:
-            return ConfigValue(value, 'env', self._session.session_var_map[name][1])
+            return ConfigValue(value, 'env',
+                               self._session.session_var_map[name][1])
         # Then try to look up the variable in the config file.
         value = self._session.get_config_variable(name, methods=('config',))
         if value is not None:
-            return ConfigValue(value, 'config-file',
-                               self._session.get_config_variable('config_file'))
+            return ConfigValue(
+                value, 'config-file',
+                self._session.get_config_variable('config_file'))
+
+    def _lookup_config(self, name):
+        val = self._lookup_in_env_and_config(name)
+        if val:
+            return val
         else:
             return ConfigValue(NOT_SET, None, None)

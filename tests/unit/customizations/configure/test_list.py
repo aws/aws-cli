@@ -111,3 +111,12 @@ class TestConfigureListCommand(unittest.TestCase):
             rendered, r'access_key\s+\*+_key\s+iam-role')
         self.assertRegexpMatches(
             rendered, r'secret_key\s+\*+_key\s+iam-role')
+
+    def test_configure_region_from_imds(self):
+        session = FakeSession(all_variables={'region': 'from-imds'})
+        stream = six.StringIO()
+        self.configure_list = ConfigureListCommand(session, stream)
+        self.configure_list(args=[], parsed_globals=None)
+        rendered = stream.getvalue()
+        self.assertRegexpMatches(
+            rendered, 'region\s+from-imds\s+imds')

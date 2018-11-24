@@ -104,6 +104,24 @@ class Lexer(object):
                 'type': lower, 'value': buff,
                 'start': start, 'end': start + len(buff)
             }
+
+        if lower == 'true':
+            return {
+                'type': 'literal', 'value': True,
+                'start': start, 'end': start + len(buff)
+            }
+
+        if lower == 'false':
+            return {
+                'type': 'literal', 'value': False,
+                'start': start, 'end': start + len(buff)
+            }
+
+        if lower == 'null':
+            return {
+                'type': 'literal', 'value': None,
+                'start': start, 'end': start + len(buff)
+            }
         return {
             'type': 'unquoted_identifier', 'value': buff,
             'start': start, 'end': start + len(buff)

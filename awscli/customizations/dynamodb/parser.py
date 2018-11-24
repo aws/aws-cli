@@ -218,7 +218,10 @@ class Parser(object):
             self._advance()
         elif self._match('lbracket'):
             self._advance()
-            value = self._parse_literal_sequence()
+            if self._match('rbracket'):
+                value = []
+            else:
+                value = self._parse_literal_sequence()
             self._advance_if_match('rbracket')
         elif self._match('lbrace'):
             self._advance()

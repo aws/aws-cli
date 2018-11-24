@@ -48,7 +48,10 @@ def test_lexer():
             {'type': 'lbracket', 'value': '['},
             {'type': 'literal', 'value': Decimal('0')},
             {'type': 'rbracket', 'value': ']'},
-        ])
+        ]),
+        ('true', [{'type': 'literal', 'value': True}]),
+        ('false', [{'type': 'literal', 'value': False}]),
+        ('null', [{'type': 'literal', 'value': None}]),
     ]
 
     tester = LexTester()

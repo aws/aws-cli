@@ -56,9 +56,7 @@ class WizardDev(BasicCommand):
     )
     ARG_TABLE = [
         {'name': 'run-wizard',
-         'help_text': 'Run a wizard given a wizard file.',
-         'action': 'store',
-         'cli_type_name': 'string'}
+         'help_text': 'Run a wizard given a wizard file.'}
     ]
 
     def __init__(self, session, dev_runner=None):

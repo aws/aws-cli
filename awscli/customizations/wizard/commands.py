@@ -121,7 +121,6 @@ class SingleWizardCommand(TopLevelWizardCommand):
         )
         return WizardHelpCommand(self._session, self, self.subcommand_table,
                                 self.arg_table, loaded)
-        return super(WizardCommand, self).create_help_command()
 
 
 class WizardHelpCommand(BasicHelp):

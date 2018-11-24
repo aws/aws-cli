@@ -15,6 +15,7 @@ import tempfile
 import shutil
 
 from awscli.testutils import BaseAWSCommandParamsTest, mock, cd
+from awscli.testutils import BaseAWSHelpOutputTest
 
 
 class TestRunWizard(BaseAWSCommandParamsTest):
@@ -58,3 +59,36 @@ class TestRunWizard(BaseAWSCommandParamsTest):
             params={'PathPrefix': '/foo/'}
         )
         self.assertEqual(self.operations_called[0][0].name, 'ListRoles')
+
+    def test_can_run_main_wizard(self):
+        wizard_path = os.path.join(self.tempdir, 'iam', '_main.yml')
+        with open(wizard_path, 'w') as f:
+            f.write(
+                'version: "0.9"\n'
+                'plan:\n'
+                '  start:\n'
+                '    values:\n'
+                '      myprefix:\n'
+                '        type: static\n'
+                '        value: /foo/\n'
+                'execute:\n'
+                '  default:\n'
+                '    - type: apicall\n'
+                '      operation: iam.ListRoles\n'
+                '      params: {}\n'
+            )
+        stdout, _, _ = self.assert_params_for_cmd(
+            'iam wizard',
+            params={},
+        )
+        self.assertEqual(self.operations_called[0][0].name, 'ListRoles')
+
+
+class TestWizardHelpCommand(BaseAWSHelpOutputTest):
+    def test_wait_help_command(self):
+        self.driver.main(['iam', 'wizard', 'help'])
+        self.assert_contains('new-role')
+
+    def test_wait_help_command(self):
+        self.driver.main(['iam', 'wizard', 'new-role', 'help'])
+        self.assert_contains('new-role')

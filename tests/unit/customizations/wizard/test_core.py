@@ -847,4 +847,4 @@ class TestAPIInvoker(unittest.TestCase):
                 },
             )
         call_method_args = self.get_call_args(self.mock_session)
-        self.assertEqual(call_method_args, mock.call(UserName='admin'))
+        self.assertEqual(call_method_args, mock.call(UserName=b'admin'))

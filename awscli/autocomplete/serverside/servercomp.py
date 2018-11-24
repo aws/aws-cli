@@ -47,9 +47,10 @@ class LazyClientCreator(object):
     a client.  This class manages this process.
 
     """
-    def __init__(self, session_import_name='botocore.session.Session'):
+    def __init__(self,
+                 import_name='awscli.clidriver.create_clidriver'):
         self._session = None
-        self._session_import_name = session_import_name
+        self._import_name = import_name
 
     def create_client(self, service_name, **kwargs):
         if self._session is None:
@@ -57,7 +58,7 @@ class LazyClientCreator(object):
         return self._session.create_client(service_name, **kwargs)
 
     def _create_session(self):
-        return lazy_call(self._session_import_name)
+        return lazy_call(self._import_name).session
 
 
 class ServerSideCompleter(BaseCompleter):

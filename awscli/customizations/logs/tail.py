@@ -23,14 +23,6 @@ from awscli.utils import is_a_tty
 from awscli.customizations.commands import BasicCommand
 
 
-def register_logs_commands(event_emitter):
-    event_emitter.register('building-command-table.logs', inject_tail_command)
-
-
-def inject_tail_command(command_table, session, **kwargs):
-    command_table['tail'] = TailCommand(session)
-
-
 class BaseLogEventsFormatter(object):
     _TIMESTAMP_COLOR = colorama.Fore.GREEN
 

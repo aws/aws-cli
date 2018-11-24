@@ -21,6 +21,7 @@ from awscli import __version__ as cli_version
 from awscli.autocomplete import parser, completer
 from awscli.autocomplete.local import model, basic
 from awscli.autocomplete import serverside
+from awscli.autocomplete import custom
 
 
 # We may eventually include a pre-generated version of this index as part
@@ -30,14 +31,16 @@ INDEX_DIR = os.path.expanduser(os.path.join('~', '.aws', 'cli', 'cache'))
 INDEX_FILE = os.path.join(INDEX_DIR, '%s.index' % cli_version)
 
 
-def create_autocompleter(index_filename=INDEX_FILE):
+def create_autocompleter(index_filename=INDEX_FILE, custom_completers=None):
+    if custom_completers is None:
+        custom_completers = custom.get_custom_completers()
     index = model.ModelIndex(index_filename)
     cli_parser = parser.CLIParser(index)
-    cli_completer = completer.AutoCompleter(
-        cli_parser,
-        [basic.ModelIndexCompleter(index),
-         serverside.create_server_side_completer(index_filename)]
-    )
+    completers = [
+        basic.ModelIndexCompleter(index),
+        serverside.create_server_side_completer(index_filename)
+    ] + custom_completers
+    cli_completer = completer.AutoCompleter(cli_parser, completers)
     return cli_completer
 
 

@@ -19,11 +19,11 @@ from botocore.session import Session
 from botocore.stub import Stubber
 
 from awscli.compat import StringIO
-from awscli.customizations.logs import ShortLogEventsFormatter
-from awscli.customizations.logs import DetailedLogEventsFormatter
-from awscli.customizations.logs import TimestampUtils
-from awscli.customizations.logs import NoFollowLogEventsGenerator
-from awscli.customizations.logs import FollowLogEventsGenerator
+from awscli.customizations.logs.tail import ShortLogEventsFormatter
+from awscli.customizations.logs.tail import DetailedLogEventsFormatter
+from awscli.customizations.logs.tail import TimestampUtils
+from awscli.customizations.logs.tail import NoFollowLogEventsGenerator
+from awscli.customizations.logs.tail import FollowLogEventsGenerator
 
 
 class BaseLogEventsFormatterTest(unittest.TestCase):

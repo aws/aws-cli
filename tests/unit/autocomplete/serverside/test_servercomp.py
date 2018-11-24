@@ -49,6 +49,27 @@ class TestServerSideAutocompleter(unittest.TestCase):
                     'delete-user': ['user-name'],
                 },
             },
+            'arg_data': {
+                '': {
+                    'aws': {
+                        'endpoint-url': ('endpoint-url', 'string',
+                                         'aws', '', None, False),
+                        'region': ('region', 'string', 'aws', '', None, False),
+                    }
+                },
+                'aws.iam': {
+                    'delete-user-policy': {
+                        'policy-name': (
+                            'policy-name', 'string',
+                            'delete-user-policy', 'aws.iam.', None, False),
+                    },
+                    'delete-user': {
+                        'user-name': (
+                            'user-name', 'string',
+                            'delete-user', 'aws.iam.', None, False),
+                    }
+                }
+            }
         })
         key = (('aws', 'iam'), 'delete-user-policy', 'policy-name')
         self.completion_data = {

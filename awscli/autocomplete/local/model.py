@@ -27,7 +27,8 @@ from awscli.autocomplete import db
 
 
 CLIArgument = namedtuple('CLIArgument', ['argname', 'type_name',
-                                         'command', 'parent', 'nargs'])
+                                         'command', 'parent', 'nargs',
+                                         'positional_arg'])
 
 
 class ModelIndex(object):
@@ -47,11 +48,12 @@ class ModelIndex(object):
         SELECT argname FROM param_table
         WHERE
           parent = :parent AND
-          command = :command
+          command = :command AND
+          positional_arg = :positional_arg
     """
 
     _ARG_DATA_QUERY = """\
-        SELECT argname, type_name, command, parent, nargs FROM param_table
+        SELECT  argname, type_name, command, parent, nargs, positional_arg FROM param_table
         WHERE
           parent = :parent AND
           command = :command AND
@@ -86,7 +88,7 @@ class ModelIndex(object):
         results = db.execute(self._COMMAND_NAME_QUERY, parent=parent)
         return [row[0] for row in results]
 
-    def arg_names(self, lineage, command_name):
+    def arg_names(self, lineage, command_name, positional_arg=False):
         """Return arg names for a given lineage.
 
         The return values do not have the `--` added, e.g
@@ -100,7 +102,8 @@ class ModelIndex(object):
         db = self._get_db_connection()
         parent = '.'.join(lineage)
         results = db.execute(self._ARG_NAME_QUERY,
-                             parent=parent, command=command_name)
+                             parent=parent, command=command_name,
+                             positional_arg=positional_arg)
         return [row[0] for row in results]
 
     def get_argument_data(self, lineage, command_name, arg_name):

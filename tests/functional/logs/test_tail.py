@@ -154,7 +154,7 @@ class TestTailCommand(BaseAWSCommandParamsTest):
         datetime_mock = mock.Mock(wraps=datetime)
         datetime_mock.utcnow = mock.Mock(
             return_value=datetime(1970, 1, 1, 0, 10, 1, tzinfo=tz.tzutc()))
-        with mock.patch('awscli.customizations.logs.datetime',
+        with mock.patch('awscli.customizations.logs.tail.datetime',
                         new=datetime_mock):
             self.assert_params_for_cmd(
                 'logs tail %s' % self.group_name,
@@ -179,7 +179,7 @@ class TestTailCommand(BaseAWSCommandParamsTest):
         datetime_mock = mock.Mock(wraps=datetime)
         datetime_mock.utcnow = mock.Mock(
             return_value=datetime(1970, 1, 1, 0, 0, 2, tzinfo=tz.tzutc()))
-        with mock.patch('awscli.customizations.logs.datetime',
+        with mock.patch('awscli.customizations.logs.tail.datetime',
                         new=datetime_mock):
             self.assert_params_for_cmd(
                 'logs tail %s --since 1s' % self.group_name,
@@ -229,7 +229,7 @@ class TestTailCommand(BaseAWSCommandParamsTest):
 
     def test_tail_no_color_when_tty(self):
         with mock.patch(
-                'awscli.customizations.logs.is_a_tty') as mock_is_a_tty:
+                'awscli.customizations.logs.tail.is_a_tty') as mock_is_a_tty:
             mock_is_a_tty.return_value = True
             stdout, _, _ = self.run_cmd(
                 'logs tail %s' % self.group_name)

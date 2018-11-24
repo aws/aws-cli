@@ -126,10 +126,44 @@ class ServerSideCompleter(BaseCompleter):
             # so the best we can do is log the exception.
             LOG.debug("Exception raised when calling %s on client %s",
                       client, py_name, exc_info=True)
-            return []
+            return {}
 
     def _map_command_to_api_params(self, parsed, completion_data):
         # Right now we don't autogenerate any completion with the 'parameters'
         # key populated, but we will eventually need to handle this once we
         # do so.
         return {}
+
+
+class BaseCustomServerSideCompleter(ServerSideCompleter):
+    _PARAM_NAME = ''
+    _COMMAND_NAMES = ''
+    _LINEAGE = []
+
+    def __init__(self, client_creator=None):
+        self._client_creator = client_creator
+        if self._client_creator is None:
+            self._client_creator = LazyClientCreator()
+
+    def complete(self, parsed):
+        if not self._is_value_for_param(parsed):
+            return
+        remote_results = self._get_remote_results(parsed)
+        completion_results = []
+        for remote_result in remote_results:
+            if remote_result.startswith(parsed.current_fragment):
+                completion_results.append(
+                    CompletionResult(
+                        remote_result, -len(parsed.current_fragment))
+                )
+        return completion_results
+
+    def _is_value_for_param(self, parsed):
+        return (
+            parsed.lineage == self._LINEAGE and
+            parsed.current_command in self._COMMAND_NAMES and
+            parsed.current_param == self._PARAM_NAME
+        )
+
+    def _get_remote_results(self, parsed):
+        raise NotImplementedError('_get_remote_results()')

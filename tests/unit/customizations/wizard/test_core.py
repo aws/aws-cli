@@ -10,13 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
 import ruamel.yaml as yaml
 
 from botocore.session import Session
 
 from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.wizard import core
-from awscli.testutils import unittest, mock
+from awscli.customizations.wizard import ui
+from awscli.testutils import unittest, mock, temporary_file
 
 
 def load_wizard(yaml_str):
@@ -336,6 +338,26 @@ class TestPlanner(unittest.TestCase):
                                              'actual_value': 'dev'}])],
         )
 
+    def test_can_run_fileprompt_step(self):
+        loaded = load_wizard("""
+        plan:
+          start:
+            values:
+              foo:
+                type: fileprompt
+                description: Select file
+        """)
+        prompter = mock.Mock(spec=ui.UIFilePrompter)
+        prompter.prompt.return_value = 'myfile.txt'
+        planner = core.Planner(
+            step_handlers={
+                'fileprompt': core.FilePromptStep(prompter=prompter),
+            },
+        )
+        parameters = planner.run(loaded['plan'])
+        self.assertEqual(parameters['foo'],
+                         os.path.abspath('myfile.txt'))
+
     def test_can_jump_around_to_next_steps(self):
         # This test shows that you can specify an explicit
         # next step name to jump to.
@@ -557,6 +579,41 @@ class TestExecutor(unittest.TestCase):
         self.assertTrue(self.session.create_client.called)
         self.assertTrue(self.client.create_user.called)
 
+    def test_can_have_multiple_conditions(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: apicall
+              condition:
+                - variable: foo
+                  equals: one
+                - variable: bar
+                  equals: two
+              operation: iam.CreateUser
+              params:
+                UserName: admin
+        """)
+        self.executor.run(loaded['execute'], {'foo': 'one', 'bar': 'two'})
+        self.assertTrue(self.session.create_client.called)
+        self.assertTrue(self.client.create_user.called)
+
+    def test_multiple_conditions_one_false(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: apicall
+              condition:
+                - variable: foo
+                  equals: one
+                - variable: bar
+                  equals: two
+              operation: iam.CreateUser
+              params:
+                UserName: admin
+        """)
+        self.executor.run(loaded['execute'], {'foo': 'one', 'bar': 'NOTTWO'})
+        self.assertFalse(self.session.create_client.called)
+
     def test_can_recursively_template_variables_in_params(self):
         loaded = load_wizard("""
         execute:
@@ -740,3 +797,54 @@ class TestRunner(unittest.TestCase):
 
         self.planner.run.assert_called_with(loaded['plan'])
         self.executor.run.assert_called_with(loaded['execute'], params)
+
+
+class TestAPIInvoker(unittest.TestCase):
+    def setUp(self):
+        self.mock_session = mock.Mock(spec=Session)
+
+    def get_call_args(self, session):
+        return session.create_client.return_value.create_user.call_args
+
+    def test_can_make_api_call(self):
+        invoker = core.APIInvoker(self.mock_session)
+        invoker.invoke(
+            'iam',
+            'CreateUser',
+            api_params={'UserName': 'admin'},
+            plan_variables={}
+        )
+        call_method_args = self.get_call_args(self.mock_session)
+        self.assertEqual(call_method_args, mock.call(UserName='admin'))
+
+    def test_can_invoke_with_plan_variables(self):
+        invoker = core.APIInvoker(self.mock_session)
+        invoker.invoke(
+            'iam',
+            'CreateUser',
+            api_params={'UserName': '{username}'},
+            plan_variables={'username': 'admin'}
+        )
+        call_method_args = self.get_call_args(self.mock_session)
+        self.assertEqual(call_method_args, mock.call(UserName='admin'))
+
+    def test_can_open_file_with_builtin_function(self):
+        invoker = core.APIInvoker(self.mock_session)
+        with temporary_file('r+') as f:
+            f.write('admin')
+            f.flush()
+            invoker.invoke(
+                'iam',
+                'CreateUser',
+                # There's two parts to this test.  First, we have the
+                # filename stored as a variable.
+                plan_variables={'myfile': f.name},
+                api_params={
+                    # Then we reference the file with the builtin File
+                    # type.  We should replace this entire value with
+                    # the contents of the temp file ('admin').
+                    'UserName': {'__wizard__:File': {'path': '{myfile}'}},
+                },
+            )
+        call_method_args = self.get_call_args(self.mock_session)
+        self.assertEqual(call_method_args, mock.call(UserName=b'admin'))

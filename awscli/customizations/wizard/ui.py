@@ -11,8 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from __future__ import unicode_literals
+import os
 
 import prompt_toolkit
+from prompt_toolkit.completion import Completer, Completion
 
 from awscli.customizations.wizard import selectmenu
 
@@ -38,3 +40,28 @@ class UIPrompter(Prompter):
 
     def _display_text(self, obj):
         return obj['display']
+
+
+class FileCompleter(Completer):
+    def get_completions(self, document, complete_event):
+        path = document.text
+        dirname, partial = os.path.split(path)
+        full_dirname = os.path.expanduser(dirname)
+        try:
+            children = os.listdir(full_dirname)
+            for child in sorted(children):
+                if child.startswith(partial):
+                    result = os.path.join(dirname, child)
+                    yield Completion(result,
+                                     start_position=-len(result))
+        except OSError:
+            return
+
+
+class UIFilePrompter(object):
+    def __init__(self, completer):
+        self._completer = completer
+
+    def prompt(self, display_text):
+        return prompt_toolkit.prompt(
+            '%s: ' % display_text, completer=self._completer)

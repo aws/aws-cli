@@ -127,6 +127,15 @@ class PromptStep(BaseStep):
             return choices
 
 
+class FilePromptStep(BaseStep):
+    def __init__(self, prompter):
+        self._prompter = prompter
+
+    def run_step(self, step_definition, parameters):
+        response = self._prompter.prompt(step_definition['description'])
+        return os.path.expanduser(os.path.abspath(response))
+
+
 class TemplateStep(BaseStep):
 
     def run_step(self, step_definition, parameters):
@@ -212,9 +221,22 @@ class APIInvoker(object):
             final = {}
             for k, v in value.items():
                 final[k] = self._resolve_vars(v, plan_vars)
+            final = self._resolve_functions(final)
             return final
         else:
             return value
+
+    def _resolve_functions(self, value):
+        if len(value) != 1:
+            return value
+        only_key = list(value)[0]
+        # The built in functions will likely move to another module
+        # as we start to add more.
+        if only_key == '__wizard__:File':
+            filename = value[only_key]['path']
+            with open(filename, 'rb') as f:
+                return f.read()
+        return value
 
 
 class Executor(object):
@@ -240,9 +262,18 @@ class Executor(object):
         handler.run_step(step, parameters)
 
     def _check_step_condition(self, condition, parameters):
-        varname = condition['variable']
-        if 'equals' in condition:
-            expected = condition['equals']
+        statuses = []
+        if not isinstance(condition, list):
+            condition = [condition]
+        for single in condition:
+            statuses.append(self._check_single_condition(
+                single, parameters))
+        return all(statuses)
+
+    def _check_single_condition(self, single, parameters):
+        varname = single['variable']
+        if 'equals' in single:
+            expected = single['equals']
             return parameters.get(varname) == expected
         return False
 

@@ -84,14 +84,18 @@ plan:
     # TODO: Not implemented yet. I think we want a loop for this?
     # Keep prompting for as many key/value pairs as they want.
     values:
-      foo:
-        type: static
-        value: bar
+      region:
+        type: prompt
+        description: "Enter the region name"
 execute:
-  default:
+  # All the logic needed when the user selects assume role.
+  assume_role:
     - type: sharedconfig
       operation: SetValues
       profile: "{profile_name}"
+      condition:
+        variable: config_type
+        equals: assume_role
       params:
         role_arn: "{role_arn}"
     - type: sharedconfig
@@ -105,9 +109,38 @@ execute:
     - type: sharedconfig
       operation: SetValues
       condition:
-        variable: source_profile
-        equals: null
+        - variable: source_profile
+          equals: null
+        - variable: config_type
+          equals: assume_role
       profile: "{profile_name}"
       params:
         credential_source: "{credential_source_type}"
-
+  static_creds:
+    - type: sharedconfig
+      operation: SetValues
+      profile: "{profile_name}"
+      condition:
+        variable: config_type
+        equals: static_creds
+      params:
+        aws_access_key_id: "{access_key_id}"
+        aws_secret_access_key: "{secret_key}"
+  proc_provider:
+    - type: sharedconfig
+      operation: SetValues
+      profile: "{profile_name}"
+      condition:
+        variable: config_type
+        equals: proc_provider
+      params:
+        credential_process: "{creds_process}"
+  additional_config:
+    - type: sharedconfig
+      operation: SetValues
+      profile: "{profile_name}"
+      condition:
+        variable: config_type
+        equals: additional_config
+      params:
+        region: "{region}"

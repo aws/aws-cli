@@ -579,6 +579,41 @@ class TestExecutor(unittest.TestCase):
         self.assertTrue(self.session.create_client.called)
         self.assertTrue(self.client.create_user.called)
 
+    def test_can_have_multiple_conditions(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: apicall
+              condition:
+                - variable: foo
+                  equals: one
+                - variable: bar
+                  equals: two
+              operation: iam.CreateUser
+              params:
+                UserName: admin
+        """)
+        self.executor.run(loaded['execute'], {'foo': 'one', 'bar': 'two'})
+        self.assertTrue(self.session.create_client.called)
+        self.assertTrue(self.client.create_user.called)
+
+    def test_multiple_conditions_one_false(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: apicall
+              condition:
+                - variable: foo
+                  equals: one
+                - variable: bar
+                  equals: two
+              operation: iam.CreateUser
+              params:
+                UserName: admin
+        """)
+        self.executor.run(loaded['execute'], {'foo': 'one', 'bar': 'NOTTWO'})
+        self.assertFalse(self.session.create_client.called)
+
     def test_can_recursively_template_variables_in_params(self):
         loaded = load_wizard("""
         execute:

@@ -262,9 +262,18 @@ class Executor(object):
         handler.run_step(step, parameters)
 
     def _check_step_condition(self, condition, parameters):
-        varname = condition['variable']
-        if 'equals' in condition:
-            expected = condition['equals']
+        statuses = []
+        if not isinstance(condition, list):
+            condition = [condition]
+        for single in condition:
+            statuses.append(self._check_single_condition(
+                single, parameters))
+        return all(statuses)
+
+    def _check_single_condition(self, single, parameters):
+        varname = single['variable']
+        if 'equals' in single:
+            expected = single['equals']
             return parameters.get(varname) == expected
         return False
 

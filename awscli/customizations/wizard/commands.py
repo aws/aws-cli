@@ -32,7 +32,7 @@ def _register_wizards_for_commands(commands, event_handlers):
 
 def _add_wizard_command(session, command_object, command_table, **kwargs):
     runner = factory.create_default_wizard_runner(session)
-    cmd = WizardCommand(
+    cmd = TopLevelWizardCommand(
         session=session,
         loader=WizardLoader(),
         parent_command=command_object.name,
@@ -41,7 +41,7 @@ def _add_wizard_command(session, command_object, command_table, **kwargs):
     command_table['wizard'] = cmd
 
 
-class WizardCommand(BasicCommand):
+class TopLevelWizardCommand(BasicCommand):
     NAME = 'wizard'
     DESCRIPTION = (
         'Interactive command for creating and configuring AWS resources.'
@@ -49,24 +49,28 @@ class WizardCommand(BasicCommand):
 
     def __init__(self, session, loader, parent_command, runner,
                  wizard_name='_main'):
+        super(TopLevelWizardCommand, self).__init__(session)
         self._session = session
         self._loader = loader
         self._parent_command = parent_command
         self._runner = runner
         self._wizard_name = wizard_name
-        if wizard_name != '_main':
-            self.NAME = wizard_name
 
     def _build_subcommand_table(self):
-        subcommand_table = super(WizardCommand, self)._build_subcommand_table()
-        wizards = self._loader.list_available_wizards(self._parent_command)
+        subcommand_table = super(
+            TopLevelWizardCommand, self)._build_subcommand_table()
+        wizards = self._get_available_wizards()
         for name in wizards:
-            cmd = WizardCommand(self._session, self._loader,
-                                self._parent_command, self._runner,
+            cmd = SingleWizardCommand(self._session, self._loader,
+                                      self._parent_command, self._runner,
                                 wizard_name=name)
             subcommand_table[name] = cmd
         self._add_lineage(subcommand_table)
         return subcommand_table
+
+    def _get_available_wizards(self):
+        wizards = self._loader.list_available_wizards(self._parent_command)
+        return [name for name in wizards if not name.startswith('_')]
 
     def _run_main(self, parsed_args, parsed_globals):
         if self._wizard_exists():
@@ -89,16 +93,34 @@ class WizardCommand(BasicCommand):
                             "[parameters]\naws: error: too few arguments")
 
     def create_help_command(self):
-        if self._wizard_exists():
-            # If the wizard exists (and it's not just the top level
-            # command with no main wizard, e.g "aws foo wizard"), then
-            # we can use a custom help command that adds the description
-            # from the wizard yaml file.
-            loaded = self._loader.load_wizard(
-                self._parent_command, self._wizard_name,
-            )
-            return WizardHelpCommand(self._session, self, self.subcommand_table,
-                                    self.arg_table, loaded)
+        return BasicHelp(self._session, self,
+                         command_table=self.subcommand_table,
+                         arg_table=self.arg_table)
+
+
+class SingleWizardCommand(TopLevelWizardCommand):
+    def __init__(self, session, loader, parent_command, runner, wizard_name):
+        super(SingleWizardCommand, self).__init__(
+            session, loader, parent_command, runner, wizard_name)
+        self._session = session
+        self._loader = loader
+        self._runner = runner
+        self._wizard_name = wizard_name
+        self.NAME = self._wizard_name
+
+    def _build_subcommand_table(self):
+        return {}
+
+    def _run_main(self, parsed_args, parsed_globals):
+        self._run_wizard()
+        return 0
+
+    def create_help_command(self):
+        loaded = self._loader.load_wizard(
+            self._parent_command, self._wizard_name,
+        )
+        return WizardHelpCommand(self._session, self, self.subcommand_table,
+                                self.arg_table, loaded)
         return super(WizardCommand, self).create_help_command()
 
 

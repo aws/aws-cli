@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from __future__ import unicode_literals
 from prompt_toolkit import Application
 from prompt_toolkit.utils import get_cwidth
 from prompt_toolkit.layout import Layout, FloatContainer, Float

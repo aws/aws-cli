@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 from awscli.customizations.wizard import devcommands, factory
 from awscli.customizations.wizard.loader import WizardLoader
-from awscli.customizations.commands import BasicCommand
+from awscli.customizations.commands import BasicCommand, BasicHelp
 
 
 def register_wizard_commands(event_handlers):
@@ -42,6 +42,11 @@ def _add_wizard_command(session, command_object, command_table, **kwargs):
 
 
 class WizardCommand(BasicCommand):
+    NAME = 'wizard'
+    DESCRIPTION = (
+        'Interactive command for creating and configuring AWS resources.'
+    )
+
     def __init__(self, session, loader, parent_command, runner,
                  wizard_name='_main'):
         self._session = session
@@ -49,6 +54,8 @@ class WizardCommand(BasicCommand):
         self._parent_command = parent_command
         self._runner = runner
         self._wizard_name = wizard_name
+        if wizard_name != '_main':
+            self.NAME = wizard_name
 
     def _build_subcommand_table(self):
         subcommand_table = super(WizardCommand, self)._build_subcommand_table()
@@ -80,3 +87,24 @@ class WizardCommand(BasicCommand):
     def _raise_usage_error(self):
         raise ValueError("usage: aws [options] <command> <subcommand> "
                             "[parameters]\naws: error: too few arguments")
+
+    def create_help_command(self):
+        if self._wizard_exists():
+            # If the wizard exists (and it's not just the top level
+            # command with no main wizard, e.g "aws foo wizard"), then
+            # we can use a custom help command that adds the description
+            # from the wizard yaml file.
+            loaded = self._loader.load_wizard(
+                self._parent_command, self._wizard_name,
+            )
+            return WizardHelpCommand(self._session, self, self.subcommand_table,
+                                    self.arg_table, loaded)
+        return super(WizardCommand, self).create_help_command()
+
+
+class WizardHelpCommand(BasicHelp):
+    def __init__(self, session, command_object, command_table, arg_table,
+                 loaded_wizard):
+        super(WizardHelpCommand, self).__init__(session, command_object,
+                                                command_table, arg_table)
+        self._description = loaded_wizard.get('description', '')

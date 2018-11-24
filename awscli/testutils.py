@@ -326,6 +326,16 @@ def capture_input(input_bytes=b''):
         yield input_data
 
 
+@contextlib.contextmanager
+def cd(path):
+    try:
+        original_dir = os.getcwd()
+        os.chdir(path)
+        yield
+    finally:
+        os.chdir(original_dir)
+
+
 class BaseAWSCommandParamsTest(unittest.TestCase):
     maxDiff = None
 

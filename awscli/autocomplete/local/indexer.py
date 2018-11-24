@@ -34,6 +34,7 @@ class ModelIndexer(object):
           command TEXT,
           parent TEXT,
           nargs TEXT,
+          positional_arg TEXT,
           FOREIGN KEY (command, parent) REFERENCES
             command_table(command, parent)
         );
@@ -64,11 +65,12 @@ class ModelIndexer(object):
         for name, value in arg_table.items():
             self._db_connection.execute(
                 'INSERT INTO param_table '
-                '(argname, type_name, command, parent, nargs)'
-                ' VALUES (:argname, :type_name, :command, :parent, :nargs)',
+                '(argname, type_name, command, parent, nargs, positional_arg)'
+                ' VALUES (:argname, :type_name, :command, :parent, :nargs, '
+                '         :positional_arg)',
                 argname=name, type_name=value.cli_type_name,
                 command=command, parent=parent,
-                nargs=value.nargs,
+                nargs=value.nargs, positional_arg=value.positional_arg
             )
 
     def _generate_command_index(self, command_table, parent):

@@ -152,7 +152,7 @@ class CLIParser(object):
                 self._handle_option(current, remaining_parts,
                                     current_args, global_args, parsed, state)
             else:
-                current_args = self._handle_subcommand(
+                current_args = self._handle_positional(
                     current, state, remaining_parts, parsed)
         parsed.current_command = state.current_command
         parsed.current_param = state.current_param
@@ -271,12 +271,14 @@ class CLIParser(object):
     def _is_last_word(self, remaining_parts, current):
         return not remaining_parts and current
 
-    def _handle_subcommand(self, current, state, remaining_parts, parsed):
-        # This is a subcommand so we can check if this is a valid
-        # subcommand given our lineage.
+    def _handle_positional(self, current, state, remaining_parts, parsed):
+        # This is can either be a subcommand or a positional argument
+        #
+        # First we can check if this is a valid subcommand given our lineage.
         # We're one off here, we need to compute a new *potential*
         # lineage.
         command_names = self._index.command_names(state.full_lineage)
+        positional_argname = self._get_positional_argname(state)
         if current in command_names:
             state.current_command = current
             # We also need to get the next set of command line options.
@@ -284,6 +286,25 @@ class CLIParser(object):
                 lineage=state.lineage,
                 command_name=state.current_command)
             return current_args
+        elif (not command_names and
+              positional_argname and
+              positional_argname not in parsed.parsed_params):
+            # Parse the current string to be a positional argument
+            # if there are no more commands left and the positional arg
+            # has not already been parsed.
+            if not remaining_parts:
+                # We are currently parsing the positional argument
+                parsed.current_fragment = current
+                state.current_param = positional_argname
+            elif current:
+                # At this point, the positional argument is fully
+                # written out so it should be saved to the parsed
+                # params
+                parsed.parsed_params[positional_argname] = current
+                state.current_param = None
+            return self._index.arg_names(
+                lineage=state.lineage,
+                command_name=state.current_command)
         else:
             if not remaining_parts:
                 # If this is the last chunk of the command line but
@@ -296,3 +317,15 @@ class CLIParser(object):
                 # so we add it to the list of unparsed_items.
                 parsed.unparsed_items.append(current)
             return None
+
+    def _get_positional_argname(self, state):
+        positional_args = self._index.arg_names(
+            lineage=state.lineage,
+            command_name=state.current_command,
+            positional_arg=True
+        )
+        if positional_args:
+            # We are assuming there is only ever one positional
+            # argument for a command.
+            return positional_args[0]
+        return None

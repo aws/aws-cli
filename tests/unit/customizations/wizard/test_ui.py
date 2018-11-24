@@ -28,7 +28,7 @@ class TestFileCompleter(unittest.TestCase):
         shutil.rmtree(self.temporary_directory)
 
     def touch_file(self, filename):
-        with open(os.path.join(self.temporary_directory, filename), 'w') as f:
+        with open(os.path.join(self.temporary_directory, filename), 'w'):
             pass
 
     def get_completions_given_user_input(self, user_input):
@@ -38,7 +38,6 @@ class TestFileCompleter(unittest.TestCase):
             completions = list(
                 self.completer.get_completions(user_input, None))
             return completions
-
 
     def test_can_list_children_of_dir_with_prefix(self):
         self.touch_file('foo.txt')

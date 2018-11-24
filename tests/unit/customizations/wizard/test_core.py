@@ -711,3 +711,32 @@ class TestSharedConfigAPI(unittest.TestCase):
         self.mock_session.available_profiles = ['foo', 'bar']
         result = self.config_api.list_profiles()
         self.assertEqual(result, ['foo', 'bar'])
+
+
+class TestRunner(unittest.TestCase):
+    def setUp(self):
+        self.planner = mock.Mock(spec=core.Planner)
+        self.executor = mock.Mock(spec=core.Executor)
+        self.runner = core.Runner(self.planner, self.executor)
+
+    def test_can_delegate_to_obs(self):
+        loaded = load_wizard("""
+        plan:
+          start:
+            values:
+              name:
+                type: prompt
+                description: Enter user name
+        execute:
+          default:
+            - type: apicall
+              operation: iam.CreateUser
+              params:
+                UserName: admin
+        """)
+        params = {'foo': 'bar'}
+        self.planner.run.return_value = params
+        self.runner.run(wizard_spec=loaded)
+
+        self.planner.run.assert_called_with(loaded['plan'])
+        self.executor.run.assert_called_with(loaded['execute'], params)

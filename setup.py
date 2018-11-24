@@ -29,6 +29,7 @@ requires = ['botocore==1.12.48',
             'rsa>=3.1.2,<=3.5.0',
             's3transfer>=0.1.12,<0.2.0',
             'ruamel.yaml>=0.15.0,<0.16.0',
+            'prompt-toolkit>=2.0.0,<3.0.0',
             ]
 
 

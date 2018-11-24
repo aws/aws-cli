@@ -102,7 +102,8 @@ class TestModelIndexCompleter(unittest.TestCase):
                     'aws': ['region', 'endpoint-url'],
                 },
                 'aws.ec2': {
-                    'describe-instances': ['instance-ids', 'reserve'],
+                    'describe-instances': [
+                        'instance-ids', 'reserve', 'positional'],
                 }
             },
             'arg_data': {
@@ -121,6 +122,9 @@ class TestModelIndexCompleter(unittest.TestCase):
                         'reserve': (
                             'reserve', 'string',
                             'describe-instances', 'aws.ec2.', None, False),
+                        'positional': (
+                            'positional', 'string',
+                            'describe-instances', 'aws.ec2.', None, True),
                     }
                 }
             }
@@ -180,4 +184,8 @@ class TestModelIndexCompleter(unittest.TestCase):
 
     def test_no_autocompletions_if_nothing_matches(self):
         parsed = self.parser.parse('aws --foo')
+        self.assertEqual(self.completer.complete(parsed), [])
+
+    def test_no_complete_positional_arguments(self):
+        parsed = self.parser.parse('aws ec2 describe-instances --pos')
         self.assertEqual(self.completer.complete(parsed), [])

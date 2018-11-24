@@ -32,12 +32,16 @@ SAMPLE_MODEL = InMemoryIndex(
             },
             'aws.ec2': {
                 'stop-instances': ['instance-ids', 'foo-arg'],
+            },
+            'aws.logs': {
+                'tail': ['group_name', 'filter-pattern']
             }
         },
         'command_names': {
             '': ['aws'],
-            'aws': ['ec2'],
+            'aws': ['ec2', 'logs'],
             'aws.ec2': ['stop-instances'],
+            'aws.logs': ['tail']
         },
         'arg_data': {
             '': {
@@ -56,6 +60,19 @@ SAMPLE_MODEL = InMemoryIndex(
                     'foo-arg': (
                         'foo-arg', 'string', 'stop-instances',
                         'aws.ec2', None, False),
+                    'positional': (
+                        'positional', 'string', 'stop-instances',
+                        'aws.ec2', None, True),
+                }
+            },
+            'aws.logs': {
+                'tail': {
+                    'group_name': (
+                        'group_name', 'string',
+                        'tail', 'aws.logs.', None, True),
+                    'filter-pattern': (
+                        'filter-pattern', 'string', 'tail',
+                        'aws.logs', None, False),
                 }
             }
         }
@@ -451,6 +468,80 @@ class TestCanParseCLICommand(unittest.TestCase):
             unparsed_items=[],
         )
 
+    def test_parses_positional(self):
+        result = self.cli_parser.parse(
+            'aws logs tail mygroup',
+        )
+        self.assert_parsed_results_equal(
+            result,
+            current_command='tail',
+            current_param='group_name',
+            parsed_params={},
+            lineage=['aws', 'logs'],
+            current_fragment='mygroup',
+            unparsed_items=[],
+        )
+
+    def test_parses_positional_done(self):
+        result = self.cli_parser.parse(
+            'aws logs tail mygroup ',
+        )
+        self.assert_parsed_results_equal(
+            result,
+            current_command='tail',
+            current_param=None,
+            parsed_params={'group_name': 'mygroup'},
+            lineage=['aws', 'logs'],
+            current_fragment='',
+            unparsed_items=[],
+        )
+
+    def test_parses_positional_parsed_only_once(self):
+        result = self.cli_parser.parse(
+            'aws logs tail mygroup random-content ',
+        )
+        self.assert_parsed_results_equal(
+            result,
+            current_command='tail',
+            current_param=None,
+            parsed_params={'group_name': 'mygroup'},
+            lineage=['aws', 'logs'],
+            current_fragment='',
+            unparsed_items=['random-content'],
+        )
+
+    def test_parse_positional_with_option(self):
+        result = self.cli_parser.parse(
+            'aws logs tail mygroup --filter-pattern pat',
+            )
+        self.assert_parsed_results_equal(
+            result,
+            current_command='tail',
+            current_param='filter-pattern',
+            parsed_params={
+                'filter-pattern': None,
+                'group_name': 'mygroup'
+            },
+            lineage=['aws', 'logs'],
+            current_fragment='pat',
+            unparsed_items=[],
+        )
+
+    def test_parse_positional_with_option_before(self):
+        result = self.cli_parser.parse(
+            'aws logs tail --filter-pattern pattern mygroup',
+            )
+        self.assert_parsed_results_equal(
+            result,
+            current_command='tail',
+            current_param='group_name',
+            parsed_params={
+                'filter-pattern': 'pattern',
+            },
+            lineage=['aws', 'logs'],
+            current_fragment='mygroup',
+            unparsed_items=[],
+        )
 
 class TestParseState(unittest.TestCase):
     def test_can_set_initial_state(self):

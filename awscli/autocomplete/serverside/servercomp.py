@@ -126,7 +126,7 @@ class ServerSideCompleter(BaseCompleter):
             # so the best we can do is log the exception.
             LOG.debug("Exception raised when calling %s on client %s",
                       client, py_name, exc_info=True)
-            return []
+            return {}
 
     def _map_command_to_api_params(self, parsed, completion_data):
         # Right now we don't autogenerate any completion with the 'parameters'

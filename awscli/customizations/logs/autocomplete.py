@@ -26,5 +26,5 @@ class GroupNameCompleter(servercomp.BaseCustomServerSideCompleter):
         client = self._client_creator.create_client('logs')
         response = self._invoke_api(client, 'describe_log_groups', {})
         return [
-            log_group['logGroupName'] for log_group in response['logGroups']
+            group['logGroupName'] for group in response.get('logGroups', [])
         ]

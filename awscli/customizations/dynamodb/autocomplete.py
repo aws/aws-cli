@@ -14,10 +14,10 @@ from awscli.autocomplete.serverside import servercomp
 
 
 def add_ddb_completers(custom_completers):
-    custom_completers.append(DDBTableNameCompleter())
+    custom_completers.append(TableNameCompleter())
 
 
-class DDBTableNameCompleter(servercomp.BaseCustomServerSideCompleter):
+class TableNameCompleter(servercomp.BaseCustomServerSideCompleter):
     _PARAM_NAME = 'table_name'
     _LINEAGE = ['aws', 'ddb']
     _COMMAND_NAMES = ['select', 'put']
@@ -26,7 +26,7 @@ class DDBTableNameCompleter(servercomp.BaseCustomServerSideCompleter):
         client = self._client_creator.create_client('dynamodb')
         response = self._invoke_api(client, 'list_tables', {})
         return [
-            table_name for table_name in response['TableNames']
+            table_name for table_name in response.get('TableNames', [])
         ]
 
 

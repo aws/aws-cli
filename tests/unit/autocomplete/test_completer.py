@@ -105,6 +105,25 @@ class TestModelIndexCompleter(unittest.TestCase):
                     'describe-instances': ['instance-ids', 'reserve'],
                 }
             },
+            'arg_data': {
+                '': {
+                    'aws': {
+                        'endpoint-url': ('endpoint-url', 'string',
+                                         'aws', '', None, False),
+                        'region': ('region', 'string', 'aws', '', None, False),
+                    }
+                },
+                'aws.ec2': {
+                    'describe-instances': {
+                        'instance-ids': (
+                            'instance-ids', 'string',
+                            'describe-instances', 'aws.ec2.', None, False),
+                        'reserve': (
+                            'reserve', 'string',
+                            'describe-instances', 'aws.ec2.', None, False),
+                    }
+                }
+            }
         })
         self.parser = parser.CLIParser(self.index)
 

@@ -30,7 +30,8 @@ class InMemoryIndex(model.ModelIndex):
              'get_argument_data': {
                  'dot.lineage': {
                      'command-name': {
-                         'arg-name': (argname, type, command, parent, nargs)
+                         'arg-name': (argname, type, command, parent,
+                                      nargs, positional_arg)
                      }
                  }
             }
@@ -42,9 +43,16 @@ class InMemoryIndex(model.ModelIndex):
         parent = '.'.join(lineage)
         return self.index['command_names'].get(parent, [])
 
-    def arg_names(self, lineage, command_name):
+    def arg_names(self, lineage, command_name, positional_arg=False):
         parent = '.'.join(lineage)
-        return self.index['arg_names'].get(parent, {}).get(command_name, [])
+        arg_names = self.index['arg_names'].get(parent, {}).get(
+            command_name, [])
+        filtered_arg_names = []
+        for arg_name in arg_names:
+            arg_data = self.get_argument_data(lineage, command_name, arg_name)
+            if arg_data.positional_arg == positional_arg:
+                filtered_arg_names.append(arg_name)
+        return filtered_arg_names
 
     def get_argument_data(self, lineage, command_name, arg_name):
         parent = '.'.join(lineage)

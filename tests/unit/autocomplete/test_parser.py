@@ -42,20 +42,20 @@ SAMPLE_MODEL = InMemoryIndex(
         'arg_data': {
             '': {
                 'aws': {
-                    'debug': ('debug', 'boolean', 'aws', '', None),
+                    'debug': ('debug', 'boolean', 'aws', '', None, False),
                     'endpoint-url': ('endpoint-url', 'string',
-                                     'aws', '', None),
-                    'region': ('region', 'string', 'aws', '', None),
+                                     'aws', '', None, False),
+                    'region': ('region', 'string', 'aws', '', None, False),
                 }
             },
             'aws.ec2': {
                 'stop-instances': {
                     'instance-ids': (
                         'instance-ids', 'string',
-                        'stop-instances', 'aws.ec2.', '*'),
+                        'stop-instances', 'aws.ec2.', '*', False),
                     'foo-arg': (
                         'foo-arg', 'string', 'stop-instances',
-                        'aws.ec2', None),
+                        'aws.ec2', None, False),
                 }
             }
         }
@@ -257,7 +257,7 @@ class TestCanParseCLICommand(unittest.TestCase):
         nargs_one_or_more = '?'
         model.index['arg_data']['aws.ec2']['stop-instances']['foo-arg'] = (
             'foo-arg', 'string',
-            'stop-instances', 'aws.ec2', nargs_one_or_more)
+            'stop-instances', 'aws.ec2', nargs_one_or_more, False)
         p = parser.CLIParser(model)
         self.assertEqual(
             p.parse(

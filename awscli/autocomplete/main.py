@@ -36,10 +36,10 @@ def create_autocompleter(index_filename=INDEX_FILE, custom_completers=None):
         custom_completers = custom.get_custom_completers()
     index = model.ModelIndex(index_filename)
     cli_parser = parser.CLIParser(index)
-    completers = custom_completers + [
+    completers = [
         basic.ModelIndexCompleter(index),
         serverside.create_server_side_completer(index_filename)
-    ]
+    ] + custom_completers
     cli_completer = completer.AutoCompleter(cli_parser, completers)
     return cli_completer
 

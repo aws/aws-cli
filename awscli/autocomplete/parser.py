@@ -278,7 +278,7 @@ class CLIParser(object):
         # We're one off here, we need to compute a new *potential*
         # lineage.
         command_names = self._index.command_names(state.full_lineage)
-        positional_argname = self._get_positional_argname(state)
+        positional_argname = None
         if current in command_names:
             state.current_command = current
             # We also need to get the next set of command line options.
@@ -286,11 +286,15 @@ class CLIParser(object):
                 lineage=state.lineage,
                 command_name=state.current_command)
             return current_args
-        elif (not command_names and
-              positional_argname and
-              positional_argname not in parsed.parsed_params):
+        if not command_names:
+            # If there are no more command names check. See if the command
+            # has a positional argument. This will require an additional
+            # select on the argument index.
+            positional_argname = self._get_positional_argname(state)
+        if (positional_argname and
+            positional_argname not in parsed.parsed_params):
             # Parse the current string to be a positional argument
-            # if there are no more commands left and the positional arg
+            # if the command has the a positional arg and the positional arg
             # has not already been parsed.
             if not remaining_parts:
                 # We are currently parsing the positional argument

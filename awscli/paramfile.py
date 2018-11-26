@@ -272,10 +272,28 @@ def get_pipe(prefix, path):
         PIPE_CACHE[path] = get_file(prefix, path, mode = 'r')
     return PIPE_CACHE[path]
 
+STDIN_CACHE = None
+def get_stdin(prefix, path):
+    """stdin can only be read once, to completion...
+
+    To facilitate this, we follow get_pipe()'s example, and maintain a cache.
+    To support Windows we do not use the "file" /dev/stdin, but rather sys.stdin
+
+    As we're not using get_file(), we need to re-implement exception handling
+    """
+    global STDIN_CACHE
+    try:
+        if STDIN_CACHE is None:
+            STDIN_CACHE = ''.join(sys.stdin.readlines())
+        return STDIN_CACHE
+    except (OSError, IOError):
+        raise ResourceLoadingError('Unable to read standard input: %s' % ( e ))
+
 LOCAL_PREFIX_MAP = {
     'file://': (get_file, {'mode': 'r'}),
     'fileb://': (get_file, {'mode': 'rb'}),
     'pipe://': (get_pipe, {}),
+    'stdin://': (get_stdin, {}),
 }
 
 

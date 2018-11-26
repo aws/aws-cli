@@ -3,22 +3,34 @@
 
 """
 import os
+import argparse
 
 from awscli.autocomplete.local import indexer
 from awscli.autocomplete.serverside.indexer import APICallIndexer
 from awscli.autocomplete import db
-from awscli.autocomplete.main import INDEX_DIR, INDEX_FILE
+from awscli.autocomplete.main import INDEX_DIR, INDEX_FILE, BUILTIN_INDEX_FILE
 from awscli.autocomplete import generator
 from awscli import clidriver
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--include-builtin-index', action='store_true',
+                        help=("Also generate builtin index as well as the "
+                              "index in the CLI cache dir."))
+    args = parser.parse_args()
     if not os.path.isdir(INDEX_DIR):
         os.makedirs(INDEX_DIR)
     # Using a temporary name so if the index already exists, we'll
     # only replace the entire file once we successfully regenerate the
     # index.
-    temp_name = '%s.temp' % INDEX_FILE
+    _generate_index(INDEX_FILE)
+    if args.include_builtin_index:
+        _generate_index(BUILTIN_INDEX_FILE)
+
+
+def _generate_index(filename):
+    temp_name = '%s.temp' % filename
     db_connection = db.DatabaseConnection(temp_name)
     indexers = [
         indexer.ModelIndexer(db_connection),
@@ -30,7 +42,7 @@ def main():
         index_gen.generate_index(driver)
     finally:
         db_connection.close()
-    os.rename(temp_name, INDEX_FILE)
+    os.rename(temp_name, filename)
 
 
 if __name__ == '__main__':

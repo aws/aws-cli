@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.16.61
+=======
+
+* api-change:``amplify``: Update amplify command to latest version
+* api-change:``transfer``: Update transfer command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``snowball``: Update snowball command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``datasync``: Update datasync command to latest version
+
+
 1.16.60
 =======
 

@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 sudo mkdir -p /usr/local/bin
-
 sudo ln -sf /usr/local/aws/aws /usr/local/bin/aws
 sudo ln -sf /usr/local/aws/aws_completer /usr/local/bin/aws_completer
+
+CLI_VERSION=$(/usr/local/bin/aws --version | cut -d' ' -f 1 | cut -d'/' -f 2)
+mkdir -p ~/.aws/cli/cache
+cp /usr/local/aws/awscli/data/ac.index ~/.aws/cli/cache/$CLI_VERSION.index

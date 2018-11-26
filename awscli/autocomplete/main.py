@@ -29,11 +29,17 @@ from awscli.autocomplete import custom
 # dir.
 INDEX_DIR = os.path.expanduser(os.path.join('~', '.aws', 'cli', 'cache'))
 INDEX_FILE = os.path.join(INDEX_DIR, '%s.index' % cli_version)
+BUILTIN_INDEX_FILE = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    'data', 'ac.index'
+)
 
 
-def create_autocompleter(index_filename=INDEX_FILE, custom_completers=None):
+def create_autocompleter(index_filename=None, custom_completers=None):
     if custom_completers is None:
         custom_completers = custom.get_custom_completers()
+    if index_filename is None:
+        index_filename = _get_index_filename()
     index = model.ModelIndex(index_filename)
     cli_parser = parser.CLIParser(index)
     completers = [
@@ -42,6 +48,12 @@ def create_autocompleter(index_filename=INDEX_FILE, custom_completers=None):
     ] + custom_completers
     cli_completer = completer.AutoCompleter(cli_parser, completers)
     return cli_completer
+
+
+def _get_index_filename():
+    if os.path.isfile(INDEX_FILE):
+        return INDEX_FILE
+    return BUILTIN_INDEX_FILE
 
 
 def autocomplete(command_line, position=None):

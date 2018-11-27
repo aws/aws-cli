@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.16.62
+=======
+
+* api-change:``globalaccelerator``: Update globalaccelerator command to latest version
+* api-change:``sms``: Update sms command to latest version
+* api-change:``greengrass``: Update greengrass command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``kms``: Update kms command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``iotanalytics``: Update iotanalytics command to latest version
+
+
 1.16.61
 =======
 

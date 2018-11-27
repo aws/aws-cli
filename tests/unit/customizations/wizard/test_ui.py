@@ -46,7 +46,8 @@ class TestFileCompleter(unittest.TestCase):
 
         completions = self.get_completions_given_user_input(u'./b')
         self.assertEqual(
-            [c.text for c in completions], ['./bar.txt', './baz.txt'])
+            [c.text for c in completions], [os.path.join('.', 'bar.txt'),
+                                            os.path.join('.', 'baz.txt')])
 
     def test_full_path_included_if_full_path_used_as_text(self):
         self.touch_file('foo.txt')

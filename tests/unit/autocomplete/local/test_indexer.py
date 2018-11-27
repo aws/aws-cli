@@ -10,6 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
+import shutil
+
 from awscli.testutils import unittest, mock
 from awscli.autocomplete import db
 from awscli.autocomplete.local import indexer, model
@@ -95,13 +98,19 @@ class TestCanRetrieveCommands(unittest.TestCase):
         # update our interfaces to return/accept a db connection.
         # I'd prefer not to have db connections as part of the
         # indexing interface.
-        self.tempfile = tempfile.NamedTemporaryFile('w')
-        self.db_conn = db.DatabaseConnection(self.tempfile.name)
+        self.temp_dir = tempfile.mkdtemp()
+        self.tempfile = os.path.join(self.temp_dir, 'temp.db')
+        self.db_conn = db.DatabaseConnection(self.tempfile)
         self.indexer = indexer.ModelIndexer(self.db_conn)
-        self.query = model.ModelIndex(self.tempfile.name)
+        self.query = model.ModelIndex(self.tempfile)
 
     def tearDown(self):
-        self.tempfile.close()
+        self.db_conn.close()
+        # TODO: This object is impossible to clean up after properly it should
+        # take a db connection instead of a filename so it doesn't have a
+        # private copy of the database connection.
+        self.query._db_connection.close()
+        shutil.rmtree(self.temp_dir)
 
     def test_can_retrieve_top_level_commands(self):
         self.indexer.generate_index(self.aws_command)
@@ -190,4 +199,3 @@ class TestCanCreateModelIndexer(unittest.TestCase):
     def test_can_create_model_indexer(self):
         index = indexer.create_model_indexer('/tmp/a/b/c/d')
         self.assertIsInstance(index, indexer.ModelIndexer)
-

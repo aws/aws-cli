@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.16.63
+=======
+
+* api-change:``meteringmarketplace``: Update meteringmarketplace command to latest version
+* api-change:``kinesisanalytics``: Update kinesisanalytics command to latest version
+* api-change:``logs``: Update logs command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``codedeploy``: Update codedeploy command to latest version
+* api-change:``mediaconnect``: Update mediaconnect command to latest version
+* api-change:``kinesisanalyticsv2``: Update kinesisanalyticsv2 command to latest version
+* api-change:``comprehendmedical``: Update comprehendmedical command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``translate``: Update translate command to latest version
+
+
 1.16.62
 =======
 

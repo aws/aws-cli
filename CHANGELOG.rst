@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.64
+=======
+
+* api-change:``dynamodb``: Update dynamodb command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
 1.16.63
 =======
 

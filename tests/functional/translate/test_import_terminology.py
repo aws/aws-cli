@@ -78,9 +78,7 @@ class TestImortTerminology(BaseAWSCommandParamsTest):
         cmdline += ' --name myterminology --merge-strategy OVERWRITE'
         cmdline += ' --terminology-data Format=TMX'
         stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=2)
-        self.assertIn(
-            'the following arguments are required: --data-file', stderr
-        )
+        self.assertIn('--data-file', stderr)
 
     def test_import_terminology_with_no_format(self):
         cmdline = self.prefix

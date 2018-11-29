@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.16.65
+=======
+
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``license-manager``: Update license-manager command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``servicediscovery``: Update servicediscovery command to latest version
+
+
 1.16.64
 =======
 

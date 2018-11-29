@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.16.66
+=======
+
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``stepfunctions``: Update stepfunctions command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``xray``: Update xray command to latest version
+* api-change:``serverlessrepo``: Update serverlessrepo command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``events``: Update events command to latest version
+* api-change:``s3``: Update s3 command to latest version
+
+
 1.16.65
 =======
 

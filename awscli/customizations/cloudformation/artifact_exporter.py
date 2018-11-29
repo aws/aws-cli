@@ -370,6 +370,21 @@ class ElasticBeanstalkApplicationVersion(ResourceWithS3UrlDict):
     VERSION_PROPERTY = None
 
 
+class LambdaLayerVersionResource(ResourceWithS3UrlDict):
+    RESOURCE_TYPE = "AWS::Lambda::LayerVersion"
+    PROPERTY_NAME = "Content"
+    BUCKET_NAME_PROPERTY = "S3Bucket"
+    OBJECT_KEY_PROPERTY = "S3Key"
+    VERSION_PROPERTY = "S3ObjectVersion"
+    FORCE_ZIP = True
+
+
+class ServerlessLayerVersionResource(Resource):
+    RESOURCE_TYPE = "AWS::Serverless::LayerVersion"
+    PROPERTY_NAME = "ContentUri"
+    FORCE_ZIP = True
+
+
 class CloudFormationStackResource(Resource):
     """
     Represents CloudFormation::Stack resource that can refer to a nested
@@ -420,6 +435,15 @@ class CloudFormationStackResource(Resource):
                     parts["Key"], parts.get("Version", None))
 
 
+class ServerlessApplicationResource(CloudFormationStackResource):
+    """
+    Represents Serverless::Application resource that can refer to a nested
+    app template via Location property.
+    """
+    RESOURCE_TYPE = "AWS::Serverless::Application"
+    PROPERTY_NAME = "Location"
+
+
 EXPORT_LIST = [
     ServerlessFunctionResource,
     ServerlessApiResource,
@@ -429,7 +453,9 @@ EXPORT_LIST = [
     ApiGatewayRestApiResource,
     LambdaFunctionResource,
     ElasticBeanstalkApplicationVersion,
-    CloudFormationStackResource
+    CloudFormationStackResource,
+    ServerlessApplicationResource,
+    LambdaLayerVersionResource,
 ]
 
 def include_transform_export_handler(template_dict, uploader):
@@ -474,9 +500,9 @@ class Template(object):
 
     def export_global_artifacts(self, template_dict):
         """
-        Template params such as AWS::Include transforms are not specific to 
+        Template params such as AWS::Include transforms are not specific to
         any resource type but contain artifacts that should be exported,
-        here we iterate through the template dict and export params with a 
+        here we iterate through the template dict and export params with a
         handler defined in GLOBAL_EXPORT_DICT
         """
         for key, val in template_dict.items():

@@ -19,7 +19,9 @@ from awscli.customizations.cloudformation.artifact_exporter \
     ServerlessFunctionResource, GraphQLSchemaResource, \
     LambdaFunctionResource, ApiGatewayRestApiResource, \
     ElasticBeanstalkApplicationVersion, CloudFormationStackResource, \
-    copy_to_temp_dir, include_transform_export_handler, GLOBAL_EXPORT_DICT
+    ServerlessApplicationResource, LambdaLayerVersionResource, \
+    copy_to_temp_dir, include_transform_export_handler, GLOBAL_EXPORT_DICT, \
+    ServerlessLayerVersionResource
 
 
 def test_is_s3_url():
@@ -94,6 +96,16 @@ def test_all_resources_export():
             "expected_result": {
                 "S3Bucket": "foo", "S3Key": "bar"
             }
+        },
+        {
+            "class": LambdaLayerVersionResource,
+            "expected_result": {
+                "S3Bucket": "foo", "S3Key": "bar", "S3ObjectVersion": "baz"
+            }
+        },
+        {
+            "class": ServerlessLayerVersionResource,
+            "expected_result": uploaded_s3_url
         },
     ]
 
@@ -707,6 +719,96 @@ class TestArtifactExporter(unittest.TestCase):
                 stack_resource.export(resource_id, resource_dict, "dir")
                 self.s3_uploader_mock.upload_with_dedup.assert_not_called()
 
+    @patch("awscli.customizations.cloudformation.artifact_exporter.Template")
+    def test_export_serverless_application(self, TemplateMock):
+        stack_resource = ServerlessApplicationResource(self.s3_uploader_mock)
+
+        resource_id = "id"
+        property_name = stack_resource.PROPERTY_NAME
+        exported_template_dict = {"foo": "bar"}
+        result_s3_url = "s3://hello/world"
+        result_path_style_s3_url = "http://s3.amazonws.com/hello/world"
+
+        template_instance_mock = Mock()
+        TemplateMock.return_value = template_instance_mock
+        template_instance_mock.export.return_value = exported_template_dict
+
+        self.s3_uploader_mock.upload_with_dedup.return_value = result_s3_url
+        self.s3_uploader_mock.to_path_style_s3_url.return_value = result_path_style_s3_url
+
+        with tempfile.NamedTemporaryFile() as handle:
+            template_path = handle.name
+            resource_dict = {property_name: template_path}
+            parent_dir = tempfile.gettempdir()
+
+            stack_resource.export(resource_id, resource_dict, parent_dir)
+
+            self.assertEquals(resource_dict[property_name], result_path_style_s3_url)
+
+            TemplateMock.assert_called_once_with(template_path, parent_dir, self.s3_uploader_mock)
+            template_instance_mock.export.assert_called_once_with()
+            self.s3_uploader_mock.upload_with_dedup.assert_called_once_with(mock.ANY, "template")
+            self.s3_uploader_mock.to_path_style_s3_url.assert_called_once_with("world", None)
+
+    def test_export_serverless_application_no_upload_path_is_s3url(self):
+        stack_resource = ServerlessApplicationResource(self.s3_uploader_mock)
+        resource_id = "id"
+        property_name = stack_resource.PROPERTY_NAME
+        s3_url = "s3://hello/world"
+        resource_dict = {property_name: s3_url}
+
+        # Case 1: Path is already S3 url
+        stack_resource.export(resource_id, resource_dict, "dir")
+        self.assertEquals(resource_dict[property_name], s3_url)
+        self.s3_uploader_mock.upload_with_dedup.assert_not_called()
+
+    def test_export_serverless_application_no_upload_path_is_httpsurl(self):
+        stack_resource = ServerlessApplicationResource(self.s3_uploader_mock)
+        resource_id = "id"
+        property_name = stack_resource.PROPERTY_NAME
+        s3_url = "https://s3.amazonaws.com/hello/world"
+        resource_dict = {property_name: s3_url}
+
+        # Case 1: Path is already S3 url
+        stack_resource.export(resource_id, resource_dict, "dir")
+        self.assertEquals(resource_dict[property_name], s3_url)
+        self.s3_uploader_mock.upload_with_dedup.assert_not_called()
+
+    def test_export_serverless_application_no_upload_path_is_empty(self):
+        stack_resource = ServerlessApplicationResource(self.s3_uploader_mock)
+        resource_id = "id"
+        property_name = stack_resource.PROPERTY_NAME
+
+        # Case 2: Path is empty
+        resource_dict = {}
+        stack_resource.export(resource_id, resource_dict, "dir")
+        self.assertEquals(resource_dict, {})
+        self.s3_uploader_mock.upload_with_dedup.assert_not_called()
+
+    def test_export_serverless_application_no_upload_path_not_file(self):
+        stack_resource = ServerlessApplicationResource(self.s3_uploader_mock)
+        resource_id = "id"
+        property_name = stack_resource.PROPERTY_NAME
+
+        # Case 3: Path is not a file
+        with self.make_temp_dir() as dirname:
+            resource_dict = {property_name: dirname}
+            with self.assertRaises(exceptions.ExportFailedError):
+                stack_resource.export(resource_id, resource_dict, "dir")
+                self.s3_uploader_mock.upload_with_dedup.assert_not_called()
+
+    def test_export_serverless_application_no_upload_path_is_dictionary(self):
+        stack_resource = ServerlessApplicationResource(self.s3_uploader_mock)
+        resource_id = "id"
+        property_name = stack_resource.PROPERTY_NAME
+
+        # Case 4: Path is dictionary
+        location = {"ApplicationId": "id", "SemanticVersion": "1.0.1"}
+        resource_dict = {property_name: location}
+        stack_resource.export(resource_id, resource_dict, "dir")
+        self.assertEquals(resource_dict[property_name], location)
+        self.s3_uploader_mock.upload_with_dedup.assert_not_called()
+
     @patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
     def test_template_export(self, yaml_parse_mock):
         parent_dir = os.path.sep
@@ -849,7 +951,7 @@ class TestArtifactExporter(unittest.TestCase):
         handler_output = include_transform_export_handler({"Name": "AWS::Include", "Parameters": {"Location": "http://foo.yaml"}}, self.s3_uploader_mock)
         self.s3_uploader_mock.upload_with_dedup.assert_not_called()
         self.assertEquals(handler_output, {"Name": "AWS::Include", "Parameters": {"Location": "http://foo.yaml"}})
-    
+
     @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_file")
     def test_include_transform_export_handler_non_include_transform(self, is_local_file_mock):
         #ignores transform that is not aws::include

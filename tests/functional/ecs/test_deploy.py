@@ -113,11 +113,13 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
         self.mock_deployer = CodeDeployer(None, self.APPSPEC_DICT)
         self.mock_deployer.update_task_def_arn(self.task_definition_arn)
         self.expected_stdout = ("Successfully registered new ECS task "
-                               "definition " + self.task_definition_arn + "\n"
-                               "Successfully created deployment " +
-                               self.deployment_id + "\n"
-                               "Waiting for " + self.deployment_id +
-                               " to succeed...")
+                                "definition " + self.task_definition_arn + "\n"
+                                "Successfully created deployment " +
+                                self.deployment_id + "\n"
+                                "Waiting for " + self.deployment_id +
+                                " to succeed...\nSuccessfully deployed "
+                                + self.task_definition_arn + " to service '"
+                                + self.service_name + "'\n")
 
     def tearDown(self):
         super(TestDeployCommand, self).tearDown()

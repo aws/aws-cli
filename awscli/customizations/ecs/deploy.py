@@ -100,7 +100,10 @@ class ECSDeploy(BasicCommand):
 
     MSG_CREATED_DEPLOYMENT = "Successfully created deployment {id}\n"
 
-    MSG_WAITING = "Waiting for {deployment_id} to succeed..."
+    MSG_WAITING = "Waiting for {deployment_id} to succeed...\n"
+
+    MSG_SUCCESS = ("Successfully deployed {task_def} to "
+                   "service '{service}'\n")
 
     def _run_main(self, parsed_args, parsed_globals):
 
@@ -140,6 +143,12 @@ class ECSDeploy(BasicCommand):
         sys.stdout.flush()
 
         deployer.wait_for_deploy_success(deployment_id)
+        service_name = self.resources['service']
+
+        sys.stdout.write(
+            self.MSG_SUCCESS.format(
+                task_def=self.task_def_arn, service=service_name))
+        sys.stdout.flush()
 
     def _get_file_contents(self, file_path):
         full_path = os.path.expandvars(os.path.expanduser(file_path))

@@ -455,6 +455,7 @@ EXPORT_LIST = [
     ElasticBeanstalkApplicationVersion,
     CloudFormationStackResource,
     ServerlessApplicationResource,
+    ServerlessLayerVersionResource,
     LambdaLayerVersionResource,
 ]
 

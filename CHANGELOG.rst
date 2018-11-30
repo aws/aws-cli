@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.67
+=======
+
+* api-change:``s3``: Update s3 command to latest version
+
+
 1.16.66
 =======
 

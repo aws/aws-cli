@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.68
+=======
+
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``devicefarm``: Update devicefarm command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+
+
 1.16.67
 =======
 

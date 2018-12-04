@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.69
+=======
+
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``health``: Update health command to latest version
+
+
 1.16.68
 =======
 

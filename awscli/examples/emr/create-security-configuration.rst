@@ -65,3 +65,61 @@
     "CreationDateTime": 1474070889.129,
     "Name": "MySecurityConfig"
     }
+
+**2. To create a security configuration with Kerberos enabled using cluster-dedicated KDC and cross-realm trust**
+
+- Command::
+
+     aws emr create-security-configuration --name MySecurityConfig --security-configuration '{
+         "AuthenticationConfiguration": {
+             "KerberosConfiguration": {
+                 "Provider": "ClusterDedicatedKdc",
+                 "ClusterDedicatedKdcConfiguration": {
+                     "TicketLifetimeInHours": 24,
+                     "CrossRealmTrustConfiguration": {
+                       "Realm": "AD.DOMAIN.COM",
+                       "Domain": "ad.domain.com",
+                       "AdminServer": "ad.domain.com",
+                       "KdcServer": "ad.domain.com"
+                     }
+                 }
+             }
+         }
+    }'
+
+- Output::
+
+    {
+    "CreationDateTime": 1490225558.982,
+    "Name": "MySecurityConfig"
+    }
+
+- JSON equivalent (contents of security_configuration.json)::
+
+    {
+        "AuthenticationConfiguration": {
+            "KerberosConfiguration": {
+                "Provider": "ClusterDedicatedKdc",
+                "ClusterDedicatedKdcConfiguration": {
+                    "TicketLifetimeInHours": 24,
+                    "CrossRealmTrustConfiguration": {
+                        "Realm": "AD.DOMAIN.COM",
+                        "Domain": "ad.domain.com",
+                        "AdminServer": "ad.domain.com",
+                        "KdcServer": "ad.domain.com"
+                    }
+                }
+            }
+        }
+    }
+
+- Command (using security_configuration.json)::
+
+   aws emr create-security-configuration --name "MySecurityConfig" --security-configuration file://./security_configuration.json
+
+- Output::
+
+    {
+    "CreationDateTime": 1490225558.982,
+    "Name": "MySecurityConfig"
+    }

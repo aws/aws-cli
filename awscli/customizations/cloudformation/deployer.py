@@ -18,6 +18,8 @@ import botocore
 import collections
 
 from awscli.customizations.cloudformation import exceptions
+from awscli.customizations.cloudformation.artifact_exporter import mktempfile, parse_s3_url
+
 from datetime import datetime
 
 LOG = logging.getLogger(__name__)
@@ -71,7 +73,7 @@ class Deployer(object):
 
     def create_changeset(self, stack_name, cfn_template,
                          parameter_values, capabilities, role_arn,
-                         notification_arns):
+                         notification_arns, s3_uploader, tags):
         """
         Call Cloudformation to create a changeset and wait for it to complete
 
@@ -79,6 +81,7 @@ class Deployer(object):
         :param cfn_template: CloudFormation template string
         :param parameter_values: Template parameters object
         :param capabilities: Array of capabilities passed to CloudFormation
+        :param tags: Array of tags passed to CloudFormation
         :return:
         """
 
@@ -88,7 +91,6 @@ class Deployer(object):
         # Each changeset will get a unique name based on time
         changeset_name = self.changeset_prefix + str(int(time.time()))
 
-        changeset_type = "UPDATE"
         if not self.has_stack(stack_name):
             changeset_type = "CREATE"
             # When creating a new stack, UsePreviousValue=True is invalid.
@@ -96,6 +98,15 @@ class Deployer(object):
             # or set a Default value in template to successfully create a stack.
             parameter_values = [x for x in parameter_values
                                 if not x.get("UsePreviousValue", False)]
+        else:
+            changeset_type = "UPDATE"
+            # UsePreviousValue not valid if parameter is new
+            summary = self._client.get_template_summary(StackName=stack_name)
+            existing_parameters = [parameter['ParameterKey'] for parameter in \
+                                   summary['Parameters']]
+            parameter_values = [x for x in parameter_values
+                                if not (x.get("UsePreviousValue", False) and \
+                                x["ParameterKey"] not in existing_parameters)]
 
         kwargs = {
             'ChangeSetName': changeset_name,
@@ -105,7 +116,21 @@ class Deployer(object):
             'Parameters': parameter_values,
             'Capabilities': capabilities,
             'Description': description,
+            'Tags': tags,
         }
+
+        # If an S3 uploader is available, use TemplateURL to deploy rather than
+        # TemplateBody. This is required for large templates.
+        if s3_uploader:
+            with mktempfile() as temporary_file:
+                temporary_file.write(kwargs.pop('TemplateBody'))
+                temporary_file.flush()
+                url = s3_uploader.upload_with_dedup(
+                        temporary_file.name, "template")
+                # TemplateUrl property requires S3 URL to be in path-style format
+                parts = parse_s3_url(url, version_property="Version")
+                kwargs['TemplateURL'] = s3_uploader.to_path_style_s3_url(parts["Key"], parts.get("Version", None))
+
         # don't set these arguments if not specified to use existing values
         if role_arn is not None:
             kwargs['RoleARN'] = role_arn
@@ -126,7 +151,7 @@ class Deployer(object):
         :param stack_name:   Stack name
         :return: Latest status of the create-change-set operation
         """
-        sys.stdout.write("Waiting for changeset to be created..\n")
+        sys.stdout.write("\nWaiting for changeset to be created..\n")
         sys.stdout.flush()
 
         # Wait for changeset to be created
@@ -144,7 +169,8 @@ class Deployer(object):
             reason = resp["StatusReason"]
 
             if status == "FAILED" and \
-               "No updates are to be performed" in reason:
+               "The submitted information didn't contain changes." in reason or \
+                            "No updates are to be performed" in reason:
                     raise exceptions.ChangeEmptyError(stack_name=stack_name)
 
             raise RuntimeError("Failed to create the changeset: {0} "
@@ -193,12 +219,11 @@ class Deployer(object):
 
     def create_and_wait_for_changeset(self, stack_name, cfn_template,
                                       parameter_values, capabilities, role_arn,
-                                      notification_arns):
+                                      notification_arns, s3_uploader, tags):
 
         result = self.create_changeset(
                 stack_name, cfn_template, parameter_values, capabilities,
-                role_arn, notification_arns)
-
+                role_arn, notification_arns, s3_uploader, tags)
         self.wait_for_changeset(result.changeset_id, stack_name)
 
         return result

@@ -39,6 +39,8 @@ from awscli.customizations.configservice.rename_cmd import \
     register_rename_config
 from awscli.customizations.configservice.subscribe import register_subscribe
 from awscli.customizations.configure.configure import register_configure_cmd
+from awscli.customizations.history import register_history_mode
+from awscli.customizations.history import register_history_commands
 from awscli.customizations.ec2.addcount import register_count_events
 from awscli.customizations.ec2.bundleinstance import register_bundleinstance
 from awscli.customizations.ec2.decryptpassword import ec2_add_priv_launch_key
@@ -75,7 +77,9 @@ from awscli.customizations.toplevelbool import register_bool_params
 from awscli.customizations.waiters import register_add_waiters
 from awscli.customizations.opsworkscm import register_alias_opsworks_cm
 from awscli.customizations.mturk import register_alias_mturk_command
+from awscli.customizations.sagemaker import register_alias_sagemaker_runtime_command
 from awscli.customizations.servicecatalog import register_servicecatalog_commands
+from awscli.customizations.s3events import register_event_stream_arg
 
 
 def awscli_initialize(event_handlers):
@@ -153,4 +157,8 @@ def awscli_initialize(event_handlers):
     cloudformation_init(event_handlers)
     register_alias_opsworks_cm(event_handlers)
     register_alias_mturk_command(event_handlers)
+    register_alias_sagemaker_runtime_command(event_handlers)
     register_servicecatalog_commands(event_handlers)
+    register_history_mode(event_handlers)
+    register_history_commands(event_handlers)
+    register_event_stream_arg(event_handlers)

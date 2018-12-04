@@ -51,7 +51,9 @@ def get_waiter_model_from_service_model(session, service_model):
 
 class WaitCommand(BasicCommand):
     NAME = 'wait'
-    DESCRIPTION = 'Wait until a particular condition is satisfied.'
+    DESCRIPTION = ('Wait until a particular condition is satisfied. Each '
+                  'subcommand polls an API until the listed requirement '
+                  'is met.')
 
     def __init__(self, session, waiter_model, service_model):
         self._model = waiter_model

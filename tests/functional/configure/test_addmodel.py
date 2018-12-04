@@ -34,6 +34,16 @@ class TestAddModel(BaseAWSCommandParamsTest):
             "operations": {},
             "shapes": {}
         }
+        self.service_unicode_definition = {
+            "version": "2.0",
+            "metadata": {
+                "apiVersion": '2015-12-02',
+                "endpointPrefix": 'myservice',
+                "keyWithUnicode": u'\u2713'
+            },
+            "operations": {},
+            "shapes": {}
+        }
 
     def tearDown(self):
         super(TestAddModel, self).tearDown()
@@ -42,6 +52,17 @@ class TestAddModel(BaseAWSCommandParamsTest):
     def test_add_model(self):
         cmdline = self.prefix + ' --service-model %s' % json.dumps(
             self.service_definition, separators=(',', ':'))
+        self.run_cmd(cmdline)
+
+        # Ensure that the model exists in the correct location.
+        self.assertTrue(
+            os.path.exists(os.path.join(
+                self.customer_data_root, 'myservice', '2015-12-02',
+                'service-2.json')))
+
+    def test_add_model_with_unicode(self):
+        cmdline = self.prefix + ' --service-model %s' % json.dumps(
+            self.service_unicode_definition, separators=(',', ':'))
         self.run_cmd(cmdline)
 
         # Ensure that the model exists in the correct location.

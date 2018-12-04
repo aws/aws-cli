@@ -22,6 +22,7 @@ DEFAULTS = {
     'multipart_chunksize': 8 * (1024 ** 2),
     'max_concurrent_requests': 10,
     'max_queue_size': 1000,
+    'max_bandwidth': None
 }
 
 
@@ -32,8 +33,10 @@ class InvalidConfigError(Exception):
 class RuntimeConfig(object):
 
     POSITIVE_INTEGERS = ['multipart_chunksize', 'multipart_threshold',
-                         'max_concurrent_requests', 'max_queue_size']
+                         'max_concurrent_requests', 'max_queue_size',
+                         'max_bandwidth']
     HUMAN_READABLE_SIZES = ['multipart_chunksize', 'multipart_threshold']
+    HUMAN_READABLE_RATES = ['max_bandwidth']
 
     @staticmethod
     def defaults():
@@ -54,6 +57,7 @@ class RuntimeConfig(object):
         if kwargs:
             runtime_config.update(kwargs)
         self._convert_human_readable_sizes(runtime_config)
+        self._convert_human_readable_rates(runtime_config)
         self._validate_config(runtime_config)
         return runtime_config
 
@@ -62,6 +66,17 @@ class RuntimeConfig(object):
             value = runtime_config.get(attr)
             if value is not None and not isinstance(value, six.integer_types):
                 runtime_config[attr] = human_readable_to_bytes(value)
+
+    def _convert_human_readable_rates(self, runtime_config):
+        for attr in self.HUMAN_READABLE_RATES:
+            value = runtime_config.get(attr)
+            if value is not None and not isinstance(value, six.integer_types):
+                if not value.endswith('B/s'):
+                    raise InvalidConfigError(
+                        'Invalid rate: %s. The value must be expressed '
+                        'as a rate in terms of bytes per seconds '
+                        '(e.g. 10MB/s or 800KB/s)' % value)
+                runtime_config[attr] = human_readable_to_bytes(value[:-2])
 
     def _validate_config(self, runtime_config):
         for attr in self.POSITIVE_INTEGERS:
@@ -94,6 +109,7 @@ def create_transfer_config_from_runtime_config(runtime_config):
         'max_queue_size': 'max_request_queue_size',
         'multipart_threshold': 'multipart_threshold',
         'multipart_chunksize': 'multipart_chunksize',
+        'max_bandwidth': 'max_bandwidth',
     }
     kwargs = {}
     for key, value in runtime_config.items():

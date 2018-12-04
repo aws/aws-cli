@@ -46,7 +46,7 @@ from awscli.customizations.s3.utils import DirectoryCreatorSubscriber
 from awscli.customizations.s3.utils import DeleteSourceFileSubscriber
 from awscli.customizations.s3.utils import DeleteSourceObjectSubscriber
 from awscli.customizations.s3.utils import DeleteCopySourceObjectSubscriber
-from awscli.compat import binary_stdin
+from awscli.compat import get_binary_stdin
 
 
 LOGGER = logging.getLogger(__name__)
@@ -306,7 +306,7 @@ class BaseTransferRequestSubmitter(object):
                         's3://'+fileinfo.src,
                         'Object is of storage class GLACIER. Unable to '
                         'perform %s operations on GLACIER objects. You must '
-                        'restore the object to be able to the perform '
+                        'restore the object to be able to perform the '
                         'operation. See aws s3 %s help for additional '
                         'parameter options to ignore or force these '
                         'transfers.' %
@@ -471,6 +471,7 @@ class UploadStreamRequestSubmitter(UploadRequestSubmitter):
             subscribers.append(ProvideSizeSubscriber(int(expected_size)))
 
     def _get_filein(self, fileinfo):
+        binary_stdin = get_binary_stdin()
         return NonSeekableStream(binary_stdin)
 
     def _format_local_path(self, path):
@@ -497,7 +498,7 @@ class DownloadStreamRequestSubmitter(DownloadRequestSubmitter):
 
 
 class DeleteRequestSubmitter(BaseTransferRequestSubmitter):
-    REQUEST_MAPPER_METHOD = None
+    REQUEST_MAPPER_METHOD = RequestParamsMapper.map_delete_object_params
     RESULT_SUBSCRIBER_CLASS = DeleteResultSubscriber
 
     def can_submit(self, fileinfo):

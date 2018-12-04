@@ -11,24 +11,16 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import set_invalid_utime
-from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 from mock import patch
 import os
 
 from awscli.compat import six
+from tests.functional.s3 import BaseS3TransferCommandTest
 
 
-class TestSyncCommand(BaseAWSCommandParamsTest):
+class TestSyncCommand(BaseS3TransferCommandTest):
 
     prefix = 's3 sync '
-
-    def setUp(self):
-        super(TestSyncCommand, self).setUp()
-        self.files = FileCreator()
-
-    def tearDown(self):
-        super(TestSyncCommand, self).tearDown()
-        self.files.remove_all()
 
     def test_website_redirect_ignore_paramfile(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
@@ -166,7 +158,37 @@ class TestSyncCommand(BaseAWSCommandParamsTest):
 
         self.assertFalse(os.path.exists(full_path))
 
-    def test_sync_skips_over_files_deleted_between_listing_and_transfer(self):
+    # When a file has been deleted after listing,
+    # awscli.customizations.s3.utils.get_file_stat may raise either some kind
+    # of OSError, or a ValueError, depending on the environment. In both cases,
+    # the behaviour should be the same: skip the file and emit a warning.
+    #
+    # This test covers the case where a ValueError is emitted.
+    def test_sync_skips_over_files_deleted_between_listing_and_transfer_valueerror(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = '%s %s s3://bucket/' % (
+            self.prefix, self.files.rootdir)
+
+        # FileGenerator.list_files should skip over files that cause an
+        # IOError to be raised because they are missing when we try to
+        # get their stats. This IOError is translated to a ValueError in
+        # awscli.customizations.s3.utils.get_file_stat.
+        def side_effect(_):
+            os.remove(full_path)
+            raise ValueError()
+        with patch(
+                'awscli.customizations.s3.filegenerator.get_file_stat',
+                side_effect=side_effect
+                ):
+            self.run_cmd(cmdline, expected_rc=2)
+
+        # We should not call PutObject because the file was deleted
+        # before we could transfer it
+        self.assertEqual(len(self.operations_called), 1, self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+
+    # This test covers the case where an OSError is emitted.
+    def test_sync_skips_over_files_deleted_between_listing_and_transfer_oserror(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
         cmdline = '%s %s s3://bucket/' % (
             self.prefix, self.files.rootdir)
@@ -187,3 +209,93 @@ class TestSyncCommand(BaseAWSCommandParamsTest):
         # before we could transfer it
         self.assertEqual(len(self.operations_called), 1, self.operations_called)
         self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+
+    def test_request_payer(self):
+        cmdline = '%s s3://sourcebucket/ s3://mybucket --request-payer' % (
+            self.prefix)
+        self.parsed_responses = [
+            # Response for ListObjects on source bucket
+            {
+                'Contents': [
+                    {'Key': 'mykey',
+                     'LastModified': '00:00:00Z',
+                     'Size': 100},
+                ],
+                'CommonPrefixes': []
+            },
+            # Response for ListObjects on destination bucket
+            {
+                'Contents': [],
+                'CommonPrefixes': []
+            },
+            # Response from copy object
+            {},
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('ListObjects', {
+                    'Bucket': 'sourcebucket',
+                    'Prefix': '',
+                    'EncodingType': 'url',
+                    'RequestPayer': 'requester',
+                }),
+                ('ListObjects', {
+                    'Bucket': 'mybucket',
+                    'Prefix': '',
+                    'EncodingType': 'url',
+                    'RequestPayer': 'requester',
+                }),
+                ('CopyObject', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'CopySource': 'sourcebucket/mykey',
+                    'RequestPayer': 'requester',
+                })
+            ]
+        )
+
+    def test_request_payer_with_deletes(self):
+        cmdline = '%s s3://sourcebucket/ s3://mybucket' % self.prefix
+        cmdline += ' --request-payer'
+        cmdline += ' --delete'
+        self.parsed_responses = [
+            # Response for ListObjects on source bucket
+            {
+                'Contents': [],
+                'CommonPrefixes': []
+            },
+            # Response for ListObjects on destination bucket
+            {
+                'Contents': [
+                    {'Key': 'key-to-delete',
+                     'LastModified': '00:00:00Z',
+                     'Size': 100},
+                ],
+                'CommonPrefixes': []
+            },
+            # Response from copy object
+            {},
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('ListObjects', {
+                    'Bucket': 'sourcebucket',
+                    'Prefix': '',
+                    'EncodingType': 'url',
+                    'RequestPayer': 'requester',
+                }),
+                ('ListObjects', {
+                    'Bucket': 'mybucket',
+                    'Prefix': '',
+                    'EncodingType': 'url',
+                    'RequestPayer': 'requester',
+                }),
+                ('DeleteObject', {
+                    'Bucket': 'mybucket',
+                    'Key': 'key-to-delete',
+                    'RequestPayer': 'requester',
+                })
+            ]
+        )

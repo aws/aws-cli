@@ -32,8 +32,11 @@ class GenerateBaseCommand(BasicCommand):
                                       parsed_args.bucket_name,
                                       self.region,
                                       force_upload=True)
-        self.s3_uploader.upload(parsed_args.file_path,
+        try:
+            self.s3_uploader.upload(parsed_args.file_path,
                                 get_s3_path(parsed_args.file_path))
+        except OSError as ex:
+            raise RuntimeError("%s cannot be found" % parsed_args.file_path)
 
     def get_and_validate_region(self, parsed_globals):
         region = parsed_globals.region

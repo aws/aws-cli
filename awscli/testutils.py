@@ -43,7 +43,7 @@ except ImportError as e:
     # In the off chance something imports this module
     # that's not suppose to, we should not stop the CLI
     # by raising an ImportError.  Now if anything actually
-    # *uses* this module that isn't suppose to, that's s
+    # *uses* this module that isn't suppose to, that's a
     # different story.
     mock = None
 from awscli.compat import six
@@ -650,7 +650,8 @@ def aws(command, collect_memory=False, env_vars=None,
         full_command = full_command.encode(stdout_encoding)
     INTEG_LOG.debug("Running command: %s", full_command)
     env = os.environ.copy()
-    env['AWS_DEFAULT_REGION'] = "us-east-1"
+    if 'AWS_DEFAULT_REGION' not in env:
+        env['AWS_DEFAULT_REGION'] = "us-east-1"
     if env_vars is not None:
         env = env_vars
     if input_file is None:
@@ -773,6 +774,9 @@ class BaseS3CLICommand(unittest.TestCase):
         bucket_name = create_bucket(self.session, name, region)
         self.regions[bucket_name] = region
         self.addCleanup(self.delete_bucket, bucket_name)
+
+        # Wait for the bucket to exist before letting it be used.
+        self.wait_bucket_exists(bucket_name)
         return bucket_name
 
     def put_object(self, bucket_name, key_name, contents='', extra_args=None):
@@ -786,10 +790,27 @@ class BaseS3CLICommand(unittest.TestCase):
         response = client.put_object(**call_args)
         self.addCleanup(self.delete_key, bucket_name, key_name)
 
-    def delete_bucket(self, bucket_name):
+    def delete_bucket(self, bucket_name, attempts=5, delay=5):
         self.remove_all_objects(bucket_name)
         client = self.create_client_for_bucket(bucket_name)
-        response = client.delete_bucket(Bucket=bucket_name)
+
+        # There's a chance that, even though the bucket has been used
+        # several times, the delete will fail due to eventual consistency
+        # issues.
+        attempts_remaining = attempts
+        while True:
+            attempts_remaining -= 1
+            try:
+                client.delete_bucket(Bucket=bucket_name)
+                break
+            except client.exceptions.NoSuchBucket:
+                if self.bucket_not_exists(bucket_name):
+                    # Fast fail when the NoSuchBucket error is real.
+                    break
+                if attempts_remaining <= 0:
+                    raise
+                time.sleep(delay)
+
         self.regions.pop(bucket_name, None)
 
     def remove_all_objects(self, bucket_name):
@@ -810,6 +831,22 @@ class BaseS3CLICommand(unittest.TestCase):
         client = self.create_client_for_bucket(bucket_name)
         response = client.get_object(Bucket=bucket_name, Key=key_name)
         return response['Body'].read().decode('utf-8')
+
+    def wait_bucket_exists(self, bucket_name, min_successes=3):
+        client = self.create_client_for_bucket(bucket_name)
+        waiter = client.get_waiter('bucket_exists')
+        for _ in range(min_successes):
+            waiter.wait(Bucket=bucket_name)
+
+    def bucket_not_exists(self, bucket_name):
+        client = self.create_client_for_bucket(bucket_name)
+        try:
+            client.head_bucket(Bucket=bucket_name)
+            return True
+        except ClientError as error:
+            if error.response.get('Code') == '404':
+                return False
+            raise
 
     def key_exists(self, bucket_name, key_name, min_successes=3):
         try:

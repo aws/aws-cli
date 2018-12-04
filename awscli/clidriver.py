@@ -21,6 +21,7 @@ from botocore import xform_name
 from botocore.compat import copy_kwargs, OrderedDict
 from botocore.exceptions import NoCredentialsError
 from botocore.exceptions import NoRegionError
+from botocore.history import get_global_history_recorder
 
 from awscli import EnvironmentVariables, __version__
 from awscli.compat import get_stderr_text_writer
@@ -44,16 +45,20 @@ from awscli.argprocess import unpack_argument
 from awscli.alias import AliasLoader
 from awscli.alias import AliasCommandInjector
 from awscli.utils import emit_top_level_args_parsed_event
+from awscli.utils import write_exception
 
 
 LOG = logging.getLogger('awscli.clidriver')
 LOG_FORMAT = (
     '%(asctime)s - %(threadName)s - %(name)s - %(levelname)s - %(message)s')
+HISTORY_RECORDER = get_global_history_recorder()
 
 
 def main():
     driver = create_clidriver()
-    return driver.main()
+    rc = driver.main()
+    HISTORY_RECORDER.record('CLI_RC', rc, 'CLI')
+    return rc
 
 
 def create_clidriver():
@@ -196,7 +201,10 @@ class CLIDriver(object):
             # general exception handling logic as calling into the
             # command table.  This is why it's in the try/except clause.
             self._handle_top_level_args(parsed_args)
-            self._emit_session_event()
+            self._emit_session_event(parsed_args)
+            HISTORY_RECORDER.record(
+                'CLI_VERSION', self.session.user_agent(), 'CLI')
+            HISTORY_RECORDER.record('CLI_ARGUMENTS', args, 'CLI')
             return command_table[parsed_args.command](remaining, parsed_args)
         except UnknownArgumentError as e:
             sys.stderr.write("usage: %s\n" % USAGE)
@@ -222,19 +230,18 @@ class CLIDriver(object):
         except Exception as e:
             LOG.debug("Exception caught in main()", exc_info=True)
             LOG.debug("Exiting with rc 255")
-            err = get_stderr_text_writer()
-            err.write("\n")
-            err.write(six.text_type(e))
-            err.write("\n")
+            write_exception(e, outfile=get_stderr_text_writer())
             return 255
 
-    def _emit_session_event(self):
+    def _emit_session_event(self, parsed_args):
         # This event is guaranteed to run after the session has been
         # initialized and a profile has been set.  This was previously
         # problematic because if something in CLIDriver caused the
         # session components to be reset (such as session.profile = foo)
         # then all the prior registered components would be removed.
-        self.session.emit('session-initialized', session=self.session)
+        self.session.emit(
+            'session-initialized', session=self.session,
+            parsed_args=parsed_args)
 
     def _show_error(self, msg):
         LOG.debug(msg, exc_info=True)
@@ -425,6 +432,8 @@ class ServiceOperation(object):
         self._lineage = [self]
         self._operation_model = operation_model
         self._session = session
+        if operation_model.deprecated:
+            self._UNDOCUMENTED = True
 
     @property
     def name(self):
@@ -557,7 +566,8 @@ class ServiceOperation(object):
             cli_arg_name = xform_name(arg_name, '-')
             arg_class = self.ARG_TYPES.get(arg_shape.type_name,
                                            self.DEFAULT_ARG_CLASS)
-            is_required = arg_name in required_arguments
+            is_token = arg_shape.metadata.get('idempotencyToken', False)
+            is_required = arg_name in required_arguments and not is_token
             event_emitter = self._session.get_component('event_emitter')
             arg_object = arg_class(
                 name=cli_arg_name,

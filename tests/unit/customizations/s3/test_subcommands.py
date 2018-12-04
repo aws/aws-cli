@@ -20,14 +20,14 @@ from mock import patch, Mock, MagicMock
 import botocore.session
 from awscli.customizations.s3.s3 import S3
 from awscli.customizations.s3.subcommands import CommandParameters, \
-    CommandArchitecture, CpCommand, SyncCommand, ListCommand, get_endpoint, \
-    RbCommand
+    CommandArchitecture, CpCommand, SyncCommand, ListCommand, \
+    RbCommand, get_client
+from awscli.customizations.s3.transferconfig import RuntimeConfig
 from awscli.customizations.s3.syncstrategy.base import \
     SizeAndLastModifiedSync, NeverSync, MissingFileSync
-from awscli.testutils import unittest, BaseAWSHelpOutputTest
-from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
-    make_s3_files, s3_cleanup, S3HandlerBaseTest
-from tests.unit.customizations.s3.fake_session import FakeSession
+from awscli.testutils import unittest, BaseAWSHelpOutputTest, \
+    BaseAWSCommandParamsTest, FileCreator
+from tests.unit.customizations.s3 import make_loc_files, clean_loc_files
 from awscli.compat import StringIO
 
 
@@ -39,87 +39,97 @@ class FakeArgs(object):
         return key in self.__dict__
 
 
-class TestGetEndpoint(unittest.TestCase):
-    def test_endpoint(self):
-        session = FakeSession()
-        endpoint = get_endpoint(session.service,
-                                region='us-west-1',
-                                endpoint_url='URL',
-                                verify=True)
-        self.assertEqual(endpoint.region_name, 'us-west-1')
-        self.assertEqual(endpoint.endpoint_url, 'URL')
-        self.assertTrue(endpoint.verify)
+class TestGetClient(unittest.TestCase):
+    def test_client(self):
+        session = Mock()
+        endpoint = get_client(session, region='us-west-1', endpoint_url='URL',
+                              verify=True)
+        session.create_client.assert_called_with(
+            's3', region_name='us-west-1', endpoint_url='URL', verify=True,
+            config=None)
 
 
 class TestRbCommand(unittest.TestCase):
-    def test_rb_command_with_force_deletes_objects_in_bucket(self):
+    def setUp(self):
         self.session = mock.Mock()
         self.session.get_scoped_config.return_value = {}
-        rb_command = RbCommand(self.session)
-        parsed_args = FakeArgs(paths='s3://mybucket/',
-                               force=True,
-                               dir_op=False)
-        parsed_globals = FakeArgs(region=None, endpoint_url=None,
-                                  verify_ssl=None)
-        cmd_name = 'awscli.customizations.s3.subcommands.RmCommand'
-        arch_name = 'awscli.customizations.s3.subcommands.CommandArchitecture'
-        with mock.patch(cmd_name) as rm_command:
-            with mock.patch(arch_name):
-                rb_command._run_main(parsed_args,
-                                    parsed_globals=parsed_globals)
+        self.rb_command = RbCommand(self.session)
+        self.parsed_args = FakeArgs(paths='s3://mybucket/',
+                                    force=True, dir_op=False)
+        self.parsed_globals = FakeArgs(region=None, endpoint_url=None,
+                                       verify_ssl=None)
+        self.cmd_name = 'awscli.customizations.s3.subcommands.RmCommand'
+        self.arch_name = 'awscli.customizations.s3.subcommands.CommandArchitecture'
+
+    def test_rb_command_with_force_deletes_objects_in_bucket(self):
+        with mock.patch(self.cmd_name) as rm_command:
+            with mock.patch(self.arch_name):
+                # RmCommand returns an RmCommand instance whose __call__
+                # should be the RC of the command.
+                # In this case we'll have it return an RC of 0 which indicates
+                # success.
+                rm_command.return_value.return_value = 0
+                self.rb_command._run_main(self.parsed_args,
+                                    parsed_globals=self.parsed_globals)
             # Because of --force we should have called the
             # rm_command with the --recursive option.
             rm_command.return_value.assert_called_with(
                 ['s3://mybucket', '--recursive'], mock.ANY)
 
+    def test_rb_command_with_force_requires_strict_path(self):
+        with self.assertRaises(ValueError):
+            self.parsed_args.paths = 's3://mybucket/mykey'
+            self.rb_command._run_main(self.parsed_args,
+                                      parsed_globals=self.parsed_globals)
+
 
 class TestLSCommand(unittest.TestCase):
     def setUp(self):
         self.session = mock.Mock()
-        self.session.get_service.return_value.get_operation.return_value\
-                .call.return_value = (None, {'Buckets': []})
-        self.session.get_service.return_value.get_operation.return_value\
-                .paginate.return_value = [
-                    (None, {'Contents': [], 'CommonPrefixes': []})]
+        self.session.create_client.return_value.list_buckets.return_value\
+            = {'Buckets': []}
+        self.session.create_client.return_value.get_paginator.return_value\
+            .paginate.return_value = [{'Contents': [], 'CommonPrefixes': []}]
 
     def test_ls_command_for_bucket(self):
         ls_command = ListCommand(self.session)
-        parsed_args = FakeArgs(paths='s3://mybucket/', dir_op=False, page_size='5',
-                human_readable=False, summarize=False)
+        parsed_args = FakeArgs(paths='s3://mybucket/', dir_op=False,
+                               page_size='5', human_readable=False,
+                               summarize=False)
         parsed_globals = mock.Mock()
         ls_command._run_main(parsed_args, parsed_globals)
-        call = self.session.get_service.return_value.get_operation\
-                .return_value.call
-        paginate = self.session.get_service.return_value.get_operation\
-                .return_value.paginate
+        call = self.session.create_client.return_value.list_objects
+        paginate = self.session.create_client.return_value.get_paginator\
+            .return_value.paginate
         # We should make no operation calls.
         self.assertEqual(call.call_count, 0)
         # And only a single pagination call to ListObjects.
-        self.session.get_service.return_value.get_operation.assert_called_with(
-            'ListObjects')
-        self.assertEqual(
-            paginate.call_args[1], {'bucket': u'mybucket',
-                                    'delimiter': '/', 'prefix': u'',
-                                    'page_size': u'5'})
+        self.session.create_client.return_value.get_paginator.\
+            assert_called_with('list_objects')
+        ref_call_args = {'Bucket': u'mybucket', 'Delimiter': '/',
+                         'Prefix': u'',
+                         'PaginationConfig': {'PageSize': u'5'}}
+
+        paginate.assert_called_with(**ref_call_args)
 
     def test_ls_command_with_no_args(self):
         ls_command = ListCommand(self.session)
-        parsed_global = FakeArgs(region=None, endpoint_url=None, verify_ssl=None)
+        parsed_global = FakeArgs(region=None, endpoint_url=None,
+                                 verify_ssl=None)
         parsed_args = FakeArgs(dir_op=False, paths='s3://',
                                human_readable=False, summarize=False)
         ls_command._run_main(parsed_args, parsed_global)
         # We should only be a single call.
-        self.session.get_service.return_value.get_operation.assert_called_with(
-            'ListBuckets')
-        call = self.session.get_service.return_value.get_operation\
-                .return_value.call
+        call = self.session.create_client.return_value.list_buckets
+        self.assertTrue(call.called)
         self.assertEqual(call.call_count, 1)
         self.assertEqual(call.call_args[1], {})
-        # Verify get_endpoint
-        get_endpoint = self.session.get_service.return_value.get_endpoint
-        args = get_endpoint.call_args
-        self.assertEqual(args, mock.call(region_name=None, endpoint_url=None,
-                                         verify=None))
+        # Verify get_client
+        get_client = self.session.create_client
+        args = get_client.call_args
+        self.assertEqual(args, mock.call(
+            's3', region_name=None, endpoint_url=None, verify=None,
+            config=None))
 
     def test_ls_with_verify_argument(self):
         options = {'default': 's3://', 'nargs': '?'}
@@ -129,20 +139,21 @@ class TestLSCommand(unittest.TestCase):
         parsed_args = FakeArgs(paths='s3://', dir_op=False,
                                human_readable=False, summarize=False)
         ls_command._run_main(parsed_args, parsed_global)
-        # Verify get_endpoint
-        get_endpoint = self.session.get_service.return_value.get_endpoint
-        args = get_endpoint.call_args
-        self.assertEqual(args, mock.call(region_name='us-west-2',
-                                         endpoint_url=None,
-                                         verify=False))
+        # Verify get_client
+        get_client = self.session.create_client
+        args = get_client.call_args
+        self.assertEqual(args, mock.call(
+            's3', region_name='us-west-2', endpoint_url=None, verify=False,
+            config=None))
 
 
-class CommandArchitectureTest(S3HandlerBaseTest):
+class CommandArchitectureTest(BaseAWSCommandParamsTest):
     def setUp(self):
         super(CommandArchitectureTest, self).setUp()
-        self.session = FakeSession()
-        self.bucket = make_s3_files(self.session)
-        self.loc_files = make_loc_files()
+        self.session = self.driver.session
+        self.bucket = 'mybucket'
+        self.file_creator = FileCreator()
+        self.loc_files = make_loc_files(self.file_creator)
         self.output = StringIO()
         self.err_output = StringIO()
         self.saved_stdout = sys.stdout
@@ -157,40 +168,85 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         sys.stderr = self.saved_stderr
 
         super(CommandArchitectureTest, self).tearDown()
-        clean_loc_files(self.loc_files)
-        s3_cleanup(self.bucket, self.session)
+        clean_loc_files(self.file_creator)
 
-    def test_set_endpoint_no_source(self):
-        cmd_arc = CommandArchitecture(self.session, 'sync',
+    def test_set_client_no_source(self):
+        session = Mock()
+        cmd_arc = CommandArchitecture(session, 'sync',
                                       {'region': 'us-west-1',
                                        'endpoint_url': None,
                                        'verify_ssl': None,
                                        'source_region': None})
-        cmd_arc.set_endpoints()
-        endpoint = cmd_arc._endpoint
-        source_endpoint = cmd_arc._source_endpoint
-        self.assertEqual(endpoint.region_name, 'us-west-1')
-        self.assertEqual(source_endpoint.region_name, 'us-west-1')
+        cmd_arc.set_clients()
+        self.assertEqual( session.create_client.call_count, 2)
+        self.assertEqual(
+            session.create_client.call_args_list[0],
+            mock.call(
+             's3', region_name='us-west-1', endpoint_url=None, verify=None,
+             config=None)
+        )
+        # A client created with the same arguments as the first should be used
+        # for the source client since no source region was provided.
+        self.assertEqual(
+            session.create_client.call_args_list[1],
+            mock.call(
+                's3', region_name='us-west-1', endpoint_url=None, verify=None,
+                config=None)
+        )
 
-    def test_set_endpoint_with_source(self):
-        cmd_arc = CommandArchitecture(self.session, 'sync',
+    def test_set_client_with_source(self):
+        session = Mock()
+        cmd_arc = CommandArchitecture(session, 'sync',
                                       {'region': 'us-west-1',
                                        'endpoint_url': None,
                                        'verify_ssl': None,
                                        'paths_type': 's3s3',
-                                       'source_region': ['us-west-2']})
-        cmd_arc.set_endpoints()
-        endpoint = cmd_arc._endpoint
-        source_endpoint = cmd_arc._source_endpoint
-        self.assertEqual(endpoint.region_name, 'us-west-1')
-        self.assertEqual(source_endpoint.region_name, 'us-west-2')
+                                       'source_region': 'us-west-2'})
+        cmd_arc.set_clients()
+        create_client_args = session.create_client.call_args_list
+        # Assert that two clients were created
+        self.assertEqual(len(create_client_args), 3)
+        self.assertEqual(
+            create_client_args[0][1],
+            {'region_name': 'us-west-1', 'verify': None, 'endpoint_url': None,
+             'config': None}
+        )
+        self.assertEqual(
+            create_client_args[1][1],
+            {'region_name': 'us-west-1', 'verify': None, 'endpoint_url': None,
+             'config': None}
+        )
+        # Assert override the second client created with the one needed for the
+        # source region.
+        self.assertEqual(
+            create_client_args[2][1],
+            {'region_name': 'us-west-2', 'verify': None, 'endpoint_url': None,
+             'config': None}
+        )
+
+    def test_set_sigv4_clients_with_sse_kms(self):
+        session = Mock()
+        cmd_arc = CommandArchitecture(
+            session, 'sync',
+            {'region': 'us-west-1', 'endpoint_url': None, 'verify_ssl': None,
+             'source_region': None, 'sse': 'aws:kms'})
+        cmd_arc.set_clients()
+        self.assertEqual( session.create_client.call_count, 2)
+        create_client_call = session.create_client.call_args_list[0]
+        create_source_client_call = session.create_client.call_args_list[1]
+
+        # Make sure that both clients are using sigv4 if kms is enabled.
+        self.assertEqual(
+            create_client_call[1]['config'].signature_version, 's3v4')
+        self.assertEqual(
+            create_source_client_call[1]['config'].signature_version, 's3v4')
 
     def test_create_instructions(self):
         """
         This tests to make sure the instructions for any command is generated
         properly.
         """
-        cmds = ['cp', 'mv', 'rm', 'sync', 'mb', 'rb']
+        cmds = ['cp', 'mv', 'rm', 'sync', 'rb']
 
         instructions = {'cp': ['file_generator', 'file_info_builder',
                                's3_handler'],
@@ -200,7 +256,6 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                                's3_handler'],
                         'sync': ['file_generator', 'comparator',
                                  'file_info_builder', 's3_handler'],
-                        'mb': ['s3_handler'],
                         'rb': ['s3_handler']}
 
         params = {'filters': True, 'region': 'us-east-1', 'endpoint_url': None,
@@ -296,6 +351,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'is_stream': False}
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
         cmd_arc.create_instructions()
+        self.patch_make_request()
         cmd_arc.run()
         output_str = "(dryrun) upload: %s to %s" % (rel_local_file, s3_file)
         self.assertIn(output_str, self.output.getvalue())
@@ -310,14 +366,21 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'paths_type': 'locals3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
-                  'is_stream': False}
-        cmd_arc = CommandArchitecture(self.session, 'cp', params)
+                  'is_stream': False, 'source_region': None, 'metadata': None}
+        self.http_response.status_code = 400
+        self.parsed_responses = [{'Error': {
+                                  'Code': 'BucketNotExists',
+                                  'Message': 'Bucket does not exist'}}]
+        cmd_arc = CommandArchitecture(
+            self.session, 'cp', params, RuntimeConfig().build_config())
+        cmd_arc.set_clients()
         cmd_arc.create_instructions()
+        self.patch_make_request()
         cmd_arc.run()
         # Also, we need to verify that the error message is on the *same* line
         # as the upload failed line, to make it easier to track.
         output_str = (
-            "upload failed: %s to %s Error: Bucket does not exist\n" % (
+            "upload failed: %s to %s An error" % (
                 rel_local_file, s3_file))
         self.assertIn(output_str, self.err_output.getvalue())
 
@@ -334,17 +397,21 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'paths_type': 's3local', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
-                  'is_stream': False}
+                  'is_stream': False, 'source_region': None}
+        self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
+                                  "LastModified": "2014-01-09T20:45:49.000Z"}]
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
+        cmd_arc.set_clients()
         cmd_arc.create_instructions()
+        self.patch_make_request()
         cmd_arc.run()
         output_str = "(dryrun) download: %s to %s" % (s3_file, rel_local_file)
         self.assertIn(output_str, self.output.getvalue())
 
     def test_run_cp_copy(self):
-        # This ensures that the architecture sets up correctly for a ``cp`` copy
-        # command.  It is just just a dry run, but all of the components need
-        # to be wired correctly for it to work.
+        # This ensures that the architecture sets up correctly for a ``cp``
+        # copy command.  It is just just a dry run, but all of the
+        # components need to be wired correctly for it to work.
         s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
         filters = [['--include', '*']]
         params = {'dir_op': False, 'dryrun': True, 'quiet': False,
@@ -352,9 +419,13 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'paths_type': 's3s3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
-                  'is_stream': False}
+                  'is_stream': False, 'source_region': None}
+        self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
+                                  "LastModified": "2014-01-09T20:45:49.000Z"}]
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
+        cmd_arc.set_clients()
         cmd_arc.create_instructions()
+        self.patch_make_request()
         cmd_arc.run()
         output_str = "(dryrun) copy: %s to %s" % (s3_file, s3_file)
         self.assertIn(output_str, self.output.getvalue())
@@ -370,9 +441,13 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'paths_type': 's3s3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
-                  'is_stream': False}
+                  'is_stream': False, 'source_region': None}
+        self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
+                                  "LastModified": "2014-01-09T20:45:49.000Z"}]
         cmd_arc = CommandArchitecture(self.session, 'mv', params)
+        cmd_arc.set_clients()
         cmd_arc.create_instructions()
+        self.patch_make_request()
         cmd_arc.run()
         output_str = "(dryrun) move: %s to %s" % (s3_file, s3_file)
         self.assertIn(output_str, self.output.getvalue())
@@ -388,9 +463,13 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'paths_type': 's3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
-                  'is_stream': False}
+                  'is_stream': False, 'source_region': None}
+        self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
+                                  "LastModified": "2014-01-09T20:45:49.000Z"}]
         cmd_arc = CommandArchitecture(self.session, 'rm', params)
+        cmd_arc.set_clients()
         cmd_arc.create_instructions()
+        self.patch_make_request()
         cmd_arc.run()
         output_str = "(dryrun) delete: %s" % s3_file
         self.assertIn(output_str, self.output.getvalue())
@@ -410,27 +489,18 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'paths_type': 'locals3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
-                  'is_stream': False}
+                  'is_stream': False, 'source_region': 'us-west-2'}
+        self.parsed_responses = [
+            {"CommonPrefixes": [], "Contents": [
+                {"Key": "text1.txt", "Size": 100,
+                 "LastModified": "2014-01-09T20:45:49.000Z"}]},
+            {"CommonPrefixes": [], "Contents": []}]
         cmd_arc = CommandArchitecture(self.session, 'sync', params)
         cmd_arc.create_instructions()
+        cmd_arc.set_clients()
+        self.patch_make_request()
         cmd_arc.run()
         output_str = "(dryrun) upload: %s to %s" % (rel_local_file, s3_file)
-        self.assertIn(output_str, self.output.getvalue())
-
-    def test_run_mb(self):
-        # This ensures that the architecture sets up correctly for a ``rb``
-        # command.  It is just just a dry run, but all of the components need
-        # to be wired correctly for it to work.
-        s3_prefix = 's3://' + self.bucket + '/'
-        params = {'dir_op': True, 'dryrun': True, 'quiet': False,
-                  'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
-                  'region': 'us-east-1', 'endpoint_url': None,
-                  'verify_ssl': None, 'follow_symlinks': True,
-                  'page_size': None, 'is_stream': False}
-        cmd_arc = CommandArchitecture(self.session, 'mb', params)
-        cmd_arc.create_instructions()
-        cmd_arc.run()
-        output_str = "(dryrun) make_bucket: %s" % s3_prefix
         self.assertIn(output_str, self.output.getvalue())
 
     def test_run_rb(self):
@@ -442,9 +512,10 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
                   'region': 'us-east-1', 'endpoint_url': None,
                   'verify_ssl': None, 'follow_symlinks': True,
-                  'page_size': None, 'is_stream': False}
+                  'page_size': None, 'is_stream': False, 'source_region': None}
         cmd_arc = CommandArchitecture(self.session, 'rb', params)
         cmd_arc.create_instructions()
+        self.patch_make_request()
         rc = cmd_arc.run()
         output_str = "(dryrun) remove_bucket: %s" % s3_prefix
         self.assertIn(output_str, self.output.getvalue())
@@ -460,8 +531,10 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'region': 'us-east-1', 'endpoint_url': None,
                   'verify_ssl': None, 'follow_symlinks': True,
                   'page_size': None, 'is_stream': False}
+        self.http_response.status_code = 400
         cmd_arc = CommandArchitecture(self.session, 'rb', params)
         cmd_arc.create_instructions()
+        self.patch_make_request()
         rc = cmd_arc.run()
         output_str = "remove_bucket failed: %s" % s3_prefix
         self.assertIn(output_str, self.err_output.getvalue())
@@ -475,12 +548,13 @@ class CommandParametersTest(unittest.TestCase):
         self.environ_patch.start()
         self.mock = MagicMock()
         self.mock.get_config = MagicMock(return_value={'region': None})
-        self.loc_files = make_loc_files()
+        self.file_creator = FileCreator()
+        self.loc_files = make_loc_files(self.file_creator)
         self.bucket = 's3testbucket'
 
     def tearDown(self):
         self.environ_patch.stop()
-        clean_loc_files(self.loc_files)
+        clean_loc_files(self.file_creator)
 
     def test_check_path_type_pass(self):
         # This tests the class's ability to determine whether the correct
@@ -536,49 +610,26 @@ class CommandParametersTest(unittest.TestCase):
                 with self.assertRaises(TypeError):
                     cmd_param.check_path_type(combos[path_args])
 
-    def test_check_src_path_pass(self):
-        # This tests to see if all of the checks on the source path works.  It
-        # does so by testing if s3 objects and and prefixes exist as well as
-        # local files and directories.  All of these should not throw an
-        # exception.
-        s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
-        local_file = self.loc_files[0]
-        s3_prefix = 's3://' + self.bucket
-        local_dir = self.loc_files[3]
-
-        # :var files: a list of tuples where the first element is a single
-        #     element list of file paths. The second element is a boolean
-        #     representing if the operation is a directory operation.
-        files = [([s3_file], False), ([local_file], False),
-                 ([s3_prefix], True), ([local_dir], True)]
-
-        parameters = {}
-        for filename in files:
-            parameters['dir_op'] = filename[1]
-            cmd_parameter = CommandParameters('put', parameters, '')
-            cmd_parameter.add_region(mock.Mock())
-            cmd_parameter.check_src_path(filename[0])
-
     def test_validate_streaming_paths_upload(self):
-        parameters = {'src': '-', 'dest': 's3://bucket'}
-        cmd_params = CommandParameters('cp', parameters, '')
-        cmd_params._validate_streaming_paths()
+        paths = ['-', 's3://bucket']
+        cmd_params = CommandParameters('cp', {}, '')
+        cmd_params.add_paths(paths)
         self.assertTrue(cmd_params.parameters['is_stream'])
         self.assertTrue(cmd_params.parameters['only_show_errors'])
         self.assertFalse(cmd_params.parameters['dir_op'])
 
     def test_validate_streaming_paths_download(self):
-        parameters = {'src': 'localfile', 'dest': '-'}
-        cmd_params = CommandParameters('cp', parameters, '')
-        cmd_params._validate_streaming_paths()
+        paths = ['s3://bucket/key', '-']
+        cmd_params = CommandParameters('cp', {}, '')
+        cmd_params.add_paths(paths)
         self.assertTrue(cmd_params.parameters['is_stream'])
         self.assertTrue(cmd_params.parameters['only_show_errors'])
         self.assertFalse(cmd_params.parameters['dir_op'])
 
     def test_validate_no_streaming_paths(self):
-        parameters = {'src': 'localfile', 'dest': 's3://bucket'}
-        cmd_params = CommandParameters('cp', parameters, '')
-        cmd_params._validate_streaming_paths()
+        paths = [self.file_creator.rootdir, 's3://bucket']
+        cmd_params = CommandParameters('cp', {}, '')
+        cmd_params.add_paths(paths)
         self.assertFalse(cmd_params.parameters['is_stream'])
 
     def test_validate_streaming_paths_error(self):
@@ -586,6 +637,60 @@ class CommandParametersTest(unittest.TestCase):
         cmd_params = CommandParameters('sync', parameters, '')
         with self.assertRaises(ValueError):
             cmd_params._validate_streaming_paths()
+
+    def test_validate_non_existent_local_path_upload(self):
+        non_existent_path = os.path.join(self.file_creator.rootdir, 'foo')
+        paths = [non_existent_path, 's3://bucket/']
+        cmd_param = CommandParameters('cp', {}, '')
+        with self.assertRaises(RuntimeError):
+            cmd_param.add_paths(paths)
+
+    def test_add_path_for_non_existsent_local_path_download(self):
+        non_existent_path = os.path.join(self.file_creator.rootdir, 'foo')
+        paths = ['s3://bucket', non_existent_path]
+        cmd_param = CommandParameters('cp', {'dir_op': True}, '')
+        cmd_param.add_paths(paths)
+        self.assertTrue(os.path.exists(non_existent_path))
+
+    def test_validate_sse_c_args_missing_sse(self):
+        paths = ['s3://bucket/foo', 's3://bucket/bar']
+        params = {'dir_op': False, 'sse_c_key': 'foo'}
+        cmd_param = CommandParameters('cp', params, '')
+        with self.assertRaisesRegexp(ValueError, '--sse-c must be specified'):
+            cmd_param.add_paths(paths)
+
+    def test_validate_sse_c_args_missing_sse_c_key(self):
+        paths = ['s3://bucket/foo', 's3://bucket/bar']
+        params = {'dir_op': False, 'sse_c': 'AES256'}
+        cmd_param = CommandParameters('cp', params, '')
+        with self.assertRaisesRegexp(ValueError,
+                                     '--sse-c-key must be specified'):
+            cmd_param.add_paths(paths)
+
+    def test_validate_sse_c_args_missing_sse_c_copy_source(self):
+        paths = ['s3://bucket/foo', 's3://bucket/bar']
+        params = {'dir_op': False, 'sse_c_copy_source_key': 'foo'}
+        cmd_param = CommandParameters('cp', params, '')
+        with self.assertRaisesRegexp(ValueError,
+                                     '--sse-c-copy-source must be specified'):
+            cmd_param.add_paths(paths)
+
+    def test_validate_sse_c_args_missing_sse_c_copy_source_key(self):
+        paths = ['s3://bucket/foo', 's3://bucket/bar']
+        params = {'dir_op': False, 'sse_c_copy_source': 'AES256'}
+        cmd_param = CommandParameters('cp', params, '')
+        with self.assertRaisesRegexp(ValueError,
+                '--sse-c-copy-source-key must be specified'):
+            cmd_param.add_paths(paths)
+
+    def test_validate_sse_c_args_wrong_path_type(self):
+        paths = ['s3://bucket/foo', self.file_creator.rootdir]
+        params = {'dir_op': False, 'sse_c_copy_source': 'AES256',
+                  'sse_c_copy_source_key': 'foo'}
+        cmd_param = CommandParameters('cp', params, '')
+        with self.assertRaisesRegexp(ValueError,
+                                     'only supported for copy operations'):
+            cmd_param.add_paths(paths)
 
 
 class HelpDocTest(BaseAWSHelpOutputTest):
@@ -606,7 +711,9 @@ class HelpDocTest(BaseAWSHelpOutputTest):
         parsed_global = parser.parse_args(['--paginate'])
         help_command = s3.create_help_command()
         help_command([], parsed_global)
-        self.assert_contains("This section explains prominent concepts and notations in the set of high-level S3 commands provided.")
+        self.assert_contains(
+            "This section explains prominent concepts "
+            "and notations in the set of high-level S3 commands provided.")
         self.assert_contains("Every command takes one or two positional")
         self.assert_contains("* rb")
 

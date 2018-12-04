@@ -11,6 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sys
+import os
+import zipfile
 
 from botocore.compat import six
 #import botocore.compat
@@ -25,11 +27,46 @@ shlex_quote = six.moves.shlex_quote
 StringIO = six.StringIO
 urlopen = six.moves.urllib.request.urlopen
 
+# Most, but not all, python installations will have zlib. This is required to
+# compress any files we send via a push. If we can't compress, we can still
+# package the files in a zip container.
+try:
+    import zlib
+    ZIP_COMPRESSION_MODE = zipfile.ZIP_DEFLATED
+except ImportError:
+    ZIP_COMPRESSION_MODE = zipfile.ZIP_STORED
+
+
+class NonTranslatedStdout(object):
+    """ This context manager sets the line-end translation mode for stdout.
+
+    It is deliberately set to binary mode so that `\r` does not get added to
+    the line ending. This can be useful when printing commands where a
+    windows style line ending would casuse errors.
+    """
+
+    def __enter__(self):
+        if sys.platform == "win32":
+            import msvcrt
+            self.previous_mode = msvcrt.setmode(sys.stdout.fileno(),
+                                                os.O_BINARY)
+        return sys.stdout
+
+    def __exit__(self, type, value, traceback):
+        if sys.platform == "win32":
+            import msvcrt
+            msvcrt.setmode(sys.stdout.fileno(), self.previous_mode)
+
+
 if six.PY3:
     import locale
     import urllib.parse as urlparse
 
+    from urllib.error import URLError
+
     raw_input = input
+
+    binary_stdin = sys.stdin.buffer
 
     def get_stdout_text_writer():
         return sys.stdout
@@ -49,13 +86,31 @@ if six.PY3:
             encoding = locale.getpreferredencoding()
         return open(filename, mode, encoding=encoding)
 
+    def bytes_print(statement, stdout=None):
+        """
+        This function is used to write raw bytes to stdout.
+        """
+        if stdout is None:
+            stdout = sys.stdout
+
+        if getattr(stdout, 'buffer', None):
+            stdout.buffer.write(statement)
+        else:
+            # If it is not possible to write to the standard out buffer.
+            # The next best option is to decode and write to standard out.
+            stdout.write(statement.decode('utf-8'))
+
 else:
     import codecs
     import locale
     import io
     import urlparse
 
+    from urllib2 import URLError
+
     raw_input = raw_input
+
+    binary_stdin = sys.stdin
 
     def get_stdout_text_writer():
         # In python3, all the sys.stdout/sys.stderr streams are in text
@@ -75,3 +130,26 @@ else:
         if 'b' not in mode:
             encoding = locale.getpreferredencoding()
         return io.open(filename, mode, encoding=encoding)
+
+    def bytes_print(statement, stdout=None):
+        if stdout is None:
+            stdout = sys.stdout
+
+        stdout.write(statement)
+
+
+def compat_input(prompt):
+    """
+    Cygwin's pty's are based on pipes. Therefore, when it interacts with a Win32
+    program (such as Win32 python), what that program sees is a pipe instead of
+    a console. This is important because python buffers pipes, and so on a
+    pty-based terminal, text will not necessarily appear immediately. In most
+    cases, this isn't a big deal. But when we're doing an interactive prompt,
+    the result is that the prompts won't display until we fill the buffer. Since
+    raw_input does not flush the prompt, we need to manually write and flush it.
+
+    See https://github.com/mintty/mintty/issues/56 for more details.
+    """
+    sys.stdout.write(prompt)
+    sys.stdout.flush()
+    return raw_input()

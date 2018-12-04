@@ -4,7 +4,7 @@ This example command provides a description of the specified task, using the tas
 
 Command::
 
-  aws ecs describe-task --cluster default --task 0cc43cdb-3bee-4407-9c26-c0e6ea5bee84
+  aws ecs describe-tasks --tasks c5cba4eb-5dad-405e-96db-71ef8eefe6a8
 
 Output::
 
@@ -12,24 +12,33 @@ Output::
 	    "failures": [],
 	    "tasks": [
 	        {
-	            "taskArn": "arn:aws:ecs:us-east-1:<aws_account_id>:task/0cc43cdb-3bee-4407-9c26-c0e6ea5bee84",
+	            "taskArn": "arn:aws:ecs:<region>:<aws_account_id>:task/c5cba4eb-5dad-405e-96db-71ef8eefe6a8",
 	            "overrides": {
 	                "containerOverrides": [
 	                    {
-	                        "name": "sleep"
+	                        "name": "ecs-demo"
 	                    }
 	                ]
 	            },
-	            "lastStatus": "PENDING",
-	            "containerInstanceArn": "arn:aws:ecs:us-east-1:<aws_account_id>:container-instance/f6bbb147-5370-4ace-8c73-c7181ded911f",
+	            "lastStatus": "RUNNING",
+	            "containerInstanceArn": "arn:aws:ecs:<region>:<aws_account_id>:container-instance/18f9eda5-27d7-4c19-b133-45adc516e8fb",
+	            "clusterArn": "arn:aws:ecs:<region>:<aws_account_id>:cluster/default",
 	            "desiredStatus": "RUNNING",
-	            "taskDefinitionArn": "arn:aws:ecs:us-east-1:<aws_account_id>:task-definition/sleep360:1",
+	            "taskDefinitionArn": "arn:aws:ecs:<region>:<aws_account_id>:task-definition/amazon-ecs-sample:1",
+	            "startedBy": "ecs-svc/9223370608528463088",
 	            "containers": [
 	                {
-	                    "containerArn": "arn:aws:ecs:us-east-1:<aws_account_id>:container/291bb057-f49c-4bd7-9b50-9c891359083b",
-	                    "taskArn": "arn:aws:ecs:us-east-1:<aws_account_id>:task/0cc43cdb-3bee-4407-9c26-c0e6ea5bee84",
-	                    "lastStatus": "PENDING",
-	                    "name": "sleep"
+	                    "containerArn": "arn:aws:ecs:<region>:<aws_account_id>:container/7c01765b-c588-45b3-8290-4ba38bd6c5a6",
+	                    "taskArn": "arn:aws:ecs:<region>:<aws_account_id>:task/c5cba4eb-5dad-405e-96db-71ef8eefe6a8",
+	                    "lastStatus": "RUNNING",
+	                    "name": "ecs-demo",
+	                    "networkBindings": [
+	                        {
+	                            "bindIP": "0.0.0.0",
+	                            "containerPort": 80,
+	                            "hostPort": 80
+	                        }
+	                    ]
 	                }
 	            ]
 	        }

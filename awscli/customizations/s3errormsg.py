@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 """Give better S3 error messages.
 """
-from awscli.customizations import utils
 
 
 REGION_ERROR_MSG = (
@@ -21,6 +20,11 @@ REGION_ERROR_MSG = (
     'environment variable, or the region variable in the AWS CLI '
     "configuration file.  You can get the bucket's location by "
     'running "aws s3api get-bucket-location --bucket BUCKET".'
+)
+
+ENABLE_SIGV4_MSG = (
+    ' You can enable AWS Signature Version 4 by running the command: \n'
+    'aws configure set s3.signature_version s3v4'
 )
 
 
@@ -45,6 +49,8 @@ def enhance_error_msg(parsed, **kwargs):
         new_message = message[:-1] + ': %s\n' % endpoint
         new_message += REGION_ERROR_MSG
         parsed['Error']['Message'] = new_message
+    elif _is_kms_sigv4_error_message(parsed):
+        parsed['Error']['Message'] += ENABLE_SIGV4_MSG
 
 
 def _is_sigv4_error_message(parsed):
@@ -54,3 +60,8 @@ def _is_sigv4_error_message(parsed):
 
 def _is_permanent_redirect_message(parsed):
     return parsed.get('Error', {}).get('Code', '') == 'PermanentRedirect'
+
+
+def _is_kms_sigv4_error_message(parsed):
+    return ('AWS KMS managed keys require AWS Signature Version 4' in
+            parsed.get('Error', {}).get('Message', ''))

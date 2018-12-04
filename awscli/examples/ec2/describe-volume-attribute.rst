@@ -1,10 +1,10 @@
 **To describe a volume attribute**
 
-This example command describes the ``autoEnableIo`` attribute of the volume with the ID ``vol-2725bc51``.
+This example command describes the ``autoEnableIo`` attribute of the volume with the ID ``vol-049df61146c4d7901``.
 
 Command::
 
-  aws ec2 describe-volume-attribute --volume-id vol-2725bc51 --attribute autoEnableIO
+  aws ec2 describe-volume-attribute --volume-id vol-049df61146c4d7901 --attribute autoEnableIO
 
 Output::
 
@@ -12,6 +12,5 @@ Output::
        "AutoEnableIO": {
            "Value": false
        },
-       "ProductCodes": [],
-       "VolumeId": "vol-2725bc51"
+       "VolumeId": "vol-049df61146c4d7901"
    }

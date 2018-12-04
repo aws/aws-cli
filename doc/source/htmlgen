@@ -8,6 +8,7 @@ from awscli.help import PagingHelpRenderer
 
 REF_PATH = 'reference'
 TUT_PATH = 'tutorial'
+TOPIC_PATH = 'topic'
 
 
 class FileRenderer(PagingHelpRenderer):
@@ -63,13 +64,35 @@ def do_service(driver, ref_path, service_name, service_command,
             do_operation(driver, service_path, operation_name,
                          operation_command)
 
+def do_topic(driver, topic_path, topic_help_command):
+    print('...%s' % topic_help_command.name)
+    file_path = os.path.join(topic_path,
+                             topic_help_command.name + '.rst')
+    topic_help_command.doc.target = 'html'
+    topic_help_command.renderer = FileRenderer(file_path)
+    topic_help_command(None, None)
 
 def do_provider(driver):
     help_command = driver.create_help_command()
     help_command.doc.target = 'html'
     help_command.renderer = FileRenderer(os.path.join(REF_PATH, 'index.rst'))
     help_command(None, None)
+
+    topic_help_command = help_command.subcommand_table['topics']
+    topic_help_command.renderer = FileRenderer(os.path.join(TOPIC_PATH,
+                                                            'index.rst'))
+    topic_help_command.doc.target = 'html'
+    help_command(['topics'], None)
+    topics = help_command.subcommand_table
+    print('Writing topics:')
+    for topic in topics:
+        if topic == 'topics':
+            continue
+        topic_help_command = help_command.subcommand_table[topic]
+        do_topic(driver, TOPIC_PATH, topic_help_command)
+
     services = sorted(help_command.command_table)
+    print('\nWriting service references')
     for service_name in services:
         if service_name == 'help':
             continue
@@ -115,6 +138,8 @@ if __name__ == '__main__':
         os.mkdir(REF_PATH)
     if not os.path.isdir(TUT_PATH):
         os.mkdir(TUT_PATH)
+    if not os.path.isdir(TOPIC_PATH):
+        os.mkdir(TOPIC_PATH)
     print('Generating ReST documents for all services...')
     do_provider(driver)
     print('Generating service list ReST document...')

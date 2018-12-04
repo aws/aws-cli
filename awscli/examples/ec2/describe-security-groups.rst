@@ -15,15 +15,16 @@ Output::
               "Description": "My security group",
               "IpPermissions": [
                   {
-                      "ToPort": 22,
-                      "IpProtocol": "tcp",
+                      "PrefixListIds": [], 
+                      "FromPort": 22, 
                       "IpRanges": [
                           {
                               "CidrIp": "203.0.113.0/24"
                           }
-                      ],
-                      "UserIdGroupPairs": [],
-                      "FromPort": 22
+                      ], 
+                      "ToPort": 22, 
+                      "IpProtocol": "tcp", 
+                      "UserIdGroupPairs": []
                   }
               ],
               "GroupName": "MySecurityGroup",
@@ -54,22 +55,41 @@ Output::
                               "CidrIp": "0.0.0.0/0"
                           }
                       ],
-                      "UserIdGroupPairs": []
+                      "UserIdGroupPairs": [],
+                      "PrefixListIds": []
                   }
               ],
               "Description": "My security group",
+              "Tags": [
+                  {
+                      "Value": "SG1", 
+                      "Key": "Name"
+                   }
+              ], 
               "IpPermissions": [
                   {
-                      "ToPort": 22,
-                      "IpProtocol": "tcp",
+                      "IpProtocol": "-1", 
+                      "IpRanges": [], 
+                      "UserIdGroupPairs": [
+                          {
+                               "UserId": "123456789012", 
+                               "GroupId": "sg-903004f8"
+                          }
+                      ], 
+                      "PrefixListIds": []
+                  },
+                  {
+                      "PrefixListIds": [], 
+                      "FromPort": 22, 
                       "IpRanges": [
                           {
                               "CidrIp": "203.0.113.0/24"
                           }
-                      ],
-                      "UserIdGroupPairs": [],
-                      "FromPort": 22
-                  }
+                      ], 
+                      "ToPort": 22, 
+                      "IpProtocol": "tcp", 
+                      "UserIdGroupPairs": []
+                    }
               ],
               "GroupName": "MySecurityGroup",
               "VpcId": "vpc-1a2b3c4d",
@@ -79,9 +99,9 @@ Output::
       ]
   }
 
-**To describe security groups that have a specific rule**
+**To describe security groups that have specific rules**
 
-(EC2-VPC only) This example uses filters to describe security groups that have a rule that allows SSH traffic (port 22) from all IP addresses (``0.0.0.0/0``). The output is filtered to display only the names of the security groups.
+(EC2-VPC only) This example uses filters to describe security groups that have a rule that allows SSH traffic (port 22) and a rule that allows traffic from all addresses (``0.0.0.0/0``). The output is filtered to display only the names of the security groups. Security groups must match all filters to be returned in the results; however, a single rule does not have to match all filters. For example, the output returns a security group with a rule that allows SSH traffic from a specific IP address and another rule that allows HTTP traffic from all addresses.
 
 Command::
 

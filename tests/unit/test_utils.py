@@ -10,9 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest
+import signal
+import platform
+import os
 
-from awscli.utils import split_on_commas
+from awscli.testutils import unittest, skip_if_windows
+from awscli.utils import (split_on_commas, ignore_ctrl_c,
+                          find_service_and_method_in_event_name)
 
 
 class TestCSVSplit(unittest.TestCase):
@@ -86,3 +90,33 @@ class TestCSVSplit(unittest.TestCase):
     def test_end_bracket_in_value(self):
         self.assertEqual(split_on_commas('foo,bar=[foo,*[biz]*,baz]'),
                          ['foo', 'bar=foo,*[biz]*,baz'])
+
+
+@skip_if_windows("Ctrl-C not supported on windows.")
+class TestIgnoreCtrlC(unittest.TestCase):
+    def test_ctrl_c_is_ignored(self):
+        with ignore_ctrl_c():
+            # Should have the noop signal handler installed.
+            self.assertEqual(signal.getsignal(signal.SIGINT), signal.SIG_IGN)
+            # And if we actually try to sigint ourselves, an exception
+            # should not propogate.
+            os.kill(os.getpid(), signal.SIGINT)
+
+
+class TestFindServiceAndOperationNameFromEvent(unittest.TestCase):
+    def test_finds_service_and_operation_name(self):
+        event_name = "foo.bar.baz"
+        service, operation = find_service_and_method_in_event_name(event_name)
+        self.assertEqual(service, "bar")
+        self.assertEqual(operation, "baz")
+
+    def test_returns_none_if_event_is_too_short(self):
+        event_name = "foo.bar"
+        service, operation = find_service_and_method_in_event_name(event_name)
+        self.assertEqual(service, "bar")
+        self.assertIs(operation, None)
+
+        event_name = "foo"
+        service, operation = find_service_and_method_in_event_name(event_name)
+        self.assertIs(service, None)
+        self.assertIs(operation, None)

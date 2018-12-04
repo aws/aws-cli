@@ -34,7 +34,7 @@ This example describes the Internet gateway for the specified VPC.
 
 Command::
 
-  aws ec2 describe-subnets --filters "Name=attachment.vpc-id,Values=vpc-a01106c2"
+  aws ec2 describe-internet-gateways --filters "Name=attachment.vpc-id,Values=vpc-a01106c2"
 
 Output::
 

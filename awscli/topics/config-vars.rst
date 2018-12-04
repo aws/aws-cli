@@ -124,8 +124,12 @@ config file or the AWS Shared credentials file (``~/.aws/credentials``).
 The Shared Credentials File
 ---------------------------
 
-The shared credentials file has a fixed location of
-``~/.aws/credentials``.  This file is an INI formatted file with section names
+The shared credentials file has a default location of
+``~/.aws/credentials``.  You can change the location of the shared
+credentials file by setting the ``AWS_SHARED_CREDENTIALS_FILE``
+environment variable.
+
+This file is an INI formatted file with section names
 corresponding to profiles.  With each section, the three configuration
 variables shown above can be specified: ``aws_access_key_id``,
 ``aws_secret_access_key``, ``aws_session_token``.  **These are the only
@@ -152,7 +156,11 @@ Precedence
 Credentials from environment variables have precedence over credentials from
 the shared credentials and AWS CLI config file.  Credentials specified in the
 shared credentials file have precedence over credentials in the AWS CLI config
-file.
+file. If ``AWS_DEFAULT_PROFILE`` environment variable is set and the
+``AWS_ACCESS_KEY_ID`` and ``AWS_SECRET_ACCESS_KEY`` environment variables are
+set, then the credentials provided by  ``AWS_ACCESS_KEY_ID`` and
+``AWS_SECRET_ACCESS_KEY`` will override the credentials located in the
+profile provided by ``AWS_DEFAULT_PROFILE``.
 
 
 Using AWS IAM Roles
@@ -182,6 +190,12 @@ in the AWS CLI config file:
   authentication. The value is either the serial number for a hardware device
   (such as GAHT12345678) or an Amazon Resource Name (ARN) for a virtual device
   (such as arn:aws:iam::123456789012:mfa/user).
+* ``role_session_name`` - The name applied to this assume-role session. This
+  value affects the assumed role user ARN  (such as
+  arn:aws:sts::123456789012:assumed-role/role_name/role_session_name). This
+  maps to the ``RoleSessionName`` parameter in the ``AssumeRole`` operation.
+  This is an optional parameter.  If you do not provide this value, a
+  session name will be automatically generated.
 
 If you do not have MFA authentication required, then you only need to specify a
 ``role_arn`` and a ``source_profile``.
@@ -203,7 +217,7 @@ Example configuration::
   # In ~/.aws/credentials:
   [development]
   aws_access_key_id=foo
-  aws_access_key_id=bar
+  aws_secret_access_key=bar
 
   # In ~/.aws/config
   [profile crossaccount]
@@ -214,15 +228,38 @@ Example configuration::
 Service Specific Configuration
 ==============================
 
+API Versions
+------------
 
-aws s3
-------
+The API version to use for a service can be set using the ``api_versions``
+key. To specify an API version, set the API version to the name of the service
+as a sub value for ``api_versions``.
 
-These values are only applicable for the ``aws s3`` commands.  These
-configuration values are sub values that must be specified under the top level
-``s3`` key.
+Example configuration::
 
-These are the configuration values you can set for S3:
+    [profile development]
+    aws_access_key_id=foo
+    aws_secret_access_key=bar
+    api_versions =
+        ec2 = 2015-03-01
+        cloudfront = 2015-09-17
+
+By setting an API version for a service, it ensures that the interface for
+that service's commands is representative of the specified API version.
+
+In the example configuration, the ``ec2`` CLI commands will be representative
+of Amazon EC2's ``2015-03-01`` API version and the ``cloudfront`` CLI commands
+will be representative of Amazon CloudFront's ``2015-09-17`` API version.
+
+
+Amazon S3
+---------
+
+These values are only applicable for the ``aws s3`` and ``aws s3api`` commands.
+These configuration values are sub values that must be specified under the
+top level ``s3`` key.
+
+These are the configuration values that will only be used for ``aws s3``:
 
 * ``max_concurrent_requests`` - The maximum number of concurrent requests.
 * ``max_queue_size`` - The maximum number of tasks in the task queue.
@@ -231,7 +268,18 @@ These are the configuration values you can set for S3:
 * ``multipart_chunksize`` - When using multipart transfers, this is the chunk
   size that will be used.
 
-Example config::
+
+These are the configuration values that can be used for both ``aws s3``
+and ``aws s3api``:
+
+* ``use_accelerate_endpoint`` - Use the Amazon S3 Accelerate endpoint for
+  all ``s3`` and ``s3api`` commands. You **must** first enable S3 Accelerate
+  on your bucket before attempting to use the endpoint.
+* ``addressing_style`` - Specifies which addressing style to use. This controls
+  if the bucket name is in the hostname or part of the URL. Value values are:
+  ``path``, ``virtual``, and ``auto``.  The default value is ``auto``.
+
+Here is an example config for all of these configuration options::
 
     [profile development]
     aws_access_key_id=foo
@@ -241,6 +289,8 @@ Example config::
       max_queue_size = 10000
       multipart_threshold = 64MB
       multipart_chunksize = 16MB
+      use_accelerate_endpoint = true
+      addressing_style = path
 
 
 For a more in depth discussion of these S3 configuration values, see ``aws help

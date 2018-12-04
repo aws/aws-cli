@@ -1,21 +1,19 @@
 import os
+import logging
 import sys
 import time
 from functools import partial
 import errno
 import hashlib
 
-from dateutil.parser import parse
-from dateutil.tz import tzlocal
-
-from botocore.compat import quote
-from awscli.customizations.s3.utils import find_bucket_key, \
-        check_etag, check_error, operate, uni_print, \
-        guess_content_type, MD5Error, bytes_print
+from botocore.compat import MD5_AVAILABLE
+from awscli.customizations.s3.utils import (
+    find_bucket_key, guess_content_type, CreateDirectoryError, MD5Error,
+    bytes_print, set_file_utime, RequestParamsMapper)
+from awscli.compat import bytes_print
 
 
-class CreateDirectoryError(Exception):
-    pass
+LOGGER = logging.getLogger(__name__)
 
 
 def read_file(filename):
@@ -35,7 +33,6 @@ def save_file(filename, response_data, last_update, is_stream=False):
     """
     body = response_data['Body']
     etag = response_data['ETag'][1:-1]
-    sse = response_data.get('ServerSideEncryption', None)
     if not is_stream:
         d = os.path.dirname(filename)
         try:
@@ -45,34 +42,47 @@ def save_file(filename, response_data, last_update, is_stream=False):
             if not e.errno == errno.EEXIST:
                 raise CreateDirectoryError(
                     "Could not create directory %s: %s" % (d, e))
-    md5 = hashlib.md5()
+
+    if MD5_AVAILABLE and _can_validate_md5_with_etag(etag, response_data):
+        md5 = hashlib.md5()
+    else:
+        md5 = None
+
     file_chunks = iter(partial(body.read, 1024 * 1024), b'')
     if is_stream:
         # Need to save the data to be able to check the etag for a stream
-        # becuase once the data is written to the stream there is no
+        # because once the data is written to the stream there is no
         # undoing it.
-        payload = write_to_file(None, etag, md5, file_chunks, True)
+        payload = write_to_file(None, etag, file_chunks, md5, True)
     else:
         with open(filename, 'wb') as out_file:
-            write_to_file(out_file, etag, md5, file_chunks)
+            write_to_file(out_file, etag, file_chunks, md5)
 
-    if not _is_multipart_etag(etag) and sse != 'aws:kms':
-        if etag != md5.hexdigest():
-            if not is_stream:
-                os.remove(filename)
-            raise MD5Error(filename)
+    if md5 is not None and etag != md5.hexdigest():
+        if not is_stream:
+            os.remove(filename)
+        raise MD5Error(filename)
 
     if not is_stream:
         last_update_tuple = last_update.timetuple()
         mod_timestamp = time.mktime(last_update_tuple)
-        os.utime(filename, (int(mod_timestamp), int(mod_timestamp)))
+        set_file_utime(filename, int(mod_timestamp))
     else:
         # Now write the output to stdout since the md5 is correct.
         bytes_print(payload)
         sys.stdout.flush()
 
 
-def write_to_file(out_file, etag, md5, file_chunks, is_stream=False):
+def _can_validate_md5_with_etag(etag, response_data):
+    sse = response_data.get('ServerSideEncryption', None)
+    sse_customer_algorithm = response_data.get('SSECustomerAlgorithm', None)
+    if not _is_multipart_etag(etag) and sse != 'aws:kms' and \
+            sse_customer_algorithm is None:
+        return True
+    return False
+
+
+def write_to_file(out_file, etag, file_chunks, md5=None, is_stream=False):
     """
     Updates the etag for each file chunk.  It will write to the file if it a
     file but if it is a stream it will return a byte string to be later
@@ -80,7 +90,7 @@ def write_to_file(out_file, etag, md5, file_chunks, is_stream=False):
     """
     body = b''
     for chunk in file_chunks:
-        if not _is_multipart_etag(etag):
+        if md5 is not None and not _is_multipart_etag(etag):
             md5.update(chunk)
         if is_stream:
             body += chunk
@@ -114,31 +124,23 @@ class TaskInfo(object):
     Note that a local file will always have its absolute path, and a s3 file
     will have its path in the form of bucket/key
     """
-    def __init__(self, src, src_type, operation_name, service, endpoint):
+    def __init__(self, src, src_type, operation_name, client):
         self.src = src
         self.src_type = src_type
         self.operation_name = operation_name
-        self.service = service
-        self.endpoint = endpoint
-
-    def make_bucket(self):
-        """
-        This opereation makes a bucket.
-        """
-        bucket, key = find_bucket_key(self.src)
-        bucket_config = {'LocationConstraint': self.endpoint.region_name}
-        params = {'endpoint': self.endpoint, 'bucket': bucket}
-        if self.endpoint.region_name != 'us-east-1':
-            params['create_bucket_configuration'] = bucket_config
-        response_data, http = operate(self.service, 'CreateBucket', params)
+        self.client = client
 
     def remove_bucket(self):
         """
         This operation removes a bucket.
         """
         bucket, key = find_bucket_key(self.src)
-        params = {'endpoint': self.endpoint, 'bucket': bucket}
-        response_data, http = operate(self.service, 'DeleteBucket', params)
+        self.client.delete_bucket(Bucket=bucket)
+
+    def is_glacier_compatible(self):
+        # These operations do not involving transferring glacier objects
+        # so they are always glacier compatible.
+        return True
 
 
 class FileInfo(TaskInfo):
@@ -163,90 +165,74 @@ class FileInfo(TaskInfo):
     :param dest_type: string
     :param parameters: a dictionary of important values this is assigned in
         the ``BasicTask`` object.
+    :param associated_response_data: The response data used by
+        the ``FileGenerator`` to create this task. It is either an dictionary
+        from the list of a ListObjects or the response from a HeadObject. It
+        will only be filled if the task was generated from an S3 bucket.
     """
     def __init__(self, src, dest=None, compare_key=None, size=None,
                  last_update=None, src_type=None, dest_type=None,
-                 operation_name=None, service=None, endpoint=None,
-                 parameters=None, source_endpoint=None, is_stream=False):
+                 operation_name=None, client=None, parameters=None,
+                 source_client=None, is_stream=False,
+                 associated_response_data=None):
         super(FileInfo, self).__init__(src, src_type=src_type,
                                        operation_name=operation_name,
-                                       service=service,
-                                       endpoint=endpoint)
+                                       client=client)
         self.dest = dest
         self.dest_type = dest_type
         self.compare_key = compare_key
         self.size = size
         self.last_update = last_update
         # Usually inject ``parameters`` from ``BasicTask`` class.
+        self.parameters = {}
         if parameters is not None:
             self.parameters = parameters
-        else:
-            self.parameters = {'acl': None,
-                               'sse': None}
-        self.source_endpoint = source_endpoint
+        self.source_client = source_client
         self.is_stream = is_stream
+        self.associated_response_data = associated_response_data
 
     def set_size_from_s3(self):
         """
         This runs a ``HeadObject`` on the s3 object and sets the size.
         """
         bucket, key = find_bucket_key(self.src)
-        params = {'endpoint': self.endpoint,
-                  'bucket': bucket,
-                  'key': key}
-        response_data, http = operate(self.service, 'HeadObject', params)
+        params = {'Bucket': bucket,
+                  'Key': key}
+        RequestParamsMapper.map_head_object_params(params, self.parameters)
+        response_data = self.client.head_object(**params)
         self.size = int(response_data['ContentLength'])
 
-    def _permission_to_param(self, permission):
-        if permission == 'read':
-            return 'grant_read'
-        if permission == 'full':
-            return 'grant_full_control'
-        if permission == 'readacl':
-            return 'grant_read_acp'
-        if permission == 'writeacl':
-            return 'grant_write_acp'
-        raise ValueError('permission must be one of: '
-                         'read|readacl|writeacl|full')
+    def is_glacier_compatible(self):
+        """Determines if a file info object is glacier compatible
 
-    def _handle_object_params(self, params):
-        if self.parameters['acl']:
-            params['acl'] = self.parameters['acl'][0]
-        if self.parameters['grants']:
-            for grant in self.parameters['grants']:
-                try:
-                    permission, grantee = grant.split('=', 1)
-                except ValueError:
-                    raise ValueError('grants should be of the form '
-                                     'permission=principal')
-                params[self._permission_to_param(permission)] = grantee
-        if self.parameters['sse']:
-            params['server_side_encryption'] = 'AES256'
-        if self.parameters['storage_class']:
-            params['storage_class'] = self.parameters['storage_class'][0]
-        if self.parameters['website_redirect']:
-            params['website_redirect_location'] = \
-                    self.parameters['website_redirect'][0]
-        if self.parameters['guess_mime_type']:
-            self._inject_content_type(params, self.src)
-        if self.parameters['content_type']:
-            params['content_type'] = self.parameters['content_type'][0]
-        if self.parameters['cache_control']:
-            params['cache_control'] = self.parameters['cache_control'][0]
-        if self.parameters['content_disposition']:
-            params['content_disposition'] = \
-                    self.parameters['content_disposition'][0]
-        if self.parameters['content_encoding']:
-            params['content_encoding'] = self.parameters['content_encoding'][0]
-        if self.parameters['content_language']:
-            params['content_language'] = self.parameters['content_language'][0]
-        if self.parameters['expires']:
-            params['expires'] = self.parameters['expires'][0]
+        Operations will fail if the S3 object has a storage class of GLACIER
+        and it involves copying from S3 to S3, downloading from S3, or moving
+        where S3 is the source (the delete will actually succeed, but we do
+        not want fail to transfer the file and then successfully delete it).
 
-    def _handle_metadata_directive(self, params):
-        if self.parameters['metadata_directive']:
-            params['metadata_directive'] = \
-                self.parameters['metadata_directive'][0]
+        :returns: True if the FileInfo's operation will not fail because the
+            operation is on a glacier object. False if it will fail.
+        """
+        if self._is_glacier_object(self.associated_response_data):
+            if self.operation_name in ['copy', 'download']:
+                return False
+            elif self.operation_name == 'move':
+                if self.src_type == 's3':
+                    return False
+        return True
+
+    def _is_glacier_object(self, response_data):
+        if response_data:
+            if response_data.get('StorageClass') == 'GLACIER' and \
+                    not self._is_restored(response_data):
+                return True
+        return False
+
+    def _is_restored(self, response_data):
+        # Returns True is this is a glacier object that has been
+        # restored back to S3.
+        # 'Restore' looks like: 'ongoing-request="false", expiry-date="..."'
+        return 'ongoing-request="false"' in response_data.get('Restore', '')
 
     def upload(self, payload=None):
         """
@@ -262,22 +248,22 @@ class FileInfo(TaskInfo):
     def _handle_upload(self, body):
         bucket, key = find_bucket_key(self.dest)
         params = {
-            'endpoint': self.endpoint,
-            'bucket': bucket,
-            'key': key,
-            'body': body,
+            'Bucket': bucket,
+            'Key': key,
+            'Body': body,
         }
-        self._handle_object_params(params)
-        response_data, http = operate(self.service, 'PutObject', params)
-        etag = response_data['ETag'][1:-1]
-        body.seek(0)
-        check_etag(etag, body)
+        self._inject_content_type(params)
+        RequestParamsMapper.map_put_object_params(params, self.parameters)
+        response_data = self.client.put_object(**params)
 
-    def _inject_content_type(self, params, filename):
+    def _inject_content_type(self, params):
+        if not self.parameters['guess_mime_type']:
+            return
+        filename = self.src
         # Add a content type param if we can guess the type.
         guessed_type = guess_content_type(filename)
         if guessed_type is not None:
-            params['content_type'] = guessed_type
+            params['ContentType'] = guessed_type
 
     def download(self):
         """
@@ -285,8 +271,9 @@ class FileInfo(TaskInfo):
         large.  If it is small enough, it gets the file as an object from s3.
         """
         bucket, key = find_bucket_key(self.src)
-        params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
-        response_data, http = operate(self.service, 'GetObject', params)
+        params = {'Bucket': bucket, 'Key': key}
+        RequestParamsMapper.map_get_object_params(params, self.parameters)
+        response_data = self.client.get_object(**params)
         save_file(self.dest, response_data, self.last_update,
                   self.is_stream)
 
@@ -294,25 +281,24 @@ class FileInfo(TaskInfo):
         """
         Copies a object in s3 to another location in s3.
         """
-        copy_source = self.src
+        source_bucket, source_key = find_bucket_key(self.src)
+        copy_source = {'Bucket': source_bucket, 'Key': source_key}
         bucket, key = find_bucket_key(self.dest)
-        params = {'endpoint': self.endpoint, 'bucket': bucket,
-                  'copy_source': copy_source, 'key': key}
-        self._handle_object_params(params)
-        self._handle_metadata_directive(params)
-        response_data, http = operate(self.service, 'CopyObject', params)
+        params = {'Bucket': bucket,
+                  'CopySource': copy_source, 'Key': key}
+        self._inject_content_type(params)
+        RequestParamsMapper.map_copy_object_params(params, self.parameters)
+        response_data = self.client.copy_object(**params)
 
     def delete(self):
         """
         Deletes the file from s3 or local.  The src file and type is used
         from the file info object.
         """
-        if (self.src_type == 's3'):
+        if self.src_type == 's3':
             bucket, key = find_bucket_key(self.src)
-            params = {'endpoint': self.source_endpoint, 'bucket': bucket,
-                      'key': key}
-            response_data, http = operate(self.service, 'DeleteObject',
-                                          params)
+            params = {'Bucket': bucket, 'Key': key}
+            self.source_client.delete_object(**params)
         else:
             os.remove(self.src)
 
@@ -334,9 +320,10 @@ class FileInfo(TaskInfo):
 
     def create_multipart_upload(self):
         bucket, key = find_bucket_key(self.dest)
-        params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
-        self._handle_object_params(params)
-        response_data, http = operate(self.service, 'CreateMultipartUpload',
-                                      params)
+        params = {'Bucket': bucket, 'Key': key}
+        self._inject_content_type(params)
+        RequestParamsMapper.map_create_multipart_upload_params(
+            params, self.parameters)
+        response_data = self.client.create_multipart_upload(**params)
         upload_id = response_data['UploadId']
         return upload_id

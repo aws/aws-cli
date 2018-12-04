@@ -17,15 +17,18 @@ import tempfile
 
 from awscli.customizations.emr import constants
 from awscli.customizations.emr import emrutils
-from awscli.customizations.emr import exceptions
 from awscli.customizations.emr import sshutils
-from awscli.customizations.commands import BasicCommand
+from awscli.customizations.emr.command import Command
+
+KEY_PAIR_FILE_HELP_TEXT = '\nA value for the variable Key Pair File ' \
+    'can be set in the AWS CLI config file using the ' \
+    '"aws configure set emr.key_pair_file <value>" command.\n'
 
 
-class Socks(BasicCommand):
+class Socks(Command):
     NAME = 'socks'
-    DESCRIPTION = ('Create a socks tunnel on port 8157 from your machine \
-                   to the master.')
+    DESCRIPTION = ('Create a socks tunnel on port 8157 from your machine '
+                   'to the master.\n%s' % KEY_PAIR_FILE_HELP_TEXT)
     ARG_TABLE = [
         {'name': 'cluster-id', 'required': True,
          'help_text': 'Cluster Id of cluster you want to ssh into'},
@@ -33,7 +36,7 @@ class Socks(BasicCommand):
          'help_text': 'Private key file to use for login'},
     ]
 
-    def _run_main(self, parsed_args, parsed_globals):
+    def _run_main_command(self, parsed_args, parsed_globals):
         try:
             master_dns = sshutils.validate_and_find_master_dns(
                 session=self._session,
@@ -43,8 +46,7 @@ class Socks(BasicCommand):
             key_file = parsed_args.key_pair_file
             sshutils.validate_ssh_with_key_file(key_file)
             f = tempfile.NamedTemporaryFile(delete=False)
-            if (sshutils.check_command_key_format(key_file, ['cer', 'pem']) and
-                    (emrutils.which('ssh') or emrutils.which('ssh.exe'))):
+            if (emrutils.which('ssh') or emrutils.which('ssh.exe')):
                 command = ['ssh', '-o', 'StrictHostKeyChecking=no', '-o',
                            'ServerAliveInterval=10', '-ND', '8157', '-i',
                            parsed_args.key_pair_file, constants.SSH_USER +
@@ -62,9 +64,10 @@ class Socks(BasicCommand):
             return 0
 
 
-class SSH(BasicCommand):
+class SSH(Command):
     NAME = 'ssh'
-    DESCRIPTION = ('SSH into master node of the cluster.')
+    DESCRIPTION = ('SSH into master node of the cluster.\n%s' %
+                   KEY_PAIR_FILE_HELP_TEXT)
     ARG_TABLE = [
         {'name': 'cluster-id', 'required': True,
          'help_text': 'Cluster Id of cluster you want to ssh into'},
@@ -73,8 +76,7 @@ class SSH(BasicCommand):
         {'name': 'command', 'help_text': 'Command to execute on Master Node'}
     ]
 
-    def _run_main(self, parsed_args, parsed_globals):
-
+    def _run_main_command(self, parsed_args, parsed_globals):
         master_dns = sshutils.validate_and_find_master_dns(
             session=self._session,
             parsed_globals=parsed_globals,
@@ -83,12 +85,11 @@ class SSH(BasicCommand):
         key_file = parsed_args.key_pair_file
         sshutils.validate_ssh_with_key_file(key_file)
         f = tempfile.NamedTemporaryFile(delete=False)
-        if (sshutils.check_command_key_format(key_file, ['cer', 'pem']) and
-                (emrutils.which('ssh') or emrutils.which('ssh.exe'))):
+        if (emrutils.which('ssh') or emrutils.which('ssh.exe')):
             command = ['ssh', '-o', 'StrictHostKeyChecking=no', '-o',
                        'ServerAliveInterval=10', '-i',
                        parsed_args.key_pair_file, constants.SSH_USER +
-                       '@' + master_dns]
+                       '@' + master_dns, '-t']
             if parsed_args.command:
                 command.append(parsed_args.command)
         else:
@@ -107,9 +108,10 @@ class SSH(BasicCommand):
         return rc
 
 
-class Put(BasicCommand):
+class Put(Command):
     NAME = 'put'
-    DESCRIPTION = ('Put file onto the master node.')
+    DESCRIPTION = ('Put file onto the master node.\n%s' %
+                   KEY_PAIR_FILE_HELP_TEXT)
     ARG_TABLE = [
         {'name': 'cluster-id', 'required': True,
          'help_text': 'Cluster Id of cluster you want to put file onto'},
@@ -120,7 +122,7 @@ class Put(BasicCommand):
         {'name': 'dest', 'help_text': 'Destination file path on remote host'}
     ]
 
-    def _run_main(self, parsed_args, parsed_globals):
+    def _run_main_command(self, parsed_args, parsed_globals):
         master_dns = sshutils.validate_and_find_master_dns(
             session=self._session,
             parsed_globals=parsed_globals,
@@ -128,8 +130,7 @@ class Put(BasicCommand):
 
         key_file = parsed_args.key_pair_file
         sshutils.validate_scp_with_key_file(key_file)
-        if (sshutils.check_command_key_format(key_file, ['cer', 'pem']) and
-                (emrutils.which('scp') or emrutils.which('scp.exe'))):
+        if (emrutils.which('scp') or emrutils.which('scp.exe')):
             command = ['scp', '-r', '-o StrictHostKeyChecking=no',
                        '-i', parsed_args.key_pair_file, parsed_args.src,
                        constants.SSH_USER + '@' + master_dns]
@@ -147,9 +148,9 @@ class Put(BasicCommand):
         return rc
 
 
-class Get(BasicCommand):
+class Get(Command):
     NAME = 'get'
-    DESCRIPTION = ('Get file from master node.')
+    DESCRIPTION = ('Get file from master node.\n%s' % KEY_PAIR_FILE_HELP_TEXT)
     ARG_TABLE = [
         {'name': 'cluster-id', 'required': True,
          'help_text': 'Cluster Id of cluster you want to get file from'},
@@ -160,7 +161,7 @@ class Get(BasicCommand):
         {'name': 'dest', 'help_text': 'Destination file path on your machine'}
     ]
 
-    def _run_main(self, parsed_args, parsed_globals):
+    def _run_main_command(self, parsed_args, parsed_globals):
         master_dns = sshutils.validate_and_find_master_dns(
             session=self._session,
             parsed_globals=parsed_globals,
@@ -168,8 +169,7 @@ class Get(BasicCommand):
 
         key_file = parsed_args.key_pair_file
         sshutils.validate_scp_with_key_file(key_file)
-        if (sshutils.check_command_key_format(key_file, ['cer', 'pem']) and
-                (emrutils.which('scp') or emrutils.which('scp.exe'))):
+        if (emrutils.which('scp') or emrutils.which('scp.exe')):
             command = ['scp', '-r', '-o StrictHostKeyChecking=no', '-i',
                        parsed_args.key_pair_file, constants.SSH_USER + '@' +
                        master_dns + ':' + parsed_args.src]

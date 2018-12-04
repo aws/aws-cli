@@ -1,13 +1,8 @@
-**To update SSL certificate for your HTTPS load balancer**
+**To update the SSL certificate for an HTTPS load balancer**
 
-This example replaces the existing SSL certificate for your HTTPS load balancer.
+This example replaces the existing SSL certificate for the specified HTTPS load balancer.
 
 Command::
 
-      aws elb set-load-balancer-listener-ssl-certificate --load-balancer-name MyHTTPSLoadBalancer --load-balancer-port 443 --ssl-certificate-id arn:aws:iam::012345678901:server-certificate/scert
-
-
-Output::
-
-    {}
+    aws elb set-load-balancer-listener-ssl-certificate --load-balancer-name my-load-balancer --load-balancer-port 443 --ssl-certificate-id arn:aws:iam::123456789012:server-certificate/new-server-cert
 

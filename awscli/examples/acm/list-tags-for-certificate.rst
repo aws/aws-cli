@@ -1,0 +1,20 @@
+**To list the tags applied to an ACM Certificate**
+
+The following ``list-tags-for-certificate`` command lists the tags applied to a certificate in your account::
+
+  aws acm list-tags-for-certificate --certificate-arn arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012
+
+The preceding command produces ouput similar to the following::
+
+  {
+    "Tags": [
+        {
+            "Value": "Website",
+            "Key": "Purpose"
+        },
+        {
+            "Value": "Alice",
+            "Key": "Admin"
+        }
+    ]
+  }

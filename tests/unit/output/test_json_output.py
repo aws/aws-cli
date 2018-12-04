@@ -18,24 +18,34 @@ from awscli.compat import six
 from awscli.formatter import JSONFormatter
 
 from awscli.testutils import BaseAWSCommandParamsTest, unittest
+from awscli.testutils import skip_if_windows
 from awscli.compat import get_stdout_text_writer
 
 
 class TestGetPasswordData(BaseAWSCommandParamsTest):
 
-    prefix = 'iam add-user-to-group '
+    COMMAND = 'iam add-user-to-group --group-name foo --user-name bar'
 
-    def test_empty_response_prints_nothing(self):
+    def setUp(self):
+        super(TestGetPasswordData, self).setUp()
+        self.parsed_response = {}
+
+    def test_empty_dict_response_prints_nothing(self):
         # This is the default response, but we want to be explicit
         # that we're returning an empty dict.
         self.parsed_response = {}
-        args = ' --group-name foo --user-name bar'
-        cmdline = self.prefix + args
-        result = {'GroupName': 'foo', 'UserName': 'bar'}
-        stdout = self.assert_params_for_cmd(cmdline, result, expected_rc=0)[0]
-        # We should have printed nothing because the parsed response
-        # is an empty dict: {}.
+        stdout = self.run_cmd(self.COMMAND, expected_rc=0)[0]
         self.assertEqual(stdout, '')
+
+    def test_empty_list_prints_list(self):
+        self.parsed_response = []
+        stdout = self.run_cmd(self.COMMAND, expected_rc=0)[0]
+        self.assertEqual(stdout, '[]\n')
+
+    def test_empty_string_prints_nothing(self):
+        self.parsed_response = ''
+        stdout = self.run_cmd(self.COMMAND, expected_rc=0)[0]
+        self.assertEqual(stdout, '""\n')
 
 
 class TestListUsers(BaseAWSCommandParamsTest):
@@ -76,6 +86,15 @@ class TestListUsers(BaseAWSCommandParamsTest):
         parsed_output = json.loads(output)
         self.assertEqual(parsed_output, ['testuser-50', 'testuser-51'])
 
+    def test_zero_value_is_printed(self):
+        # Even though the integer 0 is false-like, we still
+        # should be printing it to stdout if a jmespath query
+        # evalutes to 0.
+        jmespath_query = '`0`'
+        output = self.run_cmd('iam list-users --query %s' % jmespath_query,
+                              expected_rc=0)[0]
+        self.assertEqual(output, '0\n')
+
     def test_unknown_output_type_from_env_var(self):
         # argparse already handles the case with a bad --output
         # specified on the CLI, we need to verify that a bad
@@ -83,8 +102,7 @@ class TestListUsers(BaseAWSCommandParamsTest):
         self.environ['AWS_DEFAULT_OUTPUT'] = 'bad-output-type'
         self.run_cmd('iam list-users', expected_rc=255)
 
-    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                    'Encoding tests only supported on mac/linux')
+    @skip_if_windows('Encoding tests only supported on mac/linux')
     def test_json_prints_unicode_chars(self):
         self.parsed_response['Users'][1]['UserId'] = u'\u2713'
         output = self.run_cmd('iam list-users', expected_rc=0)[0]
@@ -106,7 +124,7 @@ class TestFormattersHandleClosedPipes(unittest.TestCase):
         fake_closed_stream = mock.Mock(spec=six.StringIO)
         fake_closed_stream.flush.side_effect = IOError
         formatter = JSONFormatter(args)
-        formatter(operation, response, fake_closed_stream)
+        formatter('command_name', response, stream=fake_closed_stream)
         # We should not have let the IOError propogate, but
         # we still should have called the flush() on the
         # stream.

@@ -1,10 +1,21 @@
-**To create an SQS queue**
+**To create a queue**
 
-The following ``create-queue`` command creates an SQS queue named MyQueue::
+This example creates a queue with the specified name, sets the message retention period to 3 days (3 days * 24 hours * 60 minutes * 60 seconds), and sets the queue's dead letter queue to the specified queue with a maximum receive count of 1,000 messages.
 
-  aws sqs create-queue --queue-name MyQueue
+Command::
 
-For more information, see `Using the AWS Command Line Interface with Amazon SQS and Amazon SNS`_ in the *AWS Command Line Interface User Guide*.
+  aws sqs create-queue --queue-name MyQueue --attributes file://create-queue.json
 
-.. _`Using the AWS Command Line Interface with Amazon SQS and Amazon SNS`: http://docs.aws.amazon.com/cli/latest/userguide/cli-sqs-queue-sns-topic.html
+Input file (create-queue.json)::
+
+  {
+    "RedrivePolicy": "{\"deadLetterTargetArn\":\"arn:aws:sqs:us-east-1:80398EXAMPLE:MyDeadLetterQueue\",\"maxReceiveCount\":\"1000\"}",
+    "MessageRetentionPeriod": "259200"  
+  }
+
+Output::
+
+  {
+    "QueueUrl": "https://queue.amazonaws.com/80398EXAMPLE/MyQueue"
+  }
 

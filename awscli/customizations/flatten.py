@@ -51,7 +51,7 @@ class FlattenedArgument(CustomArgument):
         TODO: This does not hydrate nested structures (``XmlName1.XmlName2``)!
               To do this for now you must provide your own ``hydrate`` method.
         """
-        container = self._container.py_name
+        container = self._container.argument_model.name
         cli_type = self._container.cli_type_name
         key = self._property
 
@@ -166,14 +166,14 @@ class FlattenArguments(object):
                                                                   operation),
                          self.flatten_args)
 
-    def flatten_args(self, operation, argument_table, **kwargs):
+    def flatten_args(self, command, argument_table, **kwargs):
         # For each argument with a bag of parameters
-        for name, argument in self.configs[operation.cli_name].items():
+        for name, argument in self.configs[command.name].items():
             argument_from_table = argument_table[name]
             overwritten = False
 
             LOG.debug('Flattening {0} argument {1} into {2}'.format(
-                operation, name,
+                command.name, name,
                 ', '.join([v['name'] for k, v in argument['flatten'].items()])
             ))
 

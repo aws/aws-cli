@@ -4,7 +4,7 @@ The following ``update-stack`` command updates the template and input parameters
 
   aws cloudformation update-stack --stack-name mystack --template-url https://s3.amazonaws.com/sample/updated.template --parameters ParameterKey=KeyPairName,ParameterValue=SampleKeyPair ParameterKey=SubnetIDs,ParameterValue=SampleSubnetID1\\,SampleSubnetID2
 
-The following ``update-stack`` command updates just the ``SubnetIDs`` paramter value for the ``mystack`` stack. If you
+The following ``update-stack`` command updates just the ``SubnetIDs`` parameter value for the ``mystack`` stack. If you
 don't specify a parameter value, the default value that is specified in the template is used::
 
   aws cloudformation update-stack --stack-name mystack --template-url https://s3.amazonaws.com/sample/updated.template --parameters ParameterKey=KeyPairName,UsePreviousValue=true ParameterKey=SubnetIDs,ParameterValue=SampleSubnetID1\\,UpdatedSampleSubnetID2

@@ -12,13 +12,14 @@
 # language governing permissions and limitations under the License.
 
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.emr import constants
 from awscli.customizations.emr import emrutils
 from awscli.customizations.emr import helptext
-from awscli.customizations.emr import constants
+from awscli.customizations.emr.command import Command
 from botocore.exceptions import NoCredentialsError
 
 
-class DescribeCluster(BasicCommand):
+class DescribeCluster(Command):
     NAME = 'describe-cluster'
     DESCRIPTION = ('Provides  cluster-level details including status, hardware'
                    ' and software configuration, VPC settings, bootstrap'
@@ -28,57 +29,36 @@ class DescribeCluster(BasicCommand):
         {'name': 'cluster-id', 'required': True,
          'help_text': helptext.CLUSTER_ID}
     ]
-    EXAMPLES = BasicCommand.FROM_FILE('emr', 'describe-cluster.rst')
 
-    def _run_main(self, parsed_args, parsed_globals):
-        emr = self._session.get_service('emr')
-        describe_cluster = emr.get_operation('DescribeCluster')
+    def _run_main_command(self, parsed_args, parsed_globals):
         parameters = {'ClusterId': parsed_args.cluster_id}
 
-        describe_cluster_result = self._call(describe_cluster, parameters,
-                                             parsed_globals)
+        describe_cluster_result = self._call(
+            self._session, 'describe_cluster', parameters, parsed_globals)
+
         list_instance_groups_result = self._call(
-            emr.get_operation('ListInstanceGroups'), parameters,
-            parsed_globals)
+            self._session, 'list_instance_groups', parameters, parsed_globals)
 
         list_bootstrap_actions_result = self._call(
-            emr.get_operation('ListBootstrapActions'),
+            self._session, 'list_bootstrap_actions',
             parameters, parsed_globals)
-
-        master_public_dns = self._find_master_public_dns(
-            cluster_id=parsed_args.cluster_id,
-            parsed_globals=parsed_globals)
 
         constructed_result = self._construct_result(
             describe_cluster_result,
             list_instance_groups_result,
-            list_bootstrap_actions_result,
-            master_public_dns)
+            list_bootstrap_actions_result)
 
-        emrutils.display_response(self._session, describe_cluster,
+        emrutils.display_response(self._session, 'describe_cluster',
                                   constructed_result, parsed_globals)
 
         return 0
 
-    def _find_master_public_dns(self, cluster_id, parsed_globals):
-        return emrutils.find_master_public_dns(
-            session=self._session, cluster_id=cluster_id,
-            parsed_globals=parsed_globals)
-
-    def _call(self, operation_object, parameters, parsed_globals):
-        # We could get an error from get_endpoint() about not having
-        # a region configured.  Before this happens we want to check
-        # for credentials so we can give a good error message.
-        result = []
-        if not self._session.get_credentials():
-            raise NoCredentialsError()
-        endpoint = operation_object.service.get_endpoint(
-            region_name=parsed_globals.region,
+    def _call(self, session, operation_name, parameters, parsed_globals):
+        return emrutils.call(
+            session, operation_name, parameters,
+            region_name=self.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl)
-        http_response, response_data = operation_object.call(endpoint,
-                                                             **parameters)
-        return response_data
 
     def _get_key_of_result(self, keys):
         # Return the first key that is not "Marker"
@@ -88,9 +68,8 @@ class DescribeCluster(BasicCommand):
 
     def _construct_result(
             self, describe_cluster_result, list_instance_groups_result,
-            list_bootstrap_actions_result, master_public_dns):
+            list_bootstrap_actions_result):
         result = describe_cluster_result
-        result['Cluster']['MasterPublicDnsName'] = master_public_dns
         result['Cluster']['InstanceGroups'] = []
         result['Cluster']['BootstrapActions'] = []
 

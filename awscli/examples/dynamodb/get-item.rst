@@ -1,6 +1,6 @@
 **To read an item in a table**
 
-This example retrieves an item from the *MusicCollection* table. The table has a hash-and-range primary key (*Artist* and *SongTitle*), so you must specify both of these ttributes.
+This example retrieves an item from the *MusicCollection* table. The table has a hash-and-range primary key (*Artist* and *SongTitle*), so you must specify both of these attributes.
 
 
 Command::

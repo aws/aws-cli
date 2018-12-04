@@ -12,20 +12,25 @@ Output::
     "ReservedInstances": [
         {
             "ReservedInstancesId": "b847fa93-e282-4f55-b59a-1342fexample",
-            "OfferingType": "Medium Utilization",
-            "AvailabilityZone": "us-west-1a",
+            "OfferingType": "No Upfront",
+            "AvailabilityZone": "us-west-1c",
             "End": "2016-08-14T21:34:34.000Z",
             "ProductDescription": "Linux/UNIX",
-            "UsagePrice": 0.01,
-            "RecurringCharges": [],
-            "Start": "2013-08-15T21:34:35.086Z",
+            "UsagePrice": 0.00,
+            "RecurringCharges": [
+                {
+                    "Amount": 0.104,
+                    "Frequency": "Hourly"
+                }
+            ],
+            "Start": "2015-08-15T21:34:35.086Z",
             "State": "active",
-            "FixedPrice": 82.0,
+            "FixedPrice": 0.0,
             "CurrencyCode": "USD",
-            "Duration": 94608000,
+            "Duration": 31536000,
             "InstanceTenancy": "default",
-            "InstanceType": "t1.micro",
-            "InstanceCount": 10
+            "InstanceType": "m3.medium",
+            "InstanceCount": 2
         },
         ...
     ]
@@ -33,11 +38,11 @@ Output::
 
 **To describe your Reserved Instances using filters**
 
-This example filters the response to include only one-year, t1.micro Linux/UNIX Reserved Instances in us-west-1c.
+This example filters the response to include only three-year, t2.micro Linux/UNIX Reserved Instances in us-west-1c.
 
 Command::
-
-  aws ec2 describe-reserved-instances --filters Name=duration,Values=31536000 Name=instance-type,Values=t1.micro Name=product-description,Values=Linux/UNIX Name=availability-zone,Values=us-west-1c
+    
+    aws ec2 describe-reserved-instances --filters Name=duration,Values=94608000 Name=instance-type,Values=t2.micro Name=product-description,Values=Linux/UNIX Name=availability-zone,Values=us-east-1e
 
 Output::
 
@@ -45,20 +50,20 @@ Output::
       "ReservedInstances": [
           {
               "ReservedInstancesId": "f127bd27-edb7-44c9-a0eb-0d7e09259af0",
-              "OfferingType": "Medium Utilization",
-              "AvailabilityZone": "us-west-1c",
-              "End": "2014-08-15T21:34:34.000Z",
+              "OfferingType": "All Upfront",
+              "AvailabilityZone": "us-east-1e",
+              "End": "2018-03-26T21:34:34.000Z",
               "ProductDescription": "Linux/UNIX",
-              "UsagePrice": 0.01,
+              "UsagePrice": 0.00,
               "RecurringCharges": [],
-              "Start": "2013-08-15T21:34:35.848Z",
+              "Start": "2015-03-27T21:34:35.848Z",
               "State": "active",
-              "FixedPrice": 54.0,
+              "FixedPrice": 151.0,
               "CurrencyCode": "USD",
-              "Duration": 31536000,
+              "Duration": 94608000,
               "InstanceTenancy": "default",
-              "InstanceType": "t1.micro",
-              "InstanceCount": 5
+              "InstanceType": "t2.micro",
+              "InstanceCount": 1
           }
       ]
   }

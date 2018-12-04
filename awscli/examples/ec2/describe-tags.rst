@@ -24,31 +24,31 @@ Output::
           },
           {
               "ResourceType": "instance",
-              "ResourceId": "i-12345678",
+              "ResourceId": "i-1234567890abcdef0",
               "Value": "Production",
               "Key": "Stack"
           },
           {
               "ResourceType": "instance",
-              "ResourceId": "i-5f4e3d2a",
+              "ResourceId": "i-1234567890abcdef1",
               "Value": "Test",
               "Key": "Stack"
           },
           {
               "ResourceType": "instance",
-              "ResourceId": "i-5f4e3d2a",
+              "ResourceId": "i-1234567890abcdef5",
               "Value": "Beta Server",
               "Key": "Name"
           },
           {
               "ResourceType": "volume",
-              "ResourceId": "vol-1a2b3c4d",
+              "ResourceId": "vol-049df61146c4d7901",
               "Value": "Project1",
               "Key": "Purpose"
           },
           {
               "ResourceType": "volume",
-              "ResourceId": "vol-87654321",
+              "ResourceId": "vol-1234567890abcdef0",
               "Value": "Logs",
               "Key": "Purpose"
           }
@@ -61,7 +61,7 @@ This example describes the tags for the specified instance.
 
 Command::
 
-  aws ec2 describe-tags --filters "Name=resource-id,Values=i-5f4e3d2a"
+  aws ec2 describe-tags --filters "Name=resource-id,Values=i-1234567890abcdef8"
 
 Output::
 
@@ -69,13 +69,13 @@ Output::
       "Tags": [
           {
               "ResourceType": "instance",
-              "ResourceId": "i-5f4e3d2a",
+              "ResourceId": "i-1234567890abcdef8",
               "Value": "Test",
               "Key": "Stack"
           },
           {
               "ResourceType": "instance",
-              "ResourceId": "i-5f4e3d2a",
+              "ResourceId": "i-1234567890abcdef8",
               "Value": "Beta Server",
               "Key": "Name"
           }
@@ -96,13 +96,13 @@ Output::
       "Tags": [
           {
               "ResourceType": "volume",
-              "ResourceId": "vol-1a2b3c4d",
+              "ResourceId": "vol-1234567890abcdef0",
               "Value": "Project1",
               "Key": "Purpose"
           },
           {
               "ResourceType": "volume",
-              "ResourceId": "vol-87654321",
+              "ResourceId": "vol-049df61146c4d7901",
               "Value": "Logs",
               "Key": "Purpose"
           }
@@ -129,7 +129,7 @@ Output::
           },
           {
               "ResourceType": "instance",
-              "ResourceId": "i-5f4e3d2a",
+              "ResourceId": "i-1234567890abcdef8",
               "Value": "Test",
               "Key": "Stack"
           }
@@ -148,7 +148,7 @@ Output::
         "Tags": [
             {
                 "ResourceType": "instance", 
-                "ResourceId": "i-1a2b3c4d", 
+                "ResourceId": "i-1234567890abcdef5", 
                 "Value": null, 
                 "Key": "Purpose"
             }

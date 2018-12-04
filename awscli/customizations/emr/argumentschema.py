@@ -11,8 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.customizations.emr.createdefaultroles import EC2_ROLE_NAME
 from awscli.customizations.emr import helptext
+from awscli.customizations.emr.createdefaultroles import EC2_ROLE_NAME
+
 
 INSTANCE_GROUPS_SCHEMA = {
     "type": "array",
@@ -50,6 +51,48 @@ INSTANCE_GROUPS_SCHEMA = {
                 "description": "Target number of Amazon EC2 instances "
                 "for the instance group",
                 "required": True
+            },
+            "EbsConfiguration": {
+                "type": "object",
+                "description": "EBS configuration that will be associated with the instance group.",
+                "properties": {
+                    "EbsOptimized": {
+                        "type": "boolean",
+                        "description": "Boolean flag used to tag EBS-optimized instances.",
+                    },
+                    "EbsBlockDeviceConfigs": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "VolumeSpecification" : {
+                                    "type": "object",
+                                    "description": "The EBS volume specification that will be created and attached to every instance in this instance group.",
+                                    "properties": {
+                                        "VolumeType": {
+                                            "type": "string",
+                                            "description": "The EBS volume type that is attached to all the instances in the instance group. Valid types are: gp2, io1, and standard.",
+                                            "required": True
+                                        },
+                                        "SizeInGB": {
+                                            "type": "integer",
+                                            "description": "The EBS volume size, in GB, that is attached to all the instances in the instance group.",
+                                            "required": True
+                                        },
+                                        "Iops": {
+                                            "type": "integer",
+                                            "description": "The IOPS of the EBS volume that is attached to all the instances in the instance group.",
+                                        }
+                                    }
+                                },
+                                "VolumesPerInstance": {
+                                    "type": "integer",
+                                    "description": "The number of EBS volumes that will be created and attached to each instance in the instance group.",
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -96,6 +139,10 @@ EC2_ATTRIBUTES_SCHEMA = {
             "type": "string",
             "description": helptext.EMR_MANAGED_SLAVE_SECURITY_GROUP
         },
+        "ServiceAccessSecurityGroup": {
+            "type": "string",
+            "description": helptext.SERVICE_ACCESS_SECURITY_GROUP
+        },
         "AdditionalMasterSecurityGroups": {
             "type": "array",
             "description": helptext.ADDITIONAL_MASTER_SECURITY_GROUPS,
@@ -123,7 +170,7 @@ APPLICATIONS_SCHEMA = {
                 "type": "string",
                 "description": "Application name.",
                 "enum": ["MapR", "HUE", "HIVE", "PIG", "HBASE",
-                         "IMPALA", "GANGLIA"],
+                         "IMPALA", "GANGLIA", "HADOOP", "SPARK"],
                 "required": True
             },
             "Args": {
@@ -201,7 +248,7 @@ STEPS_SCHEMA = {
                     "A list of command line arguments to pass to the step.",
                 "items": {
                         "type": "string"
-                    }
+                }
             },
             "MainClass": {
                 "type": "string",
@@ -265,6 +312,28 @@ EMR_FS_SCHEMA = {
             "items": {
                 "type": "string"
             }
+        },
+        "Encryption": {
+            "type": "string",
+            "description": "EMRFS encryption type.",
+            "enum": ["SERVERSIDE", "CLIENTSIDE"]
+        },
+        "ProviderType": {
+            "type": "string",
+            "description": "EMRFS client-side encryption provider type.",
+            "enum": ["KMS", "CUSTOM"]
+        },
+        "KMSKeyId": {
+            "type": "string",
+            "description": "AWS KMS's customer master key identifier",
+        },
+        "CustomProviderLocation": {
+            "type": "string",
+            "description": "Custom encryption provider JAR location."
+        },
+        "CustomProviderClass": {
+            "type": "string",
+            "description": "Custom encryption provider full class name."
         }
     }
 }

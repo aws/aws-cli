@@ -1,23 +1,36 @@
-**To modify attributes of your load balancer**
+**To modify the attributes of a load balancer**
 
-This example modifies attributes of a specified load balancer. The following example uses JSON syntax on a Windows
-operating system to specify the attributes. For information about specifying JSON syntax on your operating system, see
-`Quoting Strings`_.
+This example modifies the ``CrossZoneLoadBalancing`` attribute of the specified load balancer.
 
 Command::
 
-    aws elb modify-load-balancer-attributes --load-balancer-name MyHTTPSLoadBalancer --load-balancer-attributes "{\"CrossZoneLoadBalancing\":{\"Enabled\":true}}
+    aws elb modify-load-balancer-attributes --load-balancer-name my-load-balancer --load-balancer-attributes "{\"CrossZoneLoadBalancing\":{\"Enabled\":true}}"
 
 Output::
 
-   {
+  {
       "LoadBalancerAttributes": {
-        "CrossZoneLoadBalancing": {
-            "Enabled": true
+          "CrossZoneLoadBalancing": {
+              "Enabled": true
           }
       },
-      "LoadBalancerName": "MyHTTPSLoadBalancer"
-    }
+      "LoadBalancerName": "my-load-balancer"
+  }
 
-.. _`Quoting Strings`: http://docs.aws.amazon.com/cli/latest/userguide/cli-using-param.html#quoting-strings
+This example modifies the ``ConnectionDraining`` attribute of the specified load balancer.
 
+Command::
+
+    aws elb modify-load-balancer-attributes --load-balancer-name my-load-balancer --load-balancer-attributes "{\"ConnectionDraining\":{\"Enabled\":true,\"Timeout\":300}}"
+
+Output::
+
+  {
+      "LoadBalancerAttributes": {
+          "ConnectionDraining": {
+              "Enabled": true,
+              "Timeout": 300
+          }
+      },
+      "LoadBalancerName": "my-load-balancer"
+  }

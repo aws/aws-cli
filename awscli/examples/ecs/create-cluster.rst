@@ -10,8 +10,12 @@ Output::
 
 	{
 	    "cluster": {
-	        "clusterName": "my_cluster",
 	        "status": "ACTIVE",
-	        "clusterArn": "arn:aws:ecs:us-east-1:<aws_account_id>:cluster/my_cluster"
+	        "clusterName": "my_cluster",
+	        "registeredContainerInstancesCount": 0,
+	        "pendingTasksCount": 0,
+	        "runningTasksCount": 0,
+	        "activeServicesCount": 0,
+	        "clusterArn": "arn:aws:ecs:<region>:<aws_account_id>:cluster/my_cluster"
 	    }
 	}

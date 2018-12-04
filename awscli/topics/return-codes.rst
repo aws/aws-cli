@@ -1,6 +1,6 @@
 :title: AWS CLI Return Codes
 :description: Describes the various return codes of the AWS CLI
-:category: General Topics, S3, Troubleshooting
+:category: General
 :related command: s3, s3 cp, s3 sync, s3 mv, s3 rm
 
 These are the following return codes returned at the end of execution
@@ -29,6 +29,8 @@ of a CLI command:
   block special device, FIFO's, or sockets, and files that the user cannot
   read from.
 
+* ``130`` -- The process received a SIGINT (Ctrl-C).
+
 * ``255`` -- Command failed. There were errors thrown by either the CLI or
   by the service the request was made to.
 
@@ -46,6 +48,15 @@ Output (if successful)::
 On Windows PowerShell, the return code can be determined by running::
 
   > echo $lastexitcode
+
+Output (if successful)::
+
+  0
+
+
+On Windows Command Prompt, the return code can be determined by running::
+
+  > echo %errorlevel%
 
 Output (if successful)::
 

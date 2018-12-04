@@ -1,0 +1,57 @@
+#!/usr/bin/env python
+"""Setup virtualenv to run perf benchmarks.
+
+This script assumes you're running in a virtualenv.
+However, given this script will clone and install s3transfer,
+it's recommended to create a new virtualenv dedicated to
+perf testing.
+
+* Clone the s3transfer repo
+* Install dependencies
+
+"""
+import os
+import shutil
+from subprocess import check_call
+
+
+GIT_OWNER = os.environ.get('GIT_OWNER', 'boto')
+# Using PERF_BRANCH instead of GIT_BRANCH because that value
+# is set by jenkins to the branch that's been checked out via
+# git.
+PERF_BRANCH = os.environ.get('PERF_BRANCH', 'develop')
+REPO_ROOT = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+WORKDIR = os.environ.get('PERF_WORKDIR', os.path.join(REPO_ROOT, 'workdir'))
+
+
+def clone_s3_transfer_repo():
+    if os.path.isdir('s3transfer'):
+        shutil.rmtree('s3transfer')
+    check_call('git clone https://github.com/%s/s3transfer.git' % GIT_OWNER,
+               shell=True)
+    check_call('cd s3transfer && git checkout %s' % PERF_BRANCH, shell=True)
+
+
+def pip_install_s3transfer_and_deps():
+    check_call('cd s3transfer && pip install -e .', shell=True)
+    check_call('cd s3transfer && pip install -r requirements-dev.txt',
+               shell=True)
+    check_call('pip install "caf>=0.1.0,<1.0.0"', shell=True)
+    check_call('cd %s && pip install -e .' % REPO_ROOT, shell=True)
+
+
+def create_workdir():
+    if not os.path.isdir(WORKDIR):
+        os.makedirs(WORKDIR)
+
+
+def main():
+    create_workdir()
+    os.chdir(WORKDIR)
+    clone_s3_transfer_repo()
+    pip_install_s3transfer_and_deps()
+
+
+if __name__ == '__main__':
+    main()

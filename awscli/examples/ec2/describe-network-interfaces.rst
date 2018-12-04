@@ -43,7 +43,7 @@ Output::
                 "Status": "attached",
                 "DeviceIndex": 1,
                 "AttachTime": "2013-11-30T23:36:42.000Z",
-                "InstanceId": "i-640a3c17",
+                "InstanceId": "i-1234567890abcdef0",
                 "DeleteOnTermination": false,
                 "AttachmentId": "eni-attach-66c4350a",
                 "InstanceOwnerId": "123456789012"
@@ -86,7 +86,7 @@ Output::
                 "Status": "attached",
                 "DeviceIndex": 0,
                 "AttachTime": "2013-11-30T23:35:33.000Z",
-                "InstanceId": "i-640a3c17",
+                "InstanceId": "i-0598c7d356eba48d7",
                 "DeleteOnTermination": true,
                 "AttachmentId": "eni-attach-1b9db777",
                 "InstanceOwnerId": "123456789012"

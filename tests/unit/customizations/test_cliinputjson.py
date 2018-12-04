@@ -22,8 +22,8 @@ from awscli.customizations.cliinputjson import CliInputJSONArgument
 
 class TestCliInputJSONArgument(unittest.TestCase):
     def setUp(self):
-        self.operation_object = mock.Mock()
-        self.argument = CliInputJSONArgument(self.operation_object)
+        self.session = mock.Mock()
+        self.argument = CliInputJSONArgument(self.session)
 
         # Create the various forms the data could come in. The two main forms
         # are as a string and or as a path to a file.
@@ -39,7 +39,7 @@ class TestCliInputJSONArgument(unittest.TestCase):
         shutil.rmtree(self.temp_dir)
 
     def test_register_argument_action(self):
-        register_args = self.operation_object.session.register.call_args_list
+        register_args = self.session.register.call_args_list
         self.assertEqual(register_args[0][0][0], 'calling-command')
         self.assertEqual(register_args[0][0][1],
                          self.argument.add_to_call_parameters)

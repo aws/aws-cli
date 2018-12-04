@@ -13,9 +13,22 @@
 import os
 import sys
 import struct
+import unicodedata
 
 import colorama
 from awscli.compat import six
+
+
+def get_text_length(text):
+    # `len(unichar)` measures the number of characters, so we use
+    # `unicodedata.east_asian_width` to measure the length of characters.
+    # Following responses are considered to be full-width length.
+    # * A(Ambiguous)
+    # * F(Fullwidth)
+    # * W(Wide)
+    text = six.text_type(text)
+    return sum(2 if unicodedata.east_asian_width(char) in 'WFA' else 1
+               for char in text)
 
 
 def determine_terminal_width(default_width=80):
@@ -49,14 +62,14 @@ def center_text(text, length=80, left_edge='|', right_edge='|',
     automatically for you.  This can allow you to center a string not based
     on it's literal length (useful if you're using ANSI codes).
     """
-    # postcondition: len(returned_text) == length
+    # postcondition: get_text_length(returned_text) == length
     if text_length is None:
-        text_length = len(text)
+        text_length = get_text_length(text)
     output = []
     char_start = (length // 2) - (text_length // 2) - 1
     output.append(left_edge + ' ' * char_start + text)
-    length_so_far = len(left_edge) + char_start + text_length
-    right_side_spaces = length - len(right_edge) - length_so_far
+    length_so_far = get_text_length(left_edge) + char_start + text_length
+    right_side_spaces = length - get_text_length(right_edge) - length_so_far
     output.append(' ' * right_side_spaces)
     output.append(right_edge)
     final = ''.join(output)
@@ -66,11 +79,12 @@ def center_text(text, length=80, left_edge='|', right_edge='|',
 def align_left(text, length, left_edge='|', right_edge='|', text_length=None,
                left_padding=2):
     """Left align text."""
-    # postcondition: len(returned_text) == length
+    # postcondition: get_text_length(returned_text) == length
     if text_length is None:
-        text_length = len(text)
+        text_length = get_text_length(text)
     computed_length = (
-        text_length + left_padding + len(left_edge) + len(right_edge))
+        text_length + left_padding + \
+        get_text_length(left_edge) + get_text_length(right_edge))
     if length - computed_length >= 0:
         padding = left_padding
     else:
@@ -147,9 +161,9 @@ class Styler(object):
 
 class ColorizedStyler(Styler):
     def __init__(self):
-        # autoreset allows us to not have to sent
-        # reset sequences for every string.
-        colorama.init(autoreset=True)
+        # `autoreset` allows us to not have to sent reset sequences for every
+        # string. `strip` lets us preserve color when redirecting.
+        colorama.init(autoreset=True, strip=False)
 
     def style_title(self, text):
         # Originally bold + underline
@@ -246,7 +260,7 @@ class MultiTable(object):
         if section.title:
             title = self._styler.style_title(section.title)
             stream.write(center_text(title, max_width, '|', '|',
-                                     len(section.title)) + '\n')
+                                     get_text_length(section.title)) + '\n')
             if not section.headers and not section.rows:
                 stream.write('+%s+' % ('-' * (max_width - 2)) + '\n')
 
@@ -272,7 +286,7 @@ class MultiTable(object):
                 left_edge = ''
             current += center_text(text=stylized_header, length=width,
                                    left_edge=left_edge, right_edge='|',
-                                   text_length=len(header))
+                                   text_length=get_text_length(header))
             length_so_far += width
         self._write_line_break(stream, widths)
         stream.write(current + '\n')
@@ -315,7 +329,7 @@ class MultiTable(object):
                 current += align_left(text=stylized, length=width,
                                       left_edge=left_edge,
                                       right_edge=self._column_separator,
-                                      text_length=len(element))
+                                      text_length=get_text_length(element))
                 length_so_far += width
             stream.write(current + '\n')
         self._write_line_break(stream, widths)
@@ -372,7 +386,7 @@ class Section(object):
         if with_border:
             total += border_padding
         total += outer_padding + outer_padding
-        return max(len(self.title) + border_padding + outer_padding +
+        return max(get_text_length(self.title) + border_padding + outer_padding +
                    outer_padding, total)
 
     def add_title(self, title):
@@ -402,7 +416,7 @@ class Section(object):
 
     def _update_max_widths(self, row):
         if not self._max_widths:
-            self._max_widths = [len(el) for el in row]
+            self._max_widths = [get_text_length(el) for el in row]
         else:
             for i, el in enumerate(row):
-                self._max_widths[i] = max(len(el), self._max_widths[i])
+                self._max_widths[i] = max(get_text_length(el), self._max_widths[i])

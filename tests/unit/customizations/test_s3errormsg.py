@@ -46,6 +46,23 @@ class TestGetRegionFromEndpoint(unittest.TestCase):
         error_message = parsed['Error']['Message']
         self.assertIn('myendpoint', error_message)
 
+    def test_kms_sigv4_error_message(self):
+        parsed = {
+            'Error': {
+                'Message': (
+                    'Requests specifying Server Side Encryption with '
+                    'AWS KMS managed keys require AWS Signature Version 4.')
+            }
+        }
+        s3errormsg.enhance_error_msg(parsed)
+        # We should say how you enable it.
+        self.assertIn('You can enable AWS Signature Version 4',
+                      parsed['Error']['Message'])
+        # We should mention the command that needs to be run.
+        self.assertIn(
+            'aws configure set s3.signature_version s3v4',
+            parsed['Error']['Message'])
+
     def test_error_message_not_enhanced(self):
         parsed = {
             'Error': {

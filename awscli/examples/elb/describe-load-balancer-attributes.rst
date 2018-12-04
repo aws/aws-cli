@@ -1,27 +1,27 @@
 **To describe the attributes of a load balancer**
 
-This example describes the attributes of a specified load balancer.
+This example describes the attributes of the specified load balancer.
 
 Command::
 
-  aws elb describe-load-balancer-attributes --load-balancer-name MyHTTPSLoadBalancer
+  aws elb describe-load-balancer-attributes --load-balancer-name my-load-balancer
 
 Output::
 
   {
     "LoadBalancerAttributes": {
-	"ConnectionSettings": {
-               "IdleTimeout": 30
-      },
-      "ConnectionDraining": {
-        "Enabled": false,
-        "Timeout": 300
-      },
-      "CrossZoneLoadBalancing": {
-        "Enabled": true
-      },
-      "AccessLog": {
-        "Enabled": false
+        "ConnectionDraining": {
+            "Enabled": false,
+            "Timeout": 300
+        },
+        "CrossZoneLoadBalancing": {
+            "Enabled": true
+        },
+        "ConnectionSettings": {
+            "IdleTimeout": 30
+        },
+        "AccessLog": {
+            "Enabled": false
       }
     }
   }

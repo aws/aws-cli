@@ -2,7 +2,7 @@
 
 Command::
 
-  aws ec2 describe-instances --instance-ids i-5203422c
+  aws ec2 describe-instances --instance-ids i-1234567890abcdef0
 
 **To describe all instances with the instance type m1.small**
 
@@ -10,11 +10,17 @@ Command::
 
   aws ec2 describe-instances --filters "Name=instance-type,Values=m1.small"
 
-**To describe all instances with an Owner tag**
+**To describe all instances with a Owner tag**
 
 Command::
 
   aws ec2 describe-instances --filters "Name=tag-key,Values=Owner"
+
+**To describe all instances with a Purpose=test tag**
+
+Command::
+
+  aws ec2 describe-instances --filters "Name=tag:Purpose,Values=test"
 
 **To describe all EC2 instances that have an instance type of m1.small or m1.medium that are also in the us-west-2c Availability Zone**
 

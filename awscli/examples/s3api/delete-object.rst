@@ -1,9 +1,13 @@
-Delete an object
-----------------
+The following command deletes an object named ``test.txt`` from a bucket named ``my-bucket``::
 
-The following example uses the ``get-object`` command to download an object from Amazon S3::
+  aws s3api delete-object --bucket my-bucket --key test.txt
 
-  aws s3api delete-object --bucket text-content --key dir-1/my_images.tar.bz2 --region=us-east-1
+If bucket versioning is enabled, the output will contain the version ID of the delete marker::
+
+  {
+    "VersionId": "9_gKg5vG56F.TTEUdwkxGpJ3tNDlWlGq",
+    "DeleteMarker": true
+  }
 
 For more information about deleting objects, see `Deleting Objects`_ in the *Amazon S3 Developer Guide*.
 

@@ -11,7 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import csv
+import signal
 import datetime
+import contextlib
 
 from awscli.compat import six
 
@@ -107,6 +109,23 @@ def _find_quote_char_in_part(part):
     return quote_char
 
 
+def find_service_and_method_in_event_name(event_name):
+    """
+    Grabs the service name and the operation name from an event name.
+    This is making the assumption that the event name is in the form
+    event.service.operation.
+    """
+    split_event = event_name.split('.')[1:]
+    service_name = None
+    if len(split_event) > 0:
+        service_name = split_event[0]
+
+    operation_name = None
+    if len(split_event) > 1:
+        operation_name = split_event[1]
+    return service_name, operation_name
+
+
 def json_encoder(obj):
     """JSON encoder that formats datetimes as ISO8601 format."""
     if isinstance(obj, datetime.datetime):
@@ -115,3 +134,10 @@ def json_encoder(obj):
         return obj
 
 
+@contextlib.contextmanager
+def ignore_ctrl_c():
+    original = signal.signal(signal.SIGINT, signal.SIG_IGN)
+    try:
+        yield
+    finally:
+        signal.signal(signal.SIGINT, original)

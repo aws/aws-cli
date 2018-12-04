@@ -4,19 +4,19 @@ Path Argument Type
 ++++++++++++++++++
 
 Whenever using a command, at least one path argument must be specified.  There
-are two types of path arguments: ``LocalPath`` and ``S3Path``.
+are two types of path arguments: ``LocalPath`` and ``S3Uri``.
 
 ``LocalPath``: represents the path of a local file or directory.  It can be
 written as an absolute path or relative path.
 
-``S3Path``: represents the location of a S3 object, prefix, or bucket.  This
+``S3Uri``: represents the location of a S3 object, prefix, or bucket.  This
 must be written in the form ``s3://mybucket/mykey`` where ``mybucket`` is
 the specified S3 bucket, ``mykey`` is the specified S3 key.  The path argument
 must begin with ``s3://`` in order to denote that the path argument refers to
 a S3 object. Note that prefixes are separated by forward slashes. For
 example, if the S3 object ``myobject`` had the prefix ``myprefix``, the
 S3 key would be ``myprefix/myobject``, and if the object was in the bucket
-``mybucket``, the ``S3Path`` would be ``s3://mybucket/myprefix/myobject``.
+``mybucket``, the ``S3Uri`` would be ``s3://mybucket/myprefix/myobject``.
 
 
 Order of Path Arguments
@@ -51,7 +51,7 @@ The destination is indicated as a local directory, S3 prefix, or S3 bucket
 if it ends with a forward slash or back slash.  The use of slash depends
 on the path argument type.  If the path argument is a ``LocalPath``,
 the type of slash is the separator used by the operating system.  If the
-path is a ``S3Path``, the forward slash must always be used.  If a slash
+path is a ``S3Uri``, the forward slash must always be used.  If a slash
 is at the end of the destination, the destination file or object will
 adopt the name of the source file or object.  Otherwise, if there is no
 slash at the end, the file or object will be saved under the name provided.
@@ -85,7 +85,7 @@ a particular file or object.  The following pattern symbols are supported.
     * ``*``: Matches everything
     * ``?``: Matches any single character
     * ``[sequence]``: Matches any character in ``sequence``
-    * ``[!sequence]``: Matches any charater not in ``sequence``
+    * ``[!sequence]``: Matches any character not in ``sequence``
 
 Any number of these parameters can be passed to a command.  You can do this by
 providing an ``--exclude`` or ``--include`` argument multiple times, e.g.
@@ -149,7 +149,7 @@ will exclude ``/tmp/foo/bar.txt`` and ``/tmp/foo/baz.jpg``::
 Note that, by default, *all files are included*.  This means that
 providing **only** an ``--include`` filter will not change what
 files are transferred.  ``--include`` will only re-include files that
-have been excluded from an ``--exclude`` filter.  If you want only want
+have been excluded from an ``--exclude`` filter.  If you only want
 to upload files with a particular extension, you need to first exclude
 all files, then re-include the files with the particular extension.
 This command will upload **only** files ending with ``.jpg``::

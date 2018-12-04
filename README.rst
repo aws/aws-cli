@@ -2,13 +2,13 @@
 aws-cli
 =======
 
-.. image:: https://travis-ci.org/aws/aws-cli.png?branch=develop
+.. image:: https://travis-ci.org/aws/aws-cli.svg?branch=develop
    :target: https://travis-ci.org/aws/aws-cli
    :alt: Build Status
-
-
-.. image:: https://coveralls.io/repos/aws/aws-cli/badge.png
-  :target: https://coveralls.io/r/aws/aws-cli
+   
+.. image:: https://badges.gitter.im/aws/aws-cli.svg
+   :target: https://gitter.im/aws/aws-cli
+   :alt: Gitter
 
 
 This package provides a unified command line interface to Amazon Web Services.
@@ -19,6 +19,7 @@ The aws-cli package works on Python versions:
 * 2.7.x and greater
 * 3.3.x and greater
 * 3.4.x and greater
+* 3.5.x and greater
 
 .. attention::
    We recommend that all customers regularly monitor the
@@ -42,6 +43,14 @@ If you have the aws-cli installed and want to upgrade to the latest version
 you can run::
 
     $ pip install --upgrade awscli
+
+.. note::
+
+    On OS X, if you see an error regarding the version of six that came with
+    distutils in El Capitan, use the ``--ignore-installed`` option::
+
+        $ sudo pip install awscli --ignore-installed six
+
 
 This will install the aws-cli package as well as all dependencies.  You can
 also just `download the tarball`_.  Once you have the
@@ -69,9 +78,12 @@ Command Completion
 
 The aws-cli package includes a very useful command completion feature.
 This feature is not automatically installed so you need to configure it manually.
-To enable tab completion for bash use the built-in command ``complete``::
+To enable tab completion for bash either use the built-in command ``complete``::
 
     $ complete -C aws_completer aws
+
+Or add ``bin/aws_bash_completer`` file under ``/etc/bash_completion.d``,
+``/usr/local/etc/bash_completion.d`` or any other ``bash_completion.d`` location.
 
 For tcsh::
 
@@ -79,7 +91,8 @@ For tcsh::
 
 You should add this to your startup scripts to enable it for future sessions.
 
-For zsh please refer to bin/aws_zsh_completer.sh.  Source that file::
+For zsh please refer to bin/aws_zsh_completer.sh.  Source that file, e.g.
+from your `~/.zshrc`, and make sure you run `compinit` before::
 
     $ source bin/aws_zsh_completer.sh
 
@@ -94,6 +107,7 @@ Before using aws-cli, you need to tell it about your AWS credentials.  You
 can do this in several ways:
 
 * Environment variables
+* Shared credentials file
 * Config file
 * IAM Role
 
@@ -110,6 +124,24 @@ To use environment variables, do the following::
     $ export AWS_ACCESS_KEY_ID=<access_key>
     $ export AWS_SECRET_ACCESS_KEY=<secret_key>
 
+To use the shared credentials file, create an INI formatted file like this::
+
+    [default]
+    aws_access_key_id=foo
+    aws_secret_access_key=bar
+
+    [testing]
+    aws_access_key_id=foo
+    aws_secret_access_key=bar
+
+and place it in ``~/.aws/credentials`` (or in
+``%UserProfile%\.aws/credentials`` on Windows). If you wish to place the
+shared credentials file in a different location than the one specified above,
+you need to tell aws-cli where to find it.  Do this by setting
+the appropriate environment variable::
+
+    $ export AWS_SHARED_CREDENTIALS_FILE=/path/to/shared_credentials_file
+
 To use a config file, create a configuration file like this::
 
     [default]
@@ -123,20 +155,21 @@ To use a config file, create a configuration file like this::
     aws_secret_access_key=<testing secret key>
     region=us-west-2
 
-and place it in ``~/.aws/config`` (or in ``%UserProfile%\.aws\config`` on Windows).
-
-As you can see, you can have multiple ``profiles`` defined in this
-configuration file and specify which profile to use by using the ``--profile``
-option.  If no profile is specified the ``default`` profile is used.  Except
-for the default profile, you **must** prefix each config section of a profile
-group with ``profile``.  For example, if you have a profile named "testing" the
-section header would be ``[profile testing]``.
-
-If you wish to place the config file in a different location than the one
+and place it in ``~/.aws/config`` (or in ``%UserProfile%\.aws\config`` on Windows). If you wish to place the config file in a different location than the one
 specified above, you need to tell aws-cli where to find it.  Do this by setting
 the appropriate environment variable::
 
     $ export AWS_CONFIG_FILE=/path/to/config_file
+
+As you can see, you can have multiple ``profiles`` defined in both the shared
+credentials file and the  configuration file. You can then specify which
+profile to use by using the ``--profile`` option. If no profile is specified
+the ``default`` profile is used.
+
+In the config file, except for the default profile, you
+**must** prefix each config section of a profile group with ``profile``.
+For example, if you have a profile named "testing" the section header would
+be ``[profile testing]``.
 
 The final option for credentials is highly recommended if you are
 using aws-cli on an EC2 instance.  IAM Roles are
@@ -152,23 +185,25 @@ In addition to credentials, a number of other variables can be
 configured either with environment variables, configuration file
 entries or both.  The following table documents these.
 
-=========== ========= ===================== ===================== ============================
-Variable    Option    Config Entry          Environment Variable  Description
-=========== ========= ===================== ===================== ============================
-profile     --profile profile               AWS_DEFAULT_PROFILE   Default profile name
------------ --------- --------------------- --------------------- ----------------------------
-region      --region  region                AWS_DEFAULT_REGION    Default AWS Region
------------ --------- --------------------- --------------------- ----------------------------
-config_file                                 AWS_CONFIG_FILE       Alternate location of config
------------ --------- --------------------- --------------------- ----------------------------
-output      --output  output                AWS_DEFAULT_OUTPUT    Default output style
------------ --------- --------------------- --------------------- ----------------------------
-access_key            aws_access_key_id     AWS_ACCESS_KEY_ID     AWS Access Key
------------ --------- --------------------- --------------------- ----------------------------
-secret_key            aws_secret_access_key AWS_SECRET_ACCESS_KEY AWS Secret Key
------------ --------- --------------------- --------------------- ----------------------------
-token                 aws_session_token     AWS_SESSION_TOKEN     AWS Token (temp credentials)
-=========== ========= ===================== ===================== ============================
+=========== =========== ===================== ===================== ============================
+Variable    Option      Config Entry          Environment Variable  Description
+=========== =========== ===================== ===================== ============================
+profile     --profile   profile               AWS_DEFAULT_PROFILE   Default profile name
+----------- ----------- --------------------- --------------------- ----------------------------
+region      --region    region                AWS_DEFAULT_REGION    Default AWS Region
+----------- ----------- --------------------- --------------------- ----------------------------
+config_file                                   AWS_CONFIG_FILE       Alternate location of config
+----------- ----------- --------------------- --------------------- ----------------------------
+output      --output    output                AWS_DEFAULT_OUTPUT    Default output style
+----------- ----------- --------------------- --------------------- ----------------------------
+ca_bundle   --ca-bundle ca_bundle             AWS_CA_BUNDLE         CA Certificate Bundle
+----------- ----------- --------------------- --------------------- ----------------------------
+access_key              aws_access_key_id     AWS_ACCESS_KEY_ID     AWS Access Key
+----------- ----------- --------------------- --------------------- ----------------------------
+secret_key              aws_secret_access_key AWS_SECRET_ACCESS_KEY AWS Secret Key
+----------- ----------- --------------------- --------------------- ----------------------------
+token                   aws_session_token     AWS_SESSION_TOKEN     AWS Token (temp credentials)
+=========== =========== ===================== ===================== ============================
 
 ^^^^^^^^
 Examples
@@ -197,6 +232,15 @@ if one is not explicitly specified on the command line via the
 The ``profile`` variable can not be specified in the configuration file
 since it would have to be associated with a profile and would defeat the
 purpose.
+
+^^^^^^^^^^^^^^^^^^^
+Further Information
+^^^^^^^^^^^^^^^^^^^
+
+For more information about configuration options, please refer the
+`AWS CLI Configuration Variables topic <http://docs.aws.amazon.com/cli/latest/topic/config-vars.html#cli-aws-help-config-vars>`_. You can access this topic
+from the CLI as well by running ``aws help config-vars``.
+
 
 ----------------------------------------
 Accessing Services With Global Endpoints
@@ -301,8 +345,8 @@ Get a list of key names and their sizes in an S3 bucket::
 Get a list of all EC2 instances and include their Instance ID, State Name,
 and their Name (if they've been tagged with a Name)::
 
-    $ $ aws ec2 describe-instances --query \
-        'Reservations[].Instances[].[InstanceId,State.Name,Tags[?Key==`Name`] | [0].Value]'
+    $ aws ec2 describe-instances --query \
+      'Reservations[].Instances[].[InstanceId,State.Name,Tags[?Key==`Name`] | [0].Value]'
 
 
 You may also find the `jq <http://stedolan.github.com/jq/>`_ tool useful in
@@ -335,7 +379,6 @@ Additionally, there are several other packages that are developed in tandem
 with the CLI.  This includes:
 
 * `botocore <https://github.com/boto/botocore>`__
-* `bcdoc <https://github.com/boto/bcdoc>`__
 * `jmespath <https://github.com/boto/jmespath>`__
 
 If you just want to install a snapshot of the latest development version of
@@ -348,15 +391,13 @@ This file points to the development version of the above packages::
 
 However, to keep up to date, you will continually have to run the
 ``pip install -r requirements.txt`` file to pull in the latest changes
-from the develop branches of botocore, bcdoc, etc.
+from the develop branches of botocore, jmespath, etc.
 
 You can optionally clone each of those repositories and run "pip install -e ."
 for each repository::
 
     git clone <jmespath> && cd jmespath/
     pip install -e . && cd ..
-    git clone <bcdoc> && cd bcdoc/
-    pip install -e . &&  cd ..
     git clone <botocore> && cd botocore/
     pip install -e . && cd ..
     git clone <awscli> && cd aws-cli/

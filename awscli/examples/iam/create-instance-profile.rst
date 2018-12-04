@@ -1,25 +1,24 @@
 **To create an instance profile**
 
-The following ``create-instance-profile`` command creates an instance profile named ``ExampleInstanceProfile``::
+The following ``create-instance-profile`` command creates an instance profile named ``Webserver``::
 
-  aws iam create-instance-profile --instance-profile-name ExampleInstanceProfile
+  aws iam create-instance-profile --instance-profile-name Webserver
 
 Output::
 
   {
-    "InstanceProfile": {
-        "InstanceProfileId": "AIDGPMS9RO4H3FEXAMPLE",
-        "Roles": [],
-        "CreateDate": "2013-06-07T21:05:24.085Z",
-        "InstanceProfileName": "ExampleInstanceProfile",
-        "Path": "/",
-        "Arn": "arn:aws:iam::123456789012:instance-profile/ExampleInstanceProfile"
-    }
+      "InstanceProfile": {
+          "InstanceProfileId": "AIPAJMBYC7DLSPEXAMPLE",
+          "Roles": [],
+          "CreateDate": "2015-03-09T20:33:19.626Z",
+          "InstanceProfileName": "Webserver",
+          "Path": "/",
+          "Arn": "arn:aws:iam::123456789012:instance-profile/Webserver"
+      }
   }
 
 To add a role to an instance profile, use the ``add-role-to-instance-profile`` command.
 
-For more information, see `Instance Profiles`_ in the *Using IAM* guide.
+For more information, see `Using IAM Roles to Delegate Permissions to Applications that Run on Amazon EC2`_ in the *Using IAM* guide.
 
-.. _`Instance Profiles`: http://docs.aws.amazon.com/IAM/latest/UserGuide/instance-profiles.html
-
+.. _`Using IAM Roles to Delegate Permissions to Applications that Run on Amazon EC2`: http://docs.aws.amazon.com/IAM/latest/UserGuide/roles-usingrole-ec2instance.html

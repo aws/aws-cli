@@ -19,7 +19,8 @@ for performance reasons or to account for the specific environment where these
 Configuration Values
 ====================
 
-These are the configuration values you can set for S3:
+These are the configuration values you can set specifically for the ``aws s3``
+command set:
 
 * ``max_concurrent_requests`` - The maximum number of concurrent requests.
 * ``max_queue_size`` - The maximum number of tasks in the task queue.
@@ -27,6 +28,18 @@ These are the configuration values you can set for S3:
   transfers of individual files.
 * ``multipart_chunksize`` - When using multipart transfers, this is the chunk
   size that the CLI uses for multipart transfers of individual files.
+
+
+These are the configuration values that can be set for both ``aws s3``
+and ``aws s3api``:
+
+* ``use_accelerate_endpoint`` - Use the Amazon S3 Accelerate endpoint for
+  all ``s3`` and ``s3api`` commands. You **must** first enable S3 Accelerate
+  on your bucket before attempting to use the endpoint.
+* ``addressing_style`` - Specifies which addressing style to use. This controls
+  if the bucket name is in the hostname or part of the URL. Value values are:
+  ``path``, ``virtual``, and ``auto``.  The default value is ``auto``.
+
 
 These values must be set under the top level ``s3`` key in the AWS Config File,
 which has a default location of ``~/.aws/config``.  Below is an example
@@ -40,6 +53,9 @@ configuration::
       max_queue_size = 10000
       multipart_threshold = 64MB
       multipart_chunksize = 16MB
+      use_accelerate_endpoint = true
+      addressing_style = path
+
 
 Note that all the S3 configuration values are indented and nested under the top
 level ``s3`` key.
@@ -52,6 +68,8 @@ could instead run these commands::
     $ aws configure set default.s3.max_queue_size 10000
     $ aws configure set default.s3.multipart_threshold 64MB
     $ aws configure set default.s3.multipart_chunksize 16MB
+    $ aws configure set default.s3.use_accelerate_endpoint true
+    $ aws configure set default.s3.addressing_style path
 
 
 max_concurrent_requests
@@ -128,9 +146,41 @@ multipart_chunksize
 
 **Default** - ``8MB``
 
+**Minimum For Uploads** - ``5MB``
+
 Once the S3 commands have decided to use multipart operations, the
 file is divided into chunks.  This configuration option specifies what
 the chunk size (also referred to as the part size) should be.  This
 value can specified using the same semantics as ``multipart_threshold``,
 that is either as the number of bytes as an integer, or using a size
 suffix.
+
+
+use_accelerate_endpoint
+-----------------------
+
+If set to ``true``, will direct all Amazon S3 requests to the S3 Accelerate
+endpoint: ``s3-accelerate.amazonaws.com``. To use this endpoint, your bucket
+must be enabled to use S3 Accelerate. All request will be sent using the
+virtual style of bucket addressing: ``my-bucket.s3-accelerate.amazonaws.com``.
+Any ``ListBuckets``, ``CreateBucket``, and ``DeleteBucket`` requests will not
+be sent to the Accelerate endpoint as the endpoint does not support those
+operations. This behavior can also be set if ``--endpoint-url`` parameter
+is set to ``https://s3-accelerate.amazonaws.com`` or
+``http://s3-accelerate.amazonaws.com`` for any ``s3`` or ``s3api`` command.
+
+addressing_style
+----------------
+
+There's two styles of constructing an S3 endpoint.  The first is with
+the bucket included as part of the hostname.  This corresponds to the
+addressing style of ``virtual``.  The second is with the bucket included
+as part of the path of the URI, corresponding to the addressing style
+of ``path``.  The default value in the CLI is to use ``auto``, which
+will attempt to use ``virtual`` where possible, but will fall back to
+``path`` style if necessary.  For example, if your bucket name is not
+DNS compatible, the bucket name cannot be part of the hostname and
+must be in the path.  With ``auto``, the CLI will detect this condition
+and automatically switch to ``path`` style for you.  If you set the
+addressing style to ``path``, you must ensure that the AWS region you
+configured in the AWS CLI matches the same region of your bucket.

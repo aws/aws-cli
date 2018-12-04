@@ -13,6 +13,12 @@
 
 # Declare all the constants used by EMR in this file.
 
+EC2_ROLE_NAME = "EMR_EC2_DefaultRole"
+EMR_ROLE_NAME = "EMR_DefaultRole"
+EC2_ROLE_ARN_PATTERN = ("arn:{{region_suffix}}:iam::aws:policy/service-role/"
+                        "AmazonElasticMapReduceforEC2Role")
+EMR_ROLE_ARN_PATTERN = ("arn:{{region_suffix}}:iam::aws:policy/service-role/"
+                        "AmazonElasticMapReduceRole")
 
 # Action on failure
 CONTINUE = 'CONTINUE'
@@ -25,26 +31,54 @@ SPOT = 'SPOT'
 ON_DEMAND = 'ON_DEMAND'
 
 SCRIPT_RUNNER_PATH = '/libs/script-runner/script-runner.jar'
+COMMAND_RUNNER = 'command-runner.jar'
 DEBUGGING_PATH = '/libs/state-pusher/0.1/fetch'
+DEBUGGING_COMMAND = 'state-pusher-script'
 DEBUGGING_NAME = 'Setup Hadoop Debugging'
 
 CONFIG_HADOOP_PATH = '/bootstrap-actions/configure-hadoop'
 
-EMR_FS_BA_NAME = 'Setup EMRFS'
-EMR_FS_BA_ARG_KEY = '-e'
-EMR_FS_CONSISTENT_KEY = 'fs.s3.consistent'
-EMR_FS_SSE_KEY = 'fs.s3.enableServerSideEncryption'
-EMR_FS_RETRY_COUNT_KEY = 'fs.s3.consistent.retryCount'
-EMR_FS_RETRY_PERIOD_KEY = 'fs.s3.consistent.retryPeriodSeconds'
+# S3 copy bootstrap action
+S3_GET_BA_NAME = 'S3 get'
+S3_GET_BA_SRC = '-s'
+S3_GET_BA_DEST = '-d'
+S3_GET_BA_FORCE = '-f'
+
+# EMRFS
+EMRFS_BA_NAME = 'Setup EMRFS'
+EMRFS_BA_ARG_KEY = '-e'
+EMRFS_CONSISTENT_KEY = 'fs.s3.consistent'
+EMRFS_SSE_KEY = 'fs.s3.enableServerSideEncryption'
+EMRFS_RETRY_COUNT_KEY = 'fs.s3.consistent.retryCount'
+EMRFS_RETRY_PERIOD_KEY = 'fs.s3.consistent.retryPeriodSeconds'
+EMRFS_CSE_KEY = 'fs.s3.cse.enabled'
+EMRFS_CSE_KMS_KEY_ID_KEY = 'fs.s3.cse.kms.keyId'
+EMRFS_CSE_ENCRYPTION_MATERIALS_PROVIDER_KEY = \
+    'fs.s3.cse.encryptionMaterialsProvider'
+EMRFS_CSE_CUSTOM_PROVIDER_URI_KEY = 'fs.s3.cse.encryptionMaterialsProvider.uri'
+
+EMRFS_CSE_KMS_PROVIDER_FULL_CLASS_NAME = ('com.amazon.ws.emr.hadoop.fs.cse.'
+                                          'KMSEncryptionMaterialsProvider')
+EMRFS_CSE_CUSTOM_S3_GET_BA_PATH = 'file:/usr/share/aws/emr/scripts/s3get'
+EMRFS_CUSTOM_DEST_PATH = '/usr/share/aws/emr/auxlib'
+
+EMRFS_SERVER_SIDE = 'SERVERSIDE'
+EMRFS_CLIENT_SIDE = 'CLIENTSIDE'
+EMRFS_KMS = 'KMS'
+EMRFS_CUSTOM = 'CUSTOM'
+
+EMRFS_SITE = 'emrfs-site'
 
 MAX_BOOTSTRAP_ACTION_NUMBER = 16
 BOOTSTRAP_ACTION_NAME = 'Bootstrap action'
 
 HIVE_BASE_PATH = '/libs/hive'
 HIVE_SCRIPT_PATH = '/libs/hive/hive-script'
+HIVE_SCRIPT_COMMAND = 'hive-script'
 
 PIG_BASE_PATH = '/libs/pig'
 PIG_SCRIPT_PATH = '/libs/pig/pig-script'
+PIG_SCRIPT_COMMAND = 'pig-script'
 
 GANGLIA_INSTALL_BA_PATH = '/bootstrap-actions/install-ganglia'
 
@@ -78,7 +112,8 @@ HBASE_SCHEDULE_BACKUP_STEP_NAME = 'Modify Backup Schedule'
 IMPALA_INSTALL_PATH = '/libs/impala/setup-impala'
 
 # Step
-STREAMING_JAR_PATH = '/home/hadoop/contrib/streaming/hadoop-streaming.jar'
+HADOOP_STREAMING_PATH = '/home/hadoop/contrib/streaming/hadoop-streaming.jar'
+HADOOP_STREAMING_COMMAND = 'hadoop-streaming'
 
 CUSTOM_JAR = 'custom_jar'
 HIVE = 'hive'
@@ -87,12 +122,14 @@ IMPALA = 'impala'
 STREAMING = 'streaming'
 GANGLIA = 'ganglia'
 HBASE = 'hbase'
+SPARK = 'spark'
 
 DEFAULT_CUSTOM_JAR_STEP_NAME = 'Custom JAR'
 DEFAULT_STREAMING_STEP_NAME = 'Streaming program'
 DEFAULT_HIVE_STEP_NAME = 'Hive program'
 DEFAULT_PIG_STEP_NAME = 'Pig program'
 DEFAULT_IMPALA_STEP_NAME = 'Impala program'
+DEFAULT_SPARK_STEP_NAME = 'Spark application'
 
 ARGS = '--args'
 RUN_HIVE_SCRIPT = '--run-hive-script'
@@ -102,7 +139,10 @@ RUN_PIG_SCRIPT = '--run-pig-script'
 PIG_VERSIONS = '--pig-versions'
 PIG_STEP_CONFIG = 'PigStepConfig'
 RUN_IMPALA_SCRIPT = '--run-impala-script'
+SPARK_SUBMIT_PATH = '/home/hadoop/spark/bin/spark-submit'
+SPARK_SUBMIT_COMMAND = 'spark-submit'
 IMPALA_STEP_CONFIG = 'ImpalaStepConfig'
+SPARK_STEP_CONFIG = 'SparkStepConfig'
 STREAMING_STEP_CONFIG = 'StreamingStepConfig'
 CUSTOM_JAR_STEP_CONFIG = 'CustomJARStepConfig'
 
@@ -137,7 +177,7 @@ EMR = 'elasticmapreduce'
 
 LATEST = 'latest'
 
-APPLICATIONS = ["HIVE", "PIG", "HBASE", "GANGLIA", "IMPALA", "MAPR",
+APPLICATIONS = ["HIVE", "PIG", "HBASE", "GANGLIA", "IMPALA", "SPARK", "MAPR",
                 "MAPR_M3", "MAPR_M5", "MAPR_M7"]
 
 SSH_USER = 'hadoop'

@@ -202,6 +202,26 @@ class FiltersTest(unittest.TestCase):
         filtered = list(s3_filter.call(s3_files))
         self.assertEqual(len(filtered), 0)
 
+    def test_create_filter_s3_to_s3(self):
+        source = 'bucket/'
+        destination = 'bucket-2/'
+        pattern = '*'
+        parameters = {'filters': [['--exclude', pattern],
+                                  ['--include', '*.jpg']],
+                      'dir_op': True,
+                      'src': 's3://' + source,
+                      'dest': 's3://' + destination}
+        s3_filter = self.create_filter(parameters=parameters)
+
+        source_pattern = s3_filter.patterns[0][1]
+        destination_pattern = s3_filter.dst_patterns[0][1]
+        self.assertEquals(source_pattern, source + pattern)
+        self.assertEquals(destination_pattern, destination + pattern)
+
+        filtered = list(s3_filter.call(self.s3_files))
+        self.assertEquals(len(filtered), 2)
+        for filtered_file in filtered:
+            self.assertFalse('.txt' in filtered_file.src)
 
 if __name__ == "__main__":
     unittest.main()

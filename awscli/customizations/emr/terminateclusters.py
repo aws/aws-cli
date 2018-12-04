@@ -12,12 +12,12 @@
 # language governing permissions and limitations under the License.
 
 
-from awscli.customizations.commands import BasicCommand
-from awscli.customizations.emr import helptext
 from awscli.customizations.emr import emrutils
+from awscli.customizations.emr import helptext
+from awscli.customizations.emr.command import Command
 
 
-class TerminateClusters(BasicCommand):
+class TerminateClusters(Command):
     NAME = 'terminate-clusters'
     DESCRIPTION = helptext.TERMINATE_CLUSTERS
     ARG_TABLE = [{
@@ -26,7 +26,7 @@ class TerminateClusters(BasicCommand):
         'schema': {'type': 'array', 'items': {'type': 'string'}},
     }]
 
-    def _run_main(self, parsed_args, parsed_globals):
+    def _run_main_command(self, parsed_args, parsed_globals):
         parameters = {'JobFlowIds': parsed_args.cluster_ids}
         emrutils.call_and_display_response(self._session,
                                            'TerminateJobFlows', parameters,

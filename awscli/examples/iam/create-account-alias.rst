@@ -1,9 +1,9 @@
 **To create an account alias**
 
-The following ``create-account-alias`` command creates the alias ``mycompany`` for the current account::
+The following ``create-account-alias`` command creates the alias ``examplecorp`` for your AWS account::
 
-  aws iam create-account-alias --account-alias mycompany
+  aws iam create-account-alias --account-alias examplecorp
 
-For more information, see `Using an Alias for Your AWS Account ID`_ in the *Using IAM* guide.
+For more information, see `Your AWS Account ID and Its Alias`_ in the *Using IAM* guide.
 
-.. _`Using an Alias for Your AWS Account ID`: http://docs.aws.amazon.com/IAM/latest/UserGuide/AccountAlias.html
+.. _`Your AWS Account ID and Its Alias`: http://docs.aws.amazon.com/IAM/latest/UserGuide/AccountAlias.html

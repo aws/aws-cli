@@ -19,19 +19,19 @@ from awscli.compat import six
 from botocore.vendored.requests import models
 from botocore.exceptions import NoCredentialsError
 from botocore.compat import OrderedDict
+import botocore.model
 
 import awscli
 from awscli.clidriver import CLIDriver
 from awscli.clidriver import create_clidriver
 from awscli.clidriver import CustomArgument
-from awscli.clidriver import CLIOperationCaller
 from awscli.clidriver import CLICommand
 from awscli.clidriver import ServiceCommand
 from awscli.clidriver import ServiceOperation
 from awscli.customizations.commands import BasicCommand
 from awscli import formatter
+from awscli.argparser import HELP_BLURB
 from botocore.hooks import HierarchicalEmitter
-from botocore.provider import Provider
 
 
 GET_DATA = {
@@ -52,10 +52,10 @@ GET_DATA = {
                 "metavar": "output_format"
             },
             "query": {
-                "help": "<p>A JMESPath query to use in filtering the response data.</p>"
+                "help": ""
             },
             "profile": {
-                "help": "Use a specific profile from your credential file",
+                "help": "",
                 "metavar": "profile_name"
             },
             "region": {
@@ -63,32 +63,103 @@ GET_DATA = {
                 "metavar": "region_name"
             },
             "endpoint-url": {
-                "help": "Override service's default URL with the given URL",
+                "help": "",
                 "metavar": "endpoint_url"
             },
             "no-verify-ssl": {
                 "action": "store_false",
                 "dest": "verify_ssl",
-                "help": "Override default behavior of verifying SSL certificates"
+                "help": "",
             },
             "no-paginate": {
                 "action": "store_false",
-                "help": "Disable automatic pagination",
+                "help": "",
                 "dest": "paginate"
             },
             "page-size": {
-            "type": "int",
-            "help": "<p>Specifies the page size when paginating.</p>"
+                "type": "int",
+                "help": "",
             },
+            "read-timeout": {
+                "type": "int",
+                "help": ""
+            },
+            "connect-timeout": {
+                "type": "int",
+                "help": ""
+            }
         }
     },
-    'aws/_services': {'s3':{}},
-    'aws/_regions': {},
 }
 
 GET_VARIABLE = {
     'provider': 'aws',
     'output': 'json',
+    'api_versions': {}
+}
+
+
+MINI_SERVICE = {
+  "metadata":{
+    "apiVersion":"2006-03-01",
+    "endpointPrefix":"s3",
+    "globalEndpoint":"s3.amazonaws.com",
+    "signatureVersion":"s3",
+    "protocol":"rest-xml"
+  },
+  "operations":{
+    "ListObjects":{
+      "name":"ListObjects",
+      "http":{
+        "method":"GET",
+        "requestUri":"/{Bucket}"
+      },
+      "input":{"shape":"ListObjectsRequest"},
+      "output":{"shape":"ListObjectsOutput"},
+    },
+  },
+  "shapes":{
+    "ListObjectsOutput":{
+      "type":"structure",
+      "members":{
+        "IsTruncated":{
+          "shape":"IsTruncated",
+          "documentation":""
+        },
+        "NextMarker":{
+          "shape":"NextMarker",
+        },
+        "Contents":{"shape":"Contents"},
+      }
+    },
+    "ListObjectsRequest":{
+      "type":"structure",
+      "required":["Bucket"],
+      "members":  OrderedDict([
+        ("Bucket", {
+          "shape":"BucketName",
+          "location":"uri",
+          "locationName":"Bucket"
+        }),
+        ("Marker", {
+          "shape":"Marker",
+          "location":"querystring",
+          "locationName":"marker",
+        }),
+        ("MaxKeys", {
+          "shape":"MaxKeys",
+          "location":"querystring",
+          "locationName":"max-keys",
+        }),
+      ]),
+    },
+    "BucketName":{"type":"string"},
+    "MaxKeys":{"type":"integer"},
+    "Marker":{"type":"string"},
+    "IsTruncated":{"type":"boolean"},
+    "NextMarker":{"type":"string"},
+    "Contents":{"type":"string"},
+  }
 }
 
 
@@ -98,7 +169,6 @@ class FakeSession(object):
         if emitter is None:
             emitter = HierarchicalEmitter()
         self.emitter = emitter
-        self.provider = Provider(self, 'aws')
         self.profile = None
         self.stream_logger_args = None
         self.credentials = 'fakecredentials'
@@ -115,6 +185,16 @@ class FakeSession(object):
             if response is not None:
                 return response
 
+    def get_component(self, name):
+        if name == 'event_emitter':
+            return self.emitter
+
+    def create_client(self, *args, **kwargs):
+        client = mock.Mock()
+        client.list_objects.return_value = {}
+        client.can_paginate.return_value = False
+        return client
+
     def get_available_services(self):
         return ['s3']
 
@@ -124,32 +204,9 @@ class FakeSession(object):
     def get_config_variable(self, name):
         return GET_VARIABLE[name]
 
-    def get_service(self, name):
-        # Get service returns a service object,
-        # so we'll just return a Mock object with
-        # enough of the "right stuff".
-        service = mock.Mock()
-        operation = mock.Mock()
-        operation.model.input_shape.members = OrderedDict([
-            ('Bucket', mock.Mock()),
-            ('Key', mock.Mock()),
-        ])
-        operation.model.input_shape.required_members = ['Bucket']
-        operation.cli_name = 'list-objects'
-        operation.name = 'ListObjects'
-        operation.is_streaming.return_value = False
-        operation.paginate.return_value.build_full_result.return_value = {
-            'foo': 'paginate'}
-        operation.call.return_value = (mock.Mock(), {'foo': 'bar'})
-        self.operation = operation
-        service.operations = [operation]
-        service.name = 's3'
-        service.cli_name = 's3'
-        service.endpoint_prefix = 's3'
-        service.get_operation.return_value = operation
-        operation.service = service
-        operation.service.session = self
-        return service
+    def get_service_model(self, name, api_version=None):
+        return botocore.model.ServiceModel(
+            MINI_SERVICE, service_name='s3')
 
     def user_agent(self):
         return 'user_agent'
@@ -159,6 +216,10 @@ class FakeSession(object):
 
     def get_credentials(self):
         return self.credentials
+
+    def set_config_variable(self, name, value):
+        if name == 'profile':
+            self.profile = value
 
 
 class FakeCommand(BasicCommand):
@@ -209,6 +270,15 @@ class TestCliDriver(unittest.TestCase):
         expected = {'log_level': logging.ERROR, 'logger_name': 'awscli'}
         self.assertEqual(driver.session.stream_logger_args[1], expected)
 
+    def test_ctrl_c_is_handled(self):
+        driver = CLIDriver(session=self.session)
+        fake_client = mock.Mock()
+        fake_client.list_objects.side_effect = KeyboardInterrupt
+        fake_client.can_paginate.return_value = False
+        driver.session.create_client = mock.Mock(return_value=fake_client)
+        rc = driver.main('s3 list-objects --bucket foo'.split())
+        self.assertEqual(rc, 130)
+
 
 class TestCliDriverHooks(unittest.TestCase):
     # These tests verify the proper hooks are emitted in clidriver.
@@ -253,7 +323,8 @@ class TestCliDriverHooks(unittest.TestCase):
             'operation-args-parsed.s3.list-objects',
             'load-cli-arg.s3.list-objects.bucket',
             'process-cli-arg.s3.list-objects',
-            'load-cli-arg.s3.list-objects.key',
+            'load-cli-arg.s3.list-objects.marker',
+            'load-cli-arg.s3.list-objects.max-keys',
             'calling-command.s3.list-objects'
         ])
 
@@ -276,21 +347,6 @@ class TestCliDriverHooks(unittest.TestCase):
             'building-top-level-params',
             'building-command-table.s3',
         ])
-
-    def test_cli_driver_changes_args(self):
-        emitter = HierarchicalEmitter()
-        emitter.register('process-cli-arg.s3.list-objects', self.serialize_param)
-        self.session.emitter = emitter
-        driver = CLIDriver(session=self.session)
-        driver.main('s3 list-objects --bucket foo'.split())
-        self.assertIn(mock.call.paginate(mock.ANY, Bucket='foo-altered!'),
-                      self.session.operation.method_calls)
-
-    def test_unknown_params_raises_error(self):
-        driver = CLIDriver(session=self.session)
-        rc = driver.main('s3 list-objects --bucket foo --unknown-arg foo'.split())
-        self.assertEqual(rc, 255)
-        self.assertIn('Unknown options', self.stderr.getvalue())
 
     def test_unknown_command_suggests_help(self):
         driver = CLIDriver(session=self.session)
@@ -318,9 +374,10 @@ class TestSearchPath(unittest.TestCase):
         # we have to force a reimport of the module to test our changes.
         six.moves.reload_module(awscli)
         # Our two overrides should be the last two elements in the search path.
-        search_path = driver.session.get_component(
-            'data_loader').get_search_paths()[:-2]
-        self.assertEqual(search_path, ['c:\\foo', 'c:\\bar'])
+        search_paths = driver.session.get_component(
+            'data_loader').search_paths
+        self.assertIn('c:\\foo', search_paths)
+        self.assertIn('c:\\bar', search_paths)
 
 
 class TestAWSCommand(BaseAWSCommandParamsTest):
@@ -335,10 +392,6 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
     def tearDown(self):
         super(TestAWSCommand, self).tearDown()
         self.stderr_patch.stop()
-
-    def record_get_endpoint_args(self, *args, **kwargs):
-        self.get_endpoint_args = (args, kwargs)
-        self.real_get_endpoint(*args, **kwargs)
 
     def inject_new_param(self, argument_table, **kwargs):
         argument = CustomArgument('unknown-arg', {})
@@ -383,100 +436,6 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
 
         command_table['foo'] = command
 
-    def test_aws_with_endpoint_url(self):
-        with mock.patch('botocore.service.Service.get_endpoint') as endpoint:
-            http_response = models.Response()
-            http_response.status_code = 200
-            endpoint.return_value.make_request.return_value = (
-                http_response, {})
-            self.assert_params_for_cmd(
-                'ec2 describe-instances --endpoint-url https://foobar.com/',
-                expected_rc=0)
-        endpoint.assert_called_with(region_name=None,
-                                    verify=None,
-                                    endpoint_url='https://foobar.com/')
-
-    def test_aws_with_region(self):
-        with mock.patch('botocore.service.Service.get_endpoint') as endpoint:
-            http_response = models.Response()
-            http_response.status_code = 200
-            endpoint.return_value.make_request.return_value = (
-                http_response, {})
-            self.assert_params_for_cmd(
-                'ec2 describe-instances --region us-east-1',
-                expected_rc=0)
-        endpoint.assert_called_with(region_name='us-east-1',
-                                    verify=None,
-                                    endpoint_url=None)
-
-    def test_aws_with_verify_false(self):
-        with mock.patch('botocore.service.Service.get_endpoint') as endpoint:
-            http_response = models.Response()
-            http_response.status_code = 200
-            endpoint.return_value.make_request.return_value = (
-                http_response, {})
-            self.assert_params_for_cmd(
-                'ec2 describe-instances --region us-east-1 --no-verify-ssl',
-                expected_rc=0)
-        # Because we used --no-verify-ssl, get_endpoint should be
-        # called with verify=False
-        endpoint.assert_called_with(region_name='us-east-1',
-                                    verify=False,
-                                    endpoint_url=None)
-
-    def test_aws_with_cacert_env_var(self):
-        with mock.patch('botocore.endpoint.Endpoint') as endpoint:
-            http_response = models.Response()
-            http_response.status_code = 200
-            endpoint.return_value.host = ''
-            endpoint.return_value.make_request.return_value = (
-                http_response, {})
-            self.environ['AWS_CA_BUNDLE'] = '/path/cacert.pem'
-            self.assert_params_for_cmd(
-                'ec2 describe-instances --region us-east-1',
-                expected_rc=0)
-        call_args = endpoint.call_args
-        self.assertEqual(call_args[1]['verify'], '/path/cacert.pem')
-
-    def test_default_to_verifying_ssl(self):
-        with mock.patch('botocore.endpoint.Endpoint') as endpoint:
-            http_response = models.Response()
-            http_response.status_code = 200
-            endpoint.return_value.host = ''
-            endpoint.return_value.make_request.return_value = (
-                http_response, {})
-            self.assert_params_for_cmd(
-                'ec2 describe-instances --region us-east-1',
-                expected_rc=0)
-        call_args = endpoint.call_args
-        self.assertEqual(call_args[1]['verify'], True)
-
-    def test_s3_with_region_and_endpoint_url(self):
-        with mock.patch('botocore.service.Service.get_endpoint') as endpoint:
-            http_response = models.Response()
-            http_response.status_code = 200
-            endpoint.return_value.make_request.return_value = (
-                http_response, {'CommonPrefixes': [], 'Contents': []})
-            self.assert_params_for_cmd(
-                's3 ls s3://test --region us-east-1 --endpoint-url https://foobar.com/',
-                expected_rc=0)
-        endpoint.assert_called_with(region_name='us-east-1',
-                                    endpoint_url='https://foobar.com/',
-                                    verify=None)
-
-    def test_s3_with_no_verify_ssl(self):
-        with mock.patch('botocore.service.Service.get_endpoint') as endpoint:
-            http_response = models.Response()
-            http_response.status_code = 200
-            endpoint.return_value.make_request.return_value = (
-                http_response, {'CommonPrefixes': [], 'Contents': []})
-            self.assert_params_for_cmd(
-                's3 ls s3://test --no-verify-ssl',
-                expected_rc=0)
-        endpoint.assert_called_with(region_name=None,
-                                    endpoint_url=None,
-                                    verify=False)
-
     def test_event_emission_for_top_level_params(self):
         driver = create_clidriver()
         # --unknown-foo is an known arg, so we expect a 255 rc.
@@ -520,7 +479,13 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             self.assertEqual(rc, 0)
 
             # Make sure uri_param was called
-            uri_param_mock.assert_called()
+            uri_param_mock.assert_any_call(
+                event_name='load-cli-arg.ec2.describe-instances.unknown-arg',
+                operation_name='describe-instances',
+                param=mock.ANY,
+                service_name='ec2',
+                value='file:///foo',
+            )
             # Make sure it was called with our passed-in URI
             self.assertEqual('file:///foo',
                              uri_param_mock.call_args_list[-1][1]['value'])
@@ -538,7 +503,13 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
 
             self.assertEqual(rc, 0)
 
-            uri_param_mock.assert_called()
+            uri_param_mock.assert_any_call(
+                event_name='load-cli-arg.custom.foo.bar',
+                operation_name='foo',
+                param=mock.ANY,
+                service_name='custom',
+                value='file:///foo',
+            )
 
     @unittest.skip
     def test_custom_arg_no_paramfile(self):
@@ -606,9 +577,11 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         rc = driver.main('ec2 describe-instances '
                          '--filters file://does/not/exist.json'.split())
         self.assertEqual(rc, 255)
+        error_msg = self.stderr.getvalue()
         self.assertIn("Error parsing parameter '--filters': "
-                      "file does not exist: does/not/exist.json",
-                      self.stderr.getvalue())
+                      "Unable to load paramfile file://does/not/exist.json",
+                      error_msg)
+        self.assertIn("No such file or directory", error_msg)
 
     def test_aws_configure_in_error_message_no_credentials(self):
         driver = create_clidriver()
@@ -653,6 +626,116 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         rc = self.driver.main('ec2 describe-instances'.split())
         self.assertEqual(rc, 255)
 
+    def test_help_blurb_in_error_message(self):
+        with self.assertRaises(SystemExit):
+            self.driver.main([])
+        self.assertIn(HELP_BLURB, self.stderr.getvalue())
+
+    def test_help_blurb_in_service_error_message(self):
+        with self.assertRaises(SystemExit):
+            self.driver.main(['ec2'])
+        self.assertIn(HELP_BLURB, self.stderr.getvalue())
+
+    def test_help_blurb_in_operation_error_message(self):
+        with self.assertRaises(SystemExit):
+            self.driver.main(['ec2', 'run-instances'])
+        self.assertIn(HELP_BLURB, self.stderr.getvalue())
+
+    def test_help_blurb_in_unknown_argument_error_message(self):
+        with self.assertRaises(SystemExit):
+            self.driver.main(['ec2', 'run-instances', '--help'])
+        self.assertIn(HELP_BLURB, self.stderr.getvalue())
+
+
+class TestHowClientIsCreated(BaseAWSCommandParamsTest):
+    def setUp(self):
+        super(TestHowClientIsCreated, self).setUp()
+        self.endpoint_creator_patch = mock.patch(
+            'botocore.args.EndpointCreator')
+        self.endpoint_creator = self.endpoint_creator_patch.start()
+        self.create_endpoint = \
+                self.endpoint_creator.return_value.create_endpoint
+        self.endpoint = self.create_endpoint.return_value
+        self.endpoint.host = 'https://example.com'
+        # Have the endpoint give a dummy empty response.
+        http_response = models.Response()
+        http_response.status_code = 200
+        self.endpoint.make_request.return_value = (
+            http_response, {})
+
+    def tearDown(self):
+        super(TestHowClientIsCreated, self).tearDown()
+        self.endpoint_creator_patch.stop()
+
+    def test_aws_with_endpoint_url(self):
+        self.assert_params_for_cmd(
+            'ec2 describe-instances --endpoint-url https://foobar.com/',
+            expected_rc=0)
+        self.assertEqual(self.create_endpoint.call_args[1]['endpoint_url'],
+                         'https://foobar.com/')
+
+    def test_aws_with_region(self):
+        self.assert_params_for_cmd(
+            'ec2 describe-instances --region us-west-2',
+            expected_rc=0)
+        self.assertEqual(
+            self.create_endpoint.call_args[1]['region_name'], 'us-west-2')
+
+    def test_aws_with_verify_false(self):
+        self.assert_params_for_cmd(
+            'ec2 describe-instances --region us-east-1 --no-verify-ssl',
+            expected_rc=0)
+        # Because we used --no-verify-ssl, create_endpoint should be
+        # called with verify=False
+        call_args = self.create_endpoint.call_args
+        self.assertFalse(call_args[1]['verify'])
+
+    def test_aws_with_cacert_env_var(self):
+        self.environ['AWS_CA_BUNDLE'] = '/path/cacert.pem'
+        self.assert_params_for_cmd(
+            'ec2 describe-instances --region us-east-1',
+            expected_rc=0)
+        call_args = self.create_endpoint.call_args
+        self.assertEqual(call_args[1]['verify'], '/path/cacert.pem')
+
+    def test_aws_with_read_timeout(self):
+        self.assert_params_for_cmd(
+            'lambda invoke --function-name foo out.log --cli-read-timeout 90',
+            expected_rc=0)
+        call_args = self.create_endpoint.call_args
+        self.assertEqual(call_args[1]['timeout'][1], 90)
+
+    def test_aws_with_blocking_read_timeout(self):
+        self.assert_params_for_cmd(
+            'lambda invoke --function-name foo out.log --cli-read-timeout 0',
+            expected_rc=0)
+        call_args = self.create_endpoint.call_args
+        self.assertEqual(call_args[1]['timeout'][1], None)
+
+    def test_aws_with_connnect_timeout(self):
+        self.assert_params_for_cmd(
+            'lambda invoke --function-name foo out.log '
+            '--cli-connect-timeout 90',
+            expected_rc=0)
+        call_args = self.create_endpoint.call_args
+        self.assertEqual(call_args[1]['timeout'][0], 90)
+
+    def test_aws_with_blocking_connect_timeout(self):
+        self.assert_params_for_cmd(
+            'lambda invoke --function-name foo out.log '
+            '--cli-connect-timeout 0',
+            expected_rc=0)
+        call_args = self.create_endpoint.call_args
+        self.assertEqual(call_args[1]['timeout'][0], None)
+
+    def test_aws_with_read_and_connnect_timeout(self):
+        self.assert_params_for_cmd(
+            'lambda invoke --function-name foo out.log '
+            '--cli-read-timeout 70 --cli-connect-timeout 90',
+            expected_rc=0)
+        call_args = self.create_endpoint.call_args
+        self.assertEqual(call_args[1]['timeout'], (90, 70))
+
 
 class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):
 
@@ -675,20 +758,6 @@ class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):
             self.assert_params_for_cmd(
                 'ec2 describe-instances --filters http://does/not/exist.json',
                 expected_rc=255, stderr_contains=error_msg)
-
-
-class TestCLIOperationCaller(BaseAWSCommandParamsTest):
-    def setUp(self):
-        super(TestCLIOperationCaller, self).setUp()
-        self.session = mock.Mock()
-
-    def test_invoke_with_no_credentials(self):
-        # This is what happens you have no credentials.
-        # get_credentials() return None.
-        self.session.get_credentials.return_value = None
-        caller = CLIOperationCaller(self.session)
-        with self.assertRaises(NoCredentialsError):
-            caller.invoke(None, None, None)
 
 
 class TestVerifyArgument(BaseAWSCommandParamsTest):

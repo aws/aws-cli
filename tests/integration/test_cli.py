@@ -11,13 +11,16 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import time
+import signal
 import os
 import tempfile
 import random
 import shutil
 
 import botocore.session
-from awscli.testutils import unittest, aws
+from awscli.testutils import unittest, aws, BaseS3CLICommand
+from awscli.testutils import temporary_file
+from awscli.testutils import skip_if_windows
 from awscli.clidriver import create_clidriver
 
 
@@ -70,19 +73,20 @@ class TestBasicCommandFunctionality(unittest.TestCase):
     test to verify basic CLI functionality isn't entirely broken.
     """
 
-    def put_object(self, bucket, key, content):
+    def put_object(self, bucket, key, content, extra_args=None):
         session = botocore.session.get_session()
-        service = session.get_service('s3')
-        endpoint = service.get_endpoint('us-east-1')
-        http, response = service.get_operation(
-            'CreateBucket').call(endpoint, bucket=bucket)
+        client = session.create_client('s3', 'us-east-1')
+        client.create_bucket(Bucket=bucket)
         time.sleep(5)
-        self.addCleanup(service.get_operation('DeleteBucket').call,
-                        endpoint, bucket=bucket)
-        http, response = service.get_operation('PutObject').call(
-            endpoint, bucket=bucket, key=key, body=content)
-        self.addCleanup(service.get_operation('DeleteObject').call,
-                        endpoint, bucket=bucket, key=key)
+        self.addCleanup(client.delete_bucket, Bucket=bucket)
+        call_args = {
+            'Bucket': bucket,
+            'Key': key, 'Body': content
+        }
+        if extra_args is not None:
+            call_args.update(extra_args)
+        client.put_object(**call_args)
+        self.addCleanup(client.delete_object, Bucket=bucket, Key=key)
 
     def test_ec2_describe_instances(self):
         # Verify we can make a call and get output.
@@ -96,7 +100,8 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         p = aws('help')
         self.assertEqual(p.rc, 0)
         self.assertIn('AWS', p.stdout)
-        self.assertRegexpMatches(p.stdout, 'The\s+AWS\s+Command\s+Line\s+Interface')
+        self.assertRegexpMatches(
+            p.stdout, 'The\s+AWS\s+Command\s+Line\s+Interface')
 
     def test_service_help_output(self):
         p = aws('ec2 help')
@@ -113,6 +118,24 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         # 'The describe-instances operation'.
         self.assertRegexpMatches(p.stdout,
                                  '\s+Describes\s+one\s+or\s+more')
+
+    def test_topic_list_help_output(self):
+        p = aws('help topics')
+        self.assertEqual(p.rc, 0)
+        self.assertRegexpMatches(p.stdout, '\s+AWS\s+CLI\s+Topic\s+Guide')
+        self.assertRegexpMatches(
+            p.stdout,
+            '\s+This\s+is\s+the\s+AWS\s+CLI\s+Topic\s+Guide'
+        )
+
+    def test_topic_help_output(self):
+        p = aws('help return-codes')
+        self.assertEqual(p.rc, 0)
+        self.assertRegexpMatches(p.stdout, '\s+AWS\s+CLI\s+Return\s+Codes')
+        self.assertRegexpMatches(
+            p.stdout,
+            'These\s+are\s+the\s+following\s+return\s+codes'
+        )
 
     def test_operation_help_with_required_arg(self):
         p = aws('s3api get-object help')
@@ -190,6 +213,35 @@ class TestBasicCommandFunctionality(unittest.TestCase):
             contents = f.read()
         self.assertEqual(contents, 'foobar contents')
 
+    def test_no_sign_request(self):
+        d = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, d)
+
+        env_vars = os.environ.copy()
+        env_vars['AWS_ACCESS_KEY_ID'] = 'foo'
+        env_vars['AWS_SECRET_ACCESS_KEY'] = 'bar'
+
+        bucket_name = 'nosign' + str(
+            int(time.time())) + str(random.randint(1, 100))
+        self.put_object(bucket_name, 'foo', content='bar',
+                        extra_args={'ACL': 'public-read-write'})
+
+        p = aws('s3api get-object --bucket %s --key foo %s' % (
+            bucket_name, os.path.join(d, 'foo')), env_vars=env_vars)
+        # Should have credential issues.
+        self.assertEqual(p.rc, 255)
+
+        p = aws('s3api get-object --bucket %s --key foo '
+                '%s --no-sign-request' % (bucket_name, os.path.join(d, 'foo')),
+                env_vars=env_vars)
+
+        # Should be able to download the file when not signing.
+        self.assertEqual(p.rc, 0)
+
+        with open(os.path.join(d, 'foo')) as f:
+            contents = f.read()
+        self.assertEqual(contents, 'bar')
+
     def test_no_paginate_arg(self):
         d = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, d)
@@ -199,6 +251,9 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         self.put_object(bucket=bucket_name, key='foobar',
                         content='foobar contents')
         p = aws('s3api list-objects --bucket %s --no-paginate' % bucket_name)
+        self.assertEqual(p.rc, 0, p.stdout + p.stderr)
+
+        p = aws('s3api list-objects --bucket %s' % bucket_name)
         self.assertEqual(p.rc, 0, p.stdout + p.stderr)
 
     def test_top_level_options_debug(self):
@@ -214,13 +269,13 @@ class TestBasicCommandFunctionality(unittest.TestCase):
     def test_help_usage_top_level(self):
         p = aws('')
         self.assertIn('usage: aws [options] <command> '
-                      '<subcommand> [parameters]', p.stderr)
+                      '<subcommand> [<subcommand> ...] [parameters]', p.stderr)
         self.assertIn('aws: error', p.stderr)
 
     def test_help_usage_service_level(self):
         p = aws('ec2')
         self.assertIn('usage: aws [options] <command> '
-                      '<subcommand> [parameters]', p.stderr)
+                      '<subcommand> [<subcommand> ...] [parameters]', p.stderr)
         # python3: aws: error: the following arguments are required: operation
         # python2: aws: error: too few arguments
         # We don't care too much about the specific error message, as long
@@ -230,7 +285,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
     def test_help_usage_operation_level(self):
         p = aws('ec2 run-instances')
         self.assertIn('usage: aws [options] <command> '
-                      '<subcommand> [parameters]', p.stderr)
+                      '<subcommand> [<subcommand> ...] [parameters]', p.stderr)
 
     def test_unknown_argument(self):
         p = aws('ec2 describe-instances --filterss')
@@ -290,6 +345,27 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         p = aws('iam list-users', env_vars=base_env_vars)
         self.assertEqual(p.rc, 0)
 
+    def test_error_msg_with_no_region_configured(self):
+        environ = os.environ.copy()
+        try:
+            del environ['AWS_DEFAULT_REGION']
+        except KeyError:
+            pass
+        environ['AWS_CONFIG_FILE'] = 'nowhere-foo'
+        p = aws('ec2 describe-instances', env_vars=environ)
+        self.assertIn('must specify a region', p.stderr)
+
+    @skip_if_windows('Ctrl-C not supported on windows.')
+    def test_ctrl_c_does_not_print_traceback(self):
+        # Relying on the fact that this generally takes
+        # more than 1 second to complete.
+        process = aws('ec2 describe-images', wait_for_finish=False)
+        time.sleep(1)
+        process.send_signal(signal.SIGINT)
+        stdout, stderr = process.communicate()
+        self.assertNotIn(b'Traceback', stdout)
+        self.assertNotIn(b'Traceback', stderr)
+
 
 class TestCommandLineage(unittest.TestCase):
     def setUp(self):
@@ -306,7 +382,7 @@ class TestCommandLineage(unittest.TestCase):
         actual_lineage_names = []
         for cmd in command.lineage:
             actual_lineage_names.append(cmd.name)
-        
+
         # Assert the actual names of each command in a lineage is as expected.
         self.assertEqual(actual_lineage_names, ref_lineage_names)
 
@@ -344,6 +420,155 @@ class TestCommandLineage(unittest.TestCase):
     def test_wait_commands(self):
         self.assert_lineage_names(['ec2', 'wait'])
         self.assert_lineage_names(['ec2', 'wait', 'instance-running'])
+
+
+# We're using BaseS3CLICommand because we need a service to use
+# for testing the global arguments.  We're picking S3 here because
+# the BaseS3CLICommand has a lot of utility functions that help
+# with this.
+class TestGlobalArgs(BaseS3CLICommand):
+
+    def test_endpoint_url(self):
+        p = aws('s3api list-objects --bucket dnscompat '
+                '--endpoint-url http://localhost:51515 '
+                '--debug')
+        debug_logs = p.stderr
+        original_hostname = 'dnscompat.s3.amazonaws.com'
+        expected = 'localhost'
+        self.assertNotIn(original_hostname, debug_logs,
+                         '--endpoint-url is being ignored.')
+        self.assertIn(expected, debug_logs)
+
+    def test_no_pagination(self):
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, 'foo.txt', contents=b'bar')
+        self.put_object(bucket_name, 'foo2.txt', contents=b'bar')
+        self.put_object(bucket_name, 'foo3.txt', contents=b'bar')
+        p = aws('s3api list-objects --bucket %s '
+                '--no-paginate --output json' % bucket_name)
+        # A really simple way to check that --no-paginate was
+        # honored is to see if we have all the mirrored input
+        # arguments in the response json.  These normally aren't
+        # present when the response is paginated.
+        self.assert_no_errors(p)
+        response_json = p.json
+        self.assertIn('IsTruncated', response_json)
+        self.assertIn('Name', response_json)
+
+    def test_no_paginate_and_original_args(self):
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, 'foo.txt', contents=b'bar')
+        self.put_object(bucket_name, 'foo2.txt', contents=b'bar')
+        self.put_object(bucket_name, 'foo3.txt', contents=b'bar')
+        p = aws('s3api list-objects --bucket %s '
+                '--max-keys 1 --no-paginate --output json' % bucket_name)
+        self.assert_no_errors(p)
+        response_json = p.json
+        self.assertEqual(len(response_json['Contents']), 1)
+
+    def test_max_items(self):
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, 'foo.txt', contents=b'bar')
+        self.put_object(bucket_name, 'foo2.txt', contents=b'bar')
+        self.put_object(bucket_name, 'foo3.txt', contents=b'bar')
+        p = aws('s3api list-objects --bucket %s '
+                '--max-items 1 --output json' % bucket_name)
+        self.assert_no_errors(p)
+        response_json = p.json
+        self.assertEqual(len(response_json['Contents']), 1)
+
+    def test_query(self):
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, 'foo.txt', contents=b'bar')
+        p = aws('s3api list-objects --bucket %s '
+                '--query Contents[].Key --output json' % bucket_name)
+        self.assert_no_errors(p)
+        response_json = p.json
+        self.assertEqual(response_json, ['foo.txt'])
+
+    def test_no_sign_requests(self):
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, 'public', contents=b'bar',
+                        extra_args={'ACL': 'public-read'})
+        self.put_object(bucket_name, 'private', contents=b'bar')
+        env = os.environ.copy()
+        # Set the env vars to bad values so if we do actually
+        # try to sign the request, we'll get an auth error.
+        env['AWS_ACCESS_KEY_ID'] = 'foo'
+        env['AWS_SECRET_ACCESS_KEY'] = 'bar'
+        p = aws('s3api head-object --bucket %s --key public --no-sign-request'
+                % bucket_name, env_vars=env)
+        self.assert_no_errors(p)
+        self.assertIn('ETag', p.json)
+
+        # Should fail because we're not signing the request but the object is
+        # private.
+        p = aws('s3api head-object --bucket %s --key private --no-sign-request'
+                % bucket_name, env_vars=env)
+        self.assertEqual(p.rc, 255)
+
+    def test_profile_arg_has_precedence_over_env_vars(self):
+        # At a high level, we're going to set access_key/secret_key
+        # via env vars, but ensure that a --profile <foo> results
+        # in creds being retrieved from the shared creds file
+        # and not from env vars.
+        env_vars = os.environ.copy()
+        with temporary_file('w') as f:
+            env_vars.pop('AWS_PROFILE', None)
+            env_vars.pop('AWS_DEFAULT_PROFILE', None)
+            # 'aws configure list' only shows 4 values
+            # from the credentials so we'll show
+            # 4 char values.
+            env_vars['AWS_ACCESS_KEY_ID'] = 'enva'
+            env_vars['AWS_SECRET_ACCESS_KEY'] = 'envb'
+            env_vars['AWS_SHARED_CREDENTIALS_FILE'] = f.name
+            env_vars['AWS_CONFIG_FILE'] = 'does-not-exist-foo'
+            f.write(
+                '[from_argument]\n'
+                'aws_access_key_id=proa\n'
+                'aws_secret_access_key=prob\n'
+            )
+            f.flush()
+            p = aws('configure list --profile from_argument',
+                    env_vars=env_vars)
+            # 1. We should see the profile name being set.
+            self.assertIn('from_argument', p.stdout)
+            # 2. The creds should be proa/prob, which come
+            #    from the "from_argument" profile.
+            self.assertIn('proa', p.stdout)
+            self.assertIn('prob', p.stdout)
+            self.assertIn('shared-credentials-file', p.stdout)
+
+    def test_profile_arg_wins_over_profile_env_var(self):
+        env_vars = os.environ.copy()
+        with temporary_file('w') as f:
+            # Remove existing profile related env vars.
+            env_vars.pop('AWS_PROFILE', None)
+            env_vars.pop('AWS_DEFAULT_PROFILE', None)
+            env_vars['AWS_SHARED_CREDENTIALS_FILE'] = f.name
+            env_vars['AWS_CONFIG_FILE'] = 'does-not-exist-foo'
+            f.write(
+                '[from_env_var]\n'
+                'aws_access_key_id=enva\n'
+                'aws_secret_access_key=envb\n'
+                '\n'
+                '[from_argument]\n'
+                'aws_access_key_id=proa\n'
+                'aws_secret_access_key=prob\n'
+            )
+            f.flush()
+            # Now we set the current profile via env var:
+            env_vars['AWS_PROFILE'] = 'from_env_var'
+            # If we specify the --profile argument, that
+            # value should win over the AWS_PROFILE env var.
+            p = aws('configure list --profile from_argument',
+                    env_vars=env_vars)
+            # 1. We should see the profile name being set.
+            self.assertIn('from_argument', p.stdout)
+            # 2. The creds should be profa/profb, which come
+            #    from the "from_argument" profile.
+            self.assertIn('proa', p.stdout)
+            self.assertIn('prob', p.stdout)
 
 
 if __name__ == '__main__':

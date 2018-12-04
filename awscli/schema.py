@@ -96,6 +96,8 @@ class SchemaTransformer(object):
             shapes[shape_name] = self._transform_structure(schema, shapes)
         elif schema['type'] == 'array':
             shapes[shape_name] = self._transform_list(schema, shapes)
+        elif schema['type'] == 'map':
+            shapes[shape_name] = self._transform_map(schema, shapes)
         else:
             shapes[shape_name] = self._transform_scalar(schema)
         return shapes
@@ -122,6 +124,15 @@ class SchemaTransformer(object):
         structure_shape['members'] = members
         if required_members:
             structure_shape['required'] = required_members
+        return structure_shape
+
+    def _transform_map(self, schema, shapes):
+        structure_shape = self._populate_initial_shape(schema)
+        for attribute in ['key', 'value']:
+            type_name = self._json_schema_to_aws_type(schema[attribute])
+            shape_name = self._shape_namer.new_shape_name(type_name)
+            structure_shape[attribute] = {'shape': shape_name}
+            self._transform(schema[attribute], shapes, shape_name)
         return structure_shape
 
     def _transform_list(self, schema, shapes):

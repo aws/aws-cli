@@ -39,7 +39,7 @@ def register_put_metric_data(event_handler):
                               'dimensions', 'statistic_values']))
 
 
-def _promote_args(argument_table, operation, **kwargs):
+def _promote_args(argument_table, **kwargs):
     # We're providing top level params for metric-data.  This means
     # that metric-data is now longer a required arg.  We do need
     # to check that either metric-data or the complex args we've added

@@ -65,7 +65,7 @@ this example, the directory ``myDir`` has the files ``test1.txt`` and ``test2.jp
 
 Output::
 
-    upload: myDir/test1.txt to s3://mybucket2/test1.txt
+    upload: myDir/test1.txt to s3://mybucket/test1.txt
 
 **Recursively copying S3 objects to another bucket**
 
@@ -79,6 +79,15 @@ Output::
 
     copy: s3://mybucket/test1.txt to s3://mybucket2/test1.txt
 
+You can combine ``--exclude`` and ``--include`` options to copy only objects that match a pattern, excluding all others::
+
+    aws s3 cp s3://mybucket/logs/ s3://mybucket2/logs/ --recursive --exclude "*" --include "*.log" 
+
+Output::
+
+    copy: s3://mybucket/test/test.log to s3://mybucket2/test/test.log
+    copy: s3://mybucket/test3.log to s3://mybucket2/test3.log
+
 **Setting the Access Control List (ACL) while copying an S3 object**
 
 The following ``cp`` command copies a single object to a specified bucket and key while setting the ACL to
@@ -89,6 +98,34 @@ The following ``cp`` command copies a single object to a specified bucket and ke
 Output::
 
     copy: s3://mybucket/test.txt to s3://mybucket/test2.txt
+
+Note that if you're using the ``--acl`` option, ensure that any associated IAM
+policies include the ``"s3:PutObjectAcl"`` action::
+
+    aws iam get-user-policy --user-name myuser --policy-name mypolicy
+
+Output::
+
+    {
+        "UserName": "myuser",
+        "PolicyName": "mypolicy",
+        "PolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Action": [
+                        "s3:PutObject",
+                        "s3:PutObjectAcl"
+                    ],
+                    "Resource": [
+                        "arn:aws:s3:::mybucket/*"
+                    ],
+                    "Effect": "Allow",
+                    "Sid": "Stmt1234567891234"
+                }
+            ]
+        }
+    }
 
 **Granting permissions for an S3 object**
 
@@ -103,13 +140,17 @@ Output::
 
 **Uploading a local file stream to S3**
 
+WARNING:: PowerShell may alter the encoding of or add a CRLF to piped input.
+
 The following ``cp`` command uploads a local file stream from standard input to a specified bucket and key::
 
     aws s3 cp - s3://mybucket/stream.txt
 
 
-**Downloading a S3 object as a local file stream**
+**Downloading an S3 object as a local file stream**
 
-The following ``cp`` command downloads a S3 object locally as a stream to standard output::
+WARNING:: PowerShell may alter the encoding of or add a CRLF to piped or redirected output.
+
+The following ``cp`` command downloads an S3 object locally as a stream to standard output. Downloading as a stream is not currently compatible with the ``--recursive`` parameter::
 
     aws s3 cp s3://mybucket/stream.txt -

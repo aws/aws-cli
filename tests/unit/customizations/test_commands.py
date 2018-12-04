@@ -13,13 +13,16 @@
 from awscli.testutils import unittest
 import mock
 
+from awscli.clidriver import CLIDriver
 from awscli.customizations.commands import BasicHelp, BasicCommand
+from botocore.hooks import HierarchicalEmitter
+from tests.unit.test_clidriver import FakeSession, FakeCommand
 
 
 class MockCustomCommand(BasicCommand):
-        NAME = 'mock'
+    NAME = 'mock'
 
-        SUBCOMMANDS = [{'name': 'basic', 'command_class': BasicCommand}]
+    SUBCOMMANDS = [{'name': 'basic', 'command_class': BasicCommand}]
 
 
 class TestCommandLoader(unittest.TestCase):
@@ -33,11 +36,12 @@ class TestCommandLoader(unittest.TestCase):
         help_command = BasicHelp(mock.Mock(), cmd_object, {}, {})
         with mock.patch('awscli.customizations.commands._open') as mock_open:
             mock_open.return_value.__enter__.return_value.read.return_value = \
-                    'fake description'
+                'fake description'
             self.assertEqual(help_command.description, 'fake description')
 
 
 class TestBasicCommand(unittest.TestCase):
+
     def setUp(self):
         self.session = mock.Mock()
         self.command = BasicCommand(self.session)
@@ -88,3 +92,40 @@ class TestBasicCommand(unittest.TestCase):
         # though it was put into the table as ``basic``. If no name
         # is overriden it uses the name ``commandname``.
         self.assertEqual(sub_help_command.event_class, 'mock.commandname')
+
+
+class TestBasicCommandHooks(unittest.TestCase):
+    # These tests verify the proper hooks are emitted from BasicCommand.
+
+    def setUp(self):
+        self.session = FakeSession()
+        self.emitter = mock.Mock(wraps=HierarchicalEmitter())
+        self.session.emitter = self.emitter
+
+    def assert_events_fired_in_order(self, events):
+        args = self.emitter.emit.call_args_list
+        actual_events = [arg[0][0] for arg in args]
+        self.assertEqual(actual_events, events)
+
+    def inject_command(self, command_table, **kwargs):
+        command = FakeCommand(self.session)
+        command.NAME = 'foo'
+        command_table['foo'] = command
+
+    def test_expected_events_are_emitted_in_order(self):
+        driver = CLIDriver(session=self.session)
+        self.emitter.register(
+            'building-command-table.s3', self.inject_command)
+
+        driver.main('s3 foo'.split())
+
+        self.assert_events_fired_in_order([
+            'building-command-table.main',
+            'building-top-level-params',
+            'top-level-args-parsed',
+            'session-initialized',
+            'building-command-table.s3',
+            'building-command-table.foo',
+            'building-arg-table.foo',
+            'before-building-argument-table-parser.s3.foo'
+        ])

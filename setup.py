@@ -6,11 +6,12 @@ from setuptools import setup, find_packages
 import awscli
 
 
-requires = ['botocore>=0.94.0,<0.95.0',
-            'bcdoc>=0.13.0,<0.14.0',
-            'colorama>=0.2.5,<=0.3.3',
+requires = ['botocore==1.4.57',
+            'colorama>=0.2.5,<=0.3.7',
             'docutils>=0.10',
-            'rsa>=3.1.2,<=3.1.4']
+            'rsa>=3.1.2,<=3.5.0',
+            's3transfer>=0.1.0,<0.2.0']
+
 
 if sys.version_info[:2] == (2, 6):
     # For python2.6 we have to require argparse since it
@@ -23,16 +24,21 @@ setup_options = dict(
     version=awscli.__version__,
     description='Universal Command Line Environment for AWS.',
     long_description=open('README.rst').read(),
-    author='Mitch Garnaat',
-    author_email='garnaat@amazon.com',
+    author='Amazon Web Services',
     url='http://aws.amazon.com/cli/',
     scripts=['bin/aws', 'bin/aws.cmd',
-             'bin/aws_completer', 'bin/aws_zsh_completer.sh'],
-    packages=find_packages('.', exclude=['tests*']),
-    package_dir={'awscli': 'awscli'},
+             'bin/aws_completer', 'bin/aws_zsh_completer.sh',
+             'bin/aws_bash_completer'],
+    packages=find_packages(exclude=['tests*']),
     package_data={'awscli': ['data/*.json', 'examples/*/*.rst',
-                             'examples/*/*/*.rst']},
+                             'examples/*/*/*.rst', 'topics/*.rst',
+                             'topics/*.json']},
     install_requires=requires,
+    extras_require={
+        ':python_version=="2.6"': [
+            'argparse>=1.1',
+        ]
+    },
     license="Apache License 2.0",
     classifiers=(
         'Development Status :: 5 - Production/Stable',
@@ -45,6 +51,8 @@ setup_options = dict(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
     ),
 )
 
@@ -56,6 +64,7 @@ if 'py2exe' in sys.argv:
         'py2exe': {
             'optimize': 0,
             'skip_archive': True,
+            'dll_excludes': ['crypt32.dll'],
             'packages': ['docutils', 'urllib', 'httplib', 'HTMLParser',
                          'awscli', 'ConfigParser', 'xml.etree', 'pipes'],
         }

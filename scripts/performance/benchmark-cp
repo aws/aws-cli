@@ -1,0 +1,36 @@
+#!/usr/bin/env python
+from benchmark_utils import summarize, clean
+from benchmark_utils import get_default_argparser, get_transfer_command
+from benchmark_utils import create_random_subfolder, benchmark_command
+
+
+def benchmark_cp(args):
+    destination = args.destination
+    if args.recursive:
+        destination = create_random_subfolder(destination)
+    command = 'cp %s %s' % (args.source, destination)
+    command = get_transfer_command(command, args.recursive, args.quiet)
+
+    def cleanup():
+        if not args.no_cleanup:
+            clean(destination, args.recursive)
+
+    benchmark_command(
+        command, args.benchmark_script,  args.summarize_script,
+        args.result_dir, args.num_iterations, args.dry_run,
+        cleanup=cleanup
+    )
+
+
+if __name__ == "__main__":
+    parser = get_default_argparser()
+    parser.add_argument(
+        '-s', '--source', required=True,
+        help='A local path or s3 path.'
+    )
+    parser.add_argument(
+        '-d', '--destination', required=True,
+        help='A local path or s3 path. A directory will be created in this '
+             'location to copy to in the case of a recursive transfer.'
+    )
+    benchmark_cp(parser.parse_args())

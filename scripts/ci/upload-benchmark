@@ -1,0 +1,68 @@
+#!/usr/bin/env python
+"""Script to upload benchmark results to an s3 location."""
+import os
+import argparse
+from datetime import datetime
+from subprocess import check_call
+
+
+REPO_ROOT = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+WORKDIR = os.environ.get('PERF_WORKDIR', os.path.join(REPO_ROOT, 'workdir'))
+DEFAULT_BUCKET = os.environ.get('PERF_RESULTS_BUCKET')
+DATE_FORMAT = "%Y-%m-%d-%H-%M-%S-"
+
+
+def main(args):
+    source = get_latest_results_directory(args.directory)
+    run_id = source.split(os.sep)[-1]
+    destination = '%s/%s' % (args.bucket, run_id)
+    check_call(
+        'aws s3 cp --recursive %s %s' % (source, destination),
+        shell=True)
+
+
+def s3_uri(value):
+    if not value.startswith('s3://'):
+        return 's3://' + value
+    return value
+
+
+def get_latest_results_directory(parent):
+    # Check to see if the given directory is a valid directory
+    if _is_result_dir_format(os.path.split(parent)[-1]):
+        return parent
+
+    # Find the latest valid subdirectory
+    for d in sorted(os.listdir(parent), reverse=True):
+        directory = os.path.join(parent, d)
+        if os.path.isdir(directory) and _is_result_dir_format(d):
+            return directory
+
+    raise ValueError("No valid result directories found in %s" % parent)
+
+
+def _is_result_dir_format(directory):
+    try:
+        datetime.strptime(directory[:20], DATE_FORMAT)
+        int(directory[20:])
+        return True
+    except Exception:
+        return False
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-d', '--directory', default=os.path.join(WORKDIR, 'results'),
+        help='A directory containing multiple test runs or a single test '
+             'run directory. If this is a directory with multiple test runs, '
+             'the latest will be uploaded.')
+    parser.add_argument(
+        '-b', '--bucket', default=DEFAULT_BUCKET, type=s3_uri,
+        required=DEFAULT_BUCKET is None,
+        help='An s3uri to upload the results to. This can also be set with '
+             'the environment variable PERF_RESULTS_BUCKET. If the '
+             'environment variable is not set, then this argument is '
+             'required.')
+    main(parser.parse_args())

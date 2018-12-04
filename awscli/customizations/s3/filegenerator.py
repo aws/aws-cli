@@ -16,11 +16,11 @@ import stat
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
+from botocore.exceptions import ClientError
 
 from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
 from awscli.customizations.s3.utils import BucketLister, create_warning, \
-    find_dest_path_comp_key
-from awscli.errorhandler import ClientError
+    find_dest_path_comp_key, EPOCH_TIME
 from awscli.compat import six
 from awscli.compat import queue
 
@@ -95,7 +95,7 @@ class FileDecodingError(Exception):
 class FileStat(object):
     def __init__(self, src, dest=None, compare_key=None, size=None,
                  last_update=None, src_type=None, dest_type=None,
-                 operation_name=None):
+                 operation_name=None, response_data=None):
         self.src = src
         self.dest = dest
         self.compare_key = compare_key
@@ -104,6 +104,7 @@ class FileStat(object):
         self.src_type = src_type
         self.dest_type = dest_type
         self.operation_name = operation_name
+        self.response_data = response_data
 
 
 class FileGenerator(object):
@@ -114,16 +115,18 @@ class FileGenerator(object):
     under the same common prefix.  The generator yields corresponding
     ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
-    def __init__(self, service, endpoint, operation_name,
-                 follow_symlinks=True, page_size=None, result_queue=None):
-        self._service = service
-        self._endpoint = endpoint
+    def __init__(self, client, operation_name, follow_symlinks=True,
+                 page_size=None, result_queue=None, request_parameters=None):
+        self._client = client
         self.operation_name = operation_name
         self.follow_symlinks = follow_symlinks
         self.page_size = page_size
         self.result_queue = result_queue
         if not result_queue:
             self.result_queue = queue.Queue()
+        self.request_parameters = {}
+        if request_parameters is not None:
+            self.request_parameters = request_parameters
 
     def call(self, files):
         """
@@ -135,14 +138,26 @@ class FileGenerator(object):
         source = files['src']['path']
         src_type = files['src']['type']
         dest_type = files['dest']['type']
-        file_list = function_table[src_type](source, files['dir_op'])
-        for src_path, size, last_update in file_list:
+        file_iterator = function_table[src_type](source, files['dir_op'])
+        for src_path, extra_information in file_iterator:
             dest_path, compare_key = find_dest_path_comp_key(files, src_path)
-            yield FileStat(src=src_path, dest=dest_path,
-                           compare_key=compare_key, size=size,
-                           last_update=last_update, src_type=src_type,
-                           dest_type=dest_type,
-                           operation_name=self.operation_name)
+            file_stat_kwargs = {
+                'src': src_path, 'dest': dest_path, 'compare_key': compare_key,
+                'src_type': src_type, 'dest_type': dest_type,
+                'operation_name': self.operation_name
+            }
+            self._inject_extra_information(file_stat_kwargs, extra_information)
+            yield FileStat(**file_stat_kwargs)
+
+    def _inject_extra_information(self, file_stat_kwargs, extra_information):
+        src_type = file_stat_kwargs['src_type']
+        file_stat_kwargs['size'] = extra_information['Size']
+        file_stat_kwargs['last_update'] = extra_information['LastModified']
+
+        # S3 objects require the response data retrieved from HeadObject
+        # and ListObject
+        if src_type == 's3':
+            file_stat_kwargs['response_data'] = extra_information
 
     def list_files(self, path, dir_op):
         """
@@ -158,7 +173,9 @@ class FileGenerator(object):
         if not self.should_ignore_file(path):
             if not dir_op:
                 size, last_update = get_file_stat(path)
-                yield path, size, last_update
+                last_update = self._validate_update_time(last_update, path)
+                yield path, {'Size': size, 'LastModified': last_update}
+
             else:
                 # We need to list files in byte order based on the full
                 # expanded path of the key: 'test/1/2/3.txt'  However,
@@ -192,7 +209,24 @@ class FileGenerator(object):
                             yield x
                     else:
                         size, last_update = get_file_stat(file_path)
-                        yield file_path, size, last_update
+                        last_update = self._validate_update_time(
+                            last_update, path)
+                        yield (
+                            file_path,
+                            {'Size': size, 'LastModified': last_update}
+                        )
+
+    def _validate_update_time(self, update_time, path):
+        # If the update time is None we know we ran into an invalid tiemstamp.
+        if update_time is None:
+            warning = create_warning(
+                path=path,
+                error_message="File has an invalid timestamp. Passing epoch "
+                              "time as timestamp.",
+                skip_file=False)
+            self.result_queue.put(warning)
+            return EPOCH_TIME
+        return update_time
 
     def normalize_sort(self, names, os_sep, character):
         """
@@ -279,12 +313,11 @@ class FileGenerator(object):
         if not dir_op and prefix:
             yield self._list_single_object(s3_path)
         else:
-            operation = self._service.get_operation('ListObjects')
-            lister = BucketLister(operation, self._endpoint)
+            lister = BucketLister(self._client)
             for key in lister.list_objects(bucket=bucket, prefix=prefix,
                                            page_size=self.page_size):
-                source_path, size, last_update = key
-                if size == 0 and source_path.endswith('/'):
+                source_path, response_data = key
+                if response_data['Size'] == 0 and source_path.endswith('/'):
                     if self.operation_name == 'delete':
                         # This is to filter out manually created folders
                         # in S3.  They have a size zero and would be
@@ -292,11 +325,11 @@ class FileGenerator(object):
                         # are automatically created when they do not
                         # exist locally.  But user should be able to
                         # delete them.
-                        yield source_path, size, last_update
+                        yield source_path, response_data
                 elif not dir_op and s3_path != source_path:
                     pass
                 else:
-                    yield source_path, size, last_update
+                    yield source_path, response_data
 
     def _list_single_object(self, s3_path):
         # When we know we're dealing with a single object, we can avoid
@@ -304,29 +337,22 @@ class FileGenerator(object):
         # IAM policies with the smallest set of permissions needed) and
         # instead use a HeadObject request.
         bucket, key = find_bucket_key(s3_path)
-        operation = self._service.get_operation('HeadObject')
         try:
-            response = operation.call(
-                self._endpoint, bucket=bucket, key=key)[1]
+            params = {'Bucket': bucket, 'Key': key}
+            params.update(self.request_parameters.get('HeadObject', {}))
+            response = self._client.head_object(**params)
         except ClientError as e:
             # We want to try to give a more helpful error message.
             # This is what the customer is going to see so we want to
             # give as much detail as we have.
-            copy_fields = e.__dict__.copy()
-            if not e.error_message == 'Not Found':
+            if not e.response['Error']['Code'] == '404':
                 raise
-            if e.http_status_code == 404:
-                # The key does not exist so we'll raise a more specific
-                # error message here.
-                copy_fields['error_code'] = 'NoSuchKey'
-                copy_fields['error_message'] = 'Key "%s" does not exist' % key
-            else:
-                reason = six.moves.http_client.responses[
-                    e.http_status_code]
-                copy_fields['error_code'] = reason
-                copy_fields['error_message'] = reason
-            raise ClientError(**copy_fields)
-        file_size = int(response['ContentLength'])
+            # The key does not exist so we'll raise a more specific
+            # error message here.
+            response = e.response.copy()
+            response['Error']['Message'] = 'Key "%s" does not exist' % key
+            raise ClientError(response, 'HeadObject')
+        response['Size'] = int(response.pop('ContentLength'))
         last_update = parse(response['LastModified'])
-        last_update = last_update.astimezone(tzlocal())
-        return s3_path, file_size, last_update
+        response['LastModified'] = last_update.astimezone(tzlocal())
+        return s3_path, response

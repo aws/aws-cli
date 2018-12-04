@@ -1,18 +1,17 @@
 **To attach subnets to a load balancer**
 
-This example adds a subnet to the configured subnets in the Amazon VPC for the load balancer.
-
+This example adds the specified subnet to the set of configured subnets for the specified load balancer.
 
 Command::
 
-  aws elb attach-load-balancer-to-subnets --load-balancer MyVPCLoadBalancer --subnets subnet-0ecac448
+  aws elb attach-load-balancer-to-subnets --load-balancer-name my-load-balancer --subnets subnet-0ecac448
 
 Output::
 
    {
       "Subnets": [
-        "subnet-15aaab61",
-        "subnet-0ecac448"
+          "subnet-15aaab61",
+          "subnet-0ecac448"
       ]
    }
 

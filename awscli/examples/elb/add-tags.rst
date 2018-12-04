@@ -1,12 +1,8 @@
-**To add tags for a load balancer**
+**To add a tag to a load balancer**
 
-This example adds tags for a load balancer.
+This example adds tags to the specified load balancer.
 
 Command::
 
-  aws elb add-tags  --load-balancer-name MyTCPLoadBalancer --tag "Key=project,Value=lima"
+  aws elb add-tags --load-balancer-name my-load-balancer --tags "Key=project,Value=lima" "Key=department,Value=digital-media"
 
-Output::
-
-  {}
-  

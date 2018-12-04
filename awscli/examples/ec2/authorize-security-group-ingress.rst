@@ -14,6 +14,14 @@ Command::
 
   aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --protocol tcp --port 80 --source-group otheraccountgroup --group-owner 123456789012
 
+**[EC2-Classic] To add a rule that allows inbound HTTPS traffic from an ELB**
+
+This example enables inbound traffic on TCP port 443 from an ELB. If the command succeeds, no output is returned.
+
+Command::
+
+  aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --protocol tcp --port 443 --source-group amazon-elb-sg --group-owner amazon-elb
+
 **[EC2-VPC] To add a rule that allows inbound SSH traffic**
 
 This example enables inbound traffic on TCP port 22 (SSH). Note that you can't reference a security group for EC2-VPC by name. If the command succeeds, no output is returned.
@@ -24,12 +32,21 @@ Command::
 
 **[EC2-VPC] To add a rule that allows inbound HTTP traffic from another security group**
 
-This example enables inbound access on TCP port 80 from the source security group sg-1a2b3c4d. Note that for EC2-VPC, the source group must be in the same VPC. If the command succeeds, no output is returned.
+This example enables inbound access on TCP port 80 from the source security group sg-1a2b3c4d. Note that for EC2-VPC, the source group must be in the same VPC or in a peer VPC (requires a VPC peering connection). If the command succeeds, no output is returned.
 
 Command::
 
   aws ec2 authorize-security-group-ingress --group-id sg-111aaa22 --protocol tcp --port 80 --source-group sg-1a2b3c4d
 
+**[EC2-VPC] To add a custom ICMP rule**
+
+This example uses the ``ip-permissions`` parameter to add an inbound rule that allows the ICMP message ``Destination Unreachable: Fragmentation Needed and Don't Fragment was Set`` (Type 3, Code 4) from anywhere. If the command succeeds, no output is returned. For more information about quoting JSON-formatted parameters, see `Quoting Strings`_.
+
+Command::
+
+  aws ec2 authorize-security-group-ingress --group-id sg-123abc12 --ip-permissions '[{"IpProtocol": "icmp", "FromPort": 3, "ToPort": 4, "IpRanges": [{"CidrIp": "0.0.0.0/0"}]}]' 
+
 For more information, see `Using Security Groups`_ in the *AWS Command Line Interface User Guide*.
 
 .. _`Using Security Groups`: http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-sg.html
+.. _`Quoting Strings`: http://docs.aws.amazon.com/cli/latest/userguide/cli-using-param.html#quoting-strings

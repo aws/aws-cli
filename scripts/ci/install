@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+import os
+import sys
+from subprocess import check_call
+import shutil
+
+_dname = os.path.dirname
+
+REPO_ROOT = _dname(_dname(_dname(os.path.abspath(__file__))))
+os.chdir(REPO_ROOT)
+
+
+def run(command):
+    return check_call(command, shell=True)
+
+
+try:
+    # Has the form "major.minor"
+    python_version = os.environ['PYTHON_VERSION']
+except KeyError:
+    python_version = '.'.join([str(i) for i in sys.version_info[:2]])
+
+if python_version == '2.6':
+    run('pip install -r requirements26.txt')
+
+run('pip install -r requirements.txt')
+run('pip install coverage')
+if os.path.isdir('dist') and os.listdir('dist'):
+    shutil.rmtree('dist')
+run('python setup.py bdist_wheel')
+wheel_dist = os.listdir('dist')[0]
+run('pip install %s' % (os.path.join('dist', wheel_dist)))

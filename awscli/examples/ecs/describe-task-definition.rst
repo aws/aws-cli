@@ -10,6 +10,7 @@ Output::
 
 	{
 	    "taskDefinition": {
+	        "volumes": [],
 	        "taskDefinitionArn": "arn:aws:ecs:us-east-1:<aws_account_id>:task-definition/hello_world:8",
 	        "containerDefinitions": [
 	            {
@@ -18,6 +19,7 @@ Output::
 	                "links": [
 	                    "mysql"
 	                ],
+	                "mountPoints": [],
 	                "image": "wordpress",
 	                "essential": true,
 	                "portMappings": [
@@ -27,7 +29,8 @@ Output::
 	                    }
 	                ],
 	                "memory": 500,
-	                "cpu": 10
+	                "cpu": 10,
+	                "volumesFrom": []
 	            },
 	            {
 	                "environment": [
@@ -37,11 +40,13 @@ Output::
 	                    }
 	                ],
 	                "name": "mysql",
+	                "mountPoints": [],
 	                "image": "mysql",
 	                "cpu": 10,
 	                "portMappings": [],
 	                "memory": 500,
-	                "essential": true
+	                "essential": true,
+	                "volumesFrom": []
 	            }
 	        ],
 	        "family": "hello_world",

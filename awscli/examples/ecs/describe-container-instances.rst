@@ -1,10 +1,10 @@
 **To describe container instance**
 
-This example command provides a description of the specified container instance in your default region, using the container instance UUID as an identifier.
+This example command provides a description of the specified container instance in the ``update`` cluster, using the container instance UUID as an identifier.
 
 Command::
 
-  aws ecs describe-container-instance --cluster default --container-instance f6bbb147-5370-4ace-8c73-c7181ded911f
+  aws ecs describe-container-instances --cluster update --container-instances 53ac7152-dcd1-4102-81f5-208962864132
 
 Output::
 
@@ -13,40 +13,74 @@ Output::
 	    "containerInstances": [
 	        {
 	            "status": "ACTIVE",
-	            "remainingResources": [
-	                {
-	                    "integerValue": 32748,
-	                    "longValue": 0,
-	                    "type": "INTEGER",
-	                    "name": "CPU",
-	                    "doubleValue": 0.0
-	                },
-	                {
-	                    "integerValue": 60377,
-	                    "longValue": 0,
-	                    "type": "INTEGER",
-	                    "name": "MEMORY",
-	                    "doubleValue": 0.0
-	                }
-	            ],
 	            "registeredResources": [
 	                {
-	                    "integerValue": 32768,
+	                    "integerValue": 2048,
 	                    "longValue": 0,
 	                    "type": "INTEGER",
 	                    "name": "CPU",
 	                    "doubleValue": 0.0
 	                },
 	                {
-	                    "integerValue": 60397,
+	                    "integerValue": 3955,
 	                    "longValue": 0,
 	                    "type": "INTEGER",
 	                    "name": "MEMORY",
 	                    "doubleValue": 0.0
+	                },
+	                {
+	                    "name": "PORTS",
+	                    "longValue": 0,
+	                    "doubleValue": 0.0,
+	                    "stringSetValue": [
+	                        "22",
+	                        "2376",
+	                        "2375",
+	                        "51678"
+	                    ],
+	                    "type": "STRINGSET",
+	                    "integerValue": 0
 	                }
 	            ],
-	            "containerInstanceArn": "arn:aws:ecs:us-east-1:<aws_account_id>:container-instance/f6bbb147-5370-4ace-8c73-c7181ded911f",
-	            "ec2InstanceId": "i-0f51df05"
+	            "ec2InstanceId": "i-f3c1de3a",
+	            "agentConnected": true,
+	            "containerInstanceArn": "arn:aws:ecs:us-west-2:<aws_account_id>:container-instance/53ac7152-dcd1-4102-81f5-208962864132",
+	            "pendingTasksCount": 0,
+	            "remainingResources": [
+	                {
+	                    "integerValue": 2048,
+	                    "longValue": 0,
+	                    "type": "INTEGER",
+	                    "name": "CPU",
+	                    "doubleValue": 0.0
+	                },
+	                {
+	                    "integerValue": 3955,
+	                    "longValue": 0,
+	                    "type": "INTEGER",
+	                    "name": "MEMORY",
+	                    "doubleValue": 0.0
+	                },
+	                {
+	                    "name": "PORTS",
+	                    "longValue": 0,
+	                    "doubleValue": 0.0,
+	                    "stringSetValue": [
+	                        "22",
+	                        "2376",
+	                        "2375",
+	                        "51678"
+	                    ],
+	                    "type": "STRINGSET",
+	                    "integerValue": 0
+	                }
+	            ],
+	            "runningTasksCount": 0,
+	            "versionInfo": {
+	                "agentVersion": "1.0.0",
+	                "agentHash": "4023248",
+	                "dockerVersion": "DockerVersion: 1.5.0"
+	            }
 	        }
 	    ]
 	}

@@ -1,15 +1,14 @@
 **To describe snapshot attributes**
 
-This example command describes the ``createVolumePermission`` and ``productCodes`` attributes on a snapshot with the snapshot ID of ``snap-1234abcd``.
+This example command describes the ``createVolumePermission`` attribute on a snapshot with the snapshot ID of ``snap-066877671789bd71b``.
 
 Command::
 
-  aws ec2 describe-snapshot-attribute --snapshot-id snap-1234abcd --attribute createVolumePermission --attribute productCodes
+  aws ec2 describe-snapshot-attribute --snapshot-id snap-066877671789bd71b --attribute createVolumePermission
 
 Output::
 
    {
-       "SnapshotId": "snap-b52c0044",
-       "CreateVolumePermissions": [],
-       "ProductCodes": []
+       "SnapshotId": "snap-066877671789bd71b",
+       "CreateVolumePermissions": []
    }

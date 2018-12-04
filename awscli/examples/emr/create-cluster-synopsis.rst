@@ -1,10 +1,11 @@
   create-cluster
-     --ami-version <value>
+     --release-label <value> | --ami-version <value> 
      --instance-type <value> | --instance-groups <value>
      --instance-count <value>
      [--auto-terminate | --no-auto-terminate]
-     [--use-default-role]
+     [--use-default-roles]
      [--service-role <value>]
+     [--configurations <value>]
      [--name <value>]
      [--log-uri <value>]
      [--additional-info <value>]
@@ -18,3 +19,4 @@
      [--bootstrap-actions <value>]
      [--steps <value>]
      [--restore-from-hbase-backup <value>]
+     [--security-configuration <value>]

@@ -38,15 +38,15 @@ def index_hydrate(params, container, cli_type, key, value):
             }
         }
     """
-    if 'index_field' not in params:
-        params['index_field'] = {}
+    if 'IndexField' not in params:
+        params['IndexField'] = {}
 
-    if 'IndexFieldType' not in params['index_field']:
-        raise RuntimeError('You must pass the --type option!')
+    if 'IndexFieldType' not in params['IndexField']:
+        raise RuntimeError('You must pass the --type option.')
 
     # Find the type and transform it for the type options field name
     # E.g: int-array => IntArray
-    _type = params['index_field']['IndexFieldType']
+    _type = params['IndexField']['IndexFieldType']
     _type = ''.join([i.capitalize() for i in _type.split('-')])
 
     # ``index_field`` of type ``latlon`` is mapped to ``Latlon``.
@@ -60,10 +60,10 @@ def index_hydrate(params, container, cli_type, key, value):
         value = DEFAULT_VALUE_TYPE_MAP.get(_type, lambda x: x)(value)
 
     # Set the proper options field
-    if _type + 'Options' not in params['index_field']:
-        params['index_field'][_type + 'Options'] = {}
+    if _type + 'Options' not in params['IndexField']:
+        params['IndexField'][_type + 'Options'] = {}
 
-    params['index_field'][_type + 'Options'][key.split(SEP)[-1]] = value
+    params['IndexField'][_type + 'Options'][key.split(SEP)[-1]] = value
 
 
 FLATTEN_CONFIG = {
@@ -90,7 +90,7 @@ FLATTEN_CONFIG = {
                 ("IntOptions.DefaultValue", {"name": "default-value",
                                              "type": "string",
                                              "hydrate": index_hydrate}),
-                ("IntOptions.FacetEnabled", { "name": "facet-enabled",
+                ("IntOptions.FacetEnabled", {"name": "facet-enabled",
                                              "hydrate": index_hydrate }),
                 ("IntOptions.SearchEnabled", {"name": "search-enabled",
                                               "hydrate": index_hydrate}),

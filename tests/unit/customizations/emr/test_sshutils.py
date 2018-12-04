@@ -23,21 +23,19 @@ class TestSSHUtils(unittest.TestCase):
     def test_validate_and_find_master_dns_waits(self, emrutils):
         emrutils.get_cluster_state.return_value = 'STARTING'
         session = mock.Mock()
-        fake_endpoint = mock.sentinel.fake_endpoint
-        emrutils.get_endpoint.return_value = fake_endpoint
+        client = mock.Mock()
+        emrutils.get_client.return_value = client
 
         sshutils.validate_and_find_master_dns(session, None, 'cluster-id')
 
         # We should have:
         # 1. Waiter for the cluster to be running.
-        session.get_service.return_value.get_waiter.assert_called_with(
-            'ClusterRunning', fake_endpoint)
-        service = session.get_service.return_value
-        service.get_waiter.return_value.wait.assert_called_with(
+        client.get_waiter.assert_called_with('cluster_running')
+        client.get_waiter.return_value.wait.assert_called_with(
             ClusterId='cluster-id')
 
         # 2. Found the master public DNS
-        self.assertTrue(emrutils.find_master_public_dns.called)
+        self.assertTrue(emrutils.find_master_dns.called)
 
     @mock.patch('awscli.customizations.emr.sshutils.emrutils')
     def test_cluster_in_terminated_states(self, emrutils):
@@ -45,3 +43,18 @@ class TestSSHUtils(unittest.TestCase):
         with self.assertRaises(exceptions.ClusterTerminatedError):
             sshutils.validate_and_find_master_dns(
                 mock.Mock(), None, 'cluster-id')
+
+    @mock.patch('awscli.customizations.emr.sshutils.emrutils')
+    def test_ssh_scp_key_file_format(self, emrutils):
+        def which_side_effect(program):
+            if program == 'ssh' or program == 'scp':
+                return '/some/path'
+        emrutils.which.side_effect = which_side_effect
+
+        key_file1 = 'key.abc'
+        sshutils.validate_ssh_with_key_file(key_file1)
+        sshutils.validate_scp_with_key_file(key_file1)
+
+        key_file2 = 'key'
+        sshutils.validate_ssh_with_key_file(key_file2)
+        sshutils.validate_scp_with_key_file(key_file2)

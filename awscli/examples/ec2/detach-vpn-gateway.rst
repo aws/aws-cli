@@ -4,4 +4,4 @@ This example detaches the specified virtual private gateway from the specified V
 
 Command::
 
-  aws ec2 detach-internet-gateway --vpn-gateway-id vgw-9a4cacf3 --vpc-id vpc-a01106c2
+  aws ec2 detach-vpn-gateway --vpn-gateway-id vgw-9a4cacf3 --vpc-id vpc-a01106c2

@@ -20,20 +20,36 @@ from awscli.customizations.s3.fileinfobuilder import FileInfoBuilder
 
 class TestFileInfoBuilder(unittest.TestCase):
     def test_info_setter(self):
-        info_setter = FileInfoBuilder(service='service', endpoint='endpoint',
-                                      source_endpoint='source_endpoint',
+        info_setter = FileInfoBuilder(client='client',
+                                      source_client='source_client',
                                       parameters='parameters',
                                       is_stream='is_stream')
         files = [FileStat(src='src', dest='dest', compare_key='compare_key',
                           size='size', last_update='last_update',
                           src_type='src_type', dest_type='dest_type',
-                          operation_name='operation_name')]
+                          operation_name='operation_name',
+                          response_data='associated_response_data')]
         file_infos = info_setter.call(files)
         for file_info in file_infos:
             attributes = file_info.__dict__.keys()
             for key in attributes:
                 self.assertEqual(getattr(file_info, key), str(key))
 
+    def test_swaps_clients_for_sync_delete(self):
+        client_name = 'client'
+        source_client_name = 'source_client'
+        info_setter = FileInfoBuilder(client=client_name,
+                                      source_client=source_client_name,
+                                      parameters={'delete': True},
+                                      is_stream='is_stream')
+        files = [FileStat(src='src', dest='dest', compare_key='compare_key',
+                          size='size', last_update='last_update',
+                          src_type='src_type', dest_type='dest_type',
+                          operation_name='delete')]
+        file_infos = info_setter.call(files)
+        for file_info in file_infos:
+            self.assertEquals(file_info.client, source_client_name)
+            self.assertEquals(file_info.source_client, client_name)
 
 if __name__ == "__main__":
     unittest.main()

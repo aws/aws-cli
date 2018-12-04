@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
@@ -11,7 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-
 import logging
 import os
 
@@ -28,8 +26,10 @@ logger = logging.getLogger(__name__)
 # refers to an actual URI of some sort and we don't want to actually
 # download the content (i.e TemplateURL in cloudformation).
 PARAMFILE_DISABLED = set([
+    'apigateway.put-integration.uri',
     'cloudformation.create-stack.template-url',
     'cloudformation.update-stack.template-url',
+    'cloudformation.create-change-set.template-url',
     'cloudformation.validate-template.template-url',
     'cloudformation.estimate-template-cost.template-url',
 
@@ -37,11 +37,16 @@ PARAMFILE_DISABLED = set([
     'cloudformation.update-stack.stack-policy-url',
     'cloudformation.set-stack-policy.stack-policy-url',
 
+    'cloudformation.update-stack.stack-policy-during-update-url',
     # We will want to change the event name to ``s3`` as opposed to
     # custom in the near future along with ``s3`` to ``s3api``.
     'custom.cp.website-redirect',
     'custom.mv.website-redirect',
     'custom.sync.website-redirect',
+
+    'iam.create-open-id-connect-provider.url',
+
+    'machinelearning.predict.predict-endpoint',
 
     'sqs.add-permission.queue-url',
     'sqs.change-message-visibility.queue-url',
@@ -72,32 +77,43 @@ class ResourceLoadingError(Exception):
 
 
 def get_paramfile(path):
-    """
+    """Load parameter based on a resource URI.
+
     It is possible to pass parameters to operations by referring
     to files or URI's.  If such a reference is detected, this
     function attempts to retrieve the data from the file or URI
     and returns it.  If there are any errors or if the ``path``
     does not appear to refer to a file or URI, a ``None`` is
     returned.
+
+    :type path: str
+    :param path: The resource URI, e.g. file://foo.txt.  This value
+        may also be a non resource URI, in which case ``None`` is returned.
+
+    :return: The loaded value associated with the resource URI.
+        If the provided ``path`` is not a resource URI, then a
+        value of ``None`` is returned.
+
     """
     data = None
     if isinstance(path, six.string_types):
-        for prefix in PrefixMap:
+        for prefix, function_spec in PREFIX_MAP.items():
             if path.startswith(prefix):
-                kwargs = KwargsMap.get(prefix, {})
-                data = PrefixMap[prefix](prefix, path, **kwargs)
+                function, kwargs = function_spec
+                data = function(prefix, path, **kwargs)
     return data
 
 
 def get_file(prefix, path, mode):
-    file_path = path[len(prefix):]
-    file_path = os.path.expanduser(file_path)
-    file_path = os.path.expandvars(file_path)
-    if not os.path.isfile(file_path):
-        raise ResourceLoadingError("file does not exist: %s" % file_path)
+    file_path = os.path.expandvars(os.path.expanduser(path[len(prefix):]))
     try:
         with compat_open(file_path, mode) as f:
             return f.read()
+    except UnicodeDecodeError:
+        raise ResourceLoadingError(
+            'Unable to load paramfile (%s), text contents could '
+            'not be decoded.  If this is a binary file, please use the '
+            'fileb:// prefix instead of the file:// prefix.' % file_path)
     except (OSError, IOError) as e:
         raise ResourceLoadingError('Unable to load paramfile %s: %s' % (
             path, e))
@@ -116,12 +132,9 @@ def get_uri(prefix, uri):
         raise ResourceLoadingError('Unable to retrieve %s: %s' % (uri, e))
 
 
-PrefixMap = {'file://': get_file,
-             'fileb://': get_file,
-             'http://': get_uri,
-             'https://': get_uri}
-
-KwargsMap = {'file://': {'mode': 'r'},
-             'fileb://': {'mode': 'rb'},
-             'http://': {},
-             'https://': {}}
+PREFIX_MAP = {
+    'file://': (get_file, {'mode': 'r'}),
+    'fileb://': (get_file, {'mode': 'rb'}),
+    'http://': (get_uri, {}),
+    'https://': (get_uri, {}),
+}

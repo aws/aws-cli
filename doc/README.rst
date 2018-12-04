@@ -2,13 +2,14 @@
 Building The Documentation
 ==========================
 
-Before building the documentation, make sure you have all the
-necessary dependencies installed.  You can do this by using
-the requirements.txt file at the root of this repo::
+Before building the documentation, make sure you have Python 2.7,
+the awscli, and all the necessary dependencies installed.  You can
+install dependencies by using the requirements-docs.txt file at the
+root of this repo::
 
-    pip install -r requirements.txt
+    pip install -r requirements-docs.txt
 
-The process for building the documention is:
+The process for building the documentation is:
 
 * Run ``make html`` which will build all of the HTML documentation
   into the ``build/html`` directory.
@@ -18,7 +19,7 @@ The process for building the documention is:
   distribution and installed by ``python setup.py install``.
 
 * Run ``make text`` which will build all of the text pages that
-  are used for interactive help on the Window platform.  These files
+  are used for interactive help on the Windows platform.  These files
   are included in the source distribution and installed by
   ``python setup.py install``.
 

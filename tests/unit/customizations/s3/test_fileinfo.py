@@ -14,7 +14,6 @@ import os
 import tempfile
 import shutil
 from datetime import datetime
-from hashlib import md5
 
 from awscli.compat import six
 import mock
@@ -23,23 +22,44 @@ from awscli.testutils import unittest
 from awscli.customizations.s3 import fileinfo
 from awscli.customizations.s3.utils import MD5Error
 from awscli.customizations.s3.fileinfo import FileInfo
+from awscli.customizations.s3.fileinfo import TaskInfo
 
 
 class TestSaveFile(unittest.TestCase):
     def setUp(self):
         self.tempdir = tempfile.mkdtemp()
         self.filename = os.path.join(self.tempdir, 'dir1', 'dir2', 'foo.txt')
-        etag = md5()
-        etag.update(b'foobar')
-        etag = etag.hexdigest()
+        etag = '3858f62230ac3c915f300c664312c63f'
         self.response_data = {
             'Body': six.BytesIO(b'foobar'),
             'ETag': '"%s"' % etag,
         }
         self.last_update = datetime.now()
 
+        # Setup MD5 patches
+        self.md5_object = mock.Mock()
+        self.md5_object.hexdigest.return_value = etag
+        md5_builder = mock.Mock(return_value=self.md5_object)
+        self.md5_patch = mock.patch('hashlib.md5', md5_builder)
+        self.md5_patch.start()
+        self._md5_available_patch = None
+        self.set_md5_available()
+
     def tearDown(self):
         shutil.rmtree(self.tempdir)
+
+        # Tear down MD5 patches
+        self.md5_patch.stop()
+        if self._md5_available_patch:
+            self._md5_available_patch.stop()
+
+    def set_md5_available(self, is_available=True):
+        if self._md5_available_patch:
+            self._md5_available_patch.stop()
+
+        self._md5_available_patch = mock.patch(
+            'awscli.customizations.s3.fileinfo.MD5_AVAILABLE', is_available)
+        self._md5_available_patch.start()
 
     def test_save_file(self):
         fileinfo.save_file(self.filename, self.response_data, self.last_update)
@@ -94,11 +114,81 @@ class TestSaveFile(unittest.TestCase):
         # The file should have been saved.
         self.assertTrue(os.path.isfile(self.filename))
 
+    def test_no_raise_md5_when_md5_unavailable(self):
+        self.response_data['ETag'] = '"0"'
+        self.response_data['ServerSideEncryption'] = 'AES256'
+        self.set_md5_available(False)
+        # Should not raise any md5 error.
+        fileinfo.save_file(self.filename, self.response_data, self.last_update)
+        # The file should have been saved.
+        self.assertTrue(os.path.isfile(self.filename))
+
 
 class TestSetSizeFromS3(unittest.TestCase):
     def test_set_size_from_s3(self):
-        file_info = FileInfo(src="bucket/key", endpoint=None)
-        with mock.patch('awscli.customizations.s3.fileinfo.operate') as op_mock:
-            op_mock.return_value = ({'ContentLength': 5}, None)
-            file_info.set_size_from_s3()
+        client = mock.Mock()
+        client.head_object.return_value = {'ContentLength': 5}
+        file_info = FileInfo(src="bucket/key", client=client)
+        file_info.set_size_from_s3()
         self.assertEqual(file_info.size, 5)
+
+
+class TestIsGlacierCompatible(unittest.TestCase):
+    def setUp(self):
+        self.file_info = FileInfo('bucket/key')
+        self.file_info.associated_response_data = {'StorageClass': 'GLACIER'}
+
+    def test_operation_is_glacier_compatible(self):
+        self.file_info.operation_name = 'delete'
+        self.assertTrue(self.file_info.is_glacier_compatible())
+
+    def test_download_operation_is_not_glacier_compatible(self):
+        self.file_info.operation_name = 'download'
+        self.assertFalse(self.file_info.is_glacier_compatible())
+
+    def test_copy_operation_is_not_glacier_compatible(self):
+        self.file_info.operation_name = 'copy'
+        self.assertFalse(self.file_info.is_glacier_compatible())
+
+    def test_operation_is_glacier_compatible_for_non_glacier(self):
+        self.file_info.operation_name = 'download'
+        self.file_info.associated_response_data = {'StorageClass': 'STANDARD'}
+        self.assertTrue(self.file_info.is_glacier_compatible())
+
+    def test_move_operation_is_not_glacier_compatible_for_s3_source(self):
+        self.file_info.operation_name = 'move'
+        self.file_info.src_type = 's3'
+        self.assertFalse(self.file_info.is_glacier_compatible())
+
+    def test_move_operation_is_glacier_compatible_for_local_source(self):
+        self.file_info.operation_name = 'move'
+        self.file_info.src_type = 'local'
+        self.assertTrue(self.file_info.is_glacier_compatible())
+
+    def test_response_is_not_glacier(self):
+        self.file_info.associated_response_data = {'StorageClass': 'STANDARD'}
+        self.assertTrue(self.file_info.is_glacier_compatible())
+
+    def test_response_missing_storage_class(self):
+        self.file_info.associated_response_data = {'Key': 'Foo'}
+        self.assertTrue(self.file_info.is_glacier_compatible())
+
+    def test_task_info_glacier_compatibility(self):
+        task_info = TaskInfo('bucket/key', 's3', 'remove_bucket', None)
+        self.assertTrue(task_info.is_glacier_compatible())
+
+    def test_restored_object_is_glacier_compatible(self):
+        self.file_info.operation_name = 'download'
+        self.file_info.associated_response_data = {
+            'StorageClass': 'GLACIER',
+            'Restore': 'ongoing-request="false", expiry-date="..."'
+        }
+        self.assertTrue(self.file_info.is_glacier_compatible())
+
+    def test_ongoing_restore_is_not_glacier_compatible(self):
+        self.file_info.operation_name = 'download'
+        self.file_info.associated_response_data = {
+            'StorageClass': 'GLACIER',
+            'Restore': 'ongoing-request="true", expiry-date="..."'
+        }
+        self.assertFalse(self.file_info.is_glacier_compatible())

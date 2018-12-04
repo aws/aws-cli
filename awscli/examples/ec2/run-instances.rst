@@ -6,13 +6,13 @@ The key pair and security group, named ``MyKeyPair`` and ``MySecurityGroup``, mu
 
 Command::
 
-  aws ec2 run-instances --image-id ami-c3b8d6aa --count 1 --instance-type t1.micro --key-name MyKeyPair --security-groups MySecurityGroup
+  aws ec2 run-instances --image-id ami-1a2b3c4d --count 1 --instance-type t1.micro --key-name MyKeyPair --security-groups MySecurityGroup
 
 Output::
 
   {
       "OwnerId": "123456789012",
-      "ReservationId": "r-5875ca20",
+      "ReservationId": "r-08626e73c547023b1",
       "Groups": [
           {
               "GroupName": "MySecurityGroup",
@@ -25,7 +25,7 @@ Output::
                   "State": "disabled"
               },
               "PublicDnsName": null,
-              "Platform": "windows",
+              "RootDeviceType": "ebs",
               "State": {
                   "Code": 0,
                   "Name": "pending"
@@ -33,8 +33,9 @@ Output::
               "EbsOptimized": false,
               "LaunchTime": "2013-07-19T02:42:39.000Z",
               "ProductCodes": [],
-              "InstanceId": "i-5203422c",
-              "ImageId": "ami-c3b8d6aa",
+              "StateTransitionReason": null, 
+              "InstanceId": "i-1234567890abcdef0",
+              "ImageId": "ami-1a2b3c4d",
               "PrivateDnsName": null,
               "KeyName": "MyKeyPair",
               "SecurityGroups": [
@@ -52,17 +53,7 @@ Output::
                   "AvailabilityZone": "us-east-1b"
               },
               "Hypervisor": "xen",
-              "BlockDeviceMappings": [
-                  {
-                      "DeviceName": "/dev/sda1",
-                      "Ebs": {
-                          "Status": "attached",
-                          "DeleteOnTermination": true,
-                          "VolumeId": "vol-877166c8",
-                          "AttachTime": "2013-07-19T02:42:39.000Z"
-                      }
-                  }
-              ],
+              "BlockDeviceMappings": [],
               "Architecture": "x86_64",
               "StateReason": {
                   "Message": "pending",
@@ -70,13 +61,6 @@ Output::
               },
               "RootDeviceName": "/dev/sda1",
               "VirtualizationType": "hvm",
-              "RootDeviceType": "ebs",
-              "Tags": [
-                  {
-                      "Value": "MyInstance",
-                      "Key": "Name"
-                  }
-              ],
               "AmiLaunchIndex": 0
           }
       ]
@@ -84,32 +68,27 @@ Output::
 
 **To launch an instance in EC2-VPC**
 
-This example launches a single instance of type ``t1.micro`` into the specified subnet.
+This example launches a single instance of type ``t2.micro`` into the specified subnet.
 
 The key pair named ``MyKeyPair`` and the security group sg-903004f8 must exist.
 
 Command::
 
-  aws ec2 run-instances --image-id ami-c3b8d6aa --count 1 --instance-type t1.micro --key-name MyKeyPair --security-group-ids sg-903004f8 --subnet-id subnet-6e7f829e
+  aws ec2 run-instances --image-id ami-abc12345 --count 1 --instance-type t2.micro --key-name MyKeyPair --security-group-ids sg-903004f8 --subnet-id subnet-6e7f829e
 
 Output::
 
   {
       "OwnerId": "123456789012",
-      "ReservationId": "r-5875ca20",
-      "Groups": [
-          {
-              "GroupName": "MySecurityGroup",
-              "GroupId": "sg-903004f8"
-          }
-      ],
+      "ReservationId": "r-08626e73c547023b2",
+      "Groups": [],
       "Instances": [
           {
               "Monitoring": {
                   "State": "disabled"
               },
               "PublicDnsName": null,
-              "Platform": "windows",
+              "RootDeviceType": "ebs",
               "State": {
                   "Code": 0,
                   "Name": "pending"
@@ -119,8 +98,8 @@ Output::
               "PrivateIpAddress": "10.0.1.114",
               "ProductCodes": [],
               "VpcId": "vpc-1a2b3c4d",
-              "InstanceId": "i-5203422c",
-              "ImageId": "ami-c3b8d6aa",
+              "InstanceId": "i-1234567890abcdef5",
+              "ImageId": "ami-abc12345",
               "PrivateDnsName": "ip-10-0-1-114.ec2.internal",
               "KeyName": "MyKeyPair",
               "SecurityGroups": [
@@ -131,13 +110,14 @@ Output::
               ],
               "ClientToken": null,
               "SubnetId": "subnet-6e7f829e",
-              "InstanceType": "t1.micro",
+              "InstanceType": "t2.micro",
               "NetworkInterfaces": [
                   {
                       "Status": "in-use",
+                      "MacAddress": "0e:ad:05:3b:60:52",
                       "SourceDestCheck": true,
                       "VpcId": "vpc-1a2b3c4d",
-                      "Description": "Primary network interface",
+                      "Description": "null",
                       "NetworkInterfaceId": "eni-a7edb1c9",
                       "PrivateIpAddresses": [
                           {
@@ -172,17 +152,7 @@ Output::
                   "AvailabilityZone": "us-east-1b"
               },
               "Hypervisor": "xen",
-              "BlockDeviceMappings": [
-                  {
-                      "DeviceName": "/dev/sda1",
-                      "Ebs": {
-                          "Status": "attached",
-                          "DeleteOnTermination": true,
-                          "VolumeId": "vol-877166c8",
-                          "AttachTime": "2013-07-19T02:42:39.000Z"
-                      }
-                  }
-              ],
+              "BlockDeviceMappings": [],
               "Architecture": "x86_64",
               "StateReason": {
                   "Message": "pending",
@@ -190,13 +160,6 @@ Output::
               },
               "RootDeviceName": "/dev/sda1",
               "VirtualizationType": "hvm",
-              "RootDeviceType": "ebs",
-              "Tags": [
-                  {
-                      "Value": "MyInstance",
-                      "Key": "Name"
-                  }
-              ],
               "AmiLaunchIndex": 0
           }
       ]
@@ -210,29 +173,44 @@ Command::
 
 **To launch an instance using a block device mapping**
 
-Add the following parameter to your ``run-instances`` command to add an Amazon EBS volume with the device name ``/dev/sdh`` and a volume size of 100.
+Add the following parameter to your ``run-instances`` command to specify block devices::
 
-Command::
+  --block-device-mappings file://mapping.json
 
-  --block-device-mappings "[{\"DeviceName\": \"/dev/sdh\",\"Ebs\":{\"VolumeSize\":100}}]"
+To add an Amazon EBS volume with the device name ``/dev/sdh`` and a volume size of 100, specify the following in mapping.json::
 
-Add the following parameter to your ``run-instances`` command to add ``ephemeral1`` as an instance store volume with the device name ``/dev/sdc``.
+  [
+    {
+      "DeviceName": "/dev/sdh",
+      "Ebs": {
+        "VolumeSize": 100
+      }
+    }
+  ]
 
-Command::
+To add ``ephemeral1`` as an instance store volume with the device name ``/dev/sdc``, specify the following in mapping.json::
 
-  --block-device-mappings "[{\"DeviceName\": \"/dev/sdc\",\"VirtualName\":\"ephemeral1\"}]"
+  [
+    {
+      "DeviceName": "/dev/sdc",
+      "VirtualName": "ephemeral1"
+    }
+  ]
 
-Add the following parameter to your ``run-instances`` command to omit a device specified by the AMI used to launch the instance (for example, ``/dev/sdf``).
+To omit a device specified by the AMI used to launch the instance (for example, ``/dev/sdf``), specify the following in mapping.json::
 
-Command::
-
-  --block-device-mappings "[{\"DeviceName\": \"/dev/sdf\",\"NoDevice\":\"\"}]"
+  [
+    {
+      "DeviceName": "/dev/sdf",
+      "NoDevice": ""
+    }
+  ]
 
 You can view only the Amazon EBS volumes in your block device mapping using the console or the ``describe-instances`` command. To view all volumes, including the instance store volumes, use the following command.
 
 Command::
 
-  GET http://169.254.169.254/latest/meta-data/block-device-mapping
+  curl http://169.254.169.254/latest/meta-data/block-device-mapping/
 
 Output::
 
@@ -243,7 +221,7 @@ Note that ``ami`` represents the root volume. To get details about the instance 
 
 Command::
 
-  GET http://169.254.169.254/latest/meta-data/block-device-mapping/ephemeral1
+  curl http://169.254.169.254/latest/meta-data/block-device-mapping/ephemeral1
 
 Output::
 
@@ -253,28 +231,55 @@ Output::
 
 You can change individual characteristics of existing AMI block device mappings to suit your needs. Perhaps you want to use an existing AMI, but you want a larger root volume than the usual 8 GiB. Or, you would like to use a General Purpose (SSD) volume for an AMI that currently uses a Magnetic volume.
 
-Use the ``describe-images`` command with the image ID of the AMI you want to use to find its existing block device mapping. You should see a block device mapping in the output.
-
-Output::
+Use the ``describe-images`` command with the image ID of the AMI you want to use to find its existing block device mapping. You should see a block device mapping in the output::
 
   {
     "DeviceName": "/dev/sda1",
     "Ebs": {
       "DeleteOnTermination": true,
-      "SnapshotId": "snap-b047276d",
+      "SnapshotId": "snap-1234567890abcdef0",
       "VolumeSize": 8,
       "VolumeType": "standard",
       "Encrypted": false
     }
   }
 
-You can modify the above mapping by changing the individual parameters. For example, to launch an instance with a modified block device mapping, add the following parameter to your ``run-instances`` command to change the above mapping's volume size and type.
+You can modify the above mapping by changing the individual parameters. For example, to launch an instance with a modified block device mapping, add the following parameter to your ``run-instances`` command to change the above mapping's volume size and type::
+
+  --block-device-mappings file://mapping.json
+
+Where mapping.json contains the following::
+
+  [
+    {
+      "DeviceName": "/dev/sda1",
+      "Ebs": {
+        "DeleteOnTermination": true,
+        "SnapshotId": "snap-1234567890abcdef0", 
+        "VolumeSize": 100,
+        "VolumeType": "gp2"
+      }
+    }
+  ]
+
+**To launch an instance with user data**
+
+You can launch an instance and specify user data that performs instance configuration, or that runs a script. The user data needs to be passed as normal string, base64 encoding is handled internally. The following example passes user data in a file called ``my_script.txt`` that contains a configuration script for your instance. The script runs at launch.
 
 Command::
 
-  --block-device-mappings "[{\"DeviceName\":\"/dev/sda1\",\"Ebs\":{\"DeleteOnTermination\":true,\"SnapshotId\":\"snap-b047276d\",\"VolumeSize\":100,\"VolumeType\":\"gp2\"}}]"
+  aws ec2 run-instances --image-id ami-abc1234 --count 1 --instance-type m4.large --key-name keypair --user-data file://my_script.txt --subnet-id subnet-abcd1234 --security-group-ids sg-abcd1234 
 
 For more information about launching instances, see `Using Amazon EC2 Instances`_ in the *AWS Command Line Interface User Guide*.
 
 .. _`Using Amazon EC2 Instances`: http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-launch.html
 
+**To launch an instance with an instance profile**
+
+This example shows the use of the ``iam-instance-profile`` option to specify an `IAM instance profile`_ by name.
+
+.. _`IAM instance profile`: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html
+
+Command::
+
+  aws ec2 run-instances --iam-instance-profile Name=MyInstanceProfile --image-id ami-1a2b3c4d --count 1 --instance-type t2.micro --key-name MyKeyPair --security-groups MySecurityGroup

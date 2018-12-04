@@ -4,7 +4,7 @@ This example describes your virtual private gateways.
 
 Command::
 
-  aws ec2 describe-virtual-private-gateways
+  aws ec2 describe-vpn-gateways
 
 Output::
 

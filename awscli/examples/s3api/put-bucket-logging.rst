@@ -1,11 +1,14 @@
 The example below sets the logging policy for *MyBucket*. The AWS user *user@example.com* will have full control over
-the log files, and all users will have access to them::
+the log files, and all users will have access to them. First, grant S3 permission with ``put-bucket-acl``::
 
-   aws s3api put-bucket-acl --bucket MyBucket --grant-write 'URI="http://acs.amazonaws.com/groups/s3/LogDelivery"' --grant-read-acp 'URI="http://acs.amazonaws.com/groups/s3/LogDelivery"'
+   aws s3api put-bucket-acl --bucket MyBucket --grant-write URI=http://acs.amazonaws.com/groups/s3/LogDelivery --grant-read-acp URI=http://acs.amazonaws.com/groups/s3/LogDelivery
+
+Then apply the logging policy::
 
    aws s3api put-bucket-logging --bucket MyBucket --bucket-logging-status file://logging.json
 
-   logging.json:
+``logging.json`` is a JSON document in the current folder that contains the logging policy::
+
    {
      "LoggingEnabled": {
        "TargetBucket": "MyBucket",

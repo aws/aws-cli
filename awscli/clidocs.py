@@ -11,10 +11,15 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
-from bcdoc.docevents import DOC_EVENTS
+import os
+from botocore import xform_name
+from botocore.docs.bcdoc.docevents import DOC_EVENTS
+from botocore.model import StringShape
 
 from awscli import SCALAR_TYPES
 from awscli.argprocess import ParamShorthandDocGen
+from awscli.topictags import TopicTagDB
+from awscli.utils import find_service_and_method_in_event_name
 
 LOG = logging.getLogger(__name__)
 
@@ -123,7 +128,8 @@ class CLIDocumentEventHandler(object):
             self._documented_arg_groups.append(argument.group_name)
         else:
             option_str = '%s <value>' % argument.cli_name
-        if not argument.required:
+        if not (argument.required
+                or getattr(argument, '_DOCUMENT_AS_REQUIRED', False)):
             option_str = '[%s]' % option_str
         doc.writeln('%s' % option_str)
 
@@ -157,8 +163,36 @@ class CLIDocumentEventHandler(object):
         doc.write('%s (%s)\n' % (name, argument.cli_type_name))
         doc.style.indent()
         doc.include_doc_string(argument.documentation)
+        self._document_enums(argument, doc)
         doc.style.dedent()
         doc.style.new_paragraph()
+
+    def doc_relateditems_start(self, help_command, **kwargs):
+        if help_command.related_items:
+            doc = help_command.doc
+            doc.style.h2('See Also')
+
+    def doc_relateditem(self, help_command, related_item, **kwargs):
+        doc = help_command.doc
+        doc.write('* ')
+        doc.style.sphinx_reference_label(
+            label='cli:%s' % related_item,
+            text=related_item
+        )
+        doc.write('\n')
+
+    def _document_enums(self, argument, doc):
+        """Documents top-level parameter enums"""
+        if hasattr(argument, 'argument_model'):
+            model = argument.argument_model
+            if isinstance(model, StringShape):
+                if model.enum:
+                    doc.style.new_paragraph()
+                    doc.write('Possible values:')
+                    doc.style.start_ul()
+                    for enum in model.enum:
+                        doc.style.li('``%s``' % enum)
+                    doc.style.end_ul()
 
 
 class ProviderDocumentEventHandler(CLIDocumentEventHandler):
@@ -210,8 +244,9 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
 
     def build_translation_map(self):
         d = {}
-        for op in self.help_command.obj.operations:
-            d[op.name] = op.cli_name
+        service_model = self.help_command.obj
+        for operation_name in service_model.operation_names:
+            d[operation_name] = xform_name(operation_name, '-')
         return d
 
     # A service document has no synopsis.
@@ -239,9 +274,10 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
 
     def doc_description(self, help_command, **kwargs):
         doc = help_command.doc
-        service = help_command.obj
+        service_model = help_command.obj
         doc.style.h2('Description')
-        doc.include_doc_string(service.documentation)
+        # TODO: need a documentation attribute.
+        doc.include_doc_string(service_model.documentation)
 
     def doc_subitems_start(self, help_command, **kwargs):
         doc = help_command.doc
@@ -265,27 +301,42 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
 class OperationDocumentEventHandler(CLIDocumentEventHandler):
 
     def build_translation_map(self):
-        operation = self.help_command.obj
+        operation_model = self.help_command.obj
         d = {}
         for cli_name, cli_argument in self.help_command.arg_table.items():
             if cli_argument.argument_model is not None:
-                d[cli_argument.argument_model.name] = cli_name
-        for operation in operation.service.operations:
-            d[operation.name] = operation.cli_name
+                argument_name = cli_argument.argument_model.name
+                if argument_name in d:
+                    previous_mapping = d[argument_name]
+                    # If the argument name is a boolean argument, we want the
+                    # the translation to default to the one that does not start
+                    # with --no-. So we check if the cli parameter currently
+                    # being used starts with no- and if stripping off the no-
+                    # results in the new proposed cli argument name. If it
+                    # does, we assume we have the postive form of the argument
+                    # which is the name we want to use in doc translations.
+                    if cli_argument.cli_type_name == 'boolean' and \
+                            previous_mapping.startswith('no-') and \
+                            cli_name == previous_mapping[3:]:
+                        d[argument_name] = cli_name
+                else:
+                    d[argument_name] = cli_name
+        for operation_name in operation_model.service_model.operation_names:
+            d[operation_name] = xform_name(operation_name, '-')
         return d
 
     def doc_description(self, help_command, **kwargs):
         doc = help_command.doc
-        operation = help_command.obj
+        operation_model = help_command.obj
         doc.style.h2('Description')
-        doc.include_doc_string(operation.documentation)
+        doc.include_doc_string(operation_model.documentation)
 
     def _json_example_value_name(self, argument_model, include_enum_values=True):
         # If include_enum_values is True, then the valid enum values
         # are included as the sample JSON value.
-        if argument_model.type_name == 'string':
-            if 'enum' in argument_model.metadata and include_enum_values:
-                choices = argument_model.metadata['enum']
+        if isinstance(argument_model, StringShape):
+            if argument_model.enum and include_enum_values:
+                choices = argument_model.enum
                 return '|'.join(['"%s"' % c for c in choices])
             else:
                 return '"string"'
@@ -368,7 +419,9 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
                 doc.style.new_line()
         doc.write('}')
 
-    def doc_option_example(self, arg_name, help_command, **kwargs):
+    def doc_option_example(self, arg_name, help_command, event_name, **kwargs):
+        service_name, operation_name = \
+            find_service_and_method_in_event_name(event_name)
         doc = help_command.doc
         cli_argument = help_command.arg_table[arg_name]
         if cli_argument.group_name in self._arg_groups:
@@ -378,24 +431,22 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
                 return
         argument_model = cli_argument.argument_model
         docgen = ParamShorthandDocGen()
-        if docgen.supports_shorthand(cli_argument):
-            # TODO: bcdoc should not know about shorthand syntax. This
-            # should be pulled out into a separate handler in the
-            # awscli.customizations package.
+        if docgen.supports_shorthand(cli_argument.argument_model):
             example_shorthand_syntax = docgen.generate_shorthand_example(
-                cli_argument)
+                cli_argument, service_name, operation_name)
             if example_shorthand_syntax is None:
                 # If the shorthand syntax returns a value of None,
                 # this indicates to us that there is no example
                 # needed for this param so we can immediately
                 # return.
                 return
-            doc.style.new_paragraph()
-            doc.write('Shorthand Syntax')
-            doc.style.start_codeblock()
-            for example_line in example_shorthand_syntax.splitlines():
-                doc.writeln(example_line)
-            doc.style.end_codeblock()
+            if example_shorthand_syntax:
+                doc.style.new_paragraph()
+                doc.write('Shorthand Syntax')
+                doc.style.start_codeblock()
+                for example_line in example_shorthand_syntax.splitlines():
+                    doc.writeln(example_line)
+                doc.style.end_codeblock()
         if argument_model is not None and argument_model.type_name == 'list' and \
                 argument_model.member.type_name in SCALAR_TYPES:
             # A list of scalars is special.  While you *can* use
@@ -403,17 +454,17 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             # use the argparse behavior of space separated lists.
             # "foo" "bar" "baz".  In fact we don't even want to
             # document the JSON syntax in this case.
+            member = argument_model.member
             doc.style.new_paragraph()
             doc.write('Syntax')
             doc.style.start_codeblock()
             example_type = self._json_example_value_name(
-                argument_model.member, include_enum_values=False)
+                member, include_enum_values=False)
             doc.write('%s %s ...' % (example_type, example_type))
-            if 'enum' in argument_model.member.metadata:
+            if isinstance(member, StringShape) and member.enum:
                 # If we have enum values, we can tell the user
                 # exactly what valid values they can provide.
-                enum = argument_model.member.metadata['enum']
-                self._write_valid_enums(doc, enum)
+                self._write_valid_enums(doc, member.enum)
             doc.style.end_codeblock()
             doc.style.new_paragraph()
         elif cli_argument.cli_type_name not in SCALAR_TYPES:
@@ -434,8 +485,8 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
     def doc_output(self, help_command, event_name, **kwargs):
         doc = help_command.doc
         doc.style.h2('Output')
-        operation = help_command.obj
-        output_shape = operation.model.output_shape
+        operation_model = help_command.obj
+        output_shape = operation_model.output_shape
         if output_shape is None:
             doc.write('None')
         else:
@@ -482,3 +533,139 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             self._doc_member_for_output(doc, '', member_shape.member, stack)
         doc.style.dedent()
         doc.style.new_paragraph()
+
+
+class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
+    DESCRIPTION = (
+        'This is the AWS CLI Topic Guide. It gives access to a set '
+        'of topics that provide a deeper understanding of the CLI. To access '
+        'the list of topics from the command line, run ``aws help topics``. '
+        'To access a specific topic from the command line, run '
+        '``aws help [topicname]``, where ``topicname`` is the name of the '
+        'topic as it appears in the output from ``aws help topics``.')
+
+    def __init__(self, help_command):
+        self.help_command = help_command
+        self.register(help_command.session, help_command.event_class)
+        self.help_command.doc.translation_map = self.build_translation_map()
+        self._topic_tag_db = TopicTagDB()
+        self._topic_tag_db.load_json_index()
+
+    def doc_breadcrumbs(self, help_command, **kwargs):
+        doc = help_command.doc
+        if doc.target != 'man':
+            doc.write('[ ')
+            doc.style.sphinx_reference_label(label='cli:aws', text='aws')
+            doc.write(' ]')
+
+    def doc_title(self, help_command, **kwargs):
+        doc = help_command.doc
+        doc.style.new_paragraph()
+        doc.style.link_target_definition(
+            refname='cli:aws help %s' % self.help_command.name,
+            link='')
+        doc.style.h1('AWS CLI Topic Guide')
+
+    def doc_description(self, help_command, **kwargs):
+        doc = help_command.doc
+        doc.style.h2('Description')
+        doc.include_doc_string(self.DESCRIPTION)
+        doc.style.new_paragraph()
+
+    def doc_synopsis_start(self, help_command, **kwargs):
+        pass
+
+    def doc_synopsis_end(self, help_command, **kwargs):
+        pass
+
+    def doc_options_start(self, help_command, **kwargs):
+        pass
+
+    def doc_options_end(self, help_command, **kwargs):
+        pass
+
+    def doc_subitems_start(self, help_command, **kwargs):
+        doc = help_command.doc
+        doc.style.h2('Available Topics')
+
+        categories = self._topic_tag_db.query('category')
+        topic_names = self._topic_tag_db.get_all_topic_names()
+
+        # Sort the categories
+        category_names = sorted(categories.keys())
+        for category_name in category_names:
+            doc.style.h3(category_name)
+            doc.style.new_paragraph()
+            # Write out the topic and a description for each topic under
+            # each category.
+            for topic_name in sorted(categories[category_name]):
+                description = self._topic_tag_db.get_tag_single_value(
+                    topic_name, 'description')
+                doc.write('* ')
+                doc.style.sphinx_reference_label(
+                    label='cli:aws help %s' % topic_name,
+                    text=topic_name
+                )
+                doc.write(': %s\n' % description)
+        # Add a hidden toctree to make sure everything is connected in
+        # the document.
+        doc.style.hidden_toctree()
+        for topic_name in topic_names:
+            doc.style.hidden_tocitem(topic_name)
+
+
+class TopicDocumentEventHandler(TopicListerDocumentEventHandler):
+
+    def doc_breadcrumbs(self, help_command, **kwargs):
+        doc = help_command.doc
+        if doc.target != 'man':
+            doc.write('[ ')
+            doc.style.sphinx_reference_label(label='cli:aws', text='aws')
+            doc.write(' . ')
+            doc.style.sphinx_reference_label(
+                label='cli:aws help topics',
+                text='topics'
+            )
+            doc.write(' ]')
+
+    def doc_title(self, help_command, **kwargs):
+        doc = help_command.doc
+        doc.style.new_paragraph()
+        doc.style.link_target_definition(
+            refname='cli:aws help %s' % self.help_command.name,
+            link='')
+        title = self._topic_tag_db.get_tag_single_value(
+            help_command.name, 'title')
+        doc.style.h1(title)
+
+    def doc_description(self, help_command, **kwargs):
+        doc = help_command.doc
+        topic_filename = os.path.join(self._topic_tag_db.topic_dir,
+                                      help_command.name + '.rst')
+        contents = self._remove_tags_from_content(topic_filename)
+        doc.writeln(contents)
+        doc.style.new_paragraph()
+
+    def _remove_tags_from_content(self, filename):
+        with open(filename, 'r') as f:
+            lines = f.readlines()
+
+        content_begin_index = 0
+        for i, line in enumerate(lines):
+            # If a line is encountered that does not begin with the tag
+            # end the search for tags and mark where tags end.
+            if not self._line_has_tag(line):
+                content_begin_index = i
+                break
+
+        # Join all of the non-tagged lines back together.
+        return ''.join(lines[content_begin_index:])
+
+    def _line_has_tag(self, line):
+        for tag in self._topic_tag_db.valid_tags:
+            if line.startswith(':' + tag + ':'):
+                return True
+        return False
+
+    def doc_subitems_start(self, help_command, **kwargs):
+        pass

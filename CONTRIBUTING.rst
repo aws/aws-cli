@@ -23,17 +23,14 @@ contributions as well:
   Any code you submit will be released under that license.
 * We maintain a high percentage of code coverage in our unit tests.  As
   a general rule of thumb, code changes should not lower the overall
-  code coverage percentage for the project.  To help with this,
-  we use `coveralls <https://coveralls.io/r/boto/botocore>`__, which will
-  comment on changes in code coverage for every pull request.
-  In practice, this means that **every bug fix and feature addition should
-  include unit tests.**
+  code coverage percentage for the project.  In practice, this means that
+  **every bug fix and feature addition should include unit tests.**
 * Code should follow `pep 8 <https://www.python.org/dev/peps/pep-0008/>`__,
   although if you are modifying an existing module, it is more important
   for the code to be consistent if there are any discrepancies.
 * Code must work on ``python2.6``, ``python2.7``, and ``python3.3``,
   ``python3.4`` and higher.
-* The AWS CLI is cross platform and code must work on at least linux, Windows,
+* The AWS CLI is cross platform and code must work on at least Linux, Windows,
   and Mac OS X.  Avoid platform specific behavior.
 * If you would like to implement support for a significant feature that is not
   yet available in the AWS CLI, please talk to us beforehand to avoid any duplication

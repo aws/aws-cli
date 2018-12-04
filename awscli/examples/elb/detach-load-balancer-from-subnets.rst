@@ -1,17 +1,16 @@
-**To detach load balancer from subnets**
+**To detach load balancers from subnets**
 
-This example detaches your load balancer from the specified subnets in your Amazon VPC.
+This example detaches the specified load balancer from the specified subnet.
 
 Command::
 
-     aws elb detach-load-balancer-from-subnets --load-balancer-name MyVPCLoadBalancer --subnets subnet-0ecac448
-
+     aws elb detach-load-balancer-from-subnets --load-balancer-name my-load-balancer --subnets subnet-0ecac448
 
 Output::
 
    {
       "Subnets": [
-        "subnet-15aaab61"
+          "subnet-15aaab61"
       ]
    }
 

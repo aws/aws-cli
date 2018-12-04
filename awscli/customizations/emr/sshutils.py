@@ -37,19 +37,17 @@ def validate_and_find_master_dns(session, parsed_globals, cluster_id):
     if cluster_state in constants.TERMINATED_STATES:
         raise exceptions.ClusterTerminatedError
 
-    emr = session.get_service('emr')
-    endpoint = emrutils.get_endpoint(emr, parsed_globals)
+    emr = emrutils.get_client(session, parsed_globals)
 
     try:
-        cluster_running_waiter = emr.get_waiter('ClusterRunning',
-                                                endpoint)
+        cluster_running_waiter = emr.get_waiter('cluster_running')
         if cluster_state in constants.STARTING_STATES:
             print("Waiting for the cluster to start.")
         cluster_running_waiter.wait(ClusterId=cluster_id)
     except WaiterError:
         raise exceptions.MasterDNSNotAvailableError
 
-    return emrutils.find_master_public_dns(
+    return emrutils.find_master_dns(
         session=session, cluster_id=cluster_id,
         parsed_globals=parsed_globals)
 
@@ -76,11 +74,6 @@ def check_scp_key_format(key_file):
             (emrutils.which('scp.exe') or emrutils.which('scp')) is None):
         if check_command_key_format(key_file, ['ppk']) is False:
             raise exceptions.WrongPuttyKeyError
-    # If only scp is present and the file format is incorrect
-    elif (emrutils.which('pscp.exe') is None and
-            (emrutils.which('scp.exe') or emrutils.which('scp')) is not None):
-        if check_command_key_format(key_file, ['cer', 'pem']) is False:
-            raise exceptions.WrongSSHKeyError
     else:
         pass
 
@@ -91,11 +84,6 @@ def check_ssh_key_format(key_file):
             (emrutils.which('ssh.exe') or emrutils.which('ssh')) is None):
         if check_command_key_format(key_file, ['ppk']) is False:
             raise exceptions.WrongPuttyKeyError
-    # If only ssh is present and the file format is incorrect
-    elif (emrutils.which('putty.exe') is None and
-            (emrutils.which('ssh.exe') or emrutils.which('ssh')) is not None):
-        if check_command_key_format(key_file, ['cer', 'pem']) is False:
-            raise exceptions.WrongSSHKeyError
     else:
         pass
 

@@ -1,0 +1,192 @@
+#!/usr/bin/env python
+"""Script to benchmark several high level cli commands.
+
+As of now this benchmarks `cp` and `rm` with test cases for multiple 4kb files
+(default 10000 files) and a single large file (default 10gb, `cp` only).
+"""
+import os
+import json
+from subprocess import check_call, Popen, PIPE
+from datetime import datetime
+import random
+import argparse
+import inspect
+import shutil
+import platform
+
+import awscli
+import s3transfer
+
+
+TEST_BUCKET = os.environ.get('PERF_TEST_BUCKET')
+REPO_ROOT = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+WORKDIR = os.environ.get('PERF_WORKDIR', os.path.join(REPO_ROOT, 'workdir'))
+MANY_FILES_DIR = 'many'
+LARGE_FILE_DIR = 'large'
+
+
+def run(command):
+    return check_call(command, shell=True)
+
+
+def generate_run_id():
+    run_id = datetime.now().strftime("%Y-%m-%d-%H-%M-%S-")
+    run_id += str(random.randint(1, 10000))
+    return run_id
+
+
+def initialize_files(num_files, file_size):
+    # TODO: We probably need to recreate these files each time.
+    # Because you can specify --num-files and --large-file-size
+    # those arguments can be potentially ignored if you've run
+    # this previously with different values.
+    many_files_dir = os.path.join(WORKDIR, MANY_FILES_DIR)
+    if not os.path.exists(many_files_dir):
+        os.makedirs(many_files_dir)
+        run('caf gen --file-size 4kb --max-files %s --directory %s' %
+            (num_files, many_files_dir))
+
+    large_file_dir = os.path.join(WORKDIR, LARGE_FILE_DIR)
+    if not os.path.exists(large_file_dir):
+        os.makedirs(large_file_dir)
+        run('caf gen --file-size %s --max-files 1 --directory %s' %
+            (file_size, large_file_dir))
+
+
+def write_metadata_file(filename):
+    metadata = _collect_metadata()
+    with open(filename, 'w') as f:
+        f.write(json.dumps(metadata, indent=2))
+
+
+def _collect_metadata():
+    # We want to track things like the machine where the benchmark was run,
+    # and which version of the aws-cli/s3transfer code is being run.
+    # This helps us make more meaningful comparison.
+    metadata = {
+        'python_version': platform.python_version(),
+        'os': '%s/%s' % (platform.system(), platform.release()),
+    }
+    _inject_package_info(awscli, metadata)
+    _inject_package_info(s3transfer, metadata)
+    return metadata
+
+
+def _inject_package_info(package, metadata):
+    name = package.__name__
+    metadata[name + '_version'] = package.__version__
+    metadata[name + '_git_version'] = _get_git_version(package)
+
+
+def _get_git_version(package):
+    dname = os.path.dirname(inspect.getfile(package))
+    git_sha = Popen(
+        'git rev-parse HEAD',
+        cwd=dname, shell=True, stdout=PIPE).communicate()[0].strip()
+    git_branch = Popen(
+        'git rev-parse --abbrev-ref HEAD',
+        cwd=dname, shell=True, stdout=PIPE).communicate()[0].strip()
+    return '%s (%s)' % (git_sha, git_branch)
+
+
+def main(args):
+    initialize_files(args.num_files, args.large_file_size)
+    run_id = generate_run_id()
+    results_dir = os.path.join(WORKDIR, 'results', run_id)
+    os.makedirs(results_dir)
+    write_metadata_file(os.path.join(results_dir, 'metadata.json'))
+    try:
+        benchmark(args.bucket, results_dir, args.num_iterations)
+        print("RUN ID: " + run_id)
+    except Exception:
+        shutil.rmtree(results_dir)
+        raise
+
+
+def benchmark(bucket, results_dir, num_iterations=1):
+    perf_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    perf_dir = os.path.join(perf_dir, 'performance')
+
+    s3_location = bucket + '/' + MANY_FILES_DIR
+    local_dir = os.path.join(WORKDIR, MANY_FILES_DIR)
+    try:
+        # 10k upload
+        results = os.path.join(results_dir, 'upload-10k-small')
+        os.makedirs(results)
+        benchmark_cp = os.path.join(perf_dir, 'benchmark-cp')
+        run(benchmark_cp + ' --recursive --num-iterations %s '
+            '--source %s --dest %s --result-dir %s --no-cleanup' % (
+                num_iterations, local_dir, s3_location, results))
+
+        # 10k download
+        results = os.path.join(results_dir, 'download-10k-small')
+        os.makedirs(results)
+        run(benchmark_cp + ' --recursive --num-iterations %s '
+            '--source %s --dest %s --result-dir %s' % (
+                num_iterations, s3_location, local_dir, results))
+
+        # 10k rm
+        results = os.path.join(results_dir, 'delete-10k-small')
+        os.makedirs(results)
+        benchmark_rm = os.path.join(perf_dir, 'benchmark-rm')
+        run(benchmark_rm + ' --recursive --num-iterations %s '
+            '--target %s --result-dir %s' % (
+                num_iterations, s3_location, results))
+    finally:
+        # Note that the delete-10k-small benchmark restores
+        # the files it's deleted once the script is finished.
+        # Therefore we need to explicitly cleanup any files
+        # we've created.
+        run('aws s3 rm --recursive ' + s3_location)
+
+    s3_location = bucket + '/' + LARGE_FILE_DIR
+    local_dir = os.path.join(WORKDIR, LARGE_FILE_DIR)
+    try:
+        # 10gb upload
+        results = os.path.join(results_dir, 'upload-10gb')
+        os.makedirs(results)
+        run(benchmark_cp + ' --recursive --num-iterations %s '
+            '--source %s --dest %s --result-dir %s --no-cleanup' % (
+                num_iterations, local_dir, s3_location, results))
+
+        # 10gb download
+        results = os.path.join(results_dir, 'download-10gb')
+        os.makedirs(results)
+        run(benchmark_cp + ' --recursive --num-iterations %s '
+            '--source %s --dest %s --result-dir %s' % (
+                num_iterations, s3_location, local_dir, results))
+    finally:
+        # Not benchmarking a single rm call since it's just a single call
+        run('aws s3 rm --recursive ' + s3_location)
+
+
+def s3_uri(value):
+    if not value.startswith('s3://'):
+        return 's3://' + value
+    return value
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-n', '--num-iterations', type=int, default=10,
+        help='The number of times to run each test.'
+    )
+    parser.add_argument(
+        '-b', '--bucket', default=TEST_BUCKET, type=s3_uri,
+        required=TEST_BUCKET is None,
+        help='The bucket to use for testing as an s3 uri. This can also be '
+             'set by the environment variable PERF_TEST_BUCKET. If the '
+             'environment variable is not set, then this argument is required.'
+    )
+    parser.add_argument(
+        '--num-files', default=10000, type=int,
+        help='The number of files to use for the multiple file case.'
+    )
+    parser.add_argument(
+        '--large-file-size', default='10gb',
+        help='The file size for the large file case. This can be in the form '
+             '10gb, 4kb, etc.'
+    )
+    main(parser.parse_args())

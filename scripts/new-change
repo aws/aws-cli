@@ -1,0 +1,209 @@
+#!/usr/bin/env python
+"""Generate a new changelog entry.
+
+Usage
+=====
+
+To generate a new changelog entry::
+
+    scripts/new-change
+
+This will open up a file in your editor (via the ``EDITOR`` env  var).
+You'll see this template::
+
+    # Type should be one of: feature, bugfix
+    type:
+
+    # Category is the high level feature area.
+    # This can be a service identifier (e.g ``s3``),
+    # or something like: Paginator.
+    category:
+
+    # A brief description of the change.  You can
+    # use github style references to issues such as
+    # "fixes #489", "boto/boto3#100", etc.  These
+    # will get automatically replaced with the correct
+    # link.
+    description:
+
+Fill in the appropriate values, save and exit the editor.
+Make sure to commit these changes as part of your pull request.
+
+If, when your editor is open, you decide don't don't want to add a changelog
+entry, save an empty file and no entry will be generated.
+
+You can then use the ``scripts/render-change`` to generate the
+CHANGELOG.rst file.
+
+"""
+import os
+import re
+import sys
+import json
+import string
+import random
+import tempfile
+import subprocess
+import argparse
+
+
+VALID_CHARS = set(string.ascii_letters + string.digits)
+CHANGES_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    '.changes'
+)
+TEMPLATE = """\
+# Type should be one of: feature, bugfix
+type: {change_type}
+
+# Category is the high level feature area.
+# This can be a service identifier (e.g ``s3``),
+# or something like: Paginator.
+category: {category}
+
+# A brief description of the change.  You can
+# use github style references to issues such as
+# "fixes #489", "boto/boto3#100", etc.  These
+# will get automatically replaced with the correct
+# link.
+description: {description}
+"""
+
+
+def new_changelog_entry(args):
+    # Changelog values come from one of two places.
+    # Either all values are provided on the command line,
+    # or we open a text editor and let the user provide
+    # enter their values.
+    if all_values_provided(args):
+        parsed_values = {
+            'type': args.change_type,
+            'category': args.category,
+            'description': args.description,
+        }
+    else:
+        parsed_values = get_values_from_editor(args)
+    if has_empty_values(parsed_values):
+        sys.stderr.write(
+            "Empty changelog values received, skipping entry creation.\n")
+        return 1
+    replace_issue_references(parsed_values, args.repo)
+    write_new_change(parsed_values)
+    return 0
+
+
+def has_empty_values(parsed_values):
+    return not (parsed_values.get('type') and
+                parsed_values.get('category') and
+                parsed_values.get('description'))
+
+
+def all_values_provided(args):
+    return args.change_type and args.category and args.description
+
+
+def get_values_from_editor(args):
+    with tempfile.NamedTemporaryFile('w') as f:
+        contents = TEMPLATE.format(
+            change_type=args.change_type,
+            category=args.category,
+            description=args.description,
+        )
+        f.write(contents)
+        f.flush()
+        env = os.environ
+        editor = env.get('VISUAL', env.get('EDITOR', 'vim'))
+        p = subprocess.Popen('%s %s' % (editor, f.name), shell=True)
+        p.communicate()
+        with open(f.name) as f:
+            filled_in_contents = f.read()
+            parsed_values = parse_filled_in_contents(filled_in_contents)
+            return parsed_values
+
+
+def replace_issue_references(parsed, repo_name):
+    description = parsed['description']
+
+    def linkify(match):
+        number = match.group()[1:]
+        return (
+            '`%s <https://github.com/%s/issues/%s>`__' % (
+                match.group(), repo_name, number))
+
+    new_description = re.sub('#\d+', linkify, description)
+    parsed['description'] = new_description
+
+
+def write_new_change(parsed_values):
+    if not os.path.isdir(CHANGES_DIR):
+        os.makedirs(CHANGES_DIR)
+    # Assume that new changes go into the next release.
+    dirname = os.path.join(CHANGES_DIR, 'next-release')
+    if not os.path.isdir(dirname):
+        os.makedirs(dirname)
+    # Need to generate a unique filename for this change.
+    # We'll try a couple things until we get a unique match.
+    category = parsed_values['category']
+    short_summary = ''.join(filter(lambda x: x in VALID_CHARS, category))
+    filename = '{type_name}-{summary}'.format(
+        type_name=parsed_values['type'],
+        summary=short_summary)
+    possible_filename = os.path.join(
+        dirname, '%s-%s.json' % (filename, str(random.randint(1, 100000))))
+    while os.path.isfile(possible_filename):
+        possible_filename = os.path.join(
+            dirname, '%s-%s.json' % (filename, str(random.randint(1, 100000))))
+    with open(possible_filename, 'w') as f:
+        f.write(json.dumps(parsed_values, indent=2) + "\n")
+
+
+def parse_filled_in_contents(contents):
+    """Parse filled in file contents and returns parsed dict.
+
+    Return value will be::
+        {
+          "type": "bugfix",
+          "category": "category",
+          "description": "This is a description"
+        }
+
+    """
+    if not contents.strip():
+        return {}
+    parsed = {}
+    lines = iter(contents.splitlines())
+    for line in lines:
+        line = line.strip()
+        if line.startswith('#'):
+            continue
+        if 'type' not in parsed and line.startswith('type:'):
+            parsed['type'] = line.split(':')[1].strip()
+        elif 'category' not in parsed and line.startswith('category:'):
+            parsed['category'] = line.split(':')[1].strip()
+        elif 'description' not in parsed and line.startswith('description:'):
+            # Assume that everything until the end of the file is part
+            # of the description, so we can break once we pull in the
+            # remaining lines.
+            first_line = line.split(':')[1].strip()
+            full_description = '\n'.join([first_line] + list(lines))
+            parsed['description'] = full_description.strip()
+            break
+    return parsed
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-t', '--type', dest='change_type',
+                        default='', choices=('bugfix', 'feature'))
+    parser.add_argument('-c', '--category', dest='category',
+                        default='')
+    parser.add_argument('-d', '--description', dest='description',
+                        default='')
+    parser.add_argument('-r', '--repo', default='aws/aws-cli',
+                        help='Optional repo name, e.g: aws/aws-cli')
+    args = parser.parse_args()
+    sys.exit(new_changelog_entry(args))
+
+
+if __name__ == '__main__':
+    main()

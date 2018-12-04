@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sys
+import signal
 import logging
 
 import botocore.session
@@ -20,7 +21,6 @@ from botocore import xform_name
 from botocore.compat import copy_kwargs, OrderedDict
 from botocore.exceptions import NoCredentialsError
 from botocore.exceptions import NoRegionError
-from botocore import parsers
 
 from awscli import EnvironmentVariables, __version__
 from awscli.formatter import get_formatter
@@ -28,6 +28,7 @@ from awscli.plugin import load_plugins
 from awscli.argparser import MainArgParser
 from awscli.argparser import ServiceArgParser
 from awscli.argparser import ArgTableArgParser
+from awscli.argparser import USAGE
 from awscli.help import ProviderHelpCommand
 from awscli.help import ServiceHelpCommand
 from awscli.help import OperationHelpCommand
@@ -42,7 +43,6 @@ from awscli.argprocess import unpack_argument
 LOG = logging.getLogger('awscli.clidriver')
 LOG_FORMAT = (
     '%(asctime)s - %(threadName)s - %(name)s - %(levelname)s - %(message)s')
-
 
 
 def main():
@@ -63,6 +63,7 @@ def create_clidriver():
 def _set_user_agent_for_session(session):
     session.user_agent_name = 'aws-cli'
     session.user_agent_version = __version__
+    session.user_agent_extra = 'botocore/%s' % botocore_version
 
 
 class CLIDriver(object):
@@ -125,19 +126,6 @@ class CLIDriver(object):
         cli_arguments = cli_data.get('options', None)
         for option in cli_arguments:
             option_params = copy_kwargs(cli_arguments[option])
-            # Special case the 'choices' param.  Allows choices
-            # to reference a variable from the session.
-            if 'choices' in option_params:
-                choices = option_params['choices']
-                if not isinstance(choices, list):
-                    # Assume it's a reference like
-                    # "{provider}/_foo", so first resolve
-                    # the provider.
-                    provider = self.session.get_config_variable('provider')
-                    # The grab the var from the session
-                    choices_path = choices.format(provider=provider)
-                    choices = list(self.session.get_data(choices_path))
-                option_params['choices'] = choices
             cli_argument = self._create_cli_argument(option, option_params)
             cli_argument.add_to_arg_table(argument_table)
         # Then the final step is to send out an event so handlers
@@ -149,10 +137,12 @@ class CLIDriver(object):
     def _create_cli_argument(self, option_name, option_params):
         return CustomArgument(
             option_name, help_text=option_params.get('help', ''),
-            dest=option_params.get('dest'),default=option_params.get('default'),
+            dest=option_params.get('dest'),
+            default=option_params.get('default'),
             action=option_params.get('action'),
             required=option_params.get('required'),
-            choices=option_params.get('choices'))
+            choices=option_params.get('choices'),
+            cli_type_name=option_params.get('type'))
 
     def create_help_command(self):
         cli_data = self._get_cli_data()
@@ -170,7 +160,6 @@ class CLIDriver(object):
         parser = MainArgParser(
             command_table, self.session.user_agent(),
             cli_data.get('description', None),
-            cli_data.get('synopsis', None),
             self._get_argument_table())
         return parser
 
@@ -196,8 +185,9 @@ class CLIDriver(object):
             self._emit_session_event()
             return command_table[parsed_args.command](remaining, parsed_args)
         except UnknownArgumentError as e:
+            sys.stderr.write("usage: %s\n" % USAGE)
+            sys.stderr.write(str(e))
             sys.stderr.write("\n")
-            sys.stderr.write(str(e) + '\n')
             return 255
         except NoRegionError as e:
             msg = ('%s You can also configure your region by running '
@@ -209,6 +199,12 @@ class CLIDriver(object):
                    '"aws configure".' % e)
             self._show_error(msg)
             return 255
+        except KeyboardInterrupt:
+            # Shell standard for signals that terminate
+            # the process is to return 128 + signum, in this case
+            # SIGINT=2, so we'll have an RC of 130.
+            sys.stdout.write("\n")
+            return 128 + signal.SIGINT
         except Exception as e:
             LOG.debug("Exception caught in main()", exc_info=True)
             LOG.debug("Exiting with rc 255")
@@ -233,7 +229,7 @@ class CLIDriver(object):
         self.session.emit(
             'top-level-args-parsed', parsed_args=args, session=self.session)
         if args.profile:
-            self.session.profile = args.profile
+            self.session.set_config_variable('profile', args.profile)
         if args.debug:
             # TODO:
             # Unfortunately, by setting debug mode here, we miss out
@@ -243,15 +239,18 @@ class CLIDriver(object):
                                            format_string=LOG_FORMAT)
             self.session.set_stream_logger('awscli', logging.DEBUG,
                                            format_string=LOG_FORMAT)
-            LOG.debug("CLI version: %s, botocore version: %s",
-                      self.session.user_agent(),
-                      botocore_version)
+            self.session.set_stream_logger('s3transfer', logging.DEBUG,
+                                           format_string=LOG_FORMAT)
+            LOG.debug("CLI version: %s", self.session.user_agent())
+            LOG.debug("Arguments entered to CLI: %s", sys.argv[1:])
+
         else:
             self.session.set_stream_logger(logger_name='awscli',
                                            log_level=logging.ERROR)
 
 
 class CLICommand(object):
+
     """Interface for a CLI command.
 
     This class represents a top level CLI command
@@ -309,6 +308,7 @@ class CLICommand(object):
 
 
 class ServiceCommand(CLICommand):
+
     """A service command for the CLI.
 
     For example, ``aws ec2 ...`` we'd create a ServiceCommand
@@ -330,13 +330,13 @@ class ServiceCommand(CLICommand):
         self._name = cli_name
         self.session = session
         self._command_table = None
-        self._service_object = None
         if service_name is None:
             # Then default to using the cli name.
             self._service_name = cli_name
         else:
             self._service_name = service_name
         self._lineage = [self]
+        self._service_model = None
 
     @property
     def name(self):
@@ -347,8 +347,8 @@ class ServiceCommand(CLICommand):
         self._name = value
 
     @property
-    def service_object(self):
-        return self._service_object
+    def service_model(self):
+        return self._get_service_model()
 
     @property
     def lineage(self):
@@ -363,10 +363,13 @@ class ServiceCommand(CLICommand):
             self._command_table = self._create_command_table()
         return self._command_table
 
-    def _get_service_object(self):
-        if self._service_object is None:
-            self._service_object = self.session.get_service(self._service_name)
-        return self._service_object
+    def _get_service_model(self):
+        if self._service_model is None:
+            api_version = self.session.get_config_variable('api_versions').get(
+                self._service_name, None)
+            self._service_model = self.session.get_service_model(
+                self._service_name, api_version=api_version)
+        return self._service_model
 
     def __call__(self, args, parsed_globals):
         # Once we know we're trying to call a service for this operation
@@ -379,15 +382,17 @@ class ServiceCommand(CLICommand):
 
     def _create_command_table(self):
         command_table = OrderedDict()
-        service_object = self._get_service_object()
-        for operation_object in service_object.operations:
-            cli_name = xform_name(operation_object.name, '-')
+        service_model = self._get_service_model()
+        for operation_name in service_model.operation_names:
+            cli_name = xform_name(operation_name, '-')
+            operation_model = service_model.operation_model(operation_name)
             command_table[cli_name] = ServiceOperation(
                 name=cli_name,
                 parent_name=self._name,
-                operation_object=operation_object,
+                session=self.session,
+                operation_model=operation_model,
                 operation_caller=CLIOperationCaller(self.session),
-                service_object=service_object)
+            )
         self.session.emit('building-command-table.%s' % self._name,
                           command_table=command_table,
                           session=self.session,
@@ -402,9 +407,8 @@ class ServiceCommand(CLICommand):
 
     def create_help_command(self):
         command_table = self._get_command_table()
-        service_object = self._get_service_object()
         return ServiceHelpCommand(session=self.session,
-                                  obj=service_object,
+                                  obj=self._get_service_model(),
                                   command_table=command_table,
                                   arg_table=None,
                                   event_class='.'.join(self.lineage_names),
@@ -419,6 +423,7 @@ class ServiceCommand(CLICommand):
 
 
 class ServiceOperation(object):
+
     """A single operation of a service.
 
     This class represents a single operation for a service, for
@@ -432,8 +437,8 @@ class ServiceOperation(object):
     }
     DEFAULT_ARG_CLASS = CLIArgument
 
-    def __init__(self, name, parent_name, operation_object, operation_caller,
-                 service_object):
+    def __init__(self, name, parent_name, operation_caller,
+                 operation_model, session):
         """
 
         :type name: str
@@ -442,15 +447,16 @@ class ServiceOperation(object):
         :type parent_name: str
         :param parent_name: The name of the parent command.
 
-        :type operation_object: ``botocore.operation.Operation``
-        :param operation_object: The operation associated with this subcommand.
+        :type operation_model: ``botocore.model.OperationModel``
+        :param operation_object: The operation model
+            associated with this subcommand.
 
         :type operation_caller: ``CLIOperationCaller``
         :param operation_caller: An object that can properly call the
             operation.
 
-        :type service_object: ``botocore.service.Service``
-        :param service_object: The service associated wtih the object.
+        :type session: ``botocore.session.Session``
+        :param session: The session object.
 
         """
         self._arg_table = None
@@ -458,10 +464,10 @@ class ServiceOperation(object):
         # These is used so we can figure out what the proper event
         # name should be <parent name>.<name>.
         self._parent_name = parent_name
-        self._operation_object = operation_object
         self._operation_caller = operation_caller
-        self._service_object = service_object
         self._lineage = [self]
+        self._operation_model = operation_model
+        self._session = session
 
     @property
     def name(self):
@@ -495,13 +501,14 @@ class ServiceOperation(object):
         # of a service we can go ahead and load the parameters.
         event = 'before-building-argument-table-parser.%s.%s' % \
             (self._parent_name, self._name)
-        self._emit(event, argument_table=self.arg_table, args=args)
+        self._emit(event, argument_table=self.arg_table, args=args,
+                   session=self._session)
         operation_parser = self._create_operation_parser(self.arg_table)
         self._add_help(operation_parser)
         parsed_args, remaining = operation_parser.parse_known_args(args)
         if parsed_args.help == 'help':
             op_help = self.create_help_command()
-            return op_help(parsed_args, parsed_globals)
+            return op_help(remaining, parsed_globals)
         elif parsed_args.help:
             remaining.append(parsed_args.help)
         if remaining:
@@ -511,8 +518,9 @@ class ServiceOperation(object):
                                                  self._name)
         self._emit(event, parsed_args=parsed_args,
                    parsed_globals=parsed_globals)
-        call_parameters = self._build_call_parameters(parsed_args,
-                                                      self.arg_table)
+        call_parameters = self._build_call_parameters(
+            parsed_args, self.arg_table)
+
         event = 'calling-command.%s.%s' % (self._parent_name,
                                            self._name)
         override = self._emit_first_non_none_response(
@@ -538,17 +546,20 @@ class ServiceOperation(object):
         else:
             # No override value was supplied.
             return self._operation_caller.invoke(
-                self._operation_object, call_parameters, parsed_globals)
+                self._operation_model.service_model.service_name,
+                self._operation_model.name,
+                call_parameters, parsed_globals)
 
     def create_help_command(self):
         return OperationHelpCommand(
-            self._service_object.session, self._service_object,
-            self._operation_object, arg_table=self.arg_table,
+            self._session,
+            operation_model=self._operation_model,
+            arg_table=self.arg_table,
             name=self._name, event_class='.'.join(self.lineage_names))
 
     def _add_help(self, parser):
         # The 'help' output is processed a little differently from
-        # the provider/operation help because the arg_table has
+        # the operation help because the arg_table has
         # CLIArguments for values.
         parser.add_argument('help', nargs='?')
 
@@ -559,7 +570,7 @@ class ServiceOperation(object):
         # args is an argparse.Namespace object so we're using vars()
         # so we can iterate over the parsed key/values.
         parsed_args = vars(args)
-        for arg_name, arg_object in arg_table.items():
+        for arg_object in arg_table.values():
             py_name = arg_object.py_name
             if py_name in parsed_args:
                 value = parsed_args[py_name]
@@ -570,44 +581,50 @@ class ServiceOperation(object):
     def _unpack_arg(self, cli_argument, value):
         # Unpacks a commandline argument into a Python value by firing the
         # load-cli-arg.service-name.operation-name event.
-        session = self._service_object.session
-        service_name = self._service_object.endpoint_prefix
-        operation_name = xform_name(self._operation_object.name, '-')
+        session = self._session
+        service_name = self._operation_model.service_model.endpoint_prefix
+        operation_name = xform_name(self._name, '-')
 
         return unpack_argument(session, service_name, operation_name,
                                cli_argument, value)
 
     def _create_argument_table(self):
         argument_table = OrderedDict()
-        input_shape = self._operation_object.model.input_shape
+        input_shape = self._operation_model.input_shape
         required_arguments = []
         arg_dict = {}
         if input_shape is not None:
             required_arguments = input_shape.required_members
-            arg_dict = self._operation_object.model.input_shape.members
+            arg_dict = input_shape.members
         for arg_name, arg_shape in arg_dict.items():
             cli_arg_name = xform_name(arg_name, '-')
             arg_class = self.ARG_TYPES.get(arg_shape.type_name,
                                            self.DEFAULT_ARG_CLASS)
             is_required = arg_name in required_arguments
-            arg_object = arg_class(cli_arg_name, arg_shape,
-                                   self._operation_object, is_required,
-                                   serialized_name=arg_name)
+            event_emitter = self._session.get_component('event_emitter')
+            arg_object = arg_class(
+                name=cli_arg_name,
+                argument_model=arg_shape,
+                is_required=is_required,
+                operation_model=self._operation_model,
+                serialized_name=arg_name,
+                event_emitter=event_emitter)
             arg_object.add_to_arg_table(argument_table)
         LOG.debug(argument_table)
         self._emit('building-argument-table.%s.%s' % (self._parent_name,
                                                       self._name),
-                   operation=self._operation_object,
+                   operation_model=self._operation_model,
+                   session=self._session,
+                   command=self,
                    argument_table=argument_table)
         return argument_table
 
     def _emit(self, name, **kwargs):
-        session = self._service_object.session
-        return session.emit(name, **kwargs)
+        return self._session.emit(name, **kwargs)
 
     def _emit_first_non_none_response(self, name, **kwargs):
-        session = self._service_object.session
-        return session.emit_first_non_none_response(name, **kwargs)
+        return self._session.emit_first_non_none_response(
+            name, **kwargs)
 
     def _create_operation_parser(self, arg_table):
         parser = ArgTableArgParser(arg_table)
@@ -615,42 +632,54 @@ class ServiceOperation(object):
 
 
 class CLIOperationCaller(object):
-    """
-    Call an AWS operation and format the response.
 
-    This class handles the non-error path.  If an HTTP error occurs
-    on the call to the service operation, it will be detected and
-    handled by the :class:`awscli.errorhandler.ErrorHandler` which
-    is registered on the ``after-call`` event.
-    """
+    """Call an AWS operation and format the response."""
 
     def __init__(self, session):
         self._session = session
 
-    def invoke(self, operation_object, parameters, parsed_globals):
-        # We could get an error from get_endpoint() about not having
-        # a region configured.  Before this happens we want to check
-        # for credentials so we can give a good error message.
-        if not self._session.get_credentials():
-            raise NoCredentialsError()
-        endpoint = operation_object.service.get_endpoint(
-            region_name=parsed_globals.region,
+    def invoke(self, service_name, operation_name, parameters, parsed_globals):
+        """Invoke an operation and format the response.
+
+        :type service_name: str
+        :param service_name: The name of the service.  Note this is the service name,
+            not the endpoint prefix (e.g. ``ses`` not ``email``).
+
+        :type operation_name: str
+        :param operation_name: The operation name of the service.  The casing
+            of the operation name should match the exact casing used by the service,
+            e.g. ``DescribeInstances``, not ``describe-instances`` or
+            ``describe_instances``.
+
+        :type parameters: dict
+        :param parameters: The parameters for the operation call.  Again, these values
+            have the same casing used by the service.
+
+        :type parsed_globals: Namespace
+        :param parsed_globals: The parsed globals from the command line.
+
+        :return: None, the result is displayed through a formatter, but no
+            value is returned.
+
+        """
+        client = self._session.create_client(
+            service_name, region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl)
-        if operation_object.can_paginate and parsed_globals.paginate:
-            pages = operation_object.paginate(endpoint, **parameters)
-            self._display_response(operation_object, pages,
-                                   parsed_globals)
+        py_operation_name = xform_name(operation_name)
+        if client.can_paginate(py_operation_name) and parsed_globals.paginate:
+            paginator = client.get_paginator(py_operation_name)
+            response = paginator.paginate(**parameters)
         else:
-            http_response, response_data = operation_object.call(endpoint,
-                                                                 **parameters)
-            self._display_response(operation_object, response_data,
-                                   parsed_globals)
+            response = getattr(client, xform_name(operation_name))(
+                **parameters)
+        self._display_response(operation_name, response, parsed_globals)
         return 0
 
-    def _display_response(self, operation, response, args):
-        output = args.output
+    def _display_response(self, command_name, response,
+                          parsed_globals):
+        output = parsed_globals.output
         if output is None:
             output = self._session.get_config_variable('output')
-        formatter = get_formatter(output, args)
-        formatter(operation, response)
+        formatter = get_formatter(output, parsed_globals)
+        formatter(command_name, response)

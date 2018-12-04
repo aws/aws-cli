@@ -12,26 +12,25 @@
 # language governing permissions and limitations under the License.
 import os
 import platform
-from awscli.testutils import unittest, FileCreator
+from awscli.testutils import unittest, FileCreator, BaseAWSCommandParamsTest
+from awscli.testutils import skip_if_windows
 import stat
 import tempfile
 import shutil
 import socket
 
+from botocore.exceptions import ClientError
 from awscli.compat import six
 import mock
 
 from awscli.customizations.s3.filegenerator import FileGenerator, \
     FileDecodingError, FileStat, is_special_file, is_readable
-from awscli.customizations.s3.utils import get_file_stat
-import botocore.session
+from awscli.customizations.s3.utils import get_file_stat, EPOCH_TIME
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
-    make_s3_files, s3_cleanup, compare_files
-from tests.unit.customizations.s3.fake_session import FakeSession
+    compare_files
 
 
-@unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                 'Special files only supported on mac/linux')
+@skip_if_windows('Special files only supported on mac/linux')
 class TestIsSpecialFile(unittest.TestCase):
     def setUp(self):
         self.files = FileCreator()
@@ -92,19 +91,14 @@ class TestIsReadable(unittest.TestCase):
 
 class LocalFileGeneratorTest(unittest.TestCase):
     def setUp(self):
-        self.local_file = six.text_type(os.path.abspath('.') +
-                                        os.sep + 'some_directory' +
-                                        os.sep + 'text1.txt')
-        self.local_dir = six.text_type(os.path.abspath('.') +
-                                       os.sep + 'some_directory' +
-                                       os.sep)
-        self.session = FakeSession()
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
-        self.files = make_loc_files()
+        self.client = None
+        self.file_creator = FileCreator()
+        self.files = make_loc_files(self.file_creator)
+        self.local_file = self.files[0]
+        self.local_dir = self.files[3] + os.sep
 
     def tearDown(self):
-        clean_loc_files(self.files)
+        clean_loc_files(self.file_creator)
 
     def test_local_file(self):
         """
@@ -116,8 +110,7 @@ class LocalFileGeneratorTest(unittest.TestCase):
                                      'type': 's3'},
                             'dir_op': False, 'use_src_name': False}
         params = {'region': 'us-east-1'}
-        files = FileGenerator(self.service,
-                              self.endpoint, '').call(input_local_file)
+        files = FileGenerator(self.client, '').call(input_local_file)
         result_list = []
         for filename in files:
             result_list.append(filename)
@@ -141,8 +134,7 @@ class LocalFileGeneratorTest(unittest.TestCase):
                                     'type': 's3'},
                            'dir_op': True, 'use_src_name': True}
         params = {'region': 'us-east-1'}
-        files = FileGenerator(self.service,
-                              self.endpoint,'').call(input_local_dir)
+        files = FileGenerator(self.client, '').call(input_local_dir)
         result_list = []
         for filename in files:
             result_list.append(filename)
@@ -166,17 +158,14 @@ class LocalFileGeneratorTest(unittest.TestCase):
             compare_files(self, result_list[i], ref_list[i])
 
 
-@unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                 'Symlink tests only supported on mac/linux')
+@skip_if_windows('Symlink tests only supported on mac/linux')
 class TestIgnoreFilesLocally(unittest.TestCase):
     """
     This class tests the ability to ignore particular files.  This includes
     skipping symlink when desired.
     """
     def setUp(self):
-        self.session = FakeSession()
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
+        self.client = None
         self.files = FileCreator()
 
     def tearDown(self):
@@ -185,8 +174,7 @@ class TestIgnoreFilesLocally(unittest.TestCase):
     def test_warning(self):
         path = os.path.join(self.files.rootdir, 'badsymlink')
         os.symlink('non-existent-file', path)
-        filegenerator = FileGenerator(self.service, self.endpoint,
-                                      '', True)
+        filegenerator = FileGenerator(self.client, '', True)
         self.assertTrue(filegenerator.should_ignore_file(path))
 
     def test_skip_symlink(self):
@@ -196,8 +184,7 @@ class TestIgnoreFilesLocally(unittest.TestCase):
                                contents='foo.txt contents')
         sym_path = os.path.join(self.files.rootdir, 'symlink')
         os.symlink(filename, sym_path)
-        filegenerator = FileGenerator(self.service, self.endpoint,
-                                      '', False)
+        filegenerator = FileGenerator(self.client, '', False)
         self.assertTrue(filegenerator.should_ignore_file(sym_path))
 
     def test_no_skip_symlink(self):
@@ -207,8 +194,7 @@ class TestIgnoreFilesLocally(unittest.TestCase):
                                       contents='foo.txt contents')
         sym_path = os.path.join(self.files.rootdir, 'symlink')
         os.symlink(path, sym_path)
-        filegenerator = FileGenerator(self.service, self.endpoint,
-                                      '', True)
+        filegenerator = FileGenerator(self.client, '', True)
         self.assertFalse(filegenerator.should_ignore_file(sym_path))
         self.assertFalse(filegenerator.should_ignore_file(path))
 
@@ -218,8 +204,7 @@ class TestIgnoreFilesLocally(unittest.TestCase):
         os.mkdir(path)
         sym_path = os.path.join(self.files.rootdir, 'symlink')
         os.symlink(path, sym_path)
-        filegenerator = FileGenerator(self.service, self.endpoint,
-                                      '', True)
+        filegenerator = FileGenerator(self.client, '', True)
         self.assertFalse(filegenerator.should_ignore_file(sym_path))
         self.assertFalse(filegenerator.should_ignore_file(path))
 
@@ -228,15 +213,13 @@ class TestThrowsWarning(unittest.TestCase):
     def setUp(self):
         self.files = FileCreator()
         self.root = self.files.rootdir
-        self.session = FakeSession()
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
+        self.client = None
 
     def tearDown(self):
         self.files.remove_all()
 
     def test_no_warning(self):
-        file_gen = FileGenerator(self.service, self.endpoint, '', False)
+        file_gen = FileGenerator(self.client, '', False)
         self.files.create_file("foo.txt", contents="foo")
         full_path = os.path.join(self.root, "foo.txt")
         return_val = file_gen.triggers_warning(full_path)
@@ -244,7 +227,7 @@ class TestThrowsWarning(unittest.TestCase):
         self.assertTrue(file_gen.result_queue.empty())
 
     def test_no_exists(self):
-        file_gen = FileGenerator(self.service, self.endpoint, '', False)
+        file_gen = FileGenerator(self.client, '', False)
         filename = os.path.join(self.root, 'file')
         return_val = file_gen.triggers_warning(filename)
         self.assertTrue(return_val)
@@ -254,7 +237,7 @@ class TestThrowsWarning(unittest.TestCase):
                           filename))
 
     def test_no_read_access(self):
-        file_gen = FileGenerator(self.service, self.endpoint, '', False)
+        file_gen = FileGenerator(self.client, '', False)
         self.files.create_file("foo.txt", contents="foo")
         full_path = os.path.join(self.root, "foo.txt")
         open_function = 'awscli.customizations.s3.filegenerator._open'
@@ -267,10 +250,9 @@ class TestThrowsWarning(unittest.TestCase):
                          ("warning: Skipping file %s. File/Directory is "
                           "not readable." % full_path))
 
-    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                     'Special files only supported on mac/linux')
+    @skip_if_windows('Special files only supported on mac/linux')
     def test_is_special_file_warning(self):
-        file_gen = FileGenerator(self.service, self.endpoint, '', False)
+        file_gen = FileGenerator(self.client, '', False)
         file_path = os.path.join(self.files.rootdir, 'foo')
         # Use socket for special file.
         sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
@@ -284,8 +266,7 @@ class TestThrowsWarning(unittest.TestCase):
                           "socket." % file_path))
 
 
-@unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                 'Symlink tests only supported on mac/linux')
+@skip_if_windows('Symlink tests only supported on mac/linux')
 class TestSymlinksIgnoreFiles(unittest.TestCase):
     """
     This class tests the ability to list out the correct local files
@@ -293,9 +274,7 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
     broken symlinks fail.
     """
     def setUp(self):
-        self.session = FakeSession()
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
+        self.client = None
         self.files = FileCreator()
         # List of local filenames.
         self.filenames = []
@@ -339,8 +318,7 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
                            'dest': {'path': self.bucket,
                                     'type': 's3'},
                            'dir_op': True, 'use_src_name': True}
-        file_stats = FileGenerator(self.service, self.endpoint,
-                                   '', False).call(input_local_dir)
+        file_stats = FileGenerator(self.client, '', False).call(input_local_dir)
         self.filenames.sort()
         result_list = []
         for file_stat in file_stats:
@@ -361,9 +339,8 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
                            'dest': {'path': self.bucket,
                                     'type': 's3'},
                            'dir_op': True, 'use_src_name': True}
-        file_stats = FileGenerator(self.service, self.endpoint,
-                                   '', True).call(input_local_dir)
-        file_gen = FileGenerator(self.service, self.endpoint, '', True)
+        file_stats = FileGenerator(self.client, '', True).call(input_local_dir)
+        file_gen = FileGenerator(self.client, '', True)
         file_stats = file_gen.call(input_local_dir)
         all_filenames = self.filenames + self.symlink_files
         all_filenames.sort()
@@ -386,8 +363,7 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
                            'dest': {'path': self.bucket,
                                     'type': 's3'},
                            'dir_op': True, 'use_src_name': True}
-        file_stats = FileGenerator(self.service, self.endpoint,
-                                   '', True).call(input_local_dir)
+        file_stats = FileGenerator(self.client, '', True).call(input_local_dir)
         all_filenames = self.filenames + self.symlink_files
         all_filenames.sort()
         result_list = []
@@ -440,6 +416,14 @@ class TestListFilesLocally(unittest.TestCase):
                                key=lambda items: items.replace(os.sep, '/')))
         self.assertEqual(values, ref_vals)
 
+    @mock.patch('awscli.customizations.s3.filegenerator.get_file_stat')
+    def test_list_files_with_invalid_timestamp(self, stat_mock):
+        stat_mock.return_value = 9, None
+        open(os.path.join(self.directory, 'test'), 'w').close()
+        file_generator = FileGenerator(None, None, None)
+        value = list(file_generator.list_files(self.directory, dir_op=True))[0]
+        self.assertIs(value[1]['LastModified'], EPOCH_TIME)
+
     def test_list_local_files_with_unicode_chars(self):
         p = os.path.join
         open(p(self.directory, u'a'), 'w').close()
@@ -480,7 +464,7 @@ class TestNormalizeSort(unittest.TestCase):
         filegenerator.normalize_sort(names, os.path.sep, '/')
         for i in range(len(ref_names)):
             self.assertEqual(ref_names[i], names[i])
-    
+
     def test_normalize_sort_backslash(self):
         names = ['xyz123456789',
                  'xyz1\\test',
@@ -492,17 +476,13 @@ class TestNormalizeSort(unittest.TestCase):
             self.assertEqual(ref_names[i], names[i])
 
 
-class S3FileGeneratorTest(unittest.TestCase):
+class S3FileGeneratorTest(BaseAWSCommandParamsTest):
     def setUp(self):
-        self.session = FakeSession()
-        self.bucket = make_s3_files(self.session)
+        super(S3FileGeneratorTest, self).setUp()
+        self.client = self.driver.session.create_client('s3')
+        self.bucket = 'foo'
         self.file1 = self.bucket + '/' + 'text1.txt'
         self.file2 = self.bucket + '/' + 'another_directory/text2.txt'
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
-
-    def tearDown(self):
-        s3_cleanup(self.bucket, self.session)
 
     def test_s3_file(self):
         """
@@ -513,7 +493,11 @@ class S3FileGeneratorTest(unittest.TestCase):
                          'dest': {'path': 'text1.txt', 'type': 'local'},
                          'dir_op': False, 'use_src_name': False}
         params = {'region': 'us-east-1'}
-        file_gen = FileGenerator(self.service, self.endpoint, '')
+        self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
+                                  "LastModified": "2014-01-09T20:45:49.000Z"}]
+        self.patch_make_request()
+
+        file_gen = FileGenerator(self.client, '')
         files = file_gen.call(input_s3_file)
         result_list = []
         for filename in files:
@@ -530,6 +514,26 @@ class S3FileGeneratorTest(unittest.TestCase):
         for i in range(len(result_list)):
             compare_files(self, result_list[i], ref_list[i])
 
+    def test_s3_single_file_404(self):
+        """
+        Test the error message for a 404 ClientError for a single file listing
+        """
+        input_s3_file = {'src': {'path': self.file1, 'type': 's3'},
+                         'dest': {'path': 'text1.txt', 'type': 'local'},
+                         'dir_op': False, 'use_src_name': False}
+        params = {'region': 'us-east-1'}
+        self.client = mock.Mock()
+        self.client.head_object.side_effect = \
+                ClientError(
+                    {'Error': {'Code': '404', 'Message': 'Not Found'}},
+                    'HeadObject',
+                )
+        file_gen = FileGenerator(self.client, '')
+        files = file_gen.call(input_s3_file)
+        # The error should include 404 and should include the key name.
+        with self.assertRaisesRegexp(ClientError, '404.*text1.txt'):
+            list(files)
+
     def test_s3_directory(self):
         """
         Generates s3 files under a common prefix. Also it ensures that
@@ -540,8 +544,15 @@ class S3FileGeneratorTest(unittest.TestCase):
                          'dest': {'path': '', 'type': 'local'},
                          'dir_op': True, 'use_src_name': True}
         params = {'region': 'us-east-1'}
-        files = FileGenerator(self.service, self.endpoint,
-                              '').call(input_s3_file)
+        files = FileGenerator(self.client, '').call(input_s3_file)
+
+        self.parsed_responses = [{
+            "CommonPrefixes": [], "Contents": [
+                {"Key": "another_directory/text2.txt", "Size": 100,
+                 "LastModified": "2014-01-09T20:45:49.000Z"},
+                {"Key": "text1.txt", "Size": 10,
+                 "LastModified": "2013-01-09T20:45:49.000Z"}]}]
+        self.patch_make_request()
         result_list = []
         for filename in files:
             result_list.append(filename)
@@ -575,8 +586,16 @@ class S3FileGeneratorTest(unittest.TestCase):
         input_s3_file = {'src': {'path': self.bucket + '/', 'type': 's3'},
                          'dest': {'path': '', 'type': 'local'},
                          'dir_op': True, 'use_src_name': True}
-        files = FileGenerator(self.service, self.endpoint,
-                              'delete').call(input_s3_file)
+        self.parsed_responses = [{
+            "CommonPrefixes": [], "Contents": [
+                {"Key": "another_directory/", "Size": 0,
+                 "LastModified": "2012-01-09T20:45:49.000Z"},
+                {"Key": "another_directory/text2.txt", "Size": 100,
+                 "LastModified": "2014-01-09T20:45:49.000Z"},
+                {"Key": "text1.txt", "Size": 10,
+                 "LastModified": "2013-01-09T20:45:49.000Z"}]}]
+        self.patch_make_request()
+        files = FileGenerator(self.client, 'delete').call(input_s3_file)
         result_list = []
         for filename in files:
             result_list.append(filename)

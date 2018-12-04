@@ -11,9 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import mock
+
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
-from nose.tools import raises
 from copy import deepcopy
 
 
@@ -67,8 +68,9 @@ class TestScheduleHBaseBackup(BaseAWSCommandParamsTest):
         args[7] = '--incremental-backup-time-unit'
         args[8] = 'hours'
         steps[0]['HadoopJarStep']['Args'] = args
-
         result = {'JobFlowId': 'j-ABCD', 'Steps': steps}
+
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_schedule_hbase_backup_incremental(self):
         args = ' --cluster-id j-ABCD --dir s3://abc/  --type incremental' +\
@@ -127,6 +129,20 @@ class TestScheduleHBaseBackup(BaseAWSCommandParamsTest):
 
         result = {'JobFlowId': 'j-ABCD', 'Steps': steps}
         self.assert_params_for_cmd(cmdline, result)
+
+    @mock.patch('awscli.customizations.emr.'
+                'emrutils.get_release_label')
+    def test_unsupported_command_on_release_based_cluster_error(
+            self, grl_patch):
+        grl_patch.return_value = 'emr-4.0'
+        args = ' --cluster-id j-ABCD --dir s3://abc/ --type full' +\
+               ' --interval 10 --unit minutes'
+        cmdline = self.prefix + args
+        expected_error_msg = ("\naws: error: schedule-hbase-backup"
+                              " is not supported with 'emr-4.0' release.\n")
+        result = self.run_cmd(cmdline, 255)
+
+        self.assertEqual(result[1], expected_error_msg)
 
 
 if __name__ == "__main__":

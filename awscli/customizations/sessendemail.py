@@ -72,19 +72,19 @@ def _promote_args(argument_table, **kwargs):
 
 def _build_destination(params, key, value):
     # Build up the Destination data structure
-    if 'destination' not in params:
-        params['destination'] = {}
-    params['destination'][key] = value
+    if 'Destination' not in params:
+        params['Destination'] = {}
+    params['Destination'][key] = value
 
 
 def _build_message(params, key, value):
     # Build up the Message data structure
-    if 'message' not in params:
-        params['message'] = {'Subject': {}, 'Body': {}}
+    if 'Message' not in params:
+        params['Message'] = {'Subject': {}, 'Body': {}}
     if key in ('Text', 'Html'):
-        params['message']['Body'][key] = {'Data': value}
+        params['Message']['Body'][key] = {'Data': value}
     elif key == 'Subject':
-        params['message']['Subject'] = {'Data': value}
+        params['Message']['Subject'] = {'Data': value}
 
 
 class AddressesArgument(CustomArgument):

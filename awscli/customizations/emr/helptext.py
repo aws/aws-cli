@@ -15,19 +15,19 @@ from awscli.customizations.emr.createdefaultroles import EMR_ROLE_NAME
 from awscli.customizations.emr.createdefaultroles import EC2_ROLE_NAME
 
 TERMINATE_CLUSTERS = (
-    '<p>Shuts down one or more clusters, each specified by cluster ID. '
+    'Shuts down one or more clusters, each specified by cluster ID. '
     'Use this command only on clusters that do not have termination '
     'protection enabled. Clusters with termination protection enabled '
     'are not terminated. When a cluster is shut '
     'down, any step not yet completed is canceled and the '
     'Amazon EC2 instances in the cluster are terminated. '
     'Any log files not already saved are uploaded to '
-    'Amazon S3 if a <code>--log-uri</code> was specified when the cluster was created. '
+    'Amazon S3 if a --log-uri was specified when the cluster was created. '
     'The maximum number of clusters allowed in the list is 10. '
-    '<code>--terminate-clusters</code> is asynchronous. Depending on the '
+    'The command is asynchronous. Depending on the '
     'configuration of the cluster, it may take from 5 to 20 minutes for the '
     'cluster to terminate completely and release allocated resources such as '
-    'Amazon EC2 instances.</p>')
+    'Amazon EC2 instances.')
 
 CLUSTER_ID = (
     '<p>A unique string that identifies a cluster. The '
@@ -67,7 +67,7 @@ LOG_URI = (
 
 SERVICE_ROLE = (
     '<p>Specifies an IAM service role, which Amazon EMR requires to call other AWS services '
-    'such as EC2 on your behalf during cluster operation. This parameter '
+    'on your behalf during cluster operation. This parameter '
     'is usually specified when a customized service role is used. '
     'To specify the default service role, as well as the default instance '
     'profile, use the <code>--use-default-roles</code> parameter. '
@@ -86,39 +86,31 @@ USE_DEFAULT_ROLES = (
     ' service role (EMR_DefaultRole) and instance profile (EMR_EC2_DefaultRole)'
     ' for permissions to access other AWS services.</p>'
     '<p>Make sure that the role and instance profile exist first. To create them,'
-    ' use the <code>create-default-roles</code> command.</p>'
-    ' <p>Specifying <code>--use-default-roles</code> does not include the'
-    ' <code>EMR_AutoScaling_DefaultRole</code>. If you use an automatic'
-    ' scaling policy with instance groups in Amazon EMR, use <code>--autoscaling-role'
-    ' =EMR_AutoScaling_DefaultRole</code> to specify the'
-    ' role individually.</p>')
+    ' use the <code>create-default-roles</code> command.</p>')
 
 AMI_VERSION = (
-    '<p>Applies only to Amazon EMR versions earlier than 4.0. Use'
-    ' <code>--release-label</code> for version 4.x and later. Specifies'
+    '<p>Applies only to Amazon EMR release versions earlier than 4.0. Use'
+    ' <code>--release-label</code> for 4.0 and later. Specifies'
     ' the version of Amazon Linux Amazon Machine Image (AMI)'
     ' to use when launching Amazon EC2 instances in the cluster.'
-    ' For example, <code>--ami-version 3.1.0</code>.'
-    ' For more information about compatible AMIs in earlier versions of'
-    ' Amazon EMR, see the Amazon EMR Developer Guide '
-    ' (http://docs.aws.amazon.com/emr/latest/DeveloperGuide/emr-dg.pdf).</p>')
+    ' For example, <code>--ami-version 3.1.0</code>.')
 
 RELEASE_LABEL = (
     '<p>Specifies the Amazon EMR release version, which determines'
-    ' the versions of application software that is installed on the cluster.'
-    ' For example, <code>--release-label emr-5.7.0</code> installs'
+    ' the versions of application software that are installed on the cluster.'
+    ' For example, <code>--release-label emr-5.15.0</code> installs'
     ' the application versions and features available in that version.'
     ' For details about application versions and features available'
-    ' in each Amazon EMR release, see the Amazon EMR Release Guide '
-    ' (http://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-release-components.html).'
-    ' Use <code>--release-label</code> only for Amazon EMR version 4.x'
+    ' in each release, see the Amazon EMR Release Guide:</p>'
+    '<p>https://docs.aws.amazon.com/emr/ReleaseGuide</p>'
+    '<p>Use <code>--release-label</code> only for Amazon EMR release version 4.0'
     ' and later. Use <code>--ami-version</code> for earlier versions.'
     ' You cannot specify both a release label and AMI version.</p>')
 
 CONFIGURATIONS = (
     '<p>Specifies a JSON file that contains configuration classifications,'
-    ' which you can use to customize applications that EMR installs'
-    ' when cluster instances launch. Applies only to EMR 4.x and later.'
+    ' which you can use to customize applications that Amazon EMR installs'
+    ' when cluster instances launch. Applies only to Amazon EMR 4.0 and later.'
     ' The file referenced can either be stored locally (for example,'
     ' <code>--configurations file://configurations.json</code>)'
     ' or stored in Amazon S3 (for example, <code>--configurations'
@@ -126,19 +118,17 @@ CONFIGURATIONS = (
     ' Each classification usually corresponds to the xml configuration'
     ' file for an application, such as <code>yarn-site</code> for YARN. For a list of'
     ' available configuration classifications and example JSON, see'
-    ' Configuring Applications (http://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-configure-apps.html).</p>')
+    ' the following topic in the Amazon EMR Release Guide:</p>'
+    '<p>https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-configure-apps.html</p>')
 
 INSTANCE_GROUPS = (
     '<p>Specifies the number and type of Amazon EC2 instances'
     ' to create for each node type in a cluster, using uniform instance groups.'
     ' You can specify either <code>--instance-groups</code> or'
     ' <code>--instance-fleets</code> but not both.'
-    ' For more information, see Create a Cluster with Instance Fleets or Instance'
-    ' Groups (http://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-instance-group-configuration.html).</p>'
-    ' <p>You can configure instance group parameters in a JSON file that is stored locally'
-    ' or in Amazon S3 and then reference the JSON file as the sole parameter,'
-    ' for example, <code>--instance-groups s3://mybucket/instancegroupconfig.json</code>.'
-    ' Alternatively, you can specify arguments individually using multiple'
+    ' For more information, see the following topic in the EMR Management Guide:</p>'
+    '<p>https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-instance-group-configuration.html</p>'
+    '<p>You can specify arguments individually using multiple'
     ' <code>InstanceGroupType</code> argument blocks, one for the <code>MASTER</code>'
     ' instance group, one for a <code>CORE</code> instance group,'
     ' and optional, multiple <code>TASK</code> instance groups.</p>'
@@ -149,32 +139,30 @@ INSTANCE_GROUPS = (
     '<li><code>[Name]</code> - An optional friendly name for the instance group.</li>'
     '<li><code>InstanceGroupType</code> - <code>MASTER</code>, <code>CORE</code>, or <code>TASK</code>.</li>'
     '<li><code>InstanceType</code> - The type of EC2 instance, for'
-    ' example <code>m3.xlarge</code>,'
+    ' example <code>m4.large</code>,'
     ' to use for all nodes in the instance group.</li>'
     '<li><code>InstanceCount</code> - The number of EC2 instances to provision in the instance group.</li>'
-    '<li><code>[BidPrice]</code> - If specified, indicates that the instance group uses Spot Instances,'
-    ' and establishes the bid price for the instances.</li>'
+    '<li><code>[BidPrice]</code> - If specified, indicates that the instance group uses Spot Instances.'
+    ' This is the maximum price you are willing to pay for Spot Instances. Specify OnDemandPrice'
+    ' to set the amount equal to the On-Demand price, or specify an amount in USD.</li>'
     '<li><code>[EbsConfiguration]</code> - Specifies additional Amazon EBS storage volumes attached'
     ' to EC2 instances using an inline JSON structure.</li>'
     '<li><code>[AutoScalingPolicy]</code> - Specifies an automatic scaling policy for the'
     ' instance group using an inline JSON structure.</li>')
 
 INSTANCE_FLEETS = (
-    '<p>Available in Amazon EMR version 5.0 and later. Specifies'
+    '<p>Applies only to Amazon EMR release version 5.0 and later. Specifies'
     ' the number and type of Amazon EC2 instances to create'
     ' for each node type in a cluster, using instance fleets.'
     ' You can specify either <code>--instance-fleets</code> or'
     ' <code>--instance-groups</code> but not both.'
-    ' For more information and examples, see Configure Instance Fleets'
-    ' (http://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-instance-fleet.html).</p>'
-    ' <p>You can configure instance fleet parameters in a JSON file that is stored locally'
-    ' or in Amazon S3 and then reference the JSON file as the sole parameter'
-    ' (for example, <code>--instance-fleets s3://mybucket/instancefleetconfig.json</code>).'
-    ' Alternatively, you can specify arguments individually using multiple'
+    ' For more information and examples, see the following topic in the Amazon EMR Management Guide:</p>'
+    '<p>https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-instance-fleet.html</p>'
+    '<p>You can specify arguments individually using multiple'
     ' <code>InstanceFleetType</code> argument blocks, one for the <code>MASTER</code>'
     ' instance fleet, one for a <code>CORE</code> instance fleet,'
     ' and an optional <code>TASK</code> instance fleet.</p>'
-    ' <p>The following arguments can be specified for each instance fleet. Optional arguments are shown in [square brackets].</p>'
+    '<p>The following arguments can be specified for each instance fleet. Optional arguments are shown in [square brackets].</p>'
     '<li><code>[Name]</code> - An optional friendly name for the instance fleet.</li>'
     '<li><code>InstanceFleetType</code> - <code>MASTER</code>, <code>CORE</code>, or <code>TASK</code>.</li>'
     '<li><code>TargetOnDemandCapacity</code> - The target capacity of On-Demand units'
@@ -194,7 +182,7 @@ INSTANCE_FLEETS = (
 
 INSTANCE_TYPE = (
     '<p>Shortcut parameter as an alternative to <code>--instance-groups</code>.'
-    ' Specifies the the type of Amazon EC2 instance to use in a cluster.'
+    ' Specifies the type of Amazon EC2 instance to use in a cluster.'
     ' If used without the <code>--instance-count</code> parameter,'
     ' the cluster consists of a single master node running on the EC2 instance type'
     ' specified. When used together with <code>--instance-count</code>,'
@@ -202,7 +190,7 @@ INSTANCE_TYPE = (
     ' are used for the core node type.</p>')
 
 INSTANCE_COUNT = (
-    '<p>Shortcut parameter as an alternative to <code>--instance-groups</code>,'
+    '<p>Shortcut parameter as an alternative to <code>--instance-groups</code>'
     ' when used together with <code>--instance-type</code>. Specifies the'
     ' number of Amazon EC2 instances to create for a cluster.'
     ' One instance is used for the master node, and the remainder'
@@ -279,12 +267,11 @@ TAGS = (
     ' Use a space to separate multiple tags.</p>')
 
 BOOTSTRAP_ACTIONS = (
-    '<p>Specifies a list of bootstrap actions to run when creating a'
-    ' cluster. Bootstrap actions are scripts that run on each cluster node'
-    ' immediately after Amazon EMR provisions the EC2 instance.'
-    ' Bootstrap actions run before applications are installed and before'
-    ' nodes begin running steps and processing data.</p>'
-    ' <p>You can specify the bootstrap action as an inline JSON structure'
+    '<p>Specifies a list of bootstrap actions to run on each EC2 instance when'
+    ' a cluster is created. Bootstrap actions run on each instance'
+    ' immediately after Amazon EMR provisions the EC2 instance and'
+    ' before Amazon EMR installs specified applications.</p>'
+    '<p>You can specify a bootstrap action as an inline JSON structure'
     ' enclosed in single quotation marks, or you can use a shorthand'
     ' syntax, specifying multiple bootstrap actions, each separated'
     ' by a space. When using the shorthand syntax, each bootstrap'
@@ -306,38 +293,38 @@ APPLICATIONS = (
     '<p>Specifies the applications to install on the cluster.'
     ' Available applications and their respective versions vary'
     ' by Amazon EMR release. For more information, see the'
-    ' Amazon EMR Release Guide (http://docs.aws.amazon.com/emr/latest/ReleaseGuide/).</p>'
+    ' Amazon EMR Release Guide:</p>'
+    '<p>https://docs.aws.amazon.com/emr/latest/ReleaseGuide/</p>'
     '<p>When using versions of Amazon EMR earlier than 4.0,'
     ' some applications take optional arguments for configuration.'
     ' Arguments should either be a comma-separated list of values'
-    ' (<ode>Args=arg1,arg2,arg3</code>) or a bracket-enclosed list of values'
-    ' and/or key-value pairs (<code>Args=[arg1,arg2=arg3,arg4]</code>).'
-    ' For more information, see the'
-    ' Amazon EMR Developer Guide (http://docs.aws.amazon.com/emr/latest/DeveloperGuide/emr-dg.pdf).</p>')
+    ' (<code>Args=arg1,arg2,arg3</code>) or a bracket-enclosed list of values'
+    ' and key-value pairs (<code>Args=[arg1,arg2=arg3,arg4]</code>).</p>')
 
 EMR_FS = (
     '<p>Specifies EMRFS configuration options, such as consistent view'
-    ' and Amazon S3 encryption parameters. For more information,'
-    ' see Configuring Consistent View (http://docs.aws.amazon.com/emr/'
-    'latest/ManagementGuide/emrfs-configure-consistent-view.html). When using'
-    ' Amazon EMR version 4.8.0 or later, we recommend configuring data encryption'
-    ' using security configurations instead. For more information'
-    ' about using <code>--emrfs</code> to configure data encryption, see'
-    ' Specifying Amazon S3 Encryption Using EMRFS Properties'
-    ' (https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-emrfs-encryption.html.</p>')
+    ' and Amazon S3 encryption parameters.</p>'
+    '<p>When you use Amazon EMR release version 4.8.0 or later, we recommend'
+    ' that you use the <code>--configurations</code> option together'
+    ' with the <code>emrfs-site</code> configuration classification'
+    ' to configure EMRFS, and use security configurations'
+    ' to configure encryption for EMRFS data in Amazon S3 instead.'
+    ' For more information, see the following topic in the Amazon EMR Management Guide:</p>'
+    '<p>https://docs.aws.amazon.com/emr/latest/ManagementGuide/emrfs-configure-consistent-view.html</p>')
 
 RESTORE_FROM_HBASE = (
-    '<p>Available only when using Amazon EMR versions earlier than 4.x.'
+    '<p>Applies only when using Amazon EMR release versions earlier than 4.0.'
     ' Launches a new HBase cluster and populates it with'
     ' data from a previous backup of an HBase cluster. HBase'
     ' must be installed using the <code>--applications</code> option.</p>')
 
-
 STEPS = (
-    '<p>A list of steps to be executed by the cluster. A step can be'
+    '<p>Specifies a list of steps to be executed by the cluster. Steps run'
+    ' only on the master node after applications are installed'
+    ' and are used to submit work to a cluster. A step can be'
     ' specified using the shorthand syntax, by referencing a JSON file'
     ' or by specifying an inline JSON structure. <code>Args</code> supplied with steps'
-    ' should be acomma-separated list of values (<code>Args=arg1,arg2,arg3</code>) or'
+    ' should be a comma-separated list of values (<code>Args=arg1,arg2,arg3</code>) or'
     ' a bracket-enclosed list of values and key-value'
     ' pairs (<code>Args=[arg1,arg2=value,arg4</code>).</p>')
 
@@ -347,7 +334,7 @@ INSTALL_APPLICATIONS = (
     '<code>Name</code> and <code>Args</code>.</p>')
 
 EBS_ROOT_VOLUME_SIZE = (
-    '<p>Available in Amazon EMR version 4.x and later. Specifies the size,'
+    '<p>Applies only to Amazon EMR release version 4.0 and earlier. Specifies the size,'
     ' in GiB, of the EBS root device volume of the Amazon Linux AMI'
     ' that is used for each EC2 instance in the cluster. </p>')
 
@@ -355,19 +342,20 @@ SECURITY_CONFIG = (
     '<p>Specifies the name of a security configuration to use for the cluster.'
     ' A security configuration defines data encryption settings and'
     ' other security options. For more information, see'
-    ' Specifying Encryption Options Using a Security Configuration'
-    ' (http://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-encryption-enable-security-configuration.html).'
-    ' Use <code>list-security-configurations</code> to get a list of available'
+    ' the following topic in the Amazon EMR Management Guide:</p>'
+    '<p>https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-encryption-enable-security-configuration.html</p>'
+    '<p>Use <code>list-security-configurations</code> to get a list of available'
     ' security configurations in the active account.</p>')
 
 CUSTOM_AMI_ID = (
-    '<p>Available in Amazon EMR version 5.7.0 and later.'
+    '<p>Applies only to Amazon EMR release version 5.7.0 and later.'
     ' Specifies the AMI ID of a custom AMI to use'
     ' when Amazon EMR provisions EC2 instances. A custom'
     ' AMI can be used to encrypt the Amazon EBS root volume. It'
     ' can also be used instead of bootstrap actions to customize'
     ' cluster node configurations. For more information, see'
-    ' Using a Custom AMI (http://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-custom-ami.html).</p>')
+    ' the following topic in the Amazon EMR Management Guide:</p>'
+    '<p>https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-custom-ami.html</p>')
 
 REPO_UPGRADE_ON_BOOT = (
     '<p>Applies only when a <code>--custom-ami-id</code> is'
@@ -379,22 +367,21 @@ REPO_UPGRADE_ON_BOOT = (
     ' security risks.</p>')
 
 KERBEROS_ATTRIBUTES = (
-     '<p>Specifies required attributes for Kerberos when Kerberos authentication'
-     ' is enabled using a cluster security configuration.'
+     '<p>Specifies required cluster attributes for Kerberos when Kerberos authentication'
+     ' is enabled in the specified <code>--security-configuration</code>.'
      ' Takes the following arguments:</p>'
-     ' <li><code>Realm</code></li> - Specifies the name of the Kerberos'
+     ' <li><code>Realm</code> - Specifies the name of the Kerberos'
      ' realm to which all nodes in a cluster belong. For example,'
      ' <code>Realm=EC2.INTERNAL</code>.</li>'
      ' <li><code>KdcAdminPassword</code> - Specifies the password used within the cluster'
      ' for the kadmin service, which maintains Kerberos principals, password'
      ' policies, and keytabs for the cluster.</li>'
-     ' <li>CrossRealmTrustPassword</li> - Applies when establishing a cross-realm trust'
+     ' <li><code>CrossRealmTrustPrincipalPassword</code> - Required when establishing a cross-realm trust'
      ' with a KDC in a different realm. This is the cross-realm principal password,'
      ' which must be identical across realms.</li>'
-     '<li>ADDomainJoinUser</li> - Applies when establishing a cross-realm trust'
-     ' with an Active Directory. Specifies a user with sufficient privileges to join'
-     ' computers to the domain.</li>'
-     '<li>ADDomainJoinPassword</li> - The AD password for <code>ADDomainJoinUser</code>.</li>')
+     ' <li><code>ADDomainJoinUser</code> - Required when establishing trust with an Active Directory'
+     ' domain. This is the User logon name of an AD account with sufficient privileges to join resouces to the domain.</li>'
+     ' <li><code>ADDomainJoinPassword</code> - The AD password for <code>ADDomainJoinUser</code>.</li>')
 
 # end create-cluster options help descriptions
 

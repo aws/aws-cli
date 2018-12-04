@@ -27,7 +27,7 @@ class TestRb(BaseAWSCommandParamsTest):
         command = self.prefix + 's3://bucket --force'
         self.run_cmd(command)
         self.assertEqual(len(self.operations_called), 2)
-        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
         self.assertEqual(self.operations_called[1][0].name, 'DeleteBucket')
 
     def test_rb_force_non_empty_bucket(self):
@@ -43,7 +43,7 @@ class TestRb(BaseAWSCommandParamsTest):
         }, {}, {}]
         self.run_cmd(command)
         self.assertEqual(len(self.operations_called), 3)
-        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
         self.assertEqual(self.operations_called[1][0].name, 'DeleteObject')
         self.assertEqual(self.operations_called[2][0].name, 'DeleteBucket')
 
@@ -59,7 +59,7 @@ class TestRb(BaseAWSCommandParamsTest):
         _, stderr, _ = self.run_cmd(command, expected_rc=255)
         self.assertIn('remove_bucket failed:', stderr)
         self.assertEqual(len(self.operations_called), 1)
-        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
 
     def test_nonzero_exit_if_uri_scheme_not_provided(self):
         command = self.prefix + 'bucket'

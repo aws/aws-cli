@@ -1,4 +1,4 @@
-# Copyright 2012-2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2012-2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -33,6 +33,8 @@ import string
 import binascii
 from pprint import pformat
 from subprocess import Popen, PIPE
+import unittest
+
 
 from awscli.compat import StringIO
 
@@ -47,26 +49,15 @@ except ImportError as e:
     # different story.
     mock = None
 from awscli.compat import six
-from botocore.hooks import HierarchicalEmitter
 from botocore.session import Session
 from botocore.exceptions import ClientError
 from botocore.exceptions import WaiterError
 import botocore.loaders
-from botocore.vendored import requests
+from botocore.awsrequest import AWSResponse
 
 import awscli.clidriver
 from awscli.plugin import load_plugins
 from awscli.clidriver import CLIDriver
-from awscli import EnvironmentVariables
-
-
-# The unittest module got a significant overhaul
-# in 2.7, so if we're in 2.6 we can use the backported
-# version unittest2.
-if sys.version_info[:2] == (2, 6):
-    import unittest2 as unittest
-else:
-    import unittest
 
 
 # In python 3, order matters when calling assertEqual to
@@ -357,8 +348,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         }
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
-        self.http_response = requests.models.Response()
-        self.http_response.status_code = 200
+        self.http_response = AWSResponse(None, 200, {}, None)
         self.parsed_response = {}
         self.make_request_patch = mock.patch('botocore.endpoint.Endpoint.make_request')
         self.make_request_is_patched = False
@@ -452,18 +442,6 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         return stdout, stderr, rc
 
 
-class BaseAWSPreviewCommandParamsTest(BaseAWSCommandParamsTest):
-    def setUp(self):
-        self.preview_patch = mock.patch(
-            'awscli.customizations.preview.mark_as_preview')
-        self.preview_patch.start()
-        super(BaseAWSPreviewCommandParamsTest, self).setUp()
-
-    def tearDown(self):
-        self.preview_patch.stop()
-        super(BaseAWSPreviewCommandParamsTest, self).tearDown()
-
-
 class BaseCLIWireResponseTest(unittest.TestCase):
     def setUp(self):
         self.environ = {
@@ -475,7 +453,8 @@ class BaseCLIWireResponseTest(unittest.TestCase):
         }
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
-        self.send_patch = mock.patch('botocore.endpoint.Session.send')
+        # TODO: fix this patch when we have a better way to stub out responses
+        self.send_patch = mock.patch('botocore.endpoint.Endpoint._send')
         self.send_is_patched = False
         self.driver = create_clidriver()
 
@@ -487,7 +466,7 @@ class BaseCLIWireResponseTest(unittest.TestCase):
 
     def patch_send(self, status_code=200, headers={}, content=b''):
         if self.send_is_patched:
-            self.patch_send.stop()
+            self.send_patch.stop()
             self.send_is_patched = False
         send_patch = self.send_patch.start()
         send_patch.return_value = mock.Mock(status_code=status_code,
@@ -716,7 +695,7 @@ def _get_memory_with_ps(pid):
     else:
         # Get the RSS from output that looks like this:
         # USER       PID  %CPU %MEM      VSZ    RSS   TT  STAT STARTED      TIME COMMAND
-        # user     47102   0.0  0.1  2437000   4496 s002  S+    7:04PM   0:00.12 python2.6
+        # user     47102   0.0  0.1  2437000   4496 s002  S+    7:04PM   0:00.12 python2
         return int(stdout.splitlines()[1].split()[5]) * 1024
 
 

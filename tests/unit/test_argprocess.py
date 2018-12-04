@@ -27,7 +27,7 @@ from awscli.argprocess import ParamShorthandParser
 from awscli.argprocess import ParamShorthandDocGen
 from awscli.argprocess import ParamError
 from awscli.argprocess import ParamUnknownKeyError
-from awscli.argprocess import uri_param
+from awscli.paramfile import URIArgumentHandler, LOCAL_PREFIX_MAP
 from awscli.arguments import CustomArgument, CLIArgument
 from awscli.arguments import ListArgument, BooleanArgument
 from awscli.arguments import create_argument_model_from_schema
@@ -68,34 +68,20 @@ class BaseArgProcessTest(BaseCLIDriverTest):
 
 
 class TestURIParams(BaseArgProcessTest):
+    def setUp(self):
+        super(TestURIParams, self).setUp()
+        self.uri_param = URIArgumentHandler(LOCAL_PREFIX_MAP.copy())
+
     def test_uri_param(self):
         p = self.get_param_model('ec2.DescribeInstances.Filters')
         with temporary_file('r+') as f:
-            json_argument = json.dumps([{"Name": "instance-id", "Values": ["i-1234"]}])
+            json_argument = json.dumps(
+                [{"Name": "instance-id", "Values": ["i-1234"]}]
+            )
             f.write(json_argument)
             f.flush()
-            result = uri_param('event-name', p, 'file://%s' % f.name)
+            result = self.uri_param('event-name', p, 'file://%s' % f.name)
         self.assertEqual(result, json_argument)
-
-    def test_uri_param_no_paramfile_false(self):
-        p = self.get_param_model('ec2.DescribeInstances.Filters')
-        p.no_paramfile = False
-        with temporary_file('r+') as f:
-            json_argument = json.dumps([{"Name": "instance-id", "Values": ["i-1234"]}])
-            f.write(json_argument)
-            f.flush()
-            result = uri_param('event-name', p, 'file://%s' % f.name)
-        self.assertEqual(result, json_argument)
-
-    def test_uri_param_no_paramfile_true(self):
-        p = self.get_param_model('ec2.DescribeInstances.Filters')
-        p.no_paramfile = True
-        with temporary_file('r+') as f:
-            json_argument = json.dumps([{"Name": "instance-id", "Values": ["i-1234"]}])
-            f.write(json_argument)
-            f.flush()
-            result = uri_param('event-name', p, 'file://%s' % f.name)
-        self.assertEqual(result, None)
 
 
 class TestArgShapeDetection(BaseArgProcessTest):
@@ -265,7 +251,7 @@ class TestParamShorthand(BaseArgProcessTest):
     def test_list_structure_scalars(self):
         p = self.get_param_model(
             'elb.RegisterInstancesWithLoadBalancer.Instances')
-        event_name = ('process-cli-arg.elb'
+        event_name = ('process-cli-arg.elastic-load-balancing'
                       '.register-instances-with-load-balancer')
         # Because this is a list type param, we'll use nargs
         # with argparse which means the value will be presented
@@ -277,34 +263,20 @@ class TestParamShorthand(BaseArgProcessTest):
 
     def test_list_structure_list_scalar(self):
         p = self.get_param_model('ec2.DescribeInstances.Filters')
-        expected = [{"Name": "instance-id", "Values": ["i-1", "i-2"]},
-                    {"Name": "architecture", "Values": ["i386"]}]
+        expected = [{"Name": "instance-id", "Values": ["i-1", "i-2"]}]
         returned = self.parse_shorthand(
-            p, ["Name=instance-id,Values=i-1,i-2",
-                "Name=architecture,Values=i386"])
+            p, ["Name=instance-id,Values=i-1,i-2"])
         self.assertEqual(returned, expected)
 
         # With spaces around the comma.
         returned2 = self.parse_shorthand(
-            p, ["Name=instance-id, Values=i-1,i-2",
-                "Name=architecture, Values=i386"])
+            p, ["Name=instance-id, Values=i-1,i-2"])
         self.assertEqual(returned2, expected)
 
         # Strip off leading/trailing spaces.
         returned3 = self.parse_shorthand(
-            p, ["Name = instance-id, Values = i-1,i-2",
-                "Name = architecture, Values = i386"])
+            p, ["Name = instance-id, Values = i-1,i-2"])
         self.assertEqual(returned3, expected)
-
-    def test_parse_empty_values(self):
-        # A value can be omitted and will default to an empty string.
-        p = self.get_param_model('ec2.DescribeInstances.Filters')
-        expected = [{"Name": "", "Values": ["i-1", "i-2"]},
-                    {"Name": "architecture", "Values": ['']}]
-        returned = self.parse_shorthand(
-            p, ["Name=,Values=i-1,i-2",
-                "Name=architecture,Values="])
-        self.assertEqual(returned, expected)
 
     def test_list_structure_list_scalar_2(self):
         p = self.get_param_model('emr.ModifyInstanceGroups.InstanceGroups')
@@ -485,7 +457,7 @@ class TestParamShorthandCustomArguments(BaseArgProcessTest):
 
         simplified = self.shorthand(cli_argument, [
             "Name=foo,Args=[a,k1=v1,b]",
-            "Name=bar,Args=baz",
+            "Name=bar,Args=[baz]",
             "Name=single_kv,Args=[key=value]",
             "Name=single_v,Args=[value]"
         ], 'process-cli-arg.foo.bar')
@@ -526,11 +498,12 @@ class TestDocGen(BaseArgProcessTest):
         self.shorthand_documenter = ParamShorthandDocGen()
         self.service_name = 'foo'
         self.operation_name = 'bar'
+        self.service_id = 'baz'
 
     def get_generated_example_for(self, argument):
         # Returns a string containing the generated documentation.
         return self.shorthand_documenter.generate_shorthand_example(
-            argument, self.service_name, self.operation_name)
+            argument, self.service_id, self.operation_name)
 
     def assert_generated_example_is(self, argument, expected_docs):
         generated_docs = self.get_generated_example_for(argument)
@@ -550,6 +523,7 @@ class TestDocGen(BaseArgProcessTest):
 
     def test_gen_list_scalar_docs(self):
         self.service_name = 'elb'
+        self.service_id = 'elastic-load-balancing'
         self.operation_name = 'register-instances-with-load-balancer'
         argument = self.get_param_model(
             'elb.RegisterInstancesWithLoadBalancer.Instances')

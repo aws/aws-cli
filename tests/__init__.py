@@ -1,5 +1,6 @@
 from collections import MutableMapping
 from collections import Mapping
+from io import BytesIO
 
 
 # CaseInsensitiveDict from requests that must be serializble.
@@ -49,3 +50,13 @@ class CaseInsensitiveDict(MutableMapping):
 
     def __repr__(self):
         return str(dict(self.items()))
+
+
+class RawResponse(BytesIO):
+    # TODO: There's a few objects similar to this in various tests, let's
+    # try and consolidate to this one in a future commit.
+    def stream(self, **kwargs):
+        contents = self.read()
+        while contents:
+            yield contents
+            contents = self.read()

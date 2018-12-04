@@ -25,17 +25,8 @@ from contextlib import contextmanager
 # by awscli/botocore.
 PACKAGE_VERSION = {
     'virtualenv': '15.1.0',
-    # These packages are included because they are required for
-    # python2.6, but our normal dependency downloading via pip
-    # only works if you use python2.6.  To fix this issue, we're
-    # explicitly saying that we need to download these packages
-    # even if pip doesn't think we need them.  That way we can
-    # run make-bundle in python versions besides 2.6.
-    'ordereddict': '1.1',
-    'simplejson': '3.3.0',
-    'argparse': '1.2.1',
-    'python-dateutil': '2.6.1',
     'setuptools-scm': '1.15.7',
+    'urllib3': '1.22',
 }
 INSTALL_ARGS = '--allow-all-external --no-use-wheel'
 
@@ -175,9 +166,7 @@ def main():
     scratch_dir = create_scratch_dir()
     package_dir = os.path.join(scratch_dir, 'packages')
     print("Bundle dir at: %s" % scratch_dir)
-    download_package_tarballs(
-        package_dir,
-        packages=['virtualenv', 'ordereddict', 'simplejson', 'argparse', 'python-dateutil'])
+    download_package_tarballs(package_dir, packages=['virtualenv'])
 
     # Some packages require setup time dependencies, and so we will need to
     # manually install them. We isolate them to a particular directory so we

@@ -223,7 +223,7 @@ class TestBucketList(unittest.TestCase):
 
     def fake_paginate(self, *args, **kwargs):
         for response in self.responses:
-            self.emitter.emit('after-call.s3.ListObjects', parsed=response)
+            self.emitter.emit('after-call.s3.ListObjectsV2', parsed=response)
         return self.responses
 
     def test_list_objects(self):
@@ -469,7 +469,7 @@ class TestRequestParamsMapperRequestPayer(unittest.TestCase):
 
     def test_list_objects(self):
         params = {}
-        RequestParamsMapper.map_list_objects_params(
+        RequestParamsMapper.map_list_objects_v2_params(
             params, self.cli_params)
         self.assertEqual(params, {'RequestPayer': 'requester'})
 

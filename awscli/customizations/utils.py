@@ -35,31 +35,6 @@ def _copy_argument(argument_table, current_name, copy_name):
     return copy_arg
 
 
-def make_hidden_alias(argument_table, existing_name, alias_name):
-    """Create a hidden alias for an existing argument.
-
-    This will copy an existing argument object in an arg table,
-    and add a new entry to the arg table with a different name.
-    The new argument will also be undocumented.
-
-    This is needed if you want to check an existing argument,
-    but you still need the other one to work for backwards
-    compatibility reasons.
-
-    """
-    current = argument_table[existing_name]
-    copy_arg = _copy_argument(argument_table, existing_name, alias_name)
-    copy_arg._UNDOCUMENTED = True
-    if current.required:
-        # If the current argument is required, then
-        # we'll mark both as not required, but
-        # flag _DOCUMENT_AS_REQUIRED so our doc gen
-        # knows to still document this argument as required.
-        copy_arg.required = False
-        current.required = False
-        current._DOCUMENT_AS_REQUIRED = True
-
-
 def rename_command(command_table, existing_name, new_name):
     current = command_table[existing_name]
     command_table[new_name] = current
@@ -82,29 +57,6 @@ def alias_command(command_table, existing_name, new_name):
     current = command_table[existing_name]
     _copy_argument(command_table, existing_name, new_name)
     current._UNDOCUMENTED = True
-
-
-def make_hidden_command_alias(command_table, existing_name, alias_name):
-    """Create a hidden alias for an exiting command.
-
-    This will copy an existing command object in a command table and add a new
-    entry to the command table with a different name. The new command will
-    be undocumented.
-
-    This is needed if you want to change an existing command, but you still
-    need the old name to work for backwards compatibility reasons.
-
-    :type command_table: dict
-    :param command_table: The full command table for the CLI or a service.
-
-    :type existing_name: str
-    :param existing_name: The current name of the command.
-
-    :type alias_name: str
-    :param alias_name: The new name for the command.
-    """
-    new = _copy_argument(command_table, existing_name, alias_name)
-    new._UNDOCUMENTED = True
 
 
 def validate_mutually_exclusive_handler(*groups):
@@ -216,3 +168,14 @@ def uni_print(statement, out_file=None):
             new_encoding, 'replace').decode(new_encoding)
         out_file.write(new_statement)
     out_file.flush()
+
+
+def get_policy_arn_suffix(region):
+    """Method to return region value as expected by policy arn"""
+    region_string = region.lower()
+    if region_string.startswith("cn-"):
+        return "aws-cn"
+    elif region_string.startswith("us-gov"):
+        return "aws-us-gov"
+    else:
+        return "aws"

@@ -1149,7 +1149,7 @@ class TestLs(BaseS3IntegrationTest):
         self.assertEqual(p.rc, 255)
         self.assertIn(
             ('An error occurred (NoSuchBucket) when calling the '
-             'ListObjects operation: The specified bucket does not exist'),
+             'ListObjectsV2 operation: The specified bucket does not exist'),
             p.stderr)
         # There should be no stdout if we can't find the bucket.
         self.assertEqual(p.stdout, '')
@@ -1731,7 +1731,7 @@ class TestStreams(BaseS3IntegrationTest):
     def test_multipart_upload(self):
         """
         This tests the ability to multipart upload streams from stdin.
-        The data has some unicode in it to avoid having to do a seperate
+        The data has some unicode in it to avoid having to do a separate
         multipart upload test just for unicode.
         """
         bucket_name = _SHARED_BUCKET

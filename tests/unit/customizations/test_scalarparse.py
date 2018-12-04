@@ -32,7 +32,7 @@ class TestScalarParse(unittest.TestCase):
     def test_scalar_parsers_set(self):
         session = Mock()
         session.get_scoped_config.return_value = {'cli_timestamp_format':
-                                                  'none'}
+                                                  'wire'}
         scalarparse.add_scalar_parsers(session)
         session.get_component.assert_called_with('response_parser_factory')
         factory = session.get_component.return_value
@@ -44,7 +44,7 @@ class TestScalarParse(unittest.TestCase):
     def test_choose_none_timestamp_formatter(self):
         session = Mock(spec=Session)
         session.get_scoped_config.return_value = {'cli_timestamp_format':
-                                                  'none'}
+                                                  'wire'}
         factory = session.get_component.return_value
         scalarparse.add_scalar_parsers(session)
         factory.set_parser_defaults.assert_called_with(
@@ -73,4 +73,4 @@ class TestScalarParse(unittest.TestCase):
         factory = session.get_component.return_value
         scalarparse.add_scalar_parsers(session)
         factory.set_parser_defaults.assert_called_with(
-            timestamp_parser=scalarparse.identity)
+            timestamp_parser=scalarparse.iso_format)

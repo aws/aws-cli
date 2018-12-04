@@ -28,8 +28,7 @@ contributions as well:
 * Code should follow `pep 8 <https://www.python.org/dev/peps/pep-0008/>`__,
   although if you are modifying an existing module, it is more important
   for the code to be consistent if there are any discrepancies.
-* Code must work on ``python2.6``, ``python2.7``, and ``python3.3``,
-  ``python3.4`` and higher.
+* Code must work on ``python2.7``, and ``python3.5`` and higher.
 * The AWS CLI is cross platform and code must work on at least Linux, Windows,
   and Mac OS X.  Avoid platform specific behavior.
 * If you would like to implement support for a significant feature that is not

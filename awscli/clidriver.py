@@ -10,25 +10,29 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
 import sys
 import signal
 import logging
 
 import botocore.session
 from botocore import __version__ as botocore_version
-from botocore.hooks import HierarchicalEmitter
 from botocore import xform_name
 from botocore.compat import copy_kwargs, OrderedDict
 from botocore.exceptions import NoCredentialsError
 from botocore.exceptions import NoRegionError
 from botocore.history import get_global_history_recorder
+from botocore.configprovider import InstanceVarProvider
+from botocore.configprovider import EnvironmentProvider
+from botocore.configprovider import ScopedConfigProvider
+from botocore.configprovider import ConstantProvider
+from botocore.configprovider import ChainProvider
 
-from awscli import EnvironmentVariables, __version__
+from awscli import __version__
 from awscli.compat import get_stderr_text_writer
 from awscli.formatter import get_formatter
 from awscli.plugin import load_plugins
 from awscli.commands import CLICommand
-from awscli.compat import six
 from awscli.argparser import MainArgParser
 from awscli.argparser import ServiceArgParser
 from awscli.argparser import ArgTableArgParser
@@ -46,6 +50,7 @@ from awscli.alias import AliasLoader
 from awscli.alias import AliasCommandInjector
 from awscli.utils import emit_top_level_args_parsed_event
 from awscli.utils import write_exception
+from awscli.utils import IMDSRegionProvider
 
 
 LOG = logging.getLogger('awscli.clidriver')
@@ -62,11 +67,10 @@ def main():
 
 
 def create_clidriver():
-    emitter = HierarchicalEmitter()
-    session = botocore.session.Session(EnvironmentVariables, emitter)
+    session = botocore.session.Session()
     _set_user_agent_for_session(session)
     load_plugins(session.full_config.get('plugins', {}),
-                 event_hooks=emitter)
+                 event_hooks=session.get_component('event_emitter'))
     driver = CLIDriver(session=session)
     return driver
 
@@ -81,14 +85,70 @@ class CLIDriver(object):
 
     def __init__(self, session=None):
         if session is None:
-            self.session = botocore.session.get_session(EnvironmentVariables)
+            self.session = botocore.session.get_session()
             _set_user_agent_for_session(self.session)
         else:
             self.session = session
+        self._update_config_chain()
         self._cli_data = None
         self._command_table = None
         self._argument_table = None
         self.alias_loader = AliasLoader()
+
+    def _update_config_chain(self):
+        config_store = self.session.get_component('config_store')
+        config_store.set_config_provider(
+            'region',
+            self._construct_cli_region_chain()
+        )
+        config_store.set_config_provider(
+            'output',
+            self._construct_cli_output_chain()
+        )
+
+    def _construct_cli_region_chain(self):
+        providers = [
+            InstanceVarProvider(
+                instance_var='region',
+                session=self.session
+            ),
+            EnvironmentProvider(
+                names='AWS_DEFAULT_REGION',
+                env=os.environ,
+            ),
+            ScopedConfigProvider(
+                config_var_name='region',
+                session=self.session,
+            ),
+            IMDSRegionProvider(self.session),
+        ]
+        return ChainProvider(providers=providers)
+
+    def _construct_cli_output_chain(self):
+        providers = [
+            InstanceVarProvider(
+                instance_var='output',
+                session=self.session,
+            ),
+            EnvironmentProvider(
+                names='AWS_DEFAULT_OUTPUT',
+                env=os.environ,
+            ),
+            ScopedConfigProvider(
+                config_var_name='output',
+                session=self.session,
+            ),
+            ConstantProvider(value='json'),
+        ]
+        return ChainProvider(providers=providers)
+
+    @property
+    def subcommand_table(self):
+        return self._get_command_table()
+
+    @property
+    def arg_table(self):
+        return self._get_argument_table()
 
     def _get_cli_data(self):
         # Not crazy about this but the data in here is needed in
@@ -252,6 +312,8 @@ class CLIDriver(object):
         emit_top_level_args_parsed_event(self.session, args)
         if args.profile:
             self.session.set_config_variable('profile', args.profile)
+        if args.region:
+            self.session.set_config_variable('region', args.region)
         if args.debug:
             # TODO:
             # Unfortunately, by setting debug mode here, we miss out
@@ -321,6 +383,16 @@ class ServiceCommand(CLICommand):
     @lineage.setter
     def lineage(self, value):
         self._lineage = value
+
+    @property
+    def subcommand_table(self):
+        return self._get_command_table()
+
+    @property
+    def arg_table(self):
+        # No service level arguments so we just return an empty
+        # dictionary.
+        return {}
 
     def _get_command_table(self):
         if self._command_table is None:
@@ -455,6 +527,12 @@ class ServiceOperation(object):
     def lineage_names(self):
         # Represents the lineage of a command in terms of command ``name``
         return [cmd.name for cmd in self.lineage]
+
+    @property
+    def subcommand_table(self):
+        # There's no subcommands for an operation so we return an
+        # empty dictionary.
+        return {}
 
     @property
     def arg_table(self):
@@ -609,18 +687,18 @@ class CLIOperationCaller(object):
         """Invoke an operation and format the response.
 
         :type service_name: str
-        :param service_name: The name of the service.  Note this is the service name,
-            not the endpoint prefix (e.g. ``ses`` not ``email``).
+        :param service_name: The name of the service.  Note this is the
+            service name, not the endpoint prefix (e.g. ``ses`` not ``email``).
 
         :type operation_name: str
         :param operation_name: The operation name of the service.  The casing
-            of the operation name should match the exact casing used by the service,
-            e.g. ``DescribeInstances``, not ``describe-instances`` or
+            of the operation name should match the exact casing used by the
+            service, e.g. ``DescribeInstances``, not ``describe-instances`` or
             ``describe_instances``.
 
         :type parameters: dict
-        :param parameters: The parameters for the operation call.  Again, these values
-            have the same casing used by the service.
+        :param parameters: The parameters for the operation call.  Again,
+            these values have the same casing used by the service.
 
         :type parsed_globals: Namespace
         :param parsed_globals: The parsed globals from the command line.

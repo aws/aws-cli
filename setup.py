@@ -23,18 +23,13 @@ def find_version(*file_paths):
     raise RuntimeError("Unable to find version string.")
 
 
-requires = ['botocore==1.10.44',
+requires = ['botocore==1.12.38',
             'colorama>=0.2.5,<=0.3.9',
             'docutils>=0.10',
             'rsa>=3.1.2,<=3.5.0',
             's3transfer>=0.1.12,<0.2.0',
-            'PyYAML>=3.10,<=3.12']
-
-
-if sys.version_info[:2] == (2, 6):
-    # For python2.6 we have to require argparse since it
-    # was not in stdlib until 2.7.
-    requires.append('argparse>=1.1')
+            'ruamel.yaml>=0.15.0,<0.16.0',
+            ]
 
 
 setup_options = dict(
@@ -44,7 +39,7 @@ setup_options = dict(
     long_description=open('README.rst').read(),
     author='Amazon Web Services',
     url='http://aws.amazon.com/cli/',
-    scripts=['bin/aws', 'bin/aws.cmd',
+    scripts=['bin/aws', 'bin/aws.cmd', 'bin/aws_legacy_completer',
              'bin/aws_completer', 'bin/aws_zsh_completer.sh',
              'bin/aws_bash_completer'],
     packages=find_packages(exclude=['tests*']),
@@ -52,11 +47,6 @@ setup_options = dict(
                              'examples/*/*/*.rst', 'topics/*.rst',
                              'topics/*.json']},
     install_requires=requires,
-    extras_require={
-        ':python_version=="2.6"': [
-            'argparse>=1.1',
-        ]
-    },
     license="Apache License 2.0",
     classifiers=(
         'Development Status :: 5 - Production/Stable',
@@ -66,13 +56,11 @@ setup_options = dict(
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ),
 )
 

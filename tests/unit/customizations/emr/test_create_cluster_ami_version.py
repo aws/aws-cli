@@ -21,7 +21,6 @@ import copy
 import os
 import json
 from mock import patch
-from botocore.vendored import requests
 
 
 DEFAULT_CLUSTER_NAME = "Development Cluster"
@@ -715,6 +714,35 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         ]
         self.assert_params_for_cmd(cmd, result)
 
+    def test_instance_groups_from_json_file_spot_bidprice_equals_ondemandprice(self):
+        data_path = os.path.join(
+            os.path.dirname(__file__), 'input_instance_groups_spot_bidprice_equals_ondemandprice.json')
+        cmd = ('emr create-cluster --use-default-roles --ami-version 3.0.4  '
+               '--instance-groups file://' + data_path)
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['Instances']['InstanceGroups'] = \
+            [
+                {'InstanceRole': 'MASTER',
+                 'InstanceCount': 1,
+                 'Name': 'Master Instance Group',
+                 'Market': 'SPOT',
+                 'InstanceType': 'm1.large'
+                 },
+                {'InstanceRole': 'CORE',
+                 'InstanceCount': 2,
+                 'Name': 'Core Instance Group',
+                 'Market': 'SPOT',
+                 'InstanceType': 'm1.xlarge'
+                 },
+                {'InstanceRole': 'TASK',
+                 'InstanceCount': 3,
+                 'Name': 'Task Instance Group',
+                 'Market': 'SPOT',
+                 'InstanceType': 'm1.xlarge'
+                 }
+        ]
+        self.assert_params_for_cmd(cmd, result)
+
     def test_ec2_attributes_no_az(self):
         cmd = ('emr create-cluster --ami-version 3.0.4 '
                '--instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG +
@@ -1145,25 +1173,37 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmd, result)
 
     def test_empty_step_args(self):
-        cmd = DEFAULT_CMD + '--steps Type=Streaming,Args= '
-        expect_error_msg = ('\naws: error: The prameter Args cannot '
-                            'be an empty list.\n')
+        cmd = DEFAULT_CMD + '--steps Type=Streaming,Args=[]'
+        expected_error_msg = (
+            '\naws: error: The following required parameters are missing '
+            'for StreamingStepConfig: Args.\n'
+        )
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        self.assertEquals(expected_error_msg, result[1])
 
-        cmd = DEFAULT_CMD + '--steps Type=Pig,Args= '
+        expected_error_msg = (
+            '\naws: error: The following required parameters are missing '
+            'for PigStepConfig: Args.\n'
+        )
+        cmd = DEFAULT_CMD + '--steps Type=Pig,Args=[]'
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        self.assertEquals(expected_error_msg, result[1])
 
-        cmd = DEFAULT_CMD + '--steps Type=Hive,Args= '
+        expected_error_msg = (
+            '\naws: error: The following required parameters are missing '
+            'for HiveStepConfig: Args.\n'
+        )
+        cmd = DEFAULT_CMD + '--steps Type=Hive,Args=[]'
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        self.assertEquals(expected_error_msg, result[1])
 
-        cmd = DEFAULT_CMD + '--steps Args= '
-        expect_error_msg = ('\naws: error: The following required parameters '
-                            'are missing for CustomJARStepConfig: Jar.\n')
+        cmd = DEFAULT_CMD + '--steps Args=[]'
+        expected_error_msg = (
+            '\naws: error: The following required parameters '
+            'are missing for CustomJARStepConfig: Jar.\n'
+        )
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        self.assertEquals(expected_error_msg, result[1])
 
     def test_missing_applications_for_steps(self):
         cmd = DEFAULT_CMD +\

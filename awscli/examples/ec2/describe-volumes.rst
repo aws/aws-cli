@@ -113,7 +113,7 @@ This example command describes all volumes that have the tag key ``Name`` and a 
 
 Command::
 
-  aws ec2 describe-volumes --filters Name=tag:Name,Values=Test* --query 'Volumes[*].{ID:VolumeId,Tag:Tags}'
+  aws ec2 describe-volumes --filters Name=tag:Name,Values=Test* --query "Volumes[*].{ID:VolumeId,Tag:Tags}"
 
 Output::
 

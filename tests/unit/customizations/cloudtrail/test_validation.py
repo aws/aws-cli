@@ -723,8 +723,8 @@ class TestDigestTraverser(unittest.TestCase):
             digest_validator=digest_validator, on_invalid=on_invalid)
         digest_iter = traverser.traverse(start_date, end_date)
         next(digest_iter, None)
-        self.assertEquals(
-            'Digest file\ts3://1/%s\tINVALID: Incorrect padding' % end_timestamp,
+        self.assertIn(
+            'Digest file\ts3://1/%s\tINVALID: ' % end_timestamp,
             calls[0]['message'])
 
 

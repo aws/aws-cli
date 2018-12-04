@@ -12,116 +12,42 @@
 # language governing permissions and limitations under the License.
 import logging
 import os
+import copy
 
-from botocore.vendored import requests
 from awscli.compat import six
 
 from awscli.compat import compat_open
+from awscli.argprocess import ParamError
 
 
 logger = logging.getLogger(__name__)
-
-# These are special cased arguments that do _not_ get the
-# special param file processing.  This is typically because it
-# refers to an actual URI of some sort and we don't want to actually
-# download the content (i.e TemplateURL in cloudformation).
-PARAMFILE_DISABLED = set([
-    'apigateway.put-integration.uri',
-    'appstream2.create-stack.redirect-url',
-    'appstream2.update-stack.redirect-url',
-    'cloudformation.create-stack.template-url',
-    'cloudformation.update-stack.template-url',
-    'cloudformation.create-stack-set.template-url',
-    'cloudformation.update-stack-set.template-url',
-    'cloudformation.create-change-set.template-url',
-    'cloudformation.validate-template.template-url',
-    'cloudformation.estimate-template-cost.template-url',
-    'cloudformation.get-template-summary.template-url',
-
-    'cloudformation.create-stack.stack-policy-url',
-    'cloudformation.update-stack.stack-policy-url',
-    'cloudformation.set-stack-policy.stack-policy-url',
-    # aws cloudformation package --template-file
-    'custom.package.template-file',
-    # aws cloudformation deploy --template-file
-    'custom.deploy.template-file',
-
-    'cloudformation.update-stack.stack-policy-during-update-url',
-    # We will want to change the event name to ``s3`` as opposed to
-    # custom in the near future along with ``s3`` to ``s3api``.
-    'custom.cp.website-redirect',
-    'custom.mv.website-redirect',
-    'custom.sync.website-redirect',
-
-    'guardduty.create-ip-set.location',
-    'guardduty.update-ip-set.location',
-    'guardduty.create-threat-intel-set.location',
-    'guardduty.update-threat-intel-set.location',
-    'comprehend.detect-dominant-language.text',
-    'comprehend.batch-detect-dominant-language.text-list',
-    'comprehend.detect-entities.text',
-    'comprehend.batch-detect-entities.text-list',
-    'comprehend.detect-key-phrases.text',
-    'comprehend.batch-detect-key-phrases.text-list',
-    'comprehend.detect-sentiment.text',
-    'comprehend.batch-detect-sentiment.text-list',
-
-    'iam.create-open-id-connect-provider.url',
-
-    'machinelearning.predict.predict-endpoint',
-
-    'rds.copy-db-cluster-snapshot.pre-signed-url',
-    'rds.create-db-cluster.pre-signed-url',
-    'rds.copy-db-snapshot.pre-signed-url',
-    'rds.create-db-instance-read-replica.pre-signed-url',
-
-    'serverlessrepo.create-application.home-page-url',
-    'serverlessrepo.create-application.license-url',
-    'serverlessrepo.create-application.readme-url',
-    'serverlessrepo.create-application.source-code-url',
-    'serverlessrepo.create-application.template-url',
-    'serverlessrepo.create-application-version.source-code-url',
-    'serverlessrepo.create-application-version.template-url',
-    'serverlessrepo.update-application.home-page-url',
-    'serverlessrepo.update-application.readme-url',
-
-    'sqs.add-permission.queue-url',
-    'sqs.change-message-visibility.queue-url',
-    'sqs.change-message-visibility-batch.queue-url',
-    'sqs.delete-message.queue-url',
-    'sqs.delete-message-batch.queue-url',
-    'sqs.delete-queue.queue-url',
-    'sqs.get-queue-attributes.queue-url',
-    'sqs.list-dead-letter-source-queues.queue-url',
-    'sqs.receive-message.queue-url',
-    'sqs.remove-permission.queue-url',
-    'sqs.send-message.queue-url',
-    'sqs.send-message-batch.queue-url',
-    'sqs.set-queue-attributes.queue-url',
-    'sqs.purge-queue.queue-url',
-    'sqs.list-queue-tags.queue-url',
-    'sqs.tag-queue.queue-url',
-    'sqs.untag-queue.queue-url',
-
-    's3.copy-object.website-redirect-location',
-    's3.create-multipart-upload.website-redirect-location',
-    's3.put-object.website-redirect-location',
-
-    # Double check that this has been renamed!
-    'sns.subscribe.notification-endpoint',
-
-    'iot.create-job.document-source',
-    'translate.translate-text.text',
-
-    'workdocs.create-notification-subscription.notification-endpoint',
-])
 
 
 class ResourceLoadingError(Exception):
     pass
 
 
-def get_paramfile(path):
+def register_uri_param_handler(session, **kwargs):
+    prefix_map = copy.deepcopy(LOCAL_PREFIX_MAP)
+    handler = URIArgumentHandler(prefix_map)
+    session.register('load-cli-arg', handler)
+
+
+class URIArgumentHandler(object):
+    def __init__(self, prefixes):
+        self._prefixes = prefixes
+
+    def __call__(self, event_name, param, value, **kwargs):
+        """Handler that supports param values from local files."""
+        if isinstance(value, list) and len(value) == 1:
+            value = value[0]
+        try:
+            return get_paramfile(value, self._prefixes)
+        except ResourceLoadingError as e:
+            raise ParamError(param.cli_name, six.text_type(e))
+
+
+def get_paramfile(path, cases):
     """Load parameter based on a resource URI.
 
     It is possible to pass parameters to operations by referring
@@ -135,6 +61,10 @@ def get_paramfile(path):
     :param path: The resource URI, e.g. file://foo.txt.  This value
         may also be a non resource URI, in which case ``None`` is returned.
 
+    :type cases: dict
+    :param cases: A dictionary of URI prefixes to function mappings
+        that a parameter is checked against.
+
     :return: The loaded value associated with the resource URI.
         If the provided ``path`` is not a resource URI, then a
         value of ``None`` is returned.
@@ -142,7 +72,7 @@ def get_paramfile(path):
     """
     data = None
     if isinstance(path, six.string_types):
-        for prefix, function_spec in PREFIX_MAP.items():
+        for prefix, function_spec in cases.items():
             if path.startswith(prefix):
                 function, kwargs = function_spec
                 data = function(prefix, path, **kwargs)
@@ -164,22 +94,7 @@ def get_file(prefix, path, mode):
             path, e))
 
 
-def get_uri(prefix, uri):
-    try:
-        r = requests.get(uri)
-        if r.status_code == 200:
-            return r.text
-        else:
-            raise ResourceLoadingError(
-                "received non 200 status code of %s" % (
-                    r.status_code))
-    except Exception as e:
-        raise ResourceLoadingError('Unable to retrieve %s: %s' % (uri, e))
-
-
-PREFIX_MAP = {
+LOCAL_PREFIX_MAP = {
     'file://': (get_file, {'mode': 'r'}),
     'fileb://': (get_file, {'mode': 'rb'}),
-    'http://': (get_uri, {}),
-    'https://': (get_uri, {}),
 }

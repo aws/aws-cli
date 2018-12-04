@@ -15,12 +15,10 @@ This package provides a unified command line interface to Amazon Web Services.
 
 The aws-cli package works on Python versions:
 
-* 2.6.5 and greater
-* 2.7.x and greater
-* 3.3.x and greater
-* 3.4.x and greater
+* 2.7.9 and greater
 * 3.5.x and greater
 * 3.6.x and greater
+* 3.7.x and greater
 
 .. attention::
    We recommend that all customers regularly monitor the
@@ -434,4 +432,4 @@ help:
 
 .. _`Amazon Web Services Security Bulletins website`: https://aws.amazon.com/security/security-bulletins
 .. _pip: http://www.pip-installer.org/en/latest/
-.. _`download the tarball`: https://pypi.python.org/pypi/awscli
+.. _`download the tarball`: https://pypi.org/project/awscli/

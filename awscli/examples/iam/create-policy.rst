@@ -32,7 +32,7 @@ The file ``policy`` is a JSON document in the current folder that grants read on
               "Resource": [
                   "arn:aws:s3:::my-bucket/shared/*"
               ]
-          },
+          }
       ]
   }
 

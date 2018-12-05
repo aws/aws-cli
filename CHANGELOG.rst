@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.70
+=======
+
+* api-change:``ce``: Update ce command to latest version
+* api-change:``mediatailor``: Update mediatailor command to latest version
+* api-change:``mq``: Update mq command to latest version
+
+
 1.16.69
 =======
 

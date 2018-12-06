@@ -21,7 +21,8 @@ from awscli.customizations.cloudformation.artifact_exporter \
     ElasticBeanstalkApplicationVersion, CloudFormationStackResource, \
     ServerlessApplicationResource, LambdaLayerVersionResource, \
     copy_to_temp_dir, include_transform_export_handler, GLOBAL_EXPORT_DICT, \
-    ServerlessLayerVersionResource
+    ServerlessLayerVersionResource, ServerlessRepoApplicationLicense, \
+    ServerlessRepoApplicationReadme
 
 
 def test_is_s3_url():
@@ -107,6 +108,14 @@ def test_all_resources_export():
             "class": ServerlessLayerVersionResource,
             "expected_result": uploaded_s3_url
         },
+        {
+            "class": ServerlessRepoApplicationReadme,
+            "expected_result": uploaded_s3_url
+        },
+        {
+            "class": ServerlessRepoApplicationLicense,
+            "expected_result": uploaded_s3_url
+        }
     ]
 
     with patch("awscli.customizations.cloudformation.artifact_exporter.upload_local_artifacts") as upload_local_artifacts_mock:
@@ -808,6 +817,66 @@ class TestArtifactExporter(unittest.TestCase):
         stack_resource.export(resource_id, resource_dict, "dir")
         self.assertEquals(resource_dict[property_name], location)
         self.s3_uploader_mock.upload_with_dedup.assert_not_called()
+
+    @patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
+    def test_template_export_metadata(self, yaml_parse_mock):
+        parent_dir = os.path.sep
+        template_dir = os.path.join(parent_dir, 'foo', 'bar')
+        template_path = os.path.join(template_dir, 'path')
+        template_str = self.example_yaml_template()
+
+        metadata_type1_class = Mock()
+        metadata_type1_class.RESOURCE_TYPE = "metadata_type1"
+        metadata_type1_class.PROPERTY_NAME = "property_1"
+        metadata_type1_instance = Mock()
+        metadata_type1_class.return_value = metadata_type1_instance
+
+        metadata_type2_class = Mock()
+        metadata_type2_class.RESOURCE_TYPE = "metadata_type2"
+        metadata_type2_class.PROPERTY_NAME = "property_2"
+        metadata_type2_instance = Mock()
+        metadata_type2_class.return_value = metadata_type2_instance
+
+        metadata_to_export = [
+            metadata_type1_class,
+            metadata_type2_class
+        ]
+
+        template_dict = {
+            "Metadata": {
+                "metadata_type1": {
+                    "property_1": "abc"
+                },
+                "metadata_type2": {
+                    "property_2": "def"
+                }
+            }
+        }
+        open_mock = mock.mock_open()
+        yaml_parse_mock.return_value = template_dict
+
+        # Patch the file open method to return template string
+        with patch(
+                "awscli.customizations.cloudformation.artifact_exporter.open",
+                open_mock(read_data=template_str)) as open_mock:
+
+            template_exporter = Template(
+                template_path, parent_dir, self.s3_uploader_mock,
+                metadata_to_export=metadata_to_export)
+            exported_template = template_exporter.export()
+            self.assertEquals(exported_template, template_dict)
+
+            open_mock.assert_called_once_with(
+                    make_abs_path(parent_dir, template_path), "r")
+
+            self.assertEquals(1, yaml_parse_mock.call_count)
+
+            metadata_type1_class.assert_called_once_with(self.s3_uploader_mock)
+            metadata_type1_instance.export.assert_called_once_with(
+                "metadata_type1", mock.ANY, template_dir)
+            metadata_type2_class.assert_called_once_with(self.s3_uploader_mock)
+            metadata_type2_instance.export.assert_called_once_with(
+                "metadata_type2", mock.ANY, template_dir)
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
     def test_template_export(self, yaml_parse_mock):

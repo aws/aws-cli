@@ -11,7 +11,7 @@ Output::
           "UserName": "Bob",
           "Path": "/",
           "CreateDate": "2013-06-08T03:20:41.270Z",
-          "UserId": "AKIAIOSFODNN7EXAMPLE",
+          "UserId": "AIDAIOSFODNN7EXAMPLE",
           "Arn": "arn:aws:iam::123456789012:user/Bob"
       }
   }
@@ -19,4 +19,3 @@ Output::
 For more information, see `Adding a New User to Your AWS Account`_ in the *Using IAM* guide.
 
 .. _`Adding a New User to Your AWS Account`: http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_SettingUpUser.html
-

@@ -6,7 +6,7 @@ The following ``update-ip-set`` command updates an IPSet with an IPv4 address an
 
 Alternatively you can use a JSON file to specify the input. For example::
 
- aws waf update-ip-set --ip-set-id a123fae4-b567-8e90-1234-5ab67ac8ca90 --change-token 12cs345-67cd-890b-1cd2-c3a4567d89f1  --updates file://change.json 
+ aws waf-regional update-ip-set --ip-set-id a123fae4-b567-8e90-1234-5ab67ac8ca90 --change-token 12cs345-67cd-890b-1cd2-c3a4567d89f1  --updates file://change.json 
 
 Where content of the JSON file is::
 

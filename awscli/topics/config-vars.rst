@@ -244,6 +244,10 @@ in the AWS CLI config file:
   maps to the ``RoleSessionName`` parameter in the ``AssumeRole`` operation.
   This is an optional parameter.  If you do not provide this value, a
   session name will be automatically generated.
+* ``duration_seconds`` - The  duration,  in seconds, of the role session.
+  The value can range from 900 seconds (15 minutes) up to  the  maximum 
+  session  duration setting  for  the role.  This is an optional parameter
+  and by default, the value is set to 3600 seconds.
 
 If you do not have MFA authentication required, then you only need to specify a
 ``role_arn`` and either a ``source_profile`` or a ``credential_source``.

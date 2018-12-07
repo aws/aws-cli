@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.72
+=======
+
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``iam``: Update iam command to latest version
+
+
 1.16.71
 =======
 

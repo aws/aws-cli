@@ -22,6 +22,10 @@ from awscli.compat import compat_open
 from awscli.customizations.ecs import exceptions, filehelpers
 from awscli.customizations.commands import BasicCommand
 
+TIMEOUT_BUFFER_MIN = 10
+DEFAULT_DELAY_SEC = 15
+MAX_WAIT_MIN = 360  # 6 hours
+
 
 class ECSDeploy(BasicCommand):
     NAME = 'deploy'
@@ -33,7 +37,9 @@ class ECSDeploy(BasicCommand):
         "CodeDeploy appspec with the new task definition revision, create a "
         "CodeDeploy deployment, and wait for the deployment to successfully "
         "complete. This command will exit with a return code of 255 if the "
-        "deployment does not succeed within 30 minutes."
+        "deployment does not succeed within 30 minutes by default or "
+        "up to 10 minutes more than your deployment group's configured wait "
+        "time (max of 6 hours)."
     )
 
     ARG_TABLE = [
@@ -100,8 +106,6 @@ class ECSDeploy(BasicCommand):
 
     MSG_CREATED_DEPLOYMENT = "Successfully created deployment {id}\n"
 
-    MSG_WAITING = "Waiting for {deployment_id} to succeed...\n"
-
     MSG_SUCCESS = ("Successfully deployed {task_def} to "
                    "service '{service}'\n")
 
@@ -122,7 +126,8 @@ class ECSDeploy(BasicCommand):
             region_name=parsed_globals.region,
             verify=parsed_globals.verify_ssl)
 
-        self._validate_code_deploy_resources(codedeploy_client)
+        self.wait_time = \
+            self._validate_code_deploy_resources(codedeploy_client)
 
         self.task_def_arn = self._register_task_def(
             register_task_def_kwargs, ecs_client_wrapper)
@@ -138,11 +143,8 @@ class ECSDeploy(BasicCommand):
 
         sys.stdout.write(self.MSG_CREATED_DEPLOYMENT.format(
             id=deployment_id))
-        sys.stdout.write(
-            self.MSG_WAITING.format(deployment_id=deployment_id))
-        sys.stdout.flush()
 
-        deployer.wait_for_deploy_success(deployment_id)
+        deployer.wait_for_deploy_success(deployment_id, self.wait_time)
         service_name = self.resources['service']
 
         sys.stdout.write(
@@ -202,9 +204,16 @@ class ECSDeploy(BasicCommand):
         validator = CodeDeployValidator(client, self.resources)
         validator.describe_cd_resources()
         validator.validate_all()
+        return validator.get_deployment_wait_time()
 
 
 class CodeDeployer():
+
+    MSG_WAITING = ("Waiting for {deployment_id} to "
+                   "succeed{custom_wait_msg}...\n")
+
+    MSG_CUSTOM_WAIT = " (will timeout after {wait} minutes)"
+
     def __init__(self, cd_client, appspec_dict):
         self._client = cd_client
         self._appspec_dict = appspec_dict
@@ -282,9 +291,30 @@ class CodeDeployer():
         appspec_obj[resources_key] = updated_resources
         self._appspec_dict = appspec_obj
 
-    def wait_for_deploy_success(self, id):
+    def wait_for_deploy_success(self, id, wait_min):
         waiter = self._client.get_waiter("deployment_successful")
-        waiter.wait(deploymentId=id)
+        wait_msg = ""
+
+        if wait_min <= 30 or wait_min > MAX_WAIT_MIN:
+            self._show_deploy_wait_msg(id, wait_msg)
+            waiter.wait(deploymentId=id)
+        else:
+            wait_msg = self.MSG_CUSTOM_WAIT.format(wait=wait_min)
+            delay_sec = DEFAULT_DELAY_SEC
+            max_attempts = (wait_min * 60)/delay_sec
+            config = {
+                'Delay': delay_sec,
+                'MaxAttempts': max_attempts
+            }
+
+            self._show_deploy_wait_msg(id, wait_msg)
+            waiter.wait(deploymentId=id, WaiterConfig=config)
+
+    def _show_deploy_wait_msg(self, id, wait_msg):
+        sys.stdout.write(
+            self.MSG_WAITING.format(deployment_id=id,
+                                    custom_wait_msg=wait_msg))
+        sys.stdout.flush()
 
 
 class CodeDeployValidator():
@@ -308,6 +338,26 @@ class CodeDeployValidator():
         except ClientError as e:
             raise exceptions.ServiceClientError(
                 action='describe Code Deploy deployment group', error=e)
+
+    def get_deployment_wait_time(self):
+
+        if (not hasattr(self, 'deployment_group_details') or
+                self.deployment_group_details is None):
+            return 0
+        else:
+            dgp_info = self.deployment_group_details['deploymentGroupInfo']
+            blue_green_info = dgp_info['blueGreenDeploymentConfiguration']
+
+            deploy_ready_wait_min = \
+                blue_green_info['deploymentReadyOption']['waitTimeInMinutes']
+
+            terminate_key = 'terminateBlueInstancesOnDeploymentSuccess'
+            termination_wait_min = \
+                blue_green_info[terminate_key]['terminationWaitTimeInMinutes']
+
+            configured_wait = deploy_ready_wait_min + termination_wait_min
+
+            return configured_wait + TIMEOUT_BUFFER_MIN
 
     def validate_all(self):
         self.validate_application()

@@ -78,4 +78,4 @@ def parse_appspec(appspec_str):
     try:
         return json.loads(appspec_str)
     except ValueError:
-        return yaml.load(appspec_str)
+        return yaml.safe_load(appspec_str)

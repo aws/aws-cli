@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.73
+=======
+
+* api-change:``connect``: Update connect command to latest version
+* api-change:``mediastore``: Update mediastore command to latest version
+* enhancement:AssumeRole: Add support for duration_seconds in CLI config profiles (boto/botocore`#1600 <https://github.com/aws/aws-cli/issues/1600>`__).
+* api-change:``ecs``: Update ecs command to latest version
+
+
 1.16.72
 =======
 

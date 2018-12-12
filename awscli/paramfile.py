@@ -32,7 +32,9 @@ logger = logging.getLogger(__name__)
 PARAMFILE_DISABLED = set([
     'api-gateway.put-integration.uri',
     'appstream.create-stack.redirect-url',
+    'appstream.create-stack.feedback-url',
     'appstream.update-stack.redirect-url',
+    'appstream.update-stack.feedback-url',
     'cloudformation.create-stack.template-url',
     'cloudformation.update-stack.template-url',
     'cloudformation.create-stack-set.template-url',

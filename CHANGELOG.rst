@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.16.74
+=======
+
+* bugfix:appstream: Fix issue where --feedback-url was loading the content of the url to use as the input value.
+* api-change:``glue``: Update glue command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+
+
 1.16.73
 =======
 

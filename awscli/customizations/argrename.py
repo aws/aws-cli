@@ -72,6 +72,7 @@ ARGUMENT_RENAMES = {
     'mobile.create-project.region': 'project-region',
     'rekognition.create-stream-processor.output': 'stream-processor-output',
     'eks.create-cluster.version': 'kubernetes-version',
+    'eks.update-cluster-version.version': 'kubernetes-version',
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,

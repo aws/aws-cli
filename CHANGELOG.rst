@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.75
+=======
+
+* api-change:``pinpoint-email``: Update pinpoint-email command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+
+
 1.16.74
 =======
 

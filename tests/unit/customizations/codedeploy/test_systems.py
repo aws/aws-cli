@@ -185,7 +185,7 @@ class TestLinux(unittest.TestCase):
         self.credentials.token = self.session_token
 
         self.environment = dict({
-            'AWS_REGION': self.region,
+            'AWS_DEFAULT_REGION': self.region,
             'AWS_ACCESS_KEY_ID': self.access_key_id,
             'AWS_SECRET_ACCESS_KEY': self.secret_access_key,
             'AWS_SESSION_TOKEN': self.session_token

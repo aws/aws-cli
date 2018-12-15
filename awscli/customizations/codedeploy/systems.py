@@ -175,7 +175,7 @@ class Linux(System):
 
         credentials = self.session.get_credentials()
         environment = os.environ.copy()
-        environment['AWS_REGION'] = params.region
+        environment['AWS_DEFAULT_REGION'] = params.region
         environment['AWS_ACCESS_KEY_ID'] = credentials.access_key
         environment['AWS_SECRET_ACCESS_KEY'] = credentials.secret_key
         if credentials.token is not None:

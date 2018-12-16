@@ -90,13 +90,8 @@ class TestConfigureListCommand(unittest.TestCase):
             config_file_vars=config_file_vars,
             credentials=credentials)
         session.session_var_map = {
-<<<<<<< HEAD
-            'region': ('region', 'AWS_REGION'),
-            'profile': ('profile', 'AWS_DEFAULT_PROFILE')}
-=======
             'region': ('region', 'AWS_DEFAULT_REGION'),
             'profile': ('profile', 'AWS_PROFILE')}
->>>>>>> 6edfc87f... remove invalid ENV_VAR
         session.full_config = {
             'profiles': {'default': {'region': 'AWS_REGION'}}}
         stream = six.StringIO()

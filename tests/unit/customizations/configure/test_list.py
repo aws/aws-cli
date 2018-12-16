@@ -90,8 +90,13 @@ class TestConfigureListCommand(unittest.TestCase):
             config_file_vars=config_file_vars,
             credentials=credentials)
         session.session_var_map = {
+<<<<<<< HEAD
             'region': ('region', 'AWS_REGION'),
             'profile': ('profile', 'AWS_DEFAULT_PROFILE')}
+=======
+            'region': ('region', 'AWS_DEFAULT_REGION'),
+            'profile': ('profile', 'AWS_PROFILE')}
+>>>>>>> 6edfc87f... remove invalid ENV_VAR
         session.full_config = {
             'profiles': {'default': {'region': 'AWS_REGION'}}}
         stream = six.StringIO()
@@ -100,7 +105,7 @@ class TestConfigureListCommand(unittest.TestCase):
         rendered = stream.getvalue()
         # The profile came from an env var.
         self.assertRegexpMatches(
-            rendered, 'profile\s+myprofilename\s+env\s+AWS_DEFAULT_PROFILE')
+            rendered, 'profile\s+myprofilename\s+env\s+AWS_PROFILE')
         # The region came from the config file.
         self.assertRegexpMatches(
             rendered, 'region\s+us-west-2\s+config-file\s+/config/location')

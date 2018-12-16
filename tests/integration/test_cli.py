@@ -473,7 +473,6 @@ class TestGlobalArgs(BaseS3CLICommand):
         env_vars = os.environ.copy()
         with temporary_file('w') as f:
             env_vars.pop('AWS_PROFILE', None)
-            env_vars.pop('AWS_DEFAULT_PROFILE', None)
             # 'aws configure list' only shows 4 values
             # from the credentials so we'll show
             # 4 char values.
@@ -502,7 +501,6 @@ class TestGlobalArgs(BaseS3CLICommand):
         with temporary_file('w') as f:
             # Remove existing profile related env vars.
             env_vars.pop('AWS_PROFILE', None)
-            env_vars.pop('AWS_DEFAULT_PROFILE', None)
             env_vars['AWS_SHARED_CREDENTIALS_FILE'] = f.name
             env_vars['AWS_CONFIG_FILE'] = 'does-not-exist-foo'
             f.write(

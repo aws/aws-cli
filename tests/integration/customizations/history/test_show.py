@@ -26,7 +26,7 @@ class TestShow(unittest.TestCase):
                 'cli_history = enabled'
             )
         )
-        self.environ['AWS_DEFAULT_PROFILE'] = 'default'
+        self.environ['AWS_PROFILE'] = 'default'
         self.environ['AWS_DEFAULT_REGION'] = 'us-west-2'
         self.environ['AWS_CLI_HISTORY_FILE'] = os.path.join(
             self.files.rootdir, 'history.db')

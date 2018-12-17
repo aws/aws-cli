@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.77
+=======
+
+* api-change:``quicksight``: Update quicksight command to latest version
+* enhancement:``cloudformation``: Update ``cloudformation package`` command to upload readme and license files
+* api-change:``ecr``: Update ecr command to latest version
+
+
 1.16.76
 =======
 

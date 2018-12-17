@@ -22,6 +22,7 @@ from awscli.customizations.configure.set import ConfigureSetCommand
 from awscli.customizations.configure.get import ConfigureGetCommand
 from awscli.customizations.configure.list import ConfigureListCommand
 from awscli.customizations.configure.writer import ConfigFileWriter
+from awscli.customizations.configure.imp import ConfigureImportCommand
 
 from . import mask_value, profile_to_section
 
@@ -70,6 +71,7 @@ class ConfigureCommand(BasicCommand):
         '    Default output format [None]:\n'
     )
     SUBCOMMANDS = [
+        {'name': 'import', 'command_class': ConfigureImportCommand},
         {'name': 'list', 'command_class': ConfigureListCommand},
         {'name': 'get', 'command_class': ConfigureGetCommand},
         {'name': 'set', 'command_class': ConfigureSetCommand},

@@ -52,6 +52,8 @@ ARGUMENT_RENAMES = {
     'route53domains.view-billing.start': 'start-time',
     'route53domains.view-billing.end': 'end-time',
     'apigateway.create-rest-api.version': 'api-version',
+    'apigatewayv2.create-api.version': 'api-version',
+    'apigatewayv2.update-api.version': 'api-version',
     'pinpoint.get-campaign-version.version': 'campaign-version',
     'pinpoint.get-segment-version.version': 'segment-version',
     'stepfunctions.send-task-success.output': 'task-output',

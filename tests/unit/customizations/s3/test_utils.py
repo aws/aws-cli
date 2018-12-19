@@ -32,7 +32,7 @@ from awscli.compat import StringIO
 from awscli.testutils import FileCreator
 from awscli.customizations.s3.utils import (
     find_bucket_key,
-    guess_content_type, relative_path,
+    guess_content_type, relative_path, _cli_date_parser,
     StablePriorityQueue, BucketLister, get_file_stat, AppendFilter,
     create_warning, human_readable_size, human_readable_to_bytes,
     set_file_utime, SetFileUtimeError, RequestParamsMapper, StdoutBytesWriter,
@@ -267,6 +267,11 @@ class TestBucketList(unittest.TestCase):
             Bucket='mybucket', PaginationConfig={'PageSize': None},
             RequestPayer='requester'
         )
+
+
+class TestCliDateParser(unittest.TestCase):
+    def test_native_date(self):
+        _cli_date_parser('2018-08-18')
 
 
 class TestGetFileStat(unittest.TestCase):

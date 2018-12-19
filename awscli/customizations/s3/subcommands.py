@@ -1,4 +1,5 @@
 # Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2018 Transposit Corporation. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -429,6 +430,18 @@ REQUEST_PAYER = {
     )
 }
 
+DATE = {
+    'name': 'date',
+    'help_text': (
+        'Instead of selecting the last version of the object (or objects, for '
+        'a recursive operation), selects the most recent version(s) capped by '
+        'the date specified in one of formats supported by dateutil '
+        '(see: https://dateutil.readthedocs.io/en/stable/parser.html). '
+        'Makes sense only for a versioned bucket as a source, '
+        'otherwise gets ignored.'
+    )
+}
+
 TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
                  SSE, SSE_C, SSE_C_KEY, SSE_KMS_KEY_ID, SSE_C_COPY_SOURCE,
@@ -437,7 +450,7 @@ TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  CONTENT_DISPOSITION, CONTENT_ENCODING, CONTENT_LANGUAGE,
                  EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS, NO_PROGRESS,
                  PAGE_SIZE, IGNORE_GLACIER_WARNINGS, FORCE_GLACIER_TRANSFER,
-                 REQUEST_PAYER]
+                 REQUEST_PAYER, DATE]
 
 
 def get_client(session, region, endpoint_url, verify, config=None):

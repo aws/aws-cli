@@ -1,4 +1,5 @@
 # Copyright 2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2018 Transposit Corporation. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -37,12 +38,14 @@ class FileInfo(object):
         the ``FileGenerator`` to create this task. It is either an dictionary
         from the list of a ListObjects or the response from a HeadObject. It
         will only be filled if the task was generated from an S3 bucket.
+    :param version_id: Version-Id of the object
+    :type version_id: string
     """
     def __init__(self, src, dest=None, compare_key=None, size=None,
                  last_update=None, src_type=None, dest_type=None,
                  operation_name=None, client=None, parameters=None,
                  source_client=None, is_stream=False,
-                 associated_response_data=None):
+                 associated_response_data=None, version_id=None):
         self.src = src
         self.src_type = src_type
         self.operation_name = operation_name
@@ -59,6 +62,7 @@ class FileInfo(object):
         self.source_client = source_client
         self.is_stream = is_stream
         self.associated_response_data = associated_response_data
+        self.version_id = version_id
 
     def is_glacier_compatible(self):
         """Determines if a file info object is glacier compatible

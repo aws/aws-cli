@@ -1,4 +1,5 @@
 # Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2018 Transposit Corporation. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -28,7 +29,8 @@ class TestFileInfoBuilder(unittest.TestCase):
                           size='size', last_update='last_update',
                           src_type='src_type', dest_type='dest_type',
                           operation_name='operation_name',
-                          response_data='associated_response_data')]
+                          response_data='associated_response_data',
+                          version_id='version_id')]
         file_infos = info_setter.call(files)
         for file_info in file_infos:
             attributes = file_info.__dict__.keys()

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.79
+=======
+
+* api-change:``waf-regional``: Update waf-regional command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``waf``: Update waf command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+
+
 1.16.78
 =======
 

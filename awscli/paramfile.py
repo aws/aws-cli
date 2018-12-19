@@ -31,6 +31,7 @@ logger = logging.getLogger(__name__)
 # download the content (i.e TemplateURL in cloudformation).
 PARAMFILE_DISABLED = set([
     'api-gateway.put-integration.uri',
+    'apigatewayv2.create-integration.integration-uri',
     'appstream.create-stack.redirect-url',
     'appstream.create-stack.feedback-url',
     'appstream.update-stack.redirect-url',

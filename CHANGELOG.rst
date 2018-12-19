@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.16.78
+=======
+
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* api-change:``apigatewaymanagementapi``: Update apigatewaymanagementapi command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``globalaccelerator``: Update globalaccelerator command to latest version
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+
+
 1.16.77
 =======
 

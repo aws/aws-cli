@@ -1,4 +1,5 @@
 # Copyright 2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2018 Transposit Corporation. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -405,6 +406,8 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
     def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
         bucket, key = find_bucket_key(fileinfo.src)
         fileout = self._get_fileout(fileinfo)
+        if fileinfo.version_id:
+            extra_args['VersionId'] = fileinfo.version_id
         return self._transfer_manager.download(
             fileobj=fileout, bucket=bucket, key=key,
             extra_args=extra_args, subscribers=subscribers

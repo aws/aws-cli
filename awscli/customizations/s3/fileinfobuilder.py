@@ -1,4 +1,5 @@
 # Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2018 Transposit Corporation. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -45,6 +46,7 @@ class FileInfoBuilder(object):
         file_info_attr['parameters'] = self._parameters
         file_info_attr['is_stream'] = self._is_stream
         file_info_attr['associated_response_data'] = file_base.response_data
+        file_info_attr['version_id'] = file_base.version_id
 
         # This is a bit quirky. The below conditional hinges on the --delete
         # flag being set, which only occurs during a sync command. The source

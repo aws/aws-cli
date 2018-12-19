@@ -1,4 +1,5 @@
 # Copyright 2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2018 Transposit Corporation. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -351,29 +352,76 @@ def _date_parser(date_string):
     return parse(date_string).astimezone(tzlocal())
 
 
+def _cli_date_parser(date_string):
+    """Parse date string supplied by the client with local TZ in mind"""
+    date = parse(date_string)
+    if not date.tzinfo:
+        date = date.replace(tzinfo=tzlocal())
+    return date
+
+
 class BucketLister(object):
-    """List keys in a bucket."""
+    """List keys in a bucket, optionally capped by date"""
     def __init__(self, client, date_parser=_date_parser):
         self._client = client
         self._date_parser = date_parser
 
     def list_objects(self, bucket, prefix=None, page_size=None,
-                     extra_args=None):
+                     extra_args=None, date=None):
         kwargs = {'Bucket': bucket, 'PaginationConfig': {'PageSize': page_size}}
         if prefix is not None:
             kwargs['Prefix'] = prefix
         if extra_args is not None:
             kwargs.update(extra_args)
 
-        paginator = self._client.get_paginator('list_objects_v2')
+        paginator = self._client.get_paginator(
+            'list_objects_v2' if date is None else 'list_object_versions'
+        )
         pages = paginator.paginate(**kwargs)
+
+        if date is not None:
+            for content in self._list_versions(pages=pages, date=date):
+                yield bucket + '/' + content['Key'], content
+        else:
+            for page in pages:
+                contents = page.get('Contents', [])
+                for content in contents:
+                    source_path = bucket + '/' + content['Key']
+                    content['LastModified'] = self._date_parser(
+                        content['LastModified'])
+                    yield source_path, content
+
+    def _list_versions(self, pages, date):
+        """List the most recent object versions capped by date"""
+        date = _cli_date_parser(date)
+        capped_collection = []
         for page in pages:
-            contents = page.get('Contents', [])
-            for content in contents:
-                source_path = bucket + '/' + content['Key']
-                content['LastModified'] = self._date_parser(
-                    content['LastModified'])
-                yield source_path, content
+            for collection_name in 'Versions', 'DeleteMarkers':
+                collection = page.get(collection_name, [])
+                for container in collection:
+                    mod = self._date_parser(container['LastModified'])
+                    if mod <= date:
+                        container['LastModified'] = mod
+                        if collection_name == 'DeleteMarkers':
+                            container['_isDeleted'] = True
+                        capped_collection += collection
+        keys = set([ container['Key'] for container in capped_collection ])
+        for key in keys:
+            latest_object_version = sorted(
+                [
+                    container
+                    for container in capped_collection
+                    if container['Key'] == key
+                ], key=lambda container: container['LastModified']
+            )[-1]
+            if not latest_object_version.get('_isDeleted'):
+                yield latest_object_version
+
+    def date2version(self, bucket, key, date):
+        """Find the most recent version of a single object by date"""
+        for res in self.list_objects(bucket=bucket, prefix=key, date=date):
+            source_path, content = res
+            return content['VersionId']
 
 
 class PrintTask(namedtuple('PrintTask',

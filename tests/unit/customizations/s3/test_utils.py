@@ -1,4 +1,5 @@
 # Copyright 2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2019 Transposit Corporation. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -32,7 +33,7 @@ from awscli.compat import StringIO
 from awscli.testutils import FileCreator
 from awscli.customizations.s3.utils import (
     find_bucket_key,
-    guess_content_type, relative_path,
+    guess_content_type, relative_path, _cli_date_parser,
     StablePriorityQueue, BucketLister, get_file_stat, AppendFilter,
     create_warning, human_readable_size, human_readable_to_bytes,
     set_file_utime, SetFileUtimeError, RequestParamsMapper, StdoutBytesWriter,
@@ -267,6 +268,61 @@ class TestBucketList(unittest.TestCase):
             Bucket='mybucket', PaginationConfig={'PageSize': None},
             RequestPayer='requester'
         )
+
+
+class TestBucketVersionsList(unittest.TestCase):
+    def setUp(self):
+        self.client = mock.Mock()
+        self.individual_response_elements = [
+            {'Key': 'my-image.jpg',
+             'VersionId': '3/L4kqtJl40Nr8X8gdRQBpUMLUo',
+             'LastModified' : '2009-10-12T17:50:30.000Z'
+            },
+            {'Key': 'my-second-image.jpg',
+             'VersionId': 'QUpfdndhfd8438MNFDN93jdnJFkdmqnh893',
+             'LastModified' : '2009-10-10T17:50:30.000Z'
+            },
+            {'Key': 'my-third-image.jpg',
+             'VersionId': 'UIORUnfndfhnw89493jJFJ',
+             'LastModified' : '2009-10-11T12:50:30.000Z'
+            },
+            {'Key': 'my-second-image.jpg',
+             'VersionId': '03jpff543dhffds434rfdsFDN943fdsFkdmqnh892',
+             'LastModified' : '2009-11-12T17:50:30.000Z'
+            },
+            {'Key': 'my-third-image.jpg',
+             'VersionId': '03jpff543dhffds434rfdsFDN943fdsFkdmqnh892',
+             'LastModified' : '2009-10-15T17:50:30.000Z'
+            },
+        ]
+        self.responses = [
+            {'Versions': self.individual_response_elements[:3]},
+            {'DeleteMarkers': self.individual_response_elements[3:]}
+        ]
+        self.client.get_paginator.return_value.paginate = self.fake_paginate
+        self.lister = BucketLister(self.client)
+
+    def fake_paginate(self, *args, **kwargs):
+        return self.responses
+
+    def test_list_objects_with_date(self):
+        objects = list(self.lister.list_objects(bucket='foo', date='2010'))
+        self.assertEqual(objects,
+            [('foo/my-image.jpg', self.individual_response_elements[0])]
+        )
+
+    def test_list__single_object_with_date(self):
+        objects = list(self.lister.list_objects(
+            bucket='foo', date='2010', prefix='foo/my-image.jpg'
+        ))
+        self.assertEqual(objects,
+            [('foo/my-image.jpg', self.individual_response_elements[0])]
+        )
+
+
+class TestCliDateParser(unittest.TestCase):
+    def test_native_date(self):
+        _cli_date_parser('2018-08-18')
 
 
 class TestGetFileStat(unittest.TestCase):

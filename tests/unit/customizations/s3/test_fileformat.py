@@ -1,4 +1,5 @@
 # Copyright 2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2018 Transposit Corporation. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -33,7 +34,7 @@ class FileFormatTest(unittest.TestCase):
         ref_files = {'src': {'path': os.path.abspath(src) + os.sep,
                              'type': 'local'},
                      'dest': {'path': 'kyknapp/golfVid/', 'type': 's3'},
-                     'dir_op': True, 'use_src_name': True}
+                     'dir_op': True, 'use_src_name': True,'date': None}
         self.assertEqual(files, ref_files)
 
     def test_op_dir_noslash(self):
@@ -49,7 +50,7 @@ class FileFormatTest(unittest.TestCase):
         ref_files = {'src': {'path': os.path.abspath(src) + os.sep,
                              'type': 'local'},
                      'dest': {'path': 'kyknapp/golfVid/', 'type': 's3'},
-                     'dir_op': True, 'use_src_name': True}
+                     'dir_op': True, 'use_src_name': True, 'date': None}
         self.assertEqual(files, ref_files)
 
     def test_local_use_src_name(self):
@@ -66,7 +67,7 @@ class FileFormatTest(unittest.TestCase):
                              'type': 's3'},
                      'dest': {'path': os.path.abspath(dest) + os.sep,
                               'type': 'local'},
-                     'dir_op': False, 'use_src_name': True}
+                     'dir_op': False, 'use_src_name': True, 'date': None}
         self.assertEqual(files, ref_files)
 
     def test_local_noexist_file(self):
@@ -83,7 +84,7 @@ class FileFormatTest(unittest.TestCase):
                              'type': 's3'},
                      'dest': {'path': os.path.abspath(dest) + os.sep,
                               'type': 'local'},
-                     'dir_op': False, 'use_src_name': True}
+                     'dir_op': False, 'use_src_name': True, 'date': None}
         self.assertEqual(files, ref_files)
 
     def test_local_keep_dest_name(self):
@@ -100,7 +101,7 @@ class FileFormatTest(unittest.TestCase):
                              'type': 's3'},
                      'dest': {'path': os.path.abspath(dest),
                               'type': 'local'},
-                     'dir_op': False, 'use_src_name': False}
+                     'dir_op': False, 'use_src_name': False, 'date': None}
         self.assertEqual(files, ref_files)
 
     def test_s3_use_src_name(self):
@@ -116,7 +117,7 @@ class FileFormatTest(unittest.TestCase):
         ref_files = {'src': {'path': os.path.abspath(src),
                              'type': 'local'},
                      'dest': {'path': 'kyknapp/golfVid/', 'type': 's3'},
-                     'dir_op': False, 'use_src_name': True}
+                     'dir_op': False, 'use_src_name': True, 'date': None}
         self.assertEqual(files, ref_files)
 
     def test_s3_keep_dest_name(self):
@@ -132,7 +133,7 @@ class FileFormatTest(unittest.TestCase):
         ref_files = {'src': {'path': os.path.abspath(src),
                              'type': 'local'},
                      'dest': {'path': 'kyknapp/golfVid/file.py', 'type': 's3'},
-                     'dir_op': False, 'use_src_name': False}
+                     'dir_op': False, 'use_src_name': False, 'date': None}
         self.assertEqual(files, ref_files)
 
 

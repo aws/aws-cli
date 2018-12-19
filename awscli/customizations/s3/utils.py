@@ -1,4 +1,5 @@
 # Copyright 2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2018 Transposit Corporation. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -358,7 +359,7 @@ class BucketLister(object):
         self._date_parser = date_parser
 
     def list_objects(self, bucket, prefix=None, page_size=None,
-                     extra_args=None):
+                     extra_args=None, date=None):
         kwargs = {'Bucket': bucket, 'PaginationConfig': {'PageSize': page_size}}
         if prefix is not None:
             kwargs['Prefix'] = prefix
@@ -375,6 +376,47 @@ class BucketLister(object):
                     content['LastModified'])
                 yield source_path, content
 
+
+class VersionLister(BucketLister):
+    """List object versions, the most recent by date"""
+
+    def list_objects(self, bucket, prefix=None, page_size=None,
+                     extra_args=None, date=None):
+        date = self._date_parser(date)
+        versions = self._client.list_object_versions(
+            Bucket=bucket, Prefix=prefix
+        )
+        for bname in 'Versions', 'DeleteMarkers':
+            block = versions.get(bname, [])
+            for i in block:
+                i['LastModified'] = self._date_parser(i['LastModified'])
+                i['_block'] = bname
+        scope = versions.get("DeleteMarkers", []) + versions.get("Versions", [])
+        keys = set([ mark['Key'] for mark in scope ])
+        for key in keys:
+            mods_before = sorted([
+                mark['LastModified'] 
+                for mark in scope
+                if mark['Key'] == key
+                and mark['LastModified'] <= date
+            ])
+            if mods_before:
+                source_path = bucket + '/' + key
+                content = [
+                    mark 
+                    for mark in scope 
+                    if mark['Key'] == key 
+                    and mark['LastModified'] == mods_before[-1]
+                ][0]
+                if content['_block'] == 'Versions':
+                    del content['_block']
+                    yield source_path, content
+
+    def date2version(self, bucket, key, date):
+        """Find the most recent version of a single object by date"""
+        for res in self.list_objects(bucket=bucket, prefix=key, date=date):
+            source_path, content = res
+            return content['VersionId']
 
 class PrintTask(namedtuple('PrintTask',
                           ['message', 'error', 'total_parts', 'warning'])):

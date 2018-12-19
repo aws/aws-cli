@@ -1,4 +1,5 @@
 # Copyright 2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2018 Transposit Corporation. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -19,8 +20,8 @@ from dateutil.tz import tzlocal
 from botocore.exceptions import ClientError
 
 from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
-from awscli.customizations.s3.utils import BucketLister, create_warning, \
-    find_dest_path_comp_key, EPOCH_TIME
+from awscli.customizations.s3.utils import VersionLister, BucketLister, \
+    create_warning, find_dest_path_comp_key, EPOCH_TIME
 from awscli.compat import six
 from awscli.compat import queue
 
@@ -95,7 +96,7 @@ class FileDecodingError(Exception):
 class FileStat(object):
     def __init__(self, src, dest=None, compare_key=None, size=None,
                  last_update=None, src_type=None, dest_type=None,
-                 operation_name=None, response_data=None):
+                 operation_name=None, response_data=None, version_id=None):
         self.src = src
         self.dest = dest
         self.compare_key = compare_key
@@ -105,6 +106,7 @@ class FileStat(object):
         self.dest_type = dest_type
         self.operation_name = operation_name
         self.response_data = response_data
+        self.version_id = version_id
 
 
 class FileGenerator(object):
@@ -138,7 +140,9 @@ class FileGenerator(object):
         source = files['src']['path']
         src_type = files['src']['type']
         dest_type = files['dest']['type']
-        file_iterator = function_table[src_type](source, files['dir_op'])
+        file_iterator = function_table[src_type](
+            source, files['dir_op'], files.get('date')
+        )
         for src_path, extra_information in file_iterator:
             dest_path, compare_key = find_dest_path_comp_key(files, src_path)
             file_stat_kwargs = {
@@ -153,13 +157,14 @@ class FileGenerator(object):
         src_type = file_stat_kwargs['src_type']
         file_stat_kwargs['size'] = extra_information['Size']
         file_stat_kwargs['last_update'] = extra_information['LastModified']
+        file_stat_kwargs['version_id'] = extra_information.get('VersionId', '')
 
         # S3 objects require the response data retrieved from HeadObject
         # and ListObject
         if src_type == 's3':
             file_stat_kwargs['response_data'] = extra_information
 
-    def list_files(self, path, dir_op):
+    def list_files(self, path, dir_op, *args):
         """
         This function yields the appropriate local file or local files
         under a directory depending on if the operation is on a directory.
@@ -303,23 +308,28 @@ class FileGenerator(object):
             return True
         return False
 
-    def list_objects(self, s3_path, dir_op):
+    def list_objects(self, s3_path, dir_op, date=None):
         """
         This function yields the appropriate object or objects under a
         common prefix depending if the operation is on objects under a
         common prefix.  It yields the file's source path, size, and last
-        update.
+        update. Object version selection is capped by date.
         """
         # Short circuit path: if we are not recursing into the s3
         # bucket and a specific path was given, we can just yield
         # that path and not have to call any operation in s3.
         bucket, prefix = find_bucket_key(s3_path)
         if not dir_op and prefix:
-            yield self._list_single_object(s3_path)
+            yield self._list_single_object(s3_path, date=date)
         else:
-            lister = BucketLister(self._client)
-            extra_args = self.request_parameters.get('ListObjectsV2', {})
+            if date:
+                lister = VersionLister(self._client)
+                extra_args = {}
+            else:
+                lister = BucketLister(self._client)
+                extra_args = self.request_parameters.get('ListObjectsV2', {})
             for key in lister.list_objects(bucket=bucket, prefix=prefix,
+                                           date=date,
                                            page_size=self.page_size,
                                            extra_args=extra_args):
                 source_path, response_data = key
@@ -337,7 +347,7 @@ class FileGenerator(object):
                 else:
                     yield source_path, response_data
 
-    def _list_single_object(self, s3_path):
+    def _list_single_object(self, s3_path, date=None):
         # When we know we're dealing with a single object, we can avoid
         # a ListObjects operation (which causes concern for anyone setting
         # IAM policies with the smallest set of permissions needed) and
@@ -349,9 +359,18 @@ class FileGenerator(object):
             # object.
             return s3_path, {'Size': None, 'LastModified': None}
         bucket, key = find_bucket_key(s3_path)
+        params = {'Bucket': bucket, 'Key': key}
+        if date:
+            lister = VersionLister(self._client)
+            version_id = lister.date2version(bucket, key, date)
+            if version_id:
+                params['VersionId'] = version_id
+            else:
+                raise RuntimeError('Key %s doesn\'t have any versions for %s' %
+                    (key, date)
+                )
+        params.update(self.request_parameters.get('HeadObject', {}))
         try:
-            params = {'Bucket': bucket, 'Key': key}
-            params.update(self.request_parameters.get('HeadObject', {}))
             response = self._client.head_object(**params)
         except ClientError as e:
             # We want to try to give a more helpful error message.

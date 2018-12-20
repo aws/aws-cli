@@ -1677,6 +1677,9 @@ class TestFileWithSpaces(BaseS3IntegrationTest):
                                                    bucket_name))
         self.assert_no_errors(p)
         os.remove(filename)
+        self.assertTrue(
+            self.key_exists(bucket_name, key_name='with space.txt')
+        )
         # Now download the file back down locally.
         p = aws('s3 cp s3://%s/ %s --recursive' % (bucket_name,
                                                    self.files.rootdir))
@@ -1690,7 +1693,9 @@ class TestFileWithSpaces(BaseS3IntegrationTest):
         p = aws('s3 sync %s s3://%s/' % (self.files.rootdir,
                                          bucket_name))
         self.assert_no_errors(p)
-        time.sleep(1)
+        self.assertTrue(
+            self.key_exists(bucket_name, key_name='with space.txt')
+        )
         # Now syncing again should *not* trigger any uploads (i.e we should
         # get nothing on stdout).
         p2 = aws('s3 sync %s s3://%s/' % (self.files.rootdir,

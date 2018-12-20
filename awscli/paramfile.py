@@ -86,6 +86,11 @@ PARAMFILE_DISABLED = set([
     'rds.copy-db-snapshot.pre-signed-url',
     'rds.create-db-instance-read-replica.pre-signed-url',
 
+    'sagemaker.create-notebook-instance.default-code-repository',
+    'sagemaker.create-notebook-instance.additional-code-repositories',
+    'sagemaker.update-notebook-instance.default-code-repository',
+    'sagemaker.update-notebook-instance.additional-code-repositories',
+
     'serverlessapplicationrepository.create-application.home-page-url',
     'serverlessapplicationrepository.create-application.license-url',
     'serverlessapplicationrepository.create-application.readme-url',

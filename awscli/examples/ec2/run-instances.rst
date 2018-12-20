@@ -301,13 +301,29 @@ Command::
 
   aws ec2 run-instances --image-id ami-abc12345 --count 1 --instance-type t2.micro --key-name MyKeyPair --subnet-id subnet-6e7f829e --tag-specifications 'ResourceType=instance,Tags=[{Key=webserver,Value=production}]' 'ResourceType=volume,Tags=[{Key=cost-center,Value=cc123}]' 
   
-**To launch an instance with the credit option for CPU usage of ``unlimited``**
+**To launch an instance with the credit option for CPU usage of "unlimited"**
   
 You can launch a burstable performance instance (T2 and T3) and specify the credit option for CPU usage for the instance. If you do not specify the credit option, a T2 instance launches with the default ``standard`` credit option and a T3 instance launches with the default ``unlimited`` credit option. The following example launches a t2.micro instance with the ``unlimited`` credit option.
   
 Command::
   
   aws ec2 run-instances --image-id ami-abc12345 --count 1 --instance-type t2.micro --key-name MyKeyPair --credit-specification CpuCredits=unlimited
+  
+**To launch an instance with a custom number of vCPUs**
+
+This example launches an ``r4.4xlarge`` instance type with six vCPUs (three CPU cores multiplied by two threads per core).  
+  
+Command::
+
+  aws ec2 run-instances --image-id ami-1a2b3c4d --instance-type r4.4xlarge --cpu-options "CoreCount=3,ThreadsPerCore=2" --key-name MyKeyPair
+
+**To launch an instance and disable hyperthreading**
+
+This example launches an ``r4.4xlarge`` instance type and disables hyperthreading by specifying one thread per core and specifying the default number of CPU cores for the instance type (eight).
+
+Command::
+
+  aws ec2 run-instances --image-id ami-1a2b3c4d --instance-type r4.4xlarge --cpu-options "CoreCount=8,ThreadsPerCore=1" --key-name MyKeyPair 
   
 **To launch an instance into a partition placement group**
   

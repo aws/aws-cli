@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.16.80
+=======
+
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``firehose``: Update firehose command to latest version
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+
+
 1.16.79
 =======
 

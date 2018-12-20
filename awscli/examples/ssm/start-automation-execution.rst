@@ -4,7 +4,7 @@ This example executes a document.
 
 Command::
 
-  aws ssm start-automation-execution --document-name "AWS-UpdateLinuxAmi" --parameters "AutomationAssumeRole=arn:aws:iam::812345678901:role/SSMAutomationRole,SourceAmiId=ami-f173cc91,InstanceIamRole=EC2InstanceRole"
+  aws ssm start-automation-execution --document-name "AWS-UpdateLinuxAmi" --parameters "AutomationAssumeRole=arn:aws:iam::812345678901:role/SSMAutomationRole,SourceAmiId=ami-f173cc91,IamInstanceProfileName=EC2InstanceRole"
   
 Output::
 

@@ -35,7 +35,8 @@ def build_instance_groups(parsed_instance_groups):
         ig_config['InstanceRole'] = instance_group['InstanceGroupType'].upper()
 
         if 'BidPrice' in keys:
-            ig_config['BidPrice'] = instance_group['BidPrice']
+            if instance_group['BidPrice'] != 'OnDemandPrice':
+                ig_config['BidPrice'] = instance_group['BidPrice']
             ig_config['Market'] = constants.SPOT
         else:
             ig_config['Market'] = constants.ON_DEMAND

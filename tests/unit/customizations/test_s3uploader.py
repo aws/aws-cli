@@ -62,16 +62,22 @@ class TestS3Uploader(unittest.TestCase):
         # Setup mock to fake that file does not exist
         s3uploader.file_exists = Mock()
         s3uploader.file_exists.return_value = False
+        # set the metadata used by the uploader when uploading
+        artifact_metadata = {"key": "val"}
+        s3uploader.artifact_metadata = artifact_metadata
 
         upload_url = s3uploader.upload(file_name, remote_path)
         self.assertEquals(expected_upload_url, upload_url)
 
-        expected_encryption_args = {
-            "ServerSideEncryption": "AES256"
+        expected_extra_args = {
+            # expected encryption args
+            "ServerSideEncryption": "AES256",
+            # expected metadata
+            "Metadata": artifact_metadata
         }
         self.transfer_manager_mock.upload.assert_called_once_with(
                 file_name, self.bucket_name, remote_path_with_prefix,
-                expected_encryption_args, mock.ANY)
+                expected_extra_args, mock.ANY)
         s3uploader.file_exists.assert_called_once_with(remote_path_with_prefix)
 
     @patch("awscli.customizations.s3uploader.ProgressPercentage")
@@ -307,3 +313,12 @@ class TestS3Uploader(unittest.TestCase):
                 result,
                 "https://s3-{0}.amazonaws.com/{1}/{2}".format(
                         region, self.bucket_name, key))
+
+    def test_artifact_metadata_invalid_type(self):
+        prefix = "SomePrefix"
+        s3uploader = S3Uploader(
+            self.s3client, self.bucket_name, self.region, prefix, None, False,
+            self.transfer_manager_mock)
+        invalid_metadata = ["key", "val"]
+        with self.assertRaises(TypeError):
+            s3uploader.artifact_metadata = invalid_metadata

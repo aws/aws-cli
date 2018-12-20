@@ -17,7 +17,6 @@ from tests.unit.customizations.emr import test_constants as \
     CONSTANTS
 import json
 from mock import patch
-from botocore.vendored import requests
 
 INSTANCE_GROUPS_WITH_AUTOSCALING_POLICY = (
     ' InstanceGroupType=TASK,InstanceType=d2.xlarge,InstanceCount=2,'
@@ -257,6 +256,39 @@ class TestAddInstanceGroups(BaseAWSCommandParamsTest):
              'InstanceCount': 2,
              'Name': 'TaskGroup',
              'Market': 'ON_DEMAND',
+             'InstanceType': 'm1.large'
+             }
+        ]
+        result = {'JobFlowId': 'J-ABCD',
+                  'InstanceGroups': expected_instance_groups}
+
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_groups_spot_bidprice_equals_ondemandprice(self):
+        cmd = self.prefix + ' InstanceGroupType=MASTER,Name="MasterGroup",' +\
+            'InstanceCount=1,InstanceType=m1.large,BidPrice=OnDemandPrice'
+        cmd += ' InstanceGroupType=CORE,Name="CoreGroup",InstanceCount=1,' +\
+            'InstanceType=m1.xlarge,BidPrice=OnDemandPrice'
+        cmd += ' InstanceGroupType=TASK,Name="TaskGroup",InstanceCount=2,' +\
+            'InstanceType=m1.large,BidPrice=OnDemandPrice'
+
+        expected_instance_groups = [
+            {'InstanceRole': 'MASTER',
+             'InstanceCount': 1,
+             'Name': 'MasterGroup',
+             'Market': 'SPOT',
+             'InstanceType': 'm1.large'
+             },
+            {'InstanceRole': 'CORE',
+             'InstanceCount': 1,
+             'Name': 'CoreGroup',
+             'Market': 'SPOT',
+             'InstanceType': 'm1.xlarge'
+             },
+            {'InstanceRole': 'TASK',
+             'InstanceCount': 2,
+             'Name': 'TaskGroup',
+             'Market': 'SPOT',
              'InstanceType': 'm1.large'
              }
         ]

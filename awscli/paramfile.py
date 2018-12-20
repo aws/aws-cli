@@ -12,11 +12,15 @@
 # language governing permissions and limitations under the License.
 import logging
 import os
+import copy
 
-from botocore.vendored import requests
+from botocore.awsrequest import AWSRequest
+from botocore.httpsession import URLLib3Session
+from botocore.exceptions import ProfileNotFound
 from awscli.compat import six
 
 from awscli.compat import compat_open
+from awscli.argprocess import ParamError
 
 
 logger = logging.getLogger(__name__)
@@ -26,9 +30,12 @@ logger = logging.getLogger(__name__)
 # refers to an actual URI of some sort and we don't want to actually
 # download the content (i.e TemplateURL in cloudformation).
 PARAMFILE_DISABLED = set([
-    'apigateway.put-integration.uri',
-    'appstream2.create-stack.redirect-url',
-    'appstream2.update-stack.redirect-url',
+    'api-gateway.put-integration.uri',
+    'apigatewayv2.create-integration.integration-uri',
+    'appstream.create-stack.redirect-url',
+    'appstream.create-stack.feedback-url',
+    'appstream.update-stack.redirect-url',
+    'appstream.update-stack.feedback-url',
     'cloudformation.create-stack.template-url',
     'cloudformation.update-stack.template-url',
     'cloudformation.create-stack-set.template-url',
@@ -68,22 +75,26 @@ PARAMFILE_DISABLED = set([
 
     'iam.create-open-id-connect-provider.url',
 
-    'machinelearning.predict.predict-endpoint',
+    'machine-learning.predict.predict-endpoint',
+
+    'mediatailor.put-playback-configuration.ad-decision-server-url',
+    'mediatailor.put-playback-configuration.slate-ad-url',
+    'mediatailor.put-playback-configuration.video-content-source-url',
 
     'rds.copy-db-cluster-snapshot.pre-signed-url',
     'rds.create-db-cluster.pre-signed-url',
     'rds.copy-db-snapshot.pre-signed-url',
     'rds.create-db-instance-read-replica.pre-signed-url',
 
-    'serverlessrepo.create-application.home-page-url',
-    'serverlessrepo.create-application.license-url',
-    'serverlessrepo.create-application.readme-url',
-    'serverlessrepo.create-application.source-code-url',
-    'serverlessrepo.create-application.template-url',
-    'serverlessrepo.create-application-version.source-code-url',
-    'serverlessrepo.create-application-version.template-url',
-    'serverlessrepo.update-application.home-page-url',
-    'serverlessrepo.update-application.readme-url',
+    'serverlessapplicationrepository.create-application.home-page-url',
+    'serverlessapplicationrepository.create-application.license-url',
+    'serverlessapplicationrepository.create-application.readme-url',
+    'serverlessapplicationrepository.create-application.source-code-url',
+    'serverlessapplicationrepository.create-application.template-url',
+    'serverlessapplicationrepository.create-application-version.source-code-url',
+    'serverlessapplicationrepository.create-application-version.template-url',
+    'serverlessapplicationrepository.update-application.home-page-url',
+    'serverlessapplicationrepository.update-application.readme-url',
 
     'sqs.add-permission.queue-url',
     'sqs.change-message-visibility.queue-url',
@@ -113,7 +124,7 @@ PARAMFILE_DISABLED = set([
     'iot.create-job.document-source',
     'translate.translate-text.text',
 
-    'workdocs.create-notification-subscription.notification-endpoint',
+    'workdocs.create-notification-subscription.notification-endpoint'
 ])
 
 
@@ -121,7 +132,55 @@ class ResourceLoadingError(Exception):
     pass
 
 
-def get_paramfile(path):
+def register_uri_param_handler(session, **kwargs):
+    prefix_map = copy.deepcopy(LOCAL_PREFIX_MAP)
+    try:
+        fetch_url = session.get_scoped_config().get(
+            'cli_follow_urlparam', 'true') == 'true'
+    except ProfileNotFound:
+        # If a --profile is provided that does not exist, loading
+        # a value from get_scoped_config will crash the CLI.
+        # This function can be called as the first handler for
+        # the session-initialized event, which happens before a
+        # profile can be created, even if the command would have
+        # successfully created a profile. Instead of crashing here
+        # on a ProfileNotFound the CLI should just use 'none'.
+        fetch_url = True
+
+    if fetch_url:
+        prefix_map.update(REMOTE_PREFIX_MAP)
+
+    handler = URIArgumentHandler(prefix_map)
+    session.register('load-cli-arg', handler)
+
+
+class URIArgumentHandler(object):
+    def __init__(self, prefixes=None):
+        if prefixes is None:
+            prefixes = copy.deepcopy(LOCAL_PREFIX_MAP)
+            prefixes.update(REMOTE_PREFIX_MAP)
+        self._prefixes = prefixes
+
+    def __call__(self, event_name, param, value, **kwargs):
+        """Handler that supports param values from URIs."""
+        cli_argument = param
+        qualified_param_name = '.'.join(event_name.split('.')[1:])
+        if qualified_param_name in PARAMFILE_DISABLED or \
+                getattr(cli_argument, 'no_paramfile', None):
+            return
+        else:
+            return self._check_for_uri_param(cli_argument, value)
+
+    def _check_for_uri_param(self, param, value):
+        if isinstance(value, list) and len(value) == 1:
+            value = value[0]
+        try:
+            return get_paramfile(value, self._prefixes)
+        except ResourceLoadingError as e:
+            raise ParamError(param.cli_name, six.text_type(e))
+
+
+def get_paramfile(path, cases):
     """Load parameter based on a resource URI.
 
     It is possible to pass parameters to operations by referring
@@ -135,6 +194,10 @@ def get_paramfile(path):
     :param path: The resource URI, e.g. file://foo.txt.  This value
         may also be a non resource URI, in which case ``None`` is returned.
 
+    :type cases: dict
+    :param cases: A dictionary of URI prefixes to function mappings
+        that a parameter is checked against.
+
     :return: The loaded value associated with the resource URI.
         If the provided ``path`` is not a resource URI, then a
         value of ``None`` is returned.
@@ -142,7 +205,7 @@ def get_paramfile(path):
     """
     data = None
     if isinstance(path, six.string_types):
-        for prefix, function_spec in PREFIX_MAP.items():
+        for prefix, function_spec in cases.items():
             if path.startswith(prefix):
                 function, kwargs = function_spec
                 data = function(prefix, path, **kwargs)
@@ -166,7 +229,8 @@ def get_file(prefix, path, mode):
 
 def get_uri(prefix, uri):
     try:
-        r = requests.get(uri)
+        session = URLLib3Session()
+        r = session.send(AWSRequest('GET', uri).prepare())
         if r.status_code == 200:
             return r.text
         else:
@@ -177,9 +241,13 @@ def get_uri(prefix, uri):
         raise ResourceLoadingError('Unable to retrieve %s: %s' % (uri, e))
 
 
-PREFIX_MAP = {
+LOCAL_PREFIX_MAP = {
     'file://': (get_file, {'mode': 'r'}),
     'fileb://': (get_file, {'mode': 'rb'}),
+}
+
+
+REMOTE_PREFIX_MAP = {
     'http://': (get_uri, {}),
     'https://': (get_uri, {}),
 }

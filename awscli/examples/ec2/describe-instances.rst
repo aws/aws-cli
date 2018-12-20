@@ -26,14 +26,17 @@ Command::
 
 Command::
 
-  aws ec2 describe-instances --instance-id i-1234567890abcdef0 --query 'Reservations[*].Instances[*].[ImageId,Tags[*]]'
+  aws ec2 describe-instances --instance-id i-1234567890abcdef0 --query "Reservations[*].Instances[*].[ImageId,Tags[*]]"
 
 **To describe all instances, and return all instance IDs and AMI IDs, but only show the tag value where the tag key is "Application".**
 
-Command::
+Linux Command::
 
   aws ec2 describe-instances --query 'Reservations[*].Instances[*].[InstanceId,ImageId,Tags[?Key==`Application`].Value]'
 
+Windows Command::
+
+  aws ec2 describe-instances --query "Reservations[*].Instances[*].[InstanceId,ImageId,Tags[?Key==`Application`].Value]"
 
 **To describe all EC2 instances that have an instance type of m1.small or m1.medium that are also in the us-west-2c Availability Zone**
 

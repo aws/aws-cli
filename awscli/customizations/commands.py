@@ -366,9 +366,6 @@ class BasicDocHandler(OperationDocumentEventHandler):
         super(BasicDocHandler, self).__init__(help_command)
         self.doc = help_command.doc
 
-    def build_translation_map(self):
-        return {}
-
     def doc_description(self, help_command, **kwargs):
         self.doc.style.h2('Description')
         self.doc.write(help_command.description)

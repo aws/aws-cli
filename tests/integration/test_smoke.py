@@ -11,7 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import re
+import os
 import random
+import time
 from nose.tools import assert_equal
 
 from awscli.testutils import aws
@@ -108,13 +110,34 @@ ERROR_COMMANDS = [
 ]
 
 
+# These services require a particular region to run.
+REGION_OVERRIDES = {
+    'route53domains': 'us-east-1'
+}
+
+
+def _aws(command_string, max_attempts=1, delay=5, target_rc=0):
+    service = command_string.split()[0]
+    env = None
+    if service in REGION_OVERRIDES:
+        env = os.environ.copy()
+        env['AWS_DEFAULT_REGION'] = REGION_OVERRIDES[service]
+
+    for _ in range(max_attempts - 1):
+        result = aws(command_string, env_vars=env)
+        if result.rc == target_rc:
+            return result
+        time.sleep(delay)
+    return aws(command_string, env_vars=env)
+
+
 def test_can_make_success_request():
     for cmd in COMMANDS:
         yield _run_successful_aws_command, cmd
 
 
 def _run_successful_aws_command(command_string):
-    result = aws(command_string)
+    result = _aws(command_string, max_attempts=5, delay=5, target_rc=0)
     assert_equal(result.rc, 0)
     assert_equal(result.stderr, '')
 
@@ -126,7 +149,7 @@ def test_display_error_message():
 
 
 def _run_error_aws_command(command_string):
-    result = aws(command_string)
+    result = _aws(command_string, target_rc=255)
     assert_equal(result.rc, 255)
     error_message = re.compile(
         'An error occurred \(.+\) when calling the \w+ operation: \w+')

@@ -218,6 +218,7 @@ class Resource(object):
     Base class representing a CloudFormation resource that can be exported
     """
 
+    RESOURCE_TYPE = None
     PROPERTY_NAME = None
     PACKAGE_NULL_PROPERTY = True
     # Set this property to True in base class if you want the exporter to zip
@@ -306,11 +307,13 @@ class ResourceWithS3UrlDict(Resource):
 
 
 class ServerlessFunctionResource(Resource):
+    RESOURCE_TYPE = "AWS::Serverless::Function"
     PROPERTY_NAME = "CodeUri"
     FORCE_ZIP = True
 
 
 class ServerlessApiResource(Resource):
+    RESOURCE_TYPE = "AWS::Serverless::Api"
     PROPERTY_NAME = "DefinitionUri"
     # Don't package the directory if DefinitionUri is omitted.
     # Necessary to support DefinitionBody
@@ -318,10 +321,31 @@ class ServerlessApiResource(Resource):
 
 
 class GraphQLSchemaResource(Resource):
+    RESOURCE_TYPE = "AWS::AppSync::GraphQLSchema"
     PROPERTY_NAME = "DefinitionS3Location"
+    # Don't package the directory if DefinitionS3Location is omitted.
+    # Necessary to support Definition
+    PACKAGE_NULL_PROPERTY = False
+
+
+class AppSyncResolverRequestTemplateResource(Resource):
+    RESOURCE_TYPE = "AWS::AppSync::Resolver"
+    PROPERTY_NAME = "RequestMappingTemplateS3Location"
+    # Don't package the directory if RequestMappingTemplateS3Location is omitted.
+    # Necessary to support RequestMappingTemplate
+    PACKAGE_NULL_PROPERTY = False
+
+
+class AppSyncResolverResponseTemplateResource(Resource):
+    RESOURCE_TYPE = "AWS::AppSync::Resolver"
+    PROPERTY_NAME = "ResponseMappingTemplateS3Location"
+    # Don't package the directory if ResponseMappingTemplateS3Location is omitted.
+    # Necessary to support ResponseMappingTemplate
+    PACKAGE_NULL_PROPERTY = False
 
 
 class LambdaFunctionResource(ResourceWithS3UrlDict):
+    RESOURCE_TYPE = "AWS::Lambda::Function"
     PROPERTY_NAME = "Code"
     BUCKET_NAME_PROPERTY = "S3Bucket"
     OBJECT_KEY_PROPERTY = "S3Key"
@@ -330,6 +354,7 @@ class LambdaFunctionResource(ResourceWithS3UrlDict):
 
 
 class ApiGatewayRestApiResource(ResourceWithS3UrlDict):
+    RESOURCE_TYPE = "AWS::ApiGateway::RestApi"
     PROPERTY_NAME = "BodyS3Location"
     PACKAGE_NULL_PROPERTY = False
     BUCKET_NAME_PROPERTY = "Bucket"
@@ -338,10 +363,38 @@ class ApiGatewayRestApiResource(ResourceWithS3UrlDict):
 
 
 class ElasticBeanstalkApplicationVersion(ResourceWithS3UrlDict):
+    RESOURCE_TYPE = "AWS::ElasticBeanstalk::ApplicationVersion"
     PROPERTY_NAME = "SourceBundle"
     BUCKET_NAME_PROPERTY = "S3Bucket"
     OBJECT_KEY_PROPERTY = "S3Key"
     VERSION_PROPERTY = None
+
+
+class LambdaLayerVersionResource(ResourceWithS3UrlDict):
+    RESOURCE_TYPE = "AWS::Lambda::LayerVersion"
+    PROPERTY_NAME = "Content"
+    BUCKET_NAME_PROPERTY = "S3Bucket"
+    OBJECT_KEY_PROPERTY = "S3Key"
+    VERSION_PROPERTY = "S3ObjectVersion"
+    FORCE_ZIP = True
+
+
+class ServerlessLayerVersionResource(Resource):
+    RESOURCE_TYPE = "AWS::Serverless::LayerVersion"
+    PROPERTY_NAME = "ContentUri"
+    FORCE_ZIP = True
+
+
+class ServerlessRepoApplicationReadme(Resource):
+    RESOURCE_TYPE = "AWS::ServerlessRepo::Application"
+    PROPERTY_NAME = "ReadmeUrl"
+    PACKAGE_NULL_PROPERTY = False
+
+
+class ServerlessRepoApplicationLicense(Resource):
+    RESOURCE_TYPE = "AWS::ServerlessRepo::Application"
+    PROPERTY_NAME = "LicenseUrl"
+    PACKAGE_NULL_PROPERTY = False
 
 
 class CloudFormationStackResource(Resource):
@@ -349,6 +402,7 @@ class CloudFormationStackResource(Resource):
     Represents CloudFormation::Stack resource that can refer to a nested
     stack template via TemplateURL property.
     """
+    RESOURCE_TYPE = "AWS::CloudFormation::Stack"
     PROPERTY_NAME = "TemplateURL"
 
     def __init__(self, uploader):
@@ -393,15 +447,47 @@ class CloudFormationStackResource(Resource):
                     parts["Key"], parts.get("Version", None))
 
 
-EXPORT_DICT = {
-    "AWS::Serverless::Function": ServerlessFunctionResource,
-    "AWS::Serverless::Api": ServerlessApiResource,
-    "AWS::AppSync::GraphQLSchema": GraphQLSchemaResource,
-    "AWS::ApiGateway::RestApi": ApiGatewayRestApiResource,
-    "AWS::Lambda::Function": LambdaFunctionResource,
-    "AWS::ElasticBeanstalk::ApplicationVersion":
-        ElasticBeanstalkApplicationVersion,
-    "AWS::CloudFormation::Stack": CloudFormationStackResource
+class ServerlessApplicationResource(CloudFormationStackResource):
+    """
+    Represents Serverless::Application resource that can refer to a nested
+    app template via Location property.
+    """
+    RESOURCE_TYPE = "AWS::Serverless::Application"
+    PROPERTY_NAME = "Location"
+
+
+RESOURCES_EXPORT_LIST = [
+    ServerlessFunctionResource,
+    ServerlessApiResource,
+    GraphQLSchemaResource,
+    AppSyncResolverRequestTemplateResource,
+    AppSyncResolverResponseTemplateResource,
+    ApiGatewayRestApiResource,
+    LambdaFunctionResource,
+    ElasticBeanstalkApplicationVersion,
+    CloudFormationStackResource,
+    ServerlessApplicationResource,
+    ServerlessLayerVersionResource,
+    LambdaLayerVersionResource,
+]
+
+METADATA_EXPORT_LIST = [
+    ServerlessRepoApplicationReadme,
+    ServerlessRepoApplicationLicense
+]
+
+
+def include_transform_export_handler(template_dict, uploader):
+    if template_dict.get("Name", None) != "AWS::Include":
+        return template_dict
+    include_location = template_dict.get("Parameters", {}).get("Location", {})
+    if (is_local_file(include_location)):
+        template_dict["Parameters"]["Location"] = uploader.upload_with_dedup(include_location)
+    return template_dict
+
+
+GLOBAL_EXPORT_DICT = {
+    "Fn::Transform": include_transform_export_handler
 }
 
 
@@ -411,7 +497,8 @@ class Template(object):
     """
 
     def __init__(self, template_path, parent_dir, uploader,
-                 resources_to_export=EXPORT_DICT):
+                 resources_to_export=RESOURCES_EXPORT_LIST,
+                 metadata_to_export=METADATA_EXPORT_LIST):
         """
         Reads the template and makes it ready for export
         """
@@ -430,7 +517,47 @@ class Template(object):
         self.template_dict = yaml_parse(template_str)
         self.template_dir = template_dir
         self.resources_to_export = resources_to_export
+        self.metadata_to_export = metadata_to_export
         self.uploader = uploader
+
+    def export_global_artifacts(self, template_dict):
+        """
+        Template params such as AWS::Include transforms are not specific to
+        any resource type but contain artifacts that should be exported,
+        here we iterate through the template dict and export params with a
+        handler defined in GLOBAL_EXPORT_DICT
+        """
+        for key, val in template_dict.items():
+            if key in GLOBAL_EXPORT_DICT:
+                template_dict[key] = GLOBAL_EXPORT_DICT[key](val, self.uploader)
+            elif isinstance(val, dict):
+                self.export_global_artifacts(val)
+            elif isinstance(val, list):
+                for item in val:
+                    if isinstance(item, dict):
+                        self.export_global_artifacts(item)
+        return template_dict
+
+    def export_metadata(self, template_dict):
+        """
+        Exports the local artifacts referenced by the metadata section in
+        the given template to an s3 bucket.
+
+        :return: The template with references to artifacts that have been
+        exported to s3.
+        """
+        if "Metadata" not in template_dict:
+            return template_dict
+
+        for metadata_type, metadata_dict in template_dict["Metadata"].items():
+            for exporter_class in self.metadata_to_export:
+                if exporter_class.RESOURCE_TYPE != metadata_type:
+                    continue
+
+                exporter = exporter_class(self.uploader)
+                exporter.export(metadata_type, metadata_dict, self.template_dir)
+
+        return template_dict
 
     def export(self):
         """
@@ -440,18 +567,24 @@ class Template(object):
         :return: The template with references to artifacts that have been
         exported to s3.
         """
+        self.template_dict = self.export_metadata(self.template_dict)
+
         if "Resources" not in self.template_dict:
             return self.template_dict
+
+        self.template_dict = self.export_global_artifacts(self.template_dict)
 
         for resource_id, resource in self.template_dict["Resources"].items():
 
             resource_type = resource.get("Type", None)
             resource_dict = resource.get("Properties", None)
 
-            if resource_type in self.resources_to_export:
+            for exporter_class in self.resources_to_export:
+                if exporter_class.RESOURCE_TYPE != resource_type:
+                    continue
+
                 # Export code resources
-                exporter = self.resources_to_export[resource_type](
-                        self.uploader)
+                exporter = exporter_class(self.uploader)
                 exporter.export(resource_id, resource_dict, self.template_dir)
 
         return self.template_dict

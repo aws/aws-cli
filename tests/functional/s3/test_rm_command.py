@@ -55,7 +55,7 @@ class TestRmCommand(BaseS3TransferCommandTest):
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                ('ListObjects', {
+                ('ListObjectsV2', {
                     'Bucket': 'mybucket',
                     'Prefix': '',
                     'EncodingType': 'url',

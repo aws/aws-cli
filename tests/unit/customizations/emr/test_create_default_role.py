@@ -13,7 +13,7 @@
 import mock
 
 from botocore.compat import json
-from botocore.vendored import requests
+from botocore.awsrequest import AWSResponse
 from botocore.exceptions import ClientError
 
 import awscli.customizations.emr.emrutils as emrutils
@@ -77,8 +77,7 @@ CONSTRUCTED_RESULT_OUTPUT = [
     }
 ]
 
-http_response = requests.models.Response()
-http_response.status_code = 200
+http_response = AWSResponse(None, 200, {}, None)
 
 CN_EC2_ROLE_ARN = ('arn:aws-cn:iam::aws:policy/service-role/'
                    'AmazonElasticMapReduceforEC2Role')

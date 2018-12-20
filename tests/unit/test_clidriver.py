@@ -20,7 +20,7 @@ import sys
 import mock
 import nose
 from awscli.compat import six
-from botocore.vendored.requests import models
+from botocore.awsrequest import AWSResponse
 from botocore.exceptions import NoCredentialsError
 from botocore.compat import OrderedDict
 import botocore.model
@@ -32,6 +32,7 @@ from awscli.clidriver import CustomArgument
 from awscli.clidriver import CLICommand
 from awscli.clidriver import ServiceCommand
 from awscli.clidriver import ServiceOperation
+from awscli.paramfile import URIArgumentHandler
 from awscli.customizations.commands import BasicCommand
 from awscli import formatter
 from awscli.argparser import HELP_BLURB
@@ -63,7 +64,6 @@ GET_DATA = {
                 "metavar": "profile_name"
             },
             "region": {
-                "choices": "{provider}/_regions",
                 "metavar": "region_name"
             },
             "endpoint-url": {
@@ -196,6 +196,7 @@ class FakeSession(object):
         self.profile = None
         self.stream_logger_args = None
         self.credentials = 'fakecredentials'
+        self.session_vars = {}
 
     def register(self, event_name, handler):
         self.emitter.register(event_name, handler)
@@ -226,7 +227,9 @@ class FakeSession(object):
         return GET_DATA[name]
 
     def get_config_variable(self, name):
-        return GET_VARIABLE[name]
+        if name in GET_VARIABLE:
+            return GET_VARIABLE[name]
+        return self.session_vars[name]
 
     def get_service_model(self, name, api_version=None):
         return botocore.model.ServiceModel(
@@ -244,6 +247,8 @@ class FakeSession(object):
     def set_config_variable(self, name, value):
         if name == 'profile':
             self.profile = value
+        else:
+            self.session_vars[name] = value
 
 
 class FakeCommand(BasicCommand):
@@ -287,6 +292,12 @@ class TestCliDriver(unittest.TestCase):
         driver = CLIDriver(session=self.session)
         driver.main('s3 list-objects --bucket foo --profile foo'.split())
         self.assertEqual(driver.session.profile, 'foo')
+
+    def test_region_is_set_for_session(self):
+        driver = CLIDriver(session=self.session)
+        driver.main('s3 list-objects --bucket foo --region us-east-2'.split())
+        self.assertEqual(
+            driver.session.get_config_variable('region'), 'us-east-2')
 
     def test_error_logger(self):
         driver = CLIDriver(session=self.session)
@@ -510,51 +521,60 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(len(args_seen), 1)
         self.assertEqual(args_seen[0].unknown_arg, 'foo')
 
-    def test_custom_arg_paramfile(self):
-        with mock.patch('awscli.handlers.uri_param',
-                        return_value=None) as uri_param_mock:
-            driver = create_clidriver()
-            driver.session.register(
-                'building-argument-table', self.inject_new_param)
+    @mock.patch('awscli.paramfile.URIArgumentHandler',
+                spec=URIArgumentHandler)
+    def test_custom_arg_paramfile(self, mock_handler):
+        mock_paramfile = mock.Mock(autospec=True)
+        mock_paramfile.return_value = None
+        mock_handler.return_value = mock_paramfile
 
-            self.patch_make_request()
-            rc = driver.main(
-                'ec2 describe-instances --unknown-arg file:///foo'.split())
+        driver = create_clidriver()
+        driver.session.register(
+            'building-argument-table', self.inject_new_param)
 
-            self.assertEqual(rc, 0)
+        self.patch_make_request()
+        rc = driver.main(
+            'ec2 describe-instances --unknown-arg file:///foo'.split())
 
-            # Make sure uri_param was called
-            uri_param_mock.assert_any_call(
-                event_name='load-cli-arg.ec2.describe-instances.unknown-arg',
-                operation_name='describe-instances',
-                param=mock.ANY,
-                service_name='ec2',
-                value='file:///foo',
-            )
-            # Make sure it was called with our passed-in URI
-            self.assertEqual('file:///foo',
-                             uri_param_mock.call_args_list[-1][1]['value'])
+        self.assertEqual(rc, 0)
 
-    def test_custom_command_paramfile(self):
-        with mock.patch('awscli.handlers.uri_param',
-                        return_value=None) as uri_param_mock:
-            driver = create_clidriver()
-            driver.session.register(
-                'building-command-table', self.inject_command)
+        # Make sure uri_param was called
+        mock_paramfile.assert_any_call(
+            event_name='load-cli-arg.ec2.describe-instances.unknown-arg',
+            operation_name='describe-instances',
+            param=mock.ANY,
+            service_name='ec2',
+            value='file:///foo',
+        )
+        # Make sure it was called with our passed-in URI
+        self.assertEqual(
+            'file:///foo',
+            mock_paramfile.call_args_list[-1][1]['value'])
 
-            self.patch_make_request()
-            rc = driver.main(
-                'ec2 foo --bar file:///foo'.split())
+    @mock.patch('awscli.paramfile.URIArgumentHandler',
+                spec=URIArgumentHandler)
+    def test_custom_command_paramfile(self, mock_handler):
+        mock_paramfile = mock.Mock(autospec=True)
+        mock_paramfile.return_value = None
+        mock_handler.return_value = mock_paramfile
 
-            self.assertEqual(rc, 0)
+        driver = create_clidriver()
+        driver.session.register(
+            'building-command-table', self.inject_command)
 
-            uri_param_mock.assert_any_call(
-                event_name='load-cli-arg.custom.foo.bar',
-                operation_name='foo',
-                param=mock.ANY,
-                service_name='custom',
-                value='file:///foo',
-            )
+        self.patch_make_request()
+        rc = driver.main(
+            'ec2 foo --bar file:///foo'.split())
+
+        self.assertEqual(rc, 0)
+
+        mock_paramfile.assert_any_call(
+            event_name='load-cli-arg.custom.foo.bar',
+            operation_name='foo',
+            param=mock.ANY,
+            service_name='custom',
+            value='file:///foo',
+        )
 
     @unittest.skip
     def test_custom_arg_no_paramfile(self):
@@ -707,8 +727,7 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
         self.endpoint = self.create_endpoint.return_value
         self.endpoint.host = 'https://example.com'
         # Have the endpoint give a dummy empty response.
-        http_response = models.Response()
-        http_response.status_code = 200
+        http_response = AWSResponse(None, 200, {}, None)
         self.endpoint.make_request.return_value = (
             http_response, {})
 
@@ -802,7 +821,7 @@ class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):
         error_msg = ("Error parsing parameter '--filters': "
                      "Unable to retrieve http://does/not/exist.json: "
                      "received non 200 status code of 404")
-        with mock.patch('botocore.vendored.requests.get') as get:
+        with mock.patch('awscli.paramfile.URLLib3Session.send') as get:
             get.return_value.status_code = 404
             self.assert_params_for_cmd(
                 'ec2 describe-instances --filters http://does/not/exist.json',

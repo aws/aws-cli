@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.81
+=======
+
+* api-change:``dynamodb``: Update dynamodb command to latest version
+* api-change:``stepfunctions``: Update stepfunctions command to latest version
+* api-change:``sms-voice``: Update sms-voice command to latest version
+* api-change:``acm-pca``: Update acm-pca command to latest version
+
+
 1.16.80
 =======
 

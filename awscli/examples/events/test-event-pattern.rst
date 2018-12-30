@@ -8,4 +8,4 @@ This example tests whether the pattern "source:com.mycompany.myapp" matches the 
 
 Files can also be used instead of inline JSON::
 
- aws events test-event-pattern --event-pattern "$(< pattern.json)" --event "$(< event.json)"
+ aws events test-event-pattern --event-pattern file://pattern.json --event file://event.json

@@ -45,6 +45,10 @@ def initialize(cli):
         'building-argument-table.deploy.create-deployment',
         modify_revision_arguments
     )
+    cli.register(
+        'building-command-table.deploy',
+        alias_commands
+    )
 
 
 def change_name(command_table, session, **kwargs):
@@ -52,6 +56,19 @@ def change_name(command_table, session, **kwargs):
     Change all existing 'aws codedeploy' commands to 'aws deploy' commands.
     """
     utils.rename_command(command_table, 'codedeploy', 'deploy')
+
+
+def alias_commands(command_table, **kwargs):
+    utils.make_hidden_command_alias(
+        command_table,
+        existing_name='list-github-account-token-names',
+        alias_name='list-git-hub-account-token-names',
+    )
+    utils.make_hidden_command_alias(
+        command_table,
+        existing_name='delete-github-account-token',
+        alias_name='delete-git-hub-account-token',
+    )
 
 
 def inject_commands(command_table, session, **kwargs):

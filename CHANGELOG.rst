@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.83
+=======
+
+* api-change:``iotanalytics``: Update iotanalytics command to latest version
+
+
 1.16.82
 =======
 

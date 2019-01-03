@@ -60,7 +60,11 @@ def yaml_dump(dict_to_dump):
     :param dict_to_dump:
     :return:
     """
-    return yaml.safe_dump(dict_to_dump, default_flow_style=False)
+    return yaml.dump(
+        dict_to_dump,
+        default_flow_style=False,
+        Dumper=FlattenAliasDumper,
+    )
 
 
 def yaml_parse(yamlstr):
@@ -74,3 +78,8 @@ def yaml_parse(yamlstr):
         yaml.SafeLoader.add_multi_constructor(
             "!", intrinsics_multi_constructor)
         return yaml.safe_load(yamlstr)
+
+
+class FlattenAliasDumper(yaml.SafeDumper):
+    def ignore_aliases(self, data):
+        return True

@@ -69,9 +69,10 @@ class TestYaml(unittest.TestCase):
         self.assertEquals(output, output_again)
 
     def test_yaml_getatt(self):
-        # This is an invalid syntax for !GetAtt. But make sure the code does not crash when we encouter this syntax
-        # Let CloudFormation interpret this value at runtime
-        input = """
+        # This is an invalid syntax for !GetAtt. But make sure the code does
+        # not crash when we encounter this syntax. Let CloudFormation
+        # interpret this value at runtime
+        yaml_input = """
         Resource:
             Key: !GetAtt ["a", "b"]
         """
@@ -85,11 +86,37 @@ class TestYaml(unittest.TestCase):
             }
         }
 
-        actual_output = yaml_parse(input)
+        actual_output = yaml_parse(yaml_input)
         self.assertEquals(actual_output, output)
 
     def test_parse_json_with_tabs(self):
         template = '{\n\t"foo": "bar"\n}'
         output = yaml_parse(template)
         self.assertEqual(output, {'foo': 'bar'})
+
+    def test_unroll_yaml_anchors(self):
+        properties = {
+            "Foo": "bar",
+            "Spam": "eggs",
+        }
+        template = {
+            "Resources": {
+                "Resource1": {"Properties": properties},
+                "Resource2": {"Properties": properties}
+            }
+        }
+
+        expected = (
+            'Resources:\n'
+            '  Resource1:\n'
+            '    Properties:\n'
+            '      Foo: bar\n'
+            '      Spam: eggs\n'
+            '  Resource2:\n'
+            '    Properties:\n'
+            '      Foo: bar\n'
+            '      Spam: eggs\n'
+        )
+        actual = yaml_dump(template)
+        self.assertEqual(actual, expected)
 

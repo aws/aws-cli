@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.82
+=======
+
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+
+
 1.16.81
 =======
 

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.84
+=======
+
+* api-change:``ecs``: Update ecs command to latest version
+* enhancment:cloudformation: Unroll yaml anchors in cloudformation package.
+* api-change:``devicefarm``: Update devicefarm command to latest version
+
+
 1.16.83
 =======
 

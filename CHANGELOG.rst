@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.85
+=======
+
+* api-change:``appmesh``: Update appmesh command to latest version
+
+
 1.16.84
 =======
 

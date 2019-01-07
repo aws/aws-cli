@@ -58,7 +58,7 @@ setup_options = dict(
         ]
     },
     license="Apache License 2.0",
-    classifiers=(
+    classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
@@ -74,7 +74,7 @@ setup_options = dict(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
-    ),
+    ],
 )
 
 if 'py2exe' in sys.argv:

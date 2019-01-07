@@ -5,7 +5,7 @@ This example demonstrates how to update triggers named 'MyFirstTrigger' and 'MyS
 
 Command::
 
-  aws codecommit put-repository-triggers --repository-name MyDemoRepo file://MyTriggers.json
+  aws codecommit put-repository-triggers --repository-name MyDemoRepo --cli-input-json file://MyTriggers.json
   
   JSON file sample contents:
   {

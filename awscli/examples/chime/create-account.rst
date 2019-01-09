@@ -7,7 +7,6 @@ Command::
   aws chime create-account --name example
 
 Output::
-
 {
     "Account": {
         "AwsAccountId": "111122223333",

@@ -7,7 +7,6 @@ Command::
   aws chime get-account --account-id 12a3456b-7c89-012d-3456-78901e23fg45
 
 Output::
-
 {
     "Account": {
         "AwsAccountId": "111122223333",

@@ -7,7 +7,6 @@ Command::
   aws chime list-accounts
 
 Output::
-
 {
     "Accounts": [
         {

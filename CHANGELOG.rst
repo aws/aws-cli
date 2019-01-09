@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.86
+=======
+
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``docdb``: Update docdb command to latest version
+
+
 1.16.85
 =======
 

@@ -7,7 +7,8 @@ Command::
   aws chime list-users --account-id 12a3456b-7c89-012d-3456-78901e23fg45
 
 Output::
-{
+
+  {
     "Users": [
         {
             "UserId": "1ab2345c-67de-8901-f23g-45h678901j2k",
@@ -46,4 +47,4 @@ Output::
             "RegisteredOn": "2018-12-20T18:47:15.390Z"
         }
     ]
-}
+  }

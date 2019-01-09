@@ -7,7 +7,8 @@ Command::
   aws chime list-accounts
 
 Output::
-{
+
+  {
     "Accounts": [
         {
             "AwsAccountId": "111122223333",
@@ -34,4 +35,4 @@ Output::
             ]
         }
     ]
-}
+  }

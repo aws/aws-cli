@@ -256,7 +256,7 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
                            "Successfully created deployment " +
                            self.deployment_id + "\n"
                            "Waiting for " + self.deployment_id +
-                           " to succeed (will timeout after " + custom_timeout
+                           " to succeed (will wait up to " + custom_timeout
                            + " minutes)...\nSuccessfully deployed "
                            + self.task_definition_arn + " to service '"
                            + self.service_name + "'\n")

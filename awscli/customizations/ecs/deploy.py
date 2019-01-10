@@ -212,7 +212,7 @@ class CodeDeployer():
     MSG_WAITING = ("Waiting for {deployment_id} to "
                    "succeed{custom_wait_msg}...\n")
 
-    MSG_CUSTOM_WAIT = " (will timeout after {wait} minutes)"
+    MSG_CUSTOM_WAIT = " (will wait up to {wait} minutes)"
 
     def __init__(self, cd_client, appspec_dict):
         self._client = cd_client
@@ -295,20 +295,24 @@ class CodeDeployer():
         waiter = self._client.get_waiter("deployment_successful")
         wait_msg = ""
 
-        if wait_min <= 30 or wait_min > MAX_WAIT_MIN:
-            self._show_deploy_wait_msg(id, wait_msg)
-            waiter.wait(deploymentId=id)
-        else:
+        if wait_min > 30 and wait_min < MAX_WAIT_MIN:
             wait_msg = self.MSG_CUSTOM_WAIT.format(wait=wait_min)
-            delay_sec = DEFAULT_DELAY_SEC
-            max_attempts = (wait_min * 60)/delay_sec
-            config = {
-                'Delay': delay_sec,
-                'MaxAttempts': max_attempts
-            }
 
-            self._show_deploy_wait_msg(id, wait_msg)
-            waiter.wait(deploymentId=id, WaiterConfig=config)
+        elif wait_min > MAX_WAIT_MIN:
+            wait_min = MAX_WAIT_MIN
+            wait_msg = self.MSG_CUSTOM_WAIT.format(wait=wait_min)
+        else:
+            wait_min = 30
+
+        delay_sec = DEFAULT_DELAY_SEC
+        max_attempts = (wait_min * 60) / delay_sec
+        config = {
+            'Delay': delay_sec,
+            'MaxAttempts': max_attempts
+        }
+
+        self._show_deploy_wait_msg(id, wait_msg)
+        waiter.wait(deploymentId=id, WaiterConfig=config)
 
     def _show_deploy_wait_msg(self, id, wait_msg):
         sys.stdout.write(

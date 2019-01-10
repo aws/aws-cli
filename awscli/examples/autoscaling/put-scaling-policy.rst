@@ -15,6 +15,6 @@ The output includes the ARN of the policy. The following is example output::
         "PolicyARN": "arn:aws:autoscaling:us-west-2:123456789012:scalingPolicy:2233f3d7-6290-403b-b632-93c553560106:autoScalingGroupName/my-auto-scaling-group:policyName/ScaleIn"
     }
 
-For more information, see `Dynamic Scaling`_ in the *Auto Scaling Developer Guide*.
+For more information, see `Dynamic Scaling`_ in the *Amazon EC2 Auto Scaling User Guide*.
 
-.. _`Dynamic Scaling`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/as-scale-based-on-demand.html
+.. _`Dynamic Scaling`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scale-based-on-demand.html

@@ -10,12 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import json
 import sys
 
+# OrderedDict was introduced in Python 2.7, if we're in 2.6 import
+# from the ordereddict library, and use simplejson to get object_pairs_hook.
 if sys.version_info[:2] == (2, 6):
+    import simplejson as json
     from ordereddict import OrderedDict
 else:
+    import json
     from collections import OrderedDict
 
 import yaml

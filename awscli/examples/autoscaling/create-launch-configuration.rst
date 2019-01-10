@@ -12,10 +12,6 @@ This example creates a launch configuration based on an existing instance. In ad
 
     aws autoscaling create-launch-configuration --launch-configuration-name my-launch-config --key-name my-key-pair --instance-id i-7e13c876 --security-groups sg-eb2af88e --instance-type m1.small --user-data file://myuserdata.txt --instance-monitoring Enabled=true --no-ebs-optimized --no-associate-public-ip-address --placement-tenancy dedicated --iam-instance-profile my-autoscaling-role
 
-This example creates a launch configuration that uses Spot Instances::
-
-    aws autoscaling create-launch-configuration --launch-configuration-name my-launch-config --image-id ami-c6169af6 --instance-type m1.medium --spot-price "0.50"
-
 Add the following parameter to add an Amazon EBS volume with the device name ``/dev/sdh`` and a volume size of 100.
 
 Parameter::
@@ -33,3 +29,7 @@ Add the following parameter to omit a device included on the instance (for examp
 Parameter::
 
     --block-device-mappings "[{\"DeviceName\": \"/dev/sdf\",\"NoDevice\":\"\"}]"
+
+This example creates a launch configuration that uses Spot Instances::
+
+    aws autoscaling create-launch-configuration --launch-configuration-name my-launch-config --image-id ami-c6169af6 --instance-type m1.medium --spot-price "0.50"

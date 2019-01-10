@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.87
+=======
+
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``codedeploy``: Update codedeploy command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.16.86
 =======
 

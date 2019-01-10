@@ -13,8 +13,15 @@
 import mock
 import tempfile
 import re
-from collections import OrderedDict
+import sys
 from mock import patch, Mock, MagicMock
+
+# OrderedDict was introduced in Python 2.7, if we're in 2.6 import
+# from the ordereddict library.
+if sys.version_info[:2] == (2, 6):
+    from ordereddict import OrderedDict
+else:
+    from collections import OrderedDict
 
 from awscli.testutils import unittest
 from awscli.customizations.cloudformation.deployer import Deployer

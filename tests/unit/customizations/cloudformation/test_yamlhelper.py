@@ -12,6 +12,8 @@
 # language governing permissions and limitations under the License.
 import mock
 import tempfile
+import re
+from collections import OrderedDict
 from mock import patch, Mock, MagicMock
 
 from awscli.testutils import unittest
@@ -94,6 +96,59 @@ class TestYaml(unittest.TestCase):
         output = yaml_parse(template)
         self.assertEqual(output, {'foo': 'bar'})
 
+    def test_parse_json_preserve_elements_order(self):
+        input_template = """
+        {
+            "B_Resource": {
+                "Key2": {
+                    "Name": "name2"
+                },
+                "Key1": {
+                    "Name": "name1"
+                }
+            },
+            "A_Resource": {
+                "Key2": {
+                    "Name": "name2"
+                },
+                "Key1": {
+                    "Name": "name1"
+                }
+            }
+        }
+        """
+        expected_dict = OrderedDict([
+            ('B_Resource', OrderedDict([('Key2', {'Name': 'name2'}), ('Key1', {'Name': 'name1'})])),
+            ('A_Resource', OrderedDict([('Key2', {'Name': 'name2'}), ('Key1', {'Name': 'name1'})]))
+        ])
+        output_dict = yaml_parse(input_template)
+        self.assertEqual(expected_dict, output_dict)
+
+    def test_parse_yaml_preserve_elements_order(self):
+        input_template = """
+        B_Resource:
+            Key2:
+                Name: name2
+            Key1:
+                Name: name1
+        A_Resource:
+            Key2:
+                Name: name2
+            Key1:
+                Name: name1
+        """
+        output_dict = yaml_parse(input_template)
+        expected_dict = OrderedDict([
+            ('B_Resource', OrderedDict([('Key2', {'Name': 'name2'}), ('Key1', {'Name': 'name1'})])),
+            ('A_Resource', OrderedDict([('Key2', {'Name': 'name2'}), ('Key1', {'Name': 'name1'})]))
+        ])
+        self.assertEqual(expected_dict, output_dict)
+
+        output_template = yaml_dump(output_dict)
+        # yaml dump changes indentation, remove spaces and new line characters to just compare the text
+        self.assertEqual(re.sub(r'\n|\s', '', input_template),
+                         re.sub(r'\n|\s', '', output_template))
+
     def test_unroll_yaml_anchors(self):
         properties = {
             "Foo": "bar",
@@ -119,4 +174,3 @@ class TestYaml(unittest.TestCase):
         )
         actual = yaml_dump(template)
         self.assertEqual(actual, expected)
-

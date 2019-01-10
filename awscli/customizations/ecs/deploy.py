@@ -126,8 +126,9 @@ class ECSDeploy(BasicCommand):
             region_name=parsed_globals.region,
             verify=parsed_globals.verify_ssl)
 
-        self.wait_time = \
-            self._validate_code_deploy_resources(codedeploy_client)
+        self._validate_code_deploy_resources(codedeploy_client)
+        
+        self.wait_time = self._cd_validator.get_deployment_wait_time()
 
         self.task_def_arn = self._register_task_def(
             register_task_def_kwargs, ecs_client_wrapper)
@@ -204,7 +205,7 @@ class ECSDeploy(BasicCommand):
         validator = CodeDeployValidator(client, self.resources)
         validator.describe_cd_resources()
         validator.validate_all()
-        return validator.get_deployment_wait_time()
+        self._cd_validator = validator
 
 
 class CodeDeployer():

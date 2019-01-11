@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.88
+=======
+
+* api-change:``rds-data``: Update rds-data command to latest version
+* api-change:``emr``: Update emr command to latest version
+
+
 1.16.87
 =======
 

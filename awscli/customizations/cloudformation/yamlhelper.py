@@ -83,6 +83,8 @@ def yaml_dump(dict_to_dump):
 
 
 def _dict_constructor(loader, node):
+    # Necessary in order to make yaml merge tags work
+    loader.flatten_mapping(node)
     return OrderedDict(loader.construct_pairs(node))
 
 

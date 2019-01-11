@@ -156,6 +156,17 @@ class TestYaml(unittest.TestCase):
         self.assertEqual(re.sub(r'\n|\s', '', input_template),
                          re.sub(r'\n|\s', '', output_template))
 
+    def test_yaml_merge_tag(self):
+        test_yaml = """
+        base: &base
+            property: value
+        test:
+            <<: *base
+        """
+        output = yaml_parse(test_yaml)
+        self.assertTrue(isinstance(output, OrderedDict))
+        self.assertEqual(output.get('test').get('property'), 'value')
+
     def test_unroll_yaml_anchors(self):
         properties = {
             "Foo": "bar",

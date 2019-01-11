@@ -104,6 +104,14 @@ class UpdateKubeconfigCommand(BasicCommand):
             'required': False
         },
         {
+            'name': 'keep-current-context',
+            'action': 'store_true',
+            'default': False,
+            'help_text': ("Do not change the current-context when "
+                          "writing kubeconfig file."),
+            'required': False
+        },
+        {
             'name': 'dry-run',
             'action': 'store_true',
             'default': False,
@@ -140,6 +148,7 @@ class UpdateKubeconfigCommand(BasicCommand):
                            parsed_globals)
         new_cluster_dict = client.get_cluster_entry()
         new_user_dict = client.get_user_entry()
+        keep_curr_context = parsed_args.keep_current_context
 
         config_selector = KubeconfigSelector(
             os.environ.get("KUBECONFIG", ""),
@@ -152,7 +161,8 @@ class UpdateKubeconfigCommand(BasicCommand):
         appender = KubeconfigAppender()
         new_context_dict = appender.insert_cluster_user_pair(config,
                                                              new_cluster_dict,
-                                                             new_user_dict)
+                                                             new_user_dict,
+                                                             keep_curr_context)
 
         if parsed_args.dry_run:
             uni_print(config.dump_content())

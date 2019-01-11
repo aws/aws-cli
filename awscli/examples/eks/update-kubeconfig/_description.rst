@@ -14,6 +14,6 @@ The resulting kubeconfig is created as a new file or merged with an existing kub
 * Or, if you have the KUBECONFIG environment variable set, then the resulting configuration file is created at the first entry in that variable or merged with an existing kubeconfig at that location. 
 * Otherwise, by default, the resulting configuration file is created at the default kubeconfig path (.kube/config) in your home directory or merged with an existing kubeconfig at that location.
 * If a previous cluster configuration exists for an Amazon EKS cluster with the same name at the specified path, the existing configuration is overwritten with the new configuration.
-* When update-kubeconfig writes a configuration to a kubeconfig file, the current-context of the kubeconfig file is set to that configuration.
+* When update-kubeconfig writes a configuration to a kubeconfig file, the current-context of the kubeconfig file is set to that configuration unless --keep-current-context option is used.
 
 You can use the --dry-run option to print the resulting configuration to stdout instead of writing it to the specified location.

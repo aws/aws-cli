@@ -239,7 +239,8 @@ class KubeconfigAppender(object):
             ("name", user["name"])
         ])
 
-    def insert_cluster_user_pair(self, config, cluster, user):
+    def insert_cluster_user_pair(self, config, cluster, user,
+                                 keep_current_context=False):
         """
         Insert the passed cluster entry and user entry,
         then make a context to associate them
@@ -255,6 +256,9 @@ class KubeconfigAppender(object):
         :param user: the user entry
         :type user: OrderedDict
 
+        :param keep_current_context: do not change the current context
+        :type keep_current_context: bool
+
         :return: The generated context
         :rtype: OrderedDict
         """
@@ -263,6 +267,7 @@ class KubeconfigAppender(object):
         self.insert_entry(config, "users", user)
         self.insert_entry(config, "contexts", context)
 
-        config.content["current-context"] = context["name"]
+        if not keep_current_context:
+            config.content["current-context"] = context["name"]
 
         return context

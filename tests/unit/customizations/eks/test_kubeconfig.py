@@ -274,3 +274,77 @@ class TestKubeconfigAppender(unittest.TestCase):
         ])
         context = self._appender._make_context(cluster, user)
         self.assertDictEqual(context, context_correct)
+
+    def test_update_current_context(self):
+        initial = OrderedDict([
+            ("apiVersion", "v1"),
+            ("clusters", [
+                OrderedDict([
+                    ("cluster", OrderedDict([
+                        ("certificate-authority-data", "data1"),
+                        ("server", "endpoint1")
+                    ])),
+                    ("name", "oldclustername")
+                ])
+            ]),
+            ("contexts", []),
+            ("current-context", "simple"),
+            ("kind", "Config"),
+            ("preferences", OrderedDict()),
+            ("users", [])
+        ])
+        cluster = OrderedDict([
+            ("cluster", OrderedDict([
+                ("certificate-authority-data", "data2"),
+                ("server", "endpoint2")
+            ])),
+            ("name", "clustername")
+        ])
+        user = OrderedDict([
+            ("name", "myusername"),
+            ("user", OrderedDict())
+        ])
+
+        config = Kubeconfig(None, initial)
+        self._appender.insert_cluster_user_pair(config,
+                                                cluster,
+                                                user,
+                                                False)
+        self.assertEqual(config.content["current-context"], "myusername")
+
+    def test_keep_current_context(self):
+        initial = OrderedDict([
+            ("apiVersion", "v1"),
+            ("clusters", [
+                OrderedDict([
+                    ("cluster", OrderedDict([
+                        ("certificate-authority-data", "data1"),
+                        ("server", "endpoint1")
+                    ])),
+                    ("name", "oldclustername")
+                ])
+            ]),
+            ("contexts", []),
+            ("current-context", "simple"),
+            ("kind", "Config"),
+            ("preferences", OrderedDict()),
+            ("users", [])
+        ])
+        cluster = OrderedDict([
+            ("cluster", OrderedDict([
+                ("certificate-authority-data", "data2"),
+                ("server", "endpoint2")
+            ])),
+            ("name", "clustername")
+        ])
+        user = OrderedDict([
+            ("name", "myusername"),
+            ("user", OrderedDict())
+        ])
+
+        config = Kubeconfig(None, initial)
+        self._appender.insert_cluster_user_pair(config,
+                                                cluster,
+                                                user,
+                                                True)
+        self.assertEqual(config.content["current-context"], "simple")

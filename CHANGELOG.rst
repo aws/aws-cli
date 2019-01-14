@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.89
+=======
+
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+
+
 1.16.88
 =======
 

@@ -70,7 +70,7 @@ class TestCodeDeployValidator(unittest.TestCase):
     def test_get_deployment_wait_time_no_dgp(self):
         empty_validator = CodeDeployValidator(None, self.TEST_RESOURCES)
         actual_wait = empty_validator.get_deployment_wait_time()
-        self.assertEqual(0, actual_wait)
+        self.assertEqual(None, actual_wait)
 
     def test_validations(self):
         self.validator.validate_application()

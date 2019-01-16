@@ -127,7 +127,7 @@ class ECSDeploy(BasicCommand):
             verify=parsed_globals.verify_ssl)
 
         self._validate_code_deploy_resources(codedeploy_client)
-        
+
         self.wait_time = self._cd_validator.get_deployment_wait_time()
 
         self.task_def_arn = self._register_task_def(
@@ -210,10 +210,8 @@ class ECSDeploy(BasicCommand):
 
 class CodeDeployer():
 
-    MSG_WAITING = ("Waiting for {deployment_id} to "
-                   "succeed{custom_wait_msg}...\n")
-
-    MSG_CUSTOM_WAIT = " (will wait up to {wait} minutes)"
+    MSG_WAITING = ("Waiting for {deployment_id} to succeed "
+                   "(will wait up to {wait} minutes)...\n")
 
     def __init__(self, cd_client, appspec_dict):
         self._client = cd_client
@@ -294,15 +292,11 @@ class CodeDeployer():
 
     def wait_for_deploy_success(self, id, wait_min):
         waiter = self._client.get_waiter("deployment_successful")
-        wait_msg = ""
 
-        if wait_min > 30 and wait_min < MAX_WAIT_MIN:
-            wait_msg = self.MSG_CUSTOM_WAIT.format(wait=wait_min)
-
-        elif wait_min > MAX_WAIT_MIN:
+        if wait_min is not None and wait_min > MAX_WAIT_MIN:
             wait_min = MAX_WAIT_MIN
-            wait_msg = self.MSG_CUSTOM_WAIT.format(wait=wait_min)
-        else:
+
+        elif wait_min is None or wait_min < 30:
             wait_min = 30
 
         delay_sec = DEFAULT_DELAY_SEC
@@ -312,13 +306,13 @@ class CodeDeployer():
             'MaxAttempts': max_attempts
         }
 
-        self._show_deploy_wait_msg(id, wait_msg)
+        self._show_deploy_wait_msg(id, wait_min)
         waiter.wait(deploymentId=id, WaiterConfig=config)
 
-    def _show_deploy_wait_msg(self, id, wait_msg):
+    def _show_deploy_wait_msg(self, id, wait_min):
         sys.stdout.write(
             self.MSG_WAITING.format(deployment_id=id,
-                                    custom_wait_msg=wait_msg))
+                                    wait=wait_min))
         sys.stdout.flush()
 
 
@@ -348,7 +342,7 @@ class CodeDeployValidator():
 
         if (not hasattr(self, 'deployment_group_details') or
                 self.deployment_group_details is None):
-            return 0
+            return None
         else:
             dgp_info = self.deployment_group_details['deploymentGroupInfo']
             blue_green_info = dgp_info['blueGreenDeploymentConfiguration']

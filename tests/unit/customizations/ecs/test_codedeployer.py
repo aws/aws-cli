@@ -17,7 +17,7 @@ import mock
 
 from botocore import compat
 from awscli.testutils import capture_output, unittest
-from awscli.customizations.ecs.deploy import CodeDeployer
+from awscli.customizations.ecs.deploy import CodeDeployer, MAX_WAIT_MIN
 from awscli.customizations.ecs.exceptions import MissingPropertyError
 
 
@@ -99,7 +99,7 @@ class TestCodeDeployer(unittest.TestCase):
     def test_wait_for_deploy_success_default_wait(self):
         mock_id = 'd-1234567XX'
         expected_stdout = self.deployer.MSG_WAITING.format(
-            deployment_id=mock_id, custom_wait_msg='')
+            deployment_id=mock_id, wait=30)
 
         with capture_output() as captured:
             self.deployer.wait_for_deploy_success('d-1234567XX', 0)
@@ -108,10 +108,20 @@ class TestCodeDeployer(unittest.TestCase):
     def test_wait_for_deploy_success_custom_wait(self):
         mock_id = 'd-1234567XX'
         mock_wait = 40
-        custom_msg = self.deployer.MSG_CUSTOM_WAIT.format(wait=mock_wait)
 
         expected_stdout = self.deployer.MSG_WAITING.format(
-            deployment_id=mock_id, custom_wait_msg=custom_msg)
+            deployment_id=mock_id, wait=mock_wait)
+
+        with capture_output() as captured:
+            self.deployer.wait_for_deploy_success('d-1234567XX', mock_wait)
+            self.assertEqual(expected_stdout, captured.stdout.getvalue())
+
+    def test_wait_for_deploy_success_max_wait_exceeded(self):
+        mock_id = 'd-1234567XX'
+        mock_wait = MAX_WAIT_MIN + 15
+
+        expected_stdout = self.deployer.MSG_WAITING.format(
+            deployment_id=mock_id, wait=MAX_WAIT_MIN)
 
         with capture_output() as captured:
             self.deployer.wait_for_deploy_success('d-1234567XX', mock_wait)

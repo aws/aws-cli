@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.90
+=======
+
+* api-change:``dynamodb``: Update dynamodb command to latest version
+* api-change:``backup``: Update backup command to latest version
+* api-change:``ce``: Update ce command to latest version
+
+
 1.16.89
 =======
 

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.91
+=======
+
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+
+
 1.16.90
 =======
 

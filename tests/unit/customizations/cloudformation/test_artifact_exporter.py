@@ -79,6 +79,26 @@ def test_all_resources_export():
         },
 
         {
+            "class": AppSyncResolverRequestTemplateResource,
+            "expected_result": uploaded_s3_url
+        },
+
+        {
+            "class": AppSyncResolverResponseTemplateResource,
+            "expected_result": uploaded_s3_url
+        },
+
+        {
+            "class": AppSyncFunctionConfigurationRequestTemplateResource,
+            "expected_result": uploaded_s3_url
+        },
+
+        {
+            "class": AppSyncFunctionConfigurationResponseTemplateResource,
+            "expected_result": uploaded_s3_url
+        },
+
+        {
             "class": ApiGatewayRestApiResource,
             "expected_result": {
                 "Bucket": "foo", "Key": "bar", "Version": "baz"
@@ -110,6 +130,10 @@ def test_all_resources_export():
         },
         {
             "class": ServerlessRepoApplicationReadme,
+            "expected_result": uploaded_s3_url
+        },
+        {
+            "class": ServerlessRepoApplicationLicense,
             "expected_result": uploaded_s3_url
         },
         {

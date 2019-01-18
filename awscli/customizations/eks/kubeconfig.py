@@ -229,17 +229,17 @@ class KubeconfigAppender(object):
         config.content[key] = array
         return config
 
-    def _make_context(self, cluster, user):
-        """ Generate a context to associate cluster and user."""
+    def _make_context(self, cluster, user, alias=None):
+        """ Generate a context to associate cluster and user with a given alias."""
         return OrderedDict([
             ("context", OrderedDict([
                 ("cluster", cluster["name"]),
                 ("user", user["name"])
             ])),
-            ("name", user["name"])
+            ("name", alias or user["name"])
         ])
 
-    def insert_cluster_user_pair(self, config, cluster, user):
+    def insert_cluster_user_pair(self, config, cluster, user, alias=None):
         """
         Insert the passed cluster entry and user entry,
         then make a context to associate them
@@ -255,10 +255,13 @@ class KubeconfigAppender(object):
         :param user: the user entry
         :type user: OrderedDict
 
+        :param alias: the alias for the context; defaults top user entry name
+        :type context: str
+
         :return: The generated context
         :rtype: OrderedDict
         """
-        context = self._make_context(cluster, user)
+        context = self._make_context(cluster, user, alias=alias)
         self.insert_entry(config, "clusters", cluster)
         self.insert_entry(config, "users", user)
         self.insert_entry(config, "contexts", context)

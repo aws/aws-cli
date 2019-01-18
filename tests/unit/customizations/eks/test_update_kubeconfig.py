@@ -195,6 +195,7 @@ class TestEKSClient(unittest.TestCase):
 
         self._session = mock.Mock(spec=botocore.session.Session)
         self._session.create_client.return_value = self._mock_client
+        self._session.profile = None
 
         self._client = EKSClient(self._session, "ExampleCluster", None)
 
@@ -257,6 +258,21 @@ class TestEKSClient(unittest.TestCase):
                                            describe_cluster_deleting_response()
         self.assertRaises(EKSClusterError,
                           self._client._get_cluster_description)
+        self._mock_client.describe_cluster.assert_called_once_with(
+            name="ExampleCluster"
+        )
+        self._session.create_client.assert_called_once_with("eks")
+
+    def test_profile(self):
+        self._session.profile = "profile"
+        self._correct_user_entry["user"]["exec"]["env"] = [
+            OrderedDict([
+                ("name", "AWS_PROFILE"),
+                ("value", "profile")
+            ])
+        ]
+        self.assertEqual(self._client.get_user_entry(),
+                         self._correct_user_entry)
         self._mock_client.describe_cluster.assert_called_once_with(
             name="ExampleCluster"
         )

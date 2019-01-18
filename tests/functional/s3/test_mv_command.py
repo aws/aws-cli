@@ -11,24 +11,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
-import re
-
-import mock
 from awscli.compat import six
+from tests.functional.s3 import BaseS3TransferCommandTest
 
 
-class TestMvCommand(BaseAWSCommandParamsTest):
+class TestMvCommand(BaseS3TransferCommandTest):
 
     prefix = 's3 mv '
-
-    def setUp(self):
-        super(TestMvCommand, self).setUp()
-        self.files = FileCreator()
-
-    def tearDown(self):
-        super(TestMvCommand, self).tearDown()
-        self.files.remove_all()
 
     def test_cant_mv_object_onto_itself(self):
         cmdline = '%s s3://bucket/key s3://bucket/key' % self.prefix
@@ -84,5 +73,72 @@ class TestMvCommand(BaseAWSCommandParamsTest):
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
         self.assertNotIn('MetadataDirective', self.operations_called[0][1])
 
-if __name__ == "__main__":
-    unittest.main()
+    def test_download_move_with_request_payer(self):
+        cmdline = '%s s3://mybucket/mykey %s --request-payer' % (
+            self.prefix, self.files.rootdir)
+
+        self.parsed_responses = [
+            # Response for HeadObject
+            {"ContentLength": 100, "LastModified": "00:00:00Z"},
+            # Response for GetObject
+            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')},
+            # Response for DeleteObject
+            {}
+        ]
+
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('HeadObject', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'RequestPayer': 'requester',
+                }),
+                ('GetObject', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'RequestPayer': 'requester',
+                }),
+                ('DeleteObject', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'RequestPayer': 'requester',
+                })
+            ]
+        )
+
+    def test_copy_move_with_request_payer(self):
+        cmdline = self.prefix
+        cmdline += 's3://sourcebucket/sourcekey s3://mybucket/mykey'
+        cmdline += ' --request-payer'
+
+        self.parsed_responses = [
+            # Response for HeadObject
+            {"ContentLength": 100, "LastModified": "00:00:00Z"},
+            # Response for CopyObject
+            {},
+            # Response for DeleteObject
+            {}
+        ]
+
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('HeadObject', {
+                    'Bucket': 'sourcebucket',
+                    'Key': 'sourcekey',
+                    'RequestPayer': 'requester',
+                }),
+                ('CopyObject', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'CopySource': 'sourcebucket/sourcekey',
+                    'RequestPayer': 'requester',
+                }),
+                ('DeleteObject', {
+                    'Bucket': 'sourcebucket',
+                    'Key': 'sourcekey',
+                    'RequestPayer': 'requester',
+                })
+            ]
+        )

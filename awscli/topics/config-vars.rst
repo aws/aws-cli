@@ -71,9 +71,13 @@ output               --output    output                AWS_DEFAULT_OUTPUT    Def
 -------------------- ----------- --------------------- --------------------- ----------------------------
 cli_timestamp_format N/A         cli_timestamp_format  N/A                   Output format of timestamps
 -------------------- ----------- --------------------- --------------------- ----------------------------
+cli_follow_urlparam  N/A         cli_follow_urlparam   N/A                   Fetch URL url parameters
+-------------------- ----------- --------------------- --------------------- ----------------------------
 ca_bundle            --ca-bundle ca_bundle             AWS_CA_BUNDLE         CA Certificate Bundle
 -------------------- ----------- --------------------- --------------------- ----------------------------
-parameter_validation             parameter_validation                        Toggles parameter validation
+parameter_validation N/A         parameter_validation  N/A                   Toggles parameter validation
+-------------------- ----------- --------------------- --------------------- ----------------------------
+tcp_keepalive        N/A         tcp_keepalive         N/A                   Toggles TCP Keep-Alive
 ==================== =========== ===================== ===================== ============================
 
 The third column, Config Entry, is the value you would specify in the AWS CLI
@@ -88,10 +92,21 @@ The valid values of the ``output`` configuration variable are:
 * text
 
 ``cli_timestamp_format`` controls the format of timestamps displayed by the AWS CLI.
-The valid values of the ``cli_timestamp_format`` configuration varaible are:
+The valid values of the ``cli_timestamp_format`` configuration variable are:
 
 * none - Display the timestamp exactly as received from the HTTP response.
 * iso8601 - Reformat timestamp using iso8601 in the UTC timezone.
+
+``cli_follow_urlparam`` controls whether or not the CLI will attempt to follow
+URL links in parameters that start with either prefix ``https://`` or
+``http://``.  The valid values of the ``cli_follow_urlparam`` configuration
+variable are:
+
+* true - This is the default value. With this configured the CLI will follow
+  any string parameters that start with ``https://`` or ``http://`` will be
+  fetched, and the downloaded content will be used as the parameter instead.
+* false - The CLI will not treat strings prefixed with ``https://`` or
+  ``http://`` any differently than normal string parameters.
 
 ``parameter_validation`` controls whether parameter validation should occur
 when serializing requests. The default is True. You can disable parameter
@@ -229,6 +244,10 @@ in the AWS CLI config file:
   maps to the ``RoleSessionName`` parameter in the ``AssumeRole`` operation.
   This is an optional parameter.  If you do not provide this value, a
   session name will be automatically generated.
+* ``duration_seconds`` - The  duration,  in seconds, of the role session.
+  The value can range from 900 seconds (15 minutes) up to  the  maximum 
+  session  duration setting  for  the role.  This is an optional parameter
+  and by default, the value is set to 3600 seconds.
 
 If you do not have MFA authentication required, then you only need to specify a
 ``role_arn`` and either a ``source_profile`` or a ``credential_source``.

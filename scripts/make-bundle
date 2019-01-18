@@ -34,6 +34,9 @@ PACKAGE_VERSION = {
     'ordereddict': '1.1',
     'simplejson': '3.3.0',
     'argparse': '1.2.1',
+    'python-dateutil': '2.6.1',
+    'setuptools-scm': '1.15.7',
+    'urllib3': '1.22',
 }
 INSTALL_ARGS = '--allow-all-external --no-use-wheel'
 
@@ -71,6 +74,7 @@ def create_scratch_dir():
     # Then we need to create a dir where all the packages
     # will come from.
     os.mkdir(os.path.join(dirname, 'packages'))
+    os.mkdir(os.path.join(dirname, 'packages', 'setup'))
     return dirname
 
 
@@ -93,7 +97,7 @@ def download_cli_deps(scratch_dir):
     # Step one create a virtualenv.
     venv_dir = tempfile.mkdtemp()
     try:
-        run('virtualenv %s' % venv_dir)
+        run('virtualenv --no-download  %s' % venv_dir)
         pip = os.path.join(venv_dir, 'bin', 'pip')
         assert os.path.isfile(pip)
         awscli_dir = os.path.dirname(
@@ -151,19 +155,20 @@ def verify_preconditions():
     pip_version = run('pip --version').strip().split()[1]
     # Virtualenv version just has the version string: '1.14.5\n'
     virtualenv_version = run('virtualenv --version').strip()
-    _min_version_required('1.5.0', pip_version, 'pip')
-    _min_version_required('1.11.4', virtualenv_version, 'virtualenv')
+    _min_version_required('9.0.1', pip_version, 'pip')
+    _min_version_required('15.1.0', virtualenv_version, 'virtualenv')
 
 
 def _min_version_required(min_version, actual_version, name):
     # precondition: min_version is major.minor.patch
     #               actual_version is major.minor.patch
-    min_split = map(int, min_version.split('.'))
-    actual_split = map(int, actual_version.split('.'))
-    if actual_split < min_split:
-        raise ValueError("%s requires at least version %s, but "
-                         "version %s was found." % (name, min_version,
-                                                    actual_version))
+    min_split = min_version.split('.')
+    actual_split = actual_version.decode('utf-8').split('.')
+    for min_version_part, actual_version_part in zip(min_split, actual_split):
+        if int(actual_version_part) >= int(min_version_part):
+            return
+    raise ValueError("%s requires at least version %s, but version %s was "
+                     "found." % (name, min_version, actual_version))
 
 
 def main():
@@ -173,7 +178,22 @@ def main():
     print("Bundle dir at: %s" % scratch_dir)
     download_package_tarballs(
         package_dir,
-        packages=['virtualenv', 'ordereddict', 'simplejson', 'argparse'])
+        packages=[
+            'virtualenv', 'ordereddict', 'simplejson',
+            'argparse', 'python-dateutil', 'urllib3',
+        ]
+    )
+
+    # Some packages require setup time dependencies, and so we will need to
+    # manually install them. We isolate them to a particular directory so we
+    # can run the install before the things they're dependent on. We have to do
+    # this because pip won't actually find them since it doesn't handle build
+    # dependencies.
+    setup_dir = os.path.join(package_dir, 'setup')
+    download_package_tarballs(
+        setup_dir,
+        packages=['setuptools-scm']
+    )
     download_cli_deps(package_dir)
     add_cli_sdist(package_dir)
     create_bootstrap_script(scratch_dir)

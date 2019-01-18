@@ -10,6 +10,7 @@
      [--additional-info <value>]
      [--ec2-attributes <value>]
      [--termination-protected | --no-termination-protected]
+     [--scale-down-behavior <value>]
      [--visible-to-all-users | --no-visible-to-all-users]
      [--enable-debugging | --no-enable-debugging]
      [--tags <value>]
@@ -22,4 +23,4 @@
      [--custom-ami-id <value>]
      [--ebs-root-volume-size <value>]
      [--repo-upgrade-on-boot <value>]
-     [--kerberos--attributes <value>]
+     [--kerberos-attributes <value>]

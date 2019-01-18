@@ -255,6 +255,7 @@ class PageArgument(BaseCLIArgument):
     type_map = {
         'string': str,
         'integer': int,
+        'long': int,
     }
 
     def __init__(self, name, documentation, parse_type, serialized_name):

@@ -23,12 +23,12 @@ def find_version(*file_paths):
     raise RuntimeError("Unable to find version string.")
 
 
-requires = ['botocore==1.8.36',
-            'colorama>=0.2.5,<=0.3.7',
+requires = ['botocore==1.12.81',
+            'colorama>=0.2.5,<=0.3.9',
             'docutils>=0.10',
             'rsa>=3.1.2,<=3.5.0',
             's3transfer>=0.1.12,<0.2.0',
-            'PyYAML>=3.10,<=3.12']
+            'PyYAML>=3.10,<=3.13']
 
 
 if sys.version_info[:2] == (2, 6):
@@ -58,13 +58,14 @@ setup_options = dict(
         ]
     },
     license="Apache License 2.0",
-    classifiers=(
+    classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
         'Natural Language :: English',
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
@@ -72,7 +73,8 @@ setup_options = dict(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
-    ),
+        'Programming Language :: Python :: 3.7',
+    ],
 )
 
 if 'py2exe' in sys.argv:

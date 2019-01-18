@@ -306,7 +306,7 @@ class BaseTransferRequestSubmitter(object):
                         's3://'+fileinfo.src,
                         'Object is of storage class GLACIER. Unable to '
                         'perform %s operations on GLACIER objects. You must '
-                        'restore the object to be able to the perform '
+                        'restore the object to be able to perform the '
                         'operation. See aws s3 %s help for additional '
                         'parameter options to ignore or force these '
                         'transfers.' %
@@ -498,7 +498,7 @@ class DownloadStreamRequestSubmitter(DownloadRequestSubmitter):
 
 
 class DeleteRequestSubmitter(BaseTransferRequestSubmitter):
-    REQUEST_MAPPER_METHOD = None
+    REQUEST_MAPPER_METHOD = RequestParamsMapper.map_delete_object_params
     RESULT_SUBSCRIBER_CLASS = DeleteResultSubscriber
 
     def can_submit(self, fileinfo):
@@ -532,7 +532,7 @@ class LocalDeleteRequestSubmitter(BaseTransferRequestSubmitter):
         # the burden of this functionality should live in the CLI.
 
         # The main downsides in doing this is that delete and the result
-        # creation happens in the main thread as opposed to a seperate thread
+        # creation happens in the main thread as opposed to a separate thread
         # in s3transfer. However, this is not too big of a downside because
         # deleting a local file only happens for sync --delete downloads and
         # is very fast compared to all of the other types of transfers.

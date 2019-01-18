@@ -10,13 +10,17 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
+import signal
+
 from nose.tools import assert_equal
 from botocore.compat import six
 
 from awscli.compat import ensure_text_type
 from awscli.compat import compat_shell_quote
 from awscli.compat import get_popen_kwargs_for_pager_cmd
-from awscli.testutils import mock, unittest
+from awscli.compat import ignore_user_entered_signals
+from awscli.testutils import mock, unittest, skip_if_windows
 
 
 class TestEnsureText(unittest.TestCase):
@@ -110,3 +114,26 @@ class TestGetPopenPagerCmd(unittest.TestCase):
     def test_non_windows_specific_pager(self):
         kwargs = get_popen_kwargs_for_pager_cmd('more')
         self.assertEqual({'args': ['more']}, kwargs)
+
+
+class TestIgnoreUserSignals(unittest.TestCase):
+    @skip_if_windows("These signals are not supported for windows")
+    def test_ignore_signal_sigint(self):
+        with ignore_user_entered_signals():
+            try:
+                os.kill(os.getpid(), signal.SIGINT)
+            except KeyboardInterrupt:
+                self.fail('The ignore_user_entered_signals context '
+                          'manager should have ignored')
+
+    @skip_if_windows("These signals are not supported for windows")
+    def test_ignore_signal_sigquit(self):
+        with ignore_user_entered_signals():
+            self.assertEqual(signal.getsignal(signal.SIGQUIT), signal.SIG_IGN)
+            os.kill(os.getpid(), signal.SIGQUIT)
+
+    @skip_if_windows("These signals are not supported for windows")
+    def test_ignore_signal_sigtstp(self):
+        with ignore_user_entered_signals():
+            self.assertEqual(signal.getsignal(signal.SIGTSTP), signal.SIG_IGN)
+            os.kill(os.getpid(), signal.SIGTSTP)

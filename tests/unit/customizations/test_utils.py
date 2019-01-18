@@ -43,7 +43,7 @@ class TestCommandTableRenames(BaseAWSHelpOutputTest):
 class TestCommandTableAlias(BaseAWSHelpOutputTest):
 
     def test_alias_command_table(self):
-        old_name = 'ec2'
+        old_name = 'alexaforbusiness'
         new_name = 'nopossiblewaythisisalreadythere'
 
         def handler(command_table, **kwargs):
@@ -58,7 +58,7 @@ class TestCommandTableAlias(BaseAWSHelpOutputTest):
         self.assert_not_contains(old_name)
 
     def test_make_hidden_alias(self):
-        old_name = 'ec2'
+        old_name = 'alexaforbusiness'
         new_name = 'nopossiblewaythisisalreadythere'
 
         def handler(command_table, **kwargs):
@@ -79,8 +79,8 @@ class TestCommandTableAlias(BaseAWSHelpOutputTest):
         self.assert_contains(command_name)
 
         # We can also see subcommands help as well.
-        self.driver.main([command_name, 'run-instances', 'help'])
-        self.assert_contains('run-instances')
+        self.driver.main([command_name, 'get-room', 'help'])
+        self.assert_contains('get-room')
 
 
 class TestHiddenAlias(unittest.TestCase):
@@ -255,3 +255,15 @@ class TestUniPrint(unittest.TestCase):
         # We replace the characters that can't be encoded
         # with '?'.
         self.assertEqual(buf.getvalue(), b'SomeChars??OtherChars')
+
+
+class TestGetPolicyARNSuffix(unittest.TestCase):
+    def test_get_policy_arn_suffix(self):
+        self.assertEqual("aws-cn", utils.get_policy_arn_suffix("cn-northwest-1"))
+        self.assertEqual("aws-cn", utils.get_policy_arn_suffix("cn-northwest-2"))
+        self.assertEqual("aws-cn", utils.get_policy_arn_suffix("cn-north-1"))
+        self.assertEqual("aws-us-gov", utils.get_policy_arn_suffix("us-gov-west-1"))
+        self.assertEqual("aws", utils.get_policy_arn_suffix("ca-central-1"))
+        self.assertEqual("aws", utils.get_policy_arn_suffix("us-east-1"))
+        self.assertEqual("aws", utils.get_policy_arn_suffix("sa-east-1"))
+        self.assertEqual("aws", utils.get_policy_arn_suffix("ap-south-1"))

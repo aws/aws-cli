@@ -358,6 +358,36 @@ class TestDeployer(unittest.TestCase):
         mock_client.get_waiter.assert_called_once_with(
                 "change_set_create_complete")
 
+    def test_wait_for_changeset_no_changes_with_another_error_msg(self):
+        stack_name = "stack_name"
+        changeset_id = "changeset-id"
+
+        mock_client = Mock()
+        mock_deployer = Deployer(mock_client)
+        mock_waiter = Mock()
+        mock_client.get_waiter.return_value = mock_waiter
+
+        response = {
+            "Status": "FAILED",
+            "StatusReason": "No updates are to be performed"
+        }
+
+        waiter_error = botocore.exceptions.WaiterError(name="name",
+                                                       reason="reason",
+                                                       last_response=response)
+        mock_waiter.wait.side_effect = waiter_error
+
+        with self.assertRaises(exceptions.ChangeEmptyError):
+            mock_deployer.wait_for_changeset(changeset_id, stack_name)
+
+        waiter_config = {'Delay': 5}
+        mock_waiter.wait.assert_called_once_with(ChangeSetName=changeset_id,
+                                                 StackName=stack_name,
+                                                 WaiterConfig=waiter_config)
+
+        mock_client.get_waiter.assert_called_once_with(
+                "change_set_create_complete")
+
     def test_wait_for_changeset_failed_to_create_changeset(self):
         stack_name = "stack_name"
         changeset_id = "changeset-id"

@@ -274,3 +274,23 @@ class TestKubeconfigAppender(unittest.TestCase):
         ])
         context = self._appender._make_context(cluster, user)
         self.assertDictEqual(context, context_correct)
+
+    def test_make_context_alias(self):
+        cluster = OrderedDict([
+            ("name", "clustername"),
+            ("cluster", OrderedDict())
+        ])
+        user = OrderedDict([
+            ("name", "username"),
+            ("user", OrderedDict())
+        ])
+        context_correct = OrderedDict([
+            ("context", OrderedDict([
+                ("cluster", "clustername"),
+                ("user", "username")
+            ])),
+            ("name", "alias")
+        ])
+        alias = "alias"
+        context = self._appender._make_context(cluster, user, alias=alias)
+        self.assertDictEqual(context, context_correct)

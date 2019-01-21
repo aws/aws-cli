@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.16.93
+=======
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``fms``: Update fms command to latest version
+* api-change:``discovery``: Update discovery command to latest version
+* api-change:``appstream``: Update appstream command to latest version
+
+
 1.16.92
 =======
 

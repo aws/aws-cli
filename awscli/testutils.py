@@ -363,6 +363,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         self.operations_called = []
         self.parsed_responses = None
         self.driver = create_clidriver()
+        self.files = FileCreator()
 
     def tearDown(self):
         # This clears all the previous registrations.
@@ -370,6 +371,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         if self.make_request_is_patched:
             self.make_request_patch.stop()
             self.make_request_is_patched = False
+        self.files.remove_all()
 
     def before_call(self, params, **kwargs):
         self._store_params(params)
@@ -520,7 +522,8 @@ class FileCreator(object):
         self.rootdir = tempfile.mkdtemp()
 
     def remove_all(self):
-        shutil.rmtree(self.rootdir)
+        if os.path.exists(self.rootdir):
+            shutil.rmtree(self.rootdir)
 
     def create_file(self, filename, contents, mtime=None, mode='w'):
         """Creates a file in a tmpdir

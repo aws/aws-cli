@@ -22,7 +22,11 @@ from awscli.customizations.cloudformation.artifact_exporter \
     ServerlessApplicationResource, LambdaLayerVersionResource, \
     copy_to_temp_dir, include_transform_export_handler, GLOBAL_EXPORT_DICT, \
     ServerlessLayerVersionResource, ServerlessRepoApplicationLicense, \
-    ServerlessRepoApplicationReadme
+    ServerlessRepoApplicationReadme, \
+    AppSyncResolverRequestTemplateResource, \
+    AppSyncResolverResponseTemplateResource, \
+    AppSyncFunctionConfigurationRequestTemplateResource, \
+    AppSyncFunctionConfigurationResponseTemplateResource
 
 
 def test_is_s3_url():

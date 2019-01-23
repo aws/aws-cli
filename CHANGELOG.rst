@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.94
+=======
+
+* api-change:``acm-pca``: Update acm-pca command to latest version
+* api-change:``apigatewaymanagementapi``: Update apigatewaymanagementapi command to latest version
+* api-change:``worklink``: Update worklink command to latest version
+
+
 1.16.93
 =======
 

@@ -86,6 +86,7 @@ from awscli.customizations.sagemaker import register_alias_sagemaker_runtime_com
 from awscli.customizations.servicecatalog import register_servicecatalog_commands
 from awscli.customizations.s3events import register_event_stream_arg
 from awscli.customizations.sessionmanager import register_ssm_session
+from awscli.customizations.sms_voice import register_sms_voice_hide
 
 
 def awscli_initialize(event_handlers):
@@ -174,3 +175,4 @@ def awscli_initialize(event_handlers):
     register_event_stream_arg(event_handlers)
     dlm_initialize(event_handlers)
     register_ssm_session(event_handlers)
+    register_sms_voice_hide(event_handlers)

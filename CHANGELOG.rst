@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.96
+=======
+
+* api-change:``devicefarm``: Update devicefarm command to latest version
+* api-change:``mediaconnect``: Update mediaconnect command to latest version
+* api-change:``codecommit``: Update codecommit command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+
+
 1.16.95
 =======
 

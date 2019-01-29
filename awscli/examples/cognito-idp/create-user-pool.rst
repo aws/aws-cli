@@ -243,7 +243,7 @@ Output::
         },
         "CreationDate": 1547833345.777,
         "EstimatedNumberOfUsers": 0,
-        "Id": "us-west-a_aaaaaaaaa",
+        "Id": "us-west-2_aaaaaaaaa",
         "LambdaConfig": {}
     }
   }
@@ -500,7 +500,7 @@ Output::
         ],
         "CreationDate": 1547837788.189,
         "EstimatedNumberOfUsers": 0,
-        "Id": "us-west-a_aaaaaaaaa",
+        "Id": "us-west-2_aaaaaaaaa",
         "LambdaConfig": {}
     }
   }

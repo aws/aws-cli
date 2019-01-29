@@ -14,7 +14,7 @@ Output::
            "CreationDate": 1547763720.822,
            "LastModifiedDate": 1547763720.822,
            "LambdaConfig": {},
-           "Id": "us-west-a_aaaaaaaaa",
+           "Id": "us-west-2_aaaaaaaaa",
            "Name": "MyUserPool"
         }
     ]

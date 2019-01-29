@@ -4,5 +4,5 @@ This example deletes a user.
 
 Command::
 
-  aws cognito-idp admin-delete-user --user-pool-id us-west-a_aaaaaaaaa --username diego@example.com 
+  aws cognito-idp admin-delete-user --user-pool-id us-west-2_aaaaaaaaa --username diego@example.com 
   

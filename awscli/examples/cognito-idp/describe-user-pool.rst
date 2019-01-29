@@ -1,10 +1,10 @@
 **To describe a user pool**
 
-This example describes a user pool with the user pool id us-west-a_aaaaaaaaa. 
+This example describes a user pool with the user pool id us-west-2_aaaaaaaaa. 
 
 Command::
 
-  aws cognito-idp describe-user-pool --user-pool-id us-west-a_aaaaaaaaa
+  aws cognito-idp describe-user-pool --user-pool-id us-west-2_aaaaaaaaa
 
 Output::
 
@@ -261,7 +261,7 @@ Output::
         ],
         "CreationDate": 1547763720.822,
         "EstimatedNumberOfUsers": 1,
-        "Id": "us-west-a_aaaaaaaaa",
+        "Id": "us-west-2_aaaaaaaaa",
         "LambdaConfig": {}
     }
   }  

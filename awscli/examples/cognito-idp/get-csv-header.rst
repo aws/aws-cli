@@ -6,12 +6,12 @@ For more information about importing users, see `Importing Users into User Pools
 
 Command::
 
-  aws cognito-idp get-csv-header --user-pool-id us-west-1_111111111
+  aws cognito-idp get-csv-header --user-pool-id us-west-2_aaaaaaaaa
 
 Output::
 
   {
-    "UserPoolId": "us-west-1_111111111",
+    "UserPoolId": "us-west-2_aaaaaaaaa",
     "CSVHeader": [
         "name",
         "given_name",

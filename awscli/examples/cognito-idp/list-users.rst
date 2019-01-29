@@ -4,7 +4,7 @@ This example lists up to 20 users.
 
 Command::
 
-  aws cognito-idp list-users --user-pool-id us-west-a_aaaaaaaaa --limit 20
+  aws cognito-idp list-users --user-pool-id us-west-2_aaaaaaaaa --limit 20
 
 Output::
 

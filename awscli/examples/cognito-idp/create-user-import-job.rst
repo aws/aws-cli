@@ -6,7 +6,7 @@ For more information about importing users, see `Importing Users into User Pools
 
 Command::
 
-  aws cognito-idp create-group --user-pool-id us-west-1_111111111 --group-name MyNewGroupWithRole --description "New group with a role." --role-arn arn:aws:iam::111111111111:role/MyNewGroupRole --precedence 2
+  aws cognito-idp create-group --user-pool-id us-west-2_aaaaaaaaa --group-name MyNewGroupWithRole --description "New group with a role." --role-arn arn:aws:iam::111111111111:role/MyNewGroupRole --precedence 2
 
 Output::
 
@@ -14,7 +14,7 @@ Output::
     "UserImportJob": {
         "JobName": "MyImportJob",
         "JobId": "import-qQ0DCt2fRh",
-        "UserPoolId": "us-west-1_111111111",
+        "UserPoolId": "us-west-2_aaaaaaaaa",
         "PreSignedUrl": "PRE_SIGNED_URL",
         "CreationDate": 1548271795.471,
         "Status": "Created",

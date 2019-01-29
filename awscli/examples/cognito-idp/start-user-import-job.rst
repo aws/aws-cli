@@ -6,7 +6,7 @@ For more information about importing users, see `Importing Users into User Pools
 
 Command::
 
-  aws cognito-idp start-user-import-job --user-pool-id us-west-1_111111111 --job-id import-TZqNQvDRnW
+  aws cognito-idp start-user-import-job --user-pool-id us-west-2_aaaaaaaaa --job-id import-TZqNQvDRnW
 
 Output::
 
@@ -14,7 +14,7 @@ Output::
     "UserImportJob": {
         "JobName": "import-Test10",
         "JobId": "import-lmpxSOuIzH",
-        "UserPoolId": "us-west-1_111111111",
+        "UserPoolId": "us-west-2_aaaaaaaaa",
         "PreSignedUrl": "PRE_SIGNED_URL",
         "CreationDate": 1548278378.928,
         "StartDate": 1548278397.334,

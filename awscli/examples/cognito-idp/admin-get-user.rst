@@ -4,7 +4,7 @@ This example gets information about username jane@example.com.
 
 Command::
 
-  aws cognito-idp admin-get-user --user-pool-id us-west-1_111111111 --username jane@example.com
+  aws cognito-idp admin-get-user --user-pool-id us-west-2_aaaaaaaaa --username jane@example.com
 
 Output::
 

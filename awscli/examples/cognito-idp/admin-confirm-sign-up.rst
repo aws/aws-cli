@@ -1,6 +1,6 @@
 **To confirm user registration**
 
-This example adds username jane@example.com to MyGroup. 
+This example confirms user jane@example.com.
 
 Command::
 

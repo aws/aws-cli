@@ -1,4 +1,4 @@
-**To delete a user attribute**
+**To update user attributes**
 
 This example updates a custom user attribute CustomAttr1 for user diego@example.com.
 

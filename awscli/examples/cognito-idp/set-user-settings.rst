@@ -1,8 +1,8 @@
-**To set user MFA preference**
+**To set user settings**
 
-This example sets the user MFA preference to SMS.
+This example sets the MFA delivery preference to EMAIL. 
 
 Command::
 
-  aws cognito-idp set-user-mfa-preference --access-token ACCESS_TOKEN --mfa-options DeliveryMedium="SMS",AttributeName="phone_number"
+  aws cognito-idp set-user-settings --access-token ACCESS_TOKEN --mfa-options DeliveryMedium=EMAIL
 

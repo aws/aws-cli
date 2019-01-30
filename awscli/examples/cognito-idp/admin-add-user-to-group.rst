@@ -1,6 +1,6 @@
 **To add a user to a group**
 
-This example adds user Jabe to group MyGroup. 
+This example adds user Jane to group MyGroup. 
 
 Command::
 

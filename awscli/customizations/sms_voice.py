@@ -18,4 +18,6 @@ def register_sms_voice_hide(event_emitter):
 
 
 def hide_sms_voice(command_table, session, **kwargs):
-    command_table['sms-voice']._UNDOCUMENTED = True
+    cmd = command_table.get('sms-voice')
+    if cmd is not None:
+        cmd._UNDOCUMENTED = True

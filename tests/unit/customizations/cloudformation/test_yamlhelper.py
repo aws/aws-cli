@@ -12,16 +12,10 @@
 # language governing permissions and limitations under the License.
 import mock
 import tempfile
-import re
-import sys
 from mock import patch, Mock, MagicMock
 
-# OrderedDict was introduced in Python 2.7, if we're in 2.6 import
-# from the ordereddict library.
-if sys.version_info[:2] == (2, 6):
-    from ordereddict import OrderedDict
-else:
-    from collections import OrderedDict
+from botocore.compat import json
+from botocore.compat import OrderedDict
 
 from awscli.testutils import unittest
 from awscli.customizations.cloudformation.deployer import Deployer
@@ -132,18 +126,18 @@ class TestYaml(unittest.TestCase):
         self.assertEqual(expected_dict, output_dict)
 
     def test_parse_yaml_preserve_elements_order(self):
-        input_template = """
-        B_Resource:
-            Key2:
-                Name: name2
-            Key1:
-                Name: name1
-        A_Resource:
-            Key2:
-                Name: name2
-            Key1:
-                Name: name1
-        """
+        input_template = (
+        'B_Resource:\n'
+        '  Key2:\n'
+        '    Name: name2\n'
+        '  Key1:\n'
+        '    Name: name1\n'
+        'A_Resource:\n'
+        '  Key2:\n'
+        '    Name: name2\n'
+        '  Key1:\n'
+        '    Name: name1\n'
+        )
         output_dict = yaml_parse(input_template)
         expected_dict = OrderedDict([
             ('B_Resource', OrderedDict([('Key2', {'Name': 'name2'}), ('Key1', {'Name': 'name1'})])),
@@ -152,9 +146,7 @@ class TestYaml(unittest.TestCase):
         self.assertEqual(expected_dict, output_dict)
 
         output_template = yaml_dump(output_dict)
-        # yaml dump changes indentation, remove spaces and new line characters to just compare the text
-        self.assertEqual(re.sub(r'\n|\s', '', input_template),
-                         re.sub(r'\n|\s', '', output_template))
+        self.assertEqual(input_template, output_template)
 
     def test_yaml_merge_tag(self):
         test_yaml = """

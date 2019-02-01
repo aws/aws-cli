@@ -52,6 +52,6 @@ Contents of custom-resource-id.txt file::
 
   https://example.execute-api.us-west-2.amazonaws.com/prod/scalableTargetDimensions/1-23456789
 
-For more information about registering a custom resource, see the GitHub repository linked from the `Application Auto Scaling User Guide`_.
+For more information, see the `Application Auto Scaling User Guide`_.
 
 .. _`Application Auto Scaling User Guide`: https://docs.aws.amazon.com/autoscaling/application/userguide/what-is-application-auto-scaling.html

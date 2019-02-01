@@ -15,6 +15,7 @@ Command::
 This example command registers a scalable target from an AppStream 2.0 fleet called `myfleet`, with a minimum desired count of 1 instance and a maximum desired count of 5 instances.
 
 Command::
+
  aws application-autoscaling register-scalable-target --service-namespace appstream --scalable-dimension appstream:fleet:DesiredCapacity --resource-id fleet/myfleet --min-capacity 1 --max-capacity 5
 
 This example command registers the write capacity of DynamoDB table called `mytable` as a scalable target, with a minimum desired count of 5 write capacity units and a maximum desired count of 10 write capacity units.

@@ -18,13 +18,13 @@ Command::
 
  aws application-autoscaling register-scalable-target --service-namespace appstream --scalable-dimension appstream:fleet:DesiredCapacity --resource-id fleet/sample-fleet --min-capacity 1 --max-capacity 5
 
-This example command registers the write capacity of DynamoDB table called `my-table` as a scalable target, with a minimum desired count of 5 write capacity units and a maximum desired count of 10 write capacity units.
+This example command registers the write capacity of a DynamoDB table called `my-table` as a scalable target, with a minimum desired count of 5 write capacity units and a maximum desired count of 10 write capacity units.
 
 Command::
 
  aws application-autoscaling register-scalable-target --service-namespace dynamodb --scalable-dimension "dynamodb:table:WriteCapacityUnits" --resource-id "table/my-table" --min-capacity 5 --max-capacity 10
 
-This example command registers the write capacity of DynamoDB global secondary index called `my-table-index` as a scalable target, with a minimum desired count of 5 write capacity units and a maximum desired count of 10 write capacity units.
+This example command registers the write capacity of a DynamoDB global secondary index called `my-table-index` as a scalable target, with a minimum desired count of 5 write capacity units and a maximum desired count of 10 write capacity units.
 
 Command::
 
@@ -51,3 +51,7 @@ Command::
 Contents of custom-resource-id.txt file::
 
   https://example.execute-api.us-west-2.amazonaws.com/prod/scalableTargetDimensions/1-23456789
+
+For more information about registering a custom resource, see the GitHub repository linked from the `Application Auto Scaling User Guide`_.
+
+.. _`Application Auto Scaling User Guide`: https://docs.aws.amazon.com/autoscaling/application/userguide/what-is-application-auto-scaling.html

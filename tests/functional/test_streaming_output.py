@@ -13,9 +13,18 @@
 # language governing permissions and limitations under the License.
 from awscli.compat import six
 from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.testutils import FileCreator
 
 
 class TestStreamingOutput(BaseAWSCommandParamsTest):
+
+    def setUp(self):
+        super(TestStreamingOutput, self).setUp()
+        self.files = FileCreator()
+
+    def tearDown(self):
+        super(TestStreamingOutput, self).tearDown()
+        self.files.remove_all()
 
     def test_get_media_streaming_output(self):
         cmdline = (

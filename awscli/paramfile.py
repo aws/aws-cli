@@ -31,8 +31,11 @@ logger = logging.getLogger(__name__)
 # download the content (i.e TemplateURL in cloudformation).
 PARAMFILE_DISABLED = set([
     'api-gateway.put-integration.uri',
+    'apigatewayv2.create-integration.integration-uri',
     'appstream.create-stack.redirect-url',
+    'appstream.create-stack.feedback-url',
     'appstream.update-stack.redirect-url',
+    'appstream.update-stack.feedback-url',
     'cloudformation.create-stack.template-url',
     'cloudformation.update-stack.template-url',
     'cloudformation.create-stack-set.template-url',
@@ -82,6 +85,11 @@ PARAMFILE_DISABLED = set([
     'rds.create-db-cluster.pre-signed-url',
     'rds.copy-db-snapshot.pre-signed-url',
     'rds.create-db-instance-read-replica.pre-signed-url',
+
+    'sagemaker.create-notebook-instance.default-code-repository',
+    'sagemaker.create-notebook-instance.additional-code-repositories',
+    'sagemaker.update-notebook-instance.default-code-repository',
+    'sagemaker.update-notebook-instance.additional-code-repositories',
 
     'serverlessapplicationrepository.create-application.home-page-url',
     'serverlessapplicationrepository.create-application.license-url',

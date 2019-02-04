@@ -25,7 +25,7 @@ not match the ``Content-MD5`` provided, S3 will not store the object and
 instead will return an error message back the AWS CLI.  The AWS CLI will retry
 this error up to 5 times before giving up.  On the case that any files fail to
 transfer successfully to S3, the AWS CLI will exit with a non zero RC.
-See ``aws help returncodes`` for more information.
+See ``aws help return-codes`` for more information.
 
 If the upload request is signed with Signature Version 4, then a
 ``Content-MD5`` is not calculated.  Instead, the AWS CLI uses the
@@ -52,7 +52,7 @@ performed whenever the AWS CLI downloads objects from S3.  If the calculated
 MD5 checksum does not match the expected checksum, the file is deleted
 and the download is retried.  This process is retried up to 3 times.
 If a downloads fails, the AWS CLI will exit with a non zero RC.
-See ``aws help returncodes`` for more information.
+See ``aws help return-codes`` for more information.
 
 There are several conditions where the CLI is *not* able to verify
 checksums on downloads:

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.97
+=======
+
+* api-change:``codecommit``: Update codecommit command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+
+
 1.16.96
 =======
 

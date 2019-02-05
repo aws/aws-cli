@@ -22,13 +22,13 @@ This example command registers the write capacity of a DynamoDB table called `my
 
 Command::
 
- aws application-autoscaling register-scalable-target --service-namespace dynamodb --scalable-dimension "dynamodb:table:WriteCapacityUnits" --resource-id "table/my-table" --min-capacity 5 --max-capacity 10
+ aws application-autoscaling register-scalable-target --service-namespace dynamodb --scalable-dimension dynamodb:table:WriteCapacityUnits --resource-id table/my-table --min-capacity 5 --max-capacity 10
 
 This example command registers the write capacity of a DynamoDB global secondary index called `my-table-index` as a scalable target, with a minimum desired count of 5 write capacity units and a maximum desired count of 10 write capacity units.
 
 Command::
 
- aws application-autoscaling register-scalable-target --service-namespace dynamodb --scalable-dimension "dynamodb:index:WriteCapacityUnits" --resource-id "table/my-table/index/my-table-index" --min-capacity 5 --max-capacity 10
+ aws application-autoscaling register-scalable-target --service-namespace dynamodb --scalable-dimension dynamodb:index:WriteCapacityUnits --resource-id table/my-table/index/my-table-index --min-capacity 5 --max-capacity 10
 
 This example command registers a scalable target from an Aurora DB cluster called `my-db-cluster`, with a minimum desired count of 1 Aurora Replica and a maximum desired count of 8 Aurora Replicas.
 

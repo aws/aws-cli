@@ -81,8 +81,9 @@ def create_scratch_dir():
 def download_package_tarballs(dirname, packages):
     with cd(dirname):
         for package in packages:
-            run('pip install -d . %s==%s %s' % (
-                package, PACKAGE_VERSION[package], INSTALL_ARGS))
+            run('%s -m pip install -d . %s==%s %s' % (
+                sys.executable, package, PACKAGE_VERSION[package], INSTALL_ARGS
+            ))
 
 
 def download_cli_deps(scratch_dir):
@@ -97,7 +98,7 @@ def download_cli_deps(scratch_dir):
     # Step one create a virtualenv.
     venv_dir = tempfile.mkdtemp()
     try:
-        run('virtualenv --no-download  %s' % venv_dir)
+        run('%s -m virtualenv --no-download  %s' % (sys.executable, venv_dir))
         pip = os.path.join(venv_dir, 'bin', 'pip')
         assert os.path.isfile(pip)
         awscli_dir = os.path.dirname(
@@ -122,7 +123,7 @@ def add_cli_sdist(scratch_dir):
     if os.path.exists(os.path.join(awscli_dir, 'dist')):
         shutil.rmtree(os.path.join(awscli_dir, 'dist'))
     with cd(awscli_dir):
-        run('python setup.py sdist')
+        run('%s setup.py sdist' % sys.executable)
         filename = os.listdir('dist')[0]
         shutil.move(os.path.join('dist', filename),
                     os.path.join(scratch_dir, filename))
@@ -152,9 +153,11 @@ def zip_dir(scratch_dir):
 def verify_preconditions():
     # The pip version looks like:
     # 'pip 1.4.1 from ....'
-    pip_version = run('pip --version').strip().split()[1]
+    pip_version = run(
+        '%s -m pip --version' % sys.executable).strip().split()[1]
     # Virtualenv version just has the version string: '1.14.5\n'
-    virtualenv_version = run('virtualenv --version').strip()
+    virtualenv_version = run(
+        '%s -m virtualenv --version' % sys.executable).strip()
     _min_version_required('9.0.1', pip_version, 'pip')
     _min_version_required('15.1.0', virtualenv_version, 'virtualenv')
 

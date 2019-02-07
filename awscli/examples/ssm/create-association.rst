@@ -43,4 +43,11 @@ This example associates a configuration document with an instance, using targets
 Command::
 
   aws ssm create-association --name "AWS-UpdateSSMAgent" --targets "Key=instanceids,Values=i-0cb2b964d3e14fd9f"
-  
+
+**To associate a document using tags**
+
+This example associates a configuration document with an instance, using tag based targeting.  The Association executes Tuesdays at 16:00 UTC.
+
+Command::
+
+  aws ssm create-association --name "AWS-UpdateSSMAgent" --targets "Key=tag:Environment,Values=Prod"  --schedule-expression "cron(0 16 ? * TUE *)"

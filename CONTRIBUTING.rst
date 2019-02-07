@@ -83,6 +83,45 @@ Also, ensure your commit messages match this format::
     to 80 characters or less.
 
 
+Example Git Workflow
+~~~~~~~~~~~~~~~~~~~~
+
+Below is an example of how you can use git to create a feature branch.
+First, make sure you've created a fork of ``aws/aws-cli``.  Then you
+can run these commands::
+
+
+    # Clone the repo and set up the remotes.
+
+    $ git clone git@github.com:myusername/aws-cli.git
+    $ cd aws-cli
+    $ git remote add upstream https://github.com/aws/aws-cli.git
+    $ git fetch upstream
+    $ git merge upstream/develop
+
+    # Now to create a feature branch:
+    $ git checkout -b my-branch-name
+
+    # Now add your commits for your features.
+    $ git add path/to/my/files
+
+    # Make sure our commit message matches format described in the
+    # previous section.
+    $ git commit -m "Add support for foo"
+
+    # If we want to sync with the latest upstream changes before
+    # sending our pull request we can run:
+    $ git fetch upstream
+    $ git rebase upstream/develop
+
+    # When you're ready to send a PR, make sure you push your commits
+    # to your fork:
+    $ git push origin my-branch-name
+
+When you push to your remote, the output will contain a URL you
+can use to open a pull request.
+
+
 Reporting Issues
 ----------------
 

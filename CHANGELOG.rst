@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.101
+========
+
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``discovery``: Update discovery command to latest version
+* api-change:``dlm``: Update dlm command to latest version
+
+
 1.16.100
 ========
 

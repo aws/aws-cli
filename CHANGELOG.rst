@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.100
+========
+
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+
+
 1.16.99
 =======
 

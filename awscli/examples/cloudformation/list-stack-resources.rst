@@ -2,7 +2,7 @@
 
 The following ``list-stack-resources`` command shows the resources created by a stack::
 
-  $ aws cloudformation list-stack-resources --stack-name arn:aws:cloudformation:<region>:<account_number>:stack/<stack_name>/<stack_guid>
+  $ aws cloudformation list-stack-resources --stack-name <"StackName" or "StackId">
 
 Output::
 

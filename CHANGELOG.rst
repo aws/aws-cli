@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.102
+========
+
+* api-change:``appstream``: Update appstream command to latest version
+* api-change:``mediapackage``: Update mediapackage command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+
+
 1.16.101
 ========
 

@@ -13,6 +13,7 @@
 from awscli.customizations.s3.syncstrategy.sizeonly import SizeOnlySync
 from awscli.customizations.s3.syncstrategy.exacttimestamps import \
     ExactTimestampsSync
+from awscli.customizations.s3.syncstrategy.remoteetag import RemoteEtagSync
 from awscli.customizations.s3.syncstrategy.delete import DeleteSync
 
 
@@ -42,6 +43,9 @@ def register_sync_strategies(command_table, session, **kwargs):
 
     # Register the exact timestamps sync strategy.
     register_sync_strategy(session, ExactTimestampsSync)
+
+    # Register the remote etag sync strategy.
+    register_sync_strategy(session, RemoteEtagSync)
 
     # Register the delete sync strategy.
     register_sync_strategy(session, DeleteSync, 'file_not_at_src')

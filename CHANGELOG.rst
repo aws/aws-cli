@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.103
+========
+
+* api-change:``lambda``: Update lambda command to latest version
+
+
 1.16.102
 ========
 

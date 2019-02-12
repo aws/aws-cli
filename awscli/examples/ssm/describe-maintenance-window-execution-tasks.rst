@@ -1,6 +1,6 @@
 **To list all tasks associated with a Maintenance Window Execution**
 
-This example lists the tasks associated with a maintenance window execution.
+This example lists the tasks associated with a Maintenance Window execution.
 
 Command::
 

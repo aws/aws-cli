@@ -1,6 +1,6 @@
 **To get information about a Maintenance Window task execution**
 
-This example lists information about a task that was part of a maintenance window execution.
+This example lists information about a task that was part of a Maintenance Window execution.
 
 Command::
 

@@ -47,6 +47,16 @@ Output::
 
 This example creates a volume and applies two tags: ``purpose`` = ``production``, and ``cost-center`` = ``cc123``.
 
-Command::
+Command (Linux)::
 
   aws ec2 create-volume --availability-zone us-east-1a --volume-type gp2 --size 80 --tag-specifications 'ResourceType=volume,Tags=[{Key=purpose,Value=production},{Key=cost-center,Value=cc123}]'
+ 
+Command (Windows)::
+
+  aws ec2 create-volume --availability-zone us-east-1a --volume-type gp2 --size 80 --tag-specifications "ResourceType=volume,Tags=[{Key=purpose,Value=production},{Key=cost-center,Value=cc123}]"
+  
+or
+  
+  aws ec2 create-volume --availability-zone us-east-1a --volume-type gp2 --size 80 --tag-specifications=ResourceType=volume,Tags=[{Key=purpose,Value=production},{Key=cost-center,Value=cc123}]
+  
+ 

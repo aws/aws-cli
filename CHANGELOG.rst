@@ -2,6 +2,115 @@
 CHANGELOG
 =========
 
+1.16.103
+========
+
+* api-change:``lambda``: Update lambda command to latest version
+
+
+1.16.102
+========
+
+* api-change:``appstream``: Update appstream command to latest version
+* api-change:``mediapackage``: Update mediapackage command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+
+
+1.16.101
+========
+
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``discovery``: Update discovery command to latest version
+* api-change:``dlm``: Update dlm command to latest version
+
+
+1.16.100
+========
+
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+
+
+1.16.99
+=======
+
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.16.98
+=======
+
+* api-change:``shield``: Update shield command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+
+
+1.16.97
+=======
+
+* api-change:``codecommit``: Update codecommit command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+
+
+1.16.96
+=======
+
+* api-change:``devicefarm``: Update devicefarm command to latest version
+* api-change:``mediaconnect``: Update mediaconnect command to latest version
+* api-change:``codecommit``: Update codecommit command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+
+
+1.16.95
+=======
+
+* api-change:``logs``: Update logs command to latest version
+* api-change:``ecr``: Update ecr command to latest version
+* api-change:``sms-voice``: Update sms-voice command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+
+
+1.16.94
+=======
+
+* api-change:``acm-pca``: Update acm-pca command to latest version
+* api-change:``apigatewaymanagementapi``: Update apigatewaymanagementapi command to latest version
+* api-change:``worklink``: Update worklink command to latest version
+
+
+1.16.93
+=======
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``fms``: Update fms command to latest version
+* api-change:``discovery``: Update discovery command to latest version
+* api-change:``appstream``: Update appstream command to latest version
+
+
+1.16.92
+=======
+
+* api-change:``glue``: Update glue command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.16.91
+=======
+
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+
+
 1.16.90
 =======
 

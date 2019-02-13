@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.104
+========
+
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``efs``: Update efs command to latest version
+* api-change:``mediatailor``: Update mediatailor command to latest version
+
+
 1.16.103
 ========
 

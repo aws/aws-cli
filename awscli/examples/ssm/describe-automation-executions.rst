@@ -33,5 +33,5 @@ This example shows the details about a specific Automation Execution.
 
 Command::
 
-   aws ssm get-automation-execution --automation-execution-id "4105a4fc-f944-11e6-9d32-8fb2db27a909"
+   aws ssm describe-automation-executions --filter "Key=ExecutionId,Values=4105a4fc-f944-11e6-9d32-8fb2db27a909"
    

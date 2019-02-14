@@ -1,6 +1,6 @@
 **To start a Session Manager session**
 
-This example makes a connection with an instance for a Session Manager session.
+This example establishes a connection with an instance for a Session Manager session.
 
 Note that this interactive command requires the Session Manager plugin to be installed on the client machine making the call. For more information, see `<link-text>` in the *AWS Systems Manager User Guide*.
 

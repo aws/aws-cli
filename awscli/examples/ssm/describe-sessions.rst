@@ -1,6 +1,6 @@
 **To list all active Session Manager sessions**
 
-This example retrieves a list of the most recently created active sessions (both connected and disconnected) sessions from the past 30 days that were started by a particular user. 
+This example retrieves a list of the active sessions created most recently (both connected and disconnected sessions) over the past 30 days that were started by a particular user. 
 
 Command::
 

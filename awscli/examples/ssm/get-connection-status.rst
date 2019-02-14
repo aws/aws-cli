@@ -1,6 +1,6 @@
 **To determine whether connections can be made to an instance**
 
-This example retrieves the Session Manager connection status for an instance to determine whether configured and able to receive Session Manager connections. 
+This example retrieves the Session Manager connection status for an instance to determine whether it is configured and able to receive Session Manager connections. 
 
 Command::
 

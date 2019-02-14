@@ -4,48 +4,73 @@ This example runs an echo command on a target instance.
 
 Command::
 
-  aws ssm send-command --document-name "AWS-RunPowerShellScript" --parameters commands=["echo helloWorld"] --targets "Key=instanceids,Values=i-0cb2b964d3e14fd9f"
+  aws ssm send-command --document-name "AWS-RunShellScript" --parameters commands=["ifconfig"] --targets "Key=instanceids,Values=i-1234567890abcdef0"
   
 Output::
 
   {
     "Command": {
-        "Comment": "",
-        "Status": "Pending",
-        "MaxErrors": "0",
+        "CommandId": "92853adf-ba41-4cd6-9a88-142d119c083d",
+        "DocumentName": "AWS-RunShellScript",
+        "DocumentVersion": "",
+        "Comment": "IP config",
+        "ExpiresAfter": 1550181014.717,
         "Parameters": {
             "commands": [
-                "echo helloWorld"
+                "ifconfig"
             ]
         },
-        "ExpiresAfter": 1487888845.833,
-        "ServiceRole": "",
-        "DocumentName": "AWS-RunPowerShellScript",
-        "TargetCount": 0,
+        "InstanceIds": [
+            "i-0f00f008a2dcbefe2"
+        ],
+        "Targets": [],
+        "RequestedDateTime": 1550173814.717,
+        "Status": "Pending",
+        "StatusDetails": "Pending",
         "OutputS3BucketName": "",
+        "OutputS3KeyPrefix": "",
+        "MaxConcurrency": "50",
+        "MaxErrors": "0",
+        "TargetCount": 1,
+        "CompletedCount": 0,
+        "ErrorCount": 0,
+        "DeliveryTimedOutCount": 0,
+        "ServiceRole": "",
         "NotificationConfig": {
             "NotificationArn": "",
             "NotificationEvents": [],
             "NotificationType": ""
         },
-        "CompletedCount": 0,
-        "Targets": [
-            {
-                "Values": [
-                    "i-0cb2b964d3e14fd9f"
-                ],
-                "Key": "instanceids"
-            }
-        ],
-        "StatusDetails": "Pending",
-        "ErrorCount": 0,
-        "OutputS3KeyPrefix": "",
-        "RequestedDateTime": 1487885245.833,
-        "CommandId": "0d4fc863-2154-4e46-990e-d6a952469e91",
-        "InstanceIds": [],
-        "MaxConcurrency": "50"
+        "CloudWatchOutputConfig": {
+            "CloudWatchLogGroupName": "",
+            "CloudWatchOutputEnabled": false
+        }
     }
   }
+
+**To execute a command on instances using tags**
+
+This example executes a command that targets instances using the tag key "ENV" and the value "Dev".
+
+Command::
+
+  aws ssm send-command --targets "Key=tag:ENV,Values=Dev" --document-name "AWS-RunShellScript" --parameters "commands=ifconfig"
+
+**To execute a command that sends SNS Notifications**
+
+This example executes a command that is configured to send SNS notifications for all notification events and the Command notification type.
+
+Command::
+
+  aws ssm send-command --instance-ids "i-1234567890abcdef0" --document-name "AWS-RunShellScript" --comment "IP config" --parameters "commands=ifconfig" --service-role-arn "arn:aws:iam::123456789012:role/SNS_Role" --notification-config "NotificationArn=arn:aws:sns:us-east-1:123456789012:SNSTopicName,NotificationEvents=All,NotificationType=Command"
+
+**To execute a command that outputs to S3 and CloudWatch**
+
+This example executes a command that is configured to output command details to an S3 bucket and to a CloudWatch Logs Group.
+
+Command::
+
+  aws ssm send-command --instance-ids "i-1234567890abcdef0" --document-name "AWS-RunShellScript" --comment "IP config" --parameters "commands=ifconfig" --output-s3-bucket-name "s3-bucket-name" --output-s3-key-prefix "runcommand" --cloud-watch-output-config "CloudWatchOutputEnabled=true,CloudWatchLogGroupName=CWLGroupName"
 
 **To get IP information about an instance**
 
@@ -53,4 +78,4 @@ This example gets the IP information about an instance.
 
 Command::
 
-  aws ssm send-command --instance-ids "i-0cb2b964d3e14fd9f" --document-name "AWS-RunShellScript" --comment "IP config" --parameters "commands=ifconfig" --output text
+  aws ssm send-command --instance-ids "i-1234567890abcdef0" --document-name "AWS-RunShellScript" --comment "IP config" --parameters "commands=ifconfig"

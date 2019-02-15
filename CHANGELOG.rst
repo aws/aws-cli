@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.106
+========
+
+* api-change:``iot``: Update iot command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+
+
 1.16.105
 ========
 

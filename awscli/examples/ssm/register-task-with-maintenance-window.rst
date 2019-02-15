@@ -56,7 +56,7 @@ Output::
 	
 **To register a task using a Maintenance Windows target ID**
 	
-This example registers a task using a Maintenance Window target ID. The maintenance window target ID was in the output of the ``aws ssm register-target-with-maintenance-window`` command, otherwise you can retrieve it from the output of the ``aws ssm describe-maintenance-window-targets`` command.
+This example registers a task using a Maintenance Window target ID. The Maintenance Window target ID was in the output of the ``aws ssm register-target-with-maintenance-window`` command, otherwise you can retrieve it from the output of the ``aws ssm describe-maintenance-window-targets`` command.
 
 Command::
 

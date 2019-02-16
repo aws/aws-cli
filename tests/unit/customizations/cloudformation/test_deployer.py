@@ -251,7 +251,7 @@ class TestDeployer(unittest.TestCase):
         self.deployer.has_stack.return_value = False
 
         self.stub_client.add_client_error(
-                'create_change_set', "Somethign is wrong", "Service is bad")
+                'create_change_set', "Something is wrong", "Service is bad")
         with self.stub_client:
             with self.assertRaises(botocore.exceptions.ClientError):
                 self.deployer.create_changeset(stack_name, template, parameters,
@@ -275,7 +275,7 @@ class TestDeployer(unittest.TestCase):
         changeset_id = "changeset_id"
 
         self.stub_client.add_client_error(
-                'execute_change_set', "Somethign is wrong", "Service is bad")
+                'execute_change_set', "Something is wrong", "Service is bad")
         with self.stub_client:
             with self.assertRaises(botocore.exceptions.ClientError):
                 self.deployer.execute_changeset(changeset_id, stack_name)

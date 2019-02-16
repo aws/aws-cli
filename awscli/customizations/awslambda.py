@@ -50,7 +50,7 @@ class ZipFileArgumentHoister(object):
 
     Injects a top-level ZipFileArgument into the argument table which maps
     a --zip-file parameter to the underlying ``serialized_name`` ZipFile
-    shape. Repalces the old ZipFile argument with an instance of
+    shape. Replaces the old ZipFile argument with an instance of
     ReplacedZipFileArgument to prevent its usage and recommend the new
     top-level injected parameter.
     """
@@ -122,7 +122,7 @@ class ZipFileArgument(CustomArgument):
 
 
 class ReplacedZipFileArgument(CLIArgument):
-    """A replacement arugment for nested ZipFile argument.
+    """A replacement argument for nested ZipFile argument.
 
     This prevents the use of a non-working nested argument that expects binary.
     Instead an instance of ZipFileArgument should be injected at the top level

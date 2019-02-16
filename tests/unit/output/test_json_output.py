@@ -125,7 +125,7 @@ class TestFormattersHandleClosedPipes(unittest.TestCase):
         fake_closed_stream.flush.side_effect = IOError
         formatter = JSONFormatter(args)
         formatter('command_name', response, stream=fake_closed_stream)
-        # We should not have let the IOError propogate, but
+        # We should not have let the IOError propagate, but
         # we still should have called the flush() on the
         # stream.
         fake_closed_stream.flush.assert_called_with()

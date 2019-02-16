@@ -29,7 +29,7 @@ class TestIntegGenerateCliSkeleton(unittest.TestCase):
     operations that do not have many input options for the sake of readablity
     and maintenance. These are essentially smoke tests. It is not trying to
     test the different types of input shapes that can be generated in the
-    skeleton. It is only testing wheter the skeleton generator argument works
+    skeleton. It is only testing whether the skeleton generator argument works
     for various services.
     """
     def test_generate_cli_skeleton_s3api(self):

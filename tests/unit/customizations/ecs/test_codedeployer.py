@@ -65,7 +65,7 @@ class TestCodeDeployer(unittest.TestCase):
         bad_deployer = CodeDeployer(None, invalid_appspec)
 
         with self.assertRaises(MissingPropertyError):
-            bad_deployer.update_task_def_arn('arn:aws:ecs:task-definiton/test')
+            bad_deployer.update_task_def_arn('arn:aws:ecs:task-definition/test')
 
     def test_get_create_deploy_request(self):
         test_app = 'test-application'

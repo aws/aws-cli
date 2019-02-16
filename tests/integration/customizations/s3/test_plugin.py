@@ -1299,7 +1299,7 @@ class TestOutput(BaseS3IntegrationTest):
         self.assertEqual(p.rc, 1)
         self.assertIn('upload failed', p.stderr)
 
-    def test_error_ouput_quiet(self):
+    def test_error_output_quiet(self):
         foo_txt = self.files.create_file('foo.txt', 'foo contents')
 
         # Copy file into bucket.
@@ -1309,7 +1309,7 @@ class TestOutput(BaseS3IntegrationTest):
         self.assertEqual(p.rc, 1)
         self.assertEqual('', p.stderr)
 
-    def test_error_ouput_only_show_errors(self):
+    def test_error_output_only_show_errors(self):
         foo_txt = self.files.create_file('foo.txt', 'foo contents')
 
         # Copy file into bucket.
@@ -1777,7 +1777,7 @@ class TestStreams(BaseS3IntegrationTest):
     def test_multipart_download(self):
         """
         This tests the ability to multipart download streams to stdout.
-        The data has some unicode in it to avoid having to do a seperate
+        The data has some unicode in it to avoid having to do a separate
         multipart download test just for unicode.
         """
         bucket_name = _SHARED_BUCKET

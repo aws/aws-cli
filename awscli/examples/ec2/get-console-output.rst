@@ -1,6 +1,6 @@
 **To get the console output**
 
-This example gets the console ouput for the specified Linux instance.
+This example gets the console output for the specified Linux instance.
 
 Command::
 

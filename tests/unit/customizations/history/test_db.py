@@ -146,7 +146,7 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
         handler = DatabaseHistoryHandler(writer, record_builder)
         payload = {'body': b'data'}
         # In order for an http_request to have a request_id it must have been
-        # preceeded by an api_call record.
+        # preceded by an api_call record.
         handler.emit('API_CALL', '', 'BOTOCORE')
         handler.emit('HTTP_REQUEST', payload, 'BOTOCORE')
         call = writer.write_record.call_args[0][0]
@@ -167,7 +167,7 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
         handler = DatabaseHistoryHandler(writer, record_builder)
         payload = {'body': b'data'}
         # In order for an http_response to have a request_id it must have been
-        # preceeded by an api_call record.
+        # preceded by an api_call record.
         handler.emit('API_CALL', '', 'BOTOCORE')
         handler.emit('HTTP_RESPONSE', payload, 'BOTOCORE')
         call = writer.write_record.call_args[0][0]
@@ -188,7 +188,7 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
         handler = DatabaseHistoryHandler(writer, record_builder)
         payload = {'metadata': {'data': 'foobar'}}
         # In order for an http_response to have a request_id it must have been
-        # preceeded by an api_call record.
+        # preceded by an api_call record.
         handler.emit('API_CALL', '', 'BOTOCORE')
         handler.emit('PARSED_RESPONSE', payload, 'BOTOCORE')
         call = writer.write_record.call_args[0][0]

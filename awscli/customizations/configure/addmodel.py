@@ -60,7 +60,7 @@ def get_model_location(session, service_definition, service_name=None):
         and the service definition.
 
     :returns: The path to where are model should be placed based on
-        the service defintion and the current services in botocore.
+        the service definition and the current services in botocore.
     """
     # Add the ServiceModel abstraction over the service json definition to
     # make it easier to work with.

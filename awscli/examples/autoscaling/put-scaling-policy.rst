@@ -1,6 +1,6 @@
 **To add a scaling policy to an Auto Scaling group**
 
-This example adds the specified policy to the specified Auto Scaling group::
+This example adds a simple scaling policy to the specified Auto Scaling group::
 
     aws autoscaling put-scaling-policy --auto-scaling-group-name my-auto-scaling-group --policy-name ScaleIn --scaling-adjustment -1 --adjustment-type ChangeInCapacity
 

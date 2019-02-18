@@ -299,14 +299,22 @@ class TestBucketVersionsList(unittest.TestCase):
             {'Versions': self.individual_response_elements[:3]},
             {'DeleteMarkers': self.individual_response_elements[3:]}
         ]
+        self.client.get_paginator.return_value.paginate = self.fake_paginate
+        self.lister = BucketLister(self.client)
 
     def fake_paginate(self, *args, **kwargs):
         return self.responses
 
     def test_list_objects_with_date(self):
-        self.client.get_paginator.return_value.paginate = self.fake_paginate
-        lister = BucketLister(self.client)
-        objects = list(lister.list_objects(bucket='foo', date='2010'))
+        objects = list(self.lister.list_objects(bucket='foo', date='2010'))
+        self.assertEqual(objects,
+            [('foo/my-image.jpg', self.individual_response_elements[0])]
+        )
+
+    def test_list__single_object_with_date(self):
+        objects = list(self.lister.list_objects(
+            bucket='foo', date='2010', prefix='foo/my-image.jpg'
+        ))
         self.assertEqual(objects,
             [('foo/my-image.jpg', self.individual_response_elements[0])]
         )

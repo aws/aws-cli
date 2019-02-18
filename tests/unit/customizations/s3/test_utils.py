@@ -311,7 +311,7 @@ class TestBucketVersionsList(unittest.TestCase):
             [('foo/my-image.jpg', self.individual_response_elements[0])]
         )
 
-    def test_list__single_object_with_date(self):
+    def test_list_single_object_with_date(self):
         objects = list(self.lister.list_objects(
             bucket='foo', date='2010', prefix='foo/my-image.jpg'
         ))

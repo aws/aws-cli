@@ -1,4 +1,5 @@
 # Copyright 2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2019 Transposit Corporation. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -495,6 +496,46 @@ class S3FileGeneratorTest(BaseAWSCommandParamsTest):
         params = {'region': 'us-east-1'}
         self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
                                   "LastModified": "2014-01-09T20:45:49.000Z"}]
+        self.patch_make_request()
+
+        file_gen = FileGenerator(self.client, '')
+        files = file_gen.call(input_s3_file)
+        result_list = []
+        for filename in files:
+            result_list.append(filename)
+        file_stat = FileStat(src=self.file1, dest='text1.txt',
+                             compare_key='text1.txt',
+                             size=result_list[0].size,
+                             last_update=result_list[0].last_update,
+                             src_type='s3',
+                             dest_type='local', operation_name='')
+
+        ref_list = [file_stat]
+        self.assertEqual(len(result_list), len(ref_list))
+        for i in range(len(result_list)):
+            compare_files(self, result_list[i], ref_list[i])
+
+    def test_s3_file_with_date(self):
+        """
+        Generate a single s3 file version capped by date
+        """
+        input_s3_file = {'src': {'path': self.file1, 'type': 's3'},
+                         'dest': {'path': 'text1.txt', 'type': 'local'},
+                         'dir_op': False, 'use_src_name': False, 'date': '2010'}
+        params = {'region': 'us-east-1'}
+        self.parsed_responses = [
+            {
+                'Versions': [{
+                    'Key': 'text1.txt',
+                    'VersionId': '3/L4kqtJl40Nr8X8gdRQBpUMLUo',
+                    'LastModified': '2009-10-12T17:50:30.000Z'
+                }]
+            },
+            {
+                'LastModified': '2009-10-12T17:50:30.000Z',
+                'ContentLength': 100
+            }
+        ]
         self.patch_make_request()
 
         file_gen = FileGenerator(self.client, '')

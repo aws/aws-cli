@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.108
+========
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``efs``: Update efs command to latest version
+* api-change:``ds``: Update ds command to latest version
+
+
 1.16.107
 ========
 

@@ -4,10 +4,10 @@ This example permanently ends a session that was created by the user "Bob" and c
 
 Command::
 
-  aws ssm terminate-session --session-id "Bob-0df8b88b07EXAMPLE"
-  
+  aws ssm terminate-session --session-id "Bob-07a16060613c408b5"
+
 Output::
 
   {
-    "SessionId": "Bob-0df8b88b07EXAMPLE"
-  } 
+    "SessionId": "Bob-07a16060613c408b5"
+  }

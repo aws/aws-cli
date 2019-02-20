@@ -1,70 +1,64 @@
 **To list all active Session Manager sessions**
 
-This example retrieves a list of the active sessions created most recently (both connected and disconnected sessions) over the past 30 days that were started by a particular user. 
+This example retrieves a list of the active sessions created most recently (both connected and disconnected sessions) over the past 30 days that were started by a particular user.
 
 Command::
 
-  aws ssm describe-sessions --state "Active" --max-results 25 --filters "key=Owner, value=arn:aws:iam::123456789012:user/Bob” 
-  
+  aws ssm describe-sessions --state "Active" --filters "key=Owner,value=arn:aws:sts::123456789012:assumed-role/Administrator/Matt"
+
 Output::
 
   {
     "Sessions": [
         {
-            "SessionId": "Bob-0cd1b1a98fEXAMPLE",
-            "Target": "i-01d8e37ef8EXAMPLE",
+            "SessionId": "Matt-07a16060613c408b5",
+            "Target": "i-1234567890abcdef0",
             "Status": "Connected",
-            "StartDate": 1541546231.193,
-            "Owner": "aws:iam::123456789012:user/Bob",
+            "StartDate": 1550676938.352,
+            "Owner": "arn:aws:sts::123456789012:assumed-role/Administrator/Matt",
             "OutputUrl": {}
         },
         {
-            "SessionId": "tw-marbak-0d24bd8cc041095cd",
-            "Target": "i-37ef801d8eEXAMPLE",
+            "SessionId": "Matt-01edf534b8b56e8eb",
+            "Target": "i-9876543210abcdef0",
             "Status": "Connected",
-            "StartDate": 1541545487.73,
-            "DocumentName": "SSM-SessionManagerRunShell",
-            "Owner": "aws:iam::123456789012:user/Bob",
+            "StartDate": 1550676842.194,
+            "Owner": "arn:aws:sts::123456789012:assumed-role/Administrator/Matt",
             "OutputUrl": {}
         }
     ]
-}
+  }
 
 **To list all terminated Session Manager sessions**
 
-This example retrieves a list of the most recently terminated sessions from the past 30 days for all users. 
+This example retrieves a list of the most recently terminated sessions from the past 30 days for all users.
 
 Command::
 
   aws ssm describe-sessions --state "History"
-  
+
 Output::
 
   {
     "Sessions": [
         {
-            "SessionId": "Bob-05c56a28bdEXAMPLE",
-            "Target": "i-0de68d8bd2EXAMPLE",
+            "SessionId": "Dan-0022b1eb2b0d9e3bd",
+            "Target": "i-1234567890abcdef0",
             "Status": "Terminated",
-            "StartDate": 1541449551.82,
-            "EndDate": 1541451079.541,
-            "Owner": "arn:aws:iam::123456789012:user/Bob"
+            "StartDate": 1550520701.256,
+            "EndDate": 1550521931.563,
+            "Owner": "arn:aws:sts::123456789012:assumed-role/Administrator/Dan"
         },
         {
-            "SessionId": "Jane-004800a5f0EXAMPLE",
-            "Target": "i-d8bd20de68EXAMPLE",
+            "SessionId": "Erik-0db53f487931ed9d4",
+            "Target": "i-9876543210abcdef0",
             "Status": "Terminated",
-            "StartDate": 1541449401.316,
-            "EndDate": 1541451613.428,
-            "Owner": "arn:aws:iam::123456789012:user/Jane"
+            "StartDate": 1550161369.149,
+            "EndDate": 1550162580.329,
+            "Owner": "arn:aws:sts::123456789012:assumed-role/Administrator/Erik"
         },
-        {
-            "SessionId": "Bob-0d00ec80d0EXAMPLE",
-            "Target": "i-0de68d8bd2EXAMPLE",
-            "Status": "Terminated",
-            "StartDate": 1541448657.394,
-            "EndDate": 1541450094.448,
-            "Owner": "arn:aws:iam::123456789012:user/Bob"
-        }
-	]
-}
+		...
+    ],
+    "NextToken": "--token string truncated--"
+  }
+  

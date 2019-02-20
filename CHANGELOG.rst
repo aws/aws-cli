@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.109
+========
+
+* api-change:``codecommit``: Update codecommit command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``directconnect``: Update directconnect command to latest version
+
+
 1.16.108
 ========
 

@@ -14,6 +14,48 @@
 from awscli.customizations.emr import helptext
 from awscli.customizations.emr.createdefaultroles import EC2_ROLE_NAME
 
+CONFIGURATIONS_PROPERTIES_SCHEMA = {
+    "type": "map",
+    "key": {
+        "type": "string",
+        "description": "Configuration key"
+    },
+    "value": {
+        "type": "string",
+        "description": "Configuration value"
+    },
+    "description": "Application configuration properties"
+}
+
+CONFIGURATIONS_CLASSIFICATION_SCHEMA = {
+    "type": "string",
+    "description": "Application configuration classification name",
+}
+
+INNER_CONFIGURATIONS_SCHEMA = {
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "Classification": CONFIGURATIONS_CLASSIFICATION_SCHEMA,
+            "Properties": CONFIGURATIONS_PROPERTIES_SCHEMA
+        }
+    },
+    "description": "Instance group application configurations."
+}
+
+OUTER_CONFIGURATIONS_SCHEMA = {
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "Classification": CONFIGURATIONS_CLASSIFICATION_SCHEMA,
+            "Properties": CONFIGURATIONS_PROPERTIES_SCHEMA,
+            "Configurations": INNER_CONFIGURATIONS_SCHEMA
+        }
+    },
+    "description": "Instance group application configurations."
+}
 
 INSTANCE_GROUPS_SCHEMA = {
     "type": "array",
@@ -236,7 +278,8 @@ INSTANCE_GROUPS_SCHEMA = {
                         }
                     }
                 }
-            }
+            },
+            "Configurations": OUTER_CONFIGURATIONS_SCHEMA
         }
     }
 }
@@ -336,12 +379,7 @@ INSTANCE_FLEETS_SCHEMA = {
                                 }
                             }
                         },
-
-                        "Configurations": {
-                            "type": "string",
-                            "description":
-                                "Additional configiration data."
-                        }
+                        "Configurations": OUTER_CONFIGURATIONS_SCHEMA
                     }
                 }
             },

@@ -1,4 +1,4 @@
-**To resume a Session Manager Session**
+**To resume a Session Manager session**
 
 This example resumes a Session Manager session with an instance after it has been disconnected.
 

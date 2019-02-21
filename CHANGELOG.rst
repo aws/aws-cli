@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.16.110
+========
+
+* api-change:``kinesisvideo``: Update kinesisvideo command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``kinesis-video-archived-media``: Update kinesis-video-archived-media command to latest version
+* api-change:``kinesis-video-media``: Update kinesis-video-media command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``workdocs``: Update workdocs command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``transfer``: Update transfer command to latest version
+
+
 1.16.109
 ========
 

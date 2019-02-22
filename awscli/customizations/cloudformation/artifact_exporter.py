@@ -344,6 +344,22 @@ class AppSyncResolverResponseTemplateResource(Resource):
     PACKAGE_NULL_PROPERTY = False
 
 
+class AppSyncFunctionConfigurationRequestTemplateResource(Resource):
+    RESOURCE_TYPE = "AWS::AppSync::FunctionConfiguration"
+    PROPERTY_NAME = "RequestMappingTemplateS3Location"
+    # Don't package the directory if RequestMappingTemplateS3Location is omitted.
+    # Necessary to support RequestMappingTemplate
+    PACKAGE_NULL_PROPERTY = False
+
+
+class AppSyncFunctionConfigurationResponseTemplateResource(Resource):
+    RESOURCE_TYPE = "AWS::AppSync::FunctionConfiguration"
+    PROPERTY_NAME = "ResponseMappingTemplateS3Location"
+    # Don't package the directory if ResponseMappingTemplateS3Location is omitted.
+    # Necessary to support ResponseMappingTemplate
+    PACKAGE_NULL_PROPERTY = False
+
+
 class LambdaFunctionResource(ResourceWithS3UrlDict):
     RESOURCE_TYPE = "AWS::Lambda::Function"
     PROPERTY_NAME = "Code"
@@ -462,6 +478,8 @@ RESOURCES_EXPORT_LIST = [
     GraphQLSchemaResource,
     AppSyncResolverRequestTemplateResource,
     AppSyncResolverResponseTemplateResource,
+    AppSyncFunctionConfigurationRequestTemplateResource,
+    AppSyncFunctionConfigurationResponseTemplateResource,
     ApiGatewayRestApiResource,
     LambdaFunctionResource,
     ElasticBeanstalkApplicationVersion,

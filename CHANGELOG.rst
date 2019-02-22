@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.111
+========
+
+* api-change:``stepfunctions``: Update stepfunctions command to latest version
+* api-change:``athena``: Update athena command to latest version
+* api-change:``cloud9``: Update cloud9 command to latest version
+* api-change:``glue``: Update glue command to latest version
+
+
 1.16.110
 ========
 

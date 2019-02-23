@@ -75,6 +75,9 @@ setup_options = dict(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],
+    project_urls={
+        'Source': 'https://github.com/aws/aws-cli',
+    },
 )
 
 if 'py2exe' in sys.argv:

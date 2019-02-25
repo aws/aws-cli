@@ -1,6 +1,6 @@
 The following command creates a replication task to copy data from one DB instance behind a DMS endpoint to another using a replication instance::
 
-  aws dms create-replication-task --replicationtask-identifier my-replication-task --target-endpoint-arn arn:aws:dms:us-east-1:123456789012:endpoint:HTWNT57CLN2WGVBUJQXJZASXWE --source-endpoint-arn arn:aws:dms:us-east-1:123456789012:endpoint:ZW5UAN6P4E77EC7YWHK4RZZ3BE --replication-instance-arn arn:aws:dms:us-east-1:123456789012:rep:6UTDJGBOUS3VI3SUWA66XFJCJQ --migration-type full-load --table-mappings 'file://table-mappings.json'
+  aws dms create-replication-task --replication-task-identifier my-replication-task --target-endpoint-arn arn:aws:dms:us-east-1:123456789012:endpoint:HTWNT57CLN2WGVBUJQXJZASXWE --source-endpoint-arn arn:aws:dms:us-east-1:123456789012:endpoint:ZW5UAN6P4E77EC7YWHK4RZZ3BE --replication-instance-arn arn:aws:dms:us-east-1:123456789012:rep:6UTDJGBOUS3VI3SUWA66XFJCJQ --migration-type full-load --table-mappings 'file://table-mappings.json'
 
 The file ``table-mappings.json`` is a JSON document in the current folder that specifies table mappings::
 

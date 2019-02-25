@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.112
+========
+
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``mediastore``: Update mediastore command to latest version
+
+
 1.16.111
 ========
 

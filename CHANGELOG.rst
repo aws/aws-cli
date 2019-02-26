@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.16.113
+========
+
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+* api-change:``resource-groups``: Update resource-groups command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``discovery``: Update discovery command to latest version
+* api-change:``cur``: Update cur command to latest version
+
+
 1.16.112
 ========
 

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.114
+========
+
+* api-change:``waf``: Update waf command to latest version
+* api-change:``waf-regional``: Update waf-regional command to latest version
+
+
 1.16.113
 ========
 

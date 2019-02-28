@@ -659,7 +659,13 @@ class PresignCommand(S3Command):
                   'cli_type_name': 'integer',
                   'help_text': (
                       'Number of seconds until the pre-signed '
-                      'URL expires.  Default is 3600 seconds.')}]
+                      'URL expires.  Default is 3600 seconds.')},
+                 {'name': 'http-method', 'default' : 'get_object',
+                  'cli_type_name': 'string',
+                  'help_text': (
+                      'HTTP request type for pre-signed URL'
+                      'get_object to download and put_object '
+                      'to upload.')}]
 
     def _run_main(self, parsed_args, parsed_globals):
         super(PresignCommand, self)._run_main(parsed_args, parsed_globals)
@@ -668,7 +674,7 @@ class PresignCommand(S3Command):
             path = path[5:]
         bucket, key = find_bucket_key(path)
         url = self.client.generate_presigned_url(
-            'get_object',
+            parsed_args.http_method,
             {'Bucket': bucket, 'Key': key},
             ExpiresIn=parsed_args.expires_in
         )

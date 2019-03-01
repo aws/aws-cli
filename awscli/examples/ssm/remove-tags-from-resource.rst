@@ -4,4 +4,4 @@ This example removes the tags from a patch baseline. There is no output if the c
 
 Command::
 
-  aws ssm remove-tags-from-resource --resource-type "PatchBaseline" --resource-id "pb-0869b5cf84fa07081" --tag-keys "Project"
+  aws ssm remove-tags-from-resource --resource-type "PatchBaseline" --resource-id "pb-0123456789abcdef0" --tag-keys "Project"

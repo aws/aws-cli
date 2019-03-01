@@ -648,24 +648,26 @@ class PresignCommand(S3Command):
     NAME = 'presign'
     DESCRIPTION = (
         "Generate a pre-signed URL for an Amazon S3 object. This allows "
-        "anyone who receives the pre-signed URL to retrieve the S3 object "
-        "with an HTTP GET request. For sigv4 requests the region needs to be "
+        "anyone who receives the pre-signed URL to retrieve or upload the S3 object "
+        "with an HTTP GET / PUT request. For sigv4 requests the region needs to be "
         "configured explicitly."
     )
     USAGE = "<S3Uri>"
-    ARG_TABLE = [{'name': 'path',
+    ARG_TABLE = [{'name': 'client-method', 'default' : 'get_object',
+                  'cli_type_name': 'string',
+                  'help_text': (
+                      'Client Method for pre-signed URL '
+                      'get_object to retrieve the S3 object from bucket '
+                      'and put_object to upload the S3 object to bucket. '
+                      'Default is get_object.')},
+                 {'name': 'path',
                   'positional_arg': True, 'synopsis': USAGE},
                  {'name': 'expires-in', 'default': 3600,
                   'cli_type_name': 'integer',
                   'help_text': (
                       'Number of seconds until the pre-signed '
-                      'URL expires.  Default is 3600 seconds.')},
-                 {'name': 'http-method', 'default' : 'get_object',
-                  'cli_type_name': 'string',
-                  'help_text': (
-                      'HTTP request type for pre-signed URL'
-                      'get_object to download and put_object '
-                      'to upload.')}]
+                      'URL expires.  Default is 3600 seconds.')}
+                 ]
 
     def _run_main(self, parsed_args, parsed_globals):
         super(PresignCommand, self)._run_main(parsed_args, parsed_globals)
@@ -674,7 +676,7 @@ class PresignCommand(S3Command):
             path = path[5:]
         bucket, key = find_bucket_key(path)
         url = self.client.generate_presigned_url(
-            parsed_args.http_method,
+            parsed_args.client_method,
             {'Bucket': bucket, 'Key': key},
             ExpiresIn=parsed_args.expires_in
         )

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.117
+========
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``mediapackage``: Update mediapackage command to latest version
+
+
 1.16.116
 ========
 

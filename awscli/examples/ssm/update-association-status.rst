@@ -4,38 +4,40 @@ This example updates the association status of the association between an instan
 
 Command::
 
-  aws ssm update-association-status --name "AWS-UpdateSSMAgent" --instance-id "i-0000293ffd8c57862" --association-status "Date=1424421071.939,Name=Pending,Message=temp_status_change,AdditionalInfo=Additional-Config-Needed"
+  aws ssm update-association-status --name "AWS-UpdateSSMAgent" --instance-id "i-1234567890abcdef0" --association-status "Date=1424421071.939,Name=Pending,Message=temp_status_change,AdditionalInfo=Additional-Config-Needed"
 
 Output::
 
   {
     "AssociationDescription": {
+        "Name": "AWS-UpdateSSMAgent",
+        "InstanceId": "i-1234567890abcdef0",
+        "AssociationVersion": "1",
+        "Date": 1550507529.604,
+        "LastUpdateAssociationDate": 1550507806.974,
         "Status": {
             "Date": 1424421071.0,
-            "AdditionalInfo": "Additional-Config-Needed",
+            "Name": "Pending",
             "Message": "temp_status_change",
-            "Name": "Pending"
+            "AdditionalInfo": "Additional-Config-Needed"
         },
-        "Name": "AWS-UpdateSSMAgent",
-        "InstanceId": "i-0000293ffd8c57862",
         "Overview": {
-            "Status": "Pending",
-            "DetailedStatus": "Associated",
+            "Status": "Success",
             "AssociationStatusAggregatedCount": {
-                "Pending": 1
+                "Success": 1
             }
         },
-        "AssociationId": "d8617c07-2079-4c18-9847-1655fc2698b0",
         "DocumentVersion": "$DEFAULT",
-        "LastUpdateAssociationDate": 1487876122.564,
-        "Date": 1487876122.564,
+        "AssociationId": "8dfe3659-4309-493a-8755-0123456789ab",
         "Targets": [
             {
+                "Key": "InstanceIds",
                 "Values": [
-                    "i-0000293ffd8c57862"
-                ],
-                "Key": "InstanceIds"
+                    "i-1234567890abcdef0"
+                ]
             }
-        ]
+        ],
+        "LastExecutionDate": 1550507808.0,
+        "LastSuccessfulExecutionDate": 1550507808.0
     }
   }

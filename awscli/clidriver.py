@@ -18,6 +18,7 @@ import botocore.session
 from botocore import __version__ as botocore_version
 from botocore.hooks import HierarchicalEmitter
 from botocore import xform_name
+from botocore.config import Config
 from botocore.compat import copy_kwargs, OrderedDict
 from botocore.exceptions import NoCredentialsError
 from botocore.exceptions import NoRegionError
@@ -635,11 +636,27 @@ class CLIOperationCaller(object):
         client = self._session.create_client(
             service_name, region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
+            config=self._get_default_config(),
             verify=parsed_globals.verify_ssl)
         response = self._make_client_call(
             client, operation_name, parameters, parsed_globals)
         self._display_response(operation_name, response, parsed_globals)
         return 0
+
+    def _get_default_config(self):
+        if not hasattr(self._session, '_config'):
+            return Config()
+
+        _config = {}
+        profiles = self._session._config.get('profiles', {})
+        profiles_default = profiles.get('default', {})
+        for key in Config.OPTION_DEFAULTS.keys():
+            if key in profiles_default:
+                _config[key] = profiles_default.get(key)
+        if 's3' in _config and 'signature_version' in _config['s3']:
+            value = _config['s3'].pop('signature_version')
+            _config['signature_version'] = value
+        return Config(**_config)
 
     def _make_client_call(self, client, operation_name, parameters,
                           parsed_globals):

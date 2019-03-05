@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.118
+========
+
+* api-change:``codedeploy``: Update codedeploy command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``textract``: Update textract command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+
+
 1.16.117
 ========
 

@@ -32,13 +32,23 @@ CONFIGURATIONS_CLASSIFICATION_SCHEMA = {
     "description": "Application configuration classification name",
 }
 
+PSEUDO_CONFIGURATIONS_SCHEMA = {
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {}
+    },
+    "description": "Instance group application configurations."
+}
+
 INNER_CONFIGURATIONS_SCHEMA = {
     "type": "array",
     "items": {
         "type": "object",
         "properties": {
             "Classification": CONFIGURATIONS_CLASSIFICATION_SCHEMA,
-            "Properties": CONFIGURATIONS_PROPERTIES_SCHEMA
+            "Properties": CONFIGURATIONS_PROPERTIES_SCHEMA,
+            "Configurations": PSEUDO_CONFIGURATIONS_SCHEMA
         }
     },
     "description": "Instance group application configurations."

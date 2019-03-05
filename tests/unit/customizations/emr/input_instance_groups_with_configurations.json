@@ -2,7 +2,7 @@
   {
     "InstanceCount": 1,
     "InstanceGroupType": "MASTER",
-    "InstanceType": "m1.large",
+    "InstanceType": "m1.large",       
     "Name": "MASTER"
   },
   {
@@ -12,11 +12,18 @@
     "Name": "CORE",
     "Configurations": [
       {
-        "Classification": "hdfs-site",
-        "Properties": {
-          "test-key1": "test-value1",
-          "test-key2": "test-value2"
-        }
+        "Classification": "hadoop-env",
+        "Properties": {},
+        "Configurations": [
+          {
+            "Classification": "export",
+            "Properties": {
+              "HADOOP_DATANODE_HEAPSIZE": "2048",
+              "HADOOP_NAMENODE_OPTS": "-XX:GCTimeRatio=19"
+            },
+            "Configurations": []
+          }
+        ]
       }
     ]
   },

@@ -701,15 +701,24 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                 ' --release-label emr-4.0.0 '
                 '--instance-groups file://' + data_path)
         result = copy.deepcopy(DEFAULT_RESULT)
-        result['Instances']['InstanceGroups'][1]['Configurations'] = [
+        configurations_layer_one = []
+        configurations_layer_two = [
             OrderedDict([
-                ("Classification", "hdfs-site"),
+                ("Classification", "export"),
                 ("Properties", OrderedDict([
-                    ("test-key1", "test-value1"),
-                    ("test-key2", "test-value2")
-                ]))
+                    ("HADOOP_DATANODE_HEAPSIZE", "2048"),
+                    ("HADOOP_NAMENODE_OPTS", "-XX:GCTimeRatio=19")])),
+                ("Configurations", configurations_layer_one)
             ])
         ]
+        configurations_layer_three = [
+            OrderedDict([
+                ("Classification", "hadoop-env"),
+                ("Properties", OrderedDict()),
+                ("Configurations", configurations_layer_two)
+            ])
+        ]
+        result['Instances']['InstanceGroups'][1]['Configurations'] = configurations_layer_three
         self.assert_params_for_cmd(cmd, result)
 
 

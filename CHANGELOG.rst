@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.16.120
+========
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``greengrass``: Update greengrass command to latest version
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
 1.16.119
 ========
 

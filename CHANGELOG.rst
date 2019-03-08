@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.121
+========
+
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+
+
 1.16.120
 ========
 

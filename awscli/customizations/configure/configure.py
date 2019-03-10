@@ -15,7 +15,7 @@ import logging
 
 from botocore.exceptions import ProfileNotFound
 
-from awscli.compat import compat_input
+from awscli.compat import compat_input, compat_getpass
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure.addmodel import AddModelCommand
 from awscli.customizations.configure.set import ConfigureSetCommand
@@ -39,7 +39,9 @@ class InteractivePrompter(object):
     def get_value(self, current_value, config_name, prompt_text=''):
         if config_name in ('aws_access_key_id', 'aws_secret_access_key'):
             current_value = mask_value(current_value)
-        response = compat_input("%s [%s]: " % (prompt_text, current_value))
+            response = compat_getpass("%s [%s]: " % (prompt_text, current_value))
+        else:
+            response = compat_input("%s [%s]: " % (prompt_text, current_value))
         if not response:
             # If the user hits enter, we return a value of None
             # instead of an empty string.  That way we can determine

@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.16.122
+========
+
+* api-change:``glue``: Update glue command to latest version
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``iot``: Update iot command to latest version
+
+
 1.16.121
 ========
 

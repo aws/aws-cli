@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.123
+========
+
+* api-change:``serverlessrepo``: Update serverlessrepo command to latest version
+
+
 1.16.122
 ========
 

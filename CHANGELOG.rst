@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.124
+========
+
+* api-change:``config``: Update config command to latest version
+* api-change:``logs``: Update logs command to latest version
+
+
 1.16.123
 ========
 

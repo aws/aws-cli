@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.16.125
+========
+
+* api-change:``acm``: Update acm command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``acm-pca``: Update acm-pca command to latest version
+
+
 1.16.124
 ========
 

@@ -230,7 +230,9 @@ def compat_getpass(prompt):
     """
     This function is used to get sensitive input without printing it.
     """
-    return getpass.getpass(prompt)
+    sys.stdout.write(prompt)
+    sys.stdout.flush()
+    return getpass.getpass('')
 
 
 def compat_shell_quote(s, platform=None):

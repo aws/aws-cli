@@ -18,6 +18,7 @@ import platform
 import zipfile
 import signal
 import contextlib
+import getpass
 
 from botocore.compat import six
 #import botocore.compat
@@ -223,6 +224,13 @@ def compat_input(prompt):
     sys.stdout.write(prompt)
     sys.stdout.flush()
     return raw_input()
+
+
+def compat_getpass(prompt):
+    """
+    This function is used to get sensitive input without printing it.
+    """
+    return getpass.getpass(prompt)
 
 
 def compat_shell_quote(s, platform=None):

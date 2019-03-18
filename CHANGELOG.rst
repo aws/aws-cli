@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.126
+========
+
+* api-change:``dms``: Update dms command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``chime``: Update chime command to latest version
+
+
 1.16.125
 ========
 

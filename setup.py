@@ -28,10 +28,12 @@ requires = ['botocore==1.12.166',
             'docutils>=0.10',
             'rsa>=3.1.2,<=3.5.0',
             's3transfer>=0.2.0,<0.3.0',
-            'PyYAML>=3.10,<=3.13']
+            'PyYAML>=3.10,<=5.1']
 
 
 if sys.version_info[:2] == (2, 6):
+    # pyyaml 5.1 has dropped support for python2.6
+    requires[-1] = 'PyYAML>=3.10,<=3.13'
     # For python2.6 we have to require argparse since it
     # was not in stdlib until 2.7.
     requires.append('argparse>=1.1')

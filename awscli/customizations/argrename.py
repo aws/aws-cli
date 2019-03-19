@@ -107,7 +107,7 @@ ARGUMENT_RENAMES = {
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,
-# an alias is created to the original arugment and marked as undocumented.
+# an alias is created to the original argument and marked as undocumented.
 # This is useful when you need to change the name of an argument but you
 # still need to support the old argument.
 HIDDEN_ALIASES = {

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.127
+========
+
+* api-change:``config``: Update config command to latest version
+* api-change:``eks``: Update eks command to latest version
+
+
 1.16.126
 ========
 

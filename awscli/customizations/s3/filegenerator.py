@@ -221,7 +221,7 @@ class FileGenerator(object):
             return file_path, {'Size': size, 'LastModified': last_update}
 
     def _validate_update_time(self, update_time, path):
-        # If the update time is None we know we ran into an invalid tiemstamp.
+        # If the update time is None we know we ran into an invalid timestamp.
         if update_time is None:
             warning = create_warning(
                 path=path,
@@ -234,7 +234,7 @@ class FileGenerator(object):
 
     def normalize_sort(self, names, os_sep, character):
         """
-        The purpose of this function is to ensure that the same path seperator
+        The purpose of this function is to ensure that the same path separator
         is used when sorting.  In windows, the path operator is a backslash as
         opposed to a forward slash which can lead to differences in sorting
         between s3 and a windows machine.

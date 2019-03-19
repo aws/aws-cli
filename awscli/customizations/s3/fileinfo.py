@@ -22,7 +22,7 @@ class FileInfo(object):
     :param dest: the destination path
     :type dest: string
     :param compare_key: the name of the file relative to the specified
-        directory/prefix.  This variable is used when performing synching
+        directory/prefix.  This variable is used when performing syncing
         or if the destination file is adopting the source file's name.
     :type compare_key: string
     :param size: The size of the file in bytes.

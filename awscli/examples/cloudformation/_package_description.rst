@@ -21,6 +21,7 @@ This command can upload local artifacts referenced in the following places:
     - ``Location`` parameter for the ``AWS::Include`` transform
     - ``SourceBundle`` property for the ``AWS::ElasticBeanstalk::ApplicationVersion`` resource
     - ``TemplateURL`` property for the ``AWS::CloudFormation::Stack`` resource
+    - ``Command.ScriptLocation`` property for the ``AWS::Glue::Job`` resource
 
 
 To specify a local artifact in your template, specify a path to a local file or folder,

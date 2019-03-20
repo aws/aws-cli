@@ -94,6 +94,55 @@ def parse_s3_url(url,
                      "{0}".format(url))
 
 
+def get_nested_property_value(resource_dict, property_name):
+    """
+    Searches the resource_dict for nested properties by splitting the property_name
+    on '.'
+
+    :param resource_dict:   Dictionary containing resource definition
+    :param property_name:   Property name of CloudFormation resource where this
+                            local path is present
+
+    :return:                Value of the property
+    """
+
+    # Support nested properties by allowing '.' in the PROPERTY_NAME
+    if '.' in property_name:
+        sub_property_names = property_name.split('.')
+        property_value = resource_dict.get(sub_property_names[0], None)
+        for sub_property_name in sub_property_names[1:]:
+            if property_value:
+                property_value = property_value.get(sub_property_name, None)
+    else:
+        property_value = resource_dict.get(property_name, None)
+
+    return property_value
+
+
+def set_nested_property_value(resource_dict, property_name, new_value):
+    """
+    Searches the resource_dict for nested properties by splitting the property_name
+    on '.' and sets the nested property to new_value.
+
+
+    :param resource_dict:   Dictionary containing resource definition
+    :param property_name:   Property name of CloudFormation resource where this
+                            local path is present
+    :param new_value:       The new value for the property
+    :raise:                 KeyError if a property isn't found in the dictionary
+    """
+    # Support nested properties by allowing '.' in the PROPERTY_NAME
+    # Assumes that the property exists in the dictionary
+    if '.' in property_name:
+        sub_property_names = property_name.split('.')
+        property_dict = resource_dict[sub_property_names[0]]
+        for sub_property_name in sub_property_names[1:-1]:
+            property_dict = property_dict[sub_property_name]
+        property_dict[sub_property_names[-1]] = new_value
+    else:
+        resource_dict[property_name] = new_value
+
+
 def upload_local_artifacts(resource_id, resource_dict, property_name,
                            parent_dir, uploader):
     """
@@ -120,7 +169,7 @@ def upload_local_artifacts(resource_id, resource_dict, property_name,
     :raise:                 ValueError if path is not a S3 URL or a local path
     """
 
-    local_path = resource_dict.get(property_name, None)
+    local_path = get_nested_property_value(resource_dict, property_name)
 
     if local_path is None:
         # Build the root directory and upload to S3
@@ -232,7 +281,7 @@ class Resource(object):
         if resource_dict is None:
             return
 
-        property_value = resource_dict.get(self.PROPERTY_NAME, None)
+        property_value = get_nested_property_value(resource_dict, self.PROPERTY_NAME)
 
         if not property_value and not self.PACKAGE_NULL_PROPERTY:
             return
@@ -248,7 +297,7 @@ class Resource(object):
         if is_local_file(property_value) and not \
                 is_zip_file(property_value) and self.FORCE_ZIP:
             temp_dir = copy_to_temp_dir(property_value)
-            resource_dict[self.PROPERTY_NAME] = temp_dir
+            set_nested_property_value(resource_dict, self.PROPERTY_NAME, temp_dir)
 
         try:
             self.do_export(resource_id, resource_dict, parent_dir)
@@ -269,10 +318,10 @@ class Resource(object):
         Default export action is to upload artifacts and set the property to
         S3 URL of the uploaded object
         """
-        resource_dict[self.PROPERTY_NAME] = \
-            upload_local_artifacts(resource_id, resource_dict,
+        uploaded_url = upload_local_artifacts(resource_id, resource_dict,
                                    self.PROPERTY_NAME,
                                    parent_dir, self.uploader)
+        set_nested_property_value(resource_dict, self.PROPERTY_NAME, uploaded_url)
 
 
 class ResourceWithS3UrlDict(Resource):
@@ -299,11 +348,12 @@ class ResourceWithS3UrlDict(Resource):
                                    self.PROPERTY_NAME,
                                    parent_dir, self.uploader)
 
-        resource_dict[self.PROPERTY_NAME] = parse_s3_url(
+        parsed_url = parse_s3_url(
                 artifact_s3_url,
                 bucket_name_property=self.BUCKET_NAME_PROPERTY,
                 object_key_property=self.OBJECT_KEY_PROPERTY,
                 version_property=self.VERSION_PROPERTY)
+        set_nested_property_value(resource_dict, self.PROPERTY_NAME, parsed_url)
 
 
 class ServerlessFunctionResource(Resource):
@@ -459,8 +509,9 @@ class CloudFormationStackResource(Resource):
 
             # TemplateUrl property requires S3 URL to be in path-style format
             parts = parse_s3_url(url, version_property="Version")
-            resource_dict[self.PROPERTY_NAME] = self.uploader.to_path_style_s3_url(
+            s3_path_url = self.uploader.to_path_style_s3_url(
                     parts["Key"], parts.get("Version", None))
+            set_nested_property_value(resource_dict, self.PROPERTY_NAME, s3_path_url)
 
 
 class ServerlessApplicationResource(CloudFormationStackResource):
@@ -470,6 +521,16 @@ class ServerlessApplicationResource(CloudFormationStackResource):
     """
     RESOURCE_TYPE = "AWS::Serverless::Application"
     PROPERTY_NAME = "Location"
+
+
+
+class GlueJobCommandScriptLocationResource(Resource):
+    """
+    Represents Glue::Job resource.
+    """
+    RESOURCE_TYPE = "AWS::Glue::Job"
+    # Note the PROPERTY_NAME includes a '.' implying it's nested.
+    PROPERTY_NAME = "Command.ScriptLocation"
 
 
 RESOURCES_EXPORT_LIST = [
@@ -487,6 +548,7 @@ RESOURCES_EXPORT_LIST = [
     ServerlessApplicationResource,
     ServerlessLayerVersionResource,
     LambdaLayerVersionResource,
+    GlueJobCommandScriptLocationResource,
 ]
 
 METADATA_EXPORT_LIST = [

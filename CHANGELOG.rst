@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.128
+========
+
+* api-change:``cognito-identity``: Update cognito-identity command to latest version
+* api-change:``meteringmarketplace``: Update meteringmarketplace command to latest version
+* api-change:``codepipeline``: Update codepipeline command to latest version
+
+
 1.16.127
 ========
 

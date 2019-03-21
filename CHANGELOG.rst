@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.16.129
+========
+
+* api-change:``iot``: Update iot command to latest version
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``events``: Update events command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+
+
 1.16.128
 ========
 

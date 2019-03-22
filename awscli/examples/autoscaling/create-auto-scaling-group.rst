@@ -51,7 +51,7 @@ Contents of config.json file::
     "MaxSize": 5,
     "VPCZoneIdentifier": "subnet-5ea0c127,subnet-6194ea3b,subnet-c934b782",
     "Tags": []
-}
+  }
 
 For more information, see the `Amazon EC2 Auto Scaling User Guide`_.
 

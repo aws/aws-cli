@@ -32,7 +32,7 @@ This example creates an Auto Scaling group for launching a single instance using
 
     aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-asg-single-instance --min-size 1 --max-size 1 --launch-template 'LaunchTemplateName=my-single-instance-asg-template,Version=2' --availability-zones us-west-2a
 
-This example creates an Auto Scaling group that and an autoscaling:EC2_INSTANCE_LAUNCHING lifecycle hook::
+This example creates an Auto Scaling group with a lifecycle hook that supports a custom action at instance termination::
 
    aws autoscaling create-auto-scaling-group --cli-input-json file://~/config.json
 
@@ -41,7 +41,7 @@ Contents of config.json file::
    {
     "AutoScalingGroupName": "my-asg",
     "LaunchTemplate": {
-        "LaunchTemplateId": "lt-00a731f6e9fa48610"
+        "LaunchTemplateId": "lt-0a4872e2c396d941c"
         },
     "LifecycleHookSpecificationList": [{
         "LifecycleHookName": "my-hook",

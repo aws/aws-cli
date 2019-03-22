@@ -43,6 +43,7 @@ ARGUMENT_RENAMES = {
     'codepipeline.create-custom-action-type.version': 'action-version',
     'codepipeline.delete-custom-action-type.version': 'action-version',
     'kinesisanalytics.add-application-output.output': 'application-output',
+    'kinesisanalyticsv2.add-application-output.output': 'application-output',
     'route53.delete-traffic-policy.version': 'traffic-policy-version',
     'route53.get-traffic-policy.version': 'traffic-policy-version',
     'route53.update-traffic-policy-comment.version': 'traffic-policy-version',
@@ -51,6 +52,8 @@ ARGUMENT_RENAMES = {
     'route53domains.view-billing.start': 'start-time',
     'route53domains.view-billing.end': 'end-time',
     'apigateway.create-rest-api.version': 'api-version',
+    'apigatewayv2.create-api.version': 'api-version',
+    'apigatewayv2.update-api.version': 'api-version',
     'pinpoint.get-campaign-version.version': 'campaign-version',
     'pinpoint.get-segment-version.version': 'segment-version',
     'stepfunctions.send-task-success.output': 'task-output',
@@ -71,6 +74,7 @@ ARGUMENT_RENAMES = {
     'mobile.create-project.region': 'project-region',
     'rekognition.create-stream-processor.output': 'stream-processor-output',
     'eks.create-cluster.version': 'kubernetes-version',
+    'eks.update-cluster-version.version': 'kubernetes-version',
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,

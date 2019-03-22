@@ -118,6 +118,12 @@ class UpdateKubeconfigCommand(BasicCommand):
             'help_text': ("Print more detailed output "
                           "when writing to the kubeconfig file, "
                           "including the appended entries.")
+        },
+        {
+            'name': 'alias',
+            'help_text': ("Alias for the cluster context name. "
+                          "Defaults to match cluster ARN."),
+            'required': False
         }
     ]
 
@@ -152,7 +158,8 @@ class UpdateKubeconfigCommand(BasicCommand):
         appender = KubeconfigAppender()
         new_context_dict = appender.insert_cluster_user_pair(config,
                                                              new_cluster_dict,
-                                                             new_user_dict)
+                                                             new_user_dict,
+                                                             parsed_args.alias)
 
         if parsed_args.dry_run:
             uni_print(config.dump_content())
@@ -332,5 +339,11 @@ class EKSClient(object):
                 "-r",
                 self._role_arn
             ])
+
+        if self._session.profile:
+            generated_user["user"]["exec"]["env"] = [OrderedDict([
+                ("name", "AWS_PROFILE"),
+                ("value", self._session.profile)
+            ])]
 
         return generated_user

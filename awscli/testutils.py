@@ -520,7 +520,8 @@ class FileCreator(object):
         self.rootdir = tempfile.mkdtemp()
 
     def remove_all(self):
-        shutil.rmtree(self.rootdir)
+        if os.path.exists(self.rootdir):
+            shutil.rmtree(self.rootdir)
 
     def create_file(self, filename, contents, mtime=None, mode='w'):
         """Creates a file in a tmpdir

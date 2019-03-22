@@ -12,21 +12,24 @@ Output::
       "AvailabilityZones": [
           {
               "State": "available",
-              "RegionName": "us-east-1",
               "Messages": [],
-              "ZoneName": "us-east-1b"
+              "RegionName": "us-west-2",
+              "ZoneName": "us-west-2a",
+              "ZoneId": "usw2-az2"
           },
           {
               "State": "available",
-              "RegionName": "us-east-1",
               "Messages": [],
-              "ZoneName": "us-east-1c"
+              "RegionName": "us-west-2",
+              "ZoneName": "us-west-2b",
+              "ZoneId": "usw2-az1"
           },
           {
               "State": "available",
-              "RegionName": "us-east-1",
               "Messages": [],
-              "ZoneName": "us-east-1d"
+              "RegionName": "us-west-2",
+              "ZoneName": "us-west-2c",
+              "ZoneId": "usw2-az3"
           }
       ]
   }

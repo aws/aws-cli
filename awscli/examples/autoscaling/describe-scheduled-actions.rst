@@ -13,7 +13,7 @@ The following is example output::
                 "DesiredCapacity": 4,
                 "AutoScalingGroupName": "my-auto-scaling-group",
                 "MaxSize": 6,
-                "Recurrence": "30 0 1 12 0",
+                "Recurrence": "30 0 1 12 *",
                 "ScheduledActionARN": "arn:aws:autoscaling:us-west-2:123456789012:scheduledUpdateGroupAction:8e86b655-b2e6-4410-8f29-b4f094d6871c:autoScalingGroupName/my-auto-scaling-group:scheduledActionName/my-scheduled-action",
                 "ScheduledActionName": "my-scheduled-action",
                 "StartTime": "2019-12-01T00:30:00Z",
@@ -52,7 +52,7 @@ The following is example output::
                 "DesiredCapacity": 4,
                 "AutoScalingGroupName": "my-auto-scaling-group",
                 "MaxSize": 6,
-                "Recurrence": "30 0 1 12 0",
+                "Recurrence": "30 0 1 12 *",
                 "ScheduledActionARN": "arn:aws:autoscaling:us-west-2:123456789012:scheduledUpdateGroupAction:8e86b655-b2e6-4410-8f29-b4f094d6871c:autoScalingGroupName/my-auto-scaling-group:scheduledActionName/my-scheduled-action",
                 "ScheduledActionName": "my-scheduled-action",
                 "StartTime": "2019-12-01T00:30:00Z",
@@ -65,6 +65,6 @@ Use the ``NextToken`` field with the ``starting-token`` parameter in a subsequen
 
     aws autoscaling describe-scheduled-actions --auto-scaling-group-name my-auto-scaling-group --starting-token Z3M3LMPEXAMPLE
 
-For more information, see `Scheduled Scaling`_ in the *Auto Scaling Developer Guide*.
+For more information, see `Scheduled Scaling`_ in the *Amazon EC2 Auto Scaling User Guide*.
 
-.. _`Scheduled Scaling`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/schedule_time.html
+.. _`Scheduled Scaling`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/schedule_time.html

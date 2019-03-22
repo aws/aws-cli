@@ -8,7 +8,7 @@ This example creates an Auto Scaling group and configures it to use an Elastic L
 
     aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-asg --launch-configuration-name my-launch-config --load-balancer-names my-load-balancer --health-check-type ELB --health-check-grace-period 120 --min-size 1 --max-size 3 --vpc-zone-identifier "subnet-5ea0c127,subnet-6194ea3b,subnet-c934b782"
 
-This example specifies a desired capacity as well as the minimum and maximum capacity. It also launches instances into a placement group and sets the termination policy to terminate the oldest instances first::
+This example specifies a desired capacity as well as a minimum and maximum capacity. It also launches instances into a placement group and sets the termination policy to terminate the oldest instances first::
 
     aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-asg --launch-configuration-name my-launch-config --min-size 1 --max-size 3 --desired-capacity 1 --placement-group my-placement-group --termination-policies "OldestInstance" --availability-zones us-west-2c
 

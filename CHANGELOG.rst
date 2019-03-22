@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.130
+========
+
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``iot1click-projects``: Update iot1click-projects command to latest version
+
+
 1.16.129
 ========
 

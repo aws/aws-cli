@@ -22,12 +22,37 @@ This example creates an Auto Scaling group from the specified EC2 instance and a
 
 This example creates an Auto Scaling group in a VPC using a launch template to specify the type of EC2 instance that Amazon EC2 Auto Scaling creates::
 
-    aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-asg --launch-template 'LaunchTemplateName=my-template-for-auto-scaling,Version=2' --min-size 1 --max-size 3 --vpc-zone-identifier "subnet-5ea0c127,subnet-6194ea3b,subnet-c934b782"
+    aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-asg --launch-template 'LaunchTemplateName=my-template-for-auto-scaling,Version=1' --min-size 1 --max-size 3 --vpc-zone-identifier "subnet-5ea0c127,subnet-6194ea3b,subnet-c934b782"
     
 This example creates an Auto Scaling group using a launch template. It specifies Availability Zones and subnets and enables the instance protection setting::
 
     aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-asg --launch-template LaunchTemplateId=lt-0a4872e2c396d941c --min-size 1 --max-size 3 --desired-capacity 2 --availability-zones us-west-2a us-west-2b us-west-2c --vpc-zone-identifier "subnet-5ea0c127,subnet-6194ea3b,subnet-c934b782" --new-instances-protected-from-scale-in
     
-This example creates an Auto Scaling group for launching a single instance using a launch template to specify an existing network interface. It specifies an Availability Zone that matches the network interface that was specified::
+This example creates an Auto Scaling group for launching a single instance using a launch template to specify an existing network interface. It specifies an Availability Zone that matches the specified network interface::
 
     aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-asg-single-instance --min-size 1 --max-size 1 --launch-template 'LaunchTemplateName=my-single-instance-asg-template,Version=2' --availability-zones us-west-2a
+
+This example creates an Auto Scaling group that and an autoscaling:EC2_INSTANCE_LAUNCHING lifecycle hook::
+
+   aws autoscaling create-auto-scaling-group --cli-input-json file://~/config.json
+
+Contents of config.json file::
+
+   {
+    "AutoScalingGroupName": "my-asg",
+    "LaunchTemplate": {
+        "LaunchTemplateId": "lt-00a731f6e9fa48610"
+        },
+    "LifecycleHookSpecificationList": [{
+        "LifecycleHookName": "my-hook",
+        "LifecycleTransition": "autoscaling:EC2_INSTANCE_TERMINATING"
+        }],
+    "MinSize": 1,
+    "MaxSize": 5,
+    "VPCZoneIdentifier": "subnet-5ea0c127,subnet-6194ea3b,subnet-c934b782",
+    "Tags": []
+}
+
+For more information, see the `Amazon EC2 Auto Scaling User Guide`_.
+
+.. _`Amazon EC2 Auto Scaling User Guide`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html

@@ -28,7 +28,7 @@ This example uses the default version of the specified launch template. It speci
 
     aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-asg --launch-template LaunchTemplateId=lt-0a4872e2c396d941c --min-size 1 --max-size 3 --desired-capacity 2 --availability-zones us-west-2a us-west-2b us-west-2c --vpc-zone-identifier "subnet-5ea0c127,subnet-6194ea3b,subnet-c934b782" --new-instances-protected-from-scale-in
     
-This example creates an Auto Scaling group that launches a single instance using a launch template to specify the ID of an existing network interface (ENI ID) to use. It specifies an Availability Zone that matches the specified network interface::
+This example creates an Auto Scaling group that launches a single instance using a launch template to optionally specify the ID of an existing network interface (ENI ID) to use. It specifies an Availability Zone that matches the specified network interface::
 
     aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-asg-single-instance --min-size 1 --max-size 1 --launch-template 'LaunchTemplateName=my-single-instance-asg-template,Version=2' --availability-zones us-west-2a
 
@@ -38,19 +38,19 @@ This example creates an Auto Scaling group with a lifecycle hook that supports a
 
 Contents of config.json file::
 
-   {
-    "AutoScalingGroupName": "my-asg",
-    "LaunchTemplate": {
-        "LaunchTemplateId": "lt-0a4872e2c396d941c"
-        },
-    "LifecycleHookSpecificationList": [{
-        "LifecycleHookName": "my-hook",
-        "LifecycleTransition": "autoscaling:EC2_INSTANCE_TERMINATING"
-        }],
-    "MinSize": 1,
-    "MaxSize": 5,
-    "VPCZoneIdentifier": "subnet-5ea0c127,subnet-6194ea3b,subnet-c934b782",
-    "Tags": []
+  {
+      "AutoScalingGroupName": "my-asg",
+      "LaunchTemplate": {
+          "LaunchTemplateId": "lt-0a4872e2c396d941c"
+      },
+      "LifecycleHookSpecificationList": [{
+          "LifecycleHookName": "my-hook",
+          "LifecycleTransition": "autoscaling:EC2_INSTANCE_TERMINATING"
+      }],
+      "MinSize": 1,
+      "MaxSize": 5,
+      "VPCZoneIdentifier": "subnet-5ea0c127,subnet-6194ea3b,subnet-c934b782",
+      "Tags": []
   }
 
 For more information, see the `Amazon EC2 Auto Scaling User Guide`_.

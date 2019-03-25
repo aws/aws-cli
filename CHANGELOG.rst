@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.16.131
+========
+
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``iot1click-devices``: Update iot1click-devices command to latest version
+* api-change:``iotanalytics``: Update iotanalytics command to latest version
+* api-change:``directconnect``: Update directconnect command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``fms``: Update fms command to latest version
+
+
 1.16.130
 ========
 

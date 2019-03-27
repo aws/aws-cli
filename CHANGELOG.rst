@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.16.133
+========
+
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``transfer``: Update transfer command to latest version
+
+
 1.16.132
 ========
 

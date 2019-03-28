@@ -45,7 +45,11 @@ Contents of config.json file::
       },
       "LifecycleHookSpecificationList": [{
           "LifecycleHookName": "my-hook",
-          "LifecycleTransition": "autoscaling:EC2_INSTANCE_TERMINATING"
+          "LifecycleTransition": "autoscaling:EC2_INSTANCE_TERMINATING",
+          "NotificationTargetARN": "arn:aws:sqs:us-west-2:123456789012:my-sqs-queue",
+          "RoleARN": "arn:aws:iam::123456789012:role/my-notification-role",
+          "HeartbeatTimeout": 300,
+          "DefaultResult": "CONTINUE"
       }],
       "MinSize": 1,
       "MaxSize": 5,

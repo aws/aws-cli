@@ -24,9 +24,9 @@ You can also enter multiple alternative names::
 
   aws acm request-certificate --domain-name example.com --validation-method DNS --subject-alternative-names b.example.com c.example.com d.example.com 
 
-If you are using email for validation, you can enter domain validation options to specify the domain to which the validation email will be sent::
+If you are using email for validation, you can enter domain validation options to specify the superdomain to which the validation email will be sent::
 
-  aws acm request-certificate --domain-name example.com --validation-method EMAIL --subject-alternative-names www.example.com --domain-validation-options DomainName=example.com,ValidationDomain=mail.example.com
+  aws acm request-certificate --domain-name example.com --validation-method EMAIL --subject-alternative-names www.example.com --domain-validation-options DomainName=example.com,ValidationDomain=example.com
   
 The following command opts out of certificate transparency logging when you request a new certificate::
 

@@ -30,7 +30,7 @@ This example uses the default version of the specified launch template. It speci
     
 This example creates an Auto Scaling group that launches a single instance using a launch template to optionally specify the ID of an existing network interface (ENI ID) to use. It specifies an Availability Zone that matches the specified network interface::
 
-    aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-asg-single-instance --min-size 1 --max-size 1 --launch-template 'LaunchTemplateName=my-single-instance-asg-template,Version=2' --availability-zones us-west-2a
+    aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-asg-single-instance --launch-template "LaunchTemplateName=my-single-instance-asg-template,Version=2" --min-size 1 --max-size 1 --availability-zones us-west-2a
 
 This example creates an Auto Scaling group with a lifecycle hook that supports a custom action at instance termination::
 

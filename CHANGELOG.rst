@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.134
+========
+
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``pinpoint-email``: Update pinpoint-email command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+
+
 1.16.133
 ========
 

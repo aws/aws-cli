@@ -30,6 +30,14 @@ Parameter::
 
     --block-device-mappings "[{\"DeviceName\": \"/dev/sdf\",\"NoDevice\":\"\"}]"
 
+For more information about quoting JSON-formatted parameters, see `Quoting Strings`_ in the *AWS Command Line Interface User Guide*.
+
 This example creates a launch configuration that uses Spot Instances::
 
     aws autoscaling create-launch-configuration --launch-configuration-name my-launch-config --image-id ami-01e24be29428c15b2 --instance-type c5.large --spot-price "0.50"
+
+For more information, see `Launch Configurations`_ in the *AWS Command Line Interface User Guide*.
+
+.. _`Quoting Strings`: https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters.html#quoting-strings
+
+.. _`Launch Configurations`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/LaunchConfiguration.html

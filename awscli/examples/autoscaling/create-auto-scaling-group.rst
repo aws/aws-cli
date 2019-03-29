@@ -16,7 +16,7 @@ This example specifies a desired capacity as well as a minimum and maximum capac
 
 This example creates an Auto Scaling group from the specified EC2 instance and assigns a tag to instances in the group::
 
-    aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-asg --instance-id i-22c99e2a --min-size 1 --max-size 3 --vpc-zone-identifier "subnet-5ea0c127,subnet-6194ea3b,subnet-c934b782" --tags ResourceId=my-asg,ResourceType=auto-scaling-group,Key=Role,Value=WebServer,PropagateAtLaunch=true
+    aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-asg --instance-id i-22c99e2a --min-size 1 --max-size 3 --vpc-zone-identifier "subnet-5ea0c127,subnet-6194ea3b,subnet-c934b782" --tags "ResourceId=my-asg,ResourceType=auto-scaling-group,Key=Role,Value=WebServer,PropagateAtLaunch=true"
 
 **To create an Auto Scaling group using a launch template**
 

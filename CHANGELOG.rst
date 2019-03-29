@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.135
+========
+
+* api-change:``greengrass``: Update greengrass command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+
+
 1.16.134
 ========
 

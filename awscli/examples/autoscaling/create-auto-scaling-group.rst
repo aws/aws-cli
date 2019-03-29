@@ -22,7 +22,7 @@ This example creates an Auto Scaling group from the specified EC2 instance and a
 
 This example creates an Auto Scaling group in a VPC using a launch template to specify the type of EC2 instance that Amazon EC2 Auto Scaling creates::
 
-    aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-asg --launch-template 'LaunchTemplateName=my-template-for-auto-scaling,Version=1' --min-size 1 --max-size 3 --vpc-zone-identifier "subnet-5ea0c127,subnet-6194ea3b,subnet-c934b782"
+    aws autoscaling create-auto-scaling-group --auto-scaling-group-name my-asg --launch-template "LaunchTemplateName=my-template-for-auto-scaling,Version=1" --min-size 1 --max-size 3 --vpc-zone-identifier "subnet-5ea0c127,subnet-6194ea3b,subnet-c934b782"
     
 This example uses the default version of the specified launch template. It specifies Availability Zones and subnets and enables the instance protection setting::
 

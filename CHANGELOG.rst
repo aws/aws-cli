@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.136
+========
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``emr``: Update emr command to latest version
+
+
 1.16.135
 ========
 

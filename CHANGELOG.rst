@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.137
+========
+
+* api-change:``acm``: Update acm command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+
+
 1.16.136
 ========
 

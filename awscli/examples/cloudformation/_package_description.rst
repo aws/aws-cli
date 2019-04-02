@@ -29,7 +29,7 @@ that is relative to your template's location.
 
 For example, if your AWS Lambda function source code is in the
 ``/home/user/code/lambdafunction/`` folder, specify
-`` CodeUri: /home/user/code/lambdafunction`` for the
+``CodeUri: /home/user/code/lambdafunction`` for the
 ``AWS::Serverless::Function`` resource. The command returns a template and replaces
 the local path with the S3 location: ``CodeUri: s3://mybucket/lambdafunction.zip``.
 

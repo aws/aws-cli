@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.138
+========
+
+* api-change:``batch``: Update batch command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+
+
 1.16.137
 ========
 

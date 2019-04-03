@@ -1,6 +1,6 @@
-**To delete a maintenance window**
+**To delete a Maintenance Window**
 
-This example removes a maintenance window.
+This example removes a Maintenance Window.
 
 Command::
 

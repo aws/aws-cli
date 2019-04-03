@@ -1,6 +1,6 @@
-**To list all maintenance windows**
+**To list all Maintenance Windows**
 
-This example lists all maintenance windows on your account.
+This example lists all Maintenance Windows on your account.
 
 Command::
 
@@ -20,11 +20,19 @@ Output::
     ]
   }
 
-**To list all enabled maintenance windows**
+**To list all enabled Maintenance Windows**
   
-This example lists all enabled maintenance windows.
+This example lists all enabled Maintenance Windows.
 
 Command::
 
   aws ssm describe-maintenance-windows --filters "Key=Enabled,Values=true"
+  
+**To list Maintenance Windows matching a specific name**
+  
+This example lists all Maintenance Windows with a specific name value.
+
+Command::
+
+  aws ssm describe-maintenance-windows --filters "Key=Name,Values=MyMaintenanceWindow"
   

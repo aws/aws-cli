@@ -1,6 +1,6 @@
 **To get the specific task invocations performed for a task execution**
 
-This example lists the invocations for a task executed as part of a maintenance window execution.
+This example lists the invocations for a task executed as part of a Maintenance Window execution.
 
 Command::
 

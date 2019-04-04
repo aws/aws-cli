@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.139
+========
+
+* api-change:``eks``: Update eks command to latest version
+* api-change:``iam``: Update iam command to latest version
+
+
 1.16.138
 ========
 

@@ -50,6 +50,7 @@ class TestPackageZipFiles(TestCase):
         myzip = zipfile.ZipFile(zipfile_path)
         # Data file should be the only file within the zip
         self.assertEquals(["data-link.txt"], myzip.namelist())
-        with myzip.open("data-link.txt", "r") as myfile:
-            # Its content should be equal the value we wrote.
-            self.assertEquals(data.encode("utf-8"), myfile.read())
+        myfile = myzip.open("data-link.txt", "r")
+        
+        # Its content should be equal the value we wrote.
+        self.assertEquals(data.encode("utf-8"), myfile.read())

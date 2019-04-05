@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.16.140
+========
+
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``iot1click-devices``: Update iot1click-devices command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+
+
 1.16.139
 ========
 

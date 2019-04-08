@@ -77,6 +77,70 @@ class TestListUsers(BaseAWSCommandParamsTest):
             'ENGINEDEFAULTS\tNone\n')
 
 
+class TestDescribeChangesets(BaseAWSCommandParamsTest):
+
+    def setUp(self):
+        super(TestDescribeChangesets, self).setUp()
+        self.first_parsed_response = {
+            'Capabilities': ['CAPABILITY_IAM'],
+            'ChangeSetId': (
+                'arn:aws:cloudformation:us-west-2:12345:changeSet'
+                '/mychangeset/12345'
+            ),
+            'ChangeSetName': 'mychangeset',
+            'Changes': [{"ChangeId": "1"}],
+            'CreationTime': '2019-04-08T14:21:53.765Z',
+            'ExecutionStatus': 'AVAILABLE',
+            'NotificationARNs': [],
+            'RollbackConfiguration': {'RollbackTriggers': []},
+            'StackId': (
+                'arn:aws:cloudformation:us-west-2:12345:stack'
+                '/MyStack/12345'
+            ),
+            'StackName': 'MyStack',
+            'Status': 'CREATE_COMPLETE',
+            'NextToken': "more stuff"
+        }
+        self.second_parsed_response = {
+            'Capabilities': ['CAPABILITY_IAM'],
+            'ChangeSetId': (
+                'arn:aws:cloudformation:us-west-2:12345:changeSet'
+                '/mychangeset/12345'
+            ),
+            'ChangeSetName': 'mychangeset',
+            'Changes': [{"ChangeId": "2"}],
+            'CreationTime': '2019-04-08T14:21:53.765Z',
+            'ExecutionStatus': 'AVAILABLE',
+            'NotificationARNs': [],
+            'RollbackConfiguration': {'RollbackTriggers': []},
+            'StackId': (
+                'arn:aws:cloudformation:us-west-2:12345:stack'
+                '/MyStack/12345'
+            ),
+            'StackName': 'MyStack',
+            'Status': 'CREATE_COMPLETE'
+        }
+        self.parsed_responses = [
+            self.first_parsed_response,
+            self.second_parsed_response,
+        ]
+
+    def test_non_aggregate_keys(self):
+        output = self.run_cmd(
+            ('cloudformation describe-change-set --change-set-name mychangeset'
+             ' --stack-name MyStack --output text'),
+            expected_rc=0
+        )[0]
+        self.assertEqual(
+            output,
+            ("arn:aws:cloudformation:us-west-2:12345:changeSet/mychangeset/"
+             "12345\tmychangeset\t2019-04-08T14:21:53.765Z\tNone\tAVAILABLE"
+             "\tNone\tarn:aws:cloudformation:us-west-2:12345:stack/MyStack"
+             "/12345\tMyStack\tCREATE_COMPLETE\tNone\tNone\n"
+             "CAPABILITIES\tCAPABILITY_IAM\nCHANGES\t1\nCHANGES\t2\n")
+        )
+
+
 class CustomFormatter(Formatter):
     def __call__(self, operation, response, stream=None):
         self.stream = self._get_default_stream()

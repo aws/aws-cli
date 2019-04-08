@@ -7,6 +7,7 @@ Command::
   aws ssm delete-parameters --names "HelloWorld" "GoodbyeWorld"
 
 Output::
+
   {
     "DeletedParameters": [
         "HelloWorld",

@@ -106,17 +106,13 @@ def get_nested_property_value(resource_dict, property_name):
     :return:                Value of the property
     """
 
-    # Support nested properties by allowing '.' in the PROPERTY_NAME
-    if '.' in property_name:
-        sub_property_names = property_name.split('.')
-        property_value = resource_dict.get(sub_property_names[0], None)
-        for sub_property_name in sub_property_names[1:]:
-            if property_value:
-                property_value = property_value.get(sub_property_name, None)
-    else:
-        property_value = resource_dict.get(property_name, None)
-
-    return property_value
+    if '.' not in property_name:
+        return resource_dict.get(property_name, None)
+    
+    property_names = property_name.split('.', 1)
+    # default to empty dictionary so recursion has something to operate on
+    sub_property_dict = resource_dict.get(property_names[0], {}) 
+    return get_nested_property_value(sub_property_dict, property_names[1])
 
 
 def set_nested_property_value(resource_dict, property_name, new_value):
@@ -133,14 +129,14 @@ def set_nested_property_value(resource_dict, property_name, new_value):
     """
     # Support nested properties by allowing '.' in the PROPERTY_NAME
     # Assumes that the property exists in the dictionary
-    if '.' in property_name:
-        sub_property_names = property_name.split('.')
-        property_dict = resource_dict[sub_property_names[0]]
-        for sub_property_name in sub_property_names[1:-1]:
-            property_dict = property_dict[sub_property_name]
-        property_dict[sub_property_names[-1]] = new_value
-    else:
+
+    if '.' not in property_name:
         resource_dict[property_name] = new_value
+        return
+    
+    property_names = property_name.split('.', 1)
+    property_dict = resource_dict[property_names[0]]
+    return set_nested_property_value(property_dict, property_names[1], new_value)
 
 
 def upload_local_artifacts(resource_id, resource_dict, property_name,

@@ -275,6 +275,11 @@ class TestArtifactExporter(unittest.TestCase):
         property_value = get_nested_property_value(resource_dict, 'Foo')
         self.assertEquals(property_value, 'testfile.yaml')
 
+    def test_get_nested_property_value_1level_missing_returns_None(self):
+        resource_dict = {}
+        property_value = get_nested_property_value(resource_dict, 'Foo')
+        self.assertEquals(property_value, None)
+
     def test_get_nested_property_value_2levels(self):
         resource_dict = { 
             'Foo': {
@@ -283,6 +288,15 @@ class TestArtifactExporter(unittest.TestCase):
         }
         property_value = get_nested_property_value(resource_dict, 'Foo.Bar')
         self.assertEquals(property_value, 'testfile.yaml')
+
+    def test_get_nested_property_value_2levels_missing_returns_None(self):
+        resource_dict = { 
+            'Foo': {
+                'Bar': 'testfile.yaml'
+            }
+        }
+        property_value = get_nested_property_value(resource_dict, 'other.other.other')
+        self.assertEquals(property_value, None)
 
     def test_get_nested_property_value_multiplelevels(self):
         resource_dict = { 
@@ -296,6 +310,19 @@ class TestArtifactExporter(unittest.TestCase):
         }
         property_value = get_nested_property_value(resource_dict, 'Foo.Bar.Fizz.Buzz')
         self.assertEquals(property_value, 'testfile.yaml')
+
+    def test_get_nested_property_value_multiplelevels_missing_returns_None(self):
+        resource_dict = { 
+            'Foo': {
+                'Bar': {
+                    'Fizz': {
+                        'Buzz': 'testfile.yaml'
+                    }
+                }
+            }
+        }
+        property_value = get_nested_property_value(resource_dict, 'Foo.Bar.Fizz.other')
+        self.assertEquals(property_value, None)
 
     def test_set_nested_property_value_1levels(self):
         resource_dict = { 

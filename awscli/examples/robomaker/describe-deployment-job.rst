@@ -8,7 +8,7 @@ Command::
 
 Output::
 
-{
+  {
     "arn": "arn:aws:robomaker:us-west-2:111111111111:deployment-job/deployment-xl8qssl6pbcn",
     "fleet": "arn:aws:robomaker:us-west-2:111111111111:deployment-fleet/Trek/1539894765711",
     "status": "InProgress",
@@ -36,4 +36,4 @@ Output::
         }
     ],
     "tags": {}
-}
+  }

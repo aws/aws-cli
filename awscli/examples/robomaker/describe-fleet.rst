@@ -8,7 +8,7 @@ Command::
 
 Output::
 
-{
+  {
     "name": "MyFleet",
     "arn": "arn:aws:robomaker:us-west-2:111111111111:deployment-fleet/MyFleet/1539894765711",
     "robots": [
@@ -26,4 +26,4 @@ Output::
     "lastDeploymentJob": "arn:aws:robomaker:us-west-2:111111111111:deployment-job/deployment-xl8qssl6pbcn",
     "lastDeploymentTime": 1551218369.0,
     "tags": {}
-}
+  }

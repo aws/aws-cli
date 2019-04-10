@@ -45,7 +45,7 @@ Output::
   {
     "ReplicationTask": {
       "SourceEndpointArn": "arn:aws:dms:us-east-1:123456789012:endpoint:ZW5UAN6P4E77EC7YWHK4RZZ3BE",
-      "ReplicationTaskIdentifier": "task1",
+      "ReplicationTaskIdentifier": "my-replication-task",
       "ReplicationInstanceArn": "arn:aws:dms:us-east-1:123456789012:rep:6UTDJGBOUS3VI3SUWA66XFJCJQ",
       "TableMappings": "{\n \"TableMappings\": [\n {\n \"Type\":\"Include\",\n \"SourceSchema\": \"/\",\n \"SourceTable\": \"/\"\n}\n ]\n}\n\n",
       "Status": "creating",

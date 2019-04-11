@@ -42,6 +42,6 @@ Use the ``NextToken`` field with the ``starting-token`` parameter in a subsequen
 
     aws autoscaling describe-notification-configurations --auto-scaling-group-name my-auto-scaling-group --starting-token Z3M3LMPEXAMPLE
 
-For more information, see `Getting Notifications When Your Auto Scaling Group Changes`_ in the *Auto Scaling Developer Guide*.
+For more information, see `Getting Amazon SNS Notifications When Your Auto Scaling Group Scales`_ in the *Amazon EC2 Auto Scaling User Guide*.
 
-.. _`Getting Notifications When Your Auto Scaling Group Changes`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/ASGettingNotifications.html
+.. _`Getting Amazon SNS Notifications When Your Auto Scaling Group Scales`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/ASGettingNotifications.html

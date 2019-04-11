@@ -453,6 +453,10 @@ class ParamShorthandDocGen(ParamShorthand):
                 self._uses_old_list_case(
                     service_id, operation_name, cli_argument.name):
             member_name = list(model.member.members)[0]
+            # Handle special case where the min/max is exactly one.
+            metadata = model.metadata
+            if metadata.get('min') == 1 and metadata.get('max') == 1:
+                return '%s %s1' % (cli_argument.cli_name, member_name)
             return '%s %s1 %s2 %s3' % (cli_argument.cli_name, member_name,
                                        member_name, member_name)
         elif model.type_name == 'structure' and \

@@ -581,6 +581,27 @@ class TestDocGen(BaseArgProcessTest):
         with mock.patch(uses_old_list, mock.Mock(return_value=True)):
             self.assert_generated_example_is(argument, '--arg Bar1 Bar2 Bar3')
 
+    def test_generates_single_example_with_min_max_1(self):
+        # An example of this is
+        # 'workspaces rebuild-workspaces --rebuild-workspace-requests'
+        argument = self.create_argument({
+            'Arg': {
+                'type': 'list',
+                'max': 1,
+                'min': 1,
+                'member': {
+                    'type': 'structure',
+                    'members': {
+                        'Bar': {'type': 'string'}
+                    }
+                }
+            }
+        }, 'arg')
+        argument.argument_model = argument.argument_model.members['Arg']
+        uses_old_list = 'awscli.argprocess.ParamShorthand._uses_old_list_case'
+        with mock.patch(uses_old_list, mock.Mock(return_value=True)):
+            self.assert_generated_example_is(argument, '--arg Bar1')
+
     def test_does_not_flatten_unmarked_single_member_structure_list(self):
         argument = self.create_argument({
             'Arg': {

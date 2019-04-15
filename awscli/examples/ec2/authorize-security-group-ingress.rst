@@ -28,7 +28,7 @@ This example enables inbound traffic on TCP port 22 (SSH). Note that you can't r
 
 Command::
 
-  aws ec2 authorize-security-group-ingress --group-id sg-903004f8 --protocol tcp --port 22 --cidr 203.0.113.0/24
+  aws ec2 authorize-security-group-ingress --group-id sg-1234567890abcdef0 --protocol tcp --port 22 --cidr 203.0.113.0/24
 
 **[EC2-VPC] To add a rule that allows inbound HTTP traffic from another security group**
 
@@ -36,7 +36,7 @@ This example enables inbound access on TCP port 80 from the source security grou
 
 Command::
 
-  aws ec2 authorize-security-group-ingress --group-id sg-111aaa22 --protocol tcp --port 80 --source-group sg-1a2b3c4d
+  aws ec2 authorize-security-group-ingress --group-id sg-1234567890abcdef0 --protocol tcp --port 80 --source-group sg-1a2b3c4d
 
 **[EC2-VPC] To add two rules, one for RDP and another for ping/ICMP**
 
@@ -44,19 +44,19 @@ This example uses the ``ip-permissions`` parameter to add two rules, one that en
 
 Command (Windows)::
 
-  aws ec2 authorize-security-group-ingress --group-id sg-1a2b3c4d --ip-permissions IpProtocol=tcp,FromPort=3389,ToPort=3389,IpRanges=[{CidrIp=172.31.0.0/16}] IpProtocol=icmp,FromPort=-1,ToPort=-1,IpRanges=[{CidrIp=172.31.0.0/16}]
+  aws ec2 authorize-security-group-ingress --group-id sg-1234567890abcdef0 --ip-permissions IpProtocol=tcp,FromPort=3389,ToPort=3389,IpRanges=[{CidrIp=172.31.0.0/16}] IpProtocol=icmp,FromPort=-1,ToPort=-1,IpRanges=[{CidrIp=172.31.0.0/16}]
   
-**[EC2-VPC] To add a custom ICMP rule**
+**[EC2-VPC] To add a rule for ICMP traffic**
 
 This example uses the ``ip-permissions`` parameter to add an inbound rule that allows the ICMP message ``Destination Unreachable: Fragmentation Needed and Don't Fragment was Set`` (Type 3, Code 4) from anywhere. If the command succeeds, no output is returned. For more information about quoting JSON-formatted parameters, see `Quoting Strings`_.
 
 Command (Linux)::
 
-  aws ec2 authorize-security-group-ingress --group-id sg-123abc12 --ip-permissions IpProtocol=icmp,FromPort=3,ToPort=4,IpRanges='[{CidrIp=0.0.0.0/0}]' 
+  aws ec2 authorize-security-group-ingress --group-id sg-1234567890abcdef0 --ip-permissions IpProtocol=icmp,FromPort=3,ToPort=4,IpRanges='[{CidrIp=0.0.0.0/0}]' 
 
 Command (Windows)::
 
-  aws ec2 authorize-security-group-ingress --group-id sg-123abc12 --ip-permissions IpProtocol=icmp,FromPort=3,ToPort=4,IpRanges=[{CidrIp=0.0.0.0/0}]
+  aws ec2 authorize-security-group-ingress --group-id sg-1234567890abcdef0 --ip-permissions IpProtocol=icmp,FromPort=3,ToPort=4,IpRanges=[{CidrIp=0.0.0.0/0}]
 
 **[EC2-VPC] To add a rule for IPv6 traffic**
 
@@ -64,11 +64,23 @@ This example grants SSH access (port 22) from the IPv6 range ``2001:db8:1234:1a0
 
 Command (Linux)::
 
-  aws ec2 authorize-security-group-ingress --group-id sg-9bf6ceff --ip-permissions IpProtocol=tcp,FromPort=22,ToPort=22,Ipv6Ranges='[{CidrIpv6=2001:db8:1234:1a00::/64}]'
+  aws ec2 authorize-security-group-ingress --group-id sg-1234567890abcdef0 --ip-permissions IpProtocol=tcp,FromPort=22,ToPort=22,Ipv6Ranges='[{CidrIpv6=2001:db8:1234:1a00::/64}]'
 
 Command (Windows)::
 
-  aws ec2 authorize-security-group-ingress --group-id sg-9bf6ceff --ip-permissions IpProtocol=tcp,FromPort=22,ToPort=22,Ipv6Ranges=[{CidrIpv6=2001:db8:1234:1a00::/64}]
+  aws ec2 authorize-security-group-ingress --group-id sg-1234567890abcdef0 --ip-permissions IpProtocol=tcp,FromPort=22,ToPort=22,Ipv6Ranges=[{CidrIpv6=2001:db8:1234:1a00::/64}]
+
+**[EC2-VPC] To add a rule for ICMPv6 traffic**
+
+This example uses the ``ip-permissions`` parameter to add an inbound rule that allows ICMPv6 traffic from anywhere.
+
+Command (Linux)::
+
+  aws ec2 authorize-security-group-ingress --group-id sg-1234567890abcdef0 --ip-permissions IpProtocol=icmpv6,Ipv6Ranges='[{CidrIpv6=::/0}]' 
+
+Command (Windows)::
+
+  aws ec2 authorize-security-group-ingress --group-id sg-1234567890abcdef0 --ip-permissions IpProtocol=icmpv6,Ipv6Ranges=[{CidrIpv6=::/0}]
 
 **Add a rule with a description**
 
@@ -76,11 +88,11 @@ This example uses the ``ip-permissions`` parameter to add an inbound rule that a
 
 Command (Linux)::
 
-  aws ec2 authorize-security-group-ingress --group-id sg-123abc12 --ip-permissions IpProtocol=tcp,FromPort=3389,ToPort=3389,IpRanges='[{CidrIp=203.0.113.0/24,Description="RDP access from NY office"}]'
+  aws ec2 authorize-security-group-ingress --group-id sg-1234567890abcdef0 --ip-permissions IpProtocol=tcp,FromPort=3389,ToPort=3389,IpRanges='[{CidrIp=203.0.113.0/24,Description="RDP access from NY office"}]'
 
 Command (Windows)::
 
-  aws ec2 authorize-security-group-ingress --group-id sg-123abc12 --ip-permissions IpProtocol=tcp,FromPort=3389,ToPort=3389,IpRanges=[{CidrIp=203.0.113.0/24,Description="RDP access from NY office"}]
+  aws ec2 authorize-security-group-ingress --group-id sg-1234567890abcdef0 --ip-permissions IpProtocol=tcp,FromPort=3389,ToPort=3389,IpRanges=[{CidrIp=203.0.113.0/24,Description="RDP access from NY office"}]
 
 For more information, see `Using Security Groups`_ in the *AWS Command Line Interface User Guide*.
 

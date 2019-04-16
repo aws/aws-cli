@@ -33,17 +33,19 @@ from awscli.customizations.s3uploader import NoSuchBucketError
 class TestS3Uploader(unittest.TestCase):
 
     def setUp(self):
+        self._construct_uploader("us-east-1")
+
+    def _construct_uploader(self, region):
         self.s3client = botocore.session.get_session().create_client(
-                's3', region_name="us-east-1")
+                's3', region_name=region)
         self.s3client_stub = Stubber(self.s3client)
         self.transfer_manager_mock = Mock(spec=S3Transfer)
         self.transfer_manager_mock.upload = Mock()
         self.bucket_name = "bucketname"
         self.prefix = None
-        self.region = "us-east-1"
 
         self.s3uploader = S3Uploader(
-            self.s3client, self.bucket_name, self.region, self.prefix, None, False,
+            self.s3client, self.bucket_name, self.prefix, None, False,
             self.transfer_manager_mock)
 
     @patch('os.path.getsize', return_value=1)
@@ -54,7 +56,7 @@ class TestS3Uploader(unittest.TestCase):
         prefix = "SomePrefix"
         remote_path_with_prefix = "{0}/{1}".format(prefix, remote_path)
         s3uploader = S3Uploader(
-            self.s3client, self.bucket_name, self.region, prefix, None, False,
+            self.s3client, self.bucket_name, prefix, None, False,
             self.transfer_manager_mock)
         expected_upload_url = "s3://{0}/{1}/{2}".format(
             self.bucket_name, prefix, remote_path)
@@ -104,7 +106,7 @@ class TestS3Uploader(unittest.TestCase):
 
         # Set ForceUpload = True
         self.s3uploader = S3Uploader(
-            self.s3client, self.bucket_name, self.region, self.prefix,
+            self.s3client, self.bucket_name, self.prefix,
             None, True, self.transfer_manager_mock)
 
         # Pretend file already exists
@@ -135,7 +137,7 @@ class TestS3Uploader(unittest.TestCase):
                                                     remote_path)
         # Set KMS Key Id
         self.s3uploader = S3Uploader(
-            self.s3client, self.bucket_name, self.region, self.prefix,
+            self.s3client, self.bucket_name, self.prefix,
             kms_key_id, False, self.transfer_manager_mock)
 
         # Setup mock to fake that file does not exist
@@ -243,7 +245,7 @@ class TestS3Uploader(unittest.TestCase):
 
         # Let's pretend some other unknown exception happened
         s3mock = Mock()
-        uploader = S3Uploader(s3mock, self.bucket_name, self.region)
+        uploader = S3Uploader(s3mock, self.bucket_name)
         s3mock.head_object = Mock()
         s3mock.head_object.side_effect = RuntimeError()
 
@@ -278,8 +280,9 @@ class TestS3Uploader(unittest.TestCase):
         key = "path/to/file"
         version = "someversion"
         region = "us-east-1"
+        self._construct_uploader(region)
 
-        s3uploader = S3Uploader(self.s3client, self.bucket_name, region)
+        s3uploader = S3Uploader(self.s3client, self.bucket_name)
         result = s3uploader.to_path_style_s3_url(key, version)
         self.assertEqual(
                 result,
@@ -298,12 +301,13 @@ class TestS3Uploader(unittest.TestCase):
         key = "path/to/file"
         version = "someversion"
         region = "us-west-2"
+        self._construct_uploader(region)
 
         s3uploader = S3Uploader(self.s3client, self.bucket_name, region)
         result = s3uploader.to_path_style_s3_url(key, version)
         self.assertEqual(
                 result,
-                "https://s3-{0}.amazonaws.com/{1}/{2}?versionId={3}".format(
+                "https://s3.{0}.amazonaws.com/{1}/{2}?versionId={3}".format(
                         region, self.bucket_name, key, version))
 
         # Without versionId, that query parameter should be omitted
@@ -311,7 +315,7 @@ class TestS3Uploader(unittest.TestCase):
         result = s3uploader.to_path_style_s3_url(key)
         self.assertEqual(
                 result,
-                "https://s3-{0}.amazonaws.com/{1}/{2}".format(
+                "https://s3.{0}.amazonaws.com/{1}/{2}".format(
                         region, self.bucket_name, key))
 
 
@@ -319,6 +323,7 @@ class TestS3Uploader(unittest.TestCase):
         key = "path/to/file"
         version = "someversion"
         region = "cn-northwest-1"
+        self._construct_uploader(region)
 
         s3uploader = S3Uploader(self.s3client, self.bucket_name, region)
         result = s3uploader.to_path_style_s3_url(key, version)
@@ -338,7 +343,7 @@ class TestS3Uploader(unittest.TestCase):
     def test_artifact_metadata_invalid_type(self):
         prefix = "SomePrefix"
         s3uploader = S3Uploader(
-            self.s3client, self.bucket_name, self.region, prefix, None, False,
+            self.s3client, self.bucket_name, prefix, None, False,
             self.transfer_manager_mock)
         invalid_metadata = ["key", "val"]
         with self.assertRaises(TypeError):

@@ -59,7 +59,6 @@ class S3Uploader(object):
 
     def __init__(self, s3_client,
                  bucket_name,
-                 region,
                  prefix=None,
                  kms_key_id=None,
                  force_upload=False,
@@ -69,7 +68,6 @@ class S3Uploader(object):
         self.kms_key_id = kms_key_id or None
         self.force_upload = force_upload
         self.s3 = s3_client
-        self.region = region
 
         self.transfer_manager = transfer_manager
         if not transfer_manager:
@@ -195,14 +193,7 @@ class S3Uploader(object):
             This link describes the format of Path Style URLs
             http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html#access-bucket-intro
         """
-        base = "https://s3.amazonaws.com"
-        if self.region and self.region != "us-east-1":
-            if self.region.startswith("cn-"):
-                base = "https://s3.{0}.amazonaws.com.cn".format(self.region)
-            else:
-                base = "https://s3-{0}.amazonaws.com".format(self.region)
-
-
+        base = self.s3.meta.endpoint_url
         result = "{0}/{1}/{2}".format(base, self.bucket_name, key)
         if version:
             result = "{0}?versionId={1}".format(result, version)

@@ -1999,11 +1999,13 @@ class TestSSERelatedParams(BaseS3IntegrationTest):
         p = aws('s3 sync %s s3://%s/foo/ --sse AES256' % (
             self.files.rootdir, bucket))
         self.assert_no_errors(p)
+        self.wait_until_key_exists(bucket, 'foo/foo.txt')
 
         # Copy sync
         p = aws('s3 sync s3://%s/foo/ s3://%s/bar/ --sse AES256' % (
             bucket, bucket))
         self.assert_no_errors(p)
+        self.wait_until_key_exists(bucket, 'bar/foo.txt')
 
         # Remove the original file
         os.remove(file_name)

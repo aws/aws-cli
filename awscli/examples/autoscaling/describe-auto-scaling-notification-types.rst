@@ -16,6 +16,6 @@ The following is example output::
         ]
     }
 
-For more information, see `Configure Your Auto Scaling Group to Send Notifications`_ in the *Auto Scaling Developer Guide*.
+For more information, see `Getting Amazon SNS Notifications When Your Auto Scaling Group Scales`_ in the *Amazon EC2 Auto Scaling User Guide*.
 
-.. _`Configure Your Auto Scaling Group to Send Notifications`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/ASGettingNotifications.html#as-configure-asg-for-sns
+.. _`Getting Amazon SNS Notifications When Your Auto Scaling Group Scales`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/ASGettingNotifications.html

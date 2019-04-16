@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.16.141
+========
+
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``mq``: Update mq command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+
+
 1.16.140
 ========
 

@@ -20,6 +20,6 @@ The following is example output::
         ]
     }
 
-For more information, see `Scaling Adjustment Types`_ in the *Auto Scaling Developer Guide*.
+For more information, see `Scaling Adjustment Types`_ in the *Amazon EC2 Auto Scaling User Guide*.
 
-.. _`Scaling Adjustment Types`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/as-scale-based-on-demand.html#as-scaling-adjustment
+.. _`Scaling Adjustment Types`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-simple-step.html#as-scaling-adjustment

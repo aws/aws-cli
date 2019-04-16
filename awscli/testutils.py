@@ -211,7 +211,7 @@ def random_chars(num_chars):
     return binascii.hexlify(os.urandom(int(num_chars / 2))).decode('ascii')
 
 
-def random_bucket_name(prefix='awscli-s3integ-', num_random=10):
+def random_bucket_name(prefix='awscli-s3integ-', num_random=15):
     """Generate a random S3 bucket name.
 
     :param prefix: A prefix to use in the bucket name.  Useful
@@ -758,6 +758,7 @@ class BaseS3CLICommand(unittest.TestCase):
         return client
 
     def assert_key_contents_equal(self, bucket, key, expected_contents):
+        self.wait_until_key_exists(bucket, key)
         if isinstance(expected_contents, six.BytesIO):
             expected_contents = expected_contents.getvalue().decode('utf-8')
         actual_contents = self.get_key_contents(bucket, key)

@@ -314,6 +314,27 @@ class TestS3Uploader(unittest.TestCase):
                 "https://s3-{0}.amazonaws.com/{1}/{2}".format(
                         region, self.bucket_name, key))
 
+
+    def test_to_path_style_s3_url_china_regions(self):
+        key = "path/to/file"
+        version = "someversion"
+        region = "cn-northwest-1"
+
+        s3uploader = S3Uploader(self.s3client, self.bucket_name, region)
+        result = s3uploader.to_path_style_s3_url(key, version)
+        self.assertEqual(
+                result,
+                "https://s3.{0}.amazonaws.com.cn/{1}/{2}?versionId={3}".format(
+                        region, self.bucket_name, key, version))
+
+        # Without versionId, that query parameter should be omitted
+        s3uploader = S3Uploader(self.s3client, self.bucket_name, region)
+        result = s3uploader.to_path_style_s3_url(key)
+        self.assertEqual(
+                result,
+                "https://s3.{0}.amazonaws.com.cn/{1}/{2}".format(
+                        region, self.bucket_name, key))
+
     def test_artifact_metadata_invalid_type(self):
         prefix = "SomePrefix"
         s3uploader = S3Uploader(

@@ -197,7 +197,11 @@ class S3Uploader(object):
         """
         base = "https://s3.amazonaws.com"
         if self.region and self.region != "us-east-1":
-            base = "https://s3-{0}.amazonaws.com".format(self.region)
+            if self.region.startswith("cn-"):
+                base = "https://s3.{0}.amazonaws.com.cn".format(self.region)
+            else:
+                base = "https://s3-{0}.amazonaws.com".format(self.region)
+
 
         result = "{0}/{1}/{2}".format(base, self.bucket_name, key)
         if version:

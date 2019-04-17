@@ -54,3 +54,19 @@ This example gets the IP information about an instance.
 Command::
 
   aws ssm send-command --instance-ids "i-0cb2b964d3e14fd9f" --document-name "AWS-RunShellScript" --comment "IP config" --parameters "commands=ifconfig" --output text
+
+**To target multiple instances with different tags**
+
+This example targets two different tag keys and values.
+
+Command::
+
+  aws ssm send-command --document-name "AWS-RunPowerShellScript" --parameters commands=["echo helloWorld"] --targets Key=tag:Env,Values=Dev Key=tag:Role,Values=WebServers
+
+**To target multiple instances with the same tag key**
+
+This example targets the same tag key with different values.
+
+Command::
+
+  aws ssm send-command --document-name "AWS-RunPowerShellScript" --parameters commands=["echo helloWorld"] --targets Key=tag:Env,Values=Dev,Test

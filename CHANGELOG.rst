@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.142
+========
+
+* api-change:``polly``: Update polly command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.16.141
 ========
 

@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.16.143
+========
+
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``worklink``: Update worklink command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``discovery``: Update discovery command to latest version
+
+
 1.16.142
 ========
 

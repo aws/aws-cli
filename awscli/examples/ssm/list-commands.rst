@@ -53,3 +53,11 @@ This example gets the status of a command.
 Command::
 
   aws ssm list-commands --command-id "0831e1a8-a1ac-4257-a1fd-c831b48c4107"
+
+**To get the status of commands requested after a specific date**
+
+This example returns the details of commands requested after the specified date.
+
+Command::
+
+  aws ssm list-commands --filter "key=InvokedAfter,value=2019-02-01T00:00:00Z"

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.144
+========
+
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``resource-groups``: Update resource-groups command to latest version
+
+
 1.16.143
 ========
 

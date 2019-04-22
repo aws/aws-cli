@@ -64,8 +64,10 @@ def apply_boolean_options(
         raise ValueError(error_message)
     elif true_option:
         return True
-    else:
+    elif false_option:
         return False
+    else:
+        return None
 
 
 # Deprecate. Rename to apply_dict

@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 
 from awscli.customizations.emr.emrutils import which
+from awscli.customizations.emr.emrutils import apply_boolean_options
 from nose.tools import assert_equal
 from nose.tools import assert_not_equal
 
@@ -25,3 +26,15 @@ class TestEMRutils(object):
     def test_which_with_non_existing_command(self):
         path = which('klajsflklj')
         assert_equal(path, None)
+
+    def test_apply_boolean_options_true_option(self):
+        boolean_option = apply_boolean_options(True, '', None, '')
+        assert_equal(boolean_option, True)
+
+    def test_apply_boolean_options_false_option(self):
+        boolean_option = apply_boolean_options(None, '', True, '')
+        assert_equal(boolean_option, False)
+
+    def test_apply_boolean_options_none_option(self):
+        boolean_option = apply_boolean_options(None, '', None, '')
+        assert_equal(boolean_option, None)

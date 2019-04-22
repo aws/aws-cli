@@ -61,7 +61,6 @@ DEFAULT_CMD = ('emr create-cluster --release-label emr-4.0.0'
                ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG + ' ')
 
 DEFAULT_INSTANCES = {'KeepJobFlowAliveWhenNoSteps': True,
-                     'TerminationProtected': False,
                      'InstanceGroups': DEFAULT_INSTANCE_GROUPS
                      }
 
@@ -417,7 +416,11 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
     def test_no_termination_protected(self):
         cmd = DEFAULT_CMD + '--no-termination-protected'
-        self.assert_params_for_cmd(cmd, DEFAULT_RESULT)
+        result = copy.deepcopy(DEFAULT_RESULT)
+        instances = copy.deepcopy(DEFAULT_INSTANCES)
+        instances['TerminationProtected'] = False
+        result['Instances'] = instances
+        self.assert_params_for_cmd(cmd, result)
 
     def test_termination_protected_and_no_termination_protected(self):
         cmd = DEFAULT_CMD + \
@@ -526,7 +529,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         expected_result = copy.deepcopy(DEFAULT_RESULT)
         expected_result['Instances'] = \
             {'KeepJobFlowAliveWhenNoSteps': True,
-             'TerminationProtected': False,
              'InstanceGroups':
                 [{'InstanceRole': 'MASTER',
                   'InstanceCount': 1,
@@ -541,7 +543,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         expected_result = copy.deepcopy(DEFAULT_RESULT)
         expected_result['Instances'] = \
             {'KeepJobFlowAliveWhenNoSteps': True,
-             'TerminationProtected': False,
              'InstanceGroups':
                 [{'InstanceRole': 'MASTER',
                   'InstanceCount': 1,
@@ -1056,7 +1057,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             {
                 'Name': DEFAULT_CLUSTER_NAME,
                 'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
-                              'TerminationProtected': False,
                               'InstanceGroups': CONSTANTS.INSTANCE_GROUPS_WITH_AUTOSCALING_POLICY
                               },
                 'ReleaseLabel': 'emr-4.2.0',
@@ -1096,7 +1096,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             {
                 'Name': DEFAULT_CLUSTER_NAME,
                 'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
-                              'TerminationProtected': False,
                               'InstanceGroups': CONSTANTS.INSTANCE_GROUPS_WITH_EBS
                               },
                 'ReleaseLabel': 'emr-4.2.0',
@@ -1124,7 +1123,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             {
                 'Name': DEFAULT_CLUSTER_NAME,
                 'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
-                              'TerminationProtected': False,
                               'InstanceGroups': CONSTANTS.INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_VOLSPEC
                               },
                 'ReleaseLabel': 'emr-4.2.0',
@@ -1140,7 +1138,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             {
                 'Name': DEFAULT_CLUSTER_NAME,
                 'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
-                              'TerminationProtected': False,
                               'InstanceGroups': CONSTANTS.INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_IOPS
                               },
                 'ReleaseLabel': 'emr-4.2.0',
@@ -1156,7 +1153,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             {
                 'Name': DEFAULT_CLUSTER_NAME,
                 'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
-                              'TerminationProtected': False,
                               'InstanceGroups': CONSTANTS.MULTIPLE_INSTANCE_GROUPS_WITH_EBS_VOLUMES
                               },
                 'ReleaseLabel': 'emr-4.2.0',
@@ -1172,7 +1168,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             {
                 'Name': DEFAULT_CLUSTER_NAME,
                 'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
-                              'TerminationProtected': False,
                               'InstanceFleets':
                                                 CONSTANTS_FLEET.RES_INSTANCE_FLEETS_WITH_ON_DEMAND_MASTER_ONLY
                             },
@@ -1189,7 +1184,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             {
                 'Name': DEFAULT_CLUSTER_NAME,
                 'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
-                              'TerminationProtected': False,
                               'InstanceFleets':
                                                 CONSTANTS_FLEET.RES_INSTANCE_FLEETS_WITH_SPOT_MASTER_ONLY_WITH_EBS_CONF
                             },
@@ -1207,7 +1201,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             {
                 'Name': DEFAULT_CLUSTER_NAME,
                 'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
-                              'TerminationProtected': False,
                               'InstanceFleets':
                                                 CONSTANTS_FLEET.RES_INSTANCE_FLEETS_WITH_SPOT_MASTER_ONLY,
                               'Placement': {'AvailabilityZones': ['us-east-1a','us-east-1b']}
@@ -1226,7 +1219,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             {
                 'Name': DEFAULT_CLUSTER_NAME,
                 'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
-                              'TerminationProtected': False,
                               'InstanceFleets':
                                                 CONSTANTS_FLEET.RES_INSTANCE_FLEETS_WITH_SPOT_MASTER_ONLY,
                               'Ec2SubnetIds': ['subnetid-1','subnetid-2']
@@ -1244,7 +1236,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             {
                 'Name': DEFAULT_CLUSTER_NAME,
                 'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
-                              'TerminationProtected': False,
                               'InstanceFleets':
                                                 CONSTANTS_FLEET.RES_INSTANCE_FLEETS_WITH_SPOT_MASTER_CORE_CLUSTER
                             },
@@ -1263,7 +1254,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             {
                 'Name': DEFAULT_CLUSTER_NAME,
                 'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
-                              'TerminationProtected': False,
                               'InstanceFleets':
                                                 CONSTANTS_FLEET.RES_INSTANCE_FLEETS_WITH_COMPLEX_CONFIG_FROM_JSON
                             },

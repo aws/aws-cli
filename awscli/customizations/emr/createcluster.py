@@ -210,30 +210,33 @@ class CreateCluster(Command):
                 parsed_args.auto_terminate is False):
             parsed_args.no_auto_terminate = True
 
-        instances_config['KeepJobFlowAliveWhenNoSteps'] = \
-            emrutils.apply_boolean_options(
-                parsed_args.no_auto_terminate,
-                '--no-auto-terminate',
-                parsed_args.auto_terminate,
-                '--auto-terminate')
+        keep_job_flow_alive_when_no_steps = emrutils.apply_boolean_options(
+            parsed_args.no_auto_terminate,
+            '--no-auto-terminate',
+            parsed_args.auto_terminate,
+            '--auto-terminate')
+        if keep_job_flow_alive_when_no_steps is not None:
+            instances_config['KeepJobFlowAliveWhenNoSteps'] = keep_job_flow_alive_when_no_steps
 
-        instances_config['TerminationProtected'] = \
-            emrutils.apply_boolean_options(
-                parsed_args.termination_protected,
-                '--termination-protected',
-                parsed_args.no_termination_protected,
-                '--no-termination-protected')
+        termination_protected = emrutils.apply_boolean_options(
+            parsed_args.termination_protected,
+            '--termination-protected',
+            parsed_args.no_termination_protected,
+            '--no-termination-protected')
+        if termination_protected is not None:
+            instances_config['TerminationProtected'] = termination_protected
 
         if (parsed_args.visible_to_all_users is False and
                 parsed_args.no_visible_to_all_users is False):
             parsed_args.visible_to_all_users = True
 
-        params['VisibleToAllUsers'] = \
-            emrutils.apply_boolean_options(
-                parsed_args.visible_to_all_users,
-                '--visible-to-all-users',
-                parsed_args.no_visible_to_all_users,
-                '--no-visible-to-all-users')
+        visible_to_all_users = emrutils.apply_boolean_options(
+            parsed_args.visible_to_all_users,
+            '--visible-to-all-users',
+            parsed_args.no_visible_to_all_users,
+            '--no-visible-to-all-users')
+        if visible_to_all_users is not None:
+            params['VisibleToAllUsers'] = visible_to_all_users
 
         params['Tags'] = emrutils.parse_tags(parsed_args.tags)
         params['Instances'] = instances_config

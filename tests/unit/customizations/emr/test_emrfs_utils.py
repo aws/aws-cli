@@ -27,7 +27,6 @@ from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
 
 DEFAULT_INSTANCES = {
     'KeepJobFlowAliveWhenNoSteps': True,
-    'TerminationProtected': False,
     'InstanceGroups': [{
         'InstanceRole': 'MASTER',
         'InstanceCount': 1,

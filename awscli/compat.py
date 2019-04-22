@@ -22,6 +22,8 @@ import contextlib
 from botocore.compat import six
 #import botocore.compat
 
+from botocore.compat import OrderedDict
+
 # If you ever want to import from the vendored six. Add it here and then
 # import from awscli.compat. Also try to keep it in alphabetical order.
 # This may get large.
@@ -97,6 +99,7 @@ def ensure_text_type(s):
 
 
 if six.PY3:
+    import collections.abc as collections_abc
     import locale
     import urllib.parse as urlparse
 
@@ -146,6 +149,7 @@ if six.PY3:
 
 else:
     import codecs
+    import collections as collections_abc
     import locale
     import io
     import urlparse

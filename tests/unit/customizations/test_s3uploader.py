@@ -25,6 +25,7 @@ import botocore.exceptions
 from botocore.stub import Stubber
 from s3transfer import S3Transfer
 
+from awscli.compat import OrderedDict
 from awscli.testutils import unittest
 from awscli.customizations.s3uploader import S3Uploader
 from awscli.customizations.s3uploader import NoSuchBucketError
@@ -66,6 +67,40 @@ class TestS3Uploader(unittest.TestCase):
         s3uploader.file_exists.return_value = False
         # set the metadata used by the uploader when uploading
         artifact_metadata = {"key": "val"}
+        s3uploader.artifact_metadata = artifact_metadata
+
+        upload_url = s3uploader.upload(file_name, remote_path)
+        self.assertEquals(expected_upload_url, upload_url)
+
+        expected_extra_args = {
+            # expected encryption args
+            "ServerSideEncryption": "AES256",
+            # expected metadata
+            "Metadata": artifact_metadata
+        }
+        self.transfer_manager_mock.upload.assert_called_once_with(
+                file_name, self.bucket_name, remote_path_with_prefix,
+                expected_extra_args, mock.ANY)
+        s3uploader.file_exists.assert_called_once_with(remote_path_with_prefix)
+
+    @patch('os.path.getsize', return_value=1)
+    @patch("awscli.customizations.s3uploader.ProgressPercentage")
+    def test_upload_successful_odict(self, progress_percentage_mock, get_size_patch):
+        file_name = "filename"
+        remote_path = "remotepath"
+        prefix = "SomePrefix"
+        remote_path_with_prefix = "{0}/{1}".format(prefix, remote_path)
+        s3uploader = S3Uploader(
+            self.s3client, self.bucket_name, prefix, None, False,
+            self.transfer_manager_mock)
+        expected_upload_url = "s3://{0}/{1}/{2}".format(
+            self.bucket_name, prefix, remote_path)
+
+        # Setup mock to fake that file does not exist
+        s3uploader.file_exists = Mock()
+        s3uploader.file_exists.return_value = False
+        # set the metadata used by the uploader when uploading
+        artifact_metadata = OrderedDict({"key": "val"})
         s3uploader.artifact_metadata = artifact_metadata
 
         upload_url = s3uploader.upload(file_name, remote_path)

@@ -22,6 +22,8 @@ import botocore.exceptions
 from s3transfer.manager import TransferManager
 from s3transfer.subscribers import BaseSubscriber
 
+from awscli.compat import collections_abc
+
 LOG = logging.getLogger(__name__)
 
 
@@ -53,7 +55,7 @@ class S3Uploader(object):
 
     @artifact_metadata.setter
     def artifact_metadata(self, val):
-        if val is not None and type(val) is not dict:
+        if val is not None and not isinstance(val, collections_abc.Mapping):
             raise TypeError("Artifact metadata should be in dict type")
         self._artifact_metadata = val
 

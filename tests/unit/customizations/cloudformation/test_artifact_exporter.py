@@ -798,6 +798,7 @@ class TestArtifactExporter(unittest.TestCase):
         exported_template_dict = {"foo": "bar"}
         result_s3_url = "s3://hello/world"
         result_path_style_s3_url = "http://s3.amazonws.com/hello/world"
+        use_json = False
 
         template_instance_mock = Mock()
         TemplateMock.return_value = template_instance_mock
@@ -816,7 +817,7 @@ class TestArtifactExporter(unittest.TestCase):
             self.assertEquals(resource_dict[property_name], result_path_style_s3_url)
 
             TemplateMock.assert_called_once_with(template_path, parent_dir, self.s3_uploader_mock)
-            template_instance_mock.export.assert_called_once_with()
+            template_instance_mock.export.assert_called_once_with(use_json)
             self.s3_uploader_mock.upload_with_dedup.assert_called_once_with(mock.ANY, "template")
             self.s3_uploader_mock.to_path_style_s3_url.assert_called_once_with("world", None)
 

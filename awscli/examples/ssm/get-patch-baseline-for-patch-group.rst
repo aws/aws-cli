@@ -4,11 +4,12 @@ This example displays the patch baseline for a patch group.
 
 Command::
 
-  aws ssm get-patch-baseline-for-patch-group --patch-group "Production"
+  aws ssm get-patch-baseline-for-patch-group --patch-group "DEV"
 
 Output::
 
   {
-    "PatchGroup": "Production",
-    "BaselineId": "pb-045f10b4f382baeda"
+    "BaselineId": "pb-0123456789abcdef0",
+    "PatchGroup": "DEV",
+    "OperatingSystem": "WINDOWS"
   }

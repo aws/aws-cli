@@ -15,35 +15,44 @@ Output::
             "Version": "1.0",
             "Attributes": [
                 {
-                    "DataType": "STRING",
-                    "Name": "Name"
+                    "Name": "Name",
+                    "DataType": "STRING"
                 },
                 {
-                    "DataType": "STRING",
-                    "Name": "ApplicationType"
+                    "Name": "ApplicationType",
+                    "DataType": "STRING"
                 },
                 {
-                    "DataType": "STRING",
-                    "Name": "Publisher"
+                    "Name": "Publisher",
+                    "DataType": "STRING"
                 },
                 {
-                    "DataType": "STRING",
-                    "Name": "Version"
+                    "Name": "Version",
+                    "DataType": "STRING"
                 },
                 {
-                    "DataType": "STRING",
-                    "Name": "InstalledTime"
+                    "Name": "InstalledTime",
+                    "DataType": "STRING"
                 },
                 {
-                    "DataType": "STRING",
-                    "Name": "Architecture"
+                    "Name": "Architecture",
+                    "DataType": "STRING"
                 },
                 {
-                    "DataType": "STRING",
-                    "Name": "URL"
+                    "Name": "URL",
+                    "DataType": "STRING"
                 }
             ]
         },
         ...
-	}
+    ],
+    "NextToken": "--token string truncated--"
   }
+  
+**To view the inventory schema for a specific inventory type**
+
+This example return the inventory schema for a the AWS:AWSComponent inventory type.
+
+Command::
+
+  aws ssm get-inventory-schema --type-name "AWS:AWSComponent"

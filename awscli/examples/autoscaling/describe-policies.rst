@@ -57,6 +57,6 @@ If the output includes a ``NextToken`` field, use the value of this field with t
 
     aws autoscaling describe-policies --auto-scaling-group-name my-auto-scaling-group --starting-token Z3M3LMPEXAMPLE
 
-For more information, see `Dynamic Scaling`_ in the *Auto Scaling Developer Guide*.
+For more information, see `Dynamic Scaling`_ in the *Amazon EC2 Auto Scaling User Guide*.
 
-.. _`Dynamic Scaling`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/as-scale-based-on-demand.html
+.. _`Dynamic Scaling`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scale-based-on-demand.html

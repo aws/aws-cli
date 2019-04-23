@@ -2,6 +2,138 @@
 CHANGELOG
 =========
 
+1.16.144
+========
+
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``resource-groups``: Update resource-groups command to latest version
+
+
+1.16.143
+========
+
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``worklink``: Update worklink command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``discovery``: Update discovery command to latest version
+
+
+1.16.142
+========
+
+* api-change:``polly``: Update polly command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.16.141
+========
+
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``mq``: Update mq command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+
+
+1.16.140
+========
+
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``iot1click-devices``: Update iot1click-devices command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+
+
+1.16.139
+========
+
+* api-change:``eks``: Update eks command to latest version
+* api-change:``iam``: Update iam command to latest version
+
+
+1.16.138
+========
+
+* api-change:``batch``: Update batch command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+
+
+1.16.137
+========
+
+* api-change:``acm``: Update acm command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+
+
+1.16.136
+========
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``emr``: Update emr command to latest version
+
+
+1.16.135
+========
+
+* api-change:``greengrass``: Update greengrass command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+
+
+1.16.134
+========
+
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``pinpoint-email``: Update pinpoint-email command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+
+
+1.16.133
+========
+
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``transfer``: Update transfer command to latest version
+
+
+1.16.132
+========
+
+* api-change:``glue``: Update glue command to latest version
+* api-change:``workmail``: Update workmail command to latest version
+
+
+1.16.131
+========
+
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``iot1click-devices``: Update iot1click-devices command to latest version
+* api-change:``iotanalytics``: Update iotanalytics command to latest version
+* api-change:``directconnect``: Update directconnect command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``fms``: Update fms command to latest version
+
+
+1.16.130
+========
+
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``iot1click-projects``: Update iot1click-projects command to latest version
+
+
 1.16.129
 ========
 

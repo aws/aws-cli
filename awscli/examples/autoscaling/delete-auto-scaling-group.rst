@@ -8,6 +8,6 @@ To delete the Auto Scaling group without waiting for the instances in the group 
 
     aws autoscaling delete-auto-scaling-group --auto-scaling-group-name my-auto-scaling-group --force-delete
 
-For more information, see `Shut Down Auto Scaling Processes`_ in the *Auto Scaling Developer Guide*.
+For more information, see `Deleting Your Auto Scaling Infrastructure`_ in the *Amazon EC2 Auto Scaling User Guide*.
 
-.. _`Shut Down Auto Scaling Processes`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/as-process-shutdown.html
+.. _`Deleting Your Auto Scaling Infrastructure`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/as-process-shutdown.html

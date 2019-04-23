@@ -1061,32 +1061,74 @@ class TestArtifactExporter(unittest.TestCase):
                 self.assertTrue({"Name": "AWS::Include", "Parameters": {"Location": "foo.yaml"}} in call_args)
                 self.assertTrue({"Name": "AWS::OtherTransform"} in call_args)
                 self.assertTrue({"Name": "AWS::Include", "Parameters": {"Location": "bar.yaml"}} in call_args)
+                self.assertTrue(template_dir in first_call_args)
+                self.assertTrue(template_dir in second_call_args)
+                self.assertTrue(template_dir in third_call_args)
                 self.assertEquals(include_transform_export_handler_mock.call_count, 3)
                 #new s3 url is added to include location
                 self.assertEquals(exported_template["Resources"]["Resource1"]["Properties"]["Fn::Transform"], {"Name": "AWS::Include", "Parameters": {"Location": "s3://foo"}})
                 self.assertEquals(exported_template["List"][1]["Fn::Transform"], {"Name": "AWS::Include", "Parameters": {"Location": "s3://foo"}})
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_file")
-    def test_include_transform_export_handler(self, is_local_file_mock):
+    def test_include_transform_export_handler_with_relative_file_path(self, is_local_file_mock):
         #exports transform
+        parent_dir = os.path.abspath("someroot")
         self.s3_uploader_mock.upload_with_dedup.return_value = "s3://foo"
         is_local_file_mock.return_value = True
-        handler_output = include_transform_export_handler({"Name": "AWS::Include", "Parameters": {"Location": "foo.yaml"}}, self.s3_uploader_mock)
-        self.s3_uploader_mock.upload_with_dedup.assert_called_once_with("foo.yaml")
+        abs_file_path = os.path.join(parent_dir, "foo.yaml")
+
+        handler_output = include_transform_export_handler({"Name": "AWS::Include", "Parameters": {"Location": "foo.yaml"}}, self.s3_uploader_mock, parent_dir)
+        self.s3_uploader_mock.upload_with_dedup.assert_called_once_with(abs_file_path)
+        is_local_file_mock.assert_called_with(abs_file_path)
         self.assertEquals(handler_output, {'Name': 'AWS::Include', 'Parameters': {'Location': 's3://foo'}})
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_file")
+    def test_include_transform_export_handler_with_absolute_file_path(self, is_local_file_mock):
+        #exports transform
+        parent_dir = os.path.abspath("someroot")
+        self.s3_uploader_mock.upload_with_dedup.return_value = "s3://foo"
+        is_local_file_mock.return_value = True
+        abs_file_path = os.path.abspath(os.path.join("my", "file.yaml"))
+
+        handler_output = include_transform_export_handler({"Name": "AWS::Include", "Parameters": {"Location": abs_file_path}}, self.s3_uploader_mock, parent_dir)
+        self.s3_uploader_mock.upload_with_dedup.assert_called_once_with(abs_file_path)
+        is_local_file_mock.assert_called_with(abs_file_path)
+        self.assertEquals(handler_output, {'Name': 'AWS::Include', 'Parameters': {'Location': 's3://foo'}})
+
+    @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_file")
+    def test_include_transform_export_handler_with_s3_uri(self, is_local_file_mock):
+
+        handler_output = include_transform_export_handler({"Name": "AWS::Include", "Parameters": {"Location": "s3://bucket/foo.yaml"}}, self.s3_uploader_mock, "parent_dir")
+        # Input is returned unmodified
+        self.assertEquals(handler_output, {"Name": "AWS::Include", "Parameters": {"Location": "s3://bucket/foo.yaml"}})
+
+        is_local_file_mock.assert_not_called()
+        self.s3_uploader_mock.assert_not_called()
+
+    @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_file")
+    def test_include_transform_export_handler_with_no_path(self, is_local_file_mock):
+
+        handler_output = include_transform_export_handler({"Name": "AWS::Include", "Parameters": {"Location": ""}}, self.s3_uploader_mock, "parent_dir")
+        # Input is returned unmodified
+        self.assertEquals(handler_output, {"Name": "AWS::Include", "Parameters": {"Location": ""}})
+
+        is_local_file_mock.assert_not_called()
+        self.s3_uploader_mock.assert_not_called()
+
+    @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_file")
     def test_include_transform_export_handler_non_local_file(self, is_local_file_mock):
-        #returns unchanged template dict if transform not a local file
+        #returns unchanged template dict if transform not a local file, and not a S3 URI
         is_local_file_mock.return_value = False
-        handler_output = include_transform_export_handler({"Name": "AWS::Include", "Parameters": {"Location": "http://foo.yaml"}}, self.s3_uploader_mock)
-        self.s3_uploader_mock.upload_with_dedup.assert_not_called()
-        self.assertEquals(handler_output, {"Name": "AWS::Include", "Parameters": {"Location": "http://foo.yaml"}})
+
+        with self.assertRaises(exceptions.InvalidLocalPathError):
+            include_transform_export_handler({"Name": "AWS::Include", "Parameters": {"Location": "http://foo.yaml"}}, self.s3_uploader_mock, "parent_dir")
+            is_local_file_mock.assert_called_with("http://foo.yaml")
+            self.s3_uploader_mock.assert_not_called()
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_file")
     def test_include_transform_export_handler_non_include_transform(self, is_local_file_mock):
         #ignores transform that is not aws::include
-        handler_output = include_transform_export_handler({"Name": "AWS::OtherTransform", "Parameters": {"Location": "foo.yaml"}}, self.s3_uploader_mock)
+        handler_output = include_transform_export_handler({"Name": "AWS::OtherTransform", "Parameters": {"Location": "foo.yaml"}}, self.s3_uploader_mock, "parent_dir")
         self.s3_uploader_mock.upload_with_dedup.assert_not_called()
         self.assertEquals(handler_output, {"Name": "AWS::OtherTransform", "Parameters": {"Location": "foo.yaml"}})
 

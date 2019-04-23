@@ -40,6 +40,6 @@ The following is example output::
         ]
     }
 
-For more information, see `Enable Auto Scaling Group Metrics`_ in the *Auto Scaling Developer Guide*.
+For more information, see `Auto Scaling Group Metrics`_ in the *Amazon EC2 Auto Scaling User Guide*.
 
-.. _`Enable Auto Scaling Group Metrics`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/as-instance-monitoring.html#as-group-metrics
+.. _`Auto Scaling Group Metrics`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-monitoring.html#as-group-metrics

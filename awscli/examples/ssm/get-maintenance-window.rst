@@ -1,6 +1,6 @@
-**To get information about a maintenance window**
+**To get information about a Maintenance Window**
 
-This example gets details about a maintenance window.
+This example gets details about a Maintenance Window.
 
 Command::
 

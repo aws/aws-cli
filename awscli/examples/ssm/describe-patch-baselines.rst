@@ -11,23 +11,20 @@ Output::
   {
     "BaselineIdentities": [
         {
-            "BaselineName": "AWS-DefaultPatchBaseline",
-            "DefaultBaseline": true,
-            "BaselineDescription": "Default Patch Baseline Provided by AWS.",
-            "BaselineId": "arn:aws:ssm:us-west-2:812345678901:patchbaseline/pb-04fb4ae6142167966"
+            "BaselineId": "arn:aws:ssm:us-east-1:075727635805:patchbaseline/pb-03e3f588eec25344c",
+            "BaselineName": "AWS-CentOSDefaultPatchBaseline",
+            "OperatingSystem": "CENTOS",
+            "BaselineDescription": "Default Patch Baseline for CentOS Provided by AWS.",
+            "DefaultBaseline": true
         },
         {
-            "BaselineName": "Production-Baseline",
-            "DefaultBaseline": false,
-            "BaselineDescription": "Baseline containing all updates approved for production systems",
-            "BaselineId": "pb-045f10b4f382baeda"
+            "BaselineId": "arn:aws:ssm:us-east-1:075727635805:patchbaseline/pb-07d8884178197b66b",
+            "BaselineName": "AWS-SuseDefaultPatchBaseline",
+            "OperatingSystem": "SUSE",
+            "BaselineDescription": "Default Patch Baseline for Suse Provided by AWS.",
+            "DefaultBaseline": true
         },
-        {
-            "BaselineName": "Production-Baseline",
-            "DefaultBaseline": false,
-            "BaselineDescription": "Baseline containing all updates approved for production systems",
-            "BaselineId": "pb-0a2f1059b670ebd31"
-        }
+        ...
     ]
   }
 

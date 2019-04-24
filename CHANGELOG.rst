@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+1.16.145
+========
+
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+* api-change:``textract``: Update textract command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* bugfix:Cloudformation: Support non-AWS partition regions in CloudFormation deploy and package. Fixes `#3635 <https://github.com/aws/aws-cli/issues/3635>`__.
+* api-change:``mediatailor``: Update mediatailor command to latest version
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``mediaconnect``: Update mediaconnect command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``cloudformation``: Update cloudformation command to latest version
+
+
 1.16.144
 ========
 

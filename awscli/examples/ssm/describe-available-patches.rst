@@ -1,45 +1,75 @@
 **To get available patches**
 
-This example gets all available patches for Windows Server 2012 that have a MSRC severity of Critical.
+This example gets all available patches for Windows Server 2019 that have a MSRC severity of Critical.
 
 Command::
 
-  aws ssm describe-available-patches --filters "Key=PRODUCT,Values=WindowsServer2012" "Key=MSRC_SEVERITY,Values=Critical"
+  aws ssm describe-available-patches --filters "Key=PRODUCT,Values=WindowsServer2019" "Key=MSRC_SEVERITY,Values=Critical"
 
 Output::
 
   {
     "Patches": [
         {
-            "ContentUrl": "https://support.microsoft.com/en-us/kb/2727528",
-            "ProductFamily": "Windows",
-            "Product": "WindowsServer2012",
+            "Id": "fe6bd8c2-3752-4c8b-ab3e-1a7ed08767ba",
+            "ReleaseDate": 1544047205.0,
+            "Title": "2018-11 Update for Windows Server 2019 for x64-based Systems (KB4470788)",
+            "Description": "Install this update to resolve issues in Windows. For a complete listing of the issues that are included in this update, see the associated Microsoft Knowledge Base article for more information. After you install this item, you may have to restart your computer.",
+            "ContentUrl": "https://support.microsoft.com/en-us/kb/4470788",
             "Vendor": "Microsoft",
-            "Description": "A security issue has been identified that could allow an unauthenticated remote attacker to compromise your system and gain control over it. You can help protect your system by installing this update from Microsoft. After you install this update, you may have to restart your system.",
+            "ProductFamily": "Windows",
+            "Product": "WindowsServer2019",
             "Classification": "SecurityUpdates",
-            "Title": "Security Update for Windows Server 2012 (KB2727528)",
-            "ReleaseDate": 1352829600.0,
-            "Language": "All",
             "MsrcSeverity": "Critical",
-            "KbNumber": "KB2727528",
-            "MsrcNumber": "MS12-072",
-            "Id": "1eb507be-2040-4eeb-803d-abc55700b715"
+            "KbNumber": "KB4470788",
+            "MsrcNumber": "",
+            "Language": "All"
         },
         {
-            "ContentUrl": "https://support.microsoft.com/en-us/kb/2729462",
-            "ProductFamily": "Windows",
-            "Product": "WindowsServer2012",
+            "Id": "c96115e1-5587-4115-b851-22baa46a3f11",
+            "ReleaseDate": 1549994410.0,
+            "Title": "2019-02 Security Update for Adobe Flash Player for Windows Server 2019 for x64-based Systems (KB4487038)",
+            "Description": "A security issue has been identified in a Microsoft software product that could affect your system. You can help protect your system by installing this update from Microsoft. For a complete listing of the issues that are included in this update, see the associated Microsoft Knowledge Base article. After you install this update, you may have to restart your system.",
+            "ContentUrl": "https://support.microsoft.com/en-us/kb/4487038",
             "Vendor": "Microsoft",
-            "Description": "A security issue has been identified that could allow an unauthenticated remote attacker to compromise your system and gain control over it. You can help protect your system by installing this update from Microsoft. After you install this update, you may have to restart your system.",
+            "ProductFamily": "Windows",
+            "Product": "WindowsServer2019",
             "Classification": "SecurityUpdates",
-            "Title": "Security Update for Microsoft .NET Framework 3.5 on Windows 8 and Windows Server 2012 for x64-based Systems (KB2729462)",
-            "ReleaseDate": 1352829600.0,
-            "Language": "All",
             "MsrcSeverity": "Critical",
-            "KbNumber": "KB2729462",
-            "MsrcNumber": "MS12-074",
-            "Id": "af873760-c97c-4088-ab7e-5219e120eab4"
+            "KbNumber": "KB4487038",
+            "MsrcNumber": "",
+            "Language": "All"
         },
-		...
-	}
+        ...
+    ]
+  }
+
+**To get details of a specific patch**
+
+This example returns details for the specified patch.
+
+Command::
+
+  aws ssm describe-available-patches --filters "Key=PATCH_ID,Values=KB4480979"
+
+Output::
+
+  {
+    "Patches": [
+        {
+            "Id": "680861e3-fb75-432e-818e-d72e5f2be719",
+            "ReleaseDate": 1546970408.0,
+            "Title": "2019-01 Security Update for Adobe Flash Player for Windows Server 2016 for x64-based Systems (KB4480979)",
+            "Description": "A security issue has been identified in a Microsoft software product that could affect your system. You can help protect your system by installing this update from Microsoft. For a complete listing of the issues that are included in this update, see the associated Microsoft Knowledge Base article. After you install this update, you may have to restart your system.",
+            "ContentUrl": "https://support.microsoft.com/en-us/kb/4480979",
+            "Vendor": "Microsoft",
+            "ProductFamily": "Windows",
+            "Product": "WindowsServer2016",
+            "Classification": "SecurityUpdates",
+            "MsrcSeverity": "Critical",
+            "KbNumber": "KB4480979",
+            "MsrcNumber": "",
+            "Language": "All"
+        }
+    ]
   }

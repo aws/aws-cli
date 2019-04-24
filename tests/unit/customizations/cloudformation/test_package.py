@@ -19,8 +19,14 @@ from io import StringIO
 from mock import patch, Mock, MagicMock
 from awscli.testutils import unittest, BaseAWSCommandParamsTest
 from awscli.customizations.cloudformation.package import PackageCommand
-from awscli.customizations.cloudformation.artifact_exporter import Template
-from awscli.customizations.cloudformation.yamlhelper import yaml_dump
+
+
+class FakeTemplate(object):
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+    def export(self, use_json):
+        return self.__dict__
 
 
 class FakeArgs(object):
@@ -45,7 +51,7 @@ def get_example_template():
 class TestPackageCommand(unittest.TestCase):
 
     def setUp(self):
-        self.session = mock.Mock()
+        self.session = Mock()
         self.session.get_scoped_config.return_value = {}
         self.parsed_args = FakeArgs(template_file='./foo',
                                     s3_bucket="s3bucket",
@@ -59,36 +65,33 @@ class TestPackageCommand(unittest.TestCase):
                                        verify_ssl=None)
         self.package_command = PackageCommand(self.session)
 
-
-    @patch("awscli.customizations.cloudformation.package.yaml_dump")
-    def test_main(self, mock_yaml_dump):
-        exported_template_str = "hello"
-
+    @patch("awscli.customizations.cloudformation.package.Template")
+    def test_main(self, mock_template):
         self.package_command.write_output = Mock()
-        self.package_command._export = Mock()
-        mock_yaml_dump.return_value = exported_template_str
+        mock_template.return_value = FakeTemplate(get_example_template())
 
         # Create a temporary file and make this my template
         with tempfile.NamedTemporaryFile() as handle:
             for use_json in (False, True):
                 filename = handle.name
                 self.parsed_args.template_file = filename
-                self.parsed_args.use_json=use_json
+                self.parsed_args.use_json = use_json
 
                 rc = self.package_command._run_main(self.parsed_args, self.parsed_globals)
                 self.assertEquals(rc, 0)
 
                 self.package_command._export.assert_called_once_with(filename, use_json)
+                if use_json:
+                    self.package_command.json.dumps.assert_called_once_with(mock_template.return_value,
+                                                                            indent=4, ensure_ascii=False)
+                else:
+                    self.package_command.yaml_dump.assert_called_once_with(mock_template.return_value)
                 self.package_command.write_output.assert_called_once_with(
                         self.parsed_args.output_template_file, mock.ANY)
 
-                self.package_command._export.reset_mock()
                 self.package_command.write_output.reset_mock()
 
-
-
     def test_main_error(self):
-
         self.package_command._export = Mock()
         self.package_command._export.side_effect = RuntimeError()
 
@@ -99,7 +102,6 @@ class TestPackageCommand(unittest.TestCase):
 
             with self.assertRaises(RuntimeError):
                 self.package_command._run_main(self.parsed_args, self.parsed_globals)
-
 
     @patch("awscli.customizations.cloudformation.package.sys.stdout")
     def test_write_output_to_stdout(self, stdoutmock):

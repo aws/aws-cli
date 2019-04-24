@@ -27,7 +27,7 @@ class FakeTemplate(object):
     def __init__(self, obj):
         self.__dict__.update(obj)
 
-    def export(self, use_json):
+    def export(self, use_json=False):
         return self.__dict__
 
 
@@ -70,7 +70,8 @@ class TestPackageCommand(unittest.TestCase):
     @patch("awscli.customizations.cloudformation.package.Template")
     def test_main(self, mock_template):
         self.package_command.write_output = Mock()
-        mock_template.return_value = FakeTemplate(get_example_template())
+        template_dict = get_example_template()
+        mock_template.return_value = FakeTemplate(template_dict)
 
         # Create a temporary file and make this my template
         with tempfile.NamedTemporaryFile() as handle:
@@ -79,9 +80,9 @@ class TestPackageCommand(unittest.TestCase):
                 self.parsed_args.template_file = filename
                 self.parsed_args.use_json = use_json
                 if use_json:
-                    expected_str = json.dumps(mock_template.return_value, indent=4, ensure_ascii=False)
+                    expected_str = json.dumps(template_dict, indent=4, ensure_ascii=False)
                 else:
-                    expected_str = yaml_dump(mock_template.return_value)
+                    expected_str = yaml_dump(template_dict)
 
                 rc = self.package_command._run_main(self.parsed_args, self.parsed_globals)
                 self.assertEquals(rc, 0)

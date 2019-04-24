@@ -22,8 +22,8 @@ from awscli.customizations.cloudformation.package import PackageCommand
 
 
 class FakeTemplate(object):
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
+    def __init__(self, obj):
+        self.__dict__.update(obj)
 
     def export(self, use_json):
         return self.__dict__

@@ -70,7 +70,8 @@ class TestPackageCommand(unittest.TestCase):
     @patch("awscli.customizations.cloudformation.package.Template")
     def test_main(self, mock_template):
         self.package_command.write_output = Mock()
-        template_dict = get_example_template()
+        # use a simple format so output ordering doesn't matter
+        template_dict = {"Resources": {"Resource1": {}}}
         mock_template.return_value = FakeTemplate(template_dict)
 
         # Create a temporary file and make this my template

@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import mock
+import json
 import os
 import sys
 import tempfile
@@ -19,6 +20,7 @@ from io import StringIO
 from mock import patch, Mock, MagicMock
 from awscli.testutils import unittest, BaseAWSCommandParamsTest
 from awscli.customizations.cloudformation.package import PackageCommand
+from awscli.customizations.cloudformation.yamlhelper import yaml_dump
 
 
 class FakeTemplate(object):
@@ -76,19 +78,15 @@ class TestPackageCommand(unittest.TestCase):
                 filename = handle.name
                 self.parsed_args.template_file = filename
                 self.parsed_args.use_json = use_json
+                if use_json:
+                    expected_str = json.dumps(mock_template.return_value, indent=4, ensure_ascii=False)
+                else:
+                    expected_str = yaml_dump(mock_template.return_value)
 
                 rc = self.package_command._run_main(self.parsed_args, self.parsed_globals)
                 self.assertEquals(rc, 0)
-
-                self.package_command._export.assert_called_once_with(filename, use_json)
-                if use_json:
-                    self.package_command.json.dumps.assert_called_once_with(mock_template.return_value,
-                                                                            indent=4, ensure_ascii=False)
-                else:
-                    self.package_command.yaml_dump.assert_called_once_with(mock_template.return_value)
                 self.package_command.write_output.assert_called_once_with(
-                        self.parsed_args.output_template_file, mock.ANY)
-
+                        self.parsed_args.output_template_file, expected_str)
                 self.package_command.write_output.reset_mock()
 
     def test_main_error(self):

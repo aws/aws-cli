@@ -49,6 +49,8 @@ ARGUMENT_RENAMES = {
     'route53.update-traffic-policy-comment.version': 'traffic-policy-version',
     'gamelift.create-build.version': 'build-version',
     'gamelift.update-build.version': 'build-version',
+    'gamelift.create-script.version': 'script-version',
+    'gamelift.update-script.version': 'script-version',
     'route53domains.view-billing.start': 'start-time',
     'route53domains.view-billing.end': 'end-time',
     'apigateway.create-rest-api.version': 'api-version',

@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.16.146
+========
+
+* api-change:``batch``: Update batch command to latest version
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``inspector``: Update inspector command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+
+
 1.16.145
 ========
 

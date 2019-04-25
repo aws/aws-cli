@@ -435,7 +435,7 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
         return fileinfo.dest
 
     def _get_warning_handlers(self):
-        return [self._warn_glacier, self._warn_parent_reference, self._warn_deeparchive]
+        return [self._warn_glacier,self._warn_deeparchive, self._warn_parent_reference]
 
     def _format_src_dest(self, fileinfo):
         src = self._format_s3_path(fileinfo.src)

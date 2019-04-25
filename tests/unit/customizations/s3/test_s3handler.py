@@ -486,11 +486,51 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         # The transfer should have been skipped.
         self.assertIsNone(future)
         self.assert_no_downloads_happened()
+    
+    def test_warn_deeparchive_for_incompatible(self):
+        fileinfo = FileInfo(
+            src=self.bucket+'/'+self.key, dest=self.filename,
+            operation_name='download',
+            associated_response_data={
+                'StorageClass': 'DEEP_ARCHIVE',
+            }
+        )
+        future = self.transfer_request_submitter.submit(fileinfo)
+
+        # A warning should have been submitted because it is a non-restored
+        # deep archive object.
+        warning_result = self.result_queue.get()
+        self.assertIsInstance(warning_result, WarningResult)
+        self.assertIn(
+            'Unable to perform download operations on DEEP_ARCHIVE objects',
+            warning_result.message)
+
+        # The transfer should have been skipped.
+        self.assertIsNone(future)
+        self.assert_no_downloads_happened()
+    
 
     def test_not_warn_glacier_for_compatible(self):
         fileinfo = self.create_file_info(
             self.key, associated_response_data={
                 'StorageClass': 'GLACIER',
+                'Restore': 'ongoing-request="false"'
+            }
+        )
+        future = self.transfer_request_submitter.submit(fileinfo)
+
+        # A warning should have not been submitted because it is a restored
+        # glacier object.
+        self.assertTrue(self.result_queue.empty())
+
+        # And the transfer should not have been skipped.
+        self.assertIs(self.transfer_manager.download.return_value, future)
+        self.assertEqual(len(self.transfer_manager.download.call_args_list), 1)
+
+    def test_not_warn_deeparchive_for_compatible(self):
+        fileinfo = self.create_file_info(
+            self.key, associated_response_data={
+                'StorageClass': 'DEEP_ARCHIVE',
                 'Restore': 'ongoing-request="false"'
             }
         )
@@ -519,6 +559,22 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertTrue(self.result_queue.empty())
         self.assertIs(self.transfer_manager.download.return_value, future)
         self.assertEqual(len(self.transfer_manager.download.call_args_list), 1)
+    
+    def test_warn_deeparchive_force_glacier(self):
+        self.cli_params['force_glacier_transfer'] = True
+        fileinfo = self.create_file_info(
+            self.key,
+            associated_response_data={
+                'StorageClass': 'DEEP_ARCHIVE',
+            }
+        )
+        future = self.transfer_request_submitter.submit(fileinfo)
+
+        # A warning should have not been submitted because it is glacier
+        # transfers were forced.
+        self.assertTrue(self.result_queue.empty())
+        self.assertIs(self.transfer_manager.download.return_value, future)
+        self.assertEqual(len(self.transfer_manager.download.call_args_list), 1)
 
     def test_warn_glacier_ignore_glacier_warnings(self):
         self.cli_params['ignore_glacier_warnings'] = True
@@ -527,6 +583,24 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
             operation_name='download',
             associated_response_data={
                 'StorageClass': 'GLACIER',
+            }
+        )
+        future = self.transfer_request_submitter.submit(fileinfo)
+
+        # A warning should have not been submitted because it was specified
+        # to ignore glacier warnings.
+        self.assertTrue(self.result_queue.empty())
+        # But the transfer still should have been skipped.
+        self.assertIsNone(future)
+        self.assert_no_downloads_happened()
+    
+    def test_warn_deep_archive_ignore_glacier_warnings(self):
+        self.cli_params['ignore_glacier_warnings'] = True
+        fileinfo = FileInfo(
+            src=self.bucket+'/'+self.key, dest=self.filename,
+            operation_name='download',
+            associated_response_data={
+                'StorageClass': 'DEEP_ARCHIVE',
             }
         )
         future = self.transfer_request_submitter.submit(fileinfo)
@@ -708,6 +782,31 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertIsNone(future)
         # The transfer should have been skipped.
         self.assertEqual(len(self.transfer_manager.copy.call_args_list), 0)
+        
+    def test_warn_deeparchive_for_incompatible(self):
+        fileinfo = FileInfo(
+            src=self.source_bucket+'/'+self.source_key,
+            dest=self.bucket+'/'+self.key,
+            operation_name='copy',
+            associated_response_data={
+                'StorageClass': 'DEEP_ARCHIVE',
+            }
+        )
+        future = self.transfer_request_submitter.submit(fileinfo)
+
+        # A warning should have been submitted because it is a non-restored
+        # glacier object.
+        warning_result = self.result_queue.get()
+        self.assertIsInstance(warning_result, WarningResult)
+        self.assertIn(
+            'Unable to perform copy operations on DEEP_ARCHIVE objects',
+            warning_result.message)
+
+        # The transfer request should have never been sent therefore return
+        # no future.
+        self.assertIsNone(future)
+        # The transfer should have been skipped.
+        self.assertEqual(len(self.transfer_manager.copy.call_args_list), 0)
 
     def test_not_warn_glacier_for_compatible(self):
         fileinfo = FileInfo(
@@ -716,6 +815,25 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
             operation_name='copy',
             associated_response_data={
                 'StorageClass': 'GLACIER',
+                'Restore': 'ongoing-request="false"'
+            }
+        )
+        future = self.transfer_request_submitter.submit(fileinfo)
+        self.assertIs(self.transfer_manager.copy.return_value, future)
+
+        # A warning should have not been submitted because it is a restored
+        # glacier object.
+        self.assertTrue(self.result_queue.empty())
+
+        # And the transfer should not have been skipped.
+        self.assertEqual(len(self.transfer_manager.copy.call_args_list), 1)
+    def test_not_warn_deeparchive_for_compatible(self):
+        fileinfo = FileInfo(
+            src=self.source_bucket+'/'+self.source_key,
+            dest=self.bucket+'/'+self.key,
+            operation_name='copy',
+            associated_response_data={
+                'StorageClass': 'DEEP_ARCHIVE',
                 'Restore': 'ongoing-request="false"'
             }
         )
@@ -746,6 +864,24 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         # transfers were forced.
         self.assertTrue(self.result_queue.empty())
         self.assertEqual(len(self.transfer_manager.copy.call_args_list), 1)
+    
+    def test_warn_deeparchive_force_glacier(self):
+        self.cli_params['force_glacier_transfer'] = True
+        fileinfo = FileInfo(
+            src=self.source_bucket+'/'+self.source_key,
+            dest=self.bucket+'/'+self.key,
+            operation_name='copy',
+            associated_response_data={
+                'StorageClass': 'DEEP_ARCHIVE',
+            }
+        )
+        future = self.transfer_request_submitter.submit(fileinfo)
+        self.assertIs(self.transfer_manager.copy.return_value, future)
+
+        # A warning should have not been submitted because it is glacier
+        # transfers were forced.
+        self.assertTrue(self.result_queue.empty())
+        self.assertEqual(len(self.transfer_manager.copy.call_args_list), 1)
 
     def test_warn_glacier_ignore_glacier_warnings(self):
         self.cli_params['ignore_glacier_warnings'] = True
@@ -755,6 +891,27 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
             operation_name='copy',
             associated_response_data={
                 'StorageClass': 'GLACIER',
+            }
+        )
+        future = self.transfer_request_submitter.submit(fileinfo)
+
+        # The transfer request should have never been sent therefore return
+        # no future.
+        self.assertIsNone(future)
+        # A warning should have not been submitted because it was specified
+        # to ignore glacier warnings.
+        self.assertTrue(self.result_queue.empty())
+        # But the transfer still should have been skipped.
+        self.assertEqual(len(self.transfer_manager.copy.call_args_list), 0)
+    
+    def test_warn_deeparchive_ignore_glacier_warnings(self):
+        self.cli_params['ignore_glacier_warnings'] = True
+        fileinfo = FileInfo(
+            src=self.source_bucket+'/'+self.source_key,
+            dest=self.bucket+'/'+self.key,
+            operation_name='copy',
+            associated_response_data={
+                'StorageClass': 'DEEP_ARCHIVE',
             }
         )
         future = self.transfer_request_submitter.submit(fileinfo)

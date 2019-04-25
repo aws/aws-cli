@@ -316,6 +316,27 @@ class BaseTransferRequestSubmitter(object):
                 return True
         return False
 
+    def _warn_deeparchive(self, fileinfo):
+        if not self._cli_params.get('force_glacier_transfer'):
+            if not fileinfo.is_deeparchive_compatible():
+                LOGGER.debug(
+                    'Encountered deeparchive object s3://%s. Not performing '
+                    '%s on object.' % (fileinfo.src, fileinfo.operation_name))
+                if not self._cli_params.get('ignore_glacier_warnings'):
+                    warning = create_warning(
+                        's3://'+fileinfo.src,
+                        'Object is of storage class DEEP_ARCHIVE. Unable to '
+                        'perform %s operations on DEEP_ARCHIVE objects. You must '
+                        'restore the object to be able to perform the '
+                        'operation. See aws s3 %s help for additional '
+                        'parameter options to ignore or force these '
+                        'transfers.' %
+                        (fileinfo.operation_name, fileinfo.operation_name)
+                    )
+                    self._result_queue.put(warning)
+                return True
+        return False
+
     def _warn_parent_reference(self, fileinfo):
         # normpath() will use the OS path separator so we
         # need to take that into account when checking for a parent prefix.
@@ -414,7 +435,7 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
         return fileinfo.dest
 
     def _get_warning_handlers(self):
-        return [self._warn_glacier, self._warn_parent_reference]
+        return [self._warn_glacier, self._warn_parent_reference, self._warn_deeparchive]
 
     def _format_src_dest(self, fileinfo):
         src = self._format_s3_path(fileinfo.src)
@@ -448,7 +469,7 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
         )
 
     def _get_warning_handlers(self):
-        return [self._warn_glacier]
+        return [self._warn_glacier,self. _warn_deeparchive]
 
     def _format_src_dest(self, fileinfo):
         src = self._format_s3_path(fileinfo.src)

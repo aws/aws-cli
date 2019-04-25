@@ -79,12 +79,39 @@ class FileInfo(object):
                     return False
         return True
 
+    def is_deeparchive_compatible(self):
+        """Determines if a file info object is deeparchive compatible
+
+        Operations will fail if the S3 object has a storage class of DEEP_ARCHIVE
+        and it involves copying from S3 to S3, downloading from S3, or moving
+        where S3 is the source (the delete will actually succeed, but we do
+        not want fail to transfer the file and then successfully delete it).
+
+        :returns: True if the FileInfo's operation will not fail because the
+            operation is on a deep archive object. False if it will fail.
+        """
+        if self._is_deeparchive_object(self.associated_response_data):
+            if self.operation_name in ['copy', 'download']:
+                return False
+            elif self.operation_name == 'move':
+                if self.src_type == 's3':
+                    return False
+        return True
+
     def _is_glacier_object(self, response_data):
         if response_data:
             if response_data.get('StorageClass') == 'GLACIER' and \
                     not self._is_restored(response_data):
                 return True
         return False
+    
+    def _is_deeparchive_object(self, response_data):
+        if response_data:
+            if response_data.get('StorageClass') == 'DEEP_ARCHIVE' and \
+                    not self._is_restored(response_data):
+                return True
+        return False
+    
 
     def _is_restored(self, response_data):
         # Returns True is this is a glacier object that has been

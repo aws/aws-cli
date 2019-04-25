@@ -69,3 +69,61 @@ class TestIsGlacierCompatible(unittest.TestCase):
             'Restore': 'ongoing-request="true", expiry-date="..."'
         }
         self.assertFalse(self.file_info.is_glacier_compatible())
+
+
+class TestIsDeeparchiveCompatible(unittest.TestCase):
+    def setUp(self):
+        self.file_info = FileInfo('bucket/key')
+        self.file_info.associated_response_data = {'StorageClass': 'DEEP_ARCHIVE'}
+
+    def test_operation_is_deeparchive_compatible(self):
+        self.file_info.operation_name = 'delete'
+        self.assertTrue(self.file_info.is_deeparchive_compatible())
+
+    def test_download_operation_is_not_deeparchive_compatible(self):
+        self.file_info.operation_name = 'download'
+        self.assertFalse(self.file_info.is_deeparchive_compatible())
+
+    def test_copy_operation_is_not_deeparchive_compatible(self):
+        self.file_info.operation_name = 'copy'
+        self.assertFalse(self.file_info.is_deeparchive_compatible())
+
+    def test_operation_is_deeparchive_compatible_for_non_deeparchive(self):
+        self.file_info.operation_name = 'download'
+        self.file_info.associated_response_data = {'StorageClass': 'STANDARD'}
+        self.assertTrue(self.file_info.is_deeparchive_compatible())
+
+    def test_move_operation_is_not_deeparchive_compatible_for_s3_source(self):
+        self.file_info.operation_name = 'move'
+        self.file_info.src_type = 's3'
+        self.assertFalse(self.file_info.is_deeparchive_compatible())
+
+    def test_move_operation_is_deeparchive_compatible_for_local_source(self):
+        self.file_info.operation_name = 'move'
+        self.file_info.src_type = 'local'
+        self.assertTrue(self.file_info.is_deeparchive_compatible())
+
+    def test_response_is_not_deeparchive(self):
+        self.file_info.associated_response_data = {'StorageClass': 'STANDARD'}
+        self.assertTrue(self.file_info.is_deeparchive_compatible())
+
+    def test_response_missing_storage_class(self):
+        self.file_info.associated_response_data = {'Key': 'Foo'}
+        self.assertTrue(self.file_info.is_deeparchive_compatible())
+
+    def test_restored_object_is_deeparchive_compatible(self):
+        self.file_info.operation_name = 'download'
+        self.file_info.associated_response_data = {
+            'StorageClass': 'DEEPARCHIVE',
+            'Restore': 'ongoing-request="false", expiry-date="..."'
+        }
+        self.assertTrue(self.file_info.is_deeparchive_compatible())
+
+    def test_ongoing_restore_is_not_deeparchive_compatible(self):
+        self.file_info.operation_name = 'download'
+        self.file_info.associated_response_data = {
+            'StorageClass': 'DEEP_ARCHIVE',
+            'Restore': 'ongoing-request="true", expiry-date="..."'
+        }
+        self.assertFalse(self.file_info.is_deeparchive_compatible())
+

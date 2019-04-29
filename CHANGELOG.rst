@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.148
+========
+
+* api-change:``transfer``: Update transfer command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.16.147
 ========
 

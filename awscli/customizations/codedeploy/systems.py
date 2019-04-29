@@ -213,7 +213,7 @@ class Linux(System):
 class Ubuntu(Linux):
     def _update_system(self, params):
         subprocess.check_call(['apt-get', '-y', 'update'])
-        subprocess.check_call(['apt-get', '-y', 'install', 'ruby2.0'])
+        subprocess.check_call(['apt-get', '-y', 'install', 'ruby'])
 
     def _remove_agent(self, params):
         subprocess.check_call(['dpkg', '-r', 'codedeploy-agent'])

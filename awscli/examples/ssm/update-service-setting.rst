@@ -1,6 +1,6 @@
 **To update the service setting for managed instance activation**
 
-This example updates the current service setting tier for managed instance activations in the specified region to use advanced instances.  There is no output if the command succeeds.  For more information, see `Using the Advanced-Instances Tier`_ in the *AWS Systems Manager User Guide*.
+This example updates the current service setting tier for managed instance activations in the specified region to use advanced instances. There is no output if the command succeeds.  For more information, see `Using the Advanced-Instances Tier`_ in the *AWS Systems Manager User Guide*.
 
 .. _`Using the Advanced-Instances Tier`: https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-managedinstances-advanced.html
 
@@ -8,3 +8,12 @@ Command::
 
    aws ssm update-service-setting --setting-id arn:aws:ssm:us-east-1:123456789012:servicesetting/ssm/managed-instance/activation-tier --setting-value advanced
    
+**To update the service setting for Parameter Store throughput**
+
+This example updates the current service setting for Parameter Store throughput in the specified region to use increased throughput. There is no output if the command succeeds. For more information, see `Increasing Parameter Store Throughput`_ in the *AWS Systems Manager User Guide*.
+
+.. _`Increasing Parameter Store Throughput`: https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-throughput.html
+
+Command::
+
+   aws ssm update-service-setting --setting-id arn:aws:ssm:us-east-1:123456789012:servicesetting/ssm/parameter-store/high-throughput-enabled --setting-value true

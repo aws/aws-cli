@@ -26,7 +26,7 @@ For more information, see `Launching an Instance from a Launch Template`_ in the
 
 **To create a launch template for Amazon EC2 Auto Scaling**
 
-This example creates a launch template named TemplateForAutoScaling with multiple tags and a block device mapping to specify an additional EBS volume when an instance launches. Specify a value for Groups that corresponds to security groups for the VPC that your Auto Scaling group will launch instances into. Specify the VPC and subnets as parameters for the Auto Scaling group.
+This example creates a launch template named TemplateForAutoScaling with multiple tags and a block device mapping to specify an additional EBS volume when an instance launches. Specify a value for Groups that corresponds to security groups for the VPC that your Auto Scaling group will launch instances into. Specify the VPC and subnets as parameters of the Auto Scaling group.
 
 Command::
 

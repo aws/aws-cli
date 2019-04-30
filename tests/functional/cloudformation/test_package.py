@@ -19,6 +19,7 @@ import zipfile
 
 from unittest import TestCase
 from awscli.customizations.cloudformation.artifact_exporter import make_zip
+from awscli.testutils import skip_if_windows
 
 
 class TestPackageZipFiles(TestCase):
@@ -32,6 +33,10 @@ class TestPackageZipFiles(TestCase):
     def tearDown(self):
         shutil.rmtree(self.rootdir)
 
+    @skip_if_windows(
+        "Symlinks are not supported on Python 2.x + Windows, and require "
+        "administrator privleges on Python 3.x + Windows."
+    )
     def test_must_follow_symlinks(self):
         data = "hello world"
         data_file = os.path.join(self.rootdir, "data.txt")
@@ -51,6 +56,6 @@ class TestPackageZipFiles(TestCase):
         # Data file should be the only file within the zip
         self.assertEquals(["data-link.txt"], myzip.namelist())
         myfile = myzip.open("data-link.txt", "r")
-        
+
         # Its content should be equal the value we wrote.
         self.assertEquals(data.encode("utf-8"), myfile.read())

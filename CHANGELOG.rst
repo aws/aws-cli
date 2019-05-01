@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.150
+========
+
+* api-change:``xray``: Update xray command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
 1.16.149
 ========
 

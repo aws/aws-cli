@@ -26,11 +26,10 @@ users:
     exec:
       apiVersion: client.authentication.k8s.io/v1alpha1
       args:
-      - eks
-      - get-token
-      - --cluster-name
+      - token
+      - -i
       - Existing
-      command: aws
+      command: aws-iam-authenticator
 - name: arn:aws:eks:region:111222333444:cluster/ExampleCluster
   user:
     exec:
@@ -39,4 +38,7 @@ users:
       - token
       - -i
       - ExampleCluster
-      command: aws-iam-authenticator
+      - -r
+      - RoleArn
+      command: aws-iam-authenticator.exe
+

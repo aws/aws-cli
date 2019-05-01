@@ -25,7 +25,8 @@ from awscli.customizations.utils import uni_print
 import awscli.customizations.eks.kubeconfig as kubeconfig
 from awscli.customizations.eks.update_kubeconfig import (KubeconfigSelector,
                                                          EKSClient,
-                                                         API_VERSION)
+                                                         API_VERSION,
+                                                         AUTH_BIN)
 from awscli.customizations.eks.exceptions import (EKSError,
                                                   EKSClusterError)
 from awscli.customizations.eks.ordered_yaml import ordered_yaml_load
@@ -161,9 +162,9 @@ class TestKubeconfigSelector(unittest.TestCase):
 
 class TestEKSClient(unittest.TestCase):
     def setUp(self):
-        executable = "aws"
+        executable = AUTH_BIN
         if is_windows:
-            executable = "aws" + ".exe"
+            executable = AUTH_BIN + ".exe"
         self._correct_cluster_entry = OrderedDict([
             ("cluster", OrderedDict([
                 ("certificate-authority-data", describe_cluster_response()\
@@ -179,9 +180,8 @@ class TestEKSClient(unittest.TestCase):
                     ("apiVersion", API_VERSION),
                     ("args",
                         [
-                            "eks",
-                            "get-token",
-                            "--cluster-name",
+                            "token",
+                            "-i",
                             "ExampleCluster"
                         ]),
                     ("command", executable)

@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 
 from awscli.customizations.eks.update_kubeconfig import UpdateKubeconfigCommand
-from awscli.customizations.eks.get_token import GetTokenCommand
 
 
 def initialize(cli):
@@ -28,4 +27,3 @@ def inject_commands(command_table, session, **kwargs):
     Used to inject new high level commands into the command list.
     """
     command_table['update-kubeconfig'] = UpdateKubeconfigCommand(session)
-    command_table['get-token'] = GetTokenCommand(session)

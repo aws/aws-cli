@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.151
+========
+
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+* api-change:``kms``: Update kms command to latest version
+
+
 1.16.150
 ========
 

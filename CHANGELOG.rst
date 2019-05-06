@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.153
+========
+
+* api-change:``config``: Update config command to latest version
+* api-change:``iam``: Update iam command to latest version
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``sts``: Update sts command to latest version
+
+
 1.16.152
 ========
 

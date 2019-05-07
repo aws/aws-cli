@@ -11,9 +11,9 @@ Output::
     {
         "taskSet": {
             "id": "ecs-svc/9223370479726415095",
-            "taskSetArn": "arn:aws:ecs:us-west-2:809632081692:task-set/MyCluster/MyService/ecs-svc/9223370479726415095",
+            "taskSetArn": "arn:aws:ecs:us-west-2:123456789012:task-set/MyCluster/MyService/ecs-svc/9223370479726415095",
             "status": "PRIMARY",
-            "taskDefinition": "arn:aws:ecs:us-west-2:809632081692:task-definition/sample-fargate:2",
+            "taskDefinition": "arn:aws:ecs:us-west-2:123456789012:task-definition/sample-fargate:2",
             "computedDesiredCount": 1,
             "pendingCount": 0,
             "runningCount": 0,
@@ -23,10 +23,10 @@ Output::
             "networkConfiguration": {
                 "awsvpcConfiguration": {
                     "subnets": [
-                        "subnet-079ada9e28d4d7130"
+                        "subnet-12344321"
                     ],
                     "securityGroups": [
-                        "sg-07c919b0ee318e973"
+                        "sg-12344312"
                     ],
                     "assignPublicIp": "DISABLED"
                 }

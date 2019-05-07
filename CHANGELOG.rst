@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.154
+========
+
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``appsync``: Update appsync command to latest version
+
+
 1.16.153
 ========
 

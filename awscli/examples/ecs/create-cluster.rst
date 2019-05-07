@@ -33,28 +33,28 @@ Command::
 Output::
 
 	{
-	    "cluster": {
-	        "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster",
-	        "clusterName": "MyCluster",
-	        "status": "ACTIVE",
-	        "registeredContainerInstancesCount": 0,
-	        "pendingTasksCount": 0,
-	        "runningTasksCount": 0,
-	        "activeServicesCount": 0,
-	        "statistics": [],
-            "tags": [
-            	{
-                	"key": "key1",
-                	"value": "value1"
-            	},
-            	{
-             	   "key": "key2",
-             	   "value": "value2"
-            	},
-            	{
-             	   "key": "key3",
-             	   "value": "value3"
-            	}
-            ]
-	    }
+		"cluster": {
+			"clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster",
+			"clusterName": "MyCluster",
+			"status": "ACTIVE",
+			"registeredContainerInstancesCount": 0,
+			"pendingTasksCount": 0,
+			"runningTasksCount": 0,
+			"activeServicesCount": 0,
+			"statistics": [],
+			"tags": [
+				{
+					"key": "key1",
+					"value": "value1"
+				},
+				{
+					"key": "key2",
+					"value": "value2"
+				},
+				{
+					"key": "key3",
+					"value": "value3"
+				}
+			]
+		}
 	}

@@ -1,10 +1,10 @@
-**Gets a list of AWS CodeBuild build project names.**
+**To get a list of AWS CodeBuild build project names.**
 
 The following ``batch-get-projects`` example gets a list of CodeBuild build projects specified by name. ::
 
     aws codebuild batch-get-projects --names codebuild-demo-project codebuild-demo-project2 my-other-demo-project
 
-Output::
+In the following output, the ``projectsNotFound`` array lists any build project names that were specified, but not found. The ``projects`` array lists details for each build project where information was found. ::
 
     {
         "projectsNotFound": [],
@@ -15,7 +15,7 @@ Output::
                 "queuedTimeoutInMinutes": 480,
                 "timeoutInMinutes": 60,
                 "source": {
-                    "buildspec": "version: 0.2\n\n#env:\n  #variables:\n     # key: \"value\"\n     # key: \"value\"\n  #parameter-store:\n     # key: \"value\"\n     # key: \"value\"\n\nphases:\n  #install:\n    #commands:\n      # - command\n      # - command\n  #pre_build:\n    #commands:\n      # - command\n      # - command\n  build:\n    commands:\n      # - command\n      # - command\n  #post_build:\n    #commands:\n      # - command\n      # - command\n#artifacts:\n  #files:\n    # - location\n    # - location\n  #name: $(date +%Y-%m-%d)\n  #discard-paths: yes\n  #base-directory: location\n#cache:\n  #paths:\n    # - paths",
+                    "buildspec": "version: 0.2\n\n#env:\n  #variables:\n     # key: \"value\"\n     # key: \"value\"\n  #parameter-store:\n     # key: \"value\"\n     # key:\"value\"\n\nphases:\n  #install:\n    #commands:\n      # - command\n      # - command\n  #pre_build:\n    #commands:\n      # - command\n      # - command\n  build:\n    commands:\n      # - command\n      # - command\n  #post_build:\n    #commands:\n      # - command\n      # - command\n#artifacts:\n  #files:\n    # - location\n    # - location\n  #name: $(date +%Y-%m-%d)\n  #discard-paths: yes\n  #base-directory: location\n#cache:\n  #paths:\n    # - paths",
                     "type": "NO_SOURCE",
                     "insecureSsl": false,
                     "gitCloneDepth": 1
@@ -85,8 +85,5 @@ Output::
         ]
     }
 
-In the preceding output, the ``projectsNotFound`` array lists any build project names that were specified, but not found. The projects array lists details for each build project where information was found.
+For more information, see `View a Build Project's Details (AWS CLI) <https://docs.aws.amazon.com/codebuild/latest/userguide/view-project-details.html#view-project-details-cli>`_ in the *AWS CodeBuild User Guide*.
 
-For more information, see `View a Build Project's Details (AWS CLI)`_ in the *AWS CodeBuild User Guide*
-
-.. _`View a Build Project's Details (AWS CLI)`: https://docs.aws.amazon.com/codebuild/latest/userguide/view-project-details.html#view-project-details-cli

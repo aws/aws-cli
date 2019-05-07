@@ -1,10 +1,8 @@
-**View details of builds in AWS CodeBuild.**
+**To view details of builds in AWS CodeBuild.**
 
-The following ``batch-get-builds`` example gets information about builds in CodeBuild with the following two IDs:
-``codebuild-demo-project:e9c4f4df-3f43-41d2-ab3a-60fe2EXAMPLE codebuild-demo-project:815e755f-bade-4a7e-80f0-efe51EXAMPLE``
-``my-other-project:813bb6c6-891b-426a-9dd7-6d8a3EXAMPLE`` ::
+The following ``batch-get-builds`` example gets information about builds in CodeBuild with the specified IDs. ::
 
-    aws codebuild batch-get-builds --ids codebuild-demo-project:e9c4f4df-3f43-41d2-ab3a-60fe2EXAMPLE codebuild-demo-project:815e755f-bade-4a7e-80f0-efe51EXAMPLE my-other-project:813bb6c6-891b-426a-9dd7-6d8a3EXAMPLE
+    aws codebuild batch-get-builds --ids codebuild-demo-project:e9c4f4df-3f43-41d2-ab3a-60fe2EXAMPLE codebuild-demo-project:815e755f-bade-4a7e-80f0-efe51EXAMPLE
 
 Output::
 
@@ -203,7 +201,7 @@ Output::
                     },
                     "streamName": "4dea3ca4-20ec-4898-b22a-a9eb9292775d",
                     "groupName": "/aws/codebuild/codebuild-demo-project",
-                    "deepLink": "       https://console.aws.amazon.com/cloudwatch/home?region=us-west-2#logEvent:group=/aws/codebuild/codebuild-demo-project;stream=4dea3ca4-20ec-4898-b22a-a9eb9292775d"
+                    "deepLink": "https://console.aws.amazon.com/cloudwatch/home?region=us-west-2#logEvent:group=/aws/codebuild/codebuild-demo-project;stream=4dea3ca4-20ec-4898-b22a-a9eb9292775d"
                 },
                 "timeoutInMinutes": 60,
                 "environment": {
@@ -367,6 +365,5 @@ Output::
         ]
     }
 
-For more information, see `View Build Details (AWS CLI)`_ in the *AWS CodeBuild User Guide*
+For more information, see `View Build Details (AWS CLI) <https://docs.aws.amazon.com/codebuild/latest/userguide/view-build-details.html#view-build-details-cli>`_ in the *AWS CodeBuild User Guide*.
 
-.. _`View Build Details (AWS CLI)`: https://docs.aws.amazon.com/codebuild/latest/userguide/view-build-details.html#view-build-details-cli

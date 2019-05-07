@@ -1,6 +1,6 @@
 **To list the tasks in a cluster**
 
-This example command lists all of the tasks in a cluster.
+The following example shows how to list all of the tasks in a cluster.
 
 Command::
 
@@ -10,14 +10,14 @@ Output::
 
 	{
 	    "taskArns": [
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:task/0cc43cdb-3bee-4407-9c26-c0e6ea5bee84",
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:task/6b809ef6-c67e-4467-921f-ee261c15a0a1"
+	        "arn:aws:ecs:us-west-2:123456789012:task/0cc43cdb-3bee-4407-9c26-c0e6ea5bee84",
+	        "arn:aws:ecs:us-west-2:123456789012:task/6b809ef6-c67e-4467-921f-ee261c15a0a1"
 	    ]
 	}
 
 **To list the tasks on a particular container instance**
 
-This example command lists the tasks of a specified container instance, using the container instance UUID as a filter.
+The following example shows how to list the tasks on a container instance, using the container instance UUID as a filter.
 
 Command::
 
@@ -27,6 +27,6 @@ Output::
 
 	{
 	    "taskArns": [
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:task/0cc43cdb-3bee-4407-9c26-c0e6ea5bee84"
+	        "arn:aws:ecs:us-west-2:123456789012:task/0cc43cdb-3bee-4407-9c26-c0e6ea5bee84"
 	    ]
 	}

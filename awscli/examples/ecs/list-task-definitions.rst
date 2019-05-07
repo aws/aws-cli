@@ -1,6 +1,6 @@
-**To list your registered task definitions**
+**To list the registered task definitions**
 
-This example command lists all of your registered task definitions.
+The following example shows how to list all of the registered task definitions.
 
 Command::
 
@@ -10,18 +10,18 @@ Output::
 
 	{
 	    "taskDefinitionArns": [
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:task-definition/sleep300:2",
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:task-definition/sleep360:1",
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:task-definition/wordpress:3",
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:task-definition/wordpress:4",
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:task-definition/wordpress:5",
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:task-definition/wordpress:6"
+	        "arn:aws:ecs:us-west-2:123456789012:task-definition/sleep300:2",
+	        "arn:aws:ecs:us-west-2:123456789012:task-definition/sleep360:1",
+	        "arn:aws:ecs:us-west-2:123456789012:task-definition/wordpress:3",
+	        "arn:aws:ecs:us-west-2:123456789012:task-definition/wordpress:4",
+	        "arn:aws:ecs:us-west-2:123456789012:task-definition/wordpress:5",
+	        "arn:aws:ecs:us-west-2:123456789012:task-definition/wordpress:6"
 	    ]
 	}
 
 **To list the registered task definitions in a family**
 
-This example command lists the task definition revisions of a specified family.
+The following example shows how to list the task definition revisions of a specified family.
 
 Command::
 
@@ -31,9 +31,9 @@ Output::
 
 	{
 	    "taskDefinitionArns": [
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:task-definition/wordpress:3",
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:task-definition/wordpress:4",
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:task-definition/wordpress:5",
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:task-definition/wordpress:6"
+	        "arn:aws:ecs:us-west-2:123456789012:task-definition/wordpress:3",
+	        "arn:aws:ecs:us-west-2:123456789012:task-definition/wordpress:4",
+	        "arn:aws:ecs:us-west-2:123456789012:task-definition/wordpress:5",
+	        "arn:aws:ecs:us-west-2:123456789012:task-definition/wordpress:6"
 	    ]
 	}

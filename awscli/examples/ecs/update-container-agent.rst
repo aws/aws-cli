@@ -1,6 +1,6 @@
 **To update the container agent on an Amazon ECS container instance**
 
-This example command updates the container agent on the container instance ``a3e98c65-2a40-4452-a63c-62beb4d9be9b`` in the default cluster. 
+The following example shows how to update the container agent on the container instance ``a3e98c65-2a40-4452-a63c-62beb4d9be9b`` in the default cluster. 
 
 Command::
 

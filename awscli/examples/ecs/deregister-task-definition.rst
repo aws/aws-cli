@@ -1,6 +1,6 @@
 **To deregister a task definition**
 
-This example deregisters the first revision of the ``curler`` task definition in your default region. Note that in the resulting output, the task definition status becomes ``INACTIVE``.
+The following example shows how to deregister the first revision of the ``curler`` task definition in your default region. Note that in the resulting output, the task definition status becomes ``INACTIVE``.
 
 Command::
 
@@ -13,7 +13,7 @@ Output::
           "status": "INACTIVE",
           "family": "curler",
           "volumes": [],
-          "taskDefinitionArn": "arn:aws:ecs:us-west-2:<aws_account_id>:task-definition/curler:1",
+          "taskDefinitionArn": "arn:aws:ecs:us-west-2:123456789012:task-definition/curler:1",
           "containerDefinitions": [
               {
                   "environment": [],

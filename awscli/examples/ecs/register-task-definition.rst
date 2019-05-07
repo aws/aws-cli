@@ -1,6 +1,6 @@
 **To register a task definition with a JSON file**
 
-This example registers a task definition to the specified family with container definitions that are saved in JSON format at the specified file location.
+The following example shows how to register a task definition to the specified family with container definitions that are saved in JSON format at the specified file location.
 
 Command::
 
@@ -27,35 +27,40 @@ JSON file format::
 
 Output::
 
-	{
-	    "taskDefinition": {
-	        "volumes": [],
-	        "taskDefinitionArn": "arn:aws:ecs:us-east-1:<aws_account_id>:task-definition/sleep360:19",
-	        "containerDefinitions": [
-	            {
-	                "environment": [],
-	                "name": "sleep",
-	                "mountPoints": [],
-	                "image": "busybox",
-	                "cpu": 10,
-	                "portMappings": [],
-	                "command": [
-	                    "sleep",
-	                    "360"
-	                ],
-	                "memory": 10,
-	                "essential": true,
-	                "volumesFrom": []
-	            }
-	        ],
-	        "family": "sleep360",
-	        "revision": 1
-	    }
-	}
+  {
+    "taskDefinition": {
+        "taskDefinitionArn": "arn:aws:ecs:us-west-2:123456789012:task-definition/sleep360:2",
+        "containerDefinitions": [
+            {
+                "name": "sleep",
+                "image": "busybox",
+                "cpu": 10,
+                "memory": 10,
+                "portMappings": [],
+                "essential": true,
+                "command": [
+                    "sleep",
+                    "360"
+                ],
+                "environment": [],
+                "mountPoints": [],
+                "volumesFrom": []
+            }
+        ],
+        "family": "sleep360",
+        "revision": 2,
+        "volumes": [],
+        "status": "ACTIVE",
+        "placementConstraints": [],
+        "compatibilities": [
+            "EC2"
+        ]
+    }
+  }
 
 **To register a task definition with a JSON string**
 
-This example registers a the same task definition from the previous example, but the container definitions are in a string format with the double quotes escaped.
+The following example shows how to register the same task definition from the previous example, but the container definitions are in a string format with the double quotes escaped.
 
 Command::
 

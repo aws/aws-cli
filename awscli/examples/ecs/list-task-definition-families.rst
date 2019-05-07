@@ -1,6 +1,6 @@
-**To list your registered task definition families**
+**To list the registered task definition families**
 
-This example command lists all of your registered task definition families.
+The following example shows how to list all of the registered task definition families.
 
 Command::
 
@@ -17,9 +17,9 @@ Output::
 	    ]
 	}
 
-**To filter your registered task definition families**
+**To filter the registered task definition families**
 
-This example command lists the task definition revisions that start with "hpcc".
+The following example shows how to list the task definition revisions that start with "hpcc".
 
 Command::
 

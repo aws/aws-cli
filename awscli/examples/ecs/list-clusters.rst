@@ -1,6 +1,6 @@
 **To list your available clusters**
 
-This example command lists all of your available clusters in your default region.
+The following example shows how to list all of the available clusters.
 
 Command::
 
@@ -10,7 +10,7 @@ Output::
 
 	{
 	    "clusterArns": [
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:cluster/test",
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:cluster/default"
+	        "arn:aws:ecs:us-west-2:123456789012:cluster/test",
+	        "arn:aws:ecs:us-west-2:123456789012:cluster/default"
 	    ]
 	}

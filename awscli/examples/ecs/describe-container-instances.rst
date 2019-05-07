@@ -1,6 +1,6 @@
 **To describe container instance**
 
-This example command provides a description of the specified container instance in the ``update`` cluster, using the container instance UUID as an identifier.
+The following example shows how to describe a container instance in the ``update`` cluster, using the container instance UUID as an identifier.
 
 Command::
 
@@ -44,7 +44,7 @@ Output::
 	            ],
 	            "ec2InstanceId": "i-f3c1de3a",
 	            "agentConnected": true,
-	            "containerInstanceArn": "arn:aws:ecs:us-west-2:<aws_account_id>:container-instance/53ac7152-dcd1-4102-81f5-208962864132",
+	            "containerInstanceArn": "arn:aws:ecs:us-west-2:123456789012:container-instance/53ac7152-dcd1-4102-81f5-208962864132",
 	            "pendingTasksCount": 0,
 	            "remainingResources": [
 	                {

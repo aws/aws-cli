@@ -1,6 +1,6 @@
 **To describe a cluster**
 
-This example command provides a description of the specified cluster in your default region.
+The following example shows how to describe a cluster.
 
 Command::
 
@@ -17,7 +17,7 @@ Output::
 	            "pendingTasksCount": 0,
 	            "runningTasksCount": 0,
 	            "activeServicesCount": 1,
-	            "clusterArn": "arn:aws:ecs:us-west-2:<aws_Account_id>:cluster/default"
+	            "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/default"
 	        }
 	    ],
 	    "failures": []

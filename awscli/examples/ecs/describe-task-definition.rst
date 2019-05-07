@@ -1,6 +1,6 @@
 **To describe a task definition**
 
-This example command provides a description of the specified task definition.
+The following example shows how to describe a task definition.
 
 Command::
 
@@ -11,7 +11,7 @@ Output::
 	{
 	    "taskDefinition": {
 	        "volumes": [],
-	        "taskDefinitionArn": "arn:aws:ecs:us-east-1:<aws_account_id>:task-definition/hello_world:8",
+	        "taskDefinitionArn": "arn:aws:ecs:us-west-2:123456789012:task-definition/hello_world:8",
 	        "containerDefinitions": [
 	            {
 	                "environment": [],

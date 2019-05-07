@@ -97,45 +97,45 @@ Command::
 
 Output::
 
-	{
-    	"service": {
-        	"serviceArn": "arn:aws:ecs:us-west-2:123456789012:service/MyCluster/ecs-simple-service",
-        	"serviceName": "ecs-simple-service",
-        	"clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster",
-        	"loadBalancers": [],
-        	"serviceRegistries": [],
-        	"status": "ACTIVE",
-        	"desiredCount": 1,
-        	"runningCount": 0,
-        	"pendingCount": 0,
-        	"launchType": "EC2",
-        	"taskDefinition": "arn:aws:ecs:us-west-2:123456789012:task-definition/sleep360:2",
-        	"deploymentConfiguration": {
-            	"maximumPercent": 200,
-            	"minimumHealthyPercent": 100
-        	},
-        	"deployments": [
-            	{
-                	"id": "ecs-svc/9223370479648277008",
-                	"status": "PRIMARY",
-                	"taskDefinition": "arn:aws:ecs:us-west-2:123456789012:task-definition/sleep360:2",
-                	"desiredCount": 1,
-                	"pendingCount": 0,
-                	"runningCount": 0,
-                	"createdAt": 1557206498.798,
-                	"updatedAt": 1557206498.798,
-                	"launchType": "EC2"
-            	}
-        	],
-        	"events": [],
-        	"createdAt": 1557206498.798,
-        	"placementConstraints": [],
-        	"placementStrategy": [],
-        	"schedulingStrategy": "REPLICA",
-        	"enableECSManagedTags": false,
-        	"propagateTags": "NONE"
-    	}
-	}
+    {
+        "service": {
+            "serviceArn": "arn:aws:ecs:us-west-2:123456789012:service/MyCluster/ecs-simple-service",
+            "serviceName": "ecs-simple-service",
+            "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster",
+            "loadBalancers": [],
+            "serviceRegistries": [],
+            "status": "ACTIVE",
+            "desiredCount": 1,
+            "runningCount": 0,
+            "pendingCount": 0,
+            "launchType": "EC2",
+            "taskDefinition": "arn:aws:ecs:us-west-2:123456789012:task-definition/sleep360:2",
+            "deploymentConfiguration": {
+                "maximumPercent": 200,
+                "minimumHealthyPercent": 100
+            },
+            "deployments": [
+                {
+                    "id": "ecs-svc/9223370479648277008",
+                    "status": "PRIMARY",
+                    "taskDefinition": "arn:aws:ecs:us-west-2:123456789012:task-definition/sleep360:2",
+                    "desiredCount": 1,
+                    "pendingCount": 0,
+                    "runningCount": 0,
+                    "createdAt": 1557206498.798,
+                    "updatedAt": 1557206498.798,
+                    "launchType": "EC2"
+                }
+            ],
+            "events": [],
+            "createdAt": 1557206498.798,
+            "placementConstraints": [],
+            "placementStrategy": [],
+            "schedulingStrategy": "REPLICA",
+            "enableECSManagedTags": false,
+            "propagateTags": "NONE"
+        }
+    }
 
 **To create a service that uses an external deployment controller**
 
@@ -147,37 +147,37 @@ Command::
 
 Output::
 
-	{
-    	"service": {
-        	"serviceArn": "arn:aws:ecs:us-west-2:123456789012:service/MyCluster/MyService",
-        	"serviceName": "MyService",
-        	"clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster",
-        	"loadBalancers": [],
-        	"serviceRegistries": [],
-        	"status": "ACTIVE",
-        	"desiredCount": 1,
-        	"runningCount": 0,
-        	"pendingCount": 0,
-        	"launchType": "EC2",
-        	"deploymentConfiguration": {
-            	"maximumPercent": 200,
-            	"minimumHealthyPercent": 100
-        	},
-        	"taskSets": [],
-        	"deployments": [],
-        	"roleArn": "arn:aws:iam::123456789012:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS",
-        	"events": [],
-        	"createdAt": 1557128207.101,
-        	"placementConstraints": [],
-        	"placementStrategy": [],
-        	"schedulingStrategy": "REPLICA",
-        	"deploymentController": {
-            	"type": "EXTERNAL"
-        	},
-        	"enableECSManagedTags": false,
-        	"propagateTags": "NONE"
-    	}
-	}
+    {
+        "service": {
+            "serviceArn": "arn:aws:ecs:us-west-2:123456789012:service/MyCluster/MyService",
+            "serviceName": "MyService",
+            "clusterArn": "arn:aws:ecs:us-west-2:123456789012:cluster/MyCluster",
+            "loadBalancers": [],
+            "serviceRegistries": [],
+            "status": "ACTIVE",
+            "desiredCount": 1,
+            "runningCount": 0,
+            "pendingCount": 0,
+            "launchType": "EC2",
+            "deploymentConfiguration": {
+                "maximumPercent": 200,
+                "minimumHealthyPercent": 100
+            },
+            "taskSets": [],
+            "deployments": [],
+            "roleArn": "arn:aws:iam::123456789012:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS",
+            "events": [],
+            "createdAt": 1557128207.101,
+            "placementConstraints": [],
+            "placementStrategy": [],
+            "schedulingStrategy": "REPLICA",
+            "deploymentController": {
+                "type": "EXTERNAL"
+            },
+            "enableECSManagedTags": false,
+            "propagateTags": "NONE"
+        }
+    }
 
 **To create a new service behind a load balancer**
 

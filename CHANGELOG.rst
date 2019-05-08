@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.16.155
+========
+
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``kinesisanalytics``: Update kinesisanalytics command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``kinesisanalyticsv2``: Update kinesisanalyticsv2 command to latest version
+
+
 1.16.154
 ========
 

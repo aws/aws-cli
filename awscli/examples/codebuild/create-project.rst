@@ -27,31 +27,31 @@ Where the file "create-project.json" contains::
 Output::
 
     {
-        "project": {
-            "name": "codebuild-demo-project",
-            "serviceRole": "serviceIAMRole",
-            "tags": [],
-            "artifacts": {
-                "packaging": "NONE",
-                "type": "S3",
-                "location": "codebuild-region-ID-account-ID-output-bucket",
-                "name": "message-util.zip"
+        "project": {
+            "name": "codebuild-demo-project",
+            "serviceRole": "serviceIAMRole",
+            "tags": [],
+            "artifacts": {
+                "packaging": "NONE",
+                "type": "S3",
+                "location": "codebuild-region-ID-account-ID-output-bucket",
+                "name": "message-util.zip"
             },
-            "lastModified": 1472661575.244,
-            "timeoutInMinutes": 60,
-            "created": 1472661575.244,
-            "environment": {
-                "computeType": "BUILD_GENERAL1_SMALL",
-                "image": "aws/codebuild/standard:1.0",
-                "type": "LINUX_CONTAINER",
-                "environmentVariables": []
+            "lastModified": 1472661575.244,
+            "timeoutInMinutes": 60,
+            "created": 1472661575.244,
+            "environment": {
+                "computeType": "BUILD_GENERAL1_SMALL",
+                "image": "aws/codebuild/standard:1.0",
+                "type": "LINUX_CONTAINER",
+                "environmentVariables": []
             },
-            "source": {
-                "type": "S3",
-                "location": "codebuild-region-ID-account-ID-input-bucket/MessageUtil.zip"
+            "source": {
+                "type": "S3",
+                "location": "codebuild-region-ID-account-ID-input-bucket/MessageUtil.zip"
             },
-            "encryptionKey": "arn:aws:kms:region-ID:account-ID:alias/aws/s3",
-            "arn": "arn:aws:codebuild:region-ID:account-ID:project/codebuild-demo-project"
+            "encryptionKey": "arn:aws:kms:region-ID:account-ID:alias/aws/s3",
+            "arn": "arn:aws:codebuild:region-ID:account-ID:project/codebuild-demo-project"
         }
     }
 

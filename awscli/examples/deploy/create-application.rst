@@ -1,13 +1,11 @@
 **To create an application**
 
-This example creates an application and associates it with the user's AWS account.
+The following ``create-application`` example creates an application and associates it with the user's AWS account. ::
 
-Command::
+    aws deploy create-application --application-name MyOther_App
 
-  aws deploy create-application --application-name MyOther_App
-  
 Output::
 
-  {
-      "applicationId": "cfd3e1f1-5744-4aee-9251-eaa25EXAMPLE"
-  }
+    {
+        "applicationId": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE"
+    }

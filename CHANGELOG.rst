@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.156
+========
+
+* api-change:``glue``: Update glue command to latest version
+* api-change:``sts``: Update sts command to latest version
+
+
 1.16.155
 ========
 

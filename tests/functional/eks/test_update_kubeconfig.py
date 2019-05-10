@@ -36,8 +36,6 @@ from tests.functional.eks.test_util import (describe_cluster_response,
                                             describe_cluster_creating_response,
                                             get_testdata)
 
-is_windows = sys.platform == 'win32'
-
 def sanitize_output(output):
     """
     Trims output and removes all lines after a line starting with warning.
@@ -52,11 +50,6 @@ def sanitize_output(output):
             to_return += line
             to_return += '\n'
     return to_return.strip()
-
-def return_platform_filename(fileName):
-    if is_windows:
-        return fileName+"_windows"
-    return fileName
 
 def build_environment(entries):
     """ Build an environment variable from a list of strings. """
@@ -76,6 +69,7 @@ class TestUpdateKubeconfig(unittest.TestCase):
         self.mock_create_client.return_value = self.client
                 
         self.command = UpdateKubeconfigCommand(self.session)
+        self.maxDiff = None
 
     def tearDown(self):
         self.create_client_patch.stop()
@@ -149,8 +143,7 @@ class TestUpdateKubeconfig(unittest.TestCase):
 
     def assert_cmd_dry(self, passed_config,
                        env_variable_configs,
-                       default_config=os.path.join(".kube", "config"),
-                       role=None):
+                       default_config=os.path.join(".kube", "config")):
         """
         Run update-kubeconfig using dry-run,
         assert_cmd_dry runs directly referencing the testdata directory,
@@ -178,8 +171,6 @@ class TestUpdateKubeconfig(unittest.TestCase):
         args = ["--name", "ExampleCluster", "--dry-run"]
         if passed_config is not None:
             args += ["--kubeconfig", get_testdata(passed_config)]
-        if role is not None:
-            args += ["--role-arn", "RoleArn"]
 
         with capture_output() as captured:
             with mock.patch.dict(os.environ, {'KUBECONFIG': env_variable}):
@@ -197,7 +188,7 @@ class TestUpdateKubeconfig(unittest.TestCase):
     def assert_cmd(self, configs, passed_config,
                    env_variable_configs,
                    default_config=os.path.join(".kube", "config"),
-                   role=None, verbose=False):
+                   verbose=False):
         """
         Run update-kubeconfig in a temp directory,
         This directory will have copies of all testdata files whose names 
@@ -225,8 +216,6 @@ class TestUpdateKubeconfig(unittest.TestCase):
         args = ["--name", "ExampleCluster"]
         if passed_config is not None:
             args += ["--kubeconfig", self._get_temp_config(passed_config)]
-        if role is not None:
-            args += ["--role-arn", "RoleArn"]
         if verbose:
             args += ["--verbose"]
 
@@ -245,21 +234,21 @@ class TestUpdateKubeconfig(unittest.TestCase):
         environment = []
 
         captured_output = self.assert_cmd_dry(passed, environment)
-        self.assert_output(captured_output, return_platform_filename('output_single'))
+        self.assert_output(captured_output, 'output_single')
 
     def test_dry_run_existing(self):
         passed = "valid_existing"
         environment = []
 
         captured_output = self.assert_cmd_dry(passed, environment)
-        self.assert_output(captured_output, return_platform_filename('output_combined'))
+        self.assert_output(captured_output, 'output_combined')
 
     def test_dry_run_empty(self):
         passed = "valid_empty_config"
         environment = []
 
         captured_output = self.assert_cmd_dry(passed, environment)
-        self.assert_output(captured_output, return_platform_filename('output_single'))
+        self.assert_output(captured_output, 'output_single')
 
     def test_dry_run_corrupted(self):
         passed = "invalid_string_clusters"
@@ -274,7 +263,7 @@ class TestUpdateKubeconfig(unittest.TestCase):
         environment = []
 
         self.assert_cmd(configs, passed, environment)
-        self.assert_config_state("new_config", return_platform_filename("output_single"))
+        self.assert_config_state("new_config", "output_single")
 
     def test_use_environment(self):
         configs = ['invalid_string_clusters',
@@ -287,7 +276,7 @@ class TestUpdateKubeconfig(unittest.TestCase):
                        'valid_existing']
 
         self.assert_cmd(configs, passed, environment)
-        self.assert_config_state("does_not_exist", return_platform_filename("output_single"))
+        self.assert_config_state("does_not_exist", "output_single")
 
     def test_use_default(self):
         configs = ["valid_existing"]
@@ -296,7 +285,7 @@ class TestUpdateKubeconfig(unittest.TestCase):
         default = "valid_existing"
 
         self.assert_cmd(configs, passed, environment, default, verbose=True)
-        self.assert_config_state("valid_existing", return_platform_filename("output_combined"))
+        self.assert_config_state("valid_existing", "output_combined")
 
     def test_all_corrupted(self):
         configs = ["invalid_string_cluster_entry",
@@ -322,7 +311,7 @@ class TestUpdateKubeconfig(unittest.TestCase):
                        "invalid_text"]
 
         self.assert_cmd(configs, passed, environment)
-        self.assert_config_state("valid_existing", return_platform_filename('output_combined'))
+        self.assert_config_state("valid_existing", 'output_combined')
 
     def test_corrupted_and_missing(self):
         configs = ["invalid_string_clusters",
@@ -363,8 +352,7 @@ class TestUpdateKubeconfig(unittest.TestCase):
         self.mock_create_client.assert_called_once_with('eks')
         self.client\
             .describe_cluster.assert_called_once_with(name='ExampleCluster')
-        self.assert_config_state("valid_existing", 
-            return_platform_filename("output_combined"))
+        self.assert_config_state("valid_existing", "output_combined")
 
     def test_environmemt_all_empty(self):
         configs = ["valid_existing"]
@@ -382,7 +370,7 @@ class TestUpdateKubeconfig(unittest.TestCase):
         self.mock_create_client.assert_called_once_with('eks')
         self.client\
             .describe_cluster.assert_called_once_with(name='ExampleCluster')
-        self.assert_config_state("default_temp", return_platform_filename("output_single"))
+        self.assert_config_state("default_temp", "output_single")
 
     def test_default_path_directory(self):
         configs = []
@@ -395,24 +383,22 @@ class TestUpdateKubeconfig(unittest.TestCase):
             self.assert_cmd(configs, passed, environment, default)
 
     def test_update_existing(self):
-        configs = ["output_combined"]
-        passed = "output_combined"
+        configs = ["valid_old_data"]
+        passed = "valid_old_data"
         environment = []
         
-        self.assert_cmd(configs, passed, environment, role="RoleArn")
-        self.assert_config_state("output_combined", 
-                                 return_platform_filename("output_combined_with_role"))
+        self.assert_cmd(configs, passed, environment)
+        self.assert_config_state("valid_old_data", "output_combined")
 
     def test_update_existing_environment(self):
-        configs = ["output_combined"]
+        configs = ["valid_old_data"]
         passed = None
-        environment = ["output_combined",
-                       "output_combined_with_role",
+        environment = ["valid_old_data",
+                       "output_combined",
                        "output_single"]
         
-        self.assert_cmd(configs, passed, environment, role="RoleArn")
-        self.assert_config_state("output_combined", 
-                                 return_platform_filename("output_combined_with_role"))
+        self.assert_cmd(configs, passed, environment)
+        self.assert_config_state("valid_old_data", "output_combined")
 
     def test_cluster_creating(self):
         configs = ["output_combined"]
@@ -429,6 +415,5 @@ class TestUpdateKubeconfig(unittest.TestCase):
         environment = []
 
         self.assert_cmd(configs, passed, environment)
-        self.assert_config_state("valid_changed_ordering", 
-                                 return_platform_filename("output_combined_changed_ordering"))
+        self.assert_config_state("valid_changed_ordering", "output_combined_changed_ordering")
 

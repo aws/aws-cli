@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 
 import mock
+from mock import patch
 import base64
 import datetime
 import botocore
@@ -84,6 +85,12 @@ class TestTokenGenerator(unittest.TestCase):
             token_no_prefix.encode()
         ).decode()
         self.assert_url_correct(decrypted_token, False)
+
+    @patch.object(TokenGenerator, '_get_presigned_url', return_value='aHR0cHM6Ly9zdHMuYW1hem9uYXdzLmNvbS8=')
+    def test_token_no_padding(self, mock_presigned_url):
+        generator = TokenGenerator(REGION, self._session_handler)
+        tok = generator.get_token(CLUSTER_NAME, None)
+        self.assertTrue('=' not in tok)
 
     def test_token_sess(self):
         generator = TokenGenerator(REGION, self._assuming_handler)

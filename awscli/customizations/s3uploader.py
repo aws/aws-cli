@@ -220,8 +220,8 @@ class ProgressPercentage(BaseSubscriber):
         with self._lock:
             self._seen_so_far += bytes_transferred
             percentage = (self._seen_so_far / self._size) * 100
-            sys.stdout.write(
+            sys.stderr.write(
                     "\rUploading to %s  %s / %s  (%.2f%%)" %
                     (self._remote_path, self._seen_so_far,
                      self._size, percentage))
-            sys.stdout.flush()
+            sys.stderr.flush()

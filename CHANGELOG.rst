@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.157
+========
+
+* api-change:``datasync``: Update datasync command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``iotanalytics``: Update iotanalytics command to latest version
+
+
 1.16.156
 ========
 

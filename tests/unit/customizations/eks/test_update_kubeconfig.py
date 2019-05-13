@@ -174,6 +174,8 @@ class TestEKSClient(unittest.TestCase):
                     ("apiVersion", API_VERSION),
                     ("args",
                         [
+                            "--region",
+                            "region",
                             "eks",
                             "get-token",
                             "--cluster-name",

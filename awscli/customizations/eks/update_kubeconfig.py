@@ -101,7 +101,7 @@ class UpdateKubeconfigCommand(BasicCommand):
     ]
 
     def _display_entries(self, entries):
-        """ 
+        """
         Display entries in yaml format
 
         :param entries: a list of OrderedDicts to be printed
@@ -248,7 +248,7 @@ class EKSClient(object):
                 client = self._session.create_client("eks")
             else:
                 client = self._session.create_client(
-                    "eks", 
+                    "eks",
                     region_name=self._globals.region,
                     endpoint_url=self._globals.endpoint_url,
                     verify=self._globals.verify_ssl
@@ -287,6 +287,9 @@ class EKSClient(object):
         Return a user entry generated using
         the previously obtained description.
         """
+
+        region = self._get_cluster_description().get("arn").split(":")[3]
+
         generated_user = OrderedDict([
             ("name", self._get_cluster_description().get("arn", "")),
             ("user", OrderedDict([
@@ -294,10 +297,12 @@ class EKSClient(object):
                     ("apiVersion", API_VERSION),
                     ("args",
                         [
+                            "--region",
+                            region,
                             "eks",
                             "get-token",
                             "--cluster-name",
-                            self._cluster_name
+                            self._cluster_name,
                         ]),
                     ("command", "aws")
                 ]))

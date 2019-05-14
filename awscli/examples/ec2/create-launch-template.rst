@@ -4,8 +4,6 @@ This example creates a launch template that specifies the subnet in which to lau
 
   aws ec2 create-launch-template --launch-template-name TemplateForWebServer --version-description WebVersion1 --launch-template-data '{"NetworkInterfaces":[{"AssociatePublicIpAddress":true,"DeviceIndex":0,"Ipv6AddressCount":1,"SubnetId":"subnet-7b16de0c"}],"ImageId":"ami-8c1be5f6","InstanceType":"t2.small","TagSpecifications":[{"ResourceType":"instance","Tags":[{"Key":"purpose","Value":"webserver"}]}]}'
 
-For information about quoting JSON-formatted parameters, see `Quoting Strings`_ in the *AWS Command Line Interface User Guide*.
-
 Output::
 
   {
@@ -42,8 +40,10 @@ Output::
 
 For more information, see `Creating a Launch Template for an Auto Scaling Group`_ in the *Amazon EC2 Auto Scaling User Guide*.
 
-.. _`Quoting Strings`: https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters.html#quoting-strings
+For information about quoting JSON-formatted parameters, see `Quoting Strings`_ in the *AWS Command Line Interface User Guide*.
 
 .. _`Launching an Instance from a Launch Template`: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html
 
 .. _`Creating a Launch Template for an Auto Scaling Group`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/create-launch-template.html
+
+.. _`Quoting Strings`: https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters.html#quoting-strings

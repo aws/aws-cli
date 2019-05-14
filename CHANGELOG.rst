@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.158
+========
+
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.16.157
 ========
 

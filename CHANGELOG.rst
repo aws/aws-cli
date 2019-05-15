@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.16.159
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``mediapackage``: Update mediapackage command to latest version
+
+
 1.16.158
 ========
 

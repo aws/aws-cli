@@ -1,8 +1,8 @@
-**To retrieve the service setting for Parameter Store throughput**
+**To reset the service setting for Parameter Store throughput**
 
-The following ``get-service-setting`` This example retrieves the current service setting for Parameter Store throughput in the specified region. ::
+The following ``reset-service-setting`` example resets the service setting for Parameter Store throughput in the specified region to no longer use increased throughput. ::
 
-    aws ssm get-service-setting \
+    aws ssm reset-service-setting \
         --setting-id arn:aws:ssm:us-east-1:123456789012:servicesetting/ssm/parameter-store/high-throughput-enabled
 
 Output::
@@ -18,4 +18,5 @@ Output::
         }
     }
 
-For more information, see `Increasing Parameter Store Throughput <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-throughput.html>`_ in the *AWS Systems Manager Users Guide*.
+For more information, see `Increasing Parameter Store Throughput <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-throughput.html>`_ in the *AWS Systems Manager User Guide*.
+

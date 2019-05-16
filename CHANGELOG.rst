@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.160
+========
+
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``s3``: Update s3 command to latest version
+
+
 1.16.159
 ========
 

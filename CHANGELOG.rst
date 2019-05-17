@@ -2,6 +2,178 @@
 CHANGELOG
 =========
 
+1.16.160
+========
+
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``s3``: Update s3 command to latest version
+
+
+1.16.159
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``mediapackage``: Update mediapackage command to latest version
+
+
+1.16.158
+========
+
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.16.157
+========
+
+* api-change:``datasync``: Update datasync command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``iotanalytics``: Update iotanalytics command to latest version
+
+
+1.16.156
+========
+
+* api-change:``glue``: Update glue command to latest version
+* api-change:``sts``: Update sts command to latest version
+
+
+1.16.155
+========
+
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``kinesisanalytics``: Update kinesisanalytics command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``kinesisanalyticsv2``: Update kinesisanalyticsv2 command to latest version
+
+
+1.16.154
+========
+
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``appsync``: Update appsync command to latest version
+
+
+1.16.153
+========
+
+* api-change:``config``: Update config command to latest version
+* api-change:``iam``: Update iam command to latest version
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``sts``: Update sts command to latest version
+
+
+1.16.152
+========
+
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``workmail``: Update workmail command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+
+
+1.16.151
+========
+
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+* api-change:``kms``: Update kms command to latest version
+
+
+1.16.150
+========
+
+* api-change:``xray``: Update xray command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
+1.16.149
+========
+
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``neptune``: Update neptune command to latest version
+* api-change:``managedblockchain``: Update managedblockchain command to latest version
+* api-change:``s3control``: Update s3control command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``directconnect``: Update directconnect command to latest version
+
+
+1.16.148
+========
+
+* api-change:``transfer``: Update transfer command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.16.147
+========
+
+* api-change:``iam``: Update iam command to latest version
+* api-change:``sns``: Update sns command to latest version
+
+
+1.16.146
+========
+
+* api-change:``batch``: Update batch command to latest version
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``inspector``: Update inspector command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+
+
+1.16.145
+========
+
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+* api-change:``textract``: Update textract command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* bugfix:Cloudformation: Support non-AWS partition regions in CloudFormation deploy and package. Fixes `#3635 <https://github.com/aws/aws-cli/issues/3635>`__.
+* api-change:``mediatailor``: Update mediatailor command to latest version
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``mediaconnect``: Update mediaconnect command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``cloudformation``: Update cloudformation command to latest version
+
+
+1.16.144
+========
+
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``resource-groups``: Update resource-groups command to latest version
+
+
+1.16.143
+========
+
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``worklink``: Update worklink command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``discovery``: Update discovery command to latest version
+
+
+1.16.142
+========
+
+* api-change:``polly``: Update polly command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.16.141
 ========
 

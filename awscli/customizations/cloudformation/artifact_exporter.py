@@ -495,12 +495,23 @@ METADATA_EXPORT_LIST = [
 ]
 
 
-def include_transform_export_handler(template_dict, uploader):
+def include_transform_export_handler(template_dict, uploader, parent_dir):
     if template_dict.get("Name", None) != "AWS::Include":
         return template_dict
-    include_location = template_dict.get("Parameters", {}).get("Location", {})
-    if (is_local_file(include_location)):
-        template_dict["Parameters"]["Location"] = uploader.upload_with_dedup(include_location)
+
+    include_location = template_dict.get("Parameters", {}).get("Location", None)
+    if not include_location or is_s3_url(include_location):
+        return template_dict
+
+    abs_include_location = os.path.join(parent_dir, include_location)
+    if is_local_file(abs_include_location):
+        template_dict["Parameters"]["Location"] = uploader.upload_with_dedup(abs_include_location)
+    else:
+        raise exceptions.InvalidLocalPathError(
+            resource_id="AWS::Include",
+            property_name="Location",
+            local_path=abs_include_location)
+
     return template_dict
 
 
@@ -547,7 +558,7 @@ class Template(object):
         """
         for key, val in template_dict.items():
             if key in GLOBAL_EXPORT_DICT:
-                template_dict[key] = GLOBAL_EXPORT_DICT[key](val, self.uploader)
+                template_dict[key] = GLOBAL_EXPORT_DICT[key](val, self.uploader, self.template_dir)
             elif isinstance(val, dict):
                 self.export_global_artifacts(val)
             elif isinstance(val, list):

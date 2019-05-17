@@ -7,6 +7,7 @@ Command::
   aws ssm put-parameter --name "welcome" --type "String" --value "helloWorld"
   
 Output::
+
   {
     "Version": 1
   }
@@ -28,6 +29,7 @@ Command::
   aws ssm put-parameter --name "NumbersOnly" --type "String" --value "10" --allowed-pattern "^\d+$"
   
 Output::
+
   {
     "Version": 1
   }
@@ -41,6 +43,7 @@ Command::
   aws ssm put-parameter --name "welcome" --type "String" --value "good day sunshine" --overwrite
   
 Output::
+
   {
     "Version": 2
   }

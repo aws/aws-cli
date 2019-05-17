@@ -1,49 +1,94 @@
-**To create a parameter that uses a String data type**
+**Example 1: To change a parameter value**
 
-This example creates a parameter.
+The following ``put-parameter`` example changes the value of a parameter. ::
 
-Command::
+    aws ssm put-parameter \
+        --name "welcome" \
+        --type "String" \
+        --value "good day sunshine" \
+        --overwrite
 
-  aws ssm put-parameter --name "welcome" --type "String" --value "helloWorld"
-  
 Output::
 
-  {
-    "Version": 1
-  }
+    {
+        "Version": 2
+    }
 
-**To create a Secure String parameter**
+For more information, see `About Parameters <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-about-examples.html>`_ in the *AWS Systems Manager User Guide*.
 
-This example creates a Secure String parameter. Singles quotes are used so that the literal value is passed.
+**Example 2: To create an advanced parameter**
 
-Command::
+The following ``put-parameter`` example creates an advanced parameter. ::
 
-  aws ssm put-parameter --name 'password' --type "SecureString" --value 'a value, for example P@ssW%rd#1'
+    aws ssm put-parameter \
+        --name "advanced-parameter" \
+        --value "This is an advanced parameter" \
+        --type "String" \
+        --tier Advanced
 
-**To create a parameter with an allowed pattern**
-
-This example creates a String parameter and the values for this parameter are restricted to numbers.
-
-Command::
-
-  aws ssm put-parameter --name "NumbersOnly" --type "String" --value "10" --allowed-pattern "^\d+$"
-  
 Output::
 
-  {
-    "Version": 1
-  }
-  
-**To change a parameter value**
+    {
+        "Version": 1
+    }
 
-This example changes the value of a parameter.
+For more information, see `About Advanced Parameters <https://docs.aws.amazon.com/systems-manager/latest/userguide/https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-advanced-parameters.html>`_ in the *AWS Systems Manager User Guide*.
 
-Command::
+**Example 3: To convert a standard parameter to an advanced parameter**
 
-  aws ssm put-parameter --name "welcome" --type "String" --value "good day sunshine" --overwrite
-  
+The following ``put-parameter`` example converts a existing standard parameter into an advanced parameter. ::
+
+    aws ssm put-parameter \
+        --name "convert" \
+        --value "Test" \
+        --type "String" \
+        --tier Advanced \
+        --overwrite
+
 Output::
 
-  {
-    "Version": 2
-  }
+    {
+        "Version": 2
+    }
+
+For more information, see `About Advanced Parameters <https://docs.aws.amazon.com/systems-manager/latest/userguide/https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-advanced-parameters.html>`_ in the *AWS Systems Manager User Guide*.
+
+**Example 4: To create a parameter with a policy attached**
+
+The following ``put-parameter`` example creates an advanced parameter with a parameter policy attached.  ::
+
+    aws ssm put-parameter \
+        --name "/Finance/Payroll/elixir3131" \
+        --value "P@sSwW)rd" \
+        --type "SecureString" \
+        --tier Advanced \
+        --policies "[{\"Type\":\"Expiration\",\"Version\":\"1.0\",\"Attributes\":{\"Timestamp\":\"2019-05-13T00:00:00.000Z\"}},{\"Type\":\"ExpirationNotification\",\"Version\":\"1.0\",\"Attributes\":{\"Before\":\"5\",\"Unit\":\"Days\"}},{\"Type\":\"NoChangeNotification\",\"Version\":\"1.0\",\"Attributes\":{\"After\":\"60\",\"Unit\":\"Days\"}}]"
+
+Output::
+
+    {
+        "Version": 1
+    }
+
+For more information, see `Working with Parameter Policies <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-policies.html>`_ in the *AWS Systems Manager User Guide*.
+
+**Example 5: To add a policy to an existing parameter**
+
+The following ``put-parameter`` example attaches a policy to an existing advanced parameter.  ::
+
+    aws ssm put-parameter \
+        --name "/Finance/Payroll/elixir3131" \
+        --value "N3wP@sSwW)rd" \
+        --type "SecureString" \
+        --tier Advanced \
+        --policies "[{\"Type\":\"Expiration\",\"Version\":\"1.0\",\"Attributes\":{\"Timestamp\":\"2019-05-13T00:00:00.000Z\"}},{\"Type\":\"ExpirationNotification\",\"Version\":\"1.0\",\"Attributes\":{\"Before\":\"5\",\"Unit\":\"Days\"}},{\"Type\":\"NoChangeNotification\",\"Version\":\"1.0\",\"Attributes\":{\"After\":\"60\",\"Unit\":\"Days\"}}]" 
+        --overwrite
+
+Output::
+
+    {
+        "Version": 2
+    }
+
+For more information, see `Working with Parameter Policies <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-policies.html>`_ in the *AWS Systems Manager User Guide*.
+

@@ -1,35 +1,33 @@
-**To list your registered task definition families**
+**Example 1: To list the registered task definition families**
 
-This example command lists all of your registered task definition families.
+The following ``list-task-definition-families`` example lists all of the registered task definition families. ::
 
-Command::
-
-  aws ecs list-task-definition-families
+    aws ecs list-task-definition-families
 
 Output::
 
-	{
-	    "families": [
-	        "node-js-app",
-	        "web-timer",
-	        "hpcc",
-	        "hpcc-c4-8xlarge"
-	    ]
-	}
+    {
+        "families": [
+            "node-js-app",
+            "web-timer",
+            "hpcc",
+            "hpcc-c4-8xlarge"
+        ]
+    }
 
-**To filter your registered task definition families**
+**Example 2: To filter the registered task definition families**
 
-This example command lists the task definition revisions that start with "hpcc".
+The following ``list-task-definition-families`` example lists the task definition revisions that start with "hpcc". ::
 
-Command::
-
-  aws ecs list-task-definition-families --family-prefix hpcc
+    aws ecs list-task-definition-families --family-prefix hpcc
 
 Output::
 
-	{
-	    "families": [
-	        "hpcc",
-	        "hpcc-c4-8xlarge"
-	    ]
-	}
+    {
+        "families": [
+            "hpcc",
+            "hpcc-c4-8xlarge"
+        ]
+    }
+
+For more information, see `Task Definition Parameters <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#family>`_ in the *Amazon ECS Developer Guide*.

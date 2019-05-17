@@ -19,12 +19,15 @@ import contextlib
 import uuid
 import shutil
 from awscli.compat import six
+from botocore.utils import set_value_from_jmespath
 
 from awscli.compat import urlparse
 from contextlib import contextmanager
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump, \
     yaml_parse
+import jmespath
+
 
 LOG = logging.getLogger(__name__)
 
@@ -94,51 +97,6 @@ def parse_s3_url(url,
                      "{0}".format(url))
 
 
-def get_nested_property_value(resource_dict, property_name):
-    """
-    Searches the resource_dict for nested properties by splitting the property_name
-    on '.'
-
-    :param resource_dict:   Dictionary containing resource definition
-    :param property_name:   Property name of CloudFormation resource where this
-                            local path is present
-
-    :return:                Value of the property
-    """
-
-    if '.' not in property_name:
-        return resource_dict.get(property_name, None)
-    
-    property_names = property_name.split('.', 1)
-    # default to empty dictionary so recursion has something to operate on
-    sub_property_dict = resource_dict.get(property_names[0], {}) 
-    return get_nested_property_value(sub_property_dict, property_names[1])
-
-
-def set_nested_property_value(resource_dict, property_name, new_value):
-    """
-    Searches the resource_dict for nested properties by splitting the property_name
-    on '.' and sets the nested property to new_value.
-
-
-    :param resource_dict:   Dictionary containing resource definition
-    :param property_name:   Property name of CloudFormation resource where this
-                            local path is present
-    :param new_value:       The new value for the property
-    :raise:                 KeyError if a property isn't found in the dictionary
-    """
-    # Support nested properties by allowing '.' in the PROPERTY_NAME
-    # Assumes that the property exists in the dictionary
-
-    if '.' not in property_name:
-        resource_dict[property_name] = new_value
-        return
-    
-    property_names = property_name.split('.', 1)
-    property_dict = resource_dict[property_names[0]]
-    return set_nested_property_value(property_dict, property_names[1], new_value)
-
-
 def upload_local_artifacts(resource_id, resource_dict, property_name,
                            parent_dir, uploader):
     """
@@ -165,7 +123,7 @@ def upload_local_artifacts(resource_id, resource_dict, property_name,
     :raise:                 ValueError if path is not a S3 URL or a local path
     """
 
-    local_path = get_nested_property_value(resource_dict, property_name)
+    local_path = jmespath.search(property_name, resource_dict)
 
     if local_path is None:
         # Build the root directory and upload to S3
@@ -277,7 +235,7 @@ class Resource(object):
         if resource_dict is None:
             return
 
-        property_value = get_nested_property_value(resource_dict, self.PROPERTY_NAME)
+        property_value = jmespath.search(self.PROPERTY_NAME, resource_dict)
 
         if not property_value and not self.PACKAGE_NULL_PROPERTY:
             return
@@ -293,7 +251,7 @@ class Resource(object):
         if is_local_file(property_value) and not \
                 is_zip_file(property_value) and self.FORCE_ZIP:
             temp_dir = copy_to_temp_dir(property_value)
-            set_nested_property_value(resource_dict, self.PROPERTY_NAME, temp_dir)
+            set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, temp_dir)
 
         try:
             self.do_export(resource_id, resource_dict, parent_dir)
@@ -317,7 +275,7 @@ class Resource(object):
         uploaded_url = upload_local_artifacts(resource_id, resource_dict,
                                    self.PROPERTY_NAME,
                                    parent_dir, self.uploader)
-        set_nested_property_value(resource_dict, self.PROPERTY_NAME, uploaded_url)
+        set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, uploaded_url)
 
 
 class ResourceWithS3UrlDict(Resource):
@@ -349,7 +307,7 @@ class ResourceWithS3UrlDict(Resource):
                 bucket_name_property=self.BUCKET_NAME_PROPERTY,
                 object_key_property=self.OBJECT_KEY_PROPERTY,
                 version_property=self.VERSION_PROPERTY)
-        set_nested_property_value(resource_dict, self.PROPERTY_NAME, parsed_url)
+        set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, parsed_url)
 
 
 class ServerlessFunctionResource(Resource):
@@ -507,7 +465,7 @@ class CloudFormationStackResource(Resource):
             parts = parse_s3_url(url, version_property="Version")
             s3_path_url = self.uploader.to_path_style_s3_url(
                     parts["Key"], parts.get("Version", None))
-            set_nested_property_value(resource_dict, self.PROPERTY_NAME, s3_path_url)
+            set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, s3_path_url)
 
 
 class ServerlessApplicationResource(CloudFormationStackResource):

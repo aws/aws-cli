@@ -15,7 +15,6 @@ from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.artifact_exporter \
     import is_s3_url, parse_s3_url, is_local_file, is_local_folder, \
     upload_local_artifacts, zip_folder, make_abs_path, make_zip, \
-    get_nested_property_value, set_nested_property_value, \
     Template, Resource, ResourceWithS3UrlDict, ServerlessApiResource, \
     ServerlessFunctionResource, GraphQLSchemaResource, \
     LambdaFunctionResource, ApiGatewayRestApiResource, \
@@ -267,108 +266,6 @@ class TestArtifactExporter(unittest.TestCase):
         with self.make_temp_dir() as filename:
             self.assertTrue(is_local_folder(filename))
             self.assertFalse(is_local_file(filename))
-
-    def test_get_nested_property_value_1levels(self):
-        resource_dict = { 
-            'Foo': 'testfile.yaml'
-        }
-        property_value = get_nested_property_value(resource_dict, 'Foo')
-        self.assertEquals(property_value, 'testfile.yaml')
-
-    def test_get_nested_property_value_1level_missing_returns_None(self):
-        resource_dict = {}
-        property_value = get_nested_property_value(resource_dict, 'Foo')
-        self.assertEquals(property_value, None)
-
-    def test_get_nested_property_value_2levels(self):
-        resource_dict = { 
-            'Foo': {
-                'Bar': 'testfile.yaml'
-            }
-        }
-        property_value = get_nested_property_value(resource_dict, 'Foo.Bar')
-        self.assertEquals(property_value, 'testfile.yaml')
-
-    def test_get_nested_property_value_2levels_missing_returns_None(self):
-        resource_dict = { 
-            'Foo': {
-                'Bar': 'testfile.yaml'
-            }
-        }
-        property_value = get_nested_property_value(resource_dict, 'other.other.other')
-        self.assertEquals(property_value, None)
-
-    def test_get_nested_property_value_multiplelevels(self):
-        resource_dict = { 
-            'Foo': {
-                'Bar': {
-                    'Fizz': {
-                        'Buzz': 'testfile.yaml'
-                    }
-                }
-            }
-        }
-        property_value = get_nested_property_value(resource_dict, 'Foo.Bar.Fizz.Buzz')
-        self.assertEquals(property_value, 'testfile.yaml')
-
-    def test_get_nested_property_value_multiplelevels_missing_returns_None(self):
-        resource_dict = { 
-            'Foo': {
-                'Bar': {
-                    'Fizz': {
-                        'Buzz': 'testfile.yaml'
-                    }
-                }
-            }
-        }
-        property_value = get_nested_property_value(resource_dict, 'Foo.Bar.Fizz.other')
-        self.assertEquals(property_value, None)
-
-    def test_set_nested_property_value_1levels(self):
-        resource_dict = { 
-            'Foo': 'testfile.yaml'
-        }
-        set_nested_property_value(resource_dict, 'Foo', 'otherfile.yaml')
-        expected_resource_dict = { 
-            'Foo': 'otherfile.yaml'
-        }
-        self.assertEquals(resource_dict, expected_resource_dict)
-
-    def test_set_nested_property_value_2levels(self):
-        resource_dict = { 
-            'Foo': {
-                'Bar': 'testfile.yaml'
-            }
-        }
-        set_nested_property_value(resource_dict, 'Foo.Bar', 'otherfile.yaml')
-        expected_resource_dict = { 
-            'Foo': {
-                'Bar': 'otherfile.yaml'
-            }
-        }
-        self.assertEquals(resource_dict, expected_resource_dict)
-
-    def test_set_nested_property_value_multiplelevels(self):
-        resource_dict = { 
-            'Foo': {
-                'Bar': {
-                    'Fizz': {
-                        'Buzz': 'testfile.yaml'
-                    }
-                }
-            }
-        }
-        set_nested_property_value(resource_dict, 'Foo.Bar.Fizz.Buzz', 'otherfile.yaml')
-        expected_resource_dict = { 
-            'Foo': {
-                'Bar': {
-                    'Fizz': {
-                        'Buzz': 'otherfile.yaml'
-                    }
-                }
-            }
-        }
-        self.assertEquals(resource_dict, expected_resource_dict)
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.zip_and_upload")
     def test_upload_local_artifacts_local_file(self, zip_and_upload_mock):

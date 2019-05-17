@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.161
+========
+
+* api-change:``appstream``: Update appstream command to latest version
+
+
 1.16.160
 ========
 

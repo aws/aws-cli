@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.162
+========
+
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``mediapackage-vod``: Update mediapackage-vod command to latest version
+* api-change:``meteringmarketplace``: Update meteringmarketplace command to latest version
+
+
 1.16.161
 ========
 

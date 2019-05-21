@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.163
+========
+
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+* api-change:``datasync``: Update datasync command to latest version
+
+
 1.16.162
 ========
 

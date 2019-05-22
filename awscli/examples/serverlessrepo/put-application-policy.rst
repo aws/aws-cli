@@ -4,7 +4,7 @@ The following ``put-application-policy`` shares an application publicly, so anyo
 
     aws serverlessrepo put-application-policy \
         --application-id arn:aws:serverlessrepo:us-east-1:123456789012:applications/my-test-application \
-        --statements Principals='',Actions=Deploy*
+        --statements Principals='*',Actions=Deploy
 
 Output::
 

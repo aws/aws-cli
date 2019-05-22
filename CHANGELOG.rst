@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.16.164
+========
+
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``budgets``: Update budgets command to latest version
+* api-change:``efs``: Update efs command to latest version
+* api-change:``devicefarm``: Update devicefarm command to latest version
+* api-change:``worklink``: Update worklink command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
 1.16.163
 ========
 

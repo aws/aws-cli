@@ -1,30 +1,29 @@
-**To simulate the effects of all IAM policies associated with an IAM user or role**
+**To simulate the effects of an arbitrary IAM policy**
 
-The following ``simulate-custom-policy`` shows how to provide both the policy and define variable values and simulate an API call to see if it is allowed or denied. The following example shows a policy that enables database access only after a specified date and time. The simulation succeeds because the simulated actions and the specified ``aws:CurrentTime`` variable all match the requirements of the policy. ::
+The following ``simulate-principal-policy`` shows how to simulate a user calling an API action and determining whether the policies associated with that user allow or deny the action. In the following example, the user has a policy that allows only the ``codecommit:ListRepositories`` action. ::
 
-    aws iam simulate-custom-policy \
-        --policy-input-list '{"Version":"2012-10-17","Statement":{"Effect":"Allow","Action":"dynamodb:*","Resource":"*","Condition":{"DateGreaterThan":{"aws:CurrentTime":"2018-08-16T12:00:00Z"}}}}' \
-        --action-names dynamodb:CreateBackup \
-        --context-entries "ContextKeyName='aws:CurrentTime',ContextKeyValues='2019-04-25T11:00:00Z',ContextKeyType=date"
+    aws iam simulate-principal-policy \
+        --policy-source-arn arn:aws:iam::123456789012:user/alejandro \
+        --action-names codecommit:ListRepositories
 
 Output::
 
     {
         "EvaluationResults": [
             {
-                "EvalActionName": "dynamodb:CreateBackup",
+                "EvalActionName": "codecommit:ListRepositories",
                 "EvalResourceName": "*",
                 "EvalDecision": "allowed",
                 "MatchedStatements": [
                     {
-                        "SourcePolicyId": "PolicyInputList.1",
+                        "SourcePolicyId": "Grant-Access-To-CodeCommit-ListRepo",
                         "StartPosition": {
-                            "Line": 1,
-                            "Column": 38
+                            "Line": 3,
+                            "Column": 19
                         },
                         "EndPosition": {
-                            "Line": 1,
-                            "Column": 167
+                            "Line": 9,
+                            "Column": 10
                         }
                     }
                 ],
@@ -33,12 +32,12 @@ Output::
         ]
     }
 
-The following ``simulate-custom-policy`` example shows the results of simulating a command that is prohibited by the policy. In this example, the provided date is before that required by the policy's condition. ::
+The following ``simulate-custom-policy`` example shows the results of simulating a command that is prohibited by one of the user's policies. In the following example, the user has a policy that permits access to a DynamoDB database only after a certain date and time. The simulation has the user attempting to access the database with an ``aws:CurrentTime`` value that is earlier than the policy's condition permits. ::
 
-    aws iam simulate-custom-policy \
-        --policy-input-list '{"Version":"2012-10-17","Statement":{"Effect":"Allow","Action":"dynamodb:*","Resource":"*","Condition":{"DateGreaterThan":{"aws:CurrentTime":"2018-08-16T12:00:00Z"}}}}' \
+    aws iam simulate-principal-policy \
+        --policy-source-arn arn:aws:iam::123456789012:user/alejandro \
         --action-names dynamodb:CreateBackup \
-        --context-entries "ContextKeyName='aws:CurrentTime',ContextKeyValues='2014-04-25T11:00:00Z',ContextKeyType=date"
+        --context-entries "ContextKeyName='aws:CurrentTime',ContextKeyValues='2018-04-25T11:00:00Z',ContextKeyType=date"
 
 Output::
 

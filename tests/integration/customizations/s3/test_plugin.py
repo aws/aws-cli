@@ -563,8 +563,8 @@ class TestCp(BaseS3IntegrationTest):
         # For comparing expires timestamp.
         self.override_parser(timestamp_parser=identity)
         bucket_name = _SHARED_BUCKET
-        original_key = random_chars(6)
-        new_key = random_chars(6)
+        original_key = '%s-a' % random_chars(6)
+        new_key = '%s-b' % random_chars(6)
         metadata = {
             'ContentType': 'foo',
             'ContentDisposition': 'foo',

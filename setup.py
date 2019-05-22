@@ -3,6 +3,7 @@ import codecs
 import os.path
 import re
 import sys
+import platform
 
 from setuptools import setup, find_packages
 
@@ -24,18 +25,25 @@ def find_version(*file_paths):
 
 
 requires = ['botocore==1.12.153',
-            'colorama>=0.2.5,<=0.3.9',
             'docutils>=0.10',
-            'rsa>=3.1.2,<=3.5.0',
             's3transfer>=0.2.0,<0.3.0',
-            'PyYAML>=3.10,<=3.13']
-
+            ]
 
 if sys.version_info[:2] == (2, 6):
     # For python2.6 we have to require argparse since it
     # was not in stdlib until 2.7.
     requires.append('argparse>=1.1')
+    # rsa >= 4.0 and PyYAML >= 5.1 dropped support for python26
+    requires.append('rsa>=3.1.2,<=3.5.0')
+    requires.append('PyYAML>=2.10,<=3.13')
+elif sys.version_info[:2] == (2, 7) or sys.version_info[:1] >= (3,):
+    requires.append('rsa>=3.1.2,<=4.1.0')
+    requires.append('PyYAML>=2.10,<=5.1')
 
+if platform.system() == 'Windows':
+    # Only required on Windows to provide coloring of ANSI escapes
+    # Does nothing on Unix platforms
+    requires.append('colorama>=0.2.5,<=0.3.9')
 
 setup_options = dict(
     name='awscli',

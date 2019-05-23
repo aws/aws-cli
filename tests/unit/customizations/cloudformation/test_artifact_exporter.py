@@ -13,7 +13,7 @@ from botocore.stub import Stubber
 from awscli.testutils import unittest, FileCreator
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.artifact_exporter \
-    import is_s3_url, parse_s3_url, is_local_file, is_local_folder, \
+    import is_s3_url, parse_s3_url, is_local_file, is_local_folder, is_local_file_comma_delimited_list, \
     upload_local_artifacts, zip_folder, make_abs_path, make_zip, \
     Template, Resource, ResourceWithS3UrlDict, ServerlessApiResource, \
     ServerlessFunctionResource, GraphQLSchemaResource, \
@@ -27,7 +27,8 @@ from awscli.customizations.cloudformation.artifact_exporter \
     AppSyncResolverResponseTemplateResource, \
     AppSyncFunctionConfigurationRequestTemplateResource, \
     AppSyncFunctionConfigurationResponseTemplateResource, \
-    GlueJobCommandScriptLocationResource
+    GlueJobCommandScriptLocationResource, \
+    GlueJobDefaultArgumentsExtraPyFilesResource
 
 
 def test_is_s3_url():
@@ -150,6 +151,12 @@ def test_all_resources_export():
             "expected_result": {
                     "ScriptLocation": uploaded_s3_url 
             }
+        },
+        {
+            "class": GlueJobDefaultArgumentsExtraPyFilesResource,
+            "expected_result": {
+                "--extra-py-files": uploaded_s3_url
+            }
         }
     ]
 
@@ -170,8 +177,10 @@ def _helper_verify_export_resources(
 
     resource_id = "id"
 
-    if '.' in test_class.PROPERTY_NAME:
-        reversed_property_names = test_class.PROPERTY_NAME.split('.')
+    test_class_property_name = test_class.PROPERTY_NAME.replace('"', '')
+
+    if '.' in test_class_property_name:
+        reversed_property_names = test_class_property_name.split('.')
         reversed_property_names.reverse()
         property_dict = {
             reversed_property_names[0]: "foo"
@@ -183,7 +192,7 @@ def _helper_verify_export_resources(
         resource_dict = property_dict
     else:
         resource_dict = {
-            test_class.PROPERTY_NAME: "foo"
+            test_class_property_name: "foo"
         }
     parent_dir = "dir"
 
@@ -198,8 +207,8 @@ def _helper_verify_export_resources(
                                                         test_class.PROPERTY_NAME,
                                                         parent_dir,
                                                         s3_uploader_mock)
-    if '.' in test_class.PROPERTY_NAME:
-        top_level_property_name = test_class.PROPERTY_NAME.split('.')[0]
+    if '.' in test_class_property_name:
+        top_level_property_name = test_class_property_name.split('.')[0]
         result = resource_dict[top_level_property_name]
     else:
         result = resource_dict[test_class.PROPERTY_NAME]
@@ -266,6 +275,21 @@ class TestArtifactExporter(unittest.TestCase):
         with self.make_temp_dir() as filename:
             self.assertTrue(is_local_folder(filename))
             self.assertFalse(is_local_file(filename))
+
+    def test_is_local_file_comma_delimited_list_two_files(self):
+        with tempfile.NamedTemporaryFile() as handle1, tempfile.NamedTemporaryFile() as handle2:
+            filelist = '{},{}'.format(handle1.name, handle2.name)
+            self.assertTrue(is_local_file_comma_delimited_list(filelist))
+            self.assertFalse(is_local_file(filelist))
+            self.assertFalse(is_local_folder(filelist))
+
+    def test_is_local_file_comma_delimited_list_trailing_comma(self):
+        with tempfile.NamedTemporaryFile() as handle1:
+            filelist = '{},'.format(handle1.name)
+            self.assertFalse(is_local_file_comma_delimited_list(filelist))
+            self.assertFalse(is_local_file(filelist))
+            self.assertFalse(is_local_folder(filelist))
+    
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.zip_and_upload")
     def test_upload_local_artifacts_local_file(self, zip_and_upload_mock):

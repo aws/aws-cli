@@ -248,6 +248,42 @@ class TestS3Uploader(unittest.TestCase):
         remotepath = "{0}.{1}".format(checksum, extension)
         self.s3uploader.upload.assert_called_once_with(filename, remotepath)
 
+    def test_upload_with_dedup_with_original_name_appended(self):
+        
+        checksum = "somemd5checksum"
+        filename_full = "/path/to/filename"
+        filename_short = "filename"
+        extension = "extn"
+
+
+        self.s3uploader.file_checksum = Mock()
+        self.s3uploader.file_checksum.return_value = checksum
+
+        self.s3uploader.upload = Mock()
+
+        self.s3uploader.upload_with_dedup_with_original_name_appended(filename_full, extension)
+
+        remotepath = "{0}/{1}.{2}".format(checksum, filename_short, extension)
+
+        self.s3uploader.upload.assert_called_once_with(filename_full, remotepath)
+
+    def test_upload_with_dedup_with_original_name_appended_no_extension(self):
+
+        checksum = "somemd5checksum"
+        filename = "/path/to/filename.file"
+        filename_short = "filename.file"
+
+        self.s3uploader.file_checksum = Mock()
+        self.s3uploader.file_checksum.return_value = checksum
+
+        self.s3uploader.upload = Mock()
+
+        self.s3uploader.upload_with_dedup_with_original_name_appended(filename)
+
+        remotepath = "{0}/{1}".format(checksum, filename_short)
+
+        self.s3uploader.upload.assert_called_once_with(filename, remotepath)
+
     def test_file_exists(self):
         key = "some/path"
         expected_params = {

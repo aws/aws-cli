@@ -59,6 +59,8 @@ def is_local_file(path):
     return is_path_value_valid(path) and os.path.isfile(path)
 
 def is_local_file_comma_delimited_list(path):
+    if type(path) != str:
+        return False
     paths = path.split(',')
     for p in paths:
         if (not is_path_value_valid(p)) or (not (os.path.isfile(p))):

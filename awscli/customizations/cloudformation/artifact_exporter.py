@@ -104,7 +104,7 @@ def parse_s3_url(url,
 
 
 def upload_local_artifacts(resource_id, resource_dict, property_name,
-                           parent_dir, uploader):
+                           parent_dir, uploader, append_filename=False):
     """
     Upload local artifacts referenced by the property at given resource and
     return S3 URL of the uploaded object. It is the responsibility of callers
@@ -116,6 +116,14 @@ def upload_local_artifacts(resource_id, resource_dict, property_name,
     upload.
 
     If path is already a path to S3 object, this method does nothing.
+
+    An additional property called append_filename has been added. This property
+    will append the end of the filename as part of the uploaded S3 path after the
+    md5hash. For example, if the absolute path referenced in the CloudFormation template
+    is /path/to/file/bar.txt, the uploaded file will be of the format {md5hash}/bar.txt.
+    This functionality is needed for uploading extra Python files to be used by Glue jobs.
+    This option affects only uploading single files or uploading a comma-delimited list of
+    files.
 
     :param resource_id:     Id of the CloudFormation resource
     :param resource_dict:   Dictionary containing resource definition
@@ -144,7 +152,10 @@ def upload_local_artifacts(resource_id, resource_dict, property_name,
                   .format(property_name, resource_id))
         return local_path
 
-    local_path = make_abs_path(parent_dir, local_path)
+    if ',' in local_path:
+        local_path = ','.join([make_abs_path(parent_dir, lp) for lp in local_path.split(',')])
+    else:
+        local_path = make_abs_path(parent_dir, local_path)
 
     # Or, pointing to a folder. Zip the folder and upload
     if is_local_folder(local_path):
@@ -152,7 +163,19 @@ def upload_local_artifacts(resource_id, resource_dict, property_name,
 
     # Path could be pointing to a file. Upload the file
     elif is_local_file(local_path):
+
+        # If append_filename is specified, use the new
+        # uploader method for this case.
+        if append_filename:
+            return uploader.upload_with_dedup_with_original_name_appended(local_path)
+
         return uploader.upload_with_dedup(local_path)
+
+    # Path could be comma delimited list, i.e. Glue Job --extra-py-files argument.
+    # In this case, upload each file in the comma-delimited list, and return a new
+    # comma-delimited list consisting of the S3 URLs of the uploaded objects.
+    elif is_local_file_comma_delimited_list(local_path):
+        return ','.join([uploader.upload_with_dedup_with_original_name_appended(path) for path in local_path.split(',')])
 
     raise exceptions.InvalidLocalPathError(
             resource_id=resource_id,
@@ -503,44 +526,8 @@ class GlueJobDefaultArgumentsExtraPyFilesResource(Resource):
     PACKAGE_NULL_PROPERTY = False
 
 
-    def __upload_local_artifacts(self, resource_id, resource_dict, property_name, parent_dir, uploader):
-        """
-        A version of upload_local_artifacts specialized for the DefaultArguments."--extra-py-files" property.
-        Because the DefaultArguments."--extra-py-files" property can accept a comma-delimited list of S3 paths,
-        this method takes into account that situation, in which case the method will return a comma-delimited list
-        of the resultant S3 paths after uploading all local files specified in the comma-delimited list.
-
-        Thisq version of the method handles only the situations where path refers to a file or where path is a 
-        comma-delimited list of file references.
-
-        :param resource_id:     Id of the CloudFormation resource
-        :param resource_dict:   Dictionary containing resource definition
-        :param property_name:   Property name of CloudFormation resource where this
-                                local path is present
-        :param parent_dir:      Resolve all relative paths with respect to this
-                                directory
-        :param uploader:        Method to upload files to S3
-
-        :return:                S3 URL of the uploaded object
-        :raise:                 ValueError if path is not a S3 URL or a local path
-        """
-
-        local_path = jmespath.search(property_name, resource_dict)
-        if is_local_file(local_path):
-            return uploader.upload_with_dedup_with_original_name_appended(make_abs_path(parent_dir, local_path))
-
-        elif is_local_file_comma_delimited_list(local_path):
-
-            local_paths = [make_abs_path(parent_dir, lp) for lp in local_path.split(',')]
-            return ','.join([uploader.upload_with_dedup_with_original_name_appended(path) for path in local_paths])
-
-        raise exceptions.InvalidLocalPathError(
-                resource_id=resource_id,
-                property_name=property_name,
-                local_path=local_path)
-
     def do_export(self, resource_id, resource_dict, parent_dir):
-        uploaded_url = self.__upload_local_artifacts(resource_id, resource_dict,
+        uploaded_url = upload_local_artifacts(resource_id, resource_dict,
                                    self.PROPERTY_NAME,
                                    parent_dir, self.uploader)
 

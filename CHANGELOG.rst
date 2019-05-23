@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.165
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``waf-regional``: Update waf-regional command to latest version
+
+
 1.16.164
 ========
 

@@ -149,7 +149,17 @@ class S3Uploader(object):
 
     def upload_with_dedup_with_original_name_appended(self, file_name, extension=None):
         """
+        Makes and returns name of the S3 object based on the file's MD5 sum.
+        Unlike upload_with_dedup, this method uses the MD5 sum as a prefix/folder and 
+        appends the original name of the file (without parent directories). For example,
+        if the file_name /path/to/foo.txt is provided, the uploaded file will have the
+        format {md5sum}/foo.txt.
+
+        :param file_name: file to upload
+        :param extension: String of file extension to append to the object
+        :return: S3 URL of the uploaded object
         """
+        
         filemd5 = self.file_checksum(file_name)
         remote_path = "{}/{}".format(filemd5, file_name.split('/')[-1])
         if extension:

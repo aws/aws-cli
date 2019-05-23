@@ -529,7 +529,7 @@ class GlueJobDefaultArgumentsExtraPyFilesResource(Resource):
     def do_export(self, resource_id, resource_dict, parent_dir):
         uploaded_url = upload_local_artifacts(resource_id, resource_dict,
                                    self.PROPERTY_NAME,
-                                   parent_dir, self.uploader)
+                                   parent_dir, self.uploader, append_filename=True)
 
         # Need to remove quotes from the path for it to be output correctly.
         set_value_from_jmespath(resource_dict, self.PROPERTY_NAME.replace('"', ''), uploaded_url)

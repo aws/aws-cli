@@ -159,9 +159,9 @@ class S3Uploader(object):
         :param extension: String of file extension to append to the object
         :return: S3 URL of the uploaded object
         """
-        
+
         filemd5 = self.file_checksum(file_name)
-        remote_path = "{}/{}".format(filemd5, file_name.split('/')[-1])
+        remote_path = "{0}/{1}".format(filemd5, file_name.split('/')[-1])
         if extension:
             remote_path = remote_path + "." + extension
 

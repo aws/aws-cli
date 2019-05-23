@@ -248,6 +248,7 @@ class TestS3Uploader(unittest.TestCase):
         remotepath = "{0}.{1}".format(checksum, extension)
         self.s3uploader.upload.assert_called_once_with(filename, remotepath)
 
+    @patch("os.sep", '/')
     def test_upload_with_dedup_with_original_name_appended(self):
         
         checksum = "somemd5checksum"
@@ -267,10 +268,29 @@ class TestS3Uploader(unittest.TestCase):
 
         self.s3uploader.upload.assert_called_once_with(filename_full, remotepath)
 
+    @patch("os.sep", '/')
     def test_upload_with_dedup_with_original_name_appended_no_extension(self):
 
         checksum = "somemd5checksum"
         filename = "/path/to/filename.file"
+        filename_short = "filename.file"
+
+        self.s3uploader.file_checksum = Mock()
+        self.s3uploader.file_checksum.return_value = checksum
+
+        self.s3uploader.upload = Mock()
+
+        self.s3uploader.upload_with_dedup_with_original_name_appended(filename)
+
+        remotepath = "{0}/{1}".format(checksum, filename_short)
+
+        self.s3uploader.upload.assert_called_once_with(filename, remotepath)
+
+    @patch("os.sep", '\\')
+    def test_upload_with_dedup_with_original_name_appended_no_extension_windows_sep(self):
+
+        checksum = "somemd5checksum"
+        filename = "C:\\path\\to\\filename.file"
         filename_short = "filename.file"
 
         self.s3uploader.file_checksum = Mock()

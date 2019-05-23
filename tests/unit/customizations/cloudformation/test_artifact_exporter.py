@@ -151,12 +151,6 @@ def test_all_resources_export():
             "expected_result": {
                     "ScriptLocation": uploaded_s3_url 
             }
-        },
-        {
-            "class": GlueJobDefaultArgumentsExtraPyFilesResource,
-            "expected_result": {
-                "--extra-py-files": uploaded_s3_url
-            }
         }
     ]
 
@@ -167,7 +161,18 @@ def test_all_resources_export():
                     upload_local_artifacts_mock, \
                     test["expected_result"]
 
+        test_glue_extra_py_files = {
+            "class": GlueJobDefaultArgumentsExtraPyFilesResource,
+            "expected_result": {
+                "--extra-py-files": uploaded_s3_url
+            }
+        }
 
+        yield _helper_verify_export_resources_with_append_filename, \
+            test_glue_extra_py_files["class"], uploaded_s3_url, \
+            upload_local_artifacts_mock, \
+            test_glue_extra_py_files["expected_result"]
+            
 def _helper_verify_export_resources(
         test_class, uploaded_s3_url, upload_local_artifacts_mock,
         expected_result):
@@ -207,6 +212,52 @@ def _helper_verify_export_resources(
                                                         test_class.PROPERTY_NAME,
                                                         parent_dir,
                                                         s3_uploader_mock)
+    if '.' in test_class_property_name:
+        top_level_property_name = test_class_property_name.split('.')[0]
+        result = resource_dict[top_level_property_name]
+    else:
+        result = resource_dict[test_class.PROPERTY_NAME]
+    assert_equal(result, expected_result)
+
+def _helper_verify_export_resources_with_append_filename(
+        test_class, uploaded_s3_url, upload_local_artifacts_mock,
+        expected_result):
+
+    s3_uploader_mock = Mock()
+    upload_local_artifacts_mock.reset_mock()
+
+    resource_id = "id"
+
+    test_class_property_name = test_class.PROPERTY_NAME.replace('"', '')
+
+    if '.' in test_class_property_name:
+        reversed_property_names = test_class_property_name.split('.')
+        reversed_property_names.reverse()
+        property_dict = {
+            reversed_property_names[0]: "foo"
+        }
+        for sub_property_name in reversed_property_names[1:]:
+            property_dict = {
+                sub_property_name: property_dict
+            }
+        resource_dict = property_dict
+    else:
+        resource_dict = {
+            test_class_property_name: "foo"
+        }
+    parent_dir = "dir"
+
+    upload_local_artifacts_mock.return_value = uploaded_s3_url
+
+    resource_obj = test_class(s3_uploader_mock)
+
+    resource_obj.export(resource_id, resource_dict, parent_dir)
+
+    upload_local_artifacts_mock.assert_called_once_with(resource_id,
+                                                        resource_dict,
+                                                        test_class.PROPERTY_NAME,
+                                                        parent_dir,
+                                                        s3_uploader_mock, append_filename=True)
     if '.' in test_class_property_name:
         top_level_property_name = test_class_property_name.split('.')[0]
         result = resource_dict[top_level_property_name]

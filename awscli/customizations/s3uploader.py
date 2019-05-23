@@ -147,6 +147,16 @@ class S3Uploader(object):
 
         return self.upload(file_name, remote_path)
 
+    def upload_with_dedup_with_original_name_appended(self, file_name, extension=None):
+        """
+        """
+        filemd5 = self.file_checksum(file_name)
+        remote_path = "{}/{}".format(filemd5, file_name.split('/')[-1])
+        if extension:
+            remote_path = remote_path + "." + extension
+
+        return self.upload(file_name, remote_path)
+
     def file_exists(self, remote_path):
         """
         Check if the file we are trying to upload already exists in S3

@@ -161,6 +161,11 @@ def test_all_resources_export():
                     upload_local_artifacts_mock, \
                     test["expected_result"]
 
+
+        # The GlueJobDefaultArgumentsExtraPyFilesResource must be tested separately, as it expects upload_local_artifacts_mock
+        # to be called with an extra argument, which the _helper_verify_export_resources does not take into account.
+        # A different appropriately named helper, _helper_verify_export_resources_with_append_filename, i used for this
+        # test case instead.
         test_glue_extra_py_files = {
             "class": GlueJobDefaultArgumentsExtraPyFilesResource,
             "expected_result": {

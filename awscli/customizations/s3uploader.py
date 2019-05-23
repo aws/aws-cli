@@ -155,6 +155,8 @@ class S3Uploader(object):
         if the file_name /path/to/foo.txt is provided, the uploaded file will have the
         format {md5sum}/foo.txt.
 
+        Because the path separator can vary by os, we must use os.sep instead of '/'.
+
         :param file_name: file to upload
         :param extension: String of file extension to append to the object
         :return: S3 URL of the uploaded object

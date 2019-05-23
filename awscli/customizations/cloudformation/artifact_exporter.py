@@ -119,7 +119,7 @@ def upload_local_artifacts(resource_id, resource_dict, property_name,
 
     If path is already a path to S3 object, this method does nothing.
 
-    An additional property called append_filename has been added. This property
+    An additional parameter called append_filename has been added. This property
     will append the end of the filename as part of the uploaded S3 path after the
     md5hash. For example, if the absolute path referenced in the CloudFormation template
     is /path/to/file/bar.txt, the uploaded file will be of the format {md5hash}/bar.txt.
@@ -134,9 +134,12 @@ def upload_local_artifacts(resource_id, resource_dict, property_name,
     :param parent_dir:      Resolve all relative paths with respect to this
                             directory
     :param uploader:        Method to upload files to S3
+    :param append_filename: Controls whether the original short filename will be appended.
 
-    :return:                S3 URL of the uploaded object
-    :raise:                 ValueError if path is not a S3 URL or a local path
+    :return:                S3 URL of the uploaded object, or a comma-delimited list of S3 URLs of
+                            the uploaded objects.
+    :raise:                 ValueError if path is not a S3 URL or a local path, or a comma-delimited-list
+                            of local paths.
     """
 
     local_path = jmespath.search(property_name, resource_dict)

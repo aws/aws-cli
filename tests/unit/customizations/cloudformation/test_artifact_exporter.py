@@ -335,14 +335,14 @@ class TestArtifactExporter(unittest.TestCase):
     def test_is_local_file_comma_delimited_list_two_files(self):
         with tempfile.NamedTemporaryFile() as handle1:
             with tempfile.NamedTemporaryFile() as handle2:
-                filelist = '{},{}'.format(handle1.name, handle2.name)
+                filelist = '{0},{1}'.format(handle1.name, handle2.name)
                 self.assertTrue(is_local_file_comma_delimited_list(filelist))
                 self.assertFalse(is_local_file(filelist))
                 self.assertFalse(is_local_folder(filelist))
 
     def test_is_local_file_comma_delimited_list_trailing_comma(self):
         with tempfile.NamedTemporaryFile() as handle1:
-            filelist = '{},'.format(handle1.name)
+            filelist = '{0},'.format(handle1.name)
             self.assertFalse(is_local_file_comma_delimited_list(filelist))
             self.assertFalse(is_local_file(filelist))
             self.assertFalse(is_local_folder(filelist))

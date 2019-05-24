@@ -712,6 +712,36 @@ class TestArtifactExporter(unittest.TestCase):
         upload_local_artifacts_mock.assert_not_called()
         self.assertNotIn(resource.PROPERTY_NAME, resource_dict)
 
+    @patch("awscli.customizations.cloudformation.artifact_exporter.is_s3_url")
+    @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_folder")
+    @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_file")
+    @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_file_comma_delimited_list")
+    def test_glue_extra_py_files_resource(self, is_local_file_comma_delimited_list_mock, \
+        is_local_file_mock, is_local_folder_mock, is_s3_url_mock):
+
+        resource = GlueJobDefaultArgumentsExtraPyFilesResource(self.s3_uploader_mock)
+
+        resource_id = "id"
+        filepath = "/path/to/file"
+        resource_dict = {
+            "DefaultArguments": {
+                "--extra-py-files": filepath
+            }
+        }
+
+        parent_dir = "dir"
+
+        is_local_file_comma_delimited_list_mock.return_value = True
+        is_local_file_mock.return_value = False
+        is_local_folder_mock.return_value = False
+        is_s3_url_mock.return_value = False
+
+        self.s3_uploader_mock.upload_with_dedup_with_original_name_appended.return_value = "s3://foo/file"
+
+        resource.export(resource_id, resource_dict, parent_dir)
+        
+        self.s3_uploader_mock.upload_with_dedup_with_original_name_appended.assert_called_once_with(filepath)
+
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.upload_local_artifacts")
     def test_resource_export_fails(self, upload_local_artifacts_mock):

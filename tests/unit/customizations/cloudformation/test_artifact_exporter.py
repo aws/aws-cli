@@ -333,11 +333,12 @@ class TestArtifactExporter(unittest.TestCase):
             self.assertFalse(is_local_file(filename))
 
     def test_is_local_file_comma_delimited_list_two_files(self):
-        with tempfile.NamedTemporaryFile() as handle1, tempfile.NamedTemporaryFile() as handle2:
-            filelist = '{},{}'.format(handle1.name, handle2.name)
-            self.assertTrue(is_local_file_comma_delimited_list(filelist))
-            self.assertFalse(is_local_file(filelist))
-            self.assertFalse(is_local_folder(filelist))
+        with tempfile.NamedTemporaryFile() as handle1:
+            with tempfile.NamedTemporaryFile() as handle2:
+                filelist = '{},{}'.format(handle1.name, handle2.name)
+                self.assertTrue(is_local_file_comma_delimited_list(filelist))
+                self.assertFalse(is_local_file(filelist))
+                self.assertFalse(is_local_folder(filelist))
 
     def test_is_local_file_comma_delimited_list_trailing_comma(self):
         with tempfile.NamedTemporaryFile() as handle1:
@@ -739,7 +740,7 @@ class TestArtifactExporter(unittest.TestCase):
         self.s3_uploader_mock.upload_with_dedup_with_original_name_appended.return_value = "s3://foo/file"
 
         resource.export(resource_id, resource_dict, parent_dir)
-        
+
         self.s3_uploader_mock.upload_with_dedup_with_original_name_appended.assert_called_once_with(filepath)
 
 

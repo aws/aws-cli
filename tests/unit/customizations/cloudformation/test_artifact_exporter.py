@@ -8,7 +8,7 @@ import zipfile
 
 from nose.tools import assert_true, assert_false, assert_equal
 from contextlib import contextmanager, closing
-from mock import patch, Mock, MagicMock
+from mock import patch, call, Mock, MagicMock
 from botocore.stub import Stubber
 from awscli.testutils import unittest, FileCreator
 from awscli.customizations.cloudformation import exceptions
@@ -377,6 +377,72 @@ class TestArtifactExporter(unittest.TestCase):
             self.s3_uploader_mock.upload_with_dedup.assert_called_with(absolute_artifact_path)
 
             zip_and_upload_mock.assert_not_called()
+
+    def test_upload_local_artifacts_local_files_comma_delimited_list(self):
+
+
+        property_name = "property"
+        resource_id = "resource_id"
+        expected_s3_url = "s3://foo/bar"
+
+        self.s3_uploader_mock.upload_with_dedup_with_original_name_appended.return_value = expected_s3_url
+
+
+
+        with tempfile.NamedTemporaryFile() as handle1:
+            with tempfile.NamedTemporaryFile() as handle2:
+
+                artifact_path = "{0},{1}".format(handle1.name, handle2.name)
+
+                parent_dir = tempfile.gettempdir()
+
+                resource_dict = {
+                    property_name: artifact_path
+                }
+
+                result = upload_local_artifacts(resource_id,
+                                resource_dict,
+                                property_name,
+                                parent_dir,
+                                self.s3_uploader_mock)
+                self.assertEquals(result, "{0},{0}".format(expected_s3_url))
+
+                calls = [
+                    call(make_abs_path(parent_dir, handle1.name)),
+                    call(make_abs_path(parent_dir, handle2.name)),
+                ]
+                self.s3_uploader_mock.upload_with_dedup_with_original_name_appended.assert_has_calls(calls)
+
+    def test_upload_local_artifacts_local_file_with_append_filename(self):
+
+
+        property_name = "property"
+        resource_id = "resource_id"
+        expected_s3_url = "s3://foo/bar"
+
+        self.s3_uploader_mock.upload_with_dedup_with_original_name_appended.return_value = expected_s3_url
+
+        with tempfile.NamedTemporaryFile() as handle:
+
+            artifact_path = handle.name
+
+            parent_dir = tempfile.gettempdir()
+
+            resource_dict = {
+                property_name: artifact_path
+            }
+
+            result = upload_local_artifacts(resource_id,
+                            resource_dict,
+                            property_name,
+                            parent_dir,
+                            self.s3_uploader_mock, append_filename=True)
+            
+            self.assertEquals(result, expected_s3_url)
+
+            absolute_artifact_path = make_abs_path(parent_dir, artifact_path)
+            self.s3_uploader_mock.upload_with_dedup_with_original_name_appended.assert_called_once_with(absolute_artifact_path)
+
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.zip_and_upload")
     def test_upload_local_artifacts_local_file_abs_path(self, zip_and_upload_mock):

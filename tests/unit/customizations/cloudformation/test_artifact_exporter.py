@@ -712,9 +712,6 @@ class TestArtifactExporter(unittest.TestCase):
         upload_local_artifacts_mock.assert_not_called()
         self.assertNotIn(resource.PROPERTY_NAME, resource_dict)
 
-    # @patch("awscli.customization.cloudformation.artifact_exporter.upload_local_artifacts")
-    # def test_resource_has_package
-
     @patch("awscli.customizations.cloudformation.artifact_exporter.upload_local_artifacts")
     def test_resource_export_fails(self, upload_local_artifacts_mock):
 

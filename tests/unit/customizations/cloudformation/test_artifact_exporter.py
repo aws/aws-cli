@@ -1098,6 +1098,15 @@ class TestArtifactExporter(unittest.TestCase):
         self.s3_uploader_mock.assert_not_called()
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_file")
+    def test_include_transform_export_handler_with_complex_location(self, is_local_file_mock):
+        #returns unchanged template dict if the location parameter itself is nontrivial, eg includes a sub transform or a reference
+        handler_output = include_transform_export_handler({"Name": "AWS::Include", "Parameters": {"Location": {"Fn::Sub", "s3://mybucket/somefile.yaml"}}}, self.s3_uploader_mock, "parent_dir")
+        self.assertEquals(handler_output, {"Name": "AWS::Include", "Parameters": {"Location": {"Fn::Sub", "s3://mybucket/somefile.yaml"}}})
+
+        is_local_file_mock.assert_not_called()
+        self.s3_uploader_mock.assert_not_called()
+
+    @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_file")
     def test_include_transform_export_handler_non_local_file(self, is_local_file_mock):
         #returns unchanged template dict if transform not a local file, and not a S3 URI
         is_local_file_mock.return_value = False

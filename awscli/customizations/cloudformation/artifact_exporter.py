@@ -516,7 +516,11 @@ def include_transform_export_handler(template_dict, uploader, parent_dir):
         return template_dict
 
     include_location = template_dict.get("Parameters", {}).get("Location", None)
-    if not include_location or is_s3_url(include_location):
+    if (
+        not include_location
+        or not isinstance(include_location, six.string_types)
+        or is_s3_url(include_location)
+    ):
         return template_dict
 
     abs_include_location = os.path.join(parent_dir, include_location)

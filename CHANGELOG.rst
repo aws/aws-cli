@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.16.167
+========
+
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``groundstation``: Update groundstation command to latest version
+* api-change:``sts``: Update sts command to latest version
+* api-change:``pinpoint-email``: Update pinpoint-email command to latest version
+* api-change:``waf``: Update waf command to latest version
+* api-change:``chime``: Update chime command to latest version
+
+
 1.16.166
 ========
 

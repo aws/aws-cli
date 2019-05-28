@@ -549,7 +549,7 @@ class TestCp(BaseS3IntegrationTest):
         # For comparing expires timestamp.
         add_scalar_parsers(self.session)
         bucket_name = _SHARED_BUCKET
-        key = 'foo.txt'
+        key = random_chars(6)
         filename = self.files.create_file(key, contents='')
         p = aws('s3 cp %s s3://%s/%s --metadata keyname=value' %
                 (filename, bucket_name, key))
@@ -563,8 +563,8 @@ class TestCp(BaseS3IntegrationTest):
         # For comparing expires timestamp.
         self.override_parser(timestamp_parser=identity)
         bucket_name = _SHARED_BUCKET
-        original_key = 'foo.txt'
-        new_key = 'bar.txt'
+        original_key = '%s-a' % random_chars(6)
+        new_key = '%s-b' % random_chars(6)
         metadata = {
             'ContentType': 'foo',
             'ContentDisposition': 'foo',

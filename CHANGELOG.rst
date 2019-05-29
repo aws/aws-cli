@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.16.168
+========
+
+* api-change:``dlm``: Update dlm command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``iotthingsgraph``: Update iotthingsgraph command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.16.167
 ========
 

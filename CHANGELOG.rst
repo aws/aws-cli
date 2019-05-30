@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.16.169
+========
+
+* api-change:``iotanalytics``: Update iotanalytics command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``iotevents-data``: Update iotevents-data command to latest version
+* api-change:``codecommit``: Update codecommit command to latest version
+* api-change:``rds-data``: Update rds-data command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``pinpoint-email``: Update pinpoint-email command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``iotevents``: Update iotevents command to latest version
+
+
 1.16.168
 ========
 

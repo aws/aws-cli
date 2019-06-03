@@ -4,12 +4,15 @@ This example updates the specified details for the specified user.
 
 Command::
 
-  aws chime update-user --account-id 12a3456b-7c89-012d-3456-78901e23fg45 --user-id 1ab2345c-67de-8901-f23g-45h678901j2k --license-type "Basic"
+    aws chime update-user \
+        --account-id a1b2c3d4-5678-90ab-cdef-11111EXAMPLE \
+        --user-id a1b2c3d4-5678-90ab-cdef-22222EXAMPLE \
+        --license-type "Basic"
 
 Output::
 
-  {
-    "User": {
-        "UserId": "1ab2345c-67de-8901-f23g-45h678901j2k"
+    {
+        "User": {
+            "UserId": "a1b2c3d4-5678-90ab-cdef-22222EXAMPLE"
+        }
     }
-  }

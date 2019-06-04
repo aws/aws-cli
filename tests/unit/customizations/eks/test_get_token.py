@@ -71,7 +71,6 @@ class TestTokenGenerator(unittest.TestCase):
     def test_url_sess(self):
         generator = TokenGenerator(REGION, self._assuming_handler)
         url = generator._get_presigned_url(CLUSTER_NAME, "RoleArn")
-        print("URL: " + url)
         self.assert_url_correct(url, True)
 
     def test_token(self):

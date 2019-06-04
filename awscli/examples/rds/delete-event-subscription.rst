@@ -6,22 +6,22 @@ This example deletes an existing event subscription.
 
 Output::
 
-{
-    "EventSubscription": {
-        "EventSubscriptionArn": "arn:aws:rds:us-east-1:123456789012:es:my-instance-events",
-        "CustomerAwsId": "123456789012",
-        "Enabled": false,
-        "SourceIdsList": [
-            "test-instance"
-        ],
-        "SourceType": "db-instance",
-        "EventCategoriesList": [
-            "backup",
-            "recovery"
-        ],
-        "SubscriptionCreationTime": "2018-07-31 23:22:01.893",
-        "CustSubscriptionId": "my-instance-events",
-        "SnsTopicArn": "arn:aws:sns:us-east-1:123456789012:interesting-events",
-        "Status": "deleting"
+    {
+        "EventSubscription": {
+            "EventSubscriptionArn": "arn:aws:rds:us-east-1:123456789012:es:my-instance-events",
+            "CustomerAwsId": "123456789012",
+            "Enabled": false,
+            "SourceIdsList": [
+                "test-instance"
+            ],
+            "SourceType": "db-instance",
+            "EventCategoriesList": [
+                "backup",
+                "recovery"
+            ],
+            "SubscriptionCreationTime": "2018-07-31 23:22:01.893",
+            "CustSubscriptionId": "my-instance-events",
+            "SnsTopicArn": "arn:aws:sns:us-east-1:123456789012:interesting-events",
+            "Status": "deleting"
+        }
     }
-}

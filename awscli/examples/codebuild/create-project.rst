@@ -1,6 +1,6 @@
 **Example 1: To create an AWS CodeBuild build project**
 
-The following ``create-project`` example creates a CodeBuild build project using source files from an S3 bucket. ::
+The following ``create-project`` example creates a CodeBuild build project using source files from an S3 bucket ::
 
     aws codebuild create-project \
         --name "my-demo-project" \
@@ -57,7 +57,7 @@ The following ``create-project`` example creates a CodeBuild build project by pa
 
     aws codebuild create-project --cli-input-json file://create-project.json
 
-The input JSON file ``create-project.json`` contains the following content:
+The input JSON file ``create-project.json`` contains the following content::
 
     {
         "name": "codebuild-demo-project",

@@ -14,7 +14,7 @@ Output::
         "Version": 2
     }
 
-For more information, see `About Parameters <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-about-examples.html>`_ in the *AWS Systems Manager User Guide*.
+For more information, see `About Parameters <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-about-examples.html>`__ in the *AWS Systems Manager User Guide*.
 
 **Example 2: To create an advanced parameter**
 
@@ -32,7 +32,7 @@ Output::
         "Version": 1
     }
 
-For more information, see `About Advanced Parameters <https://docs.aws.amazon.com/systems-manager/latest/userguide/https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-advanced-parameters.html>`_ in the *AWS Systems Manager User Guide*.
+For more information, see `About Advanced Parameters <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-advanced-parameters.html>`__ in the *AWS Systems Manager User Guide*.
 
 **Example 3: To convert a standard parameter to an advanced parameter**
 
@@ -51,7 +51,7 @@ Output::
         "Version": 2
     }
 
-For more information, see `About Advanced Parameters <https://docs.aws.amazon.com/systems-manager/latest/userguide/https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-advanced-parameters.html>`_ in the *AWS Systems Manager User Guide*.
+For more information, see `About Advanced Parameters <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-advanced-parameters.html>`__ in the *AWS Systems Manager User Guide*.
 
 **Example 4: To create a parameter with a policy attached**
 
@@ -70,7 +70,7 @@ Output::
         "Version": 1
     }
 
-For more information, see `Working with Parameter Policies <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-policies.html>`_ in the *AWS Systems Manager User Guide*.
+For more information, see `Working with Parameter Policies <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-policies.html>`__ in the *AWS Systems Manager User Guide*.
 
 **Example 5: To add a policy to an existing parameter**
 
@@ -90,5 +90,4 @@ Output::
         "Version": 2
     }
 
-For more information, see `Working with Parameter Policies <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-policies.html>`_ in the *AWS Systems Manager User Guide*.
-
+For more information, see `Working with Parameter Policies <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-policies.html>`__ in the *AWS Systems Manager User Guide*.

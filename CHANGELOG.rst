@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.16.171
+========
+
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``iam``: Update iam command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.16.170
 ========
 

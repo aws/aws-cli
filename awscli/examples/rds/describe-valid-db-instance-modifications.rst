@@ -2,7 +2,8 @@
 
 The following ``describe-valid-db-instance-modifications`` example retrieves details about the valid modifications for the specified DB instance. ::
 
-    aws rds describe-valid-db-instance-modifications --db-instance-identifier test-instance
+    aws rds describe-valid-db-instance-modifications \
+        --db-instance-identifier test-instance
 
 Output::
 

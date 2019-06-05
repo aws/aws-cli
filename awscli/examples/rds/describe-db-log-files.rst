@@ -2,7 +2,8 @@
 
 The following ``describe-db-log-files`` example retrieves details about the log files for the specified DB instance. ::
 
-    aws rds describe-db-log-files --db-instance-identifier test-instance
+    aws rds describe-db-log-files -\
+        -db-instance-identifier test-instance
 
 Output::
 

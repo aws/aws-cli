@@ -1,8 +1,9 @@
 **To describe a DB instance**
 
-This example describes the specified DB instance. ::
+The following ``describe-db-instances`` example retrieves details about the specified DB instance. ::
 
-    aws rds describe-db-instances --db-instance-identifier test-instance
+    aws rds describe-db-instances \
+        --db-instance-identifier test-instance
 
 Output::
 
@@ -18,6 +19,6 @@ Output::
                 "Port": 3306,
                 "HostedZoneId": "Z2R2ITUGPM61AM"
             },
-            <...some output omitted...>
+            ...some output truncated...
         }
     }

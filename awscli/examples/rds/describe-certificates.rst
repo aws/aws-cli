@@ -1,6 +1,6 @@
 **To describe certificates**
 
-The foloowing ``describe-certificates`` example retrieves the details of the certificate associated with the user's default region. ::
+The following ``describe-certificates`` example retrieves the details of the certificate associated with the user's default region. ::
 
     aws rds describe-certificates
 

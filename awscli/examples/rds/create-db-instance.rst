@@ -4,9 +4,11 @@ The following ``create-db-instance`` example launches a new DB instance. ::
 
     aws rds create-db-instance \
         --allocated-storage 20 --db-instance-class db.m1.small \
-        --db-instance-identifier test-instance --engine mysql \
+        --db-instance-identifier test-instance \
+        --engine mysql \
         --enable-cloudwatch-logs-exports '["audit","error","general","slowquery"]' \
-        --master-username master --master-user-password secret99
+        --master-username master \
+        --master-user-password secret99
 
 Output::
 

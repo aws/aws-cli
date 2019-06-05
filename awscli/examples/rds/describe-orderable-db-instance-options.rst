@@ -2,7 +2,8 @@
 
 The following ``describe-orderable-db-instance-options`` example retrieves details about the orderable options for a DB instances running the MySQL DB engine. ::
 
-    aws rds describe-orderable-db-instance-options --engine mysql
+    aws rds describe-orderable-db-instance-options \
+        --engine mysql
 
 Output::
 
@@ -41,5 +42,5 @@ Output::
                 "SupportsPerformanceInsights": false
             }
         ]
-        <...some output omitted...>
+        ...some output truncated...
     }

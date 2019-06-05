@@ -790,7 +790,6 @@ class BaseS3CLICommand(unittest.TestCase):
             call_args.update(extra_args)
         response = client.put_object(**call_args)
         self.addCleanup(self.delete_key, bucket_name, key_name)
-        self.wait_until_key_exists(bucket_name, key_name)
 
     def delete_bucket(self, bucket_name, attempts=5, delay=5):
         self.remove_all_objects(bucket_name)

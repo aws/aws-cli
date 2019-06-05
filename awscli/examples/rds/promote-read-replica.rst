@@ -1,8 +1,9 @@
 **To promote a read replica**
 
-The following ``promote-read-replica`` example promotes the specified read replica to become a standalone DB instance::
+The following ``promote-read-replica`` example promotes the specified read replica to become a standalone DB instance. ::
 
-    aws rds promote-read-replica --db-instance-identifier test-instance-repl
+    aws rds promote-read-replica \
+        --db-instance-identifier test-instance-repl
 
 Output::
 
@@ -12,6 +13,6 @@ Output::
             "StorageType": "standard",
             "ReadReplicaSourceDBInstanceIdentifier": "test-instance",
             "DBInstanceStatus": "modifying",
-            <...some output omitted...>
+            ...some output truncated...
         }
     }

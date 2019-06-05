@@ -1,6 +1,6 @@
 **To delete an event subscription**
 
-This example deletes an existing event subscription.
+The following ``delete-event-subscription`` example deletes the specified event subscription. ::
 
     aws rds delete-event-subscription --subscription-name my-instance-events
 

@@ -1,0 +1,28 @@
+name: aws-cli
+summary: Universal Command Line Interface for Amazon Web Services
+description: |
+ This package provides a unified command line interface to Amazon Web
+ Services.
+version: git
+version-script: cat $SNAPCRAFT_STAGE/version
+
+confinement: classic
+grade: stable
+
+apps:
+  aws:
+    # Workaround https://bugs.launchpad.net/snappy/+bug/1664427
+    command: usr/bin/python3 $SNAP/bin/aws
+    completer: bin/aws_bash_completer
+
+parts:
+  aws:
+    plugin: python
+    source: https://github.com/aws/aws-cli.git
+    override-build: |
+      git describe --tags $(git rev-list --tags --max-count=1) > $SNAPCRAFT_STAGE/version
+      TAG=$(cat $SNAPCRAFT_STAGE/version)
+      git checkout tags/$TAG
+      snapcraftctl build
+    stage-packages:
+      - groff-base  # for `aws help`

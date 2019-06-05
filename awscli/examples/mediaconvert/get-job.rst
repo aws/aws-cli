@@ -3,9 +3,9 @@
 The following example requests the information for the job with ID ``1234567890987-1ab2c3``, which in this example ended in an error. ::
 
     aws mediaconvert get-job \
-        --endpoint-url=https://abcd1234.mediaconvert.region-name-1.amazonaws.com \
-        --region=region-name-1 \
-        --id=1234567890987-1ab2c3
+        --endpoint-url https://abcd1234.mediaconvert.region-name-1.amazonaws.com \
+        --region region-name-1 \
+        --id 1234567890987-1ab2c3
 
 To get your account-specific endpoint, use ``describe-endpoints``, or send the command without the endpoint. The service returns an error and your endpoint.
 

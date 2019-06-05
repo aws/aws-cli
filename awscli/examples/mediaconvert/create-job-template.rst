@@ -3,10 +3,10 @@
 The following ``create-job-template`` example creates a job template with the transcoding settings that are specified in the file ``job-template.json`` that resides on your system. ::
 
     aws mediaconvert create-job-template \
-        --endpoint-url=https://abcd1234.mediaconvert.region-name-1.amazonaws.com \
-        --region=region-name-1 \
-        --name=JobTemplate1 \
-        --cli-input-json=file://~/job-template.json
+        --endpoint-url https://abcd1234.mediaconvert.region-name-1.amazonaws.com \
+        --region region-name-1 \
+        --name JobTemplate1 \
+        --cli-input-json file://~/job-template.json
 
 If you create your job template JSON file by using ``get-job-template`` and then modifying the file, remove the ``JobTemplate`` object, but keep the `Settings` child object inside it. Also, make sure to remove the following key-value pairs: ``LastUpdated``, ``Arn``, ``Type``, and ``CreatedAt``. You can specific the category, description, name, and queue either in the JSON file or at the command line.
 

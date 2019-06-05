@@ -1,10 +1,9 @@
 **To describe reserved DB instance offerings**
 
-This example describes reserved DB instance options for *oracle*::
+The following ``describe-reserved-db-instances-offerings`` example retrieves details about reserved DB instance options for ``oracle``. ::
 
     aws rds describe-reserved-db-instances-offerings \
-    --product-description oracle
-
+        --product-description oracle
 
 Output::
 
@@ -27,6 +26,5 @@ Output::
                 "FixedPrice": 4089.0,
                 "Duration": 31536000
             },
-    <...output omitted...>
-
+        ...some output truncated...
     }

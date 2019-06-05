@@ -1,6 +1,6 @@
 **To describe account attributes**
 
-The following ``describe-account-attributes`` example retrieves the attributes of the current AWS account:
+The following ``describe-account-attributes`` example retrieves the attributes for the current AWS account. ::
 
     aws rds describe-account-attributes
 

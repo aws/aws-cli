@@ -1,6 +1,6 @@
 **To add a source identifier to a subscription**
 
-The following ``add-source-identifier`` example adds another source identifier to an existing subscription::
+The following ``add-source-identifier`` example adds another source identifier to an existing subscription. ::
 
     aws rds add-source-identifier-to-subscription \
         --subscription-name my-instance-events \

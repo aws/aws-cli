@@ -2,7 +2,8 @@
 
 The following ``reboot-db-instance`` example starts a reboot of the specified DB instance. ::
 
-    aws rds reboot-db-instance --db-instance-identifier test-instance
+    aws rds reboot-db-instance \
+        --db-instance-identifier test-instance
 
 Output::
 

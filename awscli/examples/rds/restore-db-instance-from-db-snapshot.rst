@@ -12,6 +12,6 @@ Output::
         "DBInstance": {
             "DBInstanceArn": "arn:aws:rds:us-east-1:123456789012:db:restored-test-instance",
             "DBInstanceStatus": "creating",
-            <...some output omitted...>
+            ...some output truncated...
         }
     }

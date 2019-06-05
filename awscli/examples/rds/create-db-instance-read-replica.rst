@@ -1,6 +1,6 @@
 **To create a DB instance read replica**
 
-This example creates a read replica of an existing DB instance (*test-instance*).  The read replica is named *test-instance-repl*. ::
+This example creates a read replica of an existing DB instance named ``test-instance``.  The read replica is named ``test-instance-repl``. ::
 
     aws rds create-db-instance-read-replica \
         --db-instance-identifier test-instance-repl \
@@ -15,7 +15,6 @@ Output::
             "DBInstanceArn": "arn:aws:rds:us-east-1:123456789012:db:test-instance-repl",
             "ReadReplicaSourceDBInstanceIdentifier": "test-instance",
             "DBInstanceIdentifier": "test-instance-repl",
-                <...some output omitted...>
+            ...some output truncated...
         }
     }
-

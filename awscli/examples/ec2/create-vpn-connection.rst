@@ -47,8 +47,7 @@ This example creates a VPN connection and specifies the inside IP address CIDR b
 
 Command::
 
-  aws ec2 create-vpn-connection --type ipsec.1 --customer-gateway-id cgw-b4de3fdd --vpn-gateway-id vgw-f211f09b --options "{"StaticRoutesOnly":false,"TunnelOptions":[{"TunnelInsideCidr":"169.254.12.0/30","PreSharedKey":"ExamplePreSharedKey1"},{"TunnelInsideCidr":"169.254.13.0/30","PreSharedKey":"ExamplePreSharedKey2"}]}"
-
+aws ec2 create-vpn-connection --type ipsec.1 --customer-gateway-id cgw-89e401e0 --vpn-gateway-id vgw-45df3a2c --options "{\"StaticRoutesOnly\":false,\"TunnelOptions\":[{\"TunnelInsideCidr\":\"169.254.12.0/30\",\"PreSharedKey\":\"ExamplePreSharedKey1\"},{\"TunnelInsideCidr\":\"169.254.13.0/30\",\"PreSharedKey\":\"ExamplePreSharedKey2\"}]}" 
 Output::
 
   {
@@ -56,7 +55,7 @@ Output::
           "VpnConnectionId": "vpn-40f41529"
           "CustomerGatewayConfiguration": "...configuration information...",
           "State": "pending",
-          "VpnGatewayId": "vgw-f211f09b",
-          "CustomerGatewayId": "cgw-b4de3fdd"
+          "VpnGatewayId": "vgw-45df3a2c",
+          "CustomerGatewayId": "cgw-89e401e0"
       }
   }

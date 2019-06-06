@@ -4,7 +4,7 @@ The following example describes your LOA-CFA for connection ``dxcon-fh6ayh1d``. 
 
 .. code::
 
-  aws directconnect describe-connection-loa --connection-id dxcon-fh6ayh1d --output text --query loa.loaContent|base64 --decode > myLoaCfa.pdf
+  aws directconnect describe-connection-loa --connection-id dxcon-fh6ayh1d --output text --query loaContent|base64 --decode > myLoaCfa.pdf
 
 **To describe your LOA-CFA for a connection using Windows**
 
@@ -12,7 +12,7 @@ The previous example requires the use of the ``base64`` utility to decode the ou
 
 .. code::
 
-  aws directconnect describe-connection-loa --connection-id dxcon-fh6ayh1d --output text --query loa.loaContent > myLoaCfa.base64 
+  aws directconnect describe-connection-loa --connection-id dxcon-fh6ayh1d --output text --query loaContent > myLoaCfa.base64
 
 .. code::
 

@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.16.173
+========
+
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+* api-change:``logs``: Update logs command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``mediaconnect``: Update mediaconnect command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``ses``: Update ses command to latest version
+
+
 1.16.172
 ========
 

@@ -39,7 +39,7 @@ The easiest way to install aws-cli is to use `pip`_ in a ``virtualenv``::
 
 or, if you are not installing in a ``virtualenv``, to install globally::
 
-    $ sudo pip install awscli
+    $ pip install awscli
 
 or for your user::
 

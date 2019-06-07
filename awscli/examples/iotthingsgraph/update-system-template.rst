@@ -1,6 +1,6 @@
 **To update a system**
 
-The following ``update-system-template`` example updates a system. The value of ``MySystemDefinition`` is the GRAPHQL that models the system. ::
+The following ``update-system-template`` example updates a system. The value of ``MySystemDefinition`` is the GraphQL that models the system. ::
 
     aws iotthingsgraph update-system-template \
         --id "urn:tdm:us-west-2/123456789012/default:System:MySystem" \

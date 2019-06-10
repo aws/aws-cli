@@ -1,6 +1,6 @@
 **To update a flow**
 
-The following ``update-flow-template`` example updates a flow (or workflow). The value of ``MyFlowDefinition`` is the GRAPHQL that models the flow. ::
+The following ``update-flow-template`` example updates a flow (workflow). The value of ``MyFlowDefinition`` is the GraphQL that models the flow. ::
 
     aws iotthingsgraph update-flow-template \
         --id "urn:tdm:us-west-2/123456789012/default:Workflow:MyFlow" \

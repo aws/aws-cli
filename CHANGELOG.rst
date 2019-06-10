@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.16.175
+========
+
+* api-change:``personalize-runtime``: Update personalize-runtime command to latest version
+* api-change:``codecommit``: Update codecommit command to latest version
+* api-change:``personalize``: Update personalize command to latest version
+* api-change:``personalize-events``: Update personalize-events command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+
+
 1.16.174
 ========
 

@@ -1,6 +1,6 @@
 **To search for flows (or workflows)**
 
-The following ``search-flow-templates`` example searches for all flows (or workflows) that contain the Camera device model. ::
+The following ``search-flow-templates`` example searches for all flows (workflows) that contain the Camera device model. ::
 
     aws iotthingsgraph search-flow-templates \
         --filters name="DEVICE_MODEL_ID",value="urn:tdm:aws/examples:DeviceModel:Camera"

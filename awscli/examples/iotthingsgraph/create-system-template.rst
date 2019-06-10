@@ -1,6 +1,6 @@
 **To create a system**
 
-The following ``create-system-template`` example creates a system. The value of MySystemDefinition is the GRAPHQL that models the system. ::
+The following ``create-system-template`` example creates a system. The value of MySystemDefinition is the GraphQL that models the system. ::
 
     aws iotthingsgraph create-system-template \
         --definition language=GRAPHQL,text="MySystemDefinition"

@@ -1,6 +1,6 @@
 **To get a flow definition**
 
-The following ``get-flow-template`` example gets a definition for a flow (or workflow). ::
+The following ``get-flow-template`` example gets a definition for a flow (workflow). ::
 
     aws iotthingsgraph get-flow-template \
         --id "urn:tdm:us-west-2/123456789012/default:Workflow:MyFlow"

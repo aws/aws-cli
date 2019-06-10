@@ -1,6 +1,6 @@
 **To create a flow**
 
-The following ``create-flow-template`` example creates a flow (or workflow). The value of ``MyFlowDefinition`` is the GRAPHQL that models the flow. ::
+The following ``create-flow-template`` example creates a flow (workflow). The value of ``MyFlowDefinition`` is the GraphQL that models the flow. ::
 
     aws iotthingsgraph create-flow-template \
         --definition language=GRAPHQL,text="MyFlowDefinition"

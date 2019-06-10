@@ -1,6 +1,6 @@
 **To create a system instance**
 
-The following ``create-system-instance`` example creates a system instance. The value of ``MySystemInstanceDefinition`` is the GRAPHQL that models the system instance. ::
+The following ``create-system-instance`` example creates a system instance. The value of ``MySystemInstanceDefinition`` is the GraphQL that models the system instance. ::
 
     aws iotthingsgraph create-system-instance -\
         -definition language=GRAPHQL,text="MySystemInstanceDefinition" \

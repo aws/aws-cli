@@ -148,7 +148,7 @@ def test_all_resources_export():
         {
             "class": GlueJobCommandScriptLocationResource,
             "expected_result": {
-                    "ScriptLocation": uploaded_s3_url 
+                    "ScriptLocation": uploaded_s3_url
             }
         }
     ]
@@ -1096,6 +1096,20 @@ class TestArtifactExporter(unittest.TestCase):
 
         is_local_file_mock.assert_not_called()
         self.s3_uploader_mock.assert_not_called()
+
+    @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_file")
+    def test_include_transform_export_handler_with_dict_value_for_location(self, is_local_file_mock):
+
+        handler_output = include_transform_export_handler(
+            {"Name": "AWS::Include", "Parameters": {"Location": {"Fn::Sub": "${S3Bucket}/file.txt"}}},
+            self.s3_uploader_mock,
+            "parent_dir")
+        # Input is returned unmodified
+        self.assertEquals(handler_output, {"Name": "AWS::Include", "Parameters": {"Location": {"Fn::Sub": "${S3Bucket}/file.txt"}}})
+
+        is_local_file_mock.assert_not_called()
+        self.s3_uploader_mock.assert_not_called()
+
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_file")
     def test_include_transform_export_handler_non_local_file(self, is_local_file_mock):

@@ -27,14 +27,19 @@ requires = ['botocore==1.12.165',
             'colorama>=0.2.5,<=0.3.9',
             'docutils>=0.10',
             'rsa>=3.1.2,<=3.5.0',
-            's3transfer>=0.2.0,<0.3.0',
-            'PyYAML>=3.10,<=3.13']
+            's3transfer>=0.2.0,<0.3.0']
 
 
 if sys.version_info[:2] == (2, 6):
     # For python2.6 we have to require argparse since it
     # was not in stdlib until 2.7.
     requires.append('argparse>=1.1')
+
+    # For Python 2.6, we have to require a different verion of PyYAML since the latest
+    # versions dropped support for Python 2.6.
+    requires.append('PyYAML>=3.10,<=3.13')
+else:
+    requires.append('PyYAML>=3.10,<=5.1')
 
 
 setup_options = dict(

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.178
+========
+
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.16.177
 ========
 

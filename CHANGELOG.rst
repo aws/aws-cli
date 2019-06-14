@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.179
+========
+
+* api-change:``appstream``: Update appstream command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``personalize``: Update personalize command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.16.178
 ========
 

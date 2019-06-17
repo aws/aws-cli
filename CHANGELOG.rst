@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.180
+========
+
+* api-change:``neptune``: Update neptune command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+
+
 1.16.179
 ========
 

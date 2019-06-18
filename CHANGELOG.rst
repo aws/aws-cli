@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.181
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+
+
 1.16.180
 ========
 

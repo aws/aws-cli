@@ -847,6 +847,7 @@ class BaseS3CLICommand(unittest.TestCase):
         response = client.delete_object(Bucket=bucket_name, Key=key_name)
 
     def get_key_contents(self, bucket_name, key_name):
+        self.wait_until_key_exists(bucket_name, key_name)
         client = self.create_client_for_bucket(bucket_name)
         response = client.get_object(Bucket=bucket_name, Key=key_name)
         return response['Body'].read().decode('utf-8')

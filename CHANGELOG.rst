@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.182
+========
+
+* api-change:``eks``: Update eks command to latest version
+
+
 1.16.181
 ========
 

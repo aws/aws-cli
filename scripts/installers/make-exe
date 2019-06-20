@@ -1,0 +1,103 @@
+#!/usr/bin/env python
+"""Script to create a pyinstaller executable.
+
+This exe can then be wrapped in a platform specific installer for each
+supported platform.
+"""
+import argparse
+import os
+import sys
+import shutil
+from distutils.dir_util import copy_tree
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from utils import run
+
+
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(
+    os.path.abspath(__file__))))
+ASSET_DIR = os.path.join(ROOT, 'pyinstaller')
+EXE_NAME = 'aws'
+
+
+def make_pyinstaller(output_dir, cleanup=True):
+    delete_existing_exe(output_dir)
+    pyinstaller('aws.spec')
+    copy_directory(output_dir, 'aws', 'aws')
+    pyinstaller('aws_completer.spec')
+    copy_directory_contents_into(output_dir, 'aws_completer', 'aws')
+    if cleanup:
+        cleanup_build()
+    print('Pyinstaller binary available at: %s' % os.path.join(
+        output_dir, 'aws', 'aws'))
+
+
+def delete_existing_exe(output_dir):
+    final_path = os.path.join(output_dir, EXE_NAME)
+    if os.path.isdir(final_path):
+        shutil.rmtree(final_path)
+    build_dir = os.path.join(ASSET_DIR, 'dist')
+    if os.path.isdir(build_dir):
+        shutil.rmtree(build_dir)
+
+
+def pyinstaller(specfile):
+    aws_spec_path = os.path.join(ASSET_DIR, specfile)
+    print(run('pyinstaller %s' % (aws_spec_path), cwd=ASSET_DIR))
+
+
+def copy_directory(output_dir, from_name, to_name):
+    src = os.path.join(ASSET_DIR, 'dist', from_name)
+    dst = os.path.join(output_dir, to_name)
+    if src != dst:
+        print('Copying %s -> %s' % (src, dst))
+        shutil.copytree(src, dst)
+
+
+def copy_directory_contents_into(output_dir, from_name, to_name):
+    src = os.path.join(ASSET_DIR, 'dist', from_name)
+    dst = os.path.join(output_dir, to_name)
+    if src != dst:
+        print('Copying contents of %s into %s' % (src, dst))
+        copy_tree(src, dst)
+
+
+def cleanup_build():
+    locations = [
+        os.path.join(ASSET_DIR, 'build'),
+        os.path.join(ASSET_DIR, 'dist'),
+    ]
+    for location in locations:
+        shutil.rmtree(location)
+        print('Deleted build directory: %s' % location)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        '--output-dir',
+        default=os.path.join(ROOT, 'dist'),
+        help=(
+            'The directory in which to write the output artifacts. By default '
+            'this will be the "dist" directory in the root of the awscli.'
+        )
+    )
+    parser.add_argument(
+        '--no-cleanup',
+        dest='cleanup',
+        action='store_false',
+        default=True,
+        help=(
+            'Leave the build folder produced by pyinstaller. This can be '
+            'useful for debugging.'
+        ),
+    )
+    args = parser.parse_args()
+
+    output_dir = os.path.abspath(args.output_dir)
+    make_pyinstaller(output_dir, cleanup=args.cleanup)
+
+
+if __name__ == "__main__":
+    main()

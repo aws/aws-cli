@@ -1,0 +1,90 @@
+#!/usr/bin/env python
+"""Script to create a mac pkg installer.
+
+This script assumes that an executable has been produced previously
+by the sibling script make-pyinstaller.
+"""
+import argparse
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from utils import run
+
+
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(
+    os.path.abspath(__file__))))
+PKG_DIR = os.path.join(ROOT, 'macpkg')
+EXE_NAME = 'aws'
+TEMP_PKG_NAME = 'aws-cli.pkg'
+PKG_NAME = 'AWS-CLI-Installer.pkg'
+
+
+def make_pkg(output_dir):
+    delete_existing_pkg(output_dir)
+    version = get_version(output_dir)
+    scripts_dir = os.path.join(PKG_DIR, 'scripts')
+    resources_dir = os.path.join(PKG_DIR, 'resources')
+    distribution_path = os.path.join(PKG_DIR, 'distribution.xml')
+    print(run(
+        (
+            'pkgbuild --identifier com.amazon.awscli '
+            '--root ./aws '
+            '--install-location /usr/local/aws/ '
+            '--scripts %s '
+            '--version %s '
+            '%s'
+        ) % (scripts_dir, version, TEMP_PKG_NAME),
+        cwd=output_dir,
+    ))
+    print(run(
+        (
+            'productbuild --distribution %s '
+            '--resources %s '
+            '%s'
+        ) % (distribution_path, resources_dir, PKG_NAME),
+        cwd=output_dir,
+    ))
+    delete_temp_pkg(output_dir)
+
+
+def delete_existing_pkg(output_dir):
+    path = os.path.join(output_dir, PKG_NAME)
+    if os.path.isfile(path):
+        os.remove(path)
+
+
+def get_version(output_dir):
+    exe_dir = os.path.join(output_dir, 'aws')
+    exe_path = os.path.join(exe_dir, 'aws')
+    result = run('%s --version' % exe_path, cwd=exe_dir).strip()
+    version = result.split(' ')[0].split('/')[1]
+    return version
+
+
+def delete_temp_pkg(output_dir):
+    path = os.path.join(output_dir, TEMP_PKG_NAME)
+    if os.path.isfile(path):
+        os.remove(path)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        '--output-dir',
+        default=os.path.join(ROOT, 'dist'),
+        help=(
+            'The directory in which to write the output artifacts. By default '
+            'this will be the "dist" directory in the root of the awscli. '
+            'This is also the location the output of the make-pyinstaller '
+            'script is assumed to be.'
+        )
+    )
+    args = parser.parse_args()
+    output_dir = os.path.abspath(args.output_dir)
+    make_pkg(output_dir)
+
+
+if __name__ == "__main__":
+    main()

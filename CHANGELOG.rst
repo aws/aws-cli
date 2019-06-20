@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.16.183
+========
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``opsworks``: Update opsworks command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``acm-pca``: Update acm-pca command to latest version
+* api-change:``health``: Update health command to latest version
+* api-change:``iotevents-data``: Update iotevents-data command to latest version
+
+
 1.16.182
 ========
 

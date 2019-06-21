@@ -12,10 +12,11 @@
 # language governing permissions and limitations under the License.
 
 import mock
-from mock import patch
+from mock import patch, call
 import base64
 import datetime
 import botocore
+import json
 
 from awscli.testutils import unittest, capture_output
 from awscli.customizations.eks.get_token import (
@@ -40,43 +41,50 @@ class TestTokenGenerator(unittest.TestCase):
 
         if is_session:
             self.assertIn("X-Amz-Security-Token=" + SESSION_TOKEN + "&", url_no_signature)
+        else:
+            self.assertNotIn("X-Amz-Security-Token=" + SESSION_TOKEN + "&", url_no_signature)
 
         self.assertIn("X-Amz-Credential=" + CREDENTIALS + "%2F", url_no_signature)
         self.assertIn("%3Bx-k8s-aws-id&", url_no_signature)
 
     def setUp(self):
-        self._session_handler = mock.Mock()
-
         session = botocore.session.get_session()
         session.set_credentials(CREDENTIALS, SECRET_KEY)
         self._session = session
 
-        self._session_handler.get_session = mock.Mock(return_value=self._session)
-
-        self._assuming_handler = mock.Mock()
-        # While assuming a role, you have a session token
-        assuming_session = botocore.session.get_session()
-        assuming_session.set_credentials(CREDENTIALS, SECRET_KEY, SESSION_TOKEN)
-        self._assuming_session = assuming_session
-
-        self._assuming_handler.get_session = mock.Mock(return_value=self._assuming_session)
+        self.mock_sts_client = mock.Mock()
+        self.mock_sts_client.assume_role.return_value = {
+            "Credentials": {
+                "AccessKeyId": CREDENTIALS,
+                "SecretAccessKey": SECRET_KEY,
+                "SessionToken": SESSION_TOKEN,
+            },
+        }
 
         self.maxDiff = None
 
     def test_url(self):
-        generator = TokenGenerator(REGION, self._session_handler)
-        url = generator._get_presigned_url(CLUSTER_NAME, None)
+        generator = TokenGenerator(self._session)
+        url = generator._get_presigned_url(CLUSTER_NAME, None, REGION)
         self.assert_url_correct(url, False)
 
-    def test_url_sess(self):
-        generator = TokenGenerator(REGION, self._assuming_handler)
-        url = generator._get_presigned_url(CLUSTER_NAME, "RoleArn")
+    def test_url_no_region(self):
+        self._session.set_config_variable('region', 'us-east-1')
+        generator = TokenGenerator(self._session)
+        url = generator._get_presigned_url(CLUSTER_NAME, None, None)
+        self.assert_url_correct(url, False)
+
+    @patch.object(botocore.session.Session, 'create_client')
+    def test_url_with_role(self, mock_create_client):
+        mock_create_client.return_value = self.mock_sts_client
+        generator = TokenGenerator(self._session)
+        url = generator._get_presigned_url(CLUSTER_NAME, "arn:aws:iam::012345678910:role/RoleArn", REGION)
         print("URL: " + url)
         self.assert_url_correct(url, True)
 
-    def test_token(self):
-        generator = TokenGenerator(REGION, self._session_handler)
-        token = generator.get_token(CLUSTER_NAME, None)
+    def test_token_no_role(self):
+        generator = TokenGenerator(self._session)
+        token = generator.get_token(CLUSTER_NAME, None, REGION)
         prefix = token[:len(TOKEN_PREFIX)]
         self.assertEqual(prefix, TOKEN_PREFIX)
         token_no_prefix = token[len(TOKEN_PREFIX):]
@@ -88,13 +96,16 @@ class TestTokenGenerator(unittest.TestCase):
 
     @patch.object(TokenGenerator, '_get_presigned_url', return_value='aHR0cHM6Ly9zdHMuYW1hem9uYXdzLmNvbS8=')
     def test_token_no_padding(self, mock_presigned_url):
-        generator = TokenGenerator(REGION, self._session_handler)
-        tok = generator.get_token(CLUSTER_NAME, None)
+        generator = TokenGenerator(self._session)
+        tok = generator.get_token(CLUSTER_NAME, None, REGION)
         self.assertTrue('=' not in tok)
 
-    def test_token_sess(self):
-        generator = TokenGenerator(REGION, self._assuming_handler)
-        token = generator.get_token(CLUSTER_NAME, "RoleArn")
+    @patch.object(botocore.session.Session, 'create_client')
+    def test_token_sess(self, mock_create_client):
+        mock_create_client.return_value = self.mock_sts_client
+
+        generator = TokenGenerator(self._session)
+        token = generator.get_token(CLUSTER_NAME, "arn:aws:iam::012345678910:role/RoleArn", REGION)
         prefix = token[:len(TOKEN_PREFIX)]
         self.assertEqual(prefix, TOKEN_PREFIX)
         token_no_prefix = token[len(TOKEN_PREFIX):]
@@ -103,3 +114,35 @@ class TestTokenGenerator(unittest.TestCase):
             token_no_prefix.encode()
         ).decode()
         self.assert_url_correct(decrypted_token, True)
+
+class TestGetTokenCommand(unittest.TestCase):
+
+    def setUp(self):
+        session = botocore.session.get_session()
+        session.set_credentials(CREDENTIALS, SECRET_KEY)
+        self._session = session
+        self.maxDiff = None
+
+    def test_run_main(self):
+        mock_token_generator = mock.Mock()
+        fake_token = 'k8s-aws-v1.aHR0cHM6Ly9zdHMuYW1hem9uYXdzLmNvbS8='
+        mock_token_generator.get_token.return_value = fake_token
+
+        mock_args = mock.Mock()
+        mock_args.cluster_name = "my-cluster"
+        mock_args.role_arn = None
+
+        mock_globals = mock.Mock()
+        mock_globals.region = 'us-west-2'
+
+        expected_stdout = json.dumps({
+            "kind": "ExecCredential",
+            "apiVersion": "client.authentication.k8s.io/v1alpha1", "spec": {},
+            "status": {
+                "token": fake_token,
+            },
+        }) +'\n'
+        cmd = GetTokenCommand(self._session)
+        with capture_output() as captured:
+            cmd._run_main(mock_args, mock_globals, mock_token_generator)
+            self.assertEqual(expected_stdout, captured.stdout.getvalue())

@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 
 import os
+import sys
 import logging
 
 from botocore.compat import OrderedDict
@@ -304,7 +305,8 @@ class EKSClient(object):
                             "--cluster-name",
                             self._cluster_name,
                         ]),
-                    ("command", "aws")
+                    ("command", sys.argv[0] if os.path.basename(sys.argv[0]) \
+                         == 'aws' else 'aws')
                 ]))
             ]))
         ])

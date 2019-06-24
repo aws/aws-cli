@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.16.185
+========
+
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``application-insights``: Update application-insights command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``service-quotas``: Update service-quotas command to latest version
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+
+
 1.16.184
 ========
 

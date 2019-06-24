@@ -1,0 +1,83 @@
+#!/usr/bin/env python
+"""Script to sign a mac pkg installer.
+
+This script assumes that an AWS-CLI-Installer.pkg is available in the
+output directory.
+"""
+import argparse
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from utils import run
+
+
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(
+    os.path.abspath(__file__))))
+PKG_NAME = 'AWS-CLI-Installer.pkg'
+SIGNED_PKG_NAME = 'AWS-CLI-Installer-Signed.pkg'
+KEYCHAIN_NAME = 'build.keychain'
+KEYCHAIN_PASS = 'password'
+
+
+def sign_pkg(output_dir, cert_path, cert_password):
+    pkg_path = os.path.join(output_dir, PKG_NAME)
+    signed_pkg_path = os.path.join(output_dir, SIGNED_PKG_NAME)
+    create_keychain_and_import_cert(cert_path, cert_password)
+    identity = get_identity()
+    print(
+        run('productsign --sign "%s" --keychain %s %s %s' % (
+            identity, KEYCHAIN_NAME, pkg_path, signed_pkg_path)))
+    run('security delete-keychain %s' % KEYCHAIN_NAME)
+
+
+def create_keychain_and_import_cert(cert_path, cert_password):
+    run('security create-keychain -p %s %s' % (KEYCHAIN_PASS, KEYCHAIN_NAME))
+    run('security import %s -k %s -P %s -A' % (
+        cert_path, KEYCHAIN_NAME, cert_password))
+    run('security unlock-keychain -p %s %s' % (KEYCHAIN_PASS, KEYCHAIN_NAME))
+
+
+def get_identity():
+    identities = run('security find-identity -v %s' % KEYCHAIN_NAME)
+    assert '1 valid identities found' in identities
+    start_quote = identities.find('"')
+    end_of_line = identities.find('\n')
+    identity = identities[start_quote+1:end_of_line-1]
+    return identity
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        '--cert-path',
+        required=True,
+        help=(
+            'The path to the .p12 file on disk.'
+        )
+    )
+    parser.add_argument(
+        '--cert-password',
+        help=(
+            'The password to use the signing cert. Only required if the cert '
+            'has a password.'
+        )
+    )
+    parser.add_argument(
+        '--output-dir',
+        default=os.path.join(ROOT, 'dist'),
+        help=(
+            'The directory in which to write the output artifacts. By default '
+            'this will be the "dist" directory in the root of the awscli. '
+            'This is also the location the output of the make-pyinstaller '
+            'script is assumed to be.'
+        )
+    )
+    args = parser.parse_args()
+    output_dir = os.path.abspath(args.output_dir)
+    sign_pkg(output_dir, args.cert_path, args.cert_password)
+
+
+if __name__ == "__main__":
+    main()

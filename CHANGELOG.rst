@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.186
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``eks``: Update eks command to latest version
+
+
 1.16.185
 ========
 

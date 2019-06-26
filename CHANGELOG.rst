@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.187
+========
+
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+* api-change:``codecommit``: Update codecommit command to latest version
+
+
 1.16.186
 ========
 

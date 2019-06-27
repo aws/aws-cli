@@ -14,7 +14,7 @@ import base64
 import botocore
 import json
 
-from botocore import session
+from datetime import datetime, timedelta
 from botocore.signers import RequestSigner
 from botocore.model import ServiceId
 
@@ -28,6 +28,8 @@ AUTH_SIGNING_VERSION = "v4"
 
 # Presigned url timeout in seconds
 URL_TIMEOUT = 60
+
+TOKEN_EXPIRATION_MINS = 14
 
 TOKEN_PREFIX = 'k8s-aws-v1.'
 
@@ -54,6 +56,10 @@ class GetTokenCommand(BasicCommand):
         }
     ]
 
+    def get_expiration_time(self):
+        token_expiration = datetime.utcnow() + timedelta(minutes=TOKEN_EXPIRATION_MINS)
+        return token_expiration.strftime('%Y-%m-%dT%H:%M:%SZ')
+
     def _run_main(self, parsed_args, parsed_globals, token_generator=None):
         if token_generator is None:
             token_generator = TokenGenerator(self._session)
@@ -63,11 +69,17 @@ class GetTokenCommand(BasicCommand):
             parsed_globals.region,
         )
 
+        # By default STS signs the url for 15 minutes so we are creating a
+        # rfc3339 timestamp with expiration in 14 minutes as part of the token, which
+        # is used by some clients (client-go) who will refresh the token after 14 mins
+        token_expiration = self.get_expiration_time()
+
         full_object = {
             "kind": "ExecCredential",
             "apiVersion": "client.authentication.k8s.io/v1alpha1",
             "spec": {},
             "status": {
+                "expirationTimestamp": token_expiration,
                 "token": token
             }
         }

@@ -14,9 +14,9 @@
 import mock
 from mock import patch, call
 import base64
-import datetime
 import botocore
 import json
+from datetime import datetime
 
 from awscli.testutils import unittest, capture_output
 from awscli.customizations.eks.get_token import (
@@ -28,7 +28,6 @@ from awscli.customizations.eks.get_token import (
 REGION = 'us-west-2'
 SIGN_REGION = 'us-east-1'
 CLUSTER_NAME = 'MyCluster'
-DATE_STRING = datetime.date.today().strftime('%Y%m%d')
 TOKEN_PREFIX = "k8s-aws-v1."
 
 CREDENTIALS   = 'ABCDEFGHIJKLMNOPQRST'
@@ -79,7 +78,6 @@ class TestTokenGenerator(unittest.TestCase):
         mock_create_client.return_value = self.mock_sts_client
         generator = TokenGenerator(self._session)
         url = generator._get_presigned_url(CLUSTER_NAME, "arn:aws:iam::012345678910:role/RoleArn", REGION)
-        print("URL: " + url)
         self.assert_url_correct(url, True)
 
     def test_token_no_role(self):
@@ -123,7 +121,16 @@ class TestGetTokenCommand(unittest.TestCase):
         self._session = session
         self.maxDiff = None
 
-    def test_run_main(self):
+    def test_get_expiration_time(self):
+        cmd = GetTokenCommand(self._session)
+        timestamp = cmd.get_expiration_time()
+        try:
+            datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%SZ')
+        except ValueError:
+            raise ValueError("Incorrect data format, should be %Y-%m-%dT%H:%M:%SZ")
+
+    @patch.object(GetTokenCommand, 'get_expiration_time', return_value='2019-06-21T22:07:54Z')
+    def test_run_main(self, mock_expiration_time):
         mock_token_generator = mock.Mock()
         fake_token = 'k8s-aws-v1.aHR0cHM6Ly9zdHMuYW1hem9uYXdzLmNvbS8='
         mock_token_generator.get_token.return_value = fake_token
@@ -139,6 +146,7 @@ class TestGetTokenCommand(unittest.TestCase):
             "kind": "ExecCredential",
             "apiVersion": "client.authentication.k8s.io/v1alpha1", "spec": {},
             "status": {
+                "expirationTimestamp": "2019-06-21T22:07:54Z",
                 "token": fake_token,
             },
         }) +'\n'

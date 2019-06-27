@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.189
+========
+
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``directconnect``: Update directconnect command to latest version
+* api-change:``ec2-instance-connect``: Update ec2-instance-connect command to latest version
+
+
 1.16.188
 ========
 

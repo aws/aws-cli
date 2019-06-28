@@ -585,7 +585,9 @@ class TestCp(BaseS3IntegrationTest):
         for name, value in metadata_ref.items():
             self.assertEqual(response[name], value)
 
-        # Use REPLACE to wipe out all of the metadata.
+        # Use REPLACE to wipe out all of the metadata when copying to a new
+        # key.
+        new_key = '%s-c' % random_chars(6)
         p = aws('s3 cp s3://%s/%s s3://%s/%s --metadata-directive REPLACE' %
                 (bucket_name, original_key, bucket_name, new_key))
         self.assert_no_errors(p)
@@ -596,6 +598,7 @@ class TestCp(BaseS3IntegrationTest):
 
         # Use REPLACE to wipe out all of the metadata but include a new
         # metadata value.
+        new_key = '%s-d' % random_chars(6)
         p = aws('s3 cp s3://%s/%s s3://%s/%s --metadata-directive REPLACE '
                 '--content-type bar' %
                 (bucket_name, original_key, bucket_name, new_key))

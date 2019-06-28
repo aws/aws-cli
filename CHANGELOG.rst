@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.190
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+
+
 1.16.189
 ========
 

@@ -277,6 +277,13 @@ class ExternalAliasCommand(BaseAliasCommand):
         ]
         command_components.extend(compat_shell_quote(a) for a in args)
         command = ' '.join(command_components)
+        if os.name == 'nt':
+            command = command.replace('\\\n', '')
+            command = command.replace('\n', ' ')
+            command = command.replace('"', '\\"')
+            # escape symbol for powershell
+            command = command.replace('@', '`@')
+            command = 'powershell -Command "function ' + command + '"'
         LOG.debug(
             'Using external alias %r with value: %r to run: %r',
             self._alias_name, self._alias_value, command)

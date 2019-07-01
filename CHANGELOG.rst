@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.191
+========
+
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``docdb``: Update docdb command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
 1.16.190
 ========
 

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.192
+========
+
+* api-change:``mediastore``: Update mediastore command to latest version
+* api-change:``appstream``: Update appstream command to latest version
+
+
 1.16.191
 ========
 

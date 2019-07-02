@@ -1,7 +1,8 @@
 =======
 aws-cli
 =======
-
+Shago7932/Master
+Code of conduct for all
 .. image:: https://travis-ci.org/aws/aws-cli.svg?branch=develop
    :target: https://travis-ci.org/aws/aws-cli
    :alt: Build Status

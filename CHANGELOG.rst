@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.193
+========
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``swf``: Update swf command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.16.192
 ========
 

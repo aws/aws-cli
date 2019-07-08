@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.194
+========
+
+* api-change:``ce``: Update ce command to latest version
+
+
 1.16.193
 ========
 

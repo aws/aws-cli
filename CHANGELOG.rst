@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.16.195
+========
+
+* api-change:``amplify``: Update amplify command to latest version
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``waf``: Update waf command to latest version
+* api-change:``waf-regional``: Update waf-regional command to latest version
+* api-change:``kinesis-video-archived-media``: Update kinesis-video-archived-media command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``kinesisvideo``: Update kinesisvideo command to latest version
+* api-change:``efs``: Update efs command to latest version
+
+
 1.16.194
 ========
 

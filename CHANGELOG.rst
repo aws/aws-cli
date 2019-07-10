@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.196
+========
+
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``glacier``: Update glacier command to latest version
+
+
 1.16.195
 ========
 

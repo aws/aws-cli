@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.197
+========
+
+* api-change:``events``: Update events command to latest version
+
+
 1.16.196
 ========
 

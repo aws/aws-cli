@@ -258,3 +258,15 @@ class CollectCLICommands(docutils.nodes.GenericNodeVisitor):
 
     def default_visit(self, node):
         pass
+
+
+
+def test_only_rst_and_txt_example_files():
+    for root, _, files in os.walk(EXAMPLES_DIR):
+        for filename in files:
+            filepath = os.path.join(root, filename)
+            yield (_assert_file_is_rst_or_txt, filepath)
+
+
+def _assert_file_is_rst_or_txt(filepath):
+    assert filepath.endswith('.rst') or filepath.endswith('.txt')

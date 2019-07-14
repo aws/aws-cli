@@ -55,3 +55,29 @@ Output::
     ],
     "NextToken": "--token string truncated--"
   }
+  
+  **To get a list of patches installed patches since a specified InstalledTime**
+  
+  This example combines the use of --filters and --query to retrieve information about patches installed since a specified time for the specified instance.
+  
+  Note: The format of InstalledTime is in epoch time. The human readable format of 1546992000.0 is 2019-01-09 12:00:00 UTC.
+  
+  Command::
+
+  aws ssm describe-instance-patches --instance-id "i-1234567890abcdef0" --filters Key=State,Values=Installed --query "Patches[?InstalledTime > `1546992000.0`]"
+
+Output::
+  {
+    "Patches": [
+        {
+            "Title": "",
+            "KBId": "KB4481031",
+            "Classification": "",
+            "Severity": "",
+            "State": "InstalledOther",
+            "InstalledTime": 1549584000.0
+        },
+		...
+    ],
+    "NextToken": "--token string truncated--"
+  }

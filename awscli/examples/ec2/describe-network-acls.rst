@@ -1,173 +1,125 @@
 **To describe your network ACLs**
 
-This example describes your network ACLs.
+The following ``describe-network-acls`` example retrieves details about your network ACLs. ::
 
-Command::
-
-  aws ec2 describe-network-acls
+    aws ec2 describe-network-acls
 
 Output::
 
-  {
-      "NetworkAcls": [
-          {
-              "Associations": [],
-              "NetworkAclId": "acl-7aaabd18",
-              "VpcId": "vpc-a01106c2",
-              "Tags": [],
-              "Entries": [
-                  {
-                      "CidrBlock": "0.0.0.0/0",
-                      "RuleNumber": 100,
-                      "Protocol": "-1",
-                      "Egress": true,
-                      "RuleAction": "allow"
-                  },
-                  {
-                      "CidrBlock": "0.0.0.0/0",
-                      "RuleNumber": 32767,
-                      "Protocol": "-1",
-                      "Egress": true,
-                      "RuleAction": "deny"
-                  },
-                  {
-                      "CidrBlock": "0.0.0.0/0",
-                      "RuleNumber": 100,
-                      "Protocol": "-1",
-                      "Egress": false,
-                      "RuleAction": "allow"
-                  },
-                  {
-                      "CidrBlock": "0.0.0.0/0",
-                      "RuleNumber": 32767,
-                      "Protocol": "-1",
-                      "Egress": false,
-                      "RuleAction": "deny"
-                  }
-              ],
-              "IsDefault": true
-          },  
-          {
-              "Associations": [],
-              "NetworkAclId": "acl-5fb85d36",
-              "VpcId": "vpc-a01106c2",
-              "Tags": [],
-              "Entries": [
-                  {
-                      "CidrBlock": "0.0.0.0/0",
-                      "RuleNumber": 32767,
-                      "Protocol": "-1",
-                      "Egress": true,
-                      "RuleAction": "deny"
-                  },
-                  {
-                      "CidrBlock": "0.0.0.0/0",
-                      "RuleNumber": 32767,
-                      "Protocol": "-1",
-                      "Egress": false,
-                      "RuleAction": "deny"
-                  }
-              ],
-              "IsDefault": false
-          },
-          {
-              "Associations": [
-                  {
-                      "SubnetId": "subnet-6bea5f06",
-                      "NetworkAclId": "acl-9aeb5ef7",
-                      "NetworkAclAssociationId": "aclassoc-67ea5f0a"
-                  },
-                  {
-                      "SubnetId": "subnet-65ea5f08",
-                      "NetworkAclId": "acl-9aeb5ef7",
-                      "NetworkAclAssociationId": "aclassoc-66ea5f0b"
-                  }
-              ],
-              "NetworkAclId": "acl-9aeb5ef7",
-              "VpcId": "vpc-98eb5ef5",
-              "Tags": [],
-              "Entries": [
-                  {
-                      "CidrBlock": "0.0.0.0/0",
-                      "RuleNumber": 100,
-                      "Protocol": "-1",
-                      "Egress": true,
-                      "RuleAction": "allow"
-                  },
-                  {
-                      "CidrBlock": "0.0.0.0/0",
-                      "RuleNumber": 32767,
-                      "Protocol": "-1",
-                      "Egress": true,
-                      "RuleAction": "deny"
-                  },
-                  {
-                      "CidrBlock": "0.0.0.0/0",
-                      "RuleNumber": 100,
-                      "Protocol": "-1",
-                      "Egress": false,
-                      "RuleAction": "allow"
-                  },
-                  {
-                      "CidrBlock": "0.0.0.0/0",
-                      "RuleNumber": 32767,
-                      "Protocol": "-1",
-                      "Egress": false,
-                      "RuleAction": "deny"
-                  }
-              ],
-              "IsDefault": true
-          },
-          {
-            "Associations": [], 
-            "NetworkAclId": "acl-6da75208", 
-            "VpcId": "vpc-4e20d42b", 
-            "Tags": [], 
-            "Entries": [
-                {
-                    "CidrBlock": "0.0.0.0/0", 
-                    "RuleNumber": 32767, 
-                    "Protocol": "-1", 
-                    "Egress": true, 
-                    "RuleAction": "deny"
-                }, 
-                {
-                    "Ipv6CidrBlock": "::/0", 
-                    "RuleNumber": 32768, 
-                    "Protocol": "-1", 
-                    "Egress": true, 
-                    "RuleAction": "deny"
-                }, 
-                {
-                    "CidrBlock": "0.0.0.0/0", 
-                    "RuleNumber": 100, 
-                    "Protocol": "-1", 
-                    "Egress": false, 
-                    "RuleAction": "allow"
-                }, 
-                {
-                    "Ipv6CidrBlock": "::/0", 
-                    "RuleNumber": 101, 
-                    "Protocol": "-1", 
-                    "Egress": false, 
-                    "RuleAction": "allow"
-                }, 
-                {
-                    "CidrBlock": "0.0.0.0/0", 
-                    "RuleNumber": 32767, 
-                    "Protocol": "-1", 
-                    "Egress": false, 
-                    "RuleAction": "deny"
-                }, 
-                {
-                    "Ipv6CidrBlock": "::/0", 
-                    "RuleNumber": 32768, 
-                    "Protocol": "-1", 
-                    "Egress": false, 
-                    "RuleAction": "deny"
-                }
-            ], 
-            "IsDefault": true
-        }          
-      ]
-  }
+    {
+        "NetworkAcls": [
+            {
+                "Associations": [
+                    {
+                        "NetworkAclAssociationId": "aclassoc-0c1679dc41EXAMPLE",
+                        "NetworkAclId": "acl-0ea1f54ca7EXAMPLE",
+                        "SubnetId": "subnet-0931fc2fa5EXAMPLE"
+                    }
+                ],
+                "Entries": [
+                    {
+                        "CidrBlock": "0.0.0.0/0",
+                        "Egress": true,
+                        "Protocol": "-1",
+                        "RuleAction": "allow",
+                        "RuleNumber": 100
+                    },
+                    {
+                        "CidrBlock": "0.0.0.0/0",
+                        "Egress": true,
+                        "Protocol": "-1",
+                        "RuleAction": "deny",
+                        "RuleNumber": 32767
+                    },
+                    {
+                        "CidrBlock": "0.0.0.0/0",
+                        "Egress": false,
+                        "Protocol": "-1",
+                        "RuleAction": "allow",
+                        "RuleNumber": 100
+                    },
+                    {
+                        "CidrBlock": "0.0.0.0/0",
+                        "Egress": false,
+                        "Protocol": "-1",
+                        "RuleAction": "deny",
+                        "RuleNumber": 32767
+                    }
+                ],
+                "IsDefault": true,
+                "NetworkAclId": "acl-0ea1f54ca7EXAMPLE",
+                "Tags": [],
+                "VpcId": "vpc-06e4ab6c6cEXAMPLE",
+                "OwnerId": "111122223333"
+            },
+            {
+                "Associations": [],
+                "Entries": [
+                    {
+                        "CidrBlock": "0.0.0.0/0",
+                        "Egress": true,
+                        "Protocol": "-1",
+                        "RuleAction": "allow",
+                        "RuleNumber": 100
+                    },
+                    {
+                        "Egress": true,
+                        "Ipv6CidrBlock": "::/0",
+                        "Protocol": "-1",
+                        "RuleAction": "allow",
+                        "RuleNumber": 101
+                    },
+                    {
+                        "CidrBlock": "0.0.0.0/0",
+                        "Egress": true,
+                        "Protocol": "-1",
+                        "RuleAction": "deny",
+                        "RuleNumber": 32767
+                    },
+                    {
+                        "Egress": true,
+                        "Ipv6CidrBlock": "::/0",
+                        "Protocol": "-1",
+                        "RuleAction": "deny",
+                        "RuleNumber": 32768
+                    },
+                    {
+                        "CidrBlock": "0.0.0.0/0",
+                        "Egress": false,
+                        "Protocol": "-1",
+                        "RuleAction": "allow",
+                        "RuleNumber": 100
+                    },
+                    {
+                        "Egress": false,
+                        "Ipv6CidrBlock": "::/0",
+                        "Protocol": "-1",
+                        "RuleAction": "allow",
+                        "RuleNumber": 101
+                    },
+                    {
+                        "CidrBlock": "0.0.0.0/0",
+                        "Egress": false,
+                        "Protocol": "-1",
+                        "RuleAction": "deny",
+                        "RuleNumber": 32767
+                    },
+                    {
+                        "Egress": false,
+                        "Ipv6CidrBlock": "::/0",
+                        "Protocol": "-1",
+                        "RuleAction": "deny",
+                        "RuleNumber": 32768
+                    }
+                ],
+                "IsDefault": true,
+                "NetworkAclId": "acl-0e2a78e4e2EXAMPLE",
+                "Tags": [],
+                "VpcId": "vpc-03914afb3eEXAMPLE",
+                "OwnerId": "111122223333"
+            }
+        ]
+    }
+                  
+
+For more information, see `Network ACLs <https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html>`__ in the *AWS VPC User Guide*.

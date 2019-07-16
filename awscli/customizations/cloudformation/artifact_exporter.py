@@ -61,8 +61,32 @@ def is_local_file(path):
 
 def is_zip_file(path):
     return (
-        is_path_value_valid(path) and
-        zipfile.is_zipfile(path))
+        is_path_value_valid(path)
+        and zipfile.is_zipfile(path))
+
+
+def parse_dotted_path_to_dict(path, dict_, data):
+    """
+    Transforms a dotted path into nested dicts and inject
+    the data at the end of the dict.
+
+    For example, if the path is "S3.Bucket", with an empty dict, this function
+    will inject data in the dict as such:
+        {
+            "S3": {
+                "Bucket": data
+            }
+        }
+    """
+    sub_keys = path.split(".")
+    cur = dict_
+    for key in sub_keys:
+        if not key in cur:
+            cur[key] = dict()
+        if key == sub_keys[-1]:
+            cur[key] = data
+        cur = cur[key]
+    return path
 
 
 def parse_s3_url(url,
@@ -81,8 +105,8 @@ def parse_s3_url(url,
 
         if parsed.netloc and parsed.path:
             result = dict()
-            result[bucket_name_property] = parsed.netloc
-            result[object_key_property] = parsed.path.lstrip('/')
+            parse_dotted_path_to_dict(bucket_name_property, result, parsed.netloc)
+            parse_dotted_path_to_dict(object_key_property, result, parsed.path.lstrip('/'))
 
             # If there is a query string that has a single versionId field,
             # set the object version and return
@@ -273,8 +297,8 @@ class Resource(object):
         S3 URL of the uploaded object
         """
         uploaded_url = upload_local_artifacts(resource_id, resource_dict,
-                                   self.PROPERTY_NAME,
-                                   parent_dir, self.uploader)
+                                              self.PROPERTY_NAME,
+                                              parent_dir, self.uploader)
         set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, uploaded_url)
 
 
@@ -477,7 +501,6 @@ class ServerlessApplicationResource(CloudFormationStackResource):
     PROPERTY_NAME = "Location"
 
 
-
 class GlueJobCommandScriptLocationResource(Resource):
     """
     Represents Glue::Job resource.
@@ -485,6 +508,18 @@ class GlueJobCommandScriptLocationResource(Resource):
     RESOURCE_TYPE = "AWS::Glue::Job"
     # Note the PROPERTY_NAME includes a '.' implying it's nested.
     PROPERTY_NAME = "Command.ScriptLocation"
+
+
+class CodeCommitCodeResource(ResourceWithS3UrlDict):
+    """
+    Represents CodeCommit::Repository initial source code.
+    """
+    RESOURCE_TYPE = "AWS::CodeCommit::Repository"
+    PROPERTY_NAME = "Code"
+    BUCKET_NAME_PROPERTY = "S3.Bucket"
+    OBJECT_KEY_PROPERTY = "S3.Key"
+    VERSION_PROPERTY = "S3.ObjectVersion"
+    FORCE_ZIP = True
 
 
 RESOURCES_EXPORT_LIST = [
@@ -503,6 +538,7 @@ RESOURCES_EXPORT_LIST = [
     ServerlessLayerVersionResource,
     LambdaLayerVersionResource,
     GlueJobCommandScriptLocationResource,
+    CodeCommitCodeResource,
 ]
 
 METADATA_EXPORT_LIST = [

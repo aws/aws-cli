@@ -1,0 +1,93 @@
+#!/usr/bin/env python
+"""Script to run smoke tests on aws cli packaged installers"""
+import argparse
+import sys
+import os
+
+SCRIPTS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(SCRIPTS_DIR)
+
+from utils import run
+
+REPO_ROOT = os.path.dirname(SCRIPTS_DIR)
+DIST_DIR = os.path.join(REPO_ROOT, 'dist')
+SMOKE_TEST_PATH = os.path.join(
+    REPO_ROOT, 'tests', 'integration', 'test_smoke.py')
+
+
+class InstallerTester(object):
+    DEFAULT_INSTALLER_LOCATION = None
+
+    def __init__(self, installer_location=None):
+        self._installer_location = installer_location
+        if self._installer_location is None:
+            self._installer_location = self.DEFAULT_INSTALLER_LOCATION
+
+    def __call__(self):
+        try:
+            self.setup()
+            return self.test()
+        finally:
+            self.cleanup()
+
+    def get_aws_cmd(self):
+        raise NotImplementedError('get_aws_cmd()')
+
+    def setup(self):
+        pass
+
+    def test(self):
+        env = os.environ.copy()
+        aws_cmd = self.get_aws_cmd()
+        self._assert_aws_cmd(aws_cmd)
+        sys.stdout.write('Setting test command to "%s"\n' % aws_cmd)
+        env['AWS_TEST_COMMAND'] = aws_cmd
+        run('nosetests -v -s %s' % SMOKE_TEST_PATH, env=env)
+        return 0
+
+    def cleanup(self):
+        pass
+
+    def _assert_aws_cmd(self, aws_cmd):
+        # Do a quick --version check to make sure we can execute
+        # the provided command
+        run('%s --version' % aws_cmd)
+
+
+class ExeTester(InstallerTester):
+    DEFAULT_INSTALLER_LOCATION = os.path.join(DIST_DIR, 'aws', 'aws')
+
+    def get_aws_cmd(self):
+        if not os.path.isfile(self._installer_location):
+            raise ValueError(
+                'There is no executable found at %s. Make sure to run the '
+                'gen-exe script or use --installer-path to provide a '
+                'custom installer location.' % self._installer_location)
+        return self._installer_location
+
+
+def main():
+    installer_to_tester_cls = {
+        'exe': ExeTester
+    }
+    parser = argparse.ArgumentParser(usage=__doc__)
+    parser.add_argument(
+        '--installer-type', required=True,
+        choices=installer_to_tester_cls.keys(),
+        help='The type of installer to test'
+    )
+    parser.add_argument(
+        '--installer-path',
+        help=(
+            'The path to the installer to test. By default, installers are '
+            'used from the dist directory.'
+        )
+    )
+    args = parser.parse_args()
+    tester = installer_to_tester_cls[args.installer_type](
+        args.installer_path)
+    return tester()
+
+
+if __name__ == '__main__':
+    sys.exit(main())

@@ -6,7 +6,7 @@ class BadRCError(Exception):
     pass
 
 
-def run(cmd, cwd=None):
+def run(cmd, cwd=None, env=None):
     sys.stdout.write("Running cmd: %s\n" % cmd)
     kwargs = {
         'shell': True,
@@ -15,6 +15,8 @@ def run(cmd, cwd=None):
     }
     if cwd is not None:
         kwargs['cwd'] = cwd
+    if env is not None:
+        kwargs['env'] = env
     p = subprocess.Popen(cmd, **kwargs)
     stdout, stderr = p.communicate()
     output = stdout.decode('utf-8') + stderr.decode('utf-8')

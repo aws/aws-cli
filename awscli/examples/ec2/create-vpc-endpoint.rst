@@ -1,6 +1,6 @@
 **To create a gateway endpoint**
 
-The following ``create-vpc-endpoint`` example creates a gateway VPC endpoint between VPC vpc-1a2b3c4d and Amazon S3 in the us-east-1 region, and associates route table rtb-11aa22bb with the endpoint. ::
+The following ``create-vpc-endpoint`` example creates a gateway VPC endpoint between VPC ``vpc-1a2b3c4d`` and Amazon S3 in the ``us-east-1`` region, and associates route table ``rtb-11aa22bb`` with the endpoint. ::
 
     aws ec2 create-vpc-endpoint \
         --vpc-id vpc-1EXAMPLE \
@@ -11,15 +11,15 @@ Output::
 
     {
         "VpcEndpoint": {
-        "PolicyDocument": "{\"Version\":\"2008-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"*\",\"Resource\":\"*\"}]}",
-        "VpcId": "vpc-1EXAMPLE",
-        "State": "available",
-        "ServiceName": "com.amazonaws.us-east-1.s3",
-        "RouteTableIds": [
-            "rtb-1EXAMPLE"
-        ],
-        "VpcEndpointId": "vpce-3EXAMPLE",
-        "CreationTimestamp": "2015-05-15T09:40:50Z"
+            "PolicyDocument": "{\"Version\":\"2008-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":\"\*\",\"Action\":\"\*\",\"Resource\":\"\*\"}]}",
+            "VpcId": "vpc-1EXAMPLE",
+            "State": "available",
+            "ServiceName": "com.amazonaws.us-east-1.s3",
+            "RouteTableIds": [
+                "rtb-1EXAMPLE"
+            ],
+            "VpcEndpointId": "vpce-3EXAMPLE",
+            "CreationTimestamp": "2015-05-15T09:40:50Z"
         }
     }
 
@@ -27,7 +27,7 @@ For more information, see `Creating a Gateway Endpoint <https://docs.aws.amazon.
 
 **To create an interface endpoint**
 
-This example creates an interface VPC endpoint between VPC ``vpc-1a2b3c4d`` and Elastic Load Balancing in the ``us-east-1`` region. The endpoint is created in subnet ``subnet-7b16de0c``, and security group ``sg-1a2b3c4d`` is associated with the endpoint network interface. ::
+The following ``create-vpc-endpoint`` example creates an interface VPC endpoint between VPC ``vpc-1a2b3c4d`` and Elastic Load Balancing in the ``us-east-1`` region. The command creates the endpoint in subnet ``subnet-7b16de0c`` and associates it with security group ``sg-1a2b3c4d``. ::
 
     aws ec2 create-vpc-endpoint \
         --vpc-id vpc-1EXAMPLE \
@@ -35,12 +35,12 @@ This example creates an interface VPC endpoint between VPC ``vpc-1a2b3c4d`` and 
         --service-name com.amazonaws.us-east-1.elasticloadbalancing \
         --subnet-id subnet-7EXAMPLE \
         --security-group-id sg-1EXAMPLE
-        
+
 Output::
 
     {
         "VpcEndpoint": {
-            "PolicyDocument": "{\n  \"Statement\": [\n    {\n      \"Action\": \"*\", \n      \"Effect\": \"Allow\", \n      \"Principal\": \"*\", \n      \"Resource\": \"*\"\n    }\n  ]\n}",
+            "PolicyDocument": "{\n  \"Statement\": [\n    {\n      \"Action\": \"\*\", \n      \"Effect\": \"Allow\", \n      \"Principal\": \"\*\", \n      \"Resource\": \"\*\"\n    }\n  ]\n}",
             "VpcId": "vpc-1EXAMPLE",
             "NetworkInterfaceIds": [
                 "eni-bf8aa46b"

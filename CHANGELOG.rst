@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.199
+========
+
+* api-change:``dms``: Update dms command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+
+
 1.16.198
 ========
 

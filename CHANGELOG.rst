@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.200
+========
+
+* api-change:``comprehend``: Update comprehend command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``codedeploy``: Update codedeploy command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+
+
 1.16.199
 ========
 

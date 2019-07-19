@@ -3,7 +3,8 @@
 The following ``get-thing-shadow`` example gets the current state of the device shadow for the thing named ``MyRPi`` and saves it to the file ``output.txt``. ::
 
     aws iot-data get-thing-shadow \
-        --thing-name MyRPi "output.txt"
+        --thing-name MyRPi \
+        "output.txt"
 
 The command produces no output on the display, but the following shows the contents of output.txt::
 

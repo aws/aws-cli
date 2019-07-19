@@ -1,6 +1,6 @@
 **To get information about a rule**
 
-The following ``get-topic-rule`` example gets information about the ``MyRPiLowMoistureAlertRule``. ::
+The following ``get-topic-rule`` example gets information about the specified rule. ::
 
     aws iot get-topic-rule \
         --rule-name MyRPiLowMoistureAlertRule

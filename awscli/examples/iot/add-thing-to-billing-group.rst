@@ -19,4 +19,3 @@ The following ``add-thing-to-billing-group`` example adds a thing with a specifi
 This command produces no output.
 
 For more information, see `Billing Groups <https://docs.aws.amazon.com/iot/latest/developerguide/tagging-iot-billing-groups.html>`__ in the *AWS IoT Developers Guide*.
-

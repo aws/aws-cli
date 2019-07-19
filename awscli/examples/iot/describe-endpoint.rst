@@ -1,6 +1,6 @@
 **Example 1: To get your current AWS endpoint**
 
-The following ``describe-endpoint`` example gets the default AWS endpoint to which all commands are applied. ::
+The following ``describe-endpoint`` example retrieves the default AWS endpoint to which all commands are applied. ::
 
     aws iot describe-endpoint
 
@@ -25,4 +25,3 @@ Output::
     }
 
 For more information, see `X.509 Certificates and AWS IoT <https://docs.aws.amazon.com/iot/latest/developerguide/managing-device-certs.html>`__ in the *AWS IoT Developer Guide*.
-

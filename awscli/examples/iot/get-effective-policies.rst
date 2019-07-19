@@ -1,9 +1,10 @@
 **To list the policies that effect a thing**
 
-The following ``get-effective-policies`` example lists the policies that effect the thing group ``MyLightBulb``, including policies attached to any groups to which it belongs. ::
+The following ``get-effective-policies`` example lists the policies that effect the specified thing group, including policies attached to any groups to which it belongs. ::
 
     aws iot get-effective-policies \
-        --thing-name MyLightBulb --principal "arn:aws:iot:us-west-2:123456789012:cert/4f0ba725787aa94d67d2fca420eca022242532e8b3c58e7465c7778b443fd65e"
+        --thing-name MyLightBulb \
+        --principal "arn:aws:iot:us-west-2:123456789012:cert/4f0ba725787aa94d67d2fca420eca022242532e8b3c58e7465c7778b443fd65e"
 
 Output::
 
@@ -23,4 +24,3 @@ Output::
     }
 
 For more information, see `Get Effective Policies for a Thing <https://docs.aws.amazon.com/iot/latest/developerguide/thing-groups.html#group-get-effective-policies>`__ in the *AWS IoT Developers Guide*.
-

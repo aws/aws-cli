@@ -1,6 +1,6 @@
 **To get information about a specific version of a policy**
 
-The following ``get-policy-version`` example gets information about the first verson of the specified policy. ::
+The following ``get-policy-version`` example gets information about the first version of the specified policy. ::
 
     aws iot get-policy \
         --policy-name UpdateDeviceCertPolicy

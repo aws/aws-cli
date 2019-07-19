@@ -1,6 +1,6 @@
 **To get information about a billing group**
 
-The following ``describe-billing-group`` example gets information for the billing group named ``GroupOne``. ::
+The following ``describe-billing-group`` example gets information for the specified billing group. ::
 
     aws iot describe-billing-group --billing-group-name GroupOne
 
@@ -18,4 +18,3 @@ Output::
     }
 
 For more information, see `Billing Groups <https://docs.aws.amazon.com/iot/latest/developerguide/tagging-iot-billing-groups.html>`__ in the *AWS IoT Developers Guide*.
-

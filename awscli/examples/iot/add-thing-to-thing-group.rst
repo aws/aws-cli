@@ -1,6 +1,6 @@
 **To add a thing to a group**
 
-The following ``add-thing-to-thing-group`` example adds the thing named ``MyLightBulb`` to the thing group named ``LightBulbs``. ::
+The following ``add-thing-to-thing-group`` example adds the specified thing to the specified thing group. ::
 
     aws iot add-thing-to-thing-group \
         --thing-name MyLightBulb \

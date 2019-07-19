@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.201
+========
+
+* api-change:``iotevents``: Update iotevents command to latest version
+* api-change:``sqs``: Update sqs command to latest version
+
+
 1.16.200
 ========
 

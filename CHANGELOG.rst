@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.202
+========
+
+* bugfix:Dependency: Fixed dependency issue with broken docutils aws/aws-cli`#4332 <https://github.com/aws/aws-cli/issues/4332>`__
+
+
 1.16.201
 ========
 

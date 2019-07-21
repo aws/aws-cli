@@ -23,9 +23,9 @@ def find_version(*file_paths):
     raise RuntimeError("Unable to find version string.")
 
 
-requires = ['botocore==1.12.191',
+requires = ['botocore==1.12.192',
             'colorama>=0.2.5,<=0.3.9',
-            'docutils>=0.10',
+            'docutils>=0.10,<0.15',
             'rsa>=3.1.2,<=3.5.0',
             's3transfer>=0.2.0,<0.3.0']
 

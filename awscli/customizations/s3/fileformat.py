@@ -111,8 +111,6 @@ class FileFormat(object):
                to the source name.
         """
         if dir_op:
-            if not path.endswith('/'):
-                path += '/'
             return path, True
         else:
             if not path.endswith('/'):

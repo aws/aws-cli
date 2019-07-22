@@ -241,7 +241,7 @@ def find_dest_path_comp_key(files, src_path=None):
 
     sep_table = {'s3': '/', 'local': os.sep}
 
-    if files['dir_op']:
+    if files['dir_op'] and src['path'].endswith('/'):
         rel_path = src_path[len(src['path']):]
     else:
         rel_path = src_path.split(sep_table[src_type])[-1]

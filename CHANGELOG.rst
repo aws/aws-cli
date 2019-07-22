@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.203
+========
+
+* api-change:``shield``: Update shield command to latest version
+* api-change:``mq``: Update mq command to latest version
+
+
 1.16.202
 ========
 

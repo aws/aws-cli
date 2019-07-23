@@ -1,6 +1,6 @@
 **To delete a rule**
 
-The following ``delete-topic-rule`` example deletes a rule named LowMoistureRule. ::
+The following ``delete-topic-rule`` example deletes the specified rule. ::
 
     aws iot delete-topic-rule \
         --rule-name "LowMoistureRule"

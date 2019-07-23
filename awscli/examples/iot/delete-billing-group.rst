@@ -1,6 +1,6 @@
 **To delete a billing group**
 
-The following ``delete-billing-group`` example deletes a billing group named BillingGroupTwo. You can delete a billing group even if it contains one or more things. ::
+The following ``delete-billing-group`` example deletes the specified billing group. You can delete a billing group even if it contains one or more things. ::
 
     aws iot delete-billing-group \
         --billing-group-name BillingGroupTwo

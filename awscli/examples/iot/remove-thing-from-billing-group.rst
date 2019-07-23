@@ -1,6 +1,6 @@
 **To remove a thing from a billing group**
 
-The following ``remove-thing-from-billing-group`` example removes the thing named MyOtherLightBulb from a billing group named ``GroupOne``. ::
+The following ``remove-thing-from-billing-group`` example removes the specified thing from a billing group. ::
 
     aws iot remove-thing-from-billing-group \
         --billing-group-name GroupOne \

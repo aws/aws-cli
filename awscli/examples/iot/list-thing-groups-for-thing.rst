@@ -1,6 +1,6 @@
 **To list the groups that a thing belongs to**
 
-The following ``list-thing-groups-for-thing`` example lists the groups to which the thing named MyLightBulb belongs. ::
+The following ``list-thing-groups-for-thing`` example lists the groups to which the specified thing belongs. ::
 
     aws iot list-thing-groups-for-thing \
         --thing-name MyLightBulb

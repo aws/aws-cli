@@ -26,4 +26,3 @@ Output::
     }
 
 For more information, see `Viewing Your Rules <https://docs.aws.amazon.com/iot/latest/developerguide/iot-view-rules.htmlget-topic-rule>`__ in the *AWS IoT Developers Guide*.
-

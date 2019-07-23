@@ -2,7 +2,8 @@
 
 The following ``describe-audit-task`` example gets information about an instance of an AWS IoT Device Defender audit. If the audit is complete, summary statistics for the run are included in the results. ::
 
-    aws iot describe-audit-task --task-id a3aea009955e501a31b764abe1bebd3d
+    aws iot describe-audit-task \
+        --task-id a3aea009955e501a31b764abe1bebd3d
 
 Output::
 
@@ -42,4 +43,3 @@ Output::
     }
 
 For more information, see `Audit Commands <https://docs.aws.amazon.com/iot/latest/developerguide/AuditCommands.html>`__ in the *AWS IoT Developer Guide*.
-

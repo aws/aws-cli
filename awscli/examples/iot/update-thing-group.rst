@@ -1,6 +1,6 @@
 **To update the definition for a thing group**
 
-The following ``update-thing-group`` example updates the definition for a thing group named HalogenBulbs, changing the description and two attributes. ::
+The following ``update-thing-group`` example updates the definition for the specified thing group, changing the description and two attributes. ::
 
     aws iot update-thing-group \
         --thing-group-name HalogenBulbs \

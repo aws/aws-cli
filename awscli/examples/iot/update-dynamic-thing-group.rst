@@ -1,6 +1,6 @@
 **To update a dynamic thing group**
 
-The following ``update-dynamic-thing-group`` example updates a dynamic thing group. It provides a description and updates the query string to change the group membership criteria. ::
+The following ``update-dynamic-thing-group`` example updates the specified dynamic thing group. It provides a description and updates the query string to change the group membership criteria. ::
 
     aws iot update-dynamic-thing-group \
         --thing-group-name "RoomTooWarm" 
@@ -14,4 +14,3 @@ Output::
     }
 
 For more information, see `Dynamic Thing Groups <https://docs.aws.amazon.com/iot/latest/developerguide/dynamic-thing-groups.html>`__ in the *AWS IoT Developers Guide*.
-

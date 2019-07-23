@@ -1,6 +1,6 @@
 **To see all versions of a policy**
 
-The following ``list-policy-versions`` example lists all versions of the UpdateDeviceCertPolicy and their creation dates. ::
+The following ``list-policy-versions`` example lists all versions of the specified policy and their creation dates. ::
 
     aws iot list-policy-versions
 
@@ -22,4 +22,3 @@ Output::
     }
 
 For more information, see `AWS IoT Policies <https://docs.aws.amazon.com/iot/latest/developerguide/iot-policies.html>`__ in the *AWS IoT Developers Guide*.
-

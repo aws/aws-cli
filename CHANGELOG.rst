@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.204
+========
+
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
 1.16.203
 ========
 

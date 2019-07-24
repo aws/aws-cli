@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.205
+========
+
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``sts``: Update sts command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``glue``: Update glue command to latest version
+
+
 1.16.204
 ========
 

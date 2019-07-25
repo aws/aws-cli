@@ -22,4 +22,3 @@ Output::
     }
 
 For more information, see `ListDetectorModelVersions <https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-commands.html#api-iotevents-ListDetectorModelVersions>`__ in the *AWS IoT Events Developer Guide**.
-

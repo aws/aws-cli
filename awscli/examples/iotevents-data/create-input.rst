@@ -32,4 +32,3 @@ Output::
     }
 
 For more information, see `CreateInput <https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-commands.html#api-iotevents-CreateInput>`__ in the *AWS IoT Events Developer Guide**.
-

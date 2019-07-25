@@ -1,6 +1,6 @@
 **To get information about a detector model**
 
-The following ``describe-detector-model`` example describes a detector model. If the "version" parameter is not specified, information about the latest version is returned. ::
+The following ``describe-detector-model`` example describes a detector model. If the ``version`` parameter is not specified, the command returns information about the latest version. ::
 
     aws iotevents describe-detector-model \
         --detector-model-name motorDetectorModel

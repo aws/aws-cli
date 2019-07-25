@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.206
+========
+
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``ecr``: Update ecr command to latest version
+
+
 1.16.205
 ========
 

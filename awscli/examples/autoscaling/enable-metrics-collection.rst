@@ -8,6 +8,6 @@ To collect data for a specific metric, use the ``metrics`` parameter::
 
     aws autoscaling enable-metrics-collection --auto-scaling-group-name my-auto-scaling-group --metrics GroupDesiredCapacity --granularity "1Minute"
 
-For more information, see `Monitoring Your Auto Scaling Instances and Groups`_ in the *Auto Scaling Developer Guide*.
+For more information, see `Monitoring Your Auto Scaling Groups and Instances Using Amazon CloudWatch`_ in the *Amazon EC2 Auto Scaling User Guide*.
 
-.. _`Monitoring Your Auto Scaling Instances and Groups`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/as-instance-monitoring.html
+.. _`Monitoring Your Auto Scaling Groups and Instances Using Amazon CloudWatch`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-monitoring.html

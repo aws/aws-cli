@@ -1,7 +1,7 @@
 Configures kubectl so that you can connect to an Amazon EKS cluster.
 
 Note:
- To use the resulting configuration, you must have kubectl and the aws-iam-authenticator installed and in your PATH environment variable.
+ To use the resulting configuration, you must have kubectl installed and in your PATH environment variable.
 
 This command constructs a configuration with prepopulated server and certificate authority data values for a specified cluster. 
 You can specify an IAM role ARN with the --role-arn option to use for authentication when you issue kubectl commands. 

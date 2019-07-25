@@ -32,6 +32,26 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
                           'host=git-codecommit.us-east-1.amazonaws.com\n'
                           'path=/v1/repos/myrepo')
 
+    FIPS_PROTOCOL_HOST_PATH = ('protocol=https\n'
+                               'host=git-codecommit-fips.us-east-1.amazonaws.com\n'
+                               'path=/v1/repos/myrepo')
+
+    VPC_1_PROTOCOL_HOST_PATH = ('protocol=https\n'
+                                'host=vpce-0b47ea360adebf88a-jkl88hez.git-codecommit.us-east-1.vpce.amazonaws.com\n'
+                                'path=/v1/repos/myrepo')
+
+    VPC_2_PROTOCOL_HOST_PATH = ('protocol=https\n'
+                                'host=vpce-0b47ea360adebf88a-jkl88hez-us-east-1a.git-codecommit.us-east-1.vpce.amazonaws.com\n'
+                                'path=/v1/repos/myrepo')
+
+    FIPS_VPC_1_PROTOCOL_HOST_PATH = ('protocol=https\n'
+                                     'host=vpce-0b47ea360adebf88a-jkl88hez.git-codecommit-fips.us-east-1.vpce.amazonaws.com\n'
+                                     'path=/v1/repos/myrepo')
+
+    FIPS_VPC_2_PROTOCOL_HOST_PATH = ('protocol=https\n'
+                                     'host=vpce-0b47ea360adebf88a-jkl88hez-us-west-2b.git-codecommit-fips.us-east-1.vpce.amazonaws.com\n'
+                                     'path=/v1/repos/myrepo')
+
     NO_REGION_PROTOCOL_HOST_PATH = ('protocol=https\n'
                                     'host=git-codecommit.amazonaws.com\n'
                                     'path=/v1/repos/myrepo')
@@ -56,6 +76,61 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
     @patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
     @patch('sys.stdin', StringIO(PROTOCOL_HOST_PATH))
     def test_generate_credentials(self, stdout_mock):
+        self.get_command = CodeCommitGetCommand(self.session)
+        self.get_command._run_main(self.args, self.globals)
+        output = stdout_mock.getvalue().strip()
+        self.assertRegexpMatches(
+            output, 'username={0}\npassword=.+'.format('access'))
+
+    @patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
+    @patch('sys.stdin', StringIO(FIPS_PROTOCOL_HOST_PATH))
+    def test_generate_credentials_fips_reads_region_from_url(self, stdout_mock):
+        self.globals.region = None
+        self.session.get_config_variable.return_value = None
+        self.get_command = CodeCommitGetCommand(self.session)
+        self.get_command._run_main(self.args, self.globals)
+        output = stdout_mock.getvalue().strip()
+        self.assertRegexpMatches(
+            output, 'username={0}\npassword=.+'.format('access'))
+
+    @patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
+    @patch('sys.stdin', StringIO(VPC_1_PROTOCOL_HOST_PATH))
+    def test_generate_credentials_vpc_reads_region_from_url(self, stdout_mock):
+        self.globals.region = None
+        self.session.get_config_variable.return_value = None
+        self.get_command = CodeCommitGetCommand(self.session)
+        self.get_command._run_main(self.args, self.globals)
+        output = stdout_mock.getvalue().strip()
+        self.assertRegexpMatches(
+            output, 'username={0}\npassword=.+'.format('access'))
+
+    @patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
+    @patch('sys.stdin', StringIO(VPC_2_PROTOCOL_HOST_PATH))
+    def test_generate_credentials_vpc_2_reads_region_from_url(self, stdout_mock):
+        self.globals.region = None
+        self.session.get_config_variable.return_value = None
+        self.get_command = CodeCommitGetCommand(self.session)
+        self.get_command._run_main(self.args, self.globals)
+        output = stdout_mock.getvalue().strip()
+        self.assertRegexpMatches(
+            output, 'username={0}\npassword=.+'.format('access'))
+
+    @patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
+    @patch('sys.stdin', StringIO(FIPS_VPC_1_PROTOCOL_HOST_PATH))
+    def test_generate_credentials_fips_vpc_1_reads_region_from_url(self, stdout_mock):
+        self.globals.region = None
+        self.session.get_config_variable.return_value = None
+        self.get_command = CodeCommitGetCommand(self.session)
+        self.get_command._run_main(self.args, self.globals)
+        output = stdout_mock.getvalue().strip()
+        self.assertRegexpMatches(
+            output, 'username={0}\npassword=.+'.format('access'))
+
+    @patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
+    @patch('sys.stdin', StringIO(FIPS_VPC_2_PROTOCOL_HOST_PATH))
+    def test_generate_credentials_fips_vpc_2_reads_region_from_url(self, stdout_mock):
+        self.globals.region = None
+        self.session.get_config_variable.return_value = None
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()

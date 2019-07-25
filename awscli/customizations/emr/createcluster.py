@@ -119,7 +119,7 @@ class CreateCluster(Command):
          'schema': argumentschema.KERBEROS_ATTRIBUTES_SCHEMA,
          'help_text': helptext.KERBEROS_ATTRIBUTES}
     ]
-    SYNOPSIS = BasicCommand.FROM_FILE('emr', 'create-cluster-synopsis.rst')
+    SYNOPSIS = BasicCommand.FROM_FILE('emr', 'create-cluster-synopsis.txt')
     EXAMPLES = BasicCommand.FROM_FILE('emr', 'create-cluster-examples.rst')
 
     def _run_main_command(self, parsed_args, parsed_globals):

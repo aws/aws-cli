@@ -75,7 +75,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         # we eventually should update this test to check exactly for
         # 'The describe-instances operation'.
         self.assertRegexpMatches(p.stdout,
-                                 '\s+Describes\s+one\s+or\s+more')
+                                 '\s+Describes\s+the\s+specified\s+instances')
 
     def test_topic_list_help_output(self):
         p = aws('help topics')

@@ -10,7 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import json
+from botocore.compat import json
+from botocore.compat import OrderedDict
+
 import yaml
 from yaml.resolver import ScalarNode, SequenceNode
 
@@ -54,13 +56,28 @@ def intrinsics_multi_constructor(loader, tag_prefix, node):
     return {cfntag: value}
 
 
+def _dict_representer(dumper, data):
+    return dumper.represent_dict(data.items())
+
+
 def yaml_dump(dict_to_dump):
     """
     Dumps the dictionary as a YAML document
     :param dict_to_dump:
     :return:
     """
-    return yaml.safe_dump(dict_to_dump, default_flow_style=False)
+    FlattenAliasDumper.add_representer(OrderedDict, _dict_representer)
+    return yaml.dump(
+        dict_to_dump,
+        default_flow_style=False,
+        Dumper=FlattenAliasDumper,
+    )
+
+
+def _dict_constructor(loader, node):
+    # Necessary in order to make yaml merge tags work
+    loader.flatten_mapping(node)
+    return OrderedDict(loader.construct_pairs(node))
 
 
 def yaml_parse(yamlstr):
@@ -69,8 +86,14 @@ def yaml_parse(yamlstr):
         # PyYAML doesn't support json as well as it should, so if the input
         # is actually just json it is better to parse it with the standard
         # json parser.
-        return json.loads(yamlstr)
+        return json.loads(yamlstr, object_pairs_hook=OrderedDict)
     except ValueError:
+        yaml.SafeLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _dict_constructor)
         yaml.SafeLoader.add_multi_constructor(
             "!", intrinsics_multi_constructor)
         return yaml.safe_load(yamlstr)
+
+
+class FlattenAliasDumper(yaml.SafeDumper):
+    def ignore_aliases(self, data):
+        return True

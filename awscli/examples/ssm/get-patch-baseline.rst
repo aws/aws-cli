@@ -4,58 +4,47 @@ This example displays the details for a patch baseline.
 
 Command::
 
-  aws ssm get-patch-baseline --baseline-id "pb-00dbb759999aa2bc3"
+  aws ssm get-patch-baseline --baseline-id "pb-0123456789abcdef0"
 
 Output::
 
   {
-	"BaselineId":"pb-00dbb759999aa2bc3",
-	"Name":"Windows-Server-2012R2",
-	"PatchGroups":[
-		"Web Servers"
-	],
-	"RejectedPatches":[
-	
-	],
-	"GlobalFilters":{
-		"PatchFilters":[
-	
-		]
-	},
-	"ApprovalRules":{
-		"PatchRules":[
-			{
-				"PatchFilterGroup":{
-				"PatchFilters":[
-					{
-						"Values":[
-							"Important",
-							"Critical"
-						],
-						"Key":"MSRC_SEVERITY"
-					},
-					{
-						"Values":[
-							"SecurityUpdates"
-						],
-						"Key":"CLASSIFICATION"
-					},
-					{
-						"Values":[
-							"WindowsServer2012R2"
-						],
-						"Key":"PRODUCT"
-					}
-				]
-				},
-				"ApproveAfterDays":5
-			}
-		]
-	},
-	"ModifiedDate":1480997823.81,
-	"CreatedDate":1480997823.81,
-	"ApprovedPatches":[
-	
-	],
-	"Description":"Windows Server 2012 R2, Important and Critical security updates"
+    "BaselineId": "pb-0123456789abcdef0",
+    "Name": "WindowsPatching",
+    "OperatingSystem": "WINDOWS",
+    "GlobalFilters": {
+        "PatchFilters": []
+    },
+    "ApprovalRules": {
+        "PatchRules": [
+            {
+                "PatchFilterGroup": {
+                    "PatchFilters": [
+                        {
+                            "Key": "PRODUCT",
+                            "Values": [
+                                "WindowsServer2016"
+                            ]
+                        }
+                    ]
+                },
+                "ComplianceLevel": "CRITICAL",
+                "ApproveAfterDays": 0,
+                "EnableNonSecurity": false
+            }
+        ]
+    },
+    "ApprovedPatches": [],
+    "ApprovedPatchesComplianceLevel": "UNSPECIFIED",
+    "ApprovedPatchesEnableNonSecurity": false,
+    "RejectedPatches": [],
+    "RejectedPatchesAction": "ALLOW_AS_DEPENDENCY",
+    "PatchGroups": [
+        "QA",
+        "DEV"
+    ],
+    "CreatedDate": 1550244180.465,
+    "ModifiedDate": 1550244180.465,
+    "Description": "Patches for Windows Servers",
+    "Sources": []
   }

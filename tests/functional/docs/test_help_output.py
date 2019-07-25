@@ -443,6 +443,13 @@ class TestIotData(BaseAWSHelpOutputTest):
             'intended for testing purposes only.')
 
 
+class TestSMSVoice(BaseAWSHelpOutputTest):
+    def test_service_help_not_listed(self):
+        self.driver.main(['help'])
+        # Ensure the hidden service is not in the help listing.
+        self.assert_not_contains('* sms-voice')
+
+
 class TestAliases(BaseAWSHelpOutputTest):
     def setUp(self):
         super(TestAliases, self).setUp()

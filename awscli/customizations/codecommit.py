@@ -133,10 +133,10 @@ class CodeCommitGetCommand(BasicCommand):
         return url
 
     def extract_region(self, parameters, parsed_globals):
-        match = re.match(r'git-codecommit\.([^.]+)\.amazonaws\.com',
+        match = re.match(r'(vpce-.+\.)?git-codecommit(-fips)?\.([^.]+)\.(vpce\.)?amazonaws\.com',
                          parameters['host'])
         if match is not None:
-            return match.group(1)
+            return match.group(3)
         elif parsed_globals.region is not None:
             return parsed_globals.region
         else:

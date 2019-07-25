@@ -1,6 +1,6 @@
 **To list all tasks for a Maintenance Window**
 
-This example lists all of the tasks for a maintenance window.
+This example lists all of the tasks for a Maintenance Window.
 
 Command::
 
@@ -38,25 +38,25 @@ Output::
     ]
   }
 
-**To list all tasks for a maintenance window that invoke the AWS-RunPowerShellScript Run Command**
+**To list all tasks for a Maintenance Window that invoke the AWS-RunPowerShellScript Run Command**
 
-This example lists all of the tasks for a maintenance window that invoke the ``AWS-RunPowerShellScript`` Run Command.
+This example lists all of the tasks for a Maintenance Window that invoke the ``AWS-RunPowerShellScript`` Run Command.
 
 Command::
 
   aws ssm describe-maintenance-window-tasks --window-id "mw-ab12cd34ef56gh78" --filters "Key=TaskArn,Values=AWS-RunPowerShellScript"
 
-**To list all tasks for a maintenance window that have a Priority of 3**
+**To list all tasks for a Maintenance Window that have a Priority of 3**
 
-This example lists all of the tasks for a maintenance window that have a ``Priority`` of ``3``.
+This example lists all of the tasks for a Maintenance Window that have a ``Priority`` of ``3``.
 
 Command::
 
   aws ssm describe-maintenance-window-tasks --window-id "mw-ab12cd34ef56gh78" --filters "Key=Priority,Values=3"
   
-**To list all tasks for a maintenance window that have a Priority of 1 and use Run Command**
+**To list all tasks for a Maintenance Window that have a Priority of 1 and use Run Command**
 
-This example lists all of the tasks for a maintenance window that have a ``Priority`` of ``1`` and use ``Run Command``.
+This example lists all of the tasks for a Maintenance Window that have a ``Priority`` of ``1`` and use ``Run Command``.
 
 Command::
 

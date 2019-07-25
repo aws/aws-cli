@@ -9,10 +9,11 @@ Command::
 Output::
 
   {
-    "InstancesWithNotApplicablePatches": 0,
-    "InstancesWithMissingPatches": 0,
-    "InstancesWithFailedPatches": 1,
-    "InstancesWithInstalledOtherPatches": 4,
-    "Instances": 4,
-    "InstancesWithInstalledPatches": 3
+    "Instances": 2,
+    "InstancesWithInstalledPatches": 2,
+    "InstancesWithInstalledOtherPatches": 2,
+    "InstancesWithInstalledRejectedPatches": 0,
+    "InstancesWithMissingPatches": 2,
+    "InstancesWithFailedPatches": 0,
+    "InstancesWithNotApplicablePatches": 2
   }

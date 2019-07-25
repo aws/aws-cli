@@ -26,7 +26,10 @@ class TestUpdateDistribution(BaseAWSCommandParamsTest):
             # A get-distribution-config response, contains a minimal config
             'ETag': '__etag__',
             'DistributionConfig': {
-                'Origins': {'Quantity': 0},  # Simplified
+                'Origins': {
+                    'Quantity': 1,
+                    'Items': [{'Id': 'foo', 'DomainName': 'bar'}]
+                },
                 'CallerReference': 'abcd',
                 'Comment': '',
                 'Enabled': True,
@@ -43,7 +46,10 @@ class TestUpdateDistribution(BaseAWSCommandParamsTest):
         result = {
             'DistributionConfig': {
                 'DefaultRootObject': 'index.html',
-                'Origins': {'Quantity': 0},  # Simplified
+                'Origins': {
+                    'Quantity': 1,
+                    'Items': [{'Id': 'foo', 'DomainName': 'bar'}]
+                },
                 'CallerReference': 'abcd',
                 'Comment': '',
                 'Enabled': True,
@@ -58,7 +64,7 @@ class TestUpdateDistribution(BaseAWSCommandParamsTest):
     def test_distribution_config(self):
         # To demonstrate the original --distribution-config still works
         cmdline = self.prefix + ('--distribution-config '
-            'Origins={Quantity=0},'
+            'Origins={Quantity=1,Items=[{Id=foo,DomainName=bar}]},'
             'DefaultCacheBehavior={'
                 'TargetOriginId=foo,'
                 'ForwardedValues={QueryString=False,Cookies={Forward=none}},'
@@ -72,7 +78,10 @@ class TestUpdateDistribution(BaseAWSCommandParamsTest):
             )
         result = {
             'DistributionConfig': {
-                'Origins': {'Quantity': 0},  # Simplified
+                'Origins': {
+                    'Quantity': 1,
+                    'Items': [{'Id': 'foo', 'DomainName': 'bar'}]
+                },
                 'CallerReference': 'abcd',
                 'Comment': '',
                 'Enabled': True,

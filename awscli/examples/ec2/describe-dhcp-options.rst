@@ -1,8 +1,8 @@
 **To describe your DHCP options**
 
-The following ``describe-network-acls`` example retrieves details about your network ACLs. ::
+The following ``describe-dhcp-options`` example retrieves details about your DHCP options. ::
 
-    aws ec2 describe-network-acls
+    aws ec2 describe-dhcp-options
 
 Output::
 
@@ -53,6 +53,6 @@ Output::
                 "OwnerId": "111122223333"
             }
         ]
-    }          
+    } 
 
 For more information, see `Working with DHCP Option Sets <https://docs.aws.amazon.com/vpc/latest/userguide/VPC_DHCP_Options.html#DHCPOptionSet>`__ in the *AWS VPC User Guide*.

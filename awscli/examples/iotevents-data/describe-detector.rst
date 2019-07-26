@@ -29,4 +29,3 @@ Output::
     }
 
 For more information, see `DescribeDetector <https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-commands.html#api-iotevents-data-DescribeDetector>`__ in the *AWS IoT Events Developer Guide**.
-

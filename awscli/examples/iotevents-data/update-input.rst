@@ -7,16 +7,16 @@ The following ``update-input`` example updates an input. ::
 
 Contents of ``pressureInput.json``::
 
-  {
-    "inputName": "PressureInput",
-    "inputDescription": "Pressure readings from a motor",
-    "inputDefinition": {
-      "attributes": [
-        { "jsonPath": "sensorData.pressure" },
-        { "jsonPath": "motorid" }
-      ]
+    {
+        "inputName": "PressureInput",
+        "inputDescription": "Pressure readings from a motor",
+        "inputDefinition": {
+            "attributes": [
+                { "jsonPath": "sensorData.pressure" },
+                { "jsonPath": "motorid" }
+            ]
+        }
     }
-  }
 
 Output::
 

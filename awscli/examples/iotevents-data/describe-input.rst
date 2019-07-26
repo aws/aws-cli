@@ -1,6 +1,6 @@
 **To get information about an input**
 
-The following ``describe-input`` example retrieves the details of an input ::
+The following ``describe-input`` example retrieves the details of an input. ::
 
     aws iotevents describe-input \
         --input-name PressureInput
@@ -31,4 +31,3 @@ Output::
     }
 
 For more information, see `DescribeInput <https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-commands.html#api-iotevents-DescribeInput>`__ in the *AWS IoT Events Developer Guide**.
-

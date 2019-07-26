@@ -2,7 +2,8 @@
 
 The following ``batch-update-detector`` example updates the state, variable values, and timer settings of one or more detectors (instances) of a specified detector model. ::
 
-    aws iotevents-data batch-update-detector --cli-input-json file://budFulton-A32.json
+    aws iotevents-data batch-update-detector \
+        --cli-input-json file://budFulton-A32.json
 
 Contents of ``budFulton-A32.json``::
 

@@ -1323,7 +1323,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         self.assertEqual(expected_error_msg, result[1])
 
     def test_create_cluster_with_security_config(self):
-        cmd = (self.prefix + '--release-label emr-4.7.2 --security-configuration MySecurityConfig '+ 
+        cmd = (self.prefix + '--release-label emr-4.7.2 --security-configuration MySecurityConfig '+
                '--instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
         result = \
             {

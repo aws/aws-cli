@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.16.207
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``mediaconnect``: Update mediaconnect command to latest version
+* api-change:``greengrass``: Update greengrass command to latest version
+* api-change:``logs``: Update logs command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``batch``: Update batch command to latest version
+* api-change:``glue``: Update glue command to latest version
+
+
 1.16.206
 ========
 

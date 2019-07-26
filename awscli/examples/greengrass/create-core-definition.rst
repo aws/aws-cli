@@ -1,6 +1,6 @@
 **To create an empty core definition**
 
-The following ``create-core-definition`` example creates an empty (no initial version) Greeengrass core definition. Before the core is usable, you must use the ``create-core-definition-version`` command to provide the other parameters for the core. ::
+The following ``create-core-definition`` example creates an empty (no initial version) Greengrass core definition. Before the core is usable, you must use the ``create-core-definition-version`` command to provide the other parameters for the core. ::
 
     aws greengrass create-core-definition \
         --name cliGroup_Core

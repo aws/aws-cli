@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.208
+========
+
+* api-change:``codecommit``: Update codecommit command to latest version
+
+
 1.16.207
 ========
 

@@ -2,7 +2,7 @@
 
 The following ``describe-db-subnet-groups`` example retrieves the details of the specified DB subnet group. ::
 
-    describe-db-subnet-groups
+    aws rds describe-db-subnet-groups
 
 Output::
 

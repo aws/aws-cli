@@ -1,0 +1,144 @@
+#!/usr/bin/env python
+"""Script to uninstall AWS CLI V2 Mac PKG"""
+import argparse
+import sys
+import os
+from datetime import datetime
+from subprocess import check_output
+from subprocess import CalledProcessError
+from subprocess import PIPE
+
+SCRIPTS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(SCRIPTS_DIR)
+
+from utils import run
+from utils import BadRCError
+
+
+_PKG_ID = 'com.amazon.aws.cli2'
+
+
+def uninstall():
+    assert _is_installed() is True, 'Could not find AWS CLI installation.'
+    assert os.geteuid() == 0, 'Script must be run as root (with sudo).'
+
+    root_dir = _get_root_dir()
+    list_files = _get_file_list(root_dir)
+    _erase_files(list_files)
+    list_dirs = _get_dir_list(root_dir)
+    _erase_dirs(list_dirs)
+    _forget()
+    return 0
+
+
+def _get_root_dir():
+    lines = run('pkgutil --pkg-info %s /' % _PKG_ID, echo=False).split('\n')
+    volume_line = lines[2]
+    volume = _trim_before_space(volume_line)
+    location_line = lines[3]
+    location = _trim_before_space(location_line)
+    path = os.path.join(volume, location)
+    return path
+
+
+def _trim_before_space(value):
+    return value[value.find(' ') + 1:]
+
+
+def _get_file_list(root):
+    lines = run(
+        'pkgutil --only-files --files %s /' % _PKG_ID, echo=False).split('\n')
+    pkg_file_list = [os.path.join(root, line) for line in lines]
+    extra_files = _read_install_metadata(root)
+    return pkg_file_list + extra_files
+
+
+def _read_install_metadata(root):
+    metadata_path = os.path.join(root, '.install-metadata')
+    if not os.path.isfile(metadata_path):
+        return []
+    extra_files = open(metadata_path, 'r').read()
+    return extra_files.split('\n')[:-1]
+
+
+def _get_dir_list(root):
+    lines = run(
+        'pkgutil --only-dirs --files %s /' % _PKG_ID, echo=False).split('\n')
+    # Longer directory names are listed first to force them to come before
+    # their parent directories. This ensures that child directories are
+    # deleted before their parents.
+    return sorted(
+        [os.path.join(root, line) for line in lines],
+        key=lambda x: -len(x)
+    )
+
+
+def _erase_files(file_list):
+    for path in file_list:
+        if os.path.isfile(path) or os.path.islink(path):
+            os.remove(path)
+
+
+def _erase_dirs(dir_list):
+    for path in dir_list:
+        if os.path.isdir(path):
+            os.rmdir(path)
+
+
+def _forget():
+    run('pkgutil --forget %s' % _PKG_ID, echo=False)
+
+
+def check():
+    assert _is_installed() is True, 'Could not find AWS CLI installation.'
+
+    lines = run('pkgutil --pkg-info %s /' % _PKG_ID, echo=False).split('\n')
+    version = _trim_before_space(lines[1])
+    volume = _trim_before_space(lines[2])
+    location = _trim_before_space(lines[3])
+    timestamp = int(_trim_before_space(lines[4]))
+    root = os.path.join(volume, location)
+    print('Found AWS CLI version %s installed at %s' % (
+        version, root))
+    print('Installed on %s' % datetime.fromtimestamp(timestamp))
+    command = 'sudo %s uninstall' % os.path.abspath(__file__)
+    print('To uninstall run the command:')
+    print(command)
+    return 0
+
+
+def _is_installed():
+    try:
+        result = run('pkgutil --pkg-info %s /' % _PKG_ID, echo=False)
+    except BadRCError:
+        return False
+    return True
+
+
+def main():
+    parser = argparse.ArgumentParser(usage=__doc__)
+    subparsers = parser.add_subparsers()
+    check_parser = subparsers.add_parser(
+        'check',
+        help=(
+            'Check if the AWS CLI is currently installed from a PKG '
+            'installer.'
+        )
+    )
+    check_parser.set_defaults(func=check)
+    uninstall_parser = subparsers.add_parser(
+        'uninstall',
+        help='Uninstall the AWS CLI installed from the Mac PKG'
+    )
+    uninstall_parser.set_defaults(func=uninstall)
+
+    args = parser.parse_args()
+    return args.func()
+
+
+if __name__ == '__main__':
+    try:
+        sys.exit(main())
+    except AssertionError as e:
+        print(e)
+        sys.exit(1)

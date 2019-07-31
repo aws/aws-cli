@@ -3,6 +3,9 @@
 import argparse
 import sys
 import os
+import re
+from subprocess import check_output
+from subprocess import check_call
 
 SCRIPTS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(SCRIPTS_DIR)
@@ -13,6 +16,8 @@ REPO_ROOT = os.path.dirname(SCRIPTS_DIR)
 DIST_DIR = os.path.join(REPO_ROOT, 'dist')
 SMOKE_TEST_PATH = os.path.join(
     REPO_ROOT, 'tests', 'integration', 'test_smoke.py')
+UNINSTALL_MAC_PKG_PATH = os.path.join(
+    SCRIPTS_DIR, 'installers', 'uninstall-mac-pkg')
 
 
 class InstallerTester(object):
@@ -66,9 +71,33 @@ class ExeTester(InstallerTester):
         return self._installer_location
 
 
+class PkgTester(InstallerTester):
+    DEFAULT_INSTALLER_LOCATION = os.path.join(DIST_DIR, 'AWS-CLI-Installer.pkg')
+    _PKG_ID = 'com.amazon.aws.cli2'
+
+    def get_aws_cmd(self):
+        value = run('%s %s check' % (sys.executable, UNINSTALL_MAC_PKG_PATH))
+        match = re.search('installed at (.+)?\n', value)
+        base_path = match.group(1)
+        cmd_path = os.path.join(base_path, 'aws')
+        return cmd_path
+
+    def setup(self):
+        run('sudo installer -pkg %s -target /' % self._installer_location)
+
+    def cleanup(self):
+        run('sudo %s %s uninstall' % (sys.executable, UNINSTALL_MAC_PKG_PATH))
+
+    def __call__(self):
+        assert os.geteuid() == 0, \
+            'Mac PKG installer must be run as root (with sudo).'
+        super(PkgTester, self).__call__()
+
+
 def main():
     installer_to_tester_cls = {
-        'exe': ExeTester
+        'exe': ExeTester,
+        'pkg': PkgTester,
     }
     parser = argparse.ArgumentParser(usage=__doc__)
     parser.add_argument(
@@ -90,4 +119,8 @@ def main():
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except AssertionError as e:
+        print(e)
+        sys.exit(1)

@@ -262,12 +262,10 @@ class TestEKSClient(unittest.TestCase):
 
     def test_profile(self):
         self._session.profile = "profile"
-        self._correct_user_entry["user"]["exec"]["env"] = [
-            OrderedDict([
-                ("name", "AWS_PROFILE"),
-                ("value", "profile")
-            ])
-        ]
+        self._correct_user_entry["user"]["exec"]["args"].extend([
+            "--profile",
+            "profile"
+        ])
         self.assertEqual(self._client.get_user_entry(),
                          self._correct_user_entry)
         self._mock_client.describe_cluster.assert_called_once_with(

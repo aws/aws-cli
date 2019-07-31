@@ -48,6 +48,13 @@ class TestParamFile(unittest.TestCase):
         self.assertEqual(data, b'This is a test')
         self.assertIsInstance(data, six.binary_type)
 
+    def test_base64_string(self):
+        base64_string = 'VGhpcyBpcyBhIHRlc3Q='
+        prefixed_base64_string = 'base64://' + base64_string
+        data = self.get_paramfile(prefixed_base64_string)
+        self.assertEqual(data, b'This is a test')
+        self.assertIsInstance(data, six.binary_type)
+
     @skip_if_windows('Binary content error only occurs '
                      'on non-Windows platforms.')
     def test_cannot_load_text_file(self):
@@ -66,6 +73,10 @@ class TestParamFile(unittest.TestCase):
 
     def test_non_string_type_returns_none(self):
         self.assertIsNone(self.get_paramfile(100))
+
+    def test_cannot_decode_base64_string(self):
+        with self.assertRaises(ResourceLoadingError):
+            self.get_paramfile('base64://VGhpcyBpcyBhIHRlc3Q')
 
 
 class TestHTTPBasedResourceLoading(unittest.TestCase):
@@ -111,6 +122,7 @@ class TestConfigureURIArgumentHandler(unittest.TestCase):
         register_uri_param_handler(session)
         cases = mock_handler_cls.call_args[0][0]
 
+        self.assertIn('base64://', cases)
         self.assertIn('file://', cases)
         self.assertIn('fileb://', cases)
         self.assertIn('http://', cases)
@@ -124,6 +136,7 @@ class TestConfigureURIArgumentHandler(unittest.TestCase):
         register_uri_param_handler(session)
         cases = mock_handler_cls.call_args[0][0]
 
+        self.assertIn('base64://', cases)
         self.assertIn('file://', cases)
         self.assertIn('fileb://', cases)
         self.assertIn('http://', cases)
@@ -138,6 +151,7 @@ class TestConfigureURIArgumentHandler(unittest.TestCase):
         register_uri_param_handler(session)
         cases = mock_handler_cls.call_args[0][0]
 
+        self.assertIn('base64://', cases)
         self.assertIn('file://', cases)
         self.assertIn('fileb://', cases)
         self.assertIn('http://', cases)
@@ -152,6 +166,7 @@ class TestConfigureURIArgumentHandler(unittest.TestCase):
         register_uri_param_handler(session)
         cases = mock_handler_cls.call_args[0][0]
 
+        self.assertIn('base64://', cases)
         self.assertIn('file://', cases)
         self.assertIn('fileb://', cases)
         self.assertNotIn('http://', cases)

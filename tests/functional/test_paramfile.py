@@ -94,6 +94,17 @@ class TestCLIFollowParamURLDefault(BaseTestCLIFollowParamURL):
             expected_param=b'file content'
         )
 
+    def test_does_use_base64_prefix(self):
+        # The command will fail with error code 255 since bytes type does
+        # not work for this parameter, however we still record the raw
+        # parameter that we passed, which is all this test is concerend about.
+        param = 'base64://YmxvYiBjb250ZW50'
+        self.assert_param_expansion_is_correct(
+            provided_param=param,
+            expected_param=b'blob content'
+        )
+
+
 
 class TestCLIFollowParamURLDisabled(BaseTestCLIFollowParamURL):
     def setUp(self):
@@ -147,6 +158,16 @@ class TestCLIFollowParamURLDisabled(BaseTestCLIFollowParamURL):
             expected_param=b'file content'
         )
 
+    def test_does_use_base64_prefix(self):
+        # The command will fail with error code 255 since bytes type does
+        # not work for this parameter, however we still record the raw
+        # parameter that we passed, which is all this test is concerend about.
+        param = 'base64://YmxvYiBjb250ZW50'
+        self.assert_param_expansion_is_correct(
+            provided_param=param,
+            expected_param=b'blob content'
+        )
+
 
 class TestCLIFollowParamURLEnabled(BaseTestCLIFollowParamURL):
     def setUp(self):
@@ -196,4 +217,14 @@ class TestCLIFollowParamURLEnabled(BaseTestCLIFollowParamURL):
         self.assert_param_expansion_is_correct(
             provided_param=param,
             expected_param=b'file content'
+        )
+
+    def test_does_use_base64_prefix(self):
+        # The command will fail with error code 255 since bytes type does
+        # not work for this parameter, however we still record the raw
+        # parameter that we passed, which is all this test is concerend about.
+        param = 'base64://YmxvYiBjb250ZW50'
+        self.assert_param_expansion_is_correct(
+            provided_param=param,
+            expected_param=b'blob content'
         )

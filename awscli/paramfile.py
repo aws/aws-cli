@@ -13,6 +13,7 @@
 import logging
 import os
 import copy
+import base64
 
 from botocore.awsrequest import AWSRequest
 from botocore.httpsession import URLLib3Session
@@ -232,6 +233,14 @@ def get_file(prefix, path, mode):
             path, e))
 
 
+def get_base64(prefix, value):
+    try:
+        return base64.b64decode(value[len(prefix):])
+    except Exception as e:
+        raise ResourceLoadingError('Unable to decode %s: %s' % (
+            value, e))
+
+
 def get_uri(prefix, uri):
     try:
         session = URLLib3Session()
@@ -247,6 +256,7 @@ def get_uri(prefix, uri):
 
 
 LOCAL_PREFIX_MAP = {
+    'base64://': (get_base64, {}),
     'file://': (get_file, {'mode': 'r'}),
     'fileb://': (get_file, {'mode': 'rb'}),
 }

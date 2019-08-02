@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.210
+========
+
+* api-change:``sts``: Update sts command to latest version
+* enhancement:Credentials: Add support for a credential provider that handles resolving credentials via STS AssumeRoleWithWebIdentity
+
+
 1.16.209
 ========
 

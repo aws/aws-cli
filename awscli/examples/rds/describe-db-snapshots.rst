@@ -36,4 +36,4 @@ Output::
         ]
     }
 
-For more information, see `title <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateSnapshot.html>`__ in the *Amazon RDS User Guide*.
+For more information, see `Creating a DB Snapshot <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateSnapshot.html>`__ in the *Amazon RDS User Guide*.

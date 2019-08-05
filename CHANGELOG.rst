@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.211
+========
+
+* api-change:``iot``: Update iot command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``datasync``: Update datasync command to latest version
+
+
 1.16.210
 ========
 

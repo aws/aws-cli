@@ -3,6 +3,7 @@
 import argparse
 import sys
 import os
+import re
 from datetime import datetime
 from subprocess import check_output
 from subprocess import CalledProcessError
@@ -16,33 +17,41 @@ from utils import BadRCError
 
 
 _PKG_ID = 'com.amazon.aws.cli2'
-
+_PKGUTIL_PATTERN = re.compile(
+    (
+        r'version: (?P<version>.*?)\n'
+        r'volume: (?P<volume>.*?)\n'
+        r'location: (?P<location>.*?)\n'
+        r'install-time: (?P<install_time>.*?)\n'
+    ),
+    re.X
+)
 
 def uninstall():
-    assert _is_installed() is True, 'Could not find AWS CLI installation.'
+    assert _is_installed(), 'Could not find AWS CLI installation.'
     assert os.geteuid() == 0, 'Script must be run as root (with sudo).'
 
+    # First we remove all the files listed in the pkg's receipt file,
+    # and our own custom metadata file.
     root_dir = _get_root_dir()
     list_files = _get_file_list(root_dir)
     _erase_files(list_files)
+
+    # Once these are all removed the directories should all be empty and can
+    # be deleted.
     list_dirs = _get_dir_list(root_dir)
     _erase_dirs(list_dirs)
+
+    # Finally we forget the package receipt.
     _forget()
     return 0
 
 
 def _get_root_dir():
-    lines = run('pkgutil --pkg-info %s /' % _PKG_ID, echo=False).split('\n')
-    volume_line = lines[2]
-    volume = _trim_before_space(volume_line)
-    location_line = lines[3]
-    location = _trim_before_space(location_line)
-    path = os.path.join(volume, location)
+    lines = run('pkgutil --pkg-info %s /' % _PKG_ID, echo=False)
+    output = _PKGUTIL_PATTERN.search(lines)
+    path = os.path.join(output.group('volume'), output.group('location'))
     return path
-
-
-def _trim_before_space(value):
-    return value[value.find(' ') + 1:]
 
 
 def _get_file_list(root):
@@ -54,6 +63,11 @@ def _get_file_list(root):
 
 
 def _read_install_metadata(root):
+    # Install metadata is a list of files that were installed by helper scripts
+    # executed by the PKG. In the AWS CLI V2's case, we use a postinstall
+    # script to add binaries symlinks to /usr/bin. These are untracked by the
+    # pkg receipt. To track them we add them to a special .install-metdata file
+    # in the installer directory.
     metadata_path = os.path.join(root, '.install-metadata')
     if not os.path.isfile(metadata_path):
         return []
@@ -86,21 +100,22 @@ def _erase_dirs(dir_list):
 
 
 def _forget():
+    # Forget is the pkgutil command to delete the pkg installer receipt.
+    # Once the files have been deleted, the pkgutil command will continue to
+    # report that they are installed until the pkg id has been forgotten.
     run('pkgutil --forget %s' % _PKG_ID, echo=False)
 
 
 def check():
-    assert _is_installed() is True, 'Could not find AWS CLI installation.'
+    assert _is_installed(), 'Could not find AWS CLI installation.'
 
-    lines = run('pkgutil --pkg-info %s /' % _PKG_ID, echo=False).split('\n')
-    version = _trim_before_space(lines[1])
-    volume = _trim_before_space(lines[2])
-    location = _trim_before_space(lines[3])
-    timestamp = int(_trim_before_space(lines[4]))
-    root = os.path.join(volume, location)
+    lines = run('pkgutil --pkg-info %s /' % _PKG_ID, echo=False)
+    output = _PKGUTIL_PATTERN.search(lines)
+    root = os.path.join(output.group('volume'), output.group('location'))
     print('Found AWS CLI version %s installed at %s' % (
-        version, root))
-    print('Installed on %s' % datetime.fromtimestamp(timestamp))
+        output.group('version'), root))
+    print('Installed on %s' % datetime.fromtimestamp(
+        int(output.group('install_time'))))
     command = 'sudo %s uninstall' % os.path.abspath(__file__)
     print('To uninstall run the command:')
     print(command)

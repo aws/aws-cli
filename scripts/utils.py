@@ -6,8 +6,9 @@ class BadRCError(Exception):
     pass
 
 
-def run(cmd, cwd=None, env=None):
-    sys.stdout.write("Running cmd: %s\n" % cmd)
+def run(cmd, cwd=None, env=None, echo=True):
+    if echo:
+        sys.stdout.write("Running cmd: %s\n" % cmd)
     kwargs = {
         'shell': True,
         'stdout': subprocess.PIPE,

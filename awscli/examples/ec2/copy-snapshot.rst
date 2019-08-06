@@ -1,13 +1,25 @@
-**To copy a snapshot**
+**Example 1: To copy a snapshot**
 
-This example command copies a snapshot with the snapshot ID of ``snap-066877671789bd71b`` from the ``us-west-2`` region to the ``us-east-1`` region and adds a short description to identify the snapshot.
+The following ``copy-snapshot`` example command copies the specified snapshot from the ``us-west-2`` Region to the ``us-east-1`` Region and adds a short description. ::
 
-Command::
-
-  aws --region us-east-1 ec2 copy-snapshot --source-region us-west-2 --source-snapshot-id snap-066877671789bd71b --description "This is my copied snapshot."
+    aws ec2 copy-snapshot \
+        --region us-east-1 \
+        --source-region us-west-2 \
+        --source-snapshot-id snap-066877671789bd71b \
+        --description "This is my copied snapshot."
 
 Output::
 
-   {
-       "SnapshotId": "snap-066877671789bd71b"
-   }
+    {
+        "SnapshotId": "snap-066877671789bd71b"
+    }
+
+**Example 2: To copy an unencrypted snapshot and encrypt the new snapshot**
+
+The following ``copy-snapshot`` command copies the specified unencrypted snapshot from the ``us-west-2`` Region to the current Region and encrypts the new snapshot using the specified AWS KMS customer master key (CMK). ::
+
+    aws ec2 copy-snapshot \
+        --source-region us-west-2 \
+        --source-snapshot-id snap-066877671789bd71b \
+        --encrypted \
+        --kmd-key-id alias/my-cmk

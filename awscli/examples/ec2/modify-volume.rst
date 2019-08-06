@@ -1,10 +1,10 @@
 **Example 1: To modify a volume by changing its size**
 
-The following ``modify-volume`` example modifies a volume by changing the volume's size to 150GB. ::
+The following ``modify-volume`` example changes the size of the specified volume to 150GB. 
 
-    aws ec2 modify-volume \
-        --size 150 \
-        --volume-id vol-1234567890abcdef0
+Command::
+
+    aws ec2 modify-volume --size 150 --volume-id vol-1234567890abcdef0
 
 Output::
 
@@ -25,7 +25,7 @@ Output::
 
 **Example 2: To modify a volume by changing its type, size, and IOPS value**
 
-The following ``modify-volume`` example changes the volume's `type` to a Provisioned IOPS SSD (`io1`), sets the target IOPS rate to 10000, and sets the volume size to `350GB`. ::
+The following ``modify-volume`` example changes the volume type to Provisioned IOPS SSD, sets the target IOPS rate to 10000, and sets the volume size to 350GB. ::
 
     aws ec2 modify-volume \
         --volume-type io1 \
@@ -49,5 +49,3 @@ Output::
             "OriginalSize": 50
         }
     }
-
-For more information, see `Modifying the Size, Performance, or Type of an EBS Volume <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-modify-volume.html>`_ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.213
+========
+
+* api-change:``application-insights``: Update application-insights command to latest version
+* bugfix:MSI: Fix race condition when running S3 commands on windows `#4247 <https://github.com/aws/aws-cli/issues/4247>`__
+
+
 1.16.212
 ========
 

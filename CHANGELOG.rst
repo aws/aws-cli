@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.214
+========
+
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``lakeformation``: Update lakeformation command to latest version
+
+
 1.16.213
 ========
 

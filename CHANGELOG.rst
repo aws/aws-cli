@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.16.215
+========
+
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``lex-runtime``: Update lex-runtime command to latest version
+* api-change:``iot``: Update iot command to latest version
+
+
 1.16.214
 ========
 

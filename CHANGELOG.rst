@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.16.216
+========
+
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* enhancement:Shorthand: Support colon char in shorthand syntax key names (#4348)
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+
+
 1.16.215
 ========
 

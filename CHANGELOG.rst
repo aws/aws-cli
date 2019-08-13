@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.217
+========
+
+* api-change:``appsync``: Update appsync command to latest version
+
+
 1.16.216
 ========
 

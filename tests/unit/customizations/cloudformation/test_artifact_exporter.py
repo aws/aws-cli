@@ -210,6 +210,7 @@ class TestArtifactExporter(unittest.TestCase):
 
     def setUp(self):
         self.s3_uploader_mock = Mock()
+        self.s3_uploader_mock.s3.meta.endpoint_url = "https://s3.some-valid-region.amazonaws.com"
 
     def test_parse_s3_url(self):
 
@@ -742,6 +743,18 @@ class TestArtifactExporter(unittest.TestCase):
         resource_dict = {property_name: s3_url}
 
         # Case 1: Path is already S3 url
+        stack_resource.export(resource_id, resource_dict, "dir")
+        self.assertEquals(resource_dict[property_name], s3_url)
+        self.s3_uploader_mock.upload_with_dedup.assert_not_called()
+
+    def test_export_cloudformation_stack_no_upload_path_is_s3_region_httpsurl(self):
+        stack_resource = CloudFormationStackResource(self.s3_uploader_mock)
+        resource_id = "id"
+        property_name = stack_resource.PROPERTY_NAME
+
+        s3_url = "https://s3.some-valid-region.amazonaws.com/hello/world"
+        resource_dict = {property_name: s3_url}
+
         stack_resource.export(resource_id, resource_dict, "dir")
         self.assertEquals(resource_dict[property_name], s3_url)
         self.s3_uploader_mock.upload_with_dedup.assert_not_called()

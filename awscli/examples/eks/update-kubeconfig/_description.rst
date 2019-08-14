@@ -6,7 +6,7 @@ Note:
 This command constructs a configuration with prepopulated server and certificate authority data values for a specified cluster. 
 You can specify an IAM role ARN with the --role-arn option to use for authentication when you issue kubectl commands. 
 Otherwise, the IAM entity in your default AWS CLI or SDK credential chain is used. 
-You can view your default AWS CLI or SDK identity by running the `aws sts get-caller-identity` command.
+You can view your default AWS CLI or SDK identity by running the ``aws sts get-caller-identity`` command.
 
 The resulting kubeconfig is created as a new file or merged with an existing kubeconfig file using the following logic:
 

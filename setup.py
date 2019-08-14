@@ -39,7 +39,7 @@ if sys.version_info[:2] == (2, 6):
     # versions dropped support for Python 2.6.
     requires.append('PyYAML>=3.10,<=3.13')
 else:
-    requires.append('PyYAML>=3.10,<=5.1')
+    requires.append('PyYAML>=3.10,<=5.2')
 
 
 setup_options = dict(

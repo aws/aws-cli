@@ -438,6 +438,7 @@ class CloudFormationStackResource(Resource):
         template_path = resource_dict.get(self.PROPERTY_NAME, None)
 
         if template_path is None or is_s3_url(template_path) or \
+                template_path.startswith(self.uploader.s3.meta.endpoint_url) or \
                 template_path.startswith("https://s3.amazonaws.com/"):
             # Nothing to do
             return

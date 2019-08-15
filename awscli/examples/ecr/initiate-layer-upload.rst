@@ -1,14 +1,13 @@
 **To initiate an image layer upload**
 
-This example initiates an image layer upload for the ``hello-world`` repository.
+The following ``initiate-layer-upload`` example initiates an image layer upload to the ``layer-test`` repository. ::
 
-Command::
-
-  aws ecr initiate-layer-upload --repository-name hello-world
+    aws ecr initiate-layer-upload \
+        --repository-name layer-test
   
 Output::
 
-  {
-      "uploadId": "4eb64aee-14ee-aae4-1e94-6593c01b39f8",
-      "partSize": 10485760
-  }
+    {
+        "partSize": 10485760,
+        "uploadId": "6cb64b8a-9378-0e33-2ab1-b780fab8a9e9"
+    }

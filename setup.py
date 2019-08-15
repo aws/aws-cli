@@ -23,7 +23,7 @@ def find_version(*file_paths):
     raise RuntimeError("Unable to find version string.")
 
 
-requires = ['botocore==1.12.208',
+requires = ['botocore==1.12.209',
             'colorama>=0.2.5,<=0.3.9',
             'docutils>=0.10,<0.15',
             'rsa>=3.1.2,<=3.5.0',
@@ -39,7 +39,7 @@ if sys.version_info[:2] == (2, 6):
     # versions dropped support for Python 2.6.
     requires.append('PyYAML>=3.10,<=3.13')
 else:
-    requires.append('PyYAML>=3.10,<=5.1')
+    requires.append('PyYAML>=3.10,<=5.2')
 
 
 setup_options = dict(

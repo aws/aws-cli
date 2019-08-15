@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.16.219
+========
+
+* api-change:``glue``: Update glue command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``codecommit``: Update codecommit command to latest version
+* api-change:``athena``: Update athena command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+
+
 1.16.218
 ========
 

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.220
+========
+
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
 1.16.219
 ========
 

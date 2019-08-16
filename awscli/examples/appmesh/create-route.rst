@@ -1,6 +1,6 @@
 **Example 1: To create a new route with weighting**
 
-The following ``create-route`` example uses a JSON input file to create a route with weighted targets. ::
+The following ``create-route`` example uses a `JSON input file <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-skeleton.html>`__ to create a route with weighted targets. ::
 
     aws appmesh create-route \
         --cli-input-json file://create-route-weighted.json
@@ -75,7 +75,7 @@ For more information, see `Routes <https://docs.aws.amazon.com/app-mesh/latest/u
 
 **Example 2: To create a new route with path-based routing**
 
-The following ``create-route`` example uses a JSON input file to create a route with path-based routing. ::
+The following ``create-route`` example uses a `JSON input file <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-skeleton.html>`__ to create a route with path-based routing. ::
 
     aws appmesh create-route \
         --cli-input-json file://create-route-path.json
@@ -139,3 +139,92 @@ Output::
     }
 
 For more information, see `Path-based Routing <https://docs.aws.amazon.com/app-mesh/latest/userguide/route-path.html>`__ in the *AWS App Mesh User Guide*.
+
+**Example 3: To create a new route based on an HTTP header**
+
+The following ``create-route`` example uses a `JSON input file <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-skeleton.html>`__ to create a route that will route all requests to ``serviceB`` that have any path prefix in an HTTPS post where the ``clientRequestId`` header has a prefix of ``123``::
+
+    aws appmesh create-route \
+        --cli-input-json file://create-route-headers.json
+
+Contents of ``create-route-headers.json``::
+
+    {
+        "meshName" : "app1",
+        "routeName" : "route-headers",
+        "spec" : {
+            "httpRoute" : {
+                "action" : {
+                    "weightedTargets" : [
+                        {
+                            "virtualNode" : "serviceB",
+                            "weight" : 100
+                        }
+                    ]
+                },
+                "match" : {
+                    "headers" : [
+                        {
+                            "invert" : false,
+                            "match" : {
+                                "prefix" : "123"
+                            },
+                            "name" : "clientRequestId"
+                        }
+                    ],
+                    "method" : "POST",
+                    "prefix" : "/",
+                    "scheme" : "https"
+                }
+            }
+        },
+        "virtualRouterName" : "virtual-router1"
+    }
+
+Output::
+
+    {
+        "route": {
+            "meshName": "app1",
+            "metadata": {
+                "arn": "arn:aws:appmesh:us-east-1:123456789012:mesh/app1/virtualRouter/virtual-router1/route/route-headers",
+                "createdAt": 1565963028.608,
+                "lastUpdatedAt": 1565963028.608,
+                "uid": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                "version": 1
+            },
+            "routeName": "route-headers",
+            "spec": {
+                "httpRoute": {
+                    "action": {
+                        "weightedTargets": [
+                            {
+                                "virtualNode": "serviceB",
+                                "weight": 100
+                            }
+                        ]
+                    },
+                    "match": {
+                        "headers": [
+                            {
+                                "invert": false,
+                                "match": {
+                                    "prefix": "123"
+                                },
+                                "name": "clientRequestId"
+                            }
+                        ],
+                        "method": "POST",
+                        "prefix": "/",
+                        "scheme": "https"
+                    }
+                }
+            },
+            "status": {
+                "status": "ACTIVE"
+            },
+            "virtualRouterName": "virtual-router1"
+        }
+    }
+
+For more information, see `HTTP Headers <https://docs.aws.amazon.com/app-mesh/latest/userguide/route-http-headers.html>`__ in the *AWS App Mesh User Guide*.

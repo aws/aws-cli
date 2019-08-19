@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.221
+========
+
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``cur``: Update cur command to latest version
+
+
 1.16.220
 ========
 

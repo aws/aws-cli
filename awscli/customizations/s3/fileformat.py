@@ -47,18 +47,18 @@ class FileFormat(object):
         #     directory/objects under a common prefix or false when it
         #     is a single file
         dir_op = parameters['dir_op']
-        src_path = format_table[src_type](src_path, dir_op)[0]
+        src_path = format_table[src_type]('src', src_path, dir_op)[0]
         # :var use_src_name: True when the destination file/object will take on
         #     the name of the source file/object.  False when it
         #     will take on the name the user specified in the
         #     command line.
-        dest_path, use_src_name = format_table[dest_type](dest_path, dir_op)
+        dest_path, use_src_name = format_table[dest_type]('dest', dest_path, dir_op)
         files = {'src': {'path': src_path, 'type': src_type},
                  'dest': {'path': dest_path, 'type': dest_type},
                  'dir_op': dir_op, 'use_src_name': use_src_name}
         return files
 
-    def local_format(self, path, dir_op):
+    def local_format(self, typ, path, dir_op):
         """
         This function formats the path of local files and returns whether the
         destination will keep its own name or take the source's name along with
@@ -92,7 +92,7 @@ class FileFormat(object):
             else:
                 return full_path, False
 
-    def s3_format(self, path, dir_op):
+    def s3_format(self, typ, path, dir_op):
         """
         This function formats the path of source files and returns whether the
         destination will keep its own name or take the source's name along
@@ -111,7 +111,7 @@ class FileFormat(object):
                to the source name.
         """
         if dir_op:
-            if not path.endswith('/'):
+            if ('dest' == typ) and (not path.endswith('/')):
                 path += '/'
             return path, True
         else:

@@ -2,6 +2,498 @@
 CHANGELOG
 =========
 
+1.16.221
+========
+
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``cur``: Update cur command to latest version
+
+
+1.16.220
+========
+
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
+1.16.219
+========
+
+* api-change:``glue``: Update glue command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``codecommit``: Update codecommit command to latest version
+* api-change:``athena``: Update athena command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+
+
+1.16.218
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.16.217
+========
+
+* api-change:``appsync``: Update appsync command to latest version
+
+
+1.16.216
+========
+
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* enhancement:Shorthand: Support colon char in shorthand syntax key names (#4348)
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+
+
+1.16.215
+========
+
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``lex-runtime``: Update lex-runtime command to latest version
+* api-change:``iot``: Update iot command to latest version
+
+
+1.16.214
+========
+
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``lakeformation``: Update lakeformation command to latest version
+
+
+1.16.213
+========
+
+* api-change:``application-insights``: Update application-insights command to latest version
+* bugfix:MSI: Fix race condition when running S3 commands on windows `#4247 <https://github.com/aws/aws-cli/issues/4247>`__
+
+
+1.16.212
+========
+
+* api-change:``batch``: Update batch command to latest version
+
+
+1.16.211
+========
+
+* api-change:``iot``: Update iot command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``datasync``: Update datasync command to latest version
+
+
+1.16.210
+========
+
+* api-change:``sts``: Update sts command to latest version
+* enhancement:Credentials: Add support for a credential provider that handles resolving credentials via STS AssumeRoleWithWebIdentity
+
+
+1.16.209
+========
+
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``polly``: Update polly command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+
+
+1.16.208
+========
+
+* api-change:``codecommit``: Update codecommit command to latest version
+
+
+1.16.207
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``mediaconnect``: Update mediaconnect command to latest version
+* api-change:``greengrass``: Update greengrass command to latest version
+* api-change:``logs``: Update logs command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``batch``: Update batch command to latest version
+* api-change:``glue``: Update glue command to latest version
+
+
+1.16.206
+========
+
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``ecr``: Update ecr command to latest version
+
+
+1.16.205
+========
+
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``sts``: Update sts command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``glue``: Update glue command to latest version
+
+
+1.16.204
+========
+
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
+1.16.203
+========
+
+* api-change:``shield``: Update shield command to latest version
+* api-change:``mq``: Update mq command to latest version
+
+
+1.16.202
+========
+
+* bugfix:Dependency: Fixed dependency issue with broken docutils aws/aws-cli`#4332 <https://github.com/aws/aws-cli/issues/4332>`__
+
+
+1.16.201
+========
+
+* api-change:``iotevents``: Update iotevents command to latest version
+* api-change:``sqs``: Update sqs command to latest version
+
+
+1.16.200
+========
+
+* api-change:``comprehend``: Update comprehend command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``codedeploy``: Update codedeploy command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+
+
+1.16.199
+========
+
+* api-change:``dms``: Update dms command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+
+
+1.16.198
+========
+
+* api-change:``es``: Update es command to latest version
+* api-change:``iam``: Update iam command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+
+
+1.16.197
+========
+
+* api-change:``events``: Update events command to latest version
+
+
+1.16.196
+========
+
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``glacier``: Update glacier command to latest version
+
+
+1.16.195
+========
+
+* api-change:``amplify``: Update amplify command to latest version
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``waf``: Update waf command to latest version
+* api-change:``waf-regional``: Update waf-regional command to latest version
+* api-change:``kinesis-video-archived-media``: Update kinesis-video-archived-media command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``kinesisvideo``: Update kinesisvideo command to latest version
+* api-change:``efs``: Update efs command to latest version
+
+
+1.16.194
+========
+
+* api-change:``ce``: Update ce command to latest version
+
+
+1.16.193
+========
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``swf``: Update swf command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.16.192
+========
+
+* api-change:``mediastore``: Update mediastore command to latest version
+* api-change:``appstream``: Update appstream command to latest version
+
+
+1.16.191
+========
+
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``docdb``: Update docdb command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
+1.16.190
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+
+
+1.16.189
+========
+
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``directconnect``: Update directconnect command to latest version
+* api-change:``ec2-instance-connect``: Update ec2-instance-connect command to latest version
+
+
+1.16.188
+========
+
+* api-change:``dynamodb``: Update dynamodb command to latest version
+
+
+1.16.187
+========
+
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+* api-change:``codecommit``: Update codecommit command to latest version
+
+
+1.16.186
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``eks``: Update eks command to latest version
+
+
+1.16.185
+========
+
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``application-insights``: Update application-insights command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``service-quotas``: Update service-quotas command to latest version
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+
+
+1.16.184
+========
+
+* api-change:``mediapackage``: Update mediapackage command to latest version
+* api-change:``devicefarm``: Update devicefarm command to latest version
+* api-change:``kinesis-video-media``: Update kinesis-video-media command to latest version
+* api-change:``iam``: Update iam command to latest version
+
+
+1.16.183
+========
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``opsworks``: Update opsworks command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``acm-pca``: Update acm-pca command to latest version
+* api-change:``health``: Update health command to latest version
+* api-change:``iotevents-data``: Update iotevents-data command to latest version
+
+
+1.16.182
+========
+
+* api-change:``eks``: Update eks command to latest version
+
+
+1.16.181
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+
+
+1.16.180
+========
+
+* api-change:``neptune``: Update neptune command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+
+
+1.16.179
+========
+
+* api-change:``appstream``: Update appstream command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``personalize``: Update personalize command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.16.178
+========
+
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.16.177
+========
+
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+
+
+1.16.176
+========
+
+* api-change:``sagemaker``: Update sagemaker command to latest version
+
+
+1.16.175
+========
+
+* api-change:``personalize-runtime``: Update personalize-runtime command to latest version
+* api-change:``codecommit``: Update codecommit command to latest version
+* api-change:``personalize``: Update personalize command to latest version
+* api-change:``personalize-events``: Update personalize-events command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+
+
+1.16.174
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.16.173
+========
+
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+* api-change:``logs``: Update logs command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``mediaconnect``: Update mediaconnect command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``ses``: Update ses command to latest version
+
+
+1.16.172
+========
+
+* api-change:``glue``: Update glue command to latest version
+
+
+1.16.171
+========
+
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``iam``: Update iam command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.16.170
+========
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.16.169
+========
+
+* api-change:``iotanalytics``: Update iotanalytics command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``iotevents-data``: Update iotevents-data command to latest version
+* api-change:``codecommit``: Update codecommit command to latest version
+* api-change:``rds-data``: Update rds-data command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``pinpoint-email``: Update pinpoint-email command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``iotevents``: Update iotevents command to latest version
+
+
+1.16.168
+========
+
+* api-change:``dlm``: Update dlm command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``iotthingsgraph``: Update iotthingsgraph command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.16.167
+========
+
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``groundstation``: Update groundstation command to latest version
+* api-change:``sts``: Update sts command to latest version
+* api-change:``pinpoint-email``: Update pinpoint-email command to latest version
+* api-change:``waf``: Update waf command to latest version
+* api-change:``chime``: Update chime command to latest version
+
+
+1.16.166
+========
+
+* api-change:``codedeploy``: Update codedeploy command to latest version
+* api-change:``mediastore-data``: Update mediastore-data command to latest version
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+
+
+1.16.165
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``waf-regional``: Update waf-regional command to latest version
+
+
+1.16.164
+========
+
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``budgets``: Update budgets command to latest version
+* api-change:``efs``: Update efs command to latest version
+* api-change:``devicefarm``: Update devicefarm command to latest version
+* api-change:``worklink``: Update worklink command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
 1.16.163
 ========
 

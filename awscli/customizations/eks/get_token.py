@@ -14,7 +14,7 @@ import base64
 import botocore
 import json
 
-from botocore import session
+from datetime import datetime, timedelta
 from botocore.signers import RequestSigner
 from botocore.model import ServiceId
 
@@ -28,6 +28,8 @@ AUTH_SIGNING_VERSION = "v4"
 
 # Presigned url timeout in seconds
 URL_TIMEOUT = 60
+
+TOKEN_EXPIRATION_MINS = 14
 
 TOKEN_PREFIX = 'k8s-aws-v1.'
 
@@ -54,18 +56,30 @@ class GetTokenCommand(BasicCommand):
         }
     ]
 
-    def _run_main(self, parsed_args, parsed_globals):
-        token_generator = TokenGenerator(parsed_globals.region)
+    def get_expiration_time(self):
+        token_expiration = datetime.utcnow() + timedelta(minutes=TOKEN_EXPIRATION_MINS)
+        return token_expiration.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+    def _run_main(self, parsed_args, parsed_globals, token_generator=None):
+        if token_generator is None:
+            token_generator = TokenGenerator(self._session)
         token = token_generator.get_token(
             parsed_args.cluster_name,
-            parsed_args.role_arn
+            parsed_args.role_arn,
+            parsed_globals.region,
         )
+
+        # By default STS signs the url for 15 minutes so we are creating a
+        # rfc3339 timestamp with expiration in 14 minutes as part of the token, which
+        # is used by some clients (client-go) who will refresh the token after 14 mins
+        token_expiration = self.get_expiration_time()
 
         full_object = {
             "kind": "ExecCredential",
             "apiVersion": "client.authentication.k8s.io/v1alpha1",
             "spec": {},
             "status": {
+                "expirationTimestamp": token_expiration,
                 "token": token
             }
         }
@@ -74,37 +88,34 @@ class GetTokenCommand(BasicCommand):
         uni_print('\n')
 
 class TokenGenerator(object):
-    def __init__(self, region_name, session_handler=None):
-        if session_handler is None:
-            session_handler = SessionHandler()
-        self._session_handler = session_handler
-        self._region_name = region_name
+    def __init__(self, botocore_session):
+        self._session_handler = SessionHandler(botocore_session)
 
-    def get_token(self, cluster_name, role_arn):
+    def get_token(self, cluster_name, role_arn, region_name=None):
         """ Generate a presigned url token to pass to kubectl. """
-        url = self._get_presigned_url(cluster_name, role_arn)
+        url = self._get_presigned_url(cluster_name, role_arn, region_name)
         token = TOKEN_PREFIX + base64.urlsafe_b64encode(url.encode('utf-8')).decode('utf-8').rstrip('=')
         return token
 
-    def _get_presigned_url(self, cluster_name, role_arn):
+    def _get_presigned_url(self, cluster_name, role_arn, region_name=None):
         session = self._session_handler.get_session(
-            self._region_name,
+            region_name,
             role_arn
         )
 
-        if self._region_name is None:
-            self._region_name = session.get_config_variable('region')
+        if region_name is None:
+            region_name = session.get_config_variable('region')
 
         loader = botocore.loaders.create_loader()
         data = loader.load_data("endpoints")
         endpoint_resolver = botocore.regions.EndpointResolver(data)
         endpoint = endpoint_resolver.construct_endpoint(
             AUTH_SERVICE,
-            self._region_name
+            region_name
         )
         signer = RequestSigner(
             ServiceId(AUTH_SERVICE),
-            self._region_name,
+            region_name,
             AUTH_SERVICE,
             AUTH_SIGNING_VERSION,
             session.get_credentials(),
@@ -128,11 +139,14 @@ class TokenGenerator(object):
         return url
 
 class SessionHandler(object):
+    def __init__(self, botocore_session):
+        self._session = botocore_session
+
     def get_session(self, region_name, role_arn):
         """
         Assumes the given role and returns a session object assuming said role.
         """
-        session = botocore.session.get_session()
+        session = self._session
         if region_name is not None:
             session.set_config_variable('region', region_name)
 

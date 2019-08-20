@@ -1,86 +1,52 @@
-**To create an HTTP listener**
+**Example 1: To create an HTTP listener**
 
-This example creates an HTTP listener for the specified Application Load Balancer that forwards requests to the specified target group.
+The following ``create-listener`` example creates an HTTP listener for the specified Application Load Balancer that forwards requests to the specified target group. ::
 
-Command::
+    aws elbv2 create-listener \
+        --load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188 \
+        --protocol HTTP \
+        --port 80 \
+        --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067
 
-  aws elbv2 create-listener --load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188 --protocol HTTP --port 80 --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067
 
-Output::
+**Example 2: To create an HTTPS listener**
 
-  {
-    "Listeners": [
-        {
-            "Protocol": "HTTP",
-            "Port": 80,
-            "DefaultActions": [
-                {
-                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067",
-                    "Type": "forward"
-                }
-            ],
-            "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188",
-            "ListenerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2"
-        }
-    ]
-  }
+The following ``create-listener`` example creates an HTTPS listener for the specified Application Load Balancer that forwards requests to the specified target group. You must specify an SSL certificate for an HTTPS listener. You can create and manage certificates using AWS Certificate Manager (ACM). Alternatively, you can create a certificate using SSL/TLS tools, get the certificate signed by a certificate authority (CA), and upload the certificate to AWS Identity and Access Management (IAM). ::
 
-**To create an HTTPS listener**
+    aws elbv2 create-listener \
+        --load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188 \
+        --protocol HTTPS \
+        --port 443 \
+        --certificates CertificateArn=arn:aws:acm:us-west-2:123456789012:certificate/3dcb0a41-bd72-4774-9ad9-756919c40557 \
+        --ssl-policy ELBSecurityPolicy-2016-08 --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067
 
-This example creates an HTTPS listener for the specified Application Load Balancer that forwards requests to the specified target group. Note that you must specify an SSL certificate for an HTTPS listener. You can create and manage certificates using AWS Certificate Manager (ACM). Alternatively, you can create a certificate using SSL/TLS tools, get the certificate signed by a certificate authority (CA), and upload the certificate to AWS Identity and Access Management (IAM).
 
-Command::
+**Example 3: To create a TCP listener**
 
-  aws elbv2 create-listener --load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188 --protocol HTTPS --port 443 --certificates CertificateArn=arn:aws:acm:us-west-2:123456789012:certificate/3dcb0a41-bd72-4774-9ad9-756919c40557 --ssl-policy ELBSecurityPolicy-2016-08 --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067
+The following ``create-listener`` example creates a TCP listener for the specified Network Load Balancer that forwards requests to the specified target group. ::
 
-Output::
+    aws elbv2 create-listener \
+        --load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/net/my-network-load-balancer/5d1b75f4f1cee11e \
+        --protocol TCP \
+        --port 80 \
+        --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-tcp-targets/b6bba954d1361c78
 
-  {
-    "Listeners": [
-        {
-            "Protocol": "HTTPS",
-            "Port": 443,
-            "DefaultActions": [
-                {
-                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067",
-                    "Type": "forward"
-                }
-            ],
-            "SslPolicy": "ELBSecurityPolicy-2016-08",
-            "Certificates": [
-                {
-                    "CertificateArn": "arn:aws:acm:us-west-2:123456789012:certificate/3dcb0a41-bd72-4774-9ad9-756919c40557"
-                }
-            ],
-            "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188",
-            "ListenerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2"
-        }
-    ]
-  }
+**Example 4: To create a TLS listener**
 
-**To create a TCP listener**
+The following ``create-listener`` example creates a TLS listener for the specified Network Load Balancer that forwards requests to the specified target group. You must specify an SSL certificate for a TLS listener. ::
 
-This example creates a TCP listener for the specified Network Load Balancer that forwards requests to the specified target group.
+    aws elbv2 create-listener \
+        --load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188 \
+        --protocol TLS --port 443 --certificates CertificateArn=arn:aws:acm:us-west-2:123456789012:certificate/3dcb0a41-bd72-4774-9ad9-756919c40557 \
+        --ssl-policy ELBSecurityPolicy-2016-08 \
+        --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067
 
-Command::
+**Example 5: To create a UDP listener**
 
-  aws elbv2 create-listener --load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/net/my-network-load-balancer/5d1b75f4f1cee11e --protocol TCP --port 80 --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-tcp-targets/b6bba954d1361c78
+The following ``create-listener`` example creates a UDP listener for the specified Network Load Balancer that forwards requests to the specified target group. ::
 
-Output::
-
-  {
-    "Listeners": [
-        {
-            "Protocol": "TCP",
-            "Port": 80,
-            "DefaultActions": [
-                {
-                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-tcp-targets/b6bba954d1361c78",
-                    "Type": "forward"
-                }
-            ],
-            "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/net/my-network-load-balancer/5d1b75f4f1cee11e",
-            "ListenerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/net/my-network-load-balancer/5d1b75f4f1cee11e/08f101851e4bca2c"
-        }
-    ]
-  }
+    aws elbv2 create-listener \
+        --load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/net/my-network-load-balancer/5d1b75f4f1cee11e \
+        --protocol UDP \
+        --port 53 \
+        --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-tcp-targets/b6bba954d1361c78

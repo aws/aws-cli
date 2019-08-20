@@ -549,7 +549,7 @@ class TestCp(BaseS3IntegrationTest):
         # For comparing expires timestamp.
         add_scalar_parsers(self.session)
         bucket_name = _SHARED_BUCKET
-        key = 'foo.txt'
+        key = random_chars(6)
         filename = self.files.create_file(key, contents='')
         p = aws('s3 cp %s s3://%s/%s --metadata keyname=value' %
                 (filename, bucket_name, key))
@@ -563,8 +563,8 @@ class TestCp(BaseS3IntegrationTest):
         # For comparing expires timestamp.
         self.override_parser(timestamp_parser=identity)
         bucket_name = _SHARED_BUCKET
-        original_key = 'foo.txt'
-        new_key = 'bar.txt'
+        original_key = '%s-a' % random_chars(6)
+        new_key = '%s-b' % random_chars(6)
         metadata = {
             'ContentType': 'foo',
             'ContentDisposition': 'foo',
@@ -585,7 +585,9 @@ class TestCp(BaseS3IntegrationTest):
         for name, value in metadata_ref.items():
             self.assertEqual(response[name], value)
 
-        # Use REPLACE to wipe out all of the metadata.
+        # Use REPLACE to wipe out all of the metadata when copying to a new
+        # key.
+        new_key = '%s-c' % random_chars(6)
         p = aws('s3 cp s3://%s/%s s3://%s/%s --metadata-directive REPLACE' %
                 (bucket_name, original_key, bucket_name, new_key))
         self.assert_no_errors(p)
@@ -596,6 +598,7 @@ class TestCp(BaseS3IntegrationTest):
 
         # Use REPLACE to wipe out all of the metadata but include a new
         # metadata value.
+        new_key = '%s-d' % random_chars(6)
         p = aws('s3 cp s3://%s/%s s3://%s/%s --metadata-directive REPLACE '
                 '--content-type bar' %
                 (bucket_name, original_key, bucket_name, new_key))

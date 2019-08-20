@@ -148,7 +148,7 @@ def test_all_resources_export():
         {
             "class": GlueJobCommandScriptLocationResource,
             "expected_result": {
-                    "ScriptLocation": uploaded_s3_url 
+                    "ScriptLocation": uploaded_s3_url
             }
         }
     ]
@@ -210,6 +210,7 @@ class TestArtifactExporter(unittest.TestCase):
 
     def setUp(self):
         self.s3_uploader_mock = Mock()
+        self.s3_uploader_mock.s3.meta.endpoint_url = "https://s3.some-valid-region.amazonaws.com"
 
     def test_parse_s3_url(self):
 
@@ -746,6 +747,18 @@ class TestArtifactExporter(unittest.TestCase):
         self.assertEquals(resource_dict[property_name], s3_url)
         self.s3_uploader_mock.upload_with_dedup.assert_not_called()
 
+    def test_export_cloudformation_stack_no_upload_path_is_s3_region_httpsurl(self):
+        stack_resource = CloudFormationStackResource(self.s3_uploader_mock)
+        resource_id = "id"
+        property_name = stack_resource.PROPERTY_NAME
+
+        s3_url = "https://s3.some-valid-region.amazonaws.com/hello/world"
+        resource_dict = {property_name: s3_url}
+
+        stack_resource.export(resource_id, resource_dict, "dir")
+        self.assertEquals(resource_dict[property_name], s3_url)
+        self.s3_uploader_mock.upload_with_dedup.assert_not_called()
+
     def test_export_cloudformation_stack_no_upload_path_is_empty(self):
         stack_resource = CloudFormationStackResource(self.s3_uploader_mock)
         resource_id = "id"
@@ -1096,6 +1109,20 @@ class TestArtifactExporter(unittest.TestCase):
 
         is_local_file_mock.assert_not_called()
         self.s3_uploader_mock.assert_not_called()
+
+    @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_file")
+    def test_include_transform_export_handler_with_dict_value_for_location(self, is_local_file_mock):
+
+        handler_output = include_transform_export_handler(
+            {"Name": "AWS::Include", "Parameters": {"Location": {"Fn::Sub": "${S3Bucket}/file.txt"}}},
+            self.s3_uploader_mock,
+            "parent_dir")
+        # Input is returned unmodified
+        self.assertEquals(handler_output, {"Name": "AWS::Include", "Parameters": {"Location": {"Fn::Sub": "${S3Bucket}/file.txt"}}})
+
+        is_local_file_mock.assert_not_called()
+        self.s3_uploader_mock.assert_not_called()
+
 
     @patch("awscli.customizations.cloudformation.artifact_exporter.is_local_file")
     def test_include_transform_export_handler_non_local_file(self, is_local_file_mock):

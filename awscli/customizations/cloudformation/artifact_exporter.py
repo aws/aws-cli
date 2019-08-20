@@ -438,6 +438,7 @@ class CloudFormationStackResource(Resource):
         template_path = resource_dict.get(self.PROPERTY_NAME, None)
 
         if template_path is None or is_s3_url(template_path) or \
+                template_path.startswith(self.uploader.s3.meta.endpoint_url) or \
                 template_path.startswith("https://s3.amazonaws.com/"):
             # Nothing to do
             return
@@ -516,9 +517,13 @@ def include_transform_export_handler(template_dict, uploader, parent_dir):
         return template_dict
 
     include_location = template_dict.get("Parameters", {}).get("Location", None)
-    if not include_location or is_s3_url(include_location):
+    if not include_location \
+            or not is_path_value_valid(include_location) \
+            or is_s3_url(include_location):
+        # `include_location` is either empty, or not a string, or an S3 URI
         return template_dict
 
+    # We are confident at this point that `include_location` is a string containing the local path
     abs_include_location = os.path.join(parent_dir, include_location)
     if is_local_file(abs_include_location):
         template_dict["Parameters"]["Location"] = uploader.upload_with_dedup(abs_include_location)

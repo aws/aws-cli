@@ -1,10 +1,6 @@
 **Example 1: To apply a target tracking scaling policy with a predefined metric specification**
 
-The following ``put-scaling-policy`` example applies a target tracking scaling policy with a predefined metric specification to an Amazon ECS service called web-app in the default cluster. The policy keeps the average CPU utilization of the service at 75 percent, with scale-out and scale-in cooldown periods of 60 seconds. The output contains the ARNs and names of the two CloudWatch alarms created on your behalf.
-
-Command:
-
-::
+The following ``put-scaling-policy`` example applies a target tracking scaling policy with a predefined metric specification to an Amazon ECS service called web-app in the default cluster. The policy keeps the average CPU utilization of the service at 75 percent, with scale-out and scale-in cooldown periods of 60 seconds. The output contains the ARNs and names of the two CloudWatch alarms created on your behalf. ::
 
     aws application-autoscaling put-scaling-policy --service-namespace ecs \
     --scalable-dimension ecs:service:DesiredCount \
@@ -12,9 +8,7 @@ Command:
     --policy-name cpu75-target-tracking-scaling-policy --policy-type TargetTrackingScaling \
     --target-tracking-scaling-policy-configuration file://config.json
 
-This example assumes that you have a `config.json` file in the current directory with the following contents:
-
-::
+This example assumes that you have a `config.json` file in the current directory with the following contents::
 
     {
          "TargetValue": 75.0,
@@ -25,9 +19,7 @@ This example assumes that you have a `config.json` file in the current directory
         "ScaleInCooldown": 60
     }
 
-The command returns the following output:
-
-::
+Output::
 
     {
         "PolicyARN": "arn:aws:autoscaling:us-west-2:012345678910:scalingPolicy:6d8972f3-efc8-437c-92d1-6270f29a66e7:resource/ecs/service/default/web-app:policyName/cpu75-target-tracking-scaling-policy",
@@ -43,17 +35,9 @@ The command returns the following output:
         ]
     }
 
-For more information, see `Target Tracking Scaling Policies for Application Auto Scaling`_ in the *AWS Application Auto Scaling User Guide*
-
-.. _`Target Tracking Scaling Policies for Application Auto Scaling`: https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-target-tracking.html
-
 **Example 2: To apply a target tracking scaling policy with a customized metric specification**
 
-The following ``put-scaling-policy`` example applies a target tracking scaling policy with a customized metric specification to an Amazon ECS service called web-app in the default cluster. The policy keeps the average utilization of the service at 75 percent, with scale-out and scale-in cooldown periods of 60 seconds. The output contains the ARNs and names of the two CloudWatch alarms created on your behalf.
-
-Command:
-
-::
+The following ``put-scaling-policy`` example applies a target tracking scaling policy with a customized metric specification to an Amazon ECS service called web-app in the default cluster. The policy keeps the average utilization of the service at 75 percent, with scale-out and scale-in cooldown periods of 60 seconds. The output contains the ARNs and names of the two CloudWatch alarms created on your behalf. ::
 
     aws application-autoscaling put-scaling-policy --service-namespace ecs \
     --scalable-dimension ecs:service:DesiredCount \
@@ -62,9 +46,7 @@ Command:
     --policy-type TargetTrackingScaling \
     --target-tracking-scaling-policy-configuration file://config.json
 
-This example assumes that you have a `config.json` file in the current directory with the following contents:
-
-::
+This example assumes that you have a `config.json` file in the current directory with the following contents::
 
     {
         "TargetValue":75.0,  
@@ -84,9 +66,7 @@ This example assumes that you have a `config.json` file in the current directory
         "ScaleInCooldown": 60
     }
 
-The command returns the following output:
-
-::
+Output::
 
     {
         "PolicyARN": "arn:aws:autoscaling:us-west-2:012345678910:scalingPolicy: 8784a896-b2ba-47a1-b08c-27301cc499a1:resource/ecs/service/default/web-app:policyName/cms75-target-tracking-scaling-policy",
@@ -102,6 +82,4 @@ The command returns the following output:
         ]
     }
 
-For more information, see `Target Tracking Scaling Policies for Application Auto Scaling`_ in the *AWS Application Auto Scaling User Guide*.
-
-.. _`Target Tracking Scaling Policies for Application Auto Scaling`: https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-target-tracking.html
+For more information, see `Target Tracking Scaling Policies for Application Auto Scaling <https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-target-tracking.html>`_ in the *AWS Application Auto Scaling User Guide*.

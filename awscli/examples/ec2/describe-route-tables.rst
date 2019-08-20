@@ -1,106 +1,99 @@
 **To describe your route tables**
 
-This example describes your route tables.
+The following ``describe-route-tables`` example retrieves the details about your route tables ::
 
-Command::
-
-  aws ec2 describe-route-tables
+    aws ec2 describe-route-tables
 
 Output::
 
-  {
-      "RouteTables": [
-          {
-              "Associations": [
-                  {
-                      "RouteTableAssociationId": "rtbassoc-d8ccddba",
-                      "Main": true,
-                      "RouteTableId": "rtb-1f382e7d"
-                  }
-              ],
-              "RouteTableId": "rtb-1f382e7d",
-              "VpcId": "vpc-a01106c2",
-              "PropagatingVgws": [],
-              "Tags": [],
-              "Routes": [
-                  {
-                      "GatewayId": "local",
-                      "DestinationCidrBlock": "10.0.0.0/16",
-                      "State": "active",
-                      "Origin": "CreateRouteTable"
-                  }
-              ]
-          },
-          {
-              "Associations": [
-                  {
-                      "SubnetId": "subnet-b61f49f0",
-                      "RouteTableAssociationId": "rtbassoc-781d0d1a",
-                      "Main": false,
-                      "RouteTableId": "rtb-22574640"
-                  }
-              ],
-              "RouteTableId": "rtb-22574640",
-              "VpcId": "vpc-a01106c2",
-              "PropagatingVgws": [
-                  {
-                      "GatewayId": "vgw-f211f09b"
-                  }
-              ],
-              "Tags": [],
-              "Routes": [
-                  {
-                      "GatewayId": "local",
-                      "DestinationCidrBlock": "10.0.0.0/16",
-                      "State": "active",
-                      "Origin": "CreateRouteTable"
-                  },
-                  {
-                      "GatewayId": "igw-046d7966",
-                      "DestinationCidrBlock": "0.0.0.0/0",
-                      "State": "active",
-                      "Origin": "CreateRoute"
-                  }
-              ]
-          },
-          {
-            "Associations": [
-                {
-                    "RouteTableAssociationId": "rtbassoc-91fbacf5", 
-                    "Main": true, 
-                    "RouteTableId": "rtb-1a459c7e"
-                }
-            ], 
-            "RouteTableId": "rtb-1a459c7e", 
-            "VpcId": "vpc-31896b55", 
-            "PropagatingVgws": [], 
-            "Tags": [], 
-            "Routes": [
-                {
-                    "GatewayId": "local", 
-                    "DestinationCidrBlock": "10.0.0.0/16", 
-                    "State": "active", 
-                    "Origin": "CreateRouteTable"
-                }, 
-                {
-                    "GatewayId": "igw-2fa4e34a", 
-                    "DestinationCidrBlock": "0.0.0.0/0", 
-                    "State": "active", 
-                    "Origin": "CreateRoute"
-                }, 
-                {
-                    "GatewayId": "local", 
-                    "Origin": "CreateRouteTable", 
-                    "State": "active", 
-                    "DestinationIpv6CidrBlock": "2001:db8:1234:a100::/56"
-                }, 
-                {
-                    "GatewayId": "igw-2fa4e34a", 
-                    "Origin": "CreateRoute", 
-                    "State": "active", 
-                    "DestinationIpv6CidrBlock": "::/0"
-                }
-            ]
-        }
-    ]
-  }          
+    {
+        "RouteTables": [
+            {
+                "Associations": [
+                    {
+                        "Main": true,
+                        "RouteTableAssociationId": "rtbassoc-0df3f54e06EXAMPLE",
+                        "RouteTableId": "rtb-09ba434c1bEXAMPLE"
+                    }
+                ],
+                "PropagatingVgws": [],
+                "RouteTableId": "rtb-09ba434c1bEXAMPLE",
+                "Routes": [
+                    {
+                        "DestinationCidrBlock": "10.0.0.0/16",
+                        "GatewayId": "local",
+                        "Origin": "CreateRouteTable",
+                        "State": "active"
+                    },
+                    {
+                        "DestinationCidrBlock": "0.0.0.0/0",
+                        "NatGatewayId": "nat-06c018cbd8EXAMPLE",
+                        "Origin": "CreateRoute",
+                        "State": "blackhole"
+                    }
+                ],
+                "Tags": [],
+                "VpcId": "vpc-0065acced4EXAMPLE",
+                "OwnerId": "111122223333"
+            },
+            {
+                "Associations": [
+                    {
+                        "Main": true,
+                        "RouteTableAssociationId": "rtbassoc-9EXAMPLE",
+                        "RouteTableId": "rtb-a1eec7de"
+                    }
+                ],
+                "PropagatingVgws": [],
+                "RouteTableId": "rtb-a1eec7de",
+                "Routes": [
+                    {
+                        "DestinationCidrBlock": "172.31.0.0/16",
+                        "GatewayId": "local",
+                        "Origin": "CreateRouteTable",
+                        "State": "active"
+                    },
+                    {
+                        "DestinationCidrBlock": "0.0.0.0/0",
+                        "GatewayId": "igw-fEXAMPLE",
+                        "Origin": "CreateRoute",
+                        "State": "active"
+                    }
+                ],
+                "Tags": [],
+                "VpcId": "vpc-3EXAMPLE",
+                "OwnerId": "111122223333"
+            },
+            {
+                "Associations": [
+                    {
+                        "Main": false,
+                        "RouteTableAssociationId": "rtbassoc-0b100c28b2EXAMPLE",
+                        "RouteTableId": "rtb-07a98f76e5EXAMPLE",
+                        "SubnetId": "subnet-0d3d002af8EXAMPLE"
+                    }
+                ],
+                "PropagatingVgws": [],
+                "RouteTableId": "rtb-07a98f76e5EXAMPLE",
+                "Routes": [
+                    {
+                        "DestinationCidrBlock": "10.0.0.0/16",
+                        "GatewayId": "local",
+                        "Origin": "CreateRouteTable",
+                        "State": "active"
+                    },
+                    {
+                        "DestinationCidrBlock": "0.0.0.0/0",
+                        "GatewayId": "igw-06cf664d80EXAMPLE",
+                        "Origin": "CreateRoute",
+                        "State": "active"
+                    }
+                ],
+                "Tags": [],
+                "VpcId": "vpc-0065acced4EXAMPLE",
+                "OwnerId": "111122223333"
+            }
+        ]
+    }
+
+For more information, see `Working with Route Tables <https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html#WorkWithRouteTables>`__ in the *AWS VPC User Guide*.

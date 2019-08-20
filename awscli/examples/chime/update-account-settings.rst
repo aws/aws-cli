@@ -1,11 +1,9 @@
-**To update account settings**
+**To update the settings for your account**
 
-This example disables the remote control of shared screens for the specified Amazon Chime account.
+The following ``update-account-settings`` example disables the remote control of shared screens for the specified Amazon Chime account. ::
 
-Command::
+    aws chime update-account-settings \
+        --account-id a1b2c3d4-5678-90ab-cdef-11111EXAMPLE \
+        --account-settings DisableRemoteControl=true
 
-  aws chime update-account-settings --account-id 12a3456b-7c89-012d-3456-78901e23fg45 --account-settings DisableRemoteControl=true
-
-Output::
-
-  None
+This command produces no output.

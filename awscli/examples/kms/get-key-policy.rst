@@ -1,0 +1,20 @@
+**To copy a key policy from one CMK to another CMK**
+
+The following ``get-key-policy`` example gets the key policy from one CMK and saves it in a text file. Then, it replaces the policy of a different CMK using the text file as the policy input.
+Because the ``--policy`` parameter of ``put-key-policy`` requires a string, you must use the ``--output text`` option to return the output as a text string instead of JSON.
+Before running these commands, replace the example key IDs with valid ones from your AWS account. ::
+
+    aws kms get-key-policy \
+        --policy-name default \
+        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
+        --query Policy \
+        --output text > policy.txt
+
+    aws kms put-key-policy \
+        --policy-name default \
+        --key-id 0987dcba-09fe-87dc-65ba-ab0987654321 \
+        --policy file://policy.txt
+
+This command produces no output.
+
+For more information, see `PutKeyPolicy <https://docs.aws.amazon.com/kms/latest/APIReference/API_PutKeyPolicy.html>`__ in the *AWS KMS API Reference*.

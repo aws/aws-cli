@@ -727,6 +727,12 @@ class BaseS3CLICommand(unittest.TestCase):
     and more streamlined.
 
     """
+    _PUT_HEAD_SHARED_EXTRAS = [
+        'SSECustomerAlgorithm',
+        'SSECustomerKey',
+        'SSECustomerKeyMD5',
+        'RequestPayer',
+    ]
 
     def setUp(self):
         self.files = FileCreator()
@@ -790,6 +796,18 @@ class BaseS3CLICommand(unittest.TestCase):
             call_args.update(extra_args)
         response = client.put_object(**call_args)
         self.addCleanup(self.delete_key, bucket_name, key_name)
+        extra_head_params = {}
+        if extra_args:
+            extra_head_params = dict(
+                (k, v) for (k, v) in extra_args.items()
+                if k in self._PUT_HEAD_SHARED_EXTRAS
+            )
+        self.wait_until_key_exists(
+            bucket_name,
+            key_name,
+            extra_params=extra_head_params,
+        )
+        return response
 
     def delete_bucket(self, bucket_name, attempts=5, delay=5):
         self.remove_all_objects(bucket_name)
@@ -829,6 +847,7 @@ class BaseS3CLICommand(unittest.TestCase):
         response = client.delete_object(Bucket=bucket_name, Key=key_name)
 
     def get_key_contents(self, bucket_name, key_name):
+        self.wait_until_key_exists(bucket_name, key_name)
         client = self.create_client_for_bucket(bucket_name)
         response = client.get_object(Bucket=bucket_name, Key=key_name)
         return response['Body'].read().decode('utf-8')

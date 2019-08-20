@@ -1,6 +1,6 @@
 **To list the SSH public keys attached to an IAM user**
 
-The following ``list-ssh-public-keys`` command lists the SSH public keys attached to the IAM user 'sofia'. ::
+The following ``list-ssh-public-keys`` example lists the SSH public keys attached to the IAM user ``sofia``. ::
 
     aws iam list-ssh-public-keys  --user-name sofia
 
@@ -17,6 +17,4 @@ Output::
         ]
     }
 
-For more information about SSH keys in IAM, see `Use SSH Keys and SSH with CodeCommit`_in the *AWS IAM User Guide*
-
-.. _`Use SSH Keys and SSH with CodeCommit`: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_ssh-keys.html#ssh-keys-code-commit
+For more information about SSH keys in IAM, see `Use SSH Keys and SSH with CodeCommit <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_ssh-keys.html#ssh-keys-code-commit>`_ in the *AWS IAM User Guide*

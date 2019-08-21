@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.16.223
+========
+
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``forecastquery``: Update forecastquery command to latest version
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``sqs``: Update sqs command to latest version
+* api-change:``personalize-runtime``: Update personalize-runtime command to latest version
+* api-change:``forecast``: Update forecast command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+
+
 1.16.222
 ========
 

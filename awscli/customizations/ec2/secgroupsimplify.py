@@ -52,6 +52,9 @@ def _add_params(argument_table, **kwargs):
     argument_table['group-owner'] = arg
     argument_table['source-security-group-owner-id']._UNDOCUMENTED = True
 
+    arg = DescriptionArgument('description', help_text=DESCRIPTION_DOCS)
+    argument_table['description'] = arg
+
 
 def _check_args(parsed_args, **kwargs):
     # This function checks the parsed args.  If the user specified
@@ -60,7 +63,7 @@ def _check_args(parsed_args, **kwargs):
     arg_dict = vars(parsed_args)
     if arg_dict['ip_permissions']:
         for key in ('protocol', 'port', 'cidr',
-                    'source_group', 'group_owner'):
+                    'source_group', 'group_owner', 'description'):
             if arg_dict[key]:
                 msg = ('The --%s option is not compatible '
                        'with the --ip-permissions option ') % key
@@ -113,6 +116,7 @@ SOURCEGROUP_DOCS = ('<p>The name or ID of the source security group.</p>')
 GROUPOWNER_DOCS = ('<p>The AWS account ID that owns the source security '
                    'group. Cannot be used when specifying a CIDR IP '
                    'address.</p>')
+DESCRIPTION_DOCS = '<p>The description of the new rule.</p>'
 
 
 def register_secgroup(event_handler):
@@ -123,10 +127,10 @@ def register_secgroup(event_handler):
 def _build_ip_permissions(params, key, value):
     if 'IpPermissions' not in params:
         params['IpPermissions'] = [{}]
-    if key == 'CidrIp':
-        if 'IpRanges' not in params['ip_permissions'][0]:
-            params['IpPermissions'][0]['IpRanges'] = []
-        params['IpPermissions'][0]['IpRanges'].append(value)
+    if key == 'CidrIp' or key == 'Description':
+        if 'IpRanges' not in params['IpPermissions'][0]:
+            params['IpPermissions'][0]['IpRanges'] = [{}]
+        params['IpPermissions'][0]['IpRanges'][0][key] = value
     elif key in ('GroupId', 'GroupName', 'UserId'):
         if 'UserIdGroupPairs' not in params['IpPermissions'][0]:
             params['IpPermissions'][0]['UserIdGroupPairs'] = [{}]
@@ -183,8 +187,7 @@ class CidrArgument(CustomArgument):
 
     def add_to_params(self, parameters, value):
         if value:
-            value = [{'CidrIp': value}]
-            _build_ip_permissions(parameters, 'IpRanges', value)
+            _build_ip_permissions(parameters, 'CidrIp', value)
 
 
 class SourceGroupArgument(CustomArgument):
@@ -202,3 +205,9 @@ class GroupOwnerArgument(CustomArgument):
     def add_to_params(self, parameters, value):
         if value:
             _build_ip_permissions(parameters, 'UserId', value)
+
+class DescriptionArgument(CustomArgument):
+
+    def add_to_params(self, parameters, value):
+        if value:
+            _build_ip_permissions(parameters, 'Description', value)

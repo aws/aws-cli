@@ -32,6 +32,7 @@ from awscli.customizations.cloudformation.artifact_exporter \
 
 def test_is_s3_url():
     valid = [
+        "S3://foo/bar",
         "s3://foo/bar",
         "s3://foo/bar/baz/cat/dog",
         "s3://foo/bar?versionId=abc",

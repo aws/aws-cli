@@ -71,7 +71,7 @@ def parse_s3_url(url,
                  version_property=None):
 
     if isinstance(url, six.string_types) \
-            and url.startswith("s3://"):
+            and url.lower().startswith("s3://"):
 
         # Python < 2.7.10 don't parse query parameters from URI with custom
         # scheme such as s3://blah/blah. As a workaround, remove scheme

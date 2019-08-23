@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.225
+========
+
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``mediapackage-vod``: Update mediapackage-vod command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.16.224
 ========
 

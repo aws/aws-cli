@@ -15,10 +15,7 @@ This package provides a unified command line interface to Amazon Web Services.
 
 The aws-cli package works on Python versions:
 
-* 2.6.5 and greater
 * 2.7.x and greater
-* 3.3.x and greater
-* 3.4.x and greater
 * 3.5.x and greater
 * 3.6.x and greater
 * 3.7.x and greater

@@ -27,19 +27,8 @@ requires = ['botocore==1.12.215',
             'colorama>=0.2.5,<=0.3.9',
             'docutils>=0.10,<0.16',
             'rsa>=3.1.2,<=3.5.0',
-            's3transfer>=0.2.0,<0.3.0']
-
-
-if sys.version_info[:2] == (2, 6):
-    # For python2.6 we have to require argparse since it
-    # was not in stdlib until 2.7.
-    requires.append('argparse>=1.1')
-
-    # For Python 2.6, we have to require a different verion of PyYAML since the latest
-    # versions dropped support for Python 2.6.
-    requires.append('PyYAML>=3.10,<=3.13')
-else:
-    requires.append('PyYAML>=3.10,<=5.2')
+            's3transfer>=0.2.0,<0.3.0',
+            'PyYAML>=3.10,<=5.2']
 
 
 setup_options = dict(
@@ -58,11 +47,6 @@ setup_options = dict(
                              'examples/*/*/*.rst', 'topics/*.rst',
                              'topics/*.json']},
     install_requires=requires,
-    extras_require={
-        ':python_version=="2.6"': [
-            'argparse>=1.1',
-        ]
-    },
     license="Apache License 2.0",
     classifiers=[
         'Development Status :: 5 - Production/Stable',
@@ -72,11 +56,8 @@ setup_options = dict(
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',

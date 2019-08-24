@@ -24,7 +24,6 @@ def find_version(*file_paths):
 
 
 requires = ['botocore==1.12.215',
-            'colorama>=0.2.5,<=0.3.9',
             'docutils>=0.10,<0.16',
             'rsa>=3.1.2,<=3.5.0',
             's3transfer>=0.2.0,<0.3.0']
@@ -38,8 +37,11 @@ if sys.version_info[:2] == (2, 6):
     # For Python 2.6, we have to require a different verion of PyYAML since the latest
     # versions dropped support for Python 2.6.
     requires.append('PyYAML>=3.10,<=3.13')
+    requires.append('colorama>=0.2.5,<=0.3.9')
+
 else:
     requires.append('PyYAML>=3.10,<=5.2')
+    requires.append('colorama>=0.2.5,<=1.0')
 
 
 setup_options = dict(

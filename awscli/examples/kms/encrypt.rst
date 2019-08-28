@@ -1,8 +1,13 @@
-The following command demonstrates the recommended way to encrypt data with the AWS CLI.
+**Example 1: To encrypt the contents of a file on Linux or MacOS**
 
-.. code::
+The following ``encrypt`` command demonstrates the recommended way to encrypt data with the AWS CLI. ::
 
-    aws kms encrypt --key-id 1234abcd-12ab-34cd-56ef-1234567890ab --plaintext fileb://ExamplePlaintextFile --output text --query CiphertextBlob | base64 --decode > ExampleEncryptedFile
+    aws kms encrypt \
+        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
+        --plaintext fileb://ExamplePlaintextFile \
+        --output text \
+        --query CiphertextBlob | base64 \
+        --decode > ExampleEncryptedFile
 
 The command does several things:
 
@@ -10,7 +15,7 @@ The command does several things:
 
     The ``fileb://`` prefix instructs the CLI to read the data to encrypt, called the *plaintext*, from a file and pass the file's contents to the command's ``--plaintext`` parameter. If the file is not in the current directory, type the full path to file. For example: ``fileb:///var/tmp/ExamplePlaintextFile`` or ``fileb://C:\Temp\ExamplePlaintextFile``.
 
-    For more information about reading AWS CLI parameter values from a file, see `Loading Parameters from a File <https://docs.aws.amazon.com/cli/latest/userguide/cli-using-param.html#cli-using-param-file>`_ in the *AWS Command Line Interface User Guide* and `Best Practices for Local File Parameters <https://blogs.aws.amazon.com/cli/post/TxLWWN1O25V1HE/Best-Practices-for-Local-File-Parameters>`_ on the AWS Command Line Tool Blog.
+    For more information about reading AWS CLI parameter values from a file, see `Loading Parameters from a File <https://docs.aws.amazon.com/cli/latest/userguide/cli-using-param.html#cli-using-param-file>`_ in the *AWS Command Line Interface User Guide* and `Best Practices for Local File Parameters <https://blogs.aws.amazon.com/cli/post/TxLWWN1O25V1HE/Best-Practices-for-Local-File-Parameters>`_ on the AWS Command Line Tool Blog
 
 #. Uses the ``--output`` and ``--query`` parameters to control the command's output.
 
@@ -26,14 +31,14 @@ The command does several things:
 
     The final part of the command (``> ExampleEncryptedFile``) saves the binary ciphertext to a file to make decryption easier. For an example command that uses the AWS CLI to decrypt data, see the `decrypt examples <decrypt.html#examples>`_.
 
-**Example: Using the AWS CLI to encrypt data from the Windows command prompt**
+**Example 2: Using the AWS CLI to encrypt data on Windows**
 
-The preceding example assumes the ``base64`` utility is available, which is commonly the case on Linux and Mac OS X. For the Windows command prompt, use ``certutil`` instead of ``base64``. This requires two commands, as shown in the following examples.
+The preceding example assumes the ``base64`` utility is available, which is commonly the case on Linux and MacOS. For the Windows command prompt, use ``certutil`` instead of ``base64``. This requires two commands, as shown in the following examples. ::
 
-.. code::
-
-    aws kms encrypt --key-id 1234abcd-12ab-34cd-56ef-1234567890ab --plaintext fileb://ExamplePlaintextFile --output text --query CiphertextBlob > C:\Temp\ExampleEncryptedFile.base64
-
-.. code::
+    aws kms encrypt \
+        --key-id 1234abcd-12ab-34cd-56ef-1234567890ab \
+        --plaintext fileb://ExamplePlaintextFile \
+        --output text \
+        --query CiphertextBlob > C:\Temp\ExampleEncryptedFile.base64
 
     certutil -decode C:\Temp\ExampleEncryptedFile.base64 C:\Temp\ExampleEncryptedFile

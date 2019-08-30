@@ -1,35 +1,33 @@
 **To describe your Availability Zones**
 
-This example describes the Availability Zones that are available to you. The response includes Availability Zones only for the current region.
+The following ``describe-availability-zones`` example describes the Availability Zones that are available to you. The response includes Availability Zones only for the current Region. ::
 
-Command::
+    aws ec2 describe-availability-zones
 
-  aws ec2 describe-availability-zones
+The following is example example output for the US East (Ohio) Region. ::
 
-Output::
-
-  {
-      "AvailabilityZones": [
-          {
-              "State": "available",
-              "Messages": [],
-              "RegionName": "us-west-2",
-              "ZoneName": "us-west-2a",
-              "ZoneId": "usw2-az2"
-          },
-          {
-              "State": "available",
-              "Messages": [],
-              "RegionName": "us-west-2",
-              "ZoneName": "us-west-2b",
-              "ZoneId": "usw2-az1"
-          },
-          {
-              "State": "available",
-              "Messages": [],
-              "RegionName": "us-west-2",
-              "ZoneName": "us-west-2c",
-              "ZoneId": "usw2-az3"
-          }
-      ]
-  }
+    {
+        "AvailabilityZones": [
+            {
+                "State": "available",
+                "Messages": [],
+                "RegionName": "us-east-2",
+                "ZoneName": "us-east-2a",
+                "ZoneId": "use2-az1"
+            },
+            {
+                "State": "available",
+                "Messages": [],
+                "RegionName": "us-east-2",
+                "ZoneName": "us-east-2b",
+                "ZoneId": "use2-az2"
+            },
+            {
+                "State": "available",
+                "Messages": [],
+                "RegionName": "us-east-2",
+                "ZoneName": "us-east-2c",
+                "ZoneId": "use2-az3"
+            }
+        ]
+    }

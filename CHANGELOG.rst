@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.230
+========
+
+* api-change:``mq``: Update mq command to latest version
+* api-change:``apigatewaymanagementapi``: Update apigatewaymanagementapi command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
 1.16.229
 ========
 

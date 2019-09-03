@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.231
+========
+
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``gamelift``: Update gamelift command to latest version
+
+
 1.16.230
 ========
 

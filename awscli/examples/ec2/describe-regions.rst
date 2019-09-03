@@ -1,10 +1,8 @@
-**Example 1: To describe all of your enabled regions**
+**Example 1: To describe all of your enabled Regions**
 
-This example describes all Regions that are enabled for your account. 
+The following ``describe-regions`` example describes all of the Regions that are enabled for your account. ::
 
-Command::
-
-  aws ec2 describe-regions
+    aws ec2 describe-regions
 
 Output::
 
@@ -98,9 +96,9 @@ Output::
         ]
     }
 
-**Example 2: To describe enabled regions with an endpoint whose name contains a specific string**
+**Example 2: To describe enabled Regions with an endpoint whose name contains a specific string**
 
-This example describes all regions that you have enabled that have the string "us" in the endpoint. ::
+The following ``describe-regions`` example describes all Regions that you have enabled that have the string "us" in the endpoint. ::
 
     aws ec2 describe-regions --filters "Name=endpoint,Values=*us*"
 
@@ -127,7 +125,7 @@ Output::
         ]
     }
 
-**Example 3: To describe all regions**
+**To describe all Regions**
 
 The following ``describe-regions`` example describes all available Regions, including opt-in Regions like HKG and BAH. For a description of opt-in Regions, see `Available Regions <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions>`__ in the *Amazon EC2 User Guide*. ::
 
@@ -167,6 +165,11 @@ Output::
                 "Endpoint": "ec2.ap-northeast-3.amazonaws.com",
                 "RegionName": "ap-northeast-3",
                 "OptInStatus": "opt-in-not-required"
+            },
+            {
+                "Endpoint": "ec2.me-south-1.amazonaws.com",
+                "RegionName": "me-south-1",
+                "OptInStatus": "not-opted-in"
             },
             {
                 "Endpoint": "ec2.ap-northeast-2.amazonaws.com",
@@ -231,27 +234,33 @@ Output::
         ]
     }
 
-**Example 4: To describe region names only**
+**To list the Region names only**
 
-This example uses the ``--query`` parameter to filter the output and return the names of the regions only. The output is returned as tab-delimited lines. ::
+The following ``describe-regions`` example uses the ``--query`` parameter to filter the output and return only the names of the Regions as text. ::
 
-    aws ec2 describe-regions --query "Regions[].{Name:RegionName}" --output text
-  
+    aws ec2 describe-regions \
+        --all-regions \
+        --query "Regions[].{Name:RegionName}" \
+        --output text
+
 Output::
 
-  ap-south-1
-  eu-west-3
-  eu-west-2
-  eu-west-1
-  ap-northeast-3
-  ap-northeast-2
-  ap-northeast-1
-  sa-east-1
-  ca-central-1
-  ap-southeast-1
-  ap-southeast-2
-  eu-central-1
-  us-east-1
-  us-east-2
-  us-west-1
-  us-west-2
+    eu-north-1
+    ap-south-1
+    eu-west-3
+    eu-west-2
+    eu-west-1
+    ap-northeast-3
+    ap-northeast-2
+    me-south-1
+    ap-northeast-1
+    sa-east-1
+    ca-central-1
+    ap-east-1
+    ap-southeast-1
+    ap-southeast-2
+    eu-central-1
+    us-east-1
+    us-east-2
+    us-west-1
+    us-west-2

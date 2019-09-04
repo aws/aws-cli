@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.232
+========
+
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``stepfunctions``: Update stepfunctions command to latest version
+
+
 1.16.231
 ========
 

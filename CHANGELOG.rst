@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.234
+========
+
+* api-change:``kinesisanalytics``: Update kinesisanalytics command to latest version
+
+
 1.16.233
 ========
 

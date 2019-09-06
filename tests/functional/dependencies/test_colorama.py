@@ -7,19 +7,15 @@ from mock import Mock, patch
 from awscli.testutils import unittest, skip_if_windows
 from awscli.testutils import capture_output
 from awscli.compat import StringIO
+from awscli.table import COLORAMA_KWARGS
 
 import colorama
 from colorama import Fore
 from colorama import Back
-from colorama.winterm import WinTerm, WinStyle, WinColor
 
 
 @skip_if_windows('Posix color code tests')
 class TestPosix(unittest.TestCase):
-    _COLORAMA_KWARGS = {
-        'autoreset': True,
-        'strip': False,
-    }
     _ANSI_RESET_ALL = '\033[0m'
     _ANSI_FORE_RED = '\033[31m'
     _ANSI_FORE_BLUE = '\033[34m'
@@ -70,7 +66,7 @@ class TestPosix(unittest.TestCase):
     def colorama_text(self, tty=True):
         with capture_output() as captured:
             captured.stdout.isatty = lambda: tty
-            with colorama.colorama_text(**self._COLORAMA_KWARGS):
+            with colorama.colorama_text(**COLORAMA_KWARGS):
                 yield captured
 
     def test_colorama_auto_resets(self):
@@ -103,120 +99,3 @@ class TestPosix(unittest.TestCase):
             self.assertEqual(captured.stdout.getvalue(),
                              '%sfoo%s' % (self._ANSI_FORE_BLUE,
                                           self._ANSI_RESET_ALL))
-
-
-
-@unittest.skipUnless(sys.platform.startswith("win"), "requires Windows")
-class WinTermTest(unittest.TestCase):
-    @patch('colorama.winterm.win32')
-    def test_init(self, mockWin32):
-        mockAttr = Mock()
-        mockAttr.wAttributes = 7 + 6 * 16 + 8
-        mockWin32.GetConsoleScreenBufferInfo.return_value = mockAttr
-        term = WinTerm()
-        self.assertEqual(term._fore, 7)
-        self.assertEqual(term._back, 6)
-        self.assertEqual(term._style, 8)
-
-    def test_get_attrs(self):
-        term = WinTerm()
-
-        term._fore = 0
-        term._back = 0
-        term._style = 0
-        self.assertEqual(term.get_attrs(), 0)
-
-        term._fore = WinColor.YELLOW
-        self.assertEqual(term.get_attrs(), WinColor.YELLOW)
-
-        term._back = WinColor.MAGENTA
-        self.assertEqual(
-            term.get_attrs(),
-            WinColor.YELLOW + WinColor.MAGENTA * 16)
-
-        term._style = WinStyle.BRIGHT
-        self.assertEqual(
-            term.get_attrs(),
-            WinColor.YELLOW + WinColor.MAGENTA * 16 + WinStyle.BRIGHT)
-
-    @patch('colorama.winterm.win32')
-    def test_reset_all(self, mockWin32):
-        mockAttr = Mock()
-        mockAttr.wAttributes = 1 + 2 * 16 + 8
-        mockWin32.GetConsoleScreenBufferInfo.return_value = mockAttr
-        term = WinTerm()
-
-        term.set_console = Mock()
-        term._fore = -1
-        term._back = -1
-        term._style = -1
-
-        term.reset_all()
-
-        self.assertEqual(term._fore, 1)
-        self.assertEqual(term._back, 2)
-        self.assertEqual(term._style, 8)
-        self.assertEqual(term.set_console.called, True)
-
-    @unittest.skipUnless(sys.platform.startswith("win"), "requires Windows")
-    def test_fore(self):
-        term = WinTerm()
-        term.set_console = Mock()
-        term._fore = 0
-
-        term.fore(5)
-
-        self.assertEqual(term._fore, 5)
-        self.assertEqual(term.set_console.called, True)
-
-    @unittest.skipUnless(sys.platform.startswith("win"), "requires Windows")
-    def test_back(self):
-        term = WinTerm()
-        term.set_console = Mock()
-        term._back = 0
-
-        term.back(5)
-
-        self.assertEqual(term._back, 5)
-        self.assertEqual(term.set_console.called, True)
-
-    @unittest.skipUnless(sys.platform.startswith("win"), "requires Windows")
-    def test_style(self):
-        term = WinTerm()
-        term.set_console = Mock()
-        term._style = 0
-
-        term.style(22)
-
-        self.assertEqual(term._style, 22)
-        self.assertEqual(term.set_console.called, True)
-
-    @patch('colorama.winterm.win32')
-    def test_set_console(self, mockWin32):
-        mockAttr = Mock()
-        mockAttr.wAttributes = 0
-        mockWin32.GetConsoleScreenBufferInfo.return_value = mockAttr
-        term = WinTerm()
-        term.windll = Mock()
-
-        term.set_console()
-
-        self.assertEqual(
-            mockWin32.SetConsoleTextAttribute.call_args,
-            ((mockWin32.STDOUT, term.get_attrs()), {})
-        )
-
-    @patch('colorama.winterm.win32')
-    def test_set_console_on_stderr(self, mockWin32):
-        mockAttr = Mock()
-        mockAttr.wAttributes = 0
-        mockWin32.GetConsoleScreenBufferInfo.return_value = mockAttr
-        term = WinTerm()
-        term.windll = Mock()
-
-        term.set_console(on_stderr=True)
-
-        self.assertEqual(
-            mockWin32.SetConsoleTextAttribute.call_args,
-            ((mockWin32.STDERR, term.get_attrs()), {})
-        )

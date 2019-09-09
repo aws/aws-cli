@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.16.235
+========
+
+* api-change:``appstream``: Update appstream command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``qldb``: Update qldb command to latest version
+* api-change:``qldb-session``: Update qldb-session command to latest version
+* api-change:``marketplacecommerceanalytics``: Update marketplacecommerceanalytics command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.16.234
 ========
 

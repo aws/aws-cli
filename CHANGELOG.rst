@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.236
+========
+
+* api-change:``storagegateway``: Update storagegateway command to latest version
+
+
 1.16.235
 ========
 

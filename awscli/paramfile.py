@@ -101,6 +101,9 @@ PARAMFILE_DISABLED = set([
     'serverlessapplicationrepository.update-application.home-page-url',
     'serverlessapplicationrepository.update-application.readme-url',
 
+    'service-catalog.create-product.support-url',
+    'service-catalog.update-product.support-url',
+
     'sqs.add-permission.queue-url',
     'sqs.change-message-visibility.queue-url',
     'sqs.change-message-visibility-batch.queue-url',

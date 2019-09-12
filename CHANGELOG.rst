@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.238
+========
+
+* api-change:``workmailmessageflow``: Update workmailmessageflow command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+
+
 1.16.237
 ========
 

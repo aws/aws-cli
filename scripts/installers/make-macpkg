@@ -16,7 +16,6 @@ from utils import run
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(
     os.path.abspath(__file__))))
 PKG_DIR = os.path.join(ROOT, 'macpkg')
-EXE_NAME = 'aws'
 TEMP_PKG_NAME = 'aws-cli.pkg'
 PKG_NAME = 'AWS-CLI-Installer.pkg'
 
@@ -30,7 +29,7 @@ def make_pkg(output_dir):
     print(run(
         (
             'pkgbuild --identifier com.amazon.aws.cli2 '
-            '--root ./aws '
+            '--root ./aws/dist '
             '--install-location /usr/local/aws/ '
             '--scripts %s '
             '--version %s '
@@ -56,7 +55,7 @@ def delete_existing_pkg(output_dir):
 
 
 def get_version(output_dir):
-    exe_dir = os.path.join(output_dir, 'aws')
+    exe_dir = os.path.join(output_dir, 'aws', 'dist')
     exe_path = os.path.join(exe_dir, 'aws')
     result = run('%s --version' % exe_path, cwd=exe_dir).strip()
     version = result.split(' ')[0].split('/')[1]

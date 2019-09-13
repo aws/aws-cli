@@ -3,7 +3,7 @@
 block_cipher = None
 
 
-completer_a = Analysis(['../bin/aws_completer'],
+completer_a = Analysis(['../../bin/aws_completer'],
              binaries=[],
              datas=[],
              hiddenimports=[],

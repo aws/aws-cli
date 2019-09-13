@@ -3,7 +3,7 @@
 block_cipher = None
 
 
-aws_a = Analysis(['../bin/aws'],
+aws_a = Analysis(['../../bin/aws'],
              binaries=[],
              datas=[],
              hiddenimports=[],

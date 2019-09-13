@@ -17,56 +17,56 @@ from utils import run
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(
     os.path.abspath(__file__))))
-ASSET_DIR = os.path.join(ROOT, 'pyinstaller')
+EXE_DIR = os.path.join(ROOT, 'exe')
+PYINSTALLER_DIR = os.path.join(EXE_DIR, 'pyinstaller')
+ASSETS_DIR = os.path.join(EXE_DIR, 'assets')
 EXE_NAME = 'aws'
 
 
 def make_pyinstaller(output_dir, cleanup=True):
-    delete_existing_exe(output_dir)
-    pyinstaller('aws.spec')
-    copy_directory(output_dir, 'aws', 'aws')
-    pyinstaller('aws_completer.spec')
-    copy_directory_contents_into(output_dir, 'aws_completer', 'aws')
+    output_exe_dir = os.path.join(output_dir, 'aws')
+    delete_existing_exe(output_exe_dir)
+    output_exe_dist_dir = os.path.join(output_exe_dir, 'dist')
+    aws_exe_build = pyinstaller('aws.spec')
+    copy_directory(aws_exe_build, output_exe_dist_dir)
+    aws_complete_exe_build = pyinstaller('aws_completer.spec')
+    copy_directory_contents_into(aws_complete_exe_build, output_exe_dist_dir)
+    copy_directory_contents_into(ASSETS_DIR, output_exe_dir)
     if cleanup:
         cleanup_build()
     print('Pyinstaller binary available at: %s' % os.path.join(
-        output_dir, 'aws', 'aws'))
+        output_exe_dist_dir, 'aws'))
 
 
-def delete_existing_exe(output_dir):
-    final_path = os.path.join(output_dir, EXE_NAME)
-    if os.path.isdir(final_path):
-        shutil.rmtree(final_path)
-    build_dir = os.path.join(ASSET_DIR, 'dist')
+def delete_existing_exe(exe_dir):
+    if os.path.isdir(exe_dir):
+        shutil.rmtree(exe_dir)
+    build_dir = os.path.join(PYINSTALLER_DIR, 'dist')
     if os.path.isdir(build_dir):
         shutil.rmtree(build_dir)
 
 
 def pyinstaller(specfile):
-    aws_spec_path = os.path.join(ASSET_DIR, specfile)
-    print(run('pyinstaller %s' % (aws_spec_path), cwd=ASSET_DIR))
+    aws_spec_path = os.path.join(PYINSTALLER_DIR, specfile)
+    print(run('pyinstaller %s' % (aws_spec_path), cwd=PYINSTALLER_DIR))
+    return os.path.join(
+        PYINSTALLER_DIR, 'dist', os.path.splitext(specfile)[0])
 
 
-def copy_directory(output_dir, from_name, to_name):
-    src = os.path.join(ASSET_DIR, 'dist', from_name)
-    dst = os.path.join(output_dir, to_name)
-    if src != dst:
-        print('Copying %s -> %s' % (src, dst))
-        shutil.copytree(src, dst)
+def copy_directory(src, dst):
+    print('Copying %s -> %s' % (src, dst))
+    shutil.copytree(src, dst)
 
 
-def copy_directory_contents_into(output_dir, from_name, to_name):
-    src = os.path.join(ASSET_DIR, 'dist', from_name)
-    dst = os.path.join(output_dir, to_name)
-    if src != dst:
-        print('Copying contents of %s into %s' % (src, dst))
-        copy_tree(src, dst)
+def copy_directory_contents_into(src, dst):
+    print('Copying contents of %s into %s' % (src, dst))
+    copy_tree(src, dst)
 
 
 def cleanup_build():
     locations = [
-        os.path.join(ASSET_DIR, 'build'),
-        os.path.join(ASSET_DIR, 'dist'),
+        os.path.join(PYINSTALLER_DIR, 'build'),
+        os.path.join(PYINSTALLER_DIR, 'dist'),
     ]
     for location in locations:
         shutil.rmtree(location)

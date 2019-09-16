@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.239
+========
+
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``eks``: Update eks command to latest version
+
+
 1.16.238
 ========
 

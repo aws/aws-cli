@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.240
+========
+
+* api-change:``personalize``: Update personalize command to latest version
+* api-change:``athena``: Update athena command to latest version
+* api-change:``iam``: Update iam command to latest version
+
+
 1.16.239
 ========
 

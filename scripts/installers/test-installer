@@ -4,13 +4,13 @@ import argparse
 import sys
 import os
 import re
-from subprocess import check_output
-from subprocess import check_call
+import shutil
+import tempfile
 
 SCRIPTS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(SCRIPTS_DIR)
 
-from utils import run
+from utils import run, tmp_dir, extract_zip
 
 REPO_ROOT = os.path.dirname(SCRIPTS_DIR)
 DIST_DIR = os.path.join(REPO_ROOT, 'dist')
@@ -60,15 +60,34 @@ class InstallerTester(object):
 
 
 class ExeTester(InstallerTester):
-    DEFAULT_INSTALLER_LOCATION = os.path.join(DIST_DIR, 'aws', 'aws')
+    DEFAULT_INSTALLER_LOCATION = os.path.join(DIST_DIR, 'awscli-exe.zip')
+
+    def __init__(self, installer_location=None):
+        self._installation_dir = None
+        self._bin_dir = None
+        super(ExeTester, self).__init__(installer_location=installer_location)
+
+    def setup(self):
+        self._installation_dir = tempfile.mkdtemp()
+        install_dir = os.path.join(self._installation_dir, 'aws-cli')
+        self._bin_dir = os.path.join(self._installation_dir, 'bin')
+        self._run_install_script(install_dir, self._bin_dir)
+
+    def _run_install_script(self, install_dir, bin_dir):
+        with tmp_dir() as workdir:
+            extract_zip(self._installer_location, workdir)
+            install_script = os.path.join(workdir, 'aws', 'install')
+            run(
+                '%s --install-dir %s --bin-dir %s' % (
+                    install_script, install_dir, bin_dir
+                )
+            )
+
+    def cleanup(self):
+        shutil.rmtree(self._installation_dir)
 
     def get_aws_cmd(self):
-        if not os.path.isfile(self._installer_location):
-            raise ValueError(
-                'There is no executable found at %s. Make sure to run the '
-                'gen-exe script or use --installer-path to provide a '
-                'custom installer location.' % self._installer_location)
-        return self._installer_location
+        return os.path.join(self._bin_dir, 'aws2')
 
 
 class PkgTester(InstallerTester):

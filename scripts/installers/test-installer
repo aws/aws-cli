@@ -77,7 +77,11 @@ class ExeTester(InstallerTester):
         with tmp_dir() as workdir:
             extract_zip(self._installer_location, workdir)
             install_script = os.path.join(workdir, 'aws', 'install')
-            run('%s -i %s -b %s' % (install_script, install_dir, bin_dir))
+            run(
+                '%s --install-dir %s --bin-dir %s' % (
+                    install_script, install_dir, bin_dir
+                )
+            )
 
     def cleanup(self):
         shutil.rmtree(self._installation_dir)

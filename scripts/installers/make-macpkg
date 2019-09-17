@@ -7,25 +7,33 @@ by the sibling script make-pyinstaller.
 import argparse
 import os
 import sys
+import shutil
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from utils import run
+from utils import run, tmp_dir, extract_zip
 
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(
     os.path.abspath(__file__))))
 PKG_DIR = os.path.join(ROOT, 'macpkg')
+SCRIPTS_DIR = os.path.join(PKG_DIR, 'scripts')
+RESOURCES_DIR = os.path.join(PKG_DIR, 'resources')
+DISTRIBUTION_PATH = os.path.join(PKG_DIR, 'distribution.xml')
+
 TEMP_PKG_NAME = 'aws-cli.pkg'
 PKG_NAME = 'AWS-CLI-Installer.pkg'
+EXE_ZIP_NAME = 'awscli-exe.zip'
 
 
-def make_pkg(output_dir):
-    delete_existing_pkg(output_dir)
-    version = get_version(output_dir)
-    scripts_dir = os.path.join(PKG_DIR, 'scripts')
-    resources_dir = os.path.join(PKG_DIR, 'resources')
-    distribution_path = os.path.join(PKG_DIR, 'distribution.xml')
+def make_pkg(pkg_name, src_exe):
+    with tmp_dir() as workdir:
+        extract_zip(src_exe, workdir)
+        do_make_pkg(workdir, pkg_name)
+
+
+def do_make_pkg(workdir, pkg_name):
+    version = get_version(workdir)
     print(run(
         (
             'pkgbuild --identifier com.amazon.aws.cli2 '
@@ -34,24 +42,18 @@ def make_pkg(output_dir):
             '--scripts %s '
             '--version %s '
             '%s'
-        ) % (scripts_dir, version, TEMP_PKG_NAME),
-        cwd=output_dir,
+        ) % (SCRIPTS_DIR, version, TEMP_PKG_NAME),
+        cwd=workdir,
     ))
     print(run(
         (
             'productbuild --distribution %s '
             '--resources %s '
             '%s'
-        ) % (distribution_path, resources_dir, PKG_NAME),
-        cwd=output_dir,
+        ) % (DISTRIBUTION_PATH, RESOURCES_DIR, PKG_NAME),
+        cwd=workdir,
     ))
-    delete_temp_pkg(output_dir)
-
-
-def delete_existing_pkg(output_dir):
-    path = os.path.join(output_dir, PKG_NAME)
-    if os.path.isfile(path):
-        os.remove(path)
+    shutil.copyfile(os.path.join(workdir, PKG_NAME), pkg_name)
 
 
 def get_version(output_dir):
@@ -62,27 +64,28 @@ def get_version(output_dir):
     return version
 
 
-def delete_temp_pkg(output_dir):
-    path = os.path.join(output_dir, TEMP_PKG_NAME)
-    if os.path.isfile(path):
-        os.remove(path)
-
-
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        '--output-dir',
-        default=os.path.join(ROOT, 'dist'),
+        '--output',
+        default=os.path.join(ROOT, 'dist', PKG_NAME),
         help=(
-            'The directory in which to write the output artifacts. By default '
-            'this will be the "dist" directory in the root of the awscli. '
-            'This is also the location the output of the make-pyinstaller '
-            'script is assumed to be.'
+            'The output PKG name. By default, this will be '
+            '"dist/%s" in the root of the awscli.' % PKG_NAME
+        )
+    )
+    parser.add_argument(
+        '--src-exe',
+        default=os.path.join(ROOT, 'dist', EXE_ZIP_NAME),
+        help=(
+            'The exe used to build the PKG. By default, this will be the'
+            '"dist/%s" zipfile in the root of the awscli.' % EXE_ZIP_NAME
         )
     )
     args = parser.parse_args()
-    output_dir = os.path.abspath(args.output_dir)
-    make_pkg(output_dir)
+    output = os.path.abspath(args.output)
+    src_exe = os.path.abspath(args.src_exe)
+    make_pkg(output, src_exe)
 
 
 if __name__ == "__main__":

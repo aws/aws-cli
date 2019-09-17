@@ -12,7 +12,7 @@ from distutils.dir_util import copy_tree
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from utils import run
+from utils import run, tmp_dir
 
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(
@@ -20,27 +20,30 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(
 EXE_DIR = os.path.join(ROOT, 'exe')
 PYINSTALLER_DIR = os.path.join(EXE_DIR, 'pyinstaller')
 ASSETS_DIR = os.path.join(EXE_DIR, 'assets')
-EXE_NAME = 'aws'
+DEFAULT_OUTPUT_ZIP = 'awscli-exe.zip'
 
 
-def make_pyinstaller(output_dir, cleanup=True):
-    output_exe_dir = os.path.join(output_dir, 'aws')
-    delete_existing_exe(output_exe_dir)
-    output_exe_dist_dir = os.path.join(output_exe_dir, 'dist')
+def make_exe(exe_zipfile, cleanup=True):
+    with tmp_dir() as workdir:
+        delete_existing_exe_build()
+        do_make_exe(workdir, exe_zipfile)
+        if cleanup:
+            cleanup_build()
+    print('Exe build is available at: %s' % exe_zipfile)
+
+
+def do_make_exe(workdir, exe_zipfile):
+    exe_dir = os.path.join(workdir, 'aws')
+    output_exe_dist_dir = os.path.join(exe_dir, 'dist')
     aws_exe_build = pyinstaller('aws.spec')
     copy_directory(aws_exe_build, output_exe_dist_dir)
     aws_complete_exe_build = pyinstaller('aws_completer.spec')
     copy_directory_contents_into(aws_complete_exe_build, output_exe_dist_dir)
-    copy_directory_contents_into(ASSETS_DIR, output_exe_dir)
-    if cleanup:
-        cleanup_build()
-    print('Pyinstaller binary available at: %s' % os.path.join(
-        output_exe_dist_dir, 'aws'))
+    copy_directory_contents_into(ASSETS_DIR, exe_dir)
+    save_to_zip(workdir, exe_zipfile)
 
 
-def delete_existing_exe(exe_dir):
-    if os.path.isdir(exe_dir):
-        shutil.rmtree(exe_dir)
+def delete_existing_exe_build():
     build_dir = os.path.join(PYINSTALLER_DIR, 'dist')
     if os.path.isdir(build_dir):
         shutil.rmtree(build_dir)
@@ -63,6 +66,12 @@ def copy_directory_contents_into(src, dst):
     copy_tree(src, dst)
 
 
+def save_to_zip(dirname, zipfile_name):
+    if zipfile_name.endswith('.zip'):
+        zipfile_name = zipfile_name[:-4]
+    shutil.make_archive(zipfile_name, 'zip', dirname)
+
+
 def cleanup_build():
     locations = [
         os.path.join(PYINSTALLER_DIR, 'build'),
@@ -76,11 +85,12 @@ def cleanup_build():
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        '--output-dir',
-        default=os.path.join(ROOT, 'dist'),
+        '--output',
+        default=os.path.join(ROOT, 'dist', DEFAULT_OUTPUT_ZIP),
         help=(
-            'The directory in which to write the output artifacts. By default '
-            'this will be the "dist" directory in the root of the awscli.'
+            'The name of the file to save the exe zip. By default, '
+            'this will be saved in "dist/%s.zip" directory in the root of the '
+            'awscli.' % DEFAULT_OUTPUT_ZIP
         )
     )
     parser.add_argument(
@@ -95,8 +105,8 @@ def main():
     )
     args = parser.parse_args()
 
-    output_dir = os.path.abspath(args.output_dir)
-    make_pyinstaller(output_dir, cleanup=args.cleanup)
+    output = os.path.abspath(args.output)
+    make_exe(output, cleanup=args.cleanup)
 
 
 if __name__ == "__main__":

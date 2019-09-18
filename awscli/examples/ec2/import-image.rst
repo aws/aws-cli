@@ -3,7 +3,7 @@
 The following ``import-image`` example imports the specified OVA. ::
 
   aws ec2 import-image \
-    --disk-containers Format=ova,UserBucket={S3Bucket=my-import-bucket,S3Key=vms/my-server-vm.ova}
+    --disk-containers Format=ova,UserBucket="{S3Bucket=my-import-bucket,S3Key=vms/my-server-vm.ova}"
 
 Output::
 

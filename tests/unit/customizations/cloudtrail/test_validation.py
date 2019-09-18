@@ -32,6 +32,7 @@ from awscli.customizations.cloudtrail.validation import DigestError, \
     InvalidDigestFormat, S3ClientProvider
 from botocore.exceptions import ClientError
 from awscli.testutils import unittest
+from awscli.schema import ParameterRequiredError
 
 
 START_DATE = parser.parse('20140810T000000Z')
@@ -45,6 +46,8 @@ VALID_TEST_KEY = ('MIIBCgKCAQEAn11L2YZ9h7onug2ILi1MWyHiMRsTQjfWE+pHVRLk1QjfW'
                   'PP0FylgWGNdFtks/4YSKcgqwH0YDcawP9GGGDAeCIqPWIXDLG1jOjRRzW'
                   'fCmD0iJUkz8vTsn4hq/5ZxRFE7UBAUiVcGbdnDdvVfhF9C3dQiDq3k7ad'
                   'QIziLT0cShgQIDAQAB')
+TEST_ORGANIZATION_ACCOUNT_ID = '987654321098'
+TEST_ORGANIZATION_ID = 'o-12345'
 
 
 def create_mock_key_provider(key_list):
@@ -218,6 +221,7 @@ class TestValidation(unittest.TestCase):
         mock_s3_provider = Mock()
         traverser = create_digest_traverser(
             trail_arn=TEST_TRAIL_ARN, cloudtrail_client=Mock(),
+            organization_client=Mock(),
             trail_source_region='us-east-1',
             s3_client_provider=mock_s3_provider,
             bucket='bucket', prefix='prefix')
@@ -227,21 +231,87 @@ class TestValidation(unittest.TestCase):
         self.assertEqual('us-east-1', digest_provider.trail_home_region)
         self.assertEqual('foo', digest_provider.trail_name)
 
+    def test_creates_traverser_account_id(self):
+        mock_s3_provider = Mock()
+        traverser = create_digest_traverser(
+            trail_arn=TEST_TRAIL_ARN, cloudtrail_client=Mock(),
+            organization_client=Mock(),
+            trail_source_region='us-east-1',
+            s3_client_provider=mock_s3_provider,
+            bucket='bucket', prefix='prefix',
+            account_id=TEST_ORGANIZATION_ACCOUNT_ID)
+        self.assertEqual('bucket', traverser.starting_bucket)
+        self.assertEqual('prefix', traverser.starting_prefix)
+        digest_provider = traverser.digest_provider
+        self.assertEqual('us-east-1', digest_provider.trail_home_region)
+        self.assertEqual('foo', digest_provider.trail_name)
+        self.assertEqual(
+            TEST_ORGANIZATION_ACCOUNT_ID, digest_provider.account_id)
+
     def test_creates_traverser_and_gets_trail_by_arn(self):
         cloudtrail_client = Mock()
         cloudtrail_client.describe_trails.return_value = {'trailList': [
             {'TrailARN': TEST_TRAIL_ARN,
-             'S3BucketName': 'bucket', 'S3KeyPrefix': 'prefix'}
+             'S3BucketName': 'bucket', 'S3KeyPrefix': 'prefix',
+             'IsOrganizationTrail': False}
         ]}
         traverser = create_digest_traverser(
             trail_arn=TEST_TRAIL_ARN, trail_source_region='us-east-1',
             cloudtrail_client=cloudtrail_client,
+            organization_client=Mock(),
             s3_client_provider=Mock())
         self.assertEqual('bucket', traverser.starting_bucket)
         self.assertEqual('prefix', traverser.starting_prefix)
         digest_provider = traverser.digest_provider
         self.assertEqual('us-east-1', digest_provider.trail_home_region)
         self.assertEqual('foo', digest_provider.trail_name)
+
+    def test_creates_traverser_and_gets_organization_id(self):
+        cloudtrail_client = Mock()
+        cloudtrail_client.describe_trails.return_value = {'trailList': [
+            {'TrailARN': TEST_TRAIL_ARN,
+             'S3BucketName': 'bucket', 'S3KeyPrefix': 'prefix',
+             'IsOrganizationTrail': True}
+        ]}
+        organization_client = Mock()
+        organization_client.describe_organization.return_value = {
+            "Organization": {
+                "MasterAccountId": TEST_ACCOUNT_ID,
+                "Id": TEST_ORGANIZATION_ID,
+            }
+        }
+        traverser = create_digest_traverser(
+            trail_arn=TEST_TRAIL_ARN, trail_source_region='us-east-1',
+            cloudtrail_client=cloudtrail_client,
+            organization_client=organization_client,
+            s3_client_provider=Mock(), account_id=TEST_ACCOUNT_ID)
+        self.assertEqual('bucket', traverser.starting_bucket)
+        self.assertEqual('prefix', traverser.starting_prefix)
+        digest_provider = traverser.digest_provider
+        self.assertEqual('us-east-1', digest_provider.trail_home_region)
+        self.assertEqual('foo', digest_provider.trail_name)
+        self.assertEqual(TEST_ORGANIZATION_ID, digest_provider.organization_id)
+
+    def test_creates_traverser_organization_trail_missing_account_id(self):
+        cloudtrail_client = Mock()
+        cloudtrail_client.describe_trails.return_value = {'trailList': [
+            {'TrailARN': TEST_TRAIL_ARN,
+             'S3BucketName': 'bucket', 'S3KeyPrefix': 'prefix',
+             'IsOrganizationTrail': True}
+        ]}
+        organization_client = Mock()
+        organization_client.describe_organization.return_value = {
+            "Organization": {
+                "MasterAccountId": TEST_ACCOUNT_ID,
+                "Id": TEST_ORGANIZATION_ID,
+            }
+        }
+        with self.assertRaises(ParameterRequiredError):
+            create_digest_traverser(
+                trail_arn=TEST_TRAIL_ARN, trail_source_region='us-east-1',
+                cloudtrail_client=cloudtrail_client,
+                organization_client=organization_client,
+                s3_client_provider=Mock())
 
 
 class TestPublicKeyProvider(unittest.TestCase):
@@ -401,6 +471,33 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
         mock_paginate.assert_called_once_with(
             Bucket='1',
             Marker=marker.format(account=TEST_ACCOUNT_ID))
+
+    def test_calls_list_objects_correctly_org_trails(self):
+        s3_client = Mock()
+        mock_s3_client_provider = Mock()
+        mock_paginate = s3_client.get_paginator.return_value.paginate
+        mock_search = mock_paginate.return_value.search
+        mock_search.return_value = []
+        mock_s3_client_provider.get_client.return_value = s3_client
+        provider = DigestProvider(
+            mock_s3_client_provider, TEST_ORGANIZATION_ACCOUNT_ID,
+            'foo', 'us-east-1', 'us-east-1',
+            TEST_ORGANIZATION_ID)
+        provider.load_digest_keys_in_range(
+            '1', 'prefix', START_DATE, END_DATE)
+        marker = (
+            'prefix/AWSLogs/{organization_id}/{member_account}/'
+            'CloudTrail-Digest/us-east-1/'
+            '2014/08/09/{member_account}_CloudTrail-Digest_us-east-1_foo_'
+            'us-east-1_20140809T235900Z.json.gz'
+        )
+        mock_paginate.assert_called_once_with(
+            Bucket='1',
+            Marker=marker.format(
+                member_account=TEST_ORGANIZATION_ACCOUNT_ID,
+                organization_id=TEST_ORGANIZATION_ID
+            )
+        )
 
     def test_ensures_digest_has_proper_metadata(self):
         out = six.BytesIO()
@@ -737,7 +834,10 @@ class TestCloudTrailCommand(BaseAWSCommandParamsTest):
         create_client_calls = session.create_client.call_args_list
         self.assertEqual(
             create_client_calls,
-            [call('cloudtrail', verify=None, region_name=None)]
+            [
+                call('organizations', verify=None, region_name=None),
+                call('cloudtrail', verify=None, region_name=None)
+            ]
         )
 
     def test_endpoint_url_is_used_for_cloudtrail(self):
@@ -751,6 +851,8 @@ class TestCloudTrailCommand(BaseAWSCommandParamsTest):
         self.assertEqual(
             create_client_calls,
             [
+                call('organizations', verify=None, region_name='foo'),
+                # Here we should inject the endpoint_url only for cloudtrail.
                 call('cloudtrail', verify=None, region_name='foo',
                      endpoint_url=endpoint_url)
             ]
@@ -762,7 +864,7 @@ class TestCloudTrailCommand(BaseAWSCommandParamsTest):
         start_date = START_DATE.strftime(DATE_FORMAT)
         args = Namespace(trail_arn='abc', verbose=True,
                          start_time=start_date, s3_bucket='bucket',
-                         s3_prefix='prefix', end_time=None)
+                         s3_prefix='prefix', end_time=None, account_id=None)
         command.handle_args(args)
         self.assertEqual('abc', command.trail_arn)
         self.assertEqual(True, command.is_verbose)

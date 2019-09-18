@@ -1,0 +1,72 @@
+#!/usr/bin/env python
+"""Script to sign exe bundle"""
+import argparse
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from utils import run, BadRCError
+
+
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(
+    os.path.abspath(__file__))))
+EXE_ZIP_NAME = 'awscli-exe.zip'
+SIGNATURE_FILENAME = EXE_ZIP_NAME + '.sig'
+
+
+def sign_exe(exe_zipfile, signature_filename, key_name=None):
+    _verify_gpg_installed()
+    _sign_exe_zip(exe_zipfile, signature_filename, key_name)
+
+
+def _verify_gpg_installed():
+    try:
+        run('gpg --version')
+    except BadRCError:
+        raise RuntimeError('Please install gpg to run this script')
+
+
+def _sign_exe_zip(exe_zipfile, signature_filename, key_name):
+    options = [
+        '--yes', '--output', signature_filename
+    ]
+    if key_name:
+        options.extend(['--local-user', key_name])
+    options = ' '.join(options)
+    run('gpg ' + options + ' --detach-sign %s' % exe_zipfile)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        '--output',
+        default=os.path.join(ROOT, 'dist', SIGNATURE_FILENAME),
+        help=(
+            'The output signature file. By default, this will be '
+            '"dist/%s" in the root of the awscli.' % SIGNATURE_FILENAME
+        )
+    )
+    parser.add_argument(
+        '--exe',
+        default=os.path.join(ROOT, 'dist', EXE_ZIP_NAME),
+        help=(
+            'The exe zip to sign. By default, this will be the'
+            '"dist/%s" zipfile in the root of the awscli.' % EXE_ZIP_NAME
+        )
+    )
+    parser.add_argument(
+        '--key-name',
+        help=(
+            'The name of the key to use for signing. This corresponds to the '
+            '--local-user option when running gpg. By default, the key used '
+            'is your default private key in gpg.'
+        )
+    )
+    args = parser.parse_args()
+    sign_exe(args.exe, args.output, args.key_name)
+
+
+if __name__ == "__main__":
+    main()
+

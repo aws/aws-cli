@@ -39,8 +39,9 @@ def _gz_compress(data):
 def _setup_mock_traverser(mock_create_digest_traverser, key_provider,
                           digest_provider, validator):
     def mock_create(trail_arn, cloudtrail_client, s3_client_provider,
-                    trail_source_region, bucket, prefix, on_missing,
-                    on_invalid, on_gap):
+                    organization_client, trail_source_region,
+                    bucket, prefix, on_missing, on_invalid, on_gap,
+                    account_id):
         bucket = bucket or '1'
         return DigestTraverser(
             digest_provider=digest_provider, starting_bucket=bucket,

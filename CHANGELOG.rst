@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.242
+========
+
+* api-change:``ecs``: Update ecs command to latest version
+* enhancement:``cloudtrail validate-logs``: Add support for validating logs from organizational trails
+* api-change:``glue``: Update glue command to latest version
+* api-change:``mediaconnect``: Update mediaconnect command to latest version
+
+
 1.16.241
 ========
 

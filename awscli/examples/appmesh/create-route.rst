@@ -228,3 +228,98 @@ Output::
     }
 
 For more information, see `HTTP Headers <https://docs.aws.amazon.com/app-mesh/latest/userguide/route-http-headers.html>`__ in the *AWS App Mesh User Guide*.
+
+**Example 4: To create a new route with a retry policy**
+
+The following ``create-route`` example uses a JSON input file to create a route with a retry policy.::
+
+    aws appmesh create-route \
+        --cli-input-json file://create-route-retry-policy.json
+
+Contents of ``create-route-retry-policy.json``::
+
+    {
+        "meshName": "App1",
+        "routeName": "Route-retries1",
+        "spec": {
+            "httpRoute": {
+                "action": {
+                    "weightedTargets": [
+                        {
+                            "virtualNode": "ServiceB",
+                            "weight": 100
+                        }
+                    ]
+                },
+                "match": {
+                    "prefix": "/"
+                },
+                "retryPolicy": {
+                    "perRetryTimeout": {
+                        "value": 15,
+                        "unit": "s"
+                    },
+                    "maxRetries": 3,
+                    "httpRetryEvents": [
+                        "server-error",
+                        "gateway-error"
+                    ],
+                    "tcpRetryEvents": [
+                        "connection-error"
+                    ]
+                }
+            }
+        },
+        "virtualRouterName": "Virtual-router1"
+    }
+
+Output::
+
+    {
+        "route": {
+            "meshName": "App1",
+            "metadata": {
+                "arn": "arn:aws:appmesh:us-east-1:123456789012:mesh/App1/virtualRouter/Virtual-router1/route/Route-retries1",
+                "createdAt": 1568142345.942,
+                "lastUpdatedAt": 1568142345.942,
+                "uid": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                "version": 1
+            },
+            "routeName": "Route-retries1",
+            "spec": {
+                "httpRoute": {
+                    "action": {
+                        "weightedTargets": [
+                            {
+                                "virtualNode": "ServiceB",
+                                "weight": 100
+                            }
+                        ]
+                    },
+                    "match": {
+                        "prefix": "/"
+                    },
+                    "retryPolicy": {
+                        "httpRetryEvents": [
+                            "server-error",
+                            "gateway-error"
+                        ],
+                        "maxRetries": 3,
+                        "perRetryTimeout": {
+                            "unit": "s",
+                            "value": 15
+                        },
+                        "tcpRetryEvents": [
+                            "connection-error"
+                        ]
+                    }
+                }
+            },
+            "status": {
+                "status": "ACTIVE"
+            },
+            "virtualRouterName": "Virtual-router1"
+        }
+    }
+
+For more information, see `Retry Policy <https://docs.aws.amazon.com/app-mesh/latest/userguide/route-retry-policy.html>`__ in the *AWS App Mesh User Guide*.

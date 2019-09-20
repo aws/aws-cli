@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.243
+========
+
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``greengrass``: Update greengrass command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
 1.16.242
 ========
 

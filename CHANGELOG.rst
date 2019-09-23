@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.244
+========
+
+* api-change:``rds-data``: Update rds-data command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+
+
 1.16.243
 ========
 

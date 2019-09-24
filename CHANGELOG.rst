@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.245
+========
+
+* api-change:``comprehendmedical``: Update comprehendmedical command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``datasync``: Update datasync command to latest version
+
+
 1.16.244
 ========
 

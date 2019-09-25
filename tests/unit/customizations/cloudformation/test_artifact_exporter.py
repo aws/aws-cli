@@ -422,10 +422,11 @@ class TestArtifactExporter(unittest.TestCase):
     @patch("awscli.customizations.cloudformation.artifact_exporter.make_zip")
     def test_zip_folder(self, make_zip_mock):
         zip_file_name = "name.zip"
-        make_zip_mock.return_value = zip_file_name
+        zip_file_hash = "hash"
+        make_zip_mock.return_value = zip_file_name, zip_file_hash
 
         with self.make_temp_dir() as dirname:
-            with zip_folder(dirname) as actual_zip_file_name:
+            with zip_folder(dirname) as (actual_zip_file_name, _actual_zip_file_hash):
                 self.assertEqual(actual_zip_file_name, zip_file_name)
 
         make_zip_mock.assert_called_once_with(mock.ANY, dirname)
@@ -1167,7 +1168,7 @@ class TestArtifactExporter(unittest.TestCase):
 
         zipfile_name = None
         try:
-            zipfile_name = make_zip(outfile, dirname)
+            zipfile_name, zipfile_hash = make_zip(outfile, dirname)
 
             test_zip_file = zipfile.ZipFile(zipfile_name, "r")
             with closing(test_zip_file) as zf:

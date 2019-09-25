@@ -59,20 +59,3 @@ class TestPackageZipFiles(TestCase):
 
         # Its content should be equal the value we wrote.
         self.assertEquals(data.encode("utf-8"), myfile.read())
-
-    def test_returns_proper_hash(self):
-        data = "hello world"
-        data_file = os.path.join(self.rootdir, "data.txt")
-
-        with open(data_file, "w") as fp:
-            fp.write(data)
-
-        # Create symlink within the zip root
-        link_name = os.path.join(self.ziproot, "data-link.txt")
-        os.symlink(data_file, link_name)
-
-        # Zip up the contents of folder `ziproot` which contains the symlink
-        _zipfile_path, zipfile_hash = make_zip(os.path.join(self.rootdir, "archive"), self.ziproot)
-
-        self.assertEquals(zipfile_hash, "123")
-

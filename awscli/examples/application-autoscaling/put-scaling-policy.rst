@@ -82,4 +82,41 @@ Output::
         ]
     }
 
+**Example 3: To apply a target tracking scaling policy for scale out only**
+
+The following ``put-scaling-policy`` example applies a target tracking scaling policy to an Amazon ECS service called ``web-app`` in the default cluster. The policy is used to scale out the ECS service when the ``RequestCountPerTarget`` metric from the Application Load Balancer exceeds the threshold. The output contains the ARN and name of the CloudWatch alarm created on your behalf. ::
+
+    aws application-autoscaling put-scaling-policy \
+        --service-namespace ecs \
+        --scalable-dimension ecs:service:DesiredCount \
+        --resource-id service/default/web-app \
+        --policy-name alb-scale-out-target-tracking-scaling-policy \
+        --policy-type TargetTrackingScaling \
+        --target-tracking-scaling-policy-configuration file://config.json
+
+Contents of ``config.json``::
+
+    {
+         "TargetValue": 1000.0,
+         "PredefinedMetricSpecification": {
+             "PredefinedMetricType": "ALBRequestCountPerTarget",
+             "ResourceLabel": "app/EC2Co-EcsEl-1TKLTMITMM0EO/f37c06a68c1748aa/targetgroup/EC2Co-Defau-LDNM7Q3ZH1ZN/6d4ea56ca2d6a18d"
+         },
+         "ScaleOutCooldown": 60,
+        "ScaleInCooldown": 60,
+        "DisableScaleIn": true
+    }
+
+Output::
+
+    {
+        "PolicyARN": "arn:aws:autoscaling:us-west-2:123456789012:scalingPolicy:6d8972f3-efc8-437c-92d1-6270f29a66e7:resource/ecs/service/default/web-app:policyName/alb-scale-out-target-tracking-scaling-policy",
+        "Alarms": [
+            {
+                "AlarmName": "TargetTracking-service/default/web-app-AlarmHigh-d4f0770c-b46e-434a-a60f-3b36d653feca",
+                "AlarmARN": "arn:aws:cloudwatch:us-west-2:123456789012:alarm:TargetTracking-service/default/web-app-AlarmHigh-d4f0770c-b46e-434a-a60f-3b36d653feca"
+            }
+        ]
+    }
+
 For more information, see `Target Tracking Scaling Policies for Application Auto Scaling <https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-target-tracking.html>`_ in the *AWS Application Auto Scaling User Guide*.

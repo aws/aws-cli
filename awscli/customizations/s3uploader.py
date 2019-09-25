@@ -169,8 +169,7 @@ class S3Uploader(object):
         return "s3://{0}/{1}".format(
             self.bucket_name, obj_path)
 
-    def file_checksum(self, file_name):
-
+    def _md5_file(self, file_name):
         with open(file_name, "rb") as file_handle:
             md5 = hashlib.md5()
             # Read file in chunks of 4096 bytes
@@ -188,7 +187,10 @@ class S3Uploader(object):
             # Restore file cursor's position
             file_handle.seek(curpos)
 
-            return md5.hexdigest()
+            return md5
+
+    def file_checksum(self, file_name):
+        return self._md5_file(file_name).hexdigest()
 
     def to_path_style_s3_url(self, key, version=None):
         """

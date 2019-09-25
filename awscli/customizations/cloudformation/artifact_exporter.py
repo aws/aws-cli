@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import hashlib
 import logging
 import os
 import tempfile
@@ -23,6 +24,7 @@ from botocore.utils import set_value_from_jmespath
 
 from awscli.compat import urlparse
 from contextlib import contextmanager
+from awscli.customizations.s3uploader import S3Uploader
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump, \
     yaml_parse
@@ -155,8 +157,8 @@ def upload_local_artifacts(resource_id, resource_dict, property_name,
 
 
 def zip_and_upload(local_path, uploader):
-    with zip_folder(local_path) as zipfile:
-            return uploader.upload_with_dedup(zipfile)
+    with zip_folder(local_path) as (zipfile, zipped_files_hash):
+        return uploader.upload(zipfile, zipped_files_hash)
 
 
 @contextmanager
@@ -172,9 +174,9 @@ def zip_folder(folder_path):
     filename = os.path.join(
         tempfile.gettempdir(), "data-" + uuid.uuid4().hex)
 
-    zipfile_name = make_zip(filename, folder_path)
+    zipfile_name, zipped_files_hash = make_zip(filename, folder_path)
     try:
-        yield zipfile_name
+        yield zipfile_name, zipped_files_hash
     finally:
         if os.path.exists(zipfile_name):
             os.remove(zipfile_name)
@@ -183,6 +185,7 @@ def zip_folder(folder_path):
 def make_zip(filename, source_root):
     zipfile_name = "{0}.zip".format(filename)
     source_root = os.path.abspath(source_root)
+    zipped_files = set()
     with open(zipfile_name, 'wb') as f:
         zip_file = zipfile.ZipFile(f, 'w', zipfile.ZIP_DEFLATED)
         with contextlib.closing(zip_file) as zf:
@@ -191,9 +194,16 @@ def make_zip(filename, source_root):
                     full_path = os.path.join(root, filename)
                     relative_path = os.path.relpath(
                         full_path, source_root)
+                    zipped_files.add(full_path)
                     zf.write(full_path, relative_path)
 
-    return zipfile_name
+    md5 = hashlib.md5()
+    for filename in sorted(zipped_files):
+        filehash = S3Uploader._md5_file(S3Uploader, filename)
+        md5.update(filename.encode())
+        md5.update(filehash.digest())
+
+    return zipfile_name, md5.hexdigest()
 
 
 @contextmanager

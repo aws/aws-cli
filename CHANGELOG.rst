@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.246
+========
+
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``globalaccelerator``: Update globalaccelerator command to latest version
+
+
 1.16.245
 ========
 

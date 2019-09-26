@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.247
+========
+
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
 1.16.246
 ========
 

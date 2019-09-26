@@ -30,7 +30,7 @@ Output::
 
 **Example 2: To create a Capacity Reservation that automatically ends at a specified date/time**
 
-The following ``create-capacity-reservation`` example creates a capacity reservation in the ``eu-west-1a`` Availability Zone, into which you can launch three ``m5.large`` instances running a Linux/Unix operating system. This capacity reservation automatically ends on 08/31/2019 at 23:59:59.
+The following ``create-capacity-reservation`` example creates a capacity reservation in the ``eu-west-1a`` Availability Zone, into which you can launch three ``m5.large`` instances running a Linux/Unix operating system. This capacity reservation automatically ends on 08/31/2019 at 23:59:59. ::
 
     aws ec2 create-capacity-reservation \
         --availability-zone eu-west-1a \
@@ -63,7 +63,7 @@ Output::
 
 **Example 3: To create a Capacity Reservation that accepts only targeted instance launches**
 
-The following ``create-capacity-reservation`` example creates a capacity reservation that accepts only targeted instance launches
+The following ``create-capacity-reservation`` example creates a capacity reservation that accepts only targeted instance launches. ::
 
     aws ec2 create-capacity-reservation \
         --availability-zone eu-west-1a \

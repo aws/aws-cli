@@ -14,9 +14,10 @@ For more information, see `DescribeEndpoint <https://docs.aws.amazon.com/iot/lat
 
 **Example 2: To get your ATS endpoint**
 
-The following ``describe-endpoint`` example gets the Amazon Trust Services (ATS) endpoint. ::
+The following ``describe-endpoint`` example retrieves the Amazon Trust Services (ATS) endpoint. ::
 
-    aws iot describe-endpoint --endpoint-type:Data-ATS
+    aws iot describe-endpoint \
+        --endpoint-type iot:Data-ATS
     
 Output::
 

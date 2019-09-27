@@ -5,7 +5,6 @@ The following ``list-journal-s3-exports-for-ledger`` example lists journal expor
     aws qldb list-journal-s3-exports-for-ledger \
         --name myExampleLedger
 
-This command produces no output.
 Output::
 
     {

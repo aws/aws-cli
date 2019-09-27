@@ -1,6 +1,6 @@
 **To describe a ledger**
 
-The following ``describe-ledger`` example displays the for about the specfied ledger. ::
+The following ``describe-ledger`` example displays the details for the specified ledger. ::
 
     aws qldb describe-ledger \
         --name myExampleLedger

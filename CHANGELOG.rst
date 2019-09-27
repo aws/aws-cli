@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.248
+========
+
+* api-change:``amplify``: Update amplify command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
 1.16.247
 ========
 

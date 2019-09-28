@@ -1,13 +1,62 @@
-**To set the instance affinity value for a specific stopped Dedicated Host**
+**Example 1: To remove an instance's affinity with a Dedicated Host**
 
-To modify the affinity of an instance so it always has affinity with the specified Dedicated Host . 
+The following ``modify-instance-placement`` example removes an instance's affinity with a Dedicated Host and enables it to launch on any available Dedicated Host in your account that supports its instance type. ::
 
-Command::
-
-  aws ec2 modify-instance-placement --instance-id=i-1234567890abcdef0 --host-id h-029e7409a3350a31f
+    aws ec2 modify-instance-placement \
+        --instance-id i-0e6ddf6187EXAMPLE \
+        --affinity default
 
 Output::
 
-  { 
-    "Return":  true
-   }
+    {
+        "Return": true
+    }
+
+**Example 2: To establish affinity between an instance and the specified Dedicated Host**
+
+The following ``modify-instance-placement`` example establishes a launch relationship between an instance and a Dedicated Host. The instance is only able to run on the specified Dedicated Host. ::
+
+    aws ec2 modify-instance-placement \
+        --instance-id i-0e6ddf6187EXAMPLE \
+        --affinity host \
+        --host-id i-0e6ddf6187EXAMPLE
+
+Output::
+
+    {
+        "Return": true
+    }
+
+For more information, see `Modifying Instance Tenancy and Affinity <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/how-dedicated-hosts-work.html#moving-instances-dedicated-hosts>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+
+**Example 3: To move an instance to a placement group**
+
+To move an instance to a placement group, stop the instance, modify the instance placement, and then restart the instance. ::
+
+    aws ec2 stop-instances \
+        --instance-ids i-0123a456700123456
+
+    aws ec2 modify-instance-placement \
+        --instance-id i-0123a456700123456 \
+        --group-name MySpreadGroup
+
+    aws ec2 start-instances \
+        --instance-ids i-0123a456700123456
+
+For more information, see `Changing the Placement Group for an Instance <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html#change-instance-placement-group>`__ in the *Amazon Elastic Compute Cloud Users Guide*.
+
+**Example 4: To remove an instance from a placement group**
+
+To remove an instance from a placement group, stop the instance, modify the instance placement, and then restart the instance. The following example specifies an empty string (" ") for the placement group name to indicate that the instance is not to be located in a placement group.
+
+    aws ec2 stop-instances \
+        --instance-ids i-0123a456700123456
+
+    aws ec2 modify-instance-placement \
+        --instance-id i-0123a456700123456 \
+        --group-name " "
+
+    aws ec2 start-instances \
+        --instance-ids i-0123a456700123456
+
+For more information, see `Modifying Instance Tenancy and Affinity <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/how-dedicated-hosts-work.html#moving-instances-dedicated-hosts>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.

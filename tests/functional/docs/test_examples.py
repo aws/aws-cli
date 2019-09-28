@@ -22,6 +22,7 @@ at the man output, we look one step before at the generated rst output
 
 """
 import os
+import re
 import shlex
 import docutils.nodes
 import docutils.parsers.rst
@@ -49,6 +50,8 @@ _dname = os.path.dirname
 EXAMPLES_DIR = os.path.join(
     _dname(_dname(_dname(_dname(os.path.abspath(__file__))))),
     'awscli', 'examples')
+
+ALLOWED_FILENAME_CHAR_REGEX = re.compile(r'([a-z0-9_\-\.]*$)')
 
 
 # Used so that docutils doesn't write errors to stdout/stderr.
@@ -260,13 +263,17 @@ class CollectCLICommands(docutils.nodes.GenericNodeVisitor):
         pass
 
 
-
-def test_only_rst_and_txt_example_files():
+def test_example_file_names():
     for root, _, files in os.walk(EXAMPLES_DIR):
         for filename in files:
             filepath = os.path.join(root, filename)
             yield (_assert_file_is_rst_or_txt, filepath)
+            yield (_assert_name_contains_only_allowed_characters, filename)
 
 
 def _assert_file_is_rst_or_txt(filepath):
     assert filepath.endswith('.rst') or filepath.endswith('.txt')
+
+
+def _assert_name_contains_only_allowed_characters(filename):
+    assert ALLOWED_FILENAME_CHAR_REGEX.match(filename)

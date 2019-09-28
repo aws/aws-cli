@@ -8,7 +8,6 @@ The following ``update-mesh`` example uses a JSON input file to update a service
 Contents of ``update-mesh.json``::
 
     {
-        "clientToken": "500",
         "meshName": "app1",
         "spec": {
             "egressFilter": {

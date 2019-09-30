@@ -57,7 +57,7 @@ setup_options = dict(
                              'examples/*/*.txt', 'examples/*/*/*.txt',
                              'examples/*/*/*.rst', 'topics/*.rst',
                              'topics/*.json']},
-    install_install_requires=install_requires,
+    install_requires=install_requires,
     extras_require={
         ':python_version=="2.6"': [
             'argparse>=1.1',

@@ -1,4 +1,4 @@
-**To get an image**
+**Example 1: To get an image**
 
 The following ``batch-get-image`` example gets an image with the tag ``v1.13.6`` in a repository called
 ``cluster-autoscaler`` in the default registry for an account. ::
@@ -23,3 +23,39 @@ Output::
         ],
         "failures": []
     }
+
+**Example 2: To get multiple images**
+
+The following ``batch-get-image`` example displays details of all images tagged with ``prod`` and ``team1`` in the specified repository. ::
+
+    aws ecr batch-get-image \
+        --repository-name MyRepository \
+        --image-ids imageTag=prod imageTag=team1
+
+Output::
+
+    {
+        "images": [
+            {
+                "registryId": "123456789012",
+                "repositoryName": "MyRepository",
+                "imageId": {
+                    "imageDigest": "sha256:123456789012",
+                    "imageTag": "prod"
+                },
+                "imageManifest": "manifestExample1"
+            },
+            {
+                "registryId": "567890121234",
+                "repositoryName": "MyRepository",
+                "imageId": {
+                    "imageDigest": "sha256:123456789012",
+                    "imageTag": "team1"
+                },
+                "imageManifest": "manifestExample2"
+            }
+        ],
+        "failures": []
+    }
+
+For more information, see `Images <https://docs.aws.amazon.com/AmazonECR/latest/userguide/images.html>`__ in the *Amazon ECR User Guide*.

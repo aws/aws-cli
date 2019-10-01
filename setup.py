@@ -23,23 +23,23 @@ def find_version(*file_paths):
     raise RuntimeError("Unable to find version string.")
 
 
-requires = ['botocore==1.12.239',
-            'colorama>=0.2.5,<=0.3.9',
-            'docutils>=0.10,<0.16',
-            'rsa>=3.1.2,<=3.5.0',
-            's3transfer>=0.2.0,<0.3.0']
+install_requires = ['botocore==1.12.240',
+                    'colorama>=0.2.5,<=0.3.9',
+                    'docutils>=0.10,<0.16',
+                    'rsa>=3.1.2,<=3.5.0',
+                    's3transfer>=0.2.0,<0.3.0']
 
 
 if sys.version_info[:2] == (2, 6):
     # For python2.6 we have to require argparse since it
     # was not in stdlib until 2.7.
-    requires.append('argparse>=1.1')
+    install_requires.append('argparse>=1.1')
 
     # For Python 2.6, we have to require a different verion of PyYAML since the latest
     # versions dropped support for Python 2.6.
-    requires.append('PyYAML>=3.10,<=3.13')
+    install_requires.append('PyYAML>=3.10,<=3.13')
 else:
-    requires.append('PyYAML>=3.10,<=5.2')
+    install_requires.append('PyYAML>=3.10,<=5.2')
 
 
 setup_options = dict(
@@ -57,7 +57,7 @@ setup_options = dict(
                              'examples/*/*.txt', 'examples/*/*/*.txt',
                              'examples/*/*/*.rst', 'topics/*.rst',
                              'topics/*.json']},
-    install_requires=requires,
+    install_requires=install_requires,
     extras_require={
         ':python_version=="2.6"': [
             'argparse>=1.1',

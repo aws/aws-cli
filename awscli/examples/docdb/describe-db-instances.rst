@@ -2,7 +2,7 @@
 
 The following ``describe-db-instances`` example displays details for about the Amazon DocumentDB instance ``sample-cluster-instance``. By omitting the ``--db-instance-identifier`` parameter you get information on up to 100 instances. ::
 
-    awd docdb describe-db-instances \
+    aws docdb describe-db-instances \
         --db-instance-identifier sample-cluster-instance
 
 Output::

@@ -4,7 +4,6 @@ The following ``list-journal-s3-exports`` example lists journal export jobs for 
 
     aws qldb list-journal-s3-exports
 
-This command produces no output.
 Output::
 
     {

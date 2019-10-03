@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.252
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``devicefarm``: Update devicefarm command to latest version
+
+
 1.16.251
 ========
 

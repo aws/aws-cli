@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.253
+========
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``mediapackage``: Update mediapackage command to latest version
+* enhancment:colorama: Increased the upper bound on the colorama dependency to 0.4.2.
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+
+
 1.16.252
 ========
 

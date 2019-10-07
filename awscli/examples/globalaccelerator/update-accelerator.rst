@@ -25,6 +25,7 @@ Output::
                     "IpFamily": "IPv4"
                 }
             ],
+            "DnsName":"a1234567890abcdef.awsglobalaccelerator.com",
             "CreatedTime": 1232394847,
             "LastModifiedTime": 1232395654
         }

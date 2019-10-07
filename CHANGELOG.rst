@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.16.254
+========
+
+* api-change:``directconnect``: Update directconnect command to latest version
+* api-change:``firehose``: Update firehose command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``pinpoint-email``: Update pinpoint-email command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``snowball``: Update snowball command to latest version
+
+
 1.16.253
 ========
 

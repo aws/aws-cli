@@ -41,6 +41,7 @@ if sys.version_info[:2] == (2, 6):
     # Colorama removed support for EOL pythons.
     install_requires.append('colorama>=0.2.5,<0.3.9')
 elif sys.version_info[:2] == (3, 3):
+    install_requires.append('PyYAML>=3.10,<=5.2')
     # Colorama removed support for EOL pythons.
     install_requires.append('colorama>=0.2.5,<0.3.9')
 else:

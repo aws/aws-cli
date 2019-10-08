@@ -1,4 +1,3 @@
-
 **To create a preset for ElasticTranscoder**
 
 The following ``create-preset`` example creates a preset for ElasticTranscoder. ::

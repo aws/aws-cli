@@ -1,4 +1,3 @@
-
 **To retrieve a list of ElasticTranscoder pipelines**
 
 This example retrieves a list of ElasticTranscoder pipelines.

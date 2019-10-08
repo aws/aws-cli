@@ -1,3 +1,5 @@
+**To list CloudFront invalidations**
+
 The following command retrieves a list of invalidations for a CloudFront web distribution with the ID ``S11A16G5KZMEQD``::
 
   aws cloudfront list-invalidations --distribution-id S11A16G5KZMEQD

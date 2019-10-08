@@ -1,3 +1,5 @@
+**To list CloudFront distributions**
+
 The following command retrieves a list of distributions::
 
   aws cloudfront list-distributions

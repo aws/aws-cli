@@ -1,3 +1,5 @@
+**To delete a CloudFront distribution**
+
 The following command deletes a CloudFront distribution with the ID ``S11A16G5KZMEQD``::
 
   aws cloudfront delete-distribution --id S11A16G5KZMEQD --if-match 8UBQECEJX24ST

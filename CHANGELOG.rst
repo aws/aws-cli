@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.256
+========
+
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+
+
 1.16.255
 ========
 

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.257
+========
+
+* api-change:``fms``: Update fms command to latest version
+* api-change:``iotanalytics``: Update iotanalytics command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``lex-runtime``: Update lex-runtime command to latest version
+
+
 1.16.256
 ========
 

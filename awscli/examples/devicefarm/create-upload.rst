@@ -1,4 +1,4 @@
-**Create an upload**
+**To create an upload**
 
 The following command creates an upload for an Android app::
 

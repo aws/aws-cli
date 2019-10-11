@@ -1,4 +1,3 @@
-
 **To retrieve a list of ElasticTranscoder jobs in the specified pipeline**
 
 This example retrieves a list of ElasticTranscoder jobs in the specified pipeline.

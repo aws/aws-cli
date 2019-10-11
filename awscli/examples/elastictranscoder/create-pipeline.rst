@@ -1,4 +1,3 @@
-
 **To create a pipeline for ElasticTranscoder**
 
 The following ``create-pipeline`` example creates a pipeline for ElasticTranscoder. ::

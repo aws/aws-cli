@@ -1,3 +1,5 @@
+**To create a CloudFront Web Distribution**
+
 You can create a CloudFront web distribution for an S3 domain (such as
 my-bucket.s3.amazonaws.com) or for a custom domain (such as example.com).
 The following command shows an example for an S3 domain, and optionally also

@@ -1,4 +1,4 @@
-**title**
+**Delete an IoT Analytics Channel**
 
 The following ``delete-channel`` example deletes the specified channel. ::
 

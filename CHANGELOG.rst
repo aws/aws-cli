@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.258
+========
+
+* api-change:``greengrass``: Update greengrass command to latest version
+
+
 1.16.257
 ========
 

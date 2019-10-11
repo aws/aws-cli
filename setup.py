@@ -23,7 +23,7 @@ def find_version(*file_paths):
     raise RuntimeError("Unable to find version string.")
 
 
-install_requires = ['botocore==1.12.247',
+install_requires = ['botocore==1.12.248',
                     'docutils>=0.10,<0.16',
                     'rsa>=3.1.2,<=3.5.0',
                     's3transfer>=0.2.0,<0.3.0']
@@ -39,13 +39,13 @@ if sys.version_info[:2] == (2, 6):
     install_requires.append('PyYAML>=3.10,<=3.13')
 
     # Colorama removed support for EOL pythons.
-    install_requires.append('colorama>=0.2.5,<0.3.9')
+    install_requires.append('colorama>=0.2.5,<=0.3.9')
 elif sys.version_info[:2] == (3, 3):
-    install_requires.append('PyYAML>=3.10,<=5.2')
+    install_requires.append('PyYAML>=3.10,<=3.13')
     # Colorama removed support for EOL pythons.
-    install_requires.append('colorama>=0.2.5,<0.3.9')
+    install_requires.append('colorama>=0.2.5,<=0.3.9')
 else:
-    install_requires.append('PyYAML>=3.10,<=5.2')
+    install_requires.append('PyYAML>=3.10,<5.2')
     install_requires.append('colorama>=0.2.5,<0.4.2')
 
 

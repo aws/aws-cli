@@ -1,4 +1,3 @@
-
 **To retrieve an ElasticTranscoder job**
 
 This example retrieves the specified ElasticTranscoder job.

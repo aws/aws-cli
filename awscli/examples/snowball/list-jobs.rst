@@ -1,4 +1,4 @@
-**title**
+**To list the current Snowball jobs in your account**
 
 The following ``list-jobs`` example displays an array of ``JobListEntry`` objects. In this example, a single job is listed. ::
 

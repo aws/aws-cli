@@ -1,3 +1,5 @@
+**To update a CloudFront distribution**
+
 The following command updates the Default Root Object to "index.html"
 for a CloudFront distribution with the ID ``S11A16G5KZMEQD``::
 

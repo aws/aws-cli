@@ -1,3 +1,5 @@
+**To get information about an invalidation**
+
 The following command retrieves an invalidation with the ID ``YNY2LI2BVJ4NJU`` for a CloudFront web distribution with the ID ``S11A16G5KZMEQD``::
 
   aws cloudfront get-invalidation --id YNY2LI2BVJ4NJU --distribution-id S11A16G5KZMEQD

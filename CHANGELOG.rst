@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.259
+========
+
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``personalize``: Update personalize command to latest version
+
+
 1.16.258
 ========
 

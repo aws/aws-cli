@@ -399,9 +399,9 @@ If you just want to install a snapshot of the latest development version of
 the CLI, you can use the ``requirements.txt`` file included in this repo.
 This file points to the development version of the above packages::
 
-    cd <path_to_awscli>
-    pip install -r requirements.txt
-    pip install -e .
+    $ cd <path_to_awscli>
+    $ pip install -r requirements.txt
+    $ pip install -e .
 
 However, to keep up to date, you will continually have to run the
 ``pip install -r requirements.txt`` file to pull in the latest changes
@@ -410,12 +410,12 @@ from the develop branches of botocore, jmespath, etc.
 You can optionally clone each of those repositories and run "pip install -e ."
 for each repository::
 
-    git clone <jmespath> && cd jmespath/
-    pip install -e . && cd ..
-    git clone <botocore> && cd botocore/
-    pip install -e . && cd ..
-    git clone <awscli> && cd aws-cli/
-    pip install -e .
+    $ git clone <jmespath> && cd jmespath/
+    $ pip install -e . && cd ..
+    $ git clone <botocore> && cd botocore/
+    $ pip install -e . && cd ..
+    $ git clone <awscli> && cd aws-cli/
+    $ pip install -e .
 
 
 ------------

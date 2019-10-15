@@ -1,6 +1,6 @@
-**To detach a certificate from a thing**
+**To detach a certificate/principal from a thing**
 
-The following ``detach-thing-principal`` example removes a certificate from the specified thing. ::
+The following ``detach-thing-principal`` example removes a certificate that represents a principal from the specified thing. ::
 
     aws iot detach-thing-principal \
         --thing-name "MyLightBulb" \

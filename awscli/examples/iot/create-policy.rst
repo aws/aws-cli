@@ -43,6 +43,7 @@ Contents of ``policy.json``::
             }
         ]
     }
+
 Output::
 
     {
@@ -87,4 +88,3 @@ Output::
     }
 
 For more information, see `AWS IoT Policies <https://docs.aws.amazon.com/iot/latest/developerguide/iot-policies.html>`__ in the *AWS IoT Developers Guide*.
-

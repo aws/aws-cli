@@ -1,6 +1,6 @@
 **To delete a version of policy**
 
-The following ``delete-policy-version`` example deletes version 2 of the specified policy from your AWS account. You cannot delete the default version of a policy. ::
+The following ``delete-policy-version`` example deletes version 2 of the specified policy from your AWS account. ::
 
     aws iot delete-policy-version \
         --policy-name UpdateDeviceCertPolicy \

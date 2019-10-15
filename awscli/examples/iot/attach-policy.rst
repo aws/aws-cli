@@ -12,7 +12,7 @@ For more information, see `Thing Groups <https://docs.aws.amazon.com/iot/latest/
 
 **Example 2: To attach a policy to a certificate**
 
-The following ``attach-policy`` example attaches the policy ``UpdateDeviceCertPolicy`` to the specified certificate. ::
+The following ``attach-policy`` example attaches the policy ``UpdateDeviceCertPolicy`` to the principal specified by a certificate. ::
 
     aws iot attach-policy \
         --policy-name UpdateDeviceCertPolicy \

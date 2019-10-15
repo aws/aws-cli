@@ -1,8 +1,9 @@
-**To see all versions of a policy**
+**Example 1: To see all versions of a policy**
 
 The following ``list-policy-versions`` example lists all versions of the specified policy and their creation dates. ::
 
-    aws iot list-policy-versions
+    aws iot list-policy-versions \
+        --policy-name LightBulbPolicy
 
 Output::
 

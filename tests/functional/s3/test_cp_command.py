@@ -420,18 +420,18 @@ class TestCPCommand(BaseCPCommandTest):
             self.operations_called[0][1],
             {'Key': 'key.txt', 'Bucket': 'bucket',
              'ContentType': 'text/plain', 'Body': mock.ANY,
-             'SSECustomerAlgorithm': 'AES256', 'SSECustomerKey': 'Zm9v',
-             'SSECustomerKeyMD5': 'rL0Y20zC+Fzt72VPzMSk2A=='}
+             'SSECustomerAlgorithm': 'AES256', 'SSECustomerKey': 'foo'}
         )
 
     def test_cp_with_sse_c_fileb(self):
         file_path = self.files.create_file('foo.txt', 'contents')
         key_path = self.files.create_file('foo.key', '')
+        key_contents = (
+            b'K\xc9G\xe1\xf9&\xee\xd1\x03\xf3\xd4\x10\x18o9E\xc2\xaeD'
+            b'\x89(\x18\xea\xda\xf6\x81\xc3\xd2\x9d\\\xa8\xe6'
+        )
         with open(key_path, 'wb') as f:
-            f.write(
-                b'K\xc9G\xe1\xf9&\xee\xd1\x03\xf3\xd4\x10\x18o9E\xc2\xaeD'
-                b'\x89(\x18\xea\xda\xf6\x81\xc3\xd2\x9d\\\xa8\xe6'
-            )
+            f.write(key_contents)
         cmdline = (
             '%s %s s3://bucket/key.txt --sse-c --sse-c-key fileb://%s' % (
                 self.prefix, file_path, key_path
@@ -446,8 +446,7 @@ class TestCPCommand(BaseCPCommandTest):
             'ContentType': 'text/plain',
             'Body': mock.ANY,
             'SSECustomerAlgorithm': 'AES256',
-            'SSECustomerKey': 'S8lH4fkm7tED89QQGG85RcKuRIkoGOra9oHD0p1cqOY=',
-            'SSECustomerKeyMD5': 'mL8/mshNgBObhAC1j5BOLw=='
+            'SSECustomerKey': key_contents,
         }
         self.assertDictEqual(self.operations_called[0][1], expected_args)
 
@@ -475,11 +474,12 @@ class TestCPCommand(BaseCPCommandTest):
 
         file_path = self.files.create_file('foo.txt', '')
         key_path = self.files.create_file('foo.key', '')
+        key_contents = (
+            b'K\xc9G\xe1\xf9&\xee\xd1\x03\xf3\xd4\x10\x18o9E\xc2\xaeD'
+            b'\x89(\x18\xea\xda\xf6\x81\xc3\xd2\x9d\\\xa8\xe6'
+        )
         with open(key_path, 'wb') as f:
-            f.write(
-                b'K\xc9G\xe1\xf9&\xee\xd1\x03\xf3\xd4\x10\x18o9E\xc2\xaeD'
-                b'\x89(\x18\xea\xda\xf6\x81\xc3\xd2\x9d\\\xa8\xe6'
-            )
+            f.write(key_contents)
         cmdline = (
             '%s s3://bucket-one/key.txt s3://bucket/key.txt '
             '--sse-c-copy-source --sse-c-copy-source-key fileb://%s' % (
@@ -494,12 +494,12 @@ class TestCPCommand(BaseCPCommandTest):
         expected_args = {
             'Key': 'key.txt', 'Bucket': 'bucket',
             'ContentType': 'text/plain',
-            'CopySource': 'bucket-one/key.txt',
+            'CopySource': {
+                'Bucket': 'bucket-one',
+                'Key': 'key.txt'
+            },
             'CopySourceSSECustomerAlgorithm': 'AES256',
-            'CopySourceSSECustomerKey': (
-                'S8lH4fkm7tED89QQGG85RcKuRIkoGOra9oHD0p1cqOY='
-            ),
-            'CopySourceSSECustomerKeyMD5': 'mL8/mshNgBObhAC1j5BOLw==',
+            'CopySourceSSECustomerKey': key_contents,
         }
         self.assertDictEqual(self.operations_called[1][1], expected_args)
 
@@ -560,9 +560,17 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
         self.assertDictEqual(
             self.operations_called[1][1],
-            {'Key': 'key2.txt', 'Bucket': 'bucket',
-             'ContentType': 'text/plain', 'CopySource': 'bucket/key1.txt',
-             'SSEKMSKeyId': 'foo', 'ServerSideEncryption': 'aws:kms'}
+            {
+                'Key': 'key2.txt',
+                'Bucket': 'bucket',
+                'ContentType': 'text/plain',
+                'CopySource': {
+                    'Bucket': 'bucket',
+                    'Key': 'key1.txt'
+                },
+                'SSEKMSKeyId': 'foo',
+                'ServerSideEncryption': 'aws:kms'
+            }
         )
 
     def test_cp_copy_large_file_with_sse_kms_and_key_id(self):
@@ -853,58 +861,41 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
     def test_single_download(self):
         cmdline = '%s s3://mybucket/mykey %s --request-payer' % (
             self.prefix, self.files.rootdir)
-
         self.parsed_responses = [
-            {"ContentLength": 100, "LastModified": "00:00:00Z"},
-            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')},
+            self.head_object_response(),
+            self.get_object_response()
         ]
 
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                ('HeadObject', {
-                    'Bucket': 'mybucket',
-                    'Key': 'mykey',
-                    'RequestPayer': 'requester',
-                }),
-                ('GetObject', {
-                    'Bucket': 'mybucket',
-                    'Key': 'mykey',
-                    'RequestPayer': 'requester',
-                })
+                self.head_object_request(
+                    'mybucket', 'mykey', RequestPayer='requester'),
+                self.get_object_request(
+                    'mybucket', 'mykey', RequestPayer='requester'),
             ]
         )
 
     def test_ranged_download(self):
         cmdline = '%s s3://mybucket/mykey %s --request-payer' % (
             self.prefix, self.files.rootdir)
-
         self.parsed_responses = [
-            {"ContentLength": 10 * (1024 ** 2), "LastModified": "00:00:00Z"},
-            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')},
-            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')}
+            self.head_object_response(ContentLength=10 * (1024 ** 2)),
+            self.get_object_response(),
+            self.get_object_response()
         ]
 
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                ('HeadObject', {
-                    'Bucket': 'mybucket',
-                    'Key': 'mykey',
-                    'RequestPayer': 'requester',
-                }),
-                ('GetObject', {
-                    'Bucket': 'mybucket',
-                    'Key': 'mykey',
-                    'RequestPayer': 'requester',
-                    'Range': mock.ANY,
-                }),
-                ('GetObject', {
-                    'Bucket': 'mybucket',
-                    'Key': 'mykey',
-                    'RequestPayer': 'requester',
-                    'Range': mock.ANY,
-                })
+                self.head_object_request(
+                    'mybucket', 'mykey', RequestPayer='requester'),
+                self.get_object_request(
+                    'mybucket', 'mykey', Range=mock.ANY,
+                    RequestPayer='requester'),
+                self.get_object_request(
+                    'mybucket', 'mykey', Range=mock.ANY,
+                    RequestPayer='requester'),
             ]
         )
 
@@ -912,30 +903,16 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
         cmdline = '%s s3://mybucket/ %s --request-payer --recursive' % (
             self.prefix, self.files.rootdir)
         self.parsed_responses = [
-            {
-                'Contents': [
-                    {'Key': 'mykey',
-                     'LastModified': '00:00:00Z',
-                     'Size': 100},
-                ],
-                'CommonPrefixes': []
-            },
-            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')},
+            self.list_objects_response(['mykey']),
+            self.get_object_response()
         ]
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                ('ListObjectsV2', {
-                    'Bucket': 'mybucket',
-                    'Prefix': '',
-                    'EncodingType': 'url',
-                    'RequestPayer': 'requester',
-                }),
-                ('GetObject', {
-                    'Bucket': 'mybucket',
-                    'Key': 'mykey',
-                    'RequestPayer': 'requester',
-                })
+                self.list_objects_request(
+                    'mybucket', RequestPayer='requester'),
+                self.get_object_request(
+                    'mybucket', 'mykey', RequestPayer='requester')
             ]
         )
 
@@ -944,23 +921,19 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
         cmdline += ' s3://sourcebucket/sourcekey s3://mybucket/mykey'
         cmdline += ' --request-payer'
         self.parsed_responses = [
-            {'ContentLength': 5, 'LastModified': '00:00:00Z'},
-            {}
+            self.head_object_response(),
+            self.copy_object_response(),
         ]
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                ('HeadObject', {
-                    'Bucket': 'sourcebucket',
-                    'Key': 'sourcekey',
-                    'RequestPayer': 'requester',
-                }),
-                ('CopyObject', {
-                    'Bucket': 'mybucket',
-                    'Key': 'mykey',
-                    'CopySource': 'sourcebucket/sourcekey',
-                    'RequestPayer': 'requester',
-                })
+                self.head_object_request(
+                    'sourcebucket', 'sourcekey', RequestPayer='requester'
+                ),
+                self.copy_object_request(
+                    'sourcebucket', 'sourcekey', 'mybucket', 'mykey',
+                    RequestPayer='requester'
+                )
             ]
         )
 
@@ -968,56 +941,32 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
         cmdline = self.prefix
         cmdline += ' s3://sourcebucket/sourcekey s3://mybucket/mykey'
         cmdline += ' --request-payer'
+        upload_id = 'id'
         self.parsed_responses = [
-            {'ContentLength': 10 * (1024 ** 2),
-             'LastModified': '00:00:00Z'},           # HeadObject
-            {'UploadId': 'myid'},                    # CreateMultipartUpload
-            {'CopyPartResult': {'ETag': '"etag"'}},  # UploadPartCopy
-            {'CopyPartResult': {'ETag': '"etag"'}},  # UploadPartCopy
-            {}                                       # CompleteMultipartUpload
+            self.head_object_response(ContentLength=10 * (1024 ** 2)),
+            self.create_mpu_response(upload_id),
+            self.upload_part_copy_response(),
+            self.upload_part_copy_response(),
+            self.complete_mpu_response(),
         ]
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                ('HeadObject', {
-                    'Bucket': 'sourcebucket',
-                    'Key': 'sourcekey',
-                    'RequestPayer': 'requester',
-                }),
-                ('CreateMultipartUpload', {
-                    'Bucket': 'mybucket',
-                    'Key': 'mykey',
-                    'RequestPayer': 'requester'
-                }),
-                ('UploadPartCopy', {
-                    'Bucket': 'mybucket',
-                    'Key': 'mykey',
-                    'CopySource': 'sourcebucket/sourcekey',
-                    'UploadId': 'myid',
-                    'RequestPayer': 'requester',
-                    'PartNumber': mock.ANY,
-                    'CopySourceRange': mock.ANY,
-
-                }),
-                ('UploadPartCopy', {
-                    'Bucket': 'mybucket',
-                    'Key': 'mykey',
-                    'CopySource': 'sourcebucket/sourcekey',
-                    'UploadId': 'myid',
-                    'RequestPayer': 'requester',
-                    'PartNumber': mock.ANY,
-                    'CopySourceRange': mock.ANY,
-                }),
-                ('CompleteMultipartUpload', {
-                    'Bucket': 'mybucket',
-                    'Key': 'mykey',
-                    'UploadId': 'myid',
-                    'RequestPayer': 'requester',
-                    'MultipartUpload': {'Parts': [
-                        {'ETag': '"etag"', 'PartNumber': 1},
-                        {'ETag': '"etag"', 'PartNumber': 2}]
-                    }
-                })
+                self.head_object_request(
+                    'sourcebucket', 'sourcekey', RequestPayer='requester'),
+                self.create_mpu_request(
+                    'mybucket', 'mykey', RequestPayer='requester'),
+                self.upload_part_copy_request(
+                    'sourcebucket', 'sourcekey', 'mybucket', 'mykey',
+                    upload_id, PartNumber=mock.ANY, RequestPayer='requester',
+                    CopySourceRange=mock.ANY),
+                self.upload_part_copy_request(
+                    'sourcebucket', 'sourcekey', 'mybucket', 'mykey',
+                    upload_id, PartNumber=mock.ANY, RequestPayer='requester',
+                    CopySourceRange=mock.ANY),
+                self.complete_mpu_request(
+                    'mybucket', 'mykey', upload_id, num_parts=2,
+                    RequestPayer='requester')
             ]
         )
 
@@ -1027,30 +976,121 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
         cmdline += ' --request-payer'
         cmdline += ' --recursive'
         self.parsed_responses = [
-            {
-                'Contents': [
-                    {'Key': 'mykey',
-                     'LastModified': '00:00:00Z',
-                     'Size': 100},
-                ],
-                'CommonPrefixes': []
-            },
-            {},
+            self.list_objects_response(['mykey']),
+            self.copy_object_response()
         ]
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                ('ListObjectsV2', {
-                    'Bucket': 'sourcebucket',
-                    'Prefix': '',
-                    'EncodingType': 'url',
-                    'RequestPayer': 'requester',
-                }),
-                ('CopyObject', {
-                    'Bucket': 'mybucket',
-                    'Key': 'mykey',
-                    'CopySource': 'sourcebucket/mykey',
-                    'RequestPayer': 'requester',
-                })
+                self.list_objects_request(
+                    'sourcebucket', RequestPayer='requester'),
+                self.copy_object_request(
+                    'sourcebucket', 'mykey', 'mybucket', 'mykey',
+                    RequestPayer='requester')
+            ]
+        )
+
+
+class TestAccesspointCPCommand(BaseCPCommandTest):
+    def setUp(self):
+        self.accesspoint_arn = (
+            'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint'
+        )
+        super(TestAccesspointCPCommand, self).setUp()
+
+    def test_upload(self):
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = self.prefix
+        cmdline += ' %s' % filename
+        cmdline += ' s3://%s/mykey' % self.accesspoint_arn
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.put_object_request(self.accesspoint_arn, 'mykey')
+            ]
+        )
+
+    def test_recusive_upload(self):
+        self.files.create_file('myfile', 'mycontent')
+        cmdline = self.prefix
+        cmdline += ' %s' % self.files.rootdir
+        cmdline += ' s3://%s/' % self.accesspoint_arn
+        cmdline += ' --recursive'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.put_object_request(self.accesspoint_arn, 'myfile')
+            ]
+        )
+
+    def test_download(self):
+        cmdline = self.prefix
+        cmdline += ' s3://%s/mykey' % self.accesspoint_arn
+        cmdline += ' %s' % self.files.rootdir
+        self.parsed_responses = [
+            self.head_object_response(),
+            self.get_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.head_object_request(self.accesspoint_arn, 'mykey'),
+                self.get_object_request(self.accesspoint_arn, 'mykey'),
+            ]
+        )
+
+    def test_recursive_download(self):
+        cmdline = self.prefix
+        cmdline += ' s3://%s' % self.accesspoint_arn
+        cmdline += ' %s' % self.files.rootdir
+        cmdline += ' --recursive'
+        self.parsed_responses = [
+            self.list_objects_response(['mykey']),
+            self.get_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.list_objects_request(self.accesspoint_arn),
+                self.get_object_request(self.accesspoint_arn, 'mykey'),
+            ]
+        )
+
+    def test_copy(self):
+        cmdline = self.prefix
+        cmdline += ' s3://%s/mykey' % self.accesspoint_arn
+        accesspoint_arn_dest = self.accesspoint_arn + '-dest'
+        cmdline += ' s3://%s' % accesspoint_arn_dest
+        self.parsed_responses = [
+            self.head_object_response(),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.head_object_request(self.accesspoint_arn, 'mykey'),
+                self.copy_object_request(
+                    self.accesspoint_arn, 'mykey', accesspoint_arn_dest,
+                    'mykey'),
+            ]
+        )
+
+    def test_recursive_copy(self):
+        cmdline = self.prefix
+        cmdline += ' s3://%s' % self.accesspoint_arn
+        accesspoint_arn_dest = self.accesspoint_arn + '-dest'
+        cmdline += ' s3://%s' % accesspoint_arn_dest
+        cmdline += ' --recursive'
+        self.parsed_responses = [
+            self.list_objects_response(['mykey']),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.list_objects_request(self.accesspoint_arn),
+                self.copy_object_request(
+                    self.accesspoint_arn, 'mykey', accesspoint_arn_dest,
+                    'mykey'),
             ]
         )

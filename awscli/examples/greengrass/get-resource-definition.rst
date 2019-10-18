@@ -1,6 +1,6 @@
 **To retrieve information about a resource definition**
 
-The following ``get-resource-definition`` example retrieves information about the specified resource definition, including the creation time and the latest version. For more information, such as the resource names and settings, use the ``get-resource-definition-version`` command. ::
+The following ``get-resource-definition`` example retrieves information about the specified resource definition. To retrieve the IDs of your resource definitions, use the ``list-resource-definitions`` command. ::
 
     aws greengrass get-resource-definition \
         --resource-definition-id "ad8c101d-8109-4b0e-b97d-9cc5802ab658"

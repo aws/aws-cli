@@ -1,6 +1,6 @@
 **To retrieve information about a Greengrass group**
 
-The following ``get-group`` example retrieves information about the specified Greengrass group. ::
+The following ``get-group`` example retrieves information about the specified Greengrass group. To retrieve the IDs of your groups, use the ``list-groups`` command. ::
 
     aws greengrass get-group \
         --group-id "1013db12-8b58-45ff-acc7-704248f66731"

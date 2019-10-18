@@ -1,6 +1,6 @@
 **To retrieve information about a connector definition**
 
-The following ``get-connector-definition`` example retrieves information about the specified Greengrass connector. To get specific parameters for the connector, use the ``get-connector-definition-version`` command. ::
+The following ``get-connector-definition`` example retrieves information about the specified connector definition. To retrieve the IDs of your connector definitions, use the ``list-connector-definitions`` command. ::
 
     aws greengrass get-connector-definition \
         --connector-definition-id "b5c4ebfd-f672-49a3-83cd-31c7216a7bb8"

@@ -1,6 +1,6 @@
 **To retrieve information about a version of a logger definition**
 
-The following ``get-logger-definition-version`` example retrieves information about the specified version of a logger definition. You can use the ``get-logger-definition`` command to get the version ID for the latest logger version. To get the version ID for any version of the logger definition, use the ``list-logger-definition-versions`` command. ::
+The following ``get-logger-definition-version`` example retrieves information about the specified version of the specified logger definition. To retrieve the IDs of all versions of the logger definition, use the ``list-logger-definition-versions`` command. To retrieve the ID of the last version added to the logger definition, use the ``get-logger-definition`` command and check the ``LatestVersion`` property. ::
 
     aws greengrass get-logger-definition-version \
         --logger-definition-id "49eeeb66-f1d3-4e34-86e3-3617262abf23" \

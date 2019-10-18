@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.263
+========
+
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+
+
 1.16.262
 ========
 

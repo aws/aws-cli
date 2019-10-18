@@ -1,6 +1,6 @@
 **To retrieve information about a logger definition**
 
-The following ``get-logger-definition`` example retrieves information about the specified logger definition. Use the ``list-logger-definitions`` command to get the logger definition ID. ::
+The following ``get-logger-definition`` example retrieves information about the specified logger definition. To retrieve the IDs of your logger definitions, use the ``list-logger-definitions`` command. ::
 
     aws greengrass get-logger-definition \
         --logger-definition-id "49eeeb66-f1d3-4e34-86e3-3617262abf23"

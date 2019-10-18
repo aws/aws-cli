@@ -1,6 +1,6 @@
 **To get a device definition version**
 
-The following ``get-device-definition-version`` example retrieves details for the specified device definition version from the specified device definition.  ::
+The following ``get-device-definition-version`` example retrieves information about the specified version of the specified device definition. To retrieve the IDs of all versions of the device definition, use the ``list-device-definition-versions`` command. To retrieve the ID of the last version added to the device definition, use the ``get-device-definition`` command and check the ``LatestVersion`` property.  ::
 
     aws greengrass get-device-definition-version \
         --device-definition-id "f9ba083d-5ad4-4534-9f86-026a45df1ccd" \

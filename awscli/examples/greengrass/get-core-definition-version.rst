@@ -1,11 +1,11 @@
 **To retrieve details about a specific version of the Greengrass core definition**
 
-The following ``get-core-definition-version`` example retrieves details for the specified version of the specified Greengrass core whose ID. Use the ``list-core-definitions`` command to get the core ID. Use the ``list-core-definition-version`` command to get the version ID for that core ID. ::
+The following ``get-core-definition-version`` example retrieves information about the specified version of the specified core definition. To retrieve the IDs of all versions of the core definition, use the ``list-core-definition-versions`` command. To retrieve the ID of the last version added to the core definition, use the ``get-core-definition`` command and check the ``LatestVersion`` property. ::
 
     aws greengrass get-core-definition-version \
         --core-definition-id "c906ed39-a1e3-4822-a981-7b9bd57b4b46"  \
         --core-definition-version-id "42aeeac3-fd9d-4312-a8fd-ffa9404a20e0"
-    
+
 Output::
 
     {

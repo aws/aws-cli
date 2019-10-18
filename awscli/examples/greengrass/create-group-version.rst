@@ -1,12 +1,16 @@
 **To create a version of a Greengrass group**
 
-The following ``create-group-version`` example defines a Greengrass group for the Twilio connector. It ties together the definition versions for group, connector, core, resource, Lambda function, and subscriptions, all of which you must define before you can create this group version.  
-- To create the group definition, use the ``create-group`` command.
-- To create the connector definition and its initial version, use the ``create-connector-definition`` command.
-- To create the resource definition and its initial version, use the ``create-resource-definition`` command.
-- To create the function definition and its initial version, use the ``create-function-definition`` command.
-- To create the subscription definition and its initial version, use the ``create-subscription-definition`` command.
-- To retrieve the core definition version ARN, use the ``get-group-version`` command, specifying the group ID and the group definition version ID with the latest version that you copied for the group. ::
+The following ``create-group-version`` example creates a group version and associates it with the specified group. The version references the core, resource, connector, function, and subscription versions that contain the entities to include in this group version. You must create these entities before you can create the group version. 
+
+* To create a resource definition with an initial version, use the ``create-resource-definition`` command. 
+
+* To create a connector definition with an initial version, use the ``create-connector-definition`` command. 
+
+* To create a function definition with an initial version, use the ``create-function-definition`` command. 
+
+* To create a subscription definition with an initial version, use the ``create-subscription-definition`` command. 
+
+* To retrieve the ARN of the latest core definition version, use the ``get-group-version`` command and specify the ID of the latest group version. ::
 
     aws greengrass create-group-version \
         --group-id "ce2e7d01-3240-4c24-b8e6-f6f6e7a9eeca" \
@@ -25,4 +29,4 @@ Output::
         "Version": "e10b0459-4345-4a09-88a4-1af1f5d34638"
     }
 
-For more information, see `How to Configure Local Resource Access Using the AWS Command Line Interface <https://docs.aws.amazon.com/greengrass/latest/developerguide/lra-cli.html>`__ in the *AWS IoT Greengrass Developer Guide*.
+For more information, see `Overview of the AWS IoT Greengrass Group Object Model <https://docs.aws.amazon.com/greengrass/latest/developerguide/deployments.html#api-overview>`__ in the *AWS IoT Greengrass Developer Guide*.

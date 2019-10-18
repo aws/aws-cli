@@ -1,6 +1,6 @@
 **To get a device definition**
 
-The following ``get-device-definition`` example displays the details for the specified device definition, including all associated device definition versions. ::
+The following ``get-device-definition`` example retrieves information about the specified device definition. To retrieve the IDs of your device definitions, use the ``list-device-definitions`` command. ::
 
     aws greengrass get-device-definition \
         --device-definition-id "f9ba083d-5ad4-4534-9f86-026a45df1ccd"

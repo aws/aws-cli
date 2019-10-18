@@ -1,6 +1,6 @@
 **To retrieve information about a specific version of a resource definition**
 
-The following ``get-resource-definition-version`` example retrieves information about the specified version of the specified resource definition. You can use the ``get-resource-definition`` command to get the latest version ID. To list all versions of the resource definition, use the ``list-resource-definition-versions`` command. ::
+The following ``get-resource-definition-version`` example retrieves information about the specified version of the specified resource definition. To retrieve the IDs of all versions of the resource definition, use the ``list-resource-definition-versions`` command. To retrieve the ID of the last version added to the resource definition, use the ``get-resource-definition`` command and check the ``LatestVersion`` property. ::
 
     aws greengrass get-resource-definition-version \
         --resource-definition-id "ad8c101d-8109-4b0e-b97d-9cc5802ab658" \

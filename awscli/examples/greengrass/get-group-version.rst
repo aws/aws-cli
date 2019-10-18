@@ -1,6 +1,6 @@
 **To retrieve information about a version of a Greengrass group**
 
-The following ``get-group-version`` example gets information for the specified version of the specified Greengrass group. ::
+The following ``get-group-version`` example retrieves information about the specified version of the specified group. To retrieve the IDs of all versions of the group, use the ``list-group-versions`` command. To retrieve the ID of the last version added to the group, use the ``get-group`` command and check the ``LatestVersion`` property. ::
 
     aws greengrass get-group-version \
         --group-id "1013db12-8b58-45ff-acc7-704248f66731"  \

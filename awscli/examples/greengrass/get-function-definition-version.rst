@@ -1,6 +1,6 @@
 **To retrieve details about a specific version of a Lambda function**
 
-The following ``get-function-definition-version`` example retrieves details for the specified version of a Lamba function. You can use the ``list-function-definitions`` command to get the ID for the latest version of a Lambda function. If you know the function ID, you can instead use ``get-function-definition``, which includes the latest version ID.  To view older versions of a function, use the ``list-function-definition-versions`` CLI command. ::
+The following ``get-function-definition-version`` retrieves information about the specified version of the specified function definition. To retrieve the IDs of all versions of the function definition, use the ``list-function-definition-versions`` command. To retrieve the ID of the last version added to the function definition, use the ``get-function-definition`` command and check the ``LatestVersion`` property. ::
 
     aws greengrass get-function-definition-version \
         --function-definition-id "063f5d1a-1dd1-40b4-9b51-56f8993d0f85" \

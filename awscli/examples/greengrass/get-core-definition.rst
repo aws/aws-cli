@@ -1,6 +1,6 @@
 **To retrieve details for a Greengrass core definition**
 
-The following ``get-core-definition`` example gets the definition for the specified Greengrass core. You can use the ``list-core-definitions`` command to get the core ID. ::
+The following ``get-core-definition`` example retrieves information about the specified core definition. To retrieve the IDs of your core definitions, use the ``list-core-definitions`` command. ::
 
     aws greengrass get-core-definition \
         --core-definition-id "c906ed39-a1e3-4822-a981-7b9bd57b4b46"

@@ -1,6 +1,6 @@
 **To retrieve information about a specific version of a subscription definition**
 
-The following ``get-subscription-definition-version`` example retrieves information about the specified version of the specified subscription definition. You can use the ``get-subscription-definition`` command to get the latest subscription definition version ID. To get the ID of another version, you can use the ``list-subscription-definition-versions`` command. ::
+The following ``get-subscription-definition-version`` example retrieves retrieves information about the specified version of the specified subscription definition. To retrieve the IDs of all versions of the subscription definition, use the ``list-subscription-definition-versions`` command. To retrieve the ID of the last version added to the subscription definition, use the ``get-subscription-definition`` command and check the ``LatestVersion`` property. ::
 
     aws greengrass get-subscription-definition-version \
         --subscription-definition-id "70e49321-83d5-45d2-bc09-81f4917ae152" \

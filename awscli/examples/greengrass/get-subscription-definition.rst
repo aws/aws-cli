@@ -1,6 +1,6 @@
 **To retrieve information about a subscription definition**
 
-The following ``get-subscription-definition`` example retrieves information about the specified subscription definition. You can use the ``list-subscription-definitions`` command to get the current list of subscription definitions. ::
+The following ``get-subscription-definition`` example retrieves information about the specified subscription definition. To retrieve the IDs of your subscription definitions, use the ``list-subscription-definitions`` command. ::
 
     aws greengrass get-subscription-definition \
         --subscription-definition-id "70e49321-83d5-45d2-bc09-81f4917ae152"

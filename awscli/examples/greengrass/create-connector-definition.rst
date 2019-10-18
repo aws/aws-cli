@@ -1,6 +1,6 @@
-**To create a Greengrass connector**
+**To create a connector definition**
 
-The following ``create-connector-definition`` example creates a Greengrass connector to publish messages to an Amazon SNS topic.  The topic must already exist and you must have a policy added to the Greengrass group role that allows the ``sns:Publish`` action on the target SNS topic. ::
+The following ``create-connector-definition`` example example creates a connector definition and an initial connector definition version. The initial version contains one connector. All connectors in a version define values for their parameters. ::
 
     aws greengrass create-connector-definition \
         --name MySNSConnector \
@@ -18,4 +18,4 @@ Output::
        "Name": "MySNSConnector"
    }
 
-For more information, see `SNS (AWS-Provided Greengrass Connectors) <https://docs.aws.amazon.com/greengrass/latest/developerguide/sns-connector.html>`__ in the **AWS IoT Greengrass Developer Guide**.
+For more information, see `Getting Started with Greengrass Connectors (CLI) <https://docs.aws.amazon.com/greengrass/latest/developerguide/connectors-cli.html>`__ in the **AWS IoT Greengrass Developer Guide**.

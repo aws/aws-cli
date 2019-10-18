@@ -1,6 +1,6 @@
 **To retreive information about a specific version of a connector definition**
 
-The following ``get-connector-definition-version`` example retrieves information about the specified version of the specified Greengrass connector definition. You can use the ``get-connector-definition`` command to get the latest version ID for a connector definition. To get the version ID for any version of the connector definition, use the ``list-connector-definition-versions`` command. ::
+The following ``get-connector-definition-version`` example retrieves information about the specified version of the specified connector definition. To retrieve the IDs of all versions of the connector definition, use the ``list-connector-definition-versions`` command. To retrieve the ID of the last version added to the connector definition, use the ``get-connector-definition`` command and check the ``LatestVersion`` property. ::
 
     aws greengrass get-connector-definition-version \
         --connector-definition-id "b5c4ebfd-f672-49a3-83cd-31c7216a7bb8" \

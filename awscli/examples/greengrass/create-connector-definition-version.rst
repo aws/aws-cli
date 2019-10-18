@@ -1,6 +1,6 @@
-**To create a version of a Greengrass connector definition**
+**To create a connector definition version**
 
-The following ``create-connector-definition-version`` example creates a new version of the Twilio connector. Provide the connector definition ID returned by the ``create-connector-definition`` command, along with a new version of the definition for the connector. ::
+The following ``create-connector-definition-version`` example creates a connector definition version and associates it with the specified connector definition. All connectors in a version define values for their parameters. ::
 
     aws greengrass create-connector-definition-version \
         --connector-definition-id "55d0052b-0d7d-44d6-b56f-21867215e118" \

@@ -1,3 +1,5 @@
+**To create an invalidation for a CloudFront distribution**
+
 The following command creates an invalidation for a CloudFront distribution with the ID ``S11A16G5KZMEQD``::
 
   aws cloudfront create-invalidation --distribution-id S11A16G5KZMEQD \

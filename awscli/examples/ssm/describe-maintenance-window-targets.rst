@@ -1,6 +1,6 @@
-**To list all targets for a maintenance window**
+**To list all targets for a Maintenance Window**
 
-This example lists all of the targets for a maintenance window.
+This example lists all of the targets for a Maintenance Window.
 
 Command::
 
@@ -42,9 +42,9 @@ Output::
     ]
   }
 
-**To list all targets for a maintenance window matching a specific owner information value**
+**To list all targets for a Maintenance Window matching a specific owner information value**
 
-This example lists all of the targets for a maintenance window with a specific value.
+This example lists all of the targets for a Maintenance Window with a specific value.
 
 Command::
 

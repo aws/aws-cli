@@ -1,8 +1,11 @@
-The following command demonstrates the recommended way to decrypt data with the AWS CLI.
+**Example 1: To decrypt an encrypted file**
 
-.. code::
+The following ``decrypt`` command demonstrates the recommended way to decrypt data with the AWS CLI. ::
 
-    aws kms decrypt --ciphertext-blob fileb://ExampleEncryptedFile --output text --query Plaintext | base64 --decode > ExamplePlaintextFile
+    aws kms decrypt \
+        --ciphertext-blob fileb://ExampleEncryptedFile \
+        --output text \
+        --query Plaintext | base64 --decode > ExamplePlaintextFile
 
 The command does several things:
 
@@ -26,14 +29,13 @@ The command does several things:
 
     The final part of the command (``> ExamplePlaintextFile``) saves the binary plaintext data to a file.
 
-**Example: Using the AWS CLI to decrypt data from the Windows command prompt**
+**Example 2: Using the AWS CLI to decrypt data from the Windows command prompt**
 
-The preceding example assumes the ``base64`` utility is available, which is commonly the case on Linux and Mac OS X. For the Windows command prompt, use ``certutil`` instead of ``base64``. This requires two commands, as shown in the following examples.
+The preceding example assumes the ``base64`` utility is available, which is commonly the case on Linux and Mac OS X. For the Windows command prompt, use ``certutil`` instead of ``base64``. This requires two commands, as shown in the following examples. ::
 
-.. code::
-
-    aws kms decrypt --ciphertext-blob fileb://ExampleEncryptedFile --output text --query Plaintext > ExamplePlaintextFile.base64
-
-.. code::
+    aws kms decrypt \
+        --ciphertext-blob fileb://ExampleEncryptedFile \
+        --output text \
+        --query Plaintext > ExamplePlaintextFile.base64
 
     certutil -decode ExamplePlaintextFile.base64 ExamplePlaintextFile

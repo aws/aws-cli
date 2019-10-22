@@ -1,6 +1,6 @@
-**To update a maintenance window**
+**To update a Maintenance Window**
 
-This example updates the name of a maintenance window.
+This example updates the name of a Maintenance Window.
 
 Command::
 
@@ -18,17 +18,17 @@ Output::
 	"Duration": 4
   }
 
-**To enable a maintenance window**
+**To enable a Maintenance Window**
 
-This example enables a maintenance window.
+This example enables a Maintenance Window.
 
 Command::
 
   aws ssm update-maintenance-window --window-id "mw-1a2b3c4d5e6f7g8h9" --enabled
   
-**To disable a maintenance window**
+**To disable a Maintenance Window**
   
-This example disables a maintenance window.
+This example disables a Maintenance Window.
 
 Command::
 

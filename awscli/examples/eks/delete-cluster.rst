@@ -1,6 +1,6 @@
 **To delete a cluster**
 
-This example command deletes a cluster named `devel` in your default region.
+This example command deletes a cluster named ``devel`` in your default region.
 
 Command::
 

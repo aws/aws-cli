@@ -52,6 +52,7 @@ from awscli.customizations.ec2.paginate import register_ec2_page_size_injector
 from awscli.customizations.ecr import register_ecr_commands
 from awscli.customizations.emr.emr import emr_initialize
 from awscli.customizations.eks import initialize as eks_initialize
+from awscli.customizations.ecs import initialize as ecs_initialize
 from awscli.customizations.gamelift import register_gamelift_commands
 from awscli.customizations.generatecliskeleton import \
     register_generate_cli_skeleton
@@ -76,6 +77,7 @@ from awscli.customizations.s3errormsg import register_s3_error_msg
 from awscli.customizations.scalarparse import register_scalar_parser
 from awscli.customizations.sessendemail import register_ses_send_email
 from awscli.customizations.streamingoutputarg import add_streaming_output_arg
+from awscli.customizations.translate import register_translate_import_terminology
 from awscli.customizations.toplevelbool import register_bool_params
 from awscli.customizations.waiters import register_add_waiters
 from awscli.customizations.opsworkscm import register_alias_opsworks_cm
@@ -85,6 +87,7 @@ from awscli.customizations.sessionmanager import register_ssm_session
 from awscli.customizations.logs import register_logs_commands
 from awscli.customizations.devcommands import register_dev_commands
 from awscli.customizations.wizard.commands import register_wizard_commands
+from awscli.customizations.sms_voice import register_sms_voice_hide
 
 
 def awscli_initialize(event_handlers):
@@ -135,6 +138,7 @@ def awscli_initialize(event_handlers):
     cloudsearch_init(event_handlers)
     emr_initialize(event_handlers)
     eks_initialize(event_handlers)
+    ecs_initialize(event_handlers)
     register_cloudsearchdomain(event_handlers)
     register_s3_endpoint(event_handlers)
     register_generate_cli_skeleton(event_handlers)
@@ -164,6 +168,7 @@ def awscli_initialize(event_handlers):
     cloudformation_init(event_handlers)
     register_alias_opsworks_cm(event_handlers)
     register_servicecatalog_commands(event_handlers)
+    register_translate_import_terminology(event_handlers)
     register_history_mode(event_handlers)
     register_history_commands(event_handlers)
     register_event_stream_arg(event_handlers)
@@ -172,3 +177,4 @@ def awscli_initialize(event_handlers):
     register_logs_commands(event_handlers)
     register_dev_commands(event_handlers)
     register_wizard_commands(event_handlers)
+    register_sms_voice_hide(event_handlers)

@@ -13,6 +13,21 @@
 from awscli.clidriver import create_clidriver
 
 
+def _assert_does_not_shadow(command_name, command_table, builtins):
+    errors = []
+    for sub_name, sub_command in command_table.items():
+        op_help = sub_command.create_help_command()
+        arg_table = op_help.arg_table
+        for arg_name in arg_table:
+            if any(p.startswith(arg_name) for p in builtins):
+                # Then we are shadowing or prefixing a top level argument
+                errors.append(
+                    'Shadowing/Prefixing a top level option: '
+                    '%s.%s.%s' % (command_name, sub_name, arg_name))
+    if errors:
+        raise AssertionError('\n' + '\n'.join(errors))
+
+
 def test_no_shadowed_builtins():
     """Verify no command params are shadowed or prefixed by the built in param.
 
@@ -42,20 +57,10 @@ def test_no_shadowed_builtins():
     driver = create_clidriver()
     help_command = driver.create_help_command()
     top_level_params = set(driver.create_help_command().arg_table)
-    errors = []
     for command_name, command_obj in help_command.command_table.items():
         sub_help = command_obj.create_help_command()
         if hasattr(sub_help, 'command_table'):
-            for sub_name, sub_command in sub_help.command_table.items():
-                op_help = sub_command.create_help_command()
-                arg_table = op_help.arg_table
-                for arg_name in arg_table:
-                    if any(p.startswith(arg_name) for p in top_level_params):
-                        # Then we are shadowing or prefixing a top level
-                        # argument.
-                        errors.append(
-                            'Shadowing/Prefixing a top level option: '
-                            '%s.%s.%s' % (command_name, sub_name, arg_name))
-
-    if errors:
-        raise AssertionError('\n' + '\n'.join(errors))
+            yield (
+                _assert_does_not_shadow,
+                command_name, sub_help.command_table, top_level_params
+            )

@@ -9,14 +9,17 @@ Command::
 Output::
 
   {
-	"InvalidParameters": [],
-	"Parameters": [
-		{
-			"Type": "String",
-			"Name": "helloWorld",
-			"Value": "good day sunshine"
-		}
-	]
+    "Parameters": [
+        {
+            "Name": "helloWorld",
+            "Type": "String",
+            "Value": "good day sunshine",
+            "Version": 1,
+            "LastModifiedDate": 1542308384.49,
+            "ARN": "arn:aws:ssm:us-east-1:123456789012:parameter/helloWorld"
+        }
+    ],
+    "InvalidParameters": []
   }
 
 To list the name and value of multiple parameters the --query argument can be used with a list of names.

@@ -25,8 +25,12 @@ class TestSessionManager(unittest.TestCase):
         self.session = mock.Mock(botocore.session.Session)
         self.client = mock.Mock()
         self.region = 'us-west-2'
+        self.profile = 'testProfile'
+        self.endpoint_url = 'testUrl'
         self.client.meta.region_name = self.region
+        self.client.meta.endpoint_url = self.endpoint_url
         self.session.create_client.return_value = self.client
+        self.session.profile = self.profile
         self.caller = sessionmanager.StartSessionCaller(self.session)
 
     def test_start_session_when_non_custom_start_session_fails(self):
@@ -62,7 +66,10 @@ class TestSessionManager(unittest.TestCase):
             ['session-manager-plugin',
              start_session_response,
              self.region,
-             'StartSession']
+             'StartSession',
+             self.profile,
+             json.dumps(start_session_params),
+             self.endpoint_url]
         )
 
     @mock.patch('awscli.customizations.sessionmanager.check_call')
@@ -101,5 +108,32 @@ class TestSessionManager(unittest.TestCase):
                 ['session-manager-plugin',
                  start_session_response,
                  self.region,
-                 'StartSession']
+                 'StartSession',
+                 self.profile,
+                 json.dumps(start_session_params),
+                 self.endpoint_url]
             )
+
+    @mock.patch('awscli.customizations.sessionmanager.check_call')
+    def test_start_session_when_no_profile_is_passed(self, mock_check_call):
+        self.session.profile = None
+        mock_check_call.return_value = 0
+
+        start_session_params = {
+            "Target": "i-123456789"
+        }
+
+        start_session_response = {
+            "SessionId": "session-id",
+            "TokenValue": "token-value",
+            "StreamUrl": "stream-url"
+        }
+
+        self.client.start_session.return_value = start_session_response
+
+        rc = self.caller.invoke('ssm', 'StartSession',
+                                start_session_params, mock.Mock())
+        self.assertEquals(rc, 0)
+        self.client.start_session.assert_called_with(**start_session_params)
+        mock_check_call_list = mock_check_call.call_args[0][0]
+        self.assertEquals(mock_check_call_list[4], '')

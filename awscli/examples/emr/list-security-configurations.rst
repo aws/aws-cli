@@ -1,20 +1,21 @@
 **To list security configurations in the current region**
  
- - Command::
+Command::
  
-	 aws emr list-security-configurations
+    aws emr list-security-configurations
 
- - Output::
+Output::
 
-{
-  "SecurityConfigurations": [
     {
-      "CreationDateTime": 1473889697.417,
-	  "Name": "MySecurityConfig-1"
-    },
-    {
-	  "CreationDateTime": 1473889697.417,
-      "Name": "MySecurityConfig-2"
+        "SecurityConfigurations": [
+            {
+                "CreationDateTime": 1473889697.417,
+                "Name": "MySecurityConfig-1"
+            },
+            {
+                "CreationDateTime": 1473889697.417,
+                "Name": "MySecurityConfig-2"
+            }
+        ]
     }
-  ]
-}
+    

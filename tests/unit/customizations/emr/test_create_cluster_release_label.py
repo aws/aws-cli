@@ -14,8 +14,9 @@
 import copy
 import os
 
-
 from botocore.compat import json
+from botocore.compat import OrderedDict
+
 from tests.unit.customizations.emr import test_constants as \
     CONSTANTS
 from tests.unit.customizations.emr import test_constants_instance_fleets as \
@@ -692,6 +693,25 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                  }
         ]
         self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_groups_adds_configurations(self):
+        data_path = os.path.join(
+            os.path.dirname(__file__), 'input_instance_groups_with_configurations.json')
+        cmd = ('emr create-cluster --use-default-roles'
+                ' --release-label emr-4.0.0 '
+                '--instance-groups file://' + data_path)
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['Instances']['InstanceGroups'][1]['Configurations'] = [
+            OrderedDict([
+                ("Classification", "hdfs-site"),
+                ("Properties", OrderedDict([
+                    ("test-key1", "test-value1"),
+                    ("test-key2", "test-value2")
+                ]))
+            ])
+        ]
+        self.assert_params_for_cmd(cmd, result)
+
 
     def test_ec2_attributes_no_az(self):
         cmd = ('emr create-cluster --release-label emr-4.0.0 '

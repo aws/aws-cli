@@ -212,7 +212,6 @@ class TestDeployCommand(unittest.TestCase):
 
             s3UploaderMock.assert_called_once_with(mock.ANY,
                     bucket_name,
-                    mock.ANY,
                     self.parsed_args.s3_prefix,
                     self.parsed_args.kms_key_id,
                     self.parsed_args.force_upload)

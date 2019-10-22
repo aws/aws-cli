@@ -17,19 +17,23 @@ from contextlib import closing
 from botocore.vendored import six
 
 from awscli.arguments import CustomArgument, CLIArgument
-from awscli.customizations import utils
+
 
 ERROR_MSG = (
     "--zip-file must be a zip file with the fileb:// prefix.\n"
     "Example usage:  --zip-file fileb://path/to/file.zip")
 
-ZIP_DOCSTRING = ('<p>The path to the zip file of the code you are uploading. '
-                 'Example: fileb://code.zip</p>')
+ZIP_DOCSTRING = (
+    '<p>The path to the zip file of the {param_type} you are uploading. '
+    'Example: fileb://{param_type}.zip</p>'
+)
 
 
 def register_lambda_create_function(cli):
     cli.register('building-argument-table.lambda.create-function',
-                 _extract_code_and_zip_file_arguments)
+                 ZipFileArgumentHoister('Code').hoist)
+    cli.register('building-argument-table.lambda.publish-layer-version',
+                 ZipFileArgumentHoister('Content').hoist)
     cli.register('building-argument-table.lambda.update-function-code',
                  _modify_zipfile_docstring)
     cli.register('process-cli-arg.lambda.update-function-code',
@@ -41,20 +45,36 @@ def validate_is_zip_file(cli_argument, value, **kwargs):
         _should_contain_zip_content(value)
 
 
-def _extract_code_and_zip_file_arguments(session, argument_table, **kwargs):
-    argument_table['zip-file'] = ZipFileArgument(
-        'zip-file', help_text=ZIP_DOCSTRING, cli_type_name='blob')
-    code_argument = argument_table['code']
-    code_model = copy.deepcopy(code_argument.argument_model)
-    del code_model.members['ZipFile']
-    argument_table['code'] = CodeArgument(
-        name='code',
-        argument_model=code_model,
-        operation_model=code_argument._operation_model,
-        is_required=False,
-        event_emitter=session.get_component('event_emitter'),
-        serialized_name='Code'
-    )
+class ZipFileArgumentHoister(object):
+    """Hoists a ZipFile argument up to the top level.
+
+    Injects a top-level ZipFileArgument into the argument table which maps
+    a --zip-file parameter to the underlying ``serialized_name`` ZipFile
+    shape. Repalces the old ZipFile argument with an instance of
+    ReplacedZipFileArgument to prevent its usage and recommend the new
+    top-level injected parameter.
+    """
+    def __init__(self, serialized_name):
+        self._serialized_name = serialized_name
+        self._name = serialized_name.lower()
+
+    def hoist(self, session, argument_table, **kwargs):
+        help_text = ZIP_DOCSTRING.format(param_type=self._name)
+        argument_table['zip-file'] = ZipFileArgument(
+            'zip-file', help_text=help_text, cli_type_name='blob',
+            serialized_name=self._serialized_name
+        )
+        argument = argument_table[self._name]
+        model = copy.deepcopy(argument.argument_model)
+        del model.members['ZipFile']
+        argument_table[self._name] = ReplacedZipFileArgument(
+            name=self._name,
+            argument_model=model,
+            operation_model=argument._operation_model,
+            is_required=False,
+            event_emitter=session.get_component('event_emitter'),
+            serialized_name=self._serialized_name,
+        )
 
 
 def _modify_zipfile_docstring(session, argument_table, **kwargs):
@@ -78,28 +98,54 @@ def _should_contain_zip_content(value):
 
 
 class ZipFileArgument(CustomArgument):
+    """A new ZipFile argument to be injected at the top level.
+
+    This class injects a ZipFile argument under the specified serialized_name
+    parameter. This can be used to take a top level parameter like --zip-file
+    and inject it into a nested different parameter like Code so
+    --zip-file foo.zip winds up being serilized as
+    { 'Code': { 'ZipFile': <contents of foo.zip> } }.
+    """
+    def __init__(self, *args, **kwargs):
+        self._param_to_replace = kwargs.pop('serialized_name')
+        super(ZipFileArgument, self).__init__(*args, **kwargs)
+
     def add_to_params(self, parameters, value):
         if value is None:
             return
         _should_contain_zip_content(value)
         zip_file_param = {'ZipFile': value}
-        if parameters.get('Code'):
-            parameters['Code'].update(zip_file_param)
+        if parameters.get(self._param_to_replace):
+            parameters[self._param_to_replace].update(zip_file_param)
         else:
-            parameters['Code'] = zip_file_param
+            parameters[self._param_to_replace] = zip_file_param
 
 
-class CodeArgument(CLIArgument):
+class ReplacedZipFileArgument(CLIArgument):
+    """A replacement arugment for nested ZipFile argument.
+
+    This prevents the use of a non-working nested argument that expects binary.
+    Instead an instance of ZipFileArgument should be injected at the top level
+    and used instead. That way fileb:// can be used to load the binary
+    contents. And the argument class can inject those bytes into the correct
+    serialization name.
+    """
+    def __init__(self, *args, **kwargs):
+        super(ReplacedZipFileArgument, self).__init__(*args, **kwargs)
+        self._cli_name = '--%s' % kwargs['name']
+        self._param_to_replace = kwargs['serialized_name']
+
     def add_to_params(self, parameters, value):
         if value is None:
             return
         unpacked = self._unpack_argument(value)
         if 'ZipFile' in unpacked:
-            raise ValueError("ZipFile cannot be provided "
-                             "as part of the --code argument.  "
-                             "Please use the '--zip-file' "
-                             "option instead to specify a zip file.")
-        if parameters.get('Code'):
-            parameters['Code'].update(unpacked)
+            raise ValueError(
+                "ZipFile cannot be provided "
+                "as part of the %s argument.  "
+                "Please use the '--zip-file' "
+                "option instead to specify a zip file." % self._cli_name)
+        if parameters.get(self._param_to_replace):
+            parameters[self._param_to_replace].update(unpacked)
         else:
-            parameters['Code'] = unpacked
+            parameters[self._param_to_replace] = unpacked

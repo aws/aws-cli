@@ -25,8 +25,7 @@ from awscli.customizations.utils import uni_print
 import awscli.customizations.eks.kubeconfig as kubeconfig
 from awscli.customizations.eks.update_kubeconfig import (KubeconfigSelector,
                                                          EKSClient,
-                                                         API_VERSION,
-                                                         AUTH_BIN)
+                                                         API_VERSION)
 from awscli.customizations.eks.exceptions import (EKSError,
                                                   EKSClusterError)
 from awscli.customizations.eks.ordered_yaml import ordered_yaml_load
@@ -54,8 +53,6 @@ def generate_env_variable(files):
 
 
 EXAMPLE_ARN = "arn:aws:eks:region:111222333444:cluster/ExampleCluster"
-is_windows = sys.platform == 'win32'
-
 
 class TestKubeconfigSelector(unittest.TestCase):
     def setUp(self):
@@ -162,9 +159,6 @@ class TestKubeconfigSelector(unittest.TestCase):
 
 class TestEKSClient(unittest.TestCase):
     def setUp(self):
-        executable = AUTH_BIN
-        if is_windows:
-            executable = AUTH_BIN + ".exe"
         self._correct_cluster_entry = OrderedDict([
             ("cluster", OrderedDict([
                 ("certificate-authority-data", describe_cluster_response()\
@@ -180,11 +174,14 @@ class TestEKSClient(unittest.TestCase):
                     ("apiVersion", API_VERSION),
                     ("args",
                         [
-                            "token",
-                            "-i",
+                            "--region",
+                            "region",
+                            "eks",
+                            "get-token",
+                            "--cluster-name",
                             "ExampleCluster"
                         ]),
-                    ("command", executable)
+                    ("command", "aws")
                 ]))
             ]))
         ])
@@ -195,6 +192,7 @@ class TestEKSClient(unittest.TestCase):
 
         self._session = mock.Mock(spec=botocore.session.Session)
         self._session.create_client.return_value = self._mock_client
+        self._session.profile = None
 
         self._client = EKSClient(self._session, "ExampleCluster", None)
 
@@ -257,6 +255,21 @@ class TestEKSClient(unittest.TestCase):
                                            describe_cluster_deleting_response()
         self.assertRaises(EKSClusterError,
                           self._client._get_cluster_description)
+        self._mock_client.describe_cluster.assert_called_once_with(
+            name="ExampleCluster"
+        )
+        self._session.create_client.assert_called_once_with("eks")
+
+    def test_profile(self):
+        self._session.profile = "profile"
+        self._correct_user_entry["user"]["exec"]["env"] = [
+            OrderedDict([
+                ("name", "AWS_PROFILE"),
+                ("value", "profile")
+            ])
+        ]
+        self.assertEqual(self._client.get_user_entry(),
+                         self._correct_user_entry)
         self._mock_client.describe_cluster.assert_called_once_with(
             name="ExampleCluster"
         )

@@ -20,6 +20,14 @@ from awscli.utils import is_a_tty
 from awscli.compat import six
 
 
+# `autoreset` allows us to not have to sent reset sequences for every
+# string. `strip` lets us preserve color when redirecting.
+COLORAMA_KWARGS = {
+    'autoreset': True,
+    'strip': False,
+}
+
+
 def get_text_length(text):
     # `len(unichar)` measures the number of characters, so we use
     # `unicodedata.east_asian_width` to measure the length of characters.
@@ -155,9 +163,7 @@ class Styler(object):
 
 class ColorizedStyler(Styler):
     def __init__(self):
-        # `autoreset` allows us to not have to sent reset sequences for every
-        # string. `strip` lets us preserve color when redirecting.
-        colorama.init(autoreset=True, strip=False)
+        colorama.init(**COLORAMA_KWARGS)
 
     def style_title(self, text):
         # Originally bold + underline

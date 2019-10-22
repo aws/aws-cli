@@ -38,6 +38,7 @@ class TestIntegGenerateCliSkeleton(unittest.TestCase):
             json.loads(p.stdout),
             {
                 'Bucket': '',
+                'BypassGovernanceRetention': True,
                 'Key': '',
                 'MFA': '',
                 'VersionId': '',

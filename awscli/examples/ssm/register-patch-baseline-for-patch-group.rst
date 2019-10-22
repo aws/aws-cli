@@ -9,6 +9,6 @@ Command::
 Output::
 
   {
-    "PatchGroup": "Production",
-    "BaselineId": "pb-045f10b4f382baeda"
+    "BaselineId": "pb-045f10b4f382baeda",
+    "PatchGroup": "Production"
   }

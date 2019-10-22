@@ -219,6 +219,7 @@ class TestOpsWorksRegister(TestOpsWorksBase):
             self.register._name_for_iam = "HOSTNAME"
 
             self.register.create_iam_entities(self._build_args())
+            policy = "arn:aws:iam::aws:policy/AWSOpsWorksInstanceRegistration"
 
             mock_iam.create_group.assert_any_call(
                 Path="/AWS/OpsWorks/", GroupName="OpsWorks-STACKID")
@@ -227,6 +228,9 @@ class TestOpsWorksRegister(TestOpsWorksBase):
             mock_iam.add_user_to_group.assert_any_call(
                 UserName="OpsWorks-STACKNAME-HOSTNAME",
                 GroupName="OpsWorks-STACKID")
+            mock_iam.attach_user_policy.assert_any_call(
+                PolicyArn=policy,
+                UserName="OpsWorks-STACKNAME-HOSTNAME")
             mock_iam.create_access_key.assert_any_call(
                 UserName="OpsWorks-STACKNAME-HOSTNAME")
 
@@ -290,6 +294,29 @@ class TestOpsWorksRegister(TestOpsWorksBase):
                 GroupName="OpsWorks-STACKID")
             mock_iam.create_access_key.assert_any_call(
                 UserName="OpsWorks-STACKNAME-HOSTNAME+2")
+
+    def test_create_iam_entities_attach_user_policy_unauthorized(self):
+        """Should call PutUserPolicy when AttachUserPolicy is unauthorized."""
+
+        with mock.patch.object(self.register, "iam", create=True) as mock_iam:
+            self.register._stack = dict(
+                StackId="STACKID", Name="STACKNAME", Arn="ARN")
+            self.register._name_for_iam = "HOSTNAME"
+            policy = "arn:aws:iam::aws:policy/AWSOpsWorksInstanceRegistration"
+
+            mock_iam.attach_user_policy.side_effect = ClientError(
+                {'Error': {'Code': 'AccessDenied', 'Message': ''}},
+                'AttachUserPolicy')
+
+            self.register.create_iam_entities(self._build_args())
+
+            mock_iam.attach_user_policy.assert_any_call(
+                PolicyArn=policy,
+                UserName="OpsWorks-STACKNAME-HOSTNAME")
+            mock_iam.put_user_policy.assert_any_call(
+                PolicyName="OpsWorks-Instance",
+                PolicyDocument=mock.ANY,
+                UserName="OpsWorks-STACKNAME-HOSTNAME")
 
     def test_create_iam_entities_long_names(self):
         """Should shorten IAM entity names to a valid size."""

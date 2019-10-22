@@ -280,7 +280,6 @@ class DeployCommand(BasicCommand):
 
             s3_uploader = S3Uploader(s3_client,
                                       bucket,
-                                      parsed_globals.region,
                                       parsed_args.s3_prefix,
                                       parsed_args.kms_key_id,
                                       parsed_args.force_upload)

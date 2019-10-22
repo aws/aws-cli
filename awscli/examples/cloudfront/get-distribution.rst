@@ -1,3 +1,5 @@
+**To get information about a CloudFront distribution**
+
 The following command gets a distribution with the ID ``S11A16G5KZMEQD``::
 
   aws cloudfront get-distribution --id S11A16G5KZMEQD

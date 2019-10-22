@@ -180,7 +180,7 @@ because those data transfers take place server side. The value is
 in terms of **bytes** per second. The value can be specified as:
 
 * An integer. For example, ``1048576`` would set the maximum bandwidth usage
-  to 1 megabyte per second.
+  to 1 MB per second.
 * A rate suffix. You can specify rate suffixes using: ``KB/s``, ``MB/s``,
   ``GB/s``, etc. For example: ``300KB/s``, ``10MB/s``.
 
@@ -191,7 +191,7 @@ should then be used to further limit bandwidth consumption if setting
 desired rate. This is recommended because ``max_concurrent_requests`` controls
 how many threads are currently running. So if a high ``max_concurrent_requests``
 value is set and a low ``max_bandwidth`` value is set, it may result in
-threads having to wait unneccessarily which can lead to excess resource
+threads having to wait unnecessarily which can lead to excess resource
 consumption and connection timeouts.
 
 

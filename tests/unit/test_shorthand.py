@@ -62,6 +62,10 @@ def test_parse():
     # Forward slashes are allowed in keys.
     yield (_can_parse, 'some/thing=value', {'some/thing': 'value'})
 
+    # Colon chars are allowed in keys:
+    yield (_can_parse, 'aws:service:region:124:foo/bar=baz',
+           {'aws:service:region:124:foo/bar': 'baz'})
+
     # Explicit lists.
     yield (_can_parse, 'foo=[]', {'foo': []})
     yield (_can_parse, 'foo=[a]', {'foo': ['a']})

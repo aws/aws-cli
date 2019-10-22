@@ -1,16 +1,16 @@
-**To list your available container instances in a cluster**
+**To list the container instances in a cluster**
 
-This example command lists all of your available container instances in the specified cluster (`my_cluster`) in your default region.
+The following ``list-container-instances`` example lists all of the available container instances in a cluster. ::
 
-Command::
-
-  aws ecs list-container-instances --cluster my_cluster
+    aws ecs list-container-instances --cluster MyCluster
 
 Output::
 
-	{
-	    "containerInstanceArns": [
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:container-instance/f6bbb147-5370-4ace-8c73-c7181ded911f",
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:container-instance/ffe3d344-77e2-476c-a4d0-bf560ad50acb"
-	    ]
-	}
+    {
+        "containerInstanceArns": [
+            "arn:aws:ecs:us-west-2:123456789012:container-instance/MyCluster/a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+            "arn:aws:ecs:us-west-2:123456789012:container-instance/MyCluster/a1b2c3d4-5678-90ab-cdef-22222EXAMPLE"
+        ]
+    }
+
+For more information, see `Amazon ECS Container Instances <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_instances.html>`_ in the *Amazon ECS Developer Guide*.

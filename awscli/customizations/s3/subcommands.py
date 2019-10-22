@@ -249,11 +249,13 @@ SSE_C_COPY_SOURCE_KEY = {
 
 STORAGE_CLASS = {'name': 'storage-class',
                  'choices': ['STANDARD', 'REDUCED_REDUNDANCY', 'STANDARD_IA',
-                             'ONEZONE_IA'],
+                             'ONEZONE_IA', 'INTELLIGENT_TIERING', 'GLACIER',
+                             'DEEP_ARCHIVE'],
                  'help_text': (
                      "The type of storage to use for the object. "
                      "Valid choices are: STANDARD | REDUCED_REDUNDANCY "
-                     "| STANDARD_IA | ONEZONE_IA. "
+                     "| STANDARD_IA | ONEZONE_IA | INTELLIGENT_TIERING "
+                     "| GLACIER | DEEP_ARCHIVE. "
                      "Defaults to 'STANDARD'")}
 
 
@@ -384,7 +386,7 @@ EXPECTED_SIZE = {'name': 'expected-size',
                      'This argument specifies the expected size of a stream '
                      'in terms of bytes. Note that this argument is needed '
                      'only when a stream is being uploaded to s3 and the size '
-                     'is larger than 5GB.  Failure to include this argument '
+                     'is larger than 50GB.  Failure to include this argument '
                      'under these conditions may result in a failed upload '
                      'due to too many parts in upload.')}
 

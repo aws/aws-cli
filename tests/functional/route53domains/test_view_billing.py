@@ -17,13 +17,6 @@ class TestViewBilling(BaseAWSCommandParamsTest):
 
     prefix = 'route53domains view-billing'
 
-    def test_accepts_start(self):
-        command = self.prefix + ' --start 2'
-        expected_params = {
-            'Start': '2'
-        }
-        self.assert_params_for_cmd(command, expected_params)
-
     def test_accepts_start_time(self):
         command = self.prefix + ' --start-time 2'
         expected_params = {

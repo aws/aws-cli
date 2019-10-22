@@ -23,7 +23,7 @@ def find_version(*file_paths):
     raise RuntimeError("Unable to find version string.")
 
 
-requires = ['botocore==1.12.48',
+requires = ['botocore==1.13.0',
             'colorama>=0.2.5,<=0.3.9',
             'docutils>=0.10',
             'rsa>=3.1.2,<=3.5.0',
@@ -37,21 +37,27 @@ setup_options = dict(
     name='awscli',
     version=find_version("awscli", "__init__.py"),
     description='Universal Command Line Environment for AWS.',
-    long_description=open('README.rst').read(),
+    long_description=read('README.rst'),
     author='Amazon Web Services',
     url='http://aws.amazon.com/cli/',
     scripts=['bin/aws', 'bin/aws.cmd', 'bin/aws_legacy_completer',
              'bin/aws_completer', 'bin/aws_zsh_completer.sh',
              'bin/aws_bash_completer'],
     packages=find_packages(exclude=['tests*']),
-    package_data={'awscli': ['data/*.json', 'examples/*/*.rst',
-                             'data/ac.index', 'examples/*/*/*.rst',
-                             'topics/*.rst',
-                             'customizations/wizard/wizards/*/*.yml',
-                             'topics/*.json']},
     install_requires=requires,
+    package_data={'awscli': [
+        'customizations/wizard/wizards/*/*.yml',
+        'data/*.json',
+        'data/ac.index',
+        'examples/*/*.rst',
+        'examples/*/*.txt',
+        'examples/*/*/*.txt',
+        'examples/*/*/*.rst',
+        'topics/*.rst',
+        'topics/*.json',
+    ]},
     license="Apache License 2.0",
-    classifiers=(
+    classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
@@ -64,7 +70,7 @@ setup_options = dict(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
-    ),
+    ],
 )
 
 if 'py2exe' in sys.argv:

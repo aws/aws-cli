@@ -1,54 +1,31 @@
-**To describe your Internet gateways**
+**To describe your internet gateways**
 
-This example describes your Internet gateways.
+The following ``describe-internet-gateways`` example retrieves details about all of your internet gateways. ::
 
-Command::
-
-  aws ec2 describe-internet-gateways
+    aws ec2 describe-internet-gateways
 
 Output::
 
-  {
-      "InternetGateways": [
-          {
-              "Tags": [],
-              "InternetGatewayId": "igw-c0a643a9",
-              "Attachments": [
-                  {
-                      "State": "available",
-                      "VpcId": "vpc-a01106c2"
-                  }
-              ]
-          },
-          {
-              "Tags": [],
-              "InternetGatewayId": "igw-046d7966",
-              "Attachments": []
-          }
-      ]  
-  }
-  
-**To describe the Internet gateway for a specific VPC**
+    {
+        "InternetGateways": [
+            {
+                "Attachments": [],
+                "InternetGatewayId": "igw-036dde5c85EXAMPLE",
+                "OwnerId": "111122223333",
+                "Tags": []
+            },
+            {
+                "Attachments": [
+                    {
+                        "State": "available",
+                        "VpcId": "vpc-cEXAMPLE"
+                    }
+                ],
+                "InternetGatewayId": "igw-0EXAMPLE",
+                "OwnerId": "111122223333",
+                "Tags": []
+            }
+        ]
+    }             
 
-This example describes the Internet gateway for the specified VPC.
-
-Command::
-
-  aws ec2 describe-internet-gateways --filters "Name=attachment.vpc-id,Values=vpc-a01106c2"
-
-Output::
-
-  {
-      "InternetGateways": [
-          {
-              "Tags": [],
-              "InternetGatewayId": "igw-c0a643a9",
-              "Attachments": [
-                  {
-                      "State": "available",
-                      "VpcId": "vpc-a01106c2"
-                  }
-              ]
-          }
-      ]  
-  }
+For more information, see `Internet Gateways <https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html>`__ in the *AWS VPC User Guide*.

@@ -1,6 +1,6 @@
-**To remove a target from a maintenance window**
+**To remove a target from a Maintenance Window**
 
-This example removes a target from a maintenance window.
+This example removes a target from a Maintenance Window.
 
 Command::
 

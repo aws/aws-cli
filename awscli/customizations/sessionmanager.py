@@ -64,6 +64,12 @@ class StartSessionCaller(CLIOperationCaller):
         response = client.start_session(**parameters)
         session_id = response['SessionId']
         region_name = client.meta.region_name
+        # profile_name is used to passed on to session manager plugin
+        # to fetch same profile credentials to make an api call in the plugin.
+        # If no profile is passed then pass on empty string
+        profile_name = self._session.profile \
+            if self._session.profile is not None else ''
+        endpoint_url = client.meta.endpoint_url
 
         try:
             # ignore_user_entered_signals ignores these signals
@@ -77,7 +83,10 @@ class StartSessionCaller(CLIOperationCaller):
                 check_call(["session-manager-plugin",
                             json.dumps(response),
                             region_name,
-                            "StartSession"])
+                            "StartSession",
+                            profile_name,
+                            json.dumps(parameters),
+                            endpoint_url])
             return 0
         except OSError as ex:
             if ex.errno == errno.ENOENT:

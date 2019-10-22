@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.264
+========
+
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+* api-change:``iotevents``: Update iotevents command to latest version
+
+
 1.16.263
 ========
 

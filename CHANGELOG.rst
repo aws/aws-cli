@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.265
+========
+
+* api-change:``polly``: Update polly command to latest version
+* api-change:``connect``: Update connect command to latest version
+
+
 1.16.264
 ========
 

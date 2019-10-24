@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.16.266
+========
+
+* enhancement:``eks get-token``: Refactor ``get-token`` implementation and add support for non-aws partitions and regions.
+* api-change:``chime``: Update chime command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* enhancement:``sts``: Add support for configuring the use of regional STS endpoints.
+
+
 1.16.265
 ========
 

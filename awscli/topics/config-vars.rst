@@ -424,6 +424,43 @@ of Amazon EC2's ``2015-03-01`` API version and the ``cloudfront`` CLI commands
 will be representative of Amazon CloudFront's ``2015-09-17`` API version.
 
 
+AWS STS
+-------
+
+To set STS endpoint resolution logic, use the ``AWS_STS_REGIONAL_ENDPOINTS``
+environment variable or ``sts_regional_endpoints`` configuration file option.
+By default, this configuration option is set to ``legacy``. Valid values are:
+
+* ``regional``
+   Uses the STS endpoint that corresponds to the configured region. For
+   example if the client is configured to use ``us-west-2``, all calls
+   to STS will be make to the ``sts.us-west-2.amazonaws.com`` regional
+   endpoint instead of the global ``sts.amazonaws.com`` endpoint.
+
+* ``legacy``
+   Uses the global STS endpoint, ``sts.amazonaws.com``, for the following
+   configured regions:
+
+   * ``ap-northeast-1``
+   * ``ap-south-1``
+   * ``ap-southeast-1``
+   * ``ap-southeast-2``
+   * ``aws-global``
+   * ``ca-central-1``
+   * ``eu-central-1``
+   * ``eu-north-1``
+   * ``eu-west-1``
+   * ``eu-west-2``
+   * ``eu-west-3``
+   * ``sa-east-1``
+   * ``us-east-1``
+   * ``us-east-2``
+   * ``us-west-1``
+   * ``us-west-2``
+
+   All other regions will use their respective regional endpoint.
+
+
 Amazon S3
 ---------
 

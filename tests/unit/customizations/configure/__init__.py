@@ -13,6 +13,11 @@
 from botocore.exceptions import ProfileNotFound
 
 
+class FakeConfigStore(object):
+    def set_config_provider(self, *args, **kwargs):
+        pass
+
+
 class FakeSession(object):
 
     def __init__(self, all_variables, profile_does_not_exist=False,
@@ -44,6 +49,10 @@ class FakeSession(object):
         if self.profile_does_not_exist:
             raise ProfileNotFound(profile='foo')
         return self.config
+
+    def get_component(self, component, *args, **kwargs):
+        if component == 'config_store':
+            return FakeConfigStore()
 
     def get_config_variable(self, name, methods=None):
         if name == 'credentials_file':

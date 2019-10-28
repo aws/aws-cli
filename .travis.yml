@@ -31,6 +31,9 @@ before_install:
   - pip install codecov
 install:
   - python scripts/ci/install
-script: python scripts/ci/run-tests
+  - python scripts/ci/install-check
+script:
+  - python scripts/ci/run-tests
+  - python scripts/ci/run-check
 after_success:
   - rm tests/coverage.xml && mv tests/.coverage ./ && codecov

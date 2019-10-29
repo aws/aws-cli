@@ -24,6 +24,7 @@ DISTRIBUTION_PATH = os.path.join(PKG_DIR, 'distribution.xml')
 TEMP_PKG_NAME = 'aws-cli.pkg'
 PKG_NAME = 'AWS-CLI-Installer.pkg'
 EXE_ZIP_NAME = 'awscli-exe.zip'
+EXE_NAME = 'aws2'
 
 
 def make_pkg(pkg_name, src_exe):
@@ -58,7 +59,7 @@ def do_make_pkg(workdir, pkg_name):
 
 def get_version(output_dir):
     exe_dir = os.path.join(output_dir, 'aws', 'dist')
-    exe_path = os.path.join(exe_dir, 'aws')
+    exe_path = os.path.join(exe_dir, EXE_NAME)
     result = run('%s --version' % exe_path, cwd=exe_dir).strip()
     version = result.split(' ')[0].split('/')[1]
     return version

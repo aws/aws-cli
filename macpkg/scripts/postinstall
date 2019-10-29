@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+EXE_NAME="aws2"
+COMPLETER_EXE_NAME="aws2_completer"
 sudo mkdir -p /usr/local/bin
 # Files created here are not stored in the bill of materials for the pkg.
 # This means we cannot find and remove them during an installation. We add a
@@ -7,11 +9,11 @@ sudo mkdir -p /usr/local/bin
 # here. If any new files are added, be sure to add them to the .install-metadata
 # file as well.
 sudo echo "/usr/local/aws/.install-metadata" >> /usr/local/aws/.install-metadata
-sudo ln -sf /usr/local/aws/aws /usr/local/bin/aws
-sudo echo "/usr/local/bin/aws" >> /usr/local/aws/.install-metadata
-sudo ln -sf /usr/local/aws/aws_completer /usr/local/bin/aws_completer
-sudo echo "/usr/local/bin/aws_completer" >> /usr/local/aws/.install-metadata
+sudo ln -sf "/usr/local/aws/$EXE_NAME" "/usr/local/bin/$EXE_NAME"
+sudo echo "/usr/local/bin/$EXE_NAME" >> /usr/local/aws/.install-metadata
+sudo ln -sf "/usr/local/aws/$COMPLETER_EXE_NAME" "/usr/local/bin/$COMPLETER_EXE_NAME"
+sudo echo "/usr/local/bin/$COMPLETER_EXE_NAME" >> /usr/local/aws/.install-metadata
 
-CLI_VERSION=$(/usr/local/bin/aws --version | cut -d' ' -f 1 | cut -d'/' -f 2)
+CLI_VERSION=$(/usr/local/bin/$EXE_NAME --version | cut -d' ' -f 1 | cut -d'/' -f 2)
 mkdir -p ~/.aws/cli/cache
 cp /usr/local/aws/awscli/data/ac.index ~/.aws/cli/cache/$CLI_VERSION.index

@@ -1,6 +1,7 @@
 # -*- mode: python -*-
 
 block_cipher = None
+exe_name = "aws2_completer"
 
 
 completer_a = Analysis(['../../bin/aws_completer'],
@@ -18,7 +19,7 @@ completer_exe = EXE(completer_pyz,
           completer_a.scripts,
           [],
           exclude_binaries=True,
-          name='aws_completer',
+          name=exe_name,
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,

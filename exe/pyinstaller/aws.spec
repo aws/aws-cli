@@ -1,7 +1,7 @@
 # -*- mode: python -*-
 
 block_cipher = None
-
+exe_name = 'aws2'
 
 aws_a = Analysis(['../../bin/aws'],
              binaries=[],
@@ -18,7 +18,7 @@ aws_exe = EXE(aws_pyz,
           aws_a.scripts,
           [],
           exclude_binaries=True,
-          name='aws',
+          name=exe_name,
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,

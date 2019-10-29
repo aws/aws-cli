@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.269
+========
+
+* api-change:``appstream``: Update appstream command to latest version
+* api-change:``cloud9``: Update cloud9 command to latest version
+
+
 1.16.268
 ========
 

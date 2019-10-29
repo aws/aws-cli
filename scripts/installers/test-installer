@@ -18,6 +18,7 @@ SMOKE_TEST_PATH = os.path.join(
     REPO_ROOT, 'tests', 'integration', 'test_smoke.py')
 UNINSTALL_MAC_PKG_PATH = os.path.join(
     SCRIPTS_DIR, 'installers', 'uninstall-mac-pkg')
+EXE_NAME = 'aws2'
 
 
 class InstallerTester(object):
@@ -87,7 +88,7 @@ class ExeTester(InstallerTester):
         shutil.rmtree(self._installation_dir)
 
     def get_aws_cmd(self):
-        return os.path.join(self._bin_dir, 'aws2')
+        return os.path.join(self._bin_dir, EXE_NAME)
 
 
 class PkgTester(InstallerTester):
@@ -98,7 +99,7 @@ class PkgTester(InstallerTester):
         value = run('%s %s check' % (sys.executable, UNINSTALL_MAC_PKG_PATH))
         match = re.search('installed at (.+)?\n', value)
         base_path = match.group(1)
-        cmd_path = os.path.join(base_path, 'aws')
+        cmd_path = os.path.join(base_path, EXE_NAME)
         return cmd_path
 
     def setup(self):

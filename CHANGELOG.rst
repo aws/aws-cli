@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.271
+========
+
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``amplify``: Update amplify command to latest version
+* api-change:``support``: Update support command to latest version
+
+
 1.16.270
 ========
 

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.272
+========
+
+* api-change:``cloudtrail``: Update cloudtrail command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+
+
 1.16.271
 ========
 

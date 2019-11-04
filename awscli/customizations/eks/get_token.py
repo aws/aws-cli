@@ -60,14 +60,12 @@ class GetTokenCommand(BasicCommand):
         token_expiration = datetime.utcnow() + timedelta(minutes=TOKEN_EXPIRATION_MINS)
         return token_expiration.strftime('%Y-%m-%dT%H:%M:%SZ')
 
-    def _run_main(self, parsed_args, parsed_globals, token_generator=None):
-        if token_generator is None:
-            token_generator = TokenGenerator(self._session)
-        token = token_generator.get_token(
-            parsed_args.cluster_name,
-            parsed_args.role_arn,
-            parsed_globals.region,
-        )
+    def _run_main(self, parsed_args, parsed_globals):
+        client_factory = STSClientFactory(self._session)
+        sts_client = client_factory.get_sts_client(
+            region_name=parsed_globals.region,
+            role_arn=parsed_args.role_arn)
+        token = TokenGenerator(sts_client).get_token(parsed_args.cluster_name)
 
         # By default STS signs the url for 15 minutes so we are creating a
         # rfc3339 timestamp with expiration in 14 minutes as part of the token, which
@@ -86,80 +84,68 @@ class GetTokenCommand(BasicCommand):
 
         uni_print(json.dumps(full_object))
         uni_print('\n')
+        return 0
+
 
 class TokenGenerator(object):
-    def __init__(self, botocore_session):
-        self._session_handler = SessionHandler(botocore_session)
+    def __init__(self, sts_client):
+        self._sts_client = sts_client
 
-    def get_token(self, cluster_name, role_arn, region_name=None):
+    def get_token(self, cluster_name):
         """ Generate a presigned url token to pass to kubectl. """
-        url = self._get_presigned_url(cluster_name, role_arn, region_name)
-        token = TOKEN_PREFIX + base64.urlsafe_b64encode(url.encode('utf-8')).decode('utf-8').rstrip('=')
+        url = self._get_presigned_url(cluster_name)
+        token = TOKEN_PREFIX + base64.urlsafe_b64encode(
+            url.encode('utf-8')).decode('utf-8').rstrip('=')
         return token
 
-    def _get_presigned_url(self, cluster_name, role_arn, region_name=None):
-        session = self._session_handler.get_session(
-            region_name,
-            role_arn
+    def _get_presigned_url(self, cluster_name):
+        return self._sts_client.generate_presigned_url(
+            'get_caller_identity',
+            Params={'ClusterName': cluster_name},
+            ExpiresIn=URL_TIMEOUT,
+            HttpMethod='GET',
         )
 
-        if region_name is None:
-            region_name = session.get_config_variable('region')
 
-        loader = botocore.loaders.create_loader()
-        data = loader.load_data("endpoints")
-        endpoint_resolver = botocore.regions.EndpointResolver(data)
-        endpoint = endpoint_resolver.construct_endpoint(
-            AUTH_SERVICE,
-            region_name
-        )
-        signer = RequestSigner(
-            ServiceId(AUTH_SERVICE),
-            region_name,
-            AUTH_SERVICE,
-            AUTH_SIGNING_VERSION,
-            session.get_credentials(),
-            session.get_component('event_emitter')
-        )
-        action_params='Action=' + AUTH_COMMAND + '&Version=' + AUTH_API_VERSION
-        params = {
-            'method': 'GET',
-            'url': 'https://' + endpoint["hostname"] + '/?' + action_params,
-            'body': {},
-            'headers': {CLUSTER_NAME_HEADER: cluster_name},
-            'context': {}
+class STSClientFactory(object):
+    def __init__(self, session):
+        self._session = session
+
+    def get_sts_client(self, region_name=None, role_arn=None):
+        client_kwargs = {
+            'region_name': region_name
         }
-
-        url=signer.generate_presigned_url(
-            params,
-            region_name=endpoint["credentialScope"]["region"],
-            operation_name='',
-            expires_in=URL_TIMEOUT
-        )
-        return url
-
-class SessionHandler(object):
-    def __init__(self, botocore_session):
-        self._session = botocore_session
-
-    def get_session(self, region_name, role_arn):
-        """
-        Assumes the given role and returns a session object assuming said role.
-        """
-        session = self._session
-        if region_name is not None:
-            session.set_config_variable('region', region_name)
-
         if role_arn is not None:
-            sts = session.create_client(AUTH_SERVICE, region_name=region_name)
-            credentials_dict = sts.assume_role(
-                RoleArn=role_arn,
-                RoleSessionName='EKSGetTokenAuth'
-            )['Credentials']
+            creds = self._get_role_credentials(region_name, role_arn)
+            client_kwargs['aws_access_key_id'] = creds['AccessKeyId']
+            client_kwargs['aws_secret_access_key'] = creds['SecretAccessKey']
+            client_kwargs['aws_session_token'] = creds['SessionToken']
+        sts = self._session.create_client('sts', **client_kwargs)
+        self._register_cluster_name_handlers(sts)
+        return sts
 
-            session.set_credentials(credentials_dict['AccessKeyId'],
-                                    credentials_dict['SecretAccessKey'],
-                                    credentials_dict['SessionToken'])
-            return session
-        else:
-            return session
+    def _get_role_credentials(self, region_name, role_arn):
+        sts = self._session.create_client('sts', region_name)
+        return sts.assume_role(
+            RoleArn=role_arn,
+            RoleSessionName='EKSGetTokenAuth'
+        )['Credentials']
+
+    def _register_cluster_name_handlers(self, sts_client):
+        sts_client.meta.events.register(
+            'provide-client-params.sts.GetCallerIdentity',
+            self._retrieve_cluster_name
+        )
+        sts_client.meta.events.register(
+            'before-sign.sts.GetCallerIdentity',
+            self._inject_cluster_name_header
+        )
+
+    def _retrieve_cluster_name(self, params, context, **kwargs):
+        if 'ClusterName' in params:
+            context['eks_cluster'] = params.pop('ClusterName')
+
+    def _inject_cluster_name_header(self, request, **kwargs):
+        if 'eks_cluster' in request.context:
+            request.headers[
+                CLUSTER_NAME_HEADER] = request.context['eks_cluster']

@@ -2,6 +2,76 @@
 CHANGELOG
 =========
 
+1.16.273
+========
+
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``dax``: Update dax command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.16.272
+========
+
+* api-change:``cloudtrail``: Update cloudtrail command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+
+
+1.16.271
+========
+
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``amplify``: Update amplify command to latest version
+* api-change:``support``: Update support command to latest version
+
+
+1.16.270
+========
+
+* api-change:``elasticache``: Update elasticache command to latest version
+
+
+1.16.269
+========
+
+* api-change:``appstream``: Update appstream command to latest version
+* api-change:``cloud9``: Update cloud9 command to latest version
+
+
+1.16.268
+========
+
+* api-change:``s3``: Update s3 command to latest version
+
+
+1.16.267
+========
+
+* api-change:``transfer``: Update transfer command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``ecr``: Update ecr command to latest version
+
+
+1.16.266
+========
+
+* enhancement:``eks get-token``: Refactor ``get-token`` implementation and add support for non-aws partitions and regions.
+* api-change:``chime``: Update chime command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* enhancement:``sts``: Add support for configuring the use of regional STS endpoints.
+
+
+1.16.265
+========
+
+* api-change:``polly``: Update polly command to latest version
+* api-change:``connect``: Update connect command to latest version
+
+
 1.16.264
 ========
 

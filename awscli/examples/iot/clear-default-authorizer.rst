@@ -1,6 +1,6 @@
 **To clear the default authorizer**
 
-The following ``clear-default-authorizer`` example clears the currently configured default custom authorizer. A custom authorizer allows you to perform authorization of users instead of using the authentication mechanism supplied by AWS IoT. ::
+The following ``clear-default-authorizer`` example clears the currently configured default custom authorizer. After you run this command, there is no default authorizer. When you use a custom authorizer, you must specify it by name in the HTTP request headers. ::
 
     aws iot clear-default-authorizer
 

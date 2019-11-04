@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.273
+========
+
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``dax``: Update dax command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.16.272
 ========
 

@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.16.275
+========
+
+* api-change:``budgets``: Update budgets command to latest version
+* api-change:``savingsplans``: Update savingsplans command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``efs``: Update efs command to latest version
+* api-change:``signer``: Update signer command to latest version
+
+
 1.16.274
 ========
 

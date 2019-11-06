@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.276
+========
+
+* api-change:``savingsplans``: Update savingsplans command to latest version
+
+
 1.16.275
 ========
 

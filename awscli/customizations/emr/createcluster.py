@@ -344,11 +344,14 @@ class CreateCluster(Command):
 
     def _construct_result(self, run_job_flow_result):
         jobFlowId = None
+        clusterArn = None
         if run_job_flow_result is not None:
             jobFlowId = run_job_flow_result.get('JobFlowId')
+            clusterArn = run_job_flow_result.get('ClusterArn')
 
         if jobFlowId is not None:
-            return {'ClusterId': jobFlowId}
+            return {'ClusterId': jobFlowId,
+                    'ClusterArn': clusterArn }
         else:
             return {}
 

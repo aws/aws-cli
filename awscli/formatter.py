@@ -300,13 +300,16 @@ class TextFormatter(Formatter):
         text.format_text(response, stream)
 
 
+CLI_OUTPUT_FORMATS = {
+    'json': JSONFormatter,
+    'text': TextFormatter,
+    'table': TableFormatter,
+    'yaml': YAMLFormatter,
+}
+
+
 def get_formatter(format_type, args):
-    if format_type == 'json':
-        return JSONFormatter(args)
-    elif format_type == 'text':
-        return TextFormatter(args)
-    elif format_type == 'table':
-        return TableFormatter(args)
-    elif format_type == 'yaml':
-        return YAMLFormatter(args)
-    raise ValueError("Unknown output type: %s" % format_type)
+    if format_type not in CLI_OUTPUT_FORMATS:
+        raise ValueError("Unknown output type: %s" % format_type)
+    format_type_cls = CLI_OUTPUT_FORMATS[format_type]
+    return format_type_cls(args)

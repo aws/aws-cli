@@ -76,6 +76,7 @@ from awscli.customizations.s3endpoint import register_s3_endpoint
 from awscli.customizations.s3errormsg import register_s3_error_msg
 from awscli.customizations.scalarparse import register_scalar_parser
 from awscli.customizations.sessendemail import register_ses_send_email
+from awscli.customizations.sso import register_sso_commands
 from awscli.customizations.streamingoutputarg import add_streaming_output_arg
 from awscli.customizations.translate import register_translate_import_terminology
 from awscli.customizations.toplevelbool import register_bool_params
@@ -178,3 +179,4 @@ def awscli_initialize(event_handlers):
     register_dev_commands(event_handlers)
     register_wizard_commands(event_handlers)
     register_sms_voice_hide(event_handlers)
+    register_sso_commands(event_handlers)

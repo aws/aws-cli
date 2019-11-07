@@ -261,6 +261,11 @@ class TestProfileToSection(unittest.TestCase):
         section = profile_to_section(profile)
         self.assertEqual('profile \'    \'', section)
 
+    def test_default_profile(self):
+        profile = 'default'
+        section = profile_to_section(profile)
+        self.assertEqual(profile, section)
+
 
 class PrecannedPrompter(object):
 

@@ -124,7 +124,10 @@ class TestConfigureSSOCommand(unittest.TestCase):
     def setUp(self):
         self.global_args = mock.Mock()
         self._session = Session()
-        self.sso_client = self._session.create_client('sso')
+        self.sso_client = self._session.create_client(
+            'sso',
+            region_name='us-west-2',
+        )
         self.sso_stub = Stubber(self.sso_client)
         self.profile = 'a-profile'
         self.scoped_config = {}

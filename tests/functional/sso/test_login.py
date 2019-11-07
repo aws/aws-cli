@@ -17,6 +17,7 @@ import time
 
 from awscli.testutils import mock
 from tests.functional.sso import BaseSSOTest
+from awscli.customizations.sso.utils import OpenBrowserHandler
 
 
 class TestLoginCommand(BaseSSOTest):
@@ -28,10 +29,17 @@ class TestLoginCommand(BaseSSOTest):
             self.token_cache_dir
         )
         self.token_cache_dir_patch.start()
+        self.open_browser_mock = mock.Mock(spec=OpenBrowserHandler)
+        self.open_browser_patch = mock.patch(
+            'awscli.customizations.sso.utils.OpenBrowserHandler',
+            self.open_browser_mock,
+        )
+        self.open_browser_patch.start()
 
     def tearDown(self):
         super(TestLoginCommand, self).tearDown()
         self.token_cache_dir_patch.stop()
+        self.open_browser_patch.stop()
 
     def add_oidc_workflow_responses(self, access_token,
                                     include_register_response=True):

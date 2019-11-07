@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.277
+========
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+* api-change:``sso``: Update sso command to latest version
+* api-change:``sso-oidc``: Update sso-oidc command to latest version
+
+
 1.16.276
 ========
 

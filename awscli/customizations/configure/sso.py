@@ -90,9 +90,9 @@ class PTKPrompt(object):
 
 class ConfigureSSOCommand(BasicCommand):
     NAME = 'sso'
-    SYNOPSIS = ('aws configure sso [--profile profile-name]')
+    SYNOPSIS = ('aws2 configure sso [--profile profile-name]')
     DESCRIPTION = (
-        'The ``aws configure sso`` command interactively prompts for the '
+        'The ``aws2 configure sso`` command interactively prompts for the '
         'configuration values required to create a profile that sources '
         'temporary AWS credentials from AWS Single Sign-On. To keep an '
         'existing value, hit enter when prompted for the value.  When  you  '
@@ -300,7 +300,7 @@ class ConfigureSSOCommand(BasicCommand):
         usage_msg = (
             '\nTo use this profile, specify the profile name using '
             '--profile, as shown:\n\n'
-            'aws s3 ls --profile {}\n'
+            'aws2 s3 ls --profile {}\n'
         )
         uni_print(usage_msg.format(profile_name))
 

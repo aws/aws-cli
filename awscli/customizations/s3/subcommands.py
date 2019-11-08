@@ -210,10 +210,10 @@ SSE_C_KEY = {
 SSE_KMS_KEY_ID = {
     'name': 'sse-kms-key-id',
     'help_text': (
-        'The AWS KMS key ID that should be used to server-side '
-        'encrypt the object in S3. Note that you should only '
-        'provide this parameter if KMS key ID is different the '
-        'default S3 master KMS key.'
+        'The customer-managed AWS Key Management Service (KMS) key ID that '
+        'should be used to server-side encrypt the object in S3. You should '
+        'only provide this parameter if you are using a customer managed '
+        'customer master key (CMK) and not the AWS managed KMS CMK.'
     )
 }
 

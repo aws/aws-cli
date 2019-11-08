@@ -80,6 +80,11 @@ class TestPTKPrompt(unittest.TestCase):
         self.prompter.get_value('', '', validator=validator)
         self.assert_expected_validator(validator)
 
+    def test_strips_extra_whitespace(self):
+        self.mock_prompter.return_value = '  no_whitespace \t  '
+        response = self.prompter.get_value('default_value', 'Prompt Text')
+        self.assertEqual(response, 'no_whitespace')
+
 
 class TestStartUrlValidator(unittest.TestCase):
     def setUp(self):

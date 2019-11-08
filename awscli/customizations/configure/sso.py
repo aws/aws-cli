@@ -82,6 +82,8 @@ class PTKPrompt(object):
             completer=completer,
             complete_while_typing=True,
         )
+        # Strip any extra white space
+        response = response.strip()
         if not response:
             # If the user hits enter, we return the current/default value
             response = current_value

@@ -1,32 +1,82 @@
-**To get instance NetworkOut metric data for a month period**
+**To get metric data for an instance**
 
-The following ``get-instance-metric-data`` example outputs the total ``NetworkOut`` metric data in bytes for an approximate month-long period.
+The following ``get-instance-metric-data`` example returns the average percent of ``CPUUtilization`` every ``7200`` seconds (2 hours) between ``1571342400`` and ``1571428800`` for instance ``MEAN-1``.
 
-We recommend that you use an epoch time converter to identify the start and end times. If the time between the ``--start-time`` and ``--end-time`` is greater than 2628000 seconds (approximately one month), then multiple results are returned for each 2628000 interval, as shown in the following sample response. ::
+We recommend that you use a unix time converter to identify the start and end times. ::
 
     aws lightsail get-instance-metric-data \
-        --instance-name InstanceName \
-        --metric-name NetworkOut \
-        --period 2628000 \
-        --start-time 1546304400 \
-        --end-time 1577840400 
-        --unit Bytes 
-        --statistics Sum
+        --instance-name MEAN-1 \
+        --metric-name CPUUtilization \
+        --period 7200 \
+        --start-time 1571342400 \
+        --end-time 1571428800 \
+        --unit Percent \
+        --statistics Average
 
 Output::
 
     {
+        "metricName": "CPUUtilization",
         "metricData": [
             {
-                "timestamp": 1556812800.0,
-                "sum": 22359134.0,
-                "unit": "Bytes"
+                "average": 0.26113718770120725,
+                "timestamp": 1571342400.0,
+                "unit": "Percent"
             },
             {
-                "timestamp": 1554184800.0,
-                "sum": 5968238.0,
-                "unit": "Bytes"
+                "average": 0.26861268928111953,
+                "timestamp": 1571392800.0,
+                "unit": "Percent"
+            },
+            {
+                "average": 0.28187475104748777,
+                "timestamp": 1571378400.0,
+                "unit": "Percent"
+            },
+            {
+                "average": 0.2651936960458352,
+                "timestamp": 1571421600.0,
+                "unit": "Percent"
+            },
+            {
+                "average": 0.2561856213712188,
+                "timestamp": 1571371200.0,
+                "unit": "Percent"
+            },
+            {
+                "average": 0.3021383254607764,
+                "timestamp": 1571356800.0,
+                "unit": "Percent"
+            },
+            {
+                "average": 0.2618381649223539,
+                "timestamp": 1571407200.0,
+                "unit": "Percent"
+            },
+            {
+                "average": 0.26331929394825787,
+                "timestamp": 1571400000.0,
+                "unit": "Percent"
+            },
+            {
+                "average": 0.2576348407007818,
+                "timestamp": 1571385600.0,
+                "unit": "Percent"
+            },
+            {
+                "average": 0.2513008454658378,
+                "timestamp": 1571364000.0,
+                "unit": "Percent"
+            },
+            {
+                "average": 0.26329974562758346,
+                "timestamp": 1571414400.0,
+                "unit": "Percent"
+            },
+            {
+                "average": 0.2667092536656445,
+                "timestamp": 1571349600.0,
+                "unit": "Percent"
             }
-        ],
-        "metricName": "NetworkOut"
+        ]
     }

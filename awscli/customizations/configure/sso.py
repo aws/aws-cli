@@ -126,15 +126,6 @@ class ConfigureSSOCommand(BasicCommand):
             self._config = self._session.get_scoped_config()
         except ProfileNotFound:
             self._config = {}
-        # The profile provided to the CLI as --profile may not exist.
-        # This means we cannot use the session as is to create clients.
-        # By overriding the profile provider we ensure that a non-existant
-        # profile won't cause us to fail to create clients.
-        # No configuration from the profile is needed for the SSO APIs.
-        # It might be good to see if we can address this in a better way
-        # in botocore.
-        config_store = self._session.get_component('config_store')
-        config_store.set_config_provider('profile', ConstantProvider(None))
 
     def _prompt_for(self, config_name, text,
                     completions=None, validator_cls=None):
@@ -271,7 +262,19 @@ class ConfigureSSOCommand(BasicCommand):
             completions=list(CLI_OUTPUT_FORMATS.keys()),
         )
 
+    def _unset_session_profile(self):
+        # The profile provided to the CLI as --profile may not exist.
+        # This means we cannot use the session as is to create clients.
+        # By overriding the profile provider we ensure that a non-existant
+        # profile won't cause us to fail to create clients.
+        # No configuration from the profile is needed for the SSO APIs.
+        # It might be good to see if we can address this in a better way
+        # in botocore.
+        config_store = self._session.get_component('config_store')
+        config_store.set_config_provider('profile', ConstantProvider(None))
+
     def _run_main(self, parsed_args, parsed_globals):
+        self._unset_session_profile()
         start_url = self._prompt_for_start_url()
         sso_region = self._prompt_for_sso_region()
         sso_token = do_sso_login(

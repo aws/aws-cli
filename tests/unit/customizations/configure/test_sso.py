@@ -24,6 +24,7 @@ from botocore.stub import Stubber
 from botocore.exceptions import ProfileNotFound
 
 from awscli.testutils import unittest
+from awscli.customizations.configure.sso import display_account
 from awscli.customizations.configure.sso import select_menu
 from awscli.customizations.configure.sso import PTKPrompt
 from awscli.customizations.configure.sso import ConfigureSSOCommand
@@ -394,3 +395,43 @@ class TestConfigureSSOCommand(unittest.TestCase):
             expected_cli_outputs,
         ]
         self.assert_prompt_completions(expected_completions)
+
+
+class TestDisplayAccount(unittest.TestCase):
+    def setUp(self):
+        self.account_id = '1234'
+        self.email_address = 'test@test.com'
+        self.account_name = 'FooBar'
+        self.account = {
+            'accountId': self.account_id,
+            'emailAddress': self.email_address,
+            'accountName': self.account_name,
+        }
+
+    def test_display_account_all_fields(self):
+        account_str = display_account(self.account)
+        self.assertIn(self.account_name, account_str)
+        self.assertIn(self.email_address, account_str)
+        self.assertIn(self.account_id, account_str)
+
+    def test_display_account_missing_email(self):
+        del self.account['emailAddress']
+        account_str = display_account(self.account)
+        self.assertIn(self.account_name, account_str)
+        self.assertNotIn(self.email_address, account_str)
+        self.assertIn(self.account_id, account_str)
+
+    def test_display_account_missing_name(self):
+        del self.account['accountName']
+        account_str = display_account(self.account)
+        self.assertNotIn(self.account_name, account_str)
+        self.assertIn(self.email_address, account_str)
+        self.assertIn(self.account_id, account_str)
+
+    def test_display_account_missing_name_and_email(self):
+        del self.account['accountName']
+        del self.account['emailAddress']
+        account_str = display_account(self.account)
+        self.assertNotIn(self.account_name, account_str)
+        self.assertNotIn(self.email_address, account_str)
+        self.assertIn(self.account_id, account_str)

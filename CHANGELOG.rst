@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.16.280
+========
+
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``marketplace-catalog``: Update marketplace-catalog command to latest version
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+
+
 1.16.279
 ========
 

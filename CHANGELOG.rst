@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.16.281
+========
+
+* api-change:``dlm``: Update dlm command to latest version
+* api-change:``dataexchange``: Update dataexchange command to latest version
+* api-change:``cloudsearch``: Update cloudsearch command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``sesv2``: Update sesv2 command to latest version
+
+
 1.16.280
 ========
 

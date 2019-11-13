@@ -90,10 +90,12 @@ from awscli.customizations.devcommands import register_dev_commands
 from awscli.customizations.wizard.commands import register_wizard_commands
 from awscli.customizations.sms_voice import register_sms_voice_hide
 from awscli.customizations.autoprompt import register_autoprompt
+from awscli.customizations.binaryformat import add_binary_formatter
 
 
 def awscli_initialize(event_handlers):
     event_handlers.register('session-initialized', register_uri_param_handler)
+    event_handlers.register('session-initialized', add_binary_formatter)
     param_shorthand = ParamShorthandParser()
     event_handlers.register('process-cli-arg', param_shorthand)
     # The s3 error mesage needs to registered before the

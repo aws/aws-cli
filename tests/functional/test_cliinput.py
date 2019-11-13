@@ -144,3 +144,26 @@ class TestCLIInputYAML(BaseCLIInputArgumentTest):
             command, expected_rc=255,
             stderr_contains='Only one --cli-input- parameter may be specified.'
         )
+
+class TestBinaryInput(BaseCLIInputArgumentTest):
+    def test_converts_base64_to_binary_in_base64_mode(self):
+        command = [
+            'kms', 'encrypt', '--cli-binary-format', 'base64',
+            '--key-id', 'test', '--plaintext', 'Zm9v'
+        ]
+        params = {
+            'KeyId': 'test',
+            'Plaintext': b'foo',
+        }
+        self.assert_params_for_cmd(command, params)
+
+    def test_preserved_input_value_in_legacy_mode(self):
+        command = [
+            'kms', 'encrypt', '--cli-binary-format', 'legacy',
+            '--key-id', 'test', '--plaintext', 'Zm9v'
+        ]
+        params = {
+            'KeyId': 'test',
+            'Plaintext': 'Zm9v',
+        }
+        self.assert_params_for_cmd(command, params)

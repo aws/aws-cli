@@ -36,10 +36,8 @@ class TestScalarParse(unittest.TestCase):
         scalarparse.add_scalar_parsers(session)
         session.get_component.assert_called_with('response_parser_factory')
         factory = session.get_component.return_value
-        expected = [call(blob_parser=scalarparse.identity),
-                    call(timestamp_parser=scalarparse.identity)]
-        self.assertEqual(factory.set_parser_defaults.mock_calls,
-                         expected)
+        expected = [call(timestamp_parser=scalarparse.identity)]
+        self.assertEqual(factory.set_parser_defaults.mock_calls, expected)
 
     def test_choose_none_timestamp_formatter(self):
         session = Mock(spec=Session)

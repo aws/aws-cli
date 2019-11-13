@@ -77,6 +77,4 @@ def add_timestamp_parser(session):
 
 
 def add_scalar_parsers(session, **kwargs):
-    factory = session.get_component('response_parser_factory')
-    factory.set_parser_defaults(blob_parser=identity)
     add_timestamp_parser(session)

@@ -132,6 +132,10 @@ class CLIDriver(object):
             'pager',
             self._construct_cli_pager_chain()
         )
+        config_store.set_config_provider(
+            'cli_binary_format',
+            self._construct_cli_binary_format_chain()
+        )
 
     def _construct_cli_region_chain(self):
         providers = [
@@ -184,6 +188,16 @@ class CLIDriver(object):
                 env=os.environ,
             ),
             ConstantProvider(value=default_pager),
+        ]
+        return ChainProvider(providers=providers)
+
+    def _construct_cli_binary_format_chain(self):
+        providers = [
+            ScopedConfigProvider(
+                config_var_name='cli_binary_format',
+                session=self.session,
+            ),
+            ConstantProvider(value='legacy'),
         ]
         return ChainProvider(providers=providers)
 

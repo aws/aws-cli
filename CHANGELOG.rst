@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.16.282
+========
+
+* api-change:``personalize``: Update personalize command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``connect``: Update connect command to latest version
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``meteringmarketplace``: Update meteringmarketplace command to latest version
+
+
 1.16.281
 ========
 

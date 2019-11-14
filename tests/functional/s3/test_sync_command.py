@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import set_invalid_utime
+from awscli.testutils import set_invalid_utime, skip_if_macos
 from mock import patch
 import os
 
@@ -123,6 +123,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
         self.assertEqual('', stderr)
 
+    @skip_if_macos("Timestamps can't be invalid on macos")
     def test_warning_on_invalid_timestamp(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
 

@@ -49,8 +49,13 @@ class TestPTKPrompt(unittest.TestCase):
         self.assertEqual(response, 'default_value')
 
     def assert_expected_completions(self, completions):
+        # The order of the completion list can vary becuase it comes from the
+        # dict's keys. Asserting that each expected completion is in the list
         _, kwargs = self.mock_prompter.call_args_list[0]
-        self.assertEqual(kwargs['completer'].words, completions)
+        completer = kwargs['completer']
+        self.assertEqual(len(completions), len(completer.words))
+        for completion in completions:
+            self.assertIn(completion, completer.words)
 
     def assert_expected_meta_dict(self, meta_dict):
         _, kwargs = self.mock_prompter.call_args_list[0]
@@ -79,6 +84,11 @@ class TestPTKPrompt(unittest.TestCase):
         validator = DummyValidator()
         self.prompter.get_value('', '', validator=validator)
         self.assert_expected_validator(validator)
+
+    def test_strips_extra_whitespace(self):
+        self.mock_prompter.return_value = '  no_whitespace \t  '
+        response = self.prompter.get_value('default_value', 'Prompt Text')
+        self.assertEqual(response, 'no_whitespace')
 
 
 class TestStartUrlValidator(unittest.TestCase):

@@ -97,22 +97,6 @@ def skip_if_windows(reason):
     return decorator
 
 
-def skip_if_macos(reason):
-    """Decorator to skip tests that should not be run on MacOS.
-
-    Example usage:
-
-        @skip_if_macos("Not valid")
-        def test_some_non_macos_stuff(self):
-            self.assertEqual(...)
-
-    """
-    def decorator(func):
-        return unittest.skipIf(
-            platform.system() in ['Darwin'], reason)(func)
-    return decorator
-
-
 def set_invalid_utime(path):
     """Helper function to set an invalid last modified time"""
     try:

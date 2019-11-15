@@ -16,7 +16,6 @@ import os
 
 from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.testutils import capture_input, set_invalid_utime
-from awscli.testutils import skip_if_windows, skip_if_macos
 from awscli.compat import six
 from tests.functional.s3 import BaseS3TransferCommandTest
 
@@ -616,29 +615,7 @@ class TestCPCommand(BaseCPCommandTest):
         progress_message = 'Completed 10 Bytes'
         self.assertIn(progress_message, stdout)
 
-
-    @skip_if_windows("Unreadable file is hard to make on windows")
-    def test_cp_with_error_and_warning_unreadable_file(self):
-        command = "s3 cp --recursive %s s3://bucket/"
-        self.parsed_responses = [{
-            'Error': {
-                'Code': 'NoSuchBucket',
-                'Message': 'The specified bucket does not exist',
-                'BucketName': 'bucket'
-            }
-        }]
-        self.http_response.status_code = 404
-
-        unreadable_path = self.files.create_file('foo.txt', 'foo')
-        self.files.create_file('bar.txt', 'bar')
-        os.chmod(unreadable_path, 0o222)
-        _, stderr, rc = self.run_cmd(command % self.files.rootdir, expected_rc=1)
-        self.assertIn('upload failed', stderr)
-        self.assertIn('warning: Skipping file', stderr)
-        self.assertIn('File/Directory is not readable.', stderr)
-
-    @skip_if_macos("On MacOS we cannot create an invalid timestamp.")
-    def test_cp_with_error_and_warning_invalid_timestamp(self):
+    def test_cp_with_error_and_warning(self):
         command = "s3 cp %s s3://bucket/foo.txt"
         self.parsed_responses = [{
             'Error': {

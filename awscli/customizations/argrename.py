@@ -77,6 +77,8 @@ ARGUMENT_RENAMES = {
     'rekognition.create-stream-processor.output': 'stream-processor-output',
     'eks.create-cluster.version': 'kubernetes-version',
     'eks.update-cluster-version.version': 'kubernetes-version',
+    'eks.create-nodegroup.version': 'kubernetes-version',
+    'eks.update-nodegroup-version.version': 'kubernetes-version',
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,

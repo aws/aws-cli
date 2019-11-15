@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+1.16.283
+========
+
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``logs``: Update logs command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+
+
 1.16.282
 ========
 

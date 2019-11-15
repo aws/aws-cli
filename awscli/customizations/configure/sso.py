@@ -90,6 +90,25 @@ class PTKPrompt(object):
         return response
 
 
+def display_account(account):
+    """Converts an SSO account response into a display string.
+
+    All fields should be present in the API response but we've seen some
+    cases where the account name or email address is not set. Considering
+    we only need the account name and email address for display purposes
+    we should be defensive just in case they don't come back.
+    """
+    if 'accountName' not in account and 'emailAddress' not in account:
+        account_template = '{accountId}'
+    elif 'emailAddress' not in account:
+        account_template = '{accountName} ({accountId})'
+    elif 'accountName' not in account:
+        account_template = '{emailAddress} ({accountId})'
+    else:
+        account_template = '{accountName}, {emailAddress} ({accountId})'
+    return account_template.format(**account)
+
+
 class ConfigureSSOCommand(BasicCommand):
     NAME = 'sso'
     SYNOPSIS = ('aws2 configure sso [--profile profile-name]')
@@ -153,15 +172,12 @@ class ConfigureSSOCommand(BasicCommand):
         uni_print(single_account_msg.format(sso_account_id))
         return sso_account_id
 
-    def _display_account(self, account):
-        return '{accountName}, {emailAddress} ({accountId})'.format(**account)
-
     def _handle_multiple_accounts(self, accounts):
         available_accounts_msg = (
             'There are {} AWS accounts available to you.\n'
         )
         uni_print(available_accounts_msg.format(len(accounts)))
-        selected_account = self._selector(accounts, self._display_account)
+        selected_account = self._selector(accounts, display_account)
         sso_account_id = selected_account['accountId']
         return sso_account_id
 

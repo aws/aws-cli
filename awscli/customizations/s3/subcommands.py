@@ -67,6 +67,16 @@ QUIET = {'name': 'quiet', 'action': 'store_true',
              "Does not display the operations performed from the specified "
              "command.")}
 
+PRINT_SYNCED = {
+    'name': 'print-synced',
+    'action': 'store_true',
+    'help_text': (
+        "Prints all synced files. "
+        "This flag is only applied, when the quiet and only-show-errors flags "
+        "are not provided."
+    ),
+}
+
 
 FORCE = {'name': 'force', 'action': 'store_true',
          'help_text': (
@@ -761,7 +771,7 @@ class SyncCommand(S3TransferCommand):
             "<LocalPath> or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
-                [METADATA, METADATA_DIRECTIVE]
+                [METADATA, METADATA_DIRECTIVE, PRINT_SYNCED]
 
 
 class MbCommand(S3Command):
@@ -1027,7 +1037,7 @@ class CommandArchitecture(object):
                                                rev_generator],
                             'filters': [create_filter(self.parameters),
                                         create_filter(self.parameters)],
-                            'comparator': [Comparator(**sync_strategies)],
+                            'comparator': [Comparator(parameters=self.parameters, **sync_strategies)],
                             'file_info_builder': [file_info_builder],
                             's3_handler': [s3_transfer_handler]}
         elif self.cmd == 'cp' and self.parameters['is_stream']:

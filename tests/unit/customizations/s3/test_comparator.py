@@ -13,7 +13,7 @@
 import datetime
 import unittest
 
-from mock import Mock
+from mock import Mock, MagicMock
 
 from awscli.customizations.s3.comparator import Comparator
 from awscli.customizations.s3.filegenerator import FileStat
@@ -24,16 +24,23 @@ class ComparatorTest(unittest.TestCase):
         self.sync_strategy = Mock()
         self.not_at_src_sync_strategy = Mock()
         self.not_at_dest_sync_strategy = Mock()
+        parameters = {
+            'print_synced': True,
+            'quiet': False,
+            'only_show_errors': False,
+        }
         self.comparator = Comparator(self.sync_strategy,
                                      self.not_at_dest_sync_strategy,
-                                     self.not_at_src_sync_strategy)
+                                     self.not_at_src_sync_strategy,
+                                     parameters)
 
     def test_compare_key_equal_should_not_sync(self):
         """
-        Confirm the appropriate action is taken when the soruce compare key
+        Confirm the appropriate action is taken when the source compare key
         is equal to the destination compare key.
         """
         # Try when the sync strategy says not to sync the file.
+        self.comparator._print_file = MagicMock()
         self.sync_strategy.determine_should_sync.return_value = False
 
         src_files = []
@@ -66,6 +73,49 @@ class ComparatorTest(unittest.TestCase):
         for filename in files:
             result_list.append(filename)
         self.assertEqual(result_list, ref_list)
+        self.comparator._print_file.assert_called_with(dest_file)
+
+    def test_compare_key_equal_should_not_sync_quiet(self):
+        """
+        Confirm the appropriate action is taken when the source compare key
+        is equal to the destination compare key and quitet option is turned on.
+        """
+        # Try when the sync strategy says not to sync the file.
+        self.comparator._print_file = MagicMock()
+        self.sync_strategy.determine_should_sync.return_value = False
+        self.comparator._parameters['quiet'] = True
+
+        src_files = []
+        dest_files = []
+        ref_list = []
+        result_list = []
+        time = datetime.datetime.now()
+        src_file = FileStat(src='', dest='',
+                            compare_key='comparator_test.py', size=10,
+                            last_update=time, src_type='local',
+                            dest_type='s3', operation_name='upload')
+        dest_file = FileStat(src='', dest='',
+                             compare_key='comparator_test.py', size=10,
+                             last_update=time, src_type='s3',
+                             dest_type='local', operation_name='')
+        src_files.append(src_file)
+        dest_files.append(dest_file)
+        files = self.comparator.call(iter(src_files), iter(dest_files))
+        for filename in files:
+            result_list.append(filename)
+        self.assertEqual(result_list, ref_list)
+
+        # Try when the sync strategy says to sync the file.
+        self.sync_strategy.determine_should_sync.return_value = True
+
+        ref_list = []
+        result_list = []
+        files = self.comparator.call(iter(src_files), iter(dest_files))
+        ref_list.append(src_file)
+        for filename in files:
+            result_list.append(filename)
+        self.assertEqual(result_list, ref_list)
+        self.comparator._print_file.assert_not_called()
 
     def test_compare_key_less(self):
         """

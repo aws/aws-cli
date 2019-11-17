@@ -23,11 +23,13 @@ class Comparator(object):
     """
     def __init__(self, file_at_src_and_dest_sync_strategy,
                  file_not_at_dest_sync_strategy,
-                 file_not_at_src_sync_strategy):
-        
+                 file_not_at_src_sync_strategy,
+                 parameters,
+        ):
         self._sync_strategy = file_at_src_and_dest_sync_strategy
         self._not_at_dest_sync_strategy = file_not_at_dest_sync_strategy
         self._not_at_src_sync_strategy = file_not_at_src_sync_strategy
+        self._parameters = parameters
 
     def call(self, src_files, dest_files):
         """
@@ -83,6 +85,7 @@ class Comparator(object):
             try:
                 if (not dest_done) and dest_take:
                     dest_file = advance_iterator(dest_files)
+                    self._print_file_if_synced(dest_file)
             except StopIteration:
                 dest_file = None
                 dest_done = True
@@ -110,7 +113,7 @@ class Comparator(object):
                     src_take = False
                     dest_take = True
                     should_sync = self._not_at_src_sync_strategy.determine_should_sync(None, dest_file)
-                    if should_sync:                        
+                    if should_sync:
                         yield dest_file
 
             elif (not src_done) and dest_done:
@@ -122,10 +125,22 @@ class Comparator(object):
             elif src_done and (not dest_done):
                 dest_take = True
                 should_sync = self._not_at_src_sync_strategy.determine_should_sync(None, dest_file)
-                if should_sync:                        
+                if should_sync:
                     yield dest_file
             else:
                 break
+
+    def _print_file_if_synced(self, synced_file):
+        if (
+                not self._parameters['quiet']
+                and not self._parameters['only_show_errors']
+                and self._parameters['print_synced']
+        ):
+            self._print_file(synced_file)
+
+    @classmethod
+    def _print_file(cls, synced_file):
+        print('Synced: %s' % synced_file.dest)
 
     def compare_comp_key(self, src_file, dest_file):
         """

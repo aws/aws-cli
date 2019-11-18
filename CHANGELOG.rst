@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.16.284
+========
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``cloudformation``: Update cloudformation command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``sagemaker-runtime``: Update sagemaker-runtime command to latest version
+
+
 1.16.283
 ========
 

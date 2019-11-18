@@ -14,15 +14,16 @@ import re
 import functools
 
 from tests import RawResponse
+from tests.functional.raise_plugin_error import PluginsNotSupportedError
 
 import mock
 
 import botocore
 from botocore.session import Session
 
-from awscli.testutils import unittest
+from awscli.testutils import FileCreator
 from awscli.testutils import BaseCLIDriverTest
-from awscli.clidriver import CLIDriver
+from awscli.clidriver import create_clidriver
 
 
 class TestSession(BaseCLIDriverTest):
@@ -73,3 +74,34 @@ class TestSession(BaseCLIDriverTest):
             self.assert_correct_region, 'us-mars-2')
         self.session.register('before-send.ec2.*', assert_correct_region)
         self.driver.main(['ec2', 'describe-instances'])
+
+
+class TestPlugins(BaseCLIDriverTest):
+    def setUp(self):
+        super(TestPlugins, self).setUp()
+        self._raise_plugin_error_module = '.'.join(
+            ['tests', 'functional', 'raise_plugin_error']
+        )
+        self.files = FileCreator()
+
+    def tearDown(self):
+        super(TestPlugins, self).setUp()
+        self.files.remove_all()
+
+    def create_config_with_plugin(self, plugin_module):
+        config_contents = (
+            '[plugins]\n'
+            'myplugin = %s\n' % plugin_module
+        )
+        config_file = self.files.create_file('config', config_contents)
+        self.environ['AWS_CONFIG_FILE'] = config_file
+
+    def test_plugins_are_not_loaded(self):
+        self.create_config_with_plugin(self._raise_plugin_error_module)
+        try:
+            create_clidriver()
+        except PluginsNotSupportedError:
+            self.fail(
+                'plugin %s should not have been loaded' %
+                self._raise_plugin_error_module
+            )

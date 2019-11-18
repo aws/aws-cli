@@ -169,11 +169,26 @@ class TestCanParseCLICommand(unittest.TestCase):
     def test_parsed_result_not_equal(self):
         self.assertFalse(parser.ParsedResult(current_command='ec2') == 'ec2')
 
-    def test_no_result_if_not_aws_command(self):
-        result = self.cli_parser.parse('notaws ec2 foo ')
+    def test_can_handle_empty_string_for_command(self):
+        result = self.cli_parser.parse('')
         self.assert_parsed_results_equal(
             result,
-            unparsed_items=['notaws', 'ec2', 'foo'],
+            current_command=None,
+            global_params={},
+            parsed_params={},
+            lineage=[],
+            unparsed_items=[],
+        )
+
+    def test_result_if_aws_exe_alias(self):
+        result = self.cli_parser.parse('aws2 ec2')
+        self.assert_parsed_results_equal(
+            result,
+            current_command='ec2',
+            global_params={},
+            parsed_params={},
+            lineage=['aws'],
+            unparsed_items=[],
         )
 
     def test_can_parse_operation_command_accepts_single_value_arg(self):

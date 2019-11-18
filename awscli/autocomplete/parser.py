@@ -141,11 +141,10 @@ class CLIParser(object):
         # between option and value, e.g `--foo=bar`.  This is something
         # we should look into adding.
         parsed = ParsedResult()
-        remaining_parts = self._split_to_parts(command_line, location)
-        state = ParseState()
+        state, remaining_parts = self._split_to_parts(command_line, location)
         global_args = self._index.arg_names(lineage=[], command_name='aws')
         current_args = []
-        current = None
+        current = state.current_command
         while remaining_parts:
             current = remaining_parts.pop(0)
             if current.startswith('--'):
@@ -213,6 +212,7 @@ class CLIParser(object):
             return value
 
     def _split_to_parts(self, command_line, location):
+        state = ParseState()
         if location is not None:
             # The original auto completer had this logic.
             # We could in theory still parse the entire command
@@ -221,7 +221,7 @@ class CLIParser(object):
             # as the original for now.
             command_line = command_line[:location]
         parts = command_line.split()
-        if command_line[-1].isspace():
+        if command_line and command_line[-1].isspace():
             # If the command line ends with whitespace then we insert
             # an empty element in the parts list to ensure that the
             # last chunk isn't marked as the last fragment.  This is
@@ -229,7 +229,15 @@ class CLIParser(object):
             # "aws ec2 stop-<TAB>" but we can't auto-complete
             # a command like: "aws ec2 stop- <TAB>"
             parts.append(WORD_BOUNDARY)
-        return parts
+        if parts:
+            # If parts are returned, we are assuming that the first argument
+            # will always be the executable name. However the executable name
+            # can be anything (e.g. aws2), so we normalize the first
+            # current_command to be aws as the autocomplete index expects the
+            # first command to be aws.
+            parts.pop(0)
+            state.current_command = 'aws'
+        return state, parts
 
     def _handle_option(self, current, remaining_parts, current_args,
                        global_args, parsed, state):

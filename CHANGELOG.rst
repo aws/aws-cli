@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.16.285
+========
+
+* api-change:``cloudformation``: Update cloudformation command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``iam``: Update iam command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``iot``: Update iot command to latest version
+
+
 1.16.284
 ========
 

@@ -22,7 +22,14 @@ Output::
                 "InboundMMS": true,
                 "OutboundMMS": true
             },
-            "Associations": [],
+           "Associations": [
+                {
+                    "Value": "abcdef1ghij2klmno3pqr4",
+                    "Name": "VoiceConnectorId",
+                    "AssociatedTimestamp": "2019-10-28T18:40:37.453Z"
+                }
+            ],
+            "CallingNameStatus": "UpdateInProgress",
             "CreatedTimestamp": "2019-08-09T21:35:21.445Z",
             "UpdatedTimestamp": "2019-08-09T21:35:31.745Z"
         }

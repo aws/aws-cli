@@ -2,6 +2,28 @@
 CHANGELOG
 =========
 
+1.16.287
+========
+
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``cloudtrail``: Update cloudtrail command to latest version
+* api-change:``firehose``: Update firehose command to latest version
+* api-change:``mediastore``: Update mediastore command to latest version
+* api-change:``codecommit``: Update codecommit command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``dlm``: Update dlm command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``discovery``: Update discovery command to latest version
+* api-change:``mgh``: Update mgh command to latest version
+* api-change:``migrationhub-config``: Update migrationhub-config command to latest version
+* api-change:``datasync``: Update datasync command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+
+
 1.16.285
 ========
 

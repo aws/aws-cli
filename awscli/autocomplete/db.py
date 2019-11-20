@@ -1,5 +1,6 @@
-import sqlite3
 import logging
+
+from awscli.compat import sqlite3
 
 
 LOG = logging.getLogger(__name__)
@@ -10,7 +11,7 @@ LOG = logging.getLogger(__name__)
 # want to import anything outside of awscli.autocomplete to ensure
 # our startup time is as minimal as possible.
 class DatabaseConnection(object):
-    _ENABLE_WAL = 'PRAGMA journal_mode=WAL'
+    _JOURNAL_MODE_OFF = 'PRAGMA journal_mode=OFF'
 
     def __init__(self, db_filename):
         self._db_conn = None
@@ -32,12 +33,8 @@ class DatabaseConnection(object):
         return self._connection.execute(query, kwargs)
 
     def _ensure_database_setup(self):
-        self._try_to_enable_wal()
-
-    def _try_to_enable_wal(self):
-        try:
-            self.execute(self._ENABLE_WAL)
-        except sqlite3.Error:
-            # This is just a performance enhancement so it is optional. Not all
-            # systems will have a sqlite compiled with the WAL enabled.
-            LOG.debug('Failed to enable sqlite WAL.')
+        # We are setting journal mode to off because there is no guarantee
+        # the user has permissions to write temporary files to where the
+        # CLI is installed and in-practice, the index is only ever read from
+        # (except when we need to generate it).
+        self.execute(self._JOURNAL_MODE_OFF)

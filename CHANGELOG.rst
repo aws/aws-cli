@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+1.16.288
+========
+
+* api-change:``dynamodb``: Update dynamodb command to latest version
+* api-change:``connectparticipant``: Update connectparticipant command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``amplify``: Update amplify command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``connect``: Update connect command to latest version
+* api-change:``appsync``: Update appsync command to latest version
+* api-change:``meteringmarketplace``: Update meteringmarketplace command to latest version
+* api-change:``lex-runtime``: Update lex-runtime command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+
+
 1.16.287
 ========
 

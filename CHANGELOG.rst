@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+1.16.290
+========
+
+* api-change:``mediapackage-vod``: Update mediapackage-vod command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``sns``: Update sns command to latest version
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``sts``: Update sts command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``forecast``: Update forecast command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``acm``: Update acm command to latest version
+* api-change:``autoscaling-plans``: Update autoscaling-plans command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+
+
 1.16.288
 ========
 

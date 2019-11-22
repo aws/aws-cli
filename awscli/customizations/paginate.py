@@ -133,6 +133,8 @@ def unify_paging_params(argument_table, operation_model, event_name,
     _remove_existing_paging_arguments(argument_table, paginator_config)
     parsed_args_event = event_name.replace('building-argument-table.',
                                            'operation-args-parsed.')
+    call_parameters_event = event_name.replace('building-argument-table',
+                                               'calling-command')
     shadowed_args = {}
     add_paging_argument(argument_table, 'starting-token',
                         PageArgument('starting-token', STARTING_TOKEN_HELP,
@@ -161,11 +163,27 @@ def unify_paging_params(argument_table, operation_model, event_name,
                                      parse_type=type_name,
                                      serialized_name='MaxItems'),
                         shadowed_args)
+    # We will register two pagination handlers.
+    # 
+    # The first is focused on analyzing the CLI arguments passed to see
+    # if they contain explicit operation-specific pagination args.  If so,
+    # they are doing manual pagination and we turn off the CLI pagination.
+    # 
+    # The second is call later in the event chain and analyzes the actual
+    # calling parameters passed to the operation.
+    #
+    # The reason we have to do the second is that someone could put
+    # operation-specific pagination args in the CLI input JSON file
+    # directly and this bypasses all of the CLI args processing.
     session.register(
         parsed_args_event,
         partial(check_should_enable_pagination,
                 list(_get_all_cli_input_tokens(paginator_config)),
                 shadowed_args, argument_table))
+    session.register(
+        call_parameters_event,
+        partial(check_should_enable_pagination_call_parameters,
+                list(_get_all_input_tokens(paginator_config))))
 
 
 def add_paging_argument(argument_table, arg_name, argument, shadowed_args):
@@ -238,6 +256,18 @@ def _get_all_cli_input_tokens(pagination_config):
         yield cli_name
 
 
+# Get all tokens but return them in API namespace rather than CLI namespace
+def _get_all_input_tokens(pagination_config):
+    # Get all input tokens including the limit_key
+    # if it exists.
+    tokens = _get_input_tokens(pagination_config)
+    for token_name in tokens:
+        yield token_name
+    if 'limit_key' in pagination_config:
+        key_name = pagination_config['limit_key']
+        yield key_name
+
+
 def _get_input_tokens(pagination_config):
     tokens = pagination_config['input_token']
     if not isinstance(tokens, list):
@@ -249,6 +279,21 @@ def _get_cli_name(param_objects, token_name):
     for param in param_objects:
         if param.name == token_name:
             return param.cli_name.lstrip('-')
+
+
+# This function checks for pagination args in the actual calling
+# arguments passed to the function.  If the user is using the
+# --cli-input-json parameter to provide JSON parameters they are
+# all in the API naming space rather than the CLI naming space
+# and would be missed by the processing above.  This function gets
+# called on the calling-command event.
+def check_should_enable_pagination_call_parameters(
+        input_tokens, call_parameters, parsed_args, parsed_globals, **kwargs):
+    for param in call_parameters:
+        if param in input_tokens:
+            logger.debug("User has specified a manual pagination arg. "
+                         "Automatically setting --no-paginate.")
+            parsed_globals.paginate = False
 
 
 class PageArgument(BaseCLIArgument):

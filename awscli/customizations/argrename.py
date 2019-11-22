@@ -79,6 +79,7 @@ ARGUMENT_RENAMES = {
     'eks.update-cluster-version.version': 'kubernetes-version',
     'eks.create-nodegroup.version': 'kubernetes-version',
     'eks.update-nodegroup-version.version': 'kubernetes-version',
+    'schemas.*.version': 'schema-version',
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,

@@ -440,3 +440,8 @@ ADDITIONAL_SLAVE_SECURITY_GROUPS = (
 AVAILABLE_ONLY_FOR_AMI_VERSIONS = (
     'This command is only available when using Amazon EMR versions'
     'earlier than 4.0.')
+
+STEP_CONCURRENCY_LEVEL = (
+    'This command specifies the step concurrency level of the cluster.'
+    'Default is 1 which is non-concurrent.'
+)

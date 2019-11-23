@@ -11,7 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
+import re
 import sys
+import xml.parsers.expat
+import xml.dom.minidom
 
 from botocore import xform_name
 from botocore.stub import Stubber
@@ -50,14 +53,14 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
             'an API request. If provided with no value or the value '
             '``input``, prints a sample input JSON that can be used as an '
             'argument for ``--cli-input-json``. Similarly, if provided '
-            '``yaml`` it will print a sample input YAML that can be used '
-            'with ``--cli-input-yaml``. If provided with the value '
+            '``yaml-input`` it will print a sample input YAML that can be '
+            'used with ``--cli-input-yaml``. If provided with the value '
             '``output``, it validates the command inputs and returns a '
             'sample output JSON for that command.'
         ),
         'nargs': '?',
         'const': 'input',
-        'choices': ['input', 'output', 'yaml'],
+        'choices': ['input', 'output', 'yaml-input'],
     }
 
     def __init__(self, session, operation_model):
@@ -88,43 +91,41 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
                           parsed_globals, **kwargs):
         if not getattr(parsed_args, 'generate_cli_skeleton', None):
             return
-
-        operation_model = self._operation_model
         arg_value = parsed_args.generate_cli_skeleton
-        if arg_value == 'output':
-            service_name = operation_model.service_model.service_name
-            operation_name = operation_model.name
-            # TODO: It would be better to abstract this logic into
-            # classes for both the input and output option such that
-            # a similar set of inputs are taken in and output
-            # similar functionality.
-            return StubbedCLIOperationCaller(self._session).invoke(
-                service_name, operation_name, call_parameters,
-                parsed_globals)
+        return getattr(
+            self, '_generate_%s_skeleton' % arg_value.replace('-', '_'))(
+                call_parameters=call_parameters, parsed_globals=parsed_globals
+        )
 
-        operation_input_shape = operation_model.input_shape
-        if arg_value == 'yaml':
-            self._write_yaml_skeleton(operation_input_shape, sys.stdout)
-        else:
-            self._write_json_skeleton(operation_input_shape, sys.stdout)
-        return 0
-
-    def _write_yaml_skeleton(self, input_shape, outfile):
+    def _generate_yaml_input_skeleton(self, **kwargs):
+        input_shape = self._operation_model.input_shape
         yaml = YAML()
         yaml.representer.add_representer(_Bytes, _Bytes.represent)
-        skeleton = {}
+        skeleton = yaml.map()
         if input_shape is not None:
             argument_generator = YAMLArgumentGenerator()
             skeleton = argument_generator.generate_skeleton(input_shape)
-        return yaml.dump(skeleton, outfile)
+        yaml.dump(skeleton, sys.stdout)
+        return 0
 
-    def _write_json_skeleton(self, input_shape, outfile):
+    def _generate_input_skeleton(self, **kwargs):
+        outfile = sys.stdout
+        input_shape = self._operation_model.input_shape
         skeleton = {}
         if input_shape is not None:
             argument_generator = ArgumentGenerator()
             skeleton = argument_generator.generate_skeleton(input_shape)
         json.dump(skeleton, outfile, indent=4, default=json_encoder)
         outfile.write('\n')
+        return 0
+
+    def _generate_output_skeleton(self, call_parameters, parsed_globals,
+                                  **kwargs):
+        service_name = self._operation_model.service_model.service_name
+        operation_name = self._operation_model.name
+        return StubbedCLIOperationCaller(self._session).invoke(
+            service_name, operation_name, call_parameters,
+            parsed_globals)
 
 
 class StubbedCLIOperationCaller(CLIOperationCaller):
@@ -155,11 +156,23 @@ class _Bytes(object):
 
 
 class YAMLArgumentGenerator(ArgumentGenerator):
+    _LINE_BREAK_CHARS = [
+        '\n',
+        '\u2028'
+    ]
+
+    def __init__(self, use_member_names=False, yaml=None):
+        super(YAMLArgumentGenerator, self).__init__(
+            use_member_names=use_member_names)
+        self._yaml = yaml
+        if self._yaml is None:
+            self._yaml = YAML()
+
     def _generate_skeleton(self, shape, stack, name=''):
         # YAML supports binary, so add in boilerplate for that instead of
         # putting in None. Here were' using a custom type so that we can ensure
         # we serialize it correctly on python 2 and to make the
-        # serialization output more useable on python 3.
+        # serialization output more usable on python 3.
         if shape.type_name == 'blob':
             return _Bytes()
         return super(YAMLArgumentGenerator, self)._generate_skeleton(
@@ -167,13 +180,58 @@ class YAMLArgumentGenerator(ArgumentGenerator):
         )
 
     def _generate_type_structure(self, shape, stack):
-        # YAML has support for ordered maps, so don't use ordereddicts
-        # because that isn't necessary and it makes the output harder to
-        # understand and read.
-        struct = super(YAMLArgumentGenerator, self)._generate_type_structure(
-            shape, stack
-        )
-        return dict(struct)
+        if stack.count(shape.name) > 1:
+            return self._yaml.map()
+        skeleton = self._yaml.map()
+        for member_name, member_shape in shape.members.items():
+            skeleton[member_name] = self._generate_skeleton(
+                member_shape, stack, name=member_name)
+            is_required = member_name in shape.required_members
+            self._add_member_comments(
+                skeleton, member_name, member_shape, is_required)
+        return skeleton
+
+    def _add_member_comments(self, skeleton, member_name, member_shape,
+                            is_required):
+        comment = self._get_comment_content_from_documentation(member_shape)
+        if is_required:
+            comment = '[REQUIRED] ' + comment
+        if comment and not comment.isspace():
+            skeleton.yaml_add_eol_comment('# ' + comment, member_name)
+
+    def _get_comment_content_from_documentation(self, member_shape):
+        content = member_shape.documentation
+        content = self._strip_xml_from_documentation(content)
+        # There are characters that may mess up the indentation of the yaml
+        # by introducing new lines. We want to ignore those in comments.
+        content = self._remove_line_breaks(content)
+        return content
+
+    def _strip_xml_from_documentation(self, documentation):
+        try:
+            # We are surrounding the docstrings with our own tags in order
+            # to make sure the dom parser will look at all elements in the
+            # docstring as some docstrings may not have xml nodes that do
+            # not all belong to the same root node.
+            xml_doc = '<doc>%s</doc>' % documentation
+            xml_dom = xml.dom.minidom.parseString(xml_doc)
+        except xml.parsers.expat.ExpatError:
+            return documentation
+        content = []
+        self._strip_xml_from_child_nodes(xml_dom, content)
+        return ''.join(content)
+
+    def _strip_xml_from_child_nodes(self, node, content):
+        for child_node in node.childNodes:
+            if child_node.nodeType == node.TEXT_NODE:
+                content.append(child_node.data)
+            else:
+                self._strip_xml_from_child_nodes(child_node, content)
+
+    def _remove_line_breaks(self, content):
+        for char in self._LINE_BREAK_CHARS:
+            content = content.replace(char, ' ')
+        return content
 
     def _generate_type_map(self, shape, stack):
         # YAML has support for ordered maps, so don't use ordereddicts

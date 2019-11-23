@@ -177,7 +177,7 @@ class TestGenerateCliSkeleton(unittest.TestCase):
             "A:\n"
             "  B: ''\n"
         )
-        self.assert_skeleton_equals('yaml', expected)
+        self.assert_skeleton_equals('yaml-input', expected)
 
     def test_generate_yaml_input_with_bytes(self):
         input_shape = {
@@ -192,4 +192,111 @@ class TestGenerateCliSkeleton(unittest.TestCase):
             "A:\n"
             "  B: !!binary ''\n"
         )
-        self.assert_skeleton_equals('yaml', expected, input_shape=input_shape)
+        self.assert_skeleton_equals(
+            'yaml-input', expected, input_shape=input_shape)
+
+    def test_generate_yaml_input_with_comments(self):
+        input_shape = {
+            'A': {
+                'type': 'string',
+                'documentation': 'docstring'
+            }
+        }
+        expected = (
+            "A: ''  # docstring\n"
+        )
+        self.assert_skeleton_equals(
+            'yaml-input', expected, input_shape=input_shape)
+
+    def test_generate_yaml_input_with_nested_comments(self):
+        input_shape = {
+            'A': {
+                'type': 'structure',
+                'documentation': 'top-level docstring',
+                'members': {
+                    'B': {
+                        'type': 'string',
+                        'documentation': 'nested docstring'
+                    }
+                }
+            }
+        }
+        expected = (
+            "A:  # top-level docstring\n"
+            "  B: ''  # nested docstring\n"
+        )
+        self.assert_skeleton_equals(
+            'yaml-input', expected, input_shape=input_shape)
+
+    def test_generate_yaml_input_with_required_member(self):
+        input_shape = {
+            'A': {
+                'type': 'structure',
+                'documentation': 'top-level docstring',
+                'members': {
+                    'B': {
+                        'type': 'string',
+                        'documentation': 'nested docstring'
+                    }
+                },
+                'required': ['B']
+            }
+        }
+        expected = (
+            "A:  # top-level docstring\n"
+            "  B: ''  # [REQUIRED] nested docstring\n"
+        )
+        self.assert_skeleton_equals(
+            'yaml-input', expected, input_shape=input_shape)
+
+    def test_generate_yaml_input_ignores_newline(self):
+        input_shape = {
+            'A': {
+                'type': 'string',
+                'documentation': 'one-line\ntwo-line'
+            }
+        }
+        expected = (
+            "A: ''  # one-line two-line\n"
+        )
+        self.assert_skeleton_equals(
+            'yaml-input', expected, input_shape=input_shape)
+
+    def test_generate_yaml_input_ignores_line_separator_char(self):
+        input_shape = {
+            'A': {
+                'type': 'string',
+                'documentation': 'one-line\u2028two-line'
+            }
+        }
+        expected = (
+            "A: ''  # one-line two-line\n"
+        )
+        self.assert_skeleton_equals(
+            'yaml-input', expected, input_shape=input_shape)
+
+    def test_generate_yaml_input_removes_xml_tags(self):
+        input_shape = {
+            'A': {
+                'type': 'string',
+                'documentation': '<p>text</p>'
+            }
+        }
+        expected = (
+            "A: ''  # text\n"
+        )
+        self.assert_skeleton_equals(
+            'yaml-input', expected, input_shape=input_shape)
+
+    def test_generate_yaml_input_can_handle_broken_xml(self):
+        input_shape = {
+            'A': {
+                'type': 'string',
+                'documentation': '<p>text'
+            }
+        }
+        expected = (
+            "A: ''  # <p>text\n"
+        )
+        self.assert_skeleton_equals(
+            'yaml-input', expected, input_shape=input_shape)

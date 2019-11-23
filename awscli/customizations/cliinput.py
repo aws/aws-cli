@@ -1,4 +1,4 @@
-# Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -20,25 +20,25 @@ from awscli.argprocess import ParamError, ParamSyntaxError
 from awscli.customizations.arguments import OverrideRequiredArgsArgument
 
 
-def register_cli_input_json(cli):
+def register_cli_input_args(cli):
     cli.register('building-argument-table', add_cli_input_json)
     cli.register('building-argument-table', add_cli_input_yaml)
 
 
 def add_cli_input_json(session, argument_table, **kwargs):
-    # This argument cannot support operations with streaming output which
-    # is designated by the argument name `outfile`.
-    if 'outfile' not in argument_table:
-        cli_input_json_argument = CliInputJSONArgument(session)
-        cli_input_json_argument.add_to_arg_table(argument_table)
+    _add_cli_input_argument(session, argument_table, CliInputJSONArgument)
 
 
 def add_cli_input_yaml(session, argument_table, **kwargs):
+    _add_cli_input_argument(session, argument_table, CliInputYAMLArgument)
+
+
+def _add_cli_input_argument(session, argument_table, argument_cls):
     # This argument cannot support operations with streaming output which
     # is designated by the argument name `outfile`.
     if 'outfile' not in argument_table:
-        cli_input_yaml_argument = CliInputYAMLArgument(session)
-        cli_input_yaml_argument.add_to_arg_table(argument_table)
+        cli_input_argument = argument_cls(session)
+        cli_input_argument.add_to_arg_table(argument_table)
 
 
 class CliInputArgument(OverrideRequiredArgsArgument):
@@ -136,7 +136,8 @@ class CliInputYAMLArgument(CliInputArgument):
         'group_name': 'cli_input',
         'help_text': (
             'Reads arguments from the YAML string provided. The YAML string '
-            'follows the format provided by ``--generate-cli-skeleton yaml``. '
+            'follows the format provided by '
+            '``--generate-cli-skeleton yaml-input``. '
             'If other arguments are provided on the command line, those '
             'values will override the YAML-provided values. This may not be '
             'specified along with ``--cli-input-json``.'
@@ -144,13 +145,6 @@ class CliInputYAMLArgument(CliInputArgument):
     }
 
     def _load_parameters(self, arg_value):
-        # YAML doesn't support JSON as well as it should, so try using json
-        # first.
-        try:
-            return json.loads(arg_value)
-        except ValueError:
-            pass
-
         try:
             return yaml.safe_load(arg_value)
         except YAMLError:

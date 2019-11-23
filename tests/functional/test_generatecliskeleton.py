@@ -12,7 +12,78 @@
 # language governing permissions and limitations under the License.
 import json
 
+from ruamel import yaml
+
 from awscli.testutils import BaseAWSCommandParamsTest
+
+
+class TestGenerateCliSkeletonInput(BaseAWSCommandParamsTest):
+    def test_generate_cli_skeleton_s3api(self):
+        cmdline = 's3api delete-object --generate-cli-skeleton'
+        stdout, _, rc = self.run_cmd(cmdline)
+        self.assertEqual(rc, 0)
+        loaded_skeleton = json.loads(stdout)
+        self.assertEqual(loaded_skeleton['Bucket'], '')
+        self.assertEqual(loaded_skeleton['BypassGovernanceRetention'], True)
+        self.assertEqual(loaded_skeleton['Key'], '')
+        self.assertEqual(loaded_skeleton['MFA'], '')
+        self.assertEqual(loaded_skeleton['RequestPayer'], 'requester')
+
+    def test_generate_cli_skeleton_sqs(self):
+        cmdline = 'sqs change-message-visibility --generate-cli-skeleton'
+        stdout, _, rc = self.run_cmd(cmdline)
+        self.assertEqual(rc, 0)
+        loaded_skeleton = json.loads(stdout)
+        self.assertEqual(loaded_skeleton['QueueUrl'], '')
+        self.assertEqual(loaded_skeleton['ReceiptHandle'], '')
+        self.assertEqual(loaded_skeleton['VisibilityTimeout'], 0)
+
+    def test_generate_cli_skeleton_iam(self):
+        cmdline = 'iam create-group --generate-cli-skeleton'
+        stdout, _, rc = self.run_cmd(cmdline)
+        self.assertEqual(rc, 0)
+        loaded_skeleton = json.loads(stdout)
+        self.assertEqual(loaded_skeleton['Path'], '')
+        self.assertEqual(loaded_skeleton['GroupName'], '')
+
+
+class TestGenerateCliSkeletonYamlInput(BaseAWSCommandParamsTest):
+    def test_generate_cli_skeleton_s3api(self):
+        cmdline = 's3api delete-object --generate-cli-skeleton yaml-input'
+        stdout, _, rc = self.run_cmd(cmdline)
+        self.assertEqual(rc, 0)
+        loaded_skeleton = yaml.safe_load(stdout)
+        self.assertEqual(loaded_skeleton['Bucket'], '')
+        self.assertEqual(loaded_skeleton['BypassGovernanceRetention'], True)
+        self.assertEqual(loaded_skeleton['Key'], '')
+        self.assertEqual(loaded_skeleton['MFA'], '')
+        self.assertEqual(loaded_skeleton['RequestPayer'], 'requester')
+
+    def test_generate_cli_skeleton_sqs(self):
+        stdout, _, rc = self.run_cmd(
+            'sqs change-message-visibility --generate-cli-skeleton yaml-input'
+        )
+        self.assertEqual(rc, 0)
+        loaded_skeleton = yaml.safe_load(stdout)
+        self.assertEqual(loaded_skeleton['QueueUrl'], '')
+        self.assertEqual(loaded_skeleton['ReceiptHandle'], '')
+        self.assertEqual(loaded_skeleton['VisibilityTimeout'], 0)
+
+    def test_generate_cli_skeleton_iam(self):
+        cmdline = 'iam create-group --generate-cli-skeleton yaml-input'
+        stdout, _, rc = self.run_cmd(cmdline)
+        self.assertEqual(rc, 0)
+        loaded_skeleton = yaml.safe_load(stdout)
+        self.assertEqual(loaded_skeleton['Path'], '')
+        self.assertEqual(loaded_skeleton['GroupName'], '')
+
+    def test_contains_comments(self):
+        # Choose a command that we know will have comments as there are
+        # required parameters and required parameters always are labeled
+        # with required.
+        cmdline = 's3api delete-object --generate-cli-skeleton yaml-input'
+        stdout, _, rc = self.run_cmd(cmdline)
+        self.assertIn("Bucket: ''  # [REQUIRED]", stdout)
 
 
 class TestGenerateCliSkeletonOutput(BaseAWSCommandParamsTest):

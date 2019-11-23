@@ -1,4 +1,4 @@
-# Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -39,16 +39,18 @@ class TestCliInputJSONArgument(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
 
+    def create_args(self, value):
+        parsed_args = mock.Mock()
+        parsed_args.cli_input_json = value
+        return parsed_args
+
     def test_register_argument_action(self):
-        register_args = self.session.register.call_args_list
-        self.assertEqual(register_args[0][0][0], 'calling-command.*')
-        self.assertEqual(register_args[0][0][1],
-                         self.argument.add_to_call_parameters)
+        self.session.register.assert_any_call(
+            'calling-command.*', self.argument.add_to_call_parameters
+        )
 
     def test_add_to_call_parameters_no_file(self):
-        parsed_args = mock.Mock()
-        # Make the value a JSON string
-        parsed_args.cli_input_json = self.input_json
+        parsed_args = self.create_args(self.input_json)
         call_parameters = {}
         self.argument.add_to_call_parameters(
             service_operation=None, call_parameters=call_parameters,
@@ -57,9 +59,7 @@ class TestCliInputJSONArgument(unittest.TestCase):
         self.assertEqual(call_parameters, {'A': 'foo', 'B': 'bar'})
 
     def test_add_to_call_parameters_with_file(self):
-        parsed_args = mock.Mock()
-        # Make the value a file with JSON located inside.
-        parsed_args.cli_input_json = 'file://' + self.temp_file
+        parsed_args = self.create_args('file://' + self.temp_file)
         call_parameters = {}
         self.argument.add_to_call_parameters(
             service_operation=None, call_parameters=call_parameters,
@@ -68,9 +68,7 @@ class TestCliInputJSONArgument(unittest.TestCase):
         self.assertEqual(call_parameters, {'A': 'foo', 'B': 'bar'})
 
     def test_add_to_call_parameters_bad_json(self):
-        parsed_args = mock.Mock()
-        # Create a bad JSON input
-        parsed_args.cli_input_json = self.input_json + ','
+        parsed_args = self.create_args(self.input_json + ',')
         call_parameters = {}
         with self.assertRaises(ParamError):
             self.argument.add_to_call_parameters(
@@ -79,8 +77,7 @@ class TestCliInputJSONArgument(unittest.TestCase):
             )
 
     def test_add_to_call_parameters_no_clobber(self):
-        parsed_args = mock.Mock()
-        parsed_args.cli_input_json = self.input_json
+        parsed_args = self.create_args(self.input_json)
         # The value for ``A`` should not be clobbered by the input JSON
         call_parameters = {'A': 'baz'}
         self.argument.add_to_call_parameters(
@@ -90,8 +87,7 @@ class TestCliInputJSONArgument(unittest.TestCase):
         self.assertEqual(call_parameters, {'A': 'baz', 'B': 'bar'})
 
     def test_no_add_to_call_parameters(self):
-        parsed_args = mock.Mock()
-        parsed_args.cli_input_json = None
+        parsed_args = self.create_args(None)
         call_parameters = {'A': 'baz'}
         self.argument.add_to_call_parameters(
             service_operation=None, call_parameters=call_parameters,
@@ -162,7 +158,6 @@ class TestCliInputYAMLArgument(TestCliInputJSONArgument):
                 service_operation=None, call_parameters=call_parameters,
                 parsed_args=parsed_args, parsed_globals=None
             )
-            print(call_parameters)
 
     def test_yaml_does_not_overwrite(self):
         parsed_args = self.create_args(self.input_yaml)

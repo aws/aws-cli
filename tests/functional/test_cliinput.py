@@ -10,21 +10,74 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import ruamel.yaml as yaml
+import os
 
+import ruamel.yaml as yaml
 
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 
 
-class TestCLIInputYAML(BaseAWSCommandParamsTest):
+class BaseCLIInputArgumentTest(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestCLIInputYAML, self).setUp()
+        super(BaseCLIInputArgumentTest, self).setUp()
         self.files = FileCreator()
 
     def tearDown(self):
-        super(TestCLIInputYAML, self).tearDown()
+        super(BaseCLIInputArgumentTest, self).tearDown()
         self.files.remove_all()
 
+
+class TestCLIInputJSON(BaseCLIInputArgumentTest):
+    def setUp(self):
+        super(TestCLIInputJSON, self).setUp()
+        self.input_json = '{"Bucket": "bucket", "Key": "key"}'
+        self.input_file = self.files.create_file('foo.json', self.input_json)
+
+    def test_cli_input_json_no_exta_args(self):
+        # Run a head command using the input json
+        cmdline = (
+            's3api head-object --cli-input-json file://%s'
+        ) % self.input_file
+        self.assert_params_for_cmd(cmdline, params={'Bucket': 'bucket',
+                                                    'Key': 'key'})
+
+    def test_cli_input_json_can_override_param(self):
+        cmdline = (
+            's3api head-object --key bar --cli-input-json file://%s'
+        ) % self.input_file
+        self.assert_params_for_cmd(cmdline, {'Bucket': 'bucket', 'Key': 'bar'})
+
+    def test_cli_input_json_not_from_file(self):
+        # Check that the input json can be used without having to use a file.
+        cmdline = (
+            's3api head-object --cli-input-json '
+            '{"Bucket":"bucket","Key":"key"}'
+        )
+        self.assert_params_for_cmd(cmdline, params={'Bucket': 'bucket',
+                                                    'Key': 'key'})
+
+    def test_cli_input_json_missing_required(self):
+        # Check that the operation properly throws an error if the json is
+        # missing any required arguments and the argument is not on the
+        # command line.
+        cmdline = (
+            's3api head-object --cli-input-json {"Key":"foo"}'
+        )
+        self.assert_params_for_cmd(cmdline, expected_rc=255,
+                                   stderr_contains='Missing')
+
+    def test_cli_input_json_has_extra_unknown_args(self):
+        # Check that the operation properly throws an error if the json
+        # has an extra argument that is not defined by the model.
+        cmdline = (
+            's3api head-object --cli-input-json '
+            '{"Bucket":"bucket","Key":"key","Foo":"bar"}'
+        )
+        self.assert_params_for_cmd(cmdline, expected_rc=255,
+                                   stderr_contains='Unknown')
+
+
+class TestCLIInputYAML(BaseCLIInputArgumentTest):
     def test_input_yaml(self):
         command = [
             's3api', 'list-objects-v2', '--cli-input-yaml',
@@ -71,3 +124,23 @@ class TestCLIInputYAML(BaseAWSCommandParamsTest):
         ]
         self.run_cmd(command)
         self.assertEqual(self.last_kwargs['Body'].getvalue(), b'foo')
+
+    def test_input_yaml_ignores_comments(self):
+        command = [
+            's3api', 'list-objects-v2', '--cli-input-yaml',
+            'Bucket: test-bucket # Some comment\nEncodingType: url'
+        ]
+        self.assert_params_for_cmd(
+            command, {'Bucket': 'test-bucket', 'EncodingType': 'url'}
+        )
+
+    def test_errors_when_both_yaml_and_json_provided(self):
+        command = [
+            's3api', 'list-objects-v2', '--cli-input-yaml',
+            'Bucket: test-bucket # Some comment\nEncodingType: url',
+            '--cli-input-json', '{"Bucket":"bucket","Key":"key"}'
+        ]
+        self.assert_params_for_cmd(
+            command, expected_rc=255,
+            stderr_contains='Only one --cli-input- parameter may be specified.'
+        )

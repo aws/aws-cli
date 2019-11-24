@@ -89,6 +89,21 @@ def skip_if_windows(reason):
     return decorator
 
 
+def skip_if_not_windows(reason):
+    """Decorator to skip tests should only be ran for windows.
+
+    Example usage:
+
+        @skip_if_not_windows("Not valid")
+        def test_some_windows_stuff(self):
+            self.assertEqual(...)
+
+    """
+    def decorator(func):
+        return unittest.skipIf(platform.system() != 'Windows', reason)(func)
+    return decorator
+
+
 def set_invalid_utime(path):
     """Helper function to set an invalid last modified time"""
     try:

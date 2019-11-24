@@ -17,6 +17,7 @@ import sys
 
 from ruamel.yaml import YAML
 
+from awscli.utils import OutputStreamFactory
 import awscli.customizations.dynamodb.params as parameters
 from awscli.customizations.commands import BasicCommand, CustomArgument
 from awscli.customizations.dynamodb.extractor import AttributeExtractor
@@ -44,6 +45,7 @@ class DDBCommand(BasicCommand):
         self._serializer = TypeSerializer()
         self._deserializer = TypeDeserializer()
         self._extractor = AttributeExtractor()
+        self._output_stream_factory = OutputStreamFactory(self._session)
 
     def _serialize(self, operation_name, data):
         service_model = self._client.meta.service_model
@@ -81,7 +83,8 @@ class DDBCommand(BasicCommand):
         return response
 
     def _dump_yaml(self, operation_name, data, parsed_globals):
-        DynamoYAMLFormatter(parsed_globals)(operation_name, data)
+        with self._output_stream_factory.get_output_stream() as stream:
+            DynamoYAMLFormatter(parsed_globals)(operation_name, data, stream)
 
     def _add_expression_args(self, expression_name, expression, args,
                              substitution_count=0):

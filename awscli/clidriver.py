@@ -29,6 +29,7 @@ from botocore.configprovider import ConstantProvider
 from botocore.configprovider import ChainProvider
 
 from awscli import __version__
+from awscli.compat import default_pager
 from awscli.compat import get_stderr_text_writer
 from awscli.formatter import get_formatter
 from awscli.plugin import load_plugins
@@ -50,6 +51,7 @@ from awscli.alias import AliasLoader
 from awscli.alias import AliasCommandInjector
 from awscli.utils import emit_top_level_args_parsed_event
 from awscli.utils import write_exception
+from awscli.utils import OutputStreamFactory
 from awscli.utils import IMDSRegionProvider
 
 
@@ -126,6 +128,10 @@ class CLIDriver(object):
             'output',
             self._construct_cli_output_chain()
         )
+        config_store.set_config_provider(
+            'pager',
+            self._construct_cli_pager_chain()
+        )
 
     def _construct_cli_region_chain(self):
         providers = [
@@ -160,6 +166,24 @@ class CLIDriver(object):
                 session=self.session,
             ),
             ConstantProvider(value='json'),
+        ]
+        return ChainProvider(providers=providers)
+
+    def _construct_cli_pager_chain(self):
+        providers = [
+            EnvironmentProvider(
+                names='AWS_PAGER',
+                env=os.environ,
+            ),
+            ScopedConfigProvider(
+                config_var_name='cli_pager',
+                session=self.session,
+            ),
+            EnvironmentProvider(
+                names='PAGER',
+                env=os.environ,
+            ),
+            ConstantProvider(value=default_pager),
         ]
         return ChainProvider(providers=providers)
 
@@ -705,6 +729,7 @@ class CLIOperationCaller(object):
 
     def __init__(self, session):
         self._session = session
+        self._output_stream_factory = OutputStreamFactory(session)
 
     def invoke(self, service_name, operation_name, parameters, parsed_globals):
         """Invoke an operation and format the response.
@@ -755,5 +780,7 @@ class CLIOperationCaller(object):
         output = parsed_globals.output
         if output is None:
             output = self._session.get_config_variable('output')
+
         formatter = get_formatter(output, parsed_globals)
-        formatter(command_name, response)
+        with self._output_stream_factory.get_output_stream() as stream:
+            formatter(command_name, response, stream)

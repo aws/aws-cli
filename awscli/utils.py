@@ -16,11 +16,11 @@ import datetime
 import contextlib
 import os
 import sys
-import subprocess
+from subprocess import Popen, PIPE
 import logging
 
 from awscli.compat import six
-from awscli.compat import get_binary_stdout
+from awscli.compat import get_stdout_text_writer
 from awscli.compat import get_popen_kwargs_for_pager_cmd
 from botocore.utils import IMDSFetcher
 from botocore.configprovider import BaseProvider
@@ -257,13 +257,27 @@ def is_a_tty():
 
 
 class OutputStreamFactory(object):
-    def __init__(self, popen=None):
+    def __init__(self, session, popen=None, environ=None,
+                 default_less_flags='FRX'):
+        self._session = session
         self._popen = popen
         if popen is None:
-            self._popen = subprocess.Popen
+            self._popen = Popen
+        self._environ = environ
+        if environ is None:
+            self._environ = os.environ.copy()
+        self._default_less_flags = default_less_flags
+
+    def get_output_stream(self):
+        pager = self._get_configured_pager()
+        if is_a_tty() and pager:
+            return self.get_pager_stream(pager)
+        return self.get_stdout_stream()
 
     @contextlib.contextmanager
     def get_pager_stream(self, preferred_pager=None):
+        if not preferred_pager:
+            preferred_pager = self._get_configured_pager()
         popen_kwargs = self._get_process_pager_kwargs(preferred_pager)
         try:
             process = self._popen(**popen_kwargs)
@@ -277,11 +291,21 @@ class OutputStreamFactory(object):
 
     @contextlib.contextmanager
     def get_stdout_stream(self):
-        yield get_binary_stdout()
+        yield get_stdout_text_writer()
+
+    def _get_configured_pager(self):
+        return self._session.get_component('config_store').get_config_variable(
+            'pager'
+        )
 
     def _get_process_pager_kwargs(self, pager_cmd):
         kwargs = get_popen_kwargs_for_pager_cmd(pager_cmd)
-        kwargs['stdin'] = subprocess.PIPE
+        kwargs['stdin'] = PIPE
+        env = self._environ.copy()
+        if pager_cmd.startswith('less') and 'LESS' not in env:
+            env['LESS'] = self._default_less_flags
+        kwargs['env'] = env
+        kwargs['universal_newlines'] = True
         return kwargs
 
 

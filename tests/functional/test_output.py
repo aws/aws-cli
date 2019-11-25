@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import json
 
-from awscli.testutils import skip_if_windows, skip_if_not_windows
+from awscli.testutils import skip_if_windows, if_windows
 from awscli.testutils import mock, create_clidriver, FileCreator
 from awscli.testutils import BaseAWSCommandParamsTest
 
@@ -100,7 +100,7 @@ class TestOutput(BaseAWSCommandParamsTest):
             expected_less_flags='FRX'
         )
 
-    @skip_if_not_windows('more is only used for windows')
+    @if_windows('more is only used for windows')
     def test_outputs_to_more_for_windows(self):
         self.run_cmd(self.cmdline)
         self.assert_content_to_pager(

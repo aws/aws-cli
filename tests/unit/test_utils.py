@@ -167,7 +167,7 @@ class TestOutputStreamFactory(unittest.TestCase):
     def assert_popen_call(self, expected_pager_cmd, **override_args):
         popen_kwargs = {
             'stdin': subprocess.PIPE,
-            'env': self.environ,
+            'env': mock.ANY,
             'universal_newlines': True
         }
         if is_windows:
@@ -235,11 +235,11 @@ class TestOutputStreamFactory(unittest.TestCase):
         with self.stream_factory.get_output_stream():
             self.assertTrue(mock_stdout_writer.called)
 
-    def test_adds_default_less_env_vars_if_pager_is_less(self):
-        self.set_session_pager('less')
+    def test_adds_default_less_env_vars(self):
+        self.set_session_pager('myless')
         with self.stream_factory.get_output_stream():
             self.assert_popen_call(
-                expected_pager_cmd='less',
+                expected_pager_cmd='myless',
                 env={'LESS': 'FRX'}
             )
 

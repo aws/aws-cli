@@ -302,7 +302,7 @@ class OutputStreamFactory(object):
         kwargs = get_popen_kwargs_for_pager_cmd(pager_cmd)
         kwargs['stdin'] = PIPE
         env = self._environ.copy()
-        if pager_cmd.startswith('less') and 'LESS' not in env:
+        if 'LESS' not in env:
             env['LESS'] = self._default_less_flags
         kwargs['env'] = env
         kwargs['universal_newlines'] = True

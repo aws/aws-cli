@@ -13,7 +13,7 @@
 import json
 import datetime
 
-from awscli.compat import default_pager
+from awscli.utils import OutputStreamFactory
 from awscli.customizations.history.commands import HistorySubcommand
 
 
@@ -33,6 +33,9 @@ class ListCommand(HistorySubcommand):
         'rc': 0
     }
 
+    def _get_default_output_stream_factory(self):
+        return OutputStreamFactory(self._session, default_less_flags='SR')
+
     def _run_main(self, parsed_args, parsed_globals):
         self._connect_to_history_db()
         try:
@@ -44,19 +47,12 @@ class ListCommand(HistorySubcommand):
                     'enabled history mode by adding "cli_history = enabled" '
                     'to the config file.')
 
-            preferred_pager = self._get_preferred_pager()
-            with self._get_output_stream(preferred_pager) as output_stream:
-                formatter = TextFormatter(self._COL_WIDTHS, output_stream)
+            with self._output_stream_factory.get_output_stream() as stream:
+                formatter = TextFormatter(self._COL_WIDTHS, stream)
                 formatter(records)
         finally:
             self._close_history_db()
         return 0
-
-    def _get_preferred_pager(self):
-        preferred_pager = default_pager
-        if preferred_pager.startswith('less'):
-            preferred_pager = 'less -SR'
-        return preferred_pager
 
 
 class RecordAdapter(object):
@@ -119,4 +115,4 @@ class TextFormatter(object):
     def __call__(self, record_adapter):
         for record in record_adapter:
             formatted_record = self._format_record(record)
-            self._output_stream.write(formatted_record.encode('utf-8'))
+            self._output_stream.write(formatted_record)

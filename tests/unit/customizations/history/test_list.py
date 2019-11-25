@@ -15,7 +15,7 @@ import datetime
 
 from botocore.session import Session
 
-from awscli.compat import BytesIO
+from awscli.compat import StringIO
 from awscli.compat import ensure_text_type
 from awscli.utils import OutputStreamFactory
 from awscli.testutils import unittest, mock
@@ -52,7 +52,7 @@ class TestTextFormatter(unittest.TestCase):
     }
 
     def setUp(self):
-        self.output_stream = BytesIO()
+        self.output_stream = StringIO()
         self.formatter = TextFormatter(self._COL_WIDTHS, self.output_stream)
 
         self.timestamp = 1511376242067
@@ -127,7 +127,7 @@ class TestListCommand(unittest.TestCase):
         self.output_stream = mock.Mock()
         output_stream_context.__enter__.return_value = self.output_stream
 
-        self.output_stream_factory.get_pager_stream.return_value = \
+        self.output_stream_factory.get_output_stream.return_value = \
             output_stream_context
 
         self.db_reader = mock.Mock(DatabaseRecordReader)
@@ -150,44 +150,19 @@ class TestListCommand(unittest.TestCase):
         }
         return record
 
-    @mock.patch('awscli.customizations.history.commands.is_windows', False)
-    @mock.patch('awscli.customizations.history.commands.is_a_tty')
-    def test_does_call_iter_all_records(self, mock_is_a_tty):
-        mock_is_a_tty.return_value = True
+    def test_does_call_iter_all_records(self):
         with self.assertRaises(RuntimeError):
             self.list_cmd._run_main(self.parsed_args, self.parsed_globals)
         self.assertTrue(self.db_reader.iter_all_records.called)
 
-    @mock.patch('awscli.customizations.history.commands.is_windows', False)
-    @mock.patch('awscli.customizations.history.commands.is_a_tty')
-    def test_list_does_write_values_to_stream(self, mock_is_a_tty):
-        mock_is_a_tty.return_value = True
+    def test_list_does_write_values_to_stream(self):
         self.db_reader.iter_all_records.return_value = iter([
             self._make_record('abc', 1511376242067, '["s3", "ls"]', '0')
         ])
         self.list_cmd._run_main(self.parsed_args, self.parsed_globals)
         self.assertTrue(self.output_stream.write.called)
 
-    @mock.patch('awscli.customizations.history.commands.is_windows', False)
-    @mock.patch('awscli.customizations.history.commands.is_a_tty')
-    @mock.patch('awscli.customizations.history.list.default_pager', 'less -R')
-    def test_default_pager_has_correct_args_non_windows(self, mock_is_a_tty):
-        mock_is_a_tty.return_value = True
-        self.db_reader.iter_all_records.return_value = iter([
-            self._make_record('abc', 1511376242067, '["s3", "ls"]', '0')
-        ])
-        self.list_cmd._run_main(self.parsed_args, self.parsed_globals)
-        self.output_stream_factory.get_pager_stream.assert_called_with(
-            'less -SR')
-
-    @mock.patch('awscli.customizations.history.commands.is_windows', True)
-    @mock.patch('awscli.customizations.history.commands.is_a_tty')
-    @mock.patch('awscli.customizations.history.list.default_pager', 'more')
-    def test_default_pager_has_correct_args_windows(self, mock_is_a_tty):
-        mock_is_a_tty.return_value = True
-        self.db_reader.iter_all_records.return_value = iter([
-            self._make_record('abc', 1511376242067, '["s3", "ls"]', '0')
-        ])
-        self.list_cmd._run_main(self.parsed_args, self.parsed_globals)
-        self.output_stream_factory.get_pager_stream.assert_called_with(
-            'more')
+    @mock.patch('awscli.customizations.history.list.OutputStreamFactory')
+    def test_uses_sr_less_flags(self, mock_factory):
+        ListCommand(self.session)
+        mock_factory.assert_called_with(self.session, default_less_flags='SR')

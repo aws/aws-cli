@@ -17,7 +17,7 @@ import xml.dom.minidom
 from botocore.session import Session
 
 from awscli.compat import ensure_text_type
-from awscli.compat import BytesIO
+from awscli.compat import StringIO
 from awscli.utils import OutputStreamFactory
 from awscli.testutils import unittest, mock, FileCreator
 from awscli.customizations.history.show import ShowCommand
@@ -87,7 +87,7 @@ class TestFormatter(unittest.TestCase):
 
 class TestDetailedFormatter(unittest.TestCase):
     def setUp(self):
-        self.output = BytesIO()
+        self.output = StringIO()
         self.formatter = DetailedFormatter(self.output, colorize=False)
 
     def get_pretty_xml(self, xml_str):
@@ -591,10 +591,7 @@ class TestShowCommand(unittest.TestCase):
         self.output_stream = mock.Mock()
         output_stream_context.__enter__.return_value = self.output_stream
 
-        self.output_stream_factory.get_pager_stream.return_value = \
-            output_stream_context
-
-        self.output_stream_factory.get_stdout_stream.return_value = \
+        self.output_stream_factory.get_output_stream.return_value = \
             output_stream_context
 
         self.db_reader = mock.Mock(DatabaseRecordReader)
@@ -722,7 +719,6 @@ class TestShowCommand(unittest.TestCase):
         self.parsed_args.command_id = 'latest'
 
         self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
-        call = self.output_stream_factory.get_pager_stream.call_args
         self.assertEqual(
             self.formatter.call_args,
             mock.call(
@@ -741,8 +737,6 @@ class TestShowCommand(unittest.TestCase):
         self.parsed_args.command_id = 'latest'
 
         self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
-        self.assertTrue(
-            self.output_stream_factory.get_stdout_stream.called)
         self.assertEqual(
             self.formatter.call_args,
             mock.call(

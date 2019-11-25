@@ -15,11 +15,13 @@ import platform
 import subprocess
 import json
 import os
+import shlex
 
 import botocore
 import botocore.session as session
 from botocore.exceptions import ConnectionClosedError
 from awscli.testutils import unittest, skip_if_windows, mock
+from awscli.compat import is_windows
 from awscli.utils import (split_on_commas, ignore_ctrl_c,
                           find_service_and_method_in_event_name,
                           OutputStreamFactory)
@@ -142,62 +144,65 @@ class MockProcess(object):
 
 class TestOutputStreamFactory(unittest.TestCase):
     def setUp(self):
+        self.session = mock.Mock(session.Session)
         self.popen = mock.Mock(subprocess.Popen)
-        self.stream_factory = OutputStreamFactory(self.popen)
+        self.environ = {}
+        self.stream_factory = OutputStreamFactory(
+            session=self.session, popen=self.popen,
+            environ=self.environ,
+        )
+        self.pager = 'mypager --option'
+        self.set_session_pager(self.pager)
+        self.patch_tty = mock.patch('awscli.utils.is_a_tty')
+        self.mock_is_a_tty = self.patch_tty.start()
+        self.mock_is_a_tty.return_value = True
 
-    @mock.patch('awscli.utils.get_popen_kwargs_for_pager_cmd')
-    def test_pager(self, mock_get_popen_pager):
-        mock_get_popen_pager.return_value = {
-                'args': ['mypager', '--option']
+    def tearDown(self):
+        self.patch_tty.stop()
+
+    def set_session_pager(self, pager):
+        self.session.get_component.return_value.\
+            get_config_variable.return_value = pager
+
+    def assert_popen_call(self, expected_pager_cmd, **override_args):
+        popen_kwargs = {
+            'stdin': subprocess.PIPE,
+            'env': mock.ANY,
+            'universal_newlines': True
         }
+        if is_windows:
+            popen_kwargs['args'] = expected_pager_cmd
+            popen_kwargs['shell'] = True
+        else:
+            popen_kwargs['args'] = shlex.split(expected_pager_cmd)
+        popen_kwargs.update(override_args)
+        self.popen.assert_called_with(**popen_kwargs)
+
+    def test_pager(self):
+        self.set_session_pager('mypager --option')
         with self.stream_factory.get_pager_stream():
-            mock_get_popen_pager.assert_called_with(None)
-            self.assertEqual(
-                self.popen.call_args_list,
-                [mock.call(
-                    args=['mypager', '--option'],
-                    stdin=subprocess.PIPE)]
+            self.assert_popen_call(
+                expected_pager_cmd='mypager --option'
             )
 
-    @mock.patch('awscli.utils.get_popen_kwargs_for_pager_cmd')
-    def test_env_configured_pager(self, mock_get_popen_pager):
-        mock_get_popen_pager.return_value = {
-            'args': ['mypager', '--option']
-        }
+    def test_explicit_pager(self):
+        self.set_session_pager('sessionpager --option')
         with self.stream_factory.get_pager_stream('mypager --option'):
-            mock_get_popen_pager.assert_called_with('mypager --option')
-            self.assertEqual(
-                self.popen.call_args_list,
-                [mock.call(
-                    args=['mypager', '--option'],
-                    stdin=subprocess.PIPE)]
-            )
-
-    @mock.patch('awscli.utils.get_popen_kwargs_for_pager_cmd')
-    def test_pager_using_shell(self, mock_get_popen_pager):
-        mock_get_popen_pager.return_value = {
-            'args': 'mypager --option', 'shell': True
-        }
-        with self.stream_factory.get_pager_stream():
-            mock_get_popen_pager.assert_called_with(None)
-            self.assertEqual(
-                self.popen.call_args_list,
-                [mock.call(
-                    args='mypager --option',
-                    stdin=subprocess.PIPE,
-                    shell=True)]
+            self.assert_popen_call(
+                expected_pager_cmd='mypager --option'
             )
 
     def test_exit_of_context_manager_for_pager(self):
+        self.set_session_pager('mypager --option')
         with self.stream_factory.get_pager_stream():
             pass
         returned_process = self.popen.return_value
         self.assertTrue(returned_process.communicate.called)
 
-    @mock.patch('awscli.utils.get_binary_stdout')
-    def test_stdout(self, mock_binary_out):
+    @mock.patch('awscli.utils.get_stdout_text_writer')
+    def test_stdout(self, mock_stdout_writer):
         with self.stream_factory.get_stdout_stream():
-            self.assertTrue(mock_binary_out.called)
+            self.assertTrue(mock_stdout_writer.called)
 
     def test_can_silence_io_error_from_pager(self):
         self.popen.return_value = MockProcess()
@@ -211,6 +216,51 @@ class TestOutputStreamFactory(unittest.TestCase):
         except IOError:
             self.fail('Should not raise IOError')
 
+    def test_get_output_stream(self):
+        self.set_session_pager('mypager --option')
+        with self.stream_factory.get_output_stream():
+            self.assert_popen_call(
+                expected_pager_cmd='mypager --option'
+            )
+
+    @mock.patch('awscli.utils.get_stdout_text_writer')
+    def test_use_stdout_if_not_tty(self, mock_stdout_writer):
+        self.mock_is_a_tty.return_value = False
+        with self.stream_factory.get_output_stream():
+            self.assertTrue(mock_stdout_writer.called)
+
+    @mock.patch('awscli.utils.get_stdout_text_writer')
+    def test_use_stdout_if_pager_set_to_empty_string(self, mock_stdout_writer):
+        self.set_session_pager('')
+        with self.stream_factory.get_output_stream():
+            self.assertTrue(mock_stdout_writer.called)
+
+    def test_adds_default_less_env_vars(self):
+        self.set_session_pager('myless')
+        with self.stream_factory.get_output_stream():
+            self.assert_popen_call(
+                expected_pager_cmd='myless',
+                env={'LESS': 'FRX'}
+            )
+
+    def test_does_not_clobber_less_env_var_if_in_env_vars(self):
+        self.set_session_pager('less')
+        self.environ['LESS'] = 'S'
+        with self.stream_factory.get_output_stream():
+            self.assert_popen_call(
+                expected_pager_cmd='less',
+                env={'LESS': 'S'}
+            )
+
+    def test_set_less_flags_through_constructor(self):
+        self.set_session_pager('less')
+        stream_factory = OutputStreamFactory(
+            self.session, self.popen, self.environ, default_less_flags='ABC')
+        with stream_factory.get_output_stream():
+            self.assert_popen_call(
+                expected_pager_cmd='less',
+                env={'LESS': 'ABC'}
+            )
 
 class TestInstanceMetadataRegionFetcher(unittest.TestCase):
     def setUp(self):

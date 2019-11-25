@@ -58,7 +58,7 @@ is_windows = sys.platform == 'win32'
 if is_windows:
     default_pager = 'more'
 else:
-    default_pager = 'less -R'
+    default_pager = 'less'
 
 
 class StdinMissingError(Exception):

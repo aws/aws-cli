@@ -16,7 +16,6 @@ from botocore.history import HistoryRecorder
 
 from awscli.testutils import mock, create_clidriver, FileCreator
 from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.compat import BytesIO
 
 
 class BaseHistoryCommandParamsTest(BaseAWSCommandParamsTest):
@@ -34,15 +33,6 @@ class BaseHistoryCommandParamsTest(BaseAWSCommandParamsTest):
         self.environ['AWS_CLI_HISTORY_FILE'] = self.files.create_file(
             'history.db', '')
         self.driver = create_clidriver()
-        # The run_cmd patches stdout with a StringIO object (similar to what
-        # nose does). Therefore it will run into issues when
-        # get_binary_stdout is called because it returns sys.stdout.buffer
-        # for Py3 and StringIO does not have a buffer
-        self.binary_stdout_patch = mock.patch(
-            'awscli.utils.get_binary_stdout')
-        mock_get_binary_stdout = self.binary_stdout_patch.start()
-        self.binary_stdout = BytesIO()
-        mock_get_binary_stdout.return_value = self.binary_stdout
 
     def _make_clean_history_recorder(self):
         # This is to ensure that for each new test run the CLI is using
@@ -80,4 +70,3 @@ class BaseHistoryCommandParamsTest(BaseAWSCommandParamsTest):
         super(BaseHistoryCommandParamsTest, self).tearDown()
         self._cleanup_db_connections()
         self.files.remove_all()
-        self.binary_stdout_patch.stop()

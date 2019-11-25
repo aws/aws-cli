@@ -2,6 +2,40 @@
 CHANGELOG
 =========
 
+1.16.291
+========
+
+* api-change:``athena``: Update athena command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``wafv2``: Update wafv2 command to latest version
+* api-change:``kinesisanalyticsv2``: Update kinesisanalyticsv2 command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``sesv2``: Update sesv2 command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``dlm``: Update dlm command to latest version
+* api-change:``lex-runtime``: Update lex-runtime command to latest version
+* api-change:``greengrass``: Update greengrass command to latest version
+* api-change:``kms``: Update kms command to latest version
+* api-change:``appconfig``: Update appconfig command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``mediapackage-vod``: Update mediapackage-vod command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``ram``: Update ram command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``application-insights``: Update application-insights command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``iotsecuretunneling``: Update iotsecuretunneling command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+
+
 1.16.290
 ========
 

@@ -203,7 +203,7 @@ class TestGenerateCliSkeleton(unittest.TestCase):
             }
         }
         expected = (
-            "A: ''  # docstring\n"
+            "A: ''  # docstring.\n"
         )
         self.assert_skeleton_equals(
             'yaml-input', expected, input_shape=input_shape)
@@ -222,8 +222,8 @@ class TestGenerateCliSkeleton(unittest.TestCase):
             }
         }
         expected = (
-            "A:  # top-level docstring\n"
-            "  B: ''  # nested docstring\n"
+            "A:  # top-level docstring.\n"
+            "  B: ''  # nested docstring.\n"
         )
         self.assert_skeleton_equals(
             'yaml-input', expected, input_shape=input_shape)
@@ -243,8 +243,8 @@ class TestGenerateCliSkeleton(unittest.TestCase):
             }
         }
         expected = (
-            "A:  # top-level docstring\n"
-            "  B: ''  # [REQUIRED] nested docstring\n"
+            "A:  # top-level docstring.\n"
+            "  B: ''  # [REQUIRED] nested docstring.\n"
         )
         self.assert_skeleton_equals(
             'yaml-input', expected, input_shape=input_shape)
@@ -257,7 +257,7 @@ class TestGenerateCliSkeleton(unittest.TestCase):
             }
         }
         expected = (
-            "A: ''  # one-line two-line\n"
+            "A: ''  # one-line two-line.\n"
         )
         self.assert_skeleton_equals(
             'yaml-input', expected, input_shape=input_shape)
@@ -270,7 +270,7 @@ class TestGenerateCliSkeleton(unittest.TestCase):
             }
         }
         expected = (
-            "A: ''  # one-line two-line\n"
+            "A: ''  # one-line two-line.\n"
         )
         self.assert_skeleton_equals(
             'yaml-input', expected, input_shape=input_shape)
@@ -283,7 +283,7 @@ class TestGenerateCliSkeleton(unittest.TestCase):
             }
         }
         expected = (
-            "A: ''  # text\n"
+            "A: ''  # text.\n"
         )
         self.assert_skeleton_equals(
             'yaml-input', expected, input_shape=input_shape)
@@ -296,7 +296,47 @@ class TestGenerateCliSkeleton(unittest.TestCase):
             }
         }
         expected = (
-            "A: ''  # <p>text\n"
+            "A: ''  # <p>text.\n"
+        )
+        self.assert_skeleton_equals(
+            'yaml-input', expected, input_shape=input_shape)
+
+    def test_generate_yaml_input_uses_only_content_before_first_period(self):
+        input_shape = {
+            'A': {
+                'type': 'string',
+                'documentation': 'First sentence. Second Sentence'
+            }
+        }
+        expected = (
+            "A: ''  # First sentence.\n"
+        )
+        self.assert_skeleton_equals(
+            'yaml-input', expected, input_shape=input_shape)
+
+    def test_generate_yaml_input_uses_only_content_before_first_colon(self):
+        input_shape = {
+            'A': {
+                'type': 'string',
+                'documentation': 'First sentence: * Option 1 * Option 2'
+            }
+        }
+        expected = (
+            "A: ''  # First sentence.\n"
+        )
+        self.assert_skeleton_equals(
+            'yaml-input', expected, input_shape=input_shape)
+
+    def test_generate_yaml_input_includes_enums_in_comments(self):
+        input_shape = {
+            'A': {
+                'type': 'string',
+                'documentation': 'First sentence.',
+                'enum': ['ENUM1']
+            }
+        }
+        expected = (
+            "A: ENUM1  # First sentence. Valid values are: ENUM1.\n"
         )
         self.assert_skeleton_equals(
             'yaml-input', expected, input_shape=input_shape)

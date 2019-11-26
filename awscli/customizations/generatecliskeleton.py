@@ -156,6 +156,7 @@ class _Bytes(object):
 
 
 class YAMLArgumentGenerator(ArgumentGenerator):
+    _SENTENCE_DELIMETERS_REGEX = re.compile(r'[.:]+')
     _LINE_BREAK_CHARS = [
         '\n',
         '\u2028'
@@ -192,16 +193,27 @@ class YAMLArgumentGenerator(ArgumentGenerator):
         return skeleton
 
     def _add_member_comments(self, skeleton, member_name, member_shape,
-                            is_required):
-        comment = self._get_comment_content_from_documentation(member_shape)
+                             is_required):
+        comment_components = []
         if is_required:
-            comment = '[REQUIRED] ' + comment
+            comment_components.append('[REQUIRED]')
+        comment_components.append(
+            self._get_comment_content_from_documentation(member_shape)
+        )
+        if getattr(member_shape, 'enum', None):
+            comment_components.append(
+                self._get_enums_comment_content(member_shape.enum)
+            )
+        comment = ' '.join(comment_components)
         if comment and not comment.isspace():
             skeleton.yaml_add_eol_comment('# ' + comment, member_name)
 
     def _get_comment_content_from_documentation(self, member_shape):
         content = member_shape.documentation
         content = self._strip_xml_from_documentation(content)
+        # In order to avoid having the comment content too dense, we limit
+        # the documentation to the first sentence.
+        content = self._get_first_sentence(content)
         # There are characters that may mess up the indentation of the yaml
         # by introducing new lines. We want to ignore those in comments.
         content = self._remove_line_breaks(content)
@@ -228,10 +240,19 @@ class YAMLArgumentGenerator(ArgumentGenerator):
             else:
                 self._strip_xml_from_child_nodes(child_node, content)
 
+    def _get_first_sentence(self, content):
+        content = self._SENTENCE_DELIMETERS_REGEX.split(content, 1)[0]
+        if content:
+            content += '.'
+        return content
+
     def _remove_line_breaks(self, content):
         for char in self._LINE_BREAK_CHARS:
             content = content.replace(char, ' ')
         return content
+
+    def _get_enums_comment_content(self, enums):
+        return 'Valid values are: %s.' % ', '.join(enums)
 
     def _generate_type_map(self, shape, stack):
         # YAML has support for ordered maps, so don't use ordereddicts

@@ -37,7 +37,9 @@ class TestUtils(unittest.TestCase):
         self.system = self.system_patcher.start()
         self.system.return_value = 'Linux'
 
-        self.linux_distribution_patcher = patch('platform.linux_distribution')
+        self.linux_distribution_patcher = patch(
+            'awscli.customizations.codedeploy.utils.linux_distribution'
+        )
         self.linux_distribution = self.linux_distribution_patcher.start()
         self.linux_distribution.return_value = ('Ubuntu', '', '')
 

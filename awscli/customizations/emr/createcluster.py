@@ -545,8 +545,8 @@ class CreateCluster(Command):
                                                 parsed_args, parsed_configs):
         if parsed_args.use_default_roles:
             configurations = [x for x in configurations
-                              if x.name is not 'service_role' and
-                              x.name is not 'instance_profile']
+                              if x.name != 'service_role' and
+                              x.name != 'instance_profile']
         return configurations
 
     def _handle_emrfs_parameters(self, cluster, emrfs_args, release_label):

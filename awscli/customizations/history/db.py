@@ -59,7 +59,8 @@ class DatabaseConnection(object):
 
     def _try_to_enable_wal(self):
         try:
-            self.execute(self._ENABLE_WAL)
+            # to be PyPy-compatible, a cursor from the PRAGMA must be closed
+            self.execute(self._ENABLE_WAL).close()
         except sqlite3.Error:
             # This is just a performance enhancement so it is optional. Not all
             # systems will have a sqlite compiled with the WAL enabled.

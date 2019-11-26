@@ -18,6 +18,11 @@ from awscli.compat import urlopen, URLError
 from awscli.customizations.codedeploy.systems import System, Ubuntu, Windows, RHEL
 from socket import timeout
 
+try:
+    from platform import linux_distribution
+except ImportError:
+    from distro import linux_distribution
+
 MAX_INSTANCE_NAME_LENGTH = 100
 MAX_TAGS_PER_INSTANCE = 10
 MAX_TAG_KEY_LENGTH = 128
@@ -99,9 +104,10 @@ def validate_iam_user_arn(params):
 
 def validate_instance(params):
     if platform.system() == 'Linux':
-        if 'Ubuntu' in platform.linux_distribution()[0]:
+        distname = linux_distribution()[0]
+        if 'Ubuntu' in distname:
             params.system = Ubuntu(params)
-        if 'Red Hat Enterprise Linux Server' in platform.linux_distribution()[0]:
+        elif 'Red Hat Enterprise Linux Server' in distname:
             params.system = RHEL(params)
     elif platform.system() == 'Windows':
         params.system = Windows(params)

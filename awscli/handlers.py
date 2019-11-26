@@ -89,6 +89,7 @@ from awscli.customizations.logs import register_logs_commands
 from awscli.customizations.devcommands import register_dev_commands
 from awscli.customizations.wizard.commands import register_wizard_commands
 from awscli.customizations.sms_voice import register_sms_voice_hide
+from awscli.customizations.autoprompt import register_autoprompt
 
 
 def awscli_initialize(event_handlers):
@@ -180,3 +181,4 @@ def awscli_initialize(event_handlers):
     register_wizard_commands(event_handlers)
     register_sms_voice_hide(event_handlers)
     register_sso_commands(event_handlers)
+    register_autoprompt(event_handlers)

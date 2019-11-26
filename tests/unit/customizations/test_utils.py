@@ -13,7 +13,9 @@
 import io
 import argparse
 import mock
+
 from botocore.exceptions import ClientError
+from botocore.model import Shape
 
 from awscli.customizations import utils
 from awscli.testutils import unittest
@@ -229,3 +231,59 @@ class TestGetPolicyARNSuffix(unittest.TestCase):
         self.assertEqual("aws", utils.get_policy_arn_suffix("us-east-1"))
         self.assertEqual("aws", utils.get_policy_arn_suffix("sa-east-1"))
         self.assertEqual("aws", utils.get_policy_arn_suffix("ap-south-1"))
+
+
+class TestGetShapeDocOverview(unittest.TestCase):
+    def assert_expected_shape_overview(self, shape_docs, expected_overview):
+        shape = mock.Mock(Shape)
+        shape.documentation = shape_docs
+        actual_overview = utils.get_shape_doc_overview(shape)
+        self.assertEqual(actual_overview, expected_overview)
+
+    def test_get_shape_doc_overview(self):
+        self.assert_expected_shape_overview(
+            shape_docs='Shape documentation',
+            expected_overview='Shape documentation.'
+        )
+
+    def test_uses_content_before_first_period(self):
+        self.assert_expected_shape_overview(
+            shape_docs='First sentence. Second Sentence.',
+            expected_overview='First sentence.'
+        )
+
+    def test_uses_content_before_first_colon(self):
+        self.assert_expected_shape_overview(
+            shape_docs='<p>Broken XML docs',
+            expected_overview='<p>Broken XML docs.'
+        )
+
+    def test_removes_xml_tags(self):
+        self.assert_expected_shape_overview(
+            shape_docs='<p>Shape documentation</p>',
+            expected_overview='Shape documentation.'
+        )
+
+    def test_removes_nested_xml_tags(self):
+        self.assert_expected_shape_overview(
+            shape_docs='<p>Shape <code>documentation</code></p>',
+            expected_overview='Shape documentation.'
+        )
+
+    def test_can_handle_broken_xml(self):
+        self.assert_expected_shape_overview(
+            shape_docs='<p>Broken XML docs',
+            expected_overview='<p>Broken XML docs.'
+        )
+
+    def test_ignores_newlines(self):
+        self.assert_expected_shape_overview(
+            shape_docs='First line\nSecond line',
+            expected_overview='First line Second line.'
+        )
+
+    def test_ignores_line_separator_char(self):
+        self.assert_expected_shape_overview(
+            shape_docs='First line\u2028Second line',
+            expected_overview='First line Second line.'
+        )

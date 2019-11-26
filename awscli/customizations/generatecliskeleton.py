@@ -11,10 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
-import re
 import sys
-import xml.parsers.expat
-import xml.dom.minidom
 
 from botocore import xform_name
 from botocore.stub import Stubber
@@ -23,6 +20,7 @@ from ruamel.yaml import YAML
 
 from awscli.clidriver import CLIOperationCaller
 from awscli.customizations.arguments import OverrideRequiredArgsArgument
+from awscli.customizations.utils import get_shape_doc_overview
 from awscli.utils import json_encoder
 
 
@@ -156,12 +154,6 @@ class _Bytes(object):
 
 
 class YAMLArgumentGenerator(ArgumentGenerator):
-    _SENTENCE_DELIMETERS_REGEX = re.compile(r'[.:]+')
-    _LINE_BREAK_CHARS = [
-        '\n',
-        '\u2028'
-    ]
-
     def __init__(self, use_member_names=False, yaml=None):
         super(YAMLArgumentGenerator, self).__init__(
             use_member_names=use_member_names)
@@ -197,9 +189,7 @@ class YAMLArgumentGenerator(ArgumentGenerator):
         comment_components = []
         if is_required:
             comment_components.append('[REQUIRED]')
-        comment_components.append(
-            self._get_comment_content_from_documentation(member_shape)
-        )
+        comment_components.append(get_shape_doc_overview(member_shape))
         if getattr(member_shape, 'enum', None):
             comment_components.append(
                 self._get_enums_comment_content(member_shape.enum)
@@ -207,49 +197,6 @@ class YAMLArgumentGenerator(ArgumentGenerator):
         comment = ' '.join(comment_components)
         if comment and not comment.isspace():
             skeleton.yaml_add_eol_comment('# ' + comment, member_name)
-
-    def _get_comment_content_from_documentation(self, member_shape):
-        content = member_shape.documentation
-        content = self._strip_xml_from_documentation(content)
-        # In order to avoid having the comment content too dense, we limit
-        # the documentation to the first sentence.
-        content = self._get_first_sentence(content)
-        # There are characters that may mess up the indentation of the yaml
-        # by introducing new lines. We want to ignore those in comments.
-        content = self._remove_line_breaks(content)
-        return content
-
-    def _strip_xml_from_documentation(self, documentation):
-        try:
-            # We are surrounding the docstrings with our own tags in order
-            # to make sure the dom parser will look at all elements in the
-            # docstring as some docstrings may not have xml nodes that do
-            # not all belong to the same root node.
-            xml_doc = '<doc>%s</doc>' % documentation
-            xml_dom = xml.dom.minidom.parseString(xml_doc)
-        except xml.parsers.expat.ExpatError:
-            return documentation
-        content = []
-        self._strip_xml_from_child_nodes(xml_dom, content)
-        return ''.join(content)
-
-    def _strip_xml_from_child_nodes(self, node, content):
-        for child_node in node.childNodes:
-            if child_node.nodeType == node.TEXT_NODE:
-                content.append(child_node.data)
-            else:
-                self._strip_xml_from_child_nodes(child_node, content)
-
-    def _get_first_sentence(self, content):
-        content = self._SENTENCE_DELIMETERS_REGEX.split(content, 1)[0]
-        if content:
-            content += '.'
-        return content
-
-    def _remove_line_breaks(self, content):
-        for char in self._LINE_BREAK_CHARS:
-            content = content.replace(char, ' ')
-        return content
 
     def _get_enums_comment_content(self, enums):
         return 'Valid values are: %s.' % ', '.join(enums)

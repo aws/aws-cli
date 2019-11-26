@@ -16,51 +16,10 @@ import logging
 
 import mock
 from nose.tools import assert_equal
+import ruamel.yaml as yaml
 
-from awscli.testutils import unittest, aws, capture_output
+from awscli.testutils import capture_output
 from awscli.clidriver import create_clidriver
-
-
-class TestIntegGenerateCliSkeleton(unittest.TestCase):
-    """This tests various services to see if the generated skeleton is correct
-
-    The operations and services selected are arbitrary. Tried to pick
-    operations that do not have many input options for the sake of readablity
-    and maintenance. These are essentially smoke tests. It is not trying to
-    test the different types of input shapes that can be generated in the
-    skeleton. It is only testing wheter the skeleton generator argument works
-    for various services.
-    """
-    def test_generate_cli_skeleton_s3api(self):
-        p = aws('s3api delete-object --generate-cli-skeleton')
-        self.assertEqual(p.rc, 0)
-        self.assertEqual(
-            json.loads(p.stdout),
-            {
-                'Bucket': '',
-                'BypassGovernanceRetention': True,
-                'Key': '',
-                'MFA': '',
-                'VersionId': '',
-                'RequestPayer': 'requester',
-            }
-        )
-
-    def test_generate_cli_skeleton_sqs(self):
-        p = aws('sqs change-message-visibility --generate-cli-skeleton')
-        self.assertEqual(p.rc, 0)
-        self.assertEqual(
-            json.loads(p.stdout),
-            {'QueueUrl': '', 'ReceiptHandle': '', 'VisibilityTimeout': 0}
-        )
-
-    def test_generate_cli_skeleton_iam(self):
-        p = aws('iam create-group --generate-cli-skeleton')
-        self.assertEqual(p.rc, 0)
-        self.assertEqual(
-            json.loads(p.stdout),
-            {'Path': '', 'GroupName': ''}
-        )
 
 
 def test_can_generate_skeletons_for_all_service_comands():
@@ -85,10 +44,14 @@ def test_can_generate_skeletons_for_all_service_comands():
                     op_help = sub_command.create_help_command()
                     arg_table = op_help.arg_table
                     if 'generate-cli-skeleton' in arg_table:
-                        yield _test_gen_skeleton, command_name, sub_name,
+                        yield _test_gen_input_skeleton, command_name, sub_name
+                        yield (
+                            _test_gen_yaml_input_skeleton, command_name,
+                            sub_name
+                        )
 
 
-def _test_gen_skeleton(command_name, operation_name):
+def _test_gen_input_skeleton(command_name, operation_name):
     command = '%s %s --generate-cli-skeleton' % (command_name,
                                                  operation_name)
     stdout, stderr, _ = _run_cmd(command)
@@ -98,6 +61,20 @@ def _test_gen_skeleton(command_name, operation_name):
     except ValueError as e:
         raise AssertionError(
             "Could not generate CLI skeleton for command: %s %s\n"
+            "stdout:\n%s\n"
+            "stderr:\n%s\n" % (command_name, operation_name, stdout,
+                               stderr))
+
+
+def _test_gen_yaml_input_skeleton(command_name, operation_name):
+    command = '%s %s --generate-cli-skeleton yaml-input' % (
+        command_name, operation_name)
+    stdout, stderr, _ = _run_cmd(command)
+    try:
+        yaml.safe_load(stdout)
+    except ValueError:
+        raise AssertionError(
+            "Could not generate CLI YAML skeleton for command: %s %s\n"
             "stdout:\n%s\n"
             "stderr:\n%s\n" % (command_name, operation_name, stdout,
                                stderr))

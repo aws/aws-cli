@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+1.16.292
+========
+
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+* api-change:``rds-data``: Update rds-data command to latest version
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``serverlessrepo``: Update serverlessrepo command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``ds``: Update ds command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+* api-change:``mediatailor``: Update mediatailor command to latest version
+* api-change:``elastic-inference``: Update elastic-inference command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+
+
 1.16.291
 ========
 

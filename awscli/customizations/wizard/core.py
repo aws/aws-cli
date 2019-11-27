@@ -17,7 +17,6 @@ import os
 from botocore import xform_name
 
 
-
 class Runner(object):
     def __init__(self, planner, executor):
         self._planner = planner
@@ -98,16 +97,26 @@ class Planner(object):
 
 
 class BaseStep(object):
+    # Subclasses must implement this.  This defines the name you'd
+    # use for the `type` in a wizard definition.
+    NAME = ''
+
     def run_step(self, step_definition, parameters):
         raise NotImplementedError("run_step")
 
 
 class StaticStep(BaseStep):
+
+    NAME = 'static'
+
     def run_step(self, step_definition, parameters):
         return step_definition['value']
 
 
 class PromptStep(BaseStep):
+
+    NAME = 'prompt'
+
     def __init__(self, prompter):
         self._prompter = prompter
 
@@ -136,6 +145,9 @@ class YesNoPrompt(PromptStep):
     step.
 
     """
+
+    NAME = 'yesno-prompt'
+
     def run_step(self, step_definition, parameters):
         choices = [
             {'display': 'Yes', 'actual_value': 'yes'},
@@ -151,6 +163,9 @@ class YesNoPrompt(PromptStep):
 
 
 class FilePromptStep(BaseStep):
+
+    NAME = 'fileprompt'
+
     def __init__(self, prompter):
         self._prompter = prompter
 
@@ -161,12 +176,17 @@ class FilePromptStep(BaseStep):
 
 class TemplateStep(BaseStep):
 
+    NAME = 'template'
+
     def run_step(self, step_definition, parameters):
         value = step_definition['value']
         return value.format(**parameters)
 
 
 class APICallStep(BaseStep):
+
+    NAME = 'apicall'
+
     def __init__(self, api_invoker):
         self._api_invoker = api_invoker
 
@@ -182,6 +202,9 @@ class APICallStep(BaseStep):
 
 
 class SharedConfigStep(BaseStep):
+
+    NAME = 'sharedconfig'
+
     def __init__(self, config_api):
         self._config_api = config_api
 
@@ -302,11 +325,19 @@ class Executor(object):
 
 
 class ExecutorStep(object):
+
+    # Subclasses must implement this to specify what name to use
+    # for the `type` in a wizard definition.
+    NAME = ''
+
     def run_step(self, step_definition, parameters):
         raise NotImplementedError("run_step")
 
 
 class APICallExecutorStep(ExecutorStep):
+
+    NAME = 'apicall'
+
     def __init__(self, api_invoker):
         self._api_invoker = api_invoker
 
@@ -324,6 +355,9 @@ class APICallExecutorStep(ExecutorStep):
 
 
 class SharedConfigExecutorStep(ExecutorStep):
+
+    NAME = 'sharedconfig'
+
     def __init__(self, config_api):
         self._config_api = config_api
 

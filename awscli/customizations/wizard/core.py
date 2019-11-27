@@ -23,7 +23,7 @@ class Runner(object):
         self._executor = executor
 
     def run(self, wizard_spec):
-        params = self._planner.run(wizard_spec['plan'])
+        params = self._planner.plan(wizard_spec['plan'])
         self._executor.run(wizard_spec['execute'], params)
 
 
@@ -37,12 +37,12 @@ class Planner(object):
         # running through the plan steps.
         self._parameters = {}
 
-    def run(self, plan):
+    def plan(self, plan):
         self._parameters.clear()
         steps_iter = self._steps(plan)
         step = next(steps_iter)
         while step is not self._STOP_RUNNING:
-            next_step_name = self._run_step(step)
+            next_step_name = self._run_plan_step(step)
             step = steps_iter.send(next_step_name)
         return self._parameters
 
@@ -69,7 +69,7 @@ class Planner(object):
                 step_index = step_names.index(next_step_name)
                 step_name = next_step_name
 
-    def _run_step(self, step):
+    def _run_plan_step(self, step):
         # Running step consists of first fetching any values
         # based on what's defined in `values`.
         for key, value in step['values'].items():

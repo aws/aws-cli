@@ -65,7 +65,7 @@ class TestPlanner(unittest.TestCase):
         """)
 
         self.responses['Enter user name'] = 'admin'
-        parameters = self.planner.run(loaded['plan'])
+        parameters = self.planner.plan(loaded['plan'])
         self.assertEqual(parameters['name'], 'admin')
 
     def test_can_prompt_for_multiple_values_in_order(self):
@@ -83,7 +83,7 @@ class TestPlanner(unittest.TestCase):
         self.responses['Enter user name'] = 'myname'
         self.responses['Enter group name'] = 'wheel'
 
-        parameters = self.planner.run(loaded['plan'])
+        parameters = self.planner.plan(loaded['plan'])
         self.assertEqual(parameters['name'], 'myname')
         self.assertEqual(parameters['group'], 'wheel')
         # We should also have prompted in the order that the keys
@@ -115,7 +115,7 @@ class TestPlanner(unittest.TestCase):
         self.responses['Should we stop'] = 'no'
         self.responses['Enter user name'] = 'admin'
 
-        parameters = self.planner.run(loaded['plan'])
+        parameters = self.planner.plan(loaded['plan'])
         self.assertEqual(parameters['should_stop'], 'no')
         self.assertEqual(parameters['name'], 'admin')
         self.assertEqual(
@@ -144,7 +144,7 @@ class TestPlanner(unittest.TestCase):
         """)
         self.responses['Should we stop'] = 'yes'
 
-        parameters = self.planner.run(loaded['plan'])
+        parameters = self.planner.plan(loaded['plan'])
         self.assertEqual(parameters['should_stop'], 'yes')
         self.assertNotIn('name', parameters)
         self.assertEqual(
@@ -168,7 +168,7 @@ class TestPlanner(unittest.TestCase):
         """)
         self.responses['Enter user name'] = 'admin'
 
-        parameters = self.planner.run(loaded['plan'])
+        parameters = self.planner.plan(loaded['plan'])
         self.assertEqual(parameters['name'], 'admin')
         self.assertEqual(
             self.prompter.recorded_prompts,
@@ -196,7 +196,7 @@ class TestPlanner(unittest.TestCase):
         """)
         self.responses['Foo'] = 'foo-value'
 
-        parameters = self.planner.run(loaded['plan'])
+        parameters = self.planner.plan(loaded['plan'])
         self.assertEqual(parameters['foo'], 'foo-value')
         self.assertNotIn('bar', parameters)
         self.assertEqual(
@@ -219,7 +219,7 @@ class TestPlanner(unittest.TestCase):
         """)
         self.responses['Foo'] = 'foo-value'
 
-        parameters = self.planner.run(loaded['plan'])
+        parameters = self.planner.plan(loaded['plan'])
         self.assertEqual(parameters['foo'], 'foo-value')
         self.assertEqual(parameters['bar'], 'template-foo-value')
         self.assertEqual(
@@ -252,7 +252,7 @@ class TestPlanner(unittest.TestCase):
                 'apicall': api_step,
             },
         )
-        parameters = planner.run(loaded['plan'])
+        parameters = planner.plan(loaded['plan'])
         self.assertEqual(parameters['foo'], {'Policies': ['foo']})
 
     def test_can_run_apicall_step_with_query(self):
@@ -281,7 +281,7 @@ class TestPlanner(unittest.TestCase):
                 'apicall': api_step,
             },
         )
-        parameters = planner.run(loaded['plan'])
+        parameters = planner.plan(loaded['plan'])
         # Note this value is the result is applying the
         # Polices[].Name jmespath query to the response.
         self.assertEqual(parameters['foo'], ['one', 'two'])
@@ -295,7 +295,7 @@ class TestPlanner(unittest.TestCase):
                 type: static
                 value: myvalue
         """)
-        parameters = self.planner.run(loaded['plan'])
+        parameters = self.planner.plan(loaded['plan'])
         self.assertEqual(parameters['foo'], 'myvalue')
 
     def test_can_use_static_value_as_non_string_type(self):
@@ -307,7 +307,7 @@ class TestPlanner(unittest.TestCase):
                 type: static
                 value: [1, 2, 3]
         """)
-        parameters = self.planner.run(loaded['plan'])
+        parameters = self.planner.plan(loaded['plan'])
         self.assertEqual(parameters['foo'], [1, 2, 3])
 
     def test_choices_can_be_variable_reference(self):
@@ -329,7 +329,7 @@ class TestPlanner(unittest.TestCase):
         """)
         self.responses['Enter user name'] = 'admin'
 
-        parameters = self.planner.run(loaded['plan'])
+        parameters = self.planner.plan(loaded['plan'])
         self.assertEqual(parameters['name'], 'admin')
         self.assertEqual(
             self.prompter.recorded_prompts,
@@ -355,7 +355,7 @@ class TestPlanner(unittest.TestCase):
                 'fileprompt': core.FilePromptStep(prompter=prompter),
             },
         )
-        parameters = planner.run(loaded['plan'])
+        parameters = planner.plan(loaded['plan'])
         self.assertEqual(parameters['foo'],
                          os.path.abspath('myfile.txt'))
 
@@ -370,7 +370,7 @@ class TestPlanner(unittest.TestCase):
         """)
         self.responses['Do you want to use the defaults?'] = 'yes'
 
-        parameters = self.planner.run(loaded['plan'])
+        parameters = self.planner.plan(loaded['plan'])
         self.assertEqual(parameters['wants_defaults'], 'yes')
         self.assertEqual(
             self.prompter.recorded_prompts,
@@ -392,7 +392,7 @@ class TestPlanner(unittest.TestCase):
         """)
         self.responses['Do you want to use the defaults?'] = 'no'
 
-        parameters = self.planner.run(loaded['plan'])
+        parameters = self.planner.plan(loaded['plan'])
         self.assertEqual(
             self.prompter.recorded_prompts[0][2],
             # The default is No so it should be presented first.
@@ -437,7 +437,7 @@ class TestPlanner(unittest.TestCase):
         self.responses['step_c'] = 'three'
         self.responses['step_b'] = 'four'
 
-        parameters = self.planner.run(loaded['plan'])
+        parameters = self.planner.plan(loaded['plan'])
         self.assertEqual(parameters['first'], 'one')
         self.assertEqual(parameters['second'], 'two')
         self.assertEqual(parameters['third'], 'three')
@@ -472,7 +472,7 @@ class TestPlanner(unittest.TestCase):
                 type: customstep
                 foo: myreturnvalue
         """)
-        parameters = custom_planner.run(loaded['plan'])
+        parameters = custom_planner.plan(loaded['plan'])
         self.assertEqual(parameters['name'], 'myreturnvalue')
 
     def test_can_load_profiles(self):
@@ -494,7 +494,7 @@ class TestPlanner(unittest.TestCase):
                 'sharedconfig': sharedconfig,
             },
         )
-        parameters = planner.run(loaded['plan'])
+        parameters = planner.plan(loaded['plan'])
         self.assertEqual(parameters['foo'], ['profile1', 'profile2'])
 
     def test_can_read_config_profile_data(self):
@@ -519,7 +519,7 @@ class TestPlanner(unittest.TestCase):
                 'sharedconfig': sharedconfig,
             },
         )
-        parameters = planner.run(loaded['plan'])
+        parameters = planner.plan(loaded['plan'])
         self.assertEqual(parameters['foo'], 'us-west-2')
         config_api.get_value.assert_called_with(profile='devprofile',
                                                 value='region')
@@ -834,10 +834,10 @@ class TestRunner(unittest.TestCase):
                 UserName: admin
         """)
         params = {'foo': 'bar'}
-        self.planner.run.return_value = params
+        self.planner.plan.return_value = params
         self.runner.run(wizard_spec=loaded)
 
-        self.planner.run.assert_called_with(loaded['plan'])
+        self.planner.plan.assert_called_with(loaded['plan'])
         self.executor.run.assert_called_with(loaded['execute'], params)
 
 

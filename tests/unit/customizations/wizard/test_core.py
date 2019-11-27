@@ -553,7 +553,7 @@ class TestExecutor(unittest.TestCase):
               params:
                 UserName: admin
         """)
-        self.executor.run(loaded['execute'], {})
+        self.executor.execute(loaded['execute'], {})
         self.session.create_client.assert_called_with('iam')
         self.client.create_user.assert_called_with(UserName='admin')
 
@@ -568,7 +568,7 @@ class TestExecutor(unittest.TestCase):
               optional_params:
                 Path: "/foo"
         """)
-        self.executor.run(loaded['execute'], {})
+        self.executor.execute(loaded['execute'], {})
         self.session.create_client.assert_called_with('iam')
         self.client.create_user.assert_called_with(
             UserName='admin', Path='/foo')
@@ -585,7 +585,7 @@ class TestExecutor(unittest.TestCase):
                 # Omitted because the value is null.
                 Path: null
         """)
-        self.executor.run(loaded['execute'], {})
+        self.executor.execute(loaded['execute'], {})
         self.session.create_client.assert_called_with('iam')
         self.client.create_user.assert_called_with(UserName='admin')
 
@@ -601,7 +601,7 @@ class TestExecutor(unittest.TestCase):
               params:
                 UserName: admin
         """)
-        self.executor.run(loaded['execute'], {'should_invoke': 'no'})
+        self.executor.execute(loaded['execute'], {'should_invoke': 'no'})
         self.assertFalse(self.session.create_client.called)
         self.assertFalse(self.client.create_user.called)
 
@@ -617,7 +617,7 @@ class TestExecutor(unittest.TestCase):
               params:
                 UserName: admin
         """)
-        self.executor.run(loaded['execute'], {})
+        self.executor.execute(loaded['execute'], {})
         self.assertTrue(self.session.create_client.called)
         self.assertTrue(self.client.create_user.called)
 
@@ -635,7 +635,7 @@ class TestExecutor(unittest.TestCase):
               params:
                 UserName: admin
         """)
-        self.executor.run(loaded['execute'], {'foo': 'one', 'bar': 'two'})
+        self.executor.execute(loaded['execute'], {'foo': 'one', 'bar': 'two'})
         self.assertTrue(self.session.create_client.called)
         self.assertTrue(self.client.create_user.called)
 
@@ -653,7 +653,7 @@ class TestExecutor(unittest.TestCase):
               params:
                 UserName: admin
         """)
-        self.executor.run(loaded['execute'], {'foo': 'one', 'bar': 'NOTTWO'})
+        self.executor.execute(loaded['execute'], {'foo': 'one', 'bar': 'NOTTWO'})
         self.assertFalse(self.session.create_client.called)
 
     def test_can_recursively_template_variables_in_params(self):
@@ -674,7 +674,7 @@ class TestExecutor(unittest.TestCase):
                     - Bar: "{foo}"
                     - Baz: "{foo}"
         """)
-        self.executor.run(loaded['execute'], {'foo': 'FOOVALUE'})
+        self.executor.execute(loaded['execute'], {'foo': 'FOOVALUE'})
         self.session.create_client.assert_called_with('iam')
         expected_params = {
             'UserName': 'FOOVALUE',
@@ -706,7 +706,7 @@ class TestExecutor(unittest.TestCase):
         self.client.create_role.return_value = {
             'Role': {'Arn': 'my-role-arn'},
         }
-        self.executor.run(loaded['execute'], params)
+        self.executor.execute(loaded['execute'], params)
         self.client.create_role.assert_called_with(RoleName='admin')
         # We should have added 'role_arn' to the params dict and also
         # applied the jmespath query to the response before storing the
@@ -730,7 +730,7 @@ class TestExecutor(unittest.TestCase):
               params:
                 RoleName: admin
         """)
-        self.executor.run(loaded['execute'], {})
+        self.executor.execute(loaded['execute'], {})
         self.session.create_client.assert_called_with('iam')
         self.assertEqual(
             self.client.method_calls,
@@ -749,7 +749,7 @@ class TestExecutor(unittest.TestCase):
                 region: us-west-2
                 output: json
         """)
-        self.executor.run(loaded['execute'], {})
+        self.executor.execute(loaded['execute'], {})
         self.config_api.set_values.assert_called_with(
              {'region': 'us-west-2', 'output': 'json'},
             profile='mydevprofile',
@@ -765,7 +765,7 @@ class TestExecutor(unittest.TestCase):
                 region: us-west-2
                 output: json
         """)
-        self.executor.run(loaded['execute'], {})
+        self.executor.execute(loaded['execute'], {})
         self.config_api.set_values.assert_called_with(
             {'region': 'us-west-2', 'output': 'json'}, profile=None
         )
@@ -780,7 +780,7 @@ class TestExecutor(unittest.TestCase):
                 region: "{foo}"
         """)
         variables = {'foo': 'bar'}
-        self.executor.run(loaded['execute'], variables)
+        self.executor.execute(loaded['execute'], variables)
         self.config_api.set_values.assert_called_with(
             {'region': 'bar'}, profile=None)
 
@@ -838,7 +838,7 @@ class TestRunner(unittest.TestCase):
         self.runner.run(wizard_spec=loaded)
 
         self.planner.plan.assert_called_with(loaded['plan'])
-        self.executor.run.assert_called_with(loaded['execute'], params)
+        self.executor.execute.assert_called_with(loaded['execute'], params)
 
 
 class TestAPIInvoker(unittest.TestCase):

@@ -24,7 +24,7 @@ class Runner(object):
 
     def run(self, wizard_spec):
         params = self._planner.plan(wizard_spec['plan'])
-        self._executor.run(wizard_spec['execute'], params)
+        self._executor.execute(wizard_spec['execute'], params)
 
 
 class Planner(object):
@@ -290,14 +290,14 @@ class Executor(object):
     def __init__(self, step_handlers):
         self._step_handlers = step_handlers
 
-    def run(self, step, parameters):
+    def execute(self, step, parameters):
         # We may eventually support jumping around to different step
         # names, but for now, we just iterate through the steps in order.
         for group in step.values():
             for step in group:
-                self._run_step(step, parameters)
+                self._execute_step(step, parameters)
 
-    def _run_step(self, step, parameters):
+    def _execute_step(self, step, parameters):
         if 'condition' in step:
             should_run = self._check_step_condition(step['condition'],
                                                     parameters)

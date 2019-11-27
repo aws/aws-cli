@@ -541,6 +541,8 @@ class TestExecutor(unittest.TestCase):
                 'sharedconfig': core.SharedConfigExecutorStep(
                     config_api=self.config_api,
                 ),
+                'define-variable': core.DefineVariableStep(),
+                'merge-dict': core.MergeDictStep(),
             }
         )
 
@@ -783,6 +785,145 @@ class TestExecutor(unittest.TestCase):
         self.executor.execute(loaded['execute'], variables)
         self.config_api.set_values.assert_called_with(
             {'region': 'bar'}, profile=None)
+
+    def test_can_define_variables(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: define-variable
+              varname: myvar
+              value:
+                foo: bar
+        """)
+        variables = {}
+        self.executor.execute(loaded['execute'], variables)
+        self.assertEqual(variables, {'myvar': {'foo': 'bar'}})
+
+    def test_can_reference_variables_in_definition(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: define-variable
+              varname: myvar
+              value:
+                foo: "{bar}"
+        """)
+        variables = {"bar": "value-of-bar"}
+        self.executor.execute(loaded['execute'], variables)
+        self.assertEqual(variables, {'myvar': {'foo': 'value-of-bar'},
+                                     'bar': 'value-of-bar'})
+
+    def test_can_merge_dicts(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: define-variable
+              varname: myvar
+              value:
+                foo: original-foo
+                bar: original-bar
+                baz: original-baz
+            - type: merge-dict
+              output_var: result
+              overlays:
+              - "{myvar}"
+              - bar: FIRST-NEW-BAR
+                baz: FIRST-NEW-BAZ
+              - baz: SECOND-NEW-BAZ
+                newkey: newvalue
+        """)
+        variables = {}
+        self.executor.execute(loaded['execute'], variables)
+        expected = {
+            'foo': 'original-foo',
+            'bar': 'FIRST-NEW-BAR',
+            'baz': 'SECOND-NEW-BAZ',
+            'newkey': 'newvalue',
+        }
+        self.assertEqual(variables['result'], expected)
+
+    def test_can_merge_nested_dicts(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: define-variable
+              varname: myvar
+              value:
+                foo:
+                  bar:
+                    baz: original-baz
+                    baz2: original-baz2
+                foo2: original-foo2
+            - type: merge-dict
+              output_var: result
+              overlays:
+              - "{myvar}"
+              - foo:
+                  bar:
+                    baz: new-baz
+                  bar2: new-bar2
+        """)
+        variables = {}
+        self.executor.execute(loaded['execute'], variables)
+        expected = {
+            'foo': {'bar': {'baz': 'new-baz', 'baz2': 'original-baz2'},
+                    'bar2': 'new-bar2'},
+            'foo2': 'original-foo2',
+        }
+        self.assertEqual(variables['result'], expected)
+
+    def test_can_merge_dicts_with_vars(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: define-variable
+              varname: myvar
+              value:
+                foo:
+                  bar:
+                    baz: original-baz
+                    baz2: original-baz2
+                foo2: original-foo2
+            - type: define-variable
+              varname: myvar2
+              value:
+                foo:
+                  bar:
+                    baz: new-baz
+                    baz2: original-baz2
+                  bar2: new-bar2
+            - type: merge-dict
+              output_var: result
+              overlays:
+              - "{myvar}"
+              - "{myvar2}"
+        """)
+        variables = {}
+        self.executor.execute(loaded['execute'], variables)
+        expected = {
+            'foo': {'bar': {'baz': 'new-baz', 'baz2': 'original-baz2'},
+                    'bar2': 'new-bar2'},
+            'foo2': 'original-foo2',
+        }
+        self.assertEqual(variables['result'], expected)
+
+    def test_can_replace_merged_bar(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: define-variable
+              varname: myvar
+              value:
+                foo: bar
+            - type: merge-dict
+              output_var: myvar
+              overlays:
+              - "{myvar}"
+              - foo: new
+        """)
+        variables = {}
+        self.executor.execute(loaded['execute'], variables)
+        self.assertEqual(variables, {'myvar': {'foo': 'new'}})
 
 
 class TestSharedConfigAPI(unittest.TestCase):

@@ -25,8 +25,9 @@ def create_default_wizard_runner(session):
                 api_invoker),
             core.SharedConfigExecutorStep.NAME: core.SharedConfigExecutorStep(
                 shared_config),
+            core.DefineVariableStep.NAME: core.DefineVariableStep(),
+            core.MergeDictStep.NAME: core.MergeDictStep(),
         }
     )
     runner = core.Runner(planner, executor)
     return runner
-

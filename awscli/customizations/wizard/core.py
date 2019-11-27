@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 """Core planner and executor for wizards."""
+import re
 import jmespath
 import os
 
@@ -218,6 +219,59 @@ class SharedConfigStep(BaseStep):
             )
 
 
+class VariableResolver(object):
+
+    _VAR_MATCH = re.compile(r'^{(.*?)}$')
+
+    def resolve_variables(self, variables, params):
+        """Replace references to variables with their values.
+
+        Example::
+
+            VariableResolver().resolve_variables(
+              {'foo': 'bar'},
+              {'MyValue': "{foo}"},
+            ) == {'MyValue': 'bar'}
+
+        """
+        return self._resolve_vars(params, variables)
+
+    def _resolve_vars(self, value, plan_vars):
+        if isinstance(value, str):
+            is_variable_ref = self._VAR_MATCH.search(value)
+            if is_variable_ref:
+                varname = is_variable_ref.group(1)
+                return plan_vars[varname]
+            return value
+        elif isinstance(value, list):
+            final = []
+            for v in value:
+                final.append(self._resolve_vars(v, plan_vars))
+            return final
+        elif isinstance(value, dict):
+            final = {}
+            for k, v in value.items():
+                final[k] = self._resolve_vars(v, plan_vars)
+            final = self._resolve_functions(final)
+            return final
+        else:
+            return value
+
+    def _resolve_functions(self, value):
+        if len(value) != 1:
+            return value
+        only_key = list(value)[0]
+        # The built in functions will likely move to another module
+        # as we start to add more.
+        if only_key == '__wizard__:File':
+            filename = value[only_key]['path']
+            with open(filename, 'rb') as f:
+                return f.read()
+        return value
+
+
+
+
 class APIInvoker(object):
     """This class contains shared logic for the apicall step.
 
@@ -245,44 +299,16 @@ class APIInvoker(object):
         return response
 
     def _resolve_params(self, api_params, optional_params, plan_vars):
-        api_params_resolved = self._resolve_vars(api_params, plan_vars)
+        resolver = VariableResolver()
+        api_params_resolved = resolver.resolve_variables(
+            plan_vars, api_params)
         if optional_params is not None:
-            optional_params_resolved = self._resolve_vars(optional_params,
-                                                          plan_vars)
+            optional_params_resolved = resolver.resolve_variables(
+                plan_vars, optional_params)
             for key, value in optional_params_resolved.items():
                 if key not in api_params_resolved and value is not None:
                     api_params_resolved[key] = value
         return api_params_resolved
-
-    def _resolve_vars(self, value, plan_vars):
-        if isinstance(value, str):
-            value = value.format(**plan_vars)
-            return value
-        elif isinstance(value, list):
-            final = []
-            for v in value:
-                final.append(self._resolve_vars(v, plan_vars))
-            return final
-        elif isinstance(value, dict):
-            final = {}
-            for k, v in value.items():
-                final[k] = self._resolve_vars(v, plan_vars)
-            final = self._resolve_functions(final)
-            return final
-        else:
-            return value
-
-    def _resolve_functions(self, value):
-        if len(value) != 1:
-            return value
-        only_key = list(value)[0]
-        # The built in functions will likely move to another module
-        # as we start to add more.
-        if only_key == '__wizard__:File':
-            filename = value[only_key]['path']
-            with open(filename, 'rb') as f:
-                return f.read()
-        return value
 
 
 class Executor(object):
@@ -373,22 +399,7 @@ class SharedConfigExecutorStep(ExecutorStep):
         self._config_api.set_values(config_params, profile=profile)
 
     def _resolve_params(self, value, params):
-        # TODO: remove duplication with APICallExecutorStep
-        if isinstance(value, str):
-            value = value.format(**params)
-            return value
-        elif isinstance(value, list):
-            final = []
-            for v in value:
-                final.append(self._resolve_params(v, params))
-            return final
-        elif isinstance(value, dict):
-            final = {}
-            for k, v in value.items():
-                final[k] = self._resolve_params(v, params)
-            return final
-        else:
-            return value
+        return VariableResolver().resolve_variables(params, value)
 
 
 class SharedConfigAPI(object):
@@ -422,3 +433,45 @@ class SharedConfigAPI(object):
         config_filename = os.path.expanduser(
             self._session.get_config_variable('config_file'))
         self._config_writer.update_config(config_params, config_filename)
+
+
+class DefineVariableStep(ExecutorStep):
+
+    NAME = 'define-variable'
+
+    def run_step(self, step_definition, parameters):
+        value = step_definition['value']
+        resolved_value = VariableResolver().resolve_variables(
+            parameters, value)
+        key = step_definition['varname']
+        parameters[key] = resolved_value
+
+
+class MergeDictStep(ExecutorStep):
+
+    NAME = 'merge-dict'
+
+    def run_step(self, step_definition, parameters):
+        var_resolver = VariableResolver()
+        result = {}
+        for overlay in step_definition['overlays']:
+            resolved_overlay = var_resolver.resolve_variables(
+                parameters, overlay,
+            )
+            result = self._deep_merge(result, resolved_overlay)
+        parameters[step_definition['output_var']] = result
+
+    def _deep_merge(self, original, newvalue):
+        if isinstance(newvalue, list) and isinstance(original, list):
+            # We want to concat list together during a deep merge.
+            return original + newvalue
+        elif isinstance(newvalue, dict) and isinstance(original, dict):
+            result = original.copy()
+            for key, value in newvalue.items():
+                if key not in result:
+                    result[key] = value
+                else:
+                    result[key] = self._deep_merge(original[key], value)
+            return result
+        else:
+            return newvalue

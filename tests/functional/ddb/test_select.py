@@ -460,6 +460,13 @@ class TestSelect(BaseSelectTest):
             command, expected, expected_rc=0
         )
 
+    def test_select_does_not_support_yaml_stream(self):
+        cmdline = 'ddb select mytable --output yaml-stream'
+        stdout, _, _ = self.assert_params_for_cmd(
+            cmdline, expected_rc=255,
+            stderr_contains='yaml-stream output format is not supported',
+        )
+
 
 class TestSelectPagination(BaseSelectTest):
     def setUp(self):

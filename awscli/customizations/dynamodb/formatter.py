@@ -16,12 +16,12 @@ import decimal
 from ruamel.yaml import ScalarNode
 
 from awscli.customizations.dynamodb.types import Binary
-from awscli.formatter import YAMLFormatter
+from awscli.formatter import YAMLDumper
 
 
-class DynamoYAMLFormatter(YAMLFormatter):
-    def __init__(self, args):
-        super(DynamoYAMLFormatter, self).__init__(args)
+class DynamoYAMLDumper(YAMLDumper):
+    def __init__(self):
+        super(DynamoYAMLDumper, self).__init__()
         self._yaml.representer.add_representer(
             decimal.Decimal, self._represent_decimal
         )
@@ -29,23 +29,21 @@ class DynamoYAMLFormatter(YAMLFormatter):
             Binary, self._represent_binary
         )
 
-    def _represent_decimal(self, dumper, data):
+    def _represent_decimal(self, underlying_dumper, data):
         if data == data.to_integral():
             return ScalarNode('tag:yaml.org,2002:int', str(data))
         else:
             return ScalarNode('tag:yaml.org,2002:float', str(data))
 
-    def _represent_binary(self, dumper, data):
+    def _represent_binary(self, underlying_dumper, data):
         encoded_data = b64encode(data.value).decode('ascii')
-        return dumper.represent_scalar(
+        return underlying_dumper.represent_scalar(
             u'tag:yaml.org,2002:binary', encoded_data, style='"'
         )
 
-    def _format_response(self, command_name, response, stream):
+    def dump(self, response, stream):
         if isinstance(response, decimal.Decimal):
             stream.write(str(response))
             stream.write('\n')
             return
-        super(DynamoYAMLFormatter, self)._format_response(
-            command_name, response, stream
-        )
+        super(DynamoYAMLDumper, self).dump(response, stream)

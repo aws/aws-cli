@@ -49,6 +49,7 @@ class TestPlanner(unittest.TestCase):
             step_handlers={
                 'static': core.StaticStep(),
                 'prompt': core.PromptStep(self.prompter),
+                'yesno-prompt': core.YesNoPrompt(self.prompter),
                 'template': core.TemplateStep(),
             }
         )
@@ -357,6 +358,47 @@ class TestPlanner(unittest.TestCase):
         parameters = planner.run(loaded['plan'])
         self.assertEqual(parameters['foo'],
                          os.path.abspath('myfile.txt'))
+
+    def test_can_run_yes_no_prompt_step(self):
+        loaded = load_wizard("""
+        plan:
+          test:
+            values:
+              wants_defaults:
+                type: yesno-prompt
+                question: "Do you want to use the defaults?"
+        """)
+        self.responses['Do you want to use the defaults?'] = 'yes'
+
+        parameters = self.planner.run(loaded['plan'])
+        self.assertEqual(parameters['wants_defaults'], 'yes')
+        self.assertEqual(
+            self.prompter.recorded_prompts,
+            [('Do you want to use the defaults?',
+              'yes',
+              [{'display': 'Yes', 'actual_value': 'yes'},
+               {'display': 'No', 'actual_value': 'no'}])],
+        )
+
+    def test_can_set_default_yes_no_value(self):
+        loaded = load_wizard("""
+        plan:
+          test:
+            values:
+              wants_defaults:
+                type: yesno-prompt
+                question: "Do you want to use the defaults?"
+                start_value: no
+        """)
+        self.responses['Do you want to use the defaults?'] = 'no'
+
+        parameters = self.planner.run(loaded['plan'])
+        self.assertEqual(
+            self.prompter.recorded_prompts[0][2],
+            # The default is No so it should be presented first.
+            [{'display': 'No', 'actual_value': 'no'},
+             {'display': 'Yes', 'actual_value': 'yes'}]
+        )
 
     def test_can_jump_around_to_next_steps(self):
         # This test shows that you can specify an explicit

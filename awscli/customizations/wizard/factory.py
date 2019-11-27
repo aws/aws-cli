@@ -10,6 +10,7 @@ def create_default_wizard_runner(session):
         step_handlers={
             'static': core.StaticStep(),
             'prompt': core.PromptStep(ui.UIPrompter()),
+            'yesno-prompt': core.YesNoPrompt(ui.UIPrompter()),
             'fileprompt': core.FilePromptStep(
                 ui.UIFilePrompter(ui.FileCompleter())),
             'template': core.TemplateStep(),

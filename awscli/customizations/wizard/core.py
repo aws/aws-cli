@@ -127,6 +127,29 @@ class PromptStep(BaseStep):
             return choices
 
 
+class YesNoPrompt(PromptStep):
+    """Shorthand for a yes/no prompt.
+
+    Asking yes/no questions is common enough in wizards that
+    this class provides a shorthand for doing this instead of having
+    to write out the long form version using the general ``prompt``
+    step.
+
+    """
+    def run_step(self, step_definition, parameters):
+        choices = [
+            {'display': 'Yes', 'actual_value': 'yes'},
+            {'display': 'No', 'actual_value': 'no'},
+        ]
+        if step_definition.get('start_value', 'yes') == 'no':
+            # They want the "No" choice to be the starting value so we
+            # need to reverse the choices.
+            choices[:] = choices[::-1]
+        response = self._prompter.prompt(step_definition['question'],
+                                         choices=choices)
+        return response
+
+
 class FilePromptStep(BaseStep):
     def __init__(self, prompter):
         self._prompter = prompter

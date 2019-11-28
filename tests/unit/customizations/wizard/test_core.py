@@ -178,6 +178,46 @@ class TestPlanner(unittest.TestCase):
                                              'actual_value': 'dev'}])],
         )
 
+    def test_can_prompt_with_types(self):
+        loaded = load_wizard("""
+        plan:
+          start:
+            values:
+              name:
+                type: prompt
+                description: Enter a string
+                datatype: str
+              age:
+                type: prompt
+                description: Enter an int
+                datatype: int
+              float:
+                type: prompt
+                description: Enter a float
+                datatype: float
+              trueval:
+                type: prompt
+                description: Enter a true value
+                datatype: bool
+              falseval:
+                type: prompt
+                description: Enter a false value
+                datatype: bool
+        """)
+        # The responses will always return string values.
+        self.responses['Enter a string'] = 'myname'
+        self.responses['Enter an int'] = '100'
+        self.responses['Enter a float'] = '2.0'
+        self.responses['Enter a true value'] = 'true'
+        self.responses['Enter a false value'] = 'false'
+
+        parameters = self.planner.plan(loaded['plan'])
+        self.assertEqual(parameters['name'], 'myname')
+        self.assertEqual(parameters['age'], 100)
+        self.assertEqual(parameters['float'], 2.0)
+        self.assertEqual(parameters['trueval'], True)
+        self.assertEqual(parameters['falseval'], False)
+
     def test_special_step_done_stops_run(self):
         loaded = load_wizard("""
         plan:

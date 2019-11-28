@@ -120,12 +120,18 @@ class PromptStep(BaseStep):
 
     def __init__(self, prompter):
         self._prompter = prompter
+        self._conversion_funcs = {
+            'int': int,
+            'float': float,
+            'str': str,
+            'bool': lambda x: True if x.lower() == 'true' else False
+        }
 
     def run_step(self, step_definition, parameters):
         choices = self._get_choices(step_definition, parameters)
         response = self._prompter.prompt(step_definition['description'],
                                          choices=choices)
-        return response
+        return self._convert_data_type_if_needed(response, step_definition)
 
     def _get_choices(self, step_definition, parameters):
         choices = step_definition.get('choices')
@@ -135,6 +141,11 @@ class PromptStep(BaseStep):
                 # a variable.
                 return parameters[choices]
             return choices
+
+    def _convert_data_type_if_needed(self, response, step_definition):
+        if 'datatype' not in step_definition:
+            return response
+        return self._conversion_funcs[step_definition['datatype']](response)
 
 
 class YesNoPrompt(PromptStep):

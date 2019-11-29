@@ -1,0 +1,158 @@
+version: "0.1"
+title: Create An Amazon DynamoDB Table
+description: This wizard will create a new Amazon DynamoDB Table
+plan:
+  required_values:
+    values:
+      table_name:
+        type: prompt
+        description: Enter the name of the table
+      primary_key_name:
+        type: prompt
+        description: Enter the name of the primary key
+      primary_key_type:
+        type: prompt
+        description: Primary key type
+        choices:
+            - actual_value: S
+              display: String
+            - actual_value: N
+              display: Number
+            - actual_value: B
+              display:  Binary
+      wants_sort_key:
+        type: yesno-prompt
+        question: Add a sort key?
+        start_value: no
+    next_step:
+      switch: wants_sort_key
+      yes: prompt_sort_key
+      no: prompt_capacity
+  prompt_sort_key:
+    values:
+      sort_key_name:
+        type: prompt
+        description: Enter the name of the sort key
+      sort_key_type:
+        type: prompt
+        description: Sort key type
+        choices:
+            - actual_value: S
+              display: String
+            - actual_value: N
+              display: Number
+            - actual_value: B
+              display:  Binary
+  prompt_capacity:
+    values:
+      capacity_mode:
+        type: prompt
+        description: "Select the read/write capacity mode."
+        choices:
+          - actual_value: PROVISIONED
+            display: Provisioned (free-tier eligible)
+          - actual_value: PAY_PER_REQUEST
+            display: On-demand
+    next_step:
+      switch: capacity_mode
+      PAY_PER_REQUEST: prompt_encryption
+      PROVISIONED: prompt_throughput
+  prompt_throughput:
+    values:
+      read_capacity:
+        type: prompt
+        description: Enter read capacity units
+        datatype: int
+      write_capacity:
+        type: prompt
+        description: Enter write capacity units
+        datatype: int
+  prompt_encryption:
+    values:
+      encryption_settings:
+        type: prompt
+        description: "Select Server-side encryption settings for your DynamoDB table"
+        choices:
+          - display: "DEFAULT"
+            actual_value: default
+          - display: "KMS - AWS managed CMK"
+            actual_value: aws_managed_cmk
+          - display: "KMS - Customer managed CMK"
+            actual_value: customer_managed_cmk
+    next_step:
+      switch: encryption_settings
+      customer_managed_cmk: prompt_for_customer_cmk
+      default: DONE
+      aws_managed_cmk: DONE
+  prompt_for_customer_cmk:
+    values:
+      existing_cmks:
+        type: apicall
+        operation: kms.ListAliases
+        params: {}
+        query: "Aliases[?!starts_with(AliasName, `alias/aws`)].{display: AliasName, actual_value: TargetKeyId}"
+      kms_key_id:
+        type: prompt
+        description: Choose a customer managed CMK
+        choices: existing_cmks
+execute:
+  parameter-build:
+    - type: define-variable
+      varname: create_table_params
+      value:
+        TableName: "{table_name}"
+        KeySchema:
+          - AttributeName: "{primary_key_name}"
+            KeyType: HASH
+        AttributeDefinitions:
+          - AttributeName: "{primary_key_name}"
+            AttributeType: "{primary_key_type}"
+        BillingMode: "{capacity_mode}"
+    - type: merge-dict
+      output_var: create_table_params
+      condition:
+        variable: wants_sort_key
+        equals: yes
+      overlays:
+        - "{create_table_params}"
+        - KeySchema:
+            - AttributeName: "{sort_key_name}"
+              KeyType: RANGE
+          AttributeDefinitions:
+            - AttributeName: "{sort_key_name}"
+              AttributeType: "{sort_key_type}"
+    - type: merge-dict
+      output_var: create_table_params
+      condition:
+        variable: capacity_mode
+        equals: PROVISIONED
+      overlays:
+        - "{create_table_params}"
+        - ProvisionedThroughput:
+            ReadCapacityUnits: "{read_capacity}"
+            WriteCapacityUnits: "{write_capacity}"
+    - type: merge-dict
+      output_var: create_table_params
+      condition:
+        variable: encryption_settings
+        equals: aws_managed_cmk
+      overlays:
+        - "{create_table_params}"
+        - SSESpecification:
+            Enabled: true
+            SSEType: KMS
+    - type: merge-dict
+      output_var: create_table_params
+      condition:
+        variable: encryption_settings
+        equals: customer_managed_cmk
+      overlays:
+        - "{create_table_params}"
+        - SSESpecification:
+            Enabled: true
+            SSEType: KMS
+            KMSMasterKeyId: "{kms_key_id}"
+  apicalls:
+    - type: apicall
+      operation: dynamodb.CreateTable
+      params: "{create_table_params}"

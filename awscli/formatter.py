@@ -182,7 +182,8 @@ class StreamedYAMLFormatter(Formatter):
 
     def _get_response_stream(self, response):
         if is_response_paginated(response):
-            return map(self._get_transformed_response_for_output, response)
+            return compat.imap(
+                self._get_transformed_response_for_output, response)
         else:
             output = self._get_transformed_response_for_output(response)
             if output == {}:

@@ -12,6 +12,9 @@
 # language governing permissions and limitations under the License.
 import json
 
+import ruamel.yaml as yaml
+
+
 from awscli.testutils import skip_if_windows, if_windows
 from awscli.testutils import mock, create_clidriver, FileCreator
 from awscli.testutils import BaseAWSCommandParamsTest
@@ -174,3 +177,168 @@ class TestOutput(BaseAWSCommandParamsTest):
             expected_content=self.expected_content,
             expected_less_flags='S'
         )
+
+
+class TestYAMLStream(BaseAWSCommandParamsTest):
+    def assert_yaml_response_equal(self, response, expected):
+        with self.assertRaises(ValueError):
+            json.loads(response)
+        loaded = yaml.safe_load(response)
+        self.assertEqual(loaded, expected)
+
+    def test_yaml_stream_single_response(self):
+        cmdline = 'dynamodb list-tables --output yaml-stream --no-paginate'
+        self.parsed_responses = [
+            {
+                'TableNames': [
+                    'MyTable'
+                ]
+            }
+        ]
+        stdout, _, _ = self.run_cmd(cmdline)
+        self.assert_yaml_response_equal(
+            stdout,
+            [
+                {'TableNames': ['MyTable']}
+            ]
+        )
+
+    def test_yaml_stream_paginated_response(self):
+        cmdline = 'dynamodb list-tables --output yaml-stream'
+        self.parsed_responses = [
+            {
+                'TableNames': [
+                    'MyTable'
+                ],
+                'LastEvaluatedTableName': 'MyTable'
+            },
+            {
+                'TableNames': [
+                    'MyTable2'
+                ]
+            },
+        ]
+        stdout, _, _ = self.run_cmd(cmdline)
+        self.assert_yaml_response_equal(
+            stdout,
+            [
+                {
+                    'TableNames': [
+                        'MyTable'
+                    ],
+                    'LastEvaluatedTableName': 'MyTable'
+                },
+                {
+                    'TableNames': [
+                        'MyTable2'
+                    ]
+                },
+            ]
+        )
+
+    def test_yaml_stream_removes_response_metadata(self):
+        cmdline = 'dynamodb list-tables --output yaml-stream --no-paginate'
+        self.parsed_responses = [
+            {
+                'TableNames': [
+                    'MyTable'
+                ],
+                'ResponseMetadata': {'RequestId': 'id'}
+            }
+        ]
+        stdout, _, _ = self.run_cmd(cmdline)
+        self.assert_yaml_response_equal(
+            stdout,
+            [
+                {'TableNames': ['MyTable']}
+            ]
+        )
+
+    def test_yaml_stream_removes_response_metadata_for_all_responses(self):
+        cmdline = 'dynamodb list-tables --output yaml-stream'
+        self.parsed_responses = [
+            {
+                'TableNames': [
+                    'MyTable'
+                ],
+                'LastEvaluatedTableName': 'MyTable',
+                'ResponseMetadata': {'RequestId': 'id'}
+            },
+            {
+                'TableNames': [
+                    'MyTable2'
+                ],
+                'ResponseMetadata': {'RequestId': 'id2'}
+            },
+        ]
+        stdout, _, _ = self.run_cmd(cmdline)
+        self.assert_yaml_response_equal(
+            stdout,
+            [
+                {
+                    'TableNames': [
+                        'MyTable'
+                    ],
+                    'LastEvaluatedTableName': 'MyTable'
+                },
+                {
+                    'TableNames': [
+                        'MyTable2'
+                    ]
+                },
+            ]
+        )
+
+    def test_yaml_stream_uses_query(self):
+        cmdline = (
+            'dynamodb list-tables --output yaml-stream --no-paginate '
+            '--query TableNames'
+        )
+        self.parsed_responses = [
+            {
+                'TableNames': [
+                    'MyTable'
+                ]
+            }
+        ]
+        stdout, _, _ = self.run_cmd(cmdline)
+        self.assert_yaml_response_equal(
+            stdout,
+            [
+                ['MyTable']
+            ]
+        )
+
+    def test_yaml_stream_uses_query_across_each_response(self):
+        cmdline = (
+            'dynamodb list-tables --output yaml-stream --query TableNames'
+        )
+        self.parsed_responses = [
+            {
+                'TableNames': [
+                    'MyTable'
+                ],
+                'LastEvaluatedTableName': 'MyTable'
+            },
+            {
+                'TableNames': [
+                    'MyTable2'
+                ]
+            },
+        ]
+        stdout, _, _ = self.run_cmd(cmdline)
+        self.assert_yaml_response_equal(
+            stdout,
+            [
+                ['MyTable'],
+                ['MyTable2']
+            ]
+        )
+
+    def test_yaml_stream_with_empty_response(self):
+        cmdline = (
+            's3api delete-bucket --bucket mybucket --output yaml-stream'
+        )
+        self.parsed_responses = [{}]
+        stdout, _, _ = self.run_cmd(cmdline)
+        self.assertEqual(stdout, '')

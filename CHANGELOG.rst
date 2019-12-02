@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.293
+========
+
+* api-change:``license-manager``: Update license-manager command to latest version
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``schemas``: Update schemas command to latest version
+
+
 1.16.292
 ========
 

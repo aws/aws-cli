@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import mock
+from collections import OrderedDict
 
 from botocore import model
 
@@ -86,8 +87,8 @@ class TestAutoPrompter(unittest.TestCase):
     def setUp(self):
         self.prompter = mock.Mock(spec=autoprompt.Prompter)
         self.auto_prompter = autoprompt.AutoPrompter(prompter=self.prompter)
-        self.complete_arg_table = {}
-        self.required_arg_table = {}
+        self.complete_arg_table = OrderedDict({})
+        self.required_arg_table = OrderedDict({})
         self.apicall_parameters = {}
         self.command_name_parts = []
         self.prompter.select_from_choices.return_value = {

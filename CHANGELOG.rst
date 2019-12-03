@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+1.16.295
+========
+
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``codeguruprofiler``: Update codeguruprofiler command to latest version
+* api-change:``textract``: Update textract command to latest version
+* api-change:``frauddetector``: Update frauddetector command to latest version
+* api-change:``outposts``: Update outposts command to latest version
+* api-change:``codeguru-reviewer``: Update codeguru-reviewer command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``sagemaker-a2i-runtime``: Update sagemaker-a2i-runtime command to latest version
+* api-change:``networkmanager``: Update networkmanager command to latest version
+* api-change:``s3control``: Update s3control command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``compute-optimizer``: Update compute-optimizer command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+
+
 1.16.294
 ========
 

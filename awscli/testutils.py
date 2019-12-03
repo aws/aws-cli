@@ -418,14 +418,15 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
 
     def before_parameter_build(self, params, model, **kwargs):
         self.last_kwargs = params
-        self.operations_called.append((model, params))
+        self.operations_called.append((model, params.copy()))
 
     def run_cmd(self, cmd, expected_rc=0):
         logging.debug("Calling cmd: %s", cmd)
         self.patch_make_request()
-        self.driver.session.register('before-call', self.before_call)
-        self.driver.session.register('before-parameter-build',
-                                self.before_parameter_build)
+        event_emitter = self.driver.session.get_component('event_emitter')
+        event_emitter.register('before-call', self.before_call)
+        event_emitter.register_first(
+            'before-parameter-build.*.*', self.before_parameter_build)
         if not isinstance(cmd, list):
             cmdlist = cmd.split()
         else:

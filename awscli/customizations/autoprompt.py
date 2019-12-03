@@ -13,8 +13,6 @@
 import prompt_toolkit
 from prompt_toolkit.completion import WordCompleter
 
-from awscli.paramfile import get_paramfile, LOCAL_PREFIX_MAP
-from awscli.argprocess import ParamError
 from awscli.customizations.arguments import OverrideRequiredArgsArgument
 from awscli.customizations.utils import get_shape_doc_overview
 from awscli.customizations.wizard import selectmenu
@@ -65,7 +63,7 @@ class AutoPromptArgument(OverrideRequiredArgsArgument):
         )
 
     def auto_prompt_arguments(self, call_parameters, parsed_args,
-                            parsed_globals, event_name, **kwargs):
+                              parsed_globals, event_name, **kwargs):
 
         # Check if ``--cli-auto-prompt`` was specified in the command line.
         auto_prompt = getattr(parsed_args, 'cli_auto_prompt', False)

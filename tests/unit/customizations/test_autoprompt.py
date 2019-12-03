@@ -11,14 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import mock
-import os
-import shutil
-import tempfile
 
 from botocore import model
 
 from awscli.testutils import unittest
-from awscli.argprocess import ParamError
 from awscli.customizations import autoprompt
 
 
@@ -61,7 +57,6 @@ class TestCLIAutoPrompt(unittest.TestCase):
 
     def test_add_to_call_parameters_no_file(self):
         parsed_args = self.create_args(cli_auto_prompt=True)
-        call_parameters = {}
         self.argument.auto_prompt_arguments(
             call_parameters={},
             parsed_args=parsed_args,
@@ -101,7 +96,7 @@ class TestAutoPrompter(unittest.TestCase):
         }
 
     def prompt_for_values(self):
-        self.auto_prompter.prompt_for_values(
+        return self.auto_prompter.prompt_for_values(
             self.complete_arg_table,
             self.required_arg_table,
             self.apicall_parameters,
@@ -120,6 +115,7 @@ class TestAutoPrompter(unittest.TestCase):
         self.add_required_arg(FakeArg('my-arg-2'))
         self.prompter.prompt.side_effect = ['my-value-1', 'my-value-2']
         result = self.prompt_for_values()
+        self.assertEqual(result, 0)
         # The prompter should have said the appropriate apicall_parameters
         # based on the return values from the prompt.
         self.assertEqual(self.apicall_parameters, {'my-arg-1': 'my-value-1',
@@ -141,7 +137,7 @@ class TestAutoPrompter(unittest.TestCase):
             {'actual_value': 'print-only', 'display': 'Print CLI command.'}
         ]
         self.prompter.prompt.side_effect = ['my-value-1', 'my-value-2']
-        result = self.prompt_for_values()
+        self.prompt_for_values()
         self.assertEqual(self.apicall_parameters,
                          {'optional-1': 'my-value-1',
                           'optional-2': 'my-value-2'})
@@ -154,7 +150,7 @@ class TestAutoPrompter(unittest.TestCase):
             # User enters a good value.
             'my-value-1',
         ]
-        result = self.prompt_for_values()
+        self.prompt_for_values()
         # The good value should make it to the api call params.
         self.assertEqual(self.apicall_parameters, {'my-arg-1': 'my-value-1'})
 
@@ -166,7 +162,7 @@ class TestAutoPrompter(unittest.TestCase):
         )
         self.add_required_arg(arg)
         self.prompter.prompt.return_value = 'my-value-1'
-        result = self.prompt_for_values()
+        self.prompt_for_values()
         self.assertEqual(self.apicall_parameters, {'my-arg-1': 'my-value-1'})
         # Because the shape has an enum, we should have used that for the
         # word completer in the prompt.

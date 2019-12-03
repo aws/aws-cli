@@ -63,6 +63,7 @@ class GetTokenCommand(BasicCommand):
     def _run_main(self, parsed_args, parsed_globals):
         client_factory = STSClientFactory(self._session)
         sts_client = client_factory.get_sts_client(
+            endpoint_url=parsed_globals.endpoint_url,
             region_name=parsed_globals.region,
             role_arn=parsed_args.role_arn)
         token = TokenGenerator(sts_client).get_token(parsed_args.cluster_name)
@@ -111,12 +112,13 @@ class STSClientFactory(object):
     def __init__(self, session):
         self._session = session
 
-    def get_sts_client(self, region_name=None, role_arn=None):
+    def get_sts_client(self, endpoint_url=None, region_name=None, role_arn=None):
         client_kwargs = {
-            'region_name': region_name
+            'region_name': region_name,
+            'endpoint_url': endpoint_url
         }
         if role_arn is not None:
-            creds = self._get_role_credentials(region_name, role_arn)
+            creds = self._get_role_credentials(endpoint_url, region_name, role_arn)
             client_kwargs['aws_access_key_id'] = creds['AccessKeyId']
             client_kwargs['aws_secret_access_key'] = creds['SecretAccessKey']
             client_kwargs['aws_session_token'] = creds['SessionToken']
@@ -124,8 +126,8 @@ class STSClientFactory(object):
         self._register_cluster_name_handlers(sts)
         return sts
 
-    def _get_role_credentials(self, region_name, role_arn):
-        sts = self._session.create_client('sts', region_name)
+    def _get_role_credentials(self, endpoint_url, region_name, role_arn):
+        sts = self._session.create_client('sts', region_name, endpoint_url=endpoint_url)
         return sts.assume_role(
             RoleArn=role_arn,
             RoleSessionName='EKSGetTokenAuth'

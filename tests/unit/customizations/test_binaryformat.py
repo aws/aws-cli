@@ -33,8 +33,8 @@ class TestBase64DecodeVisitor(unittest.TestCase):
 
     def test_can_convert_top_level_blob(self):
         members = {'B': {'type': 'blob'}}
-        params = {'B': 'Zm9v'}
-        expected_params = {'B': b'foo'}
+        params = {'B': 'Zm9vAGJheg=='}
+        expected_params = {'B': b'foo\x00baz'}
         self.assert_decoded_params(members, params, expected_params)
 
     def test_can_convert_nested_blob(self):

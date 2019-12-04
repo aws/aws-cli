@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.16.296
+========
+
+* api-change:``ebs``: Update ebs command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``stepfunctions``: Update stepfunctions command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+
+
 1.16.295
 ========
 

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.297
+========
+
+* api-change:``kinesis-video-signaling``: Update kinesis-video-signaling command to latest version
+* api-change:``kinesisvideo``: Update kinesisvideo command to latest version
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+
+
 1.16.296
 ========
 

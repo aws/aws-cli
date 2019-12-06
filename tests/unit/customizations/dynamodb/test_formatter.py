@@ -16,12 +16,13 @@ from decimal import Decimal
 import jmespath
 from nose.tools import assert_equal
 
-from awscli.customizations.dynamodb.formatter import DynamoYAMLFormatter
+from awscli.formatter import YAMLFormatter
+from awscli.customizations.dynamodb.formatter import DynamoYAMLDumper
 from awscli.customizations.dynamodb.types import Binary
 from awscli.testutils import capture_output
 
 
-def test_dynamo_formatter():
+def test_yaml_formatter_with_dynamo_dumper():
     cases = [
         {
             'given': {'mykey': Decimal('1')},
@@ -60,7 +61,8 @@ def assert_format(given, expected, query=None):
     compiled_query = None
     if query is not None:
         compiled_query = jmespath.compile(query)
-    formatter = DynamoYAMLFormatter(Namespace(query=compiled_query))
+    formatter = YAMLFormatter(
+        Namespace(query=compiled_query), DynamoYAMLDumper())
     with capture_output() as output:
         formatter('fake-command-name', given)
     assert_equal(output.stdout.getvalue(), expected)

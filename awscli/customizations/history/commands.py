@@ -29,7 +29,11 @@ class HistorySubcommand(BasicCommand):
         self._db_reader = db_reader
         self._output_stream_factory = output_stream_factory
         if output_stream_factory is None:
-            self._output_stream_factory = OutputStreamFactory()
+            self._output_stream_factory = \
+                self._get_default_output_stream_factory()
+
+    def _get_default_output_stream_factory(self):
+        return OutputStreamFactory(self._session)
 
     def _connect_to_history_db(self):
         if self._db_reader is None:
@@ -56,8 +60,5 @@ class HistorySubcommand(BasicCommand):
             return False
         return is_a_tty() and not is_windows
 
-    def _get_output_stream(self, preferred_pager=None):
-        if is_a_tty():
-            return self._output_stream_factory.get_pager_stream(
-                preferred_pager)
-        return self._output_stream_factory.get_stdout_stream()
+    def _get_output_stream(self):
+        return self._output_stream_factory.get_output_stream()

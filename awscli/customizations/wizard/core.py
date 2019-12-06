@@ -11,11 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 """Core planner and executor for wizards."""
+import re
 import jmespath
 import os
 
 from botocore import xform_name
-
 
 
 class Runner(object):
@@ -24,8 +24,8 @@ class Runner(object):
         self._executor = executor
 
     def run(self, wizard_spec):
-        params = self._planner.run(wizard_spec['plan'])
-        self._executor.run(wizard_spec['execute'], params)
+        params = self._planner.plan(wizard_spec['plan'])
+        self._executor.execute(wizard_spec['execute'], params)
 
 
 class Planner(object):
@@ -38,12 +38,12 @@ class Planner(object):
         # running through the plan steps.
         self._parameters = {}
 
-    def run(self, plan):
+    def plan(self, plan):
         self._parameters.clear()
         steps_iter = self._steps(plan)
         step = next(steps_iter)
         while step is not self._STOP_RUNNING:
-            next_step_name = self._run_step(step)
+            next_step_name = self._run_plan_step(step)
             step = steps_iter.send(next_step_name)
         return self._parameters
 
@@ -70,7 +70,7 @@ class Planner(object):
                 step_index = step_names.index(next_step_name)
                 step_name = next_step_name
 
-    def _run_step(self, step):
+    def _run_plan_step(self, step):
         # Running step consists of first fetching any values
         # based on what's defined in `values`.
         for key, value in step['values'].items():
@@ -98,24 +98,40 @@ class Planner(object):
 
 
 class BaseStep(object):
+    # Subclasses must implement this.  This defines the name you'd
+    # use for the `type` in a wizard definition.
+    NAME = ''
+
     def run_step(self, step_definition, parameters):
         raise NotImplementedError("run_step")
 
 
 class StaticStep(BaseStep):
+
+    NAME = 'static'
+
     def run_step(self, step_definition, parameters):
         return step_definition['value']
 
 
 class PromptStep(BaseStep):
+
+    NAME = 'prompt'
+
     def __init__(self, prompter):
         self._prompter = prompter
+        self._conversion_funcs = {
+            'int': int,
+            'float': float,
+            'str': str,
+            'bool': lambda x: True if x.lower() == 'true' else False
+        }
 
     def run_step(self, step_definition, parameters):
         choices = self._get_choices(step_definition, parameters)
         response = self._prompter.prompt(step_definition['description'],
                                          choices=choices)
-        return response
+        return self._convert_data_type_if_needed(response, step_definition)
 
     def _get_choices(self, step_definition, parameters):
         choices = step_definition.get('choices')
@@ -126,8 +142,42 @@ class PromptStep(BaseStep):
                 return parameters[choices]
             return choices
 
+    def _convert_data_type_if_needed(self, response, step_definition):
+        if 'datatype' not in step_definition:
+            return response
+        return self._conversion_funcs[step_definition['datatype']](response)
+
+
+class YesNoPrompt(PromptStep):
+    """Shorthand for a yes/no prompt.
+
+    Asking yes/no questions is common enough in wizards that
+    this class provides a shorthand for doing this instead of having
+    to write out the long form version using the general ``prompt``
+    step.
+
+    """
+
+    NAME = 'yesno-prompt'
+
+    def run_step(self, step_definition, parameters):
+        choices = [
+            {'display': 'Yes', 'actual_value': 'yes'},
+            {'display': 'No', 'actual_value': 'no'},
+        ]
+        if step_definition.get('start_value', 'yes') == 'no':
+            # They want the "No" choice to be the starting value so we
+            # need to reverse the choices.
+            choices[:] = choices[::-1]
+        response = self._prompter.prompt(step_definition['question'],
+                                         choices=choices)
+        return response
+
 
 class FilePromptStep(BaseStep):
+
+    NAME = 'fileprompt'
+
     def __init__(self, prompter):
         self._prompter = prompter
 
@@ -138,12 +188,17 @@ class FilePromptStep(BaseStep):
 
 class TemplateStep(BaseStep):
 
+    NAME = 'template'
+
     def run_step(self, step_definition, parameters):
         value = step_definition['value']
         return value.format(**parameters)
 
 
 class APICallStep(BaseStep):
+
+    NAME = 'apicall'
+
     def __init__(self, api_invoker):
         self._api_invoker = api_invoker
 
@@ -159,6 +214,9 @@ class APICallStep(BaseStep):
 
 
 class SharedConfigStep(BaseStep):
+
+    NAME = 'sharedconfig'
+
     def __init__(self, config_api):
         self._config_api = config_api
 
@@ -170,6 +228,59 @@ class SharedConfigStep(BaseStep):
                 profile=step_definition['params'].get('profile'),
                 value=step_definition['params']['value'],
             )
+
+
+class VariableResolver(object):
+
+    _VAR_MATCH = re.compile(r'^{(.*?)}$')
+
+    def resolve_variables(self, variables, params):
+        """Replace references to variables with their values.
+
+        Example::
+
+            VariableResolver().resolve_variables(
+              {'foo': 'bar'},
+              {'MyValue': "{foo}"},
+            ) == {'MyValue': 'bar'}
+
+        """
+        return self._resolve_vars(params, variables)
+
+    def _resolve_vars(self, value, plan_vars):
+        if isinstance(value, str):
+            is_variable_ref = self._VAR_MATCH.search(value)
+            if is_variable_ref:
+                varname = is_variable_ref.group(1)
+                return plan_vars[varname]
+            return value
+        elif isinstance(value, list):
+            final = []
+            for v in value:
+                final.append(self._resolve_vars(v, plan_vars))
+            return final
+        elif isinstance(value, dict):
+            final = {}
+            for k, v in value.items():
+                final[k] = self._resolve_vars(v, plan_vars)
+            final = self._resolve_functions(final)
+            return final
+        else:
+            return value
+
+    def _resolve_functions(self, value):
+        if len(value) != 1:
+            return value
+        only_key = list(value)[0]
+        # The built in functions will likely move to another module
+        # as we start to add more.
+        if only_key == '__wizard__:File':
+            filename = value[only_key]['path']
+            with open(filename, 'rb') as f:
+                return f.read()
+        return value
+
+
 
 
 class APIInvoker(object):
@@ -199,44 +310,16 @@ class APIInvoker(object):
         return response
 
     def _resolve_params(self, api_params, optional_params, plan_vars):
-        api_params_resolved = self._resolve_vars(api_params, plan_vars)
+        resolver = VariableResolver()
+        api_params_resolved = resolver.resolve_variables(
+            plan_vars, api_params)
         if optional_params is not None:
-            optional_params_resolved = self._resolve_vars(optional_params,
-                                                          plan_vars)
+            optional_params_resolved = resolver.resolve_variables(
+                plan_vars, optional_params)
             for key, value in optional_params_resolved.items():
                 if key not in api_params_resolved and value is not None:
                     api_params_resolved[key] = value
         return api_params_resolved
-
-    def _resolve_vars(self, value, plan_vars):
-        if isinstance(value, str):
-            value = value.format(**plan_vars)
-            return value
-        elif isinstance(value, list):
-            final = []
-            for v in value:
-                final.append(self._resolve_vars(v, plan_vars))
-            return final
-        elif isinstance(value, dict):
-            final = {}
-            for k, v in value.items():
-                final[k] = self._resolve_vars(v, plan_vars)
-            final = self._resolve_functions(final)
-            return final
-        else:
-            return value
-
-    def _resolve_functions(self, value):
-        if len(value) != 1:
-            return value
-        only_key = list(value)[0]
-        # The built in functions will likely move to another module
-        # as we start to add more.
-        if only_key == '__wizard__:File':
-            filename = value[only_key]['path']
-            with open(filename, 'rb') as f:
-                return f.read()
-        return value
 
 
 class Executor(object):
@@ -244,14 +327,14 @@ class Executor(object):
     def __init__(self, step_handlers):
         self._step_handlers = step_handlers
 
-    def run(self, step, parameters):
+    def execute(self, step, parameters):
         # We may eventually support jumping around to different step
         # names, but for now, we just iterate through the steps in order.
         for group in step.values():
             for step in group:
-                self._run_step(step, parameters)
+                self._execute_step(step, parameters)
 
-    def _run_step(self, step, parameters):
+    def _execute_step(self, step, parameters):
         if 'condition' in step:
             should_run = self._check_step_condition(step['condition'],
                                                     parameters)
@@ -279,11 +362,19 @@ class Executor(object):
 
 
 class ExecutorStep(object):
+
+    # Subclasses must implement this to specify what name to use
+    # for the `type` in a wizard definition.
+    NAME = ''
+
     def run_step(self, step_definition, parameters):
         raise NotImplementedError("run_step")
 
 
 class APICallExecutorStep(ExecutorStep):
+
+    NAME = 'apicall'
+
     def __init__(self, api_invoker):
         self._api_invoker = api_invoker
 
@@ -301,6 +392,9 @@ class APICallExecutorStep(ExecutorStep):
 
 
 class SharedConfigExecutorStep(ExecutorStep):
+
+    NAME = 'sharedconfig'
+
     def __init__(self, config_api):
         self._config_api = config_api
 
@@ -316,22 +410,7 @@ class SharedConfigExecutorStep(ExecutorStep):
         self._config_api.set_values(config_params, profile=profile)
 
     def _resolve_params(self, value, params):
-        # TODO: remove duplication with APICallExecutorStep
-        if isinstance(value, str):
-            value = value.format(**params)
-            return value
-        elif isinstance(value, list):
-            final = []
-            for v in value:
-                final.append(self._resolve_params(v, params))
-            return final
-        elif isinstance(value, dict):
-            final = {}
-            for k, v in value.items():
-                final[k] = self._resolve_params(v, params)
-            return final
-        else:
-            return value
+        return VariableResolver().resolve_variables(params, value)
 
 
 class SharedConfigAPI(object):
@@ -365,3 +444,45 @@ class SharedConfigAPI(object):
         config_filename = os.path.expanduser(
             self._session.get_config_variable('config_file'))
         self._config_writer.update_config(config_params, config_filename)
+
+
+class DefineVariableStep(ExecutorStep):
+
+    NAME = 'define-variable'
+
+    def run_step(self, step_definition, parameters):
+        value = step_definition['value']
+        resolved_value = VariableResolver().resolve_variables(
+            parameters, value)
+        key = step_definition['varname']
+        parameters[key] = resolved_value
+
+
+class MergeDictStep(ExecutorStep):
+
+    NAME = 'merge-dict'
+
+    def run_step(self, step_definition, parameters):
+        var_resolver = VariableResolver()
+        result = {}
+        for overlay in step_definition['overlays']:
+            resolved_overlay = var_resolver.resolve_variables(
+                parameters, overlay,
+            )
+            result = self._deep_merge(result, resolved_overlay)
+        parameters[step_definition['output_var']] = result
+
+    def _deep_merge(self, original, newvalue):
+        if isinstance(newvalue, list) and isinstance(original, list):
+            # We want to concat list together during a deep merge.
+            return original + newvalue
+        elif isinstance(newvalue, dict) and isinstance(original, dict):
+            result = original.copy()
+            for key, value in newvalue.items():
+                if key not in result:
+                    result[key] = value
+                else:
+                    result[key] = self._deep_merge(original[key], value)
+            return result
+        else:
+            return newvalue

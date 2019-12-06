@@ -213,8 +213,6 @@ class DetailedFormatter(Formatter):
         self._write_output(formatted_value)
 
     def _write_output(self, content):
-        if isinstance(content, six.text_type):
-            content = content.encode('utf-8')
         self._output.write(content)
 
     def _format_section_title(self, title, event_record):
@@ -378,9 +376,9 @@ class ShowCommand(HistorySubcommand):
         self._connect_to_history_db()
         try:
             self._validate_args(parsed_args)
-            with self._get_output_stream() as output_stream:
+            with self._output_stream_factory.get_output_stream() as stream:
                 formatter = self._get_formatter(
-                    parsed_args, parsed_globals, output_stream)
+                    parsed_args, parsed_globals, stream)
                 for record in self._get_record_iterator(parsed_args):
                     formatter.display(record)
         finally:

@@ -16,9 +16,11 @@ import sys
 from botocore import xform_name
 from botocore.stub import Stubber
 from botocore.utils import ArgumentGenerator
+from ruamel.yaml import YAML
 
 from awscli.clidriver import CLIOperationCaller
 from awscli.customizations.arguments import OverrideRequiredArgsArgument
+from awscli.customizations.utils import get_shape_doc_overview
 from awscli.utils import json_encoder
 
 
@@ -48,13 +50,15 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
             'Prints a JSON skeleton to standard output without sending '
             'an API request. If provided with no value or the value '
             '``input``, prints a sample input JSON that can be used as an '
-            'argument for ``--cli-input-json``. If provided with the value '
+            'argument for ``--cli-input-json``. Similarly, if provided '
+            '``yaml-input`` it will print a sample input YAML that can be '
+            'used with ``--cli-input-yaml``. If provided with the value '
             '``output``, it validates the command inputs and returns a '
             'sample output JSON for that command.'
         ),
         'nargs': '?',
         'const': 'input',
-        'choices': ['input', 'output'],
+        'choices': ['input', 'output', 'yaml-input'],
     }
 
     def __init__(self, session, operation_model):
@@ -62,8 +66,7 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
         self._operation_model = operation_model
 
     def _register_argument_action(self):
-        self._session.register(
-            'calling-command.*', self.generate_json_skeleton)
+        self._session.register('calling-command.*', self.generate_skeleton)
         super(GenerateCliSkeletonArgument, self)._register_argument_action()
 
     def override_required_args(self, argument_table, args, **kwargs):
@@ -82,36 +85,45 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
             super(GenerateCliSkeletonArgument, self).override_required_args(
                 argument_table, args, **kwargs)
 
-    def generate_json_skeleton(self, call_parameters, parsed_args,
-                               parsed_globals, **kwargs):
-        if getattr(parsed_args, 'generate_cli_skeleton', None):
-            for_output = parsed_args.generate_cli_skeleton == 'output'
-            operation_model = self._operation_model
+    def generate_skeleton(self, call_parameters, parsed_args,
+                          parsed_globals, **kwargs):
+        if not getattr(parsed_args, 'generate_cli_skeleton', None):
+            return
+        arg_value = parsed_args.generate_cli_skeleton
+        return getattr(
+            self, '_generate_%s_skeleton' % arg_value.replace('-', '_'))(
+                call_parameters=call_parameters, parsed_globals=parsed_globals
+        )
 
-            if for_output:
-                service_name = operation_model.service_model.service_name
-                operation_name = operation_model.name
-                # TODO: It would be better to abstract this logic into
-                # classes for both the input and output option such that
-                # a similar set of inputs are taken in and output
-                # similar functionality.
-                return StubbedCLIOperationCaller(self._session).invoke(
-                    service_name, operation_name, call_parameters,
-                    parsed_globals)
-            else:
-                argument_generator = ArgumentGenerator()
-                operation_input_shape = operation_model.input_shape
-                if operation_input_shape is None:
-                    skeleton = {}
-                else:
-                    skeleton = argument_generator.generate_skeleton(
-                        operation_input_shape)
+    def _generate_yaml_input_skeleton(self, **kwargs):
+        input_shape = self._operation_model.input_shape
+        yaml = YAML()
+        yaml.representer.add_representer(_Bytes, _Bytes.represent)
+        skeleton = yaml.map()
+        if input_shape is not None:
+            argument_generator = YAMLArgumentGenerator()
+            skeleton = argument_generator.generate_skeleton(input_shape)
+        yaml.dump(skeleton, sys.stdout)
+        return 0
 
-                sys.stdout.write(
-                    json.dumps(skeleton, indent=4, default=json_encoder)
-                )
-                sys.stdout.write('\n')
-                return 0
+    def _generate_input_skeleton(self, **kwargs):
+        outfile = sys.stdout
+        input_shape = self._operation_model.input_shape
+        skeleton = {}
+        if input_shape is not None:
+            argument_generator = ArgumentGenerator()
+            skeleton = argument_generator.generate_skeleton(input_shape)
+        json.dump(skeleton, outfile, indent=4, default=json_encoder)
+        outfile.write('\n')
+        return 0
+
+    def _generate_output_skeleton(self, call_parameters, parsed_globals,
+                                  **kwargs):
+        service_name = self._operation_model.service_model.service_name
+        operation_name = self._operation_model.name
+        return StubbedCLIOperationCaller(self._session).invoke(
+            service_name, operation_name, call_parameters,
+            parsed_globals)
 
 
 class StubbedCLIOperationCaller(CLIOperationCaller):
@@ -133,3 +145,66 @@ class StubbedCLIOperationCaller(CLIOperationCaller):
         with Stubber(client) as stubber:
             stubber.add_response(method_name, fake_response)
             return getattr(client, method_name)(**parameters)
+
+
+class _Bytes(object):
+    @classmethod
+    def represent(cls, dumper, data):
+        return dumper.represent_scalar(u'tag:yaml.org,2002:binary', '')
+
+
+class YAMLArgumentGenerator(ArgumentGenerator):
+    def __init__(self, use_member_names=False, yaml=None):
+        super(YAMLArgumentGenerator, self).__init__(
+            use_member_names=use_member_names)
+        self._yaml = yaml
+        if self._yaml is None:
+            self._yaml = YAML()
+
+    def _generate_skeleton(self, shape, stack, name=''):
+        # YAML supports binary, so add in boilerplate for that instead of
+        # putting in None. Here were' using a custom type so that we can ensure
+        # we serialize it correctly on python 2 and to make the
+        # serialization output more usable on python 3.
+        if shape.type_name == 'blob':
+            return _Bytes()
+        return super(YAMLArgumentGenerator, self)._generate_skeleton(
+            shape, stack, name
+        )
+
+    def _generate_type_structure(self, shape, stack):
+        if stack.count(shape.name) > 1:
+            return self._yaml.map()
+        skeleton = self._yaml.map()
+        for member_name, member_shape in shape.members.items():
+            skeleton[member_name] = self._generate_skeleton(
+                member_shape, stack, name=member_name)
+            is_required = member_name in shape.required_members
+            self._add_member_comments(
+                skeleton, member_name, member_shape, is_required)
+        return skeleton
+
+    def _add_member_comments(self, skeleton, member_name, member_shape,
+                             is_required):
+        comment_components = []
+        if is_required:
+            comment_components.append('[REQUIRED]')
+        comment_components.append(get_shape_doc_overview(member_shape))
+        if getattr(member_shape, 'enum', None):
+            comment_components.append(
+                self._get_enums_comment_content(member_shape.enum)
+            )
+        comment = ' '.join(comment_components)
+        if comment and not comment.isspace():
+            skeleton.yaml_add_eol_comment('# ' + comment, member_name)
+
+    def _get_enums_comment_content(self, enums):
+        return 'Valid values are: %s.' % ', '.join(enums)
+
+    def _generate_type_map(self, shape, stack):
+        # YAML has support for ordered maps, so don't use ordereddicts
+        # because that isn't necessary and it makes the output harder to
+        # understand and read.
+        return dict(super(YAMLArgumentGenerator, self)._generate_type_map(
+            shape, stack
+        ))

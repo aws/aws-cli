@@ -8,21 +8,26 @@ def create_default_wizard_runner(session):
                                          config_writer=ConfigFileWriter())
     planner = core.Planner(
         step_handlers={
-            'static': core.StaticStep(),
-            'prompt': core.PromptStep(ui.UIPrompter()),
-            'fileprompt': core.FilePromptStep(
+            core.StaticStep.NAME: core.StaticStep(),
+            core.PromptStep.NAME: core.PromptStep(ui.UIPrompter()),
+            core.YesNoPrompt.NAME: core.YesNoPrompt(ui.UIPrompter()),
+            core.FilePromptStep.NAME: core.FilePromptStep(
                 ui.UIFilePrompter(ui.FileCompleter())),
-            'template': core.TemplateStep(),
-            'apicall': core.APICallStep(api_invoker=api_invoker),
-            'sharedconfig': core.SharedConfigStep(config_api=shared_config),
+            core.TemplateStep.NAME: core.TemplateStep(),
+            core.APICallStep.NAME: core.APICallStep(api_invoker=api_invoker),
+            core.SharedConfigStep.NAME: core.SharedConfigStep(
+                config_api=shared_config),
         }
     )
     executor = core.Executor(
         step_handlers={
-            'apicall': core.APICallExecutorStep(api_invoker),
-            'sharedconfig': core.SharedConfigExecutorStep(shared_config),
+            core.APICallExecutorStep.NAME: core.APICallExecutorStep(
+                api_invoker),
+            core.SharedConfigExecutorStep.NAME: core.SharedConfigExecutorStep(
+                shared_config),
+            core.DefineVariableStep.NAME: core.DefineVariableStep(),
+            core.MergeDictStep.NAME: core.MergeDictStep(),
         }
     )
     runner = core.Runner(planner, executor)
     return runner
-

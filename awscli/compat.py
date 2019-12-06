@@ -58,7 +58,7 @@ is_windows = sys.platform == 'win32'
 if is_windows:
     default_pager = 'more'
 else:
-    default_pager = 'less -R'
+    default_pager = 'less'
 
 
 class StdinMissingError(Exception):
@@ -105,6 +105,7 @@ if six.PY3:
 
     from urllib.error import URLError
 
+    imap = map
     raw_input = input
 
     def get_binary_stdin():
@@ -152,10 +153,12 @@ else:
     import collections as collections_abc
     import locale
     import io
+    import itertools
     import urlparse
 
     from urllib2 import URLError
 
+    imap = itertools.imap
     raw_input = raw_input
 
     def get_binary_stdin():

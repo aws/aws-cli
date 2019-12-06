@@ -103,7 +103,8 @@ GET_DATA = {
 GET_VARIABLE = {
     'provider': 'aws',
     'output': 'json',
-    'api_versions': {}
+    'api_versions': {},
+    'pager': 'less'
 }
 
 
@@ -263,6 +264,9 @@ class FakeSession(object):
             self.profile = value
         else:
             self.session_vars[name] = value
+
+    def get_scoped_config(self):
+        return GET_VARIABLE.copy()
 
 
 class FakeCommand(BasicCommand):

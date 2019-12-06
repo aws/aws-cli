@@ -17,13 +17,15 @@ import sys
 
 from ruamel.yaml import YAML
 
+from awscli.formatter import YAMLFormatter
+from awscli.utils import OutputStreamFactory
 import awscli.customizations.dynamodb.params as parameters
 from awscli.customizations.commands import BasicCommand, CustomArgument
 from awscli.customizations.dynamodb.extractor import AttributeExtractor
 from awscli.customizations.dynamodb.transform import (
     ParameterTransformer, TypeSerializer, TypeDeserializer
 )
-from awscli.customizations.dynamodb.formatter import DynamoYAMLFormatter
+from awscli.customizations.dynamodb.formatter import DynamoYAMLDumper
 from awscli.customizations.paginate import ensure_paging_params_not_set
 from .types import Binary
 
@@ -44,6 +46,7 @@ class DDBCommand(BasicCommand):
         self._serializer = TypeSerializer()
         self._deserializer = TypeDeserializer()
         self._extractor = AttributeExtractor()
+        self._output_stream_factory = OutputStreamFactory(self._session)
 
     def _serialize(self, operation_name, data):
         service_model = self._client.meta.service_model
@@ -81,7 +84,22 @@ class DDBCommand(BasicCommand):
         return response
 
     def _dump_yaml(self, operation_name, data, parsed_globals):
-        DynamoYAMLFormatter(parsed_globals)(operation_name, data)
+        if parsed_globals.output == 'yaml-stream':
+            # TODO: In the future, we should support yaml-stream. However, it
+            #  would require a larger refactoring. Right now we always build
+            #  the full result when paginating prior to sending it to the
+            #  formatter. We need to instead pass the page iterator and
+            #  deserialize in the formatter. We cannot necessarily just
+            #  convert these to client handlers because the DDB types we
+            #  introduce do not play nicely with the pagination interfaces.
+            #  For example, botocore cannot serialize our Binary types into
+            #  a resume token when --max-items gets set.
+            raise ValueError(
+                'yaml-stream output format is not supported for ddb commands'
+            )
+        formatter = YAMLFormatter(parsed_globals, DynamoYAMLDumper())
+        with self._output_stream_factory.get_output_stream() as stream:
+            formatter(operation_name, data, stream)
 
     def _add_expression_args(self, expression_name, expression, args,
                              substitution_count=0):

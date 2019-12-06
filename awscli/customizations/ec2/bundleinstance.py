@@ -124,7 +124,7 @@ def _generate_policy(params):
     policy = POLICY.format(expires=expires_iso,
                            bucket=params['Bucket'],
                            prefix=params['Prefix'])
-    params['UploadPolicy'] = policy
+    params['UploadPolicy'] = policy.encode('utf-8')
 
 
 def _generate_signature(params):
@@ -132,7 +132,7 @@ def _generate_signature(params):
     policy = params.get('UploadPolicy')
     sak = params.get('_SAK')
     if policy and sak:
-        policy = base64.b64encode(six.b(policy)).decode('utf-8')
+        policy = base64.b64encode(policy).decode('utf-8')
         new_hmac = hmac.new(sak.encode('utf-8'), digestmod=sha1)
         new_hmac.update(six.b(policy))
         ps = base64.encodestring(new_hmac.digest()).strip().decode('utf-8')

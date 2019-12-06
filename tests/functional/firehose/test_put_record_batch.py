@@ -19,9 +19,9 @@ class TestPutRecordBatch(BaseAWSCommandParamsTest):
 
     def test_shorthand(self):
         command = self.prefix + ' --delivery-stream-name foo'
-        command += ' --records foo bar'
+        command += ' --records Zm9v YmFy'
         params = {
             'DeliveryStreamName': 'foo',
-            'Records': [{'Data': 'foo'}, {'Data': 'bar'}]
+            'Records': [{'Data': b'foo'}, {'Data': b'bar'}]
         }
         self.assert_params_for_cmd(command, params)

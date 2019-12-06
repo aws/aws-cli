@@ -13,28 +13,24 @@
 import base64
 import binascii
 
+from botocore.exceptions import ProfileNotFound
+
 from awscli.shorthand import ModelVisitor
 
 
 def add_binary_formatter(session, parsed_args, **kwargs):
     binary_format = parsed_args.cli_binary_format
     if binary_format is None:
-        binary_format = session.get_config_variable('cli_binary_format')
+        try:
+            binary_format = session.get_config_variable('cli_binary_format')
+        except ProfileNotFound:
+            binary_format = 'base64'
     BinaryFormatHandler(binary_format).register(session)
 
 
-class Base64DecodeVisitor(ModelVisitor):
-    def _visit_scalar(self, parent, shape, name, value):
-        if shape.type_name != 'blob' or not isinstance(value, str):
-            return
-        try:
-            parent[name] = base64.b64decode(value)
-        except binascii.Error:
-            raise RuntimeError('Invalid base64: "%s"' % value)
-
-
 def base64_decode_input_blobs(params, model, **kwargs):
-    Base64DecodeVisitor().visit(params, model.input_shape)
+    if model.input_shape:
+        Base64DecodeVisitor().visit(params, model.input_shape)
 
 
 def identity(x):
@@ -48,6 +44,20 @@ def _register_blob_parser(session, blob_parser):
 
 def register_identity_blob_parser(session):
     _register_blob_parser(session, identity)
+
+
+class InvalidBase64Error(Exception):
+    pass
+
+
+class Base64DecodeVisitor(ModelVisitor):
+    def _visit_scalar(self, parent, shape, name, value):
+        if shape.type_name != 'blob' or not isinstance(value, str):
+            return
+        try:
+            parent[name] = base64.b64decode(value)
+        except binascii.Error:
+            raise InvalidBase64Error('Invalid base64: "%s"' % value)
 
 
 class BinaryFormatHandler(object):

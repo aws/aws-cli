@@ -47,11 +47,11 @@ class TestCompareFaces(BaseRekognitionTest):
 
     def test_image_bytes_still_works(self):
         cmdline = self.prefix
-        cmdline += ' --source-image Bytes=foo'
-        cmdline += ' --target-image Bytes=bar'
+        cmdline += ' --source-image Bytes=Zm9v'
+        cmdline += ' --target-image Bytes=YmFy'
         result = {
-            'SourceImage': {'Bytes': 'foo'},
-            'TargetImage': {'Bytes': 'bar'},
+            'SourceImage': {'Bytes': b'foo'},
+            'TargetImage': {'Bytes': b'bar'},
         }
         self.assert_params_for_cmd(cmdline, result)
 
@@ -70,9 +70,9 @@ class TestDetectFaces(BaseRekognitionTest):
 
     def test_image_bytes_still_works(self):
         cmdline = self.prefix
-        cmdline += ' --image Bytes=foobar'
+        cmdline += ' --image Bytes=Zm9vYmFy'
         result = {
-            'Image': {'Bytes': 'foobar'}
+            'Image': {'Bytes': b'foobar'}
         }
         self.assert_params_for_cmd(cmdline, result)
 
@@ -91,9 +91,9 @@ class TestDetectLabels(BaseRekognitionTest):
 
     def test_image_bytes_still_works(self):
         cmdline = self.prefix
-        cmdline += ' --image Bytes=foobar'
+        cmdline += ' --image Bytes=Zm9vYmFy'
         result = {
-            'Image': {'Bytes': 'foobar'}
+            'Image': {'Bytes': b'foobar'}
         }
         self.assert_params_for_cmd(cmdline, result)
 
@@ -112,9 +112,9 @@ class TestDetectModerationLabels(BaseRekognitionTest):
 
     def test_image_bytes_still_works(self):
         cmdline = self.prefix
-        cmdline += ' --image Bytes=foobar'
+        cmdline += ' --image Bytes=Zm9vYmFy'
         result = {
-            'Image': {'Bytes': 'foobar'}
+            'Image': {'Bytes': b'foobar'}
         }
         self.assert_params_for_cmd(cmdline, result)
 
@@ -133,9 +133,9 @@ class TestDetectText(BaseRekognitionTest):
 
     def test_image_bytes_still_works(self):
         cmdline = self.prefix
-        cmdline += ' --image Bytes=foobar'
+        cmdline += ' --image Bytes=Zm9vYmFy'
         result = {
-            'Image': {'Bytes': 'foobar'}
+            'Image': {'Bytes': b'foobar'}
         }
         self.assert_params_for_cmd(cmdline, result)
 
@@ -157,10 +157,10 @@ class TestIndexFaces(BaseRekognitionTest):
     def test_image_bytes_still_works(self):
         cmdline = self.prefix
         cmdline += ' --collection-id foobar'
-        cmdline += ' --image Bytes=foobar'
+        cmdline += ' --image Bytes=Zm9vYmFy'
         result = {
             'CollectionId': 'foobar',
-            'Image': {'Bytes': 'foobar'}
+            'Image': {'Bytes': b'foobar'}
         }
         self.assert_params_for_cmd(cmdline, result)
 
@@ -179,9 +179,9 @@ class TestRecognizeCelebrities(BaseRekognitionTest):
 
     def test_image_bytes_still_works(self):
         cmdline = self.prefix
-        cmdline += ' --image Bytes=foobar'
+        cmdline += ' --image Bytes=Zm9vYmFy'
         result = {
-            'Image': {'Bytes': 'foobar'}
+            'Image': {'Bytes': b'foobar'}
         }
         self.assert_params_for_cmd(cmdline, result)
 
@@ -203,9 +203,9 @@ class TestSearchFacesByImage(BaseRekognitionTest):
     def test_image_bytes_still_works(self):
         cmdline = self.prefix
         cmdline += ' --collection-id foobar'
-        cmdline += ' --image Bytes=foobar'
+        cmdline += ' --image Bytes=Zm9vYmFy'
         result = {
             'CollectionId': 'foobar',
-            'Image': {'Bytes': 'foobar'}
+            'Image': {'Bytes': b'foobar'}
         }
         self.assert_params_for_cmd(cmdline, result)

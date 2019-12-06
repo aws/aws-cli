@@ -197,7 +197,7 @@ class CLIDriver(object):
                 config_var_name='cli_binary_format',
                 session=self.session,
             ),
-            ConstantProvider(value='legacy'),
+            ConstantProvider(value='base64'),
         ]
         return ChainProvider(providers=providers)
 

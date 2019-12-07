@@ -14,7 +14,9 @@
 import json
 
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
-from awscli.customizations.ecs.deploy import CodeDeployer
+from awscli.customizations.ecs.deploy import (CodeDeployer,
+                                              MAX_WAIT_MIN,
+                                              TIMEOUT_BUFFER_MIN)
 from awscli.customizations.ecs.filehelpers import (get_app_name,
                                                    get_deploy_group_name)
 
@@ -117,7 +119,8 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
                                 "Successfully created deployment " +
                                 self.deployment_id + "\n"
                                 "Waiting for " + self.deployment_id +
-                                " to succeed...\nSuccessfully deployed "
+                                " to succeed (will wait up to 30 minutes)..."
+                                "\nSuccessfully deployed "
                                 + self.task_definition_arn + " to service '"
                                 + self.service_name + "'\n")
 
@@ -206,6 +209,126 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
 
         self.assertEqual(stdout, self.expected_stdout)
 
+    def test_deploy_with_custom_timeout(self):
+        cmdline = self.PREFIX
+        cmdline += '--service ' + self.service_name
+        cmdline += ' --task-definition ' + self.task_def_file
+        cmdline += ' --codedeploy-appspec ' + self.appspec_file
+
+        expected_create_deployment_params = \
+            self.mock_deployer._get_create_deploy_request(
+                self.application_name, self.deployment_group_name)
+
+        custom_deployment_grp_response = {
+            'deploymentGroupInfo': {
+                'applicationName': self.application_name,
+                'deploymentGroupName': self.deployment_group_name,
+                'computePlatform': 'ECS',
+                'blueGreenDeploymentConfiguration': {
+                    'deploymentReadyOption': {
+                        'waitTimeInMinutes': 5
+                    },
+                    'terminateBlueInstancesOnDeploymentSuccess': {
+                        'terminationWaitTimeInMinutes': 60
+                    }
+                },
+                'ecsServices': [{
+                    'serviceName': self.service_name,
+                    'clusterName': self.cluster_name
+                }]
+            }
+        }
+        custom_timeout = str(60 + 5 + TIMEOUT_BUFFER_MIN)
+
+        self.parsed_responses = self._get_parsed_responses(
+                                    self.cluster_name,
+                                    self.application_name,
+                                    self.deployment_group_name)
+
+        self.parsed_responses[2] = custom_deployment_grp_response
+
+        expected_params = self._get_expected_params(
+                                    self.service_name,
+                                    self.cluster_name,
+                                    self.application_name,
+                                    self.deployment_group_name,
+                                    expected_create_deployment_params)
+
+        expected_stdout = ("Successfully registered new ECS task "
+                           "definition " + self.task_definition_arn + "\n"
+                           "Successfully created deployment " +
+                           self.deployment_id + "\n"
+                           "Waiting for " + self.deployment_id +
+                           " to succeed (will wait up to " + custom_timeout
+                           + " minutes)...\nSuccessfully deployed "
+                           + self.task_definition_arn + " to service '"
+                           + self.service_name + "'\n")
+
+        stdout, _, _ = self.assert_params_list_for_cmd(
+            cmdline, expected_params, None)
+
+        self.assertEqual(stdout, expected_stdout)
+
+    def test_deploy_with_max_timeout(self):
+        cmdline = self.PREFIX
+        cmdline += '--service ' + self.service_name
+        cmdline += ' --task-definition ' + self.task_def_file
+        cmdline += ' --codedeploy-appspec ' + self.appspec_file
+
+        expected_create_deployment_params = \
+            self.mock_deployer._get_create_deploy_request(
+                self.application_name, self.deployment_group_name)
+
+        custom_deployment_grp_response = {
+            'deploymentGroupInfo': {
+                'applicationName': self.application_name,
+                'deploymentGroupName': self.deployment_group_name,
+                'computePlatform': 'ECS',
+                'blueGreenDeploymentConfiguration': {
+                    'deploymentReadyOption': {
+                        'waitTimeInMinutes': 90
+                    },
+                    'terminateBlueInstancesOnDeploymentSuccess': {
+                        'terminationWaitTimeInMinutes': 300
+                    }
+                },
+                'ecsServices': [{
+                    'serviceName': self.service_name,
+                    'clusterName': self.cluster_name
+                }]
+            }
+        }
+        max_timeout = str(MAX_WAIT_MIN)
+
+        self.parsed_responses = self._get_parsed_responses(
+                                    self.cluster_name,
+                                    self.application_name,
+                                    self.deployment_group_name)
+
+        self.parsed_responses[2] = custom_deployment_grp_response
+
+        expected_params = self._get_expected_params(
+                                    self.service_name,
+                                    self.cluster_name,
+                                    self.application_name,
+                                    self.deployment_group_name,
+                                    expected_create_deployment_params)
+
+        expected_stdout = ("Successfully registered new ECS task "
+                           "definition " + self.task_definition_arn + "\n"
+                           "Successfully created deployment " +
+                           self.deployment_id + "\n"
+                           "Waiting for " + self.deployment_id +
+                           " to succeed (will wait up to " + max_timeout
+                           + " minutes)...\nSuccessfully deployed "
+                           + self.task_definition_arn + " to service '"
+                           + self.service_name + "'\n")
+
+        stdout, _, _ = self.assert_params_list_for_cmd(
+            cmdline, expected_params, None)
+
+        self.assertEqual(stdout, expected_stdout)
+
     def test_deploy_with_optional_values(self):
         custom_app = 'myOtherApp'
         custom_dgp = 'myOtherDgp'
@@ -262,6 +385,14 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
                     'applicationName': self.application_name,
                     'deploymentGroupName': self.deployment_group_name,
                     'computePlatform': 'ECS',
+                    'blueGreenDeploymentConfiguration': {
+                        'deploymentReadyOption': {
+                            'waitTimeInMinutes': 5
+                        },
+                        'terminateBlueInstancesOnDeploymentSuccess': {
+                            'terminationWaitTimeInMinutes': 10
+                        }
+                    },
                     'ecsServices': [{
                         'serviceName': self.service_name,
                         'clusterName': self.cluster_name
@@ -451,6 +582,14 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
                     'applicationName': app_name,
                     'deploymentGroupName': dgp_name,
                     'computePlatform': 'ECS',
+                    'blueGreenDeploymentConfiguration': {
+                        'deploymentReadyOption': {
+                            'waitTimeInMinutes': 5
+                        },
+                        'terminateBlueInstancesOnDeploymentSuccess': {
+                            'terminationWaitTimeInMinutes': 10
+                        }
+                    },
                     'ecsServices': [{
                         'serviceName': self.service_name,
                         'clusterName': cluster_name

@@ -23,6 +23,13 @@ The aws-cli package works on Python versions:
 * 3.6.x and greater
 * 3.7.x and greater
 
+On 10/09/2019 support for Python 2.6 and Python 3.3 was deprecated and support
+will be dropped on 01/10/2020. To avoid disruption, customers using the AWS CLI
+on Python 2.6 or 3.3 will need to upgrade their version of Python or pin the
+version of the AWS CLI in use prior to 01/10/2020. For more information, see
+this `blog post <https://aws.amazon.com/blogs/developer/deprecation-of-python-2-6-and-python-3-3-in-botocore-boto3-and-the-aws-cli/>`__.
+
+
 .. attention::
    We recommend that all customers regularly monitor the
    `Amazon Web Services Security Bulletins website`_ for any important security bulletins related to
@@ -52,7 +59,7 @@ you can run::
 
 .. note::
 
-    On OS X, if you see an error regarding the version of six that came with
+    On macOS, if you see an error regarding the version of six that came with
     distutils in El Capitan, use the ``--ignore-installed`` option::
 
         $ sudo pip install awscli --ignore-installed six
@@ -399,9 +406,9 @@ If you just want to install a snapshot of the latest development version of
 the CLI, you can use the ``requirements.txt`` file included in this repo.
 This file points to the development version of the above packages::
 
-    cd <path_to_awscli>
-    pip install -r requirements.txt
-    pip install -e .
+    $ cd <path_to_awscli>
+    $ pip install -r requirements.txt
+    $ pip install -e .
 
 However, to keep up to date, you will continually have to run the
 ``pip install -r requirements.txt`` file to pull in the latest changes
@@ -410,12 +417,12 @@ from the develop branches of botocore, jmespath, etc.
 You can optionally clone each of those repositories and run "pip install -e ."
 for each repository::
 
-    git clone <jmespath> && cd jmespath/
-    pip install -e . && cd ..
-    git clone <botocore> && cd botocore/
-    pip install -e . && cd ..
-    git clone <awscli> && cd aws-cli/
-    pip install -e .
+    $ git clone <jmespath> && cd jmespath/
+    $ pip install -e . && cd ..
+    $ git clone <botocore> && cd botocore/
+    $ pip install -e . && cd ..
+    $ git clone <awscli> && cd aws-cli/
+    $ pip install -e .
 
 
 ------------

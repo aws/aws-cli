@@ -4,6 +4,14 @@ This example describes the specified Auto Scaling group::
 
     aws autoscaling describe-auto-scaling-groups --auto-scaling-group-name my-auto-scaling-group
 
+This example describes the specified Auto Scaling groups. It allows you to specify up to 100 group names::
+
+    aws autoscaling describe-auto-scaling-groups --max-items 100 --auto-scaling-group-name "group1" "group2" "group3" "group4"
+
+This example describes the Auto Scaling groups in the specified region, up to a maximum of 75 groups::
+
+    aws autoscaling describe-auto-scaling-groups --max-items 75 --region us-east-1
+
 The following is example output::
 
     {

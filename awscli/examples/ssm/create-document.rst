@@ -1,8 +1,8 @@
 **To create a document**
 
-This example creates a document in your account. The document must be in JSON format. Note that ``file://`` must be referenced followed by the path of the content file. For more information about writing a configuration document, see `Configuration Document`_ in the *SSM API Reference*.
+This example creates a document in your account using the JSON format. Note that ``file://`` must be referenced followed by the path of the content file. For more information about writing a Systems Manager document, see `Creating Systems Manager Documents`_ in the *AWS Systems Manager User Guide*.
 
-.. _`Configuration Document`: http://docs.aws.amazon.com/ssm/latest/APIReference/aws-ssm-document.html
+.. _`Creating Systems Manager Documents`: https://docs.aws.amazon.com/systems-manager/latest/userguide/create-ssm-doc.html
 
 Command::
 
@@ -36,3 +36,11 @@ Output::
         "Description": "Run a script"
     }
   }
+
+**To create a document using the YAML document format**
+
+This example creates a document in your account using the YAML format which targets the EC2 instance type. Note that ``file://`` must be referenced followed by the path of the content file.
+
+Command::
+
+  aws ssm create-document --content file://RunShellScript.yaml --name "RunShellScript" --document-type "Command" --document-format YAML --target-type "/AWS::EC2::Instance"

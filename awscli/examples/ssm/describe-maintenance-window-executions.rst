@@ -1,6 +1,6 @@
 **To list all executions for a Maintenance Window**
 
-This example lists all of the executions for a maintenance window.
+This example lists all of the executions for a Maintenance Window.
 
 Command::
 
@@ -20,17 +20,17 @@ Output::
     ]
   }
 
-**To list all executions for a maintenance window before a specified date**
+**To list all executions for a Maintenance Window before a specified date**
 
-This example lists all of the executions for a maintenance window before a specific date.
+This example lists all of the executions for a Maintenance Window before a specific date.
 
 Command::
 
   aws ssm describe-maintenance-window-executions --window-id "mw-ab12cd34ef56gh78" --filters "Key=ExecutedBefore,Values=2016-11-04T05:00:00Z"
   
-**To list all executions for a maintenance window after a specified date**
+**To list all executions for a Maintenance Window after a specified date**
 
-This example lists all of the executions for maintenance window after a specific date.
+This example lists all of the executions for Maintenance Window after a specific date.
 
 Command::
 

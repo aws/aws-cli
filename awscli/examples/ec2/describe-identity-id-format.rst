@@ -1,37 +1,39 @@
 **To describe the ID format for an IAM role**
 
-This example describes the ID format of the ``instance`` resource for the IAM role ``EC2Role`` in your AWS account. The output indicates that instances are enabled for longer IDs - instances created by this role receive longer IDs.
+The following ``describe-identity-id-format`` example describes the ID format received by instances created by the IAM role ``EC2Role`` in your AWS account. ::
 
-Command::
+    aws ec2 describe-identity-id-format \
+        --principal-arn arn:aws:iam::123456789012:role/my-iam-role \
+        --resource instance
 
-  aws ec2 describe-identity-id-format --principal-arn arn:aws:iam::123456789012:role/EC2Role --resource instance
+The following output indicates that instances created by this role receive IDs in long ID format. ::
 
-Output::
-
-  {
-      "Statuses": [
-          {
-              "UseLongIds": true, 
-              "Resource": "instance"
-          }
-      ]
-  }
+    {
+        "Statuses": [
+            {
+                "Deadline": "2016-12-15T00:00:00Z",
+                "Resource": "instance",
+                "UseLongIds": true
+            }
+        ]
+    }
 
 **To describe the ID format for an IAM user**
 
-This example describes the ID format of the ``snapshot`` resource for the IAM user ``AdminUser`` in your AWS account. The output indicates that snapshots are enabled for longer IDs - snapshots created by this user receive longer IDs.
+The following ``describe-identity-id-format`` example describes the ID format received by snapshots created by the IAM user ``AdminUser`` in your AWS account. ::
 
-Command::
+    aws ec2 describe-identity-id-format \
+        --principal-arn arn:aws:iam::123456789012:user/AdminUser \
+        --resource snapshot
 
-  aws ec2 describe-identity-id-format --principal-arn arn:aws:iam::123456789012:user/AdminUser --resource snapshot
+The output indicates that snapshots created by this user receive IDs in long ID format. ::
 
-Output::
-
-  {
-      "Statuses": [
-          {
-              "UseLongIds": true, 
-              "Resource": "snapshot"
-          }
-      ]
-  }
+    {
+        "Statuses": [
+            {
+                "Deadline": "2016-12-15T00:00:00Z",
+                "Resource": "snapshot",
+                "UseLongIds": true
+            }
+        ]
+    }

@@ -12,7 +12,8 @@
 # language governing permissions and limitations under the License.
 
 from awscli.testutils import unittest
-from awscli.customizations.ecs.deploy import CodeDeployValidator
+from awscli.customizations.ecs.deploy import (CodeDeployValidator,
+                                              TIMEOUT_BUFFER_MIN)
 from awscli.customizations.ecs.exceptions import (InvalidPlatformError,
                                                   InvalidProperyError)
 
@@ -40,6 +41,14 @@ class TestCodeDeployValidator(unittest.TestCase):
             'applicationName': 'test-application',
             'deploymentGroupName': 'test-deployment-group',
             'computePlatform': 'ECS',
+            'blueGreenDeploymentConfiguration': {
+                'deploymentReadyOption': {
+                    'waitTimeInMinutes': 5
+                },
+                'terminateBlueInstancesOnDeploymentSuccess': {
+                    'terminationWaitTimeInMinutes': 10
+                }
+            },
             'ecsServices': [{
                 'serviceName': 'test-service',
                 'clusterName': 'test-cluster'
@@ -52,6 +61,16 @@ class TestCodeDeployValidator(unittest.TestCase):
         self.validator.app_details = self.TEST_APP_DETAILS
         self.validator.deployment_group_details = \
             self.TEST_DEPLOYMENT_GROUP_DETAILS
+
+    def test_get_deployment_wait_time(self):
+        expected_wait = 5 + 10 + TIMEOUT_BUFFER_MIN
+        actual_wait = self.validator.get_deployment_wait_time()
+        self.assertEqual(expected_wait, actual_wait)
+
+    def test_get_deployment_wait_time_no_dgp(self):
+        empty_validator = CodeDeployValidator(None, self.TEST_RESOURCES)
+        actual_wait = empty_validator.get_deployment_wait_time()
+        self.assertEqual(None, actual_wait)
 
     def test_validations(self):
         self.validator.validate_application()

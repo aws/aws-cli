@@ -58,8 +58,8 @@ class CloudTrailSubscribe(BasicCommand):
         {'name': 'sns-custom-policy',
          'help_text': 'Custom SNS policy template or URL'}
     ]
-
     UPDATE = False
+    _UNDOCUMENTED = True
 
     def _run_main(self, args, parsed_globals):
         self.setup_services(args, parsed_globals)

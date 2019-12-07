@@ -1,66 +1,67 @@
-**To describe a snapshot**
+**Example 1: To describe a snapshot**
 
-This example command describes a snapshot with the snapshot ID of ``snap-1234567890abcdef0``.
+The following ``describe-snapshots`` example describes the specified snapshot. ::
 
-Command::
-
-  aws ec2 describe-snapshots --snapshot-id snap-1234567890abcdef0
-
-Output::
-
-   {
-       "Snapshots": [
-           {
-               "Description": "This is my snapshot.",
-               "VolumeId": "vol-049df61146c4d7901",
-               "State": "completed",
-               "VolumeSize": 8,
-               "Progress": "100%",
-               "StartTime": "2014-02-28T21:28:32.000Z",
-               "SnapshotId": "snap-1234567890abcdef0",
-               "OwnerId": "012345678910"
-           }
-       ]
-   }
-
-**To describe snapshots using filters**
-
-This example command describes all snapshots owned by the ID 012345678910 that are in the ``pending`` status.
-
-Command::
-
-  aws ec2 describe-snapshots --owner-ids 012345678910 --filters Name=status,Values=pending
+    aws ec2 describe-snapshots \
+        --snapshot-ids snap-1234567890abcdef0
 
 Output::
 
-   {
-       "Snapshots": [
-           {
-               "Description": "This is my copied snapshot.",
-               "VolumeId": "vol-1234567890abcdef0",
-               "State": "pending",
-               "VolumeSize": 8,
-               "Progress": "87%",
-               "StartTime": "2014-02-28T21:37:27.000Z",
-               "SnapshotId": "snap-066877671789bd71b",
-               "OwnerId": "012345678910"
-           }
-       ]
-   }
+    {
+        "Snapshots": [
+            {
+                "Description": "This is my snapshot",
+                "Encrypted": false,
+                "VolumeId": "vol-049df61146c4d7901",
+                "State": "completed",
+                "VolumeSize": 8,
+                "StartTime": "2014-02-28T21:28:32.000Z",
+                "Progress": "100%",
+                "OwnerId": "012345678910",
+                "SnapshotId": "snap-1234567890abcdef0"
+            }
+        ]
+    }
 
-**To describe tagged snapshots and filter the output**
+**Example 2: To describe snapshots using filters**
 
-This example command describes all snapshots that have the tag ``Group=Prod``. The output is filtered to display only the snapshot IDs and the time the snapshot was started.
+The following ``describe-snapshots`` example describes all snapshots owned by the specified AWS account that are in the ``pending`` state. ::
 
-Command::
-
-  aws ec2 describe-snapshots --filters Name=tag:Group,Values=Prod --query "Snapshots[*].{ID:SnapshotId,Time:StartTime}"
+    aws ec2 describe-snapshots \
+        --owner-ids 012345678910 \
+        --filters Name=status,Values=pending
 
 Output::
 
-   [
-     {
-        "ID": "snap-1234567890abcdef0", 
-        "Time": "2014-08-04T12:48:18.000Z"
-     }
-   ]
+    {
+        "Snapshots": [
+            {
+                "Description": "This is my copied snapshot",
+                "Encrypted": true,
+                "VolumeId": "vol-1234567890abcdef0",
+                "State": "pending",
+                "VolumeSize": 8,
+                "StartTime": "2014-02-28T21:37:27.000Z",
+                "Progress": "87%",
+                "OwnerId": "012345678910",
+                "SnapshotId": "snap-066877671789bd71b"
+            }
+        ]
+    }
+
+**Example 3: To describe tagged snapshots and filter the output**
+
+The following ``describe-snapshots`` example describes all snapshots that have the tag ``Group=Prod``. The output is filtered to display only the snapshot IDs and the time the snapshot was started. ::
+
+    aws ec2 describe-snapshots \
+        --filters Name=tag:Group,Values=Prod \
+        --query "Snapshots[*].{ID:SnapshotId,Time:StartTime}"
+
+Output::
+
+    [
+        {
+            "ID": "snap-1234567890abcdef0", 
+            "Time": "2014-08-04T12:48:18.000Z"
+        }
+    ]

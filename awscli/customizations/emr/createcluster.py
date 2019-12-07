@@ -117,9 +117,12 @@ class CreateCluster(Command):
          'help_text' : helptext.REPO_UPGRADE_ON_BOOT},
         {'name': 'kerberos-attributes',
          'schema': argumentschema.KERBEROS_ATTRIBUTES_SCHEMA,
-         'help_text': helptext.KERBEROS_ATTRIBUTES}
+         'help_text': helptext.KERBEROS_ATTRIBUTES},
+        {'name': 'step-concurrency-level',
+         'cli_type_name': 'integer',
+         'help_text': helptext.STEP_CONCURRENCY_LEVEL}
     ]
-    SYNOPSIS = BasicCommand.FROM_FILE('emr', 'create-cluster-synopsis.rst')
+    SYNOPSIS = BasicCommand.FROM_FILE('emr', 'create-cluster-synopsis.txt')
     EXAMPLES = BasicCommand.FROM_FILE('emr', 'create-cluster-examples.rst')
 
     def _run_main_command(self, parsed_args, parsed_globals):
@@ -330,6 +333,9 @@ class CreateCluster(Command):
             emrutils.apply_dict(
                 params, 'KerberosAttributes', parsed_args.kerberos_attributes)
 
+        if parsed_args.step_concurrency_level is not None:
+            params['StepConcurrencyLevel'] = parsed_args.step_concurrency_level
+
         self._validate_required_applications(parsed_args)
 
         run_job_flow_response = emrutils.call(
@@ -344,11 +350,14 @@ class CreateCluster(Command):
 
     def _construct_result(self, run_job_flow_result):
         jobFlowId = None
+        clusterArn = None
         if run_job_flow_result is not None:
             jobFlowId = run_job_flow_result.get('JobFlowId')
+            clusterArn = run_job_flow_result.get('ClusterArn')
 
         if jobFlowId is not None:
-            return {'ClusterId': jobFlowId}
+            return {'ClusterId': jobFlowId,
+                    'ClusterArn': clusterArn }
         else:
             return {}
 

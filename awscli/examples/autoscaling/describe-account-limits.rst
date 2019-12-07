@@ -13,6 +13,6 @@ The following is example output::
         "MaxNumberOfAutoScalingGroups": 20
     }
 
-For more information, see `Auto Scaling Limits`_ in the *Auto Scaling Developer Guide*.
+For more information, see `Amazon EC2 Auto Scaling Limits`_ in the *Amazon EC2 Auto Scaling User Guide*.
 
-.. _`Auto Scaling Limits`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/as-account-limits.html
+.. _`Amazon EC2 Auto Scaling Limits`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-account-limits.html

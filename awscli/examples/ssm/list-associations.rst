@@ -4,14 +4,25 @@ This example lists all the associations for an instance.
 
 Command::
 
-  aws ssm list-associations --association-filter-list "key=InstanceId,value=i-0000293ffd8c57862"
+  aws ssm list-associations --association-filter-list "key=InstanceId,value=i-1234567890abcdef0"
 
 Output::
 
   {
     "Associations": [
         {
-            "InstanceId": "i-0000293ffd8c57862",
+            "Name": "AWS-UpdateSSMAgent",
+            "InstanceId": "i-1234567890abcdef0",
+            "AssociationId": "8dfe3659-4309-493a-8755-0123456789ab",
+            "AssociationVersion": "1",
+            "Targets": [
+                {
+                    "Key": "InstanceIds",
+                    "Values": [
+                        "i-016648b75dd622dab"
+                    ]
+                }
+            ],
             "Overview": {
                 "Status": "Pending",
                 "DetailedStatus": "Associated",
@@ -19,23 +30,15 @@ Output::
                     "Pending": 1
                 }
             },
-            "AssociationId": "d8617c07-2079-4c18-9847-1655fc2698b0",
-            "Name": "AWS-UpdateSSMAgent",
-            "Targets": [
-                {
-                    "Values": [
-                        "i-0000293ffd8c57862"
-                    ],
-                    "Key": "InstanceIds"
-                }
-            ]
+            "ScheduleExpression": "cron(0 00 12 ? * SUN *)",
+            "AssociationName": "UpdateSSMAgent"
         }
     ]
   }
 
 **To list your associations for a specific document**
 
-This example lists all associations for the a document.
+This example lists all associations for the specified document.
 
 Command::
 
@@ -46,44 +49,49 @@ Output::
   {
     "Associations": [
         {
-            "InstanceId": "i-0000293ffd8c57862",
-            "Overview": {
-                "Status": "Pending",
-                "DetailedStatus": "Associated",
-                "AssociationStatusAggregatedCount": {
-                    "Pending": 1
-                }
-            },
-            "AssociationId": "d8617c07-2079-4c18-9847-1655fc2698b0",
             "Name": "AWS-UpdateSSMAgent",
+			"InstanceId": "i-1234567890abcdef0",
+            "AssociationId": "8dfe3659-4309-493a-8755-0123456789ab",
+            "AssociationVersion": "1",
             "Targets": [
                 {
+                    "Key": "InstanceIds",
                     "Values": [
-                        "i-0000293ffd8c57862"
-                    ],
-                    "Key": "InstanceIds"
+                        "i-1234567890abcdef0"
+                    ]
                 }
-            ]
+            ],
+            "LastExecutionDate": 1550505828.548,
+            "Overview": {
+                "Status": "Success",
+                "DetailedStatus": "Success",
+                "AssociationStatusAggregatedCount": {
+                    "Success": 1
+                }
+            },
+            "ScheduleExpression": "cron(0 00 12 ? * SUN *)",
+            "AssociationName": "UpdateSSMAgent"
         },
-        {
+		{
             "Name": "AWS-UpdateSSMAgent",
-            "LastExecutionDate": 1487876123.0,
-            "InstanceId": "i-0cb2b964d3e14fd9f",
+            "InstanceId": "i-9876543210abcdef0",
+            "AssociationId": "fbc07ef7-b985-4684-b82b-0123456789ab",
+            "AssociationVersion": "1",
+            "Targets": [
+                {
+                    "Key": "InstanceIds",
+                    "Values": [
+                        "i-9876543210abcdef0"
+                    ]
+                }
+            ],
+            "LastExecutionDate": 1550507531.0,
             "Overview": {
                 "Status": "Success",
                 "AssociationStatusAggregatedCount": {
                     "Success": 1
                 }
-            },
-            "AssociationId": "2ccfbc46-5fe4-4e5c-ba46-70b56cc93f53",
-            "Targets": [
-                {
-                    "Values": [
-                        "i-0cb2b964d3e14fd9f"
-                    ],
-                    "Key": "InstanceIds"
-                }
-            ]
+            }
         }
     ]
   }

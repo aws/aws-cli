@@ -1,4 +1,4 @@
-**Create a device pool**
+**To create a device pool**
 
 The following command creates an Android device pool for a project::
 

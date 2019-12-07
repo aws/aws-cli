@@ -1,29 +1,20 @@
-**To list your pipeline runs**
+**Example 1: To list your pipeline runs**
 
-This example lists the runs for the specified pipeline::
+The following ``list-runs`` example lists the runs for the specified pipeline. ::
 
-   aws datapipeline list-runs --pipeline-id df-00627471SOVYZEXAMPLE
-   
-The following is example output::
+    aws datapipeline list-runs --pipeline-id df-00627471SOVYZEXAMPLE
 
-       Name                       Scheduled Start        Status                     ID                                              Started                Ended
-   -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-   1.  EC2ResourceObj             2015-04-12T17:33:02    CREATING                   @EC2ResourceObj_2015-04-12T17:33:02             2015-04-12T17:33:10
+Output::
 
-   2.  S3InputLocation            2015-04-12T17:33:02    FINISHED                   @S3InputLocation_2015-04-12T17:33:02            2015-04-12T17:33:09    2015-04-12T17:33:09
+        Name                       Scheduled Start        Status                     ID                                              Started                Ended
+        -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    1.  EC2ResourceObj             2015-04-12T17:33:02    CREATING                   @EC2ResourceObj_2015-04-12T17:33:02             2015-04-12T17:33:10
+    2.  S3InputLocation            2015-04-12T17:33:02    FINISHED                   @S3InputLocation_2015-04-12T17:33:02            2015-04-12T17:33:09    2015-04-12T17:33:09
+    3.  S3OutputLocation           2015-04-12T17:33:02    WAITING_ON_DEPENDENCIES    @S3OutputLocation_2015-04-12T17:33:02           2015-04-12T17:33:09
+    4.  ShellCommandActivityObj    2015-04-12T17:33:02    WAITING_FOR_RUNNER         @ShellCommandActivityObj_2015-04-12T17:33:02    2015-04-12T17:33:09
 
-   3.  S3OutputLocation           2015-04-12T17:33:02    WAITING_ON_DEPENDENCIES    @S3OutputLocation_2015-04-12T17:33:02           2015-04-12T17:33:09
+**Example 2: To list the pipeline runs between the specified dates**
 
-   4.  ShellCommandActivityObj    2015-04-12T17:33:02    WAITING_FOR_RUNNER         @ShellCommandActivityObj_2015-04-12T17:33:02    2015-04-12T17:33:09
+The following ``list-runs`` example uses the ``--start-interval`` to specify the dates to include in the output. ::
 
-**To list the pipeline runs between the specified dates**
-
-Use the ``list-runs`` command with the ``--start-interval`` parameter::
-
-   aws datapipeline list-runs`` --pipeline-id {#PIPELINE_ID} --start-interval {#TIME},{#TIME}
-
-For example, to list the pipeline runs between 2017-10-07T00:00:00 and 2017-10-08T00:00:00, run::
- 
-   aws datapipeline list-runs --pipeline-id df-01434553B58A2SHZUKO5 --start-interval 2017-10-07T00:00:00,2017-10-08T00:00:00
-   
-   
+    aws datapipeline list-runs --pipeline-id df-01434553B58A2SHZUKO5 --start-interval 2017-10-07T00:00:00,2017-10-08T00:00:00

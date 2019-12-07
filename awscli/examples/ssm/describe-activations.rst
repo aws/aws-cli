@@ -11,14 +11,15 @@ Output::
   {
     "ActivationList": [
         {
+            "ActivationId": "bcf6faa8-83fd-419e-9534-96ad14131eb7",
+            "Description": "test",
+            "DefaultInstanceName": "MyWebServers",
             "IamRole": "AutomationRole",
             "RegistrationLimit": 10,
-            "ActivationId": "bcf6faa8-83fd-419e-9534-96ad14131eb7",
-            "ExpirationDate": 1487887903.045,
-            "CreatedDate": 1487801503.045,
-            "DefaultInstanceName": "MyWebServers",
-            "Expired": false,
             "RegistrationsCount": 0
+            "ExpirationDate": 1550176478.734,
+            "Expired": false,
+            "CreatedDate": 1550090078.734
         }
     ]
   }

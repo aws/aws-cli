@@ -231,8 +231,12 @@ class TextFormatter(Formatter):
         try:
             if is_response_paginated(response):
                 result_keys = response.result_keys
-                for page in response:
-                    current = {}
+                for i, page in enumerate(response):
+                    if i > 0:
+                        current = {}
+                    else:
+                        current = response.non_aggregate_part
+
                     for result_key in result_keys:
                         data = result_key.search(page)
                         set_value_from_jmespath(

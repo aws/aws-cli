@@ -1,6 +1,6 @@
-**To describe instance information**
+**To describe managed instance information**
 
-This example shows details of each of your instances.
+This example shows details of each of your managed instances.
 
 Command::
 
@@ -11,33 +11,42 @@ Output::
   {
     "InstanceInformationList": [
         {
-            "IsLatestVersion": true,
-            "LastSuccessfulAssociationExecutionDate": 1487876123.0,
-            "ComputerName": "ip-172-31-44-222.us-west-2.compute.internal",
+            "InstanceId": "i-1234567890abcdef0",
             "PingStatus": "Online",
-            "InstanceId": "i-0cb2b964d3e14fd9f",
-            "IPAddress": "172.31.44.222",
-            "AssociationStatus": "Success",
-            "LastAssociationExecutionDate": 1487876123.0,
+            "LastPingDateTime": 1550501835.178,
+            "AgentVersion": "2.3.415.0",
+            "IsLatestVersion": false,
+            "PlatformType": "Linux",
+            "PlatformName": "Amazon Linux AMI",
+            "PlatformVersion": "2018.03",
             "ResourceType": "EC2Instance",
-            "AgentVersion": "2.0.672.0",
-            "PlatformVersion": "2016.09",
+            "IPAddress": "172.16.0.154",
+            "ComputerName": "ip-172-16-0-154.ec2.internal",
+            "AssociationStatus": "Success",
+            "LastAssociationExecutionDate": 1550501837.0,
+            "LastSuccessfulAssociationExecutionDate": 1550501837.0,
             "AssociationOverview": {
                 "InstanceAssociationStatusAggregatedCount": {
                     "Success": 1
                 }
-            },
-            "PlatformName": "Amazon Linux AMI",
-            "PlatformType": "Linux",
-            "LastPingDateTime": 1487898903.758
-        }
+            }
+        },
+        ...
     ]
   }
 
-**To describe information about a specific instance**
+**To describe information about a specific managed instance**
 
-This example shows details of instance ``i-0cb2b964d3e14fd9f``.
+This example shows details of the managed instance ``i-1234567890abcdef0``.
 
 Command::
 
-  aws ssm describe-instance-information --instance-information-filter-list "key=InstanceIds,valueSet=i-0cb2b964d3e14fd9f"
+  aws ssm describe-instance-information --filters "Key=InstanceIds,Values=i-1234567890abcdef0"
+
+**To describe information about managed instances with a specific tag key**
+
+This example shows details for managed instances that have the tag key ``DEV``.
+
+Command::
+
+  aws ssm describe-instance-information --filters "Key=tag-key,Values=DEV"

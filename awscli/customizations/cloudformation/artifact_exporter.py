@@ -19,12 +19,15 @@ import contextlib
 import uuid
 import shutil
 from awscli.compat import six
+from botocore.utils import set_value_from_jmespath
 
 from awscli.compat import urlparse
 from contextlib import contextmanager
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump, \
     yaml_parse
+import jmespath
+
 
 LOG = logging.getLogger(__name__)
 
@@ -120,7 +123,7 @@ def upload_local_artifacts(resource_id, resource_dict, property_name,
     :raise:                 ValueError if path is not a S3 URL or a local path
     """
 
-    local_path = resource_dict.get(property_name, None)
+    local_path = jmespath.search(property_name, resource_dict)
 
     if local_path is None:
         # Build the root directory and upload to S3
@@ -183,7 +186,7 @@ def make_zip(filename, source_root):
     with open(zipfile_name, 'wb') as f:
         zip_file = zipfile.ZipFile(f, 'w', zipfile.ZIP_DEFLATED)
         with contextlib.closing(zip_file) as zf:
-            for root, dirs, files in os.walk(source_root):
+            for root, dirs, files in os.walk(source_root, followlinks=True):
                 for filename in files:
                     full_path = os.path.join(root, filename)
                     relative_path = os.path.relpath(
@@ -232,7 +235,7 @@ class Resource(object):
         if resource_dict is None:
             return
 
-        property_value = resource_dict.get(self.PROPERTY_NAME, None)
+        property_value = jmespath.search(self.PROPERTY_NAME, resource_dict)
 
         if not property_value and not self.PACKAGE_NULL_PROPERTY:
             return
@@ -248,7 +251,7 @@ class Resource(object):
         if is_local_file(property_value) and not \
                 is_zip_file(property_value) and self.FORCE_ZIP:
             temp_dir = copy_to_temp_dir(property_value)
-            resource_dict[self.PROPERTY_NAME] = temp_dir
+            set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, temp_dir)
 
         try:
             self.do_export(resource_id, resource_dict, parent_dir)
@@ -269,10 +272,10 @@ class Resource(object):
         Default export action is to upload artifacts and set the property to
         S3 URL of the uploaded object
         """
-        resource_dict[self.PROPERTY_NAME] = \
-            upload_local_artifacts(resource_id, resource_dict,
+        uploaded_url = upload_local_artifacts(resource_id, resource_dict,
                                    self.PROPERTY_NAME,
                                    parent_dir, self.uploader)
+        set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, uploaded_url)
 
 
 class ResourceWithS3UrlDict(Resource):
@@ -299,11 +302,12 @@ class ResourceWithS3UrlDict(Resource):
                                    self.PROPERTY_NAME,
                                    parent_dir, self.uploader)
 
-        resource_dict[self.PROPERTY_NAME] = parse_s3_url(
+        parsed_url = parse_s3_url(
                 artifact_s3_url,
                 bucket_name_property=self.BUCKET_NAME_PROPERTY,
                 object_key_property=self.OBJECT_KEY_PROPERTY,
                 version_property=self.VERSION_PROPERTY)
+        set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, parsed_url)
 
 
 class ServerlessFunctionResource(Resource):
@@ -434,6 +438,7 @@ class CloudFormationStackResource(Resource):
         template_path = resource_dict.get(self.PROPERTY_NAME, None)
 
         if template_path is None or is_s3_url(template_path) or \
+                template_path.startswith(self.uploader.s3.meta.endpoint_url) or \
                 template_path.startswith("https://s3.amazonaws.com/"):
             # Nothing to do
             return
@@ -459,8 +464,9 @@ class CloudFormationStackResource(Resource):
 
             # TemplateUrl property requires S3 URL to be in path-style format
             parts = parse_s3_url(url, version_property="Version")
-            resource_dict[self.PROPERTY_NAME] = self.uploader.to_path_style_s3_url(
+            s3_path_url = self.uploader.to_path_style_s3_url(
                     parts["Key"], parts.get("Version", None))
+            set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, s3_path_url)
 
 
 class ServerlessApplicationResource(CloudFormationStackResource):
@@ -470,6 +476,16 @@ class ServerlessApplicationResource(CloudFormationStackResource):
     """
     RESOURCE_TYPE = "AWS::Serverless::Application"
     PROPERTY_NAME = "Location"
+
+
+
+class GlueJobCommandScriptLocationResource(Resource):
+    """
+    Represents Glue::Job resource.
+    """
+    RESOURCE_TYPE = "AWS::Glue::Job"
+    # Note the PROPERTY_NAME includes a '.' implying it's nested.
+    PROPERTY_NAME = "Command.ScriptLocation"
 
 
 RESOURCES_EXPORT_LIST = [
@@ -487,6 +503,7 @@ RESOURCES_EXPORT_LIST = [
     ServerlessApplicationResource,
     ServerlessLayerVersionResource,
     LambdaLayerVersionResource,
+    GlueJobCommandScriptLocationResource,
 ]
 
 METADATA_EXPORT_LIST = [
@@ -495,12 +512,27 @@ METADATA_EXPORT_LIST = [
 ]
 
 
-def include_transform_export_handler(template_dict, uploader):
+def include_transform_export_handler(template_dict, uploader, parent_dir):
     if template_dict.get("Name", None) != "AWS::Include":
         return template_dict
-    include_location = template_dict.get("Parameters", {}).get("Location", {})
-    if (is_local_file(include_location)):
-        template_dict["Parameters"]["Location"] = uploader.upload_with_dedup(include_location)
+
+    include_location = template_dict.get("Parameters", {}).get("Location", None)
+    if not include_location \
+            or not is_path_value_valid(include_location) \
+            or is_s3_url(include_location):
+        # `include_location` is either empty, or not a string, or an S3 URI
+        return template_dict
+
+    # We are confident at this point that `include_location` is a string containing the local path
+    abs_include_location = os.path.join(parent_dir, include_location)
+    if is_local_file(abs_include_location):
+        template_dict["Parameters"]["Location"] = uploader.upload_with_dedup(abs_include_location)
+    else:
+        raise exceptions.InvalidLocalPathError(
+            resource_id="AWS::Include",
+            property_name="Location",
+            local_path=abs_include_location)
+
     return template_dict
 
 
@@ -547,7 +579,7 @@ class Template(object):
         """
         for key, val in template_dict.items():
             if key in GLOBAL_EXPORT_DICT:
-                template_dict[key] = GLOBAL_EXPORT_DICT[key](val, self.uploader)
+                template_dict[key] = GLOBAL_EXPORT_DICT[key](val, self.uploader, self.template_dir)
             elif isinstance(val, dict):
                 self.export_global_artifacts(val)
             elif isinstance(val, list):

@@ -13,11 +13,23 @@ Output::
         {
             "PatchGroup": "Production",
             "BaselineIdentity": {
-                "BaselineName": "Production-Baseline",
-                "DefaultBaseline": false,
-                "BaselineDescription": "Baseline containing all updates approved for production systems",
-                "BaselineId": "pb-045f10b4f382baeda"
+                "BaselineId": "pb-0123456789abcdef0",
+                "BaselineName": "ProdPatching",
+                "OperatingSystem": "WINDOWS",
+                "BaselineDescription": "Patches for Production",
+                "DefaultBaseline": false
             }
-        }
+        },
+        {
+            "PatchGroup": "Development",
+            "BaselineIdentity": {
+                "BaselineId": "pb-0713accee01234567",
+                "BaselineName": "DevPatching",
+                "OperatingSystem": "WINDOWS",
+                "BaselineDescription": "Patches for Development",
+                "DefaultBaseline": true
+            }
+        },
+        ...
     ]
   }

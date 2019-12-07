@@ -1,29 +1,42 @@
-**To describe flow logs**
+**To describe all of your flow logs**
 
-This example describes all of your flow logs.
+The following ``describe-flow-logs`` example displays details for all of your flow logs. ::
 
-Command::
-
-  aws ec2 describe-flow-logs
+    aws ec2 describe-flow-logs
 
 Output::
 
-  {
-    "FlowLogs": [
-      {
-        "ResourceId": "eni-11aa22bb", 
-        "CreationTime": "2015-06-12T14:41:15Z", 
-        "LogGroupName": "MyFlowLogs", 
-        "TrafficType": "ALL", 
-        "FlowLogStatus": "ACTIVE", 
-        "FlowLogId": "fl-1a2b3c4d", 
-        "DeliverLogsPermissionArn": "arn:aws:iam::123456789101:role/flow-logs-role"
-      }
-    ]
-  }
-  
-This example uses a filter to describe only flow logs that are in the log group ``MyFlowLogs`` in Amazon CloudWatch Logs.
- 
-Command::
- 
-  aws ec2 describe-flow-logs --filter "Name=log-group-name,Values=MyFlowLogs"
+    {
+        "FlowLogs": [
+            {
+                "CreationTime": "2018-02-21T13:22:12.644Z",
+                "DeliverLogsPermissionArn": "arn:aws:iam::123456789012:role/flow-logs-role",
+                "DeliverLogsStatus": "SUCCESS",
+                "FlowLogId": "fl-aabbccdd112233445",
+                "FlowLogStatus": "ACTIVE",
+                "LogGroupName": "FlowLogGroup",
+                "ResourceId": "subnet-12345678901234567",
+                "TrafficType": "ALL",
+                "LogDestinationType": "cloud-watch-logs",
+                "LogFormat": "${version} ${account-id} ${interface-id} ${srcaddr} ${dstaddr} ${srcport} ${dstport} ${protocol} ${packets} ${bytes} ${start} ${end} ${action} ${log-status}"
+            },
+            {
+                "CreationTime": "2019-07-19T15:22:29.986Z",
+                "DeliverLogsStatus": "SUCCESS",
+                "FlowLogId": "fl-01234567890123456",
+                "FlowLogStatus": "ACTIVE",
+                "ResourceId": "vpc-00112233445566778",
+                "TrafficType": "ACCEPT",
+                "LogDestinationType": "s3",
+                "LogDestination": "arn:aws:s3:::my-flow-log-bucket/custom",
+                "LogFormat": "${version} ${vpc-id} ${subnet-id} ${instance-id} ${interface-id} ${account-id} ${type} ${srcaddr} ${dstaddr} ${srcport} ${dstport} ${pkt-srcaddr} ${pkt-dstaddr} ${protocol} ${bytes} ${packets} ${start} ${end} ${action} ${tcp-flags} ${log-status}"
+            }
+        ]
+    }
+
+**To describe a subset of your flow logs**
+
+The following ``describe-flow-logs`` example uses a filter to display details for only those flow logs that are in the specified log group in Amazon CloudWatch Logs. ::
+
+    aws ec2 describe-flow-logs \
+        --filter "Name=log-group-name,Values=MyFlowLogs"

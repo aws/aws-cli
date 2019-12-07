@@ -31,7 +31,9 @@ logger = logging.getLogger(__name__)
 # download the content (i.e TemplateURL in cloudformation).
 PARAMFILE_DISABLED = set([
     'api-gateway.put-integration.uri',
-    'apigatewayv2.create-integration.integration-uri',
+    'api-gateway.create-integration.integration-uri',
+    'api-gateway.create-api.target',
+    'api-gateway.update-api.target',
     'appstream.create-stack.redirect-url',
     'appstream.create-stack.feedback-url',
     'appstream.update-stack.redirect-url',
@@ -100,6 +102,9 @@ PARAMFILE_DISABLED = set([
     'serverlessapplicationrepository.create-application-version.template-url',
     'serverlessapplicationrepository.update-application.home-page-url',
     'serverlessapplicationrepository.update-application.readme-url',
+
+    'service-catalog.create-product.support-url',
+    'service-catalog.update-product.support-url',
 
     'sqs.add-permission.queue-url',
     'sqs.change-message-visibility.queue-url',

@@ -49,6 +49,8 @@ ARGUMENT_RENAMES = {
     'route53.update-traffic-policy-comment.version': 'traffic-policy-version',
     'gamelift.create-build.version': 'build-version',
     'gamelift.update-build.version': 'build-version',
+    'gamelift.create-script.version': 'script-version',
+    'gamelift.update-script.version': 'script-version',
     'route53domains.view-billing.start': 'start-time',
     'route53domains.view-billing.end': 'end-time',
     'apigateway.create-rest-api.version': 'api-version',
@@ -75,6 +77,9 @@ ARGUMENT_RENAMES = {
     'rekognition.create-stream-processor.output': 'stream-processor-output',
     'eks.create-cluster.version': 'kubernetes-version',
     'eks.update-cluster-version.version': 'kubernetes-version',
+    'eks.create-nodegroup.version': 'kubernetes-version',
+    'eks.update-nodegroup-version.version': 'kubernetes-version',
+    'schemas.*.version': 'schema-version',
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,

@@ -1,37 +1,58 @@
-**To describe your DHCP options sets**
+**To describe your DHCP options**
 
-This example describes your DHCP options sets.
+The following ``describe-dhcp-options`` example retrieves details about your DHCP options. ::
 
-Command::
-
-  aws ec2 describe-dhcp-options
+    aws ec2 describe-dhcp-options
 
 Output::
 
-  {
-      "DhcpOptions": [
-          {
-              "DhcpConfigurations": [
-                  {
-                      "Values": [
-                          "10.2.5.2",
-                          "10.2.5.1"
-                      ],
-                      "Key": "domain-name-servers"
-                  }
-              ],
-              "DhcpOptionsId": "dopt-d9070ebb"
-          },
-          {
-              "DhcpConfigurations": [
-                  {
-                      "Values": [
-                          "AmazonProvidedDNS"
-                      ],
-                      "Key": "domain-name-servers"
-                  }
-              ],
-              "DhcpOptionsId": "dopt-7a8b9c2d"
-          }
-      ]  
-  }
+    {
+        "DhcpOptions": [
+            {
+                "DhcpConfigurations": [
+                    {
+                        "Key": "domain-name",
+                        "Values": [
+                            {
+                                "Value": "us-east-2.compute.internal"
+                            }
+                        ]
+                    },
+                    {
+                        "Key": "domain-name-servers",
+                        "Values": [
+                            {
+                                "Value": "AmazonProvidedDNS"
+                            }
+                        ]
+                    }
+                ],
+                "DhcpOptionsId": "dopt-19edf471",
+                "OwnerId": "111122223333"
+            },
+            {
+                "DhcpConfigurations": [
+                    {
+                        "Key": "domain-name",
+                        "Values": [
+                            {
+                                "Value": "us-east-2.compute.internal"
+                            }
+                        ]
+                    },
+                    {
+                        "Key": "domain-name-servers",
+                        "Values": [
+                            {
+                                "Value": "AmazonProvidedDNS"
+                            }
+                        ]
+                    }
+                ],
+                "DhcpOptionsId": "dopt-fEXAMPLE",
+                "OwnerId": "111122223333"
+            }
+        ]
+    } 
+
+For more information, see `Working with DHCP Option Sets <https://docs.aws.amazon.com/vpc/latest/userguide/VPC_DHCP_Options.html#DHCPOptionSet>`__ in the *AWS VPC User Guide*.

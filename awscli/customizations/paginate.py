@@ -164,12 +164,12 @@ def unify_paging_params(argument_table, operation_model, event_name,
                                      serialized_name='MaxItems'),
                         shadowed_args)
     # We will register two pagination handlers.
-    # 
+    #
     # The first is focused on analyzing the CLI arguments passed to see
     # if they contain explicit operation-specific pagination args.  If so,
     # they are doing manual pagination and we turn off the CLI pagination.
-    # 
-    # The second is call later in the event chain and analyzes the actual
+    #
+    # The second is called later in the event chain and analyzes the actual
     # calling parameters passed to the operation.
     #
     # The reason we have to do the second is that someone could put

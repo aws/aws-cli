@@ -256,6 +256,18 @@ class TestShouldEnablePagination(TestPaginateBase):
         # user specified --bar 10
         self.assertTrue(self.parsed_globals.paginate)
 
+    def test_should_enable_pagination_with_no_args_call_parameters(self):
+        input_tokens = ['Foo', 'Bar']
+        self.parsed_globals.paginate = True
+        # Corresponds to not specifying --foo nor --bar
+        self.call_parameters['Fie'] = 1
+        self.call_parameters['Baz'] = 2
+        paginate.check_should_enable_pagination_call_parameters(
+            input_tokens, self.call_parameters, {}, self.parsed_globals)
+        # We should have not have turned paginate off because the
+        # user specified did not specify any pagination args
+        self.assertTrue(self.parsed_globals.paginate)
+
     def test_default_to_pagination_on_when_ambiguous(self):
         input_tokens = ['foo', 'max-items']
         self.parsed_globals.paginate = True

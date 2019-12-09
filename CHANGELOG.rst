@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.299
+========
+
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``kms``: Update kms command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
 1.16.297
 ========
 

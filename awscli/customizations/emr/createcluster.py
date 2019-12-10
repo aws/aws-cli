@@ -117,7 +117,10 @@ class CreateCluster(Command):
          'help_text' : helptext.REPO_UPGRADE_ON_BOOT},
         {'name': 'kerberos-attributes',
          'schema': argumentschema.KERBEROS_ATTRIBUTES_SCHEMA,
-         'help_text': helptext.KERBEROS_ATTRIBUTES}
+         'help_text': helptext.KERBEROS_ATTRIBUTES},
+        {'name': 'step-concurrency-level',
+         'cli_type_name': 'integer',
+         'help_text': helptext.STEP_CONCURRENCY_LEVEL}
     ]
     SYNOPSIS = BasicCommand.FROM_FILE('emr', 'create-cluster-synopsis.txt')
     EXAMPLES = BasicCommand.FROM_FILE('emr', 'create-cluster-examples.rst')
@@ -329,6 +332,9 @@ class CreateCluster(Command):
         if parsed_args.kerberos_attributes is not None:
             emrutils.apply_dict(
                 params, 'KerberosAttributes', parsed_args.kerberos_attributes)
+
+        if parsed_args.step_concurrency_level is not None:
+            params['StepConcurrencyLevel'] = parsed_args.step_concurrency_level
 
         self._validate_required_applications(parsed_args)
 

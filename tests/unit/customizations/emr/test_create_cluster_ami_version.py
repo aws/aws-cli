@@ -1173,37 +1173,25 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmd, result)
 
     def test_empty_step_args(self):
-        cmd = DEFAULT_CMD + '--steps Type=Streaming,Args=[]'
-        expected_error_msg = (
-            '\naws: error: The following required parameters are missing '
-            'for StreamingStepConfig: Args.\n'
-        )
+        cmd = DEFAULT_CMD + '--steps Type=Streaming,Args= '
+        expect_error_msg = ('\naws: error: The prameter Args cannot '
+                            'be an empty list.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEquals(expect_error_msg, result[1])
 
-        expected_error_msg = (
-            '\naws: error: The following required parameters are missing '
-            'for PigStepConfig: Args.\n'
-        )
-        cmd = DEFAULT_CMD + '--steps Type=Pig,Args=[]'
+        cmd = DEFAULT_CMD + '--steps Type=Pig,Args= '
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEquals(expect_error_msg, result[1])
 
-        expected_error_msg = (
-            '\naws: error: The following required parameters are missing '
-            'for HiveStepConfig: Args.\n'
-        )
-        cmd = DEFAULT_CMD + '--steps Type=Hive,Args=[]'
+        cmd = DEFAULT_CMD + '--steps Type=Hive,Args= '
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEquals(expect_error_msg, result[1])
 
-        cmd = DEFAULT_CMD + '--steps Args=[]'
-        expected_error_msg = (
-            '\naws: error: The following required parameters '
-            'are missing for CustomJARStepConfig: Jar.\n'
-        )
+        cmd = DEFAULT_CMD + '--steps Args= '
+        expect_error_msg = ('\naws: error: The following required parameters '
+                            'are missing for CustomJARStepConfig: Jar.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEquals(expect_error_msg, result[1])
 
     def test_missing_applications_for_steps(self):
         cmd = DEFAULT_CMD +\

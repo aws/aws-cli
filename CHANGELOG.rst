@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.16.300
+========
+
+* api-change:``kendra``: Update kendra command to latest version
+
+
 1.16.299
 ========
 

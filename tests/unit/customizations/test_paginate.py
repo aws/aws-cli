@@ -212,6 +212,7 @@ class TestShouldEnablePagination(TestPaginateBase):
         self.parsed_args.starting_token = None
         self.parsed_args.page_size = None
         self.parsed_args.max_items = None
+        self.call_parameters = {}
 
     def test_should_not_enable_pagination(self):
         # Here the user has specified a manual pagination argument,
@@ -228,6 +229,21 @@ class TestShouldEnablePagination(TestPaginateBase):
         # user specified --bar 10
         self.assertFalse(self.parsed_globals.paginate)
 
+    def test_should_not_enable_pagination_call_parameters(self):
+        # Here the user has specified a manual pagination argument,
+        # via CLI Input JSON so we should turn pagination off.
+        # From setUp(), the limit_key is 'Bar'
+        input_tokens = ['Foo', 'Bar']
+        self.parsed_globals.paginate = True
+        # Corresponds to --bar 10
+        self.call_parameters['Foo'] = None
+        self.call_parameters['Bar'] = 10
+        paginate.check_should_enable_pagination_call_parameters(
+            input_tokens, self.call_parameters, {}, self.parsed_globals)
+        # We should have turned paginate off because the
+        # user specified {Bar: 10} in the input JSON
+        self.assertFalse(self.parsed_globals.paginate)
+
     def test_should_enable_pagination_with_no_args(self):
         input_tokens = ['foo', 'bar']
         self.parsed_globals.paginate = True
@@ -238,6 +254,18 @@ class TestShouldEnablePagination(TestPaginateBase):
             input_tokens, {}, {}, self.parsed_args, self.parsed_globals)
         # We should have turned paginate off because the
         # user specified --bar 10
+        self.assertTrue(self.parsed_globals.paginate)
+
+    def test_should_enable_pagination_with_no_args_call_parameters(self):
+        input_tokens = ['Foo', 'Bar']
+        self.parsed_globals.paginate = True
+        # Corresponds to not specifying --foo nor --bar
+        self.call_parameters['Fie'] = 1
+        self.call_parameters['Baz'] = 2
+        paginate.check_should_enable_pagination_call_parameters(
+            input_tokens, self.call_parameters, {}, self.parsed_globals)
+        # We should have not have turned paginate off because the
+        # user specified did not specify any pagination args
         self.assertTrue(self.parsed_globals.paginate)
 
     def test_default_to_pagination_on_when_ambiguous(self):

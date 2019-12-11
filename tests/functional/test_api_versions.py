@@ -21,7 +21,7 @@ class TestAPIVersions(BaseAWSCommandParamsTest):
         # We just pick ec2 because it is a service that actually has
         # multiple api versions.
         self.service_name = 'ec2'
-        self.api_version = '2014-10-01'
+        self.api_version = '2016-11-15'
         config_contents = (
             '[default]\n'
             'api_versions =\n'

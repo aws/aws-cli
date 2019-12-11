@@ -33,7 +33,7 @@ class TestBase64DecodeVisitor(unittest.TestCase):
 
     def test_can_convert_top_level_blob(self):
         members = {'B': {'type': 'blob'}}
-        params = {'B': 'Zm9vAGJheg=='}
+        params = {'B': u'Zm9vAGJheg=='}
         expected_params = {'B': b'foo\x00baz'}
         self.assert_decoded_params(members, params, expected_params)
 
@@ -47,7 +47,7 @@ class TestBase64DecodeVisitor(unittest.TestCase):
             }
         }
         params = {
-            'Nested': {'B': 'Zm9v'}
+            'Nested': {'B': u'Zm9v'}
         }
         expected_params = {
             'Nested': {'B': b'foo'}
@@ -62,7 +62,7 @@ class TestBase64DecodeVisitor(unittest.TestCase):
             }
         }
         params = {
-            'BS': ['Zm9v', '']
+            'BS': [u'Zm9v', u'']
         }
         expected_params = {
             'BS': [b'foo', b'']
@@ -78,7 +78,7 @@ class TestBase64DecodeVisitor(unittest.TestCase):
             }
         }
         params = {
-            'StoB': {'a': 'Zm9v', 'b': ''}
+            'StoB': {'a': u'Zm9v', 'b': u''}
         }
         expected_params = {
             'StoB': {'a': b'foo', 'b': b''}

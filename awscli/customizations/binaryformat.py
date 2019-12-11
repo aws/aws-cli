@@ -15,6 +15,7 @@ import binascii
 
 from botocore.exceptions import ProfileNotFound
 
+from awscli.compat import six
 from awscli.shorthand import ModelVisitor
 
 
@@ -52,7 +53,7 @@ class InvalidBase64Error(Exception):
 
 class Base64DecodeVisitor(ModelVisitor):
     def _visit_scalar(self, parent, shape, name, value):
-        if shape.type_name != 'blob' or not isinstance(value, str):
+        if shape.type_name != 'blob' or not isinstance(value, six.text_type):
             return
         try:
             parent[name] = base64.b64decode(value)

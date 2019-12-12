@@ -1,10 +1,14 @@
-The following command publishes a message to an SNS topic named ``my-topic``::
+**To publish a message to a topic**
 
-  aws sns publish --topic-arn "arn:aws:sns:us-west-2:0123456789012:my-topic" --message file://message.txt
+The following ``publish`` command publishes the specified message to the specified SNS topic. ::
 
-``message.txt`` is a text file containing the message to publish::
+    aws sns publish \
+        --topic-arn "arn:aws:sns:us-west-2:123456789012:my-topic" \
+        --message file://message.txt
 
-  Hello World
-  Second Line
+Contents of ``message.txt``::
+
+    Hello World
+    Second Line
 
 Putting the message in a text file allows you to include line breaks.

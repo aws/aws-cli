@@ -1,3 +1,8 @@
-The following command deletes an SNS topic named ``my-topic``::
+**To delete an SNS topic**
 
-  aws sns delete-topic --topic-arn "arn:aws:sns:us-west-2:0123456789012:my-topic"
+The following ``delete-topic`` example deletes the specified SNS topic. ::
+
+    aws sns delete-topic \
+        --topic-arn "arn:aws:sns:us-west-2:123456789012:my-topic"
+
+This command produces no output.

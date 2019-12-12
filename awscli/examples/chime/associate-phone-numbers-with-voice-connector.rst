@@ -5,6 +5,7 @@ The following ``associate-phone-numbers-with-voice-connector`` example  associat
     aws chime associate-phone-numbers-with-voice-connector \
         --voice-connector-id abcdef1ghij2klmno3pqr4 \
         --e164-phone-numbers "+12065550100" "+12065550101"
+        --force-associate
 
 Output::
 

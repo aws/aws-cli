@@ -57,7 +57,7 @@ class Base64DecodeVisitor(ModelVisitor):
             return
         try:
             parent[name] = base64.b64decode(value)
-        except binascii.Error:
+        except (binascii.Error, TypeError):
             raise InvalidBase64Error('Invalid base64: "%s"' % value)
 
 

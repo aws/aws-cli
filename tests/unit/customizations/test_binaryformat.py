@@ -11,13 +11,19 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest, mock
-from awscli.customizations.binaryformat import identity
-from awscli.customizations.binaryformat import base64_decode_input_blobs
 from awscli.customizations.binaryformat import Base64DecodeVisitor
 from awscli.customizations.binaryformat import add_binary_formatter
+from awscli.customizations.binaryformat import base64_decode_input_blobs
+from awscli.customizations.binaryformat import identity
+from awscli.customizations.binaryformat import InvalidBase64Error
 
 from botocore import model
+from botocore.exceptions import ProfileNotFound
 from botocore.session import Session
+
+
+def test_identity_function():
+    assert 2 == identity(2)
 
 
 class TestBase64DecodeVisitor(unittest.TestCase):
@@ -85,6 +91,14 @@ class TestBase64DecodeVisitor(unittest.TestCase):
         }
         self.assert_decoded_params(members, params, expected_params)
 
+    def test_converts_base64_exception(self):
+        members = {'B': {'type': 'blob'}}
+        params = {'B': u'this:is:not:base64'}
+        shape = self.construct_model(members)
+        base64_decode_visitor = Base64DecodeVisitor()
+        with self.assertRaises(InvalidBase64Error):
+            base64_decode_visitor.visit(params, shape)
+
 
 class TestAddBinaryFormatter(unittest.TestCase):
     def setUp(self):
@@ -93,9 +107,7 @@ class TestAddBinaryFormatter(unittest.TestCase):
         self.mock_session = mock.Mock(spec=Session)
         self.mock_session.get_component.return_value = self.mock_factory
 
-    def test_legacy_handlers_added(self):
-        self.parsed_args.cli_binary_format = 'legacy'
-        add_binary_formatter(self.mock_session, self.parsed_args)
+    def _assert_legacy_handlers_added(self):
         # Legacy format does not register a handler to transform input
         self.assertEqual(self.mock_session.register.call_count, 0)
         # Legacy format parses blobs with an identity function
@@ -103,9 +115,18 @@ class TestAddBinaryFormatter(unittest.TestCase):
             blob_parser=identity
         )
 
-    def test_base64_handlers_added(self):
-        self.parsed_args.cli_binary_format = 'base64'
+    def test_legacy_handlers_added(self):
+        self.parsed_args.cli_binary_format = 'legacy'
         add_binary_formatter(self.mock_session, self.parsed_args)
+        self._assert_legacy_handlers_added()
+
+    def test_legacy_handlers_added_via_profile(self):
+        self.parsed_args.cli_binary_format = None
+        self.mock_session.get_config_variable.return_value = 'legacy'
+        add_binary_formatter(self.mock_session, self.parsed_args)
+        self._assert_legacy_handlers_added()
+
+    def _assert_base64_handlers_added(self):
         self.assertEqual(self.mock_session.register.call_count, 1)
         self.mock_session.register.assert_called_with(
             'provide-client-params', base64_decode_input_blobs,
@@ -114,3 +135,21 @@ class TestAddBinaryFormatter(unittest.TestCase):
         self.mock_factory.set_parser_defaults.assert_called_with(
             blob_parser=identity
         )
+
+    def test_base64_handlers_added(self):
+        self.parsed_args.cli_binary_format = 'base64'
+        add_binary_formatter(self.mock_session, self.parsed_args)
+        self._assert_base64_handlers_added()
+
+    def test_base64_handlers_added_via_profile(self):
+        self.parsed_args.cli_binary_format = None
+        self.mock_session.get_config_variable.return_value = 'base64'
+        add_binary_formatter(self.mock_session, self.parsed_args)
+        self._assert_base64_handlers_added()
+
+    def test_defaults_to_base64_if_unkonwn_profile(self):
+        self.parsed_args.cli_binary_format = None
+        exception = ProfileNotFound(profile='notaprofile')
+        self.mock_session.get_config_variable.side_effect = exception
+        add_binary_formatter(self.mock_session, self.parsed_args)
+        self._assert_base64_handlers_added()

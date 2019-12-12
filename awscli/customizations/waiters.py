@@ -42,8 +42,7 @@ def add_waiters(command_table, session, command_object, **kwargs):
 
 def get_waiter_model_from_service_model(session, service_model):
     try:
-        model = session.get_waiter_model(service_model.service_name,
-                                         service_model.api_version)
+        model = session.get_waiter_model(service_model.service_name)
     except DataNotFoundError:
         return None
     return model

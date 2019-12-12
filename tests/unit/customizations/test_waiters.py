@@ -84,7 +84,7 @@ class TestServicetoWaiterModel(unittest.TestCase):
         service_model.service_name = 'service'
         service_model.api_version = '2014-01-01'
         get_waiter_model_from_service_model(session, service_model)
-        session.get_waiter_model.assert_called_with('service', '2014-01-01')
+        session.get_waiter_model.assert_called_with('service')
 
     def test_can_handle_data_errors(self):
         service_model = mock.Mock()

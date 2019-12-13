@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.303
+========
+
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``sesv2``: Update sesv2 command to latest version
+* api-change:``detective``: Update detective command to latest version
+
+
 1.16.302
 ========
 

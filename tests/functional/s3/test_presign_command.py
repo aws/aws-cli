@@ -88,9 +88,16 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
                 'hostname': 'bucket.s3.us-east-1.amazonaws.com',
                 'path': '/key',
                 'query_params': {
-                    'AWSAccessKeyId': 'access_key',
-                    'Expires': str(FROZEN_TIMESTAMP + DEFAULT_EXPIRES),
-                    'Signature': '2m9M0eLB%2BqI0nUpkyTskKmHd0Ig%3D',
+                    'X-Amz-Algorithm': 'AWS4-HMAC-SHA256',
+                    'X-Amz-Credential': (
+                        'access_key%2F20160818%2Fus-east-1'
+                        '%2Fs3%2Faws4_request'),
+                    'X-Amz-Date': '20160818T143303Z',
+                    'X-Amz-Expires': '3600',
+                    'X-Amz-Signature': (
+                        'd28b6c4a54f31196a6d49335556736a3fc29f036018c8e'
+                        '50775887299092d1a0'),
+                    'X-Amz-SignedHeaders': 'host',
                 }
             }
         )
@@ -104,9 +111,16 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
                 'hostname': 's3.us-east-1.amazonaws.com',
                 'path': '/bucket.dots/key',
                 'query_params': {
-                    'AWSAccessKeyId': 'access_key',
-                    'Expires': str(FROZEN_TIMESTAMP + DEFAULT_EXPIRES),
-                    'Signature': '0IiC2vxub438EVcKfEFEMHuoHRw%3D',
+                    'X-Amz-Algorithm': 'AWS4-HMAC-SHA256',
+                    'X-Amz-Credential': (
+                        'access_key%2F20160818%2Fus-east-1'
+                        '%2Fs3%2Faws4_request'),
+                    'X-Amz-Date': '20160818T143303Z',
+                    'X-Amz-Expires': '3600',
+                    'X-Amz-Signature': (
+                        '8bbbd5a0d492b74048ba0b057b7d012bda6d21ecac3ef'
+                        '005dbcc34a2744922cc'),
+                    'X-Amz-SignedHeaders': 'host',
                 }
             }
         )
@@ -121,9 +135,16 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
                 'hostname': 'bucket.s3.us-east-1.amazonaws.com',
                 'path': '/key',
                 'query_params': {
-                    'AWSAccessKeyId': 'access_key',
-                    'Expires': str(FROZEN_TIMESTAMP + expires_in),
-                    'Signature': 'WZEMcfBNlzfTZBq3bOvYef1cfoU%3D',
+                    'X-Amz-Algorithm': 'AWS4-HMAC-SHA256',
+                    'X-Amz-Credential': (
+                        'access_key%2F20160818%2Fus-east-1'
+                        '%2Fs3%2Faws4_request'),
+                    'X-Amz-Date': '20160818T143303Z',
+                    'X-Amz-Expires': '{}'.format(expires_in),
+                    'X-Amz-Signature': (
+                        '58972912303cabb8ce4c9f49cb65e9ef61e72cfded805e'
+                        '87d8004592f5d4cf79'),
+                    'X-Amz-SignedHeaders': 'host',
                 }
             }
         )
@@ -163,9 +184,16 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
                 'hostname': 'bucket.s3.us-east-1.amazonaws.com',
                 'path': '/key',
                 'query_params': {
-                    'AWSAccessKeyId': 'access_key',
-                    'Expires': str(FROZEN_TIMESTAMP + DEFAULT_EXPIRES),
-                    'Signature': '2m9M0eLB%2BqI0nUpkyTskKmHd0Ig%3D',
+                    'X-Amz-Algorithm': 'AWS4-HMAC-SHA256',
+                    'X-Amz-Credential': (
+                        'access_key%2F20160818%2Fus-east-1'
+                        '%2Fs3%2Faws4_request'),
+                    'X-Amz-Date': '20160818T143303Z',
+                    'X-Amz-Expires': '3600',
+                    'X-Amz-Signature': (
+                        'd28b6c4a54f31196a6d49335556736a3fc29f036018c8e'
+                        '50775887299092d1a0'),
+                    'X-Amz-SignedHeaders': 'host',
                 }
             }
         )
@@ -180,9 +208,16 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
                 'hostname': 's3.us-east-1.amazonaws.com',
                 'path': '/bucket/key',
                 'query_params': {
-                    'AWSAccessKeyId': 'access_key',
-                    'Expires': str(FROZEN_TIMESTAMP + DEFAULT_EXPIRES),
-                    'Signature': '2m9M0eLB%2BqI0nUpkyTskKmHd0Ig%3D',
+                    'X-Amz-Algorithm': 'AWS4-HMAC-SHA256',
+                    'X-Amz-Credential': (
+                        'access_key%2F20160818%2Fus-east-1'
+                        '%2Fs3%2Faws4_request'),
+                    'X-Amz-Date': '20160818T143303Z',
+                    'X-Amz-Expires': '3600',
+                    'X-Amz-Signature': (
+                        'd20178280d7521b384730c678549f6344401ae040bec55'
+                        '9ad06020854c6c718f'),
+                    'X-Amz-SignedHeaders': 'host',
                 }
             }
         )

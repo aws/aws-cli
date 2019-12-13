@@ -650,8 +650,8 @@ class PresignCommand(S3Command):
     DESCRIPTION = (
         "Generate a pre-signed URL for an Amazon S3 object. This allows "
         "anyone who receives the pre-signed URL to retrieve the S3 object "
-        "with an HTTP GET request. For sigv4 requests the region needs to be "
-        "configured explicitly."
+        "with an HTTP GET request. All presigned URL's now use sigv4 "
+        "so the region needs to be configured explicitly."
     )
     USAGE = "<S3Uri>"
     ARG_TABLE = [{'name': 'path',

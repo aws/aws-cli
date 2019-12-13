@@ -90,4 +90,26 @@ Contents of ``custom-resource-id.txt``::
 
     https://example.execute-api.us-west-2.amazonaws.com/prod/scalableTargetDimensions/1-23456789
 
+**Example 9: To register a new scalable target for Amazon Comprehend**
+
+The following ``register-scalable-target`` example registers the desired number of inference units to be used by the model for an Amazon Comprehend document classifier endpoint using the endpoint's ARN, with a minimum capacity of 1 inference unit and a maximum capacity of 3 inference units. Each inference unit represents a throughput of 100 characters per second. ::
+
+    aws application-autoscaling register-scalable-target \
+        --service-namespace comprehend \
+        --scalable-dimension comprehend:document-classifier-endpoint:DesiredInferenceUnits \
+        --resource-id arn:aws:comprehend:us-west-2:123456789012:document-classifier-endpoint/EXAMPLE \
+        --min-capacity 1 \
+        --max-capacity 3
+
+**Example 10: To register a new scalable target for AWS Lambda**
+
+The following ``register-scalable-target`` example registers the provisioned concurrency for an alias called ``BLUE`` for the Lambda function called ``my-function``, with a minimum capacity of 0 and a maximum capacity of 100. ::
+
+    aws application-autoscaling register-scalable-target \
+        --service-namespace lambda \
+        --scalable-dimension lambda:function:ProvisionedConcurrency \
+        --resource-id function:my-function:BLUE \
+        --min-capacity 0 \
+        --max-capacity 100
+
 For more information, see the `Application Auto Scaling User Guide <https://docs.aws.amazon.com/autoscaling/application/userguide/what-is-application-auto-scaling.html>`__.

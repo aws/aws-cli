@@ -1,6 +1,6 @@
-**To retrieve the analytics configuration for a bucket**
+**To retrieve the analytics configuration for a bucket with a specific ID**
 
-The following ``get-bucket-analytics-configuration`` example retrieves the analytics configuration for the specified bucket. ::
+The following ``get-bucket-analytics-configuration`` example displays the analytics configuration for the specified bucket and ID. ::
 
     aws s3api get-bucket-analytics-configuration \
         --bucket my-bucket \
@@ -8,9 +8,9 @@ The following ``get-bucket-analytics-configuration`` example retrieves the analy
 
 Output::
 
-    {
-        "AnalyticsConfiguration": {
-            "StorageClassAnalysis": {},
-            "Id": "1"
-        }
-    }
+   {
+       "AnalyticsConfiguration": {
+           "StorageClassAnalysis": {},
+           "Id": "1"
+       }
+   }

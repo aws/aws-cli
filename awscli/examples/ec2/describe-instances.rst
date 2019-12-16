@@ -2,22 +2,27 @@
 
 The following ``describe-instances`` example displays details about the specified instance. ::
 
-    aws ec2 describe-instances \
-        --instance-ids i-1234567890abcdef0
+    aws ec2 describe-instances --instance-ids i-1234567890abcdef0
 
 **Example 2: To describe instances based on instance type**
 
 The following ``describe-instances`` example displays details about only instances of the specified type. ::
 
-    aws ec2 describe-instances \
-        --filters Name=instance-type,Values=m5.large
+    aws ec2 describe-instances --filters Name=instance-type,Values=m5.large
 
-**Example 3: To describe instances based on a tag key and value**
+**Example 3: To describe instances based on tags**
 
-The following ``describe-instances`` example displays details about only those instances that have a tag with the specified key name and value. ::
+The following ``describe-instances`` example displays details about only those instances that have a tag with the specified tag key (Owner), regardless of the tag value. ::
 
-    aws ec2 describe-instances \
-        --filters "Name=tag-key,Values=Owner"
+    aws ec2 describe-instances --filters "Name=tag-key,Values=Owner"
+
+The following ``describe-instances`` example displays details about only those instances that have a tag with the specified tag value (my-team), regardless of the tag key. ::
+
+    aws ec2 describe-instances --filters "Name=tag-value,Values=my-team"
+
+The following ``describe-instances`` example displays details about only those instances that have the specified tag (Owner=my-team). ::
+
+    aws ec2 describe-instances --filters "Name=tag:Owner,Values=my-team"
 
 **Example 4: To filter the results based on multiple conditions**
 
@@ -28,8 +33,7 @@ The following ``describe-instances`` example displays details about all instance
 
 The following ``describe-instances`` example uses a JSON input file to perform the same filtering as the previous example. When filters get more complicated, they can be easier to specify in a JSON file. ::
 
-    aws ec2 describe-instances \
-        --filters file://filters.json
+    aws ec2 describe-instances --filters file://filters.json
 
 Contents of ``filters.json``::
 

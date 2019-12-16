@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.304
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``mq``: Update mq command to latest version
+* api-change:``comprehendmedical``: Update comprehendmedical command to latest version
+
+
 1.16.303
 ========
 

@@ -20,7 +20,7 @@ PACKAGES_DIR = os.path.join(
 INSTALL_DIR = os.path.expanduser(os.path.join(
     '~', '.local', 'lib', 'aws'))
 IS_PY26 = sys.version_info[:2] == (2, 6)
-IS_PY3 = sys.version_info[0] == 3
+IS_PY37 = sys.version_info[:2] == (3, 7)
 if IS_PY26:
     # --no-build-isolation isn't available in the pip
     # version we use in py26.
@@ -58,8 +58,9 @@ def run(cmd):
                          stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
     if p.returncode != 0:
+        output = (stdout + stderr).decode("utf-8")
         raise BadRCError("Bad rc (%s) for cmd '%s': %s" % (
-            p.returncode, cmd, stdout + stderr))
+            p.returncode, cmd, output))
     return stdout
 
 
@@ -209,7 +210,7 @@ def main():
         shutil.rmtree(working_dir)
 
 
-if IS_PY3:
+if IS_PY37:
     create_virtualenv = _create_virtualenv_internal
 else:
     create_virtualenv = _create_virtualenv_external

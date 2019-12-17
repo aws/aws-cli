@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sys
+import re
 import shlex
 import os
 import os.path
@@ -344,3 +345,116 @@ def ignore_user_entered_signals():
     finally:
         for sig, user_signal in enumerate(signal_list):
             signal.signal(user_signal, actual_signals[sig])
+
+
+# linux_distribution is used by the CodeDeploy customization. Python 3.8
+# removed it from the stdlib, so it is vendored here in the case where the
+# import fails.
+try:
+    from platform import linux_distribution
+except ImportError:
+    _UNIXCONFDIR = '/etc'
+    _supported_dists = (
+        'SuSE', 'debian', 'fedora', 'redhat', 'centos',
+        'mandrake', 'mandriva', 'rocks', 'slackware', 'yellowdog', 'gentoo',
+        'UnitedLinux', 'turbolinux', 'arch', 'mageia')
+    _release_filename = re.compile(r'(\w+)[-_](release|version)', re.ASCII)
+    def linux_distribution(distname='', version='', id='',
+                           supported_dists=_supported_dists,
+                           full_distribution_name=1):
+        return _linux_distribution(distname, version, id, supported_dists,
+                                   full_distribution_name)
+
+    def _linux_distribution(distname, version, id, supported_dists,
+                            full_distribution_name):
+
+        """ Tries to determine the name of the Linux OS distribution name.
+            The function first looks for a distribution release file in
+            /etc and then reverts to _dist_try_harder() in case no
+            suitable files are found.
+            supported_dists may be given to define the set of Linux
+            distributions to look for. It defaults to a list of currently
+            supported Linux distributions identified by their release file
+            name.
+            If full_distribution_name is true (default), the full
+            distribution read from the OS is returned. Otherwise the short
+            name taken from supported_dists is used.
+            Returns a tuple (distname, version, id) which default to the
+            args given as parameters.
+        """
+        try:
+            etc = os.listdir(_UNIXCONFDIR)
+        except OSError:
+            # Probably not a Unix system
+            return distname, version, id
+        etc.sort()
+        for file in etc:
+            m = _release_filename.match(file)
+            if m is not None:
+                _distname, dummy = m.groups()
+                if _distname in supported_dists:
+                    distname = _distname
+                    break
+        else:
+            return _dist_try_harder(distname, version, id)
+
+        # Read the first line
+        with open(os.path.join(_UNIXCONFDIR, file), 'r',
+                  encoding='utf-8', errors='surrogateescape') as f:
+            firstline = f.readline()
+        _distname, _version, _id = _parse_release_file(firstline)
+
+        if _distname and full_distribution_name:
+            distname = _distname
+        if _version:
+            version = _version
+        if _id:
+            id = _id
+        return distname, version, id
+
+    def _dist_try_harder(distname, version, id):
+        """ Tries some special tricks to get the distribution
+            information in case the default method fails.
+            Currently supports older SuSE Linux, Caldera OpenLinux and
+            Slackware Linux distributions.
+        """
+        if os.path.exists('/var/adm/inst-log/info'):
+            # SuSE Linux stores distribution information in that file
+            distname = 'SuSE'
+            with open('/var/adm/inst-log/info') as f:
+                for line in f:
+                    tv = line.split()
+                    if len(tv) == 2:
+                        tag, value = tv
+                    else:
+                        continue
+                    if tag == 'MIN_DIST_VERSION':
+                        version = value.strip()
+                    elif tag == 'DIST_IDENT':
+                        values = value.split('-')
+                        id = values[2]
+            return distname, version, id
+
+        if os.path.exists('/etc/.installed'):
+            # Caldera OpenLinux has some infos in that file (thanks to Colin Kong)
+            with open('/etc/.installed') as f:
+                for line in f:
+                    pkg = line.split('-')
+                    if len(pkg) >= 2 and pkg[0] == 'OpenLinux':
+                        # XXX does Caldera support non Intel platforms ? If yes,
+                        #     where can we find the needed id ?
+                        return 'OpenLinux', pkg[1], id
+
+        if os.path.isdir('/usr/lib/setup'):
+            # Check for slackware version tag file (thanks to Greg Andruk)
+            verfiles = os.listdir('/usr/lib/setup')
+            for n in range(len(verfiles)-1, -1, -1):
+                if verfiles[n][:14] != 'slack-version-':
+                    del verfiles[n]
+            if verfiles:
+                verfiles.sort()
+                distname = 'slackware'
+                version = verfiles[-1][14:]
+                return distname, version, id
+
+        return distname, version, id

@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.16.305
+========
+
+* api-change:``iot``: Update iot command to latest version
+* api-change:``kinesisanalyticsv2``: Update kinesisanalyticsv2 command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
 1.16.304
 ========
 

@@ -27,7 +27,7 @@ from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump, \
     yaml_parse
 import jmespath
-
+import checksumdir
 
 LOG = logging.getLogger(__name__)
 
@@ -155,8 +155,19 @@ def upload_local_artifacts(resource_id, resource_dict, property_name,
 
 
 def zip_and_upload(local_path, uploader):
+    # Compute a single checksum for the content
+    # before creating the zip archive 
+    # this prevents the issue of continous re-deploy becauses
+    # when computing the checksum on the zip archive causes the 
+    # checksum to change at every run as it takes into account file 
+    # attributes such as creation and modification dates which changes
+    # every time a file is installed (requirements.txt)
+    # by computing the checksum over the content a function is deployed
+    # only when there is an actual change in the file content
+
+    filehash = checksumdir.dirhash(local_path)
     with zip_folder(local_path) as zipfile:
-            return uploader.upload_with_dedup(zipfile)
+            return uploader.upload(filehash,zipfile)
 
 
 @contextmanager

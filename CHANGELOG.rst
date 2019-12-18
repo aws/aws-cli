@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.16.306
+========
+
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+
+
 1.16.305
 ========
 

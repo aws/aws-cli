@@ -3,22 +3,24 @@
 The following ``describe-db-instances`` example retrieves details about the specified DB instance. ::
 
     aws rds describe-db-instances \
-        --db-instance-identifier test-instance
+        --db-instance-identifier mydbinstancecf
 
 Output::
 
     {
-        "DBInstance": {
-            "DBInstanceIdentifier": "test-instance",
-            "DBInstanceClass": "db.m1.small",
-            "Engine": "mysql",
-            "DBInstanceStatus": "available",
-            "MasterUsername": "myawsuser",
-            "Endpoint": {
-                "Address": "test-instance.cdgmuqiadpid.us-east-1.rds.amazonaws.com",
-                "Port": 3306,
-                "HostedZoneId": "Z2R2ITUGPM61AM"
-            },
-            ...some output truncated...
-        }
+        "DBInstances": [
+            {
+                "DBInstanceIdentifier": "mydbinstancecf",
+                "DBInstanceClass": "db.t3.small",
+                "Engine": "mysql",
+                "DBInstanceStatus": "available",
+                "MasterUsername": "masterawsuser",
+                "Endpoint": {
+                    "Address": "mydbinstancecf.abcexample.us-east-1.rds.amazonaws.com",
+                    "Port": 3306,
+                    "HostedZoneId": "Z2R2ITUGPM61AM"
+                },
+                ...some output truncated...
+            }
+        ]
     }

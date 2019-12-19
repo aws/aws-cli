@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import sys
+import os
 import logging
 
 from botocore.hooks import HierarchicalEmitter
@@ -17,6 +19,7 @@ from botocore.hooks import HierarchicalEmitter
 log = logging.getLogger('awscli.plugin')
 
 BUILTIN_PLUGINS = {'__builtin__': 'awscli.handlers'}
+CLI_LEGACY_PLUGIN_PATH = 'cli_legacy_plugin_path'
 
 
 def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):
@@ -50,9 +53,10 @@ def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):
     return event_hooks
 
 
-def _import_plugins(plugin_names):
+def _import_plugins(plugin_mapping):
     plugins = []
-    for name, path in plugin_names.items():
+    _handle_legacy_plugin_paths(plugin_mapping)
+    for name, path in plugin_mapping.items():
         log.debug("Importing plugin %s: %s", name, path)
         if '.' not in path:
             plugins.append(__import__(path))
@@ -61,3 +65,13 @@ def _import_plugins(plugin_names):
             module = __import__(path, fromlist=[module])
             plugins.append(module)
     return plugins
+
+
+def _handle_legacy_plugin_paths(plugin_mapping):
+    if CLI_LEGACY_PLUGIN_PATH not in plugin_mapping:
+        return
+    values = plugin_mapping.pop(CLI_LEGACY_PLUGIN_PATH)
+    for dirname in values.split(os.pathsep):
+        log.debug("Adding additional path from cli_legacy_plugin_path "
+                  "configuration: %s", dirname)
+        sys.path.append(dirname)

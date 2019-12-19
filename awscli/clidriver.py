@@ -81,7 +81,8 @@ def main():
 def create_clidriver():
     session = botocore.session.Session()
     _set_user_agent_for_session(session)
-    _load_plugins(session)
+    load_plugins(session.full_config.get('plugins', {}),
+                 event_hooks=session.get_component('event_emitter'))
     driver = CLIDriver(session=session)
     return driver
 
@@ -90,18 +91,6 @@ def _set_user_agent_for_session(session):
     session.user_agent_name = 'aws-cli'
     session.user_agent_version = __version__
     session.user_agent_extra = 'botocore/%s' % botocore_version
-
-
-def _load_plugins(session):
-    if 'plugins' in session.full_config:
-        # V2 currently does not support plugins as external modules cannot
-        # be loaded directly from the v2 executables we generate. We eventually
-        # want to figure out how to support plugins in the future.
-        LOG.debug(
-            '[plugins] section is not currently supported. Not loading '
-            'plugins.'
-        )
-    load_plugins({}, event_hooks=session.get_component('event_emitter'))
 
 
 class CLIDriver(object):

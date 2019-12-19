@@ -105,6 +105,29 @@ class TestRecursiveShapes(unittest.TestCase):
             'arg-name', self.help_command, 'process-cli-arg.foo.bar')
         self.assert_proper_indentation()
 
+    def test_handle_no_output_shape(self):
+        operation_model = mock.Mock()
+        operation_model.output_shape = None
+        self.help_command.obj = operation_model
+        self.operation_handler.doc_output(self.help_command, 'event-name')
+        self.assert_rendered_docs_contain('None')
+
+    def test_handle_memberless_output_shape(self):
+        shape_map = {
+            'NoMembers': {
+                'type': 'structure',
+                'members': {}
+            }
+        }
+        shape = StructureShape('NoMembers', shape_map['NoMembers'],
+                               ShapeResolver(shape_map))
+
+        operation_model = mock.Mock()
+        operation_model.output_shape = shape
+        self.help_command.obj = operation_model
+        self.operation_handler.doc_output(self.help_command, 'event-name')
+        self.assert_rendered_docs_contain('None')
+
 
 class TestCLIDocumentEventHandler(unittest.TestCase):
     def setUp(self):

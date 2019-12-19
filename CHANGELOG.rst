@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.16.307
+========
+
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``codestar-connections``: Update codestar-connections command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``personalize-runtime``: Update personalize-runtime command to latest version
+* api-change:``dlm``: Update dlm command to latest version
+
+
 1.16.306
 ========
 

@@ -1,8 +1,11 @@
 **To list the status of operations that return an operation ID**
 
-Some domain registration operations don't finish immediately. These operations return an operation ID that you can use to get the current status. The following ``list-operations`` command lists summary information, including the status, about the current domain-registration operations. ::
+Some domain registration operations run asynchronously and return a response before they finish. These operations return an operation ID that you can use to get the current status. The following ``list-operations`` command lists summary information, including the status, about the current domain-registration operations. 
+
+This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 
     aws route53domains list-operations
+        --region us-east-1
 
 Output::
 

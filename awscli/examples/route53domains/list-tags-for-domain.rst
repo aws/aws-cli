@@ -1,8 +1,11 @@
 **To list tags for a domain**
 
-The following ``list-tags-for-domain`` command lists the tags that are currently associated with the specified domain. ::
+The following ``list-tags-for-domain`` command lists the tags that are currently associated with the specified domain. 
+
+This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 
     aws route53domains list-tags-for-domain \
+        --region us-east-1 \
         --domain-name example.com
 
 Output::

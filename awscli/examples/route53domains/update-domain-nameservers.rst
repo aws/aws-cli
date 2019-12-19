@@ -1,8 +1,11 @@
 **To update the name servers for a domain**
 
-The following ``update-domain-nameservers`` command updates the name servers for a domain. ::
+The following ``update-domain-nameservers`` command updates the name servers for a domain. 
+
+This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 
     aws route53domains update-domain-nameservers \
+        --region us-east-1 \
         --domain-name example.com \
         --nameservers Name=ns-1.awsdns-01.org Name=ns-2.awsdns-02.co.uk Name=ns-3.awsdns-03.net Name=ns-4.awsdns-04.com
 

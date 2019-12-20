@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.16.308
+========
+
+* api-change:``devicefarm``: Update devicefarm command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``eks``: Update eks command to latest version
+
+
 1.16.307
 ========
 

@@ -1,8 +1,11 @@
 **To update the privacy settings for the contacts for a domain**
 
-The following ``update-domain-contact-privacy`` command turns off privacy protection for the administrative contact for the example.com domain. ::
+The following ``update-domain-contact-privacy`` command turns off privacy protection for the administrative contact for the example.com domain. This command runs only in the ``us-east-1`` Region. 
+
+If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 
     aws route53domains update-domain-contact-privacy \
+        --region us-east-1 \
         --domain-name example.com \
         --no-admin-privacy
 

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.309
+========
+
+* api-change:``detective``: Update detective command to latest version
+* api-change:``health``: Update health command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+
+
 1.16.308
 ========
 

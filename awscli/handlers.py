@@ -74,7 +74,7 @@ from awscli.customizations.route53 import register_create_hosted_zone_doc_fix
 from awscli.customizations.s3.s3 import s3_plugin_initialize
 from awscli.customizations.s3endpoint import register_s3_endpoint
 from awscli.customizations.s3errormsg import register_s3_error_msg
-from awscli.customizations.scalarparse import register_scalar_parser
+from awscli.customizations.timestampformat import register_timestamp_format
 from awscli.customizations.sessendemail import register_ses_send_email
 from awscli.customizations.sso import register_sso_commands
 from awscli.customizations.streamingoutputarg import add_streaming_output_arg
@@ -152,7 +152,7 @@ def awscli_initialize(event_handlers):
     register_subscribe(event_handlers)
     register_get_status(event_handlers)
     register_rename_config(event_handlers)
-    register_scalar_parser(event_handlers)
+    register_timestamp_format(event_handlers)
     opsworks_init(event_handlers)
     register_lambda_create_function(event_handlers)
     register_fix_kms_create_grant_docs(event_handlers)

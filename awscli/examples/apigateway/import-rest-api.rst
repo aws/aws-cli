@@ -2,4 +2,4 @@
 
 Command::
 
-  aws apigateway import-rest-api --body 'file:///path/to/API_Swagger_template.json'
+  aws apigateway import-rest-api --body 'fileb:///path/to/API_Swagger_template.json'

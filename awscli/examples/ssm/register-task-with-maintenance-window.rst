@@ -4,7 +4,7 @@ This example registers an Automation task with a Maintenance Window that is targ
 
 Command::
 
-   aws ssm register-task-with-maintenance-window --window-id "mw-082dcd7649dee04e4" --targets Key=InstanceIds,Values=i-12345201220f8cd0d --task-arn AWS-RestartEC2Instance --service-role-arn arn:aws:iam::111222333444:role/SSM --task-type AUTOMATION --task-invocation-parameters "{\"Automation\":{\"DocumentVersion\":\"\$LATEST\",\"Parameters\":{\"InstanceId\":[\"{{TARGET_ID}}\"]}}}" --priority 0 --max-concurrency 1 --max-errors 1 --name "AutomationExample" --description "Restarting EC2 Instance for maintenance"
+   aws ssm register-task-with-maintenance-window --cli-binary-format legacy --window-id "mw-082dcd7649dee04e4" --targets Key=InstanceIds,Values=i-12345201220f8cd0d --task-arn AWS-RestartEC2Instance --service-role-arn arn:aws:iam::111222333444:role/SSM --task-type AUTOMATION --task-invocation-parameters "{\"Automation\":{\"DocumentVersion\":\"\$LATEST\",\"Parameters\":{\"InstanceId\":[\"{{TARGET_ID}}\"]}}}" --priority 0 --max-concurrency 1 --max-errors 1 --name "AutomationExample" --description "Restarting EC2 Instance for maintenance"
   
 Output::
 

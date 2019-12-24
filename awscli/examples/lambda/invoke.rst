@@ -3,6 +3,7 @@
 The following ``invoke`` example invokes the ``my-function`` function synchronously. ::
 
     aws lambda invoke \
+        --cli-binary-format legacy \
         --function-name my-function \
         --payload '{ "name": "Bob" }' \
         response.json
@@ -21,6 +22,7 @@ For more information, see `Synchronous Invocation <https://docs.aws.amazon.com/l
 The following ``invoke`` example invokes the ``my-function`` function asynchronously. ::
 
     aws lambda invoke \
+        --cli-binary-format legacy \
         --function-name my-function \
         --invocation-type Event \
         --payload '{ "name": "Bob" }' \

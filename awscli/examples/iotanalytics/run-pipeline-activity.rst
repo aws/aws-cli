@@ -3,6 +3,7 @@
 The following ``run-pipeline-activity`` example simulates the results of running a pipeline activity on a message payload. ::
 
     aws iotanalytics run-pipeline-activity \
+        --cli-binary-format legacy \
         --pipeline-activity file://maths.json \
         --payloads file://payloads.json
 

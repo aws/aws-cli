@@ -103,16 +103,60 @@ class AppendFilterTest(unittest.TestCase):
                                             ['--exclude', 'b']])
 
 
-class FindBucketKey(unittest.TestCase):
-    """
-    This test ensures the find_bucket_key function works when
-    unicode is used.
-    """
+class TestFindBucketKey(unittest.TestCase):
     def test_unicode(self):
         s3_path = '\u1234' + u'/' + '\u5678'
         bucket, key = find_bucket_key(s3_path)
         self.assertEqual(bucket, '\u1234')
         self.assertEqual(key, '\u5678')
+
+    def test_bucket(self):
+        bucket, key = find_bucket_key('bucket')
+        self.assertEqual(bucket, 'bucket')
+        self.assertEqual(key, '')
+
+    def test_bucket_with_slash(self):
+        bucket, key = find_bucket_key('bucket/')
+        self.assertEqual(bucket, 'bucket')
+        self.assertEqual(key, '')
+
+    def test_bucket_with_key(self):
+        bucket, key = find_bucket_key('bucket/key')
+        self.assertEqual(bucket, 'bucket')
+        self.assertEqual(key, 'key')
+
+    def test_bucket_with_key_and_prefix(self):
+        bucket, key = find_bucket_key('bucket/prefix/key')
+        self.assertEqual(bucket, 'bucket')
+        self.assertEqual(key, 'prefix/key')
+
+    def test_accesspoint_arn(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint')
+        self.assertEqual(
+            bucket, 'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint')
+        self.assertEqual(key, '')
+
+    def test_accesspoint_arn_with_slash(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint/')
+        self.assertEqual(
+            bucket, 'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint')
+        self.assertEqual(key, '')
+
+    def test_accesspoint_arn_with_key(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint/key')
+        self.assertEqual(
+            bucket, 'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint')
+        self.assertEqual(key, 'key')
+
+    def test_accesspoint_arn_with_key_and_prefix(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint/pre/key')
+        self.assertEqual(
+            bucket, 'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint')
+        self.assertEqual(key, 'pre/key')
 
 
 class TestCreateWarning(unittest.TestCase):

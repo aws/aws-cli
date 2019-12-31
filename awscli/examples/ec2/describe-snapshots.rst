@@ -3,7 +3,7 @@
 The following ``describe-snapshots`` example describes the specified snapshot. ::
 
     aws ec2 describe-snapshots \
-        --snapshot-id snap-1234567890abcdef0
+        --snapshot-ids snap-1234567890abcdef0
 
 Output::
 

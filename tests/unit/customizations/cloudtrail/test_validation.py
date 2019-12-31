@@ -265,6 +265,21 @@ class TestValidation(unittest.TestCase):
         digest_provider = traverser.digest_provider
         self.assertEqual('us-east-1', digest_provider.trail_home_region)
         self.assertEqual('foo', digest_provider.trail_name)
+        self.assertEqual(TEST_ACCOUNT_ID, digest_provider.account_id)
+
+    def test_creates_traverser_and_gets_trail_by_arn_s3_bucket_specified(self):
+        cloudtrail_client = Mock()
+        traverser = create_digest_traverser(
+            trail_arn=TEST_TRAIL_ARN, trail_source_region='us-east-1',
+            cloudtrail_client=cloudtrail_client,
+            organization_client=Mock(),
+            s3_client_provider=Mock(),
+            bucket="bucket")
+        self.assertEqual('bucket', traverser.starting_bucket)
+        digest_provider = traverser.digest_provider
+        self.assertEqual('us-east-1', digest_provider.trail_home_region)
+        self.assertEqual('foo', digest_provider.trail_name)
+        self.assertEqual(TEST_ACCOUNT_ID, digest_provider.account_id)
 
     def test_creates_traverser_and_gets_organization_id(self):
         cloudtrail_client = Mock()

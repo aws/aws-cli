@@ -1,205 +1,192 @@
-**Example 1: To create a new route with weighting**
+**To create a new gRPC route**
 
-The following ``create-route`` example uses a `JSON input file <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-skeleton.html>`__ to create a route with weighted targets. ::
+The following ``create-route`` example uses a JSON input file to create a gRPC route. GRPC traffic that has metadata that starts with 123 is routed to a virtual node named serviceBgrpc. If there are specific gRPC, HTTP, or TCP failures when attempting to communicate with the target of the route, the route is retried three times. There is a 15 second delay between each retry attempt. ::
 
     aws appmesh create-route \
-        --cli-input-json file://create-route-weighted.json
+        --cli-input-json file://create-route-grpc.json
 
-Contents of ``create-route-weighted.json``::
+Contents of ``create-route-grpc.json``::
 
     {
-        "meshName" : "app1",
-        "routeName" : "toVnServiceB-weighted",
+        "meshName" : "apps",
+        "routeName" : "grpcRoute",
         "spec" : {
-            "httpRoute" : {
-                "action" : {
-                    "weightedTargets" : [
-                        {
-                            "virtualNode" : "vnServiceBv1",
-                            "weight" : 90
-                        },
-                        {
-                            "virtualNode" : "vnServiceBv2",
-                            "weight" : 10
-                        }
-                    ]
-                },
-                "match" : {
-                    "prefix" : "/"
-                }
-            }
-        },
-        "virtualRouterName" : "vrServiceB"
-    }
-
-Output::
-
-    {
-        "route": {
-            "meshName": "app1",
-            "metadata": {
-                "arn": "arn:aws:appmesh:us-east-1:123456789012:mesh/app1/virtualRouter/vrServiceB/route/toVnServiceB-weighted",
-                "createdAt": 1563811384.015,
-                "lastUpdatedAt": 1563811384.015,
-                "uid": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
-                "version": 1
-            },
-            "routeName": "toVnServiceB-weighted",
-            "spec": {
-                "httpRoute": {
-                    "action": {
-                        "weightedTargets": [
-                            {
-                                "virtualNode": "vnServiceBv1",
-                                "weight": 90
-                            },
-                            {
-                                "virtualNode": "vnServiceBv2",
-                                "weight": 10
-                            }
-                        ]
-                    },
-                    "match": {
-                        "prefix": "/"
+           "grpcRoute" : {
+              "action" : {
+                 "weightedTargets" : [
+                    {
+                       "virtualNode" : "serviceBgrpc",
+                       "weight" : 100
                     }
-                }
-            },
-            "status": {
-                "status": "ACTIVE"
-            },
-            "virtualRouterName": "vrServiceB"
-        }
-    }
-
-For more information, see `Routes <https://docs.aws.amazon.com/app-mesh/latest/userguide/routes.html>`__ in the *AWS App Mesh User Guide*.
-
-**Example 2: To create a new route with path-based routing**
-
-The following ``create-route`` example uses a `JSON input file <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-skeleton.html>`__ to create a route with path-based routing. ::
-
-    aws appmesh create-route \
-        --cli-input-json file://create-route-path.json
-
-Contents of ``create-route-path.json``::
-
-    {
-        "meshName": "app1",
-        "routeName": "toVnServiceB-path",
-        "spec": {
-            "httpRoute": {
-                "action": {
-                    "weightedTargets": [
-                        {
-                            "virtualNode": "vnServiceBv1",
-                            "weight": 100
-                        }
-                    ]
-                },
-                "match": {
-                    "prefix": "/metrics"
-                }
-            }
+                 ]
+              },
+              "match" : {
+                 "metadata" : [
+                    {
+                       "invert" : false,
+                       "match" : {
+                          "prefix" : "123"
+                       },
+                       "name" : "myMetadata"
+                    }
+                 ],
+                 "methodName" : "GetColor",
+                 "serviceName" : "com.amazonaws.services.ColorService"
+              },
+              "retryPolicy" : {
+                 "grpcRetryEvents" : [ "deadline-exceeded" ],
+                 "httpRetryEvents" : [ "server-error", "gateway-error" ],
+                 "maxRetries" : 3,
+                 "perRetryTimeout" : {
+                    "unit" : "s",
+                    "value" : 15
+                 },
+                 "tcpRetryEvents" : [ "connection-error" ]
+              }
+           },
+           "priority" : 100
         },
-        "virtualRouterName": "vrServiceB"
+        "virtualRouterName" : "serviceBgrpc"
     }
-    
+
 Output::
 
     {
         "route": {
-            "meshName": "app1",
+            "meshName": "apps",
             "metadata": {
-                "arn": "arn:aws:appmesh:us-east-1:123456789012:mesh/app1/virtualRouter/vrServiceB/route/toVnServiceB-path",
-                "createdAt": 1563823638.831,
-                "lastUpdatedAt": 1563823638.831,
+                "arn": "arn:aws:appmesh:us-west-2:123456789012:mesh/apps/virtualRouter/serviceBgrpc/route/grpcRoute",
+                "createdAt": 1572010806.008,
+                "lastUpdatedAt": 1572010806.008,
                 "uid": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
                 "version": 1
             },
-            "routeName": "toVnServiceB-path",
+            "routeName": "grpcRoute",
             "spec": {
-                "httpRoute": {
+                "grpcRoute": {
                     "action": {
                         "weightedTargets": [
                             {
-                                "virtualNode": "vnServiceBv1",
+                                "virtualNode": "serviceBgrpc",
                                 "weight": 100
                             }
                         ]
                     },
                     "match": {
-                        "prefix": "/metrics"
+                        "metadata": [
+                            {
+                                "invert": false,
+                                "match": {
+                                    "prefix": "123"
+                                },
+                                "name": "mymetadata"
+                            }
+                        ],
+                        "methodName": "GetColor",
+                        "serviceName": "com.amazonaws.services.ColorService"
+                    },
+                    "retryPolicy": {
+                        "grpcRetryEvents": [
+                            "deadline-exceeded"
+                        ],
+                        "httpRetryEvents": [
+                            "server-error",
+                            "gateway-error"
+                        ],
+                        "maxRetries": 3,
+                        "perRetryTimeout": {
+                            "unit": "s",
+                            "value": 15
+                        },
+                        "tcpRetryEvents": [
+                            "connection-error"
+                        ]
                     }
-                }
+                },
+                "priority": 100
             },
             "status": {
                 "status": "ACTIVE"
             },
-            "virtualRouterName": "vrServiceB"
+            "virtualRouterName": "serviceBgrpc"
         }
     }
 
-For more information, see `Path-based Routing <https://docs.aws.amazon.com/app-mesh/latest/userguide/route-path.html>`__ in the *AWS App Mesh User Guide*.
+**To create a new HTTP or HTTP/2 route**
 
-**Example 3: To create a new route based on an HTTP header**
-
-The following ``create-route`` example uses a `JSON input file <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-skeleton.html>`__ to create a route that will route all requests to ``serviceB`` that have any path prefix in an HTTPS post where the ``clientRequestId`` header has a prefix of ``123``::
+The following ``create-route`` example uses a JSON input file to create an HTTP/2 route. To create an HTTP route, replace http2Route with httpRoute under spec. All HTTP/2 traffic addressed to any URL prefix that has a header value that starts with 123 is routed to a virtual node named serviceBhttp2. If there are specific HTTP or TCP failures when attempting to communicate with the target of the route, the route is retried three times. There is a 15 second delay between each retry attempt. ::
 
     aws appmesh create-route \
-        --cli-input-json file://create-route-headers.json
+        --cli-input-json file://create-route-http2.json
 
-Contents of ``create-route-headers.json``::
+Contents of ``create-route-http2.json``::
 
     {
-        "meshName" : "app1",
-        "routeName" : "route-headers",
-        "spec" : {
-            "httpRoute" : {
-                "action" : {
-                    "weightedTargets" : [
+        "meshName": "apps",
+        "routeName": "http2Route",
+        "spec": {
+            "http2Route": {
+                "action": {
+                    "weightedTargets": [
                         {
-                            "virtualNode" : "serviceB",
-                            "weight" : 100
+                            "virtualNode": "serviceBhttp2",
+                            "weight": 100
                         }
                     ]
                 },
-                "match" : {
-                    "headers" : [
+                "match": {
+                    "headers": [
                         {
-                            "invert" : false,
-                            "match" : {
-                                "prefix" : "123"
+                            "invert": false,
+                            "match": {
+                                "prefix": "123"
                             },
-                            "name" : "clientRequestId"
+                            "name": "clientRequestId"
                         }
                     ],
-                    "method" : "POST",
-                    "prefix" : "/",
-                    "scheme" : "https"
+                    "method": "POST",
+                    "prefix": "/",
+                    "scheme": "http"
+                },
+                "retryPolicy": {
+                    "httpRetryEvents": [
+                        "server-error",
+                        "gateway-error"
+                    ],
+                    "maxRetries": 3,
+                    "perRetryTimeout": {
+                        "unit": "s",
+                        "value": 15
+                    },
+                    "tcpRetryEvents": [
+                        "connection-error"
+                    ]
                 }
-            }
+            },
+            "priority": 200
         },
-        "virtualRouterName" : "virtual-router1"
+        "virtualRouterName": "serviceBhttp2"
     }
 
 Output::
 
     {
         "route": {
-            "meshName": "app1",
+            "meshName": "apps",
             "metadata": {
-                "arn": "arn:aws:appmesh:us-east-1:123456789012:mesh/app1/virtualRouter/virtual-router1/route/route-headers",
-                "createdAt": 1565963028.608,
-                "lastUpdatedAt": 1565963028.608,
+                "arn": "arn:aws:appmesh:us-west-2:123456789012:mesh/apps/virtualRouter/serviceBhttp2/route/http2Route",
+                "createdAt": 1572011008.352,
+                "lastUpdatedAt": 1572011008.352,
                 "uid": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
                 "version": 1
             },
-            "routeName": "route-headers",
+            "routeName": "http2Route",
             "spec": {
-                "httpRoute": {
+                "http2Route": {
                     "action": {
                         "weightedTargets": [
                             {
-                                "virtualNode": "serviceB",
+                                "virtualNode": "serviceBhttp2",
                                 "weight": 100
                             }
                         ]
@@ -216,88 +203,7 @@ Output::
                         ],
                         "method": "POST",
                         "prefix": "/",
-                        "scheme": "https"
-                    }
-                }
-            },
-            "status": {
-                "status": "ACTIVE"
-            },
-            "virtualRouterName": "virtual-router1"
-        }
-    }
-
-For more information, see `HTTP Headers <https://docs.aws.amazon.com/app-mesh/latest/userguide/route-http-headers.html>`__ in the *AWS App Mesh User Guide*.
-
-**Example 4: To create a new route with a retry policy**
-
-The following ``create-route`` example uses a JSON input file to create a route with a retry policy.::
-
-    aws appmesh create-route \
-        --cli-input-json file://create-route-retry-policy.json
-
-Contents of ``create-route-retry-policy.json``::
-
-    {
-        "meshName": "App1",
-        "routeName": "Route-retries1",
-        "spec": {
-            "httpRoute": {
-                "action": {
-                    "weightedTargets": [
-                        {
-                            "virtualNode": "ServiceB",
-                            "weight": 100
-                        }
-                    ]
-                },
-                "match": {
-                    "prefix": "/"
-                },
-                "retryPolicy": {
-                    "perRetryTimeout": {
-                        "value": 15,
-                        "unit": "s"
-                    },
-                    "maxRetries": 3,
-                    "httpRetryEvents": [
-                        "server-error",
-                        "gateway-error"
-                    ],
-                    "tcpRetryEvents": [
-                        "connection-error"
-                    ]
-                }
-            }
-        },
-        "virtualRouterName": "Virtual-router1"
-    }
-
-Output::
-
-    {
-        "route": {
-            "meshName": "App1",
-            "metadata": {
-                "arn": "arn:aws:appmesh:us-east-1:123456789012:mesh/App1/virtualRouter/Virtual-router1/route/Route-retries1",
-                "createdAt": 1568142345.942,
-                "lastUpdatedAt": 1568142345.942,
-                "uid": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
-                "version": 1
-            },
-            "routeName": "Route-retries1",
-            "spec": {
-                "httpRoute": {
-                    "action": {
-                        "weightedTargets": [
-                            {
-                                "virtualNode": "ServiceB",
-                                "weight": 100
-                            }
-                        ]
-                    },
-                    "match": {
-                        "prefix": "/"
+                        "scheme": "http"
                     },
                     "retryPolicy": {
                         "httpRetryEvents": [
@@ -313,13 +219,83 @@ Output::
                             "connection-error"
                         ]
                     }
+                },
+                "priority": 200
+            },
+            "status": {
+                "status": "ACTIVE"
+            },
+            "virtualRouterName": "serviceBhttp2"
+        }
+    }
+
+**To create a new TCP route**
+
+The following ``create-route`` example uses a JSON input file to create a TCP route. 75 percent of traffic is routed to a virtual node named serviceBtcp, and 25 percent of traffic is routed to a virtual node named serviceBv2tcp. Specifying different weightings for different targets is an effective way to do a deployment of a new version of an application. You can adjust the weights so that eventually, 100 percent of all traffic is routed to a target that has the new version of an application. ::
+
+    aws appmesh create-route \
+        --cli-input-json file://create-route-tcp.json
+
+Contents of create-route-tcp.json::
+
+    {
+        "meshName": "apps",
+        "routeName": "tcpRoute",
+        "spec": {
+            "priority": 300,
+            "tcpRoute": {
+                "action": {
+                    "weightedTargets": [
+                        {
+                            "virtualNode": "serviceBtcp",
+                            "weight": 75
+                        },
+                        {
+                            "virtualNode": "serviceBv2tcp",
+                            "weight": 25
+                        }
+                    ]
+                }
+            }
+        },
+        "virtualRouterName": "serviceBtcp"
+    }
+
+Output::
+
+    {
+        "route": {
+            "meshName": "apps",
+            "metadata": {
+                "arn": "arn:aws:appmesh:us-west-2:123456789012:mesh/apps/virtualRouter/serviceBtcp/route/tcpRoute",
+                "createdAt": 1572011436.26,
+                "lastUpdatedAt": 1572011436.26,
+                "uid": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE",
+                "version": 1
+            },
+            "routeName": "tcpRoute",
+            "spec": {
+                "priority": 300,
+                "tcpRoute": {
+                    "action": {
+                        "weightedTargets": [
+                            {
+                                "virtualNode": "serviceBtcp",
+                                "weight": 75
+                            },
+                            {
+                                "virtualNode": "serviceBv2tcp",
+                                "weight": 25
+                            }
+                        ]
+                    }
                 }
             },
             "status": {
                 "status": "ACTIVE"
             },
-            "virtualRouterName": "Virtual-router1"
+            "virtualRouterName": "serviceBtcp"
         }
     }
 
-For more information, see `Retry Policy <https://docs.aws.amazon.com/app-mesh/latest/userguide/route-retry-policy.html>`__ in the *AWS App Mesh User Guide*.
+For more information, see `Routes <https://docs.aws.amazon.com/app-mesh/latest/userguide/routes.html>`__ in the *AWS App Mesh User Guide*.

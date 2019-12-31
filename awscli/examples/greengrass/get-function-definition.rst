@@ -1,6 +1,6 @@
-**To retrieve a Lambda function definition**
+**To retrieve a function definition**
 
-The following ``get-function-definition`` example retrieves the definition for the specified Lambda function. ::
+The following ``get-function-definition`` example displays details for the specified function definition. To retrieve the IDs of your function definitions, use the ``list-function-definitions`` command. ::
 
     aws greengrass get-function-definition \
         --function-definition-id "063f5d1a-1dd1-40b4-9b51-56f8993d0f85"

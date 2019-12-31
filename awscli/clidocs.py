@@ -487,7 +487,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         doc.style.h2('Output')
         operation_model = help_command.obj
         output_shape = operation_model.output_shape
-        if output_shape is None:
+        if output_shape is None or not output_shape.members:
             doc.write('None')
         else:
             for member_name, member_shape in output_shape.members.items():

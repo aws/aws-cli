@@ -2,7 +2,7 @@
 
 The following ``invoke`` example invokes the ``my-function`` function synchronously. ::
 
-    aws lambda invoke
+    aws lambda invoke \
         --function-name my-function \
         --payload '{ "name": "Bob" }' \
         response.json
@@ -20,7 +20,7 @@ For more information, see `Synchronous Invocation <https://docs.aws.amazon.com/l
 
 The following ``invoke`` example invokes the ``my-function`` function asynchronously. ::
 
-    aws lambda invoke
+    aws lambda invoke \
         --function-name my-function \
         --invocation-type Event \
         --payload '{ "name": "Bob" }' \

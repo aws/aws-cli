@@ -129,11 +129,13 @@ STREAMING_HADOOP_JAR_STEP = {
 }
 
 CREATE_CLUSTER_RESULT = {
-    "JobFlowId": "j-XXXX"
+    "JobFlowId": "j-XXXX",
+    "ClusterArn": "arn:aws:elasticmapreduce:region:012345678910:cluster/j-XXXX"
 }
 
 CONSTRUCTED_RESULT = {
-    "ClusterId": "j-XXXX"
+    "ClusterId": "j-XXXX",
+    "ClusterArn": "arn:aws:elasticmapreduce:region:012345678910:cluster/j-XXXX"
 }
 
 DEFAULT_RESULT = \
@@ -1369,6 +1371,22 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                 'VisibleToAllUsers': True,
                 'Tags': [],
                 'RepoUpgradeOnBoot': 'NONE',
+                'SecurityConfiguration': 'MySecurityConfig'
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_with_step_concurrency_level(self):
+        cmd = (self.prefix + '--release-label emr-5.28.0 --security-configuration MySecurityConfig ' +
+               '--step-concurrency-level 30 ' +
+               '--instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': DEFAULT_INSTANCES,
+                'ReleaseLabel': 'emr-5.28.0',
+                'VisibleToAllUsers': True,
+                'Tags': [],
+                'StepConcurrencyLevel': 30,
                 'SecurityConfiguration': 'MySecurityConfig'
             }
         self.assert_params_for_cmd(cmd, result)

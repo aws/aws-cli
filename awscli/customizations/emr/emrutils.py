@@ -240,7 +240,7 @@ def join(values, separator=',', lastSeparator='and'):
     values = [str(x) for x in values]
     if len(values) < 1:
         return ""
-    elif len(values) is 1:
+    elif len(values) == 1:
         return values[0]
     else:
         separator = '%s ' % separator

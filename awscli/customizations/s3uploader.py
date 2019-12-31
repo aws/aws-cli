@@ -90,7 +90,7 @@ class S3Uploader(object):
 
         # Check if a file with same data exists
         if not self.force_upload and self.file_exists(remote_path):
-            LOG.debug("File with same data is already exists at {0}. "
+            LOG.debug("File with same data already exists at {0}. "
                       "Skipping upload".format(remote_path))
             return self.make_url(remote_path)
 

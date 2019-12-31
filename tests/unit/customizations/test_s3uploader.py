@@ -319,18 +319,22 @@ class TestS3Uploader(unittest.TestCase):
 
         s3uploader = S3Uploader(self.s3client, self.bucket_name)
         result = s3uploader.to_path_style_s3_url(key, version)
+        versioned_url = (
+            "https://s3.us-east-1.amazonaws.com/{0}/{1}?versionId={2}"
+        )
         self.assertEqual(
                 result,
-                "https://s3.amazonaws.com/{0}/{1}?versionId={2}".format(
-                        self.bucket_name, key, version))
+                versioned_url.format(self.bucket_name, key, version),
+        )
 
         # Without versionId, that query parameter should be omitted
         s3uploader = S3Uploader(self.s3client, self.bucket_name, region)
         result = s3uploader.to_path_style_s3_url(key)
+        expected_url = "https://s3.us-east-1.amazonaws.com/{0}/{1}"
         self.assertEqual(
-                result,
-                "https://s3.amazonaws.com/{0}/{1}".format(
-                        self.bucket_name, key, version))
+            result,
+            expected_url.format( self.bucket_name, key, version)
+        )
 
     def test_to_path_style_s3_url_other_regions(self):
         key = "path/to/file"

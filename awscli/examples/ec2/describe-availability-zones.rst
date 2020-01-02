@@ -1,33 +1,62 @@
 **To describe your Availability Zones**
 
-The following ``describe-availability-zones`` example describes the Availability Zones that are available to you. The response includes Availability Zones only for the current Region. ::
+The following example ``describe-availability-zones`` displays details for the Availability Zones that are available to you. The response includes Availability Zones only for the current Region. In this example, it uses the profiles default ``us-west-2`` (Oregon) Region. ::
 
     aws ec2 describe-availability-zones
 
-The following is example example output for the US East (Ohio) Region. ::
+Output::
 
     {
         "AvailabilityZones": [
             {
                 "State": "available",
+                "OptInStatus": "opt-in-not-required",
                 "Messages": [],
-                "RegionName": "us-east-2",
-                "ZoneName": "us-east-2a",
-                "ZoneId": "use2-az1"
+                "RegionName": "us-west-2",
+                "ZoneName": "us-west-2a",
+                "ZoneId": "usw2-az1",
+                "GroupName": "us-west-2",
+                "NetworkBorderGroup": "us-west-2"
             },
             {
                 "State": "available",
+                "OptInStatus": "opt-in-not-required",
                 "Messages": [],
-                "RegionName": "us-east-2",
-                "ZoneName": "us-east-2b",
-                "ZoneId": "use2-az2"
+                "RegionName": "us-west-2",
+                "ZoneName": "us-west-2b",
+                "ZoneId": "usw2-az2",
+                "GroupName": "us-west-2",
+                "NetworkBorderGroup": "us-west-2"
             },
             {
                 "State": "available",
+                "OptInStatus": "opt-in-not-required",
                 "Messages": [],
-                "RegionName": "us-east-2",
-                "ZoneName": "us-east-2c",
-                "ZoneId": "use2-az3"
+                "RegionName": "us-west-2",
+                "ZoneName": "us-west-2c",
+                "ZoneId": "usw2-az3",
+                "GroupName": "us-west-2",
+                "NetworkBorderGroup": "us-west-2"
+            },
+            {
+                "State": "available",
+                "OptInStatus": "opt-in-not-required",
+                "Messages": [],
+                "RegionName": "us-west-2",
+                "ZoneName": "us-west-2d",
+                "ZoneId": "usw2-az4",
+                "GroupName": "us-west-2",
+                "NetworkBorderGroup": "us-west-2"
+            },
+            {
+                "State": "available",
+                "OptInStatus": "opted-in",
+                "Messages": [],
+                "RegionName": "us-west-2",
+                "ZoneName": "us-west-2-lax-1a",
+                "ZoneId": "usw2-lax1-az1",
+                "GroupName": "us-west-2-lax-1",
+                "NetworkBorderGroup": "us-west-2-lax-1"
             }
         ]
     }

@@ -31,9 +31,8 @@ from botocore.utils import parse_timestamp
 from botocore.exceptions import ProfileNotFound
 
 
-def register_scalar_parser(event_handlers):
-    event_handlers.register_first(
-        'session-initialized', add_scalar_parsers)
+def register_timestamp_format(event_handlers):
+    event_handlers.register_first('session-initialized', add_timestamp_parser)
 
 
 def identity(x):
@@ -44,7 +43,7 @@ def iso_format(value):
     return parse_timestamp(value).isoformat()
 
 
-def add_timestamp_parser(session):
+def add_timestamp_parser(session, **kwargs):
     factory = session.get_component('response_parser_factory')
     default_format = 'iso8601'
     try:
@@ -74,9 +73,3 @@ def add_timestamp_parser(session):
         raise ValueError('Unknown cli_timestamp_format value: %s, valid values'
                          ' are "wire" or "iso8601"' % timestamp_format)
     factory.set_parser_defaults(timestamp_parser=timestamp_parser)
-
-
-def add_scalar_parsers(session, **kwargs):
-    factory = session.get_component('response_parser_factory')
-    factory.set_parser_defaults(blob_parser=identity)
-    add_timestamp_parser(session)

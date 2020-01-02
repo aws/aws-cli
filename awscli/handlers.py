@@ -74,7 +74,7 @@ from awscli.customizations.route53 import register_create_hosted_zone_doc_fix
 from awscli.customizations.s3.s3 import s3_plugin_initialize
 from awscli.customizations.s3endpoint import register_s3_endpoint
 from awscli.customizations.s3errormsg import register_s3_error_msg
-from awscli.customizations.scalarparse import register_scalar_parser
+from awscli.customizations.timestampformat import register_timestamp_format
 from awscli.customizations.sessendemail import register_ses_send_email
 from awscli.customizations.sso import register_sso_commands
 from awscli.customizations.streamingoutputarg import add_streaming_output_arg
@@ -90,10 +90,12 @@ from awscli.customizations.devcommands import register_dev_commands
 from awscli.customizations.wizard.commands import register_wizard_commands
 from awscli.customizations.sms_voice import register_sms_voice_hide
 from awscli.customizations.autoprompt import register_autoprompt
+from awscli.customizations.binaryformat import add_binary_formatter
 
 
 def awscli_initialize(event_handlers):
     event_handlers.register('session-initialized', register_uri_param_handler)
+    event_handlers.register('session-initialized', add_binary_formatter)
     param_shorthand = ParamShorthandParser()
     event_handlers.register('process-cli-arg', param_shorthand)
     # The s3 error mesage needs to registered before the
@@ -150,7 +152,7 @@ def awscli_initialize(event_handlers):
     register_subscribe(event_handlers)
     register_get_status(event_handlers)
     register_rename_config(event_handlers)
-    register_scalar_parser(event_handlers)
+    register_timestamp_format(event_handlers)
     opsworks_init(event_handlers)
     register_lambda_create_function(event_handlers)
     register_fix_kms_create_grant_docs(event_handlers)

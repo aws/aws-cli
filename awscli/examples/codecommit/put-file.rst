@@ -5,7 +5,7 @@ The following ``put-file`` example adds a file named 'ExampleSolution.py' to a r
     aws codecommit put-file \
         --repository-name MyDemoRepo \
         --branch-name feature-randomizationfeature \
-        --file-content file://MyDirectory/ExampleSolution.py \
+        --file-content fileb://MyDirectory/ExampleSolution.py \
         --file-path /solutions/ExampleSolution.py \
         --parent-commit-id 4c925148EXAMPLE \
         --name "Maria Garcia" \

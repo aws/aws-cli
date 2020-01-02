@@ -60,25 +60,27 @@ General Options
 
 The AWS CLI has a few general options:
 
-==================== =========== ===================== ===================== ============================
-Variable             Option      Config Entry          Environment Variable  Description
-==================== =========== ===================== ===================== ============================
-profile              --profile   N/A                   AWS_PROFILE           Default profile name
--------------------- ----------- --------------------- --------------------- ----------------------------
-region               --region    region                AWS_DEFAULT_REGION    Default AWS Region
--------------------- ----------- --------------------- --------------------- ----------------------------
-output               --output    output                AWS_DEFAULT_OUTPUT    Default output style
--------------------- ----------- --------------------- --------------------- ----------------------------
-cli_timestamp_format N/A         cli_timestamp_format  N/A                   Output format of timestamps
--------------------- ----------- --------------------- --------------------- ----------------------------
-cli_follow_urlparam  N/A         cli_follow_urlparam   N/A                   Fetch URL url parameters
--------------------- ----------- --------------------- --------------------- ----------------------------
-ca_bundle            --ca-bundle ca_bundle             AWS_CA_BUNDLE         CA Certificate Bundle
--------------------- ----------- --------------------- --------------------- ----------------------------
-parameter_validation N/A         parameter_validation  N/A                   Toggles parameter validation
--------------------- ----------- --------------------- --------------------- ----------------------------
-tcp_keepalive        N/A         tcp_keepalive         N/A                   Toggles TCP Keep-Alive
-==================== =========== ===================== ===================== ============================
+==================== =================== ===================== ===================== ============================
+Variable             Option               Config Entry          Environment Variable  Description
+==================== =================== ===================== ===================== ============================
+profile              --profile           N/A                   AWS_PROFILE           Default profile name
+-------------------- ------------------- --------------------- --------------------- ----------------------------
+region               --region            region                AWS_DEFAULT_REGION    Default AWS Region
+-------------------- ------------------- --------------------- --------------------- ----------------------------
+output               --output            output                AWS_DEFAULT_OUTPUT    Default output style
+-------------------- ------------------- --------------------- --------------------- ----------------------------
+cli_timestamp_format N/A                 cli_timestamp_format  N/A                   Output format of timestamps
+-------------------- ------------------- --------------------- --------------------- ----------------------------
+cli_binary_format    --cli-binary-format cli_binary_format     N/A                   Binary input & output format
+-------------------- ------------------- --------------------- --------------------- ----------------------------
+cli_follow_urlparam  N/A                 cli_follow_urlparam   N/A                   Fetch URL url parameters
+-------------------- ------------------- --------------------- --------------------- ----------------------------
+ca_bundle            --ca-bundle         ca_bundle             AWS_CA_BUNDLE         CA Certificate Bundle
+-------------------- ------------------- --------------------- --------------------- ----------------------------
+parameter_validation N/A                 parameter_validation  N/A                   Toggles parameter validation
+-------------------- ------------------- --------------------- --------------------- ----------------------------
+tcp_keepalive        N/A                 tcp_keepalive         N/A                   Toggles TCP Keep-Alive
+==================== =================== ===================== ===================== ============================
 
 The third column, Config Entry, is the value you would specify in the AWS CLI
 config file.  By default, this location is ``~/.aws/config``.  If you need to
@@ -96,6 +98,18 @@ The valid values of the ``cli_timestamp_format`` configuration variable are:
 
 * wire - Display the timestamp exactly as received from the HTTP response.
 * iso8601 - Reformat timestamp using iso8601 in the UTC timezone.
+
+``cli_binary_format`` controls the format of binary values in input and output.
+The valid values of the ``cli_binary_format`` configuration variable are:
+
+* base64 - Binary values are provided as Base64 encoded strings. The default.
+* raw-in-base64-out - Binary values are provided are treated literally.
+  Consistent with AWS CLI V1.
+
+When providing contents from a file that map to a binary blob ``fileb://`` will
+always be treated as binary and use the file contents directly regardless of
+the ``cli_binary_format`` setting. When using ``file://`` the file contents
+will need to properly formatted for the configured ``cli_binary_format``.
 
 The default value is ``iso8601``.
 

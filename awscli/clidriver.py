@@ -140,7 +140,7 @@ class CLIDriver(object):
                 session=self.session
             ),
             EnvironmentProvider(
-                names='AWS_DEFAULT_REGION',
+                name='AWS_DEFAULT_REGION',
                 env=os.environ,
             ),
             ScopedConfigProvider(
@@ -158,7 +158,7 @@ class CLIDriver(object):
                 session=self.session,
             ),
             EnvironmentProvider(
-                names='AWS_DEFAULT_OUTPUT',
+                name='AWS_DEFAULT_OUTPUT',
                 env=os.environ,
             ),
             ScopedConfigProvider(
@@ -172,7 +172,7 @@ class CLIDriver(object):
     def _construct_cli_pager_chain(self):
         providers = [
             EnvironmentProvider(
-                names='AWS_PAGER',
+                name='AWS_PAGER',
                 env=os.environ,
             ),
             ScopedConfigProvider(
@@ -180,7 +180,7 @@ class CLIDriver(object):
                 session=self.session,
             ),
             EnvironmentProvider(
-                names='PAGER',
+                name='PAGER',
                 env=os.environ,
             ),
             ConstantProvider(value=default_pager),

@@ -1,31 +1,28 @@
 **To set subscription attributes**
 
-This example sets the RawMessageDelivery attribute to an SQS subscription.
+The following ``set-subscription-attributes`` example sets the ``RawMessageDelivery`` attribute to an SQS subscription. ::
 
-Command::
-
-  aws sns set-subscription-attributes --subscription-arn arn:aws:sns:us-east-1:012345678912:mytopic:f248de18-2cf6-578c-8592-b6f1eaa877dc --attribute-name RawMessageDelivery --attribute-value true
+    aws sns set-subscription-attributes \
+        --subscription-arn arn:aws:sns:us-east-1:123456789012:mytopic:f248de18-2cf6-578c-8592-b6f1eaa877dc \
+        --attribute-name RawMessageDelivery \
+        --attribute-value true
   
-Output::
+This command produces no output.
 
-  None.
+The following ``set-subscription-attributes`` example sets a ``FilterPolicy`` attribute to an SQS subscription. ::
 
-This example sets a FilterPolicy attribute to an SQS subscription.
+    aws sns set-subscription-attributes \
+        --subscription-arn arn:aws:sns:us-east-1:123456789012:mytopic:f248de18-2cf6-578c-8592-b6f1eaa877dc \
+        --attribute-name FilterPolicy \
+        --attribute-value "{ \"anyMandatoryKey\": [\"any\", \"of\", \"these\"] }"
 
-Command::
+This command produces no output.
 
-  aws sns set-subscription-attributes --subscription-arn arn:aws:sns:us-east-1:012345678912:mytopic:f248de18-2cf6-578c-8592-b6f1eaa877dc --attribute-name FilterPolicy --attribute-value "{ \"anyMandatoryKey\": [\"any\", \"of\", \"these\"] }"
+The following ``set-subscription-attributes`` example removes the ``FilterPolicy`` attribute from an SQS subscription. ::
 
-Output::
+    aws sns set-subscription-attributes \
+        --subscription-arn arn:aws:sns:us-east-1:123456789012:mytopic:f248de18-2cf6-578c-8592-b6f1eaa877dc \
+        --attribute-name FilterPolicy \
+        --attribute-value "{}"
 
-  None.
-
-This example removes the FilterPolicy attribute from an SQS subscription.
-
-Command::
-
-  aws sns set-subscription-attributes --subscription-arn arn:aws:sns:us-east-1:012345678912:mytopic:f248de18-2cf6-578c-8592-b6f1eaa877dc --attribute-name FilterPolicy --attribute-value "{}"
-
-Output::
-
-  None.
+This command produces no output.

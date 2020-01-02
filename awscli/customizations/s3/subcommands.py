@@ -158,14 +158,13 @@ GRANTS = {
         'the granted permissions, and can be set to read, readacl, '
         'writeacl, or full.</li><li><code>Grantee_Type</code> - '
         'Specifies how the grantee is to be identified, and can be set '
-        'to uri, emailaddress, or id.</li><li><code>Grantee_ID</code> - '
+        'to uri or id.</li><li><code>Grantee_ID</code> - '
         'Specifies the grantee based on Grantee_Type. The '
         '<code>Grantee_ID</code> value can be one of:<ul><li><b>uri</b> '
         '- The group\'s URI. For more information, see '
         '<a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/'
         'ACLOverview.html#SpecifyingGrantee">'
         'Who Is a Grantee?</a></li>'
-        '<li><b>emailaddress</b> - The account\'s email address.</li>'
         '<li><b>id</b> - The account\'s canonical ID</li></ul>'
         '</li></ul>'
         'For more information on Amazon S3 access control, see '
@@ -210,10 +209,10 @@ SSE_C_KEY = {
 SSE_KMS_KEY_ID = {
     'name': 'sse-kms-key-id',
     'help_text': (
-        'The AWS KMS key ID that should be used to server-side '
-        'encrypt the object in S3. Note that you should only '
-        'provide this parameter if KMS key ID is different the '
-        'default S3 master KMS key.'
+        'The customer-managed AWS Key Management Service (KMS) key ID that '
+        'should be used to server-side encrypt the object in S3. You should '
+        'only provide this parameter if you are using a customer managed '
+        'customer master key (CMK) and not the AWS managed KMS CMK.'
     )
 }
 

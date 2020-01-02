@@ -305,11 +305,13 @@ IMPALA_DEFAULT_STEP = {
 }
 
 CREATE_CLUSTER_RESULT = {
-    "JobFlowId": "j-XXXX"
+    "JobFlowId": "j-XXXX",
+    "ClusterArn": "arn:aws:elasticmapreduce:region:012345678910:cluster/j-XXXX"
 }
 
 CONSTRUCTED_RESULT = {
-    "ClusterId": "j-XXXX"
+    "ClusterId": "j-XXXX",
+    "ClusterArn": "arn:aws:elasticmapreduce:region:012345678910:cluster/j-XXXX"
 }
 
 DEFAULT_RESULT = \

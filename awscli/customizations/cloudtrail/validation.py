@@ -134,12 +134,15 @@ def create_digest_traverser(cloudtrail_client, organization_client,
                     "trail: '--account-id'")
             organization_id = organization_client.describe_organization()[
                 'Organization']['Id']
-        if not account_id:
-            account_id = get_account_id_from_arn(trail_arn)
+
     # Determine the region from the ARN (e.g., arn:aws:cloudtrail:REGION:...)
     trail_region = trail_arn.split(':')[3]
     # Determine the name from the ARN (the last part after "/")
     trail_name = trail_arn.split('/')[-1]
+    # If account id is not specified parse it from trail ARN
+    if not account_id:
+        account_id = get_account_id_from_arn(trail_arn)
+
     digest_provider = DigestProvider(
         account_id=account_id, trail_name=trail_name,
         s3_client_provider=s3_client_provider,

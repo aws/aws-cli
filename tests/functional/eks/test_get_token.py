@@ -36,7 +36,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
         return json.loads(response)
 
     def assert_url_correct(self, response,
-                           expected_endpoint='sts.amazonaws.com',
+                           expected_endpoint='sts.us-east-1.amazonaws.com',
                            expected_signing_region='us-east-1',
                            has_session_token=False):
         url = self._get_url(response)
@@ -90,12 +90,10 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
         cmd = 'eks get-token --cluster-name %s' % self.cluster_name
         cmd += ' --region us-west-2'
         response = self.run_get_token(cmd)
-        # Even though us-west-2 was specified, we should still only be
-        # signing for the global endpoint.
         self.assert_url_correct(
             response,
-            expected_endpoint='sts.amazonaws.com',
-            expected_signing_region='us-east-1'
+            expected_endpoint='sts.us-west-2.amazonaws.com',
+            expected_signing_region='us-west-2'
         )
 
     def test_url_with_arn(self):

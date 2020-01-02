@@ -58,6 +58,18 @@ ARGUMENT_RENAMES = {
     'apigatewayv2.update-api.version': 'api-version',
     'pinpoint.get-campaign-version.version': 'campaign-version',
     'pinpoint.get-segment-version.version': 'segment-version',
+    'pinpoint.delete-email-template.version': 'template-version',
+    'pinpoint.delete-push-template.version': 'template-version',
+    'pinpoint.delete-sms-template.version': 'template-version',
+    'pinpoint.delete-voice-template.version': 'template-version',
+    'pinpoint.get-email-template.version': 'template-version',
+    'pinpoint.get-push-template.version': 'template-version',
+    'pinpoint.get-sms-template.version': 'template-version',
+    'pinpoint.get-voice-template.version': 'template-version',
+    'pinpoint.update-email-template.version': 'template-version',
+    'pinpoint.update-push-template.version': 'template-version',
+    'pinpoint.update-sms-template.version': 'template-version',
+    'pinpoint.update-voice-template.version': 'template-version',
     'stepfunctions.send-task-success.output': 'task-output',
     'clouddirectory.publish-schema.version': 'schema-version',
     'mturk.list-qualification-types.query': 'types-query',
@@ -77,6 +89,9 @@ ARGUMENT_RENAMES = {
     'rekognition.create-stream-processor.output': 'stream-processor-output',
     'eks.create-cluster.version': 'kubernetes-version',
     'eks.update-cluster-version.version': 'kubernetes-version',
+    'eks.create-nodegroup.version': 'kubernetes-version',
+    'eks.update-nodegroup-version.version': 'kubernetes-version',
+    'schemas.*.version': 'schema-version',
 }
 
 

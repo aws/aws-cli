@@ -434,14 +434,15 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
 
     def before_parameter_build(self, params, model, **kwargs):
         self.last_kwargs = params
-        self.operations_called.append((model, params))
+        self.operations_called.append((model, params.copy()))
 
     def run_cmd(self, cmd, expected_rc=0):
         logging.debug("Calling cmd: %s", cmd)
         self.patch_make_request()
-        self.driver.session.register('before-call', self.before_call)
-        self.driver.session.register('before-parameter-build',
-                                self.before_parameter_build)
+        event_emitter = self.driver.session.get_component('event_emitter')
+        event_emitter.register('before-call', self.before_call)
+        event_emitter.register_first(
+            'before-parameter-build.*.*', self.before_parameter_build)
         if not isinstance(cmd, list):
             cmdlist = cmd.split()
         else:
@@ -859,8 +860,11 @@ class BaseS3CLICommand(unittest.TestCase):
     def wait_bucket_exists(self, bucket_name, min_successes=3):
         client = self.create_client_for_bucket(bucket_name)
         waiter = client.get_waiter('bucket_exists')
-        for _ in range(min_successes):
-            waiter.wait(Bucket=bucket_name)
+        consistency_waiter = ConsistencyWaiter(
+            min_successes=min_successes, delay_initial_poll=True)
+        consistency_waiter.wait(
+            lambda: waiter.wait(Bucket=bucket_name) is None
+        )
 
     def bucket_not_exists(self, bucket_name):
         client = self.create_client_for_bucket(bucket_name)
@@ -952,3 +956,64 @@ class TestEventHandler(object):
         self._called = True
         if self._handler is not None:
             self._handler(**kwargs)
+
+
+class ConsistencyWaiterException(Exception):
+    pass
+
+
+class ConsistencyWaiter(object):
+    """
+    A waiter class for some check to reach a consistent state.
+
+    :type min_successes: int
+    :param min_successes: The minimum number of successful check calls to
+    treat the check as stable. Default of 1 success.
+
+    :type max_attempts: int
+    :param min_successes: The maximum number of times to attempt calling
+    the check. Default of 20 attempts.
+
+    :type delay: int
+    :param delay: The number of seconds to delay the next API call after a
+    failed check call. Default of 5 seconds.
+    """
+    def __init__(self, min_successes=1, max_attempts=20, delay=5,
+                 delay_initial_poll=False):
+        self.min_successes = min_successes
+        self.max_attempts = max_attempts
+        self.delay = delay
+        self.delay_initial_poll = delay_initial_poll
+
+    def wait(self, check, *args, **kwargs):
+        """
+        Wait until the check succeeds the configured number of times
+
+        :type check: callable
+        :param check: A callable that returns True or False to indicate
+        if the check succeeded or failed.
+
+        :type args: list
+        :param args: Any ordered arguments to be passed to the check.
+
+        :type kwargs: dict
+        :param kwargs: Any keyword arguments to be passed to the check.
+        """
+        attempts = 0
+        successes = 0
+        if self.delay_initial_poll:
+            time.sleep(self.delay)
+        while attempts < self.max_attempts:
+            attempts += 1
+            if check(*args, **kwargs):
+                successes += 1
+                if successes >= self.min_successes:
+                    return
+            else:
+                time.sleep(self.delay)
+        fail_msg = self._fail_message(attempts, successes)
+        raise ConsistencyWaiterException(fail_msg)
+
+    def _fail_message(self, attempts, successes):
+        format_args = (attempts, successes)
+        return 'Failed after %s attempts, only had %s successes' % format_args

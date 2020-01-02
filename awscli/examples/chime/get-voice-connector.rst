@@ -10,11 +10,12 @@ Output::
     {
         "VoiceConnector": {
             "VoiceConnectorId": "abcdef1ghij2klmno3pqr4",
-            "Name": "MyVoiceConnector",
+            "AwsRegion": "us-west-2",
+            "Name": "newVoiceConnector",
             "OutboundHostName": "abcdef1ghij2klmno3pqr4.voiceconnector.chime.aws",
             "RequireEncryption": true,
-            "CreatedTimestamp": "2019-06-04T18:46:56.508Z",
-            "UpdatedTimestamp": "2019-08-09T21:47:48.641Z"
+            "CreatedTimestamp": "2019-09-18T20:34:01.352Z",
+            "UpdatedTimestamp": "2019-09-18T20:34:01.352Z"
         }
     }
 

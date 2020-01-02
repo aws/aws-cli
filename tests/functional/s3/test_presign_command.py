@@ -85,7 +85,7 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
 
         self.assert_presigned_url_matches(
             stdout, {
-                'hostname': 'bucket.s3.amazonaws.com',
+                'hostname': 'bucket.s3.us-east-1.amazonaws.com',
                 'path': '/key',
                 'query_params': {
                     'AWSAccessKeyId': 'access_key',
@@ -101,7 +101,7 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
 
         self.assert_presigned_url_matches(
             stdout, {
-                'hostname': 's3.amazonaws.com',
+                'hostname': 's3.us-east-1.amazonaws.com',
                 'path': '/bucket.dots/key',
                 'query_params': {
                     'AWSAccessKeyId': 'access_key',
@@ -118,7 +118,7 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
 
         self.assert_presigned_url_matches(
             stdout, {
-                'hostname': 'bucket.s3.amazonaws.com',
+                'hostname': 'bucket.s3.us-east-1.amazonaws.com',
                 'path': '/key',
                 'query_params': {
                     'AWSAccessKeyId': 'access_key',
@@ -135,7 +135,7 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
                 self.prefix + 's3://bucket/key')
 
         expected = {
-            'hostname': 'bucket.s3.amazonaws.com',
+            'hostname': 'bucket.s3.us-east-1.amazonaws.com',
             'path': '/key',
             'query_params': {
                 'X-Amz-Algorithm': 'AWS4-HMAC-SHA256',
@@ -145,8 +145,9 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
                 'X-Amz-Date': '20160818T143303Z',
                 'X-Amz-Expires': '3600',
                 'X-Amz-Signature': (
-                    'd28b6c4a54f31196a6d49335556736a3fc29f036018c8e'
-                    '50775887299092d1a0'),
+                    '1297528058f2c8b89cfa52c6a47d6c548907'
+                    '00a1da24702b06d53e774c0acc95'
+                ),
                 'X-Amz-SignedHeaders': 'host'
             }
         }
@@ -159,7 +160,7 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
 
         self.assert_presigned_url_matches(
             stdout, {
-                'hostname': 'bucket.s3.amazonaws.com',
+                'hostname': 'bucket.s3.us-east-1.amazonaws.com',
                 'path': '/key',
                 'query_params': {
                     'AWSAccessKeyId': 'access_key',
@@ -176,7 +177,7 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
                 self.prefix + 's3://bucket/key')
         self.assert_presigned_url_matches(
             stdout, {
-                'hostname': 's3.amazonaws.com',
+                'hostname': 's3.us-east-1.amazonaws.com',
                 'path': '/bucket/key',
                 'query_params': {
                     'AWSAccessKeyId': 'access_key',

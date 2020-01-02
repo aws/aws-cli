@@ -178,6 +178,7 @@ ADD_INSTANCE_GROUPS_RESULT = {
     "InstanceGroupIds": [
         "ig-XXXX"
     ],
+    "ClusterArn": "arn:aws:elasticmapreduce:region:012345678910:cluster/j-XXXX",
     "JobFlowId": "j-YYYY"
 }
 
@@ -185,6 +186,7 @@ CONSTRUCTED_RESULT = {
     "InstanceGroupIds": [
         "ig-XXXX"
     ],
+    "ClusterArn": "arn:aws:elasticmapreduce:region:012345678910:cluster/j-XXXX",
     "ClusterId": "j-YYYY"
 }
 

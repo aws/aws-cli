@@ -215,43 +215,21 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             self.prefix)
         self.parsed_responses = [
             # Response for ListObjects on source bucket
-            {
-                'Contents': [
-                    {'Key': 'mykey',
-                     'LastModified': '00:00:00Z',
-                     'Size': 100},
-                ],
-                'CommonPrefixes': []
-            },
+            self.list_objects_response(['mykey']),
             # Response for ListObjects on destination bucket
-            {
-                'Contents': [],
-                'CommonPrefixes': []
-            },
-            # Response from copy object
-            {},
+            self.list_objects_response([]),
+            self.copy_object_response(),
         ]
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                ('ListObjectsV2', {
-                    'Bucket': 'sourcebucket',
-                    'Prefix': '',
-                    'EncodingType': 'url',
-                    'RequestPayer': 'requester',
-                }),
-                ('ListObjectsV2', {
-                    'Bucket': 'mybucket',
-                    'Prefix': '',
-                    'EncodingType': 'url',
-                    'RequestPayer': 'requester',
-                }),
-                ('CopyObject', {
-                    'Bucket': 'mybucket',
-                    'Key': 'mykey',
-                    'CopySource': 'sourcebucket/mykey',
-                    'RequestPayer': 'requester',
-                })
+                self.list_objects_request(
+                    'sourcebucket', RequestPayer='requester'),
+                self.list_objects_request(
+                    'mybucket', RequestPayer='requester'),
+                self.copy_object_request(
+                    'sourcebucket', 'mykey', 'mybucket', 'mykey',
+                    RequestPayer='requester')
             ]
         )
 
@@ -261,41 +239,38 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         cmdline += ' --delete'
         self.parsed_responses = [
             # Response for ListObjects on source bucket
-            {
-                'Contents': [],
-                'CommonPrefixes': []
-            },
+            self.list_objects_response([]),
             # Response for ListObjects on destination bucket
-            {
-                'Contents': [
-                    {'Key': 'key-to-delete',
-                     'LastModified': '00:00:00Z',
-                     'Size': 100},
-                ],
-                'CommonPrefixes': []
-            },
-            # Response from copy object
-            {},
+            self.list_objects_response(['key-to-delete']),
+            self.delete_object_response()
         ]
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                ('ListObjectsV2', {
-                    'Bucket': 'sourcebucket',
-                    'Prefix': '',
-                    'EncodingType': 'url',
-                    'RequestPayer': 'requester',
-                }),
-                ('ListObjectsV2', {
-                    'Bucket': 'mybucket',
-                    'Prefix': '',
-                    'EncodingType': 'url',
-                    'RequestPayer': 'requester',
-                }),
-                ('DeleteObject', {
-                    'Bucket': 'mybucket',
-                    'Key': 'key-to-delete',
-                    'RequestPayer': 'requester',
-                })
+                self.list_objects_request(
+                    'sourcebucket', RequestPayer='requester'),
+                self.list_objects_request(
+                    'mybucket', RequestPayer='requester'),
+                self.delete_object_request(
+                    'mybucket', 'key-to-delete', RequestPayer='requester'),
+            ]
+        )
+
+    def test_with_accesspoint_arn(self):
+        accesspoint_arn = (
+            'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint'
+        )
+        cmdline = self.prefix
+        cmdline += 's3://%s' % accesspoint_arn
+        cmdline += ' %s' % self.files.rootdir
+        self.parsed_responses = [
+            self.list_objects_response(['mykey']),
+            self.get_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.list_objects_request(accesspoint_arn),
+                self.get_object_request(accesspoint_arn, 'mykey')
             ]
         )

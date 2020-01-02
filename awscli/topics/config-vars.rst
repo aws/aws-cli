@@ -103,7 +103,8 @@ The valid values of the ``cli_timestamp_format`` configuration variable are:
 The valid values of the ``cli_binary_format`` configuration variable are:
 
 * base64 - Binary values are provided as Base64 encoded strings. The default.
-* legacy - Binary values are provided are treated literally. Consistent with AWS CLI V1.
+* raw-in-base64-out - Binary values are provided are treated literally.
+  Consistent with AWS CLI V1.
 
 The default value is ``iso8601``.
 

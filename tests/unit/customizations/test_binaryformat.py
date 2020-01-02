@@ -116,13 +116,13 @@ class TestAddBinaryFormatter(unittest.TestCase):
         )
 
     def test_legacy_handlers_added(self):
-        self.parsed_args.cli_binary_format = 'legacy'
+        self.parsed_args.cli_binary_format = 'raw-in-base64-out'
         add_binary_formatter(self.mock_session, self.parsed_args)
         self._assert_legacy_handlers_added()
 
     def test_legacy_handlers_added_via_profile(self):
         self.parsed_args.cli_binary_format = None
-        self.mock_session.get_config_variable.return_value = 'legacy'
+        self.mock_session.get_config_variable.return_value = 'raw-in-base64-out'
         add_binary_formatter(self.mock_session, self.parsed_args)
         self._assert_legacy_handlers_added()
 

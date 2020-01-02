@@ -3,7 +3,7 @@
 The following example uses the ``send-raw-email`` command to send an email with a TXT attachment::
 
     aws ses send-raw-email \
-    --cli-binary-format legacy \
+    --cli-binary-format raw-in-base64-out \
     --raw-message file://message.json
 
 Output::

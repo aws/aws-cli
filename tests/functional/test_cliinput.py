@@ -157,9 +157,9 @@ class TestBinaryInput(BaseCLIInputArgumentTest):
         }
         self.assert_params_for_cmd(command, params)
 
-    def test_preserved_input_value_in_legacy_mode(self):
+    def test_preserved_input_value_in_raw_in_base64_out_mode(self):
         command = [
-            'kms', 'encrypt', '--cli-binary-format', 'legacy',
+            'kms', 'encrypt', '--cli-binary-format', 'raw-in-base64-out',
             '--key-id', 'test', '--plaintext', 'Zm9v'
         ]
         params = {

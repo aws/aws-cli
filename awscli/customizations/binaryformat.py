@@ -64,7 +64,7 @@ class Base64DecodeVisitor(ModelVisitor):
 class BinaryFormatHandler(object):
     _BINARY_FORMATS = {
         'base64': (base64_decode_input_blobs, register_identity_blob_parser),
-        'legacy': (None, register_identity_blob_parser),
+        'raw-in-base64-out': (None, register_identity_blob_parser),
     }
 
     def __init__(self, binary_format):

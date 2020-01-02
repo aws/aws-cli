@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.16.310
+========
+
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``ecr``: Update ecr command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+
+
 1.16.309
 ========
 

@@ -106,6 +106,11 @@ The valid values of the ``cli_binary_format`` configuration variable are:
 * raw-in-base64-out - Binary values are provided are treated literally.
   Consistent with AWS CLI V1.
 
+When providing contents from a file that map to a binary blob ``fileb://`` will
+always be treated as binary and use the file contents directly regardless of
+the ``cli_binary_format`` setting. When using ``file://`` the file contents
+will need to properly formatted for the configured ``cli_binary_format``.
+
 The default value is ``iso8601``.
 
 ``cli_follow_urlparam`` controls whether or not the CLI will attempt to follow

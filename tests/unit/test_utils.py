@@ -142,6 +142,10 @@ class MockProcess(object):
         pass
 
 
+class PopenException(Exception):
+    pass
+
+
 class TestOutputStreamFactory(unittest.TestCase):
     def setUp(self):
         self.session = mock.Mock(session.Session)
@@ -198,6 +202,12 @@ class TestOutputStreamFactory(unittest.TestCase):
             pass
         returned_process = self.popen.return_value
         self.assertTrue(returned_process.communicate.called)
+
+    def test_propagates_exception_from_popen(self):
+        self.popen.side_effect = PopenException
+        with self.assertRaises(PopenException):
+            with self.stream_factory.get_pager_stream():
+                pass
 
     @mock.patch('awscli.utils.get_stdout_text_writer')
     def test_stdout(self, mock_stdout_writer):

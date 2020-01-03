@@ -279,8 +279,8 @@ class OutputStreamFactory(object):
         if not preferred_pager:
             preferred_pager = self._get_configured_pager()
         popen_kwargs = self._get_process_pager_kwargs(preferred_pager)
+        process = self._popen(**popen_kwargs)
         try:
-            process = self._popen(**popen_kwargs)
             yield process.stdin
         except IOError:
             # Ignore IOError since this can commonly be raised when a pager

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.311
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+* api-change:``mediapackage``: Update mediapackage command to latest version
+
+
 1.16.310
 ========
 

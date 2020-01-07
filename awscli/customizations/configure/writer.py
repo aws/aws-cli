@@ -68,7 +68,7 @@ class ConfigFileWriter(object):
             self._write_new_section(section_name, new_values, config_filename)
 
     def _create_file(self, config_filename):
-        # Create the file as well as the parent dir if needed.
+        """Create the file as well as the parent dir if needed."""
         dirname = os.path.split(config_filename)[0]
         if not os.path.isdir(dirname):
             os.makedirs(dirname)
@@ -78,6 +78,8 @@ class ConfigFileWriter(object):
 
     def _write_new_section(self, section_name, new_values, config_filename):
         with open(config_filename, 'a') as f:
+            if f.tell() != 0:
+                f.write('\n')
             f.write('[%s]\n' % section_name)
             contents = []
             self._insert_new_values(line_number=0,

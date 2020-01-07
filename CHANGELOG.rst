@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.312
+========
+
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``xray``: Update xray command to latest version
+* api-change:``mgh``: Update mgh command to latest version
+
+
 1.16.311
 ========
 

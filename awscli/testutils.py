@@ -378,6 +378,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         self.make_request_is_patched = False
         self.operations_called = []
         self.parsed_responses = None
+        self.http_responses = None
         self.driver = create_clidriver()
 
     def tearDown(self):
@@ -404,11 +405,16 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
             self.make_request_is_patched = False
         make_request_patch = self.make_request_patch.start()
         if self.parsed_responses is not None:
-            make_request_patch.side_effect = lambda *args, **kwargs: \
-                (self.http_response, self.parsed_responses.pop(0))
+            make_request_patch.side_effect = self._request_patch_side_effect
         else:
             make_request_patch.return_value = (self.http_response, self.parsed_response)
         self.make_request_is_patched = True
+
+    def _request_patch_side_effect(self, *args, **kwargs):
+        http_response = self.http_response
+        if self.http_responses is not None:
+            http_response = self.http_responses.pop(0)
+        return http_response, self.parsed_responses.pop(0)
 
     def assert_params_for_cmd(self, cmd, params=None, expected_rc=0,
                               stderr_contains=None, ignore_params=None):

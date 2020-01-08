@@ -16,8 +16,11 @@ import os
 
 from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.testutils import capture_input, set_invalid_utime
-from awscli.compat import six
+from awscli.compat import six, OrderedDict
 from tests.functional.s3 import BaseS3TransferCommandTest
+
+
+MB = 1024 ** 2
 
 
 class BufferedBytesIO(six.BytesIO):
@@ -531,7 +534,8 @@ class TestCPCommand(BaseCPCommandTest):
         ]
         full_path = self.files.create_file('foo.txt', 'a' * 10 * (1024 ** 2))
         cmdline = (
-            '%s %s s3://bucket/key.txt --sse aws:kms --sse-kms-key-id foo' % (
+            '%s %s s3://bucket/key.txt --copy-props none '
+            '--sse aws:kms --sse-kms-key-id foo' % (
                 self.prefix, full_path))
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(len(self.operations_called), 4)
@@ -583,7 +587,7 @@ class TestCPCommand(BaseCPCommandTest):
             {}  # CompleteMultipartUpload
         ]
         cmdline = (
-            '%s s3://bucket/key1.txt s3://bucket/key2.txt '
+            '%s s3://bucket/key1.txt s3://bucket/key2.txt --copy-props none '
             '--sse aws:kms --sse-kms-key-id foo' % self.prefix)
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(len(self.operations_called), 5)
@@ -940,6 +944,7 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
     def test_multipart_copy(self):
         cmdline = self.prefix
         cmdline += ' s3://sourcebucket/sourcekey s3://mybucket/mykey'
+        cmdline += ' --copy-props none'
         cmdline += ' --request-payer'
         upload_id = 'id'
         self.parsed_responses = [
@@ -1093,4 +1098,581 @@ class TestAccesspointCPCommand(BaseCPCommandTest):
                     self.accesspoint_arn, 'mykey', accesspoint_arn_dest,
                     'mykey'),
             ]
+        )
+
+
+class BaseCopyPropsCpCommandTest(BaseCPCommandTest):
+    def setUp(self):
+        super(BaseCopyPropsCpCommandTest, self).setUp()
+        self.source_bucket = 'source-bucket'
+        self.source_key = 'source-key'
+        self.target_bucket = 'target-bucket'
+        self.target_key = 'target-key'
+        self.multipart_threshold = 8 * MB
+        self.tags = OrderedDict([
+            ('tag-key', 'tag-value'),
+            ('tag-key2', 'tag-value2'),
+        ])
+        self.urlencoded_tags = 'tag-key=tag-value&tag-key2=tag-value2'
+        self.tags_over_2k = {
+            'tag-key': 'value' * (2 * 1024)
+        }
+
+    def get_s3_cp_copy_command(self, copy_props=None):
+        cmdline = self.prefix + 's3://%s/%s s3://%s/%s' % (
+            self.source_bucket, self.source_key, self.target_bucket,
+            self.target_key
+        )
+        if copy_props:
+            cmdline += ' --copy-props %s' % copy_props
+        return cmdline
+
+    def get_recursive_s3_copy_command(self, copy_props=None):
+        cmdline = self.prefix + 's3://%s/ s3://%s/ --recursive' % (
+            self.source_bucket, self.target_bucket,
+        )
+        if copy_props:
+            cmdline += ' --copy-props %s' % copy_props
+        return cmdline
+
+    def mp_copy_responses(self):
+        return [
+            self.create_mpu_response('upload_id'),
+            self.upload_part_copy_response(),
+            self.complete_mpu_response(),
+        ]
+
+    def copy_object_request(self, source_bucket=None, source_key=None,
+                            bucket=None, key=None, **override_kwargs):
+        if source_bucket is None:
+            source_bucket = self.source_bucket
+        if source_key is None:
+            source_key = self.source_key
+        if bucket is None:
+            bucket = self.target_bucket
+        if key is None:
+            key = self.target_key
+        return super(BaseCopyPropsCpCommandTest, self).copy_object_request(
+            source_bucket, source_key, bucket, key, **override_kwargs
+        )
+
+    def create_mpu_request(self, bucket=None, key=None, **override_kwargs):
+        if bucket is None:
+            bucket = self.target_bucket
+        if key is None:
+            key = self.target_key
+        return super(BaseCopyPropsCpCommandTest, self).create_mpu_request(
+            bucket, key, **override_kwargs
+        )
+
+    def all_metadata_directive_props(self):
+        return {
+            'CacheControl': 'cache-control',
+            'ContentDisposition': 'content-disposition',
+            'ContentEncoding': 'content-encoding',
+            'ContentLanguage': 'content-language',
+            'ContentType': 'content-type',
+            'Expires': 'Tue, 07 Jan 2020 20:40:03 GMT',
+            'Metadata': {'key': 'value'}
+        }
+
+    def get_object_tagging_request(self, bucket=None, key=None):
+        if bucket is None:
+            bucket = self.source_bucket
+        if key is None:
+            key = self.source_key
+        return super(
+            BaseCopyPropsCpCommandTest, self).get_object_tagging_request(
+                bucket, key
+        )
+
+    def put_object_tagging_request(self, bucket=None, key=None, tags=None):
+        if bucket is None:
+            bucket = self.target_bucket
+        if key is None:
+            key = self.target_key
+        if tags is None:
+            tags = {}
+        return super(
+            BaseCopyPropsCpCommandTest, self).put_object_tagging_request(
+                bucket=bucket, key=key, tags=tags
+        )
+
+
+class TestCopyPropsNoneCpCommand(BaseCopyPropsCpCommandTest):
+    def test_copy_object(self):
+        cmdline = self.get_s3_cp_copy_command(copy_props='none')
+        self.parsed_responses = [
+            self.head_object_response(),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(
+            self.copy_object_request(
+                MetadataDirective='REPLACE',
+                TaggingDirective='REPLACE'
+            )
+        )
+
+    def test_mp_copy_object(self):
+        cmdline = self.get_s3_cp_copy_command(copy_props='none')
+        self.parsed_responses = [
+            self.head_object_response(ContentLength=self.multipart_threshold)
+        ] + self.mp_copy_responses()
+        self.run_cmd(cmdline, expected_rc=0)
+        # The CreateMultipartRequest is where additional parameters are
+        # typically added. It should have no additional parameters.
+        self.assert_in_operations_called(self.create_mpu_request())
+
+
+class TestCopyPropsMetadataDirectiveCpCommand(BaseCopyPropsCpCommandTest):
+    def test_copy_object(self):
+        cmdline = self.get_s3_cp_copy_command(copy_props='metadata-directive')
+        self.parsed_responses = [
+            self.head_object_response(),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(
+            self.copy_object_request(
+                TaggingDirective='REPLACE'
+            )
+        )
+
+    def test_copy_object_overrides_with_cmdline_props(self):
+        cmdline = self.get_s3_cp_copy_command(copy_props='metadata-directive')
+        cmdline += ' --content-type content-type-from-cmdline'
+        self.parsed_responses = [
+            self.head_object_response(**self.all_metadata_directive_props()),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        expected_extra_args = self.all_metadata_directive_props()
+        expected_extra_args['MetadataDirective'] = 'REPLACE'
+        expected_extra_args['TaggingDirective'] = 'REPLACE'
+        expected_extra_args['ContentType'] = 'content-type-from-cmdline'
+        self.assert_in_operations_called(
+            self.copy_object_request(**expected_extra_args)
+        )
+
+    def test_recursive_copy_object(self):
+        cmdline = self.get_recursive_s3_copy_command(
+            copy_props='metadata-directive')
+        self.parsed_responses = [
+            self.list_objects_response(keys=[self.source_key]),
+            self.copy_object_response(),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(
+            self.copy_object_request(
+                key=self.source_key,
+                TaggingDirective='REPLACE',
+            )
+        )
+
+    def test_recursive_copy_object_overrides_with_cmdline_props(self):
+        cmdline = self.get_recursive_s3_copy_command(
+            copy_props='metadata-directive')
+        cmdline += ' --metadata key=val-from-cmdline'
+        self.parsed_responses = [
+            self.list_objects_response(keys=[self.source_key]),
+            self.head_object_response(**self.all_metadata_directive_props()),
+            self.copy_object_response(),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        expected_extra_args = self.all_metadata_directive_props()
+        expected_extra_args['MetadataDirective'] = 'REPLACE'
+        expected_extra_args['TaggingDirective'] = 'REPLACE'
+        expected_extra_args['Metadata'] = {'key': 'val-from-cmdline'}
+        self.assert_in_operations_called(
+            self.copy_object_request(
+                key=self.source_key,
+                **expected_extra_args
+            )
+        )
+
+    def test_recursive_copy_maps_additional_head_object_headers(self):
+        cmdline = self.get_recursive_s3_copy_command(
+            copy_props='metadata-directive')
+        cmdline += ' --metadata key=val-from-cmdline'
+        cmdline += ' --request-payer requester'
+        self.parsed_responses = [
+            self.list_objects_response(keys=[self.source_key]),
+            self.head_object_response(),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(
+            self.head_object_request(
+                bucket=self.source_bucket,
+                key=self.source_key,
+                RequestPayer='requester',
+            )
+        )
+
+    def test_mp_copy_object(self):
+        cmdline = self.get_s3_cp_copy_command(copy_props='metadata-directive')
+        self.parsed_responses = [
+            self.head_object_response(
+                ContentLength=self.multipart_threshold,
+                **self.all_metadata_directive_props()
+            ),
+        ] + self.mp_copy_responses()
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(
+            self.create_mpu_request(**self.all_metadata_directive_props())
+        )
+
+    def test_mp_copy_object_with_prop_overrides(self):
+        cmdline = self.get_s3_cp_copy_command(copy_props='metadata-directive')
+        cmdline += ' --content-type content-type-from-cmdline'
+        self.parsed_responses = [
+            self.head_object_response(
+                ContentLength=self.multipart_threshold,
+                **self.all_metadata_directive_props()
+            ),
+        ] + self.mp_copy_responses()
+        self.run_cmd(cmdline, expected_rc=0)
+        expected_extra_args = self.all_metadata_directive_props()
+        expected_extra_args['ContentType'] = 'content-type-from-cmdline'
+        self.assert_in_operations_called(
+            self.create_mpu_request(**expected_extra_args)
+        )
+
+    def test_recursive_mp_copy(self):
+        cmdline = self.get_recursive_s3_copy_command(
+            copy_props='metadata-directive')
+        self.parsed_responses = [
+            self.list_objects_response(
+                keys=[self.source_key],
+                Size=self.multipart_threshold,
+            ),
+            self.head_object_response(**self.all_metadata_directive_props()),
+        ] + self.mp_copy_responses()
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(
+            self.create_mpu_request(
+                key=self.source_key, **self.all_metadata_directive_props()
+            )
+        )
+
+    def test_recursive_mp_copy_object_with_prop_overrides(self):
+        cmdline = self.get_recursive_s3_copy_command(
+            copy_props='metadata-directive')
+        cmdline += ' --content-type content-type-from-cmdline'
+        self.parsed_responses = [
+            self.list_objects_response(
+                keys=[self.source_key],
+                Size=self.multipart_threshold,
+            ),
+            self.head_object_response(**self.all_metadata_directive_props()),
+        ] + self.mp_copy_responses()
+        self.run_cmd(cmdline, expected_rc=0)
+        expected_extra_args = self.all_metadata_directive_props()
+        expected_extra_args['ContentType'] = 'content-type-from-cmdline'
+        self.assert_in_operations_called(
+            self.create_mpu_request(
+                key=self.source_key, **expected_extra_args
+            )
+        )
+
+    def test_recursive_mp_copy_maps_additional_head_object_headers(self):
+        cmdline = self.get_recursive_s3_copy_command(
+            copy_props='metadata-directive')
+        cmdline += ' --request-payer requester'
+        self.parsed_responses = [
+            self.list_objects_response(
+                keys=[self.source_key],
+                Size=self.multipart_threshold
+            ),
+            self.head_object_response(),
+        ] + self.mp_copy_responses()
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(
+            self.head_object_request(
+                bucket=self.source_bucket,
+                key=self.source_key,
+                RequestPayer='requester',
+            )
+        )
+
+    def test_fails_when_head_object_fails(self):
+        cmdline = self.get_recursive_s3_copy_command(
+            copy_props='metadata-directive')
+        self.parsed_responses = [
+            self.list_objects_response(
+                keys=[self.source_key],
+                Size=self.multipart_threshold
+            ),
+            self.no_such_key_error_response()
+        ]
+        self.set_http_status_codes([200, 404])
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=1)
+        self.assertIn('NoSuchKey', stderr)
+
+
+class TestCopyPropsDefaultCpCommand(BaseCopyPropsCpCommandTest):
+    def test_copy_object(self):
+        cmdline = self.get_s3_cp_copy_command(copy_props='default')
+        self.parsed_responses = [
+            self.head_object_response(),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        # The CopyObject should have no additional parameters other
+        # than copy source, bucket, and key.
+        self.assert_in_operations_called(self.copy_object_request())
+
+    def test_is_default_value(self):
+        cmdline = self.get_s3_cp_copy_command(copy_props=None)
+        self.parsed_responses = [
+            self.head_object_response(),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        # The CopyObject should have no additional parameters other
+        # than copy source, bucket, and key.
+        self.assert_in_operations_called(self.copy_object_request())
+
+    def test_copy_object_with_prop_overrides(self):
+        cmdline = self.get_s3_cp_copy_command(copy_props='default')
+        cmdline += ' --content-language content-lang-from-cmdline'
+        self.parsed_responses = [
+            self.head_object_response(**self.all_metadata_directive_props()),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        expected_extra_args = self.all_metadata_directive_props()
+        expected_extra_args['ContentLanguage'] = 'content-lang-from-cmdline'
+        expected_extra_args['MetadataDirective'] = 'REPLACE'
+        self.assert_in_operations_called(
+            self.copy_object_request(**expected_extra_args)
+        )
+
+    def test_recursive_copy_object(self):
+        cmdline = self.get_recursive_s3_copy_command(copy_props='default')
+        self.parsed_responses = [
+            self.list_objects_response(keys=[self.source_key]),
+            self.head_object_response(**self.all_metadata_directive_props()),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(
+            self.copy_object_request(key=self.source_key)
+        )
+
+    def test_recursive_copy_object_with_prop_overrides(self):
+        cmdline = self.get_recursive_s3_copy_command(copy_props='default')
+        cmdline += ' --content-language content-lang-from-cmdline'
+        self.parsed_responses = [
+            self.list_objects_response(keys=[self.source_key]),
+            self.head_object_response(**self.all_metadata_directive_props()),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        expected_extra_args = self.all_metadata_directive_props()
+        expected_extra_args['ContentLanguage'] = 'content-lang-from-cmdline'
+        expected_extra_args['MetadataDirective'] = 'REPLACE'
+        self.assert_in_operations_called(
+            self.copy_object_request(
+                key=self.source_key,
+                **expected_extra_args
+            )
+        )
+
+    def test_mp_copy_object(self):
+        cmdline = self.get_s3_cp_copy_command(copy_props='default')
+        self.parsed_responses = [
+            self.head_object_response(
+                ContentLength=self.multipart_threshold,
+                **self.all_metadata_directive_props()
+            ),
+            self.get_object_tagging_response(tags=self.tags)
+        ] + self.mp_copy_responses()
+        self.run_cmd(cmdline, expected_rc=0)
+        expected_extra_args = self.all_metadata_directive_props()
+        expected_extra_args['Tagging'] = self.urlencoded_tags
+        self.assert_in_operations_called(
+            self.create_mpu_request(**expected_extra_args)
+        )
+
+    def test_mp_copy_object_with_prop_overrides(self):
+        cmdline = self.get_s3_cp_copy_command(copy_props='default')
+        cmdline += ' --cache-control cache-control-from-cmdline'
+        self.parsed_responses = [
+            self.head_object_response(
+                ContentLength=self.multipart_threshold,
+                **self.all_metadata_directive_props()
+            ),
+            self.get_object_tagging_response(tags=self.tags)
+        ] + self.mp_copy_responses()
+        self.run_cmd(cmdline, expected_rc=0)
+        expected_extra_args = self.all_metadata_directive_props()
+        expected_extra_args['CacheControl'] = 'cache-control-from-cmdline'
+        expected_extra_args['Tagging'] = self.urlencoded_tags
+        self.assert_in_operations_called(
+            self.create_mpu_request(**expected_extra_args)
+        )
+
+    def test_mp_copy_object_no_tags(self):
+        cmdline = self.get_s3_cp_copy_command(copy_props='default')
+        self.parsed_responses = [
+            self.head_object_response(ContentLength=self.multipart_threshold),
+            self.get_object_tagging_response(tags={})
+        ] + self.mp_copy_responses()
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(self.create_mpu_request())
+
+    def test_mp_copy_object_tags_exceed_2k(self):
+        cmdline = self.get_s3_cp_copy_command(copy_props='default')
+        self.parsed_responses = [
+            self.head_object_response(ContentLength=self.multipart_threshold),
+            self.get_object_tagging_response(tags=self.tags_over_2k)
+        ] + self.mp_copy_responses() + [
+            self.put_object_tagging_response()
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(self.create_mpu_request())
+        self.assert_in_operations_called(
+            self.put_object_tagging_request(tags=self.tags_over_2k)
+        )
+
+    def test_recursive_mp_copy_object(self):
+        cmdline = self.get_recursive_s3_copy_command(copy_props='default')
+        self.parsed_responses = [
+            self.list_objects_response(
+                keys=[self.source_key], Size=self.multipart_threshold
+            ),
+            self.head_object_response(**self.all_metadata_directive_props()),
+            self.get_object_tagging_response(tags=self.tags)
+        ] + self.mp_copy_responses()
+        self.run_cmd(cmdline, expected_rc=0)
+        expected_extra_args = self.all_metadata_directive_props()
+        expected_extra_args['Tagging'] = self.urlencoded_tags
+        self.assert_in_operations_called(
+            self.create_mpu_request(
+                key=self.source_key, **expected_extra_args
+            )
+        )
+
+    def test_recursive_mp_copy_object_with_prop_overrides(self):
+        cmdline = self.get_recursive_s3_copy_command(copy_props='default')
+        cmdline += ' --cache-control cache-control-from-cmdline'
+        self.parsed_responses = [
+            self.list_objects_response(
+                keys=[self.source_key], Size=self.multipart_threshold
+            ),
+            self.head_object_response(**self.all_metadata_directive_props()),
+            self.get_object_tagging_response(tags=self.tags)
+        ] + self.mp_copy_responses()
+        self.run_cmd(cmdline, expected_rc=0)
+        expected_extra_args = self.all_metadata_directive_props()
+        expected_extra_args['CacheControl'] = 'cache-control-from-cmdline'
+        expected_extra_args['Tagging'] = self.urlencoded_tags
+        self.assert_in_operations_called(
+            self.create_mpu_request(
+                key=self.source_key, **expected_extra_args
+            )
+        )
+
+    def test_recursive_mp_copy_tags_exceed_2k(self):
+        cmdline = self.get_recursive_s3_copy_command(copy_props='default')
+        self.parsed_responses = [
+            self.list_objects_response(
+                keys=[self.source_key], Size=self.multipart_threshold
+            ),
+            self.head_object_response(),
+            self.get_object_tagging_response(tags=self.tags_over_2k)
+        ] + self.mp_copy_responses() + [
+            self.put_object_tagging_response()
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(
+            self.create_mpu_request(key=self.source_key))
+        self.assert_in_operations_called(
+            self.put_object_tagging_request(
+                key=self.source_key, tags=self.tags_over_2k
+            )
+        )
+
+    def test_fails_when_head_object_fails(self):
+        cmdline = self.get_recursive_s3_copy_command(copy_props='default')
+        self.parsed_responses = [
+            self.list_objects_response(
+                keys=[self.source_key],
+                Size=self.multipart_threshold
+            ),
+            self.no_such_key_error_response()
+        ]
+        self.set_http_status_codes([200, 404])
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=1)
+        self.assertIn('NoSuchKey', stderr)
+
+    def test_fails_when_get_tagging_object_fails(self):
+        cmdline = self.get_s3_cp_copy_command(copy_props='default')
+        self.parsed_responses = [
+            self.head_object_response(ContentLength=self.multipart_threshold),
+            self.access_denied_error_response()
+        ]
+        self.set_http_status_codes([200, 403])
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=1)
+        self.assertIn('AccessDenied', stderr)
+
+    def test_fails_and_cleans_up_when_put_tagging_object_fails(self):
+        cmdline = self.get_s3_cp_copy_command(copy_props='default')
+        self.parsed_responses = [
+            self.head_object_response(ContentLength=self.multipart_threshold),
+            self.get_object_tagging_response(self.tags_over_2k),
+        ] + self.mp_copy_responses() + [
+            self.access_denied_error_response(),
+            self.delete_object_response()
+        ]
+        self.set_http_status_codes(
+            [
+                200,  # HeadObject
+                200,  # GetObjectTagging
+                200,  # CreateMultipartUpload
+                200,  # UploadPartCopy
+                200,  # CompleteMultipartUpload
+                403,  # PutObjectTagging
+                200,  # DeleteObject
+            ]
+        )
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=1)
+        self.assertIn('AccessDenied', stderr)
+        self.assert_in_operations_called(
+            self.delete_object_request(self.target_bucket, self.target_key)
+        )
+
+    def test_clean_up_uses_requester_payer(self):
+        cmdline = self.get_s3_cp_copy_command(copy_props='default')
+        cmdline += ' --request-payer requester'
+        self.parsed_responses = [
+            self.head_object_response(ContentLength=self.multipart_threshold),
+            self.get_object_tagging_response(self.tags_over_2k),
+        ] + self.mp_copy_responses() + [
+            self.access_denied_error_response(),
+            self.delete_object_response()
+        ]
+        self.set_http_status_codes(
+            [
+                200,  # HeadObject
+                200,  # GetObjectTagging
+                200,  # CreateMultipartUpload
+                200,  # UploadPartCopy
+                200,  # CompleteMultipartUpload
+                403,  # PutObjectTagging
+                200,  # DeleteObject
+            ]
+        )
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=1)
+        self.assertIn('AccessDenied', stderr)
+        self.assert_in_operations_called(
+            self.delete_object_request(
+                self.target_bucket,
+                self.target_key,
+                RequestPayer='requester'
+            )
         )

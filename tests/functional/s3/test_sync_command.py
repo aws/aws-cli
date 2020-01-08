@@ -10,11 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import set_invalid_utime
-from mock import patch
 import os
 
 from awscli.compat import six
+from awscli.testutils import set_invalid_utime, mock
 from tests.functional.s3 import BaseS3TransferCommandTest
 
 
@@ -176,7 +175,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         def side_effect(_):
             os.remove(full_path)
             raise ValueError()
-        with patch(
+        with mock.patch(
                 'awscli.customizations.s3.filegenerator.get_file_stat',
                 side_effect=side_effect
                 ):
@@ -199,7 +198,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         def side_effect(_):
             os.remove(full_path)
             raise OSError()
-        with patch(
+        with mock.patch(
                 'awscli.customizations.s3.filegenerator.get_file_stat',
                 side_effect=side_effect
                 ):
@@ -272,5 +271,44 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             [
                 self.list_objects_request(accesspoint_arn),
                 self.get_object_request(accesspoint_arn, 'mykey')
+            ]
+        )
+
+    def test_with_copy_props(self):
+        cmdline = self.prefix
+        cmdline += 's3://sourcebucket/ s3://bucket/'
+        cmdline += ' --copy-props default'
+
+        upload_id = 'upload_id'
+        large_tag_set = {'tag-key': 'val' * 3000}
+        metadata = {'tag-key': 'tag-value'}
+        self.parsed_responses = [
+            self.list_objects_response(keys=['key'], Size=8 * 1024 ** 2),
+            self.list_objects_response(keys=[]),
+            self.head_object_response(
+                Metadata=metadata,
+            ),
+            self.get_object_tagging_response(large_tag_set),
+            self.create_mpu_response(upload_id),
+            self.upload_part_copy_response(),
+            self.complete_mpu_response(),
+            self.put_object_tagging_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.list_objects_request('sourcebucket'),
+                self.list_objects_request('bucket'),
+                self.head_object_request('sourcebucket', 'key'),
+                self.get_object_tagging_request('sourcebucket', 'key'),
+                self.create_mpu_request('bucket', 'key', Metadata=metadata),
+                self.upload_part_copy_request(
+                    'sourcebucket', 'key', 'bucket', 'key', upload_id,
+                    CopySourceRange=mock.ANY, PartNumber=1,
+                ),
+                self.complete_mpu_request('bucket', 'key', upload_id, 1),
+                self.put_object_tagging_request(
+                    'bucket', 'key', large_tag_set
+                ),
             ]
         )

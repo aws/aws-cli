@@ -347,6 +347,28 @@ METADATA_DIRECTIVE = {
         'specified metadata values.')
 }
 
+COPY_PROPS = {
+    'name': 'copy-props',
+    'choices': ['none', 'metadata-directive', 'default'],
+    'default': 'default', 'help_text': (
+        'Determines which properties are copied from the source S3 object. '
+        'This parameter only applies for S3 to S3 copies. Valid values are: '
+        '<ul>'
+        '<li>``none`` - Do not copy any of the properties from the source '
+        'S3 object.</li>'
+        '</ul>'
+        '<li>``metadata-directive`` - Copies the following properties from '
+        'the source S3 object: '
+        '``content-type``, ``content-language``, ``content-encoding``, '
+        '``content-disposition``, ``cache-control``, ``--expires``, and '
+        '``metadata``</li>'
+        '<li>``default`` - The default value. Copies tags and properties '
+        'covered under the ``metadata-directive`` value from the '
+        'source S3 object.</li>'
+        '</ul>'
+    )
+}
+
 
 INDEX_DOCUMENT = {'name': 'index-document',
                   'help_text': (
@@ -728,7 +750,8 @@ class CpCommand(S3TransferCommand):
             "or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
-                [METADATA, METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE]
+                [METADATA, COPY_PROPS, METADATA_DIRECTIVE, EXPECTED_SIZE,
+                 RECURSIVE]
 
 
 class MvCommand(S3TransferCommand):
@@ -739,7 +762,8 @@ class MvCommand(S3TransferCommand):
             "or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS +\
-                [METADATA, METADATA_DIRECTIVE, RECURSIVE]
+                [METADATA, COPY_PROPS, METADATA_DIRECTIVE, RECURSIVE]
+
 
 class RmCommand(S3TransferCommand):
     NAME = 'rm'
@@ -760,7 +784,7 @@ class SyncCommand(S3TransferCommand):
             "<LocalPath> or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
-                [METADATA, METADATA_DIRECTIVE]
+                [METADATA, COPY_PROPS, METADATA_DIRECTIVE]
 
 
 class MbCommand(S3Command):

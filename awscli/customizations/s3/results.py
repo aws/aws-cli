@@ -23,7 +23,6 @@ from s3transfer.exceptions import FatalError
 from s3transfer.subscribers import BaseSubscriber
 
 from awscli.compat import queue, ensure_text_type
-from awscli.customizations.s3.utils import relative_path
 from awscli.customizations.s3.utils import human_readable_size
 from awscli.customizations.utils import uni_print
 from awscli.customizations.s3.utils import WarningResult
@@ -76,121 +75,65 @@ class ShutdownThreadRequest(object):
     pass
 
 
-class BaseResultSubscriber(OnDoneFilteredSubscriber):
-    TRANSFER_TYPE = None
-
-    def __init__(self, result_queue, transfer_type=None):
-        """Subscriber to send result notifications during transfer process
-
-        :param result_queue: The queue to place results to be processed later
-            on.
-        """
+class BaseResultSubscriber(BaseSubscriber):
+    def __init__(self, result_queue, transfer_type, src, dest):
         self._result_queue = result_queue
-        self._result_kwargs_cache = {}
         self._transfer_type = transfer_type
-        if transfer_type is None:
-            self._transfer_type = self.TRANSFER_TYPE
+        self._src = src
+        self._dest = dest
 
+
+class QueuedResultSubscriber(BaseResultSubscriber):
     def on_queued(self, future, **kwargs):
-        self._add_to_result_kwargs_cache(future)
-        result_kwargs = self._result_kwargs_cache[future.meta.transfer_id]
-        queued_result = QueuedResult(**result_kwargs)
-        self._result_queue.put(queued_result)
+        self._result_queue.put(
+            QueuedResult(
+                transfer_type=self._transfer_type,
+                src=self._src,
+                dest=self._dest,
+                total_transfer_size=future.meta.size
+            )
+        )
 
+
+class ProgressResultSubscriber(BaseResultSubscriber):
     def on_progress(self, future, bytes_transferred, **kwargs):
-        result_kwargs = self._result_kwargs_cache[future.meta.transfer_id]
-        progress_result = ProgressResult(
-            bytes_transferred=bytes_transferred, timestamp=time.time(),
-            **result_kwargs)
-        self._result_queue.put(progress_result)
+        self._result_queue.put(
+            ProgressResult(
+                transfer_type=self._transfer_type,
+                src=self._src,
+                dest=self._dest,
+                bytes_transferred=bytes_transferred,
+                timestamp=time.time(),
+                total_transfer_size=future.meta.size
+            )
+        )
 
+
+class DoneResultSubscriber(BaseResultSubscriber, OnDoneFilteredSubscriber):
     def _on_success(self, future):
-        result_kwargs = self._on_done_pop_from_result_kwargs_cache(future)
-        self._result_queue.put(SuccessResult(**result_kwargs))
+        self._result_queue.put(
+            SuccessResult(
+                transfer_type=self._transfer_type,
+                src=self._src,
+                dest=self._dest,
+            )
+        )
 
     def _on_failure(self, future, e):
-        result_kwargs = self._on_done_pop_from_result_kwargs_cache(future)
         if isinstance(e, CancelledError):
             error_result_cls = CtrlCResult
             if isinstance(e, FatalError):
                 error_result_cls = ErrorResult
             self._result_queue.put(error_result_cls(exception=e))
         else:
-            self._result_queue.put(FailureResult(exception=e, **result_kwargs))
-
-    def _add_to_result_kwargs_cache(self, future):
-        src, dest = self._get_src_dest(future)
-        result_kwargs = {
-            'transfer_type': self._transfer_type,
-            'src': src,
-            'dest': dest,
-            'total_transfer_size': future.meta.size
-        }
-        self._result_kwargs_cache[future.meta.transfer_id] = result_kwargs
-
-    def _on_done_pop_from_result_kwargs_cache(self, future):
-        result_kwargs = self._result_kwargs_cache.pop(future.meta.transfer_id)
-        result_kwargs.pop('total_transfer_size')
-        return result_kwargs
-
-    def _get_src_dest(self, future):
-        raise NotImplementedError('_get_src_dest()')
-
-
-class UploadResultSubscriber(BaseResultSubscriber):
-    TRANSFER_TYPE = 'upload'
-
-    def _get_src_dest(self, future):
-        call_args = future.meta.call_args
-        src = self._get_src(call_args.fileobj)
-        dest = 's3://' + call_args.bucket + '/' + call_args.key
-        return src, dest
-
-    def _get_src(self, fileobj):
-        return relative_path(fileobj)
-
-
-class UploadStreamResultSubscriber(UploadResultSubscriber):
-    def _get_src(self, fileobj):
-        return '-'
-
-
-class DownloadResultSubscriber(BaseResultSubscriber):
-    TRANSFER_TYPE = 'download'
-
-    def _get_src_dest(self, future):
-        call_args = future.meta.call_args
-        src = 's3://' + call_args.bucket + '/' + call_args.key
-        dest = self._get_dest(call_args.fileobj)
-        return src, dest
-
-    def _get_dest(self, fileobj):
-        return relative_path(fileobj)
-
-
-class DownloadStreamResultSubscriber(DownloadResultSubscriber):
-    def _get_dest(self, fileobj):
-        return '-'
-
-
-class CopyResultSubscriber(BaseResultSubscriber):
-    TRANSFER_TYPE = 'copy'
-
-    def _get_src_dest(self, future):
-        call_args = future.meta.call_args
-        copy_source = call_args.copy_source
-        src = 's3://' + copy_source['Bucket'] + '/' + copy_source['Key']
-        dest = 's3://' + call_args.bucket + '/' + call_args.key
-        return src, dest
-
-
-class DeleteResultSubscriber(BaseResultSubscriber):
-    TRANSFER_TYPE = 'delete'
-
-    def _get_src_dest(self, future):
-        call_args = future.meta.call_args
-        src = 's3://' + call_args.bucket + '/' + call_args.key
-        return src, None
+            self._result_queue.put(
+                FailureResult(
+                    transfer_type=self._transfer_type,
+                    src=self._src,
+                    dest=self._dest,
+                    exception=e,
+                )
+            )
 
 
 class BaseResultHandler(object):

@@ -20,12 +20,9 @@ from awscli.customizations.s3.utils import (
     create_warning, NonSeekableStream)
 from awscli.customizations.s3.transferconfig import \
     create_transfer_config_from_runtime_config
-from awscli.customizations.s3.results import UploadResultSubscriber
-from awscli.customizations.s3.results import DownloadResultSubscriber
-from awscli.customizations.s3.results import CopyResultSubscriber
-from awscli.customizations.s3.results import UploadStreamResultSubscriber
-from awscli.customizations.s3.results import DownloadStreamResultSubscriber
-from awscli.customizations.s3.results import DeleteResultSubscriber
+from awscli.customizations.s3.results import QueuedResultSubscriber
+from awscli.customizations.s3.results import ProgressResultSubscriber
+from awscli.customizations.s3.results import DoneResultSubscriber
 from awscli.customizations.s3.results import QueuedResult
 from awscli.customizations.s3.results import SuccessResult
 from awscli.customizations.s3.results import FailureResult
@@ -42,6 +39,7 @@ from awscli.customizations.s3.utils import ProvideSizeSubscriber
 from awscli.customizations.s3.utils import ProvideUploadContentTypeSubscriber
 from awscli.customizations.s3.utils import ProvideCopyContentTypeSubscriber
 from awscli.customizations.s3.utils import ProvideLastModifiedTimeSubscriber
+from awscli.customizations.s3.utils import CopyPropsSubscriberFactory
 from awscli.customizations.s3.utils import DirectoryCreatorSubscriber
 from awscli.customizations.s3.utils import DeleteSourceFileSubscriber
 from awscli.customizations.s3.utils import DeleteSourceObjectSubscriber
@@ -183,7 +181,6 @@ class S3TransferHandler(object):
 
 class BaseTransferRequestSubmitter(object):
     REQUEST_MAPPER_METHOD = None
-    RESULT_SUBSCRIBER_CLASS = None
 
     def __init__(self, transfer_manager, result_queue, cli_params):
         """Submits transfer requests to the TransferManager
@@ -242,30 +239,44 @@ class BaseTransferRequestSubmitter(object):
         extra_args = {}
         if self.REQUEST_MAPPER_METHOD:
             self.REQUEST_MAPPER_METHOD(extra_args, self._cli_params)
-        subscribers = []
-        self._add_additional_subscribers(subscribers, fileinfo)
-        # The result subscriber class should always be the last registered
-        # subscriber to ensure it is not missing any information that
-        # may have been added in a different subscriber such as size.
-        if self.RESULT_SUBSCRIBER_CLASS:
-            result_kwargs = {'result_queue': self._result_queue}
-            if self._cli_params.get('is_move', False):
-                result_kwargs['transfer_type'] = 'move'
-            subscribers.append(self.RESULT_SUBSCRIBER_CLASS(**result_kwargs))
-
         if not self._cli_params.get('dryrun'):
             return self._submit_transfer_request(
-                fileinfo, extra_args, subscribers)
+                fileinfo, extra_args, self._get_subscribers(fileinfo))
         else:
             self._submit_dryrun(fileinfo)
 
+    def _get_subscribers(self, fileinfo):
+        subscribers = []
+        result_subscriber_kwargs = self._get_result_subscriber_kwargs(fileinfo)
+        self._add_provide_size_subscriber(subscribers, fileinfo)
+        subscribers.append(QueuedResultSubscriber(**result_subscriber_kwargs))
+        self._add_additional_subscribers(subscribers, fileinfo)
+        subscribers.extend(
+            [
+                ProgressResultSubscriber(**result_subscriber_kwargs),
+                DoneResultSubscriber(**result_subscriber_kwargs)
+            ]
+
+        )
+        return subscribers
+
+    def _get_result_subscriber_kwargs(self, fileinfo):
+        src, dest = self._format_src_dest(fileinfo)
+        return {
+            'result_queue': self._result_queue,
+            'transfer_type': self._get_transfer_type(fileinfo),
+            'src': src,
+            'dest': dest,
+        }
+
     def _submit_dryrun(self, fileinfo):
-        transfer_type = fileinfo.operation_name
-        if self._cli_params.get('is_move', False):
-            transfer_type = 'move'
+        transfer_type = self._get_transfer_type(fileinfo)
         src, dest = self._format_src_dest(fileinfo)
         self._result_queue.put(DryRunResult(
             transfer_type=transfer_type, src=src, dest=dest))
+
+    def _add_provide_size_subscriber(self, subscribers, fileinfo):
+        subscribers.append(ProvideSizeSubscriber(fileinfo.size))
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
         pass
@@ -329,6 +340,11 @@ class BaseTransferRequestSubmitter(object):
             return True
         return False
 
+    def _get_transfer_type(self, fileinfo):
+        if self._cli_params.get('is_move', False):
+            return 'move'
+        return fileinfo.operation_name
+
     def _format_src_dest(self, fileinfo):
         """Returns formatted versions of a fileinfos source and destination."""
         raise NotImplementedError('_format_src_dest')
@@ -344,13 +360,11 @@ class BaseTransferRequestSubmitter(object):
 
 class UploadRequestSubmitter(BaseTransferRequestSubmitter):
     REQUEST_MAPPER_METHOD = RequestParamsMapper.map_put_object_params
-    RESULT_SUBSCRIBER_CLASS = UploadResultSubscriber
 
     def can_submit(self, fileinfo):
         return fileinfo.operation_name == 'upload'
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
-        subscribers.append(ProvideSizeSubscriber(fileinfo.size))
         if self._should_inject_content_type():
             subscribers.append(ProvideUploadContentTypeSubscriber())
         if self._cli_params.get('is_move', False):
@@ -388,13 +402,11 @@ class UploadRequestSubmitter(BaseTransferRequestSubmitter):
 
 class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
     REQUEST_MAPPER_METHOD = RequestParamsMapper.map_get_object_params
-    RESULT_SUBSCRIBER_CLASS = DownloadResultSubscriber
 
     def can_submit(self, fileinfo):
         return fileinfo.operation_name == 'download'
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
-        subscribers.append(ProvideSizeSubscriber(fileinfo.size))
         subscribers.append(DirectoryCreatorSubscriber())
         subscribers.append(ProvideLastModifiedTimeSubscriber(
             fileinfo.last_update, self._result_queue))
@@ -424,13 +436,17 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
 
 class CopyRequestSubmitter(BaseTransferRequestSubmitter):
     REQUEST_MAPPER_METHOD = RequestParamsMapper.map_copy_object_params
-    RESULT_SUBSCRIBER_CLASS = CopyResultSubscriber
 
     def can_submit(self, fileinfo):
         return fileinfo.operation_name == 'copy'
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
-        subscribers.append(ProvideSizeSubscriber(fileinfo.size))
+        copy_props_factory = CopyPropsSubscriberFactory(
+            self._transfer_manager.client,
+            self._transfer_manager.config,
+            self._cli_params,
+        )
+        subscribers.extend(copy_props_factory.get_subscribers(fileinfo))
         if self._should_inject_content_type():
             subscribers.append(ProvideCopyContentTypeSubscriber())
         if self._cli_params.get('is_move', False):
@@ -457,18 +473,19 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
 
 
 class UploadStreamRequestSubmitter(UploadRequestSubmitter):
-    RESULT_SUBSCRIBER_CLASS = UploadStreamResultSubscriber
-
     def can_submit(self, fileinfo):
         return (
             fileinfo.operation_name == 'upload' and
             self._cli_params.get('is_stream')
         )
 
-    def _add_additional_subscribers(self, subscribers, fileinfo):
+    def _add_provide_size_subscriber(self, subscribers, fileinfo):
         expected_size = self._cli_params.get('expected_size', None)
         if expected_size is not None:
             subscribers.append(ProvideSizeSubscriber(int(expected_size)))
+
+    def _add_additional_subscribers(self, subscribers, fileinfo):
+        pass
 
     def _get_filein(self, fileinfo):
         binary_stdin = get_binary_stdin()
@@ -479,13 +496,14 @@ class UploadStreamRequestSubmitter(UploadRequestSubmitter):
 
 
 class DownloadStreamRequestSubmitter(DownloadRequestSubmitter):
-    RESULT_SUBSCRIBER_CLASS = DownloadStreamResultSubscriber
-
     def can_submit(self, fileinfo):
         return (
             fileinfo.operation_name == 'download' and
             self._cli_params.get('is_stream')
         )
+
+    def _add_provide_size_subscriber(self, subscribers, fileinfo):
+        pass
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
         pass
@@ -499,11 +517,13 @@ class DownloadStreamRequestSubmitter(DownloadRequestSubmitter):
 
 class DeleteRequestSubmitter(BaseTransferRequestSubmitter):
     REQUEST_MAPPER_METHOD = RequestParamsMapper.map_delete_object_params
-    RESULT_SUBSCRIBER_CLASS = DeleteResultSubscriber
 
     def can_submit(self, fileinfo):
         return fileinfo.operation_name == 'delete' and \
             fileinfo.src_type == 's3'
+
+    def _add_provide_size_subscriber(self, subscribers, fileinfo):
+        pass
 
     def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
         bucket, key = find_bucket_key(fileinfo.src)
@@ -517,7 +537,6 @@ class DeleteRequestSubmitter(BaseTransferRequestSubmitter):
 
 class LocalDeleteRequestSubmitter(BaseTransferRequestSubmitter):
     REQUEST_MAPPER_METHOD = None
-    RESULT_SUBSCRIBER_CLASS = None
 
     def can_submit(self, fileinfo):
         return fileinfo.operation_name == 'delete' and \

@@ -20,16 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 def register_dynamodb_paginator_fix(event_emitter):
-    event_emitter.register(
-        'calling-command.dynamodb.*', _maybe_register_pagination_fix
-    )
-
-
-def _maybe_register_pagination_fix(parsed_globals, session, **kwargs):
-    if parsed_globals.paginate:
-        session.register(
-            'after-call.dynamodb.*', parse_last_evaluated_key_binary
-        )
+    DynamoDBPaginatorFix(event_emitter).register_events()
 
 
 def parse_last_evaluated_key_binary(parsed, **kwargs):
@@ -43,7 +34,20 @@ def parse_last_evaluated_key_binary(parsed, **kwargs):
         return
     for key, val in last_evaluated_key.items():
         if 'B' in val:
-            try:
-                val['B'] = base64.b64decode(val['B'])
-            except (binascii.Error, TypeError):
-                logger.debug('Failed to base64 decode potential binary')
+            val['B'] = base64.b64decode(val['B'])
+
+
+class DynamoDBPaginatorFix(object):
+    def __init__(self, event_emitter):
+        self._event_emitter = event_emitter
+
+    def register_events(self):
+        self._event_emitter.register(
+            'calling-command.dynamodb.*', self._maybe_register_pagination_fix
+        )
+
+    def _maybe_register_pagination_fix(self, parsed_globals, **kwargs):
+        if parsed_globals.paginate:
+            self._event_emitter.register(
+                'after-call.dynamodb.*', parse_last_evaluated_key_binary
+            )

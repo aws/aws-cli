@@ -32,14 +32,8 @@ class TestParseLastEvaluatedKeyBinary(unittest.TestCase):
     def test_parses_binary_key(self):
         self.assert_parsed_output({'B': 'Zm9v'}, {'B': b'foo'})
 
-    def test_ignores_already_parsed_binary(self):
-        self.assert_parsed_output({'B': b'foo'}, {'B': b'foo'})
-
     def test_ignores_strings(self):
         self.assert_parsed_output({'S': 'Zm9v'}, {'S': 'Zm9v'})
 
     def test_ignores_numbers(self):
         self.assert_parsed_output({'N': 2}, {'N': 2})
-
-    def test_gracefully_handles_invalid_base64(self):
-        self.assert_parsed_output({'B': 'notb64'}, {'B': 'notb64'})

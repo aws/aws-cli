@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.16.313
+========
+
+* api-change:``translate``: Update translate command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``fms``: Update fms command to latest version
+
+
 1.16.312
 ========
 

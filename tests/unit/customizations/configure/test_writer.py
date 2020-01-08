@@ -131,7 +131,7 @@ class TestConfigFileWriter(unittest.TestCase):
         self.assert_update_config(
             '\n',
             {'foo': 'value'},
-            '\n[default]\nfoo = value\n')
+            '\n\n[default]\nfoo = value\n')
 
     def test_section_does_not_exist(self):
         original_contents = (
@@ -152,7 +152,7 @@ class TestConfigFileWriter(unittest.TestCase):
         self.assert_update_config(
             original_contents,
             {'foo': 'value'},
-            original_contents + appended_contents)
+            original_contents + '\n' + appended_contents)
 
     def test_config_file_does_not_exist(self):
         self.writer.update_config({'foo': 'value'}, self.config_filename)

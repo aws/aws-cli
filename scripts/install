@@ -18,23 +18,10 @@ PACKAGES_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'packages')
 INSTALL_DIR = os.path.expanduser(os.path.join(
     '~', '.local', 'lib', 'aws'))
-# There's a few things we need to care about when handling
-# multiple versions of python.  For older versions of python
-# (2.6 and 3.3) we need to use older virtualenv and older packages.
-IS_PY26 = sys.version_info[:2] == (2, 6)
-IS_PY33 = sys.version_info[:2] == (3, 3)
 GTE_PY37 = sys.version_info[:2] >= (3, 7)
-if IS_PY26 or IS_PY33:
-    # --no-build-isolation isn't available in the pip
-    # version we use in py26.
-    INSTALL_ARGS = (
-        '--no-binary :all: --no-cache-dir '
-        '--no-index '
-    )
-else:
-    INSTALL_ARGS = (
-        '--no-binary :all: --no-build-isolation --no-cache-dir --no-index '
-    )
+INSTALL_ARGS = (
+    '--no-binary :all: --no-build-isolation --no-cache-dir --no-index '
+)
 
 
 class BadRCError(Exception):
@@ -114,15 +101,7 @@ def _create_virtualenv_external(location, working_dir):
 def _get_package_tarball(package_dir, package_prefix):
     package_filenames = sorted([p for p in os.listdir(package_dir)
                                 if p.startswith(package_prefix)])
-    # Given we're droping py26 support soon we don't have to make this
-    # super sophisticated.  If we're on py26 we use the earliest version of
-    # this package, otherwise we use the most recent version.
-    # When we drop py26 support there will only be a single version of
-    # each package so we can change this back to return package_filenames[0].
-    if IS_PY26 or IS_PY33:
-        return package_filenames[0]
-    else:
-        return package_filenames[-1]
+    return package_filenames[-1]
 
 
 def _get_venv_package_tarball(package_dir):

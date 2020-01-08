@@ -506,7 +506,8 @@ class ServiceOperation(object):
             event,
             call_parameters=call_parameters,
             parsed_args=parsed_args,
-            parsed_globals=parsed_globals
+            parsed_globals=parsed_globals,
+            session=self._session,
         )
         # There are two possible values for override. It can be some type
         # of exception that will be raised if detected or it can represent

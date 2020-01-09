@@ -87,6 +87,7 @@ from awscli.customizations.servicecatalog import register_servicecatalog_command
 from awscli.customizations.s3events import register_event_stream_arg
 from awscli.customizations.sessionmanager import register_ssm_session
 from awscli.customizations.sms_voice import register_sms_voice_hide
+from awscli.customizations.dynamodb import register_dynamodb_paginator_fix
 
 
 def awscli_initialize(event_handlers):
@@ -176,3 +177,4 @@ def awscli_initialize(event_handlers):
     dlm_initialize(event_handlers)
     register_ssm_session(event_handlers)
     register_sms_voice_hide(event_handlers)
+    register_dynamodb_paginator_fix(event_handlers)

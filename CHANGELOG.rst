@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.16.314
+========
+
+* api-change:``logs``: Update logs command to latest version
+* bugfix:dynamodb: Fixed an issue that could cause paginated scans and queries to not fetch the complete list of results on tables with a binary primary key.
+
+
 1.16.313
 ========
 

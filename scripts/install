@@ -19,6 +19,10 @@ PACKAGES_DIR = os.path.join(
 INSTALL_DIR = os.path.expanduser(os.path.join(
     '~', '.local', 'lib', 'aws'))
 GTE_PY37 = sys.version_info[:2] >= (3, 7)
+UNSUPPORTED_PYTHON = (
+    (sys.version_info[0] == 2 and sys.version_info[:2] <= (2, 6)) or
+    (sys.version_info[0] == 3 and sys.version_info[:2] <= (3, 3))
+)
 INSTALL_ARGS = (
     '--no-binary :all: --no-build-isolation --no-cache-dir --no-index '
 )
@@ -177,6 +181,18 @@ def main():
                       "-b /usr/local/bin/aws.  This is an optional argument. "
                       "If you do not provide this argument you will have to "
                       "add INSTALL_DIR/bin to your PATH.")
+    if UNSUPPORTED_PYTHON:
+        unsupported_python_msg = (
+            "Unsupported Python version detected: Python %s.%s\n"
+            "To continue using this installer you must use Python 2.7 "
+            "and greater or Python 3.4 and greater.\n"
+            "For more information see the following blog post:\n"
+            "https://aws.amazon.com/blogs/developer/deprecation-of-python-2-6"
+            "-and-python-3-3-in-botocore-boto3-and-the-aws-cli/"
+        )
+        print(unsupported_python_msg % sys.version_info[:2])
+        sys.exit(1)
+
     opts = parser.parse_args()[0]
     working_dir = create_working_dir()
     try:

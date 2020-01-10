@@ -2,6 +2,58 @@
 CHANGELOG
 =========
 
+1.17.0
+======
+
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* feature:Python: Dropped support for Python 2.6 and 3.3.
+* api-change:``transfer``: Update transfer command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.16.314
+========
+
+* api-change:``logs``: Update logs command to latest version
+* bugfix:dynamodb: Fixed an issue that could cause paginated scans and queries to not fetch the complete list of results on tables with a binary primary key.
+
+
+1.16.313
+========
+
+* api-change:``translate``: Update translate command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``fms``: Update fms command to latest version
+
+
+1.16.312
+========
+
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``xray``: Update xray command to latest version
+* api-change:``mgh``: Update mgh command to latest version
+
+
+1.16.311
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+* api-change:``mediapackage``: Update mediapackage command to latest version
+
+
+1.16.310
+========
+
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``ecr``: Update ecr command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+
+
 1.16.309
 ========
 

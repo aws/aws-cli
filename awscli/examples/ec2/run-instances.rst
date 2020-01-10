@@ -350,3 +350,49 @@ You can launch an instance into a specific partition of a partition placement gr
         --key-name MyKeyPair \
         --subnet-id subnet-6e7f829e\
         --placement "GroupName = HDFS-Group-A, PartitionNumber = 3"  
+
+**Example 11: To require the use of Instance Metadata Service Version 2 on a new instance**
+
+The following ``run-instances`` example launches a ``c3.large`` instance with ``metadata-options`` set to ``HttpTokens=required``. Because the secure token header is set to ``required`` for metadata retrieval requests, this opts in the instance to require using IMDSv2 when requesting instance metadata.
+
+**Note:**
+- When specifying a value for ``HttpTokens``, you must also set ``HttpEndpoint`` to ``enabled``.
+- In the example, the ``--count`` and ``--security-group`` parameters are not included. For ``--count``, the default is ``1``. If you have a default VPC and a default security group, they are used. ::
+
+    aws ec2 run-instances \
+        --image-id ami-1a2b3c4d \
+        --instance-type c3.large \
+        --key-name MyKeyPair \
+        --metadata-options "HttpEndpoint=enabled,HttpTokens=required"
+
+For more information, see 'Configuring the Instance Metadata Service <https://docs.aws.amazon.com/en_us/AWSEC2/latest/UserGuide/ec2-instance-metadata.html#configuring-instance-metadata-service>'__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+
+**Example 12: To turn off access to instance metadata on a new instance**
+
+The following ``run-instances`` example launches a ``c3.large`` instance with ``metadata-options`` set to ``HttpEndpoint=disabled``. When the HTTP endpoint of the instance metadata service is set to ``disabled``, access to your instance metadata is turned off regardless of which version of the instance metadata service you are using. You can reverse this change at any time by enabling the HTTP endpoint, using the ``modify-instance-metadata-options`` command.
+
+**Note:** In the example, the ``--count`` and ``--security-group`` parameters are not included. For ``--count``, the default is ``1``. If you have a default VPC and a default security group, they are used. ::
+
+    aws ec2 run-instances \
+        --image-id ami-1a2b3c4d \
+        --instance-type c3.large \
+        --key-name MyKeyPair \
+        --metadata-options "HttpEndpoint=disabled"
+
+For more information, see 'Configuring the Instance Metadata Service <https://docs.aws.amazon.com/en_us/AWSEC2/latest/UserGuide/ec2-instance-metadata.html#configuring-instance-metadata-service>'__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+
+**Example 13: To specify the PUT response hop limit on a new instance**
+
+The following ``run-instances`` example launches a ``c3.large`` instance with ``metadata-options`` set to ``HttpTokens=required`` and ``HttpPutResponseHopLimit=3``. Because the secure token header is set to ``required`` for metadata retrieval requests, this opts in the instance to require using IMDSv2 when requesting instance metadata. In this example, ``HttpPutResponseHopLimit=3`` sets the allowable number of network hops for the instance metadata PUT response to ``3``.
+
+**Note:**
+- When specifying a value for ``HttpTokens`` or ``HttpPutResponseHopLimit``, you must also set ``HttpEndpoint`` to ``enabled``.
+- In the example, the ``--count`` and ``--security-group`` parameters are not included. For ``--count``, the default is ``1``. If you have a default VPC and a default security group, they are used. ::
+
+    aws ec2 run-instances \
+        --image-id ami-1a2b3c4d \
+        --instance-type c3.large \
+        --key-name MyKeyPair \
+        --metadata-options "HttpEndpoint=enabled,HttpTokens=required,HttpPutResponseHopLimit=3"
+
+For more information, see 'Configuring the Instance Metadata Service <https://docs.aws.amazon.com/en_us/AWSEC2/latest/UserGuide/ec2-instance-metadata.html#configuring-instance-metadata-service>'__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.

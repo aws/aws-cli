@@ -27,7 +27,7 @@ requires = ['botocore==2.0.0dev2',
             'colorama>=0.2.5,<=0.3.9',
             'docutils>=0.10',
             'rsa>=3.1.2,<=3.5.0',
-            's3transfer>=0.2.0,<0.3.0',
+            's3transfer>=0.3.0,<0.4.0',
             'PyYAML>=3.10,<5.2',
             'ruamel.yaml>=0.15.0,<0.16.0',
             'prompt-toolkit>=2.0.0,<3.0.0',
@@ -74,6 +74,7 @@ setup_options = dict(
         'Programming Language :: Python :: 3.8',
     ],
 )
+
 
 if 'py2exe' in sys.argv:
     # This will actually give us a py2exe command.

@@ -40,6 +40,8 @@ from awscli.customizations.configservice.rename_cmd import \
 from awscli.customizations.configservice.subscribe import register_subscribe
 from awscli.customizations.configure.configure import register_configure_cmd
 from awscli.customizations.dynamodb.ddb import register_ddb
+from awscli.customizations.dynamodb.paginatorfix import \
+    register_dynamodb_paginator_fix
 from awscli.customizations.history import register_history_mode
 from awscli.customizations.history import register_history_commands
 from awscli.customizations.ec2.addcount import register_count_events
@@ -91,7 +93,6 @@ from awscli.customizations.wizard.commands import register_wizard_commands
 from awscli.customizations.sms_voice import register_sms_voice_hide
 from awscli.customizations.autoprompt import register_autoprompt
 from awscli.customizations.binaryformat import add_binary_formatter
-from awscli.customizations.dynamodb import register_dynamodb_paginator_fix
 
 
 def awscli_initialize(event_handlers):

@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.17.0
+======
+
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* feature:Python: Dropped support for Python 2.6 and 3.3.
+* api-change:``transfer``: Update transfer command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.16.314
 ========
 

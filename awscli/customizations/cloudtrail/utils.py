@@ -17,12 +17,6 @@ def get_account_id_from_arn(trail_arn):
     return trail_arn.split(':')[4]
 
 
-def get_account_id(sts_client):
-    """Retrieve the AWS account ID for the authenticated user or role"""
-    response = sts_client.get_caller_identity()
-    return response['Account']
-
-
 def get_trail_by_arn(cloudtrail_client, trail_arn):
     """Gets trail information based on the trail's ARN"""
     trails = cloudtrail_client.describe_trails()['trailList']

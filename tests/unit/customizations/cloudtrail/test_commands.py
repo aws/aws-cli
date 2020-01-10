@@ -25,6 +25,4 @@ class TestCloudTrailPlumbing(unittest.TestCase):
         command_table = {}
         session = Mock()
         cloudtrail.inject_commands(command_table, session)
-        self.assertIn('create-subscription', command_table)
-        self.assertIn('update-subscription', command_table)
         self.assertIn('validate-logs', command_table)

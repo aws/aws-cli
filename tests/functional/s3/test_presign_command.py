@@ -95,8 +95,8 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
                     'X-Amz-Date': '20160818T143303Z',
                     'X-Amz-Expires': '3600',
                     'X-Amz-Signature': (
-                        'd28b6c4a54f31196a6d49335556736a3fc29f036018c8e'
-                        '50775887299092d1a0'),
+                        '1297528058f2c8b89cfa52c6a47d6c54890700a1da2470'
+                        '2b06d53e774c0acc95'),
                     'X-Amz-SignedHeaders': 'host',
                 }
             }
@@ -118,8 +118,8 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
                     'X-Amz-Date': '20160818T143303Z',
                     'X-Amz-Expires': '3600',
                     'X-Amz-Signature': (
-                        '8bbbd5a0d492b74048ba0b057b7d012bda6d21ecac3ef'
-                        '005dbcc34a2744922cc'),
+                        '5a032639cabfe3db0b4b87ba3b12c29f5e42fe74cbba8'
+                        'a0eb69bfb30c6e2d277'),
                     'X-Amz-SignedHeaders': 'host',
                 }
             }
@@ -142,8 +142,8 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
                     'X-Amz-Date': '20160818T143303Z',
                     'X-Amz-Expires': '{}'.format(expires_in),
                     'X-Amz-Signature': (
-                        '58972912303cabb8ce4c9f49cb65e9ef61e72cfded805e'
-                        '87d8004592f5d4cf79'),
+                        '865fb61b021c3bf406c40d41353f584835fff1f158cf1b'
+                        '3e6ec06260ecbb8937'),
                     'X-Amz-SignedHeaders': 'host',
                 }
             }
@@ -191,8 +191,8 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
                     'X-Amz-Date': '20160818T143303Z',
                     'X-Amz-Expires': '3600',
                     'X-Amz-Signature': (
-                        'd28b6c4a54f31196a6d49335556736a3fc29f036018c8e'
-                        '50775887299092d1a0'),
+                        '1297528058f2c8b89cfa52c6a47d6c54890700a1da2470'
+                        '2b06d53e774c0acc95'),
                     'X-Amz-SignedHeaders': 'host',
                 }
             }
@@ -215,8 +215,8 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
                     'X-Amz-Date': '20160818T143303Z',
                     'X-Amz-Expires': '3600',
                     'X-Amz-Signature': (
-                        'd20178280d7521b384730c678549f6344401ae040bec55'
-                        '9ad06020854c6c718f'),
+                        'c6dab3560db76aded03e6268338ddb0a6dec00ebc82d6e'
+                        '7abdc305529fcaba74'),
                     'X-Amz-SignedHeaders': 'host',
                 }
             }

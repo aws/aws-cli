@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.17.1
+======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``backup``: Update backup command to latest version
+* api-change:``efs``: Update efs command to latest version
+
+
 1.17.0
 ======
 

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.17.2
+======
+
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.17.1
 ======
 

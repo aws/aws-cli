@@ -641,7 +641,6 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
             QueuedResultSubscriber,
             SetMetadataDirectivePropsSubscriber,
             SetTagsSubscriber,
-            ProvideCopyContentTypeSubscriber,
             ProgressResultSubscriber,
             DoneResultSubscriber,
         ]
@@ -673,27 +672,6 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         copy_call_kwargs = self.transfer_manager.copy.call_args[1]
         self.assertEqual(
             copy_call_kwargs['extra_args'], {'ContentType': 'text/plain'})
-        ref_subscribers = [
-            ProvideSizeSubscriber,
-            QueuedResultSubscriber,
-            SetMetadataDirectivePropsSubscriber,
-            SetTagsSubscriber,
-            ProgressResultSubscriber,
-            DoneResultSubscriber,
-        ]
-        actual_subscribers = copy_call_kwargs['subscribers']
-        self.assertEqual(len(ref_subscribers), len(actual_subscribers))
-        for i, actual_subscriber in enumerate(actual_subscribers):
-            self.assertIsInstance(actual_subscriber, ref_subscribers[i])
-
-    def test_submit_when_no_guess_content_mime_type(self):
-        fileinfo = FileInfo(
-            src=self.source_bucket+'/'+self.source_key,
-            dest=self.bucket+'/'+self.key)
-        self.cli_params['guess_mime_type'] = False
-        self.transfer_request_submitter.submit(fileinfo)
-
-        copy_call_kwargs = self.transfer_manager.copy.call_args[1]
         ref_subscribers = [
             ProvideSizeSubscriber,
             QueuedResultSubscriber,
@@ -820,7 +798,6 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
             QueuedResultSubscriber,
             SetMetadataDirectivePropsSubscriber,
             SetTagsSubscriber,
-            ProvideCopyContentTypeSubscriber,
             DeleteSourceObjectSubscriber,
             ProgressResultSubscriber,
             DoneResultSubscriber,

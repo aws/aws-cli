@@ -447,8 +447,6 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
             self._cli_params,
         )
         subscribers.extend(copy_props_factory.get_subscribers(fileinfo))
-        if self._should_inject_content_type():
-            subscribers.append(ProvideCopyContentTypeSubscriber())
         if self._cli_params.get('is_move', False):
             subscribers.append(DeleteCopySourceObjectSubscriber(
                 fileinfo.source_client))

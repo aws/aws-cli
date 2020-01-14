@@ -22,8 +22,11 @@ from zlib import error as ZLibError
 from datetime import datetime, timedelta
 from dateutil import tz, parser
 
-from pyasn1.error import PyAsn1Error
-import rsa
+import cryptography
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric.padding import PKCS1v15
+from cryptography.hazmat.primitives.serialization import load_der_public_key
 
 from awscli.customizations.cloudtrail.utils import get_trail_by_arn, \
     get_account_id_from_arn
@@ -571,20 +574,19 @@ class Sha256RSADigestValidator(object):
         """
         try:
             decoded_key = base64.b64decode(public_key)
-            public_key = rsa.PublicKey.load_pkcs1(decoded_key, format='DER')
+            public_key = load_der_public_key(decoded_key, default_backend())
             to_sign = self._create_string_to_sign(digest_data, inflated_digest)
             signature_bytes = binascii.unhexlify(digest_data['_signature'])
-            rsa.verify(to_sign, signature_bytes, public_key)
-        except PyAsn1Error:
+            hashing = hashes.SHA256()
+            public_key.verify(signature_bytes, to_sign, PKCS1v15(), hashing)
+        except ValueError:
             raise DigestError(
                 ('Digest file\ts3://%s/%s\tINVALID: Unable to load PKCS #1 key'
                  ' with fingerprint %s')
                 % (bucket, key, digest_data['digestPublicKeyFingerprint']))
-        except rsa.pkcs1.VerificationError:
-            # Note from the Python-RSA docs: Never display the stack trace of
-            # a rsa.pkcs1.VerificationError exception. It shows where in the
-            # code the exception occurred, and thus leaks information about
-            # the key.
+        except cryptography.exceptions.InvalidSignature:
+            # Don't display the stack trace of a signature exception to avoid
+            # leaking any information about the key.
             raise DigestSignatureError(bucket, key)
 
     def _create_string_to_sign(self, digest_data, inflated_digest):

@@ -441,15 +441,19 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
         return fileinfo.operation_name == 'copy'
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
+        if not self._cli_params.get('metadata_directive'):
+            self._add_copy_props_subscribers(subscribers, fileinfo)
+        if self._cli_params.get('is_move', False):
+            subscribers.append(DeleteCopySourceObjectSubscriber(
+                fileinfo.source_client))
+
+    def _add_copy_props_subscribers(self, subscribers, fileinfo):
         copy_props_factory = CopyPropsSubscriberFactory(
             self._transfer_manager.client,
             self._transfer_manager.config,
             self._cli_params,
         )
         subscribers.extend(copy_props_factory.get_subscribers(fileinfo))
-        if self._cli_params.get('is_move', False):
-            subscribers.append(DeleteCopySourceObjectSubscriber(
-                fileinfo.source_client))
 
     def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
         bucket, key = find_bucket_key(fileinfo.dest)

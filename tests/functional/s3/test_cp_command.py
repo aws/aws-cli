@@ -1221,6 +1221,18 @@ class TestCopyPropsNoneCpCommand(BaseCopyPropsCpCommandTest):
         # typically added. It should have no additional parameters.
         self.assert_in_operations_called(self.create_mpu_request())
 
+    def test_metadata_directive_disables_copy_props(self):
+        cmdline = self.get_s3_cp_copy_command(copy_props='none')
+        cmdline += ' --metadata-directive COPY'
+        self.parsed_responses = [
+            self.head_object_response(),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(
+            self.copy_object_request(MetadataDirective='COPY')
+        )
+
 
 class TestCopyPropsMetadataDirectiveCpCommand(BaseCopyPropsCpCommandTest):
     def test_copy_object(self):
@@ -1408,6 +1420,18 @@ class TestCopyPropsMetadataDirectiveCpCommand(BaseCopyPropsCpCommandTest):
         self.set_http_status_codes([200, 404])
         _, stderr, _ = self.run_cmd(cmdline, expected_rc=1)
         self.assertIn('NoSuchKey', stderr)
+
+    def test_metadata_directive_disables_copy_props(self):
+        cmdline = self.get_s3_cp_copy_command(copy_props='metadata-directive')
+        cmdline += ' --metadata-directive REPLACE'
+        self.parsed_responses = [
+            self.head_object_response(),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(
+            self.copy_object_request(MetadataDirective='REPLACE')
+        )
 
 
 class TestCopyPropsDefaultCpCommand(BaseCopyPropsCpCommandTest):
@@ -1672,4 +1696,16 @@ class TestCopyPropsDefaultCpCommand(BaseCopyPropsCpCommandTest):
                 self.target_key,
                 RequestPayer='requester'
             )
+        )
+
+    def test_metadata_directive_disables_copy_props(self):
+        cmdline = self.get_s3_cp_copy_command(copy_props='default')
+        cmdline += ' --metadata-directive REPLACE'
+        self.parsed_responses = [
+            self.head_object_response(),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(
+            self.copy_object_request(MetadataDirective='REPLACE')
         )

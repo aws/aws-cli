@@ -685,6 +685,26 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         for i, actual_subscriber in enumerate(actual_subscribers):
             self.assertIsInstance(actual_subscriber, ref_subscribers[i])
 
+    def test_metadata_directive_excludes_copy_props_subscribers(self):
+        fileinfo = FileInfo(
+            src=self.source_bucket+'/'+self.source_key,
+            dest=self.bucket+'/'+self.key)
+        self.cli_params['copy_props'] = 'default'
+        self.cli_params['metadata_directive'] = 'REPLACE'
+        self.transfer_request_submitter.submit(fileinfo)
+
+        copy_call_kwargs = self.transfer_manager.copy.call_args[1]
+        ref_subscribers = [
+            ProvideSizeSubscriber,
+            QueuedResultSubscriber,
+            ProgressResultSubscriber,
+            DoneResultSubscriber,
+        ]
+        actual_subscribers = copy_call_kwargs['subscribers']
+        self.assertEqual(len(ref_subscribers), len(actual_subscribers))
+        for i, actual_subscriber in enumerate(actual_subscribers):
+            self.assertIsInstance(actual_subscriber, ref_subscribers[i])
+
     def test_warn_glacier_for_incompatible(self):
         fileinfo = FileInfo(
             src=self.source_bucket+'/'+self.source_key,

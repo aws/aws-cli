@@ -318,10 +318,9 @@ METADATA = {
     },
     'help_text': (
         "A map of metadata to store with the objects in S3. This will be "
-        "applied to every object which is part of this request. In a sync, this "
-        "means that files which haven't changed won't receive the new metadata. "
-        "When copying between two s3 locations, the metadata-directive "
-        "argument will default to 'REPLACE' unless otherwise specified."
+        "applied to every object which is part of this request. In a sync, "
+        "this means that files which haven't changed won't receive the new "
+        "metadata. "
     )
 }
 
@@ -329,23 +328,14 @@ METADATA = {
 METADATA_DIRECTIVE = {
     'name': 'metadata-directive', 'choices': ['COPY', 'REPLACE'],
     'help_text': (
-        'Specifies whether the metadata is copied from the source object '
-        'or replaced with metadata provided when copying S3 objects. '
-        'Note that if the object is copied over in parts, the source '
-        'object\'s metadata will not be copied over, no matter the value for '
-        '``--metadata-directive``, and instead the desired metadata values '
-        'must be specified as parameters on the command line. '
-        'Valid values are ``COPY`` and ``REPLACE``. If this parameter is not '
-        'specified, ``COPY`` will be used by default. If ``REPLACE`` is used, '
-        'the copied object will only have the metadata values that were'
-        ' specified by the CLI command. Note that if you are '
-        'using any of the following parameters: ``--content-type``, '
-        '``content-language``, ``--content-encoding``, '
-        '``--content-disposition``, ``--cache-control``, or ``--expires``, you '
-        'will need to specify ``--metadata-directive REPLACE`` for '
-        'non-multipart copies if you want the copied objects to have the '
-        'specified metadata values.')
+        'Sets the ``x-amz-metadata-directive`` header for CopyObject '
+        'operations. It is recommended to use the ``--copy-props`` parameter '
+        'instead to control copying of metadata properties. '
+        'If ``--metadata-directive`` is set, the ``--copy-props`` parameter '
+        'will be disabled and will have no affect on the transfer.'
+    )
 }
+
 
 COPY_PROPS = {
     'name': 'copy-props',

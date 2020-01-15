@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.17.3
+======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
 1.17.2
 ======
 

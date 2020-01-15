@@ -13,7 +13,12 @@
 import logging
 import os
 import base64
-import rsa
+
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric.padding import PKCS1v15
+from cryptography.hazmat.primitives.serialization import load_pem_private_key
+
 from awscli.compat import six
 
 from botocore import model
@@ -107,11 +112,12 @@ class LaunchKeyArgument(BaseCLIArgument):
             if not value:
                 return
             try:
-                with open(self._key_path) as pk_file:
-                    pk_contents = pk_file.read()
-                    private_key = rsa.PrivateKey.load_pkcs1(six.b(pk_contents))
+                with open(self._key_path, 'rb') as pk_file:
+                    pk_bytes = pk_file.read()
+                    backend = default_backend()
+                    private_key = load_pem_private_key(pk_bytes, None, backend)
                     value = base64.b64decode(value)
-                    value = rsa.decrypt(value, private_key)
+                    value = private_key.decrypt(value, PKCS1v15())
                     logger.debug(parsed)
                     parsed['PasswordData'] = value.decode('utf-8')
                     logger.debug(parsed)

@@ -55,7 +55,14 @@ def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):
 
 def _import_plugins(plugin_mapping):
     plugins = []
-    _handle_legacy_plugin_paths(plugin_mapping)
+    plugin_path = plugin_mapping.pop(CLI_LEGACY_PLUGIN_PATH, None)
+    if plugin_path is None:
+        log.debug(
+            "cli_legacy_plugin_path not defined in plugin section. Not "
+            "importing additional plugins."
+        )
+        return plugins
+    _add_plugin_path_to_sys_path(plugin_path)
     for name, path in plugin_mapping.items():
         log.debug("Importing plugin %s: %s", name, path)
         if '.' not in path:
@@ -67,11 +74,8 @@ def _import_plugins(plugin_mapping):
     return plugins
 
 
-def _handle_legacy_plugin_paths(plugin_mapping):
-    if CLI_LEGACY_PLUGIN_PATH not in plugin_mapping:
-        return
-    values = plugin_mapping.pop(CLI_LEGACY_PLUGIN_PATH)
-    for dirname in values.split(os.pathsep):
+def _add_plugin_path_to_sys_path(plugin_path):
+    for dirname in plugin_path.split(os.pathsep):
         log.debug("Adding additional path from cli_legacy_plugin_path "
                   "configuration: %s", dirname)
         sys.path.append(dirname)

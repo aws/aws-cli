@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.17.4
+======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``ds``: Update ds command to latest version
+
+
 1.17.3
 ======
 

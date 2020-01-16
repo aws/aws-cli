@@ -198,11 +198,11 @@ class DeployCommand(BasicCommand):
             'action': 'store_true',
             'group_name': 'fail-on-empty-changeset',
             'dest': 'fail_on_empty_changeset',
-            'default': True,
+            'default': False,
             'help_text': (
                 'Specify if the CLI should return a non-zero exit code if '
                 'there are no changes to be made to the stack. The default '
-                'behavior is to return a non-zero exit code.'
+                'behavior is to return a zero exit code.'
             )
         },
         {
@@ -211,7 +211,7 @@ class DeployCommand(BasicCommand):
             'action': 'store_false',
             'group_name': 'fail-on-empty-changeset',
             'dest': 'fail_on_empty_changeset',
-            'default': True,
+            'default': False,
             'help_text': (
                 'Causes the CLI to return an exit code of 0 if there are no '
                 'changes to be made to the stack.'
@@ -297,7 +297,7 @@ class DeployCommand(BasicCommand):
     def deploy(self, deployer, stack_name, template_str,
                parameters, capabilities, execute_changeset, role_arn,
                notification_arns, s3_uploader, tags,
-               fail_on_empty_changeset=True):
+               fail_on_empty_changeset=False):
         try:
             result = deployer.create_and_wait_for_changeset(
                 stack_name=stack_name,
@@ -382,6 +382,3 @@ class DeployCommand(BasicCommand):
             result[key_value_pair[0]] = key_value_pair[1]
 
         return result
-
-
-

@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.17.5
+======
+
+* api-change:``batch``: Update batch command to latest version
+* api-change:``cloudhsmv2``: Update cloudhsmv2 command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``neptune``: Update neptune command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
 1.17.4
 ======
 

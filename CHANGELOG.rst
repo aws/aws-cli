@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.17.6
+======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``kms``: Update kms command to latest version
+* api-change:``application-insights``: Update application-insights command to latest version
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+
+
 1.17.5
 ======
 

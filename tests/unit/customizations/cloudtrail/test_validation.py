@@ -18,9 +18,13 @@ import gzip
 from datetime import datetime, timedelta
 from dateutil import parser, tz
 
-import rsa
 from mock import Mock, call
 from argparse import Namespace
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives.asymmetric.padding import PKCS1v15
+from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
 
 from awscli.compat import six
 from awscli.testutils import BaseAWSCommandParamsTest
@@ -363,7 +367,7 @@ class TestSha256RSADigestValidator(unittest.TestCase):
         self._digest_data['_signature'] = 'aeff'
 
     def test_validates_digests(self):
-        (public_key, private_key) = rsa.newkeys(512)
+        private_key = rsa.generate_private_key(65537, 512, default_backend())
         sha256_hash = hashlib.sha256(self._inflated_digest)
         string_to_sign = "%s\n%s/%s\n%s\n%s" % (
             self._digest_data['digestEndTime'],
@@ -371,10 +375,13 @@ class TestSha256RSADigestValidator(unittest.TestCase):
             self._digest_data['digestS3Object'],
             sha256_hash.hexdigest(),
             self._digest_data['previousDigestSignature'])
-        signature = rsa.sign(string_to_sign.encode(), private_key, 'SHA-256')
+        to_sign = string_to_sign.encode()
+        signature = private_key.sign(to_sign, PKCS1v15(), hashes.SHA256())
         self._digest_data['_signature'] = binascii.hexlify(signature)
         validator = Sha256RSADigestValidator()
-        public_key_b64 = base64.b64encode(public_key.save_pkcs1(format='DER'))
+        public_key = private_key.public_key()
+        pub_bytes = public_key.public_bytes(Encoding.DER, PublicFormat.PKCS1)
+        public_key_b64 = base64.b64encode(pub_bytes)
         validator.validate('b', 'k', public_key_b64, self._digest_data,
                            self._inflated_digest)
 

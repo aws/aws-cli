@@ -27,7 +27,7 @@ install_requires = ['botocore==1.14.6',
                     'docutils>=0.10,<0.16',
                     'rsa>=3.1.2,<=3.5.0',
                     's3transfer>=0.3.0,<0.4.0',
-                    'PyYAML>=3.10,<5.3',
+                    'PyYAML>=3.10,<5.4',
                     'colorama>=0.2.5,<0.4.2']
 
 

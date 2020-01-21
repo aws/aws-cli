@@ -84,7 +84,7 @@ class TestPlugins(BaseCLIDriverTest):
         self.plugins_site_packages = os.path.join(
             self.files.rootdir, 'site-packages'
         )
-        self.plugin_module_name = 'add_awscli_test_cmd_plugin'
+        self.plugin_module_name = 'add_awscli_cmd_plugin'
         self.plugin_filename = os.path.join(
             os.path.dirname(__file__), self.plugin_module_name) + '.py'
         self.setup_plugin_site_packages()
@@ -94,7 +94,7 @@ class TestPlugins(BaseCLIDriverTest):
         shutil.copy(self.plugin_filename, self.plugins_site_packages)
 
     def tearDown(self):
-        super(TestPlugins, self).setUp()
+        super(TestPlugins, self).tearDown()
         self.files.remove_all()
 
     def assert_plugin_loaded(self, clidriver):

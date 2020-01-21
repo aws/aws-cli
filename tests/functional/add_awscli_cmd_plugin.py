@@ -14,10 +14,10 @@ from awscli.customizations.commands import BasicCommand
 
 
 def awscli_initialize(event_emitter):
-    event_emitter.register('building-command-table.main', add_plugin_test_cmd)
+    event_emitter.register('building-command-table.main', add_plugin_cmd)
 
 
-def add_plugin_test_cmd(command_table, session, **kwargs):
+def add_plugin_cmd(command_table, session, **kwargs):
     command_table['plugin-test-cmd'] = PluginTestCommand(session)
 
 

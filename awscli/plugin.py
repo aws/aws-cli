@@ -42,27 +42,31 @@ def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):
     :return: An event emitter object.
 
     """
-    if include_builtins:
-        plugin_mapping.update(BUILTIN_PLUGINS)
-    modules = _import_plugins(plugin_mapping)
     if event_hooks is None:
         event_hooks = HierarchicalEmitter()
-    for name, plugin in zip(plugin_mapping.keys(), modules):
-        log.debug("Initializing plugin %s: %s", name, plugin)
-        plugin.awscli_initialize(event_hooks)
-    return event_hooks
-
-
-def _import_plugins(plugin_mapping):
-    plugins = []
+    if include_builtins:
+        _load_plugins(BUILTIN_PLUGINS, event_hooks)
     plugin_path = plugin_mapping.pop(CLI_LEGACY_PLUGIN_PATH, None)
-    if plugin_path is None:
+    if plugin_path is not None:
+        _add_plugin_path_to_sys_path(plugin_path)
+        _load_plugins(plugin_mapping, event_hooks)
+    else:
         log.debug(
             "cli_legacy_plugin_path not defined in plugin section. Not "
             "importing additional plugins."
         )
-        return plugins
-    _add_plugin_path_to_sys_path(plugin_path)
+    return event_hooks
+
+
+def _load_plugins(plugin_mapping, event_hooks):
+    modules = _import_plugins(plugin_mapping)
+    for name, plugin in zip(plugin_mapping.keys(), modules):
+        log.debug("Initializing plugin %s: %s", name, plugin)
+        plugin.awscli_initialize(event_hooks)
+
+
+def _import_plugins(plugin_mapping):
+    plugins = []
     for name, path in plugin_mapping.items():
         log.debug("Importing plugin %s: %s", name, path)
         if '.' not in path:

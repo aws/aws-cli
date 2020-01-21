@@ -3,9 +3,9 @@
 The following ``create-fleet`` example creates a minimally configured fleet of on-demand Linux instances to host a custom server build. You can complete the configuration by using ``update-fleet``. ::
 
     aws gamelift create-fleet \
-        --name MegaFrogRace.NA.v2 \
+        --name MegaFrogRaceServer.NA.v2 \
         --description 'Hosts for v2 North America' \
-        --build-id build-1111aaaa-22bb-33cc-44dd-5555eeee66ff  \
+        --build-id build-1111aaaa-22bb-33cc-44dd-5555eeee66ff \
         --certificate-configuration 'CertificateType=GENERATED' \
         --ec2-instance-type c4.large \
         --fleet-type ON_DEMAND \
@@ -17,7 +17,7 @@ Output::
         "FleetAttributes": {
             "BuildId": "build-1111aaaa-22bb-33cc-44dd-5555eeee66ff", 
             "CertificateConfiguration": { 
-              "CertificateType": "GENERATED"
+                "CertificateType": "GENERATED"
             },
             "CreationTime": 1496365885.44, 
             "Description": "Hosts for v2 North America",
@@ -45,7 +45,7 @@ The following ``create-fleet`` example creates a minimally configured fleet of s
         --certificate-configuration 'CertificateType=GENERATED' \
         --ec2-instance-type c4.large \
         --fleet-type SPOT \
-        --runtime-configuration 'ServerProcesses=[{LaunchPath==C:\game\Bin64.Release.Dedicated\MegaFrogRace_Server.exe,ConcurrentExecutions=1}]'
+        --runtime-configuration 'ServerProcesses=[{LaunchPath=C:\game\Bin64.Release.Dedicated\MegaFrogRace_Server.exe,ConcurrentExecutions=1}]'
 
 Output::
 
@@ -53,7 +53,7 @@ Output::
         "FleetAttributes": {
             "BuildId": "build-2222aaaa-33bb-44cc-55dd-6666eeee77ff", 
             "CertificateConfiguration": { 
-              "CertificateType": "GENERATED"
+                "CertificateType": "GENERATED"
             },
             "CreationTime": 1496365885.44, 
             "Description": "Hosts for v2 North America",
@@ -69,6 +69,7 @@ Output::
             "Status": "NEW"
         }
     }
+
 
 **Example 3: To create a fully configured fleet**
 
@@ -89,20 +90,20 @@ The following ``create-fleet`` example creates a fleet of Spot Windows instances
 
 Contents of ``runtime-config.json``::
 
-    GameSessionActivationTimeoutSeconds=300,
-    MaxConcurrentGameSessionActivations=2,
-    ServerProcesses=[
-        {LaunchPath=C:\game\Bin64.Release.Dedicated\MegaFrogRace_Server.exe,Parameters=-debug,ConcurrentExecutions=1},
-        {LaunchPath=C:\game\Bin64.Release.Dedicated\MegaFrogRace_Server.exe,ConcurrentExecutions=1}]
+  GameSessionActivationTimeoutSeconds=300,
+   MaxConcurrentGameSessionActivations=2,
+   ServerProcesses=[
+     {LaunchPath=C:\game\Bin64.Release.Dedicated\MegaFrogRace_Server.exe,Parameters=-debug,ConcurrentExecutions=1},
+     {LaunchPath=C:\game\Bin64.Release.Dedicated\MegaFrogRace_Server.exe,ConcurrentExecutions=1}]
 
 Output::
 
     {
         "FleetAttributes": {
-            "InstanceRoleArn": "arn:aws:iam::123456789012:role/GameLiftS3Access",
+            "InstanceRoleArn": "arn:aws:iam::444455556666:role/GameLiftS3Access",
             "Status": "NEW",
             "InstanceType": "c4.large",
-            "FleetArn": "arn:aws:gamelift:us-west-2:123456789012:fleet/fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa",
+            "FleetArn": "arn:aws:gamelift:us-west-2:444455556666:fleet/fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa",
             "FleetId": "fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa",
             "Description": "Hosts for v2 North America",
             "FleetType": "SPOT",
@@ -124,7 +125,7 @@ Output::
 
 **Example 4: To create a Realtime Servers fleet**
 
-The following ``create-fleet`` example creates a fleet of Spot instances with a Realtime configuration script that has been uploaded to Amazon GameLift. All Realtime servers are deployed onto Linux machines. For the purposes of this example, assume that the uploaded Realtime script includes multiple script files, with the Init() function located in the script file called "MainScript.js". As shown, this file is identified as the launch script in the runtime configuration. ::
+The following ``create-fleet`` example creates a fleet of Spot instances with a Realtime configuration script that has been uploaded to Amazon GameLift. All Realtime servers are deployed onto Linux machines. For the purposes of this example, assume that the uploaded Realtime script includes multiple script files, with the ``Init()`` function located in the script file called ``MainScript.js``. As shown, this file is identified as the launch script in the runtime configuration. ::
 
     aws gamelift create-fleet \
         --name MegaFrogRace.NA.realtime \
@@ -132,8 +133,7 @@ The following ``create-fleet`` example creates a fleet of Spot instances with a 
         --script-id script-1111aaaa-22bb-33cc-44dd-5555eeee66ff \
         --ec2-instance-type c4.large \
         --fleet-type SPOT \
-        --certificate-configuration 'CertificateType=GENERATED' \
-        --runtime-configuration 'ServerProcesses=[{LaunchPath=/local/game/MainScript.js,Parameters=+map Winter444,ConcurrentExecutions=5}]'
+        --certificate-configuration 'CertificateType=GENERATED' --runtime-configuration 'ServerProcesses=[{LaunchPath=/local/game/MainScript.js,Parameters=+map Winter444,ConcurrentExecutions=5}]'
 
 Output::
 
@@ -149,7 +149,7 @@ Output::
             },
             "Name": "MegaFrogRace.NA.realtime",
             "ScriptId": "script-1111aaaa-22bb-33cc-44dd-5555eeee66ff",
-            "FleetArn": "arn:aws:gamelift:us-west-2:123456789012:fleet/fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa",
+            "FleetArn": "arn:aws:gamelift:us-west-2:444455556666:fleet/fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa",
             "FleetType": "SPOT",
             "MetricGroups": [
                 "default"

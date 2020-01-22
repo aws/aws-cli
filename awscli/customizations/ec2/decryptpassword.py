@@ -89,7 +89,8 @@ class LaunchKeyArgument(BaseCLIArgument):
                 self._key_path = path
                 endpoint_prefix = \
                     self._operation_model.service_model.endpoint_prefix
-                event = 'after-call.%s.%s' % (endpoint_prefix,
+                service_id = self._operation_model.service_model.service_id
+                event = 'after-call.%s.%s' % (service_id.hyphenize(),
                                               self._operation_model.name)
                 self._session.register(event, self._decrypt_password_data)
             else:

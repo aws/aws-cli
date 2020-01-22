@@ -251,8 +251,9 @@ class TestParamShorthand(BaseArgProcessTest):
     def test_list_structure_scalars(self):
         p = self.get_param_model(
             'elb.RegisterInstancesWithLoadBalancer.Instances')
-        event_name = ('process-cli-arg.elastic-load-balancing'
-                      '.register-instances-with-load-balancer')
+        event_name = (
+            'process-cli-arg.elb.register-instances-with-load-balancer'
+        )
         # Because this is a list type param, we'll use nargs
         # with argparse which means the value will be presented
         # to us as a list.
@@ -512,12 +513,11 @@ class TestDocGen(BaseArgProcessTest):
         self.shorthand_documenter = ParamShorthandDocGen()
         self.service_name = 'foo'
         self.operation_name = 'bar'
-        self.service_id = 'baz'
 
     def get_generated_example_for(self, argument):
         # Returns a string containing the generated documentation.
         return self.shorthand_documenter.generate_shorthand_example(
-            argument, self.service_id, self.operation_name)
+            argument, self.service_name, self.operation_name)
 
     def assert_generated_example_is(self, argument, expected_docs):
         generated_docs = self.get_generated_example_for(argument)
@@ -537,7 +537,6 @@ class TestDocGen(BaseArgProcessTest):
 
     def test_gen_list_scalar_docs(self):
         self.service_name = 'elb'
-        self.service_id = 'elastic-load-balancing'
         self.operation_name = 'register-instances-with-load-balancer'
         argument = self.get_param_model(
             'elb.RegisterInstancesWithLoadBalancer.Instances')

@@ -38,12 +38,16 @@ class TestPlugins(unittest.TestCase):
     def setUp(self):
         self.fake_module = FakeModule()
         sys.modules['__fake_plugin__'] = self.fake_module
+        self.plugin_mapping = {
+            'cli_legacy_plugin_path': 'fake-path',
+            'fake_plugin': '__fake_plugin__'
+        }
 
     def tearDown(self):
         del sys.modules['__fake_plugin__']
 
     def test_plugin_register(self):
-        emitter = plugin.load_plugins({'fake_plugin': '__fake_plugin__'})
+        emitter = plugin.load_plugins(self.plugin_mapping)
         self.assertTrue(self.fake_module.called)
         self.assertTrue(isinstance(emitter, hooks.HierarchicalEmitter))
         self.assertTrue(isinstance(self.fake_module.context,
@@ -51,10 +55,14 @@ class TestPlugins(unittest.TestCase):
 
     def test_event_hooks_can_be_passed_in(self):
         hooks = plugin.HierarchicalEmitter()
-        emitter = plugin.load_plugins({'fake_plugin': '__fake_plugin__'},
-                                      event_hooks=hooks)
+        emitter = plugin.load_plugins(self.plugin_mapping, event_hooks=hooks)
         emitter.emit('before_operation')
         self.assertEqual(len(self.fake_module.events_seen), 1)
+
+    def test_plugins_not_registered_if_cli_legacy_plugin_path_not_set(self):
+        del self.plugin_mapping['cli_legacy_plugin_path']
+        plugin.load_plugins(self.plugin_mapping)
+        self.assertFalse(self.fake_module.called)
 
 
 class TestPluginCanBePackage(unittest.TestCase):
@@ -64,13 +72,21 @@ class TestPluginCanBePackage(unittest.TestCase):
         sys.modules['__fake_plugin__'] = self.fake_package
         sys.modules['__fake_plugin__.__fake__'] = self.fake_package
         sys.modules['__fake_plugin__.__fake__.bar'] = self.fake_module
+        self.plugin_mapping = {
+            'cli_legacy_plugin_path': 'fake-path',
+            'fake_plugin': '__fake_plugin__.__fake__.bar'
+        }
 
     def tearDown(self):
         del sys.modules['__fake_plugin__.__fake__']
 
     def test_plugin_register(self):
         plugin.load_plugins(
-            {'fake_plugin': '__fake_plugin__.__fake__.bar'})
+            {
+                'cli_legacy_plugin_path': 'fake-path',
+                'fake_plugin': '__fake_plugin__.__fake__.bar'
+            }
+        )
         self.assertTrue(self.fake_module.called)
 
 

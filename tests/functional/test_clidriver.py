@@ -10,11 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
 import re
+import shutil
 import functools
 
 from tests import RawResponse
-from tests.functional.raise_plugin_error import PluginsNotSupportedError
 
 import mock
 
@@ -79,29 +80,61 @@ class TestSession(BaseCLIDriverTest):
 class TestPlugins(BaseCLIDriverTest):
     def setUp(self):
         super(TestPlugins, self).setUp()
-        self._raise_plugin_error_module = '.'.join(
-            ['tests', 'functional', 'raise_plugin_error']
-        )
         self.files = FileCreator()
+        self.plugins_site_packages = os.path.join(
+            self.files.rootdir, 'site-packages'
+        )
+        self.plugin_module_name = 'add_awscli_cmd_plugin'
+        self.plugin_filename = os.path.join(
+            os.path.dirname(__file__), self.plugin_module_name) + '.py'
+        self.setup_plugin_site_packages()
+
+    def setup_plugin_site_packages(self):
+        os.makedirs(self.plugins_site_packages)
+        shutil.copy(self.plugin_filename, self.plugins_site_packages)
 
     def tearDown(self):
-        super(TestPlugins, self).setUp()
+        super(TestPlugins, self).tearDown()
         self.files.remove_all()
 
-    def create_config_with_plugin(self, plugin_module):
-        config_contents = (
-            '[plugins]\n'
-            'myplugin = %s\n' % plugin_module
-        )
+    def assert_plugin_loaded(self, clidriver):
+        self.assertIn('plugin-test-cmd', clidriver.subcommand_table)
+
+    def assert_plugin_not_loaded(self, clidriver):
+        self.assertNotIn('plugin-test-cmd', clidriver.subcommand_table)
+
+    def create_config(self, config_contents):
         config_file = self.files.create_file('config', config_contents)
         self.environ['AWS_CONFIG_FILE'] = config_file
 
-    def test_plugins_are_not_loaded(self):
-        self.create_config_with_plugin(self._raise_plugin_error_module)
-        try:
-            create_clidriver()
-        except PluginsNotSupportedError:
-            self.fail(
-                'plugin %s should not have been loaded' %
-                self._raise_plugin_error_module
-            )
+    def test_plugins_loaded_from_specified_path(self):
+        self.create_config(
+            '[plugins]\n'
+            'cli_legacy_plugin_path = %s\n'
+            'myplugin = %s\n' % (
+                self.plugins_site_packages, self.plugin_module_name)
+        )
+        clidriver = create_clidriver()
+        self.assert_plugin_loaded(clidriver)
+
+    def test_plugins_are_not_loaded_when_path_specified(self):
+        self.create_config(
+            '[plugins]\n'
+            'myplugin = %s\n' % self.plugin_module_name
+        )
+        clidriver = create_clidriver()
+        self.assert_plugin_not_loaded(clidriver)
+
+    def test_looks_in_all_specified_paths(self):
+        nonexistent_dir = os.path.join(
+            self.files.rootdir, 'no-exist'
+        )
+        plugin_path = os.pathsep.join(
+            [nonexistent_dir, self.plugins_site_packages])
+        self.create_config(
+            '[plugins]\n'
+            'cli_legacy_plugin_path = %s\n'
+            'myplugin = %s\n' % (plugin_path, self.plugin_module_name)
+        )
+        clidriver = create_clidriver()
+        self.assert_plugin_loaded(clidriver)

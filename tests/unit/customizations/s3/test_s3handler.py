@@ -42,15 +42,14 @@ from awscli.customizations.s3.utils import MAX_UPLOAD_SIZE
 from awscli.customizations.s3.utils import NonSeekableStream
 from awscli.customizations.s3.utils import StdoutBytesWriter
 from awscli.customizations.s3.utils import WarningResult
-from awscli.customizations.s3.utils import ProvideSizeSubscriber
-from awscli.customizations.s3.utils import SetMetadataDirectivePropsSubscriber
-from awscli.customizations.s3.utils import SetTagsSubscriber
-from awscli.customizations.s3.utils import ProvideUploadContentTypeSubscriber
-from awscli.customizations.s3.utils import ProvideCopyContentTypeSubscriber
-from awscli.customizations.s3.utils import ProvideLastModifiedTimeSubscriber
-from awscli.customizations.s3.utils import DirectoryCreatorSubscriber
-from awscli.customizations.s3.utils import DeleteSourceFileSubscriber
-from awscli.customizations.s3.utils import DeleteSourceObjectSubscriber
+from awscli.customizations.s3.subscribers import (
+    ProvideSizeSubscriber, SetMetadataDirectivePropsSubscriber,
+    SetTagsSubscriber, ProvideUploadContentTypeSubscriber,
+    ProvideCopyContentTypeSubscriber, ProvideLastModifiedTimeSubscriber,
+    DirectoryCreatorSubscriber, DeleteSourceFileSubscriber,
+    DeleteSourceObjectSubscriber,
+
+)
 from awscli.customizations.s3.transferconfig import RuntimeConfig
 
 

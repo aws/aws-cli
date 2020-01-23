@@ -26,7 +26,7 @@ from awscli.compat import queue, ensure_text_type
 from awscli.customizations.s3.utils import human_readable_size
 from awscli.customizations.utils import uni_print
 from awscli.customizations.s3.utils import WarningResult
-from awscli.customizations.s3.utils import OnDoneFilteredSubscriber
+from awscli.customizations.s3.subscribers import OnDoneFilteredSubscriber
 
 
 LOGGER = logging.getLogger(__name__)

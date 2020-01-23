@@ -25,10 +25,22 @@ class TestPut(BaseAWSCommandParamsTest):
         super(TestPut, self).setUp()
         self.parsed_response = {}
         self.tempdir = tempfile.mkdtemp()
+        self.original_tag_handlers = yaml.YAML(typ='safe').constructor\
+            .yaml_constructors.copy()
 
     def tearDown(self):
         super(TestPut, self).tearDown()
         shutil.rmtree(self.tempdir)
+        # This line looks wrong, right?  Well... the "yaml_constructors"
+        # is actually a class attribute that's shared across *all* of the
+        # yaml.YAML() instances.  Because the ddb customization registers
+        # a custom handler for the binary and float types, this will break
+        # other code (and tests) that rely on the default behavior.  So
+        # to fix this, we put back the original tag handlers that we saved
+        # in self.original_tag_handlers to ensure we handle binary and
+        # float types correctly.
+        yaml.YAML(typ='safe').constructor.yaml_constructors.update(
+            self.original_tag_handlers)
 
     def assert_yaml_response_equal(self, response, expected):
         with self.assertRaises(ValueError):

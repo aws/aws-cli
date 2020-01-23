@@ -24,6 +24,8 @@ from awscli.customizations.cloudformation.yamlhelper import yaml_parse, yaml_dum
 
 class TestYaml(unittest.TestCase):
 
+    maxDiff = None
+
     yaml_with_tags = """
     Resource:
         Key1: !Ref Something

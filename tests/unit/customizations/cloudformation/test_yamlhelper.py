@@ -186,3 +186,15 @@ class TestYaml(unittest.TestCase):
         )
         actual = yaml_dump(template)
         self.assertEqual(actual, expected)
+
+    def test_can_roundtrip_comments(self):
+        test_yaml = (
+            'foo:\n # This is a comment'
+            '  # So is this.\n'
+            '  bar: baz\n'
+            '  baz: qux  # Another comment\n'
+            'list: [1, 2, 3] # List comment\n'
+        )
+        parsed = yaml_parse(test_yaml)
+        round_tripped = yaml_dump(parsed)
+        self.assertEqual(test_yaml, round_tripped)

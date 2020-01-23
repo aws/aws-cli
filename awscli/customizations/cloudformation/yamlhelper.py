@@ -11,6 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import ruamel.yaml as yaml
+from ruamel.yaml.comments import CommentedMap
+
 from ruamel.yaml.resolver import ScalarNode, SequenceNode
 from botocore.compat import json
 from botocore.compat import OrderedDict
@@ -51,7 +53,8 @@ def intrinsics_multi_constructor(loader, tag_prefix, node):
 
     else:
         # Value of this node is an mapping (ex: {foo: bar})
-        value = loader.construct_mapping(node)
+        value = CommentedMap()
+        loader.construct_mapping(node, value)
 
     return {cfntag: value}
 
@@ -66,7 +69,7 @@ def yaml_dump(dict_to_dump):
     :param dict_to_dump:
     :return:
     """
-    y = yaml.YAML(typ='safe')
+    y = yaml.YAML(typ='rt')
     y.default_flow_style = False
     y.representer.add_representer(OrderedDict, _dict_representer)
     y.representer.ignore_aliases = lambda data: True
@@ -89,9 +92,7 @@ def yaml_parse(yamlstr):
         # json parser.
         return json.loads(yamlstr, object_pairs_hook=OrderedDict)
     except ValueError:
-        y = yaml.YAML(typ='safe')
-        y.constructor.add_constructor(
-            yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _dict_constructor)
+        y = yaml.YAML(typ='rt')
         y.constructor.add_multi_constructor(
             "!", intrinsics_multi_constructor)
         return y.load(yamlstr)

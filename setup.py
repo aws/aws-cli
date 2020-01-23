@@ -28,7 +28,6 @@ requires = ['botocore==2.0.0dev2',
             'docutils>=0.10',
             'cryptography>=2.8.0,<=2.9.0',
             's3transfer>=0.3.0,<0.4.0',
-            'PyYAML>=3.10,<5.2',
             'ruamel.yaml>=0.15.0,<0.16.0',
             'prompt-toolkit>=2.0.0,<3.0.0',
             ]

@@ -365,7 +365,7 @@ The following ``run-instances`` example launches a ``c3.large`` instance with ``
         --key-name MyKeyPair \
         --metadata-options "HttpEndpoint=enabled,HttpTokens=required"
 
-For more information, see 'Configuring the Instance Metadata Service <https://docs.aws.amazon.com/en_us/AWSEC2/latest/UserGuide/ec2-instance-metadata.html#configuring-instance-metadata-service>'__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+For more information, see `Configuring the Instance Metadata Service <https://docs.aws.amazon.com/en_us/AWSEC2/latest/UserGuide/ec2-instance-metadata.html#configuring-instance-metadata-service>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
 
 **Example 12: To turn off access to instance metadata on a new instance**
 
@@ -379,7 +379,7 @@ The following ``run-instances`` example launches a ``c3.large`` instance with ``
         --key-name MyKeyPair \
         --metadata-options "HttpEndpoint=disabled"
 
-For more information, see 'Configuring the Instance Metadata Service <https://docs.aws.amazon.com/en_us/AWSEC2/latest/UserGuide/ec2-instance-metadata.html#configuring-instance-metadata-service>'__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+For more information, see `Configuring the Instance Metadata Service <https://docs.aws.amazon.com/en_us/AWSEC2/latest/UserGuide/ec2-instance-metadata.html#configuring-instance-metadata-service>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
 
 **Example 13: To specify the PUT response hop limit on a new instance**
 
@@ -395,4 +395,4 @@ The following ``run-instances`` example launches a ``c3.large`` instance with ``
         --key-name MyKeyPair \
         --metadata-options "HttpEndpoint=enabled,HttpTokens=required,HttpPutResponseHopLimit=3"
 
-For more information, see 'Configuring the Instance Metadata Service <https://docs.aws.amazon.com/en_us/AWSEC2/latest/UserGuide/ec2-instance-metadata.html#configuring-instance-metadata-service>'__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+For more information, see `Configuring the Instance Metadata Service <https://docs.aws.amazon.com/en_us/AWSEC2/latest/UserGuide/ec2-instance-metadata.html#configuring-instance-metadata-service>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.

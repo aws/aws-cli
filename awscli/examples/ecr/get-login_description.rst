@@ -1,3 +1,5 @@
+    **Note:** This command is deprecated. Use ``get-login-password`` instead.
+
 **To log in to an Amazon ECR registry**
 
 This command retrieves a token that is valid for a specified registry for 12

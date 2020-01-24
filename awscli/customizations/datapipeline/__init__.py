@@ -71,8 +71,9 @@ def register_customizations(cli):
     cli.register(
         'building-argument-table.datapipeline.activate-pipeline',
         activate_pipeline_definition)
+    # botocore level events use service id, not service name
     cli.register(
-        'after-call.datapipeline.GetPipelineDefinition',
+        'after-call.data-pipeline.GetPipelineDefinition',
         translate_definition)
     cli.register(
         'building-command-table.datapipeline',

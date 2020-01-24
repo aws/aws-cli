@@ -9,7 +9,7 @@ token expires.
 
 .. note::
 
-    This command writes displays ``docker login`` commands to stdout with
+    This command displays ``docker login`` commands to stdout with
     authentication credentials. Your credentials could be visible by other
     users on your system in a process list display or a command history. If you
     are not on a secure system, you should consider this risk and login

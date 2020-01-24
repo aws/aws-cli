@@ -60,7 +60,7 @@ def intrinsics_multi_constructor(loader, tag_prefix, node):
 
 
 def _dict_representer(dumper, data):
-    return dumper.represent_dict(data.items())
+    return dumper.represent_dict(data)
 
 
 def yaml_dump(dict_to_dump):

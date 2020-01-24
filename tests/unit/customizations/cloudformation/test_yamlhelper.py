@@ -158,19 +158,18 @@ class TestYaml(unittest.TestCase):
             <<: *base
         """
         output = yaml_parse(test_yaml)
-        self.assertTrue(isinstance(output, OrderedDict))
         self.assertEqual(output.get('test').get('property'), 'value')
 
     def test_unroll_yaml_anchors(self):
-        properties = {
-            "Foo": "bar",
-            "Spam": "eggs",
-        }
+        properties = OrderedDict([
+            ("Foo", "bar"),
+            ("Spam", "eggs"),
+        ])
         template = {
-            "Resources": {
-                "Resource1": {"Properties": properties},
-                "Resource2": {"Properties": properties}
-            }
+            "Resources": OrderedDict([
+                ("Resource1", {"Properties": properties}),
+                ("Resource2", {"Properties": properties}),
+            ])
         }
 
         expected = (

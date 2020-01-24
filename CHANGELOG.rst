@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.17.9
+======
+
+* api-change:``eks``: Update eks command to latest version
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``datasync``: Update datasync command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
 1.17.8
 ======
 

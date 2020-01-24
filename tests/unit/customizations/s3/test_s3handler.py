@@ -45,7 +45,7 @@ from awscli.customizations.s3.utils import WarningResult
 from awscli.customizations.s3.subscribers import (
     ProvideSizeSubscriber, SetMetadataDirectivePropsSubscriber,
     SetTagsSubscriber, ProvideUploadContentTypeSubscriber,
-    ProvideCopyContentTypeSubscriber, ProvideLastModifiedTimeSubscriber,
+    ProvideLastModifiedTimeSubscriber,
     DirectoryCreatorSubscriber, DeleteSourceFileSubscriber,
     DeleteSourceObjectSubscriber,
 

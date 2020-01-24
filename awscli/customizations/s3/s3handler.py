@@ -37,7 +37,7 @@ from awscli.customizations.s3.utils import RequestParamsMapper
 from awscli.customizations.s3.utils import StdoutBytesWriter
 from awscli.customizations.s3.subscribers import (
     ProvideSizeSubscriber, ProvideUploadContentTypeSubscriber,
-    ProvideCopyContentTypeSubscriber, ProvideLastModifiedTimeSubscriber,
+    ProvideLastModifiedTimeSubscriber,
     CopyPropsSubscriberFactory, DirectoryCreatorSubscriber,
     DeleteSourceFileSubscriber, DeleteSourceObjectSubscriber,
     DeleteCopySourceObjectSubscriber

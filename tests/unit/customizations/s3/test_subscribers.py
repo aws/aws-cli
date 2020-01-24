@@ -27,7 +27,7 @@ from awscli.customizations.s3 import utils
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.subscribers import (
     ProvideSizeSubscriber, OnDoneFilteredSubscriber,
-    ProvideUploadContentTypeSubscriber, ProvideCopyContentTypeSubscriber,
+    ProvideUploadContentTypeSubscriber,
     ProvideLastModifiedTimeSubscriber, DirectoryCreatorSubscriber,
     DeleteSourceObjectSubscriber, DeleteSourceFileSubscriber,
     DeleteCopySourceObjectSubscriber, CreateDirectoryError,
@@ -105,22 +105,6 @@ class TestProvideUploadContentTypeSubscriber(unittest.TestCase):
         self.future = self.set_future()
         self.subscriber.on_queued(self.future)
         self.assertEqual(self.extra_args, {})
-
-
-class TestProvideCopyContentTypeSubscriber(
-        TestProvideUploadContentTypeSubscriber):
-    def setUp(self):
-        self.filename = 'myfile.txt'
-        self.extra_args = {}
-        self.future = self.set_future()
-        self.subscriber = ProvideCopyContentTypeSubscriber()
-
-    def set_future(self):
-        copy_source = {'Bucket': 'mybucket', 'Key': self.filename}
-        call_args = FakeTransferFutureCallArgs(
-            copy_source=copy_source, extra_args=self.extra_args)
-        meta = FakeTransferFutureMeta(call_args=call_args)
-        return FakeTransferFuture(meta=meta)
 
 
 class BaseTestWithFileCreator(unittest.TestCase):

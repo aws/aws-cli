@@ -11,12 +11,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import ruamel.yaml as yaml
+from ruamel.yaml.comments import CommentedMap
+
 from ruamel.yaml.resolver import ScalarNode, SequenceNode
 from botocore.compat import json
 from botocore.compat import OrderedDict
 
 
-from awscli.compat import six
+from awscli.compat import six, StringIO
 
 
 def intrinsics_multi_constructor(loader, tag_prefix, node):
@@ -51,13 +53,14 @@ def intrinsics_multi_constructor(loader, tag_prefix, node):
 
     else:
         # Value of this node is an mapping (ex: {foo: bar})
-        value = loader.construct_mapping(node)
+        value = CommentedMap()
+        loader.construct_mapping(node, value)
 
     return {cfntag: value}
 
 
 def _dict_representer(dumper, data):
-    return dumper.represent_dict(data.items())
+    return dumper.represent_dict(data)
 
 
 def yaml_dump(dict_to_dump):
@@ -66,12 +69,13 @@ def yaml_dump(dict_to_dump):
     :param dict_to_dump:
     :return:
     """
-    FlattenAliasDumper.add_representer(OrderedDict, _dict_representer)
-    return yaml.dump(
-        dict_to_dump,
-        default_flow_style=False,
-        Dumper=FlattenAliasDumper,
-    )
+    y = yaml.YAML(typ='rt')
+    y.default_flow_style = False
+    y.representer.add_representer(OrderedDict, _dict_representer)
+    y.representer.ignore_aliases = lambda data: True
+    output = StringIO()
+    y.dump(dict_to_dump, output)
+    return output.getvalue()
 
 
 def _dict_constructor(loader, node):
@@ -88,12 +92,7 @@ def yaml_parse(yamlstr):
         # json parser.
         return json.loads(yamlstr, object_pairs_hook=OrderedDict)
     except ValueError:
-        yaml.SafeLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _dict_constructor)
-        yaml.SafeLoader.add_multi_constructor(
+        y = yaml.YAML(typ='rt')
+        y.constructor.add_multi_constructor(
             "!", intrinsics_multi_constructor)
-        return yaml.safe_load(yamlstr)
-
-
-class FlattenAliasDumper(yaml.SafeDumper):
-    def ignore_aliases(self, data):
-        return True
+        return y.load(yamlstr)

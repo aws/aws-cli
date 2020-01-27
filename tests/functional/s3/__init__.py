@@ -12,13 +12,29 @@
 # language governing permissions and limitations under the License.
 import mock
 
+from botocore.awsrequest import AWSResponse
+
+from awscli.testutils import create_clidriver, temporary_file
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 from awscli.compat import six
+
 
 class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
     def setUp(self):
         super(BaseS3TransferCommandTest, self).setUp()
         self.files = FileCreator()
+        self.init_clidriver()
+
+    def init_clidriver(self):
+        with temporary_file('w') as f:
+            f.write(
+                '[default]\n'
+                's3 =\n'
+                '  max_concurrent_requests = 1\n'
+            )
+            f.flush()
+            self.environ['AWS_CONFIG_FILE'] = f.name
+            self.driver = create_clidriver()
 
     def tearDown(self):
         super(BaseS3TransferCommandTest, self).tearDown()
@@ -32,6 +48,21 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
         self.assertEqual(
             actual_operations_with_params, expected_operations_with_params)
 
+    def assert_in_operations_called(self, expected_operation_with_params):
+        actual_operations_with_params = [
+            (operation_called[0].name, operation_called[1])
+            for operation_called in self.operations_called
+        ]
+        for actual_operation_with_params in actual_operations_with_params:
+            if expected_operation_with_params == actual_operation_with_params:
+                return
+        self.fail(
+            'Expected request: %s does not match any of the actual requests '
+            'made: %s' % (
+                expected_operation_with_params, actual_operations_with_params
+            )
+        )
+
     def head_object_response(self, **override_kwargs):
         response = {
             'ContentLength': 100,
@@ -40,17 +71,17 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
         response.update(override_kwargs)
         return response
 
-    def list_objects_response(self, keys):
+    def list_objects_response(self, keys, **override_kwargs):
         contents = []
         for key in keys:
-            contents.append(
-                {
-                    'Key': key,
-                    'LastModified': '00:00:00Z',
-                    'Size': 100
-                }
-            )
-
+            content = {
+                'Key': key,
+                'LastModified': '00:00:00Z',
+                'Size': 100
+            }
+            if override_kwargs:
+                content.update(override_kwargs)
+            contents.append(content)
         return {
             'Contents': contents,
             'CommonPrefixes': []
@@ -82,6 +113,14 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
 
     def complete_mpu_response(self):
         return self.empty_response()
+
+    def get_object_tagging_response(self, tags):
+        return {
+            'TagSet': [{'Key': k, 'Value': v} for k, v in tags.items()]
+        }
+
+    def put_object_tagging_response(self):
+        return 'PutObjectTagging', self.empty_response()
 
     def empty_response(self):
         return {}
@@ -181,3 +220,41 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
         }
         params.update(override_kwargs)
         return 'CompleteMultipartUpload', params
+
+    def get_object_tagging_request(self, bucket, key):
+        return 'GetObjectTagging', {
+            'Bucket': bucket,
+            'Key': key,
+        }
+
+    def put_object_tagging_request(self, bucket, key, tags):
+        return 'PutObjectTagging', {
+            'Bucket': bucket,
+            'Key': key,
+            'Tagging': {
+                'TagSet': [
+                    {'Key': k, 'Value': v} for k, v in tags.items()
+                ],
+            }
+        }
+
+    def no_such_key_error_response(self):
+        return {
+            'Error': {
+                'Code': 'NoSuchKey',
+                'Message': 'The specified key does not exist',
+            }
+        }
+
+    def access_denied_error_response(self):
+        return {
+            'Error': {
+                'Code': 'AccessDenied',
+                'Message': 'Operation not allowed',
+            }
+        }
+
+    def set_http_status_codes(self, status_codes):
+        self.http_responses = [
+            AWSResponse(None, code, {}, None) for code in status_codes
+        ]

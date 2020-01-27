@@ -12,6 +12,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.compat import six
+from awscli.testutils import mock
 from tests.functional.s3 import BaseS3TransferCommandTest
 
 
@@ -127,5 +128,92 @@ class TestMvCommand(BaseS3TransferCommandTest):
                     RequestPayer='requester'),
                 self.delete_object_request(
                     'sourcebucket', 'sourcekey', RequestPayer='requester')
+            ]
+        )
+
+    def test_with_copy_props(self):
+        cmdline = self.prefix
+        cmdline += 's3://sourcebucket/sourcekey s3://bucket/key'
+        cmdline += ' --copy-props default'
+
+        upload_id = 'upload_id'
+        large_tag_set = {'tag-key': 'val' * 3000}
+        metadata = {'tag-key': 'tag-value'}
+        self.parsed_responses = [
+            self.head_object_response(
+                Metadata=metadata,
+                ContentLength=8 * 1024 ** 2
+            ),
+            self.get_object_tagging_response(large_tag_set),
+            self.create_mpu_response(upload_id),
+            self.upload_part_copy_response(),
+            self.complete_mpu_response(),
+            self.put_object_tagging_response(),
+            self.delete_object_response()
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.head_object_request('sourcebucket', 'sourcekey'),
+                self.get_object_tagging_request('sourcebucket', 'sourcekey'),
+                self.create_mpu_request('bucket', 'key', Metadata=metadata),
+                self.upload_part_copy_request(
+                    'sourcebucket', 'sourcekey', 'bucket', 'key', upload_id,
+                    CopySourceRange=mock.ANY, PartNumber=1,
+                ),
+                self.complete_mpu_request('bucket', 'key', upload_id, 1),
+                self.put_object_tagging_request(
+                    'bucket', 'key', large_tag_set
+                ),
+                self.delete_object_request('sourcebucket', 'sourcekey')
+            ]
+        )
+
+    def test_mv_does_not_delete_source_on_failed_put_tagging(self):
+        cmdline = self.prefix
+        cmdline += 's3://sourcebucket/sourcekey s3://bucket/key'
+        cmdline += ' --copy-props default'
+
+        upload_id = 'upload_id'
+        large_tag_set = {'tag-key': 'val' * 3000}
+        metadata = {'tag-key': 'tag-value'}
+        self.parsed_responses = [
+            self.head_object_response(
+                Metadata=metadata,
+                ContentLength=8 * 1024 ** 2
+            ),
+            self.get_object_tagging_response(large_tag_set),
+            self.create_mpu_response(upload_id),
+            self.upload_part_copy_response(),
+            self.complete_mpu_response(),
+            self.access_denied_error_response(),  # PutObjectTagging error
+            self.delete_object_response(),
+        ]
+        self.set_http_status_codes(
+            [
+                200,  # HeadObject
+                200,  # GetObjectTagging
+                200,  # CreateMultipartUpload
+                200,  # UploadPartCopy
+                200,  # CompleteMultipartUpload
+                403,  # PutObjectTagging
+                200,  # DeleteObject
+            ]
+        )
+        self.run_cmd(cmdline, expected_rc=1)
+        self.assert_operations_called(
+            [
+                self.head_object_request('sourcebucket', 'sourcekey'),
+                self.get_object_tagging_request('sourcebucket', 'sourcekey'),
+                self.create_mpu_request('bucket', 'key', Metadata=metadata),
+                self.upload_part_copy_request(
+                    'sourcebucket', 'sourcekey', 'bucket', 'key', upload_id,
+                    CopySourceRange=mock.ANY, PartNumber=1,
+                ),
+                self.complete_mpu_request('bucket', 'key', upload_id, 1),
+                self.put_object_tagging_request(
+                    'bucket', 'key', large_tag_set
+                ),
+                self.delete_object_request('bucket', 'key')
             ]
         )

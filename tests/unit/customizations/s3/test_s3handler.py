@@ -31,12 +31,9 @@ from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.results import QueuedResult
 from awscli.customizations.s3.results import SuccessResult
 from awscli.customizations.s3.results import FailureResult
-from awscli.customizations.s3.results import UploadResultSubscriber
-from awscli.customizations.s3.results import DownloadResultSubscriber
-from awscli.customizations.s3.results import CopyResultSubscriber
-from awscli.customizations.s3.results import UploadStreamResultSubscriber
-from awscli.customizations.s3.results import DownloadStreamResultSubscriber
-from awscli.customizations.s3.results import DeleteResultSubscriber
+from awscli.customizations.s3.results import QueuedResultSubscriber
+from awscli.customizations.s3.results import ProgressResultSubscriber
+from awscli.customizations.s3.results import DoneResultSubscriber
 from awscli.customizations.s3.results import ResultRecorder
 from awscli.customizations.s3.results import ResultProcessor
 from awscli.customizations.s3.results import CommandResultRecorder
@@ -45,13 +42,14 @@ from awscli.customizations.s3.utils import MAX_UPLOAD_SIZE
 from awscli.customizations.s3.utils import NonSeekableStream
 from awscli.customizations.s3.utils import StdoutBytesWriter
 from awscli.customizations.s3.utils import WarningResult
-from awscli.customizations.s3.utils import ProvideSizeSubscriber
-from awscli.customizations.s3.utils import ProvideUploadContentTypeSubscriber
-from awscli.customizations.s3.utils import ProvideCopyContentTypeSubscriber
-from awscli.customizations.s3.utils import ProvideLastModifiedTimeSubscriber
-from awscli.customizations.s3.utils import DirectoryCreatorSubscriber
-from awscli.customizations.s3.utils import DeleteSourceFileSubscriber
-from awscli.customizations.s3.utils import DeleteSourceObjectSubscriber
+from awscli.customizations.s3.subscribers import (
+    ProvideSizeSubscriber, SetMetadataDirectivePropsSubscriber,
+    SetTagsSubscriber, ProvideUploadContentTypeSubscriber,
+    ProvideLastModifiedTimeSubscriber,
+    DirectoryCreatorSubscriber, DeleteSourceFileSubscriber,
+    DeleteSourceObjectSubscriber,
+
+)
 from awscli.customizations.s3.transferconfig import RuntimeConfig
 
 
@@ -293,8 +291,10 @@ class TestUploadRequestSubmitter(BaseTransferRequestSubmitterTest):
         # Make sure the subscriber applied are of the correct type and order
         ref_subscribers = [
             ProvideSizeSubscriber,
+            QueuedResultSubscriber,
             ProvideUploadContentTypeSubscriber,
-            UploadResultSubscriber
+            ProgressResultSubscriber,
+            DoneResultSubscriber,
         ]
         actual_subscribers = upload_call_kwargs['subscribers']
         self.assertEqual(len(ref_subscribers), len(actual_subscribers))
@@ -324,7 +324,9 @@ class TestUploadRequestSubmitter(BaseTransferRequestSubmitterTest):
             upload_call_kwargs['extra_args'], {'ContentType': 'text/plain'})
         ref_subscribers = [
             ProvideSizeSubscriber,
-            UploadResultSubscriber
+            QueuedResultSubscriber,
+            ProgressResultSubscriber,
+            DoneResultSubscriber,
         ]
         actual_subscribers = upload_call_kwargs['subscribers']
         self.assertEqual(len(ref_subscribers), len(actual_subscribers))
@@ -340,7 +342,9 @@ class TestUploadRequestSubmitter(BaseTransferRequestSubmitterTest):
         upload_call_kwargs = self.transfer_manager.upload.call_args[1]
         ref_subscribers = [
             ProvideSizeSubscriber,
-            UploadResultSubscriber
+            QueuedResultSubscriber,
+            ProgressResultSubscriber,
+            DoneResultSubscriber,
         ]
         actual_subscribers = upload_call_kwargs['subscribers']
         self.assertEqual(len(ref_subscribers), len(actual_subscribers))
@@ -385,9 +389,11 @@ class TestUploadRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.transfer_request_submitter.submit(fileinfo)
         ref_subscribers = [
             ProvideSizeSubscriber,
+            QueuedResultSubscriber,
             ProvideUploadContentTypeSubscriber,
             DeleteSourceFileSubscriber,
-            UploadResultSubscriber,
+            ProgressResultSubscriber,
+            DoneResultSubscriber,
         ]
         upload_call_kwargs = self.transfer_manager.upload.call_args[1]
         actual_subscribers = upload_call_kwargs['subscribers']
@@ -442,9 +448,11 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         # Make sure the subscriber applied are of the correct type and order
         ref_subscribers = [
             ProvideSizeSubscriber,
+            QueuedResultSubscriber,
             DirectoryCreatorSubscriber,
             ProvideLastModifiedTimeSubscriber,
-            DownloadResultSubscriber
+            ProgressResultSubscriber,
+            DoneResultSubscriber,
         ]
         actual_subscribers = download_call_kwargs['subscribers']
         self.assertEqual(len(ref_subscribers), len(actual_subscribers))
@@ -579,10 +587,12 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.transfer_request_submitter.submit(fileinfo)
         ref_subscribers = [
             ProvideSizeSubscriber,
+            QueuedResultSubscriber,
             DirectoryCreatorSubscriber,
             ProvideLastModifiedTimeSubscriber,
             DeleteSourceObjectSubscriber,
-            DownloadResultSubscriber,
+            ProgressResultSubscriber,
+            DoneResultSubscriber,
         ]
         download_call_kwargs = self.transfer_manager.download.call_args[1]
         actual_subscribers = download_call_kwargs['subscribers']
@@ -627,8 +637,11 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         # Make sure the subscriber applied are of the correct type and order
         ref_subscribers = [
             ProvideSizeSubscriber,
-            ProvideCopyContentTypeSubscriber,
-            CopyResultSubscriber
+            QueuedResultSubscriber,
+            SetMetadataDirectivePropsSubscriber,
+            SetTagsSubscriber,
+            ProgressResultSubscriber,
+            DoneResultSubscriber,
         ]
         actual_subscribers = copy_call_kwargs['subscribers']
         self.assertEqual(len(ref_subscribers), len(actual_subscribers))
@@ -660,24 +673,31 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
             copy_call_kwargs['extra_args'], {'ContentType': 'text/plain'})
         ref_subscribers = [
             ProvideSizeSubscriber,
-            CopyResultSubscriber
+            QueuedResultSubscriber,
+            SetMetadataDirectivePropsSubscriber,
+            SetTagsSubscriber,
+            ProgressResultSubscriber,
+            DoneResultSubscriber,
         ]
         actual_subscribers = copy_call_kwargs['subscribers']
         self.assertEqual(len(ref_subscribers), len(actual_subscribers))
         for i, actual_subscriber in enumerate(actual_subscribers):
             self.assertIsInstance(actual_subscriber, ref_subscribers[i])
 
-    def test_submit_when_no_guess_content_mime_type(self):
+    def test_metadata_directive_excludes_copy_props_subscribers(self):
         fileinfo = FileInfo(
             src=self.source_bucket+'/'+self.source_key,
             dest=self.bucket+'/'+self.key)
-        self.cli_params['guess_mime_type'] = False
+        self.cli_params['copy_props'] = 'default'
+        self.cli_params['metadata_directive'] = 'REPLACE'
         self.transfer_request_submitter.submit(fileinfo)
 
         copy_call_kwargs = self.transfer_manager.copy.call_args[1]
         ref_subscribers = [
             ProvideSizeSubscriber,
-            CopyResultSubscriber
+            QueuedResultSubscriber,
+            ProgressResultSubscriber,
+            DoneResultSubscriber,
         ]
         actual_subscribers = copy_call_kwargs['subscribers']
         self.assertEqual(len(ref_subscribers), len(actual_subscribers))
@@ -794,9 +814,12 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.transfer_request_submitter.submit(fileinfo)
         ref_subscribers = [
             ProvideSizeSubscriber,
-            ProvideCopyContentTypeSubscriber,
+            QueuedResultSubscriber,
+            SetMetadataDirectivePropsSubscriber,
+            SetTagsSubscriber,
             DeleteSourceObjectSubscriber,
-            CopyResultSubscriber,
+            ProgressResultSubscriber,
+            DoneResultSubscriber,
         ]
         copy_call_kwargs = self.transfer_manager.copy.call_args[1]
         actual_subscribers = copy_call_kwargs['subscribers']
@@ -837,7 +860,9 @@ class TestUploadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertEqual(upload_call_kwargs['extra_args'], {})
 
         ref_subscribers = [
-            UploadStreamResultSubscriber
+            QueuedResultSubscriber,
+            ProgressResultSubscriber,
+            DoneResultSubscriber,
         ]
         actual_subscribers = upload_call_kwargs['subscribers']
         self.assertEqual(len(ref_subscribers), len(actual_subscribers))
@@ -854,7 +879,9 @@ class TestUploadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
 
         ref_subscribers = [
             ProvideSizeSubscriber,
-            UploadStreamResultSubscriber
+            QueuedResultSubscriber,
+            ProgressResultSubscriber,
+            DoneResultSubscriber,
         ]
         actual_subscribers = upload_call_kwargs['subscribers']
         self.assertEqual(len(ref_subscribers), len(actual_subscribers))
@@ -912,7 +939,9 @@ class TestDownloadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertEqual(download_call_kwargs['extra_args'], {})
 
         ref_subscribers = [
-            DownloadStreamResultSubscriber
+            QueuedResultSubscriber,
+            ProgressResultSubscriber,
+            DoneResultSubscriber,
         ]
         actual_subscribers = download_call_kwargs['subscribers']
         self.assertEqual(len(ref_subscribers), len(actual_subscribers))
@@ -971,7 +1000,9 @@ class TestDeleteRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertEqual(delete_call_kwargs['extra_args'], {})
 
         ref_subscribers = [
-            DeleteResultSubscriber
+            QueuedResultSubscriber,
+            ProgressResultSubscriber,
+            DoneResultSubscriber,
         ]
         actual_subscribers = delete_call_kwargs['subscribers']
         self.assertEqual(len(ref_subscribers), len(actual_subscribers))

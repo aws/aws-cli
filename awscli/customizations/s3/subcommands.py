@@ -318,10 +318,9 @@ METADATA = {
     },
     'help_text': (
         "A map of metadata to store with the objects in S3. This will be "
-        "applied to every object which is part of this request. In a sync, this "
-        "means that files which haven't changed won't receive the new metadata. "
-        "When copying between two s3 locations, the metadata-directive "
-        "argument will default to 'REPLACE' unless otherwise specified."
+        "applied to every object which is part of this request. In a sync, "
+        "this means that files which haven't changed won't receive the new "
+        "metadata. "
     )
 }
 
@@ -329,22 +328,35 @@ METADATA = {
 METADATA_DIRECTIVE = {
     'name': 'metadata-directive', 'choices': ['COPY', 'REPLACE'],
     'help_text': (
-        'Specifies whether the metadata is copied from the source object '
-        'or replaced with metadata provided when copying S3 objects. '
-        'Note that if the object is copied over in parts, the source '
-        'object\'s metadata will not be copied over, no matter the value for '
-        '``--metadata-directive``, and instead the desired metadata values '
-        'must be specified as parameters on the command line. '
-        'Valid values are ``COPY`` and ``REPLACE``. If this parameter is not '
-        'specified, ``COPY`` will be used by default. If ``REPLACE`` is used, '
-        'the copied object will only have the metadata values that were'
-        ' specified by the CLI command. Note that if you are '
-        'using any of the following parameters: ``--content-type``, '
-        '``content-language``, ``--content-encoding``, '
-        '``--content-disposition``, ``--cache-control``, or ``--expires``, you '
-        'will need to specify ``--metadata-directive REPLACE`` for '
-        'non-multipart copies if you want the copied objects to have the '
-        'specified metadata values.')
+        'Sets the ``x-amz-metadata-directive`` header for CopyObject '
+        'operations. It is recommended to use the ``--copy-props`` parameter '
+        'instead to control copying of metadata properties. '
+        'If ``--metadata-directive`` is set, the ``--copy-props`` parameter '
+        'will be disabled and will have no affect on the transfer.'
+    )
+}
+
+
+COPY_PROPS = {
+    'name': 'copy-props',
+    'choices': ['none', 'metadata-directive', 'default'],
+    'default': 'default', 'help_text': (
+        'Determines which properties are copied from the source S3 object. '
+        'This parameter only applies for S3 to S3 copies. Valid values are: '
+        '<ul>'
+        '<li>``none`` - Do not copy any of the properties from the source '
+        'S3 object.</li>'
+        '</ul>'
+        '<li>``metadata-directive`` - Copies the following properties from '
+        'the source S3 object: '
+        '``content-type``, ``content-language``, ``content-encoding``, '
+        '``content-disposition``, ``cache-control``, ``--expires``, and '
+        '``metadata``</li>'
+        '<li>``default`` - The default value. Copies tags and properties '
+        'covered under the ``metadata-directive`` value from the '
+        'source S3 object.</li>'
+        '</ul>'
+    )
 }
 
 
@@ -728,7 +740,8 @@ class CpCommand(S3TransferCommand):
             "or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
-                [METADATA, METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE]
+                [METADATA, COPY_PROPS, METADATA_DIRECTIVE, EXPECTED_SIZE,
+                 RECURSIVE]
 
 
 class MvCommand(S3TransferCommand):
@@ -739,7 +752,8 @@ class MvCommand(S3TransferCommand):
             "or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS +\
-                [METADATA, METADATA_DIRECTIVE, RECURSIVE]
+                [METADATA, COPY_PROPS, METADATA_DIRECTIVE, RECURSIVE]
+
 
 class RmCommand(S3TransferCommand):
     NAME = 'rm'
@@ -760,7 +774,7 @@ class SyncCommand(S3TransferCommand):
             "<LocalPath> or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
-                [METADATA, METADATA_DIRECTIVE]
+                [METADATA, COPY_PROPS, METADATA_DIRECTIVE]
 
 
 class MbCommand(S3Command):

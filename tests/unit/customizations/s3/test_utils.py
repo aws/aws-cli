@@ -12,10 +12,8 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest, temporary_file
 import argparse
-import errno
 import os
-import tempfile
-import shutil
+
 import ntpath
 import time
 import datetime
@@ -23,28 +21,19 @@ import datetime
 import mock
 from dateutil.tz import tzlocal
 from nose.tools import assert_equal
-from s3transfer.futures import TransferMeta, TransferFuture
 from s3transfer.compat import seekable
 from botocore.hooks import HierarchicalEmitter
 
-from awscli.compat import queue
 from awscli.compat import StringIO
-from awscli.testutils import FileCreator
 from awscli.customizations.s3.utils import (
     find_bucket_key,
     guess_content_type, relative_path,
     StablePriorityQueue, BucketLister, get_file_stat, AppendFilter,
     create_warning, human_readable_size, human_readable_to_bytes,
     set_file_utime, SetFileUtimeError, RequestParamsMapper, StdoutBytesWriter,
-    ProvideSizeSubscriber, OnDoneFilteredSubscriber,
-    ProvideUploadContentTypeSubscriber, ProvideCopyContentTypeSubscriber,
-    ProvideLastModifiedTimeSubscriber, DirectoryCreatorSubscriber,
-    DeleteSourceObjectSubscriber, DeleteSourceFileSubscriber,
-    DeleteCopySourceObjectSubscriber, NonSeekableStream, CreateDirectoryError)
-from awscli.customizations.s3.results import WarningResult
-from tests.unit.customizations.s3 import FakeTransferFuture
-from tests.unit.customizations.s3 import FakeTransferFutureMeta
-from tests.unit.customizations.s3 import FakeTransferFutureCallArgs
+    NonSeekableStream
+)
+
 
 
 def test_human_readable_size():
@@ -528,270 +517,6 @@ class TestBytesPrint(unittest.TestCase):
         wrapper.write(b'foo')
         self.assertTrue(self.stdout.write.called)
         self.assertEqual(self.stdout.write.call_args[0][0], b'foo')
-
-
-class TestProvideSizeSubscriber(unittest.TestCase):
-    def setUp(self):
-        self.transfer_future = mock.Mock(spec=TransferFuture)
-        self.transfer_meta = TransferMeta()
-        self.transfer_future.meta = self.transfer_meta
-
-    def test_size_set(self):
-        self.transfer_meta.provide_transfer_size(5)
-        subscriber = ProvideSizeSubscriber(10)
-        subscriber.on_queued(self.transfer_future)
-        self.assertEqual(self.transfer_meta.size, 10)
-
-
-class OnDoneFilteredRecordingSubscriber(OnDoneFilteredSubscriber):
-    def __init__(self):
-        self.on_success_calls = []
-        self.on_failure_calls = []
-
-    def _on_success(self, future):
-        self.on_success_calls.append(future)
-
-    def _on_failure(self, future, exception):
-        self.on_failure_calls.append((future, exception))
-
-
-class TestOnDoneFilteredSubscriber(unittest.TestCase):
-    def test_on_success(self):
-        subscriber = OnDoneFilteredRecordingSubscriber()
-        future = FakeTransferFuture('return-value')
-        subscriber.on_done(future)
-        self.assertEqual(subscriber.on_success_calls, [future])
-        self.assertEqual(subscriber.on_failure_calls, [])
-
-    def test_on_failure(self):
-        subscriber = OnDoneFilteredRecordingSubscriber()
-        exception = Exception('my exception')
-        future = FakeTransferFuture(exception=exception)
-        subscriber.on_done(future)
-        self.assertEqual(subscriber.on_failure_calls, [(future, exception)])
-        self.assertEqual(subscriber.on_success_calls, [])
-
-
-class TestProvideUploadContentTypeSubscriber(unittest.TestCase):
-    def setUp(self):
-        self.filename = 'myfile.txt'
-        self.extra_args = {}
-        self.future = self.set_future()
-        self.subscriber = ProvideUploadContentTypeSubscriber()
-
-    def set_future(self):
-        call_args = FakeTransferFutureCallArgs(
-            fileobj=self.filename, extra_args=self.extra_args)
-        meta = FakeTransferFutureMeta(call_args=call_args)
-        return FakeTransferFuture(meta=meta)
-
-    def test_on_queued_provides_content_type(self):
-        self.subscriber.on_queued(self.future)
-        self.assertEqual(self.extra_args, {'ContentType': 'text/plain'})
-
-    def test_on_queued_does_not_provide_content_type_when_unknown(self):
-        self.filename = 'file-with-no-extension'
-        self.future = self.set_future()
-        self.subscriber.on_queued(self.future)
-        self.assertEqual(self.extra_args, {})
-
-
-class TestProvideCopyContentTypeSubscriber(
-        TestProvideUploadContentTypeSubscriber):
-    def setUp(self):
-        self.filename = 'myfile.txt'
-        self.extra_args = {}
-        self.future = self.set_future()
-        self.subscriber = ProvideCopyContentTypeSubscriber()
-
-    def set_future(self):
-        copy_source = {'Bucket': 'mybucket', 'Key': self.filename}
-        call_args = FakeTransferFutureCallArgs(
-            copy_source=copy_source, extra_args=self.extra_args)
-        meta = FakeTransferFutureMeta(call_args=call_args)
-        return FakeTransferFuture(meta=meta)
-
-
-class BaseTestWithFileCreator(unittest.TestCase):
-    def setUp(self):
-        self.file_creator = FileCreator()
-
-    def tearDown(self):
-        self.file_creator.remove_all()
-
-
-class TestProvideLastModifiedTimeSubscriber(BaseTestWithFileCreator):
-    def setUp(self):
-        super(TestProvideLastModifiedTimeSubscriber, self).setUp()
-        self.filename = self.file_creator.create_file('myfile', 'my contents')
-        self.desired_utime = datetime.datetime(
-            2016, 1, 18, 7, 0, 0, tzinfo=tzlocal())
-        self.result_queue = queue.Queue()
-        self.subscriber = ProvideLastModifiedTimeSubscriber(
-            self.desired_utime, self.result_queue)
-
-        call_args = FakeTransferFutureCallArgs(fileobj=self.filename)
-        meta = FakeTransferFutureMeta(call_args=call_args)
-        self.future = FakeTransferFuture(meta=meta)
-
-    def test_on_success_modifies_utime(self):
-        self.subscriber.on_done(self.future)
-        _, utime = get_file_stat(self.filename)
-        self.assertEqual(utime, self.desired_utime)
-
-    def test_on_success_failure_in_utime_mod_raises_warning(self):
-        self.subscriber = ProvideLastModifiedTimeSubscriber(
-            None, self.result_queue)
-        self.subscriber.on_done(self.future)
-        # Because the time to provide was None it will throw an exception
-        # which results in the a warning about the utime not being able
-        # to be set being placed in the result queue.
-        result = self.result_queue.get()
-        self.assertIsInstance(result, WarningResult)
-        self.assertIn(
-            'unable to update the last modified time', result.message)
-
-
-class TestDirectoryCreatorSubscriber(BaseTestWithFileCreator):
-    def setUp(self):
-        super(TestDirectoryCreatorSubscriber, self).setUp()
-        self.directory_to_create = os.path.join(
-            self.file_creator.rootdir, 'new-directory')
-        self.filename = os.path.join(self.directory_to_create, 'myfile')
-
-        call_args = FakeTransferFutureCallArgs(fileobj=self.filename)
-        meta = FakeTransferFutureMeta(call_args=call_args)
-        self.future = FakeTransferFuture(meta=meta)
-
-        self.subscriber = DirectoryCreatorSubscriber()
-
-    def test_on_queued_creates_directories_if_do_not_exist(self):
-        self.subscriber.on_queued(self.future)
-        self.assertTrue(os.path.exists(self.directory_to_create))
-
-    def test_on_queued_does_not_create_directories_if_exist(self):
-        os.makedirs(self.directory_to_create)
-        # This should not cause any issues if the directory already exists
-        self.subscriber.on_queued(self.future)
-        # The directory should still exist
-        self.assertTrue(os.path.exists(self.directory_to_create))
-
-    def test_on_queued_failure_propogates_create_directory_error(self):
-        # If makedirs() raises an OSError of exception, we should
-        # propogate the exception with a better worded CreateDirectoryError.
-        with mock.patch('os.makedirs') as makedirs_patch:
-            makedirs_patch.side_effect = OSError()
-            with self.assertRaises(CreateDirectoryError):
-                self.subscriber.on_queued(self.future)
-        self.assertFalse(os.path.exists(self.directory_to_create))
-
-    def test_on_queued_failure_propogates_clear_error_message(self):
-        # If makedirs() raises an OSError of exception, we should
-        # propogate the exception.
-        with mock.patch('os.makedirs') as makedirs_patch:
-            os_error = OSError()
-            os_error.errno = errno.EEXIST
-            makedirs_patch.side_effect = os_error
-            # The on_queued should not raise an error if the directory
-            # already exists
-            try:
-                self.subscriber.on_queued(self.future)
-            except Exception as e:
-                self.fail(
-                    'on_queued should not have raised an exception related '
-                    'to directory creation especially if one already existed '
-                    'but got %s' % e)
-
-
-class TestDeleteSourceObjectSubscriber(unittest.TestCase):
-    def setUp(self):
-        self.client = mock.Mock()
-        self.bucket = 'mybucket'
-        self.key = 'mykey'
-        call_args = FakeTransferFutureCallArgs(
-            bucket=self.bucket, key=self.key, extra_args={})
-        meta = FakeTransferFutureMeta(call_args=call_args)
-        self.future = mock.Mock()
-        self.future.meta = meta
-
-    def test_deletes_object(self):
-        DeleteSourceObjectSubscriber(self.client).on_done(self.future)
-        self.client.delete_object.assert_called_once_with(
-            Bucket=self.bucket, Key=self.key)
-        self.future.set_exception.assert_not_called()
-
-    def test_sets_exception_on_error(self):
-        exception = ValueError()
-        self.client.delete_object.side_effect = exception
-        DeleteSourceObjectSubscriber(self.client).on_done(self.future)
-        self.client.delete_object.assert_called_once_with(
-            Bucket=self.bucket, Key=self.key)
-        self.future.set_exception.assert_called_once_with(exception)
-
-    def test_with_request_payer(self):
-        self.future.meta.call_args.extra_args = {'RequestPayer': 'requester'}
-        DeleteSourceObjectSubscriber(self.client).on_done(self.future)
-        self.client.delete_object.assert_called_once_with(
-            Bucket=self.bucket, Key=self.key, RequestPayer='requester')
-
-
-class TestDeleteCopySourceObjectSubscriber(unittest.TestCase):
-    def setUp(self):
-        self.client = mock.Mock()
-        self.bucket = 'mybucket'
-        self.key = 'mykey'
-        copy_source = {'Bucket': self.bucket, 'Key': self.key}
-        call_args = FakeTransferFutureCallArgs(
-            copy_source=copy_source, extra_args={})
-        meta = FakeTransferFutureMeta(call_args=call_args)
-        self.future = mock.Mock()
-        self.future.meta = meta
-
-    def test_deletes_object(self):
-        DeleteCopySourceObjectSubscriber(self.client).on_done(self.future)
-        self.client.delete_object.assert_called_once_with(
-            Bucket=self.bucket, Key=self.key)
-        self.future.set_exception.assert_not_called()
-
-    def test_sets_exception_on_error(self):
-        exception = ValueError()
-        self.client.delete_object.side_effect = exception
-        DeleteCopySourceObjectSubscriber(self.client).on_done(self.future)
-        self.client.delete_object.assert_called_once_with(
-            Bucket=self.bucket, Key=self.key)
-        self.future.set_exception.assert_called_once_with(exception)
-
-    def test_with_request_payer(self):
-        self.future.meta.call_args.extra_args = {'RequestPayer': 'requester'}
-        DeleteCopySourceObjectSubscriber(self.client).on_done(self.future)
-        self.client.delete_object.assert_called_once_with(
-            Bucket=self.bucket, Key=self.key, RequestPayer='requester')
-
-
-class TestDeleteSourceFileSubscriber(unittest.TestCase):
-    def setUp(self):
-        self.tempdir = tempfile.mkdtemp()
-        self.filename = os.path.join(self.tempdir, 'myfile')
-        call_args = FakeTransferFutureCallArgs(fileobj=self.filename)
-        meta = FakeTransferFutureMeta(call_args=call_args)
-        self.future = mock.Mock()
-        self.future.meta = meta
-
-    def tearDown(self):
-        shutil.rmtree(self.tempdir)
-
-    def test_deletes_file(self):
-        with open(self.filename, 'w') as f:
-            f.write('data')
-        DeleteSourceFileSubscriber().on_done(self.future)
-        self.assertFalse(os.path.exists(self.filename))
-        self.future.set_exception.assert_not_called()
-
-    def test_sets_exception_on_error(self):
-        DeleteSourceFileSubscriber().on_done(self.future)
-        self.assertFalse(os.path.exists(self.filename))
-        call_args = self.future.set_exception.call_args[0]
-        self.assertIsInstance(call_args[0], EnvironmentError)
 
 
 class TestNonSeekableStream(unittest.TestCase):

@@ -17,12 +17,10 @@ import mimetypes
 import errno
 import os
 import re
-import time
 from collections import namedtuple, deque
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal, tzutc
-from s3transfer.subscribers import BaseSubscriber
 
 from awscli.compat import bytes_print
 from awscli.compat import queue
@@ -585,151 +583,6 @@ class RequestParamsMapper(object):
                                                   cli_params):
         cls._set_sse_c_request_params(request_params, cli_params)
         cls._set_sse_c_copy_source_request_params(request_params, cli_params)
-
-
-class ProvideSizeSubscriber(BaseSubscriber):
-    """
-    A subscriber which provides the transfer size before it's queued.
-    """
-    def __init__(self, size):
-        self.size = size
-
-    def on_queued(self, future, **kwargs):
-        future.meta.provide_transfer_size(self.size)
-
-
-# TODO: Eventually port this down to the BaseSubscriber or a new subscriber
-# class in s3transfer. The functionality is very convenient but may need
-# some further design decisions to make it a feature in s3transfer.
-class OnDoneFilteredSubscriber(BaseSubscriber):
-    """Subscriber that differentiates between successes and failures
-
-    It is really a convenience class so developers do not have to have
-    to constantly remember to have a general try/except around future.result()
-    """
-    def on_done(self, future, **kwargs):
-        future_exception = None
-        try:
-
-            future.result()
-        except Exception as e:
-            future_exception = e
-        # If the result propogates an error, call the on_failure
-        # method instead.
-        if future_exception:
-            self._on_failure(future, future_exception)
-        else:
-            self._on_success(future)
-
-    def _on_success(self, future):
-        pass
-
-    def _on_failure(self, future, e):
-        pass
-
-
-class DeleteSourceSubscriber(OnDoneFilteredSubscriber):
-    """A subscriber which deletes the source of the transfer."""
-    def _on_success(self, future):
-        try:
-            self._delete_source(future)
-        except Exception as e:
-            future.set_exception(e)
-
-    def _delete_source(self, future):
-        raise NotImplementedError('_delete_source()')
-
-
-class DeleteSourceObjectSubscriber(DeleteSourceSubscriber):
-    """A subscriber which deletes an object."""
-    def __init__(self, client):
-        self._client = client
-
-    def _get_bucket(self, call_args):
-        return call_args.bucket
-
-    def _get_key(self, call_args):
-        return call_args.key
-
-    def _delete_source(self, future):
-        call_args = future.meta.call_args
-        delete_object_kwargs = {
-            'Bucket': self._get_bucket(call_args),
-            'Key': self._get_key(call_args)
-        }
-        if call_args.extra_args.get('RequestPayer'):
-            delete_object_kwargs['RequestPayer'] = call_args.extra_args[
-                'RequestPayer']
-        self._client.delete_object(**delete_object_kwargs)
-
-
-class DeleteCopySourceObjectSubscriber(DeleteSourceObjectSubscriber):
-    """A subscriber which deletes the copy source."""
-    def _get_bucket(self, call_args):
-        return call_args.copy_source['Bucket']
-
-    def _get_key(self, call_args):
-        return call_args.copy_source['Key']
-
-
-class DeleteSourceFileSubscriber(DeleteSourceSubscriber):
-    """A subscriber which deletes a file."""
-    def _delete_source(self, future):
-        os.remove(future.meta.call_args.fileobj)
-
-
-class BaseProvideContentTypeSubscriber(BaseSubscriber):
-    """A subscriber that provides content type when creating s3 objects"""
-
-    def on_queued(self, future, **kwargs):
-        guessed_type = guess_content_type(self._get_filename(future))
-        if guessed_type is not None:
-            future.meta.call_args.extra_args['ContentType'] = guessed_type
-
-    def _get_filename(self, future):
-        raise NotImplementedError('_get_filename()')
-
-
-class ProvideUploadContentTypeSubscriber(BaseProvideContentTypeSubscriber):
-    def _get_filename(self, future):
-        return future.meta.call_args.fileobj
-
-
-class ProvideCopyContentTypeSubscriber(BaseProvideContentTypeSubscriber):
-    def _get_filename(self, future):
-        return future.meta.call_args.copy_source['Key']
-
-
-class ProvideLastModifiedTimeSubscriber(OnDoneFilteredSubscriber):
-    """Sets utime for a downloaded file"""
-    def __init__(self, last_modified_time, result_queue):
-        self._last_modified_time = last_modified_time
-        self._result_queue = result_queue
-
-    def _on_success(self, future, **kwargs):
-        filename = future.meta.call_args.fileobj
-        try:
-            last_update_tuple = self._last_modified_time.timetuple()
-            mod_timestamp = time.mktime(last_update_tuple)
-            set_file_utime(filename, int(mod_timestamp))
-        except Exception as e:
-            warning_message = (
-                'Successfully Downloaded %s but was unable to update the '
-                'last modified time. %s' % (filename, e))
-            self._result_queue.put(create_warning(filename, warning_message))
-
-
-class DirectoryCreatorSubscriber(BaseSubscriber):
-    """Creates a directory to download if it does not exist"""
-    def on_queued(self, future, **kwargs):
-        d = os.path.dirname(future.meta.call_args.fileobj)
-        try:
-            if not os.path.exists(d):
-                os.makedirs(d)
-        except OSError as e:
-            if not e.errno == errno.EEXIST:
-                raise CreateDirectoryError(
-                    "Could not create directory %s: %s" % (d, e))
 
 
 class NonSeekableStream(object):

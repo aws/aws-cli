@@ -26,12 +26,17 @@ class FakeTransferFuture(object):
             raise self._exception
         return self._result
 
+    def set_exception(self, exception):
+        self._exception = exception
+
 
 class FakeTransferFutureMeta(object):
-    def __init__(self, size=None, call_args=None, transfer_id=None):
+    def __init__(self, size=None, call_args=None, transfer_id=None,
+                 user_context=None):
         self.size = size
         self.call_args = call_args
         self.transfer_id = transfer_id
+        self.user_context = user_context
 
 
 class FakeTransferFutureCallArgs(object):

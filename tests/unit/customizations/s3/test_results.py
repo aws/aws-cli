@@ -26,26 +26,22 @@ from awscli.customizations.s3.results import ErrorResult
 from awscli.customizations.s3.results import CtrlCResult
 from awscli.customizations.s3.results import DryRunResult
 from awscli.customizations.s3.results import FinalTotalSubmissionsResult
-from awscli.customizations.s3.results import UploadResultSubscriber
-from awscli.customizations.s3.results import UploadStreamResultSubscriber
-from awscli.customizations.s3.results import DownloadResultSubscriber
-from awscli.customizations.s3.results import DownloadStreamResultSubscriber
-from awscli.customizations.s3.results import CopyResultSubscriber
-from awscli.customizations.s3.results import DeleteResultSubscriber
+from awscli.customizations.s3.results import QueuedResultSubscriber
+from awscli.customizations.s3.results import ProgressResultSubscriber
+from awscli.customizations.s3.results import DoneResultSubscriber
 from awscli.customizations.s3.results import ResultRecorder
 from awscli.customizations.s3.results import ResultPrinter
 from awscli.customizations.s3.results import OnlyShowErrorsResultPrinter
 from awscli.customizations.s3.results import NoProgressResultPrinter
 from awscli.customizations.s3.results import ResultProcessor
 from awscli.customizations.s3.results import CommandResultRecorder
-from awscli.customizations.s3.utils import relative_path
 from awscli.customizations.s3.utils import WarningResult
 from tests.unit.customizations.s3 import FakeTransferFuture
 from tests.unit.customizations.s3 import FakeTransferFutureMeta
 from tests.unit.customizations.s3 import FakeTransferFutureCallArgs
 
 
-class BaseResultSubscriberTest(unittest.TestCase):
+class TestResultSubscribers(unittest.TestCase):
     def setUp(self):
         self.result_queue = queue.Queue()
 
@@ -57,9 +53,9 @@ class BaseResultSubscriberTest(unittest.TestCase):
         self.ref_exception = Exception()
         self.set_ref_transfer_futures()
 
-        self.src = None
-        self.dest = None
-        self.transfer_type = None
+        self.src = 'src'
+        self.dest = 'dest'
+        self.transfer_type = 'upload'
 
     def set_ref_transfer_futures(self):
         self.future = self.get_success_transfer_future('foo')
@@ -88,17 +84,17 @@ class BaseResultSubscriberTest(unittest.TestCase):
     def assert_result_queue_is_empty(self):
         self.assertTrue(self.result_queue.empty())
 
-
-class TestUploadResultSubscriber(BaseResultSubscriberTest):
-    def setUp(self):
-        super(TestUploadResultSubscriber, self).setUp()
-        self.src = relative_path(self.filename)
-        self.dest = 's3://' + self.bucket + '/' + self.key
-        self.transfer_type = 'upload'
-        self.result_subscriber = UploadResultSubscriber(self.result_queue)
+    def get_result_subscriber(self, subscriber_cls):
+        return subscriber_cls(
+            result_queue=self.result_queue,
+            transfer_type=self.transfer_type,
+            src=self.src,
+            dest=self.dest,
+        )
 
     def test_on_queued(self):
-        self.result_subscriber.on_queued(self.future)
+        subscriber = self.get_result_subscriber(QueuedResultSubscriber)
+        subscriber.on_queued(self.future)
         result = self.get_queued_result()
         self.assert_result_queue_is_empty()
         self.assertEqual(
@@ -112,22 +108,9 @@ class TestUploadResultSubscriber(BaseResultSubscriberTest):
         )
 
     def test_on_progress(self):
-        # Simulate a queue result (i.e. submitting and processing the result)
-        # before processing the progress result.
-        self.result_subscriber.on_queued(self.future)
-        self.assertEqual(
-            self.get_queued_result(),
-            QueuedResult(
-                transfer_type=self.transfer_type,
-                src=self.src,
-                dest=self.dest,
-                total_transfer_size=self.size
-            )
-        )
-        self.assert_result_queue_is_empty()
-
         ref_bytes_transferred = 1024 * 1024  # 1MB
-        self.result_subscriber.on_progress(self.future, ref_bytes_transferred)
+        subscriber = self.get_result_subscriber(ProgressResultSubscriber)
+        subscriber.on_progress(self.future, ref_bytes_transferred)
         result = self.get_queued_result()
         self.assert_result_queue_is_empty()
         self.assertEqual(
@@ -143,21 +126,8 @@ class TestUploadResultSubscriber(BaseResultSubscriberTest):
         )
 
     def test_on_done_success(self):
-        # Simulate a queue result (i.e. submitting and processing the result)
-        # before processing the progress result.
-        self.result_subscriber.on_queued(self.future)
-        self.assertEqual(
-            self.get_queued_result(),
-            QueuedResult(
-                transfer_type=self.transfer_type,
-                src=self.src,
-                dest=self.dest,
-                total_transfer_size=self.size
-            )
-        )
-        self.assert_result_queue_is_empty()
-
-        self.result_subscriber.on_done(self.future)
+        subscriber = self.get_result_subscriber(DoneResultSubscriber)
+        subscriber.on_done(self.future)
         result = self.get_queued_result()
         self.assert_result_queue_is_empty()
         self.assertEqual(
@@ -170,21 +140,8 @@ class TestUploadResultSubscriber(BaseResultSubscriberTest):
         )
 
     def test_on_done_failure(self):
-        # Simulate a queue result (i.e. submitting and processing the result)
-        # before processing the progress result.
-        self.result_subscriber.on_queued(self.future)
-        self.assertEqual(
-            self.get_queued_result(),
-            QueuedResult(
-                transfer_type=self.transfer_type,
-                src=self.src,
-                dest=self.dest,
-                total_transfer_size=self.size
-            )
-        )
-        self.assert_result_queue_is_empty()
-
-        self.result_subscriber.on_done(self.failure_future)
+        subscriber = self.get_result_subscriber(DoneResultSubscriber)
+        subscriber.on_done(self.failure_future)
         result = self.get_queued_result()
         self.assert_result_queue_is_empty()
         self.assertEqual(
@@ -198,120 +155,22 @@ class TestUploadResultSubscriber(BaseResultSubscriberTest):
         )
 
     def test_on_done_unexpected_cancelled(self):
-        # Simulate a queue result (i.e. submitting and processing the result)
-        # before processing the progress result.
-        self.result_subscriber.on_queued(self.future)
-        self.assertEqual(
-            self.get_queued_result(),
-            QueuedResult(
-                transfer_type=self.transfer_type,
-                src=self.src,
-                dest=self.dest,
-                total_transfer_size=self.size
-            )
-        )
-        self.assert_result_queue_is_empty()
-
+        subscriber = self.get_result_subscriber(DoneResultSubscriber)
         cancelled_exception = FatalError('some error')
         cancelled_future = self.get_failed_transfer_future(cancelled_exception)
-        self.result_subscriber.on_done(cancelled_future)
+        subscriber.on_done(cancelled_future)
         result = self.get_queued_result()
         self.assert_result_queue_is_empty()
         self.assertEqual(result, ErrorResult(exception=cancelled_exception))
 
     def test_on_done_cancelled_for_ctrl_c(self):
-        # Simulate a queue result (i.e. submitting and processing the result)
-        # before processing the progress result.
-        self.result_subscriber.on_queued(self.future)
-        self.assertEqual(
-            self.get_queued_result(),
-            QueuedResult(
-                transfer_type=self.transfer_type,
-                src=self.src,
-                dest=self.dest,
-                total_transfer_size=self.size
-            )
-        )
-        self.assert_result_queue_is_empty()
-
+        subscriber = self.get_result_subscriber(DoneResultSubscriber)
         cancelled_exception = CancelledError('KeyboardInterrupt()')
         cancelled_future = self.get_failed_transfer_future(cancelled_exception)
-        self.result_subscriber.on_done(cancelled_future)
+        subscriber.on_done(cancelled_future)
         result = self.get_queued_result()
         self.assert_result_queue_is_empty()
         self.assertEqual(result, CtrlCResult(exception=cancelled_exception))
-
-
-class TestUploadStreamResultSubscriber(TestUploadResultSubscriber):
-    def setUp(self):
-        super(TestUploadStreamResultSubscriber, self).setUp()
-        self.src = '-'
-        self.result_subscriber = UploadStreamResultSubscriber(
-            self.result_queue)
-
-
-class TestDownloadResultSubscriber(TestUploadResultSubscriber):
-    def setUp(self):
-        super(TestDownloadResultSubscriber, self).setUp()
-        self.src = 's3://' + self.bucket + '/' + self.key
-        self.dest = relative_path(self.filename)
-        self.transfer_type = 'download'
-        self.result_subscriber = DownloadResultSubscriber(self.result_queue)
-
-
-class TestDownloadStreamResultSubscriber(TestDownloadResultSubscriber):
-    def setUp(self):
-        super(TestDownloadStreamResultSubscriber, self).setUp()
-        self.dest = '-'
-        self.result_subscriber = DownloadStreamResultSubscriber(
-            self.result_queue)
-
-
-class TestCopyResultSubscriber(TestUploadResultSubscriber):
-    def setUp(self):
-        self.source_bucket = 'sourcebucket'
-        self.source_key = 'sourcekey'
-        self.copy_source = {
-            'Bucket': self.source_bucket,
-            'Key': self.source_key,
-        }
-        super(TestCopyResultSubscriber, self).setUp()
-        self.src = 's3://' + self.source_bucket + '/' + self.source_key
-        self.dest = 's3://' + self.bucket + '/' + self.key
-        self.transfer_type = 'copy'
-        self.result_subscriber = CopyResultSubscriber(self.result_queue)
-
-    def _get_transfer_future_call_args(self):
-        return FakeTransferFutureCallArgs(
-            copy_source=self.copy_source, key=self.key, bucket=self.bucket)
-
-    def test_transfer_type_override(self):
-        new_transfer_type = 'move'
-        self.result_subscriber = CopyResultSubscriber(
-            self.result_queue, new_transfer_type)
-        self.result_subscriber.on_queued(self.future)
-        result = self.get_queued_result()
-        self.assert_result_queue_is_empty()
-        expected = QueuedResult(
-            transfer_type=new_transfer_type,
-            src=self.src,
-            dest=self.dest,
-            total_transfer_size=self.size
-        )
-        self.assertEqual(result, expected)
-
-
-class TestDeleteResultSubscriber(TestUploadResultSubscriber):
-    def setUp(self):
-        super(TestDeleteResultSubscriber, self).setUp()
-        self.src = 's3://' + self.bucket + '/' + self.key
-        self.dest = None
-        self.transfer_type = 'delete'
-        self.result_subscriber = DeleteResultSubscriber(self.result_queue)
-
-    def _get_transfer_future_call_args(self):
-        return FakeTransferFutureCallArgs(
-            bucket=self.bucket, key=self.key)
 
 
 class ResultRecorderTest(unittest.TestCase):

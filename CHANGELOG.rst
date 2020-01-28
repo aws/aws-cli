@@ -2,6 +2,86 @@
 CHANGELOG
 =========
 
+1.17.9
+======
+
+* api-change:``eks``: Update eks command to latest version
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``datasync``: Update datasync command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
+1.17.8
+======
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``iam``: Update iam command to latest version
+
+
+1.17.7
+======
+
+* api-change:``discovery``: Update discovery command to latest version
+* api-change:``iotevents``: Update iotevents command to latest version
+* api-change:``marketplacecommerceanalytics``: Update marketplacecommerceanalytics command to latest version
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.17.6
+======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``kms``: Update kms command to latest version
+* api-change:``application-insights``: Update application-insights command to latest version
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+
+
+1.17.5
+======
+
+* api-change:``batch``: Update batch command to latest version
+* api-change:``cloudhsmv2``: Update cloudhsmv2 command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``neptune``: Update neptune command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
+1.17.4
+======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``ds``: Update ds command to latest version
+
+
+1.17.3
+======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
+1.17.2
+======
+
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.17.1
+======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``backup``: Update backup command to latest version
+* api-change:``efs``: Update efs command to latest version
+
+
 1.17.0
 ======
 

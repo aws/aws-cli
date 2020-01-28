@@ -88,7 +88,7 @@ class TestOutFileQueryArguments(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(
             cmdline,
             stderr_contains=self.parsed_response['Error']['Message'],
-            expected_rc=255)
+            expected_rc=254)
 
     def test_ensures_file_is_writable_before_sending(self):
         outfile = os.sep.join(['', 'does', 'not', 'exist_', 'file.txt'])

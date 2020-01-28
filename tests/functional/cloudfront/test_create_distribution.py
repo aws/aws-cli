@@ -124,4 +124,4 @@ class TestCreateDistribution(BaseAWSCommandParamsTest):
             stderr_contains='cannot be specified when one of the following')
 
     def test_no_input(self):
-        self.run_cmd(self.prefix, expected_rc=255)
+        self.run_cmd(self.prefix, expected_rc=252)

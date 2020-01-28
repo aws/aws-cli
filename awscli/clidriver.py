@@ -21,6 +21,8 @@ from botocore import xform_name
 from botocore.compat import copy_kwargs, OrderedDict
 from botocore.exceptions import NoCredentialsError
 from botocore.exceptions import NoRegionError
+from botocore.exceptions import ClientError
+from botocore.exceptions import ParamValidationError
 from botocore.history import get_global_history_recorder
 from botocore.configprovider import InstanceVarProvider
 from botocore.configprovider import EnvironmentProvider
@@ -314,28 +316,47 @@ class CLIDriver(object):
                 'CLI_VERSION', self.session.user_agent(), 'CLI')
             HISTORY_RECORDER.record('CLI_ARGUMENTS', args, 'CLI')
             return command_table[parsed_args.command](remaining, parsed_args)
+        except ParamValidationError as e:
+            # RC 252 represents that the command failed to parse or failed
+            # client side validation at the botocore level.
+            LOG.debug("Client side parameter validation failed", exc_info=True)
+            write_exception(e, outfile=get_stderr_text_writer())
+            return 252
         except UnknownArgumentError as e:
             sys.stderr.write("usage: %s\n" % USAGE)
             sys.stderr.write(str(e))
             sys.stderr.write("\n")
-            return 255
+            return 252
         except NoRegionError as e:
+            # RC 253 represents that the command may be syntatically correct
+            # but the environment or configuration is incorrect.
             msg = ('%s You can also configure your region by running '
                    '"aws configure".' % e)
             self._show_error(msg)
-            return 255
+            return 253
         except NoCredentialsError as e:
             msg = ('%s. You can configure credentials by running '
                    '"aws configure".' % e)
             self._show_error(msg)
-            return 255
+            return 253
         except KeyboardInterrupt:
             # Shell standard for signals that terminate
             # the process is to return 128 + signum, in this case
             # SIGINT=2, so we'll have an RC of 130.
             sys.stdout.write("\n")
             return 128 + signal.SIGINT
+        except ClientError as e:
+            # RC 254 represents that a request/response completed but the
+            # request failed for reasons specific to the service, returned
+            # by the service. Generally, this will indicate incorrect API
+            # usage and is likely not an issue with CLI.
+            LOG.debug("Service returned an exception", exc_info=True)
+            write_exception(e, outfile=get_stderr_text_writer())
+            return 254
         except Exception as e:
+            # RC 255 is the catch-all. 255 specifically should not be relied
+            # on as exceptions can move from this catch-all classification
+            # to a more specific RC such as one of the above.
             LOG.debug("Exception caught in main()", exc_info=True)
             LOG.debug("Exiting with rc 255")
             write_exception(e, outfile=get_stderr_text_writer())

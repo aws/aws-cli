@@ -515,9 +515,9 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
 
     def test_event_emission_for_top_level_params(self):
         driver = create_clidriver()
-        # --unknown-foo is an known arg, so we expect a 255 rc.
+        # --unknown-foo is an unknown arg, so we expect a 252 rc.
         rc = driver.main('ec2 describe-instances --unknown-arg foo'.split())
-        self.assertEqual(rc, 255)
+        self.assertEqual(rc, 252)
         self.assertIn('Unknown options: --unknown-arg', self.stderr.getvalue())
 
         # The argument table is memoized in the CLIDriver object. So
@@ -632,13 +632,13 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         rc = driver.main(
             'ec2 foo --bar Count=4'.split())
 
-        self.assertEqual(rc, 255)
+        self.assertEqual(rc, 252)
 
         # Test extra unknown shorthand item
         rc = driver.main(
             'ec2 foo --bar Name=test,Unknown='.split())
 
-        self.assertEqual(rc, 255)
+        self.assertEqual(rc, 252)
 
         # Test long form JSON
         rc = driver.main(

@@ -216,20 +216,20 @@ class TestAddInstanceGroups(BaseAWSCommandParamsTest):
     def test_instance_groups_missing_instance_group_type_error(self):
         cmd = self.prefix + ' Name=Task,InstanceType=m1.small,' +\
             'InstanceCount=5'
-        result = self.run_cmd(cmd, 255)
+        result = self.run_cmd(cmd, 252)
         self.assert_error_message_has_field_name(result[1],
                                                  'InstanceGroupType')
 
     def test_instance_groups_missing_instance_type_error(self):
         cmd = self.prefix + ' Name=Task,InstanceGroupType=Task,' +\
             'InstanceCount=5'
-        stderr = self.run_cmd(cmd, 255)[1]
+        stderr = self.run_cmd(cmd, 252)[1]
         self.assert_error_message_has_field_name(stderr, 'InstanceType')
 
     def test_instance_groups_missing_instance_count_error(self):
         cmd = self.prefix + ' Name=Task,InstanceGroupType=Task,' +\
             'InstanceType=m1.xlarge'
-        stderr = self.run_cmd(cmd, 255)[1]
+        stderr = self.run_cmd(cmd, 252)[1]
         self.assert_error_message_has_field_name(stderr, 'InstanceCount')
 
     def test_instance_groups_all_fields(self):
@@ -309,13 +309,13 @@ class TestAddInstanceGroups(BaseAWSCommandParamsTest):
     def test_instance_groups_with_ebs_config_missing_volume_type(self):
         cmd = self.prefix
         cmd += INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_VOLTYPE_ARG
-        stderr = self.run_cmd(cmd, 255)[1]
+        stderr = self.run_cmd(cmd, 252)[1]
         self.assert_error_message_has_field_name(stderr, 'VolumeType')
 
     def test_instance_groups_with_ebs_config_missing_size(self):
         cmd = self.prefix
         cmd += INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_SIZE_ARG
-        stderr = self.run_cmd(cmd, 255)[1]
+        stderr = self.run_cmd(cmd, 252)[1]
         self.assert_error_message_has_field_name(stderr, 'SizeInGB')
 
     def test_instance_groups_with_ebs_config_missing_volume_spec(self):

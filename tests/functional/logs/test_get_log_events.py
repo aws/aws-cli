@@ -26,6 +26,6 @@ class TestGetLogEvents(BaseAWSCommandParamsTest):
         cmdline += ' --log-group-name foo'
         cmdline += ' --log-stream-name bar'
         cmdline += ' --page-size 5'
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=252)
         self.assertIn('Unknown options', stderr)
         self.assertIn('--page-size', stderr)

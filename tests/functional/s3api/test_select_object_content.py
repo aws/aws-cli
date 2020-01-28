@@ -103,7 +103,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         }
         self.assert_params_for_cmd(
             cmd=cmdline, params=expected_params,
-            expected_rc=255,
+            expected_rc=254,
             stderr_contains=(
                 'An error occurred (CastFailed) when '
                 'calling the SelectObjectContent operation'),

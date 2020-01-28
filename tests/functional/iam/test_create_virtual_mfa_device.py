@@ -155,4 +155,4 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(
             cmdline,
             stderr_contains=self.parsed_response['Error']['Message'],
-            expected_rc=255)
+            expected_rc=254)

@@ -48,4 +48,4 @@ class TestCreateInvalidation(BaseAWSCommandParamsTest):
         self.run_cmd(cmdline, expected_rc=255)
 
     def test_neither_invalidation_batch_or_paths(self):
-        self.run_cmd(self.prefix, expected_rc=255)
+        self.run_cmd(self.prefix, expected_rc=252)

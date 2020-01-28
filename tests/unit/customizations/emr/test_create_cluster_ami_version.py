@@ -662,7 +662,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '--auto-terminate '
             '--instance-groups '
             'Name=Master,InstanceCount=1,InstanceType=m1.small')
-        stderr = self.run_cmd(cmd, 255)[1]
+        stderr = self.run_cmd(cmd, 252)[1]
         self.assert_error_message_has_field_name(stderr, 'InstanceGroupType')
 
     def test_instance_groups_missing_instance_type_error(self):
@@ -674,7 +674,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         expect_error_msg = (
             '\nThe following required parameters are missing'
             ' for structure:: InstanceType\n')
-        stderr = self.run_cmd(cmd, 255)[1]
+        stderr = self.run_cmd(cmd, 252)[1]
         self.assert_error_message_has_field_name(stderr, 'InstanceType')
 
     def test_instance_groups_missing_instance_count_error(self):
@@ -683,7 +683,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '--auto-terminate '
             '--instance-groups '
             'Name=Master,InstanceGroupType=MASTER,InstanceType=m1.xlarge')
-        stderr = self.run_cmd(cmd, 255)[1]
+        stderr = self.run_cmd(cmd, 252)[1]
         self.assert_error_message_has_field_name(stderr, 'InstanceCount')
 
     def test_instance_groups_from_json_file(self):
@@ -801,7 +801,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     # Bootstrap Actions test cases
     def test_bootstrap_actions_missing_path_error(self):
         cmd = DEFAULT_CMD + '--bootstrap-actions Name=ba1,Args=arg1,arg2'
-        stderr = self.run_cmd(cmd, 255)[1]
+        stderr = self.run_cmd(cmd, 252)[1]
         self.assert_error_message_has_field_name(stderr, 'Path')
 
     def test_bootstrap_actions_with_all_fields(self):
@@ -1399,13 +1399,13 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_instance_groups_with_ebs_config_missing_volume_type(self):
         cmd = (self.prefix + '--ami-version 3.1.0 --instance-groups ' +
                CONSTANTS.INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_VOLTYPE_ARG)
-        stderr = self.run_cmd(cmd, 255)[1]
+        stderr = self.run_cmd(cmd, 252)[1]
         self.assert_error_message_has_field_name(stderr, 'VolumeType')
 
     def test_instance_groups_with_ebs_config_missing_size(self):
         cmd = (self.prefix + '--ami-version 3.1.0 --instance-groups ' +
                CONSTANTS.INSTANCE_GROUPS_WITH_EBS_VOLUME_MISSING_SIZE_ARG)
-        stderr = self.run_cmd(cmd, 255)[1]
+        stderr = self.run_cmd(cmd, 252)[1]
         self.assert_error_message_has_field_name(stderr, 'SizeInGB')
 
     def test_instance_groups_with_ebs_config_missing_volume_spec(self):

@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from awscli.customizations.exceptions import ParamValidationError
 
 
 class EmrError(Exception):
@@ -27,7 +28,7 @@ class EmrError(Exception):
         self.kwargs = kwargs
 
 
-class MissingParametersError(EmrError):
+class MissingParametersError(EmrError, ParamValidationError):
 
     """
     One or more required parameters were not supplied.
@@ -43,7 +44,7 @@ class MissingParametersError(EmrError):
            '{object_name}: {missing}.')
 
 
-class EmptyListError(EmrError):
+class EmptyListError(EmrError, ParamValidationError):
 
     """
     The provided list is empty.
@@ -53,7 +54,7 @@ class EmptyListError(EmrError):
     fmt = ('aws: error: The prameter {param} cannot be an empty list.')
 
 
-class MissingRequiredInstanceGroupsError(EmrError):
+class MissingRequiredInstanceGroupsError(EmrError, ParamValidationError):
 
     """
     In create-cluster command, none of --instance-group,
@@ -64,7 +65,7 @@ class MissingRequiredInstanceGroupsError(EmrError):
            'configure instance groups.')
 
 
-class InstanceGroupsValidationError(EmrError):
+class InstanceGroupsValidationError(EmrError, ParamValidationError):
 
     """
     --instance-type and --instance-count are shortcut option
@@ -77,7 +78,7 @@ class InstanceGroupsValidationError(EmrError):
            'shortcut options for --instance-groups.')
 
 
-class InvalidAmiVersionError(EmrError):
+class InvalidAmiVersionError(EmrError, ParamValidationError):
 
     """
     The supplied ami-version is invalid.
@@ -90,7 +91,7 @@ class InvalidAmiVersionError(EmrError):
            'latest/DeveloperGuide/ami-versions-supported.html')
 
 
-class MissingBooleanOptionsError(EmrError):
+class MissingBooleanOptionsError(EmrError, ParamValidationError):
 
     """
     Required boolean options are not supplied.
@@ -102,7 +103,7 @@ class MissingBooleanOptionsError(EmrError):
            '{true_option}|{false_option}.')
 
 
-class UnknownStepTypeError(EmrError):
+class UnknownStepTypeError(EmrError, ParamValidationError):
 
     """
     The provided step type is not supported.
@@ -133,7 +134,7 @@ class ResolveServicePrincipalError(EmrError):
           ' the region or the endpoint.'
 
 
-class LogUriError(EmrError):
+class LogUriError(EmrError, ParamValidationError):
 
     """
     The LogUri is not specified and debugging is enabled for the cluster.
@@ -151,7 +152,7 @@ class MasterDNSNotAvailableError(EmrError):
           ' Please try again after some time.'
 
 
-class WrongPuttyKeyError(EmrError):
+class WrongPuttyKeyError(EmrError, ParamValidationError):
 
     """
     A wrong key has been used with a compatible program.
@@ -181,7 +182,7 @@ class SCPNotFoundError(EmrError):
           'DeveloperGuide/EMR_SetUp_SSH.html. '
 
 
-class SubnetAndAzValidationError(EmrError):
+class SubnetAndAzValidationError(EmrError, ParamValidationError):
 
     """
     SubnetId and AvailabilityZone are mutual exclusive in --ec2-attributes.
@@ -190,7 +191,7 @@ class SubnetAndAzValidationError(EmrError):
            'tyZone (placement) because ec2SubnetId implies a placement.')
 
 
-class RequiredOptionsError(EmrError):
+class RequiredOptionsError(EmrError, ParamValidationError):
 
     """
     Either of option1 or option2 is required.
@@ -199,7 +200,7 @@ class RequiredOptionsError(EmrError):
     fmt = ('aws: error: Either {option1} or {option2} is required.')
 
 
-class MutualExclusiveOptionError(EmrError):
+class MutualExclusiveOptionError(EmrError, ParamValidationError):
 
     """
     The provided option1 and option2 are mutually exclusive.
@@ -217,7 +218,7 @@ class MutualExclusiveOptionError(EmrError):
         Exception.__init__(self, msg)
 
 
-class MissingApplicationsError(EmrError):
+class MissingApplicationsError(EmrError, ParamValidationError):
 
     """
     The application required for a step is not installed when creating a
@@ -242,7 +243,7 @@ class ClusterTerminatedError(EmrError):
     fmt = 'aws: error: Cluster terminating or already terminated.'
 
 
-class ClusterStatesFilterValidationError(EmrError):
+class ClusterStatesFilterValidationError(EmrError, ParamValidationError):
 
     """
     In the list-clusters command, customers can specify only one
@@ -254,7 +255,7 @@ class ClusterStatesFilterValidationError(EmrError):
            'filters: --cluster-states, --active, --terminated, --failed.')
 
 
-class MissingClusterAttributesError(EmrError):
+class MissingClusterAttributesError(EmrError, ParamValidationError):
 
     """
     In the modify-cluster-attributes command, customers need to provide
@@ -267,7 +268,7 @@ class MissingClusterAttributesError(EmrError):
            '--termination-protected|--no-termination-protected.')
 
 
-class InvalidEmrFsArgumentsError(EmrError):
+class InvalidEmrFsArgumentsError(EmrError, ParamValidationError):
 
     """
     The provided EMRFS parameters are invalid as parent feature e.g.,
@@ -281,13 +282,13 @@ class InvalidEmrFsArgumentsError(EmrError):
            ' following parameters are invalid: {invalid}')
 
 
-class DuplicateEmrFsConfigurationError(EmrError):
+class DuplicateEmrFsConfigurationError(EmrError, ParamValidationError):
 
     fmt = ('aws: error: EMRFS should be configured either using '
            '--configuration or --emrfs but not both')
 
 
-class UnknownCseProviderTypeError(EmrError):
+class UnknownCseProviderTypeError(EmrError, ParamValidationError):
 
     """
     The provided EMRFS client-side encryption provider type is not supported.
@@ -298,7 +299,7 @@ class UnknownCseProviderTypeError(EmrError):
            'not supported. You must specify either KMS or Custom')
 
 
-class UnknownEncryptionTypeError(EmrError):
+class UnknownEncryptionTypeError(EmrError, ParamValidationError):
 
     """
     The provided encryption type is not supported.
@@ -309,7 +310,7 @@ class UnknownEncryptionTypeError(EmrError):
            'You must specify either ServerSide or ClientSide')
 
 
-class BothSseAndEncryptionConfiguredError(EmrError):
+class BothSseAndEncryptionConfiguredError(EmrError, ParamValidationError):
 
     """
     Only one of SSE or Encryption can be configured.
@@ -322,7 +323,7 @@ class BothSseAndEncryptionConfiguredError(EmrError):
            'configured for --emrfs. You must specify only one of the two.')
 
 
-class InvalidBooleanConfigError(EmrError):
+class InvalidBooleanConfigError(EmrError, ParamValidationError):
 
     fmt = ("aws: error: {config_value} for {config_key} in the config file is "
            "invalid. The value should be either 'True' or 'False'. Use "
@@ -330,12 +331,12 @@ class InvalidBooleanConfigError(EmrError):
            "command to set a valid value.")
 
 
-class UnsupportedCommandWithReleaseError(EmrError):
+class UnsupportedCommandWithReleaseError(EmrError, ParamValidationError):
 
     fmt = ("aws: error: {command} is not supported with "
            "'{release_label}' release.")
 
-class MissingAutoScalingRoleError(EmrError):
+class MissingAutoScalingRoleError(EmrError, ParamValidationError):
 
     fmt = ("aws: error: Must specify --auto-scaling-role when configuring an "
            "AutoScaling policy for an instance group.")

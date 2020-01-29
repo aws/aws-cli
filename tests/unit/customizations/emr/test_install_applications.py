@@ -121,7 +121,7 @@ class TestInstallApplications(BaseAWSCommandParamsTest):
 
         expected_error_msg = ("\naws: error: install-applications"
                               " is not supported with 'emr-4.0' release.\n")
-        result = self.run_cmd(cmdline, 255)
+        result = self.run_cmd(cmdline, 252)
         self.assertEqual(result[1], expected_error_msg)
 
 if __name__ == "__main__":

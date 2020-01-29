@@ -101,7 +101,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         expect_error_msg = ("\n%s\n" % InvalidBooleanConfigError.fmt.format(
             config_value='False1', config_key='enable_debugging',
             profile_var_name='default'))
-        result = self.run_cmd(cmd, 255)
+        result = self.run_cmd(cmd, 252)
         self.assertEquals(expect_error_msg, result[1])
 
     @mock.patch.object(CreateCluster, '_run_main_command')

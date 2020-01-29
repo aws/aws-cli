@@ -22,7 +22,9 @@ from botocore.compat import copy_kwargs, OrderedDict
 from botocore.exceptions import NoCredentialsError
 from botocore.exceptions import NoRegionError
 from botocore.exceptions import ClientError
-from botocore.exceptions import ParamValidationError
+from botocore.exceptions import (
+    ParamValidationError as BotocoreParamValidationError
+)
 from botocore.history import get_global_history_recorder
 from botocore.configprovider import InstanceVarProvider
 from botocore.configprovider import EnvironmentProvider
@@ -55,6 +57,7 @@ from awscli.utils import emit_top_level_args_parsed_event
 from awscli.utils import write_exception
 from awscli.utils import OutputStreamFactory
 from awscli.utils import IMDSRegionProvider
+from awscli.customizations.exceptions import ParamValidationError
 
 
 LOG = logging.getLogger('awscli.clidriver')
@@ -316,7 +319,7 @@ class CLIDriver(object):
                 'CLI_VERSION', self.session.user_agent(), 'CLI')
             HISTORY_RECORDER.record('CLI_ARGUMENTS', args, 'CLI')
             return command_table[parsed_args.command](remaining, parsed_args)
-        except ParamValidationError as e:
+        except (BotocoreParamValidationError, ParamValidationError) as e:
             # RC 252 represents that the command failed to parse or failed
             # client side validation at the botocore level.
             LOG.debug("Client side parameter validation failed", exc_info=True)

@@ -13,6 +13,7 @@
 
 import re
 
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.emr import applicationutils
 from awscli.customizations.emr import argumentschema
@@ -175,8 +176,10 @@ class CreateCluster(Command):
                     params["Configurations"] = json.loads(
                         parsed_args.configurations)
                 except ValueError:
-                    raise ValueError('aws: error: invalid json argument for '
-                                     'option --configurations')
+                    raise ParamValidationError(
+                        'aws: error: invalid json argument for '
+                        'option --configurations'
+                    )
 
         if (parsed_args.release_label is None and
                 parsed_args.ami_version is not None):
@@ -440,7 +443,7 @@ class CreateCluster(Command):
         bootstrap_actions = []
         if len(cluster_ba_list) + len(parsed_boostrap_actions) \
                 > constants.MAX_BOOTSTRAP_ACTION_NUMBER:
-            raise ValueError('aws: error: maximum number of '
+            raise ParamValidationError('aws: error: maximum number of '
                              'bootstrap actions for a cluster exceeded.')
 
         for ba in parsed_boostrap_actions:

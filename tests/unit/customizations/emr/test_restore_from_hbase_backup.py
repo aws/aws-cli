@@ -61,7 +61,7 @@ class TestRestoreFromHBaseBackup(BaseAWSCommandParamsTest):
         cmdline = self.prefix + args
         expected_error_msg = ("\naws: error: restore-from-hbase-backup"
                               " is not supported with 'emr-4.0' release.\n")
-        result = self.run_cmd(cmdline, 255)
+        result = self.run_cmd(cmdline, 252)
 
         self.assertEqual(result[1], expected_error_msg)
 

@@ -14,6 +14,7 @@
 from awscli.argprocess import unpack_cli_arg
 from awscli.arguments import CustomArgument
 from awscli.arguments import create_argument_model_from_schema
+from awscli.customizations.exceptions import ParamValidationError
 
 S3_LOCATION_ARG_DESCRIPTION = {
     'name': 's3-location',
@@ -140,7 +141,7 @@ class S3LocationArgument(LocationArgument):
         required = ['bucket', 'key', 'bundleType']
         valid = lambda k: value_dict.get(k, False)
         if not all(map(valid, required)):
-            raise RuntimeError(
+            raise ParamValidationError(
                 '--s3-location must specify bucket, key and bundleType.'
             )
         revision = {
@@ -163,7 +164,7 @@ class GitHubLocationArgument(LocationArgument):
         required = ['repository', 'commitId']
         valid = lambda k: value_dict.get(k, False)
         if not all(map(valid, required)):
-            raise RuntimeError(
+            raise ParamValidationError(
                 '--github-location must specify repository and commitId.'
             )
         return {

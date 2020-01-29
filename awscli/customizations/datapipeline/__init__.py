@@ -22,6 +22,7 @@ from awscli.customizations.datapipeline.createdefaultroles \
     import CreateDefaultRoles
 from awscli.customizations.datapipeline.listrunsformatter \
     import ListRunsFormatter
+from awscli.customizations.exceptions import ParamValidationError
 
 
 DEFINITION_HELP_TEXT = """\
@@ -57,7 +58,7 @@ class DocSectionNotFoundError(Exception):
     pass
 
 
-class ParameterDefinitionError(Exception):
+class ParameterDefinitionError(ParamValidationError):
     def __init__(self, msg):
         full_msg = ("Error in parameter: %s\n" % msg)
         super(ParameterDefinitionError, self).__init__(full_msg)
@@ -279,7 +280,7 @@ class ParameterValuesArgument(CustomArgument):
             return
 
         if parameters.get('parameterValues', None) is not None:
-            raise Exception(
+            raise ParamValidationError(
                 "Only parameter-values or parameter-values-uri is allowed"
             )
 
@@ -295,7 +296,7 @@ class ParameterValuesInlineArgument(CustomArgument):
             return
 
         if parameters.get('parameterValues', None) is not None:
-            raise Exception(
+            raise ParamValidationError(
                 "Only parameter-values or parameter-values-uri is allowed"
             )
 

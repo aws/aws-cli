@@ -13,6 +13,7 @@
 from awscli.customizations.wizard import devcommands, factory
 from awscli.customizations.wizard.loader import WizardLoader
 from awscli.customizations.commands import BasicCommand, BasicHelp
+from awscli.customizations.exceptions import ParamValidationError
 
 
 def register_wizard_commands(event_handlers):
@@ -89,8 +90,10 @@ class TopLevelWizardCommand(BasicCommand):
         self._runner.run(loaded)
 
     def _raise_usage_error(self):
-        raise ValueError("usage: aws [options] <command> <subcommand> "
-                            "[parameters]\naws: error: too few arguments")
+        raise ParamValidationError(
+            "usage: aws [options] <command> <subcommand> "
+            "[parameters]\naws: error: too few arguments"
+        )
 
     def create_help_command(self):
         return BasicHelp(self._session, self,

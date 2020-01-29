@@ -14,6 +14,7 @@ from botocore import xform_name
 from botocore.exceptions import DataNotFoundError
 
 from awscli.clidriver import ServiceOperation
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.commands import BasicCommand, BasicHelp, \
     BasicDocHandler
 
@@ -66,8 +67,10 @@ class WaitCommand(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         if parsed_args.subcommand is None:
-            raise ValueError("usage: aws [options] <command> <subcommand> "
-                             "[parameters]\naws: error: too few arguments")
+            raise ParamValidationError(
+                "usage: aws [options] <command> <subcommand> "
+                "[parameters]\naws: error: too few arguments"
+            )
         return 0
 
     def _build_subcommand_table(self):

@@ -24,6 +24,7 @@ from awscli.customizations.history.show import ShowCommand
 from awscli.customizations.history.show import Formatter
 from awscli.customizations.history.show import DetailedFormatter
 from awscli.customizations.history.db import DatabaseRecordReader
+from awscli.customizations.exceptions import ParamValidationError
 
 
 class FakeError(Exception):
@@ -81,7 +82,7 @@ class TestFormatter(unittest.TestCase):
             formatter.history, [other_event_record])
 
     def test_raises_error_when_both_include_and_exclude(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             Formatter(include=['one_event'], exclude=['other_event'])
 
 
@@ -706,7 +707,7 @@ class TestShowCommand(unittest.TestCase):
     def test_raises_error_when_both_include_and_exclude(self):
         self.parsed_args.include = ['API_CALL']
         self.parsed_args.exclude = ['CLI_RC']
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
 
     @mock.patch('awscli.customizations.history.commands.is_windows', False)

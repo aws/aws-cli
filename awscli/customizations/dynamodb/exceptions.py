@@ -10,27 +10,28 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from awscli.customizations.exceptions import ParamValidationError
 
 
 class DDBError(Exception):
     pass
 
 
-class EmptyExpressionError(DDBError):
+class EmptyExpressionError(DDBError, ParamValidationError):
     def __init__(self):
         super(EmptyExpressionError, self).__init__(
             "Expressions must not be empty"
         )
 
 
-class LexerError(DDBError):
+class LexerError(DDBError, ParamValidationError):
     def __init__(self, expression, position, message):
         underline = ' ' * position + '^'
         error_message = '%s\n%s\n%s' % (message, expression, underline)
         super(LexerError, self).__init__(error_message)
 
 
-class ParserError(DDBError):
+class ParserError(DDBError, ParamValidationError):
     pass
 
 

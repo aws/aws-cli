@@ -463,8 +463,14 @@ class TestSelect(BaseSelectTest):
     def test_select_does_not_support_yaml_stream(self):
         cmdline = 'ddb select mytable --output yaml-stream'
         stdout, _, _ = self.assert_params_for_cmd(
-            cmdline, expected_rc=255,
+            cmdline, expected_rc=252,
             stderr_contains='yaml-stream output format is not supported',
+        )
+
+    def test_select_parsing_error_rc(self):
+        cmdline = 'ddb select mytable --filter a=?!f'
+        stdout, _, _ = self.assert_params_for_cmd(
+            cmdline, expected_rc=252,
         )
 
 

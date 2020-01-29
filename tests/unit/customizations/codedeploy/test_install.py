@@ -16,6 +16,7 @@ import sys
 from argparse import Namespace
 from awscli.customizations.codedeploy.install import Install
 from awscli.customizations.codedeploy.systems import Ubuntu, Windows, RHEL, System
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.testutils import unittest
 from mock import MagicMock, patch, mock_open
 from socket import timeout
@@ -131,7 +132,7 @@ class TestInstall(unittest.TestCase):
     def test_install_throws_on_invalid_agent_installer(self):
         self.args.agent_installer = 'invalid-s3-location'
         with self.assertRaisesRegexp(
-                ValueError,
+                ParamValidationError,
                 '--agent-installer must specify the Amazon S3 URL format as '
                 's3://<bucket>/<key>.'):
             self.install._run_main(self.args, self.globals)

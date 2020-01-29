@@ -23,6 +23,7 @@ from botocore.exceptions import ClientError
 from awscli.compat import six
 from awscli.customizations.codedeploy.utils import validate_s3_location
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.compat import ZIP_COMPRESSION_MODE
 
 
@@ -125,7 +126,7 @@ class Push(BasicCommand):
         validate_s3_location(parsed_args, 's3_location')
         if parsed_args.ignore_hidden_files \
                 and parsed_args.no_ignore_hidden_files:
-            raise RuntimeError(
+            raise ParamValidationError(
                 'You cannot specify both --ignore-hidden-files and '
                 '--no-ignore-hidden-files.'
             )

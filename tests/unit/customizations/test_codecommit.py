@@ -21,6 +21,7 @@ from botocore.credentials import Credentials
 from awscli.customizations.codecommit import CodeCommitGetCommand
 from awscli.customizations.codecommit import CodeCommitCommand
 from awscli.testutils import unittest, StringIOWithFileNo
+from awscli.customizations.exceptions import ParamValidationError
 
 from botocore.auth import SigV4Auth
 from botocore.awsrequest import AWSRequest
@@ -154,9 +155,9 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         output = stdout_mock.getvalue().strip()
         self.assertEquals('', output)
 
-    def test_raises_value_error_when_not_provided_any_subcommands(self):
+    def test_raises_validation_error_when_not_provided_any_subcommands(self):
         self.get_command = CodeCommitCommand(self.session)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             self.get_command._run_main(self.args, self.globals)
 
     @patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)

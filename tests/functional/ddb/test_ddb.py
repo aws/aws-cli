@@ -15,7 +15,7 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 class TestDDB(BaseAWSCommandParamsTest):
     def test_no_command_specified(self):
-        _, stderr, _ = self.run_cmd('ddb', expected_rc=255)
+        _, stderr, _ = self.run_cmd('ddb', expected_rc=252)
         expected = (
             "usage: aws [options] <command> <subcommand> "
             "[parameters]\naws: error: too few arguments"

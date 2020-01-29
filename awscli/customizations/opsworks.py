@@ -27,6 +27,7 @@ from botocore.exceptions import ClientError
 from awscli.compat import shlex_quote, urlopen, ensure_text_type
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import create_client_from_parsed_globals
+from awscli.customizations.exceptions import ParamValidationError
 
 
 LOG = logging.getLogger(__name__)
@@ -153,36 +154,36 @@ class OpsWorksRegister(BasicCommand):
         Validates command line arguments before doing anything else.
         """
         if not args.target and not args.local:
-            raise ValueError("One of target or --local is required.")
+            raise ParamValidationError("One of target or --local is required.")
         elif args.target and args.local:
-            raise ValueError(
+            raise ParamValidationError(
                 "Arguments target and --local are mutually exclusive.")
 
         if args.local and platform.system() != 'Linux':
-            raise ValueError(
+            raise ParamValidationError(
                 "Non-Linux instances are not supported by AWS OpsWorks.")
 
         if args.ssh and (args.username or args.private_key):
-            raise ValueError(
+            raise ParamValidationError(
                 "Argument --override-ssh cannot be used together with "
                 "--ssh-username or --ssh-private-key.")
 
         if args.infrastructure_class == 'ec2':
             if args.private_ip:
-                raise ValueError(
+                raise ParamValidationError(
                     "--override-private-ip is not supported for EC2.")
             if args.public_ip:
-                raise ValueError(
+                raise ParamValidationError(
                     "--override-public-ip is not supported for EC2.")
 
         if args.infrastructure_class == 'on-premises' and \
                 args.use_instance_profile:
-            raise ValueError(
+            raise ParamValidationError(
                 "--use-instance-profile is only supported for EC2.")
 
         if args.hostname:
             if not HOSTNAME_RE.match(args.hostname):
-                raise ValueError(
+                raise ParamValidationError(
                     "Invalid hostname: '%s'. Hostnames must consist of "
                     "letters, digits and dashes only and must not start or "
                     "end with a dash." % args.hostname)

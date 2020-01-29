@@ -159,7 +159,7 @@ class TestPut(BaseAWSCommandParamsTest):
             'ddb', 'put', 'mytable', '[{foo: bar}, {foo: bar}]',
             '--condition', 'attribute_exists(foo)',
         ]
-        _, stderr, _ = self.assert_params_for_cmd(command, expected_rc=255)
+        _, stderr, _ = self.assert_params_for_cmd(command, expected_rc=252)
         self.assertIn('--condition is not supported', stderr)
 
     def test_load_items_from_file(self):

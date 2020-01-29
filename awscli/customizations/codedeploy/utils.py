@@ -17,6 +17,7 @@ import re
 import awscli.compat
 from awscli.compat import urlopen, URLError
 from awscli.customizations.codedeploy.systems import System, Ubuntu, Windows, RHEL
+from awscli.customizations.exceptions import ParamValidationError
 from socket import timeout
 
 
@@ -59,11 +60,15 @@ def validate_region(params, parsed_globals):
 def validate_instance_name(params):
     if params.instance_name:
         if not re.match(INSTANCE_NAME_PATTERN, params.instance_name):
-            raise ValueError('Instance name contains invalid characters.')
+            raise ParamValidationError(
+                'Instance name contains invalid characters.'
+            )
         if params.instance_name.startswith('i-'):
-            raise ValueError('Instance name cannot start with \'i-\'.')
+            raise ParamValidationError(
+                'Instance name cannot start with \'i-\'.'
+            )
         if len(params.instance_name) > MAX_INSTANCE_NAME_LENGTH:
-            raise ValueError(
+            raise ParamValidationError(
                 'Instance name cannot be longer than {0} characters.'.format(
                     MAX_INSTANCE_NAME_LENGTH
                 )
@@ -73,20 +78,20 @@ def validate_instance_name(params):
 def validate_tags(params):
     if params.tags:
         if len(params.tags) > MAX_TAGS_PER_INSTANCE:
-            raise ValueError(
+            raise ParamValidationError(
                 'Instances can only have a maximum of {0} tags.'.format(
                     MAX_TAGS_PER_INSTANCE
                 )
             )
         for tag in params.tags:
             if len(tag['Key']) > MAX_TAG_KEY_LENGTH:
-                raise ValueError(
+                raise ParamValidationError(
                     'Tag Key cannot be longer than {0} characters.'.format(
                         MAX_TAG_KEY_LENGTH
                     )
                 )
             if len(tag['Value']) > MAX_TAG_VALUE_LENGTH:
-                raise ValueError(
+                raise ParamValidationError(
                     'Tag Value cannot be longer than {0} characters.'.format(
                         MAX_TAG_VALUE_LENGTH
                     )
@@ -96,7 +101,7 @@ def validate_tags(params):
 def validate_iam_user_arn(params):
     if params.iam_user_arn and \
             not re.match(IAM_USER_ARN_PATTERN, params.iam_user_arn):
-        raise ValueError('Invalid IAM user ARN.')
+        raise ParamValidationError('Invalid IAM user ARN.')
 
 
 def validate_instance(params):
@@ -129,7 +134,7 @@ def validate_s3_location(params, arg_name):
                 params.bucket = matcher.group(1)
                 params.key = matcher.group(2)
             else:
-                raise ValueError(
+                raise ParamValidationError(
                     '--{0} must specify the Amazon S3 URL format as '
                     's3://<bucket>/<key>.'.format(
                         arg_name.replace('_', '-')

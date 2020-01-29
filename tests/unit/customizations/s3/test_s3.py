@@ -51,7 +51,7 @@ class CreateTablesTest(unittest.TestCase):
 
 class TestS3(BaseAWSCommandParamsTest):
     def test_too_few_args(self):
-        stderr = self.run_cmd('s3', expected_rc=255)[1]
+        stderr = self.run_cmd('s3', expected_rc=252)[1]
         self.assertIn(("usage: aws [options] <command> "
                        "<subcommand> [parameters]"), stderr)
         self.assertIn('too few arguments', stderr)

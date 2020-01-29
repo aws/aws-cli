@@ -64,11 +64,11 @@ assert_expected_installation() {
   assert_expected_symlink "$expected_current_dir" "$expected_install_dir"
 
   # Assert the bin symlinks are correct
-  assert_expected_symlink "$BIN_DIR/aws2" "$expected_current_dir/bin/aws"
-  assert_expected_symlink "$BIN_DIR/aws2_completer" "$expected_current_dir/bin/aws_completer"
+  assert_expected_symlink "$BIN_DIR/aws" "$expected_current_dir/bin/aws"
+  assert_expected_symlink "$BIN_DIR/aws_completer" "$expected_current_dir/bin/aws_completer"
 
   # Assert the executable works with the expected output
-  [ "$("$BIN_DIR/aws2" --version)" = "$(aws_version_output "$expected_installed_version")" ]
+  [ "$("$BIN_DIR/aws" --version)" = "$(aws_version_output "$expected_installed_version")" ]
 }
 
 assert_expected_symlink() {
@@ -97,14 +97,14 @@ assert_expected_symlink() {
 @test "install" {
   run_install --install-dir "$INSTALL_DIR" --bin-dir "$BIN_DIR"
   [ "$status" -eq 0 ]
-  [ "$output" = "You can now run: $BIN_DIR/aws2 --version" ]
+  [ "$output" = "You can now run: $BIN_DIR/aws --version" ]
   assert_expected_installation "$AWS_EXE_VERSION"
 }
 
 @test "using shorthand parameters" {
   run_install -i "$INSTALL_DIR" -b "$BIN_DIR"
   [ "$status" -eq 0 ]
-  [ "$output" = "You can now run: $BIN_DIR/aws2 --version" ]
+  [ "$output" = "You can now run: $BIN_DIR/aws --version" ]
   assert_expected_installation "$AWS_EXE_VERSION"
 }
 

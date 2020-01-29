@@ -17,7 +17,6 @@ from awscli.customizations.s3.subcommands import ListCommand, WebsiteCommand, \
     PresignCommand
 from awscli.customizations.s3.syncstrategy.register import \
     register_sync_strategies
-from awscli.customizations.exceptions import ParamValidationError
 
 
 def awscli_initialize(cli):
@@ -66,7 +65,4 @@ class S3(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         if parsed_args.subcommand is None:
-            raise ParamValidationError(
-                "usage: aws [options] <command> <subcommand> "
-                "[parameters]\naws: error: too few arguments"
-            )
+            self._raise_usage_error()

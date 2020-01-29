@@ -23,7 +23,6 @@ from botocore.awsrequest import AWSRequest
 from botocore.compat import urlsplit
 from awscli.customizations.commands import BasicCommand
 from awscli.compat import NonTranslatedStdout
-from awscli.customizations.exceptions import ParamValidationError
 
 logger = logging.getLogger('botocore.credentials')
 
@@ -187,7 +186,4 @@ class CodeCommitCommand(BasicCommand):
                    ' for details')
 
     def _run_main(self, args, parsed_globals):
-        raise ParamValidationError(
-            'usage: aws [options] codecommit credential-helper <subcommand> '
-            '[parameters]\naws: error: too few arguments'
-        )
+        self._raise_usage_error()

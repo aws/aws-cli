@@ -27,7 +27,6 @@ from awscli.customizations.history.db import RecordBuilder
 from awscli.customizations.history.db import DatabaseHistoryHandler
 from awscli.customizations.history.show import ShowCommand
 from awscli.customizations.history.list import ListCommand
-from awscli.customizations.exceptions import ParamValidationError
 
 
 LOG = logging.getLogger(__name__)
@@ -104,7 +103,4 @@ class HistoryCommand(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         if parsed_args.subcommand is None:
-            raise ParamValidationError(
-                "usage: aws [options] <command> <subcommand> "
-                "[parameters]\naws: error: too few arguments"
-            )
+            self._raise_usage_error()

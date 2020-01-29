@@ -14,6 +14,7 @@ from awscli.clidocs import OperationDocumentEventHandler
 from awscli.clidriver import CLICommand
 from awscli.help import HelpCommand
 from awscli.schema import SchemaTransformer
+from awscli.customizations.exceptions import ParamValidationError
 
 LOG = logging.getLogger(__name__)
 _open = open
@@ -293,6 +294,14 @@ class BasicCommand(CLICommand):
     @lineage.setter
     def lineage(self, value):
         self._lineage = value
+
+    def _raise_usage_error(self):
+        lineage = ' '.join([c.name for c in self.lineage])
+        error_msg = (
+            "usage: aws [options] %s <subcommand> "
+            "[parameters]\naws: error: too few arguments"
+        ) % lineage
+        raise ParamValidationError(error_msg)
 
 
 class BasicHelp(HelpCommand):

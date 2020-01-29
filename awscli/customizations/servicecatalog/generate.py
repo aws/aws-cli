@@ -17,7 +17,6 @@ from awscli.customizations.servicecatalog.generateproduct \
     import GenerateProductCommand
 from awscli.customizations.servicecatalog.generateprovisioningartifact \
     import GenerateProvisioningArtifactCommand
-from awscli.customizations.exceptions import ParamValidationError
 
 
 class GenerateCommand(BasicCommand):
@@ -32,7 +31,4 @@ class GenerateCommand(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         if parsed_args.subcommand is None:
-            raise ParamValidationError(
-                "usage: aws [options] <command> <subcommand> "
-                "[parameters]\naws: error: too few arguments"
-            )
+            self._raise_usage_error()

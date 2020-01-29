@@ -14,7 +14,6 @@ from awscli.customizations.commands import BasicCommand
 from awscli.customizations.dynamodb.subcommands import (
     SelectCommand, PutCommand,
 )
-from awscli.customizations.exceptions import ParamValidationError
 
 
 def register_ddb(events):
@@ -36,7 +35,4 @@ class DDB(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         if parsed_args.subcommand is None:
-            raise ParamValidationError(
-                "usage: aws [options] <command> <subcommand> "
-                "[parameters]\naws: error: too few arguments"
-            )
+            self._raise_usage_error()

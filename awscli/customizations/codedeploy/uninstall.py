@@ -47,6 +47,8 @@ class Uninstall(BasicCommand):
                 'Existing On-Premises Instances by Using AWS CodeDeploy" in '
                 'the AWS CodeDeploy User Guide.\n'.format(e)
             )
+            return 255
+        return 0
 
     def _uninstall_agent(self, params):
         sys.stdout.write('Uninstalling the AWS CodeDeploy Agent... ')

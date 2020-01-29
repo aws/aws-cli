@@ -68,6 +68,7 @@ class WaitCommand(BasicCommand):
         if parsed_args.subcommand is None:
             raise ValueError("usage: aws [options] <command> <subcommand> "
                              "[parameters]\naws: error: too few arguments")
+        return 0
 
     def _build_subcommand_table(self):
         subcommand_table = super(WaitCommand, self)._build_subcommand_table()

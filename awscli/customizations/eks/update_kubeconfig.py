@@ -157,7 +157,7 @@ class UpdateKubeconfigCommand(BasicCommand):
                     new_user_dict,
                     new_cluster_dict
                 ])
-
+        return 0
 
 
 class KubeconfigSelector(object):

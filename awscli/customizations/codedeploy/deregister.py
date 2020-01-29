@@ -83,6 +83,8 @@ class Deregister(BasicCommand):
                 'Using AWS CodeDeploy" in the AWS CodeDeploy User '
                 'Guide.\n'.format(e)
             )
+            return 255
+        return 0
 
     def _get_instance_info(self, params):
         sys.stdout.write('Retrieving on-premises instance information... ')

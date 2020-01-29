@@ -91,6 +91,7 @@ class ConfigureImportCommand(BasicCommand):
         self._csv_parser.strict = not parsed_args.skip_invalid
         self._profile_prefix = parsed_args.profile_prefix
         self._import_csv(parsed_args.csv)
+        return 0
 
 
 class CredentialParserError(Exception):

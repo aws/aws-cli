@@ -146,6 +146,7 @@ class OpsWorksRegister(BasicCommand):
         self.determine_details(args)
         self.create_iam_entities(args)
         self.setup_target_machine(args)
+        return 0
 
     def prevalidate_arguments(self, args):
         """

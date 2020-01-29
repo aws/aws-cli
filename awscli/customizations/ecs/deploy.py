@@ -134,6 +134,7 @@ class ECSDeploy(BasicCommand):
             register_task_def_kwargs, ecs_client_wrapper)
 
         self._create_and_wait_for_deployment(codedeploy_client, appspec_obj)
+        return 0
 
     def _create_and_wait_for_deployment(self, client, appspec):
         deployer = CodeDeployer(client, appspec)

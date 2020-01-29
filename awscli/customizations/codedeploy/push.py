@@ -119,6 +119,7 @@ class Push(BasicCommand):
             region_name=parsed_globals.region
         )
         self._push(parsed_args)
+        return 0
 
     def _validate_args(self, parsed_args):
         validate_s3_location(parsed_args, 's3_location')

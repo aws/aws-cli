@@ -358,6 +358,7 @@ class ListRunsCommand(BasicCommand):
         self._set_client(parsed_globals)
         self._parse_type_args(parsed_args)
         self._list_runs(parsed_args, parsed_globals)
+        return 0
 
     def _set_client(self, parsed_globals):
         # This is called from _run_main and is used to ensure that we have

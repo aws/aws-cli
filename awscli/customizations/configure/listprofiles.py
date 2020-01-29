@@ -35,3 +35,4 @@ class ListProfilesCommand(BasicCommand):
     def _run_main(self, parsed_args, parsed_globals):
         for profile in self._session.available_profiles:
             uni_print('%s\n' % profile, out_file=self._out_stream)
+        return 0

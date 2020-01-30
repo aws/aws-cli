@@ -274,7 +274,7 @@ class TestMoveCommand(BaseS3IntegrationTest):
         self.put_object(bucket_name, key_name='key.txt', contents='foo')
         p = aws('s3 mv s3://%s/key.txt s3://%s/key.txt' %
                 (bucket_name, bucket_name))
-        self.assertEqual(p.rc, 255)
+        self.assertEqual(p.rc, 252)
         self.assertIn('Cannot mv a file onto itself', p.stderr)
 
     def test_cant_move_large_file_onto_itself(self):
@@ -288,7 +288,7 @@ class TestMoveCommand(BaseS3IntegrationTest):
                         contents=file_contents)
         p = aws('s3 mv s3://%s/key.txt s3://%s/key.txt' %
                 (bucket_name, bucket_name))
-        self.assertEqual(p.rc, 255)
+        self.assertEqual(p.rc, 252)
         self.assertIn('Cannot mv a file onto itself', p.stderr)
 
 
@@ -1149,7 +1149,7 @@ class TestLs(BaseS3IntegrationTest):
 
     def test_ls_non_existent_bucket(self):
         p = aws('s3 ls s3://foobara99842u4wbts829381')
-        self.assertEqual(p.rc, 255)
+        self.assertEqual(p.rc, 254)
         self.assertIn(
             ('An error occurred (NoSuchBucket) when calling the '
              'ListObjectsV2 operation: The specified bucket does not exist'),

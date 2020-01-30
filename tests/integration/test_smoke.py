@@ -149,8 +149,8 @@ def test_display_error_message():
 
 
 def _run_error_aws_command(command_string):
-    result = _aws(command_string, target_rc=255)
-    assert_equal(result.rc, 255)
+    result = _aws(command_string, target_rc=254)
+    assert_equal(result.rc, 254)
     error_message = re.compile(
         'An error occurred \(.+\) when calling the \w+ operation: \w+')
     match = error_message.search(result.stderr)

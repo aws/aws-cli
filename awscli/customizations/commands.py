@@ -187,7 +187,11 @@ class BasicCommand(CLICommand):
                 raise ParamValidationError(
                     "Unknown options: %s" % ','.join(remaining)
                 )
-            return self._run_main(parsed_args, parsed_globals)
+            rc = self._run_main(parsed_args, parsed_globals)
+            if rc is None:
+                return 0
+            else:
+                return rc
         else:
             return self.subcommand_table[parsed_args.subcommand](remaining,
                                                                  parsed_globals)

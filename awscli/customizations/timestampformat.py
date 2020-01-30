@@ -29,6 +29,7 @@ in the future.
 """
 from botocore.utils import parse_timestamp
 from botocore.exceptions import ProfileNotFound
+from awscli.customizations.exceptions import ConfigurationError
 
 
 def register_timestamp_format(event_handlers):
@@ -70,6 +71,8 @@ def add_timestamp_parser(session, **kwargs):
     elif timestamp_format == 'iso8601':
         timestamp_parser = iso_format
     else:
-        raise ValueError('Unknown cli_timestamp_format value: %s, valid values'
-                         ' are "wire" or "iso8601"' % timestamp_format)
+        raise ConfigurationError(
+            'Unknown cli_timestamp_format value: %s, valid values'
+            ' are "wire" or "iso8601"' % timestamp_format
+        )
     factory.set_parser_defaults(timestamp_parser=timestamp_parser)

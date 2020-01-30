@@ -13,9 +13,10 @@
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.sso.utils import do_sso_login
 from awscli.customizations.utils import uni_print
+from awscli.customizations.exceptions import ConfigurationError
 
 
-class InvalidSSOConfigError(Exception):
+class InvalidSSOConfigError(ConfigurationError):
     pass
 
 

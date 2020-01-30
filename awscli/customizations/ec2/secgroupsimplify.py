@@ -23,6 +23,7 @@ authorize operations:
 """
 
 from awscli.arguments import CustomArgument
+from awscli.customizations.exceptions import ParamValidationError
 
 
 def _add_params(argument_table, **kwargs):
@@ -64,7 +65,7 @@ def _check_args(parsed_args, **kwargs):
             if arg_dict[key]:
                 msg = ('The --%s option is not compatible '
                        'with the --ip-permissions option ') % key
-                raise ValueError(msg)
+                raise ParamValidationError(msg)
 
 
 def _add_docs(help_command, **kwargs):
@@ -144,12 +145,12 @@ class ProtocolArgument(CustomArgument):
                 if (int_value < 0 or int_value > 255) and int_value != -1:
                     msg = ('protocol numbers must be in the range 0-255 '
                            'or -1 to specify all protocols')
-                    raise ValueError(msg)
+                    raise ParamValidationError(msg)
             except ValueError:
                 if value not in ('tcp', 'udp', 'icmp', 'all'):
                     msg = ('protocol parameter should be one of: '
                            'tcp|udp|icmp|all or any valid protocol number.')
-                    raise ValueError(msg)
+                    raise ParamValidationError(msg)
                 if value == 'all':
                     value = '-1'
             _build_ip_permissions(parameters, 'IpProtocol', value)
@@ -176,7 +177,7 @@ class PortArgument(CustomArgument):
             except ValueError:
                 msg = ('port parameter should be of the '
                        'form <from[-to]> (e.g. 22 or 22-25)')
-                raise ValueError(msg)
+                raise ParamValidationError(msg)
 
 
 class CidrArgument(CustomArgument):

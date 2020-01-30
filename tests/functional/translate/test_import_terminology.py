@@ -65,7 +65,7 @@ class TestImortTerminology(BaseAWSCommandParamsTest):
         cmdline += ' --name myterminology --merge-strategy OVERWRITE'
         cmdline += ' --terminology-data File=fileb://wrong.csv,Format=TMX'
         cmdline += ' --data-file fileb://right.csv'
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=252)
         self.assertIn(
             "File cannot be provided as part of the '--terminology-data' "
             "argument. Please use the '--data-file' option instead to specify "

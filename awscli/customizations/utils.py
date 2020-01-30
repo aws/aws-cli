@@ -20,6 +20,7 @@ import sys
 import xml
 
 from botocore.exceptions import ClientError
+from awscli.customizations.exceptions import ParamValidationError
 
 
 _SENTENCE_DELIMETERS_REGEX = re.compile(r'[.:]+')
@@ -90,9 +91,11 @@ def validate_mutually_exclusive(parsed_args, *groups):
         if current_group is None:
             current_group = key_group
         elif not key_group == current_group:
-            raise ValueError('The key "%s" cannot be specified when one '
-                             'of the following keys are also specified: '
-                             '%s' % (key, ', '.join(current_group)))
+            raise ParamValidationError(
+                'The key "%s" cannot be specified when one '
+                'of the following keys are also specified: '
+                '%s' % (key, ', '.join(current_group))
+            )
 
 
 def _get_group_for_key(key, groups):

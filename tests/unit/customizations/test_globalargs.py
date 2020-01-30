@@ -19,6 +19,7 @@ from awscli.compat import six
 import mock
 
 from awscli.customizations import globalargs
+from awscli.customizations.exceptions import ParamValidationError
 
 
 class FakeParsedArgs(object):
@@ -65,7 +66,7 @@ class TestGlobalArgsCustomization(unittest.TestCase):
     def test_parse_query_error_message(self):
         # Invalid jmespath expression.
         parsed_args = FakeParsedArgs(query='foo.bar.')
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             globalargs.resolve_types(parsed_args)
             globalargs.resolve_types('query')
 
@@ -185,9 +186,9 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         self.assertFalse(session.register.called)
 
     def test_invalid_endpoint_url(self):
-        # Invalid jmespath expression.
+        # Invalid endpoint URL
         parsed_args = FakeParsedArgs(endpoint_url='missing-scheme.com')
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             globalargs.resolve_types(parsed_args)
 
     def test_valid_endpoint_url(self):

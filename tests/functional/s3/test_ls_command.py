@@ -36,7 +36,7 @@ class TestLSCommand(BaseS3TransferCommandTest):
             stdout, '%s        100 foo/bar.txt\n'%time_local.strftime('%Y-%m-%d %H:%M:%S'))
 
     def test_errors_out_with_extra_arguments(self):
-        stderr = self.run_cmd('s3 ls --extra-argument-foo', expected_rc=255)[1]
+        stderr = self.run_cmd('s3 ls --extra-argument-foo', expected_rc=252)[1]
         self.assertIn('Unknown options', stderr)
         self.assertIn('--extra-argument-foo', stderr)
 

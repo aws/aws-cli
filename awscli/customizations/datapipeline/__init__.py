@@ -391,8 +391,10 @@ class ListRunsCommand(BasicCommand):
     def _validate_status_choices(self, statuses):
         for status in statuses:
             if status not in self.VALID_STATUS:
-                raise ValueError("Invalid status: %s, must be one of: %s" %
-                                 (status, ', '.join(self.VALID_STATUS)))
+                raise ParamValidationError(
+                    "Invalid status: %s, must be one of: %s" %
+                    (status, ', '.join(self.VALID_STATUS))
+                )
 
     def _list_runs(self, parsed_args, parsed_globals):
         query = QueryArgBuilder().build_query(parsed_args)

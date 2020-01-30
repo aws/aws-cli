@@ -42,6 +42,7 @@ from awscli.argparser import MainArgParser
 from awscli.argparser import ServiceArgParser
 from awscli.argparser import ArgTableArgParser
 from awscli.argparser import USAGE
+from awscli.argprocess import ParamError, ParamSyntaxError
 from awscli.help import ProviderHelpCommand
 from awscli.help import ServiceHelpCommand
 from awscli.help import OperationHelpCommand
@@ -61,6 +62,10 @@ from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.exceptions import ConfigurationError
 
 
+PARAM_VALIDATION_ERRORS = (
+    ParamError, ParamSyntaxError,
+    ParamValidationError, BotocoreParamValidationError,
+)
 LOG = logging.getLogger('awscli.clidriver')
 LOG_FORMAT = (
     '%(asctime)s - %(threadName)s - %(name)s - %(levelname)s - %(message)s')
@@ -320,7 +325,7 @@ class CLIDriver(object):
                 'CLI_VERSION', self.session.user_agent(), 'CLI')
             HISTORY_RECORDER.record('CLI_ARGUMENTS', args, 'CLI')
             return command_table[parsed_args.command](remaining, parsed_args)
-        except (BotocoreParamValidationError, ParamValidationError) as e:
+        except PARAM_VALIDATION_ERRORS as e:
             # RC 252 represents that the command failed to parse or failed
             # client side validation at the botocore level.
             LOG.debug("Client side parameter validation failed", exc_info=True)

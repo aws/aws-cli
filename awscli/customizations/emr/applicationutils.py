@@ -14,6 +14,7 @@
 from awscli.customizations.emr import constants
 from awscli.customizations.emr import emrutils
 from awscli.customizations.emr import exceptions
+from awscli.customizations.exceptions import ParamValidationError
 
 
 def build_applications(region,
@@ -60,8 +61,10 @@ def build_applications(region,
                     _build_hbase_install_step(
                         constants.HBASE_PATH_HADOOP1_INSTALL_JAR))
             else:
-                raise ValueError('aws: error: AMI version ' + ami_version +
-                                 'is not compatible with HBase.')
+                raise ParamValidationError(
+                    'aws: error: AMI version %s is not '
+                    'compatible with HBase.' % ami_version
+                )
         elif app_name == constants.IMPALA:
             ba_list.append(
                 _build_impala_install_bootstrap_action(

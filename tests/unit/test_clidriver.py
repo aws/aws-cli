@@ -650,7 +650,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         rc = driver.main(
             'ec2 foo --bar {"Name":"test",Count:4}'.split())
 
-        self.assertEqual(rc, 255)
+        self.assertEqual(rc, 252)
 
     def test_empty_params_gracefully_handled(self):
         # Simulates the equivalent in bash: --identifies ""
@@ -662,7 +662,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         driver = create_clidriver()
         rc = driver.main('ec2 describe-instances '
                          '--filters file://does/not/exist.json'.split())
-        self.assertEqual(rc, 255)
+        self.assertEqual(rc, 252)
         error_msg = self.stderr.getvalue()
         self.assertIn("Error parsing parameter '--filters': "
                       "Unable to load paramfile file://does/not/exist.json",

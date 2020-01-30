@@ -23,6 +23,7 @@ from functools import partial
 from awscli.argprocess import detect_shape_structure
 from awscli import arguments
 from awscli.customizations.utils import validate_mutually_exclusive_handler
+from awscli.customizations.exceptions import ParamValidationError
 
 
 LOG = logging.getLogger(__name__)
@@ -91,7 +92,7 @@ def validate_boolean_mutex_groups(boolean_pairs, parsed_args, **kwargs):
     for positive, negative in boolean_pairs:
         if getattr(parsed_args, positive.py_name) is not _NOT_SPECIFIED and \
                 getattr(parsed_args, negative.py_name) is not _NOT_SPECIFIED:
-            raise ValueError(
+            raise ParamValidationError(
                 'Cannot specify both the "%s" option and '
                 'the "%s" option.' % (positive.cli_name, negative.cli_name))
 

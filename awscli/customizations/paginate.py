@@ -27,10 +27,11 @@ import logging
 from functools import partial
 
 from botocore import xform_name
-from botocore.exceptions import DataNotFoundError, PaginationError
+from botocore.exceptions import DataNotFoundError
 from botocore import model
 
 from awscli.arguments import BaseCLIArgument
+from awscli.customizations.exceptions import ParamValidationError
 
 
 logger = logging.getLogger(__name__)
@@ -233,9 +234,10 @@ def ensure_paging_params_not_set(parsed_args, shadowed_args):
     if len(params_used) > 0:
         converted_params = ', '.join(
             ["--" + p.replace('_', '-') for p in params_used])
-        raise PaginationError(
-            message="Cannot specify --no-paginate along with pagination "
-                    "arguments: %s" % converted_params)
+        raise ParamValidationError(
+            "Cannot specify --no-paginate along with pagination "
+            "arguments: %s" % converted_params
+        )
 
 
 def _remove_existing_paging_arguments(argument_table, pagination_config):

@@ -141,7 +141,7 @@ class TestCLIInputYAML(BaseCLIInputArgumentTest):
             '--cli-input-json', '{"Bucket":"bucket","Key":"key"}'
         ]
         self.assert_params_for_cmd(
-            command, expected_rc=255,
+            command, expected_rc=252,
             stderr_contains='Only one --cli-input- parameter may be specified.'
         )
 

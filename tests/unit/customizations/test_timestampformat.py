@@ -15,6 +15,7 @@ from botocore.session import Session
 from mock import Mock, call
 
 from awscli.customizations import timestampformat
+from awscli.customizations.exceptions import ConfigurationError
 from awscli.testutils import unittest
 
 
@@ -62,7 +63,7 @@ class TestScalarParse(unittest.TestCase):
         session.get_scoped_config.return_value = {'cli_timestamp_format':
                                                   'foobar'}
         session.get_component.return_value
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ConfigurationError):
             timestampformat.add_timestamp_parser(session)
 
     def test_choose_timestamp_parser_profile_not_found(self):

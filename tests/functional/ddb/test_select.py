@@ -523,8 +523,8 @@ class TestSelectPagination(BaseSelectTest):
         command = [
             'ddb', 'select', 'mytable', '--no-paginate', '--max-items', '1'
         ]
-        _, stderr, _ = self.run_cmd(command, expected_rc=255)
-        self.assertIn('Error during pagination', stderr)
+        _, stderr, _ = self.run_cmd(command, expected_rc=252)
+        self.assertIn('Cannot specify --no-paginate along with ', stderr)
 
     def test_max_items(self):
         command = [

@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest
 
-from botocore.exceptions import DataNotFoundError, PaginationError
+from botocore.exceptions import DataNotFoundError
 from botocore.model import OperationModel
 from awscli.help import OperationHelpCommand, OperationDocumentEventHandler
 
@@ -20,6 +20,7 @@ import mock
 from mock import Mock, patch
 
 from awscli.customizations import paginate
+from awscli.customizations.exceptions import ParamValidationError
 
 
 class TestPaginateBase(unittest.TestCase):
@@ -344,7 +345,7 @@ class TestEnsurePagingParamsNotSet(TestPaginateBase):
     def test_pagination_params_raise_error_with_no_paginate(self):
         self.parsed_args.max_items = 100
 
-        with self.assertRaises(PaginationError):
+        with self.assertRaises(ParamValidationError):
             paginate.ensure_paging_params_not_set(self.parsed_args, {})
 
     def test_can_handle_missing_page_size(self):

@@ -118,7 +118,7 @@ class TestLoginCommand(BaseSSOTest):
 
     def test_login_no_sso_configuration(self):
         self.set_config_file_content(content='')
-        _, stderr, _ = self.run_cmd('sso login', expected_rc=255)
+        _, stderr, _ = self.run_cmd('sso login', expected_rc=253)
         self.assertIn(
             'Missing the following required SSO configuration',
             stderr
@@ -130,7 +130,7 @@ class TestLoginCommand(BaseSSOTest):
             'sso_start_url=%s\n' % self.start_url
         )
         self.set_config_file_content(content=content)
-        _, stderr, _ = self.run_cmd('sso login', expected_rc=255)
+        _, stderr, _ = self.run_cmd('sso login', expected_rc=253)
         self.assertIn(
             'Missing the following required SSO configuration',
             stderr

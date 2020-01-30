@@ -20,6 +20,7 @@ import datetime
 from awscli.compat import six
 
 from awscli.arguments import CustomArgument
+from awscli.customizations.exceptions import ParamValidationError
 
 logger = logging.getLogger('ec2bundleinstance')
 
@@ -104,7 +105,7 @@ def _check_args(parsed_args, **kwargs):
                 msg = ('Mixing the --storage option '
                        'with the simple, scalar options is '
                        'not recommended.')
-                raise ValueError(msg)
+                raise ParamValidationError(msg)
 
 POLICY = ('{{"expiration": "{expires}",'
           '"conditions": ['

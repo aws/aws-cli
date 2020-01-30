@@ -99,4 +99,4 @@ class TestOutFileQueryArguments(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(
             cmdline,
             stderr_contains='Unable to write to file: ',
-            expected_rc=255)
+            expected_rc=252)

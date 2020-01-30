@@ -13,4 +13,16 @@
 
 
 class ParamValidationError(Exception):
-    pass
+    """CLI parameter validation failed. Indicates RC 252.
+
+    This exception indicates that the command was either invalid or failed to
+    pass a client side validation on the command syntax or parameters provided.
+    """
+
+
+class ConfigurationError(Exception):
+    """CLI configuration is an invalid state. Indicates RC 253.
+
+    This exception indicates that the command run may be syntactically correct
+    but the CLI's environment or configuration is incorrect, incomplete, etc.
+    """

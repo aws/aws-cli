@@ -22,6 +22,7 @@ from awscli.customizations.codedeploy.utils import \
     validate_iam_user_arn, validate_instance, validate_s3_location, \
     MAX_INSTANCE_NAME_LENGTH, MAX_TAGS_PER_INSTANCE, MAX_TAG_KEY_LENGTH, \
     MAX_TAG_VALUE_LENGTH
+from awscli.customizations.exceptions import ConfigurationError
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.testutils import unittest
 
@@ -75,7 +76,8 @@ class TestUtils(unittest.TestCase):
     def test_validate_region_throws_on_no_region(self):
         self.globals.region = None
         self.session.get_config_variable.return_value = None
-        with self.assertRaisesRegexp(RuntimeError, 'Region not specified.'):
+        error_msg = 'Region not specified.'
+        with self.assertRaisesRegexp(ConfigurationError, error_msg):
             validate_region(self.params, self.globals)
 
     def test_validate_instance_name(self):

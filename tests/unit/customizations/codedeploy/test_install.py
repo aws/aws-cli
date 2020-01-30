@@ -16,6 +16,7 @@ import sys
 from argparse import Namespace
 from awscli.customizations.codedeploy.install import Install
 from awscli.customizations.codedeploy.systems import Ubuntu, Windows, RHEL, System
+from awscli.customizations.exceptions import ConfigurationError
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.testutils import unittest
 from mock import MagicMock, patch, mock_open
@@ -96,7 +97,8 @@ class TestInstall(unittest.TestCase):
     def test_install_throws_on_invalid_region(self):
         self.globals.region = None
         self.session.get_config_variable.return_value = None
-        with self.assertRaisesRegexp(RuntimeError, 'Region not specified.'):
+        error_msg = 'Region not specified.'
+        with self.assertRaisesRegexp(ConfigurationError, error_msg):
             self.install._run_main(self.args, self.globals)
 
     def test_install_throws_on_unsupported_system(self):

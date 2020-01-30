@@ -58,6 +58,7 @@ from awscli.utils import write_exception
 from awscli.utils import OutputStreamFactory
 from awscli.utils import IMDSRegionProvider
 from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.exceptions import ConfigurationError
 
 
 LOG = logging.getLogger('awscli.clidriver')
@@ -330,9 +331,13 @@ class CLIDriver(object):
             sys.stderr.write(str(e))
             sys.stderr.write("\n")
             return 252
-        except NoRegionError as e:
+        except ConfigurationError as e:
             # RC 253 represents that the command may be syntatically correct
             # but the environment or configuration is incorrect.
+            LOG.debug("Invalid CLI or client configuration", exc_info=True)
+            write_exception(e, outfile=get_stderr_text_writer())
+            return 253
+        except NoRegionError as e:
             msg = ('%s You can also configure your region by running '
                    '"aws configure".' % e)
             self._show_error(msg)

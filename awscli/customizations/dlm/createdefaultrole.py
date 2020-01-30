@@ -22,6 +22,7 @@ from awscli.customizations.dlm.constants \
     LIFECYCLE_DEFAULT_ROLE_ASSUME_POLICY, \
     LIFECYCLE_DEFAULT_MANAGED_POLICY_NAME, \
     POLICY_ARN_PATTERN
+from awscli.customizations.exceptions import ConfigurationError
 
 LOG = logging.getLogger(__name__)
 
@@ -123,9 +124,10 @@ class CreateDefaultRole(BasicCommand):
         region = get_region(self._session, parsed_globals)
 
         if region is None:
-            raise ValueError('You must specify a region. '
-                             'You can also configure your region '
-                             'by running "aws configure".')
+            raise ConfigurationError(
+                'You must specify a region. You can also configure your '
+                'region by running "aws configure".'
+            )
 
         managed_policy_arn = get_policy_arn(
             region,

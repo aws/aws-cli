@@ -18,6 +18,7 @@ import awscli.compat
 from awscli.compat import urlopen, URLError
 from awscli.customizations.codedeploy.systems import System, Ubuntu, Windows, RHEL
 from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.exceptions import ConfigurationError
 from socket import timeout
 
 
@@ -54,7 +55,7 @@ def validate_region(params, parsed_globals):
     else:
         params.region = params.session.get_config_variable('region')
     if not params.region:
-        raise RuntimeError('Region not specified.')
+        raise ConfigurationError('Region not specified.')
 
 
 def validate_instance_name(params):

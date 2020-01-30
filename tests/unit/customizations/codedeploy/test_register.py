@@ -14,6 +14,7 @@
 from argparse import Namespace
 from awscli.customizations.codedeploy.register import Register
 from awscli.customizations.codedeploy.utils import MAX_TAGS_PER_INSTANCE
+from awscli.customizations.exceptions import ConfigurationError
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.testutils import unittest
 from mock import MagicMock, patch, call, mock_open
@@ -81,7 +82,8 @@ class TestRegister(unittest.TestCase):
     def test_register_throws_on_invalid_region(self):
         self.globals.region = None
         self.session.get_config_variable.return_value = None
-        with self.assertRaisesRegexp(RuntimeError, 'Region not specified.'):
+        error_msg = 'Region not specified.'
+        with self.assertRaisesRegexp(ConfigurationError, error_msg):
             self.register._run_main(self.args, self.globals)
 
     def test_register_throws_on_invalid_instance_name(self):

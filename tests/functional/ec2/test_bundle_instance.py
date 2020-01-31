@@ -91,6 +91,7 @@ class TestBundleInstance(BaseAWSCommandParamsTest):
     def test_both(self):
         captured = cStringIO()
         json = """{"S3":{"Bucket":"foobar","Prefix":"fiebaz"}}"""
-        args = ' --instance-id i-12345678 --owner-aki blah --owner-sak blah --storage %s' % json
+        args = ' --instance-id i-12345678 --owner-akid blah --owner-sak blah --storage %s' % json
         args_list = (self.prefix + args).split()
-        self.assert_params_for_cmd(args_list, expected_rc=255)
+        _, stderr, _ = self.assert_params_for_cmd(args_list, expected_rc=252)
+        self.assertIn('Mixing the --storage option', stderr)

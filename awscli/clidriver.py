@@ -21,6 +21,10 @@ from botocore import xform_name
 from botocore.compat import copy_kwargs, OrderedDict
 from botocore.exceptions import NoCredentialsError
 from botocore.exceptions import NoRegionError
+from botocore.exceptions import ClientError
+from botocore.exceptions import (
+    ParamValidationError as BotocoreParamValidationError
+)
 from botocore.history import get_global_history_recorder
 from botocore.configprovider import InstanceVarProvider
 from botocore.configprovider import EnvironmentProvider
@@ -38,6 +42,7 @@ from awscli.argparser import MainArgParser
 from awscli.argparser import ServiceArgParser
 from awscli.argparser import ArgTableArgParser
 from awscli.argparser import USAGE
+from awscli.argprocess import ParamError, ParamSyntaxError
 from awscli.help import ProviderHelpCommand
 from awscli.help import ServiceHelpCommand
 from awscli.help import OperationHelpCommand
@@ -53,8 +58,18 @@ from awscli.utils import emit_top_level_args_parsed_event
 from awscli.utils import write_exception
 from awscli.utils import OutputStreamFactory
 from awscli.utils import IMDSRegionProvider
+from awscli.constants import (
+    PARAM_VALIDATION_ERROR_RC, CONFIGURATION_ERROR_RC, CLIENT_ERROR_RC,
+    GENERAL_ERROR_RC,
+)
+from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.exceptions import ConfigurationError
 
 
+PARAM_VALIDATION_ERRORS = (
+    ParamError, ParamSyntaxError,
+    ParamValidationError, BotocoreParamValidationError,
+)
 LOG = logging.getLogger('awscli.clidriver')
 LOG_FORMAT = (
     '%(asctime)s - %(threadName)s - %(name)s - %(levelname)s - %(message)s')
@@ -314,32 +329,55 @@ class CLIDriver(object):
                 'CLI_VERSION', self.session.user_agent(), 'CLI')
             HISTORY_RECORDER.record('CLI_ARGUMENTS', args, 'CLI')
             return command_table[parsed_args.command](remaining, parsed_args)
+        except PARAM_VALIDATION_ERRORS as e:
+            # RC 252 represents that the command failed to parse or failed
+            # client side validation at the botocore level.
+            LOG.debug("Client side parameter validation failed", exc_info=True)
+            write_exception(e, outfile=get_stderr_text_writer())
+            return PARAM_VALIDATION_ERROR_RC
         except UnknownArgumentError as e:
             sys.stderr.write("usage: %s\n" % USAGE)
             sys.stderr.write(str(e))
             sys.stderr.write("\n")
-            return 255
+            return PARAM_VALIDATION_ERROR_RC
+        except ConfigurationError as e:
+            # RC 253 represents that the command may be syntatically correct
+            # but the environment or configuration is incorrect.
+            LOG.debug("Invalid CLI or client configuration", exc_info=True)
+            write_exception(e, outfile=get_stderr_text_writer())
+            return CONFIGURATION_ERROR_RC
         except NoRegionError as e:
             msg = ('%s You can also configure your region by running '
                    '"aws configure".' % e)
             self._show_error(msg)
-            return 255
+            return CONFIGURATION_ERROR_RC
         except NoCredentialsError as e:
             msg = ('%s. You can configure credentials by running '
                    '"aws configure".' % e)
             self._show_error(msg)
-            return 255
+            return CONFIGURATION_ERROR_RC
         except KeyboardInterrupt:
             # Shell standard for signals that terminate
             # the process is to return 128 + signum, in this case
             # SIGINT=2, so we'll have an RC of 130.
             sys.stdout.write("\n")
             return 128 + signal.SIGINT
-        except Exception as e:
-            LOG.debug("Exception caught in main()", exc_info=True)
-            LOG.debug("Exiting with rc 255")
+        except ClientError as e:
+            # RC 254 represents that a request/response completed but the
+            # request failed for reasons specific to the service, returned
+            # by the service. Generally, this will indicate incorrect API
+            # usage and is likely not an issue with CLI.
+            LOG.debug("Service returned an exception", exc_info=True)
             write_exception(e, outfile=get_stderr_text_writer())
-            return 255
+            return CLIENT_ERROR_RC
+        except Exception as e:
+            # RC 255 is the catch-all. 255 specifically should not be relied
+            # on as exceptions can move from this catch-all classification
+            # to a more specific RC such as one of the above.
+            LOG.debug("Exception caught in main()", exc_info=True)
+            LOG.debug("Exiting with rc %s" % GENERAL_ERROR_RC)
+            write_exception(e, outfile=get_stderr_text_writer())
+            return GENERAL_ERROR_RC
 
     def _emit_session_event(self, parsed_args):
         # This event is guaranteed to run after the session has been

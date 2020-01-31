@@ -31,8 +31,8 @@ from cryptography.hazmat.primitives.serialization import load_der_public_key
 from awscli.customizations.cloudtrail.utils import get_trail_by_arn, \
     get_account_id_from_arn
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.exceptions import ParamValidationError
 from botocore.exceptions import ClientError
-from awscli.schema import ParameterRequiredError
 
 
 LOG = logging.getLogger(__name__)
@@ -69,7 +69,9 @@ def parse_date(date_string):
     try:
         return parser.parse(date_string)
     except ValueError:
-        raise ValueError('Unable to parse date value: %s' % date_string)
+        raise ParamValidationError(
+            'Unable to parse date value: %s' % date_string
+        )
 
 
 def assert_cloudtrail_arn_is_valid(trail_arn):
@@ -78,7 +80,9 @@ def assert_cloudtrail_arn_is_valid(trail_arn):
     ARNs look like: arn:aws:cloudtrail:us-east-1:123456789012:trail/foo"""
     pattern = re.compile('arn:.+:cloudtrail:.+:\d{12}:trail/.+')
     if not pattern.match(trail_arn):
-        raise ValueError('Invalid trail ARN provided: %s' % trail_arn)
+        raise ParamValidationError(
+            'Invalid trail ARN provided: %s' % trail_arn
+        )
 
 
 def create_digest_traverser(cloudtrail_client, organization_client,
@@ -132,7 +136,7 @@ def create_digest_traverser(cloudtrail_client, organization_client,
         is_org_trail = trail_info['IsOrganizationTrail']
         if is_org_trail:
             if not account_id:
-                raise ParameterRequiredError(
+                raise ParamValidationError(
                     "Missing required parameter for organization "
                     "trail: '--account-id'")
             organization_id = organization_client.describe_organization()[
@@ -724,8 +728,10 @@ class CloudTrailValidateLogs(BasicCommand):
         else:
             self.end_time = normalize_date(datetime.utcnow())
         if self.start_time > self.end_time:
-            raise ValueError(('Invalid time range specified: start-time must '
-                              'occur before end-time'))
+            raise ParamValidationError(
+                'Invalid time range specified: start-time must '
+                'occur before end-time'
+            )
         # Found start time always defaults to the given start time. This value
         # may change if the earliest found digest is after the given start
         # time. Note that the summary output report of what date ranges were

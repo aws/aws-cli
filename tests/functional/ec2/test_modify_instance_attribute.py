@@ -103,7 +103,7 @@ class TestModifyInstanceAttribute(BaseAWSCommandParamsTest):
         # Can't mix non-value + value version of the arg.
         cmdline += '--no-ebs-optimized '
         cmdline += '--ebs-optimized Value=true'
-        self.assert_params_for_cmd(cmdline, expected_rc=255,
+        self.assert_params_for_cmd(cmdline, expected_rc=252,
                                     stderr_contains='Cannot specify both')
 
     def test_mix_non_value_bools_not_allowed(self):
@@ -112,7 +112,7 @@ class TestModifyInstanceAttribute(BaseAWSCommandParamsTest):
         # Can't mix non-value + value version of the arg.
         cmdline += '--no-ebs-optimized '
         cmdline += '--ebs-optimized '
-        self.assert_params_for_cmd(cmdline, expected_rc=255,
+        self.assert_params_for_cmd(cmdline, expected_rc=252,
                                     stderr_contains='Cannot specify both')
 
 

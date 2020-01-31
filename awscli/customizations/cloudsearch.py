@@ -14,6 +14,7 @@
 import logging
 
 from awscli.customizations.flatten import FlattenArguments, SEP
+from awscli.customizations.exceptions import ParamValidationError
 from botocore.compat import OrderedDict
 
 LOG = logging.getLogger(__name__)
@@ -42,7 +43,7 @@ def index_hydrate(params, container, cli_type, key, value):
         params['IndexField'] = {}
 
     if 'IndexFieldType' not in params['IndexField']:
-        raise RuntimeError('You must pass the --type option.')
+        raise ParamValidationError('You must pass the --type option.')
 
     # Find the type and transform it for the type options field name
     # E.g: int-array => IntArray

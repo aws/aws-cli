@@ -50,7 +50,7 @@ class TestModifyClusterAttributes(BaseAWSCommandParamsTest):
         expected_error_msg = (
             '\naws: error: You cannot specify both --visible-to-all-users '
             'and --no-visible-to-all-users options together.\n')
-        result = self.run_cmd(cmdline, 255)
+        result = self.run_cmd(cmdline, 252)
         self.assertEquals(expected_error_msg, result[1])
 
     def test_temination_protected_and_no_termination_protected(self):
@@ -60,7 +60,7 @@ class TestModifyClusterAttributes(BaseAWSCommandParamsTest):
         expected_error_msg = (
             '\naws: error: You cannot specify both --termination-protected '
             'and --no-termination-protected options together.\n')
-        result = self.run_cmd(cmdline, 255)
+        result = self.run_cmd(cmdline, 252)
         self.assertEquals(expected_error_msg, result[1])
 
     def test_termination_protected_and_visible_to_all(self):
@@ -98,7 +98,7 @@ class TestModifyClusterAttributes(BaseAWSCommandParamsTest):
             '\naws: error: Must specify one of the following boolean options: '
             '--visible-to-all-users|--no-visible-to-all-users, '
             '--termination-protected|--no-termination-protected.\n')
-        result = self.run_cmd(cmdline, 255)
+        result = self.run_cmd(cmdline, 252)
         self.assertEquals(expected_error_msg, result[1])
 
 if __name__ == "__main__":

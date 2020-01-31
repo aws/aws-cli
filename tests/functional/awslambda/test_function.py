@@ -94,7 +94,7 @@ class TestCreateFunction(BaseLambdaTests):
         cmdline += ' --role myrole --handler myhandler'
         cmdline += ' --code S3Bucket=mybucket,S3Key=mykey,S3ObjectVersion=vs,'
         cmdline += 'ZipFile=foo'
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=252)
         self.assertIn('ZipFile cannot be provided as part of the --code',
                       stderr)
 
@@ -103,7 +103,7 @@ class TestCreateFunction(BaseLambdaTests):
         cmdline += ' --function-name myfunction --runtime myruntime'
         cmdline += ' --role myrole --handler myhandler'
         cmdline += ' --zip-file filename_instead_of_contents.zip'
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=252)
         self.assertIn('must be a zip file with the fileb:// prefix', stderr)
         # Should also give a pointer to fileb:// for them.
         self.assertIn('fileb://', stderr)
@@ -114,7 +114,7 @@ class TestCreateFunction(BaseLambdaTests):
         cmdline += ' --role myrole --handler myhandler'
         # Note file:// instead of fileb://
         cmdline += ' --zip-file file://%s' % self.zip_file
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=252)
         # Ensure we mention fileb:// to give the user an idea of
         # where to go next.
         self.assertIn('fileb://', stderr)
@@ -168,7 +168,7 @@ class TestPublishLayerVersion(BaseLambdaTests):
         cmdline += ' --content'
         cmdline += ' S3Bucket=mybucket,S3Key=mykey,S3ObjectVersion=vs,'
         cmdline += 'ZipFile=foo'
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=252)
         self.assertIn('ZipFile cannot be provided as part of the --content',
                       stderr)
 
@@ -176,7 +176,7 @@ class TestPublishLayerVersion(BaseLambdaTests):
         cmdline = self.prefix
         cmdline += ' --layer-name mylayer'
         cmdline += ' --zip-file filename_instead_of_contents.zip'
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=252)
         self.assertIn('must be a zip file with the fileb:// prefix', stderr)
         # Should also give a pointer to fileb:// for them.
         self.assertIn('fileb://', stderr)
@@ -186,7 +186,7 @@ class TestPublishLayerVersion(BaseLambdaTests):
         cmdline += ' --layer-name mylayer'
         # Note file:// instead of fileb://
         cmdline += ' --zip-file file://%s' % self.zip_file
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=252)
         # Ensure we mention fileb:// to give the user an idea of
         # where to go next.
         self.assertIn('fileb://', stderr)
@@ -199,7 +199,7 @@ class TestUpdateFunctionCode(BaseLambdaTests):
     def test_not_using_fileb_prefix(self):
         cmdline = self.prefix + ' --function-name foo'
         cmdline += ' --zip-file filename_instead_of_contents.zip'
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=252)
         self.assertIn('must be a zip file with the fileb:// prefix', stderr)
         # Should also give a pointer to fileb:// for them.
         self.assertIn('fileb://', stderr)

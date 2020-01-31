@@ -18,6 +18,7 @@ from awscli.customizations.emr import constants
 from awscli.customizations.emr import emrutils
 from awscli.customizations.emr import helptext
 from awscli.customizations.emr.command import Command
+from awscli.customizations.exceptions import ParamValidationError
 
 
 class InstallApplications(Command):
@@ -54,13 +55,13 @@ class InstallApplications(Command):
 
             if app_name in constants.APPLICATIONS:
                 if app_name not in self.supported_apps:
-                    raise ValueError(
+                    raise ParamValidationError(
                         "aws: error: " + app_config['Name'] + " cannot be"
                         " installed on a running cluster. 'Name' should be one"
                         " of the following: " +
                         ', '.join(self.supported_apps))
             else:
-                raise ValueError(
+                raise ParamValidationError(
                     "aws: error: Unknown application: " + app_config['Name'] +
                     ". 'Name' should be one of the following: " +
                     ', '.join(constants.APPLICATIONS))

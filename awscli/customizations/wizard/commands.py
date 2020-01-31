@@ -88,10 +88,6 @@ class TopLevelWizardCommand(BasicCommand):
             self._parent_command, self._wizard_name)
         self._runner.run(loaded)
 
-    def _raise_usage_error(self):
-        raise ValueError("usage: aws [options] <command> <subcommand> "
-                            "[parameters]\naws: error: too few arguments")
-
     def create_help_command(self):
         return BasicHelp(self._session, self,
                          command_table=self.subcommand_table,

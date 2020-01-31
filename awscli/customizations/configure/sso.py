@@ -326,6 +326,7 @@ class ConfigureSSOCommand(BasicCommand):
         uni_print(usage_msg.format(profile_name))
 
         self._write_new_config(profile_name)
+        return 0
 
     def _write_new_config(self, profile):
         config_path = self._session.get_config_variable('config_file')

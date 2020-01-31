@@ -113,13 +113,13 @@ class TestGetApplicationRevisionLocationArguments(
         cmd = self.prefix + (
             '--s3-location key=k,'
             'bundleType=zip,eTag=1234,version=abcd')
-        self.run_cmd(cmd, 255)
+        self.run_cmd(cmd, 252)
 
     def test_s3_location_missing_key(self):
         cmd = self.prefix + (
             '--s3-location bucket=b,'
             'bundleType=zip,eTag=1234,version=abcd')
-        self.run_cmd(cmd, 255)
+        self.run_cmd(cmd, 252)
 
     def test_github_location_with_etag(self):
         cmd = self.prefix + (
@@ -157,11 +157,11 @@ class TestGetApplicationRevisionLocationArguments(
         cmd = self.prefix + (
             '--github-location '
             'commitId=1234')
-        self.run_cmd(cmd, 255)
+        self.run_cmd(cmd, 252)
 
     def test_github_location_missing_commit_id(self):
         cmd = self.prefix + '--github-location repository=foo/bar'
-        self.run_cmd(cmd, 255)
+        self.run_cmd(cmd, 252)
 
 
 class TestRegisterApplicationRevisionLocationArguments(
@@ -262,13 +262,13 @@ class TestRegisterApplicationRevisionLocationArguments(
         cmd = self.prefix + (
             '--s3-location key=k,'
             'bundleType=zip,eTag=1234,version=abcd')
-        self.run_cmd(cmd, 255)
+        self.run_cmd(cmd, 252)
 
     def test_s3_location_missing_key(self):
         cmd = self.prefix + (
             '--s3-location bucket=b,'
             'bundleType=zip,eTag=1234,version=abcd')
-        self.run_cmd(cmd, 255)
+        self.run_cmd(cmd, 252)
 
     def test_github_location_with_etag(self):
         cmd = self.prefix + (
@@ -306,11 +306,11 @@ class TestRegisterApplicationRevisionLocationArguments(
         cmd = self.prefix + (
             '--github-location '
             'commitId=1234')
-        self.run_cmd(cmd, 255)
+        self.run_cmd(cmd, 252)
 
     def test_github_location_missing_commit_id(self):
         cmd = self.prefix + '--github-location repository=foo/bar'
-        self.run_cmd(cmd, 255)
+        self.run_cmd(cmd, 252)
 
 
 class TestCreateDeploymentLocationArguments(
@@ -418,13 +418,13 @@ class TestCreateDeploymentLocationArguments(
         cmd = self.prefix + (
             '--s3-location key=k,'
             'bundleType=zip,eTag=1234,version=abcd')
-        self.run_cmd(cmd, 255)
+        self.run_cmd(cmd, 252)
 
     def test_s3_location_missing_key(self):
         cmd = self.prefix + (
             '--s3-location bucket=b,'
             'bundleType=zip,eTag=1234,version=abcd')
-        self.run_cmd(cmd, 255)
+        self.run_cmd(cmd, 252)
 
     def test_github_location_with_etag(self):
         cmd = self.prefix + (
@@ -464,11 +464,11 @@ class TestCreateDeploymentLocationArguments(
         cmd = self.prefix + (
             '--github-location '
             'commitId=1234')
-        self.run_cmd(cmd, 255)
+        self.run_cmd(cmd, 252)
 
     def test_github_location_missing_commit_id(self):
         cmd = self.prefix + '--github-location repository=foo/bar'
-        self.run_cmd(cmd, 255)
+        self.run_cmd(cmd, 252)
 
 
 if __name__ == "__main__":

@@ -28,7 +28,7 @@ class TestPutConfigurationRecorder(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmdline, result)
 
     def test_no_configuration_recorder(self):
-        stdout, stderr, rc = self.run_cmd(self.prefix, expected_rc=2)
+        stdout, stderr, rc = self.run_cmd(self.prefix, expected_rc=252)
         self.assertIn(
             'required',
             stderr

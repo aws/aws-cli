@@ -186,6 +186,4 @@ class CodeCommitCommand(BasicCommand):
                    ' for details')
 
     def _run_main(self, args, parsed_globals):
-        raise ValueError('usage: aws [options] codecommit'
-                         ' credential-helper <subcommand> '
-                         '[parameters]\naws: error: too few arguments')
+        self._raise_usage_error()

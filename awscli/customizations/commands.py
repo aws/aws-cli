@@ -14,6 +14,7 @@ from awscli.clidocs import OperationDocumentEventHandler
 from awscli.clidriver import CLICommand
 from awscli.help import HelpCommand
 from awscli.schema import SchemaTransformer
+from awscli.customizations.exceptions import ParamValidationError
 
 LOG = logging.getLogger(__name__)
 _open = open
@@ -183,8 +184,14 @@ class BasicCommand(CLICommand):
             # No subcommand was specified so call the main
             # function for this top level command.
             if remaining:
-                raise ValueError("Unknown options: %s" % ','.join(remaining))
-            return self._run_main(parsed_args, parsed_globals)
+                raise ParamValidationError(
+                    "Unknown options: %s" % ','.join(remaining)
+                )
+            rc = self._run_main(parsed_args, parsed_globals)
+            if rc is None:
+                return 0
+            else:
+                return rc
         else:
             return self.subcommand_table[parsed_args.subcommand](remaining,
                                                                  parsed_globals)
@@ -293,6 +300,14 @@ class BasicCommand(CLICommand):
     @lineage.setter
     def lineage(self, value):
         self._lineage = value
+
+    def _raise_usage_error(self):
+        lineage = ' '.join([c.name for c in self.lineage])
+        error_msg = (
+            "usage: aws [options] %s <subcommand> "
+            "[parameters]\naws: error: too few arguments"
+        ) % lineage
+        raise ParamValidationError(error_msg)
 
 
 class BasicHelp(HelpCommand):

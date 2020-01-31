@@ -31,5 +31,4 @@ class GenerateCommand(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         if parsed_args.subcommand is None:
-            raise ValueError("usage: aws [options] <command> <subcommand> "
-                             "[parameters]\naws: error: too few arguments")
+            self._raise_usage_error()

@@ -93,7 +93,7 @@ class TestScheduleHBaseBackup(BaseAWSCommandParamsTest):
         cmdline = self.prefix + args
         expected_error_msg = '\naws: error: invalid type. type should be' +\
                              ' either full or incremental.\n'
-        result = self.run_cmd(cmdline, 255)
+        result = self.run_cmd(cmdline, 252)
 
         self.assertEquals(expected_error_msg, result[1])
 
@@ -104,7 +104,7 @@ class TestScheduleHBaseBackup(BaseAWSCommandParamsTest):
         expected_error_msg = '\naws: error: invalid unit. unit should be' +\
                              ' one of the following values: minutes,' +\
                              ' hours or days.\n'
-        result = self.run_cmd(cmdline, 255)
+        result = self.run_cmd(cmdline, 252)
 
         self.assertEquals(expected_error_msg, result[1])
 
@@ -140,7 +140,7 @@ class TestScheduleHBaseBackup(BaseAWSCommandParamsTest):
         cmdline = self.prefix + args
         expected_error_msg = ("\naws: error: schedule-hbase-backup"
                               " is not supported with 'emr-4.0' release.\n")
-        result = self.run_cmd(cmdline, 255)
+        result = self.run_cmd(cmdline, 252)
 
         self.assertEqual(result[1], expected_error_msg)
 

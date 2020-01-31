@@ -13,6 +13,7 @@
 import copy
 
 from awscli.arguments import CustomArgument, CLIArgument
+from awscli.customizations.exceptions import ParamValidationError
 
 FILE_DOCSTRING = ('<p>The path to the file of the code you are uploading. '
                   'Example: fileb://data.csv</p>')
@@ -57,10 +58,11 @@ class TerminologyDataArgument(CLIArgument):
             return
         unpacked = self._unpack_argument(value)
         if 'File' in unpacked:
-            raise ValueError("File cannot be provided as part of the "
-                             "'--terminology-data' argument. Please use the "
-                             "'--data-file' option instead to specify a "
-                             "file.")
+            raise ParamValidationError(
+                "File cannot be provided as part of the '--terminology-data' "
+                "argument. Please use the '--data-file' option instead to "
+                "specify a file."
+            )
         if parameters.get('TerminologyData'):
             parameters['TerminologyData'].update(unpacked)
         else:

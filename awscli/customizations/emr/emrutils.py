@@ -17,6 +17,7 @@ import os
 
 
 from awscli.clidriver import CLIOperationCaller
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.emr import constants
 from awscli.customizations.emr import exceptions
 from botocore.exceptions import WaiterError, NoCredentialsError
@@ -61,7 +62,7 @@ def apply_boolean_options(
         error_message = \
             'aws: error: cannot use both ' + true_option_name + \
             ' and ' + false_option_name + ' options together.'
-        raise ValueError(error_message)
+        raise ParamValidationError(error_message)
     elif true_option:
         return True
     else:

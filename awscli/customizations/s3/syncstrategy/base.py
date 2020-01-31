@@ -12,6 +12,8 @@
 # language governing permissions and limitations under the License.
 import logging
 
+from awscli.customizations.exceptions import ParamValidationError
+
 
 LOG = logging.getLogger(__name__)
 
@@ -65,9 +67,11 @@ class BaseSync(object):
 
     def _check_sync_type(self, sync_type):
         if sync_type not in VALID_SYNC_TYPES:
-            raise ValueError("Unknown sync_type: %s.\n"
-                             "Valid options are %s." %
-                             (sync_type, VALID_SYNC_TYPES))
+            raise ParamValidationError(
+                "Unknown sync_type: %s.\n"
+                "Valid options are %s." %
+                (sync_type, VALID_SYNC_TYPES)
+            )
 
     @property
     def sync_type(self):

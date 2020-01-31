@@ -18,6 +18,7 @@ from botocore.exceptions import ClientError
 from botocore.model import Shape
 
 from awscli.customizations import utils
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.testutils import unittest
 from awscli.testutils import BaseAWSHelpOutputTest
 
@@ -81,7 +82,7 @@ class TestValidateMututuallyExclusiveGroups(unittest.TestCase):
         utils.validate_mutually_exclusive(parsed, ['foo'], ['bar'])
         # But if we specify both foo and bar then we get an error.
         parsed = FakeParsedArgs(foo='one', bar='two')
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             utils.validate_mutually_exclusive(parsed, ['foo'], ['bar'])
 
     def test_multiple_groups(self):
@@ -92,7 +93,7 @@ class TestValidateMututuallyExclusiveGroups(unittest.TestCase):
         utils.validate_mutually_exclusive(parsed, *groups)
         # But this is bad.
         parsed = FakeParsedArgs(foo='one', bar=None, qux='three')
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             utils.validate_mutually_exclusive(parsed, *groups)
 
 

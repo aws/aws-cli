@@ -67,6 +67,7 @@ class ConfigureListCommand(BasicCommand):
 
         region = self._lookup_region()
         self._display_config_value(region, 'region')
+        return 0
 
     def _display_config_value(self, config_value, config_name):
         self._stream.write('%10s %24s %16s    %s\n' % (

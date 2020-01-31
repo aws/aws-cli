@@ -17,6 +17,7 @@ from botocore.exceptions import DataNotFoundError
 
 from awscli.testutils import unittest, BaseAWSHelpOutputTest, \
     BaseAWSCommandParamsTest
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.waiters import add_waiters, WaitCommand, \
     get_waiter_model_from_service_model, WaiterStateCommand, WaiterCaller, \
     WaiterStateDocBuilder, WaiterStateCommandBuilder
@@ -121,7 +122,7 @@ class TestWaitCommand(unittest.TestCase):
     def test_run_main_error(self):
         self.parsed_args = mock.Mock()
         self.parsed_args.subcommand = None
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             self.cmd._run_main(self.parsed_args, None)
 
 

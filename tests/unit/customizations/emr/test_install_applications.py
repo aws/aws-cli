@@ -99,7 +99,7 @@ class TestInstallApplications(BaseAWSCommandParamsTest):
         expected_error_msg = "\naws: error: Impala cannot be installed on" +\
             " a running cluster. 'Name' should be one of the following:" +\
             " HIVE, PIG\n"
-        result = self.run_cmd(cmdline, 255)
+        result = self.run_cmd(cmdline, 252)
         self.assertEqual(result[1], expected_error_msg)
 
     def test_install_unknown_app_error(self):
@@ -108,7 +108,7 @@ class TestInstallApplications(BaseAWSCommandParamsTest):
         expected_error_msg = "\naws: error: Unknown application: unknown." +\
             " 'Name' should be one of the following: HIVE, PIG, HBASE," +\
             " GANGLIA, IMPALA, SPARK, MAPR, MAPR_M3, MAPR_M5, MAPR_M7\n"
-        result = self.run_cmd(cmdline, 255)
+        result = self.run_cmd(cmdline, 252)
         self.assertEqual(result[1], expected_error_msg)
 
     @mock.patch('awscli.customizations.emr.'
@@ -121,7 +121,7 @@ class TestInstallApplications(BaseAWSCommandParamsTest):
 
         expected_error_msg = ("\naws: error: install-applications"
                               " is not supported with 'emr-4.0' release.\n")
-        result = self.run_cmd(cmdline, 255)
+        result = self.run_cmd(cmdline, 252)
         self.assertEqual(result[1], expected_error_msg)
 
 if __name__ == "__main__":

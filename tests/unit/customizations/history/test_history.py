@@ -23,6 +23,7 @@ from awscli.customizations.history import attach_history_handler
 from awscli.customizations.history import add_history_commands
 from awscli.customizations.history import HistoryCommand
 from awscli.customizations.history.db import DatabaseHistoryHandler
+from awscli.customizations.exceptions import ParamValidationError
 
 
 class TestAttachHistoryHandler(unittest.TestCase):
@@ -167,5 +168,5 @@ class TestHistoryCommand(unittest.TestCase):
         parsed_args = argparse.Namespace()
         parsed_args.subcommand = None
         parsed_globals = argparse.Namespace()
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             history_command._run_main(parsed_args, parsed_globals)

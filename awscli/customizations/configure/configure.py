@@ -124,6 +124,7 @@ class ConfigureCommand(BasicCommand):
                 section = profile_to_section(profile)
                 new_values['__section__'] = section
             self._config_writer.update_config(new_values, config_filename)
+        return 0
 
     def _write_out_creds_file_values(self, new_values, profile_name):
         # The access_key/secret_key are now *always* written to the shared

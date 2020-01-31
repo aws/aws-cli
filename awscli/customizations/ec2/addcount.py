@@ -93,4 +93,4 @@ class CountArgument(BaseCLIArgument):
         except:
             msg = ('count parameter should be of '
                    'form min[:max] (e.g. 1 or 1:10)')
-            raise ValueError(msg)
+            raise ParamValidationError(msg)

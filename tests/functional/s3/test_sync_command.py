@@ -44,8 +44,8 @@ class TestSyncCommand(BaseS3TransferCommandTest):
 
     def test_no_recursive_option(self):
         cmdline = '. s3://mybucket --recursive'
-        # Return code will be 2 for invalid parameter ``--recursive``
-        self.run_cmd(cmdline, expected_rc=2)
+        # Return code will be 252 for invalid parameter ``--recursive``
+        self.run_cmd(cmdline, expected_rc=252)
 
     def test_sync_from_non_existant_directory(self):
         non_existant_directory = os.path.join(self.files.rootdir, 'fakedir')

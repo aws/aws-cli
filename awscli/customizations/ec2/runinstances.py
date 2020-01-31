@@ -23,6 +23,7 @@ This functionality (and much more) is also available using the
 the most commonly used features available more easily.
 """
 from awscli.arguments import CustomArgument
+from awscli.customizations.exceptions import ParamValidationError
 
 # --secondary-private-ip-address
 SECONDARY_PRIVATE_IP_ADDRESSES_DOCS = (
@@ -77,7 +78,7 @@ def _check_args(parsed_args, **kwargs):
                 msg = ('Mixing the --network-interfaces option '
                        'with the simple, scalar options is '
                        'not supported.')
-                raise ValueError(msg)
+                raise ParamValidationError(msg)
 
 
 def _fix_args(params, **kwargs):

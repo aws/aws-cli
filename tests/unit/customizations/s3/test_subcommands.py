@@ -25,6 +25,7 @@ from awscli.customizations.s3.subcommands import CommandParameters, \
 from awscli.customizations.s3.transferconfig import RuntimeConfig
 from awscli.customizations.s3.syncstrategy.base import \
     SizeAndLastModifiedSync, NeverSync, MissingFileSync
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.testutils import unittest, BaseAWSHelpOutputTest, \
     BaseAWSCommandParamsTest, FileCreator
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files
@@ -77,7 +78,7 @@ class TestRbCommand(unittest.TestCase):
                 ['s3://mybucket/', '--recursive'], mock.ANY)
 
     def test_rb_command_with_force_requires_strict_path(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             self.parsed_args.path = 's3://mybucket/mykey'
             self.rb_command._run_main(self.parsed_args,
                                       parsed_globals=self.parsed_globals)
@@ -602,7 +603,7 @@ class CommandParametersTest(unittest.TestCase):
             cmd_param.add_region(mock.Mock())
             wrong_paths = cmds[cmd]
             for path_args in wrong_paths:
-                with self.assertRaises(TypeError):
+                with self.assertRaises(ParamValidationError):
                     cmd_param.check_path_type(combos[path_args])
 
     def test_validate_streaming_paths_upload(self):
@@ -630,7 +631,7 @@ class CommandParametersTest(unittest.TestCase):
     def test_validate_streaming_paths_error(self):
         parameters = {'src': '-', 'dest': 's3://bucket'}
         cmd_params = CommandParameters('sync', parameters, '')
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             cmd_params._validate_streaming_paths()
 
     def test_validate_non_existent_local_path_upload(self):
@@ -651,31 +652,32 @@ class CommandParametersTest(unittest.TestCase):
         paths = ['s3://bucket/foo', 's3://bucket/bar']
         params = {'dir_op': False, 'sse_c_key': 'foo'}
         cmd_param = CommandParameters('cp', params, '')
-        with self.assertRaisesRegexp(ValueError, '--sse-c must be specified'):
+        error_msg = '--sse-c must be specified'
+        with self.assertRaisesRegexp(ParamValidationError, error_msg):
             cmd_param.add_paths(paths)
 
     def test_validate_sse_c_args_missing_sse_c_key(self):
         paths = ['s3://bucket/foo', 's3://bucket/bar']
         params = {'dir_op': False, 'sse_c': 'AES256'}
         cmd_param = CommandParameters('cp', params, '')
-        with self.assertRaisesRegexp(ValueError,
-                                     '--sse-c-key must be specified'):
+        error_msg = '--sse-c-key must be specified'
+        with self.assertRaisesRegexp(ParamValidationError, error_msg):
             cmd_param.add_paths(paths)
 
     def test_validate_sse_c_args_missing_sse_c_copy_source(self):
         paths = ['s3://bucket/foo', 's3://bucket/bar']
         params = {'dir_op': False, 'sse_c_copy_source_key': 'foo'}
         cmd_param = CommandParameters('cp', params, '')
-        with self.assertRaisesRegexp(ValueError,
-                                     '--sse-c-copy-source must be specified'):
+        error_msg = '--sse-c-copy-source must be specified'
+        with self.assertRaisesRegexp(ParamValidationError, error_msg):
             cmd_param.add_paths(paths)
 
     def test_validate_sse_c_args_missing_sse_c_copy_source_key(self):
         paths = ['s3://bucket/foo', 's3://bucket/bar']
         params = {'dir_op': False, 'sse_c_copy_source': 'AES256'}
         cmd_param = CommandParameters('cp', params, '')
-        with self.assertRaisesRegexp(ValueError,
-                '--sse-c-copy-source-key must be specified'):
+        error_msg = '--sse-c-copy-source-key must be specified'
+        with self.assertRaisesRegexp(ParamValidationError, error_msg):
             cmd_param.add_paths(paths)
 
     def test_validate_sse_c_args_wrong_path_type(self):
@@ -683,8 +685,8 @@ class CommandParametersTest(unittest.TestCase):
         params = {'dir_op': False, 'sse_c_copy_source': 'AES256',
                   'sse_c_copy_source_key': 'foo'}
         cmd_param = CommandParameters('cp', params, '')
-        with self.assertRaisesRegexp(ValueError,
-                                     'only supported for copy operations'):
+        error_msg = 'only supported for copy operations'
+        with self.assertRaisesRegexp(ParamValidationError, error_msg):
             cmd_param.add_paths(paths)
 
     def test_adds_is_move(self):

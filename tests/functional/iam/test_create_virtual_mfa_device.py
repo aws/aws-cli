@@ -112,7 +112,7 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += ' --virtual-mfa-device-name fiebaz'
         cmdline += ' --outfile %s --bootstrap-method QRCodePNG' % outfile
-        self.assert_params_for_cmd(cmdline, expected_rc=255)
+        self.assert_params_for_cmd(cmdline, expected_rc=252)
 
     def test_relative_filename(self):
         outfile = 'filename.png'
@@ -130,7 +130,7 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += ' --virtual-mfa-device-name fiebaz'
         cmdline += ' --outfile %s --bootstrap-method QRCodePNG' % outfile
-        self.assert_params_for_cmd(cmdline, expected_rc=255)
+        self.assert_params_for_cmd(cmdline, expected_rc=252)
 
     def test_bad_response(self):
         # This can happen if you run the create-virtual-mfa-device
@@ -155,4 +155,4 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(
             cmdline,
             stderr_contains=self.parsed_response['Error']['Message'],
-            expected_rc=255)
+            expected_rc=254)

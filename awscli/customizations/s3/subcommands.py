@@ -35,6 +35,7 @@ from awscli.customizations.utils import uni_print
 from awscli.customizations.s3.syncstrategy.base import MissingFileSync, \
     SizeAndLastModifiedSync, NeverSync
 from awscli.customizations.s3 import transferconfig
+from awscli.customizations.exceptions import ParamValidationError
 
 
 LOGGER = logging.getLogger(__name__)
@@ -787,7 +788,9 @@ class MbCommand(S3Command):
         super(MbCommand, self)._run_main(parsed_args, parsed_globals)
 
         if not parsed_args.path.startswith('s3://'):
-            raise TypeError("%s\nError: Invalid argument type" % self.USAGE)
+            raise ParamValidationError(
+                "%s\nError: Invalid argument type" % self.USAGE
+            )
         bucket, _ = split_s3_bucket_key(parsed_args.path)
 
         bucket_config = {'LocationConstraint': self.client.meta.region_name}
@@ -825,12 +828,16 @@ class RbCommand(S3Command):
         super(RbCommand, self)._run_main(parsed_args, parsed_globals)
 
         if not parsed_args.path.startswith('s3://'):
-            raise TypeError("%s\nError: Invalid argument type" % self.USAGE)
+            raise ParamValidationError(
+                "%s\nError: Invalid argument type" % self.USAGE
+            )
         bucket, key = split_s3_bucket_key(parsed_args.path)
 
         if key:
-            raise ValueError('Please specify a valid bucket name only.'
-                             ' E.g. s3://%s' % bucket)
+            raise ParamValidationError(
+                'Please specify a valid bucket name only. '
+                'E.g. s3://%s' % bucket
+            )
 
         if parsed_args.force:
             self._force(parsed_args.path, parsed_globals)
@@ -1184,7 +1191,7 @@ class CommandParameters(object):
         self.parameters['is_stream'] = False
         if self.parameters['src'] == '-' or self.parameters['dest'] == '-':
             if self.cmd != 'cp' or self.parameters.get('dir_op'):
-                raise ValueError(
+                raise ParamValidationError(
                     "Streaming currently is only compatible with "
                     "non-recursive cp commands"
                 )
@@ -1196,7 +1203,8 @@ class CommandParameters(object):
         # If we're using a mv command, you can't copy the object onto itself.
         params = self.parameters
         if self.cmd == 'mv' and self._same_path(params['src'], params['dest']):
-            raise ValueError("Cannot mv a file onto itself: '%s' - '%s'" % (
+            raise ParamValidationError(
+                "Cannot mv a file onto itself: '%s' - '%s'" % (
                 params['src'], params['dest']))
 
         # If the user provided local path does not exist, hard fail because
@@ -1254,7 +1262,9 @@ class CommandParameters(object):
         if self.cmd in template_type[paths_type]:
             self.parameters['paths_type'] = paths_type
         else:
-            raise TypeError("%s\nError: Invalid argument type" % usage)
+            raise ParamValidationError(
+                "%s\nError: Invalid argument type" % usage
+            )
 
     def add_region(self, parsed_globals):
         self.parameters['region'] = parsed_globals.region
@@ -1286,21 +1296,21 @@ class CommandParameters(object):
         sse_c_key_type_param = '--' + sse_c_key_type.replace('_', '-')
         if self.parameters.get(sse_c_type):
             if not self.parameters.get(sse_c_key_type):
-                raise ValueError(
-                    'It %s is specified, %s must be specified '
+                raise ParamValidationError(
+                    'If %s is specified, %s must be specified '
                     'as well.' % (sse_c_type_param, sse_c_key_type_param)
                 )
         if self.parameters.get(sse_c_key_type):
             if not self.parameters.get(sse_c_type):
-                raise ValueError(
-                    'It %s is specified, %s must be specified '
+                raise ParamValidationError(
+                    'If %s is specified, %s must be specified '
                     'as well.' % (sse_c_key_type_param, sse_c_type_param)
                 )
 
     def _validate_sse_c_copy_source_for_paths(self):
         if self.parameters.get('sse_c_copy_source'):
             if self.parameters['paths_type'] != 's3s3':
-                raise ValueError(
+                raise ParamValidationError(
                     '--sse-c-copy-source is only supported for '
                     'copy operations.'
                 )

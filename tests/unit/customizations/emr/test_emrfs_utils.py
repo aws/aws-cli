@@ -291,7 +291,8 @@ class TestEmrfsUtils(BaseAWSCommandParamsTest):
             emrfs_option_value='SSE=true,Encryption=ClientSide,'
             'ProviderType=KMS,KMSKeyId=k1',
             exception_class_name='BothSseAndEncryptionConfiguredError',
-            error_msg_kwargs={'sse': 'True', 'encryption': 'ClientSide'}
+            error_msg_kwargs={'sse': 'True', 'encryption': 'ClientSide'},
+            rc=252,
         )
 
     def test_cse_missing_provider_type(self):
@@ -299,7 +300,8 @@ class TestEmrfsUtils(BaseAWSCommandParamsTest):
             emrfs_option_value='Encryption=ClientSide',
             exception_class_name='MissingParametersError',
             error_msg_kwargs={'object_name': CSE_OPTION_NAME,
-                              'missing': 'ProviderType'}
+                              'missing': 'ProviderType'},
+            rc=252,
         )
 
     def test_cse_kms_missing_key_id(self):
@@ -307,7 +309,8 @@ class TestEmrfsUtils(BaseAWSCommandParamsTest):
             emrfs_option_value='Encryption=ClientSide,ProviderType=KMS',
             exception_class_name='MissingParametersError',
             error_msg_kwargs={'object_name': CSE_KMS_OPTION_NAME,
-                              'missing': 'KMSKeyId'}
+                              'missing': 'KMSKeyId'},
+            rc=252,
         )
 
     def test_cse_custom_missing_all(self):
@@ -316,7 +319,8 @@ class TestEmrfsUtils(BaseAWSCommandParamsTest):
             exception_class_name='MissingParametersError',
             error_msg_kwargs={'object_name': CSE_CUSTOM_OPTION_NAME,
                               'missing': 'CustomProviderClass and '
-                              'CustomProviderLocation'}
+                              'CustomProviderLocation'},
+            rc=252,
         )
 
     def test_cse_custom_missing_provider_class(self):
@@ -325,7 +329,8 @@ class TestEmrfsUtils(BaseAWSCommandParamsTest):
             'CustomProviderLocation=my_location',
             exception_class_name='MissingParametersError',
             error_msg_kwargs={'object_name': CSE_CUSTOM_OPTION_NAME,
-                              'missing': 'CustomProviderClass'}
+                              'missing': 'CustomProviderClass'},
+            rc=252,
         )
 
     def test_cse_custom_missing_provider_location(self):
@@ -334,21 +339,24 @@ class TestEmrfsUtils(BaseAWSCommandParamsTest):
             'CustomProviderClass=my_class',
             exception_class_name='MissingParametersError',
             error_msg_kwargs={'object_name': CSE_CUSTOM_OPTION_NAME,
-                              'missing': 'CustomProviderLocation'}
+                              'missing': 'CustomProviderLocation'},
+            rc=252,
         )
 
     def test_valid_encryption(self):
         self._assert_error_msg(
             emrfs_option_value='Encryption=ClientSide1',
             exception_class_name='UnknownEncryptionTypeError',
-            error_msg_kwargs={'encryption': 'ClientSide1'}
+            error_msg_kwargs={'encryption': 'ClientSide1'},
+            rc=252,
         )
 
     def test_valid_cse_provider_type(self):
         self._assert_error_msg(
             emrfs_option_value='Encryption=ClientSide,ProviderType=KMS1',
             exception_class_name='UnknownCseProviderTypeError',
-            error_msg_kwargs={'provider_type': 'KMS1'}
+            error_msg_kwargs={'provider_type': 'KMS1'},
+            rc=252,
         )
 
     def test_valid_consistent_args(self):
@@ -356,7 +364,8 @@ class TestEmrfsUtils(BaseAWSCommandParamsTest):
             emrfs_option_value='SSE=true,RetryCount=5,RetryPeriod=30',
             exception_class_name='InvalidEmrFsArgumentsError',
             error_msg_kwargs={'invalid': 'RetryCount and RetryPeriod',
-                              'parent_object_name': CONSISTENT_OPTION_NAME}
+                              'parent_object_name': CONSISTENT_OPTION_NAME},
+            rc=252,
         )
 
     def test_valid_cse_kms_args(self):
@@ -364,7 +373,8 @@ class TestEmrfsUtils(BaseAWSCommandParamsTest):
             emrfs_option_value='Consistent=true,KMSKeyId=k1',
             exception_class_name='InvalidEmrFsArgumentsError',
             error_msg_kwargs={'invalid': 'KMSKeyId',
-                              'parent_object_name': CSE_KMS_OPTION_NAME}
+                              'parent_object_name': CSE_KMS_OPTION_NAME},
+            rc=252,
         )
 
     def test_valid_cse_custom_args(self):
@@ -372,7 +382,8 @@ class TestEmrfsUtils(BaseAWSCommandParamsTest):
             emrfs_option_value='Consistent=true,CustomProviderLocation=loc',
             exception_class_name='InvalidEmrFsArgumentsError',
             error_msg_kwargs={'invalid': 'CustomProviderLocation',
-                              'parent_object_name': CSE_CUSTOM_OPTION_NAME}
+                              'parent_object_name': CSE_CUSTOM_OPTION_NAME},
+            rc=252,
         )
 
     def test_configurations_and_emrfs(self):
@@ -415,23 +426,23 @@ class TestEmrfsUtils(BaseAWSCommandParamsTest):
         result['ReleaseLabel'] = 'emr-4.0'
         result['Configurations'] = configurations
 
-        self.assert_error_msg(cmd, 'DuplicateEmrFsConfigurationError')
+        self.assert_error_msg(cmd, 'DuplicateEmrFsConfigurationError', rc=252)
 
     def _assert_error_msg(self, emrfs_option_value,
-                          exception_class_name, error_msg_kwargs):
+                          exception_class_name, error_msg_kwargs, rc=255):
         cmd = "%s --ami-version 3.4 --emrfs %s" \
             % (DEFAULT_CMD, emrfs_option_value)
         self.assert_error_msg(
             cmd,
             exception_class_name=exception_class_name,
-            error_msg_kwargs=error_msg_kwargs)
+            error_msg_kwargs=error_msg_kwargs, rc=rc)
 
         cmd = "%s --release-label emr-4.0 --emrfs %s" \
             % (DEFAULT_CMD, emrfs_option_value)
         self.assert_error_msg(
             cmd,
             exception_class_name=exception_class_name,
-            error_msg_kwargs=error_msg_kwargs)
+            error_msg_kwargs=error_msg_kwargs, rc=rc)
 
     def _assert_bootstrap_actions(self, emrfs_option_value,
                                   expected_emrfs_ba_key_values,

@@ -94,8 +94,8 @@ class TestUpdateDistribution(BaseAWSCommandParamsTest):
     def test_both_distribution_config_and_default_root_object(self):
         self.assert_params_for_cmd(
             self.prefix + '--distribution-config {} --default-root-object foo',
-            expected_rc=255,
+            expected_rc=252,
             stderr_contains='cannot be specified when one of the following')
 
     def test_no_input(self):
-        self.run_cmd(self.prefix, expected_rc=255)
+        self.run_cmd(self.prefix, expected_rc=252)

@@ -12,9 +12,10 @@
 # language governing permissions and limitations under the License.
 import json
 from awscli.clidriver import CLIOperationCaller
+from awscli.customizations.exceptions import ParamValidationError
 
 
-class PipelineDefinitionError(Exception):
+class PipelineDefinitionError(ParamValidationError):
     def __init__(self, msg, definition):
         full_msg = (
             "Error in pipeline definition: %s\n" % msg)

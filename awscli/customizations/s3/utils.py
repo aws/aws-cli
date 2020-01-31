@@ -24,6 +24,7 @@ from dateutil.tz import tzlocal, tzutc
 
 from awscli.compat import bytes_print
 from awscli.compat import queue
+from awscli.customizations.exceptions import ParamValidationError
 
 LOGGER = logging.getLogger(__name__)
 HUMANIZE_SUFFIXES = ('KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB')
@@ -523,8 +524,9 @@ class RequestParamsMapper(object):
                 try:
                     permission, grantee = grant.split('=', 1)
                 except ValueError:
-                    raise ValueError('grants should be of the form '
-                                     'permission=principal')
+                    raise ParamValidationError(
+                        'grants should be of the form permission=principal'
+                    )
                 request_params[cls._permission_to_param(permission)] = grantee
 
     @classmethod
@@ -537,8 +539,9 @@ class RequestParamsMapper(object):
             return 'GrantReadACP'
         if permission == 'writeacl':
             return 'GrantWriteACP'
-        raise ValueError('permission must be one of: '
-                         'read|readacl|writeacl|full')
+        raise ParamValidationError(
+            'permission must be one of: read|readacl|writeacl|full'
+        )
 
     @classmethod
     def _set_metadata_params(cls, request_params, cli_params):

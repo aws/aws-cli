@@ -14,6 +14,7 @@
 from argparse import Namespace
 
 from awscli.customizations.servicecatalog import GenerateCommand
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.testutils import unittest
 
 
@@ -27,7 +28,7 @@ class TestGenerateCommand(unittest.TestCase):
         arguments.subcommand = None
 
         # Act+Assert
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             self.cmd._run_main(arguments, None)
 
     def test_with_subcommand(self):

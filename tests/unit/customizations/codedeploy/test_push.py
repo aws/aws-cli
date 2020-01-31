@@ -19,6 +19,7 @@ from six import StringIO
 from botocore.exceptions import ClientError
 
 from awscli.customizations.codedeploy.push import Push
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.testutils import unittest
 from awscli.compat import ZIP_COMPRESSION_MODE
 
@@ -135,7 +136,7 @@ class TestPush(unittest.TestCase):
     def test_validate_args_throws_on_ignore_and_no_ignore_hidden_files(self):
         self.args.ignore_hidden_files = True
         self.args.no_ignore_hidden_files = True
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(ParamValidationError):
             self.push._validate_args(self.args)
 
     def test_validate_args_default_description(self):

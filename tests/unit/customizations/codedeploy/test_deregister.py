@@ -14,6 +14,8 @@
 from argparse import Namespace
 from mock import MagicMock, call
 from awscli.customizations.codedeploy.deregister import Deregister
+from awscli.customizations.exceptions import ConfigurationError
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.testutils import unittest
 
 
@@ -66,13 +68,14 @@ class TestDeregister(unittest.TestCase):
     def test_deregister_throws_on_invalid_region(self):
         self.globals.region = None
         self.session.get_config_variable.return_value = None
-        with self.assertRaisesRegexp(RuntimeError, 'Region not specified.'):
+        error_msg = 'Region not specified.'
+        with self.assertRaisesRegexp(ConfigurationError, error_msg):
             self.deregister._run_main(self.args, self.globals)
 
     def test_deregister_throws_on_invalid_instance_name(self):
         self.args.instance_name = 'invalid%@^&%#&'
-        with self.assertRaisesRegexp(
-                ValueError, 'Instance name contains invalid characters.'):
+        with self.assertRaisesRegexp(ParamValidationError,
+                'Instance name contains invalid characters.'):
             self.deregister._run_main(self.args, self.globals)
 
     def test_deregister_creates_clients(self):

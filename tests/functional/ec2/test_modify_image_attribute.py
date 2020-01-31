@@ -47,7 +47,7 @@ class TestModifyInstanceAttribute(BaseAWSCommandParamsTest):
         cmdline += ' --image-id ami-d00dbeef'
         cmdline += ' --launch-permission THISISNOTJSON'
         # The arg name should be in the error message.
-        self.assert_params_for_cmd(cmdline, expected_rc=255,
+        self.assert_params_for_cmd(cmdline, expected_rc=252,
                                    stderr_contains='launch-permission')
 
 

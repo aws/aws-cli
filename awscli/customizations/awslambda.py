@@ -17,6 +17,7 @@ from contextlib import closing
 from botocore.vendored import six
 
 from awscli.arguments import CustomArgument, CLIArgument
+from awscli.customizations.exceptions import ParamValidationError
 
 
 ERROR_MSG = (
@@ -94,7 +95,7 @@ def _should_contain_zip_content(value):
         with closing(zipfile.ZipFile(fileobj)) as f:
             f.infolist()
     except zipfile.BadZipfile:
-        raise ValueError(ERROR_MSG)
+        raise ParamValidationError(ERROR_MSG)
 
 
 class ZipFileArgument(CustomArgument):
@@ -140,11 +141,12 @@ class ReplacedZipFileArgument(CLIArgument):
             return
         unpacked = self._unpack_argument(value)
         if 'ZipFile' in unpacked:
-            raise ValueError(
+            raise ParamValidationError(
                 "ZipFile cannot be provided "
                 "as part of the %s argument.  "
                 "Please use the '--zip-file' "
-                "option instead to specify a zip file." % self._cli_name)
+                "option instead to specify a zip file." % self._cli_name
+            )
         if parameters.get(self._param_to_replace):
             parameters[self._param_to_replace].update(unpacked)
         else:

@@ -35,7 +35,7 @@ class TestAddOptionGroup(BaseAWSCommandParamsTest):
                 '--options-to-remove foo')
         cmdline = self.prefix + args
         self.assert_params_for_cmd(
-            cmdline, expected_rc=255,
+            cmdline, expected_rc=252,
             stderr_contains='Unknown options: --options-to-remove')
 
 
@@ -56,5 +56,5 @@ class TestRemoveOptionGroup(BaseAWSCommandParamsTest):
                 '--options-to-include {"OptionName":"TDE"}')
         cmdline = self.prefix + args
         self.assert_params_for_cmd(
-            cmdline, expected_rc=255,
+            cmdline, expected_rc=252,
             stderr_contains='Unknown options: --options-to-include')

@@ -14,6 +14,7 @@ import argparse
 import sys
 from awscli.compat import six
 from difflib import get_close_matches
+from gettext import gettext
 
 
 HELP_BLURB = (
@@ -107,6 +108,21 @@ class CLIArgParser(argparse.ArgumentParser):
                         encoded.append(v)
                 setattr(parsed, arg, encoded)
         return parsed, remaining
+
+    def error(self, message):
+        """error(message: string)
+
+        NOTE: This is lifted directly from argparse, the only difference being
+        we use 252 for parsing errors.
+
+        Prints a usage message incorporating the message to stderr and
+        exits.
+        If you override this in a subclass, it should not return -- it
+        should either exit or raise an exception.
+        """
+        self.print_usage(sys.stderr)
+        args = {'prog': self.prog, 'message': message}
+        self.exit(252, gettext('%(prog)s: error: %(message)s\n') % args)
 
 
 class MainArgParser(CLIArgParser):

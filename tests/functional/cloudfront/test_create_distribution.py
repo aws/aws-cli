@@ -120,8 +120,8 @@ class TestCreateDistribution(BaseAWSCommandParamsTest):
     def test_both_distribution_config_and_origin_domain_name(self):
         self.assert_params_for_cmd(
             self.prefix + '--distribution-config {} --origin-domain-name a.us',
-            expected_rc=255,
+            expected_rc=252,
             stderr_contains='cannot be specified when one of the following')
 
     def test_no_input(self):
-        self.run_cmd(self.prefix, expected_rc=255)
+        self.run_cmd(self.prefix, expected_rc=252)

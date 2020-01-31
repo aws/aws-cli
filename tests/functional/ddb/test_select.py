@@ -463,8 +463,14 @@ class TestSelect(BaseSelectTest):
     def test_select_does_not_support_yaml_stream(self):
         cmdline = 'ddb select mytable --output yaml-stream'
         stdout, _, _ = self.assert_params_for_cmd(
-            cmdline, expected_rc=255,
+            cmdline, expected_rc=252,
             stderr_contains='yaml-stream output format is not supported',
+        )
+
+    def test_select_parsing_error_rc(self):
+        cmdline = 'ddb select mytable --filter a=?!f'
+        stdout, _, _ = self.assert_params_for_cmd(
+            cmdline, expected_rc=252,
         )
 
 
@@ -517,8 +523,8 @@ class TestSelectPagination(BaseSelectTest):
         command = [
             'ddb', 'select', 'mytable', '--no-paginate', '--max-items', '1'
         ]
-        _, stderr, _ = self.run_cmd(command, expected_rc=255)
-        self.assertIn('Error during pagination', stderr)
+        _, stderr, _ = self.run_cmd(command, expected_rc=252)
+        self.assertIn('Cannot specify --no-paginate along with ', stderr)
 
     def test_max_items(self):
         command = [

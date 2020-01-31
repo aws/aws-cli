@@ -80,6 +80,8 @@ class Install(BasicCommand):
                 'On-Premises Instances by Using AWS CodeDeploy" in the AWS '
                 'CodeDeploy User Guide.\n'.format(e)
             )
+            return 255
+        return 0
 
     def _validate_override_config(self, params):
         if os.path.isfile(params.system.CONFIG_PATH) and \

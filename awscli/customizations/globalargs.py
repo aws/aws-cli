@@ -19,6 +19,7 @@ from botocore.handlers import disable_signing
 import jmespath
 
 from awscli.compat import urlparse
+from awscli.customizations.exceptions import ParamValidationError
 
 
 def register_parse_global_args(cli):
@@ -52,7 +53,9 @@ def _resolve_query(value):
     try:
         return jmespath.compile(value)
     except Exception as e:
-        raise ValueError("Bad value for --query %s: %s" % (value, str(e)))
+        raise ParamValidationError(
+            "Bad value for --query %s: %s" % (value, str(e))
+        )
 
 
 def _resolve_endpoint_url(value):
@@ -60,9 +63,11 @@ def _resolve_endpoint_url(value):
     # Our http library requires you specify an endpoint url
     # that contains a scheme, so we'll verify that up front.
     if not parsed.scheme:
-        raise ValueError('Bad value for --endpoint-url "%s": scheme is '
-                         'missing.  Must be of the form '
-                         'http://<hostname>/ or https://<hostname>/' % value)
+        raise ParamValidationError(
+            'Bad value for --endpoint-url "%s": scheme is '
+            'missing.  Must be of the form '
+            'http://<hostname>/ or https://<hostname>/' % value
+        )
     return value
 
 

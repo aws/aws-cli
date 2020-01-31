@@ -20,6 +20,7 @@ from botocore.exceptions import ClientError
 
 from awscli.customizations import opsworks
 from awscli.testutils import unittest
+from awscli.customizations.exceptions import ParamValidationError
 
 
 class TestOpsWorksBase(unittest.TestCase):
@@ -122,13 +123,13 @@ class TestOpsWorksRegister(TestOpsWorksBase):
             self._build_args(
                 infrastructure_class="on-premises",
                 hostname="AlsoAGoodHostname456", local=True))
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             self.register.prevalidate_arguments(
                 self._build_args(
                     infrastructure_class="on-premises",
                     hostname="-bad-hostname",
                     local=True))
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             self.register.prevalidate_arguments(
                 self._build_args(
                     infrastructure_class="on-premises",
@@ -140,11 +141,11 @@ class TestOpsWorksRegister(TestOpsWorksBase):
         """Shouldn't allow local and remote mode at the same time."""
 
         mock_platform.system.return_value = "Linux"
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             self.register.prevalidate_arguments(self._build_args(
                 infrastructure_class="on-premises",
                 hostname=None, target=None, local=False))
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             self.register.prevalidate_arguments(self._build_args(
                 infrastructure_class="on-premises",
                 hostname=None, target="HOSTNAME", local=True))
@@ -155,11 +156,11 @@ class TestOpsWorksRegister(TestOpsWorksBase):
             infrastructure_class="on-premises",
             hostname=None, target=None, local=True))
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             self.register.prevalidate_arguments(self._build_args(
                 infrastructure_class="ec2",
                 hostname=None, target=None, local=False))
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             self.register.prevalidate_arguments(self._build_args(
                 infrastructure_class="ec2",
                 hostname=None, target="HOSTNAME", local=True))
@@ -177,7 +178,7 @@ class TestOpsWorksRegister(TestOpsWorksBase):
         mock_platform.system.return_value = "Linux"
         self.register.prevalidate_arguments(self._build_args(
             infrastructure_class="on-premises", target=None, local=True))
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             mock_platform.system.return_value = "Windows"
             self.register.prevalidate_arguments(self._build_args(
                 infrastructure_class="on-premises", target=None, local=True))
@@ -192,17 +193,17 @@ class TestOpsWorksRegister(TestOpsWorksBase):
             self._build_args(
                 username="root", private_key="id_rsa",
                 infrastructure_class="ec2", target="1.2.3.4"))
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             self.register.prevalidate_arguments(
                 self._build_args(
                     ssh="telnet", username="root", infrastructure_class="ec2",
                     target="1.2.3.4"))
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             self.register.prevalidate_arguments(
                 self._build_args(
                     ssh="telnet", private_key="id_rsa",
                     infrastructure_class="ec2", target="1.2.3.4"))
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             self.register.prevalidate_arguments(
                 self._build_args(
                     ssh="telnet", username="root", private_key="id_rsa",
@@ -736,11 +737,11 @@ class TestOpsWorksRegisterEc2(TestOpsWorksBase):
     def test_prevalidate_arguments_no_ips_for_ec2(self):
         """Shouldn't allow overriding IP addresses for EC2."""
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             self.register.prevalidate_arguments(
                 self._build_args(
                     target="target", private_ip="private-ip"))
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             self.register.prevalidate_arguments(
                 self._build_args(target="target", public_ip="public-ip"))
 
@@ -1139,7 +1140,7 @@ class TestOpsWorksRegisterOnPremises(TestOpsWorksBase):
     def test_prevalidate_arguments_no_instance_profile(self):
         """Shouldn't allow using an instance profile on-premises."""
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             self.register.prevalidate_arguments(
                 self._build_args(
                     target="target", use_instance_profile=True))

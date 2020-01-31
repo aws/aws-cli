@@ -259,7 +259,7 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
     def test_ensures_start_time_before_end_time(self):
         stdout, stderr, rc = self.run_cmd(
             ("cloudtrail validate-logs --trail-arn %s --start-time 2015-01-01 "
-             "--end-time 2014-01-01"), 255)
+             "--end-time 2014-01-01"), 252)
         self.assertIn('start-time must occur before end-time', stderr)
 
     def test_fails_when_digest_not_from_same_location_as_json_contents(self):

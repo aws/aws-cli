@@ -159,7 +159,7 @@ class TestGenerateCliSkeletonOutput(BaseAWSCommandParamsTest):
 
     def test_validates_at_command_line_level(self):
         cmdline = 'ec2 create-vpc --generate-cli-skeleton output'
-        stdout, stderr, _ = self.run_cmd(cmdline, expected_rc=2)
+        stdout, stderr, _ = self.run_cmd(cmdline, expected_rc=252)
         self.assertIn('required', stderr)
         self.assertIn('--cidr-block', stderr)
         self.assertEqual('', stdout)
@@ -169,6 +169,6 @@ class TestGenerateCliSkeletonOutput(BaseAWSCommandParamsTest):
         # Note: The for --filters instead of Value the key should be Values
         # which should throw a validation error.
         cmdline += '--filters Name=instance-id,Value=foo'
-        stdout, stderr, _ = self.run_cmd(cmdline, expected_rc=255)
+        stdout, stderr, _ = self.run_cmd(cmdline, expected_rc=252)
         self.assertIn('Unknown parameter in Filters[0]', stderr)
         self.assertEqual('', stdout)

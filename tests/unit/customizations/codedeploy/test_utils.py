@@ -22,6 +22,8 @@ from awscli.customizations.codedeploy.utils import \
     validate_iam_user_arn, validate_instance, validate_s3_location, \
     MAX_INSTANCE_NAME_LENGTH, MAX_TAGS_PER_INSTANCE, MAX_TAG_KEY_LENGTH, \
     MAX_TAG_VALUE_LENGTH
+from awscli.customizations.exceptions import ConfigurationError
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.testutils import unittest
 
 
@@ -74,7 +76,8 @@ class TestUtils(unittest.TestCase):
     def test_validate_region_throws_on_no_region(self):
         self.globals.region = None
         self.session.get_config_variable.return_value = None
-        with self.assertRaisesRegexp(RuntimeError, 'Region not specified.'):
+        error_msg = 'Region not specified.'
+        with self.assertRaisesRegexp(ConfigurationError, error_msg):
             validate_region(self.params, self.globals)
 
     def test_validate_instance_name(self):
@@ -84,14 +87,14 @@ class TestUtils(unittest.TestCase):
 
     def test_validate_instance_name_throws_on_invalid_characters(self):
         self.params.instance_name = '!#$%^&*()<>/?;:[{]}'
-        with self.assertRaisesRegexp(
-                ValueError, 'Instance name contains invalid characters.'):
+        error_msg = 'Instance name contains invalid characters.'
+        with self.assertRaisesRegexp(ParamValidationError, error_msg):
             validate_instance_name(self.params)
 
     def test_validate_instance_name_throws_on_i_dash(self):
         self.params.instance_name = 'i-instance'
-        with self.assertRaisesRegexp(
-                ValueError, "Instance name cannot start with 'i-'."):
+        error_msg = "Instance name cannot start with 'i-'."
+        with self.assertRaisesRegexp(ParamValidationError, error_msg):
             validate_instance_name(self.params)
 
     def test_validate_instance_name_throws_on_long_name(self):
@@ -99,20 +102,20 @@ class TestUtils(unittest.TestCase):
             '01234567890123456789012345678901234567890123456789'
             '012345678901234567890123456789012345678901234567891'
         )
-        with self.assertRaisesRegexp(
-                ValueError,
-                'Instance name cannot be longer than {0} characters.'.format(
-                    MAX_INSTANCE_NAME_LENGTH)):
+        error_msg = (
+            'Instance name cannot be longer than {0} characters.'
+        ).format(MAX_INSTANCE_NAME_LENGTH)
+        with self.assertRaisesRegexp(ParamValidationError, error_msg):
             validate_instance_name(self.params)
 
     def test_validate_tags_throws_on_too_many_tags(self):
         self.params.tags = [
             {'Key': 'k' + str(x), 'Value': 'v' + str(x)} for x in range(11)
         ]
-        with self.assertRaisesRegexp(
-                ValueError,
-                'Instances can only have a maximum of {0} '
-                'tags.'.format(MAX_TAGS_PER_INSTANCE)):
+        error_msg = (
+            'Instances can only have a maximum of {0} tags.'
+        ).format(MAX_TAGS_PER_INSTANCE)
+        with self.assertRaisesRegexp(ParamValidationError, error_msg):
             validate_tags(self.params)
 
     def test_validate_tags_throws_on_max_key_not_accepted(self):
@@ -123,10 +126,10 @@ class TestUtils(unittest.TestCase):
     def test_validate_tags_throws_on_long_key(self):
         key = 'k' * 129
         self.params.tags = [{'Key': key, 'Value': 'v1'}]
-        with self.assertRaisesRegexp(
-                ValueError,
-                'Tag Key cannot be longer than {0} characters.'.format(
-                    MAX_TAG_KEY_LENGTH)):
+        error_msg = (
+            'Tag Key cannot be longer than {0} characters.'
+        ).format(MAX_TAG_KEY_LENGTH)
+        with self.assertRaisesRegexp(ParamValidationError, error_msg):
             validate_tags(self.params)
 
     def test_validate_tags_throws_on_max_value_not_accepted(self):
@@ -137,10 +140,10 @@ class TestUtils(unittest.TestCase):
     def test_validate_tags_throws_on_long_value(self):
         value = 'v' * 257
         self.params.tags = [{'Key': 'k1', 'Value': value}]
-        with self.assertRaisesRegexp(
-                ValueError,
-                'Tag Value cannot be longer than {0} characters.'.format(
-                    MAX_TAG_VALUE_LENGTH)):
+        error_msg = (
+            'Tag Value cannot be longer than {0} characters.'
+        ).format(MAX_TAG_VALUE_LENGTH)
+        with self.assertRaisesRegexp(ParamValidationError, error_msg):
             validate_tags(self.params)
 
     def test_validate_iam_user_arn(self):
@@ -149,7 +152,8 @@ class TestUtils(unittest.TestCase):
 
     def test_validate_iam_user_arn_throws_on_invalid_arn_pattern(self):
         self.params.iam_user_arn = 'invalid-arn-pattern'
-        with self.assertRaisesRegexp(ValueError, 'Invalid IAM user ARN.'):
+        error_msg = 'Invalid IAM user ARN.'
+        with self.assertRaisesRegexp(ParamValidationError, error_msg):
             validate_iam_user_arn(self.params)
 
     def test_validate_instance_ubuntu(self):
@@ -210,10 +214,11 @@ class TestUtils(unittest.TestCase):
 
     def test_validate_s3_location_throws_on_invalid_location(self):
         self.params.s3_location = 'invalid-s3-location'
-        with self.assertRaisesRegexp(
-                ValueError,
-                '--{0} must specify the Amazon S3 URL format as '
-                's3://<bucket>/<key>.'.format(self.arg_name)):
+        error_msg = (
+            '--{0} must specify the Amazon S3 URL format as '
+            's3://<bucket>/<key>.'
+        ).format(self.arg_name)
+        with self.assertRaisesRegexp(ParamValidationError, error_msg):
             validate_s3_location(self.params, self.arg_name)
 
 

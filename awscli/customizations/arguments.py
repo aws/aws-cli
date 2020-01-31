@@ -13,6 +13,7 @@
 import os
 
 from awscli.arguments import CustomArgument
+from awscli.customizations.exceptions import ParamValidationError
 import jmespath
 
 def resolve_given_outfile_path(path):
@@ -21,7 +22,7 @@ def resolve_given_outfile_path(path):
         return
     outfile = os.path.expanduser(os.path.expandvars(path))
     if not os.access(os.path.dirname(os.path.abspath(outfile)), os.W_OK):
-        raise ValueError('Unable to write to file: %s' % outfile)
+        raise ParamValidationError('Unable to write to file: %s' % outfile)
     return outfile
 
 

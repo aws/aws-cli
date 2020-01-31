@@ -17,6 +17,7 @@ This module customizes the cloudsearchdomain command:
     * Add validation that --endpoint-url is required.
 
 """
+from awscli.customizations.exceptions import ParamValidationError
 
 def register_cloudsearchdomain(cli):
     cli.register_last('calling-command.cloudsearchdomain',
@@ -25,5 +26,6 @@ def register_cloudsearchdomain(cli):
 
 def validate_endpoint_url(parsed_globals, **kwargs):
     if parsed_globals.endpoint_url is None:
-        return ValueError(
-            "--endpoint-url is required for cloudsearchdomain commands")
+        return ParamValidationError(
+            "--endpoint-url is required for cloudsearchdomain commands"
+        )

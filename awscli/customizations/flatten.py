@@ -14,6 +14,7 @@
 import logging
 
 from awscli.arguments import CustomArgument
+from awscli.customizations.exceptions import ParamValidationError
 
 LOG = logging.getLogger(__name__)
 
@@ -218,7 +219,9 @@ class FlattenArguments(object):
                         argument = member
                         break
                 else:
-                    raise ValueError('Invalid piece {0}'.format(piece))
+                    raise ParamValidationError(
+                        'Invalid piece {0}'.format(piece)
+                    )
 
         return argument
 

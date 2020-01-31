@@ -27,6 +27,7 @@ from awscli.customizations.dynamodb.transform import (
 )
 from awscli.customizations.dynamodb.formatter import DynamoYAMLDumper
 from awscli.customizations.paginate import ensure_paging_params_not_set
+from awscli.customizations.exceptions import ParamValidationError
 from .types import Binary
 
 
@@ -94,7 +95,7 @@ class DDBCommand(BasicCommand):
             #  introduce do not play nicely with the pagination interfaces.
             #  For example, botocore cannot serialize our Binary types into
             #  a resume token when --max-items gets set.
-            raise ValueError(
+            raise ParamValidationError(
                 'yaml-stream output format is not supported for ddb commands'
             )
         formatter = YAMLFormatter(parsed_globals, DynamoYAMLDumper())
@@ -276,7 +277,7 @@ class PutCommand(DDBCommand):
             self._batch_write(items, parsed_args)
         else:
             if len(items) > 1:
-                raise ValueError(
+                raise ParamValidationError(
                     '--condition is not supported for multiple items'
                 )
             self._put_item(items, parsed_args)

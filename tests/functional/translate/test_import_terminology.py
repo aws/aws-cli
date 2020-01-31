@@ -65,7 +65,7 @@ class TestImortTerminology(BaseAWSCommandParamsTest):
         cmdline += ' --name myterminology --merge-strategy OVERWRITE'
         cmdline += ' --terminology-data File=fileb://wrong.csv,Format=TMX'
         cmdline += ' --data-file fileb://right.csv'
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=252)
         self.assertIn(
             "File cannot be provided as part of the '--terminology-data' "
             "argument. Please use the '--data-file' option instead to specify "
@@ -77,14 +77,14 @@ class TestImortTerminology(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += ' --name myterminology --merge-strategy OVERWRITE'
         cmdline += ' --terminology-data Format=TMX'
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=2)
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=252)
         self.assertIn('--data-file', stderr)
 
     def test_import_terminology_with_no_format(self):
         cmdline = self.prefix
         cmdline += ' --name myterminology --merge-strategy OVERWRITE'
         cmdline += ' --data-file fileb://%s' % self.temp_file
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=252)
         self.assertIn(
             'Missing required parameter in TerminologyData: "Format"', stderr
         )

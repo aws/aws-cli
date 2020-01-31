@@ -63,11 +63,11 @@ class TestRb(BaseAWSCommandParamsTest):
 
     def test_nonzero_exit_if_uri_scheme_not_provided(self):
         command = self.prefix + 'bucket'
-        self.run_cmd(command, expected_rc=255)
+        self.run_cmd(command, expected_rc=252)
 
     def test_nonzero_exit_if_key_provided(self):
         command = self.prefix + 's3://bucket/key --force'
-        self.run_cmd(command, expected_rc=255)
+        self.run_cmd(command, expected_rc=252)
 
         command = self.prefix + 's3://bucket/key'
-        self.run_cmd(command, expected_rc=255)
+        self.run_cmd(command, expected_rc=252)

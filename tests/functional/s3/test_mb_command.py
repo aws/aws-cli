@@ -44,4 +44,4 @@ class TestMBCommand(BaseAWSCommandParamsTest):
 
     def test_nonzero_exit_if_invalid_path_provided(self):
         command = self.prefix + 'bucket'
-        self.run_cmd(command, expected_rc=255)
+        self.run_cmd(command, expected_rc=252)

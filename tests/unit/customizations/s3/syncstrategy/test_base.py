@@ -18,6 +18,7 @@ from awscli.customizations.s3.filegenerator import FileStat
 from awscli.customizations.s3.syncstrategy.base import BaseSync, \
     SizeAndLastModifiedSync, MissingFileSync, NeverSync
 from awscli.testutils import unittest
+from awscli.customizations.exceptions import ParamValidationError
 
 
 class TestBaseSync(unittest.TestCase):
@@ -32,7 +33,7 @@ class TestBaseSync(unittest.TestCase):
             self.assertEqual(strategy.sync_type, sync_type)
 
         # Check for invalid ``sync_type`` options.
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             BaseSync('wrong_sync_type')
 
     def test_register_strategy(self):

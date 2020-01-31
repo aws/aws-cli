@@ -103,7 +103,7 @@ class TestGenerateProvisioningArtifact(BaseAWSCommandParamsTest):
         self.cmd_line = self.build_cmd_line()
         self.assert_params_for_cmd(
             self.cmd_line,
-            expected_rc=2,
+            expected_rc=252,
             stderr_contains='--provisioning-artifact-type: Invalid choice')
 
     def test_generate_provisioning_artifact_missing_file_path(self):
@@ -111,7 +111,7 @@ class TestGenerateProvisioningArtifact(BaseAWSCommandParamsTest):
         self.cmd_line = self.build_cmd_line()
         self.assert_params_for_cmd(
             self.cmd_line,
-            expected_rc=2,
+            expected_rc=252,
             stderr_contains='--file-path')
 
     def test_generate_provisioning_artifact_missing_bucket_name(self):
@@ -119,7 +119,7 @@ class TestGenerateProvisioningArtifact(BaseAWSCommandParamsTest):
         self.cmd_line = self.build_cmd_line()
         self.assert_params_for_cmd(
             self.cmd_line,
-            expected_rc=2,
+            expected_rc=252,
             stderr_contains='--bucket-name')
 
     def test_generate_provisioning_artifact_missing_pa_name(self):
@@ -127,7 +127,7 @@ class TestGenerateProvisioningArtifact(BaseAWSCommandParamsTest):
         self.cmd_line = self.build_cmd_line()
         self.assert_params_for_cmd(
             self.cmd_line,
-            expected_rc=2,
+            expected_rc=252,
             stderr_contains='--provisioning-artifact-name')
 
     def test_generate_provisioning_artifact_missing_pa_description(self):
@@ -135,7 +135,7 @@ class TestGenerateProvisioningArtifact(BaseAWSCommandParamsTest):
         self.cmd_line = self.build_cmd_line()
         self.assert_params_for_cmd(
             self.cmd_line,
-            expected_rc=2,
+            expected_rc=252,
             stderr_contains='--provisioning-artifact-description')
 
     def test_generate_provisioning_artifact_missing_pa_type(self):
@@ -143,5 +143,5 @@ class TestGenerateProvisioningArtifact(BaseAWSCommandParamsTest):
         self.cmd_line = self.build_cmd_line()
         self.assert_params_for_cmd(
             self.cmd_line,
-            expected_rc=2,
+            expected_rc=252,
             stderr_contains='--provisioning-artifact-type')

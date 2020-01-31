@@ -16,6 +16,7 @@ from awscli.customizations.emr import emrutils
 from awscli.customizations.emr import hbaseutils
 from awscli.customizations.emr import helptext
 from awscli.customizations.emr.command import Command
+from awscli.customizations.exceptions import ParamValidationError
 
 
 class RestoreFromHBaseBackup(Command):
@@ -99,7 +100,7 @@ class ScheduleHBaseBackup(Command):
     def _check_type(self, type):
         type = type.lower()
         if type != constants.FULL and type != constants.INCREMENTAL:
-            raise ValueError('aws: error: invalid type. '
+            raise ParamValidationError('aws: error: invalid type. '
                              'type should be either ' +
                              constants.FULL + ' or ' + constants.INCREMENTAL +
                              '.')
@@ -109,10 +110,11 @@ class ScheduleHBaseBackup(Command):
         if (unit != constants.MINUTES and
                 unit != constants.HOURS and
                 unit != constants.DAYS):
-            raise ValueError('aws: error: invalid unit. unit should be one of'
-                             ' the following values: ' + constants.MINUTES +
-                             ', ' + constants.HOURS + ' or ' + constants.DAYS +
-                             '.')
+            raise ParamValidationError(
+                'aws: error: invalid unit. unit should be one of'
+                ' the following values: ' + constants.MINUTES +
+                ', ' + constants.HOURS + ' or ' + constants.DAYS + '.'
+            )
 
     def _build_hbase_schedule_backup_args(self, parsed_args):
         args = [constants.HBASE_MAIN, constants.HBASE_SCHEDULED_BACKUP,
@@ -228,7 +230,7 @@ class DisableHBaseBackups(Command):
             error_message = 'Should specify at least one of --' +\
                             constants.FULL + ' and --' +\
                             constants.INCREMENTAL + '.'
-            raise ValueError(error_message)
+            raise ParamValidationError(error_message)
         if parsed_args.full is True:
             args.append(constants.HBASE_DISABLE_FULL_BACKUP)
         if parsed_args.incremental is True:

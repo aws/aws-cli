@@ -63,7 +63,7 @@ class TestCLIInputJSON(BaseCLIInputArgumentTest):
         cmdline = (
             's3api head-object --cli-input-json {"Key":"foo"}'
         )
-        self.assert_params_for_cmd(cmdline, expected_rc=255,
+        self.assert_params_for_cmd(cmdline, expected_rc=252,
                                    stderr_contains='Missing')
 
     def test_cli_input_json_has_extra_unknown_args(self):
@@ -73,7 +73,7 @@ class TestCLIInputJSON(BaseCLIInputArgumentTest):
             's3api head-object --cli-input-json '
             '{"Bucket":"bucket","Key":"key","Foo":"bar"}'
         )
-        self.assert_params_for_cmd(cmdline, expected_rc=255,
+        self.assert_params_for_cmd(cmdline, expected_rc=252,
                                    stderr_contains='Unknown')
 
 
@@ -92,14 +92,14 @@ class TestCLIInputYAML(BaseCLIInputArgumentTest):
             's3api', 'list-objects-v2', '--cli-input-yaml',
             'Bucket: test-bucket\nFoo: bar'
         ]
-        self.run_cmd(command, expected_rc=255)
+        self.run_cmd(command, expected_rc=252)
 
     def test_required_params_missing(self):
         command = [
             's3api', 'list-objects-v2', '--cli-input-yaml',
             'EncodingType: url'
         ]
-        self.run_cmd(command, expected_rc=255)
+        self.run_cmd(command, expected_rc=252)
 
     def test_input_yaml_file(self):
         filename = self.files.create_file(
@@ -141,7 +141,7 @@ class TestCLIInputYAML(BaseCLIInputArgumentTest):
             '--cli-input-json', '{"Bucket":"bucket","Key":"key"}'
         ]
         self.assert_params_for_cmd(
-            command, expected_rc=255,
+            command, expected_rc=252,
             stderr_contains='Only one --cli-input- parameter may be specified.'
         )
 

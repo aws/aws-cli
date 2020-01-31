@@ -19,6 +19,7 @@ from awscli.customizations.arguments import StatefulArgument
 from awscli.customizations.arguments import QueryOutFileArgument
 from awscli.customizations.arguments import resolve_given_outfile_path
 from awscli.customizations.arguments import is_parsed_result_successful
+from awscli.customizations.exceptions import ParamValidationError
 
 
 class TestOverrideRequiredArgsArgument(unittest.TestCase):
@@ -78,7 +79,7 @@ class TestArgumentHelpers(unittest.TestCase):
 
     def test_raises_when_cannot_write_to_file(self):
         filename = os.sep.join(['_path', 'not', '_exist_', 'file.xyz'])
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ParamValidationError):
             resolve_given_outfile_path(filename)
 
     def test_checks_if_valid_result(self):

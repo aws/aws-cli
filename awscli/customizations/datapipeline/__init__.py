@@ -22,6 +22,7 @@ from awscli.customizations.datapipeline.createdefaultroles \
     import CreateDefaultRoles
 from awscli.customizations.datapipeline.listrunsformatter \
     import ListRunsFormatter
+from awscli.customizations.exceptions import ParamValidationError
 
 
 DEFINITION_HELP_TEXT = """\
@@ -57,7 +58,7 @@ class DocSectionNotFoundError(Exception):
     pass
 
 
-class ParameterDefinitionError(Exception):
+class ParameterDefinitionError(ParamValidationError):
     def __init__(self, msg):
         full_msg = ("Error in parameter: %s\n" % msg)
         super(ParameterDefinitionError, self).__init__(full_msg)
@@ -279,7 +280,7 @@ class ParameterValuesArgument(CustomArgument):
             return
 
         if parameters.get('parameterValues', None) is not None:
-            raise Exception(
+            raise ParamValidationError(
                 "Only parameter-values or parameter-values-uri is allowed"
             )
 
@@ -295,7 +296,7 @@ class ParameterValuesInlineArgument(CustomArgument):
             return
 
         if parameters.get('parameterValues', None) is not None:
-            raise Exception(
+            raise ParamValidationError(
                 "Only parameter-values or parameter-values-uri is allowed"
             )
 
@@ -358,6 +359,7 @@ class ListRunsCommand(BasicCommand):
         self._set_client(parsed_globals)
         self._parse_type_args(parsed_args)
         self._list_runs(parsed_args, parsed_globals)
+        return 0
 
     def _set_client(self, parsed_globals):
         # This is called from _run_main and is used to ensure that we have
@@ -389,8 +391,10 @@ class ListRunsCommand(BasicCommand):
     def _validate_status_choices(self, statuses):
         for status in statuses:
             if status not in self.VALID_STATUS:
-                raise ValueError("Invalid status: %s, must be one of: %s" %
-                                 (status, ', '.join(self.VALID_STATUS)))
+                raise ParamValidationError(
+                    "Invalid status: %s, must be one of: %s" %
+                    (status, ', '.join(self.VALID_STATUS))
+                )
 
     def _list_runs(self, parsed_args, parsed_globals):
         query = QueryArgBuilder().build_query(parsed_args)

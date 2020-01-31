@@ -112,6 +112,8 @@ class Register(BasicCommand):
                 'Using AWS CodeDeploy" in the AWS CodeDeploy User '
                 'Guide.\n'.format(e)
             )
+            return 255
+        return 0
 
     def _create_iam_user(self, params):
         sys.stdout.write('Creating the IAM user... ')

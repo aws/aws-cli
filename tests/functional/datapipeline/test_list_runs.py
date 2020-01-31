@@ -55,7 +55,7 @@ class TestDataPipelineQueryObjects(BaseAWSCommandParamsTest):
             {'pipelineObjects': objects[100:]}
         ]
 
-        self.run_cmd(command, expected_rc=None)
+        self.run_cmd(command, expected_rc=0)
 
         query = {
             'selectors': [{

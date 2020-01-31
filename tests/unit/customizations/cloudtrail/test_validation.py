@@ -36,7 +36,7 @@ from awscli.customizations.cloudtrail.validation import DigestError, \
     InvalidDigestFormat, S3ClientProvider
 from botocore.exceptions import ClientError
 from awscli.testutils import unittest
-from awscli.schema import ParameterRequiredError
+from awscli.customizations.exceptions import ParamValidationError
 
 
 START_DATE = parser.parse('20140810T000000Z')
@@ -184,7 +184,7 @@ class TestValidation(unittest.TestCase):
         try:
             parse_date('foo')
             self.fail('Should have failed to parse')
-        except ValueError as e:
+        except ParamValidationError as e:
             self.assertIn('Unable to parse date value: foo', str(e))
 
     def test_parses_dates(self):
@@ -195,7 +195,7 @@ class TestValidation(unittest.TestCase):
         try:
             assert_cloudtrail_arn_is_valid('foo:bar:baz')
             self.fail('Should have failed')
-        except ValueError as e:
+        except ParamValidationError as e:
             self.assertIn('Invalid trail ARN provided: foo:bar:baz', str(e))
 
     def test_ensures_cloudtrail_arns_are_valid_when_missing_resource(self):
@@ -203,7 +203,7 @@ class TestValidation(unittest.TestCase):
             assert_cloudtrail_arn_is_valid(
                 'arn:aws:cloudtrail:us-east-1:%s:foo' % TEST_ACCOUNT_ID)
             self.fail('Should have failed')
-        except ValueError as e:
+        except ParamValidationError as e:
             self.assertIn('Invalid trail ARN provided', str(e))
 
     def test_allows_valid_arns(self):
@@ -325,7 +325,7 @@ class TestValidation(unittest.TestCase):
                 "Id": TEST_ORGANIZATION_ID,
             }
         }
-        with self.assertRaises(ParameterRequiredError):
+        with self.assertRaises(ParamValidationError):
             create_digest_traverser(
                 trail_arn=TEST_TRAIL_ARN, trail_source_region='us-east-1',
                 cloudtrail_client=cloudtrail_client,

@@ -99,3 +99,4 @@ class ConfigureSetCommand(BasicCommand):
             if section_name.startswith('profile '):
                 updated_config['__section__'] = section_name[8:]
         self._config_writer.update_config(updated_config, config_filename)
+        return 0

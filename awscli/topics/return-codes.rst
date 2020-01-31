@@ -31,8 +31,22 @@ of a CLI command:
 
 * ``130`` -- The process received a SIGINT (Ctrl-C).
 
-* ``255`` -- Command failed. There were errors thrown by either the CLI or
-  by the service the request was made to.
+* ``252`` -- Command syntax was invalid, an unknown parameter was provided, or
+  a paramter value was incorrect and prevented the command from running.
+
+* ``253`` -- The system environment or configuration was invalid. While the
+  command provided may be syntactically valid, missing configuration or
+  credentials prevented the command from running.
+
+* ``254`` -- The command was succesfully parsed and a request was made to the
+  specified service but the service returned an error. This will generally
+  indicate incorrect API usage or other service specific issues.
+
+* ``255`` -- General catch-all error. The command may have parsed correctly but
+  an unspecified runtime error occured when running the command. Because this
+  is a general error code, an error may change from 255 to a more specific
+  return code. A return code of 255 should not be relied on to determine a
+  specific error case.
 
 
 To determine the return code of a command, run the following right after

@@ -17,13 +17,15 @@ Output::
 The following ``allocate-address`` example allocates an Elastic IP address to use with an instance in a VPC. ::
 
     aws ec2 allocate-address \
-        --domain vpc
+        --domain vpc \
+        --network-border-group us-west-2-lax-1
 
 Output::
 
     {
-        "PublicIp": "203.0.113.0",
+        "PublicIp": "70.224.234.241",
+        "AllocationId": "eipalloc-02463d08ceEXAMPLE",
         "PublicIpv4Pool": "amazon",
-        "Domain": "vpc",
-        "AllocationId": "eipalloc-07b6d55388acd1884"
+        "NetworkBorderGroup": "us-west-2-lax-1",
+        "Domain": "vpc"
     }

@@ -2,7 +2,7 @@
 aws-cli
 =======
 
-.. image:: https://travis-ci.org/aws/aws-cli.svg?branch=develop
+.. image:: https://travis-ci.org/aws/aws-cli.svg?branch=v2
    :target: https://travis-ci.org/aws/aws-cli
    :alt: Build Status
 
@@ -15,18 +15,8 @@ This package provides a unified command line interface to Amazon Web Services.
 
 The aws-cli package works on Python versions:
 
-* 2.7.9 and greater
-* 3.5.x and greater
-* 3.6.x and greater
 * 3.7.x and greater
 * 3.8.x and greater
-
-On 10/09/2019 support for Python 2.6 and Python 3.3 was deprecated and support
-was dropped on 01/10/2020. To avoid disruption, customers using the AWS CLI
-on Python 2.6 or 3.3 will need to upgrade their version of Python or pin the
-version of the AWS CLI in use prior to 01/10/2020. For more information, see
-this `blog post <https://aws.amazon.com/blogs/developer/deprecation-of-python-2-6-and-python-3-3-in-botocore-boto3-and-the-aws-cli/>`__.
-
 
 .. attention::
    We recommend that all customers regularly monitor the
@@ -38,39 +28,17 @@ this `blog post <https://aws.amazon.com/blogs/developer/deprecation-of-python-2-
 Installation
 ------------
 
-The easiest way to install aws-cli is to use `pip`_ in a ``virtualenv``::
+AWS CLI v2 can easily be installed on most standard platforms:
 
-    $ pip install awscli
+* `MacOS pkg installer <https://awscli.amazonaws.com/AWSCLIV2.pkg>`__
 
-or, if you are not installing in a ``virtualenv``, to install globally::
+* `Linux executable installer <https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip>`__
 
-    $ sudo pip install awscli
+* `Windows MSI installer <https://awscli.amazonaws.com/AWSCLIV2.msi>`__
 
-or for your user::
+You can find more detailed installation instructions `here <https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html>`__.
 
-    $ pip install --user awscli
-
-If you have the aws-cli installed and want to upgrade to the latest version
-you can run::
-
-    $ pip install --upgrade awscli
-
-.. note::
-
-    On macOS, if you see an error regarding the version of six that came with
-    distutils in El Capitan, use the ``--ignore-installed`` option::
-
-        $ sudo pip install awscli --ignore-installed six
-
-
-This will install the aws-cli package as well as all dependencies.  You can
-also just `download the tarball`_.  Once you have the
-awscli directory structure on your workstation, you can just run::
-
-    $ cd <path_to_awscli>
-    $ python setup.py install
-
-If you want to run the ``develop`` branch of the CLI, see the
+If you want to run the ``v2`` development branch of the CLI, see the
 "CLI Dev Version" section below.
 
 
@@ -78,7 +46,7 @@ If you want to run the ``develop`` branch of the CLI, see the
 CLI Releases
 ------------
 
-The release notes for the AWS CLI can be found `here <https://github.com/aws/aws-cli/blob/develop/CHANGELOG.rst>`__.
+The release notes for the AWS CLI can be found `here <https://github.com/aws/aws-cli/blob/v2/CHANGELOG.rst>`__.
 
 
 ------------------
@@ -328,17 +296,6 @@ data.  For example, the ``--user-data`` option of the ``aws ec2 run-instances``
 command or the ``--public-key-material`` parameter of the
 ``aws ec2 import-key-pair`` command.
 
--------------------------
-URI-based Parameter Input
--------------------------
-
-Similar to the file-based input described above, aws-cli also includes a
-way to use data from a URI as the value of a parameter.  The idea is exactly
-the same except the prefix used is ``https://`` or ``http://``::
-
-    $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup \
-        --ip-permissions http://mybucket.s3.amazonaws.com/ip_perms.json
-
 --------------
 Command Output
 --------------
@@ -391,36 +348,21 @@ need to do this unless:
 * You want to test the latest changes of the CLI before they make it into an
   official release.
 
-The latest changes to the CLI are in the ``develop`` branch on github.  This is
-the default branch when you clone the git repository.
-
-Additionally, there are several other packages that are developed in lockstep
-with the CLI.  This includes:
-
-* `botocore <https://github.com/boto/botocore>`__
-* `jmespath <https://github.com/boto/jmespath>`__
+The latest changes to the CLI are in the ``v2`` branch on github.  This is
+**NOT** the default branch when you clone the git repository, so you'll need
+to make sure you ``git checkout v2``.
 
 If you just want to install a snapshot of the latest development version of
 the CLI, you can use the ``requirements.txt`` file included in this repo.
-This file points to the development version of the above packages::
+This file points to the development version of our dependencies::
 
-    $ cd <path_to_awscli>
+    $ cd <path_to_awscli> && git checkout v2
     $ pip install -r requirements.txt
     $ pip install -e .
 
 However, to keep up to date, you will continually have to run the
 ``pip install -r requirements.txt`` file to pull in the latest changes
-from the develop branches of botocore, jmespath, etc.
-
-You can optionally clone each of those repositories and run "pip install -e ."
-for each repository::
-
-    $ git clone <jmespath> && cd jmespath/
-    $ pip install -e . && cd ..
-    $ git clone <botocore> && cd botocore/
-    $ pip install -e . && cd ..
-    $ git clone <awscli> && cd aws-cli/
-    $ pip install -e .
+from the v2 branch of botocore and other dependencies.
 
 
 ------------
@@ -439,5 +381,4 @@ help:
 
 
 .. _`Amazon Web Services Security Bulletins website`: https://aws.amazon.com/security/security-bulletins
-.. _pip: http://www.pip-installer.org/en/latest/
 .. _`download the tarball`: https://pypi.org/project/awscli/

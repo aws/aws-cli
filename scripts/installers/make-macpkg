@@ -46,14 +46,17 @@ def do_make_pkg(workdir, pkg_name):
         ) % (SCRIPTS_DIR, version, TEMP_PKG_NAME),
         cwd=workdir,
     ))
-    print(run(
-        (
-            'productbuild --distribution %s '
-            '--resources %s '
-            '%s'
-        ) % (DISTRIBUTION_PATH, RESOURCES_DIR, PKG_NAME),
-        cwd=workdir,
-    ))
+    with tmp_dir() as formatted_resource_dir:
+        render_resources(
+            formatted_resource_dir, RESOURCES_DIR, {'version': version})
+        print(run(
+            (
+                'productbuild --distribution %s '
+                '--resources %s '
+                '%s'
+            ) % (DISTRIBUTION_PATH, formatted_resource_dir, PKG_NAME),
+            cwd=workdir,
+        ))
     shutil.copyfile(os.path.join(workdir, PKG_NAME), pkg_name)
 
 
@@ -63,6 +66,25 @@ def get_version(output_dir):
     result = run('%s --version' % exe_path, cwd=exe_dir).strip()
     version = result.split(' ')[0].split('/')[1]
     return version
+
+
+def render_resources(workdir, resource_dir, variables):
+    for filename in os.listdir(resource_dir):
+        path = os.path.join(resource_dir, filename)
+        if path.endswith('.tmpl'):
+            # This is a templated resource. Format its content with the
+            # variables and write it out to a filepath with the .tmpl
+            # extension stripped.
+            dst = os.path.join(workdir, filename[:-5])
+            with open(path, 'r') as f:
+                content = f.read()
+            formatted_content = content.format(**variables)
+            with open(dst, 'w') as f:
+                f.write(formatted_content)
+        else:
+            # No formatting needed just copy the file.
+            dst = os.path.join(workdir, filename)
+            shutil.copy2(path, dst)
 
 
 def main():

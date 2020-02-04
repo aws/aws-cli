@@ -19,10 +19,12 @@ import platform
 import zipfile
 import signal
 import contextlib
+import collections.abc as collections_abc
+import locale
+import urllib.parse as urlparse
+from urllib.error import URLError
 
 from botocore.compat import six
-#import botocore.compat
-
 from botocore.compat import OrderedDict
 
 # If you ever want to import from the vendored six. Add it here and then
@@ -62,6 +64,10 @@ else:
     default_pager = 'less'
 
 
+imap = map
+raw_input = input
+
+
 class StdinMissingError(Exception):
     def __init__(self):
         message = (
@@ -99,113 +105,45 @@ def ensure_text_type(s):
     raise ValueError("Expected str, unicode or bytes, received %s." % type(s))
 
 
-if six.PY3:
-    import collections.abc as collections_abc
-    import locale
-    import urllib.parse as urlparse
+def get_binary_stdin():
+    if sys.stdin is None:
+        raise StdinMissingError()
+    return sys.stdin.buffer
 
-    from urllib.error import URLError
+def get_binary_stdout():
+    return sys.stdout.buffer
 
-    imap = map
-    raw_input = input
+def _get_text_writer(stream, errors):
+    return stream
 
-    def get_binary_stdin():
-        if sys.stdin is None:
-            raise StdinMissingError()
-        return sys.stdin.buffer
+def compat_open(filename, mode='r', encoding=None):
+    """Back-port open() that accepts an encoding argument.
 
-    def get_binary_stdout():
-        return sys.stdout.buffer
+    In python3 this uses the built in open() and in python2 this
+    uses the io.open() function.
 
-    def _get_text_writer(stream, errors):
-        return stream
+    If the file is not being opened in binary mode, then we'll
+    use locale.getpreferredencoding() to find the preferred
+    encoding.
 
-    def compat_open(filename, mode='r', encoding=None):
-        """Back-port open() that accepts an encoding argument.
-
-        In python3 this uses the built in open() and in python2 this
-        uses the io.open() function.
-
-        If the file is not being opened in binary mode, then we'll
-        use locale.getpreferredencoding() to find the preferred
-        encoding.
-
-        """
-        if 'b' not in mode:
-            encoding = locale.getpreferredencoding()
-        return open(filename, mode, encoding=encoding)
-
-    def bytes_print(statement, stdout=None):
-        """
-        This function is used to write raw bytes to stdout.
-        """
-        if stdout is None:
-            stdout = sys.stdout
-
-        if getattr(stdout, 'buffer', None):
-            stdout.buffer.write(statement)
-        else:
-            # If it is not possible to write to the standard out buffer.
-            # The next best option is to decode and write to standard out.
-            stdout.write(statement.decode('utf-8'))
-
-else:
-    import codecs
-    import collections as collections_abc
-    import locale
-    import io
-    import itertools
-    import urlparse
-
-    from urllib2 import URLError
-
-    imap = itertools.imap
-    raw_input = raw_input
-
-    def get_binary_stdin():
-        if sys.stdin is None:
-            raise StdinMissingError()
-        return sys.stdin
-
-    def get_binary_stdout():
-        return sys.stdout
-
-    def _get_text_writer(stream, errors):
-        # In python3, all the sys.stdout/sys.stderr streams are in text
-        # mode.  This means they expect unicode, and will encode the
-        # unicode automatically before actually writing to stdout/stderr.
-        # In python2, that's not the case.  In order to provide a consistent
-        # interface, we can create a wrapper around sys.stdout that will take
-        # unicode, and automatically encode it to the preferred encoding.
-        # That way consumers can just call get_text_writer(stream) and write
-        # unicode to the returned stream.  Note that get_text_writer
-        # just returns the stream in the PY3 section above because python3
-        # handles this.
-
-        # We're going to use the preferred encoding, but in cases that there is
-        # no preferred encoding we're going to fall back to assuming ASCII is
-        # what we should use. This will currently break the use of
-        # PYTHONIOENCODING, which would require checking stream.encoding first,
-        # however, the existing behavior is to only use
-        # locale.getpreferredencoding() and so in the hope of not breaking what
-        # is currently working, we will continue to only use that.
+    """
+    if 'b' not in mode:
         encoding = locale.getpreferredencoding()
-        if encoding is None:
-            encoding = "ascii"
+    return open(filename, mode, encoding=encoding)
 
-        return codecs.getwriter(encoding)(stream, errors)
+def bytes_print(statement, stdout=None):
+    """
+    This function is used to write raw bytes to stdout.
+    """
+    if stdout is None:
+        stdout = sys.stdout
 
-    def compat_open(filename, mode='r', encoding=None):
-        # See docstring for compat_open in the PY3 section above.
-        if 'b' not in mode:
-            encoding = locale.getpreferredencoding()
-        return io.open(filename, mode, encoding=encoding)
-
-    def bytes_print(statement, stdout=None):
-        if stdout is None:
-            stdout = sys.stdout
-
-        stdout.write(statement)
+    if getattr(stdout, 'buffer', None):
+        stdout.buffer.write(statement)
+    else:
+        # If it is not possible to write to the standard out buffer.
+        # The next best option is to decode and write to standard out.
+        stdout.write(statement.decode('utf-8'))
 
 
 def get_stdout_text_writer():

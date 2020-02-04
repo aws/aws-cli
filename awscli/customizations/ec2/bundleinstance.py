@@ -98,8 +98,8 @@ def _check_args(parsed_args, **kwargs):
     logger.debug(parsed_args)
     arg_dict = vars(parsed_args)
     if arg_dict['storage']:
-        for key in ('bucket', 'prefix', 'owner-akid',
-                    'owner-sak', 'policy'):
+        for key in ('bucket', 'prefix', 'owner_akid',
+                    'owner_sak', 'policy'):
             if arg_dict[key]:
                 msg = ('Mixing the --storage option '
                        'with the simple, scalar options is '

@@ -22,7 +22,6 @@ from docutils.writers import manpage
 
 from botocore.docs.bcdoc import docevents
 from botocore.docs.bcdoc.restdoc import ReSTDocument
-from botocore.docs.bcdoc.textwriter import TextWriter
 
 from awscli.clidocs import ProviderDocumentEventHandler
 from awscli.clidocs import ServiceDocumentEventHandler
@@ -33,6 +32,7 @@ from awscli.argprocess import ParamShorthandParser
 from awscli.argparser import ArgTableArgParser
 from awscli.topictags import TopicTagDB
 from awscli.utils import ignore_ctrl_c
+from awscli.textwriter import TextWriter
 
 
 LOG = logging.getLogger('awscli.help')

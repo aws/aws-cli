@@ -9,12 +9,12 @@ incompatible changes introduced to the AWS CLI v2.
 To install the AWS CLI v2, run the `install` script:
 ```
 $ sudo ./install 
-You can now run: /usr/local/bin/aws2 --version
+You can now run: /usr/local/bin/aws --version
 ```
-This will install the AWS CLI v2 at `/usr/local/bin/aws2`.  Assuming
+This will install the AWS CLI v2 at `/usr/local/bin/aws`.  Assuming
 `/usr/local/bin` is on your `PATH`, you can now run:
 ```
-$ aws2 --verison
+$ aws --verison
 ```
 
 
@@ -27,7 +27,7 @@ and `-i` options:
 $ ./install -i ~/.local/aws-cli -b ~/.local/bin
 ``` 
 This will install the AWS CLI v2 in `~/.local/aws-cli` and create
-symlinks for `aws2` and `aws2_completer` in `~/.local/bin`. For more
+symlinks for `aws` and `aws_completer` in `~/.local/bin`. For more
 information about these options, run the `install` script with `-h`:
 ```
 $ ./install -h
@@ -48,8 +48,8 @@ $ sudo ./install --update
 To remove the AWS CLI v2, delete the its installation and symlinks:
 ```
 $ sudo rm -rf /usr/local/aws-cli
-$ sudo rm /usr/local/bin/aws2
-$ sudo rm /usr/local/bin/aws2_completer
+$ sudo rm /usr/local/bin/aws
+$ sudo rm /usr/local/bin/aws_completer
 ```
 Note if you installed the AWS CLI v2 using the `-b` or `-i` options, you will
 need to remove the installation and the symlinks in the directories you

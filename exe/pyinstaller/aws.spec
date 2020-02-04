@@ -1,7 +1,7 @@
 # -*- mode: python -*-
 
 block_cipher = None
-exe_name = 'aws2'
+exe_name = 'aws'
 
 aws_a = Analysis(['../../bin/aws'],
              binaries=[],

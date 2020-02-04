@@ -1,7 +1,7 @@
 # -*- mode: python -*-
 
 block_cipher = None
-exe_name = "aws2_completer"
+exe_name = "aws_completer"
 
 
 completer_a = Analysis(['../../bin/aws_completer'],

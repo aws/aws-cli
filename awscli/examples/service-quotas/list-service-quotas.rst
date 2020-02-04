@@ -1,8 +1,9 @@
-**To view all service quotas for the specified AWS service in your AWS account**
+**To list the quotas for a service**
 
-The following **list-service-quotas** command retrieves the current quota values for all quotas in the of ``cloudformation`` service. ::
+The following ``list-service-quotas`` example displays details about the quotas for AWS CloudFormation. ::
 
-    aws service-quotas list-service-quotas --service-code cloudformation
+    aws service-quotas list-service-quotas \
+        --service-code cloudformation
 
 Output::
 
@@ -11,7 +12,7 @@ Output::
             {
                 "ServiceCode": "cloudformation",
                 "ServiceName": "AWS CloudFormation",
-                "QuotaArn": "arn:aws:servicequotas:us-east-1:123456789012:cloudformation/L-87D14FB7",
+                "QuotaArn": "arn:aws:servicequotas:us-east-2:123456789012:cloudformation/L-87D14FB7",
                 "QuotaCode": "L-87D14FB7",
                 "QuotaName": "Output count in CloudFormation template",
                 "Value": 60.0,
@@ -22,7 +23,7 @@ Output::
             {
                 "ServiceCode": "cloudformation",
                 "ServiceName": "AWS CloudFormation",
-                "QuotaArn": "arn:aws:servicequotas:us-east-1:123456789012:cloudformation/L-0485CB21",
+                "QuotaArn": "arn:aws:servicequotas:us-east-2:123456789012:cloudformation/L-0485CB21",
                 "QuotaCode": "L-0485CB21",
                 "QuotaName": "Stack count",
                 "Value": 200.0,
@@ -31,6 +32,4 @@ Output::
                 "GlobalQuota": false
             }
         ]
-
     }
-

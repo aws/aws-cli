@@ -1,40 +1,42 @@
-**To add an item to a table**
+**Example1: To add an item to a table**
 
-This example adds a new item to the *MusicCollection* table.
+The following ``put-item`` example adds a new item to the *MusicCollection* table. ::
 
-Command::
+    aws dynamodb put-item \
+        --table-name MusicCollection \
+        --item file://item.json \
+        --return-consumed-capacity TOTAL
 
-  aws dynamodb put-item --table-name MusicCollection --item file://item.json --return-consumed-capacity TOTAL
+Contents of ``item.json``::
 
-The arguments for ``--item`` are stored in a JSON file, ``item.json``.  Here are the contents of that file::
-
-  {
-      "Artist": {"S": "No One You Know"},
-      "SongTitle": {"S": "Call Me Today"},
-      "AlbumTitle": {"S": "Somewhat Famous"}
-  }
-
-Output::
-
-  {
-      "ConsumedCapacity": {
-          "CapacityUnits": 1.0,
-          "TableName": "MusicCollection"
-      }
-  }
-
-
-**Conditional Expressions**
-
-This example shows how to perform a one-line conditional expression operation. This put-item call to the table *MusicCollection* table will only succeed if the artist "Obscure Indie Band" does not exist in the table.
-
-Command::
-
-  aws dynamodb put-item --table-name MusicCollection --item '{"Artist": {"S": "Obscure Indie Band"}}' --condition-expression "attribute_not_exists(Artist)"
-
-
-If the key already exists, you should see:
+    {
+        "Artist": {"S": "No One You Know"},
+        "SongTitle": {"S": "Call Me Today"},
+        "AlbumTitle": {"S": "Somewhat Famous"}
+    }
 
 Output::
 
-  A client error (ConditionalCheckFailedException) occurred when calling the PutItem operation: The conditional request failed
+    {
+        "ConsumedCapacity": {
+            "CapacityUnits": 1.0,
+            "TableName": "MusicCollection"
+        }
+    }
+
+For more information, see `Writing an Item <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html#WorkingWithItems.WritingData>`__ in the *Amazon DynamoDB Developer Guide*.
+
+**Example2: To add an item to a table conditionally**
+
+The following ``put-item`` example adds a new item to the ``MusicCollection`` table only if the artist "Obscure Indie Band" does not already exist in the table. ::
+
+    aws dynamodb put-item \
+        --table-name MusicCollection \
+        --item '{"Artist": {"S": "Obscure Indie Band"}}' \
+        --condition-expression "attribute_not_exists(Artist)"
+
+If the key already exists, you should see the following output::
+
+    A client error (ConditionalCheckFailedException) occurred when calling the PutItem operation: The conditional request failed.
+
+For more information, see `Condition Expressions <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ConditionExpressions.html>`__ in the *Amazon DynamoDB Developer Guide*.

@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.17.11
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``dlm``: Update dlm command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``groundstation``: Update groundstation command to latest version
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+* bugfix:ec2: Fixed a paramter validation bug for the ec2 bundle-instance parameter --storage.
+* api-change:``forecastquery``: Update forecastquery command to latest version
+
+
 1.17.10
 =======
 

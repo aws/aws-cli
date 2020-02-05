@@ -28,7 +28,7 @@ install_requires = ['botocore==1.14.10',
                     'rsa>=3.1.2,<=3.5.0',
                     's3transfer>=0.3.0,<0.4.0',
                     'PyYAML>=3.10,<5.3',
-                    'colorama>=0.2.5,<0.4.2']
+                    'colorama>=0.2.5,<0.4.4']
 
 
 setup_options = dict(

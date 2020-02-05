@@ -25,21 +25,3 @@ class TestUpdateConfigurationTemplate(BaseAWSCommandParamsTest):
         cmdline += ' --application-name FooBar'
         result = {'ApplicationName': 'FooBar',}
         self.assert_params_for_cmd(cmdline, result)
-
-    @unittest.skipIf(
-        six.PY3, 'Unicode cmd line test only is relevant to python2.')
-    def test_py2_bytestring_unicode(self):
-        # In Python2, sys.argv is a list of bytestrings that are encoded
-        # in whatever encoding the terminal uses.  We have an extra step
-        # where we need to decode the bytestring into unicode.  In
-        # python3, sys.argv is a list of unicode objects so this test
-        # doesn't make sense for python3.
-        cmdline = self.prefix
-        app_name = u'\u2713'
-        cmdline += u' --application-name %s' % app_name
-        encoding = getattr(sys.stdin, 'encoding')
-        if encoding is None:
-            encoding = 'utf-8'
-        cmdline = cmdline.encode(encoding)
-        result = {'ApplicationName': u'\u2713',}
-        self.assert_params_for_cmd(cmdline, result)

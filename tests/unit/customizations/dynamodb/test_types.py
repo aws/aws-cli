@@ -99,8 +99,6 @@ class TestSerializer(unittest.TestCase):
         self.assertEqual(self.serializer.serialize(bytearray([1])),
                          {'B': b'\x01'})
 
-    @unittest.skipIf(six.PY2,
-                     'This is a test when using python3 version of bytes')
     def test_serialize_bytes(self):
         self.assertEqual(self.serializer.serialize(b'\x01'), {'B': b'\x01'})
 

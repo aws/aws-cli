@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.17.12
+=======
+
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``ebs``: Update ebs command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``appsync``: Update appsync command to latest version
+* api-change:``ecr``: Update ecr command to latest version
+
+
 1.17.11
 =======
 

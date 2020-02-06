@@ -23,11 +23,11 @@ Output::
 		},
 		{
 		  "PolicyName": "ASamplePolicy",
-          "CreateDate": "2015-06-17T19:23;32Z",
-          "AttachmentCount": "0",
-          "IsAttachable": "true",
+          	  "CreateDate": "2015-06-17T19:23;32Z",
+          	  "AttachmentCount": "0",
+          	  "IsAttachable": "true",
 		  "PolicyId": "Z27SI6FQMGNQ2EXAMPLE1",
-          "DefaultVersionId": "v1",
+          	  "DefaultVersionId": "v1",
 		  "Path": "/",
 		  "Arn": "arn:aws:iam::123456789012:policy/ASamplePolicy",
 		  "UpdateDate": "2015-06-17T19:23:32Z"

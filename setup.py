@@ -23,12 +23,19 @@ def find_version(*file_paths):
     raise RuntimeError("Unable to find version string.")
 
 
-install_requires = ['botocore==1.14.11',
-                    'docutils>=0.10,<0.16',
-                    'rsa>=3.1.2,<=3.5.0',
-                    's3transfer>=0.3.0,<0.4.0',
-                    'PyYAML>=3.10,<5.3',
-                    'colorama>=0.2.5,<0.4.2']
+install_requires = [
+    'botocore==1.14.12',
+    'docutils>=0.10,<0.16',
+    'rsa>=3.1.2,<=3.5.0',
+    's3transfer>=0.3.0,<0.4.0',
+    'PyYAML>=3.10,<5.3',
+]
+
+
+if sys.version_info[:2] == (3, 4):
+    install_requires.append('colorama>=0.2.5,<0.4.2')
+else:
+    install_requires.append('colorama>=0.2.5,<0.4.4')
 
 
 setup_options = dict(

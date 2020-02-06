@@ -2,6 +2,42 @@
 CHANGELOG
 =========
 
+1.17.12
+=======
+
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``ebs``: Update ebs command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``appsync``: Update appsync command to latest version
+* api-change:``ecr``: Update ecr command to latest version
+
+
+1.17.11
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``dlm``: Update dlm command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``groundstation``: Update groundstation command to latest version
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+* bugfix:ec2: Fixed a paramter validation bug for the ec2 bundle-instance parameter --storage.
+* api-change:``forecastquery``: Update forecastquery command to latest version
+
+
+1.17.10
+=======
+
+* api-change:``workmail``: Update workmail command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``iot``: Update iot command to latest version
+
+
 1.17.9
 ======
 

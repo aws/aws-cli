@@ -1,8 +1,9 @@
-**To create a VPC**
+**Example 1: To create a VPC**
 
 The following ``create-vpc`` example creates a VPC with the specified IPv4 CIDR block. ::
 
     aws ec2 create-vpc \
+        --ipv6-cidr-block-network-border-group us-west-2-lax-1 \
         --cidr-block 10.0.0.0/16
 
 Output::
@@ -22,15 +23,16 @@ Output::
                     "CidrBlock": "10.0.0.0/16",
                     "CidrBlockState": {
                         "State": "associated"
-                    }
+                }
+            "NetworkBorderGroup": "us-west-2-lax-1"
                 }
             ],
             "IsDefault": false,
             "Tags": []
         }
-    }             
+    }
 
-**To create a VPC with dedicated tenancy**
+**Example 2: To create a VPC with dedicated tenancy**
 
 The following ``create-vpc`` example creates a VPC with the specified IPv4 CIDR block and dedicated tenancy.
 
@@ -63,7 +65,7 @@ Output::
         }
     }
                   
-**To create a VPC with an IPv6 CIDR block**
+**Example 3: To create a VPC with an IPv6 CIDR block**
 
 The following ``create-vpc`` example creates a VPC with an Amazon-provided IPv6 CIDR block.
 
@@ -76,23 +78,25 @@ Output::
     {
         "Vpc": {
             "CidrBlock": "10.0.0.0/16",
-            "DhcpOptionsId": "dopt-19edf471",
+            "DhcpOptionsId": "dopt-dEXAMPLE",
             "State": "pending",
-            "VpcId": "vpc-07e8ffd50fEXAMPLE",
-            "OwnerId": "111122223333",
+            "VpcId": "vpc-0fc5e3406bEXAMPLE",
+            "OwnerId": "123456789012",
             "InstanceTenancy": "default",
             "Ipv6CidrBlockAssociationSet": [
                 {
-                    "AssociationId": "vpc-cidr-assoc-0aed4e604eEXAMPLE",
+                    "AssociationId": "vpc-cidr-assoc-068432c60bEXAMPLE",
                     "Ipv6CidrBlock": "",
                     "Ipv6CidrBlockState": {
                         "State": "associating"
-                    }
+                    },
+                    "Ipv6Pool": "Amazon",
+                    "NetworkBorderGroup": "us-west-2"
                 }
             ],
             "CidrBlockAssociationSet": [
                 {
-                    "AssociationId": "vpc-cidr-assoc-06472385d8EXAMPLE",
+                    "AssociationId": "vpc-cidr-assoc-0669f8f9f5EXAMPLE",
                     "CidrBlock": "10.0.0.0/16",
                     "CidrBlockState": {
                         "State": "associated"

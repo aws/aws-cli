@@ -57,6 +57,7 @@ class TestConfigureCommand(unittest.TestCase):
             'aws_secret_access_key=12345\n'
             'region=us-west-2\n'
         )
+        self.env_vars.pop('AWS_REGION', None)
         self.env_vars.pop('AWS_DEFAULT_REGION', None)
         self.env_vars.pop('AWS_ACCESS_KEY_ID', None)
         self.env_vars.pop('AWS_SECRET_ACCESS_KEY', None)

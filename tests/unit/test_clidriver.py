@@ -770,6 +770,15 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
         self.assertEqual(
             self.create_endpoint.call_args[1]['region_name'], 'us-west-2')
 
+    def test_can_use_new_aws_region_env_var(self):
+        self.environ['AWS_REGION'] = 'us-east-2'
+        self.environ['AWS_DEFAULT_REGION'] = 'us-west-1'
+        self.assert_params_for_cmd(
+            'ec2 describe-instances',
+            expected_rc=0)
+        self.assertEqual(
+            self.create_endpoint.call_args[1]['region_name'], 'us-east-2')
+
     def test_aws_with_verify_false(self):
         self.assert_params_for_cmd(
             'ec2 describe-instances --region us-east-1 --no-verify-ssl',

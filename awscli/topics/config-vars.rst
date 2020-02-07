@@ -437,3 +437,31 @@ locale will depend on your operating system and your specific IT requirements.
 One option for UNIX systems is the ``LC_ALL`` environment variable. Setting
 ``LC_ALL=en_US.UTF-8``, for instance, would give you a United States English
 locale which is compatible with unicode.
+
+
+Plugins
+=======
+
+.. warning::
+   Plugin support in the AWS CLI v2 is completely provisional and intended to
+   help users migrate from AWS CLI v1 until a stable plugin interface is
+   released. There are no guarantees that a particular plugin or even the
+   CLI plugin interface will be supported in future versions of the AWS CLI v2.
+   If you are relying on plugins, be sure to lock to a particular version of
+   the CLI and test functionality of your plugin when you do upgrade.
+
+To enable plugin support, create ``[plugins]`` section in your
+``~/.aws/config`` file::
+
+     [plugins]
+     cli_legacy_plugin_path = <path-to-plugins>/python3.7/site-packages
+     <plugin-name> = <plugin-module>
+
+
+In the ``[plugins]`` section, you must define the ``cli_legacy_plugin_path``
+variable and set its value to the Python site packages path that your plugin
+lives in. Once defined, you can configure plugins by providing a name for the
+plugin, ``plugin-name``, and the Python module, ``plugin-module``, that
+contains the source code for your plugin. Then, the CLI loads each plugin
+by importing their ``plugin-module`` and calling their ``awscli_initialize``
+function.

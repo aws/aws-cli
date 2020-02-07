@@ -148,6 +148,10 @@ class CLIDriver(object):
                 session=self.session
             ),
             EnvironmentProvider(
+                name='AWS_REGION',
+                env=os.environ,
+            ),
+            EnvironmentProvider(
                 name='AWS_DEFAULT_REGION',
                 env=os.environ,
             ),

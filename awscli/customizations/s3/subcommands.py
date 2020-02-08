@@ -475,6 +475,8 @@ class ListCommand(S3Command):
             path = path[5:]
         bucket, key = find_bucket_key(path)
         if not bucket:
+            if key:
+                return 0
             self._list_all_buckets()
         elif parsed_args.dir_op:
             # Then --recursive was specified.

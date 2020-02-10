@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.17.14
+=======
+
+* api-change:``docdb``: Update docdb command to latest version
+* api-change:``kms``: Update kms command to latest version
+
+
 1.17.13
 =======
 

@@ -1,8 +1,6 @@
 # AWS CLI v2
 
-This bundle contains a built executable of the AWS CLI v2. Note that the AWS
-CLI v2 is in developer preview. In the future, there may be backwards
-incompatible changes introduced to the AWS CLI v2.
+This bundle contains a built executable of the AWS CLI v2.
 
 ## Installation
 

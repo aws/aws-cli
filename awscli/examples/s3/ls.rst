@@ -71,3 +71,15 @@ Output::
 
     Total Objects: 10
        Total Size: 2.9 MiB
+
+You can combine ``--exclude`` and ``--include`` options to list only objects that match a pattern, excluding all others::
+
+    aws s3 ls s3://mybucket --recursive --human-readable --summarize --exclude "*" --include "*.txt"
+
+Output::
+
+    2013-09-02 21:37:53   10 Bytes a.txt
+    2013-09-02 21:32:57  398 Bytes z.txt
+
+    Total Objects: 2
+       Total Size: 408 Bytes

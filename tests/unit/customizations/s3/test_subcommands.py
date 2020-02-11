@@ -95,7 +95,7 @@ class TestLSCommand(unittest.TestCase):
         ls_command = ListCommand(self.session)
         parsed_args = FakeArgs(paths='s3://mybucket/', dir_op=False,
                                page_size='5', human_readable=False,
-                               summarize=False, request_payer=None)
+                               summarize=False, request_payer=None, filters=[['--include', '*']])
         parsed_globals = mock.Mock()
         ls_command._run_main(parsed_args, parsed_globals)
         call = self.session.create_client.return_value.list_objects_v2
@@ -118,7 +118,7 @@ class TestLSCommand(unittest.TestCase):
                                  verify_ssl=None)
         parsed_args = FakeArgs(dir_op=False, paths='s3://',
                                human_readable=False, summarize=False,
-                               request_payer=None)
+                               request_payer=None, filters=[['--include', '*']])
         ls_command._run_main(parsed_args, parsed_global)
         # We should only be a single call.
         call = self.session.create_client.return_value.list_buckets
@@ -139,7 +139,7 @@ class TestLSCommand(unittest.TestCase):
                                  verify_ssl=False)
         parsed_args = FakeArgs(paths='s3://', dir_op=False,
                                human_readable=False, summarize=False,
-                               request_payer=None)
+                               request_payer=None, filters=[['--include', '*']])
         ls_command._run_main(parsed_args, parsed_global)
         # Verify get_client
         get_client = self.session.create_client
@@ -152,7 +152,7 @@ class TestLSCommand(unittest.TestCase):
         ls_command = ListCommand(self.session)
         parsed_args = FakeArgs(paths='s3://mybucket/', dir_op=False,
                                human_readable=False, summarize=False,
-                               request_payer='requester', page_size='5')
+                               request_payer='requester', page_size='5', filters=[['--include', '*']])
         parsed_globals = mock.Mock()
         ls_command._run_main(parsed_args, parsed_globals)
         call = self.session.create_client.return_value.list_objects
@@ -171,6 +171,19 @@ class TestLSCommand(unittest.TestCase):
 
         paginate.assert_called_with(**ref_call_args)
 
+    def test_ls_with_filters(self):
+        ls_command = ListCommand(self.session)
+        parsed_global = FakeArgs(region='us-west-2', endpoint_url=None,
+                                 verify_ssl=False)
+        parsed_args = FakeArgs(paths='s3://', dir_op=False,
+                               human_readable=False, summarize=False,
+                               request_payer=None, filters=[['--include', '*']])
+        ls_command._run_main(parsed_args, parsed_global)
+        get_client = self.session.create_client
+        args = get_client.call_args
+        self.assertEqual(args, mock.call(
+            's3', region_name='us-west-2', endpoint_url=None, verify=False,
+            config=None))
 
 class CommandArchitectureTest(BaseAWSCommandParamsTest):
     def setUp(self):

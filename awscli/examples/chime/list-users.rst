@@ -14,8 +14,12 @@ Output::
                 "PrimaryEmail": "mariag@example.com",
                 "DisplayName": "Maria Garcia",
                 "LicenseType": "Pro",
+                "UserType": "PrivateUser",
                 "UserRegistrationStatus": "Registered",
                 "RegisteredOn": "2018-12-20T18:45:25.231Z"
+                "AlexaForBusinessMetadata": {
+                    "IsAlexaForBusinessEnabled": false
+                }
             },
             {
                 "UserId": "a1b2c3d4-5678-90ab-cdef-33333EXAMPLE",
@@ -23,8 +27,12 @@ Output::
                 "PrimaryEmail": "richardr@example.com",
                 "DisplayName": "Richard Roe",
                 "LicenseType": "Pro",
+                "UserType": "PrivateUser",
                 "UserRegistrationStatus": "Registered",
                 "RegisteredOn": "2018-12-20T18:45:45.415Z"
+                "AlexaForBusinessMetadata": {
+                    "IsAlexaForBusinessEnabled": false
+                }
             },
             {
                 "UserId": "a1b2c3d4-5678-90ab-cdef-44444EXAMPLE",
@@ -32,8 +40,12 @@ Output::
                 "PrimaryEmail": "saanvis@example.com",
                 "DisplayName": "Saanvi Sarkar",
                 "LicenseType": "Basic",
+                "UserType": "PrivateUser",
                 "UserRegistrationStatus": "Registered",
                 "RegisteredOn": "2018-12-20T18:46:57.747Z"
+                "AlexaForBusinessMetadata": {
+                    "IsAlexaForBusinessEnabled": false
+                }
             },
             {
                 "UserId": "a1b2c3d4-5678-90ab-cdef-55555EXAMPLE",
@@ -41,8 +53,12 @@ Output::
                 "PrimaryEmail": "wxiulan@example.com",
                 "DisplayName": "Wang Xiulan",
                 "LicenseType": "Basic",
+                "UserType": "PrivateUser",
                 "UserRegistrationStatus": "Registered",
                 "RegisteredOn": "2018-12-20T18:47:15.390Z"
+                "AlexaForBusinessMetadata": {
+                    "IsAlexaForBusinessEnabled": false
+                }
             }
         ]
     }

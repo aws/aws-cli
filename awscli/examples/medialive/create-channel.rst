@@ -22,7 +22,6 @@ All the parameters that apply to this example channel but that aren't specified 
     aws medialive create-channel \
         --cli-input-jason file://channel-in-hls-out-hls-akamai.json
 
-
 Contents of ``channel-in-hls-out-hls-akamai.json``::
 
     {

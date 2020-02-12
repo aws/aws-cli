@@ -15,8 +15,13 @@ Output::
             "PrimaryEmail": "mateo@example.com",
             "DisplayName": "Mateo Jackson",
             "LicenseType": "Pro",
+            "UserType": "PrivateUser",
             "UserRegistrationStatus": "Registered",
             "RegisteredOn": "2018-12-20T18:45:25.231Z",
+            "AlexaForBusinessMetadata": {
+                "IsAlexaForBusinessEnabled": False,
+                "AlexaForBusinessRoomArn": "null"
+            },
             "PersonalPIN": "XXXXXXXXXX"
         }
     }

@@ -2,7 +2,8 @@
 
 The following ``get-account`` example retrieves the details for the specified Amazon Chime account. ::
 
-    aws chime get-account --account-id a1b2c3d4-5678-90ab-cdef-11111EXAMPLE
+    aws chime get-account \
+        --account-id a1b2c3d4-5678-90ab-cdef-11111EXAMPLE
 
 Output::
 
@@ -17,6 +18,11 @@ Output::
             "SupportedLicenses": [
                 "Basic",
                 "Pro"
+            ],
+            "SigninDelegateGroups": [
+                {
+                    "GroupName": "myGroup"
+                },
             ]
         }
     }

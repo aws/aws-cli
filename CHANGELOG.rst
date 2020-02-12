@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.17.16
+=======
+
+* api-change:``es``: Update es command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``ds``: Update ds command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``workmail``: Update workmail command to latest version
+* api-change:``neptune``: Update neptune command to latest version
+
+
 1.17.15
 =======
 

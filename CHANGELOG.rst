@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.17.17
+=======
+
+* api-change:``mediapackage-vod``: Update mediapackage-vod command to latest version
+
+
 1.17.16
 =======
 

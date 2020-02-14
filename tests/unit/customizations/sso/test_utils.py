@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
 import webbrowser
 from awscli.testutils import mock
 from awscli.testutils import unittest
@@ -19,6 +20,7 @@ from botocore.session import Session
 from awscli.compat import StringIO
 from awscli.customizations.sso.utils import do_sso_login
 from awscli.customizations.sso.utils import OpenBrowserHandler
+from awscli.customizations.sso.utils import open_browser_with_original_ld_path
 
 
 class TestDoSSOLogin(unittest.TestCase):
@@ -121,3 +123,19 @@ class TestOpenBrowserHandler(unittest.TestCase):
         self.handler(**self.pending_authorization)
         self.assert_text_in_output(self.user_code, self.verification_uri)
         self.open_browser.assert_called_with(self.verification_uri_complete)
+
+
+class TestOpenBrowserWithPatchedEnv(unittest.TestCase):
+
+    def test_can_patch_env(self):
+        # The various edge case are tested in original_ld_library_path,
+        # we're just checking that we're integrating everything together
+        # correctly.
+        env = {'LD_LIBRARY_PATH': '/foo'}
+        with mock.patch('os.environ', env):
+            with mock.patch('webbrowser.open_new_tab') as open_new_tab:
+                captured_env = {}
+                open_new_tab.side_effect = lambda x: captured_env.update(
+                    os.environ)
+                open_browser_with_original_ld_path('http://example.com')
+        self.assertIsNone(captured_env.get('LD_LIBRARY_PATH'))

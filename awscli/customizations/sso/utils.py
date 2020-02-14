@@ -18,6 +18,7 @@ from botocore.utils import SSOTokenFetcher
 from botocore.credentials import JSONFileCache
 
 from awscli.customizations.utils import uni_print
+from awscli.utils import original_ld_library_path
 from awscli.customizations.assumerole import CACHE_DIR as AWS_CREDS_CACHE_DIR
 
 LOG = logging.getLogger(__name__)
@@ -32,7 +33,9 @@ def do_sso_login(session, sso_region, start_url, token_cache=None,
     if token_cache is None:
         token_cache = JSONFileCache(SSO_TOKEN_DIR)
     if on_pending_authorization is None:
-        on_pending_authorization = OpenBrowserHandler()
+        on_pending_authorization = OpenBrowserHandler(
+            open_browser=open_browser_with_original_ld_path
+        )
     token_fetcher = SSOTokenFetcher(
         sso_region=sso_region,
         client_creator=session.create_client,
@@ -43,6 +46,11 @@ def do_sso_login(session, sso_region, start_url, token_cache=None,
         start_url=start_url,
         force_refresh=force_refresh
     )
+
+
+def open_browser_with_original_ld_path(url):
+    with original_ld_library_path():
+        webbrowser.open_new_tab(url)
 
 
 class OpenBrowserHandler(object):

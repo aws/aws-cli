@@ -27,6 +27,7 @@ from awscli.utils import (split_on_commas, ignore_ctrl_c,
                           OutputStreamFactory)
 from awscli.utils import InstanceMetadataRegionFetcher
 from awscli.utils import IMDSRegionProvider
+from awscli.utils import original_ld_library_path
 from tests import RawResponse
 
 
@@ -112,6 +113,31 @@ class TestIgnoreCtrlC(unittest.TestCase):
             # And if we actually try to sigint ourselves, an exception
             # should not propogate.
             os.kill(os.getpid(), signal.SIGINT)
+
+
+class TestOriginalLDLibraryPath(unittest.TestCase):
+    def test_swaps_original_ld_library_path(self):
+        env = {'LD_LIBRARY_PATH_ORIG': '/my/original',
+               'LD_LIBRARY_PATH': '/pyinstallers/version'}
+        with original_ld_library_path(env):
+            self.assertEqual(env['LD_LIBRARY_PATH'],
+                             '/my/original')
+        self.assertEqual(env['LD_LIBRARY_PATH'],
+                            '/pyinstallers/version')
+
+    def test_no_ld_library_path_original(self):
+        env = {'LD_LIBRARY_PATH': '/pyinstallers/version'}
+        with original_ld_library_path(env):
+            self.assertIsNone(env.get('LD_LIBRARY_PATH'))
+        self.assertEqual(env['LD_LIBRARY_PATH'],
+                            '/pyinstallers/version')
+
+    def test_no_ld_library_path(self):
+        env = {'OTHER_VALUE': 'foo'}
+        with original_ld_library_path(env):
+            self.assertIsNone(env.get('LD_LIBRARY_PATH'))
+            self.assertEqual(env, {'OTHER_VALUE': 'foo'})
+        self.assertEqual(env, {'OTHER_VALUE': 'foo'})
 
 
 class TestFindServiceAndOperationNameFromEvent(unittest.TestCase):

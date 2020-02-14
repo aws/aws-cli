@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.0
+======
+
+* api-change:``mediatailor``: Update mediatailor command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``shield``: Update shield command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* feature:retries: Add support for retry modes including ``standard`` and ``adaptive`` (boto/botocore`#1972 <https://github.com/aws/aws-cli/issues/1972>`__)
+
+
 1.17.17
 =======
 

@@ -30,7 +30,17 @@ EXE_NAME = 'aws'
 def make_pkg(pkg_name, src_exe):
     with tmp_dir() as workdir:
         extract_zip(src_exe, workdir)
+        stage_files(workdir)
         do_make_pkg(workdir, pkg_name)
+
+
+def stage_files(workdir):
+    # Stage all the distribution files inside a directory named aws-cli
+    stage_dir = os.path.join(workdir, 'stage')
+    os.makedirs(stage_dir)
+    dist_dir = os.path.join(workdir, 'aws', 'dist')
+    cli_dir = os.path.join(stage_dir, 'aws-cli')
+    shutil.move(dist_dir, cli_dir)
 
 
 def do_make_pkg(workdir, pkg_name):
@@ -38,8 +48,7 @@ def do_make_pkg(workdir, pkg_name):
     print(run(
         (
             'pkgbuild --identifier com.amazon.aws.cli2 '
-            '--root ./aws/dist '
-            '--install-location /usr/local/aws-cli/ '
+            '--root ./stage '
             '--scripts %s '
             '--version %s '
             '%s'
@@ -61,7 +70,7 @@ def do_make_pkg(workdir, pkg_name):
 
 
 def get_version(output_dir):
-    exe_dir = os.path.join(output_dir, 'aws', 'dist')
+    exe_dir = os.path.join(output_dir, 'stage', 'aws-cli')
     exe_path = os.path.join(exe_dir, EXE_NAME)
     result = run('%s --version' % exe_path, cwd=exe_dir).strip()
     version = result.split(' ')[0].split('/')[1]

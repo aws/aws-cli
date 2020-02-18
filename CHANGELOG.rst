@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.2
+======
+
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
 1.18.1
 ======
 

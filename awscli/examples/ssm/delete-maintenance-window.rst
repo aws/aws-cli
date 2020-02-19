@@ -1,13 +1,14 @@
-**To delete a Maintenance Window**
+**To delete a maintenance window**
 
-This example removes a Maintenance Window.
+This ``delete-maintenance-window`` example removes the specified maintenance window. ::
 
-Command::
-
-  aws ssm delete-maintenance-window --window-id "mw-1a2b3c4d5e6f7g8h9"
+    aws ssm delete-maintenance-window \
+        --window-id "mw-1a2b3c4d5e6f7g8h9"
 
 Output::
 
-  {
-	"WindowId":"mw-1a2b3c4d5e6f7g8h9"
-  }
+    {
+        "WindowId":"mw-1a2b3c4d5e6f7g8h9"
+    }
+  
+For more information, see `Delete a Maintenance Window (AWS CLI) <https://docs.aws.amazon.com/systems-manager/latest/userguide/mw-cli-tutorial-delete-mw.html>`__ in the *AWS Systems Manager User Guide*.

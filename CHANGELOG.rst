@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.3
+======
+
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+
+
 1.18.2
 ======
 

@@ -1,0 +1,40 @@
+#!/usr/bin/env python
+import argparse
+import os
+import sys
+from subprocess import check_call
+import shutil
+
+_dname = os.path.dirname
+
+REPO_ROOT = _dname(_dname(_dname(os.path.abspath(__file__))))
+os.chdir(REPO_ROOT)
+
+
+def run(command):
+    return check_call(command, shell=True)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+
+    parser.add_argument(
+        '--botocore-path',
+        default='',
+        help=(
+            'The optional location of a local botocore install '
+            'for use in place of github.'
+        )
+    )
+
+    args, unknown = parser.parse_known_args()
+    if args.botocore_path:
+        botocore_path = os.path.abspath(args.botocore_path)
+        run('pip install -r requirements-common.txt')
+        run('pip install %s' % botocore_path)
+    else:
+        run('pip install -r requirements.txt')
+    run('pip install .')
+
+if __name__ == '__main__':
+    main()

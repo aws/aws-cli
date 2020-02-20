@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.4
+======
+
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``appconfig``: Update appconfig command to latest version
+* api-change:``savingsplans``: Update savingsplans command to latest version
+
+
 1.18.3
 ======
 

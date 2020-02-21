@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.5
+======
+
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``wafv2``: Update wafv2 command to latest version
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+
+
 1.18.4
 ======
 

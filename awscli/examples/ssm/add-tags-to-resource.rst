@@ -1,21 +1,17 @@
-**Example 1: To add tags to a maintenance window**
+**To add tags to a maintenance window**
 
-The following ``add-tags-to-resource`` example adds a tag to a maintenance window.
-
-Command::
+The following ``add-tags-to-resource`` example adds a tag to the specified maintenance window. ::
 
     aws ssm add-tags-to-resource \
         --resource-type "MaintenanceWindow" \
-        --resource-id "mw-03eb9db42890fb82d" \
+        --resource-id "mw-03eb9db428EXAMPLE" \
         --tags "Key=Stack,Value=Production"
 
 This command produces no output.
 
-**Example 2: To add tags to a parameter**
+**To add tags to a parameter**
 
-The following ``add-tags-to-resource`` example adds two tags to a parameter.
-
-Command::
+The following ``add-tags-to-resource`` example adds two tags to to the specified parameter. ::
 
     aws ssm add-tags-to-resource \
         --resource-type "Parameter" \

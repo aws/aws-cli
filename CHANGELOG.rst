@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.6
+======
+
+* api-change:``events``: Update events command to latest version
+* api-change:``iotevents``: Update iotevents command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``snowball``: Update snowball command to latest version
+* api-change:``docdb``: Update docdb command to latest version
+
+
 1.18.5
 ======
 

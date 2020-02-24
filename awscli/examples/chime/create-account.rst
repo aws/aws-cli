@@ -1,8 +1,9 @@
 **To create an account**
 
-The following ``create-account`` example creates a new Amazon Chime account under the administrator's AWS account. ::
+The following ``create-account`` example creates an Amazon Chime account under the administrator's AWS account. ::
 
-    aws chime create-account --name MyChimeAccount
+    aws chime create-account \
+        --name MyChimeAccount
 
 Output::
 
@@ -17,6 +18,11 @@ Output::
             "SupportedLicenses": [
                 "Basic",
                 "Pro"
+            ],
+            "SigninDelegateGroups": [
+                {
+                    "GroupName": "myGroup"
+                },
             ]
         }
     }

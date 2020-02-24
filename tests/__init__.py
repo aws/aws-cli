@@ -1,10 +1,9 @@
-from collections import MutableMapping
-from collections import Mapping
 from io import BytesIO
+from awscli.compat import collections_abc
 
 
 # CaseInsensitiveDict from requests that must be serializble.
-class CaseInsensitiveDict(MutableMapping):
+class CaseInsensitiveDict(collections_abc.MutableMapping):
     def __init__(self, data=None, **kwargs):
         self._store = dict()
         if data is None:
@@ -37,7 +36,7 @@ class CaseInsensitiveDict(MutableMapping):
         )
 
     def __eq__(self, other):
-        if isinstance(other, Mapping):
+        if isinstance(other, collections_abc.Mapping):
             other = CaseInsensitiveDict(other)
         else:
             return NotImplemented

@@ -2,7 +2,9 @@
 
 The following ``update-account`` example updates the specified account name. ::
 
-    aws chime update-account --account-id a1b2c3d4-5678-90ab-cdef-11111EXAMPLE --name MyAccountName
+    aws chime update-account \
+        --account-id a1b2c3d4-5678-90ab-cdef-11111EXAMPLE \
+        --name MyAccountName
 
 Output::
 
@@ -17,8 +19,13 @@ Output::
             "SupportedLicenses": [
                 "Basic",
                 "Pro"
+            ],
+            "SigninDelegateGroups": [
+                {
+                    "GroupName": "myGroup"
+                },
             ]
         }
     }
 
-For more information, see `Renaming Your Account <https://docs.aws.amazon.com/chime/latest/ag/rename-account.html>`_ in the *Amazon Chime Administration Guide*.
+For more information, see `Renaming Your Account <https://docs.aws.amazon.com/chime/latest/ag/rename-account.html>`__ in the *Amazon Chime Administration Guide*.

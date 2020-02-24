@@ -60,27 +60,29 @@ General Options
 
 The AWS CLI has a few general options:
 
-==================== =================== ===================== ===================== ============================
-Variable             Option               Config Entry          Environment Variable  Description
-==================== =================== ===================== ===================== ============================
-profile              --profile           N/A                   AWS_PROFILE           Default profile name
--------------------- ------------------- --------------------- --------------------- ----------------------------
-region               --region            region                AWS_DEFAULT_REGION    Default AWS Region
--------------------- ------------------- --------------------- --------------------- ----------------------------
-output               --output            output                AWS_DEFAULT_OUTPUT    Default output style
--------------------- ------------------- --------------------- --------------------- ----------------------------
-cli_timestamp_format N/A                 cli_timestamp_format  N/A                   Output format of timestamps
--------------------- ------------------- --------------------- --------------------- ----------------------------
-cli_binary_format    --cli-binary-format cli_binary_format     N/A                   Binary input & output format
--------------------- ------------------- --------------------- --------------------- ----------------------------
-cli_follow_urlparam  N/A                 cli_follow_urlparam   N/A                   Fetch URL url parameters
--------------------- ------------------- --------------------- --------------------- ----------------------------
-ca_bundle            --ca-bundle         ca_bundle             AWS_CA_BUNDLE         CA Certificate Bundle
--------------------- ------------------- --------------------- --------------------- ----------------------------
-parameter_validation N/A                 parameter_validation  N/A                   Toggles parameter validation
--------------------- ------------------- --------------------- --------------------- ----------------------------
-tcp_keepalive        N/A                 tcp_keepalive         N/A                   Toggles TCP Keep-Alive
-==================== =================== ===================== ===================== ============================
+==================== =========== ===================== ===================== ============================
+Variable             Option      Config Entry          Environment Variable  Description
+==================== =========== ===================== ===================== ============================
+profile              --profile   N/A                   AWS_PROFILE           Default profile name
+-------------------- ----------- --------------------- --------------------- ----------------------------
+region               --region    region                AWS_DEFAULT_REGION    Default AWS Region
+-------------------- ----------- --------------------- --------------------- ----------------------------
+output               --output    output                AWS_DEFAULT_OUTPUT    Default output style
+-------------------- ----------- --------------------- --------------------- ----------------------------
+cli_timestamp_format N/A         cli_timestamp_format  N/A                   Output format of timestamps
+-------------------- ----------- --------------------- --------------------- ----------------------------
+cli_follow_urlparam  N/A         cli_follow_urlparam   N/A                   Fetch URL url parameters
+-------------------- ----------- --------------------- --------------------- ----------------------------
+ca_bundle            --ca-bundle ca_bundle             AWS_CA_BUNDLE         CA Certificate Bundle
+-------------------- ----------- --------------------- --------------------- ----------------------------
+parameter_validation N/A         parameter_validation  N/A                   Toggles parameter validation
+-------------------- ----------- --------------------- --------------------- ----------------------------
+tcp_keepalive        N/A         tcp_keepalive         N/A                   Toggles TCP Keep-Alive
+-------------------- ----------- --------------------- --------------------- ----------------------------
+max_attempts         N/A         max_attempts          AWS_MAX_ATTEMPTS      Number of total requests
+-------------------- ----------- --------------------- --------------------- ----------------------------
+retry_mode           N/A         retry_mode            AWS_RETRY_MODE        Type of retries performed
+==================== =========== ===================== ===================== ============================
 
 The third column, Config Entry, is the value you would specify in the AWS CLI
 config file.  By default, this location is ``~/.aws/config``.  If you need to
@@ -128,6 +130,9 @@ variable are:
 when serializing requests. The default is True. You can disable parameter
 validation for performance reasons. Otherwise, it's recommended to leave
 parameter validation enabled.
+
+The ``max_attempts`` and ``retry_mode`` are explained in the
+"Retry Configuration" section below.
 
 When you specify a profile, either using ``--profile profile-name`` or by
 setting a value for the ``AWS_PROFILE`` environment variable, profile
@@ -415,6 +420,34 @@ Example configuration with parameters::
 
 Service Specific Configuration
 ==============================
+
+Retry Configuration
+-------------------
+
+These configuration variables control how the AWS CLI retries requests.
+
+``max_attempts``
+    An integer representing the maximum number attempts that will be made for
+    a single request, including the initial attempt.  For example,
+    setting this value to 5 will result in a request being retried up to
+    4 times.  If not provided, the number of retries will default to whatever
+    is modeled, which is typically 5 total attempts in the ``legacy`` retry mode,
+    and 3 in the ``standard`` and ``adaptive`` retry modes.
+
+``retry_mode``
+    A string representing the type of retries the AWS CLI will perform.  Value
+    values are:
+
+        * ``standard`` - A standardized set of retry rules across the AWS SDKs.
+          This includes a standard set of errors that are retried as well as
+          support for retry quotas, which limit the number of unsuccessful retries
+          an SDK can make.  This mode will default the maximum number of attempts
+          to 3 unless a ``max_attempts`` is explicitly provided.
+        * ``adaptive`` - An experimental retry mode that includes all the
+          functionality of ``standard`` mode along with automatic client side
+          throttling.  This is a provisional mode that may change behavior in
+          the future.
+
 
 Amazon S3
 ---------

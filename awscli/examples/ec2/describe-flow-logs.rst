@@ -1,4 +1,4 @@
-**To describe all of your flow logs**
+**Example 1: To describe all of your flow logs**
 
 The following ``describe-flow-logs`` example displays details for all of your flow logs. ::
 
@@ -13,6 +13,7 @@ Output::
                 "DeliverLogsPermissionArn": "arn:aws:iam::123456789012:role/flow-logs-role",
                 "DeliverLogsStatus": "SUCCESS",
                 "FlowLogId": "fl-aabbccdd112233445",
+                "MaxAggregationInterval": 600,
                 "FlowLogStatus": "ACTIVE",
                 "LogGroupName": "FlowLogGroup",
                 "ResourceId": "subnet-12345678901234567",
@@ -21,9 +22,10 @@ Output::
                 "LogFormat": "${version} ${account-id} ${interface-id} ${srcaddr} ${dstaddr} ${srcport} ${dstport} ${protocol} ${packets} ${bytes} ${start} ${end} ${action} ${log-status}"
             },
             {
-                "CreationTime": "2019-07-19T15:22:29.986Z",
+                "CreationTime": "2020-02-04T15:22:29.986Z",
                 "DeliverLogsStatus": "SUCCESS",
                 "FlowLogId": "fl-01234567890123456",
+                "MaxAggregationInterval": 60,
                 "FlowLogStatus": "ACTIVE",
                 "ResourceId": "vpc-00112233445566778",
                 "TrafficType": "ACCEPT",
@@ -34,7 +36,7 @@ Output::
         ]
     }
 
-**To describe a subset of your flow logs**
+**Example 2: To describe a subset of your flow logs**
 
 The following ``describe-flow-logs`` example uses a filter to display details for only those flow logs that are in the specified log group in Amazon CloudWatch Logs. ::
 

@@ -63,12 +63,13 @@ def get_role_policy_arn(region, policy_name):
     return role_arn
 
 
-def get_service_principal(service, endpoint_host):
+def get_service_principal(service, endpoint_host, session=None):
     suffix, region = _get_suffix_and_region_from_endpoint_host(endpoint_host)
-    boto_session = botocore.session.Session()
+    if session is None:
+        session = botocore.session.Session()
 
     if service == EMR_AUTOSCALING_SERVICE_NAME:
-        if region not in boto_session.get_available_regions('emr', 'aws-cn'):
+        if region not in session.get_available_regions('emr', 'aws-cn'):
             return EMR_AUTOSCALING_SERVICE_PRINCIPAL
 
     return service + '.' + suffix
@@ -268,11 +269,13 @@ class CreateDefaultRoles(Command):
             self, role_name, service_names, role_arn, parsed_globals):
 
         if len(service_names) == 1:
-            service_principal = get_service_principal(service_names[0], self.emr_endpoint_url)
+            service_principal = get_service_principal(
+                service_names[0], self.emr_endpoint_url, self._session)
         else:
             service_principal = []
             for service in service_names:
-                service_principal.append(get_service_principal(service, self.emr_endpoint_url))
+                service_principal.append(get_service_principal(
+                    service, self.emr_endpoint_url, self._session))
 
         LOG.debug(service_principal)
 

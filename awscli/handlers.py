@@ -74,7 +74,6 @@ from awscli.customizations.rekognition import register_rekognition_detect_labels
 from awscli.customizations.removals import register_removals
 from awscli.customizations.route53 import register_create_hosted_zone_doc_fix
 from awscli.customizations.s3.s3 import s3_plugin_initialize
-from awscli.customizations.s3endpoint import register_s3_endpoint
 from awscli.customizations.s3errormsg import register_s3_error_msg
 from awscli.customizations.timestampformat import register_timestamp_format
 from awscli.customizations.sessendemail import register_ses_send_email
@@ -145,7 +144,6 @@ def awscli_initialize(event_handlers):
     eks_initialize(event_handlers)
     ecs_initialize(event_handlers)
     register_cloudsearchdomain(event_handlers)
-    register_s3_endpoint(event_handlers)
     register_generate_cli_skeleton(event_handlers)
     register_assume_role_provider(event_handlers)
     register_add_waiters(event_handlers)

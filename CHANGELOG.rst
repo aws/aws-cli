@@ -41,6 +41,108 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.6
+======
+
+* api-change:``events``: Update events command to latest version
+* api-change:``iotevents``: Update iotevents command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``snowball``: Update snowball command to latest version
+* api-change:``docdb``: Update docdb command to latest version
+
+
+1.18.5
+======
+
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``wafv2``: Update wafv2 command to latest version
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+
+
+1.18.4
+======
+
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``appconfig``: Update appconfig command to latest version
+* api-change:``savingsplans``: Update savingsplans command to latest version
+
+
+1.18.3
+======
+
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+
+
+1.18.2
+======
+
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
+1.18.1
+======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``cloud9``: Update cloud9 command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+
+
+1.18.0
+======
+
+* api-change:``mediatailor``: Update mediatailor command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``shield``: Update shield command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* feature:retries: Add support for retry modes including ``standard`` and ``adaptive`` (boto/botocore`#1972 <https://github.com/aws/aws-cli/issues/1972>`__)
+
+
+1.17.17
+=======
+
+* api-change:``mediapackage-vod``: Update mediapackage-vod command to latest version
+
+
+1.17.16
+=======
+
+* api-change:``es``: Update es command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``ds``: Update ds command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``workmail``: Update workmail command to latest version
+* api-change:``neptune``: Update neptune command to latest version
+
+
+1.17.15
+=======
+
+* api-change:``cloudformation``: Update cloudformation command to latest version
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.17.14
+=======
+
+* api-change:``docdb``: Update docdb command to latest version
+* api-change:``kms``: Update kms command to latest version
+
+
+1.17.13
+=======
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+
+
 1.17.12
 =======
 

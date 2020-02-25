@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+2.0.1
+=====
+
+* bugfix:SSO: Fix issue where browser would not open in modern linux distros (`#4839 <https://github.com/aws/aws-cli/issues/4839>`__)
+* enhancement:Installer: macOS PKG installer now supports custom install locations.
+
+
 2.0.0
 =====
 
@@ -23,6 +30,7 @@ CHANGELOG
 * breaking-change:rc: Improved return code consistency and conventions. For more information run aws help return-codes. See `#4890 <https://github.com/aws/aws-cli/issues/4890>`__.
 * breaking-change:s3: Removed support for S3 Signature Version 2. All S3 API calls and pre-signed URLs now use Signature Version 4. See `#4764 <https://github.com/aws/aws-cli/issues/4764>`__.
 * breaking-change:sms-voice: Removed the ``sms-voice`` service command in favor of ``pinpoint-sms-voice``. See `#4902 <https://github.com/aws/aws-cli/issues/4902>`__.
+* breaking-change:retries: Add support for standard mode retries, which lowers the maximum attempts to 3, includes a consistent set of errors to retry, and implements retry quotas which limit the number of unsuccessful retries an SDK can make. See `boto/botocore#1952 <https://github.com/boto/botocore/pull/1952>`__.
 * feature:autocomplete: Improved command and parameter autocompletion, including support for service side resource ID autocompletion. See `#3725 <https://github.com/aws/aws-cli/issues/3725>`__.
 * feature:config: Add support for the ``AWS_REGION`` env var.  This value has precedence over ``AWS_DEFAULT_REGION`` (`#4934 <https://github.com/aws/aws-cli/issues/4934>`__).
 * feature:configure: Added the ``configure list-profiles`` command. See `#3735 <https://github.com/aws/aws-cli/issues/3735>`__.

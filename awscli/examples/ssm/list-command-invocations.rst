@@ -1,92 +1,94 @@
 **To list the invocations of a specific command**
 
-This example lists all the invocations of a command.
+The following ``list-command-invocations`` example lists all the invocations of a command. ::
 
-Command::
-
-  aws ssm list-command-invocations --command-id "ef7fdfd8-9b57-4151-a15c-db9a12345678" --details
+    aws ssm list-command-invocations \
+        --command-id "ef7fdfd8-9b57-4151-a15c-db9a12345678" \
+        --details
 
 Output::
 
-  {
-	"CommandInvocations": [
-        {
-            "CommandId": "ef7fdfd8-9b57-4151-a15c-db9a12345678",
-            "InstanceId": "i-1234567890abcdef0",
-            "InstanceName": "",
-            "Comment": "",
-            "DocumentName": "AWS-RunPowerShellScript",
-            "DocumentVersion": "1",
-            "RequestedDateTime": 1550172741.988,
-            "Status": "Success",
-            "StatusDetails": "Success",
-            "StandardOutputUrl": "",
-            "StandardErrorUrl": "",
-            "CommandPlugins": [
-                {
-                    "Name": "aws:runPowerShellScript",
-                    "Status": "Success",
-                    "StatusDetails": "Success",
-                    "ResponseCode": 0,
-                    "ResponseStartDateTime": 1550172742.696,
-                    "ResponseFinishDateTime": 1550172743.245,
-                    "Output": "HelloWorld\r\n",
-                    "StandardOutputUrl": "",
-                    "StandardErrorUrl": "",
-                    "OutputS3Region": "us-east-1",
-                    "OutputS3BucketName": "",
-                    "OutputS3KeyPrefix": ""
+    {
+        "CommandInvocations": [
+            {
+                "CommandId": "ef7fdfd8-9b57-4151-a15c-db9a12345678",
+                "InstanceId": "i-02573cafcfEXAMPLE",
+                "InstanceName": "",
+                "Comment": "b48291dd-ba76-43e0-b9df-13e11ddaac26:6960febb-2907-4b59-8e1a-d6ce8EXAMPLE",
+                "DocumentName": "AWS-UpdateSSMAgent",
+                "DocumentVersion": "",
+                "RequestedDateTime": 1582136283.089,
+                "Status": "Success",
+                "StatusDetails": "Success",
+                "StandardOutputUrl": "",
+                "StandardErrorUrl": "",
+                "CommandPlugins": [
+                    {
+                        "Name": "aws:updateSsmAgent",
+                        "Status": "Success",
+                        "StatusDetails": "Success",
+                        "ResponseCode": 0,
+                        "ResponseStartDateTime": 1582136283.419,
+                        "ResponseFinishDateTime": 1582136283.51,
+                        "Output": "Updating amazon-ssm-agent from 2.3.842.0 to latest\nSuccessfully downloaded https://s3.us-east-2.amazonaws.com/amazon-ssm-us-east-2/ssm-agent-manifest.json\namazon-ssm-agent 2.3.842.0 has already been installed, update skipped\n",
+                        "StandardOutputUrl": "",
+                        "StandardErrorUrl": "",
+                        "OutputS3Region": "us-east-2",
+                        "OutputS3BucketName": "",
+                        "OutputS3KeyPrefix": ""
+                    }
+                ],
+                "ServiceRole": "",
+                "NotificationConfig": {
+                    "NotificationArn": "",
+                    "NotificationEvents": [],
+                    "NotificationType": ""
+                },
+                "CloudWatchOutputConfig": {
+                    "CloudWatchLogGroupName": "",
+                    "CloudWatchOutputEnabled": false
                 }
-            ],
-            "ServiceRole": "",
-            "NotificationConfig": {
-                "NotificationArn": "",
-                "NotificationEvents": [],
-                "NotificationType": ""
             },
-            "CloudWatchOutputConfig": {
-                "CloudWatchLogGroupName": "",
-                "CloudWatchOutputEnabled": false
-            }
-        },
-        {
-            "CommandId": "ef7fdfd8-9b57-4151-a15c-db9a12345678",
-            "InstanceId": "i-12345abcdef678901",
-            "InstanceName": "",
-            "Comment": "",
-            "DocumentName": "AWS-RunPowerShellScript",
-            "DocumentVersion": "1",
-            "RequestedDateTime": 1550172741.906,
-            "Status": "Success",
-            "StatusDetails": "Success",
-            "StandardOutputUrl": "",
-            "StandardErrorUrl": "",
-            "CommandPlugins": [
-                {
-                    "Name": "aws:runPowerShellScript",
-                    "Status": "Success",
-                    "StatusDetails": "Success",
-                    "ResponseCode": 0,
-                    "ResponseStartDateTime": 1550172742.291,
-                    "ResponseFinishDateTime": 1550172742.694,
-                    "Output": "HelloWorld\r\n",
-                    "StandardOutputUrl": "",
-                    "StandardErrorUrl": "",
-                    "OutputS3Region": "us-east-1",
-                    "OutputS3BucketName": "",
-                    "OutputS3KeyPrefix": ""
+            {
+                "CommandId": "ef7fdfd8-9b57-4151-a15c-db9a12345678",
+                "InstanceId": "i-0471e04240EXAMPLE",
+                "InstanceName": "",
+                "Comment": "b48291dd-ba76-43e0-b9df-13e11ddaac26:6960febb-2907-4b59-8e1a-d6ce8EXAMPLE",
+                "DocumentName": "AWS-UpdateSSMAgent",
+                "DocumentVersion": "",
+                "RequestedDateTime": 1582136283.02,
+                "Status": "Success",
+                "StatusDetails": "Success",
+                "StandardOutputUrl": "",
+                "StandardErrorUrl": "",
+                "CommandPlugins": [
+                    {
+                        "Name": "aws:updateSsmAgent",
+                        "Status": "Success",
+                        "StatusDetails": "Success",
+                        "ResponseCode": 0,
+                        "ResponseStartDateTime": 1582136283.812,
+                        "ResponseFinishDateTime": 1582136295.031,
+                        "Output": "Updating amazon-ssm-agent from 2.3.672.0 to latest\nSuccessfully downloaded https://s3.us-east-2.amazonaws.com/amazon-ssm-us-east-2/ssm-agent-manifest.json\nSuccessfully downloaded https://s3.us-east-2.amazonaws.com/amazon-ssm-us-east-2/amazon-ssm-agent-updater/2.3.842.0/amazon-ssm-agent-updater-snap-amd64.tar.gz\nSuccessfully downloaded https://s3.us-east-2.amazonaws.com/amazon-ssm-us-east-2/amazon-ssm-agent/2.3.672.0/amazon-ssm-agent-snap-amd64.tar.gz\nSuccessfully downloaded https://s3.us-east-2.amazonaws.com/amazon-ssm-us-east-2/amazon-ssm-agent/2.3.842.0/amazon-ssm-agent-snap-amd64.tar.gz\nInitiating amazon-ssm-agent update to 2.3.842.0\namazon-ssm-agent updated successfully to 2.3.842.0",
+                        "StandardOutputUrl": "",
+                        "StandardErrorUrl": "",
+                        "OutputS3Region": "us-east-2",
+                        "OutputS3BucketName": "",
+                        "OutputS3KeyPrefix": "8bee3135-398c-4d31-99b6-e42d2EXAMPLE/i-0471e04240EXAMPLE/awsupdateSsmAgent"
+                    }
+                ],
+                "ServiceRole": "",
+                "NotificationConfig": {
+                    "NotificationArn": "",
+                    "NotificationEvents": [],
+                    "NotificationType": ""
+                },
+                "CloudWatchOutputConfig": {
+                    "CloudWatchLogGroupName": "",
+                    "CloudWatchOutputEnabled": false
                 }
-            ],
-            "ServiceRole": "",
-            "NotificationConfig": {
-                "NotificationArn": "",
-                "NotificationEvents": [],
-                "NotificationType": ""
-            },
-            "CloudWatchOutputConfig": {
-                "CloudWatchLogGroupName": "",
-                "CloudWatchOutputEnabled": false
             }
-        }
-    ]
-  }
+        ]
+    }
+
+For more information, see `Understanding Command Statuses <https://docs.aws.amazon.com/systems-manager/latest/userguide/monitor-commands.html>`__ in the *AWS Systems Manager User Guide*.

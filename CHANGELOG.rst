@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.7
+======
+
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+* api-change:``stepfunctions``: Update stepfunctions command to latest version
+* api-change:``outposts``: Update outposts command to latest version
+
+
 1.18.6
 ======
 

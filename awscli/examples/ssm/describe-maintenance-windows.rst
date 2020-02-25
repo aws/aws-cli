@@ -1,38 +1,46 @@
-**To list all Maintenance Windows**
+**Example 1: To list all maintenance windows**
 
-This example lists all Maintenance Windows on your account.
+The following ``describe-maintenance-windows`` example lists all maintenance windows in your AWS account in the current Region. ::
 
-Command::
-
-  aws ssm describe-maintenance-windows
+    aws ssm describe-maintenance-windows
 
 Output::
 
-  {
-    "WindowIdentities": [
-        {
-            "Duration": 2,
-            "Cutoff": 1,
-            "WindowId": "mw-03eb9db42890fb82d",
-            "Enabled": true,
-            "Name": "TestMaintWin"
-        },
-    ]
-  }
+    {
+        "WindowIdentities": [
+            {
+                "WindowId": "mw-0ecb1226ddEXAMPLE",
+                "Name": "MyMaintenanceWindow-1",
+                "Enabled": true,
+                "Duration": 2,
+                "Cutoff": 1,
+                "Schedule": "rate(180 minutes)",
+                "NextExecutionTime": "2020-02-12T23:19:20.596Z"
+            },
+            {
+                "WindowId": "mw-03eb9db428EXAMPLE",
+                "Name": "MyMaintenanceWindow-2",
+                "Enabled": true,
+                "Duration": 3,
+                "Cutoff": 1,
+                "Schedule": "rate(7 days)",
+                "NextExecutionTime": "2020-02-17T23:22:00.956Z"
+            },
+        ]
+    }
 
-**To list all enabled Maintenance Windows**
+**Example 2: To list all enabled maintenance windows**
   
-This example lists all enabled Maintenance Windows.
+The following ``describe-maintenance-windows`` example lists all enabled maintenance windows. ::
 
-Command::
+    aws ssm describe-maintenance-windows \
+        --filters "Key=Enabled,Values=true"
 
-  aws ssm describe-maintenance-windows --filters "Key=Enabled,Values=true"
+**Example 3: To list maintenance windows matching a specific name**
   
-**To list Maintenance Windows matching a specific name**
-  
-This example lists all Maintenance Windows with a specific name value.
+This ``describe-maintenance-windows`` example lists all maintenance windows with the specified name. ::
 
-Command::
+    aws ssm describe-maintenance-windows \
+        --filters "Key=Name,Values=MyMaintenanceWindow"
 
-  aws ssm describe-maintenance-windows --filters "Key=Name,Values=MyMaintenanceWindow"
-  
+For more information, see `View Information About Maintenance Windows (AWS CLI) <https://docs.aws.amazon.com/systems-manager/latest/userguide/maintenance-windows-cli-tutorials-describe.html>`__ in the *AWS Systems Manager User Guide*.

@@ -4,8 +4,8 @@ The following ``update-security-profile`` example updates both the description a
 
     aws iot update-security-profile \
         --security-profile-name PossibleIssue \
-        --security-profile-description "check to see if authorization fails 12 times in 5 minutes or if cellular bandwidth exceeds 128"  \
-        --behaviors "[{\"name\":\"CellularBandwidth\",\"metric\":\"aws:message-byte-size\",\"criteria\":{\"comparisonOperator\":\"greater-than\",\"value\":{\"count\":128},\"consecutiveDatapointsToAlarm\":1,\"consecutiveDatapointsToClear\":1}},{\"name\":\"Authorization\",\"metric\":\"aws:num-authorization-failures\",\"criteria\":{\"comparisonOperator\":\"greater-than\",\"value\":{\"count\":12},\"durationSeconds\":300,\"consecutiveDatapointsToAlarm\":1,\"consecutiveDatapointsToClear\":1}}]"
+        --security-profile-description "Check to see if authorization fails 12 times in 5 minutes or if cellular bandwidth exceeds 128"  \
+        --behaviors "[{\"name\":\"CellularBandwidth\",\"metric\":\"aws:message-byte-size\",\"criteria\":{\"comparisonOperator\":\"greater-than\",\"value\":{\"count\":128},\"consecutiveDatapointsToAlarm\":1,\"consecutiveDatapointsToClear\":1}},{\"name\":\"Authorization\",\"metric\":\"aws:num-authorization-failures\",\"criteria\":{\"comparisonOperator\":\"less-than\",\"value\":{\"count\":12},\"durationSeconds\":300,\"consecutiveDatapointsToAlarm\":1,\"consecutiveDatapointsToClear\":1}}]"
 
 Output::
 
@@ -30,7 +30,7 @@ Output::
                 "name": "Authorization",
                 "metric": "aws:num-authorization-failures",
                 "criteria": {
-                    "comparisonOperator": "greater-than",
+                    "comparisonOperator": "less-than",
                     "value": {
                         "count": 12
                     },

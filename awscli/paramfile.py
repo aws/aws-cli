@@ -32,6 +32,7 @@ logger = logging.getLogger(__name__)
 PARAMFILE_DISABLED = set([
     'api-gateway.put-integration.uri',
     'api-gateway.create-integration.integration-uri',
+    'api-gateway.update-integration.integration-uri',
     'api-gateway.create-api.target',
     'api-gateway.update-api.target',
     'appstream.create-stack.redirect-url',

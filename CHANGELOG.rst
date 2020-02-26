@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.8
+======
+
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* bugfix:codecommit: Fix codecommit credential-helper input parsing to allow a trailing newline.
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+
+
 1.18.7
 ======
 

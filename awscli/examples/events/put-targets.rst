@@ -4,7 +4,7 @@ This example adds a Lambda function as the target of a rule::
 
   aws events put-targets --rule DailyLambdaFunction --targets "Id"="1","Arn"="arn:aws:lambda:us-east-1:123456789012:function:MyFunctionName" 
 
-This example adds a Lambda function as the target of a rule and passes JSON payload to Input parameter::
+This example adds a Lambda function as the target of a rule and passes JSON string as Input parameter::
 
   aws events put-targets --rule DailyLambdaFunction --targets "Id"="1","Arn"="arn:aws:lambda:us-east-1:123456789012:function:MyFunctionName","Input"='"{\"Org\":\"AWS\"}"'
 

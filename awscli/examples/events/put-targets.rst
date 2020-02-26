@@ -4,6 +4,10 @@ This example adds a Lambda function as the target of a rule::
 
   aws events put-targets --rule DailyLambdaFunction --targets "Id"="1","Arn"="arn:aws:lambda:us-east-1:123456789012:function:MyFunctionName" 
 
+This example adds a Lambda function as the target of a rule and passes JSON payload to Input parameter::
+
+  aws events put-targets --rule DailyLambdaFunction --targets "Id"="1","Arn"="arn:aws:lambda:us-east-1:123456789012:function:MyFunctionName","Input"='"{\"Org\":\"AWS\"}"'
+
 This example sets an Amazon Kinesis stream as the target, so that events caught by this rule are relayed to the stream::
 
   aws events put-targets --rule EC2InstanceStateChanges --targets "Id"="1","Arn"="arn:aws:kinesis:us-east-1:123456789012:stream/MyStream","RoleArn"="arn:aws:iam::123456789012:role/MyRoleForThisRule"

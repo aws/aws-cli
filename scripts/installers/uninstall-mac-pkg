@@ -44,6 +44,8 @@ def uninstall():
 
     # Finally we forget the package receipt.
     _forget()
+
+    print('Successfully uninstalled AWS CLI from %s' % root_dir)
     return 0
 
 
@@ -57,7 +59,7 @@ def _get_root_dir():
 def _get_file_list(root):
     lines = run(
         'pkgutil --only-files --files %s /' % _PKG_ID, echo=False).split('\n')
-    pkg_file_list = [os.path.join(root, line) for line in lines]
+    pkg_file_list = [os.path.join(root, line) for line in lines if line]
     extra_files = _read_install_metadata(root)
     return pkg_file_list + extra_files
 
@@ -68,7 +70,7 @@ def _read_install_metadata(root):
     # script to add binaries symlinks to /usr/bin. These are untracked by the
     # pkg receipt. To track them we add them to a special .install-metdata file
     # in the installer directory.
-    metadata_path = os.path.join(root, '.install-metadata')
+    metadata_path = os.path.join(root, 'aws-cli', '.install-metadata')
     if not os.path.isfile(metadata_path):
         return []
     extra_files = open(metadata_path, 'r').read()
@@ -82,7 +84,7 @@ def _get_dir_list(root):
     # their parent directories. This ensures that child directories are
     # deleted before their parents.
     return sorted(
-        [os.path.join(root, line) for line in lines],
+        [os.path.join(root, line) for line in lines if line],
         key=lambda x: -len(x)
     )
 
@@ -130,6 +132,18 @@ def _is_installed():
     return True
 
 
+def _warn_missing_arg(print_help):
+
+    # wrap `parser.print_help()` to return 1 so any callers don't receive
+    # a potentially misleading 0 exit code from a failed call.
+    def missing_arg_warning():
+        print('Missing input: script requires at least one positional argument\n')
+        print_help()
+        return 1
+
+    return missing_arg_warning
+
+
 def main():
     parser = argparse.ArgumentParser(usage=__doc__)
     subparsers = parser.add_subparsers()
@@ -146,6 +160,9 @@ def main():
         help='Uninstall the AWS CLI installed from the Mac PKG'
     )
     uninstall_parser.set_defaults(func=uninstall)
+
+    # default to help string if no args are passed
+    parser.set_defaults(func=_warn_missing_arg(parser.print_help))
 
     args = parser.parse_args()
     return args.func()

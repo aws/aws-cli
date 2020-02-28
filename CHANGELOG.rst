@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.18.10
+=======
+
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``accessanalyzer``: Update accessanalyzer command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``codeguruprofiler``: Update codeguruprofiler command to latest version
+* api-change:``sagemaker-a2i-runtime``: Update sagemaker-a2i-runtime command to latest version
+* api-change:``workdocs``: Update workdocs command to latest version
+* api-change:``config``: Update config command to latest version
+
+
 1.18.9
 ======
 

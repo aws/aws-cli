@@ -2,6 +2,31 @@
 CHANGELOG
 =========
 
+2.0.2
+=====
+
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``outposts``: Update outposts command to latest version
+* api-change:``accessanalyzer``: Update accessanalyzer command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``workdocs``: Update workdocs command to latest version
+* api-change:``sagemaker-a2i-runtime``: Update sagemaker-a2i-runtime command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``globalaccelerator``: Update globalaccelerator command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``stepfunctions``: Update stepfunctions command to latest version
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+* api-change:``codeguruprofiler``: Update codeguruprofiler command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* bugfix:codecommit: Fix codecommit credential-helper input parsing to allow a trailing newline.
+* api-change:``config``: Update config command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 2.0.1
 =====
 
@@ -49,7 +74,6 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
-=======
 1.18.11
 =======
 

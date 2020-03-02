@@ -26,6 +26,7 @@ ERROR_MSG = (
 
 ZIP_DOCSTRING = (
     '<p>The path to the zip file of the {param_type} you are uploading. '
+    'Specify --zip-file or --{param_type}, but not both. '
     'Example: fileb://{param_type}.zip</p>'
 )
 

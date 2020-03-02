@@ -122,8 +122,10 @@ class CodeCommitGetCommand(BasicCommand):
     def read_git_parameters(self):
         parsed = {}
         for line in sys.stdin:
-            key, value = line.strip().split('=', 1)
-            parsed[key] = value
+            line = line.strip()
+            if line:
+                key, value = line.split('=', 1)
+                parsed[key] = value
         return parsed
 
     def extract_url(self, parameters):

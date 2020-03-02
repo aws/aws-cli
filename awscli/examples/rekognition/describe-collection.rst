@@ -1,9 +1,9 @@
 **To describe a collection**
 
-The following ``describe-collection`` command displays the details about the specified collection. ::
+The following ``describe-collection`` example displays the details about the specified collection. ::
 
     aws rekognition describe-collection \
-        -collection-id MyCollection
+        --collection-id MyCollection
 
 Output::
 

@@ -12,7 +12,7 @@ Output::
 
     {
         "Command": {
-            "CommandId": "92853adf-ba41-4cd6-9a88-142d119c083d",
+            "CommandId": "92853adf-ba41-4cd6-9a88-142d1EXAMPLE",
             "DocumentName": "AWS-RunShellScript",
             "DocumentVersion": "",
             "Comment": "echo HelloWorld",
@@ -50,7 +50,7 @@ Output::
         }
     }
 
-**Example 2: To get IP information about an instance**
+**Examle 2: To get IP information about an instance**
 
 The following ``send-command`` example retrieves the IP information about an instance. ::
 
@@ -60,7 +60,7 @@ The following ``send-command`` example retrieves the IP information about an ins
         --comment "IP config" \
         --parameters "commands=ifconfig"
 
-**Example 3: To runs a command on instances with specific tags**
+**Example 3: To run a command on instances with specific tags**
 
 The following ``send-command`` example runs a command on instances that have the tag key "ENV" and the value "Dev". ::
 
@@ -69,9 +69,9 @@ The following ``send-command`` example runs a command on instances that have the
         --document-name "AWS-RunShellScript" \
         --parameters "commands=ifconfig"
 
-**Example 4: To runs a command that sends SNS Notifications**
+**Example 4: To run a command that sends SNS notifications**
 
-The following ``send-command`` example runs a command that sends SNS notifications for all notification events and the Command notification type. ::
+The following ``send-command`` example runs a command that sends SNS notifications for all notification events and the ``Command`` notification type. ::
 
     aws ssm send-command \
         --instance-ids "i-1234567890abcdef0" \
@@ -83,7 +83,7 @@ The following ``send-command`` example runs a command that sends SNS notificatio
 
 **Example 5: To run a command that outputs to S3 and CloudWatch**
 
-The following ``send-command`` example runs a command that outputs command details to an S3 bucket and to a CloudWatch Logs Group. ::
+The following ``send-command`` example runs a command that outputs command details to an S3 bucket and to a CloudWatch Logs log group. ::
 
     aws ssm send-command \
         --instance-ids "i-1234567890abcdef0" \
@@ -96,7 +96,7 @@ The following ``send-command`` example runs a command that outputs command detai
 
 **Example 6: To run commands on multiple instances with different tags**
 
-The follwoing ``send-command`` example runs a command on instances with two different tag keys and values. ::
+The following ``send-command`` example runs a command on instances with two different tag keys and values. ::
 
     aws ssm send-command \
         --document-name "AWS-RunPowerShellScript" \
@@ -111,3 +111,5 @@ The following ``send-command`` example runs a command on instances that have the
         --document-name "AWS-RunPowerShellScript" \
         --parameters commands=["echo helloWorld"] \
         --targets Key=tag:Env,Values=Dev,Test
+
+For more information, see `Running Commands Using Systems Manager Run Command <https://docs.aws.amazon.com/systems-manager/latest/userguide/run-command.html>`__ in the *AWS Systems Manager User Guide*.

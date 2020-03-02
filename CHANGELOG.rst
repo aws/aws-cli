@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.12
+=======
+
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``comprehendmedical``: Update comprehendmedical command to latest version
+
+
 1.18.11
 =======
 

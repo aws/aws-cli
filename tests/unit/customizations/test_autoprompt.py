@@ -93,7 +93,7 @@ class TestAutoPrompter(unittest.TestCase):
         self.command_name_parts = []
         self.prompter.select_from_choices.return_value = {
             'actual_value': 'print-only',
-            'display': 'Print CLI command.'
+            'display': 'Display CLI command'
         }
 
     def prompt_for_values(self):
@@ -135,7 +135,7 @@ class TestAutoPrompter(unittest.TestCase):
             # User selects they're done entering params.
             {'actual_value': self.auto_prompter.QUIT_SENTINEL, 'display': ''},
             # User selects they want to print the params.
-            {'actual_value': 'print-only', 'display': 'Print CLI command.'}
+            {'actual_value': 'print-only', 'display': 'Display CLI command'}
         ]
         self.prompter.prompt.side_effect = ['my-value-1', 'my-value-2']
         self.prompt_for_values()

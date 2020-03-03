@@ -158,9 +158,9 @@ class AutoPrompter(object):
     def _decide_next_action(self, cli_command):
         choice = self._prompter.select_from_choices(
             [{'actual_value': 'run-command',
-              'display': 'Execute CLI command'},
+              'display': 'Run CLI command'},
              {'actual_value': 'print-only',
-              'display': 'Print CLI command.'}],
+              'display': 'Display CLI command'}],
             display_formatter=lambda x: x['display']
         )['actual_value']
         if choice == 'print-only':

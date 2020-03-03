@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.13
+=======
+
+* enhancement:PyYAML: Increased the uppber bound on the PyYAML dependency to 5.3.
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.18.12
 =======
 

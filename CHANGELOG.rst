@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.18.14
+=======
+
+* api-change:``pinpoint``: Update pinpoint command to latest version
+
+
 1.18.13
 =======
 

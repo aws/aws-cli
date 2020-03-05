@@ -1,6 +1,6 @@
-=======
-aws-cli
-=======
+==========
+aws-cli v1
+==========
 
 .. image:: https://travis-ci.org/aws/aws-cli.svg?branch=develop
    :target: https://travis-ci.org/aws/aws-cli
@@ -9,6 +9,11 @@ aws-cli
 .. image:: https://badges.gitter.im/aws/aws-cli.svg
    :target: https://gitter.im/aws/aws-cli
    :alt: Gitter
+
+.. attention::
+   aws-cli v2 has been released.  But we don't release it on PyPI.
+   Please read `the document <https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html>`__
+   for installing aws-cli v2.
 
 
 This package provides a unified command line interface to Amazon Web Services.

@@ -13,6 +13,7 @@ from distutils.dir_util import copy_tree
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from utils import run, tmp_dir
+from install_deps import install_packages
 
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(
@@ -103,9 +104,24 @@ def main():
             'useful for debugging.'
         ),
     )
+    parser.add_argument(
+        '--src-dir',
+        default=None,
+        help=(
+            'Source directory for pinned installation dependencies. This '
+            'provides the ability to do offline builds without PyPI.'
+        ),
+    )
     args = parser.parse_args()
 
     output = os.path.abspath(args.output)
+    if args.src_dir:
+        print('Installing dependencies from local directory: %s' % args.src_dir)
+        install_packages(args.src_dir)
+    else:
+        run('pip install -r requirements.txt')
+        run('pip install .')
+
     make_exe(output, cleanup=args.cleanup)
 
 

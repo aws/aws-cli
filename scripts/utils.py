@@ -1,5 +1,6 @@
 import contextlib
 import os
+import platform
 import shutil
 import sys
 import subprocess
@@ -47,3 +48,31 @@ def tmp_dir():
         yield dirname
     finally:
         shutil.rmtree(dirname)
+
+
+@contextlib.contextmanager
+def cd(dirname):
+    original = os.getcwd()
+    os.chdir(dirname)
+    try:
+        yield
+    finally:
+        os.chdir(original)
+
+
+def bin_path():
+    """Get the system's binary path, either `bin` on reasonable systems
+    or `Scripts` on Windows.
+    """
+    path = "bin"
+
+    if platform.system() == "Windows":
+        path = "Scripts"
+
+    return path
+
+
+def virtualenv_enabled():
+    # Helper function to see if we need to make
+    # our own virtualenv for installs.
+    return bool(os.environ.get('VIRTUAL_ENV'))

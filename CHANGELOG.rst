@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.16
+=======
+
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``signer``: Update signer command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+
+
 1.18.15
 =======
 

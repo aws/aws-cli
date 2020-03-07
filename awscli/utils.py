@@ -134,7 +134,7 @@ def find_service_and_method_in_event_name(event_name):
 def json_encoder(obj):
     """JSON encoder that formats datetimes as ISO8601 format."""
     if isinstance(obj, datetime.datetime):
-        return obj.isoformat()
+        return obj.isoformat(timespec='milliseconds')
     else:
         return obj
 

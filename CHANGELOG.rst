@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.17
+=======
+
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.18.16
 =======
 

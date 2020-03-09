@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+2.0.3
+=====
+
+* api-change:``eks``: Update eks command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``comprehendmedical``: Update comprehendmedical command to latest version
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``signer``: Update signer command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+
+
 2.0.2
 =====
 
@@ -72,6 +87,45 @@ CHANGELOG
 * feature:region: Added support for pulling the default region from IMDS when running on an EC2 instance. See `#3680 <https://github.com/aws/aws-cli/issues/3680>`__.
 * feature:s3: Added support for the ``--copy-props`` parameter to the high level S3 commands. This new parameter configures how additional metadata, tags, etc. should be copied for S3 to S3 transfers. See `#4840 <https://github.com/aws/aws-cli/issues/4840>`__.
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
+
+
+1.18.16
+=======
+
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``signer``: Update signer command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+
+
+1.18.15
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+
+
+1.18.14
+=======
+
+* api-change:``pinpoint``: Update pinpoint command to latest version
+
+
+1.18.13
+=======
+
+* enhancement:PyYAML: Increased the uppber bound on the PyYAML dependency to 5.3.
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.18.12
+=======
+
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``comprehendmedical``: Update comprehendmedical command to latest version
 
 
 1.18.11

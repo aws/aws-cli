@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.18
+=======
+
+* api-change:``marketplacecommerceanalytics``: Update marketplacecommerceanalytics command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``iotevents``: Update iotevents command to latest version
+* api-change:``serverlessrepo``: Update serverlessrepo command to latest version
+
+
 1.18.17
 =======
 

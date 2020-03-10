@@ -130,7 +130,7 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
         ]
     }
 
-    emr_autoscaling_role_policy_document = {
+    emr_autoscaling_role_policy_document_cn = {
         "Version": "2008-10-17",
         "Statement": [
             {
@@ -140,6 +140,23 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
                     "Service": [
                         "elasticmapreduce.amazonaws.com.cn",
                         "application-autoscaling.amazonaws.com.cn"
+                    ]
+                },
+                "Action": "sts:AssumeRole"
+            }
+        ]
+    }
+
+    emr_autoscaling_role_policy_document = {
+        "Version": "2008-10-17",
+        "Statement": [
+            {
+                "Sid": "",
+                "Effect": "Allow",
+                "Principal": {
+                    "Service": [
+                        "elasticmapreduce.amazonaws.com",
+                        "application-autoscaling.amazonaws.com"
                     ]
                 },
                 "Action": "sts:AssumeRole"
@@ -168,6 +185,34 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
         self.assertEquals(self.operations_called[3][0].name, 'GetRole')
         self.assertEqual(self.operations_called[3][1]['RoleName'],
                          EMR_AUTOSCALING_ROLE_NAME)
+
+    @mock.patch('awscli.customizations.emr.emr.'
+                'CreateDefaultRoles._construct_result')
+    @mock.patch('awscli.customizations.emr.emr.'
+                'CreateDefaultRoles.check_if_instance_profile_exists')
+    @mock.patch('awscli.customizations.emr.emr.'
+                'CreateDefaultRoles.check_if_role_exists')
+    @mock.patch('awscli.customizations.emr.emr.'
+                'CreateDefaultRoles._get_role_policy')
+    def test_default_autoscaling_role_commercial(self, get_rp_patch,
+                                                 role_exists_patch,
+                                                 instance_profile_exists_patch,
+                                                 construct_result_patch):
+        get_rp_patch.return_value = False
+        role_exists_patch.return_value = False
+        instance_profile_exists_patch.return_value = False
+        construct_result_patch.return_value = []
+
+        cmdline = self.prefix + ' --region us-east-1'
+
+        self.run_cmd(cmdline, expected_rc=0)
+
+        # Only 8 operations will be called as we are mocking
+        # check_if_role_exists and check_if_instance_profile_exists methods.
+        self.assertEqual(len(self.operations_called), 8)
+        self.assertEqual(
+            self.operations_called[6][1]['AssumeRolePolicyDocument'],
+            emrutils.dict_to_string(self.emr_autoscaling_role_policy_document))
 
     @mock.patch('awscli.customizations.emr.emr.'
                 'CreateDefaultRoles._construct_result')
@@ -238,7 +283,7 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
                          EMR_AUTOSCALING_ROLE_NAME)
         self.assertEqual(
             self.operations_called[6][1]['AssumeRolePolicyDocument'],
-            emrutils.dict_to_string(self.emr_autoscaling_role_policy_document))
+            emrutils.dict_to_string(self.emr_autoscaling_role_policy_document_cn))
 
         self.assertEqual(self.operations_called[7][0].name, 'AttachRolePolicy')
         self.assertEqual(self.operations_called[7][1]['PolicyArn'],

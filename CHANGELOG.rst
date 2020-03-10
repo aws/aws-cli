@@ -2,6 +2,186 @@
 CHANGELOG
 =========
 
+1.18.17
+=======
+
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.18.16
+=======
+
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``signer``: Update signer command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+
+
+1.18.15
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+
+
+1.18.14
+=======
+
+* api-change:``pinpoint``: Update pinpoint command to latest version
+
+
+1.18.13
+=======
+
+* enhancement:PyYAML: Increased the uppber bound on the PyYAML dependency to 5.3.
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.18.12
+=======
+
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``comprehendmedical``: Update comprehendmedical command to latest version
+
+
+1.18.11
+=======
+
+* api-change:``config``: Update config command to latest version
+
+
+1.18.10
+=======
+
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``accessanalyzer``: Update accessanalyzer command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``codeguruprofiler``: Update codeguruprofiler command to latest version
+* api-change:``sagemaker-a2i-runtime``: Update sagemaker-a2i-runtime command to latest version
+* api-change:``workdocs``: Update workdocs command to latest version
+* api-change:``config``: Update config command to latest version
+
+
+1.18.9
+======
+
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``globalaccelerator``: Update globalaccelerator command to latest version
+
+
+1.18.8
+======
+
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* bugfix:codecommit: Fix codecommit credential-helper input parsing to allow a trailing newline.
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+
+
+1.18.7
+======
+
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+* api-change:``stepfunctions``: Update stepfunctions command to latest version
+* api-change:``outposts``: Update outposts command to latest version
+
+
+1.18.6
+======
+
+* api-change:``events``: Update events command to latest version
+* api-change:``iotevents``: Update iotevents command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``snowball``: Update snowball command to latest version
+* api-change:``docdb``: Update docdb command to latest version
+
+
+1.18.5
+======
+
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``wafv2``: Update wafv2 command to latest version
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+
+
+1.18.4
+======
+
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``appconfig``: Update appconfig command to latest version
+* api-change:``savingsplans``: Update savingsplans command to latest version
+
+
+1.18.3
+======
+
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+
+
+1.18.2
+======
+
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
+1.18.1
+======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``cloud9``: Update cloud9 command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+
+
+1.18.0
+======
+
+* api-change:``mediatailor``: Update mediatailor command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``shield``: Update shield command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* feature:retries: Add support for retry modes including ``standard`` and ``adaptive`` (boto/botocore`#1972 <https://github.com/aws/aws-cli/issues/1972>`__)
+
+
+1.17.17
+=======
+
+* api-change:``mediapackage-vod``: Update mediapackage-vod command to latest version
+
+
+1.17.16
+=======
+
+* api-change:``es``: Update es command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``ds``: Update ds command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``workmail``: Update workmail command to latest version
+* api-change:``neptune``: Update neptune command to latest version
+
+
+1.17.15
+=======
+
+* api-change:``cloudformation``: Update cloudformation command to latest version
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.17.14
 =======
 

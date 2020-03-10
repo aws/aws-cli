@@ -14,5 +14,8 @@ Output::
         "DirectoryId": "d-926726012c",
         "DirectoryType": "VpcDirectory",
         "DefaultMailDomain": "site.awsapps.com",
-        "CompletedDate": 1522693605.468
+        "CompletedDate": 1522693605.468,
+        "ARN": "arn:aws:workmail:us-west-2:111122223333:organization/m-n1pq2345678r901st2u3vx45x6789yza"
     }
+
+For more information, see `Working with Organizations <https://docs.aws.amazon.com/workmail/latest/adminguide/organizations_overview.html>`__ in the *Amazon WorkMail Administrator Guide*.

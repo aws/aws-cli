@@ -83,3 +83,14 @@ Output::
 
     Total Objects: 2
        Total Size: 408 Bytes
+
+**Listing from an S3 access point**
+
+The following ``ls`` command list objects from access point (``myaccesspoint``)::
+
+    aws s3 ls s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/
+
+Output::
+
+                               PRE somePrefix/
+    2013-07-25 17:06:27         88 test.txt

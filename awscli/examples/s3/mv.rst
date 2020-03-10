@@ -79,3 +79,14 @@ Output::
 
     move: file.txt to s3://mybucket/file.txt
 
+
+**Moving a file to an S3 access point**
+
+The following ``mv`` command moves a single file (``mydoc.txt``) to the access point (``myaccesspoint``) at the key (``mykey``)::
+
+    aws s3 mv mydoc.txt s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/mykey
+
+Output::
+
+    move: mydoc.txt to s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/mykey
+

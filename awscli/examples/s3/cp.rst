@@ -165,3 +165,24 @@ WARNING:: PowerShell may alter the encoding of or add a CRLF to piped or redirec
 The following ``cp`` command downloads an S3 object locally as a stream to standard output. Downloading as a stream is not currently compatible with the ``--recursive`` parameter::
 
     aws s3 cp s3://mybucket/stream.txt -
+
+**Uploading to an S3 access point**
+
+The following ``cp`` command uploads a single file (``mydoc.txt``) to the access point (``myaccesspoint``) at the key (``mykey``)::
+
+    aws s3 cp mydoc.txt s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/mykey
+
+Output::
+
+    upload: mydoc.txt to s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/mykey
+
+
+**Downloading from an S3 access point**
+
+The following ``cp`` command downloads a single object (``mykey``) from the access point (``myaccesspoint``) to the local file (``mydoc.txt``)::
+
+    aws s3 cp s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/mykey mydoc.txt
+
+Output::
+
+    download: s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/mykey to mydoc.txt

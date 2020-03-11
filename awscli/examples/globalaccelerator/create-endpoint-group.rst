@@ -1,26 +1,25 @@
 **To create an endpoint group**
 
-The following ``create-endpoint-group`` example creates an endpoint group. ::
+The following ``create-endpoint-group`` example creates an endpoint group with one endpoint. ::
 
     aws globalaccelerator create-endpoint-group \
-        --listener-arn arn:aws:globalaccelerator::123456789012:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/0123vxyz \
+        --listener-arn arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/0123vxyz \
         --endpoint-group-region us-east-1 \
-        --endpoint-configurations EndpointId=eipalloc-eip01234567890abc,Weight=128 \
-        --region us-west-2 \
-        --idempotencytoken dcba4321-dcba-4321-dcba-dcba4321
+        --endpoint-configurations EndpointId=i-1234567890abcdef0,Weight=128 \
+        --region us-west-2
 
 Output::
 
     {
         "EndpointGroup": {
-            "TrafficDialPercentage": 100.0,
+            "TrafficDialPercentage": 100.0, 
             "EndpointDescriptions": [
                 {
-                    "Weight": 128,
-                    "EndpointId": "eipalloc-eip01234567890abc"
+                    "Weight": 128, 
+                    "EndpointId": "i-1234567890abcdef0"
                 }
-            ],
-            "EndpointGroupArn": "arn:aws:globalaccelerator::123456789012:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/0123vxyz/endpoint-group/098765zyxwvu",
+            ], 
+            "EndpointGroupArn": "arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/0123vxyz/endpoint-group/098765zyxwvu", 
             "EndpointGroupRegion": "us-east-1"
         }
     }

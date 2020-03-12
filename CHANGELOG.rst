@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.20
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+
+
 1.18.19
 =======
 

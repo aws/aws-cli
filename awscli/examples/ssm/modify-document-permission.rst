@@ -1,7 +1,12 @@
-**To modify the permissions for a document**
+**To modify document permissions**
 
-This example modifies the permissions for a document. There is no output if the command succeeds.
+The following ``modify-document-permission`` example shares a Systems Manager document publicly. ::
 
-Command::
+    aws ssm modify-document-permission \
+        --name "Example" \
+        --permission-type "Share" \
+        --account-ids-to-add "All"
 
-  aws ssm modify-document-permission --name "RunShellScript" --permission-type "Share" --account-ids-to-add "All"
+This command produces no output.
+
+For more information, see `Share a Systems Manager Document <https://docs.aws.amazon.com/systems-manager/latest/userguide/ssm-how-to-share.html>`__ in the *AWS Systems Manager User Guide*.

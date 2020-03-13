@@ -1,40 +1,41 @@
-**To get details about all active and terminated step executions in an Automation workflow**
+**Example 1: To describe all steps for an automation execution**
 
-This example displays the details of all step executions of an Automation workflow.
+The following ``describe-automation-step-executions`` example displays details about the steps of an Automation execution. ::
 
-Command::
-
-  aws ssm describe-automation-step-executions --automation-execution-id 4105a4fc-f944-11e6-9d32-0a1b2c3d495h
+    aws ssm describe-automation-step-executions \
+        --automation-execution-id 73c8eef8-f4ee-4a05-820c-e354fEXAMPLE
 
 Output::
 
-  {
-    "StepExecutions": [
-        {
-            "StepName": "startInstances",
-            "Action": "aws:changeInstanceState",
-            "ExecutionStartTime": 1550083651.597,
-            "ExecutionEndTime": 1550083872.358,
-            "StepStatus": "Success",
-            "Inputs": {
-                "DesiredState": "\"running\"",
-                "InstanceIds": "[\"i-1234567890abcdef0\"]"
-            },
-            "Outputs": {
-                "InstanceStates": [
-                    "running"
-                ]
-            },
-            "StepExecutionId": "bd010896-b1d5-4028-b869-0a1b2c3d4f95",
-            "OverriddenParameters": {}
-        }
-    ]
-  }
+    {
+        "StepExecutions": [
+            {
+                "StepName": "startInstances",
+                "Action": "aws:changeInstanceState",
+                "ExecutionStartTime": 1583737234.134,
+                "ExecutionEndTime": 1583737234.672,
+                "StepStatus": "Success",
+                "Inputs": {
+                    "DesiredState": "\"running\"",
+                    "InstanceIds": "[\"i-0cb99161f6EXAMPLE\"]"
+                },
+                "Outputs": {
+                    "InstanceStates": [
+                        "running"
+                    ]
+                },
+                "StepExecutionId": "95e70479-cf20-4d80-8018-7e4e2EXAMPLE",
+                "OverriddenParameters": {}
+            }
+        ]
+    }
 
-**To get details about a specific step execution in an Automation workflow**
+**Example 2: To describe a specific step for an automation execution**
 
-This example returns the details for a specific step within an Automation workflow.
+The following ``describe-automation-step-executions`` example displays details about a specific step of an Automation execution. ::
 
-Command::
+    aws ssm describe-automation-step-executions \
+        --automation-execution-id 73c8eef8-f4ee-4a05-820c-e354fEXAMPLE \
+        --filters Key=StepExecutionId,Values=95e70479-cf20-4d80-8018-7e4e2EXAMPLE
 
-  aws ssm describe-automation-step-executions --automation-execution-id 4105a4fc-f944-11e6-9d32-0a1b2c3d495h --filters "Key=StepExecutionId,Values=bd010896-b1d5-4028-b869-0a1b2c3d4f95"
+For more information, see `Running an Automation Workflow Step by Step (Command Line) <https://docs.aws.amazon.com/systems-manager/latest/userguide/automation-working-executing-manually.html#automation-working-executing-manually-commandline>`__ in the *AWS Systems Manager User Guide*.

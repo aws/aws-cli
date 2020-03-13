@@ -1,32 +1,51 @@
 **To list your accelerators** 
 
-The following ``list-accelerators`` example lists the accelerators available in your account. ::
+The following ``list-accelerators`` example lists the accelerators in your account. ::
 
     aws globalaccelerator list-accelerators
 
 Output::
 
     {
-        "Accelerators": [
+    "Accelerators": [
             {
-                "Name": "ExampleAccelerator",
-                "Enabled": true,
-                "DnsName": "a1234567890abcdef.awsglobalaccelerator.com",
-                "CreatedTime": 1542394847.0,
-                "LastModifiedTime": 1542394847.0,
-                "Status": "DEPLOYED",
+                "AcceleratorArn": "arn:aws:globalaccelerator::012345678901:accelerator/5555abcd-abcd-5555-abcd-5555EXAMPLE1",
+                "Name": "TestAccelerator",
                 "IpAddressType": "IPV4",
+                "Enabled": true,
                 "IpSets": [
                     {
                         "IpFamily": "IPv4",
                         "IpAddresses": [
                             "192.0.2.250",
-                            "192.0.2.52"
+                            "198.51.100.52"
                         ]
                     }
                 ],
-                "AcceleratorArn": "arn:aws:globalaccelerator::123456789012:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh"
-            }
+                "DnsName": "5a5a5a5a5a5a5a5a.awsglobalaccelerator.com",
+                "Status": "DEPLOYED",
+                "CreatedTime": 1552424416.0,
+                "LastModifiedTime": 1569375641.0
+            },
+            {
+                "AcceleratorArn": "arn:aws:globalaccelerator::888888888888:accelerator/8888abcd-abcd-8888-abcd-8888EXAMPLE2",
+                "Name": "ExampleAccelerator",
+                "IpAddressType": "IPV4",
+                "Enabled": true,
+                "IpSets": [
+                    {
+                        "IpFamily": "IPv4",
+                        "IpAddresses": [
+                            "192.0.2.100",
+                            "198.51.100.10"
+                        ]
+                    }
+                ],
+                "DnsName": "6a6a6a6a6a6a6a.awsglobalaccelerator.com",
+                "Status": "DEPLOYED",
+                "CreatedTime": 1575585564.0,
+                "LastModifiedTime": 1579809243.0
+            },
         ]
     }
 

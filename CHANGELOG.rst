@@ -263,6 +263,7 @@ CHANGELOG
 * api-change:``storagegateway``: Update storagegateway command to latest version
 * api-change:``cloudfront``: Update cloudfront command to latest version
 * api-change:``iot``: Update iot command to latest version
+* enhancement:``ecr``: Add ``get-login-password``, alternative to ``get-login`` (`#4874 <https://github.com/aws/aws-cli/issues/4874>`__)
 
 
 1.17.9

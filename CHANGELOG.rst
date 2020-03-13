@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.18.21
+=======
+
+* api-change:``appconfig``: Update appconfig command to latest version
+
+
 1.18.20
 =======
 

@@ -1,6 +1,6 @@
 **To list image pipeline pipeline images**
 
-The following ``list-image-pipeline-images`` example lists all images that were created by the specified image pipeline. ::
+The following ``list-image-pipeline-images`` example lists all images that were created by a specific image pipeline. ::
 
     aws imagebuilder list-image-pipeline-images \
         --image-pipeline-arn arn:aws:imagebuilder:us-west-2:123456789012:image-pipeline/mywindows2016pipeline
@@ -53,4 +53,4 @@ Output::
         ]
     }
 
-For more information, see `Setting Up and Managing an EC2 Image Builder Image Pipeline Using the AWS CLI` <https://https://docs.aws.amazon.com/imagebuilder/latest/userguide/managing-image-builder-cli.html>`__ in the *EC2 Image Builder Users Guide*.
+For more information, see `Setting Up and Managing an EC2 Image Builder Image Pipeline Using the AWS CLI <https://docs.aws.amazon.com/imagebuilder/latest/userguide/managing-image-builder-cli.html>`__ in the *EC2 Image Builder Users Guide*.

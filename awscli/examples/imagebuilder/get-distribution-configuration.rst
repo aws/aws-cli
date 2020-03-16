@@ -1,6 +1,6 @@
 **To get the details of a distribution configuration**
 
-The following ``get-distribution-configuration`` example displays the details of the specified distribution configuration. ::
+The following ``get-distribution-configuration`` example displays the details of a distribution configuration by specifying its ARN. ::
 
     aws imagebuilder get-distribution-configuration \
         --distribution-configuration-arn arn:aws:imagebuilder:us-west-2:123456789012:distribution-configuration/myexampledistribution
@@ -49,4 +49,4 @@ Output::
         }
     }
 
-For more information, see `Setting Up and Managing an EC2 Image Builder Image Pipeline Using the AWS CLI` <https://https://docs.aws.amazon.com/imagebuilder/latest/userguide/managing-image-builder-cli.html>`__ in the *EC2 Image Builder Users Guide*.
+For more information, see `Setting Up and Managing an EC2 Image Builder Image Pipeline Using the AWS CLI <https://docs.aws.amazon.com/imagebuilder/latest/userguide/managing-image-builder-cli.html>`__ in the *EC2 Image Builder Users Guide*.

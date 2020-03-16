@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Mappings:
+  AccountMap:
+    dev:
+      AccountId: '112233445566'
+    prod:
+      AccountId: '1111222233333'
+Parameters:
+  Environment:
+    Type: String
+    Description: The environment name
+    Default: test
+    AllowedValues:
+    - test
+    - prod
+Resources:
+  MyLambda:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: no_artifacts
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/java:openjdk-8
+        Type: LINUX_CONTAINER
+      Name: FOO
+      Source:
+        Type: CODECOMMIT
+        Location: https://git-codecommit.us-west-2.amazonaws.com/v1/repos/foo
+      Policies:
+      - Version: 2012-10-17
+        Statement:
+        - Effect: Allow
+          Action:
+          - sts:AssumeRole
+          Resource:
+          - Fn::Join:
+            - ''
+            - - 'arn:aws:iam::'
+              - Fn::FindInMap:
+                - AccountMap
+                - test
+                - AccountId
+              - :role/InvokeLambdaRole
+          - Fn::Join:
+            - ''
+            - - 'arn:aws:iam::'
+              - Fn::FindInMap:
+                - AccountMap
+                - prod
+                - AccountId
+              - :role/InvokeLambdaRole

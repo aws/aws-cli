@@ -1,6 +1,6 @@
 **To update an accelerator**
 
-The following ``update-accelerator`` example modifies an accelerator. You must specify the ``US-West-2 (Oregon)`` Region to create or update accelerators. ::
+The following ``update-accelerator`` example modifies an accelerator to change the accelerator name. You must specify the ``US-West-2 (Oregon)`` Region to create or update accelerators. ::
 
     aws globalaccelerator update-accelerator \
         --accelerator-arn arn:aws:globalaccelerator::123456789012:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh \
@@ -20,7 +20,7 @@ Output::
                 {
                     "IpAddresses": [
                         "192.0.2.250",
-                        "192.0.2.52"
+                        "198.51.100.52"
                     ],
                     "IpFamily": "IPv4"
                 }

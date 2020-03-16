@@ -1,37 +1,33 @@
-**To get details about all active and terminated Automation executions**
+**To describe an automation execution**
 
-This example displays the details of all Automation Execution.
+The following ``describe-automation-executions`` example displays details about an Automation execution. ::
 
-Command::
-
-  aws ssm describe-automation-executions
-
+    aws ssm describe-automation-executions \
+        --filters Key=ExecutionId,Values=73c8eef8-f4ee-4a05-820c-e354fEXAMPLE
+  
 Output::
 
-  {
-    "AutomationExecutionMetadataList": [
-        {
-            "AutomationExecutionStatus": "Failed",
-            "Outputs": {
-                "createImage.ImageId": [
-                    "No output available yet because the step is not successfully executed"
-                ]
-            },
-            "DocumentName": "AWS-UpdateLinuxAmi",
-            "AutomationExecutionId": "4105a4fc-f944-11e6-9d32-8fb2db27a909",
-            "ExecutionEndTime": 1487798228.456,
-            "DocumentVersion": "1",
-            "ExecutionStartTime": 1487798222.746,
-            "ExecutedBy": "admin"
-        }
-    ]
-  }
+    {
+        "AutomationExecutionMetadataList": [
+            {
+                "AutomationExecutionId": "73c8eef8-f4ee-4a05-820c-e354fEXAMPLE",
+                "DocumentName": "AWS-StartEC2Instance",
+                "DocumentVersion": "1",
+                "AutomationExecutionStatus": "Success",
+                "ExecutionStartTime": 1583737233.748,
+                "ExecutionEndTime": 1583737234.719,
+                "ExecutedBy": "arn:aws:sts::29884EXAMPLE:assumed-role/mw_service_role/OrchestrationService",
+                "LogFile": "",
+                "Outputs": {},
+                "Mode": "Auto",
+                "Targets": [],
+                "ResolvedTargets": {
+                    "ParameterValues": [],
+                    "Truncated": false
+                },
+                "AutomationType": "Local"
+            }
+        ]
+    }
 
-**To get details of a specific Automation execution**
-
-This example shows the details about a specific Automation Execution.
-
-Command::
-
-   aws ssm describe-automation-executions --filter "Key=ExecutionId,Values=4105a4fc-f944-11e6-9d32-8fb2db27a909"
-   
+For more information, see `Running a Simple Automation Workflow <https://docs.aws.amazon.com/systems-manager/latest/userguide/automation-working-executing.html>`__ in the *AWS Systems Manager User Guide*.

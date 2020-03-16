@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.22
+=======
+
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``s3control``: Update s3control command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
 1.18.21
 =======
 

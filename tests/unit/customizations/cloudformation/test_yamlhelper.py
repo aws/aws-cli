@@ -24,8 +24,6 @@ from awscli.customizations.cloudformation.yamlhelper import yaml_parse, yaml_dum
 
 class TestYaml(unittest.TestCase):
 
-    maxDiff = None
-
     yaml_with_tags = """
     Resource:
         Key1: !Ref Something
@@ -158,18 +156,19 @@ class TestYaml(unittest.TestCase):
             <<: *base
         """
         output = yaml_parse(test_yaml)
+        self.assertTrue(isinstance(output, OrderedDict))
         self.assertEqual(output.get('test').get('property'), 'value')
 
     def test_unroll_yaml_anchors(self):
-        properties = OrderedDict([
-            ("Foo", "bar"),
-            ("Spam", "eggs"),
-        ])
+        properties = {
+            "Foo": "bar",
+            "Spam": "eggs",
+        }
         template = {
-            "Resources": OrderedDict([
-                ("Resource1", {"Properties": properties}),
-                ("Resource2", {"Properties": properties}),
-            ])
+            "Resources": {
+                "Resource1": {"Properties": properties},
+                "Resource2": {"Properties": properties}
+            }
         }
 
         expected = (
@@ -185,15 +184,3 @@ class TestYaml(unittest.TestCase):
         )
         actual = yaml_dump(template)
         self.assertEqual(actual, expected)
-
-    def test_can_roundtrip_comments(self):
-        test_yaml = (
-            'foo:\n # This is a comment'
-            '  # So is this.\n'
-            '  bar: baz\n'
-            '  baz: qux  # Another comment\n'
-            'list: [1, 2, 3] # List comment\n'
-        )
-        parsed = yaml_parse(test_yaml)
-        round_tripped = yaml_dump(parsed)
-        self.assertEqual(test_yaml, round_tripped)

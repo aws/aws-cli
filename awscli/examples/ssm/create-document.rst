@@ -1,46 +1,50 @@
 **To create a document**
 
-This example creates a document in your account using the JSON format. Note that ``file://`` must be referenced followed by the path of the content file. For more information about writing a Systems Manager document, see `Creating Systems Manager Documents`_ in the *AWS Systems Manager User Guide*.
+The following ``create-document`` example creates a Systems Manager document. ::
 
-.. _`Creating Systems Manager Documents`: https://docs.aws.amazon.com/systems-manager/latest/userguide/create-ssm-doc.html
-
-Command::
-
-  aws ssm create-document --content "file://RunShellScript.json" --name "RunShellScript" --document-type "Command"
+    aws ssm create-document \
+        --content file://exampleDocument.yml \
+        --name "Example" \
+        --document-type "Automation" \
+        --document-format YAML
 
 Output::
 
-  {
-    "DocumentDescription": {
-        "Status": "Creating",
-        "Hash": "95cf32aa8c4c4e6f0eb81c4d0cc9a81aa5d209c2c67c703bdea7a233b5596eb
-        "Name": "RunShellScript",
-        "Parameters": [
-            {
-                "Type": "StringList",
-                "Name": "commands",
-                "Description": "(Required) Specify a shell script or a command to run."
-            }
-        ],
-        "DocumentType": "Command",
-        "PlatformTypes": [
-            "Linux"
-        ],
-        "DocumentVersion": "1",
-        "HashType": "Sha256",
-        "CreatedDate": 1487871523.324,
-        "Owner": "809632081692",
-        "SchemaVersion": "2.0",
-        "DefaultVersion": "1",
-        "LatestVersion": "1",
-        "Description": "Run a script"
+    {
+        "DocumentDescription": {
+            "Hash": "fc2410281f40779e694a8b95975d0f9f316da8a153daa94e3d9921102EXAMPLE",
+            "HashType": "Sha256",
+            "Name": "Example",
+            "Owner": "29884EXAMPLE",
+            "CreatedDate": 1583256349.452,
+            "Status": "Creating",
+            "DocumentVersion": "1",
+            "Description": "Document Example",
+            "Parameters": [
+                {
+                    "Name": "AutomationAssumeRole",
+                    "Type": "String",
+                    "Description": "(Required) The ARN of the role that allows Automation to perform the actions on your behalf. If no role is specified, Systems Manager Automation uses your IAM permissions to execute this document.",
+                    "DefaultValue": ""
+                },
+                {
+                    "Name": "InstanceId",
+                    "Type": "String",
+                    "Description": "(Required) The ID of the Amazon EC2 instance.",
+                    "DefaultValue": ""
+                }
+            ],
+            "PlatformTypes": [
+                "Windows",
+                "Linux"
+            ],
+            "DocumentType": "Automation",
+            "SchemaVersion": "0.3",
+            "LatestVersion": "1",
+            "DefaultVersion": "1",
+            "DocumentFormat": "YAML",
+            "Tags": []
+        }
     }
-  }
 
-**To create a document using the YAML document format**
-
-This example creates a document in your account using the YAML format which targets the EC2 instance type. Note that ``file://`` must be referenced followed by the path of the content file.
-
-Command::
-
-  aws ssm create-document --content file://RunShellScript.yaml --name "RunShellScript" --document-type "Command" --document-format YAML --target-type "/AWS::EC2::Instance"
+For more information, see `Creating Systems Manager Documents <https://docs.aws.amazon.com/systems-manager/latest/userguide/create-ssm-doc.html>`__ in the *AWS Systems Manager User Guide*.

@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.22
+=======
+
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``s3control``: Update s3control command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
 1.18.21
 =======
 
@@ -263,6 +273,7 @@ CHANGELOG
 * api-change:``storagegateway``: Update storagegateway command to latest version
 * api-change:``cloudfront``: Update cloudfront command to latest version
 * api-change:``iot``: Update iot command to latest version
+* enhancement:``ecr``: Add ``get-login-password``, alternative to ``get-login`` (`#4874 <https://github.com/aws/aws-cli/issues/4874>`__)
 
 
 1.17.9

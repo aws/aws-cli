@@ -2,6 +2,30 @@
 CHANGELOG
 =========
 
+2.0.4
+=====
+
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+* api-change:``marketplacecommerceanalytics``: Update marketplacecommerceanalytics command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``iotevents``: Update iotevents command to latest version
+* api-change:``s3control``: Update s3control command to latest version
+* api-change:``efs``: Update efs command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``serverlessrepo``: Update serverlessrepo command to latest version
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``appconfig``: Update appconfig command to latest version
+* api-change:``iot``: Update iot command to latest version
+* bugfix:cloudformation: Revert pr that added support for comments https://github.com/aws/aws-cli/pull/4873. Comment support also changed from using the 'safe' yaml representer to the 'rt' (round trip) yaml representer. In some cases this causes the `package` command to emit yaml that the CloudFormation service cannot parse, resulting in a service error.
+* api-change:``dms``: Update dms command to latest version
+
+
 2.0.3
 =====
 
@@ -89,7 +113,6 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
-=======
 1.18.22
 =======
 

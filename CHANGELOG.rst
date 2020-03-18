@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.24
+=======
+
+* api-change:``personalize``: Update personalize command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``mediaconnect``: Update mediaconnect command to latest version
+
+
 1.18.23
 =======
 

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.25
+=======
+
+* api-change:``outposts``: Update outposts command to latest version
+* api-change:``acm``: Update acm command to latest version
+
+
 1.18.24
 =======
 

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.18.26
+=======
+
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+
+
 1.18.25
 =======
 

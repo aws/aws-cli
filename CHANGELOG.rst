@@ -113,6 +113,41 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.27
+=======
+
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+
+
+1.18.26
+=======
+
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+
+
+1.18.25
+=======
+
+* api-change:``outposts``: Update outposts command to latest version
+* api-change:``acm``: Update acm command to latest version
+
+
+1.18.24
+=======
+
+* api-change:``personalize``: Update personalize command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``mediaconnect``: Update mediaconnect command to latest version
+
+
+1.18.23
+=======
+
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+
+
 1.18.22
 =======
 

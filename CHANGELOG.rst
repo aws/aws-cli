@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.28
+=======
+
+* api-change:``rds-data``: Update rds-data command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``athena``: Update athena command to latest version
+
+
 1.18.27
 =======
 

@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.18.29
+=======
+
+* enhancement:shorthand: The CLI now no longer allows a key to be spcified twice in a shorthand parameter. For example foo=bar,foo=baz would previously be accepted, with only baz being set, and foo=bar silently being ignored. Now an error will be raised pointing out the issue, and suggesting a fix.
+* api-change:``application-insights``: Update application-insights command to latest version
+* api-change:``detective``: Update detective command to latest version
+* api-change:``managedblockchain``: Update managedblockchain command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``xray``: Update xray command to latest version
+* api-change:``ce``: Update ce command to latest version
+
+
 1.18.28
 =======
 

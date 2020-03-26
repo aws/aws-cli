@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.30
+=======
+
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+
+
 1.18.29
 =======
 

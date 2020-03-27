@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.31
+=======
+
+* api-change:``globalaccelerator``: Update globalaccelerator command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+
+
 1.18.30
 =======
 

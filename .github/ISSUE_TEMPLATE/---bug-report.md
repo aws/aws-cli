@@ -26,7 +26,7 @@ Steps to reproduce the behavior
 A clear and concise description of what you expected to happen.
 
 **Logs/output**
-If applicable, add logs or error output.
+Get full traceback and error logs by adding `--debug` to the command.
 
 **Additional context**
 Add any other context about the problem here.

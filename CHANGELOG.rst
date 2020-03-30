@@ -2,6 +2,28 @@
 CHANGELOG
 =========
 
+2.0.6
+=====
+
+* api-change:``kendra``: Update kendra command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``rds-data``: Update rds-data command to latest version
+* enhancement:shorthand: The CLI now no longer allows a key to be spcified twice in a shorthand parameter. For example foo=bar,foo=baz would previously be accepted, with only baz being set, and foo=bar silently being ignored. Now an error will be raised pointing out the issue, and suggesting a fix.
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``xray``: Update xray command to latest version
+* api-change:``globalaccelerator``: Update globalaccelerator command to latest version
+* api-change:``application-insights``: Update application-insights command to latest version
+* api-change:``detective``: Update detective command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``athena``: Update athena command to latest version
+* api-change:``managedblockchain``: Update managedblockchain command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+
+
 2.0.5
 =====
 

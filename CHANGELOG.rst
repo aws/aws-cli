@@ -2,6 +2,28 @@
 CHANGELOG
 =========
 
+2.0.6
+=====
+
+* api-change:``kendra``: Update kendra command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``rds-data``: Update rds-data command to latest version
+* enhancement:shorthand: The CLI now no longer allows a key to be spcified twice in a shorthand parameter. For example foo=bar,foo=baz would previously be accepted, with only baz being set, and foo=bar silently being ignored. Now an error will be raised pointing out the issue, and suggesting a fix.
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``xray``: Update xray command to latest version
+* api-change:``globalaccelerator``: Update globalaccelerator command to latest version
+* api-change:``application-insights``: Update application-insights command to latest version
+* api-change:``detective``: Update detective command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``athena``: Update athena command to latest version
+* api-change:``managedblockchain``: Update managedblockchain command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+
+
 2.0.5
 =====
 
@@ -126,6 +148,43 @@ CHANGELOG
 * feature:region: Added support for pulling the default region from IMDS when running on an EC2 instance. See `#3680 <https://github.com/aws/aws-cli/issues/3680>`__.
 * feature:s3: Added support for the ``--copy-props`` parameter to the high level S3 commands. This new parameter configures how additional metadata, tags, etc. should be copied for S3 to S3 transfers. See `#4840 <https://github.com/aws/aws-cli/issues/4840>`__.
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
+
+
+1.18.31
+=======
+
+* api-change:``globalaccelerator``: Update globalaccelerator command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+
+
+1.18.30
+=======
+
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+
+
+1.18.29
+=======
+
+* enhancement:shorthand: The CLI now no longer allows a key to be spcified twice in a shorthand parameter. For example foo=bar,foo=baz would previously be accepted, with only baz being set, and foo=bar silently being ignored. Now an error will be raised pointing out the issue, and suggesting a fix.
+* api-change:``application-insights``: Update application-insights command to latest version
+* api-change:``detective``: Update detective command to latest version
+* api-change:``managedblockchain``: Update managedblockchain command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``xray``: Update xray command to latest version
+* api-change:``ce``: Update ce command to latest version
+
+
+1.18.28
+=======
+
+* api-change:``rds-data``: Update rds-data command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``athena``: Update athena command to latest version
 
 
 1.18.27

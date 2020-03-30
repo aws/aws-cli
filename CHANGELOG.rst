@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.18.32
+=======
+
+* api-change:``accessanalyzer``: Update accessanalyzer command to latest version
+
+
 1.18.31
 =======
 

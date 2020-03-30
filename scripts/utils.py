@@ -19,6 +19,8 @@ def run(cmd, cwd=None, env=None, echo=True):
         'stdout': subprocess.PIPE,
         'stderr': subprocess.PIPE,
     }
+    if isinstance(cmd, list):
+        kwargs['shell'] = False
     if cwd is not None:
         kwargs['cwd'] = cwd
     if env is not None:

@@ -1,0 +1,106 @@
+#!/usr/bin/env python
+"""Script to build a Docker image of the AWS CLI"""
+import argparse
+import os
+import sys
+import shutil
+from distutils.dir_util import copy_tree
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from utils import run, tmp_dir, cd, BadRCError
+
+
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(
+    os.path.abspath(__file__))))
+DOCKER_DIR = os.path.join(ROOT, 'docker')
+DIST_DIR = os.path.join(ROOT, 'dist')
+DEFAULT_EXE_ZIP = os.path.join(DIST_DIR, 'awscli-exe.zip')
+DEFAULT_DOCKER_OUTPUT = os.path.join(DIST_DIR, 'aws-cli-docker.tar')
+DEFAULT_TAGS = ['amazon/aws-cli']
+EXPECTED_DOCKERFILE_EXE_NAME = 'awscli-exe-linux-x86_64.zip'
+
+
+def make_docker(exe, output, tags):
+    _ensure_docker_is_available()
+    with tmp_dir() as build_context:
+        _make_build_context(build_context, exe)
+        _docker_build(build_context, tags)
+    _docker_save(tags, output)
+
+
+def _ensure_docker_is_available():
+    try:
+        run(['docker', '--version'])
+    except (OSError, BadRCError) as e:
+        raise RuntimeError(
+            'Docker must be installed to run this script. Received '
+            'following error from docker --version: %s' % e
+        )
+
+
+def _make_build_context(build_context_dir, exe):
+    _copy_docker_dir_to_build_context(build_context_dir)
+    _copy_exe_to_build_context(build_context_dir, exe)
+
+
+def _copy_docker_dir_to_build_context(build_context_dir):
+    copy_tree(DOCKER_DIR, build_context_dir)
+
+
+def _copy_exe_to_build_context(build_context_dir, exe):
+    build_context_exe_path = os.path.join(
+        build_context_dir, EXPECTED_DOCKERFILE_EXE_NAME)
+    shutil.copy(exe, build_context_exe_path)
+
+
+def _docker_build(build_context_dir, tags):
+    with cd(build_context_dir):
+        docker_build_cmd = ['docker', 'build', '.']
+        for tag in tags:
+            docker_build_cmd.extend(['-t', tag])
+        print(run(docker_build_cmd))
+
+
+def _docker_save(tags, output):
+    parent_dir = os.path.dirname(os.path.abspath(output))
+    if not os.path.exists(parent_dir):
+        os.makedirs(parent_dir)
+    run(['docker', 'save', '--output', output] + tags)
+    print('Saved image at: %s' % output)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        '--exe',
+        default=DEFAULT_EXE_ZIP,
+        help=(
+            'The name of the exe zip to build into the Docker image. By '
+            'default the exe located at: %s' % DEFAULT_EXE_ZIP
+        )
+    )
+    parser.add_argument(
+        '--output',
+        default=DEFAULT_DOCKER_OUTPUT,
+        help=(
+            'The name of the file to save the Docker image. By default, '
+            'this will be saved at: %s' % DEFAULT_DOCKER_OUTPUT
+        )
+    )
+    parser.add_argument(
+        '--tags',
+        nargs='*',
+        default=DEFAULT_TAGS,
+        help=(
+            'The tags to give the image. This is the value provided to the '
+            '`-t` flag when running `docker build`. By default, the image '
+            'will have the tags: %s' % ''.join(DEFAULT_TAGS)
+        ),
+    )
+    parsed_args = parser.parse_args()
+    make_docker(parsed_args.exe, parsed_args.output, parsed_args.tags)
+
+
+if __name__ == "__main__":
+    main()

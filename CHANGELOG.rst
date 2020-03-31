@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+1.18.33
+=======
+
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``appconfig``: Update appconfig command to latest version
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+* api-change:``elastic-inference``: Update elastic-inference command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``detective``: Update detective command to latest version
+* api-change:``mediastore``: Update mediastore command to latest version
+* api-change:``wafv2``: Update wafv2 command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``fms``: Update fms command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+
+
 1.18.32
 =======
 

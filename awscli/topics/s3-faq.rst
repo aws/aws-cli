@@ -27,7 +27,7 @@ this error up to 5 times before giving up.  On the case that any files fail to
 transfer successfully to S3, the AWS CLI will exit with a non zero RC.
 See ``aws help return-codes`` for more information.
 
-For some commands the AWS CLI uses the ``x-amz-content-sha256`` header as a checksum in addtion to 
+In some cases the AWS CLI uses the ``x-amz-content-sha256`` header as a checksum in addtion to 
 ``Content-MD5``. The AWS CLI will use Signature Version 4 for S3 in several 
 cases:
 

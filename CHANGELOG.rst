@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.34
+=======
+
+* api-change:``iot``: Update iot command to latest version
+* api-change:``mediaconnect``: Update mediaconnect command to latest version
+
+
 1.18.33
 =======
 

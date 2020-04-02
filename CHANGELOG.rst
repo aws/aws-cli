@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.35
+=======
+
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+
+
 1.18.34
 =======
 

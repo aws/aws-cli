@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.36
+=======
+
+* api-change:``personalize-runtime``: Update personalize-runtime command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+
+
 1.18.35
 =======
 

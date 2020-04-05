@@ -1,6 +1,6 @@
 **To get infrastructure configuration details**
 
-The following ``get-infrastructure-configuration`` example displays the details for the specified infrastructure configuration. ::
+The following ``get-infrastructure-configuration`` example lists the details of an infrastructure configuration by specifying its ARN. ::
 
     aws imagebuilder get-infrastructure-configuration \
         --infrastructure-configuration-arn arn:aws:imagebuilder:us-west-2:123456789012:infrastructure-configuration/myexampleinfrastructure
@@ -36,4 +36,4 @@ Output::
         }
     }
 
-For more information, see `Setting Up and Managing an EC2 Image Builder Image Pipeline Using the AWS CLI` <https://https://docs.aws.amazon.com/imagebuilder/latest/userguide/managing-image-builder-cli.html>`__ in the *EC2 Image Builder Users Guide*.
+For more information, see `Setting Up and Managing an EC2 Image Builder Image Pipeline Using the AWS CLI <https://docs.aws.amazon.com/imagebuilder/latest/userguide/managing-image-builder-cli.html>`__ in the *EC2 Image Builder Users Guide*.

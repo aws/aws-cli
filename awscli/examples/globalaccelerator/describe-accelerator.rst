@@ -1,6 +1,6 @@
 **To describe an accelerator**
 
-The following ``describe-accelerator`` example retrieves the details about an accelerator. ::
+The following ``describe-accelerator`` example retrieves the details about the specified accelerator. ::
 
     aws globalaccelerator describe-accelerator \
         --accelerator-arn arn:aws:globalaccelerator::123456789012:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh \
@@ -19,7 +19,7 @@ Output::
                 {
                     "IpAddresses": [
                         "192.0.2.250",
-                        "192.0.2.52"
+                        "198.51.100.52"
                     ],
                     "IpFamily": "IPv4"
                 }

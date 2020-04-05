@@ -2,6 +2,168 @@
 CHANGELOG
 =========
 
+1.18.36
+=======
+
+* api-change:``personalize-runtime``: Update personalize-runtime command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+
+
+1.18.35
+=======
+
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+
+
+1.18.34
+=======
+
+* api-change:``iot``: Update iot command to latest version
+* api-change:``mediaconnect``: Update mediaconnect command to latest version
+
+
+1.18.33
+=======
+
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``appconfig``: Update appconfig command to latest version
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+* api-change:``elastic-inference``: Update elastic-inference command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``detective``: Update detective command to latest version
+* api-change:``mediastore``: Update mediastore command to latest version
+* api-change:``wafv2``: Update wafv2 command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``fms``: Update fms command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+
+
+1.18.32
+=======
+
+* api-change:``accessanalyzer``: Update accessanalyzer command to latest version
+
+
+1.18.31
+=======
+
+* api-change:``globalaccelerator``: Update globalaccelerator command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+
+
+1.18.30
+=======
+
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+
+
+1.18.29
+=======
+
+* enhancement:shorthand: The CLI now no longer allows a key to be spcified twice in a shorthand parameter. For example foo=bar,foo=baz would previously be accepted, with only baz being set, and foo=bar silently being ignored. Now an error will be raised pointing out the issue, and suggesting a fix.
+* api-change:``application-insights``: Update application-insights command to latest version
+* api-change:``detective``: Update detective command to latest version
+* api-change:``managedblockchain``: Update managedblockchain command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``xray``: Update xray command to latest version
+* api-change:``ce``: Update ce command to latest version
+
+
+1.18.28
+=======
+
+* api-change:``rds-data``: Update rds-data command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``athena``: Update athena command to latest version
+
+
+1.18.27
+=======
+
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+
+
+1.18.26
+=======
+
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+
+
+1.18.25
+=======
+
+* api-change:``outposts``: Update outposts command to latest version
+* api-change:``acm``: Update acm command to latest version
+
+
+1.18.24
+=======
+
+* api-change:``personalize``: Update personalize command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``mediaconnect``: Update mediaconnect command to latest version
+
+
+1.18.23
+=======
+
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+
+
+1.18.22
+=======
+
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``s3control``: Update s3control command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
+1.18.21
+=======
+
+* api-change:``appconfig``: Update appconfig command to latest version
+
+
+1.18.20
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+
+
+1.18.19
+=======
+
+* api-change:``efs``: Update efs command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+
+
+1.18.18
+=======
+
+* api-change:``marketplacecommerceanalytics``: Update marketplacecommerceanalytics command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``iotevents``: Update iotevents command to latest version
+* api-change:``serverlessrepo``: Update serverlessrepo command to latest version
+
+
 1.18.17
 =======
 
@@ -231,6 +393,7 @@ CHANGELOG
 * api-change:``storagegateway``: Update storagegateway command to latest version
 * api-change:``cloudfront``: Update cloudfront command to latest version
 * api-change:``iot``: Update iot command to latest version
+* enhancement:``ecr``: Add ``get-login-password``, alternative to ``get-login`` (`#4874 <https://github.com/aws/aws-cli/issues/4874>`__)
 
 
 1.17.9

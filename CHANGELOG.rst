@@ -2,6 +2,38 @@
 CHANGELOG
 =========
 
+2.0.7
+=====
+
+* api-change:``personalize-runtime``: Update personalize-runtime command to latest version
+* api-change:``wafv2``: Update wafv2 command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``accessanalyzer``: Update accessanalyzer command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``detective``: Update detective command to latest version
+* api-change:``mediastore``: Update mediastore command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``mediaconnect``: Update mediaconnect command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* api-change:``elastic-inference``: Update elastic-inference command to latest version
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``iam``: Update iam command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``appconfig``: Update appconfig command to latest version
+* api-change:``fms``: Update fms command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+
+
 2.0.6
 =====
 
@@ -148,6 +180,63 @@ CHANGELOG
 * feature:region: Added support for pulling the default region from IMDS when running on an EC2 instance. See `#3680 <https://github.com/aws/aws-cli/issues/3680>`__.
 * feature:s3: Added support for the ``--copy-props`` parameter to the high level S3 commands. This new parameter configures how additional metadata, tags, etc. should be copied for S3 to S3 transfers. See `#4840 <https://github.com/aws/aws-cli/issues/4840>`__.
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
+
+
+1.18.37
+=======
+
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``iam``: Update iam command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+
+
+1.18.36
+=======
+
+* api-change:``personalize-runtime``: Update personalize-runtime command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+
+
+1.18.35
+=======
+
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+
+
+1.18.34
+=======
+
+* api-change:``iot``: Update iot command to latest version
+* api-change:``mediaconnect``: Update mediaconnect command to latest version
+
+
+1.18.33
+=======
+
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``appconfig``: Update appconfig command to latest version
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+* api-change:``elastic-inference``: Update elastic-inference command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``detective``: Update detective command to latest version
+* api-change:``mediastore``: Update mediastore command to latest version
+* api-change:``wafv2``: Update wafv2 command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``fms``: Update fms command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+
+
+1.18.32
+=======
+
+* api-change:``accessanalyzer``: Update accessanalyzer command to latest version
 
 
 1.18.31

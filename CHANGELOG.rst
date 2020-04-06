@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.37
+=======
+
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``iam``: Update iam command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+
+
 1.18.36
 =======
 

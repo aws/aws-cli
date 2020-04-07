@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.38
+=======
+
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``mediaconnect``: Update mediaconnect command to latest version
+* api-change:``codeguru-reviewer``: Update codeguru-reviewer command to latest version
+
+
 1.18.37
 =======
 

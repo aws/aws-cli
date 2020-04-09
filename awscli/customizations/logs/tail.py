@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from _collections import  defaultdict
+from collections import defaultdict
 from datetime import datetime, timedelta
 import re
 import time
@@ -294,6 +294,24 @@ class FollowLogEventsGenerator(BaseLogEventsGenerator):
             # KeyboardInterrupt propogate to the rest of the command.
             return
 
+    def _get_latest_events_and_timestamp(self, event_ids_per_timestamp):
+        if event_ids_per_timestamp:
+            # Keep only ids of the events with the newest timestamp
+            newest_timestamp = max(event_ids_per_timestamp.keys())
+            event_ids_per_timestamp = defaultdict(
+                set, {newest_timestamp: event_ids_per_timestamp[newest_timestamp]}
+            )
+        return event_ids_per_timestamp
+
+    def _reset_filter_log_events_params(self, fle_kwargs, event_ids_per_timestamp):
+        # Remove nextToken and update startTime for the next request
+        # with the timestamp of the newest event
+        if event_ids_per_timestamp:
+            fle_kwargs['startTime'] = max(
+                event_ids_per_timestamp.keys()
+            )
+        fle_kwargs.pop('nextToken', None)
+
     def _do_filter_log_events(self, filter_logs_events_kwargs):
         event_ids_per_timestamp = defaultdict(set)
         while True:
@@ -308,18 +326,14 @@ class FollowLogEventsGenerator(BaseLogEventsGenerator):
                 if event['eventId'] not in event_ids_per_timestamp[event['timestamp']]:
                     event_ids_per_timestamp[event['timestamp']].add(event['eventId'])
                     yield event
-            if event_ids_per_timestamp.keys():
-                # Store ids of the events with the newest timestamp only
-                newest_timestamp = max(event_ids_per_timestamp.keys())
-                event_ids_per_timestamp = defaultdict(
-                    set, {newest_timestamp: event_ids_per_timestamp[newest_timestamp]}
-                )
+            event_ids_per_timestamp = self._get_latest_events_and_timestamp(
+                event_ids_per_timestamp
+            )
             if 'nextToken' in response:
                 filter_logs_events_kwargs['nextToken'] = response['nextToken']
             else:
-                # Remove nextToken and update startTime for the next request
-                # with the timestamp of the newest event
-                if event_ids_per_timestamp.keys():
-                    filter_logs_events_kwargs['startTime'] = max(event_ids_per_timestamp.keys())
-                filter_logs_events_kwargs.pop('nextToken', None)
+                self._reset_filter_log_events_params(
+                    filter_logs_events_kwargs,
+                    event_ids_per_timestamp
+                )
                 self._sleep(self._TIME_TO_SLEEP)

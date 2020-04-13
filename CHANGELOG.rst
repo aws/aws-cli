@@ -182,6 +182,26 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.39
+=======
+
+* api-change:``cloudformation``: Update cloudformation command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``codeguruprofiler``: Update codeguruprofiler command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``migrationhub-config``: Update migrationhub-config command to latest version
+
+
+1.18.38
+=======
+
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``mediaconnect``: Update mediaconnect command to latest version
+* api-change:``codeguru-reviewer``: Update codeguru-reviewer command to latest version
+
+
 1.18.37
 =======
 

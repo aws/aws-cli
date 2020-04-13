@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import mock, unittest
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 
 from dateutil import tz
@@ -181,19 +181,21 @@ class BaseLogEventsGeneratorTest(unittest.TestCase):
         self.expected_log_timestamp_as_datetime = datetime(
             1970, 1, 1, 0, 0, 1, tzinfo=tz.tzutc())
 
-    def get_event(self, event_id, event_message):
+    def get_event(self, event_id, event_message, timestamp=None):
+        if timestamp is None:
+            timestamp = self.log_timestamp
         return {
             'eventId': event_id,
             'message': event_message,
-            'timestamp': self.log_timestamp,
+            'timestamp': timestamp,
             'ingestionTime': self.log_timestamp,
         }
 
-    def get_expected_event(self, event_id, event_message):
+    def get_expected_event(self, event_id, event_message, add_seconds=0):
         return {
             'eventId': event_id,
             'message': event_message,
-            'timestamp': self.expected_log_timestamp_as_datetime,
+            'timestamp': self.expected_log_timestamp_as_datetime + timedelta(seconds=add_seconds),
             'ingestionTime': self.expected_log_timestamp_as_datetime,
         }
 
@@ -309,7 +311,7 @@ class TestFollowLogEventsGenerator(BaseLogEventsGeneratorTest):
             'filter_log_events',
             service_response={
                 'events': [
-                    self.get_event('event-1', 'event-1-message'),
+                    self.get_event('event-1', 'event-1-message', 1000),
                 ],
                 'nextToken': 'token'
             },
@@ -323,7 +325,7 @@ class TestFollowLogEventsGenerator(BaseLogEventsGeneratorTest):
             'filter_log_events',
             service_response={
                 'events': [
-                    self.get_event('event-2', 'event-2-message'),
+                    self.get_event('event-2', 'event-2-message', 2000),
                 ],
             },
             expected_params={
@@ -333,19 +335,66 @@ class TestFollowLogEventsGenerator(BaseLogEventsGeneratorTest):
             }
         )
 
-        # Even though for the last page there was no nextToken, it should
-        # continued to be used for the next call.
+        # Because there is no token for the last page, it should remove
+        # token from the kwargs and update startTime with the max
+        # timestamp from the prvious response events
         self.stubber.add_response(
             'filter_log_events',
             service_response={
                 'events': [
+                    self.get_event('event-3', 'event-3-message', 3000),
+                ],
+            },
+            expected_params={
+                'logGroupName': self.group_name,
+                'interleaved': True,
+                'startTime': 2000
+            }
+        )
+        self.mock_sleep.side_effect = [
+            None,
+            KeyboardInterrupt()
+        ]
+        with self.stubber:
+            log_events_iter = self.logs_generator.iter_log_events(
+                self.group_name)
+            actual_log_events = [event for event in log_events_iter]
+        self.mock_sleep.assert_has_calls([mock.call(5), mock.call(5)])
+        self.assertEqual(
+            actual_log_events,
+            [
+                self.get_expected_event('event-1', 'event-1-message'),
+                self.get_expected_event('event-2', 'event-2-message', 1),
+                self.get_expected_event('event-3', 'event-3-message', 2),
+            ]
+        )
+
+    def test_iter_log_events_filters_empty_events_list(self):
+        self.stubber.add_response(
+            'filter_log_events',
+            service_response={
+                'events': [],
+            },
+            expected_params={
+                'logGroupName': self.group_name,
+                'interleaved': True,
+            }
+        )
+        # Add a new page that has events
+        # It should make a call with the same parameters as the
+        # previous one
+        self.stubber.add_response(
+            'filter_log_events',
+            service_response={
+                'events': [
+                    self.get_event('event-1', 'event-1-message'),
+                    self.get_event('event-2', 'event-2-message'),
                     self.get_event('event-3', 'event-3-message'),
                 ],
             },
             expected_params={
                 'logGroupName': self.group_name,
                 'interleaved': True,
-                'nextToken': 'token'
             }
         )
         self.mock_sleep.side_effect = [
@@ -366,6 +415,7 @@ class TestFollowLogEventsGenerator(BaseLogEventsGeneratorTest):
             ]
         )
 
+
     def test_iter_log_events_filters_old_events(self):
         self.stubber.add_response(
             'filter_log_events',
@@ -381,6 +431,8 @@ class TestFollowLogEventsGenerator(BaseLogEventsGeneratorTest):
             }
         )
         # Add a new page that has no nextToken
+        # It should update startTime with the max timestamp
+        # from the prvious response events
         self.stubber.add_response(
             'filter_log_events',
             service_response={
@@ -393,6 +445,7 @@ class TestFollowLogEventsGenerator(BaseLogEventsGeneratorTest):
             expected_params={
                 'logGroupName': self.group_name,
                 'interleaved': True,
+                'startTime': self.get_event('event-2', 'event-2-message')['timestamp']
             }
         )
         self.mock_sleep.side_effect = [

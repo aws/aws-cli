@@ -29,6 +29,7 @@ from awscli.customizations.cloudfront import register as register_cloudfront
 from awscli.customizations.cloudsearch import initialize as cloudsearch_init
 from awscli.customizations.cloudsearchdomain import register_cloudsearchdomain
 from awscli.customizations.cloudtrail import initialize as cloudtrail_init
+from awscli.customizations.codeartifact import register_codeartifact_commands
 from awscli.customizations.codecommit import initialize as codecommit_init
 from awscli.customizations.codedeploy.codedeploy import initialize as \
     codedeploy_init
@@ -152,6 +153,7 @@ def awscli_initialize(event_handlers):
     register_fix_kms_create_grant_docs(event_handlers)
     register_create_hosted_zone_doc_fix(event_handlers)
     register_modify_put_configuration_recorder(event_handlers)
+    register_codeartifact_commands(event_handlers)
     codecommit_init(event_handlers)
     register_custom_endpoint_note(event_handlers)
     event_handlers.register(

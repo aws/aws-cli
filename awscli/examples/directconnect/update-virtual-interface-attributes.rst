@@ -11,7 +11,7 @@ Output::
     {
         "ownerAccount": "1111222233333",
         "virtualInterfaceId": "dxvif-fEXAMPLE",
-        "location": "TIVIT",
+        "location": "loc1",
         "connectionId": "dxlag-fEXAMPLE",
         "virtualInterfaceType": "transit",
         "virtualInterfaceName": "example trasit virtual interface",
@@ -39,11 +39,11 @@ Output::
                 "customerAddress": "169.254.248.2/30",
                 "bgpPeerState": "available",
                 "bgpStatus": "down",
-                "awsDeviceV2": "TIVIT-26wz6vEXAMPLE"
+                "awsDeviceV2": "loc1-26wz6vEXAMPLE"
             }
         ],
         "region": "sa-east-1",
-        "awsDeviceV2": "TIVIT-26wz6vEXAMPLE",
+        "awsDeviceV2": "loc1-26wz6vEXAMPLE",
         "tags": []
     }
                   

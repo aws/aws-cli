@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+1.18.40
+=======
+
+* api-change:``snowball``: Update snowball command to latest version
+* api-change:``sagemaker-a2i-runtime``: Update sagemaker-a2i-runtime command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``mgh``: Update mgh command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``iotevents``: Update iotevents command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``mediatailor``: Update mediatailor command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+
+
 1.18.39
 =======
 

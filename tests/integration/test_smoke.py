@@ -121,7 +121,7 @@ def _aws(command_string, max_attempts=1, delay=5, target_rc=0):
     env = None
     if service in REGION_OVERRIDES:
         env = os.environ.copy()
-        env['AWS_DEFAULT_REGION'] = REGION_OVERRIDES[service]
+        env['AWS_REGION'] = REGION_OVERRIDES[service]
 
     for _ in range(max_attempts - 1):
         result = aws(command_string, env_vars=env)

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.41
+=======
+
+* api-change:``frauddetector``: Update frauddetector command to latest version
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+
+
 1.18.40
 =======
 

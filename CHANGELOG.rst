@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.42
+=======
+
+* api-change:``ce``: Update ce command to latest version
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+* api-change:``iotevents``: Update iotevents command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``synthetics``: Update synthetics command to latest version
+
+
 1.18.41
 =======
 

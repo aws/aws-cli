@@ -699,3 +699,52 @@ KERBEROS_ATTRIBUTES_SCHEMA = {
         }
     }
 }
+
+MANAGED_SCALING_POLICY_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "ComputeLimits": {
+            "type": "object",
+            "description": 
+                "The EC2 unit limits for a managed scaling policy. "
+                "The managed scaling activity of a cluster is not allowed to go above "
+                "or below these limits. The limits apply to CORE and TASK groups "
+                "and exclude the capacity of the MASTER group.",
+            "properties": {
+               "MinimumCapacityUnits": {
+                  "type": "integer",
+                  "description": 
+                      "The lower boundary of EC2 units. It is measured through "
+                      "VCPU cores or instances for instance groups and measured "
+                      "through units for instance fleets. Managed scaling "
+                      "activities are not allowed beyond this boundary.",
+                  "required": True
+               },
+               "MaximumCapacityUnits": {
+                  "type": "integer",
+                  "description": 
+                      "The upper boundary of EC2 units. It is measured through "
+                      "VCPU cores or instances for instance groups and measured "
+                      "through units for instance fleets. Managed scaling "
+                      "activities are not allowed beyond this boundary.",
+                  "required": True
+               },
+               "MaximumOnDemandCapacityUnits": {
+                  "type": "integer",
+                  "description": 
+                      "The upper boundary of on-demand EC2 units. It is measured through "
+                      "VCPU cores or instances for instance groups and measured "
+                      "through units for instance fleets. The on-demand units are not "
+                      "allowed to scale beyond this boundary. "
+                      "This value must be lower than MaximumCapacityUnits."
+               },
+               "UnitType": {
+                  "type": "string",
+                  "description": "The unit type used for specifying a managed scaling policy.",
+                  "enum": ["VCPU", "Instances", "InstanceFleetUnits"],
+                  "required": True
+               }
+            } 
+        }
+    }
+}

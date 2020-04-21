@@ -120,7 +120,10 @@ class CreateCluster(Command):
          'help_text': helptext.KERBEROS_ATTRIBUTES},
         {'name': 'step-concurrency-level',
          'cli_type_name': 'integer',
-         'help_text': helptext.STEP_CONCURRENCY_LEVEL}
+         'help_text': helptext.STEP_CONCURRENCY_LEVEL},
+        {'name': 'managed-scaling-policy',
+         'schema': argumentschema.MANAGED_SCALING_POLICY_SCHEMA,
+         'help_text': helptext.MANAGED_SCALING_POLICY}
     ]
     SYNOPSIS = BasicCommand.FROM_FILE('emr', 'create-cluster-synopsis.txt')
     EXAMPLES = BasicCommand.FROM_FILE('emr', 'create-cluster-examples.rst')
@@ -335,6 +338,10 @@ class CreateCluster(Command):
 
         if parsed_args.step_concurrency_level is not None:
             params['StepConcurrencyLevel'] = parsed_args.step_concurrency_level
+
+        if parsed_args.managed_scaling_policy is not None:
+            emrutils.apply_dict(
+                params, 'ManagedScalingPolicy', parsed_args.managed_scaling_policy)
 
         self._validate_required_applications(parsed_args)
 

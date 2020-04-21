@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.43
+=======
+
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``route53domains``: Update route53domains command to latest version
+* api-change:``ce``: Update ce command to latest version
+
+
 1.18.42
 =======
 

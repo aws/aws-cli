@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.44
+=======
+
+* api-change:``fms``: Update fms command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``codeguru-reviewer``: Update codeguru-reviewer command to latest version
+
+
 1.18.43
 =======
 

@@ -529,3 +529,13 @@ Command::
         --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
         --security-configuration mySecurityConfiguration \
         --kerberos-attributes file://kerberos_attributes.json
+
+The following ``create-cluster`` example creates an Amazon EMR cluster that uses the ``--instance-groups`` configuration and has a managed scaling policy. ::
+
+    aws emr create-cluster \
+        --release-label emr-5.30.0 \
+        --service-role EMR_DefaultRole \
+        --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
+        --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
+        --managed-scaling-policy ComputeLimits='{MinimumCapacityUnits=2,MaximumCapacityUnits=4,UnitType=Instances}'
+

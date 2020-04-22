@@ -65,6 +65,12 @@ LOG_URI = (
     'logs files are not written to Amazon S3 from the master node '
     'and are lost if the master node terminates.</p>')
 
+LOG_ENCRYPTION_KMS_KEY_ID = (
+    '<p> Specifies the KMS Id utilized for log encryption. If a value is '
+    'not provided, log files will be encrypted by default encryption method '
+    'AES-256. This attribute is only available with EMR version 5.30.0 and later, '
+    'excluding EMR 6.0.0.</p>')
+
 SERVICE_ROLE = (
     '<p>Specifies an IAM service role, which Amazon EMR requires to call other AWS services '
     'on your behalf during cluster operation. This parameter '

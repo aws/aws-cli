@@ -43,15 +43,15 @@ The easiest way to install aws-cli is to use `pip`_ in a ``virtualenv``::
 
     $ python -m pip install awscli
 
-or, if you are not installing in a ``virtualenv``, to install globally::
+Or, if you are not installing in a ``virtualenv``, to install globally::
 
     $ sudo python -m pip install awscli
 
-or for your user::
+Or for your user::
 
     $ python -m pip install --user awscli
 
-If you have the aws-cli installed and want to upgrade to the latest version
+If you have the aws-cli installed and want to upgrade to the latest version,
 you can run::
 
     $ python -m pip install --upgrade awscli
@@ -66,12 +66,12 @@ you can run::
 
 This will install the aws-cli package as well as all dependencies.  You can
 also just `download the tarball`_.  Once you have the
-awscli directory structure on your workstation, you can just run::
+aws-cli directory structure on your workstation, you can just run::
 
     $ cd <path_to_awscli>
     $ python setup.py install
 
-If you want to run the ``develop`` branch of the CLI, see the
+If you want to run the ``develop`` branch of the aws-cli, see the
 "CLI Dev Version" section below.
 
 
@@ -79,7 +79,7 @@ If you want to run the ``develop`` branch of the CLI, see the
 CLI Releases
 ------------
 
-The release notes for the AWS CLI can be found `here <https://github.com/aws/aws-cli/blob/develop/CHANGELOG.rst>`__.
+The release notes for the aws-cli can be found `here <https://github.com/aws/aws-cli/blob/develop/CHANGELOG.rst>`__.
 
 
 ------------------
@@ -321,7 +321,7 @@ Then, we could make the same call as above like this::
 
 The ``file://`` prefix on the parameter value signals that the parameter value
 is actually a reference to a file that contains the actual parameter value.
-aws-cli will open the file, read the value and use that value as the
+aws-cli will open the file, read the value, and use that value as the
 parameter value.
 
 This is also useful when the parameter is really referring to file-based
@@ -428,7 +428,7 @@ for each repository::
 Getting Help
 ------------
 
-We use GitHub issues for tracking bugs and feature requests and have limited
+We use GitHub issues for tracking bugs and feature requests, and have limited
 bandwidth to address them. Please use these community resources for getting
 help:
 

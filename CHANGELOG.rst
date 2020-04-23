@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.18.45
+=======
+
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``ram``: Update ram command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``mediapackage-vod``: Update mediapackage-vod command to latest version
+* api-change:``firehose``: Update firehose command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``transfer``: Update transfer command to latest version
+
+
 1.18.44
 =======
 

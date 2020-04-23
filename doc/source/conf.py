@@ -27,7 +27,26 @@ import bootstrapdocs
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = []
+extensions = ['notfound.extension',]
+notfound_context = {
+    'title': 'Page not found',
+    'body': '<h1>Page not found</h1>\n\n'
+            'Sorry, the page you requested could not be found.'
+}
+notfound_pagename = '_404'
+# notfound.extension changes all the relative links to links like
+# "/en/latest/_static/**" and we use "notfound_default_language" key
+# to change “en” to our path prefix
+notfound_default_language = os.environ.get(
+    'DOCS_STATIC_PATH',
+    'v2/documentation/api'
+)
+
+# For local 404.html testing uncomment lines below and put in local path
+# to the build folder on your disk
+
+# notfound_default_language = '<local path to build folder>/build'
+# notfound_default_version = 'html'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

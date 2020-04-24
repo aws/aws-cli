@@ -116,6 +116,18 @@ def get_binary_stdout():
 def _get_text_writer(stream, errors):
     return stream
 
+
+def getpreferredencoding(*args, **kwargs):
+    """Use AWS_CLI_ENCODING environment variable value as encoding,
+    if it's not set use locale.getpreferredencoding()
+    to find the preferred encoding.
+    """
+    return os.environ.get(
+        'AWS_CLI_ENCODING',
+        locale.getpreferredencoding(*args, **kwargs)
+    )
+
+
 def compat_open(filename, mode='r', encoding=None):
     """Back-port open() that accepts an encoding argument.
 
@@ -123,12 +135,12 @@ def compat_open(filename, mode='r', encoding=None):
     uses the io.open() function.
 
     If the file is not being opened in binary mode, then we'll
-    use locale.getpreferredencoding() to find the preferred
+    use getpreferredencoding() to find the preferred
     encoding.
 
     """
     if 'b' not in mode:
-        encoding = locale.getpreferredencoding()
+        encoding = getpreferredencoding()
     return open(filename, mode, encoding=encoding)
 
 def bytes_print(statement, stdout=None):

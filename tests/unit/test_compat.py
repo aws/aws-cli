@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import locale
 import os
 import signal
 
@@ -19,6 +20,7 @@ from botocore.compat import six
 from awscli.compat import ensure_text_type
 from awscli.compat import compat_shell_quote
 from awscli.compat import get_popen_kwargs_for_pager_cmd
+from awscli.compat import getpreferredencoding
 from awscli.compat import ignore_user_entered_signals
 from awscli.testutils import mock, unittest, skip_if_windows
 
@@ -137,3 +139,15 @@ class TestIgnoreUserSignals(unittest.TestCase):
         with ignore_user_entered_signals():
             self.assertEqual(signal.getsignal(signal.SIGTSTP), signal.SIG_IGN)
             os.kill(os.getpid(), signal.SIGTSTP)
+
+
+class TestGetPreferredEncoding(unittest.TestCase):
+
+    @mock.patch.dict(os.environ, {'AWS_CLI_ENCODING': 'cp1252'})
+    def test_getpreferredencoding_with_env_var(self):
+        encoding = getpreferredencoding()
+        self.assertEqual(encoding, 'cp1252')
+
+    def test_getpreferredencoding_wo_env_var(self):
+        encoding = getpreferredencoding()
+        self.assertEqual(encoding, locale.getpreferredencoding())

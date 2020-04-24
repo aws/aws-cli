@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.46
+=======
+
+* api-change:``dlm``: Update dlm command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``elastic-inference``: Update elastic-inference command to latest version
+
+
 1.18.45
 =======
 

@@ -2,6 +2,27 @@
 CHANGELOG
 =========
 
+2.0.10
+======
+
+* api-change:``dataexchange``: Update dataexchange command to latest version
+* bugfix:cloudformation: Fixed an issue with ``cloudformation package`` where virtual style S3 URLs were incorrectly validated for a stack resource's template URL.
+* api-change:``rds``: Update rds command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``elastic-inference``: Update elastic-inference command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``mediapackage-vod``: Update mediapackage-vod command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``accessanalyzer``: Update accessanalyzer command to latest version
+* api-change:``firehose``: Update firehose command to latest version
+* api-change:``transfer``: Update transfer command to latest version
+* api-change:``ram``: Update ram command to latest version
+* api-change:``dlm``: Update dlm command to latest version
+
+
 2.0.9
 =====
 
@@ -226,6 +247,37 @@ CHANGELOG
 * feature:region: Added support for pulling the default region from IMDS when running on an EC2 instance. See `#3680 <https://github.com/aws/aws-cli/issues/3680>`__.
 * feature:s3: Added support for the ``--copy-props`` parameter to the high level S3 commands. This new parameter configures how additional metadata, tags, etc. should be copied for S3 to S3 transfers. See `#4840 <https://github.com/aws/aws-cli/issues/4840>`__.
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
+
+
+1.18.47
+=======
+
+* api-change:``accessanalyzer``: Update accessanalyzer command to latest version
+* bugfix:cloudformation: Fixed an issue with ``cloudformation package`` where virtual style S3 URLs were incorrectly validated for a stack resource's template URL.
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``dataexchange``: Update dataexchange command to latest version
+* api-change:``dms``: Update dms command to latest version
+
+
+1.18.46
+=======
+
+* api-change:``dlm``: Update dlm command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``elastic-inference``: Update elastic-inference command to latest version
+
+
+1.18.45
+=======
+
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``ram``: Update ram command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``mediapackage-vod``: Update mediapackage-vod command to latest version
+* api-change:``firehose``: Update firehose command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``transfer``: Update transfer command to latest version
 
 
 1.18.44

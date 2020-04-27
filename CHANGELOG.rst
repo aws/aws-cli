@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.47
+=======
+
+* api-change:``accessanalyzer``: Update accessanalyzer command to latest version
+* bugfix:cloudformation: Fixed an issue with ``cloudformation package`` where virtual style S3 URLs were incorrectly validated for a stack resource's template URL.
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``dataexchange``: Update dataexchange command to latest version
+* api-change:``dms``: Update dms command to latest version
+
+
 1.18.46
 =======
 

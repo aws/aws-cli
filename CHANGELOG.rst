@@ -2,6 +2,27 @@
 CHANGELOG
 =========
 
+2.0.10
+======
+
+* api-change:``dataexchange``: Update dataexchange command to latest version
+* bugfix:cloudformation: Fixed an issue with ``cloudformation package`` where virtual style S3 URLs were incorrectly validated for a stack resource's template URL.
+* api-change:``rds``: Update rds command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``elastic-inference``: Update elastic-inference command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``mediapackage-vod``: Update mediapackage-vod command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``accessanalyzer``: Update accessanalyzer command to latest version
+* api-change:``firehose``: Update firehose command to latest version
+* api-change:``transfer``: Update transfer command to latest version
+* api-change:``ram``: Update ram command to latest version
+* api-change:``dlm``: Update dlm command to latest version
+
+
 2.0.9
 =====
 

@@ -723,41 +723,36 @@ class TestArtifactExporter(unittest.TestCase):
             self.s3_uploader_mock.upload_with_dedup.assert_called_once_with(mock.ANY, "template")
             self.s3_uploader_mock.to_path_style_s3_url.assert_called_once_with("world", None)
 
-    def test_export_cloudformation_stack_no_upload_path_is_s3url(self):
+    def _assert_stack_template_url_is_not_changed(self, s3_url):
         stack_resource = CloudFormationStackResource(self.s3_uploader_mock)
         resource_id = "id"
         property_name = stack_resource.PROPERTY_NAME
-        s3_url = "s3://hello/world"
         resource_dict = {property_name: s3_url}
 
         # Case 1: Path is already S3 url
         stack_resource.export(resource_id, resource_dict, "dir")
         self.assertEquals(resource_dict[property_name], s3_url)
         self.s3_uploader_mock.upload_with_dedup.assert_not_called()
+
+    def test_export_cloudformation_stack_no_upload_path_is_s3url(self):
+        s3_url = "s3://hello/world"
+        self._assert_stack_template_url_is_not_changed(s3_url)
 
     def test_export_cloudformation_stack_no_upload_path_is_httpsurl(self):
-        stack_resource = CloudFormationStackResource(self.s3_uploader_mock)
-        resource_id = "id"
-        property_name = stack_resource.PROPERTY_NAME
         s3_url = "https://s3.amazonaws.com/hello/world"
-        resource_dict = {property_name: s3_url}
-
-        # Case 1: Path is already S3 url
-        stack_resource.export(resource_id, resource_dict, "dir")
-        self.assertEquals(resource_dict[property_name], s3_url)
-        self.s3_uploader_mock.upload_with_dedup.assert_not_called()
+        self._assert_stack_template_url_is_not_changed(s3_url)
 
     def test_export_cloudformation_stack_no_upload_path_is_s3_region_httpsurl(self):
-        stack_resource = CloudFormationStackResource(self.s3_uploader_mock)
-        resource_id = "id"
-        property_name = stack_resource.PROPERTY_NAME
-
         s3_url = "https://s3.some-valid-region.amazonaws.com/hello/world"
-        resource_dict = {property_name: s3_url}
+        self._assert_stack_template_url_is_not_changed(s3_url)
 
-        stack_resource.export(resource_id, resource_dict, "dir")
-        self.assertEquals(resource_dict[property_name], s3_url)
-        self.s3_uploader_mock.upload_with_dedup.assert_not_called()
+    def test_export_cloudformation_stack_no_upload_path_is_virtual(self):
+        s3_url = "https://bucket.s3.amazonaws.com/key"
+        self._assert_stack_template_url_is_not_changed(s3_url)
+
+    def test_export_cloudformation_stack_no_upload_path_is_virtual_region(self):
+        s3_url = "https://bucket.s3.some-region.amazonaws.com/key"
+        self._assert_stack_template_url_is_not_changed(s3_url)
 
     def test_export_cloudformation_stack_no_upload_path_is_empty(self):
         stack_resource = CloudFormationStackResource(self.s3_uploader_mock)

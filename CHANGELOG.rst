@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.48
+=======
+
+* api-change:``ecr``: Update ecr command to latest version
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``kinesisvideo``: Update kinesisvideo command to latest version
+* api-change:``kinesis-video-archived-media``: Update kinesis-video-archived-media command to latest version
+
+
 1.18.47
 =======
 

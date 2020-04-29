@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.49
+=======
+
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``servicediscovery``: Update servicediscovery command to latest version
+* api-change:``waf-regional``: Update waf-regional command to latest version
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``waf``: Update waf command to latest version
+
+
 1.18.48
 =======
 

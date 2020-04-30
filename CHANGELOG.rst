@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.50
+=======
+
+* api-change:``iot``: Update iot command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``schemas``: Update schemas command to latest version
+* api-change:``iotevents``: Update iotevents command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+
+
 1.18.49
 =======
 

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.51
+=======
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``efs``: Update efs command to latest version
+
+
 1.18.50
 =======
 

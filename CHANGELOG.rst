@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.52
+=======
+
+* api-change:``s3control``: Update s3control command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+
+
 1.18.51
 =======
 

@@ -2,6 +2,33 @@
 CHANGELOG
 =========
 
+2.0.11
+======
+
+* api-change:``support``: Update support command to latest version
+* api-change:``servicediscovery``: Update servicediscovery command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``efs``: Update efs command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``ecr``: Update ecr command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``waf``: Update waf command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``s3control``: Update s3control command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``waf-regional``: Update waf-regional command to latest version
+* api-change:``schemas``: Update schemas command to latest version
+* api-change:``iotevents``: Update iotevents command to latest version
+* api-change:``kinesis-video-archived-media``: Update kinesis-video-archived-media command to latest version
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``kinesisvideo``: Update kinesisvideo command to latest version
+
+
 2.0.10
 ======
 
@@ -247,6 +274,61 @@ CHANGELOG
 * feature:region: Added support for pulling the default region from IMDS when running on an EC2 instance. See `#3680 <https://github.com/aws/aws-cli/issues/3680>`__.
 * feature:s3: Added support for the ``--copy-props`` parameter to the high level S3 commands. This new parameter configures how additional metadata, tags, etc. should be copied for S3 to S3 transfers. See `#4840 <https://github.com/aws/aws-cli/issues/4840>`__.
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
+
+
+1.18.53
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``support``: Update support command to latest version
+
+
+1.18.52
+=======
+
+* api-change:``s3control``: Update s3control command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+
+
+1.18.51
+=======
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``efs``: Update efs command to latest version
+
+
+1.18.50
+=======
+
+* api-change:``iot``: Update iot command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``schemas``: Update schemas command to latest version
+* api-change:``iotevents``: Update iotevents command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+
+
+1.18.49
+=======
+
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``servicediscovery``: Update servicediscovery command to latest version
+* api-change:``waf-regional``: Update waf-regional command to latest version
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``waf``: Update waf command to latest version
+
+
+1.18.48
+=======
+
+* api-change:``ecr``: Update ecr command to latest version
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``kinesisvideo``: Update kinesisvideo command to latest version
+* api-change:``kinesis-video-archived-media``: Update kinesis-video-archived-media command to latest version
 
 
 1.18.47

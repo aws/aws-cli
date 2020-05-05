@@ -2,6 +2,33 @@
 CHANGELOG
 =========
 
+2.0.11
+======
+
+* api-change:``support``: Update support command to latest version
+* api-change:``servicediscovery``: Update servicediscovery command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``efs``: Update efs command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``ecr``: Update ecr command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``waf``: Update waf command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``s3control``: Update s3control command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``waf-regional``: Update waf-regional command to latest version
+* api-change:``schemas``: Update schemas command to latest version
+* api-change:``iotevents``: Update iotevents command to latest version
+* api-change:``kinesis-video-archived-media``: Update kinesis-video-archived-media command to latest version
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``kinesisvideo``: Update kinesisvideo command to latest version
+
+
 2.0.10
 ======
 

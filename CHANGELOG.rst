@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.53
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``support``: Update support command to latest version
+
+
 1.18.52
 =======
 

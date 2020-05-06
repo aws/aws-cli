@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.54
+=======
+
+* api-change:``codestar-connections``: Update codestar-connections command to latest version
+* api-change:``comprehendmedical``: Update comprehendmedical command to latest version
+
+
 1.18.53
 =======
 

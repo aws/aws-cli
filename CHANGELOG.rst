@@ -276,6 +276,25 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.55
+=======
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``appconfig``: Update appconfig command to latest version
+* api-change:``logs``: Update logs command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``route53``: Update route53 command to latest version
+
+
+1.18.54
+=======
+
+* api-change:``codestar-connections``: Update codestar-connections command to latest version
+* api-change:``comprehendmedical``: Update comprehendmedical command to latest version
+
+
 1.18.53
 =======
 

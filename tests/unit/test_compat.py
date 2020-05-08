@@ -143,7 +143,7 @@ class TestIgnoreUserSignals(unittest.TestCase):
 
 class TestGetPreferredEncoding(unittest.TestCase):
 
-    @mock.patch.dict(os.environ, {'AWS_CLI_ENCODING': 'cp1252'})
+    @mock.patch.dict(os.environ, {'AWS_CLI_FILE_ENCODING': 'cp1252'})
     def test_getpreferredencoding_with_env_var(self):
         encoding = getpreferredencoding()
         self.assertEqual(encoding, 'cp1252')

@@ -118,12 +118,12 @@ def _get_text_writer(stream, errors):
 
 
 def getpreferredencoding(*args, **kwargs):
-    """Use AWS_CLI_ENCODING environment variable value as encoding,
+    """Use AWS_CLI_FILE_ENCODING environment variable value as encoding,
     if it's not set use locale.getpreferredencoding()
     to find the preferred encoding.
     """
     return os.environ.get(
-        'AWS_CLI_ENCODING',
+        'AWS_CLI_FILE_ENCODING',
         locale.getpreferredencoding(*args, **kwargs)
     )
 

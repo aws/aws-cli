@@ -471,6 +471,11 @@ One option for UNIX systems is the ``LC_ALL`` environment variable. Setting
 ``LC_ALL=en_US.UTF-8``, for instance, would give you a United States English
 locale which is compatible with unicode.
 
+To set encoding used for text files different from the locale, you can use
+``AWS_CLI_FILE_ENCODING`` environment variable. For example, if you use Windows
+with default encoding ``CP1252``, setting ``AWS_CLI_FILE_ENCODING=UTF-8`` would
+make CLI ignore locale encoding and open text files using ``UTF-8``.
+
 
 Plugins
 =======

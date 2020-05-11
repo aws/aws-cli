@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
+import os
 
 from mock import patch, ANY
 
@@ -66,4 +67,25 @@ class TestCLIFollowParamFileDefault(BaseTestCLIFollowParamFile):
         self.assert_param_expansion_is_correct(
             provided_param=param,
             expected_param=b'file content'
+        )
+
+
+class TestCLIUseEncodingFromEnv(BaseTestCLIFollowParamFile):
+
+    def test_does_use_encoding_utf8(self):
+        self.environ['AWS_CLI_FILE_ENCODING'] = 'utf-8'
+        path = self.files.create_file('foobar.txt', '經理')
+        param = 'file://%s' % path
+        self.assert_param_expansion_is_correct(
+            provided_param=param,
+            expected_param='經理'
+        )
+
+    def test_does_use_encoding_cp1251(self):
+        self.environ['AWS_CLI_FILE_ENCODING'] = 'cp1251'
+        path = self.files.create_file('foobar.txt', '經理')
+        param = 'file://%s' % path
+        self.assert_param_expansion_is_correct(
+            provided_param=param,
+            expected_param='з¶“зђ†'
         )

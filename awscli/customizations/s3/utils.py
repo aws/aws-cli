@@ -50,7 +50,7 @@ _S3_ACCESSPOINT_TO_BUCKET_KEY_REGEX = re.compile(
 
 
 def human_readable_size(value):
-    """Convert an size in bytes into a human readable format.
+    """Convert a size in bytes into a human readable format.
 
     For example::
 
@@ -63,11 +63,10 @@ def human_readable_size(value):
         >>> human_readable_size(1024 * 1024)
         '1.0 MiB'
 
-    :param value: The size in bytes
+    :param value: The size in bytes.
     :return: The size in a human readable format based on base-2 units.
 
     """
-    one_decimal_point = '%.1f'
     base = 1024
     bytes_int = float(value)
 

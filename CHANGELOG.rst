@@ -290,6 +290,29 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.58
+=======
+
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``workmail``: Update workmail command to latest version
+
+
+1.18.57
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``codeguru-reviewer``: Update codeguru-reviewer command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+
+
+1.18.56
+=======
+
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+
+
 1.18.55
 =======
 

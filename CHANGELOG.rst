@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.58
+=======
+
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``workmail``: Update workmail command to latest version
+
+
 1.18.57
 =======
 

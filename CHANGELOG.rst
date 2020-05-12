@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.0.13
+======
+
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* enhancement:encoding: Add environment variable to set encoding used for text files. fixes `#5086 <https://github.com/aws/aws-cli/issues/5086>`__
+* api-change:``codeguru-reviewer``: Update codeguru-reviewer command to latest version
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+* api-change:``workmail``: Update workmail command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+
+
 2.0.12
 ======
 
@@ -288,6 +302,29 @@ CHANGELOG
 * feature:region: Added support for pulling the default region from IMDS when running on an EC2 instance. See `#3680 <https://github.com/aws/aws-cli/issues/3680>`__.
 * feature:s3: Added support for the ``--copy-props`` parameter to the high level S3 commands. This new parameter configures how additional metadata, tags, etc. should be copied for S3 to S3 transfers. See `#4840 <https://github.com/aws/aws-cli/issues/4840>`__.
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
+
+
+1.18.58
+=======
+
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``workmail``: Update workmail command to latest version
+
+
+1.18.57
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``codeguru-reviewer``: Update codeguru-reviewer command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+
+
+1.18.56
+=======
+
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
 
 
 1.18.55

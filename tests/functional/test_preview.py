@@ -14,6 +14,10 @@ import mock
 from awscli.compat import six
 
 from awscli.customizations import preview
+
+# For the sake of testing, sdb is in preview
+preview.PREVIEW_SERVICES.append("sdb")
+
 from awscli.testutils import BaseAWSCommandParamsTest
 
 
@@ -29,6 +33,7 @@ class TestPreviewMode(BaseAWSCommandParamsTest):
         # session config, as that's the only way to control
         # preview services.
         self.driver.session._config = self.full_config
+
 
     def tearDown(self):
         super(TestPreviewMode, self).tearDown()

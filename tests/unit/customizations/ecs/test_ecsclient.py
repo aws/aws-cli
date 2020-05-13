@@ -34,11 +34,13 @@ class TestECSClient(unittest.TestCase):
 
     def test_client_config(self):
         self.test_client = ECSClient(
-            self.session, None, self.global_args, ECSDeploy.USER_DATA_EXTRA)
+            self.session, None, self.global_args, ECSDeploy.USER_AGENT_EXTRA)
+
+        expected_user_agent_extra = 'customization/ecs-deploy'
 
         create_args = self.session.create_client.call_args
         self.assertEquals(create_args[0][0], 'ecs')
         self.assertEquals(
             create_args[1]['region_name'], self.global_args.region)
         self.assertEquals(create_args[1]['config'].user_agent_extra,
-                          ECSDeploy.USER_DATA_EXTRA)
+                          expected_user_agent_extra)

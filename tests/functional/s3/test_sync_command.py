@@ -111,7 +111,10 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         self.parsed_responses = [
             {'Contents': [
                 {'Key': 'foo', 'Size': 100,
-                 'LastModified': '00:00:00Z', 'StorageClass': 'GLACIER'}]}
+                 'LastModified': '00:00:00Z', 'StorageClass': 'GLACIER'},
+                {'Key': 'bar', 'Size': 100,
+                 'LastModified': '00:00:00Z', 'StorageClass': 'DEEP_ARCHIVE'}
+            ]}
         ]
         cmdline = '%s s3://bucket/ %s --ignore-glacier-warnings' % (
             self.prefix, self.files.rootdir)

@@ -396,6 +396,21 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
         self.assertEqual('', stderr)
 
+    def test_turn_off_glacier_warnings_for_deep_archive(self):
+        self.parsed_responses = [
+            {'ContentLength': str(20 * (1024 ** 2)),
+             'LastModified': '00:00:00Z',
+             'StorageClass': 'DEEP_ARCHIVE'},
+        ]
+        cmdline = (
+                '%s s3://bucket/key.txt . --ignore-glacier-warnings' % self.prefix)
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=0)
+        # There should not have been a download attempted because the
+        # operation was skipped because it is glacier incompatible.
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        self.assertEqual('', stderr)
+
     def test_cp_with_sse_flag(self):
         full_path = self.files.create_file('foo.txt', 'contents')
         cmdline = (

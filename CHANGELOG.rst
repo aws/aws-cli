@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.60
+=======
+
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.18.59
 =======
 

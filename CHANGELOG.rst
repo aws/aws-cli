@@ -304,6 +304,20 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.60
+=======
+
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.18.59
+=======
+
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+
+
 1.18.58
 =======
 

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.0.14
+======
+
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+
+
 2.0.13
 ======
 
@@ -302,6 +311,20 @@ CHANGELOG
 * feature:region: Added support for pulling the default region from IMDS when running on an EC2 instance. See `#3680 <https://github.com/aws/aws-cli/issues/3680>`__.
 * feature:s3: Added support for the ``--copy-props`` parameter to the high level S3 commands. This new parameter configures how additional metadata, tags, etc. should be copied for S3 to S3 transfers. See `#4840 <https://github.com/aws/aws-cli/issues/4840>`__.
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
+
+
+1.18.60
+=======
+
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.18.59
+=======
+
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
 
 
 1.18.58

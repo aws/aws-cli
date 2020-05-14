@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.0.14
+======
+
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+
+
 2.0.13
 ======
 

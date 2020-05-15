@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.61
+=======
+
+* api-change:``ecr``: Update ecr command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``cloudformation``: Update cloudformation command to latest version
+* api-change:``sts``: Update sts command to latest version
+
+
 1.18.60
 =======
 

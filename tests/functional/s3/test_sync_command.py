@@ -97,16 +97,22 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         self.parsed_responses = [
             {'Contents': [
                 {'Key': 'foo', 'Size': 100,
-                 'LastModified': '00:00:00Z', 'StorageClass': 'GLACIER'}]}
+                 'LastModified': '00:00:00Z', 'StorageClass': 'GLACIER'},
+                {'Key': 'bar', 'Size': 100,
+                 'LastModified': '00:00:00Z', 'StorageClass': 'DEEP_ARCHIVE'}
+            ]}
         ]
         cmdline = '%s s3://bucket/ %s' % (
             self.prefix, self.files.rootdir)
         _, stderr, _ = self.run_cmd(cmdline, expected_rc=2)
         # There should not have been a download attempted because the
-        # operation was skipped because it is glacier incompatible.
+        # operation was skipped because it is glacier and glacier
+        # deep archive incompatible.
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
         self.assertIn('GLACIER', stderr)
+        self.assertIn('s3://bucket/foo', stderr)
+        self.assertIn('s3://bucket/bar', stderr)
 
     def test_turn_off_glacier_warnings(self):
         self.parsed_responses = [

@@ -338,6 +338,23 @@ class TestConfigureCommand(unittest.TestCase):
             self.get_config_file_contents(),
         )
 
+    def test_can_handle_missing_newline_at_end_of_file(self):
+        self.set_config_file_contents(
+            '[default]\n'
+            'region = us-west-2'
+        )
+        p = aws('configure set profile.testing.region us-west-2 --profile default',
+                env_vars=self.env_vars)
+
+        self.assertEqual(
+            '[default]\n'
+            'region = us-west-2\n'
+            '[profile testing]\n'
+            'region = us-west-2\n',
+            self.get_config_file_contents(),
+        )
+
+
 
 class TestConfigureHasArgTable(unittest.TestCase):
     def test_configure_command_has_arg_table(self):

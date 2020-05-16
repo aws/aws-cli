@@ -324,6 +324,9 @@ class TestInstanceMetadataRegionFetcher(unittest.TestCase):
             region = self._region
         self.add_imds_response(body=region.encode('utf-8'))
 
+    def add_imds_token_response(self):
+        self.add_imds_response(status_code=200, body=b'token')
+
     def add_imds_connection_error(self, exception):
         self._imds_responses.append(exception)
 
@@ -351,6 +354,7 @@ class TestInstanceMetadataRegionFetcher(unittest.TestCase):
         url = 'https://example.com/'
         env = {'AWS_EC2_METADATA_DISABLED': 'false'}
 
+        self.add_imds_token_response()
         self.add_get_region_imds_response()
 
         fetcher = InstanceMetadataRegionFetcher(base_url=url, env=env)
@@ -361,6 +365,7 @@ class TestInstanceMetadataRegionFetcher(unittest.TestCase):
 
     def test_includes_user_agent_header(self):
         user_agent = 'my-user-agent'
+        self.add_imds_token_response()
         self.add_get_region_imds_response()
 
         InstanceMetadataRegionFetcher(
@@ -372,6 +377,7 @@ class TestInstanceMetadataRegionFetcher(unittest.TestCase):
     def test_non_200_response_for_region_is_retried(self):
         # Response for role name that have a non 200 status code should
         # be retried.
+        self.add_imds_token_response()
         self.add_imds_response(
             status_code=429, body=b'{"message": "Slow down"}')
         self.add_get_region_imds_response()
@@ -393,6 +399,7 @@ class TestInstanceMetadataRegionFetcher(unittest.TestCase):
     def test_non_200_response_is_retried(self):
         # Response for creds that has a 200 status code but has an empty
         # body should be retried.
+        self.add_imds_token_response()
         self.add_imds_response(
             status_code=429, body=b'{"message": "Slow down"}')
         self.add_get_region_imds_response()
@@ -403,6 +410,7 @@ class TestInstanceMetadataRegionFetcher(unittest.TestCase):
 
     def test_http_connection_errors_is_retried(self):
         # Connection related errors should be retried
+        self.add_imds_token_response()
         self.add_imds_connection_error(ConnectionClosedError(endpoint_url=''))
         self.add_get_region_imds_response()
         result = InstanceMetadataRegionFetcher(
@@ -421,6 +429,7 @@ class TestInstanceMetadataRegionFetcher(unittest.TestCase):
         self.assertEqual(result, expected_result)
 
     def test_exhaust_retries_on_region_request(self):
+        self.add_imds_token_response()
         self.add_imds_response(status_code=400, body=b'')
         result = InstanceMetadataRegionFetcher(
             num_attempts=1).retrieve_region()

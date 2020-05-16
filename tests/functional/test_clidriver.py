@@ -29,13 +29,13 @@ from awscli.clidriver import create_clidriver
 
 class RegionCapture(object):
     def __init__(self):
-        self._region = None
+        self.region = None
 
     def __call__(self, request, **kwargs):
         url = request.url
         region = re.match(
             'https://.*?\.(.*?)\.amazonaws\.com', url).groups(1)[0]
-        self._region = region
+        self.region = region
 
 
 class TestSession(BaseCLIDriverTest):
@@ -82,7 +82,7 @@ class TestSession(BaseCLIDriverTest):
         capture = RegionCapture()
         self.session.register('before-send.ec2.*', capture)
         self.driver.main(['ec2', 'describe-instances'])
-        self.assertEqual(capture._region, 'us-mars-2')
+        self.assertEqual(capture.region, 'us-mars-2')
 
     def test_imds_region_is_used_as_fallback_with_v2_support(self):
         # Remove region override from the environment variables.
@@ -101,7 +101,7 @@ class TestSession(BaseCLIDriverTest):
         capture = RegionCapture()
         self.session.register('before-send.ec2.*', capture)
         self.driver.main(['ec2', 'describe-instances'])
-        self.assertEqual(capture._region, 'us-mars-2')
+        self.assertEqual(capture.region, 'us-mars-2')
 
 
 class TestPlugins(BaseCLIDriverTest):

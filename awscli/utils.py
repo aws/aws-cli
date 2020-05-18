@@ -110,9 +110,11 @@ class InstanceMetadataRegionFetcher(IMDSFetcher):
         return None
 
     def _get_region(self):
+        token = self._fetch_metadata_token()
         response = self._get_request(
             url_path=self._URL_PATH,
             retry_func=self._default_retry,
+            token=token
         )
         availability_zone = response.text
         region = availability_zone[:-1]

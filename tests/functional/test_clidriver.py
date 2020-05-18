@@ -27,6 +27,17 @@ from awscli.testutils import BaseCLIDriverTest
 from awscli.clidriver import create_clidriver
 
 
+class RegionCapture(object):
+    def __init__(self):
+        self.region = None
+
+    def __call__(self, request, **kwargs):
+        url = request.url
+        region = re.match(
+            'https://.*?\.(.*?)\.amazonaws\.com', url).groups(1)[0]
+        self.region = region
+
+
 class TestSession(BaseCLIDriverTest):
     def setUp(self):
         super(TestSession, self).setUp()
@@ -54,16 +65,13 @@ class TestSession(BaseCLIDriverTest):
         )
         self._responses.append(response)
 
-    def assert_correct_region(self, expected_region, request, **kwargs):
-        url = request.url
-        region = re.match(
-            'https://.*?\.(.*?)\.amazonaws\.com', url).groups(1)[0]
-        self.assertEqual(expected_region, region)
-
-    def test_imds_region_is_used_as_fallback(self):
+    def test_imds_region_is_used_as_fallback_wo_v2_support(self):
         # Remove region override from the environment variables.
         self.environ.pop('AWS_DEFAULT_REGION', 0)
-        # First response should be from the IMDS server for an availibility
+        # First response should be from the IMDS server for security token
+        # if server supports IMDSv1 only there will be no response for token
+        self.add_response(None)
+        # Then another response from the IMDS server for an availibility
         # zone.
         self.add_response(b'us-mars-2a')
         # Once a region is fetched form the IMDS server we need to mock an
@@ -71,10 +79,29 @@ class TestSession(BaseCLIDriverTest):
         # during parsing.
         self.add_response(
             b'<?xml version="1.0" ?><foo><bar>text</bar></foo>')
-        assert_correct_region = functools.partial(
-            self.assert_correct_region, 'us-mars-2')
-        self.session.register('before-send.ec2.*', assert_correct_region)
+        capture = RegionCapture()
+        self.session.register('before-send.ec2.*', capture)
         self.driver.main(['ec2', 'describe-instances'])
+        self.assertEqual(capture.region, 'us-mars-2')
+
+    def test_imds_region_is_used_as_fallback_with_v2_support(self):
+        # Remove region override from the environment variables.
+        self.environ.pop('AWS_DEFAULT_REGION', 0)
+        # First response should be from the IMDS server for security token
+        # if server supports IMDSv2 it'll return token
+        self.add_response(b'token')
+        # Then another response from the IMDS server for an availibility
+        # zone.
+        self.add_response(b'us-mars-2a')
+        # Once a region is fetched form the IMDS server we need to mock an
+        # XML response from ec2 so that the CLI driver doesn't throw an error
+        # during parsing.
+        self.add_response(
+            b'<?xml version="1.0" ?><foo><bar>text</bar></foo>')
+        capture = RegionCapture()
+        self.session.register('before-send.ec2.*', capture)
+        self.driver.main(['ec2', 'describe-instances'])
+        self.assertEqual(capture.region, 'us-mars-2')
 
 
 class TestPlugins(BaseCLIDriverTest):

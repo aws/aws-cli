@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.62
+=======
+
+* api-change:``qldb``: Update qldb command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.18.61
 =======
 

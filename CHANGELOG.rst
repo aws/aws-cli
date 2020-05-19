@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+2.0.15
+======
+
+* enhancement:IMDS: Use IMDSv2 for autodiscovering EC2 region. Fixes `#4976 <https://github.com/aws/aws-cli/issues/4976>`__
+* api-change:``glue``: Update glue command to latest version
+* api-change:``cloudformation``: Update cloudformation command to latest version
+* api-change:``sts``: Update sts command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``qldb``: Update qldb command to latest version
+* api-change:``health``: Update health command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``ecr``: Update ecr command to latest version
+* bugfix:s3: Mute warnings for not restored glacier deep archive objects if --ignore-glacier-warnings option enabled. Fixes `#4039 <https://github.com/aws/aws-cli/issues/4039>`__
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
 2.0.14
 ======
 

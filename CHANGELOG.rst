@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.63
+=======
+
+* api-change:``health``: Update health command to latest version
+* bugfix:s3: Mute warnings for not restored glacier deep archive objects if --ignore-glacier-warnings option enabled. Fixes `#4039 <https://github.com/aws/aws-cli/issues/4039>`__
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``chime``: Update chime command to latest version
+
+
 1.18.62
 =======
 

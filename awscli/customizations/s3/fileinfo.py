@@ -80,9 +80,10 @@ class FileInfo(object):
         return True
 
     def _is_glacier_object(self, response_data):
+        glacier_storage_classes = ['GLACIER', 'DEEP_ARCHIVE']
         if response_data:
-            if response_data.get('StorageClass') == 'GLACIER' and \
-                    not self._is_restored(response_data):
+            if response_data.get('StorageClass') in glacier_storage_classes \
+                    and not self._is_restored(response_data):
                 return True
         return False
 

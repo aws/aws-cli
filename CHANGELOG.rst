@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.65
+=======
+
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``synthetics``: Update synthetics command to latest version
+
+
 1.18.64
 =======
 

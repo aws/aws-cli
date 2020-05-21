@@ -9,66 +9,72 @@ Output::
     {
         "Subnets": [
             {
-                "AvailabilityZone": "us-east-2c",
-                "AvailabilityZoneId": "use2-az3",
-                "AvailableIpAddressCount": 251,
-                "CidrBlock": "10.0.2.0/24",
-                "DefaultForAz": false,
+                 "AvailabilityZone": "us-east-1d",
+                "AvailabilityZoneId": "use1-az2",
+                "AvailableIpAddressCount": 4089,
+                "CidrBlock": "172.31.80.0/20",
+                "DefaultForAz": true,
                 "MapPublicIpOnLaunch": false,
+                "MapCustomerOwnedIpOnLaunch": true,
                 "State": "available",
                 "SubnetId": "subnet-0bb1c79de3EXAMPLE",
                 "VpcId": "vpc-0ee975135dEXAMPLE",
                 "OwnerId": "111122223333",
                 "AssignIpv6AddressOnCreation": false,
                 "Ipv6CidrBlockAssociationSet": [],
+                "CustomerOwnedIpv4Pool:": 'pool-2EXAMPLE',    
                 "SubnetArn": "arn:aws:ec2:us-east-2:111122223333:subnet/subnet-0bb1c79de3EXAMPLE"
             },
             {
-                "AvailabilityZone": "us-east-2c",
-                "AvailabilityZoneId": "use2-az3",
-                "AvailableIpAddressCount": 248,
-                "CidrBlock": "10.0.1.0/24",
-                "DefaultForAz": false,
-                "MapPublicIpOnLaunch": false,
+                "AvailabilityZone": "us-east-1d",
+                "AvailabilityZoneId": "use1-az2",
+                "AvailableIpAddressCount": 4089,
+                "CidrBlock": "172.31.80.0/20",
+                "DefaultForAz": true,
+                "MapPublicIpOnLaunch": true,
+                "MapCustomerOwnedIpOnLaunch": false,
                 "State": "available",
-                "SubnetId": "subnet-0931fc2fa5EXAMPLE",
-                "VpcId": "vpc-06e4ab6c6cEXAMPLE",
-                "OwnerId": "111122223333",
+                "SubnetId": "subnet-8EXAMPLE",
+                "VpcId": "vpc-3EXAMPLE",
+                "OwnerId": "1111222233333",
                 "AssignIpv6AddressOnCreation": false,
-                "Ipv6CidrBlockAssociationSet": [],
+                "Ipv6CidrBlockAssociationSet": [],        
                 "Tags": [
                     {
-                       "Key": "Name",
-                       "Value": "MySubnet"
+                        "Key": "Name",
+                        "Value": "MySubnet"
                     }
                 ],
-                "SubnetArn": "arn:aws:ec2:us-east-2:111122223333:subnet/subnet-0931fc2fa5EXAMPLE"
+                "SubnetArn": "arn:aws:ec2:us-east-1:111122223333:subnet/subnet-8EXAMPLE"
             }
         ]
     }
 
-**Example 2: To descripe a specific subnets**
+For more information, see `Working with VPCs and Subnets <https://docs.aws.amazon.com/vpc/latest/userguide/working-with-vpcs.html>`__ in the *AWS VPC User Guide*.
+
+**Example 2: To describe a specificied VPCs subnets**
 
 The following ``describe-subnets`` example uses a filter to retrieve details for the subnets of the specified VPC. ::
 
     aws ec2 describe-subnets \
-        --filters "Name=vpc-id,Values=vpc-06e4ab6c6cEXAMPLE"
+        --filters "Name=vpc-id,Values=vpc-3EXAMPLE"
 
 Output::
 
     {
         "Subnets": [
             {
-                "AvailabilityZone": "us-east-2c",
-                "AvailabilityZoneId": "use2-az3",
-                "AvailableIpAddressCount": 248,
-                "CidrBlock": "10.0.1.0/24",
-                "DefaultForAz": false,
-                "MapPublicIpOnLaunch": false,
+                "AvailabilityZone": "us-east-1d",
+                "AvailabilityZoneId": "use1-az2",
+                "AvailableIpAddressCount": 4089,
+                "CidrBlock": "172.31.80.0/20",
+                "DefaultForAz": true,
+                "MapPublicIpOnLaunch": true,
+                "MapCustomerOwnedIpOnLaunch": false,
                 "State": "available",
-                "SubnetId": "subnet-0931fc2fa5EXAMPLE",
-                "VpcId": "vpc-06e4ab6c6cEXAMPLE",
-                "OwnerId": "111122223333",
+                "SubnetId": "subnet-8EXAMPLE",
+                "VpcId": "vpc-3EXAMPLE",
+                "OwnerId": "1111222233333",
                 "AssignIpv6AddressOnCreation": false,
                 "Ipv6CidrBlockAssociationSet": [],
                 "Tags": [
@@ -77,10 +83,12 @@ Output::
                         "Value": "MySubnet"
                     }
                 ],
-                "SubnetArn": "arn:aws:ec2:us-east-2:111122223333:subnet/subnet-0931fc2fa5EXAMPLE"
+                "SubnetArn": "arn:aws:ec2:us-east-1:111122223333:subnet/subnet-8EXAMPLE"
             }
         ]
     }
+
+For more information, see `Working with VPCs and Subnets <https://docs.aws.amazon.com/vpc/latest/userguide/working-with-vpcs.html>`__ in the *AWS VPC User Guide*.
 
 **Example 3: To describe subnets with a specific tag**
 
@@ -92,7 +100,6 @@ The following ``describe-subnets`` example uses a filter to retrieve the details
 
 Output::
 
-    SUBNETS False   us-east-2c      use2-az3        248     10.0.1.0/24     False   False   111122223333    available               arn:aws:ec2:us-east-2:111122223333:subnet/subnet-0931fc2fa5EXAMPLE      subnet-0931fc2fa5f1cbe44        vpc-06e4ab6c6c3b23ae3
-    TAGS    Name    MySubnet
+    SUBNETS False   us-east-1c      use1-az1        250     10.0.0.0/24     False   False   False   111122223333    available       arn:aws:ec2:us-east-1:111122223333:subnet/subnet-0d3d002af8EXAMPLE      subnet-0d3d002af8EXAMPLE        vpc-0065acced4EXAMPLE   TAGS    Name    MySubnet
 
 For more information, see `Working with VPCs and Subnets <https://docs.aws.amazon.com/vpc/latest/userguide/working-with-vpcs.html>`__ in the *AWS VPC User Guide*.

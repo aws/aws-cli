@@ -332,6 +332,27 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.65
+=======
+
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``synthetics``: Update synthetics command to latest version
+
+
+1.18.64
+=======
+
+* api-change:``codedeploy``: Update codedeploy command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``backup``: Update backup command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+
+
 1.18.63
 =======
 

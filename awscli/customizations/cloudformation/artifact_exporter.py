@@ -331,7 +331,6 @@ class GraphQLSchemaResource(Resource):
     # Necessary to support Definition
     PACKAGE_NULL_PROPERTY = False
 
-
 class AppSyncResolverRequestTemplateResource(Resource):
     RESOURCE_TYPE = "AWS::AppSync::Resolver"
     PROPERTY_NAME = "RequestMappingTemplateS3Location"
@@ -415,6 +414,15 @@ class ServerlessRepoApplicationLicense(Resource):
     RESOURCE_TYPE = "AWS::ServerlessRepo::Application"
     PROPERTY_NAME = "LicenseUrl"
     PACKAGE_NULL_PROPERTY = False
+
+
+class StepFunctionsStateMachineDefinitionResource(ResourceWithS3UrlDict):
+    RESOURCE_TYPE = "AWS::StepFunctions::StateMachine"
+    PROPERTY_NAME = "DefinitionS3Location"
+    BUCKET_NAME_PROPERTY = "Bucket"
+    OBJECT_KEY_PROPERTY = "Key"
+    VERSION_PROPERTY = "Version"
+    PACKAGE_NULL_PROPERTY = True
 
 
 class CloudFormationStackResource(Resource):
@@ -504,6 +512,7 @@ RESOURCES_EXPORT_LIST = [
     ServerlessLayerVersionResource,
     LambdaLayerVersionResource,
     GlueJobCommandScriptLocationResource,
+    StepFunctionsStateMachineDefinitionResource
 ]
 
 METADATA_EXPORT_LIST = [

@@ -1,8 +1,6 @@
 **To describe endpoint connection notifications**
 
-This example describe all of your endpoint connection notifications.
-
-Command::
+The following ``describe-vpc-endpoint-connection-notifications`` example describes all of your endpoint connection notifications. ::
 
   aws ec2 describe-vpc-endpoint-connection-notifications
 

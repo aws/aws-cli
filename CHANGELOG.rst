@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+2.0.16
+======
+
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``synthetics``: Update synthetics command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``backup``: Update backup command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``codedeploy``: Update codedeploy command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+
+
 2.0.15
 ======
 
@@ -330,6 +346,27 @@ CHANGELOG
 * feature:region: Added support for pulling the default region from IMDS when running on an EC2 instance. See `#3680 <https://github.com/aws/aws-cli/issues/3680>`__.
 * feature:s3: Added support for the ``--copy-props`` parameter to the high level S3 commands. This new parameter configures how additional metadata, tags, etc. should be copied for S3 to S3 transfers. See `#4840 <https://github.com/aws/aws-cli/issues/4840>`__.
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
+
+
+1.18.65
+=======
+
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``synthetics``: Update synthetics command to latest version
+
+
+1.18.64
+=======
+
+* api-change:``codedeploy``: Update codedeploy command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``backup``: Update backup command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
 
 
 1.18.63

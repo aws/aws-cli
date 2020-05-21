@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+2.0.16
+======
+
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``synthetics``: Update synthetics command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``backup``: Update backup command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``codedeploy``: Update codedeploy command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+
+
 2.0.15
 ======
 

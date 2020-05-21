@@ -237,3 +237,6 @@ class WaiterCommandDocHandler(BasicDocHandler):
 
     def doc_option(self, arg_name, help_command, **kwargs):
         pass
+
+    def doc_options_end(self, help_command, **kwargs):
+        pass

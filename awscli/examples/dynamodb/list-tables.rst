@@ -11,7 +11,7 @@ Output::
             "Forum", 
             "ProductCatalog", 
             "Reply", 
-            "Thread", 
+            "Thread"
         ]
     }
 

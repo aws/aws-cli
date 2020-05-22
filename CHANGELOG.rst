@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.66
+=======
+
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+
+
 1.18.65
 =======
 

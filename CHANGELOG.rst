@@ -2,6 +2,143 @@
 CHANGELOG
 =========
 
+1.18.66
+=======
+
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+
+
+1.18.65
+=======
+
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``synthetics``: Update synthetics command to latest version
+
+
+1.18.64
+=======
+
+* api-change:``codedeploy``: Update codedeploy command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``backup``: Update backup command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+
+
+1.18.63
+=======
+
+* api-change:``health``: Update health command to latest version
+* bugfix:s3: Mute warnings for not restored glacier deep archive objects if --ignore-glacier-warnings option enabled. Fixes `#4039 <https://github.com/aws/aws-cli/issues/4039>`__
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``chime``: Update chime command to latest version
+
+
+1.18.62
+=======
+
+* api-change:``qldb``: Update qldb command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.18.61
+=======
+
+* api-change:``ecr``: Update ecr command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``cloudformation``: Update cloudformation command to latest version
+* api-change:``sts``: Update sts command to latest version
+
+
+1.18.60
+=======
+
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.18.59
+=======
+
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+
+
+1.18.58
+=======
+
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``workmail``: Update workmail command to latest version
+
+
+1.18.57
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``codeguru-reviewer``: Update codeguru-reviewer command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+
+
+1.18.56
+=======
+
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+
+
+1.18.55
+=======
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``appconfig``: Update appconfig command to latest version
+* api-change:``logs``: Update logs command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``route53``: Update route53 command to latest version
+
+
+1.18.54
+=======
+
+* api-change:``codestar-connections``: Update codestar-connections command to latest version
+* api-change:``comprehendmedical``: Update comprehendmedical command to latest version
+
+
+1.18.53
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``support``: Update support command to latest version
+
+
+1.18.52
+=======
+
+* api-change:``s3control``: Update s3control command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+
+
+1.18.51
+=======
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``efs``: Update efs command to latest version
+
+
 1.18.50
 =======
 

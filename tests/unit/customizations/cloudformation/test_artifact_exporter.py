@@ -169,12 +169,13 @@ def _helper_verify_export_resources(
     upload_local_artifacts_mock.reset_mock()
 
     resource_id = "id"
+    property_value = "foo"
 
     if '.' in test_class.PROPERTY_NAME:
         reversed_property_names = test_class.PROPERTY_NAME.split('.')
         reversed_property_names.reverse()
         property_dict = {
-            reversed_property_names[0]: "foo"
+            reversed_property_names[0]: property_value
         }
         for sub_property_name in reversed_property_names[1:]:
             property_dict = {
@@ -183,7 +184,7 @@ def _helper_verify_export_resources(
         resource_dict = property_dict
     else:
         resource_dict = {
-            test_class.PROPERTY_NAME: "foo"
+            test_class.PROPERTY_NAME: property_value
         }
     parent_dir = "dir"
 
@@ -194,7 +195,7 @@ def _helper_verify_export_resources(
     resource_obj.export(resource_id, resource_dict, parent_dir)
 
     upload_local_artifacts_mock.assert_called_once_with(resource_id,
-                                                        resource_dict[test_class.PROPERTY_NAME],
+                                                        property_value,
                                                         test_class.PROPERTY_NAME,
                                                         parent_dir,
                                                         s3_uploader_mock)
@@ -355,10 +356,11 @@ class TestArtifactExporter(unittest.TestCase):
         zip_and_upload_mock.return_value = expected_s3_url
 
         # If you don't specify a path, we will default to Current Working Dir
+        artifact_path = None
         parent_dir = tempfile.gettempdir()
 
         result = upload_local_artifacts(resource_id,
-                                        None,
+                                        artifact_path,
                                         property_name,
                                         parent_dir,
                                         self.s3_uploader_mock)
@@ -398,7 +400,7 @@ class TestArtifactExporter(unittest.TestCase):
             non_existent_file = "some_random_filename"
             resource_dict = {property_name: non_existent_file}
             upload_local_artifacts(resource_id,
-                                   resource_dict,
+                                   non_existent_file,
                                    property_name,
                                    parent_dir,
                                    self.s3_uploader_mock)
@@ -407,7 +409,7 @@ class TestArtifactExporter(unittest.TestCase):
             non_existent_file = ["invalid datatype"]
             resource_dict = {property_name: non_existent_file}
             upload_local_artifacts(resource_id,
-                                   resource_dict,
+                                   non_existent_file,
                                    property_name,
                                    parent_dir,
                                    self.s3_uploader_mock)

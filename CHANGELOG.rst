@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.67
+=======
+
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``macie``: Update macie command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``dlm``: Update dlm command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
 1.18.66
 =======
 

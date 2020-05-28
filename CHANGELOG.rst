@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.69
+=======
+
+* api-change:``workmail``: Update workmail command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``marketplace-catalog``: Update marketplace-catalog command to latest version
+* api-change:``qldb-session``: Update qldb-session command to latest version
+
+
 1.18.68
 =======
 

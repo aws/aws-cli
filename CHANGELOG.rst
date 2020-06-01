@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.70
+=======
+
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``worklink``: Update worklink command to latest version
+* api-change:``kms``: Update kms command to latest version
+* api-change:``athena``: Update athena command to latest version
+
+
 1.18.69
 =======
 

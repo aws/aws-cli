@@ -331,6 +331,7 @@ class GraphQLSchemaResource(Resource):
     # Necessary to support Definition
     PACKAGE_NULL_PROPERTY = False
 
+
 class AppSyncResolverRequestTemplateResource(Resource):
     RESOURCE_TYPE = "AWS::AppSync::Resolver"
     PROPERTY_NAME = "RequestMappingTemplateS3Location"
@@ -422,7 +423,7 @@ class StepFunctionsStateMachineDefinitionResource(ResourceWithS3UrlDict):
     BUCKET_NAME_PROPERTY = "Bucket"
     OBJECT_KEY_PROPERTY = "Key"
     VERSION_PROPERTY = "Version"
-    PACKAGE_NULL_PROPERTY = True
+    PACKAGE_NULL_PROPERTY = False
 
 
 class CloudFormationStackResource(Resource):

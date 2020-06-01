@@ -83,7 +83,7 @@ def test_all_resources_export():
             "class": GraphQLSchemaResource,
             "expected_result": uploaded_s3_url
         },
-        
+
         {
             "class": AppSyncResolverRequestTemplateResource,
             "expected_result": uploaded_s3_url

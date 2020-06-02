@@ -20,4 +20,4 @@ Output::
         "ssoApplicationId": "ins-a1b2c3d4-EXAMPLE"
     }
 
-For more information, see `Getting started with AWS IoT SiteWise Monitor <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-getting-started.html>`__ in the *AWS IoT SiteWise User Guide* and `Enabling AWS SSO <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-getting-started.html#monitor-enable-sso>`__ in the *AWS IoT SiteWise User Guide*.
+For more information, see `Getting started with AWS IoT SiteWise Monitor <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-getting-started.html>`__ in the *AWS IoT SiteWise User Guide* and `Enabling AWS SSO <https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-getting-started.html#monitor-enable-sso>`__ in the *AWS IoT SiteWise User Guide*..

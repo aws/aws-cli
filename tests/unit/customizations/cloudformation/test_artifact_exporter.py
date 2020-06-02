@@ -27,7 +27,8 @@ from awscli.customizations.cloudformation.artifact_exporter \
     AppSyncResolverResponseTemplateResource, \
     AppSyncFunctionConfigurationRequestTemplateResource, \
     AppSyncFunctionConfigurationResponseTemplateResource, \
-    GlueJobCommandScriptLocationResource
+    GlueJobCommandScriptLocationResource, \
+    StepFunctionsStateMachineDefinitionResource
 
 
 def test_is_s3_url():
@@ -150,7 +151,13 @@ def test_all_resources_export():
             "expected_result": {
                     "ScriptLocation": uploaded_s3_url
             }
-        }
+        },
+        {
+            "class": StepFunctionsStateMachineDefinitionResource,
+            "expected_result": {
+                "Bucket": "foo", "Key": "bar", "Version": "baz"
+            }
+        },
     ]
 
     with patch("awscli.customizations.cloudformation.artifact_exporter.upload_local_artifacts") as upload_local_artifacts_mock:

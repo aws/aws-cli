@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.18.71
+=======
+
+* api-change:``guardduty``: Update guardduty command to latest version
+
+
 1.18.70
 =======
 

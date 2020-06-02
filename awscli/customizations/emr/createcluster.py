@@ -60,6 +60,8 @@ class CreateCluster(Command):
          'help_text': helptext.CLUSTER_NAME},
         {'name': 'log-uri',
          'help_text': helptext.LOG_URI},
+        {'name': 'log-encryption-kms-key-id',
+         'help_text': helptext.LOG_ENCRYPTION_KMS_KEY_ID},
         {'name': 'service-role',
          'help_text': helptext.SERVICE_ROLE},
         {'name': 'auto-scaling-role',
@@ -194,6 +196,10 @@ class CreateCluster(Command):
         emrutils.apply_dict(
             params, 'AdditionalInfo', parsed_args.additional_info)
         emrutils.apply_dict(params, 'LogUri', parsed_args.log_uri)
+
+        if parsed_args.log_encryption_kms_key_id is not None:
+            emrutils.apply_dict(params, 'LogEncryptionKmsKeyId',
+                parsed_args.log_encryption_kms_key_id)
 
         if parsed_args.use_default_roles is True:
             parsed_args.service_role = EMR_ROLE_NAME

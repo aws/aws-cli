@@ -1413,5 +1413,24 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             }
         self.assert_params_for_cmd(cmd, result)
 
+    def test_create_cluster_with_log_encryption_kms_key_id(self):
+        test_log_uri = 's3://test/logs'
+        test_log_encryption_kms_key_id = 'valid_kms_key'
+        cmd = (self.prefix + '--release-label emr-5.30.0 ' + '--log-uri '
+                + test_log_uri + ' --log-encryption-kms-key-id '
+                + test_log_encryption_kms_key_id
+                + ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
+        result = \
+             {
+                  'Name': DEFAULT_CLUSTER_NAME,
+                  'Instances': DEFAULT_INSTANCES,
+                  'ReleaseLabel': 'emr-5.30.0',
+                  'VisibleToAllUsers': True,
+                  'Tags': [],
+                  'LogUri': test_log_uri,
+                  'LogEncryptionKmsKeyId': test_log_encryption_kms_key_id
+             }
+        self.assert_params_for_cmd(cmd, result)
+
 if __name__ == "__main__":
     unittest.main()

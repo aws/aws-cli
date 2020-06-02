@@ -417,6 +417,15 @@ class ServerlessRepoApplicationLicense(Resource):
     PACKAGE_NULL_PROPERTY = False
 
 
+class StepFunctionsStateMachineDefinitionResource(ResourceWithS3UrlDict):
+    RESOURCE_TYPE = "AWS::StepFunctions::StateMachine"
+    PROPERTY_NAME = "DefinitionS3Location"
+    BUCKET_NAME_PROPERTY = "Bucket"
+    OBJECT_KEY_PROPERTY = "Key"
+    VERSION_PROPERTY = "Version"
+    PACKAGE_NULL_PROPERTY = False
+
+
 class CloudFormationStackResource(Resource):
     """
     Represents CloudFormation::Stack resource that can refer to a nested
@@ -504,6 +513,7 @@ RESOURCES_EXPORT_LIST = [
     ServerlessLayerVersionResource,
     LambdaLayerVersionResource,
     GlueJobCommandScriptLocationResource,
+    StepFunctionsStateMachineDefinitionResource
 ]
 
 METADATA_EXPORT_LIST = [

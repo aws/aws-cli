@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+2.0.18
+======
+
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``workmail``: Update workmail command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``worklink``: Update worklink command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``marketplace-catalog``: Update marketplace-catalog command to latest version
+* api-change:``athena``: Update athena command to latest version
+* api-change:``kms``: Update kms command to latest version
+* api-change:``qldb-session``: Update qldb-session command to latest version
+
+
 2.0.17
 ======
 
@@ -359,6 +376,39 @@ CHANGELOG
 * feature:region: Added support for pulling the default region from IMDS when running on an EC2 instance. See `#3680 <https://github.com/aws/aws-cli/issues/3680>`__.
 * feature:s3: Added support for the ``--copy-props`` parameter to the high level S3 commands. This new parameter configures how additional metadata, tags, etc. should be copied for S3 to S3 transfers. See `#4840 <https://github.com/aws/aws-cli/issues/4840>`__.
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
+
+
+1.18.71
+=======
+
+* api-change:``guardduty``: Update guardduty command to latest version
+
+
+1.18.70
+=======
+
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``worklink``: Update worklink command to latest version
+* api-change:``kms``: Update kms command to latest version
+* api-change:``athena``: Update athena command to latest version
+
+
+1.18.69
+=======
+
+* api-change:``workmail``: Update workmail command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``marketplace-catalog``: Update marketplace-catalog command to latest version
+* api-change:``qldb-session``: Update qldb-session command to latest version
+
+
+1.18.68
+=======
+
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
 
 
 1.18.67

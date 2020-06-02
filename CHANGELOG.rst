@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+2.0.18
+======
+
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``workmail``: Update workmail command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``worklink``: Update worklink command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``marketplace-catalog``: Update marketplace-catalog command to latest version
+* api-change:``athena``: Update athena command to latest version
+* api-change:``kms``: Update kms command to latest version
+* api-change:``qldb-session``: Update qldb-session command to latest version
+
+
 2.0.17
 ======
 

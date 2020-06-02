@@ -30,6 +30,9 @@ requires = [
     'cryptography>=2.8.0,<=2.9.0',
     's3transfer>=0.3.0,<0.4.0',
     'ruamel.yaml>=0.15.0,<0.16.0',
+    # wcwidth 0.2.0 and up do not get copied into
+    # the pyinstaller executable.
+    'wcwidth<0.2.0',
     'prompt-toolkit>=2.0.0,<3.0.0',
 ]
 

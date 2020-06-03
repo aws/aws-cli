@@ -62,7 +62,7 @@ def _dict_representer(dumper, data):
     return dumper.represent_dict(data.items())
 
 
-def _add_yaml_1_1_boolean_resolvers(dumper_cls):
+def _add_yaml_1_1_boolean_resolvers(resolver_cls):
     # CloudFormation treats unquoted values that are YAML 1.1 native
     # booleans as booleans, rather than strings. In YAML 1.2, the only
     # boolean values are "true" and "false" so values such as "yes" and "no"
@@ -75,7 +75,7 @@ def _add_yaml_1_1_boolean_resolvers(dumper_cls):
         '|on|On|ON|off|Off|OFF)$'
     )
     boolean_first_chars = list(u'yYnNtTfFoO')
-    dumper_cls.add_implicit_resolver_base(
+    resolver_cls.add_implicit_resolver(
         'tag:yaml.org,2002:bool', boolean_regex, boolean_first_chars)
 
 
@@ -111,6 +111,7 @@ def yaml_parse(yamlstr):
         yaml.SafeLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _dict_constructor)
         yaml.SafeLoader.add_multi_constructor(
             "!", intrinsics_multi_constructor)
+        _add_yaml_1_1_boolean_resolvers(yaml.SafeLoader)
         return yaml.safe_load(yamlstr)
 
 

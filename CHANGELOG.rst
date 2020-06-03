@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.72
+=======
+
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``iam``: Update iam command to latest version
+* api-change:``directconnect``: Update directconnect command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+
+
 1.18.71
 =======
 

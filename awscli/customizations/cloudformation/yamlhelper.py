@@ -70,9 +70,9 @@ def _add_yaml_1_1_boolean_resolvers(dumper_cls):
     # that we dump these values with quotes so that CloudFormation treats
     # these values as strings and not booleans.
     boolean_regex = re.compile(
-        '^(?:y|Y|yes|Yes|YES|n|N|no|No|NO|'
-        'true|True|TRUE|false|False|FALSE'
-        '|on|On|ON|off|Off|OFF)$', re.X
+        '^(?:yes|Yes|YES|no|No|NO'
+        '|true|True|TRUE|false|False|FALSE'
+        '|on|On|ON|off|Off|OFF)$'
     )
     boolean_first_chars = list(u'yYnNtTfFoO')
     dumper_cls.add_implicit_resolver_base(

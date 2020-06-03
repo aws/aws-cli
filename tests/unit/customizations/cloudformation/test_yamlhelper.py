@@ -187,7 +187,7 @@ class TestYaml(unittest.TestCase):
 
     def test_yaml_dump_quotes_boolean_strings(self):
         bools_as_strings = [
-            'Y', 'y', 'yes', 'Yes', 'YES', 'n', 'N', 'no', 'No', 'NO',
+            'yes', 'Yes', 'YES', 'no', 'No', 'NO',
             'true', 'True', 'TRUE', 'false', 'False', 'FALSE',
             'on', 'On', 'ON', 'off', 'Off', 'OFF'
         ]

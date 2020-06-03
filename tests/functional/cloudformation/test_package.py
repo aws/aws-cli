@@ -81,5 +81,13 @@ def _assert_input_does_match_expected_output(input_template, output_template):
     template = Template(input_template, os.getcwd(), None)
     exported = template.export()
     result = yaml_dump(exported)
+    expected = open(output_template, 'r').read()
 
-    assert result == open(output_template, 'r').read()
+    assert result == expected, (
+        '\nAcutal template:\n'
+        '%s'
+        '\nDiffers from expected template:\n'
+        '%s' % (
+            result, expected
+        )
+    )

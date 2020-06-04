@@ -17,12 +17,12 @@ from mock import patch, Mock, MagicMock
 from botocore.compat import json
 from botocore.compat import OrderedDict
 
-from awscli.testutils import unittest
 from awscli.customizations.cloudformation.deployer import Deployer
 from awscli.customizations.cloudformation.yamlhelper import yaml_parse, yaml_dump
+from tests.unit.customizations.cloudformation import BaseYAMLTest
 
 
-class TestYaml(unittest.TestCase):
+class TestYaml(BaseYAMLTest):
 
     yaml_with_tags = """
     Resource:

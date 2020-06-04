@@ -16,11 +16,11 @@ import six
 from mock import patch, Mock, MagicMock, call
 import collections
 
-from awscli.testutils import unittest
 from awscli.customizations.cloudformation.deploy import DeployCommand
 from awscli.customizations.cloudformation.deployer import Deployer
 from awscli.customizations.cloudformation.yamlhelper import yaml_parse
 from awscli.customizations.cloudformation import exceptions
+from tests.unit.customizations.cloudformation import BaseYAMLTest
 
 
 class FakeArgs(object):
@@ -43,9 +43,10 @@ def get_example_template():
 
 ChangeSetResult = collections.namedtuple("ChangeSetResult", ["changeset_id", "changeset_type"])
 
-class TestDeployCommand(unittest.TestCase):
+class TestDeployCommand(BaseYAMLTest):
 
     def setUp(self):
+        super(TestDeployCommand, self).setUp()
         self.session = mock.Mock()
         self.session.get_scoped_config.return_value = {}
         self.parsed_args = FakeArgs(template_file='./foo',

@@ -17,7 +17,7 @@ from . import SectionNotFoundError
 
 
 class ConfigFileWriter(object):
-    SECTION_REGEX = re.compile(r'\[(?P<header>[^]]+)\]')
+    SECTION_REGEX = re.compile(r'^\s*\[(?P<header>[^]]+)\]')
     OPTION_REGEX = re.compile(
         r'(?P<option>[^:=][^:=]*)'
         r'\s*(?P<vi>[:=])\s*'

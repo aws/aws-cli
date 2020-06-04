@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+2.0.19
+======
+
+* api-change:``es``: Update es command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``mediapackage-vod``: Update mediapackage-vod command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``iam``: Update iam command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``directconnect``: Update directconnect command to latest version
+* api-change:``meteringmarketplace``: Update meteringmarketplace command to latest version
+* bugfix:``cloudformation package``: Preserve quotes for YAML boolean strings. Fixes `#5245 <https://github.com/aws/aws-cli/issues/5245>`__
+* api-change:``glue``: Update glue command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+
+
 2.0.18
 ======
 
@@ -376,6 +393,27 @@ CHANGELOG
 * feature:region: Added support for pulling the default region from IMDS when running on an EC2 instance. See `#3680 <https://github.com/aws/aws-cli/issues/3680>`__.
 * feature:s3: Added support for the ``--copy-props`` parameter to the high level S3 commands. This new parameter configures how additional metadata, tags, etc. should be copied for S3 to S3 transfers. See `#4840 <https://github.com/aws/aws-cli/issues/4840>`__.
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
+
+
+1.18.73
+=======
+
+* api-change:``mediapackage-vod``: Update mediapackage-vod command to latest version
+* api-change:``meteringmarketplace``: Update meteringmarketplace command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.18.72
+=======
+
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``iam``: Update iam command to latest version
+* api-change:``directconnect``: Update directconnect command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
 
 
 1.18.71

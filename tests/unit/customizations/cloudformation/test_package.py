@@ -17,10 +17,10 @@ import tempfile
 
 from io import StringIO
 from mock import patch, Mock, MagicMock
-from awscli.testutils import unittest, BaseAWSCommandParamsTest
 from awscli.customizations.cloudformation.package import PackageCommand
 from awscli.customizations.cloudformation.artifact_exporter import Template
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump
+from tests.unit.customizations.cloudformation import BaseYAMLTest
 
 
 class FakeArgs(object):
@@ -42,9 +42,10 @@ def get_example_template():
     }
 
 
-class TestPackageCommand(unittest.TestCase):
+class TestPackageCommand(BaseYAMLTest):
 
     def setUp(self):
+        super(TestPackageCommand, self).setUp()
         self.session = mock.Mock()
         self.session.get_scoped_config.return_value = {}
         self.parsed_args = FakeArgs(template_file='./foo',

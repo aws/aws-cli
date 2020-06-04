@@ -10,7 +10,7 @@ from nose.tools import assert_true, assert_false, assert_equal
 from contextlib import contextmanager, closing
 from mock import patch, Mock, MagicMock
 from botocore.stub import Stubber
-from awscli.testutils import unittest, FileCreator
+from awscli.testutils import FileCreator
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.artifact_exporter \
     import is_s3_url, parse_s3_url, is_local_file, is_local_folder, \
@@ -29,6 +29,7 @@ from awscli.customizations.cloudformation.artifact_exporter \
     AppSyncFunctionConfigurationResponseTemplateResource, \
     GlueJobCommandScriptLocationResource, \
     StepFunctionsStateMachineDefinitionResource
+from tests.unit.customizations.cloudformation import BaseYAMLTest
 
 
 def test_is_s3_url():
@@ -213,9 +214,10 @@ def _helper_verify_export_resources(
     assert_equal(result, expected_result)
 
 
-class TestArtifactExporter(unittest.TestCase):
+class TestArtifactExporter(BaseYAMLTest):
 
     def setUp(self):
+        super(TestArtifactExporter, self).setUp()
         self.s3_uploader_mock = Mock()
         self.s3_uploader_mock.s3.meta.endpoint_url = "https://s3.some-valid-region.amazonaws.com"
 

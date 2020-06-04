@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  ResourceWithMixedBooleanValues:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      MfaConfiguration: 'OFF'
+      Policies:
+        PasswordPolicy:
+          RequireLowercase: false
+          RequireNumbers: true
+          RequireUppercase: true
+          RequireSymbols: true
+  YesTester:
+    Type: Custom::YesTester
+    Properties:
+      Input:
+        Fn::Select:
+        - 0
+        - - 'yes'
+          - 'no'

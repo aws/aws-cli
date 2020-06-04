@@ -3,14 +3,15 @@ import botocore.session
 
 from mock import patch, Mock, MagicMock
 from botocore.stub import Stubber
-from awscli.testutils import unittest
 from awscli.customizations.cloudformation.deployer import Deployer, ChangeSetResult
 from awscli.customizations.cloudformation import exceptions
+from tests.unit.customizations.cloudformation import BaseYAMLTest
 
 
-class TestDeployer(unittest.TestCase):
+class TestDeployer(BaseYAMLTest):
 
     def setUp(self):
+        super(TestDeployer, self).setUp()
         client = botocore.session.get_session().create_client('cloudformation',
                                                               region_name="us-east-1")
         self.stub_client = Stubber(client)

@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import re
+
 import ruamel.yaml as yaml
 from ruamel.yaml.resolver import ScalarNode, SequenceNode
 from botocore.compat import json
@@ -60,6 +62,23 @@ def _dict_representer(dumper, data):
     return dumper.represent_dict(data.items())
 
 
+def _add_yaml_1_1_boolean_resolvers(resolver_cls):
+    # CloudFormation treats unquoted values that are YAML 1.1 native
+    # booleans as booleans, rather than strings. In YAML 1.2, the only
+    # boolean values are "true" and "false" so values such as "yes" and "no"
+    # when loaded as strings are not quoted when dumped. This logic ensures
+    # that we dump these values with quotes so that CloudFormation treats
+    # these values as strings and not booleans.
+    boolean_regex = re.compile(
+        '^(?:yes|Yes|YES|no|No|NO'
+        '|true|True|TRUE|false|False|FALSE'
+        '|on|On|ON|off|Off|OFF)$'
+    )
+    boolean_first_chars = list(u'yYnNtTfFoO')
+    resolver_cls.add_implicit_resolver(
+        'tag:yaml.org,2002:bool', boolean_regex, boolean_first_chars)
+
+
 def yaml_dump(dict_to_dump):
     """
     Dumps the dictionary as a YAML document
@@ -67,6 +86,7 @@ def yaml_dump(dict_to_dump):
     :return:
     """
     FlattenAliasDumper.add_representer(OrderedDict, _dict_representer)
+    _add_yaml_1_1_boolean_resolvers(FlattenAliasDumper)
     return yaml.dump(
         dict_to_dump,
         default_flow_style=False,
@@ -91,6 +111,7 @@ def yaml_parse(yamlstr):
         yaml.SafeLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _dict_constructor)
         yaml.SafeLoader.add_multi_constructor(
             "!", intrinsics_multi_constructor)
+        _add_yaml_1_1_boolean_resolvers(yaml.SafeLoader)
         return yaml.safe_load(yamlstr)
 
 

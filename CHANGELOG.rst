@@ -378,6 +378,27 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.73
+=======
+
+* api-change:``mediapackage-vod``: Update mediapackage-vod command to latest version
+* api-change:``meteringmarketplace``: Update meteringmarketplace command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.18.72
+=======
+
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``iam``: Update iam command to latest version
+* api-change:``directconnect``: Update directconnect command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+
+
 1.18.71
 =======
 

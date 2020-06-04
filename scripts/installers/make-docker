@@ -18,14 +18,14 @@ DIST_DIR = os.path.join(ROOT, 'dist')
 DEFAULT_EXE_ZIP = os.path.join(DIST_DIR, 'awscli-exe.zip')
 DEFAULT_DOCKER_OUTPUT = os.path.join(DIST_DIR, 'aws-cli-docker.tar')
 DEFAULT_TAGS = ['amazon/aws-cli']
-EXPECTED_DOCKERFILE_EXE_NAME = 'awscli-exe-linux-x86_64.zip'
 
 
 def make_docker(exe, output, tags):
     _ensure_docker_is_available()
     with tmp_dir() as build_context:
         _make_build_context(build_context, exe)
-        _docker_build(build_context, tags)
+        # Use os.path.basename to extract filename for the path
+        _docker_build(build_context, tags, os.path.basename(exe))
     _docker_save(tags, output)
 
 
@@ -50,13 +50,16 @@ def _copy_docker_dir_to_build_context(build_context_dir):
 
 def _copy_exe_to_build_context(build_context_dir, exe):
     build_context_exe_path = os.path.join(
-        build_context_dir, EXPECTED_DOCKERFILE_EXE_NAME)
+        build_context_dir, os.path.basename(exe))
     shutil.copy(exe, build_context_exe_path)
 
 
-def _docker_build(build_context_dir, tags):
+def _docker_build(build_context_dir, tags, exe_filename):
     with cd(build_context_dir):
-        docker_build_cmd = ['docker', 'build', '.']
+        docker_build_cmd = [
+            'docker', 'build', '--build-arg',
+            f'EXE_FILENAME={exe_filename}', '.'
+        ]
         for tag in tags:
             docker_build_cmd.extend(['-t', tag])
         print(run(docker_build_cmd))

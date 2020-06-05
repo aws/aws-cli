@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.18.74
+=======
+
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``personalize-runtime``: Update personalize-runtime command to latest version
+* api-change:``sagemaker-runtime``: Update sagemaker-runtime command to latest version
+* api-change:``personalize``: Update personalize command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+
+
 1.18.73
 =======
 

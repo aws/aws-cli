@@ -1,6 +1,6 @@
 **To list all assets associated to an asset in a specific hierarchy**
 
-The following ``list-associated-assets`` example lists all wind turbine assets associated to a wind farm asset. ::
+The following ``list-associated-assets`` example lists all wind turbine assets associated to the specified wind farm asset. ::
 
     aws iotsitewise list-associated-assets \
         --asset-id a1b2c3d4-5678-90ab-cdef-44444EXAMPLE \

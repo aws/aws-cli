@@ -1,21 +1,9 @@
-**To create an endpoint**
+**To delete an endpoint**
 
-The following ``create-endpoint`` example creates an endpoint for an Amazon S3 source. ::
+The following ``delete-endpoint`` example deletes an endpoint. ::
 
-    aws dms create-endpoint \
-        --endpoint-type source \
-        --engine-name s3 \
-        --endpoint-identifier src-endpoint \
-        --s3-settings file://s3-settings.json
-
-
-Contents of ``s3-settings.json``::
-
-    {
-        "BucketName":"my-corp-data",
-        "BucketFolder":"sourcedata",
-        "ServiceAccessRoleArn":"arn:aws:iam::123456789012:role/my-s3-access-role"
-    }
+    aws dms delete-endpoint \
+        --endpoint-arn arn:aws:dms:us-east-1:123456789012:endpoint:OUJJVXO4XZ4CYTSEG5XGMN2R3Y
 
 Output::
 
@@ -26,8 +14,8 @@ Output::
             "EngineName": "s3",
             "EngineDisplayName": "Amazon S3",
             "ExtraConnectionAttributes": "bucketFolder=sourcedata;bucketName=my-corp-data;compressionType=NONE;csvDelimiter=,;csvRowDelimiter=\\n;",
-            "Status": "active",
-            "EndpointArn": "arn:aws:dms:us-east-1:123456789012:endpoint:GUVAFG34EECUOJ6QVZ56DAHT3U",
+            "Status": "deleting",
+            "EndpointArn": "arn:aws:dms:us-east-1:123456789012:endpoint:OUJJVXO4XZ4CYTSEG5XGMN2R3Y",
             "SslMode": "none",
             "ServiceAccessRoleArn": "arn:aws:iam::123456789012:role/my-s3-access-role",
             "S3Settings": {

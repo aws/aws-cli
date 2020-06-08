@@ -1,11 +1,13 @@
 **To update a gateway capability**
 
-The following ``update-gateway-capability-configuration`` example configures an OPC-UA source with the following properties::
+The following ``update-gateway-capability-configuration`` example configures an OPC-UA source with the following properties:
 
 - Trusts any certificate.
 - Uses the Basic256 algorithm to secure messages.
 - Uses the SignAndEncrypt mode to secure connections.
 - Uses authentication credentials stored in an AWS Secrets Manager secret.
+
+::
 
     aws iotsitewise update-gateway-capability-configuration \
         --gateway-id a1b2c3d4-5678-90ab-cdef-1a1a1EXAMPLE \

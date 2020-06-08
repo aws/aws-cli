@@ -1,6 +1,6 @@
 **To describe a dashboard**
 
-The following ``describe-dashboard`` example describes a wind farm dashboard. ::
+The following ``describe-dashboard`` example describes the specified wind farm dashboard. ::
 
     aws iotsitewise describe-dashboard \
         --dashboard-id a1b2c3d4-5678-90ab-cdef-fffffEXAMPLE

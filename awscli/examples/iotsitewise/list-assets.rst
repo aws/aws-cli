@@ -33,7 +33,7 @@ For more information, see `Listing assets <https://docs.aws.amazon.com/iot-sitew
 
 **Example 2: To list all assets based on an asset model**
 
-The following ``list-assets`` example lists all assets that based on an asset model and defined in your AWS account in the current Region. ::
+The following ``list-assets`` example lists all assets based on an asset model and defined in your AWS account in the current Region. ::
 
     aws iotsitewise list-assets \
         --asset-model-id a1b2c3d4-5678-90ab-cdef-11111EXAMPLE

@@ -1,9 +1,9 @@
 **To grant a project viewer ownership of a project**
 
-The following ``update-access-policy`` example update an access policy that grants a project viewer ownership of a project. ::
+The following ``update-access-policy`` example updates an access policy that grants a project viewer ownership of a project. ::
 
     aws iotsitewise update-access-policy \
-        --access-policy-id a1b2c3d4-5678-90ab-cdef-dddddEXAMPLE
+        --access-policy-id a1b2c3d4-5678-90ab-cdef-dddddEXAMPLE \
         --cli-input-json file://update-project-viewer-access-policy.json
 
 Contents of ``update-project-viewer-access-policy.json``::

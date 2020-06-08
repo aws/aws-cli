@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.75
+=======
+
+* api-change:``servicediscovery``: Update servicediscovery command to latest version
+* api-change:``shield``: Update shield command to latest version
+
+
 1.18.74
 =======
 

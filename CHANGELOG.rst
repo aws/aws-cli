@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.76
+=======
+
+* api-change:``transfer``: Update transfer command to latest version
+* bugfix:config file: Improve config parsing to handle values with square brackets. fixes `#5263 <https://github.com/aws/aws-cli/issues/5263>`__
+
+
 1.18.75
 =======
 

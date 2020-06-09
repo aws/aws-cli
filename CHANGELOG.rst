@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+2.0.20
+======
+
+* api-change:``personalize``: Update personalize command to latest version
+* api-change:``shield``: Update shield command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``servicediscovery``: Update servicediscovery command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``transfer``: Update transfer command to latest version
+* bugfix:config file: Improve config parsing to handle values with square brackets. fixes `#5263 <https://github.com/aws/aws-cli/issues/5263>`__
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``sagemaker-runtime``: Update sagemaker-runtime command to latest version
+* api-change:``personalize-runtime``: Update personalize-runtime command to latest version
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+
+
 2.0.19
 ======
 
@@ -393,6 +410,33 @@ CHANGELOG
 * feature:region: Added support for pulling the default region from IMDS when running on an EC2 instance. See `#3680 <https://github.com/aws/aws-cli/issues/3680>`__.
 * feature:s3: Added support for the ``--copy-props`` parameter to the high level S3 commands. This new parameter configures how additional metadata, tags, etc. should be copied for S3 to S3 transfers. See `#4840 <https://github.com/aws/aws-cli/issues/4840>`__.
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
+
+
+1.18.76
+=======
+
+* api-change:``transfer``: Update transfer command to latest version
+* bugfix:config file: Improve config parsing to handle values with square brackets. fixes `#5263 <https://github.com/aws/aws-cli/issues/5263>`__
+
+
+1.18.75
+=======
+
+* api-change:``servicediscovery``: Update servicediscovery command to latest version
+* api-change:``shield``: Update shield command to latest version
+
+
+1.18.74
+=======
+
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``personalize-runtime``: Update personalize-runtime command to latest version
+* api-change:``sagemaker-runtime``: Update sagemaker-runtime command to latest version
+* api-change:``personalize``: Update personalize command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
 
 
 1.18.73

@@ -50,6 +50,12 @@ class TestConfigFileWriter(unittest.TestCase):
         self.assert_update_config(
             original, {'foo': 'newvalue'}, updated)
 
+    def test_update_value_with_square_brackets(self):
+        original = '[default]\nfoo = old[value]\nbar = 1'
+        updated = '[default]\nfoo = new[value]\nbar = 1'
+        self.assert_update_config(
+            original, {'foo': 'new[value]'}, updated)
+
     def test_update_single_existing_value_no_spaces(self):
         original = '[default]\nfoo=1\nbar=1'
         updated = '[default]\nfoo = newvalue\nbar=1'

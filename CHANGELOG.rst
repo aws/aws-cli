@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+2.0.20
+======
+
+* api-change:``personalize``: Update personalize command to latest version
+* api-change:``shield``: Update shield command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``servicediscovery``: Update servicediscovery command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``transfer``: Update transfer command to latest version
+* bugfix:config file: Improve config parsing to handle values with square brackets. fixes `#5263 <https://github.com/aws/aws-cli/issues/5263>`__
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``sagemaker-runtime``: Update sagemaker-runtime command to latest version
+* api-change:``personalize-runtime``: Update personalize-runtime command to latest version
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+
+
 2.0.19
 ======
 

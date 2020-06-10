@@ -412,6 +412,20 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.77
+=======
+
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``compute-optimizer``: Update compute-optimizer command to latest version
+* api-change:``appconfig``: Update appconfig command to latest version
+* api-change:``dlm``: Update dlm command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``shield``: Update shield command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``codeartifact``: Update codeartifact command to latest version
+
+
 1.18.76
 =======
 

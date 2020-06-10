@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.0.21
+======
+
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``shield``: Update shield command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``codeartifact``: Update codeartifact command to latest version
+* api-change:``appconfig``: Update appconfig command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``dlm``: Update dlm command to latest version
+* api-change:``compute-optimizer``: Update compute-optimizer command to latest version
+
+
 2.0.20
 ======
 

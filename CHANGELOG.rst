@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.0.22
+======
+
+* api-change:``iot-data``: Update iot-data command to latest version
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
 2.0.21
 ======
 

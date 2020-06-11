@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.78
+=======
+
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``iot-data``: Update iot-data command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+
+
 1.18.77
 =======
 

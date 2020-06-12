@@ -91,7 +91,7 @@ from awscli.customizations.sessionmanager import register_ssm_session
 from awscli.customizations.logs import register_logs_commands
 from awscli.customizations.devcommands import register_dev_commands
 from awscli.customizations.wizard.commands import register_wizard_commands
-from awscli.customizations.autoprompt import register_autoprompt
+from awscli.customizations.autoprompt.autoprompt import register_autoprompt
 from awscli.customizations.binaryformat import add_binary_formatter
 
 

@@ -294,6 +294,7 @@ class FakeCommandVerify(FakeCommand):
 class TestCliDriver(unittest.TestCase):
     def setUp(self):
         self.session = FakeSession()
+        self.session.set_config_variable('cli_auto_prompt', 'off')
         self.driver = CLIDriver(session=self.session)
 
     def test_session_can_be_passed_in(self):
@@ -359,11 +360,29 @@ class TestCliDriver(unittest.TestCase):
         expected = list(GET_DATA['cli']['options'])
         self.assertEqual(list(arg_table), expected)
 
+    def test_can_call_auto_prompter_with_no_command(self):
+        new_args = self.driver.prompt_for_args([], {})
+        self.assertEqual(new_args, [])
+
+    def test_can_call_auto_prompter_with_partial_service_command(self):
+        new_args = self.driver.prompt_for_args(['ec'], {})
+        self.assertEqual(new_args, ['ec'])
+
+    def test_can_call_auto_prompter_with_partial_operation_command(self):
+        new_args = self.driver.prompt_for_args(['ec2', 'd'], {})
+        self.assertEqual(new_args, ['ec2', 'd'])
+
+    def test_can_call_auto_prompter_with_partial_option_command(self):
+        new_args = self.driver.prompt_for_args(
+            ['ec2', 'create-image', '--'], {})
+        self.assertEqual(new_args, ['ec2', 'create-image', '--'])
+
 
 class TestCliDriverHooks(unittest.TestCase):
     # These tests verify the proper hooks are emitted in clidriver.
     def setUp(self):
         self.session = FakeSession()
+        self.session.set_config_variable('cli_auto_prompt', 'off')
         self.emitter = mock.Mock()
         self.emitter.emit.return_value = []
         self.stdout = six.StringIO()

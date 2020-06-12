@@ -19,7 +19,7 @@ This example command imports the specified public key.
 
 Command::
 
-  aws ec2 import-key-pair --key-name "my-key" --public-key-material file://~/.ssh/my-key.pub
+  aws ec2 import-key-pair --key-name "my-key" --public-key-material fileb://~/.ssh/my-key.pub
   
 Output::
 

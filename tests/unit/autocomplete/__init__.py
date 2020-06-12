@@ -31,7 +31,8 @@ class InMemoryIndex(model.ModelIndex):
                  'dot.lineage': {
                      'command-name': {
                          'arg-name': (argname, type, command, parent,
-                                      nargs, positional_arg)
+                                      nargs, positional_arg, required,
+                                      help_text)
                      }
                  }
             }
@@ -61,4 +62,11 @@ class InMemoryIndex(model.ModelIndex):
         if arg_data is not None:
             return model.CLIArgument(*arg_data)
 
-
+    def get_global_arg_data(self, lineage=[], command_name='aws'):
+        parent = '.'.join(lineage)
+        arg_data = self.index['arg_data'].get(parent, {}).get(
+            command_name, {})
+        results = []
+        for _, value in arg_data.items():
+            results.append(model.CLIArgument(*value))
+        return results

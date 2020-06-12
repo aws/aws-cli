@@ -71,7 +71,7 @@ class TestSession(BaseCLIDriverTest):
         # First response should be from the IMDS server for security token
         # if server supports IMDSv1 only there will be no response for token
         self.add_response(None)
-        # Then another response from the IMDS server for an availibility
+        # Then another response from the IMDS server for an availability
         # zone.
         self.add_response(b'us-mars-2a')
         # Once a region is fetched form the IMDS server we need to mock an
@@ -90,7 +90,7 @@ class TestSession(BaseCLIDriverTest):
         # First response should be from the IMDS server for security token
         # if server supports IMDSv2 it'll return token
         self.add_response(b'token')
-        # Then another response from the IMDS server for an availibility
+        # Then another response from the IMDS server for an availability
         # zone.
         self.add_response(b'us-mars-2a')
         # Once a region is fetched form the IMDS server we need to mock an
@@ -112,6 +112,14 @@ class TestSession(BaseCLIDriverTest):
         self.assertTrue(
             'Python' in
             self._send.call_args[0][0].headers['User-Agent'].decode('utf-8'))
+    def test_throws_error_if_cli_auto_prompt_and_no_cli_auto_prompt_set(self):
+        # Mock an XML response from ec2 so that the CLI driver doesn't throw
+        # an error during parsing.
+        self.add_response(
+            b'<?xml version="1.0" ?><foo><bar>text</bar></foo>')
+        self.assertRaises(SystemExit, self.driver.main, ['ec2',
+                          'describe-instances', '--cli-auto-prompt',
+                          '--no-cli-auto-prompt'])
 
 
 class TestPlugins(BaseCLIDriverTest):

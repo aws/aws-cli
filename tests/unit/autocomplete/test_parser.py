@@ -46,33 +46,35 @@ SAMPLE_MODEL = InMemoryIndex(
         'arg_data': {
             '': {
                 'aws': {
-                    'debug': ('debug', 'boolean', 'aws', '', None, False),
-                    'endpoint-url': ('endpoint-url', 'string',
-                                     'aws', '', None, False),
-                    'region': ('region', 'string', 'aws', '', None, False),
+                    'debug': ('debug', 'boolean', 'aws', '', None, False,
+                              False, ''),
+                    'endpoint-url': ('endpoint-url', 'string', 'aws', '', None,
+                                     False, False, ''),
+                    'region': ('region', 'string', 'aws', '', None, False,
+                               False, ''),
                 }
             },
             'aws.ec2': {
                 'stop-instances': {
                     'instance-ids': (
-                        'instance-ids', 'string',
-                        'stop-instances', 'aws.ec2.', '*', False),
+                        'instance-ids', 'string', 'stop-instances', 'aws.ec2.',
+                        '*', False, False, ''),
                     'foo-arg': (
-                        'foo-arg', 'string', 'stop-instances',
-                        'aws.ec2', None, False),
+                        'foo-arg', 'string', 'stop-instances', 'aws.ec2', None,
+                        False, False, ''),
                     'positional': (
-                        'positional', 'string', 'stop-instances',
-                        'aws.ec2', None, True),
+                        'positional', 'string', 'stop-instances', 'aws.ec2',
+                        None, True, False, ''),
                 }
             },
             'aws.logs': {
                 'tail': {
                     'group_name': (
-                        'group_name', 'string',
-                        'tail', 'aws.logs.', None, True),
+                        'group_name', 'string', 'tail', 'aws.logs.', None,
+                        True, False, ''),
                     'filter-pattern': (
-                        'filter-pattern', 'string', 'tail',
-                        'aws.logs', None, False),
+                        'filter-pattern', 'string', 'tail', 'aws.logs', None,
+                        False, False, ''),
                 }
             }
         }
@@ -88,7 +90,7 @@ def test_can_handle_arbitrary_ordering():
         current_command='stop-instances',
         global_params={'debug': None, 'endpoint-url': 'https://foo'},
         parsed_params={'instance-ids': ['i-123', 'i-124'],
-                        'foo-arg': 'value'},
+                       'foo-arg': 'value'},
         lineage=['aws', 'ec2'],
         current_fragment='',
     )
@@ -289,7 +291,7 @@ class TestCanParseCLICommand(unittest.TestCase):
         nargs_one_or_more = '?'
         model.index['arg_data']['aws.ec2']['stop-instances']['foo-arg'] = (
             'foo-arg', 'string',
-            'stop-instances', 'aws.ec2', nargs_one_or_more, False)
+            'stop-instances', 'aws.ec2', nargs_one_or_more, False, False, '')
         p = parser.CLIParser(model)
         self.assertEqual(
             p.parse(
@@ -557,6 +559,7 @@ class TestCanParseCLICommand(unittest.TestCase):
             current_fragment='mygroup',
             unparsed_items=[],
         )
+
 
 class TestParseState(unittest.TestCase):
     def test_can_set_initial_state(self):

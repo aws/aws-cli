@@ -102,6 +102,9 @@ class TestBasicCommandHooks(unittest.TestCase):
 
     def setUp(self):
         self.session = FakeSession()
+        self.session.get_config_variable = mock.Mock()
+        return_values = {'cli_auto_prompt': 'off'}
+        self.session.get_config_variable.side_effect = return_values
         self.emitter = mock.Mock(wraps=HierarchicalEmitter())
         self.session.emitter = self.emitter
 

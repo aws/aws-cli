@@ -109,29 +109,28 @@ class TestModelIndexCompleter(unittest.TestCase):
             'arg_data': {
                 '': {
                     'aws': {
-                        'endpoint-url': ('endpoint-url', 'string',
-                                         'aws', '', None, False),
-                        'region': ('region', 'string', 'aws', '', None, False),
+                        'endpoint-url': ('endpoint-url', 'string', 'aws', '',
+                                         None, False, False, ''),
+                        'region': ('region', 'string', 'aws', '', None, False,
+                                   False, ''),
                     }
                 },
                 'aws.ec2': {
                     'describe-instances': {
                         'instance-ids': (
-                            'instance-ids', 'string',
-                            'describe-instances', 'aws.ec2.', None, False),
+                            'instance-ids', 'string', 'describe-instances',
+                            'aws.ec2.', None, False, False, ''),
                         'reserve': (
-                            'reserve', 'string',
-                            'describe-instances', 'aws.ec2.', None, False),
+                            'reserve', 'string', 'describe-instances',
+                            'aws.ec2.', None, False, False, ''),
                         'positional': (
-                            'positional', 'string',
-                            'describe-instances', 'aws.ec2.', None, True),
+                            'positional', 'string', 'describe-instances',
+                            'aws.ec2.', None, True, False, ''),
                     }
                 }
             }
         })
         self.parser = parser.CLIParser(self.index)
-
-
         self.completer = basic.ModelIndexCompleter(self.index)
 
     def test_does_not_complete_if_unparsed_items(self):
@@ -178,8 +177,8 @@ class TestModelIndexCompleter(unittest.TestCase):
         parsed = self.parser.parse('aws ec2 describe-instances --r')
         self.assertEqual(
             self.completer.complete(parsed),
-            [CompletionResult('--reserve', -3),
-             CompletionResult('--region', -3)]
+            [CompletionResult('--reserve', -3, False, 'string', ),
+             CompletionResult('--region', -3, False, 'string', )]
         )
 
     def test_no_autocompletions_if_nothing_matches(self):

@@ -35,6 +35,8 @@ class ModelIndexer(object):
           parent TEXT,
           nargs TEXT,
           positional_arg TEXT,
+          required INTEGER,
+          help_text TEXT,
           FOREIGN KEY (command, parent) REFERENCES
             command_table(command, parent)
         );
@@ -63,14 +65,21 @@ class ModelIndexer(object):
 
     def _generate_arg_index(self, command, parent, arg_table):
         for name, value in arg_table.items():
+            # SQLite has no boolean data type, so we use Integer instead
+            required = 1 if value.required else 0
+            help_text = getattr(value, 'help', None)
+            if help_text is None:
+                help_text = getattr(value, 'documentation', None)
             self._db_connection.execute(
                 'INSERT INTO param_table '
-                '(argname, type_name, command, parent, nargs, positional_arg)'
+                '(argname, type_name, command, parent, nargs, positional_arg,'
+                'required, help_text)'
                 ' VALUES (:argname, :type_name, :command, :parent, :nargs, '
-                '         :positional_arg)',
+                '         :positional_arg, :required, :help_text)',
                 argname=name, type_name=value.cli_type_name,
                 command=command, parent=parent,
-                nargs=value.nargs, positional_arg=value.positional_arg
+                nargs=value.nargs, positional_arg=value.positional_arg,
+                required=required, help_text=help_text
             )
 
     def _generate_command_index(self, command_table, parent):

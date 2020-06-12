@@ -38,12 +38,12 @@ class TestTableNameCompleter(unittest.TestCase):
                     'put': {
                         'table_name': (
                             'table_name', 'string',
-                            'put', 'aws.ddb.', None, True),
+                            'put', 'aws.ddb.', None, True, False, None),
                     },
                     'select': {
                         'table_name': (
                             'table_name', 'string',
-                            'select', 'aws.ddb.', None, True),
+                            'select', 'aws.ddb.', None, True, False, None),
                     },
                 }
             }

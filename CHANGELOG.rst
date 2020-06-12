@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.79
+=======
+
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``cloudformation``: Update cloudformation command to latest version
+
+
 1.18.78
 =======
 

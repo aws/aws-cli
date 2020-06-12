@@ -52,21 +52,22 @@ class TestServerSideAutocompleter(unittest.TestCase):
             'arg_data': {
                 '': {
                     'aws': {
-                        'endpoint-url': ('endpoint-url', 'string',
-                                         'aws', '', None, False),
-                        'region': ('region', 'string', 'aws', '', None, False),
+                        'endpoint-url': ('endpoint-url', 'string', 'aws', '',
+                                         None, False, False, ''),
+                        'region': ('region', 'string', 'aws', '', None, False,
+                                   False, ''),
                     }
                 },
                 'aws.iam': {
                     'delete-user-policy': {
                         'policy-name': (
-                            'policy-name', 'string',
-                            'delete-user-policy', 'aws.iam.', None, False),
+                            'policy-name', 'string', 'delete-user-policy',
+                            'aws.iam.', None, False, False, ''),
                     },
                     'delete-user': {
                         'user-name': (
-                            'user-name', 'string',
-                            'delete-user', 'aws.iam.', None, False),
+                            'user-name', 'string', 'delete-user', 'aws.iam.',
+                            None, False, False, ''),
                     }
                 }
             }

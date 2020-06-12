@@ -39,7 +39,7 @@ def test_smoke_test_completer():
         completions = _autocomplete(f.name, 'aws ec2 desc')
         # The API can change so we won't assert a specific list, but we'll
         # pick a few operations that we know will always be there.
-        completion_strings = [c.result for c in completions]
+        completion_strings = [c.name for c in completions]
         assert_in('describe-instances', completion_strings)
         assert_in('describe-regions', completion_strings)
 

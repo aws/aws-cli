@@ -36,6 +36,7 @@ from botocore.configprovider import ConstantProvider
 from botocore.configprovider import ChainProvider
 
 from awscli import __version__
+from awscli.autocomplete.main import create_autocompleter
 from awscli.compat import default_pager
 from awscli.compat import get_stderr_text_writer
 from awscli.formatter import get_formatter
@@ -65,6 +66,9 @@ from awscli.constants import (
     PARAM_VALIDATION_ERROR_RC, CONFIGURATION_ERROR_RC, CLIENT_ERROR_RC,
     GENERAL_ERROR_RC,
 )
+from awscli.customizations.autoprompt.autoprompt import AutoPrompter
+from awscli.customizations.autoprompt.autoprompt import AutoPromptArgument
+from awscli.customizations.autoprompt.autoprompt import validate_auto_prompt_args_are_mutually_exclusive
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.exceptions import ConfigurationError
 
@@ -191,6 +195,10 @@ class CLIDriver(object):
             'cli_binary_format',
             self._construct_cli_binary_format_chain()
         )
+        config_store.set_config_provider(
+            'cli_auto_prompt',
+            self._construct_cli_auto_prompt_chain()
+        )
 
     def _construct_cli_region_chain(self):
         providers = [
@@ -260,6 +268,24 @@ class CLIDriver(object):
         ]
         return ChainProvider(providers=providers)
 
+    def _construct_cli_auto_prompt_chain(self):
+        providers = [
+            InstanceVarProvider(
+                instance_var='cli_auto_prompt',
+                session=self.session,
+            ),
+            EnvironmentProvider(
+                name='AWS_CLI_AUTO_PROMPT',
+                env=os.environ,
+            ),
+            ScopedConfigProvider(
+                config_var_name='cli_auto_prompt',
+                session=self.session
+            ),
+            ConstantProvider(value='off'),
+        ]
+        return ChainProvider(providers=providers)
+
     @property
     def subcommand_table(self):
         return self._get_command_table()
@@ -311,7 +337,7 @@ class CLIDriver(object):
         return commands
 
     def _add_aliases(self, command_table, parser):
-        parser = self._create_parser(command_table)
+        parser = self.create_parser(command_table)
         injector = AliasCommandInjector(
             self.session, self.alias_loader)
         injector.inject_aliases(command_table, parser)
@@ -327,7 +353,9 @@ class CLIDriver(object):
         # Then the final step is to send out an event so handlers
         # can add extra arguments or modify existing arguments.
         self.session.emit('building-top-level-params',
-                          argument_table=argument_table)
+                          session=self.session,
+                          argument_table=argument_table,
+                          driver=self)
         return argument_table
 
     def _create_cli_argument(self, option_name, option_params):
@@ -348,7 +376,7 @@ class CLIDriver(object):
                                    cli_data.get('synopsis', None),
                                    cli_data.get('help_usage', None))
 
-    def _create_parser(self, command_table):
+    def create_parser(self, command_table):
         # Also add a 'help' command.
         command_table['help'] = self.create_help_command()
         cli_data = self._get_cli_data()
@@ -358,6 +386,36 @@ class CLIDriver(object):
             self._get_argument_table(),
             prog="aws")
         return parser
+
+    def _filter_out_options(self, args):
+        override_options = ['--cli-auto-prompt', '--no-cli-auto-prompt']
+        return [
+                arg for arg in args
+                if (not arg.startswith('--') or arg in override_options)
+            ]
+
+    def prompt_for_args(self, args, completion_source=None):
+        if completion_source is None:
+            completion_source = create_autocompleter(driver=self)
+        option_parser = ArgTableArgParser(self.arg_table)
+        filtered_args = self._filter_out_options(args)
+        parsed_options, _ = option_parser.parse_known_args(filtered_args)
+        try:
+            validate_auto_prompt_args_are_mutually_exclusive(parsed_options)
+            prompter = AutoPrompter(completion_source)
+            auto_prompt_argument = AutoPromptArgument(self.session, prompter)
+            args = auto_prompt_argument.auto_prompt_arguments(args,
+                                                              parsed_options)
+        except PARAM_VALIDATION_ERRORS as e:
+            self._show_error(str(e))
+            sys.exit(PARAM_VALIDATION_ERROR_RC)
+        except KeyboardInterrupt:
+            # If the user hits Ctrl+C, we don't want to print a traceback to
+            # the user. Shell standard for signals that terminate the process
+            # is to return 128 + signum, in this case SIGINT=2, so we'll have
+            # a RC of 130.
+            sys.exit(128 + signal.SIGINT)
+        return args
 
     def main(self, args=None):
         """
@@ -370,8 +428,9 @@ class CLIDriver(object):
         if args is None:
             args = sys.argv[1:]
         command_table = self._get_command_table()
-        parser = self._create_parser(command_table)
+        parser = self.create_parser(command_table)
         self._add_aliases(command_table, parser)
+        args = self.prompt_for_args(args)
         parsed_args, remaining = parser.parse_known_args(args)
         try:
             # Because _handle_top_level_args emits events, it's possible
@@ -396,7 +455,7 @@ class CLIDriver(object):
             sys.stderr.write("\n")
             return PARAM_VALIDATION_ERROR_RC
         except ConfigurationError as e:
-            # RC 253 represents that the command may be syntatically correct
+            # RC 253 represents that the command may be syntactically correct
             # but the environment or configuration is incorrect.
             LOG.debug("Invalid CLI or client configuration", exc_info=True)
             write_exception(e, outfile=get_stderr_text_writer())
@@ -552,7 +611,7 @@ class ServiceCommand(CLICommand):
         # Once we know we're trying to call a service for this operation
         # we can go ahead and create the parser for it.  We
         # can also grab the Service object from botocore.
-        service_parser = self._create_parser()
+        service_parser = self.create_parser()
         parsed_args, remaining = service_parser.parse_known_args(args)
         command_table = self._get_command_table()
         return command_table[parsed_args.operation](remaining, parsed_globals)
@@ -591,7 +650,7 @@ class ServiceCommand(CLICommand):
                                   event_class='.'.join(self.lineage_names),
                                   name=self._name)
 
-    def _create_parser(self):
+    def create_parser(self):
         command_table = self._get_command_table()
         # Also add a 'help' command.
         command_table['help'] = self.create_help_command()
@@ -705,7 +764,6 @@ class ServiceOperation(object):
                    parsed_globals=parsed_globals)
         call_parameters = self._build_call_parameters(
             parsed_args, self.arg_table)
-
         event = 'calling-command.%s.%s' % (self._parent_name,
                                            self._name)
         override = self._emit_first_non_none_response(

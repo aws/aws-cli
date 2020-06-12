@@ -37,7 +37,7 @@ class TestGroupNameCompleter(unittest.TestCase):
                     'tail': {
                         'group_name': (
                             'group_name', 'string',
-                            'tail', 'aws.logs.', None, True),
+                            'tail', 'aws.logs.', None, True, False, None),
                     },
                 }
             }
@@ -83,4 +83,3 @@ class TestGroupNameCompleter(unittest.TestCase):
         parsed = self.parser.parse('aws logs tail ')
         results = self.completer.complete(parsed)
         self.assertEqual(results, [])
-

@@ -743,6 +743,15 @@ MANAGED_SCALING_POLICY_SCHEMA = {
                   "description": "The unit type used for specifying a managed scaling policy.",
                   "enum": ["VCPU", "Instances", "InstanceFleetUnits"],
                   "required": True
+               },
+               "MaximumCoreCapacityUnits": {
+                  "type": "integer",
+                  "description":
+                      "The upper boundary of EC2 units for core node type in a cluster. "
+                      "It is measured through VCPU cores or instances for instance groups "
+                      "and measured through units for instance fleets. "
+                      "The core units are not allowed to scale beyond this boundary. "
+                      "The parameter is used to split capacity allocation between core and task nodes."
                }
             } 
         }

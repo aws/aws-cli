@@ -59,4 +59,4 @@ def _get_index_filename():
 def autocomplete(command_line, position=None):
     completer = create_autocompleter()
     results = completer.autocomplete(command_line, position)
-    print("\n".join([result.result for result in results]))
+    print("\n".join([result.name for result in results]))

@@ -28,7 +28,8 @@ from awscli.autocomplete import db
 
 CLIArgument = namedtuple('CLIArgument', ['argname', 'type_name',
                                          'command', 'parent', 'nargs',
-                                         'positional_arg'])
+                                         'positional_arg', 'required',
+                                         'help_text'])
 
 
 class ModelIndex(object):
@@ -53,11 +54,19 @@ class ModelIndex(object):
     """
 
     _ARG_DATA_QUERY = """\
-        SELECT  argname, type_name, command, parent, nargs, positional_arg FROM param_table
+        SELECT argname, type_name, command, parent, nargs, positional_arg,
+            required, help_text FROM param_table
         WHERE
           parent = :parent AND
           command = :command AND
           argname = :argname
+    """
+
+    _GLOBAL_ARG_DATA_QUERY = """
+        SELECT argname, type_name, command, parent, nargs, positional_arg,
+            required, help_text FROM param_table
+        WHERE
+          parent = :parent
     """
 
     def __init__(self, db_filename):
@@ -129,3 +138,15 @@ class ModelIndex(object):
         match = results.fetchone()
         if match is not None:
             return CLIArgument(*match)
+
+    def get_global_arg_data(self, lineage=[], command_name='aws'):
+        """Return all metadata for the global args.
+
+        :return: A list of tuples.
+
+        """
+        db = self._get_db_connection()
+        parent = '.'.join(lineage)
+        results = db.execute(self._GLOBAL_ARG_DATA_QUERY,
+                             parent=parent, command=command_name)
+        return [result for result in results]

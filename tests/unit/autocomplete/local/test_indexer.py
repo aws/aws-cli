@@ -51,11 +51,13 @@ class DummyCommand(object):
 
 class DummyArg(object):
     def __init__(self, name, cli_type_name='string', nargs=None,
-                 positional_arg=False):
+                 positional_arg=False, required=False, help_text=''):
         self.name = name
         self.cli_type_name = cli_type_name
         self.nargs = nargs
         self.positional_arg = positional_arg
+        self.required = required
+        self.help_text = help_text
 
 
 class TestCanRetrieveCommands(unittest.TestCase):
@@ -179,7 +181,6 @@ class TestCanRetrieveCommands(unittest.TestCase):
             lineage=['aws', 'ec2'],
             command_name='describe-instances',
             arg_name='filters',
-
         )
         self.assertEqual(
             arg_data,
@@ -190,6 +191,8 @@ class TestCanRetrieveCommands(unittest.TestCase):
                 parent='aws.ec2',
                 nargs='+',
                 positional_arg='0',
+                required=False,
+                help_text=None
             ),
         )
 

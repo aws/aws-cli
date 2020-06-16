@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.81
+=======
+
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``dataexchange``: Update dataexchange command to latest version
+* api-change:``qldb``: Update qldb command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``polly``: Update polly command to latest version
+
+
 1.18.80
 =======
 

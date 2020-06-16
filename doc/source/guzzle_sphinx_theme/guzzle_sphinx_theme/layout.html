@@ -1,5 +1,7 @@
 {%- extends "basic/layout.html" %}
 
+{% set deprecated_commands = ['reference/ecr/get-login'] %}
+
 {# Do this so that bootstrap is included before the main css file #}
 {%- block htmltitle %}
   {{ super() }}
@@ -88,8 +90,10 @@
                     </p>
                     <p>
                         AWS CLI version 2, the latest major version of AWS CLI, is now stable and recommended for general use.
+                        {% if pagename not in deprecated_commands %}
                         To view this page for the AWS CLI version 2, click
                         <a href="https://awscli.amazonaws.com/v2/documentation/api/latest/{{ pagename }}.html">here</a>.
+                        {% endif %}
                         For more information see the AWS CLI version 2
                         <a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">installation instructions</a>
                         and

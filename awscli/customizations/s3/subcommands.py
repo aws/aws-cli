@@ -447,7 +447,7 @@ REQUEST_PAYER = {
     'name': 'request-payer', 'choices': ['requester'],
     'nargs': '?', 'const': 'requester',
     'help_text': (
-        'Confirms that the requester knows that she or he will be charged '
+        'Confirms that the requester knows that they will be charged '
         'for the request. Bucket owners need not specify this parameter in '
         'their requests. Documentation on downloading objects from requester '
         'pays buckets can be found at '

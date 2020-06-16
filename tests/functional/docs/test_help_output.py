@@ -80,6 +80,11 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.assert_contains('Launches the specified number of instances')
         self.assert_contains('``--count`` (string)')
 
+    def test_waiter_does_not_have_duplicate_global_params_link(self):
+        self.driver.main(['ec2', 'wait', 'help'])
+        self.assert_contains_with_count(
+            'for descriptions of global parameters', 1)
+
     def test_custom_service_help_output(self):
         self.driver.main(['s3', 'help'])
         self.assert_contains('.. _cli:aws s3:')

@@ -435,6 +435,36 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.81
+=======
+
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``dataexchange``: Update dataexchange command to latest version
+* api-change:``qldb``: Update qldb command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``polly``: Update polly command to latest version
+
+
+1.18.80
+=======
+
+* api-change:``appconfig``: Update appconfig command to latest version
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``iot``: Update iot command to latest version
+
+
+1.18.79
+=======
+
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``cloudformation``: Update cloudformation command to latest version
+
+
 1.18.78
 =======
 

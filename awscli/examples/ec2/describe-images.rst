@@ -1,6 +1,6 @@
-**Example 1: To describe a specific AMI**
+**Example 1: To describe an AMI**
 
-The following ``describe-images`` example describes the specified AMI. ::
+The following ``describe-images`` example describes the specified AMI in the specified Region. ::
 
     aws ec2 describe-images \
         --region us-east-1 \
@@ -45,9 +45,9 @@ Output::
         ]
     }
 
-For more information, see `Amazon Machine Images (AMI) <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html>`__ in the *Amazon Elastic Compute Cloud User Guide*.
+For more information, see `Amazon Machine Images (AMI) <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html>`__ in the *Amazon EC2 User Guide*.
 
-**Example 2: To describe Windows AMIs from Amazon that are backed by Amazon EBS**
+**Example 2: To describe AMIs based on filters**
 
 The following ``describe-images`` example describes Windows AMIs provided by Amazon that are backed by Amazon EBS. ::
 
@@ -55,21 +55,22 @@ The following ``describe-images`` example describes Windows AMIs provided by Ama
         --owners amazon \
         --filters "Name=platform,Values=windows" "Name=root-device-type,Values=ebs"
 
-**Example 3: To describe tagged AMIs**
+For an example of the output for ``describe-images``, see Example 1.
 
-The following ``describe-images`` example describes all AMIs that have the tag ``Custom=Linux1``. The output is filtered to display only the AMI IDs. ::
+For additional examples using filters, see `Listing and filtering your resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html#Filtering_Resources_CLI>`__ in the *Amazon EC2 User Guide*.
+
+**Example 3: To describe AMIs based on tags**
+
+The following ``describe-images`` example describes all AMIs that have the tag ``Type=Custom``. The example uses the ``--query`` parameter to display only the AMI IDs. ::
 
     aws ec2 describe-images \
-        --filters "Name=tag:Custom,Values=Linux1" \
-        --query 'Images[*].{ID:ImageId}'
+        --filters "Name=tag:Type,Values=Custom" \
+        --query 'Images[*].[ImageId]' \
+        --output text
 
 Output::
 
-    [
-        {
-            "ID": "ami-1a2b3c4d"
-        }, 
-        {
-            "ID": "ami-ab12cd34"
-        }
-    ]
+    ami-1234567890EXAMPLE
+    ami-0abcdef1234567890
+
+For additional examples using tag filters, see `Working with tags <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#Using_Tags_CLI>`__ in the *Amazon EC2 User Guide*.

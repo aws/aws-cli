@@ -3,22 +3,26 @@
 The following ``reboot-db-instance`` example starts a reboot of the specified DB instance. ::
 
     aws rds reboot-db-instance \
-        --db-instance-identifier test-instance
+        --db-instance-identifier test-mysql-instance
 
 Output::
 
     {
         "DBInstance": {
-            "DBInstanceIdentifier": "test-instance",
-            "DBInstanceClass": "db.m1.small",
+            "DBInstanceIdentifier": "test-mysql-instance",
+            "DBInstanceClass": "db.t3.micro",
             "Engine": "mysql",
             "DBInstanceStatus": "rebooting",
-            "MasterUsername": "myawsuser",
+            "MasterUsername": "admin",
             "Endpoint": {
-                "Address": "test-instance.cdgmuqiadpid.us-east-1.rds.amazonaws.com",
+                "Address": "test-mysql-instance.############.us-west-2.rds.amazonaws.com",
                 "Port": 3306,
-                "HostedZoneId": "Z2R2ITUGPM61AM"
+                "HostedZoneId": "Z1PVIF0EXAMPLE"
             },
-            <...some output omitted...>
+            
+        ... output omitted...
+        
         }
     }
+
+For more information, see `Rebooting a DB Instance <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_RebootInstance.html>`__ in the *Amazon RDS User Guide*.

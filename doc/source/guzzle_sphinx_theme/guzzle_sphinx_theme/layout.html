@@ -1,6 +1,10 @@
 {%- extends "basic/layout.html" %}
 
-{% set deprecated_commands = ['reference/ecr/get-login'] %}
+{% set deprecated_commands = ({
+    'reference/ecr/get-login': ['reference/ecr/get-login-password', 'get-login-password'],
+    'reference/cloudtrail/create-subscription': None,
+    'reference/cloudtrail/update-subscription': None,
+}) %}
 
 {# Do this so that bootstrap is included before the main css file #}
 {%- block htmltitle %}
@@ -90,9 +94,16 @@
                     </p>
                     <p>
                         AWS CLI version 2, the latest major version of AWS CLI, is now stable and recommended for general use.
-                        {% if pagename not in deprecated_commands %}
-                        To view this page for the AWS CLI version 2, click
-                        <a href="https://awscli.amazonaws.com/v2/documentation/api/latest/{{ pagename }}.html">here</a>.
+                        {% if pagename in deprecated_commands %}
+                            {% if deprecated_commands[pagename] %}
+                                This command is deprecated in AWS CLI version 2, use
+                                <a href="https://awscli.amazonaws.com/v2/documentation/api/latest/{{ deprecated_commands[pagename][0] }}.html">{{ deprecated_commands[pagename][1] }}</a> instead.
+                            {% else %}
+                                This command is deprecated and no longer available in AWS CLI version 2.
+                            {% endif %}
+                        {% else %}
+                            To view this page for the AWS CLI version 2, click
+                            <a href="https://awscli.amazonaws.com/v2/documentation/api/latest/{{ pagename }}.html">here</a>.
                         {% endif %}
                         For more information see the AWS CLI version 2
                         <a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">installation instructions</a>

@@ -474,3 +474,10 @@ class TestAliases(BaseAWSHelpOutputTest):
         self.add_alias('my-alias', 'ec2 describe-regions')
         self.driver.main(['help'])
         self.assert_not_contains('my-alias')
+
+
+class TestStreamingOutputHelp(BaseAWSHelpOutputTest):
+    def test_service_help_command_has_note(self):
+        self.driver.main(['s3api', 'get-object', 'help'])
+        self.assert_not_contains('outfile <value>')
+        self.assert_contains('<outfile>')

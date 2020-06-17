@@ -6,14 +6,13 @@ import subprocess
 
 from configparser import RawConfigParser
 from io import StringIO
-from urllib.parse import urlsplit
 
+from awscli.compat import urlparse
 from awscli.customizations import utils as cli_utils
 from awscli.customizations.commands import BasicCommand
-from awscli.utils import original_ld_library_path
 
 
-class BaseLogin:
+class BaseLogin(object):
 
     def __init__(self, auth_token, repository_endpoint, subprocess_utils):
         self.auth_token = auth_token
@@ -36,21 +35,20 @@ class BaseLogin:
 
         for command in commands:
             try:
-                with original_ld_library_path():
-                    self.subprocess_utils.run(
-                        command,
-                        capture_output=True,
-                        check=True
-                    )
+                self.subprocess_utils.run(
+                    command,
+                    capture_output=True,
+                    check=True
+                )
             except OSError as ex:
                 if ex.errno == errno.ENOENT:
                     raise ValueError(
-                        f'{tool} was not found. Please verify installation.'
+                        '%s was not found. Please verify installation.' % tool
                     )
                 raise ex
 
         sys.stdout.write(
-            f'Successfully logged in to codeartifact for {tool}.'
+            'Successfully logged in to codeartifact for %s.' % tool
         )
         sys.stdout.write(os.linesep)
 
@@ -80,7 +78,7 @@ class NpmLogin(BaseLogin):
             [cls.NPM_CMD, 'config', 'set', 'registry', endpoint]
         )
 
-        repo_uri = urlsplit(endpoint)
+        repo_uri = urlparse.urlsplit(endpoint)
 
         # configure npm to always require auth for the repository.
         always_auth_config = '//{}{}:always-auth'.format(
@@ -113,7 +111,7 @@ class PipLogin(BaseLogin):
 
     @classmethod
     def get_commands(cls, endpoint, auth_token, **kwargs):
-        repo_uri = urlsplit(endpoint)
+        repo_uri = urlparse.urlsplit(endpoint)
         pip_index_url = cls.PIP_INDEX_URL_FMT.format(
             scheme=repo_uri.scheme,
             auth_token=auth_token,
@@ -126,7 +124,7 @@ class PipLogin(BaseLogin):
 
 class TwineLogin(BaseLogin):
 
-    DEFAULT_PYPI_RC_FMT = '''\
+    DEFAULT_PYPI_RC_FMT = u'''\
 [distutils]
 index-servers=
     pypi
@@ -147,7 +145,8 @@ password: {auth_token}'''
         if pypi_rc_path is None:
             pypi_rc_path = self.get_pypi_rc_path()
         self.pypi_rc_path = pypi_rc_path
-        super().__init__(auth_token, repository_endpoint, subprocess_utils)
+        super(TwineLogin, self).__init__(
+            auth_token, repository_endpoint, subprocess_utils)
 
     @classmethod
     def get_commands(cls, endpoint, auth_token, **kwargs):
@@ -192,7 +191,7 @@ password: {auth_token}'''
                 pypi_rc.set('codeartifact', 'username', 'aws')
                 pypi_rc.set('codeartifact', 'password', auth_token)
             except Exception as e:  # invalid .pypirc file
-                sys.stdout.write(f'{pypi_rc_path} is in an invalid state.')
+                sys.stdout.write('%s is in an invalid state.' % pypi_rc_path)
                 sys.stdout.write(os.linesep)
                 raise e
         else:
@@ -218,7 +217,7 @@ password: {auth_token}'''
             sys.stdout.write('Dryrun mode is enabled, not writing to pypirc.')
             sys.stdout.write(os.linesep)
             sys.stdout.write(
-                f'{self.pypi_rc_path} would have been set to the following:'
+                '%s would have been set to the following:' % self.pypi_rc_path
             )
             sys.stdout.write(os.linesep)
             sys.stdout.write(os.linesep)

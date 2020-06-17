@@ -5,9 +5,9 @@ import string
 import subprocess
 
 from configparser import RawConfigParser
-from urllib.parse import urlsplit
 
 from awscli.testutils import unittest, mock, FileCreator
+from awscli.compat import six, urlparse
 from awscli.customizations.codeartifact.login import BaseLogin
 from awscli.customizations.codeartifact.login import NpmLogin
 from awscli.customizations.codeartifact.login import PipLogin
@@ -50,7 +50,7 @@ class TestBaseLogin(unittest.TestCase):
             errno.ENOENT, 'not found error'
         )
         tool = 'NotSupported'
-        with self.assertRaisesRegex(ValueError, f'{tool} was not found.'):
+        with self.assertRaisesRegexp(ValueError, '%s was not found.' % tool):
             self.test_subject._run_commands(tool, ['echo', tool])
 
     def test_run_commands_unhandled_error(self):
@@ -58,7 +58,7 @@ class TestBaseLogin(unittest.TestCase):
             errno.ENOSYS, 'unhandled error'
         )
         tool = 'NotSupported'
-        with self.assertRaisesRegex(OSError, 'unhandled error'):
+        with self.assertRaisesRegexp(OSError, 'unhandled error'):
             self.test_subject._run_commands(tool, ['echo', tool])
 
 
@@ -80,7 +80,7 @@ class TestNpmLogin(unittest.TestCase):
                 repository=self.repository
             )
 
-        repo_uri = urlsplit(self.endpoint)
+        repo_uri = urlparse.urlsplit(self.endpoint)
         always_auth_config = '//{}{}:always-auth'.format(
             repo_uri.netloc, repo_uri.path
         )
@@ -146,7 +146,7 @@ class TestPipLogin(unittest.TestCase):
                 repository=self.repository
             )
 
-        repo_uri = urlsplit(self.endpoint)
+        repo_uri = urlparse.urlsplit(self.endpoint)
         self.pip_index_url = self.PIP_INDEX_URL_FMT.format(
             scheme=repo_uri.scheme,
             auth_token=self.auth_token,
@@ -223,6 +223,8 @@ class TestTwineLogin(unittest.TestCase):
         self, pypi_rc_str, server, repo_url=None, username=None, password=None
     ):
         pypi_rc = RawConfigParser()
+        if not isinstance(pypi_rc_str, six.text_type):
+             pypi_rc_str = pypi_rc_str.decode('utf-8')
         pypi_rc.read_string(pypi_rc_str)
 
         self.assertIn('distutils', pypi_rc.sections())

@@ -90,7 +90,7 @@ class TestDeployCommand(BaseYAMLTest):
             open_mock = mock.mock_open()
             # Patch the file open method to return template string
             with patch(
-                    "awscli.customizations.cloudformation.deploy.open",
+                    "awscli.customizations.cloudformation.deploy.compat_open",
                     open_mock(read_data=template_str)) as open_mock:
 
                 fake_template = get_example_template()
@@ -108,7 +108,6 @@ class TestDeployCommand(BaseYAMLTest):
                 result = self.deploy_command._run_main(self.parsed_args,
                                               parsed_globals=self.parsed_globals)
                 self.assertEquals(0, result)
-
                 open_mock.assert_called_once_with(file_path, "r")
 
                 self.deploy_command.deploy.assert_called_once_with(
@@ -162,7 +161,7 @@ class TestDeployCommand(BaseYAMLTest):
         open_mock = mock.mock_open()
 
         with patch(
-                "awscli.customizations.cloudformation.deploy.open",
+                "awscli.customizations.cloudformation.deploy.compat_open",
                 open_mock(read_data=template_str)) as open_mock:
             with self.assertRaises(exceptions.DeployBucketRequiredError):
                 result = self.deploy_command._run_main(self.parsed_args,
@@ -187,7 +186,7 @@ class TestDeployCommand(BaseYAMLTest):
         open_mock = mock.mock_open()
 
         with patch(
-                "awscli.customizations.cloudformation.deploy.open",
+                "awscli.customizations.cloudformation.deploy.compat_open",
                 open_mock(read_data=template_str)) as open_mock:
 
             self.parsed_args.s3_bucket = bucket_name

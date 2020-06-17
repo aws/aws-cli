@@ -436,8 +436,8 @@ class TestDeployer(unittest.TestCase):
             mock_deployer.wait_for_execute(stack_name, changeset_type)
 
         waiter_config = {
-            'Delay': 5,
-            'MaxAttempts': 720,
+            'Delay': 30,
+            'MaxAttempts': 120,
         }
         mock_waiter.wait.assert_called_once_with(StackName=stack_name,
                                                  WaiterConfig=waiter_config)

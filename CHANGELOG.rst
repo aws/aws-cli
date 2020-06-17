@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.82
+=======
+
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``snowball``: Update snowball command to latest version
+
+
 1.18.81
 =======
 

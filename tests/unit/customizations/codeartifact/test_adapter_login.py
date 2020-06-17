@@ -4,10 +4,8 @@ import platform
 import string
 import subprocess
 
-from configparser import RawConfigParser
-
 from awscli.testutils import unittest, mock, FileCreator
-from awscli.compat import six, urlparse
+from awscli.compat import urlparse, RawConfigParser, StringIO
 from awscli.customizations.codeartifact.login import BaseLogin
 from awscli.customizations.codeartifact.login import NpmLogin
 from awscli.customizations.codeartifact.login import PipLogin
@@ -46,7 +44,7 @@ class TestBaseLogin(unittest.TestCase):
             )
 
     def test_run_commands_nonexistent_command(self):
-        self.subprocess_utils.run.side_effect = OSError(
+        self.subprocess_utils.check_call.side_effect = OSError(
             errno.ENOENT, 'not found error'
         )
         tool = 'NotSupported'
@@ -54,7 +52,7 @@ class TestBaseLogin(unittest.TestCase):
             self.test_subject._run_commands(tool, ['echo', tool])
 
     def test_run_commands_unhandled_error(self):
-        self.subprocess_utils.run.side_effect = OSError(
+        self.subprocess_utils.check_call.side_effect = OSError(
             errno.ENOSYS, 'unhandled error'
         )
         tool = 'NotSupported'
@@ -109,11 +107,11 @@ class TestNpmLogin(unittest.TestCase):
         expected_calls = [
             mock.call(
                 command,
-                capture_output=True,
-                check=True
+                stdout=self.subprocess_utils.PIPE,
+                stderr=self.subprocess_utils.PIPE,
             ) for command in self.commands
         ]
-        self.subprocess_utils.run.assert_has_calls(
+        self.subprocess_utils.check_call.assert_has_calls(
             expected_calls, any_order=True
         )
 
@@ -125,7 +123,7 @@ class TestNpmLogin(unittest.TestCase):
 
     def test_login_dry_run(self):
         self.test_subject.login(dry_run=True)
-        self.subprocess_utils.assert_not_called()
+        self.subprocess_utils.check_call.assert_not_called()
 
 
 class TestPipLogin(unittest.TestCase):
@@ -171,15 +169,15 @@ class TestPipLogin(unittest.TestCase):
 
     def test_login(self):
         self.test_subject.login()
-        self.subprocess_utils.run.assert_called_once_with(
+        self.subprocess_utils.check_call.assert_called_once_with(
             ['pip', 'config', 'set', 'global.index-url', self.pip_index_url],
-            capture_output=True,
-            check=True
+            stdout=self.subprocess_utils.PIPE,
+            stderr=self.subprocess_utils.PIPE,
         )
 
     def test_login_dry_run(self):
         self.test_subject.login(dry_run=True)
-        self.subprocess_utils.assert_not_called()
+        self.subprocess_utils.check_call.assert_not_called()
 
 
 class TestTwineLogin(unittest.TestCase):
@@ -223,9 +221,7 @@ class TestTwineLogin(unittest.TestCase):
         self, pypi_rc_str, server, repo_url=None, username=None, password=None
     ):
         pypi_rc = RawConfigParser()
-        if not isinstance(pypi_rc_str, six.text_type):
-             pypi_rc_str = pypi_rc_str.decode('utf-8')
-        pypi_rc.read_string(pypi_rc_str)
+        pypi_rc.readfp(StringIO(pypi_rc_str))
 
         self.assertIn('distutils', pypi_rc.sections())
         self.assertIn('index-servers', pypi_rc.options('distutils'))
@@ -275,7 +271,7 @@ class TestTwineLogin(unittest.TestCase):
 
     def test_login_dry_run(self):
         self.test_subject.login(dry_run=True)
-        self.subprocess_utils.assert_not_called()
+        self.subprocess_utils.check_call.assert_not_called()
         self.assertFalse(os.path.exists(self.test_pypi_rc_path))
 
     def test_login_existing_pypi_rc_not_clobbered(self):

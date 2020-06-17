@@ -36,6 +36,8 @@ StringIO = six.StringIO
 BytesIO = six.BytesIO
 urlopen = six.moves.urllib.request.urlopen
 binary_type = six.binary_type
+RawConfigParser = six.moves.configparser.RawConfigParser
+
 
 # Most, but not all, python installations will have zlib. This is required to
 # compress any files we send via a push. If we can't compress, we can still

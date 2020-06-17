@@ -3,19 +3,17 @@ import platform
 import string
 import subprocess
 
-from configparser import RawConfigParser
-from io import StringIO
-from urllib.parse import urlsplit
-
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, mock
+from awscli.compat import urlparse, StringIO, RawConfigParser
 from awscli.customizations.codeartifact.login import CodeArtifactLogin
+
 
 class TestCodeArtifactLogin(BaseAWSCommandParamsTest):
 
     prefix = 'codeartifact login'
 
     def setUp(self):
-        super().setUp()
+        super(TestCodeArtifactLogin, self).setUp()
 
         self.file_creator = FileCreator()
         self.test_pypi_rc_path = self.file_creator.full_path('pypirc')
@@ -34,11 +32,11 @@ class TestCodeArtifactLogin(BaseAWSCommandParamsTest):
         self.pypi_rc_path_mock = self.pypi_rc_path_patch.start()
         self.pypi_rc_path_mock.return_value = self.test_pypi_rc_path
 
-        self.subprocess_patch = mock.patch('subprocess.run')
+        self.subprocess_patch = mock.patch('subprocess.check_call')
         self.subprocess_mock = self.subprocess_patch.start()
 
     def tearDown(self):
-        super().tearDown()
+        super(TestCodeArtifactLogin, self).tearDown()
         self.pypi_rc_path_patch.stop()
         self.subprocess_patch.stop()
         self.file_creator.remove_all()
@@ -75,7 +73,7 @@ class TestCodeArtifactLogin(BaseAWSCommandParamsTest):
     def _get_npm_commands(self):
         npm_cmd = 'npm.cmd' if platform.system().lower() == 'windows' else 'npm'
 
-        repo_uri = urlsplit(self.endpoint)
+        repo_uri = urlparse.urlsplit(self.endpoint)
         always_auth_config = '//{}{}:always-auth'.format(
             repo_uri.netloc, repo_uri.path
         )
@@ -98,7 +96,7 @@ class TestCodeArtifactLogin(BaseAWSCommandParamsTest):
 
     def _get_pip_commands(self):
         pip_index_url_fmt = '{scheme}://aws:{auth_token}@{netloc}{path}simple/'
-        repo_uri = urlsplit(self.endpoint)
+        repo_uri = urlparse.urlsplit(self.endpoint)
         pip_index_url = pip_index_url_fmt.format(
             scheme=repo_uri.scheme,
             auth_token=self.auth_token,
@@ -147,7 +145,7 @@ password: {auth_token}'''
             pypi_rc.set('codeartifact', 'username', 'aws')
             pypi_rc.set('codeartifact', 'password', self.auth_token)
         else:
-            pypi_rc.read_string(default_pypi_rc)
+            pypi_rc.readfp(StringIO(default_pypi_rc))
 
         pypi_rc_stream = StringIO()
         pypi_rc.write(pypi_rc_stream)
@@ -194,8 +192,8 @@ password: {auth_token}'''
         expected_calls = [
             mock.call(
                 command,
-                capture_output=True,
-                check=True
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
             ) for command in commands
         ]
         self.subprocess_mock.assert_has_calls(
@@ -211,7 +209,7 @@ password: {auth_token}'''
         self, pypi_rc_str, server, repo_url=None, username=None, password=None
     ):
         pypi_rc = RawConfigParser()
-        pypi_rc.read_string(pypi_rc_str)
+        pypi_rc.readfp(StringIO(pypi_rc_str))
 
         self.assertIn('distutils', pypi_rc.sections())
         self.assertIn('index-servers', pypi_rc.options('distutils'))

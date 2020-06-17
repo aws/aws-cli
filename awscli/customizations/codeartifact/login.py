@@ -4,10 +4,7 @@ import platform
 import sys
 import subprocess
 
-from configparser import RawConfigParser
-from io import StringIO
-
-from awscli.compat import urlparse
+from awscli.compat import urlparse, RawConfigParser, StringIO
 from awscli.customizations import utils as cli_utils
 from awscli.customizations.commands import BasicCommand
 
@@ -35,10 +32,10 @@ class BaseLogin(object):
 
         for command in commands:
             try:
-                self.subprocess_utils.run(
+                self.subprocess_utils.check_call(
                     command,
-                    capture_output=True,
-                    check=True
+                    stdout=self.subprocess_utils.PIPE,
+                    stderr=self.subprocess_utils.PIPE,
                 )
             except OSError as ex:
                 if ex.errno == errno.ENOENT:
@@ -195,7 +192,7 @@ password: {auth_token}'''
                 sys.stdout.write(os.linesep)
                 raise e
         else:
-            pypi_rc.read_string(default_pypi_rc)
+            pypi_rc.readfp(StringIO(default_pypi_rc))
 
         pypi_rc_stream = StringIO()
         pypi_rc.write(pypi_rc_stream)

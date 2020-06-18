@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+2.0.24
+======
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* bugfix:locale: Add support for AWS_CLI_FILE_ENCODING environment variable to cloudformation and eks customizations
+* api-change:``snowball``: Update snowball command to latest version
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``sesv2``: Update sesv2 command to latest version
+* api-change:``meteringmarketplace``: Update meteringmarketplace command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``support``: Update support command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+
+
 2.0.23
 ======
 

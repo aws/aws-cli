@@ -128,8 +128,10 @@ class CLIDocumentEventHandler(object):
                 [a.cli_name for a in
                  self._arg_groups[argument.group_name]])
             self._documented_arg_groups.append(argument.group_name)
-        else:
+        elif argument.cli_name.startswith('--'):
             option_str = '%s <value>' % argument.cli_name
+        else:
+            option_str = '<%s>' % argument.cli_name
         if not (argument.required
                 or getattr(argument, '_DOCUMENT_AS_REQUIRED', False)):
             option_str = '[%s]' % option_str

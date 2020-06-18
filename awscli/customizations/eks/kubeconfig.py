@@ -17,6 +17,7 @@ import os
 import ruamel.yaml as yaml
 from botocore.compat import OrderedDict
 
+from awscli.compat import compat_open
 from awscli.customizations.eks.exceptions import EKSError
 from awscli.customizations.eks.ordered_yaml import (
     ordered_yaml_load,
@@ -153,7 +154,7 @@ class KubeconfigLoader(object):
         :rtype: Kubeconfig
         """
         try:
-            with open(path, "r") as stream:
+            with compat_open(path, "r") as stream:
                 loaded_content = ordered_yaml_load(stream)
         except IOError as e:
             if e.errno == errno.ENOENT:
@@ -192,7 +193,7 @@ class KubeconfigWriter(object):
                 raise KubeconfigInaccessableError(
                         "Can't create directory for writing: {0}".format(e))
         try:
-            with open(config.path, "w+") as stream:
+            with compat_open(config.path, "w+") as stream:
                 ordered_yaml_dump(config.content, stream)
         except IOError as e:
             raise KubeconfigInaccessableError(

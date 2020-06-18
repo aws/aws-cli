@@ -17,6 +17,7 @@ import logging
 
 from botocore.client import Config
 
+from awscli.compat import compat_open
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.deployer import Deployer
 from awscli.customizations.s3uploader import S3Uploader
@@ -250,7 +251,7 @@ class DeployCommand(BasicCommand):
                     template_path=template_path)
 
         # Parse parameters
-        with open(template_path, "r") as handle:
+        with compat_open(template_path, "r") as handle:
             template_str = handle.read()
 
         stack_name = parsed_args.stack_name

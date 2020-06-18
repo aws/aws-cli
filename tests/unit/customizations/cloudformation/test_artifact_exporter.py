@@ -918,7 +918,8 @@ class TestArtifactExporter(BaseYAMLTest):
 
         # Patch the file open method to return template string
         with patch(
-                "awscli.customizations.cloudformation.artifact_exporter.open",
+                "awscli.customizations.cloudformation."
+                "artifact_exporter.compat_open",
                 open_mock(read_data=template_str)) as open_mock:
 
             template_exporter = Template(
@@ -983,7 +984,8 @@ class TestArtifactExporter(BaseYAMLTest):
 
         # Patch the file open method to return template string
         with patch(
-                "awscli.customizations.cloudformation.artifact_exporter.open",
+                "awscli.customizations.cloudformation."
+                "artifact_exporter.compat_open",
                 open_mock(read_data=template_str)) as open_mock:
 
             template_exporter = Template(
@@ -1044,7 +1046,8 @@ class TestArtifactExporter(BaseYAMLTest):
         yaml_parse_mock.return_value = template_dict
 
         with patch(
-                "awscli.customizations.cloudformation.artifact_exporter.open",
+                "awscli.customizations.cloudformation."
+                "artifact_exporter.compat_open",
                 open_mock(read_data=template_str)) as open_mock:
             with patch.dict(GLOBAL_EXPORT_DICT, {"Fn::Transform": include_transform_export_handler_mock}):
                 template_exporter = Template(

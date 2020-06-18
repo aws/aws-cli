@@ -23,6 +23,7 @@ from botocore.utils import set_value_from_jmespath
 
 from awscli.compat import urlparse
 from contextlib import contextmanager
+from awscli.compat import compat_open
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump, \
     yaml_parse
@@ -571,7 +572,7 @@ class Template(object):
         abs_template_path = make_abs_path(parent_dir, template_path)
         template_dir = os.path.dirname(abs_template_path)
 
-        with open(abs_template_path, "r") as handle:
+        with compat_open(abs_template_path, "r") as handle:
             template_str = handle.read()
 
         self.template_dict = yaml_parse(template_str)

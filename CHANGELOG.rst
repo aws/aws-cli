@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.18.83
+=======
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``support``: Update support command to latest version
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* enchancement:``codeartifact``: Backport ``login`` command to AWS CLI v1
+* api-change:``meteringmarketplace``: Update meteringmarketplace command to latest version
+* api-change:``sesv2``: Update sesv2 command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
 1.18.82
 =======
 

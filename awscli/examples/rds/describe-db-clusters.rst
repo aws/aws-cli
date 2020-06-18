@@ -1,4 +1,4 @@
-**To describe a DB cluster**
+**Example 1: To describe a DB cluster**
 
 The following ``describe-db-clusters`` example retrieves the details of the specified DB cluster. ::
 
@@ -92,5 +92,50 @@ Output::
             }
         ]
     }
+
+**Example 2: To list certain attributes of all DB clusters**
+
+The following ``describe-db-clusters`` example retrieves only the ``DBClusterIdentifier``, ``Endpoint``, and ``ReaderEndpoint`` attributes of all your DB clusters in the current AWS Region. ::
+
+    aws rds describe-db-clusters \
+        --query 'DBClusters[].{DBClusterIdentifier:DBClusterIdentifier,Endpoint:Endpoint,ReaderEndpoint:ReaderEndpoint}'
+
+Output::
+
+    [
+        {
+            "Endpoint": "cluster-57-2020-05-01-2270.cluster-cnpexample.us-east-1.rds.amazonaws.com",
+            "ReaderEndpoint": "cluster-57-2020-05-01-2270.cluster-ro-cnpexample.us-east-1.rds.amazonaws.com",
+            "DBClusterIdentifier": "cluster-57-2020-05-01-2270"
+        },
+        {
+            "Endpoint": "cluster-57-2020-05-01-4615.cluster-cnpexample.us-east-1.rds.amazonaws.com",
+            "ReaderEndpoint": "cluster-57-2020-05-01-4615.cluster-ro-cnpexample.us-east-1.rds.amazonaws.com",
+            "DBClusterIdentifier": "cluster-57-2020-05-01-4615"
+        },
+        {
+            "Endpoint": "pg2-cluster.cluster-cnpexample.us-east-1.rds.amazonaws.com",
+            "ReaderEndpoint": "pg2-cluster.cluster-ro-cnpexample.us-east-1.rds.amazonaws.com",
+            "DBClusterIdentifier": "pg2-cluster"
+        },
+        ...output omitted...
+        }
+    ]
+
+**Example 3: To list DB clusters with a specific attribute**
+
+The following ``describe-db-clusters`` example retrieves only the ``DBClusterIdentifier`` and ``Engine`` attributes of your DB clusters that use the ``aurora-postgresql`` DB engine. ::
+
+    aws rds describe-db-clusters \
+        --query 'DBClusters[].{DBClusterIdentifier:DBClusterIdentifier,Engine:Engine} | [?Engine == `aurora-postgresql`]'
+
+Output::
+
+    [
+        {
+            "Engine": "aurora-postgresql",
+            "DBClusterIdentifier": "pg2-cluster"
+        }
+    ]
 
 For more information, see `Amazon Aurora DB Clusters <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.html>`__ in the *Amazon Aurora User Guide*.

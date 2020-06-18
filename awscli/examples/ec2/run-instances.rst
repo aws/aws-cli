@@ -1,15 +1,11 @@
 **Example 1: To launch an instance into a default subnet**
 
-The following ``run-instances`` example launches a single instance of type ``t2.micro`` into the specified subnet. The key pair and the security group must already exist. ::
+The following ``run-instances`` example launches a single instance of type ``t2.micro`` into the default subnet for the current Region and associates it with the default subnet for the default VPC for the Region. The key pair is optional if you do not plan to connect to your instance using SSH (Linux) or RDP (Windows). ::
 
     aws ec2 run-instances \
         --image-id ami-0abcdef1234567890 \
         --instance-type t2.micro \
-        --count 1 \
-        --subnet-id subnet-04a636d18e83cfacb
-        --key-name MyKeyPair \
-        --security-group-ids sg-0598c7d356eba48d7 \
-        --associate-public-ip-address
+        --key-name MyKeyPair 
 
 Output::
 
@@ -118,15 +114,15 @@ Output::
 
 **Example 2: To launch an instance into a non-default subnet and add a public IP address**
 
-The following ``run-instances`` example requests a public IP address for an instance that you're launching into a nondefault subnet. ::
+The following ``run-instances`` example requests a public IP address for an instance that you're launching into a nondefault subnet. The instance is associated with the specified security group. ::
 
-    aws ec2 run-instances \
-        --image-id ami-0abcdef1234567890 \
-        --instance-type t2.micro \
-        --count 1 \
-        --subnet-id subnet-08fc749671b2d077c \
-        --key-name MyKeyPair \
-        --security-group-ids sg-0b0384b66d7d692f9
+  aws ec2 run-instances \
+      --image-id ami-0abcdef1234567890 \
+      --instance-type t2.micro \
+      --subnet-id subnet-08fc749671b2d077c \
+      --security-group-ids sg-0b0384b66d7d692f9 \
+      --associate-public-ip-address \
+      --key-name MyKeyPair 
 
 For an example of the output for ``run-instances``, see Example 1.
 
@@ -134,16 +130,15 @@ For an example of the output for ``run-instances``, see Example 1.
 
 The following ``run-instances`` example uses a block device mapping, specified in mapping.json, to attach additional volumes at launch. A block device mapping can specify EBS volumes, instance store volumes, or both EBS volumes and instance store volumes. ::
 
-    aws ec2 run-instances \
-        --image-id ami-0abcdef1234567890 \
-        --instance-type t2.micro \
-        --count 1 \
-        --subnet-id subnet-08fc749671b2d077c \
-        --key-name MyKeyPair \
-        --security-group-ids sg-0b0384b66d7d692f9 \
-        --block-device-mappings file://mapping.json
+  aws ec2 run-instances \
+      --image-id ami-0abcdef1234567890 \
+      --instance-type t2.micro \
+      --subnet-id subnet-08fc749671b2d077c \
+      --security-group-ids sg-0b0384b66d7d692f9 \
+      --key-name MyKeyPair \
+      --block-device-mappings file://mapping.json
 
-Contents of ``mapping.json`` that specifies ``/dev/sdh`` an empty EBS volume of 100 GB in size::
+Contents of ``mapping.json``. This example adds ``/dev/sdh`` an empty EBS volume with a size of 100 GiB. ::
 
     [
         {
@@ -154,7 +149,7 @@ Contents of ``mapping.json`` that specifies ``/dev/sdh`` an empty EBS volume of 
         }
     ]
 
-Contents of ``mapping.json`` that adds ``ephemeral1`` as an instance store volume::
+Contents of ``mapping.json``. This example adds ``ephemeral1`` as an instance store volume. ::
 
     [
         {
@@ -171,14 +166,14 @@ For more information about block device mappings, see `Block device mapping <htt
 
 The following ``run-instances`` example adds a tag with a key of ``webserver`` and value of ``production`` to the instance. The command also applies a tag with a key of ``cost-center`` and a value of ``cc123`` to any EBS volume that's created (in this case, the root volume). ::
 
-    aws ec2 run-instances \
-        --image-id ami-0abcdef1234567890 \
-        --instance-type t2.micro \
-        --count 1 \
-        --subnet-id subnet-08fc749671b2d077c \
-        --key-name MyKeyPair \
-        --security-group-ids sg-0b0384b66d7d692f9 \
-        --tag-specifications 'ResourceType=instance,Tags=[{Key=webserver,Value=production}]' 'ResourceType=volume,Tags=[{Key=cost-center,Value=cc123}]' 
+  aws ec2 run-instances \
+      --image-id ami-0abcdef1234567890 \
+      --instance-type t2.micro \
+      --count 1 \
+      --subnet-id subnet-08fc749671b2d077c \
+      --key-name MyKeyPair \
+      --security-group-ids sg-0b0384b66d7d692f9 \
+      --tag-specifications 'ResourceType=instance,Tags=[{Key=webserver,Value=production}]' 'ResourceType=volume,Tags=[{Key=cost-center,Value=cc123}]' 
 
 For an example of the output for ``run-instances``, see Example 1.
 
@@ -186,14 +181,14 @@ For an example of the output for ``run-instances``, see Example 1.
 
 The following ``run-instances`` example passes user data in a file called ``my_script.txt`` that contains a configuration script for your instance. The script runs at launch. ::
 
-    aws ec2 run-instances \
-        --image-id ami-0abcdef1234567890 \
-        --instance-type t2.micro \
-        --count 1 \
-        --subnet-id subnet-08fc749671b2d077c \
-        --key-name MyKeyPair \
-        --security-group-ids sg-0b0384b66d7d692f9 \
-        --user-data file://my_script.txt
+  aws ec2 run-instances \
+      --image-id ami-0abcdef1234567890 \
+      --instance-type t2.micro \
+      --count 1 \
+      --subnet-id subnet-08fc749671b2d077c \
+      --key-name MyKeyPair \
+      --security-group-ids sg-0b0384b66d7d692f9 \
+      --user-data file://my_script.txt 
 
 For an example of the output for ``run-instances``, see Example 1. 
 
@@ -203,14 +198,14 @@ For more information about instance user data, see `Working with instance user d
 
 The following ``run-instances`` example launches a t2.micro instance with the ``unlimited`` credit option. When you launch a T2 instance, if you do not specify ``--credit-specification``, the default is the ``standard`` credit option. When you launch a T3 instance, the default is the ``unlimited`` credit option. ::
 
-    aws ec2 run-instances \
-        --image-id ami-0abcdef1234567890 \
-        --instance-type t2.micro \
-        --count 1 \
-        --subnet-id subnet-08fc749671b2d077c \
-        --key-name MyKeyPair \
-        --security-group-ids sg-0b0384b66d7d692f9 \
-        --credit-specification CpuCredits=unlimited
+  aws ec2 run-instances \
+      --image-id ami-0abcdef1234567890 \
+      --instance-type t2.micro \
+      --count 1 \
+      --subnet-id subnet-08fc749671b2d077c \
+      --key-name MyKeyPair \
+      --security-group-ids sg-0b0384b66d7d692f9 \
+      --credit-specification CpuCredits=unlimited
 
 For an example of the output for ``run-instances``, see Example 1.
 

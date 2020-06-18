@@ -455,6 +455,29 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.83
+=======
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``support``: Update support command to latest version
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* enchancement:``codeartifact``: Backport ``login`` command to AWS CLI v1
+* api-change:``meteringmarketplace``: Update meteringmarketplace command to latest version
+* api-change:``sesv2``: Update sesv2 command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
+1.18.82
+=======
+
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``snowball``: Update snowball command to latest version
+
+
 1.18.81
 =======
 

@@ -1,25 +1,25 @@
 **To create a cache cluster**
 
-The following ``create-cache-cluster`` example creates a cluster. All nodes in the cluster run the same protocol-compliant cache engine software, either Memcached or Redis. ::
+The following ``create-cache-cluster`` example creates a cache cluster using the Redis engine. ::
 
-    aws elasticache create-cache-cluster \
-       --cache-cluster-id my-redis-cluster \
-       --engine "redis" \
-       --cache-node-type cache.m5.large \
-       --num-cache-nodes 1
+    aws elasticache create-cache-cluster /
+        -- cache-cluster-id "cluster-test" /
+        --engine redis /
+        --cache-node-type cache.m5.large /
+        --num-cache-nodes 1
 
 Output::
 
     {
         "CacheCluster": {
-            "CacheClusterId": "my-memcached-cluster",
+            "CacheClusterId": "cluster-test",
             "ClientDownloadLandingPage": "https://console.aws.amazon.com/elasticache/home#client-download:",
             "CacheNodeType": "cache.m5.large",
             "Engine": "redis",
             "EngineVersion": "5.0.5",
             "CacheClusterStatus": "creating",
             "NumCacheNodes": 1,
-            "PreferredMaintenanceWindow": "sat:10:00-sat:11:00",
+            "PreferredMaintenanceWindow": "sat:13:00-sat:14:00",
             "PendingModifiedValues": {},
             "CacheSecurityGroups": [],
             "CacheParameterGroup": {
@@ -30,7 +30,7 @@ Output::
             "CacheSubnetGroupName": "default",
             "AutoMinorVersionUpgrade": true,
             "SnapshotRetentionLimit": 0,
-            "SnapshotWindow": "07:00-08:00",
+            "SnapshotWindow": "06:30-07:30",
             "TransitEncryptionEnabled": false,
             "AtRestEncryptionEnabled": false
         }

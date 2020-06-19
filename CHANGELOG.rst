@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.84
+=======
+
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.18.83
 =======
 

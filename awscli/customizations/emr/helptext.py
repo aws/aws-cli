@@ -456,7 +456,7 @@ MANAGED_SCALING_POLICY = (
     '<p>Managed scaling policy for an Amazon EMR cluster. The policy '
     'specifies the limits for resources that can be added or terminated '
     'from a cluster. You can specify the ComputeLimits which include '
-    'the MaximumCapacityUnits, MinimumCapacityUnits, '
+    'the MaximumCapacityUnits, MaximumCoreCapacityUnits, MinimumCapacityUnits, '
     'MaximumOnDemandCapacityUnits and UnitType. For an '
     'InstanceFleet cluster, the UnitType must be InstanceFleetUnits. For '
     'InstanceGroup clusters, the UnitType can be either VCPU or Instances.</p>'

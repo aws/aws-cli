@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.85
+=======
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``sqs``: Update sqs command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.18.84
 =======
 

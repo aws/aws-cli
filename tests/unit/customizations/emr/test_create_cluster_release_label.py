@@ -1393,7 +1393,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
     def test_create_cluster_with_managed_scaling_policy(self):
         cmd = (self.prefix + '--release-label emr-5.28.0 --security-configuration MySecurityConfig ' +
-               '--managed-scaling-policy ComputeLimits={MinimumCapacityUnits=2,MaximumCapacityUnits=4,UnitType=Instances} ' +
+               '--managed-scaling-policy ComputeLimits={MinimumCapacityUnits=2,MaximumCapacityUnits=4,UnitType=Instances,MaximumCoreCapacityUnits=1} ' +
                '--instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
         result = \
             {
@@ -1406,7 +1406,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                    'ComputeLimits': {
                        'MinimumCapacityUnits': 2,
                        'MaximumCapacityUnits': 4,
-                       'UnitType': 'Instances'
+                       'UnitType': 'Instances',
+                       'MaximumCoreCapacityUnits': 1
                    } 
                 },
                 'SecurityConfiguration': 'MySecurityConfig'

@@ -472,6 +472,32 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.86
+=======
+
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``mediatailor``: Update mediatailor command to latest version
+
+
+1.18.85
+=======
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``sqs``: Update sqs command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.18.84
+=======
+
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.18.83
 =======
 

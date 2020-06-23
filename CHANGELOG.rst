@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.86
+=======
+
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``mediatailor``: Update mediatailor command to latest version
+
+
 1.18.85
 =======
 

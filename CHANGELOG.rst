@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+2.0.25
+======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``opsworkscm``: Update opsworkscm command to latest version
+* api-change:``mediatailor``: Update mediatailor command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``sqs``: Update sqs command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``rekognition``: Update rekognition command to latest version
+
+
 2.0.24
 ======
 

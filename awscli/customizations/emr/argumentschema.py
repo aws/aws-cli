@@ -386,6 +386,16 @@ INSTANCE_FLEETS_SCHEMA = {
             "LaunchSpecifications": {
                 "type": "object",
                 "properties" : {
+                    "OnDemandSpecification": {
+                        "type": "object",
+                        "properties": {
+                            "AllocationStrategy": {
+                                "type": "string",
+                                "description": "The strategy to use in launching On-Demand instance fleets.",
+                                "enum": ["lowest-price"]
+                            }
+                        }
+                    },
                     "SpotSpecification": {
                         "type": "object",
                         "properties": {
@@ -404,6 +414,11 @@ INSTANCE_FLEETS_SCHEMA = {
                             "BlockDurationMinutes": {
                                 "type": "integer",
                                 "description": "Block duration in minutes."
+                            },
+                            "AllocationStrategy": {
+                                "type": "string",
+                                "description": "The strategy to use in launching Spot instance fleets.",
+                                "enum": ["capacity-optimized"]
                             }
                         }
                     }

@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+2.0.26
+======
+
+* api-change:``codecommit``: Update codecommit command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``honeycode``: Update honeycode command to latest version
+* api-change:``amplify``: Update amplify command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``iam``: Update iam command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``backup``: Update backup command to latest version
+* api-change:``emr``: Update emr command to latest version
+
+
 2.0.25
 ======
 

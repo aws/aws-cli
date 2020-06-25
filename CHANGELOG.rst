@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.88
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``glue``: Update glue command to latest version
+
+
 1.18.87
 =======
 

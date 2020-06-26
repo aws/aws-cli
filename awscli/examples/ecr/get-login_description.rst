@@ -2,12 +2,7 @@
 
 **To log in to an Amazon ECR registry**
 
-This command retrieves a token that is valid for a specified registry for 12
-hours, and then it prints a ``docker login`` command with that authorization
-token. You can execute the printed command to log in to your registry with
-Docker. After you have logged in to an Amazon ECR registry with this command,
-you can use the Docker CLI to push and pull images from that registry until the
-token expires.
+This command retrieves an authentication token using the GetAuthorizationToken API, and then it prints a ``docker login`` command with the authorization token and, if you specified a registry ID, the URI for an Amazon ECR registry. You can execute the printed command to authenticate to the registry with Docker. After you have authenticated to an Amazon ECR registry with this command, you can use the Docker CLI to push and pull images to and from that registry as long as your IAM principal has access to do so until the token expires.  The authorization token is valid for 12 hours.
 
 .. note::
 

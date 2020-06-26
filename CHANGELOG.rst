@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.89
+=======
+
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``cloudformation``: Update cloudformation command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+
+
 1.18.88
 =======
 

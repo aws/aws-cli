@@ -7,7 +7,7 @@ This ``get-configuration`` example lists the applications in your account in the
         --environment 9x8y7z6 \
         --configuration 9sd1ukd \
         --client-id any-id \
-        outfile > my-file-name
+        outfile_name
 
 Output::
 

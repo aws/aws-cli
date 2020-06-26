@@ -36,6 +36,17 @@ TOKEN_PREFIX = 'k8s-aws-v1.'
 CLUSTER_NAME_HEADER = 'x-k8s-aws-id'
 
 
+def _get_sts_regional_endpoint(region_name):
+    if region_name is None:
+        return None
+
+    sts_regional_endpoint = 'https://sts.{}.amazonaws.com'.format(region_name)
+    if region_name.startswith('cn-'):
+        sts_regional_endpoint = sts_regional_endpoint + '.cn'
+
+    return sts_regional_endpoint
+
+
 class GetTokenCommand(BasicCommand):
     NAME = 'get-token'
 
@@ -112,8 +123,10 @@ class STSClientFactory(object):
         self._session = session
 
     def get_sts_client(self, region_name=None, role_arn=None):
+        sts_regional_endpoint = _get_sts_regional_endpoint(region_name)
         client_kwargs = {
-            'region_name': region_name
+            'region_name': region_name,
+            'endpoint_url': sts_regional_endpoint
         }
         if role_arn is not None:
             creds = self._get_role_credentials(region_name, role_arn)
@@ -125,7 +138,7 @@ class STSClientFactory(object):
         return sts
 
     def _get_role_credentials(self, region_name, role_arn):
-        sts = self._session.create_client('sts', region_name)
+        sts = self._session.create_client('sts', region_name=region_name, endpoint_url=_get_sts_regional_endpoint(region_name))
         return sts.assume_role(
             RoleArn=role_arn,
             RoleSessionName='EKSGetTokenAuth'

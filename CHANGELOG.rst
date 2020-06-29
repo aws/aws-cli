@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.90
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``codestar-connections``: Update codestar-connections command to latest version
+* api-change:``codeguruprofiler``: Update codeguruprofiler command to latest version
+
+
 1.18.89
 =======
 

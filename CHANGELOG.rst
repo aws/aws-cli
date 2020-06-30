@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+2.0.27
+======
+
+* api-change:``codeguruprofiler``: Update codeguruprofiler command to latest version
+* api-change:``codestar-connections``: Update codestar-connections command to latest version
+* api-change:``comprehendmedical``: Update comprehendmedical command to latest version
+* api-change:``codeguru-reviewer``: Update codeguru-reviewer command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``cloudformation``: Update cloudformation command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``ecr``: Update ecr command to latest version
+
+
 2.0.26
 ======
 

@@ -26,6 +26,8 @@ If possible, try using the credentials with another non-Python SDK, like Javascr
 
 If you have done these things, please fill out the following sections:
 
+### Command line version
+
 *You can get this by running `aws --version`.*
 
 ### Operating system

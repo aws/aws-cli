@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.91
+=======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``codeguru-reviewer``: Update codeguru-reviewer command to latest version
+* api-change:``comprehendmedical``: Update comprehendmedical command to latest version
+* api-change:``ecr``: Update ecr command to latest version
+
+
 1.18.90
 =======
 

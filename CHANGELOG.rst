@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.92
+=======
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``appsync``: Update appsync command to latest version
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``chime``: Update chime command to latest version
+
+
 1.18.91
 =======
 

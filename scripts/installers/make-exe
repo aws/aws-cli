@@ -22,21 +22,26 @@ EXE_DIR = os.path.join(ROOT, 'exe')
 PYINSTALLER_DIR = os.path.join(EXE_DIR, 'pyinstaller')
 ASSETS_DIR = os.path.join(EXE_DIR, 'assets')
 DEFAULT_OUTPUT_ZIP = 'awscli-exe.zip'
+AC_INDEX_INTERNAL_PATH = os.path.join('awscli', 'data', 'ac.index')
 
 
-def make_exe(exe_zipfile, cleanup=True):
+def make_exe(exe_zipfile, cleanup=True, ac_index=None):
     with tmp_dir() as workdir:
         delete_existing_exe_build()
-        do_make_exe(workdir, exe_zipfile)
+        do_make_exe(workdir, exe_zipfile, ac_index)
         if cleanup:
             cleanup_build()
     print('Exe build is available at: %s' % exe_zipfile)
 
 
-def do_make_exe(workdir, exe_zipfile):
+def do_make_exe(workdir, exe_zipfile, ac_index):
     exe_dir = os.path.join(workdir, 'aws')
     output_exe_dist_dir = os.path.join(exe_dir, 'dist')
     aws_exe_build = pyinstaller('aws.spec')
+    if ac_index:
+        full_internal_ac_index_path = os.path.join(
+            aws_exe_build, AC_INDEX_INTERNAL_PATH)
+        copy_file(ac_index, full_internal_ac_index_path)
     copy_directory(aws_exe_build, output_exe_dist_dir)
     aws_complete_exe_build = pyinstaller('aws_completer.spec')
     copy_directory_contents_into(aws_complete_exe_build, output_exe_dist_dir)
@@ -65,6 +70,11 @@ def copy_directory(src, dst):
 def copy_directory_contents_into(src, dst):
     print('Copying contents of %s into %s' % (src, dst))
     copy_tree(src, dst)
+
+
+def copy_file(src, dst):
+    print('Copying file %s -> %s' % (src, dst))
+    shutil.copy2(src, dst)
 
 
 def save_to_zip(dirname, zipfile_name):
@@ -112,17 +122,25 @@ def main():
             'provides the ability to do offline builds without PyPI.'
         ),
     )
+    parser.add_argument(
+        '--ac-index-path',
+        default=None,
+        help=(
+            'Path to ac.index file to include in the exe.'
+        )
+    )
     args = parser.parse_args()
 
     output = os.path.abspath(args.output)
     if args.src_dir:
-        print('Installing dependencies from local directory: %s' % args.src_dir)
+        print(
+            'Installing dependencies from local directory: %s' % args.src_dir)
         install_packages(args.src_dir)
     else:
         run('pip install -r requirements.txt')
         run('pip install .')
 
-    make_exe(output, cleanup=args.cleanup)
+    make_exe(output, cleanup=args.cleanup, ac_index=args.ac_index_path)
 
 
 if __name__ == "__main__":

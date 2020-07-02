@@ -521,6 +521,24 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.93
+=======
+
+* api-change:``connect``: Update connect command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+
+
+1.18.92
+=======
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``appsync``: Update appsync command to latest version
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``chime``: Update chime command to latest version
+
+
 1.18.91
 =======
 

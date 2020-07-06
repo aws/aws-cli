@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.94
+=======
+
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+
+
 1.18.93
 =======
 

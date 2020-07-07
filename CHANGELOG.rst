@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.0.29
+======
+
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``efs``: Update efs command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``lakeformation``: Update lakeformation command to latest version
+
+
 2.0.28
 ======
 

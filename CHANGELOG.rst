@@ -534,6 +534,25 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.95
+=======
+
+* api-change:``efs``: Update efs command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``lakeformation``: Update lakeformation command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+
+
+1.18.94
+=======
+
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+
+
 1.18.93
 =======
 

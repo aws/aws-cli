@@ -13,7 +13,8 @@
 import json
 
 import mock
-from botocore.model import ShapeResolver, StructureShape, StringShape
+from botocore.model import ShapeResolver, StructureShape, StringShape, \
+    ListShape, MapShape
 from botocore.docs.bcdoc.restdoc import ReSTDocument
 
 from awscli.testutils import unittest, FileCreator
@@ -54,7 +55,7 @@ class TestRecursiveShapes(unittest.TestCase):
                 'type': 'structure',
                 'members': {
                     'A': {'shape': 'NonRecursive'},
-                    'B':  {'shape': 'RecursiveStruct'},
+                    'B': {'shape': 'RecursiveStruct'},
                 }
             },
             'NonRecursive': {'type': 'string'}
@@ -73,7 +74,7 @@ class TestRecursiveShapes(unittest.TestCase):
                 'type': 'structure',
                 'members': {
                     'A': {'shape': 'NonRecursive'},
-                    'B':  {'shape': 'RecursiveStruct'},
+                    'B': {'shape': 'RecursiveStruct'},
                 }
             },
             'NonRecursive': {'type': 'string'}
@@ -256,6 +257,140 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         self.assertIn('Possible values', rendered)
         self.assertIn('FOO', rendered)
         self.assertIn('BAZ', rendered)
+
+    def test_documents_recursive_input(self):
+        shape_map = {
+            'RecursiveStruct': {
+                'type': 'structure',
+                'members': {
+                    'A': {'shape': 'NonRecursive'},
+                    'B': {'shape': 'RecursiveStruct'},
+                }
+            },
+            'NonRecursive': {'type': 'string'}
+        }
+        shape = StructureShape('RecursiveStruct',
+                               shape_map['RecursiveStruct'],
+                               ShapeResolver(shape_map))
+        arg_table = {'arg-name': mock.Mock(argument_model=shape)}
+        help_command = mock.Mock()
+        help_command.doc = ReSTDocument()
+        help_command.event_class = 'custom'
+        help_command.arg_table = arg_table
+        operation_model = mock.Mock()
+        operation_model.service_model.operation_names = []
+        help_command.obj = operation_model
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_option('arg-name', help_command)
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        self.assertIn('( ... recursive ... )', rendered)
+
+    def test_documents_nested_structure(self):
+        shape_map = {
+            'UpperStructure': {
+                'type': 'structure',
+                'members': {
+                    'A': {'shape': 'NestedStruct'},
+                    'B': {'shape': 'NestedStruct'},
+                }
+            },
+            'NestedStruct': {
+                'type': 'structure',
+                'members': {
+                    'Nested_A': {'shape': 'Line'},
+                    'Nested_B': {'shape': 'Line'},
+                }
+            },
+            'Line': {'type': 'string'}
+        }
+        shape = StructureShape('UpperStructure',
+                               shape_map['UpperStructure'],
+                               ShapeResolver(shape_map))
+        arg_table = {'arg-name': mock.Mock(argument_model=shape)}
+        help_command = mock.Mock()
+        help_command.doc = ReSTDocument()
+        help_command.event_class = 'custom'
+        help_command.arg_table = arg_table
+        operation_model = mock.Mock()
+        operation_model.service_model.operation_names = []
+        help_command.obj = operation_model
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_option('arg-name', help_command)
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        self.assertIn('A -> (structure)\n\n    \n\n    '
+                      'Nested_A -> (string)\n\n      \n\n      \n\n    '
+                      'Nested_B -> (string)', rendered)
+        self.assertIn('B -> (structure)\n\n    \n\n    '
+                      'Nested_A -> (string)\n\n      \n\n      \n\n    '
+                      'Nested_B -> (string)', rendered)
+
+    def test_documents_nested_list(self):
+        shape_map = {
+            'UpperList': {
+                'type': 'list',
+                'member': {'shape': 'NestedStruct'},
+            },
+            'NestedStruct': {
+                'type': 'structure',
+                'members': {
+                    'Nested_A': {'shape': 'Line'},
+                    'Nested_B': {'shape': 'Line'},
+                }
+            },
+            'Line': {'type': 'string'}
+        }
+        shape = ListShape('UpperList', shape_map['UpperList'],
+                          ShapeResolver(shape_map))
+        arg_table = {'arg-name': mock.Mock(argument_model=shape)}
+        help_command = mock.Mock()
+        help_command.doc = ReSTDocument()
+        help_command.event_class = 'custom'
+        help_command.arg_table = arg_table
+        operation_model = mock.Mock()
+        operation_model.service_model.operation_names = []
+        help_command.obj = operation_model
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_option('arg-name', help_command)
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        self.assertIn('(structure)\n\n    \n\n    '
+                      'Nested_A -> (string)\n\n      \n\n      \n\n    '
+                      'Nested_B -> (string)', rendered)
+
+    def test_documents_nested_map(self):
+        shape_map = {
+            'UpperMap': {
+                'type': 'map',
+                'key': {'shape': 'NestedStruct'},
+                'value': {'shape': 'NestedStruct'},
+            },
+            'NestedStruct': {
+                'type': 'structure',
+                'members': {
+                    'Nested_A': {'shape': 'Line'},
+                    'Nested_B': {'shape': 'Line'},
+                }
+            },
+            'Line': {'type': 'string'}
+        }
+        shape = MapShape('UpperMap', shape_map['UpperMap'],
+                         ShapeResolver(shape_map))
+        arg_table = {'arg-name': mock.Mock(argument_model=shape)}
+        help_command = mock.Mock()
+        help_command.doc = ReSTDocument()
+        help_command.event_class = 'custom'
+        help_command.arg_table = arg_table
+        operation_model = mock.Mock()
+        operation_model.service_model.operation_names = []
+        help_command.obj = operation_model
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_option('arg-name', help_command)
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        self.assertIn('key -> (structure)\n\n    \n\n    '
+                      'Nested_A -> (string)\n\n      \n\n      \n\n    '
+                      'Nested_B -> (string)', rendered)
+        self.assertIn('value -> (structure)\n\n    \n\n   '
+                      ' Nested_A -> (string)\n\n      \n\n      \n\n    '
+                      'Nested_B -> (string)', rendered)
 
     def test_description_only_for_crosslink_manpage(self):
         help_command = self.create_help_command()

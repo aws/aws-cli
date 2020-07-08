@@ -13,4 +13,4 @@ Output::
         "StreamUrl": "wss://ssmmessages.us-east-2.amazonaws.com/v1/data-channel/Mary-Major-07a16060613c408b5?role=publish_subscribe"
     }
 
-For more information, see `Install the Session Manager Plugin for the AWS CLI <https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.htmll>`__ in the *AWS Systems Manager User Guide*.
+For more information, see `Install the Session Manager Plugin for the AWS CLI <https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html>`__ in the *AWS Systems Manager User Guide*.

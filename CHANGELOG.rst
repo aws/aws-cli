@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.96
+=======
+
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``forecast``: Update forecast command to latest version
+
+
 1.18.95
 =======
 

@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+2.0.30
+======
+
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``events``: Update events command to latest version
+* api-change:``cloudhsmv2``: Update cloudhsmv2 command to latest version
+* api-change:``ebs``: Update ebs command to latest version
+* api-change:``wafv2``: Update wafv2 command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``forecast``: Update forecast command to latest version
+* api-change:``sns``: Update sns command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``amplify``: Update amplify command to latest version
+
+
 2.0.29
 ======
 

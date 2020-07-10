@@ -4,15 +4,39 @@ import platform
 import sys
 import subprocess
 
+from datetime import datetime
+from dateutil.tz import tzutc
+from dateutil.relativedelta import relativedelta
+
 from awscli.compat import urlparse, RawConfigParser, StringIO
 from awscli.customizations import utils as cli_utils
 from awscli.customizations.commands import BasicCommand
 
 
+def get_relative_expiration_time(remaining):
+    values = []
+    prev_non_zero_attr = False
+    for attr in ["years", "months", "days", "hours", "minutes"]:
+        value = getattr(remaining, attr)
+        if value > 0:
+            if prev_non_zero_attr:
+                values.append("and")
+            values.append(str(value))
+            values.append(attr[:-1] if value == 1 else attr)
+        if prev_non_zero_attr:
+            break
+        prev_non_zero_attr = value > 0
+
+    message = " ".join(values)
+    return message
+
+
 class BaseLogin(object):
 
-    def __init__(self, auth_token, repository_endpoint, subprocess_utils):
+    def __init__(self, auth_token,
+                 expiration, repository_endpoint, subprocess_utils):
         self.auth_token = auth_token
+        self.expiration = expiration
         self.repository_endpoint = repository_endpoint
         self.subprocess_utils = subprocess_utils
 
@@ -24,6 +48,22 @@ class BaseLogin(object):
             sys.stdout.write(' '.join(command))
             sys.stdout.write(os.linesep)
             sys.stdout.write(os.linesep)
+
+    def _write_success_message(self, tool):
+        # add extra 30 seconds make expiration more reasonable
+        # for some corner case
+        # e.g. 11 hours 59 minutes 31 seconds should output --> 12 hours.
+        remaining = relativedelta(
+            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
+        expiration_message = get_relative_expiration_time(remaining)
+
+        sys.stdout.write('Successfully configured {} to use '
+                         'AWS CodeArtifact repository {} '
+                         .format(tool, self.repository_endpoint))
+        sys.stdout.write(os.linesep)
+        sys.stdout.write('Login expires in {} at {}'.format(
+            expiration_message, self.expiration))
+        sys.stdout.write(os.linesep)
 
     def _run_commands(self, tool, commands, dry_run=False):
         if dry_run:
@@ -44,10 +84,7 @@ class BaseLogin(object):
                     )
                 raise ex
 
-        sys.stdout.write(
-            'Successfully logged in to codeartifact for %s.' % tool
-        )
-        sys.stdout.write(os.linesep)
+        self._write_success_message(tool)
 
     @classmethod
     def get_commands(cls, endpoint, auth_token, **kwargs):
@@ -135,6 +172,7 @@ password: {auth_token}'''
     def __init__(
         self,
         auth_token,
+        expiration,
         repository_endpoint,
         subprocess_utils,
         pypi_rc_path=None
@@ -143,7 +181,7 @@ password: {auth_token}'''
             pypi_rc_path = self.get_pypi_rc_path()
         self.pypi_rc_path = pypi_rc_path
         super(TwineLogin, self).__init__(
-            auth_token, repository_endpoint, subprocess_utils)
+            auth_token, expiration, repository_endpoint, subprocess_utils)
 
     @classmethod
     def get_commands(cls, endpoint, auth_token, **kwargs):
@@ -224,10 +262,7 @@ password: {auth_token}'''
             with open(self.pypi_rc_path, 'w+') as fp:
                 fp.write(pypi_rc_str)
 
-            sys.stdout.write(
-                'Successfully logged in to codeartifact for twine.'
-            )
-            sys.stdout.write(os.linesep)
+            self._write_success_message('twine')
 
     @classmethod
     def get_pypi_rc_path(cls):
@@ -256,8 +291,8 @@ class CodeArtifactLogin(BasicCommand):
 
     DESCRIPTION = (
         'Sets up the idiomatic tool for your package format to use your '
-        'CodeArtifact repository. Your login information is valid for 22 '
-        'hours after which you must login again.'
+        'CodeArtifact repository. Your login information is valid for up '
+        'to 12 hours after which you must login again.'
     )
 
     ARG_TABLE = [
@@ -276,6 +311,13 @@ class CodeArtifactLogin(BasicCommand):
             'name': 'domain-owner',
             'help_text': 'The AWS account ID that owns your CodeArtifact '
                          'domain',
+            'required': False,
+        },
+        {
+            'name': 'duration-seconds',
+            'cli_type_name': 'integer',
+            'help_text': 'The time, in seconds, that the login information '
+                         'is valid',
             'required': False,
         },
         {
@@ -317,10 +359,13 @@ class CodeArtifactLogin(BasicCommand):
         if parsed_args.domain_owner:
             kwargs['domainOwner'] = parsed_args.domain_owner
 
+        if parsed_args.duration_seconds:
+            kwargs['durationSeconds'] = parsed_args.duration_seconds
+
         get_authorization_token_response = \
             codeartifact_client.get_authorization_token(**kwargs)
 
-        return get_authorization_token_response['authorizationToken']
+        return get_authorization_token_response
 
     def _run_main(self, parsed_args, parsed_globals):
         tool = parsed_args.tool.lower()
@@ -331,7 +376,7 @@ class CodeArtifactLogin(BasicCommand):
             self._session, 'codeartifact', parsed_globals
         )
 
-        auth_token = self._get_authorization_token(
+        auth_token_res = self._get_authorization_token(
             codeartifact_client, parsed_args
         )
 
@@ -339,8 +384,10 @@ class CodeArtifactLogin(BasicCommand):
             codeartifact_client, parsed_args, package_format
         )
 
+        auth_token = auth_token_res['authorizationToken']
+        expiration = auth_token_res['expiration']
         login = self.TOOL_MAP[tool]['login_cls'](
-            auth_token, repository_endpoint, subprocess
+            auth_token, expiration, repository_endpoint, subprocess
         )
 
         login.login(parsed_args.dry_run)

@@ -313,10 +313,15 @@ class SetTagsSubscriber(OnDoneFilteredSubscriber):
                 future.set_exception(e)
 
     def _put_object_tagging(self, bucket, key, tag_set):
+        extra_args = {}
+        utils.RequestParamsMapper.map_put_object_tagging_params(
+            extra_args, self._cli_params
+        )
         self._client.put_object_tagging(
             Bucket=bucket,
             Key=key,
-            Tagging={'TagSet': tag_set}
+            Tagging={'TagSet': tag_set},
+            **extra_args
         )
 
     def _delete_object(self, bucket, key):
@@ -333,8 +338,12 @@ class SetTagsSubscriber(OnDoneFilteredSubscriber):
         return copy_source['Bucket'], copy_source['Key']
 
     def _get_tags(self, bucket, key):
+        extra_args = {}
+        utils.RequestParamsMapper.map_get_object_tagging_params(
+            extra_args, self._cli_params
+        )
         get_tags_response = self._client.get_object_tagging(
-            Bucket=bucket, Key=key)
+            Bucket=bucket, Key=key, **extra_args)
         return get_tags_response['TagSet']
 
     def _fits_in_tagging_header(self, tagging_header):

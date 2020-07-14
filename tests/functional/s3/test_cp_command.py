@@ -815,6 +815,10 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
 
 
 class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
+    def setUp(self):
+        super(TestCpCommandWithRequesterPayer, self).setUp()
+        self.multipart_threshold = 8 * MB
+
     def test_single_upload(self):
         full_path = self.files.create_file('myfile', 'mycontent')
         cmdline = (
@@ -1036,6 +1040,55 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
             ]
         )
 
+    def test_mp_copy_object(self):
+        cmdline = self.prefix
+        cmdline += ' s3://sourcebucket/mykey s3://mybucket/mykey'
+        cmdline += ' --request-payer'
+        self.parsed_responses = [
+            self.head_object_response(
+                ContentLength=self.multipart_threshold
+            ),
+            self.get_object_tagging_response({})
+        ] + self.mp_copy_responses()
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(
+            self.create_mpu_request('mybucket', 'mykey',
+                                    RequestPayer='requester')
+        )
+        self.assert_in_operations_called(
+            ('GetObjectTagging', {'Bucket': 'sourcebucket', 'Key': 'mykey',
+                                  'RequestPayer': 'requester'})
+        )
+
+    def test_mp_copy_object_with_tags_exceed_2k(self):
+        cmdline = self.prefix
+        cmdline += ' s3://sourcebucket/mykey s3://mybucket/mykey'
+        cmdline += ' --request-payer'
+        self.parsed_responses = [
+            self.head_object_response(
+                ContentLength=self.multipart_threshold
+            ),
+            self.get_object_tagging_response(
+                tags={'tag-key': 'value' * (2 * 1024)}
+            )
+        ] + self.mp_copy_responses()
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(
+            self.create_mpu_request('mybucket', 'mykey',
+                                    RequestPayer='requester')
+        )
+        self.assert_in_operations_called(
+            ('GetObjectTagging', {'Bucket': 'sourcebucket', 'Key': 'mykey',
+                                  'RequestPayer': 'requester'})
+        )
+        self.assert_in_operations_called(
+            ('PutObjectTagging',
+             {'Bucket': 'mybucket', 'Key': 'mykey',
+              'Tagging': {'TagSet': [{'Key': 'tag-key',
+                                      'Value': 'value' * (2 * 1024)}]},
+              'RequestPayer': 'requester'})
+        )
+
 
 class TestAccesspointCPCommand(BaseCPCommandTest):
     def setUp(self):
@@ -1175,13 +1228,6 @@ class BaseCopyPropsCpCommandTest(BaseCPCommandTest):
         if copy_props:
             cmdline += ' --copy-props %s' % copy_props
         return cmdline
-
-    def mp_copy_responses(self):
-        return [
-            self.create_mpu_response('upload_id'),
-            self.upload_part_copy_response(),
-            self.complete_mpu_response(),
-        ]
 
     def copy_object_request(self, source_bucket=None, source_key=None,
                             bucket=None, key=None, **override_kwargs):

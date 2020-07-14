@@ -258,3 +258,10 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
         self.http_responses = [
             AWSResponse(None, code, {}, None) for code in status_codes
         ]
+
+    def mp_copy_responses(self):
+        return [
+            self.create_mpu_response('upload_id'),
+            self.upload_part_copy_response(),
+            self.complete_mpu_response(),
+        ]

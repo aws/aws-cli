@@ -506,6 +506,18 @@ class TestRequestParamsMapperRequestPayer(unittest.TestCase):
             params, self.cli_params)
         self.assertEqual(params, {'RequestPayer': 'requester'})
 
+    def test_map_get_object_tagging_params(self):
+        params = {}
+        RequestParamsMapper.map_get_object_tagging_params(
+            params, self.cli_params)
+        self.assertEqual(params, {'RequestPayer': 'requester'})
+
+    def test_map_put_object_tagging_params(self):
+        params = {}
+        RequestParamsMapper.map_put_object_tagging_params(
+            params, self.cli_params)
+        self.assertEqual(params, {'RequestPayer': 'requester'})
+
 
 class TestBytesPrint(unittest.TestCase):
     def setUp(self):

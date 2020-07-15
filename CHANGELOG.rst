@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.0.31
+======
+
+* api-change:``ivs``: Update ivs command to latest version
+* bugfix:``s3``: Fix `s3 cp` bug when request-payer parameter wasn't passed to subcommands
+* enhancement:docs: Improve AWS CLI docs to include documentation strings for parameters in nested input structures
+
+
 2.0.30
 ======
 

@@ -1,10 +1,7 @@
 import os
 import platform
+import string
 import subprocess
-
-from datetime import datetime
-from dateutil.tz import tzlocal
-from dateutil.relativedelta import relativedelta
 
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, mock
 from awscli.compat import urlparse, StringIO, RawConfigParser
@@ -27,9 +24,6 @@ class TestCodeArtifactLogin(BaseAWSCommandParamsTest):
         self.domain_owner = 'domain-owner'
         self.repository = 'repository'
         self.auth_token = 'auth-token'
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(hours=10)
-                           + relativedelta(minutes=9)).replace(microsecond=0)
-        self.duration = 3600
 
         self.pypi_rc_path_patch = mock.patch(
             'awscli.customizations.codeartifact.login.TwineLogin'
@@ -47,9 +41,7 @@ class TestCodeArtifactLogin(BaseAWSCommandParamsTest):
         self.subprocess_patch.stop()
         self.file_creator.remove_all()
 
-    def _setup_cmd(self, tool,
-                   include_domain_owner=False, dry_run=False,
-                   include_duration_seconds=False):
+    def _setup_cmd(self, tool, include_domain_owner=False, dry_run=False):
         package_format = CodeArtifactLogin.TOOL_MAP[tool]['package_format']
         self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
             'a2z.com/{format}/{repository}/'.format(
@@ -70,21 +62,16 @@ class TestCodeArtifactLogin(BaseAWSCommandParamsTest):
         if dry_run:
             cmdline += ' --dry-run'
 
-        if include_duration_seconds:
-            cmdline += ' --duration-seconds %s' % self.duration
-
         # Responses from calls to services.
         self.parsed_responses = [
-            {"authorizationToken": self.auth_token,
-                "expiration": self.expiration},  # GetAuthorizationToken
+            {"authorizationToken": self.auth_token},  # GetAuthorizationToken
             {"repositoryEndpoint": self.endpoint},  # GetRepositoryEndpoint
         ]
 
         return cmdline
 
     def _get_npm_commands(self):
-        npm_cmd = 'npm.cmd' \
-            if platform.system().lower() == 'windows' else 'npm'
+        npm_cmd = 'npm.cmd' if platform.system().lower() == 'windows' else 'npm'
 
         repo_uri = urlparse.urlsplit(self.endpoint)
         always_auth_config = '//{}{}:always-auth'.format(
@@ -167,15 +154,8 @@ password: {auth_token}'''
 
         return pypi_rc_str
 
-    def _assert_expiration_printed_to_stdout(self, stdout):
-        self.assertEqual(
-            self.expiration.strftime(
-                "%Y-%m-%d %H:%M:%S"), stdout.split("at ")[1][0:19]
-        )
-
     def _assert_operations_called(
-        self, package_format,
-            include_domain_owner=False, include_duration_seconds=False
+        self, package_format, include_domain_owner=False
     ):
         self.assertEqual(len(self.operations_called), 2)
 
@@ -191,9 +171,6 @@ password: {auth_token}'''
         if include_domain_owner:
             get_auth_token_kwargs['domainOwner'] = self.domain_owner
             get_repo_endpoint_kwargs['domainOwner'] = self.domain_owner
-
-        if include_duration_seconds:
-            get_auth_token_kwargs['durationSeconds'] = self.duration
 
         self.assertEqual(
             self.operations_called[0][0].name, 'GetAuthorizationToken'
@@ -264,7 +241,6 @@ password: {auth_token}'''
         cmdline = self._setup_cmd(tool='npm')
         stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
         self._assert_operations_called(package_format='npm')
-        self._assert_expiration_printed_to_stdout(stdout)
         self._assert_subprocess_execution(self._get_npm_commands())
 
     def test_npm_login_without_domain_owner_dry_run(self):
@@ -277,21 +253,8 @@ password: {auth_token}'''
         cmdline = self._setup_cmd(tool='npm', include_domain_owner=True)
         stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
         self._assert_operations_called(
-            package_format='npm',
-            include_domain_owner=True, include_duration_seconds=False
+            package_format='npm', include_domain_owner=True
         )
-        self._assert_expiration_printed_to_stdout(stdout)
-        self._assert_subprocess_execution(self._get_npm_commands())
-
-    def test_npm_login_with_domain_owner_duration(self):
-        cmdline = self._setup_cmd(tool='npm', include_domain_owner=True,
-                                  include_duration_seconds=True)
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
-        self._assert_operations_called(
-            package_format='npm',
-            include_domain_owner=True, include_duration_seconds=True
-        )
-        self._assert_expiration_printed_to_stdout(stdout)
         self._assert_subprocess_execution(self._get_npm_commands())
 
     def test_npm_login_with_domain_owner_dry_run(self):
@@ -310,7 +273,6 @@ password: {auth_token}'''
         self._assert_operations_called(
             package_format='pypi'
         )
-        self._assert_expiration_printed_to_stdout(stdout)
         self._assert_subprocess_execution(self._get_pip_commands())
 
     def test_pip_login_without_domain_owner_dry_run(self):
@@ -327,21 +289,9 @@ password: {auth_token}'''
         self._assert_operations_called(
             package_format='pypi', include_domain_owner=True
         )
-        self._assert_expiration_printed_to_stdout(stdout)
         self._assert_subprocess_execution(self._get_pip_commands())
 
-    def test_pip_login_with_domain_owner_duration(self):
-        cmdline = self._setup_cmd(tool='pip', include_domain_owner=True,
-                                  include_duration_seconds=True)
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
-        self._assert_operations_called(
-            package_format='pypi', include_domain_owner=True,
-            include_duration_seconds=True
-        )
-        self._assert_expiration_printed_to_stdout(stdout)
-        self._assert_subprocess_execution(self._get_pip_commands())
-
-    def test_pip_login_with_domain_owner_dry_run(self):
+    def test_pip_login_with_domain_owner(self):
         cmdline = self._setup_cmd(
             tool='pip', include_domain_owner=True, dry_run=True
         )
@@ -357,7 +307,7 @@ password: {auth_token}'''
         self._assert_operations_called(
             package_format='pypi'
         )
-        self._assert_expiration_printed_to_stdout(stdout)
+
         with open(self.test_pypi_rc_path) as f:
             test_pypi_rc_str = f.read()
 
@@ -390,28 +340,6 @@ password: {auth_token}'''
         self._assert_operations_called(
             package_format='pypi', include_domain_owner=True
         )
-        self._assert_expiration_printed_to_stdout(stdout)
-
-        with open(self.test_pypi_rc_path) as f:
-            test_pypi_rc_str = f.read()
-
-        self._assert_pypi_rc_has_expected_content(
-            pypi_rc_str=test_pypi_rc_str,
-            server='codeartifact',
-            repo_url=self.endpoint,
-            username='aws',
-            password=self.auth_token
-        )
-
-    def test_twine_login_with_domain_owner_duration(self):
-        cmdline = self._setup_cmd(tool='twine', include_domain_owner=True,
-                                  include_duration_seconds=True)
-        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
-        self._assert_operations_called(
-            package_format='pypi', include_domain_owner=True,
-            include_duration_seconds=True
-        )
-        self._assert_expiration_printed_to_stdout(stdout)
 
         with open(self.test_pypi_rc_path) as f:
             test_pypi_rc_str = f.read()

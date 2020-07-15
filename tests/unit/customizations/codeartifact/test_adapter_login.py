@@ -1,16 +1,15 @@
 import errno
 import os
-
-from datetime import datetime
-from dateutil.tz import tzlocal, tzutc
-from dateutil.relativedelta import relativedelta
+import platform
+import string
+import subprocess
 
 from awscli.testutils import unittest, mock, FileCreator
 from awscli.compat import urlparse, RawConfigParser, StringIO
-from awscli.customizations.codeartifact.login import (
-    BaseLogin, NpmLogin, PipLogin, TwineLogin,
-    get_relative_expiration_time
-)
+from awscli.customizations.codeartifact.login import BaseLogin
+from awscli.customizations.codeartifact.login import NpmLogin
+from awscli.customizations.codeartifact.login import PipLogin
+from awscli.customizations.codeartifact.login import TwineLogin
 
 
 class TestBaseLogin(unittest.TestCase):
@@ -20,8 +19,6 @@ class TestBaseLogin(unittest.TestCase):
         self.package_format = 'npm'
         self.repository = 'repository'
         self.auth_token = 'auth-token'
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(hours=10)
-                           + relativedelta(minutes=9)).replace(microsecond=0)
         self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
             'a2z.com/{format}/{repository}/'.format(
                 domain=self.domain,
@@ -33,8 +30,7 @@ class TestBaseLogin(unittest.TestCase):
         self.subprocess_utils = mock.Mock()
 
         self.test_subject = BaseLogin(
-            self.auth_token, self.expiration,
-            self.endpoint, self.subprocess_utils
+            self.auth_token, self.endpoint, self.subprocess_utils
         )
 
     def test_login(self):
@@ -74,8 +70,6 @@ class TestNpmLogin(unittest.TestCase):
         self.package_format = 'npm'
         self.repository = 'repository'
         self.auth_token = 'auth-token'
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(hours=10)
-                           + relativedelta(minutes=9)).replace(microsecond=0)
         self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
             'a2z.com/{format}/{repository}/'.format(
                 domain=self.domain,
@@ -105,8 +99,7 @@ class TestNpmLogin(unittest.TestCase):
         self.subprocess_utils = mock.Mock()
 
         self.test_subject = NpmLogin(
-            self.auth_token, self.expiration,
-            self.endpoint, self.subprocess_utils
+            self.auth_token, self.endpoint, self.subprocess_utils
         )
 
     def test_login(self):
@@ -143,8 +136,6 @@ class TestPipLogin(unittest.TestCase):
         self.package_format = 'pip'
         self.repository = 'repository'
         self.auth_token = 'auth-token'
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(years=1)
-                           + relativedelta(months=9)).replace(microsecond=0)
         self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
             'a2z.com/{format}/{repository}/'.format(
                 domain=self.domain,
@@ -164,8 +155,7 @@ class TestPipLogin(unittest.TestCase):
         self.subprocess_utils = mock.Mock()
 
         self.test_subject = PipLogin(
-            self.auth_token, self.expiration,
-            self.endpoint, self.subprocess_utils
+            self.auth_token, self.endpoint, self.subprocess_utils
         )
 
     def test_get_commands(self):
@@ -201,8 +191,6 @@ class TestTwineLogin(unittest.TestCase):
         self.package_format = 'pip'
         self.repository = 'repository'
         self.auth_token = 'auth-token'
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(years=1)
-                           + relativedelta(months=9)).replace(microsecond=0)
         self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
             'a2z.com/{format}/{repository}/'.format(
                 domain=self.domain,
@@ -221,7 +209,6 @@ class TestTwineLogin(unittest.TestCase):
 
         self.test_subject = TwineLogin(
             self.auth_token,
-            self.expiration,
             self.endpoint,
             self.subprocess_utils,
             self.test_pypi_rc_path
@@ -405,108 +392,3 @@ password: JgCXIr5xGG
         # We should just leave the pypirc untouched when it's invalid.
         with open(self.test_pypi_rc_path) as f:
             self.assertEqual(f.read(), original_content)
-
-
-class TestRelativeExpirationTime(unittest.TestCase):
-
-    def test_with_years_months_days(self):
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(years=1)
-                           + relativedelta(months=9) + relativedelta(days=11))\
-            .replace(microsecond=0)
-        remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
-        message = get_relative_expiration_time(remaining)
-        self.assertEqual(message, '1 year and 9 months')
-
-    def test_with_years_months(self):
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(years=1)
-                           + relativedelta(months=9)).replace(microsecond=0)
-        remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
-        message = get_relative_expiration_time(remaining)
-        self.assertEqual(message, '1 year and 8 months')
-
-    def test_with_years_month(self):
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(years=3)
-                           + relativedelta(months=1)).replace(microsecond=0)
-        remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
-        message = get_relative_expiration_time(remaining)
-        self.assertEqual(message, '3 years')
-
-    def test_with_years_days(self):
-        self.expiration = (datetime.now(tzlocal())
-                           + relativedelta(years=1)
-                           + relativedelta(days=9)).replace(microsecond=0)
-        remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
-        message = get_relative_expiration_time(remaining)
-        self.assertEqual(message, '1 year')
-
-    def test_with_year(self):
-        self.expiration = (datetime.now(tzlocal())
-                           + relativedelta(years=1)).replace(microsecond=0)
-        remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
-        message = get_relative_expiration_time(remaining)
-        self.assertEqual(message, '11 months and 30 days')
-
-    def test_with_years(self):
-        self.expiration = (datetime.now(tzlocal())
-                           + relativedelta(years=2)).replace(microsecond=0)
-        remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
-        message = get_relative_expiration_time(remaining)
-        self.assertEqual(message, '1 year and 11 months')
-
-    def test_with_years_days_hours_minutes(self):
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(years=2)
-                           + relativedelta(days=7) + relativedelta(hours=11) +
-                           relativedelta(minutes=44)).replace(microsecond=0)
-        remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
-        message = get_relative_expiration_time(remaining)
-        self.assertEqual(message, '2 years')
-
-    def test_with_days_minutes(self):
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(days=1) +
-                           relativedelta(minutes=44)).replace(microsecond=0)
-        remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
-        message = get_relative_expiration_time(remaining)
-        self.assertEqual(message, '1 day')
-
-    def test_with_day(self):
-        self.expiration = (datetime.now(tzlocal())
-                           + relativedelta(days=1)).replace(microsecond=0)
-        remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
-        message = get_relative_expiration_time(remaining)
-        self.assertEqual(message, '1 day')
-
-    def test_with_hour(self):
-        self.expiration = (datetime.now(tzlocal())
-                           + relativedelta(hours=1)).replace(microsecond=0)
-        remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
-        message = get_relative_expiration_time(remaining)
-        self.assertEqual(message, '1 hour')
-
-    def test_with_minutes_seconds(self):
-        self.expiration = (
-                datetime.now(tzlocal()) + relativedelta(minutes=59)
-                + relativedelta(seconds=50)).replace(microsecond=0)
-        remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
-        message = get_relative_expiration_time(remaining)
-        self.assertEqual(message, '1 hour')
-
-    def test_with_full_time(self):
-        self.expiration = (datetime.now(tzlocal())
-                           + relativedelta(years=2) + relativedelta(months=3)
-                           + relativedelta(days=7) + relativedelta(hours=11) +
-                           relativedelta(minutes=44)).replace(microsecond=0)
-        remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
-        message = get_relative_expiration_time(remaining)
-        self.assertEqual(message, '2 years and 3 months')

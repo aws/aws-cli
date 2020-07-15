@@ -568,6 +568,14 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.98
+=======
+
+* enhancement:``codeartifact login``: Add expiration duration support
+* enhancement:docs: Improve AWS CLI docs to include documentation strings for parameters in nested input structures
+* api-change:``ivs``: Update ivs command to latest version
+
+
 1.18.97
 =======
 

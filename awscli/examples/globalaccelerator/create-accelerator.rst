@@ -6,7 +6,7 @@ The following ``create-accelerator`` example creates an accelerator with two tag
         --name ExampleAccelerator \
         --tags Key="Name",Value="Example Name" Key="Project",Value="Example Project" \
         --region us-west-2 \
-        --ip-addresses 192.0.2.250,198.51.100.52
+        --ip-addresses 192.0.2.250 198.51.100.52
 
 Output::
 

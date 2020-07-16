@@ -19,7 +19,7 @@ S3 key would be ``myprefix/myobject``, and if the object was in the bucket
 ``mybucket``, the ``S3Uri`` would be ``s3://mybucket/myprefix/myobject``.
 
 ``S3Uri`` also supports S3 access points. To specify an access point, this
-value must be of the form ``s3://<access-point-arn>/<key>``. For for example if
+value must be of the form ``s3://<access-point-arn>/<key>``. For example if
 the access point ``myaccesspoint`` to be used has the ARN:
 ``arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint`` and the object
 being accessed has the key ``mykey``, then the ``S3URI`` used must be:

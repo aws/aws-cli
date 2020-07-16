@@ -7,6 +7,7 @@ import subprocess
 from datetime import datetime
 from dateutil.tz import tzutc
 from dateutil.relativedelta import relativedelta
+from botocore.utils import parse_timestamp
 
 from awscli.compat import urlparse, RawConfigParser, StringIO
 from awscli.customizations import utils as cli_utils
@@ -385,7 +386,7 @@ class CodeArtifactLogin(BasicCommand):
         )
 
         auth_token = auth_token_res['authorizationToken']
-        expiration = auth_token_res['expiration']
+        expiration = parse_timestamp(auth_token_res['expiration'])
         login = self.TOOL_MAP[tool]['login_cls'](
             auth_token, expiration, repository_endpoint, subprocess
         )

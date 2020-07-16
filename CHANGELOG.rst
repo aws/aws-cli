@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.18.99
+=======
+
+* bugfix:``codeartifact login``: Fix issue with displaying expiration times
+
+
 1.18.98
 =======
 

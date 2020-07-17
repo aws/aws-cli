@@ -1,9 +1,9 @@
-**Example 1: To return findings generated for a specific standard**
+**To return findings generated for a specific standard**
 
 The following ``get-findings`` example returns findings for the PCI DSS standard. ::
 
     aws securityhub get-findings \
-        --filters '{"GeneratorId":[{"Value": "pci-dss","Comparison":"PREFIX"}]}' \
+        --filters '{"GeneratorId":[{"Value": "pci-dss","Comparison":"PREFIX"}]}' 
         --max-items 1
 
 Output::
@@ -76,9 +76,9 @@ Output::
         "NextToken": "eyJOZXh0VG9rZW4iOiBudWxsLCAiYm90b190cnVuY2F0ZV9hbW91bnQiOiAxfQ=="
     }
 
-**Example 2: To return critical-severity findings that have a workflow status of NOTIFIED**
+** To return critical-severity findings that have a workflow status of NOTIFIED **
 
-The following ``get-findings`` example returns findings that have a severity label value of CRITICAL and a workflow status of NOTIFIED. The results are sorted in descending order by the value of Confidence.
+The following ``get-findings`` example returns findings that have a severity label value of CRITICAL and a workflow status of NOTIFIED. The results are sorted in descending order by the value of Confidence. ::
 
     aws securityhub get-findings \
         --filters '{"SeverityLabel":[{"Value": "CRITICAL","Comparison":"EQUALS"}],"WorkflowStatus": [{"Value":"NOTIFIED","Comparison":"EQUALS"}]}' \

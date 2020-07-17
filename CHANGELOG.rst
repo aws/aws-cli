@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.100
+========
+
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``connect``: Update connect command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``appsync``: Update appsync command to latest version
+
+
 1.18.99
 =======
 

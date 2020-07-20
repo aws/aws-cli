@@ -11,12 +11,12 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+import platform
 import sys
 import signal
 import logging
 
 import botocore.session
-from botocore import __version__ as botocore_version
 from botocore import xform_name
 from botocore.compat import copy_kwargs, OrderedDict
 from botocore.exceptions import NoCredentialsError
@@ -102,10 +102,22 @@ def create_clidriver():
     return driver
 
 
+def _get_distribution_source():
+    return 'bundle'
+
+
+def _get_human_readable_os_name():
+    return 'os_name'
+
+
 def _set_user_agent_for_session(session):
     session.user_agent_name = 'aws-cli'
     session.user_agent_version = __version__
-    session.user_agent_extra = 'botocore/%s' % botocore_version
+    session.user_agent_extra = '%s/%s.%s' % (
+        _get_distribution_source(),
+        _get_human_readable_os_name(),
+        platform.machine()
+    )
 
 
 class CLIDriver(object):

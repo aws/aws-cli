@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.18.101
+========
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``fms``: Update fms command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``groundstation``: Update groundstation command to latest version
+* api-change:``frauddetector``: Update frauddetector command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.18.100
 ========
 

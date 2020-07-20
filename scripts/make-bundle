@@ -151,7 +151,7 @@ def _min_version_required(min_version, actual_version, name):
     # precondition: min_version is major.minor.patch
     #               actual_version is major.minor.patch
     min_split = min_version.split('.')
-    actual_split = actual_version.decode('utf-8').split('.')
+    actual_split = actual_version.decode('utf-8').lstrip('virtualenv ').split('.')
     for min_version_part, actual_version_part in zip(min_split, actual_split):
         if int(actual_version_part) >= int(min_version_part):
             return

@@ -126,6 +126,7 @@ def _get_linux_distribution():
         pass
     return linux_distribution
 
+
 def _set_user_agent_for_session(session):
     session.user_agent_name = 'aws-cli'
     session.user_agent_version = __version__

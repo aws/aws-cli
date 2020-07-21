@@ -16,7 +16,7 @@ of a CLI command:
 
   The primary meaning is that the command entered on the command
   line failed to be parsed. Parsing failures can be caused by,
-  but are not limted to, missing any required subcommands or arguments
+  but are not limited to, missing any required subcommands or arguments
   or using any unknown commands or arguments.
   Note that this return code meaning is applicable to all CLI commands.
 

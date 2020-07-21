@@ -19,7 +19,7 @@ class EmrError(Exception):
 
     :ivar msg: The descriptive message associated with the error.
     """
-    fmt = 'An unspecified error occured'
+    fmt = 'An unspecified error occurred'
 
     def __init__(self, **kwargs):
         msg = self.fmt.format(**kwargs)

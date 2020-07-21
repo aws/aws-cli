@@ -112,10 +112,10 @@ class ConfigureCommand(BasicCommand):
         config_filename = os.path.expanduser(
             self._session.get_config_variable('config_file'))
         if new_values:
-            self._write_out_creds_file_values(new_values,
-                                              parsed_globals.profile)
-            if parsed_globals.profile is not None:
-                section = profile_to_section(parsed_globals.profile)
+            profile = self._session.profile
+            self._write_out_creds_file_values(new_values, profile)
+            if profile is not None:
+                section = profile_to_section(profile)
                 new_values['__section__'] = section
             self._config_writer.update_config(new_values, config_filename)
 

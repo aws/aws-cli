@@ -93,7 +93,12 @@ class TestBundleInstance(BaseAWSCommandParamsTest):
         json = """{"S3":{"Bucket":"foobar","Prefix":"fiebaz"}}"""
         args = ' --instance-id i-12345678 --owner-aki blah --owner-sak blah --storage %s' % json
         args_list = (self.prefix + args).split()
-        self.assert_params_for_cmd(args_list, expected_rc=255)
+        _, stderr, _ = self.assert_params_for_cmd(args_list, expected_rc=255)
+        expected_err_msg = (
+            'Mixing the --storage option with the simple, '
+            'scalar options is not recommended'
+        )
+        self.assertIn(expected_err_msg, stderr)
 
 
 if __name__ == "__main__":

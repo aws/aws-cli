@@ -55,15 +55,8 @@ class _NamedRegex(object):
 
 
 class ShorthandParseError(Exception):
-    def __init__(self, value, expected, actual, index):
-        self.value = value
-        self.expected = expected
-        self.actual = actual
-        self.index = index
-        msg = self._construct_msg()
-        super(ShorthandParseError, self).__init__(msg)
 
-    def _construct_msg(self):
+    def _error_location(self):
         consumed, remaining, num_spaces = self.value, '', self.index
         if '\n' in self.value[:self.index]:
             # If there's newlines in the consumed expression, we want
@@ -83,13 +76,40 @@ class ShorthandParseError(Exception):
             next_newline = self.index + self.value[self.index:].index('\n')
             consumed = self.value[:next_newline]
             remaining = self.value[next_newline:]
+        return '%s\n%s%s' % (consumed, (' ' * num_spaces) + '^', remaining)
+
+
+class ShorthandParseSyntaxError(ShorthandParseError):
+    def __init__(self, value, expected, actual, index):
+        self.value = value
+        self.expected = expected
+        self.actual = actual
+        self.index = index
+        msg = self._construct_msg()
+        super(ShorthandParseSyntaxError, self).__init__(msg)
+
+    def _construct_msg(self):
         msg = (
             "Expected: '%s', received: '%s' for input:\n"
-            "%s\n"
             "%s"
-            "%s"
-        ) % (self.expected, self.actual, consumed,
-             ' ' * num_spaces + '^', remaining)
+        ) % (self.expected, self.actual, self._error_location())
+        return msg
+
+
+class DuplicateKeyInObjectError(ShorthandParseError):
+    def __init__(self, key, value, index):
+        self.key = key
+        self.value = value
+        self.index = index
+        msg = self._construct_msg()
+        super(DuplicateKeyInObjectError, self).__init__(msg)
+
+    def _construct_msg(self):
+        msg = (
+            "Second instance of key \"%s\" encountered for input:\n%s\n"
+            "This is often because there is a preceeding \",\" instead of a "
+            "space."
+        ) % (self.key, self._error_location())
         return msg
 
 
@@ -148,10 +168,20 @@ class ShorthandParser(object):
     def _parameter(self):
         # parameter = keyval *("," keyval)
         params = {}
-        params.update(self._keyval())
+        key, val = self._keyval()
+        params[key] = val
+        last_index = self._index
         while self._index < len(self._input_value):
             self._expect(',', consume_whitespace=True)
-            params.update(self._keyval())
+            key, val = self._keyval()
+            # If a key is already defined, it is likely an incorrectly written
+            # shorthand argument. Raise an error to inform the user.
+            if key in params:
+                raise DuplicateKeyInObjectError(
+                    key, self._input_value, last_index + 1
+                )
+            params[key] = val
+            last_index = self._index
         return params
 
     def _keyval(self):
@@ -159,11 +189,11 @@ class ShorthandParser(object):
         key = self._key()
         self._expect('=', consume_whitespace=True)
         values = self._values()
-        return {key: values}
+        return key, values
 
     def _key(self):
-        # key = 1*(alpha / %x30-39 / %x5f / %x2e / %x23)  ; [a-zA-Z0-9\-_.#]
-        valid_chars = string.ascii_letters + string.digits + '-_.#'
+        # key = 1*(alpha / %x30-39 / %x5f / %x2e / %x23)  ; [a-zA-Z0-9\-_.#/]
+        valid_chars = string.ascii_letters + string.digits + '-_.#/:'
         start = self._index
         while not self._at_eof():
             if self._current() not in valid_chars:
@@ -210,7 +240,7 @@ class ShorthandParser(object):
                     break
                 self._expect(',', consume_whitespace=True)
                 csv_list.append(current)
-            except ShorthandParseError:
+            except ShorthandParseSyntaxError:
                 # Backtrack to the previous comma.
                 # This can happen when we reach this case:
                 # foo=a,b,c=d,e=f
@@ -312,12 +342,12 @@ class ShorthandParser(object):
         if consume_whitespace:
             self._consume_whitespace()
         if self._index >= len(self._input_value):
-            raise ShorthandParseError(self._input_value, char,
-                                      'EOF', self._index)
+            raise ShorthandParseSyntaxError(self._input_value, char,
+                                            'EOF', self._index)
         actual = self._input_value[self._index]
         if actual != char:
-            raise ShorthandParseError(self._input_value, char,
-                                      actual, self._index)
+            raise ShorthandParseSyntaxError(self._input_value, char,
+                                            actual, self._index)
         self._index += 1
         if consume_whitespace:
             self._consume_whitespace()
@@ -326,8 +356,8 @@ class ShorthandParser(object):
         result = regex.match(self._input_value[self._index:])
         if result is not None:
             return self._consume_matched_regex(result)
-        raise ShorthandParseError(self._input_value, '<%s>' % regex.name,
-                                  '<none>', self._index)
+        raise ShorthandParseSyntaxError(self._input_value, '<%s>' % regex.name,
+                                        '<none>', self._index)
 
     def _consume_matched_regex(self, result):
         start, end = result.span()

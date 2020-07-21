@@ -2,7 +2,7 @@
 
 The following example uses the ``send-email`` command to send a formatted email::
 
-    aws ses send-email --from sender@example.com --destination file://c:\temp\destination.json --message file://c:\temp\message.json
+    aws ses send-email --from sender@example.com --destination file://destination.json --message file://message.json
 
 Output::
 
@@ -10,7 +10,7 @@ Output::
     "MessageId": "EXAMPLEf3a5efcd1-51adec81-d2a4-4e3f-9fe2-5d85c1b23783-000000"
  }
 
-The destination and the message are JSON data structures saved in .json files in a directory called c:\\temp. These files are as follows:
+The destination and the message are JSON data structures saved in .json files in the current directory. These files are as follows:
 
 ``destination.json``::
 

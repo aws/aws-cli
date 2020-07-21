@@ -149,5 +149,5 @@ class Filter(object):
                         file_path, path_pattern)
         else:
             LOG.debug("%s did not match %s filter: %s",
-                        file_path, pattern_type[2:], path_pattern)
+                        file_path, pattern_type, path_pattern)
         return file_status

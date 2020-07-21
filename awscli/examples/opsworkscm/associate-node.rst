@@ -5,7 +5,7 @@ a Chef Automate server named ``automate-06``, meaning that the ``automate-06`` s
 manages the node, and communicates recipe commands to the node through ``chef-client`` agent software
 that is installed on the node by the associate-node command. Valid node names are EC2 instance IDs.::
 
-  aws opsworks-cm disassociate-node --server-name "automate-06" --node-name "i-43de882p" --engine-attributes "Name=CHEF_ORGANIZATION,Value='default'"
+  aws opsworks-cm associate-node --server-name "automate-06" --node-name "i-43de882p" --engine-attributes "Name=CHEF_ORGANIZATION,Value='MyOrganization' Name=CHEF_NODE_PUBLIC_KEY,Value='Public_key_contents'"
 
 The output returned by the command resembles the following.
 *Output*::

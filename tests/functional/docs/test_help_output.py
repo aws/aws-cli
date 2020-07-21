@@ -80,6 +80,11 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.assert_contains('Launches the specified number of instances')
         self.assert_contains('``--count`` (string)')
 
+    def test_waiter_does_not_have_duplicate_global_params_link(self):
+        self.driver.main(['ec2', 'wait', 'help'])
+        self.assert_contains_with_count(
+            'for descriptions of global parameters', 1)
+
     def test_custom_service_help_output(self):
         self.driver.main(['s3', 'help'])
         self.assert_contains('.. _cli:aws s3:')
@@ -182,6 +187,13 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
     def test_shorthand_flattens_list_of_single_member_structures(self):
         self.driver.main(['elb', 'remove-tags', 'help'])
         self.assert_contains("--tags Key1 Key2 Key3")
+
+    def test_deprecated_operations_not_documented(self):
+        self.driver.main(['s3api', 'help'])
+        self.assert_not_contains('get-bucket-lifecycle\n')
+        self.assert_not_contains('put-bucket-lifecycle\n')
+        self.assert_not_contains('get-bucket-notification\n')
+        self.assert_not_contains('put-bucket-notification\n')
 
 
 class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
@@ -303,10 +315,10 @@ class TestStructureScalarHasNoExamples(BaseAWSHelpOutputTest):
         # Verify that if a structure does match our special case
         # (single element named "Value"), then we still document
         # the example syntax.
-        self.driver.main(['s3api', 'restore-object', 'help'])
-        self.assert_contains('Days=integer')
+        self.driver.main(['s3api', 'create-bucket', 'help'])
+        self.assert_contains('LocationConstraint=string')
         # Also should see the JSON syntax in the help output.
-        self.assert_contains('"Days": integer')
+        self.assert_contains('"LocationConstraint": ')
 
 
 class TestJSONListScalarDocs(BaseAWSHelpOutputTest):
@@ -436,6 +448,13 @@ class TestIotData(BaseAWSHelpOutputTest):
             'intended for testing purposes only.')
 
 
+class TestSMSVoice(BaseAWSHelpOutputTest):
+    def test_service_help_not_listed(self):
+        self.driver.main(['help'])
+        # Ensure the hidden service is not in the help listing.
+        self.assert_not_contains('* sms-voice')
+
+
 class TestAliases(BaseAWSHelpOutputTest):
     def setUp(self):
         super(TestAliases, self).setUp()
@@ -455,3 +474,10 @@ class TestAliases(BaseAWSHelpOutputTest):
         self.add_alias('my-alias', 'ec2 describe-regions')
         self.driver.main(['help'])
         self.assert_not_contains('my-alias')
+
+
+class TestStreamingOutputHelp(BaseAWSHelpOutputTest):
+    def test_service_help_command_has_note(self):
+        self.driver.main(['s3api', 'get-object', 'help'])
+        self.assert_not_contains('outfile <value>')
+        self.assert_contains('<outfile>')

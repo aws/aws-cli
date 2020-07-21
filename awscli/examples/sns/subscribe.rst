@@ -1,9 +1,14 @@
-The following command subscribes an email address to a topic::
+**To subscribe to a topic**
 
-  aws sns subscribe --topic-arn arn:aws:sns:us-west-2:0123456789012:my-topic --protocol email --notification-endpoint my-email@example.com
+The following ``subscribe`` command subscribes an email address to the specified topic. ::
+
+    aws sns subscribe \
+        --topic-arn arn:aws:sns:us-west-2:123456789012:my-topic \
+        --protocol email \
+        --notification-endpoint my-email@example.com
 
 Output::
 
-  {
-      "SubscriptionArn": "pending confirmation"
-  }
+    {
+        "SubscriptionArn": "pending confirmation"
+    }

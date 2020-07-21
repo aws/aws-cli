@@ -70,6 +70,18 @@ class TestTransferConfig(unittest.TestCase):
             multipart_threshold=long_value)
         self.assertEqual(runtime_config['multipart_threshold'], long_value)
 
+    def test_converts_max_bandwidth_as_string(self):
+        runtime_config = self.build_config_with(max_bandwidth='1MB/s')
+        self.assertEqual(runtime_config['max_bandwidth'], 1024 * 1024)
+
+    def test_validates_max_bandwidth_no_seconds(self):
+        with self.assertRaises(transferconfig.InvalidConfigError):
+            self.build_config_with(max_bandwidth='1MB')
+
+    def test_validates_max_bandwidth_in_bits_per_second(self):
+        with self.assertRaises(transferconfig.InvalidConfigError):
+            self.build_config_with(max_bandwidth='1Mb/s')
+
 
 class TestConvertToS3TransferConfig(unittest.TestCase):
     def test_convert(self):
@@ -78,6 +90,7 @@ class TestConvertToS3TransferConfig(unittest.TestCase):
             'multipart_chunksize': 2,
             'max_concurrent_requests': 3,
             'max_queue_size': 4,
+            'max_bandwidth': 1024 * 1024,
             'addressing_style': 'path',
             'use_accelerate_endpoint': True,
             # This is a TransferConfig only option, it should
@@ -90,4 +103,5 @@ class TestConvertToS3TransferConfig(unittest.TestCase):
         self.assertEqual(result.multipart_chunksize, 2)
         self.assertEqual(result.max_request_concurrency, 3)
         self.assertEqual(result.max_request_queue_size, 4)
+        self.assertEqual(result.max_bandwidth, 1024 * 1024)
         self.assertNotEqual(result.max_in_memory_upload_chunks, 1000)

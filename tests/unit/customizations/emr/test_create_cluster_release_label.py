@@ -14,8 +14,9 @@
 import copy
 import os
 
-
 from botocore.compat import json
+from botocore.compat import OrderedDict
+
 from tests.unit.customizations.emr import test_constants as \
     CONSTANTS
 from tests.unit.customizations.emr import test_constants_instance_fleets as \
@@ -67,6 +68,19 @@ DEFAULT_INSTANCES = {'KeepJobFlowAliveWhenNoSteps': True,
 EC2_ROLE_NAME = "EMR_EC2_DefaultRole"
 EMR_ROLE_NAME = "EMR_DefaultRole"
 
+DEFAULT_KERBEROS_ATTRIBUTES_ARGS = 'Realm=EC2.INTERNAL,' \
+                                   'KdcAdminPassword=123,' \
+                                   'CrossRealmTrustPrincipalPassword=123,' \
+                                   'ADDomainJoinUser=aws,' \
+                                   'ADDomainJoinPassword=123'
+
+KERBEROS_ATTRIBUTES = {'Realm': 'EC2.INTERNAL',
+                       'KdcAdminPassword': '123',
+                       'CrossRealmTrustPrincipalPassword': '123',
+                       'ADDomainJoinUser': 'aws',
+                       'ADDomainJoinPassword': '123'
+                      }
+
 TEST_BA = [
     {
         'ScriptBootstrapAction': {
@@ -115,11 +129,13 @@ STREAMING_HADOOP_JAR_STEP = {
 }
 
 CREATE_CLUSTER_RESULT = {
-    "JobFlowId": "j-XXXX"
+    "JobFlowId": "j-XXXX",
+    "ClusterArn": "arn:aws:elasticmapreduce:region:012345678910:cluster/j-XXXX"
 }
 
 CONSTRUCTED_RESULT = {
-    "ClusterId": "j-XXXX"
+    "ClusterId": "j-XXXX",
+    "ClusterArn": "arn:aws:elasticmapreduce:region:012345678910:cluster/j-XXXX"
 }
 
 DEFAULT_RESULT = \
@@ -649,6 +665,55 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                  }
         ]
         self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_groups_from_json_file_spot_bidprice_equals_ondemandprice(self):
+        data_path = os.path.join(
+            os.path.dirname(__file__), 'input_instance_groups_spot_bidprice_equals_ondemandprice.json')
+        cmd = ('emr create-cluster --use-default-roles'
+               ' --release-label emr-4.0.0  '
+               '--instance-groups file://' + data_path)
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['Instances']['InstanceGroups'] = \
+            [
+                {'InstanceRole': 'MASTER',
+                 'InstanceCount': 1,
+                 'Name': 'Master Instance Group',
+                 'Market': 'SPOT',
+                 'InstanceType': 'm1.large'
+                 },
+                {'InstanceRole': 'CORE',
+                 'InstanceCount': 2,
+                 'Name': 'Core Instance Group',
+                 'Market': 'SPOT',
+                 'InstanceType': 'm1.xlarge'
+                 },
+                {'InstanceRole': 'TASK',
+                 'InstanceCount': 3,
+                 'Name': 'Task Instance Group',
+                 'Market': 'SPOT',
+                 'InstanceType': 'm1.xlarge'
+                 }
+        ]
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_groups_adds_configurations(self):
+        data_path = os.path.join(
+            os.path.dirname(__file__), 'input_instance_groups_with_configurations.json')
+        cmd = ('emr create-cluster --use-default-roles'
+                ' --release-label emr-4.0.0 '
+                '--instance-groups file://' + data_path)
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['Instances']['InstanceGroups'][1]['Configurations'] = [
+            OrderedDict([
+                ("Classification", "hdfs-site"),
+                ("Properties", OrderedDict([
+                    ("test-key1", "test-value1"),
+                    ("test-key2", "test-value2")
+                ]))
+            ])
+        ]
+        self.assert_params_for_cmd(cmd, result)
+
 
     def test_ec2_attributes_no_az(self):
         cmd = ('emr create-cluster --release-label emr-4.0.0 '
@@ -1246,6 +1311,22 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             }
         self.assert_params_for_cmd(cmd, result)
 
+    def test_create_cluster_with_security_config_and_kerberos_attributes(self):
+        cmd = (self.prefix + '--release-label emr-4.7.2 --security-configuration MySecurityConfig' +
+               ' --kerberos-attributes ' + DEFAULT_KERBEROS_ATTRIBUTES_ARGS +
+               ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': DEFAULT_INSTANCES,
+                'KerberosAttributes': KERBEROS_ATTRIBUTES,
+                'ReleaseLabel': 'emr-4.7.2',
+                'VisibleToAllUsers': True,
+                'Tags': [],
+                'SecurityConfiguration': 'MySecurityConfig'
+            }
+        self.assert_params_for_cmd(cmd, result)
+
     def test_create_cluster_with_custom_ami_id(self):
         cmd = (self.prefix + '--release-label emr-4.7.2 --security-configuration MySecurityConfig '+
                ' --custom-ami-id ami-9be6f38c' +
@@ -1292,6 +1373,64 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                 'RepoUpgradeOnBoot': 'NONE',
                 'SecurityConfiguration': 'MySecurityConfig'
             }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_with_step_concurrency_level(self):
+        cmd = (self.prefix + '--release-label emr-5.28.0 --security-configuration MySecurityConfig ' +
+               '--step-concurrency-level 30 ' +
+               '--instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': DEFAULT_INSTANCES,
+                'ReleaseLabel': 'emr-5.28.0',
+                'VisibleToAllUsers': True,
+                'Tags': [],
+                'StepConcurrencyLevel': 30,
+                'SecurityConfiguration': 'MySecurityConfig'
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_with_managed_scaling_policy(self):
+        cmd = (self.prefix + '--release-label emr-5.28.0 --security-configuration MySecurityConfig ' +
+               '--managed-scaling-policy ComputeLimits={MinimumCapacityUnits=2,MaximumCapacityUnits=4,UnitType=Instances,MaximumCoreCapacityUnits=1} ' +
+               '--instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': DEFAULT_INSTANCES,
+                'ReleaseLabel': 'emr-5.28.0',
+                'VisibleToAllUsers': True,
+                'Tags': [],
+                'ManagedScalingPolicy': {
+                   'ComputeLimits': {
+                       'MinimumCapacityUnits': 2,
+                       'MaximumCapacityUnits': 4,
+                       'UnitType': 'Instances',
+                       'MaximumCoreCapacityUnits': 1
+                   } 
+                },
+                'SecurityConfiguration': 'MySecurityConfig'
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_with_log_encryption_kms_key_id(self):
+        test_log_uri = 's3://test/logs'
+        test_log_encryption_kms_key_id = 'valid_kms_key'
+        cmd = (self.prefix + '--release-label emr-5.30.0 ' + '--log-uri '
+                + test_log_uri + ' --log-encryption-kms-key-id '
+                + test_log_encryption_kms_key_id
+                + ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
+        result = \
+             {
+                  'Name': DEFAULT_CLUSTER_NAME,
+                  'Instances': DEFAULT_INSTANCES,
+                  'ReleaseLabel': 'emr-5.30.0',
+                  'VisibleToAllUsers': True,
+                  'Tags': [],
+                  'LogUri': test_log_uri,
+                  'LogEncryptionKmsKeyId': test_log_encryption_kms_key_id
+             }
         self.assert_params_for_cmd(cmd, result)
 
 if __name__ == "__main__":

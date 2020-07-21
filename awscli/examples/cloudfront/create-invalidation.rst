@@ -1,43 +1,68 @@
-The following command creates an invalidation for a CloudFront distribution with the ID ``S11A16G5KZMEQD``::
+**To create an invalidation for a CloudFront distribution**
 
-  aws cloudfront create-invalidation --distribution-id S11A16G5KZMEQD \
-    --paths /index.html /error.html
+The following ``create-invalidation`` example creates an invalidation for the specified files in the specified CloudFront distribution::
 
-The --paths will automatically generate a random ``CallerReference`` every time.
+    aws cloudfront create-invalidation \
+        --distribution-id EDFDVBD6EXAMPLE \
+        --paths "/example-path/example-file.jpg" "/example-path/example-file2.png"
 
-Or you can use the following command to do the same thing, so that you can have a chance to specify your own ``CallerReference`` here::
+Output::
 
-  aws cloudfront create-invalidation --invalidation-batch file://invbatch.json --distribution-id S11A16G5KZMEQD
+    {
+        "Location": "https://cloudfront.amazonaws.com/2019-03-26/distribution/EDFDVBD6EXAMPLE/invalidation/I1JLWSDAP8FU89",
+        "Invalidation": {
+            "Id": "I1JLWSDAP8FU89",
+            "Status": "InProgress",
+            "CreateTime": "2019-12-05T18:24:51.407Z",
+            "InvalidationBatch": {
+                "Paths": {
+                    "Quantity": 2,
+                    "Items": [
+                        "/example-path/example-file2.png",
+                        "/example-path/example-file.jpg"
+                    ]
+                },
+                "CallerReference": "cli-1575570291-670203"
+            }
+        }
+    }
 
-The distribution ID is available in the output of ``create-distribution`` and ``list-distributions``.
+In the previous example, the AWS CLI automatically generated a random ``CallerReference``. To specify your own ``CallerReference``, or to avoid passing the invalidation parameters as command line arguments, you can use a JSON file. The following example creates an invalidation for two files, by providing the invalidation parameters in a JSON file named ``inv-batch.json``::
 
-The file ``invbatch.json`` is a JSON document in the current folder that specifies two paths to invalidate::
+    aws cloudfront create-invalidation \
+        --distribution-id EDFDVBD6EXAMPLE \
+        --invalidation-batch file://inv-batch.json
 
-  {
-    "Paths": {
-      "Quantity": 2,
-      "Items": ["/index.html", "/error.html"]
-    },
-    "CallerReference": "my-invalidation-2015-09-01"
-  }
+Contents of ``inv-batch.json``::
 
-Output of both commands::
+    {
+        "Paths": {
+            "Quantity": 2,
+            "Items": [
+                "/example-path/example-file.jpg",
+                "/example-path/example-file2.png"
+            ]
+        },
+        "CallerReference": "cli-example"
+    }
 
-  {
-      "Invalidation": {
-          "Status": "InProgress",
-          "InvalidationBatch": {
-              "Paths": {
-                  "Items": [
-                      "/index.html",
-                      "/error.html"
-                  ],
-                  "Quantity": 2
-              },
-              "CallerReference": "my-invalidation-2015-09-01"
-          },
-          "Id": "YNY2LI2BVJ4NJU",
-          "CreateTime": "2015-08-31T21:15:52.042Z"
-      },
-      "Location": "https://cloudfront.amazonaws.com/2015-04-17/distribution/S11A16G5KZMEQD/invalidation/YNY2LI2BVJ4NJU"
-  }
+Output::
+
+    {
+        "Location": "https://cloudfront.amazonaws.com/2019-03-26/distribution/EDFDVBD6EXAMPLE/invalidation/I2J0I21PCUYOIK",
+        "Invalidation": {
+            "Id": "I2J0I21PCUYOIK",
+            "Status": "InProgress",
+            "CreateTime": "2019-12-05T18:40:49.413Z",
+            "InvalidationBatch": {
+                "Paths": {
+                    "Quantity": 2,
+                    "Items": [
+                        "/example-path/example-file.jpg",
+                        "/example-path/example-file2.png"
+                    ]
+                },
+                "CallerReference": "cli-example"
+            }
+        }
+    }

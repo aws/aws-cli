@@ -19,12 +19,15 @@ import contextlib
 import uuid
 import shutil
 from awscli.compat import six
+from botocore.utils import set_value_from_jmespath
 
 from awscli.compat import urlparse
 from contextlib import contextmanager
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump, \
     yaml_parse
+import jmespath
+
 
 LOG = logging.getLogger(__name__)
 
@@ -120,7 +123,7 @@ def upload_local_artifacts(resource_id, resource_dict, property_name,
     :raise:                 ValueError if path is not a S3 URL or a local path
     """
 
-    local_path = resource_dict.get(property_name, None)
+    local_path = jmespath.search(property_name, resource_dict)
 
     if local_path is None:
         # Build the root directory and upload to S3
@@ -183,7 +186,7 @@ def make_zip(filename, source_root):
     with open(zipfile_name, 'wb') as f:
         zip_file = zipfile.ZipFile(f, 'w', zipfile.ZIP_DEFLATED)
         with contextlib.closing(zip_file) as zf:
-            for root, dirs, files in os.walk(source_root):
+            for root, dirs, files in os.walk(source_root, followlinks=True):
                 for filename in files:
                     full_path = os.path.join(root, filename)
                     relative_path = os.path.relpath(
@@ -218,6 +221,7 @@ class Resource(object):
     Base class representing a CloudFormation resource that can be exported
     """
 
+    RESOURCE_TYPE = None
     PROPERTY_NAME = None
     PACKAGE_NULL_PROPERTY = True
     # Set this property to True in base class if you want the exporter to zip
@@ -231,7 +235,7 @@ class Resource(object):
         if resource_dict is None:
             return
 
-        property_value = resource_dict.get(self.PROPERTY_NAME, None)
+        property_value = jmespath.search(self.PROPERTY_NAME, resource_dict)
 
         if not property_value and not self.PACKAGE_NULL_PROPERTY:
             return
@@ -247,7 +251,7 @@ class Resource(object):
         if is_local_file(property_value) and not \
                 is_zip_file(property_value) and self.FORCE_ZIP:
             temp_dir = copy_to_temp_dir(property_value)
-            resource_dict[self.PROPERTY_NAME] = temp_dir
+            set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, temp_dir)
 
         try:
             self.do_export(resource_id, resource_dict, parent_dir)
@@ -268,10 +272,10 @@ class Resource(object):
         Default export action is to upload artifacts and set the property to
         S3 URL of the uploaded object
         """
-        resource_dict[self.PROPERTY_NAME] = \
-            upload_local_artifacts(resource_id, resource_dict,
+        uploaded_url = upload_local_artifacts(resource_id, resource_dict,
                                    self.PROPERTY_NAME,
                                    parent_dir, self.uploader)
+        set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, uploaded_url)
 
 
 class ResourceWithS3UrlDict(Resource):
@@ -298,26 +302,70 @@ class ResourceWithS3UrlDict(Resource):
                                    self.PROPERTY_NAME,
                                    parent_dir, self.uploader)
 
-        resource_dict[self.PROPERTY_NAME] = parse_s3_url(
+        parsed_url = parse_s3_url(
                 artifact_s3_url,
                 bucket_name_property=self.BUCKET_NAME_PROPERTY,
                 object_key_property=self.OBJECT_KEY_PROPERTY,
                 version_property=self.VERSION_PROPERTY)
+        set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, parsed_url)
 
 
 class ServerlessFunctionResource(Resource):
+    RESOURCE_TYPE = "AWS::Serverless::Function"
     PROPERTY_NAME = "CodeUri"
     FORCE_ZIP = True
 
 
 class ServerlessApiResource(Resource):
+    RESOURCE_TYPE = "AWS::Serverless::Api"
     PROPERTY_NAME = "DefinitionUri"
     # Don't package the directory if DefinitionUri is omitted.
     # Necessary to support DefinitionBody
     PACKAGE_NULL_PROPERTY = False
 
 
+class GraphQLSchemaResource(Resource):
+    RESOURCE_TYPE = "AWS::AppSync::GraphQLSchema"
+    PROPERTY_NAME = "DefinitionS3Location"
+    # Don't package the directory if DefinitionS3Location is omitted.
+    # Necessary to support Definition
+    PACKAGE_NULL_PROPERTY = False
+
+
+class AppSyncResolverRequestTemplateResource(Resource):
+    RESOURCE_TYPE = "AWS::AppSync::Resolver"
+    PROPERTY_NAME = "RequestMappingTemplateS3Location"
+    # Don't package the directory if RequestMappingTemplateS3Location is omitted.
+    # Necessary to support RequestMappingTemplate
+    PACKAGE_NULL_PROPERTY = False
+
+
+class AppSyncResolverResponseTemplateResource(Resource):
+    RESOURCE_TYPE = "AWS::AppSync::Resolver"
+    PROPERTY_NAME = "ResponseMappingTemplateS3Location"
+    # Don't package the directory if ResponseMappingTemplateS3Location is omitted.
+    # Necessary to support ResponseMappingTemplate
+    PACKAGE_NULL_PROPERTY = False
+
+
+class AppSyncFunctionConfigurationRequestTemplateResource(Resource):
+    RESOURCE_TYPE = "AWS::AppSync::FunctionConfiguration"
+    PROPERTY_NAME = "RequestMappingTemplateS3Location"
+    # Don't package the directory if RequestMappingTemplateS3Location is omitted.
+    # Necessary to support RequestMappingTemplate
+    PACKAGE_NULL_PROPERTY = False
+
+
+class AppSyncFunctionConfigurationResponseTemplateResource(Resource):
+    RESOURCE_TYPE = "AWS::AppSync::FunctionConfiguration"
+    PROPERTY_NAME = "ResponseMappingTemplateS3Location"
+    # Don't package the directory if ResponseMappingTemplateS3Location is omitted.
+    # Necessary to support ResponseMappingTemplate
+    PACKAGE_NULL_PROPERTY = False
+
+
 class LambdaFunctionResource(ResourceWithS3UrlDict):
+    RESOURCE_TYPE = "AWS::Lambda::Function"
     PROPERTY_NAME = "Code"
     BUCKET_NAME_PROPERTY = "S3Bucket"
     OBJECT_KEY_PROPERTY = "S3Key"
@@ -326,6 +374,7 @@ class LambdaFunctionResource(ResourceWithS3UrlDict):
 
 
 class ApiGatewayRestApiResource(ResourceWithS3UrlDict):
+    RESOURCE_TYPE = "AWS::ApiGateway::RestApi"
     PROPERTY_NAME = "BodyS3Location"
     PACKAGE_NULL_PROPERTY = False
     BUCKET_NAME_PROPERTY = "Bucket"
@@ -334,10 +383,47 @@ class ApiGatewayRestApiResource(ResourceWithS3UrlDict):
 
 
 class ElasticBeanstalkApplicationVersion(ResourceWithS3UrlDict):
+    RESOURCE_TYPE = "AWS::ElasticBeanstalk::ApplicationVersion"
     PROPERTY_NAME = "SourceBundle"
     BUCKET_NAME_PROPERTY = "S3Bucket"
     OBJECT_KEY_PROPERTY = "S3Key"
     VERSION_PROPERTY = None
+
+
+class LambdaLayerVersionResource(ResourceWithS3UrlDict):
+    RESOURCE_TYPE = "AWS::Lambda::LayerVersion"
+    PROPERTY_NAME = "Content"
+    BUCKET_NAME_PROPERTY = "S3Bucket"
+    OBJECT_KEY_PROPERTY = "S3Key"
+    VERSION_PROPERTY = "S3ObjectVersion"
+    FORCE_ZIP = True
+
+
+class ServerlessLayerVersionResource(Resource):
+    RESOURCE_TYPE = "AWS::Serverless::LayerVersion"
+    PROPERTY_NAME = "ContentUri"
+    FORCE_ZIP = True
+
+
+class ServerlessRepoApplicationReadme(Resource):
+    RESOURCE_TYPE = "AWS::ServerlessRepo::Application"
+    PROPERTY_NAME = "ReadmeUrl"
+    PACKAGE_NULL_PROPERTY = False
+
+
+class ServerlessRepoApplicationLicense(Resource):
+    RESOURCE_TYPE = "AWS::ServerlessRepo::Application"
+    PROPERTY_NAME = "LicenseUrl"
+    PACKAGE_NULL_PROPERTY = False
+
+
+class StepFunctionsStateMachineDefinitionResource(ResourceWithS3UrlDict):
+    RESOURCE_TYPE = "AWS::StepFunctions::StateMachine"
+    PROPERTY_NAME = "DefinitionS3Location"
+    BUCKET_NAME_PROPERTY = "Bucket"
+    OBJECT_KEY_PROPERTY = "Key"
+    VERSION_PROPERTY = "Version"
+    PACKAGE_NULL_PROPERTY = False
 
 
 class CloudFormationStackResource(Resource):
@@ -345,6 +431,7 @@ class CloudFormationStackResource(Resource):
     Represents CloudFormation::Stack resource that can refer to a nested
     stack template via TemplateURL property.
     """
+    RESOURCE_TYPE = "AWS::CloudFormation::Stack"
     PROPERTY_NAME = "TemplateURL"
 
     def __init__(self, uploader):
@@ -360,7 +447,8 @@ class CloudFormationStackResource(Resource):
         template_path = resource_dict.get(self.PROPERTY_NAME, None)
 
         if template_path is None or is_s3_url(template_path) or \
-                template_path.startswith("https://s3.amazonaws.com/"):
+                template_path.startswith("http://") or \
+                template_path.startswith("https://"):
             # Nothing to do
             return
 
@@ -385,18 +473,81 @@ class CloudFormationStackResource(Resource):
 
             # TemplateUrl property requires S3 URL to be in path-style format
             parts = parse_s3_url(url, version_property="Version")
-            resource_dict[self.PROPERTY_NAME] = self.uploader.to_path_style_s3_url(
+            s3_path_url = self.uploader.to_path_style_s3_url(
                     parts["Key"], parts.get("Version", None))
+            set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, s3_path_url)
 
 
-EXPORT_DICT = {
-    "AWS::Serverless::Function": ServerlessFunctionResource,
-    "AWS::Serverless::Api": ServerlessApiResource,
-    "AWS::ApiGateway::RestApi": ApiGatewayRestApiResource,
-    "AWS::Lambda::Function": LambdaFunctionResource,
-    "AWS::ElasticBeanstalk::ApplicationVersion":
-        ElasticBeanstalkApplicationVersion,
-    "AWS::CloudFormation::Stack": CloudFormationStackResource
+class ServerlessApplicationResource(CloudFormationStackResource):
+    """
+    Represents Serverless::Application resource that can refer to a nested
+    app template via Location property.
+    """
+    RESOURCE_TYPE = "AWS::Serverless::Application"
+    PROPERTY_NAME = "Location"
+
+
+
+class GlueJobCommandScriptLocationResource(Resource):
+    """
+    Represents Glue::Job resource.
+    """
+    RESOURCE_TYPE = "AWS::Glue::Job"
+    # Note the PROPERTY_NAME includes a '.' implying it's nested.
+    PROPERTY_NAME = "Command.ScriptLocation"
+
+
+RESOURCES_EXPORT_LIST = [
+    ServerlessFunctionResource,
+    ServerlessApiResource,
+    GraphQLSchemaResource,
+    AppSyncResolverRequestTemplateResource,
+    AppSyncResolverResponseTemplateResource,
+    AppSyncFunctionConfigurationRequestTemplateResource,
+    AppSyncFunctionConfigurationResponseTemplateResource,
+    ApiGatewayRestApiResource,
+    LambdaFunctionResource,
+    ElasticBeanstalkApplicationVersion,
+    CloudFormationStackResource,
+    ServerlessApplicationResource,
+    ServerlessLayerVersionResource,
+    LambdaLayerVersionResource,
+    GlueJobCommandScriptLocationResource,
+    StepFunctionsStateMachineDefinitionResource
+]
+
+METADATA_EXPORT_LIST = [
+    ServerlessRepoApplicationReadme,
+    ServerlessRepoApplicationLicense
+]
+
+
+def include_transform_export_handler(template_dict, uploader, parent_dir):
+    if template_dict.get("Name", None) != "AWS::Include":
+        return template_dict
+
+    include_location = template_dict.get("Parameters", {}).get("Location", None)
+    if not include_location \
+            or not is_path_value_valid(include_location) \
+            or is_s3_url(include_location):
+        # `include_location` is either empty, or not a string, or an S3 URI
+        return template_dict
+
+    # We are confident at this point that `include_location` is a string containing the local path
+    abs_include_location = os.path.join(parent_dir, include_location)
+    if is_local_file(abs_include_location):
+        template_dict["Parameters"]["Location"] = uploader.upload_with_dedup(abs_include_location)
+    else:
+        raise exceptions.InvalidLocalPathError(
+            resource_id="AWS::Include",
+            property_name="Location",
+            local_path=abs_include_location)
+
+    return template_dict
+
+
+GLOBAL_EXPORT_DICT = {
+    "Fn::Transform": include_transform_export_handler
 }
 
 
@@ -406,7 +557,8 @@ class Template(object):
     """
 
     def __init__(self, template_path, parent_dir, uploader,
-                 resources_to_export=EXPORT_DICT):
+                 resources_to_export=RESOURCES_EXPORT_LIST,
+                 metadata_to_export=METADATA_EXPORT_LIST):
         """
         Reads the template and makes it ready for export
         """
@@ -425,7 +577,47 @@ class Template(object):
         self.template_dict = yaml_parse(template_str)
         self.template_dir = template_dir
         self.resources_to_export = resources_to_export
+        self.metadata_to_export = metadata_to_export
         self.uploader = uploader
+
+    def export_global_artifacts(self, template_dict):
+        """
+        Template params such as AWS::Include transforms are not specific to
+        any resource type but contain artifacts that should be exported,
+        here we iterate through the template dict and export params with a
+        handler defined in GLOBAL_EXPORT_DICT
+        """
+        for key, val in template_dict.items():
+            if key in GLOBAL_EXPORT_DICT:
+                template_dict[key] = GLOBAL_EXPORT_DICT[key](val, self.uploader, self.template_dir)
+            elif isinstance(val, dict):
+                self.export_global_artifacts(val)
+            elif isinstance(val, list):
+                for item in val:
+                    if isinstance(item, dict):
+                        self.export_global_artifacts(item)
+        return template_dict
+
+    def export_metadata(self, template_dict):
+        """
+        Exports the local artifacts referenced by the metadata section in
+        the given template to an s3 bucket.
+
+        :return: The template with references to artifacts that have been
+        exported to s3.
+        """
+        if "Metadata" not in template_dict:
+            return template_dict
+
+        for metadata_type, metadata_dict in template_dict["Metadata"].items():
+            for exporter_class in self.metadata_to_export:
+                if exporter_class.RESOURCE_TYPE != metadata_type:
+                    continue
+
+                exporter = exporter_class(self.uploader)
+                exporter.export(metadata_type, metadata_dict, self.template_dir)
+
+        return template_dict
 
     def export(self):
         """
@@ -435,18 +627,24 @@ class Template(object):
         :return: The template with references to artifacts that have been
         exported to s3.
         """
+        self.template_dict = self.export_metadata(self.template_dict)
+
         if "Resources" not in self.template_dict:
             return self.template_dict
+
+        self.template_dict = self.export_global_artifacts(self.template_dict)
 
         for resource_id, resource in self.template_dict["Resources"].items():
 
             resource_type = resource.get("Type", None)
             resource_dict = resource.get("Properties", None)
 
-            if resource_type in self.resources_to_export:
+            for exporter_class in self.resources_to_export:
+                if exporter_class.RESOURCE_TYPE != resource_type:
+                    continue
+
                 # Export code resources
-                exporter = self.resources_to_export[resource_type](
-                        self.uploader)
+                exporter = exporter_class(self.uploader)
                 exporter.export(resource_id, resource_dict, self.template_dir)
 
         return self.template_dict

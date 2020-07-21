@@ -1,34 +1,24 @@
-**To describe the ID format for your resources**
+**Example 1: To describe the ID format of a resource**
 
-This example describes the ID format for all resource types that support longer IDs. The output indicates that the ``instance``, ``reservation``, ``volume``, and ``snapshot`` resource types can be enabled or disabled for longer IDs. The ``reservation`` resource is already enabled. The ``Deadline`` field indicates the date (in UTC) at which you're automatically switched over to using longer IDs for that resource type. If a deadline is not yet available for the resource type, this value is not returned.
+The following ``describe-id-format`` example describes the ID format for security groups. ::
 
-Command::
+    aws ec2 describe-id-format \
+        --resource security-group
 
-  aws ec2 describe-id-format
+In the following example output, the ``Deadline`` value indicates that the deadline for this resource type to permanently switch from the short ID format to the long ID format expired at 00:00 UTC on August 15, 2018. ::
 
-Output::
+    {
+        "Statuses": [
+            {
+                "Deadline": "2018-08-15T00:00:00.000Z",
+                "Resource": "security-group",
+                "UseLongIds": true
+            }
+        ]
+    }
 
-  {
-    "Statuses": [
-      {
-        "Deadline": "2016-11-01T13:00:00.000Z",
-        "UseLongIds": false,
-        "Resource": "instance"
-      },
-      {
-        "Deadline": "2016-11-01T13:00:00.000Z",
-        "UseLongIds": true,
-        "Resource": "reservation"
-      },
-      {
-        "Deadline": "2016-11-01T13:00:00.000Z",
-        "UseLongIds": false,
-        "Resource": "volume"
-      },
-      {
-        "Deadline": "2016-11-01T13:00:00.000Z",
-        "UseLongIds": false,
-        "Resource": "snapshot"
-      }
-    ]
-  }
+**Example 2: To describe the ID format for all resources**
+
+The following ``describe-id-format`` example describes the ID format for all resource types. All resource types that supported the short ID format were switched to use the long ID format. ::
+
+    aws ec2 describe-id-format

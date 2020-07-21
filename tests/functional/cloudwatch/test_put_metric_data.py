@@ -70,3 +70,21 @@ class TestPutMetricData(BaseAWSCommandParamsTest):
             'Namespace': 'MyService'
         }
         self.assert_params_for_cmd(cmdline, expected)
+
+    def test_using_storage_resolution(self):
+        args = (
+            '--metric-name Foo '
+            '--namespace Bar '
+            '--value 5 '
+            '--storage-resolution 1 '
+        )
+        cmdline = self.prefix + args
+        expected = {
+            'MetricData': [{
+                'MetricName': 'Foo',
+                'Value': decimal.Decimal('5'),
+                'StorageResolution': 1
+            }],
+            'Namespace': 'Bar'
+        }
+        self.assert_params_for_cmd(cmdline, expected)

@@ -3,7 +3,7 @@
 The following example shows how to obtain the profile
 of the AWS Identity and Access Management (IAM) user that is running the command. ::
 
-  aws opsworks --region us-east-1 describe-user-profile
+  aws opsworks --region us-east-1 describe-my-user-profile
 
 *Output*: For brevity, most of the user's SSH public key is replaced by an ellipsis (...). ::
 

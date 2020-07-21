@@ -30,7 +30,6 @@ class CLIDocumentEventHandler(object):
     def __init__(self, help_command):
         self.help_command = help_command
         self.register(help_command.session, help_command.event_class)
-        self.help_command.doc.translation_map = self.build_translation_map()
         self._arg_groups = self._build_arg_table_groups(help_command)
         self._documented_arg_groups = []
 
@@ -40,9 +39,6 @@ class CLIDocumentEventHandler(object):
             if arg.group_name is not None:
                 arg_groups.setdefault(arg.group_name, []).append(arg)
         return arg_groups
-
-    def build_translation_map(self):
-        return dict()
 
     def _get_argument_type_name(self, shape, default):
         if is_json_value_header(shape):
@@ -132,8 +128,10 @@ class CLIDocumentEventHandler(object):
                 [a.cli_name for a in
                  self._arg_groups[argument.group_name]])
             self._documented_arg_groups.append(argument.group_name)
-        else:
+        elif argument.cli_name.startswith('--'):
             option_str = '%s <value>' % argument.cli_name
+        else:
+            option_str = '<%s>' % argument.cli_name
         if not (argument.required
                 or getattr(argument, '_DOCUMENT_AS_REQUIRED', False)):
             option_str = '[%s]' % option_str
@@ -170,7 +168,9 @@ class CLIDocumentEventHandler(object):
             argument.argument_model, argument.cli_type_name)))
         doc.style.indent()
         doc.include_doc_string(argument.documentation)
-        self._document_enums(argument, doc)
+        if hasattr(argument, 'argument_model'):
+            self._document_enums(argument.argument_model, doc)
+            self._document_nested_structure(argument.argument_model, doc)
         doc.style.dedent()
         doc.style.new_paragraph()
 
@@ -188,18 +188,75 @@ class CLIDocumentEventHandler(object):
         )
         doc.write('\n')
 
-    def _document_enums(self, argument, doc):
+    def _document_enums(self, model, doc):
         """Documents top-level parameter enums"""
-        if hasattr(argument, 'argument_model'):
-            model = argument.argument_model
-            if isinstance(model, StringShape):
-                if model.enum:
-                    doc.style.new_paragraph()
-                    doc.write('Possible values:')
-                    doc.style.start_ul()
-                    for enum in model.enum:
-                        doc.style.li('``%s``' % enum)
-                    doc.style.end_ul()
+        if isinstance(model, StringShape):
+            if model.enum:
+                doc.style.new_paragraph()
+                doc.write('Possible values:')
+                doc.style.start_ul()
+                for enum in model.enum:
+                    doc.style.li('``%s``' % enum)
+                doc.style.end_ul()
+
+    def _document_nested_structure(self, model, doc):
+        """Recursively documents parameters in nested structures"""
+        member_type_name = getattr(model, 'type_name', None)
+        if member_type_name == 'structure':
+            for member_name, member_shape in model.members.items():
+                self._doc_member(doc, member_name, member_shape,
+                                 stack=[model.name])
+        elif member_type_name == 'list':
+            self._doc_member(doc, '', model.member, stack=[model.name])
+        elif member_type_name == 'map':
+            key_shape = model.key
+            key_name = key_shape.serialization.get('name', 'key')
+            self._doc_member(doc, key_name, key_shape, stack=[model.name])
+            value_shape = model.value
+            value_name = value_shape.serialization.get('name', 'value')
+            self._doc_member(doc, value_name, value_shape, stack=[model.name])
+
+    def _doc_member(self, doc, member_name, member_shape, stack):
+        if member_shape.name in stack:
+            # Document the recursion once, otherwise just
+            # note the fact that it's recursive and return.
+            if stack.count(member_shape.name) > 1:
+                if member_shape.type_name == 'structure':
+                    doc.write('( ... recursive ... )')
+                return
+        stack.append(member_shape.name)
+        try:
+            self._do_doc_member(doc, member_name,
+                                member_shape, stack)
+        finally:
+            stack.pop()
+
+    def _do_doc_member(self, doc, member_name, member_shape, stack):
+        docs = member_shape.documentation
+        if member_name:
+            doc.write('%s -> (%s)' % (member_name, self._get_argument_type_name(
+                                      member_shape, member_shape.type_name)))
+        else:
+            doc.write('(%s)' % member_shape.type_name)
+        doc.style.indent()
+        doc.style.new_paragraph()
+        doc.include_doc_string(docs)
+        doc.style.new_paragraph()
+        member_type_name = member_shape.type_name
+        if member_type_name == 'structure':
+            for sub_name, sub_shape in member_shape.members.items():
+                self._doc_member(doc, sub_name, sub_shape, stack)
+        elif member_type_name == 'map':
+            key_shape = member_shape.key
+            key_name = key_shape.serialization.get('name', 'key')
+            self._doc_member(doc, key_name, key_shape, stack)
+            value_shape = member_shape.value
+            value_name = value_shape.serialization.get('name', 'value')
+            self._doc_member(doc, value_name, value_shape, stack)
+        elif member_type_name == 'list':
+            self._doc_member(doc, '', member_shape.member, stack)
+        doc.style.dedent()
+        doc.style.new_paragraph()
 
 
 class ProviderDocumentEventHandler(CLIDocumentEventHandler):
@@ -248,13 +305,6 @@ class ProviderDocumentEventHandler(CLIDocumentEventHandler):
 
 
 class ServiceDocumentEventHandler(CLIDocumentEventHandler):
-
-    def build_translation_map(self):
-        d = {}
-        service_model = self.help_command.obj
-        for operation_name in service_model.operation_names:
-            d[operation_name] = xform_name(operation_name, '-')
-        return d
 
     # A service document has no synopsis.
     def doc_synopsis_start(self, help_command, **kwargs):
@@ -309,37 +359,22 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
 
     AWS_DOC_BASE = 'https://docs.aws.amazon.com/goto/WebAPI'
 
-    def build_translation_map(self):
-        operation_model = self.help_command.obj
-        d = {}
-        for cli_name, cli_argument in self.help_command.arg_table.items():
-            if cli_argument.argument_model is not None:
-                argument_name = cli_argument.argument_model.name
-                if argument_name in d:
-                    previous_mapping = d[argument_name]
-                    # If the argument name is a boolean argument, we want the
-                    # the translation to default to the one that does not start
-                    # with --no-. So we check if the cli parameter currently
-                    # being used starts with no- and if stripping off the no-
-                    # results in the new proposed cli argument name. If it
-                    # does, we assume we have the positive form of the argument
-                    # which is the name we want to use in doc translations.
-                    if cli_argument.cli_type_name == 'boolean' and \
-                            previous_mapping.startswith('no-') and \
-                            cli_name == previous_mapping[3:]:
-                        d[argument_name] = cli_name
-                else:
-                    d[argument_name] = cli_name
-        for operation_name in operation_model.service_model.operation_names:
-            d[operation_name] = xform_name(operation_name, '-')
-        return d
-
     def doc_description(self, help_command, **kwargs):
         doc = help_command.doc
         operation_model = help_command.obj
         doc.style.h2('Description')
         doc.include_doc_string(operation_model.documentation)
         self._add_webapi_crosslink(help_command)
+        self._add_top_level_args_reference(help_command)
+
+    def _add_top_level_args_reference(self, help_command):
+        help_command.doc.writeln('')
+        help_command.doc.write("See ")
+        help_command.doc.style.internal_link(
+            title="'aws help'",
+            page='/reference/index'
+        )
+        help_command.doc.writeln(' for descriptions of global parameters.')
 
     def _add_webapi_crosslink(self, help_command):
         doc = help_command.doc
@@ -446,7 +481,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         doc.write('}')
 
     def doc_option_example(self, arg_name, help_command, event_name, **kwargs):
-        service_name, operation_name = \
+        service_id, operation_name = \
             find_service_and_method_in_event_name(event_name)
         doc = help_command.doc
         cli_argument = help_command.arg_table[arg_name]
@@ -459,7 +494,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         docgen = ParamShorthandDocGen()
         if docgen.supports_shorthand(cli_argument.argument_model):
             example_shorthand_syntax = docgen.generate_shorthand_example(
-                cli_argument, service_name, operation_name)
+                cli_argument, service_id, operation_name)
             if example_shorthand_syntax is None:
                 # If the shorthand syntax returns a value of None,
                 # this indicates to us that there is no example
@@ -513,53 +548,14 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         doc.style.h2('Output')
         operation_model = help_command.obj
         output_shape = operation_model.output_shape
-        if output_shape is None:
+        if output_shape is None or not output_shape.members:
             doc.write('None')
         else:
             for member_name, member_shape in output_shape.members.items():
-                self._doc_member_for_output(doc, member_name, member_shape, stack=[])
+                self._doc_member(doc, member_name, member_shape, stack=[])
 
-    def _doc_member_for_output(self, doc, member_name, member_shape, stack):
-        if member_shape.name in stack:
-            # Document the recursion once, otherwise just
-            # note the fact that it's recursive and return.
-            if stack.count(member_shape.name) > 1:
-                if member_shape.type_name == 'structure':
-                    doc.write('( ... recursive ... )')
-                return
-        stack.append(member_shape.name)
-        try:
-            self._do_doc_member_for_output(doc, member_name,
-                                           member_shape, stack)
-        finally:
-            stack.pop()
-
-    def _do_doc_member_for_output(self, doc, member_name, member_shape, stack):
-        docs = member_shape.documentation
-        if member_name:
-            doc.write('%s -> (%s)' % (member_name, self._get_argument_type_name(
-                                      member_shape, member_shape.type_name)))
-        else:
-            doc.write('(%s)' % member_shape.type_name)
-        doc.style.indent()
-        doc.style.new_paragraph()
-        doc.include_doc_string(docs)
-        doc.style.new_paragraph()
-        member_type_name = member_shape.type_name
-        if member_type_name == 'structure':
-            for sub_name, sub_shape in member_shape.members.items():
-                self._doc_member_for_output(doc, sub_name, sub_shape, stack)
-        elif member_type_name == 'map':
-            key_shape = member_shape.key
-            key_name = key_shape.serialization.get('name', 'key')
-            self._doc_member_for_output(doc, key_name, key_shape, stack)
-            value_shape = member_shape.value
-            value_name = value_shape.serialization.get('name', 'value')
-            self._doc_member_for_output(doc, value_name, value_shape, stack)
-        elif member_type_name == 'list':
-            self._doc_member_for_output(doc, '', member_shape.member, stack)
-        doc.style.dedent()
-        doc.style.new_paragraph()
+    def doc_options_end(self, help_command, **kwargs):
+        self._add_top_level_args_reference(help_command)
 
 
 class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
@@ -574,7 +570,6 @@ class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
     def __init__(self, help_command):
         self.help_command = help_command
         self.register(help_command.session, help_command.event_class)
-        self.help_command.doc.translation_map = self.build_translation_map()
         self._topic_tag_db = TopicTagDB()
         self._topic_tag_db.load_json_index()
 

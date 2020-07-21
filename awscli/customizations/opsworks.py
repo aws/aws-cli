@@ -34,6 +34,7 @@ LOG = logging.getLogger(__name__)
 IAM_USER_POLICY_NAME = "OpsWorks-Instance"
 IAM_USER_POLICY_TIMEOUT = datetime.timedelta(minutes=15)
 IAM_PATH = '/AWS/OpsWorks/'
+IAM_POLICY_ARN = 'arn:aws:iam::aws:policy/AWSOpsWorksInstanceRegistration'
 
 HOSTNAME_RE = re.compile(r"^(?!-)[a-z0-9-]{1,63}(?<!-)$", re.I)
 INSTANCE_ID_RE = re.compile(r"^i-[0-9a-f]+$")
@@ -376,12 +377,39 @@ class OpsWorksRegister(BasicCommand):
 
         LOG.debug("Adding the user to the group and attaching a policy")
         self.iam.add_user_to_group(GroupName=group_name, UserName=username)
-        self.iam.put_user_policy(
-            PolicyName=IAM_USER_POLICY_NAME,
-            PolicyDocument=self._iam_policy_document(
-                self._stack['Arn'], IAM_USER_POLICY_TIMEOUT),
-            UserName=username
-        )
+
+        try:
+            self.iam.attach_user_policy(
+                PolicyArn=IAM_POLICY_ARN,
+                UserName=username
+            )
+        except ClientError as e:
+            if e.response.get('Error', {}).get('Code') == 'AccessDenied':
+                LOG.debug(
+                    "Unauthorized to attach policy %s to user %s. Trying "
+                    "to put user policy",
+                    IAM_POLICY_ARN,
+                    username
+                )
+                self.iam.put_user_policy(
+                    PolicyName=IAM_USER_POLICY_NAME,
+                    PolicyDocument=self._iam_policy_document(
+                        self._stack['Arn'], IAM_USER_POLICY_TIMEOUT),
+                    UserName=username
+                )
+                LOG.debug(
+                    "Put policy %s to user %s",
+                    IAM_USER_POLICY_NAME,
+                    username
+                )
+            else:
+                raise
+        else:
+            LOG.debug(
+                "Attached policy %s to user %s",
+                IAM_POLICY_ARN,
+                username
+            )
 
         LOG.debug("Creating an access key")
         self.access_key = self.iam.create_access_key(

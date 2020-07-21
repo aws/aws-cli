@@ -3,7 +3,7 @@
 The following ``disassociate-node`` command disassociates a node named ``i-44de882p``, removing the node from
 management by a Chef Automate server named ``automate-06``. Valid node names are EC2 instance IDs.::
 
-  aws opsworks-cm disassociate-node --server-name "automate-06" --node-name "i-43de882p" --engine-attributes "Name=CHEF_ORGANIZATION,Value='default'"
+  aws opsworks-cm disassociate-node --server-name "automate-06" --node-name "i-43de882p" --engine-attributes "Name=CHEF_ORGANIZATION,Value='MyOrganization' Name=CHEF_NODE_PUBLIC_KEY,Value='Public_key_contents'"
 
 The output returned by the command resembles the following.
 *Output*::

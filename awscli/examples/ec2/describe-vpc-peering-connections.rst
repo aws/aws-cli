@@ -72,11 +72,11 @@ Command::
   aws ec2 describe-vpc-peering-connections --filters Name=status-code,Values=pending-acceptance
 
 
-This example describes all of your VPC peering connections that have the tag Name=Finance or Name=Accounts.
+This example describes all of your VPC peering connections that have the tag Owner=Finance.
 
 Command::
 
-  aws ec2 describe-vpc-peering-connections --filters Name=tag-key,Values=Name Name=tag-value,Values=Finance,Accounts
+  aws ec2 describe-vpc-peering-connections --filters Name=tag:Owner,Values=Finance
 
 
 This example describes all of the VPC peering connections you requested for the specified VPC, vpc-1a2b3c4d.

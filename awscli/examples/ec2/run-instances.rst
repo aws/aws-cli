@@ -1,294 +1,212 @@
-**To launch an instance in EC2-Classic**
+**Example 1: To launch an instance into a default subnet**
 
-This example launches a single instance of type ``c3.large``.
+The following ``run-instances`` example launches a single instance of type ``t2.micro`` into the default subnet for the current Region and associates it with the default subnet for the default VPC for the Region. The key pair is optional if you do not plan to connect to your instance using SSH (Linux) or RDP (Windows). ::
 
-The key pair and security group, named ``MyKeyPair`` and ``MySecurityGroup``, must exist.
-
-Command::
-
-  aws ec2 run-instances --image-id ami-1a2b3c4d --count 1 --instance-type c3.large --key-name MyKeyPair --security-groups MySecurityGroup
-
-Output::
-
-  {
-      "OwnerId": "123456789012",
-      "ReservationId": "r-08626e73c547023b1",
-      "Groups": [
-          {
-              "GroupName": "MySecurityGroup",
-              "GroupId": "sg-903004f8"
-          }
-      ],
-      "Instances": [
-          {
-              "Monitoring": {
-                  "State": "disabled"
-              },
-              "PublicDnsName": null,
-              "RootDeviceType": "ebs",
-              "State": {
-                  "Code": 0,
-                  "Name": "pending"
-              },
-              "EbsOptimized": false,
-              "LaunchTime": "2013-07-19T02:42:39.000Z",
-              "ProductCodes": [],
-              "StateTransitionReason": null, 
-              "InstanceId": "i-1234567890abcdef0",
-              "ImageId": "ami-1a2b3c4d",
-              "PrivateDnsName": null,
-              "KeyName": "MyKeyPair",
-              "SecurityGroups": [
-                  {
-                      "GroupName": "MySecurityGroup",
-                      "GroupId": "sg-903004f8"
-                  }
-              ],
-              "ClientToken": null,
-              "InstanceType": "c3.large",
-              "NetworkInterfaces": [],
-              "Placement": {
-                  "Tenancy": "default",
-                  "GroupName": null,
-                  "AvailabilityZone": "us-east-1b"
-              },
-              "Hypervisor": "xen",
-              "BlockDeviceMappings": [],
-              "Architecture": "x86_64",
-              "StateReason": {
-                  "Message": "pending",
-                  "Code": "pending"
-              },
-              "RootDeviceName": "/dev/sda1",
-              "VirtualizationType": "hvm",
-              "AmiLaunchIndex": 0
-          }
-      ]
-  }
-
-**To launch an instance in EC2-VPC**
-
-This example launches a single instance of type ``t2.micro`` into the specified subnet.
-
-The key pair named ``MyKeyPair`` and the security group sg-903004f8 must exist.
-
-Command::
-
-  aws ec2 run-instances --image-id ami-abc12345 --count 1 --instance-type t2.micro --key-name MyKeyPair --security-group-ids sg-903004f8 --subnet-id subnet-6e7f829e
+    aws ec2 run-instances \
+        --image-id ami-0abcdef1234567890 \
+        --instance-type t2.micro \
+        --key-name MyKeyPair 
 
 Output::
 
-  {
-      "OwnerId": "123456789012",
-      "ReservationId": "r-08626e73c547023b2",
-      "Groups": [],
-      "Instances": [
-          {
-              "Monitoring": {
-                  "State": "disabled"
-              },
-              "PublicDnsName": null,
-              "RootDeviceType": "ebs",
-              "State": {
-                  "Code": 0,
-                  "Name": "pending"
-              },
-              "EbsOptimized": false,
-              "LaunchTime": "2013-07-19T02:42:39.000Z",
-              "PrivateIpAddress": "10.0.1.114",
-              "ProductCodes": [],
-              "VpcId": "vpc-1a2b3c4d",
-              "InstanceId": "i-1234567890abcdef5",
-              "ImageId": "ami-abc12345",
-              "PrivateDnsName": "ip-10-0-1-114.ec2.internal",
-              "KeyName": "MyKeyPair",
-              "SecurityGroups": [
-                  {
-                      "GroupName": "MySecurityGroup",
-                      "GroupId": "sg-903004f8"
-                  }
-              ],
-              "ClientToken": null,
-              "SubnetId": "subnet-6e7f829e",
-              "InstanceType": "t2.micro",
-              "NetworkInterfaces": [
-                  {
-                      "Status": "in-use",
-                      "MacAddress": "0e:ad:05:3b:60:52",
-                      "SourceDestCheck": true,
-                      "VpcId": "vpc-1a2b3c4d",
-                      "Description": "null",
-                      "NetworkInterfaceId": "eni-a7edb1c9",
-                      "PrivateIpAddresses": [
-                          {
-                              "PrivateDnsName": "ip-10-0-1-114.ec2.internal",
-                              "Primary": true,
-                              "PrivateIpAddress": "10.0.1.114"
-                          }
-                      ],
-                      "Ipv6Addresses": [],
-                      "PrivateDnsName": "ip-10-0-1-114.ec2.internal",
-                      "Attachment": {
-                          "Status": "attached",
-                          "DeviceIndex": 0,
-                          "DeleteOnTermination": true,
-                          "AttachmentId": "eni-attach-52193138",
-                          "AttachTime": "2013-07-19T02:42:39.000Z"
-                      },
-                      "Groups": [
-                          {
-                              "GroupName": "MySecurityGroup",
-                              "GroupId": "sg-903004f8"
-                          }
-                      ],
-                      "SubnetId": "subnet-6e7f829e",
-                      "OwnerId": "123456789012",
-                      "PrivateIpAddress": "10.0.1.114"
-                  }
-              ],
-              "SourceDestCheck": true,
-              "Placement": {
-                  "Tenancy": "default",
-                  "GroupName": null,
-                  "AvailabilityZone": "us-east-1b"
-              },
-              "Hypervisor": "xen",
-              "BlockDeviceMappings": [],
-              "Architecture": "x86_64",
-              "StateReason": {
-                  "Message": "pending",
-                  "Code": "pending"
-              },
-              "RootDeviceName": "/dev/sda1",
-              "VirtualizationType": "hvm",
-              "AmiLaunchIndex": 0
-          }
-      ]
-  }
-
-The following example requests a public IP address for an instance that you're launching into a nondefault subnet:
-
-Command::
-
-  aws ec2 run-instances --image-id ami-c3b8d6aa --count 1 --instance-type t2.medium --key-name MyKeyPair --security-group-ids sg-903004f8 --subnet-id subnet-6e7f829e --associate-public-ip-address
-
-**To launch an instance using a block device mapping**
-
-Add the following parameter to your ``run-instances`` command to specify block devices::
-
-  --block-device-mappings file://mapping.json
-
-To add an Amazon EBS volume with the device name ``/dev/sdh`` and a volume size of 100, specify the following in mapping.json::
-
-  [
     {
-      "DeviceName": "/dev/sdh",
-      "Ebs": {
-        "VolumeSize": 100
-      }
+        "Instances": [
+            {
+                "AmiLaunchIndex": 0,
+                "ImageId": "ami-0abcdef1234567890,
+                "InstanceId": "i-1231231230abcdef0",
+                "InstanceType": "t2.micro",
+                "KeyName": "MyKeyPair",
+                "LaunchTime": "2018-05-10T08:05:20.000Z",
+                "Monitoring": {
+                    "State": "disabled"
+                },
+                "Placement": {
+                    "AvailabilityZone": "us-east-2a",
+                    "GroupName": "",
+                    "Tenancy": "default"
+                },
+                "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                "PrivateIpAddress": "10.0.0.157",
+                "ProductCodes": [],
+                "PublicDnsName": "",
+                "State": {
+                    "Code": 0,
+                    "Name": "pending"
+                },
+                "StateTransitionReason": "",
+                "SubnetId": "subnet-04a636d18e83cfacb",
+                "VpcId": "vpc-1234567890abcdef0",
+                "Architecture": "x86_64",
+                "BlockDeviceMappings": [],
+                "ClientToken": "",
+                "EbsOptimized": false,
+                "Hypervisor": "xen",
+                "NetworkInterfaces": [
+                    {
+                        "Attachment": {
+                            "AttachTime": "2018-05-10T08:05:20.000Z",
+                            "AttachmentId": "eni-attach-0e325c07e928a0405",
+                            "DeleteOnTermination": true,
+                            "DeviceIndex": 0,
+                            "Status": "attaching"
+                        },
+                        "Description": "",
+                        "Groups": [
+                            {
+                                "GroupName": "MySecurityGroup",
+                                "GroupId": "sg-0598c7d356eba48d7"
+                            }
+                        ],
+                        "Ipv6Addresses": [],
+                        "MacAddress": "0a:ab:58:e0:67:e2",
+                        "NetworkInterfaceId": "eni-0c0a29997760baee7",
+                        "OwnerId": "123456789012",
+                        "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                        "PrivateIpAddress": "10.0.0.157"
+                        "PrivateIpAddresses": [
+                            {
+                                "Primary": true,
+                                "PrivateDnsName": "ip-10-0-0-157.us-east-2.compute.internal",
+                                "PrivateIpAddress": "10.0.0.157"
+                            }
+                        ],
+                        "SourceDestCheck": true,
+                        "Status": "in-use",
+                        "SubnetId": "subnet-04a636d18e83cfacb",
+                        "VpcId": "vpc-1234567890abcdef0",
+                        "InterfaceType": "interface"
+                    }
+                ],
+                "RootDeviceName": "/dev/xvda",
+                "RootDeviceType": "ebs",
+                "SecurityGroups": [
+                    {
+                        "GroupName": "MySecurityGroup",
+                        "GroupId": "sg-0598c7d356eba48d7"
+                    }
+                ],
+                "SourceDestCheck": true,
+                "StateReason": {
+                    "Code": "pending",
+                    "Message": "pending"
+                },
+                "Tags": [],
+                "VirtualizationType": "hvm",
+                "CpuOptions": {
+                    "CoreCount": 1,
+                    "ThreadsPerCore": 1
+                },
+                "CapacityReservationSpecification": {
+                    "CapacityReservationPreference": "open"
+                },
+                "MetadataOptions": {
+                    "State": "pending",
+                    "HttpTokens": "optional",
+                    "HttpPutResponseHopLimit": 1,
+                    "HttpEndpoint": "enabled"
+                }
+            }
+        ],
+        "OwnerId": "123456789012"
+        "ReservationId": "r-02a3f596d91211712",
     }
-  ]
 
-To add ``ephemeral1`` as an instance store volume with the device name ``/dev/sdc``, specify the following in mapping.json::
+**Example 2: To launch an instance into a non-default subnet and add a public IP address**
 
-  [
-    {
-      "DeviceName": "/dev/sdc",
-      "VirtualName": "ephemeral1"
-    }
-  ]
+The following ``run-instances`` example requests a public IP address for an instance that you're launching into a nondefault subnet. The instance is associated with the specified security group. ::
 
-To omit a device specified by the AMI used to launch the instance (for example, ``/dev/sdf``), specify the following in mapping.json::
+  aws ec2 run-instances \
+      --image-id ami-0abcdef1234567890 \
+      --instance-type t2.micro \
+      --subnet-id subnet-08fc749671b2d077c \
+      --security-group-ids sg-0b0384b66d7d692f9 \
+      --associate-public-ip-address \
+      --key-name MyKeyPair 
 
-  [
-    {
-      "DeviceName": "/dev/sdf",
-      "NoDevice": ""
-    }
-  ]
+For an example of the output for ``run-instances``, see Example 1.
 
-You can view only the Amazon EBS volumes in your block device mapping using the console or the ``describe-instances`` command. To view all volumes, including the instance store volumes, use the following command.
+**Example 3: To launch an instance with additional volumes**
 
-Command::
+The following ``run-instances`` example uses a block device mapping, specified in mapping.json, to attach additional volumes at launch. A block device mapping can specify EBS volumes, instance store volumes, or both EBS volumes and instance store volumes. ::
 
-  curl http://169.254.169.254/latest/meta-data/block-device-mapping/
+  aws ec2 run-instances \
+      --image-id ami-0abcdef1234567890 \
+      --instance-type t2.micro \
+      --subnet-id subnet-08fc749671b2d077c \
+      --security-group-ids sg-0b0384b66d7d692f9 \
+      --key-name MyKeyPair \
+      --block-device-mappings file://mapping.json
 
-Output::
+Contents of ``mapping.json``. This example adds ``/dev/sdh`` an empty EBS volume with a size of 100 GiB. ::
 
-  ami
-  ephemeral1
+    [
+        {
+            "DeviceName": "/dev/sdh",
+            "Ebs": {
+                "VolumeSize": 100
+            }
+        }
+    ]
 
-Note that ``ami`` represents the root volume. To get details about the instance store volume ``ephemeral1``, use the following command.
+Contents of ``mapping.json``. This example adds ``ephemeral1`` as an instance store volume. ::
 
-Command::
+    [
+        {
+            "DeviceName": "/dev/sdc",
+            "VirtualName": "ephemeral1"
+        }
+    ]
 
-  curl http://169.254.169.254/latest/meta-data/block-device-mapping/ephemeral1
+For an example of the output for ``run-instances``, see Example 1.
 
-Output::
+For more information about block device mappings, see `Block device mapping <http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html>`__ in the *Amazon EC2 User Guide*.
 
-  sdc
+**Example 4: To launch an instance and add tags on creation**
 
-**To launch an instance with a modified block device mapping**
+The following ``run-instances`` example adds a tag with a key of ``webserver`` and value of ``production`` to the instance. The command also applies a tag with a key of ``cost-center`` and a value of ``cc123`` to any EBS volume that's created (in this case, the root volume). ::
 
-You can change individual characteristics of existing AMI block device mappings to suit your needs. Perhaps you want to use an existing AMI, but you want a larger root volume than the usual 8 GiB. Or, you would like to use a General Purpose (SSD) volume for an AMI that currently uses a Magnetic volume.
+  aws ec2 run-instances \
+      --image-id ami-0abcdef1234567890 \
+      --instance-type t2.micro \
+      --count 1 \
+      --subnet-id subnet-08fc749671b2d077c \
+      --key-name MyKeyPair \
+      --security-group-ids sg-0b0384b66d7d692f9 \
+      --tag-specifications 'ResourceType=instance,Tags=[{Key=webserver,Value=production}]' 'ResourceType=volume,Tags=[{Key=cost-center,Value=cc123}]' 
 
-Use the ``describe-images`` command with the image ID of the AMI you want to use to find its existing block device mapping. You should see a block device mapping in the output::
+For an example of the output for ``run-instances``, see Example 1.
 
-  {
-    "DeviceName": "/dev/sda1",
-    "Ebs": {
-      "DeleteOnTermination": true,
-      "SnapshotId": "snap-1234567890abcdef0",
-      "VolumeSize": 8,
-      "VolumeType": "standard",
-      "Encrypted": false
-    }
-  }
+**Example 5: To launch an instance with user data**
 
-You can modify the above mapping by changing the individual parameters. For example, to launch an instance with a modified block device mapping, add the following parameter to your ``run-instances`` command to change the above mapping's volume size and type::
+The following ``run-instances`` example passes user data in a file called ``my_script.txt`` that contains a configuration script for your instance. The script runs at launch. ::
 
-  --block-device-mappings file://mapping.json
+  aws ec2 run-instances \
+      --image-id ami-0abcdef1234567890 \
+      --instance-type t2.micro \
+      --count 1 \
+      --subnet-id subnet-08fc749671b2d077c \
+      --key-name MyKeyPair \
+      --security-group-ids sg-0b0384b66d7d692f9 \
+      --user-data file://my_script.txt 
 
-Where mapping.json contains the following::
+For an example of the output for ``run-instances``, see Example 1. 
 
-  [
-    {
-      "DeviceName": "/dev/sda1",
-      "Ebs": {
-        "DeleteOnTermination": true,
-        "SnapshotId": "snap-1234567890abcdef0", 
-        "VolumeSize": 100,
-        "VolumeType": "gp2"
-      }
-    }
-  ]
+For more information about instance user data, see `Working with instance user data <http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-add-user-data.html>`__ in the *Amazon EC2 User Guide*.
 
-**To launch an instance with user data**
+**Example 6: To launch a burstable performance instance**
 
-You can launch an instance and specify user data that performs instance configuration, or that runs a script. The user data needs to be passed as normal string, base64 encoding is handled internally. The following example passes user data in a file called ``my_script.txt`` that contains a configuration script for your instance. The script runs at launch.
+The following ``run-instances`` example launches a t2.micro instance with the ``unlimited`` credit option. When you launch a T2 instance, if you do not specify ``--credit-specification``, the default is the ``standard`` credit option. When you launch a T3 instance, the default is the ``unlimited`` credit option. ::
 
-Command::
+  aws ec2 run-instances \
+      --image-id ami-0abcdef1234567890 \
+      --instance-type t2.micro \
+      --count 1 \
+      --subnet-id subnet-08fc749671b2d077c \
+      --key-name MyKeyPair \
+      --security-group-ids sg-0b0384b66d7d692f9 \
+      --credit-specification CpuCredits=unlimited
 
-  aws ec2 run-instances --image-id ami-abc1234 --count 1 --instance-type m4.large --key-name keypair --user-data file://my_script.txt --subnet-id subnet-abcd1234 --security-group-ids sg-abcd1234 
+For an example of the output for ``run-instances``, see Example 1.
 
-For more information about launching instances, see `Using Amazon EC2 Instances`_ in the *AWS Command Line Interface User Guide*.
-
-.. _`Using Amazon EC2 Instances`: http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-launch.html
-
-**To launch an instance with an instance profile**
-
-This example shows the use of the ``iam-instance-profile`` option to specify an `IAM instance profile`_ by name.
-
-.. _`IAM instance profile`: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html
-
-Command::
-
-  aws ec2 run-instances --iam-instance-profile Name=MyInstanceProfile --image-id ami-1a2b3c4d --count 1 --instance-type t2.micro --key-name MyKeyPair --security-groups MySecurityGroup
-
-**To launch an instance with tags**
-
-You can launch an instance and specify tags for the instance, volumes, or both. The following example applies a tag with a key of ``webserver`` and value of ``production`` to the instance. The command also applies a tag with a key of ``cost-center`` and a value of ``cc123`` to any EBS volume that's created (in this case, the root volume).
-
-Command::
-
-  aws ec2 run-instances --image-id ami-abc12345 --count 1 --instance-type t2.micro --key-name MyKeyPair --subnet-id subnet-6e7f829e --tag-specifications 'ResourceType=instance,Tags=[{Key=webserver,Value=production}]' 'ResourceType=volume,Tags=[{Key=cost-center,Value=cc123}]' 
+For more information about burstable performance instances, see `Burstable performance instances <http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances.html>`__ in the *Amazon EC2 User Guide*.

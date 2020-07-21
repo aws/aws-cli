@@ -216,3 +216,14 @@ def uni_print(statement, out_file=None):
             new_encoding, 'replace').decode(new_encoding)
         out_file.write(new_statement)
     out_file.flush()
+
+
+def get_policy_arn_suffix(region):
+    """Method to return region value as expected by policy arn"""
+    region_string = region.lower()
+    if region_string.startswith("cn-"):
+        return "aws-cn"
+    elif region_string.startswith("us-gov"):
+        return "aws-us-gov"
+    else:
+        return "aws"

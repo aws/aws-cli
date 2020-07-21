@@ -15,7 +15,7 @@ import random
 from nose.plugins.attrib import attr
 import botocore.session
 
-from awscli.testutils import unittest, aws
+from awscli.testutils import unittest, aws, random_chars
 
 
 class TestDynamoDBWait(unittest.TestCase):
@@ -26,7 +26,7 @@ class TestDynamoDBWait(unittest.TestCase):
     @attr('slow')
     def test_wait_table_exists(self):
         # Create a table.
-        table_name = 'awscliddb-%s' % random.randint(1, 10000)
+        table_name = 'awscliddb-%s' % random_chars(10)
         self.client.create_table(
             TableName=table_name,
             ProvisionedThroughput={"ReadCapacityUnits": 5,

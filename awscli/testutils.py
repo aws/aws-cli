@@ -43,16 +43,15 @@ except ImportError as e:
     # In the off chance something imports this module
     # that's not suppose to, we should not stop the CLI
     # by raising an ImportError.  Now if anything actually
-    # *uses* this module that isn't suppose to, that's s
+    # *uses* this module that isn't suppose to, that's a
     # different story.
     mock = None
 from awscli.compat import six
-from botocore.hooks import HierarchicalEmitter
 from botocore.session import Session
 from botocore.exceptions import ClientError
 from botocore.exceptions import WaiterError
 import botocore.loaders
-from botocore.vendored import requests
+from botocore.awsrequest import AWSResponse
 
 import awscli.clidriver
 from awscli.plugin import load_plugins
@@ -60,13 +59,7 @@ from awscli.clidriver import CLIDriver
 from awscli import EnvironmentVariables
 
 
-# The unittest module got a significant overhaul
-# in 2.7, so if we're in 2.6 we can use the backported
-# version unittest2.
-if sys.version_info[:2] == (2, 6):
-    import unittest2 as unittest
-else:
-    import unittest
+import unittest
 
 
 # In python 3, order matters when calling assertEqual to
@@ -212,7 +205,7 @@ def random_chars(num_chars):
     return binascii.hexlify(os.urandom(int(num_chars / 2))).decode('ascii')
 
 
-def random_bucket_name(prefix='awscli-s3integ-', num_random=10):
+def random_bucket_name(prefix='awscli-s3integ-', num_random=15):
     """Generate a random S3 bucket name.
 
     :param prefix: A prefix to use in the bucket name.  Useful
@@ -357,8 +350,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         }
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
-        self.http_response = requests.models.Response()
-        self.http_response.status_code = 200
+        self.http_response = AWSResponse(None, 200, {}, None)
         self.parsed_response = {}
         self.make_request_patch = mock.patch('botocore.endpoint.Endpoint.make_request')
         self.make_request_is_patched = False
@@ -420,14 +412,15 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
 
     def before_parameter_build(self, params, model, **kwargs):
         self.last_kwargs = params
-        self.operations_called.append((model, params))
+        self.operations_called.append((model, params.copy()))
 
     def run_cmd(self, cmd, expected_rc=0):
         logging.debug("Calling cmd: %s", cmd)
         self.patch_make_request()
-        self.driver.session.register('before-call', self.before_call)
-        self.driver.session.register('before-parameter-build',
-                                self.before_parameter_build)
+        event_emitter = self.driver.session.get_component('event_emitter')
+        event_emitter.register('before-call', self.before_call)
+        event_emitter.register_first(
+            'before-parameter-build.*.*', self.before_parameter_build)
         if not isinstance(cmd, list):
             cmdlist = cmd.split()
         else:
@@ -475,7 +468,8 @@ class BaseCLIWireResponseTest(unittest.TestCase):
         }
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
-        self.send_patch = mock.patch('botocore.endpoint.Session.send')
+        # TODO: fix this patch when we have a better way to stub out responses
+        self.send_patch = mock.patch('botocore.endpoint.Endpoint._send')
         self.send_is_patched = False
         self.driver = create_clidriver()
 
@@ -487,7 +481,7 @@ class BaseCLIWireResponseTest(unittest.TestCase):
 
     def patch_send(self, status_code=200, headers={}, content=b''):
         if self.send_is_patched:
-            self.patch_send.stop()
+            self.send_patch.stop()
             self.send_is_patched = False
         send_patch = self.send_patch.start()
         send_patch.return_value = mock.Mock(status_code=status_code,
@@ -521,7 +515,8 @@ class FileCreator(object):
         self.rootdir = tempfile.mkdtemp()
 
     def remove_all(self):
-        shutil.rmtree(self.rootdir)
+        if os.path.exists(self.rootdir):
+            shutil.rmtree(self.rootdir)
 
     def create_file(self, filename, contents, mtime=None, mode='w'):
         """Creates a file in a tmpdir
@@ -650,7 +645,8 @@ def aws(command, collect_memory=False, env_vars=None,
         full_command = full_command.encode(stdout_encoding)
     INTEG_LOG.debug("Running command: %s", full_command)
     env = os.environ.copy()
-    env['AWS_DEFAULT_REGION'] = "us-east-1"
+    if 'AWS_DEFAULT_REGION' not in env:
+        env['AWS_DEFAULT_REGION'] = "us-east-1"
     if env_vars is not None:
         env = env_vars
     if input_file is None:
@@ -726,6 +722,12 @@ class BaseS3CLICommand(unittest.TestCase):
     and more streamlined.
 
     """
+    _PUT_HEAD_SHARED_EXTRAS = [
+        'SSECustomerAlgorithm',
+        'SSECustomerKey',
+        'SSECustomerKeyMD5',
+        'RequestPayer',
+    ]
 
     def setUp(self):
         self.files = FileCreator()
@@ -757,6 +759,7 @@ class BaseS3CLICommand(unittest.TestCase):
         return client
 
     def assert_key_contents_equal(self, bucket, key, expected_contents):
+        self.wait_until_key_exists(bucket, key)
         if isinstance(expected_contents, six.BytesIO):
             expected_contents = expected_contents.getvalue().decode('utf-8')
         actual_contents = self.get_key_contents(bucket, key)
@@ -773,6 +776,9 @@ class BaseS3CLICommand(unittest.TestCase):
         bucket_name = create_bucket(self.session, name, region)
         self.regions[bucket_name] = region
         self.addCleanup(self.delete_bucket, bucket_name)
+
+        # Wait for the bucket to exist before letting it be used.
+        self.wait_bucket_exists(bucket_name)
         return bucket_name
 
     def put_object(self, bucket_name, key_name, contents='', extra_args=None):
@@ -785,11 +791,40 @@ class BaseS3CLICommand(unittest.TestCase):
             call_args.update(extra_args)
         response = client.put_object(**call_args)
         self.addCleanup(self.delete_key, bucket_name, key_name)
+        extra_head_params = {}
+        if extra_args:
+            extra_head_params = dict(
+                (k, v) for (k, v) in extra_args.items()
+                if k in self._PUT_HEAD_SHARED_EXTRAS
+            )
+        self.wait_until_key_exists(
+            bucket_name,
+            key_name,
+            extra_params=extra_head_params,
+        )
+        return response
 
-    def delete_bucket(self, bucket_name):
+    def delete_bucket(self, bucket_name, attempts=5, delay=5):
         self.remove_all_objects(bucket_name)
         client = self.create_client_for_bucket(bucket_name)
-        response = client.delete_bucket(Bucket=bucket_name)
+
+        # There's a chance that, even though the bucket has been used
+        # several times, the delete will fail due to eventual consistency
+        # issues.
+        attempts_remaining = attempts
+        while True:
+            attempts_remaining -= 1
+            try:
+                client.delete_bucket(Bucket=bucket_name)
+                break
+            except client.exceptions.NoSuchBucket:
+                if self.bucket_not_exists(bucket_name):
+                    # Fast fail when the NoSuchBucket error is real.
+                    break
+                if attempts_remaining <= 0:
+                    raise
+                time.sleep(delay)
+
         self.regions.pop(bucket_name, None)
 
     def remove_all_objects(self, bucket_name):
@@ -807,9 +842,29 @@ class BaseS3CLICommand(unittest.TestCase):
         response = client.delete_object(Bucket=bucket_name, Key=key_name)
 
     def get_key_contents(self, bucket_name, key_name):
+        self.wait_until_key_exists(bucket_name, key_name)
         client = self.create_client_for_bucket(bucket_name)
         response = client.get_object(Bucket=bucket_name, Key=key_name)
         return response['Body'].read().decode('utf-8')
+
+    def wait_bucket_exists(self, bucket_name, min_successes=3):
+        client = self.create_client_for_bucket(bucket_name)
+        waiter = client.get_waiter('bucket_exists')
+        consistency_waiter = ConsistencyWaiter(
+            min_successes=min_successes, delay_initial_poll=True)
+        consistency_waiter.wait(
+            lambda: waiter.wait(Bucket=bucket_name) is None
+        )
+
+    def bucket_not_exists(self, bucket_name):
+        client = self.create_client_for_bucket(bucket_name)
+        try:
+            client.head_bucket(Bucket=bucket_name)
+            return True
+        except ClientError as error:
+            if error.response.get('Code') == '404':
+                return False
+            raise
 
     def key_exists(self, bucket_name, key_name, min_successes=3):
         try:
@@ -891,3 +946,64 @@ class TestEventHandler(object):
         self._called = True
         if self._handler is not None:
             self._handler(**kwargs)
+
+
+class ConsistencyWaiterException(Exception):
+    pass
+
+
+class ConsistencyWaiter(object):
+    """
+    A waiter class for some check to reach a consistent state.
+
+    :type min_successes: int
+    :param min_successes: The minimum number of successful check calls to
+    treat the check as stable. Default of 1 success.
+
+    :type max_attempts: int
+    :param min_successes: The maximum number of times to attempt calling
+    the check. Default of 20 attempts.
+
+    :type delay: int
+    :param delay: The number of seconds to delay the next API call after a
+    failed check call. Default of 5 seconds.
+    """
+    def __init__(self, min_successes=1, max_attempts=20, delay=5,
+                 delay_initial_poll=False):
+        self.min_successes = min_successes
+        self.max_attempts = max_attempts
+        self.delay = delay
+        self.delay_initial_poll = delay_initial_poll
+
+    def wait(self, check, *args, **kwargs):
+        """
+        Wait until the check succeeds the configured number of times
+
+        :type check: callable
+        :param check: A callable that returns True or False to indicate
+        if the check succeeded or failed.
+
+        :type args: list
+        :param args: Any ordered arguments to be passed to the check.
+
+        :type kwargs: dict
+        :param kwargs: Any keyword arguments to be passed to the check.
+        """
+        attempts = 0
+        successes = 0
+        if self.delay_initial_poll:
+            time.sleep(self.delay)
+        while attempts < self.max_attempts:
+            attempts += 1
+            if check(*args, **kwargs):
+                successes += 1
+                if successes >= self.min_successes:
+                    return
+            else:
+                time.sleep(self.delay)
+        fail_msg = self._fail_message(attempts, successes)
+        raise ConsistencyWaiterException(fail_msg)
+
+    def _fail_message(self, attempts, successes):
+        format_args = (attempts, successes)
+        return 'Failed after %s attempts, only had %s successes' % format_args

@@ -16,6 +16,7 @@ import difflib
 import mock
 
 from botocore.compat import OrderedDict
+from botocore.model import OperationModel
 from awscli.clidriver import (
     CLIDriver, ServiceCommand, ServiceOperation, CLICommand)
 from awscli.arguments import BaseCLIArgument, CustomArgument
@@ -378,7 +379,10 @@ class MockCLIDriverFactory(object):
     def _create_operation_command(self, name, command):
         argument_table = self.create_argument_table(
             command.get('arguments', []))
-        operation = ServiceOperation(name, 'parent', None, {}, None)
+        mock_operation = mock.Mock(spec=OperationModel)
+        mock_operation.deprecated = False
+        operation = ServiceOperation(name, 'parent', None, mock_operation,
+                                     None)
         operation._arg_table = argument_table
         return operation
 

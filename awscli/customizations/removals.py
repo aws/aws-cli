@@ -40,6 +40,8 @@ def register_removals(event_handler):
                                         'list-instance-groups',
                                         'set-termination-protection',
                                         'set-visible-to-all-users'])
+    cmd_remover.remove(on_event='building-command-table.kinesis',
+                       remove_commands=['subscribe-to-shard'])
 
 
 class CommandRemover(object):

@@ -12,24 +12,25 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import mock
+import os
 
-from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
-from awscli.testutils import capture_input
+from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.testutils import capture_input, set_invalid_utime
 from awscli.compat import six
+from tests.functional.s3 import BaseS3TransferCommandTest
 
 
-class TestCPCommand(BaseAWSCommandParamsTest):
+class BufferedBytesIO(six.BytesIO):
+    @property
+    def buffer(self):
+        return self
 
+
+class BaseCPCommandTest(BaseS3TransferCommandTest):
     prefix = 's3 cp '
 
-    def setUp(self):
-        super(TestCPCommand, self).setUp()
-        self.files = FileCreator()
 
-    def tearDown(self):
-        super(TestCPCommand, self).tearDown()
-        self.files.remove_all()
-
+class TestCPCommand(BaseCPCommandTest):
     def test_operations_used_in_upload(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
         cmdline = '%s %s s3://bucket/key.txt' % (self.prefix, full_path)
@@ -98,6 +99,81 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         self.assertEqual(self.operations_called[0][1]['Bucket'], 'bucket')
         self.assertEqual(self.operations_called[0][1]['Expires'], '90')
 
+    def test_upload_standard_ia(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = ('%s %s s3://bucket/key.txt --storage-class STANDARD_IA' %
+                   (self.prefix, full_path))
+        self.parsed_responses = \
+            [{'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        args = self.operations_called[0][1]
+        self.assertEqual(args['Key'], 'key.txt')
+        self.assertEqual(args['Bucket'], 'bucket')
+        self.assertEqual(args['StorageClass'], 'STANDARD_IA')
+
+    def test_upload_onezone_ia(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = ('%s %s s3://bucket/key.txt --storage-class ONEZONE_IA' %
+                   (self.prefix, full_path))
+        self.parsed_responses = \
+            [{'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        args = self.operations_called[0][1]
+        self.assertEqual(args['Key'], 'key.txt')
+        self.assertEqual(args['Bucket'], 'bucket')
+        self.assertEqual(args['StorageClass'], 'ONEZONE_IA')
+
+    def test_upload_intelligent_tiering(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = ('%s %s s3://bucket/key.txt --storage-class INTELLIGENT_TIERING' %
+                   (self.prefix, full_path))
+        self.parsed_responses = \
+            [{'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        args = self.operations_called[0][1]
+        self.assertEqual(args['Key'], 'key.txt')
+        self.assertEqual(args['Bucket'], 'bucket')
+        self.assertEqual(args['StorageClass'], 'INTELLIGENT_TIERING')
+
+    def test_upload_glacier(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = ('%s %s s3://bucket/key.txt --storage-class GLACIER' %
+                   (self.prefix, full_path))
+        self.parsed_responses = \
+            [{'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        args = self.operations_called[0][1]
+        self.assertEqual(args['Key'], 'key.txt')
+        self.assertEqual(args['Bucket'], 'bucket')
+        self.assertEqual(args['StorageClass'], 'GLACIER')
+
+    def test_upload_deep_archive(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = ('%s %s s3://bucket/key.txt --storage-class DEEP_ARCHIVE' %
+                   (self.prefix, full_path))
+        self.parsed_responses = \
+            [{'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        args = self.operations_called[0][1]
+        self.assertEqual(args['Key'], 'key.txt')
+        self.assertEqual(args['Bucket'], 'bucket')
+        self.assertEqual(args['StorageClass'], 'DEEP_ARCHIVE')
+
     def test_operations_used_in_download_file(self):
         self.parsed_responses = [
             {"ContentLength": "100", "LastModified": "00:00:00Z"},
@@ -118,10 +194,10 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         cmdline = '%s s3://bucket/key.txt %s --recursive' % (
             self.prefix, self.files.rootdir)
         self.run_cmd(cmdline, expected_rc=0)
-        # We called ListObjects but had no objects to download, so
-        # we only have a single ListObjects operation being called.
+        # We called ListObjectsV2 but had no objects to download, so
+        # we only have a single ListObjectsV2 operation being called.
         self.assertEqual(len(self.operations_called), 1, self.operations_called)
-        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
 
     def test_website_redirect_ignore_paramfile(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
@@ -253,7 +329,7 @@ class TestCPCommand(BaseAWSCommandParamsTest):
                   % (self.prefix, self.files.rootdir)
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(len(self.operations_called), 2, self.operations_called)
-        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
         self.assertEqual(self.operations_called[1][0].name, 'GetObject')
 
     def test_recursive_glacier_download_without_force_glacier(self):
@@ -272,7 +348,7 @@ class TestCPCommand(BaseAWSCommandParamsTest):
             self.prefix, self.files.rootdir)
         _, stderr, _ = self.run_cmd(cmdline, expected_rc=2)
         self.assertEqual(len(self.operations_called), 1, self.operations_called)
-        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
         self.assertIn('GLACIER', stderr)
 
     def test_warns_on_glacier_incompatible_operation(self):
@@ -284,6 +360,20 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         _, stderr, _ = self.run_cmd(cmdline, expected_rc=2)
         # There should not have been a download attempted because the
         # operation was skipped because it is glacier incompatible.
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        self.assertIn('GLACIER', stderr)
+
+    def test_warns_on_deep_arhive_incompatible_operation(self):
+        self.parsed_responses = [
+            {'ContentLength': '100', 'LastModified': '00:00:00Z',
+             'StorageClass': 'DEEP_ARCHIVE'},
+        ]
+        cmdline = ('%s s3://bucket/key.txt .' % self.prefix)
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=2)
+        # There should not have been a download attempted because the
+        # operation was skipped because it is glacier
+        # deep archive incompatible.
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
         self.assertIn('GLACIER', stderr)
@@ -302,6 +392,21 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
         self.assertIn('GLACIER', stderr)
 
+    def test_warns_on_deep_archive_incompatible_op_for_multipart_file(self):
+        self.parsed_responses = [
+            {'ContentLength': str(20 * (1024 ** 2)),
+             'LastModified': '00:00:00Z',
+             'StorageClass': 'DEEP_ARCHIVE'},
+        ]
+        cmdline = ('%s s3://bucket/key.txt .' % self.prefix)
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=2)
+        # There should not have been a download attempted because the
+        # operation was skipped because it is glacier
+        # deep archive incompatible.
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        self.assertIn('GLACIER', stderr)
+
     def test_turn_off_glacier_warnings(self):
         self.parsed_responses = [
             {'ContentLength': str(20 * (1024 ** 2)),
@@ -310,6 +415,21 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         ]
         cmdline = (
             '%s s3://bucket/key.txt . --ignore-glacier-warnings' % self.prefix)
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=0)
+        # There should not have been a download attempted because the
+        # operation was skipped because it is glacier incompatible.
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        self.assertEqual('', stderr)
+
+    def test_turn_off_glacier_warnings_for_deep_archive(self):
+        self.parsed_responses = [
+            {'ContentLength': str(20 * (1024 ** 2)),
+             'LastModified': '00:00:00Z',
+             'StorageClass': 'DEEP_ARCHIVE'},
+        ]
+        cmdline = (
+                '%s s3://bucket/key.txt . --ignore-glacier-warnings' % self.prefix)
         _, stderr, _ = self.run_cmd(cmdline, expected_rc=0)
         # There should not have been a download attempted because the
         # operation was skipped because it is glacier incompatible.
@@ -344,9 +464,89 @@ class TestCPCommand(BaseAWSCommandParamsTest):
             self.operations_called[0][1],
             {'Key': 'key.txt', 'Bucket': 'bucket',
              'ContentType': 'text/plain', 'Body': mock.ANY,
-             'SSECustomerAlgorithm': 'AES256', 'SSECustomerKey': 'Zm9v',
-             'SSECustomerKeyMD5': 'rL0Y20zC+Fzt72VPzMSk2A=='}
+             'SSECustomerAlgorithm': 'AES256', 'SSECustomerKey': 'foo'}
         )
+
+    def test_cp_with_sse_c_fileb(self):
+        file_path = self.files.create_file('foo.txt', 'contents')
+        key_path = self.files.create_file('foo.key', '')
+        key_contents = (
+            b'K\xc9G\xe1\xf9&\xee\xd1\x03\xf3\xd4\x10\x18o9E\xc2\xaeD'
+            b'\x89(\x18\xea\xda\xf6\x81\xc3\xd2\x9d\\\xa8\xe6'
+        )
+        with open(key_path, 'wb') as f:
+            f.write(key_contents)
+        cmdline = (
+            '%s %s s3://bucket/key.txt --sse-c --sse-c-key fileb://%s' % (
+                self.prefix, file_path, key_path
+            )
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+
+        expected_args = {
+            'Key': 'key.txt', 'Bucket': 'bucket',
+            'ContentType': 'text/plain',
+            'Body': mock.ANY,
+            'SSECustomerAlgorithm': 'AES256',
+            'SSECustomerKey': key_contents,
+        }
+        self.assertDictEqual(self.operations_called[0][1], expected_args)
+
+    def test_cp_with_sse_c_copy_source_fileb(self):
+        self.parsed_responses = [
+            {
+                "AcceptRanges": "bytes",
+                "LastModified": "Tue, 12 Jul 2016 21:26:07 GMT",
+                "ContentLength": 4,
+                "ETag": '"d3b07384d113edec49eaa6238ad5ff00"',
+                "Metadata": {},
+                "ContentType": "binary/octet-stream"
+            },
+            {
+                "AcceptRanges": "bytes",
+                "Metadata": {},
+                "ContentType": "binary/octet-stream",
+                "ContentLength": 4,
+                "ETag": '"d3b07384d113edec49eaa6238ad5ff00"',
+                "LastModified": "Tue, 12 Jul 2016 21:26:07 GMT",
+                "Body": six.BytesIO(b'foo\n')
+            },
+            {}
+        ]
+
+        file_path = self.files.create_file('foo.txt', '')
+        key_path = self.files.create_file('foo.key', '')
+        key_contents = (
+            b'K\xc9G\xe1\xf9&\xee\xd1\x03\xf3\xd4\x10\x18o9E\xc2\xaeD'
+            b'\x89(\x18\xea\xda\xf6\x81\xc3\xd2\x9d\\\xa8\xe6'
+        )
+        with open(key_path, 'wb') as f:
+            f.write(key_contents)
+        cmdline = (
+            '%s s3://bucket-one/key.txt s3://bucket/key.txt '
+            '--sse-c-copy-source --sse-c-copy-source-key fileb://%s' % (
+                self.prefix, key_path
+            )
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 2)
+        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
+
+        expected_args = {
+            'Key': 'key.txt', 'Bucket': 'bucket',
+            'ContentType': 'text/plain',
+            'CopySource': {
+                'Bucket': 'bucket-one',
+                'Key': 'key.txt'
+            },
+            'CopySourceSSECustomerAlgorithm': 'AES256',
+            'CopySourceSSECustomerKey': key_contents,
+        }
+        self.assertDictEqual(self.operations_called[1][1], expected_args)
+
 
     # Note ideally the kms sse with a key id would be integration tests
     # However, you cannot delete kms keys so there would be no way to clean
@@ -404,9 +604,17 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
         self.assertDictEqual(
             self.operations_called[1][1],
-            {'Key': 'key2.txt', 'Bucket': 'bucket',
-             'ContentType': 'text/plain', 'CopySource': 'bucket/key1.txt',
-             'SSEKMSKeyId': 'foo', 'ServerSideEncryption': 'aws:kms'}
+            {
+                'Key': 'key2.txt',
+                'Bucket': 'bucket',
+                'ContentType': 'text/plain',
+                'CopySource': {
+                    'Bucket': 'bucket',
+                    'Key': 'key1.txt'
+                },
+                'SSEKMSKeyId': 'foo',
+                'ServerSideEncryption': 'aws:kms'
+            }
         )
 
     def test_cp_copy_large_file_with_sse_kms_and_key_id(self):
@@ -459,6 +667,23 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         progress_message = 'Completed 10 Bytes'
         self.assertIn(progress_message, stdout)
 
+    def test_cp_with_error_and_warning(self):
+        command = "s3 cp %s s3://bucket/foo.txt"
+        self.parsed_responses = [{
+            'Error': {
+                'Code': 'NoSuchBucket',
+                'Message': 'The specified bucket does not exist',
+                'BucketName': 'bucket'
+            }
+        }]
+        self.http_response.status_code = 404
+
+        full_path = self.files.create_file('foo.txt', 'bar')
+        set_invalid_utime(full_path)
+        _, stderr, rc = self.run_cmd(command % full_path, expected_rc=1)
+        self.assertIn('upload failed', stderr)
+        self.assertIn('warning: File has an invalid timestamp.', stderr)
+
 
 class TestStreamingCPCommand(BaseAWSCommandParamsTest):
     def test_streaming_upload(self):
@@ -467,9 +692,8 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
             'ETag': '"c8afdb36c52cf4727836669019e69222"'
         }]
 
-        binary_stdin = six.BytesIO(b'foo\n')
-        location = "awscli.customizations.s3.s3handler.binary_stdin"
-        with mock.patch(location, binary_stdin):
+        binary_stdin = BufferedBytesIO(b'foo\n')
+        with mock.patch('sys.stdin', binary_stdin):
             self.run_cmd(command)
 
         self.assertEqual(len(self.operations_called), 1)
@@ -489,9 +713,8 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
             'ETag': '"c8afdb36c52cf4727836669019e69222"'
         }]
 
-        binary_stdin = six.BytesIO(b'foo\n')
-        location = "awscli.customizations.s3.s3handler.binary_stdin"
-        with mock.patch(location, binary_stdin):
+        binary_stdin = BufferedBytesIO(b'foo\n')
+        with mock.patch('sys.stdin', binary_stdin):
             self.run_cmd(command)
 
         self.assertEqual(len(self.operations_called), 1)
@@ -516,9 +739,8 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
         }]
         self.http_response.status_code = 404
 
-        binary_stdin = six.BytesIO(b'foo\n')
-        location = "awscli.customizations.s3.s3handler.binary_stdin"
-        with mock.patch(location, binary_stdin):
+        binary_stdin = BufferedBytesIO(b'foo\n')
+        with mock.patch('sys.stdin', binary_stdin):
             _, stderr, _ = self.run_cmd(command, expected_rc=1)
 
         error_message = (
@@ -526,6 +748,20 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
             'the PutObject operation: The specified bucket does not exist'
         )
         self.assertIn(error_message, stderr)
+
+    def test_streaming_upload_when_stdin_unavailable(self):
+        command = "s3 cp - s3://bucket/streaming.txt"
+        self.parsed_responses = [{
+            'ETag': '"c8afdb36c52cf4727836669019e69222"'
+        }]
+
+        with mock.patch('sys.stdin', None):
+            _, stderr, _ = self.run_cmd(command, expected_rc=1)
+
+        expected_message = (
+            'stdin is required for this operation, but is not available'
+        )
+        self.assertIn(expected_message, stderr)
 
     def test_streaming_download(self):
         command = "s3 cp s3://bucket/streaming.txt -"
@@ -575,3 +811,330 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
             'the HeadObject operation: The specified bucket does not exist'
         )
         self.assertIn(error_message, stderr)
+
+
+class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
+    def test_single_upload(self):
+        full_path = self.files.create_file('myfile', 'mycontent')
+        cmdline = (
+            '%s %s s3://mybucket/mykey --request-payer' % (
+                self.prefix, full_path
+            )
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('PutObject', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'RequestPayer': 'requester',
+                    'Body': mock.ANY,
+                })
+            ]
+        )
+
+    def test_multipart_upload(self):
+        full_path = self.files.create_file('myfile', 'a' * 10 * (1024 ** 2))
+        cmdline = (
+            '%s %s s3://mybucket/mykey --request-payer' % (
+                self.prefix, full_path))
+
+        self.parsed_responses = [
+            {'UploadId': 'myid'},      # CreateMultipartUpload
+            {'ETag': '"myetag"'},      # UploadPart
+            {'ETag': '"myetag"'},      # UploadPart
+            {}                         # CompleteMultipartUpload
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('CreateMultipartUpload', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'RequestPayer': 'requester',
+                }),
+                ('UploadPart', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'RequestPayer': 'requester',
+                    'UploadId': 'myid',
+                    'PartNumber': mock.ANY,
+                    'Body': mock.ANY,
+                }),
+                ('UploadPart', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'RequestPayer': 'requester',
+                    'UploadId': 'myid',
+                    'PartNumber': mock.ANY,
+                    'Body': mock.ANY,
+
+                }),
+                ('CompleteMultipartUpload', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'RequestPayer': 'requester',
+                    'UploadId': 'myid',
+                    'MultipartUpload': {'Parts': [
+                        {'ETag': '"myetag"', 'PartNumber': 1},
+                        {'ETag': '"myetag"', 'PartNumber': 2}]
+                    }
+                })
+            ]
+        )
+
+    def test_recursive_upload(self):
+        self.files.create_file('myfile', 'mycontent')
+        cmdline = (
+            '%s %s s3://mybucket/ --request-payer --recursive' % (
+                self.prefix, self.files.rootdir
+            )
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('PutObject', {
+                    'Bucket': 'mybucket',
+                    'Key': 'myfile',
+                    'RequestPayer': 'requester',
+                    'Body': mock.ANY,
+                })
+            ]
+        )
+
+    def test_single_download(self):
+        cmdline = '%s s3://mybucket/mykey %s --request-payer' % (
+            self.prefix, self.files.rootdir)
+        self.parsed_responses = [
+            self.head_object_response(),
+            self.get_object_response()
+        ]
+
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.head_object_request(
+                    'mybucket', 'mykey', RequestPayer='requester'),
+                self.get_object_request(
+                    'mybucket', 'mykey', RequestPayer='requester'),
+            ]
+        )
+
+    def test_ranged_download(self):
+        cmdline = '%s s3://mybucket/mykey %s --request-payer' % (
+            self.prefix, self.files.rootdir)
+        self.parsed_responses = [
+            self.head_object_response(ContentLength=10 * (1024 ** 2)),
+            self.get_object_response(),
+            self.get_object_response()
+        ]
+
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.head_object_request(
+                    'mybucket', 'mykey', RequestPayer='requester'),
+                self.get_object_request(
+                    'mybucket', 'mykey', Range=mock.ANY,
+                    RequestPayer='requester'),
+                self.get_object_request(
+                    'mybucket', 'mykey', Range=mock.ANY,
+                    RequestPayer='requester'),
+            ]
+        )
+
+    def test_recursive_download(self):
+        cmdline = '%s s3://mybucket/ %s --request-payer --recursive' % (
+            self.prefix, self.files.rootdir)
+        self.parsed_responses = [
+            self.list_objects_response(['mykey']),
+            self.get_object_response()
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.list_objects_request(
+                    'mybucket', RequestPayer='requester'),
+                self.get_object_request(
+                    'mybucket', 'mykey', RequestPayer='requester')
+            ]
+        )
+
+    def test_single_copy(self):
+        cmdline = self.prefix
+        cmdline += ' s3://sourcebucket/sourcekey s3://mybucket/mykey'
+        cmdline += ' --request-payer'
+        self.parsed_responses = [
+            self.head_object_response(),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.head_object_request(
+                    'sourcebucket', 'sourcekey', RequestPayer='requester'
+                ),
+                self.copy_object_request(
+                    'sourcebucket', 'sourcekey', 'mybucket', 'mykey',
+                    RequestPayer='requester'
+                )
+            ]
+        )
+
+    def test_multipart_copy(self):
+        cmdline = self.prefix
+        cmdline += ' s3://sourcebucket/sourcekey s3://mybucket/mykey'
+        cmdline += ' --request-payer'
+        upload_id = 'id'
+        self.parsed_responses = [
+            self.head_object_response(ContentLength=10 * (1024 ** 2)),
+            self.create_mpu_response(upload_id),
+            self.upload_part_copy_response(),
+            self.upload_part_copy_response(),
+            self.complete_mpu_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.head_object_request(
+                    'sourcebucket', 'sourcekey', RequestPayer='requester'),
+                self.create_mpu_request(
+                    'mybucket', 'mykey', RequestPayer='requester'),
+                self.upload_part_copy_request(
+                    'sourcebucket', 'sourcekey', 'mybucket', 'mykey',
+                    upload_id, PartNumber=mock.ANY, RequestPayer='requester',
+                    CopySourceRange=mock.ANY),
+                self.upload_part_copy_request(
+                    'sourcebucket', 'sourcekey', 'mybucket', 'mykey',
+                    upload_id, PartNumber=mock.ANY, RequestPayer='requester',
+                    CopySourceRange=mock.ANY),
+                self.complete_mpu_request(
+                    'mybucket', 'mykey', upload_id, num_parts=2,
+                    RequestPayer='requester')
+            ]
+        )
+
+    def test_recursive_copy(self):
+        cmdline = self.prefix
+        cmdline += ' s3://sourcebucket/ s3://mybucket/'
+        cmdline += ' --request-payer'
+        cmdline += ' --recursive'
+        self.parsed_responses = [
+            self.list_objects_response(['mykey']),
+            self.copy_object_response()
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.list_objects_request(
+                    'sourcebucket', RequestPayer='requester'),
+                self.copy_object_request(
+                    'sourcebucket', 'mykey', 'mybucket', 'mykey',
+                    RequestPayer='requester')
+            ]
+        )
+
+
+class TestAccesspointCPCommand(BaseCPCommandTest):
+    def setUp(self):
+        self.accesspoint_arn = (
+            'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint'
+        )
+        super(TestAccesspointCPCommand, self).setUp()
+
+    def test_upload(self):
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = self.prefix
+        cmdline += ' %s' % filename
+        cmdline += ' s3://%s/mykey' % self.accesspoint_arn
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.put_object_request(self.accesspoint_arn, 'mykey')
+            ]
+        )
+
+    def test_recusive_upload(self):
+        self.files.create_file('myfile', 'mycontent')
+        cmdline = self.prefix
+        cmdline += ' %s' % self.files.rootdir
+        cmdline += ' s3://%s/' % self.accesspoint_arn
+        cmdline += ' --recursive'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.put_object_request(self.accesspoint_arn, 'myfile')
+            ]
+        )
+
+    def test_download(self):
+        cmdline = self.prefix
+        cmdline += ' s3://%s/mykey' % self.accesspoint_arn
+        cmdline += ' %s' % self.files.rootdir
+        self.parsed_responses = [
+            self.head_object_response(),
+            self.get_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.head_object_request(self.accesspoint_arn, 'mykey'),
+                self.get_object_request(self.accesspoint_arn, 'mykey'),
+            ]
+        )
+
+    def test_recursive_download(self):
+        cmdline = self.prefix
+        cmdline += ' s3://%s' % self.accesspoint_arn
+        cmdline += ' %s' % self.files.rootdir
+        cmdline += ' --recursive'
+        self.parsed_responses = [
+            self.list_objects_response(['mykey']),
+            self.get_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.list_objects_request(self.accesspoint_arn),
+                self.get_object_request(self.accesspoint_arn, 'mykey'),
+            ]
+        )
+
+    def test_copy(self):
+        cmdline = self.prefix
+        cmdline += ' s3://%s/mykey' % self.accesspoint_arn
+        accesspoint_arn_dest = self.accesspoint_arn + '-dest'
+        cmdline += ' s3://%s' % accesspoint_arn_dest
+        self.parsed_responses = [
+            self.head_object_response(),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.head_object_request(self.accesspoint_arn, 'mykey'),
+                self.copy_object_request(
+                    self.accesspoint_arn, 'mykey', accesspoint_arn_dest,
+                    'mykey'),
+            ]
+        )
+
+    def test_recursive_copy(self):
+        cmdline = self.prefix
+        cmdline += ' s3://%s' % self.accesspoint_arn
+        accesspoint_arn_dest = self.accesspoint_arn + '-dest'
+        cmdline += ' s3://%s' % accesspoint_arn_dest
+        cmdline += ' --recursive'
+        self.parsed_responses = [
+            self.list_objects_response(['mykey']),
+            self.copy_object_response(),
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.list_objects_request(self.accesspoint_arn),
+                self.copy_object_request(
+                    self.accesspoint_arn, 'mykey', accesspoint_arn_dest,
+                    'mykey'),
+            ]
+        )

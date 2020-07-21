@@ -59,6 +59,13 @@ def test_parse():
     # Pound signs are allowed.
     yield (_can_parse, '#key=value', {'#key': 'value'})
 
+    # Forward slashes are allowed in keys.
+    yield (_can_parse, 'some/thing=value', {'some/thing': 'value'})
+
+    # Colon chars are allowed in keys:
+    yield (_can_parse, 'aws:service:region:124:foo/bar=baz',
+           {'aws:service:region:124:foo/bar': 'baz'})
+
     # Explicit lists.
     yield (_can_parse, 'foo=[]', {'foo': []})
     yield (_can_parse, 'foo=[a]', {'foo': ['a']})
@@ -167,6 +174,10 @@ def test_error_parsing():
     yield (_is_error, "foo={bar=bar")
     yield (_is_error, "foo=bar,")
     yield (_is_error, "foo==bar,\nbar=baz")
+    # Duplicate keys should error otherwise they silently
+    # set only one of the values.
+    yield (_is_error, 'foo=bar,foo=qux')
+
 
 def _is_error(expr):
     try:

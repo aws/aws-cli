@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import json
 
-from awscli.paramfile import get_paramfile
+from awscli.paramfile import get_paramfile, LOCAL_PREFIX_MAP
 from awscli.argprocess import ParamError
 from awscli.customizations.arguments import OverrideRequiredArgsArgument
 
@@ -42,7 +42,9 @@ class CliInputJSONArgument(OverrideRequiredArgsArgument):
                      'provided. The JSON string follows the format provided '
                      'by ``--generate-cli-skeleton``. If other arguments are '
                      'provided on the command line, the CLI values will override '
-                     'the JSON-provided values.'
+                     'the JSON-provided values. It is not possible to pass '
+                     'arbitrary binary values using a JSON-provided value as '
+                     'the string will be taken literally.'
     }
 
     def __init__(self, session):
@@ -60,7 +62,7 @@ class CliInputJSONArgument(OverrideRequiredArgsArgument):
         input_json = getattr(parsed_args, 'cli_input_json', None)
         if input_json is not None:
             # Retrieve the JSON from the file if needed.
-            retrieved_json = get_paramfile(input_json)
+            retrieved_json = get_paramfile(input_json, LOCAL_PREFIX_MAP)
             # Nothing was retrieved from the file. So assume the argument
             # is already a JSON string.
             if retrieved_json is None:

@@ -33,6 +33,7 @@ from awscli.customizations.s3.results import DryRunResult
 from awscli.customizations.s3.results import ResultRecorder
 from awscli.customizations.s3.results import ResultPrinter
 from awscli.customizations.s3.results import OnlyShowErrorsResultPrinter
+from awscli.customizations.s3.results import NoProgressResultPrinter
 from awscli.customizations.s3.results import ResultProcessor
 from awscli.customizations.s3.results import CommandResultRecorder
 from awscli.customizations.s3.utils import RequestParamsMapper
@@ -45,7 +46,7 @@ from awscli.customizations.s3.utils import DirectoryCreatorSubscriber
 from awscli.customizations.s3.utils import DeleteSourceFileSubscriber
 from awscli.customizations.s3.utils import DeleteSourceObjectSubscriber
 from awscli.customizations.s3.utils import DeleteCopySourceObjectSubscriber
-from awscli.compat import binary_stdin
+from awscli.compat import get_binary_stdin
 
 
 LOGGER = logging.getLogger(__name__)
@@ -110,6 +111,8 @@ class S3TransferHandlerFactory(object):
             result_printer = OnlyShowErrorsResultPrinter(result_recorder)
         elif self._cli_params.get('is_stream'):
             result_printer = OnlyShowErrorsResultPrinter(result_recorder)
+        elif not self._cli_params.get('progress'):
+            result_printer = NoProgressResultPrinter(result_recorder)
         else:
             result_printer = ResultPrinter(result_recorder)
         result_processor_handlers.append(result_printer)
@@ -303,7 +306,7 @@ class BaseTransferRequestSubmitter(object):
                         's3://'+fileinfo.src,
                         'Object is of storage class GLACIER. Unable to '
                         'perform %s operations on GLACIER objects. You must '
-                        'restore the object to be able to the perform '
+                        'restore the object to be able to perform the '
                         'operation. See aws s3 %s help for additional '
                         'parameter options to ignore or force these '
                         'transfers.' %
@@ -468,6 +471,7 @@ class UploadStreamRequestSubmitter(UploadRequestSubmitter):
             subscribers.append(ProvideSizeSubscriber(int(expected_size)))
 
     def _get_filein(self, fileinfo):
+        binary_stdin = get_binary_stdin()
         return NonSeekableStream(binary_stdin)
 
     def _format_local_path(self, path):
@@ -494,7 +498,7 @@ class DownloadStreamRequestSubmitter(DownloadRequestSubmitter):
 
 
 class DeleteRequestSubmitter(BaseTransferRequestSubmitter):
-    REQUEST_MAPPER_METHOD = None
+    REQUEST_MAPPER_METHOD = RequestParamsMapper.map_delete_object_params
     RESULT_SUBSCRIBER_CLASS = DeleteResultSubscriber
 
     def can_submit(self, fileinfo):

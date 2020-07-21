@@ -1,43 +1,50 @@
-**To describe instance information**
+**Example 1: To describe managed instance information**
 
-This example shows details of each of your instances.
+The following ``describe-instance-information`` example retrieves details of each of your managed instances. ::
 
-Command::
+    aws ssm describe-instance-information
 
-  aws ssm describe-instance-information
+**Example 2: To describe information about a specific managed instance**
+
+The following ``describe-instance-information`` example shows details of the managed instance ``i-028ea792daEXAMPLE``. ::
+
+    aws ssm describe-instance-information \
+        --filters "Key=InstanceIds,Values=i-028ea792daEXAMPLE"
+
+**Example 3: To describe information about managed instances with a specific tag key**
+
+The following ``describe-instance-information`` example shows details for managed instances that have the tag key ``DEV``. ::
+
+    aws ssm describe-instance-information \
+        --filters "Key=tag-key,Values=DEV"
 
 Output::
 
-  {
-    "InstanceInformationList": [
-        {
-            "IsLatestVersion": true,
-            "LastSuccessfulAssociationExecutionDate": 1487876123.0,
-            "ComputerName": "ip-172-31-44-222.us-west-2.compute.internal",
-            "PingStatus": "Online",
-            "InstanceId": "i-0cb2b964d3e14fd9f",
-            "IPAddress": "172.31.44.222",
-            "AssociationStatus": "Success",
-            "LastAssociationExecutionDate": 1487876123.0,
-            "ResourceType": "EC2Instance",
-            "AgentVersion": "2.0.672.0",
-            "PlatformVersion": "2016.09",
-            "AssociationOverview": {
-                "InstanceAssociationStatusAggregatedCount": {
-                    "Success": 1
+    {
+        "InstanceInformationList": [
+            {
+                "InstanceId": "i-028ea792daEXAMPLE",
+                "PingStatus": "Online",
+                "LastPingDateTime": 1582221233.421,
+                "AgentVersion": "2.3.842.0",
+                "IsLatestVersion": true,
+                "PlatformType": "Linux",
+                "PlatformName": "SLES",
+                "PlatformVersion": "15.1",
+                "ResourceType": "EC2Instance",
+                "IPAddress": "192.0.2.0",
+                "ComputerName": "ip-198.51.100.0.us-east-2.compute.internal",
+                "AssociationStatus": "Success",
+                "LastAssociationExecutionDate": 1582220806.0,
+                "LastSuccessfulAssociationExecutionDate": 1582220806.0,
+                "AssociationOverview": {
+                    "DetailedStatus": "Success",
+                    "InstanceAssociationStatusAggregatedCount": {
+                        "Success": 2
+                    }
                 }
-            },
-            "PlatformName": "Amazon Linux AMI",
-            "PlatformType": "Linux",
-            "LastPingDateTime": 1487898903.758
-        }
-    ]
-  }
+            }
+        ]
+    }
 
-**To describe information about a specific instance**
-
-This example shows details of instance ``i-0cb2b964d3e14fd9f``.
-
-Command::
-
-  aws ssm describe-instance-information --instance-information-filter-list "key=InstanceIds,valueSet=i-0cb2b964d3e14fd9f"
+For more information, see `Managed Instances <https://docs.aws.amazon.com/systems-manager/latest/userguide/managed_instances.html>`__ in the *AWS Systems Manager User Guide*.

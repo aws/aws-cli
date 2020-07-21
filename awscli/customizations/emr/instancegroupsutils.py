@@ -35,7 +35,8 @@ def build_instance_groups(parsed_instance_groups):
         ig_config['InstanceRole'] = instance_group['InstanceGroupType'].upper()
 
         if 'BidPrice' in keys:
-            ig_config['BidPrice'] = instance_group['BidPrice']
+            if instance_group['BidPrice'] != 'OnDemandPrice':
+                ig_config['BidPrice'] = instance_group['BidPrice']
             ig_config['Market'] = constants.SPOT
         else:
             ig_config['Market'] = constants.ON_DEMAND
@@ -44,6 +45,9 @@ def build_instance_groups(parsed_instance_groups):
 
         if 'AutoScalingPolicy' in keys:
             ig_config['AutoScalingPolicy'] = instance_group['AutoScalingPolicy']
+
+        if 'Configurations' in keys:
+            ig_config['Configurations'] = instance_group['Configurations']
 
         instance_groups.append(ig_config)
     return instance_groups

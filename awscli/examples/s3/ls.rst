@@ -12,7 +12,7 @@ Output::
 The following ``ls`` command lists objects and common prefixes under a specified bucket and prefix.  In this example, the
 user owns the bucket ``mybucket`` with the objects ``test.txt`` and ``somePrefix/test.txt``.  The ``LastWriteTime`` and
 ``Length`` are arbitrary. Note that since the ``ls`` command has no interaction with the local filesystem, the ``s3://``
-URI scheme is not required to resolve ambiguity and may be ommited::
+URI scheme is not required to resolve ambiguity and may be omitted::
 
     aws s3 ls s3://mybucket
 
@@ -71,3 +71,14 @@ Output::
 
     Total Objects: 10
        Total Size: 2.9 MiB
+
+**Listing from an S3 access point**
+
+The following ``ls`` command list objects from access point (``myaccesspoint``)::
+
+    aws s3 ls s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/
+
+Output::
+
+                               PRE somePrefix/
+    2013-07-25 17:06:27         88 test.txt

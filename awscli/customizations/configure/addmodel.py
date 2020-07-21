@@ -114,7 +114,7 @@ class AddModelCommand(BasicCommand):
             os.makedirs(model_directory)
 
         # Write the model to the specified location
-        with open(model_location, 'w') as f:
-            f.write(parsed_args.service_model)
+        with open(model_location, 'wb') as f:
+            f.write(parsed_args.service_model.encode('utf-8'))
 
         return 0

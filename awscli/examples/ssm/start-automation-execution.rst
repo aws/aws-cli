@@ -1,13 +1,15 @@
-**To initiate the execution of an Automation document**
+**To execute an automation document**
 
-This example executes a document.
+The following ``start-automation-execution`` example runs an Automation document. ::
 
-Command::
+    aws ssm start-automation-execution \
+        --document-name "AWS-UpdateLinuxAmi" \
+        --parameters "AutomationAssumeRole=arn:aws:iam::123456789012:role/SSMAutomationRole,SourceAmiId=ami-EXAMPLE,IamInstanceProfileName=EC2InstanceRole"
 
-  aws ssm start-automation-execution --document-name "AWS-UpdateLinuxAmi" --parameters "AutomationAssumeRole=arn:aws:iam::812345678901:role/SSMAutomationRole,SourceAmiId=ami-f173cc91,InstanceIamRole=EC2InstanceRole"
-  
 Output::
 
-  {
-	"AutomationExecutionId": "4105a4fc-f944-11e6-9d32-8fb2db27a909"
-  }
+    {
+      "AutomationExecutionId": "4105a4fc-f944-11e6-9d32-0a1b2EXAMPLE"
+    }
+
+For more information, see `Running an Automation Workflow Manually <https://docs.aws.amazon.com/systems-manager/latest/userguide/automation-working-executing-manually.html>`__ in the *AWS Systems Manager User Guide*.

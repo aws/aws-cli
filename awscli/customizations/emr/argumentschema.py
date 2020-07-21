@@ -14,6 +14,48 @@
 from awscli.customizations.emr import helptext
 from awscli.customizations.emr.createdefaultroles import EC2_ROLE_NAME
 
+CONFIGURATIONS_PROPERTIES_SCHEMA = {
+    "type": "map",
+    "key": {
+        "type": "string",
+        "description": "Configuration key"
+    },
+    "value": {
+        "type": "string",
+        "description": "Configuration value"
+    },
+    "description": "Application configuration properties"
+}
+
+CONFIGURATIONS_CLASSIFICATION_SCHEMA = {
+    "type": "string",
+    "description": "Application configuration classification name",
+}
+
+INNER_CONFIGURATIONS_SCHEMA = {
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "Classification": CONFIGURATIONS_CLASSIFICATION_SCHEMA,
+            "Properties": CONFIGURATIONS_PROPERTIES_SCHEMA
+        }
+    },
+    "description": "Instance group application configurations."
+}
+
+OUTER_CONFIGURATIONS_SCHEMA = {
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "Classification": CONFIGURATIONS_CLASSIFICATION_SCHEMA,
+            "Properties": CONFIGURATIONS_PROPERTIES_SCHEMA,
+            "Configurations": INNER_CONFIGURATIONS_SCHEMA
+        }
+    },
+    "description": "Instance group application configurations."
+}
 
 INSTANCE_GROUPS_SCHEMA = {
     "type": "array",
@@ -236,7 +278,8 @@ INSTANCE_GROUPS_SCHEMA = {
                         }
                     }
                 }
-            }
+            },
+            "Configurations": OUTER_CONFIGURATIONS_SCHEMA
         }
     }
 }
@@ -336,18 +379,23 @@ INSTANCE_FLEETS_SCHEMA = {
                                 }
                             }
                         },
-
-                        "Configurations": {
-                            "type": "string",
-                            "description":
-                                "Additional configiration data."
-                        }
+                        "Configurations": OUTER_CONFIGURATIONS_SCHEMA
                     }
                 }
             },
             "LaunchSpecifications": {
                 "type": "object",
                 "properties" : {
+                    "OnDemandSpecification": {
+                        "type": "object",
+                        "properties": {
+                            "AllocationStrategy": {
+                                "type": "string",
+                                "description": "The strategy to use in launching On-Demand instance fleets.",
+                                "enum": ["lowest-price"]
+                            }
+                        }
+                    },
                     "SpotSpecification": {
                         "type": "object",
                         "properties": {
@@ -366,6 +414,11 @@ INSTANCE_FLEETS_SCHEMA = {
                             "BlockDurationMinutes": {
                                 "type": "integer",
                                 "description": "Block duration in minutes."
+                            },
+                            "AllocationStrategy": {
+                                "type": "string",
+                                "description": "The strategy to use in launching Spot instance fleets.",
+                                "enum": ["capacity-optimized"]
                             }
                         }
                     }
@@ -633,5 +686,89 @@ TAGS_SCHEMA = {
     "type": "array",
     "items": {
         "type": "string"
+    }
+}
+
+KERBEROS_ATTRIBUTES_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "Realm": {
+            "type": "string",
+            "description": "The name of Kerberos realm."
+        },
+        "KdcAdminPassword": {
+            "type": "string",
+            "description": "The password of Kerberos administrator."
+        },
+        "CrossRealmTrustPrincipalPassword": {
+            "type": "string",
+            "description": "The password to establish cross-realm trusts."
+        },
+        "ADDomainJoinUser": {
+            "type": "string",
+            "description": "The name of the user with privileges to join instances to Active Directory."
+        },
+        "ADDomainJoinPassword": {
+            "type": "string",
+            "description": "The password of the user with privileges to join instances to Active Directory."
+        }
+    }
+}
+
+MANAGED_SCALING_POLICY_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "ComputeLimits": {
+            "type": "object",
+            "description": 
+                "The EC2 unit limits for a managed scaling policy. "
+                "The managed scaling activity of a cluster is not allowed to go above "
+                "or below these limits. The limits apply to CORE and TASK groups "
+                "and exclude the capacity of the MASTER group.",
+            "properties": {
+               "MinimumCapacityUnits": {
+                  "type": "integer",
+                  "description": 
+                      "The lower boundary of EC2 units. It is measured through "
+                      "VCPU cores or instances for instance groups and measured "
+                      "through units for instance fleets. Managed scaling "
+                      "activities are not allowed beyond this boundary.",
+                  "required": True
+               },
+               "MaximumCapacityUnits": {
+                  "type": "integer",
+                  "description": 
+                      "The upper boundary of EC2 units. It is measured through "
+                      "VCPU cores or instances for instance groups and measured "
+                      "through units for instance fleets. Managed scaling "
+                      "activities are not allowed beyond this boundary.",
+                  "required": True
+               },
+               "MaximumOnDemandCapacityUnits": {
+                  "type": "integer",
+                  "description": 
+                      "The upper boundary of on-demand EC2 units. It is measured through "
+                      "VCPU cores or instances for instance groups and measured "
+                      "through units for instance fleets. The on-demand units are not "
+                      "allowed to scale beyond this boundary. "
+                      "This value must be lower than MaximumCapacityUnits."
+               },
+               "UnitType": {
+                  "type": "string",
+                  "description": "The unit type used for specifying a managed scaling policy.",
+                  "enum": ["VCPU", "Instances", "InstanceFleetUnits"],
+                  "required": True
+               },
+               "MaximumCoreCapacityUnits": {
+                  "type": "integer",
+                  "description":
+                      "The upper boundary of EC2 units for core node type in a cluster. "
+                      "It is measured through VCPU cores or instances for instance groups "
+                      "and measured through units for instance fleets. "
+                      "The core units are not allowed to scale beyond this boundary. "
+                      "The parameter is used to split capacity allocation between core and task nodes."
+               }
+            } 
+        }
     }
 }

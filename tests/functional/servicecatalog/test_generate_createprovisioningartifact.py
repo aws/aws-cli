@@ -91,12 +91,12 @@ class TestGenerateProvisioningArtifact(BaseAWSCommandParamsTest):
                                    expected_rc=0)
 
     def test_generate_provisioning_artifact_invalid_path(self):
-        self.template_path = 'invalid/template/file'
+        self.template_path = os.path.join('invalid', 'template', 'file')
         self.cmd_line = self.build_cmd_line()
         self.assert_params_for_cmd(
             self.cmd_line,
             expected_rc=255,
-            stderr_contains='No such file')
+            stderr_contains='cannot be found')
 
     def test_generate_provisioning_artifact_invalid_pa_type(self):
         self.provisioning_artifact_type = 'invalid_provisioning type'

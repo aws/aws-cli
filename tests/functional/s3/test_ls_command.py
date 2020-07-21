@@ -11,11 +11,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import BaseAWSCommandParamsTest
 from dateutil import parser, tz
 
+from tests.functional.s3 import BaseS3TransferCommandTest
 
-class TestLSCommand(BaseAWSCommandParamsTest):
+class TestLSCommand(BaseS3TransferCommandTest):
 
     def test_operations_used_in_recursive_list(self):
         time_utc = "2014-01-09T20:45:49.000Z"
@@ -199,6 +199,13 @@ class TestLSCommand(BaseAWSCommandParamsTest):
             'Prefix': 'foo/'
         })
 
-
-if __name__ == "__main__":
-    unittest.main()
+    def test_accesspoint_arn(self):
+        self.parsed_responses = [
+            self.list_objects_response(['bar.txt'])
+        ]
+        arn = (
+            'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint'
+        )
+        self.run_cmd('s3 ls s3://%s' % arn, expected_rc=0)
+        call_args = self.operations_called[0][1]
+        self.assertEqual(call_args['Bucket'], arn)

@@ -4,10 +4,6 @@ This example creates a launch configuration::
 
     aws autoscaling create-launch-configuration --launch-configuration-name my-launch-config --image-id ami-c6169af6 --instance-type m1.medium
 
-This example creates a launch configuration that uses Spot Instances::
-
-    aws autoscaling create-launch-configuration --launch-configuration-name my-launch-config --image-id ami-c6169af6 --instance-type m1.medium --spot-price "0.50"
-
 This example creates a launch configuration with a key pair and a bootstrapping script::
 
     aws autoscaling create-launch-configuration --launch-configuration-name my-launch-config --key-name my-key-pair --image-id ami-c6169af6 --instance-type m1.small --user-data file://myuserdata.txt
@@ -33,3 +29,15 @@ Add the following parameter to omit a device included on the instance (for examp
 Parameter::
 
     --block-device-mappings "[{\"DeviceName\": \"/dev/sdf\",\"NoDevice\":\"\"}]"
+
+For more information about quoting JSON-formatted parameters, see `Quoting Strings`_ in the *AWS Command Line Interface User Guide*.
+
+This example creates a launch configuration that uses Spot Instances::
+
+    aws autoscaling create-launch-configuration --launch-configuration-name my-launch-config --image-id ami-01e24be29428c15b2 --instance-type c5.large --spot-price "0.50"
+
+For more information, see `Launching Spot Instances in Your Auto Scaling Group`_ in the *Amazon EC2 Auto Scaling User Guide*.
+
+.. _`Quoting Strings`: https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters.html#quoting-strings
+
+.. _`Launching Spot Instances in Your Auto Scaling Group`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-launch-spot-instances.html

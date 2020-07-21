@@ -14,8 +14,10 @@
 import logging
 import re
 import botocore.exceptions
+import botocore.session
 from botocore import xform_name
 
+from awscli.customizations.utils import get_policy_arn_suffix
 from awscli.customizations.emr import configutils
 from awscli.customizations.emr import emrutils
 from awscli.customizations.emr import exceptions
@@ -29,7 +31,11 @@ from awscli.customizations.emr.constants import EMR_AUTOSCALING_ROLE_NAME
 from awscli.customizations.emr.constants import APPLICATION_AUTOSCALING
 from awscli.customizations.emr.constants import EC2_ROLE_POLICY_NAME
 from awscli.customizations.emr.constants import EMR_ROLE_POLICY_NAME
-from awscli.customizations.emr.constants import EMR_AUTOSCALING_ROLE_POLICY_NAME
+from awscli.customizations.emr.constants \
+    import EMR_AUTOSCALING_ROLE_POLICY_NAME
+from awscli.customizations.emr.constants import EMR_AUTOSCALING_SERVICE_NAME
+from awscli.customizations.emr.constants \
+    import EMR_AUTOSCALING_SERVICE_PRINCIPAL
 from awscli.customizations.emr.exceptions import ResolveServicePrincipalError
 
 
@@ -51,38 +57,34 @@ def assume_role_policy(serviceprincipal):
 
 
 def get_role_policy_arn(region, policy_name):
-    region_suffix = _get_policy_arn_suffix(region)
+    region_suffix = get_policy_arn_suffix(region)
     role_arn = ROLE_ARN_PATTERN.replace("{{region_suffix}}", region_suffix)
     role_arn = role_arn.replace("{{policy_name}}", policy_name)
     return role_arn
 
-def _get_policy_arn_suffix(region):
-    region_string = region.lower()
-    if region_string.startswith("cn-"):
-        return "aws-cn"
-    elif region_string.startswith("us-gov"):
-        return "aws-us-gov"
-    else:
-        return "aws"
+
+def get_service_principal(service, endpoint_host, session=None):
+    suffix, region = _get_suffix_and_region_from_endpoint_host(endpoint_host)
+    if session is None:
+        session = botocore.session.Session()
+
+    if service == EMR_AUTOSCALING_SERVICE_NAME:
+        if region not in session.get_available_regions('emr', 'aws-cn'):
+            return EMR_AUTOSCALING_SERVICE_PRINCIPAL
+
+    return service + '.' + suffix
 
 
-def get_service_principal(service, endpoint_host):
-    return service + '.' + _get_suffix(endpoint_host)
-
-
-def _get_suffix(endpoint_host):
-    return _get_suffix_from_endpoint_host(endpoint_host)
-
-
-def _get_suffix_from_endpoint_host(endpoint_host):
+def _get_suffix_and_region_from_endpoint_host(endpoint_host):
     suffix_match = _get_regex_match_from_endpoint_host(endpoint_host)
 
     if suffix_match is not None and suffix_match.lastindex >= 3:
         suffix = suffix_match.group(3)
+        region = suffix_match.group(2)
     else:
         raise ResolveServicePrincipalError
 
-    return suffix
+    return suffix, region
 
 
 def _get_regex_match_from_endpoint_host(endpoint_host):
@@ -267,11 +269,13 @@ class CreateDefaultRoles(Command):
             self, role_name, service_names, role_arn, parsed_globals):
 
         if len(service_names) == 1:
-            service_principal = get_service_principal(service_names[0], self.emr_endpoint_url)
+            service_principal = get_service_principal(
+                service_names[0], self.emr_endpoint_url, self._session)
         else:
             service_principal = []
             for service in service_names:
-                service_principal.append(get_service_principal(service, self.emr_endpoint_url))
+                service_principal.append(get_service_principal(
+                    service, self.emr_endpoint_url, self._session))
 
         LOG.debug(service_principal)
 

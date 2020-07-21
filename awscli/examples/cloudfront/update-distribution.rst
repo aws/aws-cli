@@ -1,193 +1,375 @@
-The following command updates the Default Root Object to "index.html"
-for a CloudFront distribution with the ID ``S11A16G5KZMEQD``::
+**To update a CloudFront distribution's default root object**
 
-  aws cloudfront update-distribution --id S11A16G5KZMEQD \
-    --default-root-object index.html
+The following example updates the default root object to ``index.html`` for the
+CloudFront distribution with the ID ``EDFDVBD6EXAMPLE``::
 
-The following command disables a CloudFront distribution with the ID ``S11A16G5KZMEQD``::
+    aws cloudfront update-distribution --id EDFDVBD6EXAMPLE \
+        --default-root-object index.html
 
-  aws cloudfront update-distribution --id S11A16G5KZMEQD --distribution-config file://distconfig-disabled.json --if-match E37HOT42DHPVYH
+Output::
 
-The distribution ID is available in the output of ``create-distribution`` and ``list-distributions``. The ETag value ``E37HOT42DHPVYH`` for the ``if-match`` parameter is available in the output of ``create-distribution``, ``get-distribution`` or ``get-distribution-config``.
-
-The file ``distconfig-disabled.json`` is a JSON document in the current folder that modifies the existing distribution config for ``S11A16G5KZMEQD`` to disable the distribution. This file was created by taking the existing config from the ``DistributionConfig`` key in the output of ``get-distribution-config`` and changing the ``Enabled`` key's value to ``false``::
-
-  {
-    "Comment": "",
-    "CacheBehaviors": {
-        "Quantity": 0
-    },
-    "Logging": {
-        "Bucket": "",
-        "Prefix": "",
-        "Enabled": false,
-        "IncludeCookies": false
-    },
-    "Origins": {
-        "Items": [
-            {
-                "OriginPath": "",
-                "S3OriginConfig": {
-                    "OriginAccessIdentity": ""
-                },
-                "Id": "my-origin",
-                "DomainName": "my-bucket.s3.amazonaws.com"
-            }
-        ],
-        "Quantity": 1
-    },
-    "DefaultRootObject": "",
-    "PriceClass": "PriceClass_All",
-    "Enabled": false,
-    "DefaultCacheBehavior": {
-        "TrustedSigners": {
-            "Enabled": false,
-            "Quantity": 0
-        },
-        "TargetOriginId": "my-origin",
-        "ViewerProtocolPolicy": "allow-all",
-        "ForwardedValues": {
-            "Headers": {
+    {
+        "ETag": "E2QWRUHEXAMPLE",
+        "Distribution": {
+            "Id": "EDFDVBD6EXAMPLE",
+            "ARN": "arn:aws:cloudfront::123456789012:distribution/EDFDVBD6EXAMPLE",
+            "Status": "InProgress",
+            "LastModifiedTime": "2019-12-06T18:55:39.870Z",
+            "InProgressInvalidationBatches": 0,
+            "DomainName": "d111111abcdef8.cloudfront.net",
+            "ActiveTrustedSigners": {
+                "Enabled": false,
                 "Quantity": 0
             },
-            "Cookies": {
-                "Forward": "none"
-            },
-            "QueryString": true
+            "DistributionConfig": {
+                "CallerReference": "6b10378d-49be-4c4b-a642-419ccaf8f3b5",
+                "Aliases": {
+                    "Quantity": 0
+                },
+                "DefaultRootObject": "index.html",
+                "Origins": {
+                    "Quantity": 1,
+                    "Items": [
+                        {
+                            "Id": "example-website",
+                            "DomainName": "www.example.com",
+                            "OriginPath": "",
+                            "CustomHeaders": {
+                                "Quantity": 0
+                            },
+                            "CustomOriginConfig": {
+                                "HTTPPort": 80,
+                                "HTTPSPort": 443,
+                                "OriginProtocolPolicy": "match-viewer",
+                                "OriginSslProtocols": {
+                                    "Quantity": 2,
+                                    "Items": [
+                                        "SSLv3",
+                                        "TLSv1"
+                                    ]
+                                },
+                                "OriginReadTimeout": 30,
+                                "OriginKeepaliveTimeout": 5
+                            }
+                        }
+                    ]
+                },
+                "OriginGroups": {
+                    "Quantity": 0
+                },
+                "DefaultCacheBehavior": {
+                    "TargetOriginId": "example-website",
+                    "ForwardedValues": {
+                        "QueryString": false,
+                        "Cookies": {
+                            "Forward": "none"
+                        },
+                        "Headers": {
+                            "Quantity": 1,
+                            "Items": [
+                                "*"
+                            ]
+                        },
+                        "QueryStringCacheKeys": {
+                            "Quantity": 0
+                        }
+                    },
+                    "TrustedSigners": {
+                        "Enabled": false,
+                        "Quantity": 0
+                    },
+                    "ViewerProtocolPolicy": "allow-all",
+                    "MinTTL": 0,
+                    "AllowedMethods": {
+                        "Quantity": 2,
+                        "Items": [
+                            "HEAD",
+                            "GET"
+                        ],
+                        "CachedMethods": {
+                            "Quantity": 2,
+                            "Items": [
+                                "HEAD",
+                                "GET"
+                            ]
+                        }
+                    },
+                    "SmoothStreaming": false,
+                    "DefaultTTL": 86400,
+                    "MaxTTL": 31536000,
+                    "Compress": false,
+                    "LambdaFunctionAssociations": {
+                        "Quantity": 0
+                    },
+                    "FieldLevelEncryptionId": ""
+                },
+                "CacheBehaviors": {
+                    "Quantity": 0
+                },
+                "CustomErrorResponses": {
+                    "Quantity": 0
+                },
+                "Comment": "",
+                "Logging": {
+                    "Enabled": false,
+                    "IncludeCookies": false,
+                    "Bucket": "",
+                    "Prefix": ""
+                },
+                "PriceClass": "PriceClass_All",
+                "Enabled": true,
+                "ViewerCertificate": {
+                    "CloudFrontDefaultCertificate": true,
+                    "MinimumProtocolVersion": "TLSv1",
+                    "CertificateSource": "cloudfront"
+                },
+                "Restrictions": {
+                    "GeoRestriction": {
+                        "RestrictionType": "none",
+                        "Quantity": 0
+                    }
+                },
+                "WebACLId": "",
+                "HttpVersion": "http1.1",
+                "IsIPV6Enabled": true
+            }
+        }
+    }
+
+**To update a CloudFront distribution**
+
+The following example disables the CloudFront distribution with the ID
+``EMLARXS9EXAMPLE`` by providing the distribution configuration in a JSON file
+named ``dist-config-disable.json``. To update a distribution, you must use the
+``--if-match`` option to provide the distribution's ``ETag``. To get the
+``ETag``, use the `get-distribution <get-distribution.html>`_ or
+`get-distribution-config <get-distribution-config.html>`_ command.
+
+After you use the following example to disable a distribution, you can use the
+`delete-distribution <delete-distribution.html>`_ command to delete it.
+
+::
+
+    aws cloudfront update-distribution \
+        --id EMLARXS9EXAMPLE \
+        --if-match E2QWRUHEXAMPLE \
+        --distribution-config file://dist-config-disable.json
+
+The file ``dist-config-disable.json`` is a JSON document in the current folder
+that contains the following. Note that the ``Enabled`` field is set to
+``false``::
+
+    {
+        "CallerReference": "cli-1574382155-496510",
+        "Aliases": {
+            "Quantity": 0
         },
-        "MaxTTL": 31536000,
-        "SmoothStreaming": false,
-        "DefaultTTL": 86400,
-        "AllowedMethods": {
+        "DefaultRootObject": "index.html",
+        "Origins": {
+            "Quantity": 1,
             "Items": [
-                "HEAD",
-                "GET"
-            ],
-            "CachedMethods": {
+                {
+                    "Id": "awsexamplebucket.s3.amazonaws.com-1574382155-273939",
+                    "DomainName": "awsexamplebucket.s3.amazonaws.com",
+                    "OriginPath": "",
+                    "CustomHeaders": {
+                        "Quantity": 0
+                    },
+                    "S3OriginConfig": {
+                        "OriginAccessIdentity": ""
+                    }
+                }
+            ]
+        },
+        "OriginGroups": {
+            "Quantity": 0
+        },
+        "DefaultCacheBehavior": {
+            "TargetOriginId": "awsexamplebucket.s3.amazonaws.com-1574382155-273939",
+            "ForwardedValues": {
+                "QueryString": false,
+                "Cookies": {
+                    "Forward": "none"
+                },
+                "Headers": {
+                    "Quantity": 0
+                },
+                "QueryStringCacheKeys": {
+                    "Quantity": 0
+                }
+            },
+            "TrustedSigners": {
+                "Enabled": false,
+                "Quantity": 0
+            },
+            "ViewerProtocolPolicy": "allow-all",
+            "MinTTL": 0,
+            "AllowedMethods": {
+                "Quantity": 2,
                 "Items": [
                     "HEAD",
                     "GET"
                 ],
-                "Quantity": 2
+                "CachedMethods": {
+                    "Quantity": 2,
+                    "Items": [
+                        "HEAD",
+                        "GET"
+                    ]
+                }
             },
-            "Quantity": 2
+            "SmoothStreaming": false,
+            "DefaultTTL": 86400,
+            "MaxTTL": 31536000,
+            "Compress": false,
+            "LambdaFunctionAssociations": {
+                "Quantity": 0
+            },
+            "FieldLevelEncryptionId": ""
         },
-        "MinTTL": 3600
-    },
-    "CallerReference": "my-distribution-2015-09-01",
-    "ViewerCertificate": {
-        "CloudFrontDefaultCertificate": true,
-        "MinimumProtocolVersion": "SSLv3"
-    },
-    "CustomErrorResponses": {
-        "Quantity": 0
-    },
-    "Restrictions": {
-        "GeoRestriction": {
-            "RestrictionType": "none",
+        "CacheBehaviors": {
             "Quantity": 0
-        }
-    },
-    "Aliases": {
-        "Quantity": 0
+        },
+        "CustomErrorResponses": {
+            "Quantity": 0
+        },
+        "Comment": "",
+        "Logging": {
+            "Enabled": false,
+            "IncludeCookies": false,
+            "Bucket": "",
+            "Prefix": ""
+        },
+        "PriceClass": "PriceClass_All",
+        "Enabled": false,
+        "ViewerCertificate": {
+            "CloudFrontDefaultCertificate": true,
+            "MinimumProtocolVersion": "TLSv1",
+            "CertificateSource": "cloudfront"
+        },
+        "Restrictions": {
+            "GeoRestriction": {
+                "RestrictionType": "none",
+                "Quantity": 0
+            }
+        },
+        "WebACLId": "",
+        "HttpVersion": "http2",
+        "IsIPV6Enabled": true
     }
-  }
 
-After disabling a CloudFront distribution you can delete it with ``delete-distribution``.
+Output::
 
-The output includes the updated distribution config. Note that the ``ETag`` value has also changed::
-
-  {
-      "Distribution": {
-          "Status": "InProgress",
-          "DomainName": "d2wkuj2w9l34gt.cloudfront.net",
-          "InProgressInvalidationBatches": 0,
-          "DistributionConfig": {
-              "Comment": "",
-              "CacheBehaviors": {
-                  "Quantity": 0
-              },
-              "Logging": {
-                  "Bucket": "",
-                  "Prefix": "",
-                  "Enabled": false,
-                  "IncludeCookies": false
-              },
-              "Origins": {
-                  "Items": [
-                      {
-                          "OriginPath": "",
-                          "S3OriginConfig": {
-                              "OriginAccessIdentity": ""
-                          },
-                          "Id": "my-origin",
-                          "DomainName": "my-bucket.s3.amazonaws.com"
-                      }
-                  ],
-                  "Quantity": 1
-              },
-              "DefaultRootObject": "",
-              "PriceClass": "PriceClass_All",
-              "Enabled": false,
-              "DefaultCacheBehavior": {
-                  "TrustedSigners": {
-                      "Enabled": false,
-                      "Quantity": 0
-                  },
-                  "TargetOriginId": "my-origin",
-                  "ViewerProtocolPolicy": "allow-all",
-                  "ForwardedValues": {
-                      "Headers": {
-                          "Quantity": 0
-                      },
-                      "Cookies": {
-                          "Forward": "none"
-                      },
-                      "QueryString": true
-                  },
-                  "MaxTTL": 31536000,
-                  "SmoothStreaming": false,
-                  "DefaultTTL": 86400,
-                  "AllowedMethods": {
-                      "Items": [
-                          "HEAD",
-                          "GET"
-                      ],
-                      "CachedMethods": {
-                          "Items": [
-                              "HEAD",
-                              "GET"
-                          ],
-                          "Quantity": 2
-                      },
-                      "Quantity": 2
-                  },
-                  "MinTTL": 3600
-              },
-              "CallerReference": "my-distribution-2015-09-01",
-              "ViewerCertificate": {
-                  "CloudFrontDefaultCertificate": true,
-                  "MinimumProtocolVersion": "SSLv3"
-              },
-              "CustomErrorResponses": {
-                  "Quantity": 0
-              },
-              "Restrictions": {
-                  "GeoRestriction": {
-                      "RestrictionType": "none",
-                      "Quantity": 0
-                  }
-              },
-              "Aliases": {
-                  "Quantity": 0
-              }
-          },
-          "ActiveTrustedSigners": {
-              "Enabled": false,
-              "Quantity": 0
-          },
-          "LastModifiedTime": "2015-09-01T17:54:11.453Z",
-          "Id": "S11A16G5KZMEQD"
-      },
-      "ETag": "8UBQECEJX24ST"
-  }
+    {
+        "ETag": "E9LHASXEXAMPLE",
+        "Distribution": {
+            "Id": "EMLARXS9EXAMPLE",
+            "ARN": "arn:aws:cloudfront::123456789012:distribution/EMLARXS9EXAMPLE",
+            "Status": "InProgress",
+            "LastModifiedTime": "2019-12-06T18:32:35.553Z",
+            "InProgressInvalidationBatches": 0,
+            "DomainName": "d111111abcdef8.cloudfront.net",
+            "ActiveTrustedSigners": {
+                "Enabled": false,
+                "Quantity": 0
+            },
+            "DistributionConfig": {
+                "CallerReference": "cli-1574382155-496510",
+                "Aliases": {
+                    "Quantity": 0
+                },
+                "DefaultRootObject": "index.html",
+                "Origins": {
+                    "Quantity": 1,
+                    "Items": [
+                        {
+                            "Id": "awsexamplebucket.s3.amazonaws.com-1574382155-273939",
+                            "DomainName": "awsexamplebucket.s3.amazonaws.com",
+                            "OriginPath": "",
+                            "CustomHeaders": {
+                                "Quantity": 0
+                            },
+                            "S3OriginConfig": {
+                                "OriginAccessIdentity": ""
+                            }
+                        }
+                    ]
+                },
+                "OriginGroups": {
+                    "Quantity": 0
+                },
+                "DefaultCacheBehavior": {
+                    "TargetOriginId": "awsexamplebucket.s3.amazonaws.com-1574382155-273939",
+                    "ForwardedValues": {
+                        "QueryString": false,
+                        "Cookies": {
+                            "Forward": "none"
+                        },
+                        "Headers": {
+                            "Quantity": 0
+                        },
+                        "QueryStringCacheKeys": {
+                            "Quantity": 0
+                        }
+                    },
+                    "TrustedSigners": {
+                        "Enabled": false,
+                        "Quantity": 0
+                    },
+                    "ViewerProtocolPolicy": "allow-all",
+                    "MinTTL": 0,
+                    "AllowedMethods": {
+                        "Quantity": 2,
+                        "Items": [
+                            "HEAD",
+                            "GET"
+                        ],
+                        "CachedMethods": {
+                            "Quantity": 2,
+                            "Items": [
+                                "HEAD",
+                                "GET"
+                            ]
+                        }
+                    },
+                    "SmoothStreaming": false,
+                    "DefaultTTL": 86400,
+                    "MaxTTL": 31536000,
+                    "Compress": false,
+                    "LambdaFunctionAssociations": {
+                        "Quantity": 0
+                    },
+                    "FieldLevelEncryptionId": ""
+                },
+                "CacheBehaviors": {
+                    "Quantity": 0
+                },
+                "CustomErrorResponses": {
+                    "Quantity": 0
+                },
+                "Comment": "",
+                "Logging": {
+                    "Enabled": false,
+                    "IncludeCookies": false,
+                    "Bucket": "",
+                    "Prefix": ""
+                },
+                "PriceClass": "PriceClass_All",
+                "Enabled": false,
+                "ViewerCertificate": {
+                    "CloudFrontDefaultCertificate": true,
+                    "MinimumProtocolVersion": "TLSv1",
+                    "CertificateSource": "cloudfront"
+                },
+                "Restrictions": {
+                    "GeoRestriction": {
+                        "RestrictionType": "none",
+                        "Quantity": 0
+                    }
+                },
+                "WebACLId": "",
+                "HttpVersion": "http2",
+                "IsIPV6Enabled": true
+            }
+        }
+    }

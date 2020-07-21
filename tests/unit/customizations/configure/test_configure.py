@@ -95,9 +95,9 @@ class TestConfigureCommand(unittest.TestCase):
             {'output': 'NEW OUTPUT FORMAT'}, 'myconfigfile')
 
     def test_section_name_can_be_changed_for_profiles(self):
-        # If the user specifies "--profile myname" we need to write
-        # this out to the [profile myname] section.
-        self.global_args.profile = 'myname'
+        # If the user specifies a profile we need to write this out to
+        # the [profile myname] section.
+        self.session.profile = 'myname'
         self.configure(args=[], parsed_globals=self.global_args)
         # Note the __section__ key name.
         self.assert_credentials_file_updated_with(
@@ -115,11 +115,11 @@ class TestConfigureCommand(unittest.TestCase):
         # We should handle this case, and write out a new profile section
         # in the config file.
         session = FakeSession({'config_file': 'myconfigfile'},
-                              profile_does_not_exist=True)
+                              profile_does_not_exist=True,
+                              profile='profile-does-not-exist')
         self.configure = configure.ConfigureCommand(session,
                                                     prompter=self.precanned,
                                                     config_writer=self.writer)
-        self.global_args.profile = 'profile-does-not-exist'
         self.configure(args=[], parsed_globals=self.global_args)
         self.assert_credentials_file_updated_with(
             {'aws_access_key_id': 'new_value',

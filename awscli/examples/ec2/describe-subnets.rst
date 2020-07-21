@@ -1,67 +1,105 @@
-**To describe your subnets**
+**Example 1: To describe your subnets**
 
-This example describes your subnets.
+The following ``describe-subnets`` example displays the details of your subnets. ::
 
-Command::
-
-  aws ec2 describe-subnets 
+    aws ec2 describe-subnets
 
 Output::
 
-  {
-      "Subnets": [
-          {
-              "VpcId": "vpc-a01106c2",
-              "AvailableIpAddressCount": 251,
-              "MapPublicIpOnLaunch": false,
-              "DefaultForAz": false,
-              "Ipv6CidrBlockAssociationSet": [],
-              "State": "available",
-              "AvailabilityZone": "us-east-1c",
-              "SubnetId": "subnet-9d4a7b6c",
-              "CidrBlock": "10.0.1.0/24",
-              "AssignIpv6AddressOnCreation": false
-          },
-          {
-            "VpcId": "vpc-31896b55", 
-            "AvailableIpAddressCount": 251, 
-            "MapPublicIpOnLaunch": false, 
-            "DefaultForAz": false, 
-            "Ipv6CidrBlockAssociationSet": [
-                {
-                    "Ipv6CidrBlock": "2001:db8:1234:a101::/64", 
-                    "AssociationId": "subnet-cidr-assoc-30e7e348", 
-                    "Ipv6CidrBlockState": {
-                        "State": "ASSOCIATED"
+    {
+        "Subnets": [
+            {
+                 "AvailabilityZone": "us-east-1d",
+                "AvailabilityZoneId": "use1-az2",
+                "AvailableIpAddressCount": 4089,
+                "CidrBlock": "172.31.80.0/20",
+                "DefaultForAz": true,
+                "MapPublicIpOnLaunch": false,
+                "MapCustomerOwnedIpOnLaunch": true,
+                "State": "available",
+                "SubnetId": "subnet-0bb1c79de3EXAMPLE",
+                "VpcId": "vpc-0ee975135dEXAMPLE",
+                "OwnerId": "111122223333",
+                "AssignIpv6AddressOnCreation": false,
+                "Ipv6CidrBlockAssociationSet": [],
+                "CustomerOwnedIpv4Pool:": 'pool-2EXAMPLE',    
+                "SubnetArn": "arn:aws:ec2:us-east-2:111122223333:subnet/subnet-0bb1c79de3EXAMPLE"
+            },
+            {
+                "AvailabilityZone": "us-east-1d",
+                "AvailabilityZoneId": "use1-az2",
+                "AvailableIpAddressCount": 4089,
+                "CidrBlock": "172.31.80.0/20",
+                "DefaultForAz": true,
+                "MapPublicIpOnLaunch": true,
+                "MapCustomerOwnedIpOnLaunch": false,
+                "State": "available",
+                "SubnetId": "subnet-8EXAMPLE",
+                "VpcId": "vpc-3EXAMPLE",
+                "OwnerId": "1111222233333",
+                "AssignIpv6AddressOnCreation": false,
+                "Ipv6CidrBlockAssociationSet": [],        
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "MySubnet"
                     }
-                }
-            ], 
-            "State": "available", 
-            "AvailabilityZone": "us-east-1a", 
-            "SubnetId": "subnet-4204d234", 
-            "CidrBlock": "10.0.1.0/24", 
-            "AssignIpv6AddressOnCreation": false
-        }
-      ]  
-  }
-  
-**To describe the subnets for a specific VPC**
+                ],
+                "SubnetArn": "arn:aws:ec2:us-east-1:111122223333:subnet/subnet-8EXAMPLE"
+            }
+        ]
+    }
 
-This example describes the subnets for the specified VPC.
+For more information, see `Working with VPCs and Subnets <https://docs.aws.amazon.com/vpc/latest/userguide/working-with-vpcs.html>`__ in the *AWS VPC User Guide*.
 
-Command::
+**Example 2: To describe a specificied VPCs subnets**
 
-  aws ec2 describe-subnets --filters "Name=vpc-id,Values=vpc-a01106c2"
+The following ``describe-subnets`` example uses a filter to retrieve details for the subnets of the specified VPC. ::
 
-**To describe subnets with a specific tag**
-
-This example lists subnets with the tag ``Name=MySubnet`` and returns the output in text format.
-
-Command::
-
-  aws ec2 describe-subnets --filters Name=tag:Name,Values=MySubnet --output text
+    aws ec2 describe-subnets \
+        --filters "Name=vpc-id,Values=vpc-3EXAMPLE"
 
 Output::
 
-  SUBNETS	False	us-east-1a	251	10.0.1.0/24	False	False	available	subnet-5f46ec3b	vpc-a034d6c4
-  TAGS	Name	MySubnet
+    {
+        "Subnets": [
+            {
+                "AvailabilityZone": "us-east-1d",
+                "AvailabilityZoneId": "use1-az2",
+                "AvailableIpAddressCount": 4089,
+                "CidrBlock": "172.31.80.0/20",
+                "DefaultForAz": true,
+                "MapPublicIpOnLaunch": true,
+                "MapCustomerOwnedIpOnLaunch": false,
+                "State": "available",
+                "SubnetId": "subnet-8EXAMPLE",
+                "VpcId": "vpc-3EXAMPLE",
+                "OwnerId": "1111222233333",
+                "AssignIpv6AddressOnCreation": false,
+                "Ipv6CidrBlockAssociationSet": [],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "MySubnet"
+                    }
+                ],
+                "SubnetArn": "arn:aws:ec2:us-east-1:111122223333:subnet/subnet-8EXAMPLE"
+            }
+        ]
+    }
+
+For more information, see `Working with VPCs and Subnets <https://docs.aws.amazon.com/vpc/latest/userguide/working-with-vpcs.html>`__ in the *AWS VPC User Guide*.
+
+**Example 3: To describe subnets with a specific tag**
+
+The following ``describe-subnets`` example uses a filter to retrieve the details of those subnets with the tag ``Name=MySubnet``. The command specifies that the output is a simple text string. ::
+
+    aws ec2 describe-subnets \
+        --filters Name=tag:Name,Values=MySubnet \
+        --output text
+
+Output::
+
+    SUBNETS False   us-east-1c      use1-az1        250     10.0.0.0/24     False   False   False   111122223333    available       arn:aws:ec2:us-east-1:111122223333:subnet/subnet-0d3d002af8EXAMPLE      subnet-0d3d002af8EXAMPLE        vpc-0065acced4EXAMPLE   TAGS    Name    MySubnet
+
+For more information, see `Working with VPCs and Subnets <https://docs.aws.amazon.com/vpc/latest/userguide/working-with-vpcs.html>`__ in the *AWS VPC User Guide*.

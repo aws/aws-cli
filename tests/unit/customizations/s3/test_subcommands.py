@@ -98,14 +98,14 @@ class TestLSCommand(unittest.TestCase):
                                summarize=False, request_payer=None)
         parsed_globals = mock.Mock()
         ls_command._run_main(parsed_args, parsed_globals)
-        call = self.session.create_client.return_value.list_objects
+        call = self.session.create_client.return_value.list_objects_v2
         paginate = self.session.create_client.return_value.get_paginator\
             .return_value.paginate
         # We should make no operation calls.
         self.assertEqual(call.call_count, 0)
-        # And only a single pagination call to ListObjects.
+        # And only a single pagination call to ListObjectsV2.
         self.session.create_client.return_value.get_paginator.\
-            assert_called_with('list_objects')
+            assert_called_with('list_objects_v2')
         ref_call_args = {'Bucket': u'mybucket', 'Delimiter': '/',
                          'Prefix': u'',
                          'PaginationConfig': {'PageSize': u'5'}}
@@ -160,9 +160,9 @@ class TestLSCommand(unittest.TestCase):
             .return_value.paginate
         # We should make no operation calls.
         self.assertEqual(call.call_count, 0)
-        # And only a single pagination call to ListObjects.
+        # And only a single pagination call to ListObjectsV2.
         self.session.create_client.return_value.get_paginator.\
-            assert_called_with('list_objects')
+            assert_called_with('list_objects_v2')
         ref_call_args = {
             'Bucket': u'mybucket', 'Delimiter': '/',
             'Prefix': u'', 'PaginationConfig': {'PageSize': '5'},

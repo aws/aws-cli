@@ -75,7 +75,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         # we eventually should update this test to check exactly for
         # 'The describe-instances operation'.
         self.assertRegexpMatches(p.stdout,
-                                 '\s+Describes\s+one\s+or\s+more')
+                                 '\s+Describes\s+the\s+specified\s+instances')
 
     def test_topic_list_help_output(self):
         p = aws('help topics')
@@ -241,7 +241,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         self.assertIn('aws: error', p.stderr)
 
     def test_help_usage_operation_level(self):
-        p = aws('ec2 run-instances')
+        p = aws('ec2 start-instances')
         self.assertIn('usage: aws [options] <command> '
                       '<subcommand> [<subcommand> ...] [parameters]', p.stderr)
 

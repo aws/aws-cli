@@ -15,6 +15,8 @@ import mock
 
 from awscli.clidriver import CLIDriver
 from awscli.customizations.commands import BasicHelp, BasicCommand
+from awscli.customizations.commands import BasicDocHandler
+from botocore.docs.bcdoc.restdoc import ReSTDocument
 from botocore.hooks import HierarchicalEmitter
 from tests.unit.test_clidriver import FakeSession, FakeCommand
 
@@ -129,3 +131,59 @@ class TestBasicCommandHooks(unittest.TestCase):
             'building-arg-table.foo',
             'before-building-argument-table-parser.s3.foo'
         ])
+
+
+class TestBasicDocHandler(unittest.TestCase):
+    def setUp(self):
+        self.session = mock.Mock()
+        self.obj = MockCustomCommand(self.session)
+        self.command_table = {}
+        self.arg_table = {}
+
+    def create_help_command(self):
+        return BasicHelp(
+            self.session, self.obj, self.command_table, self.arg_table
+        )
+
+    def test_includes_global_args_ref_in_man_description(self):
+        help_command = self.create_help_command()
+        operation_handler = BasicDocHandler(help_command)
+        operation_handler.doc_description(help_command=help_command)
+        rendered = help_command.doc.getvalue()
+        rendered = rendered.decode('utf-8')
+        # The links aren't generated in the "man" mode.
+        self.assertIn(
+            "See 'aws help' for descriptions of global parameters", rendered
+        )
+
+    def test_includes_global_args_ref_in_html_description(self):
+        help_command = self.create_help_command()
+        help_command.doc.target = 'html'
+        operation_handler = BasicDocHandler(help_command)
+        operation_handler.doc_description(help_command=help_command)
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        self.assertIn(
+            "See :doc:`'aws help' </reference/index>` for descriptions of "
+            "global parameters", rendered
+        )
+
+    def test_includes_global_args_ref_in_man_options(self):
+        help_command = self.create_help_command()
+        operation_handler = BasicDocHandler(help_command)
+        operation_handler.doc_options_end(help_command=help_command)
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        # The links aren't generated in the "man" mode.
+        self.assertIn(
+            "See 'aws help' for descriptions of global parameters", rendered
+        )
+
+    def test_includes_global_args_ref_in_html_options(self):
+        help_command = self.create_help_command()
+        help_command.doc.target = 'html'
+        operation_handler = BasicDocHandler(help_command)
+        operation_handler.doc_options_end(help_command=help_command)
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        self.assertIn(
+            "See :doc:`'aws help' </reference/index>` for descriptions of "
+            "global parameters", rendered
+        )

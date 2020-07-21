@@ -1,7 +1,10 @@
 **To delete a parameter**
 
-This example deletes a parameter. There is no output if the command succeeds.
+This ``delete-parameter`` example deletes the specified single parameter. ::
 
-Command::
+    aws ssm delete-parameter \
+        --name "MyParameter"
 
-  aws ssm delete-parameter --name "helloWorld"
+This command produces no output.
+
+For more information, see `Working with Parameters <https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-working.html>`_ in the *AWS Systems Manager User Guide*.

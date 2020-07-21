@@ -15,8 +15,8 @@ Output::
 The following ``sync`` command syncs objects under a specified prefix and bucket to objects under another specified
 prefix and bucket by copying s3 objects.  A s3 object will require copying if the sizes of the two s3 objects differ,
 the last modified time of the source is newer than the last modified time of the destination, or the s3 object does not
-exist under the specified bucket and prefix destination.  In this example, the user syncs the bucket ``mybucket2`` to
-the bucket ``mybucket``.  The bucket ``mybucket`` contains the objects ``test.txt`` and ``test2.txt``.  The bucket
+exist under the specified bucket and prefix destination.  In this example, the user syncs the bucket ``mybucket`` to
+the bucket ``mybucket2``.  The bucket ``mybucket`` contains the objects ``test.txt`` and ``test2.txt``.  The bucket
 ``mybucket2`` contains no objects::
 
     aws s3 sync s3://mybucket s3://mybucket2
@@ -82,3 +82,15 @@ Output::
 The following ``sync`` command syncs files between two buckets in different regions::
 
     aws s3 sync s3://my-us-west-2-bucket s3://my-us-east-1-bucket --source-region us-west-2 --region us-east-1
+
+
+**Sync to an S3 access point**
+
+The following ``sync`` command syncs the current directory to the access point (``myaccesspoint``)::
+
+    aws s3 sync . s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/
+
+Output::
+
+    upload: test.txt to s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/test.txt
+    upload: test2.txt to s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/test2.txt

@@ -53,7 +53,8 @@ class TestPackageCommand(unittest.TestCase):
                                     kms_key_id="kmskeyid",
                                     output_template_file="./oputput",
                                     use_json=False,
-                                    force_upload=False)
+                                    force_upload=False,
+                                    metadata=None)
         self.parsed_globals = FakeArgs(region="us-east-1", endpoint_url=None,
                                        verify_ssl=None)
         self.package_command = PackageCommand(self.session)

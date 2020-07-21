@@ -1,23 +1,24 @@
-The following command retrieves a list of invalidations for a CloudFront web distribution with the ID ``S11A16G5KZMEQD``::
+**To list CloudFront invalidations**
 
-  aws cloudfront list-invalidations --distribution-id S11A16G5KZMEQD
+The following example gets a list of the invalidations for the CloudFront
+distribution with the ID ``EDFDVBD6EXAMPLE``::
 
-The distribution ID is available in the output of ``create-distribution`` and ``list-distributions``.
+    aws cloudfront list-invalidations --distribution-id EDFDVBD6EXAMPLE
 
 Output::
 
-  {
-      "InvalidationList": {
-          "Marker": "",
-          "Items": [
-              {
-                  "Status": "Completed",
-                  "Id": "YNY2LI2BVJ4NJU",
-                  "CreateTime": "2015-08-31T21:15:52.042Z"
-              }
-          ],
-          "IsTruncated": false,
-          "MaxItems": 100,
-          "Quantity": 1
-      }
-  }
+    {
+        "InvalidationList": {
+            "Marker": "",
+            "Items": [
+                {
+                    "Status": "Completed",
+                    "Id": "YNY2LI2BVJ4NJU",
+                    "CreateTime": "2019-08-31T21:15:52.042Z"
+                }
+            ],
+            "IsTruncated": false,
+            "MaxItems": 100,
+            "Quantity": 1
+        }
+    }

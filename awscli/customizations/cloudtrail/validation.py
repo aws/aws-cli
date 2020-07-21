@@ -29,6 +29,7 @@ from awscli.customizations.cloudtrail.utils import get_trail_by_arn, \
     get_account_id_from_arn
 from awscli.customizations.commands import BasicCommand
 from botocore.exceptions import ClientError
+from awscli.schema import ParameterRequiredError
 
 
 LOG = logging.getLogger(__name__)
@@ -77,14 +78,17 @@ def assert_cloudtrail_arn_is_valid(trail_arn):
         raise ValueError('Invalid trail ARN provided: %s' % trail_arn)
 
 
-def create_digest_traverser(cloudtrail_client, s3_client_provider, trail_arn,
+def create_digest_traverser(cloudtrail_client, organization_client,
+                            s3_client_provider, trail_arn,
                             trail_source_region=None, on_invalid=None,
                             on_gap=None, on_missing=None, bucket=None,
-                            prefix=None):
+                            prefix=None, account_id=None):
     """Creates a CloudTrail DigestTraverser and its object graph.
 
     :type cloudtrail_client: botocore.client.CloudTrail
     :param cloudtrail_client: Client used to connect to CloudTrail
+    :type organization_client: botocore.client.organizations
+    :param organization_client: Client used to connect to Organizations
     :type s3_client_provider: S3ClientProvider
     :param s3_client_provider: Used to create Amazon S3 client per/region.
     :param trail_arn: CloudTrail trail ARN
@@ -100,6 +104,9 @@ def create_digest_traverser(cloudtrail_client, s3_client_provider, trail_arn,
     :param prefix: bucket: Key prefix prepended to each digest and log placed
         in the Amazon S3 bucket if it is different than the prefix that is
         currently associated with the trail.
+    :param account_id: The account id for which the digest files are
+        validated. For normal trails this is the caller account, for
+        organization trails it is the member accout.
 
     ``on_gap``, ``on_invalid``, and ``on_missing`` callbacks are invoked with
     the following named arguments:
@@ -112,22 +119,36 @@ def create_digest_traverser(cloudtrail_client, s3_client_provider, trail_arn,
     - ``message``: (optional) Message string about the notification.
     """
     assert_cloudtrail_arn_is_valid(trail_arn)
-    account_id = get_account_id_from_arn(trail_arn)
+    organization_id = None
     if bucket is None:
         # Determine the bucket and prefix based on the trail arn.
         trail_info = get_trail_by_arn(cloudtrail_client, trail_arn)
         LOG.debug('Loaded trail info: %s', trail_info)
         bucket = trail_info['S3BucketName']
         prefix = trail_info.get('S3KeyPrefix', None)
+        is_org_trail = trail_info['IsOrganizationTrail']
+        if is_org_trail:
+            if not account_id:
+                raise ParameterRequiredError(
+                    "Missing required parameter for organization "
+                    "trail: '--account-id'")
+            organization_id = organization_client.describe_organization()[
+                'Organization']['Id']
+
     # Determine the region from the ARN (e.g., arn:aws:cloudtrail:REGION:...)
     trail_region = trail_arn.split(':')[3]
     # Determine the name from the ARN (the last part after "/")
     trail_name = trail_arn.split('/')[-1]
+    # If account id is not specified parse it from trail ARN
+    if not account_id:
+        account_id = get_account_id_from_arn(trail_arn)
+
     digest_provider = DigestProvider(
         account_id=account_id, trail_name=trail_name,
         s3_client_provider=s3_client_provider,
         trail_source_region=trail_source_region,
-        trail_home_region=trail_region)
+        trail_home_region=trail_region,
+        organization_id=organization_id)
     return DigestTraverser(
         digest_provider=digest_provider, starting_bucket=bucket,
         starting_prefix=prefix, on_invalid=on_invalid, on_gap=on_gap,
@@ -224,12 +245,14 @@ class DigestProvider(object):
     one digest to the next.
     """
     def __init__(self, s3_client_provider, account_id, trail_name,
-                 trail_home_region, trail_source_region=None):
+                 trail_home_region, trail_source_region=None,
+                 organization_id=None):
         self._client_provider = s3_client_provider
         self.trail_name = trail_name
         self.account_id = account_id
         self.trail_home_region = trail_home_region
         self.trail_source_region = trail_source_region or trail_home_region
+        self.organization_id = organization_id
 
     def load_digest_keys_in_range(self, bucket, prefix, start_date, end_date):
         """Returns a list of digest keys in the date range.
@@ -300,28 +323,46 @@ class DigestProvider(object):
         """
         # Subtract one minute to ensure the dates are inclusive.
         date = start_date - timedelta(minutes=1)
-        template = ('AWSLogs/{account}/CloudTrail-Digest/{source_region}/'
-                    '{ymd}/{account}_CloudTrail-Digest_{source_region}_{name}_'
-                    '{home_region}_{date}.json.gz')
-        key = template.format(account=self.account_id, date=format_date(date),
-                              ymd=date.strftime('%Y/%m/%d'),
-                              source_region=self.trail_source_region,
-                              home_region=self.trail_home_region,
-                              name=self.trail_name)
+        template = 'AWSLogs/'
+        template_params = {
+            'account_id': self.account_id,
+            'date': format_date(date),
+            'ymd': date.strftime('%Y/%m/%d'),
+            'source_region': self.trail_source_region,
+            'home_region': self.trail_home_region,
+            'name': self.trail_name
+        }
+        if self.organization_id:
+            template += '{organization_id}/'
+            template_params['organization_id'] = self.organization_id
+        template += (
+            '{account_id}/CloudTrail-Digest/{source_region}/'
+            '{ymd}/{account_id}_CloudTrail-Digest_{source_region}_{name}_'
+            '{home_region}_{date}.json.gz'
+        )
+        key = template.format(**template_params)
         if key_prefix:
             key = key_prefix + '/' + key
         return key
 
     def _create_digest_key_regex(self, key_prefix):
         """Creates a regular expression used to match against S3 keys"""
-        template = ('AWSLogs/{account}/CloudTrail\\-Digest/{source_region}/'
-                    '\\d+/\\d+/\\d+/{account}_CloudTrail\\-Digest_'
-                    '{source_region}_{name}_{home_region}_.+\\.json\\.gz')
-        key = template.format(
-            account=re.escape(self.account_id),
-            source_region=re.escape(self.trail_source_region),
-            home_region=re.escape(self.trail_home_region),
-            name=re.escape(self.trail_name))
+        template = 'AWSLogs/'
+        template_params = {
+            'account_id': re.escape(self.account_id),
+            'source_region': re.escape(self.trail_source_region),
+            'home_region': re.escape(self.trail_home_region),
+            'name': re.escape(self.trail_name)
+        }
+        if self.organization_id:
+            template += '{organization_id}/'
+            template_params['organization_id'] = self.organization_id
+        template += (
+            '{account_id}/CloudTrail\\-Digest/{source_region}/'
+            '\\d+/\\d+/\\d+/{account_id}_CloudTrail\\-Digest_'
+            '{source_region}_{name}_{home_region}_.+\\.json\\.gz'
+        )
+        key = template.format(**template_params)
         if key_prefix:
             key = re.escape(key_prefix) + '/' + key
         return '^' + key + '$'
@@ -585,6 +626,8 @@ class CloudTrailValidateLogs(BasicCommand):
       log files.
     - The digest and log files must not have been moved from the original S3
       location where CloudTrail delivered them.
+    - For organization trails you must have access to describe-organization to
+      validate digest files
 
     When you disable Log File Validation, the chain of digest files is broken
     after one hour. CloudTrail will not digest log files that were delivered
@@ -629,6 +672,11 @@ class CloudTrailValidateLogs(BasicCommand):
                        'digest files are stored. If not specified, the CLI '
                        'will determine the prefix automatically by calling '
                        'describe_trails.')},
+        {'name': 'account-id', 'cli_type_name': 'string',
+         'help_text': ('Optionally specifies the account for validating logs. '
+                       'This parameter is needed for organization trails '
+                       'for validating logs for specific account inside an '
+                       'organization')},
         {'name': 'verbose', 'cli_type_name': 'boolean',
          'action': 'store_true',
          'help_text': 'Display verbose log validation information'}
@@ -644,6 +692,7 @@ class CloudTrailValidateLogs(BasicCommand):
         self.s3_prefix = None
         self.s3_client_provider = None
         self.cloudtrail_client = None
+        self.account_id = None
         self._source_region = None
         self._valid_digests = 0
         self._invalid_digests = 0
@@ -666,6 +715,7 @@ class CloudTrailValidateLogs(BasicCommand):
         self.is_verbose = args.verbose
         self.s3_bucket = args.s3_bucket
         self.s3_prefix = args.s3_prefix
+        self.account_id = args.account_id
         self.start_time = normalize_date(parse_date(args.start_time))
         if args.end_time:
             self.end_time = normalize_date(parse_date(args.end_time))
@@ -688,6 +738,9 @@ class CloudTrailValidateLogs(BasicCommand):
             self._session, self._source_region)
         client_args = {'region_name': parsed_globals.region,
                        'verify': parsed_globals.verify_ssl}
+        self.organization_client = self._session.create_client(
+            'organizations', **client_args)
+
         if parsed_globals.endpoint_url is not None:
             client_args['endpoint_url'] = parsed_globals.endpoint_url
         self.cloudtrail_client = self._session.create_client(
@@ -696,10 +749,12 @@ class CloudTrailValidateLogs(BasicCommand):
     def _call(self):
         traverser = create_digest_traverser(
             trail_arn=self.trail_arn, cloudtrail_client=self.cloudtrail_client,
+            organization_client=self.organization_client,
             trail_source_region=self._source_region,
             s3_client_provider=self.s3_client_provider, bucket=self.s3_bucket,
             prefix=self.s3_prefix, on_missing=self._on_missing_digest,
-            on_invalid=self._on_invalid_digest, on_gap=self._on_digest_gap)
+            on_invalid=self._on_invalid_digest, on_gap=self._on_digest_gap,
+            account_id=self.account_id)
         self._write_startup_text()
         digests = traverser.traverse(self.start_time, self.end_time)
         for digest in digests:

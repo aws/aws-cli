@@ -11,6 +11,7 @@ Output::
   {
     "Listeners": [
         {
+            "Port": 80,
             "Protocol": "HTTP",
             "DefaultActions": [
                 {
@@ -19,7 +20,6 @@ Output::
                 }
             ],
             "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188",
-            "Port": 80,
             "ListenerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2"
         }
     ]
@@ -38,6 +38,7 @@ Output::
   {
     "Listeners": [
         {
+            "Port": 443,
             "Protocol": "HTTPS",
             "DefaultActions": [
                 {
@@ -52,10 +53,10 @@ Output::
                 }
             ],
             "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188",
-            "Port": 443,
             "ListenerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/app/my-load-balancer/50dc6c495c0c9188/0467ef3c8400ae65"
         },
         {
+            "Port": 80,
             "Protocol": "HTTP",
             "DefaultActions": [
                 {
@@ -64,7 +65,6 @@ Output::
                 }
             ],
             "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188",
-            "Port": 80,
             "ListenerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2"
         }
     ]

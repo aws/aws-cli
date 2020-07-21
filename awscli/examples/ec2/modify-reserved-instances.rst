@@ -29,7 +29,7 @@ Output::
 
 For more information, see `Modifying Your Reserved Instances`_ in the *Amazon EC2 User Guide*.
 
-**To modify the instance types of Reserved Instances**
+**To modify the instance size of Reserved Instances**
 
 This example command modifies a Reserved Instance that has 10 m1.small Linux/UNIX instances in us-west-1c so that 8
 m1.small instances become 2 m1.large instances, and the remaining 2 m1.small become 1 m1.medium instance in the same
@@ -43,8 +43,8 @@ Output::
       "ReservedInstancesModificationId": "rimod-acc5f240-080d-4717-b3e3-1c6b11fa00b6"
   }
 
-For more information, see `Changing the Instance Type of Your Reservations`_ in the *Amazon EC2 User Guide*.
+For more information, see `Modifying the Instance Size of Your Reservations`_ in the *Amazon EC2 User Guide*.
 
-.. _`Changing the Instance Type of Your Reservations`: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-modification-instancemove.html
+.. _`Modifying the Instance Size of Your Reservations`: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-modification-instancemove.html
 .. _`Modifying Your Reserved Instances`: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-modifying.html
 

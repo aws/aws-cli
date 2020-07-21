@@ -1,55 +1,106 @@
-**To create an Amazon RDS DB instance**
+**To create a DB instance**
 
-The following ``create-db-instance`` command launches a new Amazon RDS DB instance::
+The following ``create-db-instance`` example uses the required options to launch a new DB instance. ::
 
-    aws rds create-db-instance --db-instance-identifier sg-cli-test \
-    --allocated-storage 20 --db-instance-class db.m1.small --engine mysql \
-    --master-username myawsuser --master-user-password myawsuser
+    aws rds create-db-instance \
+        --db-instance-identifier test-mysql-instance \
+        --db-instance-class db.t3.micro \
+        --engine mysql \
+        --master-username admin \
+        --master-user-password secret99 \
+        --allocated-storage 20
 
-In the preceding example, the DB instance is created with 20 Gb of standard storage and has a DB engine class of
-db.m1.small. The master username and master password are provided.
-
-This command outputs a JSON block that indicates that the DB instance was created::
+Output::
 
     {
         "DBInstance": {
+            "DBInstanceIdentifier": "test-mysql-instance",
+            "DBInstanceClass": "db.t3.micro",
             "Engine": "mysql",
-            "MultiAZ": false,
-            "DBSecurityGroups": [
+            "DBInstanceStatus": "creating",
+            "MasterUsername": "admin",
+            "AllocatedStorage": 20,
+            "PreferredBackupWindow": "12:55-13:25",
+            "BackupRetentionPeriod": 1,
+            "DBSecurityGroups": [],
+            "VpcSecurityGroups": [
                 {
-                    "Status": "active",
-                    "DBSecurityGroupName": "default"
+                    "VpcSecurityGroupId": "sg-12345abc",
+                    "Status": "active"
                 }
             ],
-            "DBInstanceStatus": "creating",
             "DBParameterGroups": [
                 {
-                    "DBParameterGroupName": "default.mysql5.6",
+                    "DBParameterGroupName": "default.mysql5.7",
                     "ParameterApplyStatus": "in-sync"
                 }
             ],
-            "MasterUsername": "myawsuser",
+            "DBSubnetGroup": {
+                "DBSubnetGroupName": "default",
+                "DBSubnetGroupDescription": "default",
+                "VpcId": "vpc-2ff2ff2f",
+                "SubnetGroupStatus": "Complete",
+                "Subnets": [
+                    {
+                        "SubnetIdentifier": "subnet-########",
+                        "SubnetAvailabilityZone": {
+                            "Name": "us-west-2c"
+                        },
+                        "SubnetStatus": "Active"
+                    },
+                    {
+                        "SubnetIdentifier": "subnet-########",
+                        "SubnetAvailabilityZone": {
+                            "Name": "us-west-2d"
+                        },
+                        "SubnetStatus": "Active"
+                    },
+                    {
+                        "SubnetIdentifier": "subnet-########",
+                        "SubnetAvailabilityZone": {
+                            "Name": "us-west-2a"
+                        },
+                        "SubnetStatus": "Active"
+                    },
+                    {
+                        "SubnetIdentifier": "subnet-########",
+                        "SubnetAvailabilityZone": {
+                            "Name": "us-west-2b"
+                        },
+                        "SubnetStatus": "Active"
+                    }
+                ]
+            },
+            "PreferredMaintenanceWindow": "sun:08:07-sun:08:37",
+            "PendingModifiedValues": {
+                "MasterUserPassword": "****"
+            },
+            "MultiAZ": false,
+            "EngineVersion": "5.7.22",
+            "AutoMinorVersionUpgrade": true,
+            "ReadReplicaDBInstanceIdentifiers": [],
             "LicenseModel": "general-public-license",
             "OptionGroupMemberships": [
                 {
-                    "Status": "in-sync",
-                    "OptionGroupName": "default:mysql-5-6"
+                    "OptionGroupName": "default:mysql-5-7",
+                    "Status": "in-sync"
                 }
             ],
-            "AutoMinorVersionUpgrade": true,
-            "PreferredBackupWindow": "11:58-12:28",
-            "VpcSecurityGroups": [],
             "PubliclyAccessible": true,
-            "PreferredMaintenanceWindow": "sat:13:10-sat:13:40",
-            "AllocatedStorage": 20,
-            "EngineVersion": "5.6.13",
-            "DBInstanceClass": "db.m1.small",
-            "ReadReplicaDBInstanceIdentifiers": [],
-            "BackupRetentionPeriod": 1,
-            "DBInstanceIdentifier": "sg-cli-test",
-            "PendingModifiedValues": {
-                "MasterUserPassword": "****"
-            }
+            "StorageType": "gp2",
+            "DbInstancePort": 0,
+            "StorageEncrypted": false,
+            "DbiResourceId": "db-5555EXAMPLE44444444EXAMPLE",
+            "CACertificateIdentifier": "rds-ca-2019",
+            "DomainMemberships": [],
+            "CopyTagsToSnapshot": false,
+            "MonitoringInterval": 0,
+            "DBInstanceArn": "arn:aws:rds:us-west-2:123456789012:db:test-mysql-instance",
+            "IAMDatabaseAuthenticationEnabled": false,
+            "PerformanceInsightsEnabled": false,
+            "DeletionProtection": false,
+            "AssociatedRoles": []
         }
     }
 
+For more information, see `Creating an Amazon RDS DB Instance <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateDBInstance.html>`__ in the *Amazon RDS User Guide*.

@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+2.0.33
+======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``codeguruprofiler``: Update codeguruprofiler command to latest version
+* api-change:``appsync``: Update appsync command to latest version
+* api-change:``frauddetector``: Update frauddetector command to latest version
+* api-change:``fms``: Update fms command to latest version
+* api-change:``groundstation``: Update groundstation command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``connect``: Update connect command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+
+
 2.0.31
 ======
 

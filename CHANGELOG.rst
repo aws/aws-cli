@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.18.102
+========
+
+* api-change:``codeguruprofiler``: Update codeguruprofiler command to latest version
+
+
 1.18.101
 ========
 

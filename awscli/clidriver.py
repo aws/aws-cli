@@ -16,6 +16,8 @@ import sys
 import signal
 import logging
 
+import distro
+
 import botocore.session
 from botocore import xform_name
 from botocore.compat import copy_kwargs, OrderedDict
@@ -106,18 +108,36 @@ def _get_distribution_source():
     return 'bundle'
 
 
-def _get_human_readable_os_name():
-    return 'os_name'
+def _get_distribution():
+    distribution = None
+    if platform.system() == 'Linux':
+        distribution = _get_linux_distribution()
+    return distribution
 
+
+def _get_linux_distribution():
+    linux_distribution = 'unknown'
+    try:
+        linux_distribution = distro.id()
+        version = distro.major_version()
+        if version:
+            linux_distribution += '.%s' % version
+    except Exception:
+        pass
+    return linux_distribution
 
 def _set_user_agent_for_session(session):
     session.user_agent_name = 'aws-cli'
     session.user_agent_version = __version__
-    session.user_agent_extra = '%s/%s.%s' % (
+    # user_agent_extra on linux will look like "rpm/x86_64.Ubuntu.18"
+    # on mac and windows like "sources/x86_64"
+    session.user_agent_extra = '%s/%s' % (
         _get_distribution_source(),
-        _get_human_readable_os_name(),
         platform.machine()
     )
+    linux_distribution = _get_distribution()
+    if linux_distribution:
+        session.user_agent_extra += ".%s" % linux_distribution
 
 
 class CLIDriver(object):

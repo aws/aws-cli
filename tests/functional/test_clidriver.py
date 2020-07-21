@@ -103,6 +103,16 @@ class TestSession(BaseCLIDriverTest):
         self.driver.main(['ec2', 'describe-instances'])
         self.assertEqual(capture.region, 'us-mars-2')
 
+    def test_user_agent_in_request(self):
+        self.driver.main(['ec2', 'describe-instances'])
+        self.assertTrue('User-Agent' in self._send.call_args[0][0].headers)
+        self.assertTrue(
+            'aws-cli' in
+            self._send.call_args[0][0].headers['User-Agent'].decode('utf-8'))
+        self.assertTrue(
+            'Python' in
+            self._send.call_args[0][0].headers['User-Agent'].decode('utf-8'))
+
 
 class TestPlugins(BaseCLIDriverTest):
     def setUp(self):

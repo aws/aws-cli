@@ -11,6 +11,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import platform
+import re
+
 from awscli.testutils import unittest
 from awscli.testutils import BaseAWSCommandParamsTest
 import logging
@@ -736,6 +739,35 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         with self.assertRaises(SystemExit):
             self.driver.main(['servicecatalog', 'create-constraint'])
         self.assertNotIn('--idempotency-token', self.stderr.getvalue())
+
+    @mock.patch('awscli.clidriver.platform.system', return_value='Linux')
+    @mock.patch('awscli.clidriver.distro.id', return_value='amzn')
+    @mock.patch('awscli.clidriver.distro.major_version', return_value='1')
+    def test_user_agent_for_linux(self, *args):
+        driver = create_clidriver()
+        user_agent_extra_pattern = re.compile(
+            r'^.+/[a-z1-9_]+\.amzn\.1$'
+        )
+        self.assertIsNotNone(user_agent_extra_pattern.match(
+            driver.session.user_agent_extra))
+
+    def test_user_agent(self, *args):
+        machine = platform.machine()
+        driver = create_clidriver()
+        user_agent_extra_pattern = re.compile(
+            '^.+/%s(\.[a-z_]+)?(\.[1-9]+)?$' % machine
+        )
+        self.assertIsNotNone(user_agent_extra_pattern.match(
+            driver.session.user_agent_extra))
+        # check that distro didn't fail
+        self.assertFalse('unknown' in driver.session.user_agent_extra)
+
+    @mock.patch('awscli.clidriver.platform.system', return_value='Linux')
+    @mock.patch('awscli.clidriver.distro.id', side_effect=Exception())
+    def test_user_agent_handles_distro_exception(self, *args):
+        driver = create_clidriver()
+        self.assertTrue('unknown' in driver.session.user_agent_extra)
+
 
 class TestHowClientIsCreated(BaseAWSCommandParamsTest):
     def setUp(self):

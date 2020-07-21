@@ -6,7 +6,6 @@ The following ``describe-events`` example returns a list of events for a replica
         -- source-identifier test-cluster \
         --source-type replication-group
 
-
 Output::
 
     {

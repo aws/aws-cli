@@ -1,113 +1,85 @@
 **To modify a replication group**
 
-The following ``modify-replication-group`` example modifies the settings for the specified replication group.
-For Redis (cluster mode enabled) clusters, this operation cannot be used to change a cluster's node type or engine version. :: 
+The following ``modify-replication-group`` disables Multi-AZ using the Redis engine. ::
 
-    aws elasticache modify-replication-group /
-        --replication-group-id "my cluster" /
-        --replication-group-description "my cluster" /
-        --preferred-maintenance-window sun:23:00-mon:01:30 /
-        --notification-topic-arn arn:aws:sns:us-west-2:xxxxxxxxxxxxxx52:My_Topic
+    aws elasticache modify-replication-group \
+        --replication-group-id test-cluster \
+        --no-multi-az-enabled \
+        --apply-immediately
 
-Output::
+Output ::
 
     {
         "ReplicationGroup": {
-            "ReplicationGroupId": "mycluster",
-            "Description": "mycluster",
+            "ReplicationGroupId": "test-cluster",
+            "Description": "test-cluster",
+            "GlobalReplicationGroupInfo": {
+                "GlobalReplicationGroupId": "sgaui-pat-group",
+                "GlobalReplicationGroupMemberRole": "PRIMARY"
+            },
             "Status": "available",
             "PendingModifiedValues": {},
             "MemberClusters": [
-                "mycluster-0001-001",
-                "mycluster-0001-002",
-                "mycluster-0001-003",
-                "mycluster-0003-001",
-                "mycluster-0003-002",
-                "mycluster-0003-003",
-                "mycluster-0004-001",
-                "mycluster-0004-002",
-                "mycluster-0004-003"
+                "test-cluster-001",
+                "test-cluster-002",
+                "test-cluster-003"
             ],
             "NodeGroups": [
                 {
                     "NodeGroupId": "0001",
                     "Status": "available",
-                    "Slots": "0-1767,3134-5461,6827-8191",
+                    "PrimaryEndpoint": {
+                        "Address": "test-cluster.g2xbih.ng.0001.usw2.cache.amazonaws.com",
+                        "Port": 6379
+                    },
+                    "ReaderEndpoint": {
+                        "Address": "test-cluster-ro.g2xbih.ng.0001.usw2.cache.amazonaws.com",
+                        "Port": 6379
+                    },
                     "NodeGroupMembers": [
                         {
-                            "CacheClusterId": "mycluster-0001-001",
+                            "CacheClusterId": "test-cluster-001",
                             "CacheNodeId": "0001",
-                            "PreferredAvailabilityZone": "us-west-2b"
+                            "ReadEndpoint": {
+                                "Address": "test-cluster-001.g2xbih.0001.usw2.cache.amazonaws.com",
+                                "Port": 6379
+                            },
+                            "PreferredAvailabilityZone": "us-west-2c",
+                            "CurrentRole": "primary"
                         },
                         {
-                            "CacheClusterId": "mycluster-0001-002",
+                            "CacheClusterId": "test-cluster-002",
                             "CacheNodeId": "0001",
-                            "PreferredAvailabilityZone": "us-west-2a"
+                            "ReadEndpoint": {
+                                "Address": "test-cluster-002.g2xbih.0001.usw2.cache.amazonaws.com",
+                                "Port": 6379
+                            },
+                            "PreferredAvailabilityZone": "us-west-2b",
+                            "CurrentRole": "replica"
                         },
                         {
-                            "CacheClusterId": "mycluster-0001-003",
+                            "CacheClusterId": "test-cluster-003",
                             "CacheNodeId": "0001",
-                            "PreferredAvailabilityZone": "us-west-2c"
-                        }
-                    ]
-                },
-                {
-                    "NodeGroupId": "0003",
-                    "Status": "available",
-                    "Slots": "5462-6826,10923-11075,12441-16383",
-                    "NodeGroupMembers": [
-                        {
-                            "CacheClusterId": "mycluster-0003-001",
-                            "CacheNodeId": "0001",
-                            "PreferredAvailabilityZone": "us-west-2c"
-                        },
-                        {
-                            "CacheClusterId": "mycluster-0003-002",
-                            "CacheNodeId": "0001",
-                            "PreferredAvailabilityZone": "us-west-2b"
-                        },
-                        {
-                            "CacheClusterId": "mycluster-0003-003",
-                            "CacheNodeId": "0001",
-                            "PreferredAvailabilityZone": "us-west-2a"
-                        }
-                    ]
-                },
-                {
-                    "NodeGroupId": "0004",
-                    "Status": "available",
-                    "Slots": "1768-3133,8192-10922,11076-12440",
-                    "NodeGroupMembers": [
-                        {
-                            "CacheClusterId": "mycluster-0004-001",
-                            "CacheNodeId": "0001",
-                            "PreferredAvailabilityZone": "us-west-2b"
-                        },
-                        {
-                            "CacheClusterId": "mycluster-0004-002",
-                            "CacheNodeId": "0001",
-                            "PreferredAvailabilityZone": "us-west-2a"
-                        },
-                        {
-                            "CacheClusterId": "mycluster-0004-003",
-                            "CacheNodeId": "0001",
-                            "PreferredAvailabilityZone": "us-west-2c"
+                            "ReadEndpoint": {
+                                "Address": "test-cluster-003.g2xbih.0001.usw2.cache.amazonaws.com",
+                                "Port": 6379
+                            },
+                            "PreferredAvailabilityZone": "us-west-2a",
+                            "CurrentRole": "replica"
                         }
                     ]
                 }
             ],
+            "SnapshottingClusterId": "test-cluster-002",
             "AutomaticFailover": "enabled",
-            "ConfigurationEndpoint": {
-                "Address": "mycluster.xxxxxx.clustercfg.usw2.cache.amazonaws.com",
-                "Port": 6379
-            },
+            "MultiAZ": "disabled",
             "SnapshotRetentionLimit": 1,
-            "SnapshotWindow": "13:00-14:00",
-            "ClusterEnabled": true,
+            "SnapshotWindow": "08:00-09:00",
+            "ClusterEnabled": false,
             "CacheNodeType": "cache.r5.large",
             "TransitEncryptionEnabled": false,
             "AtRestEncryptionEnabled": false
         }
     }
 
-For more information, see `Modifying a Replication Group <https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Replication.Modify.html`>__ in the *Elasticache User Guide*.
+For more information, see `Modifying a Replication Group <https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Replication.Modify.html>`__ in the *Elasticache User Guide*.

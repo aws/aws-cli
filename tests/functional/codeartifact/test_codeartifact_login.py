@@ -1,6 +1,7 @@
 import os
 import platform
 import subprocess
+import time
 
 from configparser import RawConfigParser
 from io import StringIO
@@ -9,6 +10,7 @@ from urllib.parse import urlsplit
 from datetime import datetime
 from dateutil.tz import tzlocal
 from dateutil.relativedelta import relativedelta
+from botocore.utils import parse_timestamp
 
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, mock
 from awscli.customizations.codeartifact.login import CodeArtifactLogin
@@ -29,9 +31,9 @@ class TestCodeArtifactLogin(BaseAWSCommandParamsTest):
         self.domain_owner = 'domain-owner'
         self.repository = 'repository'
         self.auth_token = 'auth-token'
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(hours=10)
-                           + relativedelta(minutes=9)).replace(microsecond=0)
         self.duration = 3600
+        self.expiration = time.time() + self.duration
+        self.expiration_as_datetime = parse_timestamp(self.expiration)
 
         self.pypi_rc_path_patch = mock.patch(
             'awscli.customizations.codeartifact.login.TwineLogin'
@@ -171,7 +173,7 @@ password: {auth_token}'''
 
     def _assert_expiration_printed_to_stdout(self, stdout):
         self.assertEqual(
-            self.expiration.strftime(
+            self.expiration_as_datetime.strftime(
                 "%Y-%m-%d %H:%M:%S"), stdout.split("at ")[1][0:19]
         )
 

@@ -576,6 +576,41 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.102
+========
+
+* api-change:``codeguruprofiler``: Update codeguruprofiler command to latest version
+
+
+1.18.101
+========
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``fms``: Update fms command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``groundstation``: Update groundstation command to latest version
+* api-change:``frauddetector``: Update frauddetector command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.18.100
+========
+
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``connect``: Update connect command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``appsync``: Update appsync command to latest version
+
+
+1.18.99
+=======
+
+* bugfix:``codeartifact login``: Fix issue with displaying expiration times
+
+
 1.18.98
 =======
 

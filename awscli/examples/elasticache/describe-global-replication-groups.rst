@@ -1,9 +1,9 @@
-**To describe a global replication groups**
+**To describe global replication groups**
 
-The following ``describe-global-replication-groups`` example returns details of a Global datastore ::
+The following ``describe-global-replication-groups`` example returns details of a Global datastore. ::
 
     aws elasticache describe-global-replication-groups \
-        --global-replication-group-id my-grg
+        --global-replication-group-id my-grg        
 
 Output::
 

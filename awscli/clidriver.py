@@ -190,12 +190,7 @@ class CLIDriver(object):
             ScopedConfigProvider(
                 config_var_name='cli_pager',
                 session=self.session,
-            ),
-            EnvironmentProvider(
-                name='PAGER',
-                env=os.environ,
-            ),
-            ConstantProvider(value=default_pager),
+            )
         ]
         return ChainProvider(providers=providers)
 

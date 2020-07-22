@@ -14,8 +14,6 @@ import json
 
 import ruamel.yaml as yaml
 
-
-from awscli.testutils import skip_if_windows, if_windows
 from awscli.testutils import mock, create_clidriver, FileCreator
 from awscli.testutils import BaseAWSCommandParamsTest
 
@@ -81,35 +79,11 @@ class TestOutput(BaseAWSCommandParamsTest):
             content += write_call[0][0]
         return content
 
-    def test_outputs_to_pager(self):
-        self.run_cmd(self.cmdline)
-        self.assert_content_to_pager(
-            expected_pager=mock.ANY,
-            expected_content=self.expected_content
-        )
-
     def test_does_not_output_to_pager_if_not_tty(self):
         self.mock_is_a_tty.return_value = False
         stdout, _, _ = self.run_cmd(self.cmdline)
         self.assertFalse(self.mock_popen.called)
         self.assertEqual(stdout, self.expected_content)
-
-    @skip_if_windows('less is not used for windows')
-    def test_outputs_to_less_non_windows(self):
-        self.run_cmd(self.cmdline)
-        self.assert_content_to_pager(
-            expected_pager='less',
-            expected_content=self.expected_content,
-            expected_less_flags='FRX'
-        )
-
-    @if_windows('more is only used for windows')
-    def test_outputs_to_more_for_windows(self):
-        self.run_cmd(self.cmdline)
-        self.assert_content_to_pager(
-            expected_pager='more',
-            expected_content=self.expected_content,
-        )
 
     def test_respects_aws_pager_env_var(self):
         self.environ['AWS_PAGER'] = 'mypager'
@@ -121,14 +95,6 @@ class TestOutput(BaseAWSCommandParamsTest):
 
     def test_respects_cli_pager_config_var(self):
         self.write_cli_pager_config('mypager')
-        self.run_cmd(self.cmdline)
-        self.assert_content_to_pager(
-            expected_pager='mypager',
-            expected_content=self.expected_content,
-        )
-
-    def test_respects_pager_env_var(self):
-        self.environ['PAGER'] = 'mypager'
         self.run_cmd(self.cmdline)
         self.assert_content_to_pager(
             expected_pager='mypager',

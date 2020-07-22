@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.103
+========
+
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+
+
 1.18.102
 ========
 

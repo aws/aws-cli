@@ -1,6 +1,6 @@
 **To delete a workgroup**
 
-The following ``delete-work-group `` example deletes the ``TeamB`` workgroup. ::
+The following ``delete-work-group`` example deletes the ``TeamB`` workgroup. ::
 
     aws athena delete-work-group \
         --work-group TeamB

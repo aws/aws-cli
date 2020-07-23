@@ -594,6 +594,24 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.104
+========
+
+* api-change:``config``: Update config command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``directconnect``: Update directconnect command to latest version
+
+
+1.18.103
+========
+
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+
+
 1.18.102
 ========
 

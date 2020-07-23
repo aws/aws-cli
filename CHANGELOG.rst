@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.104
+========
+
+* api-change:``config``: Update config command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``directconnect``: Update directconnect command to latest version
+
+
 1.18.103
 ========
 

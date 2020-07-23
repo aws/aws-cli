@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.0.34
+======
+
+* api-change:``directconnect``: Update directconnect command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+
+
 2.0.33
 ======
 

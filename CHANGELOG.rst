@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.18.105
+========
+
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``mq``: Update mq command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``frauddetector``: Update frauddetector command to latest version
+* api-change:``mediaconnect``: Update mediaconnect command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+* api-change:``mediapackage``: Update mediapackage command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+
+
 1.18.104
 ========
 

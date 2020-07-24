@@ -1,6 +1,6 @@
 **To modify the tunnel options for a VPN connection**
 
-The following ``modify-vpn-tunnel-options`` example updates the Diffie-Hellmann groups that are permitted for the specified tunnel and VPN connection. ::
+The following ``modify-vpn-tunnel-options`` example updates the Diffie-Hellman groups that are permitted for the specified tunnel and VPN connection. ::
 
     aws ec2 modify-vpn-tunnel-options \
         --vpn-connection-id vpn-12345678901234567 \

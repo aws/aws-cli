@@ -9,7 +9,7 @@ Command::
 Output::
 
   {
-      "VpcAttachement": {
+      "VpcAttachment": {
           "State": "attaching",
           "VpcId": "vpc-a01106c2"
       }

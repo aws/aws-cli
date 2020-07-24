@@ -1,6 +1,6 @@
 **To cancel an audit mitigation actions task**
 
-The following ``cancel-audit-mitigations-action-task`` example cancels the application of mitigation actions for the specified task. You cannot cancel tasks that are already completed. ::
+The following ``cancel-audit-mitigation-action-task`` example cancels the application of mitigation actions for the specified task. You cannot cancel tasks that are already completed. ::
 
     aws iot cancel-audit-mitigation-actions-task
         --task-id "myActionsTaskId"

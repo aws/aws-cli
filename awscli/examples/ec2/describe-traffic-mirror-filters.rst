@@ -25,7 +25,7 @@ Output::
                 ],
                 "EgressFilterRules": [],
                 "NetworkServices": [],
-                "Description": "Exanple Filter",
+                "Description": "Example Filter",
                 "Tags": []
             }
         ]

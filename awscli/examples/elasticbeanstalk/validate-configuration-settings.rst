@@ -25,8 +25,8 @@ If validation fails, the response will include information about the error::
   {
       "Messages": [
           {
-              "OptionName": "ConfigDocumet",
-              "Message": "Invalid option specification (Namespace: 'aws:elasticbeanstalk:healthreporting:system', OptionName: 'ConfigDocumet'): Unknown configuration setting.",
+              "OptionName": "ConfigDocument",
+              "Message": "Invalid option specification (Namespace: 'aws:elasticbeanstalk:healthreporting:system', OptionName: 'ConfigDocument'): Unknown configuration setting.",
               "Namespace": "aws:elasticbeanstalk:healthreporting:system",
               "Severity": "error"
           }

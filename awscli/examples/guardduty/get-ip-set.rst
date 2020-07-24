@@ -1,6 +1,6 @@
 **To list get details on a specified trusted IP set**
 
-The following ``get-ip-set`` example shows the status and details of the specififed trusted IP set. ::
+The following ``get-ip-set`` example shows the status and details of the specified trusted IP set. ::
 
     aws guardduty get-ip-set \
         --detector-id 12abc34d567e8fa901bc2d34eexample \

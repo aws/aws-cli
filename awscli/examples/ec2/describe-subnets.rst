@@ -52,7 +52,7 @@ Output::
 
 For more information, see `Working with VPCs and Subnets <https://docs.aws.amazon.com/vpc/latest/userguide/working-with-vpcs.html>`__ in the *AWS VPC User Guide*.
 
-**Example 2: To describe a specificied VPCs subnets**
+**Example 2: To describe a specified VPCs subnets**
 
 The following ``describe-subnets`` example uses a filter to retrieve details for the subnets of the specified VPC. ::
 

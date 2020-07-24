@@ -28,7 +28,7 @@ Output::
                 "CreatedAt": 1537460025,
                 "Name": "Customer1",
                 "SubmittedJobsCount": 0,
-                "Description": "Jobs we run for our cusotmer.",
+                "Description": "Jobs we run for our customer.",
                 "ProgressingJobsCount": 0,
                 "Arn": "arn:aws:mediaconvert:us-west-2:123456789012:queues/Customer1",
                 "LastUpdated": 1537460025

@@ -1,4 +1,4 @@
-**To diassociate a secondary cluster from a global replication group**
+**To disassociate a secondary cluster from a global replication group**
 
 The following ``disassociate-global-replication-group`` example removes a secondary cluster from a Global datastore ::
 

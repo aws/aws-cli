@@ -1,6 +1,6 @@
 **To create a stack set**
 
-The following ``create-stack-set`` example creates a stack set using the specified YAML file temlplate. ``template.yaml`` is an AWS CloudFormation template in the current folder that defines a stack. ::
+The following ``create-stack-set`` example creates a stack set using the specified YAML file template. ``template.yaml`` is an AWS CloudFormation template in the current folder that defines a stack. ::
 
     aws cloudformation create-stack-set \
         --stack-set-name my-stack-set \

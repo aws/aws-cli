@@ -1,6 +1,6 @@
 **To stop a stack set operation**
 
-The following ``stop-stack-set-operation`` example stops an in-progess update operation on the specified stack set. ::
+The following ``stop-stack-set-operation`` example stops an in-progress update operation on the specified stack set. ::
 
     aws cloudformation stop-stack-set-operation \
         --stack-set-name my-stack-set \

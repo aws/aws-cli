@@ -1,7 +1,7 @@
 from awscli.compat import collections_abc
 
 
-# CaseInsensitiveDict from requests that must be serializble.
+# CaseInsensitiveDict from requests that must be serializable.
 class CaseInsensitiveDict(collections_abc.MutableMapping):
     def __init__(self, data=None, **kwargs):
         self._store = dict()

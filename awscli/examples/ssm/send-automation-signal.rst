@@ -1,4 +1,4 @@
-**To send a singal to an automation execution**
+**To send a signal to an automation execution**
 
 The following ``send-automation-signal`` example sends an Approve signal to an Automation execution. ::
 

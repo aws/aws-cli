@@ -1,4 +1,4 @@
-**Example 1: To run a query in a specfied database, data catalog, and workgroup**
+**Example 1: To run a query in a specified database, data catalog, and workgroup**
 
 The following ``start-query-execution`` example uses the ``AthenaAdmin`` workgroup to run a query on the`` cloudfront_logs`` table in the ``cflogsdatabase`` in the ``AwsDataCatalog`` data catalog. ::
 
@@ -13,7 +13,7 @@ Output::
     "QueryExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
-**Example 2: To run a query in a specfied database, data catalog, and workgroup to create a new database**
+**Example 2: To run a query in a specified database, data catalog, and workgroup to create a new database**
 
 The following ``start-query-execution`` example uses the ``AthenaAdmin`` workgroup to create the database ``newdb`` in the default data catalog ``AwsDataCatalog``. ::
 
@@ -27,7 +27,7 @@ Output::
     "QueryExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11112"
     }
 
-**Example 3: To run a query in a specfied database, data catalog, and workgroup to create a table view**
+**Example 3: To run a query in a specified database, data catalog, and workgroup to create a table view**
 
 The following ``start-query-execution`` example uses  a ``SELECT`` statement on the ``cloudfront_logs`` table in the ``cflogsdatabase`` to create the view ``cf10``. ::
 

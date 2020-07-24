@@ -1,6 +1,6 @@
 **To list all assets**
 
-The following ``list-assets`` example ists all of the assets that are configured in the current AWS account. ::
+The following ``list-assets`` example lists all of the assets that are configured in the current AWS account. ::
 
     aws mediapackage-vod list-assets 
 

@@ -1,6 +1,6 @@
 **To list all defined mitigation actions**
 
-The following ``list-mitigations-actions`` example lists all defined mitigation actions for your AWS account and Region. For each action, the name, ARN, and creation date are listed. ::
+The following ``list-mitigation-actions`` example lists all defined mitigation actions for your AWS account and Region. For each action, the name, ARN, and creation date are listed. ::
 
     aws iot list-mitigation-actions
 

@@ -10,7 +10,7 @@ This command produces no output.
 
 **To apply a permissions boundary based on an AWS managed policy to an IAM user**
 
-The following ``put-user-permissions-boundary`` example applies the AWS managed pollicy named ``PowerUserAccess`` as the permissions boundary for the specified IAM user. ::
+The following ``put-user-permissions-boundary`` example applies the AWS managed policy named ``PowerUserAccess`` as the permissions boundary for the specified IAM user. ::
 
     aws iam put-user-permissions-boundary \
         --permissions-boundary arn:aws:iam::aws:policy/PowerUserAccess \

@@ -1,6 +1,6 @@
 **To delete an Amazon Chime Voice Connector**
 
-The following ``delete-voice-connector`` example doesthis ::
+The following ``delete-voice-connector`` example does this ::
 
     aws chime delete-voice-connector \
         --voice-connector-id abcdef1ghij2klmno3pqr4

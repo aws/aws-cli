@@ -4,7 +4,7 @@ Command::
 
   aws apigateway get-export --rest-api-id a1b2c3d4e5 --stage-name dev --export-type swagger /path/to/filename.json
 
-**To get the JSON Swagger template + API Gateway Extentions for a stage**
+**To get the JSON Swagger template + API Gateway Extensions for a stage**
 
 Command::
 

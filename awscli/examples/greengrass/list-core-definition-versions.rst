@@ -1,6 +1,6 @@
 **To list the versions of a Greengrass core definition**
 
-The following ``list-core-definitions`` example lists all versions of the specied Greengrass core definition. You can use the ``list-core-definitions`` command to get the version ID. ::
+The following ``list-core-definitions`` example lists all versions of the specified Greengrass core definition. You can use the ``list-core-definitions`` command to get the version ID. ::
 
     aws greengrass list-core-definition-versions \
         --core-definition-id "eaf280cb-138c-4d15-af36-6f681a1348f7"

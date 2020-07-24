@@ -1,6 +1,6 @@
 **To get logging configuration details**
 
-The following ``get-voice-connector-logging-configuration`` example retreives the logging configuration details for the specified Amazon Chime Voice Connector. ::
+The following ``get-voice-connector-logging-configuration`` example retrieves the logging configuration details for the specified Amazon Chime Voice Connector. ::
 
     aws chime get-voice-connector-logging-configuration \
         --voice-connector-id abcdef1ghij2klmno3pqr4

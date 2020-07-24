@@ -1,4 +1,4 @@
-**To retreive information about a specific version of a connector definition**
+**To retrieve information about a specific version of a connector definition**
 
 The following ``get-connector-definition-version`` example retrieves information about the specified version of the specified connector definition. To retrieve the IDs of all versions of the connector definition, use the ``list-connector-definition-versions`` command. To retrieve the ID of the last version added to the connector definition, use the ``get-connector-definition`` command and check the ``LatestVersion`` property. ::
 

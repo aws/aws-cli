@@ -1,6 +1,6 @@
 **To disassociate a transit gateway route table from a  resource attachment**
 
-The following ``disassociate-transit-gateway-route-table`` example disasssociates the transit gateway route table from the specified attachment. ::
+The following ``disassociate-transit-gateway-route-table`` example disassociates the transit gateway route table from the specified attachment. ::
 
     aws ec2 disassociate-transit-gateway-route-table \
         --transit-gateway-route-table-id tgw-rtb-002573ed1eEXAMPLE \

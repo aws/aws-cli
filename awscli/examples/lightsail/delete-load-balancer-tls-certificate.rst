@@ -1,6 +1,6 @@
 **To delete a TLS certificate for a load balancer**
 
-The following ``delete-load-balancer-tls-certificate`` example deletes the specifie TLS certificate from the specified load balancer. ::
+The following ``delete-load-balancer-tls-certificate`` example deletes the specified TLS certificate from the specified load balancer. ::
 
     aws lightsail delete-load-balancer-tls-certificate \
         --load-balancer-name MyFirstLoadBalancer \

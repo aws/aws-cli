@@ -10,7 +10,7 @@ Output::
 
     {
         "Preset": {
-            "Description": "Creates basic MP4 file. No filtering or preproccessing.",
+            "Description": "Creates basic MP4 file. No filtering or preprocessing.",
             "Arn": "arn:aws:mediaconvert:us-west-2:123456789012:presets/SimpleMP4",
             "LastUpdated": 1568843141,
             "Name": "SimpleMP4",

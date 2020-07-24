@@ -1,6 +1,6 @@
-**To list the results of replication task assessmentss**
+**To list the results of replication task assessments**
 
-The following ``describe-replication-task-assessment-results`` example lists the results of a prior task assesssment. ::
+The following ``describe-replication-task-assessment-results`` example lists the results of a prior task assessment. ::
 
     aws dms describe-replication-task-assessment-results
 

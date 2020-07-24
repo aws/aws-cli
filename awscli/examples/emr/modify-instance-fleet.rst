@@ -1,4 +1,4 @@
-**To change the target capacites of an instance fleet**
+**To change the target capacities of an instance fleet**
 
 This example changes the On-Demand and Spot target capacities to 1 for the instance fleet specified.
 

@@ -1,6 +1,6 @@
 **To delete an event subscription**
 
-The following ``delete-event-subscription`` example deletes a subscription to an Amaon SNS topic. ::
+The following ``delete-event-subscription`` example deletes a subscription to an Amazon SNS topic. ::
 
     aws dms delete-event-subscription \
         --subscription-name "my-dms-events"

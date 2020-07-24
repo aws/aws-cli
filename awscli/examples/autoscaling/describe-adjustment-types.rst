@@ -12,7 +12,7 @@ The following is example output::
                 "AdjustmentType": "ChangeInCapacity"
             },
             {
-                "AdjustmentType": "ExactCapcity"
+                "AdjustmentType": "ExactCapacity"
             },
             {
                 "AdjustmentType": "PercentChangeInCapacity"

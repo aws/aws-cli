@@ -1,6 +1,6 @@
 **To get information about an API mapping for a custom domain name**
 
-The following ``get-api-mapping`` example displays infomation about an API mapping for the ``api.example.com`` custom domain name. ::
+The following ``get-api-mapping`` example displays information about an API mapping for the ``api.example.com`` custom domain name. ::
 
     aws apigatewayv2 get-api-mapping \
         --api-mapping-id a1b2c3 \

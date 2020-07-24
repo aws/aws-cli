@@ -1,6 +1,6 @@
 **To remove a tag from a project**
 
-The following ``untag-project`` example removes any tag with a key name of ``Team`` from the specifiec project. ::
+The following ``untag-project`` example removes any tag with a key name of ``Team`` from the specified project. ::
 
     aws codestar untag-project \
         --id my-project \

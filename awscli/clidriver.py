@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import json
 import os
 import platform
 import sys
@@ -76,6 +77,7 @@ LOG = logging.getLogger('awscli.clidriver')
 LOG_FORMAT = (
     '%(asctime)s - %(threadName)s - %(name)s - %(levelname)s - %(message)s')
 HISTORY_RECORDER = get_global_history_recorder()
+METADATA_FILENAME = 'metadata.json'
 # Don't remove this line.  The idna encoding
 # is used by getaddrinfo when dealing with unicode hostnames,
 # and in some cases, there appears to be a race condition
@@ -105,7 +107,15 @@ def create_clidriver():
 
 
 def _get_distribution_source():
-    return 'bundle'
+    metadata_file = os.path.join(
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data'),
+        METADATA_FILENAME
+    )
+    metadata = {}
+    if os.path.isfile(metadata_file):
+        with open(metadata_file) as f:
+            metadata = json.load(f)
+    return metadata.get('distribution_source', 'other')
 
 
 def _get_distribution():

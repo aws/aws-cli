@@ -34,7 +34,7 @@ requires = [
     # the pyinstaller executable.
     'wcwidth<0.2.0',
     'prompt-toolkit>=2.0.0,<3.0.0',
-    'distro>=1.5.0, <1.6.0',
+    'distro>=1.5.0,<1.6.0',
 ]
 
 

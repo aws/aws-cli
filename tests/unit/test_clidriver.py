@@ -741,21 +741,20 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertNotIn('--idempotency-token', self.stderr.getvalue())
 
     @mock.patch('awscli.clidriver.platform.system', return_value='Linux')
+    @mock.patch('awscli.clidriver.platform.machine', return_value='x86_64')
     @mock.patch('awscli.clidriver.distro.id', return_value='amzn')
     @mock.patch('awscli.clidriver.distro.major_version', return_value='1')
     def test_user_agent_for_linux(self, *args):
         driver = create_clidriver()
-        user_agent_extra_pattern = re.compile(
-            r'^.+/[a-z1-9_]+\.amzn\.1$'
-        )
-        self.assertIsNotNone(user_agent_extra_pattern.match(
-            driver.session.user_agent_extra))
+        expected_user_agent = 'source/x86_64.amzn.1'
+        self.assertEqual(expected_user_agent,
+                         driver.session.user_agent_extra)
 
     def test_user_agent(self, *args):
         machine = platform.machine()
         driver = create_clidriver()
         user_agent_extra_pattern = re.compile(
-            '^.+/%s(\.[a-z_]+)?(\.[1-9]+)?$' % machine
+            '^source/%s(\.[a-z_]+)?(\.[1-9]+)?$' % machine
         )
         self.assertIsNotNone(user_agent_extra_pattern.match(
             driver.session.user_agent_extra))

@@ -116,6 +116,7 @@ class UpdateKubeconfigCommand(BasicCommand):
         client = EKSClient(self._session,
                            parsed_args.name,
                            parsed_args.role_arn,
+                           parsed_args.alias,
                            parsed_globals)
         new_cluster_dict = client.get_cluster_entry()
         new_user_dict = client.get_user_entry()
@@ -230,10 +231,11 @@ class KubeconfigSelector(object):
 
 
 class EKSClient(object):
-    def __init__(self, session, cluster_name, role_arn, parsed_globals=None):
+    def __init__(self, session, cluster_name, role_arn, alias, parsed_globals=None):
         self._session = session
         self._cluster_name = cluster_name
         self._role_arn = role_arn
+        self._alias = alias
         self._cluster_description = None
         self._globals = parsed_globals
 
@@ -293,7 +295,7 @@ class EKSClient(object):
         region = self._get_cluster_description().get("arn").split(":")[3]
 
         generated_user = OrderedDict([
-            ("name", self._get_cluster_description().get("arn", "")),
+            ("name", self._alias if self._alias is not None else self._get_cluster_description().get("arn", "")),
             ("user", OrderedDict([
                 ("exec", OrderedDict([
                     ("apiVersion", API_VERSION),

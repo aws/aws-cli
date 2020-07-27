@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.106
+========
+
+* api-change:``datasync``: Update datasync command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``frauddetector``: Update frauddetector command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
 1.18.105
 ========
 

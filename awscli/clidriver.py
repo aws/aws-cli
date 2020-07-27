@@ -709,6 +709,8 @@ class ServiceOperation(object):
         # of exception that will be raised if detected or it can represent
         # the desired return code. Note that a return code of 0 represents
         # a success.
+        if hasattr(self._session, 'user_agent_extra'):
+            self._add_customization_to_user_agent()
         if override is not None:
             if isinstance(override, Exception):
                 # If the override value provided back is an exception then
@@ -806,6 +808,14 @@ class ServiceOperation(object):
     def _create_operation_parser(self, arg_table):
         parser = ArgTableArgParser(arg_table)
         return parser
+
+    def _add_customization_to_user_agent(self):
+        if ' command/' in self._session.user_agent_extra:
+            self._session.user_agent_extra += '.%s' % self.lineage_names[-1]
+        else:
+            self._session.user_agent_extra += ' command/%s' % '.'.join(
+                self.lineage_names
+            )
 
 
 class CLIOperationCaller(object):

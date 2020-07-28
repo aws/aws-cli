@@ -2,6 +2,31 @@
 CHANGELOG
 =========
 
+2.0.35
+======
+
+* api-change:``mediaconnect``: Update mediaconnect command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``frauddetector``: Update frauddetector command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``datasync``: Update datasync command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``ivs``: Update ivs command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``mediapackage``: Update mediapackage command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+* api-change:``mq``: Update mq command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 2.0.34
 ======
 

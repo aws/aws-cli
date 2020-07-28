@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.18.107
+========
+
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``ivs``: Update ivs command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
 1.18.106
 ========
 

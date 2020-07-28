@@ -99,5 +99,5 @@ class TestShowCommand(BaseHistoryCommandParamsTest):
         # The show command writes the history out as binary to the attached
         # stream so we want to determine if the values are in the binary
         # stdout stream
-        self.assertNotIn('describe-regions', stdout)
+        self.assertNotIn("['ec2', 'describe-regions']", stdout)
         self.assertIn('version', stdout)

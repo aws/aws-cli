@@ -37,6 +37,7 @@ class FakeSession(object):
         self.environment_vars = environment_vars
         self._credentials = credentials
         self.profile = profile
+        self.user_agent_extra = ''
 
     @property
     def available_profiles(self):

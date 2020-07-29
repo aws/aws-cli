@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.108
+========
+
+* api-change:``ecr``: Update ecr command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``firehose``: Update firehose command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``resource-groups``: Update resource-groups command to latest version
+* api-change:``servicediscovery``: Update servicediscovery command to latest version
+
+
 1.18.107
 ========
 

@@ -8,7 +8,8 @@ from distutils.dir_util import copy_tree
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from utils import run, tmp_dir, cd, BadRCError
+from utils import run, tmp_dir, cd, BadRCError, \
+                  extract_zip, update_metadata, save_to_zip
 
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(
@@ -18,6 +19,7 @@ DIST_DIR = os.path.join(ROOT, 'dist')
 DEFAULT_EXE_ZIP = os.path.join(DIST_DIR, 'awscli-exe.zip')
 DEFAULT_DOCKER_OUTPUT = os.path.join(DIST_DIR, 'aws-cli-docker.tar')
 DEFAULT_TAGS = ['amazon/aws-cli']
+DISTRIBUTION_SOURCE = 'docker'
 
 
 def make_docker(exe, output, tags):
@@ -42,6 +44,17 @@ def _ensure_docker_is_available():
 def _make_build_context(build_context_dir, exe):
     _copy_docker_dir_to_build_context(build_context_dir)
     _copy_exe_to_build_context(build_context_dir, exe)
+    _update_exe_metadata(
+        os.path.join(build_context_dir, os.path.basename(exe))
+    )
+
+
+def _update_exe_metadata(exe):
+    with tmp_dir() as tmp:
+        extract_zip(exe, tmp)
+        update_metadata(os.path.join(tmp, 'aws', 'dist'),
+                        distribution_source=DISTRIBUTION_SOURCE)
+        save_to_zip(tmp, exe)
 
 
 def _copy_docker_dir_to_build_context(build_context_dir):

@@ -1,4 +1,5 @@
 import contextlib
+import json
 import os
 import platform
 import shutil
@@ -78,3 +79,20 @@ def virtualenv_enabled():
     # Helper function to see if we need to make
     # our own virtualenv for installs.
     return bool(os.environ.get('VIRTUAL_ENV'))
+
+
+def update_metadata(dirname, **kwargs):
+    print('Update metadata values %s' % kwargs)
+    metadata_file = os.path.join(dirname, 'awscli', 'data', 'metadata.json')
+    with open(metadata_file) as f:
+        metadata = json.load(f)
+    for key, value in kwargs.items():
+        metadata[key] = value
+    with open(metadata_file, 'w') as f:
+        json.dump(metadata, f)
+
+
+def save_to_zip(dirname, zipfile_name):
+    if zipfile_name.endswith('.zip'):
+        zipfile_name = zipfile_name[:-4]
+    shutil.make_archive(zipfile_name, 'zip', dirname)

@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.18.109
+========
+
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``resource-groups``: Update resource-groups command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``sesv2``: Update sesv2 command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+
+
 1.18.108
 ========
 

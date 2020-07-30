@@ -632,6 +632,31 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.109
+========
+
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``resource-groups``: Update resource-groups command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``sesv2``: Update sesv2 command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+
+
+1.18.108
+========
+
+* api-change:``ecr``: Update ecr command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``firehose``: Update firehose command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``resource-groups``: Update resource-groups command to latest version
+* api-change:``servicediscovery``: Update servicediscovery command to latest version
+
+
 1.18.107
 ========
 

@@ -187,6 +187,7 @@ class TestCommandsRunProperly(BaseAWSCommandParamsTest):
         self.client.describe_objects = self.describe_objects
 
         self.driver.session = mock.Mock()
+        self.driver.session.user_agent_extra = ''
         self.driver.session.emit_first_non_none_response.return_value = None
         self.driver.session.create_client.return_value = self.client
         self.query_objects.paginate.return_value.build_full_result.\

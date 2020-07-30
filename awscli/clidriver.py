@@ -10,13 +10,16 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import json
 import os
+import platform
 import sys
 import signal
 import logging
 
+import distro
+
 import botocore.session
-from botocore import __version__ as botocore_version
 from botocore import xform_name
 from botocore.compat import copy_kwargs, OrderedDict
 from botocore.exceptions import NoCredentialsError
@@ -74,6 +77,7 @@ LOG = logging.getLogger('awscli.clidriver')
 LOG_FORMAT = (
     '%(asctime)s - %(threadName)s - %(name)s - %(levelname)s - %(message)s')
 HISTORY_RECORDER = get_global_history_recorder()
+METADATA_FILENAME = 'metadata.json'
 # Don't remove this line.  The idna encoding
 # is used by getaddrinfo when dealing with unicode hostnames,
 # and in some cases, there appears to be a race condition
@@ -102,10 +106,49 @@ def create_clidriver():
     return driver
 
 
+def _get_distribution_source():
+    metadata_file = os.path.join(
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data'),
+        METADATA_FILENAME
+    )
+    metadata = {}
+    if os.path.isfile(metadata_file):
+        with open(metadata_file) as f:
+            metadata = json.load(f)
+    return metadata.get('distribution_source', 'other')
+
+
+def _get_distribution():
+    distribution = None
+    if platform.system() == 'Linux':
+        distribution = _get_linux_distribution()
+    return distribution
+
+
+def _get_linux_distribution():
+    linux_distribution = 'unknown'
+    try:
+        linux_distribution = distro.id()
+        version = distro.major_version()
+        if version:
+            linux_distribution += '.%s' % version
+    except Exception:
+        pass
+    return linux_distribution
+
+
 def _set_user_agent_for_session(session):
     session.user_agent_name = 'aws-cli'
     session.user_agent_version = __version__
-    session.user_agent_extra = 'botocore/%s' % botocore_version
+    # user_agent_extra on linux will look like "rpm/x86_64.Ubuntu.18"
+    # on mac and windows like "sources/x86_64"
+    session.user_agent_extra = '%s/%s' % (
+        _get_distribution_source(),
+        platform.machine()
+    )
+    linux_distribution = _get_distribution()
+    if linux_distribution:
+        session.user_agent_extra += ".%s" % linux_distribution
 
 
 class CLIDriver(object):
@@ -667,6 +710,8 @@ class ServiceOperation(object):
         # of exception that will be raised if detected or it can represent
         # the desired return code. Note that a return code of 0 represents
         # a success.
+        if hasattr(self._session, 'user_agent_extra'):
+            self._add_customization_to_user_agent()
         if override is not None:
             if isinstance(override, Exception):
                 # If the override value provided back is an exception then
@@ -764,6 +809,14 @@ class ServiceOperation(object):
     def _create_operation_parser(self, arg_table):
         parser = ArgTableArgParser(arg_table)
         return parser
+
+    def _add_customization_to_user_agent(self):
+        if ' command/' in self._session.user_agent_extra:
+            self._session.user_agent_extra += '.%s' % self.lineage_names[-1]
+        else:
+            self._session.user_agent_extra += ' command/%s' % '.'.join(
+                self.lineage_names
+            )
 
 
 class CLIOperationCaller(object):

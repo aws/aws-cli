@@ -177,7 +177,8 @@ class BasicCommand(CLICommand):
                     cli_argument.argument_model, value)
 
             setattr(parsed_args, key, value)
-
+        if hasattr(self._session, 'user_agent_extra'):
+            self._add_customization_to_user_agent()
         if hasattr(parsed_args, 'help'):
             self._display_help(parsed_args, parsed_globals)
         elif getattr(parsed_args, 'subcommand', None) is None:
@@ -308,6 +309,14 @@ class BasicCommand(CLICommand):
             "[parameters]\naws: error: too few arguments"
         ) % lineage
         raise ParamValidationError(error_msg)
+
+    def _add_customization_to_user_agent(self):
+        if ' command/' in self._session.user_agent_extra:
+            self._session.user_agent_extra += '.%s' % self.lineage_names[-1]
+        else:
+            self._session.user_agent_extra += ' command/%s' % '.'.join(
+                self.lineage_names
+            )
 
 
 class BasicHelp(HelpCommand):

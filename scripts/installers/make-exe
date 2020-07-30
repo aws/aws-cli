@@ -5,6 +5,7 @@ This exe can then be wrapped in a platform specific installer for each
 supported platform.
 """
 import argparse
+import json
 import os
 import sys
 import shutil
@@ -12,7 +13,7 @@ from distutils.dir_util import copy_tree
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from utils import run, tmp_dir
+from utils import run, tmp_dir, update_metadata, save_to_zip
 from install_deps import install_packages
 
 
@@ -23,6 +24,7 @@ PYINSTALLER_DIR = os.path.join(EXE_DIR, 'pyinstaller')
 ASSETS_DIR = os.path.join(EXE_DIR, 'assets')
 DEFAULT_OUTPUT_ZIP = 'awscli-exe.zip'
 AC_INDEX_INTERNAL_PATH = os.path.join('awscli', 'data', 'ac.index')
+DISTRIBUTION_SOURCE = 'exe'
 
 
 def make_exe(exe_zipfile, cleanup=True, ac_index=None):
@@ -44,6 +46,8 @@ def do_make_exe(workdir, exe_zipfile, ac_index):
         copy_file(ac_index, full_internal_ac_index_path)
     copy_directory(aws_exe_build, output_exe_dist_dir)
     aws_complete_exe_build = pyinstaller('aws_completer.spec')
+    update_metadata(aws_complete_exe_build,
+                    distribution_source=DISTRIBUTION_SOURCE)
     copy_directory_contents_into(aws_complete_exe_build, output_exe_dist_dir)
     copy_directory_contents_into(ASSETS_DIR, exe_dir)
     save_to_zip(workdir, exe_zipfile)
@@ -75,12 +79,6 @@ def copy_directory_contents_into(src, dst):
 def copy_file(src, dst):
     print('Copying file %s -> %s' % (src, dst))
     shutil.copy2(src, dst)
-
-
-def save_to_zip(dirname, zipfile_name):
-    if zipfile_name.endswith('.zip'):
-        zipfile_name = zipfile_name[:-4]
-    shutil.make_archive(zipfile_name, 'zip', dirname)
 
 
 def cleanup_build():

@@ -16,6 +16,7 @@ import mock
 from awscli.clidriver import CLIDriver
 from awscli.customizations.commands import BasicHelp, BasicCommand
 from awscli.customizations.commands import BasicDocHandler
+from awscli.testutils import BaseAWSCommandParamsTest
 from botocore.docs.bcdoc.restdoc import ReSTDocument
 from botocore.hooks import HierarchicalEmitter
 from tests.unit.test_clidriver import FakeSession, FakeCommand
@@ -186,4 +187,42 @@ class TestBasicDocHandler(unittest.TestCase):
         self.assertIn(
             "See :doc:`'aws help' </reference/index>` for descriptions of "
             "global parameters", rendered
+        )
+
+
+class TestUserAgentCommandSection(BaseAWSCommandParamsTest):
+    def _assert_customization_in_user_agent(self, customization):
+        self.assertTrue(
+            self.driver.session.user_agent_extra.endswith(customization)
+        )
+
+    def test_customization_in_user_agent_s3_cp(self):
+        cmd = 's3 cp s3://foo s3://bar'
+        self.run_cmd(cmd)
+        self._assert_customization_in_user_agent(' command/s3.cp')
+
+    def test_customization_in_user_agent_s3_ls(self):
+        cmd = 's3 ls'
+        # it should fail but the user_agent should be correct
+        self.run_cmd(cmd, expected_rc=255)
+        self._assert_customization_in_user_agent(' command/s3.ls')
+
+    def test_customization_in_user_agent_logs_tail(self):
+        cmd = 'logs tail foo'
+        # it should fail but the user_agent should be correct
+        self.run_cmd(cmd, expected_rc=255)
+        self._assert_customization_in_user_agent(' command/logs.tail')
+
+    def test_service_operation_in_user_agent(self):
+        cmd = 'ec2 describe-instances'
+        self.run_cmd(cmd)
+        self._assert_customization_in_user_agent(
+            ' command/ec2.describe-instances'
+        )
+
+    def test_custom_service_operation_in_user_agent(self):
+        cmd = 'rds add-option-to-option-group --option-group-name foo'
+        self.run_cmd(cmd)
+        self._assert_customization_in_user_agent(
+            ' command/rds.add-option-to-option-group'
         )

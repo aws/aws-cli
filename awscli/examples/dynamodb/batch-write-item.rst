@@ -1,9 +1,11 @@
 **To add multiple items to a table**
 
-The following ``batch-write-item`` example adds three new items to the ``MusicCollection`` table using a batch of three ``PutItem`` requests. ::
+The following ``batch-write-item`` example adds three new items to the ``MusicCollection`` table using a batch of three ``PutItem`` requests. It also requests information about the number of write capacity units consumed by the operation and any item collections modified by the operation. ::
 
     aws dynamodb batch-write-item \
-        --request-items file://request-items.json
+        --request-items file://request-items.json \
+        --return-consumed-capacity INDEXES \
+        --return-item-collection-metrics SIZE
 
 Contents of ``request-items.json``::
 
@@ -42,7 +44,47 @@ Contents of ``request-items.json``::
 Output::
 
     {
-        "UnprocessedItems": {}
+        "UnprocessedItems": {},
+        "ItemCollectionMetrics": {
+            "MusicCollection": [
+                {
+                    "ItemCollectionKey": {
+                        "Artist": {
+                            "S": "No One You Know"
+                        }
+                    },
+                    "SizeEstimateRangeGB": [
+                        0.0,
+                        1.0
+                    ]
+                },
+                {
+                    "ItemCollectionKey": {
+                        "Artist": {
+                            "S": "Acme Band"
+                        }
+                    },
+                    "SizeEstimateRangeGB": [
+                        0.0,
+                        1.0
+                    ]
+                }
+            ]
+        },
+        "ConsumedCapacity": [
+            {
+                "TableName": "MusicCollection",
+                "CapacityUnits": 6.0,
+                "Table": {
+                    "CapacityUnits": 3.0
+                },
+                "LocalSecondaryIndexes": {
+                    "AlbumTitleIndex": {
+                        "CapacityUnits": 3.0
+                    }
+                }
+            }
+        ]
     }
-    
+
 For more information, see `Batch Operations <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html#WorkingWithItems.BatchOperations>`__ in the *Amazon DynamoDB Developer Guide*.

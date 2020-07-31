@@ -1,9 +1,10 @@
 **To retrieve multiple items from a table**
 
-The following ``batch-get-items`` example reads multiple items from the ``MusicCollection`` table using a batch of three ``GetItem`` requests. The command returns only the ``AlbumTitle`` attribute. ::
+The following ``batch-get-items`` example reads multiple items from the ``MusicCollection`` table using a batch of three ``GetItem`` requests, and requests the number of read capacity units consumed by the operation. The command returns only the ``AlbumTitle`` attribute. ::
 
     aws dynamodb batch-get-item \
-        --request-items file://request-items.json
+        --request-items file://request-items.json \
+        --return-consumed-capacity TOTAL
 
 Contents of ``request-items.json``::
 
@@ -30,7 +31,6 @@ Contents of ``request-items.json``::
 Output::
 
     {
-        "UnprocessedKeys": {}, 
         "Responses": {
             "MusicCollection": [
                 {
@@ -49,7 +49,14 @@ Output::
                     }
                 }
             ]
-        }
+        },
+        "UnprocessedKeys": {}, 
+        "ConsumedCapacity": [
+            {
+                "TableName": "MusicCollection",
+                "CapacityUnits": 1.5
+            }
+        ]
     }
 
 For more information, see `Batch Operations <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html#WorkingWithItems.BatchOperations>`__ in the *Amazon DynamoDB Developer Guide*.

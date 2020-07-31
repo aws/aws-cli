@@ -410,77 +410,54 @@ password: JgCXIr5xGG
 class TestRelativeExpirationTime(unittest.TestCase):
 
     def test_with_years_months_days(self):
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(years=1)
-                           + relativedelta(months=9) + relativedelta(days=11))\
-            .replace(microsecond=0)
-        remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
+        remaining = relativedelta(years=1, months=9)
         message = get_relative_expiration_time(remaining)
         self.assertEqual(message, '1 year and 9 months')
 
     def test_with_years_months(self):
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(years=1)
-                           + relativedelta(months=9)).replace(microsecond=0)
-        remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
+        remaining = relativedelta(years=1, months=8, days=30, hours=23,
+                                  minutes=59, seconds=30)
         message = get_relative_expiration_time(remaining)
         self.assertEqual(message, '1 year and 8 months')
 
     def test_with_years_month(self):
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(years=3)
-                           + relativedelta(months=1)).replace(microsecond=0)
-        remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
+        remaining = relativedelta(years=3, days=30, hours=23,
+                                  minutes=59, seconds=30)
         message = get_relative_expiration_time(remaining)
         self.assertEqual(message, '3 years')
 
     def test_with_years_days(self):
-        self.expiration = (datetime.now(tzlocal())
-                           + relativedelta(years=1)
-                           + relativedelta(days=9)).replace(microsecond=0)
-        remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
+        remaining = relativedelta(years=1, days=9)
         message = get_relative_expiration_time(remaining)
         self.assertEqual(message, '1 year')
 
     def test_with_year(self):
-        self.expiration = (datetime.now(tzlocal())
-                           + relativedelta(years=1)).replace(microsecond=0)
-        remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
+        remaining = relativedelta(months=11, days=30)
+        message = get_relative_expiration_time(remaining)
+        self.assertEqual(message, '11 months and 30 days')
+
+    def test_with_year(self):
+        remaining = relativedelta(months=11, days=30)
         message = get_relative_expiration_time(remaining)
         self.assertEqual(message, '11 months and 30 days')
 
     def test_with_years(self):
-        self.expiration = (datetime.now(tzlocal())
-                           + relativedelta(years=2)).replace(microsecond=0)
-        remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
+        remaining = relativedelta(years=1, months=11)
         message = get_relative_expiration_time(remaining)
         self.assertEqual(message, '1 year and 11 months')
 
     def test_with_years_days_hours_minutes(self):
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(years=2)
-                           + relativedelta(days=7) + relativedelta(hours=11) +
-                           relativedelta(minutes=44)).replace(microsecond=0)
-        remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
+        remaining = relativedelta(years=2, days=7, hours=11, minutes=44)
         message = get_relative_expiration_time(remaining)
         self.assertEqual(message, '2 years')
 
     def test_with_days_minutes(self):
-        self.expiration = (datetime.now(tzlocal()) + relativedelta(days=1) +
-                           relativedelta(minutes=44)).replace(microsecond=0)
-        remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
+        remaining = relativedelta(days=1, minutes=44)
         message = get_relative_expiration_time(remaining)
         self.assertEqual(message, '1 day')
 
     def test_with_day(self):
-        self.expiration = (datetime.now(tzlocal())
-                           + relativedelta(days=1)).replace(microsecond=0)
-        remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
+        remaining = relativedelta(days=1)
         message = get_relative_expiration_time(remaining)
         self.assertEqual(message, '1 day')
 
@@ -493,20 +470,12 @@ class TestRelativeExpirationTime(unittest.TestCase):
         self.assertEqual(message, '1 hour')
 
     def test_with_minutes_seconds(self):
-        self.expiration = (
-                datetime.now(tzlocal()) + relativedelta(minutes=59)
-                + relativedelta(seconds=50)).replace(microsecond=0)
-        remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
+        remaining = relativedelta(hours=1)
         message = get_relative_expiration_time(remaining)
         self.assertEqual(message, '1 hour')
 
     def test_with_full_time(self):
-        self.expiration = (datetime.now(tzlocal())
-                           + relativedelta(years=2) + relativedelta(months=3)
-                           + relativedelta(days=7) + relativedelta(hours=11) +
-                           relativedelta(minutes=44)).replace(microsecond=0)
         remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
+            years=2, months=3, days=7, hours=11, minutes=44)
         message = get_relative_expiration_time(remaining)
         self.assertEqual(message, '2 years and 3 months')

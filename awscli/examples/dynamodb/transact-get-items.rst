@@ -3,7 +3,8 @@
 The following ``transact-get-items`` example retrieves multiple items atomically. ::
 
     aws dynamodb transact-get-items \
-        --transact-items file://transact-items.json
+        --transact-items file://transact-items.json \
+        --return-consumed-capacity TOTAL
 
 Contents of ``transact-items.json``::
 
@@ -31,6 +32,13 @@ Contents of ``transact-items.json``::
 Output::
 
     {
+        "ConsumedCapacity": [
+            {
+                "TableName": "MusicCollection",
+                "CapacityUnits": 4.0,
+                "ReadCapacityUnits": 4.0
+            }
+        ],
         "Responses": [
             {
                 "Item": {

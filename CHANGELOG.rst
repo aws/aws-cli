@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.110
+========
+
+* api-change:``chime``: Update chime command to latest version
+* api-change:``personalize-runtime``: Update personalize-runtime command to latest version
+* api-change:``wafv2``: Update wafv2 command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+
+
 1.18.109
 ========
 

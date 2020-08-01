@@ -11,6 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import functools
+import json
 import os
 import sys
 import logging
@@ -18,6 +20,7 @@ import logging
 from botocore.client import Config
 
 from awscli.compat import compat_open
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.deployer import Deployer
 from awscli.customizations.s3uploader import S3Uploader
@@ -107,12 +110,7 @@ class DeployCommand(BasicCommand):
             'name': PARAMETER_OVERRIDE_CMD,
             'action': 'store',
             'required': False,
-            'schema': {
-                'type': 'array',
-                'items': {
-                    'type': 'string'
-                }
-            },
+            'nargs': '+',
             'default': [],
             'help_text': (
                 'A list of parameter structures that specify input parameters'
@@ -255,10 +253,9 @@ class DeployCommand(BasicCommand):
             template_str = handle.read()
 
         stack_name = parsed_args.stack_name
-        parameter_overrides = self.parse_key_value_arg(
-                parsed_args.parameter_overrides,
-                self.PARAMETER_OVERRIDE_CMD)
-
+        parameter_overrides = self.parse_parameter_overrides(
+            parsed_args.parameter_overrides
+        )
         tags_dict = self.parse_key_value_arg(parsed_args.tags, self.TAGS_CMD)
         tags = [{"Key": key, "Value": value}
                 for key, value in tags_dict.items()]
@@ -358,6 +355,68 @@ class DeployCommand(BasicCommand):
             parameter_values.append(obj)
 
         return parameter_values
+
+    def _validate_cf_params(self, param):
+        if 'ParameterKey' in param and 'ParameterValue' in param:
+            if len(param.keys()) > 2:
+                raise ParamValidationError(
+                    'CloudFormation like parameter JSON should have format '
+                    '[{"ParameterKey": "string", "ParameterValue": "string"}]')
+        return True
+
+    def _cf_param_parser(self, data):
+        # Parse parameter_overrides if they were given in
+        # CloudFormation params file format
+        # [{
+        #   "ParameterKey": "string",
+        #   "ParameterValue": "string",
+        # }]
+        try:
+            return {
+                param['ParameterKey']: param['ParameterValue']
+                for param in data if self._validate_cf_params(param)
+            }
+        except (KeyError, TypeError):
+            return None
+
+    def _codepipeline_param_parser(self, data):
+        # Parse parameter_overrides if they were given in
+        # CodePipeline params file format
+        # {
+        #     "Parameters": {
+        #         "ParameterKey": "ParameterValue"
+        #     }
+        # }
+        if isinstance(data, dict):
+            return data.get('Parameters', None)
+
+    def parse_parameter_overrides(self, arg_value):
+        if isinstance(arg_value, str):
+            data = json.loads(arg_value)
+            parsers = [
+                self._cf_param_parser,
+                self._codepipeline_param_parser,
+
+            ]
+            result = functools.reduce(
+                lambda a, parser: a or parser(data),
+                parsers, None
+            )
+            # In case it was in deploy command format
+            # but was in file
+            if result is None:
+                return self.parse_key_value_arg(
+                    data,
+                    self.PARAMETER_OVERRIDE_CMD
+                )
+            return result
+        else:
+            # In case it was in deploy command format
+            # and was input via command line
+            return self.parse_key_value_arg(
+                arg_value,
+                self.PARAMETER_OVERRIDE_CMD
+            )
 
     def parse_key_value_arg(self, arg_value, argname):
         """

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.18.112
+========
+
+* api-change:``health``: Update health command to latest version
+
+
 1.18.111
 ========
 

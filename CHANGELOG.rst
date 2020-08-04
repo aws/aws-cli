@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.0.37
+======
+
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``personalize-runtime``: Update personalize-runtime command to latest version
+* api-change:``health``: Update health command to latest version
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+* api-change:``wafv2``: Update wafv2 command to latest version
+
+
 2.0.36
 ======
 

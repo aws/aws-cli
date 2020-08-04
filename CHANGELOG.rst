@@ -649,6 +649,28 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.112
+========
+
+* api-change:``health``: Update health command to latest version
+
+
+1.18.111
+========
+
+* api-change:``ssm``: Update ssm command to latest version
+
+
+1.18.110
+========
+
+* api-change:``chime``: Update chime command to latest version
+* api-change:``personalize-runtime``: Update personalize-runtime command to latest version
+* api-change:``wafv2``: Update wafv2 command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+
+
 1.18.109
 ========
 

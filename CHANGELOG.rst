@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.113
+========
+
+* api-change:``appsync``: Update appsync command to latest version
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``sns``: Update sns command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+
+
 1.18.112
 ========
 

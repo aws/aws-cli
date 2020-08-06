@@ -119,7 +119,7 @@ class DeployCommand(BasicCommand):
                 ' existing value. For new stacks, you must specify'
                 ' parameters that don\'t have a default value.'
                 ' Syntax: ParameterKey1=ParameterValue1'
-                ' ParameterKey2=ParameterValue2 ...'
+                ' ParameterKey2=ParameterValue2 ... or JSON file (see Examples)'
             )
         },
         {

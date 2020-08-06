@@ -473,6 +473,18 @@ class TestDeployCommand(BaseYAMLTest):
         result = self.deploy_command.parse_parameter_overrides(data)
         self.assertEqual(result, output)
 
+    def test_parse_parameter_override_with_inline_json(self):
+        data = [json.dumps([
+            'Key1=Value1',
+            'Key2=[1,2,3]',
+            'Key3={"a":"val", "b": 2}'
+        ])]
+        output = {"Key1": "Value1",
+                  "Key2": '[1,2,3]',
+                  "Key3": '{"a":"val", "b": 2}'}
+        result = self.deploy_command.parse_parameter_overrides(data)
+        self.assertEqual(result, output)
+
     def test_parse_parameter_override_with_deploy_data_format(self):
         """
         Tests that we can parse parameter arguments in

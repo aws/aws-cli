@@ -390,9 +390,20 @@ class DeployCommand(BasicCommand):
         if isinstance(data, dict):
             return data.get('Parameters', None)
 
+    def _parse_input_as_json(self, arg_value):
+        # In case of inline json input it'll be list where json string
+        # will be the first element
+        if arg_value:
+            if isinstance(arg_value, str):
+                return json.loads(arg_value)
+            try:
+                return json.loads(arg_value[0])
+            except json.JSONDecodeError:
+                return None
+
     def parse_parameter_overrides(self, arg_value):
-        if isinstance(arg_value, str):
-            data = json.loads(arg_value)
+        data = self._parse_input_as_json(arg_value)
+        if data is not None:
             parsers = [
                 self._cf_param_parser,
                 self._codepipeline_param_parser,

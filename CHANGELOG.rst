@@ -661,6 +661,27 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.114
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``personalize-runtime``: Update personalize-runtime command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``lex-runtime``: Update lex-runtime command to latest version
+* api-change:``personalize``: Update personalize command to latest version
+* api-change:``personalize-events``: Update personalize-events command to latest version
+
+
+1.18.113
+========
+
+* api-change:``appsync``: Update appsync command to latest version
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``sns``: Update sns command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+
+
 1.18.112
 ========
 

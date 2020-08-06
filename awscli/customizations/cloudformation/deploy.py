@@ -11,9 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import logging
 import os
 import sys
-import logging
+import time
 
 from botocore.client import Config
 
@@ -66,6 +67,15 @@ class DeployCommand(BasicCommand):
                 'The name of the AWS CloudFormation stack you\'re deploying to.'
                 ' If you specify an existing stack, the command updates the'
                 ' stack. If you specify a new stack, the command creates it.'
+            )
+        },
+        {
+            'name': 'change-set-name',
+            'action': 'store',
+            'required': False,
+            'help_text': (
+                'The name of the change set. The name must be unique among all change'
+                ' sets that are associated with the specified stack.'
             )
         },
         {
@@ -255,6 +265,14 @@ class DeployCommand(BasicCommand):
             template_str = handle.read()
 
         stack_name = parsed_args.stack_name
+        change_set_name = parsed_args.change_set_name
+
+        if change_set_name is None:
+            # Each changeset will get a unique name based on time
+            change_set_prefix = "awscli-cloudformation-package-deploy-"
+            change_set_postfix = str(int(time.time()))
+            change_set_name = change_set_prefix + change_set_postfix
+
         parameter_overrides = self.parse_key_value_arg(
                 parsed_args.parameter_overrides,
                 self.PARAMETER_OVERRIDE_CMD)
@@ -288,20 +306,21 @@ class DeployCommand(BasicCommand):
             s3_uploader = None
 
         deployer = Deployer(cloudformation_client)
-        return self.deploy(deployer, stack_name, template_str,
+        return self.deploy(deployer, stack_name, change_set_name, template_str,
                            parameters, parsed_args.capabilities,
                            parsed_args.execute_changeset, parsed_args.role_arn,
                            parsed_args.notification_arns, s3_uploader,
                            tags,
                            parsed_args.fail_on_empty_changeset)
 
-    def deploy(self, deployer, stack_name, template_str,
+    def deploy(self, deployer, stack_name, change_set_name, template_str,
                parameters, capabilities, execute_changeset, role_arn,
                notification_arns, s3_uploader, tags,
                fail_on_empty_changeset=False):
         try:
             result = deployer.create_and_wait_for_changeset(
                 stack_name=stack_name,
+                change_set_name=change_set_name,
                 cfn_template=template_str,
                 parameter_values=parameters,
                 capabilities=capabilities,

@@ -15,9 +15,7 @@ class TestDeployer(BaseYAMLTest):
         client = botocore.session.get_session().create_client('cloudformation',
                                                               region_name="us-east-1")
         self.stub_client = Stubber(client)
-
-        self.changeset_prefix = "some-changeset-prefix"
-        self.deployer = Deployer(client, self.changeset_prefix)
+        self.deployer = Deployer(client)
 
     def test_has_stack_success(self):
         stack_name = "stack_name"
@@ -89,6 +87,7 @@ class TestDeployer(BaseYAMLTest):
 
     def test_create_changeset_success(self):
         stack_name = "stack_name"
+        change_set_name = "change_set_name"
         template = "template"
         parameters = [
             {"ParameterKey": "Key1", "ParameterValue": "Value"},
@@ -113,7 +112,7 @@ class TestDeployer(BaseYAMLTest):
         self.deployer.has_stack.return_value = False
 
         expected_params = {
-            "ChangeSetName": botocore.stub.ANY,
+            "ChangeSetName": change_set_name,
             "StackName": stack_name,
             "TemplateBody": template,
             "ChangeSetType": "CREATE",
@@ -133,8 +132,9 @@ class TestDeployer(BaseYAMLTest):
                                       expected_params)
         with self.stub_client:
             result = self.deployer.create_changeset(
-                    stack_name, template, parameters, capabilities, role_arn,
-                    notification_arns, s3_uploader, tags)
+                    stack_name, change_set_name, template, parameters,
+                    capabilities, role_arn, notification_arns, s3_uploader,
+                    tags)
             self.assertEquals(response["Id"], result.changeset_id)
             self.assertEquals("CREATE", result.changeset_type)
 
@@ -154,13 +154,14 @@ class TestDeployer(BaseYAMLTest):
             [{"ParameterKey": "New", "UsePreviousValue": True}]
         with self.stub_client:
             result = self.deployer.create_changeset(
-                    stack_name, template, parameters, capabilities, role_arn,
-                    notification_arns, s3_uploader, tags)
+                    stack_name, change_set_name, template, parameters, capabilities,
+                    role_arn, notification_arns, s3_uploader, tags)
             self.assertEquals(response["Id"], result.changeset_id)
             self.assertEquals("UPDATE", result.changeset_type)
 
     def test_create_changeset_success_s3_bucket(self):
         stack_name = "stack_name"
+        change_set_name = "change_set_name"
         template = "template"
         template_url = "https://s3.amazonaws.com/bucket/file"
         parameters = [
@@ -191,7 +192,7 @@ class TestDeployer(BaseYAMLTest):
         self.deployer.has_stack.return_value = False
 
         expected_params = {
-            "ChangeSetName": botocore.stub.ANY,
+            "ChangeSetName": change_set_name,
             "StackName": stack_name,
             "TemplateURL": template_url,
             "ChangeSetType": "CREATE",
@@ -211,8 +212,8 @@ class TestDeployer(BaseYAMLTest):
                                       expected_params)
         with self.stub_client:
             result = self.deployer.create_changeset(
-                stack_name, template, parameters, capabilities, role_arn,
-                notification_arns, s3_uploader, [])
+                stack_name, change_set_name, template, parameters,
+                capabilities, role_arn, notification_arns, s3_uploader, [])
             self.assertEquals(response["Id"], result.changeset_id)
             self.assertEquals("CREATE", result.changeset_type)
 
@@ -232,13 +233,14 @@ class TestDeployer(BaseYAMLTest):
                                       expected_params)
         with self.stub_client:
             result = self.deployer.create_changeset(
-                    stack_name, template, parameters, capabilities, role_arn,
-                    notification_arns, s3_uploader, [])
+                    stack_name, change_set_name, template, parameters,
+                    capabilities, role_arn, notification_arns, s3_uploader, [])
             self.assertEquals(response["Id"], result.changeset_id)
             self.assertEquals("UPDATE", result.changeset_type)
 
     def test_create_changeset_exception(self):
         stack_name = "stack_name"
+        change_set_name = "change_set_name"
         template = "template"
         parameters = [{"ParameterKey": "Key1", "ParameterValue": "Value",
                        "UsePreviousValue": True}]
@@ -255,7 +257,7 @@ class TestDeployer(BaseYAMLTest):
                 'create_change_set', "Somethign is wrong", "Service is bad")
         with self.stub_client:
             with self.assertRaises(botocore.exceptions.ClientError):
-                self.deployer.create_changeset(stack_name, template, parameters,
+                self.deployer.create_changeset(stack_name, change_set_name, template, parameters,
                                                capabilities, role_arn, notification_arns, None, tags)
 
     def test_execute_changeset(self):
@@ -283,6 +285,7 @@ class TestDeployer(BaseYAMLTest):
 
     def test_create_and_wait_for_changeset_successful(self):
         stack_name = "stack_name"
+        change_set_name = "change_set_name"
         template = "template"
         parameters = [{"ParameterKey": "Key1", "ParameterValue": "Value",
                        "UsePreviousValue": True}]
@@ -300,13 +303,15 @@ class TestDeployer(BaseYAMLTest):
         self.deployer.wait_for_changeset = Mock()
 
         result = self.deployer.create_and_wait_for_changeset(
-                stack_name, template, parameters, capabilities, role_arn,
-                notification_arns, s3_uploader, tags)
+                stack_name, change_set_name, template, parameters,
+                capabilities, role_arn, notification_arns, s3_uploader,
+                tags)
         self.assertEquals(result.changeset_id, changeset_id)
         self.assertEquals(result.changeset_type, changeset_type)
 
     def test_create_and_wait_for_changeset_error_waiting_for_changeset(self):
         stack_name = "stack_name"
+        change_set_name = "change_set_name"
         template = "template"
         parameters = [{"ParameterKey": "Key1", "ParameterValue": "Value",
                        "UsePreviousValue": True}]
@@ -326,8 +331,9 @@ class TestDeployer(BaseYAMLTest):
 
         with self.assertRaises(RuntimeError):
             result = self.deployer.create_and_wait_for_changeset(
-                    stack_name, template, parameters, capabilities, role_arn,
-                    notification_arns, s3_uploader, tags)
+                    stack_name, change_set_name, template, parameters,
+                    capabilities, role_arn, notification_arns, s3_uploader,
+                    tags)
 
     def test_wait_for_changeset_no_changes(self):
         stack_name = "stack_name"

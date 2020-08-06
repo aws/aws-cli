@@ -51,6 +51,7 @@ class TestDeployCommand(BaseYAMLTest):
         self.session.get_scoped_config.return_value = {}
         self.parsed_args = FakeArgs(template_file='./foo',
                                     stack_name="some_stack_name",
+                                    change_set_name="some_change_set_name",
                                     parameter_overrides=["Key1=Value1",
                                                          "Key2=Value2"],
                                     no_execute_changeset=False,
@@ -113,6 +114,7 @@ class TestDeployCommand(BaseYAMLTest):
                 self.deploy_command.deploy.assert_called_once_with(
                     mock.ANY,
                     'some_stack_name',
+                    'some_change_set_name',
                     mock.ANY,
                     fake_parameters,
                     None,
@@ -199,6 +201,7 @@ class TestDeployCommand(BaseYAMLTest):
             self.deploy_command.deploy.assert_called_once_with(
                 mock.ANY,
                 self.parsed_args.stack_name,
+                self.parsed_args.change_set_name,
                 mock.ANY,
                 mock.ANY,
                 None,
@@ -222,6 +225,7 @@ class TestDeployCommand(BaseYAMLTest):
         """
 
         stack_name = "stack_name"
+        change_set_name = "change_set_name"
         changeset_id = "some changeset"
         parameters = ["a", "b"]
         template = "cloudformation template"
@@ -238,6 +242,7 @@ class TestDeployCommand(BaseYAMLTest):
 
         rc = self.deploy_command.deploy(self.deployer,
                                    stack_name,
+                                   change_set_name,
                                    template,
                                    parameters,
                                    capabilities,
@@ -250,6 +255,7 @@ class TestDeployCommand(BaseYAMLTest):
 
 
         self.deployer.create_and_wait_for_changeset.assert_called_once_with(stack_name=stack_name,
+                                                     change_set_name=change_set_name,
                                                      cfn_template=template,
                                                      parameter_values=parameters,
                                                      capabilities=capabilities,
@@ -265,6 +271,7 @@ class TestDeployCommand(BaseYAMLTest):
 
     def test_deploy_no_execute(self):
         stack_name = "stack_name"
+        change_set_name = "change_set_name"
         changeset_id = "some changeset"
         parameters = ["a", "b"]
         template = "cloudformation template"
@@ -279,6 +286,7 @@ class TestDeployCommand(BaseYAMLTest):
         self.deployer.create_and_wait_for_changeset.return_value = ChangeSetResult(changeset_id, "CREATE")
         rc = self.deploy_command.deploy(self.deployer,
                                             stack_name,
+                                            change_set_name,
                                             template,
                                             parameters,
                                             capabilities,
@@ -290,6 +298,7 @@ class TestDeployCommand(BaseYAMLTest):
         self.assertEqual(rc, 0)
 
         self.deployer.create_and_wait_for_changeset.assert_called_once_with(stack_name=stack_name,
+                                                     change_set_name=change_set_name,
                                                      cfn_template=template,
                                                      parameter_values=parameters,
                                                      capabilities=capabilities,
@@ -304,6 +313,7 @@ class TestDeployCommand(BaseYAMLTest):
 
     def test_deploy_raise_exception(self):
         stack_name = "stack_name"
+        change_set_name = "change_set_name"
         changeset_id = "some changeset"
         parameters = ["a", "b"]
         template = "cloudformation template"
@@ -318,6 +328,7 @@ class TestDeployCommand(BaseYAMLTest):
         with self.assertRaises(RuntimeError):
             self.deploy_command.deploy(self.deployer,
                                        stack_name,
+                                       change_set_name,
                                        template,
                                        parameters,
                                        capabilities,
@@ -329,6 +340,7 @@ class TestDeployCommand(BaseYAMLTest):
 
     def test_deploy_raises_exception_on_empty_changeset(self):
         stack_name = "stack_name"
+        change_set_name = "change_set_name"
         parameters = ["a", "b"]
         template = "cloudformation template"
         capabilities = ["foo", "bar"]
@@ -342,12 +354,13 @@ class TestDeployCommand(BaseYAMLTest):
         changeset_func.side_effect = empty_changeset
         with self.assertRaises(exceptions.ChangeEmptyError):
             self.deploy_command.deploy(
-                self.deployer, stack_name, template, parameters, capabilities,
-                execute_changeset, role_arn, notification_arns,
-                None, tags, fail_on_empty_changeset=True)
+                self.deployer, stack_name, change_set_name, template,
+                parameters, capabilities, execute_changeset, role_arn,
+                notification_arns, None, tags, fail_on_empty_changeset=True)
 
     def test_deploy_does_not_raise_exception_on_empty_changeset(self):
         stack_name = "stack_name"
+        change_set_name = "change_set_name"
         parameters = ["a", "b"]
         template = "cloudformation template"
         capabilities = ["foo", "bar"]
@@ -359,14 +372,15 @@ class TestDeployCommand(BaseYAMLTest):
         changeset_func = self.deployer.create_and_wait_for_changeset
         changeset_func.side_effect = empty_changeset
         self.deploy_command.deploy(
-            self.deployer, stack_name, template, parameters, capabilities,
-            execute_changeset, role_arn, notification_arns,
+            self.deployer, stack_name, change_set_name, template, parameters,
+            capabilities, execute_changeset, role_arn, notification_arns,
             s3_uploader=None, tags=[],
             fail_on_empty_changeset=False
         )
 
     def test_deploy_empty_changeset_does_not_raise_exception_by_default(self):
         stack_name = "stack_name"
+        change_set_name = "change_set_name"
         parameters = ["a", "b"]
         template = "cloudformation template"
         capabilities = ["foo", "bar"]
@@ -378,8 +392,8 @@ class TestDeployCommand(BaseYAMLTest):
         changeset_func = self.deployer.create_and_wait_for_changeset
         changeset_func.side_effect = empty_changeset
         self.deploy_command.deploy(
-            self.deployer, stack_name, template, parameters, capabilities,
-            execute_changeset, role_arn, notification_arns,
+            self.deployer, stack_name, change_set_name, template, parameters,
+            capabilities, execute_changeset, role_arn, notification_arns,
             s3_uploader=None, tags=[]
         )
 

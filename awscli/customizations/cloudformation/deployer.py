@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 
 import sys
-import time
 import logging
 import botocore
 import collections
@@ -30,10 +29,8 @@ ChangeSetResult = collections.namedtuple(
 
 class Deployer(object):
 
-    def __init__(self, cloudformation_client,
-                 changeset_prefix="awscli-cloudformation-package-deploy-"):
+    def __init__(self, cloudformation_client):
         self._client = cloudformation_client
-        self.changeset_prefix = changeset_prefix
 
     def has_stack(self, stack_name):
         """
@@ -71,13 +68,14 @@ class Deployer(object):
                 LOG.debug("Unable to get stack details.", exc_info=e)
                 raise e
 
-    def create_changeset(self, stack_name, cfn_template,
+    def create_changeset(self, stack_name, change_set_name, cfn_template,
                          parameter_values, capabilities, role_arn,
                          notification_arns, s3_uploader, tags):
         """
         Call Cloudformation to create a changeset and wait for it to complete
 
         :param stack_name: Name or ID of stack
+        :param change_set_name: Name of change set
         :param cfn_template: CloudFormation template string
         :param parameter_values: Template parameters object
         :param capabilities: Array of capabilities passed to CloudFormation
@@ -87,9 +85,6 @@ class Deployer(object):
 
         now = datetime.utcnow().isoformat()
         description = "Created by AWS CLI at {0} UTC".format(now)
-
-        # Each changeset will get a unique name based on time
-        changeset_name = self.changeset_prefix + str(int(time.time()))
 
         if not self.has_stack(stack_name):
             changeset_type = "CREATE"
@@ -109,7 +104,7 @@ class Deployer(object):
                                 x["ParameterKey"] not in existing_parameters)]
 
         kwargs = {
-            'ChangeSetName': changeset_name,
+            'ChangeSetName': change_set_name,
             'StackName': stack_name,
             'TemplateBody': cfn_template,
             'ChangeSetType': changeset_type,
@@ -217,13 +212,14 @@ class Deployer(object):
 
             raise exceptions.DeployFailedError(stack_name=stack_name)
 
-    def create_and_wait_for_changeset(self, stack_name, cfn_template,
-                                      parameter_values, capabilities, role_arn,
+    def create_and_wait_for_changeset(self, stack_name, change_set_name,
+                                      cfn_template, parameter_values,
+                                      capabilities, role_arn,
                                       notification_arns, s3_uploader, tags):
 
         result = self.create_changeset(
-                stack_name, cfn_template, parameter_values, capabilities,
-                role_arn, notification_arns, s3_uploader, tags)
+                stack_name, change_set_name, cfn_template, parameter_values,
+                capabilities, role_arn, notification_arns, s3_uploader, tags)
         self.wait_for_changeset(result.changeset_id, stack_name)
 
         return result

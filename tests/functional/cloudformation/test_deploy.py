@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import json
+
 from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.testutils import FileCreator
 
@@ -91,14 +93,17 @@ class TestDeployCommandParameterOverrides(TestDeployCommand):
             ]
         )
 
+    def create_json_file(self, filename, data):
+        return self.files.create_file(filename, json.dumps(data))
+
     def test_parameter_overrides_shorthand(self):
         self.command += ' --parameter-overrides Key1=Value1 Key2=Value2'
         self.run_cmd(self.command)
         self._assert_parameters_parsed()
 
     def test_parameter_overrides_from_inline_original_json(self):
-        original_like_json = '["Key1=Value1","Key2=Value2"]'
-        path = self.files.create_file('param.json', original_like_json)
+        original_like_json = ['Key1=Value1', 'Key2=Value2']
+        path = self.create_json_file('param.json', original_like_json)
         self.command += ' --parameter-overrides file://%s' % path
         self.run_cmd(self.command)
         self._assert_parameters_parsed()
@@ -113,32 +118,14 @@ class TestDeployCommandParameterOverrides(TestDeployCommand):
         self._assert_parameters_parsed()
 
     def test_parameter_overrides_from_cf_like_json_file(self):
-        cf_like_json = '''
-            [
-                {"ParameterKey": "Key1", "ParameterValue": "Value1"},
-                {"ParameterKey": "Key2", "ParameterValue": "Value2"}
-            ]
-        '''
-        path = self.files.create_file('param.json', cf_like_json)
+        cf_like_json = [
+            {'ParameterKey': 'Key1', 'ParameterValue': 'Value1'},
+            {'ParameterKey': 'Key2', 'ParameterValue': 'Value2'}
+        ]
+        path = self.create_json_file('param.json', cf_like_json)
         self.command += ' --parameter-overrides file://%s' % path
         self.run_cmd(self.command)
         self._assert_parameters_parsed()
-
-    def test_parameter_overrides_from_invalid_cf_like_json_file(self):
-        cf_like_json = '''
-            [
-                {"ParameterKey": "Key1",
-                 "ParameterValue": "Value1",
-                 "RedundantKey": "RedundantValue"
-                 },
-                {"ParameterKey": "Key2", "ParameterValue": "Value2"}
-            ]
-        '''
-        path = self.files.create_file('param.json', cf_like_json)
-        self.command += ' --parameter-overrides file://%s' % path
-        _, err, _ = self.run_cmd(self.command, expected_rc=252)
-        self.assertTrue('CloudFormation like parameter JSON should have format'
-                        in err)
 
     def test_parameter_overrides_from_inline_codepipeline_like_json(self):
         codepipeline_like_json = ('{"Parameters":{"Key1":"Value1",'
@@ -148,34 +135,46 @@ class TestDeployCommandParameterOverrides(TestDeployCommand):
         self._assert_parameters_parsed()
 
     def test_parameter_overrides_from_codepipeline_like_json_file(self):
-        codepipeline_like_json = '''
-            {
-                "Parameters":
-                {"Key1": "Value1",
-                 "Key2": "Value2"}
+        codepipeline_like_json = {
+            'Parameters': {
+                'Key1': 'Value1',
+                'Key2': 'Value2'
             }
-        '''
-        path = self.files.create_file('param.json', codepipeline_like_json)
+        }
+        path = self.create_json_file('param.json', codepipeline_like_json)
         self.command += ' --parameter-overrides file://%s' % path
         self.run_cmd(self.command)
         self._assert_parameters_parsed()
 
     def test_parameter_overrides_from_original_json_file(self):
-        original_like_json = '''
-            [
-                "Key1=Value1",
-                "Key2=Value2"
-            ]
-        '''
-        path = self.files.create_file('param.json', original_like_json)
+        original_like_json = ['Key1=Value1', 'Key2=Value2']
+        path = self.create_json_file('param.json', original_like_json)
         self.command += ' --parameter-overrides file://%s' % path
         self.run_cmd(self.command, expected_rc=0)
         self._assert_parameters_parsed()
 
-    def test_parameter_overrides_from_random_invalid_json(self):
-        cf_like_json = '{"SomeKey":[{"RedundantKey": "RedundantValue"}]}'
-        path = self.files.create_file('param.json', cf_like_json)
+    def test_parameter_overrides_from_invalid_cf_like_json_file(self):
+        invalid_cf_like_json = [
+            {
+                'ParameterKey': 'Key1',
+                'ParameterValue': 'Value1',
+                'RedundantKey': 'RedundantValue'
+            },
+            {
+                'ParameterKey': 'Key2',
+                'ParameterValue': 'Value2'
+            }
+        ]
+        path = self.create_json_file('param.json', invalid_cf_like_json)
         self.command += ' --parameter-overrides file://%s' % path
-        _, err, _ = self.run_cmd(self.command, expected_rc=255)
-        self.assertTrue("['SomeKey'] value passed to --parameter-overrides"
+        _, err, _ = self.run_cmd(self.command, expected_rc=252)
+        self.assertTrue('JSON passed to --parameter-overrides must be'
+                        in err)
+
+    def test_parameter_overrides_from_invalid_json(self):
+        cf_like_json = {'SomeKey': [{'RedundantKey': 'RedundantValue'}]}
+        path = self.create_json_file('param.json', cf_like_json)
+        self.command += ' --parameter-overrides file://%s' % path
+        _, err, _ = self.run_cmd(self.command, expected_rc=252)
+        self.assertTrue('JSON passed to --parameter-overrides must be'
                         in err)

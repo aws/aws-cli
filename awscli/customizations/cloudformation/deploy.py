@@ -33,6 +33,70 @@ from awscli.utils import write_exception
 LOG = logging.getLogger(__name__)
 
 
+class BaseParameterOverrideParser:
+    def can_parse(self, data):
+        # Returns true/false if it can parse
+        raise NotImplementedError('can_parse')
+
+    def parse(self, data):
+        # Return the properly formatted parameter dictionary
+        raise NotImplementedError('parse')
+
+
+class CodePipelineLikeParameterOverrideParser(BaseParameterOverrideParser):
+    def can_parse(self, data):
+        return isinstance(data, dict) and 'Parameters' in data
+
+    def parse(self, data):
+        # Parse parameter_overrides if they were given in
+        # CodePipeline params file format
+        # {
+        #     "Parameters": {
+        #         "ParameterKey": "ParameterValue"
+        #     }
+        # }
+        return data['Parameters']
+
+
+class CloudFormationLikeParameterOverrideParser(BaseParameterOverrideParser):
+    def can_parse(self, data):
+        for param_pair in data:
+            if ('ParameterKey' not in param_pair or
+                    'ParameterValue' not in param_pair):
+                return False
+            if len(param_pair.keys()) > 2:
+                return False
+        return True
+
+    def parse(self, data):
+        # Parse parameter_overrides if they were given in
+        # CloudFormation params file format
+        # [{
+        #   "ParameterKey": "string",
+        #   "ParameterValue": "string",
+        # }]
+        return {
+            param['ParameterKey']: param['ParameterValue']
+            for param in data
+        }
+
+
+class StringEqualsParameterOverrideParser(BaseParameterOverrideParser):
+    def can_parse(self, data):
+        return all(
+            isinstance(param, str) and len(param.split("=", 1)) == 2
+            for param in data
+        )
+
+    def parse(self, data):
+        result = {}
+        for param in data:
+            # Split at first '=' from left
+            key_value_pair = param.split("=", 1)
+            result[key_value_pair[0]] = key_value_pair[1]
+        return result
+
+
 class DeployCommand(BasicCommand):
 
     MSG_NO_EXECUTE_CHANGESET = \
@@ -356,42 +420,9 @@ class DeployCommand(BasicCommand):
 
         return parameter_values
 
-    def _validate_cf_params(self, param):
-        if 'ParameterKey' in param and 'ParameterValue' in param:
-            if len(param.keys()) > 2:
-                raise ParamValidationError(
-                    'CloudFormation like parameter JSON should have format '
-                    '[{"ParameterKey": "string", "ParameterValue": "string"}]')
-        return True
-
-    def _cf_param_parser(self, data):
-        # Parse parameter_overrides if they were given in
-        # CloudFormation params file format
-        # [{
-        #   "ParameterKey": "string",
-        #   "ParameterValue": "string",
-        # }]
-        try:
-            return {
-                param['ParameterKey']: param['ParameterValue']
-                for param in data if self._validate_cf_params(param)
-            }
-        except (KeyError, TypeError):
-            return None
-
-    def _codepipeline_param_parser(self, data):
-        # Parse parameter_overrides if they were given in
-        # CodePipeline params file format
-        # {
-        #     "Parameters": {
-        #         "ParameterKey": "ParameterValue"
-        #     }
-        # }
-        if isinstance(data, dict):
-            return data.get('Parameters', None)
-
     def _parse_input_as_json(self, arg_value):
-        # In case of inline json input it'll be list where json string
+        # In case of reading from file it'll be string and in case
+        # of inline json input it'll be list where json string
         # will be the first element
         if arg_value:
             if isinstance(arg_value, str):
@@ -405,22 +436,18 @@ class DeployCommand(BasicCommand):
         data = self._parse_input_as_json(arg_value)
         if data is not None:
             parsers = [
-                self._cf_param_parser,
-                self._codepipeline_param_parser,
-
+                CloudFormationLikeParameterOverrideParser(),
+                CodePipelineLikeParameterOverrideParser(),
+                StringEqualsParameterOverrideParser()
             ]
-            result = functools.reduce(
-                lambda a, parser: a or parser(data),
-                parsers, None
-            )
-            # In case it was in deploy command format
-            # but was in file
-            if result is None:
-                return self.parse_key_value_arg(
-                    data,
-                    self.PARAMETER_OVERRIDE_CMD
-                )
-            return result
+            for parser in parsers:
+                if parser.can_parse(data):
+                    return parser.parse(data)
+            raise ParamValidationError(
+                'JSON passed to --parameter-overrides must be one of '
+                'the formats: ["Key1=Value1","Key2=Value2", ...] , '
+                '[{"ParameterKey": "Key1", "ParameterValue": "Value1"}, ...] , '
+                '["Parameters": {"Key1": "Value1", "Key2": "Value2", ...}]')
         else:
             # In case it was in deploy command format
             # and was input via command line

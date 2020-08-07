@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.115
+========
+
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``sms``: Update sms command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``glue``: Update glue command to latest version
+
+
 1.18.114
 ========
 

@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import json
+
 import mock
 import tempfile
 import six
@@ -20,6 +22,7 @@ from awscli.customizations.cloudformation.deploy import DeployCommand
 from awscli.customizations.cloudformation.deployer import Deployer
 from awscli.customizations.cloudformation.yamlhelper import yaml_parse
 from awscli.customizations.cloudformation import exceptions
+from awscli.customizations.exceptions import ParamValidationError
 from tests.unit.customizations.cloudformation import BaseYAMLTest
 
 
@@ -399,6 +402,105 @@ class TestDeployCommand(BaseYAMLTest):
         # Empty input should return empty output
         result = self.deploy_command.parse_key_value_arg([], argname)
         self.assertEqual(result, {})
+
+    def test_parse_parameter_override_with_cf_data_format(self):
+        """
+        Tests that we can parse parameter arguments from file in
+        CloudFormation parameters file format
+        :return:
+        """
+        data = json.dumps([
+            {'ParameterKey': 'Key1',
+             'ParameterValue': 'Value1'},
+            {'ParameterKey': 'Key2',
+             'ParameterValue': '[1,2,3]'},
+            {'ParameterKey': 'Key3',
+             'ParameterValue': '{"a":"val", "b": 2}'}
+        ])
+        output = {"Key1": "Value1",
+                  "Key2": '[1,2,3]',
+                  "Key3": '{"a":"val", "b": 2}'}
+        result = self.deploy_command.parse_parameter_overrides(data)
+        self.assertEqual(result, output)
+
+    def test_validate_parameter_override_with_cf_data_format(self):
+        """
+        Tests that we through exception if have redundant keys in json
+        CloudFormation parameters file format
+        :return:
+        """
+        data = json.dumps([
+            {'ParameterKey': 'Key1',
+             'ParameterValue': 'Value1',
+             'RedundantKey': 'foo'}
+        ])
+        with self.assertRaises(ParamValidationError):
+            self.deploy_command.parse_parameter_overrides(data)
+
+    def test_parse_parameter_override_with_codepipeline_data_format(self):
+        """
+        Tests that we can parse parameter arguments from file in
+        CodePipeline parameters file format
+        :return:
+        """
+        data = json.dumps({
+            'Parameters': {
+                "Key1": "Value1",
+                "Key2": '[1,2,3]',
+                "Key3": '{"a":"val", "b": 2}'
+            }
+        })
+        output = {"Key1": "Value1",
+                  "Key2": '[1,2,3]',
+                  "Key3": '{"a":"val", "b": 2}'}
+        result = self.deploy_command.parse_parameter_overrides(data)
+        self.assertEqual(result, output)
+
+    def test_parse_parameter_override_with_deploy_data_format_from_file(self):
+        """
+        Tests that we can parse parameter arguments from file in
+        deploy command parameters file format
+        :return:
+        """
+        data = json.dumps([
+            'Key1=Value1',
+            'Key2=[1,2,3]',
+            'Key3={"a":"val", "b": 2}'
+        ])
+        output = {"Key1": "Value1",
+                  "Key2": '[1,2,3]',
+                  "Key3": '{"a":"val", "b": 2}'}
+        result = self.deploy_command.parse_parameter_overrides(data)
+        self.assertEqual(result, output)
+
+    def test_parse_parameter_override_with_inline_json(self):
+        data = [json.dumps([
+            'Key1=Value1',
+            'Key2=[1,2,3]',
+            'Key3={"a":"val", "b": 2}'
+        ])]
+        output = {"Key1": "Value1",
+                  "Key2": '[1,2,3]',
+                  "Key3": '{"a":"val", "b": 2}'}
+        result = self.deploy_command.parse_parameter_overrides(data)
+        self.assertEqual(result, output)
+
+    def test_parse_parameter_override_with_deploy_data_format(self):
+        """
+        Tests that we can parse parameter arguments in
+        deploy command parameters command line format
+        :return:
+        """
+        data = [
+            'Key1=Value1',
+            'Key2=[1,2,3]',
+            'Key3={"a":"val", "b": 2}'
+        ]
+        output = {"Key1": "Value1",
+                  "Key2": '[1,2,3]',
+                  "Key3": '{"a":"val", "b": 2}'}
+        result = self.deploy_command.parse_parameter_overrides(data)
+        self.assertEqual(result, output)
 
     def test_parse_key_value_arg_invalid_input(self):
         # non-list input

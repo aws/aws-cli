@@ -11,6 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import functools
+import json
 import os
 import sys
 import logging
@@ -18,6 +20,7 @@ import logging
 from botocore.client import Config
 
 from awscli.compat import compat_open
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.deployer import Deployer
 from awscli.customizations.s3uploader import S3Uploader
@@ -28,6 +31,70 @@ from awscli.compat import get_stdout_text_writer
 from awscli.utils import write_exception
 
 LOG = logging.getLogger(__name__)
+
+
+class BaseParameterOverrideParser:
+    def can_parse(self, data):
+        # Returns true/false if it can parse
+        raise NotImplementedError('can_parse')
+
+    def parse(self, data):
+        # Return the properly formatted parameter dictionary
+        raise NotImplementedError('parse')
+
+
+class CodePipelineLikeParameterOverrideParser(BaseParameterOverrideParser):
+    def can_parse(self, data):
+        return isinstance(data, dict) and 'Parameters' in data
+
+    def parse(self, data):
+        # Parse parameter_overrides if they were given in
+        # CodePipeline params file format
+        # {
+        #     "Parameters": {
+        #         "ParameterKey": "ParameterValue"
+        #     }
+        # }
+        return data['Parameters']
+
+
+class CloudFormationLikeParameterOverrideParser(BaseParameterOverrideParser):
+    def can_parse(self, data):
+        for param_pair in data:
+            if ('ParameterKey' not in param_pair or
+                    'ParameterValue' not in param_pair):
+                return False
+            if len(param_pair.keys()) > 2:
+                return False
+        return True
+
+    def parse(self, data):
+        # Parse parameter_overrides if they were given in
+        # CloudFormation params file format
+        # [{
+        #   "ParameterKey": "string",
+        #   "ParameterValue": "string",
+        # }]
+        return {
+            param['ParameterKey']: param['ParameterValue']
+            for param in data
+        }
+
+
+class StringEqualsParameterOverrideParser(BaseParameterOverrideParser):
+    def can_parse(self, data):
+        return all(
+            isinstance(param, str) and len(param.split("=", 1)) == 2
+            for param in data
+        )
+
+    def parse(self, data):
+        result = {}
+        for param in data:
+            # Split at first '=' from left
+            key_value_pair = param.split("=", 1)
+            result[key_value_pair[0]] = key_value_pair[1]
+        return result
 
 
 class DeployCommand(BasicCommand):
@@ -107,12 +174,7 @@ class DeployCommand(BasicCommand):
             'name': PARAMETER_OVERRIDE_CMD,
             'action': 'store',
             'required': False,
-            'schema': {
-                'type': 'array',
-                'items': {
-                    'type': 'string'
-                }
-            },
+            'nargs': '+',
             'default': [],
             'help_text': (
                 'A list of parameter structures that specify input parameters'
@@ -121,7 +183,7 @@ class DeployCommand(BasicCommand):
                 ' existing value. For new stacks, you must specify'
                 ' parameters that don\'t have a default value.'
                 ' Syntax: ParameterKey1=ParameterValue1'
-                ' ParameterKey2=ParameterValue2 ...'
+                ' ParameterKey2=ParameterValue2 ... or JSON file (see Examples)'
             )
         },
         {
@@ -255,10 +317,9 @@ class DeployCommand(BasicCommand):
             template_str = handle.read()
 
         stack_name = parsed_args.stack_name
-        parameter_overrides = self.parse_key_value_arg(
-                parsed_args.parameter_overrides,
-                self.PARAMETER_OVERRIDE_CMD)
-
+        parameter_overrides = self.parse_parameter_overrides(
+            parsed_args.parameter_overrides
+        )
         tags_dict = self.parse_key_value_arg(parsed_args.tags, self.TAGS_CMD)
         tags = [{"Key": key, "Value": value}
                 for key, value in tags_dict.items()]
@@ -358,6 +419,42 @@ class DeployCommand(BasicCommand):
             parameter_values.append(obj)
 
         return parameter_values
+
+    def _parse_input_as_json(self, arg_value):
+        # In case of reading from file it'll be string and in case
+        # of inline json input it'll be list where json string
+        # will be the first element
+        if arg_value:
+            if isinstance(arg_value, str):
+                return json.loads(arg_value)
+            try:
+                return json.loads(arg_value[0])
+            except json.JSONDecodeError:
+                return None
+
+    def parse_parameter_overrides(self, arg_value):
+        data = self._parse_input_as_json(arg_value)
+        if data is not None:
+            parsers = [
+                CloudFormationLikeParameterOverrideParser(),
+                CodePipelineLikeParameterOverrideParser(),
+                StringEqualsParameterOverrideParser()
+            ]
+            for parser in parsers:
+                if parser.can_parse(data):
+                    return parser.parse(data)
+            raise ParamValidationError(
+                'JSON passed to --parameter-overrides must be one of '
+                'the formats: ["Key1=Value1","Key2=Value2", ...] , '
+                '[{"ParameterKey": "Key1", "ParameterValue": "Value1"}, ...] , '
+                '["Parameters": {"Key1": "Value1", "Key2": "Value2", ...}]')
+        else:
+            # In case it was in deploy command format
+            # and was input via command line
+            return self.parse_key_value_arg(
+                arg_value,
+                self.PARAMETER_OVERRIDE_CMD
+            )
 
     def parse_key_value_arg(self, arg_value, argname):
         """

@@ -1,15 +1,17 @@
 **To enable Contributor Insights on a table**
 
-The following ``update-contributor-insights`` example enables Contributor Insights on the ``MusicCollection`` table. ::
+The following ``update-contributor-insights`` example enables Contributor Insights on the ``MusicCollection`` table and the ``AlbumTitle-index`` global secondary index. ::
 
     aws dynamodb update-contributor-insights \
         --table-name MusicCollection \
+        --index-name AlbumTitle-index \
         --contributor-insights-action ENABLE
 
 Output::
 
     {
         "TableName": "MusicCollection",
+        "IndexName": "AlbumTitle-index",
         "ContributorInsightsStatus": "ENABLING"
     }
 

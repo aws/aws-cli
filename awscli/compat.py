@@ -57,7 +57,6 @@ except ImportError:
 
 is_windows = sys.platform == 'win32'
 
-
 if is_windows:
     default_pager = 'more'
 else:

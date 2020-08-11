@@ -253,7 +253,7 @@ def emit_top_level_args_parsed_event(session, args):
 
 def is_a_tty():
     try:
-        return os.isatty(sys.stdout.fileno())
+        return sys.__stdin__.isatty() and sys.stdout.isatty()
     except Exception as e:
         return False
 

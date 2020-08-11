@@ -150,6 +150,7 @@ class TestOutput(BaseAWSCommandParamsTest):
             expected_content=self.expected_content,
         )
 
+    @mock.patch('awscli.clidriver.is_interactive', True)
     def test_aws_pager_env_var_beats_pager_env_var(self):
         self.write_cli_pager_config('configpager')
         self.environ['PAGER'] = 'envpager'

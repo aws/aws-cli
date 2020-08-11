@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.117
+========
+
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* enhancement:``codeartifact login``: Add support for ``--namespace`` parameter `#5291 <https://github.com/aws/aws-cli/issues/5291>`__
+
+
 1.18.116
 ========
 

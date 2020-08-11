@@ -340,7 +340,7 @@ INSTALL_APPLICATIONS = (
     '<code>Name</code> and <code>Args</code>.</p>')
 
 EBS_ROOT_VOLUME_SIZE = (
-    '<p>Applies only to Amazon EMR release version 4.0 and earlier. Specifies the size,'
+    '<p>This option is available only with Amazon EMR version 4.x and later. Specifies the size,'
     ' in GiB, of the EBS root device volume of the Amazon Linux AMI'
     ' that is used for each EC2 instance in the cluster. </p>')
 

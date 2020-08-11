@@ -1,6 +1,6 @@
-**Example 1: To run a query in a specified database, data catalog, and workgroup**
+**Example 1: To run a query in a workgroup on the specified table in the specified database and data catalog**
 
-The following ``start-query-execution`` example uses the ``AthenaAdmin`` workgroup to run a query on the`` cloudfront_logs`` table in the ``cflogsdatabase`` in the ``AwsDataCatalog`` data catalog. ::
+The following ``start-query-execution`` example uses the ``AthenaAdmin`` workgroup to run a query on the ``cloudfront_logs`` table in the ``cflogsdatabase`` in the ``AwsDataCatalog`` data catalog. ::
 
     aws athena start-query-execution \
         --query-string "select date, location, browser, uri, status from cloudfront_logs where method = 'GET' and status = 200 and location like 'SFO%' limit 10" \
@@ -13,7 +13,9 @@ Output::
     "QueryExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
-**Example 2: To run a query in a specified database, data catalog, and workgroup to create a new database**
+For more information, see `Running SQL Queries Using Amazon Athena <https://docs.aws.amazon.com/athena/latest/ug/querying-athena-tables.html>`__ in the *Amazon Athena User Guide*.
+
+**Example 2: To run a query that uses a specified workgroup to create a database in the specified data catalog**
 
 The following ``start-query-execution`` example uses the ``AthenaAdmin`` workgroup to create the database ``newdb`` in the default data catalog ``AwsDataCatalog``. ::
 
@@ -27,7 +29,9 @@ Output::
     "QueryExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11112"
     }
 
-**Example 3: To run a query in a specified database, data catalog, and workgroup to create a table view**
+For more information, see `Running SQL Queries Using Amazon Athena <https://docs.aws.amazon.com/athena/latest/ug/querying-athena-tables.html>`__ in the *Amazon Athena User Guide*.
+
+**Example 3: To run a query that creates a view on a table in the specified database and data catalog**
 
 The following ``start-query-execution`` example uses  a ``SELECT`` statement on the ``cloudfront_logs`` table in the ``cflogsdatabase`` to create the view ``cf10``. ::
 

@@ -1,6 +1,6 @@
 **To update a data catalog**
 
-The following ``update-data-catalog`` example updates the Lambda function and description of the`` cw_logs_catalog`` data catalog. ::
+The following ``update-data-catalog`` example updates the Lambda function and description of the ``cw_logs_catalog`` data catalog. ::
 
     aws athena update-data-catalog \
         --name cw_logs_catalog \

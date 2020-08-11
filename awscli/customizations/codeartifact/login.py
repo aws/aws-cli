@@ -3,6 +3,7 @@ import os
 import platform
 import sys
 import subprocess
+import re
 
 from configparser import RawConfigParser
 from io import StringIO
@@ -38,12 +39,13 @@ def get_relative_expiration_time(remaining):
 
 class BaseLogin:
 
-    def __init__(self, auth_token,
-                 expiration, repository_endpoint, subprocess_utils):
+    def __init__(self, auth_token, expiration,
+                 repository_endpoint, subprocess_utils, namespace=None):
         self.auth_token = auth_token
         self.expiration = expiration
         self.repository_endpoint = repository_endpoint
         self.subprocess_utils = subprocess_utils
+        self.namespace = namespace
 
     def login(self, dry_run=False):
         raise NotImplementedError('login()')
@@ -104,18 +106,47 @@ class NpmLogin(BaseLogin):
     NPM_CMD = 'npm.cmd' if platform.system().lower() == 'windows' else 'npm'
 
     def login(self, dry_run=False):
+        scope = self.get_scope(
+            self.namespace
+        )
         commands = self.get_commands(
-            self.repository_endpoint, self.auth_token
+            self.repository_endpoint, self.auth_token, scope=scope
         )
         self._run_commands('npm', commands, dry_run)
 
     @classmethod
+    def get_scope(cls, namespace):
+        # Regex for valid scope name
+        valid_scope_name = re.compile('^(@[a-z0-9-~][a-z0-9-._~]*)')
+
+        if namespace is None:
+            return namespace
+
+        # Add @ prefix to scope if it doesn't exist
+        if namespace.startswith('@'):
+            scope = namespace
+        else:
+            scope = '@{}'.format(namespace)
+
+        if not valid_scope_name.match(scope):
+            raise ValueError(
+                'Invalid scope name, scope must contain URL-safe '
+                'characters, no leading dots or underscores'
+            )
+
+        return scope
+
+    @classmethod
     def get_commands(cls, endpoint, auth_token, **kwargs):
         commands = []
+        scope = kwargs.get('scope')
+
+        # prepend scope if it exists
+        registry = '{}:registry'.format(scope) if scope else 'registry'
 
         # set up the codeartifact repository as the npm registry.
         commands.append(
-            [cls.NPM_CMD, 'config', 'set', 'registry', endpoint]
+            [cls.NPM_CMD, 'config', 'set', registry, endpoint]
         )
 
         repo_uri = urlsplit(endpoint)
@@ -281,15 +312,18 @@ class CodeArtifactLogin(BasicCommand):
     TOOL_MAP = {
         'npm': {
             'package_format': 'npm',
-            'login_cls': NpmLogin
+            'login_cls': NpmLogin,
+            'namespace_support': True,
         },
         'pip': {
             'package_format': 'pypi',
-            'login_cls': PipLogin
+            'login_cls': PipLogin,
+            'namespace_support': False,
         },
         'twine': {
             'package_format': 'pypi',
-            'login_cls': TwineLogin
+            'login_cls': TwineLogin,
+            'namespace_support': False,
         }
     }
 
@@ -320,6 +354,11 @@ class CodeArtifactLogin(BasicCommand):
             'required': False,
         },
         {
+            'name': 'namespace',
+            'help_text': 'Associates a namespace with your repository tool',
+            'required': False,
+        },
+        {
             'name': 'duration-seconds',
             'cli_type_name': 'integer',
             'help_text': 'The time, in seconds, that the login information '
@@ -341,6 +380,16 @@ class CodeArtifactLogin(BasicCommand):
             'default': False
         },
     ]
+
+    def _get_namespace(self, tool, parsed_args):
+        namespace_compatible = self.TOOL_MAP[tool]['namespace_support']
+
+        if not namespace_compatible and parsed_args.namespace:
+            raise ValueError(
+                'Argument --namespace is not supported for {}'.format(tool)
+            )
+        else:
+            return parsed_args.namespace
 
     def _get_repository_endpoint(
         self, codeartifact_client, parsed_args, package_format
@@ -390,10 +439,12 @@ class CodeArtifactLogin(BasicCommand):
             codeartifact_client, parsed_args, package_format
         )
 
+        namespace = self._get_namespace(tool, parsed_args)
+
         auth_token = auth_token_res['authorizationToken']
         expiration = parse_timestamp(auth_token_res['expiration'])
         login = self.TOOL_MAP[tool]['login_cls'](
-            auth_token, expiration, repository_endpoint, subprocess
+            auth_token, expiration, repository_endpoint, subprocess, namespace
         )
 
         login.login(parsed_args.dry_run)

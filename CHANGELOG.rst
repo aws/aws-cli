@@ -677,6 +677,33 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.117
+========
+
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* enhancement:``codeartifact login``: Add support for ``--namespace`` parameter `#5291 <https://github.com/aws/aws-cli/issues/5291>`__
+
+
+1.18.116
+========
+
+* api-change:``savingsplans``: Update savingsplans command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``glue``: Update glue command to latest version
+
+
+1.18.115
+========
+
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``sms``: Update sms command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``glue``: Update glue command to latest version
+
+
 1.18.114
 ========
 

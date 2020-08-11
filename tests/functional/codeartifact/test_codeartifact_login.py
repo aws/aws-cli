@@ -31,6 +31,7 @@ class TestCodeArtifactLogin(BaseAWSCommandParamsTest):
         self.domain_owner = 'domain-owner'
         self.repository = 'repository'
         self.auth_token = 'auth-token'
+        self.namespace = 'namespace'
         self.duration = 3600
         self.expiration = time.time() + self.duration
         self.expiration_as_datetime = parse_timestamp(self.expiration)
@@ -53,7 +54,8 @@ class TestCodeArtifactLogin(BaseAWSCommandParamsTest):
 
     def _setup_cmd(self, tool,
                    include_domain_owner=False, dry_run=False,
-                   include_duration_seconds=False):
+                   include_duration_seconds=False,
+                   include_namespace=False):
         package_format = CodeArtifactLogin.TOOL_MAP[tool]['package_format']
         self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
             'a2z.com/{format}/{repository}/'.format(
@@ -77,6 +79,9 @@ class TestCodeArtifactLogin(BaseAWSCommandParamsTest):
         if include_duration_seconds:
             cmdline += ' --duration-seconds %s' % self.duration
 
+        if include_namespace:
+            cmdline += ' --namespace %s' % self.namespace
+
         # Responses from calls to services.
         self.parsed_responses = [
             {"authorizationToken": self.auth_token,
@@ -86,7 +91,7 @@ class TestCodeArtifactLogin(BaseAWSCommandParamsTest):
 
         return cmdline
 
-    def _get_npm_commands(self):
+    def _get_npm_commands(self, **kwargs):
         npm_cmd = 'npm.cmd' \
             if platform.system().lower() == 'windows' else 'npm'
 
@@ -98,9 +103,12 @@ class TestCodeArtifactLogin(BaseAWSCommandParamsTest):
             repo_uri.netloc, repo_uri.path
         )
 
+        scope = kwargs.get('scope')
+        registry = '{}:registry'.format(scope) if scope else 'registry'
+
         commands = []
         commands.append(
-            [npm_cmd, 'config', 'set', 'registry', self.endpoint]
+            [npm_cmd, 'config', 'set', registry, self.endpoint]
         )
         commands.append(
             [npm_cmd, 'config', 'set', always_auth_config, 'true']
@@ -308,6 +316,26 @@ password: {auth_token}'''
         )
         self._assert_dry_run_execution(self._get_npm_commands(), stdout)
 
+    def test_npm_login_with_namespace(self):
+        cmdline = self._setup_cmd(
+            tool='npm', include_namespace=True
+        )
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
+        self._assert_operations_called(package_format='npm')
+        self._assert_expiration_printed_to_stdout(stdout)
+        self._assert_subprocess_execution(
+            self._get_npm_commands(scope='@{}'.format(self.namespace))
+        )
+
+    def test_npm_login_with_namespace_dry_run(self):
+        cmdline = self._setup_cmd(
+            tool='npm', include_namespace=True, dry_run=True
+        )
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
+        self._assert_operations_called(package_format='npm')
+        self._assert_dry_run_execution(self._get_npm_commands(
+            scope='@{}'.format(self.namespace)), stdout)
+
     def test_pip_login_without_domain_owner(self):
         cmdline = self._setup_cmd(tool='pip')
         stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
@@ -354,6 +382,23 @@ password: {auth_token}'''
             package_format='pypi', include_domain_owner=True
         )
         self._assert_dry_run_execution(self._get_pip_commands(), stdout)
+
+    def test_pip_login_with_namespace(self):
+        cmdline = self._setup_cmd(tool='pip', include_namespace=True)
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        self._assert_operations_called(
+            package_format='pypi'
+        )
+        self.assertIn('Argument --namespace is not supported for pip', stderr)
+
+    def test_pip_login_with_namespace_dry_run(self):
+        cmdline = self._setup_cmd(
+            tool='pip', include_namespace=True, dry_run=True)
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        self._assert_operations_called(
+            package_format='pypi'
+        )
+        self.assertIn('Argument --namespace is not supported for pip', stderr)
 
     def test_twine_login_without_domain_owner(self):
         cmdline = self._setup_cmd(tool='twine')
@@ -444,3 +489,26 @@ password: {auth_token}'''
             username='aws',
             password=self.auth_token
         )
+
+    def test_twine_login_with_namespace(self):
+        cmdline = self._setup_cmd(
+            tool='twine', include_namespace=True
+        )
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        self._assert_operations_called(
+            package_format='pypi'
+        )
+        self.assertIn(
+            'Argument --namespace is not supported for twine', stderr)
+
+    def test_twine_login_with_namespace_dry_run(self):
+        cmdline = self._setup_cmd(
+            tool='twine', include_namespace=True, dry_run=True
+        )
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        self._assert_operations_called(
+            package_format='pypi',
+        )
+        self.assertFalse(os.path.exists(self.test_pypi_rc_path))
+        self.assertIn(
+            'Argument --namespace is not supported for twine', stderr)

@@ -340,7 +340,7 @@ INSTALL_APPLICATIONS = (
     '<code>Name</code> and <code>Args</code>.</p>')
 
 EBS_ROOT_VOLUME_SIZE = (
-    '<p>Applies only to Amazon EMR release version 4.0 and earlier. Specifies the size,'
+    '<p>This option is available only with Amazon EMR version 4.x and later. Specifies the size,'
     ' in GiB, of the EBS root device volume of the Amazon Linux AMI'
     ' that is used for each EC2 instance in the cluster. </p>')
 
@@ -456,7 +456,7 @@ MANAGED_SCALING_POLICY = (
     '<p>Managed scaling policy for an Amazon EMR cluster. The policy '
     'specifies the limits for resources that can be added or terminated '
     'from a cluster. You can specify the ComputeLimits which include '
-    'the MaximumCapacityUnits, MinimumCapacityUnits, '
+    'the MaximumCapacityUnits, MaximumCoreCapacityUnits, MinimumCapacityUnits, '
     'MaximumOnDemandCapacityUnits and UnitType. For an '
     'InstanceFleet cluster, the UnitType must be InstanceFleetUnits. For '
     'InstanceGroup clusters, the UnitType can be either VCPU or Instances.</p>'

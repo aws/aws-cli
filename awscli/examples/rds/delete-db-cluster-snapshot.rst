@@ -35,4 +35,4 @@ Output::
         }
     }
 
-For more information, see `Deleting a Snapshot <linkhttps://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_DeleteSnapshot.html`__ in the *Amazon Aurora User Guide*.
+For more information, see `Deleting a Snapshot <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_DeleteSnapshot.html>`__ in the *Amazon Aurora User Guide*.

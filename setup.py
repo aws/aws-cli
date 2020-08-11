@@ -24,9 +24,8 @@ def find_version(*file_paths):
 
 
 install_requires = [
-    'botocore==1.16.23',
+    'botocore==1.17.39',
     'docutils>=0.10,<0.16',
-    'rsa>=3.1.2,<=3.5.0',
     's3transfer>=0.3.0,<0.4.0',
 ]
 
@@ -34,16 +33,18 @@ install_requires = [
 if sys.version_info[:2] == (3, 4):
     install_requires.append('PyYAML>=3.10,<5.3')
     install_requires.append('colorama>=0.2.5,<0.4.2')
+    install_requires.append('rsa>=3.1.2,<=4.0.0')
 else:
     install_requires.append('PyYAML>=3.10,<5.4')
     install_requires.append('colorama>=0.2.5,<0.4.4')
+    install_requires.append('rsa>=3.1.2,<=4.5.0')
 
 
 setup_options = dict(
     name='awscli',
     version=find_version("awscli", "__init__.py"),
     description='Universal Command Line Environment for AWS.',
-    long_description=read('README.rst'),
+    long_description=read('README.md'),
     author='Amazon Web Services',
     url='http://aws.amazon.com/cli/',
     scripts=['bin/aws', 'bin/aws.cmd',

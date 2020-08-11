@@ -128,8 +128,10 @@ class CLIDocumentEventHandler(object):
                 [a.cli_name for a in
                  self._arg_groups[argument.group_name]])
             self._documented_arg_groups.append(argument.group_name)
-        else:
+        elif argument.cli_name.startswith('--'):
             option_str = '%s <value>' % argument.cli_name
+        else:
+            option_str = '<%s>' % argument.cli_name
         if not (argument.required
                 or getattr(argument, '_DOCUMENT_AS_REQUIRED', False)):
             option_str = '[%s]' % option_str
@@ -166,7 +168,9 @@ class CLIDocumentEventHandler(object):
             argument.argument_model, argument.cli_type_name)))
         doc.style.indent()
         doc.include_doc_string(argument.documentation)
-        self._document_enums(argument, doc)
+        if hasattr(argument, 'argument_model'):
+            self._document_enums(argument.argument_model, doc)
+            self._document_nested_structure(argument.argument_model, doc)
         doc.style.dedent()
         doc.style.new_paragraph()
 
@@ -184,18 +188,75 @@ class CLIDocumentEventHandler(object):
         )
         doc.write('\n')
 
-    def _document_enums(self, argument, doc):
+    def _document_enums(self, model, doc):
         """Documents top-level parameter enums"""
-        if hasattr(argument, 'argument_model'):
-            model = argument.argument_model
-            if isinstance(model, StringShape):
-                if model.enum:
-                    doc.style.new_paragraph()
-                    doc.write('Possible values:')
-                    doc.style.start_ul()
-                    for enum in model.enum:
-                        doc.style.li('``%s``' % enum)
-                    doc.style.end_ul()
+        if isinstance(model, StringShape):
+            if model.enum:
+                doc.style.new_paragraph()
+                doc.write('Possible values:')
+                doc.style.start_ul()
+                for enum in model.enum:
+                    doc.style.li('``%s``' % enum)
+                doc.style.end_ul()
+
+    def _document_nested_structure(self, model, doc):
+        """Recursively documents parameters in nested structures"""
+        member_type_name = getattr(model, 'type_name', None)
+        if member_type_name == 'structure':
+            for member_name, member_shape in model.members.items():
+                self._doc_member(doc, member_name, member_shape,
+                                 stack=[model.name])
+        elif member_type_name == 'list':
+            self._doc_member(doc, '', model.member, stack=[model.name])
+        elif member_type_name == 'map':
+            key_shape = model.key
+            key_name = key_shape.serialization.get('name', 'key')
+            self._doc_member(doc, key_name, key_shape, stack=[model.name])
+            value_shape = model.value
+            value_name = value_shape.serialization.get('name', 'value')
+            self._doc_member(doc, value_name, value_shape, stack=[model.name])
+
+    def _doc_member(self, doc, member_name, member_shape, stack):
+        if member_shape.name in stack:
+            # Document the recursion once, otherwise just
+            # note the fact that it's recursive and return.
+            if stack.count(member_shape.name) > 1:
+                if member_shape.type_name == 'structure':
+                    doc.write('( ... recursive ... )')
+                return
+        stack.append(member_shape.name)
+        try:
+            self._do_doc_member(doc, member_name,
+                                member_shape, stack)
+        finally:
+            stack.pop()
+
+    def _do_doc_member(self, doc, member_name, member_shape, stack):
+        docs = member_shape.documentation
+        if member_name:
+            doc.write('%s -> (%s)' % (member_name, self._get_argument_type_name(
+                                      member_shape, member_shape.type_name)))
+        else:
+            doc.write('(%s)' % member_shape.type_name)
+        doc.style.indent()
+        doc.style.new_paragraph()
+        doc.include_doc_string(docs)
+        doc.style.new_paragraph()
+        member_type_name = member_shape.type_name
+        if member_type_name == 'structure':
+            for sub_name, sub_shape in member_shape.members.items():
+                self._doc_member(doc, sub_name, sub_shape, stack)
+        elif member_type_name == 'map':
+            key_shape = member_shape.key
+            key_name = key_shape.serialization.get('name', 'key')
+            self._doc_member(doc, key_name, key_shape, stack)
+            value_shape = member_shape.value
+            value_name = value_shape.serialization.get('name', 'value')
+            self._doc_member(doc, value_name, value_shape, stack)
+        elif member_type_name == 'list':
+            self._doc_member(doc, '', member_shape.member, stack)
+        doc.style.dedent()
+        doc.style.new_paragraph()
 
 
 class ProviderDocumentEventHandler(CLIDocumentEventHandler):
@@ -491,49 +552,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             doc.write('None')
         else:
             for member_name, member_shape in output_shape.members.items():
-                self._doc_member_for_output(doc, member_name, member_shape, stack=[])
-
-    def _doc_member_for_output(self, doc, member_name, member_shape, stack):
-        if member_shape.name in stack:
-            # Document the recursion once, otherwise just
-            # note the fact that it's recursive and return.
-            if stack.count(member_shape.name) > 1:
-                if member_shape.type_name == 'structure':
-                    doc.write('( ... recursive ... )')
-                return
-        stack.append(member_shape.name)
-        try:
-            self._do_doc_member_for_output(doc, member_name,
-                                           member_shape, stack)
-        finally:
-            stack.pop()
-
-    def _do_doc_member_for_output(self, doc, member_name, member_shape, stack):
-        docs = member_shape.documentation
-        if member_name:
-            doc.write('%s -> (%s)' % (member_name, self._get_argument_type_name(
-                                      member_shape, member_shape.type_name)))
-        else:
-            doc.write('(%s)' % member_shape.type_name)
-        doc.style.indent()
-        doc.style.new_paragraph()
-        doc.include_doc_string(docs)
-        doc.style.new_paragraph()
-        member_type_name = member_shape.type_name
-        if member_type_name == 'structure':
-            for sub_name, sub_shape in member_shape.members.items():
-                self._doc_member_for_output(doc, sub_name, sub_shape, stack)
-        elif member_type_name == 'map':
-            key_shape = member_shape.key
-            key_name = key_shape.serialization.get('name', 'key')
-            self._doc_member_for_output(doc, key_name, key_shape, stack)
-            value_shape = member_shape.value
-            value_name = value_shape.serialization.get('name', 'value')
-            self._doc_member_for_output(doc, value_name, value_shape, stack)
-        elif member_type_name == 'list':
-            self._doc_member_for_output(doc, '', member_shape.member, stack)
-        doc.style.dedent()
-        doc.style.new_paragraph()
+                self._doc_member(doc, member_name, member_shape, stack=[])
 
     def doc_options_end(self, help_command, **kwargs):
         self._add_top_level_args_reference(help_command)

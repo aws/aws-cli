@@ -1,11 +1,11 @@
 **To modify a DB snapshot attribute**
 
-The following ``modify-db-snapshot-attribute`` example permits two AWS account identifiers, ``111122223333`` and ``444455556666``, to restore the DB snapshot named ``mydbsnapshot``. ::
+The following ``modify-db-snapshot-attribute`` example enables two AWS account identifiers, ``111122223333`` and ``444455556666``, to restore the DB snapshot named ``mydbsnapshot``. ::
 
     aws rds modify-db-snapshot-attribute \
         --db-snapshot-identifier mydbsnapshot \
         --attribute-name restore \
-        --values-to-add '["111122223333","444455556666"]'
+        --values-to-add {"111122223333","444455556666"}
 
 Output::
 

@@ -74,6 +74,7 @@ class TestNpmLogin(unittest.TestCase):
         self.package_format = 'npm'
         self.repository = 'repository'
         self.auth_token = 'auth-token'
+        self.namespace = 'namespace'
         self.expiration = (datetime.now(tzlocal()) + relativedelta(hours=10)
                            + relativedelta(minutes=9)).replace(microsecond=0)
         self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
@@ -122,10 +123,36 @@ class TestNpmLogin(unittest.TestCase):
             expected_calls, any_order=True
         )
 
+    def test_get_scope(self):
+        expected_value = '@{}'.format(self.namespace)
+        scope = self.test_subject.get_scope(self.namespace)
+        self.assertEqual(scope, expected_value)
+
+    def test_get_scope_none_namespace(self):
+        expected_value = None
+        scope = self.test_subject.get_scope(None)
+        self.assertEqual(scope, expected_value)
+
+    def test_get_scope_invalid_name(self):
+        with self.assertRaises(ValueError):
+            self.test_subject.get_scope('.{}'.format(self.namespace))
+
+    def test_get_scope_without_prefix(self):
+        expected_value = '@{}'.format(self.namespace)
+        scope = self.test_subject.get_scope('@{}'.format(self.namespace))
+        self.assertEqual(scope, expected_value)
+
     def test_get_commands(self):
         commands = self.test_subject.get_commands(
             self.endpoint, self.auth_token
         )
+        self.assertCountEqual(commands, self.commands)
+
+    def test_get_commands_with_scope(self):
+        commands = self.test_subject.get_commands(
+            self.endpoint, self.auth_token, scope=self.namespace
+        )
+        self.commands[0][3] = '{}:registry'.format(self.namespace)
         self.assertCountEqual(commands, self.commands)
 
     def test_login_dry_run(self):

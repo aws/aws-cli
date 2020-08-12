@@ -90,6 +90,52 @@ class TestConfigureSetCommand(unittest.TestCase):
             {'__section__': 'default', 's3': {'signature_version': 's3v4'}},
             'myconfigfile')
 
+    def test_configure_set_bulk_update_all_config(self):
+        self.session.full_config = {'profiles': {
+            'default': {},
+            'non_default': {}
+        }}
+        set_command = ConfigureSetCommand(
+            self.session, self.config_writer)
+        set_command(args=['region', 'us-west-2', '--profile-pattern', '.*'],
+                    parsed_globals=None)
+        self.assertEqual(self.config_writer.update_config.call_count, 2)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'profile non_default', 'region': 'us-west-2'},
+             'myconfigfile')
+
+    def test_configure_set_bulk_update_config(self):
+        self.session.full_config = {'profiles': {
+            'default': {},
+            'non_default': {},
+            'not_update': {}
+        }}
+        set_command = ConfigureSetCommand(
+            self.session, self.config_writer)
+        set_command(args=['region', 'us-west-2', '--profile-pattern',
+                          '.*default'],
+                    parsed_globals=None)
+        self.assertEqual(self.config_writer.update_config.call_count, 2)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'profile non_default', 'region': 'us-west-2'},
+             'myconfigfile')
+
+    def test_configure_set_bulk_update_credentials(self):
+        self.session.full_config = {'profiles': {
+            'default': {},
+            'non_default': {},
+            'not_update': {}
+        }}
+        set_command = ConfigureSetCommand(
+            self.session, self.config_writer)
+        set_command(args=['aws_access_key_id', 'foo', '--profile-pattern',
+                          '.*default'],
+                    parsed_globals=None)
+        self.assertEqual(self.config_writer.update_config.call_count, 2)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'non_default', 'aws_access_key_id': 'foo'},
+            self.fake_credentials_filename)
+
     def test_configure_set_with_profile_nested(self):
         # aws configure set default.s3.signature_version s3v4
         set_command = ConfigureSetCommand(

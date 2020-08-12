@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+import re
 
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure.writer import ConfigFileWriter
@@ -34,6 +35,11 @@ class ConfigureSetCommand(BasicCommand):
          'action': 'store',
          'no_paramfile': True,  # To disable the default paramfile behavior
          'cli_type_name': 'string', 'positional_arg': True},
+        {'name': 'profile-pattern',
+         'help_text': 'Regexp pattern for profile names to update.',
+         'action': 'store',
+         'required': False,
+         'cli_type_name': 'string', 'positional_arg': False},
     ]
     # Any variables specified in this list will be written to
     # the ~/.aws/credentials file instead of ~/.aws/config.
@@ -46,15 +52,23 @@ class ConfigureSetCommand(BasicCommand):
             config_writer = ConfigFileWriter()
         self._config_writer = config_writer
 
+    def _get_sections_for_pattern(self, pattern):
+        return [profile_to_section(profile)
+                for profile in self._session.full_config.get('profiles', [])
+                if re.match(pattern, profile)]
+
     def _run_main(self, args, parsed_globals):
         varname = args.varname
         value = args.value
         section = 'default'
+        sections = []
         # Before handing things off to the config writer,
         # we need to find out three things:
         # 1. What section we're writing to (section).
         # 2. The name of the config key (varname)
         # 3. The actual value (value).
+        if args.profile_pattern:
+            sections = self._get_sections_for_pattern(args.profile_pattern)
         if '.' not in varname:
             # unqualified name, scope it to the current
             # profile (or leave it as the 'default' section if
@@ -95,8 +109,19 @@ class ConfigureSetCommand(BasicCommand):
         if varname in self._WRITE_TO_CREDS_FILE:
             config_filename = os.path.expanduser(
                 self._session.get_config_variable('credentials_file'))
-            section_name = updated_config['__section__']
-            if section_name.startswith('profile '):
-                updated_config['__section__'] = section_name[8:]
-        self._config_writer.update_config(updated_config, config_filename)
+            if sections:
+                sections = [name[8:] if name.startswith('profile ') else name
+                            for name in sections]
+            else:
+                section_name = updated_config['__section__']
+                if section_name.startswith('profile '):
+                    updated_config['__section__'] = section_name[8:]
+        if sections:
+            for section in sections:
+                updated_config['__section__'] = section
+                self._config_writer.update_config(updated_config,
+                                                  config_filename)
+        else:
+            self._config_writer.update_config(updated_config,
+                                              config_filename)
         return 0

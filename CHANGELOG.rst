@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+2.0.40
+======
+
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``braket``: Update braket command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``cloud9``: Update cloud9 command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``transfer``: Update transfer command to latest version
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``appsync``: Update appsync command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
 2.0.39
 ======
 

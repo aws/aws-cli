@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.18.119
+========
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``appsync``: Update appsync command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``braket``: Update braket command to latest version
+* api-change:``eks``: Update eks command to latest version
+
+
 1.18.118
 ========
 

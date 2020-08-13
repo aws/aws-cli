@@ -52,76 +52,70 @@ class ConfigureSetCommand(BasicCommand):
             config_writer = ConfigFileWriter()
         self._config_writer = config_writer
 
-    def _get_sections_for_pattern(self, pattern):
-        return [profile_to_section(profile)
+    def _get_sections_for_pattern(self, args):
+        if args.profile_pattern:
+            return [
+                profile_to_section(profile)
                 for profile in self._session.full_config.get('profiles', [])
-                if re.match(pattern, profile)]
+                if re.match(args.profile_pattern, profile)
+            ]
+        return []
+
+    def _parse_varname(self, varname):
+        """
+        :return:  sections: list of of one section to update
+                  varname: name of the variable
+                  key: list where first element will be key if input value
+                       should be dict
+        """
+        if '.' not in varname:
+            # just a varname without section and key
+            return [], varname, []
+        else:
+            parts = varname.split('.')
+            if parts[0] == 'default':
+                return [parts[0]], parts[1], parts[2:]
+            if parts[0] == 'profile':
+                # [profile, profile_name, ...]
+                return [profile_to_section(parts[1])], parts[2], parts[3:]
+            if parts[0] not in PREDEFINED_SECTION_NAMES:
+                return [], parts[0], parts[1:]
+            if len(parts) == 2:
+                # Otherwise it's something in the [plugin] section
+                return [parts[0]], parts[1], []
+            return [], varname, []
 
     def _run_main(self, args, parsed_globals):
-        varname = args.varname
-        value = args.value
-        section = 'default'
-        sections = []
         # Before handing things off to the config writer,
         # we need to find out three things:
         # 1. What section we're writing to (section).
         # 2. The name of the config key (varname)
         # 3. The actual value (value).
-        if args.profile_pattern:
-            sections = self._get_sections_for_pattern(args.profile_pattern)
-        if '.' not in varname:
+        sections, varname, key = self._parse_varname(args.varname)
+        value = {key[0]: args.value} if len(key) == 1 else args.value
+        sections = self._get_sections_for_pattern(args) or sections
+        if not sections:
             # unqualified name, scope it to the current
             # profile (or leave it as the 'default' section if
             # no profile is set).
             if self._session.profile is not None:
-                section = profile_to_section(self._session.profile)
-        else:
-            # First figure out if it's been scoped to a profile.
-            parts = varname.split('.')
-            if parts[0] in ('default', 'profile'):
-                # Then we know we're scoped to a profile.
-                if parts[0] == 'default':
-                    section = 'default'
-                    remaining = parts[1:]
+                sections = [profile_to_section(self._session.profile)]
+            else:
+                profile_name = self._session.get_config_variable('profile')
+                if profile_name is not None:
+                    sections = [profile_name]
                 else:
-                    # [profile, profile_name, ...]
-                    section = profile_to_section(parts[1])
-                    remaining = parts[2:]
-                varname = remaining[0]
-                if len(remaining) == 2:
-                    value = {remaining[1]: value}
-            elif parts[0] not in PREDEFINED_SECTION_NAMES:
-                if self._session.profile is not None:
-                    section = profile_to_section(self._session.profile)
-                else:
-                    profile_name = self._session.get_config_variable('profile')
-                    if profile_name is not None:
-                        section = profile_name
-                varname = parts[0]
-                if len(parts) == 2:
-                    value = {parts[1]: value}
-            elif len(parts) == 2:
-                # Otherwise it's something in the [plugin] section
-                section, varname = parts
+                    sections = ['default']
         config_filename = os.path.expanduser(
             self._session.get_config_variable('config_file'))
-        updated_config = {'__section__': section, varname: value}
+        updated_config = {varname: value}
         if varname in self._WRITE_TO_CREDS_FILE:
             config_filename = os.path.expanduser(
                 self._session.get_config_variable('credentials_file'))
-            if sections:
-                sections = [name[8:] if name.startswith('profile ') else name
-                            for name in sections]
-            else:
-                section_name = updated_config['__section__']
-                if section_name.startswith('profile '):
-                    updated_config['__section__'] = section_name[8:]
-        if sections:
-            for section in sections:
-                updated_config['__section__'] = section
-                self._config_writer.update_config(updated_config,
-                                                  config_filename)
-        else:
+            sections = [name[8:] if name.startswith('profile ') else name
+                        for name in sections]
+        for section in sections:
+            updated_config['__section__'] = section
             self._config_writer.update_config(updated_config,
                                               config_filename)
         return 0

@@ -151,6 +151,14 @@ def _set_user_agent_for_session(session):
         session.user_agent_extra += ".%s" % linux_distribution
 
 
+def no_pager_handler(session, parsed_args, **kwargs):
+    if parsed_args.no_cli_pager:
+        config_store = session.get_component('config_store')
+        config_store.set_config_provider(
+            'pager',  ConstantProvider(value=None)
+        )
+
+
 class CLIDriver(object):
 
     def __init__(self, session=None):

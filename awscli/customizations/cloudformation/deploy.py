@@ -442,7 +442,8 @@ class DeployCommand(BasicCommand):
             ]
             for parser in parsers:
                 if parser.can_parse(data):
-                    return parser.parse(data)
+                    return {key: str(value)
+                            for key, value in parser.parse(data).items()}
             raise ParamValidationError(
                 'JSON passed to --parameter-overrides must be one of '
                 'the formats: ["Key1=Value1","Key2=Value2", ...] , '

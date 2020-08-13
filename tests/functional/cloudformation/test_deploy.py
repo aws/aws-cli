@@ -146,6 +146,24 @@ class TestDeployCommandParameterOverrides(TestDeployCommand):
         self.run_cmd(self.command)
         self._assert_parameters_parsed()
 
+    def test_parameter_overrides_from_json_file_with_nonstring_params(self):
+        codepipeline_like_json = {
+            'Parameters': {
+                'Key1': True,
+                'Key2': 1
+            }
+        }
+        path = self.create_json_file('param.json', codepipeline_like_json)
+        self.command += ' --parameter-overrides file://%s' % path
+        self.run_cmd(self.command)
+        self.assertEqual(
+            self.operations_called[1][1]['Parameters'],
+            [
+                {'ParameterKey': 'Key1', 'ParameterValue': 'True'},
+                {'ParameterKey': 'Key2', 'ParameterValue': '1'}
+            ]
+        )
+
     def test_parameter_overrides_from_original_json_file(self):
         original_like_json = ['Key1=Value1', 'Key2=Value2']
         path = self.create_json_file('param.json', original_like_json)

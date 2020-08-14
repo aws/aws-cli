@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.120
+========
+
+* api-change:``license-manager``: Update license-manager command to latest version
+* api-change:``appstream``: Update appstream command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``braket``: Update braket command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.18.119
 ========
 

@@ -69,6 +69,22 @@ class TestCLIFollowParamFileDefault(BaseTestCLIFollowParamFile):
             expected_param=b'file content'
         )
 
+    def test_does_use_yaml_prefix(self):
+        path = self.files.create_file('foobar.yaml', '- key: value')
+        param = 'yaml://%s' % path
+        self.assert_param_expansion_is_correct(
+            provided_param=param,
+            expected_param='[{"key": "value"}]'
+        )
+
+    def test_does_use_yaml_binary_data(self):
+        path = self.files.create_file('foobar.yaml', '{key: !!binary "4pyT"}')
+        param = 'yaml://%s' % path
+        self.assert_param_expansion_is_correct(
+            provided_param=param,
+            expected_param='{"key": "4pyT"}'
+        )
+
 
 class TestCLIUseEncodingFromEnv(BaseTestCLIFollowParamFile):
 

@@ -81,22 +81,16 @@ The following example uses a projection expression to retrieve only three attrib
 
     aws dynamodb get-item \
         --table-name ProductCatalog \
-        --key file://key.json \
-        --projection-expression "#D, #R, #P" \
+        --key '{"Id": {"N": "102"}}' \
+        --projection-expression "#T, #C, #P" \
         --expression-attribute-names file://names.json
-
-Contents of ``key.json``::
-
-    {
-        "Id": {"N": "102"}
-    }
 
 Contents of ``names.json``::
 
     {
-        "#t": "Title",
-        "#d": "Description",
-        "#p": "Price"
+        "#T": "Title",
+        "#C": "ProductCategory",
+        "#P": "Price"
     }
 
 Output::

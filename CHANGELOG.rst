@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.18.121
+========
+
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``acm-pca``: Update acm-pca command to latest version
+* api-change:``ecr``: Update ecr command to latest version
+* api-change:``acm``: Update acm command to latest version
+* api-change:``kinesis``: Update kinesis command to latest version
+* api-change:``elb``: Update elb command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+
+
 1.18.120
 ========
 

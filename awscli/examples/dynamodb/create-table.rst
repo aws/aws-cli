@@ -261,9 +261,7 @@ The following example creates a table named ``GameScores`` with a Global Seconda
 
     aws dynamodb create-table \
         --table-name GameScores \
-        --attribute-definitions AttributeName=UserId,AttributeType=S \
-                                AttributeName=GameTitle,AttributeType=S \
-                                AttributeName=TopScore,AttributeType=N \
+        --attribute-definitions AttributeName=UserId,AttributeType=S AttributeName=GameTitle,AttributeType=S AttributeName=TopScore,AttributeType=N \
         --key-schema AttributeName=UserId,KeyType=HASH \
                     AttributeName=GameTitle,KeyType=RANGE \
         --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=5 \
@@ -361,7 +359,164 @@ Output::
 
 For more information, see `Basic Operations for Tables <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithTables.Basics.html>`__ in the *Amazon DynamoDB Developer Guide*.
 
-** Example 6: To create a table with Streams enabled**
+**Example 6: To create a table with multiple Global Secondary Indexes at once**
+
+The following example creates a table named ``GameScores`` with two Global Secondary Indexes. The GSI schemas are passed via a file, rather than on the command line. ::
+
+    aws dynamodb create-table \
+        --table-name GameScores \
+        --attribute-definitions AttributeName=UserId,AttributeType=S AttributeName=GameTitle,AttributeType=S AttributeName=TopScore,AttributeType=N AttributeName=Date,AttributeType=S \
+        --key-schema AttributeName=UserId,KeyType=HASH AttributeName=GameTitle,KeyType=RANGE \
+        --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=5 \
+        --global-secondary-indexes file://gsi.json
+
+Contents of ``gsi.json``::
+
+    [
+        {
+            "IndexName": "GameTitleIndex",
+            "KeySchema": [
+                {
+                    "AttributeName": "GameTitle",
+                    "KeyType": "HASH"
+                },
+                {
+                    "AttributeName": "TopScore",
+                    "KeyType": "RANGE"
+                }
+            ],
+            "Projection": {
+                "ProjectionType": "ALL"
+            },
+            "ProvisionedThroughput": {
+                "ReadCapacityUnits": 10,
+                "WriteCapacityUnits": 5
+            }
+        },
+        {
+            "IndexName": "GameDateIndex",
+            "KeySchema": [
+                {
+                    "AttributeName": "GameTitle",
+                    "KeyType": "HASH"
+                },
+                {
+                    "AttributeName": "Date",
+                    "KeyType": "RANGE"
+                }
+            ],
+            "Projection": {
+                "ProjectionType": "ALL"
+            },
+            "ProvisionedThroughput": {
+                "ReadCapacityUnits": 5,
+                "WriteCapacityUnits": 5
+            }
+        }
+    ]
+
+Output::
+
+    {
+        "TableDescription": {
+            "AttributeDefinitions": [
+                {
+                    "AttributeName": "Date",
+                    "AttributeType": "S"
+                },
+                {
+                    "AttributeName": "GameTitle",
+                    "AttributeType": "S"
+                },
+                {
+                    "AttributeName": "TopScore",
+                    "AttributeType": "N"
+                },
+                {
+                    "AttributeName": "UserId",
+                    "AttributeType": "S"
+                }
+            ],
+            "TableName": "GameScores",
+            "KeySchema": [
+                {
+                    "AttributeName": "UserId",
+                    "KeyType": "HASH"
+                },
+                {
+                    "AttributeName": "GameTitle",
+                    "KeyType": "RANGE"
+                }
+            ],
+            "TableStatus": "CREATING",
+            "CreationDateTime": "2020-08-04T16:40:55.524000-07:00",
+            "ProvisionedThroughput": {
+                "NumberOfDecreasesToday": 0,
+                "ReadCapacityUnits": 10,
+                "WriteCapacityUnits": 5
+            },
+            "TableSizeBytes": 0,
+            "ItemCount": 0,
+            "TableArn": "arn:aws:dynamodb:us-west-2:123456789012:table/GameScores",
+            "TableId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "GlobalSecondaryIndexes": [
+                {
+                    "IndexName": "GameTitleIndex",
+                    "KeySchema": [
+                        {
+                            "AttributeName": "GameTitle",
+                            "KeyType": "HASH"
+                        },
+                        {
+                            "AttributeName": "TopScore",
+                            "KeyType": "RANGE"
+                        }
+                    ],
+                    "Projection": {
+                        "ProjectionType": "ALL"
+                    },
+                    "IndexStatus": "CREATING",
+                    "ProvisionedThroughput": {
+                        "NumberOfDecreasesToday": 0,
+                        "ReadCapacityUnits": 10,
+                        "WriteCapacityUnits": 5
+                    },
+                    "IndexSizeBytes": 0,
+                    "ItemCount": 0,
+                    "IndexArn": "arn:aws:dynamodb:us-west-2:123456789012:table/GameScores/index/GameTitleIndex"
+                },
+                {
+                    "IndexName": "GameDateIndex",
+                    "KeySchema": [
+                        {
+                            "AttributeName": "GameTitle",
+                            "KeyType": "HASH"
+                        },
+                        {
+                            "AttributeName": "Date",
+                            "KeyType": "RANGE"
+                        }
+                    ],
+                    "Projection": {
+                        "ProjectionType": "ALL"
+                    },
+                    "IndexStatus": "CREATING",
+                    "ProvisionedThroughput": {
+                        "NumberOfDecreasesToday": 0,
+                        "ReadCapacityUnits": 5,
+                        "WriteCapacityUnits": 5
+                    },
+                    "IndexSizeBytes": 0,
+                    "ItemCount": 0,
+                    "IndexArn": "arn:aws:dynamodb:us-west-2:123456789012:table/GameScores/index/GameDateIndex"
+                }
+            ]
+        }
+    }
+
+For more information, see `Basic Operations for Tables <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithTables.Basics.html>`__ in the *Amazon DynamoDB Developer Guide*.
+
+**Example 7: To create a table with Streams enabled**
 
 The following example creates a table called ``GameScores`` with DynamoDB Streams enabled. Both new and old images of each item will be written to the stream.
 

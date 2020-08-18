@@ -2,6 +2,30 @@
 CHANGELOG
 =========
 
+2.0.41
+======
+
+* api-change:``license-manager``: Update license-manager command to latest version
+* api-change:``identitystore``: Update identitystore command to latest version
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``acm-pca``: Update acm-pca command to latest version
+* api-change:``appstream``: Update appstream command to latest version
+* api-change:``acm``: Update acm command to latest version
+* api-change:``elb``: Update elb command to latest version
+* api-change:``datasync``: Update datasync command to latest version
+* api-change:``kinesis``: Update kinesis command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``ecr``: Update ecr command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``braket``: Update braket command to latest version
+* api-change:``sesv2``: Update sesv2 command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+
+
 2.0.40
 ======
 

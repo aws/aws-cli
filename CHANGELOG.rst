@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.123
+========
+
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``ivs``: Update ivs command to latest version
+* api-change:``lakeformation``: Update lakeformation command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+
+
 1.18.122
 ========
 

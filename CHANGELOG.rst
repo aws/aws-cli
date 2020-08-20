@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.0.42
+======
+
+* api-change:``chime``: Update chime command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+* api-change:``lakeformation``: Update lakeformation command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``ivs``: Update ivs command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+
+
 2.0.41
 ======
 

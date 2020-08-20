@@ -734,6 +734,24 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.124
+========
+
+* api-change:``chime``: Update chime command to latest version
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+
+
+1.18.123
+========
+
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``ivs``: Update ivs command to latest version
+* api-change:``lakeformation``: Update lakeformation command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+
+
 1.18.122
 ========
 

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.124
+========
+
+* api-change:``chime``: Update chime command to latest version
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+
+
 1.18.123
 ========
 

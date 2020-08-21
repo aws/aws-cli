@@ -169,14 +169,14 @@ class PipLogin(BaseLogin):
 
     PIP_INDEX_URL_FMT = '{scheme}://aws:{auth_token}@{netloc}{path}simple/'
 
-    def login(self, dry_run=False):
+    def login(self, dry_run=False, extra_index_url=False):
         commands = self.get_commands(
-            self.repository_endpoint, self.auth_token
+            self.repository_endpoint, self.auth_token, extra_index_url=extra_index_url
         )
         self._run_commands('pip', commands, dry_run)
 
     @classmethod
-    def get_commands(cls, endpoint, auth_token, **kwargs):
+    def get_commands(cls, endpoint, auth_token, extra_index_url=False, **kwargs):
         repo_uri = urlparse.urlsplit(endpoint)
         pip_index_url = cls.PIP_INDEX_URL_FMT.format(
             scheme=repo_uri.scheme,
@@ -185,7 +185,12 @@ class PipLogin(BaseLogin):
             path=repo_uri.path
         )
 
-        return [['pip', 'config', 'set', 'global.index-url', pip_index_url]]
+        if extra_index_url:
+            setting = 'global.extra-index-url'
+        else:
+            setting = 'global.index-url'
+
+        return [['pip', 'config', 'set', setting, pip_index_url]]
 
 
 class TwineLogin(BaseLogin):
@@ -372,7 +377,14 @@ class CodeArtifactLogin(BasicCommand):
                          'to connect your tool with your repository without '
                          'making any changes to your configuration',
             'required': False,
-            'default': False
+            'default': False,
+        },
+        {
+            'name': 'extra-index-url',
+            'action': 'store_true',
+            'help_text': 'For --tool pip, use CodeArtifact as an extra index '
+                         'url instead of replacing the main index url',
+            'required': False,
         },
     ]
 
@@ -420,6 +432,13 @@ class CodeArtifactLogin(BasicCommand):
     def _run_main(self, parsed_args, parsed_globals):
         tool = parsed_args.tool.lower()
 
+        extra_options = {}
+        if parsed_args.extra_index_url:
+            if tool != 'pip':
+                raise ValueError(
+                    'Can only use --extra-index-url with --tool pip')
+            extra_options['extra_index_url'] = parsed_args.extra_index_url
+
         package_format = self.TOOL_MAP[tool]['package_format']
 
         codeartifact_client = cli_utils.create_client_from_parsed_globals(
@@ -442,6 +461,6 @@ class CodeArtifactLogin(BasicCommand):
             auth_token, expiration, repository_endpoint, subprocess, namespace
         )
 
-        login.login(parsed_args.dry_run)
+        login.login(parsed_args.dry_run, **extra_options)
 
         return 0

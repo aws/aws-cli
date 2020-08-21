@@ -52,7 +52,7 @@ class TestCodeArtifactLogin(BaseAWSCommandParamsTest):
 
     def _setup_cmd(self, tool,
                    include_domain_owner=False, dry_run=False,
-                   include_duration_seconds=False,
+                   include_duration_seconds=False, extra_index_url=False,
                    include_namespace=False):
         package_format = CodeArtifactLogin.TOOL_MAP[tool]['package_format']
         self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
@@ -73,6 +73,9 @@ class TestCodeArtifactLogin(BaseAWSCommandParamsTest):
 
         if dry_run:
             cmdline += ' --dry-run'
+
+        if extra_index_url:
+            cmdline += ' --extra-index-url'
 
         if include_duration_seconds:
             cmdline += ' --duration-seconds %s' % self.duration
@@ -117,7 +120,7 @@ class TestCodeArtifactLogin(BaseAWSCommandParamsTest):
 
         return commands
 
-    def _get_pip_commands(self):
+    def _get_pip_commands(self, extra_index_url=False):
         pip_index_url_fmt = '{scheme}://aws:{auth_token}@{netloc}{path}simple/'
         repo_uri = urlparse.urlsplit(self.endpoint)
         pip_index_url = pip_index_url_fmt.format(
@@ -127,7 +130,12 @@ class TestCodeArtifactLogin(BaseAWSCommandParamsTest):
             path=repo_uri.path
         )
 
-        return [['pip', 'config', 'set', 'global.index-url', pip_index_url]]
+        if extra_index_url:
+            setting = 'global.extra-index-url'
+        else:
+            setting = 'global.index-url'
+
+        return [['pip', 'config', 'set', setting, pip_index_url]]
 
     def _get_twine_commands(self):
         default_pypi_rc_fmt = '''\
@@ -380,6 +388,38 @@ password: {auth_token}'''
             package_format='pypi', include_domain_owner=True
         )
         self._assert_dry_run_execution(self._get_pip_commands(), stdout)
+
+    def test_pip_login_with_extra_index_url(self):
+        cmdline = self._setup_cmd(tool='pip', extra_index_url=True)
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
+        self._assert_operations_called(package_format='pypi')
+        self._assert_subprocess_execution(self._get_pip_commands(extra_index_url=True))
+
+    def test_pip_login_with_extra_index_url_dry_run(self):
+        cmdline = self._setup_cmd(tool='pip', dry_run=True, extra_index_url=True)
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
+        self._assert_operations_called(package_format='pypi')
+        self._assert_dry_run_execution(self._get_pip_commands(extra_index_url=True), stdout)
+
+    def test_twine_login_with_extra_index_url(self):
+        cmdline = self._setup_cmd(tool='twine', extra_index_url=True)
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        assert stderr.strip() == 'Can only use --extra-index-url with --tool pip'
+
+    def test_twine_login_with_extra_index_url_dry_run(self):
+        cmdline = self._setup_cmd(tool='twine', dry_run=True, extra_index_url=True)
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        assert stderr.strip() == 'Can only use --extra-index-url with --tool pip'
+
+    def test_npm_login_with_extra_index_url(self):
+        cmdline = self._setup_cmd(tool='npm', extra_index_url=True)
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        assert stderr.strip() == 'Can only use --extra-index-url with --tool pip'
+
+    def test_npm_login_with_extra_index_url_dry_run(self):
+        cmdline = self._setup_cmd(tool='npm', dry_run=True, extra_index_url=True)
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        assert stderr.strip() == 'Can only use --extra-index-url with --tool pip'
 
     def test_pip_login_with_namespace(self):
         cmdline = self._setup_cmd(tool='pip', include_namespace=True)

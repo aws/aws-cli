@@ -60,29 +60,31 @@ General Options
 
 The AWS CLI has a few general options:
 
-==================== =========== ===================== ===================== ============================
-Variable             Option      Config Entry          Environment Variable  Description
-==================== =========== ===================== ===================== ============================
-profile              --profile   N/A                   AWS_PROFILE           Default profile name
--------------------- ----------- --------------------- --------------------- ----------------------------
-region               --region    region                AWS_DEFAULT_REGION    Default AWS Region
--------------------- ----------- --------------------- --------------------- ----------------------------
-output               --output    output                AWS_DEFAULT_OUTPUT    Default output style
--------------------- ----------- --------------------- --------------------- ----------------------------
-cli_timestamp_format N/A         cli_timestamp_format  N/A                   Output format of timestamps
--------------------- ----------- --------------------- --------------------- ----------------------------
-cli_follow_urlparam  N/A         cli_follow_urlparam   N/A                   Fetch URL url parameters
--------------------- ----------- --------------------- --------------------- ----------------------------
-ca_bundle            --ca-bundle ca_bundle             AWS_CA_BUNDLE         CA Certificate Bundle
--------------------- ----------- --------------------- --------------------- ----------------------------
-parameter_validation N/A         parameter_validation  N/A                   Toggles parameter validation
--------------------- ----------- --------------------- --------------------- ----------------------------
-tcp_keepalive        N/A         tcp_keepalive         N/A                   Toggles TCP Keep-Alive
--------------------- ----------- --------------------- --------------------- ----------------------------
-max_attempts         N/A         max_attempts          AWS_MAX_ATTEMPTS      Number of total requests
--------------------- ----------- --------------------- --------------------- ----------------------------
-retry_mode           N/A         retry_mode            AWS_RETRY_MODE        Type of retries performed
-==================== =========== ===================== ===================== ============================
+==================== ============== ===================== ===================== ================================
+Variable             Option         Config Entry          Environment Variable  Description
+==================== ============== ===================== ===================== ================================
+profile              --profile      N/A                   AWS_PROFILE           Default profile name
+-------------------- -------------- --------------------- --------------------- --------------------------------
+region               --region       region                AWS_DEFAULT_REGION    Default AWS Region
+-------------------- -------------- --------------------- --------------------- --------------------------------
+output               --output       output                AWS_DEFAULT_OUTPUT    Default output style
+-------------------- -------------- --------------------- --------------------- --------------------------------
+cli_timestamp_format N/A            cli_timestamp_format  N/A                   Output format of timestamps
+-------------------- -------------- --------------------- --------------------- --------------------------------
+cli_follow_urlparam  N/A            cli_follow_urlparam   N/A                   Fetch URL url parameters
+-------------------- -------------- --------------------- --------------------- --------------------------------
+ca_bundle            --ca-bundle    ca_bundle             AWS_CA_BUNDLE         CA Certificate Bundle
+-------------------- -------------- --------------------- --------------------- --------------------------------
+parameter_validation N/A            parameter_validation  N/A                   Toggles parameter validation
+-------------------- -------------- --------------------- --------------------- --------------------------------
+tcp_keepalive        N/A            tcp_keepalive         N/A                   Toggles TCP Keep-Alive
+-------------------- -------------- --------------------- --------------------- --------------------------------
+max_attempts         N/A            max_attempts          AWS_MAX_ATTEMPTS      Number of total requests
+-------------------- -------------- --------------------- --------------------- --------------------------------
+retry_mode           N/A            retry_mode            AWS_RETRY_MODE        Type of retries performed
+-------------------- -------------- --------------------- --------------------- --------------------------------
+cli_pager            --no-cli-pager cli_pager             AWS_PAGER             Redirect/Disable output to pager
+==================== ============== ===================== ===================== ================================
 
 The third column, Config Entry, is the value you would specify in the AWS CLI
 config file.  By default, this location is ``~/.aws/config``.  If you need to
@@ -476,6 +478,66 @@ To set encoding used for text files different from the locale, you can use
 with default encoding ``CP1252``, setting ``AWS_CLI_FILE_ENCODING=UTF-8`` would
 make CLI ignore locale encoding and open text files using ``UTF-8``.
 
+Pager
+-----
+
+The AWS CLI uses a pager for output data that does not fit on the screen.
+
+On Linux/MacOS, ``less`` is used as the default pager. On Windows,
+the default is ``more``.
+
+Configuring pager
+^^^^^^^^^^^^^^^^^^
+
+You can override the default pager with the following configuration
+options. These are in order of precedence:
+
+* ``AWS_PAGER`` environment variable
+
+* ``cli_pager`` shared config variable
+
+* ``PAGER`` environment variable
+
+If you set any of the configuration options to an empty string
+(e.g. ``AWS_PAGER=""``) or use ``--no-cli-pager`` option in the command line the
+AWS CLI will not send the output to a pager.
+
+Examples
+""""""""
+
+To disable the pager for ``default`` profile::
+
+    aws configure set cli_pager "" --profile default
+
+To disable the pager for all profiles in the current terminal session::
+
+    export AWS_PAGER="" - for Linux
+
+    set AWS_PAGER="" - for Windows cmd
+
+To disable the pager for one command call::
+
+    aws <command> <sub-command> --no-cli-pager
+
+
+Pager settings
+^^^^^^^^^^^^^^
+
+If the ``LESS`` environment variable is not set the AWS CLI will set it to ``FRX``
+(see "less" manual page for more information about possible options
+https://man7.org/linux/man-pages/man1/less.1.html)
+in order to set the appropriate flags. If you set the ``LESS`` env var, we will
+not clobber it with ours (e.g. ``FRX``). Be aware that different shells can
+have different default values for the ``LESS`` environment variable that can cause
+unexpected behavior of AWS CLI output
+
+You can also set flags when specifying the pager and those will combine
+with any environment variables we set (e.g. ``AWS_PAGER="less -S"`` will make it
+less ``-FRXS``). The behavior of combining flags is a feature of ``less``.
+You can also negate flags we set by specifying it on the command line:
+(e.g. ``AWS_PAGER="less -+F"`` will deactivate the quit if one screen behavior)
+
+For Windows, ``more`` is used with no additional environment variables.
 
 Plugins
 =======

@@ -1,6 +1,6 @@
 Configure AWS CLI options. If this command is run with no
 arguments, you will be prompted for configuration values such as your AWS
-Access Key Id and you AWS Secret Access Key.  You can configure a named
+Access Key Id and your AWS Secret Access Key.  You can configure a named
 profile using the ``--profile`` argument.  If your config file does not exist
 (the default location is ``~/.aws/config``), the AWS CLI will create it
 for you.  To keep an existing value, hit enter when prompted for the value.

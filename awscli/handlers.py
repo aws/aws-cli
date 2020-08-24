@@ -18,6 +18,7 @@ registered with the event system.
 """
 from awscli.argprocess import ParamShorthandParser
 from awscli.paramfile import register_uri_param_handler
+from awscli.clidriver import no_pager_handler
 from awscli.customizations import datapipeline
 from awscli.customizations.addexamples import add_examples
 from awscli.customizations.argrename import register_arg_renames
@@ -97,6 +98,7 @@ from awscli.customizations.binaryformat import add_binary_formatter
 def awscli_initialize(event_handlers):
     event_handlers.register('session-initialized', register_uri_param_handler)
     event_handlers.register('session-initialized', add_binary_formatter)
+    event_handlers.register('session-initialized', no_pager_handler)
     param_shorthand = ParamShorthandParser()
     event_handlers.register('process-cli-arg', param_shorthand)
     # The s3 error mesage needs to registered before the

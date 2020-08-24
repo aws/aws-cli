@@ -81,6 +81,10 @@ class TestOutput(BaseAWSCommandParamsTest):
             content += write_call[0][0]
         return content
 
+    def test_no_cli_pager_disable_outputs_to_pager(self):
+        self.run_cmd(self.cmdline + ' --no-cli-pager')
+        self.assertFalse(self.mock_popen.called)
+
     def test_outputs_to_pager(self):
         self.run_cmd(self.cmdline)
         self.assert_content_to_pager(

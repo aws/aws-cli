@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.0.43
+======
+
+* api-change:``logs``: Update logs command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``xray``: Update xray command to latest version
+* api-change:``dms``: Update dms command to latest version
+* enhancement:pager: Add ``--no-cli-pager`` command line option to disable output ot pager
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
 2.0.42
 ======
 

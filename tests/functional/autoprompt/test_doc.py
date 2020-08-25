@@ -27,9 +27,8 @@ class TestDocsGetter(unittest.TestCase):
         command_text = 'ec2'
         actual_docs = self.docs_getter.get_docs(command_text)
         expected_docs = (
-            '\n\n.. _cli:aws ec2:\n\n\n***\nec2\n***\n\n\n\n===========\nDescr'
-            'iption\n===========\n\n \n\nAmazon Elastic Compute Cloud (Amazon '
-            'EC2)'
+            '\n\nAmazon Elastic Compute Cloud (Amazon EC2) provides secure and'
+            '\nresizable computing capacity in the AWS cloud. Using '
         )
         self.assertEqual(actual_docs[:len(expected_docs)], expected_docs)
 
@@ -37,10 +36,10 @@ class TestDocsGetter(unittest.TestCase):
         command_text = 'ec2 describe-instances'
         actual_docs = self.docs_getter.get_docs(command_text)
         expected_docs = (
-            '\n\n.. _cli:aws ec2 describe-instances:\n\n\n******************\n'
-            'describe-instances\n******************\n\n\n\n===========\nDescri'
-            'ption\n===========\n\n\n\nDescribes the specified instances or al'
-            'l instances.\n'
+            '\n\nDescribes the specified instances or all instances.\n\n'
+            'If you specify instance IDs, the output includes information '
+            'for only\nthe specified instances. If you specify filters, '
+            'the output includ'
         )
         self.assertEqual(actual_docs[:len(expected_docs)], expected_docs)
 
@@ -48,9 +47,9 @@ class TestDocsGetter(unittest.TestCase):
         command_text = ''
         actual_docs = self.docs_getter.get_docs(command_text)
         expected_docs = (
-            '\n\n.. _cli:aws:\n\n\n***\naws\n***\n\n\n\n===========\nDescripti'
-            'on\n===========\n\nThe AWS Command Line Interface is a unified to'
-            'ol to manage your AWS services.\n'
+            '\n\nThe AWS Command Line Interface is a unified tool to manage '
+            'your AWS\nservices.\n\n\nSYNOPSIS\n\n   aws [options] <command> '
+            '<subcommand> [parameters]\n\nU'
         )
         self.assertEqual(actual_docs[:len(expected_docs)], expected_docs)
 
@@ -58,9 +57,9 @@ class TestDocsGetter(unittest.TestCase):
         command_text = 'fake'
         actual_docs = self.docs_getter.get_docs(command_text)
         expected_docs = (
-            '\n\n.. _cli:aws:\n\n\n***\naws\n***\n\n\n\n===========\nDescripti'
-            'on\n===========\n\nThe AWS Command Line Interface is a unified to'
-            'ol to manage your AWS services.\n'
+            '\n\nThe AWS Command Line Interface is a unified tool to manage '
+            'your AWS\nservices.\n\n\nSYNOPSIS\n\n   aws [options] <command> '
+            '<subcommand> [parameters]\n\nU'
         )
         self.assertEqual(actual_docs[:len(expected_docs)], expected_docs)
 
@@ -73,9 +72,8 @@ class TestDocsGetter(unittest.TestCase):
         command_text = 'ec2 fake'
         actual_docs = self.docs_getter.get_docs(command_text)
         expected_docs = (
-            '\n\n.. _cli:aws ec2:\n\n\n***\nec2\n***\n\n\n\n===========\nDescr'
-            'iption\n===========\n\n \n\nAmazon Elastic Compute Cloud (Amazon '
-            'EC2)'
+            '\n\nAmazon Elastic Compute Cloud (Amazon EC2) provides secure and'
+            '\nresizable computing capacity in the AWS cloud. Using '
         )
         self.assertEqual(actual_docs[:len(expected_docs)], expected_docs)
 
@@ -92,9 +90,9 @@ class TestAwsTopLevelDocsGetter(unittest.TestCase):
         self.driver = create_clidriver()
         self.docs_getter = AwsTopLevelDocsGetter(self.driver)
         self.help_docs = (
-            '\n\n.. _cli:aws:\n\n\n***\naws\n***\n\n\n\n===========\nDescripti'
-            'on\n===========\n\nThe AWS Command Line Interface is a unified to'
-            'ol to manage your AWS services.\n'
+            '\n\nThe AWS Command Line Interface is a unified tool to manage '
+            'your AWS\nservices.\n\n\nSYNOPSIS\n\n   aws [options] <command> '
+            '<subcommand> [parameters]\n\nU'
         )
 
     def test_can_get_top_level_aws_help_text(self):
@@ -119,9 +117,8 @@ class TestServiceCommandDocsGetter(unittest.TestCase):
         args = ['ec2']
         actual_docs = self.service_command_docs_getter.get_docs(args)
         expected_docs = (
-            '\n\n.. _cli:aws ec2:\n\n\n***\nec2\n***\n\n\n\n===========\nDescr'
-            'iption\n===========\n\n \n\nAmazon Elastic Compute Cloud (Amazon '
-            'EC2)'
+            '\n\nAmazon Elastic Compute Cloud (Amazon EC2) provides secure and'
+            '\nresizable computing capacity in the AWS cloud. Using '
         )
         self.assertEqual(actual_docs[:len(expected_docs)], expected_docs)
 
@@ -129,10 +126,10 @@ class TestServiceCommandDocsGetter(unittest.TestCase):
         args = ['ec2', 'describe-instances']
         actual_docs = self.service_command_docs_getter.get_docs(args)
         expected_docs = (
-            '\n\n.. _cli:aws ec2 describe-instances:\n\n\n******************\n'
-            'describe-instances\n******************\n\n\n\n===========\nDescri'
-            'ption\n===========\n\n\n\nDescribes the specified instances or al'
-            'l instances.\n'
+            '\n\nDescribes the specified instances or all instances.\n\n'
+            'If you specify instance IDs, the output includes information '
+            'for only\nthe specified instances. If you specify filters, '
+            'the output includ'
         )
         self.assertEqual(actual_docs[:len(expected_docs)], expected_docs)
 
@@ -140,9 +137,8 @@ class TestServiceCommandDocsGetter(unittest.TestCase):
         args = ['ec2', 'fake']
         actual_docs = self.service_command_docs_getter.get_docs(args)
         expected_docs = (
-            '\n\n.. _cli:aws ec2:\n\n\n***\nec2\n***\n\n\n\n===========\nDescr'
-            'iption\n===========\n\n \n\nAmazon Elastic Compute Cloud (Amazon '
-            'EC2)'
+            '\n\nAmazon Elastic Compute Cloud (Amazon EC2) provides secure and'
+            '\nresizable computing capacity in the AWS cloud. Using '
         )
         self.assertEqual(actual_docs[:len(expected_docs)], expected_docs)
 
@@ -174,9 +170,9 @@ class TestServiceOperationDocsGetter(unittest.TestCase):
         actual_docs = self.service_operation_docs_getter.get_docs(
             self.service_command, remaining)
         expected_docs = (
-            '\n\n.. _cli:aws ec2 describe-instances:\n\n\n******************\n'
-            'describe-instances\n******************\n\n\n\n===========\nDescri'
-            'ption\n===========\n\n\n\nDescribes the specified instances or al'
-            'l instances.\n'
+            '\n\nDescribes the specified instances or all instances.\n\n'
+            'If you specify instance IDs, the output includes information '
+            'for only\nthe specified instances. If you specify filters, '
+            'the output includ'
         )
         self.assertEqual(actual_docs[:len(expected_docs)], expected_docs)

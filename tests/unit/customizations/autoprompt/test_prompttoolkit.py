@@ -57,8 +57,8 @@ class TestPromptToolkitCompleter(unittest.TestCase):
 
     def test_get_completions_sorted_by_required(self):
         expected_completion_objects = [
-            Completion('--instance-id', 0, '--instance-id (required)', ''),
             Completion('--name', 0, '--name (required)', ''),
+            Completion('--instance-id', 0, '--instance-id (required)', ''),
             Completion('--debug', 0, '--debug', '')
         ]
         self.completion_source.autocomplete.return_value = [
@@ -74,8 +74,8 @@ class TestPromptToolkitCompleter(unittest.TestCase):
 
     def test_get_completions_with_auto_prompt_overrides_filtered_out(self):
         expected_completion_objects = [
-            Completion('--instance-id', 0, '--instance-id (required)', ''),
             Completion('--name', 0, '--name (required)', ''),
+            Completion('--instance-id', 0, '--instance-id (required)', ''),
             Completion('--debug', 0, '--debug', '')
         ]
         self.completion_source.autocomplete.return_value = [
@@ -93,8 +93,8 @@ class TestPromptToolkitCompleter(unittest.TestCase):
 
     def test_get_completions_with_duplicates_removed(self):
         expected_completion_objects = [
-            Completion('--instance-id', 0, '--instance-id (required)', ''),
             Completion('--name', 0, '--name (required)', ''),
+            Completion('--instance-id', 0, '--instance-id (required)', ''),
             Completion('--debug', 0, '--debug', '')
         ]
         self.completion_source.autocomplete.return_value = [
@@ -112,8 +112,8 @@ class TestPromptToolkitCompleter(unittest.TestCase):
 
     def test_get_completions_with_overrides_and_duplicates_removed(self):
         expected_completion_objects = [
-            Completion('--instance-id', 0, '--instance-id (required)', ''),
             Completion('--name', 0, '--name (required)', ''),
+            Completion('--instance-id', 0, '--instance-id (required)', ''),
             Completion('--debug', 0, '--debug', '')
         ]
         self.completion_source.autocomplete.return_value = [
@@ -133,10 +133,10 @@ class TestPromptToolkitCompleter(unittest.TestCase):
 
     def test_get_completions_with_display_meta(self):
         expected_completion_objects = [
-            Completion('--instance-id', 0, '--instance-id (required)',
-                       '[string] The ID of the instance.'),
             Completion('--name', 0, '--name (required)',
                        '[string] A name for the new image.'),
+            Completion('--instance-id', 0, '--instance-id (required)',
+                       '[string] The ID of the instance.'),
             Completion('--debug', 0, '--debug',
                        '[boolean] Turn on debug logging.')
         ]

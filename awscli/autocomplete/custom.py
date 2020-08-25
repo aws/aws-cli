@@ -10,8 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.customizations.dynamodb.autocomplete import add_ddb_completers
-from awscli.customizations.logs.autocomplete import add_log_completers
+from awscli.autocomplete.serverside.custom_completers.ddb.autocomplete import add_ddb_completers
+from awscli.autocomplete.serverside.custom_completers.logs.autocomplete import add_log_completers
 
 
 def get_custom_completers():

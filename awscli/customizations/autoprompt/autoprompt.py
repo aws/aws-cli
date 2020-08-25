@@ -10,10 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import sys
+
 from awscli.autocomplete.main import create_autocompleter
 from awscli.customizations.arguments import CustomArgument
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.autoprompt.prompttoolkit import PromptToolkitPrompter
+from awscli.utils import is_stdin_a_tty
 
 
 def register_autoprompt(cli):
@@ -24,9 +27,9 @@ def add_auto_prompt(session, argument_table, driver,
                     completion_source=None, **kwargs):
     # This argument cannot support operations with streaming output which
     # is designated by the argument name `outfile`.
-    if 'outfile' not in argument_table:
+    if 'outfile' not in argument_table and is_stdin_a_tty():
         if completion_source is None:
-            completion_source = create_autocompleter()
+            completion_source = create_autocompleter(driver=driver)
         prompter = AutoPrompter(completion_source, driver)
         auto_prompt_argument = AutoPromptArgument(session, prompter)
         auto_prompt_argument.add_to_arg_table(argument_table)
@@ -56,16 +59,21 @@ class AutoPromptArgument(CustomArgument):
         'help_text': 'Automatically prompt for CLI input parameters.'
     }
 
+    NO_PROMPT_ARGS = ['help', '--version']
+
     def __init__(self, session, prompter):
         super(AutoPromptArgument, self).__init__(**self.ARG_DATA)
         self._session = session
         self._prompter = prompter
 
-    def _should_autoprompt(self, parsed_args):
+    def _should_autoprompt(self, parsed_args, args):
         # Order of precedence to check:
+        # - check if any arg rom NO_PROMPT_ARGS in args
         # - check if '--no-cli-auto-prompt' was specified
         # - check if '--cli-auto-prompt' was specified
         # - check configuration chain
+        if any(arg in args for arg in self.NO_PROMPT_ARGS):
+            return False
         if getattr(parsed_args, 'no_cli_auto_prompt', False):
             return False
         if getattr(parsed_args, 'cli_auto_prompt', False):
@@ -92,7 +100,7 @@ class AutoPromptArgument(CustomArgument):
             Example: ['ec2', 'describe-instances']
 
         """
-        if self._should_autoprompt(parsed_args):
+        if self._should_autoprompt(parsed_args, args):
             args = self._prompter.prompt_for_values(args)
         return args
 

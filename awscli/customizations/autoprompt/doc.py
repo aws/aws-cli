@@ -10,10 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import awscli.clidriver
+import io
+from docutils.core import publish_string
 
+import awscli.clidriver
 from awscli.argparser import ArgTableArgParser
-from botocore.docs.bcdoc import docevents
+from awscli.bcdoc import docevents, textwriter
 
 
 class DocsGetter:
@@ -91,6 +93,42 @@ class DocsGetter:
 class BaseDocsGetter:
     def __init__(self, driver):
         self._driver = driver
+        self._cache = {}
+
+    def _render_docs(self, help_command):
+        renderer = FileRenderer()
+        help_command.renderer = renderer
+        help_command(None, None)
+        # The report_level override is so that we don't print anything
+        # to stdout/stderr on rendering issues.
+        original_cli_help = renderer.contents.decode('utf-8')
+        text_content = self._convert_rst_to_basic_text(original_cli_help)
+        index = text_content.find('DESCRIPTION')
+        if index > 0:
+            text_content = text_content[index + len('DESCRIPTION'):]
+        return text_content
+
+    def _convert_rst_to_basic_text(self, contents):
+        """Convert restructured text to basic text output.
+
+        This function removes most of the decorations added
+        in restructured text.
+
+        This function is used to generate documentation we
+        can show to users in a cross platform manner.
+
+        Basic indentation and list formatting are kept,
+        but many RST features are removed (such as
+        section underlines).
+
+        """
+        # The report_level override is so that we don't print anything
+        # to stdout/stderr on rendering issues.
+        converted = publish_string(
+            contents, writer=BasicTextWriter(),
+            settings_overrides={'report_level': 5, 'halt_level': 5}
+        )
+        return converted.decode('utf-8')
 
     def get_doc_content(self, help_command):
         """Does the heavy lifting of retrieving the actual documentation
@@ -99,23 +137,23 @@ class BaseDocsGetter:
         """
         instance = help_command.EventHandlerClass(help_command)
         docevents.generate_events(help_command.session, help_command)
-        content = help_command.doc.getvalue()
+        content = self._render_docs(help_command)
         instance.unregister()
-        if content is not None:
-            content = content.decode('utf-8')
         return content
 
 
 class AwsTopLevelDocsGetter(BaseDocsGetter):
     """Getter for the top-level `aws` command."""
     def get_docs(self, driver):
-        help_command = driver.create_help_command()
-        return self.get_doc_content(help_command)
+        if 'aws' not in self._cache:
+            help_command = driver.create_help_command()
+            self._cache['aws'] = self.get_doc_content(help_command)
+        return self._cache['aws']
 
 
 class ServiceCommandDocsGetter(BaseDocsGetter):
     def __init__(self, driver, service_operation_docs_getter=None):
-        self._driver = driver
+        super(ServiceCommandDocsGetter, self).__init__(driver)
         self._service_command_table = self._driver.subcommand_table
         if service_operation_docs_getter is None:
             service_operation_docs_getter = \
@@ -127,7 +165,10 @@ class ServiceCommandDocsGetter(BaseDocsGetter):
         if not remaining \
                 or not self._is_valid_operation(service_command, remaining):
             help_command = service_command.create_help_command()
-            return self.get_doc_content(help_command)
+            if help_command.name not in self._cache:
+                self._cache[help_command.name] = \
+                     self.get_doc_content(help_command)
+            return self._cache[help_command.name]
         else:
             return self._service_operation_docs_getter.get_docs(
                 service_command, remaining)
@@ -152,9 +193,12 @@ class ServiceOperationDocsGetter(BaseDocsGetter):
     def get_docs(self, service_command, remaining):
         subcommand_table = service_command.subcommand_table
         operation_name = self._get_operation_name(service_command, remaining)
-        service_operation = subcommand_table[operation_name]
-        help_command = service_operation.create_help_command()
-        return self.get_doc_content(help_command)
+        if (service_command.name, operation_name) not in self._cache:
+            service_operation = subcommand_table[operation_name]
+            help_command = service_operation.create_help_command()
+            self._cache[(service_command.name, operation_name)] = \
+                self.get_doc_content(help_command)
+        return self._cache[(service_command.name, operation_name)]
 
     def _get_operation_name(self, service_command, remaining):
         # We need to differentiate between `awscli.clidriver.ServiceCommand`
@@ -169,3 +213,42 @@ class ServiceOperationDocsGetter(BaseDocsGetter):
             parsed_args, remaining = service_parser.parse_known_args(remaining)
             operation_name = parsed_args.subcommand
         return operation_name
+
+
+class FileRenderer:
+
+    def __init__(self):
+        self._io = io.BytesIO()
+
+    def render(self, contents):
+        self._io.write(contents)
+
+    @property
+    def contents(self):
+        return self._io.getvalue()
+
+
+class BasicTextWriter(textwriter.TextWriter):
+    def translate(self):
+        visitor = BasicTextTranslator(self.document)
+        self.document.walkabout(visitor)
+        self.output = visitor.body
+
+
+class BasicTextTranslator(textwriter.TextTranslator):
+    def depart_title(self, node):
+        # Make the section titles upper cased, similar to
+        # the man page output.
+        text = ''.join(x[1] for x in self.states.pop() if x[0] == -1)
+        self.stateindent.pop()
+        self.states[-1].append((0, ['', text.upper(), '']))
+
+    # The botocore TextWriter has additional formatting
+    # for literals, for the aws-shell docs we don't want any
+    # special processing so these nodes are noops.
+
+    def visit_literal(self, node):
+        pass
+
+    def depart_literal(self, node):
+        pass

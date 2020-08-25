@@ -11,6 +11,7 @@ from awscli.argprocess import unpack_argument, unpack_cli_arg
 from awscli.arguments import CustomArgument, create_argument_model_from_schema
 from awscli.clidocs import OperationDocumentEventHandler
 from awscli.commands import CLICommand
+from awscli.bcdoc import docevents
 from awscli.help import HelpCommand
 from awscli.schema import SchemaTransformer
 from awscli.customizations.exceptions import ParamValidationError

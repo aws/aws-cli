@@ -10,15 +10,38 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
+import shutil
+import tempfile
+
 from prompt_toolkit import Application
 
 from awscli.autocomplete.main import create_autocompleter
+from awscli.autocomplete import generator
+from awscli.autocomplete.local import indexer
 from awscli.clidriver import create_clidriver
 from awscli.customizations.autoprompt.factory import PromptToolkitFactory
 from awscli.customizations.autoprompt.prompttoolkit import (
     PromptToolkitCompleter, PromptToolkitPrompter
 )
-from awscli.testutils import unittest
+from awscli.testutils import unittest, random_chars
+
+
+def _ec2_only_command_table(command_table, **kwargs):
+    for key in list(command_table):
+        if key != 'ec2':
+            del command_table[key]
+
+
+def _generate_index(filename):
+    # This will eventually be moved into some utility function.
+    index_generator = generator.IndexGenerator(
+        [indexer.create_model_indexer(filename)],
+    )
+    driver = create_clidriver()
+    driver.session.register('building-command-table.main',
+                            _ec2_only_command_table)
+    index_generator.generate_index(driver)
 
 
 class TestPromptToolkitPrompterBuffer(unittest.TestCase):
@@ -27,8 +50,19 @@ class TestPromptToolkitPrompterBuffer(unittest.TestCase):
     previously been known to produce unexpected behavior.
 
     """
+    @classmethod
+    def setUpClass(cls):
+        cls.temporary_directory = tempfile.mkdtemp()
+        basename = 'tmpfile-%s' % str(random_chars(8))
+        full_filename = os.path.join(cls.temporary_directory, basename)
+        _generate_index(full_filename)
+        cls.completion_source = create_autocompleter(full_filename)
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.temporary_directory)
+
     def setUp(self):
-        self.completion_source = create_autocompleter()
         self.completer = PromptToolkitCompleter(self.completion_source)
         self.factory = PromptToolkitFactory(self.completer)
         self.driver = create_clidriver()
@@ -48,10 +82,10 @@ class TestPromptToolkitPrompterBuffer(unittest.TestCase):
         layout = self.factory.create_layout()
         return Application(layout=layout)
 
-    def test_reset_buffer_text_if_invalid_command_entered(self):
+    def test_preserve_buffer_text_if_invalid_command_entered(self):
         original_args = ['ec2', 'fake']
         buffer_text = self.get_updated_input_buffer_text(original_args)
-        self.assertEqual(buffer_text, '')
+        self.assertEqual(buffer_text, 'ec2 fake')
 
     def test_dont_reset_buffer_text_if_complete_command_entered(self):
         original_args = ['ec2']
@@ -66,17 +100,17 @@ class TestPromptToolkitPrompterBuffer(unittest.TestCase):
     def test_dont_reset_buffer_text_if_s3_ls_entered(self):
         original_args = ['s3', 'ls']
         buffer_text = self.get_updated_input_buffer_text(original_args)
-        self.assertEqual(buffer_text, 's3 ls ')
+        self.assertEqual(buffer_text, 's3 ls')
 
     def test_dont_reset_buffer_text_if_s3_ls_space_entered(self):
         original_args = ['s3', 'ls ']
         buffer_text = self.get_updated_input_buffer_text(original_args)
         self.assertEqual(buffer_text, 's3 ls ')
 
-    def test_reset_buffer_text_if_invalid_command_with_option_entered(self):
+    def test_preserve_buffer_text_if_invalid_command_with_option_entered(self):
         original_args = ['ec2', 'fake', '--output']
         buffer_text = self.get_updated_input_buffer_text(original_args)
-        self.assertEqual(buffer_text, '')
+        self.assertEqual(buffer_text, 'ec2 fake --output')
 
     def test_dont_reset_buffer_text_if_valid_command_with_option_entered(self):
         original_args = ['ec2', 'describe-instances', '--output']

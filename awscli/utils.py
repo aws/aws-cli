@@ -264,6 +264,13 @@ def is_a_tty():
         return False
 
 
+def is_stdin_a_tty():
+    try:
+        return os.isatty(sys.stdin.fileno())
+    except Exception as e:
+        return False
+
+
 class OutputStreamFactory(object):
     def __init__(self, session, popen=None, environ=None,
                  default_less_flags='FRX'):

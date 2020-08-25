@@ -10,61 +10,31 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import sys
 import logging
-import jmespath
 
 from awscli.autocomplete.completer import BaseCompleter, CompletionResult
-
+from awscli.autocomplete import LazyClientCreator
+from awscli.autocomplete.filters import startswith_filter
 
 LOG = logging.getLogger(__name__)
 
 
-def lazy_call(import_name, **kwargs):
-    """Import a callable and invoke it with the provided kwargs.
-
-    :param import_name: A dotted string of the form ``package.module.Callable``.
-    :type import_name: string
-    :param kwargs: kwargs to pass to the callable once it's imported.
-    :type kwargs:  dict
-
-    """
-    module_name, callable_name = import_name.rsplit('.', 1)
-    __import__(module_name)
-    module = sys.modules[module_name]
-    return getattr(module, callable_name)(**kwargs)
-
-
-class LazyClientCreator(object):
-    """Lazy create a botocore client.
-
-    This class will defer creating a client until the create_client method
-    is invoked.  It will also avoid importing botocore until we need to
-    create a client.
-
-    Importing botocore and creating a botocore session/client is an expensive
-    process, and we only want to do this when we know for sure that we need
-    a client.  This class manages this process.
-
-    """
-    def __init__(self,
-                 import_name='awscli.clidriver.create_clidriver'):
-        self._session = None
-        self._import_name = import_name
-
-    def create_client(self, service_name, **kwargs):
-        if self._session is None:
-            self._session = self._create_session()
-        return self._session.create_client(service_name, **kwargs)
-
-    def _create_session(self):
-        return lazy_call(self._import_name).session
-
-
 class ServerSideCompleter(BaseCompleter):
-    def __init__(self, completion_lookup, client_creator):
+    def __init__(self, completion_lookup, client_creator,
+                 response_filter=None):
         self._completion_lookup = completion_lookup
         self._client_creator = client_creator
+        self._jmespath = None
+        self._filter = response_filter
+        if self._filter is None:
+            self._filter = startswith_filter
+
+    @property
+    def jmespath(self):
+        if self._jmespath is None:
+            import jmespath
+            self._jmespath = jmespath
+        return self._jmespath
 
     def complete(self, parsed):
         """
@@ -93,12 +63,14 @@ class ServerSideCompleter(BaseCompleter):
         # with a 'parameters' key.
         raw_results = self._retrieve_remote_completion_data(
             parsed, completion_data['completions'][0])
-        return self._convert_to_completion_data(raw_results, parsed)
+        return self._filter(
+            parsed.current_fragment,
+            self._convert_to_completion_data(raw_results, parsed)
+        )
 
     def _convert_to_completion_data(self, raw_results, parsed):
         index = -len(parsed.current_fragment)
-        return [CompletionResult(r, index) for r in raw_results
-                if r.startswith(parsed.current_fragment)]
+        return [CompletionResult(r, index) for r in raw_results]
 
     def _on_cli_option_value_fragment(self, parsed):
         if parsed.current_param is None or parsed.current_fragment is None:
@@ -109,12 +81,16 @@ class ServerSideCompleter(BaseCompleter):
         # TODO: Handle global params that can affect how we create the client
         # (region, endpoint-url, profile, timeouts, etc).
         service_name = completion_data['service']
-        client = self._client_creator.create_client(service_name)
+        client = self._client_creator.create_client(
+            service_name,
+            parsed_region=parsed.global_params.get('region'),
+            parsed_profile=parsed.global_params.get('profile')
+        )
         method_name = completion_data['operation']
         api_params = self._map_command_to_api_params(parsed, completion_data)
         response = self._invoke_api(client, method_name, api_params)
         if response:
-            result = jmespath.search(completion_data['jp_expr'], response)
+            result = self.jmespath.search(completion_data['jp_expr'], response)
             if result:
                 return result
         return []

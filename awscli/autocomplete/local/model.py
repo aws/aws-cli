@@ -28,8 +28,7 @@ from awscli.autocomplete import db
 
 CLIArgument = namedtuple('CLIArgument', ['argname', 'type_name',
                                          'command', 'parent', 'nargs',
-                                         'positional_arg', 'required',
-                                         'help_text'])
+                                         'positional_arg', 'required'])
 
 
 class ModelIndex(object):
@@ -41,7 +40,7 @@ class ModelIndex(object):
 
     """
     _COMMAND_NAME_QUERY = """
-        SELECT command FROM command_table
+        SELECT command, full_name FROM command_table
         WHERE parent = :parent
     """
 
@@ -55,7 +54,7 @@ class ModelIndex(object):
 
     _ARG_DATA_QUERY = """\
         SELECT argname, type_name, command, parent, nargs, positional_arg,
-            required, help_text FROM param_table
+            required FROM param_table
         WHERE
           parent = :parent AND
           command = :command AND
@@ -64,7 +63,7 @@ class ModelIndex(object):
 
     _GLOBAL_ARG_DATA_QUERY = """
         SELECT argname, type_name, command, parent, nargs, positional_arg,
-            required, help_text FROM param_table
+            required FROM param_table
         WHERE
           parent = :parent
     """
@@ -80,7 +79,16 @@ class ModelIndex(object):
         return self._db_connection
 
     def command_names(self, lineage):
-        """Return command names given a lineage.
+        """Return only command names without full_names
+            given a lineage.
+
+        :return: A list of available commands
+        """
+        return [row[0] for row in self.commands_with_full_name(lineage)]
+
+    def commands_with_full_name(self, lineage):
+        """Return command names and full_name if it's a service
+         given a lineage.
 
         This ``lineage`` is the same concept used in the
         AWS CLI command classes, except that it explicitly
@@ -90,12 +98,12 @@ class ModelIndex(object):
         command ``aws ec2 wait instance-running <here>`` has a lineage
         of ``['aws', 'ec2', 'wait', 'instance-running']``.
 
-        :return: A list of available commands.
+        :return: A list of tuples (name, full_name) available commands
         """
         db = self._get_db_connection()
         parent = '.'.join(lineage)
         results = db.execute(self._COMMAND_NAME_QUERY, parent=parent)
-        return [row[0] for row in results]
+        return results.fetchall()
 
     def arg_names(self, lineage, command_name, positional_arg=False):
         """Return arg names for a given lineage.
@@ -139,14 +147,12 @@ class ModelIndex(object):
         if match is not None:
             return CLIArgument(*match)
 
-    def get_global_arg_data(self, lineage=[], command_name='aws'):
+    def get_global_arg_data(self):
         """Return all metadata for the global args.
 
         :return: A list of tuples.
 
         """
         db = self._get_db_connection()
-        parent = '.'.join(lineage)
-        results = db.execute(self._GLOBAL_ARG_DATA_QUERY,
-                             parent=parent, command=command_name)
-        return [result for result in results]
+        results = db.execute(self._GLOBAL_ARG_DATA_QUERY, parent='')
+        return results.fetchall()

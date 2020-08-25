@@ -36,13 +36,15 @@ class TestServerSideAutocompleter(unittest.TestCase):
     def setUp(self):
         self.index = InMemoryIndex({
             'command_names': {
-                '': ['aws'],
-                'aws': ['ec2', 'iam', 's3'],
-                'aws.iam': ['delete-user-policy', 'delete-user'],
+                '': [('aws', None)],
+                'aws': [('ec2', None), ('iam', None), ('s3', None)],
+                'aws.iam': [
+                    ('delete-user-policy', None),
+                    ('delete-user', None)],
             },
             'arg_names': {
                 '': {
-                    'aws': ['region', 'endpoint-url'],
+                    'aws': ['region', 'endpoint-url', 'profile'],
                 },
                 'aws.iam': {
                     'delete-user-policy': ['policy-name'],
@@ -53,21 +55,23 @@ class TestServerSideAutocompleter(unittest.TestCase):
                 '': {
                     'aws': {
                         'endpoint-url': ('endpoint-url', 'string', 'aws', '',
-                                         None, False, False, ''),
+                                         None, False, False),
                         'region': ('region', 'string', 'aws', '', None, False,
-                                   False, ''),
+                                   False),
+                        'profile': ('profile', 'string', 'aws', '', None, False,
+                                   False),
                     }
                 },
                 'aws.iam': {
                     'delete-user-policy': {
                         'policy-name': (
                             'policy-name', 'string', 'delete-user-policy',
-                            'aws.iam.', None, False, False, ''),
+                            'aws.iam.', None, False, False),
                     },
                     'delete-user': {
                         'user-name': (
                             'user-name', 'string', 'delete-user', 'aws.iam.',
-                            None, False, False, ''),
+                            None, False, False),
                     }
                 }
             }
@@ -149,6 +153,15 @@ class TestServerSideAutocompleter(unittest.TestCase):
         parsed = self.parser.parse('aws iam delete-user-policy --policy-name ')
         results = self.completer.complete(parsed)
         self.assertEqual(results, [])
+
+    def test_region_and_profile_passed_to_create_client(self):
+        parsed = self.parser.parse('aws iam delete-user-policy '
+                                   '--region us-west-2 --profile profile1 '
+                                   '--policy-name ')
+        self.completer.complete(parsed)
+        self.mock_create_client.create_client.assert_called_with(
+            'iam', parsed_profile='profile1', parsed_region='us-west-2'
+        )
 
 
 class TestLazyClientCreator(unittest.TestCase):

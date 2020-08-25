@@ -747,6 +747,18 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.125
+========
+
+* api-change:``xray``: Update xray command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``logs``: Update logs command to latest version
+
+
 1.18.124
 ========
 

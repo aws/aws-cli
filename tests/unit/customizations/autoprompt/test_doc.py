@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import mock
+import textwrap
 
 from awscli.clidriver import create_clidriver
 from awscli.customizations.autoprompt.doc import (
@@ -91,7 +92,36 @@ class TestBaseDocsGetter(unittest.TestCase):
     def test_get_doc_content(self):
         self.help_command.doc.getvalue.return_value = b'Dummy content.'
         content = self.base_docs_getter.get_doc_content(self.help_command)
-        self.assertEqual(content, 'Dummy content.')
+        self.assertEqual(content, 'Dummy content.\n')
+
+    def test_get_rst_doc_in_txt(self):
+        content = textwrap.dedent("""\
+            MySection
+            =========
+
+            This is some text.
+            Here's a list:
+
+            * foo
+            * bar
+
+            Literal text: ``--foo-bar``
+        """)
+        expected_response = textwrap.dedent("""\
+
+            MYSECTION
+
+            This is some text. Here's a list:
+
+            * foo
+
+            * bar
+
+            Literal text: --foo-bar
+        """)
+        self.help_command.doc.getvalue.return_value = content.encode('utf-8')
+        response = self.base_docs_getter.get_doc_content(self.help_command)
+        self.assertEqual(response, expected_response)
 
     def test_get_empty_doc_content(self):
         self.help_command.doc.getvalue.return_value = b''
@@ -108,6 +138,16 @@ class TestAwsTopLevelDocsGetter(unittest.TestCase):
     def test_base_docs_getter_is_called(self):
         self.aws_top_level_docs_getter.get_docs(self.driver)
         self.assertTrue(self.aws_top_level_docs_getter.get_doc_content.called)
+
+    def test_base_docs_getter_use_cache(self):
+        self.aws_top_level_docs_getter.get_docs(self.driver)
+        self.assertEqual(
+            self.aws_top_level_docs_getter.get_doc_content.call_count, 1
+        )
+        self.aws_top_level_docs_getter.get_docs(self.driver)
+        self.assertEqual(
+            self.aws_top_level_docs_getter.get_doc_content.call_count, 1
+        )
 
 
 class TestServiceCommandDocsGetter(unittest.TestCase):
@@ -134,6 +174,17 @@ class TestServiceCommandDocsGetter(unittest.TestCase):
         args = ['ec2', 'describe-instances']
         self.service_command_docs_getter.get_docs(args)
         self.assertTrue(self.service_operation_docs_getter.get_docs.called)   
+
+    def test_base_docs_getter_use_cache(self):
+        args = ['ec2']
+        self.service_command_docs_getter.get_docs(args)
+        self.assertEqual(
+            self.service_command_docs_getter.get_doc_content.call_count, 1
+        )
+        self.service_command_docs_getter.get_docs(args)
+        self.assertEqual(
+            self.service_command_docs_getter.get_doc_content.call_count, 1
+        )
 
 
 class TestServiceOperationDocsGetter(unittest.TestCase):
@@ -165,3 +216,15 @@ class TestServiceOperationDocsGetter(unittest.TestCase):
             self.service_command, remaining)
         self.assertTrue(
             self.service_operation_docs_getter.get_doc_content.called)
+
+    def test_base_docs_getter_use_cache(self):
+        args = ['ec2', 'describe-instances']
+        self.service_command, remaining = self.get_service_command(args)
+        self.service_operation_docs_getter.get_docs(
+            self.service_command, remaining)
+        self.assertEqual(
+            self.service_operation_docs_getter.get_doc_content.call_count, 1)
+        self.service_operation_docs_getter.get_docs(
+            self.service_command, remaining)
+        self.assertEqual(
+            self.service_operation_docs_getter.get_doc_content.call_count, 1)

@@ -62,6 +62,7 @@ from awscli.utils import emit_top_level_args_parsed_event
 from awscli.utils import write_exception
 from awscli.utils import OutputStreamFactory
 from awscli.utils import IMDSRegionProvider
+from awscli.utils import is_stdin_a_tty
 from awscli.constants import (
     PARAM_VALIDATION_ERROR_RC, CONFIGURATION_ERROR_RC, CLIENT_ERROR_RC,
     GENERAL_ERROR_RC,
@@ -395,26 +396,27 @@ class CLIDriver(object):
             ]
 
     def prompt_for_args(self, args, completion_source=None):
-        if completion_source is None:
-            completion_source = create_autocompleter(driver=self)
-        option_parser = ArgTableArgParser(self.arg_table)
-        filtered_args = self._filter_out_options(args)
-        parsed_options, _ = option_parser.parse_known_args(filtered_args)
-        try:
-            validate_auto_prompt_args_are_mutually_exclusive(parsed_options)
-            prompter = AutoPrompter(completion_source)
-            auto_prompt_argument = AutoPromptArgument(self.session, prompter)
-            args = auto_prompt_argument.auto_prompt_arguments(args,
-                                                              parsed_options)
-        except PARAM_VALIDATION_ERRORS as e:
-            self._show_error(str(e))
-            sys.exit(PARAM_VALIDATION_ERROR_RC)
-        except KeyboardInterrupt:
-            # If the user hits Ctrl+C, we don't want to print a traceback to
-            # the user. Shell standard for signals that terminate the process
-            # is to return 128 + signum, in this case SIGINT=2, so we'll have
-            # a RC of 130.
-            sys.exit(128 + signal.SIGINT)
+        if is_stdin_a_tty():
+            if completion_source is None:
+                completion_source = create_autocompleter(driver=self)
+            option_parser = ArgTableArgParser(self.arg_table)
+            filtered_args = self._filter_out_options(args)
+            parsed_options, _ = option_parser.parse_known_args(filtered_args)
+            try:
+                validate_auto_prompt_args_are_mutually_exclusive(parsed_options)
+                prompter = AutoPrompter(completion_source, self)
+                auto_prompt_argument = AutoPromptArgument(self.session, prompter)
+                args = auto_prompt_argument.auto_prompt_arguments(args,
+                                                                  parsed_options)
+            except PARAM_VALIDATION_ERRORS as e:
+                self._show_error(str(e))
+                sys.exit(PARAM_VALIDATION_ERROR_RC)
+            except KeyboardInterrupt:
+                # If the user hits Ctrl+C, we don't want to print a traceback to
+                # the user. Shell standard for signals that terminate the process
+                # is to return 128 + signum, in this case SIGINT=2, so we'll have
+                # a RC of 130.
+                sys.exit(128 + signal.SIGINT)
         return args
 
     def main(self, args=None):

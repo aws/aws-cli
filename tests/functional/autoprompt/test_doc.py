@@ -26,43 +26,26 @@ class TestDocsGetter(unittest.TestCase):
     def test_get_service_command_docs(self):
         command_text = 'ec2'
         actual_docs = self.docs_getter.get_docs(command_text)
-        expected_docs = (
-            '\n\n.. _cli:aws ec2:\n\n\n***\nec2\n***\n\n\n\n===========\nDescr'
-            'iption\n===========\n\n \n\nAmazon Elastic Compute Cloud (Amazon '
-            'EC2)'
-        )
-        self.assertEqual(actual_docs[:len(expected_docs)], expected_docs)
+        expected_docs = 'Elastic Compute Cloud'
+        self.assertIn(expected_docs, actual_docs)
 
     def test_get_service_operation_docs(self):
         command_text = 'ec2 describe-instances'
         actual_docs = self.docs_getter.get_docs(command_text)
-        expected_docs = (
-            '\n\n.. _cli:aws ec2 describe-instances:\n\n\n******************\n'
-            'describe-instances\n******************\n\n\n\n===========\nDescri'
-            'ption\n===========\n\n\n\nDescribes the specified instances or al'
-            'l instances.\n'
-        )
-        self.assertEqual(actual_docs[:len(expected_docs)], expected_docs)
+        expected_docs = 'Describes the specified instances'
+        self.assertIn(expected_docs, actual_docs)
 
     def test_get_top_level_aws_docs_if_no_command_specified(self):
         command_text = ''
         actual_docs = self.docs_getter.get_docs(command_text)
-        expected_docs = (
-            '\n\n.. _cli:aws:\n\n\n***\naws\n***\n\n\n\n===========\nDescripti'
-            'on\n===========\n\nThe AWS Command Line Interface is a unified to'
-            'ol to manage your AWS services.\n'
-        )
-        self.assertEqual(actual_docs[:len(expected_docs)], expected_docs)
+        expected_docs = 'The AWS Command Line Interface'
+        self.assertIn(expected_docs, actual_docs)
 
     def test_get_top_level_aws_docs_if_service_command_is_invalid(self):
         command_text = 'fake'
         actual_docs = self.docs_getter.get_docs(command_text)
-        expected_docs = (
-            '\n\n.. _cli:aws:\n\n\n***\naws\n***\n\n\n\n===========\nDescripti'
-            'on\n===========\n\nThe AWS Command Line Interface is a unified to'
-            'ol to manage your AWS services.\n'
-        )
-        self.assertEqual(actual_docs[:len(expected_docs)], expected_docs)
+        expected_docs = 'The AWS Command Line Interface'
+        self.assertIn(expected_docs, actual_docs)
 
     def test_get_service_command_docs_if_service_operation_is_invalid(self):
         # The service command docs will still be retrieved if the service
@@ -72,12 +55,8 @@ class TestDocsGetter(unittest.TestCase):
         # outside of the `DocsGetter` class.
         command_text = 'ec2 fake'
         actual_docs = self.docs_getter.get_docs(command_text)
-        expected_docs = (
-            '\n\n.. _cli:aws ec2:\n\n\n***\nec2\n***\n\n\n\n===========\nDescr'
-            'iption\n===========\n\n \n\nAmazon Elastic Compute Cloud (Amazon '
-            'EC2)'
-        )
-        self.assertEqual(actual_docs[:len(expected_docs)], expected_docs)
+        expected_docs = 'Elastic Compute Cloud'
+        self.assertIn(expected_docs, actual_docs)
 
 
 class TestAwsTopLevelDocsGetter(unittest.TestCase):
@@ -91,15 +70,11 @@ class TestAwsTopLevelDocsGetter(unittest.TestCase):
     def setUp(self):
         self.driver = create_clidriver()
         self.docs_getter = AwsTopLevelDocsGetter(self.driver)
-        self.help_docs = (
-            '\n\n.. _cli:aws:\n\n\n***\naws\n***\n\n\n\n===========\nDescripti'
-            'on\n===========\n\nThe AWS Command Line Interface is a unified to'
-            'ol to manage your AWS services.\n'
-        )
+        self.help_docs = 'The AWS Command Line Interface'
 
     def test_can_get_top_level_aws_help_text(self):
         docs = self.docs_getter.get_docs(self.driver)
-        self.assertEqual(docs[:len(self.help_docs)], self.help_docs)
+        self.assertIn(self.help_docs, docs)
 
 
 class TestServiceCommandDocsGetter(unittest.TestCase):
@@ -118,33 +93,20 @@ class TestServiceCommandDocsGetter(unittest.TestCase):
     def test_can_get_service_command_docs_with_no_service_operation(self):
         args = ['ec2']
         actual_docs = self.service_command_docs_getter.get_docs(args)
-        expected_docs = (
-            '\n\n.. _cli:aws ec2:\n\n\n***\nec2\n***\n\n\n\n===========\nDescr'
-            'iption\n===========\n\n \n\nAmazon Elastic Compute Cloud (Amazon '
-            'EC2)'
-        )
-        self.assertEqual(actual_docs[:len(expected_docs)], expected_docs)
+        expected_docs = 'Elastic Compute Cloud'
+        self.assertIn(expected_docs, actual_docs)
 
     def test_can_get_service_command_docs_with_valid_service_operation(self):
         args = ['ec2', 'describe-instances']
         actual_docs = self.service_command_docs_getter.get_docs(args)
-        expected_docs = (
-            '\n\n.. _cli:aws ec2 describe-instances:\n\n\n******************\n'
-            'describe-instances\n******************\n\n\n\n===========\nDescri'
-            'ption\n===========\n\n\n\nDescribes the specified instances or al'
-            'l instances.\n'
-        )
-        self.assertEqual(actual_docs[:len(expected_docs)], expected_docs)
+        expected_docs = 'Describes the specified instances'
+        self.assertIn(expected_docs, actual_docs)
 
     def test_can_get_service_command_docs_with_invalid_service_operation(self):
         args = ['ec2', 'fake']
         actual_docs = self.service_command_docs_getter.get_docs(args)
-        expected_docs = (
-            '\n\n.. _cli:aws ec2:\n\n\n***\nec2\n***\n\n\n\n===========\nDescr'
-            'iption\n===========\n\n \n\nAmazon Elastic Compute Cloud (Amazon '
-            'EC2)'
-        )
-        self.assertEqual(actual_docs[:len(expected_docs)], expected_docs)
+        expected_docs = 'Elastic Compute Cloud'
+        self.assertIn(expected_docs, actual_docs)
 
 
 class TestServiceOperationDocsGetter(unittest.TestCase):
@@ -173,10 +135,5 @@ class TestServiceOperationDocsGetter(unittest.TestCase):
         remaining = ['describe-instances']
         actual_docs = self.service_operation_docs_getter.get_docs(
             self.service_command, remaining)
-        expected_docs = (
-            '\n\n.. _cli:aws ec2 describe-instances:\n\n\n******************\n'
-            'describe-instances\n******************\n\n\n\n===========\nDescri'
-            'ption\n===========\n\n\n\nDescribes the specified instances or al'
-            'l instances.\n'
-        )
-        self.assertEqual(actual_docs[:len(expected_docs)], expected_docs)
+        expected_docs = 'Describes the specified instances'
+        self.assertIn(expected_docs, actual_docs)

@@ -19,9 +19,9 @@ from awscli.autocomplete.serverside import model
 from awscli.autocomplete import db
 
 
-def create_server_side_completer(index_filename):
+def create_server_side_completer(index_filename, response_filter=None):
     return servercomp.ServerSideCompleter(
         model.DBCompletionLookup(
             db.DatabaseConnection(index_filename)
         ),
-        servercomp.LazyClientCreator())
+        servercomp.LazyClientCreator(), response_filter)

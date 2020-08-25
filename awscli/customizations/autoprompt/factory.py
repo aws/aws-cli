@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
+
 from prompt_toolkit.application import get_app
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.document import Document
@@ -21,11 +23,29 @@ from prompt_toolkit.keys import Keys
 from prompt_toolkit.layout import Float, FloatContainer, HSplit, Window
 from prompt_toolkit.layout.controls import BufferControl
 from prompt_toolkit.layout.dimension import Dimension
-from prompt_toolkit.layout.layout import Layout
-from prompt_toolkit.layout.menus import CompletionsMenu
+from prompt_toolkit.layout.layout import Layout, ConditionalContainer
+from prompt_toolkit.layout.menus import CompletionsMenu, MultiColumnCompletionsMenu
 from prompt_toolkit.layout.processors import (
     BeforeInput, Processor, Transformation)
 from prompt_toolkit.widgets import HorizontalLine, SearchToolbar
+
+
+@Condition
+def doc_section_visible():
+    app = get_app()
+    return getattr(app, 'show_doc')
+
+
+@Condition
+def is_multi_column():
+    app = get_app()
+    return getattr(app, 'multi_column', False)
+
+
+@Condition
+def is_one_column():
+    app = get_app()
+    return not getattr(app, 'multi_column', False)
 
 
 class PromptToolkitFactory:
@@ -68,7 +88,15 @@ class PromptToolkitFactory:
                 Float(
                     xcursor=True,
                     ycursor=True,
+                    content=MultiColumnCompletionsMenu(
+                        extra_filter=is_multi_column
+                    )
+                ),
+                Float(
+                    xcursor=True,
+                    ycursor=True,
                     content=CompletionsMenu(
+                        extra_filter=is_one_column,
                         max_height=self.DIMENSIONS['menu_height_max'],
                         scroll_offset=self.DIMENSIONS['menu_scroll_offset']
                     )
@@ -143,8 +171,8 @@ class PromptToolkitFactory:
             HSplit(
                 [
                     input_buffer_container,
-                    HorizontalLine(),
-                    doc_window,
+                    ConditionalContainer(HorizontalLine(), doc_section_visible),
+                    ConditionalContainer(doc_window, doc_section_visible),
                     HorizontalLine(),
                     search_field,
                     bottom_toolbar_container
@@ -179,14 +207,57 @@ class PromptToolkitKeyBindings:
 
         @self._kb.add(Keys.Enter, filter=_input_buffer_has_focus)
         def _(event):
-            event.app.exit()
+            buffer = event.app.current_buffer
+            is_completing = getattr(buffer, 'complete_state', False)
+            current_document = buffer.document
+            if not is_completing:
+                event.app.exit()
+            else:
+                # I didn't find better way to make a choice and close prompter
+                # than reset buffer and change it to selected part
+                buffer.cancel_completion()
+                event.app.current_buffer.reset()
+                updated_document = Document(
+                    text=current_document.text,
+                    cursor_position=current_document.cursor_position)
+                buffer.set_document(updated_document)
+                # If prompter suggested us something ended with slash and
+                # started with 'file://' or 'fileb://' it should be path ended
+                # with directory then we run completion again
+                cur_word = current_document.get_word_under_cursor(WORD=True)
+                if cur_word.endswith(os.sep) \
+                        and cur_word.startswith(('file://', 'fileb://')):
+                    buffer.start_completion()
+
+        @self._kb.add(Keys.F2)
+        def _(event):
+            current_buffer = event.app.current_buffer
+            if current_buffer.name != 'input_buffer':
+                layout = event.app.layout
+                toolbar_buffer = layout.get_buffer_by_name(
+                    'bottom_toolbar_buffer')
+                input_buffer = layout.get_buffer_by_name('input_buffer')
+                layout.focus(input_buffer)
+                text = self._toolbar_text.input_buffer_key_binding_text
+                new_document = Document(text=text, cursor_position=0)
+                toolbar_buffer.set_document(new_document, bypass_readonly=True)
+            event.app.show_doc = not getattr(event.app, 'show_doc')
+
+        @self._kb.add(Keys.F3)
+        def _(event):
+            event.app.multi_column = not getattr(
+                event.app, 'multi_column', True
+            )
 
         @self._kb.add(Keys.ControlC)
         @self._kb.add(Keys.ControlD)
         def _(event):
+            layout = event.app.layout
+            input_buffer = layout.get_buffer_by_name('input_buffer')
+            print(input_buffer.document.text)
             event.app.exit(exception=KeyboardInterrupt)
 
-        @self._kb.add(Keys.F1)
+        @self._kb.add(Keys.F1, filter=doc_section_visible)
         @self._kb.add('q', filter=_doc_window_has_focus)
         def _(event):
             # It may make sense to add the 'Escape' key as a binding to move
@@ -286,8 +357,10 @@ class ToolbarHelpText:
             f'{self._style}[UP]</style> Cycle Forward{self._spacing}'
             f'{self._style}[DOWN]</style> Cycle Backward{self._spacing}'
             f'{self._style}[SPACE]</style> Autocomplete Choice{self._spacing}'
-            f'{self._style}[ENTER]</style> Execute Command{self._spacing}'
-            f'{self._style}[F1]</style> Focus on Docs'
+            f'{self._style}[ENTER]</style> Autocomplete Choice/Execute Command{self._spacing}'
+            f'{self._style}[F1]</style> Focus on Docs{self._spacing}'
+            f'{self._style}[F2]</style> Hide/Show on Docs{self._spacing}'
+            f'{self._style}[F3]</style> One/Multi column prompt'
         )
         self.doc_window_key_binding_text = (
             f'{self._style}[/]</style> Search Forward{self._spacing}'

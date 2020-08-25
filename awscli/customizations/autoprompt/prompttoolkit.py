@@ -92,11 +92,13 @@ class PromptToolkitPrompter:
             bottom_toolbar_container=bottom_toolbar_container)
         kb_manager = self._factory.create_key_bindings()
         kb = kb_manager.keybindings
-        return Application(layout=layout, key_bindings=kb, full_screen=False,
+        app = Application(layout=layout, key_bindings=kb, full_screen=False,
                            erase_when_done=True)
+        # make doc panel invisible by default
+        app.show_doc = False
+        return app
 
     def _update_doc_window_contents(self, *args):
-        self._doc_buffer.reset()
         content = self._docs_getter.get_docs(self._input_buffer.text)
         # The only way to "modify" a read-only buffer in prompt_toolkit is to
         # create a new `prompt_toolkit.document.Document`. A 'cursor_position'
@@ -106,7 +108,8 @@ class PromptToolkitPrompter:
         # Note: `content` may be None if we are still in the middle of typing a
         # command (e.g. `aws ec2 descr`) or if the current command is invalid.
         # In these cases, we don't update the doc window.
-        if content is not None:
+        if content is not None and content != self._doc_buffer.document.text:
+            self._doc_buffer.reset()
             new_document = Document(text=content, cursor_position=0)
             self._doc_buffer.set_document(new_document, bypass_readonly=True)
 
@@ -119,10 +122,8 @@ class PromptToolkitPrompter:
         # menu with autocompletion options.
         #
         # If what the user entered at the command line already has no
-        # completions, we just clear out the buffer and start from scratch.
-        # Example:
-        #       `$ aws codebuild fake` will get truncated into
-        #       `> aws `
+        # completions, we just keep it as it is without showing
+        # any suggestions.
         self._input_buffer.insert_text(' '.join(self._args))
         cmd_line_text = 'aws ' + self._input_buffer.document.text
         self._set_input_buffer_text(cmd_line_text)
@@ -135,10 +136,6 @@ class PromptToolkitPrompter:
         if self._is_valid_command(cmd_line_text) and not is_empty_aws_command:
             if not last_char_is_space:
                 self._input_buffer.insert_text(' ')
-        elif not self._completion_source.autocomplete(cmd_line_text):
-            sys.stdout.write(f'Invalid command `{cmd_line_text}`. '
-                             'Starting from scratch.\n')
-            self._input_buffer.reset()
 
     def _is_valid_command(self, cmd_line_text):
         if cmd_line_text.split()[-1].startswith('--'):
@@ -239,9 +236,7 @@ class PromptToolkitCompleter(Completer):
 
     def _prioritize_required_args(self, completions):
         required_args = self._get_required_args(completions)
-        required_args.sort(key=lambda x: x.name)
         optional_args = self._get_optional_args(completions)
-        optional_args.sort(key=lambda x: x.name)
         return required_args + optional_args
 
     def _get_required_args(self, completions):
@@ -259,6 +254,8 @@ class PromptToolkitCompleter(Completer):
         return results
 
     def _get_display_text(self, completion):
+        if completion.display_text is not None:
+            return completion.display_text
         display_text = completion.name
         if completion.name.startswith('--') and completion.required:
             display_text += ' (required)'
@@ -266,10 +263,12 @@ class PromptToolkitCompleter(Completer):
 
     def _get_display_meta(self, completion):
         display_meta = ''
-        if completion.name.startswith('--'):
-            type_name = getattr(completion, 'cli_type_name', None)
-            help_text = getattr(completion, 'help_text', None)
-            display_meta = f'[{type_name}] {help_text}'
+        type_name = getattr(completion, 'cli_type_name', None)
+        help_text = getattr(completion, 'help_text', None)
+        if type_name:
+            display_meta += f'[{type_name}] '
+        if help_text:
+            display_meta += f'{help_text}'
         return display_meta
 
     def _filter_completions(self, completions):

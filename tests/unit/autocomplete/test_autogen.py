@@ -327,6 +327,12 @@ MODEL_WITH_STRING_LIST = {
             "name": "ListNamedQueries",
             "output": {"shape": "ListNamedQueriesOutput"},
         },
+        "ListStrangeStuffAndNamedQueries": {
+            "http": {"method": "POST", "requestUri": "/"},
+            "input": {"shape": "ListNamedQueriesInput"},
+            "name": "ListStrangeStuffAndNamedQueries",
+            "output": {"shape": "ListNamedQueriesOutput"},
+        },
     },
     "shapes": {
         "CreateNamedQueryInput": {

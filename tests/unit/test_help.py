@@ -157,6 +157,16 @@ class TestHelpPager(unittest.TestCase):
         last_call = renderer.mock_popen.communicate.call_args_list[-1]
         self.assertEqual(last_call, mock.call(input='send to pager'))
 
+    def test_no_warnings_on_invalid_rst(self):
+        renderer = FakePosixHelpRenderer()
+        renderer.exists_on_path['groff'] = True
+        renderer.exists_on_path['less'] = True
+        renderer.mock_popen.communicate.return_value = ('rendered', '')
+        renderer.render('*****foo')
+        self.assertFalse(
+            'WARNING' in renderer.mock_popen.communicate.call_args_list[0]
+        )
+
 
 class TestHelpCommandBase(unittest.TestCase):
     def setUp(self):

@@ -41,6 +41,9 @@ class InMemoryIndex(model.ModelIndex):
         self.index = index
 
     def command_names(self, lineage):
+        return [row[0] for row in self.commands_with_full_name(lineage)]
+
+    def commands_with_full_name(self, lineage):
         parent = '.'.join(lineage)
         return self.index['command_names'].get(parent, [])
 

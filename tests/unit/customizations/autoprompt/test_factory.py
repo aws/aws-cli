@@ -29,7 +29,7 @@ class TestPromptToolkitFactory(unittest.TestCase):
     def setUp(self):
         self.factory = PromptToolkitFactory(completer=DummyCompleter())
 
-    def dummy_callback(self):
+    def dummy_callback(self, *args, **kwargs):
         return
 
     def test_can_create_input_buffer(self):
@@ -77,15 +77,11 @@ class TestPromptToolkitFactory(unittest.TestCase):
         self.assertTrue(layout.container is not None)
 
     def test_can_create_layout_with_input_buffer_container_specified(self):
-        buffer = Buffer()
-        container = Window(content=buffer)
-        layout = self.factory.create_layout(input_buffer_container=container)
+        layout = self.factory.create_layout(input_buffer_container=Window())
         self.assertTrue(layout.container is not None)
 
     def test_can_create_layout_with_doc_window_specified(self):
-        buffer = Buffer()
-        window = Window(content=buffer)
-        layout = self.factory.create_layout(doc_window=window)
+        layout = self.factory.create_layout(doc_window=Window())
         self.assertTrue(layout.container is not None)
 
     def test_can_create_layout_with_search_field_specified(self):
@@ -94,9 +90,7 @@ class TestPromptToolkitFactory(unittest.TestCase):
         self.assertTrue(layout.container is not None)
 
     def test_can_create_layout_with_bottom_toolbar_container_specified(self):
-        buffer = Buffer()
-        container = Window(content=buffer)
-        layout = self.factory.create_layout(bottom_toolbar_container=container)
+        layout = self.factory.create_layout(bottom_toolbar_container=Window())
         self.assertTrue(layout.container is not None)
 
     def test_can_create_key_bindings(self):
@@ -149,8 +143,10 @@ class TestToolbarHelpText(unittest.TestCase):
             f'{style}[UP]</style> Cycle Forward'
             f'{style}[DOWN]</style> Cycle Backward'
             f'{style}[SPACE]</style> Autocomplete Choice'
-            f'{style}[ENTER]</style> Execute Command'
+            f'{style}[ENTER]</style> Autocomplete Choice/Execute Command'
             f'{style}[F1]</style> Focus on Docs'
+            f'{style}[F2]</style> Hide/Show on Docs'
+            f'{style}[F3]</style> One/Multi column prompt'
         )
         self.assertEqual(actual_text, expected_text)
 

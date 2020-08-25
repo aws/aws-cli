@@ -165,15 +165,18 @@ class CLIParser(object):
         # e.g. 'aws ec2 describe-instances --instance-ids '
         # Note the space at the end.  In this case we don't have a value
         # to consume so we special case this and short circuit.
-        if remaining_parts == [WORD_BOUNDARY]:
-            return ''
-        elif len(remaining_parts) <= 1:
-            return None
         arg_data = self._index.get_argument_data(
             lineage=lineage,
             command_name=current_command,
             arg_name=option_name,
         )
+        if arg_data.type_name == 'boolean':
+            state.current_param = None
+            return True
+        elif remaining_parts == [WORD_BOUNDARY]:
+            return ''
+        elif len(remaining_parts) <= 1:
+            return None
         nargs = arg_data.nargs
         # We're making an assumption about nargs in order to simplify
         # its handling.  Handling nargs='*' and nargs='+' normally takes into
@@ -185,9 +188,7 @@ class CLIParser(object):
         # subcommand, e.g. "aws ec2 describe-instances <params here>".  We
         # don't have to worry about global params because none of them use
         # nargs '*' or '+'.
-        if arg_data.type_name == 'boolean':
-            return None
-        elif nargs is None:
+        if nargs is None:
             # The default behavior is to consume a single arg.
             result = remaining_parts.pop(0)
             state.current_param = None
@@ -203,10 +204,12 @@ class CLIParser(object):
             # an empty list being returned.  This is acceptable
             # for auto-completion purposes.
             value = []
-            while len(remaining_parts) > 1 and \
+            while len(remaining_parts) > 0 and \
                     not remaining_parts == [WORD_BOUNDARY]:
                 if remaining_parts[0].startswith('--'):
                     state.current_param = None
+                    break
+                if len(remaining_parts) == 1:
                     break
                 value.append(remaining_parts.pop(0))
             return value
@@ -325,9 +328,25 @@ class CLIParser(object):
                 # command, e.g 'aws ec2 run-instan'
                 parsed.current_fragment = current
             elif current:
-                # Otherwise this is some command we don't know about
-                # so we add it to the list of unparsed_items.
-                parsed.unparsed_items.append(current)
+                outfile_arg = self._index.get_argument_data(
+                    lineage=state.lineage,
+                    command_name=state.current_command,
+                    arg_name='outfile',
+                )
+                if outfile_arg and 'outfile' not in parsed.parsed_params:
+                    # if "outfile" is in command args we need to handle it in a
+                    # special way because "outfile" is a special option which
+                    # is marked as option but actually a positional argument
+                    # that can be at any place in the command line
+                    parsed.parsed_params['outfile'] = current
+                    state.current_param = None
+                    return self._index.arg_names(
+                        lineage=state.lineage,
+                        command_name=state.current_command)
+                else:
+                    # Otherwise this is some command we don't know about
+                    # so we add it to the list of unparsed_items.
+                    parsed.unparsed_items.append(current)
             return None
 
     def _get_positional_argname(self, state):

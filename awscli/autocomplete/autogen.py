@@ -7,7 +7,7 @@ It can also be used to regen completion data as new heuristics are added.
 """
 import logging
 from difflib import SequenceMatcher
-from collections import namedtuple
+from collections import namedtuple, defaultdict
 
 
 LOG = logging.getLogger(__name__)
@@ -80,7 +80,7 @@ class ServerCompletionHeuristic(object):
         # an actual limitation of auto-generating completion data.
         # If there is a resource that has ``inputParameters`` (i.e required
         # params), then we don't generate completions for you.
-        reverse_mapping = {}
+        reverse_mapping = defaultdict(list)
         for name, identifier_map in resources.items():
             if identifier_map.get('inputParameters', {}):
                 # If there are required inputParameters for a resource
@@ -89,7 +89,7 @@ class ServerCompletionHeuristic(object):
                 # in many cases.
                 continue
             for key in identifier_map['resourceIdentifier']:
-                reverse_mapping[key] = name
+                reverse_mapping[key].append(name)
         op_map = {}
         for op_name in op_names:
             self._add_completion_data_for_operation(
@@ -108,7 +108,9 @@ class ServerCompletionHeuristic(object):
                 member, reverse_mapping)
             if member_name is None:
                 continue
-            resource_name = reverse_mapping[member_name]
+            resource_name = self._find_matching_op_name(
+                op_name, reverse_mapping[member_name]
+            )
             op = op_map.setdefault(op_name, {})
             param = op.setdefault(member, {})
             param['completions'] = [
@@ -116,6 +118,30 @@ class ServerCompletionHeuristic(object):
                  'resourceName': resource_name,
                  'resourceIdentifier': member_name}
             ]
+
+    def _find_matching_op_name(self, op_name, candidates):
+        # If we have more than one operation that gives us back
+        # desirable output we match them all with initial operation
+        # name and choose the most similar one
+        #
+        # For example if
+        # op_name = DescribeDBInstances and member=DBInstanceIdentifier
+        #
+        # we can have such list of candidates
+        # ['DBInstanceAutomatedBackup', 'DBInstance', 'DBSnapshot']
+        #
+        # and finally 'DBInstance' will have the highest score
+
+        matcher = SequenceMatcher()
+        matcher.set_seq2(op_name)
+        matching_score = []
+        for candidate in candidates:
+            matcher.set_seq1(candidate)
+            match_ratio = matcher.ratio()
+            matching_score.append((match_ratio, candidate))
+        return sorted(
+            matching_score, key=lambda x: x[0], reverse=True
+        )[0][1]
 
     def _find_matching_member_name(self, member, reverse_mapping):
         # Try to find something in the reverse mapping that's close

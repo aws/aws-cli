@@ -18,8 +18,8 @@
 import os
 
 from awscli import __version__ as cli_version
-from awscli.autocomplete import parser, completer
-from awscli.autocomplete.local import model, basic
+from awscli.autocomplete import parser, completer, filters
+from awscli.autocomplete.local import model, basic, fetcher
 from awscli.autocomplete import serverside
 from awscli.autocomplete import custom
 
@@ -35,16 +35,28 @@ BUILTIN_INDEX_FILE = os.path.join(
 )
 
 
-def create_autocompleter(index_filename=None, custom_completers=None):
+def create_autocompleter(index_filename=None, custom_completers=None,
+                         driver=None):
     if custom_completers is None:
         custom_completers = custom.get_custom_completers()
     if index_filename is None:
         index_filename = _get_index_filename()
     index = model.ModelIndex(index_filename)
     cli_parser = parser.CLIParser(index)
+    cli_driver_fetcher = None
+    if driver is not None:
+        cli_driver_fetcher = fetcher.CliDriverFetcher(driver)
     completers = [
-        basic.ModelIndexCompleter(index),
-        serverside.create_server_side_completer(index_filename)
+        basic.RegionCompleter(response_filter=filters.fuzzy_filter),
+        basic.ProfileCompleter(response_filter=filters.fuzzy_filter),
+        basic.ModelIndexCompleter(index, cli_driver_fetcher,
+                                  response_filter=filters.fuzzy_filter),
+        basic.FilePathCompleter(response_filter=filters.fuzzy_filter),
+        serverside.create_server_side_completer(
+            index_filename,
+            response_filter=filters.fuzzy_filter),
+        basic.ShorthandCompleter(cli_driver_fetcher,
+                                 response_filter=filters.fuzzy_filter)
     ] + custom_completers
     cli_completer = completer.AutoCompleter(cli_parser, completers)
     return cli_completer

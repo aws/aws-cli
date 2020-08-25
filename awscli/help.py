@@ -105,7 +105,10 @@ class PosixHelpRenderer(PagingHelpRenderer):
     PAGER = 'less -R'
 
     def _convert_doc_content(self, contents):
-        man_contents = publish_string(contents, writer=manpage.Writer())
+        man_contents = publish_string(
+            contents, writer=manpage.Writer(),
+            settings_overrides={'report_level': 3}
+        )
         if not self._exists_on_path('groff'):
             raise ExecutableNotFoundError('groff')
         cmdline = ['groff', '-m', 'man', '-T', 'ascii']

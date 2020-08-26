@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.126
+========
+
+* api-change:``route53resolver``: Update route53resolver command to latest version
+* api-change:``appflow``: Update appflow command to latest version
+
+
 1.18.125
 ========
 

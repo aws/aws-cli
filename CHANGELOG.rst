@@ -760,6 +760,22 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.127
+========
+
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``gamelift``: Update gamelift command to latest version
+
+
+1.18.126
+========
+
+* api-change:``route53resolver``: Update route53resolver command to latest version
+* api-change:``appflow``: Update appflow command to latest version
+
+
 1.18.125
 ========
 

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.127
+========
+
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``gamelift``: Update gamelift command to latest version
+
+
 1.18.126
 ========
 

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.128
+========
+
+* api-change:``cur``: Update cur command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``route53``: Update route53 command to latest version
+
+
 1.18.127
 ========
 

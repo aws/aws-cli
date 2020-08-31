@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.129
+========
+
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``backup``: Update backup command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``sqs``: Update sqs command to latest version
+
+
 1.18.128
 ========
 

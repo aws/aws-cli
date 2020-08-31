@@ -32,7 +32,9 @@ AWS CLI v2 can easily be installed on most standard platforms:
 
 * `MacOS pkg installer <https://awscli.amazonaws.com/AWSCLIV2.pkg>`__
 
-* `Linux executable installer <https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip>`__
+* `Linux x86-64 executable installer <https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip>`__
+
+* `Linux arm64 (aarch64) executable installer <https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip>`__
 
 * `Windows MSI installer <https://awscli.amazonaws.com/AWSCLIV2.msi>`__
 

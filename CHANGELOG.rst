@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.130
+========
+
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``codeguru-reviewer``: Update codeguru-reviewer command to latest version
+
+
 1.18.129
 ========
 

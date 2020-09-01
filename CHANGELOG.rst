@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.0.45
+======
+
+* api-change:``codeguru-reviewer``: Update codeguru-reviewer command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``backup``: Update backup command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``sqs``: Update sqs command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``cur``: Update cur command to latest version
+* api-change:``route53``: Update route53 command to latest version
+
+
 2.0.44
 ======
 

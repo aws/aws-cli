@@ -771,6 +771,31 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.130
+========
+
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``codeguru-reviewer``: Update codeguru-reviewer command to latest version
+
+
+1.18.129
+========
+
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``backup``: Update backup command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``sqs``: Update sqs command to latest version
+
+
+1.18.128
+========
+
+* api-change:``cur``: Update cur command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``route53``: Update route53 command to latest version
+
+
 1.18.127
 ========
 

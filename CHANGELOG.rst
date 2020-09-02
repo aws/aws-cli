@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.131
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+
+
 1.18.130
 ========
 

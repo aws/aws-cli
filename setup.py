@@ -53,6 +53,7 @@ setup_options = dict(
     package_data={'awscli': [
         'customizations/wizard/wizards/*/*.yml',
         'data/*.json',
+        'data/*/*.json',
         'examples/*/*.rst',
         'examples/*/*.txt',
         'examples/*/*/*.txt',

@@ -1,10 +1,24 @@
 language: python
 matrix:
   include:
-    - python: 3.7
+    - stage: testing
+      python: 3.7
       dist: xenial
     - python: 3.8
       dist: xenial
+    - stage: build
+      python: 3.8
+      env:
+       - CIBW_BUILD="cp38-manylinux_x86_64"
+       - CIBW_TEST_REQUIRES="nose coverage"
+       - CIBW_BEFORE_TEST="pip3 install -r {project}/requirements.txt"
+       - CIBW_TEST_COMMAND="cd {project}/tests; nosetests --with-coverage --cover-erase --cover-package awscli --with-xunit --cover-xml unit/ functional/"
+      install: pip3 install --upgrade cibuildwheel
+      script: cibuildwheel --output-dir wheelhouse
+      after_success:
+       - ls wheelhouse/
+       - pip3 install twine
+       - python3 -m twine upload --skip-existing wheelhouse/*
 
 before_install:
   - if [ "$TRAVIS_PULL_REQUEST" != "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then

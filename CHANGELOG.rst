@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.0.46
+======
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``stepfunctions``: Update stepfunctions command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``mediapackage``: Update mediapackage command to latest version
+
+
 2.0.45
 ======
 

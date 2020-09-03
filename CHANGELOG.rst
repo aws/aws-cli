@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.132
+========
+
+* api-change:``kendra``: Update kendra command to latest version
+* api-change:``mediapackage``: Update mediapackage command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``stepfunctions``: Update stepfunctions command to latest version
+
+
 1.18.131
 ========
 

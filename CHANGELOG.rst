@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.133
+========
+
+* api-change:``xray``: Update xray command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
 1.18.132
 ========
 

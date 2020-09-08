@@ -796,6 +796,24 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.134
+========
+
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+
+
+1.18.133
+========
+
+* api-change:``xray``: Update xray command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
 1.18.132
 ========
 

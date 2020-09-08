@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.0.47
+======
+
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``xray``: Update xray command to latest version
+
+
 2.0.46
 ======
 

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.135
+========
+
+* api-change:``glue``: Update glue command to latest version
+* api-change:``redshift-data``: Update redshift-data command to latest version
+* api-change:``kinesisanalyticsv2``: Update kinesisanalyticsv2 command to latest version
+
+
 1.18.134
 ========
 

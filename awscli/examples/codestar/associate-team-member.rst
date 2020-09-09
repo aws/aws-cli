@@ -6,5 +6,8 @@ The following ``associate-team-member`` example makes the ``intern`` user a view
         --project-id my-project \
         --user-arn arn:aws:iam::123456789012:user/intern \
         --project-role Viewer
+        
+
+        
 
 This command produces no output.

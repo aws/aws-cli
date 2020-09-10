@@ -32,36 +32,43 @@ class TestIntegGenerateCliSkeleton(unittest.TestCase):
     skeleton. It is only testing wheter the skeleton generator argument works
     for various services.
     """
+    def _assert_skeleton_matches(self, actual_skeleton, expected_skeleton):
+        # Assert all expected keys are present, however there may be more
+        # keys in the actual skeleton generated if the API updates
+        for key, value in expected_skeleton.items():
+            self.assertEqual(value, actual_skeleton[key])
+
     def test_generate_cli_skeleton_s3api(self):
         p = aws('s3api delete-object --generate-cli-skeleton')
         self.assertEqual(p.rc, 0)
-        self.assertEqual(
-            json.loads(p.stdout),
-            {
-                'Bucket': '',
-                'BypassGovernanceRetention': True,
-                'Key': '',
-                'MFA': '',
-                'VersionId': '',
-                'RequestPayer': 'requester',
-            }
-        )
+        expected_skeleton = {
+            'Bucket': '',
+            'BypassGovernanceRetention': True,
+            'Key': '',
+            'MFA': '',
+            'VersionId': '',
+            'RequestPayer': 'requester',
+        }
+        actual_skeleton = json.loads(p.stdout)
+        self._assert_skeleton_matches(actual_skeleton, expected_skeleton)
 
     def test_generate_cli_skeleton_sqs(self):
         p = aws('sqs change-message-visibility --generate-cli-skeleton')
         self.assertEqual(p.rc, 0)
-        self.assertEqual(
-            json.loads(p.stdout),
-            {'QueueUrl': '', 'ReceiptHandle': '', 'VisibilityTimeout': 0}
-        )
+        expected_skeleton = {
+            'QueueUrl': '',
+            'ReceiptHandle': '',
+            'VisibilityTimeout': 0,
+        }
+        actual_skeleton = json.loads(p.stdout)
+        self._assert_skeleton_matches(actual_skeleton, expected_skeleton)
 
     def test_generate_cli_skeleton_iam(self):
         p = aws('iam create-group --generate-cli-skeleton')
         self.assertEqual(p.rc, 0)
-        self.assertEqual(
-            json.loads(p.stdout),
-            {'Path': '', 'GroupName': ''}
-        )
+        expected_skeleton = {'Path': '', 'GroupName': ''}
+        actual_skeleton = json.loads(p.stdout)
+        self._assert_skeleton_matches(actual_skeleton, expected_skeleton)
 
 
 def test_can_generate_skeletons_for_all_service_comands():

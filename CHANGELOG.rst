@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.0.48
+======
+
+* api-change:``glue``: Update glue command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``redshift-data``: Update redshift-data command to latest version
+* api-change:``sso-admin``: Update sso-admin command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``ebs``: Update ebs command to latest version
+* api-change:``kinesisanalyticsv2``: Update kinesisanalyticsv2 command to latest version
+
+
 2.0.47
 ======
 

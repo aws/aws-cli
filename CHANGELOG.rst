@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.136
+========
+
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``sso-admin``: Update sso-admin command to latest version
+* api-change:``ebs``: Update ebs command to latest version
+
+
 1.18.135
 ========
 

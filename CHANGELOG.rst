@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.18.137
+========
+
+* api-change:``workspaces``: Update workspaces command to latest version
+
+
 1.18.136
 ========
 

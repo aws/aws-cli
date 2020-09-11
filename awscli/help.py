@@ -20,15 +20,14 @@ from subprocess import Popen, PIPE
 from docutils.core import publish_string
 from docutils.writers import manpage
 
-from botocore.docs.bcdoc import docevents
-from botocore.docs.bcdoc.restdoc import ReSTDocument
-from botocore.docs.bcdoc.textwriter import TextWriter
-
 from awscli.clidocs import ProviderDocumentEventHandler
 from awscli.clidocs import ServiceDocumentEventHandler
 from awscli.clidocs import OperationDocumentEventHandler
 from awscli.clidocs import TopicListerDocumentEventHandler
 from awscli.clidocs import TopicDocumentEventHandler
+from awscli.docs.bcdoc import docevents
+from awscli.docs.bcdoc.restdoc import ReSTDocument
+from awscli.docs.bcdoc.textwriter import TextWriter
 from awscli.argprocess import ParamShorthandParser
 from awscli.argparser import ArgTableArgParser
 from awscli.topictags import TopicTagDB

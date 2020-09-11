@@ -4,7 +4,6 @@ import os
 from botocore import model
 from botocore.compat import OrderedDict
 from botocore.validate import validate_parameters
-from botocore.docs.bcdoc import docevents
 
 import awscli
 from awscli.argparser import ArgTableArgParser
@@ -12,6 +11,7 @@ from awscli.argprocess import unpack_argument, unpack_cli_arg
 from awscli.arguments import CustomArgument, create_argument_model_from_schema
 from awscli.clidocs import OperationDocumentEventHandler
 from awscli.clidriver import CLICommand
+from awscli.docs.bcdoc import docevents
 from awscli.help import HelpCommand
 from awscli.schema import SchemaTransformer
 

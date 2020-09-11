@@ -3,7 +3,7 @@
 The following ``put-bucket-replication`` example applies a replication configuration to the specified S3 bucket. ::
 
     aws s3api put-bucket-replication \
-        --bucket my-bucket \
+        --bucket AWSDOC-EXAMPLE-BUCKET1 \
         --replication-configuration file://replication.json
 
 Contents of ``replication.json``::
@@ -17,13 +17,13 @@ Contents of ``replication.json``::
                 "DeleteMarkerReplication": { "Status": "Disabled" },
                 "Filter" : { "Prefix": ""},
                 "Destination": {
-                    "Bucket": "arn:aws:s3:::my-bucket-backup"
+                    "Bucket": "arn:aws:s3:::AWSDOC-EXAMPLE-BUCKET2"
                 }
             }
         ]
     }
 
-The destination bucket must be in a different region and have versioning enabled. The specified role must have permission to write to the destination bucket and have a trust relationship that allows Amazon S3 to assume the role.
+The destination bucket must have versioning enabled. The specified role must have permission to write to the destination bucket and have a trust relationship that allows Amazon S3 to assume the role.
 
 Example role permission policy::
 
@@ -32,8 +32,33 @@ Example role permission policy::
         "Statement": [
             {
                 "Effect": "Allow",
-                "Action": "s3:*",
-                "Resource": "*"
+                "Action": [
+                    "s3:GetReplicationConfiguration",
+                    "s3:ListBucket"
+                ],
+                "Resource": [
+                    "arn:aws:s3:::AWSDOC-EXAMPLE-BUCKET1"
+                ]
+            },
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "s3:GetObjectVersion",
+                    "s3:GetObjectVersionAcl",
+                    "s3:GetObjectVersionTagging"
+                ],
+                "Resource": [
+                    "arn:aws:s3:::AWSDOC-EXAMPLE-BUCKET1/*"
+                ]
+            },
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "s3:ReplicateObject",
+                    "s3:ReplicateDelete",
+                    "s3:ReplicateTags"
+                ],
+                "Resource": "arn:aws:s3:::AWSDOC-EXAMPLE-BUCKET2/*"
             }
         ]
     }
@@ -52,3 +77,7 @@ Example trust relationship policy::
             }
         ]
     }
+
+This command produces no output.
+
+For more information, see `This is the topic title <https://docs.aws.amazon.com/AmazonS3/latest/user-guide/enable-replication.html>`__ in the *Amazon Simple Storage Service Console User Guide*.

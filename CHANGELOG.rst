@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.138
+========
+
+* api-change:``docdb``: Update docdb command to latest version
+* api-change:``managedblockchain``: Update managedblockchain command to latest version
+* api-change:``stepfunctions``: Update stepfunctions command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.18.137
 ========
 

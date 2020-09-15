@@ -821,6 +821,34 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.139
+========
+
+* api-change:``kendra``: Update kendra command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``budgets``: Update budgets command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+
+
+1.18.138
+========
+
+* api-change:``docdb``: Update docdb command to latest version
+* api-change:``managedblockchain``: Update managedblockchain command to latest version
+* api-change:``stepfunctions``: Update stepfunctions command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.18.137
+========
+
+* api-change:``workspaces``: Update workspaces command to latest version
+
+
 1.18.136
 ========
 

@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.18.139
+========
+
+* api-change:``kendra``: Update kendra command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``budgets``: Update budgets command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+
+
 1.18.138
 ========
 

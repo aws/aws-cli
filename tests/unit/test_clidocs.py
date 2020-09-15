@@ -15,12 +15,12 @@ import json
 import mock
 from botocore.model import ShapeResolver, StructureShape, StringShape, \
     ListShape, MapShape
-from botocore.docs.bcdoc.restdoc import ReSTDocument
 
 from awscli.testutils import unittest, FileCreator
 from awscli.clidocs import OperationDocumentEventHandler, \
     CLIDocumentEventHandler, TopicListerDocumentEventHandler, \
     TopicDocumentEventHandler
+from awscli.bcdoc.restdoc import ReSTDocument
 from awscli.help import ServiceHelpCommand, TopicListerCommand, \
     TopicHelpCommand
 

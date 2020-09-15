@@ -18,7 +18,7 @@ from botocore.utils import is_json_value_header
 
 from awscli import SCALAR_TYPES
 from awscli.argprocess import ParamShorthandDocGen
-from awscli.docs.bcdoc.docevents import DOC_EVENTS
+from awscli.bcdoc.docevents import DOC_EVENTS
 from awscli.topictags import TopicTagDB
 from awscli.utils import find_service_and_method_in_event_name
 

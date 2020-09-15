@@ -21,8 +21,8 @@
 # IN THE SOFTWARE.
 #
 import unittest
-from awscli.docs.bcdoc.style import ReSTStyle
-from awscli.docs.bcdoc.restdoc import ReSTDocument
+from awscli.bcdoc.style import ReSTStyle
+from awscli.bcdoc.restdoc import ReSTDocument
 
 
 class TestStyle(unittest.TestCase):

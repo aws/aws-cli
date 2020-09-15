@@ -21,8 +21,8 @@
 import mock
 import unittest
 
-import awscli.docs.bcdoc.docstringparser as parser
-from awscli.docs.bcdoc.restdoc import ReSTDocument
+import awscli.bcdoc.docstringparser as parser
+from awscli.bcdoc.restdoc import ReSTDocument
 
 
 class TestDocStringParser(unittest.TestCase):

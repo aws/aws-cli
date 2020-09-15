@@ -20,7 +20,7 @@ from awscli.testutils import unittest, FileCreator
 from awscli.clidocs import OperationDocumentEventHandler, \
     CLIDocumentEventHandler, TopicListerDocumentEventHandler, \
     TopicDocumentEventHandler
-from awscli.docs.bcdoc.restdoc import ReSTDocument
+from awscli.bcdoc.restdoc import ReSTDocument
 from awscli.help import ServiceHelpCommand, TopicListerCommand, \
     TopicHelpCommand
 

@@ -25,9 +25,9 @@ from awscli.clidocs import ServiceDocumentEventHandler
 from awscli.clidocs import OperationDocumentEventHandler
 from awscli.clidocs import TopicListerDocumentEventHandler
 from awscli.clidocs import TopicDocumentEventHandler
-from awscli.docs.bcdoc import docevents
-from awscli.docs.bcdoc.restdoc import ReSTDocument
-from awscli.docs.bcdoc.textwriter import TextWriter
+from awscli.bcdoc import docevents
+from awscli.bcdoc.restdoc import ReSTDocument
+from awscli.bcdoc.textwriter import TextWriter
 from awscli.argprocess import ParamShorthandParser
 from awscli.argparser import ArgTableArgParser
 from awscli.topictags import TopicTagDB

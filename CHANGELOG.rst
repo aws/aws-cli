@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.140
+========
+
+* api-change:``greengrass``: Update greengrass command to latest version
+* api-change:``connect``: Update connect command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``dlm``: Update dlm command to latest version
+
+
 1.18.139
 ========
 

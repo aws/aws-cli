@@ -27,7 +27,7 @@ from awscli.clidriver import create_clidriver
 class TestBasicCommandFunctionality(unittest.TestCase):
     """
     These are a set of tests that assert high level features of
-    the CLI.  They don't anything exhaustive and is meant as a smoke
+    the CLI.  They don't test anything exhaustively and they're meant as a smoke
     test to verify basic CLI functionality isn't entirely broken.
     """
 

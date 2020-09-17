@@ -17,7 +17,7 @@ from awscli.clidriver import CLIDriver
 from awscli.customizations.commands import BasicHelp, BasicCommand
 from awscli.customizations.commands import BasicDocHandler
 from awscli.testutils import BaseAWSCommandParamsTest
-from botocore.docs.bcdoc.restdoc import ReSTDocument
+from awscli.bcdoc.restdoc import ReSTDocument
 from botocore.hooks import HierarchicalEmitter
 from tests.unit.test_clidriver import FakeSession, FakeCommand
 

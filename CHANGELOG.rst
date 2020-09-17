@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.141
+========
+
+* api-change:``kendra``: Update kendra command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+
+
 1.18.140
 ========
 

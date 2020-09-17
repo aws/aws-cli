@@ -838,6 +838,27 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.141
+========
+
+* api-change:``kendra``: Update kendra command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+
+
+1.18.140
+========
+
+* api-change:``greengrass``: Update greengrass command to latest version
+* api-change:``connect``: Update connect command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``dlm``: Update dlm command to latest version
+
+
 1.18.139
 ========
 

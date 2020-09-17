@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+2.0.50
+======
+
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``greengrass``: Update greengrass command to latest version
+* api-change:``dlm``: Update dlm command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``connect``: Update connect command to latest version
+
+
 2.0.49
 ======
 

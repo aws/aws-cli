@@ -1,6 +1,6 @@
 **To set the repository policy for a repository**
 
-The following ``set-repository-polixy`` example attaches a repository policy contained in a file to the ``cluster-autoscaler`` repository. ::
+The following ``set-repository-policy`` example attaches a repository policy contained in a file to the ``cluster-autoscaler`` repository. ::
 
     aws ecr set-repository-policy \
         --repository-name cluster-autoscaler \

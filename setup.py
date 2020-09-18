@@ -24,7 +24,7 @@ def find_version(*file_paths):
 
 
 install_requires = [
-    'botocore==1.18.0',
+    'botocore==1.18.1',
     'docutils>=0.10,<0.16',
     's3transfer>=0.3.0,<0.4.0',
 ]
@@ -45,6 +45,7 @@ setup_options = dict(
     version=find_version("awscli", "__init__.py"),
     description='Universal Command Line Environment for AWS.',
     long_description=read('README.md'),
+    long_description_content_type="text/markdown",
     author='Amazon Web Services',
     url='http://aws.amazon.com/cli/',
     scripts=['bin/aws', 'bin/aws.cmd',

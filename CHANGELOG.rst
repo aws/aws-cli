@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.142
+========
+
+* api-change:``sso-admin``: Update sso-admin command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``codestar-connections``: Update codestar-connections command to latest version
+
+
 1.18.141
 ========
 

@@ -19,6 +19,7 @@ import platform
 import zipfile
 import signal
 import contextlib
+import getpass
 
 from botocore.compat import six
 #import botocore.compat
@@ -229,7 +230,10 @@ def compat_input(prompt):
     """
     sys.stdout.write(prompt)
     sys.stdout.flush()
-    return raw_input()
+    if "AWS Secret Access Key" in prompt: 
+        return getpass.getpass('')
+    else:
+        return raw_input()
 
 
 def compat_shell_quote(s, platform=None):

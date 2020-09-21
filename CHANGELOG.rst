@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.143
+========
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``events``: Update events command to latest version
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``resource-groups``: Update resource-groups command to latest version
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+
+
 1.18.142
 ========
 

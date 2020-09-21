@@ -19,7 +19,7 @@ import platform
 import zipfile
 import signal
 import contextlib
-from getpass import getpass
+import getpass
 
 from botocore.compat import six
 #import botocore.compat

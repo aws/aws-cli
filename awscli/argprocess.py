@@ -20,12 +20,16 @@ from botocore.compat import OrderedDict, json
 from awscli import SCALAR_TYPES, COMPLEX_TYPES
 from awscli import shorthand
 from awscli.utils import find_service_and_method_in_event_name
+from awscli.constants import PARAM_VALIDATION_ERROR_RC
 from botocore.utils import is_json_value_header
 
 LOG = logging.getLogger('awscli.argprocess')
 
 
 class ParamError(Exception):
+    RC = PARAM_VALIDATION_ERROR_RC
+    DEBUG_MESSAGE = "Client side parameter validation failed"
+
     def __init__(self, cli_name, message):
         """
 
@@ -46,7 +50,8 @@ class ParamError(Exception):
 
 
 class ParamSyntaxError(Exception):
-    pass
+    RC = PARAM_VALIDATION_ERROR_RC
+    DEBUG_MESSAGE = "Client side parameter validation failed"
 
 
 class ParamUnknownKeyError(Exception):

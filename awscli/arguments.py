@@ -42,7 +42,9 @@ from botocore import xform_name
 from botocore.hooks import first_non_none_response
 
 from awscli.argprocess import unpack_cli_arg
+from awscli.argparser import USAGE
 from awscli.schema import SchemaTransformer
+from awscli.constants import PARAM_VALIDATION_ERROR_RC
 from botocore import model
 
 
@@ -50,7 +52,10 @@ LOG = logging.getLogger('awscli.arguments')
 
 
 class UnknownArgumentError(Exception):
-    pass
+    RC = PARAM_VALIDATION_ERROR_RC
+
+    def __init__(self, message):
+        super().__init__(self, f'usage: {USAGE}\n{message}\n')
 
 
 def create_argument_model_from_schema(schema):

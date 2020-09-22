@@ -418,7 +418,7 @@ class ShorthandCompleter(BaseCompleter):
             )
 
     def _get_prompt_for_string(self, arg_model, parsed_input):
-        if arg_model.enum:
+        if getattr(arg_model, 'enum', False):
             prefix = parsed_input
             if prefix == self._DUMMY_VALUE:
                 prefix = ''

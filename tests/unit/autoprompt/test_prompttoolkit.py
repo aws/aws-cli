@@ -15,7 +15,7 @@ from prompt_toolkit.completion import Completion, CompleteEvent
 from prompt_toolkit.document import Document
 
 from awscli.autocomplete.completer import CompletionResult
-from awscli.customizations.autoprompt.prompttoolkit import PromptToolkitCompleter
+from awscli.autoprompt.prompttoolkit import PromptToolkitCompleter
 from awscli.testutils import unittest
 
 

@@ -18,8 +18,8 @@ from prompt_toolkit.completion import Completer, ThreadedCompleter
 from prompt_toolkit.completion import Completion
 from prompt_toolkit.document import Document
 
-from awscli.customizations.autoprompt.doc import DocsGetter
-from awscli.customizations.autoprompt.factory import PromptToolkitFactory
+from awscli.autoprompt.doc import DocsGetter
+from awscli.autoprompt.factory import PromptToolkitFactory
 
 
 class PromptToolkitPrompter:

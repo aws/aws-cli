@@ -18,10 +18,8 @@ from awscli.testutils import unittest
 from awscli.testutils import BaseAWSCommandParamsTest
 import logging
 import io
-import sys
 
 import mock
-import nose
 from awscli.compat import six
 from botocore import xform_name
 from botocore.awsrequest import AWSResponse
@@ -38,8 +36,9 @@ from awscli.clidriver import ServiceCommand
 from awscli.clidriver import ServiceOperation
 from awscli.paramfile import URIArgumentHandler
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.exceptions import ExceptionHandler
 from awscli import formatter
-from awscli.argparser import HELP_BLURB
+from awscli.argparser import HELP_BLURB, ArgParseException
 from botocore.hooks import HierarchicalEmitter
 from botocore.configprovider import create_botocore_default_config_mapping
 from botocore.configprovider import ConfigChainFactory
@@ -360,22 +359,12 @@ class TestCliDriver(unittest.TestCase):
         expected = list(GET_DATA['cli']['options'])
         self.assertEqual(list(arg_table), expected)
 
-    def test_can_call_auto_prompter_with_no_command(self):
-        new_args = self.driver.prompt_for_args([], {})
-        self.assertEqual(new_args, [])
-
-    def test_can_call_auto_prompter_with_partial_service_command(self):
-        new_args = self.driver.prompt_for_args(['ec'], {})
-        self.assertEqual(new_args, ['ec'])
-
-    def test_can_call_auto_prompter_with_partial_operation_command(self):
-        new_args = self.driver.prompt_for_args(['ec2', 'd'], {})
-        self.assertEqual(new_args, ['ec2', 'd'])
-
-    def test_can_call_auto_prompter_with_partial_option_command(self):
-        new_args = self.driver.prompt_for_args(
-            ['ec2', 'create-image', '--'], {})
-        self.assertEqual(new_args, ['ec2', 'create-image', '--'])
+    @mock.patch('awscli.clidriver.create_clidriver')
+    def test_driver_ran_when_main_called(self, create_clidriver):
+        create_clidriver.return_value = self.driver
+        rc = awscli.clidriver.main()
+        create_clidriver.assert_called_once_with()
+        self.assertEqual(rc, 252)
 
 
 class TestCliDriverHooks(unittest.TestCase):
@@ -492,6 +481,16 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         super(TestAWSCommand, self).tearDown()
         self.stderr_patch.stop()
 
+    def _assert_driver_returns_correct_rc(self, command, expected_rd,
+                                          driver=None):
+        if driver is None:
+            driver = self.driver
+        with ExceptionHandler(Exception) as error:
+            rc = driver.main(command)
+        if error.rc is not None:
+            rc = error.rc
+        self.assertEqual(rc, expected_rd)
+
     def inject_new_param(self, argument_table, **kwargs):
         argument = CustomArgument('unknown-arg', {})
         argument.add_to_arg_table(argument_table)
@@ -538,9 +537,11 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
     def test_event_emission_for_top_level_params(self):
         driver = create_clidriver()
         # --unknown-foo is an unknown arg, so we expect a 252 rc.
-        rc = driver.main('ec2 describe-instances --unknown-arg foo'.split())
-        self.assertEqual(rc, 252)
-        self.assertIn('Unknown options: --unknown-arg', self.stderr.getvalue())
+        with self.assertRaises(Exception) as e:
+            driver.main('ec2 describe-instances --unknown-arg foo'.split())
+        error_message = self.stderr.getvalue() + str(e.exception)
+        self.assertEqual(e.exception.RC, 252)
+        self.assertIn('Unknown options: --unknown-arg', error_message)
 
         # The argument table is memoized in the CLIDriver object. So
         # when we call main() above, it will get created and cached
@@ -626,10 +627,10 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             'building-argument-table', self.inject_new_param_no_paramfile)
 
         self.patch_make_request()
-        rc = driver.main(
-            'ec2 describe-instances --unknown-arg file:///foo'.split())
 
-        self.assertEqual(rc, 0)
+        self._assert_driver_returns_correct_rc(
+            'ec2 describe-instances --unknown-arg file:///foo'.split(), 0
+        )
 
     def test_custom_command_schema(self):
         driver = create_clidriver()
@@ -639,40 +640,38 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.patch_make_request()
 
         # Test single shorthand item
-        rc = driver.main(
-            'ec2 foo --bar Name=test,Count=4'.split())
-
-        self.assertEqual(rc, 0)
+        self._assert_driver_returns_correct_rc(
+            'ec2 foo --bar Name=test,Count=4'.split(), 0, driver=driver
+        )
 
         # Test shorthand list of items with optional values
-        rc = driver.main(
-            'ec2 foo --bar Name=test,Count=4 Name=another'.split())
-
-        self.assertEqual(rc, 0)
+        self._assert_driver_returns_correct_rc(
+            'ec2 foo --bar Name=test,Count=4 Name=another'.split(), 0,
+            driver=driver
+        )
 
         # Test missing require shorthand item
-        rc = driver.main(
-            'ec2 foo --bar Count=4'.split())
-
-        self.assertEqual(rc, 252)
+        self._assert_driver_returns_correct_rc(
+            'ec2 foo --bar Count=4'.split(), 252, driver=driver
+        )
 
         # Test extra unknown shorthand item
-        rc = driver.main(
-            'ec2 foo --bar Name=test,Unknown='.split())
-
-        self.assertEqual(rc, 252)
+        self._assert_driver_returns_correct_rc(
+            'ec2 foo --bar Name=test,Unknown='.split(), 252, driver=driver
+        )
 
         # Test long form JSON
-        rc = driver.main(
-            'ec2 foo --bar {"Name":"test","Count":4}'.split())
-
-        self.assertEqual(rc, 0)
+        self._assert_driver_returns_correct_rc(
+             'ec2 foo --bar {"Name":"test","Count":4}'.split(), 0,
+             driver=driver
+        )
 
         # Test malformed long form JSON
-        rc = driver.main(
-            'ec2 foo --bar {"Name":"test",Count:4}'.split())
+        self._assert_driver_returns_correct_rc(
+             'ec2 foo --bar {"Name":"test",Count:4}'.split(), 252,
+             driver=driver
+        )
 
-        self.assertEqual(rc, 252)
 
     def test_empty_params_gracefully_handled(self):
         # Simulates the equivalent in bash: --identifies ""
@@ -682,10 +681,11 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
 
     def test_file_param_does_not_exist(self):
         driver = create_clidriver()
-        rc = driver.main('ec2 describe-instances '
-                         '--filters file://does/not/exist.json'.split())
-        self.assertEqual(rc, 252)
-        error_msg = self.stderr.getvalue()
+        with self.assertRaises(Exception) as e:
+            driver.main('ec2 describe-instances '
+                        '--filters file://does/not/exist.json'.split())
+        self.assertEqual(e.exception.RC, 252)
+        error_msg = self.stderr.getvalue() + str(e.exception)
         self.assertIn("Error parsing parameter '--filters': "
                       "Unable to load paramfile file://does/not/exist.json",
                       error_msg)
@@ -694,15 +694,16 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
     def test_aws_configure_in_error_message_no_credentials(self):
         driver = create_clidriver()
         def raise_exception(*args, **kwargs):
-            raise NoCredentialsError()
+            raise NoCredentialsError
         driver.session.register(
             'building-command-table',
             lambda command_table, **kwargs: \
                 command_table.__setitem__('ec2', raise_exception))
         with mock.patch('sys.stderr') as f:
-            driver.main('ec2 describe-instances'.split())
+            with ExceptionHandler(Exception):
+                driver.main('ec2 describe-instances'.split())
         self.assertEqual(
-            f.write.call_args_list[0][0][0],
+            f.write.call_args_list[1][0][0],
             'Unable to locate credentials. '
             'You can configure credentials by running "aws configure".')
 
@@ -716,9 +717,10 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             return 20
 
         self.driver.session.register('calling-command', override_with_rc)
-        rc = self.driver.main('ec2 describe-instances'.split())
         # Check that the overriden rc is as expected.
-        self.assertEqual(rc, 20)
+        self._assert_driver_returns_correct_rc(
+            'ec2 describe-instances'.split(), 20
+        )
 
     def test_override_calling_command_error(self):
         self.driver = create_clidriver()
@@ -731,33 +733,39 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.driver.session.register('calling-command', override_with_error)
         # An exception should be thrown as a result of the handler, which
         # will result in 255 rc.
-        rc = self.driver.main('ec2 describe-instances'.split())
-        self.assertEqual(rc, 255)
+        self._assert_driver_returns_correct_rc(
+            'ec2 describe-instances'.split(), 255
+        )
 
     def test_help_blurb_in_error_message(self):
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(ArgParseException) as e:
             self.driver.main([])
-        self.assertIn(HELP_BLURB, self.stderr.getvalue())
+        error_message = self.stderr.getvalue() + str(e.exception)
+        self.assertIn(HELP_BLURB, error_message)
 
     def test_help_blurb_in_service_error_message(self):
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(ArgParseException) as e:
             self.driver.main(['ec2'])
-        self.assertIn(HELP_BLURB, self.stderr.getvalue())
+        error_message = self.stderr.getvalue() + str(e.exception)
+        self.assertIn(HELP_BLURB, error_message)
 
     def test_help_blurb_in_operation_error_message(self):
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(ArgParseException) as e:
             self.driver.main(['s3api', 'list-objects'])
-        self.assertIn(HELP_BLURB, self.stderr.getvalue())
+        error_message = self.stderr.getvalue() + str(e.exception)
+        self.assertIn(HELP_BLURB, error_message)
 
     def test_help_blurb_in_unknown_argument_error_message(self):
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(ArgParseException) as e:
             self.driver.main(['s3api', 'list-objects', '--help'])
-        self.assertIn(HELP_BLURB, self.stderr.getvalue())
+        error_message = self.stderr.getvalue() + str(e.exception)
+        self.assertIn(HELP_BLURB, error_message)
 
     def test_idempotency_token_is_not_required_in_help_text(self):
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(ArgParseException) as e:
             self.driver.main(['servicecatalog', 'create-constraint'])
-        self.assertNotIn('--idempotency-token', self.stderr.getvalue())
+        error_message = self.stderr.getvalue() + str(e.exception)
+        self.assertNotIn('--idempotency-token', error_message)
 
     @mock.patch('awscli.clidriver.platform.system', return_value='Linux')
     @mock.patch('awscli.clidriver.platform.machine', return_value='x86_64')

@@ -202,13 +202,12 @@ class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
         # command verify that we get a SystemExit exception
         # and that we get something in stderr that says that
         # we made an invalid choice (because the operation is removed).
-        stderr = six.StringIO()
-        with mock.patch('sys.stderr', stderr):
-            with self.assertRaises(SystemExit):
-                self.driver.main([service, command, 'help'])
+        with self.assertRaises(Exception) as cm:
+            self.driver.main([service, command, 'help'])
+        error_message = str(cm.exception)
         # We should see an error message complaining about
         # an invalid choice because the operation has been removed.
-        self.assertIn('argument operation: Invalid choice', stderr.getvalue())
+        self.assertIn('argument operation: Invalid choice', error_message)
 
     def test_ses_deprecated_commands(self):
         self.driver.main(['ses', 'help'])

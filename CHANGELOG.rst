@@ -854,6 +854,34 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.144
+========
+
+* api-change:``comprehend``: Update comprehend command to latest version
+* api-change:``workmail``: Update workmail command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``dynamodbstreams``: Update dynamodbstreams command to latest version
+
+
+1.18.143
+========
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``events``: Update events command to latest version
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``resource-groups``: Update resource-groups command to latest version
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+
+
+1.18.142
+========
+
+* api-change:``sso-admin``: Update sso-admin command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``codestar-connections``: Update codestar-connections command to latest version
+
+
 1.18.141
 ========
 

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.145
+========
+
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``backup``: Update backup command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``translate``: Update translate command to latest version
+
+
 1.18.144
 ========
 

@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+2.0.51
+======
+
+* api-change:``dynamodbstreams``: Update dynamodbstreams command to latest version
+* api-change:``codestar-connections``: Update codestar-connections command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``resource-groups``: Update resource-groups command to latest version
+* api-change:``events``: Update events command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``sso-admin``: Update sso-admin command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``workmail``: Update workmail command to latest version
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+
+
 2.0.50
 ======
 

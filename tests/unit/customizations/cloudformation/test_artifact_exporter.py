@@ -28,7 +28,8 @@ from awscli.customizations.cloudformation.artifact_exporter \
     AppSyncFunctionConfigurationResponseTemplateResource, \
     GlueJobCommandScriptLocationResource, \
     StepFunctionsStateMachineDefinitionResource, \
-    ServerlessStateMachineDefinitionResource
+    ServerlessStateMachineDefinitionResource, \
+    CodeCommitRepositoryS3Resource
 
 
 VALID_CASES = [

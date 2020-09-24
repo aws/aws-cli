@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+2.0.52
+======
+
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``synthetics``: Update synthetics command to latest version
+* api-change:``savingsplans``: Update savingsplans command to latest version
+* api-change:``textract``: Update textract command to latest version
+* api-change:``amplify``: Update amplify command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+* api-change:``backup``: Update backup command to latest version
+* api-change:``translate``: Update translate command to latest version
+
+
 2.0.51
 ======
 

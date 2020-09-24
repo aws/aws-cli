@@ -872,6 +872,26 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.146
+========
+
+* api-change:``eks``: Update eks command to latest version
+* api-change:``textract``: Update textract command to latest version
+* api-change:``synthetics``: Update synthetics command to latest version
+* api-change:``amplify``: Update amplify command to latest version
+* api-change:``savingsplans``: Update savingsplans command to latest version
+* api-change:``transcribe``: Update transcribe command to latest version
+
+
+1.18.145
+========
+
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``backup``: Update backup command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``translate``: Update translate command to latest version
+
+
 1.18.144
 ========
 

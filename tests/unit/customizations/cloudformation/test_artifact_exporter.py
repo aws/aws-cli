@@ -14,8 +14,8 @@ from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.artifact_exporter \
     import is_s3_url, parse_s3_url, is_local_file, is_local_folder, \
     upload_local_artifacts, zip_folder, make_abs_path, make_zip, \
-    Template, Resource, ResourceWithS3UrlDict, ServerlessApiResource, \
-    ServerlessFunctionResource, GraphQLSchemaResource, \
+    Template, Resource, ResourceWithS3UrlDict, ResourceWithS3UrlProperties, \
+    ServerlessApiResource, ServerlessFunctionResource, GraphQLSchemaResource, \
     LambdaFunctionResource, ApiGatewayRestApiResource, \
     ElasticBeanstalkApplicationVersion, CloudFormationStackResource, \
     ServerlessApplicationResource, LambdaLayerVersionResource, \
@@ -676,7 +676,7 @@ class TestArtifactExporter(unittest.TestCase):
     @mock.patch("awscli.customizations.cloudformation.artifact_exporter.upload_local_artifacts")
     def test_resource_with_s3_url_dict(self, upload_local_artifacts_mock):
         """
-        Checks if we properly export from the Resource classc
+        Checks if we properly export from the Resource class
         :return:
         """
 
@@ -711,6 +711,53 @@ class TestArtifactExporter(unittest.TestCase):
             "b": "bucket",
             "o": "key1/key2",
             "v": "SomeVersionNumber"
+        })
+
+    @mock.patch("awscli.customizations.cloudformation.artifact_exporter.upload_local_artifacts")
+    def test_resource_with_s3_url_properties(self, upload_local_artifacts_mock):
+        """
+        Checks if we properly export from the Resource class with property preservation
+        :return:
+        """
+
+        self.assertTrue(issubclass(ResourceWithS3UrlProperties, Resource))
+
+        class MockResource(ResourceWithS3UrlProperties):
+            PROPERTY_NAME = "foo.bar"
+            BUCKET_NAME_PROPERTY = "b"
+            OBJECT_KEY_PROPERTY = "o"
+            VERSION_PROPERTY = "v"
+
+        resource = MockResource(self.s3_uploader_mock)
+
+        # Case 1: Property value is a path to file
+        resource_id = "id"
+        resource_dict = {
+            "foo": {
+                "bar": "/path/to/file",
+                "preserved": "this exists",
+            },
+        }
+        parent_dir = "dir"
+        s3_url = "s3://bucket/key1/key2?versionId=SomeVersionNumber"
+
+        upload_local_artifacts_mock.return_value = s3_url
+
+        resource.export(resource_id, resource_dict, parent_dir)
+
+        upload_local_artifacts_mock.assert_called_once_with(
+            resource_id,
+            resource_dict,
+            resource.PROPERTY_NAME,
+            parent_dir,
+            self.s3_uploader_mock,
+        )
+
+        self.assertEquals(resource_dict["foo"], {
+            "b": "bucket",
+            "o": "key1/key2",
+            "v": "SomeVersionNumber",
+            "preserved": "this exists",
         })
 
     @mock.patch("awscli.customizations.cloudformation.artifact_exporter.Template")

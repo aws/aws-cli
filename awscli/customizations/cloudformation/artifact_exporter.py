@@ -310,6 +310,56 @@ class ResourceWithS3UrlDict(Resource):
         set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, parsed_url)
 
 
+class ResourceWithS3UrlProperties(Resource):
+    """
+    Represents CloudFormation resources that need the S3 URL to be specified as
+    properties like {Bucket: "", Key: "", Version: ""} but also contains other properties
+    that should be preserved. In this case, PROPERTY_NAME must be a dotted path to a property
+    that contains the artifact location. The parent dict of PROPERTY_NAME will be updated
+    to include the S3 properties and the PROPERTY_NAME property will be removed.
+    """
+
+    BUCKET_NAME_PROPERTY = None
+    OBJECT_KEY_PROPERTY = None
+    VERSION_PROPERTY = None
+
+    def __init__(self, uploader):
+        super(ResourceWithS3UrlProperties, self).__init__(uploader)
+
+    def do_export(self, resource_id, resource_dict, parent_dir):
+        """
+        Upload to S3 and set add properties to the dict representing the S3 url
+        of the uploaded object while preserving other existing properties
+        """
+
+        artifact_s3_url = \
+            upload_local_artifacts(resource_id, resource_dict,
+                                   self.PROPERTY_NAME,
+                                   parent_dir, self.uploader)
+
+        parsed_url = parse_s3_url(
+                artifact_s3_url,
+                bucket_name_property=self.BUCKET_NAME_PROPERTY,
+                object_key_property=self.OBJECT_KEY_PROPERTY,
+                version_property=self.VERSION_PROPERTY)
+
+        # Split the path into parent and final property
+        path_parts = self.PROPERTY_NAME.split(".")
+        parent_path = ".".join(path_parts[:-1])
+        artifact_property = path_parts[-1]
+
+        # Create a new dict to store the s3 url
+        s3_dict = {"S3": {}}
+        set_value_from_jmespath(s3_dict, "S3", parsed_url)
+
+        # Remove the artifact path from the resource
+        property_dict = jmespath.search(parent_path, resource_dict)
+        del property_dict[artifact_property]
+
+        # Merge in the S3 url properties
+        property_dict.update(s3_dict["S3"])
+
+
 class ServerlessFunctionResource(Resource):
     RESOURCE_TYPE = "AWS::Serverless::Function"
     PROPERTY_NAME = "CodeUri"
@@ -435,6 +485,15 @@ class ServerlessStateMachineDefinitionResource(ResourceWithS3UrlDict):
     PACKAGE_NULL_PROPERTY = False
 
 
+class SyntheticsCanaryCodeResource(ResourceWithS3UrlProperties):
+    RESOURCE_TYPE = "AWS::Synthetics::Canary"
+    PROPERTY_NAME = "Code.Script"
+    BUCKET_NAME_PROPERTY = "S3Bucket"
+    OBJECT_KEY_PROPERTY = "S3Key"
+    VERSION_PROPERTY = "S3ObjectVersion"
+    FORCE_ZIP = True
+
+
 class CloudFormationStackResource(Resource):
     """
     Represents CloudFormation::Stack resource that can refer to a nested
@@ -538,7 +597,8 @@ RESOURCES_EXPORT_LIST = [
     GlueJobCommandScriptLocationResource,
     StepFunctionsStateMachineDefinitionResource,
     ServerlessStateMachineDefinitionResource,
-    CodeCommitRepositoryS3Resource
+    CodeCommitRepositoryS3Resource,
+    SyntheticsCanaryCodeResource,
 ]
 
 METADATA_EXPORT_LIST = [

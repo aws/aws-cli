@@ -419,9 +419,9 @@ LIST_CLUSTERS_CREATED_AFTER = (
     ' <code>--created-after 2017-07-04T00:01:30.</p>')
 
 LIST_CLUSTERS_CREATED_BEFORE = (
-    '<p>List only those clusters created after the date and time'
+    '<p>List only those clusters created before the date and time'
     ' specified in the format yyyy-mm-ddThh:mm:ss. For example,'
-    ' <code>--created-after 2017-07-04T00:01:30.</p>')
+    ' <code>--created-before 2017-07-04T00:01:30.</p>')
 
 EMR_MANAGED_MASTER_SECURITY_GROUP = (
     '<p>The identifier of the Amazon EC2 security group '

@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.147
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``frauddetector``: Update frauddetector command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``docdb``: Update docdb command to latest version
+* api-change:``sts``: Update sts command to latest version
+* api-change:``batch``: Update batch command to latest version
+
+
 1.18.146
 ========
 

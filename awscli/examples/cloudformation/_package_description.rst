@@ -28,6 +28,7 @@ This command can upload local artifacts referenced in the following places:
     - ``TemplateURL`` property for the ``AWS::CloudFormation::Stack`` resource
     - ``Command.ScriptLocation`` property for the ``AWS::Glue::Job`` resource
     - ``DefinitionS3Location`` property for the ``AWS::StepFunctions::StateMachine`` resource
+    - ``DefinitionUri`` property for the ``AWS::Serverless::StateMachine`` resource
 
 
 To specify a local artifact in your template, specify a path to a local file or folder,

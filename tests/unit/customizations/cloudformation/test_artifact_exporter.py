@@ -27,7 +27,8 @@ from awscli.customizations.cloudformation.artifact_exporter \
     AppSyncFunctionConfigurationRequestTemplateResource, \
     AppSyncFunctionConfigurationResponseTemplateResource, \
     GlueJobCommandScriptLocationResource, \
-    StepFunctionsStateMachineDefinitionResource
+    StepFunctionsStateMachineDefinitionResource, \
+    ServerlessStateMachineDefinitionResource
 
 
 VALID_CASES = [
@@ -155,6 +156,12 @@ RESOURCE_EXPORT_TEST_CASES = [
     },
     {
         "class": StepFunctionsStateMachineDefinitionResource,
+        "expected_result": {
+            "Bucket": "foo", "Key": "bar", "Version": "baz"
+        }
+    },
+    {
+        "class": ServerlessStateMachineDefinitionResource,
         "expected_result": {
             "Bucket": "foo", "Key": "bar", "Version": "baz"
         }

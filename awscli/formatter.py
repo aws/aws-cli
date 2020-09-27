@@ -10,9 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import collections
 import logging
 from datetime import datetime
 
+import jmespath
 from botocore.compat import json
 from botocore.utils import set_value_from_jmespath
 from botocore.paginate import PageIterator
@@ -56,7 +58,10 @@ class Formatter(object):
 
     def _apply_query_if_needed(self, response_data):
         if self._args.query is not None:
-            response_data = self._args.query.search(response_data)
+            response_data = self._args.query.search(
+                response_data,
+                jmespath.Options(dict_cls=collections.OrderedDict)
+            )
         return response_data
 
     def _get_default_stream(self):
@@ -255,6 +260,12 @@ class TableFormatter(FullyBufferedFormatter):
         # and the row as the values, unless the value
         # is a list.
         headers, more = self._group_scalar_keys(current)
+        if self._args.query is None:
+            headers.sort()
+            more.sort()
+        else:
+            headers = sorted(headers, key=headers.index)
+            more = sorted(more, key=more.index)
         if len(headers) == 1:
             # Special casing if a dict has a single scalar key/value pair.
             self.table.add_row([headers[0], current[headers[0]]])
@@ -293,14 +304,18 @@ class TableFormatter(FullyBufferedFormatter):
         # We want to make sure we catch all the keys in the list of dicts.
         # Most of the time each list element has the same keys, but sometimes
         # a list element will have keys not defined in other elements.
-        headers = set()
-        more = set()
+        headers = []
+        more = []
         for item in list_of_dicts:
             current_headers, current_more = self._group_scalar_keys(item)
-            headers.update(current_headers)
-            more.update(current_more)
-        headers = list(sorted(headers))
-        more = list(sorted(more))
+            headers.extend(current_headers)
+            more.extend(current_more)
+        if self._args.query is None:
+            headers = sorted(set(headers))
+            more = sorted(set(more))
+        else:
+            headers = sorted(set(headers), key=headers.index)
+            more = sorted(set(more), key=more.index)
         return headers, more
 
     def _group_scalar_keys(self, current):
@@ -314,8 +329,6 @@ class TableFormatter(FullyBufferedFormatter):
                 headers.append(element)
             else:
                 more.append(element)
-        headers.sort()
-        more.sort()
         return headers, more
 
 

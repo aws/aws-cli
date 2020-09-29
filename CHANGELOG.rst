@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.149
+========
+
+* api-change:``schemas``: Update schemas command to latest version
+* api-change:``timestream-query``: Update timestream-query command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``timestream-write``: Update timestream-write command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``connect``: Update connect command to latest version
+
+
 1.18.148
 ========
 

@@ -887,6 +887,35 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.149
+========
+
+* api-change:``schemas``: Update schemas command to latest version
+* api-change:``timestream-query``: Update timestream-query command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``timestream-write``: Update timestream-write command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``connect``: Update connect command to latest version
+
+
+1.18.148
+========
+
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
+1.18.147
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``frauddetector``: Update frauddetector command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``docdb``: Update docdb command to latest version
+* api-change:``sts``: Update sts command to latest version
+* api-change:``batch``: Update batch command to latest version
+
+
 1.18.146
 ========
 

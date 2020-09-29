@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.148
+========
+
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
 1.18.147
 ========
 

@@ -193,6 +193,7 @@ class ConfigureSSOCommand(BasicCommand):
         if len(accounts) == 1:
             sso_account_id = self._handle_single_account(accounts)
         else:
+            accounts = sorted(accounts, key=lambda i: i['accountName'])
             sso_account_id = self._handle_multiple_accounts(accounts)
         uni_print('Using the account ID {}\n'.format(sso_account_id))
         self._new_values['sso_account_id'] = sso_account_id

@@ -75,7 +75,7 @@ Before using the AWS CLI, you need to configure your AWS credentials. You can do
 - Config file
 - IAM Role
 
-The quickest way to get started is to run the `aws configure` command:
+The quickest way to get started is to run the `aws configure` command (you must need to create IAM user, if not created):
 
     $ aws configure
     AWS Access Key ID: MYACCESSKEY

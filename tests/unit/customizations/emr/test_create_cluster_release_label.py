@@ -36,6 +36,12 @@ DEFAULT_INSTANCE_GROUPS_ARG = (
     'InstanceGroupType=TASK,Name=TASK,'
     'InstanceCount=1,InstanceType=m1.large ')
 
+HA_INSTANCE_GROUPS_ARG = (
+    'InstanceGroupType=MASTER,Name=MASTER,'
+    'InstanceCount=3,InstanceType=m1.large '
+    'InstanceGroupType=CORE,Name=CORE,'
+    'InstanceCount=1,InstanceType=m1.large ')
+
 DEFAULT_INSTANCE_GROUPS = \
     [{'InstanceRole': 'MASTER',
       'InstanceCount': 1,
@@ -56,6 +62,21 @@ DEFAULT_INSTANCE_GROUPS = \
       'InstanceType': 'm1.large'
       }]
 
+HA_INSTANCE_GROUPS = \
+    [{'InstanceRole': 'MASTER',
+      'InstanceCount': 3,
+      'Name': 'MASTER',
+      'Market': 'ON_DEMAND',
+      'InstanceType': 'm1.large'
+      },
+     {'InstanceRole': 'CORE',
+      'InstanceCount': 1,
+      'Name': 'CORE',
+      'Market': 'ON_DEMAND',
+      'InstanceType': 'm1.large'
+      }]
+
+
 DEFAULT_CMD = ('emr create-cluster --release-label emr-4.0.0'
                ' --use-default-roles'
                ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG + ' ')
@@ -64,6 +85,11 @@ DEFAULT_INSTANCES = {'KeepJobFlowAliveWhenNoSteps': True,
                      'TerminationProtected': False,
                      'InstanceGroups': DEFAULT_INSTANCE_GROUPS
                      }
+
+HA_INSTANCES = {'KeepJobFlowAliveWhenNoSteps': True,
+                'TerminationProtected': False,
+                'InstanceGroups': HA_INSTANCE_GROUPS
+                }
 
 EC2_ROLE_NAME = "EMR_EC2_DefaultRole"
 EMR_ROLE_NAME = "EMR_DefaultRole"
@@ -1432,6 +1458,27 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                   'LogEncryptionKmsKeyId': test_log_encryption_kms_key_id
              }
         self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_with_placement_groups(self):
+        cmd = (self.prefix + '--release-label emr-5.28.0 --security-configuration ' +
+               'MySecurityConfig --placement-group-configs ' +
+               'InstanceRole=MASTER,PlacementStrategy=SPREAD ' +
+               '--instance-groups ' + HA_INSTANCE_GROUPS_ARG)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': HA_INSTANCES,
+                'ReleaseLabel': 'emr-5.28.0',
+                'VisibleToAllUsers': True,
+                'Tags': [],
+                'PlacementGroupConfigs': [{
+                    'InstanceRole': 'MASTER',
+                    'PlacementStrategy': 'SPREAD'
+                }],
+                'SecurityConfiguration': 'MySecurityConfig'
+            }
+        self.assert_params_for_cmd(cmd, result)
+
 
 if __name__ == "__main__":
     unittest.main()

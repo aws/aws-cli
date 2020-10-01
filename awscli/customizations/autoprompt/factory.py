@@ -29,6 +29,10 @@ from prompt_toolkit.layout.processors import (
     BeforeInput, Processor, Transformation)
 from prompt_toolkit.widgets import HorizontalLine, SearchToolbar
 
+from awscli.customizations.autoprompt.history import (
+    HistoryDriver, HistoryCompleter
+)
+
 
 @Condition
 def doc_section_visible():
@@ -48,6 +52,23 @@ def is_one_column():
     return not getattr(app, 'multi_column', False)
 
 
+class CLIPromptBuffer(Buffer):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._completer = self.completer
+        self._history_completer = HistoryCompleter(self)
+        self.history_mode = False
+
+    def switch_history_mode(self):
+        self.history_mode = not self.history_mode
+        if self.history_mode:
+            self.completer = self._history_completer
+            self.start_completion()
+        else:
+            self.completer = self._completer
+
+
 class PromptToolkitFactory:
     DIMENSIONS = {
         'doc_window_height_max': 40,
@@ -61,10 +82,18 @@ class PromptToolkitFactory:
     def __init__(self, completer):
         self._completer = completer
 
+    def create_history(self):
+        cache_dir = os.path.expanduser(
+            os.path.join('~', '.aws', 'cli', 'cache'))
+        history_filename = os.path.join(cache_dir, 'prompt_history.json')
+        return HistoryDriver(history_filename)
+
     def create_input_buffer(self, on_text_changed_callback=None):
-        return Buffer(name='input_buffer', completer=self._completer,
-                      complete_while_typing=True,
-                      on_text_changed=on_text_changed_callback)
+        history = self.create_history()
+        return CLIPromptBuffer(
+            name='input_buffer', completer=self._completer,
+            history=history, complete_while_typing=True,
+            on_text_changed=on_text_changed_callback)
 
     def create_doc_buffer(self):
         return Buffer(name='doc_buffer', read_only=True)
@@ -211,10 +240,16 @@ class PromptToolkitKeyBindings:
             is_completing = getattr(buffer, 'complete_state', False)
             current_document = buffer.document
             if not is_completing:
+                buffer.append_to_history()
                 event.app.exit()
             else:
                 # I didn't find better way to make a choice and close prompter
                 # than reset buffer and change it to selected part
+                if buffer.history_mode:
+                    buffer.switch_history_mode()
+                    self.switch_history_prompting_alert(
+                        event, buffer.history_mode
+                    )
                 buffer.cancel_completion()
                 event.app.current_buffer.reset()
                 updated_document = Document(
@@ -228,6 +263,16 @@ class PromptToolkitKeyBindings:
                 if cur_word.endswith(os.sep) \
                         and cur_word.startswith(('file://', 'fileb://')):
                     buffer.start_completion()
+
+        @self._kb.add(Keys.Escape, filter=_input_buffer_has_focus)
+        def _(event):
+            buffer = event.app.current_buffer
+            if buffer.history_mode:
+                buffer.cancel_completion()
+                buffer.switch_history_mode()
+                self.switch_history_prompting_alert(
+                    event, buffer.history_mode
+                )
 
         @self._kb.add(Keys.F2)
         def _(event):
@@ -248,6 +293,14 @@ class PromptToolkitKeyBindings:
             event.app.multi_column = not getattr(
                 event.app, 'multi_column', True
             )
+
+        @self._kb.add(Keys.ControlR, filter=_input_buffer_has_focus)
+        def _(event):
+            buffer = event.app.current_buffer
+            buffer.cancel_completion()
+            buffer.switch_history_mode()
+            self.switch_history_prompting_alert(
+                event, buffer.history_mode)
 
         @self._kb.add(Keys.ControlC)
         @self._kb.add(Keys.ControlD)
@@ -330,6 +383,17 @@ class PromptToolkitKeyBindings:
     def keybindings(self):
         return self._kb
 
+    def switch_history_prompting_alert(self, event, history_mode):
+        toolbar_buffer = event.app.layout.get_buffer_by_name(
+            'bottom_toolbar_buffer')
+        if history_mode:
+            text = self._toolbar_text.input_buf_key_binding_with_history_mode
+        else:
+            text = self._toolbar_text.input_buffer_key_binding_text
+        new_document = Document(text=text, cursor_position=0)
+        toolbar_buffer.set_document(new_document,
+                                    bypass_readonly=True)
+
 
 class FormatTextProcessor(Processor):
     """This Processor is used to transform formatted text into a useable
@@ -352,15 +416,12 @@ class ToolbarHelpText:
             spacing = '    '
         self._spacing = spacing
         self.input_buffer_key_binding_text = (
-            f'{self._style}[TAB]</style> Cycle Forward{self._spacing}'
-            f'{self._style}[SHIFT+TAB]</style> Cycle Backward{self._spacing}'
-            f'{self._style}[UP]</style> Cycle Forward{self._spacing}'
-            f'{self._style}[DOWN]</style> Cycle Backward{self._spacing}'
             f'{self._style}[SPACE]</style> Autocomplete Choice{self._spacing}'
             f'{self._style}[ENTER]</style> Autocomplete Choice/Execute Command{self._spacing}'
             f'{self._style}[F1]</style> Focus on Docs{self._spacing}'
             f'{self._style}[F2]</style> Hide/Show on Docs{self._spacing}'
-            f'{self._style}[F3]</style> One/Multi column prompt'
+            f'{self._style}[F3]</style> One/Multi column prompt{self._spacing}'
+            f'{self._style}[CONTROL+R]</style> On/Off bck-i-search'
         )
         self.doc_window_key_binding_text = (
             f'{self._style}[/]</style> Search Forward{self._spacing}'
@@ -375,3 +436,10 @@ class ToolbarHelpText:
             f'{self._style}[G]</style> Go to Bottom{self._spacing}'
             f'{self._style}[F1] or [q]</style> Focus on Input'
         )
+        self.history_mode_sign = (
+            f'<style fg="ansired" bg="#00ff44">bck-i-search</style>{self._spacing}'
+        )
+
+    @property
+    def input_buf_key_binding_with_history_mode(self):
+        return self.history_mode_sign + self.input_buffer_key_binding_text

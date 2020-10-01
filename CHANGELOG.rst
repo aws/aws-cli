@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+2.0.54
+======
+
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``datasync``: Update datasync command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``s3control``: Update s3control command to latest version
+* api-change:``mediaconnect``: Update mediaconnect command to latest version
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+* api-change:``s3outposts``: Update s3outposts command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``directconnect``: Update directconnect command to latest version
+* api-change:``emr``: Update emr command to latest version
+
+
 2.0.53
 ======
 

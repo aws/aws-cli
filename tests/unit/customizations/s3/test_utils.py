@@ -147,6 +147,148 @@ class TestFindBucketKey(unittest.TestCase):
             bucket, 'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint')
         self.assertEqual(key, 'pre/key')
 
+    def test_outpost_arn_with_colon(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
+            'accesspoint:my-accesspoint'
+        )
+        self.assertEqual(
+            bucket,
+            (
+                'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
+                'accesspoint:my-accesspoint'
+            )
+        )
+        self.assertEqual(key, '')
+
+    def test_outpost_arn_with_colon_and_key(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
+            'accesspoint:my-accesspoint/key'
+        )
+        self.assertEqual(
+            bucket,
+            (
+                'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
+                'accesspoint:my-accesspoint'
+            )
+        )
+        self.assertEqual(key, 'key')
+
+    def test_outpost_arn_with_colon_and_key_with_colon_in_name(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
+            'accesspoint:my-accesspoint/key:name'
+        )
+        self.assertEqual(
+            bucket,
+            (
+                'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
+                'accesspoint:my-accesspoint'
+            )
+        )
+        self.assertEqual(key, 'key:name')
+
+    def test_outpost_arn_with_colon_and_key_with_slash_in_name(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
+            'accesspoint:my-accesspoint/key/name'
+        )
+        self.assertEqual(
+            bucket,
+            (
+                'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
+                'accesspoint:my-accesspoint'
+            )
+        )
+        self.assertEqual(key, 'key/name')
+
+    def test_outpost_arn_with_colon_and_key_with_slash_and_colon_in_name(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
+            'accesspoint:my-accesspoint/prefix/key:name'
+        )
+        self.assertEqual(
+            bucket,
+            (
+                'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
+                'accesspoint:my-accesspoint'
+            )
+        )
+        self.assertEqual(key, 'prefix/key:name')
+
+    def test_outpost_arn_with_slash(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
+            'accesspoint/my-accesspoint'
+        )
+        self.assertEqual(
+            bucket,
+            (
+                'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
+                'accesspoint/my-accesspoint'
+            )
+        )
+        self.assertEqual(key, '')
+
+    def test_outpost_arn_with_slash_and_key(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
+            'accesspoint/my-accesspoint/key'
+        )
+        self.assertEqual(
+            bucket,
+            (
+                'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
+                'accesspoint/my-accesspoint'
+            )
+        )
+        self.assertEqual(key, 'key')
+
+    def test_outpost_arn_with_slash_and_key_with_colon_in_name(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
+            'accesspoint/my-accesspoint/key:name'
+        )
+        self.assertEqual(
+            bucket,
+            (
+                'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
+                'accesspoint/my-accesspoint'
+            )
+        )
+        self.assertEqual(key, 'key:name')
+
+    def test_outpost_arn_with_slash_and_key_with_slash_in_name(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
+            'accesspoint/my-accesspoint/key/name'
+        )
+        self.assertEqual(
+            bucket,
+            (
+                'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
+                'accesspoint/my-accesspoint'
+            )
+        )
+        self.assertEqual(key, 'key/name')
+
+    def test_outpost_arn_with_slash_and_key_with_slash_and_colon_in_name(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
+            'accesspoint/my-accesspoint/prefix/key:name'
+        )
+        self.assertEqual(
+            bucket,
+            (
+                'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
+                'accesspoint/my-accesspoint'
+            )
+        )
+        self.assertEqual(key, 'prefix/key:name')
+
+
+
 
 class TestCreateWarning(unittest.TestCase):
     def test_create_warning(self):

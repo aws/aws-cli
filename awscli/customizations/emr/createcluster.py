@@ -126,7 +126,10 @@ class CreateCluster(Command):
          'help_text': helptext.STEP_CONCURRENCY_LEVEL},
         {'name': 'managed-scaling-policy',
          'schema': argumentschema.MANAGED_SCALING_POLICY_SCHEMA,
-         'help_text': helptext.MANAGED_SCALING_POLICY}
+         'help_text': helptext.MANAGED_SCALING_POLICY},
+        {'name': 'placement-group-configs',
+         'schema': argumentschema.PLACEMENT_GROUP_CONFIGS_SCHEMA,
+         'help_text': helptext.PLACEMENT_GROUP_CONFIGS}
     ]
     SYNOPSIS = BasicCommand.FROM_FILE('emr', 'create-cluster-synopsis.txt')
     EXAMPLES = BasicCommand.FROM_FILE('emr', 'create-cluster-examples.rst')
@@ -351,6 +354,11 @@ class CreateCluster(Command):
         if parsed_args.managed_scaling_policy is not None:
             emrutils.apply_dict(
                 params, 'ManagedScalingPolicy', parsed_args.managed_scaling_policy)
+
+        if parsed_args.placement_group_configs is not None:
+            emrutils.apply_dict(
+                params, 'PlacementGroupConfigs',
+                parsed_args.placement_group_configs)
 
         self._validate_required_applications(parsed_args)
 

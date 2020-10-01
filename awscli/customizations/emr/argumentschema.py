@@ -772,3 +772,24 @@ MANAGED_SCALING_POLICY_SCHEMA = {
         }
     }
 }
+
+PLACEMENT_GROUP_CONFIGS_SCHEMA = {
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "InstanceRole": {
+                "type": "string",
+                "description": "Role of the instance in the cluster.",
+                "enum": ["MASTER", "CORE", "TASK"],
+                "required": True
+            },
+            "PlacementStrategy": {
+                "type": "string",
+                "description": "EC2 Placement Group strategy associated "
+                               "with instance role.",
+                "enum": ["SPREAD", "PARTITION", "CLUSTER", "NONE"]
+            }
+        }
+    }
+}

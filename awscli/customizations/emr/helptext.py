@@ -461,3 +461,13 @@ MANAGED_SCALING_POLICY = (
     'InstanceFleet cluster, the UnitType must be InstanceFleetUnits. For '
     'InstanceGroup clusters, the UnitType can be either VCPU or Instances.</p>'
 )
+
+PLACEMENT_GROUP_CONFIGS = (
+    '<p>Placement group configuration for an Amazon EMR ' 
+    'cluster. The configuration specifies the EC2 placement group ' 
+    'strategy associated with each EMR Instance Role.</p> ' 
+    '<p>Currently, we support placement group only for <code>MASTER</code> ' 
+    'role with <code>SPREAD</code> strategy by default. You can opt-in by '
+    'passing <code>--placement-group-configs InstanceRole=MASTER</code> '
+    'during cluster creation.</p>'
+)

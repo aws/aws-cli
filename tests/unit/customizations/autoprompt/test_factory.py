@@ -13,15 +13,16 @@
 import mock
 
 from prompt_toolkit.buffer import Buffer
-from prompt_toolkit.completion import DummyCompleter
+from prompt_toolkit.completion import DummyCompleter, Completer
 from prompt_toolkit.formatted_text import FormattedText
 from prompt_toolkit.layout import Window
 from prompt_toolkit.widgets import SearchToolbar
 
 from awscli.customizations.autoprompt.factory import (
     FormatTextProcessor, PromptToolkitKeyBindings, PromptToolkitFactory,
-    ToolbarHelpText
+    ToolbarHelpText, CLIPromptBuffer
 )
+from awscli.customizations.autoprompt.history import HistoryCompleter
 from awscli.testutils import unittest
 
 
@@ -138,15 +139,28 @@ class TestToolbarHelpText(unittest.TestCase):
         self.toolbar_help_text = ToolbarHelpText(style=style, spacing=spacing)
         actual_text = self.toolbar_help_text.input_buffer_key_binding_text
         expected_text = (
-            f'{style}[TAB]</style> Cycle Forward'
-            f'{style}[SHIFT+TAB]</style> Cycle Backward'
-            f'{style}[UP]</style> Cycle Forward'
-            f'{style}[DOWN]</style> Cycle Backward'
             f'{style}[SPACE]</style> Autocomplete Choice'
             f'{style}[ENTER]</style> Autocomplete Choice/Execute Command'
             f'{style}[F1]</style> Focus on Docs'
             f'{style}[F2]</style> Hide/Show on Docs'
             f'{style}[F3]</style> One/Multi column prompt'
+            f'{style}[CONTROL+R]</style> On/Off bck-i-search'
+        )
+        self.assertEqual(actual_text, expected_text)
+
+    def test_can_get_input_buffer_key_bindings_wiht_history_sigh(self):
+        style = '<style>'
+        spacing = ''
+        self.toolbar_help_text = ToolbarHelpText(style=style, spacing=spacing)
+        actual_text = self.toolbar_help_text.input_buf_key_binding_with_history_mode
+        expected_text = (
+            f'<style fg="ansired" bg="#00ff44">bck-i-search</style>'
+            f'{style}[SPACE]</style> Autocomplete Choice'
+            f'{style}[ENTER]</style> Autocomplete Choice/Execute Command'
+            f'{style}[F1]</style> Focus on Docs'
+            f'{style}[F2]</style> Hide/Show on Docs'
+            f'{style}[F3]</style> One/Multi column prompt'
+            f'{style}[CONTROL+R]</style> On/Off bck-i-search'
         )
         self.assertEqual(actual_text, expected_text)
 
@@ -169,3 +183,14 @@ class TestToolbarHelpText(unittest.TestCase):
             f'{style}[F1] or [q]</style> Focus on Input'
         )
         self.assertEqual(actual_text, expected_text)
+
+
+class TestCLIPromptBuffer(unittest.TestCase):
+    def setUp(self):
+        self.buffer = CLIPromptBuffer()
+
+    def test_history_mode_switching(self):
+        self.buffer.switch_history_mode()
+        self.assertIsInstance(self.buffer.completer, HistoryCompleter)
+        self.buffer.switch_history_mode()
+        self.assertIsInstance(self.buffer.completer, Completer)

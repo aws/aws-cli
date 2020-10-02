@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import shlex
 import sys
 
 from prompt_toolkit.application import Application
@@ -171,11 +172,14 @@ class PromptToolkitPrompter:
             return True
         return False
 
+    def _quote_args_with_spaces(self, args):
+        return [shlex.quote(arg) for arg in args]
+
     def prompt_for_args(self, original_args):
         """Prompt for values for a given CLI command.
 
-        :type args: list
-        :param args: A list of the entered command at the program entry
+        :type original_args: list
+        :param original_args: A list of the entered command at the program entry
             point, less the initial `aws` command.
 
         :rtype: list
@@ -183,14 +187,14 @@ class PromptToolkitPrompter:
             delimited by whitespace characters.
 
         """
-        self._args = original_args
+        self._args = self._quote_args_with_spaces(original_args)
         self._app.run(pre_run=self.pre_run)
         cmd_line_text = self._input_buffer.document.text
         # Once the application is finished running, the screen is cleared.
         # Here, we display the command to be run so that the user knows what
         # command caused the output that they're seeing.
         sys.stdout.write(f'> {cmd_line_text}\n')
-        return cmd_line_text.split()
+        return shlex.split(cmd_line_text)
 
 
 class PromptToolkitCompleter(Completer):

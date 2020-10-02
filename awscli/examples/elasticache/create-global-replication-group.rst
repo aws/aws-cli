@@ -4,23 +4,37 @@ The following ``create-global-replication-group`` example creates a new global r
 
     aws elasticache create-global-replication-group \
         --global-replication-group-id-suffix my-global-replication-group \
-        --primary-replication-group-id my-primary-cluster 
+        --primary-replication-group-id my-primary-cluster
 
 Output::
 
     {
-        "CacheSubnetGroup": {
-            "CacheSubnetGroupName": "my-global-replication-group",
-            "CacheSubnetGroupDescription": "my subnet group",
-            "VpcId": "vpc-xxxxxcdb",
-            "Subnets": [
+        "GlobalReplicationGroup": {
+            "GlobalReplicationGroupId": "sgaui-my-global-replication-group",
+            "GlobalReplicationGroupDescription": " ",
+            "Status": "creating",
+            "CacheNodeType": "cache.r5.large",
+            "Engine": "redis",
+            "EngineVersion": "5.0.6",
+            "Members": [
                 {
-                    "SubnetIdentifier": "subnet-xxxxexxf",
-                    "SubnetAvailabilityZone": {
-                        "Name": "us-west-2d"
-                    }
+                    "ReplicationGroupId": "my-primary-cluster",
+                    "ReplicationGroupRegion": "us-west-2",
+                    "Role": "PRIMARY",
+                    "AutomaticFailover": "enabled",
+                    "Status": "associating"
                 }
-            ]
+            ],
+            "ClusterEnabled": true,
+            "GlobalNodeGroups": [
+                {
+                    "GlobalNodeGroupId": "sgaui-my-global-replication-group-0001",
+                    "Slots": "0-16383"
+                }
+            ],
+            "AuthTokenEnabled": false,
+            "TransitEncryptionEnabled": false,
+            "AtRestEncryptionEnabled": false
         }
     }
 

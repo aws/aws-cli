@@ -13,7 +13,6 @@
 
 import os
 import yaml
-import logging
 import errno
 from botocore.compat import OrderedDict
 
@@ -30,7 +29,7 @@ class KubeconfigCorruptedError(KubeconfigError):
     """ Raised when a kubeconfig cannot be parsed."""
 
 
-class KubeconfigInaccessableError(KubeconfigError):
+class KubeconfigInaccessibleError(KubeconfigError):
     """ Raised when a kubeconfig cannot be opened for read/writing."""
 
 
@@ -144,7 +143,7 @@ class KubeconfigLoader(object):
         :param path: The path to load a kubeconfig from
         :type path: string
 
-        :raises KubeconfigInaccessableError: if the kubeconfig can't be opened
+        :raises KubeconfigInaccessibleError: if the kubeconfig can't be opened
         :raises KubeconfigCorruptedError: if the kubeconfig is invalid
 
         :return: The loaded kubeconfig
@@ -157,7 +156,7 @@ class KubeconfigLoader(object):
             if e.errno == errno.ENOENT:
                 loaded_content = None
             else:
-                raise KubeconfigInaccessableError(
+                raise KubeconfigInaccessibleError(
                     "Can't open kubeconfig for reading: {0}".format(e))
         except yaml.YAMLError as e:
             raise KubeconfigCorruptedError(
@@ -178,7 +177,7 @@ class KubeconfigWriter(object):
         :param config: The kubeconfig to write
         :type config: Kubeconfig
 
-        :raises KubeconfigInaccessableError: if the kubeconfig
+        :raises KubeconfigInaccessibleError: if the kubeconfig
         can't be opened for writing
         """
         directory = os.path.dirname(config.path)
@@ -187,13 +186,14 @@ class KubeconfigWriter(object):
             os.makedirs(directory)
         except OSError as e:
             if e.errno != errno.EEXIST:
-                raise KubeconfigInaccessableError(
+                raise KubeconfigInaccessibleError(
                         "Can't create directory for writing: {0}".format(e))
         try:
-            with open(config.path, "w+") as stream:
+            fd = os.open(config.path, os.O_WRONLY | os.O_CREAT, 0o600)
+            with os.fdopen(fd, 'w') as stream:
                 ordered_yaml_dump(config.content, stream)
-        except IOError as e:
-            raise KubeconfigInaccessableError(
+        except OSError as e:
+            raise KubeconfigInaccessibleError(
                 "Can't open kubeconfig for writing: {0}".format(e))
 
 

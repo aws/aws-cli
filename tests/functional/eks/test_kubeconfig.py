@@ -25,7 +25,7 @@ from awscli.customizations.eks.kubeconfig import (_get_new_kubeconfig_content,
                                                   KubeconfigLoader,
                                                   KubeconfigValidator,
                                                   Kubeconfig,
-                                                  KubeconfigInaccessableError)
+                                                  KubeconfigInaccessibleError)
 class TestKubeconfigWriter(unittest.TestCase):
     def setUp(self):
         self._writer = KubeconfigWriter()
@@ -35,16 +35,21 @@ class TestKubeconfigWriter(unittest.TestCase):
             ("current-context", "context"),
             ("apiVersion", "v1")
         ])
-        file_to_write = tempfile.NamedTemporaryFile(mode='w').name
-        self.addCleanup(os.remove, file_to_write)
+        tempdir = tempfile.mkdtemp()
+        file_to_write = os.path.join(tempdir, 'config')
+        original_permissions = 0o0755
+        os.close(os.open(file_to_write, os.O_CREAT, original_permissions))
+        self.addCleanup(shutil.rmtree, tempdir)
 
         config = Kubeconfig(file_to_write, content)
         self._writer.write_kubeconfig(config)
 
+        self.assertEqual(self._get_file_permissions(file_to_write), original_permissions)
         with open(file_to_write, 'r') as stream:
             self.assertMultiLineEqual(stream.read(),
                                       "current-context: context\n"
                                       "apiVersion: v1\n")
+
     def test_write_makedirs(self):
         content = OrderedDict([
             ("current-context", "context"),
@@ -60,6 +65,7 @@ class TestKubeconfigWriter(unittest.TestCase):
         config = Kubeconfig(config_path, content)
         self._writer.write_kubeconfig(config)
 
+        self.assertEqual(self._get_file_permissions(config_path), 0o600)
         with open(config_path, 'r') as stream:
             self.assertMultiLineEqual(stream.read(),
                                       "current-context: context\n"
@@ -74,13 +80,19 @@ class TestKubeconfigWriter(unittest.TestCase):
         self.addCleanup(shutil.rmtree, containing_dir)
 
         config = Kubeconfig(containing_dir, content)
-        self.assertRaises(KubeconfigInaccessableError,
+        self.assertRaises(KubeconfigInaccessibleError,
                           self._writer.write_kubeconfig,
                           config)
 
+    @staticmethod
+    def _get_file_permissions(path):
+        # From octal |type|SSS|USR|GRP|OTH| gets value of last 3 octal digits
+        # which represents permissions for user, group, other.
+        return os.stat(path).st_mode & 0o777
+
 class TestKubeconfigLoader(unittest.TestCase):
     def setUp(self):
-        # This mock validator allows all kubeconfigs
+        # This mock validator allows all kubeconfigs.
         self._validator = mock.Mock(spec=KubeconfigValidator)
         self._loader = KubeconfigLoader(self._validator)
 
@@ -97,7 +109,7 @@ class TestKubeconfigLoader(unittest.TestCase):
         """
         old_path = os.path.abspath(get_testdata(config))
         new_path = os.path.join(self._temp_directory, config)
-        shutil.copy2(old_path, 
+        shutil.copy2(old_path,
                      new_path)
         return new_path
 
@@ -121,14 +133,14 @@ class TestKubeconfigLoader(unittest.TestCase):
         ])
         loaded_config = self._loader.load_kubeconfig(simple_path)
         self.assertEqual(loaded_config.content, content)
-        self._validator.validate_config.called_with(Kubeconfig(simple_path, 
+        self._validator.validate_config.called_with(Kubeconfig(simple_path,
                                                                content))
 
     def test_load_noexist(self):
         no_exist_path = os.path.join(self._temp_directory,
                                      "this_does_not_exist")
         loaded_config = self._loader.load_kubeconfig(no_exist_path)
-        self.assertEqual(loaded_config.content, 
+        self.assertEqual(loaded_config.content,
                          _get_new_kubeconfig_content())
         self._validator.validate_config.called_with(
             Kubeconfig(no_exist_path, _get_new_kubeconfig_content()))
@@ -136,15 +148,15 @@ class TestKubeconfigLoader(unittest.TestCase):
     def test_load_empty(self):
         empty_path = self._clone_config("valid_empty_existing")
         loaded_config = self._loader.load_kubeconfig(empty_path)
-        self.assertEqual(loaded_config.content, 
+        self.assertEqual(loaded_config.content,
                          _get_new_kubeconfig_content())
         self._validator.validate_config.called_with(
-            Kubeconfig(empty_path, 
+            Kubeconfig(empty_path,
                        _get_new_kubeconfig_content()))
 
     def test_load_directory(self):
         current_directory = self._temp_directory
-        self.assertRaises(KubeconfigInaccessableError,
+        self.assertRaises(KubeconfigInaccessibleError,
                           self._loader.load_kubeconfig,
                           current_directory)
         self._validator.validate_config.assert_not_called()

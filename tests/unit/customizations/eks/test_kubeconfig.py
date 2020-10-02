@@ -12,16 +12,12 @@
 # language governing permissions and limitations under the License.
 
 import glob
-import os
-import mock
-import tempfile
-import shutil
 from botocore.compat import OrderedDict
 
 from awscli.testutils import unittest
 from awscli.customizations.utils import uni_print
 from awscli.customizations.eks.kubeconfig import (KubeconfigError,
-                                                  KubeconfigInaccessableError,
+                                                  KubeconfigInaccessibleError,
                                                   KubeconfigCorruptedError,
                                                   Kubeconfig,
                                                   KubeconfigValidator,
@@ -43,7 +39,7 @@ class TestKubeconfig(unittest.TestCase):
 
     def test_no_content(self):
         config = Kubeconfig(self._path, None)
-        self.assertEqual(config.content, 
+        self.assertEqual(config.content,
                          _get_new_kubeconfig_content())
 
     def test_has_cluster(self):
@@ -89,7 +85,7 @@ class TestKubeconfigValidator(unittest.TestCase):
                 content_dict = ordered_yaml_load(stream)
             config = Kubeconfig(None, content_dict)
             self.assertRaises(KubeconfigCorruptedError,
-                              self._validator.validate_config, 
+                              self._validator.validate_config,
                               config)
 
 class TestKubeconfigAppender(unittest.TestCase):
@@ -173,7 +169,7 @@ class TestKubeconfigAppender(unittest.TestCase):
                 ("server", "endpoint")
             ])),
             ("name", "clustername")
-        ])            
+        ])
         correct = OrderedDict([
             ("apiVersion", "v1"),
             ("clusters", [
@@ -196,7 +192,7 @@ class TestKubeconfigAppender(unittest.TestCase):
                                               cluster)
         self.assertDictEqual(updated.content, correct)
 
-    def test_key_not_exist(self): 
+    def test_key_not_exist(self):
         initial = OrderedDict([
             ("apiVersion", "v1"),
             ("contexts", []),
@@ -250,7 +246,7 @@ class TestKubeconfigAppender(unittest.TestCase):
             ])),
             ("name", "clustername")
         ])
-        self.assertRaises(KubeconfigError, 
+        self.assertRaises(KubeconfigError,
                           self._appender.insert_entry,
                           Kubeconfig(None, initial),
                           "kind",

@@ -23,8 +23,7 @@ from botocore.session import get_session
 from awscli.testutils import unittest, capture_output
 from awscli.customizations.eks.update_kubeconfig import UpdateKubeconfigCommand
 from awscli.customizations.eks.exceptions import EKSClusterError
-from awscli.customizations.eks.kubeconfig import (Kubeconfig,
-                                                  KubeconfigCorruptedError,
+from awscli.customizations.eks.kubeconfig import (KubeconfigCorruptedError,
                                                   KubeconfigInaccessibleError)
 from tests.functional.eks.test_util import (describe_cluster_response,
                                             describe_cluster_creating_response,
@@ -284,11 +283,13 @@ class TestUpdateKubeconfig(unittest.TestCase):
     def test_all_corrupted(self):
         configs = ["invalid_string_cluster_entry",
                    "invalid_string_contexts",
-                   "invalid_text"]
+                   "invalid_text",
+                   "non_parsable_yaml"]
         passed = None
         environment = ["invalid_string_cluster_entry",
                        "invalid_string_contexts",
-                       "invalid_text"]
+                       "invalid_text",
+                       "non_parsable_yaml"]
 
         with self.assertRaises(KubeconfigCorruptedError):
             self.assert_cmd(configs, passed, environment)

@@ -25,7 +25,8 @@ from awscli.customizations.eks.kubeconfig import (_get_new_kubeconfig_content,
                                                   KubeconfigLoader,
                                                   KubeconfigValidator,
                                                   Kubeconfig,
-                                                  KubeconfigInaccessibleError)
+                                                  KubeconfigInaccessibleError,
+                                                  KubeconfigCorruptedError)
 class TestKubeconfigWriter(unittest.TestCase):
     def setUp(self):
         self._writer = KubeconfigWriter()
@@ -70,6 +71,19 @@ class TestKubeconfigWriter(unittest.TestCase):
             self.assertMultiLineEqual(stream.read(),
                                       "current-context: context\n"
                                       "apiVersion: v1\n")
+
+    def test_failure_makedirs(self):
+        content = OrderedDict([
+            ("current-context", "context"),
+            ("apiVersion", "v1")
+        ])
+        too_long_path = 10000 * 'l' + '/dir/config'
+
+        config = Kubeconfig(too_long_path, content)
+        self.assertRaises(KubeconfigInaccessibleError,
+                          self._writer.write_kubeconfig,
+                          config)
+
 
     def test_write_directory(self):
         content = OrderedDict([
@@ -153,6 +167,13 @@ class TestKubeconfigLoader(unittest.TestCase):
         self._validator.validate_config.called_with(
             Kubeconfig(empty_path,
                        _get_new_kubeconfig_content()))
+
+    def test_load_invalid(self):
+        invalid_path = self._clone_config("non_parsable_yaml")
+        self.assertRaises(KubeconfigCorruptedError,
+                          self._loader.load_kubeconfig,
+                          invalid_path)
+        self._validator.validate_config.assert_not_called()
 
     def test_load_directory(self):
         current_directory = self._temp_directory

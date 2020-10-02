@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.152
+========
+
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``servicediscovery``: Update servicediscovery command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``batch``: Update batch command to latest version
+* api-change:``personalize-events``: Update personalize-events command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+
+
 1.18.151
 ========
 

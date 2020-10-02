@@ -44,6 +44,11 @@ def _generate_index(filename):
     index_generator.generate_index(driver)
 
 
+class FakeApplication:
+    def run(self, pre_run):
+        pre_run()
+
+
 class TestPromptToolkitPrompterBuffer(unittest.TestCase):
     """This set of tests tests that we set the buffer (aka "construction zone")
     correctly. Some of these tests test against specific edge cases that have
@@ -121,3 +126,15 @@ class TestPromptToolkitPrompterBuffer(unittest.TestCase):
         original_args = [' ']
         buffer_text = self.get_updated_input_buffer_text(original_args)
         self.assertEqual(buffer_text, ' ')
+
+    def test_handle_args_with_spaces(self):
+        original_args = ['iam', 'create-role', '--description', 'With spaces']
+        prompter = PromptToolkitPrompter(
+            completion_source=self.completion_source, driver=self.driver,
+            app=FakeApplication())
+        prompter.input_buffer = self.factory.create_input_buffer()
+        prompter.doc_buffer = self.factory.create_doc_buffer()
+        args = prompter.prompt_for_args(original_args)
+        self.assertEqual(prompter.input_buffer.document.text,
+                         "iam create-role --description 'With spaces'")
+        self.assertEqual(args, original_args)

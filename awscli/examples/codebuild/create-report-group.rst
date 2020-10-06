@@ -1,0 +1,42 @@
+**To create a report group in AWS CodeBuild.**
+
+The following ``create-report-group`` example creates a new report group. ::
+
+    aws codebuild create-report-group --cli-input-json file://create-report-group-source.json
+
+Contents of create-report-group-source.json::
+
+  {
+    "name": "cli-created-report-group",
+    "type": "TEST",
+    "exportConfig": {
+      "exportConfigType": "S3",
+      "s3Destination": {
+        "bucket": "my-s3-bucket",
+        "path": "",
+        "packaging": "ZIP",
+        "encryptionDisabled": true
+      }
+    }
+  }
+
+Output::
+
+  {
+    "reportGroup": {
+      "arn": "arn:aws:codebuild:<region-ID>:<user-ID>:report-group/cli-created-report-group",
+      "name": "cli-created-report-group",
+      "type": "TEST",
+      "exportConfig": {
+        "exportConfigType": "S3",
+        "s3Destination": {
+          "bucket": "my-s3-bucket",
+          "path": "",
+          "packaging": "ZIP",
+          "encryptionDisabled": true
+        }
+      },
+      "created": 1602020026.775,
+      "lastModified": 1602020026.775
+    }
+  }

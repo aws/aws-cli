@@ -1,6 +1,6 @@
-**To get a list of the report groups in AWS CodeBuild.**
+**To get information about one or more report groups in AWS CodeBuild.**
 
-The following ``batch-get-report-groups`` example retrieves the report group with the specified ARN. ::
+The following ``batch-get-report-groups`` example retrieves information about the report group with the specified ARN. ::
 
     aws codebuild batch-get-report-groups --report-group-arns arn:aws:codebuild:<region-ID>:<user-ID>:report-group/<report-group-name>
 

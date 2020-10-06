@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.154
+========
+
+* api-change:``marketplace-catalog``: Update marketplace-catalog command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``kinesisanalyticsv2``: Update kinesisanalyticsv2 command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.18.153
 ========
 

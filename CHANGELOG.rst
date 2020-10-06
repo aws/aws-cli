@@ -922,6 +922,47 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.154
+========
+
+* api-change:``marketplace-catalog``: Update marketplace-catalog command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``kinesisanalyticsv2``: Update kinesisanalyticsv2 command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.18.153
+========
+
+* api-change:``dynamodbstreams``: Update dynamodbstreams command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+
+
+1.18.152
+========
+
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``servicediscovery``: Update servicediscovery command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``batch``: Update batch command to latest version
+* api-change:``personalize-events``: Update personalize-events command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+
+
+1.18.151
+========
+
+* api-change:``glue``: Update glue command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``appsync``: Update appsync command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``wafv2``: Update wafv2 command to latest version
+
+
 1.18.150
 ========
 

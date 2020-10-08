@@ -4,7 +4,7 @@ The following ``modify-instance-attribute`` example modifies the instance type o
 
     aws ec2 modify-instance-attribute \
         --instance-id i-1234567890abcdef0 \
-        --instance-type "{\"Value\": \"m1.small\"}"
+        --instance-type "m1.small"
 
 This command produces no output.
 

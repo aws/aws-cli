@@ -947,6 +947,27 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.156
+========
+
+* api-change:``events``: Update events command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``sns``: Update sns command to latest version
+
+
+1.18.155
+========
+
+* api-change:``ce``: Update ce command to latest version
+* api-change:``compute-optimizer``: Update compute-optimizer command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``mediapackage``: Update mediapackage command to latest version
+
+
 1.18.154
 ========
 

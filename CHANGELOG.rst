@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+2.0.56
+======
+
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``compute-optimizer``: Update compute-optimizer command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``events``: Update events command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``sns``: Update sns command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``mediapackage``: Update mediapackage command to latest version
+
+
 2.0.55
 ======
 

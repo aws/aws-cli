@@ -18,11 +18,11 @@ from prompt_toolkit.formatted_text import FormattedText
 from prompt_toolkit.layout import Window
 from prompt_toolkit.widgets import SearchToolbar
 
-from awscli.customizations.autoprompt.factory import (
+from awscli.autoprompt.factory import (
     FormatTextProcessor, PromptToolkitKeyBindings, PromptToolkitFactory,
     ToolbarHelpText, CLIPromptBuffer
 )
-from awscli.customizations.autoprompt.history import HistoryCompleter
+from awscli.autoprompt.history import HistoryCompleter
 from awscli.testutils import unittest
 
 

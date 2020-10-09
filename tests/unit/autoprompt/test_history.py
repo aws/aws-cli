@@ -23,10 +23,10 @@ from prompt_toolkit.document import Document
 from prompt_toolkit.history import History
 from prompt_toolkit.formatted_text import FormattedText
 
-from awscli.customizations.autoprompt.history import (
+from awscli.autoprompt.history import (
     HistoryCompleter, HistoryDriver
 )
-from awscli.testutils import unittest, temporary_file
+from awscli.testutils import unittest
 
 
 class TestHistoryCompleter(unittest.TestCase):
@@ -120,7 +120,7 @@ class TestHistoryCompleter(unittest.TestCase):
             commands, ['aws s3 ls', 'aws dynamodb create-table']
         )
 
-    @mock.patch('awscli.customizations.autoprompt.history.FileHistory')
+    @mock.patch('awscli.autoprompt.history.FileHistory')
     def test_handle_io_errors(self, file_history_mock):
         history_driver = HistoryDriver(self.filename)
         file_history_mock.store_string.side_effect = IOError

@@ -10,32 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import sys
 
-from awscli.autocomplete.main import create_autocompleter
-from awscli.customizations.arguments import CustomArgument
 from awscli.customizations.exceptions import ParamValidationError
-from awscli.customizations.autoprompt.prompttoolkit import PromptToolkitPrompter
-from awscli.utils import is_stdin_a_tty
-
-
-def register_autoprompt(cli):
-    cli.register('building-top-level-params', add_auto_prompt)
-
-
-def add_auto_prompt(session, argument_table, driver,
-                    completion_source=None, **kwargs):
-    # This argument cannot support operations with streaming output which
-    # is designated by the argument name `outfile`.
-    if 'outfile' not in argument_table and is_stdin_a_tty():
-        if completion_source is None:
-            completion_source = create_autocompleter(driver=driver)
-        prompter = AutoPrompter(completion_source, driver)
-        auto_prompt_argument = AutoPromptArgument(session, prompter)
-        auto_prompt_argument.add_to_arg_table(argument_table)
-
-        no_auto_prompt_argument = NoAutoPromptArgument()
-        no_auto_prompt_argument.add_to_arg_table(argument_table)
+from awscli.autoprompt.prompttoolkit import PromptToolkitPrompter
 
 
 def validate_auto_prompt_args_are_mutually_exclusive(parsed_args, **kwargs):
@@ -48,23 +25,13 @@ def validate_auto_prompt_args_are_mutually_exclusive(parsed_args, **kwargs):
         )
 
 
-class AutoPromptArgument(CustomArgument):
-    """This argument is a boolean to let you prompt for args.
-
-    """
-    ARG_DATA = {
-        'name': 'cli-auto-prompt',
-        'action': 'store_true',
-        'group_name': 'auto_prompt',
-        'help_text': 'Automatically prompt for CLI input parameters.'
-    }
+class AutoPromptDriver:
 
     NO_PROMPT_ARGS = ['help', '--version']
 
-    def __init__(self, session, prompter):
-        super(AutoPromptArgument, self).__init__(**self.ARG_DATA)
-        self._session = session
+    def __init__(self, session, prompter=None):
         self._prompter = prompter
+        self._session = session
 
     def _should_autoprompt(self, parsed_args, args):
         # Order of precedence to check:
@@ -103,20 +70,6 @@ class AutoPromptArgument(CustomArgument):
         if self._should_autoprompt(parsed_args, args):
             args = self._prompter.prompt_for_values(args)
         return args
-
-
-class NoAutoPromptArgument(CustomArgument):
-    """This argument is a boolean to let you disable prompting for args.
-
-    """
-    ARG_DATA = {
-        'name': 'no-cli-auto-prompt',
-        'action': 'store_true',
-        'group_name': 'auto_prompt'
-    }
-
-    def __init__(self):
-        super(NoAutoPromptArgument, self).__init__(**self.ARG_DATA)
 
 
 class AutoPrompter:

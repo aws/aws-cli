@@ -67,9 +67,10 @@ from awscli.constants import (
     PARAM_VALIDATION_ERROR_RC, CONFIGURATION_ERROR_RC, CLIENT_ERROR_RC,
     GENERAL_ERROR_RC,
 )
-from awscli.customizations.autoprompt.autoprompt import AutoPrompter
-from awscli.customizations.autoprompt.autoprompt import AutoPromptArgument
-from awscli.customizations.autoprompt.autoprompt import validate_auto_prompt_args_are_mutually_exclusive
+from awscli.autoprompt.core import (
+    AutoPrompter, AutoPromptDriver,
+    validate_auto_prompt_args_are_mutually_exclusive
+)
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.exceptions import ConfigurationError
 
@@ -396,6 +397,7 @@ class CLIDriver(object):
             ]
 
     def prompt_for_args(self, args, completion_source=None):
+        # TODO make AutoPrompter initialisation lazy and remove this check
         if is_stdin_a_tty():
             if completion_source is None:
                 completion_source = create_autocompleter(driver=self)
@@ -405,9 +407,9 @@ class CLIDriver(object):
             try:
                 validate_auto_prompt_args_are_mutually_exclusive(parsed_options)
                 prompter = AutoPrompter(completion_source, self)
-                auto_prompt_argument = AutoPromptArgument(self.session, prompter)
-                args = auto_prompt_argument.auto_prompt_arguments(args,
-                                                                  parsed_options)
+                auto_prompt_driver = AutoPromptDriver(self.session, prompter)
+                args = auto_prompt_driver.auto_prompt_arguments(args,
+                                                                parsed_options)
             except PARAM_VALIDATION_ERRORS as e:
                 self._show_error(str(e))
                 sys.exit(PARAM_VALIDATION_ERROR_RC)

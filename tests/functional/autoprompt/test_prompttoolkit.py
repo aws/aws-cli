@@ -20,8 +20,8 @@ from awscli.autocomplete.main import create_autocompleter
 from awscli.autocomplete import generator
 from awscli.autocomplete.local import indexer
 from awscli.clidriver import create_clidriver
-from awscli.customizations.autoprompt.factory import PromptToolkitFactory
-from awscli.customizations.autoprompt.prompttoolkit import (
+from awscli.autoprompt.factory import PromptToolkitFactory
+from awscli.autoprompt.prompttoolkit import (
     PromptToolkitCompleter, PromptToolkitPrompter
 )
 from awscli.testutils import unittest, random_chars

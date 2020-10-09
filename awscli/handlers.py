@@ -91,7 +91,6 @@ from awscli.customizations.sessionmanager import register_ssm_session
 from awscli.customizations.logs import register_logs_commands
 from awscli.customizations.devcommands import register_dev_commands
 from awscli.customizations.wizard.commands import register_wizard_commands
-from awscli.customizations.autoprompt.autoprompt import register_autoprompt
 from awscli.customizations.binaryformat import add_binary_formatter
 
 
@@ -185,5 +184,4 @@ def awscli_initialize(event_handlers):
     register_dev_commands(event_handlers)
     register_wizard_commands(event_handlers)
     register_sso_commands(event_handlers)
-    register_autoprompt(event_handlers)
     register_dynamodb_paginator_fix(event_handlers)

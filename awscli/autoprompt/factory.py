@@ -29,7 +29,7 @@ from prompt_toolkit.layout.processors import (
     BeforeInput, Processor, Transformation)
 from prompt_toolkit.widgets import HorizontalLine, SearchToolbar
 
-from awscli.customizations.autoprompt.history import (
+from awscli.autoprompt.history import (
     HistoryDriver, HistoryCompleter
 )
 

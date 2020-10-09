@@ -14,7 +14,7 @@ import mock
 import textwrap
 
 from awscli.clidriver import create_clidriver
-from awscli.customizations.autoprompt.doc import (
+from awscli.autoprompt.doc import (
     AwsTopLevelDocsGetter, BaseDocsGetter, DocsGetter,
     ServiceCommandDocsGetter, ServiceOperationDocsGetter
 )

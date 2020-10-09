@@ -16,8 +16,8 @@ import nose
 from collections import namedtuple
 
 from awscli.clidriver import CLIDriver, create_clidriver
-from awscli.customizations.autoprompt.prompttoolkit import PromptToolkitPrompter
-from awscli.customizations.autoprompt import autoprompt
+from awscli.autoprompt.prompttoolkit import PromptToolkitPrompter
+from awscli.autoprompt import core
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.testutils import unittest
 from botocore.session import Session
@@ -26,9 +26,9 @@ from botocore.session import Session
 class TestCLIAutoPrompt(unittest.TestCase):
     def setUp(self):
         self.session = mock.Mock(spec=Session)
-        self.prompter = mock.Mock(spec=autoprompt.AutoPrompter)
-        self.argument = autoprompt.AutoPromptArgument(self.session,
-                                                      self.prompter)
+        self.prompter = mock.Mock(spec=core.AutoPrompter)
+        self.prompt_driver = core.AutoPromptDriver(self.session,
+                                                                self.prompter)
         self.driver = create_clidriver()
 
     def create_args(self, cli_auto_prompt=False, no_cli_auto_prompt=False):
@@ -39,8 +39,11 @@ class TestCLIAutoPrompt(unittest.TestCase):
 
     def test_throw_error_if_both_args_specified(self):
         args = self.create_args(cli_auto_prompt=True, no_cli_auto_prompt=True)
-        self.assertRaises(ParamValidationError,
-            autoprompt.validate_auto_prompt_args_are_mutually_exclusive, args)
+        self.assertRaises(
+            ParamValidationError,
+            core.validate_auto_prompt_args_are_mutually_exclusive,
+            args
+        )
 
 
 def test_auto_prompt_config():
@@ -86,12 +89,12 @@ def test_auto_prompt_config():
 def _assert_auto_prompt_runs_as_expected(case):
     session = mock.Mock(spec=Session)
     session.get_config_variable.return_value = case.config_variable
-    prompter = mock.Mock(spec=autoprompt.AutoPrompter)
-    argument = autoprompt.AutoPromptArgument(session, prompter)
+    prompter = mock.Mock(spec=core.AutoPrompter)
+    prompt_driver = core.AutoPromptDriver(session, prompter)
     parsed_args = argparse.Namespace()
     parsed_args.no_cli_auto_prompt = case.no_cli_autoprompt
     parsed_args.cli_auto_prompt = case.cli_auto_prompt
-    argument.auto_prompt_arguments(
+    prompt_driver.auto_prompt_arguments(
         args=case.args,
         parsed_args=parsed_args
     )
@@ -104,7 +107,7 @@ class TestAutoPrompter(unittest.TestCase):
         self.driver = mock.Mock(spec=CLIDriver)
         self.prompter = mock.Mock(spec=PromptToolkitPrompter)
         self.prompter.prompt_for_args = lambda x: x
-        self.auto_prompter = autoprompt.AutoPrompter(
+        self.auto_prompter = core.AutoPrompter(
             self.completion_source, self.driver, self.prompter)
 
     def test_auto_prompter_returns_args(self):

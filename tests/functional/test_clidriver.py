@@ -112,7 +112,9 @@ class TestSession(BaseCLIDriverTest):
         self.assertTrue(
             'Python' in
             self._send.call_args[0][0].headers['User-Agent'].decode('utf-8'))
-    def test_throws_error_if_cli_auto_prompt_and_no_cli_auto_prompt_set(self):
+
+    @mock.patch('awscli.clidriver.is_stdin_a_tty', return_value=True)
+    def test_throws_error_if_cli_auto_prompt_and_no_cli_auto_prompt_set(self, *args):
         # Mock an XML response from ec2 so that the CLI driver doesn't throw
         # an error during parsing.
         self.add_response(

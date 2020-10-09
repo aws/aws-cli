@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.clidriver import create_clidriver, ServiceCommand
-from awscli.customizations.autoprompt.doc import (
+from awscli.autoprompt.doc import (
     AwsTopLevelDocsGetter, DocsGetter, ServiceCommandDocsGetter,
     ServiceOperationDocsGetter
 )

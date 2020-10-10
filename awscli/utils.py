@@ -24,6 +24,7 @@ from awscli.compat import get_stdout_text_writer
 from awscli.compat import get_popen_kwargs_for_pager_cmd
 from botocore.utils import IMDSFetcher
 from botocore.configprovider import BaseProvider
+from botocore.vendored import requests
 
 logger = logging.getLogger(__name__)
 
@@ -284,6 +285,10 @@ class OutputStreamFactory(object):
         process = self._popen(**popen_kwargs)
         try:
             yield process.stdin
+        except requests.exceptions.RequestException:
+            # Because requests.exceptions inherited from IOError
+            # we need to catch them first and raise again
+            raise
         except IOError:
             # Ignore IOError since this can commonly be raised when a pager
             # is closed abruptly and causes a broken pipe.

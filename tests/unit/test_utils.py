@@ -19,6 +19,8 @@ import shlex
 
 import botocore
 import botocore.session as session
+from botocore.vendored import requests
+
 from botocore.exceptions import ConnectionClosedError
 from awscli.testutils import unittest, skip_if_windows, mock
 from awscli.compat import is_windows
@@ -234,6 +236,11 @@ class TestOutputStreamFactory(unittest.TestCase):
         with self.assertRaises(PopenException):
             with self.stream_factory.get_pager_stream():
                 pass
+
+    def test_propagates_exception_from_requests(self):
+        with self.assertRaises(requests.exceptions.RequestException):
+            with self.stream_factory.get_pager_stream():
+                raise requests.exceptions.RequestException
 
     @mock.patch('awscli.utils.get_stdout_text_writer')
     def test_stdout(self, mock_stdout_writer):

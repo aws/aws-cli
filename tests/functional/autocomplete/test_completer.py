@@ -85,6 +85,8 @@ class TestShorthandCompleter(unittest.TestCase):
             self.assertTrue(all([suggest in expected_suggestions
                                  for suggest in displayed_suggestions]),
                             command_line)
+            self.assertEqual(len(expected_suggestions),
+                             len(displayed_suggestions), command_line)
 
     def test_return_none_if_it_does_not_have_shorthand_input(self):
         self.assert_command_generates_suggestions(

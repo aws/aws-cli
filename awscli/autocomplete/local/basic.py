@@ -446,7 +446,7 @@ class ShorthandCompleter(BaseCompleter):
 
     def _get_prompt_for_map(self, arg_model, parsed_input):
         last_key, last_value = self._get_last_key_value(parsed_input)
-        if last_value:
+        if last_value is not None:
             return self._get_completion(arg_model.value, last_value)
         return self._get_completion(arg_model.key, last_key)
 

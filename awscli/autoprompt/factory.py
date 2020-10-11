@@ -229,6 +229,13 @@ class PromptToolkitKeyBindings:
             return app.current_buffer.name == 'input_buffer'
 
         @Condition
+        def _is_history_mode():
+            """Only activate these key bindings if input buffer has focus
+               and history_mode is on """
+            buffer = get_app().current_buffer
+            return buffer.name == 'input_buffer' and buffer.history_mode
+
+        @Condition
         def _doc_window_has_focus():
             "Only activate these key bindings if doc window has focus."
             app = get_app()
@@ -264,15 +271,27 @@ class PromptToolkitKeyBindings:
                         and cur_word.startswith(('file://', 'fileb://')):
                     buffer.start_completion()
 
-        @self._kb.add(Keys.Escape, filter=_input_buffer_has_focus)
+        @self._kb.add(Keys.Escape, filter=_is_history_mode)
         def _(event):
             buffer = event.app.current_buffer
-            if buffer.history_mode:
-                buffer.cancel_completion()
+            buffer.cancel_completion()
+            buffer.switch_history_mode()
+            self.switch_history_prompting_alert(
+                event, buffer.history_mode
+            )
+
+        @self._kb.add(' ', filter=_is_history_mode)
+        def _(event):
+            """Exit from history mode if something was selected or
+            just add space to the end of the text and keep suggesting"""
+            buffer = event.app.current_buffer
+            if (buffer.complete_state
+                    and buffer.complete_state.current_completion):
                 buffer.switch_history_mode()
                 self.switch_history_prompting_alert(
                     event, buffer.history_mode
                 )
+            buffer.insert_text(' ')
 
         @self._kb.add(Keys.F2)
         def _(event):

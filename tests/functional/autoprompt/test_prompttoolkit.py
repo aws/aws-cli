@@ -102,10 +102,15 @@ class TestPromptToolkitPrompterBuffer(unittest.TestCase):
         buffer_text = self.get_updated_input_buffer_text(original_args)
         self.assertEqual(buffer_text, 's3 mv /path/to/file/1 s3://path/to/file/2 ')
 
-    def test_dont_reset_buffer_text_if_s3_ls_entered(self):
+    def test_add_trailing_space_if_s3_ls_entered(self):
         original_args = ['s3', 'ls']
         buffer_text = self.get_updated_input_buffer_text(original_args)
-        self.assertEqual(buffer_text, 's3 ls')
+        self.assertEqual(buffer_text, 's3 ls ')
+
+    def test_dont_add_trailing_space_if_incomplete_command(self):
+        original_args = ['ec2', 'desc']
+        buffer_text = self.get_updated_input_buffer_text(original_args)
+        self.assertEqual(buffer_text, 'ec2 desc')
 
     def test_dont_reset_buffer_text_if_s3_ls_space_entered(self):
         original_args = ['s3', 'ls ']
@@ -115,9 +120,9 @@ class TestPromptToolkitPrompterBuffer(unittest.TestCase):
     def test_preserve_buffer_text_if_invalid_command_with_option_entered(self):
         original_args = ['ec2', 'fake', '--output']
         buffer_text = self.get_updated_input_buffer_text(original_args)
-        self.assertEqual(buffer_text, 'ec2 fake --output')
+        self.assertEqual(buffer_text, 'ec2 fake --output ')
 
-    def test_dont_reset_buffer_text_if_valid_command_with_option_entered(self):
+    def test_add_trailing_space_if_valid_command_with_option_entered(self):
         original_args = ['ec2', 'describe-instances', '--output']
         buffer_text = self.get_updated_input_buffer_text(original_args)
         self.assertEqual(buffer_text, 'ec2 describe-instances --output ')
@@ -136,5 +141,5 @@ class TestPromptToolkitPrompterBuffer(unittest.TestCase):
         prompter.doc_buffer = self.factory.create_doc_buffer()
         args = prompter.prompt_for_args(original_args)
         self.assertEqual(prompter.input_buffer.document.text,
-                         "iam create-role --description 'With spaces'")
+                         "iam create-role --description 'With spaces' ")
         self.assertEqual(args, original_args)

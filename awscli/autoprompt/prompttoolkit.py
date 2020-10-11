@@ -132,45 +132,18 @@ class PromptToolkitPrompter:
         self._input_buffer.start_completion()
 
     def _set_input_buffer_text(self, cmd_line_text):
-        is_empty_aws_command = cmd_line_text.strip() == 'aws'
-        last_char_is_space = cmd_line_text[-1] == ' '
-        if self._is_valid_command(cmd_line_text) and not is_empty_aws_command:
-            if not last_char_is_space:
-                self._input_buffer.insert_text(' ')
-
-    def _is_valid_command(self, cmd_line_text):
-        if cmd_line_text.split()[-1].startswith('--'):
-            filtered_text = self._filter_out_options(cmd_line_text)
-            return self._can_autocomplete(filtered_text)
-        return self._can_autocomplete(cmd_line_text)
-
-    def _filter_out_options(self, cmd_line_text):
-        args = cmd_line_text.split()
-        filtered_args = [arg for arg in args if not arg.startswith('--')]
-        return ' '.join(filtered_args)
+        """If entered command line does not have trailing space and can not
+           be autocompleted we assume that it is a completed part of command
+           and add trailing space to it"""
+        if cmd_line_text[-1] == ' ':
+            return
+        if self._can_autocomplete(cmd_line_text):
+            return
+        if cmd_line_text.strip() != 'aws':
+            self._input_buffer.insert_text(' ')
 
     def _can_autocomplete(self, cmd_line_text):
-        # Conditions that we check for:
-        # 1. Add a ' ' in the conditional to ensure that correctly entered
-        #    commands, such as `aws ec2`, get a chance to be offered
-        #    completions before we decide that the entered command is invalid
-        #    and clear the buffer.
-        # 2. Add '--' and ' --' in the conditionals to prevent commands, such
-        #    as `aws s3 ls` (not autocomplete-able), from clearing the buffer.
-        # 3. Don't clear the buffer if file paths are entered as parameters in
-        #    commands, such as `aws s3 mv /path/to/file1 /path/to/file2`.
-        # 4. If the last token in the entered command starts with '--', we
-        #    check the command sans the '--options'. If that portion is valid,
-        #    then we assume that the specified `--options` are valid. This is
-        #    done to prevent clearing the buffer for commands whose '--options'
-        #    take argument(s), such as `aws ec2 describe-instances --output`.
-        file_path_chars = '.:\\/'
-        if self._completion_source.autocomplete(cmd_line_text + ' ') \
-                or self._completion_source.autocomplete(cmd_line_text + '--') \
-                or self._completion_source.autocomplete(cmd_line_text + ' --') \
-                or any(char in cmd_line_text for char in file_path_chars):
-            return True
-        return False
+        return bool(self._completion_source.autocomplete(cmd_line_text))
 
     def _quote_args_with_spaces(self, args):
         return [shlex.quote(arg) for arg in args]

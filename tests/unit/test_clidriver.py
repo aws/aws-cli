@@ -18,10 +18,8 @@ from awscli.testutils import unittest
 from awscli.testutils import BaseAWSCommandParamsTest
 import logging
 import io
-import sys
 
 import mock
-import nose
 from awscli.compat import six
 from botocore import xform_name
 from botocore.awsrequest import AWSResponse
@@ -34,12 +32,13 @@ from awscli.clidriver import CLIDriver
 from awscli.clidriver import create_clidriver
 from awscli.clidriver import CustomArgument
 from awscli.clidriver import CLICommand
+from awscli.clidriver import construct_cli_error_handlers_chain
 from awscli.clidriver import ServiceCommand
 from awscli.clidriver import ServiceOperation
 from awscli.paramfile import URIArgumentHandler
 from awscli.customizations.commands import BasicCommand
 from awscli import formatter
-from awscli.argparser import HELP_BLURB
+from awscli.argparser import HELP_BLURB, ArgParseException
 from botocore.hooks import HierarchicalEmitter
 from botocore.configprovider import create_botocore_default_config_mapping
 from botocore.configprovider import ConfigChainFactory
@@ -448,13 +447,16 @@ class TestCliDriverHooks(unittest.TestCase):
         ])
 
     def test_unknown_command_suggests_help(self):
-        driver = CLIDriver(session=self.session)
-        # We're catching SystemExit here because this is raised from the bowels
-        # of argparser so short of patching the ArgumentParser's exit() method,
-        # we can just catch SystemExit.
-        with self.assertRaises(SystemExit):
-            # Note the typo in 'list-objects'
-            driver.main('s3 list-objecst --bucket foo --unknown-arg foo'.split())
+        driver = CLIDriver(
+            session=self.session,
+            error_handlers_chain=construct_cli_error_handlers_chain()
+        )
+
+        # Note the typo in 'list-objects'
+        rc = driver.main(
+            's3 list-objecst --bucket foo --unknown-arg foo'.split()
+        )
+        self.assertEqual(rc, 252)
         # Tell the user what went wrong.
         self.assertIn("Invalid choice: 'list-objecst'", self.stderr.getvalue())
         # Offer the user a suggestion.
@@ -702,7 +704,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         with mock.patch('sys.stderr') as f:
             driver.main('ec2 describe-instances'.split())
         self.assertEqual(
-            f.write.call_args_list[0][0][0],
+            f.write.call_args_list[1][0][0],
             'Unable to locate credentials. '
             'You can configure credentials by running "aws configure".')
 
@@ -735,28 +737,28 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(rc, 255)
 
     def test_help_blurb_in_error_message(self):
-        with self.assertRaises(SystemExit):
-            self.driver.main([])
+        rc = self.driver.main([])
+        self.assertEqual(rc, 252)
         self.assertIn(HELP_BLURB, self.stderr.getvalue())
 
     def test_help_blurb_in_service_error_message(self):
-        with self.assertRaises(SystemExit):
-            self.driver.main(['ec2'])
+        rc = self.driver.main(['ec2'])
+        self.assertEqual(rc, 252)
         self.assertIn(HELP_BLURB, self.stderr.getvalue())
 
     def test_help_blurb_in_operation_error_message(self):
-        with self.assertRaises(SystemExit):
-            self.driver.main(['s3api', 'list-objects'])
+        rc = self.driver.main(['s3api', 'list-objects'])
+        self.assertEqual(rc, 252)
         self.assertIn(HELP_BLURB, self.stderr.getvalue())
 
     def test_help_blurb_in_unknown_argument_error_message(self):
-        with self.assertRaises(SystemExit):
-            self.driver.main(['s3api', 'list-objects', '--help'])
+        rc = self.driver.main(['s3api', 'list-objects', '--help'])
+        self.assertEqual(rc, 252)
         self.assertIn(HELP_BLURB, self.stderr.getvalue())
 
     def test_idempotency_token_is_not_required_in_help_text(self):
-        with self.assertRaises(SystemExit):
-            self.driver.main(['servicecatalog', 'create-constraint'])
+        rc = self.driver.main(['servicecatalog', 'create-constraint'])
+        self.assertEqual(rc, 252)
         self.assertNotIn('--idempotency-token', self.stderr.getvalue())
 
     @mock.patch('awscli.clidriver.platform.system', return_value='Linux')

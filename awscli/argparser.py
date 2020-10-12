@@ -14,7 +14,6 @@ import argparse
 import sys
 from awscli.compat import six
 from difflib import get_close_matches
-from gettext import gettext
 
 
 HELP_BLURB = (
@@ -28,6 +27,10 @@ USAGE = (
     "aws [options] <command> <subcommand> [<subcommand> ...] [parameters]\n"
     "%s" % HELP_BLURB
 )
+
+
+class ArgParseException(Exception):
+    pass
 
 
 class CommandAction(argparse.Action):
@@ -115,14 +118,14 @@ class CLIArgParser(argparse.ArgumentParser):
         NOTE: This is lifted directly from argparse, the only difference being
         we use 252 for parsing errors.
 
-        Prints a usage message incorporating the message to stderr and
-        exits.
+        Raises exception with a usage message incorporating the message.
+
         If you override this in a subclass, it should not return -- it
-        should either exit or raise an exception.
+        should raise an exception.
         """
-        self.print_usage(sys.stderr)
-        args = {'prog': self.prog, 'message': message}
-        self.exit(252, gettext('%(prog)s: error: %(message)s\n') % args)
+        usage_message = self.format_usage()
+        error_message = f'{self.prog}: error: {message}\n'
+        raise ArgParseException(f'{usage_message}\n{error_message}')
 
 
 class MainArgParser(CLIArgParser):

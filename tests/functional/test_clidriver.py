@@ -10,17 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import mock
 import os
 import re
 import shutil
-import functools
 
 from tests import RawResponse
 
-import mock
-
 import botocore
-from botocore.session import Session
 
 from awscli.testutils import FileCreator
 from awscli.testutils import BaseCLIDriverTest
@@ -104,6 +101,8 @@ class TestSession(BaseCLIDriverTest):
         self.assertEqual(capture.region, 'us-mars-2')
 
     def test_user_agent_in_request(self):
+        self.add_response(
+            b'<?xml version="1.0" ?><foo><bar>text</bar></foo>')
         self.driver.main(['ec2', 'describe-instances'])
         self.assertTrue('User-Agent' in self._send.call_args[0][0].headers)
         self.assertTrue(
@@ -119,9 +118,9 @@ class TestSession(BaseCLIDriverTest):
         # an error during parsing.
         self.add_response(
             b'<?xml version="1.0" ?><foo><bar>text</bar></foo>')
-        self.assertRaises(SystemExit, self.driver.main, ['ec2',
-                          'describe-instances', '--cli-auto-prompt',
-                          '--no-cli-auto-prompt'])
+        rc = self.driver.main(['ec2', 'describe-instances', '--cli-auto-prompt',
+                               '--no-cli-auto-prompt'])
+        self.assertEqual(rc, 252)
 
 
 class TestPlugins(BaseCLIDriverTest):

@@ -24,7 +24,7 @@ from awscli.alias import AliasCommandInjector
 from awscli.alias import BaseAliasCommand
 from awscli.alias import ServiceAliasCommand
 from awscli.alias import ExternalAliasCommand
-from awscli.argparser import MainArgParser
+from awscli.argparser import MainArgParser, ArgParseException
 from awscli.commands import CLICommand
 
 
@@ -459,7 +459,7 @@ class TestServiceAliasCommand(unittest.TestCase):
         alias_cmd = ServiceAliasCommand(
             self.alias_name, alias_value, self.session, command_table, parser)
 
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(ArgParseException):
             # Even though we catch the system exit, a message will always
             # be forced to screen because it happened at system exit.
             # The patch is to ensure it does not get displayed by nosetests.
@@ -475,7 +475,7 @@ class TestServiceAliasCommand(unittest.TestCase):
         alias_cmd = ServiceAliasCommand(
             self.alias_name, alias_value, self.session, command_table, parser)
 
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(ArgParseException):
             # Even though we catch the system exit, a message will always
             # be forced to screen because it happened at system exit.
             # The patch is to ensure it does not get displayed by nosetests.

@@ -11,68 +11,110 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
+import signal
+
+from botocore.exceptions import (
+    NoRegionError, NoCredentialsError, ClientError,
+    ParamValidationError as BotocoreParamValidationError,
+)
+
+from awscli.argprocess import ParamError, ParamSyntaxError
+from awscli.arguments import UnknownArgumentError
+from awscli.argparser import ArgParseException, USAGE
+from awscli.constants import (
+    PARAM_VALIDATION_ERROR_RC, CONFIGURATION_ERROR_RC, CLIENT_ERROR_RC,
+    GENERAL_ERROR_RC
+)
+from awscli.customizations.exceptions import (
+    ParamValidationError, ConfigurationError
+)
+
 
 LOG = logging.getLogger(__name__)
 
 
-class BaseOperationError(Exception):
-    MSG_TEMPLATE = ("A {error_type} error ({error_code}) occurred "
-                    "when calling the {operation_name} operation: "
-                    "{error_message}")
-
-    def __init__(self, error_code, error_message, error_type, operation_name,
-                 http_status_code):
-        msg = self.MSG_TEMPLATE.format(
-            error_code=error_code, error_message=error_message,
-            error_type=error_type, operation_name=operation_name)
-        super(BaseOperationError, self).__init__(msg)
-        self.error_code = error_code
-        self.error_message = error_message
-        self.error_type = error_type
-        self.operation_name = operation_name
-        self.http_status_code = http_status_code
+class BaseExceptionHandler:
+    def handle_exception(self, exception, stdout, stderr):
+        raise NotImplementedError('handle_exception')
 
 
-class ClientError(BaseOperationError):
-    pass
+class FilteredExceptionHandler(BaseExceptionHandler):
+    EXCEPTIONS_TO_HANDLE = ()
+    MESSAGE = '%s'
+
+    def handle_exception(self, exception, stdout, stderr):
+        if issubclass(exception.__class__, self.EXCEPTIONS_TO_HANDLE):
+            return_val = self._do_handle_exception(exception, stdout, stderr)
+            if return_val is not None:
+                return return_val
+
+    def _do_handle_exception(self, exception, stdout, stderr):
+        stderr.write("\n")
+        stderr.write(self.MESSAGE % exception)
+        stderr.write("\n")
+        return self.RC
 
 
-class ServerError(BaseOperationError):
-    pass
+class ParamValidationErrorsHandler(FilteredExceptionHandler):
+    EXCEPTIONS_TO_HANDLE = (
+        ParamError, ParamSyntaxError, ArgParseException,
+        ParamValidationError, BotocoreParamValidationError,
+        UnknownArgumentError
+    )
+    RC = PARAM_VALIDATION_ERROR_RC
 
 
-class ErrorHandler(object):
-    """
-    This class is responsible for handling any HTTP errors that occur
-    when a service operation is called.  It is registered for the
-    ``after-call`` event and will have the opportunity to inspect
-    all operation calls.  If the HTTP response contains an error
-    ``status_code`` an appropriate error message will be printed and
-    the handler will short-circuit all further processing by exiting
-    with an appropriate error code.
-    """
+class ClientErrorHandler(FilteredExceptionHandler):
+    EXCEPTIONS_TO_HANDLE = ClientError
+    RC = CLIENT_ERROR_RC
 
-    def __call__(self, http_response, parsed, model, **kwargs):
-        LOG.debug('HTTP Response Code: %d', http_response.status_code)
-        error_type = None
-        error_class = None
-        if http_response.status_code >= 500:
-            error_type = 'server'
-            error_class = ServerError
-        elif http_response.status_code >= 400 or http_response.status_code == 301:
-            error_type = 'client'
-            error_class = ClientError
-        if error_class is not None:
-            code, message = self._get_error_code_and_message(parsed)
-            raise error_class(
-                error_code=code, error_message=message,
-                error_type=error_type, operation_name=model.name,
-                http_status_code=http_response.status_code)
 
-    def _get_error_code_and_message(self, response):
-        code = 'Unknown'
-        message = 'Unknown'
-        if 'Error' in response:
-            error = response['Error']
-            return error.get('Code', code), error.get('Message', message)
-        return (code, message)
+class ConfigurationErrorHandler(FilteredExceptionHandler):
+    EXCEPTIONS_TO_HANDLE = ConfigurationError
+    RC = CONFIGURATION_ERROR_RC
+
+
+class NoRegionErrorHandler(FilteredExceptionHandler):
+    EXCEPTIONS_TO_HANDLE = NoRegionError
+    RC = CONFIGURATION_ERROR_RC
+    MESSAGE = '%s You can also configure your region by running "aws configure".'
+
+
+class NoCredentialsErrorHandler(FilteredExceptionHandler):
+    EXCEPTIONS_TO_HANDLE = NoCredentialsError
+    RC = CONFIGURATION_ERROR_RC
+    MESSAGE = '%s. You can configure credentials by running "aws configure".'
+
+
+class UnknownArgumentErrorHandler(FilteredExceptionHandler):
+    EXCEPTIONS_TO_HANDLE = UnknownArgumentError
+    RC = PARAM_VALIDATION_ERROR_RC
+
+    def _do_handle_exception(self, exception, stdout, stderr):
+        stderr.write("\n")
+        stderr.write(f'usage: {USAGE}\n{exception}\n')
+        stderr.write("\n")
+        return self.RC
+
+
+class InterruptExceptionHandler(FilteredExceptionHandler):
+    EXCEPTIONS_TO_HANDLE = KeyboardInterrupt
+    RC = 128 + signal.SIGINT
+
+
+class GeneralExceptionHandler(FilteredExceptionHandler):
+    EXCEPTIONS_TO_HANDLE = Exception
+    RC = GENERAL_ERROR_RC
+
+
+class ChainedExceptionHandler(BaseExceptionHandler):
+    def __init__(self, exception_handlers=None):
+        self._exception_handlers = exception_handlers
+        if self._exception_handlers is None:
+            self._exception_handlers = [GeneralExceptionHandler]
+
+    def handle_exception(self, exception, stdout, stderr):
+        for handler in self._exception_handlers:
+            return_value = handler.handle_exception(exception, stdout, stderr)
+            if return_value is not None:
+                return return_value

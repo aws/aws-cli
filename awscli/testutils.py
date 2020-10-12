@@ -29,15 +29,12 @@ import logging
 import tempfile
 import platform
 import contextlib
-import string
 import binascii
 from pprint import pformat
 from subprocess import Popen, PIPE
 import unittest
 
-
 from awscli.compat import StringIO
-
 
 try:
     import mock
@@ -445,16 +442,8 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
             cmdlist = cmd.split()
         else:
             cmdlist = cmd
-
         with capture_output() as captured:
-            try:
-                rc = self.driver.main(cmdlist)
-            except SystemExit as e:
-                # We need to catch SystemExit so that we
-                # can get a proper rc and still present the
-                # stdout/stderr to the test runner so we can
-                # figure out what went wrong.
-                rc = e.code
+            rc = self.driver.main(cmdlist)
         stderr = captured.stderr.getvalue()
         stdout = captured.stdout.getvalue()
         self.assertEqual(

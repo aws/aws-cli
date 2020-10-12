@@ -21,6 +21,8 @@ at the man output, we look one step before at the generated rst output
 (it's easier to verify).
 
 """
+import io
+
 from awscli.testutils import BaseAWSHelpOutputTest
 from awscli.testutils import FileCreator
 
@@ -202,10 +204,10 @@ class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
         # command verify that we get a SystemExit exception
         # and that we get something in stderr that says that
         # we made an invalid choice (because the operation is removed).
-        stderr = six.StringIO()
+        stderr = io.StringIO()
         with mock.patch('sys.stderr', stderr):
-            with self.assertRaises(SystemExit):
-                self.driver.main([service, command, 'help'])
+            cr = self.driver.main([service, command, 'help'])
+        self.assertEqual(cr, 252)
         # We should see an error message complaining about
         # an invalid choice because the operation has been removed.
         self.assertIn('argument operation: Invalid choice', stderr.getvalue())

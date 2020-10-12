@@ -10,101 +10,74 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest
+import io
+from collections import namedtuple
 
-import mock
+from botocore.exceptions import (
+    NoRegionError, NoCredentialsError, ClientError,
+    ParamValidationError as BotocoreParamValidationError,
+)
+from awscli.arguments import UnknownArgumentError
+from awscli.argparser import ArgParseException
+from awscli.argprocess import ParamError, ParamSyntaxError
+from awscli.customizations.exceptions import (
+    ParamValidationError, ConfigurationError
+)
+
+from awscli.testutils import unittest
 from awscli import errorhandler
 
 
-class TestErrorHandler(unittest.TestCase):
+class TestChainedExceptionHandler(unittest.TestCase):
 
-    def create_http_response(self, **kwargs):
-        response = mock.Mock()
-        for key, value in kwargs.items():
-            setattr(response, key, value)
-        return response
+    @classmethod
+    def setUpClass(cls) -> None:
+        handlers = [
+            errorhandler.ParamValidationErrorsHandler(),
+            errorhandler.UnknownArgumentErrorHandler(),
+            errorhandler.ClientErrorHandler(),
+            errorhandler.ConfigurationErrorHandler(),
+            errorhandler.NoRegionErrorHandler(),
+            errorhandler.NoCredentialsErrorHandler(),
+            errorhandler.InterruptExceptionHandler(),
+            errorhandler.GeneralExceptionHandler()
+        ]
+        cls.error_handlers_chain = errorhandler.ChainedExceptionHandler(
+            exception_handlers=handlers)
 
-    def test_error_handler_client_side(self):
-        response = {
-            'Error': {'Code': 'AccessDenied',
-                      'HostId': 'foohost',
-                      'Message': 'Access Denied',
-                      'RequestId': 'requestid'},
-            'ResponseMetadata': {}}
-        handler = errorhandler.ErrorHandler()
-        http_response = self.create_http_response(status_code=403)
-        # We're manually using the try/except form because
-        # we want to catch the exception and assert that it has specific
-        # attributes on it.
-        operation = mock.Mock()
-        operation.name = 'OperationName'
+    def _assert_rc_and_error_message(self, case):
+        stderr = io.StringIO()
+        stdout = io.StringIO()
         try:
-            handler(http_response, response, operation)
-        except errorhandler.ClientError as e:
-            # First, the operation name should be in the error message.
-            self.assertIn('OperationName', str(e))
-            # We should state that this is a ClientError.
-            self.assertIn('client error', str(e))
-            # And these values should be available on the exception
-            # so clients can access this information programmatically.
-            self.assertEqual(e.error_code, 'AccessDenied')
-            self.assertEqual(e.error_message, 'Access Denied')
-            self.assertEqual(e.operation_name, 'OperationName')
+            raise case.exception
         except Exception as e:
-            self.fail("Unexpected error raised: %s" % e)
-        else:
-            self.fail("Expected errorhandler.ClientError to be raised "
-                      "but no exception was raised.")
+            cr = self.error_handlers_chain.handle_exception(e, stdout, stderr)
+            self.assertEqual(cr, case.rc, case.exception.__class__)
+            self.assertIn(case.message, stderr.getvalue())
+            self.assertEqual('', stdout.getvalue())
 
-    def test_error_handler_server_side(self):
-        response = {
-            'Error': {'Code': 'InternalError',
-                      'HostId': 'foohost',
-                      'Message': 'An internal error has occurred',
-                      'RequestId': 'requestid'},
-            'ResponseMetadata': {}}
-        handler = errorhandler.ErrorHandler()
-        http_response = self.create_http_response(status_code=500)
-        # We're manually using the try/except form because
-        # we want to catch the exception and assert that it has specific
-        # attributes on it.
-        operation = mock.Mock()
-        operation.name = 'OperationName'
-        try:
-            handler(http_response, response, operation)
-        except errorhandler.ServerError as e:
-            # First, the operation name should be in the error message.
-            self.assertIn('OperationName', str(e))
-            # We should state that this is a ServerError.
-            self.assertIn('server error', str(e))
-            # And these values should be available on the exception
-            # so clients can access this information programmatically.
-            self.assertEqual(e.error_code, 'InternalError')
-            self.assertEqual(e.error_message, 'An internal error has occurred')
-            self.assertEqual(e.operation_name, 'OperationName')
-        except Exception as e:
-            self.fail("Unexpected error raised: %s" % e)
-        else:
-            self.fail("Expected errorhandler.ServerError to be raised "
-                      "but no exception was raised.")
-
-    def test_no_exception_raised_on_200(self):
-        response = {
-            'CommonPrefixes': [],
-            'Contents': [],
-        }
-        handler = errorhandler.ErrorHandler()
-        http_response = self.create_http_response(status_code=200)
-        # We're manually using the try/except form because
-        # we want to catch the exception and assert that it has specific
-        # attributes on it.
-        operation = mock.Mock()
-        operation.name = 'OperationName'
-        try:
-            self.assertIsNone(handler(http_response, response, operation))
-        except errorhandler.BaseOperationError as e:
-            self.fail("Unexpected error raised: %s" % e)
-
-
-if __name__ == '__main__':
-    unittest.main()
+    def test_error_handling(self):
+        Case = namedtuple('Case', [
+            'exception',
+            'rc',
+            'message',
+        ])
+        cases = [
+            Case(Exception(), 255, '\n\n'),
+            Case(NoRegionError(), 253, 'region'),
+            Case(NoCredentialsError(), 253, 'credentials'),
+            Case(ClientError(error_response={}, operation_name=''), 254,
+                 'An error occurred'
+            ),
+            Case(BotocoreParamValidationError(report='param_name'), 252,
+                 'param_name'),
+            Case(UnknownArgumentError(), 252, ''),
+            Case(ArgParseException(), 252, '\n\n'),
+            Case(ParamSyntaxError(), 252, '\n\n'),
+            Case(ParamError(cli_name='cli', message='message'), 252,
+                 "'cli': message"),
+            Case(ParamValidationError(), 252, '\n\n'),
+            Case(ConfigurationError(), 253, '\n\n'),
+        ]
+        for case in cases:
+            self._assert_rc_and_error_message(case)

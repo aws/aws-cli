@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import io
+import nose
 from collections import namedtuple
 
 from botocore.exceptions import (
@@ -24,60 +25,46 @@ from awscli.customizations.exceptions import (
     ParamValidationError, ConfigurationError
 )
 
-from awscli.testutils import unittest
 from awscli import errorhandler
 
 
-class TestChainedExceptionHandler(unittest.TestCase):
+def _assert_rc_and_error_message(case):
+    stderr = io.StringIO()
+    stdout = io.StringIO()
+    error_handler = errorhandler.construct_cli_error_handlers_chain()
+    try:
+        raise case.exception
+    except BaseException as e:
+        cr = error_handler.handle_exception(e, stdout, stderr)
+        nose.tools.eq_(cr, case.rc, case.exception.__class__)
+        nose.tools.assert_in(case.stderr, stderr.getvalue())
+        nose.tools.eq_(case.stdout, stdout.getvalue())
 
-    @classmethod
-    def setUpClass(cls) -> None:
-        handlers = [
-            errorhandler.ParamValidationErrorsHandler(),
-            errorhandler.UnknownArgumentErrorHandler(),
-            errorhandler.ClientErrorHandler(),
-            errorhandler.ConfigurationErrorHandler(),
-            errorhandler.NoRegionErrorHandler(),
-            errorhandler.NoCredentialsErrorHandler(),
-            errorhandler.InterruptExceptionHandler(),
-            errorhandler.GeneralExceptionHandler()
-        ]
-        cls.error_handlers_chain = errorhandler.ChainedExceptionHandler(
-            exception_handlers=handlers)
 
-    def _assert_rc_and_error_message(self, case):
-        stderr = io.StringIO()
-        stdout = io.StringIO()
-        try:
-            raise case.exception
-        except Exception as e:
-            cr = self.error_handlers_chain.handle_exception(e, stdout, stderr)
-            self.assertEqual(cr, case.rc, case.exception.__class__)
-            self.assertIn(case.message, stderr.getvalue())
-            self.assertEqual('', stdout.getvalue())
-
-    def test_error_handling(self):
-        Case = namedtuple('Case', [
-            'exception',
-            'rc',
-            'message',
-        ])
-        cases = [
-            Case(Exception(), 255, '\n\n'),
-            Case(NoRegionError(), 253, 'region'),
-            Case(NoCredentialsError(), 253, 'credentials'),
-            Case(ClientError(error_response={}, operation_name=''), 254,
-                 'An error occurred'
-            ),
-            Case(BotocoreParamValidationError(report='param_name'), 252,
-                 'param_name'),
-            Case(UnknownArgumentError(), 252, ''),
-            Case(ArgParseException(), 252, '\n\n'),
-            Case(ParamSyntaxError(), 252, '\n\n'),
-            Case(ParamError(cli_name='cli', message='message'), 252,
-                 "'cli': message"),
-            Case(ParamValidationError(), 252, '\n\n'),
-            Case(ConfigurationError(), 253, '\n\n'),
-        ]
-        for case in cases:
-            self._assert_rc_and_error_message(case)
+def test_error_handling():
+    Case = namedtuple('Case', [
+        'exception',
+        'rc',
+        'stderr',
+        'stdout'
+    ])
+    cases = [
+        Case(Exception('error'), 255, 'error', ''),
+        Case(KeyboardInterrupt(), 130, '', '\n'),
+        Case(NoRegionError(), 253, 'region', ''),
+        Case(NoCredentialsError(), 253, 'credentials', ''),
+        Case(ClientError(error_response={}, operation_name=''), 254,
+             'An error occurred', ''
+        ),
+        Case(BotocoreParamValidationError(report='param_name'), 252,
+             'param_name', ''),
+        Case(UnknownArgumentError('error'), 252, 'error', ''),
+        Case(ArgParseException('error'), 252, 'error', ''),
+        Case(ParamSyntaxError('error'), 252, 'error', ''),
+        Case(ParamError(cli_name='cli', message='message'), 252,
+             "'cli': message", ''),
+        Case(ParamValidationError('error'), 252, 'error', ''),
+        Case(ConfigurationError('error'), 253, 'error', ''),
+    ]
+    for case in cases:
+        yield _assert_rc_and_error_message, case

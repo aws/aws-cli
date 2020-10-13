@@ -449,7 +449,7 @@ class TestCliDriverHooks(unittest.TestCase):
     def test_unknown_command_suggests_help(self):
         driver = CLIDriver(
             session=self.session,
-            error_handlers_chain=construct_cli_error_handlers_chain()
+            error_handler=construct_cli_error_handlers_chain()
         )
 
         # Note the typo in 'list-objects'

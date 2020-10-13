@@ -33,6 +33,20 @@ from awscli.customizations.exceptions import (
 LOG = logging.getLogger(__name__)
 
 
+def construct_cli_error_handlers_chain():
+    handlers = [
+        ParamValidationErrorsHandler(),
+        UnknownArgumentErrorHandler(),
+        ConfigurationErrorHandler(),
+        NoRegionErrorHandler(),
+        NoCredentialsErrorHandler(),
+        InterruptExceptionHandler(),
+        ClientErrorHandler(),
+        GeneralExceptionHandler()
+    ]
+    return ChainedExceptionHandler(exception_handlers=handlers)
+
+
 class BaseExceptionHandler:
     def handle_exception(self, exception, stdout, stderr):
         raise NotImplementedError('handle_exception')
@@ -43,7 +57,7 @@ class FilteredExceptionHandler(BaseExceptionHandler):
     MESSAGE = '%s'
 
     def handle_exception(self, exception, stdout, stderr):
-        if issubclass(exception.__class__, self.EXCEPTIONS_TO_HANDLE):
+        if isinstance(exception, self.EXCEPTIONS_TO_HANDLE):
             return_val = self._do_handle_exception(exception, stdout, stderr)
             if return_val is not None:
                 return return_val
@@ -58,8 +72,7 @@ class FilteredExceptionHandler(BaseExceptionHandler):
 class ParamValidationErrorsHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = (
         ParamError, ParamSyntaxError, ArgParseException,
-        ParamValidationError, BotocoreParamValidationError,
-        UnknownArgumentError
+        ParamValidationError, BotocoreParamValidationError
     )
     RC = PARAM_VALIDATION_ERROR_RC
 
@@ -101,6 +114,10 @@ class InterruptExceptionHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = KeyboardInterrupt
     RC = 128 + signal.SIGINT
 
+    def _do_handle_exception(self, exception, stdout, stderr):
+        stdout.write("\n")
+        return self.RC
+
 
 class GeneralExceptionHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = Exception
@@ -108,10 +125,8 @@ class GeneralExceptionHandler(FilteredExceptionHandler):
 
 
 class ChainedExceptionHandler(BaseExceptionHandler):
-    def __init__(self, exception_handlers=None):
+    def __init__(self, exception_handlers):
         self._exception_handlers = exception_handlers
-        if self._exception_handlers is None:
-            self._exception_handlers = [GeneralExceptionHandler]
 
     def handle_exception(self, exception, stdout, stderr):
         for handler in self._exception_handlers:

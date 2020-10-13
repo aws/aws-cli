@@ -59,13 +59,8 @@ from awscli.autoprompt.core import (
     AutoPrompter, AutoPromptDriver,
     validate_auto_prompt_args_are_mutually_exclusive
 )
-from awscli.errorhandler import (
-    ParamValidationErrorsHandler, ClientErrorHandler,
-    ConfigurationErrorHandler, NoRegionErrorHandler,
-    NoCredentialsErrorHandler, InterruptExceptionHandler,
-    UnknownArgumentErrorHandler, GeneralExceptionHandler,
-    ChainedExceptionHandler
- )
+from awscli.errorhandler import construct_cli_error_handlers_chain
+
 
 LOG = logging.getLogger('awscli.clidriver')
 LOG_FORMAT = (
@@ -90,21 +85,6 @@ def main():
     HISTORY_RECORDER.record('CLI_RC', rc, 'CLI')
     return rc
 
-
-def construct_cli_error_handlers_chain():
-    handlers = [
-        ParamValidationErrorsHandler(),
-        UnknownArgumentErrorHandler(),
-        ClientErrorHandler(),
-        ConfigurationErrorHandler(),
-        NoRegionErrorHandler(),
-        NoCredentialsErrorHandler(),
-        InterruptExceptionHandler(),
-        GeneralExceptionHandler()
-    ]
-    return ChainedExceptionHandler(exception_handlers=handlers)
-
-
 def create_clidriver():
     session = botocore.session.Session()
     _set_user_agent_for_session(session)
@@ -112,7 +92,7 @@ def create_clidriver():
                  event_hooks=session.get_component('event_emitter'))
     error_handlers_chain = construct_cli_error_handlers_chain()
     driver = CLIDriver(session=session,
-                       error_handlers_chain=error_handlers_chain)
+                       error_handler=error_handlers_chain)
     return driver
 
 
@@ -171,15 +151,15 @@ def no_pager_handler(session, parsed_args, **kwargs):
 
 class CLIDriver(object):
 
-    def __init__(self, session=None, error_handlers_chain=None):
+    def __init__(self, session=None, error_handler=None):
         if session is None:
             self.session = botocore.session.get_session()
             _set_user_agent_for_session(self.session)
         else:
             self.session = session
-        self._error_handlers_chain = error_handlers_chain
-        if self._error_handlers_chain is None:
-            self._error_handlers_chain = ChainedExceptionHandler()
+        self._error_handler = error_handler
+        if self._error_handler is None:
+            self._error_handler = construct_cli_error_handlers_chain()
         self._update_config_chain()
         self._cli_data = None
         self._command_table = None
@@ -444,8 +424,9 @@ class CLIDriver(object):
                 'CLI_VERSION', self.session.user_agent(), 'CLI')
             HISTORY_RECORDER.record('CLI_ARGUMENTS', args, 'CLI')
             return command_table[parsed_args.command](remaining, parsed_args)
-        except Exception as e:
-            return self._error_handlers_chain.handle_exception(
+        except BaseException as e:
+            LOG.debug("Exception caught in main()", exc_info=True)
+            return self._error_handler.handle_exception(
                 e,
                 stdout=get_stdout_text_writer(),
                 stderr=get_stderr_text_writer()

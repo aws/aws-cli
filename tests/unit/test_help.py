@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest, skip_if_windows, FileCreator
 import signal
-import platform
 import json
 import sys
 import os
@@ -23,7 +22,7 @@ from awscli.compat import six
 from awscli.help import PosixHelpRenderer, ExecutableNotFoundError
 from awscli.help import WindowsHelpRenderer, ProviderHelpCommand, HelpCommand
 from awscli.help import TopicListerCommand, TopicHelpCommand
-from awscli.argparser import HELP_BLURB
+from awscli.argparser import HELP_BLURB, ArgParseException
 
 
 class HelpSpyMixin(object):
@@ -211,12 +210,10 @@ class TestHelpCommand(TestHelpCommandBase):
         self.assertTrue(self.renderer.render.called)
 
     def test_invalid_subcommand(self):
-        with mock.patch('sys.stderr') as f:
-            with self.assertRaises(SystemExit):
-                self.cmd(['no-exist-command'], None)
+        with self.assertRaises(ArgParseException) as e:
+            self.cmd(['no-exist-command'], None)
         # We should see the pointer to "aws help" in the error message.
-        error_message = ''.join(arg[0][0] for arg in f.write.call_args_list)
-        self.assertIn(HELP_BLURB, error_message)
+        self.assertIn(HELP_BLURB, str(e.exception))
 
 
 class TestProviderHelpCommand(TestHelpCommandBase):

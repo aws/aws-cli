@@ -23,11 +23,13 @@ _LOADER = botocore.loaders.Loader()
 
 class CLIRunner(object):
     """Runs CLI commands in a stubbed environment"""
-    def __init__(self, env=None):
+    def __init__(self, env=None, session_stubber=None):
         if env is None:
             env = self._get_default_env()
         self.env = env
-        self._session_stubber = SessionStubber()
+        if session_stubber is None:
+            session_stubber = SessionStubber()
+        self._session_stubber = session_stubber
 
     def run(self, cmdline):
         with mock.patch('os.environ', self.env):
@@ -127,14 +129,16 @@ class BaseResponse(object):
 
 
 class AWSResponse(BaseResponse):
-    def __init__(self, service_name, operation_name, parsed_response):
+    def __init__(self, service_name, operation_name, parsed_response,
+                 validate=True):
         self._service_name = service_name
         self._operation_name = operation_name
         self._parsed_response = parsed_response
         self._service_model = self._get_service_model()
         self._operation_model = self._service_model.operation_model(
             self._operation_name)
-        self._validate_parsed_response()
+        if validate:
+            self._validate_parsed_response()
 
     def on_http_request_sent(self, request):
         return self._generate_http_response()

@@ -10,12 +10,16 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import json
 import os
 import shutil
 import tempfile
 
 from prompt_toolkit import Application
 from prompt_toolkit.key_binding.key_processor import KeyProcessor, KeyPress
+from prompt_toolkit.key_binding import merge_key_bindings
+from prompt_toolkit.key_binding.defaults import load_key_bindings
+
 from prompt_toolkit.keys import Keys
 from prompt_toolkit.utils import Event
 
@@ -27,6 +31,7 @@ from awscli.autoprompt.factory import PromptToolkitFactory
 from awscli.autoprompt.prompttoolkit import (
     PromptToolkitCompleter, PromptToolkitPrompter
 )
+from awscli.autoprompt.history import HistoryDriver
 from awscli.testutils import unittest, random_chars
 
 
@@ -62,6 +67,7 @@ class ApplicationStubber:
         self._app = app
         self._queue = []
         self._assertion_callback = lambda x: True
+        self._default_keybindings = load_key_bindings()
 
     def add_key_assert(self, key=None, assertion=None):
         assert key is not None or assertion is not None, \
@@ -72,13 +78,16 @@ class ApplicationStubber:
             self._queue.append((self._ASSERTION, assertion, key))
 
     def run(self, pre_run=None):
-        key_processor = KeyProcessor(self._app.key_bindings)
+        key_processor = KeyProcessor(merge_key_bindings([
+           self._default_keybindings, self._app.key_bindings
+        ]))
         # After each rendering application will run this callback
         # it takes the next action from the queue and performs it
         # some key_presses can lead to rerender, after which this callback
         # will be run again before re-rendering app.invalidation property
         # set to True.
         # On exit this callback also run so we need to remove it before exit
+
         def callback(app):
             while self._queue and not app.invalidated:
                 action = self._queue.pop(0)
@@ -110,16 +119,35 @@ class BasicPromptToolkitTest(unittest.TestCase):
         cls.completion_source = create_autocompleter(
             full_filename, response_filter=filters.fuzzy_filter)
 
+        cls.history_filename = os.path.join(cls.temporary_directory,
+                                            'prompt_history.json')
+        history = {
+            'version': 1,
+            'commands': [
+                'accessanalyzer update-findings',
+                'ec2 describe-instances',
+                's3 ls'
+            ]
+        }
+        with open(cls.history_filename, 'w') as f:
+            json.dump(history, f)
+
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree(cls.temporary_directory)
 
     def setUp(self):
         self.completer = PromptToolkitCompleter(self.completion_source)
-        self.factory = PromptToolkitFactory(self.completer)
+        self.history_driver = HistoryDriver(self.history_filename)
         self.driver = create_clidriver()
+        self.factory = PromptToolkitFactory(
+            self.completer,
+            history_driver=self.history_driver
+        )
         self.prompter = PromptToolkitPrompter(
-            completion_source=self.completion_source, driver=self.driver
+            completion_source=self.completion_source,
+            driver=self.driver,
+            factory=self.factory
         )
         self.prompter.args = ['']
         self.prompter.input_buffer = self.factory.create_input_buffer()
@@ -222,20 +250,7 @@ class TestPromptToolkitDocBuffer(BasicPromptToolkitTest):
         )
         stubber.run(self.prompter.pre_run)
 
-    def test_doc_buffer_get_and_remove_focus(self):
-        stubber = ApplicationStubber(self.prompter.create_application())
-        stubber.add_key_assert(Keys.F2, lambda app: app.show_doc is True)
-        stubber.add_key_assert(
-            Keys.F1,
-            lambda app: app.current_buffer.name == 'doc_buffer'
-        )
-        stubber.add_key_assert(
-            'q',
-            lambda app: app.current_buffer.name == 'input_buffer'
-        )
-        stubber.run(self.prompter.pre_run)
-
-    def test_doc_buffer_get_and_remove_focus(self):
+    def test_doc_buffer_gets_and_removes_focus(self):
         stubber = ApplicationStubber(self.prompter.create_application())
         stubber.add_key_assert(Keys.F2, lambda app: app.show_doc is True)
         stubber.add_key_assert(
@@ -300,3 +315,60 @@ class TestPromptToolkitDocBuffer(BasicPromptToolkitTest):
         original_args = ['ec2', 'describe-instances', '--instance-ids']
         buffer_text = self.get_updated_doc_buffer_text(original_args)
         self.assertIn('Describes the specified', buffer_text)
+
+
+class TestHistoryMode(BasicPromptToolkitTest):
+    def test_history_mode_disabled_on_start_and_switched_by_control_R(self):
+        stubber = ApplicationStubber(self.prompter.create_application())
+        stubber.add_key_assert(
+            None, lambda app: not app.current_buffer.history_mode)
+        stubber.add_key_assert(
+            Keys.ControlR, lambda app: app.current_buffer.history_mode)
+        stubber.add_key_assert(
+            Keys.ControlR, lambda app: not app.current_buffer.history_mode
+        )
+        stubber.run(self.prompter.pre_run)
+
+    def test_choose_and_disable_history_mode_with_enter(self):
+        self.prompter.args = ['s']
+        stubber = ApplicationStubber(self.prompter.create_application())
+        stubber.add_key_assert(
+            None, lambda app: not app.current_buffer.history_mode)
+        stubber.add_key_assert(
+            Keys.ControlR, lambda app: app.current_buffer.history_mode)
+        # for some reason in this mode first click down chooses the original
+        # input and only the second one gets to the completions
+        stubber.add_key_assert(Keys.Down)
+        stubber.add_key_assert(
+            Keys.Down, lambda app:
+            app.current_buffer.complete_state.current_completion.text == 's3 ls'
+        )
+        stubber.add_key_assert(
+            Keys.Enter, lambda app:
+            not app.current_buffer.history_mode and
+            app.current_buffer.name == 'input_buffer' and
+            app.current_buffer.document.text == 's3 ls'
+        )
+        stubber.run(self.prompter.pre_run)
+
+    def test_choose_and_disable_history_mode_with_space(self):
+        self.prompter.args = ['s']
+        stubber = ApplicationStubber(self.prompter.create_application())
+        stubber.add_key_assert(
+            None, lambda app: not app.current_buffer.history_mode)
+        stubber.add_key_assert(
+            Keys.ControlR, lambda app: app.current_buffer.history_mode)
+        # for some reason in this mode first click down chooses the original
+        # input and only the second one gets to the completions
+        stubber.add_key_assert(Keys.Down)
+        stubber.add_key_assert(
+            Keys.Down, lambda app:
+            app.current_buffer.complete_state.current_completion.text == 's3 ls'
+        )
+        stubber.add_key_assert(
+            ' ', lambda app:
+            not app.current_buffer.history_mode and
+            app.current_buffer.name == 'input_buffer' and
+            app.current_buffer.document.text == 's3 ls '
+        )
+        stubber.run(self.prompter.pre_run)

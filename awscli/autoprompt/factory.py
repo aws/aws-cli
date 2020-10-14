@@ -64,20 +64,23 @@ class PromptToolkitFactory:
         'menu_scroll_offset': 2,
     }
 
-    def __init__(self, completer):
+    def __init__(self, completer, history_driver=None):
         self._completer = completer
+        self._history_driver = history_driver
 
-    def create_history(self):
-        cache_dir = os.path.expanduser(
-            os.path.join('~', '.aws', 'cli', 'cache'))
-        history_filename = os.path.join(cache_dir, 'prompt_history.json')
-        return HistoryDriver(history_filename)
+    @property
+    def history_driver(self):
+        if self._history_driver is None:
+            cache_dir = os.path.expanduser(
+                os.path.join('~', '.aws', 'cli', 'cache'))
+            history_filename = os.path.join(cache_dir, 'prompt_history.json')
+            self._history_driver = HistoryDriver(history_filename)
+        return self._history_driver
 
     def create_input_buffer(self, on_text_changed_callback=None):
-        history = self.create_history()
         return CLIPromptBuffer(
             name='input_buffer', completer=self._completer,
-            history=history, complete_while_typing=True,
+            history=self.history_driver, complete_while_typing=True,
             on_text_changed=on_text_changed_callback)
 
     def create_doc_buffer(self):

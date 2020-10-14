@@ -11,6 +11,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import contextlib
 import platform
 import re
 
@@ -28,6 +29,7 @@ from botocore.compat import OrderedDict
 import botocore.model
 
 import awscli
+from awscli.autoprompt.core import AutoPromptDriver
 from awscli.clidriver import CLIDriver
 from awscli.clidriver import create_clidriver
 from awscli.clidriver import CustomArgument
@@ -38,7 +40,7 @@ from awscli.clidriver import ServiceOperation
 from awscli.paramfile import URIArgumentHandler
 from awscli.customizations.commands import BasicCommand
 from awscli import formatter
-from awscli.argparser import HELP_BLURB, ArgParseException
+from awscli.argparser import HELP_BLURB
 from botocore.hooks import HierarchicalEmitter
 from botocore.configprovider import create_botocore_default_config_mapping
 from botocore.configprovider import ConfigChainFactory
@@ -358,23 +360,6 @@ class TestCliDriver(unittest.TestCase):
         arg_table = self.driver.arg_table
         expected = list(GET_DATA['cli']['options'])
         self.assertEqual(list(arg_table), expected)
-
-    def test_can_call_auto_prompter_with_no_command(self):
-        new_args = self.driver.prompt_for_args([], {})
-        self.assertEqual(new_args, [])
-
-    def test_can_call_auto_prompter_with_partial_service_command(self):
-        new_args = self.driver.prompt_for_args(['ec'], {})
-        self.assertEqual(new_args, ['ec'])
-
-    def test_can_call_auto_prompter_with_partial_operation_command(self):
-        new_args = self.driver.prompt_for_args(['ec2', 'd'], {})
-        self.assertEqual(new_args, ['ec2', 'd'])
-
-    def test_can_call_auto_prompter_with_partial_option_command(self):
-        new_args = self.driver.prompt_for_args(
-            ['ec2', 'create-image', '--'], {})
-        self.assertEqual(new_args, ['ec2', 'create-image', '--'])
 
 
 class TestCliDriverHooks(unittest.TestCase):
@@ -1030,6 +1015,66 @@ class TestServiceOperation(unittest.TestCase):
         token_argument = arg_table.get('token')
         self.assertFalse(token_argument.required,
                          'Idempotency tokens should not be required')
+
+
+class TestAWSCLIEntryPoint(unittest.TestCase):
+
+    def setUp(self):
+        self.prompt_patch = mock.patch('awscli.clidriver.AutoPromptDriver')
+        self.crete_driver_patch = mock.patch(
+            'awscli.clidriver.create_clidriver')
+        prompt_driver_class = self.prompt_patch.start()
+        self.create_clidriver = self.crete_driver_patch.start()
+        self.driver = mock.Mock()
+        self.create_clidriver.return_value = self.driver
+        self.prompt_driver = mock.Mock()
+        prompt_driver_class.return_value = self.prompt_driver
+
+    def tearDown(self):
+        self.prompt_patch.stop()
+        self.crete_driver_patch.stop()
+
+    def test_recreate_driver_in_partial_mode_on_param_err(self):
+        self.prompt_driver.resolve_mode.return_value = 'on-partial'
+        self.driver.main.return_value = 252
+        entry_point = awscli.clidriver.AWSCLIEntryPoint()
+        rc = entry_point.main([])
+        self.assertEqual(self.create_clidriver.call_count, 2)
+        self.assertEqual(rc, 252)
+
+    def test_not_recreate_driver_in_partial_mode_on_success(self):
+        self.prompt_driver.resolve_mode.return_value = 'on-partial'
+        self.driver.main.return_value = 0
+        entry_point = awscli.clidriver.AWSCLIEntryPoint()
+        rc = entry_point.main([])
+        self.assertEqual(self.create_clidriver.call_count, 1)
+        self.assertEqual(rc, 0)
+
+    def test_not_recreate_driver_in_on_mode(self):
+        self.prompt_driver.resolve_mode.return_value = 'on'
+        self.driver.main.return_value = 252
+        entry_point = awscli.clidriver.AWSCLIEntryPoint()
+        rc = entry_point.main([])
+        self.assertEqual(self.create_clidriver.call_count, 1)
+        self.assertEqual(rc, 252)
+
+    def test_not_recreate_driver_in_off_mode(self):
+        self.prompt_driver.resolve_mode.return_value = 'off'
+        self.driver.main.return_value = 252
+        entry_point = awscli.clidriver.AWSCLIEntryPoint()
+        rc = entry_point.main([])
+        self.assertEqual(self.create_clidriver.call_count, 1)
+        self.assertEqual(rc, 252)
+
+    def test_handle_exception_in_main(self):
+        self.prompt_driver.resolve_mode.return_value = 'on'
+        self.prompt_driver.prompt_for_args.side_effect = Exception('error')
+        entry_point = awscli.clidriver.AWSCLIEntryPoint()
+        fake_stderr = io.StringIO()
+        with contextlib.redirect_stderr(fake_stderr):
+            rc = entry_point.main([])
+        self.assertEqual(rc, 255)
+        self.assertIn('error', fake_stderr.getvalue())
 
 
 if __name__ == '__main__':

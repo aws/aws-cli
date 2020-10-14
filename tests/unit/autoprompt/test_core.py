@@ -10,54 +10,38 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import argparse
 import mock
 import nose
 from collections import namedtuple
 
-from awscli.clidriver import CLIDriver, create_clidriver
-from awscli.autoprompt.prompttoolkit import PromptToolkitPrompter
+from awscli.clidriver import create_clidriver
 from awscli.autoprompt import core
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.testutils import unittest
-from botocore.session import Session
 
 
 class TestCLIAutoPrompt(unittest.TestCase):
     def setUp(self):
-        self.session = mock.Mock(spec=Session)
+        self.driver = mock.Mock()
         self.prompter = mock.Mock(spec=core.AutoPrompter)
-        self.prompt_driver = core.AutoPromptDriver(self.session,
-                                                                self.prompter)
-        self.driver = create_clidriver()
-
-    def create_args(self, cli_auto_prompt=False, no_cli_auto_prompt=False):
-        args = argparse.Namespace()
-        args.cli_auto_prompt = cli_auto_prompt
-        args.no_cli_auto_prompt = no_cli_auto_prompt
-        return args
+        self.prompt_driver = core.AutoPromptDriver(self.driver,
+                                                   prompter=self.prompter)
 
     def test_throw_error_if_both_args_specified(self):
-        args = self.create_args(cli_auto_prompt=True, no_cli_auto_prompt=True)
+        args = ['--cli-auto-prompt', '--no-cli-auto-prompt']
         self.assertRaises(
             ParamValidationError,
-            core.validate_auto_prompt_args_are_mutually_exclusive,
+            self.prompt_driver.validate_auto_prompt_args_are_mutually_exclusive,
             args
         )
 
 
-def test_auto_prompt_config():
+def test_auto_prompt_resolve_mode():
     # Each case is a 5-namedtuple with the following meaning:
-    # "no_cli_autoprompt" is the command line --no-cli-auto-prompt override:
-    #   True means --no-cli-auto-prompt is specified.
-    #   False means --no-cli-auto-prompt is not specified.
-    # "cli_auto_prompt"is the command line --cli-auto-prompt override:
-    #   True means --cli-auto-prompt is specified.
-    #   False means --cli-auto-prompt is not specified.
-    # "config_variable" is the result from get_config_variable
-    #   This takes a value of either 'on' or 'off'.
     # "args" is a list of arguments that command got as input from
     #   command line
+    # "config_variable" is the result from get_config_variable
+    #   This takes a value of either 'on' , 'off' or 'on-partial'
     # "expected_result" is a boolean indicating whether auto-prompt
     #   should be used or not.
     #
@@ -66,49 +50,47 @@ def test_auto_prompt_config():
     # TestCLIAutoPrompt.test_throw_error_if_both_args_specified tests
     # that these command line overrides are mutually exclusive.
     Case = namedtuple('Case', [
-        'no_cli_autoprompt',
-        'cli_auto_prompt',
-        'config_variable',
         'args',
-        'expected_result'
+        'config_variable',
+        'expected_result',
     ])
     cases = [
-        Case(False, False, 'off', ['aws', 'ec2'], False),
-        Case(False, False, 'on', ['aws', 'ec2'], True),
-        Case(False, True, 'off', ['aws', 'ec2'], True),
-        Case(False, True, 'on', ['aws', 'ec2'], True),
-        Case(True, False, 'off', ['aws', 'ec2'], False),
-        Case(True, False, 'on', ['aws', 'ec2'], False),
-        Case(False, False, 'on', ['aws', 'ec2', 'help'], False),
-        Case(False, False, 'on', ['aws', '--version'], False),
+        Case([], 'off', 'off'),
+        Case([], 'on', 'on'),
+        Case(['--cli-auto-prompt'], 'off', 'on'),
+        Case(['--cli-auto-prompt'], 'on', 'on'),
+        Case(['--no-cli-auto-prompt'], 'off', 'off'),
+        Case(['--no-cli-auto-prompt'], 'on', 'off'),
+        Case([], 'on', 'on'),
+        Case([], 'on-partial', 'on-partial'),
+        Case(['--cli-auto-prompt'], 'on-partial', 'on'),
+        Case(['--no-cli-auto-prompt'], 'on-partial', 'off'),
+        Case(['--version'], 'on', 'off'),
+        Case(['help'], 'on', 'off'),
     ]
     for case in cases:
         yield (_assert_auto_prompt_runs_as_expected, case)
 
 
 def _assert_auto_prompt_runs_as_expected(case):
-    session = mock.Mock(spec=Session)
-    session.get_config_variable.return_value = case.config_variable
+    driver = create_clidriver()
+    driver.session.set_config_variable('cli_auto_prompt',
+                                       case.config_variable)
     prompter = mock.Mock(spec=core.AutoPrompter)
-    prompt_driver = core.AutoPromptDriver(session, prompter)
-    parsed_args = argparse.Namespace()
-    parsed_args.no_cli_auto_prompt = case.no_cli_autoprompt
-    parsed_args.cli_auto_prompt = case.cli_auto_prompt
-    prompt_driver.auto_prompt_arguments(
-        args=case.args,
-        parsed_args=parsed_args
-    )
-    nose.tools.eq_(prompter.prompt_for_values.called, case.expected_result)
+    prompt_driver = core.AutoPromptDriver(driver, prompter=prompter)
+    result = prompt_driver.resolve_mode(args=case.args)
+    nose.tools.eq_(result, case.expected_result)
 
 
 class TestAutoPrompter(unittest.TestCase):
     def setUp(self):
-        self.completion_source = mock.Mock()
-        self.driver = mock.Mock(spec=CLIDriver)
-        self.prompter = mock.Mock(spec=PromptToolkitPrompter)
-        self.prompter.prompt_for_args = lambda x: x
+        completion_source = mock.Mock()
+        driver = mock.Mock()
+        prompter = mock.Mock()
+        prompter.prompt_for_args = lambda x: x
+        driver.arg_table = []
         self.auto_prompter = core.AutoPrompter(
-            self.completion_source, self.driver, self.prompter)
+            completion_source, driver, prompter)
 
     def test_auto_prompter_returns_args(self):
         original_args = ['aws', 'ec2', 'help']

@@ -11,65 +11,66 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+from awscli.argparser import ArgTableArgParser
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.autoprompt.prompttoolkit import PromptToolkitPrompter
-
-
-def validate_auto_prompt_args_are_mutually_exclusive(parsed_args, **kwargs):
-    cli_auto_prompt = getattr(parsed_args, 'cli_auto_prompt', False)
-    no_cli_auto_prompt = getattr(parsed_args, 'no_cli_auto_prompt', False)
-    if cli_auto_prompt and no_cli_auto_prompt:
-        raise ParamValidationError(
-            'Both --cli-auto-prompt and --no-cli-auto-prompt cannot be '
-            'specified at the same time.'
-        )
+from awscli.autocomplete.main import create_autocompleter
+from awscli.errorhandler import SilenceParamValidationMsgErrorHandler
 
 
 class AutoPromptDriver:
 
-    NO_PROMPT_ARGS = ['help', '--version']
+    _NO_PROMPT_ARGS = ['help', '--version']
+    _CLI_AUTO_PROMPT_OPTION = '--cli-auto-prompt'
+    _NO_CLI_AUTO_PROMPT_OPTION = '--no-cli-auto-prompt'
 
-    def __init__(self, session, prompter=None):
+    def __init__(self, driver, completion_source=None, prompter=None):
+        self._completion_source = completion_source
         self._prompter = prompter
-        self._session = session
+        self._session = driver.session
+        self._driver = driver
+        if self._completion_source is None:
+            self._completion_source = create_autocompleter(driver=self._driver)
 
-    def _should_autoprompt(self, parsed_args, args):
+    @property
+    def prompter(self):
+        if self._prompter is None:
+            self._prompter = AutoPrompter(self._completion_source,
+                                          self._driver)
+        return self._prompter
+
+    def validate_auto_prompt_args_are_mutually_exclusive(self, args):
+        no_cli_auto_prompt = self._NO_CLI_AUTO_PROMPT_OPTION in args
+        cli_auto_prompt = self._CLI_AUTO_PROMPT_OPTION in args
+        if cli_auto_prompt and no_cli_auto_prompt:
+            raise ParamValidationError(
+                'Both --cli-auto-prompt and --no-cli-auto-prompt cannot be '
+                'specified at the same time.'
+            )
+
+    def resolve_mode(self, args):
         # Order of precedence to check:
         # - check if any arg rom NO_PROMPT_ARGS in args
         # - check if '--no-cli-auto-prompt' was specified
         # - check if '--cli-auto-prompt' was specified
         # - check configuration chain
-        if any(arg in args for arg in self.NO_PROMPT_ARGS):
-            return False
-        if getattr(parsed_args, 'no_cli_auto_prompt', False):
-            return False
-        if getattr(parsed_args, 'cli_auto_prompt', False):
-            return True
+        self.validate_auto_prompt_args_are_mutually_exclusive(args)
+        if any(arg in args for arg in self._NO_PROMPT_ARGS):
+            return 'off'
+        if self._NO_CLI_AUTO_PROMPT_OPTION in args:
+            return 'off'
+        if self._CLI_AUTO_PROMPT_OPTION in args:
+            return 'on'
         config = self._session.get_config_variable('cli_auto_prompt')
-        return config.lower() == 'on'
+        return config.lower()
 
-    def auto_prompt_arguments(self, args, parsed_args, **kwargs):
-        """Prompts the user for input while providing autoprompt support along
-        the way.
+    def inject_silence_param_error_msg_handler(self, driver):
+        driver.error_handler.inject_handler(
+            0, SilenceParamValidationMsgErrorHandler()
+        )
 
-        :type args: list
-        :param args: The list of command line args entered at the command line
-            just before entering into the autoprompt workflow.
-
-        :type parsed_args: ``argparse.Namespace``
-        :param parsed_args: The parsed options at the `aws` entrypoint. This is
-            primarily used to check if the autoprompt override arguments
-            ``--cli-auto-prompt`` or ``--no-cli-auto-prompt`` were specified.
-
-        :rtype: list of strings
-        :return: A list of the arguments that the user typed into the buffer
-            (aka "construction zone").
-            Example: ['ec2', 'describe-instances']
-
-        """
-        if self._should_autoprompt(parsed_args, args):
-            args = self._prompter.prompt_for_values(args)
-        return args
+    def prompt_for_args(self, args):
+        return self.prompter.prompt_for_values(args)
 
 
 class AutoPrompter:

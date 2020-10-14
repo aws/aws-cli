@@ -25,12 +25,23 @@ from awscli.constants import (
     PARAM_VALIDATION_ERROR_RC, CONFIGURATION_ERROR_RC, CLIENT_ERROR_RC,
     GENERAL_ERROR_RC
 )
+from awscli.autoprompt.factory import PrompterKeyboardInterrupt
 from awscli.customizations.exceptions import (
     ParamValidationError, ConfigurationError
 )
 
 
 LOG = logging.getLogger(__name__)
+
+
+def construct_entry_point_handlers_chain():
+    handlers = [
+        ParamValidationErrorsHandler(),
+        PrompterInterruptExceptionHandler(),
+        InterruptExceptionHandler(),
+        GeneralExceptionHandler()
+    ]
+    return ChainedExceptionHandler(exception_handlers=handlers)
 
 
 def construct_cli_error_handlers_chain():
@@ -77,6 +88,11 @@ class ParamValidationErrorsHandler(FilteredExceptionHandler):
     RC = PARAM_VALIDATION_ERROR_RC
 
 
+class SilenceParamValidationMsgErrorHandler(ParamValidationErrorsHandler):
+    def _do_handle_exception(self, exception, stdout, stderr):
+        return self.RC
+
+
 class ClientErrorHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = ClientError
     RC = CLIENT_ERROR_RC
@@ -119,6 +135,15 @@ class InterruptExceptionHandler(FilteredExceptionHandler):
         return self.RC
 
 
+class PrompterInterruptExceptionHandler(InterruptExceptionHandler):
+    EXCEPTIONS_TO_HANDLE = PrompterKeyboardInterrupt
+
+    def _do_handle_exception(self, exception, stdout, stderr):
+        stderr.write(f'{exception}')
+        stderr.write("\n")
+        return self.RC
+
+
 class GeneralExceptionHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = Exception
     RC = GENERAL_ERROR_RC
@@ -127,6 +152,9 @@ class GeneralExceptionHandler(FilteredExceptionHandler):
 class ChainedExceptionHandler(BaseExceptionHandler):
     def __init__(self, exception_handlers):
         self._exception_handlers = exception_handlers
+
+    def inject_handler(self, position, handler):
+        self._exception_handlers.insert(position, handler)
 
     def handle_exception(self, exception, stdout, stderr):
         for handler in self._exception_handlers:

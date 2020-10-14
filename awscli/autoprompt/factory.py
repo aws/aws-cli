@@ -52,6 +52,10 @@ def is_one_column():
     return not getattr(app, 'multi_column', False)
 
 
+class PrompterKeyboardInterrupt(KeyboardInterrupt):
+    pass
+
+
 class CLIPromptBuffer(Buffer):
 
     def __init__(self, *args, **kwargs):
@@ -326,8 +330,8 @@ class PromptToolkitKeyBindings:
         def _(event):
             layout = event.app.layout
             input_buffer = layout.get_buffer_by_name('input_buffer')
-            print(input_buffer.document.text)
-            event.app.exit(exception=KeyboardInterrupt)
+            text = f'> aws {input_buffer.document.text}'
+            event.app.exit(exception=PrompterKeyboardInterrupt(text))
 
         @self._kb.add(Keys.F1, filter=doc_section_visible)
         @self._kb.add('q', filter=_doc_window_has_focus)

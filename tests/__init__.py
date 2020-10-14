@@ -1,4 +1,5 @@
 import collections
+import copy
 import os
 
 import awscli
@@ -63,8 +64,9 @@ class CLIRunner(object):
         rc = driver.main(cmdline)
         self._session_stubber.assert_no_remaining_responses()
         runner_result = CLIRunnerResult(rc)
-        aws_requests = self._session_stubber.received_aws_requests.copy()
-        runner_result.aws_requests = aws_requests
+        runner_result.aws_requests = copy.copy(
+            self._session_stubber.received_aws_requests
+        )
         return runner_result
 
 

@@ -1,3 +1,4 @@
+import copy
 import os
 import platform
 import subprocess
@@ -62,7 +63,7 @@ class TestCodeArtifactLogin(unittest.TestCase):
                 repository=self.repository
             )
 
-        cmdline = self.prefix.copy()
+        cmdline = copy.copy(self.prefix)
         cmdline.extend([
             '--domain', self.domain,
             '--repository', self.repository,

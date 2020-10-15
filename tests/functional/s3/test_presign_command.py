@@ -13,6 +13,7 @@
 import datetime
 
 from botocore.compat import urlsplit
+from awscli.clidriver import AWSCLIEntryPoint
 from awscli.testutils import BaseAWSCommandParamsTest, mock, temporary_file
 from awscli.testutils import create_clidriver
 
@@ -39,6 +40,7 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
         fileobj.flush()
         self.environ['AWS_CONFIG_FILE'] = fileobj.name
         self.driver = create_clidriver()
+        self.entry_point = AWSCLIEntryPoint(self.driver)
 
     def enable_sigv4_from_config_file(self, fileobj):
         fileobj.write(
@@ -49,6 +51,7 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
         fileobj.flush()
         self.environ['AWS_CONFIG_FILE'] = fileobj.name
         self.driver = create_clidriver()
+        self.entry_point = AWSCLIEntryPoint(self.driver)
 
     def assert_presigned_url_matches(self, actual_url, expected_match):
         """Verify generated presigned URL matches expected dict.

@@ -4,7 +4,7 @@ import copy
 import os
 
 import awscli
-from awscli.clidriver import create_clidriver
+from awscli.clidriver import create_clidriver, AWSCLIEntryPoint
 from awscli.compat import collections_abc
 from awscli.testutils import mock, capture_output
 
@@ -62,8 +62,9 @@ class CLIRunner(object):
 
     def _do_run(self, cmdline):
         driver = create_clidriver()
+        entry_point = AWSCLIEntryPoint(driver)
         self._session_stubber.register(driver.session)
-        rc = driver.main(cmdline)
+        rc = entry_point.main(cmdline)
         self._session_stubber.assert_no_remaining_responses()
         runner_result = CLIRunnerResult(rc)
         runner_result.aws_requests = copy.copy(

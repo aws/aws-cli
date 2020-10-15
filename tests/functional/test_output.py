@@ -14,7 +14,7 @@ import json
 
 import ruamel.yaml as yaml
 
-
+from awscli.clidriver import AWSCLIEntryPoint
 from awscli.testutils import skip_if_windows, if_windows
 from awscli.testutils import mock, create_clidriver, FileCreator
 from awscli.testutils import BaseAWSCommandParamsTest
@@ -62,6 +62,7 @@ class TestOutput(BaseAWSCommandParamsTest):
         )
         self.environ['AWS_CONFIG_FILE'] = config_file
         self.driver = create_clidriver()
+        self.entry_point = AWSCLIEntryPoint(self.driver)
 
     def assert_content_to_pager(self, expected_pager, expected_content,
                                 expected_less_flags=None):

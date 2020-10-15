@@ -14,6 +14,7 @@ import uuid
 
 from botocore.history import HistoryRecorder
 
+from awscli.clidriver import AWSCLIEntryPoint
 from awscli.testutils import mock, create_clidriver, FileCreator
 from awscli.testutils import BaseAWSCommandParamsTest
 
@@ -33,6 +34,7 @@ class BaseHistoryCommandParamsTest(BaseAWSCommandParamsTest):
         self.environ['AWS_CLI_HISTORY_FILE'] = self.files.create_file(
             'history.db', '')
         self.driver = create_clidriver()
+        self.entry_point = AWSCLIEntryPoint(self.driver)
 
     def _make_clean_history_recorder(self):
         # This is to ensure that for each new test run the CLI is using

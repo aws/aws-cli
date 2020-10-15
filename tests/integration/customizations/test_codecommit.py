@@ -23,7 +23,7 @@ from botocore.credentials import Credentials
 from awscli.customizations.codecommit import CodeCommitGetCommand
 from awscli.testutils import unittest, StringIOWithFileNo
 from botocore.awsrequest import AWSRequest
-from awscli.clidriver import create_clidriver
+from awscli.clidriver import create_clidriver, AWSCLIEntryPoint
 
 
 class TestCodeCommitCredentialHelper(unittest.TestCase):
@@ -62,7 +62,8 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
     def test_integration_using_cli_driver(self, dt_mock, stdout_mock):
         dt_mock.utcnow.return_value = datetime(2010, 10, 8)
         driver = create_clidriver()
-        rc = driver.main('codecommit credential-helper get'.split())
+        entry_point = AWSCLIEntryPoint(driver)
+        rc = entry_point.main('codecommit credential-helper get'.split())
         output = stdout_mock.getvalue().strip()
         self.assertEquals(
             ('username=foo\n'
@@ -77,7 +78,8 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
     def test_integration_fips_using_cli_driver(self, dt_mock, stdout_mock):
         dt_mock.utcnow.return_value = datetime(2010, 10, 8)
         driver = create_clidriver()
-        rc = driver.main('codecommit credential-helper get'.split())
+        entry_point = AWSCLIEntryPoint(driver)
+        rc = entry_point.main('codecommit credential-helper get'.split())
         output = stdout_mock.getvalue().strip()
         self.assertEquals(
             ('username=foo\n'
@@ -92,7 +94,8 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
     def test_integration_vpc_using_cli_driver(self, dt_mock, stdout_mock):
         dt_mock.utcnow.return_value = datetime(2010, 10, 8)
         driver = create_clidriver()
-        rc = driver.main('codecommit credential-helper get'.split())
+        entry_point = AWSCLIEntryPoint(driver)
+        rc = entry_point.main('codecommit credential-helper get'.split())
         output = stdout_mock.getvalue().strip()
         self.assertEquals(
             ('username=foo\n'

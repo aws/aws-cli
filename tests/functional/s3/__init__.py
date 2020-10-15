@@ -14,6 +14,7 @@ import mock
 
 from botocore.awsrequest import AWSResponse
 
+from awscli.clidriver import AWSCLIEntryPoint
 from awscli.testutils import create_clidriver, temporary_file
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 from awscli.compat import six
@@ -35,6 +36,7 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
             f.flush()
             self.environ['AWS_CONFIG_FILE'] = f.name
             self.driver = create_clidriver()
+            self.entry_point = AWSCLIEntryPoint(self.driver)
 
     def tearDown(self):
         super(BaseS3TransferCommandTest, self).tearDown()

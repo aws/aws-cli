@@ -357,6 +357,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         self.parsed_responses = None
         self.http_responses = None
         self.driver = create_clidriver()
+        self.entry_point = awscli.clidriver.AWSCLIEntryPoint(self.driver)
 
     def tearDown(self):
         # This clears all the previous registrations.
@@ -431,7 +432,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         else:
             cmdlist = cmd
         with capture_output() as captured:
-            rc = self.driver.main(cmdlist)
+            rc = self.entry_point.main(cmdlist)
         stderr = captured.stderr.getvalue()
         stdout = captured.stdout.getvalue()
         self.assertEqual(
@@ -457,6 +458,8 @@ class BaseCLIWireResponseTest(unittest.TestCase):
         self.send_patch = mock.patch('botocore.endpoint.Endpoint._send')
         self.send_is_patched = False
         self.driver = create_clidriver()
+        self.entry_point = awscli.clidriver.AWSCLIEntryPoint(self.driver)
+
 
     def tearDown(self):
         self.environ_patch.stop()
@@ -481,7 +484,7 @@ class BaseCLIWireResponseTest(unittest.TestCase):
             cmdlist = cmd
         with capture_output() as captured:
             try:
-                rc = self.driver.main(cmdlist)
+                rc = self.entry_point.main(cmdlist)
             except SystemExit as e:
                 rc = e.code
         stderr = captured.stderr.getvalue()
@@ -492,7 +495,6 @@ class BaseCLIWireResponseTest(unittest.TestCase):
             "stdout:\n%sstderr:\n%s" % (
                 expected_rc, rc, cmd, stdout, stderr))
         return stdout, stderr, rc
-
 
 
 class FileCreator(object):

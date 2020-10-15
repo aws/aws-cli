@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import mock
+from awscli.clidriver import AWSCLIEntryPoint
 from awscli.testutils import create_clidriver
 from awscli.testutils import FileCreator
 from awscli.testutils import BaseAWSCommandParamsTest
@@ -49,3 +49,4 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
         # We need to recreate the driver (which includes its session) in order
         # for the config changes to be pulled in by the session.
         self.driver = create_clidriver()
+        self.entry_point = AWSCLIEntryPoint(self.driver)

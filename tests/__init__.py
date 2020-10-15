@@ -5,9 +5,8 @@ import os
 import awscli
 from awscli.clidriver import create_clidriver
 from awscli.compat import collections_abc
-from awscli.testutils import capture_output
+from awscli.testutils import mock, capture_output
 
-import mock
 import botocore.awsrequest
 import botocore.loaders
 import botocore.model

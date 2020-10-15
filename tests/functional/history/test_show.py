@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 from tests.functional.history import BaseHistoryCommandParamsTest
 
+from awscli.clidriver import AWSCLIEntryPoint
 from awscli.testutils import create_clidriver, mock
 
 
@@ -41,6 +42,7 @@ class TestShowCommand(BaseHistoryCommandParamsTest):
     def test_show_nothing_when_no_history(self):
         self.environ['AWS_CONFIG_FILE'] = ''
         self.driver = create_clidriver()
+        self.entry_point = AWSCLIEntryPoint(self.driver)
         self.parsed_responses = [
             {
                 "Regions": [

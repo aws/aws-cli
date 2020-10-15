@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from awscli.clidriver import AWSCLIEntryPoint
 from awscli.compat import ensure_text_type
 
 from tests.functional.history import BaseHistoryCommandParamsTest
@@ -20,6 +21,7 @@ class TestListCommand(BaseHistoryCommandParamsTest):
     def test_show_nothing_when_no_history_and_call_made(self):
         self.environ['AWS_CONFIG_FILE'] = ''
         self.driver = create_clidriver()
+        self.entry_point = AWSCLIEntryPoint(self.driver)
         self.parsed_responses = [
             {
                 "Regions": [

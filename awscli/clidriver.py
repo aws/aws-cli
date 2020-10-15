@@ -145,8 +145,9 @@ def no_pager_handler(session, parsed_args, **kwargs):
 
 
 class AWSCLIEntryPoint:
-    def __init__(self):
+    def __init__(self, driver=None):
         self._error_handler = construct_entry_point_handlers_chain()
+        self._driver = driver
 
     def main(self, args):
         try:
@@ -163,7 +164,9 @@ class AWSCLIEntryPoint:
         return rc
 
     def _do_main(self, args):
-        driver = create_clidriver()
+        driver = self._driver
+        if driver is None:
+            driver = create_clidriver()
         autoprompt_driver = AutoPromptDriver(driver)
         auto_prompt_mode = autoprompt_driver.resolve_mode(args)
         if auto_prompt_mode == 'on':

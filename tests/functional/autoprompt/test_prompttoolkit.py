@@ -372,3 +372,20 @@ class TestHistoryMode(BasicPromptToolkitTest):
             app.current_buffer.document.text == 's3 ls '
         )
         stubber.run(self.prompter.pre_run)
+
+
+class TestCompletions(BasicPromptToolkitTest):
+    def test_service_full_name_shown(self):
+        self.prompter.args = ['e']
+        stubber = ApplicationStubber(self.prompter.create_application())
+        stubber.add_key_assert(None,
+            lambda app: 'Elastic Compute' in
+            app.current_buffer.complete_state.completions[0].display_meta_text)
+        stubber.run(self.prompter.pre_run)
+
+    def test_switch_to_multicolumn_mode(self):
+        self.prompter.args = ['ec2 d']
+        stubber = ApplicationStubber(self.prompter.create_application())
+        stubber.add_key_assert(Keys.F3, lambda app: app.multi_column)
+        stubber.add_key_assert(Keys.F3, lambda app: not app.multi_column)
+        stubber.run(self.prompter.pre_run)

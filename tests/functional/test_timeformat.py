@@ -14,7 +14,7 @@ import json
 import datetime
 from dateutil.tz import tzlocal
 from awscli.testutils import FileCreator, BaseCLIWireResponseTest
-from awscli.clidriver import create_clidriver
+from awscli.clidriver import create_clidriver, AWSCLIEntryPoint
 
 
 class TestCLITimestampParser(BaseCLIWireResponseTest):
@@ -38,6 +38,7 @@ class TestCLITimestampParser(BaseCLIWireResponseTest):
             'iso',
             '[default]\ncli_timestamp_format = iso8601\n')
         self.driver = create_clidriver()
+        self.entry_point = AWSCLIEntryPoint(self.driver)
         expected_time = datetime.datetime.fromtimestamp(0).replace(
             tzinfo=tzlocal()).isoformat()
 
@@ -51,6 +52,7 @@ class TestCLITimestampParser(BaseCLIWireResponseTest):
             'none',
             '[default]\ncli_timestamp_format = wire\n')
         self.driver = create_clidriver()
+        self.entry_point = AWSCLIEntryPoint(self.driver)
         expected_time = 0
 
         stdout, _, _ = self.run_cmd(self.command)
@@ -60,6 +62,7 @@ class TestCLITimestampParser(BaseCLIWireResponseTest):
 
     def test_default(self):
         self.driver = create_clidriver()
+        self.entry_point = AWSCLIEntryPoint(self.driver)
         expected_time = datetime.datetime.fromtimestamp(0).replace(
             tzinfo=tzlocal()).isoformat()
 

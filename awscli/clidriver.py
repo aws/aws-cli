@@ -29,7 +29,6 @@ from botocore.configprovider import ConstantProvider
 from botocore.configprovider import ChainProvider
 
 from awscli import __version__
-from awscli.autocomplete.main import create_autocompleter
 from awscli.compat import (
     default_pager, get_stderr_text_writer, get_stdout_text_writer
 )
@@ -53,13 +52,11 @@ from awscli.alias import AliasCommandInjector
 from awscli.utils import emit_top_level_args_parsed_event
 from awscli.utils import OutputStreamFactory
 from awscli.utils import IMDSRegionProvider
-from awscli.utils import is_stdin_a_tty
 from awscli.constants import PARAM_VALIDATION_ERROR_RC
-from awscli.autoprompt.core import (
-    AutoPrompter, AutoPromptDriver,
-    validate_auto_prompt_args_are_mutually_exclusive
+from awscli.autoprompt.core import AutoPromptDriver
+from awscli.errorhandler import (
+    construct_cli_error_handlers_chain, construct_entry_point_handlers_chain
 )
-from awscli.errorhandler import construct_cli_error_handlers_chain
 
 
 LOG = logging.getLogger('awscli.clidriver')
@@ -80,10 +77,8 @@ u''.encode('idna')
 
 
 def main():
-    driver = create_clidriver()
-    rc = driver.main()
-    HISTORY_RECORDER.record('CLI_RC', rc, 'CLI')
-    return rc
+    return AWSCLIEntryPoint().main(sys.argv[1:])
+
 
 def create_clidriver():
     session = botocore.session.Session()
@@ -145,8 +140,48 @@ def no_pager_handler(session, parsed_args, **kwargs):
     if parsed_args.no_cli_pager:
         config_store = session.get_component('config_store')
         config_store.set_config_provider(
-            'pager',  ConstantProvider(value=None)
+            'pager', ConstantProvider(value=None)
         )
+
+
+class AWSCLIEntryPoint:
+    def __init__(self, driver=None):
+        self._error_handler = construct_entry_point_handlers_chain()
+        self._driver = driver
+
+    def main(self, args):
+        try:
+            rc = self._do_main(args)
+        except BaseException as e:
+            LOG.debug("Exception caught in AWSCLIEntryPoint", exc_info=True)
+            return self._error_handler.handle_exception(
+                e,
+                stdout=get_stdout_text_writer(),
+                stderr=get_stderr_text_writer()
+            )
+
+        HISTORY_RECORDER.record('CLI_RC', rc, 'CLI')
+        return rc
+
+    def _do_main(self, args):
+        driver = self._driver
+        if driver is None:
+            driver = create_clidriver()
+        autoprompt_driver = AutoPromptDriver(driver)
+        auto_prompt_mode = autoprompt_driver.resolve_mode(args)
+        if auto_prompt_mode == 'on':
+            args = autoprompt_driver.prompt_for_args(args)
+            rc = driver.main(args)
+        elif auto_prompt_mode == 'on-partial':
+            autoprompt_driver.inject_silence_param_error_msg_handler(driver)
+            rc = driver.main(args)
+            if rc == PARAM_VALIDATION_ERROR_RC:
+                args = autoprompt_driver.prompt_for_args(args)
+                driver = create_clidriver()
+                rc = driver.main(args)
+        else:
+            rc = driver.main(args)
+        return rc
 
 
 class CLIDriver(object):
@@ -283,6 +318,10 @@ class CLIDriver(object):
     def arg_table(self):
         return self._get_argument_table()
 
+    @property
+    def error_handler(self):
+        return self._error_handler
+
     def _get_cli_data(self):
         # Not crazy about this but the data in here is needed in
         # several places (e.g. MainArgParser, ProviderHelp) so
@@ -376,28 +415,6 @@ class CLIDriver(object):
             prog="aws")
         return parser
 
-    def _filter_out_options(self, args):
-        override_options = ['--cli-auto-prompt', '--no-cli-auto-prompt']
-        return [
-                arg for arg in args
-                if (not arg.startswith('--') or arg in override_options)
-            ]
-
-    def prompt_for_args(self, args, completion_source=None):
-        # TODO make AutoPrompter initialisation lazy and remove this check
-        if is_stdin_a_tty():
-            if completion_source is None:
-                completion_source = create_autocompleter(driver=self)
-            option_parser = ArgTableArgParser(self.arg_table)
-            filtered_args = self._filter_out_options(args)
-            parsed_options, _ = option_parser.parse_known_args(filtered_args)
-            validate_auto_prompt_args_are_mutually_exclusive(parsed_options)
-            prompter = AutoPrompter(completion_source, self)
-            auto_prompt_driver = AutoPromptDriver(self.session, prompter)
-            args = auto_prompt_driver.auto_prompt_arguments(args,
-                                                            parsed_options)
-        return args
-
     def main(self, args=None):
         """
 
@@ -416,7 +433,6 @@ class CLIDriver(object):
             # that exceptions can be raised, which should have the same
             # general exception handling logic as calling into the
             # command table.  This is why it's in the try/except clause.
-            args = self.prompt_for_args(args)
             parsed_args, remaining = parser.parse_known_args(args)
             self._handle_top_level_args(parsed_args)
             self._emit_session_event(parsed_args)

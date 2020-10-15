@@ -121,11 +121,14 @@ class PromptToolkitPrompter:
         kb = kb_manager.keybindings
         app = Application(layout=layout, key_bindings=kb, full_screen=False,
                           erase_when_done=True)
-        # make doc panel invisible by default
+        self._set_app_defaults(app)
+        return app
+
+    def _set_app_defaults(self, app):
         app.show_doc = False
+        app.multi_column = False
         app.show_help = False
         app.debug = False
-        return app
 
     def _update_doc_window_contents(self, *args):
         content = self._docs_getter.get_docs(self._input_buffer.text)

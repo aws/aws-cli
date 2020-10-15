@@ -239,9 +239,7 @@ class PromptToolkitKeyBindings:
 
         @self._kb.add(Keys.F4)
         def _(event):
-            event.app.multi_column = not getattr(
-                event.app, 'multi_column', True
-            )
+            event.app.multi_column = not event.app.multi_column
 
         @self._kb.add(Keys.F1)
         def _(event):

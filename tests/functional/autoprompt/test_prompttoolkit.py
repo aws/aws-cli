@@ -11,14 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
-import os
-import shutil
-import tempfile
+import io
 
 from prompt_toolkit import Application
 from prompt_toolkit.key_binding.key_processor import KeyProcessor, KeyPress
 from prompt_toolkit.key_binding import merge_key_bindings
 from prompt_toolkit.key_binding.defaults import load_key_bindings
+from prompt_toolkit.input import DummyInput
 
 from prompt_toolkit.keys import Keys
 from prompt_toolkit.utils import Event
@@ -32,7 +31,7 @@ from awscli.autoprompt.prompttoolkit import (
     PromptToolkitCompleter, PromptToolkitPrompter
 )
 from awscli.autoprompt.history import HistoryDriver
-from awscli.testutils import unittest, random_chars
+from awscli.testutils import unittest, random_chars, FileCreator
 
 
 def _ec2_only_command_table(command_table, **kwargs):
@@ -59,12 +58,23 @@ class FakeApplication:
         pre_run()
 
 
+class FakeInput(DummyInput):
+
+    def fileno(self):
+        return 0
+
+    @property
+    def closed(self):
+        return False
+
+
 class ApplicationStubber:
     _KEYPRESS = 'KEYPRESS'
     _ASSERTION = 'ASSERTION'
 
     def __init__(self, app):
         self._app = app
+        self._app.input = FakeInput()
         self._queue = []
         self._assertion_callback = lambda x: True
         self._default_keybindings = load_key_bindings()
@@ -84,7 +94,7 @@ class ApplicationStubber:
         # After each rendering application will run this callback
         # it takes the next action from the queue and performs it
         # some key_presses can lead to rerender, after which this callback
-        # will be run again before re-rendering app.invalidation property
+        # will be run again before re-rendering app.invalidated property
         # set to True.
         # On exit this callback also run so we need to remove it before exit
 
@@ -106,21 +116,22 @@ class ApplicationStubber:
                 app.exit()
 
         self._app.after_render = Event(self._app, callback)
+
+        _stdout = io.TextIOWrapper(io.BytesIO(), encoding="utf-8")
+        self._app.output.stdout = _stdout
         self._app.run(pre_run=pre_run)
 
 
 class BasicPromptToolkitTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.temporary_directory = tempfile.mkdtemp()
+        cls.test_file_creator = FileCreator()
         basename = 'tmpfile-%s' % str(random_chars(8))
-        full_filename = os.path.join(cls.temporary_directory, basename)
+        full_filename = cls.test_file_creator.full_path(basename)
         _generate_index(full_filename)
         cls.completion_source = create_autocompleter(
             full_filename, response_filter=filters.fuzzy_filter)
 
-        cls.history_filename = os.path.join(cls.temporary_directory,
-                                            'prompt_history.json')
         history = {
             'version': 1,
             'commands': [
@@ -129,12 +140,12 @@ class BasicPromptToolkitTest(unittest.TestCase):
                 's3 ls'
             ]
         }
-        with open(cls.history_filename, 'w') as f:
-            json.dump(history, f)
+        cls.history_filename = cls.test_file_creator.create_file(
+            'prompt_history.json', json.dumps(history))
 
     @classmethod
     def tearDownClass(cls):
-        shutil.rmtree(cls.temporary_directory)
+        cls.test_file_creator.remove_all()
 
     def setUp(self):
         self.completer = PromptToolkitCompleter(self.completion_source)
@@ -149,7 +160,7 @@ class BasicPromptToolkitTest(unittest.TestCase):
             driver=self.driver,
             factory=self.factory
         )
-        self.prompter.args = ['']
+        self.prompter.args = []
         self.prompter.input_buffer = self.factory.create_input_buffer()
         self.prompter.doc_buffer = self.factory.create_doc_buffer()
 
@@ -242,19 +253,19 @@ class TestPromptToolkitDocBuffer(BasicPromptToolkitTest):
         )
         stubber.run(self.prompter.pre_run)
 
-    def test_doc_buffer_shows_hides_on_F2(self):
+    def test_doc_buffer_shows_hides_on_F3(self):
         stubber = ApplicationStubber(self.prompter.create_application())
-        stubber.add_key_assert(Keys.F2, lambda app: app.show_doc is True)
+        stubber.add_key_assert(Keys.F3, lambda app: app.show_doc is True)
         stubber.add_key_assert(
-            Keys.F2, lambda app: app.current_buffer.name == 'input_buffer'
+            Keys.F3, lambda app: app.current_buffer.name == 'input_buffer'
         )
         stubber.run(self.prompter.pre_run)
 
     def test_doc_buffer_gets_and_removes_focus(self):
         stubber = ApplicationStubber(self.prompter.create_application())
-        stubber.add_key_assert(Keys.F2, lambda app: app.show_doc is True)
+        stubber.add_key_assert(Keys.F3, lambda app: app.show_doc is True)
         stubber.add_key_assert(
-            Keys.F1,
+            Keys.F2,
             lambda app: app.current_buffer.name == 'doc_buffer'
         )
         stubber.add_key_assert(
@@ -267,8 +278,8 @@ class TestPromptToolkitDocBuffer(BasicPromptToolkitTest):
         original_args = ['ec2', 'describe-instances']
         self.prompter.args = original_args
         stubber = ApplicationStubber(self.prompter.create_application())
+        stubber.add_key_assert(Keys.F3)
         stubber.add_key_assert(Keys.F2)
-        stubber.add_key_assert(Keys.F1)
         # go to the top row
         stubber.add_key_assert('g', lambda app: app.layout.get_buffer_by_name(
                     'doc_buffer').document.cursor_position_row == 0)
@@ -386,6 +397,6 @@ class TestCompletions(BasicPromptToolkitTest):
     def test_switch_to_multicolumn_mode(self):
         self.prompter.args = ['ec2 d']
         stubber = ApplicationStubber(self.prompter.create_application())
-        stubber.add_key_assert(Keys.F3, lambda app: app.multi_column)
-        stubber.add_key_assert(Keys.F3, lambda app: not app.multi_column)
+        stubber.add_key_assert(Keys.F4, lambda app: app.multi_column)
+        stubber.add_key_assert(Keys.F4, lambda app: not app.multi_column)
         stubber.run(self.prompter.pre_run)

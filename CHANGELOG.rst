@@ -962,6 +962,36 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.158
+========
+
+* api-change:``transfer``: Update transfer command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``rekognition``: Update rekognition command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``groundstation``: Update groundstation command to latest version
+* api-change:``budgets``: Update budgets command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``accessanalyzer``: Update accessanalyzer command to latest version
+* api-change:``workmail``: Update workmail command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``xray``: Update xray command to latest version
+
+
+1.18.157
+========
+
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``snowball``: Update snowball command to latest version
+* api-change:``amplify``: Update amplify command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``eks``: Update eks command to latest version
+
+
 1.18.156
 ========
 

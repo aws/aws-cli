@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from nose.tools import assert_in
+from nose.tools import assert_in, assert_true
 
 from awscli.autocomplete import main, generator
 from awscli.autocomplete.local import indexer
@@ -18,9 +18,9 @@ from awscli import clidriver
 from awscli import testutils
 
 
-def _ec2_only_command_table(command_table, **kwargs):
+def _ec2_and_dynamo_only_command_table(command_table, **kwargs):
     for key in list(command_table):
-        if key != 'ec2':
+        if key not in ['ec2', 'dynamodb']:
             del command_table[key]
 
 
@@ -43,6 +43,11 @@ def test_smoke_test_completer():
         assert_in('describe-instances', completion_strings)
         assert_in('describe-regions', completion_strings)
 
+        completions = _autocomplete(f.name, 'aws dynamodb describe-tab')
+        completion_strings = [c.name for c in completions]
+        assert_true(all(completion.startswith('describe-table')
+                        for completion in completion_strings))
+
 
 def _autocomplete(filename, command_line):
     completer = main.create_autocompleter(filename)
@@ -56,5 +61,5 @@ def _generate_index(filename):
     )
     driver = clidriver.create_clidriver()
     driver.session.register('building-command-table.main',
-                            _ec2_only_command_table)
+                            _ec2_and_dynamo_only_command_table)
     index_generator.generate_index(driver)

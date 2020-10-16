@@ -46,6 +46,8 @@ class HistoryDriver(FileHistory):
             if os.path.exists(self.filename):
                 with open(self.filename, 'r') as f:
                     history = json.load(f)
+            elif not os.path.exists(os.path.dirname(self.filename)):
+                os.makedirs(os.path.dirname(self.filename))
             history['commands'].append(string)
             history['commands'] = history['commands'][-self._max_commands:]
             with open(self.filename, 'w') as f:

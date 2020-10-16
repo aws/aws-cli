@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.159
+========
+
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+
+
 1.18.158
 ========
 

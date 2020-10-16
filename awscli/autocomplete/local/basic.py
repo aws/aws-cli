@@ -439,10 +439,15 @@ class ShorthandCompleter(BaseCompleter):
         # we have two way we can enter lists:
         # - if it's a top level structure it will be space separated and
         # parsed_input will contain the last element of the list
-        # - if it's a nested structure we'll get the whole list as an input
-        if not isinstance(parsed_input, list):
-            parsed_input = [parsed_input]
-        return self._get_completion(arg_model.member, parsed_input[-1])
+        # - if it's a nested structure we'll get the whole list as an input 
+        # and take the last item
+        # - if list is empty we'll pass None to the next completer
+        if isinstance(parsed_input, list):
+            if parsed_input:
+                parsed_input = parsed_input[-1]
+            else:
+                parsed_input = None
+        return self._get_completion(arg_model.member, parsed_input)
 
     def _get_prompt_for_map(self, arg_model, parsed_input):
         last_key, last_value = self._get_last_key_value(parsed_input)

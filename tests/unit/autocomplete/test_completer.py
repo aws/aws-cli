@@ -206,6 +206,16 @@ class TestModelIndexCompleter(unittest.TestCase):
             len(self.completer.complete(parsed)) > 0
         )
 
+    def test_keep_suggesting_if_there_are_longer_completions(self):
+        parsed = self.parser.parse('aws s3')
+        self.assertEqual(
+            self.completer.complete(parsed),
+            [CompletionResult('s3', -2, False, None,
+                              'Amazon Simple Storage Service', ),
+             CompletionResult('s3api', -2, False, None,
+                              'Amazon Simple Storage Service', )]
+        )
+
     def test_retain_option_order_on_dashes(self):
         parsed = self.parser.parse('aws ec2 describe-instances --region '
                                    'us-west-2 --')

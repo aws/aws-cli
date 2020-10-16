@@ -33,6 +33,9 @@ SAMPLE_MODEL = InMemoryIndex(
             'aws.ec2': {
                 'stop-instances': ['instance-ids', 'foo-arg'],
             },
+            'aws.s3': {
+                'cp': ['bucket', 'key'],
+            },
             'aws.s3api': {
                 'get-object': ['outfile', 'bucket', 'key'],
             },
@@ -42,9 +45,11 @@ SAMPLE_MODEL = InMemoryIndex(
         },
         'command_names': {
             '': [('aws', None)],
-            'aws': [('ec2', None), ('logs', None), ('s3api', None)],
+            'aws': [('ec2', None), ('logs', None),
+                    ('s3api', None), ('s3', None)],
             'aws.ec2': [('stop-instances', None)],
             'aws.logs': [('tail', None)],
+            'aws.s3': [('cp', None)],
             'aws.s3api': [('get-object', None)]
         },
         'arg_data': {
@@ -78,6 +83,16 @@ SAMPLE_MODEL = InMemoryIndex(
                         True, False),
                     'filter-pattern': (
                         'filter-pattern', 'string', 'tail', 'aws.logs', None,
+                        False, False),
+                }
+            },
+            'aws.s3': {
+                'cp': {
+                    'bucket': (
+                        'bucket', 'string', 'cp', 'aws.s3.', None,
+                        False, False),
+                    'key': (
+                        'key', 'string', 'cp', 'aws.s3.', None,
                         False, False),
                 }
             },
@@ -304,6 +319,27 @@ class TestCanParseCLICommand(unittest.TestCase):
             current_command='stop-instances',
             parsed_params={},
             lineage=['aws', 'ec2'],
+        )
+
+    def test_can_parse_if_there_longer_command(self):
+        result = self.cli_parser.parse('aws s3')
+        self.assert_parsed_results_equal(
+            result,
+            current_command='aws',
+            parsed_params={},
+            global_params={},
+            current_fragment='s3',
+            lineage=[],
+        )
+
+    def test_can_proceed_if_there_longer_command(self):
+        result = self.cli_parser.parse('aws s3 ')
+        self.assert_parsed_results_equal(
+            result,
+            current_command='s3',
+            global_params={},
+            current_fragment='',
+            lineage=['aws'],
         )
 
     def test_can_consume_one_or_more_nargs(self):

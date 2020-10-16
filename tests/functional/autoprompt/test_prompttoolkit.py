@@ -17,7 +17,7 @@ import tempfile
 from prompt_toolkit import Application
 
 from awscli.autocomplete.main import create_autocompleter
-from awscli.autocomplete import generator
+from awscli.autocomplete import generator, filters
 from awscli.autocomplete.local import indexer
 from awscli.clidriver import create_clidriver
 from awscli.autoprompt.factory import PromptToolkitFactory
@@ -61,7 +61,8 @@ class TestPromptToolkitPrompterBuffer(unittest.TestCase):
         basename = 'tmpfile-%s' % str(random_chars(8))
         full_filename = os.path.join(cls.temporary_directory, basename)
         _generate_index(full_filename)
-        cls.completion_source = create_autocompleter(full_filename)
+        cls.completion_source = create_autocompleter(
+            full_filename, response_filter=filters.fuzzy_filter)
 
     @classmethod
     def tearDownClass(cls):

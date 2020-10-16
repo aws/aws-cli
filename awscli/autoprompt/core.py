@@ -15,6 +15,7 @@ from awscli.argparser import ArgTableArgParser
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.autoprompt.prompttoolkit import PromptToolkitPrompter
 from awscli.autocomplete.main import create_autocompleter
+from awscli.autocomplete.filters import fuzzy_filter
 from awscli.errorhandler import SilenceParamValidationMsgErrorHandler
 
 
@@ -30,7 +31,8 @@ class AutoPromptDriver:
         self._session = driver.session
         self._driver = driver
         if self._completion_source is None:
-            self._completion_source = create_autocompleter(driver=self._driver)
+            self._completion_source = create_autocompleter(
+                driver=self._driver, response_filter=fuzzy_filter)
 
     @property
     def prompter(self):

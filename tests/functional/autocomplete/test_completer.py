@@ -215,6 +215,10 @@ class TestShorthandCompleter(unittest.TestCase):
                 'S=', 'N=', 'B=', 'SS=[', 'NS=[', 'M={', 'L=[',
                 'NULL=', 'BOOL=', 'Autoclose brackets'])
 
+        self.assert_command_generates_suggestions(
+            'aws dynamodb put-item --item key={SS=[]}',
+            expected_suggestions=None)
+
     def test_autoclose_brackets(self):
         parsed = self.parser.parse('aws dynamodb put-item --item '
                                    'key={M={key1={M={key2={BS=[1')

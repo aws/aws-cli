@@ -67,6 +67,47 @@ class TestConfigureCommand(unittest.TestCase):
         self.assertRegexpMatches(p.stdout, r'secret_key.+config-file')
         self.assertRegexpMatches(p.stdout, r'region\s+us-west-2\s+config-file')
 
+    def test_list_profiles_command(self):
+        self.set_config_file_contents(
+            '\n'
+            '[default]\n'
+            'aws_access_key_id=12345\n'
+            'aws_secret_access_key=12345\n'
+            'region=us-west-2\n'
+            '[profile foo]\n'
+            'aws_access_key_id=12345\n'
+            'aws_secret_access_key=12345\n'
+            'region=us-west-2\n'
+        )
+        self.env_vars.pop('AWS_REGION', None)
+        self.env_vars.pop('AWS_DEFAULT_REGION', None)
+        self.env_vars.pop('AWS_ACCESS_KEY_ID', None)
+        self.env_vars.pop('AWS_SECRET_ACCESS_KEY', None)
+        p = aws('configure list-profiles', env_vars=self.env_vars)
+        self.assert_no_errors(p)
+        self.assertEqual(p.stdout, 'default\nfoo\n')
+
+    def test_list_profiles_command_with_incorrect_profile_in_env(self):
+        self.set_config_file_contents(
+            '\n'
+            '[default]\n'
+            'aws_access_key_id=12345\n'
+            'aws_secret_access_key=12345\n'
+            'region=us-west-2\n'
+            '[profile foo]\n'
+            'aws_access_key_id=12345\n'
+            'aws_secret_access_key=12345\n'
+            'region=us-west-2\n'
+        )
+        self.env_vars.pop('AWS_REGION', None)
+        self.env_vars.pop('AWS_DEFAULT_REGION', None)
+        self.env_vars.pop('AWS_ACCESS_KEY_ID', None)
+        self.env_vars.pop('AWS_SECRET_ACCESS_KEY', None)
+        self.env_vars['AWS_PROFILE'] = 'not_a_profile'
+        p = aws('configure list-profiles', env_vars=self.env_vars)
+        self.assert_no_errors(p)
+        self.assertEqual(p.stdout, 'default\nfoo\n')
+
     def test_get_command(self):
         self.set_config_file_contents(
             '\n'
@@ -292,6 +333,7 @@ class TestConfigureCommand(unittest.TestCase):
 class TestConfigureHasArgTable(unittest.TestCase):
     def test_configure_command_has_arg_table(self):
         m = mock.Mock()
+        m.available_profiles = []
         command = ConfigureCommand(m)
         self.assertEqual(command.arg_table, {})
 

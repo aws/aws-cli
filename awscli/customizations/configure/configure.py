@@ -99,6 +99,15 @@ class ConfigureCommand(BasicCommand):
         if config_writer is None:
             config_writer = ConfigFileWriter()
         self._config_writer = config_writer
+        self._validate_session_profile(session)
+
+    def _validate_session_profile(self, session):
+        try:
+            profile_name = session.get_config_variable('profile')
+        except ProfileNotFound:
+            profile_name = None
+        if profile_name and profile_name not in session.available_profiles:
+            session.set_config_variable('profile', 'default')
 
     def _run_main(self, parsed_args, parsed_globals):
         # Called when invoked with no args "aws configure"

@@ -462,7 +462,7 @@ class ShorthandCompleter(BaseCompleter):
                 return None
             return self._get_completion(
                 arg_model.members[last_key], last_value)
-        entered_keys = set(parsed_input) - set(last_key)
+        entered_keys = set(parsed_input) - set([last_key])
         return self._get_struct_keys_completions(
             arg_model, entered_keys, last_key)
 
@@ -484,5 +484,4 @@ class ShorthandCompleter(BaseCompleter):
                     display_text=display_text
                     )
                 )
-            results = self._filter(last_key, results)
-        return results
+        return self._filter(last_key, results)

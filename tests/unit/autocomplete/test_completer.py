@@ -92,6 +92,18 @@ class TestAutoCompleter(unittest.TestCase):
         first.complete.assert_called_with(self.parsed_result)
         self.assertFalse(second.complete.called)
 
+    def test_strip_html_tags_and_newlines(self):
+        STARTING_TOKEN_HELP = """
+<p>A token to specify where to start paginating.  This is the
+<code>NextToken</code> from a previously truncated response.</p>
+"""
+        help_text = basic.strip_html_tags_and_newlines(STARTING_TOKEN_HELP)
+        self.assertEqual(
+            help_text,
+            'A token to specify where to start paginating.  This is the'
+            'NextToken from a previously truncated response.'
+        )
+
 
 class TestModelIndexCompleter(unittest.TestCase):
     def setUp(self):

@@ -95,6 +95,12 @@ class TestHistoryCompleter(unittest.TestCase):
             {'version': 1, 'commands': ['aws ec2 describe-instances']}
         )
 
+    def test_creates_folder_and_file(self):
+        non_existing_path = os.path.join(self.dirname, 'foo', 'history.json')
+        history_driver = HistoryDriver(non_existing_path)
+        history_driver.store_string('aws ec2 describe-instances')
+        self.assertTrue(os.path.exists(non_existing_path))
+
     def test_read_after_write_in_reversed_order(self):
         history_driver = HistoryDriver(self.filename)
         history_driver.store_string('aws ec2 describe-instances')

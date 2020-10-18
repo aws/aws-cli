@@ -19,9 +19,9 @@ from awscli.autocomplete.filters import startswith_filter
 from awscli.autocomplete import LazyClientCreator
 
 
-def strip_html_tags(text):
+def strip_html_tags_and_newlines(text):
     clean = re.compile('<.*?>')
-    return re.sub(clean, '', text)
+    return re.sub(clean, '', text).replace('\n', '')
 
 
 class ProfileCompleter(BaseCompleter):
@@ -206,7 +206,7 @@ class ModelIndexCompleter(BaseCompleter):
                 command_name=parsed.current_command, arg_name=arg_name)
             help_text = None
             if self._cli_driver_fetcher:
-                help_text = strip_html_tags(
+                help_text = strip_html_tags_and_newlines(
                     self._cli_driver_fetcher.get_argument_documentation(
                         parsed.lineage, parsed.current_command, arg_name
                     )
@@ -241,7 +241,7 @@ class ModelIndexCompleter(BaseCompleter):
             for arg_name, type_name, *_, help_text in arg_data:
                 help_text = None
                 if self._cli_driver_fetcher:
-                    help_text = strip_html_tags(
+                    help_text = strip_html_tags_and_newlines(
                         self._cli_driver_fetcher.get_global_arg_documentation(
                             arg_name
                         )
@@ -418,7 +418,7 @@ class ShorthandCompleter(BaseCompleter):
             )
 
     def _get_prompt_for_string(self, arg_model, parsed_input):
-        if arg_model.enum:
+        if getattr(arg_model, 'enum', False):
             prefix = parsed_input
             if prefix == self._DUMMY_VALUE:
                 prefix = ''
@@ -479,7 +479,7 @@ class ShorthandCompleter(BaseCompleter):
                 )
                 results.append(CompletionResult(
                     last_key,
-                    help_text=strip_html_tags(member.documentation),
+                    help_text=strip_html_tags_and_newlines(member.documentation),
                     cli_type_name=member.type_name,
                     display_text=display_text
                     )

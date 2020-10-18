@@ -282,6 +282,10 @@ class CLIParser(object):
     def _is_last_word(self, remaining_parts, current):
         return not remaining_parts and current
 
+    def _is_part_of_command(self, current, command_names):
+        return any(command.startswith(current) and command != current
+                   for command in command_names)
+
     def _handle_positional(self, current, state, remaining_parts, parsed):
         # This is can either be a subcommand or a positional argument
         #
@@ -290,7 +294,18 @@ class CLIParser(object):
         # lineage.
         command_names = self._index.command_names(state.full_lineage)
         positional_argname = None
-        if current in command_names:
+        is_command_name = current in command_names
+        is_part_of_command = self._is_part_of_command(current, command_names)
+        # To decide if 'current' part is a command or not we consider such cases
+        # - if 'current' is in 'command_names' and we already moved forward (at
+        # least entered ' ' after) then it's a command
+        # - if 'current' is in 'command_names' and we have no other commands
+        # started with this prefix then it's a command
+        #
+        # but if 'current' is in 'command_names' but we have other commands
+        # start with the same prefix, for example 's3' and 's3api' we don't
+        # consider 'current' as a complete command
+        if is_command_name and (remaining_parts or not is_part_of_command):
             state.current_command = current
             # We also need to get the next set of command line options.
             current_args = self._index.arg_names(

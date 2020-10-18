@@ -36,7 +36,9 @@ BUILTIN_INDEX_FILE = os.path.join(
 
 
 def create_autocompleter(index_filename=None, custom_completers=None,
-                         driver=None):
+                         driver=None, response_filter=None):
+    if response_filter is None:
+        response_filter = filters.startswith_filter
     if custom_completers is None:
         custom_completers = custom.get_custom_completers()
     if index_filename is None:
@@ -47,16 +49,15 @@ def create_autocompleter(index_filename=None, custom_completers=None,
     if driver is not None:
         cli_driver_fetcher = fetcher.CliDriverFetcher(driver)
     completers = [
-        basic.RegionCompleter(response_filter=filters.fuzzy_filter),
-        basic.ProfileCompleter(response_filter=filters.fuzzy_filter),
+        basic.RegionCompleter(response_filter=response_filter),
+        basic.ProfileCompleter(response_filter=response_filter),
         basic.ModelIndexCompleter(index, cli_driver_fetcher,
-                                  response_filter=filters.fuzzy_filter),
-        basic.FilePathCompleter(response_filter=filters.fuzzy_filter),
+                                  response_filter=response_filter),
+        basic.FilePathCompleter(response_filter=response_filter),
         serverside.create_server_side_completer(
-            index_filename,
-            response_filter=filters.fuzzy_filter),
+            index_filename, response_filter=response_filter),
         basic.ShorthandCompleter(cli_driver_fetcher,
-                                 response_filter=filters.fuzzy_filter)
+                                 response_filter=response_filter)
     ] + custom_completers
     cli_completer = completer.AutoCompleter(cli_parser, completers)
     return cli_completer

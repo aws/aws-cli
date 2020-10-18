@@ -182,6 +182,10 @@ class TestShorthandCompleter(unittest.TestCase):
                 'NULL=', 'BOOL=', 'Autoclose brackets'])
 
         self.assert_command_generates_suggestions(
+            'aws dynamodb put-item --item key={SS',
+            expected_suggestions=['SS=[', 'Autoclose brackets'])
+
+        self.assert_command_generates_suggestions(
             'aws dynamodb put-item --item key={M={',
             expected_suggestions=['Autoclose brackets'])
 

@@ -76,8 +76,35 @@ class TestHistoryCompleter(unittest.TestCase):
             ]
         )
 
+    def test_show_newest_duplicated_command(self):
+        strings = [
+            'chime associate-phone-number-with-user',
+            's3 ls',
+            's3api list-buckets',
+            's3 ls'
+        ]
+        history = mock.Mock(spec=History)
+        history.get_strings.return_value = strings
+        self.buffer.history = history
+        self.completer = HistoryCompleter(buffer=self.buffer)
+        document = Document('')
+        response = self.completer.get_completions(document)
+        self.assertEqual(
+            list(response),
+            [Completion(text='s3 ls',
+                        start_position=0, display=FormattedText(
+                        [('', 's3 ls')])),
+             Completion(text='s3api list-buckets',
+                        start_position=0, display=FormattedText([('',
+                        's3api list-buckets')])),
+             Completion(text='chime associate-phone-number-with-user',
+                        start_position=0, display=FormattedText([('',
+                        'chime associate-phone-number-with-user')]))
+            ]
+        )
 
-class TestHistoryCompleter(unittest.TestCase):
+
+class TestHistoryDriver(unittest.TestCase):
     def setUp(self):
         self.dirname = tempfile.mkdtemp()
         self.filename = os.path.join(self.dirname, 'prompt_history.json')

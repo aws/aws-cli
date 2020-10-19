@@ -67,7 +67,8 @@ class HistoryCompleter(Completer):
         completions = []
         current_line = document.current_line_before_cursor.lstrip()
 
-        for line in self.working_lines:
+        # going backwards from newest commands to oldest
+        for line in self.working_lines[::-1]:
             s_line = line.strip()
             if s_line and s_line not in found_completions:
                 found_completions.add(s_line)
@@ -76,7 +77,5 @@ class HistoryCompleter(Completer):
                     starting_index=-len(current_line)))
         if current_line:
             completions = fuzzy_filter(current_line, completions)
-        else:
-            completions.reverse()
         yield from (Completion(c.name, start_position=c.starting_index)
                     for c in completions)

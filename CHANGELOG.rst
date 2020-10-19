@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.160
+========
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``docdb``: Update docdb command to latest version
+* api-change:``backup``: Update backup command to latest version
+
+
 1.18.159
 ========
 

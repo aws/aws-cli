@@ -10,20 +10,26 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from prompt_toolkit.application import get_app
 from prompt_toolkit.formatted_text import HTML, to_formatted_text
 from prompt_toolkit.formatted_text.utils import fragment_list_to_text
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.document import Document
-from prompt_toolkit.layout import HSplit, Window, VSplit
+from prompt_toolkit.key_binding import KeyBindings
+from prompt_toolkit.keys import Keys
 from prompt_toolkit.layout.controls import BufferControl
 from prompt_toolkit.layout.dimension import Dimension
-from prompt_toolkit.layout.layout import ConditionalContainer
 from prompt_toolkit.layout.processors import Processor, Transformation
-from prompt_toolkit.widgets import Frame, HorizontalLine
+from prompt_toolkit.layout import (
+    HSplit, Window, VSplit, FloatContainer, Float, ConditionalContainer
+)
+from prompt_toolkit.widgets import (
+    Frame, HorizontalLine, Dialog, Button, TextArea, Label
+)
 
 from awscli.autoprompt.filters import (
     help_section_visible, doc_window_has_focus, search_input_has_focus,
-    input_buffer_has_focus, is_history_mode
+    input_buffer_has_focus, is_history_mode, is_debug_mode
 )
 
 
@@ -90,7 +96,7 @@ class InputHelpView(BaseHelpView):
     def help_text(self):
         return (
             f'{self.STYLE}[ENTER]</style> Autocomplete Choice/Execute Command\n'
-            f'{self.STYLE}[F1]</style> Hide/Show Shortkey Help\n'
+            f'{self.STYLE}[F1]</style> Hide Shortkey Help\n'
             f'{self.STYLE}[F2]</style> Focus on Docs\n'
             f'{self.STYLE}[F3]</style> Hide/Show Docs\n'
             f'{self.STYLE}[F4]</style> One/Multi column prompt\n'
@@ -116,7 +122,7 @@ class DocHelpView(BaseHelpView):
             f'{self.STYLE}[k]</style> Go Down a Line\n'
             f'{self.STYLE}[g]</style> Go to Top\n'
             f'{self.STYLE}[G]</style> Go to Bottom\n'
-            f'{self.STYLE}[F1]</style> Hide/Show Shortkey Help\n'
+            f'{self.STYLE}[F1]</style> Hide Shortkey Help\n'
             f'{self.STYLE}[F2] or [q]</style> Focus on Input'
         )
 
@@ -133,7 +139,7 @@ class DocToolbarView(BaseToolbarView):
     @property
     def help_text(self):
         return (
-            f'{self.STYLE}[F1]</style> Hide/Show Shortkey Help{self.SPACING}'
+            f'{self.STYLE}[F1]</style> Show Shortkey Help{self.SPACING}'
             f'{self.STYLE}[F2] or [q]</style> Focus on Input'
         )
 
@@ -147,9 +153,21 @@ class InputToolbarView(BaseToolbarView):
         return (
             f'{self.STYLE}[ENTER]</style> Autocomplete '
             f'Choice/Execute Command{self.SPACING}'
-            f'{self.STYLE}[F1]</style> Hide/Show Shortkey Help{self.SPACING}'
+            f'{self.STYLE}[F1]</style> Show Shortkey Help{self.SPACING}'
             f'{self.STYLE}[F2]</style> Focus on Docs{self.SPACING}'
             f'{self.STYLE}[F3]</style> Hide/Show Docs'
+        )
+
+
+class DebugToolbarView(BaseToolbarView):
+    NAME = 'toolbar_input'
+    CONDITION = is_debug_mode
+
+    @property
+    def help_text(self):
+        return (
+            f'{self.STYLE}[CONTROL+\\]</style> Focus on debug panel\n'
+            f'{self.STYLE}[CONTROL+S]</style> Save log to file'
         )
 
 
@@ -192,6 +210,110 @@ class HelpPanelWidget:
             HSplit([DocHelpView(), InputHelpView()]),
             help_section_visible
         )
+
+    def __pt_container__(self):
+        return self.container
+
+
+class DebugPanelWidget:
+    DIMENSIONS = {
+        'width': Dimension(max=40, preferred=20),
+    }
+
+    def __init__(self):
+        self._previous_focus = None
+        self.dialog = self.create_save_file_dialog()
+
+        _kb = KeyBindings()
+        _kb.add(Keys.ControlS, filter=is_debug_mode, is_global=True)(
+            self._activate_dialog)
+        _kb.add(Keys.ControlBackslash, filter=is_debug_mode, is_global=True)(
+            self._switch_to_debug_panel)
+
+        self.float_container = FloatContainer(
+            Window(
+                content=BufferControl(
+                    buffer=Buffer(name='debug_buffer', read_only=True)
+                ),
+                wrap_lines=True,
+            ),
+            key_bindings=_kb,
+            floats=[]
+        )
+        self.container = ConditionalContainer(
+            Frame(
+                HSplit([
+                    self.float_container,
+                    HorizontalLine(),
+                    DebugToolbarView()
+                ]),
+                **self.DIMENSIONS,
+                title='Debug panel'
+            ),
+            filter=is_debug_mode
+        )
+
+    @property
+    def previous_focus(self):
+        if self._previous_focus is None:
+            app = get_app()
+            input_buffer = app.layout.get_buffer_by_name('input_buffer')
+            self._previous_focus = input_buffer
+        return self._previous_focus
+
+    @previous_focus.setter
+    def previous_focus(self, value):
+        self._previous_focus = value
+
+    def _activate_dialog(self, event):
+        layout = event.app.layout
+        self.previous_focus = event.app.current_buffer
+        self.float_container.floats.append(Float(content=self.dialog))
+        layout.focus(self.dialog)
+
+    def _switch_to_debug_panel(self, event):
+        current_buffer = event.app.current_buffer
+        layout = event.app.layout
+        if current_buffer.name != 'debug_buffer':
+            self.previous_focus = current_buffer
+            debug_buffer = layout.get_buffer_by_name('debug_buffer')
+            layout.focus(debug_buffer)
+        else:
+            layout.focus(self.previous_focus)
+
+    def create_save_file_dialog(self):
+        default_filename = 'prompt_debug.log'
+
+        def cancel_handler():
+            app = get_app()
+            textfield.text = default_filename
+            app.layout.focus(textfield)
+            self.float_container.floats.pop()
+            app.layout.focus(self.previous_focus)
+
+        def ok_handler():
+            app = get_app()
+            buffer = app.layout.get_buffer_by_name('debug_buffer')
+            with open(textfield.text, 'w') as f:
+                f.write(buffer.document.text)
+            textfield.text = default_filename
+            app.layout.focus(textfield)
+            self.float_container.floats.pop()
+            app.layout.focus(self.previous_focus)
+
+        ok_button = Button(text='Save', handler=ok_handler)
+        cancel_button = Button(text='Cancel', handler=cancel_handler)
+
+        textfield = TextArea(text=default_filename, multiline=False)
+
+        return Dialog(
+            title='Save logs to file',
+            body=HSplit([
+                Label(text='Log file name', dont_extend_height=True),
+                textfield,
+            ], padding=Dimension(preferred=1, max=1)),
+            buttons=[ok_button, cancel_button],
+            with_background=True)
 
     def __pt_container__(self):
         return self.container

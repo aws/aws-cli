@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import mock
 from prompt_toolkit.completion import Completion, CompleteEvent
+from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.document import Document
 
 from awscli.autocomplete.completer import CompletionResult
@@ -154,3 +155,19 @@ class TestPromptToolkitCompleter(unittest.TestCase):
                                                             CompleteEvent())
         self.assert_completions_match_expected(actual_completions,
                                                expected_completion_objects)
+
+    @mock.patch('awscli.autoprompt.logger.get_app')
+    def test_error_logger(self, get_app):
+        fake_layout = mock.Mock()
+        buffer = Buffer()
+        fake_layout.get_buffer_by_name.return_value = buffer
+        fake_app = mock.Mock()
+        fake_app.is_running = True
+        fake_app.debug = True
+        fake_app.layout = fake_layout
+        get_app.return_value = fake_app
+        self.completion_source.autocomplete.side_effect = Exception('error')
+        self.completer = PromptToolkitCompleter(self.completion_source)
+        list(self.completer.get_completions(Document(), CompleteEvent()))
+        self.assertIn('Exception caught in PromptToolkitCompleter: error',
+                      buffer.document.text)

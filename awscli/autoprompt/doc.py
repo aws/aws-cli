@@ -13,7 +13,7 @@
 import io
 from docutils.core import publish_string
 
-import awscli.clidriver
+import awscli
 from awscli.argparser import ArgTableArgParser
 from awscli.bcdoc import docevents, textwriter
 

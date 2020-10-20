@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
-import logging
 import os
 
 from prompt_toolkit.completion import Completion, Completer
@@ -19,9 +18,7 @@ from prompt_toolkit.history import FileHistory
 
 from awscli.autocomplete.completer import CompletionResult
 from awscli.autocomplete.filters import fuzzy_filter
-
-
-LOG = logging.getLogger(__name__)
+from awscli.autoprompt.logger import LOG
 
 
 class HistoryDriver(FileHistory):
@@ -36,8 +33,9 @@ class HistoryDriver(FileHistory):
             with open(self.filename, 'r') as f:
                 commands = json.load(f).get('commands', [])
             return reversed(commands)
-        except Exception:
-            LOG.debug('Exception on loading prompt history:', exc_info=True)
+        except Exception as e:
+            LOG.debug('Exception on loading prompt history: %s' % e,
+                      exc_info=True)
             return []
 
     def store_string(self, string):
@@ -52,8 +50,9 @@ class HistoryDriver(FileHistory):
             history['commands'] = history['commands'][-self._max_commands:]
             with open(self.filename, 'w') as f:
                 json.dump(history, f)
-        except Exception:
-            LOG.debug('Exception on storing prompt history:', exc_info=True)
+        except Exception as e:
+            LOG.debug('Exception on storing prompt history: %s' % e,
+                      exc_info=True)
 
 
 class HistoryCompleter(Completer):
@@ -66,16 +65,19 @@ class HistoryCompleter(Completer):
         found_completions = set()
         completions = []
         current_line = document.current_line_before_cursor.lstrip()
-
-        # going backwards from newest commands to oldest
-        for line in self.working_lines[::-1]:
-            s_line = line.strip()
-            if s_line and s_line not in found_completions:
-                found_completions.add(s_line)
-                completions.append(CompletionResult(
-                    s_line,
-                    starting_index=-len(current_line)))
-        if current_line:
-            completions = fuzzy_filter(current_line, completions)
-        yield from (Completion(c.name, start_position=c.starting_index)
-                    for c in completions)
+        try:
+            # going backwards from newest commands to oldest
+            for line in self.working_lines[::-1]:
+                s_line = line.strip()
+                if s_line and s_line not in found_completions:
+                    found_completions.add(s_line)
+                    completions.append(CompletionResult(
+                        s_line,
+                        starting_index=-len(current_line)))
+            if current_line:
+                completions = fuzzy_filter(current_line, completions)
+            yield from (Completion(c.name, start_position=c.starting_index)
+                        for c in completions)
+        except Exception as e:
+            LOG.debug('Exception caught in history completer: %s' % e,
+                      exc_info=True)

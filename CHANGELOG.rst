@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+2.0.58
+======
+
+* api-change:``appsync``: Update appsync command to latest version
+* api-change:``batch``: Update batch command to latest version
+* api-change:``backup``: Update backup command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* api-change:``docdb``: Update docdb command to latest version
+
+
 2.0.57
 ======
 

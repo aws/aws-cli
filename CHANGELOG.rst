@@ -987,6 +987,31 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.161
+========
+
+* api-change:``batch``: Update batch command to latest version
+* api-change:``appsync``: Update appsync command to latest version
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+
+
+1.18.160
+========
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``docdb``: Update docdb command to latest version
+* api-change:``backup``: Update backup command to latest version
+
+
+1.18.159
+========
+
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+
+
 1.18.158
 ========
 

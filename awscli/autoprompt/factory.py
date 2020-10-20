@@ -12,44 +12,24 @@
 # language governing permissions and limitations under the License.
 import os
 
-from prompt_toolkit.application import get_app
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.document import Document
-from prompt_toolkit.filters import Condition
-from prompt_toolkit.formatted_text import HTML, to_formatted_text
-from prompt_toolkit.formatted_text.utils import fragment_list_to_text
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.keys import Keys
-from prompt_toolkit.layout import Float, FloatContainer, HSplit, Window
+from prompt_toolkit.layout import Float, FloatContainer, HSplit, Window, VSplit
 from prompt_toolkit.layout.controls import BufferControl
 from prompt_toolkit.layout.dimension import Dimension
 from prompt_toolkit.layout.layout import Layout, ConditionalContainer
 from prompt_toolkit.layout.menus import CompletionsMenu, MultiColumnCompletionsMenu
-from prompt_toolkit.layout.processors import (
-    BeforeInput, Processor, Transformation)
+from prompt_toolkit.layout.processors import BeforeInput
 from prompt_toolkit.widgets import HorizontalLine, SearchToolbar
 
-from awscli.autoprompt.history import (
-    HistoryDriver, HistoryCompleter
+from awscli.autoprompt.history import HistoryDriver, HistoryCompleter
+from awscli.autoprompt.widgets import HelpPanelWidget, ToolbarWidget
+from awscli.autoprompt.filters import (
+    is_one_column, is_multi_column, doc_section_visible,
+    input_buffer_has_focus, doc_window_has_focus, is_history_mode
 )
-
-
-@Condition
-def doc_section_visible():
-    app = get_app()
-    return getattr(app, 'show_doc')
-
-
-@Condition
-def is_multi_column():
-    app = get_app()
-    return getattr(app, 'multi_column', False)
-
-
-@Condition
-def is_one_column():
-    app = get_app()
-    return not getattr(app, 'multi_column', False)
 
 
 class PrompterKeyboardInterrupt(KeyboardInterrupt):
@@ -80,7 +60,6 @@ class PromptToolkitFactory:
         'input_buffer_height_min': 10,
         'menu_height_max': 16,
         'menu_scroll_offset': 2,
-        'toolbar_height_max': 2
     }
 
     def __init__(self, completer):
@@ -101,9 +80,6 @@ class PromptToolkitFactory:
 
     def create_doc_buffer(self):
         return Buffer(name='doc_buffer', read_only=True)
-
-    def create_bottom_toolbar_buffer(self):
-        return Buffer(name='bottom_toolbar_buffer', read_only=True)
 
     def create_input_buffer_container(self, input_buffer):
         return FloatContainer(
@@ -141,51 +117,31 @@ class PromptToolkitFactory:
         if search_field is None:
             search_field = SearchToolbar()
         return Window(
-                    content=BufferControl(
-                        buffer=doc_buffer,
-                        search_buffer_control=search_field.control
-                    ),
-                    height=Dimension(
-                        max=self.DIMENSIONS['doc_window_height_max'],
-                        preferred=self.DIMENSIONS['doc_window_height_pref']
-                    ),
-                    wrap_lines=True
-                )
-
-    def create_bottom_toolbar_container(self, toolbar_buffer,
-                                        toolbar_text=None):
-        if toolbar_text is None:
-            toolbar_text = ToolbarHelpText()
-        window = Window(
-            BufferControl(buffer=toolbar_buffer,
-                          input_processors=[FormatTextProcessor()]),
-            height=Dimension(max=self.DIMENSIONS['toolbar_height_max']),
-            style='bg:#3b3b3b',
+            content=BufferControl(
+                buffer=doc_buffer,
+                search_buffer_control=search_field.control
+            ),
+            height=Dimension(
+                max=self.DIMENSIONS['doc_window_height_max'],
+                preferred=self.DIMENSIONS['doc_window_height_pref']
+            ),
             wrap_lines=True
         )
-        # The only way to "modify" a read-only buffer in prompt_toolkit is to
-        # create a new `prompt_toolkit.document.Document`. A 'cursor_position'
-        # of 0 ensures that we place the cursor at the beginning so that we see
-        # the toolbar text that we expect to see.
-        new_document = Document(
-            text=toolbar_text.input_buffer_key_binding_text,
-            cursor_position=0
-        )
-        toolbar_buffer.set_document(new_document, bypass_readonly=True)
-        return window
 
     def create_search_field(self):
         return SearchToolbar()
 
     def create_layout(self, on_input_buffer_text_changed=None,
                       input_buffer_container=None, doc_window=None,
-                      search_field=None, bottom_toolbar_container=None):
+                      search_field=None):
         # This is the main layout, which consists of:
         # - The main input buffer with completion menus floating on top of it.
         # - A separating line between the input buffer and the doc window.
         # - A doc window to hold documentation.
         # - A separating line between the doc window and the toolbar.
         # - A toolbar denoting key bindings.
+        if search_field is None:
+            search_field = SearchToolbar()
         if input_buffer_container is None:
             input_buffer = \
                 self.create_input_buffer(on_input_buffer_text_changed)
@@ -193,24 +149,22 @@ class PromptToolkitFactory:
                 self.create_input_buffer_container(input_buffer)
         if doc_window is None:
             doc_buffer = self.create_doc_buffer()
-            doc_window = self.create_doc_window(doc_buffer)
-        if search_field is None:
-            search_field = SearchToolbar()
-        if bottom_toolbar_container is None:
-            bottom_toolbar_buffer = self.create_bottom_toolbar_buffer()
-            bottom_toolbar_container = \
-                self.create_bottom_toolbar_container(bottom_toolbar_buffer)
+            doc_window = self.create_doc_window(doc_buffer, search_field)
         return Layout(
-            HSplit(
-                [
-                    input_buffer_container,
-                    ConditionalContainer(HorizontalLine(), doc_section_visible),
-                    ConditionalContainer(doc_window, doc_section_visible),
-                    HorizontalLine(),
-                    search_field,
-                    bottom_toolbar_container
-                ]
-            )
+            HSplit([
+                VSplit([
+                    HSplit([
+                        input_buffer_container,
+                        ConditionalContainer(HorizontalLine(),
+                                             doc_section_visible),
+                        ConditionalContainer(doc_window,
+                                             doc_section_visible),
+                    ]),
+                    HelpPanelWidget()
+                ]),
+                search_field,
+                ToolbarWidget()
+            ])
         )
 
     def create_key_bindings(self):
@@ -218,34 +172,12 @@ class PromptToolkitFactory:
 
 
 class PromptToolkitKeyBindings:
-    def __init__(self, keybindings=None, toolbar_text=None):
+    def __init__(self, keybindings=None):
         if keybindings is None:
             keybindings = KeyBindings()
         self._kb = keybindings
-        if toolbar_text is None:
-            toolbar_text = ToolbarHelpText()
-        self._toolbar_text = toolbar_text
 
-        @Condition
-        def _input_buffer_has_focus():
-            "Only activate these key bindings if input buffer has focus."
-            app = get_app()
-            return app.current_buffer.name == 'input_buffer'
-
-        @Condition
-        def _is_history_mode():
-            """Only activate these key bindings if input buffer has focus
-               and history_mode is on """
-            buffer = get_app().current_buffer
-            return buffer.name == 'input_buffer' and buffer.history_mode
-
-        @Condition
-        def _doc_window_has_focus():
-            "Only activate these key bindings if doc window has focus."
-            app = get_app()
-            return app.current_buffer.name == 'doc_buffer'
-
-        @self._kb.add(Keys.Enter, filter=_input_buffer_has_focus)
+        @self._kb.add(Keys.Enter, filter=input_buffer_has_focus)
         def _(event):
             buffer = event.app.current_buffer
             is_completing = getattr(buffer, 'complete_state', False)
@@ -258,9 +190,6 @@ class PromptToolkitKeyBindings:
                 # than reset buffer and change it to selected part
                 if buffer.history_mode:
                     buffer.switch_history_mode()
-                    self.switch_history_prompting_alert(
-                        event, buffer.history_mode
-                    )
                 buffer.cancel_completion()
                 event.app.current_buffer.reset()
                 updated_document = Document(
@@ -275,16 +204,13 @@ class PromptToolkitKeyBindings:
                         and cur_word.startswith(('file://', 'fileb://')):
                     buffer.start_completion()
 
-        @self._kb.add(Keys.Escape, filter=_is_history_mode)
+        @self._kb.add(Keys.Escape, filter=is_history_mode)
         def _(event):
             buffer = event.app.current_buffer
             buffer.cancel_completion()
             buffer.switch_history_mode()
-            self.switch_history_prompting_alert(
-                event, buffer.history_mode
-            )
 
-        @self._kb.add(' ', filter=_is_history_mode)
+        @self._kb.add(' ', filter=is_history_mode)
         def _(event):
             """Exit from history mode if something was selected or
             just add space to the end of the text and keep suggesting"""
@@ -292,38 +218,32 @@ class PromptToolkitKeyBindings:
             if (buffer.complete_state
                     and buffer.complete_state.current_completion):
                 buffer.switch_history_mode()
-                self.switch_history_prompting_alert(
-                    event, buffer.history_mode
-                )
             buffer.insert_text(' ')
 
-        @self._kb.add(Keys.F2)
+        @self._kb.add(Keys.F3)
         def _(event):
             current_buffer = event.app.current_buffer
             if current_buffer.name != 'input_buffer':
                 layout = event.app.layout
-                toolbar_buffer = layout.get_buffer_by_name(
-                    'bottom_toolbar_buffer')
                 input_buffer = layout.get_buffer_by_name('input_buffer')
                 layout.focus(input_buffer)
-                text = self._toolbar_text.input_buffer_key_binding_text
-                new_document = Document(text=text, cursor_position=0)
-                toolbar_buffer.set_document(new_document, bypass_readonly=True)
             event.app.show_doc = not getattr(event.app, 'show_doc')
 
-        @self._kb.add(Keys.F3)
+        @self._kb.add(Keys.F4)
         def _(event):
             event.app.multi_column = not getattr(
                 event.app, 'multi_column', True
             )
 
-        @self._kb.add(Keys.ControlR, filter=_input_buffer_has_focus)
+        @self._kb.add(Keys.F1)
+        def _(event):
+            event.app.show_help = not event.app.show_help
+
+        @self._kb.add(Keys.ControlR, filter=input_buffer_has_focus)
         def _(event):
             buffer = event.app.current_buffer
             buffer.cancel_completion()
             buffer.switch_history_mode()
-            self.switch_history_prompting_alert(
-                event, buffer.history_mode)
 
         @self._kb.add(Keys.ControlC)
         @self._kb.add(Keys.ControlD)
@@ -333,28 +253,23 @@ class PromptToolkitKeyBindings:
             text = f'> aws {input_buffer.document.text}'
             event.app.exit(exception=PrompterKeyboardInterrupt(text))
 
-        @self._kb.add(Keys.F1, filter=doc_section_visible)
-        @self._kb.add('q', filter=_doc_window_has_focus)
+        @self._kb.add(Keys.F2, filter=doc_section_visible)
+        @self._kb.add('q', filter=doc_window_has_focus)
         def _(event):
             # It may make sense to add the 'Escape' key as a binding to move
             # the focus from the doc window to the input buffer. However, there
             # is a noticeable lag after pressing 'Escape', so I've left it out
             # for now.
             layout = event.app.layout
-            toolbar_buffer = layout.get_buffer_by_name('bottom_toolbar_buffer')
             current_buffer = event.app.current_buffer
             if current_buffer.name == 'input_buffer':
                 doc_buffer = layout.get_buffer_by_name('doc_buffer')
                 event.app.layout.focus(doc_buffer)
-                text = self._toolbar_text.doc_window_key_binding_text
             else:
                 input_buffer = layout.get_buffer_by_name('input_buffer')
                 layout.focus(input_buffer)
-                text = self._toolbar_text.input_buffer_key_binding_text
-            new_document = Document(text=text, cursor_position=0)
-            toolbar_buffer.set_document(new_document, bypass_readonly=True)
 
-        @self._kb.add('w', filter=_doc_window_has_focus)
+        @self._kb.add('w', filter=doc_window_has_focus)
         def _(event):
             # Scroll up one unit equal to the height of the doc window.
             # Note: The scroll isn't exactly equal to the height of the doc
@@ -364,7 +279,7 @@ class PromptToolkitKeyBindings:
             window_height = event.app.layout.current_window.height.preferred
             event.app.current_buffer.cursor_up(window_height)
 
-        @self._kb.add('z', filter=_doc_window_has_focus)
+        @self._kb.add('z', filter=doc_window_has_focus)
         def _(event):
             # Scroll down one unit equal to the height of the doc window.
             # Note: The scroll isn't exactly equal to the height of the doc
@@ -374,17 +289,17 @@ class PromptToolkitKeyBindings:
             window_height = event.app.layout.current_window.height.preferred
             event.app.current_buffer.cursor_down(window_height)
 
-        @self._kb.add('k', filter=_doc_window_has_focus)
+        @self._kb.add('k', filter=doc_window_has_focus)
         def _(event):
             # Scroll up one line in the doc window.
             event.app.layout.current_buffer.cursor_up(1)
 
-        @self._kb.add('j', filter=_doc_window_has_focus)
+        @self._kb.add('j', filter=doc_window_has_focus)
         def _(event):
             # Scroll down one line in the doc window.
             event.app.layout.current_buffer.cursor_down(1)
 
-        @self._kb.add('g', filter=_doc_window_has_focus)
+        @self._kb.add('g', filter=doc_window_has_focus)
         def _(event):
             # Go to top of the doc window.
             document = event.app.layout.current_buffer.document
@@ -393,7 +308,7 @@ class PromptToolkitKeyBindings:
             if current_row >= 1:
                 event.app.layout.current_buffer.cursor_up(current_row)
 
-        @self._kb.add('G', filter=_doc_window_has_focus)
+        @self._kb.add('G', filter=doc_window_has_focus)
         def _(event):
             # Go to bottom of the doc window.
             document = event.app.layout.current_buffer.document
@@ -405,64 +320,3 @@ class PromptToolkitKeyBindings:
     @property
     def keybindings(self):
         return self._kb
-
-    def switch_history_prompting_alert(self, event, history_mode):
-        toolbar_buffer = event.app.layout.get_buffer_by_name(
-            'bottom_toolbar_buffer')
-        if history_mode:
-            text = self._toolbar_text.input_buf_key_binding_with_history_mode
-        else:
-            text = self._toolbar_text.input_buffer_key_binding_text
-        new_document = Document(text=text, cursor_position=0)
-        toolbar_buffer.set_document(new_document,
-                                    bypass_readonly=True)
-
-
-class FormatTextProcessor(Processor):
-    """This Processor is used to transform formatted text into a useable
-    format inside a ``prompt_toolkit.buffer.Buffer``.
-
-    """
-    def apply_transformation(self, text_input):
-        # https://python-prompt-toolkit.readthedocs.io/en/master/pages/reference.html#module-prompt_toolkit.formatted_text
-        fragments = to_formatted_text(
-            HTML(fragment_list_to_text(text_input.fragments)))
-        return Transformation(fragments)
-
-
-class ToolbarHelpText:
-    def __init__(self, style=None, spacing=None):
-        if style is None:
-            style = '<style fg="darkturquoise">'
-        self._style = style
-        if spacing is None:
-            spacing = '    '
-        self._spacing = spacing
-        self.input_buffer_key_binding_text = (
-            f'{self._style}[SPACE]</style> Autocomplete Choice{self._spacing}'
-            f'{self._style}[ENTER]</style> Autocomplete Choice/Execute Command{self._spacing}'
-            f'{self._style}[F1]</style> Focus on Docs{self._spacing}'
-            f'{self._style}[F2]</style> Hide/Show on Docs{self._spacing}'
-            f'{self._style}[F3]</style> One/Multi column prompt{self._spacing}'
-            f'{self._style}[CONTROL+R]</style> On/Off bck-i-search'
-        )
-        self.doc_window_key_binding_text = (
-            f'{self._style}[/]</style> Search Forward{self._spacing}'
-            f'{self._style}[?]</style> Search Backward{self._spacing}'
-            f'{self._style}[n]</style> Find Next Match{self._spacing}'
-            f'{self._style}[N]</style> Find Previous Match{self._spacing}'
-            f'{self._style}[w]</style> Go Up a Page{self._spacing}'
-            f'{self._style}[z]</style> Go Down a Page{self._spacing}'
-            f'{self._style}[j]</style> Go Up a Line{self._spacing}'
-            f'{self._style}[k]</style> Go Down a Line{self._spacing}'
-            f'{self._style}[g]</style> Go to Top{self._spacing}'
-            f'{self._style}[G]</style> Go to Bottom{self._spacing}'
-            f'{self._style}[F1] or [q]</style> Focus on Input'
-        )
-        self.history_mode_sign = (
-            f'<style fg="ansired" bg="#00ff44">bck-i-search</style>{self._spacing}'
-        )
-
-    @property
-    def input_buf_key_binding_with_history_mode(self):
-        return self.history_mode_sign + self.input_buffer_key_binding_text

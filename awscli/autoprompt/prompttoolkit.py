@@ -39,7 +39,6 @@ class PromptToolkitPrompter:
         self._factory = factory
         self._input_buffer = None
         self._doc_buffer = None
-        self._bottom_toolbar_buffer = None
         if app is None:
             app = self._create_application()
         self._app = app
@@ -69,7 +68,6 @@ class PromptToolkitPrompter:
         self._input_buffer = self._factory.create_input_buffer(
             self._update_doc_window_contents)
         self._doc_buffer = self._factory.create_doc_buffer()
-        self._bottom_toolbar_buffer = self._factory.create_bottom_toolbar_buffer()
 
     def _create_containers(self):
         input_buffer_container = self._factory.create_input_buffer_container(
@@ -77,26 +75,24 @@ class PromptToolkitPrompter:
         search_field = self._factory.create_search_field()
         doc_window = self._factory.create_doc_window(self._doc_buffer,
                                                      search_field)
-        bottom_toolbar_container = self._factory.create_bottom_toolbar_container(
-            self._bottom_toolbar_buffer)
-        return input_buffer_container, search_field, \
-                doc_window, bottom_toolbar_container
+        return input_buffer_container, search_field, doc_window
 
     def _create_application(self):
         self._create_buffers()
-        input_buffer_container, search_field, doc_window, \
-            bottom_toolbar_container = self._create_containers()
+        input_buffer_container, search_field, \
+                doc_window = self._create_containers()
         layout = self._factory.create_layout(
             on_input_buffer_text_changed=self._update_doc_window_contents,
             input_buffer_container=input_buffer_container,
             doc_window=doc_window, search_field=search_field,
-            bottom_toolbar_container=bottom_toolbar_container)
+        )
         kb_manager = self._factory.create_key_bindings()
         kb = kb_manager.keybindings
         app = Application(layout=layout, key_bindings=kb, full_screen=False,
-                           erase_when_done=True)
+                          erase_when_done=True)
         # make doc panel invisible by default
         app.show_doc = False
+        app.show_help = False
         return app
 
     def _update_doc_window_contents(self, *args):

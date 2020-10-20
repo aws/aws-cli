@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.161
+========
+
+* api-change:``batch``: Update batch command to latest version
+* api-change:``appsync``: Update appsync command to latest version
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+
+
 1.18.160
 ========
 

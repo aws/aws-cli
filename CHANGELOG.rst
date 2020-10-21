@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.162
+========
+
+* api-change:``glue``: Update glue command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``globalaccelerator``: Update globalaccelerator command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+
+
 1.18.161
 ========
 

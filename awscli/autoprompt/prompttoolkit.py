@@ -162,7 +162,7 @@ class PromptToolkitPrompter:
         # Once the application is finished running, the screen is cleared.
         # Here, we display the command to be run so that the user knows what
         # command caused the output that they're seeing.
-        sys.stdout.write(f'> {cmd_line_text}\n')
+        sys.stdout.write(f'> aws {cmd_line_text}\n')
         return shlex.split(cmd_line_text)
 
 

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.163
+========
+
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``appflow``: Update appflow command to latest version
+* api-change:``sns``: Update sns command to latest version
+* api-change:``accessanalyzer``: Update accessanalyzer command to latest version
+
+
 1.18.162
 ========
 

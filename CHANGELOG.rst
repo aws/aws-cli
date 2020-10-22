@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+2.0.59
+======
+
+* api-change:``accessanalyzer``: Update accessanalyzer command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``appflow``: Update appflow command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``sns``: Update sns command to latest version
+* api-change:``globalaccelerator``: Update globalaccelerator command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+
+
 2.0.58
 ======
 

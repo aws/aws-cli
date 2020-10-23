@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.164
+========
+
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``mediatailor``: Update mediatailor command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+
+
 1.18.163
 ========
 

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.165
+========
+
+* api-change:``neptune``: Update neptune command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+
+
 1.18.164
 ========
 

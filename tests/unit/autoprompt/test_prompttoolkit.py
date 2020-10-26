@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import mock
 from prompt_toolkit.completion import Completion, CompleteEvent
+from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.document import Document
 
 from awscli.autocomplete.completer import CompletionResult

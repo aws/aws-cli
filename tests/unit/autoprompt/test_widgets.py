@@ -14,9 +14,12 @@ import mock
 
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.formatted_text import FormattedText
-from prompt_toolkit.layout import HSplit, Window, ConditionalContainer
-from awscli.autoprompt import widgets
+from prompt_toolkit.layout import (
+    HSplit, Window, ConditionalContainer, FloatContainer
+)
+from prompt_toolkit.widgets import Dialog
 
+from awscli.autoprompt import widgets
 from awscli.testutils import unittest
 
 
@@ -65,6 +68,17 @@ class TestDocToolbarView(unittest.TestCase):
         self.assertEqual(buffer.document.text, widget.help_text)
 
 
+class TestDebugToolbarView(unittest.TestCase):
+    def test_can_create_container(self):
+        widget = widgets.DebugToolbarView()
+        self.assertIsInstance(widget.content, Window)
+
+    def test_buffer_has_correct_wording(self):
+        widget = widgets.DebugToolbarView()
+        buffer = widget.content.content.buffer
+        self.assertEqual(buffer.document.text, widget.help_text)
+
+
 class TestDocHelpView(unittest.TestCase):
     def test_can_create_container(self):
         widget = widgets.DocHelpView()
@@ -95,6 +109,26 @@ class TestInputHelpView(unittest.TestCase):
         widget = widgets.InputHelpView()
         buffer = widget.create_buffer()
         self.assertEqual(buffer.document.text, widget.help_text)
+
+
+class TestDebugPanelWidget(unittest.TestCase):
+    def test_can_create_container(self):
+        widget = widgets.DebugPanelWidget()
+        self.assertIsInstance(widget.container, ConditionalContainer)
+
+    def test_can_create_save_dialog(self):
+        widget = widgets.DebugPanelWidget()
+        save_dialog = widget.create_save_file_dialog()
+        self.assertIsInstance(save_dialog, Dialog)
+
+    def test_can_create_float_container_with_correct_bindings(self):
+        widget = widgets.DebugPanelWidget()
+        self.assertIsInstance(widget.float_container, FloatContainer)
+        key_bindings = widget.float_container.key_bindings.\
+                                get_bindings_starting_with_keys('')
+        self.assertEqual(len(key_bindings), 2)
+        self.assertEqual(key_bindings[0].keys, ('c-s',))
+        self.assertEqual(key_bindings[1].keys, ('c-\\',))
 
 
 class TestFormatTextProcessor(unittest.TestCase):

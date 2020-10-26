@@ -25,7 +25,9 @@ from prompt_toolkit.layout.processors import BeforeInput
 from prompt_toolkit.widgets import HorizontalLine, SearchToolbar
 
 from awscli.autoprompt.history import HistoryDriver, HistoryCompleter
-from awscli.autoprompt.widgets import HelpPanelWidget, ToolbarWidget
+from awscli.autoprompt.widgets import (
+    HelpPanelWidget, ToolbarWidget, DebugPanelWidget
+)
 from awscli.autoprompt.filters import (
     is_one_column, is_multi_column, doc_section_visible,
     input_buffer_has_focus, doc_window_has_focus, is_history_mode
@@ -140,6 +142,8 @@ class PromptToolkitFactory:
         # - A doc window to hold documentation.
         # - A separating line between the doc window and the toolbar.
         # - A toolbar denoting key bindings.
+        # - A help panel
+        # - A debug panel in case debug mode enabled
         if search_field is None:
             search_field = SearchToolbar()
         if input_buffer_container is None:
@@ -160,7 +164,8 @@ class PromptToolkitFactory:
                         ConditionalContainer(doc_window,
                                              doc_section_visible),
                     ]),
-                    HelpPanelWidget()
+                    HelpPanelWidget(),
+                    DebugPanelWidget(),
                 ]),
                 search_field,
                 ToolbarWidget()

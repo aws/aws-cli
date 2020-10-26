@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import logging
 import shlex
 import sys
 
@@ -20,6 +21,9 @@ from prompt_toolkit.document import Document
 
 from awscli.autoprompt.doc import DocsGetter
 from awscli.autoprompt.factory import PromptToolkitFactory
+
+
+LOG = logging.getLogger(__name__)
 
 
 class PromptToolkitPrompter:
@@ -93,6 +97,7 @@ class PromptToolkitPrompter:
         # make doc panel invisible by default
         app.show_doc = False
         app.show_help = False
+        app.debug = False
         return app
 
     def _update_doc_window_contents(self, *args):
@@ -109,6 +114,10 @@ class PromptToolkitPrompter:
             self._doc_buffer.reset()
             new_document = Document(text=content, cursor_position=0)
             self._doc_buffer.set_document(new_document, bypass_readonly=True)
+
+    def _set_debug_mode(self):
+        if '--debug' in self._args:
+            self._app.debug = True
 
     def pre_run(self):
         if '--cli-auto-prompt' in self._args:
@@ -157,6 +166,7 @@ class PromptToolkitPrompter:
 
         """
         self._args = self._quote_args_with_spaces(original_args)
+        self._set_debug_mode()
         self._app.run(pre_run=self.pre_run)
         cmd_line_text = self._input_buffer.document.text
         # Once the application is finished running, the screen is cleared.
@@ -194,12 +204,16 @@ class PromptToolkitCompleter(Completer):
                              display_meta=display_meta)
 
     def get_completions(self, document, complete_event):
-        text_before_cursor = document.text_before_cursor
-        text_to_autocomplete = 'aws ' + text_before_cursor
-        completions = self._completion_source.autocomplete(text_to_autocomplete,
-                                                           len(text_to_autocomplete))
-        yield from self._convert_to_prompt_completions(completions,
-                                                       text_before_cursor)
+        try:
+            text_before_cursor = document.text_before_cursor
+            text_to_autocomplete = 'aws ' + text_before_cursor
+            completions = self._completion_source.autocomplete(
+                text_to_autocomplete, len(text_to_autocomplete))
+            yield from self._convert_to_prompt_completions(
+                completions, text_before_cursor)
+        except Exception as e:
+            LOG.debug('Exception caught in PromptToolkitCompleter: %s' % e,
+                      exc_info=True)
 
     def _strip_whitespace(self, text):
         word_before_cursor = ''

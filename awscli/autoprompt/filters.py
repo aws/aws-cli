@@ -65,3 +65,11 @@ def is_history_mode():
        and history_mode is on """
     buffer = get_app().current_buffer
     return buffer.name == 'input_buffer' and buffer.history_mode
+
+
+@Condition
+def is_debug_mode():
+    """Only activate these key bindings if input buffer has focus
+       and history_mode is on """
+    app = get_app()
+    return app.debug

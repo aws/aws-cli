@@ -92,6 +92,8 @@ ARGUMENT_RENAMES = {
     'eks.create-nodegroup.version': 'kubernetes-version',
     'eks.update-nodegroup-version.version': 'kubernetes-version',
     'schemas.*.version': 'schema-version',
+    'sagemaker.delete-image-version.version': 'version-number',
+    'sagemaker.describe-image-version.version': 'version-number',
 }
 
 

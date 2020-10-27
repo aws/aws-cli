@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.18.166
+========
+
+* api-change:``glue``: Update glue command to latest version
+
+
 1.18.165
 ========
 

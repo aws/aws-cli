@@ -207,3 +207,13 @@ class ArgTableArgParser(CLIArgParser):
         else:
             return super(ArgTableArgParser, self).parse_known_args(
                 args, namespace)
+
+
+class FirstPassGlobalArgParser(CLIArgParser):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._build()
+
+    def _build(self):
+        self.add_argument('--profile', type=str)
+        self.add_argument('--debug', action='store_true', default=False)

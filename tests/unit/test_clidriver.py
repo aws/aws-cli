@@ -29,7 +29,6 @@ from botocore.compat import OrderedDict
 import botocore.model
 
 import awscli
-from awscli.autoprompt.core import AutoPromptDriver
 from awscli.clidriver import CLIDriver
 from awscli.clidriver import create_clidriver
 from awscli.clidriver import CustomArgument
@@ -319,10 +318,11 @@ class TestCliDriver(unittest.TestCase):
         self.assertEqual(
             driver.session.get_config_variable('region'), 'us-east-2')
 
-    def test_error_logger(self):
+    @mock.patch('awscli.clidriver.set_stream_logger')
+    def test_error_logger(self, set_stream_logger):
         self.driver.main('s3 list-objects --bucket foo --profile foo'.split())
         expected = {'log_level': logging.ERROR, 'logger_name': 'awscli'}
-        self.assertEqual(self.driver.session.stream_logger_args[1], expected)
+        set_stream_logger.assert_called_with(**expected)
 
     def test_ctrl_c_is_handled(self):
         fake_client = mock.Mock()
@@ -360,6 +360,22 @@ class TestCliDriver(unittest.TestCase):
         arg_table = self.driver.arg_table
         expected = list(GET_DATA['cli']['options'])
         self.assertEqual(list(arg_table), expected)
+
+    def test_cli_driver_can_keep_log_handlers(self):
+        fake_stderr = io.StringIO()
+        with contextlib.redirect_stderr(fake_stderr):
+            driver = create_clidriver(['--debug'])
+            rc = driver.main(['ec2', '--debug'])
+        self.assertEqual(rc, 252)
+        self.assertEqual(2, fake_stderr.getvalue().count('CLI version:'))
+
+    def test_cli_driver_can_remove_log_handlers(self):
+        fake_stderr = io.StringIO()
+        with contextlib.redirect_stderr(fake_stderr):
+            driver = create_clidriver(['--debug'])
+            rc = driver.main(['ec2'])
+        self.assertEqual(rc, 252)
+        self.assertEqual(1, fake_stderr.getvalue().count('CLI version:'))
 
 
 class TestCliDriverHooks(unittest.TestCase):
@@ -1075,6 +1091,20 @@ class TestAWSCLIEntryPoint(unittest.TestCase):
             rc = entry_point.main([])
         self.assertEqual(rc, 255)
         self.assertIn('error', fake_stderr.getvalue())
+
+
+class TextCreateCLIDriver(unittest.TestCase):
+    def test_create_cli_driver_parse_args(self):
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr):
+            driver = create_clidriver(['--debug'])
+        self.assertIn('CLI version', stderr.getvalue())
+
+    def test_create_cli_driver_wo_args(self):
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr):
+            driver = create_clidriver()
+        self.assertIn('', stderr.getvalue())
 
 
 if __name__ == '__main__':

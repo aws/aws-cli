@@ -36,6 +36,7 @@ from awscli.formatter import get_formatter
 from awscli.plugin import load_plugins
 from awscli.commands import CLICommand
 from awscli.argparser import MainArgParser
+from awscli.argparser import FirstPassGlobalArgParser
 from awscli.argparser import ServiceArgParser
 from awscli.argparser import ArgTableArgParser
 from awscli.help import ProviderHelpCommand
@@ -49,6 +50,7 @@ from awscli.arguments import UnknownArgumentError
 from awscli.argprocess import unpack_argument
 from awscli.alias import AliasLoader
 from awscli.alias import AliasCommandInjector
+from awscli.logger import set_stream_logger, remove_stream_logger
 from awscli.utils import emit_top_level_args_parsed_event
 from awscli.utils import OutputStreamFactory
 from awscli.utils import IMDSRegionProvider
@@ -80,14 +82,20 @@ def main():
     return AWSCLIEntryPoint().main(sys.argv[1:])
 
 
-def create_clidriver():
+def create_clidriver(args=None):
+    debug = None
+    if args is not None:
+        parser = FirstPassGlobalArgParser()
+        args, _ = parser.parse_known_args(args)
+        debug = args.debug
     session = botocore.session.Session()
     _set_user_agent_for_session(session)
     load_plugins(session.full_config.get('plugins', {}),
                  event_hooks=session.get_component('event_emitter'))
     error_handlers_chain = construct_cli_error_handlers_chain()
     driver = CLIDriver(session=session,
-                       error_handler=error_handlers_chain)
+                       error_handler=error_handlers_chain,
+                       debug=debug)
     return driver
 
 
@@ -166,7 +174,7 @@ class AWSCLIEntryPoint:
     def _do_main(self, args):
         driver = self._driver
         if driver is None:
-            driver = create_clidriver()
+            driver = create_clidriver(args)
         autoprompt_driver = AutoPromptDriver(driver)
         auto_prompt_mode = autoprompt_driver.resolve_mode(args)
         if auto_prompt_mode == 'on':
@@ -177,7 +185,7 @@ class AWSCLIEntryPoint:
             rc = driver.main(args)
             if rc == PARAM_VALIDATION_ERROR_RC:
                 args = autoprompt_driver.prompt_for_args(args)
-                driver = create_clidriver()
+                driver = create_clidriver(args)
                 rc = driver.main(args)
         else:
             rc = driver.main(args)
@@ -186,7 +194,8 @@ class AWSCLIEntryPoint:
 
 class CLIDriver(object):
 
-    def __init__(self, session=None, error_handler=None):
+    def __init__(self, session=None, error_handler=None,
+                 debug=False):
         if session is None:
             self.session = botocore.session.get_session()
             _set_user_agent_for_session(self.session)
@@ -195,6 +204,8 @@ class CLIDriver(object):
         self._error_handler = error_handler
         if self._error_handler is None:
             self._error_handler = construct_cli_error_handlers_chain()
+        if debug:
+            self._set_logging(debug)
         self._update_config_chain()
         self._cli_data = None
         self._command_table = None
@@ -465,29 +476,28 @@ class CLIDriver(object):
 
     def _handle_top_level_args(self, args):
         emit_top_level_args_parsed_event(self.session, args)
-        if args.profile:
+        if getattr(args, 'profile', False):
             self.session.set_config_variable('profile', args.profile)
-        if args.region:
+        if getattr(args, 'region', False):
             self.session.set_config_variable('region', args.region)
-        if args.debug:
-            # TODO:
-            # Unfortunately, by setting debug mode here, we miss out
-            # on all of the debug events prior to this such as the
-            # loading of plugins, etc.
-            self.session.set_stream_logger('botocore', logging.DEBUG,
-                                           format_string=LOG_FORMAT)
-            self.session.set_stream_logger('awscli', logging.DEBUG,
-                                           format_string=LOG_FORMAT)
-            self.session.set_stream_logger('s3transfer', logging.DEBUG,
-                                           format_string=LOG_FORMAT)
-            self.session.set_stream_logger('urllib3', logging.DEBUG,
-                                           format_string=LOG_FORMAT)
+        self._set_logging(getattr(args, 'debug', False))
+
+    def _set_logging(self, debug):
+        loggers_list = ['botocore', 'awscli', 's3transfer', 'urllib3']
+        if debug:
+            for logger_name in loggers_list:
+                set_stream_logger(logger_name, logging.DEBUG,
+                                  format_string=LOG_FORMAT)
             LOG.debug("CLI version: %s", self.session.user_agent())
             LOG.debug("Arguments entered to CLI: %s", sys.argv[1:])
-
         else:
-            self.session.set_stream_logger(logger_name='awscli',
-                                           log_level=logging.ERROR)
+            # In case user set --debug before entering prompt mode and removed
+            # it during editing inside the prompter we need to remove all the
+            # debug handlers
+            for logger_name in loggers_list:
+                remove_stream_logger(logger_name)
+            set_stream_logger(logger_name='awscli',
+                              log_level=logging.ERROR)
 
 
 class ServiceCommand(CLICommand):

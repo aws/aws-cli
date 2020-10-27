@@ -123,6 +123,19 @@ class TestBaseDocsGetter(unittest.TestCase):
         response = self.base_docs_getter.get_doc_content(self.help_command)
         self.assertEqual(response, expected_response)
 
+    def test_get_doc_content_strips_carriage_returns(self):
+        content = textwrap.dedent("""\
+            MySection\r
+            =========\r
+        """)
+        expected_response = textwrap.dedent("""\
+
+            MYSECTION
+        """)
+        self.help_command.doc.getvalue.return_value = content.encode('utf-8')
+        response = self.base_docs_getter.get_doc_content(self.help_command)
+        self.assertEqual(response, expected_response)
+
     def test_get_empty_doc_content(self):
         self.help_command.doc.getvalue.return_value = b''
         content = self.base_docs_getter.get_doc_content(self.help_command)
@@ -173,7 +186,7 @@ class TestServiceCommandDocsGetter(unittest.TestCase):
     def test_calls_service_operation_docs_getter_if_remaining_args_exist(self):
         args = ['ec2', 'describe-instances']
         self.service_command_docs_getter.get_docs(args)
-        self.assertTrue(self.service_operation_docs_getter.get_docs.called)   
+        self.assertTrue(self.service_operation_docs_getter.get_docs.called)
 
     def test_base_docs_getter_use_cache(self):
         args = ['ec2']

@@ -10,13 +10,17 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import logging
 import mock
+
 from prompt_toolkit.completion import Completion, CompleteEvent
-from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.document import Document
 
 from awscli.autocomplete.completer import CompletionResult
-from awscli.autoprompt.prompttoolkit import PromptToolkitCompleter
+from awscli.autoprompt.logger import PromptToolkitHandler
+from awscli.autoprompt.prompttoolkit import (
+    PromptToolkitCompleter, loggers_handler_switcher
+)
 from awscli.testutils import unittest
 
 
@@ -155,3 +159,19 @@ class TestPromptToolkitCompleter(unittest.TestCase):
                                                             CompleteEvent())
         self.assert_completions_match_expected(actual_completions,
                                                expected_completion_objects)
+
+
+class TestLoggersHandlerSwitcher(unittest.TestCase):
+    def test_can_switch_and_restore_handlers(self):
+        log = logging.getLogger('test_prompt_logger')
+        log.handlers = []
+        log.addHandler(logging.StreamHandler())
+        log.addHandler(logging.NullHandler())
+        with loggers_handler_switcher():
+            handlers = log.handlers
+            self.assertEqual(len(handlers), 1)
+            self.assertIsInstance(handlers[0], PromptToolkitHandler)
+        handlers = log.handlers
+        self.assertEqual(len(handlers), 2)
+        self.assertIsInstance(handlers[0], logging.StreamHandler)
+        self.assertIsInstance(handlers[1], logging.NullHandler)

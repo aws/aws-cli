@@ -13,17 +13,41 @@
 import logging
 import shlex
 import sys
+from contextlib import nullcontext, contextmanager
 
 from prompt_toolkit.application import Application
 from prompt_toolkit.completion import Completer, ThreadedCompleter
 from prompt_toolkit.completion import Completion
 from prompt_toolkit.document import Document
 
+from awscli.logger import LOG_FORMAT
 from awscli.autoprompt.doc import DocsGetter
 from awscli.autoprompt.factory import PromptToolkitFactory
+from awscli.autoprompt.logger import PromptToolkitHandler
 
 
 LOG = logging.getLogger(__name__)
+
+
+@contextmanager
+def loggers_handler_switcher():
+    old_handlers = {}
+    loggers = [name for name in logging.root.manager.loggerDict]
+
+    handler = PromptToolkitHandler()
+    handler.setLevel(logging.DEBUG)
+    handler.setFormatter(logging.Formatter(LOG_FORMAT))
+    for logger_name in loggers:
+        logger = logging.getLogger(logger_name)
+        old_handlers[logger_name] = logger.handlers
+        logger.handlers = []
+        logger.addHandler(handler)
+    yield None
+    for logger_name in loggers:
+        logger = logging.getLogger(logger_name)
+        logger.handlers = []
+        for handler in old_handlers[logger_name]:
+            logger.addHandler(handler)
 
 
 class PromptToolkitPrompter:
@@ -167,7 +191,11 @@ class PromptToolkitPrompter:
         """
         self._args = self._quote_args_with_spaces(original_args)
         self._set_debug_mode()
-        self._app.run(pre_run=self.pre_run)
+        logging_manager = nullcontext
+        if self._app.debug:
+            logging_manager = loggers_handler_switcher
+        with logging_manager():
+            self._app.run(pre_run=self.pre_run)
         cmd_line_text = self._input_buffer.document.text
         # Once the application is finished running, the screen is cleared.
         # Here, we display the command to be run so that the user knows what

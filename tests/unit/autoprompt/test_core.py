@@ -82,6 +82,15 @@ def _assert_auto_prompt_runs_as_expected(case):
     nose.tools.eq_(result, case.expected_result)
 
 
+def test_auto_prompt_resolve_mode_on_non_existing_profile():
+    driver = create_clidriver()
+    driver.session.set_config_variable('profile', 'not_exist')
+    prompter = mock.Mock(spec=core.AutoPrompter)
+    prompt_driver = core.AutoPromptDriver(driver, prompter=prompter)
+    result = prompt_driver.resolve_mode(args=[])
+    nose.tools.eq_(result, 'off')
+
+
 class TestAutoPrompter(unittest.TestCase):
     def setUp(self):
         completion_source = mock.Mock()

@@ -128,7 +128,7 @@ class BaseDocsGetter:
             contents, writer=BasicTextWriter(),
             settings_overrides={'report_level': 5, 'halt_level': 5}
         )
-        return converted.decode('utf-8')
+        return converted.decode('utf-8').replace('\r', '')
 
     def get_doc_content(self, help_command):
         """Does the heavy lifting of retrieving the actual documentation

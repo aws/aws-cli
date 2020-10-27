@@ -10,8 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from botocore.exceptions import ProfileNotFound
 
-from awscli.argparser import ArgTableArgParser
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.autoprompt.prompttoolkit import PromptToolkitPrompter
 from awscli.autocomplete.main import create_autocompleter
@@ -63,8 +63,11 @@ class AutoPromptDriver:
             return 'off'
         if self._CLI_AUTO_PROMPT_OPTION in args:
             return 'on'
-        config = self._session.get_config_variable('cli_auto_prompt')
-        return config.lower()
+        try:
+            config = self._session.get_config_variable('cli_auto_prompt')
+            return config.lower()
+        except ProfileNotFound:
+            return 'off'
 
     def inject_silence_param_error_msg_handler(self, driver):
         driver.error_handler.inject_handler(

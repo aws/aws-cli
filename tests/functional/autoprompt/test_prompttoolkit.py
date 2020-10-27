@@ -45,6 +45,8 @@ def _generate_index(filename):
 
 
 class FakeApplication:
+    debug = False
+
     def run(self, pre_run):
         pre_run()
 

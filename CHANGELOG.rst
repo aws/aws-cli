@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.0.60
+======
+
+* api-change:``mediatailor``: Update mediatailor command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``neptune``: Update neptune command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+
+
 2.0.59
 ======
 

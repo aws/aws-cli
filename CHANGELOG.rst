@@ -1017,6 +1017,28 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.166
+========
+
+* api-change:``glue``: Update glue command to latest version
+
+
+1.18.165
+========
+
+* api-change:``neptune``: Update neptune command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+
+
+1.18.164
+========
+
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``mediatailor``: Update mediatailor command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+
+
 1.18.163
 ========
 

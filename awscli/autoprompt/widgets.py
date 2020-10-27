@@ -99,7 +99,7 @@ class InputHelpView(BaseHelpView):
 
 
 class DocHelpView(BaseHelpView):
-    TITLE = 'Don panel help'
+    TITLE = 'Doc panel help'
     NAME = 'help_doc'
     CONDITION = doc_window_has_focus | search_input_has_focus
 

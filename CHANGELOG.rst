@@ -1029,6 +1029,26 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.168
+========
+
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``codeartifact``: Update codeartifact command to latest version
+* api-change:``sesv2``: Update sesv2 command to latest version
+* api-change:``marketplacecommerceanalytics``: Update marketplacecommerceanalytics command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+
+
+1.18.167
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``workmail``: Update workmail command to latest version
+* api-change:``iot``: Update iot command to latest version
+
+
 1.18.166
 ========
 

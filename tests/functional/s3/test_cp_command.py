@@ -668,9 +668,15 @@ class TestCPCommand(BaseCPCommandTest):
         progress_message = 'Completed 10 Bytes'
         self.assertIn(progress_message, stdout)
 
-    def test_cp_with_error_and_warning(self):
-        command = "s3 cp %s s3://bucket/foo.txt"
+    def test_cp_with_error_and_warning_permissions(self):
+        command = "s3 cp %s s3://bucket/ --recursive --no-follow-symlinks"
         self.parsed_responses = [{
+            'Error': {
+                'Code': 'NoSuchBucket',
+                'Message': 'The specified bucket does not exist',
+                'BucketName': 'bucket'
+            }
+        },{
             'Error': {
                 'Code': 'NoSuchBucket',
                 'Message': 'The specified bucket does not exist',
@@ -680,10 +686,15 @@ class TestCPCommand(BaseCPCommandTest):
         self.http_response.status_code = 404
 
         full_path = self.files.create_file('foo.txt', 'bar')
-        set_invalid_utime(full_path)
-        _, stderr, rc = self.run_cmd(command % full_path, expected_rc=1)
+        dir_path = os.path.dirname(full_path)
+        self.files.create_file('bar.txt', 'foo')
+        os.chmod(full_path, 0o300)
+
+        stdout, stderr, rc = self.run_cmd(command % dir_path, expected_rc=1)
         self.assertIn('upload failed', stderr)
-        self.assertIn('warning: File has an invalid timestamp.', stderr)
+        self.assertIn('warning:', stderr)
+        self.assertIn('File/Directory is not readable.', stderr)
+
 
 
 class TestStreamingCPCommand(BaseAWSCommandParamsTest):

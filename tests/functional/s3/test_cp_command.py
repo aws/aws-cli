@@ -15,7 +15,7 @@ import mock
 import os
 
 from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import capture_input, set_invalid_utime
+from awscli.testutils import capture_input
 from awscli.compat import six, OrderedDict
 from tests.functional.s3 import BaseS3TransferCommandTest
 
@@ -669,14 +669,8 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertIn(progress_message, stdout)
 
     def test_cp_with_error_and_warning_permissions(self):
-        command = "s3 cp %s s3://bucket/ --recursive --no-follow-symlinks"
+        command = "s3 cp %s s3://bucket/foo.txt"
         self.parsed_responses = [{
-            'Error': {
-                'Code': 'NoSuchBucket',
-                'Message': 'The specified bucket does not exist',
-                'BucketName': 'bucket'
-            }
-        },{
             'Error': {
                 'Code': 'NoSuchBucket',
                 'Message': 'The specified bucket does not exist',
@@ -686,15 +680,18 @@ class TestCPCommand(BaseCPCommandTest):
         self.http_response.status_code = 404
 
         full_path = self.files.create_file('foo.txt', 'bar')
-        dir_path = os.path.dirname(full_path)
-        self.files.create_file('bar.txt', 'foo')
-        os.chmod(full_path, 0o300)
 
-        stdout, stderr, rc = self.run_cmd(command % dir_path, expected_rc=1)
+        # Patch get_file_stat to return a value indicating that an invalid
+        # timestamp was loaded. It is impossible to set an invalid timestamp
+        # on all OSes so it has to be patched.
+        # TODO: find another method to test this behavior without patching.
+        with mock.patch(
+                'awscli.customizations.s3.filegenerator.get_file_stat',
+                return_value=(None, None)
+        ):
+            _, stderr, rc = self.run_cmd(command % full_path, expected_rc=1)
         self.assertIn('upload failed', stderr)
-        self.assertIn('warning:', stderr)
-        self.assertIn('File/Directory is not readable.', stderr)
-
+        self.assertIn('warning: File has an invalid timestamp.', stderr)
 
 
 class TestStreamingCPCommand(BaseAWSCommandParamsTest):

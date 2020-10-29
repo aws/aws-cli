@@ -1,0 +1,14 @@
+name: PRs against master are not accepted, please target develop branch
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  fail:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail PRs against master
+        run: |
+          echo "PRs must be made aginst the develop branch."
+          exit 1

@@ -135,16 +135,21 @@ class TestSyncCommand(BaseS3TransferCommandTest):
     def test_warning_on_invalid_timestamp(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
 
-        # Set the update time to a value that will raise a ValueError when
-        # converting to datetime
-        set_invalid_utime(full_path)
         cmdline = '%s %s s3://bucket/key.txt' % \
                   (self.prefix, self.files.rootdir)
         self.parsed_responses = [
             {"CommonPrefixes": [], "Contents": []},
             {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
         ]
-        self.run_cmd(cmdline, expected_rc=2)
+        # Patch get_file_stat to return a value indicationg that an invalid
+        # timestamp was loaded. It is impossible to set an invalid timestamp
+        # on all OSes so it has to be patched.
+        # TODO: find another method to test this behavior without patching.
+        with patch(
+                'awscli.customizations.s3.filegenerator.get_file_stat',
+                return_value=(None, None)
+        ):
+            self.run_cmd(cmdline, expected_rc=2)
 
         # We should still have put the object
         self.assertEqual(len(self.operations_called), 2, self.operations_called)

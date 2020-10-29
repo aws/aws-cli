@@ -144,7 +144,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         # timestamp was loaded. It is impossible to set an invalid timestamp
         # on all OSes so it has to be patched.
         # TODO: find another method to test this behavior without patching.
-        with patch(
+        with mock.patch(
                 'awscli.customizations.s3.filegenerator.get_file_stat',
                 return_value=(None, None)
         ):

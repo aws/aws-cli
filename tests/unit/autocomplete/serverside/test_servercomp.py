@@ -154,11 +154,13 @@ class TestLazyClientCreator(unittest.TestCase):
     def test_can_create_client(self):
         creator = LazyClientCreator()
         client = creator.create_client('iam', aws_access_key_id='foo',
-                                       aws_secret_access_key='bar')
+                                       aws_secret_access_key='bar',
+                                       region_name='us-west-2')
         self.assertIsInstance(client, botocore.client.BaseClient)
         # Sanity check it's an IAM client.
         self.assertTrue(hasattr(client, 'list_users'))
         # Verify we can create another client.
         new_client = creator.create_client('iam', aws_access_key_id='foo',
-                                           aws_secret_access_key='bar')
+                                           aws_secret_access_key='bar',
+                                           region_name='us-west-2')
         self.assertIsInstance(new_client, botocore.client.BaseClient)

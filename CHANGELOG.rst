@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.0.61
+======
+
+* api-change:``workmail``: Update workmail command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``marketplacecommerceanalytics``: Update marketplacecommerceanalytics command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``sesv2``: Update sesv2 command to latest version
+* api-change:``codeartifact``: Update codeartifact command to latest version
+
+
 2.0.60
 ======
 

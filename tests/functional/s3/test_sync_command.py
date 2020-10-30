@@ -10,7 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import set_invalid_utime
 from mock import patch
 import os
 
@@ -141,7 +140,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             {"CommonPrefixes": [], "Contents": []},
             {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
         ]
-        # Patch get_file_stat to return a value indicationg that an invalid
+        # Patch get_file_stat to return a value indicating that an invalid
         # timestamp was loaded. It is impossible to set an invalid timestamp
         # on all OSes so it has to be patched.
         # TODO: find another method to test this behavior without patching.

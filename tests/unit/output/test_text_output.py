@@ -131,14 +131,29 @@ class TestDescribeChangesets(BaseAWSCommandParamsTest):
              ' --stack-name MyStack --output text'),
             expected_rc=0
         )[0]
-        self.assertEqual(
-            output,
-            ("arn:aws:cloudformation:us-west-2:12345:changeSet/mychangeset/"
-             "12345\tmychangeset\t2019-04-08T14:21:53.765Z\tNone\tAVAILABLE"
-             "\tNone\tarn:aws:cloudformation:us-west-2:12345:stack/MyStack"
-             "/12345\tMyStack\tCREATE_COMPLETE\tNone\tNone\n"
-             "CAPABILITIES\tCAPABILITY_IAM\nCHANGES\t1\nCHANGES\t2\n")
-        )
+        fields = output.split()
+        self.assertIn((
+            "arn:aws:cloudformation:us-west-2:12345:changeSet/mychangeset/"
+            "12345"), fields)
+        self.assert_in("CAPABILITY_IAM", fields, 1)
+        self.assert_in("mychangeset", fields, 1)
+        self.assert_in("2019-04-08T14:21:53.765Z", fields, 1)
+        self.assert_in("AVAILABLE", fields, 1)
+        self.assert_in("MyStack", fields, 1)
+        self.assert_in("CREATE_COMPLETE", fields, 1)
+
+    def assert_in(self, key, fields, count=None):
+        if count is None:
+            self.assertIn(key, fields)
+        else:
+            actual_count = fields.count(key)
+            self.assertEqual(
+                count,
+                actual_count,
+                "%s was found in the output %s times. Expected %s." % (
+                    key, actual_count, count
+                )
+            )
 
 
 class CustomFormatter(Formatter):

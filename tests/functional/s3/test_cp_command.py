@@ -15,7 +15,7 @@ import mock
 import os
 
 from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import capture_input, set_invalid_utime
+from awscli.testutils import capture_input
 from awscli.compat import six
 from tests.functional.s3 import BaseS3TransferCommandTest
 
@@ -667,7 +667,7 @@ class TestCPCommand(BaseCPCommandTest):
         progress_message = 'Completed 10 Bytes'
         self.assertIn(progress_message, stdout)
 
-    def test_cp_with_error_and_warning(self):
+    def test_cp_with_error_and_warning_permissions(self):
         command = "s3 cp %s s3://bucket/foo.txt"
         self.parsed_responses = [{
             'Error': {
@@ -679,8 +679,16 @@ class TestCPCommand(BaseCPCommandTest):
         self.http_response.status_code = 404
 
         full_path = self.files.create_file('foo.txt', 'bar')
-        set_invalid_utime(full_path)
-        _, stderr, rc = self.run_cmd(command % full_path, expected_rc=1)
+
+        # Patch get_file_stat to return a value indicating that an invalid
+        # timestamp was loaded. It is impossible to set an invalid timestamp
+        # on all OSes so it has to be patched.
+        # TODO: find another method to test this behavior without patching.
+        with mock.patch(
+                'awscli.customizations.s3.filegenerator.get_file_stat',
+                return_value=(None, None)
+        ):
+            _, stderr, rc = self.run_cmd(command % full_path, expected_rc=1)
         self.assertIn('upload failed', stderr)
         self.assertIn('warning: File has an invalid timestamp.', stderr)
 

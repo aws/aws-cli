@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.18.169
+========
+
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``braket``: Update braket command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``sns``: Update sns command to latest version
+
+
 1.18.168
 ========
 

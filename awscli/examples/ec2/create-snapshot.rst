@@ -27,7 +27,7 @@ This example command creates a snapshot and applies two tags: purpose=prod and c
 
 Command::
 
-  aws ec2 create-snapshot --volume-id vol-1234567890abcdef0 --description 'Prod backup' --tag-specifications 'ResourceType=snapshot,Tags=[{Key=purpose,Value=prod},{Key=costcenter,Value=123}]'
+  aws ec2 create-snapshot --volume-id vol-1234567890abcdef0 --description 'Prod backup' --tag-specifications 'ResourceType=snapshot,Tags=["{Key=purpose,Value=prod}","{Key=costcenter,Value=123}"]'
 
 Output::
 

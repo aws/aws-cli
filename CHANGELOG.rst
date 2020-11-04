@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.18.171
+========
+
+* api-change:``iot``: Update iot command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``xray``: Update xray command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``mq``: Update mq command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``meteringmarketplace``: Update meteringmarketplace command to latest version
+
+
 1.18.170
 ========
 

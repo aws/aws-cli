@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.18.172
+========
+
+* api-change:``frauddetector``: Update frauddetector command to latest version
+* api-change:``events``: Update events command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+* api-change:``es``: Update es command to latest version
+
+
 1.18.171
 ========
 

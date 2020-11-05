@@ -25,6 +25,14 @@ class CliDriverFetcher:
         if command:
             return command.arg_table.get(arg_name)
 
+    def get_operation_model(self, lineage, current_command, operation):
+        if current_command and len(lineage) > 1:
+            service_model = self._cli_driver.session.get_service_model(
+                lineage[1])
+            operation = ''.join([part.capitalize()
+                                 for part in current_command.split('-')])
+            return service_model.operation_model(operation)
+
     def get_argument_model(self, lineage, current_command, arg_name):
         return getattr(self._get_argument(
             lineage, current_command, arg_name), 'argument_model', None)

@@ -11,10 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+from functools import partial
 
 from prompt_toolkit.application import get_app
 from prompt_toolkit.filters import has_focus
-from prompt_toolkit.formatted_text import HTML, to_formatted_text
+from prompt_toolkit.formatted_text import HTML, Template, to_formatted_text
 from prompt_toolkit.formatted_text.utils import fragment_list_to_text
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.document import Document
@@ -29,10 +30,11 @@ from prompt_toolkit.layout import (
 from prompt_toolkit.widgets import (
     Frame, HorizontalLine, Dialog, Button, TextArea, Label
 )
+from prompt_toolkit.widgets.base import Border
 
 from awscli.autoprompt.filters import (
     help_section_visible, doc_window_has_focus, search_input_has_focus,
-    input_buffer_has_focus, is_history_mode, is_debug_mode
+    input_buffer_has_focus, is_history_mode, is_debug_mode,
 )
 
 
@@ -48,11 +50,32 @@ class FormatTextProcessor(Processor):
         return Transformation(fragments)
 
 
+class TitleLine:
+
+    def __init__(self, title):
+        fill = partial(Window, style='class:frame.border')
+        self.container =  VSplit([
+            fill(char=Border.HORIZONTAL),
+            fill(width=1, height=1, char='|'),
+            # Notice: we use `Template` here, because `self.title` can be an
+            # `HTML` object for instance.
+            Label(lambda: Template(' {} ').format(title),
+                  style='class:frame.label',
+                  dont_extend_width=True),
+            fill(width=1, height=1, char='|'),
+            fill(char=Border.HORIZONTAL),
+        ], height=1)
+
+    def __pt_container__(self):
+        return self.container
+
+
 class BaseHelpContainer(ConditionalContainer):
     STYLE = '<style fg="darkturquoise">'
     NAME = None
     CONDITION = None
     DIMENSIONS = {}
+    FOCUSABLE = False
 
     def __init__(self):
         window = self.create_window(self.create_buffer())
@@ -66,6 +89,7 @@ class BaseHelpContainer(ConditionalContainer):
         document = Document(text=self.help_text, cursor_position=0)
         help_buffer = Buffer(name=self.NAME, read_only=True)
         help_buffer.set_document(document, bypass_readonly=True)
+        help_buffer.focusable = self.FOCUSABLE
         return help_buffer
 
     def create_window(self, help_buffer):
@@ -93,17 +117,33 @@ class BaseHelpView(BaseHelpContainer):
 class InputHelpView(BaseHelpView):
     TITLE = 'Prompt panel help'
     NAME = 'help_input'
-    CONDITION = input_buffer_has_focus
+    CONDITION = has_focus('input_buffer')
 
     @property
     def help_text(self):
         return (
             f'{self.STYLE}[ENTER]</style> Autocomplete Choice/Execute Command\n'
             f'{self.STYLE}[F1]</style> Hide Shortkey Help\n'
-            f'{self.STYLE}[F2]</style> Focus on Docs\n'
+            f'{self.STYLE}[F2]</style> Focus on next panel\n'
             f'{self.STYLE}[F3]</style> Hide/Show Docs\n'
             f'{self.STYLE}[F4]</style> One/Multi column prompt\n'
+            f'{self.STYLE}[F5]</style> Hide/Show Output\n'
             f'{self.STYLE}[CONTROL+R]</style> On/Off bck-i-search'
+        )
+
+
+class OutputHelpView(BaseHelpView):
+    TITLE = 'Output panel help'
+    NAME = 'output_input'
+    CONDITION = has_focus('output_buffer')
+
+    @property
+    def help_text(self):
+        return (
+            f'{self.STYLE}[F1]</style> Hide Shortkey Help\n'
+            f'{self.STYLE}[F2]</style> Focus on next panel\n'
+            f'{self.STYLE}[F3]</style> Hide/Show Docs\n'
+            f'{self.STYLE}[F5]</style> Hide/Show Output\n'
         )
 
 
@@ -126,7 +166,9 @@ class DocHelpView(BaseHelpView):
             f'{self.STYLE}[g]</style> Go to Top\n'
             f'{self.STYLE}[G]</style> Go to Bottom\n'
             f'{self.STYLE}[F1]</style> Hide Shortkey Help\n'
-            f'{self.STYLE}[F2] or [q]</style> Focus on Input'
+            f'{self.STYLE}[F2]</style> Focus on next panel\n'
+            f'{self.STYLE}[q]</style> Focus on Input\n'
+            f'{self.STYLE}[F5]</style> Hide/Show Output'
         )
 
 
@@ -143,13 +185,14 @@ class DocToolbarView(BaseToolbarView):
     def help_text(self):
         return (
             f'{self.STYLE}[F1]</style> Show Shortkey Help{self.SPACING}'
-            f'{self.STYLE}[F2] or [q]</style> Focus on Input'
+            f'{self.STYLE}[F2]</style> Focus on next panel{self.SPACING}'
+            f'{self.STYLE}[[q]</style> Focus on Input'
         )
 
 
 class InputToolbarView(BaseToolbarView):
     NAME = 'toolbar_input'
-    CONDITION = input_buffer_has_focus
+    CONDITION = has_focus('input_buffer')
 
     @property
     def help_text(self):
@@ -157,9 +200,24 @@ class InputToolbarView(BaseToolbarView):
             f'{self.STYLE}[ENTER]</style> Autocomplete '
             f'Choice/Execute Command{self.SPACING}'
             f'{self.STYLE}[F1]</style> Show Shortkey Help{self.SPACING}'
-            f'{self.STYLE}[F2]</style> Focus on Docs{self.SPACING}'
-            f'{self.STYLE}[F3]</style> Hide/Show Docs'
-        )
+            f'{self.STYLE}[F2]</style> Focus on next panel{self.SPACING}'
+            f'{self.STYLE}[F3]</style> Hide/Show Docs{self.SPACING}'
+            f'{self.STYLE}[F5]</style> Hide/Show Output'
+            )
+
+
+class OutputToolbarView(BaseToolbarView):
+    NAME = 'output_input'
+    CONDITION = has_focus('output_buffer')
+
+    @property
+    def help_text(self):
+        return (
+            f'{self.STYLE}[F1]</style> Show Shortkey Help{self.SPACING}'
+            f'{self.STYLE}[F2]</style> Focus on next panel{self.SPACING}'
+            f'{self.STYLE}[F3]</style> Hide/Show Docs{self.SPACING}'
+            f'{self.STYLE}[F5]</style> Hide/Show Output'
+            )
 
 
 class DebugToolbarView(BaseToolbarView):
@@ -196,7 +254,9 @@ class ToolbarWidget:
             VSplit([
                 HistorySignToolbarView(),
                 ConditionalContainer(
-                    VSplit([InputToolbarView(), DocToolbarView()]),
+                    VSplit([InputToolbarView(),
+                            DocToolbarView(),
+                            OutputToolbarView()]),
                     ~help_section_visible
                 )
             ])
@@ -210,7 +270,7 @@ class HelpPanelWidget:
 
     def __init__(self):
         self.container = ConditionalContainer(
-            HSplit([DocHelpView(), InputHelpView()]),
+            HSplit([DocHelpView(), InputHelpView(), OutputHelpView()]),
             help_section_visible
         )
 

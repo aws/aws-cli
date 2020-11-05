@@ -51,7 +51,7 @@ class TestPromptToolkitFactory(unittest.TestCase):
     def test_can_create_doc_window(self):
         buffer = mock.Mock(spec=Buffer)
         container = self.factory.create_doc_window(buffer)
-        self.assertTrue(container.content is not None)
+        self.assertTrue(container.children is not None)
 
     def test_can_create_search_field(self):
         search_field = self.factory.create_search_field()

@@ -29,6 +29,9 @@ class AutoCompleter(object):
         self._parser = parser
         self._completers = completers
 
+    def parse(self, command_line, index=None):
+        return self._parser.parse(command_line, index)
+
     def autocomplete(self, command_line, index=None):
         """Attempt to find completion suggestions.
 
@@ -39,7 +42,7 @@ class AutoCompleter(object):
         :return: A list of ``CompletionResult`` objects.
 
         """
-        parsed = self._parser.parse(command_line, index)
+        parsed = self.parse(command_line, index)
         for completer in self._completers:
             result = completer.complete(parsed)
             if result is not None:

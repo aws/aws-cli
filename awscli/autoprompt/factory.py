@@ -22,14 +22,15 @@ from prompt_toolkit.layout.dimension import Dimension
 from prompt_toolkit.layout.layout import Layout, ConditionalContainer
 from prompt_toolkit.layout.menus import CompletionsMenu, MultiColumnCompletionsMenu
 from prompt_toolkit.layout.processors import BeforeInput
-from prompt_toolkit.widgets import HorizontalLine, SearchToolbar
+from prompt_toolkit.widgets import SearchToolbar, VerticalLine
+from prompt_toolkit.key_binding.bindings.focus import focus_next
 
 from awscli.autoprompt.history import HistoryDriver, HistoryCompleter
 from awscli.autoprompt.widgets import (
-    HelpPanelWidget, ToolbarWidget, DebugPanelWidget
+    HelpPanelWidget, ToolbarWidget, DebugPanelWidget, TitleLine
 )
 from awscli.autoprompt.filters import (
-    is_one_column, is_multi_column, doc_section_visible,
+    is_one_column, is_multi_column, doc_section_visible, output_section_visible,
     input_buffer_has_focus, doc_window_has_focus, is_history_mode
 )
 
@@ -83,6 +84,9 @@ class PromptToolkitFactory:
     def create_doc_buffer(self):
         return Buffer(name='doc_buffer', read_only=True)
 
+    def create_output_buffer(self):
+        return Buffer(name='output_buffer', read_only=True)
+
     def create_input_buffer_container(self, input_buffer):
         return FloatContainer(
             Window(
@@ -118,24 +122,40 @@ class PromptToolkitFactory:
     def create_doc_window(self, doc_buffer, search_field=None):
         if search_field is None:
             search_field = SearchToolbar()
-        return Window(
-            content=BufferControl(
-                buffer=doc_buffer,
-                search_buffer_control=search_field.control
-            ),
-            height=Dimension(
-                max=self.DIMENSIONS['doc_window_height_max'],
-                preferred=self.DIMENSIONS['doc_window_height_pref']
-            ),
-            wrap_lines=True
-        )
+        return HSplit([
+            TitleLine('Doc panel'),
+            Window(
+                content=BufferControl(
+                    buffer=doc_buffer,
+                    search_buffer_control=search_field.control
+                ),
+                height=Dimension(
+                    max=self.DIMENSIONS['doc_window_height_max'],
+                    preferred=self.DIMENSIONS['doc_window_height_pref']
+                ),
+                wrap_lines=True
+            )
+        ])
+
+    def create_output_window(self, output_buffer):
+        return HSplit([
+            TitleLine('Output panel'),
+            Window(
+                content=BufferControl(buffer=output_buffer),
+                height=Dimension(
+                    max=self.DIMENSIONS['doc_window_height_max'],
+                    preferred=self.DIMENSIONS['doc_window_height_pref']
+                ),
+                wrap_lines=True
+            )
+        ])
 
     def create_search_field(self):
         return SearchToolbar()
 
     def create_layout(self, on_input_buffer_text_changed=None,
                       input_buffer_container=None, doc_window=None,
-                      search_field=None):
+                      search_field=None, output_window=None):
         # This is the main layout, which consists of:
         # - The main input buffer with completion menus floating on top of it.
         # - A separating line between the input buffer and the doc window.
@@ -154,15 +174,23 @@ class PromptToolkitFactory:
         if doc_window is None:
             doc_buffer = self.create_doc_buffer()
             doc_window = self.create_doc_window(doc_buffer, search_field)
+        if output_window is None:
+            output_buffer = self.create_output_buffer()
+            output_window = self.create_output_window(output_buffer)
         return Layout(
             HSplit([
                 VSplit([
                     HSplit([
                         input_buffer_container,
-                        ConditionalContainer(HorizontalLine(),
-                                             doc_section_visible),
-                        ConditionalContainer(doc_window,
-                                             doc_section_visible),
+                        VSplit([
+                            ConditionalContainer(doc_window,
+                                                 doc_section_visible),
+                            ConditionalContainer(
+                                VerticalLine(),
+                                output_section_visible & doc_section_visible),
+                            ConditionalContainer(output_window,
+                                                 output_section_visible),
+                        ]),
                     ]),
                     HelpPanelWidget(),
                     DebugPanelWidget(),
@@ -228,7 +256,7 @@ class PromptToolkitKeyBindings:
         @self._kb.add(Keys.F3)
         def _(event):
             current_buffer = event.app.current_buffer
-            if current_buffer.name != 'input_buffer':
+            if current_buffer.name == 'doc_buffer':
                 layout = event.app.layout
                 input_buffer = layout.get_buffer_by_name('input_buffer')
                 layout.focus(input_buffer)
@@ -239,6 +267,14 @@ class PromptToolkitKeyBindings:
             event.app.multi_column = not getattr(
                 event.app, 'multi_column', True
             )
+
+        @self._kb.add(Keys.F5)
+        def _(event):
+            event.app.show_output = not event.app.show_output
+            if event.app.current_buffer.name == 'output_buffer':
+                layout = event.app.layout
+                input_buffer = layout.get_buffer_by_name('input_buffer')
+                layout.focus(input_buffer)
 
         @self._kb.add(Keys.F1)
         def _(event):
@@ -258,21 +294,17 @@ class PromptToolkitKeyBindings:
             text = f'> aws {input_buffer.document.text}'
             event.app.exit(exception=PrompterKeyboardInterrupt(text))
 
-        @self._kb.add(Keys.F2, filter=doc_section_visible)
+        @self._kb.add(Keys.F2)
+        def _(event):
+            focus_next(event)
+            if not getattr(event.app.current_buffer, 'focusable', True):
+                focus_next(event)
+
         @self._kb.add('q', filter=doc_window_has_focus)
         def _(event):
-            # It may make sense to add the 'Escape' key as a binding to move
-            # the focus from the doc window to the input buffer. However, there
-            # is a noticeable lag after pressing 'Escape', so I've left it out
-            # for now.
             layout = event.app.layout
-            current_buffer = event.app.current_buffer
-            if current_buffer.name == 'input_buffer':
-                doc_buffer = layout.get_buffer_by_name('doc_buffer')
-                event.app.layout.focus(doc_buffer)
-            else:
-                input_buffer = layout.get_buffer_by_name('input_buffer')
-                layout.focus(input_buffer)
+            input_buffer = layout.get_buffer_by_name('input_buffer')
+            layout.focus(input_buffer)
 
         @self._kb.add('w', filter=doc_window_has_focus)
         def _(event):

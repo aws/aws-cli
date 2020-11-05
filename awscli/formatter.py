@@ -115,7 +115,7 @@ class YAMLDumper(object):
         # Encoding is set to None because we handle the encoding by
         # wrapping the stream, so there's no need for the yaml library
         # to do it.
-        self._yaml.encoding = None
+        # self._yaml.encoding = None
         self._yaml.representer.default_flow_style = False
 
     def dump(self, value, stream):

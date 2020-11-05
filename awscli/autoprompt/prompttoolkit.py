@@ -22,6 +22,7 @@ from prompt_toolkit.document import Document
 
 from awscli.logger import LOG_FORMAT
 from awscli.autoprompt.doc import DocsGetter
+from awscli.autoprompt.output import OutputGetter
 from awscli.autoprompt.factory import PromptToolkitFactory
 from awscli.autoprompt.logger import PromptToolkitHandler
 
@@ -65,30 +66,16 @@ class PromptToolkitPrompter:
         if factory is None:
             factory = PromptToolkitFactory(completer=self._completer)
         self._factory = factory
-        self._input_buffer = None
-        self._doc_buffer = None
+        self.input_buffer = None
+        self.doc_buffer = None
+        self.output_buffer = None
         if app is None:
             app = self.create_application()
         self._app = app
         self._args = []
         self._driver = driver
         self._docs_getter = DocsGetter(self._driver)
-
-    @property
-    def input_buffer(self):
-        return self._input_buffer
-
-    @input_buffer.setter
-    def input_buffer(self, value):
-        self._input_buffer = value
-
-    @property
-    def doc_buffer(self):
-        return self._doc_buffer
-
-    @doc_buffer.setter
-    def doc_buffer(self, value):
-        self._doc_buffer = value
+        self._output_getter = OutputGetter(self._driver)
 
     def args(self, value):
         self._args = value
@@ -96,26 +83,28 @@ class PromptToolkitPrompter:
     args = property(None, args)
 
     def _create_buffers(self):
-        self._input_buffer = self._factory.create_input_buffer(
-            self._update_doc_window_contents)
-        self._doc_buffer = self._factory.create_doc_buffer()
+        self.input_buffer = self._factory.create_input_buffer(
+            self.update_bottom_buffers_text)
+        self.doc_buffer = self._factory.create_doc_buffer()
+        self.output_buffer = self._factory.create_output_buffer()
 
     def _create_containers(self):
         input_buffer_container = self._factory.create_input_buffer_container(
-            self._input_buffer)
-        search_field = self._factory.create_search_field()
-        doc_window = self._factory.create_doc_window(self._doc_buffer,
-                                                     search_field)
-        return input_buffer_container, search_field, doc_window
+            self.input_buffer)
+        doc_window = self._factory.create_bottom_window(
+            'Doc panel', self.doc_buffer)
+        output_window = self._factory.create_bottom_window(
+            'Output panel', self.output_buffer)
+        return input_buffer_container, doc_window, output_window
 
     def create_application(self):
         self._create_buffers()
-        input_buffer_container, search_field, \
-                doc_window = self._create_containers()
+        input_buffer_container, \
+                doc_window, output_window = self._create_containers()
         layout = self._factory.create_layout(
-            on_input_buffer_text_changed=self._update_doc_window_contents,
+            on_input_buffer_text_changed=self.update_bottom_buffers_text,
             input_buffer_container=input_buffer_container,
-            doc_window=doc_window, search_field=search_field,
+            doc_window=doc_window, output_window=output_window
         )
         kb_manager = self._factory.create_key_bindings()
         kb = kb_manager.keybindings
@@ -129,9 +118,24 @@ class PromptToolkitPrompter:
         app.multi_column = False
         app.show_help = False
         app.debug = False
+        app.show_output = False
+        return app
 
-    def _update_doc_window_contents(self, *args):
-        content = self._docs_getter.get_docs(self._input_buffer.text)
+    def update_bottom_buffers_text(self, *args):
+        parsed = self._completion_source.parse(
+            'aws ' + self.input_buffer.document.text)
+        self._update_doc_window_contents(parsed)
+        self._update_output_window_contents(parsed)
+
+    def _update_output_window_contents(self, parsed):
+        content = self._output_getter.get_output(parsed)
+        if content is not None and content != self.output_buffer.document.text:
+            self.output_buffer.reset()
+            new_document = Document(text=content, cursor_position=0)
+            self.output_buffer.set_document(new_document, bypass_readonly=True)
+
+    def _update_doc_window_contents(self, parsed):
+        content = self._docs_getter.get_docs(parsed)
         # The only way to "modify" a read-only buffer in prompt_toolkit is to
         # create a new `prompt_toolkit.document.Document`. A 'cursor_position'
         # of 0 allows us to start viewing the documentation from the beginning,
@@ -140,10 +144,10 @@ class PromptToolkitPrompter:
         # Note: `content` may be None if we are still in the middle of typing a
         # command (e.g. `aws ec2 descr`) or if the current command is invalid.
         # In these cases, we don't update the doc window.
-        if content is not None and content != self._doc_buffer.document.text:
-            self._doc_buffer.reset()
+        if content is not None and content != self.doc_buffer.document.text:
+            self.doc_buffer.reset()
             new_document = Document(text=content, cursor_position=0)
-            self._doc_buffer.set_document(new_document, bypass_readonly=True)
+            self.doc_buffer.set_document(new_document, bypass_readonly=True)
 
     def _set_debug_mode(self):
         if '--debug' in self._args:
@@ -160,11 +164,11 @@ class PromptToolkitPrompter:
         # If what the user entered at the command line already has no
         # completions, we just keep it as it is without showing
         # any suggestions.
-        self._input_buffer.insert_text(' '.join(self._args))
-        cmd_line_text = 'aws ' + self._input_buffer.document.text
+        self.input_buffer.insert_text(' '.join(self._args))
+        cmd_line_text = 'aws ' + self.input_buffer.document.text
         self._set_input_buffer_text(cmd_line_text)
-        self._update_doc_window_contents()
-        self._input_buffer.start_completion()
+        self.update_bottom_buffers_text()
+        self.input_buffer.start_completion()
 
     def _set_input_buffer_text(self, cmd_line_text):
         """If entered command line does not have trailing space and can not
@@ -175,7 +179,7 @@ class PromptToolkitPrompter:
         if self._can_autocomplete(cmd_line_text):
             return
         if cmd_line_text.strip() != 'aws':
-            self._input_buffer.insert_text(' ')
+            self.input_buffer.insert_text(' ')
 
     def _can_autocomplete(self, cmd_line_text):
         return bool(self._completion_source.autocomplete(cmd_line_text))
@@ -202,7 +206,7 @@ class PromptToolkitPrompter:
             logging_manager = loggers_handler_switcher
         with logging_manager():
             self._app.run(pre_run=self.pre_run)
-        cmd_line_text = self._input_buffer.document.text
+        cmd_line_text = self.input_buffer.document.text
         # Once the application is finished running, the screen is cleared.
         # Here, we display the command to be run so that the user knows what
         # command caused the output that they're seeing.

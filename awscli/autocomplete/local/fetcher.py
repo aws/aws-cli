@@ -13,6 +13,8 @@
 
 
 class CliDriverFetcher:
+    SERVICE_MAPPER = {'s3api': 's3'}
+
     def __init__(self, cli_driver):
         self._cli_driver = cli_driver
 
@@ -24,6 +26,18 @@ class CliDriverFetcher:
         command = subcommand_table.get(current_command)
         if command:
             return command.arg_table.get(arg_name)
+
+    def get_operation_model(self, lineage, current_command, operation):
+        if current_command and len(lineage) > 1:
+            try:
+                service_name = self.SERVICE_MAPPER.get(lineage[1], lineage[1])
+                service_model = self._cli_driver.session.get_service_model(
+                    service_name)
+                operation = ''.join([part.capitalize()
+                                     for part in current_command.split('-')])
+                return service_model.operation_model(operation)
+            except Exception:
+                return
 
     def get_argument_model(self, lineage, current_command, arg_name):
         return getattr(self._get_argument(

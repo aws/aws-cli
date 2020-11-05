@@ -160,6 +160,7 @@ class BasicPromptToolkitTest(unittest.TestCase):
         self.prompter.args = []
         self.prompter.input_buffer = self.factory.create_input_buffer()
         self.prompter.doc_buffer = self.factory.create_doc_buffer()
+        self.prompter.output_buffer = self.factory.create_output_buffer()
 
     def create_application(self):
         layout = self.factory.create_layout()
@@ -241,6 +242,7 @@ class TestPromptToolkitPrompterBuffer(BasicPromptToolkitTest):
             app=FakeApplication())
         prompter.input_buffer = self.factory.create_input_buffer()
         prompter.doc_buffer = self.factory.create_doc_buffer()
+        prompter.output_buffer = self.factory.create_output_buffer()
         args = prompter.prompt_for_args(original_args)
         self.assertEqual(prompter.input_buffer.document.text,
                          "iam create-role --description 'With spaces' ")

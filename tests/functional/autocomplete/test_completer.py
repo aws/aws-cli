@@ -34,7 +34,7 @@ class TestShorthandCompleter(unittest.TestCase):
             },
             'arg_names': {
                 '': {
-                    'aws': ['region'],
+                    'aws': ['region', 'output', 'debug'],
                 },
                 'aws.codebuild': {
                     'create-project': [
@@ -48,6 +48,10 @@ class TestShorthandCompleter(unittest.TestCase):
                 '': {
                     'aws': {
                         'region': ('region', 'string', 'aws', '', None, False,
+                                   False),
+                        'output': ('output', 'string', 'aws', '', None, False,
+                                   False),
+                        'debug': ('debug', 'string', 'aws', '', None, False,
                                    False),
                     }
                 },
@@ -284,3 +288,32 @@ class TestShorthandCompleter(unittest.TestCase):
         self.assertEqual(display_text,
                          ['buildspec=',
                           'buildStatusConfig={'])
+
+    def test_return_suggestions_for_global_arg_with_choices(self):
+        self.completer = basic.ShorthandCompleter(
+            self.cli_fetcher,
+            response_filter=filters.startswith_filter
+        )
+        parsed = self.parser.parse('aws --output ')
+        suggestions = self.completer.complete(parsed)
+        names = [s.name for s in suggestions]
+        self.assertEqual(names, ['json', 'text', 'table',
+                                 'yaml', 'yaml-stream'])
+
+    def test_not_return_suggestions_for_global_arg_wo_trailing_space(self):
+        self.completer = basic.ShorthandCompleter(
+            self.cli_fetcher,
+            response_filter=filters.startswith_filter
+        )
+        parsed = self.parser.parse('aws --output')
+        suggestions = self.completer.complete(parsed)
+        self.assertIsNone(suggestions)
+
+    def test_not_return_suggestions_for_global_arg_wo_choices(self):
+        self.completer = basic.ShorthandCompleter(
+            self.cli_fetcher,
+            response_filter=filters.startswith_filter
+        )
+        parsed = self.parser.parse('aws --debug ')
+        suggestions = self.completer.complete(parsed)
+        self.assertIsNone(suggestions)

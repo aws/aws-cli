@@ -35,3 +35,7 @@ class CliDriverFetcher:
 
     def get_global_arg_documentation(self, arg_name):
         return self._cli_driver.arg_table[arg_name].documentation
+
+    def get_global_arg_choices(self, arg_name):
+        if arg_name in self._cli_driver.arg_table:
+            return self._cli_driver.arg_table[arg_name].choices

@@ -301,10 +301,6 @@ class TestShorthandCompleter(unittest.TestCase):
                                  'yaml', 'yaml-stream'])
 
     def test_not_return_suggestions_for_global_arg_wo_trailing_space(self):
-        self.completer = basic.ShorthandCompleter(
-            self.cli_fetcher,
-            response_filter=filters.startswith_filter
-        )
         parsed = self.parser.parse('aws --output')
         suggestions = self.completer.complete(parsed)
         self.assertIsNone(suggestions)
@@ -351,3 +347,4 @@ class TestModelIndexCompleter(unittest.TestCase):
         parsed = self.parser.parse('aws --re')
         suggestions = self.completer.complete(parsed)
         self.assertIn('The region', suggestions[0].help_text)
+

@@ -131,7 +131,9 @@ class PromptToolkitPrompter:
         app.debug = False
 
     def _update_doc_window_contents(self, *args):
-        content = self._docs_getter.get_docs(self._input_buffer.text)
+        parsed_args = self._completion_source.parse(
+            'aws ' + self._input_buffer.document.text)
+        content = self._docs_getter.get_docs(parsed_args)
         # The only way to "modify" a read-only buffer in prompt_toolkit is to
         # create a new `prompt_toolkit.document.Document`. A 'cursor_position'
         # of 0 allows us to start viewing the documentation from the beginning,

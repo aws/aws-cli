@@ -3,6 +3,8 @@
 # which doesn't have argparse.  Given that argparse is
 # a dependency that eventually gets installed, we could
 # try to bootstrap, but using optparse is just easier.
+from __future__ import print_function
+
 import optparse
 import os
 import platform
@@ -23,6 +25,9 @@ UNSUPPORTED_PYTHON = (
     (sys.version_info[0] == 2 and sys.version_info[:2] <= (2, 6)) or
     (sys.version_info[0] == 3 and sys.version_info[:2] <= (3, 3))
 )
+DEPRECATED_PYTHON = (
+    sys.version_info[:2] in ((3, 4), (3, 5))
+)
 INSTALL_ARGS = (
     '--no-binary :all: --no-build-isolation --no-cache-dir --no-index '
 )
@@ -35,6 +40,12 @@ class BadRCError(Exception):
 class MultipleBundlesError(Exception):
     pass
 
+class PythonDeprecationWarning(Warning):
+    """
+    Python version being used is scheduled to become unsupported
+    in an future release. See warning for specifics.
+    """
+    pass
 
 @contextmanager
 def cd(dirname):
@@ -184,14 +195,27 @@ def main():
     if UNSUPPORTED_PYTHON:
         unsupported_python_msg = (
             "Unsupported Python version detected: Python %s.%s\n"
-            "To continue using this installer you must use Python 2.7 "
-            "and greater or Python 3.4 and greater.\n"
+            "To continue using this installer you must use Python 2.7, "
+            "Python 3.6 or later.\n"
             "For more information see the following blog post:\n"
             "https://aws.amazon.com/blogs/developer/deprecation-of-python-2-6"
             "-and-python-3-3-in-botocore-boto3-and-the-aws-cli/"
         )
         print(unsupported_python_msg % sys.version_info[:2])
         sys.exit(1)
+
+    if DEPRECATED_PYTHON:
+        py_version = sys.version_info[:2]
+        deprecated_python_msg = (
+            "Deprecated Python version detected: Python {}.{}\n"
+            "Starting February 1, 2021, the AWS CLI will no longer support "
+            "this version of Python. To continue receiving service updates, "
+            "bug fixes, and security updates please upgrade to Python 3.6 or "
+            "later. More information can be found here: https://aws.amazon.com"
+            "/blogs/developer/announcing-the-end-of-support-for-python-3-4-"
+            "and-3-5-in-the-aws-sdk-for-python-and-aws-cli-v1/"
+        ).format(py_version[0], py_version[1])
+        print(deprecated_python_msg, file=sys.stderr)
 
     opts = parser.parse_args()[0]
     working_dir = create_working_dir()

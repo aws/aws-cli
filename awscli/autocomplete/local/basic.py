@@ -291,7 +291,9 @@ class ShorthandCompleter(BaseCompleter):
                 parsed.lineage, parsed.current_command, parsed.current_param
             )
             if arg_model is None:
-                return None
+                results = self._get_prompt_for_global_arg(
+                    parsed.current_param, parsed.current_fragment)
+                return results
             parsed_input = self._parse_fragment(parsed.current_fragment)
             if parsed_input is not None:
                 results = self._get_completion(arg_model, parsed_input)
@@ -299,18 +301,32 @@ class ShorthandCompleter(BaseCompleter):
                 # current_fragment to make correct insert into the user
                 # input line
                 fragment = parsed.current_fragment or ''
-                for result in results:
-                    name_part_len = len(fragment) - len(result.name)
-                    result.name = "%s%s" % (
-                        fragment[:name_part_len],
-                        result.display_text
-                    )
+                results = self._set_results_name(results, fragment)
             brackets_completion = self._get_close_brackets_completion(
                 parsed.current_fragment
             )
             if brackets_completion is not None:
                 results.append(brackets_completion)
             return results or None
+
+    def _get_prompt_for_global_arg(self, arg_name, prefix):
+        choices = self._cli_driver_fetcher.get_global_arg_choices(arg_name)
+        if choices and prefix is not None:
+            results = self._filter(
+                prefix,
+                [CompletionResult(prefix, display_text=choice)
+                 for choice in choices]
+            )
+            return self._set_results_name(results, prefix)
+
+    def _set_results_name(self, results, fragment):
+        for result in results:
+            name_part_len = len(fragment) - len(result.name)
+            result.name = "%s%s" % (
+                fragment[:name_part_len],
+                result.display_text
+            )
+        return results
 
     def _close_brackets(self, fragment):
         # If there any unclosed brackets in the text we try to close them
@@ -439,7 +455,7 @@ class ShorthandCompleter(BaseCompleter):
         # we have two way we can enter lists:
         # - if it's a top level structure it will be space separated and
         # parsed_input will contain the last element of the list
-        # - if it's a nested structure we'll get the whole list as an input 
+        # - if it's a nested structure we'll get the whole list as an input
         # and take the last item
         # - if list is empty we'll pass None to the next completer
         if isinstance(parsed_input, list):

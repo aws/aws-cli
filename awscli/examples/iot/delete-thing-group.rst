@@ -1,6 +1,6 @@
 **To delete a thing group**
 
-The following ``delete-thing-group`` example deletes the specified thing group. You cannot delete a thing group if it contains things. ::
+The following ``delete-thing-group`` example deletes the specified thing group. You cannot delete a thing group if it contains child thing groups. ::
 
     aws iot delete-thing-group \
         --thing-group-name DefectiveBulbs

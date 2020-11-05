@@ -1043,6 +1043,52 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.172
+========
+
+* api-change:``frauddetector``: Update frauddetector command to latest version
+* api-change:``events``: Update events command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+* api-change:``es``: Update es command to latest version
+
+
+1.18.171
+========
+
+* api-change:``iot``: Update iot command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``xray``: Update xray command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``mq``: Update mq command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``meteringmarketplace``: Update meteringmarketplace command to latest version
+
+
+1.18.170
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+
+
+1.18.169
+========
+
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``braket``: Update braket command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``sns``: Update sns command to latest version
+
+
 1.18.168
 ========
 

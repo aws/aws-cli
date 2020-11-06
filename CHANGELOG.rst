@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.173
+========
+
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``dlm``: Update dlm command to latest version
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
 1.18.172
 ========
 

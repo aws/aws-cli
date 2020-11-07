@@ -180,10 +180,6 @@ class TestModelIndexCompleter(unittest.TestCase):
         self.assertIsNone(self.completer.complete(parsed))
 
     def test_can_prefix_match_services(self):
-        parsed = parser.ParsedResult(
-            current_command='aws', lineage=[],
-            current_fragment='e',
-        )
         parsed = self.parser.parse('aws e')
         expected = [
             # The -1 is because we need to replace the string starting

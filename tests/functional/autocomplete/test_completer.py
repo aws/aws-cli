@@ -119,7 +119,7 @@ class TestShorthandCompleter(unittest.TestCase):
 
         self.assert_command_generates_suggestions(
             'aws codebuild create-project --source auth=',
-            expected_suggestions= None)
+            expected_suggestions=None)
 
         self.assert_command_generates_suggestions(
             'aws codebuild create-project --source auth={',
@@ -317,3 +317,37 @@ class TestShorthandCompleter(unittest.TestCase):
         parsed = self.parser.parse('aws --debug ')
         suggestions = self.completer.complete(parsed)
         self.assertIsNone(suggestions)
+
+
+class TestModelIndexCompleter(unittest.TestCase):
+    def setUp(self):
+        cli_driver = CLIDriver()
+        self.cli_fetcher = fetcher.CliDriverFetcher(cli_driver)
+        self.index = InMemoryIndex({
+            'command_names': {
+                '': [('aws', None)],
+            },
+            'arg_names': {
+                '': {
+                    'aws': ['region', 'endpoint-url'],
+                },
+            },
+            'arg_data': {
+                '': {
+                    'aws': {
+                        'endpoint-url': ('endpoint-url', 'string', 'aws', '',
+                                         None, False, False),
+                        'region': ('region', 'string', 'aws', '', None, False,
+                                   False),
+                    }
+                }
+            }
+        })
+        self.parser = parser.CLIParser(self.index)
+        self.completer = basic.ModelIndexCompleter(
+            self.index, cli_driver_fetcher=self.cli_fetcher)
+
+    def test_returns_help_text_for_params_in_global_scope(self):
+        parsed = self.parser.parse('aws --re')
+        suggestions = self.completer.complete(parsed)
+        self.assertIn('The region', suggestions[0].help_text)

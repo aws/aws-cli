@@ -191,70 +191,60 @@ class ModelIndexCompleter(BaseCompleter):
     def _complete_options(self, parsed):
         # '--endpoint' -> 'endpoint'
         offset = -len(parsed.current_fragment)
-        # In case fragment doesn't start from --
-        # we use the original fragment
-        if parsed.current_fragment.startswith('--'):
-            fragment = parsed.current_fragment[2:]
-        else:
-            fragment = parsed.current_fragment
+        is_in_global_scope = (
+                parsed.lineage == [] and
+                parsed.current_command == 'aws'
+        )
         arg_names = self._index.arg_names(
             lineage=parsed.lineage, command_name=parsed.current_command)
         results = []
-        for arg_name in arg_names:
-            arg_data = self._index.get_argument_data(
-                lineage=parsed.lineage,
-                command_name=parsed.current_command, arg_name=arg_name)
-            help_text = None
-            if self._cli_driver_fetcher:
-                help_text = strip_html_tags_and_newlines(
-                    self._cli_driver_fetcher.get_argument_documentation(
-                        parsed.lineage, parsed.current_command, arg_name
+        if not is_in_global_scope:
+            for arg_name in arg_names:
+                arg_data = self._index.get_argument_data(
+                    lineage=parsed.lineage,
+                    command_name=parsed.current_command, arg_name=arg_name)
+                help_text = None
+                if self._cli_driver_fetcher:
+                    help_text = strip_html_tags_and_newlines(
+                        self._cli_driver_fetcher.get_argument_documentation(
+                            parsed.lineage, parsed.current_command, arg_name
+                        )
                     )
+                results.append(self._outfile_filter(
+                                    CompletionResult(
+                                        '--%s' % arg_name,
+                                        starting_index=offset,
+                                        required=arg_data.required,
+                                        cli_type_name=arg_data.type_name,
+                                        help_text=help_text)
+                                    )
                 )
-            results.append(self._outfile_filter(
-                                CompletionResult(
-                                    '--%s' % arg_name,
-                                    starting_index=offset,
-                                    required=arg_data.required,
-                                    cli_type_name=arg_data.type_name,
-                                    help_text=help_text)
-                                )
-            )
-        # Global params apply to any scope, so if we're not
-        # in the global scope, we need to add completions for
-        # global params
-        self._inject_global_params_if_needed(parsed, results, fragment)
-
+        # Global params apply to any scope
+        self._inject_global_params(parsed, results)
         return [result for result in results
                 if result.name.strip('--') not in (list(parsed.parsed_params) +
                                                    list(parsed.global_params))]
 
-    def _inject_global_params_if_needed(self, parsed, results, fragment):
-        is_in_global_scope = (
-            parsed.lineage == [] and
-            parsed.current_command == 'aws'
-        )
-        if not is_in_global_scope:
-            offset = -len(parsed.current_fragment)
-            arg_data = self._index.get_global_arg_data()
-            global_param_completions = []
-            for arg_name, type_name, *_, help_text in arg_data:
-                help_text = None
-                if self._cli_driver_fetcher:
-                    help_text = strip_html_tags_and_newlines(
-                        self._cli_driver_fetcher.get_global_arg_documentation(
-                            arg_name
-                        )
+    def _inject_global_params(self, parsed, results):
+        offset = -len(parsed.current_fragment)
+        arg_data = self._index.get_global_arg_data()
+        global_param_completions = []
+        for arg_name, type_name, *_, help_text in arg_data:
+            help_text = None
+            if self._cli_driver_fetcher:
+                help_text = strip_html_tags_and_newlines(
+                    self._cli_driver_fetcher.get_global_arg_documentation(
+                        arg_name
                     )
-                global_param_completions.append(
-                    CompletionResult('--%s' % arg_name,
-                                     starting_index=offset,
-                                     required=False,
-                                     cli_type_name=type_name,
-                                     help_text=help_text)
                 )
-
-            results.extend(global_param_completions)
+            global_param_completions.append(
+                CompletionResult('--%s' % arg_name,
+                                 starting_index=offset,
+                                 required=False,
+                                 cli_type_name=type_name,
+                                 help_text=help_text)
+            )
+        results.extend(global_param_completions)
 
 
 class ShorthandCompleter(BaseCompleter):
@@ -291,7 +281,9 @@ class ShorthandCompleter(BaseCompleter):
                 parsed.lineage, parsed.current_command, parsed.current_param
             )
             if arg_model is None:
-                return None
+                results = self._get_prompt_for_global_arg(
+                    parsed.current_param, parsed.current_fragment)
+                return results
             parsed_input = self._parse_fragment(parsed.current_fragment)
             if parsed_input is not None:
                 results = self._get_completion(arg_model, parsed_input)
@@ -299,18 +291,32 @@ class ShorthandCompleter(BaseCompleter):
                 # current_fragment to make correct insert into the user
                 # input line
                 fragment = parsed.current_fragment or ''
-                for result in results:
-                    name_part_len = len(fragment) - len(result.name)
-                    result.name = "%s%s" % (
-                        fragment[:name_part_len],
-                        result.display_text
-                    )
+                results = self._set_results_name(results, fragment)
             brackets_completion = self._get_close_brackets_completion(
                 parsed.current_fragment
             )
             if brackets_completion is not None:
                 results.append(brackets_completion)
             return results or None
+
+    def _get_prompt_for_global_arg(self, arg_name, prefix):
+        choices = self._cli_driver_fetcher.get_global_arg_choices(arg_name)
+        if choices and prefix is not None:
+            results = self._filter(
+                prefix,
+                [CompletionResult(prefix, display_text=choice)
+                 for choice in choices]
+            )
+            return self._set_results_name(results, prefix)
+
+    def _set_results_name(self, results, fragment):
+        for result in results:
+            name_part_len = len(fragment) - len(result.name)
+            result.name = "%s%s" % (
+                fragment[:name_part_len],
+                result.display_text
+            )
+        return results
 
     def _close_brackets(self, fragment):
         # If there any unclosed brackets in the text we try to close them
@@ -439,7 +445,7 @@ class ShorthandCompleter(BaseCompleter):
         # we have two way we can enter lists:
         # - if it's a top level structure it will be space separated and
         # parsed_input will contain the last element of the list
-        # - if it's a nested structure we'll get the whole list as an input 
+        # - if it's a nested structure we'll get the whole list as an input
         # and take the last item
         # - if list is empty we'll pass None to the next completer
         if isinstance(parsed_input, list):

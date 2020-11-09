@@ -68,7 +68,7 @@ class PromptToolkitPrompter:
         self._input_buffer = None
         self._doc_buffer = None
         if app is None:
-            app = self._create_application()
+            app = self.create_application()
         self._app = app
         self._args = []
         self._driver = driver
@@ -82,10 +82,13 @@ class PromptToolkitPrompter:
     def input_buffer(self, value):
         self._input_buffer = value
 
+    @property
+    def doc_buffer(self):
+        return self._doc_buffer
+
+    @doc_buffer.setter
     def doc_buffer(self, value):
         self._doc_buffer = value
-
-    doc_buffer = property(None, doc_buffer)
 
     def args(self, value):
         self._args = value
@@ -105,7 +108,7 @@ class PromptToolkitPrompter:
                                                      search_field)
         return input_buffer_container, search_field, doc_window
 
-    def _create_application(self):
+    def create_application(self):
         self._create_buffers()
         input_buffer_container, search_field, \
                 doc_window = self._create_containers()
@@ -118,11 +121,14 @@ class PromptToolkitPrompter:
         kb = kb_manager.keybindings
         app = Application(layout=layout, key_bindings=kb, full_screen=False,
                           erase_when_done=True)
-        # make doc panel invisible by default
+        self._set_app_defaults(app)
+        return app
+
+    def _set_app_defaults(self, app):
         app.show_doc = False
+        app.multi_column = False
         app.show_help = False
         app.debug = False
-        return app
 
     def _update_doc_window_contents(self, *args):
         content = self._docs_getter.get_docs(self._input_buffer.text)

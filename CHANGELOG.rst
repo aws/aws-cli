@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.18.174
+========
+
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``iotanalytics``: Update iotanalytics command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``storagegateway``: Update storagegateway command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+* api-change:``datasync``: Update datasync command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+
+
 1.18.173
 ========
 

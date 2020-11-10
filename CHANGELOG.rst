@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.1.0
+=====
+
+* feature:autoprompt: Improved autoprompt mode. See `#5664 <https://github.com/aws/aws-cli/issues/5664>`__
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 2.0.63
 ======
 

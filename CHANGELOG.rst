@@ -1090,6 +1090,15 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.175
+========
+
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.18.174
 ========
 

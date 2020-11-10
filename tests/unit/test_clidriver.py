@@ -11,6 +11,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import contextlib
 import platform
 import re
 
@@ -18,10 +19,8 @@ from awscli.testutils import unittest
 from awscli.testutils import BaseAWSCommandParamsTest
 import logging
 import io
-import sys
 
 import mock
-import nose
 from awscli.compat import six
 from botocore import xform_name
 from botocore.awsrequest import AWSResponse
@@ -34,6 +33,7 @@ from awscli.clidriver import CLIDriver
 from awscli.clidriver import create_clidriver
 from awscli.clidriver import CustomArgument
 from awscli.clidriver import CLICommand
+from awscli.clidriver import construct_cli_error_handlers_chain
 from awscli.clidriver import ServiceCommand
 from awscli.clidriver import ServiceOperation
 from awscli.paramfile import URIArgumentHandler
@@ -294,6 +294,7 @@ class FakeCommandVerify(FakeCommand):
 class TestCliDriver(unittest.TestCase):
     def setUp(self):
         self.session = FakeSession()
+        self.session.set_config_variable('cli_auto_prompt', 'off')
         self.driver = CLIDriver(session=self.session)
 
     def test_session_can_be_passed_in(self):
@@ -317,10 +318,11 @@ class TestCliDriver(unittest.TestCase):
         self.assertEqual(
             driver.session.get_config_variable('region'), 'us-east-2')
 
-    def test_error_logger(self):
+    @mock.patch('awscli.clidriver.set_stream_logger')
+    def test_error_logger(self, set_stream_logger):
         self.driver.main('s3 list-objects --bucket foo --profile foo'.split())
         expected = {'log_level': logging.ERROR, 'logger_name': 'awscli'}
-        self.assertEqual(self.driver.session.stream_logger_args[1], expected)
+        set_stream_logger.assert_called_with(**expected)
 
     def test_ctrl_c_is_handled(self):
         fake_client = mock.Mock()
@@ -359,11 +361,28 @@ class TestCliDriver(unittest.TestCase):
         expected = list(GET_DATA['cli']['options'])
         self.assertEqual(list(arg_table), expected)
 
+    def test_cli_driver_can_keep_log_handlers(self):
+        fake_stderr = io.StringIO()
+        with contextlib.redirect_stderr(fake_stderr):
+            driver = create_clidriver(['--debug'])
+            rc = driver.main(['ec2', '--debug'])
+        self.assertEqual(rc, 252)
+        self.assertEqual(2, fake_stderr.getvalue().count('CLI version:'))
+
+    def test_cli_driver_can_remove_log_handlers(self):
+        fake_stderr = io.StringIO()
+        with contextlib.redirect_stderr(fake_stderr):
+            driver = create_clidriver(['--debug'])
+            rc = driver.main(['ec2'])
+        self.assertEqual(rc, 252)
+        self.assertEqual(1, fake_stderr.getvalue().count('CLI version:'))
+
 
 class TestCliDriverHooks(unittest.TestCase):
     # These tests verify the proper hooks are emitted in clidriver.
     def setUp(self):
         self.session = FakeSession()
+        self.session.set_config_variable('cli_auto_prompt', 'off')
         self.emitter = mock.Mock()
         self.emitter.emit.return_value = []
         self.stdout = six.StringIO()
@@ -429,13 +448,16 @@ class TestCliDriverHooks(unittest.TestCase):
         ])
 
     def test_unknown_command_suggests_help(self):
-        driver = CLIDriver(session=self.session)
-        # We're catching SystemExit here because this is raised from the bowels
-        # of argparser so short of patching the ArgumentParser's exit() method,
-        # we can just catch SystemExit.
-        with self.assertRaises(SystemExit):
-            # Note the typo in 'list-objects'
-            driver.main('s3 list-objecst --bucket foo --unknown-arg foo'.split())
+        driver = CLIDriver(
+            session=self.session,
+            error_handler=construct_cli_error_handlers_chain()
+        )
+
+        # Note the typo in 'list-objects'
+        rc = driver.main(
+            's3 list-objecst --bucket foo --unknown-arg foo'.split()
+        )
+        self.assertEqual(rc, 252)
         # Tell the user what went wrong.
         self.assertIn("Invalid choice: 'list-objecst'", self.stderr.getvalue())
         # Offer the user a suggestion.
@@ -683,7 +705,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         with mock.patch('sys.stderr') as f:
             driver.main('ec2 describe-instances'.split())
         self.assertEqual(
-            f.write.call_args_list[0][0][0],
+            f.write.call_args_list[1][0][0],
             'Unable to locate credentials. '
             'You can configure credentials by running "aws configure".')
 
@@ -716,28 +738,28 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(rc, 255)
 
     def test_help_blurb_in_error_message(self):
-        with self.assertRaises(SystemExit):
-            self.driver.main([])
+        rc = self.driver.main([])
+        self.assertEqual(rc, 252)
         self.assertIn(HELP_BLURB, self.stderr.getvalue())
 
     def test_help_blurb_in_service_error_message(self):
-        with self.assertRaises(SystemExit):
-            self.driver.main(['ec2'])
+        rc = self.driver.main(['ec2'])
+        self.assertEqual(rc, 252)
         self.assertIn(HELP_BLURB, self.stderr.getvalue())
 
     def test_help_blurb_in_operation_error_message(self):
-        with self.assertRaises(SystemExit):
-            self.driver.main(['s3api', 'list-objects'])
+        rc = self.driver.main(['s3api', 'list-objects'])
+        self.assertEqual(rc, 252)
         self.assertIn(HELP_BLURB, self.stderr.getvalue())
 
     def test_help_blurb_in_unknown_argument_error_message(self):
-        with self.assertRaises(SystemExit):
-            self.driver.main(['s3api', 'list-objects', '--help'])
+        rc = self.driver.main(['s3api', 'list-objects', '--help'])
+        self.assertEqual(rc, 252)
         self.assertIn(HELP_BLURB, self.stderr.getvalue())
 
     def test_idempotency_token_is_not_required_in_help_text(self):
-        with self.assertRaises(SystemExit):
-            self.driver.main(['servicecatalog', 'create-constraint'])
+        rc = self.driver.main(['servicecatalog', 'create-constraint'])
+        self.assertEqual(rc, 252)
         self.assertNotIn('--idempotency-token', self.stderr.getvalue())
 
     @mock.patch('awscli.clidriver.platform.system', return_value='Linux')
@@ -1009,6 +1031,80 @@ class TestServiceOperation(unittest.TestCase):
         token_argument = arg_table.get('token')
         self.assertFalse(token_argument.required,
                          'Idempotency tokens should not be required')
+
+
+class TestAWSCLIEntryPoint(unittest.TestCase):
+
+    def setUp(self):
+        self.prompt_patch = mock.patch('awscli.clidriver.AutoPromptDriver')
+        self.crete_driver_patch = mock.patch(
+            'awscli.clidriver.create_clidriver')
+        prompt_driver_class = self.prompt_patch.start()
+        self.create_clidriver = self.crete_driver_patch.start()
+        self.driver = mock.Mock()
+        self.create_clidriver.return_value = self.driver
+        self.prompt_driver = mock.Mock()
+        prompt_driver_class.return_value = self.prompt_driver
+
+    def tearDown(self):
+        self.prompt_patch.stop()
+        self.crete_driver_patch.stop()
+
+    def test_recreate_driver_in_partial_mode_on_param_err(self):
+        self.prompt_driver.resolve_mode.return_value = 'on-partial'
+        self.driver.main.return_value = 252
+        entry_point = awscli.clidriver.AWSCLIEntryPoint()
+        rc = entry_point.main([])
+        self.assertEqual(self.create_clidriver.call_count, 2)
+        self.assertEqual(rc, 252)
+
+    def test_not_recreate_driver_in_partial_mode_on_success(self):
+        self.prompt_driver.resolve_mode.return_value = 'on-partial'
+        self.driver.main.return_value = 0
+        entry_point = awscli.clidriver.AWSCLIEntryPoint()
+        rc = entry_point.main([])
+        self.assertEqual(self.create_clidriver.call_count, 1)
+        self.assertEqual(rc, 0)
+
+    def test_not_recreate_driver_in_on_mode(self):
+        self.prompt_driver.resolve_mode.return_value = 'on'
+        self.driver.main.return_value = 252
+        entry_point = awscli.clidriver.AWSCLIEntryPoint()
+        rc = entry_point.main([])
+        self.assertEqual(self.create_clidriver.call_count, 1)
+        self.assertEqual(rc, 252)
+
+    def test_not_recreate_driver_in_off_mode(self):
+        self.prompt_driver.resolve_mode.return_value = 'off'
+        self.driver.main.return_value = 252
+        entry_point = awscli.clidriver.AWSCLIEntryPoint()
+        rc = entry_point.main([])
+        self.assertEqual(self.create_clidriver.call_count, 1)
+        self.assertEqual(rc, 252)
+
+    def test_handle_exception_in_main(self):
+        self.prompt_driver.resolve_mode.return_value = 'on'
+        self.prompt_driver.prompt_for_args.side_effect = Exception('error')
+        entry_point = awscli.clidriver.AWSCLIEntryPoint()
+        fake_stderr = io.StringIO()
+        with contextlib.redirect_stderr(fake_stderr):
+            rc = entry_point.main([])
+        self.assertEqual(rc, 255)
+        self.assertIn('error', fake_stderr.getvalue())
+
+
+class TextCreateCLIDriver(unittest.TestCase):
+    def test_create_cli_driver_parse_args(self):
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr):
+            driver = create_clidriver(['--debug'])
+        self.assertIn('CLI version', stderr.getvalue())
+
+    def test_create_cli_driver_wo_args(self):
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr):
+            driver = create_clidriver()
+        self.assertIn('', stderr.getvalue())
 
 
 if __name__ == '__main__':

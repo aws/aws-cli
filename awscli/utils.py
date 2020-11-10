@@ -15,6 +15,7 @@ import signal
 import datetime
 import contextlib
 import os
+import re
 import sys
 from subprocess import Popen, PIPE
 import logging
@@ -132,6 +133,11 @@ def split_on_commas(value):
         # If there's quotes for the values, we have to handle this
         # ourselves.
         return _split_with_quotes(value)
+
+
+def strip_html_tags(text):
+    clean = re.compile('<.*?>')
+    return re.sub(clean, '', text)
 
 
 def _split_with_quotes(value):
@@ -254,6 +260,13 @@ def emit_top_level_args_parsed_event(session, args):
 def is_a_tty():
     try:
         return os.isatty(sys.stdout.fileno())
+    except Exception as e:
+        return False
+
+
+def is_stdin_a_tty():
+    try:
+        return os.isatty(sys.stdin.fileno())
     except Exception as e:
         return False
 

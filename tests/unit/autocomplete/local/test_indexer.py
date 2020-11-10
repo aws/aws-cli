@@ -48,14 +48,23 @@ class DummyCommand(object):
             arg_table = {}
         self.arg_table = arg_table
 
+    def create_help_command(self):
+        help_command = mock.Mock()
+        service = mock.Mock()
+        service.service_model.metadata = {'serviceFullName': 'Amazon Elastic'}
+        help_command.command_table = {'ec2': service}
+        return help_command
+
 
 class DummyArg(object):
     def __init__(self, name, cli_type_name='string', nargs=None,
-                 positional_arg=False):
+                 positional_arg=False, required=False, help_text=''):
         self.name = name
         self.cli_type_name = cli_type_name
         self.nargs = nargs
         self.positional_arg = positional_arg
+        self.required = required
+        self.help_text = help_text
 
 
 class TestCanRetrieveCommands(unittest.TestCase):
@@ -173,13 +182,19 @@ class TestCanRetrieveCommands(unittest.TestCase):
             set([]),
         )
 
+    def test_can_get_full_service_name(self):
+        self.indexer.generate_index(self.aws_command)
+        self.assertEqual(
+            set(self.query.commands_with_full_name(lineage=['aws'])),
+            set([('ec2', 'Amazon Elastic'), ('s3', 'High level S3 commands')]),
+        )
+
     def test_can_get_argument_data(self):
         self.indexer.generate_index(self.aws_command)
         arg_data = self.query.get_argument_data(
             lineage=['aws', 'ec2'],
             command_name='describe-instances',
             arg_name='filters',
-
         )
         self.assertEqual(
             arg_data,
@@ -190,6 +205,7 @@ class TestCanRetrieveCommands(unittest.TestCase):
                 parent='aws.ec2',
                 nargs='+',
                 positional_arg='0',
+                required=False,
             ),
         )
 

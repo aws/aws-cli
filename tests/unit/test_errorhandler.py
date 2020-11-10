@@ -10,101 +10,98 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest
+import io
+import nose
+from collections import namedtuple
 
-import mock
+from botocore.exceptions import (
+    NoRegionError, NoCredentialsError, ClientError,
+    ParamValidationError as BotocoreParamValidationError,
+)
+from awscli.arguments import UnknownArgumentError
+from awscli.argparser import ArgParseException
+from awscli.argprocess import ParamError, ParamSyntaxError
+from awscli.autoprompt.factory import PrompterKeyboardInterrupt
+from awscli.customizations.exceptions import (
+    ParamValidationError, ConfigurationError
+)
+
 from awscli import errorhandler
 
-
-class TestErrorHandler(unittest.TestCase):
-
-    def create_http_response(self, **kwargs):
-        response = mock.Mock()
-        for key, value in kwargs.items():
-            setattr(response, key, value)
-        return response
-
-    def test_error_handler_client_side(self):
-        response = {
-            'Error': {'Code': 'AccessDenied',
-                      'HostId': 'foohost',
-                      'Message': 'Access Denied',
-                      'RequestId': 'requestid'},
-            'ResponseMetadata': {}}
-        handler = errorhandler.ErrorHandler()
-        http_response = self.create_http_response(status_code=403)
-        # We're manually using the try/except form because
-        # we want to catch the exception and assert that it has specific
-        # attributes on it.
-        operation = mock.Mock()
-        operation.name = 'OperationName'
-        try:
-            handler(http_response, response, operation)
-        except errorhandler.ClientError as e:
-            # First, the operation name should be in the error message.
-            self.assertIn('OperationName', str(e))
-            # We should state that this is a ClientError.
-            self.assertIn('client error', str(e))
-            # And these values should be available on the exception
-            # so clients can access this information programmatically.
-            self.assertEqual(e.error_code, 'AccessDenied')
-            self.assertEqual(e.error_message, 'Access Denied')
-            self.assertEqual(e.operation_name, 'OperationName')
-        except Exception as e:
-            self.fail("Unexpected error raised: %s" % e)
-        else:
-            self.fail("Expected errorhandler.ClientError to be raised "
-                      "but no exception was raised.")
-
-    def test_error_handler_server_side(self):
-        response = {
-            'Error': {'Code': 'InternalError',
-                      'HostId': 'foohost',
-                      'Message': 'An internal error has occurred',
-                      'RequestId': 'requestid'},
-            'ResponseMetadata': {}}
-        handler = errorhandler.ErrorHandler()
-        http_response = self.create_http_response(status_code=500)
-        # We're manually using the try/except form because
-        # we want to catch the exception and assert that it has specific
-        # attributes on it.
-        operation = mock.Mock()
-        operation.name = 'OperationName'
-        try:
-            handler(http_response, response, operation)
-        except errorhandler.ServerError as e:
-            # First, the operation name should be in the error message.
-            self.assertIn('OperationName', str(e))
-            # We should state that this is a ServerError.
-            self.assertIn('server error', str(e))
-            # And these values should be available on the exception
-            # so clients can access this information programmatically.
-            self.assertEqual(e.error_code, 'InternalError')
-            self.assertEqual(e.error_message, 'An internal error has occurred')
-            self.assertEqual(e.operation_name, 'OperationName')
-        except Exception as e:
-            self.fail("Unexpected error raised: %s" % e)
-        else:
-            self.fail("Expected errorhandler.ServerError to be raised "
-                      "but no exception was raised.")
-
-    def test_no_exception_raised_on_200(self):
-        response = {
-            'CommonPrefixes': [],
-            'Contents': [],
-        }
-        handler = errorhandler.ErrorHandler()
-        http_response = self.create_http_response(status_code=200)
-        # We're manually using the try/except form because
-        # we want to catch the exception and assert that it has specific
-        # attributes on it.
-        operation = mock.Mock()
-        operation.name = 'OperationName'
-        try:
-            self.assertIsNone(handler(http_response, response, operation))
-        except errorhandler.BaseOperationError as e:
-            self.fail("Unexpected error raised: %s" % e)
+Case = namedtuple('Case', [
+    'exception',
+    'rc',
+    'stderr',
+    'stdout'
+])
 
 
-if __name__ == '__main__':
-    unittest.main()
+def _assert_rc_and_error_message(case, error_handler):
+    stderr = io.StringIO()
+    stdout = io.StringIO()
+    try:
+        raise case.exception
+    except BaseException as e:
+        cr = error_handler.handle_exception(e, stdout, stderr)
+        nose.tools.eq_(cr, case.rc, case.exception.__class__)
+        nose.tools.assert_in(case.stderr, stderr.getvalue())
+        nose.tools.eq_(case.stdout, stdout.getvalue())
+
+
+def test_cli_error_handling_chain():
+    cases = [
+        Case(Exception('error'), 255, 'error', ''),
+        Case(KeyboardInterrupt(), 130, '', '\n'),
+        Case(NoRegionError(), 253, 'region', ''),
+        Case(NoCredentialsError(), 253, 'credentials', ''),
+        Case(ClientError(error_response={}, operation_name=''), 254,
+             'An error occurred', ''),
+        Case(BotocoreParamValidationError(report='param_name'), 252,
+             'param_name', ''),
+        Case(UnknownArgumentError('error'), 252, 'error', ''),
+        Case(ArgParseException('error'), 252, 'error', ''),
+        Case(ParamSyntaxError('error'), 252, 'error', ''),
+        Case(ParamError(cli_name='cli', message='message'), 252,
+             "'cli': message", ''),
+        Case(ParamValidationError('error'), 252, 'error', ''),
+        Case(ConfigurationError('error'), 253, 'error', ''),
+    ]
+    error_handler = errorhandler.construct_cli_error_handlers_chain()
+    for case in cases:
+        yield _assert_rc_and_error_message, case, error_handler
+
+
+def test_cli_error_handling_chain_injection():
+    cases = [
+        Case(Exception('error'), 255, 'error', ''),
+        Case(KeyboardInterrupt(), 130, '', '\n'),
+        Case(NoRegionError(), 253, 'region', ''),
+        Case(NoCredentialsError(), 253, 'credentials', ''),
+        Case(ClientError(error_response={}, operation_name=''), 254,
+             'An error occurred', ''),
+        Case(BotocoreParamValidationError(report='param_name'), 252, '', ''),
+        Case(UnknownArgumentError('error'), 252, '', ''),
+        Case(ArgParseException('error'), 252, '', ''),
+        Case(ParamSyntaxError('error'), 252, '', ''),
+        Case(ParamError(cli_name='cli', message='message'), 252, '', ''),
+        Case(ParamValidationError('error'), 252, '', ''),
+        Case(ConfigurationError('error'), 253, 'error', ''),
+    ]
+    error_handler = errorhandler.construct_cli_error_handlers_chain()
+    error_handler.inject_handler(
+        0, errorhandler.SilenceParamValidationMsgErrorHandler()
+    )
+    for case in cases:
+        yield _assert_rc_and_error_message, case, error_handler
+
+
+def test_entry_point_error_handling_chain():
+    cases = [
+        Case(Exception('error'), 255, 'error', ''),
+        Case(KeyboardInterrupt(), 130, '', '\n'),
+        Case(PrompterKeyboardInterrupt('error'), 130, 'error', ''),
+        Case(ParamValidationError('error'), 252, 'error', ''),
+    ]
+    error_handler = errorhandler.construct_entry_point_handlers_chain()
+    for case in cases:
+        yield _assert_rc_and_error_message, case, error_handler

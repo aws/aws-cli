@@ -14,7 +14,6 @@ import json
 import os
 import platform
 import sys
-import signal
 import logging
 
 import distro
@@ -22,12 +21,6 @@ import distro
 import botocore.session
 from botocore import xform_name
 from botocore.compat import copy_kwargs, OrderedDict
-from botocore.exceptions import NoCredentialsError
-from botocore.exceptions import NoRegionError
-from botocore.exceptions import ClientError
-from botocore.exceptions import (
-    ParamValidationError as BotocoreParamValidationError
-)
 from botocore.history import get_global_history_recorder
 from botocore.configprovider import InstanceVarProvider
 from botocore.configprovider import EnvironmentProvider
@@ -36,16 +29,16 @@ from botocore.configprovider import ConstantProvider
 from botocore.configprovider import ChainProvider
 
 from awscli import __version__
-from awscli.compat import default_pager
-from awscli.compat import get_stderr_text_writer
+from awscli.compat import (
+    default_pager, get_stderr_text_writer, get_stdout_text_writer
+)
 from awscli.formatter import get_formatter
 from awscli.plugin import load_plugins
 from awscli.commands import CLICommand
 from awscli.argparser import MainArgParser
+from awscli.argparser import FirstPassGlobalArgParser
 from awscli.argparser import ServiceArgParser
 from awscli.argparser import ArgTableArgParser
-from awscli.argparser import USAGE
-from awscli.argprocess import ParamError, ParamSyntaxError
 from awscli.help import ProviderHelpCommand
 from awscli.help import ServiceHelpCommand
 from awscli.help import OperationHelpCommand
@@ -57,22 +50,17 @@ from awscli.arguments import UnknownArgumentError
 from awscli.argprocess import unpack_argument
 from awscli.alias import AliasLoader
 from awscli.alias import AliasCommandInjector
+from awscli.logger import set_stream_logger, remove_stream_logger
 from awscli.utils import emit_top_level_args_parsed_event
-from awscli.utils import write_exception
 from awscli.utils import OutputStreamFactory
 from awscli.utils import IMDSRegionProvider
-from awscli.constants import (
-    PARAM_VALIDATION_ERROR_RC, CONFIGURATION_ERROR_RC, CLIENT_ERROR_RC,
-    GENERAL_ERROR_RC,
+from awscli.constants import PARAM_VALIDATION_ERROR_RC
+from awscli.autoprompt.core import AutoPromptDriver
+from awscli.errorhandler import (
+    construct_cli_error_handlers_chain, construct_entry_point_handlers_chain
 )
-from awscli.customizations.exceptions import ParamValidationError
-from awscli.customizations.exceptions import ConfigurationError
 
 
-PARAM_VALIDATION_ERRORS = (
-    ParamError, ParamSyntaxError,
-    ParamValidationError, BotocoreParamValidationError,
-)
 LOG = logging.getLogger('awscli.clidriver')
 LOG_FORMAT = (
     '%(asctime)s - %(threadName)s - %(name)s - %(levelname)s - %(message)s')
@@ -91,18 +79,23 @@ u''.encode('idna')
 
 
 def main():
-    driver = create_clidriver()
-    rc = driver.main()
-    HISTORY_RECORDER.record('CLI_RC', rc, 'CLI')
-    return rc
+    return AWSCLIEntryPoint().main(sys.argv[1:])
 
 
-def create_clidriver():
+def create_clidriver(args=None):
+    debug = None
+    if args is not None:
+        parser = FirstPassGlobalArgParser()
+        args, _ = parser.parse_known_args(args)
+        debug = args.debug
     session = botocore.session.Session()
     _set_user_agent_for_session(session)
     load_plugins(session.full_config.get('plugins', {}),
                  event_hooks=session.get_component('event_emitter'))
-    driver = CLIDriver(session=session)
+    error_handlers_chain = construct_cli_error_handlers_chain()
+    driver = CLIDriver(session=session,
+                       error_handler=error_handlers_chain,
+                       debug=debug)
     return driver
 
 
@@ -155,18 +148,64 @@ def no_pager_handler(session, parsed_args, **kwargs):
     if parsed_args.no_cli_pager:
         config_store = session.get_component('config_store')
         config_store.set_config_provider(
-            'pager',  ConstantProvider(value=None)
+            'pager', ConstantProvider(value=None)
         )
+
+
+class AWSCLIEntryPoint:
+    def __init__(self, driver=None):
+        self._error_handler = construct_entry_point_handlers_chain()
+        self._driver = driver
+
+    def main(self, args):
+        try:
+            rc = self._do_main(args)
+        except BaseException as e:
+            LOG.debug("Exception caught in AWSCLIEntryPoint", exc_info=True)
+            return self._error_handler.handle_exception(
+                e,
+                stdout=get_stdout_text_writer(),
+                stderr=get_stderr_text_writer()
+            )
+
+        HISTORY_RECORDER.record('CLI_RC', rc, 'CLI')
+        return rc
+
+    def _do_main(self, args):
+        driver = self._driver
+        if driver is None:
+            driver = create_clidriver(args)
+        autoprompt_driver = AutoPromptDriver(driver)
+        auto_prompt_mode = autoprompt_driver.resolve_mode(args)
+        if auto_prompt_mode == 'on':
+            args = autoprompt_driver.prompt_for_args(args)
+            rc = driver.main(args)
+        elif auto_prompt_mode == 'on-partial':
+            autoprompt_driver.inject_silence_param_error_msg_handler(driver)
+            rc = driver.main(args)
+            if rc == PARAM_VALIDATION_ERROR_RC:
+                args = autoprompt_driver.prompt_for_args(args)
+                driver = create_clidriver(args)
+                rc = driver.main(args)
+        else:
+            rc = driver.main(args)
+        return rc
 
 
 class CLIDriver(object):
 
-    def __init__(self, session=None):
+    def __init__(self, session=None, error_handler=None,
+                 debug=False):
         if session is None:
             self.session = botocore.session.get_session()
             _set_user_agent_for_session(self.session)
         else:
             self.session = session
+        self._error_handler = error_handler
+        if self._error_handler is None:
+            self._error_handler = construct_cli_error_handlers_chain()
+        if debug:
+            self._set_logging(debug)
         self._update_config_chain()
         self._cli_data = None
         self._command_table = None
@@ -190,6 +229,10 @@ class CLIDriver(object):
         config_store.set_config_provider(
             'cli_binary_format',
             self._construct_cli_binary_format_chain()
+        )
+        config_store.set_config_provider(
+            'cli_auto_prompt',
+            self._construct_cli_auto_prompt_chain()
         )
 
     def _construct_cli_region_chain(self):
@@ -260,6 +303,24 @@ class CLIDriver(object):
         ]
         return ChainProvider(providers=providers)
 
+    def _construct_cli_auto_prompt_chain(self):
+        providers = [
+            InstanceVarProvider(
+                instance_var='cli_auto_prompt',
+                session=self.session,
+            ),
+            EnvironmentProvider(
+                name='AWS_CLI_AUTO_PROMPT',
+                env=os.environ,
+            ),
+            ScopedConfigProvider(
+                config_var_name='cli_auto_prompt',
+                session=self.session
+            ),
+            ConstantProvider(value='off'),
+        ]
+        return ChainProvider(providers=providers)
+
     @property
     def subcommand_table(self):
         return self._get_command_table()
@@ -267,6 +328,10 @@ class CLIDriver(object):
     @property
     def arg_table(self):
         return self._get_argument_table()
+
+    @property
+    def error_handler(self):
+        return self._error_handler
 
     def _get_cli_data(self):
         # Not crazy about this but the data in here is needed in
@@ -311,7 +376,7 @@ class CLIDriver(object):
         return commands
 
     def _add_aliases(self, command_table, parser):
-        parser = self._create_parser(command_table)
+        parser = self.create_parser(command_table)
         injector = AliasCommandInjector(
             self.session, self.alias_loader)
         injector.inject_aliases(command_table, parser)
@@ -327,7 +392,9 @@ class CLIDriver(object):
         # Then the final step is to send out an event so handlers
         # can add extra arguments or modify existing arguments.
         self.session.emit('building-top-level-params',
-                          argument_table=argument_table)
+                          session=self.session,
+                          argument_table=argument_table,
+                          driver=self)
         return argument_table
 
     def _create_cli_argument(self, option_name, option_params):
@@ -348,7 +415,7 @@ class CLIDriver(object):
                                    cli_data.get('synopsis', None),
                                    cli_data.get('help_usage', None))
 
-    def _create_parser(self, command_table):
+    def create_parser(self, command_table):
         # Also add a 'help' command.
         command_table['help'] = self.create_help_command()
         cli_data = self._get_cli_data()
@@ -370,69 +437,27 @@ class CLIDriver(object):
         if args is None:
             args = sys.argv[1:]
         command_table = self._get_command_table()
-        parser = self._create_parser(command_table)
+        parser = self.create_parser(command_table)
         self._add_aliases(command_table, parser)
-        parsed_args, remaining = parser.parse_known_args(args)
         try:
             # Because _handle_top_level_args emits events, it's possible
             # that exceptions can be raised, which should have the same
             # general exception handling logic as calling into the
             # command table.  This is why it's in the try/except clause.
+            parsed_args, remaining = parser.parse_known_args(args)
             self._handle_top_level_args(parsed_args)
             self._emit_session_event(parsed_args)
             HISTORY_RECORDER.record(
                 'CLI_VERSION', self.session.user_agent(), 'CLI')
             HISTORY_RECORDER.record('CLI_ARGUMENTS', args, 'CLI')
             return command_table[parsed_args.command](remaining, parsed_args)
-        except PARAM_VALIDATION_ERRORS as e:
-            # RC 252 represents that the command failed to parse or failed
-            # client side validation at the botocore level.
-            LOG.debug("Client side parameter validation failed", exc_info=True)
-            write_exception(e, outfile=get_stderr_text_writer())
-            return PARAM_VALIDATION_ERROR_RC
-        except UnknownArgumentError as e:
-            sys.stderr.write("usage: %s\n" % USAGE)
-            sys.stderr.write(str(e))
-            sys.stderr.write("\n")
-            return PARAM_VALIDATION_ERROR_RC
-        except ConfigurationError as e:
-            # RC 253 represents that the command may be syntatically correct
-            # but the environment or configuration is incorrect.
-            LOG.debug("Invalid CLI or client configuration", exc_info=True)
-            write_exception(e, outfile=get_stderr_text_writer())
-            return CONFIGURATION_ERROR_RC
-        except NoRegionError as e:
-            msg = ('%s You can also configure your region by running '
-                   '"aws configure".' % e)
-            self._show_error(msg)
-            return CONFIGURATION_ERROR_RC
-        except NoCredentialsError as e:
-            msg = ('%s. You can configure credentials by running '
-                   '"aws configure".' % e)
-            self._show_error(msg)
-            return CONFIGURATION_ERROR_RC
-        except KeyboardInterrupt:
-            # Shell standard for signals that terminate
-            # the process is to return 128 + signum, in this case
-            # SIGINT=2, so we'll have an RC of 130.
-            sys.stdout.write("\n")
-            return 128 + signal.SIGINT
-        except ClientError as e:
-            # RC 254 represents that a request/response completed but the
-            # request failed for reasons specific to the service, returned
-            # by the service. Generally, this will indicate incorrect API
-            # usage and is likely not an issue with CLI.
-            LOG.debug("Service returned an exception", exc_info=True)
-            write_exception(e, outfile=get_stderr_text_writer())
-            return CLIENT_ERROR_RC
-        except Exception as e:
-            # RC 255 is the catch-all. 255 specifically should not be relied
-            # on as exceptions can move from this catch-all classification
-            # to a more specific RC such as one of the above.
+        except BaseException as e:
             LOG.debug("Exception caught in main()", exc_info=True)
-            LOG.debug("Exiting with rc %s" % GENERAL_ERROR_RC)
-            write_exception(e, outfile=get_stderr_text_writer())
-            return GENERAL_ERROR_RC
+            return self._error_handler.handle_exception(
+                e,
+                stdout=get_stdout_text_writer(),
+                stderr=get_stderr_text_writer()
+            )
 
     def _emit_session_event(self, parsed_args):
         # This event is guaranteed to run after the session has been
@@ -451,29 +476,28 @@ class CLIDriver(object):
 
     def _handle_top_level_args(self, args):
         emit_top_level_args_parsed_event(self.session, args)
-        if args.profile:
+        if getattr(args, 'profile', False):
             self.session.set_config_variable('profile', args.profile)
-        if args.region:
+        if getattr(args, 'region', False):
             self.session.set_config_variable('region', args.region)
-        if args.debug:
-            # TODO:
-            # Unfortunately, by setting debug mode here, we miss out
-            # on all of the debug events prior to this such as the
-            # loading of plugins, etc.
-            self.session.set_stream_logger('botocore', logging.DEBUG,
-                                           format_string=LOG_FORMAT)
-            self.session.set_stream_logger('awscli', logging.DEBUG,
-                                           format_string=LOG_FORMAT)
-            self.session.set_stream_logger('s3transfer', logging.DEBUG,
-                                           format_string=LOG_FORMAT)
-            self.session.set_stream_logger('urllib3', logging.DEBUG,
-                                           format_string=LOG_FORMAT)
+        self._set_logging(getattr(args, 'debug', False))
+
+    def _set_logging(self, debug):
+        loggers_list = ['botocore', 'awscli', 's3transfer', 'urllib3']
+        if debug:
+            for logger_name in loggers_list:
+                set_stream_logger(logger_name, logging.DEBUG,
+                                  format_string=LOG_FORMAT)
             LOG.debug("CLI version: %s", self.session.user_agent())
             LOG.debug("Arguments entered to CLI: %s", sys.argv[1:])
-
         else:
-            self.session.set_stream_logger(logger_name='awscli',
-                                           log_level=logging.ERROR)
+            # In case user set --debug before entering prompt mode and removed
+            # it during editing inside the prompter we need to remove all the
+            # debug handlers
+            for logger_name in loggers_list:
+                remove_stream_logger(logger_name)
+            set_stream_logger(logger_name='awscli',
+                              log_level=logging.ERROR)
 
 
 class ServiceCommand(CLICommand):
@@ -552,7 +576,7 @@ class ServiceCommand(CLICommand):
         # Once we know we're trying to call a service for this operation
         # we can go ahead and create the parser for it.  We
         # can also grab the Service object from botocore.
-        service_parser = self._create_parser()
+        service_parser = self.create_parser()
         parsed_args, remaining = service_parser.parse_known_args(args)
         command_table = self._get_command_table()
         return command_table[parsed_args.operation](remaining, parsed_globals)
@@ -591,7 +615,7 @@ class ServiceCommand(CLICommand):
                                   event_class='.'.join(self.lineage_names),
                                   name=self._name)
 
-    def _create_parser(self):
+    def create_parser(self):
         command_table = self._get_command_table()
         # Also add a 'help' command.
         command_table['help'] = self.create_help_command()
@@ -705,7 +729,6 @@ class ServiceOperation(object):
                    parsed_globals=parsed_globals)
         call_parameters = self._build_call_parameters(
             parsed_args, self.arg_table)
-
         event = 'calling-command.%s.%s' % (self._parent_name,
                                            self._name)
         override = self._emit_first_non_none_response(

@@ -13,7 +13,7 @@
 from awscli.testutils import unittest, mock
 from awscli.autocomplete.completer import CompletionResult
 from awscli.autocomplete import parser
-from awscli.customizations.logs.autocomplete import GroupNameCompleter
+from awscli.autocomplete.serverside.custom_completers.logs.autocomplete import GroupNameCompleter
 from tests.unit.autocomplete import InMemoryIndex
 
 
@@ -21,9 +21,9 @@ class TestGroupNameCompleter(unittest.TestCase):
     def setUp(self):
         self.index = InMemoryIndex({
             'command_names': {
-                '': ['aws'],
-                'aws': ['logs'],
-                'aws.logs': ['tail'],
+                '': [('aws', None)],
+                'aws': [('logs', None)],
+                'aws.logs': [('tail', None)],
             },
             'arg_names': {
                 '': {},
@@ -37,7 +37,7 @@ class TestGroupNameCompleter(unittest.TestCase):
                     'tail': {
                         'group_name': (
                             'group_name', 'string',
-                            'tail', 'aws.logs.', None, True),
+                            'tail', 'aws.logs.', None, True, False),
                     },
                 }
             }
@@ -83,4 +83,3 @@ class TestGroupNameCompleter(unittest.TestCase):
         parsed = self.parser.parse('aws logs tail ')
         results = self.completer.complete(parsed)
         self.assertEqual(results, [])
-

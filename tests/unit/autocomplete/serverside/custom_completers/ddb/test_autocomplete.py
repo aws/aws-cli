@@ -13,7 +13,7 @@
 from awscli.testutils import unittest, mock
 from awscli.autocomplete.completer import CompletionResult
 from awscli.autocomplete import parser
-from awscli.customizations.dynamodb.autocomplete import TableNameCompleter
+from awscli.autocomplete.serverside.custom_completers.ddb.autocomplete import TableNameCompleter
 from tests.unit.autocomplete import InMemoryIndex
 
 
@@ -21,9 +21,9 @@ class TestTableNameCompleter(unittest.TestCase):
     def setUp(self):
         self.index = InMemoryIndex({
             'command_names': {
-                '': ['aws'],
-                'aws': ['ddb'],
-                'aws.ddb': ['put', 'select'],
+                '': [('aws', None)],
+                'aws': [('ddb', None)],
+                'aws.ddb': [('put', None), ('select', None)],
             },
             'arg_names': {
                 '': {},
@@ -38,12 +38,12 @@ class TestTableNameCompleter(unittest.TestCase):
                     'put': {
                         'table_name': (
                             'table_name', 'string',
-                            'put', 'aws.ddb.', None, True),
+                            'put', 'aws.ddb.', None, True, False),
                     },
                     'select': {
                         'table_name': (
                             'table_name', 'string',
-                            'select', 'aws.ddb.', None, True),
+                            'select', 'aws.ddb.', None, True, False),
                     },
                 }
             }

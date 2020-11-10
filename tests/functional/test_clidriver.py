@@ -10,18 +10,16 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import mock
 import os
 import re
 import shutil
-import functools
 
 from tests import RawResponse
 
-import mock
-
 import botocore
-from botocore.session import Session
 
+import awscli.constants
 from awscli.testutils import FileCreator
 from awscli.testutils import BaseCLIDriverTest
 from awscli.clidriver import create_clidriver
@@ -71,7 +69,7 @@ class TestSession(BaseCLIDriverTest):
         # First response should be from the IMDS server for security token
         # if server supports IMDSv1 only there will be no response for token
         self.add_response(None)
-        # Then another response from the IMDS server for an availibility
+        # Then another response from the IMDS server for an availability
         # zone.
         self.add_response(b'us-mars-2a')
         # Once a region is fetched form the IMDS server we need to mock an
@@ -90,7 +88,7 @@ class TestSession(BaseCLIDriverTest):
         # First response should be from the IMDS server for security token
         # if server supports IMDSv2 it'll return token
         self.add_response(b'token')
-        # Then another response from the IMDS server for an availibility
+        # Then another response from the IMDS server for an availability
         # zone.
         self.add_response(b'us-mars-2a')
         # Once a region is fetched form the IMDS server we need to mock an
@@ -104,6 +102,8 @@ class TestSession(BaseCLIDriverTest):
         self.assertEqual(capture.region, 'us-mars-2')
 
     def test_user_agent_in_request(self):
+        self.add_response(
+            b'<?xml version="1.0" ?><foo><bar>text</bar></foo>')
         self.driver.main(['ec2', 'describe-instances'])
         self.assertTrue('User-Agent' in self._send.call_args[0][0].headers)
         self.assertTrue(

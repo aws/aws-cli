@@ -54,20 +54,28 @@ class CompletionResult(object):
     stores metadata about the completion.
 
     """
-    def __init__(self, result, starting_index=0):
-        self.result = result
+    def __init__(self, name, starting_index=0, required=False,
+                 cli_type_name='', help_text='', display_text=None):
+        self.name = name
         self.starting_index = starting_index
+        self.required = required
+        self.cli_type_name = cli_type_name
+        self.help_text = help_text
+        self.display_text = display_text
 
     def __eq__(self, other):
         return (
             isinstance(other, self.__class__) and
-            self.result == other.result and
-            self.starting_index == other.starting_index
+            self.name == other.name and
+            self.starting_index == other.starting_index and
+            self.display_text == other.display_text
         )
 
     def __repr__(self):
-        return '%s(%s, %s)' % (self.__class__.__name__,
-                               self.result, self.starting_index)
+        return '%s(%s, %s, %s, %s, %s, %s)' % (self.__class__.__name__, self.name,
+                                           self.starting_index, self.required,
+                                           self.cli_type_name, self.help_text,
+                                           self.display_text)
 
 
 class BaseCompleter(object):

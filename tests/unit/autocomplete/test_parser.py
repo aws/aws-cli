@@ -33,46 +33,80 @@ SAMPLE_MODEL = InMemoryIndex(
             'aws.ec2': {
                 'stop-instances': ['instance-ids', 'foo-arg'],
             },
+            'aws.s3': {
+                'cp': ['bucket', 'key'],
+            },
+            'aws.s3api': {
+                'get-object': ['outfile', 'bucket', 'key'],
+            },
             'aws.logs': {
                 'tail': ['group_name', 'filter-pattern']
             }
         },
         'command_names': {
-            '': ['aws'],
-            'aws': ['ec2', 'logs'],
-            'aws.ec2': ['stop-instances'],
-            'aws.logs': ['tail']
+            '': [('aws', None)],
+            'aws': [('ec2', None), ('logs', None),
+                    ('s3api', None), ('s3', None)],
+            'aws.ec2': [('stop-instances', None)],
+            'aws.logs': [('tail', None)],
+            'aws.s3': [('cp', None)],
+            'aws.s3api': [('get-object', None)]
         },
         'arg_data': {
             '': {
                 'aws': {
-                    'debug': ('debug', 'boolean', 'aws', '', None, False),
-                    'endpoint-url': ('endpoint-url', 'string',
-                                     'aws', '', None, False),
-                    'region': ('region', 'string', 'aws', '', None, False),
+                    'debug': ('debug', 'boolean', 'aws', '', None, False,
+                              False),
+                    'endpoint-url': ('endpoint-url', 'string', 'aws', '', None,
+                                     False, False),
+                    'region': ('region', 'string', 'aws', '', None, False,
+                               False),
                 }
             },
             'aws.ec2': {
                 'stop-instances': {
                     'instance-ids': (
-                        'instance-ids', 'string',
-                        'stop-instances', 'aws.ec2.', '*', False),
+                        'instance-ids', 'string', 'stop-instances', 'aws.ec2.',
+                        '*', False, False),
                     'foo-arg': (
-                        'foo-arg', 'string', 'stop-instances',
-                        'aws.ec2', None, False),
+                        'foo-arg', 'string', 'stop-instances', 'aws.ec2', None,
+                        False, False),
                     'positional': (
-                        'positional', 'string', 'stop-instances',
-                        'aws.ec2', None, True),
+                        'positional', 'string', 'stop-instances', 'aws.ec2',
+                        None, True, False),
                 }
             },
             'aws.logs': {
                 'tail': {
                     'group_name': (
-                        'group_name', 'string',
-                        'tail', 'aws.logs.', None, True),
+                        'group_name', 'string', 'tail', 'aws.logs.', None,
+                        True, False),
                     'filter-pattern': (
-                        'filter-pattern', 'string', 'tail',
-                        'aws.logs', None, False),
+                        'filter-pattern', 'string', 'tail', 'aws.logs', None,
+                        False, False),
+                }
+            },
+            'aws.s3': {
+                'cp': {
+                    'bucket': (
+                        'bucket', 'string', 'cp', 'aws.s3.', None,
+                        False, False),
+                    'key': (
+                        'key', 'string', 'cp', 'aws.s3.', None,
+                        False, False),
+                }
+            },
+            'aws.s3api': {
+                'get-object': {
+                    'outfile': (
+                        'outfile', 'string', 'get-object', 'aws.s3api.', None,
+                        False, False),
+                    'bucket': (
+                        'bucket', 'string', 'get-object', 'aws.s3api.', None,
+                        False, False),
+                    'key': (
+                        'key', 'string', 'get-object', 'aws.s3api.', None,
+                        False, False),
                 }
             }
         }
@@ -86,9 +120,9 @@ def test_can_handle_arbitrary_ordering():
     # see TestCanParseCLICommand below.
     expected = parser.ParsedResult(
         current_command='stop-instances',
-        global_params={'debug': None, 'endpoint-url': 'https://foo'},
+        global_params={'debug': True, 'endpoint-url': 'https://foo'},
         parsed_params={'instance-ids': ['i-123', 'i-124'],
-                        'foo-arg': 'value'},
+                       'foo-arg': 'value'},
         lineage=['aws', 'ec2'],
         current_fragment='',
     )
@@ -166,6 +200,19 @@ class TestCanParseCLICommand(unittest.TestCase):
             self.assertEqual(actual_value, value, '%r != %r (attr: %r)'
                              % (actual_value, value, key))
 
+    def assert_parsed_s3api_result_correct(self, result):
+        self.assert_parsed_results_equal(
+            result,
+            current_command='get-object',
+            parsed_params={
+                'outfile': 'filename',
+                'bucket': 'myBucket',
+                'key': 'foo'
+            },
+            lineage=['aws', 's3api'],
+            unparsed_items=[],
+        )
+
     def test_parsed_result_not_equal(self):
         self.assertFalse(parser.ParsedResult(current_command='ec2') == 'ec2')
 
@@ -219,7 +266,7 @@ class TestCanParseCLICommand(unittest.TestCase):
         self.assert_parsed_results_equal(
             result,
             current_command='stop-instances',
-            global_params={'debug': None},
+            global_params={'debug': True},
             parsed_params={'instance-ids': ['i-1']},
             lineage=['aws', 'ec2']
         )
@@ -230,7 +277,7 @@ class TestCanParseCLICommand(unittest.TestCase):
         self.assert_parsed_results_equal(
             result,
             current_command='stop-instances',
-            global_params={'debug': None},
+            global_params={'debug': True},
             parsed_params={'instance-ids': ['i-1']},
             lineage=['aws', 'ec2']
         )
@@ -274,6 +321,27 @@ class TestCanParseCLICommand(unittest.TestCase):
             lineage=['aws', 'ec2'],
         )
 
+    def test_can_parse_if_there_longer_command(self):
+        result = self.cli_parser.parse('aws s3')
+        self.assert_parsed_results_equal(
+            result,
+            current_command='aws',
+            parsed_params={},
+            global_params={},
+            current_fragment='s3',
+            lineage=[],
+        )
+
+    def test_can_proceed_if_there_longer_command(self):
+        result = self.cli_parser.parse('aws s3 ')
+        self.assert_parsed_results_equal(
+            result,
+            current_command='s3',
+            global_params={},
+            current_fragment='',
+            lineage=['aws'],
+        )
+
     def test_can_consume_one_or_more_nargs(self):
         result = self.cli_parser.parse(
             'aws ec2 stop-instances --instance-ids i-1 i-2 i-3 ')
@@ -289,7 +357,7 @@ class TestCanParseCLICommand(unittest.TestCase):
         nargs_one_or_more = '?'
         model.index['arg_data']['aws.ec2']['stop-instances']['foo-arg'] = (
             'foo-arg', 'string',
-            'stop-instances', 'aws.ec2', nargs_one_or_more, False)
+            'stop-instances', 'aws.ec2', nargs_one_or_more, False, False)
         p = parser.CLIParser(model)
         self.assertEqual(
             p.parse(
@@ -465,6 +533,20 @@ class TestCanParseCLICommand(unittest.TestCase):
             unparsed_items=[],
         )
 
+    def test_params_stop_populate_when_dashes_entered(self):
+        result = self.cli_parser.parse(
+            'aws ec2 stop-instances --instance-ids i-1 --'
+        )
+        self.assert_parsed_results_equal(
+            result,
+            current_command='stop-instances',
+            current_param=None,
+            parsed_params={'instance-ids': ['i-1']},
+            lineage=['aws', 'ec2'],
+            current_fragment='--',
+            unparsed_items=[],
+        )
+
     def test_curent_fragment_works_for_global_params(self):
         result = self.cli_parser.parse(
             'aws --endpoint-url http',
@@ -557,6 +639,25 @@ class TestCanParseCLICommand(unittest.TestCase):
             current_fragment='mygroup',
             unparsed_items=[],
         )
+
+    def test_parse_outfile_option_in_the_beginning(self):
+        result = self.cli_parser.parse(
+            'aws s3api get-object filename --bucket myBucket --key foo ',
+            )
+        self.assert_parsed_s3api_result_correct(result)
+
+    def test_parse_outfile_option_in_the_middle(self):
+        result = self.cli_parser.parse(
+            'aws s3api get-object --bucket myBucket filename --key foo ',
+        )
+        self.assert_parsed_s3api_result_correct(result)
+
+    def test_parse_outfile_option_at_the_end(self):
+        result = self.cli_parser.parse(
+            'aws s3api get-object --bucket myBucket --key foo filename ',
+        )
+        self.assert_parsed_s3api_result_correct(result)
+
 
 class TestParseState(unittest.TestCase):
     def test_can_set_initial_state(self):

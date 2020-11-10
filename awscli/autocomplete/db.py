@@ -1,6 +1,5 @@
 import logging
-
-from awscli.compat import sqlite3
+import sqlite3
 
 
 LOG = logging.getLogger(__name__)

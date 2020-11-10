@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.18.175
+========
+
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.18.174
 ========
 

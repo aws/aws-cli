@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.176
+========
+
+* api-change:``amplify``: Update amplify command to latest version
+* api-change:``databrew``: Update databrew command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``forecast``: Update forecast command to latest version
+
+
 1.18.175
 ========
 

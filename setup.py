@@ -36,7 +36,7 @@ if sys.version_info[:2] == (3, 4):
     install_requires.append('rsa>=3.1.2,<=4.0.0')
 else:
     install_requires.append('PyYAML>=3.10,<5.4')
-    install_requires.append('colorama>=0.2.5,<0.4.4')
+    install_requires.append('colorama>=0.2.5,<0.5.0')
     install_requires.append('rsa>=3.1.2,<=4.5.0')
 
 

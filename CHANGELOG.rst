@@ -1100,6 +1100,29 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.177
+========
+
+* api-change:``servicecatalog-appregistry``: Update servicecatalog-appregistry command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``polly``: Update polly command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``personalize-runtime``: Update personalize-runtime command to latest version
+
+
+1.18.176
+========
+
+* api-change:``amplify``: Update amplify command to latest version
+* api-change:``databrew``: Update databrew command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``forecast``: Update forecast command to latest version
+
+
 1.18.175
 ========
 

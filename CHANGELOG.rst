@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.18.177
+========
+
+* api-change:``servicecatalog-appregistry``: Update servicecatalog-appregistry command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``polly``: Update polly command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``personalize-runtime``: Update personalize-runtime command to latest version
+
+
 1.18.176
 ========
 

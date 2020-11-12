@@ -92,6 +92,7 @@ from awscli.customizations.logs import register_logs_commands
 from awscli.customizations.devcommands import register_dev_commands
 from awscli.customizations.wizard.commands import register_wizard_commands
 from awscli.customizations.binaryformat import add_binary_formatter
+from awscli.customizations.lightsail import initialize as lightsail_initialize
 
 
 def awscli_initialize(event_handlers):
@@ -145,6 +146,7 @@ def awscli_initialize(event_handlers):
     emr_initialize(event_handlers)
     eks_initialize(event_handlers)
     ecs_initialize(event_handlers)
+    lightsail_initialize(event_handlers)
     register_cloudsearchdomain(event_handlers)
     register_generate_cli_skeleton(event_handlers)
     register_assume_role_provider(event_handlers)

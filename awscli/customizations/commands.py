@@ -223,7 +223,8 @@ class BasicCommand(CLICommand):
             subcommand_name = subcommand['name']
             subcommand_class = subcommand['command_class']
             subcommand_table[subcommand_name] = subcommand_class(self._session)
-        self._session.emit('building-command-table.%s' % self.NAME,
+        name = '_'.join([c.name for c in self.lineage])
+        self._session.emit('building-command-table.%s' % name,
                            command_table=subcommand_table,
                            session=self._session,
                            command_object=self)
@@ -254,7 +255,8 @@ class BasicCommand(CLICommand):
 
     def _build_arg_table(self):
         arg_table = OrderedDict()
-        self._session.emit('building-arg-table.%s' % self.NAME,
+        name = '_'.join([c.name for c in self.lineage])
+        self._session.emit('building-arg-table.%s' % name,
                            arg_table=self.ARG_TABLE)
         for arg_data in self.ARG_TABLE:
 

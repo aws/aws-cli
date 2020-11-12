@@ -17,7 +17,6 @@ from awscli.clidriver import CLIDriver
 from awscli.customizations.commands import BasicHelp, BasicCommand
 from awscli.customizations.commands import BasicDocHandler
 from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.bcdoc.restdoc import ReSTDocument
 from botocore.hooks import HierarchicalEmitter
 from tests.unit.test_clidriver import FakeSession, FakeCommand
 
@@ -131,8 +130,8 @@ class TestBasicCommandHooks(unittest.TestCase):
             'top-level-args-parsed',
             'session-initialized',
             'building-command-table.s3',
-            'building-command-table.foo',
-            'building-arg-table.foo',
+            'building-command-table.s3_foo',
+            'building-arg-table.s3_foo',
             'before-building-argument-table-parser.s3.foo'
         ])
 

@@ -44,7 +44,7 @@ class TestBaseSync(unittest.TestCase):
         self.sync_strategy.register_strategy(session)
         register_args = session.register.call_args_list
         self.assertEqual(register_args[0][0][0],
-                         'building-arg-table.sync')
+                         'building-arg-table.s3_sync')
         self.assertEqual(register_args[0][0][1],
                          self.sync_strategy.add_sync_argument)
         self.assertEqual(register_args[1][0][0], 'choosing-s3-sync-strategy')

@@ -82,12 +82,3 @@ class TestAddModel(BaseAWSCommandParamsTest):
             os.path.exists(os.path.join(
                 self.customer_data_root, 'override-name', '2015-12-02',
                 'service-2.json')))
-
-
-class TestConfigureSSO(BaseAWSCommandParamsTest):
-    prefix = 'configure sso'
-
-    def test_sso_logout_do_not_exist(self):
-        cmdline = self.prefix + ' logout'
-        _, err, _ = self.run_cmd(cmdline, 252)
-        self.assertIn('Unknown options', err)

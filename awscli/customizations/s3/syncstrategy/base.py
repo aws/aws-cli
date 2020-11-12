@@ -80,7 +80,7 @@ class BaseSync(object):
     def register_strategy(self, session):
         """Registers the sync strategy class to the given session."""
 
-        session.register('building-arg-table.sync',
+        session.register('building-arg-table.s3_sync',
                          self.add_sync_argument)
         session.register('choosing-s3-sync-strategy', self.use_sync_strategy)
 

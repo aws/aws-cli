@@ -27,7 +27,7 @@ def awscli_initialize(cli):
     file
     """
     cli.register("building-command-table.main", add_s3)
-    cli.register('building-command-table.sync', register_sync_strategies)
+    cli.register('building-command-table.s3_sync', register_sync_strategies)
 
 
 def s3_plugin_initialize(event_handlers):

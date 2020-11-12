@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+2.1.1
+=====
+
+* api-change:``forecast``: Update forecast command to latest version
+* api-change:``iot``: Update iot command to latest version
+* enhancement:``lightsail push-container-image``: Add ``lightsail push-container-image`` command
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``databrew``: Update databrew command to latest version
+* api-change:``polly``: Update polly command to latest version
+* api-change:``personalize-runtime``: Update personalize-runtime command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``servicecatalog-appregistry``: Update servicecatalog-appregistry command to latest version
+* api-change:``amplify``: Update amplify command to latest version
+
+
 2.1.0
 =====
 

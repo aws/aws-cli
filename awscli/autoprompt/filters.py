@@ -27,6 +27,12 @@ def help_section_visible():
 
 
 @Condition
+def output_section_visible():
+    app = get_app()
+    return app.show_output
+
+
+@Condition
 def is_multi_column():
     app = get_app()
     return getattr(app, 'multi_column', False)

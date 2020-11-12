@@ -126,9 +126,8 @@ class TestDebugPanelWidget(unittest.TestCase):
         self.assertIsInstance(widget.float_container, FloatContainer)
         key_bindings = widget.float_container.key_bindings.\
                                 get_bindings_starting_with_keys('')
-        self.assertEqual(len(key_bindings), 2)
+        self.assertEqual(len(key_bindings), 1)
         self.assertEqual(key_bindings[0].keys, ('c-s',))
-        self.assertEqual(key_bindings[1].keys, ('c-\\',))
 
 
 class TestFormatTextProcessor(unittest.TestCase):

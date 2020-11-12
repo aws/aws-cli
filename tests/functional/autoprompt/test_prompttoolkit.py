@@ -162,6 +162,7 @@ class BasicPromptToolkitTest(unittest.TestCase):
         self.prompter.args = []
         self.prompter.input_buffer = self.factory.create_input_buffer()
         self.prompter.doc_buffer = self.factory.create_doc_buffer()
+        self.prompter.output_buffer = self.factory.create_output_buffer()
 
     def create_application(self):
         layout = self.factory.create_layout()
@@ -243,6 +244,7 @@ class TestPromptToolkitPrompterBuffer(BasicPromptToolkitTest):
             app=FakeApplication(), cli_parser=self.cli_parser)
         prompter.input_buffer = self.factory.create_input_buffer()
         prompter.doc_buffer = self.factory.create_doc_buffer()
+        prompter.output_buffer = self.factory.create_output_buffer()
         args = prompter.prompt_for_args(original_args)
         self.assertEqual(prompter.input_buffer.document.text,
                          "iam create-role --description 'With spaces' ")
@@ -459,45 +461,6 @@ class TestDebugPanel(BasicPromptToolkitTest):
             self.get_buffer_is_visible_assertion('debug_buffer'))
         stubber.run(self.prompter.pre_run)
 
-    def test_debug_panel_is_focusable_on_command_backslash(self):
-        app = self.prompter.create_application()
-        app.debug = True
-        stubber = ApplicationStubber(app)
-        stubber.add_assertion_action(
-            self.get_buffer_is_visible_assertion('debug_buffer'))
-        stubber.add_keypress_with_assertion(
-            Keys.ControlBackslash,
-            self.get_current_buffer_assertion('debug_buffer')
-        )
-        stubber.run(self.prompter.pre_run)
-
-    def test_debug_panel_focus_to_previous_active_panel(self):
-        app = self.prompter.create_application()
-        app.debug = True
-        stubber = ApplicationStubber(app)
-        stubber.add_keypress_with_assertion(
-            Keys.ControlBackslash,
-            self.get_current_buffer_assertion('debug_buffer')
-        )
-        stubber.add_keypress_with_assertion(
-            Keys.ControlBackslash,
-            self.get_current_buffer_assertion('input_buffer')
-        )
-        stubber.add_keypress_action(Keys.F3)
-        stubber.add_keypress_with_assertion(
-            Keys.F2,
-            self.get_current_buffer_assertion('doc_buffer')
-        )
-        stubber.add_keypress_with_assertion(
-            Keys.ControlBackslash,
-            self.get_current_buffer_assertion('debug_buffer')
-        )
-        stubber.add_keypress_with_assertion(
-            Keys.ControlBackslash,
-            self.get_current_buffer_assertion('doc_buffer')
-        )
-        stubber.run(self.prompter.pre_run)
-
     def test_open_save_dialog_on_control_s(self):
         app = self.prompter.create_application()
         app.debug = True
@@ -518,3 +481,106 @@ class TestDebugPanel(BasicPromptToolkitTest):
         with cd(self.test_file_creator.rootdir):
             stubber.run(self.prompter.pre_run)
             self.assertTrue(os.path.exists(log_file_path))
+
+    def test_can_switch_focus_between_panels(self):
+        app = self.prompter.create_application()
+        app.debug = True
+        stubber = ApplicationStubber(app)
+        stubber.add_assertion_action(
+            self.get_current_buffer_assertion('input_buffer')
+        )
+        stubber.add_keypress_with_assertion(
+            Keys.F2,
+            self.get_current_buffer_assertion('debug_buffer')
+        )
+        stubber.add_keypress_with_assertion(
+            Keys.F2,
+            self.get_current_buffer_assertion('input_buffer')
+        )
+        stubber.run(self.prompter.pre_run)
+
+
+class TestOutputPanel(BasicPromptToolkitTest):
+    def test_output_panel_not_visible_on_start(self):
+        stubber = ApplicationStubber(self.prompter.create_application())
+        stubber.add_assertion_action(
+            self.get_buffer_not_visible_assertion('output_buffer'))
+        stubber.run(self.prompter.pre_run)
+
+    def test_output_panel_switches_on_F5(self):
+        app = self.prompter.create_application()
+        stubber = ApplicationStubber(app)
+        stubber.add_keypress_with_assertion(
+            Keys.F5,
+            self.get_buffer_is_visible_assertion('output_buffer'))
+        stubber.add_keypress_with_assertion(
+            Keys.F5,
+            self.get_buffer_not_visible_assertion('output_buffer'))
+        stubber.run(self.prompter.pre_run)
+
+    def test_output_panel_and_doc_panel_can_be_visible_together(self):
+        app = self.prompter.create_application()
+        stubber = ApplicationStubber(app)
+        stubber.add_keypress_with_assertion(
+            Keys.F5,
+            self.get_buffer_is_visible_assertion('output_buffer'))
+        stubber.add_assertion_action(
+            self.get_buffer_not_visible_assertion('doc_buffer')
+        )
+        stubber.add_keypress_with_assertion(
+            Keys.F3,
+            self.get_buffer_is_visible_assertion('doc_buffer'))
+        stubber.add_assertion_action(
+            self.get_buffer_is_visible_assertion('doc_buffer')
+        )
+        stubber.run(self.prompter.pre_run)
+
+    def test_can_switch_focus_between_panels(self):
+        app = self.prompter.create_application()
+        stubber = ApplicationStubber(app)
+        stubber.add_keypress_action(Keys.F5)
+        stubber.add_keypress_action(Keys.F3)
+        stubber.add_assertion_action(
+            self.get_current_buffer_assertion('input_buffer')
+        )
+        stubber.add_keypress_with_assertion(
+            Keys.F2,
+            self.get_current_buffer_assertion('doc_buffer')
+        )
+        stubber.add_keypress_with_assertion(
+            Keys.F2,
+            self.get_current_buffer_assertion('output_buffer')
+        )
+        stubber.add_keypress_with_assertion(
+            Keys.F2,
+            self.get_current_buffer_assertion('input_buffer')
+        )
+        stubber.run(self.prompter.pre_run)
+
+    def test_can_quit_output_panel(self):
+        app = self.prompter.create_application()
+        stubber = ApplicationStubber(app)
+        stubber.add_keypress_action(Keys.F5)
+        stubber.add_keypress_with_assertion(
+            Keys.F2,
+            self.get_current_buffer_assertion('output_buffer')
+        )
+        stubber.add_keypress_with_assertion(
+            'q',
+            self.get_current_buffer_assertion('input_buffer')
+        )
+        stubber.run(self.prompter.pre_run)
+
+    def test_return_focus_on_input_buffer(self):
+        app = self.prompter.create_application()
+        stubber = ApplicationStubber(app)
+        stubber.add_keypress_action(Keys.F5)
+        stubber.add_keypress_with_assertion(
+            Keys.F2,
+            self.get_current_buffer_assertion('output_buffer')
+        )
+        stubber.add_keypress_with_assertion(
+            Keys.F5,
+            self.get_current_buffer_assertion('input_buffer')
+        )
+        stubber.run(self.prompter.pre_run)

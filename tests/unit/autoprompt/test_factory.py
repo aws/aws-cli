@@ -37,7 +37,7 @@ class TestPromptToolkitFactory(unittest.TestCase):
 
     def test_can_create_input_buffer_with_callback(self):
         buffer = self.factory.create_input_buffer(self.dummy_callback)
-        self.assertTrue(buffer.on_text_changed is not None)
+        self.assertIsNotNone(buffer.on_text_changed)
 
     def test_can_create_doc_buffer(self):
         buffer = self.factory.create_doc_buffer()
@@ -46,38 +46,36 @@ class TestPromptToolkitFactory(unittest.TestCase):
     def test_can_create_input_buffer_container(self):
         buffer = mock.Mock(spec=Buffer)
         container = self.factory.create_input_buffer_container(buffer)
-        self.assertTrue(container.content is not None)
+        self.assertIsNotNone(container.content)
 
-    def test_can_create_doc_window(self):
+    def test_can_create_searchable_window(self):
         buffer = mock.Mock(spec=Buffer)
-        container = self.factory.create_doc_window(buffer)
-        self.assertTrue(container.content is not None)
+        container = self.factory.create_searchable_window('foo window', buffer)
+        self.assertIsNotNone(container.children)
 
-    def test_can_create_search_field(self):
-        search_field = self.factory.create_search_field()
-        self.assertIsInstance(search_field, SearchToolbar)
+    def test_can_create_bottom_panel(self):
+        buffer = mock.Mock(spec=Buffer)
+        foo = self.factory.create_searchable_window('foo window', buffer)
+        bar = self.factory.create_searchable_window('bar window', buffer)
+        panel = self.factory.create_bottom_panel(foo, bar)
+        self.assertTrue(len(panel.children), 3)
 
     def test_can_create_layout(self):
         layout = self.factory.create_layout()
-        self.assertTrue(layout.container is not None)
+        self.assertIsNotNone(layout.container)
 
     def test_can_create_layout_with_input_buffer_callback_specified(self):
         layout = self.factory.create_layout(
             on_input_buffer_text_changed=self.dummy_callback)
-        self.assertTrue(layout.container is not None)
+        self.assertIsNotNone(layout.container)
 
     def test_can_create_layout_with_input_buffer_container_specified(self):
         layout = self.factory.create_layout(input_buffer_container=Window())
-        self.assertTrue(layout.container is not None)
+        self.assertIsNotNone(layout.container)
 
     def test_can_create_layout_with_doc_window_specified(self):
         layout = self.factory.create_layout(doc_window=Window())
-        self.assertTrue(layout.container is not None)
-
-    def test_can_create_layout_with_search_field_specified(self):
-        search_field = SearchToolbar()
-        layout = self.factory.create_layout(search_field=search_field)
-        self.assertTrue(layout.container is not None)
+        self.assertIsNotNone(layout.container)
 
     def test_can_create_key_bindings(self):
         key_bindings = self.factory.create_key_bindings()

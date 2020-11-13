@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.178
+========
+
+* api-change:``textract``: Update textract command to latest version
+* api-change:``shield``: Update shield command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+
+
 1.18.177
 ========
 

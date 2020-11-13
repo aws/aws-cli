@@ -1,6 +1,6 @@
-**To view a list of webhooks**
+**To list webhooks**
 
-The following ``list-webhooks`` example lists the available webhooks in your AWS account. ::
+The following ``list-webhooks`` example retrieves a list of all tags attached to the specified pipeline resource. ::
 
     aws codepipeline list-webhooks \
         --endpoint-url "https://codepipeline.eu-central-1.amazonaws.com" \
@@ -26,9 +26,9 @@ Output::
                         }
                     ]
                 },
-                "arn": "arn:aws:codepipeline:eu-central-1:ACCOUNT_ID:webhook:my-webhook"
+                "arn": "arn:aws:codepipeline:eu-central-1:123456789012:webhook:my-webhook"
             }
         ]
     }
 
-For more information, see `List webhooks in your account <https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-webhooks-view.html>`__ in the *AWS CodePipeline User Guide*.
+For more information, see `List webhooks in your account <https://docs.aws.amazon.com/codepipeline/latest/userguide/appendix-github-oauth.html#pipelines-webhooks-view>`__ in the *AWS CodePipeline User Guide*.

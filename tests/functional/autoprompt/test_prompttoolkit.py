@@ -22,8 +22,8 @@ from prompt_toolkit.keys import Keys
 from prompt_toolkit.utils import Event
 
 from awscli.autocomplete.main import create_autocompleter
-from awscli.autocomplete import generator, filters
-from awscli.autocomplete.local import indexer
+from awscli.autocomplete import generator, filters, parser
+from awscli.autocomplete.local import indexer, model
 from awscli.clidriver import create_clidriver
 from awscli.autoprompt.factory import PromptToolkitFactory
 from awscli.autoprompt.prompttoolkit import (
@@ -124,10 +124,11 @@ class BasicPromptToolkitTest(unittest.TestCase):
     def setUpClass(cls):
         cls.test_file_creator = FileCreator()
         basename = 'tmpfile-%s' % str(random_chars(8))
-        full_filename = cls.test_file_creator.full_path(basename)
-        _generate_index(full_filename)
+        index_filename = cls.test_file_creator.full_path(basename)
+        _generate_index(index_filename)
+        cls.cli_parser = parser.CLIParser(model.ModelIndex(index_filename))
         cls.completion_source = create_autocompleter(
-            full_filename, response_filter=filters.fuzzy_filter)
+            index_filename, response_filter=filters.fuzzy_filter)
 
         history = {
             'version': 1,
@@ -155,7 +156,8 @@ class BasicPromptToolkitTest(unittest.TestCase):
         self.prompter = PromptToolkitPrompter(
             completion_source=self.completion_source,
             driver=self.driver,
-            factory=self.factory
+            factory=self.factory,
+            cli_parser=self.cli_parser
         )
         self.prompter.args = []
         self.prompter.input_buffer = self.factory.create_input_buffer()
@@ -238,7 +240,7 @@ class TestPromptToolkitPrompterBuffer(BasicPromptToolkitTest):
         original_args = ['iam', 'create-role', '--description', 'With spaces']
         prompter = PromptToolkitPrompter(
             completion_source=self.completion_source, driver=self.driver,
-            app=FakeApplication())
+            app=FakeApplication(), cli_parser=self.cli_parser)
         prompter.input_buffer = self.factory.create_input_buffer()
         prompter.doc_buffer = self.factory.create_doc_buffer()
         args = prompter.prompt_for_args(original_args)

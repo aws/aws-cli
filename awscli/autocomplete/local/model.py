@@ -68,7 +68,7 @@ class ModelIndex(object):
           parent = :parent
     """
 
-    def __init__(self, db_filename):
+    def __init__(self, db_filename=None):
         self._db_filename = db_filename
         self._db_connection = None
 

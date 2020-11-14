@@ -1,9 +1,21 @@
+import os
 import logging
 import sqlite3
+
+from awscli import __version__ as cli_version
 
 
 LOG = logging.getLogger(__name__)
 
+# We may eventually include a pre-generated version of this index as part
+# of our shipped distributable, but for now we'll add this to our cache
+# dir.
+INDEX_DIR = os.path.expanduser(os.path.join('~', '.aws', 'cli', 'cache'))
+INDEX_FILE = os.path.join(INDEX_DIR, '%s.index' % cli_version)
+BUILTIN_INDEX_FILE = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    'data', 'ac.index'
+)
 
 # This is similar to DBConnection in awscli.customization.history.
 # I'd like to reuse code, but we also have the contraint that we don't
@@ -12,9 +24,11 @@ LOG = logging.getLogger(__name__)
 class DatabaseConnection(object):
     _JOURNAL_MODE_OFF = 'PRAGMA journal_mode=OFF'
 
-    def __init__(self, db_filename):
+    def __init__(self, db_filename=None):
         self._db_conn = None
         self._db_filename = db_filename
+        if self._db_filename is None:
+            self._db_filename = self._get_index_filename()
 
     @property
     def _connection(self):
@@ -37,3 +51,8 @@ class DatabaseConnection(object):
         # CLI is installed and in-practice, the index is only ever read from
         # (except when we need to generate it).
         self.execute(self._JOURNAL_MODE_OFF)
+
+    def _get_index_filename(self):
+        if os.path.isfile(INDEX_FILE):
+            return INDEX_FILE
+        return BUILTIN_INDEX_FILE

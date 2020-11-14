@@ -50,6 +50,16 @@ class ModelIndexer(object):
         );
     """
 
+    _CREATE_COMMAND_TABLE_INDEX = """\
+        CREATE INDEX parent_index 
+            ON command_table(parent);
+    """
+
+    _CREATE_PARAM_TABLE_INDEX = """\
+        CREATE INDEX parent_command_index 
+            ON param_table(parent, command);
+    """
+
     def __init__(self, db_connection):
         self._db_connection = db_connection
 
@@ -68,6 +78,8 @@ class ModelIndexer(object):
                                  arg_table=clidriver.arg_table)
         self._generate_command_index(command_table, parent=parent,
                                      help_command_table=help_command_table)
+
+        self._generate_table_indexes()
 
     def _create_tables(self):
         self._db_connection.execute(self._CREATE_CMD_TABLE)
@@ -110,3 +122,7 @@ class ModelIndexer(object):
                                      arg_table=command.arg_table)
             self._generate_command_index(command.subcommand_table,
                                          parent='%s.%s' % (parent, name))
+
+    def _generate_table_indexes(self):
+        self._db_connection.execute(self._CREATE_COMMAND_TABLE_INDEX)
+        self._db_connection.execute(self._CREATE_PARAM_TABLE_INDEX)

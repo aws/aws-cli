@@ -67,7 +67,7 @@ class DummyArg(object):
         self.help_text = help_text
 
 
-class TestCanRetrieveCommands(unittest.TestCase):
+class BaseIndexerTest(unittest.TestCase):
     def setUp(self):
         self.session = mock.Mock(spec=Session)
         self.aws_command = DummyCommand(
@@ -121,6 +121,8 @@ class TestCanRetrieveCommands(unittest.TestCase):
         self.query._db_connection.close()
         shutil.rmtree(self.temp_dir)
 
+
+class TestCanRetrieveCommands(BaseIndexerTest):
     def test_can_retrieve_top_level_commands(self):
         self.indexer.generate_index(self.aws_command)
         self.assertEqual(
@@ -215,3 +217,19 @@ class TestCanCreateModelIndexer(unittest.TestCase):
     def test_can_create_model_indexer(self):
         index = indexer.create_model_indexer('/tmp/a/b/c/d')
         self.assertIsInstance(index, indexer.ModelIndexer)
+
+
+class TestGeneratesIndex(BaseIndexerTest):
+    def tearDown(self):
+        self.db_conn.close()
+        shutil.rmtree(self.temp_dir)
+
+    def test_generates_indexes_for_tables(self):
+        self.indexer.generate_index(self.aws_command)
+        index_info = 'SELECT name from pragma_index_info("%s");'
+        index = self.db_conn.execute(
+            index_info % 'parent_index').fetchall()
+        self.assertEqual([('parent',)], index)
+        index = self.db_conn.execute(
+            index_info % 'parent_command_index').fetchall()
+        self.assertEqual([('parent',), ('command',)], index)

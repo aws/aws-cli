@@ -21,6 +21,8 @@ from prompt_toolkit.completion import Completion
 from prompt_toolkit.document import Document
 
 from awscli.logger import LOG_FORMAT
+from awscli.autocomplete import parser
+from awscli.autocomplete.local import model
 from awscli.autoprompt.doc import DocsGetter
 from awscli.autoprompt.factory import PromptToolkitFactory
 from awscli.autoprompt.logger import PromptToolkitHandler
@@ -55,7 +57,7 @@ class PromptToolkitPrompter:
 
     """
     def __init__(self, completion_source, driver, completer=None,
-                 factory=None, app=None):
+                 factory=None, app=None, cli_parser=None):
         self._completion_source = completion_source
         if completer is None:
             completer = PromptToolkitCompleter(self._completion_source)
@@ -64,6 +66,9 @@ class PromptToolkitPrompter:
         self._completer = ThreadedCompleter(completer)
         if factory is None:
             factory = PromptToolkitFactory(completer=self._completer)
+        self._parser = cli_parser
+        if self._parser is None:
+            self._parser = parser.CLIParser(model.ModelIndex())
         self._factory = factory
         self._input_buffer = None
         self._doc_buffer = None
@@ -131,7 +136,7 @@ class PromptToolkitPrompter:
         app.debug = False
 
     def _update_doc_window_contents(self, *args):
-        parsed_args = self._completion_source.parse(
+        parsed_args = self._parser.parse(
             'aws ' + self._input_buffer.document.text)
         content = self._docs_getter.get_docs(parsed_args)
         # The only way to "modify" a read-only buffer in prompt_toolkit is to

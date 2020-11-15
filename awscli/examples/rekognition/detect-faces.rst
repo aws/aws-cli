@@ -1,9 +1,9 @@
 **To detect faces in an image**
 
-The following ``detect-faces`` command detects faces in the specified image stored in an Amazon S3 bucket.::
+The following ``detect-faces`` command detects faces in the specified image stored in an Amazon S3 bucket. ::
 
     aws rekognition detect-faces \
-        --image '{"S3Object":{"MyImageS3Bucket":"bucket","Name":"MyFriend.jpg"}}' \
+        --image '{"S3Object":{"Bucket":"MyImageS3Bucket","Name":"MyFriend.jpg"}}' \
         --attributes "ALL" 
 
 Output::

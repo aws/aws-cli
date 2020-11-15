@@ -80,6 +80,11 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.assert_contains('Launches the specified number of instances')
         self.assert_contains('``--count`` (string)')
 
+    def test_waiter_does_not_have_duplicate_global_params_link(self):
+        self.driver.main(['ec2', 'wait', 'help'])
+        self.assert_contains_with_count(
+            'for descriptions of global parameters', 1)
+
     def test_custom_service_help_output(self):
         self.driver.main(['s3', 'help'])
         self.assert_contains('.. _cli:aws s3:')
@@ -469,3 +474,10 @@ class TestAliases(BaseAWSHelpOutputTest):
         self.add_alias('my-alias', 'ec2 describe-regions')
         self.driver.main(['help'])
         self.assert_not_contains('my-alias')
+
+
+class TestStreamingOutputHelp(BaseAWSHelpOutputTest):
+    def test_service_help_command_has_note(self):
+        self.driver.main(['s3api', 'get-object', 'help'])
+        self.assert_not_contains('outfile <value>')
+        self.assert_contains('<outfile>')

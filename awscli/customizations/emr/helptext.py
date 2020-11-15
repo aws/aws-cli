@@ -65,6 +65,12 @@ LOG_URI = (
     'logs files are not written to Amazon S3 from the master node '
     'and are lost if the master node terminates.</p>')
 
+LOG_ENCRYPTION_KMS_KEY_ID = (
+    '<p> Specifies the KMS Id utilized for log encryption. If a value is '
+    'not provided, log files will be encrypted by default encryption method '
+    'AES-256. This attribute is only available with EMR version 5.30.0 and later, '
+    'excluding EMR 6.0.0.</p>')
+
 SERVICE_ROLE = (
     '<p>Specifies an IAM service role, which Amazon EMR requires to call other AWS services '
     'on your behalf during cluster operation. This parameter '
@@ -334,7 +340,7 @@ INSTALL_APPLICATIONS = (
     '<code>Name</code> and <code>Args</code>.</p>')
 
 EBS_ROOT_VOLUME_SIZE = (
-    '<p>Applies only to Amazon EMR release version 4.0 and earlier. Specifies the size,'
+    '<p>This option is available only with Amazon EMR version 4.x and later. Specifies the size,'
     ' in GiB, of the EBS root device volume of the Amazon Linux AMI'
     ' that is used for each EC2 instance in the cluster. </p>')
 
@@ -444,4 +450,24 @@ AVAILABLE_ONLY_FOR_AMI_VERSIONS = (
 STEP_CONCURRENCY_LEVEL = (
     'This command specifies the step concurrency level of the cluster.'
     'Default is 1 which is non-concurrent.'
+)
+
+MANAGED_SCALING_POLICY = (
+    '<p>Managed scaling policy for an Amazon EMR cluster. The policy '
+    'specifies the limits for resources that can be added or terminated '
+    'from a cluster. You can specify the ComputeLimits which include '
+    'the MaximumCapacityUnits, MaximumCoreCapacityUnits, MinimumCapacityUnits, '
+    'MaximumOnDemandCapacityUnits and UnitType. For an '
+    'InstanceFleet cluster, the UnitType must be InstanceFleetUnits. For '
+    'InstanceGroup clusters, the UnitType can be either VCPU or Instances.</p>'
+)
+
+PLACEMENT_GROUP_CONFIGS = (
+    '<p>Placement group configuration for an Amazon EMR ' 
+    'cluster. The configuration specifies the EC2 placement group ' 
+    'strategy associated with each EMR Instance Role.</p> ' 
+    '<p>Currently, we support placement group only for <code>MASTER</code> ' 
+    'role with <code>SPREAD</code> strategy by default. You can opt-in by '
+    'passing <code>--placement-group-configs InstanceRole=MASTER</code> '
+    'during cluster creation.</p>'
 )

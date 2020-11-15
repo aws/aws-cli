@@ -417,6 +417,15 @@ class ServerlessRepoApplicationLicense(Resource):
     PACKAGE_NULL_PROPERTY = False
 
 
+class StepFunctionsStateMachineDefinitionResource(ResourceWithS3UrlDict):
+    RESOURCE_TYPE = "AWS::StepFunctions::StateMachine"
+    PROPERTY_NAME = "DefinitionS3Location"
+    BUCKET_NAME_PROPERTY = "Bucket"
+    OBJECT_KEY_PROPERTY = "Key"
+    VERSION_PROPERTY = "Version"
+    PACKAGE_NULL_PROPERTY = False
+
+
 class CloudFormationStackResource(Resource):
     """
     Represents CloudFormation::Stack resource that can refer to a nested
@@ -438,8 +447,8 @@ class CloudFormationStackResource(Resource):
         template_path = resource_dict.get(self.PROPERTY_NAME, None)
 
         if template_path is None or is_s3_url(template_path) or \
-                template_path.startswith(self.uploader.s3.meta.endpoint_url) or \
-                template_path.startswith("https://s3.amazonaws.com/"):
+                template_path.startswith("http://") or \
+                template_path.startswith("https://"):
             # Nothing to do
             return
 
@@ -504,6 +513,7 @@ RESOURCES_EXPORT_LIST = [
     ServerlessLayerVersionResource,
     LambdaLayerVersionResource,
     GlueJobCommandScriptLocationResource,
+    StepFunctionsStateMachineDefinitionResource
 ]
 
 METADATA_EXPORT_LIST = [

@@ -47,10 +47,14 @@ _S3_ACCESSPOINT_TO_BUCKET_KEY_REGEX = re.compile(
     r'^(?P<bucket>arn:(aws).*:s3:[a-z\-0-9]+:[0-9]{12}:accesspoint[:/][^/]+)/?'
     r'(?P<key>.*)$'
 )
+_S3_OUTPOST_TO_BUCKET_KEY_REGEX = re.compile(
+    r'^(?P<bucket>arn:(aws).*:s3-outposts:[a-z\-0-9]+:[0-9]{12}:outpost[/:]'
+    r'[a-zA-Z0-9\-]{1,63}[/:]accesspoint[/:][a-zA-Z0-9\-]{1,63})[/:]?(?P<key>.*)$'
+)
 
 
 def human_readable_size(value):
-    """Convert an size in bytes into a human readable format.
+    """Convert a size in bytes into a human readable format.
 
     For example::
 
@@ -63,11 +67,10 @@ def human_readable_size(value):
         >>> human_readable_size(1024 * 1024)
         '1.0 MiB'
 
-    :param value: The size in bytes
+    :param value: The size in bytes.
     :return: The size in a human readable format based on base-2 units.
 
     """
-    one_decimal_point = '%.1f'
     base = 1024
     bytes_int = float(value)
 
@@ -187,6 +190,9 @@ def find_bucket_key(s3_path):
     It will return the bucket and the key represented by the s3 path
     """
     match = _S3_ACCESSPOINT_TO_BUCKET_KEY_REGEX.match(s3_path)
+    if match:
+        return match.group('bucket'), match.group('key')
+    match = _S3_OUTPOST_TO_BUCKET_KEY_REGEX.match(s3_path)
     if match:
         return match.group('bucket'), match.group('key')
     s3_components = s3_path.split('/', 1)

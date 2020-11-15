@@ -258,8 +258,10 @@ class EKSClient(object):
 
             if "status" not in self._cluster_description:
                 raise EKSClusterError("Cluster not found")
-            if self._cluster_description["status"] != "ACTIVE":
-                raise EKSClusterError("Cluster status not active")
+            if self._cluster_description["status"] not in ["ACTIVE", "UPDATING"]:
+                raise EKSClusterError("Cluster status is {0}".format(
+                    self._cluster_description["status"]
+                ))
 
         return self._cluster_description
 

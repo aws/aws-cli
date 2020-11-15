@@ -21,6 +21,7 @@ Output::
                "device4"
             ],
             "targetSelection": "SNAPSHOT",
+            "protocols": ["HTTP"],
             "awsJobExecutionsRolloutConfig": {
                "maximumPerMinute": 10
             },

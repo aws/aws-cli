@@ -28,7 +28,7 @@ from awscli.customizations.utils import uni_print
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure import profile_to_section
 from awscli.customizations.configure.writer import ConfigFileWriter
-from awscli.customizations.wizard.selectmenu import select_menu
+from awscli.customizations.wizard.ui.selectmenu import select_menu
 from awscli.customizations.sso.utils import do_sso_login
 from awscli.formatter import CLI_OUTPUT_FORMATS
 

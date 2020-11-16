@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.18.179
+========
+
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``iotsecuretunneling``: Update iotsecuretunneling command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``sns``: Update sns command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``synthetics``: Update synthetics command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+
+
 1.18.178
 ========
 

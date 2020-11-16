@@ -16,7 +16,7 @@ import os
 import prompt_toolkit
 from prompt_toolkit.completion import Completer, Completion
 
-from awscli.customizations.wizard import selectmenu
+from awscli.customizations.wizard.ui import selectmenu
 
 
 class Prompter(object):

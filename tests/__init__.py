@@ -1,7 +1,9 @@
+import dataclasses
 from io import BytesIO, TextIOWrapper
 import collections
 import copy
 import os
+from typing import Optional, Callable
 
 import awscli
 from awscli.clidriver import create_clidriver, AWSCLIEntryPoint
@@ -14,7 +16,9 @@ import botocore.model
 import botocore.serialize
 import botocore.validate
 
+import prompt_toolkit
 import prompt_toolkit.input
+import prompt_toolkit.input.defaults
 import prompt_toolkit.keys
 import prompt_toolkit.utils
 import prompt_toolkit.key_binding.key_processor
@@ -335,24 +339,49 @@ class FakeApplicationInput(prompt_toolkit.input.DummyInput):
         return False
 
 
-class PromptToolkitApplicationStubber:
-    _KEYPRESS = 'KEYPRESS'
-    _ASSERTION = 'ASSERTION'
+@dataclasses.dataclass
+class AppKeyPressAction:
+    key: str
 
+
+@dataclasses.dataclass
+class AppAssertionAction:
+    assertion: Callable[[prompt_toolkit.Application], None]
+    failure_message_format: Optional[str] = None
+
+
+@dataclasses.dataclass
+class AppCallbackAction:
+    callback: Callable[[prompt_toolkit.Application], None]
+
+
+class PromptToolkitApplicationStubber:
     def __init__(self, app):
         self._app = app
         self._app.input = FakeApplicationInput()
         self._queue = []
 
-    def add_keypress_with_assertion(self, key, assertion):
-        self.add_keypress_action(key)
-        self.add_assertion_action(assertion, key)
+    def add_keypress(self, key, app_assertion=None):
+        self._queue.append(AppKeyPressAction(key))
+        if app_assertion:
+            failure_message_format = (
+                f'Incorrect action on key press "{key}": '
+                '{message}'
+            )
+            self._queue.append(
+                AppAssertionAction(
+                    assertion=app_assertion,
+                    failure_message_format=failure_message_format
+                )
+            )
 
-    def add_keypress_action(self, key):
-        self._queue.append((self._KEYPRESS, key))
+    def add_app_assertion(self, assertion):
+        self._queue.append(AppAssertionAction(assertion))
 
-    def add_assertion_action(self, assertion, key=None):
-        self._queue.append((self._ASSERTION, assertion, key))
+    def add_text_to_current_buffer(self, text):
+        def set_current_buffer(app):
+            app.current_buffer.text = text
+        self._queue.append(AppCallbackAction(callback=set_current_buffer))
 
     def run(self, pre_run=None):
         key_processor = self._app.key_processor
@@ -366,20 +395,27 @@ class PromptToolkitApplicationStubber:
         def callback(app):
             while self._queue and not app.invalidated:
                 action = self._queue.pop(0)
-                if action[0] == self._KEYPRESS:
+                if hasattr(action, 'key'):
                     key_processor.feed(
                         prompt_toolkit.key_binding.key_processor.KeyPress(
-                            action[1], ''
+                            action.key, ''
                         )
                     )
                     key_processor.process_keys()
-                if action[0] == self._ASSERTION:
-                    if not action[1](app):
+                if hasattr(action, 'callback'):
+                    action.callback(app)
+                if getattr(action, 'assertion', None):
+                    try:
+                        action.assertion(app)
+                    except AssertionError as e:
+                        message = str(e)
+                        if getattr(action, 'failure_message_format'):
+                            message = action.failure_message_format.format(
+                                message=message
+                            )
                         app.after_render = prompt_toolkit.utils.Event(
                             app, None)
-                        app.exit(
-                            exception=AssertionError(f'Incorrect action on key '
-                                                     f'press "{action[2]}"'))
+                        app.exit(exception=AssertionError(message))
                         return
             if not self._queue:
                 app.after_render = prompt_toolkit.utils.Event(app, None)

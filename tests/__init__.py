@@ -1,4 +1,4 @@
-from io import BytesIO
+from io import BytesIO, TextIOWrapper
 import collections
 import copy
 import os
@@ -14,6 +14,10 @@ import botocore.model
 import botocore.serialize
 import botocore.validate
 
+import prompt_toolkit.input
+import prompt_toolkit.keys
+import prompt_toolkit.utils
+import prompt_toolkit.key_binding.key_processor
 
 # A shared loader to use for classes in this module. This allows us to
 # load models outside of influence of a session and take advantage of
@@ -320,3 +324,70 @@ class RawResponse(BytesIO):
         while contents:
             yield contents
             contents = self.read()
+
+
+class FakeApplicationInput(prompt_toolkit.input.DummyInput):
+    def fileno(self):
+        return 0
+
+    @property
+    def closed(self):
+        return False
+
+
+class PromptToolkitApplicationStubber:
+    _KEYPRESS = 'KEYPRESS'
+    _ASSERTION = 'ASSERTION'
+
+    def __init__(self, app):
+        self._app = app
+        self._app.input = FakeApplicationInput()
+        self._queue = []
+
+    def add_keypress_with_assertion(self, key, assertion):
+        self.add_keypress_action(key)
+        self.add_assertion_action(assertion, key)
+
+    def add_keypress_action(self, key):
+        self._queue.append((self._KEYPRESS, key))
+
+    def add_assertion_action(self, assertion, key=None):
+        self._queue.append((self._ASSERTION, assertion, key))
+
+    def run(self, pre_run=None):
+        key_processor = self._app.key_processor
+        # After each rendering application will run this callback
+        # it takes the next action from the queue and performs it
+        # some key_presses can lead to rerender, after which this callback
+        # will be run again before re-rendering app.invalidated property
+        # set to True.
+        # On exit this callback also run so we need to remove it before exit
+
+        def callback(app):
+            while self._queue and not app.invalidated:
+                action = self._queue.pop(0)
+                if action[0] == self._KEYPRESS:
+                    key_processor.feed(
+                        prompt_toolkit.key_binding.key_processor.KeyPress(
+                            action[1], ''
+                        )
+                    )
+                    key_processor.process_keys()
+                if action[0] == self._ASSERTION:
+                    if not action[1](app):
+                        app.after_render = prompt_toolkit.utils.Event(
+                            app, None)
+                        app.exit(
+                            exception=AssertionError(f'Incorrect action on key '
+                                                     f'press "{action[2]}"'))
+                        return
+            if not self._queue:
+                app.after_render = prompt_toolkit.utils.Event(app, None)
+                app.exit()
+
+        self._app.after_render = prompt_toolkit.utils.Event(
+            self._app, callback)
+
+        _stdout = TextIOWrapper(BytesIO(), encoding="utf-8")
+        self._app.output.stdout = _stdout
+        self._app.run(pre_run=pre_run)

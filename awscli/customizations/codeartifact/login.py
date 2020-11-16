@@ -13,6 +13,7 @@ from botocore.utils import parse_timestamp
 from awscli.compat import urlparse, RawConfigParser, StringIO
 from awscli.customizations import utils as cli_utils
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.utils import uni_print
 
 
 def get_relative_expiration_time(remaining):
@@ -34,12 +35,15 @@ def get_relative_expiration_time(remaining):
 
 
 class BaseLogin(object):
+    _TOOL_NOT_FOUND_MESSAGE = '%s was not found. Please verify installation.'
 
-    def __init__(self, auth_token, expiration,
-                 repository_endpoint, subprocess_utils, namespace=None):
+    def __init__(self, auth_token, expiration, repository_endpoint,
+                 domain, repository, subprocess_utils, namespace=None):
         self.auth_token = auth_token
         self.expiration = expiration
         self.repository_endpoint = repository_endpoint
+        self.domain = domain
+        self.repository = repository
         self.subprocess_utils = subprocess_utils
         self.namespace = namespace
 
@@ -83,7 +87,7 @@ class BaseLogin(object):
             except OSError as ex:
                 if ex.errno == errno.ENOENT:
                     raise ValueError(
-                        '%s was not found. Please verify installation.' % tool
+                        self._TOOL_NOT_FOUND_MESSAGE % tool
                     )
                 raise ex
 
@@ -92,6 +96,126 @@ class BaseLogin(object):
     @classmethod
     def get_commands(cls, endpoint, auth_token, **kwargs):
         raise NotImplementedError('get_commands()')
+
+
+class NuGetLogin(BaseLogin):
+    _NUGET_INDEX_URL_FMT = '{endpoint}v3/index.json'
+
+    def login(self, dry_run=False):
+        try:
+            source_to_url_dict = self._get_source_to_url_dict()
+        except OSError as ex:
+            if ex.errno == errno.ENOENT:
+                raise ValueError(
+                    self._TOOL_NOT_FOUND_MESSAGE % 'nuget'
+                )
+            raise ex
+
+        nuget_index_url = self._NUGET_INDEX_URL_FMT.format(
+            endpoint=self.repository_endpoint
+        )
+        source_name, already_exists = self._get_source_name(
+            nuget_index_url, source_to_url_dict
+        )
+
+        if already_exists:
+            command = self._get_command(
+                'update', nuget_index_url, source_name
+            )
+            verb = "Updated"
+        else:
+            command = self._get_command('add', nuget_index_url, source_name)
+            verb = "Added"
+
+        if dry_run:
+            dry_run_command = ' '.join([str(cd) for cd in command])
+            uni_print(dry_run_command)
+            uni_print('\n')
+            return
+
+        try:
+            self.subprocess_utils.check_output(
+                command,
+                stderr=self.subprocess_utils.PIPE
+            )
+        except subprocess.CalledProcessError as e:
+            uni_print('Failed to update the user level NuGet.Config\n')
+            raise e
+
+        uni_print('%s source %s in the user level NuGet.Config\n'
+                  % (verb, source_name))
+        self._write_success_message('nuget')
+
+    def _get_source_to_url_dict(self):
+        # The response from 'nuget sources list' takes the following form:
+        #
+        # Registered Sources:
+        #   1.  Source Name 1 [Enabled]
+        #       https://source1.com/index.json
+        #   2.  Source Name 2 [Disabled]
+        #       https://source2.com/index.json
+        # ...
+        #   100. Source Name 100
+        #       https://source100.com/index.json
+
+        response = self.subprocess_utils.check_output(
+            ['nuget', 'sources', 'list', '-format', 'detailed'],
+            stderr=self.subprocess_utils.PIPE
+        )
+
+        lines = response.decode("utf-8").splitlines()
+
+        source_to_url_dict = {}
+        for i in range(1, len(lines), 2):
+            source_to_url_dict[self._parse_source_name(lines[i])] = \
+                self._parse_source_url(lines[i + 1])
+
+        return source_to_url_dict
+
+    def _parse_source_name(self, line):
+        # A source name line takes the following form:
+        #   1.  NuGet Source [Enabled]
+
+        # Remove the Enabled/Disabled tag.
+        line_without_tag = line.strip().rsplit(' [', 1)[0]
+
+        # Remove the leading number.
+        return line_without_tag.split(None, 1)[1]
+
+    def _parse_source_url(self, line):
+        # A source url line takes the following form:
+        #       https://source.com/index.json
+        return line.strip()
+
+    def _get_source_name(self, codeartifact_url, source_dict):
+        default_name = '{}/{}'.format(self.domain, self.repository)
+
+        # Check if the CodeArtifact URL is already present in the
+        # NuGet.Config file. If the URL already exists, use the source name
+        # already assigned to the CodeArtifact URL.
+        for source_name, source_url in source_dict.items():
+            if source_url == codeartifact_url:
+                return source_name, True
+
+        # If the CodeArtifact URL is not present in the NuGet.Config file,
+        # check if the default source name already exists so we can know
+        # whether we need to add a new entry or update the existing entry.
+        for source_name in source_dict.keys():
+            if source_name == default_name:
+                return source_name, True
+
+        # If neither the source url nor the source name already exist in the
+        # NuGet.Config file, use the default source name.
+        return default_name, False
+
+    def _get_command(self, operation, nuget_index_url, source_name):
+        return [
+            'nuget', 'sources', operation,
+            '-name', source_name,
+            '-source', nuget_index_url,
+            '-username', 'aws',
+            '-password', self.auth_token
+        ]
 
 
 class NpmLogin(BaseLogin):
@@ -206,6 +330,8 @@ password: {auth_token}'''
         auth_token,
         expiration,
         repository_endpoint,
+        domain,
+        repository,
         subprocess_utils,
         pypi_rc_path=None
     ):
@@ -213,7 +339,8 @@ password: {auth_token}'''
             pypi_rc_path = self.get_pypi_rc_path()
         self.pypi_rc_path = pypi_rc_path
         super(TwineLogin, self).__init__(
-            auth_token, expiration, repository_endpoint, subprocess_utils)
+            auth_token, expiration, repository_endpoint,
+            domain, repository, subprocess_utils)
 
     @classmethod
     def get_commands(cls, endpoint, auth_token, **kwargs):
@@ -305,6 +432,11 @@ class CodeArtifactLogin(BasicCommand):
     '''Log in to the idiomatic tool for the requested package format.'''
 
     TOOL_MAP = {
+        'nuget': {
+            'package_format': 'nuget',
+            'login_cls': NuGetLogin,
+            'namespace_support': False,
+        },
         'npm': {
             'package_format': 'npm',
             'login_cls': NpmLogin,
@@ -434,12 +566,15 @@ class CodeArtifactLogin(BasicCommand):
             codeartifact_client, parsed_args, package_format
         )
 
+        domain = parsed_args.domain
+        repository = parsed_args.repository
         namespace = self._get_namespace(tool, parsed_args)
 
         auth_token = auth_token_res['authorizationToken']
         expiration = parse_timestamp(auth_token_res['expiration'])
         login = self.TOOL_MAP[tool]['login_cls'](
-            auth_token, expiration, repository_endpoint, subprocess, namespace
+            auth_token, expiration, repository_endpoint,
+            domain, repository, subprocess, namespace
         )
 
         login.login(parsed_args.dry_run)

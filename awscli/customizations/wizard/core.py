@@ -336,15 +336,18 @@ class Executor(object):
 
     def _execute_step(self, step, parameters):
         if 'condition' in step:
-            should_run = self._check_step_condition(step['condition'],
-                                                    parameters)
+            should_run = ConditionEvaluator().evaluate(
+                step['condition'], parameters
+            )
             if not should_run:
                 return
         step_type = step['type']
         handler = self._step_handlers[step_type]
         handler.run_step(step, parameters)
 
-    def _check_step_condition(self, condition, parameters):
+
+class ConditionEvaluator:
+    def evaluate(self, condition, parameters):
         statuses = []
         if not isinstance(condition, list):
             condition = [condition]

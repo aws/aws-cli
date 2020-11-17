@@ -11,21 +11,24 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from prompt_toolkit.layout import Layout
-from prompt_toolkit.layout.containers import WindowAlign, HSplit
-from prompt_toolkit.widgets import Label
+from prompt_toolkit.layout.containers import WindowAlign, HSplit, VSplit
+from prompt_toolkit.widgets import Label, HorizontalLine
 
-from awscli.customizations.wizard.ui.prompt import WizardPrompt
+from awscli.customizations.wizard.ui.section import (
+    WizardSectionTab, WizardSectionBody
+)
+from awscli.customizations.wizard.ui.utils import Spacer
 
 
 class WizardLayoutFactory:
-    def create_wizard_layout(self, defintion):
+    def create_wizard_layout(self, definition):
         return Layout(
             container=HSplit(
                 [
-                    self._create_title(defintion),
-                    self._create_all_prompts(defintion)
+                    self._create_title(definition),
+                    self._create_sections(definition),
+                    HorizontalLine()
                 ],
-                padding=1,
             )
         )
 
@@ -34,17 +37,30 @@ class WizardLayoutFactory:
         title.window.align = WindowAlign.CENTER
         return title
 
-    def _create_all_prompts(self, definition):
-        prompts = []
-        for step_definition in definition['plan'].values():
-            prompts.extend(
-                self._create_prompts_from_step_definition(step_definition)
+    def _create_sections(self, definition):
+        section_tabs = []
+        section_bodies = []
+        for section_name, section_definition in definition['plan'].items():
+            section_tabs.append(
+                self._create_section_tab(section_name, section_definition)
             )
-        return HSplit(prompts, padding=0)
+            section_bodies.append(
+                self._create_section_body(section_name, section_definition)
+            )
+        section_tabs.append(Spacer())
+        return VSplit(
+            [
+                HSplit(
+                    section_tabs,
+                    padding=1,
+                    style='class:wizard.section.tab'
+                ),
+                HSplit(section_bodies)
+            ]
+        )
 
-    def _create_prompts_from_step_definition(self, step_definition):
-        prompts = []
-        for value_name, value_definition in step_definition['values'].items():
-            if value_definition['type'] == 'prompt':
-                prompts.append(WizardPrompt(value_name, value_definition))
-        return prompts
+    def _create_section_tab(self, section_name, section_definition):
+        return WizardSectionTab(section_name, section_definition)
+
+    def _create_section_body(self, section_name, section_definition):
+        return WizardSectionBody(section_name, section_definition)

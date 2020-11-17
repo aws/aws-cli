@@ -173,11 +173,13 @@ class BasicPromptToolkitTest(unittest.TestCase):
 
     def get_buffer_is_visible_assertion(self, buffer_name):
         return lambda app: buffer_name in [window.content.buffer.name
-                    for window in app.layout.get_visible_focusable_windows()]
+                    for window in app.layout.visible_windows
+                    if hasattr(window.content, 'buffer')]
 
     def get_buffer_not_visible_assertion(self, buffer_name):
         return lambda app: buffer_name not in [window.content.buffer.name
-                    for window in app.layout.get_visible_focusable_windows()]
+                    for window in app.layout.visible_windows
+                    if hasattr(window.content, 'buffer')]
 
 
 class TestPromptToolkitPrompterBuffer(BasicPromptToolkitTest):

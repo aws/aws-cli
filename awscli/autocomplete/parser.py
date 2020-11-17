@@ -126,8 +126,9 @@ class CLIParser(object):
     not a general purpose AWS CLI parser.
 
     """
-    def __init__(self, index):
+    def __init__(self, index, return_first_command_match=False):
         self._index = index
+        self._return_first_command_match = return_first_command_match
 
     def parse(self, command_line, location=None):
         """Parses as much of the command line input as possible.
@@ -286,16 +287,15 @@ class CLIParser(object):
         return any(command.startswith(current) and command != current
                    for command in command_names)
 
-    def _handle_positional(self, current, state, remaining_parts, parsed):
-        # This is can either be a subcommand or a positional argument
+    def _is_command_name(self, current, remaining_parts, command_names):
+        # If _return_first_command_match is True
         #
-        # First we can check if this is a valid subcommand given our lineage.
-        # We're one off here, we need to compute a new *potential*
-        # lineage.
-        command_names = self._index.command_names(state.full_lineage)
-        positional_argname = None
-        is_command_name = current in command_names
-        is_part_of_command = self._is_part_of_command(current, command_names)
+        # We just check if the 'current' is in 'command_names'
+        # and don't care if there any other commands that could have 'current'
+        # as a part
+        #
+        # If _return_first_command_match is False
+        #
         # To decide if 'current' part is a command or not we consider such cases
         # - if 'current' is in 'command_names' and we already moved forward (at
         # least entered ' ' after) then it's a command
@@ -305,7 +305,21 @@ class CLIParser(object):
         # but if 'current' is in 'command_names' but we have other commands
         # start with the same prefix, for example 's3' and 's3api' we don't
         # consider 'current' as a complete command
-        if is_command_name and (remaining_parts or not is_part_of_command):
+        is_command_name = current in command_names
+        if self._return_first_command_match:
+            return is_command_name
+        is_part_of_command = self._is_part_of_command(current, command_names)
+        return is_command_name and (remaining_parts or not is_part_of_command)
+
+    def _handle_positional(self, current, state, remaining_parts, parsed):
+        # This is can either be a subcommand or a positional argument
+        #
+        # First we can check if this is a valid subcommand given our lineage.
+        # We're one off here, we need to compute a new *potential*
+        # lineage.
+        command_names = self._index.command_names(state.full_lineage)
+        positional_argname = None
+        if self._is_command_name(current, remaining_parts, command_names):
             state.current_command = current
             # We also need to get the next set of command line options.
             current_args = self._index.arg_names(

@@ -13,17 +13,26 @@
 
 
 class CliDriverFetcher:
+
     def __init__(self, cli_driver):
         self._cli_driver = cli_driver
 
-    def _get_argument(self, lineage, current_command, arg_name):
+    def _get_command(self, lineage, current_command):
         subcommand_table = self._cli_driver.subcommand_table
         for arg in lineage[1:]:
             subcommand = subcommand_table[arg]
             subcommand_table = subcommand.subcommand_table
-        command = subcommand_table.get(current_command)
+        return subcommand_table.get(current_command)
+
+    def _get_argument(self, lineage, current_command, arg_name):
+        command = self._get_command(lineage, current_command)
         if command:
             return command.arg_table.get(arg_name)
+
+    def get_operation_model(self, lineage, current_command):
+        if len(lineage) > 1 and current_command:
+            command = self._get_command(lineage, current_command)
+            return command.create_help_command().obj
 
     def get_argument_model(self, lineage, current_command, arg_name):
         return getattr(self._get_argument(

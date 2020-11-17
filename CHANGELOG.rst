@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.180
+========
+
+* api-change:``connect``: Update connect command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``network-firewall``: Update network-firewall command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``fms``: Update fms command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+
+
 1.18.179
 ========
 

@@ -2,6 +2,29 @@
 CHANGELOG
 =========
 
+2.1.2
+=====
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``iotsecuretunneling``: Update iotsecuretunneling command to latest version
+* api-change:``shield``: Update shield command to latest version
+* api-change:``textract``: Update textract command to latest version
+* api-change:``synthetics``: Update synthetics command to latest version
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``fms``: Update fms command to latest version
+* api-change:``network-firewall``: Update network-firewall command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``sns``: Update sns command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``connect``: Update connect command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``dms``: Update dms command to latest version
+
+
 2.1.1
 =====
 

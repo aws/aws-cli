@@ -22,5 +22,9 @@ def get_default_style():
             ('wizard.prompt.description.current', 'white'),
             ('wizard.prompt.answer', ''),
             ('wizard.prompt.answer.current', 'white'),
+            ('wizard.section.tab', 'bold bg:#aaaaaa black'),
+            ('wizard.section.tab.current', 'white'),
+            ('wizard.section.tab.unvisited', '#777777'),
+            ('wizard.section.tab.visited', '')
         ]
     )

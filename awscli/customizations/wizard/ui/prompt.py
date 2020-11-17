@@ -13,7 +13,10 @@
 from prompt_toolkit.application import get_app
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.document import Document
-from prompt_toolkit.layout.containers import Window, VSplit, Dimension
+from prompt_toolkit.filters import Condition
+from prompt_toolkit.layout.containers import (
+    Window, VSplit, Dimension, ConditionalContainer
+)
 from prompt_toolkit.layout.controls import BufferControl
 
 
@@ -24,15 +27,21 @@ class WizardPrompt:
         self.container = self._get_container()
 
     def _get_container(self):
-        return VSplit(
-            [
-                WizardPromptDescription(
-                    self._value_name,
-                    self._value_definition['description']
-                ),
-                WizardPromptAnswer(self._value_name)
-            ]
+        return ConditionalContainer(
+            VSplit(
+                [
+                    WizardPromptDescription(
+                        self._value_name,
+                        self._value_definition['description']
+                    ),
+                    WizardPromptAnswer(self._value_name)
+                ],
+            ),
+            Condition(self._is_visible)
         )
+
+    def _is_visible(self):
+        return get_app().traverser.is_prompt_visible(self._value_name)
 
     def __pt_container__(self):
         return self.container
@@ -60,7 +69,7 @@ class WizardPromptDescription:
         )
 
     def _get_style(self):
-        if get_app().layout.has_focus(self._value_name):
+        if get_app().traverser.get_current_prompt() == self._value_name:
             return 'class:wizard.prompt.description.current'
         else:
             return 'class:wizard.prompt.description'
@@ -84,7 +93,7 @@ class WizardPromptAnswer:
         )
 
     def _get_style(self):
-        if get_app().layout.has_focus(self._value_name):
+        if get_app().traverser.get_current_prompt() == self._value_name:
             return 'class:wizard.prompt.answer.current'
         else:
             return 'class:wizard.prompt.answer'

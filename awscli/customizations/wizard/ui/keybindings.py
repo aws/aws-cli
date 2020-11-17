@@ -21,18 +21,21 @@ def get_default_keybindings():
         event.app.exit()
 
     def submit_current_answer(event):
-        current_buffer = event.app.current_buffer
-        event.app.values[current_buffer.name] = current_buffer.text
+        current_prompt = event.app.traverser.get_current_prompt()
+        prompt_buffer = event.app.layout.get_buffer_by_name(current_prompt)
+        event.app.values[current_prompt] = prompt_buffer.text
 
     @kb.add('tab')
     @kb.add('enter')
     def next_prompt(event):
         submit_current_answer(event)
-        event.app.layout.focus_next()
+        next_prompt = event.app.traverser.next_prompt()
+        event.app.layout.focus(next_prompt)
 
     @kb.add('s-tab')
-    def last_prompt(event):
+    def previous_prompt(event):
         submit_current_answer(event)
-        event.app.layout.focus_last()
+        previous_prompt = event.app.traverser.previous_prompt()
+        event.app.layout.focus(previous_prompt)
 
     return kb

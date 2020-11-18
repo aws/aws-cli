@@ -11,9 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from prompt_toolkit.layout import Layout
-from prompt_toolkit.layout.containers import (
-    WindowAlign, HSplit,
-)
+from prompt_toolkit.layout.containers import WindowAlign, HSplit
 from prompt_toolkit.widgets import Label
 
 from awscli.customizations.wizard.ui.prompt import WizardPrompt
@@ -38,7 +36,7 @@ class WizardLayoutFactory:
 
     def _create_all_prompts(self, definition):
         prompts = []
-        for _, step_definition in definition['plan'].items():
+        for step_definition in definition['plan'].values():
             prompts.extend(
                 self._create_prompts_from_step_definition(step_definition)
             )

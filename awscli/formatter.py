@@ -128,7 +128,7 @@ class YAMLDumper(object):
             # - the json dumper will complain if you pass them in. datetime
             # values should respect the cli timestamp format, which is
             # impossible to do from the Formatter.
-            json.dump(value, stream, ensure_ascii=False)
+            json.dump(value, stream, ensure_ascii=False, default=json_encoder)
             stream.write('\n')
         else:
             self._yaml.dump(value, stream)

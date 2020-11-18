@@ -10,21 +10,29 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from prompt_toolkit.application import Application
 from prompt_toolkit.key_binding import KeyBindings
 
-from awscli.customizations.wizard.ui.keybindings import get_default_keybindings
-from awscli.customizations.wizard.ui.layout import WizardLayoutFactory
-from awscli.customizations.wizard.ui.style import get_default_style
 
+def get_default_keybindings():
+    kb = KeyBindings()
 
-def create_wizard_app(definition):
-    layout_factory = WizardLayoutFactory()
-    app = Application(
-        key_bindings=get_default_keybindings(),
-        style=get_default_style(),
-        layout=layout_factory.create_wizard_layout(definition),
-        full_screen=True,
-    )
-    app.values = {}
-    return app
+    @kb.add('c-c')
+    def exit_(event):
+        event.app.exit()
+
+    def submit_current_answer(event):
+        current_buffer = event.app.current_buffer
+        event.app.values[current_buffer.name] = current_buffer.text
+
+    @kb.add('tab')
+    @kb.add('enter')
+    def next_prompt(event):
+        submit_current_answer(event)
+        event.app.layout.focus_next()
+
+    @kb.add('s-tab')
+    def last_prompt(event):
+        submit_current_answer(event)
+        event.app.layout.focus_last()
+
+    return kb

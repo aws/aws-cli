@@ -350,7 +350,9 @@ class ShorthandCompleter(BaseCompleter):
         # and make one more attempt
         # --option foo={bar -> foo={bar=DUMMY_EQ_VALUE
         from awscli.shorthand import ShorthandParseError
-        if not fragment:
+        if fragment is None:
+            return None
+        if fragment == '':
             return {}
         if '=' not in fragment:
             return {fragment: None}
@@ -368,7 +370,6 @@ class ShorthandCompleter(BaseCompleter):
                     f'{fragment}={self._DUMMY_EQ_VALUE}', attempt + 1)
         # if we get here it means that we can't make it parsable and can't
         # suggest anything so the only solution is to wait till user enter more
-        return
 
     def _get_completion(self, arg_model, parsed_input):
         completion = getattr(

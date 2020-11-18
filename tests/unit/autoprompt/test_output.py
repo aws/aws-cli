@@ -25,8 +25,12 @@ class TestOutputGetter(unittest.TestCase):
         index = InMemoryIndex({
             'command_names': {
                 '': [('aws', None)],
-                'aws': [('s3api', 'Amazon Simple Storage Service')],
+                'aws': [
+                    ('s3api', 'Amazon Simple Storage Service'),
+                    ('ec2', None)
+                ],
                 'aws.s3api': [('get-object', None)],
+                'aws.ec2': [('bundle-instance', None)],
             },
             'arg_names': {
                 '': {
@@ -34,6 +38,9 @@ class TestOutputGetter(unittest.TestCase):
                 },
                 'aws.s3api': {
                     'get-object': [],
+                },
+                'aws.ec2': {
+                    'bundle-instance': [],
                 },
             },
             'arg_data': {
@@ -49,7 +56,10 @@ class TestOutputGetter(unittest.TestCase):
                 },
                 'aws.s3api': {
                     'get-object': {}
-                }
+                },
+                'aws.ec2': {
+                    'bundle-instance': {},
+                },
             }
         })
         self.parser = parser.CLIParser(index)
@@ -111,3 +121,9 @@ class TestOutputGetter(unittest.TestCase):
         parsed = self.parser.parse('aws s3api get-object --output yaml')
         content = self.base_output_getter.get_output(parsed)
         self.assertNotIn('omap', content)
+
+    def test_yaml_output_can_parse_datetime(self):
+        parsed = self.parser.parse('aws ec2 bundle-instance --output yaml '
+                                   '--query BundleTask.StartTime')
+        content = self.base_output_getter.get_output(parsed)
+        self.assertEqual('"1970-01-01T00:00:00"\n', content)

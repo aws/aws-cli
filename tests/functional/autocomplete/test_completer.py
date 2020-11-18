@@ -28,9 +28,11 @@ class TestShorthandCompleter(unittest.TestCase):
                 '': [('aws', None)],
                 'aws': [('codebuild', None),
                         ('dynamodb', None),
-                        ('s3', None)],
+                        ('s3', None),
+                        ('ec2', None)],
                 'aws.codebuild': [('create-project', None)],
                 'aws.dynamodb': [('put-item', None)],
+                'aws.ec2': [('bundle-instance', None)]
             },
             'arg_names': {
                 '': {
@@ -42,6 +44,9 @@ class TestShorthandCompleter(unittest.TestCase):
                 },
                 'aws.dynamodb': {
                     'put-item': ['item'],
+                },
+                'aws.ec2': {
+                    'bundle-instance': ['storage']
                 }
             },
             'arg_data': {
@@ -70,6 +75,13 @@ class TestShorthandCompleter(unittest.TestCase):
                         'item': (
                             'item', 'map', 'put-item',
                             'aws.dynamodb.', None, False, False),
+                    }
+                },
+                'aws.ec2': {
+                    'bundle-instance': {
+                        'storage': (
+                            'storage', 'structure', 'bundle-instance',
+                            'aws.ec2.', None, False, False),
                     }
                 }
             }
@@ -106,7 +118,7 @@ class TestShorthandCompleter(unittest.TestCase):
                 'insecureSsl=', 'sourceIdentifier='])
 
         self.assert_command_generates_suggestions(
-            'aws codebuild create-project --source foo --secondary-sources',
+            'aws codebuild create-project --source foo --secondary-sources ',
             expected_suggestions=[
                 'type=', 'location=', 'gitCloneDepth=',
                 'gitSubmodulesConfig={', 'buildspec=',
@@ -235,6 +247,11 @@ class TestShorthandCompleter(unittest.TestCase):
         suggestions = self.completer.complete(parsed)
         self.assertEqual(suggestions[-1].name,
                          'key={M=[key1={M=[key2={BS=[1]}]}]}')
+
+    def test_not_start_autocompletion_wo_trailing_space(self):
+        parsed = self.parser.parse('aws ec2 bundle-instance --storage')
+        suggestions = self.completer.complete(parsed)
+        self.assertIsNone(suggestions)
 
     def test_un_closable_brackets(self):
         parsed = self.parser.parse('aws dynamodb put-item --item '

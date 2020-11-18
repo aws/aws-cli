@@ -68,7 +68,17 @@ class TestOutputGetter(unittest.TestCase):
         self.assertEqual('No output', content)
 
     def test_can_return_json(self):
-        parsed = self.parser.parse('aws s3api get-object --output json')
+        parsed = self.parser.parse('aws s3api get-object --output json ')
+        content = json.loads(self.base_output_getter.get_output(parsed))
+        self.assertIn('Body', content)
+
+    def test_can_take_output_format_without_trailing_spoace(self):
+        parsed = self.parser.parse('aws s3api get-object --output table')
+        content = self.base_output_getter.get_output(parsed)
+        self.assertIn('------+------', content)
+
+    def test_use_session_output_value_on_partial_input(self):
+        parsed = self.parser.parse('aws s3api get-object --output yam')
         content = json.loads(self.base_output_getter.get_output(parsed))
         self.assertIn('Body', content)
 

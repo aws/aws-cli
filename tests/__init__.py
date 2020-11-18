@@ -1,7 +1,9 @@
-from io import BytesIO
+import dataclasses
+from io import BytesIO, TextIOWrapper
 import collections
 import copy
 import os
+from typing import Optional, Callable
 
 import awscli
 from awscli.clidriver import create_clidriver, AWSCLIEntryPoint
@@ -14,6 +16,12 @@ import botocore.model
 import botocore.serialize
 import botocore.validate
 
+import prompt_toolkit
+import prompt_toolkit.input
+import prompt_toolkit.input.defaults
+import prompt_toolkit.keys
+import prompt_toolkit.utils
+import prompt_toolkit.key_binding.key_processor
 
 # A shared loader to use for classes in this module. This allows us to
 # load models outside of influence of a session and take advantage of
@@ -320,3 +328,102 @@ class RawResponse(BytesIO):
         while contents:
             yield contents
             contents = self.read()
+
+
+class FakeApplicationInput(prompt_toolkit.input.DummyInput):
+    def fileno(self):
+        return 0
+
+    @property
+    def closed(self):
+        return False
+
+
+@dataclasses.dataclass
+class AppKeyPressAction:
+    key: str
+
+
+@dataclasses.dataclass
+class AppAssertionAction:
+    assertion: Callable[[prompt_toolkit.Application], None]
+    failure_message_format: Optional[str] = None
+
+
+@dataclasses.dataclass
+class AppCallbackAction:
+    callback: Callable[[prompt_toolkit.Application], None]
+
+
+class PromptToolkitApplicationStubber:
+    def __init__(self, app):
+        self._app = app
+        self._app.input = FakeApplicationInput()
+        self._queue = []
+
+    def add_keypress(self, key, app_assertion=None):
+        self._queue.append(AppKeyPressAction(key))
+        if app_assertion:
+            failure_message_format = (
+                f'Incorrect action on key press "{key}": '
+                '{message}'
+            )
+            self._queue.append(
+                AppAssertionAction(
+                    assertion=app_assertion,
+                    failure_message_format=failure_message_format
+                )
+            )
+
+    def add_app_assertion(self, assertion):
+        self._queue.append(AppAssertionAction(assertion))
+
+    def add_text_to_current_buffer(self, text):
+        def set_current_buffer(app):
+            app.current_buffer.text = text
+        self._queue.append(AppCallbackAction(callback=set_current_buffer))
+
+    def run(self, pre_run=None):
+        key_processor = self._app.key_processor
+        # After each rendering application will run this callback
+        # it takes the next action from the queue and performs it
+        # some key_presses can lead to rerender, after which this callback
+        # will be run again before re-rendering app.invalidated property
+        # set to True.
+        # On exit this callback also run so we need to remove it before exit
+
+        def callback(app):
+            while self._queue and not app.invalidated:
+                action = self._queue.pop(0)
+                if hasattr(action, 'key'):
+                    key_processor.feed(
+                        prompt_toolkit.key_binding.key_processor.KeyPress(
+                            action.key, ''
+                        )
+                    )
+                    key_processor.process_keys()
+                if hasattr(action, 'callback'):
+                    action.callback(app)
+                if getattr(action, 'assertion', None):
+                    try:
+                        action.assertion(app)
+                    except AssertionError as e:
+                        message = str(e)
+                        if getattr(action, 'failure_message_format'):
+                            message = action.failure_message_format.format(
+                                message=message
+                            )
+                        app.after_render = prompt_toolkit.utils.Event(
+                            app, None)
+                        app.exit(exception=AssertionError(message))
+                        return
+            if not self._queue:
+                app.after_render = prompt_toolkit.utils.Event(app, None)
+                app.exit()
+
+        self._app.after_render = prompt_toolkit.utils.Event(
+            self._app, callback)
+
+        _stdout = TextIOWrapper(BytesIO(), encoding="utf-8")
+        self._app.output.stdout = _stdout
+        self._app.run(pre_run=pre_run)

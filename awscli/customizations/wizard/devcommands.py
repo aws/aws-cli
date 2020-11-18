@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import ruamel.yaml as yaml
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.wizard import factory
+from awscli.customizations.wizard.app import create_wizard_app
 
 
 def register_dev_commands(event_handlers):
@@ -21,10 +21,8 @@ def register_dev_commands(event_handlers):
 
 
 def create_default_wizard_dev_runner(session):
-    runner = factory.create_default_wizard_runner(session)
     return WizardDevRunner(
         wizard_loader=WizardLoader(),
-        wizard_runner=runner
     )
 
 
@@ -35,14 +33,15 @@ class WizardLoader(object):
 
 
 class WizardDevRunner(object):
-    def __init__(self, wizard_loader, wizard_runner):
+    def __init__(self, wizard_loader):
         self._wizard_loader = wizard_loader
-        self._wizard_runner = wizard_runner
 
     def run_wizard(self, wizard_contents):
         """Run a single wizard given the contents as a string."""
         loaded = self._wizard_loader.load(wizard_contents)
-        self._wizard_runner.run(loaded)
+        app = create_wizard_app(loaded)
+        app.run()
+        print(f'Collected values: {app.values}')
 
 
 class WizardDev(BasicCommand):

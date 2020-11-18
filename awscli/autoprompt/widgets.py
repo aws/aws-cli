@@ -15,7 +15,7 @@ from functools import partial
 
 from prompt_toolkit.application import get_app
 from prompt_toolkit.filters import has_focus
-from prompt_toolkit.formatted_text import HTML, Template, to_formatted_text
+from prompt_toolkit.formatted_text import HTML, to_formatted_text
 from prompt_toolkit.formatted_text.utils import fragment_list_to_text
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.document import Document
@@ -85,14 +85,14 @@ class BaseHelpContainer(ConditionalContainer):
         document = Document(text=self.help_text, cursor_position=0)
         help_buffer = Buffer(name=self.NAME, read_only=True)
         help_buffer.set_document(document, bypass_readonly=True)
-        help_buffer.focusable = self.FOCUSABLE
         return help_buffer
 
     def create_window(self, help_buffer):
         return Window(
             content=BufferControl(
                 buffer=help_buffer,
-                input_processors=[FormatTextProcessor()]
+                input_processors=[FormatTextProcessor()],
+                focusable=self.FOCUSABLE
             ),
             wrap_lines=True,
             **self.DIMENSIONS

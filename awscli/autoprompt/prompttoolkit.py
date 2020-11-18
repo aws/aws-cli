@@ -24,6 +24,7 @@ from awscli.logger import LOG_FORMAT
 from awscli.autocomplete import parser
 from awscli.autocomplete.local import model
 from awscli.autoprompt.doc import DocsGetter
+from awscli.autoprompt.output import OutputGetter
 from awscli.autoprompt.factory import PromptToolkitFactory
 from awscli.autoprompt.logger import PromptToolkitHandler
 
@@ -68,7 +69,8 @@ class PromptToolkitPrompter:
             factory = PromptToolkitFactory(completer=self._completer)
         self._parser = cli_parser
         if self._parser is None:
-            self._parser = parser.CLIParser(model.ModelIndex())
+            self._parser = parser.CLIParser(
+                model.ModelIndex(), return_first_command_match=True)
         self._factory = factory
         self.input_buffer = None
         self.doc_buffer = None
@@ -79,6 +81,7 @@ class PromptToolkitPrompter:
         self._args = []
         self._driver = driver
         self._docs_getter = DocsGetter(self._driver)
+        self._output_getter = OutputGetter(self._driver)
 
     def args(self, value):
         self._args = value
@@ -128,6 +131,14 @@ class PromptToolkitPrompter:
         parsed = self._parser.parse(
             'aws ' + self.input_buffer.document.text)
         self._update_doc_window_contents(parsed)
+        self._update_output_window_contents(parsed)
+
+    def _update_output_window_contents(self, parsed):
+        content = self._output_getter.get_output(parsed)
+        if content is not None and content != self.output_buffer.document.text:
+            self.output_buffer.reset()
+            new_document = Document(text=content, cursor_position=0)
+            self.output_buffer.set_document(new_document, bypass_readonly=True)
 
     def _update_doc_window_contents(self, parsed):
         content = self._docs_getter.get_docs(parsed)

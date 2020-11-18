@@ -278,8 +278,6 @@ class PromptToolkitKeyBindings:
         @self._kb.add(Keys.F2)
         def _(event):
             focus_next(event)
-            while not getattr(event.app.current_buffer, 'focusable', True):
-                focus_next(event)
 
         @self._kb.add('q', filter=~input_buffer_has_focus)
         def _(event):

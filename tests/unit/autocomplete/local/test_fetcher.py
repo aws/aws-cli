@@ -22,12 +22,16 @@ class FakeDriver:
         global_arg.documentation = 'global arg doc'
         self.arg_table = {'arg': global_arg}
 
+        help_command = mock.Mock()
+        help_command.obj = 'fake_operational_model'
+
         arg = mock.Mock()
         arg.documentation = 'arg doc'
         arg_table = {'instance-ids': arg}
 
         sub_subcommand = mock.Mock()
         sub_subcommand.arg_table = arg_table
+        sub_subcommand.create_help_command.return_value = help_command
 
         subcommand = mock.Mock()
         subcommand.subcommand_table = {'describe-instances': sub_subcommand}
@@ -47,3 +51,8 @@ class TestCliDriverFetcher(unittest.TestCase):
     def test_get_global_arg_documentation(self):
         help_text = self.fetcher.get_global_arg_documentation('arg')
         self.assertEqual(help_text, 'global arg doc')
+
+    def test_get_operational_model(self):
+        operational_model = self.fetcher.get_operation_model(
+            ['aws', 'ec2'], 'describe-instances')
+        self.assertEqual(operational_model, 'fake_operational_model')

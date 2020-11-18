@@ -52,7 +52,7 @@ class TestShorthandCompleter(unittest.TestCase):
                         'output': ('output', 'string', 'aws', '', None, False,
                                    False),
                         'debug': ('debug', 'string', 'aws', '', None, False,
-                                   False),
+                                  False),
                     }
                 },
                 'aws.codebuild': {
@@ -351,3 +351,84 @@ class TestModelIndexCompleter(unittest.TestCase):
         parsed = self.parser.parse('aws --re')
         suggestions = self.completer.complete(parsed)
         self.assertIn('The region', suggestions[0].help_text)
+
+
+class TestQueryCompleter(unittest.TestCase):
+    def setUp(self):
+        cli_driver = CLIDriver()
+        self.cli_fetcher = fetcher.CliDriverFetcher(cli_driver)
+        index = InMemoryIndex({
+            'command_names': {
+                '': [('aws', None)],
+                'aws': [('ec2', None)],
+                'aws.ec2': [('describe-instances', None)],
+            },
+            'arg_names': {
+                '': {
+                    'aws': ['query', 'output'],
+                },
+                'aws.ec2': {
+                    'describe-instances': [],
+                },
+            },
+            'arg_data': {
+                '': {
+                    'aws': {
+                        'query': (
+                            'query', 'string', 'aws', '', None, False,
+                            False),
+                        'output': (
+                            'output', 'string', 'aws', '', None, False,
+                            False),
+                    }
+                },
+                'aws.ec2': {
+                    'describe-instances': {}
+                }
+            }
+        })
+        self.parser = parser.CLIParser(index)
+        self.completer = basic.QueryCompleter(
+            self.cli_fetcher, response_filter=filters.fuzzy_filter)
+
+    def _assert_in_completions(self, name, completions):
+        self.assertIn(name, [completion.name for completion in completions])
+
+    def _assert_not_in_completions(self, name, completions):
+        self.assertNotIn(name, [completion.name for completion in completions])
+
+    def test_get_completion(self):
+        parsed = self.parser.parse('aws ec2 describe-instances --query ')
+        completions = self.completer.complete(parsed)
+        self._assert_in_completions('Reservations', completions)
+
+    def test_complete_on_brackets(self):
+        parsed = self.parser.parse(
+            'aws ec2 describe-instances --query Reservations[].')
+        completions = self.completer.complete(parsed)
+        self._assert_in_completions('Reservations[].Groups', completions)
+
+    def test_complete_on_brackets_with_content(self):
+        parsed = self.parser.parse(
+            'aws ec2 describe-instances --query Reservations[65].')
+        completions = self.completer.complete(parsed)
+        self._assert_in_completions('Reservations[65].Groups', completions)
+
+    def test_filter_completions(self):
+        parsed = self.parser.parse(
+            'aws ec2 describe-instances --query Reservations[65].id')
+        completions = self.completer.complete(parsed)
+        self._assert_in_completions('Reservations[65].OwnerId', completions)
+        self._assert_not_in_completions('Reservations[65].Groups', completions)
+
+    def test_not_run_wo_cli_fetcher(self):
+        parsed = self.parser.parse(
+            'aws ec2 describe-instances --query Reservations[65].id')
+        completer = basic.QueryCompleter()
+        self.assertIsNone(completer.complete(parsed))
+
+    def test_return_empty_list_when_query_invalid(self):
+        parsed = self.parser.parse(
+            'aws ec2 describe-instances --query Reservations{65].id')
+        completions = self.completer.complete(parsed)
+        self.assertEqual([], completions)

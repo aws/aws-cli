@@ -496,3 +496,84 @@ class ShorthandCompleter(BaseCompleter):
                     )
                 )
         return self._filter(last_key, results)
+
+
+class QueryCompleter(BaseCompleter):
+
+    def __init__(self, cli_driver_fetcher=None,
+                 response_filter=startswith_filter):
+        self._filter = response_filter
+        self._cli_driver_fetcher = cli_driver_fetcher
+        self._argument_generator = None
+        self._jmespath = None
+
+    @property
+    def jmespath(self):
+        if self._jmespath is None:
+            import jmespath
+            self._jmespath = jmespath
+        return self._jmespath
+
+    @property
+    def argument_generator(self):
+        if self._argument_generator is None:
+            from botocore.utils import ArgumentGenerator
+            self._argument_generator = ArgumentGenerator
+        return self._argument_generator
+
+    def complete(self, parsed):
+        if self._cli_driver_fetcher is None:
+            return
+        if parsed.current_param == 'query' and \
+                parsed.current_fragment is not None:
+            operation_model = self._cli_driver_fetcher.get_operation_model(
+                parsed.lineage, parsed.current_command)
+            if operation_model:
+                return self._get_completions(parsed.current_fragment,
+                                             operation_model)
+
+    def _get_query_and_last_key(self, query):
+        # Because output example has only 1 element in any list if
+        # user enters query like Groups[2] jmespath will return "null"
+        # and we won't be able to prompting so we change all the numbers
+        # in brackets to 0 to be able to get the shape of the nested structure
+        query = re.sub(r'([\{\[])\d+?([\}\]])', '\g<1>0\g<2>', query)
+        return query.rsplit('.', 1)
+
+    def _create_completions(self, results, last_key, fragment):
+        completions = self._filter(
+            last_key,
+            [CompletionResult(last_key, display_text=result)
+             for result in results]
+        )
+        for completion in completions:
+            name_part_len = len(fragment) - len(completion.name)
+            completion.name = "%s%s" % (
+                fragment[:name_part_len],
+                completion.display_text
+            )
+        return completions
+
+    def _get_completions(self, fragment, operation_model):
+        results = []
+        last_key = fragment
+        if operation_model.output_shape:
+            argument_generator = self.argument_generator(
+                use_member_names=True)
+            response = argument_generator.generate_skeleton(
+                operation_model.output_shape)
+            if '.' not in fragment:
+                if isinstance(response, dict):
+                    results = response.keys()
+            else:
+                try:
+                    query, last_key = self._get_query_and_last_key(fragment)
+                    expression = self.jmespath.compile(query)
+                    parsed_response = expression.search(response)
+                    if parsed_response and isinstance(parsed_response, list):
+                        parsed_response = parsed_response[0]
+                    if isinstance(parsed_response, dict):
+                        results = parsed_response.keys()
+                except self.jmespath.exceptions.JMESPathError:
+                    pass
+        return self._create_completions(results, last_key, fragment)

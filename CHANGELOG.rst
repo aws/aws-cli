@@ -1142,6 +1142,34 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.182
+========
+
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``events``: Update events command to latest version
+* api-change:``lex-runtime``: Update lex-runtime command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``ds``: Update ds command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``kinesisanalyticsv2``: Update kinesisanalyticsv2 command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+
+
+1.18.181
+========
+
+* api-change:``outposts``: Update outposts command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``cloudformation``: Update cloudformation command to latest version
+* api-change:``backup``: Update backup command to latest version
+* api-change:``s3control``: Update s3control command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.18.180
 ========
 

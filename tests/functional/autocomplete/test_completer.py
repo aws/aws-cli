@@ -449,3 +449,15 @@ class TestQueryCompleter(unittest.TestCase):
             'aws ec2 describe-instances --query Reservations{65].id')
         completions = self.completer.complete(parsed)
         self.assertEqual([], completions)
+
+    def test_return_empty_list_if_output_is_list_and_expression_is_field(self):
+        parsed = self.parser.parse(
+            'aws ec2 describe-instances --query Reservations.')
+        completions = self.completer.complete(parsed)
+        self.assertEqual([], completions)
+
+    def test_return_empty_list_if_output_is_list_and_last_child_is_field(self):
+        parsed = self.parser.parse(
+            'aws ec2 describe-instances --query Reservations[0].Groups.')
+        completions = self.completer.complete(parsed)
+        self.assertEqual([], completions)

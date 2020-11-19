@@ -555,6 +555,14 @@ class QueryCompleter(BaseCompleter):
             )
         return completions
 
+    def _is_field_expression(self, expression):
+        is_last_child_field = False
+        is_field = expression.parsed['type'] == 'field'
+        if expression.parsed['children']:
+            is_last_child_field = \
+                expression.parsed['children'][-1]['type'] == 'field'
+        return is_field or is_last_child_field
+
     def _get_completions(self, fragment, operation_model):
         results = []
         last_key = fragment
@@ -571,7 +579,8 @@ class QueryCompleter(BaseCompleter):
                     query, last_key = self._get_query_and_last_key(fragment)
                     expression = self.jmespath.compile(query)
                     parsed_response = expression.search(response)
-                    if parsed_response and isinstance(parsed_response, list):
+                    if parsed_response and isinstance(parsed_response, list) \
+                            and not self._is_field_expression(expression):
                         parsed_response = parsed_response[0]
                     if isinstance(parsed_response, dict):
                         results = parsed_response.keys()

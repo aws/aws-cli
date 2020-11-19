@@ -58,6 +58,9 @@ class OutputGetter:
 
     def _get_output(self, parsed):
         error_message = None
+        if parsed.current_param == 'output':
+            if parsed.current_fragment in self._output_formats:
+                return parsed.current_fragment, error_message
         session_output = self._session.get_config_variable('output')
         output = parsed.global_params.get('output') or session_output
         if output not in self._output_formats:

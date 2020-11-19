@@ -49,7 +49,6 @@ def create_autocompleter(index_filename=None, custom_completers=None,
     return cli_completer
 
 
-
 def autocomplete(command_line, position=None):
     completer = create_autocompleter()
     results = completer.autocomplete(command_line, position)

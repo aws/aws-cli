@@ -189,8 +189,11 @@ class TestCanParseCLICommand(unittest.TestCase):
     def setUp(self):
         self.cli_parser = self.create_parser()
 
-    def create_parser(self):
-        return parser.CLIParser(SAMPLE_MODEL)
+    def create_parser(self, return_first_command_match=False):
+        return parser.CLIParser(
+            SAMPLE_MODEL,
+            return_first_command_match=return_first_command_match
+        )
 
     def assert_parsed_results_equal(self, actual, **expected):
         # Asserts that every kwargs in expected matches what was actually
@@ -330,6 +333,17 @@ class TestCanParseCLICommand(unittest.TestCase):
             global_params={},
             current_fragment='s3',
             lineage=[],
+        )
+
+    def test_parse_shortest_command_if_first_wins(self):
+        parser = self.create_parser(return_first_command_match=True)
+        result = parser.parse('aws s3')
+        self.assert_parsed_results_equal(
+            result,
+            current_command='s3',
+            parsed_params={},
+            global_params={},
+            lineage=['aws'],
         )
 
     def test_can_proceed_if_there_longer_command(self):

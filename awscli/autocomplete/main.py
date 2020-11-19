@@ -41,11 +41,12 @@ def create_autocompleter(index_filename=None, custom_completers=None,
         serverside.create_server_side_completer(
             index_filename, response_filter=response_filter),
         basic.ShorthandCompleter(cli_driver_fetcher,
-                                 response_filter=response_filter)
+                                 response_filter=response_filter),
+        basic.QueryCompleter(cli_driver_fetcher,
+                             response_filter=response_filter),
     ] + custom_completers
     cli_completer = completer.AutoCompleter(cli_parser, completers)
     return cli_completer
-
 
 
 def autocomplete(command_line, position=None):

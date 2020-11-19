@@ -142,8 +142,8 @@ class TestYAMLOutput(BaseAWSCommandParamsTest):
         stdout, _, _ = self.run_cmd(command, expected_rc=0)
         self.assertEqual(stdout, 'false\n')
 
-    def test_print_timestamp_raises_error(self):
-        now = datetime.datetime.now()
+    def test_print_timestamp(self):
+        now = datetime.datetime(1970, 1, 1, 0, 0)
         self.parsed_response = {
             "Buckets": [{
                 "CreationDate": now,
@@ -153,9 +153,9 @@ class TestYAMLOutput(BaseAWSCommandParamsTest):
         command = (
             's3api list-buckets --output yaml --query Buckets[0].CreationDate'
         )
-        _, stderr, _ = self.run_cmd(command, expected_rc=255)
-        expected = 'not JSON serializable'
-        self.assertIn(expected, stderr)
+        stdout, _, _ = self.run_cmd(command)
+        expected = '1970-01-01T00:00:00'
+        self.assertIn(expected, stdout)
 
     def test_print_string_literal(self):
         jmespath_query = 'Users[0].UserName'

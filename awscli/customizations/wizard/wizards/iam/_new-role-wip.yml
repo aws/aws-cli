@@ -1,0 +1,93 @@
+version: "0.2"
+title: Create An IAM Role and Policy
+description: This wizard will create a new IAM role for you
+plan:
+  ask_role_name:
+    shortname: Intro
+    description: Provide role name and description
+    values:
+      role_name:
+        type: prompt
+        description: Role name
+      role_description:
+        type: prompt
+        description: Role description
+  decide_role_type:
+    shortname: Trusted Entity
+    description: Select the trusted entity for the role
+    values:
+      # This will prompt the user using the 'description' value.
+      # The value the user enters is saved under the global variable
+      # 'name'.
+      role_type:
+        type: prompt
+        description: Select type of trusted entity
+        choices:
+          # There's also Web Identity and SAML but we're skipping that.
+          - display: AWS Service
+            actual_value: aws_service
+          - display: Another AWS Account
+            actual_value: aws_account
+      service_name:
+        type: prompt
+        description: Choose the service that will use this role
+        condition:
+          variable: role_type
+          equals: aws_service
+        choices:
+          - display: Amazon EC2
+            actual_value: ec2
+          - display: AWS Lambda
+            actual_value: lambda
+      account_id:
+        type: prompt
+        description: Enter the Account ID that can use this role
+        condition:
+          variable: role_type
+          equals: aws_account
+  ask_role_permissions:
+    shortname: Permissions
+    description: Attach permissions policies
+    # The console by default asks you to pick an existing policy
+    # to attach to.  We'll just go with that behavior for now.
+    values:
+      existing_policies:
+        type: apicall
+        operation: iam.ListPolicies
+        params:
+          Scope: AWS
+        query: "sort_by(Policies[].{display: PolicyName, actual_value: Arn}, &display)"
+      policy_arn:
+        type: prompt
+        description: Choose a policy to attach to your new role
+        choices: existing_policies
+  ask_profile_config:
+    shortname: CLI config
+    description: Determine CLI configuration
+    values:
+      wants_config_profile:
+        type: prompt
+        description: Do you want to create a new CLI profile with this role?
+        choices:
+          - display: Yes
+            actual_value: yes
+          - display: No
+            actual_value: no
+      new_profile_name:
+        type: prompt
+        description: Enter the name of the new profile
+        condition:
+          variable: wants_config_profile
+          equals: yes
+      existing_profiles:
+        type: sharedconfig
+        operation: ListProfiles
+      source_profile:
+        type: prompt
+        description: Name of the source profile
+        choices: existing_profiles
+        condition:
+          variable: wants_config_profile
+          equals: yes
+execute:
+

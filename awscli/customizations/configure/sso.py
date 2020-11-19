@@ -124,6 +124,10 @@ class ConfigureSSOCommand(BasicCommand):
         'the profile name will be prompted for.'
         '\n\nNote: The configuration is saved in the shared configuration '
         'file. By default, ``~/.aws/config``.'
+        '<p>For more information, see '
+        '<a href="https://docs.aws.amazon.com/cli/latest/userguide/'
+        'cli-configure-sso.html">Configuring the AWS CLI to use AWS Single '
+        'Sign-On</a> in the <i>AWS CLI User Guide</i>.</p>'
     )
     # TODO: Add CLI parameters to skip prompted values, --start-url, etc.
 

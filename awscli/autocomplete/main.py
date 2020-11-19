@@ -21,6 +21,7 @@ from awscli.autocomplete.local import model, basic, fetcher
 from awscli.autocomplete import serverside
 from awscli.autocomplete import custom
 
+
 def create_autocompleter(index_filename=None, custom_completers=None,
                          driver=None, response_filter=None):
     if response_filter is None:

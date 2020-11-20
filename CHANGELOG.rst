@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.18.183
+========
+
+* api-change:``cognito-identity``: Update cognito-identity command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``codeguru-reviewer``: Update codeguru-reviewer command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``cloudhsmv2``: Update cloudhsmv2 command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``servicecatalog-appregistry``: Update servicecatalog-appregistry command to latest version
+* api-change:``connect``: Update connect command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+
+
 1.18.182
 ========
 

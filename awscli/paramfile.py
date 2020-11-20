@@ -107,6 +107,8 @@ PARAMFILE_DISABLED = set([
     'service-catalog.create-product.support-url',
     'service-catalog.update-product.support-url',
 
+    'ses.put-account-details.website-url',
+
     'sqs.add-permission.queue-url',
     'sqs.change-message-visibility.queue-url',
     'sqs.change-message-visibility-batch.queue-url',

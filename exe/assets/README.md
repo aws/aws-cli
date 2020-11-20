@@ -12,7 +12,7 @@ You can now run: /usr/local/bin/aws --version
 This will install the AWS CLI v2 at `/usr/local/bin/aws`.  Assuming
 `/usr/local/bin` is on your `PATH`, you can now run:
 ```
-$ aws --verison
+$ aws --version
 ```
 
 

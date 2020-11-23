@@ -2,6 +2,32 @@
 CHANGELOG
 =========
 
+1.18.184
+========
+
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``forecast``: Update forecast command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``application-insights``: Update application-insights command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``codestar-connections``: Update codestar-connections command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``sso-admin``: Update sso-admin command to latest version
+* api-change:``timestream-query``: Update timestream-query command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``outposts``: Update outposts command to latest version
+* api-change:``license-manager``: Update license-manager command to latest version
+* api-change:``codeartifact``: Update codeartifact command to latest version
+* api-change:``signer``: Update signer command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``translate``: Update translate command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+
+
 1.18.183
 ========
 

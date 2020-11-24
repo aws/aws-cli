@@ -139,10 +139,11 @@ class NuGetLogin(BaseLogin):
             return
 
         try:
-            self.subprocess_utils.check_output(
-                command,
-                stderr=self.subprocess_utils.PIPE
-            )
+            with original_ld_library_path():
+                self.subprocess_utils.check_output(
+                    command,
+                    stderr=self.subprocess_utils.PIPE
+                )
         except subprocess.CalledProcessError as e:
             uni_print('Failed to update the user level NuGet.Config\n')
             raise e
@@ -163,10 +164,11 @@ class NuGetLogin(BaseLogin):
         #   100. Source Name 100
         #       https://source100.com/index.json
 
-        response = self.subprocess_utils.check_output(
-            ['nuget', 'sources', 'list', '-format', 'detailed'],
-            stderr=self.subprocess_utils.PIPE
-        )
+        with original_ld_library_path():
+            response = self.subprocess_utils.check_output(
+                ['nuget', 'sources', 'list', '-format', 'detailed'],
+                stderr=self.subprocess_utils.PIPE
+            )
 
         lines = response.decode("utf-8").splitlines()
 

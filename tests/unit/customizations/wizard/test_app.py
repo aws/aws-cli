@@ -204,6 +204,40 @@ class TestConditionalWizardApplication(BaseWizardApplicationTest):
         self.stubbed_app.run()
 
 
+class TestChoicesWizardApplication(BaseWizardApplicationTest):
+    def get_definition(self):
+        return {
+            'title': 'Conditional wizard',
+            'plan': {
+                'section': {
+                    'shortname': 'Section',
+                    'values': {
+                        'choices_prompt': {
+                            'description': 'Description of first prompt',
+                            'type': 'prompt',
+                            'choices': [
+                                {
+                                    'display': 'Option 1',
+                                    'actual_value': 'actual_option_1'
+                                },
+                                {
+                                    'display': 'Option 2',
+                                    'actual_value': 'actual_option_2'
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+
+    def test_can_select_choice_in_prompt(self):
+        self.stubbed_app.add_keypress(Keys.Down)
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.add_app_values_assertion(choices_prompt='actual_option_2')
+        self.stubbed_app.run()
+
+
 class TestWizardTraverser(unittest.TestCase):
     def setUp(self):
         self.simple_definition = self.create_definition(

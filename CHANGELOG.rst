@@ -2,6 +2,28 @@
 CHANGELOG
 =========
 
+1.18.185
+========
+
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``cloudformation``: Update cloudformation command to latest version
+* api-change:``timestream-write``: Update timestream-write command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``cloudtrail``: Update cloudtrail command to latest version
+* api-change:``batch``: Update batch command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* api-change:``appflow``: Update appflow command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``stepfunctions``: Update stepfunctions command to latest version
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``mwaa``: Update mwaa command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+
+
 1.18.184
 ========
 

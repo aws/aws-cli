@@ -17,6 +17,21 @@ from prompt_toolkit.layout.containers import Window, Dimension
 from prompt_toolkit.layout.controls import BufferControl
 
 
+def get_ui_control_by_buffer_name(layout, buffer_name):
+    """Retrieves any UI control based on it's buffer name
+
+    Prompt toolkit has a variety of methods on its layout to retrieve the
+    a buffer by name but most of them require the control to be a
+    BufferControl object. This function allows for better duck typing in that
+    it includes UI control objects that have buffer properties.
+    """
+    for control in layout.find_all_controls():
+        if hasattr(control, 'buffer') and control.buffer.name == buffer_name:
+            return control
+    raise ValueError(
+        f"Couldn't find buffer in the current layout: {buffer_name}")
+
+
 class Spacer:
     """Fills empty space in a layout
 

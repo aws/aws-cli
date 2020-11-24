@@ -32,6 +32,10 @@ def create_wizard_app(definition):
     return app
 
 
+class InvalidChoiceException(Exception):
+    pass
+
+
 class WizardTraverser:
     def __init__(self, definition, values):
         self._definition = definition
@@ -47,6 +51,17 @@ class WizardTraverser:
 
     def get_current_section(self):
         return self._prompt_to_sections[self._current_prompt]
+
+    def get_current_prompt_choices(self):
+        return self._get_choices(self._current_prompt)
+
+    def submit_prompt_answer(self, answer):
+        if 'choices' in self._prompt_definitions[self._current_prompt]:
+            answer = self._convert_display_value_to_actual_value(
+                self._prompt_definitions[self._current_prompt]['choices'],
+                answer
+            )
+        self._values[self._current_prompt] = answer
 
     def next_prompt(self):
         new_prompt = self._get_next_prompt()
@@ -89,6 +104,23 @@ class WizardTraverser:
 
     def _get_starting_prompt(self):
         return list(self._prompt_definitions)[0]
+
+    def _get_choices(self, value_name):
+        value_definition = self._prompt_definitions[value_name]
+        if 'choices' in value_definition:
+            return [
+                choice['display'] for choice in value_definition['choices']
+            ]
+        return None
+
+    def _convert_display_value_to_actual_value(self, choices, display_value):
+        for choice in choices:
+            if choice['display'] == display_value:
+                return choice['actual_value']
+        raise InvalidChoiceException(
+            f"'{display_value}' is not a valid choice. Valid choices are: "
+            f"{[choice['display'] for choice in choices]}"
+        )
 
     def _get_next_prompt(self):
         prompts = list(self._prompt_definitions)

@@ -171,6 +171,10 @@ class AWSCLIEntryPoint:
         HISTORY_RECORDER.record('CLI_RC', rc, 'CLI')
         return rc
 
+    def _run_driver(self, driver, args, prompt_mode):
+        driver.session.user_agent_extra += " prompt/%s" % prompt_mode
+        return driver.main(args)
+
     def _do_main(self, args):
         driver = self._driver
         if driver is None:
@@ -179,16 +183,16 @@ class AWSCLIEntryPoint:
         auto_prompt_mode = autoprompt_driver.resolve_mode(args)
         if auto_prompt_mode == 'on':
             args = autoprompt_driver.prompt_for_args(args)
-            rc = driver.main(args)
+            rc = self._run_driver(driver, args, prompt_mode='on')
         elif auto_prompt_mode == 'on-partial':
             autoprompt_driver.inject_silence_param_error_msg_handler(driver)
-            rc = driver.main(args)
+            rc = self._run_driver(driver, args, prompt_mode='off')
             if rc == PARAM_VALIDATION_ERROR_RC:
                 args = autoprompt_driver.prompt_for_args(args)
                 driver = create_clidriver(args)
-                rc = driver.main(args)
+                rc = self._run_driver(driver, args, prompt_mode='partial')
         else:
-            rc = driver.main(args)
+            rc = self._run_driver(driver, args, prompt_mode='off')
         return rc
 
 

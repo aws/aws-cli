@@ -202,7 +202,7 @@ Contents of ``ec2_attributes.json``::
             "InstanceProfile":"myRole",
             "EmrManagedMasterSecurityGroup": "sg-master1",
             "EmrManagedSlaveSecurityGroup": "sg-slave1",
-            "ServiceAccessSecurityGroup": "sg-service-access"
+            "ServiceAccessSecurityGroup": "sg-service-access",
             "AdditionalMasterSecurityGroups": ["sg-addMaster1","sg-addMaster2","sg-addMaster3","sg-addMaster4"],
             "AdditionalSlaveSecurityGroups": ["sg-addSlave1","sg-addSlave2","sg-addSlave3","sg-addSlave4"]
         }

@@ -1166,6 +1166,69 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.185
+========
+
+* api-change:``cognito-idp``: Update cognito-idp command to latest version
+* api-change:``cloudformation``: Update cloudformation command to latest version
+* api-change:``timestream-write``: Update timestream-write command to latest version
+* api-change:``lex-models``: Update lex-models command to latest version
+* api-change:``fsx``: Update fsx command to latest version
+* api-change:``cloudtrail``: Update cloudtrail command to latest version
+* api-change:``batch``: Update batch command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``elasticbeanstalk``: Update elasticbeanstalk command to latest version
+* api-change:``appflow``: Update appflow command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``stepfunctions``: Update stepfunctions command to latest version
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``mwaa``: Update mwaa command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+
+
+1.18.184
+========
+
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``forecast``: Update forecast command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``application-insights``: Update application-insights command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``codestar-connections``: Update codestar-connections command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``sso-admin``: Update sso-admin command to latest version
+* api-change:``timestream-query``: Update timestream-query command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``outposts``: Update outposts command to latest version
+* api-change:``license-manager``: Update license-manager command to latest version
+* api-change:``codeartifact``: Update codeartifact command to latest version
+* api-change:``signer``: Update signer command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``translate``: Update translate command to latest version
+* api-change:``dynamodb``: Update dynamodb command to latest version
+
+
+1.18.183
+========
+
+* api-change:``cognito-identity``: Update cognito-identity command to latest version
+* api-change:``chime``: Update chime command to latest version
+* api-change:``codeguru-reviewer``: Update codeguru-reviewer command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``cloudhsmv2``: Update cloudhsmv2 command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``servicecatalog-appregistry``: Update servicecatalog-appregistry command to latest version
+* api-change:``connect``: Update connect command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+
+
 1.18.182
 ========
 

@@ -10,7 +10,7 @@ from urllib.parse import urlsplit
 
 from awscli.testutils import unittest, mock, FileCreator
 from awscli.customizations.codeartifact.login import (
-    BaseLogin, NpmLogin, PipLogin, TwineLogin,
+    BaseLogin, NuGetLogin, NpmLogin, PipLogin, TwineLogin,
     get_relative_expiration_time
 )
 
@@ -35,8 +35,8 @@ class TestBaseLogin(unittest.TestCase):
         self.subprocess_utils = mock.Mock()
 
         self.test_subject = BaseLogin(
-            self.auth_token, self.expiration,
-            self.endpoint, self.subprocess_utils
+            self.auth_token, self.expiration, self.endpoint,
+            self.domain, self.repository, self.subprocess_utils
         )
 
     def test_login(self):
@@ -64,6 +64,124 @@ class TestBaseLogin(unittest.TestCase):
         tool = 'NotSupported'
         with self.assertRaisesRegex(OSError, 'unhandled error'):
             self.test_subject._run_commands(tool, ['echo', tool])
+
+
+class TestNuGetLogin(unittest.TestCase):
+    _NUGET_INDEX_URL_FMT = NuGetLogin._NUGET_INDEX_URL_FMT
+    _NUGET_SOURCES_LIST_RESPONSE = b"""\
+Registered Sources:
+  1. Source Name 1 [Enabled]
+     https://source1.com/index.json
+  2. Ab[.d7  $#!],   [Disabled]
+     https://source2.com/index.json"""
+
+    def setUp(self):
+        self.domain = 'domain'
+        self.domain_owner = 'domain-owner'
+        self.package_format = 'nuget'
+        self.repository = 'repository'
+        self.auth_token = 'auth-token'
+        self.expiration = (datetime.now(tzlocal()) + relativedelta(hours=10)
+                           + relativedelta(minutes=9)).replace(microsecond=0)
+        self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
+            'a2z.com/{format}/{repository}/'.format(
+                domain=self.domain,
+                domainOwner=self.domain_owner,
+                format=self.package_format,
+                repository=self.repository
+            )
+
+        self.nuget_index_url = self._NUGET_INDEX_URL_FMT.format(
+            endpoint=self.endpoint,
+        )
+        self.source_name = self.domain + '/' + self.repository
+        self.list_operation_command = [
+            'nuget', 'sources', 'list',
+            '-format', 'detailed',
+        ]
+        self.add_operation_command = [
+            'nuget', 'sources', 'add',
+            '-name', self.source_name,
+            '-source', self.nuget_index_url,
+            '-username', 'aws',
+            '-password', self.auth_token
+        ]
+        self.update_operation_command = [
+            'nuget', 'sources', 'update',
+            '-name', self.source_name,
+            '-source', self.nuget_index_url,
+            '-username', 'aws',
+            '-password', self.auth_token
+        ]
+
+        self.subprocess_utils = mock.Mock()
+
+        self.test_subject = NuGetLogin(
+            self.auth_token, self.expiration, self.endpoint,
+            self.domain, self.repository, self.subprocess_utils
+        )
+
+    def test_login(self):
+        self.subprocess_utils.check_output.return_value = \
+            self._NUGET_SOURCES_LIST_RESPONSE
+        self.test_subject.login()
+        self.subprocess_utils.check_output.assert_any_call(
+            self.list_operation_command,
+            stderr=self.subprocess_utils.PIPE
+        )
+        self.subprocess_utils.check_output.assert_called_with(
+            self.add_operation_command,
+            stderr=self.subprocess_utils.PIPE
+        )
+
+    def test_login_dry_run(self):
+        self.subprocess_utils.check_output.return_value = \
+            self._NUGET_SOURCES_LIST_RESPONSE
+        self.test_subject.login(dry_run=True)
+        self.subprocess_utils.check_output.assert_called_once_with(
+            ['nuget', 'sources', 'list', '-format', 'detailed'],
+            stderr=self.subprocess_utils.PIPE
+        )
+
+    def test_login_source_name_already_exists(self):
+        list_response = 'Registered Sources:\n' \
+                        '  1.  ' + self.source_name + ' [ENABLED]\n' \
+                        '      https://source.com/index.json'
+        self.subprocess_utils.check_output.return_value = \
+            list_response.encode('utf-8')
+        self.test_subject.login()
+        self.subprocess_utils.check_output.assert_called_with(
+            self.update_operation_command,
+            stderr=self.subprocess_utils.PIPE
+        )
+
+    def test_login_source_url_already_exists(self):
+        non_default_source_name = 'Source Name'
+        list_response = 'Registered Sources:\n' \
+                        '  1. ' + non_default_source_name + ' [ENABLED]\n' \
+                        '      ' + self.nuget_index_url
+        self.subprocess_utils.check_output.return_value = \
+            list_response.encode('utf-8')
+        self.test_subject.login()
+        self.subprocess_utils.check_output.assert_called_with(
+            [
+                'nuget', 'sources', 'update',
+                '-name', non_default_source_name,
+                '-source', self.nuget_index_url,
+                '-username', 'aws',
+                '-password', self.auth_token
+            ],
+            stderr=self.subprocess_utils.PIPE
+        )
+
+    def test_login_nuget_not_installed(self):
+        self.subprocess_utils.check_output.side_effect = OSError(
+            errno.ENOENT, 'not found error'
+        )
+        with self.assertRaisesRegexp(
+                ValueError,
+                'nuget was not found. Please verify installation.'):
+            self.test_subject.login()
 
 
 class TestNpmLogin(unittest.TestCase):
@@ -108,8 +226,8 @@ class TestNpmLogin(unittest.TestCase):
         self.subprocess_utils = mock.Mock()
 
         self.test_subject = NpmLogin(
-            self.auth_token, self.expiration,
-            self.endpoint, self.subprocess_utils
+            self.auth_token, self.expiration, self.endpoint,
+            self.domain, self.repository, self.subprocess_utils
         )
 
     def test_login(self):
@@ -193,8 +311,8 @@ class TestPipLogin(unittest.TestCase):
         self.subprocess_utils = mock.Mock()
 
         self.test_subject = PipLogin(
-            self.auth_token, self.expiration,
-            self.endpoint, self.subprocess_utils
+            self.auth_token, self.expiration, self.endpoint,
+            self.domain, self.repository, self.subprocess_utils
         )
 
     def test_get_commands(self):
@@ -252,6 +370,8 @@ class TestTwineLogin(unittest.TestCase):
             self.auth_token,
             self.expiration,
             self.endpoint,
+            self.domain,
+            self.repository,
             self.subprocess_utils,
             self.test_pypi_rc_path
         )
@@ -459,11 +579,6 @@ class TestRelativeExpirationTime(unittest.TestCase):
         remaining = relativedelta(years=1, days=9)
         message = get_relative_expiration_time(remaining)
         self.assertEqual(message, '1 year')
-
-    def test_with_year(self):
-        remaining = relativedelta(months=11, days=30)
-        message = get_relative_expiration_time(remaining)
-        self.assertEqual(message, '11 months and 30 days')
 
     def test_with_year(self):
         remaining = relativedelta(months=11, days=30)

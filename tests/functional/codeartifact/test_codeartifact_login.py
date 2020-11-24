@@ -8,9 +8,6 @@ from configparser import RawConfigParser
 from io import StringIO
 from urllib.parse import urlsplit
 
-from datetime import datetime
-from dateutil.tz import tzlocal
-from dateutil.relativedelta import relativedelta
 from botocore.utils import parse_timestamp
 
 from tests import CLIRunner, AWSRequest, AWSResponse
@@ -33,6 +30,8 @@ class TestCodeArtifactLogin(unittest.TestCase):
         self.repository = 'repository'
         self.auth_token = 'auth-token'
         self.namespace = 'namespace'
+        self.nuget_index_url_fmt = '{endpoint}v3/index.json'
+        self.nuget_source_name = self.domain + '/' + self.repository
         self.duration = 3600
         self.expiration = time.time() + self.duration
         self.expiration_as_datetime = parse_timestamp(self.expiration)
@@ -46,6 +45,11 @@ class TestCodeArtifactLogin(unittest.TestCase):
 
         self.subprocess_patch = mock.patch('subprocess.run')
         self.subprocess_mock = self.subprocess_patch.start()
+        self.subprocess_check_output_patch = mock.patch(
+            'subprocess.check_output'
+        )
+        self.subprocess_check_out_mock = \
+            self.subprocess_check_output_patch.start()
         self.cli_runner = CLIRunner()
 
     def tearDown(self):
@@ -104,6 +108,23 @@ class TestCodeArtifactLogin(unittest.TestCase):
         )
 
         return cmdline
+
+    def _get_nuget_commands(self):
+        nuget_index_url = self.nuget_index_url_fmt.format(
+            endpoint=self.endpoint
+        )
+
+        commands = []
+        commands.append(
+            [
+                'nuget', 'sources', 'add',
+                '-name', self.nuget_source_name,
+                '-source', nuget_index_url,
+                '-username', 'aws',
+                '-password', self.auth_token
+            ]
+        )
+        return commands
 
     def _get_npm_commands(self, **kwargs):
         npm_cmd = 'npm.cmd' \
@@ -248,6 +269,17 @@ password: {auth_token}'''
             expected_calls, any_order=True
         )
 
+    def _assert_subprocess_check_output_execution(self, commands):
+        expected_calls = [
+            mock.call(
+                command,
+                stderr=subprocess.PIPE,
+            ) for command in commands
+        ]
+        self.subprocess_check_out_mock.assert_has_calls(
+            expected_calls, any_order=True
+        )
+
     def _assert_dry_run_execution(self, commands, stdout):
         self.subprocess_mock.assert_not_called()
         for command in commands:
@@ -284,6 +316,123 @@ password: {auth_token}'''
         if password:
             self.assertIn('password', pypi_rc.options(server))
             self.assertEqual(pypi_rc.get(server, 'password'), password)
+
+    def test_nuget_login_without_domain_owner_without_duration_seconds(self):
+        cmdline = self._setup_cmd(tool='nuget')
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='nuget', result=result)
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_check_output_execution(
+            self._get_nuget_commands()
+        )
+
+    def test_nuget_login_with_domain_owner_without_duration_seconds(self):
+        cmdline = self._setup_cmd(tool='nuget', include_domain_owner=True)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_domain_owner=True,
+            result=result
+        )
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_check_output_execution(
+            self._get_nuget_commands()
+        )
+
+    def test_nuget_login_without_domain_owner_with_duration_seconds(self):
+        cmdline = self._setup_cmd(tool='nuget', include_duration_seconds=True)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_duration_seconds=True,
+            result=result
+        )
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_check_output_execution(
+            self._get_nuget_commands()
+        )
+
+    def test_nuget_login_with_domain_owner_duration_sections(self):
+        cmdline = self._setup_cmd(
+            tool='nuget',
+            include_domain_owner=True,
+            include_duration_seconds=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_domain_owner=True,
+            include_duration_seconds=True,
+            result=result
+        )
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_check_output_execution(
+            self._get_nuget_commands()
+        )
+
+    def test_nuget_login_without_domain_owner_dry_run(self):
+        cmdline = self._setup_cmd(tool='nuget', dry_run=True)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='nuget', result=result)
+        self._assert_dry_run_execution(
+            self._get_nuget_commands(),
+            result.stdout
+        )
+
+    def test_nuget_login_with_domain_owner_dry_run(self):
+        cmdline = self._setup_cmd(
+            tool='nuget', include_domain_owner=True, dry_run=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_domain_owner=True,
+            result=result
+        )
+        self._assert_dry_run_execution(
+            self._get_nuget_commands(),
+            result.stdout
+        )
+
+    def test_nuget_login_with_duration_seconds_dry_run(self):
+        cmdline = self._setup_cmd(
+            tool='nuget', include_duration_seconds=True, dry_run=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_duration_seconds=True,
+            result=result
+        )
+        self._assert_dry_run_execution(
+            self._get_nuget_commands(),
+            result.stdout
+        )
+
+    def test_nuget_login_with_domain_owner_duration_seconds_dry_run(self):
+        cmdline = self._setup_cmd(
+            tool='nuget', include_domain_owner=True,
+            include_duration_seconds=True, dry_run=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_domain_owner=True,
+            include_duration_seconds=True,
+            result=result
+        )
+        self._assert_dry_run_execution(
+            self._get_nuget_commands(),
+            result.stdout
+        )
 
     def test_npm_login_without_domain_owner(self):
         cmdline = self._setup_cmd(tool='npm')

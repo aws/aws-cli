@@ -56,3 +56,8 @@ class Spacer:
     def __pt_container__(self):
         return self.container
 
+
+class FullyExtendedWidthWindow(Window):
+    """Window that fully extends its available width"""
+    def preferred_width(self, max_available_width):
+        return Dimension(preferred=max_available_width)

@@ -231,6 +231,11 @@ class TestChoicesWizardApplication(BaseWizardApplicationTest):
             }
         }
 
+    def test_immediately_pressing_enter_selects_first_choice(self):
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.add_app_values_assertion(choices_prompt='actual_option_1')
+        self.stubbed_app.run()
+
     def test_can_select_choice_in_prompt(self):
         self.stubbed_app.add_keypress(Keys.Down)
         self.stubbed_app.add_keypress(Keys.Enter)

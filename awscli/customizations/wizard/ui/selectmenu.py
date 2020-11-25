@@ -214,6 +214,14 @@ class CollapsableSelectionMenuControl(SelectionMenuControl):
         else:
             return 1
 
+    def _get_items(self):
+        items = super()._get_items()
+        # Initialize buffer selection text if it had not been set previously
+        # (e.g. it was the first time items were retrieved)
+        if not self.buffer.text:
+            self.buffer.text = items[self._selection]
+        return items
+
     def _move_cursor(self, delta):
         super()._move_cursor(delta)
         self.buffer.text = self._get_items()[self._selection]

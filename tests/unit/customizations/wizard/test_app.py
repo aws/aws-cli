@@ -15,8 +15,9 @@ from awscli.testutils import unittest
 from prompt_toolkit.keys import Keys
 
 from tests import PromptToolkitApplicationStubber as ApplicationStubber
-from awscli.customizations.wizard.app import create_wizard_app
-from awscli.customizations.wizard.app import WizardTraverser
+from awscli.customizations.wizard.app import (
+    create_wizard_app, InvalidChoiceException, WizardTraverser
+)
 
 
 class BaseWizardApplicationTest(unittest.TestCase):
@@ -203,6 +204,45 @@ class TestConditionalWizardApplication(BaseWizardApplicationTest):
         self.stubbed_app.run()
 
 
+class TestChoicesWizardApplication(BaseWizardApplicationTest):
+    def get_definition(self):
+        return {
+            'title': 'Conditional wizard',
+            'plan': {
+                'section': {
+                    'shortname': 'Section',
+                    'values': {
+                        'choices_prompt': {
+                            'description': 'Description of first prompt',
+                            'type': 'prompt',
+                            'choices': [
+                                {
+                                    'display': 'Option 1',
+                                    'actual_value': 'actual_option_1'
+                                },
+                                {
+                                    'display': 'Option 2',
+                                    'actual_value': 'actual_option_2'
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+
+    def test_immediately_pressing_enter_selects_first_choice(self):
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.add_app_values_assertion(choices_prompt='actual_option_1')
+        self.stubbed_app.run()
+
+    def test_can_select_choice_in_prompt(self):
+        self.stubbed_app.add_keypress(Keys.Down)
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.add_app_values_assertion(choices_prompt='actual_option_2')
+        self.stubbed_app.run()
+
+
 class TestWizardTraverser(unittest.TestCase):
     def setUp(self):
         self.simple_definition = self.create_definition(
@@ -211,6 +251,26 @@ class TestWizardTraverser(unittest.TestCase):
                     'values': {
                         'first_prompt': self.create_prompt_definition(),
                         'second_prompt': self.create_prompt_definition(),
+                    }
+                }
+            }
+        )
+        self.simple_choice_definition = self.create_definition(
+            sections={
+                'first_section': {
+                    'values': {
+                        'choice_prompt': self.create_prompt_definition(
+                            choices=[
+                                {
+                                    'display': 'Option 1',
+                                    'actual_value': 'actual_option_1'
+                                },
+                                {
+                                    'display': 'Option 2',
+                                    'actual_value': 'actual_option_2'
+                                }
+                            ]
+                        ),
                     }
                 }
             }
@@ -226,7 +286,8 @@ class TestWizardTraverser(unittest.TestCase):
             'plan': sections
         }
 
-    def create_prompt_definition(self, description=None, condition=None):
+    def create_prompt_definition(self, description=None, condition=None,
+                                 choices=None):
         prompt = {
             'type': 'prompt'
         }
@@ -235,6 +296,8 @@ class TestWizardTraverser(unittest.TestCase):
         prompt['description'] = description
         if condition:
             prompt['condition'] = condition
+        if choices:
+            prompt['choices'] = choices
         return prompt
 
     def test_get_current_prompt(self):
@@ -244,6 +307,36 @@ class TestWizardTraverser(unittest.TestCase):
     def test_get_current_section(self):
         traverser = self.create_traverser(self.simple_definition)
         self.assertEqual(traverser.get_current_section(), 'first_section')
+
+    def test_get_current_prompt_choices(self):
+        traverser = self.create_traverser(self.simple_choice_definition)
+        self.assertEqual(
+            traverser.get_current_prompt_choices(),
+            ['Option 1', 'Option 2']
+        )
+
+    def test_get_current_prompt_choices_returns_none_when_no_choices(self):
+        traverser = self.create_traverser(self.simple_definition)
+        self.assertEqual(traverser.get_current_prompt_choices(), None)
+
+    def test_submit_prompt_answer(self):
+        values = {}
+        traverser = self.create_traverser(self.simple_definition, values)
+        traverser.submit_prompt_answer('answer1')
+        self.assertEqual(values, {'first_prompt': 'answer1'})
+
+    def test_submit_prompt_answer_converts_display_value(self):
+        values = {}
+        traverser = self.create_traverser(
+            self.simple_choice_definition, values
+        )
+        traverser.submit_prompt_answer('Option 1')
+        self.assertEqual(values, {'choice_prompt': 'actual_option_1'})
+
+    def test_submit_prompt_answer_throw_error_for_invalid_option(self):
+        traverser = self.create_traverser(self.simple_choice_definition)
+        with self.assertRaises(InvalidChoiceException):
+            traverser.submit_prompt_answer('Not an option')
 
     def test_next_prompt(self):
         traverser = self.create_traverser(self.simple_definition)

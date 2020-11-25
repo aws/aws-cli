@@ -20,11 +20,12 @@ def get_default_style():
             ('wizard.title', 'underline bold'),
             ('wizard.prompt.description', 'bold'),
             ('wizard.prompt.description.current', 'white'),
-            ('wizard.prompt.answer', ''),
+            ('wizard.prompt.answer', 'bg:#aaaaaa black'),
             ('wizard.prompt.answer.current', 'white'),
             ('wizard.section.tab', 'bold bg:#aaaaaa black'),
             ('wizard.section.tab.current', 'white'),
             ('wizard.section.tab.unvisited', '#777777'),
-            ('wizard.section.tab.visited', '')
+            ('wizard.section.tab.visited', ''),
+            ('completion-menu.completion', 'underline')
         ]
     )

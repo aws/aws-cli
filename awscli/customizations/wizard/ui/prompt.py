@@ -18,6 +18,13 @@ from prompt_toolkit.layout.containers import (
     Window, VSplit, Dimension, ConditionalContainer
 )
 from prompt_toolkit.layout.controls import BufferControl
+from prompt_toolkit.layout.margins import ScrollbarMargin
+from prompt_toolkit.layout.containers import ScrollOffsets
+
+from awscli.customizations.wizard.ui.selectmenu import (
+    CollapsableSelectionMenuControl
+)
+from awscli.customizations.wizard.ui.utils import FullyExtendedWidthWindow
 
 
 class WizardPrompt:
@@ -27,6 +34,11 @@ class WizardPrompt:
         self.container = self._get_container()
 
     def _get_container(self):
+        uses_choices = 'choices' in self._value_definition
+        if uses_choices:
+            answer = WizardPromptSelectionAnswer(self._value_name)
+        else:
+            answer = WizardPromptAnswer(self._value_name)
         return ConditionalContainer(
             VSplit(
                 [
@@ -34,7 +46,7 @@ class WizardPrompt:
                         self._value_name,
                         self._value_definition['description']
                     ),
-                    WizardPromptAnswer(self._value_name)
+                    answer
                 ],
             ),
             Condition(self._is_visible)
@@ -81,12 +93,16 @@ class WizardPromptDescription:
 class WizardPromptAnswer:
     def __init__(self, value_name):
         self._value_name = value_name
+        self._buffer = self._get_answer_buffer()
         self.container = self._get_answer_container()
 
+    def _get_answer_buffer(self):
+        return Buffer(name=self._value_name)
+
     def _get_answer_container(self):
-        return Window(
+        return FullyExtendedWidthWindow(
             content=BufferControl(
-                buffer=Buffer(name=self._value_name)
+                buffer=self._buffer
             ),
             style=self._get_style,
             dont_extend_height=True,
@@ -100,3 +116,20 @@ class WizardPromptAnswer:
 
     def __pt_container__(self):
         return self.container
+
+
+class WizardPromptSelectionAnswer(WizardPromptAnswer):
+    def _get_answer_container(self):
+        return FullyExtendedWidthWindow(
+            content=CollapsableSelectionMenuControl(
+                items=self._get_choices,
+                selection_capture_buffer=self._buffer
+            ),
+            style=self._get_style,
+            always_hide_cursor=True,
+            scroll_offsets=ScrollOffsets(),
+            right_margins=[ScrollbarMargin()],
+        )
+
+    def _get_choices(self):
+        return get_app().traverser.get_current_prompt_choices()

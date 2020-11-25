@@ -1,30 +1,58 @@
 {
   "version": "1.0",
   "resources": {
+    "DBClusterEndpoint": {
+      "operation": "DescribeDBClusterEndpoints",
+      "resourceIdentifier": {
+        "DBClusterEndpointIdentifier": "DBClusterEndpoints[].DBClusterEndpointIdentifier",
+        "DBClusterIdentifier": "DBClusterEndpoints[].DBClusterIdentifier",
+        "EndpointType": "DBClusterEndpoints[].EndpointType",
+        "StaticMembers": "DBClusterEndpoints[].StaticMembers",
+        "ExcludedMembers": "DBClusterEndpoints[].ExcludedMembers"
+      }
+    },
     "DBClusterParameterGroup": {
       "operation": "DescribeDBClusterParameterGroups",
       "resourceIdentifier": {
-        "DBClusterParameterGroupName": "DBClusterParameterGroups[].DBClusterParameterGroupName"
+        "DBClusterParameterGroupName": "DBClusterParameterGroups[].DBClusterParameterGroupName",
+        "DBParameterGroupFamily": "DBClusterParameterGroups[].DBParameterGroupFamily"
       }
     },
     "DBClusterSnapshot": {
       "operation": "DescribeDBClusterSnapshots",
       "resourceIdentifier": {
+        "AvailabilityZones": "DBClusterSnapshots[].AvailabilityZones",
         "DBClusterSnapshotIdentifier": "DBClusterSnapshots[].DBClusterSnapshotIdentifier",
-        "SnapshotType": "DBClusterSnapshots[].SnapshotType"
+        "DBClusterIdentifier": "DBClusterSnapshots[].DBClusterIdentifier",
+        "Engine": "DBClusterSnapshots[].Engine",
+        "Port": "DBClusterSnapshots[].Port",
+        "EngineVersion": "DBClusterSnapshots[].EngineVersion",
+        "SnapshotType": "DBClusterSnapshots[].SnapshotType",
+        "KmsKeyId": "DBClusterSnapshots[].KmsKeyId"
       }
     },
     "DBCluster": {
       "operation": "DescribeDBClusters",
       "resourceIdentifier": {
-        "AvailabilityZones": "DBClusters[].AvailabilityZones",
+        "BackupRetentionPeriod": "DBClusters[].BackupRetentionPeriod",
         "DatabaseName": "DBClusters[].DatabaseName",
-        "Port": "DBClusters[].Port"
+        "DBClusterIdentifier": "DBClusters[].DBClusterIdentifier",
+        "EngineVersion": "DBClusters[].EngineVersion",
+        "LatestRestorableTime": "DBClusters[].LatestRestorableTime",
+        "Port": "DBClusters[].Port",
+        "PreferredBackupWindow": "DBClusters[].PreferredBackupWindow",
+        "PreferredMaintenanceWindow": "DBClusters[].PreferredMaintenanceWindow",
+        "VpcSecurityGroups": "DBClusters[].VpcSecurityGroups",
+        "EnabledCloudwatchLogsExports": "DBClusters[].EnabledCloudwatchLogsExports",
+        "DeletionProtection": "DBClusters[].DeletionProtection"
       }
     },
     "DBEngineVersion": {
       "operation": "DescribeDBEngineVersions",
       "resourceIdentifier": {
+        "Engine": "DBEngineVersions[].Engine",
+        "EngineVersion": "DBEngineVersions[].EngineVersion",
+        "DBParameterGroupFamily": "DBEngineVersions[].DBParameterGroupFamily",
         "SupportedCharacterSets": "DBEngineVersions[].SupportedCharacterSets"
       }
     },
@@ -40,7 +68,6 @@
         "DBSecurityGroups": "DBInstances[].DBSecurityGroups",
         "VpcSecurityGroups": "DBInstances[].VpcSecurityGroups",
         "PreferredMaintenanceWindow": "DBInstances[].PreferredMaintenanceWindow",
-        "LatestRestorableTime": "DBInstances[].LatestRestorableTime",
         "MultiAZ": "DBInstances[].MultiAZ",
         "EngineVersion": "DBInstances[].EngineVersion",
         "AutoMinorVersionUpgrade": "DBInstances[].AutoMinorVersionUpgrade",
@@ -49,21 +76,19 @@
         "PubliclyAccessible": "DBInstances[].PubliclyAccessible",
         "StorageType": "DBInstances[].StorageType",
         "TdeCredentialArn": "DBInstances[].TdeCredentialArn",
-        "DBClusterIdentifier": "DBInstances[].DBClusterIdentifier",
-        "KmsKeyId": "DBInstances[].KmsKeyId",
         "CACertificateIdentifier": "DBInstances[].CACertificateIdentifier",
         "CopyTagsToSnapshot": "DBInstances[].CopyTagsToSnapshot",
         "MonitoringInterval": "DBInstances[].MonitoringInterval",
         "MonitoringRoleArn": "DBInstances[].MonitoringRoleArn",
         "PromotionTier": "DBInstances[].PromotionTier",
-        "PerformanceInsightsKMSKeyId": "DBInstances[].PerformanceInsightsKMSKeyId"
+        "PerformanceInsightsKMSKeyId": "DBInstances[].PerformanceInsightsKMSKeyId",
+        "DeletionProtection": "DBInstances[].DeletionProtection"
       }
     },
     "DBParameterGroup": {
       "operation": "DescribeDBParameterGroups",
       "resourceIdentifier": {
-        "DBParameterGroupName": "DBParameterGroups[].DBParameterGroupName",
-        "DBParameterGroupFamily": "DBParameterGroups[].DBParameterGroupFamily"
+        "DBParameterGroupName": "DBParameterGroups[].DBParameterGroupName"
       }
     },
     "DBSubnetGroup": {
@@ -73,10 +98,18 @@
         "DBSubnetGroupDescription": "DBSubnetGroups[].DBSubnetGroupDescription"
       }
     },
+    "EventCategory": {
+      "operation": "DescribeEventCategories",
+      "resourceIdentifier": {
+        "SourceType": "EventCategoriesMapList[].SourceType",
+        "EventCategories": "EventCategoriesMapList[].EventCategories"
+      }
+    },
     "EventSubscription": {
       "operation": "DescribeEventSubscriptions",
       "resourceIdentifier": {
         "SnsTopicArn": "EventSubscriptionsList[].SnsTopicArn",
+        "SourceType": "EventSubscriptionsList[].SourceType",
         "Enabled": "EventSubscriptionsList[].Enabled"
       }
     },
@@ -101,7 +134,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBCluster",
             "resourceIdentifier": "DBClusterIdentifier"
           }
         ]
@@ -134,7 +167,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBClusterSnapshot",
             "resourceIdentifier": "KmsKeyId"
           }
         ]
@@ -145,8 +178,19 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBCluster",
             "resourceIdentifier": "DBClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "DeleteDBClusterEndpoint": {
+      "DBClusterEndpointIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterEndpoint",
+            "resourceIdentifier": "DBClusterEndpointIdentifier"
           }
         ]
       }
@@ -206,6 +250,26 @@
         ]
       }
     },
+    "DescribeDBClusterEndpoints": {
+      "DBClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterEndpoint",
+            "resourceIdentifier": "DBClusterIdentifier"
+          }
+        ]
+      },
+      "DBClusterEndpointIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterEndpoint",
+            "resourceIdentifier": "DBClusterEndpointIdentifier"
+          }
+        ]
+      }
+    },
     "DescribeDBClusterParameterGroups": {
       "DBClusterParameterGroupName": {
         "completions": [
@@ -244,7 +308,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBClusterSnapshot",
             "resourceIdentifier": "DBClusterIdentifier"
           }
         ]
@@ -273,7 +337,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBCluster",
             "resourceIdentifier": "DBClusterIdentifier"
           }
         ]
@@ -284,7 +348,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBEngineVersion",
             "resourceIdentifier": "Engine"
           }
         ]
@@ -293,7 +357,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBEngineVersion",
             "resourceIdentifier": "EngineVersion"
           }
         ]
@@ -302,7 +366,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBParameterGroup",
+            "resourceName": "DBEngineVersion",
             "resourceIdentifier": "DBParameterGroupFamily"
           }
         ]
@@ -366,7 +430,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBParameterGroup",
+            "resourceName": "DBClusterParameterGroup",
             "resourceIdentifier": "DBParameterGroupFamily"
           }
         ]
@@ -377,7 +441,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBParameterGroup",
+            "resourceName": "DBClusterParameterGroup",
             "resourceIdentifier": "DBParameterGroupFamily"
           }
         ]
@@ -388,7 +452,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Event",
+            "resourceName": "EventCategory",
             "resourceIdentifier": "SourceType"
           }
         ]
@@ -488,7 +552,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBCluster",
             "resourceIdentifier": "DBClusterIdentifier"
           }
         ]
@@ -499,7 +563,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBCluster",
             "resourceIdentifier": "DBClusterIdentifier"
           }
         ]
@@ -508,7 +572,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBCluster",
             "resourceIdentifier": "DBClusterIdentifier"
           }
         ]
@@ -517,7 +581,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBCluster",
             "resourceIdentifier": "BackupRetentionPeriod"
           }
         ]
@@ -535,7 +599,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBCluster",
             "resourceIdentifier": "VpcSecurityGroups"
           }
         ]
@@ -553,7 +617,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBCluster",
             "resourceIdentifier": "PreferredBackupWindow"
           }
         ]
@@ -562,7 +626,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBCluster",
             "resourceIdentifier": "PreferredMaintenanceWindow"
           }
         ]
@@ -571,8 +635,55 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBCluster",
             "resourceIdentifier": "EngineVersion"
+          }
+        ]
+      },
+      "DeletionProtection": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DeletionProtection"
+          }
+        ]
+      }
+    },
+    "ModifyDBClusterEndpoint": {
+      "DBClusterEndpointIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterEndpoint",
+            "resourceIdentifier": "DBClusterEndpointIdentifier"
+          }
+        ]
+      },
+      "EndpointType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterEndpoint",
+            "resourceIdentifier": "EndpointType"
+          }
+        ]
+      },
+      "StaticMembers": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterEndpoint",
+            "resourceIdentifier": "StaticMembers"
+          }
+        ]
+      },
+      "ExcludedMembers": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterEndpoint",
+            "resourceIdentifier": "ExcludedMembers"
           }
         ]
       }
@@ -824,6 +935,15 @@
             "resourceIdentifier": "PerformanceInsightsKMSKeyId"
           }
         ]
+      },
+      "DeletionProtection": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBInstance",
+            "resourceIdentifier": "DeletionProtection"
+          }
+        ]
       }
     },
     "ModifyDBParameterGroup": {
@@ -871,7 +991,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Event",
+            "resourceName": "EventSubscription",
             "resourceIdentifier": "SourceType"
           }
         ]
@@ -880,7 +1000,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "Event",
+            "resourceName": "EventCategory",
             "resourceIdentifier": "EventCategories"
           }
         ]
@@ -900,7 +1020,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBCluster",
             "resourceIdentifier": "DBClusterIdentifier"
           }
         ]
@@ -922,7 +1042,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBCluster",
             "resourceIdentifier": "DBClusterIdentifier"
           }
         ]
@@ -966,7 +1086,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBCluster",
+            "resourceName": "DBClusterSnapshot",
             "resourceIdentifier": "AvailabilityZones"
           }
         ]
@@ -975,7 +1095,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBClusterSnapshot",
             "resourceIdentifier": "DBClusterIdentifier"
           }
         ]
@@ -984,7 +1104,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBClusterSnapshot",
             "resourceIdentifier": "Engine"
           }
         ]
@@ -993,7 +1113,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBClusterSnapshot",
             "resourceIdentifier": "EngineVersion"
           }
         ]
@@ -1002,7 +1122,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBCluster",
+            "resourceName": "DBClusterSnapshot",
             "resourceIdentifier": "Port"
           }
         ]
@@ -1029,7 +1149,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBCluster",
             "resourceIdentifier": "VpcSecurityGroups"
           }
         ]
@@ -1038,8 +1158,35 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBClusterSnapshot",
             "resourceIdentifier": "KmsKeyId"
+          }
+        ]
+      },
+      "EnableCloudwatchLogsExports": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "EnabledCloudwatchLogsExports"
+          }
+        ]
+      },
+      "DBClusterParameterGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterParameterGroup",
+            "resourceIdentifier": "DBClusterParameterGroupName"
+          }
+        ]
+      },
+      "DeletionProtection": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DeletionProtection"
           }
         ]
       }
@@ -1049,7 +1196,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBClusterEndpoint",
             "resourceIdentifier": "DBClusterIdentifier"
           }
         ]
@@ -1058,7 +1205,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBCluster",
             "resourceIdentifier": "LatestRestorableTime"
           }
         ]
@@ -1067,7 +1214,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBCluster",
+            "resourceName": "DBClusterSnapshot",
             "resourceIdentifier": "Port"
           }
         ]
@@ -1085,7 +1232,7 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBCluster",
             "resourceIdentifier": "VpcSecurityGroups"
           }
         ]
@@ -1094,8 +1241,57 @@
         "completions": [
           {
             "parameters": {},
-            "resourceName": "DBInstance",
+            "resourceName": "DBClusterSnapshot",
             "resourceIdentifier": "KmsKeyId"
+          }
+        ]
+      },
+      "EnableCloudwatchLogsExports": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "EnabledCloudwatchLogsExports"
+          }
+        ]
+      },
+      "DBClusterParameterGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBClusterParameterGroup",
+            "resourceIdentifier": "DBClusterParameterGroupName"
+          }
+        ]
+      },
+      "DeletionProtection": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DeletionProtection"
+          }
+        ]
+      }
+    },
+    "StartDBCluster": {
+      "DBClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClusterIdentifier"
+          }
+        ]
+      }
+    },
+    "StopDBCluster": {
+      "DBClusterIdentifier": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DBCluster",
+            "resourceIdentifier": "DBClusterIdentifier"
           }
         ]
       }

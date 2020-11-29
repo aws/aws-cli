@@ -23,6 +23,7 @@ def register_dev_commands(event_handlers):
 def create_default_wizard_dev_runner(session):
     return WizardDevRunner(
         wizard_loader=WizardLoader(),
+        session=session,
     )
 
 
@@ -33,13 +34,14 @@ class WizardLoader(object):
 
 
 class WizardDevRunner(object):
-    def __init__(self, wizard_loader):
+    def __init__(self, wizard_loader, session):
         self._wizard_loader = wizard_loader
+        self._session = session
 
     def run_wizard(self, wizard_contents):
         """Run a single wizard given the contents as a string."""
         loaded = self._wizard_loader.load(wizard_contents)
-        app = create_wizard_app(loaded)
+        app = create_wizard_app(loaded, self._session)
         app.run()
         print(f'Collected values: {app.values}')
 

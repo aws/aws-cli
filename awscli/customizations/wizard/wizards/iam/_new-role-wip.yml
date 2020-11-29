@@ -59,10 +59,8 @@ plan:
         query: "sort_by(Policies[].{display: PolicyName, actual_value: Arn}, &display)"
       policy_arn:
         type: prompt
-        description: Choose a policy to attach to your new role
-        # TODO: Uncomment this choices once we implement pulling choices
-        # from variables.
-        # choices: existing_policies
+        description: Choose a policy to attach
+        choices: existing_policies
   ask_profile_config:
     shortname: CLI config
     description: Determine CLI configuration
@@ -87,9 +85,7 @@ plan:
       source_profile:
         type: prompt
         description: Name of the source profile
-        # TODO: Uncomment this choices once we implement pulling choices
-        # from variables.
-        # choices: existing_profiles
+        choices: existing_profiles
         condition:
           variable: wants_config_profile
           equals: yes

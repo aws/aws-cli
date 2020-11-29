@@ -10,16 +10,21 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from prompt_toolkit.application import Application
-from prompt_toolkit.key_binding import KeyBindings
+from collections.abc import MutableMapping
 
-from awscli.customizations.wizard.core import ConditionEvaluator
+from prompt_toolkit.application import Application
+
+from awscli.customizations.configure.writer import ConfigFileWriter
+from awscli.customizations.wizard import core
 from awscli.customizations.wizard.ui.keybindings import get_default_keybindings
 from awscli.customizations.wizard.ui.layout import WizardLayoutFactory
 from awscli.customizations.wizard.ui.style import get_default_style
 
 
-def create_wizard_app(definition):
+def create_wizard_app(definition, session):
+    api_invoker = core.APIInvoker(session=session)
+    shared_config = core.SharedConfigAPI(session=session,
+                                         config_writer=ConfigFileWriter())
     layout_factory = WizardLayoutFactory()
     app = Application(
         key_bindings=get_default_keybindings(),
@@ -27,7 +32,14 @@ def create_wizard_app(definition):
         layout=layout_factory.create_wizard_layout(definition),
         full_screen=True,
     )
-    app.values = {}
+    app.values = WizardValues(
+        definition,
+        value_retrieval_steps={
+            core.APICallStep.NAME: core.APICallStep(api_invoker=api_invoker),
+            core.SharedConfigStep.NAME: core.SharedConfigStep(
+                config_api=shared_config),
+        }
+    )
     app.traverser = WizardTraverser(definition, app.values)
     return app
 
@@ -53,12 +65,15 @@ class WizardTraverser:
         return self._prompt_to_sections[self._current_prompt]
 
     def get_current_prompt_choices(self):
-        return self._get_choices(self._current_prompt)
+        choices = self._get_choices(self._current_prompt)
+        if choices:
+            return [choice['display'] for choice in choices]
+        return None
 
     def submit_prompt_answer(self, answer):
         if 'choices' in self._prompt_definitions[self._current_prompt]:
             answer = self._convert_display_value_to_actual_value(
-                self._prompt_definitions[self._current_prompt]['choices'],
+                self._get_choices(self._current_prompt),
                 answer
             )
         self._values[self._current_prompt] = answer
@@ -108,10 +123,27 @@ class WizardTraverser:
     def _get_choices(self, value_name):
         value_definition = self._prompt_definitions[value_name]
         if 'choices' in value_definition:
-            return [
-                choice['display'] for choice in value_definition['choices']
-            ]
+            choices = value_definition['choices']
+            if not isinstance(value_definition['choices'], list):
+                # When choices is declared as a variable, we want to use the
+                # value from the variable.
+                choices = self._values[value_definition['choices']]
+            return self._get_normalized_choice_values(choices)
         return None
+
+    def _get_normalized_choice_values(self, choices):
+        normalized_choices = []
+        for choice in choices:
+            if isinstance(choice, str):
+                normalized_choices.append(
+                    {
+                        'display': choice,
+                        'actual_value': choice
+                    }
+                )
+            else:
+                normalized_choices.append(choice)
+        return normalized_choices
 
     def _convert_display_value_to_actual_value(self, choices, display_value):
         for choice in choices:
@@ -133,7 +165,50 @@ class WizardTraverser:
     def _prompt_meets_condition(self, value_name):
         value_definition = self._prompt_definitions[value_name]
         if 'condition' in value_definition:
-            return ConditionEvaluator().evaluate(
+            return core.ConditionEvaluator().evaluate(
                 value_definition['condition'], self._values
             )
         return True
+
+
+class WizardValues(MutableMapping):
+    def __init__(self, definition, value_retrieval_steps=None):
+        self._definition = definition
+        if value_retrieval_steps is None:
+            value_retrieval_steps = {}
+        self._value_retrieval_steps = value_retrieval_steps
+        self._values = {}
+        self._value_definitions = self._collect_all_value_definitions()
+
+    def __getitem__(self, key):
+        if key not in self._values and key in self._value_definitions:
+            value_definition = self._value_definitions[key]
+            if value_definition['type'] in self._value_retrieval_steps:
+                retrieval_step = self._value_retrieval_steps[
+                    value_definition['type']
+                ]
+                self._values[key] = retrieval_step.run_step(
+                    value_definition, self)
+        return self._values[key]
+
+    def __setitem__(self, key, value):
+        self._values[key] = value
+
+    def __delitem__(self, key):
+        del self._values[key]
+
+    def __iter__(self):
+        return iter(self._values)
+
+    def __len__(self):
+        return len(self._values)
+
+    def __str__(self):
+        return str(self._values)
+
+    def _collect_all_value_definitions(self):
+        value_definitions = {}
+        for _, section_definition in self._definition['plan'].items():
+            for name, value_definition in section_definition['values'].items():
+                value_definitions[name] = value_definition
+        return value_definitions

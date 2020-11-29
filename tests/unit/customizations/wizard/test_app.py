@@ -10,20 +10,24 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest
+from awscli.testutils import unittest, mock
 
+from botocore.session import Session
 from prompt_toolkit.keys import Keys
 
 from tests import PromptToolkitApplicationStubber as ApplicationStubber
 from awscli.customizations.wizard.app import (
-    create_wizard_app, InvalidChoiceException, WizardTraverser
+    create_wizard_app, InvalidChoiceException, WizardTraverser,
+    WizardValues
 )
+from awscli.customizations.wizard.core import BaseStep
 
 
 class BaseWizardApplicationTest(unittest.TestCase):
     def setUp(self):
         self.definition = self.get_definition()
-        self.app = create_wizard_app(self.definition)
+        self.session = mock.Mock(spec=Session)
+        self.app = create_wizard_app(self.definition, self.session)
         self.stubbed_app = ApplicationStubber(self.app)
 
     def get_definition(self):
@@ -38,7 +42,7 @@ class BaseWizardApplicationTest(unittest.TestCase):
 
     def add_app_values_assertion(self, **expected_values):
         self.stubbed_app.add_app_assertion(
-            lambda app: self.assertEqual(app.values, expected_values)
+            lambda app: self.assertEqual(dict(app.values), expected_values)
         )
 
     def add_prompt_is_visible_assertion(self, name):
@@ -243,6 +247,91 @@ class TestChoicesWizardApplication(BaseWizardApplicationTest):
         self.stubbed_app.run()
 
 
+class TestApiCallWizardApplication(BaseWizardApplicationTest):
+    def get_definition(self):
+        return {
+            'title': 'Uses API call in prompting stage',
+            'plan': {
+                'section': {
+                    'shortname': 'Section',
+                    'values': {
+                        'existing_policies': {
+                            'type': 'apicall',
+                            'operation': 'iam.ListPolicies',
+                            'params': {},
+                            'query': (
+                                'sort_by(Policies[].{display: PolicyName, '
+                                'actual_value: Arn}, &display)'
+                            )
+                        },
+                        'choose_policy': {
+                            'description': 'Choose policy',
+                            'type': 'prompt',
+                            'choices': 'existing_policies'
+                        }
+                    }
+                }
+            }
+        }
+
+    def test_uses_choices_from_api_call(self):
+        mock_client = mock.Mock()
+        self.session.create_client.return_value = mock_client
+        mock_client.list_policies.return_value = {
+            'Policies': [
+                {
+                    'PolicyName': 'policy1',
+                    'Arn': 'policy1_arn'
+                },
+                {
+                    'PolicyName': 'policy2',
+                    'Arn': 'policy2_arn'
+                }
+            ]
+        }
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.add_app_values_assertion(
+            choose_policy='policy1_arn',
+            existing_policies=[
+                {'actual_value': 'policy1_arn', 'display': 'policy1'},
+                {'actual_value': 'policy2_arn', 'display': 'policy2'}
+            ]
+        )
+        self.stubbed_app.run()
+
+
+class TestSharedConfigWizardApplication(BaseWizardApplicationTest):
+    def get_definition(self):
+        return {
+            'title': 'Uses shared config API in prompting stage',
+            'plan': {
+                'section': {
+                    'shortname': 'Section',
+                    'values': {
+                        'existing_profiles': {
+                            'type': 'sharedconfig',
+                            'operation': 'ListProfiles',
+                        },
+                        'choose_profile': {
+                            'description': 'Choose profile',
+                            'type': 'prompt',
+                            'choices': 'existing_profiles'
+                        }
+                    }
+                }
+            }
+        }
+
+    def test_uses_choices_from_api_call(self):
+        self.session.available_profiles = ['profile1', 'profile2']
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.add_app_values_assertion(
+            choose_profile='profile1',
+            existing_profiles=['profile1', 'profile2']
+        )
+        self.stubbed_app.run()
+
+
 class TestWizardTraverser(unittest.TestCase):
     def setUp(self):
         self.simple_definition = self.create_definition(
@@ -313,6 +402,46 @@ class TestWizardTraverser(unittest.TestCase):
         self.assertEqual(
             traverser.get_current_prompt_choices(),
             ['Option 1', 'Option 2']
+        )
+
+    def test_get_current_prompt_choices_as_list_of_strings(self):
+        choice_wizard = self.create_definition(
+            sections={
+                'first_section': {
+                    'values': {
+                        'choice_prompt': self.create_prompt_definition(
+                            choices=[
+                                'from_list_1',
+                                'from_list_2',
+                            ]
+                        ),
+                    }
+                }
+            }
+        )
+        traverser = self.create_traverser(choice_wizard)
+        self.assertEqual(
+            traverser.get_current_prompt_choices(),
+            ['from_list_1', 'from_list_2']
+        )
+
+    def test_get_current_prompt_choices_from_variable(self):
+        values = {'choices_var': ['from_var_1', 'from_var_2']}
+        choice_wizard = self.create_definition(
+            sections={
+                'first_section': {
+                    'values': {
+                        'choice_prompt': self.create_prompt_definition(
+                            choices='choices_var'
+                        ),
+                    }
+                }
+            }
+        )
+        traverser = self.create_traverser(choice_wizard, values)
+        self.assertEqual(
+            traverser.get_current_prompt_choices(),
+            ['from_var_1', 'from_var_2']
         )
 
     def test_get_current_prompt_choices_returns_none_when_no_choices(self):
@@ -578,3 +707,69 @@ class TestWizardTraverser(unittest.TestCase):
         self.assertTrue(traverser.has_visited_section('first_section'))
         self.assertTrue(traverser.has_visited_section('second_section'))
         self.assertFalse(traverser.has_visited_section('third_section'))
+
+
+class TestWizardValues(unittest.TestCase):
+    def setUp(self):
+        self.definition = {
+            'title': 'Wizard',
+            'plan': {
+                'section': {
+                    'shortname': 'Section',
+                    'values': {
+                        'no_handler_value': {
+                            'type': 'prompt'
+                        },
+                        'handler_value': {
+                            'type': 'use_handler'
+                        }
+                    }
+                }
+            }
+        }
+        self.handler = mock.Mock(BaseStep)
+
+    def get_wizard_values(self, retrieval_steps=None):
+        return WizardValues(self.definition, retrieval_steps)
+
+    def test_manual_get_and_set(self):
+        values = self.get_wizard_values()
+        values['no_handler_value'] = 'manual'
+        self.assertEqual(values['no_handler_value'], 'manual')
+
+    def test_get_with_handler(self):
+        self.handler.run_step.return_value = 'from_handler'
+        values = self.get_wizard_values({'use_handler': self.handler})
+        self.assertEqual(values['handler_value'], 'from_handler')
+
+    def test_get_with_handler_caches_result(self):
+        self.handler.run_step.return_value = 'from_handler'
+        values = self.get_wizard_values({'use_handler': self.handler})
+        self.assertEqual(values['handler_value'], 'from_handler')
+        self.assertEqual(values['handler_value'], 'from_handler')
+        self.assertEqual(self.handler.run_step.call_count, 1)
+
+    def test_manual_set_overrides_delegation_handler(self):
+        self.handler.run_step.return_value = 'from_handler'
+        values = self.get_wizard_values({'use_handler': self.handler})
+        values['handler_value'] = 'manual'
+        self.assertEqual(values['handler_value'], 'manual')
+        self.handler.run_step.assert_not_called()
+
+    def test_delete(self):
+        values = self.get_wizard_values()
+        values['no_handler_value'] = 'manual'
+        self.assertEqual(values['no_handler_value'], 'manual')
+        del values['no_handler_value']
+        self.assertNotIn('no_handler_value', values)
+
+    def test_iterates_over_value_names(self):
+        values = self.get_wizard_values()
+        values['no_handler_value'] = 'manual'
+        value_names = list(values)
+        self.assertEqual(value_names, ['no_handler_value'])
+
+    def test_length(self):
+        values = self.get_wizard_values()
+        values['no_handler_value'] = 'manual'
+        self.assertEqual(len(values), 1)

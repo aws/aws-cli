@@ -196,13 +196,18 @@ class CollapsableSelectionMenuControl(SelectionMenuControl):
         if not selection_capture_buffer:
             selection_capture_buffer = Buffer()
         self.buffer = selection_capture_buffer
+        self._has_ever_entered_select_menu = False
 
     def create_content(self, width, height):
         if get_app().layout.has_focus(self):
+            self._has_ever_entered_select_menu = True
             return super().create_content(width, height)
         else:
             def get_line(i):
-                return [('', self._get_items()[self._selection])]
+                content = ''
+                if self._has_ever_entered_select_menu:
+                    content = self._get_items()[self._selection]
+                return [('', content)]
 
             return UIContent(get_line=get_line, line_count=1)
 

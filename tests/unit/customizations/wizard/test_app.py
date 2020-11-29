@@ -247,6 +247,41 @@ class TestChoicesWizardApplication(BaseWizardApplicationTest):
         self.stubbed_app.run()
 
 
+class TestMixedPromptTypeWizardApplication(BaseWizardApplicationTest):
+    def get_definition(self):
+        return {
+            'title': 'Wizard with both buffer inputs and select inputs',
+            'plan': {
+                'section': {
+                    'shortname': 'Section',
+                    'values': {
+                        'buffer_input_prompt': {
+                            'description': 'Type answer',
+                            'type': 'prompt',
+                        },
+                        'select_prompt': {
+                            'description': 'Select answer',
+                            'type': 'prompt',
+                            'choices': [
+                                'select_answer_1',
+                                'select_answer_2'
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+
+    def test_can_answer_buffer_prompt_followed_by_select_prompt(self):
+        self.add_answer_submission('buffer_answer')
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.add_app_values_assertion(
+            buffer_input_prompt='buffer_answer',
+            select_prompt='select_answer_1'
+        )
+        self.stubbed_app.run()
+
+
 class TestApiCallWizardApplication(BaseWizardApplicationTest):
     def get_definition(self):
         return {

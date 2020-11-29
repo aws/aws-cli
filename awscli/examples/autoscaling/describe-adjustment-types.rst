@@ -1,6 +1,6 @@
-**To describe the Auto Scaling adjustment types**
+**To describe the autor scaling adjustment types**
 
-This example describes the available adjustment types::
+This example describes the available adjustment types. ::
 
     aws autoscaling describe-adjustment-types
 
@@ -20,6 +20,6 @@ The following is example output::
         ]
     }
 
-For more information, see `Scaling Adjustment Types`_ in the *Amazon EC2 Auto Scaling User Guide*.
+For more information, see `Scaling adjustment types`_ in the *Amazon EC2 Auto Scaling User Guide*.
 
-.. _`Scaling Adjustment Types`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-simple-step.html#as-scaling-adjustment
+.. _`Scaling adjustment types`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-simple-step.html#as-scaling-adjustment

@@ -1,6 +1,6 @@
 **To create a lifecycle hook**
 
-This example creates a lifecycle hook that will invoke on any newly launched instances, with a timeout of 4800 seconds. This is useful for keeping the instance in a wait state until the user data scripts have finished, or for invoking an AWS Lambda function using EventBridge. ::
+This example creates a lifecycle hook that will invoke on any newly launched instances, with a timeout of 4800 seconds. This is useful for keeping the instances in a wait state until the user data scripts have finished, or for invoking an AWS Lambda function using EventBridge. ::
 
     aws autoscaling put-lifecycle-hook --auto-scaling-group-name my-asg --lifecycle-hook-name my-launch-hook --lifecycle-transition autoscaling:EC2_INSTANCE_LAUNCHING --heartbeat-timeout 4800
 

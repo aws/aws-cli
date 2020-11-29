@@ -1,4 +1,4 @@
-**To describe Auto Scaling policies**
+**To describe scaling policies**
 
 This example describes the policies for the specified Auto Scaling group. ::
 

@@ -1,4 +1,4 @@
-**To describe the autor scaling adjustment types**
+**To describe the auto scaling adjustment types**
 
 This example describes the available adjustment types. ::
 

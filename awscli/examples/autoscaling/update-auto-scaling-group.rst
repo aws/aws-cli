@@ -26,7 +26,7 @@ This example updates the specified Auto Scaling group to use a specific version 
 
 **To define a mixed instances policy and enable capacity rebalancing**
 
-This example updates the specified Auto Scaling group to use a mixed instance policy and enables capacity rebalancing. This structure lets you specify groups with Spot and On-Demand capacities and use different launch templates for different architectures. ::
+This example updates the specified Auto Scaling group to use a mixed instances policy and enables capacity rebalancing. This structure lets you specify groups with Spot and On-Demand capacities and use different launch templates for different architectures. ::
 
     aws autoscaling update-auto-scaling-group --cli-input-json file://~/config.json 
 

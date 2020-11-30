@@ -1,6 +1,6 @@
-**To describe the available types of lifecycle hooks**
+**To describe the available lifecycle hook types**
 
-This example describes the available lifecycle hook types::
+This example describes the available lifecycle hook types. ::
 
     aws autoscaling describe-lifecycle-hook-types
 

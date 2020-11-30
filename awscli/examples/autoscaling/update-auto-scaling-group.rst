@@ -1,21 +1,69 @@
-**To update an Auto Scaling group**
+**To update an Auto Scaling group's size**
 
-This example updates the specified Auto Scaling group to use Elastic Load Balancing health checks::
+This example updates the desired capacity, maximum size, and minimum size of the specified Auto Scaling group. ::
 
-    aws autoscaling update-auto-scaling-group --auto-scaling-group-name my-auto-scaling-group --health-check-type ELB --health-check-grace-period 60
+    aws autoscaling update-auto-scaling-group --auto-scaling-group-name my-asg --desired-capacity 2 --max-size 10 --min-size 2 
 
-This example updates the launch configuration, minimum and maximum size of the group, and which subnet to use::
+This command returns to the prompt if successful.
 
-    aws autoscaling update-auto-scaling-group --auto-scaling-group-name my-auto-scaling-group --launch-configuration-name new-launch-config --min-size 1 --max-size 3 --vpc-zone-identifier subnet-41767929
+**To add Elastic Load Balancing health checks and change the subnets**
 
-This example updates the desired capacity, default cooldown, placement group, termination policy, and which Availability Zone to use::
+This example updates the specified Auto Scaling group to use Elastic Load Balancing health checks. This command also updates the value of ``--vpc-zone-identifier``. This helps you change the Availability Zones where the instances are located as well as the subnets. ::
 
-    aws autoscaling update-auto-scaling-group --auto-scaling-group-name my-auto-scaling-group --default-cooldown 600 --placement-group my-placement-group --termination-policies "OldestInstance" --availability-zones us-west-2c
+    aws autoscaling update-auto-scaling-group --auto-scaling-group-name my-asg --health-check-type ELB --health-check-grace-period 600 --vpc-zone-identifier "subnet-5ea0c127,subnet-6194ea3b,subnet-c934b782"
 
-This example enables the instance protection setting for the specified Auto Scaling group::
+**To use the latest version of the launch template**
 
-    aws autoscaling update-auto-scaling-group --auto-scaling-group-name my-auto-scaling-group --new-instances-protected-from-scale-in
+This example updates the specified Auto Scaling group to use the latest version of the specified launch template. ::
 
-This example disables the instance protection setting for the specified Auto Scaling group::
+    aws autoscaling update-auto-scaling-group --auto-scaling-group-name my-asg --launch-template LaunchTemplateId=lt-1234567890abcde12,Version='$Latest'
 
-    aws autoscaling update-auto-scaling-group --auto-scaling-group-name my-auto-scaling-group --no-new-instances-protected-from-scale-in
+**To use a specific version of the launch template**
+
+This example updates the specified Auto Scaling group to use a specific version of the specified launch template. ::
+
+    aws autoscaling update-auto-scaling-group --auto-scaling-group-name my-asg --launch-template LaunchTemplateName=my-template-for-auto-scaling,Version='2'
+
+**To define a mixed instances policy and enable capacity rebalancing**
+
+This example updates the specified Auto Scaling group to use a mixed instances policy and enables capacity rebalancing. This structure lets you specify groups with Spot and On-Demand capacities and use different launch templates for different architectures. ::
+
+    aws autoscaling update-auto-scaling-group --cli-input-json file://~/config.json 
+
+Contents of ``config.json`` file::
+
+  {
+      "AutoScalingGroupName": "my-asg",
+      "CapacityRebalance": true,
+      "MixedInstancesPolicy": {
+          "LaunchTemplate": {
+              "LaunchTemplateSpecification": {
+                  "LaunchTemplateName": "my-launch-template-for-x86",
+                  "Version": "$Latest"
+              },
+              "Overrides": [
+                  {
+                      "InstanceType": "c6g.large",
+                      "LaunchTemplateSpecification": {
+                          "LaunchTemplateName": "my-launch-template-for-arm",
+                          "Version": "$Latest"
+                      }
+                  },
+                  {
+                      "InstanceType": "c5.large"
+                  },
+                  {
+                    "InstanceType": "c5a.large"
+                  }
+              ]
+          },
+          "InstancesDistribution": {
+              "OnDemandPercentageAboveBaseCapacity": 50,
+              "SpotAllocationStrategy": "capacity-optimized"
+          }
+      }
+  }
+
+For more information, see `Auto Scaling groups`_ in the *Amazon EC2 Auto Scaling User Guide*.
+
+.. _`Auto Scaling groups`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/AutoScalingGroup.html

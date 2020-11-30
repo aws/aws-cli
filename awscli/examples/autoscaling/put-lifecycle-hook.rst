@@ -8,7 +8,7 @@ This command returns to the prompt if successful.  If a lifecycle hook with the 
 
 **To send an Amazon SNS email message to notify you of instance state transitions**
 
-This example creates a lifecycle hook with the Amazon SNS topic and IAM role to use to receive notification at instance launch. This lets you eliminate any need to check or “poll” for updates. ::
+This example creates a lifecycle hook with the Amazon SNS topic and IAM role to use to receive notification at instance launch. ::
 
     aws autoscaling put-lifecycle-hook --auto-scaling-group-name my-asg --lifecycle-hook-name my-launch-hook --lifecycle-transition autoscaling:EC2_INSTANCE_LAUNCHING --notification-target-arn arn:aws:sns:us-west-2:123456789012:my-sns-topic --role-arn arn:aws:iam::123456789012:role/my-auto-scaling-role
 

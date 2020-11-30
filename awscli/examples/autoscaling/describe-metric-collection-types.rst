@@ -1,6 +1,6 @@
-**To describe the Auto Scaling metric collection types**
+**To describe the available metric collection types**
 
-This example describes the available metric collection types::
+This example describes the available metric collection types. ::
 
     aws autoscaling describe-metric-collection-types
 
@@ -40,6 +40,6 @@ The following is example output::
         ]
     }
 
-For more information, see `Auto Scaling Group Metrics`_ in the *Amazon EC2 Auto Scaling User Guide*.
+For more information, see `Auto Scaling group metrics`_ in the *Amazon EC2 Auto Scaling User Guide*.
 
-.. _`Auto Scaling Group Metrics`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-monitoring.html#as-group-metrics
+.. _`Auto Scaling group metrics`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-monitoring.html#as-group-metrics

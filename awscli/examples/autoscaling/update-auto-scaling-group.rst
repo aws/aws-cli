@@ -1,4 +1,4 @@
-**To update the size of an an Auto Scaling group**
+**To update the size of an Auto Scaling group**
 
 This example updates the desired capacity, maximum size, and minimum size of the specified Auto Scaling group. ::
 

@@ -28,8 +28,6 @@ def _register_wizards_for_commands(commands, event_handlers):
                                 _add_wizard_command)
 
 
-
-
 def _add_wizard_command(session, command_object, command_table, **kwargs):
     runner = factory.create_default_wizard_runner(session)
     cmd = TopLevelWizardCommand(

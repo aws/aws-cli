@@ -54,6 +54,7 @@ from awscli.customizations.ec2.runinstances import register_runinstances
 from awscli.customizations.ec2.secgroupsimplify import register_secgroup
 from awscli.customizations.ec2.paginate import register_ec2_page_size_injector
 from awscli.customizations.ecr import register_ecr_commands
+from awscli.customizations.ecr_public import register_ecr_public_commands
 from awscli.customizations.emr.emr import emr_initialize
 from awscli.customizations.eks import initialize as eks_initialize
 from awscli.customizations.ecs import initialize as ecs_initialize
@@ -139,6 +140,7 @@ def awscli_initialize(event_handlers):
     register_configure_cmd(event_handlers)
     cloudtrail_init(event_handlers)
     register_ecr_commands(event_handlers)
+    register_ecr_public_commands(event_handlers)
     register_bool_params(event_handlers)
     register_protocol_args(event_handlers)
     datapipeline.register_customizations(event_handlers)

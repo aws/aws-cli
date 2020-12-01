@@ -191,12 +191,13 @@ class SelectionMenuControl(UIControl):
 class CollapsableSelectionMenuControl(SelectionMenuControl):
     """Menu that collapses to text with selection when loses focus"""
     def __init__(self, items, display_format=None, cursor='>',
-                 selection_capture_buffer=None):
+                 selection_capture_buffer=None, on_toggle=None):
         super().__init__(items, display_format=display_format, cursor=cursor)
         if not selection_capture_buffer:
             selection_capture_buffer = Buffer()
         self.buffer = selection_capture_buffer
         self._has_ever_entered_select_menu = False
+        self.on_toggle = on_toggle
 
     def create_content(self, width, height):
         if get_app().layout.has_focus(self):
@@ -230,6 +231,8 @@ class CollapsableSelectionMenuControl(SelectionMenuControl):
     def _move_cursor(self, delta):
         super()._move_cursor(delta)
         self.buffer.text = self._get_items()[self._selection]
+        if callable(self.on_toggle):
+            self.on_toggle(self.buffer.text)
 
     def get_key_bindings(self):
         kb = KeyBindings()

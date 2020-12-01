@@ -285,8 +285,6 @@ class VariableResolver(object):
         return value
 
 
-
-
 class APIInvoker(object):
     """This class contains shared logic for the apicall step.
 

@@ -15,10 +15,10 @@ from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.document import Document
 from prompt_toolkit.filters import Condition
 from prompt_toolkit.layout.containers import (
-    Window, HSplit, Dimension, ConditionalContainer, WindowAlign
+    Window, HSplit, Dimension, ConditionalContainer
 )
 from prompt_toolkit.layout.controls import BufferControl
-from prompt_toolkit.widgets import Label, Box
+from prompt_toolkit.widgets import Box
 
 from awscli.customizations.wizard.ui.prompt import WizardPrompt
 

@@ -45,6 +45,13 @@ class BaseWizardApplicationTest(unittest.TestCase):
             lambda app: self.assertEqual(dict(app.values), expected_values)
         )
 
+    def add_buffer_text_assertion(self, buffer_name, text):
+        self.stubbed_app.add_app_assertion(
+            lambda app: self.assertEqual(
+                app.layout.get_buffer_by_name(buffer_name).document.text,
+                text)
+        )
+
     def add_prompt_is_visible_assertion(self, name):
         self.stubbed_app.add_app_assertion(
             lambda app: self.assertIn(name, self.get_visible_buffers(app))
@@ -326,6 +333,118 @@ class TestApiCallWizardApplication(BaseWizardApplicationTest):
         }
         self.stubbed_app.add_keypress(Keys.Enter)
         self.add_app_values_assertion(choose_policy='policy1_arn')
+        self.stubbed_app.run()
+
+
+class TestDetailsWizardApplication(BaseWizardApplicationTest):
+    def get_definition(self):
+        return {
+            'title': 'Show details in prompting stage',
+            'plan': {
+                'section': {
+                    'shortname': 'Section',
+                    'values': {
+                        'version_id': {
+                            'type': 'apicall',
+                            'operation': 'iam.GetPolicy',
+                            'params': {
+                                'PolicyArn': '{policy_arn}'
+                            },
+                            'query': 'Policy.DefaultVersionId',
+                            'cache': True
+                        },
+                        'policy_document': {
+                            'type': 'apicall',
+                            'operation': 'iam.GetPolicyVersion',
+                            'params': {
+                                'PolicyArn': '{policy_arn}',
+                                'VersionId': '{version_id}'
+                            },
+                            'query': 'PolicyVersion.Document',
+                            'cache': True
+                        },
+                        'existing_policies': {
+                            'type': 'apicall',
+                            'operation': 'iam.ListPolicies',
+                            'params': {},
+                            'query': (
+                                'sort_by(Policies[].{display: PolicyName, '
+                                'actual_value: Arn}, &display)'
+                            )
+                        },
+                        'policy_arn': {
+                            'description': 'Choose policy',
+                            'type': 'prompt',
+                            'choices': 'existing_policies',
+                            'details': {'value': 'policy_document'},
+                        },
+                        'some_prompt': {
+                            'description': 'Choose something',
+                            'type': 'prompt',
+                            'choices': [1, 2, 3],
+                        }
+                    }
+                }
+            }
+        }
+
+    def setUp(self):
+        super(TestDetailsWizardApplication, self).setUp()
+        self.mock_client = mock.Mock()
+        self.session.create_client.return_value = self.mock_client
+        self.mock_client.list_policies.return_value = {
+            'Policies': [
+                {
+                    'PolicyName': 'policy1',
+                    'Arn': 'policy1_arn'
+                },
+                {
+                    'PolicyName': 'policy2',
+                    'Arn': 'policy2_arn'
+                }
+            ]
+        }
+        self.mock_client.get_policy.return_value = {
+            'Policy': {'DefaultVersionId': 'policy_id'}
+        }
+        self.mock_client.get_policy_version.return_value = {
+            'PolicyVersion': {'Document': {'policy': 'policy_document'}}
+        }
+
+    def test_get_details_for_choice(self):
+        self.stubbed_app.add_keypress(Keys.F3)
+        self.add_buffer_text_assertion(
+            'details_buffer',
+            '{\n  "policy": "policy_document"\n}'
+        )
+        self.add_prompt_is_visible_assertion('toolbar_details')
+        self.stubbed_app.run()
+
+    def test_details_disabled_for_choice_wo_details(self):
+        self.add_prompt_is_visible_assertion('toolbar_details')
+        self.stubbed_app.add_keypress(Keys.Tab)
+        self.add_prompt_is_not_visible_assertion('toolbar_details')
+        self.stubbed_app.add_keypress(Keys.F3)
+        self.add_prompt_is_not_visible_assertion('details_buffer')
+
+    def test_can_switch_focus_to_details_panel(self):
+        self.stubbed_app.add_keypress(Keys.F3)
+        self.stubbed_app.add_keypress(
+            Keys.F2,
+            lambda app: self.assertEqual(
+                app.layout.current_buffer.name, 'details_buffer')
+        )
+        self.stubbed_app.add_keypress(
+            Keys.F3,
+            lambda app: self.assertIsNone(app.layout.current_buffer)
+        )
+        self.stubbed_app.run()
+
+    def test_can_not_switch_focus_to_details_panel_if_it_not_visible(self):
+        self.stubbed_app.add_keypress(
+            Keys.F2,
+            lambda app: self.assertIsNone(app.layout.current_buffer)
+        )
         self.stubbed_app.run()
 
 
@@ -792,3 +911,13 @@ class TestWizardValues(unittest.TestCase):
         values = self.get_wizard_values()
         values['no_handler_value'] = 'manual'
         self.assertEqual(len(values), 1)
+
+    def test_copy(self):
+        values = self.get_wizard_values()
+        values['foo'] = 'bar'
+        values['bar'] = 'foo'
+        values_copy = values.copy()
+        for key in values.keys():
+            self.assertEqual(values[key], values_copy[key])
+        self.assertEqual(len(values), len(values_copy))
+        self.assertNotEqual(id(values), id(values_copy))

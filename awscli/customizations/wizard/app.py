@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from collections.abc import MutableMapping
+import json
 
 from prompt_toolkit.application import Application
 
@@ -19,6 +20,7 @@ from awscli.customizations.wizard import core
 from awscli.customizations.wizard.ui.keybindings import get_default_keybindings
 from awscli.customizations.wizard.ui.layout import WizardLayoutFactory
 from awscli.customizations.wizard.ui.style import get_default_style
+from awscli.utils import json_encoder
 
 
 def create_wizard_app(definition, session):
@@ -41,6 +43,7 @@ def create_wizard_app(definition, session):
         }
     )
     app.traverser = WizardTraverser(definition, app.values)
+    app.details_visible = False
     return app
 
 
@@ -52,7 +55,7 @@ class WizardTraverser:
     def __init__(self, definition, values):
         self._definition = definition
         self._values = values
-        self._prompt_definitions = self._collect_all_prompt_definitions()
+        self._prompt_definitions = self._collect_prompt_definitions()
         self._prompt_to_sections = self._map_prompts_to_sections()
         self._current_prompt = self._get_starting_prompt()
         self._previous_prompts = []
@@ -70,6 +73,9 @@ class WizardTraverser:
             return [choice['display'] for choice in choices]
         return None
 
+    def current_prompt_has_details(self):
+        return 'details' in self._prompt_definitions[self._current_prompt]
+    
     def submit_prompt_answer(self, answer):
         if 'choices' in self._prompt_definitions[self._current_prompt]:
             answer = self._convert_display_value_to_actual_value(
@@ -101,7 +107,7 @@ class WizardTraverser:
     def has_visited_section(self, section_name):
         return section_name in self._visited_sections
 
-    def _collect_all_prompt_definitions(self):
+    def _collect_prompt_definitions(self):
         value_prompt_definitions = {}
         for _, section_definition in self._definition['plan'].items():
             for name, value_definition in section_definition['values'].items():
@@ -130,6 +136,18 @@ class WizardTraverser:
                 choices = self._values[value_definition['choices']]
             return self._get_normalized_choice_values(choices)
         return None
+
+    def get_details_for_choice(self, choice):
+        step_definition = self._prompt_definitions[self._current_prompt]
+        if 'details' in step_definition:
+            value = self._convert_display_value_to_actual_value(
+                self._get_choices(self._current_prompt), choice
+            )
+            temp_values = self._values.copy()
+            temp_values[self._current_prompt] = value
+            details = temp_values[step_definition['details']['value']]
+            return json.dumps(details, indent=2,
+                              default=json_encoder)
 
     def _get_normalized_choice_values(self, choices):
         normalized_choices = []
@@ -211,3 +229,14 @@ class WizardValues(MutableMapping):
             for name, value_definition in section_definition['values'].items():
                 value_definitions[name] = value_definition
         return value_definitions
+
+    def __copy__(self):
+        new_vars = type(self)(
+            self._definition,
+            self._value_retrieval_steps,
+        )
+        for varname, value in self.items():
+            new_vars[varname] = value
+        return new_vars
+
+    copy = __copy__

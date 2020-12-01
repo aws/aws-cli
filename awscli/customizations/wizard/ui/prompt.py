@@ -123,7 +123,8 @@ class WizardPromptSelectionAnswer(WizardPromptAnswer):
         return FullyExtendedWidthWindow(
             content=CollapsableSelectionMenuControl(
                 items=self._get_choices,
-                selection_capture_buffer=self._buffer
+                selection_capture_buffer=self._buffer,
+                on_toggle=self._show_details
             ),
             style=self._get_style,
             always_hide_cursor=True,
@@ -133,3 +134,15 @@ class WizardPromptSelectionAnswer(WizardPromptAnswer):
 
     def _get_choices(self):
         return get_app().traverser.get_current_prompt_choices()
+
+    def _show_details(self, choice):
+        if get_app().details_visible:
+            details_buffer = get_app().layout.get_buffer_by_name(
+                'details_buffer')
+            details = self._get_details(choice)
+            details_buffer.reset()
+            new_document = Document(text=details, cursor_position=0)
+            details_buffer.set_document(new_document, bypass_readonly=True)
+
+    def _get_details(self, choice):
+        return get_app().traverser.get_details_for_choice(choice)

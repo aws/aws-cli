@@ -51,6 +51,21 @@ plan:
     # The console by default asks you to pick an existing policy
     # to attach to.  We'll just go with that behavior for now.
     values:
+      version_id:
+        type: apicall
+        operation: iam.GetPolicy
+        params:
+          PolicyArn: "{policy_arn}"
+        query: "Policy.DefaultVersionId"
+        cache: true
+      policy_document:
+        type: apicall
+        operation: iam.GetPolicyVersion
+        params:
+          PolicyArn: "{policy_arn}"
+          VersionId: "{version_id}"
+        query: "PolicyVersion.Document"
+        cache: true
       existing_policies:
         type: apicall
         operation: iam.ListPolicies
@@ -62,6 +77,8 @@ plan:
         type: prompt
         description: Choose a policy to attach
         choices: existing_policies
+        details:
+          value: policy_document
   ask_profile_config:
     shortname: CLI config
     description: Determine CLI configuration
@@ -90,5 +107,5 @@ plan:
         condition:
           variable: wants_config_profile
           equals: yes
-execute:
+#execute:
 

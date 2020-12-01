@@ -187,8 +187,7 @@ class WizardValues(MutableMapping):
                 retrieval_step = self._value_retrieval_steps[
                     value_definition['type']
                 ]
-                self._values[key] = retrieval_step.run_step(
-                    value_definition, self)
+                return retrieval_step.run_step(value_definition, self)
         return self._values[key]
 
     def __setitem__(self, key, value):

@@ -295,6 +295,51 @@ class TestPlanner(unittest.TestCase):
         parameters = planner.plan(loaded['plan'])
         self.assertEqual(parameters['foo'], {'Policies': ['foo']})
 
+    def test_can_run_apicall_step_with_cache(self):
+        loaded = load_wizard("""
+        plan:
+          start:
+            values:
+              foo:
+                type: apicall
+                operation: iam.ListPolicies
+                params:
+                  Scope: AWS
+                cache: true
+              use_cached_foo:
+                type: apicall
+                operation: iam.ListPolicies
+                params:
+                  Scope: AWS
+                cache: true
+        """)
+        mock_session = mock.Mock(spec=Session)
+        mock_client = mock.Mock()
+        mock_session.create_client.return_value = mock_client
+        mock_client.list_policies.return_value = {
+            'Policies': ['foo'],
+        }
+        api_step = core.APICallStep(
+            api_invoker=core.APIInvoker(session=mock_session)
+        )
+        planner = core.Planner(
+            step_handlers={
+                'apicall': api_step,
+            },
+        )
+        parameters = planner.plan(loaded['plan'])
+        self.assertEqual(
+            parameters,
+            {
+                'foo': {'Policies': ['foo']},
+                'use_cached_foo': {'Policies': ['foo']},
+            }
+        )
+        self.assertEqual(
+            mock_client.list_policies.call_count,
+            1
+        )
+
     def test_can_run_apicall_step_with_query(self):
         loaded = load_wizard("""
         plan:
@@ -1029,6 +1074,9 @@ class TestAPIInvoker(unittest.TestCase):
     def get_call_args(self, session):
         return session.create_client.return_value.create_user.call_args
 
+    def get_call_count(self, session):
+        return session.create_client.return_value.create_user.call_count
+
     def test_can_make_api_call(self):
         invoker = core.APIInvoker(self.mock_session)
         invoker.invoke(
@@ -1039,6 +1087,49 @@ class TestAPIInvoker(unittest.TestCase):
         )
         call_method_args = self.get_call_args(self.mock_session)
         self.assertEqual(call_method_args, mock.call(UserName='admin'))
+
+    def test_make_api_call_can_cache_response(self):
+        invoker = core.APIInvoker(self.mock_session)
+        invoker.invoke(
+            'iam',
+            'CreateUser',
+            api_params={'UserName': 'admin'},
+            plan_variables={},
+            cache=True
+        )
+        call_method_args = self.get_call_args(self.mock_session)
+        self.assertEqual(call_method_args, mock.call(UserName='admin'))
+        invoker.invoke(
+            'iam',
+            'CreateUser',
+            api_params={'UserName': 'admin'},
+            plan_variables={},
+            cache=True
+        )
+        self.assertEqual(self.get_call_count(self.mock_session), 1)
+
+    def test_does_not_use_cache_when_different_input_parameters(self):
+        invoker = core.APIInvoker(self.mock_session)
+        invoker.invoke(
+            'iam',
+            'CreateUser',
+            api_params={'UserName': 'admin'},
+            plan_variables={},
+            cache=True
+        )
+        call_method_args = self.get_call_args(self.mock_session)
+        self.assertEqual(call_method_args, mock.call(UserName='admin'))
+        invoker.invoke(
+            'iam',
+            'CreateUser',
+            api_params={'UserName': 'admin-different'},
+            plan_variables={},
+            cache=True
+        )
+        call_method_args = self.get_call_args(self.mock_session)
+        self.assertEqual(
+            call_method_args, mock.call(UserName='admin-different'))
+        self.assertEqual(self.get_call_count(self.mock_session), 2)
 
     def test_can_invoke_with_plan_variables(self):
         invoker = core.APIInvoker(self.mock_session)

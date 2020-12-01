@@ -325,13 +325,7 @@ class TestApiCallWizardApplication(BaseWizardApplicationTest):
             ]
         }
         self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_app_values_assertion(
-            choose_policy='policy1_arn',
-            existing_policies=[
-                {'actual_value': 'policy1_arn', 'display': 'policy1'},
-                {'actual_value': 'policy2_arn', 'display': 'policy2'}
-            ]
-        )
+        self.add_app_values_assertion(choose_policy='policy1_arn')
         self.stubbed_app.run()
 
 
@@ -360,10 +354,7 @@ class TestSharedConfigWizardApplication(BaseWizardApplicationTest):
     def test_uses_choices_from_api_call(self):
         self.session.available_profiles = ['profile1', 'profile2']
         self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_app_values_assertion(
-            choose_profile='profile1',
-            existing_profiles=['profile1', 'profile2']
-        )
+        self.add_app_values_assertion(choose_profile='profile1')
         self.stubbed_app.run()
 
 
@@ -776,13 +767,6 @@ class TestWizardValues(unittest.TestCase):
         self.handler.run_step.return_value = 'from_handler'
         values = self.get_wizard_values({'use_handler': self.handler})
         self.assertEqual(values['handler_value'], 'from_handler')
-
-    def test_get_with_handler_caches_result(self):
-        self.handler.run_step.return_value = 'from_handler'
-        values = self.get_wizard_values({'use_handler': self.handler})
-        self.assertEqual(values['handler_value'], 'from_handler')
-        self.assertEqual(values['handler_value'], 'from_handler')
-        self.assertEqual(self.handler.run_step.call_count, 1)
 
     def test_manual_set_overrides_delegation_handler(self):
         self.handler.run_step.return_value = 'from_handler'

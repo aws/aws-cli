@@ -12,10 +12,13 @@
 # language governing permissions and limitations under the License.
 """Core planner and executor for wizards."""
 import re
-import jmespath
+import json
 import os
 
 from botocore import xform_name
+import jmespath
+
+from awscli.utils import json_encoder
 
 
 class Runner(object):
@@ -210,6 +213,7 @@ class APICallStep(BaseStep):
             plan_variables=parameters,
             optional_api_params=step_definition.get('optional_params'),
             query=step_definition.get('query'),
+            cache=step_definition.get('cache', False),
         )
 
 
@@ -293,18 +297,22 @@ class APIInvoker(object):
     """
     def __init__(self, session):
         self._session = session
+        self._response_cache = {}
 
     def invoke(self, service, operation, api_params, plan_variables,
-               optional_api_params=None, query=None):
+               optional_api_params=None, query=None, cache=False):
         # TODO: All of the params that come from prompting the user
         # are strings.  We need a way to convert values to their
         # appropriate types.  We can either add typing into the wizard
         # spec or we possibly auto-convert based on the service
         # model (or both).
-        client = self._session.create_client(service)
         resolved_params = self._resolve_params(
             api_params, optional_api_params, plan_variables)
-        response = getattr(client, xform_name(operation))(**resolved_params)
+        if cache:
+            response = self._get_cached_api_call(
+                service, operation, resolved_params)
+        else:
+            response = self._make_api_call(service, operation, resolved_params)
         if query is not None:
             response = jmespath.search(query, response)
         return response
@@ -320,6 +328,28 @@ class APIInvoker(object):
                 if key not in api_params_resolved and value is not None:
                     api_params_resolved[key] = value
         return api_params_resolved
+
+    def _make_api_call(self, service, operation, resolved_params):
+        client = self._session.create_client(service)
+        response = getattr(client, xform_name(operation))(**resolved_params)
+        return response
+
+    def _get_cached_api_call(self, service, operation, resolved_params):
+        cache_key = self._get_cache_key(
+            service, operation, resolved_params
+        )
+        if cache_key not in self._response_cache:
+            response = self._make_api_call(
+                service, operation, resolved_params)
+            self._response_cache[cache_key] = response
+        return self._response_cache[cache_key]
+
+    def _get_cache_key(self, service_name, operation, resolved_params):
+        return (
+            service_name,
+            operation,
+            json.dumps(resolved_params, default=json_encoder)
+        )
 
 
 class Executor(object):

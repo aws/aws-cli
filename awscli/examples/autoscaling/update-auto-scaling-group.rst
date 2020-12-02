@@ -14,7 +14,7 @@ This example updates the specified Auto Scaling group to add Elastic Load Balanc
 
 **To update the placement group and termination policy**
 
-This example updates the placement group and termination policy to use:
+This example updates the placement group and termination policy to use. ::
 
     aws autoscaling update-auto-scaling-group --auto-scaling-group-name my-asg --placement-group my-placement-group --termination-policies "OldestInstance" 
 

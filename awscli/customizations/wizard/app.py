@@ -10,8 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from collections.abc import MutableMapping
 import json
+from collections.abc import MutableMapping
+import argparse
+import io
 
 from prompt_toolkit.application import Application
 
@@ -40,6 +42,7 @@ def create_wizard_app(definition, session):
             core.APICallStep.NAME: core.APICallStep(api_invoker=api_invoker),
             core.SharedConfigStep.NAME: core.SharedConfigStep(
                 config_api=shared_config),
+            core.TemplateStep.NAME: core.TemplateStep(),
         }
     )
     app.traverser = WizardTraverser(definition, app.values)
@@ -104,6 +107,10 @@ class WizardTraverser:
             return False
         return self._prompt_meets_condition(value_name)
 
+    def is_prompt_details_visible_by_default(self, value_name):
+        return self._prompt_definitions[value_name].get(
+            'details', {}).get('visible', False)
+
     def has_visited_section(self, section_name):
         return section_name in self._visited_sections
 
@@ -137,17 +144,34 @@ class WizardTraverser:
             return self._get_normalized_choice_values(choices)
         return None
 
+    def get_details_title(self):
+        step_definition = self._prompt_definitions[self._current_prompt]
+        if 'details' in step_definition:
+            return step_definition['details'].get('description')
+        return ''
+
     def get_details_for_choice(self, choice):
+        if not choice:
+            return ''
         step_definition = self._prompt_definitions[self._current_prompt]
         if 'details' in step_definition:
             value = self._convert_display_value_to_actual_value(
                 self._get_choices(self._current_prompt), choice
             )
+            format_type = step_definition['details'].get('output', 'text')
             temp_values = self._values.copy()
-            temp_values[self._current_prompt] = value
-            details = temp_values[step_definition['details']['value']]
-            return json.dumps(details, indent=2,
-                              default=json_encoder)
+            if step_definition['details']['value'] == '__selected_choice__':
+                output = temp_values[value]
+            else:
+                temp_values[self._current_prompt] = value
+                output = temp_values[step_definition['details']['value']]
+
+            return self._format_output(output, format_type)
+
+    def _format_output(self, output, format_type):
+        if format_type == 'json':
+            return json.dumps(output, indent=4, default=json_encoder)
+        return output
 
     def _get_normalized_choice_values(self, choices):
         normalized_choices = []

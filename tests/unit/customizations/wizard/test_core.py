@@ -1162,3 +1162,131 @@ class TestAPIInvoker(unittest.TestCase):
             )
         call_method_args = self.get_call_args(self.mock_session)
         self.assertEqual(call_method_args, mock.call(UserName=b'admin'))
+
+
+class TestTemplateStep(unittest.TestCase):
+    def test_positive_condition_statement(self):
+        step_definition = {
+            'type': 'template',
+            'value': "{foo} {%   if    allow   %} allow foo {%   endif   %}"
+        }
+        parameters = {
+            'foo': 'foo parameter',
+            'allow': 'True'
+        }
+        step = core.TemplateStep()
+        value = step.run_step(step_definition, parameters)
+        self.assertEqual(value, 'foo parameter  allow foo')
+
+    def test_negative_condition_statement(self):
+        step_definition = {
+            'type': 'template',
+            'value': "{foo}{%if   not_allow    %} allow foo {% endif %}"
+        }
+        parameters = {
+            'foo': 'foo parameter',
+            'not_allow': 'False'
+        }
+        step = core.TemplateStep()
+        value = step.run_step(step_definition, parameters)
+        self.assertEqual(value, 'foo parameter')
+
+    def test_negative_condition_statement_when_key_not_exist(self):
+        step_definition = {
+            'type': 'template',
+            'value': "{foo}{%if   not_allow    %} allow foo {% endif %}"
+        }
+        parameters = {
+            'foo': 'foo parameter',
+        }
+        step = core.TemplateStep()
+        value = step.run_step(step_definition, parameters)
+        self.assertEqual(value, 'foo parameter')
+
+    def test_multiline_condition_statement(self):
+        step_definition = {
+            'type': 'template',
+            'value': """{foo}
+            {%if   not_allow    %} 
+not allow foo 
+            {% endif %}
+   {%if   allow    %}
+allow foo
+        {% endif %}
+more text"""
+        }
+        parameters = {
+            'foo': 'foo parameter',
+            'allow': 'True',
+        }
+        step = core.TemplateStep()
+        value = step.run_step(step_definition, parameters)
+        self.assertEqual(value, 'foo parameter\nallow foo\nmore text')
+
+    def test_positive_condition_statements_with_equal(self):
+        step_definition = {
+            'type': 'template',
+            'value': "{%if   allow == you can do it    %}allow foo{% endif %}"
+        }
+        parameters = {
+            'foo': 'foo parameter',
+            'allow': 'you can do it',
+        }
+        step = core.TemplateStep()
+        value = step.run_step(step_definition, parameters)
+        self.assertEqual(value, 'allow foo')
+
+        step_definition['value'] = "{%if allow == value %}allow foo{% endif %}"
+        parameters = {
+            'foo': 'foo parameter',
+            'allow': 'you can do it',
+            'value': 'you can do it',
+        }
+        value = step.run_step(step_definition, parameters)
+        self.assertEqual(value, 'allow foo')
+
+        step_definition['value'] = "{%if  yes == allow  %}allow foo{% endif %}"
+        parameters = {
+            'foo': 'foo parameter',
+            'allow': 'yes',
+        }
+        value = step.run_step(step_definition, parameters)
+        self.assertEqual(value, 'allow foo')
+
+    def test_negative_condition_statements_with_equal(self):
+        step_definition = {
+            'type': 'template',
+            'value': "{%if   allow == you can do it    %}allow foo{% endif %}"
+        }
+        parameters = {
+            'foo': 'foo parameter',
+            'allow': 'you can not do it',
+        }
+        step = core.TemplateStep()
+        value = step.run_step(step_definition, parameters)
+        self.assertEqual(value, '')
+
+        step_definition['value'] = "{%if allow == value %}allow foo{% endif %}"
+        parameters = {
+            'foo': 'foo parameter',
+            'allow': 'you can do it',
+            'value': 'other value',
+        }
+        value = step.run_step(step_definition, parameters)
+        self.assertEqual(value, '')
+
+        step_definition['value'] = "{%if  yes == allow  %}allow foo{% endif %}"
+        parameters = {
+            'foo': 'foo parameter',
+            'allow': 'no',
+        }
+        value = step.run_step(step_definition, parameters)
+        self.assertEqual(value, '')
+
+        step_definition['value'] = "{%if  yes == no  %}allow foo{% endif %}"
+        parameters = {
+            'foo': 'foo parameter',
+            'allow': 'no',
+        }
+        value = step.run_step(step_definition, parameters)
+        self.assertEqual(value, '')

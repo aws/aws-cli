@@ -376,7 +376,11 @@ class TestDetailsWizardApplication(BaseWizardApplicationTest):
                             'description': 'Choose policy',
                             'type': 'prompt',
                             'choices': 'existing_policies',
-                            'details': {'value': 'policy_document'},
+                            'details': {
+                                'value': 'policy_document',
+                                'description': 'Policy Document',
+                                'output': 'json'
+                            },
                         },
                         'some_prompt': {
                             'description': 'Choose something',
@@ -415,9 +419,8 @@ class TestDetailsWizardApplication(BaseWizardApplicationTest):
         self.stubbed_app.add_keypress(Keys.F3)
         self.add_buffer_text_assertion(
             'details_buffer',
-            '{\n  "policy": "policy_document"\n}'
+            '{\n    "policy": "policy_document"\n}'
         )
-        self.add_prompt_is_visible_assertion('toolbar_details')
         self.stubbed_app.run()
 
     def test_details_disabled_for_choice_wo_details(self):
@@ -444,6 +447,104 @@ class TestDetailsWizardApplication(BaseWizardApplicationTest):
         self.stubbed_app.add_keypress(
             Keys.F2,
             lambda app: self.assertIsNone(app.layout.current_buffer)
+        )
+        self.stubbed_app.run()
+
+    def test_can_set_details_panel_title(self):
+        self.stubbed_app.add_app_assertion(
+            lambda app: self.assertEqual(app.details_title, 'Policy Document')
+        )
+        self.stubbed_app.add_keypress(
+            Keys.F3,
+            lambda app: self.assertEqual(app.details_title, 'Policy Document')
+        )
+        self.stubbed_app.run()
+
+    def test_can_set_details_toolbar_text(self):
+        self.stubbed_app.add_app_assertion(
+            lambda app: self.assertIn(
+                'Policy Document',
+                list(filter(
+                    lambda x: getattr(x, 'name', '') == 'details_toolbar',
+                    app.layout.find_all_controls())
+                )[0].text()()[1][1]
+            )
+        )
+
+        self.stubbed_app.add_app_assertion(
+            lambda app: self.assertIn(
+                'Policy Document',
+                list(filter(
+                    lambda x: getattr(x, 'name', '') == 'details_toolbar',
+                    app.layout.find_all_controls())
+                )[0].text()()[3][1]
+            )
+        )
+        self.stubbed_app.run()
+
+
+class TestPreviewWizardApplication(BaseWizardApplicationTest):
+    def get_definition(self):
+        return {
+            'title': 'Show details in prompting stage',
+            'plan': {
+                'section': {
+                    'shortname': 'Section',
+                    'values': {
+                        'option1': {
+                            'type': 'template',
+                            'value': "First option details"
+                        },
+                        'option2': {
+                            'type': 'template',
+                            'value': "Second option details"
+                        },
+                        'some_prompt': {
+                            'description': 'Choose something',
+                            'type': 'prompt',
+                            'choices': [{
+                                'display': '1', 'actual_value': '2'
+                            }],
+                        },
+                        'choose_option': {
+                            'description': 'Choose option',
+                            'type': 'prompt',
+                            'choices': [
+                                {'display': 'Option 1',
+                                 'actual_value': 'option1'},
+                                {'display': 'Option 2',
+                                 'actual_value': 'option2'},
+                            ],
+                            'details': {
+                                'visible': True,
+                                'value': '__selected_choice__',
+                                'description': 'Option details',
+                            },
+                        },
+                    }
+                }
+            }
+        }
+
+    def test_details_panel_visible_by_default(self):
+        self.stubbed_app.add_keypress(Keys.Tab)
+        self.add_prompt_is_visible_assertion('details_buffer')
+        self.stubbed_app.run()
+
+    def test_get_details_for_choice(self):
+        self.stubbed_app.add_keypress(Keys.Tab)
+        self.add_buffer_text_assertion(
+            'details_buffer',
+            'First option details'
+        )
+        self.stubbed_app.run()
+
+    def test_get_details_for_second_choice(self):
+        self.stubbed_app.add_keypress(Keys.Tab)
+        self.stubbed_app.add_keypress(Keys.Down)
+        self.add_buffer_text_assertion(
+            'details_buffer',
+            'Second option details'
         )
         self.stubbed_app.run()
 

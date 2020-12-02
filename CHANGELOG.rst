@@ -2,6 +2,27 @@
 CHANGELOG
 =========
 
+2.1.6
+=====
+
+* api-change:``customer-profiles``: Update customer-profiles command to latest version
+* api-change:``ecr-public``: Update ecr-public command to latest version
+* api-change:``appintegrations``: Update appintegrations command to latest version
+* api-change:``ds``: Update ds command to latest version
+* api-change:``honeycode``: Update honeycode command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``amplifybackend``: Update amplifybackend command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``lookoutvision``: Update lookoutvision command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``sagemaker-featurestore-runtime``: Update sagemaker-featurestore-runtime command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``devops-guru``: Update devops-guru command to latest version
+* api-change:``connect``: Update connect command to latest version
+* api-change:``connect-contact-lens``: Update connect-contact-lens command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+
+
 2.1.5
 =====
 

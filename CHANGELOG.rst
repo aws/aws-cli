@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.18.188
+========
+
+* api-change:``customer-profiles``: Update customer-profiles command to latest version
+
+
 1.18.187
 ========
 

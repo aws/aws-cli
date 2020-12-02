@@ -226,6 +226,8 @@ class CollapsableSelectionMenuControl(SelectionMenuControl):
         # (e.g. it was the first time items were retrieved)
         if not self.buffer.text:
             self.buffer.text = items[self._selection]
+            if callable(self.on_toggle):
+                self.on_toggle(self.buffer.text)
         return items
 
     def _move_cursor(self, delta):

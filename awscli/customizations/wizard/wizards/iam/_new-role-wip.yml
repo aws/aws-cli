@@ -79,6 +79,8 @@ plan:
         choices: existing_policies
         details:
           value: policy_document
+          output: json
+          description: "Policy Document"
   ask_profile_config:
     shortname: CLI config
     description: Determine CLI configuration
@@ -107,5 +109,79 @@ plan:
         condition:
           variable: wants_config_profile
           equals: yes
-#execute:
+  preview:
+    shortname: Preview
+    description: Preview results
+    values:
+      preview_none:
+        type: template
+        value: ''
+      preview_cli_command:
+        type: template
+        value: |
+          aws iam create-role \
+            --role-name '{role_name}' \
+            --description '{role_description}' \
+            --assume-role-policy-document \
+            '{{"Version": "2008-10-17","Statement":
+             [{{"Action": "sts:AssumeRole","Principal":
+             {% if role_type == aws_service %}
+             {{"Service": "{service_name}.amazonaws.com"}}{% endif %}
+             {% if role_type == aws_account %}
+             {{"AWS": "arn:aws:iam::{account_id}:root"}}{% endif %}
+          ,"Effect": "Allow","Sid": ""}}]}}'
 
+          aws iam attach-role-policy \
+            --role-name '{role_name}' \
+            --policy-arn '{policy_arn}'
+
+          {% if wants_config_profile %}
+          aws configure set source_profile {source_profile} --profile {new_profile_name}
+
+          role_arn=$(aws iam get-role --role-name '{role_name}' \
+            --query Role.Arn --output text)
+
+          aws configure set role_arn "$role_arn" --profile {new_profile_name}
+          {% endif %}
+      preview_cfn_template:
+        type: template
+        value: |
+          Resources:
+            - {role_name}:
+                Type: "AWS::IAM::Role"
+                Properties:
+                  RoleName: {role_name}
+                  Description: {role_description}
+                  AssumeRolePolicyDocument:
+                    Version: 2012-10-17
+                    Statement:
+                      - Effect: Allow
+                        Principal:
+                        {% if role_type == aws_service %}
+                          Service:
+                          - {service_name}.amazonaws.com
+                        {% endif %}
+                        {% if role_type == aws_account %}
+                          AWS:
+                          - arn:aws:iam::{account_id}:root
+                        {% endif %}
+                        Action:
+                          - 'sts:AssumeRole'
+                        Sid: ''
+                  ManagedPolicyArns:
+                    - {policy_arn}
+      output_type:
+        type: prompt
+        description: Select an preview format
+        choices:
+          - display: None
+            actual_value: preview_none
+          - display: AWS CLI command
+            actual_value: preview_cli_command
+          - display: AWS CloudFormation template
+            actual_value: preview_cfn_template
+        details:
+          value: __selected_choice__
+          visible: True
+          description: "Preview"
+#  execute:

@@ -41,6 +41,15 @@ def get_default_keybindings():
             event.app.layout, current_prompt).buffer
         event.app.traverser.submit_prompt_answer(prompt_buffer.text)
 
+    def show_details_if_visible_by_default(event, prompt):
+        event.app.details_visible = \
+            event.app.traverser.is_prompt_details_visible_by_default(prompt)
+
+    def refresh_details_view(event, prompt):
+        control = get_ui_control_by_buffer_name(event.app.layout, prompt)
+        if callable(getattr(control, 'on_toggle', None)):
+            control.on_toggle(control.buffer.text)
+
     @kb.add(Keys.Tab)
     @kb.add(Keys.Enter)
     def next_prompt(event):
@@ -48,7 +57,8 @@ def get_default_keybindings():
         next_prompt = event.app.traverser.next_prompt()
         layout = event.app.layout
         next_control = get_ui_control_by_buffer_name(layout, next_prompt)
-        event.app.details_visible = False
+        show_details_if_visible_by_default(event, next_prompt)
+        refresh_details_view(event, next_prompt)
         layout.focus(next_control)
 
     @kb.add(Keys.BackTab)
@@ -58,7 +68,8 @@ def get_default_keybindings():
         layout = event.app.layout
         previous_control = get_ui_control_by_buffer_name(
             layout, previous_prompt)
-        event.app.details_visible = False
+        show_details_if_visible_by_default(event, previous_prompt)
+        refresh_details_view(event, previous_prompt)
         layout.focus(previous_control)
 
     @kb.add(Keys.F2)
@@ -85,7 +96,5 @@ def get_default_keybindings():
         if not event.app.details_visible:
             layout.focus(current_control)
         else:
-            if callable(current_control.on_toggle):
-                current_control.on_toggle(current_control.buffer.text)
-
+            refresh_details_view(event, current_prompt)
     return kb

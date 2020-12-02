@@ -20,6 +20,7 @@ import shlex
 import botocore
 import botocore.session as session
 from botocore.exceptions import ConnectionClosedError
+from awscli.clidriver import create_clidriver
 from awscli.testutils import unittest, skip_if_windows, mock
 from awscli.compat import is_windows
 from awscli.utils import (split_on_commas, ignore_ctrl_c,
@@ -437,6 +438,14 @@ class TestInstanceMetadataRegionFetcher(unittest.TestCase):
 
 
 class TestIMDSRegionProvider(unittest.TestCase):
+    def setUp(self):
+        self.environ = {}
+        self.environ_patch = mock.patch('os.environ', self.environ)
+        self.environ_patch.start()
+
+    def tearDown(self):
+        self.environ_patch.stop()
+
     def assert_does_provide_expected_value(self, fetcher_region=None,
                                            expected_result=None,):
         fake_session = mock.Mock(spec=session.Session)
@@ -457,3 +466,12 @@ class TestIMDSRegionProvider(unittest.TestCase):
             fetcher_region=None,
             expected_result=None,
         )
+
+    @mock.patch('botocore.httpsession.URLLib3Session.send')
+    def test_use_truncated_user_agent(self, send):
+        driver = create_clidriver()
+        driver.session.user_agent_version = '3.0'
+        provider = IMDSRegionProvider(driver.session)
+        provider.provide()
+        args, _ = send.call_args
+        self.assertEqual(args[0].headers['User-Agent'], 'aws-cli/3.0')

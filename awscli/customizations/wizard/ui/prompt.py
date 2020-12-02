@@ -136,13 +136,19 @@ class WizardPromptSelectionAnswer(WizardPromptAnswer):
         return get_app().traverser.get_current_prompt_choices()
 
     def _show_details(self, choice):
-        if get_app().details_visible:
-            details_buffer = get_app().layout.get_buffer_by_name(
-                'details_buffer')
-            details = self._get_details(choice)
-            details_buffer.reset()
-            new_document = Document(text=details, cursor_position=0)
-            details_buffer.set_document(new_document, bypass_readonly=True)
+        app = get_app()
+        details_buffer = app.layout.get_buffer_by_name(
+            'details_buffer')
+        details, title = self._get_details(choice)
+        app.details_title = title
+        details_buffer.reset()
+        new_document = Document(text=details, cursor_position=0)
+        details_buffer.set_document(new_document, bypass_readonly=True)
 
     def _get_details(self, choice):
-        return get_app().traverser.get_details_for_choice(choice)
+        app = get_app()
+        details = ''
+        title = get_app().traverser.get_details_title()
+        if app.details_visible:
+            details = get_app().traverser.get_details_for_choice(choice)
+        return details, title

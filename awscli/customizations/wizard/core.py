@@ -14,6 +14,7 @@
 import re
 import json
 import os
+from functools import partial
 
 from botocore import xform_name
 import jmespath
@@ -193,8 +194,33 @@ class TemplateStep(BaseStep):
 
     NAME = 'template'
 
+    CONDITION_PATTERN = re.compile(
+        r'(?:^[ \t]*)?{%\s*if\s+(?P<condition>.+?)\s+%}(?:\s*[$|\n])?'
+        r'(?P<body>.+?)[ \t]*{%\s*endif\s*%}[$|\n]?',
+        re.DOTALL | re.MULTILINE | re.IGNORECASE
+    )
+
+    def _check_condition(self, parameters, matchobj):
+        group_dict = matchobj.groupdict()
+        condition = group_dict['condition'].strip()
+        if '==' in condition:
+            right, left = condition.split('==', 1)
+            right = right.strip()
+            left = left.strip()
+            if parameters.get(right) == left or right == parameters.get(left) \
+                    or parameters.get(right, 1) == parameters.get(left, 2):
+                return group_dict['body']
+            return ''
+        elif parameters.get(condition, False) in ['False', 'no', False]:
+            return ''
+        return group_dict['body']
+
+    def _evaluate_conditions(self, value, parameters):
+        condition_checker = partial(self._check_condition, parameters)
+        return re.sub(self.CONDITION_PATTERN, condition_checker, value)
+
     def run_step(self, step_definition, parameters):
-        value = step_definition['value']
+        value = self._evaluate_conditions(step_definition['value'], parameters)
         return value.format(**parameters)
 
 

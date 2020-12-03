@@ -12,9 +12,13 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest, mock
 
+from prompt_toolkit.application import Application
 from prompt_toolkit.layout import Layout
 
-from awscli.customizations.wizard.ui.utils import get_ui_control_by_buffer_name
+from awscli.customizations.wizard.app import WizardTraverser
+from awscli.customizations.wizard.ui.utils import (
+    get_ui_control_by_buffer_name, move_to_previous_prompt
+)
 
 
 class TestGetUIControlByName(unittest.TestCase):
@@ -39,3 +43,19 @@ class TestGetUIControlByName(unittest.TestCase):
         layout.find_all_controls.return_value = []
         with self.assertRaises(ValueError):
             get_ui_control_by_buffer_name(layout, 'buffer-does-not-exist')
+
+
+class TestMoveToPreviousPrompt(unittest.TestCase):
+    def test_move_to_previous_prompt(self):
+        app = mock.Mock(Application)
+        app.layout = mock.Mock(Layout)
+        previous_control = mock.Mock()
+        previous_control.buffer.name = 'previous'
+        app.layout.find_all_controls.return_value = [
+            previous_control,
+        ]
+        app.traverser = mock.Mock(WizardTraverser)
+        app.traverser.previous_prompt.return_value = 'previous'
+
+        move_to_previous_prompt(app)
+        app.layout.focus.assert_called_with(previous_control)

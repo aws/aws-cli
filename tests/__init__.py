@@ -417,6 +417,9 @@ class PromptToolkitApplicationStubber:
                             app, None)
                         app.exit(exception=AssertionError(message))
                         return
+                if app.future.done():
+                    app.after_render = prompt_toolkit.utils.Event(app, None)
+                    return
             if not self._queue:
                 app.after_render = prompt_toolkit.utils.Event(app, None)
                 app.exit()

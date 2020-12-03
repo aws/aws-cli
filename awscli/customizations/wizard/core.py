@@ -22,6 +22,9 @@ import jmespath
 from awscli.utils import json_encoder
 
 
+DONE_SECTION_NAME = '__DONE__'
+
+
 class Runner(object):
     def __init__(self, planner, executor):
         self._planner = planner

@@ -31,6 +31,27 @@ def get_ui_control_by_buffer_name(layout, buffer_name):
         f"Couldn't find buffer in the current layout: {buffer_name}")
 
 
+def move_to_previous_prompt(app):
+    """Moves to traverser's previous prompt in the layout"""
+    previous_prompt = app.traverser.previous_prompt()
+    show_details_if_visible_by_default(app, previous_prompt)
+    refresh_details_view(app, previous_prompt)
+    previous_control = get_ui_control_by_buffer_name(
+        app.layout, previous_prompt)
+    app.layout.focus(previous_control)
+
+
+def show_details_if_visible_by_default(app, prompt):
+    app.details_visible = \
+        app.traverser.is_prompt_details_visible_by_default(prompt)
+
+
+def refresh_details_view(app, prompt):
+    control = get_ui_control_by_buffer_name(app.layout, prompt)
+    if callable(getattr(control, 'on_toggle', None)):
+        control.on_toggle(control.buffer.text)
+
+
 class Spacer:
     """Fills empty space in a layout
 

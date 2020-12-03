@@ -79,7 +79,7 @@ class IMDSRegionProvider(BaseProvider):
             timeout=metadata_timeout,
             num_attempts=metadata_num_attempts,
             env=self._environ,
-            user_agent=self._session.user_agent(),
+            user_agent=self._session.user_agent(truncate=True),
         )
         return fetcher
 

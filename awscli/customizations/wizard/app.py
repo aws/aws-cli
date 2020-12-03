@@ -55,6 +55,8 @@ class InvalidChoiceException(Exception):
 
 
 class WizardTraverser:
+    DONE = core.DONE_SECTION_NAME
+
     def __init__(self, definition, values):
         self._definition = definition
         self._values = values
@@ -68,6 +70,8 @@ class WizardTraverser:
         return self._current_prompt
 
     def get_current_section(self):
+        if self.has_no_remaining_prompts():
+            return self.DONE
         return self._prompt_to_sections[self._current_prompt]
 
     def get_current_prompt_choices(self):
@@ -77,7 +81,8 @@ class WizardTraverser:
         return None
 
     def current_prompt_has_details(self):
-        return 'details' in self._prompt_definitions[self._current_prompt]
+        return 'details' in self._prompt_definitions.get(
+            self._current_prompt, {})
     
     def submit_prompt_answer(self, answer):
         if 'choices' in self._prompt_definitions[self._current_prompt]:
@@ -88,11 +93,15 @@ class WizardTraverser:
         self._values[self._current_prompt] = answer
 
     def next_prompt(self):
+        if self._current_prompt == self.DONE:
+            return self._current_prompt
         new_prompt = self._get_next_prompt()
-        if new_prompt != self._current_prompt:
-            self._previous_prompts.append(self._current_prompt)
-        if self._prompt_to_sections[new_prompt] != self.get_current_section():
-            self._visited_sections.append(self._prompt_to_sections[new_prompt])
+        self._previous_prompts.append(self._current_prompt)
+        if new_prompt != self.DONE:
+            section_of_new_prompt = self._prompt_to_sections.get(new_prompt)
+            if section_of_new_prompt != self.get_current_section():
+                self._visited_sections.append(
+                    self._prompt_to_sections[new_prompt])
         self._current_prompt = new_prompt
         return new_prompt
 
@@ -114,9 +123,15 @@ class WizardTraverser:
     def has_visited_section(self, section_name):
         return section_name in self._visited_sections
 
+    def has_no_remaining_prompts(self):
+        return self.get_current_prompt() == self.DONE
+
     def _collect_prompt_definitions(self):
         value_prompt_definitions = {}
-        for _, section_definition in self._definition['plan'].items():
+        plan = self._definition['plan']
+        for section_name, section_definition in plan.items():
+            if section_name == self.DONE:
+                continue
             for name, value_definition in section_definition['values'].items():
                 if value_definition['type'] == 'prompt':
                     value_prompt_definitions[name] = value_definition
@@ -126,6 +141,8 @@ class WizardTraverser:
         prompts_to_sections = {}
         sections = self._definition['plan']
         for section_name, section_definition in sections.items():
+            if section_name == self.DONE:
+                continue
             for name, value_definition in section_definition['values'].items():
                 prompts_to_sections[name] = section_name
         return prompts_to_sections
@@ -134,7 +151,7 @@ class WizardTraverser:
         return list(self._prompt_definitions)[0]
 
     def _get_choices(self, value_name):
-        value_definition = self._prompt_definitions[value_name]
+        value_definition = self._prompt_definitions.get(value_name, {})
         if 'choices' in value_definition:
             choices = value_definition['choices']
             if not isinstance(value_definition['choices'], list):
@@ -202,7 +219,7 @@ class WizardTraverser:
         for prompt in prompts[current_pos+1:]:
             if self._prompt_meets_condition(prompt):
                 return prompt
-        return self._current_prompt
+        return self.DONE
 
     def _prompt_meets_condition(self, value_name):
         value_definition = self._prompt_definitions[value_name]
@@ -249,7 +266,10 @@ class WizardValues(MutableMapping):
 
     def _collect_all_value_definitions(self):
         value_definitions = {}
-        for _, section_definition in self._definition['plan'].items():
+        plan = self._definition['plan']
+        for section_name, section_definition in plan.items():
+            if section_name == core.DONE_SECTION_NAME:
+                continue
             for name, value_definition in section_definition['values'].items():
                 value_definitions[name] = value_definition
         return value_definitions

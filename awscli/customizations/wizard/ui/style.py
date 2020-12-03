@@ -16,6 +16,7 @@ from prompt_toolkit.styles import Style
 def get_default_style():
     return Style(
         [
+            # Wizard-specific classes
             ('wizard', ''),
             ('wizard.title', 'underline bold'),
             ('wizard.prompt.description', 'bold'),
@@ -26,6 +27,13 @@ def get_default_style():
             ('wizard.section.tab.current', 'white'),
             ('wizard.section.tab.unvisited', '#777777'),
             ('wizard.section.tab.visited', ''),
-            ('completion-menu.completion', 'underline')
+            ('wizard.dialog', ''),
+            ('wizard.dialog frame.label', 'white bold'),
+            ('wizard.dialog.body', 'bg:#aaaaaa black'),
+
+            # Prompt-toolkit built-in classes
+            ('button.focused', 'bg:#777777 white'),
+            ('completion-menu.completion', 'underline'),
+            ('shadow', 'bg:#222222'),
         ]
     )

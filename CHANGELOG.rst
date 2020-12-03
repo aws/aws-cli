@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.1.7
+=====
+
+* api-change:``license-manager``: Update license-manager command to latest version
+* api-change:``amplifybackend``: Update amplifybackend command to latest version
+* api-change:``compute-optimizer``: Update compute-optimizer command to latest version
+* api-change:``batch``: Update batch command to latest version
+
+
 2.1.6
 =====
 

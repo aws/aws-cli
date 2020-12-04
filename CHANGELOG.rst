@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.18.190
+========
+
+* api-change:``license-manager``: Update license-manager command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``ds``: Update ds command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+
+
 1.18.189
 ========
 

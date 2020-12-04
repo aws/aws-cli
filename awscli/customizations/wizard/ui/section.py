@@ -30,7 +30,7 @@ class WizardSectionTab:
         self.container = self._get_container()
 
     def _get_container(self):
-        content = f"{self._definition['shortname']}"
+        content = f" {self._definition['shortname']}"
         buffer = Buffer(
             document=Document(content),
             read_only=True

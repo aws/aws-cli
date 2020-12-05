@@ -15,7 +15,10 @@ from prompt_toolkit.filters import Condition
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.keys import Keys
 
-from awscli.customizations.wizard.ui.utils import get_ui_control_by_buffer_name
+from awscli.customizations.wizard.ui.utils import (
+    get_ui_control_by_buffer_name, move_to_previous_prompt,
+    show_details_if_visible_by_default, refresh_details_view
+)
 
 
 @Condition
@@ -41,36 +44,27 @@ def get_default_keybindings():
             event.app.layout, current_prompt).buffer
         event.app.traverser.submit_prompt_answer(prompt_buffer.text)
 
-    def show_details_if_visible_by_default(event, prompt):
-        event.app.details_visible = \
-            event.app.traverser.is_prompt_details_visible_by_default(prompt)
-
-    def refresh_details_view(event, prompt):
-        control = get_ui_control_by_buffer_name(event.app.layout, prompt)
-        if callable(getattr(control, 'on_toggle', None)):
-            control.on_toggle(control.buffer.text)
-
     @kb.add(Keys.Tab)
     @kb.add(Keys.Enter)
     def next_prompt(event):
         submit_current_answer(event)
-        next_prompt = event.app.traverser.next_prompt()
+        traverser = event.app.traverser
         layout = event.app.layout
-        next_control = get_ui_control_by_buffer_name(layout, next_prompt)
-        show_details_if_visible_by_default(event, next_prompt)
-        refresh_details_view(event, next_prompt)
-        layout.focus(next_control)
+        event.app.details_visible = False
+        new_prompt = traverser.next_prompt()
+        if new_prompt == traverser.DONE:
+            layout.focus(layout.run_wizard_dialog)
+        else:
+            next_control = get_ui_control_by_buffer_name(layout, new_prompt)
+            show_details_if_visible_by_default(event.app, new_prompt)
+            refresh_details_view(event.app, new_prompt)
+            layout.focus(next_control)
 
     @kb.add(Keys.BackTab)
     def previous_prompt(event):
         submit_current_answer(event)
-        previous_prompt = event.app.traverser.previous_prompt()
-        layout = event.app.layout
-        previous_control = get_ui_control_by_buffer_name(
-            layout, previous_prompt)
-        show_details_if_visible_by_default(event, previous_prompt)
-        refresh_details_view(event, previous_prompt)
-        layout.focus(previous_control)
+        event.app.details_visible = False
+        move_to_previous_prompt(event.app)
 
     @kb.add(Keys.F2)
     def focus_on_details_panel(event):
@@ -96,5 +90,6 @@ def get_default_keybindings():
         if not event.app.details_visible:
             layout.focus(current_control)
         else:
-            refresh_details_view(event, current_prompt)
+            refresh_details_view(event.app, current_prompt)
+
     return kb

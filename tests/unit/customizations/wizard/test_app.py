@@ -14,6 +14,7 @@ from awscli.testutils import unittest, mock
 
 from botocore.session import Session
 from prompt_toolkit.keys import Keys
+from prompt_toolkit.layout import walk
 
 from tests import PromptToolkitApplicationStubber as ApplicationStubber
 from awscli.customizations.wizard.app import (
@@ -33,7 +34,9 @@ class BaseWizardApplicationTest(unittest.TestCase):
     def get_definition(self):
         return {
             'title': 'Wizard title',
-            'plan': {}
+            'plan': {
+                '__DONE__': {},
+            }
         }
 
     def add_answer_submission(self, answer):
@@ -62,12 +65,31 @@ class BaseWizardApplicationTest(unittest.TestCase):
             lambda app: self.assertNotIn(name, self.get_visible_buffers(app))
         )
 
+    def add_run_wizard_dialog_is_visible(self):
+        self.stubbed_app.add_app_assertion(
+            lambda app: self.assertIn(
+                app.layout.run_wizard_dialog.container,
+                self.get_visible_containers(app)
+            )
+        )
+
+    def add_run_wizard_dialog_is_not_visible(self):
+        self.stubbed_app.add_app_assertion(
+            lambda app: self.assertNotIn(
+                app.layout.run_wizard_dialog.container,
+                self.get_visible_containers(app)
+            )
+        )
+
     def get_visible_buffers(self, app):
         return [
             window.content.buffer.name
             for window in app.layout.visible_windows
             if hasattr(window.content, 'buffer')
         ]
+
+    def get_visible_containers(self, app):
+        return list(walk(app.layout.container, skip_hidden=True))
 
 
 class TestBasicWizardApplication(BaseWizardApplicationTest):
@@ -96,7 +118,8 @@ class TestBasicWizardApplication(BaseWizardApplicationTest):
                             'type': 'prompt'
                         },
                     }
-                }
+                },
+                '__DONE__': {},
             }
         }
 
@@ -141,6 +164,7 @@ class TestBasicWizardApplication(BaseWizardApplicationTest):
         self.add_answer_submission('val1')
         self.add_answer_submission('val2')
         self.add_answer_submission('second_section_val1')
+        self.stubbed_app.add_keypress(Keys.BackTab)  # At DONE step
         self.stubbed_app.add_keypress(Keys.BackTab)
         self.add_answer_submission('override2')
         self.add_app_values_assertion(
@@ -160,6 +184,39 @@ class TestBasicWizardApplication(BaseWizardApplicationTest):
         self.add_prompt_is_not_visible_assertion('prompt1')
         self.add_prompt_is_not_visible_assertion('prompt2')
         self.add_prompt_is_visible_assertion('second_section_prompt')
+        self.stubbed_app.run()
+
+    def test_run_wizard_dialog_appears_only_at_end_of_wizard(self):
+        self.add_run_wizard_dialog_is_not_visible()
+        self.add_answer_submission('val1')
+        self.add_run_wizard_dialog_is_not_visible()
+        self.add_answer_submission('val2')
+        self.add_run_wizard_dialog_is_not_visible()
+        self.add_answer_submission('second_section_val1')
+        self.add_run_wizard_dialog_is_visible()
+        self.stubbed_app.run()
+
+    def test_enter_at_wizard_dialog_exits_app_with_zero_rc(self):
+        self.add_answer_submission('val1')
+        self.add_answer_submission('val2')
+        self.add_answer_submission('second_section_val1')
+        self.add_run_wizard_dialog_is_visible()
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.stubbed_app.run()
+        self.assertEqual(self.app.future.result(), 0)
+
+    def test_can_go_back_from_run_wizard_dialog(self):
+        self.add_answer_submission('val1')
+        self.add_answer_submission('val2')
+        self.add_answer_submission('second_section_val1')
+        self.add_run_wizard_dialog_is_visible()
+        self.stubbed_app.add_keypress(Keys.Right)
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.add_answer_submission('override_second_section_val1')
+        self.add_app_values_assertion(
+            prompt1='val1', prompt2='val2',
+            second_section_prompt='override_second_section_val1'
+        )
         self.stubbed_app.run()
 
 
@@ -189,6 +246,7 @@ class TestConditionalWizardApplication(BaseWizardApplicationTest):
                         },
                     }
                 },
+                '__DONE__': {},
             }
         }
 
@@ -238,7 +296,8 @@ class TestChoicesWizardApplication(BaseWizardApplicationTest):
                             ]
                         }
                     }
-                }
+                },
+                '__DONE__': {},
             }
         }
 
@@ -275,7 +334,8 @@ class TestMixedPromptTypeWizardApplication(BaseWizardApplicationTest):
                             ]
                         }
                     }
-                }
+                },
+                '__DONE__': {},
             }
         }
 
@@ -312,7 +372,8 @@ class TestApiCallWizardApplication(BaseWizardApplicationTest):
                             'choices': 'existing_policies'
                         }
                     }
-                }
+                },
+                '__DONE__': {},
             }
         }
 
@@ -388,7 +449,8 @@ class TestDetailsWizardApplication(BaseWizardApplicationTest):
                             'choices': [1, 2, 3],
                         }
                     }
-                }
+                },
+                '__DONE__': {},
             }
         }
 
@@ -522,7 +584,8 @@ class TestPreviewWizardApplication(BaseWizardApplicationTest):
                             },
                         },
                     }
-                }
+                },
+                '__DONE__': {},
             }
         }
 
@@ -567,7 +630,8 @@ class TestSharedConfigWizardApplication(BaseWizardApplicationTest):
                             'choices': 'existing_profiles'
                         }
                     }
-                }
+                },
+                '__DONE__': {},
             }
         }
 
@@ -611,12 +675,24 @@ class TestWizardTraverser(unittest.TestCase):
             }
         )
 
+        self.single_prompt_definition = self.create_definition(
+            sections={
+                'only_section': {
+                    'values': {
+                        'only_prompt': self.create_prompt_definition(),
+                    }
+                }
+            }
+        )
+
     def create_traverser(self, definition, values=None):
         if values is None:
             values = {}
         return WizardTraverser(definition, values)
 
     def create_definition(self, sections):
+        sections = sections.copy()
+        sections['__DONE__'] = {}
         return {
             'plan': sections
         }
@@ -639,9 +715,19 @@ class TestWizardTraverser(unittest.TestCase):
         traverser = self.create_traverser(self.simple_definition)
         self.assertEqual(traverser.get_current_prompt(), 'first_prompt')
 
+    def test_get_current_prompt_returns_done_when_no_more_prompts(self):
+        traverser = self.create_traverser(self.single_prompt_definition)
+        traverser.next_prompt()
+        self.assertEqual(traverser.get_current_prompt(), traverser.DONE)
+
     def test_get_current_section(self):
         traverser = self.create_traverser(self.simple_definition)
         self.assertEqual(traverser.get_current_section(), 'first_section')
+
+    def test_get_current_section_returns_done_when_no_more_prompts(self):
+        traverser = self.create_traverser(self.single_prompt_definition)
+        traverser.next_prompt()
+        self.assertEqual(traverser.get_current_section(), traverser.DONE)
 
     def test_get_current_prompt_choices(self):
         traverser = self.create_traverser(self.simple_choice_definition)
@@ -791,19 +877,10 @@ class TestWizardTraverser(unittest.TestCase):
         self.assertEqual(next_prompt, 'second_prompt')
         self.assertEqual(traverser.get_current_section(), 'second_section')
 
-    def test_next_prompt_returns_same_prompt_at_end_of_wizard(self):
-        definition = self.create_definition(
-            sections={
-                'only_section': {
-                    'values': {
-                        'only_prompt': self.create_prompt_definition(),
-                    }
-                }
-            }
-        )
-        traverser = self.create_traverser(definition)
+    def test_next_prompt_returns_done_at_end_of_wizard(self):
+        traverser = self.create_traverser(self.single_prompt_definition)
         next_prompt = traverser.next_prompt()
-        self.assertEqual(next_prompt, 'only_prompt')
+        self.assertEqual(next_prompt, traverser.DONE)
 
     def test_previous_prompt(self):
         traverser = self.create_traverser(self.simple_definition)
@@ -844,6 +921,12 @@ class TestWizardTraverser(unittest.TestCase):
         previous_prompt = traverser.previous_prompt()
         self.assertEqual(previous_prompt, 'first_prompt')
         self.assertEqual(traverser.get_current_section(), 'first_section')
+
+    def test_previous_prompt_returns_last_prompt_from_done(self):
+        traverser = self.create_traverser(self.single_prompt_definition)
+        traverser.next_prompt()
+        self.assertTrue(traverser.has_no_remaining_prompts())
+        self.assertEqual(traverser.previous_prompt(), 'only_prompt')
 
     def test_prompt_is_visible_when_no_condition(self):
         traverser = self.create_traverser(self.simple_definition)
@@ -953,6 +1036,12 @@ class TestWizardTraverser(unittest.TestCase):
         self.assertTrue(traverser.has_visited_section('first_section'))
         self.assertTrue(traverser.has_visited_section('second_section'))
         self.assertFalse(traverser.has_visited_section('third_section'))
+
+    def test_has_no_remaining_prompts(self):
+        traverser = self.create_traverser(self.single_prompt_definition)
+        self.assertFalse(traverser.has_no_remaining_prompts())
+        traverser.next_prompt()
+        self.assertTrue(traverser.has_no_remaining_prompts())
 
 
 class TestWizardValues(unittest.TestCase):

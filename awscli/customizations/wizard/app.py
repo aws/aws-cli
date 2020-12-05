@@ -97,11 +97,9 @@ class WizardTraverser:
             return self._current_prompt
         new_prompt = self._get_next_prompt()
         self._previous_prompts.append(self._current_prompt)
-        if new_prompt != self.DONE:
-            section_of_new_prompt = self._prompt_to_sections.get(new_prompt)
-            if section_of_new_prompt != self.get_current_section():
-                self._visited_sections.append(
-                    self._prompt_to_sections[new_prompt])
+        section_of_new_prompt = self._prompt_to_sections.get(new_prompt)
+        if section_of_new_prompt != self.get_current_section():
+            self._visited_sections.append(self._prompt_to_sections[new_prompt])
         self._current_prompt = new_prompt
         return new_prompt
 
@@ -142,6 +140,7 @@ class WizardTraverser:
         sections = self._definition['plan']
         for section_name, section_definition in sections.items():
             if section_name == self.DONE:
+                prompts_to_sections[section_name] = self.DONE
                 continue
             for name, value_definition in section_definition['values'].items():
                 prompts_to_sections[name] = section_name

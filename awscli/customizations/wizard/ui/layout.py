@@ -67,6 +67,9 @@ class WizardLayoutFactory:
         section_bodies = []
         for section_name, section_definition in definition['plan'].items():
             if section_name == core.DONE_SECTION_NAME:
+                section_tabs.append(
+                    self._create_done_section_tab(section_definition)
+                )
                 section_bodies.append(run_wizard_dialog)
             else:
                 section_tabs.append(
@@ -91,6 +94,11 @@ class WizardLayoutFactory:
 
     def _create_section_tab(self, section_name, section_definition):
         return WizardSectionTab(section_name, section_definition)
+
+    def _create_done_section_tab(self, done_definition):
+        if not done_definition or 'shortname' not in done_definition:
+            done_definition = {'shortname': 'Done'}
+        return WizardSectionTab(core.DONE_SECTION_NAME, done_definition)
 
     def _create_section_body(self, section_name, section_definition):
         return WizardSectionBody(section_name, section_definition)

@@ -17,9 +17,9 @@ from prompt_toolkit.keys import Keys
 from prompt_toolkit.layout import walk
 
 from tests import PromptToolkitApplicationStubber as ApplicationStubber
+from awscli.customizations.wizard.factory import create_wizard_app
 from awscli.customizations.wizard.app import (
-    create_wizard_app, InvalidChoiceException, WizardTraverser,
-    WizardValues
+    InvalidChoiceException, WizardTraverser, WizardValues
 )
 from awscli.customizations.wizard.core import BaseStep
 

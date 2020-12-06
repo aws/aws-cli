@@ -23,6 +23,19 @@ from awscli.customizations.wizard.app import (
 from awscli.customizations.configure.writer import ConfigFileWriter
 
 
+def create_default_executor(api_invoker, shared_config):
+    return core.Executor(
+        step_handlers={
+            core.APICallExecutorStep.NAME: core.APICallExecutorStep(
+                api_invoker),
+            core.SharedConfigExecutorStep.NAME: core.SharedConfigExecutorStep(
+                shared_config),
+            core.DefineVariableStep.NAME: core.DefineVariableStep(),
+            core.MergeDictStep.NAME: core.MergeDictStep(),
+        }
+    )
+
+
 def create_default_wizard_v1_runner(session):
     api_invoker = core.APIInvoker(session=session)
     shared_config = core.SharedConfigAPI(session=session,
@@ -40,16 +53,7 @@ def create_default_wizard_v1_runner(session):
                 config_api=shared_config),
         }
     )
-    executor = core.Executor(
-        step_handlers={
-            core.APICallExecutorStep.NAME: core.APICallExecutorStep(
-                api_invoker),
-            core.SharedConfigExecutorStep.NAME: core.SharedConfigExecutorStep(
-                shared_config),
-            core.DefineVariableStep.NAME: core.DefineVariableStep(),
-            core.MergeDictStep.NAME: core.MergeDictStep(),
-        }
-    )
+    executor = create_default_executor(api_invoker, shared_config)
     runner = core.Runner(planner, executor)
     return runner
 
@@ -78,6 +82,7 @@ def create_wizard_app(definition, session):
             core.TemplateStep.NAME: core.TemplateStep(),
         }
     )
-    app.traverser = WizardTraverser(definition, app.values)
+    executor = create_default_executor(api_invoker, shared_config)
+    app.traverser = WizardTraverser(definition, app.values, executor)
     app.details_visible = False
     return app

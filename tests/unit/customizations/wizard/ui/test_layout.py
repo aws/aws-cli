@@ -14,7 +14,9 @@ from awscli.testutils import unittest
 
 from prompt_toolkit.layout import walk
 
-from awscli.customizations.wizard.ui.layout import RunWizardDialog
+from awscli.customizations.wizard.ui.layout import (
+    RunWizardDialog, WizardErrorBar
+)
 
 
 class TestRunWizardDialog(unittest.TestCase):
@@ -112,3 +114,47 @@ class TestRunWizardDialog(unittest.TestCase):
                 '<    B     >',
             ]
         )
+
+
+class TestWizardErrorBar(unittest.TestCase):
+    def setUp(self):
+        self.error_bar = WizardErrorBar()
+
+    def assert_error_bar_is_visible(self):
+        self.assertIsNotNone(self.get_error_bar_buffer())
+
+    def assert_error_bar_is_not_visible(self):
+        self.assertIsNone(self.get_error_bar_buffer())
+
+    def get_error_bar_message(self):
+        return self.get_error_bar_buffer().text
+
+    def get_error_bar_buffer(self):
+        for child in walk(self.error_bar.container, skip_hidden=True):
+            if hasattr(child, 'content') and \
+                    hasattr(child.content, 'buffer') and \
+                    child.content.buffer.name == 'error_bar':
+                return child.content.buffer
+        return None
+
+    def test_visible_when_exception(self):
+        self.error_bar.display_error(Exception('Error message'))
+        self.assert_error_bar_is_visible()
+        self.assertIn('Error message', self.get_error_bar_message())
+
+    def test_not_visible_by_default(self):
+        self.error_bar = WizardErrorBar()
+        self.assert_error_bar_is_not_visible()
+
+    def test_can_clear_error_bar(self):
+        self.error_bar.display_error(Exception('Error message'))
+        self.assert_error_bar_is_visible()
+        self.error_bar.clear()
+        self.assert_error_bar_is_not_visible()
+
+    def test_can_override_existing_error(self):
+        self.error_bar.display_error(Exception('Original'))
+        self.error_bar.display_error(Exception('Override'))
+        error_bar_message = self.get_error_bar_message()
+        self.assertNotIn('Original', error_bar_message)
+        self.assertIn('Override', error_bar_message)

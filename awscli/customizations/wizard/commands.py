@@ -13,6 +13,7 @@
 from awscli.customizations.wizard import devcommands, factory
 from awscli.customizations.wizard.loader import WizardLoader
 from awscli.customizations.commands import BasicCommand, BasicHelp
+from awscli.customizations.exceptions import ParamValidationError
 
 
 def register_wizard_commands(event_handlers):
@@ -29,12 +30,13 @@ def _register_wizards_for_commands(commands, event_handlers):
 
 
 def _add_wizard_command(session, command_object, command_table, **kwargs):
-    runner = factory.create_default_wizard_runner(session)
+    v1_runner = factory.create_default_wizard_v1_runner(session)
+    v2_runner = factory.create_default_wizard_v2_runner(session)
     cmd = TopLevelWizardCommand(
         session=session,
         loader=WizardLoader(),
         parent_command=command_object.name,
-        runner=runner,
+        runner={'0.1': v1_runner, '0.2': v2_runner}
     )
     command_table['wizard'] = cmd
 
@@ -84,7 +86,13 @@ class TopLevelWizardCommand(BasicCommand):
     def _run_wizard(self):
         loaded = self._loader.load_wizard(
             self._parent_command, self._wizard_name)
-        self._runner.run(loaded)
+        version = loaded.get('version')
+        try:
+            self._runner[version].run(loaded)
+        except KeyError:
+            raise ParamValidationError(
+                'Definition file has unsupported version %s ' % version
+            )
 
     def create_help_command(self):
         return BasicHelp(self._session, self,

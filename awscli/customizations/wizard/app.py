@@ -12,46 +12,25 @@
 # language governing permissions and limitations under the License.
 import json
 from collections.abc import MutableMapping
-import argparse
-import io
 
-from prompt_toolkit.application import Application
-
-from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.wizard import core
-from awscli.customizations.wizard.ui.keybindings import get_default_keybindings
-from awscli.customizations.wizard.ui.layout import WizardLayoutFactory
-from awscli.customizations.wizard.ui.style import get_default_style
 from awscli.utils import json_encoder
-
-
-def create_wizard_app(definition, session):
-    api_invoker = core.APIInvoker(session=session)
-    shared_config = core.SharedConfigAPI(session=session,
-                                         config_writer=ConfigFileWriter())
-    layout_factory = WizardLayoutFactory()
-    app = Application(
-        key_bindings=get_default_keybindings(),
-        style=get_default_style(),
-        layout=layout_factory.create_wizard_layout(definition),
-        full_screen=True,
-    )
-    app.values = WizardValues(
-        definition,
-        value_retrieval_steps={
-            core.APICallStep.NAME: core.APICallStep(api_invoker=api_invoker),
-            core.SharedConfigStep.NAME: core.SharedConfigStep(
-                config_api=shared_config),
-            core.TemplateStep.NAME: core.TemplateStep(),
-        }
-    )
-    app.traverser = WizardTraverser(definition, app.values)
-    app.details_visible = False
-    return app
 
 
 class InvalidChoiceException(Exception):
     pass
+
+
+class WizardAppRunner(object):
+    def __init__(self, session, app_factory):
+        self._session = session
+        self._app_factory = app_factory
+
+    def run(self, loaded):
+        """Run a single wizard given the contents as a string."""
+        app = self._app_factory(loaded, self._session)
+        app.run()
+        print(f'Collected values: {app.values}')
 
 
 class WizardTraverser:

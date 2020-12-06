@@ -19,9 +19,10 @@ from prompt_toolkit.layout import walk
 from tests import PromptToolkitApplicationStubber as ApplicationStubber
 from awscli.customizations.wizard.factory import create_wizard_app
 from awscli.customizations.wizard.app import (
-    InvalidChoiceException, WizardTraverser, WizardValues
+    InvalidChoiceException, UnableToRunWizardError, WizardTraverser,
+    WizardValues
 )
-from awscli.customizations.wizard.core import BaseStep
+from awscli.customizations.wizard.core import BaseStep, Executor
 
 
 class BaseWizardApplicationTest(unittest.TestCase):
@@ -36,7 +37,8 @@ class BaseWizardApplicationTest(unittest.TestCase):
             'title': 'Wizard title',
             'plan': {
                 '__DONE__': {},
-            }
+            },
+            'execute': {}
         }
 
     def add_answer_submission(self, answer):
@@ -120,7 +122,8 @@ class TestBasicWizardApplication(BaseWizardApplicationTest):
                     }
                 },
                 '__DONE__': {},
-            }
+            },
+            'execute': {}
         }
 
     def test_can_answer_single_prompt(self):
@@ -247,7 +250,8 @@ class TestConditionalWizardApplication(BaseWizardApplicationTest):
                     }
                 },
                 '__DONE__': {},
-            }
+            },
+            'execute': {}
         }
 
     def test_conditional_prompt_is_skipped_when_condition_not_met(self):
@@ -298,7 +302,8 @@ class TestChoicesWizardApplication(BaseWizardApplicationTest):
                     }
                 },
                 '__DONE__': {},
-            }
+            },
+            'execute': {}
         }
 
     def test_immediately_pressing_enter_selects_first_choice(self):
@@ -336,7 +341,8 @@ class TestMixedPromptTypeWizardApplication(BaseWizardApplicationTest):
                     }
                 },
                 '__DONE__': {},
-            }
+            },
+            'execute': {}
         }
 
     def test_can_answer_buffer_prompt_followed_by_select_prompt(self):
@@ -374,7 +380,8 @@ class TestApiCallWizardApplication(BaseWizardApplicationTest):
                     }
                 },
                 '__DONE__': {},
-            }
+            },
+            'execute': {}
         }
 
     def test_uses_choices_from_api_call(self):
@@ -451,7 +458,8 @@ class TestDetailsWizardApplication(BaseWizardApplicationTest):
                     }
                 },
                 '__DONE__': {},
-            }
+            },
+            'execute': {}
         }
 
     def setUp(self):
@@ -642,6 +650,99 @@ class TestSharedConfigWizardApplication(BaseWizardApplicationTest):
         self.stubbed_app.run()
 
 
+class TestRunWizardApplication(BaseWizardApplicationTest):
+    def setUp(self):
+        super().setUp()
+        self.client = mock.Mock()
+        self.session.create_client.return_value = self.client
+        self.role_arn = 'returned-role-arn'
+        self.create_role_response = {
+            'Role': {
+                'Arn': self.role_arn
+            }
+        }
+
+    def get_definition(self):
+        return {
+            'title': 'For running execute step',
+            'plan': {
+                'section': {
+                    'shortname': 'Section',
+                    'values': {
+                        'role_name': {
+                            'type': 'prompt',
+                            'description': 'Enter role name'
+                        }
+                    }
+                },
+                '__DONE__': {},
+            },
+            'execute': {
+                'default': [
+                    {
+                        'type': 'apicall',
+                        'operation': 'iam.CreateRole',
+                        'params': {
+                            'RoleName': "{role_name}"
+                        },
+                        'output_var': 'role_arn',
+                        'query': 'Role.Arn',
+                    }
+
+                ]
+            }
+        }
+
+    def add_error_bar_is_not_visible_assertion(self):
+        self.stubbed_app.add_app_assertion(
+            lambda app: self.assertNotIn(
+                'error_bar', self.get_visible_buffers(app))
+        )
+
+    def test_run_wizard_execute(self):
+        self.client.create_role.return_value = self.create_role_response
+        self.add_answer_submission('role-name')
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.stubbed_app.run()
+        self.client.create_role.assert_called_with(RoleName='role-name')
+        self.assertEqual(self.app.values['role_arn'], self.role_arn)
+
+    def test_run_wizard_captures_and_displays_errors(self):
+        self.client.create_role.side_effect = Exception('Error creating role')
+        self.add_answer_submission('role-name')
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.add_buffer_text_assertion(
+            'error_bar',
+            'Encountered following error in wizard:\n\nError creating role'
+        )
+        self.stubbed_app.run()
+
+    def test_can_change_answers_on_run_wizard_failure(self):
+        self.client.create_role.side_effect = [
+            Exception('Initial error'),
+            self.create_role_response
+        ]
+        self.add_answer_submission('role-name')
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.add_buffer_text_assertion(
+            'error_bar',
+            'Encountered following error in wizard:\n\nInitial error'
+        )
+        # Select "Back" button in dialog
+        self.stubbed_app.add_keypress(Keys.Right)
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.add_error_bar_is_not_visible_assertion()
+
+        self.add_answer_submission('new-role-name')
+
+        # Make sure we select "Yes" button in dialog
+        self.stubbed_app.add_keypress(Keys.Left)
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.stubbed_app.run()
+        self.client.create_role.assert_called_with(RoleName='new-role-name')
+        self.assertEqual(self.app.values['role_arn'], self.role_arn)
+
+
 class TestWizardTraverser(unittest.TestCase):
     def setUp(self):
         self.simple_definition = self.create_definition(
@@ -685,16 +786,21 @@ class TestWizardTraverser(unittest.TestCase):
             }
         )
 
-    def create_traverser(self, definition, values=None):
+    def create_traverser(self, definition, values=None, executor=None):
         if values is None:
             values = {}
-        return WizardTraverser(definition, values)
+        if executor is None:
+            executor = mock.Mock(Executor)
+        return WizardTraverser(definition, values, executor)
 
-    def create_definition(self, sections):
+    def create_definition(self, sections, execute=None):
         sections = sections.copy()
         sections['__DONE__'] = {}
+        if execute is None:
+            execute = {}
         return {
-            'plan': sections
+            'plan': sections,
+            'execute': execute
         }
 
     def create_prompt_definition(self, description=None, condition=None,
@@ -927,6 +1033,36 @@ class TestWizardTraverser(unittest.TestCase):
         traverser.next_prompt()
         self.assertTrue(traverser.has_no_remaining_prompts())
         self.assertEqual(traverser.previous_prompt(), 'only_prompt')
+
+    def test_run_wizard_calls_executor(self):
+        executor = mock.Mock(Executor)
+        values = {}
+        execute_definition = {
+            'step': []
+        }
+        traverser = self.create_traverser(
+            definition=self.create_definition(
+                sections={
+                    'only_section': {
+                        'values': {
+                            'only_prompt': self.create_prompt_definition(),
+                        }
+                    },
+                },
+                execute=execute_definition
+            ),
+            values=values,
+            executor=executor,
+        )
+        traverser.submit_prompt_answer('only_answer')
+        traverser.next_prompt()
+        traverser.run_wizard()
+        executor.execute.assert_called_with(execute_definition, values)
+
+    def test_run_wizard_throws_error_when_not_at_done_step(self):
+        traverser = self.create_traverser(self.simple_definition)
+        with self.assertRaises(UnableToRunWizardError):
+            traverser.run_wizard()
 
     def test_prompt_is_visible_when_no_condition(self):
         traverser = self.create_traverser(self.simple_definition)

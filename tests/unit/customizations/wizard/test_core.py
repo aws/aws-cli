@@ -18,12 +18,24 @@ from botocore.session import Session
 from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.wizard import core
 from awscli.customizations.wizard import ui
+from awscli.customizations.wizard.app import WizardValues
 from awscli.testutils import unittest, mock, temporary_file
 
 
 def load_wizard(yaml_str):
     data = yaml.load(yaml_str, Loader=yaml.RoundTripLoader)
     return data
+
+
+class FakeWizardValues(WizardValues):
+    def __init__(self):
+        self.values = {}
+        self._values = self.values
+
+    def __getitem__(self, item):
+        if item not in self.values:
+            self.values[item] = item
+        return self.values[item]
 
 
 class FakePrompter(object):
@@ -1290,3 +1302,14 @@ more text"""
         }
         value = step.run_step(step_definition, parameters)
         self.assertEqual(value, '')
+
+    def test_can_fetch_values(self):
+        step_definition = {
+            'type': 'template',
+            'value': "{foo} {bar}"
+        }
+        fake_wizard_values = FakeWizardValues()
+        step = core.TemplateStep()
+        value = step.run_step(step_definition, fake_wizard_values)
+        self.assertEqual(fake_wizard_values, {'foo': 'foo', 'bar': 'bar'})
+        self.assertEqual(value, 'foo bar')

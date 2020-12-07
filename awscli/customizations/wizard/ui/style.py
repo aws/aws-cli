@@ -30,6 +30,7 @@ def get_default_style():
             ('wizard.dialog', ''),
             ('wizard.dialog frame.label', 'white bold'),
             ('wizard.dialog.body', 'bg:#aaaaaa black'),
+            ('wizard.error', 'bg:#550000 #ffffff'),
 
             # Prompt-toolkit built-in classes
             ('button.focused', 'bg:#777777 white'),

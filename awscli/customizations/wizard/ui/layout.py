@@ -45,16 +45,19 @@ from awscli.customizations.wizard.ui.utils import (
 class WizardLayoutFactory:
     def create_wizard_layout(self, definition):
         run_wizard_dialog = self._create_run_wizard_dialog(definition)
+        error_bar = self._create_error_bar()
         layout = Layout(
             container=HSplit(
                 [
                     self._create_title(definition),
-                    self._create_sections(definition, run_wizard_dialog),
+                    self._create_sections(
+                        definition, run_wizard_dialog, error_bar),
                     HorizontalLine()
                 ],
             )
         )
         layout.run_wizard_dialog = run_wizard_dialog
+        layout.error_bar = error_bar
         return layout
 
     def _create_title(self, definition):
@@ -62,7 +65,7 @@ class WizardLayoutFactory:
         title.window.align = WindowAlign.CENTER
         return title
 
-    def _create_sections(self, definition, run_wizard_dialog):
+    def _create_sections(self, definition, run_wizard_dialog, error_bar):
         section_tabs = []
         section_bodies = []
         for section_name, section_definition in definition['plan'].items():
@@ -88,6 +91,7 @@ class WizardLayoutFactory:
                 ),
                 HSplit([*section_bodies,
                         WizardDetailsPanel(),
+                        error_bar,
                         DetailPanelToolbarView()])
             ]
         )
@@ -106,6 +110,9 @@ class WizardLayoutFactory:
     def _create_run_wizard_dialog(self, wizard_defintion):
         done_section = wizard_defintion['plan'][core.DONE_SECTION_NAME]
         return RunWizardDialog.from_done_section_definition(done_section)
+
+    def _create_error_bar(self):
+        return WizardErrorBar()
 
 
 class WizardDetailsPanel:
@@ -179,13 +186,20 @@ class RunWizardDialogButtonFactory:
 
     def _create_yes_button(self, text='Yes'):
         def yes_handler():
-            get_app().exit(result=0)
+            app = get_app()
+            try:
+                app.traverser.run_wizard()
+                app.exit(result=0)
+            except Exception as e:
+                app.layout.error_bar.display_error(e)
 
         return self._create_dialog_button(text=text, handler=yes_handler)
 
     def _create_back_button(self, text='Back'):
         def back_handler():
-            move_to_previous_prompt(get_app())
+            app = get_app()
+            app.layout.error_bar.clear()
+            move_to_previous_prompt(app)
 
         return self._create_dialog_button(text=text, handler=back_handler)
 
@@ -275,6 +289,46 @@ class RunWizardDialog:
         kb.add(Keys.Tab)(focus_next)
         kb.add(Keys.BackTab)(focus_previous)
         return kb
+
+    def __pt_container__(self):
+        return self.container
+
+
+class WizardErrorBar:
+    def __init__(self):
+        self._current_exception = None
+        self._error_bar_buffer = self._get_error_bar_buffer()
+        self.container = self._get_container()
+
+    def display_error(self, exception):
+        self._error_bar_buffer.text = (
+            'Encountered following error in wizard:\n\n'
+            f'{exception}'
+        )
+        self._current_exception = exception
+
+    def clear(self):
+        self._error_bar_buffer.text = ''
+        self._current_exception = None
+
+    def _get_error_bar_buffer(self):
+        return Buffer(name='error_bar')
+
+    def _get_container(self):
+        return ConditionalContainer(
+            Window(
+                content=BufferControl(
+                    buffer=self._error_bar_buffer,
+                ),
+                style='class:wizard.error',
+                dont_extend_height=True,
+                wrap_lines=True,
+            ),
+            Condition(self._is_visible)
+        )
+
+    def _is_visible(self):
+        return self._current_exception is not None
 
     def __pt_container__(self):
         return self.container

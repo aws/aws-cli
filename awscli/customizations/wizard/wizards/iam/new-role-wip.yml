@@ -45,6 +45,27 @@ plan:
         condition:
           variable: role_type
           equals: aws_account
+      trust_policy:
+        type: template
+        value: |
+          {{
+            "Version": "2008-10-17",
+            "Statement": [
+                {{
+                    "Action": "sts:AssumeRole",
+                    "Principal": {{
+                        {% if role_type == aws_service %}
+                        "Service": "{service_name}.amazonaws.com"
+                        {% endif %}
+                        {% if role_type == aws_account %}
+                        "AWS": "arn:aws:iam::{account_id}:root"
+                        {% endif %}
+                    }},
+                    "Effect": "Allow",
+                    "Sid": ""
+                }}
+            ]
+          }}
   ask_role_permissions:
     shortname: Permissions
     description: Attach permissions policies
@@ -185,4 +206,30 @@ plan:
           visible: True
           description: "Preview"
   __DONE__:
-#  execute:
+execute:
+  default:
+    - type: apicall
+      operation: iam.CreateRole
+      params:
+        RoleName: "{role_name}"
+        AssumeRolePolicyDocument: "{trust_policy}"
+        Description: "{role_description}"
+      output_var: role_arn
+      query: Role.Arn
+    - type: apicall
+      operation: iam.AttachRolePolicy
+      params:
+        RoleName: "{role_name}"
+        PolicyArn: "{policy_arn}"
+  write_config_file:
+    - type: sharedconfig
+      operation: SetValues
+      condition:
+        variable: wants_config_profile
+        equals: yes
+      profile: "{new_profile_name}"
+      params:
+        source_profile: "{source_profile}"
+        # This role_arn comes from the `output_var` in the previous
+        # executor step.
+        role_arn: "{role_arn}"

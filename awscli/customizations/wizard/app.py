@@ -21,6 +21,10 @@ class InvalidChoiceException(Exception):
     pass
 
 
+class UnableToRunWizardError(Exception):
+    pass
+
+
 class WizardAppRunner(object):
     def __init__(self, session, app_factory):
         self._session = session
@@ -36,9 +40,10 @@ class WizardAppRunner(object):
 class WizardTraverser:
     DONE = core.DONE_SECTION_NAME
 
-    def __init__(self, definition, values):
+    def __init__(self, definition, values, executor):
         self._definition = definition
         self._values = values
+        self._executor = executor
         self._prompt_definitions = self._collect_prompt_definitions()
         self._prompt_to_sections = self._map_prompts_to_sections()
         self._current_prompt = self._get_starting_prompt()
@@ -87,6 +92,15 @@ class WizardTraverser:
             previous = self._previous_prompts.pop()
             self._current_prompt = previous
         return self._current_prompt
+
+    def run_wizard(self):
+        if self.has_no_remaining_prompts():
+            self._executor.execute(self._definition['execute'], self._values)
+        else:
+            raise UnableToRunWizardError(
+                'Cannot run wizard. There are prompts remaining that must '
+                'be answered.'
+            )
 
     def is_prompt_visible(self, value_name):
         if self._prompt_to_sections[value_name] != self.get_current_section():

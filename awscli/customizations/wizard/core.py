@@ -15,6 +15,7 @@ import re
 import json
 import os
 from functools import partial
+from string import Formatter
 
 from botocore import xform_name
 import jmespath
@@ -23,6 +24,7 @@ from awscli.utils import json_encoder
 
 
 DONE_SECTION_NAME = '__DONE__'
+OUTPUT_SECTION_NAME = '__OUTPUT__'
 
 
 class Runner(object):
@@ -224,7 +226,7 @@ class TemplateStep(BaseStep):
 
     def run_step(self, step_definition, parameters):
         value = self._evaluate_conditions(step_definition['value'], parameters)
-        return value.format(**parameters)
+        return value.format_map(parameters)
 
 
 class APICallStep(BaseStep):

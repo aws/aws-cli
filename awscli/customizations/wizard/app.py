@@ -34,11 +34,12 @@ class WizardAppRunner(object):
         """Run a single wizard given the contents as a string."""
         app = self._app_factory(loaded, self._session)
         app.run()
-        print(f'Collected values: {app.values}')
+        print(app.traverser.get_output())
 
 
 class WizardTraverser:
     DONE = core.DONE_SECTION_NAME
+    OUTPUT = core.OUTPUT_SECTION_NAME
 
     def __init__(self, definition, values, executor):
         self._definition = definition
@@ -220,6 +221,11 @@ class WizardTraverser:
                 value_definition['condition'], self._values
             )
         return True
+
+    def get_output(self):
+        template_step = core.TemplateStep()
+        return template_step.run_step(
+            self._definition[self.OUTPUT], self._values)
 
 
 class WizardValues(MutableMapping):

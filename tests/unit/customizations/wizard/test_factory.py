@@ -12,12 +12,17 @@
 # language governing permissions and limitations under the License.
 from botocore.session import Session
 
-from awscli.customizations.wizard import factory, core
+from awscli.customizations.wizard import factory, core, app
 from awscli.testutils import unittest, mock
 
 
 class TestCanCreateWizardComponents(unittest.TestCase):
-    def test_can_create_default_runner(self):
+    def test_can_create_default_v1_runner(self):
         session = mock.Mock(spec=Session)
-        runner = factory.create_default_wizard_runner(session)
+        runner = factory.create_default_wizard_v1_runner(session)
         self.assertIsInstance(runner, core.Runner)
+
+    def test_can_create_default_v2_runner(self):
+        session = mock.Mock(spec=Session)
+        runner = factory.create_default_wizard_v2_runner(session)
+        self.assertIsInstance(runner, app.WizardAppRunner)

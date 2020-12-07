@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import ruamel.yaml as yaml
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.wizard.app import create_wizard_app
+from awscli.customizations.wizard.factory import create_wizard_app
 
 
 def register_dev_commands(event_handlers):

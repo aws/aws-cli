@@ -214,7 +214,7 @@ execute:
         RoleName: "{role_name}"
         AssumeRolePolicyDocument: "{trust_policy}"
         Description: "{role_description}"
-      output_var: role_arn
+      output_var: created_role_arn
       query: Role.Arn
     - type: apicall
       operation: iam.AttachRolePolicy
@@ -232,4 +232,18 @@ execute:
         source_profile: "{source_profile}"
         # This role_arn comes from the `output_var` in the previous
         # executor step.
-        role_arn: "{role_arn}"
+        role_arn: "{created_role_arn}"
+__OUTPUT__:
+  value: |
+    Wizard successfully created role with following properties:
+      Role name: {role_name}
+      Role ARN: {created_role_arn}
+
+    {% if output_type == preview_cli_command %}
+    Steps to create role is equivalent to running the following sample AWS CLI commands:
+      {preview_cli_command}
+    {% endif %}
+    {% if output_type == preview_cfn_template %}
+    Steps to create role is equivalent to deploying the following sample AWS CloudFormation template:
+      {preview_cfn_template}
+    {% endif %}

@@ -119,11 +119,16 @@ class TestBasicWizardApplication(BaseWizardApplicationTest):
                             'description': 'Description of prompt',
                             'type': 'prompt'
                         },
+                        'template_section': {
+                            'type': 'template',
+                            'value': 'some text'
+                        }
                     }
                 },
                 '__DONE__': {},
             },
-            'execute': {}
+            'execute': {},
+            '__OUTPUT__': {'value': 'output: {template_section}'}
         }
 
     def test_can_answer_single_prompt(self):
@@ -221,6 +226,10 @@ class TestBasicWizardApplication(BaseWizardApplicationTest):
             second_section_prompt='override_second_section_val1'
         )
         self.stubbed_app.run()
+
+    def test_traverser_get_output(self):
+        self.assertEqual('output: some text',
+                         self.app.traverser.get_output())
 
 
 class TestConditionalWizardApplication(BaseWizardApplicationTest):

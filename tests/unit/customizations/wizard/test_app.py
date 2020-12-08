@@ -111,6 +111,28 @@ class BaseWizardApplicationTest(unittest.TestCase):
             )
         )
 
+    def add_toolbar_has_text_assertion(self, text):
+        self.stubbed_app.add_app_assertion(
+            lambda app: self.assertTrue(any(
+                [text in tip[1]
+                 for tip in list(filter(
+                    lambda x: getattr(x, 'name', '') == 'toolbar_panel',
+                    app.layout.find_all_controls())
+                 )[0].text()()]
+            ))
+        )
+
+    def add_toolbar_has_not_text_assertion(self, text):
+        self.stubbed_app.add_app_assertion(
+            lambda app: self.assertFalse(any(
+                [text in tip[1]
+                 for tip in list(filter(
+                    lambda x: getattr(x, 'name', '') == 'toolbar_panel',
+                    app.layout.find_all_controls())
+                 )[0].text()()]
+            ))
+        )
+
     def get_visible_buffers(self, app):
         return [
             window.content.buffer.name
@@ -361,6 +383,48 @@ class TestChoicesWizardApplication(BaseWizardApplicationTest):
         self.stubbed_app.run()
 
 
+class TestCorruptedChoicesWizardApplication(BaseWizardApplicationTest):
+    def get_definition(self):
+        return {
+            'title': 'Conditional wizard',
+            'plan': {
+                'section': {
+                    'shortname': 'Section',
+                    'values': {
+                        'choices_prompt': {
+                            'description': 'Description of first prompt',
+                            'type': 'prompt',
+                            'choices': 'corrupted_choice'
+                        },
+                        'corrupted_choice': {
+                            'description': 'Description of first prompt',
+                            'type': 'apicall',
+                        }
+                    }
+                },
+                '__DONE__': {},
+            },
+            'execute': {}
+        }
+
+    def test_can_handle_corrupted_choices(self):
+        self.stubbed_app.add_keypress(Keys.Down)
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.add_app_values_assertion(choices_prompt=None)
+        self.stubbed_app.run()
+
+    def test_show_error_message_on_get_value_exception(self):
+        self.add_buffer_text_assertion(
+            'error_bar',
+            'Encountered following error in wizard:\n\n\'operation\''
+        )
+        self.stubbed_app.run()
+
+    def test_toolbar_text_on_get_value_exception(self):
+        self.add_toolbar_has_text_assertion('error message')
+        self.stubbed_app.run()
+
+
 class TestMixedPromptTypeWizardApplication(BaseWizardApplicationTest):
     def get_definition(self):
         return {
@@ -574,25 +638,7 @@ class TestDetailsWizardApplication(BaseWizardApplicationTest):
         self.stubbed_app.run()
 
     def test_can_set_details_toolbar_text(self):
-        self.stubbed_app.add_app_assertion(
-            lambda app: self.assertIn(
-                'Policy Document',
-                list(filter(
-                    lambda x: getattr(x, 'name', '') == 'details_toolbar',
-                    app.layout.find_all_controls())
-                )[0].text()()[1][1]
-            )
-        )
-
-        self.stubbed_app.add_app_assertion(
-            lambda app: self.assertIn(
-                'Policy Document',
-                list(filter(
-                    lambda x: getattr(x, 'name', '') == 'details_toolbar',
-                    app.layout.find_all_controls())
-                )[0].text()()[3][1]
-            )
-        )
+        self.add_toolbar_has_text_assertion('Policy Document')
         self.stubbed_app.run()
 
 
@@ -742,6 +788,12 @@ class TestRunWizardApplication(BaseWizardApplicationTest):
                 'error_bar', self.get_visible_buffers(app))
         )
 
+    def add_error_bar_is_visible_assertion(self):
+        self.stubbed_app.add_app_assertion(
+            lambda app: self.assertIn(
+                'error_bar', self.get_visible_buffers(app))
+        )
+
     def test_run_wizard_execute(self):
         self.client.create_role.return_value = self.create_role_response
         self.add_answer_submission('role-name')
@@ -766,16 +818,17 @@ class TestRunWizardApplication(BaseWizardApplicationTest):
             self.create_role_response
         ]
         self.add_answer_submission('role-name')
+        self.add_error_bar_is_not_visible_assertion()
+        self.add_run_wizard_dialog_is_visible()
         self.stubbed_app.add_keypress(Keys.Enter)
         self.add_buffer_text_assertion(
             'error_bar',
             'Encountered following error in wizard:\n\nInitial error'
         )
-        # Select "Back" button in dialog
-        self.stubbed_app.add_keypress(Keys.Right)
-        self.stubbed_app.add_keypress(Keys.Enter)
-        self.add_error_bar_is_not_visible_assertion()
 
+        # Make sure dialog closed on error but error message is still visible
+        self.add_run_wizard_dialog_is_not_visible()
+        self.add_error_bar_is_visible_assertion()
         self.add_answer_submission('new-role-name')
 
         # Make sure we select "Yes" button in dialog
@@ -784,6 +837,30 @@ class TestRunWizardApplication(BaseWizardApplicationTest):
         self.stubbed_app.run()
         self.client.create_role.assert_called_with(RoleName='new-role-name')
         self.assertEqual(self.app.values['role_arn'], self.role_arn)
+
+    def test_can_switch_exception_panel(self):
+        self.client.create_role.side_effect = [
+            Exception('Initial error'),
+            self.create_role_response
+        ]
+        self.add_answer_submission('role-name')
+        self.add_error_bar_is_not_visible_assertion()
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.add_error_bar_is_visible_assertion()
+        self.stubbed_app.add_keypress(Keys.F2)
+        self.add_error_bar_is_not_visible_assertion()
+
+    def test_toolbar_has_exception_panel_hot_key(self):
+        self.client.create_role.side_effect = [
+            Exception('Initial error'),
+            self.create_role_response
+        ]
+        self.add_answer_submission('role-name')
+        self.add_error_bar_is_not_visible_assertion()
+        self.add_toolbar_has_not_text_assertion('error message')
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.add_error_bar_is_visible_assertion()
+        self.add_toolbar_has_text_assertion('error message')
 
 
 class TestWizardTraverser(unittest.TestCase):
@@ -1242,9 +1319,14 @@ class TestWizardValues(unittest.TestCase):
             }
         }
         self.handler = mock.Mock(BaseStep)
+        self.exception_handler = mock.Mock()
 
-    def get_wizard_values(self, retrieval_steps=None):
-        return WizardValues(self.definition, retrieval_steps)
+    def get_wizard_values(self, retrieval_steps=None, exception_handler=None):
+        if exception_handler is None:
+            exception_handler = self.exception_handler
+        return WizardValues(
+            self.definition, retrieval_steps, exception_handler
+        )
 
     def test_manual_get_and_set(self):
         values = self.get_wizard_values()
@@ -1290,3 +1372,10 @@ class TestWizardValues(unittest.TestCase):
             self.assertEqual(values[key], values_copy[key])
         self.assertEqual(len(values), len(values_copy))
         self.assertNotEqual(id(values), id(values_copy))
+
+    def test_exception_hanler(self):
+        e = Exception()
+        self.handler.run_step.side_effect = e
+        values = self.get_wizard_values({'use_handler': self.handler})
+        value = values['handler_value']
+        self.exception_handler.assert_called_with(e)

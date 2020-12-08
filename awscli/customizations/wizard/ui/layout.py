@@ -35,7 +35,7 @@ from awscli.customizations.wizard.ui.section import (
     WizardSectionTab, WizardSectionBody
 )
 from awscli.customizations.wizard.ui.keybindings import (
-    details_visible, prompt_has_details
+    details_visible, prompt_has_details, error_bar_enabled
 )
 from awscli.customizations.wizard.ui.utils import (
     move_to_previous_prompt, Spacer
@@ -92,7 +92,7 @@ class WizardLayoutFactory:
                 HSplit([*section_bodies,
                         WizardDetailsPanel(),
                         error_bar,
-                        DetailPanelToolbarView()])
+                        ToolbarView()])
             ]
         )
 
@@ -149,8 +149,8 @@ class WizardDetailsPanel:
         return self.container
 
 
-class DetailPanelToolbarView(BaseToolbarView):
-    CONDITION = prompt_has_details
+class ToolbarView(BaseToolbarView):
+    CONDITION = prompt_has_details | error_bar_enabled
 
     def __init__(self):
         self.content = to_container(self.create_window(self.help_text))
@@ -158,7 +158,7 @@ class DetailPanelToolbarView(BaseToolbarView):
 
     def create_window(self, help_text):
         text_control = FormattedTextControl(text=lambda: help_text)
-        text_control.name = 'details_toolbar'
+        text_control.name = 'toolbar_panel'
         return HSplit([
             HorizontalLine(),
             Window(
@@ -170,11 +170,18 @@ class DetailPanelToolbarView(BaseToolbarView):
 
     def help_text(self):
         app = get_app()
-        title = getattr(app, 'details_title', 'Details panel')
-        return to_formatted_text(HTML(
-            f'{self.STYLE}[F2]</style> Switch to {title}{self.SPACING}'
-            f'{self.STYLE}[F3]</style> Show/Hide {title}'
-        ))
+        output = []
+        if prompt_has_details():
+            title = getattr(app, 'details_title', 'Details panel')
+            output.append(
+                f'{self.STYLE}[F2]</style> Switch to {title}{self.SPACING}'
+                f'{self.STYLE}[F3]</style> Show/Hide {title}'
+            )
+        if error_bar_enabled():
+            output.append(
+                f'{self.STYLE}[F4]</style> Show/Hide error message'
+            )
+        return to_formatted_text(HTML(f'{self.SPACING}'.join(output)))
 
 
 class RunWizardDialogButtonFactory:
@@ -192,6 +199,7 @@ class RunWizardDialogButtonFactory:
                 app.exit(result=0)
             except Exception as e:
                 app.layout.error_bar.display_error(e)
+                move_to_previous_prompt(app)
 
         return self._create_dialog_button(text=text, handler=yes_handler)
 
@@ -296,7 +304,6 @@ class RunWizardDialog:
 
 class WizardErrorBar:
     def __init__(self):
-        self._current_exception = None
         self._error_bar_buffer = self._get_error_bar_buffer()
         self.container = self._get_container()
 
@@ -305,30 +312,34 @@ class WizardErrorBar:
             'Encountered following error in wizard:\n\n'
             f'{exception}'
         )
-        self._current_exception = exception
+        get_app().error_bar_visible = True
 
     def clear(self):
         self._error_bar_buffer.text = ''
-        self._current_exception = None
+        get_app().error_bar_visible = None
 
     def _get_error_bar_buffer(self):
         return Buffer(name='error_bar')
 
     def _get_container(self):
         return ConditionalContainer(
-            Window(
-                content=BufferControl(
-                    buffer=self._error_bar_buffer,
+            HSplit([
+                TitleLine('Wizard exception'),
+                Window(
+                    content=BufferControl(
+                        buffer=self._error_bar_buffer,
+                        focusable=False
+                    ),
+                    style='class:wizard.error',
+                    dont_extend_height=True,
+                    wrap_lines=True,
                 ),
-                style='class:wizard.error',
-                dont_extend_height=True,
-                wrap_lines=True,
-            ),
+            ]),
             Condition(self._is_visible)
         )
 
     def _is_visible(self):
-        return self._current_exception is not None
+        return get_app().error_bar_visible
 
     def __pt_container__(self):
         return self.container

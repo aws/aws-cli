@@ -29,4 +29,4 @@ Output::
         ]
     }
 
-For more information, see `Organizing Parameters into Hierarchies <https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-su-organize.html>`_ in the *AWS Systems Manager User Guide*.
+For more information, see `Working with parameter hierarchies <https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-hierarchies.html>`__ in the *AWS Systems Manager User Guide*.

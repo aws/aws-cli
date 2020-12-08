@@ -1254,6 +1254,42 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.192
+========
+
+* api-change:``sagemaker-edge``: Update sagemaker-edge command to latest version
+* api-change:``auditmanager``: Update auditmanager command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``forecast``: Update forecast command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``ecr``: Update ecr command to latest version
+* api-change:``sagemaker-runtime``: Update sagemaker-runtime command to latest version
+* api-change:``healthlake``: Update healthlake command to latest version
+* api-change:``emr-containers``: Update emr-containers command to latest version
+
+
+1.18.191
+========
+
+* api-change:``dms``: Update dms command to latest version
+* api-change:``servicecatalog-appregistry``: Update servicecatalog-appregistry command to latest version
+
+
+1.18.190
+========
+
+* api-change:``license-manager``: Update license-manager command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``ds``: Update ds command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``workspaces``: Update workspaces command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``kafka``: Update kafka command to latest version
+
+
 1.18.189
 ========
 

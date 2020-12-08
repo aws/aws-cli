@@ -571,3 +571,31 @@ class MergeDictStep(ExecutorStep):
             return result
         else:
             return newvalue
+
+
+class LoadDataStep(ExecutorStep):
+    NAME = 'load-data'
+
+    def run_step(self, step_definition, parameters):
+        var_resolver = VariableResolver()
+        value = var_resolver.resolve_variables(
+            parameters, step_definition['value'],
+        )
+        format_type = step_definition['load_type']
+        if format_type == 'json':
+            loaded_value = json.loads(value)
+            parameters[step_definition['output_var']] = loaded_value
+
+
+class DumpDataStep(ExecutorStep):
+    NAME = 'dump-data'
+
+    def run_step(self, step_definition, parameters):
+        var_resolver = VariableResolver()
+        value = var_resolver.resolve_variables(
+            parameters, step_definition['value'],
+        )
+        format_type = step_definition['dump_type']
+        if format_type == 'json':
+            dumped_value = json.dumps(value)
+            parameters[step_definition['output_var']] = dumped_value

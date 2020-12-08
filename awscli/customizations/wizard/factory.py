@@ -32,6 +32,8 @@ def create_default_executor(api_invoker, shared_config):
                 shared_config),
             core.DefineVariableStep.NAME: core.DefineVariableStep(),
             core.MergeDictStep.NAME: core.MergeDictStep(),
+            core.LoadDataStep.NAME: core.LoadDataStep(),
+            core.DumpDataStep.NAME: core.DumpDataStep(),
         }
     )
 

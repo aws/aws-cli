@@ -680,6 +680,8 @@ class TestExecutor(unittest.TestCase):
                 ),
                 'define-variable': core.DefineVariableStep(),
                 'merge-dict': core.MergeDictStep(),
+                'load-data': core.LoadDataStep(),
+                'dump-data': core.DumpDataStep(),
             }
         )
 
@@ -1061,6 +1063,32 @@ class TestExecutor(unittest.TestCase):
         variables = {}
         self.executor.execute(loaded['execute'], variables)
         self.assertEqual(variables, {'myvar': {'foo': 'new'}})
+
+    def test_can_load_json(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: load-data
+              value: "{myvar}"
+              output_var: loaded_myvar
+              load_type: json
+        """)
+        variables = {'myvar': '{"foo": "bar"}'}
+        self.executor.execute(loaded['execute'], variables)
+        self.assertEqual(variables['loaded_myvar'], {'foo': 'bar'})
+
+    def test_can_dump_json(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: dump-data
+              value: "{myvar}"
+              output_var: dumped_myvar
+              dump_type: json
+        """)
+        variables = {'myvar': {"foo": "bar"}}
+        self.executor.execute(loaded['execute'], variables)
+        self.assertEqual(variables['dumped_myvar'], '{"foo": "bar"}')
 
 
 class TestSharedConfigAPI(unittest.TestCase):

@@ -34,6 +34,8 @@ class WizardAppRunner(object):
         """Run a single wizard given the contents as a string."""
         app = self._app_factory(loaded, self._session)
         app.run()
+        # Propagates any exceptions that got set while in the app
+        app.future.result()
         print(app.traverser.get_output())
 
 

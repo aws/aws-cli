@@ -14,6 +14,7 @@ import os
 import ruamel.yaml as yaml
 
 from botocore.session import Session
+from botocore.paginate import Paginator
 
 from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.wizard import core
@@ -351,6 +352,45 @@ class TestPlanner(unittest.TestCase):
             mock_client.list_policies.call_count,
             1
         )
+
+    def test_can_run_apicall_step_with_paginate(self):
+        loaded = load_wizard("""
+        plan:
+          start:
+            values:
+              all_policies:
+                type: apicall
+                operation: iam.ListPolicies
+                params:
+                  Scope: All
+                paginate: true
+        """)
+        mock_session = mock.Mock(spec=Session)
+        mock_client = mock.Mock()
+        mock_paginator = mock.Mock(Paginator)
+        mock_session.create_client.return_value = mock_client
+        mock_client.can_paginate.return_value = True
+        mock_client.get_paginator.return_value = mock_paginator
+        mock_paginator.paginate.return_value.build_full_result.return_value = {
+            'Policies': ['foo'],
+        }
+        api_step = core.APICallStep(
+            api_invoker=core.APIInvoker(session=mock_session)
+        )
+        planner = core.Planner(
+            step_handlers={
+                'apicall': api_step,
+            },
+        )
+        parameters = planner.plan(loaded['plan'])
+        self.assertEqual(
+            parameters,
+            {
+                'all_policies': {'Policies': ['foo']},
+            }
+        )
+        mock_client.get_paginator.assert_called_with('list_policies')
+        mock_paginator.paginate.assert_called_with(Scope='All')
 
     def test_can_run_apicall_step_with_query(self):
         loaded = load_wizard("""
@@ -1089,6 +1129,10 @@ class TestAPIInvoker(unittest.TestCase):
     def get_call_count(self, session):
         return session.create_client.return_value.create_user.call_count
 
+    def get_paginate_call_args(self, session):
+        client = session.create_client.return_value
+        return client.get_paginator.return_value.paginate.call_args
+
     def test_can_make_api_call(self):
         invoker = core.APIInvoker(self.mock_session)
         invoker.invoke(
@@ -1142,6 +1186,18 @@ class TestAPIInvoker(unittest.TestCase):
         self.assertEqual(
             call_method_args, mock.call(UserName='admin-different'))
         self.assertEqual(self.get_call_count(self.mock_session), 2)
+
+    def test_can_paginate(self):
+        invoker = core.APIInvoker(self.mock_session)
+        invoker.invoke(
+            'iam',
+            'ListPolicies',
+            api_params={'Scope': 'All'},
+            plan_variables={},
+            paginate=True
+        )
+        paginate_args = self.get_paginate_call_args(self.mock_session)
+        self.assertEqual(paginate_args, mock.call(Scope='All'))
 
     def test_can_invoke_with_plan_variables(self):
         invoker = core.APIInvoker(self.mock_session)

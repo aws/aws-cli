@@ -245,6 +245,7 @@ class APICallStep(BaseStep):
             optional_api_params=step_definition.get('optional_params'),
             query=step_definition.get('query'),
             cache=step_definition.get('cache', False),
+            paginate=step_definition.get('paginate', False)
         )
 
 
@@ -329,7 +330,8 @@ class APIInvoker(object):
         self._response_cache = {}
 
     def invoke(self, service, operation, api_params, plan_variables,
-               optional_api_params=None, query=None, cache=False):
+               optional_api_params=None, query=None, cache=False,
+               paginate=False):
         # TODO: All of the params that come from prompting the user
         # are strings.  We need a way to convert values to their
         # appropriate types.  We can either add typing into the wizard
@@ -339,9 +341,10 @@ class APIInvoker(object):
             api_params, optional_api_params, plan_variables)
         if cache:
             response = self._get_cached_api_call(
-                service, operation, resolved_params)
+                service, operation, resolved_params, paginate)
         else:
-            response = self._make_api_call(service, operation, resolved_params)
+            response = self._make_api_call(
+                service, operation, resolved_params, paginate)
         if query is not None:
             response = jmespath.search(query, response)
         return response
@@ -358,18 +361,23 @@ class APIInvoker(object):
                     api_params_resolved[key] = value
         return api_params_resolved
 
-    def _make_api_call(self, service, operation, resolved_params):
+    def _make_api_call(self, service, operation, resolved_params, paginate):
         client = self._session.create_client(service)
-        response = getattr(client, xform_name(operation))(**resolved_params)
-        return response
+        client_method_name = xform_name(operation)
+        if paginate:
+            paginator = client.get_paginator(client_method_name)
+            return paginator.paginate(**resolved_params).build_full_result()
+        else:
+            return getattr(client, client_method_name)(**resolved_params)
 
-    def _get_cached_api_call(self, service, operation, resolved_params):
+    def _get_cached_api_call(self, service, operation, resolved_params,
+                             paginate):
         cache_key = self._get_cache_key(
             service, operation, resolved_params
         )
         if cache_key not in self._response_cache:
             response = self._make_api_call(
-                service, operation, resolved_params)
+                service, operation, resolved_params, paginate)
             self._response_cache[cache_key] = response
         return self._response_cache[cache_key]
 

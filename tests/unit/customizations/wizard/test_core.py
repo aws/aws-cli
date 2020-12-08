@@ -1077,6 +1077,19 @@ class TestExecutor(unittest.TestCase):
         self.executor.execute(loaded['execute'], variables)
         self.assertEqual(variables['loaded_myvar'], {'foo': 'bar'})
 
+    def test_raises_error_for_unsupported_load_type(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: load-data
+              value: "{myvar}"
+              output_var: loaded_myvar
+              load_type: not-supported-type
+        """)
+        variables = {'myvar': '{"foo": "bar"}'}
+        with self.assertRaisesRegexp(ValueError, 'not-supported-type'):
+            self.executor.execute(loaded['execute'], variables)
+
     def test_can_dump_json(self):
         loaded = load_wizard("""
         execute:
@@ -1089,6 +1102,19 @@ class TestExecutor(unittest.TestCase):
         variables = {'myvar': {"foo": "bar"}}
         self.executor.execute(loaded['execute'], variables)
         self.assertEqual(variables['dumped_myvar'], '{"foo": "bar"}')
+
+    def test_raises_error_for_unsupported_dump_type(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: dump-data
+              value: "{myvar}"
+              output_var: dumped_myvar
+              dump_type: not-supported-type
+        """)
+        variables = {'myvar': {"foo": "bar"}}
+        with self.assertRaisesRegexp(ValueError, 'not-supported-type'):
+            self.executor.execute(loaded['execute'], variables)
 
 
 class TestSharedConfigAPI(unittest.TestCase):

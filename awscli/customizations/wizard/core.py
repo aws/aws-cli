@@ -581,10 +581,12 @@ class LoadDataStep(ExecutorStep):
         value = var_resolver.resolve_variables(
             parameters, step_definition['value'],
         )
-        format_type = step_definition['load_type']
-        if format_type == 'json':
+        load_type = step_definition['load_type']
+        if load_type == 'json':
             loaded_value = json.loads(value)
             parameters[step_definition['output_var']] = loaded_value
+        else:
+            raise ValueError(f'Unsupported load_type: {load_type}')
 
 
 class DumpDataStep(ExecutorStep):
@@ -595,7 +597,9 @@ class DumpDataStep(ExecutorStep):
         value = var_resolver.resolve_variables(
             parameters, step_definition['value'],
         )
-        format_type = step_definition['dump_type']
-        if format_type == 'json':
+        dump_type = step_definition['dump_type']
+        if dump_type == 'json':
             dumped_value = json.dumps(value)
             parameters[step_definition['output_var']] = dumped_value
+        else:
+            raise ValueError(f'Unsupported load_type: {dump_type}')

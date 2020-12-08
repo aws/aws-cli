@@ -214,11 +214,12 @@ class TemplateStep(BaseStep):
         condition = group_dict['condition'].strip()
         for operator in self._SUPPORTED_CONDITION_OPERATORS:
             if operator in condition:
+                condition = self._resolve_variables_in_condition(
+                    condition, parameters
+                )
                 right, left = condition.split(operator, 1)
-                right = self._resolve_value_in_condition(
-                    right.strip(), parameters)
-                left = self._resolve_value_in_condition(
-                    left.strip(), parameters)
+                right = right.strip()
+                left = left.strip()
                 if operator == '==':
                     if left == right:
                         return group_dict['body']
@@ -226,14 +227,10 @@ class TemplateStep(BaseStep):
                     if left != right:
                         return group_dict['body']
                 return ''
-        if parameters.get(condition, False) in ['False', 'no', False]:
-            return ''
         return group_dict['body']
 
-    def _resolve_value_in_condition(self, value, parameters):
-        if value in parameters:
-            return parameters[value]
-        return value
+    def _resolve_variables_in_condition(self, condition, parameters):
+        return condition.format_map(parameters)
 
     def _evaluate_conditions(self, value, parameters):
         condition_checker = partial(self._check_condition, parameters)

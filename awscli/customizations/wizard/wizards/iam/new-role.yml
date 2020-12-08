@@ -58,10 +58,10 @@ plan:
                 {{
                     "Action": "sts:AssumeRole",
                     "Principal": {{
-                        {% if role_type == aws_service %}
+                        {% if {role_type} == aws_service %}
                         "Service": "{service_name}.amazonaws.com"
                         {% endif %}
-                        {% if role_type == aws_account %}
+                        {% if {role_type} == aws_account %}
                         "AWS": "arn:aws:iam::{account_id}:root"
                         {% endif %}
                     }},
@@ -148,9 +148,9 @@ plan:
             --assume-role-policy-document \
             '{{"Version": "2008-10-17","Statement":
              [{{"Action": "sts:AssumeRole","Principal":
-             {% if role_type == aws_service %}
+             {% if {role_type} == aws_service %}
              {{"Service": "{service_name}.amazonaws.com"}}{% endif %}
-             {% if role_type == aws_account %}
+             {% if {role_type} == aws_account %}
              {{"AWS": "arn:aws:iam::{account_id}:root"}}{% endif %}
           ,"Effect": "Allow","Sid": ""}}]}}'
 
@@ -158,7 +158,7 @@ plan:
             --role-name '{role_name}' \
             --policy-arn '{policy_arn}'
 
-          {% if wants_config_profile %}
+          {% if {wants_config_profile} == yes %}
           aws configure set source_profile {source_profile} --profile {new_profile_name}
 
           role_arn=$(aws iam get-role --role-name '{role_name}' \
@@ -180,11 +180,11 @@ plan:
                     Statement:
                       - Effect: Allow
                         Principal:
-                        {% if role_type == aws_service %}
+                        {% if {role_type} == aws_service %}
                           Service:
                           - {service_name}.amazonaws.com
                         {% endif %}
-                        {% if role_type == aws_account %}
+                        {% if {role_type} == aws_account %}
                           AWS:
                           - arn:aws:iam::{account_id}:root
                         {% endif %}
@@ -196,10 +196,10 @@ plan:
       preview_value:
         type: template
         value: |
-          {%if preview_type == preview_cli_command %}
+          {%if {preview_type} == preview_cli_command %}
           {preview_cli_command_value}
           {% endif %}
-          {%if preview_type == preview_cfn_template %}
+          {%if {preview_type} == preview_cfn_template %}
           {preview_cfn_template_value}
           {% endif %}
       preview_type:
@@ -250,11 +250,11 @@ __OUTPUT__:
       Role name: {role_name}
       Role ARN: {created_role_arn}
 
-    {% if preview_type == preview_cli_command %}
+    {% if {preview_type} == preview_cli_command %}
     Steps to create role is equivalent to running the following sample AWS CLI commands:
       {preview_cli_command_value}
     {% endif %}
-    {% if preview_type == preview_cfn_template %}
+    {% if {preview_type} == preview_cfn_template %}
     Steps to create role is equivalent to deploying the following sample AWS CloudFormation template:
       {preview_cfn_template_value}
     {% endif %}

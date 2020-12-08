@@ -93,12 +93,12 @@ plan:
             actual_value: day
       fixed_rate:
         type: template
-        value: rate({fixed_rate_value} {fixed_rate_unit}{% if fixed_rate_value != 1 %}s{% endif %})
+        value: rate({fixed_rate_value} {fixed_rate_unit}{% if {fixed_rate_value} != 1 %}s{% endif %})
       schedule_expression:
         type: template
         value: |
-          {% if schedule_type == cron %}{cron_expression}{% endif %}
-          {% if schedule_type == fixed %}{fixed_rate}{% endif %}
+          {% if {schedule_type} == cron %}{cron_expression}{% endif %}
+          {% if {schedule_type} == fixed %}{fixed_rate}{% endif %}
   decide_target:
     shortname: Target
     description: Select a target for the rule
@@ -183,9 +183,9 @@ plan:
       target_needs_role:
         type: template
         value: |
-          {% if target_type == codebuild_project %}yes{% endif %}
-          {% if target_type == lambda_function %}no{% endif %}
-          {% if target_type == sns_topic %}no{% endif %}
+          {% if {target_type} == codebuild_project %}yes{% endif %}
+          {% if {target_type} == lambda_function %}no{% endif %}
+          {% if {target_type} == sns_topic %}no{% endif %}
       target_role_arn:
         condition:
           variable: target_needs_role
@@ -203,9 +203,9 @@ plan:
       target_arn:
         type: template
         value: |
-          {% if target_type == codebuild_project %}{codebuild_project_arn}{% endif %}
-          {% if target_type == lambda_function %}{lambda_function_arn}{% endif %}
-          {% if target_type == sns_topic %}{sns_topic_target}{% endif %}
+          {% if {target_type} == codebuild_project %}{codebuild_project_arn}{% endif %}
+          {% if {target_type} == lambda_function %}{lambda_function_arn}{% endif %}
+          {% if {target_type} == sns_topic %}{sns_topic_target}{% endif %}
 
   preview:
     shortname: Preview
@@ -228,28 +228,28 @@ plan:
       preview_value:
         type: template
         value: |
-          {%if preview_type == preview_cli_command %}
+          {%if {preview_type} == preview_cli_command %}
           {preview_cli_command_value}
           {% endif %}
-          {%if preview_type == preview_cfn_template %}
+          {%if {preview_type} == preview_cfn_template %}
           {preview_cfn_template_value}
           {% endif %}
       preview_cli_command_value:
         type: template
         value: |
-          {% if target_type == lambda_function %}rule_arn=$({% endif %}aws events put-rule \
+          {% if {target_type} == lambda_function %}rule_arn=$({% endif %}aws events put-rule \
             --name '{rule_name}' \
             --description '{rule_description}' \
-            {%if pattern_type == schedule %}
+            {%if {pattern_type} == schedule %}
             --schedule-expression '{schedule_expression}' \
             {% endif %}
-            {%if pattern_type == event_pattern %}
+            {%if {pattern_type} == event_pattern %}
             --event-pattern-expression '{event_pattern_value}' \
             {% endif %}
-            --query RuleArn --output text{% if target_type == lambda_function %})
+            --query RuleArn --output text{% if {target_type} == lambda_function %})
             {% endif %}
 
-          {% if target_type == lambda_function %}
+          {% if {target_type} == lambda_function %}
           aws lambda add-permission \
             --function-name '{lambda_function_target}' \
             --statement-id cli-wizard \
@@ -258,7 +258,7 @@ plan:
             --source-arn "$rule_arn"
           {% endif %}
 
-          {% if target_type == sns_topic %}
+          {% if {target_type} == sns_topic %}
           aws sns get-topic-attributes \
             --topic-arn {sns_topic_target} \
             --query Attributes.Policy --output text > policy.json
@@ -281,7 +281,7 @@ plan:
 
           aws events put-targets \
             --rule '{rule_name}' \
-            --targets 'Id=cli-wizard-0,Arn={target_arn}{% if target_needs_role == yes %},RoleArn={target_role_arn}{% endif %}'
+            --targets 'Id=cli-wizard-0,Arn={target_arn}{% if {target_needs_role} == yes %},RoleArn={target_role_arn}{% endif %}'
 
       preview_cfn_template_value:
         type: template
@@ -292,10 +292,10 @@ plan:
                 Properties:
                   Name: {rule_name}
                   Description: {rule_description}
-                  {%if pattern_type == schedule %}
+                  {%if {pattern_type} == schedule %}
                   ScheduleExpression: {schedule_expression}
                   {% endif %}
-                  {%if pattern_type == event_pattern %}
+                  {%if {pattern_type} == event_pattern %}
                   EventPattern:
                     source:
                       - aws.{service_for_event_pattern}
@@ -303,10 +303,10 @@ plan:
                   Targets:
                     - Id: cli-wizard-0
                       Arn: {target_arn}
-                      {% if target_needs_role == yes %}
+                      {% if {target_needs_role} == yes %}
                       RoleArn: {target_role_arn}
                       {% endif %}
-            {% if target_type == lambda_function %}
+            {% if {target_type} == lambda_function %}
             - LambdaPermission:
                 Type: AWS::Lambda::Permission
                 Properties:
@@ -318,7 +318,7 @@ plan:
                       - {rule_name}
                       - Arn
             {% endif %}
-            {% if target_type == sns_topic %}
+            {% if {target_type} == sns_topic %}
             - SNSTopicPolcy:
                 Type: AWS::SNS::TopicPolicy
                 Properties:
@@ -449,19 +449,19 @@ __OUTPUT__:
     Wizard successfully created rule with following properties:
       Rule name: {rule_name}
       Rule ARN: {rule_arn}
-      {%if pattern_type == schedule %}
+      {%if {pattern_type} == schedule %}
       Schedule expression: {schedule_expression}
       {% endif %}
-      {%if pattern_type == event_pattern %}
+      {%if {pattern_type} == event_pattern %}
       Event pattern: {event_pattern_value}
       {% endif %}
       Target resource: {target_arn}
 
-    {% if preview_type == preview_cli_command %}
+    {% if {preview_type} == preview_cli_command %}
     Steps to create rule is equivalent to running the following sample AWS CLI commands:
     {preview_cli_command_value}
     {% endif %}
-    {% if preview_type == preview_cfn_template %}
+    {% if {preview_type} == preview_cfn_template %}
     Steps to create rule is equivalent to deploying the following sample AWS CloudFormation template:
     {preview_cfn_template_value}
     {% endif %}

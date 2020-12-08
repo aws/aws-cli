@@ -1359,6 +1359,32 @@ more text"""
         value = step.run_step(step_definition, parameters)
         self.assertEqual(value, '')
 
+    def test_positive_condition_statements_with_not_equal(self):
+        step_definition = {
+            'type': 'template',
+            'value': "{%if first_var != second_var %}not equals{% endif %}"
+        }
+        parameters = {
+            'first_var': 'first_value',
+            'second_var': 'second_value',
+        }
+        step = core.TemplateStep()
+        value = step.run_step(step_definition, parameters)
+        self.assertEqual(value, 'not equals')
+
+    def test_negative_condition_statements_with_not_equal(self):
+        step_definition = {
+            'type': 'template',
+            'value': "{%if first_var != second_var %}not equals{% endif %}"
+        }
+        parameters = {
+            'first_var': 'same_value',
+            'second_var': 'same_value',
+        }
+        step = core.TemplateStep()
+        value = step.run_step(step_definition, parameters)
+        self.assertEqual(value, '')
+
     def test_can_fetch_values(self):
         step_definition = {
             'type': 'template',

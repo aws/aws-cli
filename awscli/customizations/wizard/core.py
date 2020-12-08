@@ -204,21 +204,36 @@ class TemplateStep(BaseStep):
         r'(?P<body>.+?)[ \t]*{%\s*endif\s*%}[$|\n]?',
         re.DOTALL | re.MULTILINE | re.IGNORECASE
     )
+    _SUPPORTED_CONDITION_OPERATORS = [
+        '==',
+        '!=',
+    ]
 
     def _check_condition(self, parameters, matchobj):
         group_dict = matchobj.groupdict()
         condition = group_dict['condition'].strip()
-        if '==' in condition:
-            right, left = condition.split('==', 1)
-            right = right.strip()
-            left = left.strip()
-            if parameters.get(right) == left or right == parameters.get(left) \
-                    or parameters.get(right, 1) == parameters.get(left, 2):
-                return group_dict['body']
-            return ''
-        elif parameters.get(condition, False) in ['False', 'no', False]:
+        for operator in self._SUPPORTED_CONDITION_OPERATORS:
+            if operator in condition:
+                right, left = condition.split(operator, 1)
+                right = self._resolve_value_in_condition(
+                    right.strip(), parameters)
+                left = self._resolve_value_in_condition(
+                    left.strip(), parameters)
+                if operator == '==':
+                    if left == right:
+                        return group_dict['body']
+                elif operator == '!=':
+                    if left != right:
+                        return group_dict['body']
+                return ''
+        if parameters.get(condition, False) in ['False', 'no', False]:
             return ''
         return group_dict['body']
+
+    def _resolve_value_in_condition(self, value, parameters):
+        if value in parameters:
+            return parameters[value]
+        return value
 
     def _evaluate_conditions(self, value, parameters):
         condition_checker = partial(self._check_condition, parameters)

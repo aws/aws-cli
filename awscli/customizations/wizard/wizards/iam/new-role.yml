@@ -39,6 +39,10 @@ plan:
             actual_value: ec2
           - display: AWS Lambda
             actual_value: lambda
+          - display: AWS CodeBuild
+            actual_value: codebuild
+          - display: Amazon EventBridge
+            actual_value: events
       account_id:
         type: prompt
         description: Enter the Account ID that can use this role
@@ -91,9 +95,10 @@ plan:
         type: apicall
         operation: iam.ListPolicies
         params:
-          Scope: AWS
+          Scope: All
         query: "sort_by(Policies[].{display: PolicyName, actual_value: Arn}, &display)"
         cache: true
+        paginate: true
       policy_arn:
         type: prompt
         description: Choose a policy to attach

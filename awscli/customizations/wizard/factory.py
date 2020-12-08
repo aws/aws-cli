@@ -82,9 +82,11 @@ def create_wizard_app(definition, session):
             core.SharedConfigStep.NAME: core.SharedConfigStep(
                 config_api=shared_config),
             core.TemplateStep.NAME: core.TemplateStep(),
-        }
+        },
+        exception_handler=app.layout.error_bar.display_error
     )
     executor = create_default_executor(api_invoker, shared_config)
     app.traverser = WizardTraverser(definition, app.values, executor)
     app.details_visible = False
+    app.error_bar_visible = None
     return app

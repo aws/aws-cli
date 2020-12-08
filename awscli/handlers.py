@@ -52,6 +52,8 @@ from awscli.customizations.ec2.paginate import register_ec2_page_size_injector
 from awscli.customizations.ecr import register_ecr_commands
 from awscli.customizations.ecr_public import register_ecr_public_commands
 from awscli.customizations.emr.emr import emr_initialize
+from awscli.customizations.emrcontainers import \
+    initialize as emrcontainers_initialize
 from awscli.customizations.eks import initialize as eks_initialize
 from awscli.customizations.ecs import initialize as ecs_initialize
 from awscli.customizations.gamelift import register_gamelift_commands
@@ -139,6 +141,7 @@ def awscli_initialize(event_handlers):
     datapipeline.register_customizations(event_handlers)
     cloudsearch_init(event_handlers)
     emr_initialize(event_handlers)
+    emrcontainers_initialize(event_handlers)
     eks_initialize(event_handlers)
     ecs_initialize(event_handlers)
     register_cloudsearchdomain(event_handlers)

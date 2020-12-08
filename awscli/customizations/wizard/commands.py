@@ -87,9 +87,9 @@ class TopLevelWizardCommand(BasicCommand):
         loaded = self._loader.load_wizard(
             self._parent_command, self._wizard_name)
         version = loaded.get('version')
-        try:
+        if version in self._runner:
             self._runner[version].run(loaded)
-        except KeyError:
+        else:
             raise ParamValidationError(
                 'Definition file has unsupported version %s ' % version
             )

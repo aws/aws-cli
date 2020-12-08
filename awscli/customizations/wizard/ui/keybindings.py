@@ -36,7 +36,7 @@ def get_default_keybindings():
 
     @kb.add(Keys.ControlC)
     def exit_(event):
-        event.app.exit()
+        event.app.exit(exception=KeyboardInterrupt())
 
     def submit_current_answer(event):
         current_prompt = event.app.traverser.get_current_prompt()

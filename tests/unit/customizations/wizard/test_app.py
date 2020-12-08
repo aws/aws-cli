@@ -13,16 +13,44 @@
 from awscli.testutils import unittest, mock
 
 from botocore.session import Session
+from prompt_toolkit.application import Application
+from prompt_toolkit.eventloop import Future
 from prompt_toolkit.keys import Keys
 from prompt_toolkit.layout import walk
 
 from tests import PromptToolkitApplicationStubber as ApplicationStubber
 from awscli.customizations.wizard.factory import create_wizard_app
 from awscli.customizations.wizard.app import (
-    InvalidChoiceException, UnableToRunWizardError, WizardTraverser,
-    WizardValues
+    InvalidChoiceException, UnableToRunWizardError, WizardAppRunner,
+    WizardTraverser, WizardValues
 )
 from awscli.customizations.wizard.core import BaseStep, Executor
+
+
+class TestWizardAppRunner(unittest.TestCase):
+    def setUp(self):
+        self.session = mock.Mock(Session)
+        self.app_factory = mock.Mock(create_wizard_app)
+        self.app = mock.Mock(Application)
+        self.app.future = mock.Mock(Future)
+        self.app.traverser = mock.Mock(WizardTraverser)
+        self.app_factory.return_value = self.app
+        self.definition = {}
+        self.runner = WizardAppRunner(
+            session=self.session, app_factory=self.app_factory
+        )
+
+    def test_run_calls_expected_app_interfaces(self):
+        self.runner.run(self.definition)
+        self.app.run.assert_called_with()
+        self.app.future.result.assert_called_with()
+        self.app.traverser.get_output.assert_called_with()
+
+    def test_run_propagates_error_from_app_future(self):
+        expected_exception = KeyboardInterrupt
+        self.app.future.result.side_effect = KeyboardInterrupt
+        with self.assertRaises(expected_exception):
+            self.runner.run(self.definition)
 
 
 class BaseWizardApplicationTest(unittest.TestCase):
@@ -230,6 +258,12 @@ class TestBasicWizardApplication(BaseWizardApplicationTest):
     def test_traverser_get_output(self):
         self.assertEqual('output: some text',
                          self.app.traverser.get_output())
+
+    def test_can_exit_and_propagate_ctrl_c_from_wizard(self):
+        self.stubbed_app.add_keypress(Keys.ControlC)
+        with self.assertRaises(KeyboardInterrupt):
+            self.stubbed_app.run()
+            self.app.future.result()
 
 
 class TestConditionalWizardApplication(BaseWizardApplicationTest):

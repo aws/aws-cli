@@ -96,7 +96,7 @@ plan:
         operation: iam.ListPolicies
         params:
           Scope: All
-        query: "sort_by(Policies[].{display: PolicyName, actual_value: Arn}, &display)"
+        query: "sort_by(Policies[?IsAttachable==`true`].{display: PolicyName, actual_value: Arn}, &display)"
         cache: true
         paginate: true
       policy_arn:

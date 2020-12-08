@@ -139,10 +139,7 @@ plan:
     shortname: Preview
     description: Preview results
     values:
-      preview_none:
-        type: template
-        value: ''
-      preview_cli_command:
+      preview_cli_command_value:
         type: template
         value: |
           aws iam create-role \
@@ -169,7 +166,7 @@ plan:
 
           aws configure set role_arn "$role_arn" --profile {new_profile_name}
           {% endif %}
-      preview_cfn_template:
+      preview_cfn_template_value:
         type: template
         value: |
           Resources:
@@ -196,7 +193,16 @@ plan:
                         Sid: ''
                   ManagedPolicyArns:
                     - {policy_arn}
-      output_type:
+      preview_value:
+        type: template
+        value: |
+          {%if preview_type == preview_cli_command %}
+          {preview_cli_command_value}
+          {% endif %}
+          {%if preview_type == preview_cfn_template %}
+          {preview_cfn_template_value}
+          {% endif %}
+      preview_type:
         type: prompt
         description: Select an preview format
         choices:
@@ -207,7 +213,7 @@ plan:
           - display: AWS CloudFormation template
             actual_value: preview_cfn_template
         details:
-          value: __selected_choice__
+          value: preview_value
           visible: True
           description: "Preview"
   __DONE__:
@@ -244,11 +250,11 @@ __OUTPUT__:
       Role name: {role_name}
       Role ARN: {created_role_arn}
 
-    {% if output_type == preview_cli_command %}
+    {% if preview_type == preview_cli_command %}
     Steps to create role is equivalent to running the following sample AWS CLI commands:
-      {preview_cli_command}
+      {preview_cli_command_value}
     {% endif %}
-    {% if output_type == preview_cfn_template %}
+    {% if preview_type == preview_cfn_template %}
     Steps to create role is equivalent to deploying the following sample AWS CloudFormation template:
-      {preview_cfn_template}
+      {preview_cfn_template_value}
     {% endif %}

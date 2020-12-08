@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.18.192
+========
+
+* api-change:``sagemaker-edge``: Update sagemaker-edge command to latest version
+* api-change:``auditmanager``: Update auditmanager command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``forecast``: Update forecast command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``ecr``: Update ecr command to latest version
+* api-change:``sagemaker-runtime``: Update sagemaker-runtime command to latest version
+* api-change:``healthlake``: Update healthlake command to latest version
+* api-change:``emr-containers``: Update emr-containers command to latest version
+
+
 1.18.191
 ========
 

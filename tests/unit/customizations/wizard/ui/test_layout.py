@@ -10,9 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest
+from awscli.testutils import unittest, mock
 
 from prompt_toolkit.layout import walk
+from prompt_toolkit.application import DummyApplication
 
 from awscli.customizations.wizard.ui.layout import (
     RunWizardDialog, WizardErrorBar
@@ -119,12 +120,21 @@ class TestRunWizardDialog(unittest.TestCase):
 class TestWizardErrorBar(unittest.TestCase):
     def setUp(self):
         self.error_bar = WizardErrorBar()
+        self.app = DummyApplication()
+        self.app.error_bar_visible = None
+        self.get_app = mock.patch(
+            'awscli.customizations.wizard.ui.layout.get_app',
+            return_value=self.app)
+        self.get_app.start()
+
+    def tearDown(self):
+        self.get_app.stop()
 
     def assert_error_bar_is_visible(self):
-        self.assertIsNotNone(self.get_error_bar_buffer())
+        self.assertTrue(self.error_bar.container.filter())
 
     def assert_error_bar_is_not_visible(self):
-        self.assertIsNone(self.get_error_bar_buffer())
+        self.assertFalse(self.error_bar.container.filter())
 
     def get_error_bar_message(self):
         return self.get_error_bar_buffer().text
@@ -143,7 +153,6 @@ class TestWizardErrorBar(unittest.TestCase):
         self.assertIn('Error message', self.get_error_bar_message())
 
     def test_not_visible_by_default(self):
-        self.error_bar = WizardErrorBar()
         self.assert_error_bar_is_not_visible()
 
     def test_can_clear_error_bar(self):

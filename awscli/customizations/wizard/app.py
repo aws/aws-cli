@@ -153,7 +153,8 @@ class WizardTraverser:
                 # When choices is declared as a variable, we want to use the
                 # value from the variable.
                 choices = self._values[value_definition['choices']]
-            return self._get_normalized_choice_values(choices)
+            if choices:
+                return self._get_normalized_choice_values(choices)
         return None
 
     def get_details_title(self):
@@ -200,13 +201,14 @@ class WizardTraverser:
         return normalized_choices
 
     def _convert_display_value_to_actual_value(self, choices, display_value):
-        for choice in choices:
-            if choice['display'] == display_value:
-                return choice['actual_value']
-        raise InvalidChoiceException(
-            f"'{display_value}' is not a valid choice. Valid choices are: "
-            f"{[choice['display'] for choice in choices]}"
-        )
+        if choices:
+            for choice in choices:
+                if choice['display'] == display_value:
+                    return choice['actual_value']
+            raise InvalidChoiceException(
+                f"'{display_value}' is not a valid choice. Valid choices are: "
+                f"{[choice['display'] for choice in choices]}"
+            )
 
     def _get_next_prompt(self):
         prompts = list(self._prompt_definitions)
@@ -231,13 +233,15 @@ class WizardTraverser:
 
 
 class WizardValues(MutableMapping):
-    def __init__(self, definition, value_retrieval_steps=None):
+    def __init__(self, definition, value_retrieval_steps=None,
+                 exception_handler=None):
         self._definition = definition
         if value_retrieval_steps is None:
             value_retrieval_steps = {}
         self._value_retrieval_steps = value_retrieval_steps
         self._values = {}
         self._value_definitions = self._collect_all_value_definitions()
+        self._exception_handler = exception_handler
 
     def __getitem__(self, key):
         if key not in self._values and key in self._value_definitions:
@@ -246,7 +250,12 @@ class WizardValues(MutableMapping):
                 retrieval_step = self._value_retrieval_steps[
                     value_definition['type']
                 ]
-                return retrieval_step.run_step(value_definition, self)
+                try:
+                    return retrieval_step.run_step(value_definition, self)
+                except Exception as e:
+                    if self._exception_handler is not None:
+                        return self._exception_handler(e)
+                    raise
         return self._values[key]
 
     def __setitem__(self, key, value):

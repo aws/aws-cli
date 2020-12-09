@@ -224,6 +224,8 @@ class CollapsableSelectionMenuControl(SelectionMenuControl):
         items = super()._get_items()
         # Initialize buffer selection text if it had not been set previously
         # (e.g. it was the first time items were retrieved)
+        if items is None:
+            return ['']
         if not self.buffer.text:
             self.buffer.text = items[self._selection]
             if callable(self.on_toggle):

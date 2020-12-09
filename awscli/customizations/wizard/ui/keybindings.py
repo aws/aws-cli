@@ -31,6 +31,11 @@ def prompt_has_details():
     return get_app().traverser.current_prompt_has_details()
 
 
+@Condition
+def error_bar_enabled():
+    return get_app().error_bar_visible is not None
+
+
 def get_default_keybindings():
     kb = KeyBindings()
 
@@ -91,5 +96,9 @@ def get_default_keybindings():
             layout.focus(current_control)
         else:
             refresh_details_view(event.app, current_prompt)
+
+    @kb.add(Keys.F4, filter=error_bar_enabled)
+    def show_details(event):
+        event.app.error_bar_visible = not event.app.error_bar_visible
 
     return kb

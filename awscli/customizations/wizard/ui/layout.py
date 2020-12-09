@@ -46,19 +46,18 @@ class WizardLayoutFactory:
     def create_wizard_layout(self, definition):
         run_wizard_dialog = self._create_run_wizard_dialog(definition)
         error_bar = self._create_error_bar()
-        layout = Layout(
-            container=HSplit(
-                [
-                    self._create_title(definition),
-                    self._create_sections(
-                        definition, run_wizard_dialog, error_bar),
-                    HorizontalLine()
-                ],
-            )
+        container = HSplit(
+            [
+                self._create_title(definition),
+                self._create_sections(
+                    definition, run_wizard_dialog, error_bar),
+                HorizontalLine()
+            ]
         )
-        layout.run_wizard_dialog = run_wizard_dialog
-        layout.error_bar = error_bar
-        return layout
+        return WizardLayout(
+            container=container, run_wizard_dialog=run_wizard_dialog,
+            error_bar=error_bar
+        )
 
     def _create_title(self, definition):
         title = Label(f'{definition["title"]}', style='class:wizard.title')
@@ -113,6 +112,13 @@ class WizardLayoutFactory:
 
     def _create_error_bar(self):
         return WizardErrorBar()
+
+
+class WizardLayout(Layout):
+    def __init__(self, container, run_wizard_dialog, error_bar):
+        self.run_wizard_dialog = run_wizard_dialog
+        self.error_bar = error_bar
+        super().__init__(container)
 
 
 class WizardDetailsPanel:

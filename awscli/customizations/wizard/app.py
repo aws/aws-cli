@@ -13,7 +13,11 @@
 import json
 from collections.abc import MutableMapping
 
+from prompt_toolkit.application import Application
+
 from awscli.customizations.wizard import core
+from awscli.customizations.wizard.ui.style import get_default_style
+from awscli.customizations.wizard.ui.keybindings import get_default_keybindings
 from awscli.utils import json_encoder
 
 
@@ -37,6 +41,24 @@ class WizardAppRunner(object):
         # Propagates any exceptions that got set while in the app
         app.future.result()
         print(app.traverser.get_output())
+
+
+class WizardApp(Application):
+    def __init__(self, layout, values, traverser, executor, style=None,
+                 key_bindings=None, full_screen=True):
+        self.values = values
+        self.traverser = traverser
+        self.executor = executor
+        if style is None:
+            style = get_default_style()
+        if key_bindings is None:
+            key_bindings = get_default_keybindings()
+        self.details_visible = False
+        self.error_bar_visible = None
+        super().__init__(
+            layout=layout, style=style, key_bindings=key_bindings,
+            full_screen=full_screen
+        )
 
 
 class WizardTraverser:

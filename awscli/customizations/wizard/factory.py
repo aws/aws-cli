@@ -10,15 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from prompt_toolkit.application import Application
-
-from awscli.customizations.wizard.ui.keybindings import get_default_keybindings
 from awscli.customizations.wizard.ui.layout import WizardLayoutFactory
-from awscli.customizations.wizard.ui.style import get_default_style
-
 from awscli.customizations.wizard import core, ui
 from awscli.customizations.wizard.app import (
-    WizardAppRunner, WizardValues, WizardTraverser
+    WizardAppRunner, WizardApp, WizardValues, WizardTraverser,
 )
 from awscli.customizations.configure.writer import ConfigFileWriter
 
@@ -68,14 +63,8 @@ def create_wizard_app(definition, session):
     api_invoker = core.APIInvoker(session=session)
     shared_config = core.SharedConfigAPI(session=session,
                                          config_writer=ConfigFileWriter())
-    layout_factory = WizardLayoutFactory()
-    app = Application(
-        key_bindings=get_default_keybindings(),
-        style=get_default_style(),
-        layout=layout_factory.create_wizard_layout(definition),
-        full_screen=True,
-    )
-    app.values = WizardValues(
+    layout = WizardLayoutFactory().create_wizard_layout(definition)
+    values = WizardValues(
         definition,
         value_retrieval_steps={
             core.APICallStep.NAME: core.APICallStep(api_invoker=api_invoker),
@@ -83,10 +72,10 @@ def create_wizard_app(definition, session):
                 config_api=shared_config),
             core.TemplateStep.NAME: core.TemplateStep(),
         },
-        exception_handler=app.layout.error_bar.display_error
+        exception_handler=layout.error_bar.display_error
     )
     executor = create_default_executor(api_invoker, shared_config)
-    app.traverser = WizardTraverser(definition, app.values, executor)
-    app.details_visible = False
-    app.error_bar_visible = None
-    return app
+    traverser = WizardTraverser(definition, values, executor)
+    return WizardApp(
+        layout=layout, values=values, traverser=traverser, executor=executor
+    )

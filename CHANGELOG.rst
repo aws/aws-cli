@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.1.9
+=====
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``globalaccelerator``: Update globalaccelerator command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+
+
 2.1.8
 =====
 

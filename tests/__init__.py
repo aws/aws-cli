@@ -358,7 +358,6 @@ class AppCallbackAction:
 class PromptToolkitApplicationStubber:
     def __init__(self, app):
         self._app = app
-        self._app.input = FakeApplicationInput()
         self._queue = []
 
     def add_keypress(self, key, app_assertion=None):
@@ -424,6 +423,7 @@ class PromptToolkitApplicationStubber:
                 app.after_render = prompt_toolkit.utils.Event(app, None)
                 app.exit()
 
+        self._app.input = FakeApplicationInput()
         self._app.after_render = prompt_toolkit.utils.Event(
             self._app, callback)
 

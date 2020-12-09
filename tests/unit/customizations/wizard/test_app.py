@@ -10,19 +10,21 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from io import BytesIO, TextIOWrapper
 from awscli.testutils import unittest, mock
 
 from botocore.session import Session
 from prompt_toolkit.application import Application
 from prompt_toolkit.eventloop import Future
+from prompt_toolkit.input.defaults import create_pipe_input
 from prompt_toolkit.keys import Keys
 from prompt_toolkit.layout import walk
 
 from tests import PromptToolkitApplicationStubber as ApplicationStubber
 from awscli.customizations.wizard.factory import create_wizard_app
 from awscli.customizations.wizard.app import (
-    InvalidChoiceException, UnableToRunWizardError, WizardAppRunner,
-    WizardTraverser, WizardValues
+    InvalidChoiceException, UnableToRunWizardError, UnexpectedWizardException,
+    WizardAppRunner, WizardTraverser, WizardValues
 )
 from awscli.customizations.wizard.core import BaseStep, Executor
 
@@ -286,6 +288,28 @@ class TestBasicWizardApplication(BaseWizardApplicationTest):
         with self.assertRaises(KeyboardInterrupt):
             self.stubbed_app.run()
             self.app.future.result()
+
+    def test_captures_unexpected_errors_when_processing_input(self):
+        unexpected_error = ValueError('Not expected')
+
+        @self.app.key_bindings.add('a')
+        def trigger_unexpected_error(event):
+            raise unexpected_error
+
+        self.app.output.stdout = TextIOWrapper(BytesIO(), encoding="utf-8")
+
+        pipe_input = create_pipe_input()
+        captured_exception = None
+        try:
+            pipe_input.send_text('a')
+            self.app.input = pipe_input
+            self.app.run()
+        except UnexpectedWizardException as e:
+            captured_exception = e
+        finally:
+            pipe_input.close()
+        self.assertIsInstance(captured_exception, UnexpectedWizardException)
+        self.assertIs(captured_exception.original_exception, unexpected_error)
 
 
 class TestConditionalWizardApplication(BaseWizardApplicationTest):

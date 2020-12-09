@@ -12,13 +12,33 @@
 # language governing permissions and limitations under the License.
 import json
 from collections.abc import MutableMapping
+from traceback import format_tb
+
 
 from prompt_toolkit.application import Application
+from prompt_toolkit.eventloop import get_event_loop, run_until_complete
 
 from awscli.customizations.wizard import core
 from awscli.customizations.wizard.ui.style import get_default_style
 from awscli.customizations.wizard.ui.keybindings import get_default_keybindings
 from awscli.utils import json_encoder
+
+
+class UnexpectedWizardException(Exception):
+    MSG_FORMAT = (
+        'Encountered unexpected exception inside of wizard:\n\n'
+        'Traceback:\n{original_tb}'
+        '{original_exception_cls}: {original_exception}'
+    )
+
+    def __init__(self, original_exception):
+        self.original_exception = original_exception
+        message = self.MSG_FORMAT.format(
+            original_tb=''.join(format_tb(original_exception.__traceback__)),
+            original_exception_cls=self.original_exception.__class__.__name__,
+            original_exception=self.original_exception
+        )
+        super().__init__(message)
 
 
 class InvalidChoiceException(Exception):
@@ -58,6 +78,22 @@ class WizardApp(Application):
         super().__init__(
             layout=layout, style=style, key_bindings=key_bindings,
             full_screen=full_screen
+        )
+
+    def run(self, pre_run=None, **kwargs):
+        loop = get_event_loop()
+        previous_exc_handler = loop.get_exception_handler()
+        loop.set_exception_handler(self._handle_exception)
+        try:
+            f = self.run_async(pre_run=pre_run)
+            run_until_complete(f)
+            return f.result()
+        finally:
+            loop.set_exception_handler(previous_exc_handler)
+
+    def _handle_exception(self, context):
+        self.exit(
+            exception=UnexpectedWizardException(context['exception'])
         )
 
 

@@ -1280,6 +1280,14 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.193
+========
+
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``globalaccelerator``: Update globalaccelerator command to latest version
+
+
 1.18.192
 ========
 

@@ -26,8 +26,9 @@ from prompt_toolkit.layout.containers import (
     to_container, to_filter
 )
 from prompt_toolkit.widgets import (
-    HorizontalLine, Box, Button, Label, Shadow, Frame
+    HorizontalLine, Box, Button, Label, Shadow, Frame, VerticalLine
 )
+from prompt_toolkit.utils import is_windows
 
 from awscli.autoprompt.widgets import BaseToolbarView, TitleLine
 from awscli.customizations.wizard import core
@@ -88,6 +89,9 @@ class WizardLayoutFactory:
                     section_tabs,
                     padding=1,
                     style='class:wizard.section.tab'
+                ),
+                ConditionalContainer(
+                    VerticalLine(), filter=Condition(is_windows)
                 ),
                 HSplit([*section_bodies,
                         WizardDetailsPanel(),

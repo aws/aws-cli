@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.194
+========
+
+* api-change:``networkmanager``: Update networkmanager command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.18.193
 ========
 

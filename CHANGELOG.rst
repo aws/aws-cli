@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.1.10
+======
+
+* api-change:``networkmanager``: Update networkmanager command to latest version
+* enhancement:Wizards: Add support for new form-based wizard UI. Migrated ``iam wizard new-role`` command to new UI in order to add support for the displaying of policy documents, generation of sample AWS CLI commands, and generation of sample AWS CloudFormation templates.
+* api-change:``kendra``: Update kendra command to latest version
+* enhancement:Wizards: Add ``events wizard new-rule`` command. The wizard helps create an EventBridge rule and add a target for that rule.
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 2.1.9
 =====
 

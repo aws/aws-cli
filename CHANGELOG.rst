@@ -1288,6 +1288,14 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.194
+========
+
+* api-change:``networkmanager``: Update networkmanager command to latest version
+* api-change:``kendra``: Update kendra command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+
+
 1.18.193
 ========
 

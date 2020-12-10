@@ -97,7 +97,7 @@ plan:
       schedule_expression:
         type: template
         value: |
-          {% if {schedule_type} == cron %}{cron_expression}{% endif %}
+          {% if {schedule_type} == cron %}cron({cron_expression}){% endif %}
           {% if {schedule_type} == fixed %}{fixed_rate}{% endif %}
   decide_target:
     shortname: Target
@@ -244,7 +244,7 @@ plan:
             --schedule-expression '{schedule_expression}' \
             {% endif %}
             {%if {pattern_type} == event_pattern %}
-            --event-pattern-expression '{event_pattern_value}' \
+            --event-pattern '{event_pattern_value}' \
             {% endif %}
             --query RuleArn --output text{% if {target_type} == lambda_function %})
             {% endif %}
@@ -275,7 +275,7 @@ plan:
 
           aws sns set-topic-attributes \
             --topic-arn {sns_topic_target} \
-            --attribute-name Policy
+            --attribute-name Policy \
             --attribute-value file://policy.json
           {% endif %}
 
@@ -287,41 +287,41 @@ plan:
         type: template
         value: |
           Resources:
-            - {rule_name}:
-                AWS::Events::Rule
-                Properties:
-                  Name: {rule_name}
-                  Description: {rule_description}
-                  {%if {pattern_type} == schedule %}
-                  ScheduleExpression: {schedule_expression}
-                  {% endif %}
-                  {%if {pattern_type} == event_pattern %}
-                  EventPattern:
-                    source:
-                      - aws.{service_for_event_pattern}
-                  {% endif %}
-                  Targets:
-                    - Id: cli-wizard-0
-                      Arn: {target_arn}
-                      {% if {target_needs_role} == yes %}
-                      RoleArn: {target_role_arn}
-                      {% endif %}
+            {rule_name}:
+              Type: AWS::Events::Rule
+              Properties:
+                Name: {rule_name}
+                Description: {rule_description}
+                {%if {pattern_type} == schedule %}
+                ScheduleExpression: {schedule_expression}
+                {% endif %}
+                {%if {pattern_type} == event_pattern %}
+                EventPattern:
+                  source:
+                    - aws.{service_for_event_pattern}
+                {% endif %}
+                Targets:
+                  - Id: cli-wizard-0
+                    Arn: {target_arn}
+                    {% if {target_needs_role} == yes %}
+                    RoleArn: {target_role_arn}
+                    {% endif %}
             {% if {target_type} == lambda_function %}
-            - LambdaPermission:
-                Type: AWS::Lambda::Permission
-                Properties:
-                  Action: lambda:InvokeFunction
-                  FunctionName: {lambda_function_target}
-                  Principal: events.amazonaws.com
-                  SourceArn:
-                    Fn::GetAtt:
-                      - {rule_name}
-                      - Arn
+            LambdaPermission:
+              Type: AWS::Lambda::Permission
+              Properties:
+                Action: lambda:InvokeFunction
+                FunctionName: {lambda_function_target}
+                Principal: events.amazonaws.com
+                SourceArn:
+                  Fn::GetAtt:
+                    - {rule_name}
+                    - Arn
             {% endif %}
             {% if {target_type} == sns_topic %}
-            - SNSTopicPolcy:
-                Type: AWS::SNS::TopicPolicy
-                Properties:
+            SNSTopicPolcy:
+              Type: AWS::SNS::TopicPolicy
+              Properties:
                 PolicyDocument:
                   Version: 2012-10-17
                   Statement:

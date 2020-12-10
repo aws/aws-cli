@@ -1380,6 +1380,16 @@ more text"""
         value = step.run_step(step_definition, parameters)
         self.assertEqual(value, '')
 
+    def test_does_not_error_for_missing_vars_in_condition(self):
+        step_definition = {
+            'type': 'template',
+            'value': "{%if {missing} == expected_value %}body{% endif %}"
+        }
+        parameters = {}
+        step = core.TemplateStep()
+        value = step.run_step(step_definition, parameters)
+        self.assertEqual(value, '')
+
     def test_can_fetch_values(self):
         step_definition = {
             'type': 'template',

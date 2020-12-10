@@ -230,7 +230,10 @@ class TemplateStep(BaseStep):
         return group_dict['body']
 
     def _resolve_variables_in_condition(self, condition, parameters):
-        return condition.format_map(parameters)
+        try:
+            return condition.format_map(parameters)
+        except KeyError:
+            return condition
 
     def _evaluate_conditions(self, value, parameters):
         condition_checker = partial(self._check_condition, parameters)

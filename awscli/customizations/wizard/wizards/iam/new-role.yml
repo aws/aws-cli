@@ -170,29 +170,29 @@ plan:
         type: template
         value: |
           Resources:
-            - {role_name}:
-                Type: "AWS::IAM::Role"
-                Properties:
-                  RoleName: {role_name}
-                  Description: {role_description}
-                  AssumeRolePolicyDocument:
-                    Version: 2012-10-17
-                    Statement:
-                      - Effect: Allow
-                        Principal:
-                        {% if {role_type} == aws_service %}
-                          Service:
+            {role_name}:
+              Type: "AWS::IAM::Role"
+              Properties:
+                RoleName: {role_name}
+                Description: {role_description}
+                AssumeRolePolicyDocument:
+                  Version: 2012-10-17
+                  Statement:
+                    - Effect: Allow
+                      Principal:
+                      {% if {role_type} == aws_service %}
+                        Service:
                           - {service_name}.amazonaws.com
-                        {% endif %}
-                        {% if {role_type} == aws_account %}
-                          AWS:
+                      {% endif %}
+                      {% if {role_type} == aws_account %}
+                        AWS:
                           - arn:aws:iam::{account_id}:root
-                        {% endif %}
-                        Action:
-                          - 'sts:AssumeRole'
-                        Sid: ''
-                  ManagedPolicyArns:
-                    - {policy_arn}
+                      {% endif %}
+                      Action:
+                        - 'sts:AssumeRole'
+                      Sid: ''
+                ManagedPolicyArns:
+                  - {policy_arn}
       preview_value:
         type: template
         value: |

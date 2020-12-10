@@ -14,16 +14,29 @@ import os
 import ruamel.yaml as yaml
 
 from botocore.session import Session
+from botocore.paginate import Paginator
 
 from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.wizard import core
 from awscli.customizations.wizard import ui
+from awscli.customizations.wizard.app import WizardValues
 from awscli.testutils import unittest, mock, temporary_file
 
 
 def load_wizard(yaml_str):
     data = yaml.load(yaml_str, Loader=yaml.RoundTripLoader)
     return data
+
+
+class FakeWizardValues(WizardValues):
+    def __init__(self):
+        self.values = {}
+        self._values = self.values
+
+    def __getitem__(self, item):
+        if item not in self.values:
+            self.values[item] = item
+        return self.values[item]
 
 
 class FakePrompter(object):
@@ -294,6 +307,90 @@ class TestPlanner(unittest.TestCase):
         )
         parameters = planner.plan(loaded['plan'])
         self.assertEqual(parameters['foo'], {'Policies': ['foo']})
+
+    def test_can_run_apicall_step_with_cache(self):
+        loaded = load_wizard("""
+        plan:
+          start:
+            values:
+              foo:
+                type: apicall
+                operation: iam.ListPolicies
+                params:
+                  Scope: AWS
+                cache: true
+              use_cached_foo:
+                type: apicall
+                operation: iam.ListPolicies
+                params:
+                  Scope: AWS
+                cache: true
+        """)
+        mock_session = mock.Mock(spec=Session)
+        mock_client = mock.Mock()
+        mock_session.create_client.return_value = mock_client
+        mock_client.list_policies.return_value = {
+            'Policies': ['foo'],
+        }
+        api_step = core.APICallStep(
+            api_invoker=core.APIInvoker(session=mock_session)
+        )
+        planner = core.Planner(
+            step_handlers={
+                'apicall': api_step,
+            },
+        )
+        parameters = planner.plan(loaded['plan'])
+        self.assertEqual(
+            parameters,
+            {
+                'foo': {'Policies': ['foo']},
+                'use_cached_foo': {'Policies': ['foo']},
+            }
+        )
+        self.assertEqual(
+            mock_client.list_policies.call_count,
+            1
+        )
+
+    def test_can_run_apicall_step_with_paginate(self):
+        loaded = load_wizard("""
+        plan:
+          start:
+            values:
+              all_policies:
+                type: apicall
+                operation: iam.ListPolicies
+                params:
+                  Scope: All
+                paginate: true
+        """)
+        mock_session = mock.Mock(spec=Session)
+        mock_client = mock.Mock()
+        mock_paginator = mock.Mock(Paginator)
+        mock_session.create_client.return_value = mock_client
+        mock_client.can_paginate.return_value = True
+        mock_client.get_paginator.return_value = mock_paginator
+        mock_paginator.paginate.return_value.build_full_result.return_value = {
+            'Policies': ['foo'],
+        }
+        api_step = core.APICallStep(
+            api_invoker=core.APIInvoker(session=mock_session)
+        )
+        planner = core.Planner(
+            step_handlers={
+                'apicall': api_step,
+            },
+        )
+        parameters = planner.plan(loaded['plan'])
+        self.assertEqual(
+            parameters,
+            {
+                'all_policies': {'Policies': ['foo']},
+            }
+        )
+        mock_client.get_paginator.assert_called_with('list_policies')
+        mock_paginator.paginate.assert_called_with(Scope='All')
 
     def test_can_run_apicall_step_with_query(self):
         loaded = load_wizard("""
@@ -583,6 +680,8 @@ class TestExecutor(unittest.TestCase):
                 ),
                 'define-variable': core.DefineVariableStep(),
                 'merge-dict': core.MergeDictStep(),
+                'load-data': core.LoadDataStep(),
+                'dump-data': core.DumpDataStep(),
             }
         )
 
@@ -965,6 +1064,58 @@ class TestExecutor(unittest.TestCase):
         self.executor.execute(loaded['execute'], variables)
         self.assertEqual(variables, {'myvar': {'foo': 'new'}})
 
+    def test_can_load_json(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: load-data
+              value: "{myvar}"
+              output_var: loaded_myvar
+              load_type: json
+        """)
+        variables = {'myvar': '{"foo": "bar"}'}
+        self.executor.execute(loaded['execute'], variables)
+        self.assertEqual(variables['loaded_myvar'], {'foo': 'bar'})
+
+    def test_raises_error_for_unsupported_load_type(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: load-data
+              value: "{myvar}"
+              output_var: loaded_myvar
+              load_type: not-supported-type
+        """)
+        variables = {'myvar': '{"foo": "bar"}'}
+        with self.assertRaisesRegexp(ValueError, 'not-supported-type'):
+            self.executor.execute(loaded['execute'], variables)
+
+    def test_can_dump_json(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: dump-data
+              value: "{myvar}"
+              output_var: dumped_myvar
+              dump_type: json
+        """)
+        variables = {'myvar': {"foo": "bar"}}
+        self.executor.execute(loaded['execute'], variables)
+        self.assertEqual(variables['dumped_myvar'], '{"foo": "bar"}')
+
+    def test_raises_error_for_unsupported_dump_type(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: dump-data
+              value: "{myvar}"
+              output_var: dumped_myvar
+              dump_type: not-supported-type
+        """)
+        variables = {'myvar': {"foo": "bar"}}
+        with self.assertRaisesRegexp(ValueError, 'not-supported-type'):
+            self.executor.execute(loaded['execute'], variables)
+
 
 class TestSharedConfigAPI(unittest.TestCase):
     def setUp(self):
@@ -1029,6 +1180,13 @@ class TestAPIInvoker(unittest.TestCase):
     def get_call_args(self, session):
         return session.create_client.return_value.create_user.call_args
 
+    def get_call_count(self, session):
+        return session.create_client.return_value.create_user.call_count
+
+    def get_paginate_call_args(self, session):
+        client = session.create_client.return_value
+        return client.get_paginator.return_value.paginate.call_args
+
     def test_can_make_api_call(self):
         invoker = core.APIInvoker(self.mock_session)
         invoker.invoke(
@@ -1039,6 +1197,61 @@ class TestAPIInvoker(unittest.TestCase):
         )
         call_method_args = self.get_call_args(self.mock_session)
         self.assertEqual(call_method_args, mock.call(UserName='admin'))
+
+    def test_make_api_call_can_cache_response(self):
+        invoker = core.APIInvoker(self.mock_session)
+        invoker.invoke(
+            'iam',
+            'CreateUser',
+            api_params={'UserName': 'admin'},
+            plan_variables={},
+            cache=True
+        )
+        call_method_args = self.get_call_args(self.mock_session)
+        self.assertEqual(call_method_args, mock.call(UserName='admin'))
+        invoker.invoke(
+            'iam',
+            'CreateUser',
+            api_params={'UserName': 'admin'},
+            plan_variables={},
+            cache=True
+        )
+        self.assertEqual(self.get_call_count(self.mock_session), 1)
+
+    def test_does_not_use_cache_when_different_input_parameters(self):
+        invoker = core.APIInvoker(self.mock_session)
+        invoker.invoke(
+            'iam',
+            'CreateUser',
+            api_params={'UserName': 'admin'},
+            plan_variables={},
+            cache=True
+        )
+        call_method_args = self.get_call_args(self.mock_session)
+        self.assertEqual(call_method_args, mock.call(UserName='admin'))
+        invoker.invoke(
+            'iam',
+            'CreateUser',
+            api_params={'UserName': 'admin-different'},
+            plan_variables={},
+            cache=True
+        )
+        call_method_args = self.get_call_args(self.mock_session)
+        self.assertEqual(
+            call_method_args, mock.call(UserName='admin-different'))
+        self.assertEqual(self.get_call_count(self.mock_session), 2)
+
+    def test_can_paginate(self):
+        invoker = core.APIInvoker(self.mock_session)
+        invoker.invoke(
+            'iam',
+            'ListPolicies',
+            api_params={'Scope': 'All'},
+            plan_variables={},
+            paginate=True
+        )
+        paginate_args = self.get_paginate_call_args(self.mock_session)
+        self.assertEqual(paginate_args, mock.call(Scope='All'))
 
     def test_can_invoke_with_plan_variables(self):
         invoker = core.APIInvoker(self.mock_session)
@@ -1071,3 +1284,119 @@ class TestAPIInvoker(unittest.TestCase):
             )
         call_method_args = self.get_call_args(self.mock_session)
         self.assertEqual(call_method_args, mock.call(UserName=b'admin'))
+
+
+class TestTemplateStep(unittest.TestCase):
+    def test_positive_condition_statement_for_equals(self):
+        step_definition = {
+            'type': 'template',
+            'value': "{%if {allow} == True %}allow body{%   endif   %}"
+        }
+        parameters = {
+            'allow': 'True'
+        }
+        step = core.TemplateStep()
+        value = step.run_step(step_definition, parameters)
+        self.assertEqual(value, 'allow body')
+
+    def test_negative_condition_statement_for_equals(self):
+        step_definition = {
+            'type': 'template',
+            'value': "{%if {allow} == True %}allow body{%   endif   %}"
+        }
+        parameters = {
+            'allow': 'False'
+        }
+        step = core.TemplateStep()
+        value = step.run_step(step_definition, parameters)
+        self.assertEqual(value, '')
+
+    def test_multiline_condition_statement(self):
+        step_definition = {
+            'type': 'template',
+            'value': """{foo}
+            {%if   {allow} == False    %}
+not allow foo 
+            {% endif %}
+   {%if   {allow} == True    %}
+allow foo
+        {% endif %}
+more text"""
+        }
+        parameters = {
+            'foo': 'foo parameter',
+            'allow': 'True',
+        }
+        step = core.TemplateStep()
+        value = step.run_step(step_definition, parameters)
+        self.assertEqual(value, 'foo parameter\nallow foo\nmore text')
+
+    def test_can_use_conditions_with_multiple_vars(self):
+        step_definition = {
+            'type': 'template',
+            'value': "{%if {var1} == {var2} %}allow body{% endif %}"
+        }
+        parameters = {
+            'var1': 'yes',
+            'var2': 'yes',
+        }
+        step = core.TemplateStep()
+        value = step.run_step(step_definition, parameters)
+        self.assertEqual(value, 'allow body')
+
+    def test_can_use_conditions_with_no_vars(self):
+        step_definition = {
+            'type': 'template',
+            'value': "{%if yes == yes %}allow body{% endif %}"
+        }
+        parameters = {}
+        step = core.TemplateStep()
+        value = step.run_step(step_definition, parameters)
+        self.assertEqual(value, 'allow body')
+
+    def test_positive_condition_statements_with_not_equal(self):
+        step_definition = {
+            'type': 'template',
+            'value': "{%if {first_var} != {second_var} %}not equals{% endif %}"
+        }
+        parameters = {
+            'first_var': 'first_value',
+            'second_var': 'second_value',
+        }
+        step = core.TemplateStep()
+        value = step.run_step(step_definition, parameters)
+        self.assertEqual(value, 'not equals')
+
+    def test_negative_condition_statements_with_not_equal(self):
+        step_definition = {
+            'type': 'template',
+            'value': "{%if {first_var} != {second_var} %}not equals{% endif %}"
+        }
+        parameters = {
+            'first_var': 'same_value',
+            'second_var': 'same_value',
+        }
+        step = core.TemplateStep()
+        value = step.run_step(step_definition, parameters)
+        self.assertEqual(value, '')
+
+    def test_does_not_error_for_missing_vars_in_condition(self):
+        step_definition = {
+            'type': 'template',
+            'value': "{%if {missing} == expected_value %}body{% endif %}"
+        }
+        parameters = {}
+        step = core.TemplateStep()
+        value = step.run_step(step_definition, parameters)
+        self.assertEqual(value, '')
+
+    def test_can_fetch_values(self):
+        step_definition = {
+            'type': 'template',
+            'value': "{foo} {bar}"
+        }
+        fake_wizard_values = FakeWizardValues()
+        step = core.TemplateStep()
+        value = step.run_step(step_definition, fake_wizard_values)
+        self.assertEqual(fake_wizard_values, {'foo': 'foo', 'bar': 'bar'})
+        self.assertEqual(value, 'foo bar')

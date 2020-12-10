@@ -12,10 +12,19 @@
 # language governing permissions and limitations under the License.
 """Core planner and executor for wizards."""
 import re
-import jmespath
+import json
 import os
+from functools import partial
+from string import Formatter
 
 from botocore import xform_name
+import jmespath
+
+from awscli.utils import json_encoder
+
+
+DONE_SECTION_NAME = '__DONE__'
+OUTPUT_SECTION_NAME = '__OUTPUT__'
 
 
 class Runner(object):
@@ -190,9 +199,49 @@ class TemplateStep(BaseStep):
 
     NAME = 'template'
 
+    CONDITION_PATTERN = re.compile(
+        r'(?:^[ \t]*)?{%\s*if\s+(?P<condition>.+?)\s+%}(?:\s*[$|\n])?'
+        r'(?P<body>.+?)[ \t]*{%\s*endif\s*%}[$|\n]?',
+        re.DOTALL | re.MULTILINE | re.IGNORECASE
+    )
+    _SUPPORTED_CONDITION_OPERATORS = [
+        '==',
+        '!=',
+    ]
+
+    def _check_condition(self, parameters, matchobj):
+        group_dict = matchobj.groupdict()
+        condition = group_dict['condition'].strip()
+        for operator in self._SUPPORTED_CONDITION_OPERATORS:
+            if operator in condition:
+                condition = self._resolve_variables_in_condition(
+                    condition, parameters
+                )
+                right, left = condition.split(operator, 1)
+                right = right.strip()
+                left = left.strip()
+                if operator == '==':
+                    if left == right:
+                        return group_dict['body']
+                elif operator == '!=':
+                    if left != right:
+                        return group_dict['body']
+                return ''
+        return group_dict['body']
+
+    def _resolve_variables_in_condition(self, condition, parameters):
+        try:
+            return condition.format_map(parameters)
+        except KeyError:
+            return condition
+
+    def _evaluate_conditions(self, value, parameters):
+        condition_checker = partial(self._check_condition, parameters)
+        return re.sub(self.CONDITION_PATTERN, condition_checker, value)
+
     def run_step(self, step_definition, parameters):
-        value = step_definition['value']
-        return value.format(**parameters)
+        value = self._evaluate_conditions(step_definition['value'], parameters)
+        return value.format_map(parameters)
 
 
 class APICallStep(BaseStep):
@@ -210,6 +259,8 @@ class APICallStep(BaseStep):
             plan_variables=parameters,
             optional_api_params=step_definition.get('optional_params'),
             query=step_definition.get('query'),
+            cache=step_definition.get('cache', False),
+            paginate=step_definition.get('paginate', False)
         )
 
 
@@ -281,8 +332,6 @@ class VariableResolver(object):
         return value
 
 
-
-
 class APIInvoker(object):
     """This class contains shared logic for the apicall step.
 
@@ -293,18 +342,24 @@ class APIInvoker(object):
     """
     def __init__(self, session):
         self._session = session
+        self._response_cache = {}
 
     def invoke(self, service, operation, api_params, plan_variables,
-               optional_api_params=None, query=None):
+               optional_api_params=None, query=None, cache=False,
+               paginate=False):
         # TODO: All of the params that come from prompting the user
         # are strings.  We need a way to convert values to their
         # appropriate types.  We can either add typing into the wizard
         # spec or we possibly auto-convert based on the service
         # model (or both).
-        client = self._session.create_client(service)
         resolved_params = self._resolve_params(
             api_params, optional_api_params, plan_variables)
-        response = getattr(client, xform_name(operation))(**resolved_params)
+        if cache:
+            response = self._get_cached_api_call(
+                service, operation, resolved_params, paginate)
+        else:
+            response = self._make_api_call(
+                service, operation, resolved_params, paginate)
         if query is not None:
             response = jmespath.search(query, response)
         return response
@@ -321,6 +376,33 @@ class APIInvoker(object):
                     api_params_resolved[key] = value
         return api_params_resolved
 
+    def _make_api_call(self, service, operation, resolved_params, paginate):
+        client = self._session.create_client(service)
+        client_method_name = xform_name(operation)
+        if paginate:
+            paginator = client.get_paginator(client_method_name)
+            return paginator.paginate(**resolved_params).build_full_result()
+        else:
+            return getattr(client, client_method_name)(**resolved_params)
+
+    def _get_cached_api_call(self, service, operation, resolved_params,
+                             paginate):
+        cache_key = self._get_cache_key(
+            service, operation, resolved_params
+        )
+        if cache_key not in self._response_cache:
+            response = self._make_api_call(
+                service, operation, resolved_params, paginate)
+            self._response_cache[cache_key] = response
+        return self._response_cache[cache_key]
+
+    def _get_cache_key(self, service_name, operation, resolved_params):
+        return (
+            service_name,
+            operation,
+            json.dumps(resolved_params, default=json_encoder)
+        )
+
 
 class Executor(object):
 
@@ -336,15 +418,18 @@ class Executor(object):
 
     def _execute_step(self, step, parameters):
         if 'condition' in step:
-            should_run = self._check_step_condition(step['condition'],
-                                                    parameters)
+            should_run = ConditionEvaluator().evaluate(
+                step['condition'], parameters
+            )
             if not should_run:
                 return
         step_type = step['type']
         handler = self._step_handlers[step_type]
         handler.run_step(step, parameters)
 
-    def _check_step_condition(self, condition, parameters):
+
+class ConditionEvaluator:
+    def evaluate(self, condition, parameters):
         statuses = []
         if not isinstance(condition, list):
             condition = [condition]
@@ -486,3 +571,35 @@ class MergeDictStep(ExecutorStep):
             return result
         else:
             return newvalue
+
+
+class LoadDataStep(ExecutorStep):
+    NAME = 'load-data'
+
+    def run_step(self, step_definition, parameters):
+        var_resolver = VariableResolver()
+        value = var_resolver.resolve_variables(
+            parameters, step_definition['value'],
+        )
+        load_type = step_definition['load_type']
+        if load_type == 'json':
+            loaded_value = json.loads(value)
+            parameters[step_definition['output_var']] = loaded_value
+        else:
+            raise ValueError(f'Unsupported load_type: {load_type}')
+
+
+class DumpDataStep(ExecutorStep):
+    NAME = 'dump-data'
+
+    def run_step(self, step_definition, parameters):
+        var_resolver = VariableResolver()
+        value = var_resolver.resolve_variables(
+            parameters, step_definition['value'],
+        )
+        dump_type = step_definition['dump_type']
+        if dump_type == 'json':
+            dumped_value = json.dumps(value)
+            parameters[step_definition['output_var']] = dumped_value
+        else:
+            raise ValueError(f'Unsupported load_type: {dump_type}')

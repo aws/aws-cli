@@ -12,6 +12,8 @@
 # language governing permissions and limitations under the License.
 from __future__ import unicode_literals
 from prompt_toolkit import Application
+from prompt_toolkit.application import get_app
+from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.utils import get_cwidth
 from prompt_toolkit.layout import Layout, FloatContainer, Float
 from prompt_toolkit.layout.controls import UIControl, UIContent
@@ -111,6 +113,8 @@ class SelectionMenuControl(UIControl):
         self._format_overhead = 3 + len(cursor)
 
     def _get_items(self):
+        if callable(self._items):
+            self._items = self._items()
         return self._items
 
     def is_focusable(self):
@@ -145,12 +149,10 @@ class SelectionMenuControl(UIControl):
         return [(style_str, '%s %s%s  ' % (cursor, text, padding))]
 
     def create_content(self, width, height):
-        menu_width = self.preferred_width(width)
-
         def get_line(i):
             item = self._get_items()[i]
             is_selected = (i == self._selection)
-            return self._menu_item_fragment(item, is_selected, menu_width)
+            return self._menu_item_fragment(item, is_selected, width)
 
         return UIContent(
             get_line=get_line,
@@ -182,5 +184,69 @@ class SelectionMenuControl(UIControl):
         def app_result(event):
             result = self._get_items()[self._selection]
             event.app.exit(result=result)
+
+        return kb
+
+
+class CollapsableSelectionMenuControl(SelectionMenuControl):
+    """Menu that collapses to text with selection when loses focus"""
+    def __init__(self, items, display_format=None, cursor='>',
+                 selection_capture_buffer=None, on_toggle=None):
+        super().__init__(items, display_format=display_format, cursor=cursor)
+        if not selection_capture_buffer:
+            selection_capture_buffer = Buffer()
+        self.buffer = selection_capture_buffer
+        self._has_ever_entered_select_menu = False
+        self.on_toggle = on_toggle
+
+    def create_content(self, width, height):
+        if get_app().layout.has_focus(self):
+            self._has_ever_entered_select_menu = True
+            return super().create_content(width, height)
+        else:
+            def get_line(i):
+                content = ''
+                if self._has_ever_entered_select_menu:
+                    content = self._get_items()[self._selection]
+                return [('', content)]
+
+            return UIContent(get_line=get_line, line_count=1)
+
+    def preferred_height(self, width, max_height, wrap_lines,
+                         get_line_prefix):
+        if get_app().layout.has_focus(self):
+            return super().preferred_height(
+                width, max_height, wrap_lines, get_line_prefix)
+        else:
+            return 1
+
+    def _get_items(self):
+        items = super()._get_items()
+        # Initialize buffer selection text if it had not been set previously
+        # (e.g. it was the first time items were retrieved)
+        if items is None:
+            return ['']
+        if not self.buffer.text:
+            self.buffer.text = items[self._selection]
+            if callable(self.on_toggle):
+                self.on_toggle(self.buffer.text)
+        return items
+
+    def _move_cursor(self, delta):
+        super()._move_cursor(delta)
+        self.buffer.text = self._get_items()[self._selection]
+        if callable(self.on_toggle):
+            self.on_toggle(self.buffer.text)
+
+    def get_key_bindings(self):
+        kb = KeyBindings()
+
+        @kb.add('up')
+        def move_up(event):
+            self._move_cursor(-1)
+
+        @kb.add('down')
+        def move_down(event):
+            self._move_cursor(1)
 
         return kb

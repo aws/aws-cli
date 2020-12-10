@@ -96,7 +96,7 @@ plan:
         operation: iam.ListPolicies
         params:
           Scope: All
-        query: "sort_by(Policies[?IsAttachable==`true`].{display: PolicyName, actual_value: Arn}, &display)"
+        query: "sort_by(Policies[?IsAttachable==`true`&&Path!=`/aws-service-role/`].{display: PolicyName, actual_value: Arn}, &display)"
         cache: true
         paginate: true
       policy_arn:
@@ -252,9 +252,11 @@ __OUTPUT__:
 
     {% if {preview_type} == preview_cli_command %}
     Steps to create role is equivalent to running the following sample AWS CLI commands:
-      {preview_cli_command_value}
+
+    {preview_cli_command_value}
     {% endif %}
     {% if {preview_type} == preview_cfn_template %}
     Steps to create role is equivalent to deploying the following sample AWS CloudFormation template:
-      {preview_cfn_template_value}
+
+    {preview_cfn_template_value}
     {% endif %}

@@ -25,7 +25,7 @@ class TestStyles(unittest.TestCase):
         self.assertNotIn(('shadow', 'bg:#222222'), style.style_rules)
 
     @mock.patch('awscli.customizations.wizard.ui.style.is_windows')
-    def test_get_styles_for_windows(self, is_windows):
+    def test_get_styles_for_non_windows(self, is_windows):
         is_windows.return_value = False
         style = get_default_style()
         self.assertIn(('shadow', 'bg:#222222'), style.style_rules)

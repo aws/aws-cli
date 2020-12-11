@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.195
+========
+
+* api-change:``cloudtrail``: Update cloudtrail command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``pi``: Update pi command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+
+
 1.18.194
 ========
 

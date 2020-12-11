@@ -38,7 +38,9 @@ class WizardPrompt:
         if uses_choices:
             answer = WizardPromptSelectionAnswer(self._value_name)
         else:
-            answer = WizardPromptAnswer(self._value_name)
+            answer = WizardPromptAnswer(
+                self._value_name, self._value_definition.get('default_value')
+            )
         return ConditionalContainer(
             VSplit(
                 [
@@ -91,13 +93,17 @@ class WizardPromptDescription:
 
 
 class WizardPromptAnswer:
-    def __init__(self, value_name):
+    def __init__(self, value_name, default_value=None):
         self._value_name = value_name
+        self._default_value = ''
+        if default_value is not None:
+            self._default_value = str(default_value)
         self._buffer = self._get_answer_buffer()
         self.container = self._get_answer_container()
 
     def _get_answer_buffer(self):
-        return Buffer(name=self._value_name)
+        return Buffer(name=self._value_name,
+                      document=Document(text=self._default_value))
 
     def _get_answer_container(self):
         return FullyExtendedWidthWindow(

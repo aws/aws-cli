@@ -15,12 +15,14 @@ import re
 import json
 import os
 from functools import partial
-from string import Formatter
 
 from botocore import xform_name
 import jmespath
 
 from awscli.utils import json_encoder
+from awscli.customizations.wizard.exceptions import (
+    InvalidDataTypeConversionException
+)
 
 
 DONE_SECTION_NAME = '__DONE__'
@@ -444,6 +446,22 @@ class ConditionEvaluator:
             expected = single['equals']
             return parameters.get(varname) == expected
         return False
+
+
+class DataTypeConverter:
+    CONVERSION_FUNCS = {
+        'int': int,
+        'float': float,
+        'str': str,
+        'bool': lambda x: x.lower() == 'true'
+    }
+
+    @classmethod
+    def convert(cls, datatype, value):
+        try:
+            return cls.CONVERSION_FUNCS[datatype](value)
+        except ValueError:
+            raise InvalidDataTypeConversionException(value, datatype)
 
 
 class ExecutorStep(object):

@@ -12,8 +12,6 @@
 # language governing permissions and limitations under the License.
 import json
 from collections.abc import MutableMapping
-from traceback import format_tb
-
 
 from prompt_toolkit.application import Application
 from prompt_toolkit.eventloop import get_event_loop, run_until_complete
@@ -21,32 +19,10 @@ from prompt_toolkit.eventloop import get_event_loop, run_until_complete
 from awscli.customizations.wizard import core
 from awscli.customizations.wizard.ui.style import get_default_style
 from awscli.customizations.wizard.ui.keybindings import get_default_keybindings
+from awscli.customizations.wizard.exceptions import (
+    UnexpectedWizardException, UnableToRunWizardError, InvalidChoiceException
+)
 from awscli.utils import json_encoder
-
-
-class UnexpectedWizardException(Exception):
-    MSG_FORMAT = (
-        'Encountered unexpected exception inside of wizard:\n\n'
-        'Traceback:\n{original_tb}'
-        '{original_exception_cls}: {original_exception}'
-    )
-
-    def __init__(self, original_exception):
-        self.original_exception = original_exception
-        message = self.MSG_FORMAT.format(
-            original_tb=''.join(format_tb(original_exception.__traceback__)),
-            original_exception_cls=self.original_exception.__class__.__name__,
-            original_exception=self.original_exception
-        )
-        super().__init__(message)
-
-
-class InvalidChoiceException(Exception):
-    pass
-
-
-class UnableToRunWizardError(Exception):
-    pass
 
 
 class WizardAppRunner(object):
@@ -130,11 +106,16 @@ class WizardTraverser:
             self._current_prompt, {})
     
     def submit_prompt_answer(self, answer):
-        if 'choices' in self._prompt_definitions[self._current_prompt]:
+        definition = self._prompt_definitions[self._current_prompt]
+        if 'choices' in definition:
             answer = self._convert_display_value_to_actual_value(
                 self._get_choices(self._current_prompt),
                 answer
             )
+        if 'datatype' in definition:
+            answer = core.DataTypeConverter.convert(
+                definition['datatype'], answer)
+
         self._values[self._current_prompt] = answer
 
     def next_prompt(self):

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.196
+========
+
+* api-change:``devops-guru``: Update devops-guru command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``globalaccelerator``: Update globalaccelerator command to latest version
+
+
 1.18.195
 ========
 

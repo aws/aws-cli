@@ -2,6 +2,29 @@
 CHANGELOG
 =========
 
+2.1.11
+======
+
+* api-change:``amp``: Update amp command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``devops-guru``: Update devops-guru command to latest version
+* api-change:``greengrassv2``: Update greengrassv2 command to latest version
+* api-change:``iotwireless``: Update iotwireless command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``iotfleethub``: Update iotfleethub command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``globalaccelerator``: Update globalaccelerator command to latest version
+* api-change:``cloudtrail``: Update cloudtrail command to latest version
+* api-change:``iotdeviceadvisor``: Update iotdeviceadvisor command to latest version
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``pi``: Update pi command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``iotanalytics``: Update iotanalytics command to latest version
+
+
 2.1.10
 ======
 

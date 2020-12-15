@@ -97,6 +97,7 @@ ARGUMENT_RENAMES = {
     'schemas.*.version': 'schema-version',
     'sagemaker.delete-image-version.version': 'version-number',
     'sagemaker.describe-image-version.version': 'version-number',
+    'iotwireless.*.lo-ra-wan': 'lorawan',
 }
 
 

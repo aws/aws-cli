@@ -1298,6 +1298,39 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.197
+========
+
+* api-change:``iot``: Update iot command to latest version
+* api-change:``amp``: Update amp command to latest version
+* api-change:``iotfleethub``: Update iotfleethub command to latest version
+* api-change:``iotwireless``: Update iotwireless command to latest version
+* api-change:``iotdeviceadvisor``: Update iotdeviceadvisor command to latest version
+* api-change:``greengrassv2``: Update greengrassv2 command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``iotanalytics``: Update iotanalytics command to latest version
+
+
+1.18.196
+========
+
+* api-change:``devops-guru``: Update devops-guru command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``globalaccelerator``: Update globalaccelerator command to latest version
+
+
+1.18.195
+========
+
+* api-change:``cloudtrail``: Update cloudtrail command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``pi``: Update pi command to latest version
+* api-change:``guardduty``: Update guardduty command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+
+
 1.18.194
 ========
 

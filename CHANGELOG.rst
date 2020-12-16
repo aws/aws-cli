@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.198
+========
+
+* api-change:``amp``: Update amp command to latest version
+* api-change:``location``: Update location command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``wellarchitected``: Update wellarchitected command to latest version
+
+
 1.18.197
 ========
 

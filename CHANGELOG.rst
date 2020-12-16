@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.1.12
+======
+
+* api-change:``location``: Update location command to latest version
+* api-change:``amp``: Update amp command to latest version
+* enhancement:Wizards: Migrate ``dynamodb wizard new-table`` command to new UI
+* api-change:``wellarchitected``: Update wellarchitected command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+
+
 2.1.11
 ======
 

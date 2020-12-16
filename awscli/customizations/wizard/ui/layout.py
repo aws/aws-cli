@@ -316,8 +316,10 @@ class WizardErrorBar:
     def __init__(self):
         self._error_bar_buffer = self._get_error_bar_buffer()
         self.container = self._get_container()
+        self.current_error = None
 
     def display_error(self, exception):
+        self.current_error = exception
         self._error_bar_buffer.text = (
             'Encountered following error in wizard:\n\n'
             f'{exception}'
@@ -325,6 +327,7 @@ class WizardErrorBar:
         get_app().error_bar_visible = True
 
     def clear(self):
+        self.current_error = None
         self._error_bar_buffer.text = ''
         get_app().error_bar_visible = None
 

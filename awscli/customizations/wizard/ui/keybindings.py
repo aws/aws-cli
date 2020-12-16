@@ -19,6 +19,7 @@ from awscli.customizations.wizard.ui.utils import (
     get_ui_control_by_buffer_name, move_to_previous_prompt,
     show_details_if_visible_by_default, refresh_details_view
 )
+from awscli.customizations.wizard.exceptions import BaseWizardException
 
 
 @Condition
@@ -47,12 +48,21 @@ def get_default_keybindings():
         current_prompt = event.app.traverser.get_current_prompt()
         prompt_buffer = get_ui_control_by_buffer_name(
             event.app.layout, current_prompt).buffer
-        event.app.traverser.submit_prompt_answer(prompt_buffer.text)
+        try:
+            event.app.traverser.submit_prompt_answer(prompt_buffer.text)
+            if isinstance(event.app.layout.error_bar.current_error,
+                          BaseWizardException):
+                event.app.layout.error_bar.clear()
+        except BaseWizardException as e:
+            event.app.layout.error_bar.display_error(e)
+            return False
+        return True
 
     @kb.add(Keys.Tab)
     @kb.add(Keys.Enter)
     def next_prompt(event):
-        submit_current_answer(event)
+        if not submit_current_answer(event):
+            return
         traverser = event.app.traverser
         layout = event.app.layout
         event.app.details_visible = False
@@ -67,7 +77,8 @@ def get_default_keybindings():
 
     @kb.add(Keys.BackTab)
     def previous_prompt(event):
-        submit_current_answer(event)
+        if not submit_current_answer(event):
+            return
         event.app.details_visible = False
         move_to_previous_prompt(event.app)
 

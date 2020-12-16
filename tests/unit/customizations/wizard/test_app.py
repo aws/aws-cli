@@ -23,8 +23,11 @@ from prompt_toolkit.layout import walk
 from tests import PromptToolkitApplicationStubber as ApplicationStubber
 from awscli.customizations.wizard.factory import create_wizard_app
 from awscli.customizations.wizard.app import (
-    InvalidChoiceException, UnableToRunWizardError, UnexpectedWizardException,
     WizardAppRunner, WizardTraverser, WizardValues
+)
+from awscli.customizations.wizard.exceptions import (
+    InvalidChoiceException, UnableToRunWizardError, UnexpectedWizardException,
+    InvalidDataTypeConversionException
 )
 from awscli.customizations.wizard.core import BaseStep, Executor
 
@@ -160,7 +163,8 @@ class TestBasicWizardApplication(BaseWizardApplicationTest):
                         },
                         'prompt2': {
                             'description': 'Description of second prompt',
-                            'type': 'prompt'
+                            'type': 'prompt',
+                            'default_value': 'foo'
                         },
                     }
                 },
@@ -173,7 +177,7 @@ class TestBasicWizardApplication(BaseWizardApplicationTest):
                         },
                         'template_section': {
                             'type': 'template',
-                            'value': 'some text'
+                            'value': 'some text',
                         }
                     }
                 },
@@ -203,11 +207,17 @@ class TestBasicWizardApplication(BaseWizardApplicationTest):
         self.add_app_values_assertion(prompt1='val1')
         self.stubbed_app.run()
 
+    def test_can_use_prompt_default_value(self):
+        self.stubbed_app.add_keypress(Keys.Tab)
+        self.stubbed_app.add_keypress(Keys.Tab)
+        self.add_app_values_assertion(prompt1='', prompt2='foo')
+        self.stubbed_app.run()
+
     def test_can_use_shift_tab_to_toggle_backwards_and_change_answer(self):
         self.add_answer_submission('orig1')
         self.stubbed_app.add_keypress(Keys.BackTab)
         self.add_answer_submission('override1')
-        self.add_app_values_assertion(prompt1='override1', prompt2='')
+        self.add_app_values_assertion(prompt1='override1', prompt2='foo')
         self.stubbed_app.run()
 
     def test_can_answer_prompts_across_sections(self):
@@ -482,6 +492,85 @@ class TestMixedPromptTypeWizardApplication(BaseWizardApplicationTest):
         self.add_app_values_assertion(
             buffer_input_prompt='buffer_answer',
             select_prompt='select_answer_1'
+        )
+        self.stubbed_app.run()
+
+
+class TestPromptWithDataConvertWizardApplication(BaseWizardApplicationTest):
+    def get_definition(self):
+        return {
+            'title': 'Wizard with both buffer inputs and select inputs',
+            'plan': {
+                'section': {
+                    'shortname': 'Section',
+                    'values': {
+                        'buffer_input_int': {
+                            'description': 'Type answer',
+                            'type': 'prompt',
+                            'datatype': 'int'
+                        },
+                        'buffer_input_bool': {
+                            'description': 'Type answer',
+                            'type': 'prompt',
+                            'datatype': 'bool'
+                        },
+                    }
+                },
+                '__DONE__': {},
+            },
+            'execute': {}
+        }
+
+    def test_can_convert_integers(self):
+        self.add_answer_submission('100')
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.add_app_values_assertion(
+            buffer_input_int=100,
+            buffer_input_bool=False
+        )
+        self.stubbed_app.run()
+
+    def test_can_convert_bool(self):
+        self.add_answer_submission('0')
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.add_answer_submission('true')
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.add_app_values_assertion(
+            buffer_input_int=100,
+            buffer_input_bool=True
+        )
+        self.stubbed_app.run()
+
+    def test_show_error_and_stop_on_incorrect_input(self):
+        self.add_answer_submission('foo')
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.add_buffer_text_assertion(
+            'error_bar',
+            'Encountered following error in wizard:\n\n'
+            'Invalid value foo for datatype int'
+        )
+        self.stubbed_app.add_app_assertion(
+            lambda app: self.assertEqual(
+                app.layout.current_buffer.name, 'buffer_input_int')
+        )
+        self.stubbed_app.run()
+
+    def test_clear_error_and_go_on_after_correction(self):
+        self.add_answer_submission('foo')
+        self.add_buffer_text_assertion(
+            'error_bar',
+            'Encountered following error in wizard:\n\n'
+            'Invalid value foo for datatype int'
+        )
+        self.stubbed_app.add_app_assertion(
+            lambda app: self.assertEqual(
+                app.layout.current_buffer.name, 'buffer_input_int')
+        )
+        self.add_answer_submission('100')
+        self.add_buffer_text_assertion('error_bar', '')
+        self.stubbed_app.add_app_assertion(
+            lambda app: self.assertEqual(
+                app.layout.current_buffer.name, 'buffer_input_bool')
         )
         self.stubbed_app.run()
 
@@ -930,7 +1019,18 @@ class TestWizardTraverser(unittest.TestCase):
             }
         )
 
-    def create_traverser(self, definition, values=None, executor=None):
+        self.single_prompt_definition_with_datatype = self.create_definition(
+            sections={
+                'only_section': {
+                    'values': {
+                        'only_prompt': self.create_prompt_definition(
+                                                            datatype='int'),
+                    }
+                }
+            }
+        )
+
+    def create_traverser(self, definition, values=None, executor=None,):
         if values is None:
             values = {}
         if executor is None:
@@ -948,7 +1048,7 @@ class TestWizardTraverser(unittest.TestCase):
         }
 
     def create_prompt_definition(self, description=None, condition=None,
-                                 choices=None):
+                                 choices=None, datatype=None):
         prompt = {
             'type': 'prompt'
         }
@@ -959,6 +1059,8 @@ class TestWizardTraverser(unittest.TestCase):
             prompt['condition'] = condition
         if choices:
             prompt['choices'] = choices
+        if datatype:
+            prompt['datatype'] = datatype
         return prompt
 
     def test_get_current_prompt(self):
@@ -1043,6 +1145,24 @@ class TestWizardTraverser(unittest.TestCase):
         )
         traverser.submit_prompt_answer('Option 1')
         self.assertEqual(values, {'choice_prompt': 'actual_option_1'})
+
+    def test_submit_prompt_answer_converts_datatype(self):
+        values = {}
+        traverser = self.create_traverser(
+            self.single_prompt_definition_with_datatype, values
+        )
+        traverser.submit_prompt_answer('100')
+        self.assertEqual(values, {'only_prompt': 100})
+
+    def test_submit_prompt_raise_correct_exception_on_datatype_convert(self):
+        values = {}
+        traverser = self.create_traverser(
+            self.single_prompt_definition_with_datatype, values,
+        )
+        with self.assertRaises(InvalidDataTypeConversionException) as e:
+            traverser.submit_prompt_answer('foo')
+        self.assertEqual(
+            str(e.exception), 'Invalid value foo for datatype int')
 
     def test_submit_prompt_answer_throw_error_for_invalid_option(self):
         traverser = self.create_traverser(self.simple_choice_definition)
@@ -1397,7 +1517,7 @@ class TestWizardValues(unittest.TestCase):
         self.assertEqual(len(values), len(values_copy))
         self.assertNotEqual(id(values), id(values_copy))
 
-    def test_exception_hanler(self):
+    def test_exception_handler(self):
         e = Exception()
         self.handler.run_step.side_effect = e
         values = self.get_wizard_values({'use_handler': self.handler})

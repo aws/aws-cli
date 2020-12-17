@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.1.13
+======
+
+* api-change:``sqs``: Update sqs command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``dlm``: Update dlm command to latest version
+* api-change:``kms``: Update kms command to latest version
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``route53resolver``: Update route53resolver command to latest version
+
+
 2.1.12
 ======
 

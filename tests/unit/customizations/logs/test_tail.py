@@ -337,7 +337,7 @@ class TestFollowLogEventsGenerator(BaseLogEventsGeneratorTest):
 
         # Because there is no token for the last page, it should remove
         # token from the kwargs and update startTime with the max
-        # timestamp from the prvious response events
+        # timestamp from the previous response events
         self.stubber.add_response(
             'filter_log_events',
             service_response={
@@ -432,7 +432,7 @@ class TestFollowLogEventsGenerator(BaseLogEventsGeneratorTest):
         )
         # Add a new page that has no nextToken
         # It should update startTime with the max timestamp
-        # from the prvious response events
+        # from the previous response events
         self.stubber.add_response(
             'filter_log_events',
             service_response={

@@ -153,6 +153,14 @@ class TailCommand(BasicCommand):
                 'the events are matched'
             )
         },
+        {
+            'name': 'prefix',
+            'help_text': (
+                'The ``logStreamNamePrefix``: filters the results'
+                'to include only events from log streams that have names'
+                'starting with this prefix.'
+            )
+        },
 
 
     ]
@@ -171,7 +179,8 @@ class TailCommand(BasicCommand):
             logs_client, parsed_args.follow)
         log_events = logs_generator.iter_log_events(
             parsed_args.group_name, start=parsed_args.since,
-            filter_pattern=parsed_args.filter_pattern)
+            filter_pattern=parsed_args.filter_pattern,
+            prefix=parsed_args.prefix)
         self._output_log_events(parsed_args, parsed_globals, log_events)
         return 0
 
@@ -237,9 +246,9 @@ class BaseLogEventsGenerator(object):
         self._client = client
         self._timestamp_utils = timestamp_utils
 
-    def iter_log_events(self, group_name, start=None, filter_pattern=None):
+    def iter_log_events(self, group_name, start=None, filter_pattern=None, prefix=None):
         filter_logs_events_kwargs = self._get_filter_logs_events_kwargs(
-            group_name, start, filter_pattern)
+            group_name, start, filter_pattern, prefix)
         log_events = self._filter_log_events(filter_logs_events_kwargs)
         for log_event in log_events:
             self._convert_event_timestamps(log_event)
@@ -249,7 +258,7 @@ class BaseLogEventsGenerator(object):
         raise NotImplementedError('_filter_log_events()')
 
     def _get_filter_logs_events_kwargs(self, group_name, start,
-                                       filter_pattern):
+                                       filter_pattern, prefix):
         kwargs = {
             'logGroupName': group_name,
             'interleaved': True
@@ -258,6 +267,8 @@ class BaseLogEventsGenerator(object):
             kwargs['startTime'] = self._timestamp_utils.to_epoch_millis(start)
         if filter_pattern is not None:
             kwargs['filterPattern'] = filter_pattern
+        if prefix is not None:
+            kwargs['logStreamNamePrefix'] = prefix
         return kwargs
 
     def _convert_event_timestamps(self, event):

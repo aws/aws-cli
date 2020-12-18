@@ -10,10 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import datetime
 import hashlib
 import json
 import os
 import time
+
+from dateutil.tz import tzutc
 
 from awscli.testutils import mock
 from tests.functional.sso import BaseSSOTest
@@ -35,6 +38,8 @@ class TestLoginCommand(BaseSSOTest):
             self.open_browser_mock,
         )
         self.open_browser_patch.start()
+        self.expires_in = 28800
+        self.expiration_time = time.time()+1000
 
     def tearDown(self):
         super(TestLoginCommand, self).tearDown()
@@ -55,7 +60,7 @@ class TestLoginCommand(BaseSSOTest):
             },
             # CreateToken response
             {
-                'expiresIn': 28800,
+                'expiresIn': self.expires_in,
                 'tokenType': 'Bearer',
                 'accessToken': access_token,
             }
@@ -64,7 +69,7 @@ class TestLoginCommand(BaseSSOTest):
             responses.insert(
                 0,
                 {
-                    'clientSecretExpiresAt': time.time() + 1000,
+                    'clientSecretExpiresAt': self.expiration_time,
                     'clientId': 'foo-client-id',
                     'clientSecret': 'foo-client-secret',
                 }
@@ -81,18 +86,28 @@ class TestLoginCommand(BaseSSOTest):
         cached_token_filename = self._get_cached_token_filename(start_url)
         self.assertIn(cached_token_filename, cached_files)
         self.assertEqual(
-            self._get_token(cached_token_filename),
+            self._get_cached_response(cached_token_filename)['accessToken'],
             expected_token
         )
 
     def _get_cached_token_filename(self, start_url):
         return hashlib.sha1(start_url.encode('utf-8')).hexdigest() + '.json'
 
-    def _get_token(self, token_filename):
+    def _get_cached_response(self, token_filename):
         token_path = os.path.join(self.token_cache_dir, token_filename)
         with open(token_path, 'r') as f:
             cached_response = json.loads(f.read())
-            return cached_response['accessToken']
+            return cached_response
+
+    def assert_cache_token_expiration_time(self, expected_expiration):
+        token_filename = self._get_cached_token_filename(self.start_url)
+        token_path = os.path.join(self.token_cache_dir, token_filename)
+        with open(token_path, 'r') as f:
+            cached_response = json.loads(f.read())
+            self.assertEqual(
+                cached_response['expiresAt'],
+                expected_expiration.strftime('%Y-%m-%dT%H:%M:%SZ')
+            )
 
     def test_login(self):
         self.add_oidc_workflow_responses(self.access_token)
@@ -137,3 +152,17 @@ class TestLoginCommand(BaseSSOTest):
         )
         self.assertIn('sso_region', stderr)
         self.assertNotIn('sso_start_url', stderr)
+
+    def test_token_cache_datetime_format(self):
+        self.add_oidc_workflow_responses(self.access_token)
+        self.run_cmd('sso login')
+        self.assert_used_expected_sso_region(expected_region=self.sso_region)
+        self.assert_cache_contains_token(
+            start_url=self.start_url,
+            expected_token=self.access_token
+        )
+        # Remove our initial 1000 offset to get recorded expiresAt
+        computed_expiration_time = self.expiration_time + self.expires_in - 1000
+        self.assert_cache_token_expiration_time(
+            datetime.datetime.fromtimestamp(computed_expiration_time, tzutc())
+        )

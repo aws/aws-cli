@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.200
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``personalize-runtime``: Update personalize-runtime command to latest version
+
+
 1.18.199
 ========
 

@@ -10,8 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import datetime
 import os
 import logging
+import json
 import webbrowser
 
 from botocore.utils import SSOTokenFetcher
@@ -28,10 +30,20 @@ SSO_TOKEN_DIR = os.path.expanduser(
 )
 
 
+def _serialize_utc_timestamp(obj):
+    if isinstance(obj, datetime.datetime):
+        return obj.strftime('%Y-%m-%dT%H:%M:%SZ')
+    return obj
+
+
+def _sso_json_dumps(obj):
+    return json.dumps(obj, default=_serialize_utc_timestamp)
+
+
 def do_sso_login(session, sso_region, start_url, token_cache=None,
                  on_pending_authorization=None, force_refresh=False):
     if token_cache is None:
-        token_cache = JSONFileCache(SSO_TOKEN_DIR)
+        token_cache = JSONFileCache(SSO_TOKEN_DIR, dumps_func=_sso_json_dumps)
     if on_pending_authorization is None:
         on_pending_authorization = OpenBrowserHandler(
             open_browser=open_browser_with_original_ld_path

@@ -26,13 +26,22 @@ class TestGroupNameCompleter(unittest.TestCase):
                 'aws.logs': [('tail', None)],
             },
             'arg_names': {
-                '': {},
+                '': {
+                    'aws': ['region', 'profile'],
+                },
                 'aws.logs': {
                     'tail': ['group_name'],
                 },
             },
             'arg_data': {
-                '': {},
+                '': {
+                    'aws': {
+                        'profile': ('profile', 'string', 'aws', '',
+                                         None, False, False),
+                        'region': ('region', 'string', 'aws', '', None, False,
+                                   False),
+                    }
+                },
                 'aws.logs': {
                     'tail': {
                         'group_name': (
@@ -83,3 +92,11 @@ class TestGroupNameCompleter(unittest.TestCase):
         parsed = self.parser.parse('aws logs tail ')
         results = self.completer.complete(parsed)
         self.assertEqual(results, [])
+
+    def test_client_created_with_region_and_profiles_from_parsed(self):
+        self.mock_client.describe_log_groups.return_value = {'logGroups': []}
+        parsed = self.parser.parse(
+            'aws --profile foo --region us-west-2 logs tail ')
+        self.completer.complete(parsed)
+        self.mock_create_client.create_client.assert_called_with(
+            'logs', parsed_profile='foo', parsed_region='us-west-2')

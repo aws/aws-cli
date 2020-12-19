@@ -178,3 +178,17 @@ class TestLazyClientCreator(unittest.TestCase):
                                            aws_secret_access_key='bar',
                                            region_name='us-west-2')
         self.assertIsInstance(new_client, botocore.client.BaseClient)
+
+    def test_can_use_session_cache(self):
+        creator = LazyClientCreator()
+        creator.create_session = mock.Mock()
+        creator.create_client('iam', parsed_profile='foo')
+        creator.create_client('rds', parsed_profile='foo')
+        self.assertEqual(creator.create_session.call_count, 1)
+
+    def test_not_use_session_cache_for_different_profiles(self):
+        creator = LazyClientCreator()
+        creator.create_session = mock.Mock()
+        creator.create_client('iam', parsed_profile='foo')
+        creator.create_client('rds', parsed_profile='bar')
+        self.assertEqual(creator.create_session.call_count, 2)

@@ -23,7 +23,7 @@ class GroupNameCompleter(servercomp.BaseCustomServerSideCompleter):
     _COMMAND_NAMES = ['tail']
 
     def _get_remote_results(self, parsed):
-        client = self._client_creator.create_client('logs')
+        client = self._get_client('logs', parsed)
         response = self._invoke_api(client, 'describe_log_groups', {})
         return [
             group['logGroupName'] for group in response.get('logGroups', [])

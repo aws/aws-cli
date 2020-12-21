@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+1.18.201
+========
+
+* api-change:``managedblockchain``: Update managedblockchain command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``service-quotas``: Update service-quotas command to latest version
+* api-change:``dms``: Update dms command to latest version
+* api-change:``apigateway``: Update apigateway command to latest version
+* api-change:``outposts``: Update outposts command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``batch``: Update batch command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``qldb-session``: Update qldb-session command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``servicecatalog-appregistry``: Update servicecatalog-appregistry command to latest version
+* api-change:``connectparticipant``: Update connectparticipant command to latest version
+
+
 1.18.200
 ========
 

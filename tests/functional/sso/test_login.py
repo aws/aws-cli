@@ -14,6 +14,7 @@ import datetime
 import hashlib
 import json
 import os
+import re
 import time
 
 from dateutil.tz import tzutc
@@ -24,6 +25,10 @@ from awscli.customizations.sso.utils import OpenBrowserHandler
 
 
 class TestLoginCommand(BaseSSOTest):
+    _TIMESTAMP_FORMAT_PATTERN = re.compile(
+        r'\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\dZ'
+    )
+
     def setUp(self):
         super(TestLoginCommand, self).setUp()
         self.token_cache_dir = self.files.full_path('token-cache')
@@ -39,7 +44,7 @@ class TestLoginCommand(BaseSSOTest):
         )
         self.open_browser_patch.start()
         self.expires_in = 28800
-        self.expiration_time = time.time()+1000
+        self.expiration_time = time.time() + 1000
 
     def tearDown(self):
         super(TestLoginCommand, self).tearDown()
@@ -99,14 +104,15 @@ class TestLoginCommand(BaseSSOTest):
             cached_response = json.loads(f.read())
             return cached_response
 
-    def assert_cache_token_expiration_time(self, expected_expiration):
+    def assert_cache_token_expiration_time_format_is_correct(self):
         token_filename = self._get_cached_token_filename(self.start_url)
         token_path = os.path.join(self.token_cache_dir, token_filename)
         with open(token_path, 'r') as f:
             cached_response = json.loads(f.read())
-            self.assertEqual(
-                cached_response['expiresAt'],
-                expected_expiration.strftime('%Y-%m-%dT%H:%M:%SZ')
+            self.assertIsNotNone(
+                self._TIMESTAMP_FORMAT_PATTERN.match(
+                    cached_response['expiresAt']
+                )
             )
 
     def test_login(self):
@@ -161,8 +167,4 @@ class TestLoginCommand(BaseSSOTest):
             start_url=self.start_url,
             expected_token=self.access_token
         )
-        # Remove our initial 1000 offset to get recorded expiresAt
-        computed_expiration_time = self.expiration_time + self.expires_in - 1000
-        self.assert_cache_token_expiration_time(
-            datetime.datetime.fromtimestamp(computed_expiration_time, tzutc())
-        )
+        self.assert_cache_token_expiration_time_format_is_correct()

@@ -34,7 +34,8 @@ class ProfileCompleter(BaseCompleter):
             self._session_creator = LazyClientCreator()
 
     def complete(self, parsed):
-        if parsed.current_param == 'profile':
+        if parsed.current_param == 'profile' \
+                and parsed.current_fragment is not None:
             return self._filter(parsed.current_fragment, self._get_profiles())
 
     def _get_profiles(self):
@@ -59,7 +60,8 @@ class RegionCompleter(BaseCompleter):
             self._session_creator = LazyClientCreator()
 
     def complete(self, parsed):
-        if parsed.current_param == 'region':
+        if parsed.current_param == 'region' \
+                and parsed.current_fragment is not None:
             if len(parsed.lineage) > 1:
                 service_name = parsed.lineage[1]
             else:

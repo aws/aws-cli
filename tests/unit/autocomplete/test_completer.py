@@ -348,6 +348,14 @@ class TestRegionCompleter(unittest.TestCase):
                          [CompletionResult('us-west-1', 0, False),
                           CompletionResult('us-west-2', 0, False)])
 
+    def test_not_autocomplete_wo_trailing_space(self):
+        parsed = self.parser.parse('aws --region')
+        self.assertIsNone(self.completer.complete(parsed))
+
+    def test_autocomplete_with_trailing_space(self):
+        parsed = self.parser.parse('aws --region ')
+        self.assertIsNotNone(self.completer.complete(parsed))
+
 
 class TestProfileCompleter(unittest.TestCase):
     def setUp(self):
@@ -380,6 +388,14 @@ class TestProfileCompleter(unittest.TestCase):
     def test_no_autocompletions_if_nothing_matches(self):
         parsed = self.parser.parse('aws --profile foo')
         self.assertEqual(list(self.completer.complete(parsed)), [])
+
+    def test_not_autocomplete_wo_trailing_space(self):
+        parsed = self.parser.parse('aws --profile')
+        self.assertIsNone(self.completer.complete(parsed))
+
+    def test_autocomplete_with_trailing_space(self):
+        parsed = self.parser.parse('aws --profile ')
+        self.assertIsNotNone(self.completer.complete(parsed))
 
     def test_autocompletes_if_matches(self):
         parsed = self.parser.parse('aws --profile prof')

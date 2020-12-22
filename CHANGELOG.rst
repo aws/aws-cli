@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.18.202
+========
+
+* api-change:``connect``: Update connect command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``iotwireless``: Update iotwireless command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``glue``: Update glue command to latest version
+
+
 1.18.201
 ========
 

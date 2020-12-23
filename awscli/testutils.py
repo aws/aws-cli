@@ -505,7 +505,8 @@ class FileCreator(object):
         if os.path.exists(self.rootdir):
             shutil.rmtree(self.rootdir)
 
-    def create_file(self, filename, contents, mtime=None, mode='w'):
+    def create_file(self, filename, contents, mtime=None, mode='w',
+                    encoding=None):
         """Creates a file in a tmpdir
 
         ``filename`` should be a relative path, e.g. "foo/bar/baz.txt"
@@ -524,7 +525,7 @@ class FileCreator(object):
         full_path = os.path.join(self.rootdir, filename)
         if not os.path.isdir(os.path.dirname(full_path)):
             os.makedirs(os.path.dirname(full_path))
-        with open(full_path, mode) as f:
+        with open(full_path, mode, encoding=encoding) as f:
             f.write(contents)
         current_time = os.path.getmtime(full_path)
         # Subtract a few years off the last modification date.
@@ -533,7 +534,7 @@ class FileCreator(object):
             os.utime(full_path, (mtime, mtime))
         return full_path
 
-    def append_file(self, filename, contents):
+    def append_file(self, filename, contents, encoding=None):
         """Append contents to a file
 
         ``filename`` should be a relative path, e.g. "foo/bar/baz.txt"
@@ -544,7 +545,7 @@ class FileCreator(object):
         full_path = os.path.join(self.rootdir, filename)
         if not os.path.isdir(os.path.dirname(full_path)):
             os.makedirs(os.path.dirname(full_path))
-        with open(full_path, 'a') as f:
+        with open(full_path, 'a', encoding=encoding) as f:
             f.write(contents)
         return full_path
 

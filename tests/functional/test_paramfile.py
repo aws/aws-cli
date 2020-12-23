@@ -72,10 +72,14 @@ class TestCLIFollowParamFileDefault(BaseTestCLIFollowParamFile):
 
 class TestCLIUseEncodingFromEnv(BaseTestCLIFollowParamFile):
 
+    def setUp(self):
+        super(TestCLIUseEncodingFromEnv, self).setUp()
+        self.path = self.files.create_file(
+            'foobar.txt', '經理', encoding='utf-8')
+
     def test_does_use_encoding_utf8(self):
         self.environ['AWS_CLI_FILE_ENCODING'] = 'utf-8'
-        path = self.files.create_file('foobar.txt', '經理')
-        param = 'file://%s' % path
+        param = 'file://%s' % self.path
         self.assert_param_expansion_is_correct(
             provided_param=param,
             expected_param='經理'
@@ -83,8 +87,7 @@ class TestCLIUseEncodingFromEnv(BaseTestCLIFollowParamFile):
 
     def test_does_use_encoding_cp1251(self):
         self.environ['AWS_CLI_FILE_ENCODING'] = 'cp1251'
-        path = self.files.create_file('foobar.txt', '經理')
-        param = 'file://%s' % path
+        param = 'file://%s' % self.path
         self.assert_param_expansion_is_correct(
             provided_param=param,
             expected_param='з¶“зђ†'

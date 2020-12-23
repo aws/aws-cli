@@ -41,7 +41,7 @@ class WizardAppRunner(object):
 
 class WizardApp(Application):
     def __init__(self, layout, values, traverser, executor, style=None,
-                 key_bindings=None, full_screen=True):
+                 key_bindings=None, full_screen=True, output=None):
         self.values = values
         self.traverser = traverser
         self.executor = executor
@@ -53,7 +53,7 @@ class WizardApp(Application):
         self.error_bar_visible = None
         super().__init__(
             layout=layout, style=style, key_bindings=key_bindings,
-            full_screen=full_screen
+            full_screen=full_screen, output=output
         )
 
     def run(self, pre_run=None, **kwargs):

@@ -21,7 +21,10 @@ from prompt_toolkit.input.defaults import create_pipe_input
 from prompt_toolkit.keys import Keys
 from prompt_toolkit.layout import walk
 
-from tests import PromptToolkitApplicationStubber as ApplicationStubber
+from tests import (
+    PromptToolkitApplicationStubber as ApplicationStubber,
+    FakeApplicationOutput
+)
 from awscli.customizations.wizard.factory import create_wizard_app
 from awscli.customizations.wizard.app import (
     WizardAppRunner, WizardTraverser, WizardValues
@@ -63,7 +66,8 @@ class BaseWizardApplicationTest(unittest.TestCase):
     def setUp(self):
         self.definition = self.get_definition()
         self.session = mock.Mock(spec=Session)
-        self.app = create_wizard_app(self.definition, self.session)
+        self.app = create_wizard_app(
+            self.definition, self.session, FakeApplicationOutput())
         self.stubbed_app = ApplicationStubber(self.app)
 
     def get_definition(self):

@@ -196,6 +196,16 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         super(CommandArchitectureTest, self).tearDown()
         clean_loc_files(self.file_creator)
 
+    def _get_file_path(self, file):
+        try:
+            return os.path.relpath(file)
+        except ValueError:
+            # In some cases (usually it happens inside Windows based GitHub
+            # Action) tests are situated on one volume and temp folder on
+            # another one, in such a case there is no relative path between
+            # them and we use absolute path instead
+            return os.path.abspath(file)
+
     def test_set_client_no_source(self):
         session = Mock()
         cmd_arc = CommandArchitecture(session, 'sync',
@@ -366,7 +376,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         # to be wired correctly for it to work.
         s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
         local_file = self.loc_files[0]
-        rel_local_file = os.path.relpath(local_file)
+        rel_local_file = self._get_file_path(local_file)
         filters = [['--include', '*']]
         params = {'dir_op': False, 'dryrun': True, 'quiet': False,
                   'src': local_file, 'dest': s3_file, 'filters': filters,
@@ -386,7 +396,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
     def test_error_on_same_line_as_status(self):
         s3_file = 's3://' + 'bucket-does-not-exist' + '/' + 'text1.txt'
         local_file = self.loc_files[0]
-        rel_local_file = os.path.relpath(local_file)
+        rel_local_file = self._get_file_path(local_file)
         filters = [['--include', '*']]
         params = {'dir_op': False, 'dryrun': False, 'quiet': False,
                   'src': local_file, 'dest': s3_file, 'filters': filters,
@@ -417,7 +427,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         # to be wired correctly for it to work.
         s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
         local_file = self.loc_files[0]
-        rel_local_file = os.path.relpath(local_file)
+        rel_local_file = self._get_file_path(local_file)
         filters = [['--include', '*']]
         params = {'dir_op': False, 'dryrun': True, 'quiet': False,
                   'src': s3_file, 'dest': local_file, 'filters': filters,
@@ -514,7 +524,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         local_file = self.loc_files[0]
         s3_prefix = 's3://' + self.bucket + '/'
         local_dir = self.loc_files[3]
-        rel_local_file = os.path.relpath(local_file)
+        rel_local_file = self._get_file_path(local_file)
         filters = [['--include', '*']]
         params = {'dir_op': True, 'dryrun': True, 'quiet': False,
                   'src': local_dir, 'dest': s3_prefix, 'filters': filters,

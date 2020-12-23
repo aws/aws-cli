@@ -17,6 +17,7 @@ BUILTIN_INDEX_FILE = os.path.join(
     'data', 'ac.index'
 )
 
+
 # This is similar to DBConnection in awscli.customization.history.
 # I'd like to reuse code, but we also have the contraint that we don't
 # want to import anything outside of awscli.autocomplete to ensure
@@ -33,9 +34,18 @@ class DatabaseConnection(object):
     @property
     def _connection(self):
         if self._db_conn is None:
-            self._db_conn = sqlite3.connect(
-                self._db_filename, check_same_thread=False,
-                isolation_level=None)
+            kwargs = {
+                'check_same_thread': False,
+                'isolation_level': None
+            }
+            if self._db_filename.startswith('file::memory:'):
+                # This statement was added because old versions of sqlite
+                # don't support 'uri' but we use it for tests and because
+                # in the tests we use only in-memory database we're looking
+                # for 'file::memory:' prefix if we decide to use 'uri' with
+                # sqlite more widely we can ease restrictions to 'file:'
+                kwargs['uri'] = True
+            self._db_conn = sqlite3.connect(self._db_filename, **kwargs)
             self._ensure_database_setup()
         return self._db_conn
 

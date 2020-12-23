@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.203
+========
+
+* api-change:``resource-groups``: Update resource-groups command to latest version
+* api-change:``compute-optimizer``: Update compute-optimizer command to latest version
+* api-change:``dms``: Update dms command to latest version
+
+
 1.18.202
 ========
 

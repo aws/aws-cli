@@ -42,16 +42,19 @@ class LazyClientCreator(object):
     """
     def __init__(self,
                  import_name='awscli.clidriver.create_clidriver'):
-        self._session = None
         self._import_name = import_name
+        self._session_cache = {}
 
     def create_client(self, service_name, parsed_region=None,
                       parsed_profile=None, **kwargs):
-        if self._session is None:
-            self._session = self.create_session()
-        self._session.set_config_variable('region', parsed_region)
-        self._session.set_config_variable('profile', parsed_profile)
-        return self._session.create_client(service_name, **kwargs)
+        if self._session_cache.get(parsed_profile) is None:
+            session = self.create_session()
+            session.set_config_variable('profile', parsed_profile)
+            self._session_cache[parsed_profile] = session
+        self._session_cache[parsed_profile].set_config_variable(
+            'region', parsed_region)
+        return self._session_cache[parsed_profile].create_client(
+                                                        service_name, **kwargs)
 
     def create_session(self):
         return lazy_call(self._import_name).session

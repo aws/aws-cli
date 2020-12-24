@@ -23,7 +23,7 @@ class TableNameCompleter(servercomp.BaseCustomServerSideCompleter):
     _COMMAND_NAMES = ['select', 'put']
 
     def _get_remote_results(self, parsed):
-        client = self._client_creator.create_client('dynamodb')
+        client = self._get_client('dynamodb', parsed)
         response = self._invoke_api(client, 'list_tables', {})
         return [
             table_name for table_name in response.get('TableNames', [])

@@ -77,15 +77,18 @@ class ServerSideCompleter(BaseCompleter):
             return False
         return True
 
-    def _retrieve_remote_completion_data(self, parsed, completion_data):
-        # TODO: Handle global params that can affect how we create the client
-        # (region, endpoint-url, profile, timeouts, etc).
-        service_name = completion_data['service']
-        client = self._client_creator.create_client(
+    def _get_client(self, service_name, parsed):
+        return self._client_creator.create_client(
             service_name,
             parsed_region=parsed.global_params.get('region'),
             parsed_profile=parsed.global_params.get('profile')
         )
+
+    def _retrieve_remote_completion_data(self, parsed, completion_data):
+        # TODO: Handle global params that can affect how we create the client
+        # (region, endpoint-url, profile, timeouts, etc).
+        service_name = completion_data['service']
+        client = self._get_client(service_name, parsed)
         method_name = completion_data['operation']
         api_params = self._map_command_to_api_params(parsed, completion_data)
         response = self._invoke_api(client, method_name, api_params)

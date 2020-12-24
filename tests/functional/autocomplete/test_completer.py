@@ -14,14 +14,15 @@
 from awscli.testutils import unittest
 from awscli.autocomplete import parser, filters
 from awscli.autocomplete.local import basic, fetcher
-from awscli.clidriver import CLIDriver
+from awscli.clidriver import CLIDriver, create_clidriver
+from awscli.autocomplete.completer import CompletionResult
 
 from tests.unit.autocomplete import InMemoryIndex
 
 
 class TestShorthandCompleter(unittest.TestCase):
     def setUp(self):
-        cli_driver = CLIDriver()
+        cli_driver = create_clidriver()
         self.cli_fetcher = fetcher.CliDriverFetcher(cli_driver)
         self.index = InMemoryIndex({
             'command_names': {
@@ -29,10 +30,12 @@ class TestShorthandCompleter(unittest.TestCase):
                 'aws': [('codebuild', None),
                         ('dynamodb', None),
                         ('s3', None),
-                        ('ec2', None)],
+                        ('ec2', None),
+                        ('cloudformation', None)],
                 'aws.codebuild': [('create-project', None)],
                 'aws.dynamodb': [('put-item', None)],
-                'aws.ec2': [('bundle-instance', None)]
+                'aws.ec2': [('bundle-instance', None)],
+                'aws.cloudformation': [('deploy', None)],
             },
             'arg_names': {
                 '': {
@@ -47,6 +50,9 @@ class TestShorthandCompleter(unittest.TestCase):
                 },
                 'aws.ec2': {
                     'bundle-instance': ['storage']
+                },
+                'aws.cloudformation': {
+                    'deploy': ['capabilities']
                 }
             },
             'arg_data': {
@@ -82,6 +88,13 @@ class TestShorthandCompleter(unittest.TestCase):
                         'storage': (
                             'storage', 'structure', 'bundle-instance',
                             'aws.ec2.', None, False, False),
+                    }
+                },
+                'aws.cloudformation': {
+                    'deploy': {
+                        'capabilities': (
+                            'capabilities', 'list', 'deploy',
+                            'aws.cloudformation.', None, False, False),
                     }
                 }
             }
@@ -334,6 +347,39 @@ class TestShorthandCompleter(unittest.TestCase):
         parsed = self.parser.parse('aws --debug ')
         suggestions = self.completer.complete(parsed)
         self.assertIsNone(suggestions)
+
+    def test_return_suggestions_for_list_of_enum(self):
+        self.completer = basic.ShorthandCompleter(
+            self.cli_fetcher,
+            response_filter=filters.fuzzy_filter
+        )
+        parsed = self.parser.parse('aws cloudformation deploy --capabilities ')
+        suggestions = self.completer.complete(parsed)
+        self.assertIn(
+            CompletionResult('CAPABILITY_IAM', 0,
+                             False, None, None, 'CAPABILITY_IAM'),
+            suggestions)
+        self.assertIn(
+            CompletionResult('CAPABILITY_NAMED_IAM', 0,
+                             False, None, None, 'CAPABILITY_NAMED_IAM'),
+            suggestions)
+
+    def test_return_suggestions_for_list_of_enum_with_prefix(self):
+        self.completer = basic.ShorthandCompleter(
+            self.cli_fetcher,
+            response_filter=filters.fuzzy_filter
+        )
+        parsed = self.parser.parse(
+            'aws cloudformation deploy --capabilities ca')
+        suggestions = self.completer.complete(parsed)
+        self.assertIn(
+            CompletionResult('CAPABILITY_IAM', 0,
+                             False, None, None, 'CAPABILITY_IAM'),
+            suggestions)
+        self.assertIn(
+            CompletionResult('CAPABILITY_NAMED_IAM', 0,
+                             False, None, None, 'CAPABILITY_NAMED_IAM'),
+            suggestions)
 
 
 class TestModelIndexCompleter(unittest.TestCase):

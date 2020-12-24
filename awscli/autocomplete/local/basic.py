@@ -427,8 +427,14 @@ class ShorthandCompleter(BaseCompleter):
             )
 
     def _get_prompt_for_string(self, arg_model, parsed_input):
+        # If string shape is a value for a list of enums it'll be an instance
+        # of dict because parsing method tries to convert it to a valid
+        # shorthand expression. In such a case we need to take the first and
+        # only key of the dict if it has keys or an empty string
         if getattr(arg_model, 'enum', False):
-            prefix = parsed_input
+            prefix = parsed_input or ''
+            if isinstance(prefix, dict):
+                prefix = list(prefix.keys())[0]
             if prefix == self._DUMMY_VALUE:
                 prefix = ''
             return self._filter(prefix,

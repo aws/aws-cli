@@ -18,7 +18,7 @@ import tempfile
 import shutil
 from botocore.compat import OrderedDict
 
-from awscli.testutils import unittest
+from awscli.testutils import unittest, skip_if_windows
 from awscli.customizations.utils import uni_print
 from awscli.customizations.eks.kubeconfig import (KubeconfigError,
                                                   KubeconfigInaccessableError,
@@ -66,8 +66,10 @@ class TestKubeconfig(unittest.TestCase):
         config = Kubeconfig(self._path, self._content)
         self.assertFalse(config.has_cluster("clustername"))
 
+
 class TestKubeconfigWriter(unittest.TestCase):
 
+    @skip_if_windows('Windows does not support such permissions set up')
     def test_not_world_readable(self):
         tmpdir = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, tmpdir)
@@ -76,6 +78,7 @@ class TestKubeconfigWriter(unittest.TestCase):
         KubeconfigWriter().write_kubeconfig(config)
         stat = os.stat(config_path)
         self.assertEqual(stat.st_mode & 0o777, 0o600)
+
 
 class TestKubeconfigValidator(unittest.TestCase):
     def setUp(self):

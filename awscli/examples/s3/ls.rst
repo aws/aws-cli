@@ -30,7 +30,7 @@ Output::
 
     None
     
-**Example 4: Recursively tisting all prefixes and objects in a bucket**
+**Example 4: Recursively listing all prefixes and objects in a bucket**
 
 The following ``ls`` command will recursively list objects in a bucket.  Rather than showing ``PRE dirname/`` in the output, all the content in a bucket will be listed in order::
 

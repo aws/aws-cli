@@ -5,7 +5,7 @@ The following ``create-user`` example creates a new user. ::
     aws elasticache create-user \
         --user-id user1 \
         --user-name myUser \
-        --password mYnuUzrpAxXw2rdzx \
+        --passwords mYnuUzrpAxXw2rdzx \
         --engine redis \
         --access-string "on ~app::* -@all +@read"
 

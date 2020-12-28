@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.18.204
+========
+
+* api-change:``cloudfront``: Update cloudfront command to latest version
+
+
 1.18.203
 ========
 

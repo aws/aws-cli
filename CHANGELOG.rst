@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.1.15
+======
+
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+* api-change:``compute-optimizer``: Update compute-optimizer command to latest version
+* api-change:``cloudfront``: Update cloudfront command to latest version
+* api-change:``acm-pca``: Update acm-pca command to latest version
+* enhancement:Wizards: Migrate ``lambda wizard new-function`` command to new UI
+* api-change:``dms``: Update dms command to latest version
+* api-change:``resource-groups``: Update resource-groups command to latest version
+
+
 2.1.14
 ======
 

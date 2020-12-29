@@ -71,8 +71,8 @@ def main():
     return rc
 
 
-def create_clidriver():
-    session = botocore.session.Session(EnvironmentVariables)
+def create_clidriver(profile=None):
+    session = botocore.session.Session(EnvironmentVariables, profile=profile)
     _set_user_agent_for_session(session)
     load_plugins(session.full_config.get('plugins', {}),
                  event_hooks=session.get_component('event_emitter'))

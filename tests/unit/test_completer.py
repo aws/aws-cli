@@ -12,16 +12,18 @@
 # language governing permissions and limitations under the License.
 import pprint
 import difflib
+import subprocess
 
 import mock
 
 from botocore.compat import OrderedDict
 from botocore.model import OperationModel
+from botocore.exceptions import ClientError
 from awscli.clidriver import (
     CLIDriver, ServiceCommand, ServiceOperation, CLICommand)
 from awscli.arguments import BaseCLIArgument, CustomArgument
 from awscli.help import ProviderHelpCommand
-from awscli.completer import Completer
+from awscli.completer import Completer, complete
 from awscli.testutils import unittest
 from awscli.customizations.commands import BasicCommand
 
@@ -345,6 +347,127 @@ class TestCompleteCustomCommands(BaseCompleterTest):
             '--bar', '--sse'])
 
 
+class TestProfileRegionParsed(BaseCompleterTest):
+    def test_profile_region_used(self):
+        create_clidriver_patch = mock.patch('awscli.clidriver.create_clidriver')
+        create_clidriver_patch_mock = create_clidriver_patch.start()
+
+        cmdline = 'aws s3 --profile myprofile --region dummyregion ls '
+        complete(cmdline, len(cmdline))
+
+        create_clidriver_patch.stop()
+
+        create_clidriver_patch_mock.assert_called_with(profile='myprofile')
+        create_clidriver_patch_mock.return_value.session.create_client\
+            .assert_called_with('s3', region_name='dummyregion')
+
+
+class TestProfileCompletion(BaseCompleterTest):
+    def setUp(self):
+        super(TestProfileCompletion, self).setUp()
+        commands = {
+            'subcommands': {},
+            'arguments': ['profile']
+        }
+        self.completer = Completer(
+            self.clidriver_creator.create_clidriver(commands,
+            profiles=['testprofile1', 'testprofile2', 'other']))
+
+    def test_complete_profile_empty(self):
+        self.assert_completion(self.completer, 's3 ls s3:// --profile ', [
+            'testprofile1', 'testprofile2', 'other'])
+
+    def test_complete_profile_partial_multi(self):
+        self.assert_completion(self.completer, 's3 ls s3:// --profile test', [
+            'testprofile1', 'testprofile2'])
+
+    def test_complete_profile_partial_single(self):
+        self.assert_completion(self.completer, 's3 ls s3:// --profile o', [
+            'other'])
+
+
+class TestS3PathCompletion(BaseCompleterTest):
+    def setUp(self):
+        super(TestS3PathCompletion, self).setUp()
+        commands = {
+            'subcommands': {},
+            'arguments': []
+        }
+        clidriver = self.clidriver_creator.create_clidriver(commands)
+
+        clidriver.session.create_client.return_value.list_buckets.return_value\
+            = {'Buckets': [{'Name': 'mybucket'}, {'Name': 'otherbucket'}]}
+        clidriver.session.create_client.return_value.get_paginator.return_value\
+            .paginate.return_value = [{'Contents': [], 'CommonPrefixes': []}]
+
+        self.completer = Completer(clidriver)
+
+    def test_complete_path_empty(self):
+        self.assert_completion(self.completer, 's3 ls ', [
+            's3://mybucket/', 's3://otherbucket/'])
+
+    def test_complete_path_scheme_only(self):
+        self.assert_completion(self.completer, 's3 ls s3://', [
+            '//mybucket/', '//otherbucket/'])
+
+    def test_complete_path_partial_bucket1(self):
+        self.assert_completion(self.completer, 's3 ls s3://m', [
+            '//mybucket/'])
+
+    def test_complete_path_partial_bucket2(self):
+        self.assert_completion(self.completer, 's3 ls s3://o', [
+            '//otherbucket/'])
+
+    def test_complete_path_prefix(self):
+        clidriver = self.completer.driver
+        clidriver.session.create_client.return_value.get_paginator.return_value\
+            .paginate.return_value = [{
+            'Contents': [
+                {'Key': 'key1'},
+                {'Key': 'key2'}
+            ],
+            'CommonPrefixes': [
+                {'Prefix': 'prefix1'},
+                {'Prefix': 'prefix2'}
+            ]
+        }]
+
+        self.assert_completion(self.completer, 's3 ls s3://mybucket/', [
+            '//mybucket/key1',
+            '//mybucket/key2',
+            '//mybucket/prefix1',
+            '//mybucket/prefix2'
+        ])
+
+    def test_complete_path_error(self):
+        clidriver = self.completer.driver
+        clidriver.session.create_client.return_value.list_buckets.side_effect\
+            = ClientError({
+                'Error': {'AccessDenied': 'NoSuchKey', 'Message': 'foo'}},
+                'ListBuckets')
+        self.assert_completion(self.completer, 's3 ls ', [])
+
+    def test_complete_local_path(self):
+        check_output_patch = mock.patch('subprocess.check_output')
+        check_output_patch_mock = check_output_patch.start()
+        check_output_patch_mock.return_value = b'file1\nfile2\n'
+
+        self.assert_completion(self.completer, 's3 cp ', [
+            'file1', 'file2', 's3://mybucket/', 's3://otherbucket/'])
+
+        check_output_patch.stop()
+
+    def test_complete_local_path_error(self):
+        check_output_patch = mock.patch('subprocess.check_output')
+        check_output_patch_mock = check_output_patch.start()
+        check_output_patch_mock.side_effect = subprocess.CalledProcessError(
+            127, 'compgen')
+
+        self.assert_completion(self.completer, 's3 cp ', [
+            's3://mybucket/', 's3://otherbucket/'])
+
+        check_output_patch.stop()
+
 class MockCLIDriverFactory(object):
     def create_clidriver(self, commands=None, profiles=None):
         session = mock.Mock()
@@ -408,3 +531,7 @@ class MockCLIDriverFactory(object):
             else:
                 argument_table[arg] = BaseCLIArgument(arg)
         return argument_table
+
+
+if __name__ == "__main__":
+    unittest.main()

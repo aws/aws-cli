@@ -15,6 +15,7 @@ from awscli.testutils import unittest, mock
 
 from botocore.session import Session
 from prompt_toolkit.application import Application
+from prompt_toolkit.completion import PathCompleter, Completion
 from prompt_toolkit.eventloop import Future
 from prompt_toolkit.input.defaults import create_pipe_input
 from prompt_toolkit.keys import Keys
@@ -88,6 +89,20 @@ class BaseWizardApplicationTest(unittest.TestCase):
             lambda app: self.assertEqual(
                 app.layout.get_buffer_by_name(buffer_name).document.text,
                 text)
+        )
+
+    def add_current_buffer_assertion(self, buffer_name):
+        self.stubbed_app.add_app_assertion(
+            lambda app: self.assertEqual(
+                app.layout.current_buffer.name, buffer_name)
+        )
+
+    def add_buffer_completions_assertion(self, buffer_name, completions):
+        self.stubbed_app.add_app_assertion(
+            lambda app: self.assertEqual(
+                app.layout.get_buffer_by_name(
+                    buffer_name).complete_state.completions,
+                completions)
         )
 
     def add_prompt_is_visible_assertion(self, name):
@@ -1523,3 +1538,105 @@ class TestWizardValues(unittest.TestCase):
         values = self.get_wizard_values({'use_handler': self.handler})
         value = values['handler_value']
         self.exception_handler.assert_called_with(e)
+
+
+class FakePathCompleter(PathCompleter):
+    def get_completions(self, document, complete_event):
+        prefix_len = len(document.text)
+
+        yield from [
+            Completion('file1'[prefix_len:], 0, display='file1'),
+            Completion('file2'[prefix_len:], 0, display='file2'),
+        ]
+
+
+class TestPromptCompletionWizardApplication(BaseWizardApplicationTest):
+    def setUp(self):
+        self.patch = mock.patch(
+            'awscli.customizations.wizard.ui.prompt.PathCompleter',
+            FakePathCompleter)
+        self.patch.start()
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+        self.patch.stop()
+
+    def get_definition(self):
+        return {
+            'title': 'Uses API call in prompting stage',
+            'plan': {
+                'section': {
+                    'shortname': 'Section',
+                    'values': {
+                        'choose_file': {
+                            'description': 'Choose file',
+                            'type': 'prompt',
+                            'completer': 'file_completer'
+                        },
+                        'second_prompt': {
+                            'description': 'Second prompt',
+                            'type': 'prompt',
+                        }
+                    }
+                },
+                '__DONE__': {},
+            },
+            'execute': {}
+        }
+
+    def test_show_completions_for_buffer_text(self):
+        self.stubbed_app.add_text_to_current_buffer('fi')
+        self.stubbed_app.start_completion_for_current_buffer()
+        self.add_buffer_completions_assertion('choose_file',
+            [
+                Completion('le1', 0, display='file1'),
+                Completion('le2', 0, display='file2'),
+            ]
+        )
+        self.stubbed_app.run()
+
+    def test_choose_completion_on_Enter_and_stays_on_the_same_prompt(self):
+        self.stubbed_app.add_text_to_current_buffer('fi')
+        self.stubbed_app.start_completion_for_current_buffer()
+        self.stubbed_app.add_keypress(Keys.Down)
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.add_buffer_text_assertion('choose_file', 'file1')
+        self.add_current_buffer_assertion('choose_file')
+        self.stubbed_app.run()
+
+    def test_choose_completion_on_Enter_and_move_on_second_Enter(self):
+        self.stubbed_app.add_text_to_current_buffer('fi')
+        self.stubbed_app.start_completion_for_current_buffer()
+        self.stubbed_app.add_keypress(Keys.Down)
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.add_current_buffer_assertion('second_prompt')
+        self.stubbed_app.run()
+
+    def test_switch_completions_on_tab(self):
+        self.stubbed_app.add_text_to_current_buffer('fi')
+        self.stubbed_app.start_completion_for_current_buffer()
+        self.stubbed_app.add_keypress(Keys.Tab)
+        self.stubbed_app.add_keypress(Keys.Tab)
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.add_buffer_text_assertion('choose_file', 'file2')
+        self.add_current_buffer_assertion('choose_file')
+        self.stubbed_app.run()
+
+    def test_switch_completions_on_back_tab(self):
+        self.stubbed_app.add_text_to_current_buffer('fi')
+        self.stubbed_app.start_completion_for_current_buffer()
+        self.stubbed_app.add_keypress(Keys.Tab)
+        self.stubbed_app.add_keypress(Keys.Tab)
+        self.stubbed_app.add_keypress(Keys.BackTab)
+        self.stubbed_app.add_keypress(Keys.Enter)
+        self.add_buffer_text_assertion('choose_file', 'file1')
+        self.add_current_buffer_assertion('choose_file')
+        self.stubbed_app.run()
+
+    def test_switch_prompt_on_tab_if_it_is_not_completing(self):
+        self.stubbed_app.add_text_to_current_buffer('rrrr')
+        self.stubbed_app.add_keypress(Keys.Tab)
+        self.add_current_buffer_assertion('second_prompt')
+        self.stubbed_app.run()

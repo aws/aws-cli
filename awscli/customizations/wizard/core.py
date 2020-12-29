@@ -328,7 +328,7 @@ class VariableResolver(object):
         # The built in functions will likely move to another module
         # as we start to add more.
         if only_key == '__wizard__:File':
-            filename = value[only_key]['path']
+            filename = os.path.expanduser(value[only_key]['path'])
             with open(filename, 'rb') as f:
                 return f.read()
         return value

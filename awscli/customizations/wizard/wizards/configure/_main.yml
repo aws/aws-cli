@@ -1,60 +1,107 @@
-version: "0.1"
+version: "0.2"
 title: Configure the AWS CLI
 description: This wizard will create a new CLI config profile for you
 plan:
   decide_profile_type:
+    shortname: Intro
     values:
+      new_profile:
+        type: prompt
+        description: Create new profile or updated existing
+        choices:
+          - display: Create new
+            actual_value: yes
+          - display: Update existing
+            actual_value: no
+      new_profile_name:
+        type: prompt
+        description: Enter the name of the profile
+        condition:
+          variable: new_profile
+          equals: yes
+      existing_profiles:
+        type: sharedconfig
+        operation: ListProfiles
+      updated_profile_name:
+        type: prompt
+        description: Enter the name of the profile
+        choices: existing_profiles
+        condition:
+          variable: new_profile
+          equals: no
+      profile_name:
+        type: template
+        value: |
+          {% if {new_profile} == yes %}
+          {new_profile_name}{% endif %}
+          {% if {new_profile} == no %}
+          {updated_profile_name}{% endif %}
+  creds:
+    shortname: Credentials
+    values:
+      add_creds:
+        type: prompt
+        description: "Would you like to add credentials"
+        choices:
+          - display: Yes
+            actual_value: yes
+          - display: No
+      config_type_details:
+        type: template
+        value: |
+          <b>Static Credentials</b> - provide <b>AWS Access Key ID</b> and <b>AWS Secret Access Key</b> and store them in <b>~/.aws/config</b> file.
+
+          <b>Assume Role</b> - AWS CLI calls the AWS STS <b>AssumeRole</b> operation to retrieve temporary credentials.
+
+          <b>Process Provider</b> - if you have a method to generate or look up credentials that isn't directly supportedby the AWS CLI, you can configure the CLI to use it.
       config_type:
         type: prompt
-        description: "What would you like to configure"
+        description: "Choose credentials type"
         choices:
-          # There's also Web Identity and SAML but we're skipping that.
           - display: Static Credentials
             actual_value: static_creds
           - display: Assume Role
             actual_value: assume_role
           - display: Process Provider
             actual_value: proc_provider
-          - display: Additional CLI configuration
-            actual_value: additional_config
-      profile_name:
-        type: prompt
-        description: Enter the name of the profile
-    next_step:
-      switch: config_type
-      static_creds: get_static_creds
-      assume_role: get_assume_role
-      proc_provider: get_process_provider
-      additional_config: get_extra_cli_config
-  get_static_creds:
-    values:
+        condition:
+          variable: add_creds
+          equals: yes
+        details:
+          value: config_type_details
+          visible: True
+          description: "Docs"
       access_key_id:
         type: prompt
         description: Enter your Access Key Id
+        condition:
+          - variable: config_type
+            equals: static_creds
+          - variable: add_creds
+            equals: yes
       secret_key:
         type: prompt
         description: Enter your Secret Access Key
-    next_step: DONE
-  get_process_provider:
-    values:
-      creds_process:
-        type: prompt
-        description: Enter the credential process command
-    next_step: DONE
-  get_assume_role:
-    values:
+        condition:
+          - variable: config_type
+            equals: static_creds
+          - variable: add_creds
+            equals: yes
       existing_profiles:
         type: sharedconfig
         operation: ListProfiles
+        condition:
+          - variable: config_type
+            equals: assume_role
+          - variable: add_creds
+            equals: yes
       existing_roles:
         type: apicall
         operation: iam.ListRoles
         params: {}
         query: "sort_by(Roles[].{display: RoleName, actual_value: Arn}, &display)"
-      role_arn:
-        type: prompt
-        description: Select the role you want to assume
-        choices: existing_roles
+        cache: true
+        paginate: true
       credential_source_type:
         type: prompt
         description: Select your credentials source type
@@ -67,26 +114,171 @@ plan:
             actual_value: Ec2InstanceMetadata
           - display: Amazon ECS Container Credentials
             actual_value: EcsContainer
-    next_step:
-      switch: credential_source_type
-      source_profile: get_source_profile
-      Environment: DONE
-      Ec2InstanceMetadata: DONE
-      EcsContainer: DONE
-  get_source_profile:
-    values:
+        condition:
+          - variable: config_type
+            equals: assume_role
+          - variable: add_creds
+            equals: yes
       source_profile:
         type: prompt
         description: Select the source profile
         choices: existing_profiles
-    next_step: DONE
-  get_extra_cli_config:
-    # TODO: Not implemented yet. I think we want a loop for this?
-    # Keep prompting for as many key/value pairs as they want.
+        condition:
+          - variable: credential_source_type
+            equals: source_profile
+          - variable: config_type
+            equals: assume_role
+          - variable: add_creds
+            equals: yes
+      role_arn:
+        type: prompt
+        description: Select the role you want to assume
+        choices: existing_roles
+        condition:
+          - variable: config_type
+            equals: assume_role
+          - variable: add_creds
+            equals: yes
+      creds_process:
+        type: prompt
+        description: Enter the credential process command
+        condition:
+          - variable: config_type
+            equals: proc_provider
+          - variable: add_creds
+            equals: yes
+  additional_config:
+    shortname: Additional config
+    description: Additional CLI configuration
     values:
+      add_config:
+        type: prompt
+        description: "Would you like to add additional configuration"
+        choices:
+          - display: Yes
+            actual_value: yes
+          - display: No
+            actual_value: no
+      region_details:
+        type: template
+        value: |
+          The <b>Default region name</b> identifies the AWS Region whose servers you want to send your requests to by default. 
+          
+          This is typically the Region closest to you, but it can be any Region. For example, you can type <b>us-west-2</b> to use US West (Oregon). This is the Region that all later requests are sent to, unless you specify otherwise in an individual command.
       region:
         type: prompt
-        description: "Enter the region name"
+        description: "Enter the default region name"
+        condition:
+          variable: add_config
+          equals: yes
+        details:
+          value: region_details
+          visible: True
+          description: "Docs"
+      prompt_mode_details:
+        type: template
+        value: |
+          Enables the auto-prompt for the AWS CLI. There are two settings that can be used:
+
+            <b>on</b> - uses the full auto-prompt mode each time you attempt to run an <b>aws</b> command. This includes pressing <b>ENTER</b> after both a complete command or incomplete command.
+
+            <b>on-partial</b> - uses partial auto-promptmode. If a command is incomplete or cannot be run due to client-side validation errors, auto-prompt is used. This mode is particular useful if you have pre-existing scripts, runbooks, or you only want to be auto-prompted for commands you are unfamiliar with rather than prompted on every command.
+      prompt_mode:
+        type: prompt
+        description: "Enter the autoprompt mode"
+        choices:
+          - display: Off
+            actual_value: off
+          - display: On
+            actual_value: on
+          - display: On partial
+            actual_value: on-partial
+        details:
+          value: prompt_mode_details
+          visible: True
+          description: "Docs"
+        condition:
+          variable: add_config
+          equals: yes
+  preview:
+    shortname: Preview
+    description: Preview results
+    values:
+      additional_config_template:
+        type: template
+        value: |
+          {% if {region} !=  %}
+          aws configure set region '{region}' --profile '{profile_name}'
+          {% endif %}
+          {% if {prompt_mode} !=  %}
+          aws configure set cli_auto_prompt '{prompt_mode}' --profile '{profile_name}'
+          {% endif %}
+      assume_role_template:
+        type: template
+        value: |
+          aws configure set \
+            role_arn '{role_arn}' \
+            --profile '{profile_name}'
+
+          {% if {credential_source_type} == source_profile %}
+          aws configure set \
+            source_profile '{source_profile}' \
+            --profile '{profile_name}'
+          {% endif %}
+
+          {% if {credential_source_type} != source_profile %}
+          aws configure set \
+            credential_source '{credential_source_type}' \
+            --profile '{profile_name}'
+          {% endif %}
+      add_credentials_template:
+        type: template
+        value: |
+          {% if {config_type} == assume_role %}
+          {assume_role_template}
+          {% endif %}
+          {% if {config_type} == static_creds %}
+          aws configure set \
+            aws_access_key_id '{access_key_id}' \
+            --profile '{profile_name}'
+
+          aws configure set \
+            aws_secret_access_key '{secret_key}' \
+            --profile '{profile_name}'
+          {% endif %}
+          {% if {config_type} == proc_provider %}
+          aws configure set \
+            credential_process '{creds_process}' \
+            --profile '{profile_name}'
+          {% endif %}
+      preview_cli_command_value:
+        type: template
+        value: |
+          {% if {add_creds} == yes %}
+          {add_credentials_template}
+          {% endif %}
+          {% if {add_config} == yes %}
+          {additional_config_template}
+          {% endif %}
+      preview_value:
+        type: template
+        value: |
+          {%if {preview_type} == preview_cli_command %}
+          {preview_cli_command_value}
+          {% endif %}
+      preview_type:
+        type: prompt
+        description: Select an preview format
+        choices:
+          - display: None
+            actual_value: preview_none
+          - display: AWS CLI command
+            actual_value: preview_cli_command
+        details:
+          value: preview_value
+          visible: True
+          description: "Preview"
+  __DONE__:
 execute:
   # All the logic needed when the user selects assume role.
   assume_role:
@@ -94,15 +286,19 @@ execute:
       operation: SetValues
       profile: "{profile_name}"
       condition:
-        variable: config_type
-        equals: assume_role
+        - variable: config_type
+          equals: assume_role
+        - variable: add_creds
+          equals: yes
       params:
         role_arn: "{role_arn}"
     - type: sharedconfig
       operation: SetValues
       condition:
-        variable: credential_source_type
-        equals: source_profile
+        - variable: credential_source_type
+          equals: source_profile
+        - variable: add_creds
+          equals: yes
       profile: "{profile_name}"
       params:
         source_profile: "{source_profile}"
@@ -113,6 +309,8 @@ execute:
           equals: null
         - variable: config_type
           equals: assume_role
+        - variable: add_creds
+          equals: yes
       profile: "{profile_name}"
       params:
         credential_source: "{credential_source_type}"
@@ -121,8 +319,10 @@ execute:
       operation: SetValues
       profile: "{profile_name}"
       condition:
-        variable: config_type
-        equals: static_creds
+        - variable: config_type
+          equals: static_creds
+        - variable: add_creds
+          equals: yes
       params:
         aws_access_key_id: "{access_key_id}"
         aws_secret_access_key: "{secret_key}"
@@ -131,16 +331,40 @@ execute:
       operation: SetValues
       profile: "{profile_name}"
       condition:
-        variable: config_type
-        equals: proc_provider
+        - variable: config_type
+          equals: proc_provider
+        - variable: add_creds
+          equals: yes
       params:
         credential_process: "{creds_process}"
-  additional_config:
+  region_config:
     - type: sharedconfig
       operation: SetValues
       profile: "{profile_name}"
       condition:
-        variable: config_type
-        equals: additional_config
+        - variable: add_config
+          equals: yes
+        - variable: region
+          exists: true
       params:
         region: "{region}"
+  autoprompt_config:
+    - type: sharedconfig
+      operation: SetValues
+      profile: "{profile_name}"
+      condition:
+        - variable: add_config
+          equals: yes
+        - variable: prompt_mode
+          exists: true
+      params:
+        cli_auto_prompt: "{prompt_mode}"
+__OUTPUT__:
+  value: |
+    Wizard successfully created/updated "{profile_name}" profile
+
+    {% if {preview_type} == preview_cli_command %}
+    Steps to create/update profile is equivalent to running the following sample AWS CLI commands:
+
+    {preview_cli_command_value}
+    {% endif %}

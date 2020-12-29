@@ -14,7 +14,7 @@
 import re
 import json
 import os
-from functools import partial
+from functools import partial, reduce
 
 from botocore import xform_name
 import jmespath
@@ -445,6 +445,9 @@ class ConditionEvaluator:
         if 'equals' in single:
             expected = single['equals']
             return parameters.get(varname) == expected
+        if 'exists' in single:
+            expected = single['exists']
+            return bool(parameters.get(varname)) == expected
         return False
 
 
@@ -507,9 +510,14 @@ class SharedConfigExecutorStep(ExecutorStep):
         if 'profile' in step_definition:
             profile = self._resolve_params(step_definition['profile'],
                                            parameters)
-        config_params = self._resolve_params(
+        resolved_params = self._resolve_params(
             step_definition['params'], parameters
         )
+        for key, item in resolved_params.items():
+            parts = key.split('.')
+            parts.reverse()
+            config_params.update(reduce(lambda a, k: {k: a}, parts[1:], {parts[0]: item}))
+
         self._config_api.set_values(config_params, profile=profile)
 
     def _resolve_params(self, value, params):

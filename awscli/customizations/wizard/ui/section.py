@@ -67,7 +67,6 @@ class WizardSectionBody:
             Box(
                 HSplit(
                     self._create_prompts_from_section_definition(),
-                    padding=1
                 ),
                 padding_left=2, padding_top=1
             ),

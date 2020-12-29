@@ -797,6 +797,41 @@ class TestExecutor(unittest.TestCase):
         self.executor.execute(loaded['execute'], {'foo': 'one', 'bar': 'NOTTWO'})
         self.assertFalse(self.session.create_client.called)
 
+    def test_conditions_exists_true_statement(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: apicall
+              condition:
+                - variable: foo
+                  exists: true
+              operation: iam.CreateUser
+              params:
+                UserName: admin
+        """)
+        self.executor.execute(loaded['execute'], {})
+        self.assertFalse(self.session.create_client.called)
+        self.executor.execute(loaded['execute'], {'foo': 'one'})
+        self.assertTrue(self.session.create_client.called)
+
+    def test_conditions_exists_false_statement(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: apicall
+              condition:
+                - variable: foo
+                  exists: false
+              operation: iam.CreateUser
+              params:
+                UserName: admin
+        """)
+        self.executor.execute(loaded['execute'], {'foo': 'one'})
+        self.assertFalse(self.session.create_client.called)
+        self.executor.execute(loaded['execute'], {})
+        self.assertTrue(self.session.create_client.called)
+
+
     def test_can_recursively_template_variables_in_params(self):
         loaded = load_wizard("""
         execute:
@@ -909,6 +944,22 @@ class TestExecutor(unittest.TestCase):
         self.executor.execute(loaded['execute'], {})
         self.config_api.set_values.assert_called_with(
             {'region': 'us-west-2', 'output': 'json'}, profile=None
+        )
+
+    def test_can_parse_nested_config_keys(self):
+        loaded = load_wizard("""
+        execute:
+          default:
+            - type: sharedconfig
+              operation: SetValues
+              profile: mydevprofile
+              params:
+                s3.addressing_style: auto
+        """)
+        self.executor.execute(loaded['execute'], {})
+        self.config_api.set_values.assert_called_with(
+            {'s3': {'addressing_style': 'auto'}},
+            profile='mydevprofile',
         )
 
     def test_can_expand_vars(self):

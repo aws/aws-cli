@@ -202,6 +202,11 @@ class WizardTraverser:
             return step_definition['details'].get('description')
         return ''
 
+    def get_details_for_prompt(self):
+        step_definition = self._prompt_definitions[self._current_prompt]
+        if 'details' in step_definition:
+            return self._values[step_definition['details']['value']]
+
     def get_details_for_choice(self, choice):
         if not choice:
             return ''

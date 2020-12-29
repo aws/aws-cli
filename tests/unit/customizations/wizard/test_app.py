@@ -688,8 +688,23 @@ class TestDetailsWizardApplication(BaseWizardApplicationTest):
                         'some_prompt': {
                             'description': 'Choose something',
                             'type': 'prompt',
-                            'choices': [1, 2, 3],
-                        }
+                            'choices': [
+                                {'display': '1', 'actual_value': '1'},
+                                {'display': '2', 'actual_value': '2'}
+                            ]
+                        },
+                        'static_details': {
+                            'type': 'template',
+                            'value': 'Details',
+                        },
+                        'prompt_w_static_details': {
+                            'description': 'Input',
+                            'type': 'prompt',
+                            'details': {
+                                'value': 'static_details',
+                                'description': 'Static details',
+                            },
+                        },
                     }
                 },
                 '__DONE__': {},
@@ -767,6 +782,28 @@ class TestDetailsWizardApplication(BaseWizardApplicationTest):
 
     def test_can_set_details_toolbar_text(self):
         self.add_toolbar_has_text_assertion('Policy Document')
+        self.stubbed_app.run()
+
+    def test_can_set_static_details_panel_title(self):
+        self.stubbed_app.add_keypress(Keys.Tab)
+        self.stubbed_app.add_keypress(Keys.Tab)
+        self.stubbed_app.add_app_assertion(
+            lambda app: self.assertEqual(app.details_title, 'Static details')
+        )
+        self.stubbed_app.add_keypress(
+            Keys.F3,
+            lambda app: self.assertEqual(app.details_title, 'Static details')
+        )
+        self.stubbed_app.run()
+
+    def test_show_static_details_panel_with_content(self):
+        self.stubbed_app.add_keypress(Keys.Tab)
+        self.stubbed_app.add_keypress(Keys.Tab)
+        self.stubbed_app.add_keypress(Keys.F3)
+        self.add_buffer_text_assertion(
+            'details_buffer',
+            'Details'
+        )
         self.stubbed_app.run()
 
 

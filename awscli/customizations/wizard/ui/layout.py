@@ -30,7 +30,7 @@ from prompt_toolkit.widgets import (
 )
 from prompt_toolkit.utils import is_windows
 
-from awscli.autoprompt.widgets import BaseToolbarView, TitleLine
+from awscli.autoprompt.widgets import BaseToolbarView, TitleLine, FormatTextProcessor
 from awscli.customizations.wizard import core
 from awscli.customizations.wizard.ui.section import (
     WizardSectionTab, WizardSectionBody
@@ -144,6 +144,7 @@ class WizardDetailsPanel:
                 Window(
                     content=BufferControl(
                         buffer=Buffer(name='details_buffer', read_only=True),
+                        input_processors=[FormatTextProcessor()]
                     ),
                     height=Dimension(
                         max=self.DIMENSIONS['details_window_height_max'],

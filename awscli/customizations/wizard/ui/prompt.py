@@ -17,7 +17,8 @@ from prompt_toolkit.filters import Condition
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.keys import Keys
 from prompt_toolkit.layout.containers import (
-    Window, VSplit, Dimension, ConditionalContainer, FloatContainer, Float
+    Window, VSplit, Dimension, ConditionalContainer,
+    FloatContainer, Float, HSplit
 )
 from prompt_toolkit.layout.controls import BufferControl
 from prompt_toolkit.layout.margins import ScrollbarMargin
@@ -54,15 +55,18 @@ class WizardPrompt:
                 default_value=self._value_definition.get('default_value'),
             )
         return ConditionalContainer(
-            VSplit(
-                [
-                    WizardPromptDescription(
-                        self._value_name,
-                        self._value_definition['description']
-                    ),
-                    answer
-                ],
-            ),
+            HSplit([
+                VSplit(
+                    [
+                        WizardPromptDescription(
+                            self._value_name,
+                            self._value_definition['description']
+                        ),
+                        answer
+                    ]
+                ),
+                Window(height=1)
+            ]),
             Condition(self._is_visible)
         )
 
@@ -118,13 +122,31 @@ class WizardPromptAnswer:
                       document=Document(text=self._default_value))
 
     def _get_answer_container(self):
+        content = BufferControl(buffer=self._buffer)
+        content.on_toggle = self._show_details
         return FullyExtendedWidthWindow(
-            content=BufferControl(
-                buffer=self._buffer
-            ),
+            content=content,
             style=self._get_style,
             dont_extend_height=True,
         )
+
+    def _show_details(self, *args, **kwargs):
+        app = get_app()
+        details_buffer = app.layout.get_buffer_by_name(
+            'details_buffer')
+        details, title = self._get_details(*args, **kwargs)
+        app.details_title = title
+        details_buffer.reset()
+        new_document = Document(text=details, cursor_position=0)
+        details_buffer.set_document(new_document, bypass_readonly=True)
+
+    def _get_details(self, *args, **kwargs):
+        app = get_app()
+        details = ''
+        title = get_app().traverser.get_details_title()
+        if app.details_visible:
+            details = get_app().traverser.get_details_for_prompt()
+        return details, title
 
     def _get_style(self):
         if get_app().traverser.get_current_prompt() == self._value_name:
@@ -215,16 +237,6 @@ class WizardPromptSelectionAnswer(WizardPromptAnswer):
 
     def _get_choices(self):
         return get_app().traverser.get_current_prompt_choices()
-
-    def _show_details(self, choice):
-        app = get_app()
-        details_buffer = app.layout.get_buffer_by_name(
-            'details_buffer')
-        details, title = self._get_details(choice)
-        app.details_title = title
-        details_buffer.reset()
-        new_document = Document(text=details, cursor_position=0)
-        details_buffer.set_document(new_document, bypass_readonly=True)
 
     def _get_details(self, choice):
         app = get_app()

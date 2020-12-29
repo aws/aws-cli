@@ -1372,6 +1372,27 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.205
+========
+
+* api-change:``acm-pca``: Update acm-pca command to latest version
+* api-change:``apigatewayv2``: Update apigatewayv2 command to latest version
+
+
+1.18.204
+========
+
+* api-change:``cloudfront``: Update cloudfront command to latest version
+
+
+1.18.203
+========
+
+* api-change:``resource-groups``: Update resource-groups command to latest version
+* api-change:``compute-optimizer``: Update compute-optimizer command to latest version
+* api-change:``dms``: Update dms command to latest version
+
+
 1.18.202
 ========
 

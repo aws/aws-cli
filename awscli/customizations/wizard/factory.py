@@ -59,7 +59,7 @@ def create_default_wizard_v2_runner(session):
     return WizardAppRunner(session=session, app_factory=create_wizard_app)
 
 
-def create_wizard_app(definition, session):
+def create_wizard_app(definition, session, output=None):
     api_invoker = core.APIInvoker(session=session)
     shared_config = core.SharedConfigAPI(session=session,
                                          config_writer=ConfigFileWriter())
@@ -77,5 +77,6 @@ def create_wizard_app(definition, session):
     executor = create_default_executor(api_invoker, shared_config)
     traverser = WizardTraverser(definition, values, executor)
     return WizardApp(
-        layout=layout, values=values, traverser=traverser, executor=executor
+        layout=layout, values=values, traverser=traverser,
+        executor=executor, output=output
     )

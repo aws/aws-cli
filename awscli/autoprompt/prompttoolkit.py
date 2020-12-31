@@ -58,8 +58,9 @@ class PromptToolkitPrompter:
 
     """
     def __init__(self, completion_source, driver, completer=None,
-                 factory=None, app=None, cli_parser=None):
+                 factory=None, app=None, cli_parser=None, output=None):
         self._completion_source = completion_source
+        self._output = output
         if completer is None:
             completer = PromptToolkitCompleter(self._completion_source)
         # We wrap our completer with a ThreadedCompleter to make autocompletion
@@ -115,7 +116,7 @@ class PromptToolkitPrompter:
         kb_manager = self._factory.create_key_bindings()
         kb = kb_manager.keybindings
         app = Application(layout=layout, key_bindings=kb, full_screen=False,
-                          erase_when_done=True)
+                          output=self._output, erase_when_done=True)
         self._set_app_defaults(app)
         return app
 

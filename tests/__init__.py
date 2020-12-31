@@ -18,6 +18,7 @@ import botocore.validate
 
 import prompt_toolkit
 import prompt_toolkit.input
+import prompt_toolkit.output
 import prompt_toolkit.input.defaults
 import prompt_toolkit.keys
 import prompt_toolkit.utils
@@ -337,6 +338,11 @@ class FakeApplicationInput(prompt_toolkit.input.DummyInput):
     @property
     def closed(self):
         return False
+
+
+class FakeApplicationOutput(prompt_toolkit.output.DummyOutput):
+    def fileno(self):
+        return 1
 
 
 @dataclasses.dataclass

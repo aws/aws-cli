@@ -11,14 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
-import io
 import os
 
 from prompt_toolkit import Application
 from prompt_toolkit.keys import Keys
 
 from awscli.autocomplete.main import create_autocompleter
-from awscli.autocomplete import generator, filters, parser
+from awscli.autocomplete import generator, filters, parser, db
 from awscli.autocomplete.local import indexer, model
 from awscli.clidriver import create_clidriver
 from awscli.autoprompt.factory import PromptToolkitFactory
@@ -26,8 +25,9 @@ from awscli.autoprompt.prompttoolkit import (
     PromptToolkitCompleter, PromptToolkitPrompter
 )
 from awscli.autoprompt.history import HistoryDriver
-from awscli.testutils import unittest, random_chars, FileCreator, cd
+from awscli.testutils import unittest, FileCreator, cd
 from tests import PromptToolkitApplicationStubber as ApplicationStubber
+from tests import FakeApplicationOutput
 
 
 def _ec2_only_command_table(command_table, **kwargs):
@@ -36,15 +36,24 @@ def _ec2_only_command_table(command_table, **kwargs):
             del command_table[key]
 
 
-def _generate_index(filename):
-    # This will eventually be moved into some utility function.
-    index_generator = generator.IndexGenerator(
-        [indexer.create_model_indexer(filename)],
+def _generate_index_if_needed(db_connection):
+    if not _index_has_been_generated(db_connection):
+        # This will eventually be moved into some utility function.
+        index_generator = generator.IndexGenerator(
+            [indexer.ModelIndexer(db_connection)],
+        )
+        driver = create_clidriver()
+        driver.session.register('building-command-table.main',
+                                _ec2_only_command_table)
+        index_generator.generate_index(driver)
+
+
+def _index_has_been_generated(db_connection):
+    result = db_connection.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' "
+        "AND name='command_table';"
     )
-    driver = create_clidriver()
-    driver.session.register('building-command-table.main',
-                            _ec2_only_command_table)
-    index_generator.generate_index(driver)
+    return any(result.fetchall())
 
 
 class FakeApplication:
@@ -58,9 +67,9 @@ class BasicPromptToolkitTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.test_file_creator = FileCreator()
-        basename = 'tmpfile-%s' % str(random_chars(8))
-        index_filename = cls.test_file_creator.full_path(basename)
-        _generate_index(index_filename)
+        index_filename = 'file::memory:?cache=shared'
+        cls.db_connection = db.DatabaseConnection(index_filename)
+        _generate_index_if_needed(cls.db_connection)
         cls.cli_parser = parser.CLIParser(model.ModelIndex(index_filename))
         cls.completion_source = create_autocompleter(
             index_filename, response_filter=filters.fuzzy_filter)
@@ -78,6 +87,7 @@ class BasicPromptToolkitTest(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
+        cls.db_connection.close()
         cls.test_file_creator.remove_all()
 
     def setUp(self):
@@ -92,7 +102,8 @@ class BasicPromptToolkitTest(unittest.TestCase):
             completion_source=self.completion_source,
             driver=self.driver,
             factory=self.factory,
-            cli_parser=self.cli_parser
+            cli_parser=self.cli_parser,
+            output=FakeApplicationOutput()
         )
         self.prompter.args = []
         self.prompter.input_buffer = self.factory.create_input_buffer()

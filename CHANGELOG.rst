@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.208
+========
+
+* api-change:``healthlake``: Update healthlake command to latest version
+* api-change:``cloudsearch``: Update cloudsearch command to latest version
+
+
 1.18.207
 ========
 

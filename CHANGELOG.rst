@@ -1384,6 +1384,33 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.209
+========
+
+* api-change:``ce``: Update ce command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+
+
+1.18.208
+========
+
+* api-change:``healthlake``: Update healthlake command to latest version
+* api-change:``cloudsearch``: Update cloudsearch command to latest version
+
+
+1.18.207
+========
+
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+
+
+1.18.206
+========
+
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+
+
 1.18.205
 ========
 

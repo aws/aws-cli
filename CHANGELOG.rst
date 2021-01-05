@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.1.16
+======
+
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``servicecatalog``: Update servicecatalog command to latest version
+* api-change:``healthlake``: Update healthlake command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``cloudsearch``: Update cloudsearch command to latest version
+
+
 2.1.15
 ======
 

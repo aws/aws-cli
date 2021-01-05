@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.209
+========
+
+* api-change:``ce``: Update ce command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+
+
 1.18.208
 ========
 

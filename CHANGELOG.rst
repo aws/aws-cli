@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.210
+========
+
+* api-change:``transfer``: Update transfer command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``autoscaling-plans``: Update autoscaling-plans command to latest version
+
+
 1.18.209
 ========
 

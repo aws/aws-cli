@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.211
+========
+
+* api-change:``devops-guru``: Update devops-guru command to latest version
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+
+
 1.18.210
 ========
 

@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.1.17
+======
+
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``transfer``: Update transfer command to latest version
+* api-change:``autoscaling-plans``: Update autoscaling-plans command to latest version
+* api-change:``devops-guru``: Update devops-guru command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+
+
 2.1.16
 ======
 

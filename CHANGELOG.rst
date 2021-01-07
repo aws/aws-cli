@@ -1396,6 +1396,22 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.211
+========
+
+* api-change:``devops-guru``: Update devops-guru command to latest version
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+
+
+1.18.210
+========
+
+* api-change:``transfer``: Update transfer command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``autoscaling-plans``: Update autoscaling-plans command to latest version
+
+
 1.18.209
 ========
 

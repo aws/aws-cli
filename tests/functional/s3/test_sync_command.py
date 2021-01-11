@@ -73,6 +73,29 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         self.assertTrue(
             os.path.exists(os.path.join(non_existant_directory, key)))
 
+    def test_dryrun_sync(self):
+        self.parsed_responses = [
+            self.list_objects_response([]),
+        ]
+        full_path = self.files.create_file('file.txt', 'mycontent')
+        cmdline = (
+            f'{self.prefix} {self.files.rootdir} s3://bucket/ --dryrun'
+        )
+        stdout, _, _ = self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('ListObjectsV2', {
+                    'Bucket': 'bucket',
+                    'Prefix': '',
+                }),
+            ]
+        )
+        self.assertIn(
+            f'(dryrun) upload: {os.path.relpath(full_path)} to '
+            f's3://bucket/file.txt',
+            stdout
+        )
+
     def test_glacier_sync_with_force_glacier(self):
         self.parsed_responses = [
             {

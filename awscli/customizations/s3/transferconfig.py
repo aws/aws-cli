@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 from s3transfer.manager import TransferConfig
 
+from awscli.customizations.s3 import constants
 from awscli.customizations.s3.utils import human_readable_to_bytes
 from awscli.compat import six
 # If the user does not specify any overrides,
@@ -22,7 +23,8 @@ DEFAULTS = {
     'multipart_chunksize': 8 * (1024 ** 2),
     'max_concurrent_requests': 10,
     'max_queue_size': 1000,
-    'max_bandwidth': None
+    'max_bandwidth': None,
+    'preferred_transfer_client': constants.DEFAULT_TRANSFER_CLIENT,
 }
 
 
@@ -37,6 +39,12 @@ class RuntimeConfig(object):
                          'max_bandwidth']
     HUMAN_READABLE_SIZES = ['multipart_chunksize', 'multipart_threshold']
     HUMAN_READABLE_RATES = ['max_bandwidth']
+    SUPPORTED_CHOICES = {
+        'preferred_transfer_client': [
+            constants.DEFAULT_TRANSFER_CLIENT,
+            constants.CRT_TRANSFER_CLIENT,
+        ]
+    }
 
     @staticmethod
     def defaults():
@@ -79,6 +87,10 @@ class RuntimeConfig(object):
                 runtime_config[attr] = human_readable_to_bytes(value[:-2])
 
     def _validate_config(self, runtime_config):
+        self._validate_positive_integers(runtime_config)
+        self._validate_choices(runtime_config)
+
+    def _validate_positive_integers(self, runtime_config):
         for attr in self.POSITIVE_INTEGERS:
             value = runtime_config.get(attr)
             if value is not None:
@@ -89,9 +101,22 @@ class RuntimeConfig(object):
                 except ValueError:
                     self._error_positive_value(attr, value)
 
+    def _validate_choices(self, runtime_config):
+        for attr in self.SUPPORTED_CHOICES:
+            value = runtime_config.get(attr)
+            if value is not None:
+                if value not in self.SUPPORTED_CHOICES[attr]:
+                    self._error_invalid_choice(attr, value)
+
     def _error_positive_value(self, name, value):
         raise InvalidConfigError(
             "Value for %s must be a positive integer: %s" % (name, value))
+
+    def _error_invalid_choice(self, name, value):
+        raise InvalidConfigError(
+            f'Invalid value: "{value}" for configuration option: "{name}". '
+            f'Supported values are: {", ".join(self.SUPPORTED_CHOICES[name])}'
+        )
 
 
 def create_transfer_config_from_runtime_config(runtime_config):

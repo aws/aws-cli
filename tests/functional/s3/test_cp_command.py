@@ -67,6 +67,32 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertEqual(self.operations_called[0][1]['Key'], 'foo.txt')
         self.assertEqual(self.operations_called[0][1]['Bucket'], 'bucket')
 
+    def test_dryrun_upload(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --dryrun'
+        self.parsed_responses = []
+        stdout, _, _ = self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called, [])
+        self.assertIn(
+            f'(dryrun) upload: {os.path.relpath(full_path)} to '
+            f's3://bucket/key.txt',
+            stdout
+        )
+
+    def test_error_on_same_line_as_status(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = f'{self.prefix} {full_path} s3://bucket-not-exist/key.txt'
+        self.http_response.status_code = 400
+        self.parsed_responses = [{'Error': {
+                                  'Code': 'BucketNotExists',
+                                  'Message': 'Bucket does not exist'}}]
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=1)
+        self.assertIn(
+            f'upload failed: {os.path.relpath(full_path)} to '
+            's3://bucket-not-exist/key.txt An error',
+            stderr
+        )
+
     def test_upload_grants(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
         cmdline = ('%s %s s3://bucket/key.txt --grants read=id=foo '
@@ -202,6 +228,25 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertEqual(len(self.operations_called), 1, self.operations_called)
         self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
 
+    def test_dryrun_download(self):
+        self.parsed_responses = [self.head_object_response()]
+        target = self.files.full_path('file.txt')
+        cmdline = f'{self.prefix} s3://bucket/key.txt {target} --dryrun'
+        stdout, _, _ = self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('HeadObject', {
+                    'Bucket': 'bucket',
+                    'Key': 'key.txt',
+                })
+            ]
+        )
+        self.assertIn(
+            f'(dryrun) download: s3://bucket/key.txt to '
+            f'{os.path.relpath(target)}',
+            stdout
+        )
+
     def test_website_redirect_ignore_paramfile(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
         cmdline = '%s %s s3://bucket/key.txt --website-redirect %s' % \
@@ -213,6 +258,25 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertEqual(
             self.operations_called[0][1]['WebsiteRedirectLocation'],
             'http://someserver'
+        )
+
+    def test_dryrun_copy(self):
+        self.parsed_responses = [self.head_object_response()]
+        cmdline = (
+            f'{self.prefix} s3://bucket/key.txt s3://bucket/key2.txt --dryrun'
+        )
+        stdout, _, _ = self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('HeadObject', {
+                    'Bucket': 'bucket',
+                    'Key': 'key.txt',
+                })
+            ]
+        )
+        self.assertIn(
+            '(dryrun) copy: s3://bucket/key.txt to s3://bucket/key2.txt',
+            stdout
         )
 
     def test_metadata_copy(self):

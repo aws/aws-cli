@@ -24,6 +24,18 @@ class TestRmCommand(BaseS3TransferCommandTest):
             len(self.operations_called), 1, self.operations_called)
         self.assertEqual(self.operations_called[0][0].name, 'DeleteObject')
 
+    def test_dryrun_delete(self):
+        self.parsed_responses = [self.head_object_response()]
+        cmdline = (
+            f'{self.prefix} s3://bucket/key.txt --dryrun'
+        )
+        stdout, _, _ = self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called([])
+        self.assertIn(
+            '(dryrun) delete: s3://bucket/key.txt',
+            stdout
+        )
+
     def test_delete_with_request_payer(self):
         cmdline = '%s s3://mybucket/mykey --request-payer' % self.prefix
         self.run_cmd(cmdline, expected_rc=0)

@@ -49,26 +49,19 @@ LOGGER = logging.getLogger(__name__)
 
 
 class S3TransferHandlerFactory(object):
-    MAX_IN_MEMORY_CHUNKS = 6
-
-    def __init__(self, cli_params, runtime_config):
+    def __init__(self, cli_params):
         """Factory for S3TransferHandlers
 
         :type cli_params: dict
         :param cli_params: The parameters provide to the CLI command
-
-        :type runtime_config: RuntimeConfig
-        :param runtime_config: The runtime config for the CLI command
-            being run
         """
         self._cli_params = cli_params
-        self._runtime_config = runtime_config
 
-    def __call__(self, client, result_queue):
+    def __call__(self, transfer_manager, result_queue):
         """Creates a S3TransferHandler instance
 
-        :type client: botocore.client.Client
-        :param client: The client to power the S3TransferHandler
+        :param transfer_manager: The transfer manager to power the
+            S3TransferHandler
 
         :type result_queue: queue.Queue
         :param result_queue: The result queue to be used to process results
@@ -76,19 +69,6 @@ class S3TransferHandlerFactory(object):
 
         :returns: A S3TransferHandler instance
         """
-        transfer_config = create_transfer_config_from_runtime_config(
-            self._runtime_config)
-        transfer_config.max_in_memory_upload_chunks = self.MAX_IN_MEMORY_CHUNKS
-        transfer_config.max_in_memory_download_chunks = \
-            self.MAX_IN_MEMORY_CHUNKS
-
-        transfer_manager = TransferManager(client, transfer_config)
-
-        LOGGER.debug(
-            "Using a multipart threshold of %s and a part size of %s",
-            transfer_config.multipart_threshold,
-            transfer_config.multipart_chunksize
-        )
         result_recorder = ResultRecorder()
         result_processor_handlers = [result_recorder]
         self._add_result_printer(result_recorder, result_processor_handlers)

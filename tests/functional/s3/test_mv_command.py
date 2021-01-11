@@ -31,6 +31,25 @@ class TestMvCommand(BaseS3TransferCommandTest):
         stderr = self.run_cmd(cmdline, expected_rc=252)[1]
         self.assertIn('Cannot mv a file onto itself', stderr)
 
+    def test_dryrun_move(self):
+        self.parsed_responses = [self.head_object_response()]
+        cmdline = (
+            f'{self.prefix} s3://bucket/key.txt s3://bucket/key2.txt --dryrun'
+        )
+        stdout, _, _ = self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('HeadObject', {
+                    'Bucket': 'bucket',
+                    'Key': 'key.txt',
+                })
+            ]
+        )
+        self.assertIn(
+            '(dryrun) move: s3://bucket/key.txt to s3://bucket/key2.txt',
+            stdout
+        )
+
     def test_website_redirect_ignore_paramfile(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
         cmdline = '%s %s s3://bucket/key.txt --website-redirect %s' % \

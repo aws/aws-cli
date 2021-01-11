@@ -137,3 +137,15 @@ The following ``send-command`` example runs a command on instances that have the
 See example 1 for sample output.
 
 For more information, see `Running Commands Using Systems Manager Run Command <https://docs.aws.amazon.com/systems-manager/latest/userguide/run-command.html>`__ in the *AWS Systems Manager User Guide*.
+
+**Example 8: To run a command that uses a shared document**
+
+The following ``send-command`` example runs a shared document on a target instance. ::
+
+    aws ssm send-command \
+        --document-name "arn:aws:ssm:us-east-1:123456789012:document/ExampleDocument" \
+        --targets "Key=instanceids,Values=i-1234567890abcdef0"
+
+See example 1 for sample output.
+
+For more information, see `Using shared SSM documents <https://docs.aws.amazon.com/systems-manager/latest/userguide/ssm-using-shared.html>`__ in the *AWS Systems Manager User Guide*.

@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.1.18
+======
+
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``auditmanager``: Update auditmanager command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``kms``: Update kms command to latest version
+* api-change:``appstream``: Update appstream command to latest version
+
+
 2.1.17
 ======
 

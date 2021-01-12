@@ -1407,6 +1407,23 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.213
+========
+
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``auditmanager``: Update auditmanager command to latest version
+* api-change:``appstream``: Update appstream command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
+1.18.212
+========
+
+* api-change:``rds``: Update rds command to latest version
+* api-change:``kms``: Update kms command to latest version
+
+
 1.18.211
 ========
 

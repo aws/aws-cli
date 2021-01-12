@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.18.213
+========
+
+* api-change:``elasticache``: Update elasticache command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``auditmanager``: Update auditmanager command to latest version
+* api-change:``appstream``: Update appstream command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
 1.18.212
 ========
 

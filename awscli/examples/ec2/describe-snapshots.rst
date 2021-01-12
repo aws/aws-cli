@@ -86,4 +86,6 @@ The following ``describe-snapshots`` example uses JMESPath expressions to descri
 
     aws ec2 describe-snapshots \
         --owner-ids 012345678910 \
-        --query "Snapshots[?(StartTime<=`2020-03-31`)].[SnapshotId]"
+        --query "Snapshots[?(StartTime<='2020-03-31')].[SnapshotId]"
+
+For additional examples using filters, see `Listing and filtering your resources <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html#Filtering_Resources_CLI>`__ in the *Amazon EC2 User Guide*.

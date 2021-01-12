@@ -85,7 +85,7 @@ This example creates a new association that only runs once on the specified date
     aws ssm create-association \
         --name "AWS-UpdateSSMAgent" \
         --targets "Key=instanceids,Values=i-0cb2b964d3e14fd9f" \
-        --schedule "at(2020-05-14T15:55:00)"  \
+        --schedule-expression "at(2020-05-14T15:55:00)"  \
         --apply-only-at-cron-interval
 
 Output::
@@ -118,4 +118,4 @@ Output::
         }
     }
 
-For more information, see `CreateAssociation <https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_CreateAssociation.html>`__ in the *AWS Systems Manager API Reference*.
+For more information, see `CreateAssociation <https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_CreateAssociation.html>`__ in the *AWS Systems Manager API Reference* or `Reference: Cron and rate expressions for Systems Manager <https://docs.aws.amazon.com/systems-manager/latest/userguide/reference-cron-and-rate-expressions.html>`__ in the *AWS Systems Manager User Guide*.

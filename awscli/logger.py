@@ -12,6 +12,8 @@
 # language governing permissions and limitations under the License.
 import logging
 
+import awscrt.io
+
 LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
 
@@ -73,3 +75,11 @@ def remove_stream_logger(logger_name):
     for handler in log.handlers:
         if handler.get_name() == handler_name:
             log.removeHandler(handler)
+
+
+def enable_crt_logging():
+    awscrt.io.init_logging(awscrt.io.LogLevel.Debug, 'stderr')
+
+
+def disable_crt_logging():
+    awscrt.io.init_logging(awscrt.io.LogLevel.NoLogs, 'stderr')

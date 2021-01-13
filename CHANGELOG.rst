@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.18.214
+========
+
+* api-change:``frauddetector``: Update frauddetector command to latest version
+* api-change:``personalize``: Update personalize command to latest version
+
+
 1.18.213
 ========
 

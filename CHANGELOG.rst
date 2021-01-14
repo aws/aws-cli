@@ -2,7 +2,17 @@
 CHANGELOG
 =========
 
-<<<<<<< HEAD
+2.1.19
+======
+
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``cognito-identity``: Update cognito-identity command to latest version
+* api-change:``s3control``: Update s3control command to latest version
+* api-change:``personalize``: Update personalize command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``frauddetector``: Update frauddetector command to latest version
+
+
 2.1.18
 ======
 

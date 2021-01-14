@@ -1,4 +1,4 @@
-# Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -22,14 +22,18 @@ class TestExecuteCommand(BaseAWSCommandParamsTest):
 
     @mock.patch('awscli.customizations.ecs.executeCommand.check_call')
     def test_execute_command_success(self, mock_check_call):
-        cmdline = 'ecs execute-command --cluster someCluster --task someTaskId ' \
-                  '--interactive --command ls --region use-west-2'
+        cmdline = 'ecs execute-command --cluster someCluster ' \
+                  '--task someTaskId ' \
+                  '--interactive --command ls ' \
+                  '--region use-west-2'
         mock_check_call.return_value = 0
         self.parsed_responses = [{
             "containerName": "someContainerName",
-            "containerArn" : "someContainerArn",
+            "containerArn": "someContainerArn",
             "taskArn": "someTaskArn",
-            "session": {"sessionId": "session-id", "tokenValue": "token-value", "streamUrl": "stream-url"},
+            "session": {"sessionId": "session-id",
+                        "tokenValue": "token-value",
+                        "streamUrl": "stream-url"},
             "clusterArn": "someClusterArn",
             "interactive": "true"
         }]
@@ -41,9 +45,11 @@ class TestExecuteCommand(BaseAWSCommandParamsTest):
         self.assertEqual(
             {
                 "containerName": "someContainerName",
-                "containerArn" : "someContainerArn",
+                "containerArn": "someContainerArn",
                 "taskArn": "someTaskArn",
-                "session": {"sessionId": "session-id", "tokenValue": "token-value", "streamUrl": "stream-url"},
+                "session": {"sessionId": "session-id",
+                            "tokenValue": "token-value",
+                            "streamUrl": "stream-url"},
                 "clusterArn": "someClusterArn",
                 "interactive": "true"
             },
@@ -52,8 +58,10 @@ class TestExecuteCommand(BaseAWSCommandParamsTest):
 
     @mock.patch('awscli.customizations.ecs.executeCommand.check_call')
     def test_execute_command_fails(self, mock_check_call):
-        cmdline = 'ecs execute-command --cluster someCluster --task someTaskId ' \
-                  '--interactive --command ls --region use-west-2'
+        cmdline = 'ecs execute-command --cluster someCluster ' \
+                  '--task someTaskId ' \
+                  '--interactive --command ls ' \
+                  '--region use-west-2'
         mock_check_call.side_effect = OSError(errno.ENOENT, 'some error')
         self.run_cmd(cmdline, expected_rc=255)
 

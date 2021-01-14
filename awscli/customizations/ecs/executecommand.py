@@ -1,4 +1,4 @@
-# Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -28,10 +28,10 @@ ERROR_MESSAGE = (
 )
 
 
-class EcsExecuteCommand(ServiceOperation):
+class ECSExecuteCommand(ServiceOperation):
 
     def create_help_command(self):
-        help_command = super(EcsExecuteCommand, self).create_help_command()
+        help_command = super(ECSExecuteCommand, self).create_help_command()
         # change the output shape because the command provides no output.
         self._operation_model.output_shape = None
         return help_command
@@ -40,10 +40,13 @@ class EcsExecuteCommand(ServiceOperation):
 class ExecuteCommandCaller(CLIOperationCaller):
     def invoke(self, service_name, operation_name, parameters, parsed_globals):
         try:
-            # making an execute-command call to connect to an active session on a container would require
+            # making an execute-command call to connect to an
+            # active session on a container would require
             # session-manager-plugin to be installed on the client machine.
-            # Hence, making this empty session-manager-plugin call before calling execute-command
-            # to ensure that session-manager-plugin is installed before execute-command-command is made
+            # Hence, making this empty session-manager-plugin call
+            # before calling execute-command to ensure that
+            # session-manager-plugin is installed
+            # before execute-command-command is made
             check_call(["session-manager-plugin"])
             client = self._session.create_client(
                 service_name, region_name=parsed_globals.region,

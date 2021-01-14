@@ -2,6 +2,7 @@
 CHANGELOG
 =========
 
+<<<<<<< HEAD
 2.1.18
 ======
 
@@ -1417,6 +1418,22 @@ CHANGELOG
 * feature:region: Added support for pulling the default region from IMDS when running on an EC2 instance. See `#3680 <https://github.com/aws/aws-cli/issues/3680>`__.
 * feature:s3: Added support for the ``--copy-props`` parameter to the high level S3 commands. This new parameter configures how additional metadata, tags, etc. should be copied for S3 to S3 transfers. See `#4840 <https://github.com/aws/aws-cli/issues/4840>`__.
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
+
+
+1.18.215
+========
+
+* api-change:``cognito-identity``: Update cognito-identity command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``s3control``: Update s3control command to latest version
+
+
+1.18.214
+========
+
+* api-change:``frauddetector``: Update frauddetector command to latest version
+* api-change:``personalize``: Update personalize command to latest version
 
 
 1.18.213

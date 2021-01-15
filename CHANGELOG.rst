@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.18.216
+========
+
+* api-change:``sns``: Update sns command to latest version
+
+
 1.18.215
 ========
 

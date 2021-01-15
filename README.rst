@@ -53,6 +53,13 @@ Services Security Bulletins
 website <https://aws.amazon.com/security/security-bulletins>`__ *for
 any important security bulletins related to aws-cli.*
 
+Maintenance and Support for CLI Major Versions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The AWS CLI version 1 was made generally available on 09/02/2013 and is currently in the full support phase of the availability life cycle.
+
+For information about maintenance and support for SDK major versions and their underlying dependencies, see the `Maintenance Policy <https://docs.aws.amazon.com/credref/latest/refdocs/maint-policy.html>`__ section in the *AWS SDKs and Tools Shared Configuration and Credentials Reference Guide*.
+
 Installation
 ~~~~~~~~~~~~
 

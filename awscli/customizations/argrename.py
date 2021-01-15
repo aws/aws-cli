@@ -85,6 +85,9 @@ ARGUMENT_RENAMES = {
     'lex-models.delete-intent-version.version': 'intent-version',
     'lex-models.delete-slot-type-version.version': 'slot-type-version',
     'lex-models.get-export.version': 'resource-version',
+    'license-manager.get-grant.version': 'grant-version',
+    'license-manager.delete-grant.version': 'grant-version',
+    'license-manager.get-license.version': 'license-version',
     'mobile.create-project.region': 'project-region',
     'rekognition.create-stream-processor.output': 'stream-processor-output',
     'eks.create-cluster.version': 'kubernetes-version',
@@ -94,6 +97,7 @@ ARGUMENT_RENAMES = {
     'schemas.*.version': 'schema-version',
     'sagemaker.delete-image-version.version': 'version-number',
     'sagemaker.describe-image-version.version': 'version-number',
+    'iotwireless.*.lo-ra-wan': 'lorawan',
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,

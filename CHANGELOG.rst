@@ -1430,6 +1430,20 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.217
+========
+
+* api-change:``chime``: Update chime command to latest version
+* api-change:``acm-pca``: Update acm-pca command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
+1.18.216
+========
+
+* api-change:``sns``: Update sns command to latest version
+
+
 1.18.215
 ========
 

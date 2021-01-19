@@ -25,9 +25,6 @@ UNSUPPORTED_PYTHON = (
     (sys.version_info[0] == 2 and sys.version_info[:2] <= (2, 6)) or
     (sys.version_info[0] == 3 and sys.version_info[:2] <= (3, 3))
 )
-DEPRECATED_PYTHON = (
-    sys.version_info[:2] in ((3, 4), (3, 5))
-)
 INSTALL_ARGS = (
     '--no-binary :all: --no-build-isolation --no-cache-dir --no-index '
 )
@@ -40,12 +37,37 @@ class BadRCError(Exception):
 class MultipleBundlesError(Exception):
     pass
 
+
 class PythonDeprecationWarning(Warning):
     """
     Python version being used is scheduled to become unsupported
     in an future release. See warning for specifics.
     """
     pass
+
+
+def _build_deprecations():
+    py_34_35_params = {
+        'date': 'February 1, 2021',
+        'blog_link': 'https://aws.amazon.com/blogs/developer/announcing-the-'
+                     'end-of-support-for-python-3-4-and-3-5-in-the-aws-sdk-'
+                     'for-python-and-aws-cli-v1/'
+    }
+    py_27_params = {
+        'date': 'July 15, 2021',
+        'blog_link': 'https://aws.amazon.com/blogs/developer/announcing-end-'
+                     'of-support-for-python-2-7-in-aws-sdk-for-python-and-'
+                     'aws-cli-v1/'
+    }
+    return {
+        (3,4): py_34_35_params,
+        (3,5): py_34_35_params,
+        (2,7): py_27_params
+    }
+
+
+DEPRECATED_PYTHON = _build_deprecations()
+
 
 @contextmanager
 def cd(dirname):
@@ -192,6 +214,7 @@ def main():
                       "-b /usr/local/bin/aws.  This is an optional argument. "
                       "If you do not provide this argument you will have to "
                       "add INSTALL_DIR/bin to your PATH.")
+    py_version = sys.version_info[:2]
     if UNSUPPORTED_PYTHON:
         unsupported_python_msg = (
             "Unsupported Python version detected: Python %s.%s\n"
@@ -201,20 +224,20 @@ def main():
             "https://aws.amazon.com/blogs/developer/deprecation-of-python-2-6"
             "-and-python-3-3-in-botocore-boto3-and-the-aws-cli/"
         )
-        print(unsupported_python_msg % sys.version_info[:2])
+        print(unsupported_python_msg % py_version)
         sys.exit(1)
 
-    if DEPRECATED_PYTHON:
-        py_version = sys.version_info[:2]
+    if py_version in DEPRECATED_PYTHON:
+        params = DEPRECATED_PYTHON[py_version]
         deprecated_python_msg = (
             "Deprecated Python version detected: Python {}.{}\n"
-            "Starting February 1, 2021, the AWS CLI will no longer support "
+            "Starting {}, the AWS CLI will no longer support "
             "this version of Python. To continue receiving service updates, "
             "bug fixes, and security updates please upgrade to Python 3.6 or "
-            "later. More information can be found here: https://aws.amazon.com"
-            "/blogs/developer/announcing-the-end-of-support-for-python-3-4-"
-            "and-3-5-in-the-aws-sdk-for-python-and-aws-cli-v1/"
-        ).format(py_version[0], py_version[1])
+            "later. More information can be found here: {}"
+        ).format(
+            py_version[0], py_version[1], params['date'], params['blog_link']
+        )
         print(deprecated_python_msg, file=sys.stderr)
 
     opts = parser.parse_args()[0]

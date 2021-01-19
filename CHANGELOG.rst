@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.1.20
+======
+
+* api-change:``chime``: Update chime command to latest version
+* api-change:``sns``: Update sns command to latest version
+* api-change:``acm-pca``: Update acm-pca command to latest version
+* api-change:``ecs``: Update ecs command to latest version
+
+
 2.1.19
 ======
 

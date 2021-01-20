@@ -31,21 +31,21 @@ class TestExecuteCommand(unittest.TestCase):
         self.caller = executecommand.ExecuteCommandCaller(self.session)
         self.session.create_client.return_value = self.client
 
-    @mock.patch('awscli.customizations.ecs.executeCommand.check_call')
+    @mock.patch('awscli.customizations.ecs.executecommand.check_call')
     def test_when_calls_fails_from_ecs(self, mock_check_call):
         self.client.execute_command.side_effect = Exception('some exception')
         mock_check_call.return_value = 0
         with self.assertRaisesRegexp(Exception, 'some exception'):
             self.caller.invoke('ecs', 'ExecuteCommand', {}, mock.Mock())
 
-    @mock.patch('awscli.customizations.ecs.executeCommand.check_call')
+    @mock.patch('awscli.customizations.ecs.executecommand.check_call')
     def test_when_session_manager_plugin_not_installed(self, mock_check_call):
         mock_check_call.side_effect = [OSError(errno.ENOENT, 'some error'), 0]
 
         with self.assertRaises(ValueError):
             self.caller.invoke('ecs', 'ExecuteCommand', {}, mock.Mock())
 
-    @mock.patch('awscli.customizations.ecs.executeCommand.check_call')
+    @mock.patch('awscli.customizations.ecs.executecommand.check_call')
     def test_execute_command_success(self, mock_check_call):
         mock_check_call.return_value = 0
         execute_command_params = {
@@ -85,7 +85,7 @@ class TestExecuteCommand(unittest.TestCase):
              'StartSession']
         )
 
-    @mock.patch('awscli.customizations.ecs.executeCommand.check_call')
+    @mock.patch('awscli.customizations.ecs.executecommand.check_call')
     def test_when_check_call_fails(self, mock_check_call):
         mock_check_call.side_effect = [0, Exception('some Exception')]
 

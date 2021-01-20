@@ -20,7 +20,7 @@ from awscli.testutils import BaseAWSHelpOutputTest
 
 class TestExecuteCommand(BaseAWSCommandParamsTest):
 
-    @mock.patch('awscli.customizations.ecs.executeCommand.check_call')
+    @mock.patch('awscli.customizations.ecs.executecommand.check_call')
     def test_execute_command_success(self, mock_check_call):
         cmdline = 'ecs execute-command --cluster someCluster ' \
                   '--task someTaskId ' \
@@ -56,7 +56,7 @@ class TestExecuteCommand(BaseAWSCommandParamsTest):
             actual_response
         )
 
-    @mock.patch('awscli.customizations.ecs.executeCommand.check_call')
+    @mock.patch('awscli.customizations.ecs.executecommand.check_call')
     def test_execute_command_fails(self, mock_check_call):
         cmdline = 'ecs execute-command --cluster someCluster ' \
                   '--task someTaskId ' \

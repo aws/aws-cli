@@ -15,14 +15,14 @@ import json
 import logging
 
 import mock
-from nose.tools import assert_equal
+import pytest
 import ruamel.yaml as yaml
 
-from awscli.testutils import capture_output
 from awscli.clidriver import create_clidriver
 
 
-def test_can_generate_skeletons_for_all_service_comands():
+def get_all_cli_skeleton_commands():
+    skeleton_commands = []
     environ = {
         'AWS_DATA_PATH': os.environ['AWS_DATA_PATH'],
         'AWS_DEFAULT_REGION': 'us-east-1',
@@ -44,43 +44,43 @@ def test_can_generate_skeletons_for_all_service_comands():
                     op_help = sub_command.create_help_command()
                     arg_table = op_help.arg_table
                     if 'generate-cli-skeleton' in arg_table:
-                        yield _test_gen_input_skeleton, command_name, sub_name
-                        yield (
-                            _test_gen_yaml_input_skeleton, command_name,
-                            sub_name
-                        )
+                        skeleton_commands.append(f'{command_name} {sub_name}')
+    return skeleton_commands
 
 
-def _test_gen_input_skeleton(command_name, operation_name):
-    command = '%s %s --generate-cli-skeleton' % (command_name,
-                                                 operation_name)
-    stdout, stderr, _ = _run_cmd(command)
+SKELETON_COMMANDS = get_all_cli_skeleton_commands()
+
+
+@pytest.mark.parametrize('cmd', SKELETON_COMMANDS)
+def test_gen_input_skeleton(cmd, capsys):
+    stdout, stderr, _ = _run_cmd(cmd + ' --generate-cli-skeleton', capsys)
     # Test that a valid JSON blob is emitted to stdout is valid.
     try:
         json.loads(stdout)
-    except ValueError as e:
+    except ValueError:
         raise AssertionError(
-            "Could not generate CLI skeleton for command: %s %s\n"
-            "stdout:\n%s\n"
-            "stderr:\n%s\n" % (command_name, operation_name, stdout,
-                               stderr))
+            f"Could not generate CLI skeleton for command: {cmd}\n"
+            f"stdout:\n{stdout}\n"
+            f"stderr:\n{stderr}\n"
+        )
 
 
-def _test_gen_yaml_input_skeleton(command_name, operation_name):
-    command = '%s %s --generate-cli-skeleton yaml-input' % (
-        command_name, operation_name)
-    stdout, stderr, _ = _run_cmd(command)
+@pytest.mark.parametrize('cmd', SKELETON_COMMANDS)
+def test_gen_yaml_input_skeleton(cmd, capsys):
+    stdout, stderr, _ = _run_cmd(
+        cmd + ' --generate-cli-skeleton yaml-input', capsys
+    )
     try:
         yaml.safe_load(stdout)
     except ValueError:
         raise AssertionError(
-            "Could not generate CLI YAML skeleton for command: %s %s\n"
-            "stdout:\n%s\n"
-            "stderr:\n%s\n" % (command_name, operation_name, stdout,
-                               stderr))
+            f"Could not generate CLI YAML skeleton for command: {cmd}\n"
+            f"stdout:\n{stdout}\n"
+            f"stderr:\n{stderr}\n"
+        )
 
 
-def _run_cmd(cmd, expected_rc=0):
+def _run_cmd(cmd, capsys, expected_rc=0):
     logging.debug("Calling cmd: %s", cmd)
     # Drivers do not seem to be reusable since the formatters seem to not clear
     # themselves between runs. This is fine in practice since a driver is only
@@ -89,25 +89,17 @@ def _run_cmd(cmd, expected_rc=0):
     # worth seeing if we can make drivers reusable to speed these up generated
     # tests.
     driver = create_clidriver()
-    if not isinstance(cmd, list):
-        cmdlist = cmd.split()
-    else:
-        cmdlist = cmd
-
-    with capture_output() as captured:
-        try:
-            rc = driver.main(cmdlist)
-        except SystemExit as e:
-            # We need to catch SystemExit so that we
-            # can get a proper rc and still present the
-            # stdout/stderr to the test runner so we can
-            # figure out what went wrong.
-            rc = e.code
-    stderr = captured.stderr.getvalue()
-    stdout = captured.stdout.getvalue()
-    assert_equal(
-        rc, expected_rc,
-        "Unexpected rc (expected: %s, actual: %s) for command: %s\n"
-        "stdout:\n%sstderr:\n%s" % (
-            expected_rc, rc, cmd, stdout, stderr))
+    try:
+        rc = driver.main(cmd.split())
+    except SystemExit as e:
+        # We need to catch SystemExit so that we
+        # can get a proper rc and still present the
+        # stdout/stderr to the test runner so we can
+        # figure out what went wrong.
+        rc = e.code
+    stdout, stderr = capsys.readouterr()
+    assert rc == expected_rc, (
+        f"Unexpected rc (expected: {expected_rc}, actual: {rc}) "
+        f"for command: {cmd}\nstdout:\n{stdout}stderr:\n{stderr}"
+    )
     return stdout, stderr, rc

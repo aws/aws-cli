@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.1.21
+======
+
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+* enhancement:codeartifact: Added login support for NuGet client v4.9.4
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+
+
 2.1.20
 ======
 

@@ -27,17 +27,10 @@ install_requires = [
     'botocore==1.19.57',
     'docutils>=0.10,<0.16',
     's3transfer>=0.3.0,<0.4.0',
+    'PyYAML>=3.10,<5.4',
+    'colorama>=0.2.5,<0.4.4',
+    'rsa>=3.1.2,<=4.5.0',
 ]
-
-
-if sys.version_info[:2] == (3, 4):
-    install_requires.append('PyYAML>=3.10,<5.3')
-    install_requires.append('colorama>=0.2.5,<0.4.2')
-    install_requires.append('rsa>=3.1.2,<=4.0.0')
-else:
-    install_requires.append('PyYAML>=3.10,<5.4')
-    install_requires.append('colorama>=0.2.5,<0.4.4')
-    install_requires.append('rsa>=3.1.2,<=4.5.0')
 
 
 setup_options = dict(
@@ -58,6 +51,7 @@ setup_options = dict(
     install_requires=install_requires,
     extras_require={},
     license="Apache License 2.0",
+    python_requires=">= 2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*",
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
@@ -68,8 +62,6 @@ setup_options = dict(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',

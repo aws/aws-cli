@@ -1439,6 +1439,15 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.218
+========
+
+* api-change:``kafka``: Update kafka command to latest version
+* api-change:``resourcegroupstaggingapi``: Update resourcegroupstaggingapi command to latest version
+* enhancement:codeartifact: Added login support for NuGet client v4.9.4
+* api-change:``securityhub``: Update securityhub command to latest version
+
+
 1.18.217
 ========
 

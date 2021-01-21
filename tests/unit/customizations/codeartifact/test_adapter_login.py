@@ -75,6 +75,14 @@ Registered Sources:
   2. Ab[.d7  $#!],   [Disabled]
      https://source2.com/index.json"""
 
+    _NUGET_SOURCES_LIST_RESPONSE_WITH_SPACE = b"""\
+                Registered Sources:
+
+                  1. Source Name 1 [Enabled]
+                     https://source1.com/index.json
+                  2. Ab[.d7  $#!],   [Disabled]
+                     https://source2.com/index.json"""
+
     def setUp(self):
         self.domain = 'domain'
         self.domain_owner = 'domain-owner'
@@ -143,6 +151,28 @@ Registered Sources:
             stderr=self.subprocess_utils.PIPE
         )
 
+    def test_login_old_nuget(self):
+        self.subprocess_utils.check_output.return_value = \
+            self._NUGET_SOURCES_LIST_RESPONSE_WITH_SPACE
+        self.test_subject.login()
+        self.subprocess_utils.check_output.assert_any_call(
+            self.list_operation_command,
+            stderr=self.subprocess_utils.PIPE
+        )
+        self.subprocess_utils.check_output.assert_called_with(
+            self.add_operation_command,
+            stderr=self.subprocess_utils.PIPE
+        )
+
+    def test_login_dry_run_old_nuget(self):
+        self.subprocess_utils.check_output.return_value = \
+            self._NUGET_SOURCES_LIST_RESPONSE_WITH_SPACE
+        self.test_subject.login(dry_run=True)
+        self.subprocess_utils.check_output.assert_called_once_with(
+            ['nuget', 'sources', 'list', '-format', 'detailed'],
+            stderr=self.subprocess_utils.PIPE
+        )
+
     def test_login_source_name_already_exists(self):
         list_response = 'Registered Sources:\n' \
                         '  1.  ' + self.source_name + ' [ENABLED]\n' \
@@ -152,6 +182,26 @@ Registered Sources:
         self.test_subject.login()
         self.subprocess_utils.check_output.assert_called_with(
             self.update_operation_command,
+            stderr=self.subprocess_utils.PIPE
+        )
+
+    def test_login_source_url_already_exists_old_nuget(self):
+        non_default_source_name = 'Source Name'
+        list_response = 'Registered Sources:\n' \
+                        '\n' \
+                        '  1. ' + non_default_source_name + ' [ENABLED]\n' \
+                                                            '      ' + self.nuget_index_url
+        self.subprocess_utils.check_output.return_value = \
+            list_response.encode('utf-8')
+        self.test_subject.login()
+        self.subprocess_utils.check_output.assert_called_with(
+            [
+                'nuget', 'sources', 'update',
+                '-name', non_default_source_name,
+                '-source', self.nuget_index_url,
+                '-username', 'aws',
+                '-password', self.auth_token
+            ],
             stderr=self.subprocess_utils.PIPE
         )
 

@@ -158,12 +158,25 @@ class NuGetLogin(BaseLogin):
         #   100. Source Name 100
         #       https://source100.com/index.json
 
+       # Or it can be (blank line after Registered Sources:)
+
+       # Registered Sources:
+
+       #   1.  Source Name 1 [Enabled]
+       #       https://source1.com/index.json
+       #   2.  Source Name 2 [Disabled]
+       #       https://source2.com/index.json
+       # ...
+       #   100. Source Name 100
+       #       https://source100.com/index.json
+
         response = self.subprocess_utils.check_output(
             ['nuget', 'sources', 'list', '-format', 'detailed'],
             stderr=self.subprocess_utils.PIPE
         )
 
         lines = response.decode("utf-8").splitlines()
+        lines = [line for line in lines if line.strip() != '']
 
         source_to_url_dict = {}
         for i in range(1, len(lines), 2):

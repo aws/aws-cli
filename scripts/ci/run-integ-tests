@@ -4,66 +4,21 @@
 # binary package not from the CWD.
 
 import os
-from subprocess import run, CalledProcessError
+import sys
+
+import pytest
 
 _dname = os.path.dirname
 
 REPO_ROOT = _dname(_dname(_dname(os.path.abspath(__file__))))
 os.chdir(os.path.join(REPO_ROOT, 'tests'))
-NOSE_ONLY_TESTS = [
-    'test_smoke.py',
-    os.path.join('customizations', 'test_generatecliskeleton.py'),
-]
-
-
-class TestFailureException(Exception):
-    pass
-
-
-def get_nose_only_integ_tests():
-    return [
-        os.path.join('integration', integ_test)
-        for integ_test in NOSE_ONLY_TESTS
-    ]
-
-
-def run_pytest():
-    tests_to_ignore = get_nose_only_integ_tests()
-    ignore_params = [
-        f'--ignore={test_to_ignore}' for test_to_ignore in tests_to_ignore
-    ]
-    cmd = ['py.test', '-v', 'integration/'] + ignore_params
-    print(f'Running cmd: {cmd}')
-    return run(cmd)
-
-
-def run_nose():
-    test_to_run = get_nose_only_integ_tests()
-    cmd = ['nosetests', '-v'] + test_to_run
-    print(f'Running cmd: {cmd}')
-    return run(cmd)
-
-
-def check_test_results(test_results):
-    errors = []
-    for result in test_results:
-        try:
-            result.check_returncode()
-        except CalledProcessError as e:
-            errors.append(e)
-    if errors:
-        err_msg = "\n".join(str(errors))
-        raise TestFailureException(
-            f'Tests failed with the following exceptions: {err_msg}'
-        )
 
 
 def main():
-    results = []
-    results.append(run_pytest())
-    results.append(run_nose())
-    check_test_results(results)
+    args = ['-v', 'integration/']
+    print(f'Running py.test with args: {args}')
+    return pytest.main(args)
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

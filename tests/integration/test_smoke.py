@@ -14,7 +14,8 @@ import re
 import os
 import random
 import time
-from nose.tools import assert_equal
+
+import pytest
 
 from awscli.testutils import aws
 
@@ -131,30 +132,22 @@ def _aws(command_string, max_attempts=1, delay=5, target_rc=0):
     return aws(command_string, env_vars=env)
 
 
-def test_can_make_success_request():
-    for cmd in COMMANDS:
-        yield _run_successful_aws_command, cmd
+@pytest.mark.parametrize('cmd', COMMANDS)
+def test_can_make_success_request(cmd):
+    result = _aws(cmd, max_attempts=5, delay=5, target_rc=0)
+    assert result.rc == 0
+    assert result.stderr == ''
 
 
-def _run_successful_aws_command(command_string):
-    result = _aws(command_string, max_attempts=5, delay=5, target_rc=0)
-    assert_equal(result.rc, 0)
-    assert_equal(result.stderr, '')
-
-
-def test_display_error_message():
+@pytest.mark.parametrize('cmd', ERROR_COMMANDS)
+def test_display_error_message(cmd):
     identifier = 'foo-awscli-test-%s' % random.randint(1000, 100000)
-    for cmd in ERROR_COMMANDS:
-        yield _run_error_aws_command, cmd % identifier
-
-
-def _run_error_aws_command(command_string):
-    result = _aws(command_string, target_rc=254)
-    assert_equal(result.rc, 254)
+    cmd = cmd % identifier
+    result = _aws(cmd, target_rc=254)
+    assert result.rc == 254
     error_message = re.compile(
         'An error occurred \(.+\) when calling the \w+ operation: \w+')
     match = error_message.search(result.stderr)
-    if match is None:
-        raise AssertionError(
-            'Error message was not displayed for command "%s": %s' % (
-                command_string, result.stderr))
+    assert match, (
+        f'Error message was not displayed for command "{cmd}": {result.stderr}'
+    )

@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import contextlib
 import os
 import json
 import logging
@@ -20,9 +21,14 @@ import ruamel.yaml as yaml
 
 from awscli.clidriver import create_clidriver
 
-
-def get_all_cli_skeleton_commands():
-    skeleton_commands = []
+# NOTE: This should be a standalone pytest fixture.  However, fixtures cannot
+# be used outside of other fixtures or test cases, and it is needed by
+# get_all_cli_skeleton_commands to generate the parameterization cases.
+# So the environ patching logic is extracted out to this general helper
+# context manager that can be used in both case generator and an actual
+# fixture for the tests.
+@contextlib.contextmanager
+def patch_environ():
     environ = {
         'AWS_DATA_PATH': os.environ['AWS_DATA_PATH'],
         'AWS_DEFAULT_REGION': 'us-east-1',
@@ -32,6 +38,18 @@ def get_all_cli_skeleton_commands():
         'AWS_SHARED_CREDENTIALS_FILE': '',
     }
     with mock.patch('os.environ', environ):
+        yield
+
+
+@pytest.fixture
+def clean_environ():
+    with patch_environ():
+        yield
+
+
+def get_all_cli_skeleton_commands():
+    skeleton_commands = []
+    with patch_environ():
         driver = create_clidriver()
         help_command = driver.create_help_command()
         for command_name, command_obj in help_command.command_table.items():
@@ -52,7 +70,7 @@ SKELETON_COMMANDS = get_all_cli_skeleton_commands()
 
 
 @pytest.mark.parametrize('cmd', SKELETON_COMMANDS)
-def test_gen_input_skeleton(cmd, capsys):
+def test_gen_input_skeleton(cmd, capsys, clean_environ):
     stdout, stderr, _ = _run_cmd(cmd + ' --generate-cli-skeleton', capsys)
     # Test that a valid JSON blob is emitted to stdout is valid.
     try:
@@ -66,7 +84,7 @@ def test_gen_input_skeleton(cmd, capsys):
 
 
 @pytest.mark.parametrize('cmd', SKELETON_COMMANDS)
-def test_gen_yaml_input_skeleton(cmd, capsys):
+def test_gen_yaml_input_skeleton(cmd, capsys, clean_environ):
     stdout, stderr, _ = _run_cmd(
         cmd + ' --generate-cli-skeleton yaml-input', capsys
     )

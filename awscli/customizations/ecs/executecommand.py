@@ -27,6 +27,11 @@ ERROR_MESSAGE = (
     'session-manager-plugin-not-found'
 )
 
+TASK_NOT_FOUND = (
+    'The task provided in the request was '
+    'not found.'
+)
+
 
 class ECSExecuteCommand(ServiceOperation):
 
@@ -35,6 +40,37 @@ class ECSExecuteCommand(ServiceOperation):
         # change the output shape because the command provides no output.
         self._operation_model.output_shape = None
         return help_command
+
+
+def get_container_runtime_id(client, container_name, task_id, cluster_name):
+    describe_tasks_params = {
+        "cluster": cluster_name,
+        "tasks": [task_id]
+    }
+    describe_tasks_response = client.describe_tasks(**describe_tasks_params)
+    # need to fail here if task has failed in the intermediate time
+    tasks = describe_tasks_response['tasks']
+    if not tasks:
+        raise ValueError(TASK_NOT_FOUND)
+    response = describe_tasks_response['tasks'][0]['containers']
+    for container in response:
+        if container_name == container['name']:
+            return container['runtimeId']
+
+
+def build_ssm_request_paramaters(response, client):
+    cluster_name = response['clusterArn'].split('/')[-1]
+    task_id = response['taskArn'].split('/')[-1]
+    container_name = response['containerName']
+    # in order to get container run-time id
+    # we need to make a call to describe-tasks
+    container_runtime_id = \
+        get_container_runtime_id(client, container_name,
+                                 task_id, cluster_name)
+    target = "ecs:{}_{}_{}".format(cluster_name, task_id,
+                                   container_runtime_id)
+    ssm_request_params = {"Target": target}
+    return ssm_request_params
 
 
 class ExecuteCommandCaller(CLIOperationCaller):
@@ -54,6 +90,10 @@ class ExecuteCommandCaller(CLIOperationCaller):
                 verify=parsed_globals.verify_ssl)
             response = client.execute_command(**parameters)
             region_name = client.meta.region_name
+            profile_name = self._session.profile \
+                if self._session.profile is not None else ''
+            endpoint_url = client.meta.endpoint_url
+            ssm_request_params = build_ssm_request_paramaters(response, client)
             # ignore_user_entered_signals ignores these signals
             # because if signals which kills the process are not
             # captured would kill the foreground process but not the
@@ -65,7 +105,10 @@ class ExecuteCommandCaller(CLIOperationCaller):
                 check_call(["session-manager-plugin",
                             json.dumps(response['session']),
                             region_name,
-                            "StartSession"])
+                            "StartSession",
+                            profile_name,
+                            json.dumps(ssm_request_params),
+                            endpoint_url])
             return 0
         except OSError as ex:
             if ex.errno == errno.ENOENT:

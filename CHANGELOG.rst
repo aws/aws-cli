@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.18.220
+========
+
+* api-change:``backup``: Update backup command to latest version
+
+
 1.18.219
 ========
 

@@ -475,3 +475,20 @@ class TestIMDSRegionProvider(unittest.TestCase):
         provider.provide()
         args, _ = send.call_args
         self.assertEqual(args[0].headers['User-Agent'], 'aws-cli/3.0')
+
+    @mock.patch('botocore.httpsession.URLLib3Session.send')
+    def test_can_use_ipv6(self, send):
+        driver = create_clidriver()
+        driver.session.set_config_variable('imds_use_ipv6', True)
+        provider = IMDSRegionProvider(driver.session)
+        provider.provide()
+        args, _ = send.call_args
+        self.assertIn('[fe80:ec2::254%eth0]', args[0].url)
+
+    @mock.patch('botocore.httpsession.URLLib3Session.send')
+    def test_use_ipv4_by_default(self, send):
+        driver = create_clidriver()
+        provider = IMDSRegionProvider(driver.session)
+        provider.provide()
+        args, _ = send.call_args
+        self.assertIn('169.254.169.254', args[0].url)

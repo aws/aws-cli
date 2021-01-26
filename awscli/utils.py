@@ -75,11 +75,15 @@ class IMDSRegionProvider(BaseProvider):
             'metadata_service_timeout')
         metadata_num_attempts = self._session.get_config_variable(
             'metadata_service_num_attempts')
+        imds_config = {
+            'imds_use_ipv6': self._session.get_config_variable('imds_use_ipv6')
+        }
         fetcher = InstanceMetadataRegionFetcher(
             timeout=metadata_timeout,
             num_attempts=metadata_num_attempts,
             env=self._environ,
             user_agent=self._session.user_agent(truncate=True),
+            config=imds_config,
         )
         return fetcher
 

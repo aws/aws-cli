@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.221
+========
+
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``accessanalyzer``: Update accessanalyzer command to latest version
+* api-change:``sesv2``: Update sesv2 command to latest version
+* api-change:``customer-profiles``: Update customer-profiles command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+
+
 1.18.220
 ========
 

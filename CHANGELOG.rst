@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.18.222
+========
+
+* api-change:``wellarchitected``: Update wellarchitected command to latest version
+* api-change:``databrew``: Update databrew command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``managedblockchain``: Update managedblockchain command to latest version
+
+
 1.18.221
 ========
 

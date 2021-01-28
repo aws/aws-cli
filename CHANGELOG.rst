@@ -1448,6 +1448,46 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.18.222
+========
+
+* api-change:``wellarchitected``: Update wellarchitected command to latest version
+* api-change:``databrew``: Update databrew command to latest version
+* api-change:``robomaker``: Update robomaker command to latest version
+* api-change:``iot``: Update iot command to latest version
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``managedblockchain``: Update managedblockchain command to latest version
+
+
+1.18.221
+========
+
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``accessanalyzer``: Update accessanalyzer command to latest version
+* api-change:``sesv2``: Update sesv2 command to latest version
+* api-change:``customer-profiles``: Update customer-profiles command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+
+
+1.18.220
+========
+
+* api-change:``backup``: Update backup command to latest version
+
+
+1.18.219
+========
+
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``lexv2-runtime``: Update lexv2-runtime command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``redshift``: Update redshift command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``greengrassv2``: Update greengrassv2 command to latest version
+
+
 1.18.218
 ========
 

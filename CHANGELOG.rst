@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.18.223
+========
+
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``connect``: Update connect command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+
+
 1.18.222
 ========
 

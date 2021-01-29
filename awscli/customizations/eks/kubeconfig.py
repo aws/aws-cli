@@ -193,7 +193,8 @@ class KubeconfigWriter(object):
                 raise KubeconfigInaccessableError(
                         "Can't create directory for writing: {0}".format(e))
         try:
-            with compat_open(config.path, "w+") as stream:
+            with compat_open(
+                    config.path, "w+", access_permissions=0o600) as stream:
                 ordered_yaml_dump(config.content, stream)
         except IOError as e:
             raise KubeconfigInaccessableError(

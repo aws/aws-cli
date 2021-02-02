@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+2.1.23
+======
+
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``route53``: Update route53 command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``s3control``: Update s3control command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``iotwireless``: Update iotwireless command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``lookoutvision``: Update lookoutvision command to latest version
+* api-change:``rds-data``: Update rds-data command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``location``: Update location command to latest version
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``connect``: Update connect command to latest version
+
+
 2.1.22
 ======
 

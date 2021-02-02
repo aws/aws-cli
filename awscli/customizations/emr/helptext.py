@@ -108,7 +108,7 @@ RELEASE_LABEL = (
     ' the application versions and features available in that version.'
     ' For details about application versions and features available'
     ' in each release, see the Amazon EMR Release Guide:</p>'
-    '<p>https://docs.aws.amazon.com/emr/ReleaseGuide</p>'
+    '<p>https://docs.aws.amazon.com/emr/latest/ReleaseGuide</p>'
     '<p>Use <code>--release-label</code> only for Amazon EMR release version 4.0'
     ' and later. Use <code>--ami-version</code> for earlier versions.'
     ' You cannot specify both a release label and AMI version.</p>')

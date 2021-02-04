@@ -1491,6 +1491,32 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.19.2
+======
+
+* api-change:``emr-containers``: Update emr-containers command to latest version
+* api-change:``dlm``: Update dlm command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``athena``: Update athena command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``appflow``: Update appflow command to latest version
+
+
+1.19.1
+======
+
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``compute-optimizer``: Update compute-optimizer command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``workmail``: Update workmail command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``auditmanager``: Update auditmanager command to latest version
+* api-change:``databrew``: Update databrew command to latest version
+
+
 1.19.0
 ======
 

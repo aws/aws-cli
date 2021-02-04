@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.19.2
+======
+
+* api-change:``emr-containers``: Update emr-containers command to latest version
+* api-change:``dlm``: Update dlm command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``athena``: Update athena command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``appflow``: Update appflow command to latest version
+
+
 1.19.1
 ======
 

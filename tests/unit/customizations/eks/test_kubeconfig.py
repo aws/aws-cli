@@ -66,17 +66,6 @@ class TestKubeconfig(unittest.TestCase):
         config = Kubeconfig(self._path, self._content)
         self.assertFalse(config.has_cluster("clustername"))
 
-class TestKubeconfigWriter(unittest.TestCase):
-
-    def test_not_world_readable(self):
-        tmpdir = tempfile.mkdtemp()
-        self.addCleanup(shutil.rmtree, tmpdir)
-        config_path = os.path.join(tmpdir, "config")
-        config = Kubeconfig(config_path, None)
-        KubeconfigWriter().write_kubeconfig(config)
-        stat = os.stat(config_path)
-        self.assertEqual(stat.st_mode & 0o777, 0o600)
-
 class TestKubeconfigValidator(unittest.TestCase):
     def setUp(self):
         self._validator = KubeconfigValidator()

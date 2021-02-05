@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.19.3
+======
+
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``macie``: Update macie command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+
+
 1.19.2
 ======
 

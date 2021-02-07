@@ -2,9 +2,9 @@ How to make your own sync strategy
 =======
 
 1. Make a file with your new sync strategy class.
-Make sure the new class inherits from ``BaseSyncStrategy``
+Make sure the new class inherits from ``BaseSync``
 
-2. Register the new sync strategy class in ``registerstrategy.py``
+2. Register the new sync strategy class in ``register.py``
 To do so, call ``register_sync_strategy`` method from within ``register_sync_strategies`` method.
 ``register_sync_strategy`` takes two arguments. The first being the class of the new sync strategy
 and the second being where to apply the sync strategy also denoted as ``sync_type``.

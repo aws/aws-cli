@@ -23,7 +23,7 @@ def register_sync_strategy(session, strategy_cls,
     :param session: The session that the sync strategy is being registered to.
     :param strategy_cls: The class of the sync strategy to be registered.
     :param sync_type: A string representing when to perform the sync strategy.
-        See ``__init__`` method of ``BaseSyncStrategy`` for possible options.
+        See ``__init__`` method of ``BaseSync`` for possible options.
     """
     strategy = strategy_cls(sync_type)
     strategy.register_strategy(session)

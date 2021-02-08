@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.19.4
+======
+
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``globalaccelerator``: Update globalaccelerator command to latest version
+* api-change:``ivs``: Update ivs command to latest version
+* api-change:``cloudtrail``: Update cloudtrail command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``dataexchange``: Update dataexchange command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+
+
 1.19.3
 ======
 

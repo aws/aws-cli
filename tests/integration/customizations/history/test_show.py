@@ -75,7 +75,7 @@ class TestShow(unittest.TestCase):
                 '    "RoleArn": "arn:aws:iam::...:invalid",',
                 '    "SAMLAssertion": "fake-assertion"',
                 '[0] HTTP request sent',
-                'to URL: https://sts.amazonaws.com/',
+                'to URL: https://sts.us-west-2.amazonaws.com/',
                 'with method: POST',
                 'with body: Action=AssumeRoleWithSAML&Version=2011-06-15',
                 '[0] HTTP response received',
@@ -85,7 +85,7 @@ class TestShow(unittest.TestCase):
                 'parsed to: {',
                 '    "Error": {',
                 'AWS CLI command exited',
-                'with return code: 255'
+                'with return code: 254'
             ],
             uncolored_content
         )

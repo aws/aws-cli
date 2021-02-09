@@ -4,7 +4,9 @@
 # binary package not from the CWD.
 
 import os
-from subprocess import check_call
+import sys
+
+import pytest
 
 _dname = os.path.dirname
 
@@ -12,9 +14,11 @@ REPO_ROOT = _dname(_dname(_dname(os.path.abspath(__file__))))
 os.chdir(os.path.join(REPO_ROOT, 'tests'))
 
 
-def run(command):
-    return check_call(command, shell=True)
+def main():
+    args = ['-v', 'integration/']
+    print(f'Running py.test with args: {args}')
+    return pytest.main(args)
 
 
-run('nosetests --with-xunit --cover-erase --with-coverage '
-    '--cover-package awscli --cover-xml -v integration')
+if __name__ == '__main__':
+    sys.exit(main())

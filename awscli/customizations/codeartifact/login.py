@@ -106,6 +106,17 @@ class BaseLogin:
 class NuGetLogin(BaseLogin):
     _NUGET_INDEX_URL_FMT = '{endpoint}v3/index.json'
 
+    # When adding new sources we can specify that we added the source to the
+    # user level NuGet.Config file. However, when updating an existing source
+    # we cannot be specific about which level NuGet.Config file was updated
+    # because it is possible that the existing source was not in the user
+    # level NuGet.Config. The 'nuget sources list' command returns all
+    # configured sources from all NuGet.Config levels. The 'nuget sources
+    # update' command updates the source in whichever NuGet.Config file the
+    # source was found.
+    _SOURCE_ADDED_MESSAGE = 'Added source %s to the user level NuGet.Config\n'
+    _SOURCE_UPDATED_MESSAGE = 'Updated source %s in the NuGet.Config\n'
+
     def login(self, dry_run=False):
         try:
             source_to_url_dict = self._get_source_to_url_dict()
@@ -127,10 +138,10 @@ class NuGetLogin(BaseLogin):
             command = self._get_command(
                 'update', nuget_index_url, source_name
             )
-            verb = "Updated"
+            source_configured_message = self._SOURCE_UPDATED_MESSAGE
         else:
             command = self._get_command('add', nuget_index_url, source_name)
-            verb = "Added"
+            source_configured_message = self._SOURCE_ADDED_MESSAGE
 
         if dry_run:
             dry_run_command = ' '.join([str(cd) for cd in command])
@@ -145,11 +156,10 @@ class NuGetLogin(BaseLogin):
                     stderr=self.subprocess_utils.PIPE
                 )
         except subprocess.CalledProcessError as e:
-            uni_print('Failed to update the user level NuGet.Config\n')
+            uni_print('Failed to update the NuGet.Config\n')
             raise e
 
-        uni_print('%s source %s in the user level NuGet.Config\n'
-                  % (verb, source_name))
+        uni_print(source_configured_message % source_name)
         self._write_success_message('nuget')
 
     def _get_source_to_url_dict(self):

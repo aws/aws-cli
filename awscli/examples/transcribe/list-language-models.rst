@@ -18,7 +18,7 @@ Output::
                 "UpgradeAvailability": false,
                 "InputDataConfig": {
                     "S3Uri": "s3://DOC-EXAMPLE-BUCKET/clm-training-data/",
-                    "TuningDataS3Uri": "s3://DOC-EXAMPLE-BUCKET/clm-tuning/",
+                    "TuningDataS3Uri": "s3://DOC-EXAMPLE-BUCKET/clm-tuning-data/",
                     "DataAccessRoleArn": "arn:aws:iam::AWS-account-number:role/IAM-role-used-to-create-the-custom-language-model"
                 }
             },

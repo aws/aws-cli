@@ -3,7 +3,7 @@
 The following ``create-input`` example creates an ``HLS PULL`` input by passing in a JSON file that contains the parameters that apply to this type of input. The JSON for this example input specifies two sources (addresses) to the input, in order to support redundancy in the ingest. These addresses require passwords. ::
 
     aws medialive create-input \
-        --cli-input-jason file://input-hls-pull-news.json
+        --cli-input-json file://input-hls-pull-news.json
 
 Contents of ``input-hls-pull-news.json``::
 

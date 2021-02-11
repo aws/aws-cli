@@ -9,7 +9,7 @@ Output::
 
     {
         "VocabularyName": "cli-vocab-1",
-        "LanguageCode": "en-US",
+        "LanguageCode": "language-code",
         "VocabularyState": "READY",
         "LastModifiedTime": "2020-09-19T23:22:32.836000+00:00",
         "DownloadUri": "https://link-to-download-the-text-file-used-to-create-your-custom-vocabulary"

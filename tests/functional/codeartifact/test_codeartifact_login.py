@@ -126,6 +126,22 @@ class TestCodeArtifactLogin(unittest.TestCase):
         )
         return commands
 
+    def _get_dotnet_commands(self):
+        nuget_index_url = self.nuget_index_url_fmt.format(
+            endpoint=self.endpoint
+        )
+
+        commands = []
+        commands.append(
+            [
+                'dotnet', 'nuget', 'add', 'source', nuget_index_url,
+                '--name', self.nuget_source_name,
+                '--username', 'aws',
+                '--password', self.auth_token
+            ]
+        )
+        return commands
+
     def _get_npm_commands(self, **kwargs):
         npm_cmd = 'npm.cmd' \
             if platform.system().lower() == 'windows' else 'npm'
@@ -431,6 +447,131 @@ password: {auth_token}'''
         )
         self._assert_dry_run_execution(
             self._get_nuget_commands(),
+            result.stdout
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_dotnet_login_without_domain_owner_without_duration_seconds(self):
+        cmdline = self._setup_cmd(tool='dotnet')
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='nuget', result=result)
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_check_output_execution(
+            self._get_dotnet_commands()
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_dotnet_login_with_domain_owner_without_duration_seconds(self):
+        cmdline = self._setup_cmd(tool='dotnet', include_domain_owner=True)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_domain_owner=True,
+            result=result
+        )
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_check_output_execution(
+            self._get_dotnet_commands()
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_dotnet_login_without_domain_owner_with_duration_seconds(self):
+        cmdline = self._setup_cmd(tool='dotnet', include_duration_seconds=True)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_duration_seconds=True,
+            result=result
+        )
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_check_output_execution(
+            self._get_dotnet_commands()
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_dotnet_login_with_domain_owner_duration_sections(self):
+        cmdline = self._setup_cmd(
+            tool='dotnet',
+            include_domain_owner=True,
+            include_duration_seconds=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_domain_owner=True,
+            include_duration_seconds=True,
+            result=result
+        )
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_check_output_execution(
+            self._get_dotnet_commands()
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_dotnet_login_without_domain_owner_dry_run(self):
+        cmdline = self._setup_cmd(tool='dotnet', dry_run=True)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='nuget', result=result)
+        self._assert_dry_run_execution(
+            self._get_dotnet_commands(),
+            result.stdout
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_dotnet_login_with_domain_owner_dry_run(self):
+        cmdline = self._setup_cmd(
+            tool='dotnet', include_domain_owner=True, dry_run=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_domain_owner=True,
+            result=result
+        )
+        self._assert_dry_run_execution(
+            self._get_dotnet_commands(),
+            result.stdout
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_dotnet_login_with_duration_seconds_dry_run(self):
+        cmdline = self._setup_cmd(
+            tool='dotnet', include_duration_seconds=True, dry_run=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_duration_seconds=True,
+            result=result
+        )
+        self._assert_dry_run_execution(
+            self._get_dotnet_commands(),
+            result.stdout
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_dotnet_login_with_domain_owner_duration_seconds_dry_run(self):
+        cmdline = self._setup_cmd(
+            tool='dotnet', include_domain_owner=True,
+            include_duration_seconds=True, dry_run=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_domain_owner=True,
+            include_duration_seconds=True,
+            result=result
+        )
+        self._assert_dry_run_execution(
+            self._get_dotnet_commands(),
             result.stdout
         )
 

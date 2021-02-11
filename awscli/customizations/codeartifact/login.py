@@ -14,6 +14,7 @@ from dateutil.tz import tzutc
 from dateutil.relativedelta import relativedelta
 from botocore.utils import parse_timestamp
 
+from awscli.compat import is_windows
 from awscli.customizations import utils as cli_utils
 from awscli.customizations.commands import BasicCommand
 from awscli.utils import original_ld_library_path
@@ -103,17 +104,16 @@ class BaseLogin:
         raise NotImplementedError('get_commands()')
 
 
-class NuGetLogin(BaseLogin):
+class NuGetBaseLogin(BaseLogin):
     _NUGET_INDEX_URL_FMT = '{endpoint}v3/index.json'
 
     # When adding new sources we can specify that we added the source to the
     # user level NuGet.Config file. However, when updating an existing source
     # we cannot be specific about which level NuGet.Config file was updated
     # because it is possible that the existing source was not in the user
-    # level NuGet.Config. The 'nuget sources list' command returns all
-    # configured sources from all NuGet.Config levels. The 'nuget sources
-    # update' command updates the source in whichever NuGet.Config file the
-    # source was found.
+    # level NuGet.Config. The source listing command returns all configured
+    # sources from all NuGet.Config levels. The update command updates the
+    # source in whichever NuGet.Config file the source was found.
     _SOURCE_ADDED_MESSAGE = 'Added source %s to the user level NuGet.Config\n'
     _SOURCE_UPDATED_MESSAGE = 'Updated source %s in the NuGet.Config\n'
 
@@ -123,7 +123,7 @@ class NuGetLogin(BaseLogin):
         except OSError as ex:
             if ex.errno == errno.ENOENT:
                 raise ValueError(
-                    self._TOOL_NOT_FOUND_MESSAGE % 'nuget'
+                    self._TOOL_NOT_FOUND_MESSAGE % self._get_tool_name()
                 )
             raise ex
 
@@ -135,12 +135,12 @@ class NuGetLogin(BaseLogin):
         )
 
         if already_exists:
-            command = self._get_command(
+            command = self._get_configure_command(
                 'update', nuget_index_url, source_name
             )
             source_configured_message = self._SOURCE_UPDATED_MESSAGE
         else:
-            command = self._get_command('add', nuget_index_url, source_name)
+            command = self._get_configure_command('add', nuget_index_url, source_name)
             source_configured_message = self._SOURCE_ADDED_MESSAGE
 
         if dry_run:
@@ -163,7 +163,7 @@ class NuGetLogin(BaseLogin):
         self._write_success_message('nuget')
 
     def _get_source_to_url_dict(self):
-        # The response from 'nuget sources list' takes the following form:
+        # The response from listing sources takes the following form:
         #
         # Registered Sources:
         #   1.  Source Name 1 [Enabled]
@@ -188,7 +188,7 @@ class NuGetLogin(BaseLogin):
 
         with original_ld_library_path():
             response = self.subprocess_utils.check_output(
-                ['nuget', 'sources', 'list', '-format', 'detailed'],
+                self._get_list_command(),
                 stderr=self.subprocess_utils.PIPE
             )
 
@@ -238,7 +238,25 @@ class NuGetLogin(BaseLogin):
         # NuGet.Config file, use the default source name.
         return default_name, False
 
-    def _get_command(self, operation, nuget_index_url, source_name):
+    def _get_tool_name(self):
+        raise NotImplementedError('_get_tool_name()')
+
+    def _get_list_command(self):
+        raise NotImplementedError('_get_list_command()')
+
+    def _get_configure_command(self, operation, nuget_index_url, source_name):
+        raise NotImplementedError('_get_configure_command()')
+
+
+class NuGetLogin(NuGetBaseLogin):
+
+    def _get_tool_name(self):
+        return 'nuget'
+
+    def _get_list_command(self):
+        return ['nuget', 'sources', 'list', '-format', 'detailed']
+
+    def _get_configure_command(self, operation, nuget_index_url, source_name):
         return [
             'nuget', 'sources', operation,
             '-name', source_name,
@@ -246,6 +264,36 @@ class NuGetLogin(BaseLogin):
             '-username', 'aws',
             '-password', self.auth_token
         ]
+
+
+class DotNetLogin(NuGetBaseLogin):
+
+    def _get_tool_name(self):
+        return 'dotnet'
+
+    def _get_list_command(self):
+        return ['dotnet', 'nuget', 'list', 'source', '--format', 'detailed']
+
+    def _get_configure_command(self, operation, nuget_index_url, source_name):
+        command = ['dotnet', 'nuget', operation, 'source']
+
+        if operation == 'add':
+            command.append(nuget_index_url)
+            command += ['--name', source_name]
+        else:
+            command.append(source_name)
+            command += ['--source', nuget_index_url]
+
+        command += [
+            '--username', 'aws',
+            '--password', self.auth_token
+        ]
+
+        # Encryption is not supported on non-Windows platforms.
+        if not is_windows:
+            command.append('--store-password-in-clear-text')
+
+        return command
 
 
 class NpmLogin(BaseLogin):
@@ -465,6 +513,11 @@ class CodeArtifactLogin(BasicCommand):
         'nuget': {
             'package_format': 'nuget',
             'login_cls': NuGetLogin,
+            'namespace_support': False,
+        },
+        'dotnet': {
+            'package_format': 'nuget',
+            'login_cls': DotNetLogin,
             'namespace_support': False,
         },
         'npm': {

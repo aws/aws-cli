@@ -97,6 +97,12 @@ class UpdateKubeconfigCommand(BasicCommand):
             'help_text': ("Alias for the cluster context name. "
                           "Defaults to match cluster ARN."),
             'required': False
+        },
+        {
+            'name': 'proxy-url',
+            'help_text': ("Proxy URL to connect to the cluster endpoint. "
+                          "Defaults to None."),
+            'required': False
         }
     ]
 
@@ -116,6 +122,7 @@ class UpdateKubeconfigCommand(BasicCommand):
         client = EKSClient(self._session,
                            parsed_args.name,
                            parsed_args.role_arn,
+                           parsed_args.proxy_url,
                            parsed_globals)
         new_cluster_dict = client.get_cluster_entry()
         new_user_dict = client.get_user_entry()
@@ -230,12 +237,13 @@ class KubeconfigSelector(object):
 
 
 class EKSClient(object):
-    def __init__(self, session, cluster_name, role_arn, parsed_globals=None):
+    def __init__(self, session, cluster_name, role_arn, proxy_url, parsed_globals=None):
         self._session = session
         self._cluster_name = cluster_name
         self._role_arn = role_arn
-        self._cluster_description = None
+        self._proxy_url = proxy_url
         self._globals = parsed_globals
+        self._cluster_description = None
 
     def _get_cluster_description(self):
         """
@@ -276,13 +284,18 @@ class EKSClient(object):
         endpoint = self._get_cluster_description().get("endpoint")
         arn = self._get_cluster_description().get("arn")
 
-        return OrderedDict([
+        cluster_entry =  OrderedDict([
             ("cluster", OrderedDict([
                 ("certificate-authority-data", cert_data),
                 ("server", endpoint)
             ])),
             ("name", arn)
         ])
+
+        if self._proxy_url is not None:
+            cluster_entry["cluster"]["proxy-url"] = self._proxy_url
+
+        return cluster_entry
 
     def get_user_entry(self):
         """

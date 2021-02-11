@@ -14,10 +14,14 @@
 import mock
 import os
 
+from awscrt.s3 import S3RequestType
+
 from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.testutils import capture_input
 from awscli.compat import six, OrderedDict
-from tests.functional.s3 import BaseS3TransferCommandTest
+from tests.functional.s3 import (
+    BaseS3TransferCommandTest, BaseCRTTransferClientTest
+)
 
 
 MB = 1024 ** 2
@@ -1871,3 +1875,115 @@ class TestCopyPropsDefaultCpCommand(BaseCopyPropsCpCommandTest):
         self.assert_in_operations_called(
             self.copy_object_request(MetadataDirective='REPLACE')
         )
+
+
+class TestCpWithCRTClient(BaseCRTTransferClientTest):
+    def test_upload_using_crt_client(self):
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = [
+            's3', 'cp', filename, 's3://bucket/key'
+        ]
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket'),
+            expected_path='/key',
+            expected_send_filepath=filename,
+        )
+
+    def test_recursive_upload_using_crt_client(self):
+        filename1 = self.files.create_file('myfile1', 'mycontent')
+        filename2 = self.files.create_file('myfile2', 'mycontent')
+        cmdline = [
+            's3', 'cp', self.files.rootdir, 's3://bucket/', '--recursive'
+        ]
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 2)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket'),
+            expected_path='/myfile1',
+            expected_send_filepath=filename1,
+        )
+        self.assert_crt_make_request_call(
+            crt_requests[1],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket'),
+            expected_path='/myfile2',
+            expected_send_filepath=filename2,
+        )
+
+    def test_download_using_crt_client(self):
+        filename = os.path.join(self.files.rootdir, 'myfile')
+        cmdline = [
+            's3', 'cp', 's3://bucket/key', filename
+        ]
+        self.add_botocore_head_object_response()
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.GET_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket'),
+            expected_path='/key',
+            expected_recv_startswith=filename,
+        )
+
+    def test_recursive_download_using_crt_client(self):
+        cmdline = [
+            's3', 'cp', 's3://bucket/', self.files.rootdir, '--recursive'
+        ]
+        self.add_botocore_list_objects_response(['key1', 'key2'])
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 2)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.GET_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket'),
+            expected_path='/key1',
+            expected_recv_startswith=os.path.join(self.files.rootdir, 'key1'),
+        )
+        self.assert_crt_make_request_call(
+            crt_requests[1],
+            expected_type=S3RequestType.GET_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket'),
+            expected_path='/key2',
+            expected_recv_startswith=os.path.join(self.files.rootdir, 'key2'),
+        )
+
+    def test_does_not_use_crt_client_for_copies(self):
+        cmdline = [
+            's3', 'cp', 's3://bucket/key', 's3://otherbucket/'
+        ]
+        self.add_botocore_head_object_response()
+        self.add_botocore_copy_object_response()
+        self.run_command(cmdline)
+        self.assertEqual(self.get_crt_make_request_calls(), [])
+        self.assert_no_remaining_botocore_responses()
+
+    def test_does_not_use_crt_client_for_streaming_upload(self):
+        cmdline = [
+            's3', 'cp', '-', 's3://bucket/key'
+        ]
+        self.add_botocore_put_object_response()
+        with mock.patch('sys.stdin', BufferedBytesIO(b'foo')):
+            self.run_command(cmdline)
+        self.assertEqual(self.get_crt_make_request_calls(), [])
+        self.assert_no_remaining_botocore_responses()
+
+    def test_does_not_use_crt_client_for_streaming_download(self):
+        cmdline = [
+            's3', 'cp', 's3://bucket/key', '-'
+        ]
+        self.add_botocore_head_object_response()
+        self.add_botocore_get_object_response()
+        self.run_command(cmdline)
+        self.assertEqual(self.get_crt_make_request_calls(), [])
+        self.assert_no_remaining_botocore_responses()

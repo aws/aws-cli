@@ -13,10 +13,13 @@
 from mock import patch
 import os
 
+from awscrt.s3 import S3RequestType
+
 from awscli.compat import six
 from awscli.testutils import mock
-from tests.functional.s3 import BaseS3TransferCommandTest
-
+from tests.functional.s3 import (
+    BaseS3TransferCommandTest, BaseCRTTransferClientTest
+)
 
 class TestSyncCommand(BaseS3TransferCommandTest):
 
@@ -350,3 +353,91 @@ class TestSyncCommand(BaseS3TransferCommandTest):
                 ),
             ]
         )
+
+
+class TestSyncWithCRTClient(BaseCRTTransferClientTest):
+    def test_upload_sync_using_crt_client(self):
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = [
+            's3', 'sync', self.files.rootdir, 's3://bucket/',
+        ]
+        self.add_botocore_list_objects_response([])
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket'),
+            expected_path='/myfile',
+            expected_send_filepath=filename,
+        )
+
+    def test_download_sync_using_crt_client(self):
+        cmdline = [
+            's3', 'sync', 's3://bucket/', self.files.rootdir,
+        ]
+        self.add_botocore_list_objects_response(['key'])
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.GET_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket'),
+            expected_path='/key',
+            expected_recv_startswith=os.path.join(self.files.rootdir, 'key'),
+        )
+
+    def test_upload_sync_with_delete_using_crt_client(self):
+        filename = self.files.create_file('a-file', 'mycontent')
+        cmdline = [
+            's3', 'sync', self.files.rootdir, 's3://bucket/', '--delete'
+        ]
+        self.add_botocore_list_objects_response(['delete-this'])
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 2)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket'),
+            expected_path='/a-file',
+            expected_send_filepath=filename,
+        )
+        self.assert_crt_make_request_call(
+            crt_requests[1],
+            expected_type=S3RequestType.DEFAULT,
+            expected_host=self.get_virtual_s3_host('bucket'),
+            expected_path='/delete-this',
+            expected_http_method='DELETE'
+        )
+
+    def test_download_sync_with_delete_using_crt_client(self):
+        self.files.create_file('delete-this', 'content')
+        cmdline = [
+            's3', 'sync', 's3://bucket/', self.files.rootdir, '--delete'
+        ]
+        self.add_botocore_list_objects_response(['key'])
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.GET_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket'),
+            expected_path='/key',
+            expected_recv_startswith=os.path.join(self.files.rootdir, 'key'),
+        )
+        self.assertFalse(os.path.exists('delete-this'))
+
+    def test_does_not_use_crt_client_for_copy_syncs(self):
+        cmdline = [
+            's3', 'sync', 's3://bucket/', 's3://otherbucket/'
+        ]
+        self.add_botocore_list_objects_response(['key'])
+        self.add_botocore_list_objects_response([])
+        self.add_botocore_copy_object_response()
+        self.run_command(cmdline)
+        self.assertEqual(self.get_crt_make_request_calls(), [])
+        self.assert_no_remaining_botocore_responses()

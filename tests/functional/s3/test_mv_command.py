@@ -11,10 +11,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
+
+from awscrt.s3 import S3RequestType
+
 from awscli.compat import six
 from awscli.testutils import mock
-from tests.functional.s3 import BaseS3TransferCommandTest
-
+from tests.functional.s3 import (
+    BaseS3TransferCommandTest, BaseCRTTransferClientTest
+)
 
 class TestMvCommand(BaseS3TransferCommandTest):
 
@@ -236,3 +241,54 @@ class TestMvCommand(BaseS3TransferCommandTest):
                 self.delete_object_request('bucket', 'key')
             ]
         )
+
+
+class TestMvWithCRTClient(BaseCRTTransferClientTest):
+    def test_upload_move_using_crt_client(self):
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = [
+            's3', 'mv', filename, 's3://bucket/key',
+        ]
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket'),
+            expected_path='/key',
+            expected_send_filepath=filename,
+        )
+        self.assertFalse(os.path.exists(filename))
+
+    def test_download_move_using_crt_client(self):
+        filename = os.path.join(self.files.rootdir, 'myfile')
+        cmdline = [
+            's3', 'mv', 's3://bucket/key', filename
+        ]
+        self.add_botocore_head_object_response()
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self.add_botocore_delete_object_response()
+        self.run_on_done_callbacks()
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.GET_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket'),
+            expected_path='/key',
+            expected_recv_startswith=filename,
+        )
+        self.assert_no_remaining_botocore_responses()
+
+    def test_does_not_use_crt_client_for_copy_moves(self):
+        cmdline = [
+            's3', 'mv', 's3://bucket/key', 's3://otherbucket/'
+        ]
+        self.add_botocore_head_object_response()
+        self.add_botocore_copy_object_response()
+        self.add_botocore_delete_object_response()
+        self.run_command(cmdline)
+        self.assertEqual(self.get_crt_make_request_calls(), [])
+        self.assert_no_remaining_botocore_responses()

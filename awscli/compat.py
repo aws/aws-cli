@@ -21,6 +21,7 @@ import signal
 import contextlib
 import collections.abc as collections_abc
 import locale
+from functools import partial
 import urllib.parse as urlparse
 from urllib.error import URLError
 
@@ -128,7 +129,7 @@ def getpreferredencoding(*args, **kwargs):
     )
 
 
-def compat_open(filename, mode='r', encoding=None):
+def compat_open(filename, mode='r', encoding=None, access_permissions=None):
     """Back-port open() that accepts an encoding argument.
 
     In python3 this uses the built in open() and in python2 this
@@ -139,9 +140,13 @@ def compat_open(filename, mode='r', encoding=None):
     encoding.
 
     """
+    opener = os.open
+    if access_permissions is not None:
+        opener = partial(os.open, mode=access_permissions)
     if 'b' not in mode:
         encoding = getpreferredencoding()
-    return open(filename, mode, encoding=encoding)
+    return open(filename, mode, encoding=encoding, opener=opener)
+
 
 def bytes_print(statement, stdout=None):
     """

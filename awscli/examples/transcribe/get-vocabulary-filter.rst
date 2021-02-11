@@ -9,7 +9,7 @@ Output::
 
     {
         "VocabularyFilterName": "testFilter",
-        "LanguageCode": "en-US",
+        "LanguageCode": "language-code",
         "LastModifiedTime": "2020-05-07T22:39:32.147000+00:00",
         "DownloadUri": "https://Amazon-S3-location-to-download-your-vocabulary-filter"
     }

@@ -1,6 +1,6 @@
-**To get all patches defined by a patch baseline**
+**Example 1: To get all patches defined by a custom patch baseline**
 
-The following ``describe-effective-patches-for-patch-baseline`` example returns the patches defined by a patch baseline. ::
+The following ``describe-effective-patches-for-patch-baseline`` example returns the patches defined by a custom patch baseline in the current AWS account. Note that for a custom baseline, only the ID is required for ``--baseline-id``. ::
 
     aws ssm describe-effective-patches-for-patch-baseline \
         --baseline-id "pb-08b654cf9b9681f04"
@@ -57,5 +57,14 @@ Output::
         ],
         "NextToken": "--token string truncated--"
     }
+
+**Example 2: To get all patches defined by an AWS managed patch baseline**
+
+The following ``describe-effective-patches-for-patch-baseline`` example returns the patches defined by an AWS managed patch baseline. Note that for an AWS managed baseline, the complete baseline ARN is required for ``--baseline-id`` ::
+
+    aws ssm describe-effective-patches-for-patch-baseline \
+        --baseline-id "arn:aws:ssm:us-east-2:733109147000:patchbaseline/pb-020d361a05defe4ed"
+        
+See example 1 for sample output.
 
 For more information, see `How Security Patches Are Selected <https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-how-it-works-selection.html>`__ in the *AWS Systems Manager User Guide*.

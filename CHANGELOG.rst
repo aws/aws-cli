@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.19.7
+======
+
+* api-change:``detective``: Update detective command to latest version
+* api-change:``personalize-events``: Update personalize-events command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``appsync``: Update appsync command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``wafv2``: Update wafv2 command to latest version
+* api-change:``iam``: Update iam command to latest version
+
+
 1.19.6
 ======
 

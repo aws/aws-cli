@@ -741,6 +741,7 @@ class S3TransferCommand(S3Command):
         cmd_params.add_region(parsed_globals)
         cmd_params.add_endpoint_url(parsed_globals)
         cmd_params.add_verify_ssl(parsed_globals)
+        cmd_params.add_sign_request(parsed_globals)
         cmd_params.add_page_size(parsed_args)
         cmd_params.add_paths(parsed_args.paths)
         return cmd_params.parameters
@@ -1293,6 +1294,10 @@ class CommandParameters(object):
 
     def add_verify_ssl(self, parsed_globals):
         self.parameters['verify_ssl'] = parsed_globals.verify_ssl
+
+    def add_sign_request(self, parsed_globals):
+        self.parameters['sign_request'] = getattr(
+            parsed_globals, 'sign_request', True)
 
     def add_page_size(self, parsed_args):
         self.parameters['page_size'] = getattr(parsed_args, 'page_size', None)

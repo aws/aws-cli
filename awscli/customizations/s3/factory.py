@@ -14,7 +14,9 @@ import logging
 
 from botocore.client import Config
 from s3transfer.manager import TransferManager
-from s3transfer.crt import CRTTransferManager
+from s3transfer.crt import (
+    create_s3_crt_client, BotocoreCRTRequestSerializer, CRTTransferManager
+)
 
 from awscli.customizations.s3 import constants
 from awscli.customizations.s3.transferconfig import \
@@ -58,7 +60,7 @@ class TransferManagerFactory:
         client_type = self._compute_transfer_client_type(
             params, runtime_config)
         if client_type == constants.CRT_TRANSFER_CLIENT:
-            return self._create_crt_transfer_manager()
+            return self._create_crt_transfer_manager(params)
         else:
             return self._create_default_transfer_manager(
                 params, runtime_config, botocore_client)
@@ -71,8 +73,31 @@ class TransferManagerFactory:
         return runtime_config.get(
             'preferred_transfer_client', constants.DEFAULT_TRANSFER_CLIENT)
 
-    def _create_crt_transfer_manager(self):
-        return CRTTransferManager(self._session)
+    def _create_crt_transfer_manager(self, params):
+        return CRTTransferManager(
+            self._create_crt_client(params),
+            self._create_crt_request_serializer(params)
+        )
+
+    def _create_crt_client(self, params):
+        create_crt_client_kwargs = {
+            'region': self._resolve_region(params)
+        }
+        if params.get('sign_request', True):
+            create_crt_client_kwargs[
+                'botocore_credential_provider'] = self._session.get_component(
+                    'credential_provider')
+
+        return create_s3_crt_client(**create_crt_client_kwargs)
+
+    def _create_crt_request_serializer(self, params):
+        return BotocoreCRTRequestSerializer(
+            self._session,
+            {
+                'region_name': self._resolve_region(params),
+                'endpoint_url': params.get('endpoint_url'),
+            }
+        )
 
     def _create_default_transfer_manager(self, params, runtime_config,
                                          client=None):
@@ -90,3 +115,9 @@ class TransferManagerFactory:
             transfer_config.multipart_chunksize
         )
         return TransferManager(client, transfer_config)
+
+    def _resolve_region(self, params):
+        region = params.get('region')
+        if region is None:
+            region = self._session.get_config_variable('region')
+        return region

@@ -278,7 +278,6 @@ class BaseCRTTransferClientTest(unittest.TestCase):
         self.mock_crt_client = self.crt_client_patch.start()
         self.mock_crt_client.return_value.make_request.side_effect = \
             self.simulate_make_request_side_effect
-        self.captured_on_done_callbacks = []
         self.config_files = FileCreator()
         self.config_filename = os.path.join(
             self.config_files.rootdir, 'config')
@@ -308,35 +307,34 @@ class BaseCRTTransferClientTest(unittest.TestCase):
 
     def simulate_make_request_side_effect(self, *args, **kwargs):
         if kwargs.get('recv_filepath'):
-            parent_dir = os.path.dirname(kwargs['recv_filepath'])
-            if not os.path.isdir(parent_dir):
-                os.makedirs(parent_dir)
-            with open(kwargs['recv_filepath'], 'w') as f:
-                f.write('content')
-        if kwargs.get('on_done'):
-            # Ideally we just run the on_done callbacks here. The
-            # on_done callbacks often call the transfer future's result()
-            # method. However, the transfer future relies on an underlying
-            # CRT future from the returned S3Request object when calling
-            # result(). If we call on_done here, the underlying future is
-            # not available as it has not been returned yet which makes the
-            # the on_done callback fail. So instead, we collect the on_done
-            # callbacks and invoke them at a later part to fully simulate
-            # the transfer.
-            self.captured_on_done_callbacks.append(kwargs.get('on_done'))
-        return mock.Mock(S3Request)
+            self.simulate_file_download(kwargs['recv_filepath'])
+        s3_request = FakeCRTS3Request(
+            future=FakeCRTFuture(kwargs.get('on_done'))
+        )
+        return s3_request
+
+    def simulate_file_download(self, recv_filepath):
+        parent_dir = os.path.dirname(recv_filepath)
+        if not os.path.isdir(parent_dir):
+            os.makedirs(parent_dir)
+        with open(recv_filepath, 'w') as f:
+            # The content is arbitrary as most functional tests are just going
+            # to assert the file exists since it is the CRT writing the
+            # data to the file.
+            f.write('content')
 
     def run_command(self, cmdline):
         result = self.cli_runner.run(cmdline)
-        self.assertEqual(result.rc, 0)
-        self.run_on_done_callbacks()
+        self.assertEqual(
+            result.rc, 0,
+            f'Expected rc of 0 instead got {result.rc} '
+            f'with stderr message: {result.stderr}'
+        )
 
-    def run_on_done_callbacks(self):
-        for done_callback in self.captured_on_done_callbacks:
-            done_callback(error=None)
-
-    def get_virtual_s3_host(self, bucket):
-        return f'{bucket}.s3.{self.region}.amazonaws.com'
+    def get_virtual_s3_host(self, bucket, region=None):
+        if not region:
+            region = self.region
+        return f'{bucket}.s3.{region}.amazonaws.com'
 
     def get_crt_make_request_calls(self):
         return self.mock_crt_client.return_value.make_request.call_args_list
@@ -385,6 +383,17 @@ class BaseCRTTransferClientTest(unittest.TestCase):
     def add_botocore_delete_object_response(self):
         self.cli_runner.add_response(HTTPResponse())
 
+    def assert_crt_client_region(self, expected_region):
+        self.assertEqual(
+            self.mock_crt_client.call_args[1]['region'],
+            expected_region
+        )
+
+    def assert_crt_client_has_no_credential_provider(self):
+        self.assertIsNone(
+            self.mock_crt_client.call_args[1]['credential_provider']
+        )
+
     def assert_crt_make_request_call(
             self, make_request_call, expected_type, expected_host,
             expected_path, expected_http_method=None,
@@ -425,6 +434,25 @@ class BaseCRTTransferClientTest(unittest.TestCase):
 
     def assert_no_remaining_botocore_responses(self):
         self.session_stubber.assert_no_remaining_responses()
+
+
+class FakeCRTS3Request:
+    def __init__(self, future):
+        self.finished_future = future
+
+
+class FakeCRTFuture:
+    def __init__(self, done_callback=None):
+        self._done_callback = done_callback
+        self._callback_called = False
+
+    def result(self, timeout=None):
+        if self._done_callback and not self._callback_called:
+            self._callback_called = True
+            self._done_callback(error=None)
+
+    def done(self):
+        return True
 
 
 # The CRT integrations use botocore clients to serialize the request.

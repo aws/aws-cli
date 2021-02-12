@@ -176,3 +176,77 @@ class TestTransferManagerFactory(unittest.TestCase):
         transfer_manager = self.factory.create_transfer_manager(
             self.params, self.runtime_config)
         self.assert_is_default_manager(transfer_manager)
+
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_uses_region_parameter_for_crt_manager(self, mock_crt_client):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt')
+        self.params['region'] = 'param-region'
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config)
+        self.assert_is_crt_manager(transfer_manager)
+        self.assertEqual(
+            mock_crt_client.call_args[1]['region'], 'param-region'
+        )
+        self.assertEqual(
+            self.session.create_client.call_args[1]['region_name'],
+            'param-region'
+        )
+
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_falls_back_to_session_region_for_crt_manager(
+            self, mock_crt_client):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt')
+        if 'region' in self.params:
+            self.params.pop('region')
+        self.session.get_config_variable.return_value = 'config-region'
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config)
+        self.assert_is_crt_manager(transfer_manager)
+        self.assertEqual(
+            mock_crt_client.call_args[1]['region'], 'config-region'
+        )
+        self.assertEqual(
+            self.session.create_client.call_args[1]['region_name'],
+            'config-region'
+        )
+
+    def test_uses_endpoint_url_parameter_for_crt_manager(self):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt')
+        self.params['endpoint_url'] = 'https://my.endpoint.com'
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config)
+        self.assert_is_crt_manager(transfer_manager)
+        self.assertEqual(
+            self.session.create_client.call_args[1]['endpoint_url'],
+            'https://my.endpoint.com'
+        )
+
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_uses_botocore_credential_provider_for_crt_manager(
+            self, mock_crt_client):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt')
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config)
+        self.assert_is_crt_manager(transfer_manager)
+        self.session.get_component.assert_called_with('credential_provider')
+        self.assertIsNotNone(
+            mock_crt_client.call_args[1]['credential_provider']
+        )
+
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_disable_botocore_credential_provider_for_crt_manager(
+            self, mock_crt_client):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt')
+        self.params['sign_request'] = False
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config)
+        self.assert_is_crt_manager(transfer_manager)
+        self.session.get_component.assert_not_called()
+        self.assertIsNone(
+            mock_crt_client.call_args[1]['credential_provider']
+        )

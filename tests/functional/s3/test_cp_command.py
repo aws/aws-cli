@@ -1987,3 +1987,53 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
         self.run_command(cmdline)
         self.assertEqual(self.get_crt_make_request_calls(), [])
         self.assert_no_remaining_botocore_responses()
+
+    def test_respects_region_parameter(self):
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = [
+            's3', 'cp', filename, 's3://bucket/key', '--region', 'us-west-1',
+        ]
+        self.run_command(cmdline)
+        self.assert_crt_client_region('us-west-1')
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket', 'us-west-1'),
+            expected_path='/key',
+            expected_send_filepath=filename,
+        )
+
+    def test_respects_endpoint_url_parameter(self):
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = [
+            's3', 'cp', filename, 's3://bucket/key',
+            '--endpoint-url', 'https://my.endpoint.com'
+        ]
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host='my.endpoint.com',
+            expected_path='/bucket/key',
+            expected_send_filepath=filename,
+        )
+
+    def test_respects_no_sign_request_parameter(self):
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = [
+            's3', 'cp', filename, 's3://bucket/key', '--no-sign-request'
+        ]
+        self.run_command(cmdline)
+        self.assert_crt_client_has_no_credential_provider()
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        # Generally the HTTP requests serialized for the CRT client will
+        # never be signed, but this is just to double check that especially
+        # for the --no-sign-request-flag
+        self.assertIsNone(
+            crt_requests[0][1]['request'].headers.get('Authorization')
+        )

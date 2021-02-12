@@ -245,6 +245,7 @@ class BaseTransferRequestSubmitter(object):
             'transfer_type': self._get_transfer_type(fileinfo),
             'src': src,
             'dest': dest,
+            'size': fileinfo.size,
         }
 
     def _submit_dryrun(self, fileinfo):

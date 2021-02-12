@@ -267,10 +267,9 @@ class TestMvWithCRTClient(BaseCRTTransferClientTest):
             's3', 'mv', 's3://bucket/key', filename
         ]
         self.add_botocore_head_object_response()
+        self.add_botocore_delete_object_response()
         result = self.cli_runner.run(cmdline)
         self.assertEqual(result.rc, 0)
-        self.add_botocore_delete_object_response()
-        self.run_on_done_callbacks()
         crt_requests = self.get_crt_make_request_calls()
         self.assertEqual(len(crt_requests), 1)
         self.assert_crt_make_request_call(

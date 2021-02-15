@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.19.8
+======
+
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``workmailmessageflow``: Update workmailmessageflow command to latest version
+* api-change:``mediatailor``: Update mediatailor command to latest version
+* api-change:``redshift-data``: Update redshift-data command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``kinesis-video-archived-media``: Update kinesis-video-archived-media command to latest version
+
+
 1.19.7
 ======
 

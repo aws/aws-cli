@@ -2,6 +2,31 @@
 CHANGELOG
 =========
 
+2.1.27
+======
+
+* api-change:``iam``: Update iam command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``mediatailor``: Update mediatailor command to latest version
+* api-change:``personalize-events``: Update personalize-events command to latest version
+* api-change:``wafv2``: Update wafv2 command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``workmailmessageflow``: Update workmailmessageflow command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``redshift-data``: Update redshift-data command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``devops-guru``: Update devops-guru command to latest version
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``detective``: Update detective command to latest version
+* api-change:``appsync``: Update appsync command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``kinesis-video-archived-media``: Update kinesis-video-archived-media command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+
+
 2.1.26
 ======
 

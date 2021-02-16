@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.19.9
+======
+
+* api-change:``devops-guru``: Update devops-guru command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+
+
 1.19.8
 ======
 

@@ -6,7 +6,7 @@ The following ``presign`` command generates a pre-signed URL for a specified buc
 
 Output::
 
-    https://awsexamplebucket.s3.amazonaws.com/test2.txt?AWSAccessKeyId=AKIAEXAMPLEACCESSKEY&Signature=EXHCcBe%EXAMPLEKnz3r8O0AgEXAMPLE&Expires=1555531131
+    https://s3.us-east-1.amazonaws.com/awsexamplebucket/test2.txt?AWSAccessKeyId=AKIAEXAMPLEACCESSKEY&Signature=EXHCcBe%EXAMPLEKnz3r8O0AgEXAMPLE&X-Amz-Expires=3600
 
 **To create a pre-signed URL with a custom lifetime that links to an object in an S3 bucket**
 
@@ -16,7 +16,7 @@ The following ``presign`` command generates a pre-signed URL for a specified buc
 
 Output::
 
-    https://examplebucket.s3.amazonaws.com/test2.txt?AWSAccessKeyId=AKIAEXAMPLEACCESSKEY&Signature=EXHCcBe%EXAMPLEKnz3r8O0AgEXAMPLE&Expires=1556132848
+   https://s3.us-east-1.amazonaws.com/awsexamplebucket/test2.txt?AWSAccessKeyId=AKIAEXAMPLEACCESSKEY&Signature=EXHCcBe%EXAMPLEKnz3r8O0AgEXAMPLE&X-Amz-Expires=604800
 
 For more information, see `Share an Object with Others`_ in the *S3 Developer Guide* guide.
 

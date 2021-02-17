@@ -41,6 +41,7 @@ the high level ``aws s3`` commands that perform uploads
 (``aws s3 cp``, ``aws s3 sync``) as well as the low level ``s3api``
 commands including ``aws s3api put-object`` and ``aws s3api upload-part``.
 
+If you want to verify the integrity of an object during upload, see `How can I check the integrity of an object uploaded to Amazon S3? <https://aws.amazon.com/premiumsupport/knowledge-center/data-integrity-s3/>`_ in the *AWS Knowledge Center*.
 
 Download
 ~~~~~~~~

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.19.10
+=======
+
+* api-change:``lookoutvision``: Update lookoutvision command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``config``: Update config command to latest version
+
+
 1.19.9
 ======
 

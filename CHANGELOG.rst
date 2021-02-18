@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.19.11
+=======
+
+* api-change:``cloudformation``: Update cloudformation command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``health``: Update health command to latest version
+
+
 1.19.10
 =======
 

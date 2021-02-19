@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.19.12
+=======
+
+* api-change:``rds``: Update rds command to latest version
+
+
 1.19.11
 =======
 

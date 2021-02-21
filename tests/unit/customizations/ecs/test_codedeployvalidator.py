@@ -52,24 +52,38 @@ class TestCodeDeployValidator(unittest.TestCase):
             'ecsServices': [{
                 'serviceName': 'test-service',
                 'clusterName': 'test-cluster'
-            }]
+            }],
+            'deploymentConfigName': 'CodeDeployDefault.ECSLinear10PercentEvery1Minutes'
         }
     }
 
+    TEST_DEPLOYMENT_CONFIG = {
+        'deploymentConfigInfo': {
+            'trafficRoutingConfig': {
+                'type': 'TimeBasedLinear',
+                'timeBasedLinear': {
+                    'linearPercentage': 10,
+                    'linearInterval': 5
+                }
+            }
+        }
+    }
     def setUp(self):
         self.validator = CodeDeployValidator(None, self.TEST_RESOURCES)
         self.validator.app_details = self.TEST_APP_DETAILS
         self.validator.deployment_group_details = \
             self.TEST_DEPLOYMENT_GROUP_DETAILS
+        self.validator.deployment_config = \
+            self.TEST_DEPLOYMENT_CONFIG
 
-    def test_get_deployment_wait_time(self):
-        expected_wait = 5 + 10 + TIMEOUT_BUFFER_MIN
-        actual_wait = self.validator.get_deployment_wait_time()
+    def test_get_deployment_duration(self):
+        expected_wait = 5 + 10 + (10 * 5) + TIMEOUT_BUFFER_MIN
+        actual_wait = self.validator.get_deployment_duration()
         self.assertEqual(expected_wait, actual_wait)
 
-    def test_get_deployment_wait_time_no_dgp(self):
+    def test_get_deployment_duration_no_dgp(self):
         empty_validator = CodeDeployValidator(None, self.TEST_RESOURCES)
-        actual_wait = empty_validator.get_deployment_wait_time()
+        actual_wait = empty_validator.get_deployment_duration()
         self.assertEqual(None, actual_wait)
 
     def test_validations(self):

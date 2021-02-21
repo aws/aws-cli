@@ -39,7 +39,8 @@ class ECSDeploy(BasicCommand):
         "complete. This command will exit with a return code of 255 if the "
         "deployment does not succeed within 30 minutes by default or "
         "up to 10 minutes more than your deployment group's configured wait "
-        "time (max of 6 hours)."
+        "time + the time required for shifting the traffic in the case of canary "
+        "releases (max of 6 hours)."
     )
 
     ARG_TABLE = [
@@ -131,7 +132,7 @@ class ECSDeploy(BasicCommand):
 
         self._validate_code_deploy_resources(codedeploy_client)
 
-        self.wait_time = self._cd_validator.get_deployment_wait_time()
+        self.wait_time = self._cd_validator.get_deployment_duration()
 
         self.task_def_arn = self._register_task_def(
             register_task_def_kwargs, ecs_client_wrapper)
@@ -341,6 +342,24 @@ class CodeDeployValidator():
             raise exceptions.ServiceClientError(
                 action='describe Code Deploy deployment group', error=e)
 
+        try:
+            dgp_info = self.deployment_group_details['deploymentGroupInfo']
+            deployment_config_name = dgp_info['deploymentConfigName']
+            self.deployment_config = self._client.get_deployment_config(
+                deploymentConfigName=deployment_config_name)
+        except ClientError as e:
+            raise exceptions.ServiceClientError(
+                action='describe Code Deploy deployment config', error=e)
+
+    def get_deployment_duration(self):
+        wait_time = self.get_deployment_wait_time()
+        rerouting_time = self.get_traffic_rerouting_time()
+
+        if wait_time is None or rerouting_time is None:
+            return None
+
+        return wait_time + rerouting_time + TIMEOUT_BUFFER_MIN
+
     def get_deployment_wait_time(self):
 
         if (not hasattr(self, 'deployment_group_details') or
@@ -359,7 +378,26 @@ class CodeDeployValidator():
 
             configured_wait = deploy_ready_wait_min + termination_wait_min
 
-            return configured_wait + TIMEOUT_BUFFER_MIN
+            return configured_wait
+
+    def get_traffic_rerouting_time(self):
+        if (not hasattr(self, 'deployment_config') or
+                self.deployment_config is None):
+            return None
+        else:
+            config_info = self.deployment_config['deploymentConfigInfo']
+            routing_config = config_info['trafficRoutingConfig']
+            routing_type = routing_config['type']
+
+            if routing_type == 'AllAtOnce':
+                return 0
+            elif routing_type == 'TimeBasedCanary':
+                return routing_config['timeBasedCanary']['canaryInterval']
+            elif routing_type == 'TimeBasedLinear':
+                time_based_linear = routing_config['timeBasedLinear']
+                return int((100 / time_based_linear['linearPercentage']) * time_based_linear['linearInterval'])
+            else:
+                return None
 
     def validate_all(self):
         self.validate_application()

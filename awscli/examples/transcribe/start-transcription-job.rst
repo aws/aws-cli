@@ -354,7 +354,7 @@ Contents of ``mytenthfile.json``::
         "TranscriptionJobName": "cli-clm-2-job-1",
         "LanguageCode": "language-code",
         "Media": {
-            "MediaFileUri": "s3://transcribe-learning-1/nov-26-2017.mp3"
+            "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/your-audio-file.file-extension"
         },
         "ModelSettings": {
             "LanguageModelName":"cli-clm-2"
@@ -369,7 +369,7 @@ Output::
             "TranscriptionJobStatus": "IN_PROGRESS",
             "LanguageCode": "language-code",
             "Media": {
-                "MediaFileUri": "s3://transcribe-learning-1/nov-26-2017.mp3"
+                "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/your-audio-file.file-extension"
             },
             "StartTime": "2020-09-28T17:56:01.835000+00:00",
             "CreationTime": "2020-09-28T17:56:01.801000+00:00",

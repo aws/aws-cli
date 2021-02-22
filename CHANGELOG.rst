@@ -2,6 +2,144 @@
 CHANGELOG
 =========
 
+1.19.12
+=======
+
+* api-change:``rds``: Update rds command to latest version
+
+
+1.19.11
+=======
+
+* api-change:``cloudformation``: Update cloudformation command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``health``: Update health command to latest version
+
+
+1.19.10
+=======
+
+* api-change:``lookoutvision``: Update lookoutvision command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``config``: Update config command to latest version
+
+
+1.19.9
+======
+
+* api-change:``devops-guru``: Update devops-guru command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+
+
+1.19.8
+======
+
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``workmailmessageflow``: Update workmailmessageflow command to latest version
+* api-change:``mediatailor``: Update mediatailor command to latest version
+* api-change:``redshift-data``: Update redshift-data command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``kinesis-video-archived-media``: Update kinesis-video-archived-media command to latest version
+
+
+1.19.7
+======
+
+* api-change:``detective``: Update detective command to latest version
+* api-change:``personalize-events``: Update personalize-events command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``appsync``: Update appsync command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``wafv2``: Update wafv2 command to latest version
+* api-change:``iam``: Update iam command to latest version
+
+
+1.19.6
+======
+
+* api-change:``databrew``: Update databrew command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
+1.19.5
+======
+
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``qldb-session``: Update qldb-session command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+
+
+1.19.4
+======
+
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``globalaccelerator``: Update globalaccelerator command to latest version
+* api-change:``ivs``: Update ivs command to latest version
+* api-change:``cloudtrail``: Update cloudtrail command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``dataexchange``: Update dataexchange command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+
+
+1.19.3
+======
+
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``macie``: Update macie command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+
+
+1.19.2
+======
+
+* api-change:``emr-containers``: Update emr-containers command to latest version
+* api-change:``dlm``: Update dlm command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``athena``: Update athena command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``appflow``: Update appflow command to latest version
+
+
+1.19.1
+======
+
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``compute-optimizer``: Update compute-optimizer command to latest version
+* api-change:``securityhub``: Update securityhub command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``workmail``: Update workmail command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``ce``: Update ce command to latest version
+* api-change:``auditmanager``: Update auditmanager command to latest version
+* api-change:``databrew``: Update databrew command to latest version
+
+
+1.19.0
+======
+
+* api-change:``appmesh``: Update appmesh command to latest version
+* api-change:``organizations``: Update organizations command to latest version
+* api-change:``location``: Update location command to latest version
+* api-change:``route53``: Update route53 command to latest version
+* feature:Python: Dropped support for Python 3.4 and 3.5
+* api-change:``rds-data``: Update rds-data command to latest version
+* api-change:``s3control``: Update s3control command to latest version
+* api-change:``lookoutvision``: Update lookoutvision command to latest version
+* api-change:``application-autoscaling``: Update application-autoscaling command to latest version
+* api-change:``iotwireless``: Update iotwireless command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+
+
 1.18.223
 ========
 

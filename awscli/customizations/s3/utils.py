@@ -52,7 +52,7 @@ _S3_OUTPOST_TO_BUCKET_KEY_REGEX = re.compile(
     r'[a-zA-Z0-9\-]{1,63}[/:]accesspoint[/:][a-zA-Z0-9\-]{1,63})[/:]?(?P<key>.*)$'
 )
 _S3_OBJECT_LAMBDA_TO_BUCKET_KEY_REGEX = re.compile(
-    r'^(?P<bucket>arn:(aws).*:s3-object-lambdas:[a-z\-0-9]+:[0-9]{12}:'
+    r'^(?P<bucket>arn:(aws).*:s3-object-lambda:[a-z\-0-9]+:[0-9]{12}:'
     r'accesspoint[/:][a-zA-Z0-9\-]{1,63})[/:]?(?P<key>.*)$'
 )
 

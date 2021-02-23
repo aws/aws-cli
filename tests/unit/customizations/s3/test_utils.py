@@ -303,14 +303,14 @@ class TestBlockS3ObjectLambda(unittest.TestCase):
     def test_banner_arn_with_colon_raises_exception(self):
         with self.assertRaisesRegexp(ValueError, 's3 commands do not support'):
             block_s3_object_lambda(
-                'arn:aws:s3-object-lambdas:us-west-2:123456789012:'
+                'arn:aws:s3-object-lambda:us-west-2:123456789012:'
                 'accesspoint:my-accesspoint'
             )
 
     def test_banner_arn_with_slash_raises_exception(self):
         with self.assertRaisesRegexp(ValueError, 's3 commands do not support'):
             block_s3_object_lambda(
-                 'arn:aws:s3-object-lambdas:us-west-2:123456789012:'
+                 'arn:aws:s3-object-lambda:us-west-2:123456789012:'
                  'accesspoint/my-accesspoint'
             )
 

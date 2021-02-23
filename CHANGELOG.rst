@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.1.28
+======
+
+* enhancement:Python: Update embedded Python version to 3.8.8 for standalone artifacts
+
+
 2.1.27
 ======
 

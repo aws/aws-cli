@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.19.15
+=======
+
+* api-change:``appflow``: Update appflow command to latest version
+* api-change:``ecr-public``: Update ecr-public command to latest version
+* api-change:``mediapackage-vod``: Update mediapackage-vod command to latest version
+* api-change:``compute-optimizer``: Update compute-optimizer command to latest version
+* api-change:``es``: Update es command to latest version
+
+
 1.19.14
 =======
 

@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.19.16
+=======
+
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``detective``: Update detective command to latest version
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+* api-change:``databrew``: Update databrew command to latest version
+* api-change:``transfer``: Update transfer command to latest version
+
+
 1.19.15
 =======
 

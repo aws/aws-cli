@@ -149,9 +149,19 @@ class TestGetPreferredEncoding(unittest.TestCase):
         encoding = getpreferredencoding()
         self.assertEqual(encoding, 'cp1252')
 
-    def test_getpreferredencoding_wo_env_var(self):
+    @mock.patch('locale.setlocale', side_effect=['POSIX', 'C'])
+    def test_getpreferredencoding_wo_env_var_with_ctype_posix(self, *args):
         encoding = getpreferredencoding()
-        self.assertEqual(encoding, locale.getpreferredencoding())
+        self.assertEqual(encoding, 'UTF-8')
+        encoding = getpreferredencoding()
+        self.assertEqual(encoding, 'UTF-8')
+
+    @mock.patch('locale.setlocale', return_value='English_United States.1252')
+    @mock.patch('locale.getpreferredencoding')
+    def test_runs_locale_getpreferredencoding_wo_env_var_and_posix(
+            self, getprefedencoding, *args):
+        getpreferredencoding()
+        getprefedencoding.assert_called_once_with()
 
 
 class TestCompatOpenWithAccessPermissions(unittest.TestCase):

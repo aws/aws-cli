@@ -123,10 +123,16 @@ def getpreferredencoding(*args, **kwargs):
     if it's not set use locale.getpreferredencoding()
     to find the preferred encoding.
     """
-    return os.environ.get(
-        'AWS_CLI_FILE_ENCODING',
-        locale.getpreferredencoding(*args, **kwargs)
-    )
+    if 'AWS_CLI_FILE_ENCODING' in os.environ:
+        return os.environ['AWS_CLI_FILE_ENCODING']
+    # in Python 3.8 PyConfig API has been changed but pyInstaller only
+    # partially supports these changes, one thing it doesn't support is
+    # auto-conversion POSIX locale to UTF-8 which is part of PEP-540
+    # so we have to implement this conversion on our side
+    lc_type = locale.setlocale(locale.LC_CTYPE)
+    if lc_type in ('C', 'POSIX'):
+        return 'UTF-8'
+    return locale.getpreferredencoding(*args, **kwargs)
 
 
 def compat_open(filename, mode='r', encoding=None, access_permissions=None):

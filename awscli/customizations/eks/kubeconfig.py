@@ -193,7 +193,7 @@ class KubeconfigWriter(object):
             with os.fdopen(
                     os.open(
                         config.path,
-                        os.O_CREAT | os.O_RDWR,
+                        os.O_CREAT | os.O_RDWR | os.O_TRUNC,
                         0o600),
                     "w+") as stream:
                 ordered_yaml_dump(config.content, stream)

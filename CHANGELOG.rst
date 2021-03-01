@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.19.18
+=======
+
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+
+
 1.19.17
 =======
 

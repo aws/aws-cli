@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.1.29
+======
+
+* bugfix:``locale``: Fix when UTF-8 isn't preferred encoding with locale equals to "POSIX" or "C"
+
+
 2.1.28
 ======
 

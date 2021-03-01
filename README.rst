@@ -398,7 +398,7 @@ Discussion Forums <https://forums.aws.amazon.com/>`__ helpful.
 
 
 ------------
-More Resourses
+More Resources
 ------------
 
 -  `Changelog <https://github.com/aws/aws-cli/blob/v2/CHANGELOG.rst>`__

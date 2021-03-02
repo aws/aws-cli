@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.19.19
+=======
+
+* api-change:``events``: Update events command to latest version
+* api-change:``managedblockchain``: Update managedblockchain command to latest version
+* api-change:``datasync``: Update datasync command to latest version
+* api-change:``directconnect``: Update directconnect command to latest version
+* api-change:``iotwireless``: Update iotwireless command to latest version
+* api-change:``compute-optimizer``: Update compute-optimizer command to latest version
+
+
 1.19.18
 =======
 

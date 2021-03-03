@@ -63,7 +63,11 @@ class TestCodeDeployValidator(unittest.TestCase):
         self.validator.deployment_group_details = \
             self.TEST_DEPLOYMENT_GROUP_DETAILS
 
-    def test_get_deployment_duration_time_based_linear(self):
+    def test_get_deployment_wait_time(self):
+        actual_wait = self.validator.get_deployment_wait_time()
+        self.assertEqual(15, actual_wait)
+
+    def test_get_traffic_rerouting_time_based_linear(self):
         self.validator.deployment_config = {
             'deploymentConfigInfo': {
                 'trafficRoutingConfig': {
@@ -76,11 +80,10 @@ class TestCodeDeployValidator(unittest.TestCase):
             }
         }
 
-        expected_wait = 5 + 10 + (10 * 5) + TIMEOUT_BUFFER_MIN
-        actual_wait = self.validator.get_deployment_duration()
-        self.assertEqual(expected_wait, actual_wait)
+        actual_wait = self.validator.get_traffic_rerouting_time()
+        self.assertEqual(10 * 5, actual_wait)
 
-    def test_get_deployment_duration_time_based_canary(self):
+    def test_get_traffic_rerouting_time_based_canary(self):
         self.validator.deployment_config = {
             'deploymentConfigInfo': {
                 'trafficRoutingConfig': {
@@ -93,11 +96,10 @@ class TestCodeDeployValidator(unittest.TestCase):
             }
         }
 
-        expected_wait = 5 + 10 + 5 + TIMEOUT_BUFFER_MIN
-        actual_wait = self.validator.get_deployment_duration()
-        self.assertEqual(expected_wait, actual_wait)
+        actual_wait = self.validator.get_traffic_rerouting_time()
+        self.assertEqual(5, actual_wait)
 
-    def test_get_deployment_duration_all_at_once(self):
+    def test_get_traffic_rerouting_time_all_at_once(self):
         self.validator.deployment_config = {
             'deploymentConfigInfo': {
                 'trafficRoutingConfig': {
@@ -106,11 +108,10 @@ class TestCodeDeployValidator(unittest.TestCase):
             }
         }
 
-        expected_wait = 5 + 10 + TIMEOUT_BUFFER_MIN
-        actual_wait = self.validator.get_deployment_duration()
-        self.assertEqual(expected_wait, actual_wait)
+        actual_wait = self.validator.get_traffic_rerouting_time()
+        self.assertEqual(0, actual_wait)
 
-    def test_get_deployment_duration_unknown_traffic_routing_config(self):
+    def test_get_traffic_rerouting_time_unknown_traffic_routing_config(self):
         self.validator.deployment_config = {
             'deploymentConfigInfo': {
                 'trafficRoutingConfig': {
@@ -119,9 +120,12 @@ class TestCodeDeployValidator(unittest.TestCase):
             }
         }
 
-        expected_wait = 5 + 10 + TIMEOUT_BUFFER_MIN
+        actual_wait = self.validator.get_traffic_rerouting_time()
+        self.assertEqual(0, actual_wait)
+
+    def test_get_deployment_duration(self):
         actual_wait = self.validator.get_deployment_duration()
-        self.assertEqual(expected_wait, actual_wait)
+        self.assertEqual(25, actual_wait)
 
     def test_get_deployment_duration_no_dgp(self):
         empty_validator = CodeDeployValidator(None, self.TEST_RESOURCES)

@@ -297,10 +297,10 @@ class CodeDeployer():
     def wait_for_deploy_success(self, id, wait_min):
         waiter = self._client.get_waiter("deployment_successful")
 
-        if wait_min is not None and wait_min > MAX_WAIT_MIN:
+        if wait_min > MAX_WAIT_MIN:
             wait_min = MAX_WAIT_MIN
 
-        elif wait_min is None or wait_min < 30:
+        elif wait_min < 30:
             wait_min = 30
 
         delay_sec = DEFAULT_DELAY_SEC
@@ -355,16 +355,13 @@ class CodeDeployValidator():
         wait_time = self.get_deployment_wait_time()
         rerouting_time = self.get_traffic_rerouting_time()
 
-        if wait_time is None or rerouting_time is None:
-            return None
-
         return wait_time + rerouting_time + TIMEOUT_BUFFER_MIN
 
     def get_deployment_wait_time(self):
 
         if (not hasattr(self, 'deployment_group_details') or
                 self.deployment_group_details is None):
-            return None
+            return 0
         else:
             dgp_info = self.deployment_group_details['deploymentGroupInfo']
             blue_green_info = dgp_info['blueGreenDeploymentConfiguration']
@@ -381,9 +378,9 @@ class CodeDeployValidator():
             return configured_wait
 
     def get_traffic_rerouting_time(self):
-        if (not hasattr(self, 'deployment_config') or
+        if (not hasattr(self, 'deployment_config')or
                 self.deployment_config is None):
-            return None
+            return 0
         else:
             config_info = self.deployment_config['deploymentConfigInfo']
             routing_config = config_info['trafficRoutingConfig']
@@ -397,7 +394,7 @@ class CodeDeployValidator():
                 time_based_linear = routing_config['timeBasedLinear']
                 return int((100 / time_based_linear['linearPercentage']) * time_based_linear['linearInterval'])
             else:
-                return None
+                return 0
 
     def validate_all(self):
         self.validate_application()

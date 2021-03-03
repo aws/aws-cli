@@ -67,6 +67,14 @@ class TestCodeDeployValidator(unittest.TestCase):
         actual_wait = self.validator.get_deployment_wait_time()
         self.assertEqual(15, actual_wait)
 
+    def test_get_traffic_rerouting_missing_traffic_routing_config(self):
+        self.validator.deployment_config = {
+            'deploymentConfigInfo': {}
+        }
+
+        actual_wait = self.validator.get_traffic_rerouting_time()
+        self.assertEqual(0, actual_wait)
+
     def test_get_traffic_rerouting_time_based_linear(self):
         self.validator.deployment_config = {
             'deploymentConfigInfo': {

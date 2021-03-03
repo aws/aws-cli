@@ -378,13 +378,13 @@ class CodeDeployValidator():
             return configured_wait
 
     def get_traffic_rerouting_time(self):
-        if (not hasattr(self, 'deployment_config')or
+        if (not hasattr(self, 'deployment_config') or
                 self.deployment_config is None):
             return 0
         else:
-            config_info = self.deployment_config['deploymentConfigInfo']
-            routing_config = config_info['trafficRoutingConfig']
-            routing_type = routing_config['type']
+            config_info = self.deployment_config.get('deploymentConfigInfo', {})
+            routing_config = config_info.get('trafficRoutingConfig', {})
+            routing_type = routing_config.get('type', '')
 
             if routing_type == 'AllAtOnce':
                 return 0

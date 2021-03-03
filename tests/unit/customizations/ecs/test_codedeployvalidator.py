@@ -63,7 +63,7 @@ class TestCodeDeployValidator(unittest.TestCase):
         self.validator.deployment_group_details = \
             self.TEST_DEPLOYMENT_GROUP_DETAILS
 
-    def test_time_based_linear_get_deployment_duration(self):
+    def test_get_deployment_duration_time_based_linear(self):
         self.validator.deployment_config = {
             'deploymentConfigInfo': {
                 'trafficRoutingConfig': {
@@ -80,7 +80,7 @@ class TestCodeDeployValidator(unittest.TestCase):
         actual_wait = self.validator.get_deployment_duration()
         self.assertEqual(expected_wait, actual_wait)
 
-    def test_time_based_canary_get_deployment_duration(self):
+    def test_get_deployment_duration_time_based_canary(self):
         self.validator.deployment_config = {
             'deploymentConfigInfo': {
                 'trafficRoutingConfig': {
@@ -97,7 +97,7 @@ class TestCodeDeployValidator(unittest.TestCase):
         actual_wait = self.validator.get_deployment_duration()
         self.assertEqual(expected_wait, actual_wait)
 
-    def test_all_at_once_get_deployment_duration(self):
+    def test_get_deployment_duration_all_at_once(self):
         self.validator.deployment_config = {
             'deploymentConfigInfo': {
                 'trafficRoutingConfig': {
@@ -110,7 +110,7 @@ class TestCodeDeployValidator(unittest.TestCase):
         actual_wait = self.validator.get_deployment_duration()
         self.assertEqual(expected_wait, actual_wait)
 
-    def test_unknown_traffic_routing_config_get_deployment_duration(self):
+    def test_get_deployment_duration_unknown_traffic_routing_config(self):
         self.validator.deployment_config = {
             'deploymentConfigInfo': {
                 'trafficRoutingConfig': {

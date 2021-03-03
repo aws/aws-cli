@@ -39,7 +39,8 @@ class Formatter(object):
         # the request id) if there is an error in the response.
         # Since all errors have been unified under the Errors key,
         # this should be a reasonable way to filter.
-        if 'Errors' not in response_data:
+        if 'Errors' not in response_data or \
+                len(response_data['Errors']) == 0:
             if 'ResponseMetadata' in response_data:
                 if 'RequestId' in response_data['ResponseMetadata']:
                     request_id = response_data['ResponseMetadata']['RequestId']

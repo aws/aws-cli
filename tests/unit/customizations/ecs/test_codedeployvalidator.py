@@ -57,29 +57,59 @@ class TestCodeDeployValidator(unittest.TestCase):
         }
     }
 
-    TEST_DEPLOYMENT_CONFIG = {
-        'deploymentConfigInfo': {
-            'trafficRoutingConfig': {
-                'type': 'TimeBasedLinear',
-                'timeBasedLinear': {
-                    'linearPercentage': 10,
-                    'linearInterval': 5
-                }
-            }
-        }
-    }
     def setUp(self):
         self.validator = CodeDeployValidator(None, self.TEST_RESOURCES)
         self.validator.app_details = self.TEST_APP_DETAILS
         self.validator.deployment_group_details = \
             self.TEST_DEPLOYMENT_GROUP_DETAILS
-        self.validator.deployment_config = \
-            self.TEST_DEPLOYMENT_CONFIG
 
-    def test_get_deployment_duration(self):
+    def test_time_based_linear_get_deployment_duration(self):
+        self.validator.deployment_config = {
+            'deploymentConfigInfo': {
+                'trafficRoutingConfig': {
+                    'type': 'TimeBasedLinear',
+                    'timeBasedLinear': {
+                        'linearPercentage': 10,
+                        'linearInterval': 5
+                    }
+                }
+            }
+        }
+
         expected_wait = 5 + 10 + (10 * 5) + TIMEOUT_BUFFER_MIN
         actual_wait = self.validator.get_deployment_duration()
         self.assertEqual(expected_wait, actual_wait)
+
+    def test_time_based_canary_get_deployment_duration(self):
+        self.validator.deployment_config = {
+            'deploymentConfigInfo': {
+                'trafficRoutingConfig': {
+                    'type': 'TimeBasedCanary',
+                    'timeBasedCanary': {
+                        'canaryPercentage': 10,
+                        'canaryInterval': 5
+                    }
+                }
+            }
+        }
+
+        expected_wait = 5 + 10 + 5 + TIMEOUT_BUFFER_MIN
+        actual_wait = self.validator.get_deployment_duration()
+        self.assertEqual(expected_wait, actual_wait)
+
+    def test_all_at_once_get_deployment_duration(self):
+        self.validator.deployment_config = {
+            'deploymentConfigInfo': {
+                'trafficRoutingConfig': {
+                    'type': 'AllAtOnce'
+                }
+            }
+        }
+
+        expected_wait = 5 + 10 + TIMEOUT_BUFFER_MIN
+        actual_wait = self.validator.get_deployment_duration()
+        self.assertEqual(expected_wait, actual_wait)
+
 
     def test_get_deployment_duration_no_dgp(self):
         empty_validator = CodeDeployValidator(None, self.TEST_RESOURCES)

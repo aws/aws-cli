@@ -110,6 +110,18 @@ class TestCodeDeployValidator(unittest.TestCase):
         actual_wait = self.validator.get_deployment_duration()
         self.assertEqual(expected_wait, actual_wait)
 
+    def test_unknown_traffic_routing_config_get_deployment_duration(self):
+        self.validator.deployment_config = {
+            'deploymentConfigInfo': {
+                'trafficRoutingConfig': {
+                    'type': 'NewTypeNotKnownYet'
+                }
+            }
+        }
+
+        expected_wait = None
+        actual_wait = self.validator.get_deployment_duration()
+        self.assertEqual(expected_wait, actual_wait)
 
     def test_get_deployment_duration_no_dgp(self):
         empty_validator = CodeDeployValidator(None, self.TEST_RESOURCES)

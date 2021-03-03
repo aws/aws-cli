@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.19.20
+=======
+
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``wellarchitected``: Update wellarchitected command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+* api-change:``acm``: Update acm command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``forecast``: Update forecast command to latest version
+
+
 1.19.19
 =======
 

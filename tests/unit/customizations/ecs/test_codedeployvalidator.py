@@ -119,14 +119,14 @@ class TestCodeDeployValidator(unittest.TestCase):
             }
         }
 
-        expected_wait = None
+        expected_wait = 5 + 10 + TIMEOUT_BUFFER_MIN
         actual_wait = self.validator.get_deployment_duration()
         self.assertEqual(expected_wait, actual_wait)
 
     def test_get_deployment_duration_no_dgp(self):
         empty_validator = CodeDeployValidator(None, self.TEST_RESOURCES)
         actual_wait = empty_validator.get_deployment_duration()
-        self.assertEqual(None, actual_wait)
+        self.assertEqual(TIMEOUT_BUFFER_MIN, actual_wait)
 
     def test_validations(self):
         self.validator.validate_application()

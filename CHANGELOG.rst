@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.19.21
+=======
+
+* api-change:``mwaa``: Update mwaa command to latest version
+* api-change:``events``: Update events command to latest version
+* api-change:``servicediscovery``: Update servicediscovery command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+
+
 1.19.20
 =======
 

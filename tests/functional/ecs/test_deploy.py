@@ -224,6 +224,7 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
                 'applicationName': self.application_name,
                 'deploymentGroupName': self.deployment_group_name,
                 'computePlatform': 'ECS',
+                'deploymentConfigName': 'ECS.AllAtOnce',
                 'blueGreenDeploymentConfiguration': {
                     'deploymentReadyOption': {
                         'waitTimeInMinutes': 5
@@ -295,7 +296,8 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
                 'ecsServices': [{
                     'serviceName': self.service_name,
                     'clusterName': self.cluster_name
-                }]
+                }],
+                'deploymentConfigName': 'ECS.AllAtOnce'
             }
         }
         max_timeout = str(MAX_WAIT_MIN)
@@ -396,7 +398,15 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
                     'ecsServices': [{
                         'serviceName': self.service_name,
                         'clusterName': self.cluster_name
-                    }]
+                    }],
+                    'deploymentConfigName': 'ECS.AllAtOnce'
+                }
+            },
+            {
+                'deploymentConfigInfo': {
+                    'trafficRoutingConfig': {
+                        'type': 'AllAtOnce'
+                    }
                 }
             },
             {
@@ -425,6 +435,12 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
                 'params': {
                     'applicationName': self.application_name,
                     'deploymentGroupName': self.deployment_group_name
+                }
+            },
+            {
+                'operation': 'GetDeploymentConfig',
+                'params': {
+                    'deploymentConfigName': 'ECS.AllAtOnce'
                 }
             },
             {
@@ -474,9 +490,17 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
                     'ecsServices': [{
                         'serviceName': self.service_name,
                         'clusterName': self.cluster_name
-                    }]
+                    }],
+                    'deploymentConfigName': 'ECS.AllAtOnce'
                 }
-            }
+            },
+            {
+                'deploymentConfigInfo': {
+                    'trafficRoutingConfig': {
+                        'type': 'AllAtOnce'
+                    }
+                }
+            },
         ]
 
         expected_params = [
@@ -496,6 +520,12 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
                 'params': {
                     'applicationName': self.application_name,
                     'deploymentGroupName': self.deployment_group_name
+                }
+            },
+            {
+                'operation': 'GetDeploymentConfig',
+                'params': {
+                    'deploymentConfigName': 'ECS.AllAtOnce'
                 }
             }
         ]
@@ -546,6 +576,12 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
                 }
             },
             {
+                'operation': 'GetDeploymentConfig',
+                'params': {
+                    'deploymentConfigName': 'ECS.AllAtOnce'
+                }
+            },
+            {
                 'operation': 'RegisterTaskDefinition',
                 'params': self.TASK_DEFINITION_JSON
             },
@@ -593,7 +629,15 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
                     'ecsServices': [{
                         'serviceName': self.service_name,
                         'clusterName': cluster_name
-                    }]
+                    }],
+                    'deploymentConfigName': 'ECS.AllAtOnce'
+                }
+            },
+            {
+                'deploymentConfigInfo': {
+                    'trafficRoutingConfig': {
+                        'type': 'AllAtOnce'
+                    }
                 }
             },
             {

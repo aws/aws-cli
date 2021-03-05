@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.19.22
+=======
+
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``athena``: Update athena command to latest version
+* api-change:``license-manager``: Update license-manager command to latest version
+* api-change:``network-firewall``: Update network-firewall command to latest version
+* api-change:``appflow``: Update appflow command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``shield``: Update shield command to latest version
+
+
 1.19.21
 =======
 

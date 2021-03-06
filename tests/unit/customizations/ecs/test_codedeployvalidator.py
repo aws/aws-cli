@@ -68,7 +68,7 @@ class TestCodeDeployValidator(unittest.TestCase):
         self.assertEqual(15, actual_wait)
 
     def test_get_traffic_rerouting_missing_traffic_routing_config(self):
-        self.validator.deployment_config = {
+        self.validator.deployment_config_details = {
             'deploymentConfigInfo': {}
         }
 
@@ -76,7 +76,7 @@ class TestCodeDeployValidator(unittest.TestCase):
         self.assertEqual(0, actual_wait)
 
     def test_get_traffic_rerouting_time_based_linear(self):
-        self.validator.deployment_config = {
+        self.validator.deployment_config_details = {
             'deploymentConfigInfo': {
                 'trafficRoutingConfig': {
                     'type': 'TimeBasedLinear',
@@ -92,7 +92,7 @@ class TestCodeDeployValidator(unittest.TestCase):
         self.assertEqual(10 * 5, actual_wait)
 
     def test_get_traffic_rerouting_time_based_canary(self):
-        self.validator.deployment_config = {
+        self.validator.deployment_config_details = {
             'deploymentConfigInfo': {
                 'trafficRoutingConfig': {
                     'type': 'TimeBasedCanary',
@@ -108,7 +108,7 @@ class TestCodeDeployValidator(unittest.TestCase):
         self.assertEqual(5, actual_wait)
 
     def test_get_traffic_rerouting_time_all_at_once(self):
-        self.validator.deployment_config = {
+        self.validator.deployment_config_details = {
             'deploymentConfigInfo': {
                 'trafficRoutingConfig': {
                     'type': 'AllAtOnce'
@@ -120,7 +120,7 @@ class TestCodeDeployValidator(unittest.TestCase):
         self.assertEqual(0, actual_wait)
 
     def test_get_traffic_rerouting_time_unknown_traffic_routing_config(self):
-        self.validator.deployment_config = {
+        self.validator.deployment_config_details = {
             'deploymentConfigInfo': {
                 'trafficRoutingConfig': {
                     'type': 'NewTypeNotKnownYet'

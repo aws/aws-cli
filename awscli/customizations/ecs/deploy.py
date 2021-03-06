@@ -345,7 +345,7 @@ class CodeDeployValidator():
         try:
             dgp_info = self.deployment_group_details['deploymentGroupInfo']
             deployment_config_name = dgp_info['deploymentConfigName']
-            self.deployment_config = self._client.get_deployment_config(
+            self.deployment_config_details = self._client.get_deployment_config(
                 deploymentConfigName=deployment_config_name)
         except ClientError as e:
             raise exceptions.ServiceClientError(
@@ -378,11 +378,11 @@ class CodeDeployValidator():
             return configured_wait
 
     def get_traffic_rerouting_time(self):
-        if (not hasattr(self, 'deployment_config') or
-                self.deployment_config is None):
+        if (not hasattr(self, 'deployment_config_details') or
+                self.deployment_config_details is None):
             return 0
         else:
-            config_info = self.deployment_config.get('deploymentConfigInfo', {})
+            config_info = self.deployment_config_details.get('deploymentConfigInfo', {})
             routing_config = config_info.get('trafficRoutingConfig', {})
             routing_type = routing_config.get('type', '')
 

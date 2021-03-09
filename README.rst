@@ -279,8 +279,8 @@ Overflow <https://stackoverflow.com/>`__ with the tag
 `aws-cli <https://stackoverflow.com/questions/tagged/aws-cli>`__ or on
 the `AWS Discussion Forum for
 CLI <https://forums.aws.amazon.com/forum.jspa?forumID=150>`__. If you
-have a support plan with `AWS Premium
-Support <https://aws.amazon.com/premiumsupport>`__, you can also create
+have a support plan with `AWS Support
+<https://aws.amazon.com/premiumsupport>`__, you can also create
 a new support case.
 
 Please check for open similar

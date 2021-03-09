@@ -13,7 +13,8 @@
 
 INSTANCE_FLEETS_WITH_ON_DEMAND_MASTER_ONLY = (
     'InstanceFleetType=MASTER,TargetOnDemandCapacity=1,InstanceTypeConfigs=[{InstanceType=d2.xlarge}],'
-    'LaunchSpecifications={OnDemandSpecification={AllocationStrategy=lowest-price}}')
+    'LaunchSpecifications={OnDemandSpecification={AllocationStrategy=lowest-price,'
+    'CapacityReservationOptions={UsageStrategy=use-capacity-reservations-first,CapacityReservationPreference=open}}}')
 
 INSTANCE_FLEETS_WITH_SPOT_MASTER_ONLY = (
     'InstanceFleetType=MASTER,TargetSpotCapacity=1,InstanceTypeConfigs=[{InstanceType=d2.xlarge,BidPrice=0.1}],'
@@ -41,7 +42,13 @@ INSTANCE_FLEETS_WITH_MISSING_BID_PRICE_CONFIGS = (
 RES_INSTANCE_FLEETS_WITH_ON_DEMAND_MASTER_ONLY = \
     [{"InstanceTypeConfigs": [{"InstanceType": "d2.xlarge"}],
       "LaunchSpecifications": {
-        "OnDemandSpecification": {"AllocationStrategy": "lowest-price"}
+        "OnDemandSpecification": {
+            "AllocationStrategy": "lowest-price",
+            "CapacityReservationOptions": {
+                "UsageStrategy": "use-capacity-reservations-first",
+                "CapacityReservationPreference": "open"
+            }
+        }
       },
       "TargetOnDemandCapacity": 1,
       "InstanceFleetType": "MASTER",

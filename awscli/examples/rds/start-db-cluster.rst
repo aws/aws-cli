@@ -1,8 +1,8 @@
-**To stop a DB cluster**
+**To start a DB cluster**
 
-The following ``stop-db-cluster`` example stops a DB cluster and its DB instances. ::
+The following ``start-db-cluster`` example starts a DB cluster and its DB instances. ::
 
-    aws rds stop-db-cluster \
+    aws rds start-db-cluster \
         --db-cluster-identifier mydbcluster
 
 Output::

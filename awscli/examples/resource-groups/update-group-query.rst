@@ -19,6 +19,8 @@ Output::
         }
     }
 
+For more information, see `Update Groups <https://docs.aws.amazon.com/ARG/latest/userguide/updating-resource-groups.html>`__ in the *AWS Resource Groups User Guide*.
+
 **Example 2: To update the query for a CloudFormation stack-based resource group**
 
 The following ``update-group-query`` example updates the query attached to the specified AWS CloudFormation stack-based resource group. ::

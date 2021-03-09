@@ -2,6 +2,66 @@
 CHANGELOG
 =========
 
+2.1.30
+======
+
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``kinesis-video-archived-media``: Update kinesis-video-archived-media command to latest version
+* api-change:``s3control``: Update s3control command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``codeguruprofiler``: Update codeguruprofiler command to latest version
+* api-change:``wellarchitected``: Update wellarchitected command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``health``: Update health command to latest version
+* api-change:``transfer``: Update transfer command to latest version
+* api-change:``servicediscovery``: Update servicediscovery command to latest version
+* api-change:``iotevents``: Update iotevents command to latest version
+* api-change:``sso-admin``: Update sso-admin command to latest version
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``acm``: Update acm command to latest version
+* api-change:``detective``: Update detective command to latest version
+* api-change:``databrew``: Update databrew command to latest version
+* api-change:``efs``: Update efs command to latest version
+* api-change:``connect``: Update connect command to latest version
+* api-change:``network-firewall``: Update network-firewall command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``datasync``: Update datasync command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``athena``: Update athena command to latest version
+* api-change:``shield``: Update shield command to latest version
+* api-change:``mwaa``: Update mwaa command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+* api-change:``managedblockchain``: Update managedblockchain command to latest version
+* api-change:``appflow``: Update appflow command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``ecr-public``: Update ecr-public command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``license-manager``: Update license-manager command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``cloudformation``: Update cloudformation command to latest version
+* api-change:``events``: Update events command to latest version
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``sagemaker-runtime``: Update sagemaker-runtime command to latest version
+* api-change:``glue``: Update glue command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``mediapackage-vod``: Update mediapackage-vod command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``directconnect``: Update directconnect command to latest version
+* api-change:``forecast``: Update forecast command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``iotwireless``: Update iotwireless command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``compute-optimizer``: Update compute-optimizer command to latest version
+* api-change:``redshift-data``: Update redshift-data command to latest version
+* api-change:``lookoutvision``: Update lookoutvision command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
 2.1.29
 ======
 

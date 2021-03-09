@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.19.24
+=======
+
+* api-change:``efs``: Update efs command to latest version
+* api-change:``codeguruprofiler``: Update codeguruprofiler command to latest version
+* api-change:``iotwireless``: Update iotwireless command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+
+
 1.19.23
 =======
 

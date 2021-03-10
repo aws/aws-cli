@@ -28,6 +28,7 @@ class TestShow(unittest.TestCase):
         )
         self.environ['AWS_DEFAULT_PROFILE'] = 'default'
         self.environ['AWS_DEFAULT_REGION'] = 'us-west-2'
+        self.environ['AWS_STS_REGIONAL_ENDPOINTS'] = 'regional'
         self.environ['AWS_CLI_HISTORY_FILE'] = os.path.join(
             self.files.rootdir, 'history.db')
 
@@ -77,7 +78,7 @@ class TestShow(unittest.TestCase):
                 '    "RoleArn": "arn:aws:iam::...:invalid",',
                 '    "SAMLAssertion": "fake-assertion"',
                 '[0] HTTP request sent',
-                'to URL: https://sts.amazonaws.com/',
+                'to URL: https://sts.us-west-2.amazonaws.com/',
                 'with method: POST',
                 'with body: ',
                 'Action=AssumeRoleWithSAML',

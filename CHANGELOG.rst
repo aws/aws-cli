@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.19.25
+=======
+
+* api-change:``accessanalyzer``: Update accessanalyzer command to latest version
+* api-change:``backup``: Update backup command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
 1.19.24
 =======
 

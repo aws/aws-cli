@@ -1,5 +1,5 @@
- Log stream name format may differ sometime, it will look a like `'2020-10-28_20-20-54`' or `'2021/03/10/[$LATEST]f897b8fa9432936332'` and make sure mention log stream name in single quote. 
- The following command retrieves log events from a log stream named ``20150601`` in the log group ``my-logs``::
+Log stream name format may differ sometime, it will look a like `'2020-10-28_20-20-54`' or `'2021/03/10/[$LATEST]f897b8fa9432936332'` and make sure mention log stream name in single quote. 
+The following command retrieves log events from a log stream named ``20150601`` in the log group ``my-logs``::
 
   aws logs get-log-events --log-group-name my-logs --log-stream-name 20150601
 

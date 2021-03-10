@@ -15,7 +15,6 @@ from awscli.testutils import unittest
 import mock
 
 from awscli.arguments import CLIArgument
-from awscli.customizations import utils
 from awscli.customizations.flatten import FlattenedArgument, FlattenArguments
 
 

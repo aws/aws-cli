@@ -13,8 +13,6 @@
 from decimal import Decimal
 from awscli.testutils import unittest
 
-from botocore.compat import six
-
 from awscli.customizations.dynamodb.types import (
     Binary, TypeSerializer, TypeDeserializer
 )

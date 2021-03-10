@@ -13,7 +13,7 @@
 from tests.functional.history import BaseHistoryCommandParamsTest
 
 from awscli.clidriver import AWSCLIEntryPoint
-from awscli.testutils import create_clidriver, mock
+from awscli.testutils import create_clidriver
 
 
 class TestShowCommand(BaseHistoryCommandParamsTest):

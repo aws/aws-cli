@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 import logging
 import os
-from botocore import xform_name
 from botocore.model import StringShape
 from botocore.utils import is_json_value_header
 

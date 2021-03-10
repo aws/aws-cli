@@ -19,7 +19,6 @@ from tests import RawResponse
 
 import botocore
 
-import awscli.constants
 from awscli.testutils import FileCreator
 from awscli.testutils import BaseCLIDriverTest
 from awscli.clidriver import create_clidriver

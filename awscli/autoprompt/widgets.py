@@ -34,7 +34,7 @@ from prompt_toolkit.widgets.base import Border
 
 from awscli.autoprompt.filters import (
     help_section_visible, doc_window_has_focus, search_input_has_focus,
-    input_buffer_has_focus, is_history_mode, is_debug_mode,
+    is_history_mode, is_debug_mode,
 )
 
 

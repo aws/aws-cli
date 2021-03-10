@@ -13,7 +13,6 @@
 
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
-from nose.tools import raises
 
 
 class TestModifyClusterAttributes(BaseAWSCommandParamsTest):

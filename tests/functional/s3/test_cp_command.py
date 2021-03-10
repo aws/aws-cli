@@ -12,10 +12,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import mock
-import os
 
 from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import capture_input
 from awscli.compat import six, OrderedDict
 from tests.functional.s3 import BaseS3TransferCommandTest
 

@@ -12,7 +12,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from botocore.compat import json
-import platform
 import mock
 from awscli.compat import six
 from awscli.formatter import JSONFormatter

@@ -12,9 +12,8 @@
 # language governing permissions and limitations under the License.
 from collections import Mapping, MutableSequence
 
-from awscli.customizations.dynamodb.types import (
-    TypeSerializer, TypeDeserializer
-)
+from awscli.customizations.dynamodb.types import TypeSerializer  # NOQA
+from awscli.customizations.dynamodb.types import TypeDeserializer  # NOQA
 
 
 class ParameterTransformer(object):

@@ -14,21 +14,15 @@
 import glob
 import os
 import mock
-import tempfile
-import shutil
-import sys
 import botocore
 from botocore.compat import OrderedDict
 
 from awscli.testutils import unittest
-from awscli.customizations.utils import uni_print
 import awscli.customizations.eks.kubeconfig as kubeconfig
 from awscli.customizations.eks.update_kubeconfig import (KubeconfigSelector,
                                                          EKSClient,
                                                          API_VERSION)
-from awscli.customizations.eks.exceptions import (EKSError,
-                                                  EKSClusterError)
-from awscli.customizations.eks.ordered_yaml import ordered_yaml_load
+from awscli.customizations.eks.exceptions import EKSClusterError
 from tests.functional.eks.test_util import get_testdata
 from tests.functional.eks.test_util import (describe_cluster_response,
                                             describe_cluster_no_status_response,

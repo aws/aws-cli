@@ -14,8 +14,7 @@
 import mock
 
 from argparse import Namespace
-from botocore import config
-from awscli.testutils import capture_output, unittest
+from awscli.testutils import unittest
 from awscli.customizations.ecs.deploy import ECSClient, ECSDeploy
 
 

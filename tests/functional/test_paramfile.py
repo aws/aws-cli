@@ -11,12 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
-import os
 
-from mock import patch, ANY
+from mock import ANY
 
 from awscli.testutils import FileCreator, BaseAWSCommandParamsTest
-from awscli.clidriver import create_clidriver
 
 logger = logging.getLogger(__name__)
 

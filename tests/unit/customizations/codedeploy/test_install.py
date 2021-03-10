@@ -11,11 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import sys
-
 from argparse import Namespace
 from awscli.customizations.codedeploy.install import Install
-from awscli.customizations.codedeploy.systems import Ubuntu, Windows, RHEL, System
+from awscli.customizations.codedeploy.systems import Ubuntu, Windows, System
 from awscli.customizations.exceptions import ConfigurationError
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.testutils import unittest

@@ -21,7 +21,7 @@ from botocore.credentials import JSONFileCache
 
 from awscli.customizations.utils import uni_print
 from awscli.utils import original_ld_library_path
-from awscli.customizations.assumerole import CACHE_DIR as AWS_CREDS_CACHE_DIR
+from awscli.customizations.assumerole import CACHE_DIR as AWS_CREDS_CACHE_DIR # NOQA
 
 LOG = logging.getLogger(__name__)
 

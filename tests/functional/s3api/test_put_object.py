@@ -12,13 +12,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import re
-import copy
 
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
-from awscli.compat import six
 
-import awscli.clidriver
 
 # file is gone in python3, so instead IOBase must be used.
 # Given this test module is the only place that cares about

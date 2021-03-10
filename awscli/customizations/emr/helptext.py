@@ -11,8 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.customizations.emr.createdefaultroles import EMR_ROLE_NAME
-from awscli.customizations.emr.createdefaultroles import EC2_ROLE_NAME
 
 TERMINATE_CLUSTERS = (
     'Shuts down one or more clusters, each specified by cluster ID. '

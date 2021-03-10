@@ -1,7 +1,6 @@
-import mock
 import botocore.session
 
-from mock import patch, Mock, MagicMock
+from mock import Mock
 from botocore.stub import Stubber
 from awscli.customizations.cloudformation.deployer import Deployer, ChangeSetResult
 from awscli.customizations.cloudformation import exceptions

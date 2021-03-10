@@ -20,7 +20,6 @@
 # IN THE SOFTWARE.
 #
 import unittest
-import sys
 
 from awscli.compat import six
 import mock

@@ -20,8 +20,7 @@ from awscli.clidriver import CLIOperationCaller
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.emr import constants
 from awscli.customizations.emr import exceptions
-from botocore.exceptions import WaiterError, NoCredentialsError
-from botocore import xform_name
+from botocore.exceptions import NoCredentialsError
 
 LOG = logging.getLogger(__name__)
 

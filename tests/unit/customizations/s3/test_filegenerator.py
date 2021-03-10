@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import platform
 from awscli.testutils import unittest, FileCreator, BaseAWSCommandParamsTest
 from awscli.testutils import skip_if_windows
 import stat
@@ -24,7 +23,7 @@ from awscli.compat import six
 import mock
 
 from awscli.customizations.s3.filegenerator import FileGenerator, \
-    FileDecodingError, FileStat, is_special_file, is_readable
+   FileStat, is_special_file, is_readable
 from awscli.customizations.s3.utils import get_file_stat, EPOCH_TIME
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     compare_files

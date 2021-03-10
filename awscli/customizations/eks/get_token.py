@@ -11,12 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import base64
-import botocore
 import json
 
 from datetime import datetime, timedelta
-from botocore.signers import RequestSigner
-from botocore.model import ServiceId
 
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import uni_print

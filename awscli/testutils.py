@@ -46,15 +46,12 @@ except ImportError as e:
     # different story.
     mock = None
 from awscli.compat import six
-from botocore.session import Session
 from botocore.exceptions import ClientError
 from botocore.exceptions import WaiterError
 import botocore.loaders
 from botocore.awsrequest import AWSResponse
 
 import awscli.clidriver
-from awscli.plugin import load_plugins
-from awscli.clidriver import CLIDriver
 
 
 _LOADER = botocore.loaders.Loader()

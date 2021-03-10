@@ -1,5 +1,4 @@
 import mock
-import botocore.session
 import tempfile
 import os
 import string
@@ -8,8 +7,7 @@ import zipfile
 
 from nose.tools import assert_true, assert_false, assert_equal
 from contextlib import contextmanager, closing
-from mock import patch, Mock, MagicMock
-from botocore.stub import Stubber
+from mock import patch, Mock
 from awscli.testutils import FileCreator
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.artifact_exporter \

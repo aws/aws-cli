@@ -14,8 +14,6 @@ import decimal
 
 from awscli.testutils import unittest
 
-import mock
-
 from awscli.customizations import putmetricdata
 
 

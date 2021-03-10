@@ -14,7 +14,6 @@
 import unittest
 from awscli.testutils import BaseAWSCommandParamsTest
 import os
-import awscli.clidriver
 
 
 class TestCreateLayer(BaseAWSCommandParamsTest):

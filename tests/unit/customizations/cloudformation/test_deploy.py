@@ -14,13 +14,11 @@ import json
 
 import mock
 import tempfile
-import six
 from mock import patch, Mock, MagicMock, call
 import collections
 
 from awscli.customizations.cloudformation.deploy import DeployCommand
 from awscli.customizations.cloudformation.deployer import Deployer
-from awscli.customizations.cloudformation.yamlhelper import yaml_parse
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.exceptions import ParamValidationError
 from tests.unit.customizations.cloudformation import BaseYAMLTest

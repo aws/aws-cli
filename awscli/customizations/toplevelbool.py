@@ -22,7 +22,6 @@ from functools import partial
 
 from awscli.argprocess import detect_shape_structure
 from awscli import arguments
-from awscli.customizations.utils import validate_mutually_exclusive_handler
 from awscli.customizations.exceptions import ParamValidationError
 
 

@@ -19,7 +19,6 @@ import xml.dom.minidom
 import colorama
 
 from awscli.table import COLORAMA_KWARGS
-from awscli.compat import six
 from awscli.customizations.history.commands import HistorySubcommand
 from awscli.customizations.history.filters import RegexFilter
 from awscli.customizations.exceptions import ParamValidationError

@@ -13,11 +13,8 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import BaseAWSCommandParamsTest
 import os
-import re
 
 from awscli.compat import six
-
-import awscli.clidriver
 
 
 class TestGetObject(BaseAWSCommandParamsTest):

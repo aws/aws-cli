@@ -3,8 +3,6 @@
 import os
 import xml.etree.ElementTree as ET
 
-from docutils import nodes
-from sphinx.locale import admonitionlabels
 from sphinx.writers.html import HTMLTranslator as SphinxHTMLTranslator
 
 from pygments.style import Style

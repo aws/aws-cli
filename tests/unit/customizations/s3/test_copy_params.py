@@ -11,25 +11,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import io
 import os
-import sys
-import re
-import copy
 
 from awscli.testutils import BaseAWSCommandParamsTest
 
-if sys.version_info[:2] == (2, 6):
-    from StringIO import StringIO
 
-
-# file is gone in python3, so instead IOBase must be used.
-# Given this test module is the only place that cares about
-# this type check, we do the check directly in this test module.
-try:
-    file_type = file
-except NameError:
-    import io
-    file_type = io.IOBase
+file_type = io.IOBase
 
 
 class TestGetObject(BaseAWSCommandParamsTest):

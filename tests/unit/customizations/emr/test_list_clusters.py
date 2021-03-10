@@ -13,8 +13,6 @@
 
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
-from datetime import datetime
-from time import mktime
 
 
 class TestListClusters(BaseAWSCommandParamsTest):

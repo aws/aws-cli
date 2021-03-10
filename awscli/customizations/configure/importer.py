@@ -13,7 +13,6 @@
 import os
 import sys
 
-from awscli.compat import compat_open
 from awscli.customizations.utils import uni_print
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure.writer import ConfigFileWriter

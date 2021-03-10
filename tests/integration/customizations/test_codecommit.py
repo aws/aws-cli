@@ -18,11 +18,7 @@ from datetime import datetime
 
 from mock import patch
 from six import StringIO
-from botocore.session import Session
-from botocore.credentials import Credentials
-from awscli.customizations.codecommit import CodeCommitGetCommand
 from awscli.testutils import unittest, StringIOWithFileNo
-from botocore.awsrequest import AWSRequest
 from awscli.clidriver import create_clidriver, AWSCLIEntryPoint
 
 

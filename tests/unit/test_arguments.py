@@ -14,7 +14,7 @@ import mock
 
 from awscli.testutils import unittest
 from awscli import arguments
-from botocore.model import StringShape, OperationModel, ServiceModel
+from botocore.model import ServiceModel
 
 
 class DemoArgument(arguments.CustomArgument):

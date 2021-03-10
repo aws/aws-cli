@@ -26,7 +26,6 @@ import io
 from awscli.testutils import BaseAWSHelpOutputTest
 from awscli.testutils import FileCreator
 
-from awscli.compat import six
 from awscli.alias import AliasLoader
 import mock
 

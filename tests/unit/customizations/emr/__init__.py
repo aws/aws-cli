@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 
 from awscli.customizations.emr import exceptions
-from awscli.customizations.emr.configutils import ConfigWriter
 from awscli.testutils import BaseAWSCommandParamsTest
 import mock
 

@@ -20,13 +20,11 @@ from botocore.compat import OrderedDict
 from awscli.testutils import unittest
 from awscli.testutils import BaseCLIDriverTest
 from awscli.testutils import temporary_file
-from awscli.help import OperationHelpCommand
 from awscli.argprocess import detect_shape_structure
 from awscli.argprocess import unpack_cli_arg
 from awscli.argprocess import ParamShorthandParser
 from awscli.argprocess import ParamShorthandDocGen
 from awscli.argprocess import ParamError
-from awscli.argprocess import ParamUnknownKeyError
 from awscli.paramfile import URIArgumentHandler, LOCAL_PREFIX_MAP
 from awscli.arguments import CustomArgument, CLIArgument
 from awscli.arguments import ListArgument, BooleanArgument

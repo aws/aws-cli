@@ -12,17 +12,12 @@
 # language governing permissions and limitations under the License.
 
 import os
-import sys
+
 import mock
-import glob
-import yaml
-import logging
-import botocore
 import tempfile
 import shutil
 import re
-from argparse import Namespace
-from mock import patch, Mock, MagicMock, call
+from mock import patch, Mock
 
 from botocore.session import get_session
 
@@ -60,14 +55,14 @@ class TestUpdateKubeconfig(unittest.TestCase):
         self.create_client_patch = patch(
             'botocore.session.Session.create_client'
         )
-        
+
         self.mock_create_client = self.create_client_patch.start()
         self.session = get_session()
 
         self.client = Mock()
         self.client.describe_cluster.return_value = describe_cluster_response()
         self.mock_create_client.return_value = self.client
-                
+
         self.command = UpdateKubeconfigCommand(self.session)
         self.maxDiff = None
 
@@ -104,7 +99,7 @@ class TestUpdateKubeconfig(unittest.TestCase):
         self.addCleanup(shutil.rmtree, self._temp_directory)
         if files is not None:
             for file in files:
-                shutil.copy2(get_testdata(file), 
+                shutil.copy2(get_testdata(file),
                             self._get_temp_config(file))
         return self._temp_directory
 
@@ -118,7 +113,7 @@ class TestUpdateKubeconfig(unittest.TestCase):
         to put in the environment variable
         :type configs: list
         """
-        return build_environment([self._get_temp_config(config) 
+        return build_environment([self._get_temp_config(config)
                                   for config in configs])
 
     def assert_config_state(self, config_name, correct_output_name):
@@ -127,7 +122,7 @@ class TestUpdateKubeconfig(unittest.TestCase):
         as the testdata named correct_output_name.
         Should be called after initialize_tempfiles.
 
-        :param config_name: The filename (not the path) of the tempfile 
+        :param config_name: The filename (not the path) of the tempfile
         to compare
         :type config_name: str
 
@@ -191,7 +186,7 @@ class TestUpdateKubeconfig(unittest.TestCase):
                    verbose=False):
         """
         Run update-kubeconfig in a temp directory,
-        This directory will have copies of all testdata files whose names 
+        This directory will have copies of all testdata files whose names
         are listed in configs.
         The KUBECONFIG environment variable will be set to contain the configs
         listed in env_variable_configs (regardless of whether they exist).
@@ -290,11 +285,13 @@ class TestUpdateKubeconfig(unittest.TestCase):
     def test_all_corrupted(self):
         configs = ["invalid_string_cluster_entry",
                    "invalid_string_contexts",
-                   "invalid_text"]
+                   "invalid_text",
+                   "non_parsable_yaml"]
         passed = None
         environment = ["invalid_string_cluster_entry",
                        "invalid_string_contexts",
-                       "invalid_text"]
+                       "invalid_text",
+                       "non_parsable_yaml"]
 
         with self.assertRaises(KubeconfigCorruptedError):
             self.assert_cmd(configs, passed, environment)
@@ -386,7 +383,7 @@ class TestUpdateKubeconfig(unittest.TestCase):
         configs = ["valid_old_data"]
         passed = "valid_old_data"
         environment = []
-        
+
         self.assert_cmd(configs, passed, environment)
         self.assert_config_state("valid_old_data", "output_combined")
 
@@ -396,7 +393,7 @@ class TestUpdateKubeconfig(unittest.TestCase):
         environment = ["valid_old_data",
                        "output_combined",
                        "output_single"]
-        
+
         self.assert_cmd(configs, passed, environment)
         self.assert_config_state("valid_old_data", "output_combined")
 
@@ -416,4 +413,3 @@ class TestUpdateKubeconfig(unittest.TestCase):
 
         self.assert_cmd(configs, passed, environment)
         self.assert_config_state("valid_changed_ordering", "output_combined_changed_ordering")
-

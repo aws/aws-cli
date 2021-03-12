@@ -14,21 +14,15 @@
 import glob
 import os
 import mock
-import tempfile
-import shutil
-import sys
 import botocore
 from botocore.compat import OrderedDict
 
 from awscli.testutils import unittest
-from awscli.customizations.utils import uni_print
 import awscli.customizations.eks.kubeconfig as kubeconfig
 from awscli.customizations.eks.update_kubeconfig import (KubeconfigSelector,
                                                          EKSClient,
                                                          API_VERSION)
-from awscli.customizations.eks.exceptions import (EKSError,
-                                                  EKSClusterError)
-from awscli.customizations.eks.ordered_yaml import ordered_yaml_load
+from awscli.customizations.eks.exceptions import EKSClusterError
 from tests.functional.eks.test_util import get_testdata
 from tests.functional.eks.test_util import (describe_cluster_response,
                                             describe_cluster_no_status_response,
@@ -64,11 +58,11 @@ class TestKubeconfigSelector(unittest.TestCase):
                            path_in,
                            cluster_name,
                            chosen_path):
-        selector = KubeconfigSelector(env_variable, path_in, 
+        selector = KubeconfigSelector(env_variable, path_in,
                                                     self._validator,
                                                     self._loader)
         self.assertEqual(selector.choose_kubeconfig(cluster_name).path,
-                         chosen_path)  
+                         chosen_path)
 
     def test_parse_env_variable(self):
         paths = [
@@ -85,7 +79,7 @@ class TestKubeconfigSelector(unittest.TestCase):
 
         selector = KubeconfigSelector(env_variable, None, self._validator,
                                                           self._loader)
-        self.assertEqual(selector._paths, [path for path in paths 
+        self.assertEqual(selector._paths, [path for path in paths
                                                 if len(path) > 0])
 
     def test_choose_env_only(self):
@@ -97,9 +91,9 @@ class TestKubeconfigSelector(unittest.TestCase):
             get_testdata("valid_no_user")
         ]
         env_variable = generate_env_variable(paths)
-        self.assert_chosen_path(env_variable, 
-                                None, 
-                                EXAMPLE_ARN, 
+        self.assert_chosen_path(env_variable,
+                                None,
+                                EXAMPLE_ARN,
                                 get_testdata("valid_simple"))
 
     def test_choose_existing(self):
@@ -113,9 +107,9 @@ class TestKubeconfigSelector(unittest.TestCase):
             get_testdata("output_single_with_role")
         ]
         env_variable = generate_env_variable(paths)
-        self.assert_chosen_path(env_variable, 
-                                None, 
-                                EXAMPLE_ARN, 
+        self.assert_chosen_path(env_variable,
+                                None,
+                                EXAMPLE_ARN,
                                 get_testdata("output_single"))
 
     def test_arg_override(self):
@@ -129,9 +123,9 @@ class TestKubeconfigSelector(unittest.TestCase):
             get_testdata("output_single_with_role")
         ]
         env_variable = generate_env_variable(paths)
-        self.assert_chosen_path(env_variable, 
-                                get_testdata("output_combined"), 
-                                EXAMPLE_ARN, 
+        self.assert_chosen_path(env_variable,
+                                get_testdata("output_combined"),
+                                EXAMPLE_ARN,
                                 get_testdata("output_combined"))
 
     def test_first_corrupted(self):
@@ -142,7 +136,7 @@ class TestKubeconfigSelector(unittest.TestCase):
         env_variable = generate_env_variable(paths)
         selector = KubeconfigSelector(env_variable, None, self._validator,
                                                           self._loader)
-        self.assertRaises(kubeconfig.KubeconfigCorruptedError, 
+        self.assertRaises(kubeconfig.KubeconfigCorruptedError,
                           selector.choose_kubeconfig,
                           EXAMPLE_ARN)
 
@@ -152,9 +146,9 @@ class TestKubeconfigSelector(unittest.TestCase):
             get_testdata("valid_no_user")
         ]
         env_variable = generate_env_variable(paths)
-        self.assert_chosen_path(env_variable, 
-                                get_testdata("output_combined"), 
-                                EXAMPLE_ARN, 
+        self.assert_chosen_path(env_variable,
+                                get_testdata("output_combined"),
+                                EXAMPLE_ARN,
                                 get_testdata("output_combined"))
 
 class TestEKSClient(unittest.TestCase):

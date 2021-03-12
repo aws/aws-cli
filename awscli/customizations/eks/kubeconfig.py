@@ -13,7 +13,6 @@
 
 import os
 import yaml
-import logging
 import errno
 from botocore.compat import OrderedDict
 

@@ -9,31 +9,31 @@ The following ``create-members`` example invites two AWS accounts to become memb
 
 Output::
 
-{
-    "Members": [ 
-    { 
-        "AccountId": "444455556666",
-        "AdministratorId": "111122223333",
-        "EmailAddress": "mmajor@example.com",
-        "GraphArn": "arn:aws:detective:us-east-1:111122223333:graph:123412341234",
-        "InvitedTime": 1579826107000,
-        "MasterId": "111122223333",
-        "Status": "INVITED",
-        "UpdatedTime": 1579826107000
-   },
-   { 
-        "AccountId": "123456789012",
-        "AdministratorId": "111122223333",
-        "EmailAddress": "jstiles@example.com",
-        "GraphArn": "arn:aws:detective:us-east-1:111122223333:graph:123412341234",
-        "InvitedTime": 1579826107000,
-        "MasterId": "111122223333",
-        "Status": "VERIFICATION_IN_PROGRESS",
-        "UpdatedTime": 1579826107000
-     }
-    ],
-    "UnprocessedAccounts": [ ]
-}
+    {
+        "Members": [ 
+        { 
+            "AccountId": "444455556666",
+            "AdministratorId": "111122223333",
+            "EmailAddress": "mmajor@example.com",
+            "GraphArn": "arn:aws:detective:us-east-1:111122223333:graph:123412341234",
+            "InvitedTime": 1579826107000,
+            "MasterId": "111122223333",
+            "Status": "INVITED",
+            "UpdatedTime": 1579826107000
+       },
+       { 
+            "AccountId": "123456789012",
+            "AdministratorId": "111122223333",
+            "EmailAddress": "jstiles@example.com",
+            "GraphArn": "arn:aws:detective:us-east-1:111122223333:graph:123412341234",
+            "InvitedTime": 1579826107000,
+            "MasterId": "111122223333",
+            "Status": "VERIFICATION_IN_PROGRESS",
+            "UpdatedTime": 1579826107000
+         }
+        ],
+        "UnprocessedAccounts": [ ]
+    }
 
 For more information, see `Inviting member accounts to a behavior graph<https://docs.aws.amazon.com/detective/latest/adminguide/graph-admin-add-member-accounts.html>`__ in the *Amazon Detective Administration Guide*.
 
@@ -48,30 +48,30 @@ The following ``create-members`` example invites two AWS accounts to become memb
 
 Output::
 
-{
-    "Members": [ 
-    { 
-        "AccountId": "444455556666",
-        "AdministratorId": "111122223333",
-        "EmailAddress": "mmajor@example.com",
-        "GraphArn": "arn:aws:detective:us-east-1:111122223333:graph:123412341234",
-        "InvitedTime": 1579826107000,
-        "MasterId": "111122223333",
-        "Status": "INVITED",
-        "UpdatedTime": 1579826107000
-   },
-   { 
-        "AccountId": "123456789012",
-        "AdministratorId": "111122223333",
-        "EmailAddress": "jstiles@example.com",
-        "GraphArn": "arn:aws:detective:us-east-1:111122223333:graph:123412341234",
-        "InvitedTime": 1579826107000,
-        "MasterId": "111122223333",
-        "Status": "VERIFICATION_IN_PROGRESS",
-        "UpdatedTime": 1579826107000
-     }
-    ],
-    "UnprocessedAccounts": [ ]
-}
+    {
+        "Members": [ 
+        { 
+            "AccountId": "444455556666",
+            "AdministratorId": "111122223333",
+            "EmailAddress": "mmajor@example.com",
+            "GraphArn": "arn:aws:detective:us-east-1:111122223333:graph:123412341234",
+            "InvitedTime": 1579826107000,
+            "MasterId": "111122223333",
+            "Status": "INVITED",
+            "UpdatedTime": 1579826107000
+       },
+       { 
+            "AccountId": "123456789012",
+            "AdministratorId": "111122223333",
+            "EmailAddress": "jstiles@example.com",
+            "GraphArn": "arn:aws:detective:us-east-1:111122223333:graph:123412341234",
+            "InvitedTime": 1579826107000,
+            "MasterId": "111122223333",
+            "Status": "VERIFICATION_IN_PROGRESS",
+            "UpdatedTime": 1579826107000
+         }
+        ],
+        "UnprocessedAccounts": [ ]
+    }
 
 For more information, see `Inviting member accounts to a behavior graph<https://docs.aws.amazon.com/detective/latest/adminguide/graph-admin-add-member-accounts.html>`__ in the *Amazon Detective Administration Guide*.

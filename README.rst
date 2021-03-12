@@ -10,6 +10,10 @@ aws-cli
    :target: https://gitter.im/aws/aws-cli
    :alt: Gitter
 
+.. image:: https://codecov.io/gh/aws/aws-cli/branch/develop/graph/badge.svg
+   :target: https://codecov.io/gh/aws/aws-cli
+   :alt: Codecov
+
 
 This package provides a unified command line interface to Amazon Web
 Services.

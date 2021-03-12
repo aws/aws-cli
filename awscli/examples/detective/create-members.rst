@@ -44,7 +44,7 @@ The following ``create-members`` example invites two AWS accounts to become memb
     aws detective create-members \
         --accounts AccountId=444455556666,EmailAddress=mmajor@example.com AccountId=123456789012,EmailAddress=jstiles@example.com \
         --graph-arn arn:aws:detective:us-east-1:111122223333:graph:123412341234 \
-        --disable-email-notification"
+        --disable-email-notification
 
 Output::
 

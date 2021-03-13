@@ -4,7 +4,7 @@ The following ``describe-patch-properties`` example displays a list of the Amazo
 
     aws ssm describe-patch-properties \
         --operating-system AMAZON_LINUX \
-        --property PRODUCTS
+        --property PRODUCT
 
 Output::
 

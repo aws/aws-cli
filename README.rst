@@ -33,18 +33,16 @@ Requirements
 The aws-cli package works on Python versions:
 
 -  2.7.x and greater
--  3.4.x and greater
--  3.5.x and greater
 -  3.6.x and greater
 -  3.7.x and greater
 -  3.8.x and greater
 
-On 10/09/2019 support for Python 2.6 and Python 3.3 was deprecated and
-support was dropped on 01/10/2020. To avoid disruption, customers using
-the AWS CLI on Python 2.6 or 3.3 will need to upgrade their version of
-Python or pin the version of the AWS CLI in use prior to 01/10/2020. For
-more information, see this `blog
-post <https://aws.amazon.com/blogs/developer/deprecation-of-python-2-6-and-python-3-3-in-botocore-boto3-and-the-aws-cli/>`__.
+On 10/29/2020 support for Python 3.4 and Python 3.5 was deprecated and
+support was dropped on 02/01/2021. Customers using the AWS CLI on
+Python 3.4 or 3.5 will need to upgrade their version of Python to
+continue receiving feature and security updates. For more information,
+see this `blog
+post <https://aws.amazon.com/blogs/developer/announcing-the-end-of-support-for-python-3-4-and-3-5-in-the-aws-sdk-for-python-and-aws-cli-v1/>`__.
 
 *Attention!*
 
@@ -281,8 +279,8 @@ Overflow <https://stackoverflow.com/>`__ with the tag
 `aws-cli <https://stackoverflow.com/questions/tagged/aws-cli>`__ or on
 the `AWS Discussion Forum for
 CLI <https://forums.aws.amazon.com/forum.jspa?forumID=150>`__. If you
-have a support plan with `AWS Premium
-Support <https://aws.amazon.com/premiumsupport>`__, you can also create
+have a support plan with `AWS Support
+<https://aws.amazon.com/premiumsupport>`__, you can also create
 a new support case.
 
 Please check for open similar

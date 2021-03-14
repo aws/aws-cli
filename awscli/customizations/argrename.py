@@ -98,6 +98,7 @@ ARGUMENT_RENAMES = {
     'sagemaker.delete-image-version.version': 'version-number',
     'sagemaker.describe-image-version.version': 'version-number',
     'iotwireless.*.lo-ra-wan': 'lorawan',
+    'codepipeline.get-action-type.version': 'action-version',
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,

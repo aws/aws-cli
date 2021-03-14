@@ -190,9 +190,14 @@ class KubeconfigWriter(object):
                 raise KubeconfigInaccessableError(
                         "Can't create directory for writing: {0}".format(e))
         try:
-            with open(config.path, "w+") as stream:
+            with os.fdopen(
+                    os.open(
+                        config.path,
+                        os.O_CREAT | os.O_RDWR | os.O_TRUNC,
+                        0o600),
+                    "w+") as stream:
                 ordered_yaml_dump(config.content, stream)
-        except IOError as e:
+        except (IOError, OSError) as e:
             raise KubeconfigInaccessableError(
                 "Can't open kubeconfig for writing: {0}".format(e))
 

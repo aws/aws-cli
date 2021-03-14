@@ -42,7 +42,8 @@ def register_removals(event_handler):
                                         'set-visible-to-all-users'])
     cmd_remover.remove(on_event='building-command-table.kinesis',
                        remove_commands=['subscribe-to-shard'])
-
+    cmd_remover.remove(on_event='building-command-table.lexv2-runtime',
+                         remove_commands=['start-conversation'])
 
 class CommandRemover(object):
     def __init__(self, events):

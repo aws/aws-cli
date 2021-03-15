@@ -409,6 +409,10 @@ INSTANCE_FLEETS_SCHEMA = {
                                             "open",
                                             "none"
                                         ]
+                                    },
+                                    "CapacityReservationResourceGroupArn": {
+                                        "type": "string",
+                                        "description": "The ARN of the Capacity Reservation resource group in which to run the instance."
                                     }
                                 }
                             }

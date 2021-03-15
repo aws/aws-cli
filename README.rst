@@ -2,8 +2,8 @@
 aws-cli
 =======
 
-.. image:: https://travis-ci.org/aws/aws-cli.svg?branch=v2
-   :target: https://travis-ci.org/aws/aws-cli
+.. image:: https://github.com/aws/aws-cli/actions/workflows/run-tests.yml/badge.svg?branch=v2
+   :target: https://github.com/aws/aws-cli/actions/workflows/run-tests.yml
    :alt: Build Status
 
 .. image:: https://badges.gitter.im/aws/aws-cli.svg

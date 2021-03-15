@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.19.28
+=======
+
+* api-change:``fis``: Initial release of AWS Fault Injection Simulator, a managed service that enables you to perform fault injection experiments on your AWS workloads
+* api-change:``codedeploy``: AWS CodeDeploy can now detect instances running an outdated revision of your application and automatically update them with the latest revision.
+* api-change:``emr``: Update emr command to latest version
+* api-change:``ecs``: This is for ecs exec feature release which includes two new APIs - execute-command and update-cluster and an AWS CLI customization for execute-command API
+
+
 1.19.27
 =======
 

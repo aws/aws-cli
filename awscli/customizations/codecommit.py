@@ -15,7 +15,6 @@ import os
 import re
 import sys
 import logging
-import fileinput
 import datetime
 
 from botocore.auth import SigV4Auth

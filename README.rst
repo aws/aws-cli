@@ -11,6 +11,10 @@ aws-cli
    :alt: Gitter
 
 
+.. image:: https://codecov.io/gh/aws/aws-cli/branch/v2/graph/badge.svg
+   :target: https://codecov.io/gh/aws/aws-cli
+   :alt: Codecov
+
 This package provides a unified command line interface to Amazon Web Services.
 
 The aws-cli package works on Python versions:

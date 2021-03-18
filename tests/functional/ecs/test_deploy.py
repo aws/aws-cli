@@ -39,11 +39,11 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
             "TestService": {
                 "type": "AWS::ECS::Service",
                 "properties": {
+                    "taskDefinition": "arn:aws:ecs::123:task-definition:1",
                     "loadBalancerInfo": {
                         "containerName": "web",
                         "containerPort": 80
-                    },
-                    "taskDefinition": "arn:aws:ecs::123:task-definition:1"
+                    }
                 }
             }
         }]
@@ -77,11 +77,11 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
             "TestService": {
                 "type": "AWS::ECS::Service",
                 "properties": {
+                    "taskDefinition": "arn:aws:ecs::123:task-definition:1",
                     "loadBalancerInfo": {
                         "containerName": "web",
                         "containerPort": 80
-                    },
-                    "taskDefinition": "arn:aws:ecs::123:task-definition:1"
+                    }
                 }
             }
         }]

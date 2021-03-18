@@ -187,14 +187,11 @@ class StablePriorityQueue(queue.Queue):
 
 
 def block_s3_object_lambda(s3_path):
-    # AWS CLI s3 commands don't support banner resources only direct API calls
+    # AWS CLI s3 commands don't support object lambdas only direct API calls
     # are available for such resources
     match = _S3_OBJECT_LAMBDA_TO_BUCKET_KEY_REGEX.match(s3_path)
     if match:
-        # In AWS CLI v2 we should use
-        # awscli.customizations.exceptions.ParamValidationError
-        # instead of ValueError
-        raise ValueError(
+        raise ParamValidationError(
             's3 commands do not support S3 Object Lambda resources. '
             'Use s3api commands instead.'
         )

@@ -25,6 +25,7 @@ from s3transfer.compat import seekable
 from botocore.hooks import HierarchicalEmitter
 
 from awscli.compat import StringIO
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.s3.utils import (
     find_bucket_key,
     guess_content_type, relative_path, block_s3_object_lambda,
@@ -289,15 +290,17 @@ class TestFindBucketKey(unittest.TestCase):
 
 
 class TestBlockS3ObjectLambda(unittest.TestCase):
-    def test_banner_arn_with_colon_raises_exception(self):
-        with self.assertRaisesRegexp(ValueError, 's3 commands do not support'):
+    def test_object_lambda_arn_with_colon_raises_exception(self):
+        with self.assertRaisesRegexp(
+                ParamValidationError, 's3 commands do not support'):
             block_s3_object_lambda(
                 'arn:aws:s3-object-lambda:us-west-2:123456789012:'
                 'accesspoint:my-accesspoint'
             )
 
-    def test_banner_arn_with_slash_raises_exception(self):
-        with self.assertRaisesRegexp(ValueError, 's3 commands do not support'):
+    def test_object_lambda_arn_with_slash_raises_exception(self):
+        with self.assertRaisesRegexp(
+                ParamValidationError, 's3 commands do not support'):
             block_s3_object_lambda(
                  'arn:aws:s3-object-lambda:us-west-2:123456789012:'
                  'accesspoint/my-accesspoint'

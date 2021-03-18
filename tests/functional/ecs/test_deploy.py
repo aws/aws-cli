@@ -72,15 +72,15 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
     """
 
     APPSPEC_DICT = {
-        "version": 0.0,
-        "resources": [{
-            "TestService": {
-                "type": "AWS::ECS::Service",
-                "properties": {
-                    "taskDefinition": "arn:aws:ecs::123:task-definition:1",
-                    "loadBalancerInfo": {
-                        "containerName": "web",
-                        "containerPort": 80
+        u"version": 0.0,
+        u"resources": [{
+            u"TestService": {
+                u"type": u"AWS::ECS::Service",
+                u"properties": {
+                    u"taskDefinition": u"arn:aws:ecs::123:task-definition:1",
+                    u"loadBalancerInfo": {
+                        u"containerName": u"web",
+                        u"containerPort": 80
                     }
                 }
             }

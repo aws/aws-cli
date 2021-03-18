@@ -50,6 +50,10 @@ _S3_OUTPOST_TO_BUCKET_KEY_REGEX = re.compile(
     r'^(?P<bucket>arn:(aws).*:s3-outposts:[a-z\-0-9]+:[0-9]{12}:outpost[/:]'
     r'[a-zA-Z0-9\-]{1,63}[/:]accesspoint[/:][a-zA-Z0-9\-]{1,63})[/:]?(?P<key>.*)$'
 )
+_S3_OBJECT_LAMBDA_TO_BUCKET_KEY_REGEX = re.compile(
+    r'^(?P<bucket>arn:(aws).*:s3-object-lambda:[a-z\-0-9]+:[0-9]{12}:'
+    r'accesspoint[/:][a-zA-Z0-9\-]{1,63})[/:]?(?P<key>.*)$'
+)
 
 
 def human_readable_size(value):
@@ -182,12 +186,27 @@ class StablePriorityQueue(queue.Queue):
             return bucket.popleft()
 
 
+def block_s3_object_lambda(s3_path):
+    # AWS CLI s3 commands don't support banner resources only direct API calls
+    # are available for such resources
+    match = _S3_OBJECT_LAMBDA_TO_BUCKET_KEY_REGEX.match(s3_path)
+    if match:
+        # In AWS CLI v2 we should use
+        # awscli.customizations.exceptions.ParamValidationError
+        # instead of ValueError
+        raise ValueError(
+            's3 commands do not support S3 Object Lambda resources. '
+            'Use s3api commands instead.'
+        )
+
+
 def find_bucket_key(s3_path):
     """
     This is a helper function that given an s3 path such that the path is of
     the form: bucket/key
     It will return the bucket and the key represented by the s3 path
     """
+    block_s3_object_lambda(s3_path)
     match = _S3_ACCESSPOINT_TO_BUCKET_KEY_REGEX.match(s3_path)
     if match:
         return match.group('bucket'), match.group('key')

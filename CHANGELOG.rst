@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.19.33
+=======
+
+* api-change:``ec2``: X2gd instances are the next generation of memory-optimized instances powered by AWS-designed, Arm-based AWS Graviton2 processors.
+* api-change:``sagemaker``: Adding authentication support for pulling images stored in private Docker registries to build containers for real-time inference.
+
+
 1.19.31
 =======
 

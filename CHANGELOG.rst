@@ -1635,6 +1635,70 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.19.31
+=======
+
+* api-change:``autoscaling``: Amazon EC2 Auto Scaling Instance Refresh now supports phased deployments.
+* api-change:``securityhub``: New object for separate provider and customer values. New objects track S3 Public Access Block configuration and identify sensitive data. BatchImportFinding requests are limited to 100 findings.
+* api-change:``s3``: S3 Object Lambda is a new S3 feature that enables users to apply their own custom code to process the output of a standard S3 GET request by automatically invoking a Lambda function with a GET request
+* api-change:``redshift``: Add new fields for additional information about VPC endpoint for clusters with reallocation enabled, and a new field for total storage capacity for all clusters.
+* api-change:``s3control``: S3 Object Lambda is a new S3 feature that enables users to apply their own custom code to process the output of a standard S3 GET request by automatically invoking a Lambda function with a GET request
+
+
+1.19.30
+=======
+
+* api-change:``batch``: Making serviceRole an optional parameter when creating a compute environment. If serviceRole is not provided then Service Linked Role will be created (or reused if it already exists).
+* api-change:``sagemaker``: Support new target device ml_eia2 in SageMaker CreateCompilationJob API
+
+
+1.19.29
+=======
+
+* api-change:``mwaa``: This release adds UPDATE_FAILED and UNAVAILABLE MWAA environment states.
+* api-change:``gamelift``: GameLift expands to six new AWS Regions, adds support for multi-location fleets to streamline management of hosting resources, and lets you customize more of the game session placement process.
+* api-change:``mediaconnect``: This release adds support for the SRT-listener protocol on sources and outputs.
+* api-change:``lambda``: Allow empty list for function response types
+* api-change:``mediatailor``: MediaTailor channel assembly is a new manifest-only service that allows you to assemble linear streams using your existing VOD content.
+* api-change:``iam``: Documentation updates for AWS Identity and Access Management (IAM).
+* api-change:``accessanalyzer``: This release adds support for the ValidatePolicy API. IAM Access Analyzer is adding over 100 policy checks and actionable recommendations that help you validate your policies during authoring.
+
+
+1.19.28
+=======
+
+* api-change:``fis``: Initial release of AWS Fault Injection Simulator, a managed service that enables you to perform fault injection experiments on your AWS workloads
+* api-change:``codedeploy``: AWS CodeDeploy can now detect instances running an outdated revision of your application and automatically update them with the latest revision.
+* api-change:``emr``: Update emr command to latest version
+* api-change:``ecs``: This is for ecs exec feature release which includes two new APIs - execute-command and update-cluster and an AWS CLI customization for execute-command API
+
+
+1.19.27
+=======
+
+* api-change:``workspaces``: Adds API support for WorkSpaces bundle management operations.
+* api-change:``mediatailor``: MediaTailor channel assembly is a new manifest-only service that allows you to assemble linear streams using your existing VOD content.
+* api-change:``cur``: - Added optional billingViewArn field for OSG.
+
+
+1.19.26
+=======
+
+* api-change:``network-firewall``: Update network-firewall command to latest version
+* api-change:``wafv2``: Update wafv2 command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+
+
+1.19.25
+=======
+
+* api-change:``accessanalyzer``: Update accessanalyzer command to latest version
+* api-change:``backup``: Update backup command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
 1.19.24
 =======
 

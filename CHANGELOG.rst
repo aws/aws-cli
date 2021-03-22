@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.19.34
+=======
+
+* api-change:``codeartifact``: Documentation updates for CodeArtifact
+* api-change:``macie2``: This release of the Amazon Macie API adds support for publishing sensitive data findings to AWS Security Hub and specifying which categories of findings to publish to Security Hub.
+* api-change:``redshift``: Added support to enable AQUA in Amazon Redshift clusters.
+* api-change:``ec2``: This release adds support for UEFI boot on selected AMD- and Intel-based EC2 instances.
+
+
 1.19.33
 =======
 

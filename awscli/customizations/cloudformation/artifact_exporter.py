@@ -394,7 +394,7 @@ class LambdaFunctionResource(ResourceWithS3UrlDict):
             return
 
         if isinstance(property_value, dict):
-            if INLINE_CODE not in property_value:
+            if self.INLINE_CODE not in property_value:
                 LOG.debug("Property {0} of {1} resource is not a URL"
                         .format(self.PROPERTY_NAME, resource_id))
                 return

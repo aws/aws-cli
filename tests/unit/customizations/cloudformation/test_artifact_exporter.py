@@ -1101,7 +1101,7 @@ class TestArtifactExporter(unittest.TestCase):
                 resources_to_export)
             exported_template = template_exporter.export()
             self.assertTrue(
-                "Zipfile" in exported_template.get("Resources").get("Resource1").get("Properties").get("Code")
+                "ZipFile" in exported_template.get("Resources").get("Resource1").get("Properties").get("Code")
             )
 
             open_mock.assert_called_once_with(

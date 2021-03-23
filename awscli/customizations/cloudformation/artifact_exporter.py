@@ -384,13 +384,60 @@ class LambdaFunctionResource(ResourceWithS3UrlDict):
     INLINE_CODE = "ZipFile"
     FORCE_ZIP = True
 
+    def export(self, resource_id, resource_dict, parent_dir):
+        if resource_dict is None:
+            return
+
+        property_value = jmespath.search(self.PROPERTY_NAME, resource_dict)
+
+        if not property_value and not self.PACKAGE_NULL_PROPERTY:
+            return
+
+        if isinstance(property_value, dict):
+            if INLINE_CODE not in property_value:
+                LOG.debug("Property {0} of {1} resource is not a URL"
+                        .format(self.PROPERTY_NAME, resource_id))
+                return
+
+        # If property is a file but not a zip file, place file in temp
+        # folder and send the temp folder to be zipped
+        temp_dir = None
+        if is_local_file(property_value) and not \
+                is_zip_file(property_value) and self.FORCE_ZIP:
+            temp_dir = copy_to_temp_dir(property_value)
+            set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, temp_dir)
+
+        try:
+            self.do_export(resource_id, resource_dict, parent_dir)
+
+        except Exception as ex:
+            LOG.debug("Unable to export", exc_info=ex)
+            raise exceptions.ExportFailedError(
+                    resource_id=resource_id,
+                    property_name=self.PROPERTY_NAME,
+                    property_value=property_value,
+                    ex=ex)
+        finally:
+            if temp_dir:
+                shutil.rmtree(temp_dir)
+
     def do_export(self, resource_id, resource_dict, parent_dir):
         code_value = jmespath.search(self.PROPERTY_NAME, resource_dict)
         if code_value: 
             if isinstance(code_value, dict) and code_value.get(INLINE_CODE):
                 return
 
-        super().do_export(resource_id, resource_dict, parent_dir)
+        artifact_s3_url = \
+            upload_local_artifacts(resource_id, resource_dict,
+                                   self.PROPERTY_NAME,
+                                   parent_dir, self.uploader)
+
+        parsed_url = parse_s3_url(
+                artifact_s3_url,
+                bucket_name_property=self.BUCKET_NAME_PROPERTY,
+                object_key_property=self.OBJECT_KEY_PROPERTY,
+                version_property=self.VERSION_PROPERTY)
+        set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, parsed_url)
 
 
 class ApiGatewayRestApiResource(ResourceWithS3UrlDict):

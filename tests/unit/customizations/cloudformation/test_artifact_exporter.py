@@ -1078,7 +1078,7 @@ class TestArtifactExporter(unittest.TestCase):
             resource_type1_class
         ]
 
-        properties = {"Handler": "index.handler", "Runtime": "nodejs10.x", "Code": {"ZipFIle": "'code'"}}
+        properties = {"Handler": "index.handler", "Runtime": "nodejs10.x", "Code": {"ZipFile": "'code'"}}
         template_dict = {
             "Resources": {
                 "Resource1": {

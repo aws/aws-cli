@@ -29,6 +29,35 @@ from botocore.configprovider import BaseProvider
 logger = logging.getLogger(__name__)
 
 
+class LazyStdin:
+    def __init__(self, process):
+        self._process = process
+        self._stream = None
+
+    def __getattr__(self, item):
+        if self._stream is None:
+            self._stream = self._process.initialize().stdin
+        return getattr(self._stream, item)
+
+
+class LazyPager:
+    # Spin up a new process only in case it has been called or its stdin
+    # has been called
+    def __init__(self, popen, **kwargs):
+        self._popen = popen
+        self._popen_kwargs = kwargs
+        self._process = None
+        self.stdin = LazyStdin(self)
+
+    def initialize(self):
+        if self._process is None:
+            self._process = self._popen(**self._popen_kwargs)
+        return self._process
+
+    def __getattr__(self, item):
+        return getattr(self.initialize(), item)
+
+
 class IMDSRegionProvider(BaseProvider):
     def __init__(self, session, environ=None, fetcher=None):
         """Initialize IMDSRegionProvider.
@@ -298,7 +327,7 @@ class OutputStreamFactory(object):
         if not preferred_pager:
             preferred_pager = self._get_configured_pager()
         popen_kwargs = self._get_process_pager_kwargs(preferred_pager)
-        process = self._popen(**popen_kwargs)
+        process = LazyPager(self._popen, **popen_kwargs)
         try:
             yield process.stdin
         except IOError:

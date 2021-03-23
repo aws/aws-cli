@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.19.35
+=======
+
+* api-change:``redshift``: Removed APIs to control AQUA on clusters.
+* api-change:``ce``: You can now create cost categories with inherited value rules and specify default values for any uncategorized costs.
+* api-change:``gamelift``: GameLift adds support for using event notifications to monitor game session placements. Specify an SNS topic or use CloudWatch Events to track activity for a game session queue.
+* api-change:``iam``: Documentation updates for IAM operations and descriptions.
+* api-change:``fis``: Updated maximum allowed size of action parameter from 64 to 1024
+
+
 1.19.34
 =======
 

@@ -390,10 +390,8 @@ class LambdaFunctionResource(ResourceWithS3UrlDict):
             if isinstance(code_value, dict) and code_value.get(INLINE_CODE):
                 return
 
-        uploaded_url = upload_local_artifacts(resource_id, resource_dict,
-                                   self.PROPERTY_NAME,
-                                   parent_dir, self.uploader)
-        set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, uploaded_url)
+        super().do_export(resource_id, resource_dict, parent_dir)
+
 
 class ApiGatewayRestApiResource(ResourceWithS3UrlDict):
     RESOURCE_TYPE = "AWS::ApiGateway::RestApi"

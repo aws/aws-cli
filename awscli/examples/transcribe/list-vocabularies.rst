@@ -11,31 +11,31 @@ Output::
         "Vocabularies": [
             {
                 "VocabularyName": "ards-test-1",
-                "LanguageCode": "en-US",
+                "LanguageCode": "language-code",
                 "LastModifiedTime": "2020-04-27T22:00:27.330000+00:00",
                 "VocabularyState": "READY"
             },
             {
                 "VocabularyName": "sample-test",
-                "LanguageCode": "en-US",
+                "LanguageCode": "language-code",
                 "LastModifiedTime": "2020-04-24T23:04:11.044000+00:00",
                 "VocabularyState": "READY"
             },
             {
                 "VocabularyName": "CRLF-to-LF-test-3-1",
-                "LanguageCode": "en-US",
+                "LanguageCode": "language-code",
                 "LastModifiedTime": "2020-04-24T22:12:22.277000+00:00",
                 "VocabularyState": "READY"
             },
             {
                 "VocabularyName": "CRLF-to-LF-test-2",
-                "LanguageCode": "en-US",
+                "LanguageCode": "language-code",
                 "LastModifiedTime": "2020-04-24T21:53:50.455000+00:00",
                 "VocabularyState": "READY"
             },
             {
                 "VocabularyName": "CRLF-to-LF-1-1",
-                "LanguageCode": "en-US",
+                "LanguageCode": "language-code",
                 "LastModifiedTime": "2020-04-24T21:39:33.356000+00:00",
                 "VocabularyState": "READY"
             }

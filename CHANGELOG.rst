@@ -2,6 +2,298 @@
 CHANGELOG
 =========
 
+1.19.34
+=======
+
+* api-change:``codeartifact``: Documentation updates for CodeArtifact
+* api-change:``macie2``: This release of the Amazon Macie API adds support for publishing sensitive data findings to AWS Security Hub and specifying which categories of findings to publish to Security Hub.
+* api-change:``redshift``: Added support to enable AQUA in Amazon Redshift clusters.
+* api-change:``ec2``: This release adds support for UEFI boot on selected AMD- and Intel-based EC2 instances.
+
+
+1.19.33
+=======
+
+* api-change:``ec2``: X2gd instances are the next generation of memory-optimized instances powered by AWS-designed, Arm-based AWS Graviton2 processors.
+* api-change:``sagemaker``: Adding authentication support for pulling images stored in private Docker registries to build containers for real-time inference.
+
+
+1.19.31
+=======
+
+* api-change:``autoscaling``: Amazon EC2 Auto Scaling Instance Refresh now supports phased deployments.
+* api-change:``securityhub``: New object for separate provider and customer values. New objects track S3 Public Access Block configuration and identify sensitive data. BatchImportFinding requests are limited to 100 findings.
+* api-change:``s3``: S3 Object Lambda is a new S3 feature that enables users to apply their own custom code to process the output of a standard S3 GET request by automatically invoking a Lambda function with a GET request
+* api-change:``redshift``: Add new fields for additional information about VPC endpoint for clusters with reallocation enabled, and a new field for total storage capacity for all clusters.
+* api-change:``s3control``: S3 Object Lambda is a new S3 feature that enables users to apply their own custom code to process the output of a standard S3 GET request by automatically invoking a Lambda function with a GET request
+
+
+1.19.30
+=======
+
+* api-change:``batch``: Making serviceRole an optional parameter when creating a compute environment. If serviceRole is not provided then Service Linked Role will be created (or reused if it already exists).
+* api-change:``sagemaker``: Support new target device ml_eia2 in SageMaker CreateCompilationJob API
+
+
+1.19.29
+=======
+
+* api-change:``mwaa``: This release adds UPDATE_FAILED and UNAVAILABLE MWAA environment states.
+* api-change:``gamelift``: GameLift expands to six new AWS Regions, adds support for multi-location fleets to streamline management of hosting resources, and lets you customize more of the game session placement process.
+* api-change:``mediaconnect``: This release adds support for the SRT-listener protocol on sources and outputs.
+* api-change:``lambda``: Allow empty list for function response types
+* api-change:``mediatailor``: MediaTailor channel assembly is a new manifest-only service that allows you to assemble linear streams using your existing VOD content.
+* api-change:``iam``: Documentation updates for AWS Identity and Access Management (IAM).
+* api-change:``accessanalyzer``: This release adds support for the ValidatePolicy API. IAM Access Analyzer is adding over 100 policy checks and actionable recommendations that help you validate your policies during authoring.
+
+
+1.19.28
+=======
+
+* api-change:``fis``: Initial release of AWS Fault Injection Simulator, a managed service that enables you to perform fault injection experiments on your AWS workloads
+* api-change:``codedeploy``: AWS CodeDeploy can now detect instances running an outdated revision of your application and automatically update them with the latest revision.
+* api-change:``emr``: Update emr command to latest version
+* api-change:``ecs``: This is for ecs exec feature release which includes two new APIs - execute-command and update-cluster and an AWS CLI customization for execute-command API
+
+
+1.19.27
+=======
+
+* api-change:``workspaces``: Adds API support for WorkSpaces bundle management operations.
+* api-change:``mediatailor``: MediaTailor channel assembly is a new manifest-only service that allows you to assemble linear streams using your existing VOD content.
+* api-change:``cur``: - Added optional billingViewArn field for OSG.
+
+
+1.19.26
+=======
+
+* api-change:``network-firewall``: Update network-firewall command to latest version
+* api-change:``wafv2``: Update wafv2 command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``comprehend``: Update comprehend command to latest version
+
+
+1.19.25
+=======
+
+* api-change:``accessanalyzer``: Update accessanalyzer command to latest version
+* api-change:``backup``: Update backup command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+
+
+1.19.24
+=======
+
+* api-change:``efs``: Update efs command to latest version
+* api-change:``codeguruprofiler``: Update codeguruprofiler command to latest version
+* api-change:``iotwireless``: Update iotwireless command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+
+
+1.19.23
+=======
+
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``lambda``: Update lambda command to latest version
+* api-change:``kinesis-video-archived-media``: Update kinesis-video-archived-media command to latest version
+* api-change:``s3control``: Update s3control command to latest version
+* api-change:``emr``: Update emr command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+
+
+1.19.22
+=======
+
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``athena``: Update athena command to latest version
+* api-change:``license-manager``: Update license-manager command to latest version
+* api-change:``network-firewall``: Update network-firewall command to latest version
+* api-change:``appflow``: Update appflow command to latest version
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``shield``: Update shield command to latest version
+
+
+1.19.21
+=======
+
+* api-change:``mwaa``: Update mwaa command to latest version
+* api-change:``events``: Update events command to latest version
+* api-change:``servicediscovery``: Update servicediscovery command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+
+
+1.19.20
+=======
+
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``wellarchitected``: Update wellarchitected command to latest version
+* api-change:``es``: Update es command to latest version
+* api-change:``secretsmanager``: Update secretsmanager command to latest version
+* api-change:``acm``: Update acm command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``forecast``: Update forecast command to latest version
+
+
+1.19.19
+=======
+
+* api-change:``events``: Update events command to latest version
+* api-change:``managedblockchain``: Update managedblockchain command to latest version
+* api-change:``datasync``: Update datasync command to latest version
+* api-change:``directconnect``: Update directconnect command to latest version
+* api-change:``iotwireless``: Update iotwireless command to latest version
+* api-change:``compute-optimizer``: Update compute-optimizer command to latest version
+
+
+1.19.18
+=======
+
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``ssm``: Update ssm command to latest version
+* api-change:``alexaforbusiness``: Update alexaforbusiness command to latest version
+
+
+1.19.17
+=======
+
+* api-change:``eks``: Update eks command to latest version
+* api-change:``sso-admin``: Update sso-admin command to latest version
+* api-change:``s3``: Update s3 command to latest version
+* api-change:``emr``: Update emr command to latest version
+
+
+1.19.16
+=======
+
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``detective``: Update detective command to latest version
+* api-change:``imagebuilder``: Update imagebuilder command to latest version
+* api-change:``databrew``: Update databrew command to latest version
+* api-change:``transfer``: Update transfer command to latest version
+
+
+1.19.15
+=======
+
+* api-change:``appflow``: Update appflow command to latest version
+* api-change:``ecr-public``: Update ecr-public command to latest version
+* api-change:``mediapackage-vod``: Update mediapackage-vod command to latest version
+* api-change:``compute-optimizer``: Update compute-optimizer command to latest version
+* api-change:``es``: Update es command to latest version
+
+
+1.19.14
+=======
+
+* api-change:``glue``: Update glue command to latest version
+* api-change:``iotevents``: Update iotevents command to latest version
+* api-change:``autoscaling``: Update autoscaling command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+* api-change:``redshift-data``: Update redshift-data command to latest version
+* api-change:``connect``: Update connect command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``s3control``: Update s3control command to latest version
+
+
+1.19.13
+=======
+
+* api-change:``sagemaker-runtime``: Update sagemaker-runtime command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+
+
+1.19.12
+=======
+
+* api-change:``rds``: Update rds command to latest version
+
+
+1.19.11
+=======
+
+* api-change:``cloudformation``: Update cloudformation command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``health``: Update health command to latest version
+
+
+1.19.10
+=======
+
+* api-change:``lookoutvision``: Update lookoutvision command to latest version
+* api-change:``ec2``: Update ec2 command to latest version
+* api-change:``config``: Update config command to latest version
+
+
+1.19.9
+======
+
+* api-change:``devops-guru``: Update devops-guru command to latest version
+* api-change:``codebuild``: Update codebuild command to latest version
+
+
+1.19.8
+======
+
+* api-change:``medialive``: Update medialive command to latest version
+* api-change:``workmailmessageflow``: Update workmailmessageflow command to latest version
+* api-change:``mediatailor``: Update mediatailor command to latest version
+* api-change:``redshift-data``: Update redshift-data command to latest version
+* api-change:``pinpoint``: Update pinpoint command to latest version
+* api-change:``config``: Update config command to latest version
+* api-change:``lightsail``: Update lightsail command to latest version
+* api-change:``kinesis-video-archived-media``: Update kinesis-video-archived-media command to latest version
+
+
+1.19.7
+======
+
+* api-change:``detective``: Update detective command to latest version
+* api-change:``personalize-events``: Update personalize-events command to latest version
+* api-change:``rds``: Update rds command to latest version
+* api-change:``appsync``: Update appsync command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``eks``: Update eks command to latest version
+* api-change:``codepipeline``: Update codepipeline command to latest version
+* api-change:``wafv2``: Update wafv2 command to latest version
+* api-change:``iam``: Update iam command to latest version
+
+
+1.19.6
+======
+
+* api-change:``databrew``: Update databrew command to latest version
+* api-change:``rds``: Update rds command to latest version
+
+
+1.19.5
+======
+
+* api-change:``gamelift``: Update gamelift command to latest version
+* api-change:``mediaconvert``: Update mediaconvert command to latest version
+* api-change:``sagemaker``: Update sagemaker command to latest version
+* api-change:``qldb-session``: Update qldb-session command to latest version
+* api-change:``quicksight``: Update quicksight command to latest version
+
+
+1.19.4
+======
+
+* api-change:``iotsitewise``: Update iotsitewise command to latest version
+* api-change:``macie2``: Update macie2 command to latest version
+* api-change:``globalaccelerator``: Update globalaccelerator command to latest version
+* api-change:``ivs``: Update ivs command to latest version
+* api-change:``cloudtrail``: Update cloudtrail command to latest version
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``dataexchange``: Update dataexchange command to latest version
+* api-change:``elasticache``: Update elasticache command to latest version
+
+
 1.19.3
 ======
 

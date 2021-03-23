@@ -393,6 +393,28 @@ INSTANCE_FLEETS_SCHEMA = {
                                 "type": "string",
                                 "description": "The strategy to use in launching On-Demand instance fleets.",
                                 "enum": ["lowest-price"]
+                            },
+                            "CapacityReservationOptions": {
+                                "type": "object",
+                                "properties" : {
+                                    "UsageStrategy": {
+                                        "type": "string",
+                                        "description": "The strategy of whether to use unused Capacity Reservations for fulfilling On-Demand capacity.",
+                                        "enum": ["use-capacity-reservations-first"]
+                                    },
+                                    "CapacityReservationPreference": {
+                                        "type": "string",
+                                        "description": "The preference of the instance's Capacity Reservation.",
+                                        "enum": [
+                                            "open",
+                                            "none"
+                                        ]
+                                    },
+                                    "CapacityReservationResourceGroupArn": {
+                                        "type": "string",
+                                        "description": "The ARN of the Capacity Reservation resource group in which to run the instance."
+                                    }
+                                }
                             }
                         }
                     },

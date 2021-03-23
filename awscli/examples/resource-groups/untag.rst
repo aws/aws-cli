@@ -14,3 +14,5 @@ Output::
             "QueryType"
         ]
     }
+
+For more information, see `Manage tags <https://docs.aws.amazon.com/ARG/latest/userguide/tagging-resources.html>`__ in the *AWS Resource Groups User Guide*.

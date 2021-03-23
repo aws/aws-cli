@@ -28,6 +28,7 @@ class TestShow(unittest.TestCase):
         )
         self.environ['AWS_DEFAULT_PROFILE'] = 'default'
         self.environ['AWS_DEFAULT_REGION'] = 'us-west-2'
+        self.environ['AWS_STS_REGIONAL_ENDPOINTS'] = 'regional'
         self.environ['AWS_CLI_HISTORY_FILE'] = os.path.join(
             self.files.rootdir, 'history.db')
 
@@ -66,7 +67,9 @@ class TestShow(unittest.TestCase):
             [
                 'AWS CLI command entered',
                 'with AWS CLI version: aws-cli/',
-                "with arguments: ['sts', 'assume-role-with-saml',",
+                "with arguments: [",
+                "'sts', ",
+                "'assume-role-with-saml',",
                 '[0] API call made',
                 'to service: sts',
                 'using operation: AssumeRoleWithSAML',
@@ -75,9 +78,11 @@ class TestShow(unittest.TestCase):
                 '    "RoleArn": "arn:aws:iam::...:invalid",',
                 '    "SAMLAssertion": "fake-assertion"',
                 '[0] HTTP request sent',
-                'to URL: https://sts.amazonaws.com/',
+                'to URL: https://sts.us-west-2.amazonaws.com/',
                 'with method: POST',
-                'with body: Action=AssumeRoleWithSAML&Version=2011-06-15',
+                'with body: ',
+                'Action=AssumeRoleWithSAML',
+                'Version=2011-06-15',
                 '[0] HTTP response received',
                 'with status code: 400',
                 'with body: <?xml version="1.0" ?>',

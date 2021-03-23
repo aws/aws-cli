@@ -1069,7 +1069,7 @@ class TestArtifactExporter(unittest.TestCase):
         template_path = os.path.join(template_dir, 'path')
         template_str = self.example_yaml_template()
 
-        resource_type1_class = ServerlessFunctionResource
+        resource_type1_class = LambdaFunctionResource
         resource_type1_class.RESOURCE_TYPE = "AWS::Lambda::Function"
         resource_type1_instance = mock.Mock()
         resource_type1_class.return_value = resource_type1_instance

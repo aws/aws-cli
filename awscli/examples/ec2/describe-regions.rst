@@ -124,7 +124,7 @@ Output::
             {
                 "Endpoint": "ec2.us-west-2.amazonaws.com",
                 "RegionName": "us-west-2"
-            },
+            }
         ]
     }
 

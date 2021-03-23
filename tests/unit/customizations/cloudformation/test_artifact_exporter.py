@@ -1017,6 +1017,100 @@ class TestArtifactExporter(unittest.TestCase):
                 "Resource2", mock.ANY, template_dir)
 
     @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
+    def test_inline_serverless_template_do_export(self, yaml_parse_mock):
+        parent_dir = os.path.sep
+        template_dir = os.path.join(parent_dir, 'foo', 'bar')
+        template_path = os.path.join(template_dir, 'path')
+        template_str = self.example_yaml_template()
+
+        resource_type1_class = ServerlessFunctionResource
+        resource_type1_class.RESOURCE_TYPE = "AWS::Serverless::Function"
+        resource_type1_instance = mock.Mock()
+        resource_type1_class.return_value = resource_type1_instance
+
+        resources_to_export = [
+            resource_type1_class
+        ]
+
+        properties = {"Handler": "index.handler", "Runtime": "nodejs10.x", "InlineCode": "'code'"}
+        template_dict = {
+            "Resources": {
+                "Resource1": {
+                    "Type": "AWS::Serverless::Function",
+                    "Properties": properties
+                }
+            }
+        }
+
+        open_mock = mock.mock_open()
+        yaml_parse_mock.return_value = template_dict
+
+        # Patch the file open method to return template string
+        with mock.patch(
+                "awscli.customizations.cloudformation.artifact_exporter.open",
+                open_mock(read_data=template_str)) as open_mock:
+
+            template_exporter = Template(
+                template_path, parent_dir, self.s3_uploader_mock,
+                resources_to_export)
+            exported_template = template_exporter.export()
+            self.assertFalse("CodeUri" in exported_template.get("Resources").get("Resource1").get("Properties"))
+
+            open_mock.assert_called_once_with(
+                    make_abs_path(parent_dir, template_path), "r")
+
+            self.assertEquals(1, yaml_parse_mock.call_count)
+
+
+    @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
+    def test_inline_lambda_template_do_export(self, yaml_parse_mock):
+        parent_dir = os.path.sep
+        template_dir = os.path.join(parent_dir, 'foo', 'bar')
+        template_path = os.path.join(template_dir, 'path')
+        template_str = self.example_yaml_template()
+
+        resource_type1_class = ServerlessFunctionResource
+        resource_type1_class.RESOURCE_TYPE = "AWS::Lambda::Function"
+        resource_type1_instance = mock.Mock()
+        resource_type1_class.return_value = resource_type1_instance
+
+        resources_to_export = [
+            resource_type1_class
+        ]
+
+        properties = {"Handler": "index.handler", "Runtime": "nodejs10.x", "Code": {"ZipFIle": "'code'"}}
+        template_dict = {
+            "Resources": {
+                "Resource1": {
+                    "Type": "AWS::Serverless::Function",
+                    "Properties": properties
+                }
+            }
+        }
+
+        open_mock = mock.mock_open()
+        yaml_parse_mock.return_value = template_dict
+
+        # Patch the file open method to return template string
+        with mock.patch(
+                "awscli.customizations.cloudformation.artifact_exporter.open",
+                open_mock(read_data=template_str)) as open_mock:
+
+            template_exporter = Template(
+                template_path, parent_dir, self.s3_uploader_mock,
+                resources_to_export)
+            exported_template = template_exporter.export()
+            self.assertTrue(
+                "Zipfile" in exported_template.get("Resources").get("Resource1").get("Properties").get("Code")
+                )
+
+            open_mock.assert_called_once_with(
+                    make_abs_path(parent_dir, template_path), "r")
+
+            self.assertEquals(1, yaml_parse_mock.call_count)
+
+
+    @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
     def test_template_global_export(self, yaml_parse_mock):
         parent_dir = os.path.sep
         template_dir = os.path.join(parent_dir, 'foo', 'bar')

@@ -1082,7 +1082,7 @@ class TestArtifactExporter(unittest.TestCase):
         template_dict = {
             "Resources": {
                 "Resource1": {
-                    "Type": "AWS::Serverless::Function",
+                    "Type": "AWS::Lambda::Function",
                     "Properties": properties
                 }
             }
@@ -1102,7 +1102,7 @@ class TestArtifactExporter(unittest.TestCase):
             exported_template = template_exporter.export()
             self.assertTrue(
                 "Zipfile" in exported_template.get("Resources").get("Resource1").get("Properties").get("Code")
-                )
+            )
 
             open_mock.assert_called_once_with(
                     make_abs_path(parent_dir, template_path), "r")

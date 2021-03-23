@@ -313,8 +313,19 @@ class ResourceWithS3UrlDict(Resource):
 class ServerlessFunctionResource(Resource):
     RESOURCE_TYPE = "AWS::Serverless::Function"
     PROPERTY_NAME = "CodeUri"
+    INLINE_CODE = "InlineCode"
     FORCE_ZIP = True
 
+    def do_export(self, resource_id, resource_dict, parent_dir):
+        codeuri_value = jmespath.search(self.PROPERTY_NAME, resource_dict)
+        inlinecode_value = jmespath.search(self.INLINE_CODE, resource_dict)
+        if not codeuri_value and inlinecode_value:
+            return
+
+        uploaded_url = upload_local_artifacts(resource_id, resource_dict,
+                                   self.PROPERTY_NAME,
+                                   parent_dir, self.uploader)
+        set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, uploaded_url)
 
 class ServerlessApiResource(Resource):
     RESOURCE_TYPE = "AWS::Serverless::Api"
@@ -370,8 +381,19 @@ class LambdaFunctionResource(ResourceWithS3UrlDict):
     BUCKET_NAME_PROPERTY = "S3Bucket"
     OBJECT_KEY_PROPERTY = "S3Key"
     VERSION_PROPERTY = "S3ObjectVersion"
+    INLINE_CODE = "ZipFile"
     FORCE_ZIP = True
 
+    def do_export(self, resource_id, resource_dict, parent_dir):
+        code_value = jmespath.search(self.PROPERTY_NAME, resource_dict)
+        if code_value: 
+            if code_value.get(INLINE_CODE):
+                return
+
+        uploaded_url = upload_local_artifacts(resource_id, resource_dict,
+                                   self.PROPERTY_NAME,
+                                   parent_dir, self.uploader)
+        set_value_from_jmespath(resource_dict, self.PROPERTY_NAME, uploaded_url)
 
 class ApiGatewayRestApiResource(ResourceWithS3UrlDict):
     RESOURCE_TYPE = "AWS::ApiGateway::RestApi"

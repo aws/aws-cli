@@ -424,7 +424,7 @@ class LambdaFunctionResource(ResourceWithS3UrlDict):
     def do_export(self, resource_id, resource_dict, parent_dir):
         code_value = jmespath.search(self.PROPERTY_NAME, resource_dict)
         if code_value: 
-            if isinstance(code_value, dict) and code_value.get(INLINE_CODE):
+            if isinstance(code_value, dict) and code_value.get(self.INLINE_CODE):
                 return
 
         artifact_s3_url = \

@@ -1666,6 +1666,43 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.19.36
+=======
+
+* api-change:``ssm``: This release allows SSM Explorer customers to enable OpsData sources across their organization when creating a resource data sync.
+* api-change:``s3control``: Documentation updates for s3-control
+* api-change:``s3``: Documentation updates for Amazon S3
+* api-change:``ec2``: maximumEfaInterfaces added to DescribeInstanceTypes API
+* api-change:``route53``: Documentation updates for route53
+* api-change:``greengrass``: Updated the parameters to make name required for CreateGroup API.
+
+
+1.19.35
+=======
+
+* api-change:``redshift``: Removed APIs to control AQUA on clusters.
+* api-change:``ce``: You can now create cost categories with inherited value rules and specify default values for any uncategorized costs.
+* api-change:``gamelift``: GameLift adds support for using event notifications to monitor game session placements. Specify an SNS topic or use CloudWatch Events to track activity for a game session queue.
+* api-change:``iam``: Documentation updates for IAM operations and descriptions.
+* api-change:``fis``: Updated maximum allowed size of action parameter from 64 to 1024
+
+
+1.19.34
+=======
+
+* api-change:``codeartifact``: Documentation updates for CodeArtifact
+* api-change:``macie2``: This release of the Amazon Macie API adds support for publishing sensitive data findings to AWS Security Hub and specifying which categories of findings to publish to Security Hub.
+* api-change:``redshift``: Added support to enable AQUA in Amazon Redshift clusters.
+* api-change:``ec2``: This release adds support for UEFI boot on selected AMD- and Intel-based EC2 instances.
+
+
+1.19.33
+=======
+
+* api-change:``ec2``: X2gd instances are the next generation of memory-optimized instances powered by AWS-designed, Arm-based AWS Graviton2 processors.
+* api-change:``sagemaker``: Adding authentication support for pulling images stored in private Docker registries to build containers for real-time inference.
+
+
 1.19.31
 =======
 

@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.19.37
+=======
+
+* api-change:``medialive``: EML now supports handling HDR10 and HLG 2020 color space from a Link input.
+* api-change:``lookoutmetrics``: Amazon Lookout for Metrics is now generally available. You can use Lookout for Metrics to monitor your data for anomalies. For more information, see the Amazon Lookout for Metrics Developer Guide.
+* api-change:``sagemaker``: This feature allows customer to specify the environment variables in their CreateTrainingJob requests.
+* api-change:``sqs``: Documentation updates for Amazon SQS
+* api-change:``alexaforbusiness``: Added support for enabling and disabling data retention in the CreateProfile and UpdateProfile APIs and retrieving the state of data retention for a profile in the GetProfile API.
+* api-change:``rekognition``: This release introduces AWS tagging support for Amazon Rekognition collections, stream processors, and Custom Label models.
+
+
 1.19.36
 =======
 

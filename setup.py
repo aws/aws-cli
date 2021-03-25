@@ -27,7 +27,7 @@ requires = [
     'botocore==2.0.0dev100',
     'colorama>=0.2.5,<0.4.4',
     'docutils>=0.10,<0.16',
-    'cryptography>=2.8.0,<=2.9.0',
+    'cryptography>=3.3.2,<3.4.0',
     's3transfer>=0.3.0,<0.4.0',
     'ruamel.yaml>=0.15.0,<0.16.0',
     # wcwidth 0.2.0 and up do not get copied into

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.19.38
+=======
+
+* api-change:``lookoutmetrics``: Allowing uppercase alphabets for RDS and Redshift database names.
+
+
 1.19.37
 =======
 

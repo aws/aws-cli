@@ -211,14 +211,16 @@ class TestOutputStreamFactory(unittest.TestCase):
 
     def test_pager(self):
         self.set_session_pager('mypager --option')
-        with self.stream_factory.get_pager_stream():
+        with self.stream_factory.get_pager_stream() as stream:
+            stream.write()
             self.assert_popen_call(
                 expected_pager_cmd='mypager --option'
             )
 
     def test_explicit_pager(self):
         self.set_session_pager('sessionpager --option')
-        with self.stream_factory.get_pager_stream('mypager --option'):
+        with self.stream_factory.get_pager_stream('mypager --option') as stream:
+            stream.write()
             self.assert_popen_call(
                 expected_pager_cmd='mypager --option'
             )
@@ -238,24 +240,22 @@ class TestOutputStreamFactory(unittest.TestCase):
 
     @mock.patch('awscli.utils.get_stdout_text_writer')
     def test_stdout(self, mock_stdout_writer):
-        with self.stream_factory.get_stdout_stream():
+        with self.stream_factory.get_stdout_stream() as stream:
+            stream.write()
             self.assertTrue(mock_stdout_writer.called)
 
     def test_can_silence_io_error_from_pager(self):
         self.popen.return_value = MockProcess()
         try:
-            # RuntimeError is caught here since a runtime error is raised
-            # when an IOError is raised before the context manager yields.
-            # If we ignore it like this we will actually see the IOError.
-            with self.assertRaises(RuntimeError):
-                with self.stream_factory.get_pager_stream():
-                    pass
+            with self.stream_factory.get_pager_stream() as stream:
+                stream.write()
         except IOError:
             self.fail('Should not raise IOError')
 
     def test_get_output_stream(self):
         self.set_session_pager('mypager --option')
-        with self.stream_factory.get_output_stream():
+        with self.stream_factory.get_output_stream() as stream:
+            stream.write()
             self.assert_popen_call(
                 expected_pager_cmd='mypager --option'
             )
@@ -263,18 +263,21 @@ class TestOutputStreamFactory(unittest.TestCase):
     @mock.patch('awscli.utils.get_stdout_text_writer')
     def test_use_stdout_if_not_tty(self, mock_stdout_writer):
         self.mock_is_a_tty.return_value = False
-        with self.stream_factory.get_output_stream():
+        with self.stream_factory.get_output_stream() as stream:
+            stream.write()
             self.assertTrue(mock_stdout_writer.called)
 
     @mock.patch('awscli.utils.get_stdout_text_writer')
     def test_use_stdout_if_pager_set_to_empty_string(self, mock_stdout_writer):
         self.set_session_pager('')
-        with self.stream_factory.get_output_stream():
+        with self.stream_factory.get_output_stream() as stream:
+            stream.write()
             self.assertTrue(mock_stdout_writer.called)
 
     def test_adds_default_less_env_vars(self):
         self.set_session_pager('myless')
-        with self.stream_factory.get_output_stream():
+        with self.stream_factory.get_output_stream() as stream:
+            stream.write()
             self.assert_popen_call(
                 expected_pager_cmd='myless',
                 env={'LESS': 'FRX'}
@@ -283,7 +286,8 @@ class TestOutputStreamFactory(unittest.TestCase):
     def test_does_not_clobber_less_env_var_if_in_env_vars(self):
         self.set_session_pager('less')
         self.environ['LESS'] = 'S'
-        with self.stream_factory.get_output_stream():
+        with self.stream_factory.get_output_stream() as stream:
+            stream.write()
             self.assert_popen_call(
                 expected_pager_cmd='less',
                 env={'LESS': 'S'}
@@ -293,11 +297,43 @@ class TestOutputStreamFactory(unittest.TestCase):
         self.set_session_pager('less')
         stream_factory = OutputStreamFactory(
             self.session, self.popen, self.environ, default_less_flags='ABC')
-        with stream_factory.get_output_stream():
+        with stream_factory.get_output_stream() as stream:
+            stream.write()
             self.assert_popen_call(
                 expected_pager_cmd='less',
                 env={'LESS': 'ABC'}
             )
+
+    def test_not_create_pager_process_if_not_called(self):
+        self.set_session_pager('sessionpager --option')
+        with self.stream_factory.get_pager_stream('mypager --option'):
+            self.assertEqual(self.popen.call_count, 0)
+
+    def test_create_process_on_stdin_method_call(self):
+        self.set_session_pager('less')
+        stream_factory = OutputStreamFactory(
+            self.session, self.popen, self.environ, default_less_flags='ABC')
+        with stream_factory.get_output_stream() as stream:
+            self.assertEqual(self.popen.call_count, 0)
+            stream.write()
+            self.assert_popen_call(
+                expected_pager_cmd='less',
+                env={'LESS': 'ABC'}
+            )
+
+    def test_create_process_on_process_method_call(self):
+        self.set_session_pager('less')
+        stream_factory = OutputStreamFactory(
+            self.session, self.popen, self.environ, default_less_flags='ABC')
+        with stream_factory.get_output_stream():
+            self.assertEqual(self.popen.call_count, 0)
+        # On exit from context manager it called process.communicate()
+        # and process should be created only at that time
+        self.assert_popen_call(
+            expected_pager_cmd='less',
+            env={'LESS': 'ABC'}
+        )
+
 
 class TestInstanceMetadataRegionFetcher(unittest.TestCase):
     def setUp(self):

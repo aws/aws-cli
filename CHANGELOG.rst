@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.19.39
+=======
+
+* api-change:``iotwireless``: Support tag-on-create for WirelessDevice.
+* api-change:``customer-profiles``: This release adds an optional parameter named FlowDefinition in PutIntegrationRequest.
+* api-change:``events``: Add support for SageMaker Model Builder Pipelines Targets to EventBridge
+* api-change:``transcribe``: Amazon Transcribe now supports tagging words that match your vocabulary filter for batch transcription.
+
+
 1.19.38
 =======
 

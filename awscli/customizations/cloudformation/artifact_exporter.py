@@ -497,6 +497,15 @@ class GlueJobCommandScriptLocationResource(Resource):
     PROPERTY_NAME = "Command.ScriptLocation"
 
 
+class CloudFormationModuleVersionResource(Resource):
+    """
+    Represents CloudFormation::ModuleVersion resource.
+    """
+    RESOURCE_TYPE = "AWS::CloudFormation::ModuleVersion"
+    PROPERTY_NAME = "ModulePackage"
+    FORCE_ZIP = True
+
+
 RESOURCES_EXPORT_LIST = [
     ServerlessFunctionResource,
     ServerlessApiResource,
@@ -513,7 +522,8 @@ RESOURCES_EXPORT_LIST = [
     ServerlessLayerVersionResource,
     LambdaLayerVersionResource,
     GlueJobCommandScriptLocationResource,
-    StepFunctionsStateMachineDefinitionResource
+    StepFunctionsStateMachineDefinitionResource,
+    CloudFormationModuleVersionResource
 ]
 
 METADATA_EXPORT_LIST = [

@@ -21,6 +21,7 @@ This command can upload local artifacts referenced in the following places:
     - ``Location`` parameter for the ``AWS::Include`` transform
     - ``SourceBundle`` property for the ``AWS::ElasticBeanstalk::ApplicationVersion`` resource
     - ``TemplateURL`` property for the ``AWS::CloudFormation::Stack`` resource
+    - ``ModulePackage`` property for the ``AWS::CloudFormation::ModuleVersion`` resource
     - ``Command.ScriptLocation`` property for the ``AWS::Glue::Job`` resource
     - ``DefinitionS3Location`` property for the ``AWS::StepFunctions::StateMachine`` resource
 

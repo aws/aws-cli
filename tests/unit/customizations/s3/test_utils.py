@@ -28,7 +28,7 @@ from awscli.compat import StringIO
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.s3.utils import (
     find_bucket_key,
-    guess_content_type, relative_path, block_s3_object_lambda,
+    guess_content_type, relative_path, block_unsupported_resources,
     StablePriorityQueue, BucketLister, get_file_stat, AppendFilter,
     create_warning, human_readable_size, human_readable_to_bytes,
     set_file_utime, SetFileUtimeError, RequestParamsMapper, StdoutBytesWriter,
@@ -289,21 +289,37 @@ class TestFindBucketKey(unittest.TestCase):
         self.assertEqual(key, 'prefix/key:name')
 
 
-class TestBlockS3ObjectLambda(unittest.TestCase):
+class TestBlockUnsupportedResources(unittest.TestCase):
     def test_object_lambda_arn_with_colon_raises_exception(self):
         with self.assertRaisesRegexp(
-                ParamValidationError, 's3 commands do not support'):
-            block_s3_object_lambda(
+                ParamValidationError, 'Use s3api commands instead'):
+            block_unsupported_resources(
                 'arn:aws:s3-object-lambda:us-west-2:123456789012:'
                 'accesspoint:my-accesspoint'
             )
 
     def test_object_lambda_arn_with_slash_raises_exception(self):
         with self.assertRaisesRegexp(
-                ParamValidationError, 's3 commands do not support'):
-            block_s3_object_lambda(
+                ParamValidationError, 'Use s3api commands instead'):
+            block_unsupported_resources(
                  'arn:aws:s3-object-lambda:us-west-2:123456789012:'
                  'accesspoint/my-accesspoint'
+            )
+
+    def test_outpost_bucket_arn_with_colon_raises_exception(self):
+        with self.assertRaisesRegexp(
+                ParamValidationError, 'Use s3control commands instead'):
+            block_unsupported_resources(
+                'arn:aws:s3-outposts:us-west-2:123456789012:'
+                'outpost/op-0a12345678abcdefg:bucket/bucket-foo'
+            )
+
+    def test_outpost_bucket_arn_with_slash_raises_exception(self):
+        with self.assertRaisesRegexp(
+                ParamValidationError, 'Use s3control commands instead'):
+            block_unsupported_resources(
+                 'arn:aws:s3-outposts:us-west-2:123456789012:'
+                 'outpost/op-0a12345678abcdefg/bucket/bucket-foo'
             )
 
 

@@ -29,13 +29,9 @@ install_requires = [
     's3transfer>=0.3.0,<0.4.0',
     'PyYAML>=3.10,<5.5',
     'colorama>=0.2.5,<0.4.4',
+    'rsa>=3.1.2,<=4.5.0; python_version=="2.7"',
+    'rsa>=3.1.2,<4.8; python_version>"2.7"',
 ]
-
-if sys.version_info[:2] == (2, 7):
-    # Last version of rsa supporting Python 2.7
-    install_requires.append('rsa>=3.1.2,<=4.5.0')
-else:
-    install_requires.append('rsa>=3.1.2,<4.8')
 
 
 setup_options = dict(

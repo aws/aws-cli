@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.19.40
+=======
+
+* api-change:``docdb``: This release adds support for Event Subscriptions to DocumentDB.
+* api-change:``glue``: Allow Dots in Registry and Schema Names for CreateRegistry, CreateSchema; Fixed issue when duplicate keys are present and not returned as part of QuerySchemaVersionMetadata.
+* api-change:``wafv2``: Added custom request handling and custom response support in rule actions and default action; Added the option to inspect the web request body as parsed and filtered JSON.
+* api-change:``iam``: AWS Identity and Access Management GetAccessKeyLastUsed API will throw a custom error if customer public key is not found for access keys.
+* api-change:``location``: Amazon Location added support for specifying pricing plan information on resources in alignment with our cost model.
+
+
 1.19.39
 =======
 

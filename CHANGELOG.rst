@@ -1686,6 +1686,55 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.19.41
+=======
+
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``databrew``: This SDK release adds two new dataset features: 1) support for specifying a database connection as a dataset input 2) support for dynamic datasets that accept configurable parameters in S3 path.
+* api-change:``sagemaker``: Amazon SageMaker Autopilot now supports 1) feature importance reports for AutoML jobs and 2) PartialFailures for AutoML jobs
+* api-change:``ec2-instance-connect``: Adding support to push SSH keys to the EC2 serial console in order to allow an SSH connection to your Amazon EC2 instance's serial port.
+* api-change:``ec2``: ReplaceRootVolume feature enables customers to replace the EBS root volume of a running instance to a previously known state. Add support to grant account-level access to the EC2 serial console
+* api-change:``config``: Adding new APIs to support ConformancePack Compliance CI in Aggregators
+* api-change:``pinpoint``: Added support for journey pause/resume, journey updatable import segment and journey quiet time wait.
+* api-change:``frauddetector``: This release adds support for Batch Predictions in Amazon Fraud Detector.
+
+
+1.19.40
+=======
+
+* api-change:``docdb``: This release adds support for Event Subscriptions to DocumentDB.
+* api-change:``glue``: Allow Dots in Registry and Schema Names for CreateRegistry, CreateSchema; Fixed issue when duplicate keys are present and not returned as part of QuerySchemaVersionMetadata.
+* api-change:``wafv2``: Added custom request handling and custom response support in rule actions and default action; Added the option to inspect the web request body as parsed and filtered JSON.
+* api-change:``iam``: AWS Identity and Access Management GetAccessKeyLastUsed API will throw a custom error if customer public key is not found for access keys.
+* api-change:``location``: Amazon Location added support for specifying pricing plan information on resources in alignment with our cost model.
+
+
+1.19.39
+=======
+
+* api-change:``iotwireless``: Support tag-on-create for WirelessDevice.
+* api-change:``customer-profiles``: This release adds an optional parameter named FlowDefinition in PutIntegrationRequest.
+* api-change:``events``: Add support for SageMaker Model Builder Pipelines Targets to EventBridge
+* api-change:``transcribe``: Amazon Transcribe now supports tagging words that match your vocabulary filter for batch transcription.
+
+
+1.19.38
+=======
+
+* api-change:``lookoutmetrics``: Allowing uppercase alphabets for RDS and Redshift database names.
+
+
+1.19.37
+=======
+
+* api-change:``medialive``: EML now supports handling HDR10 and HLG 2020 color space from a Link input.
+* api-change:``lookoutmetrics``: Amazon Lookout for Metrics is now generally available. You can use Lookout for Metrics to monitor your data for anomalies. For more information, see the Amazon Lookout for Metrics Developer Guide.
+* api-change:``sagemaker``: This feature allows customer to specify the environment variables in their CreateTrainingJob requests.
+* api-change:``sqs``: Documentation updates for Amazon SQS
+* api-change:``alexaforbusiness``: Added support for enabling and disabling data retention in the CreateProfile and UpdateProfile APIs and retrieving the state of data retention for a profile in the GetProfile API.
+* api-change:``rekognition``: This release introduces AWS tagging support for Amazon Rekognition collections, stream processors, and Custom Label models.
+
+
 1.19.36
 =======
 

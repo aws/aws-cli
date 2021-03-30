@@ -10,6 +10,7 @@ Output::
         "Invitations": [ 
         { 
             "AccountId": "444455556666",
+            "AdministratorId": "111122223333",
             "EmailAddress": "mmajor@example.com",
             "GraphArn": "arn:aws:detective:us-east-1:111122223333:graph:123412341234",
             "InvitedTime": 1579826107000,
@@ -20,4 +21,4 @@ Output::
     ]
     }
 
-For more information, see `Viewing Your List of Behavior Graph Invitations <https://docs.aws.amazon.com/detective/latest/adminguide/member-view-graph-invitations.html>`__ in the *Amazon Detective Administration Guide*.
+For more information, see `Viewing your list of behavior graph invitations<https://docs.aws.amazon.com/detective/latest/adminguide/member-view-graph-invitations.html>`__ in the *Amazon Detective Administration Guide*.

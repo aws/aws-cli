@@ -98,6 +98,9 @@ ARGUMENT_RENAMES = {
     'sagemaker.delete-image-version.version': 'version-number',
     'sagemaker.describe-image-version.version': 'version-number',
     'iotwireless.*.lo-ra-wan': 'lorawan',
+    'codepipeline.get-action-type.version': 'action-version',
+    'ecs.*.no-enable-execute-command': 'disable-execute-command',
+    'ecs.execute-command.no-interactive': 'non-interactive',
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,

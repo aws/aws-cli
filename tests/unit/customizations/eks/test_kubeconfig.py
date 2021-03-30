@@ -79,6 +79,16 @@ class TestKubeconfigWriter(unittest.TestCase):
         stat = os.stat(config_path)
         self.assertEqual(stat.st_mode & 0o777, 0o600)
 
+    def test_truncates(self):
+        tmpdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tmpdir)
+        config_path = os.path.join(tmpdir, "config")
+        with open(config_path, "w+") as f:
+            f.write("#" * 100)
+        KubeconfigWriter().write_kubeconfig(Kubeconfig(config_path, {}))
+        empty_stat = os.stat(config_path)
+        self.assertLessEqual(empty_stat.st_size, 4, "file should be '{}[newline]', 3/4 bytes long ")
+
 
 class TestKubeconfigValidator(unittest.TestCase):
     def setUp(self):

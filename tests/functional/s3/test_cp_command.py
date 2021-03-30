@@ -2037,3 +2037,30 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
         self.assertIsNone(
             crt_requests[0][1]['request'].headers.get('Authorization')
         )
+
+    @mock.patch('s3transfer.crt.ClientTlsContext')
+    def test_respects_ca_bundle_parameter(self, mock_client_tls_context_options):
+        filename = self.files.create_file('myfile', 'mycontent')
+        fake_ca_contents = b"fake ca content"
+        ca_bundle = self.files.create_file('fake_ca', fake_ca_contents, mode='wb')
+        cmdline = [
+            's3', 'cp', filename, 's3://bucket/key', '--ca-bundle', ca_bundle
+        ]
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        tls_context_options = mock_client_tls_context_options.call_args[0][0]
+        self.assertEqual(tls_context_options.ca_buffer, fake_ca_contents)
+
+    @mock.patch('s3transfer.crt.ClientTlsContext')
+    def test_respects_ca_bundle_parameter(self, mock_client_tls_context_options):
+        filename = self.files.create_file('myfile', 'mycontent')
+        ca_bundle = self.files.create_file('fake_ca', 'mycontent')
+        cmdline = [
+            's3', 'cp', filename, 's3://bucket/key', '--ca-bundle', ca_bundle, '--no-verify-ssl'
+        ]
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        tls_context_options = mock_client_tls_context_options.call_args[0][0]
+        self.assertFalse(tls_context_options.verify_peer)

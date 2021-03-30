@@ -13,6 +13,7 @@
 import logging
 
 from botocore.client import Config
+from botocore.httpsession import DEFAULT_CA_BUNDLE
 from s3transfer.manager import TransferManager
 from s3transfer.crt import (
     create_s3_crt_client, BotocoreCRTRequestSerializer, CRTTransferManager
@@ -87,7 +88,10 @@ class TransferManagerFactory:
             create_crt_client_kwargs[
                 'botocore_credential_provider'] = self._session.get_component(
                     'credential_provider')
-
+        verify = params.get('verify_ssl')
+        if verify is None:
+            verify = DEFAULT_CA_BUNDLE
+        create_crt_client_kwargs['verify'] = verify
         return create_s3_crt_client(**create_crt_client_kwargs)
 
     def _create_crt_request_serializer(self, params):

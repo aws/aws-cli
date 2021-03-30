@@ -10,10 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest, mock
+from awscli.testutils import unittest, mock, FileCreator
 
 from botocore.session import Session
 from botocore.config import Config
+from botocore.httpsession import DEFAULT_CA_BUNDLE
 from s3transfer.manager import TransferManager
 from s3transfer.crt import CRTTransferManager
 
@@ -94,6 +95,10 @@ class TestTransferManagerFactory(unittest.TestCase):
             'verify_ssl': None,
         }
         self.runtime_config = self.get_runtime_config()
+        self.files = FileCreator()
+
+    def tearDown(self):
+        self.files.remove_all()
 
     def get_runtime_config(self, **kwargs):
         return RuntimeConfig().build_config(**kwargs)
@@ -250,3 +255,45 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.assertIsNone(
             mock_crt_client.call_args[1]['credential_provider']
         )
+
+    @mock.patch('s3transfer.crt.ClientTlsContext')
+    def test_use_verify_ssl_parameter_for_crt_manager(
+            self, mock_client_tls_context_options):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt')
+        fake_ca_contents = b"fake ca content"
+        fake_ca_bundle = self.files.create_file(
+            "fake_ca", fake_ca_contents, mode='wb')
+        self.params['verify_ssl'] = fake_ca_bundle
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config)
+        self.assert_is_crt_manager(transfer_manager)
+        tls_context_options = mock_client_tls_context_options.call_args[0][0]
+        self.assertEqual(tls_context_options.ca_buffer,
+                         bytes(fake_ca_contents, 'utf-8'))
+
+    @mock.patch('s3transfer.crt.ClientTlsContext')
+    def test_use_verify_ssl_parameter_none_for_crt_manager(
+            self, mock_client_tls_context_options):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt')
+        self.params['verify_ssl'] = None
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config)
+        self.assert_is_crt_manager(transfer_manager)
+        tls_context_options = mock_client_tls_context_options.call_args[0][0]
+        with open(DEFAULT_CA_BUNDLE, mode='rb') as fh:
+            contents = fh.read()
+            self.assertEqual(tls_context_options.ca_buffer, contents)
+
+    @mock.patch('s3transfer.crt.ClientTlsContext')
+    def test_use_verify_ssl_parameter_false_for_crt_manager(
+            self, mock_client_tls_context_options):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt')
+        self.params['verify_ssl'] = False
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config)
+        self.assert_is_crt_manager(transfer_manager)
+        tls_context_options = mock_client_tls_context_options.call_args[0][0]
+        self.assertFalse(tls_context_options.verify_peer)

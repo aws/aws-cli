@@ -46,13 +46,17 @@ class ConfigureSetCommand(BasicCommand):
             config_writer = ConfigFileWriter()
         self._config_writer = config_writer
 
+    def _get_config_file(self, path):
+        config_path = self._session.get_config_variable(path)
+        return os.path.expanduser(config_path)
+
     def _run_main(self, args, parsed_globals):
         varname = args.varname
         value = args.value
-        section = 'default'
+        profile = 'default'
         # Before handing things off to the config writer,
         # we need to find out three things:
-        # 1. What section we're writing to (section).
+        # 1. What section we're writing to (profile).
         # 2. The name of the config key (varname)
         # 3. The actual value (value).
         if '.' not in varname:
@@ -60,43 +64,44 @@ class ConfigureSetCommand(BasicCommand):
             # profile (or leave it as the 'default' section if
             # no profile is set).
             if self._session.profile is not None:
-                section = profile_to_section(self._session.profile)
+                profile = self._session.profile
         else:
             # First figure out if it's been scoped to a profile.
             parts = varname.split('.')
             if parts[0] in ('default', 'profile'):
                 # Then we know we're scoped to a profile.
                 if parts[0] == 'default':
-                    section = 'default'
+                    profile = 'default'
                     remaining = parts[1:]
                 else:
                     # [profile, profile_name, ...]
-                    section = profile_to_section(parts[1])
+                    profile = parts[1]
                     remaining = parts[2:]
                 varname = remaining[0]
                 if len(remaining) == 2:
                     value = {remaining[1]: value}
             elif parts[0] not in PREDEFINED_SECTION_NAMES:
                 if self._session.profile is not None:
-                    section = profile_to_section(self._session.profile)
+                    profile = self._session.profile
                 else:
                     profile_name = self._session.get_config_variable('profile')
                     if profile_name is not None:
-                        section = profile_name
+                        profile = profile_name
                 varname = parts[0]
                 if len(parts) == 2:
                     value = {parts[1]: value}
             elif len(parts) == 2:
                 # Otherwise it's something like "set preview.service true"
                 # of something in the [plugin] section.
-                section, varname = parts
-        config_filename = os.path.expanduser(
-            self._session.get_config_variable('config_file'))
-        updated_config = {'__section__': section, varname: value}
+                profile, varname = parts
+        config_filename = self._get_config_file('config_file')
         if varname in self._WRITE_TO_CREDS_FILE:
-            config_filename = os.path.expanduser(
-                self._session.get_config_variable('credentials_file'))
-            section_name = updated_config['__section__']
-            if section_name.startswith('profile '):
-                updated_config['__section__'] = section_name[8:]
+            # When writing to the creds file, the section is just the profile
+            section = profile
+            config_filename = self._get_config_file('credentials_file')
+        elif profile in PREDEFINED_SECTION_NAMES or profile == 'default':
+            section = profile
+        else:
+            section = profile_to_section(profile)
+        updated_config = {'__section__': section, varname: value}
         self._config_writer.update_config(updated_config, config_filename)

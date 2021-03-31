@@ -30,7 +30,7 @@ from awscli.customizations.s3.filters import create_filter
 from awscli.customizations.s3.s3handler import S3TransferHandlerFactory
 from awscli.customizations.s3.utils import find_bucket_key, AppendFilter, \
     find_dest_path_comp_key, human_readable_size, \
-    RequestParamsMapper, split_s3_bucket_key, block_s3_object_lambda
+    RequestParamsMapper, split_s3_bucket_key, block_unsupported_resources
 from awscli.customizations.utils import uni_print
 from awscli.customizations.s3.syncstrategy.base import MissingFileSync, \
     SizeAndLastModifiedSync, NeverSync
@@ -641,7 +641,7 @@ class WebsiteCommand(S3Command):
             path = path[5:]
         if path.endswith('/'):
             path = path[:-1]
-        block_s3_object_lambda(path)
+        block_unsupported_resources(path)
         return path
 
 

@@ -2,6 +2,37 @@
 CHANGELOG
 =========
 
+2.1.34
+======
+
+* api-change:``batch``: AWS Batch adds support for Amazon EFS File System
+* api-change:``lightsail``: - This release adds support for state detail for Amazon Lightsail container services.
+* api-change:``iotwireless``: Add Sidewalk support to APIs: GetWirelessDevice, ListWirelessDevices, GetWirelessDeviceStatistics. Add Gateway connection status in GetWirelessGatewayStatistics API.
+* api-change:``detective``: Added the ability to assign tag values to Detective behavior graphs. Tag values can be used for attribute-based access control, and for cost allocation for billing.
+* api-change:``directconnect``: This release adds MACsec support to AWS Direct Connect
+* api-change:``comprehend``: Support for customer managed KMS encryption of Comprehend custom models
+* api-change:``machinelearning``: Minor documentation updates and link updates.
+* bugfix:Configuration: Fixed an issue when using the aws configure set command to update profiles with a space in the profile name.
+* api-change:``cloudhsm``: Minor documentation and link updates.
+* api-change:``datapipeline``: Minor documentation updates and link updates.
+* api-change:``workmail``: This release adds support for mobile device access rules management in Amazon WorkMail.
+* api-change:``cloud9``: Add ImageId input parameter to CreateEnvironmentEC2 endpoint. New parameter enables creation of environments with different AMIs.
+* api-change:``ec2``: VPC Flow Logs Service adds a new API, GetFlowLogsIntegrationTemplate, which generates CloudFormation templates for Athena. For more info, see https://docs.aws.amazon.com/console/vpc/flow-logs/athena
+* api-change:``lex-models``: Lex now supports the ja-JP locale
+* api-change:``cloudformation``: 1. Added a new parameter RegionConcurrencyType in OperationPreferences. 2. Changed the name of AccountUrl to AccountsUrl in DeploymentTargets parameter.
+* api-change:``fms``: Added Firewall Manager policy support for AWS Route 53 Resolver DNS Firewall.
+* api-change:``lex-runtime``: Update lex-runtime command to latest version
+* api-change:``redshift``: Enable customers to share access to their Redshift clusters from other VPCs (including VPCs from other accounts).
+* api-change:``wafv2``: Added support for ScopeDownStatement for ManagedRuleGroups, Labels, LabelMatchStatement, and LoggingFilter. For more information on these features, see the AWS WAF Developer Guide.
+* api-change:``route53resolver``: Route 53 Resolver DNS Firewall is a firewall service that allows you to filter and regulate outbound DNS traffic for your VPCs.
+* api-change:``kendra``: AWS Kendra's ServiceNow data source now supports OAuth 2.0 authentication and knowledge article filtering via a ServiceNow query.
+* api-change:``transcribe``: Amazon Transcribe now supports creating custom language models in the following languages: British English (en-GB), Australian English (en-AU), Indian Hindi (hi-IN), and US Spanish (es-US).
+* api-change:``cognito-sync``: Minor documentation updates and link updates.
+* api-change:``iot``: Added ability to prefix search on attribute value for ListThings API.
+* api-change:``mediaconvert``: MediaConvert now supports HLS ingest, sidecar WebVTT ingest, Teletext color & style passthrough to TTML subtitles, TTML to WebVTT subtitle conversion with style, & DRC profiles in AC3 audio.
+* api-change:``pricing``: Minor documentation and link updates.
+
+
 2.1.33
 ======
 

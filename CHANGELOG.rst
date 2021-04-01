@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.19.43
+=======
+
+* api-change:``mediaconvert``: MediaConvert now supports HLS ingest, sidecar WebVTT ingest, Teletext color & style passthrough to TTML subtitles, TTML to WebVTT subtitle conversion with style, & DRC profiles in AC3 audio.
+* api-change:``wafv2``: Added support for ScopeDownStatement for ManagedRuleGroups, Labels, LabelMatchStatement, and LoggingFilter. For more information on these features, see the AWS WAF Developer Guide.
+* api-change:``lex-models``: Lex now supports the ja-JP locale
+* api-change:``kendra``: AWS Kendra's ServiceNow data source now supports OAuth 2.0 authentication and knowledge article filtering via a ServiceNow query.
+* api-change:``route53resolver``: Route 53 Resolver DNS Firewall is a firewall service that allows you to filter and regulate outbound DNS traffic for your VPCs.
+* bugfix:Configuration: Fixed an issue when using the aws configure set command to update profiles with a space in the profile name.
+* api-change:``fms``: Added Firewall Manager policy support for AWS Route 53 Resolver DNS Firewall.
+* api-change:``ec2``: VPC Flow Logs Service adds a new API, GetFlowLogsIntegrationTemplate, which generates CloudFormation templates for Athena. For more info, see https://docs.aws.amazon.com/console/vpc/flow-logs/athena
+* api-change:``lex-runtime``: Update lex-runtime command to latest version
+* api-change:``lightsail``: - This release adds support for state detail for Amazon Lightsail container services.
+
+
 1.19.42
 =======
 

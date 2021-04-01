@@ -23,63 +23,66 @@ Output::
         }
     }
 
-For more information, see `Creating a gateway endpoint <https://docs.aws.amazon.com/vpc/latest/userguide/vpce-gateway.html#create-gateway-endpoint>`__ in the *Amazon VPC User Guide*.
+For more information, see `Creating a gateway endpoint <https://docs.aws.amazon.com/vpc/latest/privatelink/vpce-gateway.html#create-gateway-endpoint>`__ in the *AWSPrivateLink Guide*.
 
 **Example 2: To create an interface endpoint**
 
-The following ``create-vpc-endpoint`` example creates an interface VPC endpoint between VPC ``vpc-1a2b3c4d`` and Elastic Load Balancing in the ``us-east-1`` region. The command creates the endpoint in subnet ``subnet-7b16de0c`` and associates it with security group ``sg-1a2b3c4d``. ::
+The following ``create-vpc-endpoint`` example creates an interface VPC endpoint between VPC ``vpc-1a2b3c4d`` and Amazon S3 in the ``us-east-1`` region. The command creates the endpoint in subnet ``subnet-1a2b3c4d``, associates it with security group ``sg-1a2b3c4d``, and adds a tag with a key of "Service" and a Value of "S3". ::
 
     aws ec2 create-vpc-endpoint \
         --vpc-id vpc-1a2b3c4d \
         --vpc-endpoint-type Interface \
-        --service-name com.amazonaws.us-east-1.elasticloadbalancing \
+        --service-name com.amazonaws.us-east-1.s3 \
         --subnet-id subnet-7b16de0c \
-        --security-group-id sg-1a2b3c4d
+        --security-group-id sg-1a2b3c4d \
+        --tag-specifications ResourceType=vpc-endpoint,Tags=[{Key=service,Value=S3}]
 
 Output::
 
     {
         "VpcEndpoint": {
-            "PolicyDocument": "{\n  \"Statement\": [\n    {\n      \"Action\": \"\*\", \n      \"Effect\": \"Allow\", \n      \"Principal\": \"\*\", \n      \"Resource\": \"\*\"\n    }\n  ]\n}",
+            "VpcEndpointId": "vpce-1a2b3c4d5e6f1a2b3",
+            "VpcEndpointType": "Interface",
             "VpcId": "vpc-1a2b3c4d",
-            "NetworkInterfaceIds": [
-                "eni-bf8aa46b"
-            ],
-            "SubnetIds": [
-                "subnet-7b16de0c"
-            ],
-            "PrivateDnsEnabled": true,
+            "ServiceName": "com.amazonaws.us-east-1.s3",
             "State": "pending",
-            "ServiceName": "com.amazonaws.us-east-1.elasticloadbalancing",
             "RouteTableIds": [],
+            "SubnetIds": [
+                "subnet-1a2b3c4d"
+            ],
             "Groups": [
                 {
-                    "GroupName": "default",
-                    "GroupId": "sg-1a2b3c4d"
+                    "GroupId": "sg-1a2b3c4d",
+                    "GroupName": "default"
                 }
             ],
-            "VpcEndpointId": "vpce-088d25a4bbEXAMPLE",
-            "VpcEndpointType": "Interface",
-            "CreationTimestamp": "2017-09-05T20:14:41.240Z",
+            "PrivateDnsEnabled": false,
+            "RequesterManaged": false,
+            "NetworkInterfaceIds": [
+                "eni-0b16f0581c8ac6877"
+            ],
             "DnsEntries": [
                 {
-                    "HostedZoneId": "Z7HUB22UULQXV",
-                    "DnsName": "vpce-088d25a4bbf4a7e66-ks83awe7.elasticloadbalancing.us-east-1.vpce.amazonaws.com"
+                    "DnsName": "*.vpce-1a2b3c4d5e6f1a2b3-9hnenorg.s3.us-east-1.vpce.amazonaws.com",
+                    "HostedZoneId": "Z7HUB22UULQXV"
                 },
                 {
-                    "HostedZoneId": "Z7HUB22UULQXV",
-                    "DnsName": "vpce-088d25a4bbf4a7e66-ks83awe7-us-east-1a.elasticloadbalancing.us-east-1.vpce.amazonaws.com"
-                },
+                    "DnsName": "*.vpce-1a2b3c4d5e6f1a2b3-9hnenorg-us-east-1c.s3.us-east-1.vpce.amazonaws.com",
+                    "HostedZoneId": "Z7HUB22UULQXV"
+                }
+            ],
+            "CreationTimestamp": "2021-03-05T14:46:16.030000+00:00",
+            "Tags": [
                 {
-                    "HostedZoneId": "Z1K56Z6FNPJRR",
-                    "DnsName": "elasticloadbalancing.us-east-1.amazonaws.com"
+                    "Key": "service",
+                    "Value": "S3"
                 }
             ],
             "OwnerId": "123456789012"
         }
     }
 
-For more information, see `Creating an interface endpoint <https://docs.aws.amazon.com/vpc/latest/userguide/vpce-interface.html#create-interface-endpoint>`__ in the *Amazon VPC User Guide*.
+For more information, see `Creating an interface endpoint <https://docs.aws.amazon.com/vpc/latest/privatelink/vpce-interface.html#create-interface-endpoint>`__ in the *User Guide for AWSPrivateLink*.
 
 **Example 3: To create a Gateway Load Balancer endpoint**
 
@@ -112,4 +115,4 @@ Output::
         }
     }
 
-For more information, see `Gateway Load Balancer endpoints <https://docs.aws.amazon.com/vpc/latest/userguide/vpce-gateway-load-balancer.html>`__ in the *Amazon VPC User Guide*.
+For more information, see `Gateway Load Balancer endpoints <https://docs.aws.amazon.com/vpc/latest/privatelink/vpce-gateway-load-balancer.html>`__ in the *User Guide for AWSPrivateLink*.

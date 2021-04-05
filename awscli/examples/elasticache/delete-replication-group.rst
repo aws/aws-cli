@@ -1,8 +1,8 @@
 **To delete a replication group**
 
-The following ``delete-replication-group`` example deletes the specified replication group. By default, this operation deletes the entire replication group, including the primary or primaries and all of the read replicas. If the replication group has only one primary, you can optionally delete only the read replicas, while keeping the primary by setting ``--retain-primary-cluster``.
+The following ``delete-replication-group`` example deletes an existing replication group. By default, this operation deletes the entire replication group, including the primary/primaries and all of the read replicas. If the replication group has only one primary, you can optionally delete only the read replicas, while retaining the primary by setting RetainPrimaryCluster=true .
 
-When you get a successful response from this operation, Amazon ElastiCache immediately begins deleting the selected resources; you can't cancel or revert this operation. This operation is valid for Redis only.
+When you receive a successful response from this operation, Amazon ElastiCache immediately begins deleting the selected resources; you cannot cancel or revert this operation. Valid for Redis only. ::
 
     aws elasticache delete-replication-group \
         --replication-group-id "mygroup" 
@@ -22,5 +22,3 @@ Output::
             "AtRestEncryptionEnabled": false
         }
     }
-
-For more information, see `Deleting a Replication Group <https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Replication.DeletingRepGroup.html>`__ in the *Elasticache User Guide*.

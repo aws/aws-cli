@@ -3,7 +3,7 @@
 The following ``list-repositories-for-approval-rule-template`` example lists all repositories associated with the specified approval rule template. ::
 
     aws codecommit list-repositories-for-approval-rule-template \
-        --approval-rule-template-name 2-approver-rule-for-master
+        --approval-rule-template-name 2-approver-rule-for-main
 
 Output::
 

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.19.45
+=======
+
+* api-change:``medialive``: MediaLive now support HTML5 Motion Graphics overlay
+* api-change:``auditmanager``: AWS Audit Manager has updated the GetAssessment API operation to include a new response field called userRole. The userRole field indicates the role information and IAM ARN of the API caller.
+* api-change:``appflow``: Added destination properties for Zendesk.
+
+
 1.19.44
 =======
 

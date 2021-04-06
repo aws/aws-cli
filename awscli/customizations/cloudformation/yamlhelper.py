@@ -80,12 +80,6 @@ def _dict_constructor(loader, node):
     return OrderedDict(loader.construct_pairs(node))
 
 
-class SafeLoaderWrapper(yaml.SafeLoader):
-    """Isolated safe loader to allow for customizations without global changes.
-    """
-
-    pass
-
 def yaml_parse(yamlstr):
     """Parse a yaml string"""
     try:
@@ -94,11 +88,10 @@ def yaml_parse(yamlstr):
         # json parser.
         return json.loads(yamlstr, object_pairs_hook=OrderedDict)
     except ValueError:
-        loader = SafeLoaderWrapper
-        loader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, 
-                               _dict_constructor)
-        loader.add_multi_constructor("!", intrinsics_multi_constructor)
-        return yaml.load(yamlstr, loader)
+        yaml.SafeLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _dict_constructor)
+        yaml.SafeLoader.add_multi_constructor(
+            "!", intrinsics_multi_constructor)
+        return yaml.safe_load(yamlstr)
 
 
 class FlattenAliasDumper(yaml.SafeDumper):

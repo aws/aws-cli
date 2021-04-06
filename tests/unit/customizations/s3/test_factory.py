@@ -103,6 +103,15 @@ class TestTransferManagerFactory(unittest.TestCase):
     def get_runtime_config(self, **kwargs):
         return RuntimeConfig().build_config(**kwargs)
 
+    def assert_uses_client_tls_context_options(
+            self, mock_crt_client, mock_client_tls_context_options):
+        mock_connection_options = mock_client_tls_context_options. \
+            return_value.new_connection_options.return_value
+        self.assertIs(
+            mock_crt_client.call_args[1]['tls_connection_options'],
+            mock_connection_options
+        )
+
     def assert_is_default_manager(self, manager):
         self.assertIsInstance(manager, TransferManager)
 
@@ -256,9 +265,10 @@ class TestTransferManagerFactory(unittest.TestCase):
             mock_crt_client.call_args[1]['credential_provider']
         )
 
+    @mock.patch('s3transfer.crt.S3Client')
     @mock.patch('s3transfer.crt.ClientTlsContext')
     def test_use_verify_ssl_parameter_for_crt_manager(
-            self, mock_client_tls_context_options):
+            self, mock_client_tls_context_options, mock_crt_client):
         self.runtime_config = self.get_runtime_config(
             preferred_transfer_client='crt')
         fake_ca_contents = b"fake ca content"
@@ -270,11 +280,14 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.assert_is_crt_manager(transfer_manager)
         tls_context_options = mock_client_tls_context_options.call_args[0][0]
         self.assertEqual(tls_context_options.ca_buffer,
-                         bytes(fake_ca_contents, 'utf-8'))
+                         fake_ca_contents)
+        self.assert_uses_client_tls_context_options(
+            mock_crt_client, mock_client_tls_context_options)
 
+    @mock.patch('s3transfer.crt.S3Client')
     @mock.patch('s3transfer.crt.ClientTlsContext')
     def test_use_verify_ssl_parameter_none_for_crt_manager(
-            self, mock_client_tls_context_options):
+            self, mock_client_tls_context_options, mock_crt_client):
         self.runtime_config = self.get_runtime_config(
             preferred_transfer_client='crt')
         self.params['verify_ssl'] = None
@@ -285,10 +298,13 @@ class TestTransferManagerFactory(unittest.TestCase):
         with open(DEFAULT_CA_BUNDLE, mode='rb') as fh:
             contents = fh.read()
             self.assertEqual(tls_context_options.ca_buffer, contents)
+        self.assert_uses_client_tls_context_options(
+            mock_crt_client, mock_client_tls_context_options)
 
+    @mock.patch('s3transfer.crt.S3Client')
     @mock.patch('s3transfer.crt.ClientTlsContext')
     def test_use_verify_ssl_parameter_false_for_crt_manager(
-            self, mock_client_tls_context_options):
+            self, mock_client_tls_context_options, mock_crt_client):
         self.runtime_config = self.get_runtime_config(
             preferred_transfer_client='crt')
         self.params['verify_ssl'] = False
@@ -297,3 +313,20 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.assert_is_crt_manager(transfer_manager)
         tls_context_options = mock_client_tls_context_options.call_args[0][0]
         self.assertFalse(tls_context_options.verify_peer)
+        self.assert_uses_client_tls_context_options(
+            mock_crt_client, mock_client_tls_context_options)
+
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_target_bandwidth_configure_for_crt_manager(
+            self, mock_crt_client):
+        GB = 1024 ** 3
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt',
+            target_bandwidth=1*GB)
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config)
+        self.assert_is_crt_manager(transfer_manager)
+        self.assertEqual(
+            mock_crt_client.call_args[1]['throughput_target_gbps'],
+            8
+        )

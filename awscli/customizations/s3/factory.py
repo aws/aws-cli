@@ -61,7 +61,7 @@ class TransferManagerFactory:
         client_type = self._compute_transfer_client_type(
             params, runtime_config)
         if client_type == constants.CRT_TRANSFER_CLIENT:
-            return self._create_crt_transfer_manager(params)
+            return self._create_crt_transfer_manager(params, runtime_config)
         else:
             return self._create_default_transfer_manager(
                 params, runtime_config, botocore_client)
@@ -74,16 +74,19 @@ class TransferManagerFactory:
         return runtime_config.get(
             'preferred_transfer_client', constants.DEFAULT_TRANSFER_CLIENT)
 
-    def _create_crt_transfer_manager(self, params):
+    def _create_crt_transfer_manager(self, params, runtime_config):
         return CRTTransferManager(
-            self._create_crt_client(params),
+            self._create_crt_client(params, runtime_config),
             self._create_crt_request_serializer(params)
         )
 
-    def _create_crt_client(self, params):
+    def _create_crt_client(self, params, runtime_config):
         create_crt_client_kwargs = {
             'region': self._resolve_region(params)
         }
+        target_throughput = runtime_config.get('target_bandwidth', None)
+        if target_throughput:
+            create_crt_client_kwargs['target_throughput'] = target_throughput
         if params.get('sign_request', True):
             create_crt_client_kwargs[
                 'botocore_credential_provider'] = self._session.get_component(

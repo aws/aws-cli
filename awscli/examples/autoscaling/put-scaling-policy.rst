@@ -1,18 +1,19 @@
-**To add a scaling policy to an Auto Scaling group**
+**To add a target tracking scaling policy to an Auto Scaling group**
 
-The following put-scaling-policy example applies a target tracking scaling policy to the specified Auto Scaling group. The output contains the ARNs and names of the two CloudWatch alarms created on your behalf. ::
+The following ``put-scaling-policy`` example applies a target tracking scaling policy to the specified Auto Scaling group. The output contains the ARNs and names of the two CloudWatch alarms created on your behalf. If a scaling policy with the same name already exists, it will be overwritten by the new scaling policy. ::
 
-    aws autoscaling put-scaling-policy --policy-name alb1000-target-tracking-scaling-policy \
-    --auto-scaling-group-name my-asg --policy-type TargetTrackingScaling \
-    --target-tracking-configuration file://config.json
+    aws autoscaling put-scaling-policy --auto-scaling-group-name my-asg \
+      --policy-name alb1000-target-tracking-scaling-policy \
+      --policy-type TargetTrackingScaling \
+      --target-tracking-configuration file://config.json
 
-This example assumes that you have a `config.json` file in the current directory with the following contents::
+Contents of ``config.json``::
 
     {
          "TargetValue": 1000.0,
          "PredefinedMetricSpecification": {
               "PredefinedMetricType": "ALBRequestCountPerTarget",
-              "ResourceLabel": "app/EC2Co-EcsEl-1TKLTMITMM0EO/f37c06a68c1748aa/targetgroup/EC2Co-Defau-LDNM7Q3ZH1ZN/6d4ea56ca2d6a18d"
+              "ResourceLabel": "app/my-alb/778d41231b141a0f/targetgroup/my-alb-target-group/943f017f100becff"
          }
     }
 
@@ -32,6 +33,4 @@ Output::
         ]
     }
 
-For more information, see `Example Scaling Policies for the AWS Command Line Interface (AWS CLI)`_ in the *Amazon EC2 Auto Scaling User Guide*.
-
-.. _`Example Scaling Policies for the AWS Command Line Interface (AWS CLI)`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/examples-scaling-policies.html
+For more examples, see `Example scaling policies for the AWS Command Line Interface (AWS CLI) <https://docs.aws.amazon.com/autoscaling/ec2/userguide/examples-scaling-policies.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

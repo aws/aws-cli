@@ -1,10 +1,10 @@
-**To describe termination policy types**
+**To describe available termination policy types**
 
-This example describes the available termination policy types::
+This example describes the available termination policy types. ::
 
     aws autoscaling describe-termination-policy-types
 
-The following is example output::
+Output::
 
     {
         "TerminationPolicyTypes": [
@@ -18,6 +18,5 @@ The following is example output::
         ]
     }
 
-For more information, see `Controlling Which Instances Auto Scaling Terminates During Scale In`_ in the *Amazon EC2 Auto Scaling User Guide*.
+For more information, see `Controlling which Auto Scaling instances terminate during scale in <https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-termination.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
 
-.. _`Controlling Which Instances Auto Scaling Terminates During Scale In`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-termination.html

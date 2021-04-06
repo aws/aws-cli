@@ -1,13 +1,23 @@
-**To enable metrics collection for an Auto Scaling group**
+**Example 1: To enable metrics collection for an Auto Scaling group**
 
-This example enables data collection for the specified Auto Scaling group::
+This example enables data collection for the specified Auto Scaling group. ::
 
-    aws autoscaling enable-metrics-collection --auto-scaling-group-name my-auto-scaling-group --granularity "1Minute"
+    aws autoscaling enable-metrics-collection \
+        --auto-scaling-group-name my-asg \
+        --granularity "1Minute"
 
-To collect data for a specific metric, use the ``metrics`` parameter::
+This command produces no output.
 
-    aws autoscaling enable-metrics-collection --auto-scaling-group-name my-auto-scaling-group --metrics GroupDesiredCapacity --granularity "1Minute"
+For more information, see `Monitoring CloudWatch metrics for your Auto Scaling groups and instances <https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-monitoring.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
 
-For more information, see `Monitoring Your Auto Scaling Groups and Instances Using Amazon CloudWatch`_ in the *Amazon EC2 Auto Scaling User Guide*.
+**Example 2: To collect data for the scpecified metric for an Auto Scaling group**
 
-.. _`Monitoring Your Auto Scaling Groups and Instances Using Amazon CloudWatch`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-monitoring.html
+To collect data for a specific metric, use the ``--metrics`` option. ::
+
+    aws autoscaling enable-metrics-collection \
+        --auto-scaling-group-name my-asg \
+        --metrics GroupDesiredCapacity --granularity "1Minute"
+
+This command produces no output.
+
+For more information, see `Monitoring CloudWatch metrics for your Auto Scaling groups and instances <https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-monitoring.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

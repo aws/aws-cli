@@ -1,6 +1,6 @@
 **To view comments for a pull request**
 
-This example demonstrates how to view comments for a pull request in a repository named 'MyDemoRepo'. ::
+This example demonstrates how to view comments for a pull request in a repository named ``MyDemoRepo``. ::
 
     aws codecommit get-comments-for-pull-request \
         --repository-name MyDemoRepo \
@@ -24,7 +24,13 @@ Output::
                         "content": "These don't appear to be used anywhere. Can we remove them?",
                         "creationDate": 1508369622.123,
                         "deleted": false,
-                        "lastModifiedDate": 1508369622.123
+                        "lastModifiedDate": 1508369622.123,
+                        "callerReactions": [],
+                        "reactionCounts": 
+                        {
+                            "THUMBSUP" : 6,
+                            "CONFUSED" : 1
+                        }
                     },
                     {
                         "authorArn": "arn:aws:iam::111111111111:user/Li_Juan",
@@ -33,8 +39,12 @@ Output::
                         "content": "Good catch. I'll remove them.",
                         "creationDate": 1508369829.104,
                         "deleted": false,
-                        "commentId": "abcd1234EXAMPLEb5678efgh",
-                        "lastModifiedDate": 150836912.273
+                        "lastModifiedDate": 150836912.273,
+                        "callerReactions": ["THUMBSUP"]
+                        "reactionCounts": 
+                        {
+                            "THUMBSUP" : 14
+                        }
                     }
                 ],
                 "location": { 

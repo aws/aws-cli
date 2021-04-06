@@ -456,6 +456,10 @@ class CLIDriver(object):
             HISTORY_RECORDER.record('CLI_ARGUMENTS', args, 'CLI')
             return command_table[parsed_args.command](remaining, parsed_args)
         except BaseException as e:
+            # when --version action executed default argparser prints out
+            # version string and calls sys.exit(0)
+            if isinstance(e, SystemExit) and e.code == 0:
+                return e.code
             LOG.debug("Exception caught in main()", exc_info=True)
             return self._error_handler.handle_exception(
                 e,

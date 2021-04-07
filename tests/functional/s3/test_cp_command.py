@@ -762,6 +762,58 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertIn('upload failed', stderr)
         self.assertIn('warning: File has an invalid timestamp.', stderr)
 
+    def test_cp_copy_with_tagging(self):
+        self.parsed_responses = [
+            {'ContentLength': 5, 'LastModified': '00:00:00Z'},  # HeadObject
+            {}  # CopyObject
+        ]
+        cmdline = (
+            '%s s3://bucket/key1.txt s3://bucket/key2.txt '
+            '--tagging foo=bar' % self.prefix)
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 2)
+        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
+        self.assertDictEqual(
+            self.operations_called[1][1],
+            {
+                'Key': 'key2.txt',
+                'Bucket': 'bucket',
+                'CopySource': {
+                    'Bucket': 'bucket',
+                    'Key': 'key1.txt'
+                },
+                'Tagging': 'foo=bar',
+                'TaggingDirective': 'REPLACE'
+            }
+        )
+
+    def test_cp_copy_with_merge_tagging(self):
+        self.parsed_responses = [
+            {'ContentLength': 5, 'LastModified': '00:00:00Z'},  # HeadObject
+            {'TagSet': [{'Key': 'bar', 'Value': 'foo'}]},  # GetObjectTagging
+            {}  # CopyObject
+        ]
+        cmdline = (
+            '%s s3://bucket/key1.txt s3://bucket/key2.txt '
+            '--tagging foo=bar --merge-tagging' % self.prefix)
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 3)
+        self.assertEqual(self.operations_called[1][0].name, 'GetObjectTagging')
+        self.assertEqual(self.operations_called[2][0].name, 'CopyObject')
+        self.assertDictEqual(
+            self.operations_called[2][1],
+            {
+                'Key': 'key2.txt',
+                'Bucket': 'bucket',
+                'CopySource': {
+                    'Bucket': 'bucket',
+                    'Key': 'key1.txt'
+                },
+                'Tagging': 'bar=foo&foo=bar',
+                'TaggingDirective': 'REPLACE'
+            }
+        )
+
 
 class TestStreamingCPCommand(BaseAWSCommandParamsTest):
     def test_streaming_upload(self):
@@ -1130,7 +1182,8 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_in_operations_called(
             self.create_mpu_request('mybucket', 'mykey',
-                                    RequestPayer='requester')
+                                    RequestPayer='requester',
+                                    Tagging='')
         )
         self.assert_in_operations_called(
             ('GetObjectTagging', {'Bucket': 'sourcebucket', 'Key': 'mykey',
@@ -1165,6 +1218,73 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
                                       'Value': 'value' * (2 * 1024)}]},
               'RequestPayer': 'requester'})
         )
+
+    def test_single_upload_with_tagging(self):
+        full_path = self.files.create_file('myfile', 'mycontent')
+        cmdline = (
+            '%s %s s3://mybucket/mykey --tagging foo=bar,bar=foo' % (
+                self.prefix, full_path
+            )
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('PutObject', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'Body': mock.ANY,
+                    'Tagging': 'foo=bar&bar=foo',
+                })
+            ]
+        )
+
+    def test_multipart_upload_with_tagging(self):
+        full_path = self.files.create_file('myfile', 'a' * 10 * (1024 ** 2))
+        cmdline = (
+            '%s %s s3://mybucket/mykey --tagging foo=bar,bar=foo' % (
+                self.prefix, full_path))
+
+        self.parsed_responses = [
+            {'UploadId': 'myid'},      # CreateMultipartUpload
+            {'ETag': '"myetag"'},      # UploadPart
+            {'ETag': '"myetag"'},      # UploadPart
+            {}                         # CompleteMultipartUpload
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('CreateMultipartUpload', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'Tagging': 'foo=bar&bar=foo'
+                }),
+                ('UploadPart', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'UploadId': 'myid',
+                    'PartNumber': mock.ANY,
+                    'Body': mock.ANY,
+                }),
+                ('UploadPart', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'UploadId': 'myid',
+                    'PartNumber': mock.ANY,
+                    'Body': mock.ANY,
+
+                }),
+                ('CompleteMultipartUpload', {
+                    'Bucket': 'mybucket',
+                    'Key': 'mykey',
+                    'UploadId': 'myid',
+                    'MultipartUpload': {'Parts': [
+                        {'ETag': '"myetag"', 'PartNumber': 1},
+                        {'ETag': '"myetag"', 'PartNumber': 2}]
+                    }
+                }),
+            ]
+        )
+
 
 
 class TestAccesspointCPCommand(BaseCPCommandTest):
@@ -1711,7 +1831,7 @@ class TestCopyPropsDefaultCpCommand(BaseCopyPropsCpCommandTest):
             self.get_object_tagging_response(tags={})
         ] + self.mp_copy_responses()
         self.run_cmd(cmdline, expected_rc=0)
-        self.assert_in_operations_called(self.create_mpu_request())
+        self.assert_in_operations_called(self.create_mpu_request(Tagging=''))
 
     def test_mp_copy_object_tags_exceed_2k(self):
         cmdline = self.get_s3_cp_copy_command(copy_props='default')

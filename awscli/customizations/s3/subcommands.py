@@ -459,6 +459,38 @@ REQUEST_PAYER = {
     )
 }
 
+
+TAGGING = {
+    'name': 'tagging', 'cli_type_name': 'map',
+    'schema': {
+        'type': 'map',
+        'key': {'type': 'string'},
+        'value': {'type': 'string'}
+    },
+    'help_text': (
+        'The tag-set must be provided as a key-value pair '
+        '(e.g. "Key1=Value1,Key2=Value2"). ``--tagging-directive`` option '
+        'defines merge strategy of the ``--tagging`` value and the original '
+        'object tag-set.'
+    )
+}
+
+
+MERGE_TAGGING = {
+    'name': 'merge-tagging', 'action': 'store_true',
+    'help_text': (
+        'The strategy for merging original object tag-set and ``--tagging`` '
+        'option value into the destination object tag-set. '
+        'This option must be used in conjunction with ``--tagging``.'
+        'If set merges original object tag-set with ``--tagging`` '
+        'option value and set result as the destination object '
+        'tag-set. Otherwise sets destination object tag-set '
+        'equal to ``--tagging`` option value. May require additional '
+        '``GetObjectTagging``, and``PutObjectTagging`` API calls.'
+    )
+}
+
+
 TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
                  SSE, SSE_C, SSE_C_KEY, SSE_KMS_KEY_ID, SSE_C_COPY_SOURCE,
@@ -775,7 +807,7 @@ class CpCommand(S3TransferCommand):
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
                 [METADATA, COPY_PROPS, METADATA_DIRECTIVE, EXPECTED_SIZE,
-                 RECURSIVE]
+                 RECURSIVE, TAGGING, MERGE_TAGGING]
 
 
 class MvCommand(S3TransferCommand):
@@ -786,7 +818,8 @@ class MvCommand(S3TransferCommand):
             "or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS +\
-                [METADATA, COPY_PROPS, METADATA_DIRECTIVE, RECURSIVE]
+                [METADATA, COPY_PROPS, METADATA_DIRECTIVE, RECURSIVE,
+                 TAGGING, MERGE_TAGGING]
 
 
 class RmCommand(S3TransferCommand):
@@ -808,7 +841,8 @@ class SyncCommand(S3TransferCommand):
             "<LocalPath> or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
-                [METADATA, COPY_PROPS, METADATA_DIRECTIVE]
+                [METADATA, COPY_PROPS, METADATA_DIRECTIVE,
+                 TAGGING, MERGE_TAGGING]
 
 
 class MbCommand(S3Command):

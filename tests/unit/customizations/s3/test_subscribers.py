@@ -34,7 +34,7 @@ from awscli.customizations.s3.subscribers import (
     DeleteCopySourceObjectSubscriber, CreateDirectoryError,
     CopyPropsSubscriberFactory, ReplaceMetadataDirectiveSubscriber,
     ReplaceTaggingDirectiveSubscriber, SetMetadataDirectivePropsSubscriber,
-    SetTagsSubscriber
+    SetTagsSubscriber, SetMultipartTagsSubscriber
 )
 from awscli.customizations.s3.results import WarningResult
 from tests.unit.customizations.s3 import FakeTransferFuture
@@ -394,7 +394,18 @@ class TestCopyPropsSubscriberFactory(BaseCopyPropsSubscriberTest):
             subscribers,
             [
                 SetMetadataDirectivePropsSubscriber,
-                SetTagsSubscriber,
+                SetMultipartTagsSubscriber,
+            ]
+        )
+
+    def test_get_subscribers_for_copy_props_default_with_tagging(self):
+        self.set_copy_props('default')
+        self.cli_params['tagging'] = {'Key': 'Value'}
+        subscribers = self.factory.get_subscribers(self.fileinfo)
+        self.assert_subscriber_classes(
+            subscribers,
+            [
+                SetMetadataDirectivePropsSubscriber,
             ]
         )
 
@@ -589,10 +600,10 @@ class PutObjectTaggingException(Exception):
     pass
 
 
-class TestSetTagsSubscriber(BaseCopyPropsSubscriberTest):
+class TestSetMultipartTagsSubscriber(BaseCopyPropsSubscriberTest):
     def setUp(self):
-        super(TestSetTagsSubscriber, self).setUp()
-        self.subscriber = SetTagsSubscriber(
+        super(TestSetMultipartTagsSubscriber, self).setUp()
+        self.subscriber = SetMultipartTagsSubscriber(
             client=self.client,
             transfer_config=self.transfer_config,
             cli_params=self.cli_params,
@@ -632,14 +643,14 @@ class TestSetTagsSubscriber(BaseCopyPropsSubscriberTest):
         )
         self.assert_extra_args(self.future, {'Tagging': self.url_encoded_tags})
 
-    def test_does_not_set_tags_if_not_present(self):
+    def test_sets_empty_tags_if_tags_not_present(self):
         self.set_size_for_mp_copy(self.future)
         self.client.get_object_tagging.return_value = {'TagSet': []}
         self.subscriber.on_queued(self.future)
         self.client.get_object_tagging.assert_called_with(
             Bucket=self.source_bucket, Key=self.source_key
         )
-        self.assert_extra_args(self.future, {})
+        self.assert_extra_args(self.future, {'Tagging': ''})
 
     def test_sets_tags_using_put_object_tagging_if_over_size_limit(self):
         self.set_size_for_mp_copy(self.future)
@@ -699,4 +710,87 @@ class TestSetTagsSubscriber(BaseCopyPropsSubscriberTest):
 
         self.client.delete_object.assert_called_once_with(
             Bucket=self.bucket, Key=self.key, RequestPayer='requester'
+        )
+
+
+class TestSetTagsSubscriber(BaseCopyPropsSubscriberTest):
+    def setUp(self):
+        super(TestSetTagsSubscriber, self).setUp()
+        self.cli_params['tagging'] = {'Key1': 'Value1'}
+        self.subscriber = SetTagsSubscriber(
+            client=self.client,
+            transfer_config=self.transfer_config,
+            cli_params=self.cli_params,
+        )
+        self.tagging_response = {
+            'TagSet': [
+                {
+                    'Key': 'tag1',
+                    'Value': 'val1'
+                },
+                {
+                    'Key': 'tag2',
+                    'Value': 'val2'
+                },
+            ]
+        }
+
+    def test_set_tags_for_copy_object(self):
+        self.subscriber.on_queued(self.future)
+        self.assertEqual(self.client.get_object_tagging.call_count, 0)
+        self.assert_extra_args(
+            self.future,
+            {'Tagging': 'Key1=Value1',
+             'TaggingDirective': 'REPLACE'}
+        )
+
+    def test_sets_tags_with_merge_strategy_wo_overlapping_tags(self):
+        self.cli_params['merge_tagging'] = True
+        self.subscriber = SetTagsSubscriber(
+            client=self.client,
+            transfer_config=self.transfer_config,
+            cli_params=self.cli_params,
+        )
+        self.client.get_object_tagging.return_value = self.tagging_response
+        self.subscriber.on_queued(self.future)
+        self.client.get_object_tagging.assert_called_with(
+            Bucket=self.source_bucket, Key=self.source_key
+        )
+        self.assert_extra_args(
+            self.future,
+           {'Tagging': 'tag1=val1&tag2=val2&Key1=Value1',
+            'TaggingDirective': 'REPLACE'})
+
+    def test_sets_tags_with_merge_strategy_and_overlapping_tags(self):
+        self.cli_params['merge_tagging'] = True
+        self.cli_params['tagging'] = {'tag1': 'Value1'}
+        self.subscriber = SetTagsSubscriber(
+            client=self.client,
+            transfer_config=self.transfer_config,
+            cli_params=self.cli_params,
+        )
+        self.client.get_object_tagging.return_value = self.tagging_response
+        self.subscriber.on_queued(self.future)
+        self.client.get_object_tagging.assert_called_with(
+            Bucket=self.source_bucket, Key=self.source_key
+        )
+        self.assert_extra_args(
+            self.future,
+           {'Tagging': 'tag1=Value1&tag2=val2',
+            'TaggingDirective': 'REPLACE'})
+
+    def test_sets_tags_using_put_object_tagging_if_over_size_limit(self):
+        self.cli_params['tagging'] = {'Key1': 'Value1' * (2 * 1024)}
+        self.subscriber = SetTagsSubscriber(
+            client=self.client,
+            transfer_config=self.transfer_config,
+            cli_params=self.cli_params,
+        )
+        self.subscriber.on_queued(self.future)
+        self.assert_extra_args(self.future, {'TaggingDirective': 'REPLACE'})
+        self.subscriber.on_done(self.future)
+        self.client.put_object_tagging.assert_called_with(
+            Bucket=self.bucket, Key=self.key,
+            Tagging={'TagSet': [{'Key': 'Key1',
+                                 'Value':'Value1' * (2 * 1024)}]},
         )

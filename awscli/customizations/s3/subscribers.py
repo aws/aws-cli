@@ -201,11 +201,14 @@ class CopyPropsSubscriberFactory(object):
         ]
 
     def _get_default_subscribers(self, fileinfo):
-        return [
+        subscribers = [
             self._create_metadata_directive_props_subscriber(fileinfo),
-            SetTagsSubscriber(
-                self._client, self._transfer_config, self._cli_params)
         ]
+        # if --tagging option set SetTagsSubscriber will handle tags copy
+        if self._cli_params.get('tagging') is None:
+            subscribers.append(SetMultipartTagsSubscriber(
+                self._client, self._transfer_config, self._cli_params))
+        return subscribers
 
     def _create_metadata_directive_props_subscriber(self, fileinfo):
         subscriber_kwargs = {
@@ -291,22 +294,20 @@ class SetMetadataDirectivePropsSubscriber(BaseSubscriber):
         return future.meta.size >= self._transfer_config.multipart_threshold
 
 
-class SetTagsSubscriber(OnDoneFilteredSubscriber):
+class BaseTagsSubscriber(OnDoneFilteredSubscriber):
     _MAX_TAGGING_HEADER_SIZE = 2 * 1024
 
-    def __init__(self, client, transfer_config, cli_params):
+    def __init__(self, client, transfer_config, cli_params, replace=True):
         self._client = client
         self._transfer_config = transfer_config
         self._cli_params = cli_params
+        self._replace = replace
 
     def on_queued(self, future, **kwargs):
-        # Tags only need to be set if the operation is a multipart copy
-        if not self._is_multipart_copy(future):
-            return
-        bucket, key = self._get_bucket_key_from_copy_source(future)
-        tags = self._get_tags(bucket, key)
-        if not tags:
-            return
+        raise NotImplementedError('on_queued()')
+
+    def _set_tags(self, future, tags, **extra_args):
+        future.meta.call_args.extra_args.update(extra_args)
         header_value = self._serialize_to_header_value(tags)
         if self._fits_in_tagging_header(header_value):
             future.meta.call_args.extra_args['Tagging'] = header_value
@@ -365,6 +366,36 @@ class SetTagsSubscriber(OnDoneFilteredSubscriber):
     def _serialize_to_header_value(self, tags):
         return percent_encode_sequence(
             [(tag['Key'], tag['Value']) for tag in tags])
+
+
+class SetTagsSubscriber(BaseTagsSubscriber):
+    def on_queued(self, future, **kwargs):
+        directive = 'default'
+        if self._cli_params.get('merge_tagging', False):
+            directive = 'merge'
+        tags = getattr(self, f'_{directive}_directive')(future)
+        extra_args = {}
+        if self._replace:
+            extra_args = {'TaggingDirective': 'REPLACE'}
+        self._set_tags(future, tags, **extra_args)
+
+    def _default_directive(self, future):
+        return [{"Key": key, "Value": value}
+                for key, value in self._cli_params['tagging'].items()]
+
+    def _merge_directive(self, future):
+        bucket, key = self._get_bucket_key_from_copy_source(future)
+        tags = {t['Key']: t['Value'] for t in self._get_tags(bucket, key)}
+        tags.update(self._cli_params['tagging'])
+        return [{"Key": key, "Value": value} for key, value in tags.items()]
+
+
+class SetMultipartTagsSubscriber(BaseTagsSubscriber):
+    def on_queued(self, future, **kwargs):
+        if self._is_multipart_copy(future):
+            bucket, key = self._get_bucket_key_from_copy_source(future)
+            tags = self._get_tags(bucket, key)
+            self._set_tags(future, tags)
 
     def _is_multipart_copy(self, future):
         return future.meta.size >= self._transfer_config.multipart_threshold

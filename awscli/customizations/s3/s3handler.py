@@ -40,7 +40,7 @@ from awscli.customizations.s3.subscribers import (
     ProvideLastModifiedTimeSubscriber,
     CopyPropsSubscriberFactory, DirectoryCreatorSubscriber,
     DeleteSourceFileSubscriber, DeleteSourceObjectSubscriber,
-    DeleteCopySourceObjectSubscriber
+    DeleteCopySourceObjectSubscriber, SetTagsSubscriber
 )
 from awscli.compat import get_binary_stdin
 
@@ -348,6 +348,11 @@ class UploadRequestSubmitter(BaseTransferRequestSubmitter):
             subscribers.append(ProvideUploadContentTypeSubscriber())
         if self._cli_params.get('is_move', False):
             subscribers.append(DeleteSourceFileSubscriber())
+        if self._cli_params.get('tagging') is not None:
+            subscribers.append(SetTagsSubscriber(
+                self._transfer_manager.client,
+                self._transfer_manager.config,
+                self._cli_params, replace=False))
 
     def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
         bucket, key = find_bucket_key(fileinfo.dest)
@@ -425,6 +430,11 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
         if self._cli_params.get('is_move', False):
             subscribers.append(DeleteCopySourceObjectSubscriber(
                 fileinfo.source_client))
+        if self._cli_params.get('tagging') is not None:
+            subscribers.append(SetTagsSubscriber(
+                self._transfer_manager.client,
+                self._transfer_manager.config,
+                self._cli_params))
 
     def _add_copy_props_subscribers(self, subscribers, fileinfo):
         copy_props_factory = CopyPropsSubscriberFactory(

@@ -3,6 +3,7 @@
 The following ``update-container-instances-state`` updates the state of the specified container instance to ``DRAINING`` which will remove it from the cluster is it registered to. ::
 
     aws ecs update-container-instances-state \
+        --cluster my-cluster \
         --container-instances 765936fadbdd46b5991a4bd70c2a43d4 \
         --status DRAINING
 

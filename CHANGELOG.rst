@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+2.1.36
+======
+
+* api-change:``ivs``: This release adds support for the Auto-Record to S3 feature. Amazon IVS now enables you to save your live video to Amazon S3.
+* api-change:``robomaker``: This release allows RoboMaker customers to specify custom tools to run with their simulation job
+* api-change:``lookoutequipment``: This release introduces support for Amazon Lookout for Equipment.
+* bugfix:``profile``: Fix bug in profile resolution order when AWS_PROFILE environment variable contains non-existing profile but `--profile` command line argument contains correct profile name
+* api-change:``kinesis-video-archived-media``: Documentation updates for archived.kinesisvideo
+* api-change:``autoscaling``: Amazon EC2 Auto Scaling announces Warm Pools that help applications to scale out faster by pre-initializing EC2 instances and save money by requiring fewer continuously running instances
+* api-change:``appstream``: This release provides support for image updates
+* api-change:``elasticache``: This release adds tagging support for all AWS ElastiCache resources except Global Replication Groups.
+* api-change:``storagegateway``: File Gateway APIs now support FSx for Windows as a cloud storage.
+* api-change:``accessanalyzer``: IAM Access Analyzer now analyzes your CloudTrail events to identify actions and services that have been used by an IAM entity (user or role) and generates an IAM policy that is based on that activity.
+* api-change:``ram``: Documentation updates for AWS RAM resource sharing
+* api-change:``mgn``: Add new service - Application Migration Service.
+* bugfix:``profile``: Fix bug in profile resolution order when AWS_PROFILE environment variable contains non-existing profile but `--profile` command line argument contains correct profile name
+* api-change:``customer-profiles``: Documentation updates for Put-Integration API
+
+
 2.1.35
 ======
 

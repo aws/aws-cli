@@ -26,6 +26,24 @@ from awscli.customizations.s3.utils import human_readable_size
 class UploadBuildCommand(BasicCommand):
     NAME = 'upload-build'
     DESCRIPTION = 'Upload a new build to AWS GameLift.'
+    TAGS_SCHEMA = {
+        "type": "array",
+        "items": {
+            "type": "object",
+            "properties": {
+                "Key": {
+                    "description": "The tag key.",
+                    "type": "string",
+                    "required": True
+                },
+                "Value": {
+                    "description": "The tag value.",
+                    "type": "string",
+                    "required": True
+                }
+            }
+        }
+    }
     ARG_TABLE = [
         {'name': 'name', 'required': True,
          'help_text': 'The name of the build'},
@@ -35,7 +53,18 @@ class UploadBuildCommand(BasicCommand):
          'help_text':
          'The path to the directory containing the build to upload'},
         {'name': 'operating-system', 'required': False,
-         'help_text': 'The operating system the build runs on'}
+         'help_text': 'The operating system the build runs on'},
+	{
+            'name': 'tags',
+            'synopsis': '--tags <value>',
+            'required': False,
+            'nargs': '+',
+            'schema': TAGS_SCHEMA,
+            'help_text': (
+                'Optional. The list of key/value pairs to tag'
+                'instance.'
+            )
+        }
     ]
 
     def _run_main(self, args, parsed_globals):
@@ -60,6 +89,18 @@ class UploadBuildCommand(BasicCommand):
         }
         if args.operating_system:
             create_build_kwargs['OperatingSystem'] = args.operating_system
+        if args.tags:
+            # Validate tags if available
+            if not validate_tags(args.tags):
+                sys.stderr.write(
+                    'A maximum of 50 tags may be provided each containing a '
+                    '"Key" property value between 1 and 128 UTF-8 Unicode '
+                    'characters and a "Value" property value between 0 and '
+                    '256 UTF-8 Unicode characters'
+                )
+
+                return 255
+            create_build_kwargs['Tags'] = args.tags
 
         response = gamelift_client.create_build(**create_build_kwargs)
         build_id = response['Build']['BuildId']
@@ -131,6 +172,17 @@ def validate_directory(source_root):
         if files:
             return True
     return False
+
+def validate_tags(tags):
+    if tags:
+        if len(tags) > 50:
+            return False
+        for tag in tags:
+            if len(tag['Key']) > 128:
+                return False
+            if len(tag['Value']) > 256:
+                return False
+    return True
 
 
 # TODO: Remove this class once available to CLI from s3transfer

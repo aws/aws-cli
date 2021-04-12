@@ -122,6 +122,226 @@ class TestUploadBuild(BaseAWSCommandParamsTest):
             stdout)
         self.assertIn('Build ID: myid', stdout)
 
+    def test_upload_build_with_tags_param(self):
+        self.files.create_file('tmpfile', 'Some contents')
+        cmdline = self.prefix
+        cmdline += ' --name mybuild --build-version myversion'
+        cmdline += ' --build-root %s' % self.files.rootdir
+        cmdline += ' --operating-system WINDOWS_2012'
+        cmdline += ' --tags Key=k1,Value=v1 Key=k2,Value=v2'
+
+        self.parsed_responses = [
+            {'Build': {'BuildId': 'myid'}},
+            {'StorageLocation': {
+                'Bucket': 'mybucket',
+                'Key': 'mykey'},
+             'UploadCredentials': {
+                'AccessKeyId': 'myaccesskey',
+                'SecretAccessKey': 'mysecretkey',
+                'SessionToken': 'mytoken'}},
+            {}
+        ]
+
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=0)
+
+        # First the build is created.
+        self.assertEqual(len(self.operations_called), 3)
+        self.assertEqual(self.operations_called[0][0].name, 'CreateBuild')
+        self.assertEqual(
+            self.operations_called[0][1],
+            {'Name': 'mybuild', 'Version': 'myversion',
+             'OperatingSystem': 'WINDOWS_2012',
+             'Tags': [{'Key': 'k1', 'Value': 'v1'}, {'Key': 'k2', 'Value': 'v2'}]}
+        )
+
+        # Second the credentials are requested.
+        self.assertEqual(
+            self.operations_called[1][0].name, 'RequestUploadCredentials')
+        self.assertEqual(
+            self.operations_called[1][1], {'BuildId': 'myid'})
+
+        # The build is then uploaded to S3.
+        self.assertEqual(self.operations_called[2][0].name, 'PutObject')
+        self.assertEqual(
+            self.operations_called[2][1],
+            {'Body': mock.ANY, 'Bucket': 'mybucket', 'Key': 'mykey'}
+        )
+
+        # Check the output of the command.
+        self.assertIn(
+            'Successfully uploaded %s to AWS GameLift' % self.files.rootdir,
+            stdout)
+        self.assertIn('Build ID: myid', stdout)
+
+    def test_upload_build_with_tags_missing_key(self):
+        self.files.create_file('tmpfile', 'Some contents')
+        cmdline = self.prefix
+        cmdline += ' --name mybuild --build-version myversion'
+        cmdline += ' --build-root %s' % self.files.rootdir
+        cmdline += ' --operating-system WINDOWS_2012'
+        cmdline += ' --tags Miss=k1,Value=v1 Key=k2,Value=v2'
+
+        self.parsed_responses = [
+            {'Build': {'BuildId': 'myid'}},
+            {'StorageLocation': {
+                'Bucket': 'mybucket',
+                'Key': 'mykey'},
+             'UploadCredentials': {
+                'AccessKeyId': 'myaccesskey',
+                'SecretAccessKey': 'mysecretkey',
+                'SessionToken': 'mytoken'}},
+            {}
+        ]
+
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=252)
+
+        self.assertIn(
+            'Missing required parameter in [0]: "Key"\n'
+            'Unknown parameter in [0]: "Miss", must be one of: Key, Value',
+            stderr)
+
+    def test_upload_build_with_tags_missing_value(self):
+        self.files.create_file('tmpfile', 'Some contents')
+        cmdline = self.prefix
+        cmdline += ' --name mybuild --build-version myversion'
+        cmdline += ' --build-root %s' % self.files.rootdir
+        cmdline += ' --operating-system WINDOWS_2012'
+        cmdline += ' --tags Key=k1,Miss=v1 Key=k2,Value=v2'
+
+        self.parsed_responses = [
+            {'Build': {'BuildId': 'myid'}},
+            {'StorageLocation': {
+                'Bucket': 'mybucket',
+                'Key': 'mykey'},
+             'UploadCredentials': {
+                'AccessKeyId': 'myaccesskey',
+                'SecretAccessKey': 'mysecretkey',
+                'SessionToken': 'mytoken'}},
+            {}
+        ]
+
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=252)
+
+        self.assertIn(
+            'Missing required parameter in [0]: "Value"\n'
+            'Unknown parameter in [0]: "Miss", must be one of: Key, Value',
+            stderr)
+
+    def test_upload_build_with_tags_empty_key(self):
+        self.files.create_file('tmpfile', 'Some contents')
+        cmdline = self.prefix
+        cmdline += ' --name mybuild --build-version myversion'
+        cmdline += ' --build-root %s' % self.files.rootdir
+        cmdline += ' --operating-system WINDOWS_2012'
+        cmdline += ' --tags Key=,Value=v1 Key=k2,Value=v2'
+
+        self.parsed_responses = [
+            {'Build': {'BuildId': 'myid'}},
+            {'StorageLocation': {
+                'Bucket': 'mybucket',
+                'Key': 'mykey'},
+             'UploadCredentials': {
+                'AccessKeyId': 'myaccesskey',
+                'SecretAccessKey': 'mysecretkey',
+                'SessionToken': 'mytoken'}},
+            {}
+        ]
+
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=252)
+
+        self.assertIn(
+            'Invalid length for parameter Tags[0].Key, value: 0, valid min '
+            'length: 1', stderr)
+
+    def test_upload_build_with_tags_long_key(self):
+        self.files.create_file('tmpfile', 'Some contents')
+        cmdline = self.prefix
+        cmdline += ' --name mybuild --build-version myversion'
+        cmdline += ' --build-root %s' % self.files.rootdir
+        cmdline += ' --operating-system WINDOWS_2012'
+        cmdline += ' --tags Key=' + ('k' * 129) + ',Value=v1 Key=k2,Value=v2'
+
+        self.parsed_responses = [
+            {'Build': {'BuildId': 'myid'}},
+            {'StorageLocation': {
+                'Bucket': 'mybucket',
+                'Key': 'mykey'},
+             'UploadCredentials': {
+                'AccessKeyId': 'myaccesskey',
+                'SecretAccessKey': 'mysecretkey',
+                'SessionToken': 'mytoken'}},
+            {}
+        ]
+
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+
+        self.assertIn(
+            'A maximum of 50 tags may be provided each containing a "Key" '
+            'property value between 1 and 128 UTF-8 Unicode characters and a '
+            '"Value" property value between 0 and 256 UTF-8 Unicode '
+            'characters', stderr)
+
+    def test_upload_build_with_tags_long_value(self):
+        self.files.create_file('tmpfile', 'Some contents')
+        cmdline = self.prefix
+        cmdline += ' --name mybuild --build-version myversion'
+        cmdline += ' --build-root %s' % self.files.rootdir
+        cmdline += ' --operating-system WINDOWS_2012'
+        cmdline += ' --tags Key=k1,Value=' + ('v' * 257) + ' Key=k2,Value=v2'
+
+        self.parsed_responses = [
+            {'Build': {'BuildId': 'myid'}},
+            {'StorageLocation': {
+                'Bucket': 'mybucket',
+                'Key': 'mykey'},
+             'UploadCredentials': {
+                'AccessKeyId': 'myaccesskey',
+                'SecretAccessKey': 'mysecretkey',
+                'SessionToken': 'mytoken'}},
+            {}
+        ]
+
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+
+        self.assertIn(
+            'A maximum of 50 tags may be provided each containing a "Key" '
+            'property value between 1 and 128 UTF-8 Unicode characters and a '
+            '"Value" property value between 0 and 256 UTF-8 Unicode '
+            'characters', stderr)
+
+    def test_upload_build_with_too_many_tags(self):
+        self.files.create_file('tmpfile', 'Some contents')
+
+        tags = [
+            'Key=k' + str(x) + ',Value=v' + str(x) for x in range(51)
+        ]
+
+        cmdline = self.prefix
+        cmdline += ' --name mybuild --build-version myversion'
+        cmdline += ' --build-root %s' % self.files.rootdir
+        cmdline += ' --operating-system WINDOWS_2012'
+        cmdline += ' --tags %s' % ' '.join(tags)
+
+        self.parsed_responses = [
+            {'Build': {'BuildId': 'myid'}},
+            {'StorageLocation': {
+                'Bucket': 'mybucket',
+                'Key': 'mykey'},
+             'UploadCredentials': {
+                'AccessKeyId': 'myaccesskey',
+                'SecretAccessKey': 'mysecretkey',
+                'SessionToken': 'mytoken'}},
+            {}
+        ]
+
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+
+        self.assertIn(
+            'A maximum of 50 tags may be provided each containing a "Key" '
+            'property value between 1 and 128 UTF-8 Unicode characters and a '
+            '"Value" property value between 0 and 256 UTF-8 Unicode '
+            'characters', stderr)
+
     def test_upload_build_with_empty_directory(self):
         cmdline = self.prefix
         cmdline += ' --name mybuild --build-version myversion'

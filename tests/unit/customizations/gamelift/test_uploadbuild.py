@@ -11,12 +11,15 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from argparse import Namespace
+from collections import OrderedDict
 import contextlib
+import json
 import os
 import zipfile
 
 from botocore.session import get_session
 from botocore.exceptions import ClientError
+from botocore.exceptions import ParamValidationError
 
 from awscli.compat import six
 from awscli.testutils import unittest, mock, FileCreator
@@ -140,6 +143,121 @@ class TestGetGameSessionLogCommand(unittest.TestCase):
         self.gamelift_client.create_build.assert_called_once_with(
             Name=self.build_name, Version=self.build_version,
             OperatingSystem=operating_system)
+
+    def test_upload_build_when_tags_are_provided(self):
+        operating_system = 'WINDOWS_2012'
+        self.file_creator.create_file('tmpfile', 'Some contents')
+        self.args = [
+            '--name', self.build_name, '--build-version', self.build_version,
+            '--build-root', self.build_root,
+            '--operating-system', operating_system,
+            '--tags', '[{"Key": "k1", "Value": "v1"}]'
+        ]
+        self.cmd(self.args, self.global_args)
+
+        # Ensure the GameLift client was called correctly.
+        self.gamelift_client.create_build.assert_called_once_with(
+            Name=self.build_name, Version=self.build_version,
+            OperatingSystem=operating_system,
+            Tags=[OrderedDict([('Key', 'k1'), ('Value', 'v1')])])
+
+    def test_upload_build_throws_on_invalid_tag_count(self):
+        operating_system = 'WINDOWS_2012'
+        self.file_creator.create_file('tmpfile', 'Some contents')
+        self.args = [
+            '--name', self.build_name, '--build-version', self.build_version,
+            '--build-root', self.build_root,
+            '--operating-system', operating_system,
+            '--tags', json.dumps([{
+                'Key': 'k' + str(x), 'Value': 'v' + str(x)
+                } for x in range(51)])
+        ]
+
+        with mock.patch('sys.stderr', six.StringIO()) as mock_stderr:
+            self.cmd(self.args, self.global_args)
+            self.assertEqual(
+                mock_stderr.getvalue(),
+                'A maximum of 50 tags may be provided each containing a '
+                '"Key" property value between 1 and 128 UTF-8 Unicode '
+                'characters and a "Value" property value between 0 and 256 '
+                'UTF-8 Unicode characters'
+            )
+
+    def test_upload_build_throws_on_missing_tag_key(self):
+        operating_system = 'WINDOWS_2012'
+        self.file_creator.create_file('tmpfile', 'Some contents')
+        self.args = [
+            '--name', self.build_name, '--build-version', self.build_version,
+            '--build-root', self.build_root,
+            '--operating-system', operating_system,
+            '--tags', json.dumps([{'Miss': 'k1', 'Value': 'v1'}])
+        ]
+
+        with self.assertRaises(ParamValidationError) as err:
+            self.cmd(self.args, self.global_args)
+
+        self.assertEquals(str(err.exception),
+            "Parameter validation failed:\n"
+            "Missing required parameter in [0]: \"Key\"\n"
+            "Unknown parameter in [0]: \"Miss\", must be one of: Key, Value")
+
+    def test_upload_build_throws_on_missing_tag_value(self):
+        operating_system = 'WINDOWS_2012'
+        self.file_creator.create_file('tmpfile', 'Some contents')
+        self.args = [
+            '--name', self.build_name, '--build-version', self.build_version,
+            '--build-root', self.build_root,
+            '--operating-system', operating_system,
+            '--tags', json.dumps([{'Key': 'k1', 'Miss': 'v1'}])
+        ]
+
+        with self.assertRaises(ParamValidationError) as err:
+            self.cmd(self.args, self.global_args)
+
+        self.assertEquals(str(err.exception),
+            "Parameter validation failed:\n"
+            "Missing required parameter in [0]: \"Value\"\n"
+            "Unknown parameter in [0]: \"Miss\", must be one of: Key, Value")
+
+    def test_upload_build_throws_on_long_tag_key_value(self):
+        operating_system = 'WINDOWS_2012'
+        self.file_creator.create_file('tmpfile', 'Some contents')
+        self.args = [
+            '--name', self.build_name, '--build-version', self.build_version,
+            '--build-root', self.build_root,
+            '--operating-system', operating_system,
+            '--tags', json.dumps([{'Key': 'k' * 129, 'Value': 'v1'}])
+        ]
+
+        with mock.patch('sys.stderr', six.StringIO()) as mock_stderr:
+            self.cmd(self.args, self.global_args)
+            self.assertEqual(
+                mock_stderr.getvalue(),
+                'A maximum of 50 tags may be provided each containing a '
+                '"Key" property value between 1 and 128 UTF-8 Unicode '
+                'characters and a "Value" property value between 0 and 256 '
+                'UTF-8 Unicode characters'
+            )
+
+    def test_upload_build_throws_on_long_tag_value_value(self):
+        operating_system = 'WINDOWS_2012'
+        self.file_creator.create_file('tmpfile', 'Some contents')
+        self.args = [
+            '--name', self.build_name, '--build-version', self.build_version,
+            '--build-root', self.build_root,
+            '--operating-system', operating_system,
+            '--tags', json.dumps([{'Key': 'k1', 'Value': 'v' * 257}])
+        ]
+
+        with mock.patch('sys.stderr', six.StringIO()) as mock_stderr:
+            self.cmd(self.args, self.global_args)
+            self.assertEqual(
+                mock_stderr.getvalue(),
+                'A maximum of 50 tags may be provided each containing a '
+                '"Key" property value between 1 and 128 UTF-8 Unicode '
+                'characters and a "Value" property value between 0 and 256 '
+                'UTF-8 Unicode characters'
+            )
 
     def test_error_message_when_directory_is_empty(self):
         with mock.patch('sys.stderr', six.StringIO()) as mock_stderr:

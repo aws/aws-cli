@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.19.50
+=======
+
+* api-change:``fsx``: Support for cross-region and cross-account backup copies
+* api-change:``codebuild``: AWS CodeBuild now allows you to set the access permissions for build artifacts, project artifacts, and log files that are uploaded to an Amazon S3 bucket that is owned by another account.
+
+
 1.19.49
 =======
 

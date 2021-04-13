@@ -185,13 +185,15 @@ max_bandwidth
 This controls the maximum bandwidth that the S3 commands will
 utilize when streaming content data to and from S3. Thus, this value only
 applies for uploads and downloads. It does not apply to copies nor deletes
-because those data transfers take place server side. The value is
-in terms of **bytes** per second. The value can be specified as:
+because those data transfers take place server side. The value can be
+specified as:
 
-* An integer. For example, ``1048576`` would set the maximum bandwidth usage
-  to 1 MB per second.
-* A rate suffix. You can specify rate suffixes using: ``KB/s``, ``MB/s``,
-  ``GB/s``, etc. For example: ``300KB/s``, ``10MB/s``.
+* An integer in terms of **bytes** per second. For example, ``1048576`` would
+  set the maximum bandwidth usage to 1 MB per second.
+* A rate suffix. This can be expressed in terms of either bytes per second
+  (``B/s``) or bits per second (``b/s``). You can specify rate suffixes
+  using: ``KB/s``, ``MB/s``, ``GB/s``, ``Kb/s``, ``Mb/s``, ``Gb/s`` etc.
+  For example: ``300KB/s``, ``10MB/s``, ``300Kb/s``, ``10Mb/s``.
 
 In general, it is recommended to first use ``max_concurrent_requests`` to lower
 transfers to the desired bandwidth consumption. The ``max_bandwidth`` setting

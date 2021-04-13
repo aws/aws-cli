@@ -330,3 +330,18 @@ class TestTransferManagerFactory(unittest.TestCase):
             mock_crt_client.call_args[1]['throughput_target_gbps'],
             8
         )
+
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_multipart_chunksize_configure_for_crt_manager(
+            self, mock_crt_client):
+        part_size = 16 * (1024**2)
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt',
+            multipart_chunksize=part_size)
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config)
+        self.assert_is_crt_manager(transfer_manager)
+        self.assertEqual(
+            mock_crt_client.call_args[1]['part_size'],
+            part_size
+        )

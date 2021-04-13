@@ -85,8 +85,11 @@ class TransferManagerFactory:
             'region': self._resolve_region(params)
         }
         target_throughput = runtime_config.get('target_bandwidth', None)
+        multipart_chunksize = runtime_config.get('multipart_chunksize', None)
         if target_throughput:
             create_crt_client_kwargs['target_throughput'] = target_throughput
+        if multipart_chunksize:
+            create_crt_client_kwargs['part_size'] = multipart_chunksize
         if params.get('sign_request', True):
             create_crt_client_kwargs[
                 'botocore_credential_provider'] = self._session.get_component(

@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.19.51
+=======
+
+* api-change:``sts``: This release adds the SourceIdentity parameter that can be set when assuming a role.
+* api-change:``redshift``: Added support to enable AQUA in Amazon Redshift clusters.
+* api-change:``comprehendmedical``: The InferICD10CM API now returns TIME_EXPRESSION entities that refer to medical conditions.
+* api-change:``lightsail``: Documentation updates for Amazon Lightsail.
+* api-change:``rds``: Clarify that enabling or disabling automated backups causes a brief downtime, not an outage.
+
+
 1.19.50
 =======
 

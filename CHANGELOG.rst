@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.19.52
+=======
+
+* api-change:``config``: Add exception for DeleteRemediationConfiguration and DescribeRemediationExecutionStatus
+* api-change:``mediaconnect``: For flows that use Listener protocols, you can now easily locate an output's outbound IP address for a private internet. Additionally, MediaConnect now supports the Waiters feature that makes it easier to poll for the status of a flow until it reaches its desired state.
+* api-change:``codestar-connections``: This release adds tagging support for CodeStar Connections Host resources
+* api-change:``route53``: Documentation updates for route53
+
+
 1.19.51
 =======
 

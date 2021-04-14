@@ -86,7 +86,7 @@ class TestClientFactory(unittest.TestCase):
 class TestTransferManagerFactory(unittest.TestCase):
     def setUp(self):
         self.session = mock.Mock(Session)
-        self.session.get_config_variable.return_value = 'var'
+        self.session.get_config_variable.return_value = None
         self.session.get_default_client_config.return_value = None
         self.factory = TransferManagerFactory(self.session)
         self.params = {
@@ -212,11 +212,12 @@ class TestTransferManagerFactory(unittest.TestCase):
             self, mock_crt_client):
         self.runtime_config = self.get_runtime_config(
             preferred_transfer_client='crt')
-        if 'region' in self.params:
-            self.params.pop('region')
+        params = {
+            'verify_ssl': DEFAULT_CA_BUNDLE
+        }
         self.session.get_config_variable.return_value = 'config-region'
         transfer_manager = self.factory.create_transfer_manager(
-            self.params, self.runtime_config)
+            params, self.runtime_config)
         self.assert_is_crt_manager(transfer_manager)
         self.assertEqual(
             mock_crt_client.call_args[1]['region'], 'config-region'
@@ -275,6 +276,25 @@ class TestTransferManagerFactory(unittest.TestCase):
         fake_ca_bundle = self.files.create_file(
             "fake_ca", fake_ca_contents, mode='wb')
         self.params['verify_ssl'] = fake_ca_bundle
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config)
+        self.assert_is_crt_manager(transfer_manager)
+        tls_context_options = mock_client_tls_context_options.call_args[0][0]
+        self.assertEqual(tls_context_options.ca_buffer,
+                         fake_ca_contents)
+        self.assert_uses_client_tls_context_options(
+            mock_crt_client, mock_client_tls_context_options)
+
+    @mock.patch('s3transfer.crt.S3Client')
+    @mock.patch('s3transfer.crt.ClientTlsContext')
+    def test_use_ca_bundle_from_session_for_crt_manager(
+            self, mock_client_tls_context_options, mock_crt_client):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt')
+        fake_ca_contents = b"fake ca content"
+        fake_ca_bundle = self.files.create_file(
+            "fake_ca", fake_ca_contents, mode='wb')
+        self.session.get_config_variable.return_value = fake_ca_bundle
         transfer_manager = self.factory.create_transfer_manager(
             self.params, self.runtime_config)
         self.assert_is_crt_manager(transfer_manager)

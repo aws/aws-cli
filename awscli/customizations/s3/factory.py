@@ -82,7 +82,8 @@ class TransferManagerFactory:
 
     def _create_crt_client(self, params, runtime_config):
         create_crt_client_kwargs = {
-            'region': self._resolve_region(params)
+            'region': self._resolve_region(params),
+            'verify': self._resolve_verify(params),
         }
         target_throughput = runtime_config.get('target_bandwidth', None)
         multipart_chunksize = runtime_config.get('multipart_chunksize', None)
@@ -94,10 +95,7 @@ class TransferManagerFactory:
             create_crt_client_kwargs[
                 'botocore_credential_provider'] = self._session.get_component(
                     'credential_provider')
-        verify = params.get('verify_ssl')
-        if verify is None:
-            verify = DEFAULT_CA_BUNDLE
-        create_crt_client_kwargs['verify'] = verify
+
         return create_s3_crt_client(**create_crt_client_kwargs)
 
     def _create_crt_request_serializer(self, params):
@@ -131,3 +129,11 @@ class TransferManagerFactory:
         if region is None:
             region = self._session.get_config_variable('region')
         return region
+
+    def _resolve_verify(self, params):
+        verify = params.get('verify_ssl')
+        if verify is None:
+            verify = self._session.get_config_variable('ca_bundle')
+        if verify is None:
+            verify = DEFAULT_CA_BUNDLE
+        return verify

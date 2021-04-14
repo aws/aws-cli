@@ -408,6 +408,9 @@ class BaseS3IntegrationTest:
         assert 'client error' not in p.stderr
         assert 'server error' not in p.stderr
 
+    def fail(self, msg=None):
+        raise Exception(msg)
+
 
 class TestMoveCommand(BaseS3IntegrationTest):
     def test_mv_local_to_s3(self, files, s3_utils, shared_bucket):
@@ -1853,6 +1856,76 @@ class TestIncludeExcludeFilters(BaseS3IntegrationTest):
         p = aws("s3 sync s3://%s/temp %s --exclude '*' --include test.txt"
                 % (shared_bucket, dir_name))
         self.assert_no_files_would_be_uploaded(p)
+
+
+class TestNoOverwriteFilter(BaseS3IntegrationTest):
+    def assert_skipped(self, p, files):
+        for filename in files:
+            assert '%s already exists' % filename in p.stdout
+
+    def assert_not_skipped(self, p, files):
+        for filename in files:
+            assert '%s already exists' % filename  not in p.stdout
+
+    def test_not_overwrite_s3_objects(self, files, s3_utils, shared_bucket):
+        files.create_file('foo.txt', 'contents')
+        p = aws("s3 cp %s s3://%s/ --recursive" %
+                (files.rootdir, shared_bucket))
+        assert s3_utils.key_exists(shared_bucket, key_name='foo.txt')
+        self.assert_no_errors(p)
+        files.create_file('bar.py', 'contents')
+        cwd = os.getcwd()
+        try:
+            os.chdir(files.rootdir)
+            p = aws("s3 cp . s3://%s --no-overwrite --recursive" %
+                    shared_bucket)
+        finally:
+            os.chdir(cwd)
+        self.assert_skipped(p, ['foo.txt'])
+        self.assert_not_skipped(p, ['bar.py'])
+        self.assert_no_errors(p)
+        assert s3_utils.key_exists(shared_bucket, key_name='bar.py')
+
+    def test_not_overwrite_local_objects(self, files, s3_utils, shared_bucket):
+        files.create_file('foo.txt', 'contents')
+        second = files.create_file('bar.py', 'contents')
+        p = aws("s3 cp %s s3://%s/ --recursive" %
+                (files.rootdir, shared_bucket))
+        assert s3_utils.key_exists(shared_bucket, key_name='foo.txt')
+        assert s3_utils.key_exists(shared_bucket, key_name='bar.py')
+        self.assert_no_errors(p)
+        os.remove(second)
+        cwd = os.getcwd()
+        try:
+            os.chdir(files.rootdir)
+            p = aws("s3 cp s3://%s .  --no-overwrite --recursive" %
+                    shared_bucket)
+        finally:
+            os.chdir(cwd)
+        self.assert_skipped(p, ['foo.txt'])
+        self.assert_not_skipped(p, ['bar.py'])
+        self.assert_no_errors(p)
+
+    def test_combine_not_overwrite_and_exclude_filter(
+                                self, files, s3_utils, shared_bucket):
+        files.create_file('foo.txt', 'contents')
+        files.create_file('bar.py', 'contents')
+        s3_utils.put_object(shared_bucket, key_name='temp/test')
+        p = aws("s3 cp %s s3://%s/ --recursive" %
+                (files.rootdir, shared_bucket))
+        self.assert_no_errors(p)
+        assert s3_utils.key_exists(shared_bucket, key_name='foo.txt')
+        assert s3_utils.key_exists(shared_bucket, key_name='bar.py')
+        cwd = os.getcwd()
+        try:
+            os.chdir(files.rootdir)
+            p = aws("s3 cp s3://%s .  --no-overwrite "
+                    "--recursive --exclude test" % shared_bucket)
+        finally:
+            os.chdir(cwd)
+        self.assert_no_errors(p)
+        self.assert_skipped(p, ['foo.txt', 'bar.py'])
+        assert 'copy:' not in p.stdout
 
 
 class TestFileWithSpaces(BaseS3IntegrationTest):

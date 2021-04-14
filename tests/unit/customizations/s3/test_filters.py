@@ -10,12 +10,16 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import io
 import os
-from awscli.testutils import unittest
+from awscli.testutils import unittest, mock
 import platform
 
+from botocore.exceptions import ClientError
 from awscli.customizations.s3.filegenerator import FileStat
-from awscli.customizations.s3.filters import Filter, create_filter
+from awscli.customizations.s3.filters import (
+    Filter, FilterRunner, NoOverwriteFilter
+)
 
 
 def platform_path(filepath):
@@ -26,7 +30,7 @@ def platform_path(filepath):
     return filepath
 
 
-class FiltersTest(unittest.TestCase):
+class BaseFilterTest(unittest.TestCase):
     def setUp(self):
         self.local_files = [
             self.file_stat('test.txt'),
@@ -51,7 +55,7 @@ class FiltersTest(unittest.TestCase):
                         dest_type=dest_type, operation_name='')
 
     def create_filter(self, filters=None, root=None, dst_root=None,
-                      parameters=None):
+                      parameters=None, client=None, out_file=None):
         if root is None:
             root = os.getcwd()
         if filters is None:
@@ -59,9 +63,11 @@ class FiltersTest(unittest.TestCase):
         if dst_root is None:
             dst_root = 'bucket'
         if parameters is not None:
-            return create_filter(parameters)
+            return FilterRunner(parameters, client, out_file)
         return Filter(filters, root, dst_root)
 
+
+class TestFilterRunner(BaseFilterTest):
     def test_no_filter(self):
         exc_inc_filter = self.create_filter()
         matched_files = list(exc_inc_filter.call(self.local_files))
@@ -213,8 +219,8 @@ class FiltersTest(unittest.TestCase):
                       'dest': 's3://' + destination}
         s3_filter = self.create_filter(parameters=parameters)
 
-        source_pattern = s3_filter.patterns[0][1]
-        destination_pattern = s3_filter.dst_patterns[0][1]
+        source_pattern = s3_filter.filters[0].patterns[0][1]
+        destination_pattern = s3_filter.filters[0].dst_patterns[0][1]
         self.assertEquals(source_pattern, source + pattern)
         self.assertEquals(destination_pattern, destination + pattern)
 
@@ -223,5 +229,92 @@ class FiltersTest(unittest.TestCase):
         for filtered_file in filtered:
             self.assertFalse('.txt' in filtered_file.src)
 
-if __name__ == "__main__":
-    unittest.main()
+
+class TestNoOverwriteFilter(BaseFilterTest):
+    def test_no_overwrite_filter_to_s3(self):
+        source = 'bucket/'
+        destination = 'bucket-2/'
+        parameters = {'no_overwrite': True,
+                      'src': 's3://' + source,
+                      'dest': 's3://' + destination}
+        client = mock.Mock()
+        s3_filter = self.create_filter(parameters=parameters, client=client)
+        self.assertIsInstance(s3_filter.filters[1], NoOverwriteFilter)
+
+        filtered = list(s3_filter.call(self.s3_files))
+        self.assertEquals(len(filtered), 0)
+        self.assertEqual(client.head_object.call_count, 3)
+
+        client.head_object.side_effect = ClientError(
+            {'Error': {'Code': '404'}}, 'head_object')
+        # code 404 means object does not exist and should be kept
+        filtered = list(s3_filter.call(self.s3_files))
+        self.assertEquals(len(filtered), 3)
+        self.assertEqual(client.head_object.call_count, 6)
+
+    @mock.patch('os.path.exists')
+    def test_no_overwrite_filter_to_local(self, exists):
+        source = 'bucket/'
+        destination = 'bucket-2/'
+        parameters = {'no_overwrite': True,
+                      'src': 's3://' + source,
+                      'dest': '/' + destination}
+        client = mock.Mock()
+        s3_filter = self.create_filter(parameters=parameters, client=client)
+        self.assertIsInstance(s3_filter.filters[1], NoOverwriteFilter)
+
+        filtered = list(s3_filter.call(self.s3_files))
+        self.assertEquals(len(filtered), 0)
+        self.assertEqual(client.head_object.call_count, 0)
+        self.assertEqual(exists.call_count, 3)
+
+    def test_no_overwrite_filter_to_s3_message(self):
+        stdout = io.StringIO()
+        source = 'bucket/'
+        destination = 'bucket-2/'
+        parameters = {'no_overwrite': True,
+                      'src': 's3://' + source,
+                      'dest': 's3://' + destination}
+        client = mock.Mock()
+        s3_filter = self.create_filter(
+            parameters=parameters, client=client, out_file=stdout)
+
+        list(s3_filter.call(self.s3_files))
+        self.assertIn('Object/file  already exists.\n', stdout.getvalue())
+
+        client.head_object.side_effect = ClientError(
+            {'Error': {'Code': '500'}}, 'head_object')
+
+        list(s3_filter.call(self.s3_files))
+        self.assertIn(
+            'skipped because of such head-'
+            'object response "An error occurred (500)',
+            stdout.getvalue()
+        )
+
+    @mock.patch('os.path.exists')
+    def test_no_overwrite_filter_to_local_message(self, exists):
+        stdout = io.StringIO()
+        source = 'bucket/'
+        destination = 'bucket-2/'
+        parameters = {'no_overwrite': True,
+                      'src': 's3://' + source,
+                      'dest': '/' + destination}
+        s3_filter = self.create_filter(parameters=parameters, out_file=stdout)
+
+        list(s3_filter.call(self.s3_files))
+        self.assertIn('Object/file  already exists.\n', stdout.getvalue())
+
+    def test_empty_filters_wo_filters_or_no_overwrite_in_params(self,):
+        stdout = io.StringIO()
+        source = 'bucket/'
+        destination = 'bucket-2/'
+        parameters = {'src': 's3://' + source,
+                      'dest': '/' + destination}
+        s3_filter = self.create_filter(parameters=parameters, out_file=stdout)
+
+        self.assertEqual(len(s3_filter.filters), 2)
+        self.assertIsInstance(s3_filter.filters[0], Filter)
+        self.assertIsInstance(s3_filter.filters[1], Filter)
+        self.assertEqual(s3_filter.filters[0].patterns, [])
+        self.assertEqual(s3_filter.filters[1].patterns, [])

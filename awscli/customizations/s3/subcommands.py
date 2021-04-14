@@ -26,7 +26,7 @@ from awscli.customizations.s3.fileinfobuilder import FileInfoBuilder
 from awscli.customizations.s3.fileformat import FileFormat
 from awscli.customizations.s3.filegenerator import FileGenerator
 from awscli.customizations.s3.fileinfo import FileInfo
-from awscli.customizations.s3.filters import create_filter
+from awscli.customizations.s3.filters import FilterRunner
 from awscli.customizations.s3.s3handler import S3TransferHandlerFactory
 from awscli.customizations.s3.utils import find_bucket_key, AppendFilter, \
     find_dest_path_comp_key, human_readable_size, \
@@ -456,6 +456,14 @@ REQUEST_PAYER = {
     )
 }
 
+
+NO_OVERWRITE = {
+    'name': 'no-overwrite', 'action': 'store_true',
+    'help_text': ('Skip object if object with the same name '
+                  'already exists in the destination')
+}
+
+
 TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
                  SSE, SSE_C, SSE_C_KEY, SSE_KMS_KEY_ID, SSE_C_COPY_SOURCE,
@@ -757,7 +765,7 @@ class CpCommand(S3TransferCommand):
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
                 [METADATA, COPY_PROPS, METADATA_DIRECTIVE, EXPECTED_SIZE,
-                 RECURSIVE]
+                 RECURSIVE, NO_OVERWRITE]
 
 
 class MvCommand(S3TransferCommand):
@@ -768,7 +776,8 @@ class MvCommand(S3TransferCommand):
             "or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS +\
-                [METADATA, COPY_PROPS, METADATA_DIRECTIVE, RECURSIVE]
+                [METADATA, COPY_PROPS, METADATA_DIRECTIVE,
+                 RECURSIVE, NO_OVERWRITE]
 
 
 class RmCommand(S3TransferCommand):
@@ -937,7 +946,8 @@ class CommandArchitecture(object):
         """
         if self.needs_filegenerator():
             self.instructions.append('file_generator')
-            if self.parameters.get('filters'):
+            if self.parameters.get('filters') \
+                    or self.parameters.get('no_overwrite'):
                 self.instructions.append('filters')
             if self.cmd == 'sync':
                 self.instructions.append('comparator')
@@ -1056,34 +1066,35 @@ class CommandArchitecture(object):
         sync_strategies = self.choose_sync_strategies()
 
         command_dict = {}
+        filter_runner = FilterRunner(self.parameters, self._client)
         if self.cmd == 'sync':
             command_dict = {'setup': [files, rev_files],
                             'file_generator': [file_generator,
                                                rev_generator],
-                            'filters': [create_filter(self.parameters),
-                                        create_filter(self.parameters)],
+                            'filters': [filter_runner, filter_runner],
                             'comparator': [Comparator(**sync_strategies)],
                             'file_info_builder': [file_info_builder],
                             's3_handler': [s3_transfer_handler]}
         elif self.cmd == 'cp' and self.parameters['is_stream']:
             command_dict = {'setup': [stream_file_info],
+                            'filters': [filter_runner],
                             's3_handler': [s3_transfer_handler]}
         elif self.cmd == 'cp':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],
-                            'filters': [create_filter(self.parameters)],
+                            'filters': [filter_runner],
                             'file_info_builder': [file_info_builder],
                             's3_handler': [s3_transfer_handler]}
         elif self.cmd == 'rm':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],
-                            'filters': [create_filter(self.parameters)],
+                            'filters': [filter_runner],
                             'file_info_builder': [file_info_builder],
                             's3_handler': [s3_transfer_handler]}
         elif self.cmd == 'mv':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],
-                            'filters': [create_filter(self.parameters)],
+                            'filters': [filter_runner],
                             'file_info_builder': [file_info_builder],
                             's3_handler': [s3_transfer_handler]}
 

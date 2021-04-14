@@ -13,43 +13,15 @@
 import logging
 import fnmatch
 import os
+import sys
+from concurrent.futures import ThreadPoolExecutor
+from functools import reduce
 
+from botocore.exceptions import ClientError
 from awscli.customizations.s3.utils import split_s3_bucket_key
-
+from awscli.customizations.utils import uni_print
 
 LOG = logging.getLogger(__name__)
-
-
-def create_filter(parameters):
-    """Given the CLI parameters dict, create a Filter object."""
-    # We need to evaluate all the filters based on the source
-    # directory.
-    if parameters['filters']:
-        cli_filters = parameters['filters']
-        real_filters = []
-        for filter_type, filter_pattern in cli_filters:
-            real_filters.append((filter_type.lstrip('-'),
-                                 filter_pattern))
-        source_location = parameters['src']
-        if source_location.startswith('s3://'):
-            # This gives us (bucket, keyname) and we want
-            # the bucket to be the root dir.
-            src_rootdir = _get_s3_root(source_location,
-                                       parameters['dir_op'])
-        else:
-            src_rootdir = _get_local_root(parameters['src'], parameters['dir_op'])
-
-        destination_location = parameters['dest']
-        if destination_location.startswith('s3://'):
-            dst_rootdir = _get_s3_root(parameters['dest'],
-                                       parameters['dir_op'])
-        else:
-            dst_rootdir = _get_local_root(parameters['dest'],
-                                          parameters['dir_op'])
-
-        return Filter(real_filters, src_rootdir, dst_rootdir)
-    else:
-        return Filter({}, None, None)
 
 
 def _get_s3_root(source_location, dir_op):
@@ -71,6 +43,64 @@ def _get_local_root(source_location, dir_op):
     else:
         rootdir = os.path.abspath(os.path.dirname(source_location))
     return rootdir
+
+
+class FilterRunner:
+    def __init__(self, parameters, client, out_file=None):
+        self._parameters = parameters
+        self._client = client
+        self._out_file = out_file
+        if self._out_file is None:
+            self._out_file = sys.stdout
+        self.filters = self._create_filters()
+
+    def call(self, file_infos):
+        return reduce(
+            lambda files, filtering: filtering.call(files),
+            self.filters, file_infos)
+
+    def _create_filters(self):
+        return [self._create_filter(), self._create_no_overwrite_filter()]
+
+    def _create_filter(self):
+        """Given the CLI parameters dict, create a Filter object."""
+        # We need to evaluate all the filters based on the source
+        # directory.
+        parameters = self._parameters
+        if parameters.get('filters'):
+            cli_filters = parameters['filters']
+            real_filters = []
+            for filter_type, filter_pattern in cli_filters:
+                real_filters.append((filter_type.lstrip('-'),
+                                     filter_pattern))
+            source_location = parameters['src']
+            if source_location.startswith('s3://'):
+                # This gives us (bucket, keyname) and we want
+                # the bucket to be the root dir.
+                src_rootdir = _get_s3_root(source_location,
+                                           parameters['dir_op'])
+            else:
+                src_rootdir = _get_local_root(parameters['src'],
+                                              parameters['dir_op'])
+
+            destination_location = parameters['dest']
+            if destination_location.startswith('s3://'):
+                dst_rootdir = _get_s3_root(parameters['dest'],
+                                           parameters['dir_op'])
+            else:
+                dst_rootdir = _get_local_root(parameters['dest'],
+                                              parameters['dir_op'])
+
+            return Filter(real_filters, src_rootdir, dst_rootdir)
+        else:
+            return Filter({}, None, None)
+
+    def _create_no_overwrite_filter(self):
+        if self._parameters.get('no_overwrite', False):
+            return NoOverwriteFilter(
+                self._client, self._parameters, self._out_file)
+        else:
+            return Filter({}, None, None)
 
 
 class Filter(object):
@@ -151,3 +181,50 @@ class Filter(object):
             LOG.debug("%s did not match %s filter: %s",
                         file_path, pattern_type, path_pattern)
         return file_status
+
+
+class NoOverwriteFilter:
+    FILE_EXIST_FORMAT = 'Object/file %s already exists.\n'
+    FILE_SKIPPED_FORMAT = (
+        'Object %s skipped because of such head-object response "%s".\n'
+    )
+
+    def __init__(self, client, cli_params, out_file=None):
+        self._client = client
+        self._object_checker = self._get_object_checker(cli_params['dest'])
+        self._out_file = out_file
+        if self._out_file is None:
+            self._out_file = sys.stdout
+
+    def call(self, file_infos):
+        with ThreadPoolExecutor(max_workers=7) as executor:
+            yield from filter(
+                bool, executor.map(self._object_checker, file_infos))
+
+    def _get_object_checker(self, dest):
+        if dest.startswith('s3://'):
+            return self._check_s3_object_exists
+        return self._check_local_object_exists
+
+    def _check_s3_object_exists(self, fileinfo):
+        bucket, key = split_s3_bucket_key(fileinfo.dest)
+        try:
+            self._client.head_object(Bucket=bucket, Key=key)
+            self._print_to_out_file(self.FILE_EXIST_FORMAT % fileinfo.dest)
+            return False
+        except ClientError as e:
+            if e.response['Error']['Code'] == '404':
+                return fileinfo
+            self._print_to_out_file(
+                self.FILE_SKIPPED_FORMAT % (fileinfo.dest, e)
+            )
+        return False
+
+    def _check_local_object_exists(self, fileinfo):
+        if os.path.exists(fileinfo.dest):
+            self._print_to_out_file(self.FILE_EXIST_FORMAT % fileinfo.dest)
+            return False
+        return fileinfo
+
+    def _print_to_out_file(self, statement):
+        uni_print(statement, self._out_file)

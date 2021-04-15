@@ -1794,6 +1794,22 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.19.53
+=======
+
+* api-change:``dms``: AWS DMS added support of TLS for Kafka endpoint. Added Describe endpoint setting API for DMS endpoints.
+* api-change:``sts``: STS now supports assume role with Web Identity using JWT token length upto 20000 characters
+
+
+1.19.52
+=======
+
+* api-change:``config``: Add exception for DeleteRemediationConfiguration and DescribeRemediationExecutionStatus
+* api-change:``mediaconnect``: For flows that use Listener protocols, you can now easily locate an output's outbound IP address for a private internet. Additionally, MediaConnect now supports the Waiters feature that makes it easier to poll for the status of a flow until it reaches its desired state.
+* api-change:``codestar-connections``: This release adds tagging support for CodeStar Connections Host resources
+* api-change:``route53``: Documentation updates for route53
+
+
 1.19.51
 =======
 

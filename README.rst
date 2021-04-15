@@ -65,6 +65,13 @@ For information about maintenance and support for SDK major versions and their u
 Installation
 ~~~~~~~~~~~~
 
+Installation of the AWS CLI and its dependencies use a range of packaging
+features provided by ``pip`` and ``setuptools``. To ensure smooth installation,
+it's recommended to use:
+
+- ``pip``: 9.0.2 or greater
+- ``setuptools``: 36.2.0 or greater
+
 The safest way to install the AWS CLI is to use
 `pip <https://pip.pypa.io/en/stable/>`__ in a ``virtualenv``:
 

@@ -19,6 +19,7 @@ from s3transfer.crt import (
     create_s3_crt_client, BotocoreCRTRequestSerializer, CRTTransferManager
 )
 
+from awscli.compat import urlparse
 from awscli.customizations.s3 import constants
 from awscli.customizations.s3.transferconfig import \
     create_transfer_config_from_runtime_config
@@ -85,6 +86,9 @@ class TransferManagerFactory:
             'region': self._resolve_region(params),
             'verify': self._resolve_verify(params),
         }
+        endpoint_url = params.get('endpoint_url')
+        if endpoint_url and urlparse.urlparse(endpoint_url).scheme == 'http':
+            create_crt_client_kwargs['use_ssl'] = False
         target_throughput = runtime_config.get('target_bandwidth', None)
         multipart_chunksize = runtime_config.get('multipart_chunksize', None)
         if target_throughput:

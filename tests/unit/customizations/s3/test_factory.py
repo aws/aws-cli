@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest, mock, FileCreator
 
+from awscrt.s3 import S3RequestTlsMode
 from botocore.session import Session
 from botocore.config import Config
 from botocore.httpsession import DEFAULT_CA_BUNDLE
@@ -102,6 +103,18 @@ class TestTransferManagerFactory(unittest.TestCase):
 
     def get_runtime_config(self, **kwargs):
         return RuntimeConfig().build_config(**kwargs)
+
+    def assert_tls_enabled_for_crt_client(self, mock_crt_client):
+        self.assertEqual(
+            mock_crt_client.call_args[1]['tls_mode'],
+            S3RequestTlsMode.ENABLED
+        )
+
+    def assert_tls_disabled_for_crt_client(self, mock_crt_client):
+        self.assertEqual(
+            mock_crt_client.call_args[1]['tls_mode'],
+            S3RequestTlsMode.DISABLED
+        )
 
     def assert_uses_client_tls_context_options(
             self, mock_crt_client, mock_client_tls_context_options):
@@ -227,7 +240,19 @@ class TestTransferManagerFactory(unittest.TestCase):
             'config-region'
         )
 
-    def test_uses_endpoint_url_parameter_for_crt_manager(self):
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_uses_tls_by_default_for_crt_manager(
+            self, mock_crt_client):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt')
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config)
+        self.assert_is_crt_manager(transfer_manager)
+        self.assert_tls_enabled_for_crt_client(mock_crt_client)
+
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_uses_endpoint_url_parameter_for_crt_manager(
+            self, mock_crt_client):
         self.runtime_config = self.get_runtime_config(
             preferred_transfer_client='crt')
         self.params['endpoint_url'] = 'https://my.endpoint.com'
@@ -238,6 +263,22 @@ class TestTransferManagerFactory(unittest.TestCase):
             self.session.create_client.call_args[1]['endpoint_url'],
             'https://my.endpoint.com'
         )
+        self.assert_tls_enabled_for_crt_client(mock_crt_client)
+
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_can_disable_tls_using_endpoint_scheme_for_crt_manager(
+            self, mock_crt_client):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt')
+        self.params['endpoint_url'] = 'http://my.endpoint.com'
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config)
+        self.assert_is_crt_manager(transfer_manager)
+        self.assertEqual(
+            self.session.create_client.call_args[1]['endpoint_url'],
+            'http://my.endpoint.com'
+        )
+        self.assert_tls_disabled_for_crt_client(mock_crt_client)
 
     @mock.patch('s3transfer.crt.S3Client')
     def test_uses_botocore_credential_provider_for_crt_manager(

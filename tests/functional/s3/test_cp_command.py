@@ -14,7 +14,7 @@
 import mock
 import os
 
-from awscrt.s3 import S3RequestType
+from awscrt.s3 import S3RequestType, S3RequestTlsMode
 
 from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.testutils import capture_input
@@ -2020,6 +2020,31 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
             expected_host='my.endpoint.com',
             expected_path='/bucket/key',
             expected_send_filepath=filename,
+        )
+        self.assertEqual(
+            self.mock_crt_client.call_args[1]['tls_mode'],
+            S3RequestTlsMode.ENABLED
+        )
+
+    def test_can_disable_ssl_using_endpoint_url_parameter(self):
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = [
+            's3', 'cp', filename, 's3://bucket/key',
+            '--endpoint-url', 'http://my.endpoint.com'
+        ]
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host='my.endpoint.com',
+            expected_path='/bucket/key',
+            expected_send_filepath=filename,
+        )
+        self.assertEqual(
+            self.mock_crt_client.call_args[1]['tls_mode'],
+            S3RequestTlsMode.DISABLED
         )
 
     def test_respects_no_sign_request_parameter(self):

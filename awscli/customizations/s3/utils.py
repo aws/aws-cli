@@ -483,6 +483,16 @@ class RequestParamsMapper(object):
         cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod
+    def map_get_object_acl_params(cls, request_params, cli_params):
+        """Map CLI params to GetObjectAcl request params"""
+        cls._set_request_payer_param(request_params, cli_params)
+
+    @classmethod
+    def map_put_object_acl_params(cls, request_params, cli_params):
+        """Map CLI params to PutObjectAcl request params"""
+        cls._set_request_payer_param(request_params, cli_params)
+
+    @classmethod
     def map_put_object_tagging_params(cls, request_params, cli_params):
         """Map CLI params to PutObjectTagging request params"""
         cls._set_request_payer_param(request_params, cli_params)

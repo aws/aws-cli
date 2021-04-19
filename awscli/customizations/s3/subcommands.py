@@ -339,9 +339,9 @@ METADATA_DIRECTIVE = {
 
 
 COPY_PROPS = {
-    'name': 'copy-props',
-    'choices': ['none', 'metadata-directive', 'default'],
-    'default': 'default', 'help_text': (
+    'name': 'copy-props', 'nargs': '+',
+    'choices': ['none', 'metadata-directive', 'default', 'acl'],
+    'default': ['default'], 'help_text': (
         'Determines which properties are copied from the source S3 object. '
         'This parameter only applies for S3 to S3 copies. Valid values are: '
         '<ul>'
@@ -355,6 +355,14 @@ COPY_PROPS = {
         '<li>``default`` - The default value. Copies tags and properties '
         'covered under the ``metadata-directive`` value from the '
         'source S3 object.</li>'
+        '<li>``acl`` - Copy ACL from ф source object to destination. '
+        'It requires additional ``GetObjectAcl`` and ``PutObjectAcl`` API '
+        'calls. In case destination bucket has more restricted ACL than '
+        'the object ``PutObjectAcl`` will fail with ``AccessDenied`` exception '
+        'and this object won\'t be copied. Can be combined with any other '
+        'value (if only ``acl`` value set it\'ll be combined with '
+        '``default``). Can\'t be combined with ``--acl`` or ``--grants`` '
+        'options. </li>'
         '</ul>'
         'In order to copy the appropriate properties for multipart copies, '
         'some of the options may require additional API calls if a multipart '

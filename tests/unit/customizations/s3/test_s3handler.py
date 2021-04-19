@@ -47,7 +47,7 @@ from awscli.customizations.s3.subscribers import (
     SetTagsSubscriber, ProvideUploadContentTypeSubscriber,
     ProvideLastModifiedTimeSubscriber,
     DirectoryCreatorSubscriber, DeleteSourceFileSubscriber,
-    DeleteSourceObjectSubscriber,
+    DeleteSourceObjectSubscriber, SetAclSubscriber
 
 )
 from awscli.customizations.s3.transferconfig import RuntimeConfig

@@ -18,6 +18,7 @@ from botocore.utils import percent_encode_sequence
 from s3transfer.subscribers import BaseSubscriber
 
 from awscli.customizations.s3 import utils
+from awscli.customizations.exceptions import ParamValidationError
 
 
 class CreateDirectoryError(Exception):
@@ -166,15 +167,35 @@ class DirectoryCreatorSubscriber(BaseSubscriber):
 
 
 class CopyPropsSubscriberFactory(object):
+    _MUTUAL_EXCLUSIVE_VALUES = {'default', 'metadata-directive', 'none'}
+    _MUTUAL_EXCLUSIVE_VALUES_AND_PARAMS = {
+        'acl': {'params': {'acl', 'grants'},
+                'message':  'Specifying both Canned ACLs or grants '
+                            'and copy ACL props is not allowed'
+                }
+    }
+
     def __init__(self, client, transfer_config, cli_params):
         self._client = client
         self._transfer_config = transfer_config
         self._cli_params = cli_params
 
     def get_subscribers(self, fileinfo):
-        copy_props = self._cli_params.get(
-            'copy_props', 'default').replace('-', '_')
-        return getattr(self, '_get_%s_subscribers' % copy_props)(fileinfo)
+        subscribers = []
+        copy_props = self._cli_params.get('copy_props', [])
+        self._check_mutual_exclusive_params(copy_props)
+        self._add_default_if_needed(copy_props)
+        for prop in copy_props:
+            subscribers.extend(
+                getattr(self, '_get_%s_subscribers' %
+                                prop.replace('-', '_'))(fileinfo)
+            )
+        return subscribers
+
+    def _get_acl_subscribers(self, fileinfo):
+        return [
+            SetAclSubscriber(self._client, self._cli_params)
+        ]
 
     def _get_none_subscribers(self, fileinfo):
         return [
@@ -205,6 +226,21 @@ class CopyPropsSubscriberFactory(object):
             subscriber_kwargs[
                 'head_object_response'] = fileinfo.associated_response_data
         return SetMetadataDirectivePropsSubscriber(**subscriber_kwargs)
+
+    def _add_default_if_needed(self, props):
+        if not self._MUTUAL_EXCLUSIVE_VALUES.intersection(props):
+            props.append('default')
+
+    def _check_mutual_exclusive_params(self, props):
+        if len(self._MUTUAL_EXCLUSIVE_VALUES.intersection(props)) > 1:
+            raise ParamValidationError(
+                'Only one of %s values can be specified' %
+                self._MUTUAL_EXCLUSIVE_VALUES
+            )
+        for key, value in self._MUTUAL_EXCLUSIVE_VALUES_AND_PARAMS.items():
+            if key in props and \
+                    value['params'].intersection(self._cli_params.keys()):
+                raise ParamValidationError(value['message'])
 
 
 class ReplaceDirectiveSubscriber(BaseSubscriber):
@@ -277,6 +313,59 @@ class SetMetadataDirectivePropsSubscriber(BaseSubscriber):
 
     def _is_multipart_copy(self, future):
         return future.meta.size >= self._transfer_config.multipart_threshold
+
+
+class SetAclSubscriber(OnDoneFilteredSubscriber):
+    def __init__(self, client, cli_params):
+        self._client = client
+        self._cli_params = cli_params
+
+    def on_queued(self, future, **kwargs):
+        get_obj_acl_response = self._get_object_acl(future)
+        del get_obj_acl_response['ResponseMetadata']
+        future.meta.user_context['AccessControlPolicy'] = get_obj_acl_response
+
+    def _get_object_acl(self, future):
+        copy_source = future.meta.call_args.copy_source
+        get_object_acl_params = {
+            'Bucket': copy_source['Bucket'],
+            'Key': copy_source['Key'],
+        }
+        utils.RequestParamsMapper.map_get_object_acl_params(
+            get_object_acl_params, self._cli_params)
+        return self._client.get_object_acl(**get_object_acl_params)
+
+    def _put_object_acl(self, bucket, key, acl):
+        extra_args = {}
+        utils.RequestParamsMapper.map_put_object_acl_params(
+            extra_args, self._cli_params
+        )
+        self._client.put_object_acl(
+            Bucket=bucket,
+            Key=key,
+            AccessControlPolicy=acl,
+            **extra_args
+        )
+
+    def _delete_object(self, bucket, key):
+        params = {
+            'Bucket': bucket,
+            'Key': key
+        }
+        utils.RequestParamsMapper.map_delete_object_params(
+            params, self._cli_params)
+        self._client.delete_object(**params)
+
+    def _on_success(self, future):
+        if 'AccessControlPolicy' in future.meta.user_context:
+            bucket = future.meta.call_args.bucket
+            key = future.meta.call_args.key
+            acl = future.meta.user_context['AccessControlPolicy']
+            try:
+                self._put_object_acl(bucket, key, acl)
+            except Exception as e:
+                self._delete_object(bucket, key)
+                future.set_exception(e)
 
 
 class SetTagsSubscriber(OnDoneFilteredSubscriber):

@@ -33,12 +33,13 @@ from awscli.customizations.s3.subscribers import (
     DeleteCopySourceObjectSubscriber, CreateDirectoryError,
     CopyPropsSubscriberFactory, ReplaceMetadataDirectiveSubscriber,
     ReplaceTaggingDirectiveSubscriber, SetMetadataDirectivePropsSubscriber,
-    SetTagsSubscriber
+    SetTagsSubscriber, SetAclSubscriber
 )
 from awscli.customizations.s3.results import WarningResult
 from tests.unit.customizations.s3 import FakeTransferFuture
 from tests.unit.customizations.s3 import FakeTransferFutureMeta
 from tests.unit.customizations.s3 import FakeTransferFutureCallArgs
+from awscli.customizations.exceptions import ParamValidationError
 
 
 class TestProvideSizeSubscriber(unittest.TestCase):
@@ -353,7 +354,7 @@ class TestCopyPropsSubscriberFactory(BaseCopyPropsSubscriberTest):
             self.assertIsInstance(subscriber, expected_classes[i])
 
     def test_get_subscribers_for_copy_props_none(self):
-        self.set_copy_props('none')
+        self.set_copy_props(['none'])
         subscribers = self.factory.get_subscribers(self.fileinfo)
         self.assert_subscriber_classes(
             subscribers,
@@ -364,7 +365,7 @@ class TestCopyPropsSubscriberFactory(BaseCopyPropsSubscriberTest):
         )
 
     def test_get_subscribers_for_copy_props_metadata_directive(self):
-        self.set_copy_props('metadata-directive')
+        self.set_copy_props(['metadata-directive'])
         subscribers = self.factory.get_subscribers(self.fileinfo)
         self.assert_subscriber_classes(
             subscribers,
@@ -375,7 +376,7 @@ class TestCopyPropsSubscriberFactory(BaseCopyPropsSubscriberTest):
         )
 
     def test_get_subscribers_for_copy_props_default(self):
-        self.set_copy_props('default')
+        self.set_copy_props(['default'])
         subscribers = self.factory.get_subscribers(self.fileinfo)
         self.assert_subscriber_classes(
             subscribers,
@@ -386,7 +387,7 @@ class TestCopyPropsSubscriberFactory(BaseCopyPropsSubscriberTest):
         )
 
     def test_get_subscribers_injects_cached_head_object_response(self):
-        self.set_copy_props('default')
+        self.set_copy_props(['default'])
         self.cli_params['dir_op'] = False
         self.fileinfo.associated_response_data = {
             'ContentType': 'from-cache'
@@ -396,6 +397,43 @@ class TestCopyPropsSubscriberFactory(BaseCopyPropsSubscriberTest):
         metadata_subscriber.on_queued(self.future)
         self.assertFalse(self.client.head_object.called)
         self.assert_extra_args(self.future, {'ContentType': 'from-cache'})
+
+    def test_get_subscribers_for_copy_props_default_and_acl(self):
+        self.set_copy_props(['default', 'acl'])
+        subscribers = self.factory.get_subscribers(self.fileinfo)
+        self.assert_subscriber_classes(
+            subscribers,
+            [
+                SetMetadataDirectivePropsSubscriber,
+                SetTagsSubscriber,
+                SetAclSubscriber
+            ]
+        )
+
+    def test_adds_default(self):
+        self.set_copy_props(['acl'])
+        subscribers = self.factory.get_subscribers(self.fileinfo)
+        self.assert_subscriber_classes(
+            subscribers,
+            [
+                SetAclSubscriber,
+                SetMetadataDirectivePropsSubscriber,
+                SetTagsSubscriber,
+            ]
+        )
+
+    def test_raise_for_mutual_exclusive_values(self):
+        self.set_copy_props(['default', 'metadata-directive', 'acl'])
+        with self.assertRaisesRegex(
+                ParamValidationError, 'Only one of'):
+            self.factory.get_subscribers(self.fileinfo)
+
+    def test_raise_for_mutual_exclusive_value_and_parameter(self):
+        self.set_copy_props(['metadata-directive', 'acl'])
+        self.cli_params['acl'] = 'public-read'
+        with self.assertRaisesRegex(
+                ParamValidationError, 'and copy ACL props is not allowed'):
+            self.factory.get_subscribers(self.fileinfo)
 
 
 class TestReplaceMetadataDirectiveSubscriber(BaseCopyPropsSubscriberTest):
@@ -576,6 +614,10 @@ class PutObjectTaggingException(Exception):
     pass
 
 
+class PutObjectAclException(Exception):
+    pass
+
+
 class TestSetTagsSubscriber(BaseCopyPropsSubscriberTest):
     def setUp(self):
         super(TestSetTagsSubscriber, self).setUp()
@@ -683,6 +725,116 @@ class TestSetTagsSubscriber(BaseCopyPropsSubscriberTest):
         self.client.put_object_tagging.side_effect = \
             PutObjectTaggingException()
         self.subscriber.on_done(self.future)
+
+        self.client.delete_object.assert_called_once_with(
+            Bucket=self.bucket, Key=self.key, RequestPayer='requester'
+        )
+
+
+class TestSetAclSubscriber(BaseCopyPropsSubscriberTest):
+    def setUp(self):
+        super(TestSetAclSubscriber, self).setUp()
+        self.subscriber = SetAclSubscriber(
+            client=self.client,
+            cli_params=self.cli_params,
+        )
+        self.get_acl_response = {
+            "ResponseMetadata": {},
+            "Owner": {
+                "DisplayName": "foo",
+                "ID": "foo_id"
+            },
+            "Grants": [
+                {"Grantee": {
+                    "DisplayName": "foo",
+                    "ID": "foo_id",
+                    "Type": "CanonicalUser"
+                    },
+                 "Permission": "FULL_CONTROL"},
+                {"Grantee": {
+                    "URI": "http://acs.amazonaws.com/groups/global/AllUsers",
+                    "Type": "Group"
+                    },
+                 "Permission": "READ"},
+                {"Grantee": {
+                    "DisplayName": "foo_bar",
+                    "ID": "foo_bar_id",
+                    "Type": "CanonicalUser"
+                    },
+                 "Permission": "WRITE"}
+            ]
+        }
+        self.put_object_acl_expected_extra_args = {
+            'AccessControlPolicy': {
+                'Owner': self.get_acl_response['Owner'],
+                'Grants': self.get_acl_response['Grants'],
+            }
+        }
+
+    def test_gets_acl_for_copy(self):
+        self.client.get_object_acl.return_value = self.get_acl_response
+        self.subscriber.on_queued(self.future)
+        self.client.get_object_acl.assert_called_with(
+            Bucket=self.source_bucket, Key=self.source_key
+        )
+
+    def test_passes_owner_and_grants_to_user_context(self):
+        self.client.get_object_acl.return_value = self.get_acl_response
+        self.subscriber.on_queued(self.future)
+
+        self.assertEqual(
+            self.put_object_acl_expected_extra_args,
+            self.future.meta.user_context
+        )
+
+    def test_sets_acl_using_put_object_acl(self):
+        self.client.get_object_acl.return_value = self.get_acl_response
+        self.subscriber.on_queued(self.future)
+        self.client.get_object_acl.assert_called_with(
+            Bucket=self.source_bucket, Key=self.source_key
+        )
+        self.assert_extra_args(self.future, {})
+        self.subscriber.on_done(self.future)
+        self.client.put_object_acl.assert_called_with(
+            Bucket=self.bucket, Key=self.key,
+            **self.put_object_acl_expected_extra_args,
+        )
+
+    def test_put_object_acl_propagates_error_and_cleans_up_if_fails(self):
+        self.client.get_object_acl.return_value = self.get_acl_response
+        self.subscriber.on_queued(self.future)
+
+        self.client.put_object_acl.side_effect = PutObjectAclException()
+        self.subscriber.on_done(self.future)
+
+        with self.assertRaises(PutObjectAclException):
+            self.future.result()
+
+        self.client.put_object_acl.assert_called_with(
+            Bucket=self.bucket, Key=self.key,
+            **self.put_object_acl_expected_extra_args,
+        )
+        self.client.delete_object.assert_called_once_with(
+            Bucket=self.bucket, Key=self.key,
+        )
+
+    def test_does_not_call_put_object_acl_if_transfer_fails(self):
+        self.client.get_object_acl.return_value = self.get_acl_response
+        self.subscriber.on_queued(self.future)
+        self.future.set_exception(Exception())
+        self.subscriber.on_done(self.future)
+        self.assertFalse(self.client.put_object_acl.called)
+
+    def test_add_extra_params_to_delete_object_call(self):
+        self.cli_params['request_payer'] = 'requester'
+        self.client.get_object_acl.return_value = self.get_acl_response
+        self.subscriber.on_queued(self.future)
+
+        self.client.put_object_acl.side_effect = PutObjectAclException()
+        self.subscriber.on_done(self.future)
+
+        with self.assertRaises(PutObjectAclException):
+            self.future.result()
 
         self.client.delete_object.assert_called_once_with(
             Bucket=self.bucket, Key=self.key, RequestPayer='requester'

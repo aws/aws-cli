@@ -439,7 +439,7 @@ class ResultPrinter(BaseResultHandler):
         failure_statement = self.FAILURE_FORMAT.format(
             transfer_type=result.transfer_type,
             transfer_location=self._get_transfer_location(result),
-            exception=result.exception
+            exception=repr(result.exception)
         )
         failure_statement = self._adjust_statement_padding(failure_statement)
         self._print_to_error_file(failure_statement)

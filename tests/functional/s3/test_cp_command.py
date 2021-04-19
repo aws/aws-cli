@@ -16,6 +16,7 @@ import os
 
 from awscrt.s3 import S3RequestType, S3RequestTlsMode
 
+from awscli.customizations.s3.utils import relative_path
 from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.testutils import capture_input
 from awscli.compat import six, OrderedDict
@@ -78,7 +79,7 @@ class TestCPCommand(BaseCPCommandTest):
         stdout, _, _ = self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(self.operations_called, [])
         self.assertIn(
-            f'(dryrun) upload: {os.path.relpath(full_path)} to '
+            f'(dryrun) upload: {relative_path(full_path)} to '
             f's3://bucket/key.txt',
             stdout
         )
@@ -92,7 +93,7 @@ class TestCPCommand(BaseCPCommandTest):
                                   'Message': 'Bucket does not exist'}}]
         _, stderr, _ = self.run_cmd(cmdline, expected_rc=1)
         self.assertIn(
-            f'upload failed: {os.path.relpath(full_path)} to '
+            f'upload failed: {relative_path(full_path)} to '
             's3://bucket-not-exist/key.txt An error',
             stderr
         )
@@ -247,7 +248,7 @@ class TestCPCommand(BaseCPCommandTest):
         )
         self.assertIn(
             f'(dryrun) download: s3://bucket/key.txt to '
-            f'{os.path.relpath(target)}',
+            f'{relative_path(target)}',
             stdout
         )
 

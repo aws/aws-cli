@@ -16,6 +16,7 @@ import os
 from awscrt.s3 import S3RequestType
 
 from awscli.compat import six
+from awscli.customizations.s3.utils import relative_path
 from awscli.testutils import mock
 from tests.functional.s3 import (
     BaseS3TransferCommandTest, BaseCRTTransferClientTest
@@ -94,7 +95,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             ]
         )
         self.assertIn(
-            f'(dryrun) upload: {os.path.relpath(full_path)} to '
+            f'(dryrun) upload: {relative_path(full_path)} to '
             f's3://bucket/file.txt',
             stdout
         )

@@ -1805,6 +1805,23 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.19.55
+=======
+
+* api-change:``detective``: Added parameters to track the data volume in bytes for a member account. Deprecated the existing parameters that tracked the volume as a percentage of the allowed volume for a behavior graph. Changes reflected in MemberDetails object.
+* api-change:``groundstation``: Support new S3 Recording Config allowing customers to write downlink data directly to S3.
+* api-change:``cloudformation``: Added support for creating and updating stack sets with self-managed permissions from templates that reference macros.
+* api-change:``redshift``: Add operations: AddPartner, DescribePartners, DeletePartner, and UpdatePartnerStatus to support tracking integration status with data partners.
+* api-change:``kendra``: Amazon Kendra now enables users to override index-level boosting configurations for each query.
+
+
+1.19.54
+=======
+
+* api-change:``ce``: Adding support for Sagemaker savings plans in GetSavingsPlansPurchaseRecommendation API
+* api-change:``savingsplans``: Added support for Amazon SageMaker in Machine Learning Savings Plans
+
+
 1.19.53
 =======
 

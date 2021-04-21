@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.1.39
+======
+
+* api-change:``kendra``: Amazon Kendra now enables users to override index-level boosting configurations for each query.
+* api-change:``redshift``: Add operations: AddPartner, DescribePartners, DeletePartner, and UpdatePartnerStatus to support tracking integration status with data partners.
+* api-change:``groundstation``: Support new S3 Recording Config allowing customers to write downlink data directly to S3.
+* api-change:``ce``: Adding support for Sagemaker savings plans in GetSavingsPlansPurchaseRecommendation API
+* api-change:``detective``: Added parameters to track the data volume in bytes for a member account. Deprecated the existing parameters that tracked the volume as a percentage of the allowed volume for a behavior graph. Changes reflected in MemberDetails object.
+* api-change:``savingsplans``: Added support for Amazon SageMaker in Machine Learning Savings Plans
+* api-change:``cloudformation``: Added support for creating and updating stack sets with self-managed permissions from templates that reference macros.
+
+
 2.1.38
 ======
 

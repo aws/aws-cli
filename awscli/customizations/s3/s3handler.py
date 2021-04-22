@@ -40,7 +40,7 @@ from awscli.customizations.s3.subscribers import (
     ProvideLastModifiedTimeSubscriber,
     CopyPropsSubscriberFactory, DirectoryCreatorSubscriber,
     DeleteSourceFileSubscriber, DeleteSourceObjectSubscriber,
-    DeleteCopySourceObjectSubscriber
+    DeleteCopySourceObjectSubscriber, ProvideCopyContentTypeSubscriber
 )
 from awscli.compat import get_binary_stdin
 
@@ -444,6 +444,8 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
         if self._cli_params.get('is_move', False):
             subscribers.append(DeleteCopySourceObjectSubscriber(
                 fileinfo.source_client))
+        if self._should_inject_content_type():
+            subscribers.append(ProvideCopyContentTypeSubscriber())
 
     def _add_copy_props_subscribers(self, subscribers, fileinfo):
         copy_props_factory = CopyPropsSubscriberFactory(
@@ -470,6 +472,12 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
         src = self._format_s3_path(fileinfo.src)
         dest = self._format_s3_path(fileinfo.dest)
         return src, dest
+
+    def _should_inject_content_type(self):
+        return (
+            self._cli_params.get('metadata_directive') == 'REPLACE' and
+            not self._cli_params.get('content_type')
+        )
 
 
 class UploadStreamRequestSubmitter(UploadRequestSubmitter):

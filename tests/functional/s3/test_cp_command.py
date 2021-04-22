@@ -693,6 +693,34 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertIn('upload failed', stderr)
         self.assertIn('warning: File has an invalid timestamp.', stderr)
 
+    def test_cp_with_replace_metadata_can_check_content_type(self):
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = (
+            '%s %s s3://bucket/key.txt --metadata-directive REPLACE' % (
+                self.prefix, full_path))
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertDictEqual(
+            self.operations_called[0][1],
+            {'Key': 'key.txt', 'Bucket': 'bucket',
+             'ContentType': 'text/plain', 'Body': mock.ANY}
+        )
+
+    def test_cp_with_replace_metadata_and_content_type_set(self):
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = (
+            '%s %s s3://bucket/key.txt --metadata-directive REPLACE '
+            '--content-type application/json' % (self.prefix, full_path))
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertDictEqual(
+            self.operations_called[0][1],
+            {'Key': 'key.txt', 'Bucket': 'bucket',
+             'ContentType': 'application/json', 'Body': mock.ANY}
+        )
+
 
 class TestStreamingCPCommand(BaseAWSCommandParamsTest):
     def test_streaming_upload(self):

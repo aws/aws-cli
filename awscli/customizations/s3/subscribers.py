@@ -132,6 +132,11 @@ class ProvideUploadContentTypeSubscriber(BaseProvideContentTypeSubscriber):
         return future.meta.call_args.fileobj
 
 
+class ProvideCopyContentTypeSubscriber(BaseProvideContentTypeSubscriber):
+    def _get_filename(self, future):
+        return future.meta.call_args.copy_source['Key']
+
+
 class ProvideLastModifiedTimeSubscriber(OnDoneFilteredSubscriber):
     """Sets utime for a downloaded file"""
     def __init__(self, last_modified_time, result_queue):

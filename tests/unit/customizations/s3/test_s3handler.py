@@ -47,7 +47,7 @@ from awscli.customizations.s3.subscribers import (
     SetTagsSubscriber, ProvideUploadContentTypeSubscriber,
     ProvideLastModifiedTimeSubscriber,
     DirectoryCreatorSubscriber, DeleteSourceFileSubscriber,
-    DeleteSourceObjectSubscriber,
+    DeleteSourceObjectSubscriber, ProvideCopyContentTypeSubscriber,
 
 )
 from awscli.customizations.s3.transferconfig import RuntimeConfig
@@ -690,12 +690,34 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
             dest=self.bucket+'/'+self.key)
         self.cli_params['copy_props'] = 'default'
         self.cli_params['metadata_directive'] = 'REPLACE'
+        self.cli_params['content_type'] = 'application/json'
         self.transfer_request_submitter.submit(fileinfo)
 
         copy_call_kwargs = self.transfer_manager.copy.call_args[1]
         ref_subscribers = [
             ProvideSizeSubscriber,
             QueuedResultSubscriber,
+            ProgressResultSubscriber,
+            DoneResultSubscriber,
+        ]
+        actual_subscribers = copy_call_kwargs['subscribers']
+        self.assertEqual(len(ref_subscribers), len(actual_subscribers))
+        for i, actual_subscriber in enumerate(actual_subscribers):
+            self.assertIsInstance(actual_subscriber, ref_subscribers[i])
+
+    def test_metadata_directive_wo_cont_type_adds_cont_type_subscriber(self):
+        fileinfo = FileInfo(
+            src=self.source_bucket+'/'+self.source_key,
+            dest=self.bucket+'/'+self.key)
+        self.cli_params['copy_props'] = 'default'
+        self.cli_params['metadata_directive'] = 'REPLACE'
+        self.transfer_request_submitter.submit(fileinfo)
+
+        copy_call_kwargs = self.transfer_manager.copy.call_args[1]
+        ref_subscribers = [
+            ProvideSizeSubscriber,
+            QueuedResultSubscriber,
+            ProvideCopyContentTypeSubscriber,
             ProgressResultSubscriber,
             DoneResultSubscriber,
         ]

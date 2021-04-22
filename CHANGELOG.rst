@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.19.56
+=======
+
+* api-change:``forecast``: This release adds EstimatedTimeRemaining minutes field to the DescribeDatasetImportJob, DescribePredictor, DescribeForecast API response which denotes the time remaining to complete the job IN_PROGRESS.
+* api-change:``cognito-idp``: Documentation updates for cognito-idp
+* api-change:``elasticache``: This release introduces log delivery of Redis slow log from Amazon ElastiCache.
+* api-change:``securityhub``: Replaced the term "master" with "administrator". Added new actions to replace AcceptInvitation, GetMasterAccount, and DisassociateFromMasterAccount. In Member, replaced MasterId with AdministratorId.
+
+
 1.19.55
 =======
 

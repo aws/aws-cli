@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.19.57
+=======
+
+* api-change:``sns``: Amazon SNS adds two new attributes, TemplateId and EntityId, for using sender IDs to send SMS messages to destinations in India.
+* api-change:``mediapackage``: Add support for Widevine DRM on CMAF origin endpoints. Both Widevine and FairPlay DRMs can now be used simultaneously, with CBCS encryption.
+
+
 1.19.56
 =======
 

@@ -7,6 +7,16 @@ The following ``list-recommendation-feedback`` Lists customer feedback on all re
 
 Output::
 
-    {        "RecommendationFeedbackSummaries": [            {                "RecommendationId": "3be1b2e5d7ef6e298a06499379ee290c9c596cf688fdcadb08285ddb0dd390eb",                "Reactions": [                    "ThumbsUp"                ],                "UserId": "aws-user-id"            }        ]    }
+    {
+        "RecommendationFeedbackSummaries": [
+            {
+                "RecommendationId": "3be1b2e5d7ef6e298a06499379ee290c9c596cf688fdcadb08285ddb0dd390eb",
+                "Reactions": [
+                    "ThumbsUp"
+                ],
+                "UserId": "aws-user-id"
+            }
+        ]
+    }
 
 For more information, see `ListRecommendationFeedback <https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_ListRecommendationFeedback.html>`__ in the *Amazon CodeGuru Reviewer API Reference*.

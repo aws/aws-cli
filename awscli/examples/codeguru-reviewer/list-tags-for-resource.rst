@@ -7,6 +7,11 @@ The following ``list-tags-for-resource`` lists the tags on an associated reposit
 
 Output::
 
-    {        "Tags": {            "Status": "Secret",            "Team": "Saanvi"        }    }
+    {
+        "Tags": {
+            "Status": "Secret",
+            "Team": "Saanvi"
+        }
+    }
 
 For more information, see `ListTagsForResource<https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_ListTagsForResource.html>`__ in the *Amazon CodeGuru Reviewer API Reference*.

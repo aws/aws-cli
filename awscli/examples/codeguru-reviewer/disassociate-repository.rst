@@ -7,6 +7,21 @@ The following ``disassociate-repository`` disassociates a repository association
 
 Output::
 
-    {        "RepositoryAssociation": {            "AssociationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",            "AssociationArn": "arn:aws:codeguru-reviewer:us-west-2:123456789012:association:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",            "Name": "my-repository",            "Owner": "123456789012",            "ProviderType": "CodeCommit",            "State": "Disassociating",            "LastUpdatedTimeStamp": 1618939174.759,            "CreatedTimeStamp": 1595636947.096        },        "Tags": {            "Status": "Secret",            "Team": "Saanvi"        }    }
+    {
+        "RepositoryAssociation": {
+            "AssociationId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "AssociationArn": "arn:aws:codeguru-reviewer:us-west-2:123456789012:association:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "Name": "my-repository",
+            "Owner": "123456789012",
+            "ProviderType": "CodeCommit",
+            "State": "Disassociating",
+            "LastUpdatedTimeStamp": 1618939174.759,
+            "CreatedTimeStamp": 1595636947.096
+        },
+        "Tags": {
+            "Status": "Secret",
+            "Team": "Saanvi"
+        }
+    }
 
 For more information, see `DisassociateRepository <https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_DisassociateRepository.html>`__ in the *Amazon CodeGuru Reviewer API Reference*.

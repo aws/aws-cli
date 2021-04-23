@@ -1,8 +1,8 @@
 **To retrieve information about an administrator account**
 
-The following ``get-master-account`` example retrieves information about the administrator account for the requesting account. ::
+The following ``get-administrator-account`` example retrieves information about the administrator account for the requesting account. ::
 
-    aws securityhub get-master-account
+    aws securityhub get-administrator-account
 
 Output::
 

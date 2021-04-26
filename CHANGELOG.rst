@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.19.58
+=======
+
+* api-change:``kinesisanalyticsv2``: Amazon Kinesis Data Analytics now supports custom application maintenance configuration using UpdateApplicationMaintenanceConfiguration API for Apache Flink applications. Customers will have visibility when their application is under maintenance status using 'MAINTENANCE' application status.
+* api-change:``personalize``: Added support for exporting data imported into an Amazon Personalize dataset to a specified data source (Amazon S3 bucket).
+* api-change:``codeguru-reviewer``: Include KMS Key Details in Repository Association APIs to enable usage of customer managed KMS Keys.
+* api-change:``mediaconvert``: Documentation updates for mediaconvert
+* api-change:``iotwireless``: Add a new optional field MessageType to support Sidewalk devices in SendDataToWirelessDevice API
+* api-change:``glue``: Adding Kafka Client Auth Related Parameters
+* api-change:``eks``: This release updates existing Amazon EKS input validation so customers will see an InvalidParameterException instead of a ParamValidationError when they enter 0 for minSize and/or desiredSize. It also adds LaunchTemplate information to update responses and a new "CUSTOM" value for AMIType.
+* api-change:``ec2``: Adding support for Red Hat Enterprise Linux with HA for Reserved Instances.
+
+
 1.19.57
 =======
 

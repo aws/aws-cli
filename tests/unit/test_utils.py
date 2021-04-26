@@ -25,7 +25,7 @@ from awscli.testutils import unittest, skip_if_windows, mock
 from awscli.compat import is_windows
 from awscli.utils import (split_on_commas, ignore_ctrl_c,
                           find_service_and_method_in_event_name,
-                          OutputStreamFactory)
+                          OutputStreamFactory, LazyPager)
 from awscli.utils import InstanceMetadataRegionFetcher
 from awscli.utils import IMDSRegionProvider
 from awscli.utils import original_ld_library_path
@@ -227,16 +227,16 @@ class TestOutputStreamFactory(unittest.TestCase):
 
     def test_exit_of_context_manager_for_pager(self):
         self.set_session_pager('mypager --option')
-        with self.stream_factory.get_pager_stream():
-            pass
+        with self.stream_factory.get_pager_stream() as stream:
+            stream.write()
         returned_process = self.popen.return_value
         self.assertTrue(returned_process.communicate.called)
 
     def test_propagates_exception_from_popen(self):
         self.popen.side_effect = PopenException
         with self.assertRaises(PopenException):
-            with self.stream_factory.get_pager_stream():
-                pass
+            with self.stream_factory.get_pager_stream() as stream:
+                stream.write()
 
     @mock.patch('awscli.utils.get_stdout_text_writer')
     def test_stdout(self, mock_stdout_writer):
@@ -321,18 +321,13 @@ class TestOutputStreamFactory(unittest.TestCase):
                 env={'LESS': 'ABC'}
             )
 
-    def test_create_process_on_process_method_call(self):
+    def test_not_create_process_if_stream_not_created(self):
         self.set_session_pager('less')
         stream_factory = OutputStreamFactory(
             self.session, self.popen, self.environ, default_less_flags='ABC')
         with stream_factory.get_output_stream():
             self.assertEqual(self.popen.call_count, 0)
-        # On exit from context manager it called process.communicate()
-        # and process should be created only at that time
-        self.assert_popen_call(
-            expected_pager_cmd='less',
-            env={'LESS': 'ABC'}
-        )
+        self.assertEqual(self.popen.call_count, 0)
 
 
 class TestInstanceMetadataRegionFetcher(unittest.TestCase):
@@ -528,3 +523,35 @@ class TestIMDSRegionProvider(unittest.TestCase):
         provider.provide()
         args, _ = send.call_args
         self.assertIn('169.254.169.254', args[0].url)
+
+
+class TestLazyPager(unittest.TestCase):
+    def setUp(self):
+        self.popen = mock.Mock(subprocess.Popen)
+        self.pager = LazyPager(self.popen)
+
+    def test_lazy_pager_process_not_created_on_communicate_call_wo_args(self):
+        stdout, stderr = self.pager.communicate()
+        self.assertEqual(self.popen.call_count, 0)
+        self.assertIsNone(stdout)
+        self.assertIsNone(stderr)
+
+    def test_lazy_pager_process_not_created_on_stdin_flush(self):
+        self.pager.stdin.flush()
+        self.assertEqual(self.popen.call_count, 0)
+
+    def test_lazy_pager_popen_communicate_calls_on_call_with_args(self):
+        process = mock.Mock(subprocess.Popen)
+        self.popen.return_value = process
+        pager = LazyPager(self.popen)
+        pager.communicate(timeout=20)
+        self.assertEqual(self.popen.call_count, 1)
+        process.communicate.assert_called_with(timeout=20)
+
+    def test_lazy_pager_popen_calls_on_stdin_call(self):
+        self.pager.stdin.foo()
+        self.assertEqual(self.popen.call_count, 1)
+
+    def test_lazy_pager_popen_calls_on_process_call(self):
+        self.pager.foo()
+        self.assertEqual(self.popen.call_count, 1)

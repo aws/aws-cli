@@ -39,6 +39,12 @@ class LazyStdin:
             self._stream = self._process.initialize().stdin
         return getattr(self._stream, item)
 
+    def flush(self):
+        # if stream has not been created yet there is no reason to create it
+        # just to call `flush`
+        if self._stream is not None:
+            return self._stream.flush()
+
 
 class LazyPager:
     # Spin up a new process only in case it has been called or its stdin
@@ -56,6 +62,14 @@ class LazyPager:
 
     def __getattr__(self, item):
         return getattr(self.initialize(), item)
+
+    def communicate(self, *args, **kwargs):
+        # if pager process has not been created yet it means we didn't
+        # write to its stdin and there is no reason to create it just
+        # to call `communicate` so we can ignore this call
+        if self._process is not None or args or kwargs:
+            return getattr(self.initialize(), 'communicate')(*args, **kwargs)
+        return None, None
 
 
 class IMDSRegionProvider(BaseProvider):

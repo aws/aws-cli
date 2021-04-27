@@ -151,6 +151,32 @@ def config_with_profile(session, files):
 
 
 @pytest.fixture
+def aws_config_copy(monkeypatch, tmpdir, session):
+    config_contents = _get_config_contents(session)
+    tmp_config_file = os.path.join(tmpdir, 'config')
+    with open(tmp_config_file, 'w') as f:
+        f.write(config_contents)
+        f.flush()
+    monkeypatch.setenv('AWS_CONFIG_FILE', tmp_config_file)
+    yield tmp_config_file
+
+
+def _get_config_contents(session):
+    config_file = session.get_config_variable('config_file')
+    if config_file:
+        config_path = os.path.expanduser(os.path.expandvars(config_file))
+        if os.path.exists(config_path):
+            with open(config_path, 'r') as f:
+                return f.read()
+    return ''
+
+
+@pytest.fixture
+def preferred_transfer_client(request, aws_config_copy):
+    aws(f'configure set s3.preferred_transfer_client {request.param}')
+
+
+@pytest.fixture
 def encrypt_key():
     return 'a' * 32
 
@@ -409,7 +435,18 @@ class BaseS3IntegrationTest:
         assert 'server error' not in p.stderr
 
 
-class TestMoveCommand(BaseS3IntegrationTest):
+@pytest.mark.parametrize(
+    'preferred_transfer_client', ['default', 'crt'], indirect=True
+)
+@pytest.mark.usefixtures('preferred_transfer_client')
+class BaseParameterizedS3ClientTest(BaseS3IntegrationTest):
+    # Use this base class if you want to run tests once for
+    # when the preferred_transfer_client is set to default and
+    # once when the preferred_transfer_client is set to crt.
+    pass
+
+
+class TestMoveCommand(BaseParameterizedS3ClientTest):
     def test_mv_local_to_s3(self, files, s3_utils, shared_bucket):
         full_path = files.create_file('foo.txt', 'this is foo.txt')
         p = aws('s3 mv %s s3://%s/foo.txt' % (full_path,
@@ -557,7 +594,7 @@ class TestMoveCommand(BaseS3IntegrationTest):
         assert 'Cannot mv a file onto itself' in p.stderr
 
 
-class TestRm(BaseS3IntegrationTest):
+class TestRm(BaseParameterizedS3ClientTest):
     @skip_if_windows('Newline in filename test not valid on windows.')
     # Windows won't let you do this.  You'll get:
     # [Errno 22] invalid mode ('w') or filename:
@@ -587,7 +624,7 @@ class TestRm(BaseS3IntegrationTest):
         assert s3_utils.key_not_exists(shared_bucket, key_name='bar.txt')
 
 
-class TestCp(BaseS3IntegrationTest):
+class TestCp(BaseParameterizedS3ClientTest):
     def test_cp_to_and_from_s3(self, files, s3_utils, shared_bucket):
         # This tests the ability to put a single file in s3
         # move it to a different bucket.
@@ -876,7 +913,7 @@ class TestCp(BaseS3IntegrationTest):
         assert contents == 'this is foo.txt'
 
 
-class TestSync(BaseS3IntegrationTest):
+class TestSync(BaseParameterizedS3ClientTest):
     def test_sync_with_plus_chars_paginate(self, files, shared_bucket):
         # This test ensures pagination tokens are url decoded.
         # 1. Create > 2 files with '+' in the filename.
@@ -1081,7 +1118,7 @@ class TestSync(BaseS3IntegrationTest):
         assert not os.path.exists(file_to_delete)
 
 
-class TestSourceRegion(BaseS3IntegrationTest):
+class TestSourceRegion(BaseParameterizedS3ClientTest):
     def test_cp_region(self, files, s3_utils, shared_non_dns_compatible_bucket,
                        shared_non_dns_compatible_us_east_1_bucket):
         src_region = 'us-west-2'
@@ -1156,7 +1193,7 @@ class TestSourceRegion(BaseS3IntegrationTest):
         assert s3_utils.key_not_exists(src_bucket, 'foo.txt')
 
 
-class TestWarnings(BaseS3IntegrationTest):
+class TestWarnings(BaseParameterizedS3ClientTest):
     def test_no_exist(self, files, shared_bucket):
         filename = os.path.join(files.rootdir, "no-exists-file")
         p = aws('s3 cp %s s3://%s/' % (filename, shared_bucket))
@@ -1199,7 +1236,7 @@ class TestWarnings(BaseS3IntegrationTest):
         assert warning_msg in p.stderr
 
 
-class TestUnableToWriteToFile(BaseS3IntegrationTest):
+class TestUnableToWriteToFile(BaseParameterizedS3ClientTest):
     @skip_if_windows('Write permissions tests only supported on mac/linux')
     def test_no_write_access_small_file(self, files, s3_utils, shared_bucket):
         if os.geteuid() == 0:
@@ -1232,7 +1269,7 @@ class TestUnableToWriteToFile(BaseS3IntegrationTest):
 
 
 @skip_if_windows('Symlink tests only supported on mac/linux')
-class TestSymlinks(BaseS3IntegrationTest):
+class TestSymlinks(BaseParameterizedS3ClientTest):
     """
     This class test the ability to follow or not follow symlinks.
     """
@@ -1292,7 +1329,7 @@ class TestSymlinks(BaseS3IntegrationTest):
         assert warning_msg in p.stderr
 
 
-class TestUnicode(BaseS3IntegrationTest):
+class TestUnicode(BaseParameterizedS3ClientTest):
     """
     The purpose of these tests are to ensure that the commands can handle
     unicode characters in both keyname and from those generated for both
@@ -1443,7 +1480,7 @@ class TestMbRb(BaseS3IntegrationTest):
         assert p.rc == 1
 
 
-class TestOutput(BaseS3IntegrationTest):
+class TestOutput(BaseParameterizedS3ClientTest):
     """
     This ensures that arguments that affect output i.e. ``--quiet`` and
     ``--only-show-errors`` behave as expected.
@@ -1548,7 +1585,7 @@ class TestOutput(BaseS3IntegrationTest):
         assert s3_utils.key_exists(shared_bucket, long_prefix + '/f')
 
 
-class TestDryrun(BaseS3IntegrationTest):
+class TestDryrun(BaseParameterizedS3ClientTest):
     """
     This ensures that dryrun works.
     """
@@ -1703,7 +1740,7 @@ class TestWebsiteConfiguration(BaseS3IntegrationTest):
         assert 'RedirectAllRequestsTo' not in parsed
 
 
-class TestIncludeExcludeFilters(BaseS3IntegrationTest):
+class TestIncludeExcludeFilters(BaseParameterizedS3ClientTest):
     def assert_no_files_would_be_uploaded(self, p):
         self.assert_no_errors(p)
         # There should be no output.
@@ -1855,7 +1892,7 @@ class TestIncludeExcludeFilters(BaseS3IntegrationTest):
         self.assert_no_files_would_be_uploaded(p)
 
 
-class TestFileWithSpaces(BaseS3IntegrationTest):
+class TestFileWithSpaces(BaseParameterizedS3ClientTest):
     def test_upload_download_file_with_spaces(self, files, shared_bucket):
         filename = files.create_file('with space.txt', 'contents')
         p = aws('s3 cp %s s3://%s/ --recursive' % (files.rootdir,
@@ -1884,7 +1921,7 @@ class TestFileWithSpaces(BaseS3IntegrationTest):
         assert p2.rc == 0
 
 
-class TestStreams(BaseS3IntegrationTest):
+class TestStreams(BaseParameterizedS3ClientTest):
     def test_upload(self, s3_utils, shared_bucket):
         """
         This tests uploading a small stream from stdin.
@@ -1978,7 +2015,7 @@ class TestLSWithProfile(BaseS3IntegrationTest):
         self.assert_no_errors(p)
 
 
-class TestNoSignRequests(BaseS3IntegrationTest):
+class TestNoSignRequests(BaseParameterizedS3ClientTest):
     def test_no_sign_request(self, files, s3_utils, shared_bucket, region):
         s3_utils.put_object(shared_bucket, 'foo', contents='bar',
                             extra_args={'ACL': 'public-read-write'})
@@ -1998,7 +2035,7 @@ class TestNoSignRequests(BaseS3IntegrationTest):
         self.assert_no_errors(p)
 
 
-class TestHonorsEndpointUrl(BaseS3IntegrationTest):
+class TestHonorsEndpointUrl(BaseParameterizedS3ClientTest):
     def test_verify_endpoint_url_is_used(self):
         # We're going to verify this indirectly by looking at the
         # debug logs.  The endpoint url we specify should be in the
@@ -2018,7 +2055,7 @@ class TestHonorsEndpointUrl(BaseS3IntegrationTest):
         assert expected in debug_logs
 
 
-class TestSSERelatedParams(BaseS3IntegrationTest):
+class TestSSERelatedParams(BaseParameterizedS3ClientTest):
     def download_and_assert_kms_object_integrity(self, bucket, key, contents,
                                                  files, s3_utils):
         s3_utils.wait_until_key_exists(bucket, key)
@@ -2206,7 +2243,7 @@ class TestSSERelatedParams(BaseS3IntegrationTest):
             assert f.read() == contents
 
 
-class TestSSECRelatedParams(BaseS3IntegrationTest):
+class TestSSECRelatedParams(BaseParameterizedS3ClientTest):
     def download_and_assert_sse_c_object_integrity(
             self, bucket, key, encrypt_key, contents, files, s3_utils):
         s3_utils.wait_until_key_exists(bucket, key,

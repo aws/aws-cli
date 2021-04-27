@@ -95,13 +95,13 @@ def human_readable_size(value):
             return '%.1f %s' % ((base * bytes_int / unit), suffix)
 
 
-def human_readable_to_bytes(value):
-    """Converts a human readable size to bytes.
+def human_readable_to_int(value):
+    """Converts a human readable size to int.
 
     :param value: A string such as "10MB".  If a suffix is not included,
         then the value is assumed to be an integer representing the size
         in bytes.
-    :returns: The converted value in bytes as an integer
+    :returns: The converted value as an integer.
 
     """
     value = value.lower()

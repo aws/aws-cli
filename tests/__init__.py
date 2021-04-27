@@ -207,9 +207,10 @@ class HTTPResponse(BaseResponse):
             headers = {}
         self.headers = headers
         self.body = body
-        # Botocore's interface uses content instead of body so just
-        # making the content an alias to the body.
+        # Botocore's interface uses content and raw instead of body so just
+        # making the content and raw aliases to the body.
         self.content = body
+        self.raw = body
 
     def on_http_request_sent(self, request):
         return self

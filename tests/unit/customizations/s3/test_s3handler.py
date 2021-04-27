@@ -61,14 +61,15 @@ class TestS3TransferHandlerFactory(unittest.TestCase):
     def setUp(self):
         self.cli_params = {}
         self.runtime_config = runtime_config()
-        self.client = mock.Mock()
+        self.transfer_manager = mock.Mock()
         self.result_queue = queue.Queue()
 
     def test_call(self):
-        factory = S3TransferHandlerFactory(
-            self.cli_params, self.runtime_config)
+        factory = S3TransferHandlerFactory(self.cli_params)
         self.assertIsInstance(
-            factory(self.client, self.result_queue), S3TransferHandler)
+            factory(self.transfer_manager, self.result_queue),
+            S3TransferHandler
+        )
 
 
 class TestS3TransferHandler(unittest.TestCase):

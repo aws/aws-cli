@@ -10,9 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import contextlib
+import io
 import json
 import os
 
+import awscrt.io
 from prompt_toolkit import Application
 from prompt_toolkit.keys import Keys
 
@@ -25,7 +28,7 @@ from awscli.autoprompt.prompttoolkit import (
     PromptToolkitCompleter, PromptToolkitPrompter
 )
 from awscli.autoprompt.history import HistoryDriver
-from awscli.testutils import unittest, FileCreator, cd
+from awscli.testutils import unittest, mock, FileCreator, cd
 from tests import PromptToolkitApplicationStubber as ApplicationStubber
 from tests import FakeApplicationOutput
 
@@ -561,6 +564,22 @@ class TestDebugPanel(BasicPromptToolkitTest):
             self.get_current_buffer_assertion('input_buffer')
         )
         stubber.run(self.prompter.pre_run)
+
+    @mock.patch('awscrt.io.init_logging')
+    def test_debug_mode_does_not_allow_crt_logging(self, mock_init_logging):
+        app = FakeApplication()
+        prompter = PromptToolkitPrompter(
+            completion_source=self.completion_source, driver=self.driver,
+            app=app, cli_parser=self.cli_parser)
+        prompter.input_buffer = self.factory.create_input_buffer()
+        prompter.doc_buffer = self.factory.create_doc_buffer()
+        prompter.output_buffer = self.factory.create_output_buffer()
+        with contextlib.redirect_stderr(io.StringIO()):
+            prompter.prompt_for_args(['ec2', 'describe-instances', '--debug'])
+        self.assertTrue(app.debug)
+        mock_init_logging.assert_called_with(
+            awscrt.io.LogLevel.NoLogs, 'stderr'
+        )
 
 
 class TestOutputPanel(BasicPromptToolkitTest):

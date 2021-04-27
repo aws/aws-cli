@@ -70,6 +70,12 @@ class TestTransferConfig(unittest.TestCase):
             multipart_threshold=long_value)
         self.assertEqual(runtime_config['multipart_threshold'], long_value)
 
+    def test_can_set_preferred_transfer_client(self):
+        runtime_config = self.build_config_with(
+            preferred_transfer_client='crt')
+        self.assertEqual(
+            runtime_config['preferred_transfer_client'], 'crt')
+
     def test_converts_max_bandwidth_as_string(self):
         runtime_config = self.build_config_with(max_bandwidth='1MB/s')
         self.assertEqual(runtime_config['max_bandwidth'], 1024 * 1024)
@@ -78,9 +84,26 @@ class TestTransferConfig(unittest.TestCase):
         with self.assertRaises(transferconfig.InvalidConfigError):
             self.build_config_with(max_bandwidth='1MB')
 
-    def test_validates_max_bandwidth_in_bits_per_second(self):
+    def test_converts_max_bandwidth_in_bits_per_sec_to_bytes_per_sec(self):
+        runtime_config = self.build_config_with(max_bandwidth='8Mb/s')
+        self.assertEqual(runtime_config['max_bandwidth'], 1024 * 1024)
+
+    def test_converts_target_bandwidth_as_string(self):
+        runtime_config = self.build_config_with(target_bandwidth='5MB/s')
+        self.assertEqual(runtime_config['target_bandwidth'], 5 * 1024 * 1024)
+
+    def test_validates_target_bandwidth_no_seconds(self):
         with self.assertRaises(transferconfig.InvalidConfigError):
-            self.build_config_with(max_bandwidth='1Mb/s')
+            self.build_config_with(target_bandwidth='1MB')
+
+    def test_converts_target_bandwidth_in_bits_per_sec_to_bytes_per_sec(self):
+        runtime_config = self.build_config_with(target_bandwidth='1Mb/s')
+        self.assertEqual(
+            runtime_config['target_bandwidth'], 1 * 1024 * 1024 / 8)
+
+    def test_validates_preferred_transfer_client_choices(self):
+        with self.assertRaises(transferconfig.InvalidConfigError):
+            self.build_config_with(preferred_transfer_client='not-supported')
 
 
 class TestConvertToS3TransferConfig(unittest.TestCase):

@@ -21,6 +21,7 @@ import logging
 import io
 
 import mock
+import awscrt.io
 from awscli.compat import six
 from botocore import xform_name
 from botocore.awsrequest import AWSResponse
@@ -376,6 +377,22 @@ class TestCliDriver(unittest.TestCase):
             rc = driver.main(['ec2'])
         self.assertEqual(rc, 252)
         self.assertEqual(1, fake_stderr.getvalue().count('CLI version:'))
+
+    @mock.patch('awscrt.io.init_logging')
+    def test_debug_enables_crt_logging(self, mock_init_logging):
+        with contextlib.redirect_stderr(io.StringIO()):
+            self.driver.main(
+                ['s3', 'list-objects', '--bucket', 'foo', '--debug'])
+        mock_init_logging.assert_called_with(
+            awscrt.io.LogLevel.Debug, 'stderr'
+        )
+
+    @mock.patch('awscrt.io.init_logging')
+    def test_no_debug_disables_crt_logging(self, mock_init_logging):
+        self.driver.main(['s3', 'list-objects', '--bucket', 'foo'])
+        mock_init_logging.assert_called_with(
+            awscrt.io.LogLevel.NoLogs, 'stderr'
+        )
 
 
 class TestCliDriverHooks(unittest.TestCase):

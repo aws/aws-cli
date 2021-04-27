@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.19.59
+=======
+
+* api-change:``auditmanager``: This release restricts using backslashes in control, assessment, and framework names. The controlSetName field of the UpdateAssessmentFrameworkControlSet API now allows strings without backslashes.
+
+
 1.19.58
 =======
 

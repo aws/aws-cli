@@ -2,6 +2,29 @@
 CHANGELOG
 =========
 
+2.2.0
+=====
+
+* api-change:``iotwireless``: Add a new optional field MessageType to support Sidewalk devices in SendDataToWirelessDevice API
+* api-change:``forecast``: This release adds EstimatedTimeRemaining minutes field to the DescribeDatasetImportJob, DescribePredictor, DescribeForecast API response which denotes the time remaining to complete the job IN_PROGRESS.
+* enhancement:``s3``: Add support for expressing rate configurations (e.g. ``max_bandwidth``) in terms of bits per second (``b/s``).
+* api-change:``elasticache``: This release introduces log delivery of Redis slow log from Amazon ElastiCache.
+* api-change:``kinesisanalyticsv2``: Amazon Kinesis Data Analytics now supports custom application maintenance configuration using UpdateApplicationMaintenanceConfiguration API for Apache Flink applications. Customers will have visibility when their application is under maintenance status using 'MAINTENANCE' application status.
+* api-change:``glue``: Adding Kafka Client Auth Related Parameters
+* api-change:``eks``: This release updates existing Amazon EKS input validation so customers will see an InvalidParameterException instead of a ParamValidationError when they enter 0 for minSize and/or desiredSize. It also adds LaunchTemplate information to update responses and a new "CUSTOM" value for AMIType.
+* api-change:``cognito-idp``: Documentation updates for cognito-idp
+* feature:``s3``: Add experimental support for performing S3 transfers using the AWS Common Runtime (CRT). It provides a C-based S3 transfer client that can improve transfer throughput for ``s3`` commands.
+* api-change:``mediapackage``: Add support for Widevine DRM on CMAF origin endpoints. Both Widevine and FairPlay DRMs can now be used simultaneously, with CBCS encryption.
+* api-change:``ec2``: Adding support for Red Hat Enterprise Linux with HA for Reserved Instances.
+* api-change:``auditmanager``: This release restricts using backslashes in control, assessment, and framework names. The controlSetName field of the UpdateAssessmentFrameworkControlSet API now allows strings without backslashes.
+* api-change:``mediaconvert``: Documentation updates for mediaconvert
+* api-change:``codeguru-reviewer``: Include KMS Key Details in Repository Association APIs to enable usage of customer managed KMS Keys.
+* api-change:``personalize``: Added support for exporting data imported into an Amazon Personalize dataset to a specified data source (Amazon S3 bucket).
+* api-change:``securityhub``: Replaced the term "master" with "administrator". Added new actions to replace AcceptInvitation, GetMasterAccount, and DisassociateFromMasterAccount. In Member, replaced MasterId with AdministratorId.
+* bugfix:``pager``: Fix bug with spawning pager process if there is not output. Fixes `#5144 <https://github.com/aws/aws-cli/issues/5144>`__
+* api-change:``sns``: Amazon SNS adds two new attributes, TemplateId and EntityId, for using sender IDs to send SMS messages to destinations in India.
+
+
 2.1.39
 ======
 

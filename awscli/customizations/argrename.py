@@ -132,6 +132,13 @@ HIDDEN_ALIASES = {
     'lambda.publish-version.code-sha256': 'code-sha-256',
     'lightsail.import-key-pair.public-key-base64': 'public-key-base-64',
     'opsworks.register-volume.ec2-volume-id': 'ec-2-volume-id',
+    'mgn.*.replication-servers-security-groups-ids':
+        'replication-servers-security-groups-i-ds',
+    'mgn.*.source-server-ids': 'source-server-i-ds',
+    'mgn.*.replication-configuration-template-ids':
+        'replication-configuration-template-i-ds',
+    'elasticache.create-replication-group.preferred-cache-cluster-azs':
+        'preferred-cache-cluster-a-zs'
 }
 
 

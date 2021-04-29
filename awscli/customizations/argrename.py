@@ -103,6 +103,20 @@ ARGUMENT_RENAMES = {
     'ecs.execute-command.no-interactive': 'non-interactive',
 }
 
+# Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,
+# an alias is created to the original argument and marked as undocumented.
+# This is useful when you need to change the name of an argument but you
+# still need to support the old argument.
+HIDDEN_ALIASES = {
+    'mgn.*.replication-servers-security-groups-ids':
+        'replication-servers-security-groups-i-ds',
+    'mgn.*.source-server-ids': 'source-server-i-ds',
+    'mgn.*.replication-configuration-template-ids':
+        'replication-configuration-template-i-ds',
+    'elasticache.create-replication-group.preferred-cache-cluster-azs':
+        'preferred-cache-cluster-a-zs'
+}
+
 
 def register_arg_renames(cli):
     for original, new_name in ARGUMENT_RENAMES.items():

@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.19.61
+=======
+
+* enhancement:arguments: Remove redundant '-' from two character pluralized acronyms in argument names
+* api-change:``macie2``: The Amazon Macie API now provides S3 bucket metadata that indicates whether a bucket policy requires server-side encryption of objects when objects are uploaded to the bucket.
+* api-change:``ecs``: Add support for EphemeralStorage on TaskDefinition and TaskOverride
+* api-change:``chime``: Increase AppInstanceUserId length to 64 characters
+* api-change:``organizations``: Minor text updates for AWS Organizations API Reference
+* bugfix:``configure``: Fix `list` command to show correct profile location when AWS_DEFAULT_PROFILE set, fixes `#6119 <https://github.com/aws/aws-cli/issues/6119>`__
+
+
 1.19.60
 =======
 

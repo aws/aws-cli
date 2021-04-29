@@ -123,6 +123,10 @@ def register_arg_renames(cli):
         event_portion, original_arg_name = original.rsplit('.', 1)
         cli.register('building-argument-table.%s' % event_portion,
                      rename_arg(original_arg_name, new_name))
+    for original, new_name in HIDDEN_ALIASES.items():
+        event_portion, original_arg_name = original.rsplit('.', 1)
+        cli.register('building-argument-table.%s' % event_portion,
+                     hidden_alias(original_arg_name, new_name))
 
 
 def rename_arg(original_arg_name, new_name):
@@ -130,3 +134,10 @@ def rename_arg(original_arg_name, new_name):
         if original_arg_name in argument_table:
             utils.rename_argument(argument_table, original_arg_name, new_name)
     return _rename_arg
+
+
+def hidden_alias(original_arg_name, alias_name):
+    def _alias_arg(argument_table, **kwargs):
+        if original_arg_name in argument_table:
+            utils.make_hidden_alias(argument_table, original_arg_name, alias_name)
+    return _alias_arg

@@ -11,6 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+import sys
+import os.path
 import subprocess
 
 from botocore.session import Session
@@ -27,7 +29,7 @@ from awscli.alias import ExternalAliasCommand
 from awscli.argparser import MainArgParser
 from awscli.commands import CLICommand
 
-
+# create class FakeParsedArgs(object):
 class FakeParsedArgs(object):
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
@@ -41,7 +43,7 @@ class FakeParsedArgs(object):
     def __contains__(self, key):
         return key in self.__dict__
 
-
+# create class TestAliasLoader(unittest.TestCase):
 class TestAliasLoader(unittest.TestCase):
     def setUp(self):
         self.files = FileCreator()
@@ -117,7 +119,7 @@ class TestAliasLoader(unittest.TestCase):
             {'my-alias': 'my-alias-value',
              'my-second-alias': 'my-second-alias-value'})
 
-
+# create class TestAliasCommandInjector(unittest.TestCase):
 class TestAliasCommandInjector(unittest.TestCase):
     def setUp(self):
         self.files = FileCreator()
@@ -188,7 +190,7 @@ class TestAliasCommandInjector(unittest.TestCase):
         builtin_cmd.assert_called_with(
             [], FakeParsedArgs(command='builtin'))
 
-
+# create class TestBaseAliasCommand(unittest.TestCase):
 class TestBaseAliasCommand(unittest.TestCase):
     def test_name(self):
         alias_cmd = BaseAliasCommand('alias-name', 'alias-value')
@@ -196,7 +198,7 @@ class TestBaseAliasCommand(unittest.TestCase):
         alias_cmd.name = 'new-alias-name'
         self.assertEqual(alias_cmd.name, 'new-alias-name')
 
-
+# create class TestServiceAliasCommand(unittest.TestCase):
 class TestServiceAliasCommand(unittest.TestCase):
     def setUp(self):
         self.alias_name = 'myalias'
@@ -512,7 +514,7 @@ class TestServiceAliasCommand(unittest.TestCase):
         with self.assertRaises(InvalidAliasException):
             alias_cmd([], FakeParsedArgs(command=self.alias_name))
 
-
+# create class TestExternalAliasCommand(unittest.TestCase):
 class TestExternalAliasCommand(unittest.TestCase):
     def setUp(self):
         self.subprocess_call = mock.Mock(spec=subprocess.call)

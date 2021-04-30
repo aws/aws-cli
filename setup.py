@@ -3,17 +3,17 @@ import codecs
 import os.path
 import re
 import sys
-
+import os 
 from setuptools import setup, find_packages
 
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-
+# create def read(*parts):
 def read(*parts):
     return codecs.open(os.path.join(here, *parts), 'r').read()
 
-
+# create def find_version(*file_paths):
 def find_version(*file_paths):
     version_file = read(*file_paths)
     version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",

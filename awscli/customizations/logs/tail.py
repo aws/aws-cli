@@ -76,7 +76,9 @@ class DetailedLogEventsFormatter(BaseLogEventsFormatter):
 
     def _format_timestamp(self, timestamp):
         return self._color_if_configured(
-            timestamp.isoformat(), self._TIMESTAMP_COLOR)
+            timestamp.isoformat(timespec='microseconds'),
+            self._TIMESTAMP_COLOR
+        )
 
 
 class TailCommand(BasicCommand):

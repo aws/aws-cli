@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.19.64
+=======
+
+* api-change:``finspace-data``: Update FinSpace Data serviceAbbreviation
+
+
 1.19.63
 =======
 

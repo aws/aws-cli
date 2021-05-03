@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.19.63
+=======
+
+* api-change:``securityhub``: Updated ASFF to add the following new resource details objects: AwsEc2NetworkAcl, AwsEc2Subnet, and AwsElasticBeanstalkEnvironment.
+* api-change:``finspace``: This is the initial SDK release for the management APIs for Amazon FinSpace. Amazon FinSpace is a data management and analytics service for the financial services industry (FSI).
+* api-change:``mturk``: Update mturk command to latest version
+* api-change:``finspace-data``: This is the initial SDK release for the data APIs for Amazon FinSpace. Amazon FinSpace is a data management and analytics application for the financial services industry (FSI).
+* api-change:``chime``: Added new BatchCreateChannelMembership API to support multiple membership creation for channels
+
+
 1.19.62
 =======
 

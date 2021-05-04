@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.19.65
+=======
+
+* api-change:``health``: Documentation updates for health
+* api-change:``devops-guru``: Added GetCostEstimation and StartCostEstimation to get the monthly resource usage cost and added ability to view resource health by AWS service name and to search insights be AWS service name.
+* api-change:``chime``: This release adds the ability to search for and order international phone numbers for Amazon Chime SIP media applications.
+* api-change:``acm-pca``: This release adds the KeyStorageSecurityStandard parameter to the CreateCertificateAuthority API to allow customers to mandate a security standard to which the CA key will be stored within.
+* api-change:``sagemaker``: Enable retrying Training and Tuning Jobs that fail with InternalServerError by setting RetryStrategy.
+
+
 1.19.64
 =======
 

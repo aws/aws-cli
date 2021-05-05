@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.19.66
+=======
+
+* api-change:``finspace-data``: Documentation updates for FinSpaceData API.
+* api-change:``finspace``: Documentation updates for FinSpace API.
+
+
 1.19.65
 =======
 

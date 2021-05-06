@@ -1879,6 +1879,31 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.19.68
+=======
+
+* api-change:``snowball``: AWS Snow Family adds APIs for ordering and managing Snow jobs with long term pricing
+* api-change:``servicediscovery``: Bugfix: Improved input validation for RegisterInstance action, InstanceId field
+* api-change:``ssm``: SSM feature release - ChangeCalendar integration with StateManager.
+* api-change:``kafka``: IAM Access Control for Amazon MSK enables you to create clusters that use IAM to authenticate clients and to allow or deny Apache Kafka actions for those clients.
+
+
+1.19.67
+=======
+
+* api-change:``kinesisanalyticsv2``: Amazon Kinesis Analytics now supports RollbackApplication for Apache Flink applications to revert the application to the previous running version
+* api-change:``sagemaker``: Amazon SageMaker Autopilot now provides the ability to automatically deploy the best model to an endpoint
+* api-change:``auditmanager``: This release updates the CreateAssessmentFrameworkControlSet and UpdateAssessmentFrameworkControlSet API data types. For both of these data types, the control set name is now a required attribute.
+* api-change:``nimble``: Documentation Updates for Amazon Nimble Studio.
+
+
+1.19.66
+=======
+
+* api-change:``finspace-data``: Documentation updates for FinSpaceData API.
+* api-change:``finspace``: Documentation updates for FinSpace API.
+
+
 1.19.65
 =======
 

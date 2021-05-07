@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.19.69
+=======
+
+* api-change:``lakeformation``: This release adds Tag Based Access Control to AWS Lake Formation service
+* api-change:``connect``: Adds tagging support for Connect APIs CreateIntegrationAssociation and CreateUseCase.
+* api-change:``lookoutmetrics``: Enforcing UUID style for parameters that are already in UUID format today. Documentation specifying eventual consistency of lookoutmetrics resources.
+
+
 1.19.68
 =======
 

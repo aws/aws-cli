@@ -174,6 +174,10 @@ def test_error_parsing():
     yield (_is_error, "foo={bar=bar")
     yield (_is_error, "foo=bar,")
     yield (_is_error, "foo==bar,\nbar=baz")
+    # Duplicate keys should error otherwise they silently
+    # set only one of the values.
+    yield (_is_error, 'foo=bar,foo=qux')
+
 
 def _is_error(expr):
     try:

@@ -2,30 +2,17 @@
 
 The following ``list-audit-mitigation-actions-tasks`` example lists the mitigation actions that were applied to findings within the specified time period. ::
 
-    aws iot create-mitigation-action --cli-input-json file://params.json
-
-Contents of ``params.json``::
-
-    {
-        "actionName": "AddThingsToQuarantineGroup1Action",
-        "actionParams": {
-            "addThingsToThingGroupParams": {
-                "thingGroupNames": [
-                    "QuarantineGroup1"
-                ],
-                "overrideDynamicGroups": true
-            }
-        },
-        "roleArn": "arn:aws:iam::123456789012:role/service-role/MoveThingsToQuarantineGroupRole"
-    }
+    aws iot list-audit-mitigation-actions-tasks \
+        --start-time 1594157400 \
+        --end-time 1594157430
 
 Output::
 
     {
         "tasks": [
             {
-                "taskId": "ResetPolicyTask01",
-                "startTime": "2019-12-10T15:13:19.457000-08:00",
+                    "taskId": "0062f2d6-3999-488f-88c7-bef005414103",
+                    "startTime": "2020-07-07T14:30:15.172000-07:00",
                 "taskStatus": "COMPLETED"
             }
         ]

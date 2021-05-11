@@ -3,6 +3,8 @@
 # which doesn't have argparse.  Given that argparse is
 # a dependency that eventually gets installed, we could
 # try to bootstrap, but using optparse is just easier.
+from __future__ import print_function
+
 import optparse
 import os
 import platform
@@ -20,8 +22,10 @@ INSTALL_DIR = os.path.expanduser(os.path.join(
     '~', '.local', 'lib', 'aws'))
 GTE_PY37 = sys.version_info[:2] >= (3, 7)
 UNSUPPORTED_PYTHON = (
-    (sys.version_info[0] == 2 and sys.version_info[:2] <= (2, 6)) or
-    (sys.version_info[0] == 3 and sys.version_info[:2] <= (3, 3))
+    (2,6),
+    (3,3),
+    (3,4),
+    (3,5),
 )
 INSTALL_ARGS = (
     '--no-binary :all: --no-build-isolation --no-cache-dir --no-index '
@@ -34,6 +38,29 @@ class BadRCError(Exception):
 
 class MultipleBundlesError(Exception):
     pass
+
+
+class PythonDeprecationWarning(Warning):
+    """
+    Python version being used is scheduled to become unsupported
+    in an future release. See warning for specifics.
+    """
+    pass
+
+
+def _build_deprecations():
+    py_27_params = {
+        'date': 'July 15, 2021',
+        'blog_link': 'https://aws.amazon.com/blogs/developer/announcing-end-'
+                     'of-support-for-python-2-7-in-aws-sdk-for-python-and-'
+                     'aws-cli-v1/'
+    }
+    return {
+        (2,7): py_27_params
+    }
+
+
+DEPRECATED_PYTHON = _build_deprecations()
 
 
 @contextmanager
@@ -181,17 +208,31 @@ def main():
                       "-b /usr/local/bin/aws.  This is an optional argument. "
                       "If you do not provide this argument you will have to "
                       "add INSTALL_DIR/bin to your PATH.")
-    if UNSUPPORTED_PYTHON:
+    py_version = sys.version_info[:2]
+    if py_version in UNSUPPORTED_PYTHON:
         unsupported_python_msg = (
             "Unsupported Python version detected: Python %s.%s\n"
-            "To continue using this installer you must use Python 2.7 "
-            "and greater or Python 3.4 and greater.\n"
+            "To continue using this installer you must use Python 2.7, "
+            "Python 3.6 or later.\n"
             "For more information see the following blog post:\n"
             "https://aws.amazon.com/blogs/developer/deprecation-of-python-2-6"
             "-and-python-3-3-in-botocore-boto3-and-the-aws-cli/"
         )
-        print(unsupported_python_msg % sys.version_info[:2])
+        print(unsupported_python_msg % py_version)
         sys.exit(1)
+
+    if py_version in DEPRECATED_PYTHON:
+        params = DEPRECATED_PYTHON[py_version]
+        deprecated_python_msg = (
+            "Deprecated Python version detected: Python {}.{}\n"
+            "Starting {}, the AWS CLI will no longer support "
+            "this version of Python. To continue receiving service updates, "
+            "bug fixes, and security updates please upgrade to Python 3.6 or "
+            "later. More information can be found here: {}"
+        ).format(
+            py_version[0], py_version[1], params['date'], params['blog_link']
+        )
+        print(deprecated_python_msg, file=sys.stderr)
 
     opts = parser.parse_args()[0]
     working_dir = create_working_dir()
@@ -204,6 +245,11 @@ def main():
             print("You can now run: %s --version" % opts.bin_location)
         else:
             print("You can now run: %s --version" % real_location)
+        print('\nNote: AWS CLI version 2, the latest major version '
+              'of the AWS CLI, is now stable and recommended for general '
+              'use. For more information, see the AWS CLI version 2 '
+              'installation instructions at: https://docs.aws.amazon.com/cli/'
+              'latest/userguide/install-cliv2.html')
     finally:
         shutil.rmtree(working_dir)
 

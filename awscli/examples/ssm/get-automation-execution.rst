@@ -1,76 +1,58 @@
-**To display the details of an Automation Execution**
+**To display details about an automation execution**
 
-This example displays the details of an Automation Execution.
+The following ``get-automation-execution`` example displays detailed information about an Automation execution. ::
 
-Command::
-
-  aws ssm get-automation-execution --automation-execution-id "4105a4fc-f944-11e6-9d32-8fb2db27a909"
+    aws ssm get-automation-execution \
+        --automation-execution-id 73c8eef8-f4ee-4a05-820c-e354fEXAMPLE
 
 Output::
 
-  {
-    "AutomationExecution": {
-        "AutomationExecutionStatus": "Failed",
-        "Parameters": {
-            "SourceAmiId": [
-                "ami-f173cc91"
+    {
+        "AutomationExecution": {
+            "AutomationExecutionId": "73c8eef8-f4ee-4a05-820c-e354fEXAMPLE",
+            "DocumentName": "AWS-StartEC2Instance",
+            "DocumentVersion": "1",
+            "ExecutionStartTime": 1583737233.748,
+            "ExecutionEndTime": 1583737234.719,
+            "AutomationExecutionStatus": "Success",
+            "StepExecutions": [
+                {
+                    "StepName": "startInstances",
+                    "Action": "aws:changeInstanceState",
+                    "ExecutionStartTime": 1583737234.134,
+                    "ExecutionEndTime": 1583737234.672,
+                    "StepStatus": "Success",
+                    "Inputs": {
+                        "DesiredState": "\"running\"",
+                        "InstanceIds": "[\"i-0cb99161f6EXAMPLE\"]"
+                    },
+                    "Outputs": {
+                        "InstanceStates": [
+                            "running"
+                        ]
+                    },
+                    "StepExecutionId": "95e70479-cf20-4d80-8018-7e4e2EXAMPLE",
+                    "OverriddenParameters": {}
+                }
             ],
-            "AutomationAssumeRole": [
-                "arn:aws:iam::812345678901:role/SSMAutomationRole"
-            ],
-            "InstanceIamRole": [
-                "EC2InstanceRole"
-            ]
-        },
-        "Outputs": {
-            "createImage.ImageId": [
-                "No output available yet because the step is not successfully executed"
-            ]
-        },
-        "DocumentName": "AWS-UpdateLinuxAmi",
-        "AutomationExecutionId": "4105a4fc-f944-11e6-9d32-8fb2db27a909",
-        "FailureMessage": "Step launchInstance failed maximum allowed times. You are not authorized to perform this operation. Encoded authorization failure message: --truncated-- (Service: AmazonEC2; Status Code: 403; Error Code: UnauthorizedOperation; Request ID: 6a002f94-ba37-43fd-99e6-39517715fce5)",
-        "ExecutionEndTime": 1487798228.456,
-        "DocumentVersion": "1",
-        "ExecutionStartTime": 1487798222.746,
-        "StepExecutions": [
-            {
-                "Inputs": {
-                    "MaxInstanceCount": "1",
-                    "UserData": "\"--truncated--\"",
-                    "MinInstanceCount": "1",
-                    "ImageId": "\"ami-f173cc91\"",
-                    "IamInstanceProfileName": "\"EC2InstanceRole\"",
-                    "InstanceType": "\"t2.micro\""
-                },
-                "StepName": "launchInstance",
-                "FailureMessage": "Step launchInstance failed maximum allowed times. You are not authorized to perform this operation. Encoded authorization failure message: --truncated--)",
-                "ExecutionEndTime": 1487798226.014,
-                "ExecutionStartTime": 1487798223.346,
-                "Action": "aws:runInstances",
-                "StepStatus": "Failed"
+            "StepExecutionsTruncated": false,
+            "Parameters": {
+                "AutomationAssumeRole": [
+                    ""
+                ],
+                "InstanceId": [
+                    "i-0cb99161f6EXAMPLE"
+                ]
             },
-            {
-                "Action": "aws:runCommand",
-                "StepName": "updateOSSoftware",
-                "StepStatus": "Pending"
-            },
-            {
-                "Action": "aws:changeInstanceState",
-                "StepName": "stopInstance",
-                "StepStatus": "Pending"
-            },
-            {
-                "Action": "aws:createImage",
-                "StepName": "createImage",
-                "StepStatus": "Pending"
-            },
-            {
-                "Action": "aws:changeInstanceState",
-                "StepName": "terminateInstance",
-                "StepStatus": "Pending"
+            "Outputs": {},
+            "Mode": "Auto",
+            "ExecutedBy": "arn:aws:sts::29884EXAMPLE:assumed-role/mw_service_role/OrchestrationService",
+            "Targets": [],
+            "ResolvedTargets": {
+                "ParameterValues": [],
+                "Truncated": false
             }
-        ]
+        }
     }
-  }
-  
+
+For more information, see `Walkthrough: Patch a Linux AMI (AWS CLI) <https://docs.aws.amazon.com/systems-manager/latest/userguide/automation-walk-patch-linux-ami-cli.html>`__ in the *AWS Systems Manager User Guide*.

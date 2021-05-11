@@ -16,7 +16,7 @@ import json
 import os
 import sys
 
-from botocore import compat
+from botocore import compat, config
 from botocore.exceptions import ClientError
 from awscli.compat import compat_open
 from awscli.customizations.ecs import exceptions, filehelpers
@@ -109,6 +109,8 @@ class ECSDeploy(BasicCommand):
     MSG_SUCCESS = ("Successfully deployed {task_def} to "
                    "service '{service}'\n")
 
+    USER_AGENT_EXTRA = 'customization/ecs-deploy'
+
     def _run_main(self, parsed_args, parsed_globals):
 
         register_task_def_kwargs, appspec_obj = \
@@ -116,7 +118,7 @@ class ECSDeploy(BasicCommand):
                                  parsed_args.codedeploy_appspec)
 
         ecs_client_wrapper = ECSClient(
-            self._session, parsed_args, parsed_globals)
+            self._session, parsed_args, parsed_globals, self.USER_AGENT_EXTRA)
 
         self.resources = self._get_resource_names(
             parsed_args, ecs_client_wrapper)
@@ -124,7 +126,8 @@ class ECSDeploy(BasicCommand):
         codedeploy_client = self._session.create_client(
             'codedeploy',
             region_name=parsed_globals.region,
-            verify=parsed_globals.verify_ssl)
+            verify=parsed_globals.verify_ssl,
+            config=config.Config(user_agent_extra=self.USER_AGENT_EXTRA))
 
         self._validate_code_deploy_resources(codedeploy_client)
 
@@ -399,13 +402,16 @@ class CodeDeployValidator():
 
 
 class ECSClient():
-    def __init__(self, session, parsed_args, parsed_globals):
+
+    def __init__(self, session, parsed_args, parsed_globals, user_agent_extra):
         self._args = parsed_args
+        self._custom_config = config.Config(user_agent_extra=user_agent_extra)
         self._client = session.create_client(
             'ecs',
             region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
-            verify=parsed_globals.verify_ssl)
+            verify=parsed_globals.verify_ssl,
+            config=self._custom_config)
 
     def get_service_details(self):
         cluster = self._args.cluster

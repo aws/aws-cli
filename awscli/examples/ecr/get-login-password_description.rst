@@ -1,15 +1,5 @@
 **To log in to an Amazon ECR registry**
 
-This command retrieves and prints a password that is valid for a specified
-registry for 12 hours. You can pass the password to the login command of the
-container client of your preference, such as Docker. After you have logged in
-to an Amazon ECR registry with this command, you can use the Docker CLI to push
-and pull images from that registry until the token expires.
+This command retrieves and displays an authentication token using the GetAuthorizationToken API that you can use to authenticate to an Amazon ECR registry. You can pass the authorization token to the login command of the container client of your preference, such as the Docker CLI. After you have authenticated to an Amazon ECR registry with this command, you can use the client to push and pull images from that registry as long as your IAM principal has access to do so until the token expires. The authorization token is valid for 12 hours.
 
-.. note::
-
-    This command displays password(s) to stdout with authentication credentials.
-    Your credentials could be visible by other users on your system in a process
-    list display or a command history. If you are not on a secure system, you
-    should consider this risk and login interactively. For more information,
-    see ``get-authorization-token``.
+This command is supported using the latest version of AWS CLI version 2 or in v1.17.10 or later of AWS CLI version 1. For information on updating to the latest AWS CLI version, see `Installing the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html>`__ in the *AWS Command Line Interface User Guide*.

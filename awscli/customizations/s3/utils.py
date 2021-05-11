@@ -47,10 +47,25 @@ _S3_ACCESSPOINT_TO_BUCKET_KEY_REGEX = re.compile(
     r'^(?P<bucket>arn:(aws).*:s3:[a-z\-0-9]+:[0-9]{12}:accesspoint[:/][^/]+)/?'
     r'(?P<key>.*)$'
 )
+_S3_OUTPOST_TO_BUCKET_KEY_REGEX = re.compile(
+    r'^(?P<bucket>arn:(aws).*:s3-outposts:[a-z\-0-9]+:[0-9]{12}:outpost[/:]'
+    r'[a-zA-Z0-9\-]{1,63}[/:]accesspoint[/:][a-zA-Z0-9\-]{1,63})[/:]?(?P<key>.*)$'
+)
+
+_S3_OUTPOST_BUCKET_ARN_TO_BUCKET_KEY_REGEX = re.compile(
+    r'^(?P<bucket>arn:(aws).*:s3-outposts:[a-z\-0-9]+:[0-9]{12}:outpost[/:]'
+    r'[a-zA-Z0-9\-]{1,63}[/:]bucket[/:]'
+    r'[a-zA-Z0-9\-]{1,63})[/:]?(?P<key>.*)$'
+)
+
+_S3_OBJECT_LAMBDA_TO_BUCKET_KEY_REGEX = re.compile(
+    r'^(?P<bucket>arn:(aws).*:s3-object-lambda:[a-z\-0-9]+:[0-9]{12}:'
+    r'accesspoint[/:][a-zA-Z0-9\-]{1,63})[/:]?(?P<key>.*)$'
+)
 
 
 def human_readable_size(value):
-    """Convert an size in bytes into a human readable format.
+    """Convert a size in bytes into a human readable format.
 
     For example::
 
@@ -63,11 +78,10 @@ def human_readable_size(value):
         >>> human_readable_size(1024 * 1024)
         '1.0 MiB'
 
-    :param value: The size in bytes
+    :param value: The size in bytes.
     :return: The size in a human readable format based on base-2 units.
 
     """
-    one_decimal_point = '%.1f'
     base = 1024
     bytes_int = float(value)
 
@@ -180,13 +194,37 @@ class StablePriorityQueue(queue.Queue):
             return bucket.popleft()
 
 
+def block_unsupported_resources(s3_path):
+    # AWS CLI s3 commands don't support object lambdas only direct API calls
+    # are available for such resources
+    if _S3_OBJECT_LAMBDA_TO_BUCKET_KEY_REGEX.match(s3_path):
+        # In AWS CLI v2 we should use
+        # awscli.customizations.exceptions.ParamValidationError
+        # instead of ValueError
+        raise ValueError(
+            's3 commands do not support S3 Object Lambda resources. '
+            'Use s3api commands instead.'
+        )
+    # AWS S3 API and AWS CLI s3 commands don't support Outpost bucket ARNs
+    # only s3control API supports them so far
+    if _S3_OUTPOST_BUCKET_ARN_TO_BUCKET_KEY_REGEX.match(s3_path):
+        raise ValueError(
+            's3 commands do not support Outpost Bucket ARNs. '
+            'Use s3control commands instead.'
+        )
+
+
 def find_bucket_key(s3_path):
     """
     This is a helper function that given an s3 path such that the path is of
     the form: bucket/key
     It will return the bucket and the key represented by the s3 path
     """
+    block_unsupported_resources(s3_path)
     match = _S3_ACCESSPOINT_TO_BUCKET_KEY_REGEX.match(s3_path)
+    if match:
+        return match.group('bucket'), match.group('key')
+    match = _S3_OUTPOST_TO_BUCKET_KEY_REGEX.match(s3_path)
     if match:
         return match.group('bucket'), match.group('key')
     s3_components = s3_path.split('/', 1)

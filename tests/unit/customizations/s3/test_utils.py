@@ -32,7 +32,7 @@ from awscli.compat import StringIO
 from awscli.testutils import FileCreator
 from awscli.customizations.s3.utils import (
     find_bucket_key,
-    guess_content_type, relative_path,
+    guess_content_type, relative_path, block_unsupported_resources,
     StablePriorityQueue, BucketLister, get_file_stat, AppendFilter,
     create_warning, human_readable_size, human_readable_to_bytes,
     set_file_utime, SetFileUtimeError, RequestParamsMapper, StdoutBytesWriter,
@@ -157,6 +157,180 @@ class TestFindBucketKey(unittest.TestCase):
         self.assertEqual(
             bucket, 'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint')
         self.assertEqual(key, 'pre/key')
+
+    def test_outpost_arn_with_colon(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
+            'accesspoint:my-accesspoint'
+        )
+        self.assertEqual(
+            bucket,
+            (
+                'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
+                'accesspoint:my-accesspoint'
+            )
+        )
+        self.assertEqual(key, '')
+
+    def test_outpost_arn_with_colon_and_key(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
+            'accesspoint:my-accesspoint/key'
+        )
+        self.assertEqual(
+            bucket,
+            (
+                'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
+                'accesspoint:my-accesspoint'
+            )
+        )
+        self.assertEqual(key, 'key')
+
+    def test_outpost_arn_with_colon_and_key_with_colon_in_name(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
+            'accesspoint:my-accesspoint/key:name'
+        )
+        self.assertEqual(
+            bucket,
+            (
+                'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
+                'accesspoint:my-accesspoint'
+            )
+        )
+        self.assertEqual(key, 'key:name')
+
+    def test_outpost_arn_with_colon_and_key_with_slash_in_name(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
+            'accesspoint:my-accesspoint/key/name'
+        )
+        self.assertEqual(
+            bucket,
+            (
+                'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
+                'accesspoint:my-accesspoint'
+            )
+        )
+        self.assertEqual(key, 'key/name')
+
+    def test_outpost_arn_with_colon_and_key_with_slash_and_colon_in_name(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
+            'accesspoint:my-accesspoint/prefix/key:name'
+        )
+        self.assertEqual(
+            bucket,
+            (
+                'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
+                'accesspoint:my-accesspoint'
+            )
+        )
+        self.assertEqual(key, 'prefix/key:name')
+
+    def test_outpost_arn_with_slash(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
+            'accesspoint/my-accesspoint'
+        )
+        self.assertEqual(
+            bucket,
+            (
+                'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
+                'accesspoint/my-accesspoint'
+            )
+        )
+        self.assertEqual(key, '')
+
+    def test_outpost_arn_with_slash_and_key(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
+            'accesspoint/my-accesspoint/key'
+        )
+        self.assertEqual(
+            bucket,
+            (
+                'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
+                'accesspoint/my-accesspoint'
+            )
+        )
+        self.assertEqual(key, 'key')
+
+    def test_outpost_arn_with_slash_and_key_with_colon_in_name(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
+            'accesspoint/my-accesspoint/key:name'
+        )
+        self.assertEqual(
+            bucket,
+            (
+                'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
+                'accesspoint/my-accesspoint'
+            )
+        )
+        self.assertEqual(key, 'key:name')
+
+    def test_outpost_arn_with_slash_and_key_with_slash_in_name(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
+            'accesspoint/my-accesspoint/key/name'
+        )
+        self.assertEqual(
+            bucket,
+            (
+                'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
+                'accesspoint/my-accesspoint'
+            )
+        )
+        self.assertEqual(key, 'key/name')
+
+    def test_outpost_arn_with_slash_and_key_with_slash_and_colon_in_name(self):
+        bucket, key = find_bucket_key(
+            'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
+            'accesspoint/my-accesspoint/prefix/key:name'
+        )
+        self.assertEqual(
+            bucket,
+            (
+                'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
+                'accesspoint/my-accesspoint'
+            )
+        )
+        self.assertEqual(key, 'prefix/key:name')
+
+
+class TestBlockUnsupportedResources(unittest.TestCase):
+    def test_object_lambda_arn_with_colon_raises_exception(self):
+        with self.assertRaisesRegexp(
+                ValueError, 'Use s3api commands instead'):
+            block_unsupported_resources(
+                'arn:aws:s3-object-lambda:us-west-2:123456789012:'
+                'accesspoint:my-accesspoint'
+            )
+
+    def test_object_lambda_arn_with_slash_raises_exception(self):
+        with self.assertRaisesRegexp(
+                ValueError, 'Use s3api commands instead'):
+            block_unsupported_resources(
+                 'arn:aws:s3-object-lambda:us-west-2:123456789012:'
+                 'accesspoint/my-accesspoint'
+            )
+
+    def test_outpost_bucket_arn_with_colon_raises_exception(self):
+        with self.assertRaisesRegexp(
+                ValueError, 'Use s3control commands instead'):
+            block_unsupported_resources(
+                'arn:aws:s3-outposts:us-west-2:123456789012:'
+                'outpost/op-0a12345678abcdefg:bucket/bucket-foo'
+            )
+
+    def test_outpost_bucket_arn_with_slash_raises_exception(self):
+        with self.assertRaisesRegexp(
+                ValueError, 'Use s3control commands instead'):
+            block_unsupported_resources(
+                 'arn:aws:s3-outposts:us-west-2:123456789012:'
+                 'outpost/op-0a12345678abcdefg/bucket/bucket-foo'
+            )
 
 
 class TestCreateWarning(unittest.TestCase):

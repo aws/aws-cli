@@ -13,13 +13,14 @@
 import json
 
 import mock
-from botocore.model import ShapeResolver, StructureShape, StringShape
-from botocore.docs.bcdoc.restdoc import ReSTDocument
+from botocore.model import ShapeResolver, StructureShape, StringShape, \
+    ListShape, MapShape
 
 from awscli.testutils import unittest, FileCreator
 from awscli.clidocs import OperationDocumentEventHandler, \
     CLIDocumentEventHandler, TopicListerDocumentEventHandler, \
     TopicDocumentEventHandler
+from awscli.bcdoc.restdoc import ReSTDocument
 from awscli.help import ServiceHelpCommand, TopicListerCommand, \
     TopicHelpCommand
 
@@ -54,7 +55,7 @@ class TestRecursiveShapes(unittest.TestCase):
                 'type': 'structure',
                 'members': {
                     'A': {'shape': 'NonRecursive'},
-                    'B':  {'shape': 'RecursiveStruct'},
+                    'B': {'shape': 'RecursiveStruct'},
                 }
             },
             'NonRecursive': {'type': 'string'}
@@ -73,7 +74,7 @@ class TestRecursiveShapes(unittest.TestCase):
                 'type': 'structure',
                 'members': {
                     'A': {'shape': 'NonRecursive'},
-                    'B':  {'shape': 'RecursiveStruct'},
+                    'B': {'shape': 'RecursiveStruct'},
                 }
             },
             'NonRecursive': {'type': 'string'}
@@ -149,6 +150,19 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         help_command.obj = operation_model
         return help_command
 
+    def get_help_docs_for_argument(self, shape):
+        arg_table = {'arg-name': mock.Mock(argument_model=shape)}
+        help_command = mock.Mock()
+        help_command.doc = ReSTDocument()
+        help_command.event_class = 'custom'
+        help_command.arg_table = arg_table
+        operation_model = mock.Mock()
+        operation_model.service_model.operation_names = []
+        help_command.obj = operation_model
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_option('arg-name', help_command)
+        return help_command.doc.getvalue().decode('utf-8')
+
     def test_breadcrumbs_man(self):
         # Create an arbitrary help command class. This was chosen
         # because it is fairly easy to instantiate.
@@ -223,17 +237,7 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
             'locationName': 'X-Amz-Header-Name'
         }
         shape = StringShape('JSONValueArg', shape)
-        arg_table = {'arg-name': mock.Mock(argument_model=shape)}
-        help_command = mock.Mock()
-        help_command.doc = ReSTDocument()
-        help_command.event_class = 'custom'
-        help_command.arg_table = arg_table
-        operation_model = mock.Mock()
-        operation_model.service_model.operation_names = []
-        help_command.obj = operation_model
-        operation_handler = OperationDocumentEventHandler(help_command)
-        operation_handler.doc_option('arg-name', help_command)
-        rendered = help_command.doc.getvalue().decode('utf-8')
+        rendered = self.get_help_docs_for_argument(shape)
         self.assertIn('(JSON)', rendered)
 
     def test_documents_enum_values(self):
@@ -242,20 +246,100 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
             'enum': ['FOO', 'BAZ']
         }
         shape = StringShape('EnumArg', shape)
-        arg_table = {'arg-name': mock.Mock(argument_model=shape)}
-        help_command = mock.Mock()
-        help_command.doc = ReSTDocument()
-        help_command.event_class = 'custom'
-        help_command.arg_table = arg_table
-        operation_model = mock.Mock()
-        operation_model.service_model.operation_names = []
-        help_command.obj = operation_model
-        operation_handler = OperationDocumentEventHandler(help_command)
-        operation_handler.doc_option('arg-name', help_command)
-        rendered = help_command.doc.getvalue().decode('utf-8')
+        rendered = self.get_help_docs_for_argument(shape)
         self.assertIn('Possible values', rendered)
         self.assertIn('FOO', rendered)
         self.assertIn('BAZ', rendered)
+
+    def test_documents_recursive_input(self):
+        shape_map = {
+            'RecursiveStruct': {
+                'type': 'structure',
+                'members': {
+                    'A': {'shape': 'NonRecursive'},
+                    'B': {'shape': 'RecursiveStruct'},
+                }
+            },
+            'NonRecursive': {'type': 'string'}
+        }
+        shape = StructureShape('RecursiveStruct',
+                               shape_map['RecursiveStruct'],
+                               ShapeResolver(shape_map))
+        rendered = self.get_help_docs_for_argument(shape)
+        self.assertIn('( ... recursive ... )', rendered)
+
+    def test_documents_nested_structure(self):
+        shape_map = {
+            'UpperStructure': {
+                'type': 'structure',
+                'members': {
+                    'A': {'shape': 'NestedStruct'},
+                    'B': {'shape': 'NestedStruct'},
+                }
+            },
+            'NestedStruct': {
+                'type': 'structure',
+                'members': {
+                    'Nested_A': {'shape': 'Line'},
+                    'Nested_B': {'shape': 'Line'},
+                }
+            },
+            'Line': {'type': 'string'}
+        }
+        shape = StructureShape('UpperStructure',
+                               shape_map['UpperStructure'],
+                               ShapeResolver(shape_map))
+        rendered = self.get_help_docs_for_argument(shape)
+        self.assertEqual(rendered.count('A -> (structure)'), 1)
+        self.assertEqual(rendered.count('B -> (structure)'), 1)
+        self.assertEqual(rendered.count('Nested_A -> (string)'), 2)
+        self.assertEqual(rendered.count('Nested_B -> (string)'), 2)
+
+    def test_documents_nested_list(self):
+        shape_map = {
+            'UpperList': {
+                'type': 'list',
+                'member': {'shape': 'NestedStruct'},
+            },
+            'NestedStruct': {
+                'type': 'structure',
+                'members': {
+                    'Nested_A': {'shape': 'Line'},
+                    'Nested_B': {'shape': 'Line'},
+                }
+            },
+            'Line': {'type': 'string'}
+        }
+        shape = ListShape('UpperList', shape_map['UpperList'],
+                          ShapeResolver(shape_map))
+        rendered = self.get_help_docs_for_argument(shape)
+        self.assertEqual(rendered.count('(structure)'), 1)
+        self.assertEqual(rendered.count('Nested_A -> (string)'), 1)
+        self.assertEqual(rendered.count('Nested_B -> (string)'), 1)
+
+    def test_documents_nested_map(self):
+        shape_map = {
+            'UpperMap': {
+                'type': 'map',
+                'key': {'shape': 'NestedStruct'},
+                'value': {'shape': 'NestedStruct'},
+            },
+            'NestedStruct': {
+                'type': 'structure',
+                'members': {
+                    'Nested_A': {'shape': 'Line'},
+                    'Nested_B': {'shape': 'Line'},
+                }
+            },
+            'Line': {'type': 'string'}
+        }
+        shape = MapShape('UpperMap', shape_map['UpperMap'],
+                         ShapeResolver(shape_map))
+        rendered = self.get_help_docs_for_argument(shape)
+        self.assertEqual(rendered.count('key -> (structure)'), 1)
+        self.assertEqual(rendered.count('value -> (structure)'), 1)
+        self.assertEqual(rendered.count('Nested_A -> (string)'), 2)
+        self.assertEqual(rendered.count('Nested_B -> (string)'), 2)
 
     def test_description_only_for_crosslink_manpage(self):
         help_command = self.create_help_command()

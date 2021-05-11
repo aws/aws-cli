@@ -31,4 +31,16 @@ The following ``create-flow-logs`` example creates a flow log that captures all 
         --log-destination arn:aws:s3:::flow-log-bucket/my-custom-flow-logs/ \
         --log-format '${version} ${vpc-id} ${subnet-id} ${instance-id} ${srcaddr} ${dstaddr} ${srcport} ${dstport} ${protocol} ${tcp-flags} ${type} ${pkt-srcaddr} ${pkt-dstaddr}'
 
+**Example 3: To create a flow log with a one-minute maximum aggregation interval**
+
+The following ``create-flow-logs`` example creates a flow log that captures all traffic for the specified VPC and delivers the flow logs to an Amazon S3 bucket. The ``--max-aggregation-interval`` parameter specifies a maximum aggregation interval of 60 seconds (1 minute). ::
+
+    aws ec2 create-flow-logs \
+        --resource-type VPC \
+        --resource-ids vpc-00112233344556677 \
+        --traffic-type ALL \
+        --log-destination-type s3 \
+        --log-destination arn:aws:s3:::flow-log-bucket/my-custom-flow-logs/ \
+        --max-aggregation-interval 60
+
 For more information, see `VPC Flow Logs <https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html>`__ in the *Amazon VPC User Guide*.

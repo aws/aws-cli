@@ -1,17 +1,20 @@
 **To delete a list of parameters**
 
-This example deletes a list of parameters.
+The following ``delete-parameters`` example deletes the specified parameters. ::
 
-Command::
-
-  aws ssm delete-parameters --names "HelloWorld" "GoodbyeWorld"
+    aws ssm delete-parameters \
+        --names "MyFirstParameter" "MySecondParameter" "MyInvalidParameterName"
 
 Output::
 
-  {
-    "DeletedParameters": [
-        "HelloWorld",
-        "GoodbyeWorld"
-    ],
-    "InvalidParameters": []
-  }
+    {
+        "DeletedParameters": [
+            "MyFirstParameter",
+            "MySecondParameter"
+        ],
+        "InvalidParameters": [
+            "MyInvalidParameterName"
+        ]
+    }
+
+For more information, see `Working with Parameter Store <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-working-with.html>`__ in the *AWS Systems Manager User Guide*.

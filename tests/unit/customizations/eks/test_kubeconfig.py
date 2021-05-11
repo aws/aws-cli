@@ -18,7 +18,7 @@ import tempfile
 import shutil
 from botocore.compat import OrderedDict
 
-from awscli.testutils import unittest
+from awscli.testutils import unittest, skip_if_windows
 from awscli.customizations.utils import uni_print
 from awscli.customizations.eks.kubeconfig import (KubeconfigError,
                                                   KubeconfigInaccessableError,
@@ -65,6 +65,30 @@ class TestKubeconfig(unittest.TestCase):
     def test_has_cluster_with_no_clusters(self):
         config = Kubeconfig(self._path, self._content)
         self.assertFalse(config.has_cluster("clustername"))
+
+
+class TestKubeconfigWriter(unittest.TestCase):
+
+    @skip_if_windows('Windows does not support such permissions set up')
+    def test_not_world_readable(self):
+        tmpdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tmpdir)
+        config_path = os.path.join(tmpdir, "config")
+        config = Kubeconfig(config_path, None)
+        KubeconfigWriter().write_kubeconfig(config)
+        stat = os.stat(config_path)
+        self.assertEqual(stat.st_mode & 0o777, 0o600)
+
+    def test_truncates(self):
+        tmpdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tmpdir)
+        config_path = os.path.join(tmpdir, "config")
+        with open(config_path, "w+") as f:
+            f.write("#" * 100)
+        KubeconfigWriter().write_kubeconfig(Kubeconfig(config_path, {}))
+        empty_stat = os.stat(config_path)
+        self.assertLessEqual(empty_stat.st_size, 4, "file should be '{}[newline]', 3/4 bytes long ")
+
 
 class TestKubeconfigValidator(unittest.TestCase):
     def setUp(self):

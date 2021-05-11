@@ -1,13 +1,12 @@
 **To create a listener**
 
-The following ``create-listener`` example creates a listener. ::
+The following ``create-listener`` example creates a listener with two ports. ::
 
     aws globalaccelerator create-listener \
         --accelerator-arn arn:aws:globalaccelerator::123456789012:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh \
         --port-ranges FromPort=80,ToPort=80 FromPort=81,ToPort=81 \
         --protocol TCP \
-        --region us-west-2 \
-        --idempotencytoken dcba4321-dcba-4321-dcba-dcba4321
+        --region us-west-2
 
 Output::
 

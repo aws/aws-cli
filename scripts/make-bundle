@@ -24,18 +24,15 @@ from contextlib import contextmanager
 EXTRA_RUNTIME_DEPS = [
     # Use an up to date virtualenv/pip/setuptools on > 2.6.
     ('virtualenv', '16.7.8'),
-    # The following is for python 3.4 compatibility.
-    ('colorama', '0.4.1'),
-    ('urllib3', '1.25.7'),
 ]
 BUILDTIME_DEPS = [
     ('setuptools-scm', '3.3.3'),
     ('wheel', '0.33.6'),
 ]
 PIP_DOWNLOAD_ARGS = '--no-binary :all:'
-# The constraints file is used to lock the version of dateutils needed
-# to be 2.8.0 until we can drop py26/py33 support.  This lets us put
-# botocore's version range on dateutils to be <3.0.
+# The constraints file is used to lock the version of rsa needed
+# to be 3.4.2 until we can drop py27 support. This lets us ensure
+# we're distributing a copy that works on all supported platforms.
 CONSTRAINTS_FILE = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
     'assets', 'constraints-bundled.txt'

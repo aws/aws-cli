@@ -202,7 +202,7 @@ Contents of ``ec2_attributes.json``::
             "InstanceProfile":"myRole",
             "EmrManagedMasterSecurityGroup": "sg-master1",
             "EmrManagedSlaveSecurityGroup": "sg-slave1",
-            "ServiceAccessSecurityGroup": "sg-service-access"
+            "ServiceAccessSecurityGroup": "sg-service-access",
             "AdditionalMasterSecurityGroups": ["sg-addMaster1","sg-addMaster2","sg-addMaster3","sg-addMaster4"],
             "AdditionalSlaveSecurityGroups": ["sg-addSlave1","sg-addSlave2","sg-addSlave3","sg-addSlave4"]
         }
@@ -529,3 +529,33 @@ Command::
         --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
         --security-configuration mySecurityConfiguration \
         --kerberos-attributes file://kerberos_attributes.json
+
+The following ``create-cluster`` example creates an Amazon EMR cluster that uses the ``--instance-groups`` configuration and has a managed scaling policy. ::
+
+    aws emr create-cluster \
+        --release-label emr-5.30.0 \
+        --service-role EMR_DefaultRole \
+        --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
+        --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
+        --managed-scaling-policy ComputeLimits='{MinimumCapacityUnits=2,MaximumCapacityUnits=4,UnitType=Instances}'
+
+The following ``create-cluster`` example creates an Amazon EMR cluster that uses the "--log-encryption-kms-key-id" to define KMS key ID utilized for Log encryption.
+
+Command::
+
+    aws emr create-cluster \
+        --release-label emr-5.30.0 \
+        --log-uri s3://myBucket/myLog \
+        --log-encryption-kms-key-id arn:aws:kms:us-east-1:110302272565:key/dd559181-283e-45d7-99d1-66da348c4d33 \
+        --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
+
+The following ``create-cluster`` example creates an Amazon EMR cluster that uses the "--placement-group-configs" configuration to place master nodes in a high-availability (HA) cluster within an EC2 placement group using ``SPREAD`` placement strategy.
+
+Command::
+
+    aws emr create-cluster \
+        --release-label emr-5.30.0 \
+        --service-role EMR_DefaultRole \
+        --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
+        --instance-groups InstanceGroupType=MASTER,InstanceCount=3,InstanceType=m4.largeInstanceGroupType=CORE,InstanceCount=1,InstanceType=m4.large \
+        --placement-group-configs InstanceRole=MASTER

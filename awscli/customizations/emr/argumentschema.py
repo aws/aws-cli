@@ -386,6 +386,38 @@ INSTANCE_FLEETS_SCHEMA = {
             "LaunchSpecifications": {
                 "type": "object",
                 "properties" : {
+                    "OnDemandSpecification": {
+                        "type": "object",
+                        "properties": {
+                            "AllocationStrategy": {
+                                "type": "string",
+                                "description": "The strategy to use in launching On-Demand instance fleets.",
+                                "enum": ["lowest-price"]
+                            },
+                            "CapacityReservationOptions": {
+                                "type": "object",
+                                "properties" : {
+                                    "UsageStrategy": {
+                                        "type": "string",
+                                        "description": "The strategy of whether to use unused Capacity Reservations for fulfilling On-Demand capacity.",
+                                        "enum": ["use-capacity-reservations-first"]
+                                    },
+                                    "CapacityReservationPreference": {
+                                        "type": "string",
+                                        "description": "The preference of the instance's Capacity Reservation.",
+                                        "enum": [
+                                            "open",
+                                            "none"
+                                        ]
+                                    },
+                                    "CapacityReservationResourceGroupArn": {
+                                        "type": "string",
+                                        "description": "The ARN of the Capacity Reservation resource group in which to run the instance."
+                                    }
+                                }
+                            }
+                        }
+                    },
                     "SpotSpecification": {
                         "type": "object",
                         "properties": {
@@ -404,6 +436,11 @@ INSTANCE_FLEETS_SCHEMA = {
                             "BlockDurationMinutes": {
                                 "type": "integer",
                                 "description": "Block duration in minutes."
+                            },
+                            "AllocationStrategy": {
+                                "type": "string",
+                                "description": "The strategy to use in launching Spot instance fleets.",
+                                "enum": ["capacity-optimized"]
                             }
                         }
                     }
@@ -696,6 +733,85 @@ KERBEROS_ATTRIBUTES_SCHEMA = {
         "ADDomainJoinPassword": {
             "type": "string",
             "description": "The password of the user with privileges to join instances to Active Directory."
+        }
+    }
+}
+
+MANAGED_SCALING_POLICY_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "ComputeLimits": {
+            "type": "object",
+            "description": 
+                "The EC2 unit limits for a managed scaling policy. "
+                "The managed scaling activity of a cluster is not allowed to go above "
+                "or below these limits. The limits apply to CORE and TASK groups "
+                "and exclude the capacity of the MASTER group.",
+            "properties": {
+               "MinimumCapacityUnits": {
+                  "type": "integer",
+                  "description": 
+                      "The lower boundary of EC2 units. It is measured through "
+                      "VCPU cores or instances for instance groups and measured "
+                      "through units for instance fleets. Managed scaling "
+                      "activities are not allowed beyond this boundary.",
+                  "required": True
+               },
+               "MaximumCapacityUnits": {
+                  "type": "integer",
+                  "description": 
+                      "The upper boundary of EC2 units. It is measured through "
+                      "VCPU cores or instances for instance groups and measured "
+                      "through units for instance fleets. Managed scaling "
+                      "activities are not allowed beyond this boundary.",
+                  "required": True
+               },
+               "MaximumOnDemandCapacityUnits": {
+                  "type": "integer",
+                  "description": 
+                      "The upper boundary of on-demand EC2 units. It is measured through "
+                      "VCPU cores or instances for instance groups and measured "
+                      "through units for instance fleets. The on-demand units are not "
+                      "allowed to scale beyond this boundary. "
+                      "This value must be lower than MaximumCapacityUnits."
+               },
+               "UnitType": {
+                  "type": "string",
+                  "description": "The unit type used for specifying a managed scaling policy.",
+                  "enum": ["VCPU", "Instances", "InstanceFleetUnits"],
+                  "required": True
+               },
+               "MaximumCoreCapacityUnits": {
+                  "type": "integer",
+                  "description":
+                      "The upper boundary of EC2 units for core node type in a cluster. "
+                      "It is measured through VCPU cores or instances for instance groups "
+                      "and measured through units for instance fleets. "
+                      "The core units are not allowed to scale beyond this boundary. "
+                      "The parameter is used to split capacity allocation between core and task nodes."
+               }
+            } 
+        }
+    }
+}
+
+PLACEMENT_GROUP_CONFIGS_SCHEMA = {
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "InstanceRole": {
+                "type": "string",
+                "description": "Role of the instance in the cluster.",
+                "enum": ["MASTER", "CORE", "TASK"],
+                "required": True
+            },
+            "PlacementStrategy": {
+                "type": "string",
+                "description": "EC2 Placement Group strategy associated "
+                               "with instance role.",
+                "enum": ["SPREAD", "PARTITION", "CLUSTER", "NONE"]
+            }
         }
     }
 }

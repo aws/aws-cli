@@ -1,23 +1,23 @@
-**To describe tags**
+**To describe all tags**
 
-This example describes all your tags::
+This example describes all your tags. ::
 
     aws autoscaling describe-tags
 
-The following is example output::
+Output::
 
     {
         "Tags": [
             {
                 "ResourceType": "auto-scaling-group",
-                "ResourceId": "my-auto-scaling-group",
+                "ResourceId": "my-asg",
                 "PropagateAtLaunch": true,
                 "Value": "Research",
                 "Key": "Dept"
             },
             {
                 "ResourceType": "auto-scaling-group",
-                "ResourceId": "my-auto-scaling-group",
+                "ResourceId": "my-asg",
                 "PropagateAtLaunch": true,
                 "Value": "WebServer",
                 "Key": "Role"
@@ -25,33 +25,27 @@ The following is example output::
         ]
     }
 
-To describe tags for a specific Auto Scaling group, use the ``filters`` parameter::
+For more information, see `Tagging Auto Scaling groups and instances <https://docs.aws.amazon.com/autoscaling/ec2/userguide/autoscaling-tagging.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
 
-    aws autoscaling describe-tags --filters Name=auto-scaling-group,Values=my-auto-scaling-group
+**Example 2: To describe tags for a specified group**
 
-To return a specific number of tags, use the ``max-items`` parameter::
+To describe tags for a specific Auto Scaling group, use the ``--filters`` option. ::
 
-    aws autoscaling describe-tags --max-items 1
+    aws autoscaling describe-tags --filters Name=auto-scaling-group,Values=my-asg
 
-The following is example output::
+For more information, see `Tagging Auto Scaling groups and instances <https://docs.aws.amazon.com/autoscaling/ec2/userguide/autoscaling-tagging.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
 
-    {
-        "NextToken": "Z3M3LMPEXAMPLE",
-        "Tags": [
-            {
-                "ResourceType": "auto-scaling-group",
-                "ResourceId": "my-auto-scaling-group",
-                "PropagateAtLaunch": true,
-                "Value": "Research",
-                "Key": "Dept"
-            }
-        ]
-    }
+**Example 3: To describe the specified number of tags**
 
-Use the ``NextToken`` field with the ``starting-token`` parameter in a subsequent call to get the additional tags::
+To return a specific number of tags, use the ``--max-items`` option. ::
 
-    aws autoscaling describe-tags --filters Name=auto-scaling-group,Values=my-auto-scaling-group --starting-token Z3M3LMPEXAMPLE
+    aws autoscaling describe-tags \
+        --max-items 1
 
-For more information, see `Tagging Auto Scaling Groups and Instances`_ in the *Amazon EC2 Auto Scaling User Guide*.
+If the output includes a ``NextToken`` field, there are more tags. To get the additional tags, use the value of this field with the ``--starting-token`` option in a subsequent call as follows. ::
 
-.. _`Tagging Auto Scaling Groups and Instances`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/autoscaling-tagging.html
+    aws autoscaling describe-tags \
+        --filters Name=auto-scaling-group,Values=my-asg \
+        --starting-token Z3M3LMPEXAMPLE
+
+For more information, see `Tagging Auto Scaling groups and instances <https://docs.aws.amazon.com/autoscaling/ec2/userguide/autoscaling-tagging.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

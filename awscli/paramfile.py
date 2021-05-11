@@ -32,6 +32,7 @@ logger = logging.getLogger(__name__)
 PARAMFILE_DISABLED = set([
     'api-gateway.put-integration.uri',
     'api-gateway.create-integration.integration-uri',
+    'api-gateway.update-integration.integration-uri',
     'api-gateway.create-api.target',
     'api-gateway.update-api.target',
     'appstream.create-stack.redirect-url',
@@ -105,6 +106,8 @@ PARAMFILE_DISABLED = set([
 
     'service-catalog.create-product.support-url',
     'service-catalog.update-product.support-url',
+
+    'ses.put-account-details.website-url',
 
     'sqs.add-permission.queue-url',
     'sqs.change-message-visibility.queue-url',

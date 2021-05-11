@@ -10,7 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import set_invalid_utime
 from mock import patch
 import os
 
@@ -97,22 +96,31 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         self.parsed_responses = [
             {'Contents': [
                 {'Key': 'foo', 'Size': 100,
-                 'LastModified': '00:00:00Z', 'StorageClass': 'GLACIER'}]}
+                 'LastModified': '00:00:00Z', 'StorageClass': 'GLACIER'},
+                {'Key': 'bar', 'Size': 100,
+                 'LastModified': '00:00:00Z', 'StorageClass': 'DEEP_ARCHIVE'}
+            ]}
         ]
         cmdline = '%s s3://bucket/ %s' % (
             self.prefix, self.files.rootdir)
         _, stderr, _ = self.run_cmd(cmdline, expected_rc=2)
         # There should not have been a download attempted because the
-        # operation was skipped because it is glacier incompatible.
+        # operation was skipped because it is glacier and glacier
+        # deep archive incompatible.
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
         self.assertIn('GLACIER', stderr)
+        self.assertIn('s3://bucket/foo', stderr)
+        self.assertIn('s3://bucket/bar', stderr)
 
     def test_turn_off_glacier_warnings(self):
         self.parsed_responses = [
             {'Contents': [
                 {'Key': 'foo', 'Size': 100,
-                 'LastModified': '00:00:00Z', 'StorageClass': 'GLACIER'}]}
+                 'LastModified': '00:00:00Z', 'StorageClass': 'GLACIER'},
+                {'Key': 'bar', 'Size': 100,
+                 'LastModified': '00:00:00Z', 'StorageClass': 'DEEP_ARCHIVE'}
+            ]}
         ]
         cmdline = '%s s3://bucket/ %s --ignore-glacier-warnings' % (
             self.prefix, self.files.rootdir)
@@ -126,16 +134,21 @@ class TestSyncCommand(BaseS3TransferCommandTest):
     def test_warning_on_invalid_timestamp(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
 
-        # Set the update time to a value that will raise a ValueError when
-        # converting to datetime
-        set_invalid_utime(full_path)
         cmdline = '%s %s s3://bucket/key.txt' % \
                   (self.prefix, self.files.rootdir)
         self.parsed_responses = [
             {"CommonPrefixes": [], "Contents": []},
             {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
         ]
-        self.run_cmd(cmdline, expected_rc=2)
+        # Patch get_file_stat to return a value indicating that an invalid
+        # timestamp was loaded. It is impossible to set an invalid timestamp
+        # on all OSes so it has to be patched.
+        # TODO: find another method to test this behavior without patching.
+        with patch(
+                'awscli.customizations.s3.filegenerator.get_file_stat',
+                return_value=(None, None)
+        ):
+            self.run_cmd(cmdline, expected_rc=2)
 
         # We should still have put the object
         self.assertEqual(len(self.operations_called), 2, self.operations_called)

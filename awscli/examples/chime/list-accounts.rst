@@ -18,6 +18,11 @@ Output::
                 "SupportedLicenses": [
                     "Basic",
                     "Pro"
+                ],
+                "SigninDelegateGroups": [
+                    {
+                        "GroupName": "myGroup"
+                    },
                 ]
             },
             {
@@ -30,6 +35,11 @@ Output::
                 "SupportedLicenses": [
                     "Basic",
                     "Pro"
+                ],
+                "SigninDelegateGroups": [
+                    {
+                        "GroupName": "myGroup"
+                    },
                 ]
             }
         ]

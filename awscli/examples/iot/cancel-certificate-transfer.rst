@@ -7,4 +7,4 @@ The following ``cancel-certificate-transfer`` example cancels the transfer of th
 
 This command produces no output.
 
-For more information, see `CancelCertificateTransfer <https://docs.aws.amazon.com/iot/latest/apireference/API_CancelCertificateTransfer.html>`__ in the *AWS IoT API Reference*.
+For more information, see `Transfer a certificate to another account <https://docs.aws.amazon.com/iot/latest/developerguide/transfer-cert.html>`__ in the *AWS IoT Core Developer Guide*.

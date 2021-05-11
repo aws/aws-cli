@@ -1,12 +1,10 @@
 **To create an invalidation for a CloudFront distribution**
 
-The following example creates an invalidation for the file
-``/example-path/example-file.jpg`` in the CloudFront distribution with the ID
-``EDFDVBD6EXAMPLE``::
+The following ``create-invalidation`` example creates an invalidation for the specified files in the specified CloudFront distribution::
 
     aws cloudfront create-invalidation \
         --distribution-id EDFDVBD6EXAMPLE \
-        --paths "/example-path/example-file.jpg"
+        --paths "/example-path/example-file.jpg" "/example-path/example-file2.png"
 
 Output::
 
@@ -18,8 +16,9 @@ Output::
             "CreateTime": "2019-12-05T18:24:51.407Z",
             "InvalidationBatch": {
                 "Paths": {
-                    "Quantity": 1,
+                    "Quantity": 2,
                     "Items": [
+                        "/example-path/example-file2.png",
                         "/example-path/example-file.jpg"
                     ]
                 },
@@ -28,26 +27,20 @@ Output::
         }
     }
 
-In the previous example, the AWS CLI automatically generated a random
-``CallerReference``. To specify your own ``CallerReference``, or to avoid
-passing the invalidation parameters as command line arguments, you can use a
-JSON file. The following example creates an invalidation for two files, by
-providing the invalidation parameters in a JSON file named
-``inv-batch.json``::
+In the previous example, the AWS CLI automatically generated a random ``CallerReference``. To specify your own ``CallerReference``, or to avoid passing the invalidation parameters as command line arguments, you can use a JSON file. The following example creates an invalidation for two files, by providing the invalidation parameters in a JSON file named ``inv-batch.json``::
 
     aws cloudfront create-invalidation \
         --distribution-id EDFDVBD6EXAMPLE \
         --invalidation-batch file://inv-batch.json
 
-The file ``inv-batch.json`` is a JSON document in the current folder that
-contains the following::
+Contents of ``inv-batch.json``::
 
     {
         "Paths": {
             "Quantity": 2,
             "Items": [
                 "/example-path/example-file.jpg",
-                "/example-path/example-file-2.jpg"
+                "/example-path/example-file2.png"
             ]
         },
         "CallerReference": "cli-example"
@@ -66,7 +59,7 @@ Output::
                     "Quantity": 2,
                     "Items": [
                         "/example-path/example-file.jpg",
-                        "/example-path/example-file-2.jpg"
+                        "/example-path/example-file2.png"
                     ]
                 },
                 "CallerReference": "cli-example"

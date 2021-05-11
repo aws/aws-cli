@@ -1,8 +1,9 @@
 **To enable Amazon Detective and create a new behavior graph**
 
-The following ``create-graph`` example enables Detective for the AWS account that runs the command in the Region where the command is run. The command creates a new behavior graph with that account as its master account. ::
+The following ``create-graph`` example enables Detective for the AWS account that runs the command in the Region where the command is run. A new behavior graph is created that has that account as its administrator account. The command also assigns the value Finance to the Department tag. ::
 
-    aws detective create-graph
+    aws detective create-graph \
+        --tags '{"Department": "Finance"}'
 
 Output::
 

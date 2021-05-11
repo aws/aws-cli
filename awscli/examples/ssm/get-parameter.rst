@@ -1,43 +1,44 @@
-**Example 1: To list the value for a parameter**
+**Example 1: To display the value of a parameter**
 
-The following ``get-parameter`` example lists the value for a parameter.
+The following ``get-parameter`` example lists the value for the specified single parameter. ::
 
-Command::
-
-    aws ssm get-parameter --name "helloWorld"
+    aws ssm get-parameter \
+        --name "MyStringParameter"
 
 Output::
 
     {
         "Parameter": {
-            "Name": "helloWorld",
+            "Name": "MyStringParameter",
             "Type": "String",
-            "Value": "Good day sunshine",
+            "Value": "Veni",
             "Version": 1,
             "LastModifiedDate": 1530018761.888,
-            "ARN": "arn:aws:ssm:us-east-1:123456789012:parameter/helloWorld"
+            "ARN": "arn:aws:ssm:us-east-2:111222333444:parameter/MyStringParameter"
         }
     }
 
-**Example 2: To decrypt the value for a parmeter**
+For more information, see `Working with Parameter Store <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-working-with.html>`__ in the *AWS Systems Manager User Guide*.
 
-The following ``get-parameter`` example decrypts the value of a ``SecureString`` parameter.
+**Example 2: To decrypt the value of a SecureString parameter**
 
-Command::
-  
+The following ``get-parameter`` example decrypts the value of the specified ``SecureString`` parameter. ::
+
     aws ssm get-parameter \
-        --name "helloSecureWorld" \
+        --name "MySecureStringParameter" \
         --with-decryption
 
 Output::
 
     {
         "Parameter": {
-            "Name": "helloSecureWorld",
+            "Name": "MySecureStringParameter",
             "Type": "SecureString",
-            "Value": "Good day sunshine",
-            "Version": 1,
-            "LastModifiedDate": 1530018761.888,
-            "ARN": "arn:aws:ssm:us-east-1:123456789012:parameter/helloSecureWorld"
+            "Value": "16679b88-310b-4895-a943-e0764EXAMPLE",
+            "Version": 2,
+            "LastModifiedDate": 1582155479.205,
+            "ARN": "arn:aws:ssm:us-east-2:111222333444:parameter/MySecureStringParameter"
         }
     }
+
+For more information, see `Working with Parameter Store <https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-working-with.html>`__ in the *AWS Systems Manager User Guide*.

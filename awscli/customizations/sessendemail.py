@@ -28,11 +28,11 @@ from awscli.customizations.utils import validate_mutually_exclusive_handler
 
 
 TO_HELP = ('The email addresses of the primary recipients.  '
-           'You can specify multiple recipients as space-separated values')
+           'You can specify multiple recipients by specifying this option mulitple times.')
 CC_HELP = ('The email addresses of copy recipients (Cc).  '
-           'You can specify multiple recipients as space-separated values')
+           'You can specify multiple recipients by specifying this option mulitple times.')
 BCC_HELP = ('The email addresses of blind-carbon-copy recipients (Bcc).  '
-            'You can specify multiple recipients as space-separated values')
+            'You can specify multiple recipients by specifying this option mulitple times.')
 SUBJECT_HELP = 'The subject of the message'
 TEXT_HELP = 'The raw text body of the message'
 HTML_HELP = 'The HTML body of the message'

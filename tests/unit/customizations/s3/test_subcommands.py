@@ -138,7 +138,7 @@ class TestLSCommand(unittest.TestCase):
                                     verify_ssl=None)
         parsed_args = FakeArgs(dir_op=False, paths='s3:///random_nonsense',
                                 human_readable=False, summarize=False,
-                                request_payer=None)
+                                request_payer=None, page_size=None)
         ls_command._run_main(parsed_args, parsed_global)
         # We should make no operation calls.
         call = self.session.create_client.return_value.list_buckets

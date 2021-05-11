@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.19.71
+=======
+
+* api-change:``s3control``: Documentation updates for Amazon S3-control
+* api-change:``ssm-contacts``: AWS Systems Manager Incident Manager enables faster resolution of critical application availability and performance issues, management of contacts and post incident analysis
+* api-change:``ssm-incidents``: AWS Systems Manager Incident Manager enables faster resolution of critical application availability and performance issues, management of contacts and post-incident analysis
+
+
 1.19.70
 =======
 

@@ -20,7 +20,7 @@ from tests import CLIRunner, SessionStubber, HTTPResponse
 from awscli.clidriver import AWSCLIEntryPoint
 from awscli.testutils import unittest, create_clidriver, temporary_file
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
-from awscli.compat import six
+from awscli.compat import six, urlparse
 
 
 class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
@@ -272,72 +272,43 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
         ]
 
 
-class BaseCRTTransferClientTest(unittest.TestCase):
+class BaseS3CLIRunnerTest(unittest.TestCase):
     def setUp(self):
-        self.crt_client_patch = mock.patch('s3transfer.crt.S3Client')
-        self.mock_crt_client = self.crt_client_patch.start()
-        self.mock_crt_client.return_value.make_request.side_effect = \
-            self.simulate_make_request_side_effect
-        self.config_files = FileCreator()
-        self.config_filename = os.path.join(
-            self.config_files.rootdir, 'config')
-        self.files = FileCreator()
-        self.session_stubber = IgnoreCRTRequestsSessionStubber()
+        self.session_stubber = self.get_session_stubber()
         self.cli_runner = CLIRunner(session_stubber=self.session_stubber)
-        self.set_config_file_contents(
-            self.cli_runner.env, self.config_filename)
+
         self.region = 'us-west-2'
         self.cli_runner.env['AWS_DEFAULT_REGION'] = self.region
 
+        self.config_files = FileCreator()
+        self.config_filename = os.path.join(
+            self.config_files.rootdir, 'config')
+        self.set_config_file_contents(
+            self.cli_runner.env, self.config_filename)
+
     def tearDown(self):
-        self.crt_client_patch.stop()
         self.config_files.remove_all()
-        self.files.remove_all()
+
+    def get_session_stubber(self):
+        return SessionStubber()
 
     def set_config_file_contents(self, env, config_filename):
         with open(config_filename, 'w') as f:
-            f.write(
-                '[default]\n'
-                's3 =\n'
-                '  preferred_transfer_client = crt\n'
-                '  max_concurrent_requests = 1\n'
-            )
+            f.write(self.get_config_file_contents())
             f.flush()
         env['AWS_CONFIG_FILE'] = config_filename
 
-    def simulate_make_request_side_effect(self, *args, **kwargs):
-        if kwargs.get('recv_filepath'):
-            self.simulate_file_download(kwargs['recv_filepath'])
-        s3_request = FakeCRTS3Request(
-            future=FakeCRTFuture(kwargs.get('on_done'))
-        )
-        return s3_request
-
-    def simulate_file_download(self, recv_filepath):
-        parent_dir = os.path.dirname(recv_filepath)
-        if not os.path.isdir(parent_dir):
-            os.makedirs(parent_dir)
-        with open(recv_filepath, 'w') as f:
-            # The content is arbitrary as most functional tests are just going
-            # to assert the file exists since it is the CRT writing the
-            # data to the file.
-            f.write('content')
-
-    def run_command(self, cmdline):
-        result = self.cli_runner.run(cmdline)
-        self.assertEqual(
-            result.rc, 0,
-            f'Expected rc of 0 instead got {result.rc} '
-            f'with stderr message: {result.stderr}'
+    def get_config_file_contents(self):
+        return (
+            '[default]\n'
+            's3 =\n'
+            '  max_concurrent_requests = 1\n'
         )
 
     def get_virtual_s3_host(self, bucket, region=None):
         if not region:
             region = self.region
         return f'{bucket}.s3.{region}.amazonaws.com'
-
-    def get_crt_make_request_calls(self):
-        return self.mock_crt_client.return_value.make_request.call_args_list
 
     def add_botocore_head_object_response(self):
         self.cli_runner.add_response(
@@ -382,6 +353,78 @@ class BaseCRTTransferClientTest(unittest.TestCase):
 
     def add_botocore_delete_object_response(self):
         self.cli_runner.add_response(HTTPResponse())
+
+    def assert_no_remaining_botocore_responses(self):
+        self.session_stubber.assert_no_remaining_responses()
+
+    def assert_operations_to_endpoints(self, cli_runner_result,
+                                       expected_operations_to_endpoints):
+        actual_operations_to_endpoints = []
+        for aws_request in cli_runner_result.aws_requests:
+            actual_operations_to_endpoints.append(
+                (
+                    aws_request.operation_name,
+                    urlparse.urlparse(aws_request.http_requests[0].url).netloc
+                )
+            )
+        self.assertEqual(
+            actual_operations_to_endpoints, expected_operations_to_endpoints)
+
+    def run_command(self, cmdline):
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(
+            result.rc, 0,
+            f'Expected rc of 0 instead got {result.rc} '
+            f'with stderr message: {result.stderr}'
+        )
+        return result
+
+
+class BaseCRTTransferClientTest(BaseS3CLIRunnerTest):
+    def setUp(self):
+        super(BaseCRTTransferClientTest, self).setUp()
+        self.crt_client_patch = mock.patch('s3transfer.crt.S3Client')
+        self.mock_crt_client = self.crt_client_patch.start()
+        self.mock_crt_client.return_value.make_request.side_effect = \
+            self.simulate_make_request_side_effect
+        self.files = FileCreator()
+
+    def tearDown(self):
+        super(BaseCRTTransferClientTest, self).tearDown()
+        self.crt_client_patch.stop()
+        self.files.remove_all()
+
+    def get_session_stubber(self):
+        return IgnoreCRTRequestsSessionStubber()
+
+    def get_config_file_contents(self):
+        return (
+            '[default]\n'
+            's3 =\n'
+            '  preferred_transfer_client = crt\n'
+            '  max_concurrent_requests = 1\n'
+        )
+
+    def simulate_make_request_side_effect(self, *args, **kwargs):
+        if kwargs.get('recv_filepath'):
+            self.simulate_file_download(kwargs['recv_filepath'])
+        s3_request = FakeCRTS3Request(
+            future=FakeCRTFuture(kwargs.get('on_done'))
+        )
+        return s3_request
+
+    def simulate_file_download(self, recv_filepath):
+        parent_dir = os.path.dirname(recv_filepath)
+        if not os.path.isdir(parent_dir):
+            os.makedirs(parent_dir)
+        with open(recv_filepath, 'w') as f:
+            # The content is arbitrary as most functional tests are just going
+            # to assert the file exists since it is the CRT writing the
+            # data to the file.
+            f.write('content')
+
+    def get_crt_make_request_calls(self):
+        return self.mock_crt_client.return_value.make_request.call_args_list
 
     def assert_crt_client_region(self, expected_region):
         self.assertEqual(
@@ -431,9 +474,6 @@ class BaseCRTTransferClientTest(unittest.TestCase):
                     f"start with {expected_recv_startswith}"
                 )
             )
-
-    def assert_no_remaining_botocore_responses(self):
-        self.session_stubber.assert_no_remaining_responses()
 
 
 class FakeCRTS3Request:

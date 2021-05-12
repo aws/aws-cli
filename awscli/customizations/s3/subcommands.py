@@ -913,8 +913,8 @@ class CommandArchitecture(object):
         self.parameters = parameters
         self.instructions = []
         self._transfer_manager = transfer_manager
-        self._client = source_client
-        self._source_client = transfer_client
+        self._source_client = source_client
+        self._client = transfer_client
 
     def create_instructions(self):
         """

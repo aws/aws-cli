@@ -21,7 +21,7 @@ from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.testutils import capture_input
 from awscli.compat import six, OrderedDict
 from tests.functional.s3 import (
-    BaseS3TransferCommandTest, BaseCRTTransferClientTest
+    BaseS3TransferCommandTest, BaseS3CLIRunnerTest, BaseCRTTransferClientTest
 )
 
 
@@ -1875,6 +1875,49 @@ class TestCopyPropsDefaultCpCommand(BaseCopyPropsCpCommandTest):
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_in_operations_called(
             self.copy_object_request(MetadataDirective='REPLACE')
+        )
+
+
+class TestCpSourceRegion(BaseS3CLIRunnerTest):
+    def test_respects_source_region_for_single_copy(self):
+        source_region = 'af-south-1'
+        cmdline = [
+            's3', 'cp', 's3://sourcebucket/key', 's3://bucket/',
+            '--region', self.region, '--source-region', source_region
+        ]
+        self.add_botocore_head_object_response()
+        self.add_botocore_copy_object_response()
+        result = self.run_command(cmdline)
+        self.assert_no_remaining_botocore_responses()
+        self.assert_operations_to_endpoints(
+            cli_runner_result=result,
+            expected_operations_to_endpoints=[
+                ('HeadObject',
+                 self.get_virtual_s3_host('sourcebucket', source_region)),
+                ('CopyObject',
+                 self.get_virtual_s3_host('bucket', self.region))
+            ]
+        )
+
+    def test_respects_source_region_for_recursive_copy(self):
+        source_region = 'af-south-1'
+        cmdline = [
+            's3', 'cp', 's3://sourcebucket/', 's3://bucket/',
+            '--region', self.region, '--source-region', source_region,
+            '--recursive'
+        ]
+        self.add_botocore_list_objects_response(['key'])
+        self.add_botocore_copy_object_response()
+        result = self.run_command(cmdline)
+        self.assert_no_remaining_botocore_responses()
+        self.assert_operations_to_endpoints(
+            cli_runner_result=result,
+            expected_operations_to_endpoints=[
+                ('ListObjectsV2',
+                 self.get_virtual_s3_host('sourcebucket', source_region)),
+                ('CopyObject',
+                 self.get_virtual_s3_host('bucket', self.region))
+            ]
         )
 
 

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.19.72
+=======
+
+* api-change:``ec2``: High Memory virtual instances are powered by Intel Sky Lake CPUs and offer up to 12TB of memory.
+
+
 1.19.71
 =======
 

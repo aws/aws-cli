@@ -58,7 +58,7 @@ def build_bootstrap_action_configs(region, emrfs_args):
     return bootstrap_actions
 
 
-def build_emrfs_confiuration(emrfs_args):
+def build_emrfs_configuration(emrfs_args):
     _verify_emrfs_args(emrfs_args)
     emrfs_properties = _build_emrfs_properties(emrfs_args)
 

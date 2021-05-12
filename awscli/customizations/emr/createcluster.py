@@ -573,7 +573,7 @@ class CreateCluster(Command):
     def _handle_emrfs_parameters(self, cluster, emrfs_args, release_label):
         if release_label:
             self.validate_no_emrfs_configuration(cluster)
-            emrfs_configuration = emrfsutils.build_emrfs_confiuration(
+            emrfs_configuration = emrfsutils.build_emrfs_configuration(
                 emrfs_args)
 
             self._update_cluster_dict(

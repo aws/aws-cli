@@ -43,6 +43,8 @@ class CLIDocumentEventHandler(object):
     def _get_argument_type_name(self, shape, default):
         if is_json_value_header(shape):
             return 'JSON'
+        if default == 'structure' and shape.is_document_type:
+            return 'document'
         return default
 
     def _map_handlers(self, session, event_class, mapfn):
@@ -451,7 +453,13 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             doc.style.dedent()
             doc.write('}')
         elif argument_model.type_name == 'structure':
-            self._doc_input_structure_members(doc, argument_model, stack)
+            if argument_model.is_document_type:
+                doc.write("This value is an JSON document that can have arbitrary content.")
+                doc.style.new_line()
+                doc.write("For more information on JSON document values visit: <insert section name in user guide>")
+                doc.style.new_line()
+            else:
+                self._doc_input_structure_members(doc, argument_model, stack)
 
     def _doc_input_structure_members(self, doc, argument_model, stack):
         doc.write('{')

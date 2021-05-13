@@ -379,6 +379,16 @@ class ParamShorthandParser(ParamShorthand):
             # {"Value": "shutdown"}
             return {'Value': value}
 
+        # Additional handling of special cases where a structure is
+        # a document type. Shorthand syntax is not supported and
+        # should therefore err out before attempt to parse.
+        if model.type_name == 'structure' and model.is_document_type:
+            raise shorthand.ShorthandParseError(
+                'Shorthand syntax not supported for document type input: %s' % (
+                    value
+                )
+            )
+
     def _should_parse_as_shorthand(self, cli_argument, value):
         # We first need to make sure this is a parameter that qualifies
         # for simplification.  The first short-circuit case is if it looks
@@ -470,6 +480,8 @@ class ParamShorthandDocGen(ParamShorthand):
         if len(stack) > self._MAX_STACK:
             raise TooComplexError()
         if argument_model.type_name == 'structure':
+            if argument_model.is_document_type:
+                return "Shorthand syntax not supported with documents."
             return self._structure_docs(argument_model, stack)
         elif argument_model.type_name == 'list':
             return self._list_docs(argument_model, stack)

@@ -19,7 +19,7 @@ from awscli.compat import six
 from awscli.customizations.s3.utils import relative_path
 from awscli.testutils import mock
 from tests.functional.s3 import (
-    BaseS3TransferCommandTest, BaseCRTTransferClientTest
+    BaseS3TransferCommandTest, BaseS3CLIRunnerTest, BaseCRTTransferClientTest
 )
 
 class TestSyncCommand(BaseS3TransferCommandTest):
@@ -352,6 +352,31 @@ class TestSyncCommand(BaseS3TransferCommandTest):
                 self.put_object_tagging_request(
                     'bucket', 'key', large_tag_set
                 ),
+            ]
+        )
+
+
+class TestSyncSourceRegion(BaseS3CLIRunnerTest):
+    def test_respects_source_region(self):
+        source_region = 'af-south-1'
+        cmdline = [
+            's3', 'sync', 's3://sourcebucket/', 's3://bucket/',
+            '--region', self.region, '--source-region', source_region
+        ]
+        self.add_botocore_list_objects_response(['key'])
+        self.add_botocore_list_objects_response([])
+        self.add_botocore_copy_object_response()
+        result = self.run_command(cmdline)
+        self.assert_no_remaining_botocore_responses()
+        self.assert_operations_to_endpoints(
+            cli_runner_result=result,
+            expected_operations_to_endpoints=[
+                ('ListObjectsV2',
+                 self.get_virtual_s3_host('sourcebucket', source_region)),
+                ('ListObjectsV2',
+                 self.get_virtual_s3_host('bucket', self.region)),
+                ('CopyObject',
+                 self.get_virtual_s3_host('bucket', self.region))
             ]
         )
 

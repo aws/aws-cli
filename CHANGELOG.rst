@@ -1913,6 +1913,24 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.19.73
+=======
+
+* api-change:``imagebuilder``: Text-only updates for bundled documentation feedback tickets - spring 2021.
+* api-change:``macie2``: This release of the Amazon Macie API adds support for defining run-time, S3 bucket criteria for classification jobs. It also adds resources for querying data about AWS resources that Macie monitors.
+* api-change:``securityhub``: Updated descriptions to add notes on array lengths.
+* api-change:``es``: Adds support for cold storage.
+* api-change:``events``: Update InputTransformer variable limit from 10 to 100 variables.
+* api-change:``transcribe``: Transcribe Medical now supports identification of PHI entities within transcripts
+* api-change:``detective``: Updated descriptions of array parameters to add the restrictions on the array and value lengths.
+
+
+1.19.72
+=======
+
+* api-change:``ec2``: High Memory virtual instances are powered by Intel Sky Lake CPUs and offer up to 12TB of memory.
+
+
 1.19.71
 =======
 

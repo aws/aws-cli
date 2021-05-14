@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.2.5
+=====
+
+* api-change:``imagebuilder``: Text-only updates for bundled documentation feedback tickets - spring 2021.
+* api-change:``detective``: Updated descriptions of array parameters to add the restrictions on the array and value lengths.
+* api-change:``securityhub``: Updated descriptions to add notes on array lengths.
+* bugfix:``s3``: Fixed regression in not respecting ``--source-region`` for S3 to S3 copies. Fixes `#6152 <https://github.com/aws/aws-cli/issues/6152>`__
+* api-change:``macie2``: This release of the Amazon Macie API adds support for defining run-time, S3 bucket criteria for classification jobs. It also adds resources for querying data about AWS resources that Macie monitors.
+* api-change:``es``: Adds support for cold storage.
+* api-change:``transcribe``: Transcribe Medical now supports identification of PHI entities within transcripts
+* api-change:``ec2``: High Memory virtual instances are powered by Intel Sky Lake CPUs and offer up to 12TB of memory.
+* api-change:``events``: Update InputTransformer variable limit from 10 to 100 variables.
+
+
 2.2.4
 =====
 

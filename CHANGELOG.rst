@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.19.75
+=======
+
+* api-change:``license-manager``: AWS License Manager now supports periodic report generation.
+* api-change:``personalize``: Amazon Personalize now supports the ability to optimize a solution for a custom objective in addition to maximizing relevance.
+* api-change:``iotsitewise``: Documentation updates for AWS IoT SiteWise.
+* api-change:``apprunner``: AWS App Runner is a service that provides a fast, simple, and cost-effective way to deploy from source code or a container image directly to a scalable and secure web application in the AWS Cloud.
+* api-change:``compute-optimizer``: This release enables compute optimizer to support exporting  recommendations to Amazon S3 for EBS volumes and Lambda Functions.
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``support``: Documentation updates for support
+
+
 1.19.74
 =======
 

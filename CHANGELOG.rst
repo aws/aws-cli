@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.19.76
+=======
+
+* api-change:``iam``: Add pagination to ListUserTags operation
+* api-change:``eks``: Update the EKS AddonActive waiter.
+* api-change:``autoscaling``: With this release, customers can easily use Predictive Scaling as a policy directly through Amazon EC2 Auto Scaling configurations to proactively scale their applications ahead of predicted demand.
+* api-change:``kinesisanalyticsv2``: Kinesis Data Analytics now allows rapid iteration on Apache Flink stream processing through the Kinesis Data Analytics Studio feature.
+* api-change:``lightsail``: Documentation updates for Amazon Lightsail.
+* api-change:``rekognition``: Amazon Rekognition Custom Labels adds support for customer managed encryption, using AWS Key Management Service, of image files copied into the service and files written back to the customer.
+
+
 1.19.75
 =======
 

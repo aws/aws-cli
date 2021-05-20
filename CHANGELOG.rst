@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.19.77
+=======
+
+* api-change:``iam``: Documentation updates for AWS Identity and Access Management (IAM).
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``personalize``: Added new API to stop a solution version creation that is pending or in progress for Amazon Personalize
+* api-change:``quicksight``: Add ARN based Row Level Security support to CreateDataSet/UpdateDataSet APIs.
+
+
 1.19.76
 =======
 

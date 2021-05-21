@@ -151,7 +151,7 @@ Output::
 
 **Uploading a local file stream to S3**
 
-WARNING:: PowerShell may alter the encoding of or add a CRLF to piped input.
+.. WARNING:: PowerShell may alter the encoding of or add a CRLF to piped input.
 
 The following ``cp`` command uploads a local file stream from standard input to a specified bucket and key::
 
@@ -160,7 +160,7 @@ The following ``cp`` command uploads a local file stream from standard input to 
 
 **Downloading an S3 object as a local file stream**
 
-WARNING:: PowerShell may alter the encoding of or add a CRLF to piped or redirected output.
+.. WARNING:: PowerShell may alter the encoding of or add a CRLF to piped or redirected output.
 
 The following ``cp`` command downloads an S3 object locally as a stream to standard output. Downloading as a stream is not currently compatible with the ``--recursive`` parameter::
 

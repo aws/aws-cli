@@ -157,6 +157,11 @@ The following ``cp`` command uploads a local file stream from standard input to 
 
     aws s3 cp - s3://mybucket/stream.txt
 
+**Uploading a local file stream that is larger than 50GB to S3**
+
+The following ``cp`` command uploads a 51GB local file stream from standard input to a specified bucket and key.  The ``--expected-size`` option must be provided, or the upload may fail when it reaches the default part limit of 10,000::
+
+    aws s3 cp - s3://mybucket/stream.txt --expected-size 54760833024
 
 **Downloading an S3 object as a local file stream**
 

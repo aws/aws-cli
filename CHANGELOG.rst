@@ -2,6 +2,46 @@
 CHANGELOG
 =========
 
+2.2.6
+=====
+
+* api-change:``eks``: Update the EKS AddonActive waiter.
+* api-change:``quicksight``: Add new parameters on RegisterUser and UpdateUser APIs to assign or update external ID associated to QuickSight users federated through web identity.
+* api-change:``compute-optimizer``: Adds support for 1) additional instance types, 2) additional instance metrics, 3) finding reasons for instance recommendations, and 4) platform differences between a current instance and a recommended instance type.
+* api-change:``s3``: Documentation updates for Amazon S3
+* api-change:``mediaconnect``: MediaConnect now supports JPEG XS for AWS Cloud Digital Interface (AWS CDI) uncompressed workflows, allowing you to establish a bridge between your on-premises live video network and the AWS Cloud.
+* api-change:``iot``: This release includes support for a new feature: Job templates for AWS IoT Device Management Jobs. The release includes job templates as a new resource and APIs for managing job templates.
+* api-change:``license-manager``: AWS License Manager now supports periodic report generation.
+* api-change:``lightsail``: Documentation updates for Amazon Lightsail.
+* api-change:``personalize``: Amazon Personalize now supports the ability to optimize a solution for a custom objective in addition to maximizing relevance.
+* api-change:``ec2``: This release adds support for creating and managing EC2 On-Demand Capacity Reservations on Outposts.
+* api-change:``iotsitewise``: Documentation updates for AWS IoT SiteWise.
+* api-change:``support``: Documentation updates for support
+* api-change:``neptune``: Neptune support for CopyTagsToSnapshots
+* api-change:``kinesisanalyticsv2``: Kinesis Data Analytics now allows rapid iteration on Apache Flink stream processing through the Kinesis Data Analytics Studio feature.
+* api-change:``iotdeviceadvisor``: AWS IoT Core Device Advisor is fully managed test capability for IoT devices. Device manufacturers can use Device Advisor to test their IoT devices for reliable and secure connectivity with AWS IoT.
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``iam``: Documentation updates for AWS Identity and Access Management (IAM).
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``applicationcostprofiler``: APIs for AWS Application Cost Profiler.
+* api-change:``efs``: Update efs command to latest version
+* api-change:``apprunner``: AWS App Runner is a service that provides a fast, simple, and cost-effective way to deploy from source code or a container image directly to a scalable and secure web application in the AWS Cloud.
+* api-change:``workspaces``: Adds support for Linux device types in WorkspaceAccessProperties
+* api-change:``autoscaling``: With this release, customers can easily use Predictive Scaling as a policy directly through Amazon EC2 Auto Scaling configurations to proactively scale their applications ahead of predicted demand.
+* api-change:``compute-optimizer``: This release enables compute optimizer to support exporting  recommendations to Amazon S3 for EBS volumes and Lambda Functions.
+* api-change:``quicksight``: Add ARN based Row Level Security support to CreateDataSet/UpdateDataSet APIs.
+* api-change:``ce``: Introduced FindingReasonCodes, PlatformDifferences, DiskResourceUtilization and NetworkResourceUtilization to GetRightsizingRecommendation action
+* api-change:``elasticache``: Documentation updates for elasticache
+* api-change:``forecast``: Updated attribute statistics in DescribeDatasetImportJob response to support Long values
+* api-change:``rekognition``: Amazon Rekognition Custom Labels adds support for customer managed encryption, using AWS Key Management Service, of image files copied into the service and files written back to the customer.
+* api-change:``personalize``: Added new API to stop a solution version creation that is pending or in progress for Amazon Personalize
+* api-change:``logs``: This release provides dimensions and unit support for metric filters.
+* api-change:``opsworkscm``: New PUPPET_API_CRL attribute returned by DescribeServers API; new EngineVersion of 2019 available for Puppet Enterprise servers.
+* api-change:``transfer``: AWS Transfer Family customers can now use AWS Managed Active Directory or AD Connector to authenticate their end users, enabling seamless migration of file transfer workflows that rely on AD authentication, without changing end users' credentials or needing a custom authorizer.
+* api-change:``iam``: Add pagination to ListUserTags operation
+* api-change:``sagemaker-a2i-runtime``: Documentation updates for Amazon A2I Runtime model
+
+
 2.2.5
 =====
 

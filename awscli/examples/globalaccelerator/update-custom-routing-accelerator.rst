@@ -1,10 +1,10 @@
-**To update an accelerator**
+**To update a custom routing accelerator**
 
-The following ``update-accelerator`` example modifies an accelerator to change the accelerator name to ``ExampleAcceleratorNew``. You must specify the ``US-West-2 (Oregon)`` Region to create or update accelerators. ::
+The following ``update-custom-routing-accelerator`` example modifies a custom routing accelerator to change the accelerator name. ::
 
-    aws globalaccelerator update-accelerator \
+    aws globalaccelerator --region us-west-2 update-custom-routing-accelerator \
         --accelerator-arn arn:aws:globalaccelerator::123456789012:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh \
-        --name ExampleAcceleratorNew
+        --name ExampleCustomRoutingAcceleratorNew
 
 Output::
 
@@ -12,7 +12,7 @@ Output::
         "Accelerator": {
             "AcceleratorArn": "arn:aws:globalaccelerator::123456789012:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh",
             "IpAddressType": "IPV4",
-            "Name": "ExampleAcceleratorNew",
+            "Name": "ExampleCustomRoutingAcceleratorNew",
             "Enabled": true,
             "Status": "IN_PROGRESS",
             "IpSets": [
@@ -30,4 +30,4 @@ Output::
         }
     }
 
-For more information, see `Accelerators in AWS Global Accelerator <https://docs.aws.amazon.com/global-accelerator/latest/dg/about-accelerators.html>`__ in the *AWS Global Accelerator Developer Guide*.
+For more information, see `Custom routing accelerators in AWS Global Accelerator <https://docs.aws.amazon.com/global-accelerator/latest/dg/about-custom-routing-accelerators.html>`__ in the *AWS Global Accelerator Developer Guide*.

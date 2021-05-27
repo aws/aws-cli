@@ -1,9 +1,8 @@
-**To describe replication groups**
+**To return a list of replication group details**
 
-The following ``describe-replication-groups`` example returns information about the specified replication group. ::
+The following ``describe-replication-groups`` example returns the replication groups. ::
 
-    aws elasticache describe-replication-groups 
-        --replication-group-id "my-cluster"
+    aws elasticache describe-replication-groups
 
 Output::
 
@@ -83,9 +82,23 @@ Output::
                 "CacheNodeType": "cache.r5.xlarge",
                 "AuthTokenEnabled": false,
                 "TransitEncryptionEnabled": false,
-                "AtRestEncryptionEnabled": false
+                "AtRestEncryptionEnabled": false,
+                "ARN": "arn:aws:elasticache:us-west-2:xxxxxxxxxxx152:replicationgroup:my-cluster",
+                "LogDeliveryConfigurations": [
+                    {
+                        "LogType": "slow-log",
+                        "DestinationType": "cloudwatch-logs",
+                        "DestinationDetails": {
+                            "CloudWatchLogsDetails": {
+                                "LogGroup": "test-log"
+                            }
+                        },
+                        "LogFormat": "json",
+                        "Status": "active"
+                    }
+                ]
             }
         ]
     }
 
-For more information, see `Viewing a Replication Group's Details <https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Replication.ViewDetails.html>`__ in the *Elasticache User Guide*.
+For more information, see `Managing Clusters <https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Clusters.html>`__ in the *Elasticache User Guide*.

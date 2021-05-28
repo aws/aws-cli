@@ -43,7 +43,7 @@ Before running this command, replace the example key ID with a valid key ID from
         --output text ^
         --query Plaintext > ExamplePlaintextFile.base64
 
-Run the ''certutil'' command. ::
+Run the ``certutil`` command. ::
 
     certutil -decode ExamplePlaintextFile.base64 ExamplePlaintextFile
 

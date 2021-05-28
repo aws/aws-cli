@@ -36,7 +36,7 @@ For more information, see `AWS Systems Manager Documents <https://docs.aws.amazo
 
 The following ``list-documents`` example lists shared documents, including private shared documents not owned by AWS. ::
 
-    aws ssm list-documents /
+    aws ssm list-documents \
         --filters Key=Name,Values=sharedDocNamePrefix  Key=Owner,Values=Private
 
 Output::

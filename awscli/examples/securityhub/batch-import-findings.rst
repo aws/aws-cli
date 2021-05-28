@@ -2,7 +2,7 @@
 
 The following ``batch-import-findings`` example updates a finding. ::
 
-    aws securityhub batch-import-findings
+    aws securityhub batch-import-findings \
          --findings '
             [{
                 "AwsAccountId": "123456789012",

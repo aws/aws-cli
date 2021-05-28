@@ -1,8 +1,8 @@
 **To disassociate from an administrator account**
 
-The following ``disassociate-from-master-account`` example disassociates the requesting account from its current administrator account. ::
+The following ``disassociate-from-administrator-account`` example disassociates the requesting account from its current administrator account. ::
 
-    aws securityhub disassociate-from-master-account
+    aws securityhub disassociate-from-administrator-account
 
 This command produces no output.
 

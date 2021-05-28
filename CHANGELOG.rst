@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.19.84
+=======
+
+* api-change:``datasync``: Added SecurityDescriptorCopyFlags option that allows for control of which components of SMB security descriptors are copied from source to destination objects.
+* api-change:``lookoutmetrics``: Allowing dot(.) character in table name for RDS and Redshift as source connector.
+* api-change:``location``: Adds support for calculation of routes, resource tagging and customer provided KMS keys.
+
+
 1.19.83
 =======
 

@@ -1,8 +1,8 @@
-**To describe an accelerator**
+**To describe a custom routing accelerator**
 
-The following ``describe-accelerator`` example retrieves the details about the specified accelerator. ::
+The following ``describe-custom-routing-accelerator`` example retrieves the details about the specified custom routing accelerator. ::
 
-    aws globalaccelerator describe-accelerator \
+    aws globalaccelerator describe-custom-routing-accelerator \
         --accelerator-arn arn:aws:globalaccelerator::123456789012:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh
 
 Output::
@@ -11,7 +11,7 @@ Output::
         "Accelerator": {
             "AcceleratorArn": "arn:aws:globalaccelerator::123456789012:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh",
             "IpAddressType": "IPV4",
-            "Name": "ExampleAccelerator",
+            "Name": "ExampleCustomRoutingAccelerator",
             "Enabled": true,
             "Status": "IN_PROGRESS",
             "IpSets": [
@@ -29,4 +29,4 @@ Output::
         }
     }
 
-For more information, see `Accelerators in AWS Global Accelerator <https://docs.aws.amazon.com/global-accelerator/latest/dg/about-accelerators.html>`__ in the *AWS Global Accelerator Developer Guide*.
+For more information, see `Custom routing accelerators in AWS Global Accelerator <https://docs.aws.amazon.com/global-accelerator/latest/dg/about-custom-routing-accelerators.html>`__ in the *AWS Global Accelerator Developer Guide*.

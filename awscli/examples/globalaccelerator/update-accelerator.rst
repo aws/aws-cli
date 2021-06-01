@@ -1,11 +1,10 @@
 **To update an accelerator**
 
-The following ``update-accelerator`` example modifies an accelerator to change the accelerator name. You must specify the ``US-West-2 (Oregon)`` Region to create or update accelerators. ::
+The following ``update-accelerator`` example modifies an accelerator to change the accelerator name to ``ExampleAcceleratorNew``. You must specify the ``US-West-2 (Oregon)`` Region to create or update accelerators. ::
 
     aws globalaccelerator update-accelerator \
         --accelerator-arn arn:aws:globalaccelerator::123456789012:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh \
-        --name ExampleAcceleratorNew \
-        --region us-west-2
+        --name ExampleAcceleratorNew
 
 Output::
 

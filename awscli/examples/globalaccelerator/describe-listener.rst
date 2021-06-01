@@ -3,8 +3,7 @@
 The following ``describe-listener`` example describes a listener. ::
 
     aws globalaccelerator describe-listener \
-            --listener-arn arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/abcdef1234 \
-            --region us-west-2
+        --listener-arn arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/abcdef1234
 
 Output::
 

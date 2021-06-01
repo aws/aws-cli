@@ -1,6 +1,6 @@
-**To accept an invitation from a master account**
+**To accept an invitation from an administrator account**
 
-The following ``accept-invitation`` example accepts the specified invitation from the specified master account. ::
+The following ``accept-invitation`` example accepts the specified invitation from the specified administrator account. ::
 
     aws securityhub accept-invitation \
         --master-id 123456789012 \
@@ -8,4 +8,4 @@ The following ``accept-invitation`` example accepts the specified invitation fro
 
 This command produces no output.
 
-For more information, see `Master and member accounts <https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-accounts.html>`__ in the *AWS Security Hub User Guide*.
+For more information, see `Managing administrator and member accounts <https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-accounts.html>`__ in the *AWS Security Hub User Guide*.

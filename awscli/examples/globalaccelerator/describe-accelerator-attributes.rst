@@ -1,6 +1,6 @@
 **To describe an accelerator's attributes**
 
-The following ``describe-accelerator-attributes`` example describes the attributes for an accelerator. ::
+The following ``describe-accelerator-attributes`` example retrieves the attribute details for an accelerator. ::
 
     aws globalaccelerator describe-accelerator-attributes \
         --accelerator-arn arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh

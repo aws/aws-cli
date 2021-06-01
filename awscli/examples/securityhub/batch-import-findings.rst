@@ -4,14 +4,14 @@ The following ``batch-import-findings`` example updates a finding. ::
 
     aws securityhub batch-import-findings \
          --findings '
-             [{
+            [{
                 "AwsAccountId": "123456789012",
                 "CreatedAt": "2020-05-27T17:05:54.832Z",
                 "Description": "Vulnerability in a CloudTrail trail",
                 "FindingProviderFields": {
                     "Severity": {
                         "Label": "LOW",
-                        "Original": 10
+                        "Original": "10"
                     },
                     "Types": [
                         "Software and Configuration Checks/Vulnerabilities/CVE"
@@ -33,7 +33,6 @@ The following ``batch-import-findings`` example updates a finding. ::
                 "UpdatedAt": "2020-06-02T16:05:54.832Z"
             }]'
 
-
 Output::
 
     {
@@ -41,6 +40,5 @@ Output::
         "SuccessCount": 1,
         "FailedFindings": []
     }
-
 
 For more information, see `Using BatchImportFindings to create and update findings <https://docs.aws.amazon.com/securityhub/latest/userguide/finding-update-batchimportfindings.html>`__ in the *AWS Security Hub User Guide*.

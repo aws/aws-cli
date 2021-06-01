@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.2.8
+=====
+
+* api-change:``ec2``: Added idempotency to CreateNetworkInterface using the ClientToken parameter.
+* api-change:``lookoutmetrics``: Allowing dot(.) character in table name for RDS and Redshift as source connector.
+* api-change:``iotwireless``: Added six new public customer logging APIs to allow customers to set/get/reset log levels at resource type and resource id level. The log level set from the APIs will be used to filter log messages that can be emitted to CloudWatch in customer accounts.
+* api-change:``location``: Adds support for calculation of routes, resource tagging and customer provided KMS keys.
+* api-change:``datasync``: Added SecurityDescriptorCopyFlags option that allows for control of which components of SMB security descriptors are copied from source to destination objects.
+* api-change:``servicediscovery``: Bugfixes - The DiscoverInstances API operation now provides an option to return all instances for health-checked services when there are no healthy instances available.
+* api-change:``polly``: Amazon Polly adds new Canadian French voice - Gabrielle. Gabrielle is available as Neural voice only.
+* api-change:``sns``: This release adds SMS sandbox in Amazon SNS and the ability to view all configured origination numbers. The SMS sandbox provides a safe environment for sending SMS messages, without risking your reputation as an SMS sender.
+
+
 2.2.7
 =====
 

@@ -1,8 +1,8 @@
-**To list your accelerators** 
+**To list your custom routing accelerators** 
 
-The following ``list-accelerators`` example lists the accelerators in your AWS account. This account has two accelerators. ::
+The following ``list-custom-routing-accelerators`` example lists the custom routing accelerators in an AWS account. ::
 
-    aws globalaccelerator list-accelerators 
+    aws globalaccelerator list-custom-routing-accelerators
 
 Output::
 
@@ -10,7 +10,7 @@ Output::
         "Accelerators": [
             {
                 "AcceleratorArn": "arn:aws:globalaccelerator::012345678901:accelerator/5555abcd-abcd-5555-abcd-5555EXAMPLE1",
-                "Name": "TestAccelerator",
+                "Name": "TestCustomRoutingAccelerator",
                 "IpAddressType": "IPV4",
                 "Enabled": true,
                 "IpSets": [
@@ -29,7 +29,7 @@ Output::
             },
             {
                 "AcceleratorArn": "arn:aws:globalaccelerator::888888888888:accelerator/8888abcd-abcd-8888-abcd-8888EXAMPLE2",
-                "Name": "ExampleAccelerator",
+                "Name": "ExampleCustomRoutingAccelerator",
                 "IpAddressType": "IPV4",
                 "Enabled": true,
                 "IpSets": [
@@ -49,4 +49,4 @@ Output::
         ]
     }
 
-For more information, see `Accelerators in AWS Global Accelerator <https://docs.aws.amazon.com/global-accelerator/latest/dg/about-accelerators.html>`__ in the *AWS Global Accelerator Developer Guide*.
+For more information, see `Custom routing accelerators in AWS Global Accelerator <https://docs.aws.amazon.com/global-accelerator/latest/dg/about-custom-routing-accelerators.html>`__ in the *AWS Global Accelerator Developer Guide*.

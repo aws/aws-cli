@@ -2002,6 +2002,27 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.19.87
+=======
+
+* api-change:``ssm``: Documentation updates for ssm to fix customer reported issue
+* api-change:``forecast``: Added optional field AutoMLOverrideStrategy to CreatePredictor API that allows users to customize AutoML strategy. If provided in CreatePredictor request, this field is visible in DescribePredictor and GetAccuracyMetrics responses.
+* api-change:``route53resolver``: Documentation updates for Route 53 Resolver
+* api-change:``s3``: S3 Inventory now supports Bucket Key Status
+* api-change:``s3control``: Amazon S3 Batch Operations now supports S3 Bucket Keys.
+
+
+1.19.86
+=======
+
+* api-change:``docdb``: This SDK release adds support for DocDB global clusters.
+* api-change:``lightsail``: Documentation updates for Lightsail
+* api-change:``ecs``: Documentation updates for Amazon ECS.
+* api-change:``iam``: Documentation updates for AWS Identity and Access Management (IAM).
+* api-change:``braket``: Introduction of a RETIRED status for devices.
+* api-change:``autoscaling``: You can now launch EC2 instances with GP3 volumes when using Auto Scaling groups with Launch Configurations
+
+
 1.19.85
 =======
 

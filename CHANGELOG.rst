@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.19.88
+=======
+
+* api-change:``medialive``: Add support for automatically setting the H.264 adaptive quantization and GOP B-frame fields.
+* api-change:``autoscaling``: Documentation updates for Amazon EC2 Auto Scaling
+* api-change:``qldb``: Documentation updates for Amazon QLDB
+* api-change:``rds``: Documentation updates for RDS: fixing an outdated link to the RDS documentation in DBInstance$DBInstanceStatus
+* api-change:``pi``: The new GetDimensionKeyDetails action retrieves the attributes of the specified dimension group for a DB instance or data source.
+* api-change:``cloudtrail``: AWS CloudTrail supports data events on new service resources, including Amazon DynamoDB tables and S3 Object Lambda access points.
+
+
 1.19.87
 =======
 

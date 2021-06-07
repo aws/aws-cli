@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.19.89
+=======
+
+* api-change:``eks``: Added updateConfig option that allows customers to control upgrade velocity in Managed Node Group.
+* api-change:``sagemaker``: AWS SageMaker - Releasing new APIs related to Callback steps in model building pipelines. Adds experiment integration to model building pipelines.
+* api-change:``glue``: Add SampleSize variable to S3Target to enable s3-sampling feature through API.
+* api-change:``personalize``: Update regex validation in kmsKeyArn and s3 path API parameters for AWS Personalize APIs
+
+
 1.19.88
 =======
 

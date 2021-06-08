@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.19.90
+=======
+
+* api-change:``cognito-idp``: Documentation updates for cognito-idp
+* api-change:``macie2``: This release of the Amazon Macie API introduces stricter validation of S3 object criteria for classification jobs.
+* api-change:``fsx``: This release adds support for auditing end-user access to files, folders, and file shares using Windows event logs, enabling customers to meet their security and compliance needs.
+* api-change:``servicecatalog``: increase max pagesize for List/Search apis
+
+
 1.19.89
 =======
 

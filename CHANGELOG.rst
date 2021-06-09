@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.19.91
+=======
+
+* api-change:``proton``: This is the initial SDK release for AWS Proton
+* api-change:``transfer``: Documentation updates for the AWS Transfer Family service.
+* api-change:``personalize-events``: Support for unstructured text inputs in the items dataset to to automatically extract key information from product/content description as an input when creating solution versions.
+* api-change:``kendra``: AWS Kendra now supports checking document status.
+
+
 1.19.90
 =======
 

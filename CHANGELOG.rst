@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.19.93
+=======
+
+* api-change:``ec2``: Amazon EC2 adds new AMI property to flag outdated AMIs
+* api-change:``medialive``: AWS MediaLive now supports OCR-based conversion of DVB-Sub and SCTE-27 image-based source captions to WebVTT, and supports ingest of ad avail decorations in HLS input manifests.
+* api-change:``mediaconnect``: When you enable source failover, you can now designate one of two sources as the primary source. You can choose between two failover modes to prevent any disruption to the video stream. Merge combines the sources into a single stream. Failover allows switching between a primary and a backup stream.
+
+
 1.19.92
 =======
 

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.19.94
+=======
+
+* api-change:``greengrassv2``: We have verified the APIs being released here and are ready to release
+* api-change:``lookoutmetrics``: Added "LEARNING" status for anomaly detector and updated description for "Offset" parameter in MetricSet APIs.
+* api-change:``iotanalytics``: Adds support for data store partitions.
+
+
 1.19.93
 =======
 

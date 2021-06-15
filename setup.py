@@ -29,8 +29,7 @@ install_requires = [
     's3transfer>=0.4.0,<0.5.0',
     'PyYAML>=3.10,<5.5',
     'colorama>=0.2.5,<0.4.4',
-    'rsa>=3.1.2,<=4.5.0; python_version=="2.7"',
-    'rsa>=3.1.2,<4.8; python_version>"2.7"',
+    'rsa>=3.1.2,<4.8',
 ]
 
 
@@ -52,7 +51,7 @@ setup_options = dict(
     install_requires=install_requires,
     extras_require={},
     license="Apache License 2.0",
-    python_requires=">= 2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*",
+    python_requires=">= 3.6",
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
@@ -60,8 +59,6 @@ setup_options = dict(
         'Natural Language :: English',
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',

@@ -30,13 +30,6 @@ BUILDTIME_DEPS = [
     ('wheel', '0.33.6'),
 ]
 PIP_DOWNLOAD_ARGS = '--no-binary :all:'
-# The constraints file is used to lock the version of rsa needed
-# to be 3.4.2 until we can drop py27 support. This lets us ensure
-# we're distributing a copy that works on all supported platforms.
-CONSTRAINTS_FILE = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)),
-    'assets', 'constraints-bundled.txt'
-)
 
 
 class BadRCError(Exception):
@@ -88,8 +81,8 @@ def download_cli_deps(scratch_dir):
     awscli_dir = os.path.dirname(
         os.path.dirname(os.path.abspath(__file__)))
     with cd(scratch_dir):
-        run('pip download -c %s %s %s' % (
-            CONSTRAINTS_FILE, PIP_DOWNLOAD_ARGS, awscli_dir))
+        run('pip download %s %s' % (
+            PIP_DOWNLOAD_ARGS, awscli_dir))
 
 
 def _remove_cli_zip(scratch_dir):

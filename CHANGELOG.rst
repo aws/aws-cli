@@ -2056,6 +2056,32 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.19.95
+=======
+
+* api-change:``ec2``: EC2 M5n, M5dn, R5n, R5dn metal instances with 100 Gbps network performance and Elastic Fabric Adapter (EFA) for ultra low latency
+* api-change:``redshift-data``: Redshift Data API service now supports SQL parameterization.
+* api-change:``lexv2-runtime``: Update lexv2-runtime command to latest version
+* api-change:``connect``: This release adds new sets of APIs: AssociateBot, DisassociateBot, and ListBots. You can use it to programmatically add an Amazon Lex bot or Amazon Lex V2 bot on the specified Amazon Connect instance
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+
+
+1.19.94
+=======
+
+* api-change:``greengrassv2``: We have verified the APIs being released here and are ready to release
+* api-change:``lookoutmetrics``: Added "LEARNING" status for anomaly detector and updated description for "Offset" parameter in MetricSet APIs.
+* api-change:``iotanalytics``: Adds support for data store partitions.
+
+
+1.19.93
+=======
+
+* api-change:``ec2``: Amazon EC2 adds new AMI property to flag outdated AMIs
+* api-change:``medialive``: AWS MediaLive now supports OCR-based conversion of DVB-Sub and SCTE-27 image-based source captions to WebVTT, and supports ingest of ad avail decorations in HLS input manifests.
+* api-change:``mediaconnect``: When you enable source failover, you can now designate one of two sources as the primary source. You can choose between two failover modes to prevent any disruption to the video stream. Merge combines the sources into a single stream. Failover allows switching between a primary and a backup stream.
+
+
 1.19.92
 =======
 

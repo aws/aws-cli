@@ -4,7 +4,7 @@ The following ``create-recording-configuration`` example creates RecordingConfig
 
     aws ivs create-recording-configuration \
         --name test-recording-config \
-        --destination-configuration 3={bucketName=demo-recording-bucket}
+        --destination-configuration S3={bucketName=demo-recording-bucket}
 
 Output::
 

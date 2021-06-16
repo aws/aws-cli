@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.19.96
+=======
+
+* api-change:``ec2``: This release adds support for VLAN-tagged network traffic over an Elastic Network Interface (ENI). This feature is in limited Preview for this release. Contact your account manager if you are interested in this feature.
+* api-change:``kms``: Adds support for multi-Region keys
+* api-change:``mediatailor``: Adds AWS Secrets Manager Access Token Authentication for Source Locations
+* api-change:``rds``: This release enables fast cloning in Aurora Serverless. You can now clone between Aurora Serverless clusters and Aurora Provisioned clusters.
+
+
 1.19.95
 =======
 

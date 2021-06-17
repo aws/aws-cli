@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.19.97
+=======
+
+* api-change:``chime``: This release adds a new API UpdateSipMediaApplicationCall, to update an in-progress call for SipMediaApplication.
+* api-change:``sagemaker``: Enable ml.g4dn instance types for SageMaker Batch Transform and SageMaker Processing
+* api-change:``kendra``: Amazon Kendra now supports the indexing of web documents for search through the web crawler.
+* api-change:``rds``: This release enables Database Activity Streams for RDS Oracle
+
+
 1.19.96
 =======
 

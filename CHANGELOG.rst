@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.19.98
+=======
+
+* api-change:``cloudformation``: CloudFormation registry service now supports 3rd party public type sharing
+
+
 1.19.97
 =======
 

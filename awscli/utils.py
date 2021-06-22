@@ -29,6 +29,10 @@ from botocore.configprovider import BaseProvider
 logger = logging.getLogger(__name__)
 
 
+class PagerInitializationException(Exception):
+    pass
+
+
 class LazyStdin:
     def __init__(self, process):
         self._process = process
@@ -57,7 +61,7 @@ class LazyPager:
 
     def initialize(self):
         if self._process is None:
-            self._process = self._popen(**self._popen_kwargs)
+            self._process = self._do_popen()
         return self._process
 
     def __getattr__(self, item):
@@ -70,6 +74,12 @@ class LazyPager:
         if self._process is not None or args or kwargs:
             return getattr(self.initialize(), 'communicate')(*args, **kwargs)
         return None, None
+
+    def _do_popen(self):
+        try:
+            return self._popen(**self._popen_kwargs)
+        except FileNotFoundError as e:
+            raise PagerInitializationException(e)
 
 
 class IMDSRegionProvider(BaseProvider):

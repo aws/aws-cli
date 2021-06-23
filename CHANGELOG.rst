@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.19.99
+=======
+
+* api-change:``codeguru-reviewer``: Adds support for S3 based full repository analysis and changed lines scan.
+* api-change:``events``: Added the following parameters to ECS targets: CapacityProviderStrategy, EnableECSManagedTags, EnableExecuteCommand, PlacementConstraints, PlacementStrategy, PropagateTags, ReferenceId, and Tags
+* api-change:``cloudsearch``: This release replaces previous generation CloudSearch instances with equivalent new instances that provide better stability at the same price.
+* api-change:``license-manager``: AWS License Manager now allows license administrators and end users to communicate to each other by setting custom status reasons when updating the status on a granted license.
+* api-change:``cloud9``: Updated documentation for CreateEnvironmentEC2 to explain that because Amazon Linux AMI has ended standard support as of December 31, 2020, we recommend you choose Amazon Linux 2--which includes long term support through 2023--for new AWS Cloud9 environments.
+* api-change:``docdb``: DocumentDB documentation-only edits
+* api-change:``mediatailor``: Update GetChannelSchedule to return information on ad breaks.
+* api-change:``quicksight``: Releasing new APIs for AWS QuickSight Folders
+* api-change:``cloudfront``: Amazon CloudFront adds support for a new security policy, TLSv1.2_2021.
+* api-change:``ec2``: This release adds support for provisioning your own IP (BYOIP) range in multiple regions. This feature is in limited Preview for this release. Contact your account manager if you are interested in this feature.
+
+
 1.19.98
 =======
 

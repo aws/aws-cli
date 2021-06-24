@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.19.100
+========
+
+* api-change:``dax``: Add support for encryption in transit to DAX clusters.
+* api-change:``transfer``: Customers can successfully use legacy clients with Transfer Family endpoints enabled for FTPS and FTP behind routers, firewalls, and load balancers by providing a Custom IP address used for data channel communication.
+* api-change:``wafv2``: Added support for 15 new text transformation.
+* api-change:``connect``: Released Amazon Connect quick connects management API for general availability (GA). For more information, see https://docs.aws.amazon.com/connect/latest/APIReference/Welcome.html
+* api-change:``cloud9``: Minor update to AWS Cloud9 documentation to allow correct parsing of outputted text
+* api-change:``chime``: Adds EventIngestionUrl field to MediaPlacement
+* api-change:``codebuild``: BucketOwnerAccess is currently not supported
+* api-change:``securityhub``: Added new resource details for ECS clusters and ECS task definitions. Added additional information for S3 buckets, Elasticsearch domains, and API Gateway V2 stages.
+* api-change:``kendra``: Amazon Kendra now supports SharePoint 2013 and SharePoint 2016 when using a SharePoint data source.
+
+
 1.19.99
 =======
 

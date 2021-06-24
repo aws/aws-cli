@@ -2,6 +2,32 @@
 CHANGELOG
 =========
 
+2.2.14
+======
+
+* api-change:``docdb``: DocumentDB documentation-only edits
+* api-change:``license-manager``: AWS License Manager now allows license administrators and end users to communicate to each other by setting custom status reasons when updating the status on a granted license.
+* api-change:``cloud9``: Minor update to AWS Cloud9 documentation to allow correct parsing of outputted text
+* api-change:``dax``: Add support for encryption in transit to DAX clusters.
+* api-change:``cloudsearch``: This release replaces previous generation CloudSearch instances with equivalent new instances that provide better stability at the same price.
+* bugfix:Pager: Display error message when unable to open pager. Fixes `#6225 <https://github.com/aws/aws-cli/issues/6225>`__
+* api-change:``codebuild``: BucketOwnerAccess is currently not supported
+* api-change:``quicksight``: Releasing new APIs for AWS QuickSight Folders
+* api-change:``cloudfront``: Amazon CloudFront adds support for a new security policy, TLSv1.2_2021.
+* api-change:``chime``: Adds EventIngestionUrl field to MediaPlacement
+* api-change:``securityhub``: Added new resource details for ECS clusters and ECS task definitions. Added additional information for S3 buckets, Elasticsearch domains, and API Gateway V2 stages.
+* api-change:``ec2``: This release adds support for provisioning your own IP (BYOIP) range in multiple regions. This feature is in limited Preview for this release. Contact your account manager if you are interested in this feature.
+* api-change:``codeguru-reviewer``: Adds support for S3 based full repository analysis and changed lines scan.
+* api-change:``mediatailor``: Update GetChannelSchedule to return information on ad breaks.
+* api-change:``cloud9``: Updated documentation for CreateEnvironmentEC2 to explain that because Amazon Linux AMI has ended standard support as of December 31, 2020, we recommend you choose Amazon Linux 2--which includes long term support through 2023--for new AWS Cloud9 environments.
+* api-change:``wafv2``: Added support for 15 new text transformation.
+* api-change:``cloudformation``: CloudFormation registry service now supports 3rd party public type sharing
+* api-change:``connect``: Released Amazon Connect quick connects management API for general availability (GA). For more information, see https://docs.aws.amazon.com/connect/latest/APIReference/Welcome.html
+* api-change:``kendra``: Amazon Kendra now supports SharePoint 2013 and SharePoint 2016 when using a SharePoint data source.
+* api-change:``events``: Added the following parameters to ECS targets: CapacityProviderStrategy, EnableECSManagedTags, EnableExecuteCommand, PlacementConstraints, PlacementStrategy, PropagateTags, ReferenceId, and Tags
+* api-change:``transfer``: Customers can successfully use legacy clients with Transfer Family endpoints enabled for FTPS and FTP behind routers, firewalls, and load balancers by providing a Custom IP address used for data channel communication.
+
+
 2.2.13
 ======
 

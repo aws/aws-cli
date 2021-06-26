@@ -89,7 +89,7 @@ class CLIArgParser(argparse.ArgumentParser):
                 for choice in action.choices[i:i+self.ChoicesPerLine]:
                     current.append('%-40s' % choice)
                 msg.append(' | '.join(current))
-            possible = get_close_matches(value, action.choices, cutoff=0.8)
+            possible = get_close_matches(value, action.choices, cutoff=2/3)
             if possible:
                 extra = ['\n\nInvalid choice: %r, maybe you meant:\n' % value]
                 for word in possible:

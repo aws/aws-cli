@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.2.16
+======
+
+* api-change:``mediapackage-vod``: Add support for Widevine DRM on CMAF packaging configurations. Both Widevine and FairPlay DRMs can now be used simultaneously, with CBCS encryption.
+* api-change:``sqs``: Documentation updates for Amazon SQS.
+* api-change:``kendra``: Amazon Kendra Enterprise Edition now offered in smaller more granular units to enable customers with smaller workloads. Virtual Storage Capacity units now offer scaling in increments of 100,000 documents (up to 30GB) per unit and Virtual Query Units offer scaling increments of 8,000 queries per day.
+* api-change:``sagemaker``: SageMaker model registry now supports up to 5 containers and associated environment variables.
+* api-change:``autoscaling``: Amazon EC2 Auto Scaling infrastructure improvements and optimizations.
+* api-change:``ec2``: Adding a new reserved field to support future infrastructure improvements for Amazon EC2 Fleet.
+* api-change:``ssm-contacts``: Fixes the tag key length range to 128 chars,  tag value length to 256 chars; Adds support for UTF-8 chars for contact and channel names, Allows users to unset name in UpdateContact API; Adds throttling exception to StopEngagement API, validation exception to APIs UntagResource, ListTagsForResource
+* api-change:``servicediscovery``: AWS Cloud Map now allows configuring the TTL of the SOA record for a hosted zone to control the negative caching for new services.
+* api-change:``databrew``: Adds support for the output of job results to the AWS Glue Data Catalog.
+
+
 2.2.15
 ======
 

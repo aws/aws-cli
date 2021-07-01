@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.19.104
+========
+
+* api-change:``ec2``: Adding a new reserved field to support future infrastructure improvements for Amazon EC2 Fleet.
+* api-change:``sagemaker``: SageMaker model registry now supports up to 5 containers and associated environment variables.
+* api-change:``sqs``: Documentation updates for Amazon SQS.
+
+
 1.19.103
 ========
 

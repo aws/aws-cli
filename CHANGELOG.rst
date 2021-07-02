@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.19.105
+========
+
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``ec2``: This release removes network-insights-boundary
+
+
 1.19.104
 ========
 

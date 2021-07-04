@@ -28,5 +28,7 @@ A clear and concise description of what you expected to happen.
 **Logs/output**
 Get full traceback and error logs by adding `--debug` to the command.
 
+*Important!!! Be sure to redact sensitive information like account numbers, ARNs, etc.*
+
 **Additional context**
 Add any other context about the problem here.

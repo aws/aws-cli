@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.2.17
+======
+
+* api-change:``sns``: Documentation updates for Amazon SNS.
+* api-change:``ec2``: This release removes network-insights-boundary
+* api-change:``imagebuilder``: Adds support for specifying parameters to customize components for recipes. Expands configuration of the Amazon EC2 instances that are used for building and testing images, including the ability to specify commands to run on launch, and more control over installation and removal of the SSM agent.
+* api-change:``macie2``: Sensitive data findings in Amazon Macie now include enhanced location data for JSON and JSON Lines files
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``mgn``: Bug fix: Remove not supported EBS encryption type "NONE"
+* api-change:``eks``: Adding new error code UnsupportedAddonModification for Addons in EKS
+* api-change:``lambda``: Added support for AmazonMQRabbitMQ as an event source. Added support for VIRTUAL_HOST as SourceAccessType for streams event source mappings.
+
+
 2.2.16
 ======
 

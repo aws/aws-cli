@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.19.107
+========
+
+* api-change:``cloudfront``: Amazon CloudFront now provides two new APIs, ListConflictingAliases and AssociateAlias, that help locate and move Alternate Domain Names (CNAMEs) if you encounter the CNAMEAlreadyExists error code.
+* api-change:``storagegateway``: Adding support for oplocks for SMB file shares,  S3 Access Point and S3 Private Link for all file shares and IP address support for file system associations
+* api-change:``mq``: adds support for modifying the maintenance window for brokers.
+* api-change:``sts``: Documentation updates for AWS Security Token Service.
+* api-change:``chime``: Releasing new APIs for AWS Chime MediaCapturePipeline
+* api-change:``iotsitewise``: This release add storage configuration APIs for AWS IoT SiteWise.
+* api-change:``ec2``: This release adds resource ids and tagging support for VPC security group rules.
+* api-change:``iam``: Documentation updates for AWS Identity and Access Management (IAM).
+
+
 1.19.106
 ========
 

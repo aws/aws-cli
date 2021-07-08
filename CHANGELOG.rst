@@ -2150,6 +2150,30 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.19.108
+========
+
+* api-change:``eks``: Added waiters for EKS FargateProfiles.
+* api-change:``devops-guru``: Add AnomalyReportedTimeRange field to include open and close time of anomalies.
+* api-change:``ssm-contacts``: Updated description for CreateContactChannel contactId.
+* api-change:``mediatailor``: Add ListAlerts for Channel, Program, Source Location, and VOD Source to return alerts for resources.
+* api-change:``fms``: AWS Firewall Manager now supports route table monitoring, and provides remediation action recommendations to security administrators for AWS Network Firewall policies with misconfigured routes.
+* api-change:``outposts``: Added property filters for listOutposts
+
+
+1.19.107
+========
+
+* api-change:``cloudfront``: Amazon CloudFront now provides two new APIs, ListConflictingAliases and AssociateAlias, that help locate and move Alternate Domain Names (CNAMEs) if you encounter the CNAMEAlreadyExists error code.
+* api-change:``storagegateway``: Adding support for oplocks for SMB file shares,  S3 Access Point and S3 Private Link for all file shares and IP address support for file system associations
+* api-change:``mq``: adds support for modifying the maintenance window for brokers.
+* api-change:``sts``: Documentation updates for AWS Security Token Service.
+* api-change:``chime``: Releasing new APIs for AWS Chime MediaCapturePipeline
+* api-change:``iotsitewise``: This release add storage configuration APIs for AWS IoT SiteWise.
+* api-change:``ec2``: This release adds resource ids and tagging support for VPC security group rules.
+* api-change:``iam``: Documentation updates for AWS Identity and Access Management (IAM).
+
+
 1.19.106
 ========
 

@@ -115,6 +115,27 @@ class TestSessionManager(unittest.TestCase):
             )
 
     @mock.patch('awscli.customizations.sessionmanager.check_call')
+    def test_start_session_when_check_call_fails_then_terminate_fails(self, mock_check_call):
+        mock_check_call.side_effect = OSError(errno.ENOENT, 'some error')
+
+        start_session_params = {
+            "Target": "i-123456789"
+        }
+
+        start_session_response = {
+            "SessionId": "session-id",
+            "TokenValue": "token-value",
+            "StreamUrl": "stream-url"
+        }
+
+        self.client.start_session.return_value = start_session_response
+        self.client.terminate_session.side_effect = Exception('some exception')
+
+        with self.assertRaises(ValueError):
+            self.caller.invoke('ssm', 'StartSession',
+                               start_session_params, mock.Mock())
+
+    @mock.patch('awscli.customizations.sessionmanager.check_call')
     def test_start_session_when_no_profile_is_passed(self, mock_check_call):
         self.session.profile = None
         mock_check_call.return_value = 0

@@ -98,5 +98,8 @@ class StartSessionCaller(CLIOperationCaller):
                 # is called so that service and ssm-agent terminates the
                 # session to avoid zombie session active on ssm-agent for
                 # default self terminate time
-                client.terminate_session(SessionId=session_id)
+                try:
+                    client.terminate_session(SessionId=session_id)
+                except Exception as e:
+                    logger.debug('Error processing terminate session: %s', e)
                 raise ValueError(''.join(ERROR_MESSAGE))

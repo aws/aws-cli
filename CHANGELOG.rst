@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.19.109
+========
+
+* api-change:``mediaconvert``: MediaConvert now supports color, style and position information passthrough from 608 and Teletext to SRT and WebVTT subtitles. MediaConvert now also supports Automatic QVBR quality levels for QVBR RateControlMode.
+* api-change:``frauddetector``: This release adds support for ML Explainability to display model variable importance value in Amazon Fraud Detector.
+* api-change:``sagemaker``: Releasing new APIs related to Tuning steps in model building pipelines.
+
+
 1.19.108
 ========
 

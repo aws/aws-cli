@@ -5,7 +5,7 @@ It sets a password for user jane@example.com.
 
 Command::
 
-  aws cognito-idp respond-to-auth-challenge --client-id 3n4b5urk1ft4fl3mg5e62d9ado --challenge-name NEW_PASSWORD_REQUIRED --challenge-responses USERNAME=jane@example.com,NEW_PASSWORD="password" --session "SESSION_TOKEN"
+  aws cognito-idp respond-to-auth-challenge --client-id 3n4b5urk1ft4fl3mg5e62d9ado --challenge-name NEW_PASSWORD_REQUIRED --challenge-responses USERNAME=jane@example.com,NEW_PASSWORD="password" --session "SESSION_TOKEN_EXAMPLE"
 
 Output::
 

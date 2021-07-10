@@ -3,7 +3,7 @@
 The following ``delete-report`` example deletes the specified report. ::
 
     aws codebuild delete-report \
-        --arn arn:aws:codebuild:<region-ID>:<account-ID>:report/<report-group-name>:<report-ID>
+        --arn "arn:aws:codebuild:<region-ID>:<account-ID>:report/<report-group-name>:<report-ID>"
 
 This command produces no output.
 

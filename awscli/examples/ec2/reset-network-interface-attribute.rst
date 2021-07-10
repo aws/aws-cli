@@ -4,6 +4,6 @@ The following ``reset-network-interface-attribute`` example resets the value of 
 
     aws ec2 reset-network-interface-attribute \
         --network-interface-id eni-686ea200 \
-        --source-dest-check
+        --source-dest-check true
 
 This command produces no output.

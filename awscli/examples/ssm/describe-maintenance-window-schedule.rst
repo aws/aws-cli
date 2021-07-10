@@ -3,19 +3,19 @@
 The following ``describe-maintenance-window-schedule`` example lists all upcoming executions for the specified maintenance window. ::
 
     aws ssm describe-maintenance-window-schedule \
-        --window-id mw-ab12cd34eEXAMPLE
+        --window-id mw-06cf17cbefEXAMPLE
 
 Output::
 
     {
         "ScheduledWindowExecutions": [
             {
-                "WindowId": "mw-ab12cd34eEXAMPLE",
+                "WindowId": "mw-06cf17cbefEXAMPLE",
                 "Name": "My-First-Maintenance-Window",
                 "ExecutionTime": "2020-02-19T16:00Z"
             },
             {
-                "WindowId": "mw-ab12cd34eEXAMPLE",
+                "WindowId": "mw-06cf17cbefEXAMPLE",
                 "Name": "My-First-Maintenance-Window",
                 "ExecutionTime": "2020-02-26T16:00Z"
             },

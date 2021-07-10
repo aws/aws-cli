@@ -4,7 +4,7 @@ The following ``update-audit-suppression`` example updates an audit finding supp
 
     aws iot update-audit-suppression \
         --check-name DEVICE_CERTIFICATE_EXPIRING_CHECK \
-        --resource-identifier deviceCertificateId=c7691e<shortened> \
+        --resource-identifier "deviceCertificateId=c7691e<shortened>" \
         --no-suppress-indefinitely \
         --expiration-date 2020-09-21
 

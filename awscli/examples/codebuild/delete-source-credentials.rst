@@ -2,7 +2,7 @@
 
 The following ``delete-source-credentials`` example disconnects from a source provider and removes its tokens. The ARN of source credentials used to connect to the source provider determines which source credentials. ::
 
-    aws codebuild delete-source-credentials --arn arn-of-your-credentials
+    aws codebuild delete-source-credentials --arn "arn:aws:codebuild:us-west-2:<account-ID>:token/<your-credential>"
 
 Output::
 

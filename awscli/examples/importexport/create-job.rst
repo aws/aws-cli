@@ -25,7 +25,7 @@ For more information on the manifest file format, see `Creating Import Manifests
   
 You can also pass the manifest as a string in quotes::
 
-  aws importexport create-job --job-type import --manifest 'manifestVersion: 2.0;
+  aws importexport create-job --job-type import --no-validate-only --manifest 'manifestVersion: 2.0;
    returnAddress:
    name: Jane Roe
    company: Example Corp.

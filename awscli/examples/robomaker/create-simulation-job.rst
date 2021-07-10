@@ -4,7 +4,12 @@ This example creates a simulation job. It uses a robot application and a simulat
 
 Command::
 
-   aws robomaker create-simulation-job --max-job-duration-in-seconds 3600 --iam-role arn:aws:iam::111111111111:role/AWSRoboMakerCloudWatch-154766341-SimulationJobRole-G0OBWTQ8YBG6 --robot-applications application=arn:aws:robomaker:us-west-2:111111111111:robot-application/MyRobotApplication/1551203485821,launchConfig={packageName=hello_world_robot,launchFile=rotate.launch} --simulation-applications application=arn:aws:robomaker:us-west-2:111111111111:simulation-application/MySimulationApplication/1551203427605,launchConfig={packageName=hello_world_simulation,launchFile=empty_world.launch} --tags Region=North
+   aws robomaker create-simulation-job \
+    --max-job-duration-in-seconds 3600 \
+    --iam-role arn:aws:iam::111111111111:role/AWSRoboMakerCloudWatch-154766341-SimulationJobRole-G0OBWTQ8YBG6 \
+    --robot-applications "application=arn:aws:robomaker:us-west-2:111111111111:robot-application/MyRobotApplication/1551203485821,launchConfig={packageName=hello_world_robot,launchFile=rotate.launch}" \
+    --simulation-applications "application=arn:aws:robomaker:us-west-2:111111111111:simulation-application/MySimulationApplication/1551203427605,launchConfig={packageName=hello_world_simulation,launchFile=empty_world.launch}" \
+    --tags Region=North
 
 Output::
 

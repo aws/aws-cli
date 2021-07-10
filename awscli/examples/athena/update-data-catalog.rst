@@ -6,7 +6,7 @@ The following ``update-data-catalog`` example updates the Lambda function and de
         --name cw_logs_catalog \
         --type LAMBDA \
         --description "New CloudWatch Logs Catalog" \
-        --function=arn:aws:lambda:us-west-2:111122223333:function:new_cw_logs_lambda
+        --parameters function=arn:aws:lambda:us-west-2:111122223333:function:new_cw_logs_lambda
 
 This command produces no output. To see the result, use ``aws athena get-data-catalog --name cw_logs_catalog``.
 

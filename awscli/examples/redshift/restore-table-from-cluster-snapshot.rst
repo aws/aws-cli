@@ -2,14 +2,14 @@
 
 The following ``restore-table-from-cluster-snapshot`` example creates a new table from the specified table in the specified cluster snapshot. ::
 
-    aws redshift restore-table-from-cluster-snapshot /
-        --cluster-identifier mycluster /
-        --snapshot-identifier mycluster-2019-11-19-16-17 /
-        --source-database-name dev /
-        --source-schema-name public /
-        --source-table-name mytable /
-        --target-database-name dev /
-        --target-schema-name public /
+    aws redshift restore-table-from-cluster-snapshot \
+        --cluster-identifier mycluster \
+        --snapshot-identifier mycluster-2019-11-19-16-17 \
+        --source-database-name dev \
+        --source-schema-name public \
+        --source-table-name mytable \
+        --target-database-name dev \
+        --target-schema-name public \
         --new-table-name mytable-clone
 
 Output::

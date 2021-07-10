@@ -4,7 +4,7 @@ The following ``update-experiment-template`` example updates the description of 
 
     aws fis update-experiment-template \
         --id ABCDE1fgHIJkLmNop \
-        ---description myExperimentTemplate
+        --description myExperimentTemplate
 
 Output::
 

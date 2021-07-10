@@ -4,7 +4,6 @@ The following ``create-database`` example creates a database in the AWS Glue Dat
 
     aws glue create-database \
         --database-input "{\"Name\":\"tempdb\"}" \
-        --profile my_profile \
         --endpoint https://glue.us-east-1.amazonaws.com
 
 This command produces no output.

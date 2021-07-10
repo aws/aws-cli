@@ -3,7 +3,7 @@
 The following ``describe-test-cases`` example gets information about the test cases in the specified report. ::
 
     aws codebuild describe-test-cases \
-        --report-arn arn:aws:codebuild:<region-ID>:<account-ID>:report/<report-group-name>:<report-ID>
+        --report-arn "arn:aws:codebuild:<region-ID>:<account-ID>:report/<report-group-name>:<report-ID>"
 
 Output::
 

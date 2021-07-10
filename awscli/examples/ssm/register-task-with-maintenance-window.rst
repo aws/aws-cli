@@ -3,7 +3,7 @@
 The following ``register-task-with-maintenance-window`` example registers an Automation task with a maintenance window that is targeted at an instance. ::
 
     aws ssm register-task-with-maintenance-window \
-        --window-id "mw-082dcd7649EXAMPLE" \
+        --window-id "mw-082dcd7649dee04e4" \
         --targets Key=InstanceIds,Values=i-1234520122EXAMPLE \
         --task-arn AWS-RestartEC2Instance \
         --service-role-arn arn:aws:iam::111222333444:role/SSM --task-type AUTOMATION \
@@ -76,7 +76,7 @@ For more information, see `Register a Task with the Maintenance Window (AWS CLI)
 The following ``register-task-with-maintenance-window`` example registers a Step Functions task with a maintenance window that is targeted at an instance. ::
 
     aws ssm register-task-with-maintenance-window \
-        --window-id "mw-1234d787d6EXAMPLE" \
+        --window-id "mw-082dcd7649dee04e4" \
         --targets Key=WindowTargetIds,Values=12347414-69c3-49f8-95b8-ed2dcEXAMPLE \
         --task-arn arn:aws:states:us-east-1:111222333444:stateMachine:SSMTestStateMachine \
         --service-role-arn arn:aws:iam::111222333444:role/MaintenanceWindows \
@@ -104,7 +104,7 @@ The following ``register-task-with-maintenance-window`` example registers a task
         --targets "Key=WindowTargetIds,Values=350d44e6-28cc-44e2-951f-4b2c9EXAMPLE" \
         --task-arn "AWS-RunShellScript" \
         --service-role-arn "arn:aws:iam::111222333444:role/MaintenanceWindowsRole" \
-        --window-id "mw-ab12cd34eEXAMPLE" \
+        --window-id "mw-082dcd7649dee04e4" \
         --task-type "RUN_COMMAND" \
         --task-parameters  "{\"commands\":{\"Values\":[\"df\"]}}" \
         --max-concurrency 1 \

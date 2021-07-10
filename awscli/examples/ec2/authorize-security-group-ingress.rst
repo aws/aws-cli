@@ -126,7 +126,7 @@ The following example uses the ``ip-permissions`` parameter to add an inbound ru
 
     aws ec2 authorize-security-group-ingress \
         --group-id sg-1234567890abcdef0 \
-        --ip-permissions IpProtocol=tcp,FromPort=3389,ToPort=3389,IpRanges='[{CidrIp=203.0.113.0/24,Description="RDP access from NY office"}]'
+        --ip-permissions IpProtocol=tcp,FromPort=3389,ToPort=3389,IpRanges='[{CidrIp=203.0.113.0/24},{Description="RDP access from NY office"}]'
         
 (Windows)::
 

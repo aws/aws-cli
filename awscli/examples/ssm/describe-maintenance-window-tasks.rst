@@ -28,7 +28,7 @@ Output::
                 "Targets": [
                     {
                         "Values": [
-                            "i-0000293ffdmw-06cf17cbefEXAMPLE"
+                            "i-0000293ff"
                         ],
                         "Key": "InstanceIds"
                     }
@@ -42,7 +42,7 @@ Output::
 The following ``describe-maintenance-window-tasks`` example lists all of the tasks for the specified maintenance window that invokes the ``AWS-RunPowerShellScript`` command document. ::
 
     aws ssm describe-maintenance-window-tasks \
-        --window-id "mw-ab12cd34eEXAMPLE" \
+        --window-id "mw-06cf17cbefEXAMPLE" \
         --filters "Key=TaskArn,Values=AWS-RunPowerShellScript"
 
 Output::
@@ -50,7 +50,7 @@ Output::
     {
         "Tasks": [
             {
-                "WindowId": "mw-ab12cd34eEXAMPLE",
+                "WindowId": "mw-06cf17cbefEXAMPLE",
                 "WindowTaskId": "0d36e6b4-3a4f-411e-adcb-3558eEXAMPLE",
                 "TaskArn": "AWS-RunPowerShellScript",
                 "Type": "RUN_COMMAND",
@@ -77,7 +77,7 @@ Output::
 The following ``describe-maintenance-window-tasks`` example lists all of the tasks for the specified maintenance window that have a ``Priority`` of ``3``. ::
 
     aws ssm describe-maintenance-window-tasks \
-        --window-id "mw-ab12cd34eEXAMPLE" \
+        --window-id "mw-06cf17cbefEXAMPLE" \
         --filters "Key=Priority,Values=3"    
 
 Output::
@@ -85,7 +85,7 @@ Output::
     {
         "Tasks": [
             {
-                "WindowId": "mw-ab12cd34eEXAMPLE",
+                "WindowId": "mw-06cf17cbefEXAMPLE",
                 "WindowTaskId": "0d36e6b4-3a4f-411e-adcb-3558eEXAMPLE",
                 "TaskArn": "AWS-RunPowerShellScript",
                 "Type": "RUN_COMMAND",
@@ -105,7 +105,7 @@ Output::
                 "Name": "MyRunCommandTask"
             },
             {
-                "WindowId": "mw-ab12cd34eEXAMPLE",
+                "WindowId": "mw-06cf17cbefEXAMPLE",
                 "WindowTaskId": "ee45feff-ad65-4a6c-b478-5cab8EXAMPLE",
                 "TaskArn": "AWS-RestartEC2Instance",
                 "Type": "AUTOMATION",
@@ -133,7 +133,7 @@ Output::
 This ``describe-maintenance-window-tasks`` example lists all of the tasks for the specified maintenance window that have a ``Priority`` of ``1`` and use ``Run Command``. ::
 
     aws ssm describe-maintenance-window-tasks \
-        --window-id "mw-ab12cd34eEXAMPLE" \
+        --window-id "mw-06cf17cbefEXAMPLE" \
         --filters "Key=Priority,Values=1" "Key=TaskType,Values=RUN_COMMAND"
         
 Output::
@@ -141,7 +141,7 @@ Output::
     {
         "Tasks": [
             {
-                "WindowId": "mw-ab12cd34eEXAMPLE",
+                "WindowId": "mw-06cf17cbefEXAMPLE",
                 "WindowTaskId": "0d36e6b4-3a4f-411e-adcb-3558eEXAMPLE",
                 "TaskArn": "AWS-RunPowerShellScript",
                 "Type": "RUN_COMMAND",

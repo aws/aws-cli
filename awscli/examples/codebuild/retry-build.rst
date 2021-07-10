@@ -3,7 +3,7 @@
 The following ``retry-build`` example restarts the specified build. ::
 
     aws codebuild retry-build \
-        --id <project-name>:<build-ID>
+        --id "<project-name>:<build-ID>"
 
 Output::
 

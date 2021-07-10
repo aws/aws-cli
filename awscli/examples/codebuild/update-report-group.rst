@@ -3,7 +3,7 @@
 The following ``update-report-group`` example changes the export type of the report group to "NO_EXPORT". ::
 
     aws codebuild update-report-group \
-        --arn arn:aws:codebuild:<region-ID>:<user-ID>:report-group/cli-created-report-group \
+        --arn "arn:aws:codebuild:<region-ID>:<user-ID>:report-group/cli-created-report-group" \
         --export-config="exportConfigType=NO_EXPORT"
 
 Output::

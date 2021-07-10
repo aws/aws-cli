@@ -3,7 +3,7 @@
 The following ``batch-get-reports`` example retrieves information about the reports with the specified ARNs. ::
 
     aws codebuild batch-get-reports \
-        --report-arns arn:aws:codebuild:<region-ID>:<user-ID>:report/<report-group-name>:<report 1 ID> arn:aws:codebuild:<region-ID>:<user-ID>:report/<report-group-name>:<report 2 ID>
+        --report-arns "arn:aws:codebuild:<region-ID>:<user-ID>:report/<report-group-name>:<report 1 ID>" "arn:aws:codebuild:<region-ID>:<user-ID>:report/<report-group-name>:<report 2 ID>"
 
 Output::
 

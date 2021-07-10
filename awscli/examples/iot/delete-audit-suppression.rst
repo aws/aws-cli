@@ -4,7 +4,7 @@ The following ``delete-audit-suppression`` example deletes an audit finding supp
 
     aws iot delete-audit-suppression \
         --check-name DEVICE_CERTIFICATE_EXPIRING_CHECK \
-        --resource-identifier deviceCertificateId="c7691e<shortened>"
+        --resource-identifier "deviceCertificateId=c7691e<shortened>"
 
 This command produces no output.
 

@@ -5,7 +5,7 @@ The following ``update-thing`` example associates a thing in the AWS IoT registr
     aws iot update-thing \
         --thing-name "MyOtherLightBulb" \
         --thing-type-name "LightBulb" \
-        --attribute-payload "{"attributes": {"wattage":"75", "model":"123"}}"
+        --attribute-payload "{\"attributes\": {\"wattage\":\"75\", \"model\":\"123\"}}"
 
 This command does not produce output. Use the ``describe-thing`` command to see the result.
 

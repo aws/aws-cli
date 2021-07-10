@@ -85,4 +85,4 @@ The following ``create-snapshots`` example creates snapshots of all volumes atta
 
     aws ec2 create-snapshots \
         --instance-specification InstanceId=i-1234567890abcdef0 
-        --tag-specifications ResourceType=snapshot,Tags=[{Key=Name,Value=backup},{Key=costcenter,Value=123}]
+        --tag-specifications ResourceType=snapshot,Tags=[{Key=Name},{Value=backup},{Key=costcenter},{Value=123}]

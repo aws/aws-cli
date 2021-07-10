@@ -4,7 +4,7 @@ This example disables transitions into the Beta stage of the MyFirstPipeline pip
 
 Command::
 
-  aws codepipeline disable-stage-transition --pipeline-name MyFirstPipeline --stage-name Beta  --transition-type Inbound
+  aws codepipeline disable-stage-transition --pipeline-name MyFirstPipeline --stage-name Beta  --transition-type Inbound --reason "Disabled"
 
 
 Output::

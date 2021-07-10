@@ -21,8 +21,7 @@ The following ``create-table`` example creates a table in the AWS Glue Data Cata
             "Parameters":{ \
                 "classification":"json"} \
             }' \
-        --profile my-profile \
-        --endpoint https://glue.us-east-1.amazonaws.com 
+        --endpoint https://glue.us-east-1.amazonaws.com
 
 This command produces no output.
 
@@ -51,8 +50,7 @@ The following ``create-table`` example creates a table in the AWS Glue Data Cata
                 "Parameters":{ \
                     "separatorChar":","} \
                 }' \
-            --profile my-profile \
-            --endpoint https://glue.us-east-1.amazonaws.com 
+            --endpoint https://glue.us-east-1.amazonaws.com
 
 This command produces no output.
 
@@ -77,8 +75,7 @@ describes a AWS Simple Storage Service (AWS S3) data store. ::
                 "Parameters":{ \
                     "classification":"json"} \
                 }' \
-            --profile my-profile \
-            --endpoint https://glue.us-east-1.amazonaws.com 
+            --endpoint https://glue.us-east-1.amazonaws.com
 
 This command produces no output.
 

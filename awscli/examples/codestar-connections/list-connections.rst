@@ -5,7 +5,7 @@ The following ``list-connections`` example retrieves a list of all connections i
     aws codestar-connections list-connections \
     --provider-type Bitbucket \
     --max-results 5 \
-    --next-token: next-token
+    --next-token next-token
 
 Output::
 

@@ -3,7 +3,7 @@
 The following ``describe-code-coverages`` example gets information about the code coverage test results in the specified report. ::
 
     aws codebuild describe-code-coverages \
-        --report-arn arn:aws:codebuild:<region-ID>:<account-ID>:report/<report-group-name>:<report-ID>
+        --report-arn "arn:aws:codebuild:<region-ID>:<account-ID>:report/<report-group-name>:<report-ID>"
 
 Output::
 

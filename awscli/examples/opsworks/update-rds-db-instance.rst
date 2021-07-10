@@ -6,7 +6,7 @@ you provide to AWS OpsWorks.
 If this password does not match the RDS instance's password,
 your application will not be able to connect to the database. ::
 
-  aws opsworks --region us-east-1 update-rds-db-instance --db-password 123456789
+  aws opsworks update-rds-db-instance --rds-db-instance-arn "arn:aws:rds:us-west-2:123456789012:db:test-mysql-instance" --region us-east-1 --db-password 123456789 
 
 *Output*: None.
 

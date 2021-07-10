@@ -3,7 +3,7 @@
 The following ``stop-build-batch`` example stops the specified batch build. ::
 
     aws codebuild stop-build-batch \
-        --id <project-name>:<batch-ID>
+        --id "<project-name>:<batch-ID>"
 
 Output::
 

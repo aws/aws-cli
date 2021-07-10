@@ -3,7 +3,7 @@
 The following ``describe-fleet-history`` example returns the history for the specified EC2 Fleet starting at the specified time. The output is for an EC2 Fleet with two running instances. ::
 
     aws ec2 describe-fleet-history \
-        --fleet-ids fleet-12a34b55-67cd-8ef9-ba9b-9208dEXAMPLE \
+        --fleet-id fleet-12a34b55-67cd-8ef9-ba9b-9208dEXAMPLE \
         --start-time 2020-09-01T00:00:00Z
 
 Output::

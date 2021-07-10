@@ -3,13 +3,13 @@
 The following ``deregister-target-from-maintenance-window`` example removes the specified target from the specified maintenance window. ::
 
     aws ssm deregister-target-from-maintenance-window \
-        --window-id "mw-ab12cd34ef56gh78" \
+        --window-id "mw-06cf17cbefEXAMPLE" \
         --window-target-id "1a2b3c4d-1a2b-1a2b-1a2b-1a2b3c4d-1a2"
 
 Output::
 
     {
-        "WindowId":"mw-ab12cd34ef56gh78",
+        "WindowId": "mw-06cf17cbefEXAMPLE",
         "WindowTargetId":"1a2b3c4d-1a2b-1a2b-1a2b-1a2b3c4d-1a2"
     }
 

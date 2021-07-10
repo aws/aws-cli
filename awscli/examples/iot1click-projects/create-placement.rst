@@ -5,7 +5,7 @@ The following ``create-placement`` example  create an AWS IoT 1-Click placement 
     aws iot1click-projects create-placement \
         --project-name AnytownDumpsters \
         --placement-name customer217 \
-        --attributes "{"location": "123 Any Street Anytown, USA 10001", "phone": "123-456-7890"}"
+        --attributes '{"location": "123 Any Street Anytown, USA 10001", "phone": "123-456-7890"}'
 
 This command produces no output.
 

@@ -3,7 +3,7 @@
 The following ``retry-build-batch`` example restarts the specified batch build. ::
 
     aws codebuild retry-build-batch \
-        --id <project-name>:<batch-ID>
+        --id "<project-name>:<batch-ID>"
 
 Output::
 

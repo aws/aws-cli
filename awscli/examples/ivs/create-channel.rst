@@ -3,7 +3,7 @@
 The following ``create-channel`` example creates a new channel and an associated stream key to start streaming. ::
 
     aws ivs create-channel \
-        -name "test-channel"
+        --name "test-channel"
 
 Output::
 

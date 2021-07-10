@@ -2,7 +2,7 @@
 
 The following example retrieves information about when the access key ``ABCDEXAMPLE`` was last used::
 
-  aws iam get-access-key-last-used --access-key-id ABCDEXAMPLE
+  aws iam get-access-key-last-used --access-key-id ABCDEXAMPLEGHIJK
 
 
 Output::

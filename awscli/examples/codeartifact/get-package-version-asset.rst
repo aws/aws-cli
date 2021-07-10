@@ -8,6 +8,7 @@ The following ``get-package-version-asset`` example retrieves the package.tgz as
         --format npm \
         --package test-package \
         --package-version 4.0.0 \
+        --asset test-asset
         outfileName
 
 Output::

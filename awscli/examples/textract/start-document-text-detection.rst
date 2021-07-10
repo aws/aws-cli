@@ -2,7 +2,9 @@
 
 The following ``start-document-text-detection`` example shows how to start asynchronous detection of text in a multi-page document. ::
 
-    aws textract start-document-text-detection --document-location '{"S3Object":{"Bucket":"reescheastv","Name":"doctest.png"}}' --notification-channel "SNSTopicArn=topicARN,RoleArn=roleARN"
+    aws textract start-document-text-detection \
+        --document-location '{"S3Object":{"Bucket":"reescheastv","Name":"doctest.png"}}' \
+        --notification-channel "SNSTopicArn=arn:aws:sns:us-west-2:123456789012:my-topic,RoleArn=arn:aws:iam::123456789012:role/Test-Role"
 
 The command returns output similar to the following. ::
 

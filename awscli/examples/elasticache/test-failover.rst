@@ -2,8 +2,8 @@
 
 The following ``test-failover`` example tests automatic failover on the specified node group (called a shard in the console) in a replication group (called a cluster in the console). ::
 
-    aws elasticache test-failover /
-        --replication-group-id "mycluster" /
+    aws elasticache test-failover \
+        --replication-group-id "mycluster" \
         --node-group-id "0001"
 
 Output::

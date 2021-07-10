@@ -6,9 +6,10 @@ The following ``assume-role-with-web-identity`` example retrieves a set of short
          --duration-seconds 3600 \
          --role-session-name "app1" \
          --provider-id "www.amazon.com" \
-         --policy-arns "arn:aws:iam::123456789012:policy/q=webidentitydemopolicy1","arn:aws:iam::123456789012:policy/webidentitydemopolicy2" \
+         --policy-arns "arn=arn:aws:iam::123456789012:policy/webidentitydemopolicy1" "arn=arn:aws:iam::123456789012:policy/webidentitydemopolicy2" \
          --role-arn arn:aws:iam::123456789012:role/FederatedWebIdentityRole \
          --web-identity-token "Atza%7CIQEBLjAsAhRFiXuWpUXuRvQ9PZL3GMFcYevydwIUFAHZwXZXXXXXXXXJnrulxKDHwy87oGKPznh0D6bEQZTSCzyoCtL_8S07pLpr0zMbn6w1lfVZKNTBdDansFBmtGnIsIapjI6xKR02Yc_2bQ8LZbUXSGm6Ry6_BG7PrtLZtj_dfCTj92xNGed-CrKqjG7nPBjNIL016GGvuS5gSvPRUxWES3VYfm1wl7WTI7jn-Pcb6M-buCgHhFOzTQxod27L9CqnOLio7N3gZAGpsp6n1-AJBOCJckcyXe2c6uD0srOJeZlKUm2eTDVMf8IehDVI0r1QOnTV6KzzAI3OY87Vd_cVMQ"
+
 
 Output::
 

@@ -4,7 +4,7 @@ The following ``unlabel-parameter-version`` example deletes the specified labels
 
     aws ssm unlabel-parameter-version \
         --name "parameterName" \
-        --parameter-version "version" \
+        --parameter-version 1 \
         --labels "label_1" "label_2" "label_3"
 
 Output::

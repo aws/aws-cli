@@ -4,7 +4,7 @@ The following ``update-security-group-rule-descriptions-egress`` example updates
 
     aws ec2 update-security-group-rule-descriptions-egress \
         --group-id sg-02f0d35a850ba727f \
-        --ip-permissions IpProtocol=tcp,FromPort=80,ToPort=80,IpRanges=[{CidrIp=203.0.113.0/24,Description="Outbound HTTP access to server 2"}]
+        --ip-permissions IpProtocol=tcp,FromPort=80,ToPort=80,IpRanges=[{CidrIp=203.0.113.0/24},{Description="Outbound HTTP access to server 2"}]
 
 Output::
 

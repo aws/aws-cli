@@ -4,7 +4,9 @@ The following ``create-local-gateway-route`` example creates the specified route
 
     aws ec2 create-local-gateway-route \
         --destination-cidr-block 0.0.0.0/0 \
-        --local-gateway-route-table-id lgw-rtb-059615ef7dEXAMPLE
+        --local-gateway-route-table-id lgw-rtb-059615ef7dEXAMPLE \
+        --local-gateway-virtual-interface-group-id lgw-vif-grp-07145b276bEXAMPLE
+
 
 Output::
 

@@ -4,7 +4,7 @@ The following ``start-fhir-import-job`` example shows how to start a FHIR import
 
     aws healthlake start-fhir-import-job \
         --input-data-config S3Uri="s3://(Bucket Name)/(Prefix Name)/" \
-        --datastore-id (Datastore ID) \
+        --datastore-id "(Datastore ID)" \
         --data-access-role-arn "arn:aws:iam::(AWS Account ID):role/(Role Name)" \
         --region us-east-1
 

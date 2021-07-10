@@ -3,7 +3,7 @@
 The following ``start-build-batch`` example starts a batch build of the specified project. ::
 
     aws codebuild start-build-batch \
-        --project-name <project-name>
+        --project-name "<project-name>"
 
 Output::
 

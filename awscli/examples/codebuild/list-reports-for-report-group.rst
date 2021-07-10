@@ -3,7 +3,7 @@
 The following ``list-report-for-report-groups`` example retrieves the reports in the specified report group for the account in the region. ::
 
     aws codebuild list-reports-for-report-group \
-        --report-group-arn arn:aws:codebuild:<region-ID>:<user-ID>:report-group/<report-group-name>
+        --report-group-arn "arn:aws:codebuild:<region-ID>:<user-ID>:report-group/<report-group-name>"
 
 Output::
 

@@ -6,8 +6,8 @@ A host created through the AWS CLI is in Pending status by default. After you cr
 
     aws codestar-connections create-host \
         --name MyHost \ 
-        --provider-type GitHubEnterpriseServer \ 
-        --provider-endpoint "https://my-instance.dev"
+        --provider-type GitHub \
+        --provider-endpoint "https://github.com"
 
 Output::
 

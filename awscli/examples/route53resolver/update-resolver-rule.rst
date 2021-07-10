@@ -6,7 +6,7 @@ The following ``update-resolver-rule`` example updates the name of the rule, the
 
     aws route53resolver update-resolver-rule \
         --resolver-rule-id rslvr-rr-1247fa64f3example \
-        --config Name="my-2nd-rule",TargetIps=[{Ip=192.0.2.45,Port=53},{Ip=192.0.2.46,Port=53}],ResolverEndpointId=rslvr-out-7b89ed0d25example
+        --config "Name="my-2nd-rule",TargetIps=[{Ip=192.0.2.45,Port=53},{Ip=192.0.2.46,Port=53}],ResolverEndpointId=rslvr-out-7b89ed0d25example"
 
 Output::
 

@@ -3,7 +3,7 @@
 The following ``delete-build-batch`` example deletes the specified batch build. ::
 
     aws codebuild delete-build-batch \
-        --id <project-name>:<batch-ID>
+        --id "<project-name>:<batch-ID>"
 
 Output::
 

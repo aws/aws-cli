@@ -2,7 +2,7 @@
 
 The following `list-associations` example lists all associations with the AssociationName, UpdateSSMAgent. ::
 
-    aws ssm list-associations /
+    aws ssm list-associations \
         --association-filter-list "key=AssociationName,value=UpdateSSMAgent"
 
 Output::
@@ -41,7 +41,7 @@ For more information, see `Working with associations in Systems Manager <https:/
 
 The following `list-associations` example lists all associations for the specified document. ::
 
-    aws ssm list-associations /
+    aws ssm list-associations \
         --association-filter-list "key=Name,value=AWS-UpdateSSMAgent"
 
 Output::

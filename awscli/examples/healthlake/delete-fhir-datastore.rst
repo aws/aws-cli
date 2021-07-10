@@ -3,7 +3,7 @@
 The following ``delete-fhir-datastore`` example demonstrates how to delete a Data Store and all of its contents in Amazon HealthLake. ::
 
     aws healthlake delete-fhir-datastore \
-        --datastore-id (Data Store ID) \
+        --datastore-id "(Data Store ID)" \
         --region us-east-1
 
 Output::

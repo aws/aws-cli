@@ -4,7 +4,7 @@ The following ``create-capacity-provider`` example creates a capacity provider t
 
     aws ecs create-capacity-provider \
         --name "MyCapacityProvider" \
-        --auto-scaling-group-provider autoScalingGroupArn=arn:aws:autoscaling:us-west-2:123456789012:autoScalingGroup:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111:autoScalingGroupName/MyAutoScalingGroup,managedScaling={status=ENABLED,targetCapacity=100,minimumScalingStepSize=1,maximumScalingStepSize=100},managedTerminationProtection=ENABLED
+        --auto-scaling-group-provider "autoScalingGroupArn=arn:aws:autoscaling:us-west-2:123456789012:autoScalingGroup:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111:autoScalingGroupName/MyAutoScalingGroup,managedScaling={status=ENABLED,targetCapacity=100,minimumScalingStepSize=1,maximumScalingStepSize=100},managedTerminationProtection=ENABLED"
 
 Output::
 

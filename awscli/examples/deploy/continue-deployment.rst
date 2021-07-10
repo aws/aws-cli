@@ -3,7 +3,7 @@
 The following ``continue-deployment`` example starts rerouting traffic from instances in the original environment that are ready to start shifting traffic to instances in the replacement environment. ::
 
     aws deploy continue-deployment \
-        --deployment-d "d-A1B2C3111" \
+        --deployment-id "d-A1B2C3111" \
         --deployment-wait-type "READY_WAIT"
 
 This command produces no output.

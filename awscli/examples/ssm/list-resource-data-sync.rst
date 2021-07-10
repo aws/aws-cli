@@ -4,7 +4,7 @@ This example retrieves information about your resource data sync configurations.
 
 Command::
 
-  aws ssm list-resource-data-sync --sync-name "ssm-resource-data-sync"
+  aws ssm list-resource-data-sync
 
 Output::
 

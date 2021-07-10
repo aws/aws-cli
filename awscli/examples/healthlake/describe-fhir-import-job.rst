@@ -3,7 +3,7 @@
 The following ``describe-fhir-import-job`` example shows how to learn the properties of a FHIR import job using Amazon HealthLake. ::
 
     aws healthlake describe-fhir-import-job \
-        --datastore-id (Datastore ID) \
+        --datastore-id "(Datastore ID)" \
         --job-id c145fbb27b192af392f8ce6e7838e34f \
         --region us-east-1
 

@@ -3,7 +3,7 @@
 The following ``describe-fhir-export-job`` example shows how to find the properties of a FHIR export job in Amazon HealthLake. ::
 
     aws healthlake describe-fhir-export-job \
-        --datastore-id (Datastore ID) \
+        --datastore-id "(Datastore ID)" \
         --job-id 9b9a51943afaedd0a8c0c26c49135a31
 
 Output::

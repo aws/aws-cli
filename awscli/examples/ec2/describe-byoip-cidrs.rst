@@ -2,7 +2,8 @@
 
 The following ``describe-byoip-cidrs`` example displays details about the public IPv4 address ranges that you provisioned for use by AWS. ::
 
-    aws ec2 describe-byoip-cidrs
+    aws ec2 describe-byoip-cidrs \
+        --max-results 10
 
 Output::
 

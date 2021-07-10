@@ -4,7 +4,7 @@ The following ``restore-table-from-backup`` example restores the specified table
 
     aws dynamodb restore-table-from-backup \
         --target-table-name MusicCollection \
-        --backup-arnarn:aws:dynamodb:us-west-2:123456789012:table/MusicCollection/backup/01576616366715-b4e58d3a
+        --backup-arn arn:aws:dynamodb:us-west-2:123456789012:table/MusicCollection/backup/01576616366715-b4e58d3a
 
 Output::
 

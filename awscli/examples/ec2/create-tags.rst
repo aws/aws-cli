@@ -25,8 +25,8 @@ If you are using Windows, surround the element that has special characters with 
 
 If you are using Windows PowerShell, element the value that has special characters with double quotes ("), precede each double quote character with a backslash (\\), and then surround the entire key and value structure with single quotes (') as follows::
 
-    aws ec2 create-tags `
-        --resources i-1234567890abcdef0 `
+    aws ec2 create-tags ^
+        --resources i-1234567890abcdef0 ^
         --tags 'Key=\"[Group]\",Value=test'
 
 If you are using Linux or OS X, surround the element that has special characters with double quotes ("), and then surround the entire key and value structure with single quotes (') as follows::

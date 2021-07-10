@@ -2,8 +2,8 @@
 
 The following ``accept-reserved-node-exchange`` example accepts exchange of a DC1 reserved node for a DC2 reserved node. ::
 
-    aws redshift accept-reserved-node-exchange /
-        --reserved-node-id 12345678-12ab-12a1-1a2a-12ab-12a12EXAMPLE /
+    aws redshift accept-reserved-node-exchange \
+        --reserved-node-id 12345678-12ab-12a1-1a2a-12ab-12a12EXAMPLE \
         --target-reserved-node-offering-id 12345678-12ab-12a1-1a2a-12ab-12a12EXAMPLE
 
 Output::

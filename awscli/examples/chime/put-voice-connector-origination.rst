@@ -4,7 +4,7 @@ The following ``put-voice-connector-origination`` example sets up the originatio
 
     aws chime put-voice-connector-origination \
         --voice-connector-id abcdef1ghij2klmno3pqr4 \
-        --origination Routes=[{Host="10.24.34.0",Port=1234,Protocol="TCP",Priority=1,Weight=5}],Disabled=false
+        --origination Routes=[{Host="10.24.34.0"},{Port=1234},{Protocol="TCP"},{Priority=1},{Weight=5}],Disabled=false
 
 Output::
 

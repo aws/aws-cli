@@ -18,7 +18,7 @@ The output includes a ``nextToken`` value which indicates that there is more out
 
 Run this command again and provide the ``nextToken`` value from the previous response as a parameter to get the next part of the output. Repeat until you don't receive a ``nextToken`` value in the response. ::
 
-    aws codebuild list-projects  --sort-by NAME --sort-order ASCENDING --next-token Ci33ACF6...The full token has been omitted for brevity...U+AkMx8=
+    aws codebuild list-projects  --sort-by NAME --sort-order ASCENDING --next-token "Ci33ACF6...The full token has been omitted for brevity...U+AkMx8="
 
     {
         "projects": [

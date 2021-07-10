@@ -3,7 +3,7 @@
 The following ``delete-project`` example deletes the specified project. ::
 
     aws codestar delete-project \
-        --project-id my-project
+        --id my-project
 
 Output::
 

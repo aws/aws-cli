@@ -3,7 +3,7 @@
 The following ``list-resources`` example retrieves a list of resources for the specified project. ::
 
     aws codestar list-resources \
-        --id my-project
+        --project-id my-project
 
 Output::
 

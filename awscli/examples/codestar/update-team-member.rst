@@ -5,7 +5,7 @@ The following ``update-team-member`` example makes the specified user a contribu
     aws codestar update-team-member \
         --project-id my-project \
         --user-arn arn:aws:iam::123456789012:user/intern \
-        --project-role Contributor -\
+        --project-role Contributor \
         --remote-access-allowed
 
 Output::

@@ -4,8 +4,8 @@ The following ``start-fhir-export-job`` example shows how to start a FHIR export
 
     aws healthlake start-fhir-export-job \
         --output-data-config S3Uri="s3://(Bucket Name)/(Prefix Name)/" \
-        --datastore-id (Datastore ID) \
-        --data-access-role-arn arn:aws:iam::(AWS Account ID):role/(Role Name)
+        --datastore-id "(Datastore ID)" \
+        --data-access-role-arn "arn:aws:iam::(AWS Account ID):role/(Role Name)"
 
 Output::
 

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.19.110
+========
+
+* api-change:``kendra``: Amazon Kendra now supports Principal Store
+* api-change:``eks``: Documentation updates for Wesley to support the parallel node upgrade feature.
+
+
 1.19.109
 ========
 

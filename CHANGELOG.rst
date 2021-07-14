@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+2.2.19
+======
+
+* api-change:``kendra``: Amazon Kendra now supports Principal Store
+* api-change:``directconnect``: This release adds a new filed named awsLogicalDeviceId that it displays the AWS Direct Connect endpoint which terminates a physical connection's BGP Sessions.
+* api-change:``pricing``: Documentation updates for api.pricing
+* api-change:``mediaconvert``: MediaConvert now supports color, style and position information passthrough from 608 and Teletext to SRT and WebVTT subtitles. MediaConvert now also supports Automatic QVBR quality levels for QVBR RateControlMode.
+* api-change:``redshift``: Release new APIs to support new Redshift feature - Authentication Profile
+* api-change:``sagemaker``: Releasing new APIs related to Tuning steps in model building pipelines.
+* api-change:``eks``: Documentation updates for Wesley to support the parallel node upgrade feature.
+* api-change:``amplifybackend``: Added Sign in with Apple OAuth provider.
+* api-change:``lex-models``: Customers can now migrate bots built with Lex V1 APIs to V2 APIs. This release adds APIs to initiate and manage the migration of a bot.
+* api-change:``frauddetector``: This release adds support for ML Explainability to display model variable importance value in Amazon Fraud Detector.
+* api-change:``ssm``: Changes to OpsCenter APIs to support a new feature, operational insights.
+
+
 2.2.18
 ======
 

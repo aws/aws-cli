@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.19.112
+========
+
+* api-change:``dms``: Release of feature needed for ECA-Endpoint settings. This allows customer to delete a field in endpoint settings by using --exact-settings flag in modify-endpoint api. This also displays default values for certain required fields of endpoint settings in describe-endpoint-settings api.
+* api-change:``wellarchitected``: This update provides support for Well-Architected API users to mark answer choices as not applicable.
+* api-change:``healthlake``: General availability for Amazon HealthLake. StartFHIRImportJob and StartFHIRExportJob APIs now require AWS KMS parameter. For more information, see the Amazon HealthLake Documentation https://docs.aws.amazon.com/healthlake/index.html.
+* api-change:``acm``: Added support for RSA 3072 SSL certificate import
+* api-change:``glue``: Add support for Event Driven Workflows
+* api-change:``lightsail``: This release adds support for the Amazon Lightsail object storage service, which allows you to create buckets and store objects.
+
+
 1.19.111
 ========
 

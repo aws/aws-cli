@@ -488,7 +488,7 @@ class TestIMDSRegionProvider(unittest.TestCase):
         provider = IMDSRegionProvider(driver.session)
         provider.provide()
         args, _ = send.call_args
-        self.assertIn('[fe80:ec2::254%eth0]', args[0].url)
+        self.assertIn('[fd00:ec2::254]', args[0].url)
 
     @mock.patch('botocore.httpsession.URLLib3Session.send')
     def test_use_ipv4_by_default(self, send):
@@ -497,6 +497,26 @@ class TestIMDSRegionProvider(unittest.TestCase):
         provider.provide()
         args, _ = send.call_args
         self.assertIn('169.254.169.254', args[0].url)
+
+    @mock.patch('botocore.httpsession.URLLib3Session.send')
+    def test_can_set_imds_endpoint_mode_to_ipv4(self, send):
+        driver = create_clidriver()
+        driver.session.set_config_variable(
+            'ec2_metadata_service_endpoint_mode', 'ipv4')
+        provider = IMDSRegionProvider(driver.session)
+        provider.provide()
+        args, _ = send.call_args
+        self.assertIn('169.254.169.254', args[0].url)
+
+    @mock.patch('botocore.httpsession.URLLib3Session.send')
+    def test_can_set_imds_endpoint_mode_to_ipv6(self, send):
+        driver = create_clidriver()
+        driver.session.set_config_variable(
+            'ec2_metadata_service_endpoint_mode', 'ipv6')
+        provider = IMDSRegionProvider(driver.session)
+        provider.provide()
+        args, _ = send.call_args
+        self.assertIn('[fd00:ec2::254]', args[0].url)
 
 
 class TestLazyPager(unittest.TestCase):

@@ -2185,6 +2185,28 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.20.0
+======
+
+* feature:Python: Drop support for Python 2.7
+* api-change:``lex-models``: Lex now supports the en-IN locale
+* api-change:``ec2``: This feature enables customers  to specify weekly recurring time window(s) for scheduled events that reboot, stop or terminate EC2 instances.
+* api-change:``cognito-idp``: Documentation updates for cognito-idp
+* api-change:``ecs``: Documentation updates for support of awsvpc mode on Windows.
+* api-change:``iotsitewise``: Update the default endpoint for the APIs used to manage asset models, assets, gateways, tags, and account configurations. If you have firewalls with strict egress rules, configure the rules to grant you access to api.iotsitewise.[region].amazonaws.com or api.iotsitewise.[cn-region].amazonaws.com.cn.
+
+
+1.19.112
+========
+
+* api-change:``dms``: Release of feature needed for ECA-Endpoint settings. This allows customer to delete a field in endpoint settings by using --exact-settings flag in modify-endpoint api. This also displays default values for certain required fields of endpoint settings in describe-endpoint-settings api.
+* api-change:``wellarchitected``: This update provides support for Well-Architected API users to mark answer choices as not applicable.
+* api-change:``healthlake``: General availability for Amazon HealthLake. StartFHIRImportJob and StartFHIRExportJob APIs now require AWS KMS parameter. For more information, see the Amazon HealthLake Documentation https://docs.aws.amazon.com/healthlake/index.html.
+* api-change:``acm``: Added support for RSA 3072 SSL certificate import
+* api-change:``glue``: Add support for Event Driven Workflows
+* api-change:``lightsail``: This release adds support for the Amazon Lightsail object storage service, which allows you to create buckets and store objects.
+
+
 1.19.111
 ========
 

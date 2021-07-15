@@ -23,6 +23,7 @@ INSTALL_DIR = os.path.expanduser(os.path.join(
 GTE_PY37 = sys.version_info[:2] >= (3, 7)
 UNSUPPORTED_PYTHON = (
     (2,6),
+    (2,7),
     (3,3),
     (3,4),
     (3,5),
@@ -49,14 +50,17 @@ class PythonDeprecationWarning(Warning):
 
 
 def _build_deprecations():
-    py_27_params = {
-        'date': 'July 15, 2021',
-        'blog_link': 'https://aws.amazon.com/blogs/developer/announcing-end-'
-                     'of-support-for-python-2-7-in-aws-sdk-for-python-and-'
-                     'aws-cli-v1/'
-    }
+    # Example Template
+
+    # py_27_params = {
+    #    'date': 'July 15, 2021',
+    #    'blog_link': 'https://aws.amazon.com/blogs/developer/announcing-end-'
+    #                 'of-support-for-python-2-7-in-aws-sdk-for-python-and-'
+    #                 'aws-cli-v1/'
+    # }
+
     return {
-        (2,7): py_27_params
+        # (2,7): py_27_params
     }
 
 
@@ -211,14 +215,15 @@ def main():
     py_version = sys.version_info[:2]
     if py_version in UNSUPPORTED_PYTHON:
         unsupported_python_msg = (
-            "Unsupported Python version detected: Python %s.%s\n"
-            "To continue using this installer you must use Python 2.7, "
-            "Python 3.6 or later.\n"
-            "For more information see the following blog post:\n"
-            "https://aws.amazon.com/blogs/developer/deprecation-of-python-2-6"
-            "-and-python-3-3-in-botocore-boto3-and-the-aws-cli/"
-        )
-        print(unsupported_python_msg % py_version)
+            "Unsupported Python version detected: Python {}.{}\n"
+            "To continue using this installer you must use Python 3.6 "
+            "or later.\n"
+            "For more information see the following blog post: "
+            "https://aws.amazon.com/blogs/developer/announcing-end-"
+            "of-support-for-python-2-7-in-aws-sdk-for-python-and-"
+            "aws-cli-v1/\n"
+        ).format(py_version[0], py_version[1])
+        print(unsupported_python_msg, file=sys.stderr)
         sys.exit(1)
 
     if py_version in DEPRECATED_PYTHON:

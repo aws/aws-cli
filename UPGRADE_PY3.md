@@ -1,9 +1,9 @@
 # CLI Python 3 Migration Guide
 
 Python 2.7 was deprecated by the [Python Software Foundation](https://www.python.org/psf-landing/)
-back on January 1, 2020 following a multi-year process of phasing it out. Because of this, AWS is
-deprecating support for Python 2.7, meaning versions the AWS CLI v1 released after the deprecation
-date will no longer work with Python 2.7.
+back on January 1, 2020 following a multi-year process of phasing it out. Because of this, AWS has
+deprecated support for Python 2.7, meaning versions the AWS CLI v1 released after the deprecation
+date no longer work with Python 2.7.
 
 -----
 

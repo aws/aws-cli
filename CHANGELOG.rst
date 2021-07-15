@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.20.0
+======
+
+* feature:Python: Drop support for Python 2.7
+* api-change:``lex-models``: Lex now supports the en-IN locale
+* api-change:``ec2``: This feature enables customers  to specify weekly recurring time window(s) for scheduled events that reboot, stop or terminate EC2 instances.
+* api-change:``cognito-idp``: Documentation updates for cognito-idp
+* api-change:``ecs``: Documentation updates for support of awsvpc mode on Windows.
+* api-change:``iotsitewise``: Update the default endpoint for the APIs used to manage asset models, assets, gateways, tags, and account configurations. If you have firewalls with strict egress rules, configure the rules to grant you access to api.iotsitewise.[region].amazonaws.com or api.iotsitewise.[cn-region].amazonaws.com.cn.
+
+
 1.19.112
 ========
 

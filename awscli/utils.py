@@ -23,6 +23,7 @@ import logging
 from awscli.compat import six
 from awscli.compat import get_stdout_text_writer
 from awscli.compat import get_popen_kwargs_for_pager_cmd
+from botocore.utils import resolve_imds_endpoint_mode
 from botocore.utils import IMDSFetcher
 from botocore.configprovider import BaseProvider
 
@@ -129,7 +130,9 @@ class IMDSRegionProvider(BaseProvider):
         metadata_num_attempts = self._session.get_config_variable(
             'metadata_service_num_attempts')
         imds_config = {
-            'imds_use_ipv6': self._session.get_config_variable('imds_use_ipv6')
+            'ec2_metadata_service_endpoint_mode': resolve_imds_endpoint_mode(
+                self._session
+            )
         }
         fetcher = InstanceMetadataRegionFetcher(
             timeout=metadata_timeout,

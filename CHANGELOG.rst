@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.20.1
+======
+
+* api-change:``appintegrations``: Documentation update for AppIntegrations Service
+* api-change:``chime``: This SDK release adds Account Status as one of the attributes in Account API response
+* api-change:``auditmanager``: This release relaxes the S3 URL character restrictions in AWS Audit Manager. Regex patterns have been updated for the following attributes: s3RelativePath, destination, and s3ResourcePath. 'AWS' terms have also been replaced with entities to align with China Rebrand documentation efforts.
+
+
 1.20.0
 ======
 

@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.20.4
+======
+
+* api-change:``lambda``: New ResourceConflictException error code for PutFunctionEventInvokeConfig, UpdateFunctionEventInvokeConfig, and DeleteFunctionEventInvokeConfig operations.
+* api-change:``emr``: Update emr command to latest version
+* api-change:``personalize``: My AWS Service (placeholder) - Making minProvisionedTPS an optional parameter when creating a campaign. If not provided, it defaults to 1.
+* api-change:``rds``: Adds the OriginalSnapshotCreateTime field to the DBSnapshot response object. This field timestamps the underlying data of a snapshot and doesn't change when the snapshot is copied.
+* api-change:``kendra``: Amazon Kendra now provides a data source connector for Amazon WorkDocs. For more information, see https://docs.aws.amazon.com/kendra/latest/dg/data-source-workdocs.html
+* api-change:``iam``: Documentation updates for AWS Identity and Access Management (IAM).
+* api-change:``codebuild``: AWS CodeBuild now allows you to set the access permissions for build artifacts, project artifacts, and log files that are uploaded to an Amazon S3 bucket that is owned by another account.
+* api-change:``proton``: Documentation updates for AWS Proton
+* api-change:``elbv2``: Update elbv2 command to latest version
+
+
 1.20.3
 ======
 

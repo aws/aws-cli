@@ -4,7 +4,7 @@ This example describes the available adjustment types. ::
 
     aws autoscaling describe-adjustment-types
 
-The following is example output::
+Output::
 
     {
         "AdjustmentTypes": [
@@ -12,7 +12,7 @@ The following is example output::
                 "AdjustmentType": "ChangeInCapacity"
             },
             {
-                "AdjustmentType": "ExactCapcity"
+                "AdjustmentType": "ExactCapacity"
             },
             {
                 "AdjustmentType": "PercentChangeInCapacity"

@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.20.5
+======
+
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``databrew``: This SDK release adds two new features: 1) Output to Native JDBC destinations and 2) Adding configurations to profile jobs
+* api-change:``s3control``: Documentation updates for Amazon S3-control
+* api-change:``qldb``: Amazon QLDB now supports ledgers encrypted with customer managed KMS keys. Changes in CreateLedger, UpdateLedger and DescribeLedger APIs to support the changes.
+* api-change:``medialive``: MediaLive now supports passing through style data on WebVTT caption outputs.
+* api-change:``ec2``: This release allows customers to assign prefixes to their elastic network interface and to reserve IP blocks in their subnet CIDRs. These reserved blocks can be used to assign prefixes to elastic network interfaces or be excluded from auto-assignment.
+
+
 1.20.4
 ======
 

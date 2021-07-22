@@ -73,7 +73,7 @@ For more information, see `Writing an Item <https://docs.aws.amazon.com/amazondy
 
 **Example 2: To update an item conditionally**
 
-The following example updates an item in the ``MusicCollection`` table, but only if the existing item does not already have a ``Year`` attribute.
+The following example updates an item in the ``MusicCollection`` table, but only if the existing item does not already have a ``Year`` attribute. ::
 
     aws dynamodb update-item \
         --table-name MusicCollection \
@@ -104,7 +104,7 @@ Contents of ``expression-attribute-values.json``::
         ":t":{"S": "Louder Than Ever"}
     }
 
-If the item already has a ``Year`` attribute, DynamoDB returns the following output::
+If the item already has a ``Year`` attribute, DynamoDB returns the following output. ::
 
     An error occurred (ConditionalCheckFailedException) when calling the UpdateItem operation: The conditional request failed
 

@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+2.2.22
+======
+
+* api-change:``emr``: Update emr command to latest version
+* api-change:``proton``: Documentation updates for AWS Proton
+* api-change:``ec2``: This release allows customers to assign prefixes to their elastic network interface and to reserve IP blocks in their subnet CIDRs. These reserved blocks can be used to assign prefixes to elastic network interfaces or be excluded from auto-assignment.
+* api-change:``medialive``: MediaLive now supports passing through style data on WebVTT caption outputs.
+* api-change:``databrew``: This SDK release adds two new features: 1) Output to Native JDBC destinations and 2) Adding configurations to profile jobs
+* api-change:``codebuild``: AWS CodeBuild now allows you to set the access permissions for build artifacts, project artifacts, and log files that are uploaded to an Amazon S3 bucket that is owned by another account.
+* api-change:``iam``: Documentation updates for AWS Identity and Access Management (IAM).
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``lambda``: New ResourceConflictException error code for PutFunctionEventInvokeConfig, UpdateFunctionEventInvokeConfig, and DeleteFunctionEventInvokeConfig operations.
+* api-change:``s3control``: Documentation updates for Amazon S3-control
+* api-change:``personalize``: My AWS Service (placeholder) - Making minProvisionedTPS an optional parameter when creating a campaign. If not provided, it defaults to 1.
+* api-change:``rds``: Adds the OriginalSnapshotCreateTime field to the DBSnapshot response object. This field timestamps the underlying data of a snapshot and doesn't change when the snapshot is copied.
+* api-change:``kendra``: Amazon Kendra now provides a data source connector for Amazon WorkDocs. For more information, see https://docs.aws.amazon.com/kendra/latest/dg/data-source-workdocs.html
+* api-change:``qldb``: Amazon QLDB now supports ledgers encrypted with customer managed KMS keys. Changes in CreateLedger, UpdateLedger and DescribeLedger APIs to support the changes.
+* api-change:``elbv2``: Update elbv2 command to latest version
+
+
 2.2.21
 ======
 

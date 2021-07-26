@@ -94,6 +94,10 @@ INSTANCE_GROUPS_SCHEMA = {
                 "for the instance group",
                 "required": True
             },
+            "CustomAmiId": {
+                "type": "string",
+                "description": "The AMI ID of a custom AMI to use when Amazon EMR provisions EC2 instances."
+            },
             "EbsConfiguration": {
                 "type": "object",
                 "description": "EBS configuration that will be associated with the instance group.",
@@ -330,6 +334,10 @@ INSTANCE_FLEETS_SCHEMA = {
                         "BidPriceAsPercentageOfOnDemandPrice": {
                             "type": "double",
                             "description": "Bid price as percentage of on-demand price."
+                        },
+                        "CustomAmiId": {
+                            "type": "string",
+                            "description": "The AMI ID of a custom AMI to use when Amazon EMR provisions EC2 instances."
                         },
                         "EbsConfiguration": {
                             "type": "object",

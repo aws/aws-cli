@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.20.7
+======
+
+* api-change:``identitystore``: Documentation updates for SSO API Ref.
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``synthetics``: CloudWatch Synthetics now supports visual testing in its canaries.
+* api-change:``s3control``: S3 Access Point aliases can be used anywhere you use S3 bucket names to access data in S3
+* api-change:``proton``: Documentation-only update links
+* api-change:``textract``: Adds support for AnalyzeExpense, a new API to extract relevant data such as contact information, items purchased, and vendor name, from almost any invoice or receipt without the need for any templates or configuration.
+
+
 1.20.6
 ======
 

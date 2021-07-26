@@ -130,6 +130,8 @@ class IMDSRegionProvider(BaseProvider):
         metadata_num_attempts = self._session.get_config_variable(
             'metadata_service_num_attempts')
         imds_config = {
+            'ec2_metadata_service_endpoint': self._session.get_config_variable(
+                'ec2_metadata_service_endpoint'),
             'ec2_metadata_service_endpoint_mode': resolve_imds_endpoint_mode(
                 self._session
             )

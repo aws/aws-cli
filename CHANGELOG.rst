@@ -2,6 +2,32 @@
 CHANGELOG
 =========
 
+2.2.23
+======
+
+* api-change:``quicksight``: Add support to use row-level security with tags when embedding dashboards for users not provisioned in QuickSight
+* api-change:``route53``: This release adds support for the RECOVERY_CONTROL health check type to be used in conjunction with Route53 Application Recovery Controller.
+* api-change:``route53-recovery-cluster``: Amazon Route 53 Application Recovery Controller's routing control - Routing Control Data Plane APIs help you update the state (On/Off) of the routing controls to reroute traffic across application replicas in a 100% available manner.
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``s3control``: S3 Access Point aliases can be used anywhere you use S3 bucket names to access data in S3
+* api-change:``route53-recovery-control-config``: Amazon Route 53 Application Recovery Controller's routing control - Routing Control Configuration APIs help you create and delete clusters, control panels, routing controls and safety rules. State changes (On/Off) of routing controls are not part of configuration APIs.
+* api-change:``proton``: Documentation-only update links
+* api-change:``imagebuilder``: Update to documentation to reapply missing change to SSM uninstall switch default value and improve description.
+* api-change:``redshift-data``: Added structures to support new Data API operation BatchExecuteStatement, used to execute multiple SQL statements within a single transaction.
+* api-change:``identitystore``: Documentation updates for SSO API Ref.
+* api-change:``route53-recovery-readiness``: Amazon Route 53 Application Recovery Controller's readiness check capability continually monitors resource quotas, capacity, and network routing policies to ensure that the recovery environment is scaled and configured to take over when needed.
+* api-change:``shield``: Change name of DDoS Response Team (DRT) to Shield Response Team (SRT)
+* api-change:``s3outposts``: Add on-premise access type support for endpoints
+* api-change:``iotanalytics``: IoT Analytics now supports creating a dataset resource with IoT SiteWise MultiLayerStorage data stores, enabling customers to query industrial data within the service. This release includes adding JOIN functionality for customers to query multiple data sources in a dataset.
+* api-change:``batch``: Add support for ListJob filters
+* api-change:``securityhub``: Added product name, company name, and Region fields for security findings. Added details objects for RDS event subscriptions and AWS ECS services. Added fields to the details for AWS Elasticsearch domains.
+* enhancement:IMDS: Add support for configuring IMDS endpoint for region resolution via ``ec2_metadata_service_endpoint`` config option and ``AWS_EC2_METADATA_SERVICE_ENDPOINT`` environment variable.
+* api-change:``textract``: Adds support for AnalyzeExpense, a new API to extract relevant data such as contact information, items purchased, and vendor name, from almost any invoice or receipt without the need for any templates or configuration.
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``synthetics``: CloudWatch Synthetics now supports visual testing in its canaries.
+* api-change:``iotwireless``: Add SidewalkManufacturingSn as an identifier to allow Customer to query WirelessDevice, in the response, AmazonId is added in the case that Sidewalk device is return.
+
+
 2.2.22
 ======
 

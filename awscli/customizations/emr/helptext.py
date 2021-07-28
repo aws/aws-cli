@@ -56,6 +56,18 @@ CREATE_CLUSTER_DESCRIPTION = (
     ' config file using the "aws configure set" command: --service-role, --log-uri,'
     ' and InstanceProfile and KeyName arguments under --ec2-attributes.')
 
+DESCRIBE_CLUSTER_DESCRIPTION = (
+    'Provides  cluster-level details including status, hardware'
+    ' and software configuration, VPC settings, bootstrap'
+    ' actions, instance groups and so on.'
+    '\nPermissions needed for describe-cluster include:\n'
+    '\n"elasticmapreduce:ListBootstrapActions",\n'
+    '\n"elasticmapreduce:ListInstanceFleets",\n'
+    '\n"elasticmapreduce:DescribeCluster",\n'
+    '\n"elasticmapreduce:ListInstanceGroups"\n'
+    '\nFor information about the cluster'
+    ' steps, see <code>list-steps</code>.')
+
 CLUSTER_NAME = (
     '<p>The name of the cluster. If not provided, the default is "Development Cluster".</p>')
 

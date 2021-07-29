@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
 import sys
 import signal
 import logging
@@ -237,6 +238,20 @@ class CLIDriver(object):
             # SIGINT=2, so we'll have an RC of 130.
             sys.stdout.write("\n")
             return 128 + signal.SIGINT
+        except BrokenPipeError:
+            # On broken pipe we cannot keep printing anymore as the consuming process
+            # closed the file descriptor. Eg: running `aws s3 ls | head -n 1`. This is a
+            # regular, non-error signal on shell pipelines and should trigger a clean,
+            # successful shutdown
+            # Because after a SIGPIPE we cannot print anymore, we need to redirect all
+            # remaining output that python may flush to /dev/null. This is necessary or
+            # else another SIGPIPE will happen when the flush happens, triggering the
+            # basic SIGPIPE handling in python's interpreter, which would print
+            # "BrokenPipeError: [Errno 32] Broken pipe" as well
+            # See more at https://docs.python.org/3/library/signal.html#note-on-sigpipe
+            devnull = os.open(os.devnull, os.O_WRONLY)
+            os.dup2(devnull, sys.stdout.fileno())
+            return 0
         except Exception as e:
             LOG.debug("Exception caught in main()", exc_info=True)
             LOG.debug("Exiting with rc 255")

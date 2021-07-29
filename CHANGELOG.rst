@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.2.24
+======
+
+* api-change:``iotsitewise``: Added support for AWS IoT SiteWise Edge. You can now create an AWS IoT SiteWise gateway that runs on AWS IoT Greengrass V2. With the gateway,  you can collect local server and equipment data, process the data, and export the selected data from the edge to the AWS Cloud.
+* enhancement:eks: Updated Kubernetes client authentication API version
+* api-change:``ec2``: This release adds support for G4ad xlarge and 2xlarge instances powered by AMD Radeon Pro V520 GPUs and AMD 2nd Generation EPYC processors
+* api-change:``chime``: Adds support for live transcription of meetings with Amazon Transcribe and Amazon Transcribe Medical.  The new APIs, StartMeetingTranscription and StopMeetingTranscription, control the generation of user-attributed transcriptions sent to meeting clients via Amazon Chime SDK data messages.
+* api-change:``cloudformation``: SDK update to support Importing existing Stacks to new/existing Self Managed StackSet - Stack Import feature.
+* api-change:``sso-admin``: Documentation updates for arn:aws:trebuchet:::service:v1:03a2216d-1cda-4696-9ece-1387cb6f6952
+* api-change:``iot``: Increase maximum credential duration of role alias to 12 hours.
+* api-change:``savingsplans``: Documentation update for valid Savings Plans offering ID pattern
+
+
 2.2.23
 ======
 

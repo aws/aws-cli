@@ -20,7 +20,10 @@ from awscli import SCALAR_TYPES
 from awscli.argprocess import ParamShorthandDocGen
 from awscli.bcdoc.docevents import DOC_EVENTS
 from awscli.topictags import TopicTagDB
-from awscli.utils import find_service_and_method_in_event_name
+from awscli.utils import (
+    find_service_and_method_in_event_name, is_document_type,
+    operation_uses_document_types
+)
 
 LOG = logging.getLogger(__name__)
 
@@ -43,7 +46,7 @@ class CLIDocumentEventHandler(object):
     def _get_argument_type_name(self, shape, default):
         if is_json_value_header(shape):
             return 'JSON'
-        if default == 'structure' and shape.is_document_type:
+        if is_document_type(shape):
             return 'document'
         return default
 
@@ -235,11 +238,12 @@ class CLIDocumentEventHandler(object):
 
     def _do_doc_member(self, doc, member_name, member_shape, stack):
         docs = member_shape.documentation
+        type_name = self._get_argument_type_name(
+            member_shape, member_shape.type_name)
         if member_name:
-            doc.write('%s -> (%s)' % (member_name, self._get_argument_type_name(
-                                      member_shape, member_shape.type_name)))
+            doc.write('%s -> (%s)' % (member_name, type_name))
         else:
-            doc.write('(%s)' % member_shape.type_name)
+            doc.write('(%s)' % type_name)
         doc.style.indent()
         doc.style.new_paragraph()
         doc.include_doc_string(docs)
@@ -368,6 +372,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         doc.include_doc_string(operation_model.documentation)
         self._add_webapi_crosslink(help_command)
         self._add_top_level_args_reference(help_command)
+        self._add_note_for_document_types_if_used(help_command)
 
     def _add_top_level_args_reference(self, help_command):
         help_command.doc.writeln('')
@@ -394,6 +399,18 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
                              operation_model.name)
         doc.style.external_link(title="AWS API Documentation", link=link)
         doc.writeln('')
+
+    def _add_note_for_document_types_if_used(self, help_command):
+        if operation_uses_document_types(help_command.obj):
+            help_command.doc.style.new_paragraph()
+            help_command.doc.writeln(
+                '``%s`` uses document type values. Document types follow the '
+                'JSON data model where valid values are: strings, numbers, '
+                'booleans, null, arrays, and objects. For command input,'
+                'options and nested parameters that are labeled with the type '
+                '``document`` must be provided as JSON. Shorthand syntax does '
+                'not support document types' % help_command.name
+            )
 
     def _json_example_value_name(self, argument_model, include_enum_values=True):
         # If include_enum_values is True, then the valid enum values
@@ -454,12 +471,12 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             doc.write('}')
         elif argument_model.type_name == 'structure':
             if argument_model.is_document_type:
-                doc.write("This value is an JSON document that can have arbitrary content.")
-                doc.style.new_line()
-                doc.write("For more information on JSON document values visit: <insert section name in user guide>")
-                doc.style.new_line()
+                self._doc_document_member(doc)
             else:
                 self._doc_input_structure_members(doc, argument_model, stack)
+
+    def _doc_document_member(self, doc):
+        doc.write('{...}')
 
     def _doc_input_structure_members(self, doc, argument_model, stack):
         doc.write('{')

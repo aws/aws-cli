@@ -130,41 +130,6 @@ class TestRecursiveShapes(unittest.TestCase):
         self.assert_rendered_docs_contain('None')
 
 
-class TestDocumentTypes(unittest.TestCase):
-    def setUp(self):
-        self.arg_table = {}
-        self.help_command = mock.Mock()
-        self.help_command.event_class = 'custom'
-        self.help_command.arg_table = self.arg_table
-        self.operation_model = mock.Mock()
-        self.operation_model.service_model.operation_names = []
-        self.help_command.obj = self.operation_model
-        self.operation_handler = OperationDocumentEventHandler(
-            self.help_command)
-
-    def assert_rendered_docs_contain(self, expected):
-        writes = [args[0][0] for args in
-                  self.help_command.doc.write.call_args_list]
-        writes = '\n'.join(writes)
-        self.assertIn(expected, writes)
-
-    def test_memberless_document_type_input(self):
-        shape_map = {
-            'documentType': {
-                'type': 'structure',
-                'document': True
-            }
-        }
-        shape = StructureShape('documentType', shape_map['documentType'],
-                               ShapeResolver(shape_map))
-
-        operation_model = mock.Mock()
-        operation_model.output_shape = shape
-        self.help_command.obj = operation_model
-        self.operation_handler.doc_output(self.help_command, 'event-name')
-        self.assert_rendered_docs_contain('None')
-
-
 class TestCLIDocumentEventHandler(unittest.TestCase):
     def setUp(self):
         self.session = mock.Mock()
@@ -375,86 +340,6 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         self.assertEqual(rendered.count('value -> (structure)'), 1)
         self.assertEqual(rendered.count('Nested_A -> (string)'), 2)
         self.assertEqual(rendered.count('Nested_B -> (string)'), 2)
-
-    def test_document_type(self):
-        shape_map = {
-            'Input': {
-                'type': 'structure',
-                'members': {
-                    'documentValue': {
-                        'shape': 'documentType'
-                    }
-                }
-            },
-            'documentType': {
-                'type': 'structure',
-                'document': True
-            }
-        }
-        shape = StructureShape('Input', shape_map['Input'],
-                               ShapeResolver(shape_map))
-        rendered = self.get_help_docs_for_argument(shape)
-        self.assertEqual(rendered.count('(structure)'), 0)
-        self.assertEqual(rendered.count('(document)'), 1)
-
-    def test_document_type_nested(self):
-        shape_map = {
-            'Input': {
-                'type': 'structure',
-                'members': {
-                    'UpperStruct': {
-                        'shape': 'NestedStruct'
-                    }
-                }
-            },
-            'NestedStruct':{
-                'type': 'structure',
-                'members':{
-                    'documentValue': {
-                        'shape': 'documentType'
-                    }
-                }
-            },
-            'documentType': {
-                'type': 'structure',
-                'document': True
-            }
-        }
-        shape = StructureShape('Input', shape_map['Input'],
-                               ShapeResolver(shape_map))
-        rendered = self.get_help_docs_for_argument(shape)
-        self.assertEqual(rendered.count('(structure)'), 1)
-        self.assertEqual(rendered.count('(document)'), 1)
-
-    def test_document_type_examples(self):
-        shape_map = {
-            'Input': {
-                'type': 'structure',
-                'members': {
-                    'documentValue': {
-                        'shape': 'documentType'
-                    }
-                }
-            },
-            'documentType': {
-                'type': 'structure',
-                'document': True
-            }
-        }
-        shape = StructureShape('Input', shape_map['Input'],
-                               ShapeResolver(shape_map))
-        help_command = self.create_help_command()
-        help_command.arg_table['arg-name'] =  mock.Mock(argument_model=shape)
-        operation_handler = OperationDocumentEventHandler(help_command)
-        operation_handler.doc_option_example(
-        'arg-name', help_command, 'process-cli-arg.foo.bar')
-        rendered = help_command.doc.getvalue().decode('utf-8')
-        self.assertIn(
-            'This value is an JSON document that can have arbitrary '
-            'content.\n    For more information on JSON document values '
-            'visit', rendered)
-        self.assertIn(
-            'Shorthand syntax not supported with documents', rendered)
 
     def test_description_only_for_crosslink_manpage(self):
         help_command = self.create_help_command()

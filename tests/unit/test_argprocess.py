@@ -253,6 +253,7 @@ class TestParamShorthand(BaseArgProcessTest):
         bool_param = mock.Mock()
         bool_param.cli_type_name = 'boolean'
         bool_param.argument_model.type_name = 'boolean'
+        bool_param.argument_model.is_document_type = False
         self.assertTrue(unpack_cli_arg(bool_param, True))
         self.assertTrue(unpack_cli_arg(bool_param, 'True'))
         self.assertTrue(unpack_cli_arg(bool_param, 'true'))
@@ -449,61 +450,6 @@ class TestParamShorthand(BaseArgProcessTest):
             self.parse_shorthand(p, ['ParameterKey=key,ParameterValue=""foo,bar"'])
         with self.assertRaisesRegexp(ParamError, error_msg):
             self.parse_shorthand(p, ['ParameterKey=key,ParameterValue="foo,bar\''])
-
-
-class TestParamDocumentTypesShorthand(TestParamShorthand):
-    def setUp(self):
-        super(TestParamDocumentTypesShorthand, self).setUp()
-
-    def create_cli_argument(self, shapes):
-        service_name = 'foo'
-        service_model = model.ServiceModel({
-            'metadata': {
-                'endpointPrefix': 'bad',
-            },
-            'operations': {
-                'SampleOperation': {
-                    'name': 'SampleOperation',
-                    'input': {'shape': 'Input'}
-                }
-            },
-            'shapes': shapes
-        }, service_name)
-        operation_model = service_model.operation_model(
-            'SampleOperation')
-        argument_model = operation_model.input_shape.members['documentValue']
-        event_emitter = mock.Mock()
-        return  CLIArgument(argument_model.name, argument_model,
-                            operation_model, event_emitter)
-
-    def test_document_type_error(self):
-        service_name = 'foo'
-        shapes = {
-            'documentType': {
-                'type': 'structure',
-                'document': True
-            },
-            'Input': {
-                'type': 'structure',
-                'members': {
-                    'documentValue': {
-                        'shape': 'documentType',
-                        'documentation': 'foo'
-                    }
-                },
-            }
-        }
-        cls = self.create_cli_argument(shapes)
-        # TODO: Unable to match the full string
-        """
-        error_msg = ("Error parsing parameter '--documentType': "
-                     "Shorthand syntax not supported for document type input:"
-                     " ['foo=\"bar\",fizz=\"buzz\"']")
-        """
-        error_msg = ("Error parsing parameter '--documentType': "
-                     "Shorthand syntax not supported for document type input:")
-        with self.assertRaisesRegexp(ParamError, error_msg):
-            self.parse_shorthand(cls, ['foo="bar",fizz="buzz"'])
 
 
 class TestParamShorthandCustomArguments(BaseArgProcessTest):

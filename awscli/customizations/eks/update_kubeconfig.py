@@ -34,7 +34,7 @@ DEFAULT_PATH = os.path.expanduser("~/.kube/config")
 # Use the endpoint for kubernetes 1.10
 # To get the most recent endpoint we will need to
 # Do a check on the cluster's version number
-API_VERSION = "client.authentication.k8s.io/v1beta1"
+API_VERSION = "client.authentication.k8s.io/v1alpha1"
 
 class UpdateKubeconfigCommand(BasicCommand):
     NAME = 'update-kubeconfig'

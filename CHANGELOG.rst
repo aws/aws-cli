@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.2.25
+======
+
+* bugfix:``eks``: Fixes `#6308 <https://github.com/aws/aws-cli/issues/6308>`__ version mismatch running eks get-login without eks update-config
+
+
 2.2.24
 ======
 

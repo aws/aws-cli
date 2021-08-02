@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.20.12
+=======
+
+* api-change:``ssm-contacts``: Added new attribute in AcceptCode API. AcceptCodeValidation takes in two values - ENFORCE, IGNORE. ENFORCE forces validation of accept code and IGNORE ignores it which is also the default behavior; Corrected TagKeyList length from 200 to 50
+* api-change:``greengrassv2``: This release adds support for component system resource limits and idempotent Create operations. You can now specify the maximum amount of CPU and memory resources that each component can use.
+* bugfix:``eks``: Fixes `#6308 <https://github.com/aws/aws-cli/issues/6308>`__ version mismatch running eks get-login without eks update-config
+
+
 1.20.11
 =======
 

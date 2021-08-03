@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.20.13
+=======
+
+* api-change:``proton``: Docs only add idempotent create apis
+* api-change:``iotsitewise``: My AWS Service (placeholder) - This release introduces custom Intervals and offset for tumbling window in metric for AWS IoT SiteWise.
+* api-change:``glue``: Add ConcurrentModificationException to create-table, delete-table, create-database, update-database, delete-database
+* api-change:``mediaconvert``: AWS Elemental MediaConvert SDK has added control over the passthrough of XDS captions metadata to outputs.
+* api-change:``redshift``: API support for Redshift Data Sharing feature.
+
+
 1.20.12
 =======
 

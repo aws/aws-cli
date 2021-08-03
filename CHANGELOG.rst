@@ -2282,6 +2282,33 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.20.13
+=======
+
+* api-change:``proton``: Docs only add idempotent create apis
+* api-change:``iotsitewise``: My AWS Service (placeholder) - This release introduces custom Intervals and offset for tumbling window in metric for AWS IoT SiteWise.
+* api-change:``glue``: Add ConcurrentModificationException to create-table, delete-table, create-database, update-database, delete-database
+* api-change:``mediaconvert``: AWS Elemental MediaConvert SDK has added control over the passthrough of XDS captions metadata to outputs.
+* api-change:``redshift``: API support for Redshift Data Sharing feature.
+
+
+1.20.12
+=======
+
+* api-change:``ssm-contacts``: Added new attribute in AcceptCode API. AcceptCodeValidation takes in two values - ENFORCE, IGNORE. ENFORCE forces validation of accept code and IGNORE ignores it which is also the default behavior; Corrected TagKeyList length from 200 to 50
+* api-change:``greengrassv2``: This release adds support for component system resource limits and idempotent Create operations. You can now specify the maximum amount of CPU and memory resources that each component can use.
+* bugfix:``eks``: Fixes `#6308 <https://github.com/aws/aws-cli/issues/6308>`__ version mismatch running eks get-login without eks update-config
+
+
+1.20.11
+=======
+
+* api-change:``secretsmanager``: Add support for KmsKeyIds in the ListSecretVersionIds API response
+* api-change:``appsync``: AWS AppSync now supports a new authorization mode allowing you to define your own authorization logic using an AWS Lambda function.
+* api-change:``sagemaker``: API changes with respect to Lambda steps in model building pipelines. Adds several waiters to async Sagemaker Image APIs. Add more instance types to AppInstanceType field
+* api-change:``elbv2``: Update elbv2 command to latest version
+
+
 1.20.10
 =======
 

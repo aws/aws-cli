@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 
 import re
-
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.emr import applicationutils
 from awscli.customizations.emr import argumentschema
@@ -128,7 +127,10 @@ class CreateCluster(Command):
          'help_text': helptext.MANAGED_SCALING_POLICY},
         {'name': 'placement-group-configs',
          'schema': argumentschema.PLACEMENT_GROUP_CONFIGS_SCHEMA,
-         'help_text': helptext.PLACEMENT_GROUP_CONFIGS}
+         'help_text': helptext.PLACEMENT_GROUP_CONFIGS},
+        {'name': 'auto-termination-policy',
+         'schema': argumentschema.AUTO_TERMINATION_POLICY_SCHEMA,
+         'help_text': helptext.AUTO_TERMINATION_POLICY}
     ]
     SYNOPSIS = BasicCommand.FROM_FILE('emr', 'create-cluster-synopsis.txt')
     EXAMPLES = BasicCommand.FROM_FILE('emr', 'create-cluster-examples.rst')
@@ -356,6 +358,11 @@ class CreateCluster(Command):
             emrutils.apply_dict(
                 params, 'PlacementGroupConfigs',
                 parsed_args.placement_group_configs)
+
+        if parsed_args.auto_termination_policy is not None:
+            emrutils.apply_dict(
+                params, 'AutoTerminationPolicy',
+                parsed_args.auto_termination_policy)
 
         self._validate_required_applications(parsed_args)
 

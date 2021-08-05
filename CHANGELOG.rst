@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.2.27
+======
+
+* api-change:``events``: Update events command to latest version
+* api-change:``rds``: This release adds AutomaticRestartTime to the DescribeDBInstances and DescribeDBClusters operations. AutomaticRestartTime indicates the time when a stopped DB instance or DB cluster is restarted automatically.
+* api-change:``autoscaling``: EC2 Auto Scaling adds configuration checks and Launch Template validation to Instance Refresh.
+* api-change:``imagebuilder``: Updated list actions to include a list of valid filters that can be used in the request.
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``ssm-incidents``: Documentation updates for Incident Manager.
+* api-change:``transcribe``: This release adds support for call analytics (batch) within Amazon Transcribe.
+
+
 2.2.26
 ======
 

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.20.15
+=======
+
+* api-change:``autoscaling``: EC2 Auto Scaling adds configuration checks and Launch Template validation to Instance Refresh.
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+
+
 1.20.14
 =======
 

@@ -392,12 +392,13 @@ class TestShapeWalker(BaseShapeTest):
     def test_walk_map(self):
         self.shapes['Map'] = {
             'type': 'map',
-            'key': {'shape': 'String'},
-            'value': {'shape': 'String'}
+            'key': {'shape': 'KeyString'},
+            'value': {'shape': 'ValueString'}
         }
-        self.shapes['String'] = {'type': 'string'}
+        self.shapes['KeyString'] = {'type': 'string'}
+        self.shapes['ValueString'] = {'type': 'string'}
         self.walker.walk(self.get_shape_model('Map'), self.visitor)
-        self.assert_visited_shapes(['Map', 'String'])
+        self.assert_visited_shapes(['Map', 'ValueString'])
 
     def test_can_escape_recursive_shapes(self):
         self.shapes['Recursive'] = {

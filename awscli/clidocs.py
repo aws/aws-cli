@@ -406,10 +406,10 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             help_command.doc.writeln(
                 '``%s`` uses document type values. Document types follow the '
                 'JSON data model where valid values are: strings, numbers, '
-                'booleans, null, arrays, and objects. For command input,'
+                'booleans, null, arrays, and objects. For command input, '
                 'options and nested parameters that are labeled with the type '
                 '``document`` must be provided as JSON. Shorthand syntax does '
-                'not support document types' % help_command.name
+                'not support document types.' % help_command.name
             )
 
     def _json_example_value_name(self, argument_model, include_enum_values=True):

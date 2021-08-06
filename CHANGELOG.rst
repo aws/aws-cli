@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.20.16
+=======
+
+* api-change:``athena``: Documentation updates for Athena.
+* api-change:``synthetics``: Documentation updates for Visual Monitoring feature and other doc ticket fixes.
+* api-change:``chime-sdk-identity``: The Amazon Chime SDK Identity APIs allow software developers to create and manage unique instances of their messaging applications.
+* api-change:``connect``: This release adds support for agent status and hours of operation. For details, see the Release Notes in the Amazon Connect Administrator Guide.
+* api-change:``chime-sdk-messaging``: The Amazon Chime SDK Messaging APIs allow software developers to send and receive messages in custom messaging applications.
+* api-change:``lightsail``: This release adds support to track when a bucket access key was last used.
+
+
 1.20.15
 =======
 

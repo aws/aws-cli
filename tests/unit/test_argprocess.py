@@ -253,6 +253,7 @@ class TestParamShorthand(BaseArgProcessTest):
         bool_param = mock.Mock()
         bool_param.cli_type_name = 'boolean'
         bool_param.argument_model.type_name = 'boolean'
+        bool_param.argument_model.is_document_type = False
         self.assertTrue(unpack_cli_arg(bool_param, True))
         self.assertTrue(unpack_cli_arg(bool_param, 'True'))
         self.assertTrue(unpack_cli_arg(bool_param, 'true'))

@@ -16,7 +16,7 @@ Output::
         "Version": "$LATEST",
         "Role": "arn:aws:iam::123456789012:role/service-role/my-function-role-uy3l9qyq",
         "Timeout": 3,
-        "Runtime": "nodejs10.x",
+        "Runtime": "nodejs14.x",
         "TracingConfig": {
             "Mode": "PassThrough"
         },

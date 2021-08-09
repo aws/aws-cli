@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.20.17
+=======
+
+* api-change:``wafv2``: This release adds APIs to support versioning feature of AWS WAF Managed rule groups
+* api-change:``rekognition``: This release adds support for four new types of segments (opening credits, content segments, slates, and studio logos), improved accuracy for credits and shot detection and new filters to control black frame detection.
+* api-change:``ssm``: Documentation updates for AWS Systems Manager.
+
+
 1.20.16
 =======
 

@@ -15,10 +15,15 @@ import platform
 import subprocess
 import os
 
+import botocore.model
+
 from awscli.testutils import unittest, skip_if_windows, mock
-from awscli.utils import (split_on_commas, ignore_ctrl_c,
-                          find_service_and_method_in_event_name,
-                          OutputStreamFactory)
+from awscli.utils import (
+    split_on_commas, ignore_ctrl_c, find_service_and_method_in_event_name,
+    is_document_type, is_document_type_container,
+    operation_uses_document_types, ShapeWalker, ShapeRecordingVisitor,
+    OutputStreamFactory
+)
 
 
 class TestCSVSplit(unittest.TestCase):
@@ -203,3 +208,204 @@ class TestOutputStreamFactory(unittest.TestCase):
                     pass
         except IOError:
             self.fail('Should not raise IOError')
+
+
+class BaseShapeTest(unittest.TestCase):
+    def setUp(self):
+        self.shapes = {}
+
+    def get_shape_model(self, shape_name):
+        shape_model = self.shapes[shape_name]
+        resolver = botocore.model.ShapeResolver(self.shapes)
+        shape_cls = resolver.SHAPE_CLASSES.get(
+            shape_model['type'], botocore.model.Shape
+        )
+        return shape_cls(shape_name, shape_model, resolver)
+
+    def get_doc_type_shape_definition(self):
+        return {
+            'type': 'structure',
+            'members': {},
+            'document': True
+        }
+
+
+class TestIsDocumentType(BaseShapeTest):
+    def test_is_document_type(self):
+        self.shapes['DocStructure'] = self.get_doc_type_shape_definition()
+        self.assertTrue(is_document_type(self.get_shape_model('DocStructure')))
+
+    def test_is_not_document_type_if_missing_document_trait(self):
+        self.shapes['NonDocStructure'] = {
+            'type': 'structure',
+            'members': {},
+        }
+        self.assertFalse(
+            is_document_type(self.get_shape_model('NonDocStructure'))
+        )
+
+    def test_is_not_document_type_if_not_structure(self):
+        self.shapes['String'] = {'type': 'string'}
+        self.assertFalse(is_document_type(self.get_shape_model('String')))
+
+
+class TestIsDocumentTypeContainer(BaseShapeTest):
+    def test_is_document_type_container_for_doc_type(self):
+        self.shapes['DocStructure'] = self.get_doc_type_shape_definition()
+        self.assertTrue(
+            is_document_type_container(self.get_shape_model('DocStructure'))
+        )
+
+    def test_is_not_document_type_container_if_missing_document_trait(self):
+        self.shapes['NonDocStructure'] = {
+            'type': 'structure',
+            'members': {},
+        }
+        self.assertFalse(
+            is_document_type_container(self.get_shape_model('NonDocStructure'))
+        )
+
+    def test_is_not_document_type_container_if_not_scalar(self):
+        self.shapes['String'] = {'type': 'string'}
+        self.assertFalse(
+            is_document_type_container(self.get_shape_model('String')))
+
+    def test_is_document_type_container_if_list_member(self):
+        self.shapes['ListOfDocTypes'] = {
+            'type': 'list',
+            'member': {'shape': 'DocType'}
+        }
+        self.shapes['DocType'] = self.get_doc_type_shape_definition()
+        self.assertTrue(
+            is_document_type_container(self.get_shape_model('ListOfDocTypes'))
+        )
+
+    def test_is_document_type_container_if_map_value(self):
+        self.shapes['MapOfDocTypes'] = {
+            'type': 'map',
+            'key': {'shape': 'String'},
+            'value': {'shape': 'DocType'}
+        }
+        self.shapes['DocType'] = self.get_doc_type_shape_definition()
+        self.shapes['String'] = {'type': 'string'}
+        self.assertTrue(
+            is_document_type_container(self.get_shape_model('MapOfDocTypes'))
+        )
+
+    def test_is_document_type_container_if_nested_list_member(self):
+        self.shapes['NestedListsOfDocTypes'] = {
+            'type': 'list',
+            'member': {'shape': 'ListOfDocTypes'}
+        }
+        self.shapes['ListOfDocTypes'] = {
+            'type': 'list',
+            'member': {'shape': 'DocType'}
+        }
+        self.shapes['DocType'] = self.get_doc_type_shape_definition()
+        self.assertTrue(
+            is_document_type_container(
+                self.get_shape_model('NestedListsOfDocTypes')
+            )
+        )
+
+
+class TestOperationUsesDocumentTypes(BaseShapeTest):
+    def setUp(self):
+        super(TestOperationUsesDocumentTypes, self).setUp()
+        self.input_shape_definition = {
+            'type': 'structure',
+            'members': {}
+        }
+        self.shapes['Input'] = self.input_shape_definition
+        self.output_shape_definition = {
+            'type': 'structure',
+            'members': {}
+        }
+        self.shapes['Output'] = self.output_shape_definition
+        self.operation_definition = {
+            'input': {'shape': 'Input'},
+            'output': {'shape': 'Output'}
+        }
+        self.service_model = botocore.model.ServiceModel(
+            {
+                'operations': {'DescribeResource': self.operation_definition},
+                'shapes': self.shapes
+            }
+        )
+        self.operation_model = self.service_model.operation_model(
+            'DescribeResource')
+
+    def test_operation_uses_document_types_if_doc_type_in_input(self):
+        self.shapes['DocType'] = self.get_doc_type_shape_definition()
+        self.input_shape_definition['members']['DocType'] = {
+            'shape': 'DocType'}
+        self.assertTrue(operation_uses_document_types(self.operation_model))
+
+    def test_operation_uses_document_types_if_doc_type_in_output(self):
+        self.shapes['DocType'] = self.get_doc_type_shape_definition()
+        self.output_shape_definition['members']['DocType'] = {
+            'shape': 'DocType'}
+        self.assertTrue(operation_uses_document_types(self.operation_model))
+
+    def test_operation_uses_document_types_is_false_when_no_doc_types(self):
+        self.assertFalse(operation_uses_document_types(self.operation_model))
+
+
+class TestShapeWalker(BaseShapeTest):
+    def setUp(self):
+        super(TestShapeWalker, self).setUp()
+        self.walker = ShapeWalker()
+        self.visitor = ShapeRecordingVisitor()
+
+    def assert_visited_shapes(self, expected_shape_names):
+        self.assertEqual(
+            expected_shape_names,
+            [shape.name for shape in self.visitor.visited]
+        )
+
+    def test_walk_scalar(self):
+        self.shapes['String'] = {'type': 'string'}
+        self.walker.walk(self.get_shape_model('String'), self.visitor)
+        self.assert_visited_shapes(['String'])
+
+    def test_walk_structure(self):
+        self.shapes['Structure'] = {
+            'type': 'structure',
+            'members': {
+                'String1': {'shape': 'String'},
+                'String2': {'shape': 'String'}
+            }
+        }
+        self.shapes['String'] = {'type': 'string'}
+        self.walker.walk(self.get_shape_model('Structure'), self.visitor)
+        self.assert_visited_shapes(['Structure', 'String', 'String'])
+
+    def test_walk_list(self):
+        self.shapes['List'] = {
+            'type': 'list',
+            'member': {'shape': 'String'}
+        }
+        self.shapes['String'] = {'type': 'string'}
+        self.walker.walk(self.get_shape_model('List'), self.visitor)
+        self.assert_visited_shapes(['List', 'String'])
+
+    def test_walk_map(self):
+        self.shapes['Map'] = {
+            'type': 'map',
+            'key': {'shape': 'KeyString'},
+            'value': {'shape': 'ValueString'}
+        }
+        self.shapes['KeyString'] = {'type': 'string'}
+        self.shapes['ValueString'] = {'type': 'string'}
+        self.walker.walk(self.get_shape_model('Map'), self.visitor)
+        self.assert_visited_shapes(['Map', 'ValueString'])
+
+    def test_can_escape_recursive_shapes(self):
+        self.shapes['Recursive'] = {
+            'type': 'structure',
+            'members': {
+                'Recursive': {'shape': 'Recursive'},
+            }
+        }
+        self.walker.walk(self.get_shape_model('Recursive'), self.visitor)
+        self.assert_visited_shapes(['Recursive'])

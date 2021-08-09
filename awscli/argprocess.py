@@ -19,7 +19,10 @@ from botocore.compat import OrderedDict, json
 
 from awscli import SCALAR_TYPES, COMPLEX_TYPES
 from awscli import shorthand
-from awscli.utils import find_service_and_method_in_event_name
+from awscli.utils import (
+    find_service_and_method_in_event_name, is_document_type,
+    is_document_type_container
+)
 from botocore.utils import is_json_value_header
 
 LOG = logging.getLogger('awscli.argprocess')
@@ -153,7 +156,8 @@ def _special_type(model):
 
 
 def _unpack_cli_arg(argument_model, value, cli_name):
-    if is_json_value_header(argument_model):
+    if is_json_value_header(argument_model) or \
+            is_document_type(argument_model):
         return _unpack_json_cli_arg(argument_model, value, cli_name)
     elif argument_model.type_name in SCALAR_TYPES:
         return unpack_scalar_cli_arg(
@@ -178,21 +182,16 @@ def _unpack_complex_cli_arg(argument_model, value, cli_name):
     type_name = argument_model.type_name
     if type_name == 'structure' or type_name == 'map':
         if value.lstrip()[0] == '{':
-            try:
-                return json.loads(value, object_pairs_hook=OrderedDict)
-            except ValueError as e:
-                raise ParamError(
-                    cli_name, "Invalid JSON: %s\nJSON received: %s"
-                    % (e, value))
+            return _unpack_json_cli_arg(argument_model, value, cli_name)
         raise ParamError(cli_name, "Invalid JSON:\n%s" % value)
     elif type_name == 'list':
         if isinstance(value, six.string_types):
             if value.lstrip()[0] == '[':
-                return json.loads(value, object_pairs_hook=OrderedDict)
+                return _unpack_json_cli_arg(argument_model, value, cli_name)
         elif isinstance(value, list) and len(value) == 1:
             single_value = value[0].strip()
             if single_value and single_value[0] == '[':
-                return json.loads(value[0], object_pairs_hook=OrderedDict)
+                return _unpack_json_cli_arg(argument_model, value[0], cli_name)
         try:
             # There's a couple of cases remaining here.
             # 1. It's possible that this is just a list of strings, i.e
@@ -232,6 +231,21 @@ def unpack_scalar_cli_arg(argument_model, value, cli_name=''):
         return bool(value)
     else:
         return value
+
+
+def _supports_shorthand_syntax(model):
+    # Shorthand syntax is only supported if:
+    #
+    # 1. The argument is not a document type nor is a wrapper around a document
+    # type (e.g. is a list of document types or a map of document types). These
+    # should all be expressed as JSON input.
+    #
+    # 2. The argument is sufficiently complex, that is, it's base type is
+    # a complex type *and* if it's a list, then it can't be a list of
+    # scalar types.
+    if is_document_type_container(model):
+        return False
+    return _is_complex_shape(model)
 
 
 def _is_complex_shape(model):
@@ -393,10 +407,7 @@ class ParamShorthandParser(ParamShorthand):
                       "param shorthand.", cli_argument.py_name)
             return False
         model = cli_argument.argument_model
-        # The second case is to make sure the argument is sufficiently
-        # complex, that is, it's base type is a complex type *and*
-        # if it's a list, then it can't be a list of scalar types.
-        return _is_complex_shape(model)
+        return _supports_shorthand_syntax(model)
 
 
 class ParamShorthandDocGen(ParamShorthand):
@@ -408,7 +419,7 @@ class ParamShorthandDocGen(ParamShorthand):
     def supports_shorthand(self, argument_model):
         """Checks if a CLI argument supports shorthand syntax."""
         if argument_model is not None:
-            return _is_complex_shape(argument_model)
+            return _supports_shorthand_syntax(argument_model)
         return False
 
     def generate_shorthand_example(self, cli_argument, service_id,
@@ -505,6 +516,8 @@ class ParamShorthandDocGen(ParamShorthand):
     def _structure_docs(self, argument_model, stack):
         parts = []
         for name, member_shape in argument_model.members.items():
+            if is_document_type_container(member_shape):
+                continue
             parts.append(self._member_docs(name, member_shape, stack))
         inner_part = ','.join(parts)
         if not stack:

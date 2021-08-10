@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.20.18
+=======
+
+* api-change:``chime``: Add support for "auto" in Region field of StartMeetingTranscription API request.
+
+
 1.20.17
 =======
 

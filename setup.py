@@ -24,7 +24,7 @@ def find_version(*file_paths):
 
 
 requires = [
-    'botocore==2.0.0dev135',
+    'botocore==2.0.0dev136',
     'colorama>=0.2.5,<0.4.4',
     'docutils>=0.10,<0.16',
     'cryptography>=3.3.2,<3.4.0',

@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.20.19
+=======
+
+* api-change:``codebuild``: CodeBuild now allows you to make the build results for your build projects available to the public without requiring access to an AWS account.
+* api-change:``route53``: Documentation updates for route53
+* api-change:``snow-device-management``: AWS Snow Family customers can remotely monitor and operate their connected AWS Snowcone devices.
+* api-change:``ecs``: Documentation updates for ECS.
+* api-change:``nimble``: Add new attribute 'ownedBy' in Streaming Session APIs. 'ownedBy' represents the AWS SSO Identity Store User ID of the owner of the Streaming Session resource.
+* api-change:``ebs``: Documentation updates for Amazon EBS direct APIs.
+
+
 1.20.18
 =======
 

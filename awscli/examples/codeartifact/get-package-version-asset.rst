@@ -4,11 +4,11 @@ The following ``get-package-version-asset`` example retrieves the package.tgz as
 
     aws codeartifact get-package-version-asset \
         --domain test-domain \
-        --repo test-repo \
+        --repository test-repo \
         --format npm \
         --package test-package \
         --package-version 4.0.0 \
-        outfileName
+        --asset outfileName
 
 Output::
 

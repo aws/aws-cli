@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.20.21
+=======
+
+* api-change:``customer-profiles``: This release introduces Standard Profile Objects, namely Asset and Case which contain values populated by data from third party systems and belong to a specific profile. This release adds an optional parameter, ObjectFilter to the ListProfileObjects API in order to search for these Standard Objects.
+* api-change:``elasticache``: This release adds ReplicationGroupCreateTime field to ReplicationGroup which indicates the UTC time when ElastiCache ReplicationGroup is created
+* api-change:``emr``: Update emr command to latest version
+* api-change:``quicksight``: Documentation updates for QuickSight.
+
+
 1.20.20
 =======
 

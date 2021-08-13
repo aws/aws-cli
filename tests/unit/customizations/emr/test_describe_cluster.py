@@ -115,6 +115,7 @@ list_instance_groups_result_mock = {
             "Name": "Master instance group",
             "InstanceGroupType": "MASTER",
             "InstanceType": "m1.large",
+            "CustomAmiId": "ami-deadbeef",
             "Id": "ig-ABCD",
             "Market": "ON_DEMAND",
             "RunningInstanceCount": 0
@@ -136,6 +137,7 @@ list_instance_groups_result_mock = {
             "Name": "Core instance group",
             "InstanceGroupType": "CORE",
             "InstanceType": "m1.large",
+            "CustomAmiId": "ami-deadpork",
             "Id": "ig-DEF",
             "Market": "ON_DEMAND",
             "RunningInstanceCount": 0
@@ -170,6 +172,7 @@ list_instance_fleets_result_mock = {
                     "WeightedCapacity": 1,
                     "BidPrice": "1",
                     "InstanceType": "m3.xlarge",
+                    "CustomAmiId": "ami-deadbeef",
                     "BidPriceAsPercentageOfOnDemandPrice": 0.0
                 }
             ],
@@ -224,6 +227,7 @@ EXPECTED_RESULT_IG = {
                 "Name": "Master instance group",
                 "InstanceGroupType": "MASTER",
                 "InstanceType": "m1.large",
+                "CustomAmiId": "ami-deadbeef",
                 "Market": "ON_DEMAND",
                 "Id": "ig-ABCD"
             },
@@ -245,6 +249,7 @@ EXPECTED_RESULT_IG = {
                 "Name": "Core instance group",
                 "InstanceGroupType": "CORE",
                 "InstanceType": "m1.large",
+                "CustomAmiId": "ami-deadpork",
                 "Market": "ON_DEMAND",
                 "Id": "ig-DEF"
             }
@@ -318,6 +323,7 @@ EXPECTED_RESULT_IF = {
                         "WeightedCapacity": 1,
                         "BidPrice": "1",
                         "InstanceType": "m3.xlarge",
+                        "CustomAmiId": "ami-deadbeef",
                         "BidPriceAsPercentageOfOnDemandPrice": 0.0
                     }
                 ],

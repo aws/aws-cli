@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.20.22
+=======
+
+* api-change:``config``: Update ResourceType enum with values for Backup Plan, Selection, Vault, RecoveryPoint; ECS Cluster, Service, TaskDefinition; EFS AccessPoint, FileSystem; EKS Cluster; ECR Repository resources
+* api-change:``s3``: Documentation updates for Amazon S3
+* api-change:``license-manager``: AWS License Manager now allows end users to call CheckoutLicense API using new CheckoutType PERPETUAL. Perpetual checkouts allow sellers to check out a quantity of entitlements to be drawn down for consumption.
+* api-change:``iotsitewise``: AWS IoT SiteWise added query window for the interpolation interval. AWS IoT SiteWise computes each interpolated value by using data points from the timestamp of each interval minus the window to the timestamp of each interval plus the window.
+* api-change:``ds``: This release adds support for describing client authentication settings.
+* api-change:``codebuild``: CodeBuild now allows you to select how batch build statuses are sent to the source provider for a project.
+
+
 1.20.21
 =======
 

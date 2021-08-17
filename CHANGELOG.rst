@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.20.23
+=======
+
+* api-change:``ce``: This release is a new feature for Cost Categories: Split charge rules. Split charge rules enable you to allocate shared costs between your cost category values.
+* api-change:``clouddirectory``: Documentation updates for clouddirectory
+* api-change:``cloud9``: Added DryRun parameter to CreateEnvironmentEC2 API. Added ManagedCredentialsActions parameter to UpdateEnvironment API
+* api-change:``ec2``: This release adds support for EC2 ED25519 key pairs for authentication
+* api-change:``logs``: Documentation-only update for CloudWatch Logs
+
+
 1.20.22
 =======
 

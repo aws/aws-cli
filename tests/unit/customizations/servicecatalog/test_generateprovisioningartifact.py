@@ -122,7 +122,7 @@ class TestCreateProvisioningArtifactCommand(unittest.TestCase):
 
     def test_region_not_supported(self):
         self.global_args.region = 'not-supported-region'
-        with self.assertRaisesRegexp(exceptions.InvalidParametersException,
+        with self.assertRaisesRegex(exceptions.InvalidParametersException,
                                      "not supported"):
             self.cmd._run_main(self.args, self.global_args)
 

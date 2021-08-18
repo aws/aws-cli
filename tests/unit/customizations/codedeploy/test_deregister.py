@@ -66,12 +66,12 @@ class TestDeregister(unittest.TestCase):
     def test_deregister_throws_on_invalid_region(self):
         self.globals.region = None
         self.session.get_config_variable.return_value = None
-        with self.assertRaisesRegexp(RuntimeError, 'Region not specified.'):
+        with self.assertRaisesRegex(RuntimeError, 'Region not specified.'):
             self.deregister._run_main(self.args, self.globals)
 
     def test_deregister_throws_on_invalid_instance_name(self):
         self.args.instance_name = 'invalid%@^&%#&'
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 ValueError, 'Instance name contains invalid characters.'):
             self.deregister._run_main(self.args, self.globals)
 
@@ -99,11 +99,11 @@ class TestDeregister(unittest.TestCase):
             instanceName=self.instance_name
         )
         self.assertIn('iam_user_arn', self.args)
-        self.assertEquals(self.iam_user_arn, self.args.iam_user_arn)
+        self.assertEqual(self.iam_user_arn, self.args.iam_user_arn)
         self.assertIn('user_name', self.args)
-        self.assertEquals(self.instance_name, self.args.user_name)
+        self.assertEqual(self.instance_name, self.args.user_name)
         self.assertIn('tags', self.args)
-        self.assertEquals(self.tags, self.args.tags)
+        self.assertEqual(self.tags, self.args.tags)
         self.codedeploy.remove_tags_from_on_premises_instances.\
             assert_called_with(
                 tags=self.tags,
@@ -126,11 +126,11 @@ class TestDeregister(unittest.TestCase):
             instanceName=self.instance_name
         )
         self.assertIn('iam_user_arn', self.args)
-        self.assertEquals(self.iam_user_arn, self.args.iam_user_arn)
+        self.assertEqual(self.iam_user_arn, self.args.iam_user_arn)
         self.assertIn('user_name', self.args)
-        self.assertEquals(self.instance_name, self.args.user_name)
+        self.assertEqual(self.instance_name, self.args.user_name)
         self.assertIn('tags', self.args)
-        self.assertEquals(None, self.args.tags)
+        self.assertEqual(None, self.args.tags)
         self.assertFalse(
             self.codedeploy.remove_tags_from_on_premises_instances.called
         )

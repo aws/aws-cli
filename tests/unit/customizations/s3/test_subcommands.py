@@ -661,14 +661,14 @@ class CommandParametersTest(unittest.TestCase):
         paths = ['s3://bucket/foo', 's3://bucket/bar']
         params = {'dir_op': False, 'sse_c_key': 'foo'}
         cmd_param = CommandParameters('cp', params, '')
-        with self.assertRaisesRegexp(ValueError, '--sse-c must be specified'):
+        with self.assertRaisesRegex(ValueError, '--sse-c must be specified'):
             cmd_param.add_paths(paths)
 
     def test_validate_sse_c_args_missing_sse_c_key(self):
         paths = ['s3://bucket/foo', 's3://bucket/bar']
         params = {'dir_op': False, 'sse_c': 'AES256'}
         cmd_param = CommandParameters('cp', params, '')
-        with self.assertRaisesRegexp(ValueError,
+        with self.assertRaisesRegex(ValueError,
                                      '--sse-c-key must be specified'):
             cmd_param.add_paths(paths)
 
@@ -676,7 +676,7 @@ class CommandParametersTest(unittest.TestCase):
         paths = ['s3://bucket/foo', 's3://bucket/bar']
         params = {'dir_op': False, 'sse_c_copy_source_key': 'foo'}
         cmd_param = CommandParameters('cp', params, '')
-        with self.assertRaisesRegexp(ValueError,
+        with self.assertRaisesRegex(ValueError,
                                      '--sse-c-copy-source must be specified'):
             cmd_param.add_paths(paths)
 
@@ -684,7 +684,7 @@ class CommandParametersTest(unittest.TestCase):
         paths = ['s3://bucket/foo', 's3://bucket/bar']
         params = {'dir_op': False, 'sse_c_copy_source': 'AES256'}
         cmd_param = CommandParameters('cp', params, '')
-        with self.assertRaisesRegexp(ValueError,
+        with self.assertRaisesRegex(ValueError,
                 '--sse-c-copy-source-key must be specified'):
             cmd_param.add_paths(paths)
 
@@ -693,7 +693,7 @@ class CommandParametersTest(unittest.TestCase):
         params = {'dir_op': False, 'sse_c_copy_source': 'AES256',
                   'sse_c_copy_source_key': 'foo'}
         cmd_param = CommandParameters('cp', params, '')
-        with self.assertRaisesRegexp(ValueError,
+        with self.assertRaisesRegex(ValueError,
                                      'only supported for copy operations'):
             cmd_param.add_paths(paths)
 

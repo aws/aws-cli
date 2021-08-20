@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.20.26
+=======
+
+* api-change:``eks``: Adds support for EKS add-ons "preserve" flag, which allows customers to maintain software on their EKS clusters after removing it from EKS add-ons management.
+* api-change:``ec2``: encryptionInTransitSupported added to DescribeInstanceTypes API
+* api-change:``robomaker``: Documentation updates for RoboMaker
+* api-change:``comprehend``: Add tagging support for Comprehend async inference job.
+
+
 1.20.25
 =======
 

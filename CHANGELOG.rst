@@ -2,6 +2,27 @@
 CHANGELOG
 =========
 
+2.2.32
+======
+
+* api-change:``iot-data``: Updated Publish with support for new Retain flag and added two new API operations: GetRetainedMessage, ListRetainedMessages.
+* api-change:``eks``: Adds support for EKS add-ons "preserve" flag, which allows customers to maintain software on their EKS clusters after removing it from EKS add-ons management.
+* api-change:``ec2``: encryptionInTransitSupported added to DescribeInstanceTypes API
+* api-change:``robomaker``: Documentation updates for RoboMaker
+* api-change:``mediaconvert``: AWS Elemental MediaConvert SDK has added MBAFF encoding support for AVC video and the ability to pass encryption context from the job settings to S3.
+* api-change:``dlm``: Added AMI deprecation support for Amazon Data Lifecycle Manager EBS-backed AMI policies.
+* api-change:``iotsitewise``: Documentation updates for AWS IoT SiteWise
+* api-change:``polly``: Amazon Polly adds new New Zealand English voice - Aria. Aria is available as Neural voice only.
+* api-change:``frauddetector``: Updated an element of the DescribeModelVersion API response (LogitMetrics -> logOddsMetrics) for clarity. Added new exceptions to several APIs to protect against unlikely scenarios.
+* api-change:``glue``: Add support for Custom Blueprints
+* api-change:``apigateway``: Adding some of the pending releases (1) Adding WAF Filter to GatewayResponseType enum (2) Ensuring consistent error model for all operations (3) Add missing BRE to GetVpcLink operation
+* api-change:``dms``: Amazon AWS DMS service now support Redis target endpoint migration. Now S3 endpoint setting is capable to setup features which are used to be configurable only in extract connection attributes.
+* api-change:``backup``: AWS Backup - Features: Evaluate your backup activity and generate audit reports.
+* api-change:``ssm``: Updated Parameter Store property for logging improvements.
+* api-change:``comprehend``: Add tagging support for Comprehend async inference job.
+* api-change:``transcribe``: This release adds support for feature tagging with Amazon Transcribe batch jobs.
+
+
 2.2.31
 ======
 

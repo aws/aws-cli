@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.20.29
+=======
+
+* api-change:``ec2``: Support added for IMDS IPv6 endpoint
+* api-change:``events``: AWS CWEvents adds an enum of EXTERNAL for EcsParameters LaunchType for PutTargets API
+* api-change:``fms``: AWS Firewall Manager now supports triggering resource cleanup workflow when account or resource goes out of policy scope for AWS WAF, Security group, AWS Network Firewall, and Amazon Route 53 Resolver DNS Firewall policies.
+* api-change:``datasync``: Added include filters to CreateTask and UpdateTask, and added exclude filters to StartTaskExecution, giving customers more granular control over how DataSync transfers files, folders, and objects.
+
+
 1.20.28
 =======
 

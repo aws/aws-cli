@@ -177,6 +177,8 @@ class BaseLogEventsGeneratorTest(unittest.TestCase):
         self.start = '1970-01-01T00:00:01.000000'
         self.expected_start_as_milli_epoch = 1000
         self.filter_pattern = 'mypattern'
+        self.log_stream_names = ['foo-stream', 'bar-stream']
+        self.log_stream_name_prefix = 'foo'
         self.log_timestamp = 1000
         self.expected_log_timestamp_as_datetime = datetime(
             1970, 1, 1, 0, 0, 1, tzinfo=tz.tzutc())
@@ -218,7 +220,9 @@ class TestNoFollowLogEventsGenerator(BaseLogEventsGeneratorTest):
                 'logGroupName': self.group_name,
                 'interleaved': True,
                 'startTime': self.expected_start_as_milli_epoch,
-                'filterPattern': self.filter_pattern
+                'filterPattern': self.filter_pattern,
+                'logStreamNames': self.log_stream_names,
+                'logStreamNamePrefix': self.log_stream_name_prefix
             }
         )
         # Add a new page that has no more results
@@ -234,12 +238,15 @@ class TestNoFollowLogEventsGenerator(BaseLogEventsGeneratorTest):
                 'interleaved': True,
                 'startTime': self.expected_start_as_milli_epoch,
                 'filterPattern': self.filter_pattern,
+                'logStreamNames': self.log_stream_names,
+                'logStreamNamePrefix': self.log_stream_name_prefix,
                 'nextToken': 'token'
             }
         )
         with self.stubber:
             log_events_iter = logs_generator.iter_log_events(
-                self.group_name, self.start, self.filter_pattern)
+                self.group_name, self.start, self.filter_pattern,
+                self.log_stream_names, self.log_stream_name_prefix)
             actual_log_events = [event for event in log_events_iter]
         self.assertEqual(
             actual_log_events,
@@ -272,7 +279,9 @@ class TestFollowLogEventsGenerator(BaseLogEventsGeneratorTest):
                 'logGroupName': self.group_name,
                 'interleaved': True,
                 'startTime': self.expected_start_as_milli_epoch,
-                'filterPattern': self.filter_pattern
+                'filterPattern': self.filter_pattern,
+                'logStreamNames': self.log_stream_names,
+                'logStreamNamePrefix': self.log_stream_name_prefix,
             }
         )
         # Add a new page that has no nextToken
@@ -288,13 +297,16 @@ class TestFollowLogEventsGenerator(BaseLogEventsGeneratorTest):
                 'interleaved': True,
                 'startTime': self.expected_start_as_milli_epoch,
                 'filterPattern': self.filter_pattern,
+                'logStreamNames': self.log_stream_names,
+                'logStreamNamePrefix': self.log_stream_name_prefix,
                 'nextToken': 'token'
             }
         )
         self.mock_sleep.side_effect = KeyboardInterrupt()
         with self.stubber:
             log_events_iter = self.logs_generator.iter_log_events(
-                self.group_name, self.start, self.filter_pattern)
+                self.group_name, self.start, self.filter_pattern,
+                self.log_stream_names, self.log_stream_name_prefix)
             actual_log_events = [event for event in log_events_iter]
         self.mock_sleep.assert_called_once_with(5)
         self.assertEqual(

@@ -687,7 +687,7 @@ class PresignCommand(S3Command):
                   'cli_type_name': 'integer',
                   'help_text': (
                       'Number of seconds until the pre-signed '
-                      'URL expires.  Default is 3600 seconds.')}]
+                      'URL expires.  Default is 3600 seconds. Maximum is 604800 seconds.')}]
 
     def _run_main(self, parsed_args, parsed_globals):
         super(PresignCommand, self)._run_main(parsed_args, parsed_globals)

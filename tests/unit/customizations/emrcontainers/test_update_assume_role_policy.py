@@ -34,13 +34,25 @@ class TestUpdateAssumeRolePolicy(BaseAWSCommandParamsTest):
     role_name = 'myrole'
     account_id = '123456789012'
     oidc_provider = 'oidc-provider/id/test'
+    policy_arn_commercial = 'aws'
+    policy_arn_cn = 'aws-cn'
+    bjs = 'cn-north-1'
 
     base36_encoded_role_name = Base36().encode(role_name)
     expected_statement = TRUST_POLICY_STATEMENT_FORMAT % {
         "AWS_ACCOUNT_ID": account_id,
         "OIDC_PROVIDER": oidc_provider,
         "NAMESPACE": namespace,
-        "BASE36_ENCODED_ROLE_NAME": base36_encoded_role_name
+        "BASE36_ENCODED_ROLE_NAME": base36_encoded_role_name,
+        "POLICY_ARN": policy_arn_commercial
+    }
+
+    expected_statement_cn = TRUST_POLICY_STATEMENT_FORMAT % {
+        "AWS_ACCOUNT_ID": account_id,
+        "OIDC_PROVIDER": oidc_provider,
+        "NAMESPACE": namespace,
+        "BASE36_ENCODED_ROLE_NAME": base36_encoded_role_name,
+        "POLICY_ARN": policy_arn_cn
     }
 
     command = 'emr-containers update-role-trust-policy --cluster-name=%s ' \
@@ -67,8 +79,12 @@ class TestUpdateAssumeRolePolicy(BaseAWSCommandParamsTest):
         self.expected_policy_document.get("Statement").append(
             json.loads(self.expected_statement))
 
+        self.expected_policy_document_cn = copy.deepcopy(self.policy_document)
+        self.expected_policy_document_cn.get("Statement").append(
+            json.loads(self.expected_statement_cn))
+
     # Assert the call to update trust policy of the role
-    def assert_trust_policy_updated(self, cmd_output):
+    def assert_trust_policy_updated(self, cmd_output, cn = False):
         self.assertTrue(TRUST_POLICY_UPDATE_SUCCESSFUL % self.role_name
                         in cmd_output)
 
@@ -79,9 +95,14 @@ class TestUpdateAssumeRolePolicy(BaseAWSCommandParamsTest):
         self.assertEqual(self.operations_called[0][1]['RoleName'],
                          self.role_name)
 
-        self.assertTrue(json_matches(json.loads(
-            self.operations_called[0][1]['PolicyDocument']),
-            self.expected_policy_document))
+        if cn == True:
+            self.assertTrue(json_matches(json.loads(
+                self.operations_called[0][1]['PolicyDocument']),
+                self.expected_policy_document_cn))
+        else:
+            self.assertTrue(json_matches(json.loads(
+                self.operations_called[0][1]['PolicyDocument']),
+                self.expected_policy_document))
 
     # Use case: Expected trust policy does not exist
     # Expected results: Operation is performed by client
@@ -228,6 +249,29 @@ class TestUpdateAssumeRolePolicy(BaseAWSCommandParamsTest):
         self.assertEqual(len(self.operations_called), 0)
         self.assertTrue(TRUST_POLICY_STATEMENT_ALREADY_EXISTS % self.role_name
                         in output[0])
+
+    # Use case: Expected trust policy does not exist in cn-north-1
+    # Expected results: Operation is performed by client in cn-north-1
+    # to update the trust policy in expected format
+    @mock.patch('awscli.customizations.emrcontainers.'
+                'iam.IAM.get_assume_role_policy')
+    @mock.patch('awscli.customizations.emrcontainers.'
+                'eks.EKS.get_oidc_issuer_id')
+    @mock.patch('awscli.customizations.emrcontainers.'
+                'eks.EKS.get_account_id')
+    @mock.patch('awscli.customizations.emrcontainers.'
+                 'update_role_trust_policy.get_region')
+    def test_trust_policy_does_not_exist_in_cn(self, get_region_patch,
+                                         get_account_id_patch,
+                                         get_oidc_issuer_id_patch,
+                                         get_assume_role_policy_patch):
+        get_assume_role_policy_patch.return_value = self.policy_document
+        get_oidc_issuer_id_patch.return_value = self.oidc_provider
+        get_account_id_patch.return_value = self.account_id
+        get_region_patch.return_value = self.bjs
+
+        output = self.run_cmd(self.command, expected_rc=0)
+        self.assert_trust_policy_updated(output[0], cn = True)
 
 
 if __name__ == "__main__":

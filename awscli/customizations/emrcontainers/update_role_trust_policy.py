@@ -22,7 +22,7 @@ from awscli.customizations.emrcontainers.constants \
 from awscli.customizations.emrcontainers.base36 import Base36
 from awscli.customizations.emrcontainers.eks import EKS
 from awscli.customizations.emrcontainers.iam import IAM
-from awscli.customizations.utils import uni_print
+from awscli.customizations.utils import uni_print, get_policy_arn_suffix
 
 LOG = logging.getLogger(__name__)
 
@@ -152,7 +152,8 @@ class UpdateRoleTrustPolicyCommand(BasicCommand):
                 "AWS_ACCOUNT_ID": account_id,
                 "OIDC_PROVIDER": oidc_provider,
                 "NAMESPACE": self._namespace,
-                "BASE36_ENCODED_ROLE_NAME": base36_encoded_role_name
+                "BASE36_ENCODED_ROLE_NAME": base36_encoded_role_name,
+                "POLICY_ARN": get_policy_arn_suffix(self._region)
             }
         )
 

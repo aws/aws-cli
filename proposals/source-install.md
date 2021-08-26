@@ -17,7 +17,7 @@ source along with an official source distribution artifact.
 The AWS CLI v2 is available as pre-built executables for macOS,
 Linux x86_64, Linux aarch64, and Windows (64-bit). The AWS CLI v2 is also
 available as a Docker image. Generally, these artifacts provide coverage for
-most platforms and environments, but they do not satisfy all uses cases:
+most platforms and environments, but they do not satisfy all use cases:
 
 * The desired platform (e.g, [ARM 32-bit](https://github.com/aws/aws-cli/issues/5426))
   is not supported by any of the pre-built executables.
@@ -412,7 +412,7 @@ These are the aspects that have **no** backwards compatibility guarantees:
   for that new requirement.
 
 In general, users cannot make the assumption that when upgrading versions of
-the AWS  CLI v2 that using the same environment and same build steps will
+the AWS CLI v2, using the same environment and same build steps will
 always result in a successful install. If building from source in a CI/CD
 setting, users should pin to a specific version of the AWS CLI v2 code base
 using repository tags or a versioned source distribution
@@ -640,8 +640,7 @@ tools' core functionality around building C/C++ libraries is actually
 leveraged. For the purpose of being a thin, familiar interface, Autotools is
 advantageous over CMake because:
 
-* It requires little to no dependencies in order to use the build/install
-  interface.
+* Minimal dependencies required to use the build/install interface.
   
 * The end user interface is more minimal as it is scoped to running a single
   `configure` script followed by `make` commands. Users do not have to
@@ -715,10 +714,10 @@ the three goals from the motivation section.
 
 #### Q. Why are there two different installation types?
 
-By having the two different installations types, it provides more flexibility
-in how to build and install the AWS CLI v2.
+By having the two different installations types, we're able to provide
+more flexibility in how to build and install the AWS CLI v2.
 
-The `system-sandbox` provides a light-weight install mechanism to get the
+The `system-sandbox` provides a lightweight install mechanism to get the
 AWS CLI  v2 installed on a system, while following best Python practices by
 sandboxing the installation in a virtual environment. This installation is
 intended for users that want to install the CLI from source in the

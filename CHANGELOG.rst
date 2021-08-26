@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.20.30
+=======
+
+* api-change:``ec2``: Support added for resizing VPC prefix lists
+* api-change:``rekognition``: This release added new attributes to Rekognition RecognizeCelebities and GetCelebrityInfo API operations.
+* api-change:``compute-optimizer``: Adds support for 1) the AWS Graviton (AWS_ARM64) recommendation preference for Amazon EC2 instance and Auto Scaling group recommendations, and 2) the ability to get the enrollment statuses for all member accounts of an organization.
+* api-change:``transcribe``: This release adds support for batch transcription in six new languages - Afrikaans, Danish, Mandarin Chinese (Taiwan), New Zealand English, South African English, and Thai.
+
+
 1.20.29
 =======
 

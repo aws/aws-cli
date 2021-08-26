@@ -238,3 +238,26 @@ class TestTailCommand(BaseAWSCommandParamsTest):
             "\x1b[32m%s\x1b[0m \x1b[36m%s\x1b[0m %s" % (
                 self.formatted_log_timestamp, self.stream_name, self.message)
         )
+
+    def test_tail_with_log_stream_names(self):
+        self.assert_params_for_cmd(
+            'logs tail %s --log-stream-names foo-stream bar-stream' %
+            self.group_name,
+            params={
+                'logGroupName': self.group_name,
+                'interleaved': True,
+                'startTime': mock.ANY,
+                'logStreamNames': ['foo-stream', 'bar-stream']
+            }
+        )
+
+    def test_tail_with_log_stream_name_prefix(self):
+        self.assert_params_for_cmd(
+            'logs tail %s --log-stream-name-prefix foo' % self.group_name,
+            params={
+                'logGroupName': self.group_name,
+                'interleaved': True,
+                'startTime': mock.ANY,
+                'logStreamNamePrefix': 'foo'
+            }
+        )

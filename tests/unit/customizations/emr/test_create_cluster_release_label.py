@@ -1440,6 +1440,23 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             }
         self.assert_params_for_cmd(cmd, result)
 
+    def test_create_cluster_with_auto_termination_policy(self):
+        cmd = (self.prefix + '--release-label emr-5.34.0 ' +
+               '--auto-termination-policy IdleTimeout=100 ' +
+               '--instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': DEFAULT_INSTANCES,
+                'ReleaseLabel': 'emr-5.34.0',
+                'VisibleToAllUsers': True,
+                'Tags': [],
+                'AutoTerminationPolicy': {
+                    'IdleTimeout': 100,
+                }
+            }
+        self.assert_params_for_cmd(cmd, result)
+
     def test_create_cluster_with_log_encryption_kms_key_id(self):
         test_log_uri = 's3://test/logs'
         test_log_encryption_kms_key_id = 'valid_kms_key'

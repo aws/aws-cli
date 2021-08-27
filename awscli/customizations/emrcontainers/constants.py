@@ -17,7 +17,7 @@
 TRUST_POLICY_STATEMENT_FORMAT = '{ \
     "Effect": "Allow", \
     "Principal": { \
-        "Federated": "arn:%(POLICY_ARN)s:iam::%(AWS_ACCOUNT_ID)s:oidc-provider/' \
+        "Federated": "arn:%(AWS_PARTITION)s:iam::%(AWS_ACCOUNT_ID)s:oidc-provider/' \
                                 '%(OIDC_PROVIDER)s" \
     }, \
     "Action": "sts:AssumeRoleWithWebIdentity", \

@@ -147,15 +147,13 @@ class UpdateRoleTrustPolicyCommand(BasicCommand):
 
         base36_encoded_role_name = base36.encode(self._role_name)
         LOG.debug('Base36 encoded role name: %s', base36_encoded_role_name)
-        trust_policy_statement = json.loads(TRUST_POLICY_STATEMENT_FORMAT %
-            {
-                "AWS_ACCOUNT_ID": account_id,
-                "OIDC_PROVIDER": oidc_provider,
-                "NAMESPACE": self._namespace,
-                "BASE36_ENCODED_ROLE_NAME": base36_encoded_role_name,
-                "POLICY_ARN": get_policy_arn_suffix(self._region)
-            }
-        )
+        trust_policy_statement = json.loads(TRUST_POLICY_STATEMENT_FORMAT % {
+            "AWS_ACCOUNT_ID": account_id,
+            "OIDC_PROVIDER": oidc_provider,
+            "NAMESPACE": self._namespace,
+            "BASE36_ENCODED_ROLE_NAME": base36_encoded_role_name,
+            "AWS_PARTITION": get_policy_arn_suffix(self._region)
+        })
 
         LOG.debug('Computed Trust Policy Statement:\n%s', json.dumps(
             trust_policy_statement, indent=2))

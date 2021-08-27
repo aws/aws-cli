@@ -823,3 +823,15 @@ PLACEMENT_GROUP_CONFIGS_SCHEMA = {
         }
     }
 }
+
+AUTO_TERMINATION_POLICY_SCHEMA = {
+    "type": "object",
+    "properties":  {
+        "IdleTimeout": {
+            "type": "long",
+            "description":
+                "Specifies the amount of idle time in seconds after which the cluster automatically terminates. "
+                "You can specify a minimum of 60 seconds and a maximum of 604800 seconds (seven days).",
+        }
+    }
+}

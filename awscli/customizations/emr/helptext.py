@@ -485,3 +485,9 @@ PLACEMENT_GROUP_CONFIGS = (
     'passing <code>--placement-group-configs InstanceRole=MASTER</code> '
     'during cluster creation.</p>'
 )
+
+AUTO_TERMINATION_POLICY = (
+    '<p>Auto termination policy for an Amazon EMR cluster. '
+    'The configuration specifies the termination idle timeout'
+    'threshold for an cluster.</p> '
+)

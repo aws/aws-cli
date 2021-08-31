@@ -106,7 +106,7 @@ class TestDeployCommand(unittest.TestCase):
                 self.parsed_args.template_file = file_path
                 result = self.deploy_command._run_main(self.parsed_args,
                                               parsed_globals=self.parsed_globals)
-                self.assertEquals(0, result)
+                self.assertEqual(0, result)
 
                 open_mock.assert_called_once_with(file_path, "r")
 
@@ -138,7 +138,7 @@ class TestDeployCommand(unittest.TestCase):
                 self.deploy_command.merge_parameters.assert_called_once_with(
                         fake_template, fake_parameter_overrides)
 
-                self.assertEquals(1, mock_yaml_parse.call_count)
+                self.assertEqual(1, mock_yaml_parse.call_count)
 
     def test_invalid_template_file(self):
         self.parsed_args.template_file = "sometemplate"

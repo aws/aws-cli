@@ -531,7 +531,7 @@ class S3FileGeneratorTest(BaseAWSCommandParamsTest):
         file_gen = FileGenerator(self.client, '')
         files = file_gen.call(input_s3_file)
         # The error should include 404 and should include the key name.
-        with self.assertRaisesRegexp(ClientError, '404.*text1.txt'):
+        with self.assertRaisesRegex(ClientError, '404.*text1.txt'):
             list(files)
 
     def test_s3_single_file_delete(self):

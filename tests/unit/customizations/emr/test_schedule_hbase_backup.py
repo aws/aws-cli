@@ -95,7 +95,7 @@ class TestScheduleHBaseBackup(BaseAWSCommandParamsTest):
                              ' either full or incremental.\n'
         result = self.run_cmd(cmdline, 255)
 
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEqual(expected_error_msg, result[1])
 
     def test_schedule_hbase_backup_wrong_unit(self):
         args = ' --cluster-id j-ABCD --dir s3://abc/  --type full' +\
@@ -106,7 +106,7 @@ class TestScheduleHBaseBackup(BaseAWSCommandParamsTest):
                              ' hours or days.\n'
         result = self.run_cmd(cmdline, 255)
 
-        self.assertEquals(expected_error_msg, result[1])
+        self.assertEqual(expected_error_msg, result[1])
 
     def test_schedule_hbase_backup_consistent(self):
         args = ' --cluster-id j-ABCD --dir s3://abc/ --type full' +\

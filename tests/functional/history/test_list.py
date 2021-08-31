@@ -78,12 +78,12 @@ class TestListCommand(BaseHistoryCommandParamsTest):
                 "Arn": "arn:aws:iam::1234567:user/baz"
             }
         ]
-        _, _, rc = self.run_cmd('ec2 describe-instances', expected_rc=0)
+        _, _, rc = self.run_cmd('ec2 describe-regions', expected_rc=0)
         self.history_recorder.record('CLI_RC', rc, 'CLI')
         _, _, rc = self.run_cmd('sts get-caller-identity', expected_rc=0)
         self.history_recorder.record('CLI_RC', rc, 'CLI')
         self.run_cmd('history list', expected_rc=0)
-        self.assertIn(b'ec2 describe-instances',
+        self.assertIn(b'ec2 describe-regions',
                       self.binary_stdout.getvalue())
         self.assertIn(b'sts get-caller-identity',
                       self.binary_stdout.getvalue())

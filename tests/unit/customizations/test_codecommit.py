@@ -178,7 +178,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        self.assertEqual('', output)
+        self.assertEquals('', output)
 
     def test_raises_value_error_when_not_provided_any_subcommands(self):
         self.get_command = CodeCommitCommand(self.session)
@@ -208,11 +208,11 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         aws_request = signature.call_args[0][1]
-        self.assertEqual('GIT', aws_request.method)
-        self.assertEqual(
+        self.assertEquals('GIT', aws_request.method)
+        self.assertEquals(
             'https://git-codecommit.us-east-1.amazonaws.com//v1/repos/myrepo',
             aws_request.url)
-        self.assertEqual(
+        self.assertEquals(
             ('GIT\n//v1/repos/myrepo\n\n'
              'host:git-codecommit.us-east-1.amazonaws.com\n\n'
              'host\n'),

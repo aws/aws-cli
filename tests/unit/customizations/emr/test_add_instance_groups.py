@@ -367,7 +367,7 @@ class TestAddInstanceGroups(BaseAWSCommandParamsTest):
         result = self.run_cmd(cmd, expected_rc=0)
         result_json = json.loads(result[0])
 
-        self.assertEqual(result_json, CONSTRUCTED_RESULT)
+        self.assertEquals(result_json, CONSTRUCTED_RESULT)
 
 if __name__ == "__main__":
     unittest.main()

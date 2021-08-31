@@ -403,7 +403,7 @@ class TestDescribeCluster(BaseAWSCommandParamsTest):
         cmdline = self.prefix + args
         result = self.run_cmd(cmdline, expected_rc=0)
         result_json = json.loads(result[0])
-        self.assertEqual(result_json, EXPECTED_RESULT_IG)
+        self.assertEquals(result_json, EXPECTED_RESULT_IG)
 
     @patch('awscli.customizations.emr.emr.DescribeCluster._call')
     def test_constructed_result_if(self, call_patch):
@@ -413,7 +413,7 @@ class TestDescribeCluster(BaseAWSCommandParamsTest):
         cmdline = self.prefix + args
         result = self.run_cmd(cmdline, expected_rc=0)
         result_json = json.loads(result[0])
-        self.assertEqual(result_json, EXPECTED_RESULT_IF)
+        self.assertEquals(result_json, EXPECTED_RESULT_IF)
 
 def side_effect_of_call_ig(*args, **kwargs):
     if args[1] == 'describe_cluster':

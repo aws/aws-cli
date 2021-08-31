@@ -163,7 +163,7 @@ class TestPush(unittest.TestCase):
         self.push._register_revision = MagicMock()
         self.push._push(self.args)
         self.push._register_revision.assert_called_with(self.args)
-        self.assertEqual(str(self.args.eTag), self.upload_response['ETag'].replace('"',""))
+        self.assertEquals(str(self.args.eTag), self.upload_response['ETag'].replace('"',""))
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_push_output_message(self, stdout_mock):
@@ -193,7 +193,7 @@ class TestPush(unittest.TestCase):
                 expected_revision_output
             )
         )
-        self.assertEqual(expected_output, output)
+        self.assertEquals(expected_output, output)
 
     @patch('zipfile.ZipFile')
     @patch('tempfile.TemporaryFile')

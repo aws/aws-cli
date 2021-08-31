@@ -54,8 +54,8 @@ class TestPackageZipFiles(TestCase):
         # Now verify that the zipfile includes contents of the data file we created
         myzip = zipfile.ZipFile(zipfile_path)
         # Data file should be the only file within the zip
-        self.assertEqual(["data-link.txt"], myzip.namelist())
+        self.assertEquals(["data-link.txt"], myzip.namelist())
         myfile = myzip.open("data-link.txt", "r")
 
         # Its content should be equal the value we wrote.
-        self.assertEqual(data.encode("utf-8"), myfile.read())
+        self.assertEquals(data.encode("utf-8"), myfile.read())

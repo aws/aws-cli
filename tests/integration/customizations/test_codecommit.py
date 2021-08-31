@@ -64,12 +64,12 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         driver = create_clidriver()
         rc = driver.main('codecommit credential-helper get'.split())
         output = stdout_mock.getvalue().strip()
-        self.assertEqual(
+        self.assertEquals(
             ('username=foo\n'
              'password=20101008T000000Z'
              '7dc259e2d505af354a1219b9bcd784bd384dc706efa0d9aefc571f214be4c89c'),
              output)
-        self.assertEqual(0, rc)
+        self.assertEquals(0, rc)
 
     @patch('sys.stdin', StringIO(FIPS_PROTOCOL_HOST_PATH))
     @patch('sys.stdout', new_callable=StringIOWithFileNo)
@@ -79,12 +79,12 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         driver = create_clidriver()
         rc = driver.main('codecommit credential-helper get'.split())
         output = stdout_mock.getvalue().strip()
-        self.assertEqual(
+        self.assertEquals(
             ('username=foo\n'
              'password=20101008T000000Z'
              '500037cb3514b3fe01ebcda7c80973f5b4c0d8199a7a6563b85fd6edf272d460'),
              output)
-        self.assertEqual(0, rc)
+        self.assertEquals(0, rc)
 
     @patch('sys.stdin', StringIO(VPC_PROTOCOL_HOST_PATH))
     @patch('sys.stdout', new_callable=StringIOWithFileNo)
@@ -94,12 +94,12 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         driver = create_clidriver()
         rc = driver.main('codecommit credential-helper get'.split())
         output = stdout_mock.getvalue().strip()
-        self.assertEqual(
+        self.assertEquals(
             ('username=foo\n'
              'password=20101008T000000Z'
              '9ed987cc6336c3de2d9f06b9236c7a9fd76b660b080db15983290e636dbfbd6b'),
              output)
-        self.assertEqual(0, rc)
+        self.assertEquals(0, rc)
 
 
 if __name__ == "__main__":

@@ -48,8 +48,8 @@ class TestFileInfoBuilder(unittest.TestCase):
                           operation_name='delete')]
         file_infos = info_setter.call(files)
         for file_info in file_infos:
-            self.assertEqual(file_info.client, source_client_name)
-            self.assertEqual(file_info.source_client, client_name)
+            self.assertEquals(file_info.client, source_client_name)
+            self.assertEquals(file_info.source_client, client_name)
 
 if __name__ == "__main__":
     unittest.main()

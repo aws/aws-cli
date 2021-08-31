@@ -263,7 +263,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '\naws: error: You cannot specify both --ami-version'
             ' and --release-label options together.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expected_error_msg, result[1])
+        self.assertEquals(expected_error_msg, result[1])
 
     def test_if_ami_version_or_release_label_is_provided(self):
         cmd = (self.prefix + ' --instance-groups ' +
@@ -271,7 +271,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         expected_error_msg = ('\naws: error: Either --ami-version or'
                               ' --release-label is required.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expected_error_msg, result[1])
+        self.assertEquals(expected_error_msg, result[1])
 
     def test_no_special_steps_added_for_applications(self):
         cmd = (DEFAULT_CMD + '--applications Name=MapR')
@@ -370,7 +370,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             'choose --use-default-roles or use both --service-role <roleName>'
             ' and --ec2-attributes InstanceProfile=<profileName>.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expected_error_msg, result[1])
+        self.assertEquals(expected_error_msg, result[1])
 
     def test_mutual_exclusive_use_default_roles_and_instance_profile(self):
         cmd = (DEFAULT_CMD + '--service-role ServiceRole '
@@ -381,7 +381,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '--use-default-roles or use both --service-role <roleName> '
             'and --ec2-attributes InstanceProfile=<profileName>.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expected_error_msg, result[1])
+        self.assertEquals(expected_error_msg, result[1])
 
     def test_cluster_name_no_space(self):
         cmd = DEFAULT_CMD + '--name MyCluster'
@@ -433,7 +433,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '\naws: error: cannot use both --no-auto-terminate and'
             ' --auto-terminate options together.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expected_error_msg, result[1])
+        self.assertEquals(expected_error_msg, result[1])
 
     def test_termination_protected(self):
         cmd = DEFAULT_CMD + '--termination-protected'
@@ -454,7 +454,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '\naws: error: cannot use both --termination-protected'
             ' and --no-termination-protected options together.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expected_error_msg, result[1])
+        self.assertEquals(expected_error_msg, result[1])
 
     def test_visible_to_all_users(self):
         cmd = DEFAULT_CMD + '--visible-to-all-users'
@@ -472,7 +472,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '\naws: error: cannot use both --visible-to-all-users and '
             '--no-visible-to-all-users options together.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expected_error_msg, result[1])
+        self.assertEquals(expected_error_msg, result[1])
 
     def test_tags(self):
         cmd = DEFAULT_CMD.split() + ['--tags', 'k1=v1', 'k2', 'k3=spaces  v3']
@@ -517,7 +517,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '\naws: error: LogUri not specified. You must specify a logUri'
             ' if you enable debugging when creating a cluster.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expected_error_msg, result[1])
+        self.assertEquals(expected_error_msg, result[1])
 
     def test_enable_debugging_and_no_enable_debugging(self):
         cmd = DEFAULT_CMD + '--enable-debugging --no-enable-debugging' + \
@@ -526,7 +526,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '\naws: error: cannot use both --enable-debugging and '
             '--no-enable-debugging options together.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expected_error_msg, result[1])
+        self.assertEquals(expected_error_msg, result[1])
 
     def test_instance_groups_default_name_market(self):
         cmd = (
@@ -594,7 +594,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '--instance-type with --instance-count(optional) to '
             'configure instance groups.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expect_error_msg, result[1])
+        self.assertEquals(expect_error_msg, result[1])
 
         cmd = (
             'emr create-cluster --use-default-roles --release-label emr-4.0.0 '
@@ -604,7 +604,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '--instance-type with --instance-count(optional) to '
             'configure instance groups.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expect_error_msg, result[1])
+        self.assertEquals(expect_error_msg, result[1])
 
     def test_instance_groups_exclusive_parameter_validation_error(self):
         cmd = (
@@ -617,7 +617,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             'because --instance-type and --instance-count are '
             'shortcut options for --instance-groups.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expect_error_msg, result[1])
+        self.assertEquals(expect_error_msg, result[1])
 
         cmd = (
             'emr create-cluster --use-default-roles --release-label emr-4.0.0 '
@@ -629,7 +629,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             'because --instance-type and --instance-count are '
             'shortcut options for --instance-groups.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expect_error_msg, result[1])
+        self.assertEquals(expect_error_msg, result[1])
 
     def test_instance_groups_missing_instance_group_type_error(self):
         cmd = (
@@ -766,7 +766,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '\naws: error: You may not specify both a SubnetId and an Availab'
             'ilityZone (placement) because ec2SubnetId implies a placement.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expect_error_msg, result[1])
+        self.assertEquals(expect_error_msg, result[1])
 
     def test_ec2_attributes_with_subnet_from_json_file(self):
         data_path = os.path.join(
@@ -820,7 +820,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                              'bootstrap actions for a cluster exceeded.\n'
         result = self.run_cmd(cmd, 255)
 
-        self.assertEqual(expected_error_msg, result[1])
+        self.assertEquals(expected_error_msg, result[1])
 
     def test_bootstrap_actions_exceed_maximum_with_applications_error(self):
         cmd = DEFAULT_CMD + ' --bootstrap-actions'
@@ -830,7 +830,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         expected_error_msg = '\naws: error: maximum number of ' +\
                              'bootstrap actions for a cluster exceeded.\n'
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expected_error_msg, result[1])
+        self.assertEquals(expected_error_msg, result[1])
 
     def test_boostrap_actions_with_default_fields(self):
         cmd = DEFAULT_CMD + (
@@ -875,7 +875,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         expected_error_msg = (
             '\naws: error: The step type unknown is not supported.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expected_error_msg, result[1])
+        self.assertEquals(expected_error_msg, result[1])
 
     def test_default_step_type_name_action_on_failure(self):
         cmd = DEFAULT_CMD + '--steps Jar=s3://mybucket/mytest.jar'
@@ -888,7 +888,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         expect_error_msg = '\naws: error: The following ' + \
             'required parameters are missing for CustomJARStepConfig: Jar.\n'
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expect_error_msg, result[1])
+        self.assertEquals(expect_error_msg, result[1])
 
     def test_custom_jar_step_with_all_fields(self):
         cmd = DEFAULT_CMD + '--steps ' + (
@@ -924,7 +924,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         expect_error_msg = '\naws: error: The following ' + \
             'required parameters are missing for StreamingStepConfig: Args.\n'
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expect_error_msg, result[1])
+        self.assertEquals(expect_error_msg, result[1])
 
     def test_streaming_jar_with_all_fields(self):
         test_step_config = (
@@ -952,7 +952,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         expect_error_msg = '\naws: error: The following ' + \
             'required parameters are missing for HiveStepConfig: Args.\n'
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expect_error_msg, result[1])
+        self.assertEquals(expect_error_msg, result[1])
 
     def test_hive_step_with_all_fields(self):
         test_step_config = (
@@ -978,7 +978,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         expect_error_msg = '\naws: error: The following ' + \
             'required parameters are missing for PigStepConfig: Args.\n'
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expect_error_msg, result[1])
+        self.assertEquals(expect_error_msg, result[1])
 
     def test_pig_step_with_all_fields(self):
         test_step_config = (
@@ -997,7 +997,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         cmd = DEFAULT_CMD
         result = self.run_cmd(cmd, expected_rc=0)
         result_json = json.loads(result[0])
-        self.assertEqual(result_json, CONSTRUCTED_RESULT)
+        self.assertEquals(result_json, CONSTRUCTED_RESULT)
 
     def test_all_security_groups(self):
         cmd = DEFAULT_CMD + (
@@ -1101,7 +1101,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '\naws: error: Must specify --auto-scaling-role when'
             ' configuring an AutoScaling policy for an instance group.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expected_error_msg, result[1])
+        self.assertEquals(expected_error_msg, result[1])
         
     def test_scale_down_behavior(self):
         cmd = (self.prefix + '--release-label emr-4.0.0 --scale-down-behavior TERMINATE_AT_INSTANCE_HOUR '
@@ -1311,7 +1311,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '\naws: error: You cannot specify both --instance-groups'
             ' and --instance-fleets options together.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expected_error_msg, result[1])
+        self.assertEquals(expected_error_msg, result[1])
 
     def test_instance_fleets_with_both_subnetid_subnetids_specified(self):
         cmd = (self.prefix + '--release-label emr-4.2.0 --instance-fleets ' +
@@ -1321,7 +1321,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '\naws: error: You cannot specify both SubnetId'
             ' and SubnetIds options together.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEqual(expected_error_msg, result[1])
+        self.assertEquals(expected_error_msg, result[1])
 
     def test_create_cluster_with_security_config(self):
         cmd = (self.prefix + '--release-label emr-4.7.2 --security-configuration MySecurityConfig '+ 

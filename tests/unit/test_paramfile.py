@@ -93,12 +93,12 @@ class TestHTTPBasedResourceLoading(unittest.TestCase):
 
     def test_non_200_raises_error(self):
         self.response.status_code = 500
-        with self.assertRaisesRegex(ResourceLoadingError, 'foo\.bar\.baz'):
+        with self.assertRaisesRegexp(ResourceLoadingError, 'foo\.bar\.baz'):
             self.get_paramfile('https://foo.bar.baz')
 
     def test_connection_error_raises_error(self):
         self.session_mock.side_effect = Exception("Connection error.")
-        with self.assertRaisesRegex(ResourceLoadingError, 'foo\.bar\.baz'):
+        with self.assertRaisesRegexp(ResourceLoadingError, 'foo\.bar\.baz'):
             self.get_paramfile('https://foo.bar.baz')
 
 

@@ -70,7 +70,7 @@ class TestS3Uploader(unittest.TestCase):
         s3uploader.artifact_metadata = artifact_metadata
 
         upload_url = s3uploader.upload(file_name, remote_path)
-        self.assertEqual(expected_upload_url, upload_url)
+        self.assertEquals(expected_upload_url, upload_url)
 
         expected_extra_args = {
             # expected encryption args
@@ -104,7 +104,7 @@ class TestS3Uploader(unittest.TestCase):
         s3uploader.artifact_metadata = artifact_metadata
 
         upload_url = s3uploader.upload(file_name, remote_path)
-        self.assertEqual(expected_upload_url, upload_url)
+        self.assertEquals(expected_upload_url, upload_url)
 
         expected_extra_args = {
             # expected encryption args
@@ -150,7 +150,7 @@ class TestS3Uploader(unittest.TestCase):
 
         # Because we forced an update, this should reupload even if file exists
         upload_url = self.s3uploader.upload(file_name, remote_path)
-        self.assertEqual(expected_upload_url, upload_url)
+        self.assertEquals(expected_upload_url, upload_url)
 
         expected_encryption_args = {
             "ServerSideEncryption": "AES256"
@@ -180,7 +180,7 @@ class TestS3Uploader(unittest.TestCase):
         self.s3uploader.file_exists.return_value = False
 
         upload_url = self.s3uploader.upload(file_name, remote_path)
-        self.assertEqual(expected_upload_url, upload_url)
+        self.assertEquals(expected_upload_url, upload_url)
 
         expected_encryption_args = {
             "ServerSideEncryption": "aws:kms",
@@ -309,7 +309,7 @@ class TestS3Uploader(unittest.TestCase):
     def test_make_url(self):
         path = "Hello/how/are/you"
         expected = "s3://{0}/{1}".format(self.bucket_name, path)
-        self.assertEqual(expected, self.s3uploader.make_url(path))
+        self.assertEquals(expected, self.s3uploader.make_url(path))
 
     def test_to_path_style_s3_url_us_east_1(self):
         key = "path/to/file"

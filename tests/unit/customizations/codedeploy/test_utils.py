@@ -62,19 +62,19 @@ class TestUtils(unittest.TestCase):
         self.session.get_config_variable.return_value = None
         validate_region(self.params, self.globals)
         self.assertIn('region', self.params)
-        self.assertEqual(self.region, self.params.region)
+        self.assertEquals(self.region, self.params.region)
 
     def test_validate_region_returns_session_region(self):
         self.globals.region = None
         self.session.get_config_variable.return_value = self.region
         validate_region(self.params, self.globals)
         self.assertIn('region', self.params)
-        self.assertEqual(self.region, self.params.region)
+        self.assertEquals(self.region, self.params.region)
 
     def test_validate_region_throws_on_no_region(self):
         self.globals.region = None
         self.session.get_config_variable.return_value = None
-        with self.assertRaisesRegex(RuntimeError, 'Region not specified.'):
+        with self.assertRaisesRegexp(RuntimeError, 'Region not specified.'):
             validate_region(self.params, self.globals)
 
     def test_validate_instance_name(self):
@@ -84,13 +84,13 @@ class TestUtils(unittest.TestCase):
 
     def test_validate_instance_name_throws_on_invalid_characters(self):
         self.params.instance_name = '!#$%^&*()<>/?;:[{]}'
-        with self.assertRaisesRegex(
+        with self.assertRaisesRegexp(
                 ValueError, 'Instance name contains invalid characters.'):
             validate_instance_name(self.params)
 
     def test_validate_instance_name_throws_on_i_dash(self):
         self.params.instance_name = 'i-instance'
-        with self.assertRaisesRegex(
+        with self.assertRaisesRegexp(
                 ValueError, "Instance name cannot start with 'i-'."):
             validate_instance_name(self.params)
 
@@ -99,7 +99,7 @@ class TestUtils(unittest.TestCase):
             '01234567890123456789012345678901234567890123456789'
             '012345678901234567890123456789012345678901234567891'
         )
-        with self.assertRaisesRegex(
+        with self.assertRaisesRegexp(
                 ValueError,
                 'Instance name cannot be longer than {0} characters.'.format(
                     MAX_INSTANCE_NAME_LENGTH)):
@@ -109,7 +109,7 @@ class TestUtils(unittest.TestCase):
         self.params.tags = [
             {'Key': 'k' + str(x), 'Value': 'v' + str(x)} for x in range(11)
         ]
-        with self.assertRaisesRegex(
+        with self.assertRaisesRegexp(
                 ValueError,
                 'Instances can only have a maximum of {0} '
                 'tags.'.format(MAX_TAGS_PER_INSTANCE)):
@@ -123,7 +123,7 @@ class TestUtils(unittest.TestCase):
     def test_validate_tags_throws_on_long_key(self):
         key = 'k' * 129
         self.params.tags = [{'Key': key, 'Value': 'v1'}]
-        with self.assertRaisesRegex(
+        with self.assertRaisesRegexp(
                 ValueError,
                 'Tag Key cannot be longer than {0} characters.'.format(
                     MAX_TAG_KEY_LENGTH)):
@@ -137,7 +137,7 @@ class TestUtils(unittest.TestCase):
     def test_validate_tags_throws_on_long_value(self):
         value = 'v' * 257
         self.params.tags = [{'Key': 'k1', 'Value': value}]
-        with self.assertRaisesRegex(
+        with self.assertRaisesRegexp(
                 ValueError,
                 'Tag Value cannot be longer than {0} characters.'.format(
                     MAX_TAG_VALUE_LENGTH)):
@@ -149,7 +149,7 @@ class TestUtils(unittest.TestCase):
 
     def test_validate_iam_user_arn_throws_on_invalid_arn_pattern(self):
         self.params.iam_user_arn = 'invalid-arn-pattern'
-        with self.assertRaisesRegex(ValueError, 'Invalid IAM user ARN.'):
+        with self.assertRaisesRegexp(ValueError, 'Invalid IAM user ARN.'):
             validate_iam_user_arn(self.params)
 
     def test_validate_instance_ubuntu(self):
@@ -183,7 +183,7 @@ class TestUtils(unittest.TestCase):
 
     def test_validate_instance_throws_on_unsupported_system(self):
         self.system.return_value = 'Unsupported'
-        with self.assertRaisesRegex(
+        with self.assertRaisesRegexp(
                 RuntimeError, System.UNSUPPORTED_SYSTEM_MSG):
             validate_instance(self.params)
 
@@ -191,7 +191,7 @@ class TestUtils(unittest.TestCase):
         self.params.session = self.session
         self.params.region = self.region
         self.urlopen.side_effect = None
-        with self.assertRaisesRegex(
+        with self.assertRaisesRegexp(
                 RuntimeError, 'Amazon EC2 instances are not supported.'):
             validate_instance(self.params)
 
@@ -199,9 +199,9 @@ class TestUtils(unittest.TestCase):
         self.params.s3_location = 's3://{0}/{1}'.format(self.bucket, self.key)
         validate_s3_location(self.params, self.arg_name)
         self.assertIn('bucket', self.params)
-        self.assertEqual(self.bucket, self.params.bucket)
+        self.assertEquals(self.bucket, self.params.bucket)
         self.assertIn('key', self.params)
-        self.assertEqual(self.key, self.params.key)
+        self.assertEquals(self.key, self.params.key)
 
     def test_validate_s3_location_not_present(self):
         validate_s3_location(self.params, 'unknown')
@@ -210,7 +210,7 @@ class TestUtils(unittest.TestCase):
 
     def test_validate_s3_location_throws_on_invalid_location(self):
         self.params.s3_location = 'invalid-s3-location'
-        with self.assertRaisesRegex(
+        with self.assertRaisesRegexp(
                 ValueError,
                 '--{0} must specify the Amazon S3 URL format as '
                 's3://<bucket>/<key>.'.format(self.arg_name)):

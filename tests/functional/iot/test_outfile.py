@@ -39,7 +39,7 @@ class TestOutFileQueryArguments(BaseAWSCommandParamsTest):
         self.run_cmd(cmdline, 0)
         self.assertTrue(os.path.exists(outfile))
         with open(outfile) as fp:
-            self.assertEqual('cert...', fp.read())
+            self.assertEquals('cert...', fp.read())
 
     def test_saves_files_for_create_keys_and_cert(self):
         self.parsed_response = {
@@ -65,11 +65,11 @@ class TestOutFileQueryArguments(BaseAWSCommandParamsTest):
         self.assertTrue(os.path.exists(out_pub))
         self.assertTrue(os.path.exists(out_priv))
         with open(out_cert) as fp:
-            self.assertEqual('cert...', fp.read())
+            self.assertEquals('cert...', fp.read())
         with open(out_pub) as fp:
-            self.assertEqual('public', fp.read())
+            self.assertEquals('public', fp.read())
         with open(out_priv) as fp:
-            self.assertEqual('private', fp.read())
+            self.assertEquals('private', fp.read())
 
     def test_bad_response(self):
         outfile = self.files.full_path('cert.pem')

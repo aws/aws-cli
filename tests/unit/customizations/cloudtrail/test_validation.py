@@ -359,7 +359,7 @@ class TestPublicKeyProvider(unittest.TestCase):
         start_date = START_DATE
         end_date = start_date + timedelta(days=2)
         keys = provider.get_public_keys(start_date, end_date)
-        self.assertEqual({
+        self.assertEquals({
             'a': {'Fingerprint': 'a', 'OtherData': 'a', 'Value': 'a'},
             'b': {'Fingerprint': 'b', 'OtherData': 'b', 'Value': 'b'},
             'c': {'Fingerprint': 'c', 'OtherData': 'c', 'Value': 'c'},
@@ -714,7 +714,7 @@ class TestDigestTraverser(unittest.TestCase):
         self.assertEqual(
             1, len(digest_provider.calls['load_digest_keys_in_range']))
         self.assertEqual(4, len(digest_provider.calls['fetch_digest']))
-        self.assertEqual(4, len(collected))
+        self.assertEquals(4, len(collected))
 
     def test_invokes_cb_and_continues_when_missing(self):
         start_date = START_DATE
@@ -727,9 +727,9 @@ class TestDigestTraverser(unittest.TestCase):
             starting_prefix='baz', public_key_provider=key_provider,
             digest_validator=validator, on_missing=on_missing)
         collected = list(traverser.traverse(start_date, end_date))
-        self.assertEqual(3, len(collected))
+        self.assertEquals(3, len(collected))
         self.assertEqual(1, key_provider.get_public_keys.call_count)
-        self.assertEqual(1, len(missing_calls))
+        self.assertEquals(1, len(missing_calls))
         # Ensure the keys were provided in the correct order.
         self.assertIn('bucket', missing_calls[0])
         self.assertIn('next_end_date', missing_calls[0])
@@ -755,9 +755,9 @@ class TestDigestTraverser(unittest.TestCase):
             starting_prefix='baz', public_key_provider=key_provider,
             digest_validator=validator, on_invalid=on_invalid)
         collected = list(traverser.traverse(start_date, end_date))
-        self.assertEqual(3, len(collected))
+        self.assertEquals(3, len(collected))
         self.assertEqual(1, key_provider.get_public_keys.call_count)
-        self.assertEqual(2, len(invalid_calls))
+        self.assertEquals(2, len(invalid_calls))
         # Ensure it was invoked with all the kwargs we expected.
         self.assertIn('bucket', invalid_calls[0])
         self.assertIn('next_end_date', invalid_calls[0])
@@ -787,9 +787,9 @@ class TestDigestTraverser(unittest.TestCase):
             starting_prefix='baz', public_key_provider=key_provider,
             digest_validator=validator, on_gap=on_gap)
         collected = list(traverser.traverse(start_date, end_date))
-        self.assertEqual(4, len(collected))
+        self.assertEquals(4, len(collected))
         self.assertEqual(1, key_provider.get_public_keys.call_count)
-        self.assertEqual(2, len(gap_calls))
+        self.assertEquals(2, len(gap_calls))
         # Ensure it was invoked with all the kwargs we expected.
         self.assertIn('bucket', gap_calls[0])
         self.assertIn('next_key', gap_calls[0])
@@ -817,14 +817,14 @@ class TestDigestTraverser(unittest.TestCase):
             starting_prefix='baz', public_key_provider=key_provider,
             digest_validator=validator)
         collected = list(traverser.traverse(start_date, end_date))
-        self.assertEqual(4, len(collected))
+        self.assertEquals(4, len(collected))
         self.assertEqual(1, key_provider.get_public_keys.call_count)
         # Ensure the provider was called correctly
         self.assertEqual(1, key_provider.get_public_keys.call_count)
         self.assertEqual(
             2, len(digest_provider.calls['load_digest_keys_in_range']))
-        self.assertEqual(['1', '1', '2', '2'],
-                         [c['digestS3Bucket'] for c in collected])
+        self.assertEquals(['1', '1', '2', '2'],
+                          [c['digestS3Bucket'] for c in collected])
 
     def test_does_not_hard_fail_on_invalid_signature(self):
         start_date = START_DATE

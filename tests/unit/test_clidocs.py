@@ -47,7 +47,7 @@ class TestRecursiveShapes(unittest.TestCase):
         indent = self.help_command.doc.style.indent.call_count
         dedent = self.help_command.doc.style.dedent.call_count
         message = 'Imbalanced indentation: indent (%s) != dedent (%s)'
-        self.assertEqual(indent, dedent, message % (indent, dedent))
+        self.assertEquals(indent, dedent, message % (indent, dedent))
 
     def test_handle_recursive_input(self):
         shape_map = {

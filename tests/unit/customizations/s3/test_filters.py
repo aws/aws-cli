@@ -215,11 +215,11 @@ class FiltersTest(unittest.TestCase):
 
         source_pattern = s3_filter.patterns[0][1]
         destination_pattern = s3_filter.dst_patterns[0][1]
-        self.assertEqual(source_pattern, source + pattern)
-        self.assertEqual(destination_pattern, destination + pattern)
+        self.assertEquals(source_pattern, source + pattern)
+        self.assertEquals(destination_pattern, destination + pattern)
 
         filtered = list(s3_filter.call(self.s3_files))
-        self.assertEqual(len(filtered), 2)
+        self.assertEquals(len(filtered), 2)
         for filtered_file in filtered:
             self.assertFalse('.txt' in filtered_file.src)
 

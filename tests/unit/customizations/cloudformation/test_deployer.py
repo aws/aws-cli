@@ -134,8 +134,8 @@ class TestDeployer(unittest.TestCase):
             result = self.deployer.create_changeset(
                     stack_name, template, parameters, capabilities, role_arn,
                     notification_arns, s3_uploader, tags)
-            self.assertEqual(response["Id"], result.changeset_id)
-            self.assertEqual("CREATE", result.changeset_type)
+            self.assertEquals(response["Id"], result.changeset_id)
+            self.assertEquals("CREATE", result.changeset_type)
 
         # Case 2: Stack exists. We are updating it
         self.deployer.has_stack.return_value = True
@@ -155,8 +155,8 @@ class TestDeployer(unittest.TestCase):
             result = self.deployer.create_changeset(
                     stack_name, template, parameters, capabilities, role_arn,
                     notification_arns, s3_uploader, tags)
-            self.assertEqual(response["Id"], result.changeset_id)
-            self.assertEqual("UPDATE", result.changeset_type)
+            self.assertEquals(response["Id"], result.changeset_id)
+            self.assertEquals("UPDATE", result.changeset_type)
 
     def test_create_changeset_success_s3_bucket(self):
         stack_name = "stack_name"
@@ -212,8 +212,8 @@ class TestDeployer(unittest.TestCase):
             result = self.deployer.create_changeset(
                 stack_name, template, parameters, capabilities, role_arn,
                 notification_arns, s3_uploader, [])
-            self.assertEqual(response["Id"], result.changeset_id)
-            self.assertEqual("CREATE", result.changeset_type)
+            self.assertEquals(response["Id"], result.changeset_id)
+            self.assertEquals("CREATE", result.changeset_type)
 
         # Case 2: Stack exists. We are updating it
         self.deployer.has_stack.return_value = True
@@ -233,8 +233,8 @@ class TestDeployer(unittest.TestCase):
             result = self.deployer.create_changeset(
                     stack_name, template, parameters, capabilities, role_arn,
                     notification_arns, s3_uploader, [])
-            self.assertEqual(response["Id"], result.changeset_id)
-            self.assertEqual("UPDATE", result.changeset_type)
+            self.assertEquals(response["Id"], result.changeset_id)
+            self.assertEquals("UPDATE", result.changeset_type)
 
     def test_create_changeset_exception(self):
         stack_name = "stack_name"
@@ -301,8 +301,8 @@ class TestDeployer(unittest.TestCase):
         result = self.deployer.create_and_wait_for_changeset(
                 stack_name, template, parameters, capabilities, role_arn,
                 notification_arns, s3_uploader, tags)
-        self.assertEqual(result.changeset_id, changeset_id)
-        self.assertEqual(result.changeset_type, changeset_type)
+        self.assertEquals(result.changeset_id, changeset_id)
+        self.assertEquals(result.changeset_type, changeset_type)
 
     def test_create_and_wait_for_changeset_error_waiting_for_changeset(self):
         stack_name = "stack_name"

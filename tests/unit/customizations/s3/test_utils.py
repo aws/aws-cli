@@ -301,7 +301,7 @@ class TestFindBucketKey(unittest.TestCase):
 
 class TestBlockUnsupportedResources(unittest.TestCase):
     def test_object_lambda_arn_with_colon_raises_exception(self):
-        with self.assertRaisesRegex(
+        with self.assertRaisesRegexp(
                 ValueError, 'Use s3api commands instead'):
             block_unsupported_resources(
                 'arn:aws:s3-object-lambda:us-west-2:123456789012:'
@@ -309,7 +309,7 @@ class TestBlockUnsupportedResources(unittest.TestCase):
             )
 
     def test_object_lambda_arn_with_slash_raises_exception(self):
-        with self.assertRaisesRegex(
+        with self.assertRaisesRegexp(
                 ValueError, 'Use s3api commands instead'):
             block_unsupported_resources(
                  'arn:aws:s3-object-lambda:us-west-2:123456789012:'
@@ -317,7 +317,7 @@ class TestBlockUnsupportedResources(unittest.TestCase):
             )
 
     def test_outpost_bucket_arn_with_colon_raises_exception(self):
-        with self.assertRaisesRegex(
+        with self.assertRaisesRegexp(
                 ValueError, 'Use s3control commands instead'):
             block_unsupported_resources(
                 'arn:aws:s3-outposts:us-west-2:123456789012:'
@@ -325,7 +325,7 @@ class TestBlockUnsupportedResources(unittest.TestCase):
             )
 
     def test_outpost_bucket_arn_with_slash_raises_exception(self):
-        with self.assertRaisesRegex(
+        with self.assertRaisesRegexp(
                 ValueError, 'Use s3control commands instead'):
             block_unsupported_resources(
                  'arn:aws:s3-outposts:us-west-2:123456789012:'
@@ -502,7 +502,7 @@ class TestGetFileStat(unittest.TestCase):
 
     def test_error_message(self):
         with mock.patch('os.stat', mock.Mock(side_effect=IOError('msg'))):
-            with self.assertRaisesRegex(ValueError, 'myfilename\.txt'):
+            with self.assertRaisesRegexp(ValueError, 'myfilename\.txt'):
                 get_file_stat('myfilename.txt')
 
     def assert_handles_fromtimestamp_error(self, error):

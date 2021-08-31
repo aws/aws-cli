@@ -168,7 +168,7 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
         result = self.run_cmd(self.prefix, 0)
         expected_output = json.dumps(self.CONSTRUCTED_RESULT_OUTPUT,
                                      indent=4) + '\n'
-        self.assertEqual(result[0], expected_output)
+        self.assertEquals(result[0], expected_output)
 
     def toggle_for_check_if_exists(self, *args):
         if args[0] == DATAPIPELINE_DEFAULT_RESOURCE_ROLE_NAME:

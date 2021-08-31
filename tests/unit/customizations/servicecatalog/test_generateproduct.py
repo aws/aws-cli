@@ -107,7 +107,7 @@ class TestCreateProductCommand(unittest.TestCase):
         self.assertEqual(expected_response_output,
                          captured.stdout.getvalue()
                          )
-        self.assertEqual(0, result)
+        self.assertEquals(0, result)
 
     @patch('os.path.getsize', return_value=1)
     def test_happy_path_unicode(self, getsize_patch):
@@ -160,11 +160,11 @@ class TestCreateProductCommand(unittest.TestCase):
         self.assertEqual(expected_response_output,
                          captured.stdout.getvalue()
                          )
-        self.assertEqual(0, result)
+        self.assertEquals(0, result)
 
     def test_region_not_supported(self):
         self.global_args.region = 'not-supported-region'
-        with self.assertRaisesRegex(exceptions.InvalidParametersException,
+        with self.assertRaisesRegexp(exceptions.InvalidParametersException,
                                      "not supported"):
             self.cmd._run_main(self.args, self.global_args)
 
@@ -212,7 +212,7 @@ class TestCreateProductCommand(unittest.TestCase):
 
         self.assertEqual(expected_response_output,
                          captured.stdout.getvalue())
-        self.assertEqual(0, result)
+        self.assertEquals(0, result)
 
     def get_product_view_detail(self):
         return {

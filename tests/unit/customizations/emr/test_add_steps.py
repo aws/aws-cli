@@ -630,11 +630,11 @@ class TestAddSteps(BaseAWSCommandParamsTest):
         if expected_error_msg:
             grl_patch.return_value = None
             result = self.run_cmd(cmd, 255)
-            self.assertEqual(expected_error_msg, result[1])
+            self.assertEquals(expected_error_msg, result[1])
         if expected_result_release:
             grl_patch.return_value = 'emr-4.0'
             result = self.run_cmd(cmd, 255)
-            self.assertEqual(expected_result_release, result[1])
+            self.assertEquals(expected_result_release, result[1])
 
 if __name__ == "__main__":
     unittest.main()

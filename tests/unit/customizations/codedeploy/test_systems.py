@@ -67,13 +67,13 @@ class TestWindows(unittest.TestCase):
         self.assertEqual(self.config_dir, self.windows.CONFIG_DIR)
 
     def test_config_file(self):
-        self.assertEqual(self.config_file, self.windows.CONFIG_FILE)
+        self.assertEquals(self.config_file, self.windows.CONFIG_FILE)
 
     def test_config_path(self):
-        self.assertEqual(self.config_path, self.windows.CONFIG_PATH)
+        self.assertEquals(self.config_path, self.windows.CONFIG_PATH)
 
     def test_installer(self):
-        self.assertEqual(self.installer, self.windows.INSTALLER)
+        self.assertEquals(self.installer, self.windows.INSTALLER)
 
     def test_install(self):
         process = MagicMock()
@@ -221,21 +221,21 @@ class TestUbuntu(TestLinux):
         self.ubuntu = Ubuntu(self.params)
 
     def test_config_dir(self):
-        self.assertEqual(self.config_dir, self.ubuntu.CONFIG_DIR)
+        self.assertEquals(self.config_dir, self.ubuntu.CONFIG_DIR)
 
     def test_config_file(self):
-        self.assertEqual(self.config_file, self.ubuntu.CONFIG_FILE)
+        self.assertEquals(self.config_file, self.ubuntu.CONFIG_FILE)
 
     def test_config_path(self):
-        self.assertEqual(self.config_path, self.ubuntu.CONFIG_PATH)
+        self.assertEquals(self.config_path, self.ubuntu.CONFIG_PATH)
 
     def test_installer(self):
-        self.assertEqual(self.installer, self.ubuntu.INSTALLER)
+        self.assertEquals(self.installer, self.ubuntu.INSTALLER)
 
     @patch('os.geteuid', create=True)
     def test_validate_administrator_throws(self, geteuid):
         geteuid.return_value = 1
-        with self.assertRaisesRegex(
+        with self.assertRaisesRegexp(
                 RuntimeError, 'You must run this command as sudo.'):
             self.ubuntu.validate_administrator()
 
@@ -289,21 +289,21 @@ class TestRHEL(TestLinux):
         self.rhel = RHEL(self.params)
 
     def test_config_dir(self):
-        self.assertEqual(self.config_dir, self.rhel.CONFIG_DIR)
+        self.assertEquals(self.config_dir, self.rhel.CONFIG_DIR)
 
     def test_config_file(self):
-        self.assertEqual(self.config_file, self.rhel.CONFIG_FILE)
+        self.assertEquals(self.config_file, self.rhel.CONFIG_FILE)
 
     def test_config_path(self):
-        self.assertEqual(self.config_path, self.rhel.CONFIG_PATH)
+        self.assertEquals(self.config_path, self.rhel.CONFIG_PATH)
 
     def test_installer(self):
-        self.assertEqual(self.installer, self.rhel.INSTALLER)
+        self.assertEquals(self.installer, self.rhel.INSTALLER)
 
     @patch('os.geteuid', create=True)
     def test_validate_administrator_throws(self, geteuid):
         geteuid.return_value = 1
-        with self.assertRaisesRegex(
+        with self.assertRaisesRegexp(
                 RuntimeError, 'You must run this command as sudo.'):
             self.rhel.validate_administrator()
 

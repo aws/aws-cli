@@ -76,7 +76,7 @@ class TestPackageCommand(unittest.TestCase):
                 self.parsed_args.use_json=use_json
 
                 rc = self.package_command._run_main(self.parsed_args, self.parsed_globals)
-                self.assertEquals(rc, 0)
+                self.assertEqual(rc, 0)
 
                 self.package_command._export.assert_called_once_with(filename, use_json)
                 self.package_command.write_output.assert_called_once_with(

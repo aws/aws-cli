@@ -102,7 +102,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             config_value='False1', config_key='enable_debugging',
             profile_var_name='default'))
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        self.assertEqual(expect_error_msg, result[1])
 
     @mock.patch.object(CreateCluster, '_run_main_command')
     def test_ignore_role_configs_when_use_default_roles(self,

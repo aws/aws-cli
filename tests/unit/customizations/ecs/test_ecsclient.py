@@ -39,8 +39,8 @@ class TestECSClient(unittest.TestCase):
         expected_user_agent_extra = 'customization/ecs-deploy'
 
         create_args = self.session.create_client.call_args
-        self.assertEquals(create_args[0][0], 'ecs')
-        self.assertEquals(
+        self.assertEqual(create_args[0][0], 'ecs')
+        self.assertEqual(
             create_args[1]['region_name'], self.global_args.region)
-        self.assertEquals(create_args[1]['config'].user_agent_extra,
+        self.assertEqual(create_args[1]['config'].user_agent_extra,
                           expected_user_agent_extra)

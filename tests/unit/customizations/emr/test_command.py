@@ -44,4 +44,4 @@ class TestCommand(BaseAWSCommandParamsTest):
         cmd = FakeCommand(mock_session)
         cmd._run_main(mocked_parsed_args, parsed_globals)
 
-        self.assertEquals(cmd.region, 'eu-central-1')
+        self.assertEqual(cmd.region, 'eu-central-1')

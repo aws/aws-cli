@@ -515,3 +515,12 @@ The following ``create-cluster`` example creates an Amazon EMR cluster that uses
         --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=3,InstanceType=m4.largeInstanceGroupType=CORE,InstanceCount=1,InstanceType=m4.large \
         --placement-group-configs InstanceRole=MASTER
+
+The following ``create-cluster`` example creates an Amazon EMR cluster that uses the "--auto-termination-policy" configuration to place an automatic idle termination threshold for the cluster. ::
+
+    aws emr create-cluster \
+        --release-label emr-5.34.0 \
+        --service-role EMR_DefaultRole \
+        --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
+        --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=1,InstanceType=m4.large \
+        --auto-termination-policy IdleTimeout=100

@@ -61,6 +61,7 @@ class TestListCommand(BaseHistoryCommandParamsTest):
         self.history_recorder.record('CLI_RC', rc, 'CLI')
         self.run_cmd('history list', expected_rc=0)
         self.assertIn(b'ec2 describe-regions', self.binary_stdout.getvalue())
+
     def test_multiple_calls_present(self):
         self.parsed_responses = [
             {

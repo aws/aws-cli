@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+2.2.34
+======
+
+* api-change:``compute-optimizer``: Documentation updates for Compute Optimizer
+* api-change:``codebuild``: Documentation updates for CodeBuild
+* api-change:``emr``: Update emr command to latest version
+* api-change:``cloudformation``: AWS CloudFormation allows you to iteratively develop your applications when failures are encountered without rolling back successfully provisioned resources. By specifying stack failure options, you can troubleshoot resources in a CREATE_FAILED or UPDATE_FAILED status.
+* api-change:``sqs``: Amazon SQS adds a new queue attribute, RedriveAllowPolicy, which includes the dead-letter queue redrive permission parameters. It defines which source queues can specify dead-letter queues as a JSON object.
+* api-change:``firehose``: This release adds the Dynamic Partitioning feature to Kinesis Data Firehose service for S3 destinations.
+* api-change:``s3``: Documentation updates for Amazon S3.
+* api-change:``polly``: Amazon Polly adds new South African English voice - Ayanda. Ayanda is available as Neural voice only.
+* api-change:``kms``: This release has changes to KMS nomenclature to remove the word master from both the "Customer master key" and "CMK" abbreviation and replace those naming conventions with "KMS key".
+* api-change:``memorydb``: Documentation updates for MemoryDB
+* api-change:``iot``: Added Create/Update/Delete/Describe/List APIs for a new IoT resource named FleetMetric. Added a new Fleet Indexing query API named GetBucketsAggregation. Added a new field named DisconnectedReason in Fleet Indexing query response. Updated their related documentations.
+* api-change:``ec2``: This release adds the BootMode flag to the ImportImage API and showing the detected BootMode of an ImportImage task.
+
+
 2.2.33
 ======
 
@@ -2409,6 +2426,7 @@ CHANGELOG
 * feature:region: Added support for pulling the default region from IMDS when running on an EC2 instance. See `#3680 <https://github.com/aws/aws-cli/issues/3680>`__.
 * feature:s3: Added support for the ``--copy-props`` parameter to the high level S3 commands. This new parameter configures how additional metadata, tags, etc. should be copied for S3 to S3 transfers. See `#4840 <https://github.com/aws/aws-cli/issues/4840>`__.
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
+
 
 1.20.33
 =======

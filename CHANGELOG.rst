@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.20.34
+=======
+
+* api-change:``mediatailor``: This release adds support for wall clock programs in LINEAR channels.
+* api-change:``servicecatalog-appregistry``: Introduction of GetAssociatedResource API and GetApplication response extension for Resource Groups support.
+* api-change:``cloudtrail``: Documentation updates for CloudTrail
+* api-change:``config``: Documentation updates for config
+* api-change:``ec2``: Added LaunchTemplate support for the IMDS IPv6 endpoint
+* enhancement:emr-containers: Adds addition aws partition support for update-role-trust-policy
+
+
 1.20.33
 =======
 

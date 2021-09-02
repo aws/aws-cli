@@ -21,7 +21,7 @@ from ruamel.yaml import YAML
 from awscli.table import MultiTable, Styler, ColorizedStyler
 from awscli import text
 from awscli import compat
-from awscli.utils import json_encoder
+from awscli.utils import is_a_tty, json_encoder
 
 
 LOG = logging.getLogger(__name__)
@@ -71,7 +71,7 @@ class Formatter(object):
 
 class FullyBufferedFormatter(Formatter):
     def __call__(self, command_name, response, stream=None):
-        if stream is None:
+        if stream is None or is_a_tty():
             # Retrieve stdout on invocation instead of at import time
             # so that if anything wraps stdout we'll pick up those changes
             # (specifically colorama on windows wraps stdout).

@@ -43,7 +43,7 @@ SIZE_SUFFIX = {
     'tib': 1024 ** 4,
 }
 _S3_ACCESSPOINT_TO_BUCKET_KEY_REGEX = re.compile(
-    r'^(?P<bucket>arn:(aws).*:s3:[a-z\-0-9]+:[0-9]{12}:accesspoint[:/][^/]+)/?'
+    r'^(?P<bucket>arn:(aws).*:s3:[a-z\-0-9]*:[0-9]{12}:accesspoint[:/][^/]+)/?'
     r'(?P<key>.*)$'
 )
 _S3_OUTPOST_TO_BUCKET_KEY_REGEX = re.compile(

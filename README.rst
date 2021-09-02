@@ -6,10 +6,6 @@ aws-cli
    :target: https://github.com/aws/aws-cli/actions/workflows/run-tests.yml
    :alt: Build Status
 
-.. image:: https://badges.gitter.im/aws/aws-cli.svg
-   :target: https://gitter.im/aws/aws-cli
-   :alt: Gitter
-
 
 This package provides a unified command line interface to Amazon Web Services.
 

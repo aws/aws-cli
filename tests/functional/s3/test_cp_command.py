@@ -1146,3 +1146,33 @@ class TestAccesspointCPCommand(BaseCPCommandTest):
                     'mykey'),
             ]
         )
+
+    def test_accepts_mrap_arns(self):
+        mrap_arn = (
+            'arn:aws:s3::123456789012:accesspoint:mfzwi23gnjvgw.mrap'
+        )
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = self.prefix
+        cmdline += ' %s' % filename
+        cmdline += ' s3://%s/mykey' % mrap_arn
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.put_object_request(mrap_arn, 'mykey')
+            ]
+        )
+
+    def test_accepts_mrap_arns_with_slash(self):
+        mrap_arn = (
+            'arn:aws:s3::123456789012:accesspoint/mfzwi23gnjvgw.mrap'
+        )
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = self.prefix
+        cmdline += ' %s' % filename
+        cmdline += ' s3://%s/mykey' % mrap_arn
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.put_object_request(mrap_arn, 'mykey')
+            ]
+        )

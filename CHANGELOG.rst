@@ -2,6 +2,29 @@
 CHANGELOG
 =========
 
+2.2.35
+======
+
+* api-change:``transfer``: AWS Transfer Family introduces Managed Workflows for creating, executing, monitoring, and standardizing post file transfer processing
+* api-change:``fsx``: Announcing Amazon FSx for NetApp ONTAP, a new service that provides fully managed shared storage in the AWS Cloud with the data access and management capabilities of ONTAP.
+* api-change:``cloudtrail``: Documentation updates for CloudTrail
+* enhancement:emr-containers: Adds addition aws partition support for update-role-trust-policy
+* api-change:``config``: Documentation updates for config
+* api-change:``servicecatalog-appregistry``: Introduction of GetAssociatedResource API and GetApplication response extension for Resource Groups support.
+* api-change:``quicksight``: This release adds support for referencing parent datasets as sources in a child dataset.
+* api-change:``efs``: Update efs command to latest version
+* api-change:``acm-pca``: Private Certificate Authority Service now allows customers to enable an online certificate status protocol (OCSP) responder service on their private certificate authorities. Customers can also optionally configure a custom CNAME for their OCSP responder.
+* api-change:``ec2``: Added LaunchTemplate support for the IMDS IPv6 endpoint
+* api-change:``accessanalyzer``: Updates service API, documentation, and paginators to support multi-region access points from Amazon S3.
+* api-change:``ebs``: Documentation updates for Amazon EBS direct APIs.
+* api-change:``mediatailor``: This release adds support for wall clock programs in LINEAR channels.
+* api-change:``schemas``: This update include the support for Schema Discoverer to discover the events sent to the bus from another account. The feature will be enabled by default when discoverer is created or updated but can also be opt-in or opt-out  by specifying the value for crossAccount.
+* api-change:``securityhub``: New ASFF Resources: AwsAutoScalingLaunchConfiguration, AwsEc2VpnConnection, AwsEcrContainerImage. Added KeyRotationStatus to AwsKmsKey. Added AccessControlList, BucketLoggingConfiguration,BucketNotificationConfiguration and BucketNotificationConfiguration to AwsS3Bucket.
+* api-change:``s3control``: S3 Multi-Region Access Points provide a single global endpoint to access a data set that spans multiple S3 buckets in different AWS Regions.
+* api-change:``lex-models``: Lex now supports Korean (ko-KR) locale.
+* enhancement:``s3``: Add support for multi-region access points.
+
+
 2.2.34
 ======
 

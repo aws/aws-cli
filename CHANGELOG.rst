@@ -2451,6 +2451,28 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.20.37
+=======
+
+* api-change:``forecast``: Predictor creation now supports selecting an accuracy metric to optimize in AutoML and hyperparameter optimization. This release adds additional accuracy metrics for predictors - AverageWeightedQuantileLoss, MAPE and MASE.
+* api-change:``ssm-contacts``: Added SDK examples for SSM-Contacts.
+* api-change:``amp``: This release adds tagging support for Amazon Managed Service for Prometheus workspace.
+* api-change:``elasticache``: Doc only update for ElastiCache
+* api-change:``mediapackage``: SPEKE v2 support for live CMAF packaging type. SPEKE v2 is an upgrade to the existing SPEKE API to support multiple encryption keys, it supports live DASH currently.
+* api-change:``xray``: Updated references to AWS KMS keys and customer managed keys to reflect current terminology.
+* api-change:``eks``: Adding RegisterCluster and DeregisterCluster operations, to support connecting external clusters to EKS.
+
+
+1.20.36
+=======
+
+* api-change:``chime-sdk-identity``: Documentation updates for Chime
+* api-change:``codeguru-reviewer``: Added support for CodeInconsistencies detectors
+* api-change:``frauddetector``: Enhanced GetEventPrediction API response to include risk scores from imported SageMaker models
+* api-change:``chime-sdk-messaging``: Documentation updates for Chime
+* api-change:``outposts``: This release adds a new API CreateOrder.
+
+
 1.20.35
 =======
 

@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.20.38
+=======
+
+* api-change:``ram``: A minor text-only update that fixes several customer issues.
+* api-change:``opensearch``: Updated Configuration APIs for Amazon OpenSearch Service (successor to Amazon Elasticsearch Service)
+* api-change:``kafka``: Amazon MSK has added a new API that allows you to update the encrypting and authentication settings for an existing cluster.
+
+
 1.20.37
 =======
 

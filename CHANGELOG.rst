@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.2.37
+======
+
+* api-change:``kafka``: Amazon MSK has added a new API that allows you to update the encrypting and authentication settings for an existing cluster.
+* api-change:``lookoutequipment``: Added OffCondition parameter to CreateModel API
+* api-change:``codeguru-reviewer``: The Amazon CodeGuru Reviewer API now includes the RuleMetadata data object and a Severity attribute on a RecommendationSummary object. A RuleMetadata object contains information about a rule that generates a recommendation. Severity indicates how severe the issue associated with a recommendation is.
+* api-change:``emr``: Update emr command to latest version
+* api-change:``opensearch``: Updated Configuration APIs for Amazon OpenSearch Service (successor to Amazon Elasticsearch Service)
+* api-change:``ram``: A minor text-only update that fixes several customer issues.
+
+
 2.2.36
 ======
 

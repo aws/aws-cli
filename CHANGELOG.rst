@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.20.40
+=======
+
+* api-change:``rds``: This release adds support for providing a custom timeout value for finding a scaling point during autoscaling in Aurora Serverless v1.
+* api-change:``sagemaker``: This release adds support for "Lifecycle Configurations" to SageMaker Studio
+* api-change:``transcribe``: This release adds an API option for startTranscriptionJob and startMedicalTranscriptionJob that allows the user to specify encryption context key value pairs for batch jobs.
+* api-change:``cloudformation``: Doc only update for CloudFormation that fixes several customer-reported issues.
+* api-change:``ecr``: This release updates terminology around KMS keys.
+* api-change:``quicksight``: Add new data source type for Amazon OpenSearch (successor to Amazon ElasticSearch).
+
+
 1.20.39
 =======
 

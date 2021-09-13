@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.20.41
+=======
+
+* api-change:``iot``: AWS IoT Rules Engine adds OpenSearch action. The OpenSearch rule action lets you stream data from IoT sensors and applications to Amazon OpenSearch Service which is a successor to Amazon Elasticsearch Service.
+* api-change:``ec2``: Adds support for T3 instances on Amazon EC2 Dedicated Hosts.
+
+
 1.20.40
 =======
 

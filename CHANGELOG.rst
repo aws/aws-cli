@@ -2479,6 +2479,34 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.20.42
+=======
+
+* api-change:``wafv2``: This release adds support for including rate based rules in a rule group.
+* api-change:``sagemaker``: This release adds support for "Project Search"
+* api-change:``ec2``: This release adds support for vt1 3xlarge, 6xlarge and 24xlarge instances powered by Xilinx Alveo U30 Media Accelerators for video transcoding workloads
+* api-change:``chime``: Adds support for SipHeaders parameter for CreateSipMediaApplicationCall.
+* api-change:``comprehend``: Amazon Comprehend now allows you to train and run PDF and Word documents for custom entity recognition. With PDF and Word formats, you can extract information from documents containing headers, lists and tables.
+
+
+1.20.41
+=======
+
+* api-change:``iot``: AWS IoT Rules Engine adds OpenSearch action. The OpenSearch rule action lets you stream data from IoT sensors and applications to Amazon OpenSearch Service which is a successor to Amazon Elasticsearch Service.
+* api-change:``ec2``: Adds support for T3 instances on Amazon EC2 Dedicated Hosts.
+
+
+1.20.40
+=======
+
+* api-change:``rds``: This release adds support for providing a custom timeout value for finding a scaling point during autoscaling in Aurora Serverless v1.
+* api-change:``sagemaker``: This release adds support for "Lifecycle Configurations" to SageMaker Studio
+* api-change:``transcribe``: This release adds an API option for startTranscriptionJob and startMedicalTranscriptionJob that allows the user to specify encryption context key value pairs for batch jobs.
+* api-change:``cloudformation``: Doc only update for CloudFormation that fixes several customer-reported issues.
+* api-change:``ecr``: This release updates terminology around KMS keys.
+* api-change:``quicksight``: Add new data source type for Amazon OpenSearch (successor to Amazon ElasticSearch).
+
+
 1.20.39
 =======
 

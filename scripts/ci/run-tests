@@ -3,58 +3,18 @@
 # We want to ensure we're importing from the installed
 # binary package not from the CWD.
 
-import argparse
 import os
 from subprocess import check_call
 
 _dname = os.path.dirname
 
 REPO_ROOT = _dname(_dname(_dname(os.path.abspath(__file__))))
-PACKAGE = "awscli"
-os.chdir(os.path.join(REPO_ROOT, "tests"))
+os.chdir(os.path.join(REPO_ROOT, 'tests'))
 
 
 def run(command):
     return check_call(command, shell=True)
 
 
-def process_args(args):
-    runner = args.test_runner
-    test_args = ''
-    if args.with_cov:
-        test_args += (
-            f"--with-xunit --cover-erase --with-coverage "
-            f"--cover-package {PACKAGE} --cover-xml -v "
-        )
-    dirs = " ".join(args.test_dirs)
-
-    return runner, test_args, dirs
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "test_dirs",
-        default=["unit/", "functional/"],
-        nargs="*",
-        help="One or more directories containing tests.",
-    )
-    parser.add_argument(
-        "-r",
-        "--test-runner",
-        default="nosetests",
-        help="Test runner to execute tests. Defaults to nose.",
-    )
-    parser.add_argument(
-        "-c",
-        "--with-cov",
-        default=False,
-        action="store_true",
-        help="Run default test-runner with code coverage enabled.",
-    )
-    raw_args = parser.parse_args()
-    test_runner, test_args, test_dirs = process_args(raw_args)
-
-    cmd = f"{test_runner} {test_args}{test_dirs}"
-    print(f"Running {cmd}...")
-    run(cmd)
+run('nosetests --with-coverage --cover-erase --cover-package awscli '
+    '--traverse-namespace --with-xunit --cover-xml unit/ functional/')

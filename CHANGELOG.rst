@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.20.42
+=======
+
+* api-change:``wafv2``: This release adds support for including rate based rules in a rule group.
+* api-change:``sagemaker``: This release adds support for "Project Search"
+* api-change:``ec2``: This release adds support for vt1 3xlarge, 6xlarge and 24xlarge instances powered by Xilinx Alveo U30 Media Accelerators for video transcoding workloads
+* api-change:``chime``: Adds support for SipHeaders parameter for CreateSipMediaApplicationCall.
+* api-change:``comprehend``: Amazon Comprehend now allows you to train and run PDF and Word documents for custom entity recognition. With PDF and Word formats, you can extract information from documents containing headers, lists and tables.
+
+
 1.20.41
 =======
 

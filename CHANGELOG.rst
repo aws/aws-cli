@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.20.43
+=======
+
+* api-change:``pinpoint``: This SDK release adds a new feature for Pinpoint campaigns, in-app messaging.
+* api-change:``sagemaker``: Add API for users to retry a failed pipeline execution or resume a stopped one.
+* api-change:``transcribe``: This release adds support for subtitling with Amazon Transcribe batch jobs.
+* api-change:``s3``: Add support for access point arn filtering in S3 CW Request Metrics
+* api-change:``robomaker``: Adding support to create container based Robot and Simulation applications by introducing an environment field
+* api-change:``macie2``: This release adds support for specifying which managed data identifiers are used by a classification job, and retrieving a list of managed data identifiers that are available.
+* api-change:``kafkaconnect``: This is the initial SDK release for Amazon Managed Streaming for Apache Kafka Connect (MSK Connect).
+
+
 1.20.42
 =======
 

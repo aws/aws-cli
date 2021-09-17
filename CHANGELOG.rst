@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.20.44
+=======
+
+* api-change:``dms``: Optional flag force-planned-failover added to reboot-replication-instance API call. This flag can be used to test a planned failover scenario used during some maintenance operations.
+* api-change:``es``: This release adds an optional parameter in the ListDomainNames API to filter domains based on the engine type (OpenSearch/Elasticsearch).
+* api-change:``opensearch``: This release adds an optional parameter in the ListDomainNames API to filter domains based on the engine type (OpenSearch/Elasticsearch).
+
+
 1.20.43
 =======
 

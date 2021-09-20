@@ -13,6 +13,7 @@
 
 import functools
 import json
+import re
 import os
 import sys
 import logging
@@ -326,14 +327,23 @@ class DeployCommand(BasicCommand):
         tags_dict = self.parse_key_value_arg(parsed_args.tags, self.TAGS_CMD)
         tags = [{"Key": key, "Value": value}
                 for key, value in tags_dict.items()]
-
-        template_dict = yaml_parse(template_str)
+        if template_path.startswith("https://"):
+            parsed_url = self.parse_s3_url(template_path)
+            s3 = self._session.create_client('s3',
+                region_name=parsed_globals.region,
+                endpoint_url=parsed_globals.endpoint_url,
+                verify=parsed_globals.verify_ssl)
+            obj = s3.get_object(Bucket=parsed_url[0], Key=parsed_url[2])
+            template_dict = yaml_parse(obj.get('Body').read())
+        else:
+            template_dict = yaml_parse(template_str)
 
         parameters = self.merge_parameters(template_dict, parameter_overrides)
 
-        template_size = os.path.getsize(parsed_args.template_file)
-        if template_size > 51200 and not parsed_args.s3_bucket:
-            raise exceptions.DeployBucketRequiredError()
+        if not template_path.startswith("https://"):
+            template_size = os.path.getsize(parsed_args.template_file)
+            if template_size > 51200 and not parsed_args.s3_bucket:
+                raise exceptions.DeployBucketRequiredError()
 
         bucket = parsed_args.s3_bucket
         if bucket:
@@ -483,3 +493,32 @@ class DeployCommand(BasicCommand):
             result[key_value_pair[0]] = key_value_pair[1]
 
         return result
+    
+    def parse_s3_url(self, url):
+        # returns bucket_name, region, key
+
+        bucket_name = None
+        region = None
+        key = None
+
+        # http://bucket.s3.amazonaws.com/key1/key2
+        match = re.search('^https?://([^.]+).s3.amazonaws.com(.*?)$', url)
+        if match:
+            bucket_name, key = match.group(1), match.group(2)
+
+        # http://bucket.s3-aws-region.amazonaws.com/key1/key2
+        match = re.search('^https?://([^.]+).s3-([^\.]+).amazonaws.com(.*?)$', url)
+        if match:
+            bucket_name, region, key = match.group(1), match.group(2), match.group(3)
+
+        # http://s3.amazonaws.com/bucket/key1/key2
+        match = re.search('^https?://s3.amazonaws.com/([^\/]+)(.*?)$', url)
+        if match:
+            bucket_name, key = match.group(1), match.group(2)
+
+        # http://s3-aws-region.amazonaws.com/bucket/key1/key2
+        match = re.search('^https?://s3-([^.]+).amazonaws.com/([^\/]+)(.*?)$', url)
+        if match:
+            bucket_name, region, key = match.group(2), match.group(1), match.group(3)
+
+        return list( map(lambda x: x.strip('/') if x else None, [bucket_name, region, key] ) )

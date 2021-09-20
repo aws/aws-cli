@@ -119,7 +119,7 @@ class Deployer(object):
         }
 
         if cfn_template.startswith('https://'):
-            kwargs['TemplateUrl'] = cfn_template
+            kwargs['TemplateURL'] = cfn_template
         else:
             kwargs['TemplateBody'] = cfn_template
 

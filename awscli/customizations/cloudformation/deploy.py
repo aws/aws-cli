@@ -122,7 +122,7 @@ class DeployCommand(BasicCommand):
             'name': 'template-file',
             'required': True,
             'help_text': (
-                'The path where your AWS CloudFormation'
+                'The local path or s3 url where your AWS CloudFormation'
                 ' template is located.'
             )
         },

@@ -111,13 +111,17 @@ class Deployer(object):
         kwargs = {
             'ChangeSetName': changeset_name,
             'StackName': stack_name,
-            'TemplateBody': cfn_template,
             'ChangeSetType': changeset_type,
             'Parameters': parameter_values,
             'Capabilities': capabilities,
             'Description': description,
             'Tags': tags,
         }
+
+        if cfn_template.startswith('https://'):
+            kwargs['TemplateUrl'] = cfn_template
+        else:
+            kwargs['TemplateBody'] = cfn_template
 
         # If an S3 uploader is available, use TemplateURL to deploy rather than
         # TemplateBody. This is required for large templates.

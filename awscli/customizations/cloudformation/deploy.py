@@ -308,13 +308,16 @@ class DeployCommand(BasicCommand):
                     verify=parsed_globals.verify_ssl)
 
         template_path = parsed_args.template_file
-        if not os.path.isfile(template_path):
-            raise exceptions.InvalidTemplatePathError(
-                    template_path=template_path)
+        if template_path.startswith("https://"):
+            template_str = template_path
+        else:
+            if not os.path.isfile(template_path):
+                raise exceptions.InvalidTemplatePathError(
+                        template_path=template_path)
 
-        # Parse parameters
-        with compat_open(template_path, "r") as handle:
-            template_str = handle.read()
+            # Parse parameters
+            with open(template_path, "r") as handle:
+                template_str = handle.read()
 
         stack_name = parsed_args.stack_name
         parameter_overrides = self.parse_parameter_overrides(

@@ -14,8 +14,7 @@
 from argparse import Namespace
 from awscli.customizations.codedeploy.register import Register
 from awscli.customizations.codedeploy.utils import MAX_TAGS_PER_INSTANCE
-from awscli.testutils import unittest
-from mock import MagicMock, patch, call, mock_open
+from awscli.testutils import mock, unittest
 
 
 class TestRegister(unittest.TestCase):
@@ -51,15 +50,15 @@ class TestRegister(unittest.TestCase):
         self.globals.endpoint_url = self.endpoint_url
         self.globals.verify_ssl = False
 
-        self.open_patcher = patch(
+        self.open_patcher = mock.patch(
             'awscli.customizations.codedeploy.register.open',
-            mock_open(), create=True
+            mock.mock_open(), create=True
         )
         self.open = self.open_patcher.start()
 
-        self.codedeploy = MagicMock()
+        self.codedeploy = mock.MagicMock()
 
-        self.iam = MagicMock()
+        self.iam = mock.MagicMock()
         self.iam.create_user.return_value = {
             'User': {'Arn': self.iam_user_arn}
         }
@@ -70,7 +69,7 @@ class TestRegister(unittest.TestCase):
             }
         }
 
-        self.session = MagicMock()
+        self.session = mock.MagicMock()
         self.session.create_client.side_effect = [self.codedeploy, self.iam]
         self.register = Register(self.session)
 
@@ -107,13 +106,13 @@ class TestRegister(unittest.TestCase):
     def test_register_creates_clients(self):
         self.register._run_main(self.args, self.globals)
         self.session.create_client.assert_has_calls([
-            call(
+            mock.call(
                 'codedeploy',
                 region_name=self.region,
                 endpoint_url=self.endpoint_url,
                 verify=self.globals.verify_ssl
             ),
-            call('iam', region_name=self.region)
+            mock.call('iam', region_name=self.region)
         ])
 
     def test_register_with_no_iam_user_arn(self):

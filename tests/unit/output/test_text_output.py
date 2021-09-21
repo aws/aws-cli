@@ -12,7 +12,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 import json
 import os
 import sys
@@ -21,7 +21,6 @@ import locale
 
 from awscli.compat import six
 from six.moves import cStringIO
-import mock
 
 from awscli.formatter import Formatter
 

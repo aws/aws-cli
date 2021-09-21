@@ -13,12 +13,11 @@
 # language governing permissions and limitations under the License.
 from botocore.compat import json
 import platform
-import mock
 from awscli.compat import six
 from awscli.formatter import JSONFormatter
 
 from awscli.testutils import BaseAWSCommandParamsTest, unittest
-from awscli.testutils import skip_if_windows
+from awscli.testutils import mock, skip_if_windows
 from awscli.compat import get_stdout_text_writer
 
 

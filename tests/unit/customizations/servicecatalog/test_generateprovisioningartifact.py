@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 
 from argparse import Namespace
-from mock import patch
 
 from awscli.customizations.servicecatalog import exceptions
 from awscli.customizations.servicecatalog.generateprovisioningartifact \
@@ -48,7 +47,7 @@ class TestCreateProvisioningArtifactCommand(unittest.TestCase):
         self.global_args.endpoint_url = None
         self.global_args.verify_ssl = None
 
-    @patch('os.path.getsize', return_value=1)
+    @mock.patch('os.path.getsize', return_value=1)
     def test_happy_path(self, getsize_patch):
         # Arrange
         self.servicecatalog_client.create_provisioning_artifact\
@@ -83,7 +82,7 @@ class TestCreateProvisioningArtifactCommand(unittest.TestCase):
                          captured.stdout.getvalue())
         self.assertEqual(0, result)
 
-    @patch('os.path.getsize', return_value=1)
+    @mock.patch('os.path.getsize', return_value=1)
     def test_happy_path_unicode(self, getsize_patch):
         # Arrange
         self.args.provisioning_artifact_name = u'\u05d1\u05e8\u05d9\u05e6'

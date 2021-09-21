@@ -12,8 +12,9 @@
 # language governing permissions and limitations under the License.
 
 from argparse import Namespace
+from mock import MagicMock, call
 from awscli.customizations.codedeploy.deregister import Deregister
-from awscli.testutils import mock, unittest
+from awscli.testutils import unittest
 
 
 class TestDeregister(unittest.TestCase):
@@ -37,7 +38,7 @@ class TestDeregister(unittest.TestCase):
         self.globals.endpoint_url = self.endpoint_url
         self.globals.verify_ssl = False
 
-        self.codedeploy = mock.MagicMock()
+        self.codedeploy = MagicMock()
         self.codedeploy.get_on_premises_instance.return_value = {
             'instanceInfo': {
                 'iamUserArn': self.iam_user_arn,
@@ -45,12 +46,12 @@ class TestDeregister(unittest.TestCase):
             }
         }
 
-        self.iam = mock.MagicMock()
-        self.list_user_policies = mock.MagicMock()
+        self.iam = MagicMock()
+        self.list_user_policies = MagicMock()
         self.list_user_policies.paginate.return_value = [
             {'PolicyNames': [self.policy_name]}
         ]
-        self.list_access_keys = mock.MagicMock()
+        self.list_access_keys = MagicMock()
         self.list_access_keys.paginate.return_value = [
             {'AccessKeyMetadata': [{'AccessKeyId': self.access_key_id}]}
         ]
@@ -58,7 +59,7 @@ class TestDeregister(unittest.TestCase):
             self.list_user_policies, self.list_access_keys
         ]
 
-        self.session = mock.MagicMock()
+        self.session = MagicMock()
         self.session.create_client.side_effect = [self.codedeploy, self.iam]
         self.deregister = Deregister(self.session)
 
@@ -77,13 +78,13 @@ class TestDeregister(unittest.TestCase):
     def test_deregister_creates_clients(self):
         self.deregister._run_main(self.args, self.globals)
         self.session.create_client.assert_has_calls([
-            mock.call(
+            call(
                 'codedeploy',
                 region_name=self.region,
                 endpoint_url=self.endpoint_url,
                 verify=self.globals.verify_ssl
             ),
-            mock.call('iam', region_name=self.region)
+            call('iam', region_name=self.region)
         ])
 
     def test_deregister_with_tags(self):
@@ -149,8 +150,8 @@ class TestDeregister(unittest.TestCase):
                 instanceName=self.instance_name
             )
         self.iam.get_paginator.assert_has_calls([
-            mock.call('list_user_policies'),
-            mock.call('list_access_keys')
+            call('list_user_policies'),
+            call('list_access_keys')
         ])
         self.list_user_policies.paginate.assert_called_with(
             UserName=self.instance_name

@@ -12,14 +12,15 @@
 # language governing permissions and limitations under the License.
 from botocore.exceptions import ProfileNotFound
 from botocore.session import Session
+from mock import Mock, call
 
 from awscli.customizations import scalarparse
-from awscli.testutils import mock, unittest
+from awscli.testutils import unittest
 
 
 class TestScalarParse(unittest.TestCase):
     def test_register_scalar_parser(self):
-        event_handers = mock.Mock()
+        event_handers = Mock()
         scalarparse.register_scalar_parser(event_handers)
         event_handers.register_first.assert_called_with(
             'session-initialized', scalarparse.add_scalar_parsers)
@@ -29,19 +30,19 @@ class TestScalarParse(unittest.TestCase):
         self.assertEqual(scalarparse.identity(10), 10)
 
     def test_scalar_parsers_set(self):
-        session = mock.Mock()
+        session = Mock()
         session.get_scoped_config.return_value = {'cli_timestamp_format':
                                                   'none'}
         scalarparse.add_scalar_parsers(session)
         session.get_component.assert_called_with('response_parser_factory')
         factory = session.get_component.return_value
-        expected = [mock.call(blob_parser=scalarparse.identity),
-                    mock.call(timestamp_parser=scalarparse.identity)]
+        expected = [call(blob_parser=scalarparse.identity),
+                    call(timestamp_parser=scalarparse.identity)]
         self.assertEqual(factory.set_parser_defaults.mock_calls,
                          expected)
 
     def test_choose_none_timestamp_formatter(self):
-        session = mock.Mock(spec=Session)
+        session = Mock(spec=Session)
         session.get_scoped_config.return_value = {'cli_timestamp_format':
                                                   'none'}
         factory = session.get_component.return_value
@@ -50,7 +51,7 @@ class TestScalarParse(unittest.TestCase):
             timestamp_parser=scalarparse.identity)
 
     def test_choose_iso_timestamp_formatter(self):
-        session = mock.Mock(spec=Session)
+        session = Mock(spec=Session)
         session.get_scoped_config.return_value = {'cli_timestamp_format':
                                                   'iso8601'}
         factory = session.get_component.return_value
@@ -59,7 +60,7 @@ class TestScalarParse(unittest.TestCase):
             timestamp_parser=scalarparse.iso_format)
 
     def test_choose_invalid_timestamp_formatter(self):
-        session = mock.Mock(spec=Session)
+        session = Mock(spec=Session)
         session.get_scoped_config.return_value = {'cli_timestamp_format':
                                                   'foobar'}
         session.get_component.return_value
@@ -67,7 +68,7 @@ class TestScalarParse(unittest.TestCase):
             scalarparse.add_scalar_parsers(session)
 
     def test_choose_timestamp_parser_profile_not_found(self):
-        session = mock.Mock(spec=Session)
+        session = Mock(spec=Session)
         session.get_scoped_config.side_effect = ProfileNotFound(profile='foo')
         factory = session.get_component.return_value
         scalarparse.add_scalar_parsers(session)

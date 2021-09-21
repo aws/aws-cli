@@ -14,8 +14,10 @@ from botocore.session import get_session
 from botocore.handlers import disable_signing
 import os
 
-from awscli.testutils import mock, unittest
+from awscli.testutils import unittest
 from awscli.compat import six
+import mock
+
 from awscli.customizations import globalargs
 
 

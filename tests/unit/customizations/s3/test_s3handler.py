@@ -12,9 +12,9 @@
 # language governing permissions and limitations under the License.
 import os
 
+import mock
 from s3transfer.manager import TransferManager
 
-from awscli.testutils import mock
 from awscli.testutils import unittest
 from awscli.testutils import FileCreator
 from awscli.compat import queue

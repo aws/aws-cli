@@ -13,9 +13,10 @@
 # language governing permissions and limitations under the License.
 
 import copy
+import mock
 import unittest
 
-from awscli.testutils import mock, BaseAWSHelpOutputTest, BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSHelpOutputTest, BaseAWSCommandParamsTest
 
 from awscli.customizations.datapipeline import convert_described_objects
 from awscli.customizations.datapipeline import ListRunsCommand

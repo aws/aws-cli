@@ -10,13 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+
 import os
 import shutil
 import tempfile
+import mock
 
 from botocore.compat import OrderedDict
 
-from awscli.testutils import mock, unittest
+from awscli.testutils import unittest
 from tests.functional.eks.test_util import get_testdata
 from awscli.customizations.eks.kubeconfig import (_get_new_kubeconfig_content,
                                                   KubeconfigWriter,

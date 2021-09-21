@@ -13,11 +13,12 @@
 
 import glob
 import os
+import mock
 import tempfile
 import shutil
 from botocore.compat import OrderedDict
 
-from awscli.testutils import mock, unittest, skip_if_windows
+from awscli.testutils import unittest, skip_if_windows
 from awscli.customizations.utils import uni_print
 from awscli.customizations.eks.kubeconfig import (KubeconfigError,
                                                   KubeconfigInaccessableError,

@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 import platform
-from awscli.testutils import mock, unittest, FileCreator, BaseAWSCommandParamsTest
+from awscli.testutils import unittest, FileCreator, BaseAWSCommandParamsTest
 from awscli.testutils import skip_if_windows
 import stat
 import tempfile
@@ -21,6 +21,7 @@ import socket
 
 from botocore.exceptions import ClientError
 from awscli.compat import six
+import mock
 
 from awscli.customizations.s3.filegenerator import FileGenerator, \
     FileDecodingError, FileStat, is_special_file, is_readable

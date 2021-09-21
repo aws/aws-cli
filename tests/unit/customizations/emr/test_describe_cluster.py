@@ -13,9 +13,9 @@
 
 import json
 
-from awscli.testutils import mock
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
+from mock import patch
 
 describe_cluster_result_mock_ig = {
     "Cluster": {
@@ -371,7 +371,7 @@ EXPECTED_RESULT_IF = {
 class TestDescribeCluster(BaseAWSCommandParamsTest):
     prefix = 'emr describe-cluster'
 
-    @mock.patch('awscli.customizations.emr.emr.DescribeCluster._construct_result')
+    @patch('awscli.customizations.emr.emr.DescribeCluster._construct_result')
     def test_operations_called(self, construct_result_patch):
         construct_result_patch.return_value = dict()
 
@@ -395,7 +395,7 @@ class TestDescribeCluster(BaseAWSCommandParamsTest):
         self.assertEqual(self.operations_called[2][1]['ClusterId'],
                          'j-ABCD')
 
-    @mock.patch('awscli.customizations.emr.emr.DescribeCluster._call')
+    @patch('awscli.customizations.emr.emr.DescribeCluster._call')
     def test_constructed_result_ig(self, call_patch):
         call_patch.side_effect = side_effect_of_call_ig
 
@@ -405,7 +405,7 @@ class TestDescribeCluster(BaseAWSCommandParamsTest):
         result_json = json.loads(result[0])
         self.assertEqual(result_json, EXPECTED_RESULT_IG)
 
-    @mock.patch('awscli.customizations.emr.emr.DescribeCluster._call')
+    @patch('awscli.customizations.emr.emr.DescribeCluster._call')
     def test_constructed_result_if(self, call_patch):
         call_patch.side_effect = side_effect_of_call_if
 

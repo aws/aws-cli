@@ -14,21 +14,22 @@
 import subprocess
 
 from argparse import Namespace
+from mock import MagicMock, patch, call, mock_open
 from awscli.customizations.codedeploy.systems import Windows, Ubuntu, RHEL
-from awscli.testutils import mock, unittest
+from awscli.testutils import unittest
 
 
 class TestWindows(unittest.TestCase):
     def setUp(self):
-        self.popen_patcher = mock.patch('subprocess.Popen')
+        self.popen_patcher = patch('subprocess.Popen')
         self.popen = self.popen_patcher.start()
 
-        self.check_call_patcher = mock.patch('subprocess.check_call')
+        self.check_call_patcher = patch('subprocess.check_call')
         self.check_call = self.check_call_patcher.start()
 
-        self.open_patcher = mock.patch(
+        self.open_patcher = patch(
             'awscli.customizations.codedeploy.systems.open',
-            mock.mock_open(), create=True
+            mock_open(), create=True
         )
         self.open = self.open_patcher.start()
 
@@ -41,12 +42,12 @@ class TestWindows(unittest.TestCase):
         self.region = 'us-east-1'
 
         self.body = 'install-script'
-        self.reader = mock.MagicMock()
+        self.reader = MagicMock()
         self.reader.read.return_value = self.body
-        self.s3 = mock.MagicMock()
+        self.s3 = MagicMock()
         self.s3.get_object.return_value = {'Body': self.reader}
 
-        self.session = mock.MagicMock()
+        self.session = MagicMock()
         self.session.create_client.return_value = self.s3
 
         self.params = Namespace()
@@ -75,13 +76,13 @@ class TestWindows(unittest.TestCase):
         self.assertEqual(self.installer, self.windows.INSTALLER)
 
     def test_install(self):
-        process = mock.MagicMock()
+        process = MagicMock()
         process.communicate.side_effect = [('', ''), ('Running', '')]
         process.returncode = 0
         self.popen.return_value = process
         self.windows.install(self.params)
         self.popen.assert_has_calls([
-            mock.call(
+            call(
                 [
                     'powershell.exe',
                     '-Command', 'Stop-Service',
@@ -90,8 +91,8 @@ class TestWindows(unittest.TestCase):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
             ),
-            mock.call().communicate(),
-            mock.call(
+            call().communicate(),
+            call(
                 [
                     'powershell.exe',
                     '-Command', 'Get-Service',
@@ -100,10 +101,10 @@ class TestWindows(unittest.TestCase):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
             ),
-            mock.call().communicate()
+            call().communicate()
         ])
         self.check_call.assert_has_calls([
-            mock.call(
+            call(
                 [
                     r'.\{0}'.format(self.installer),
                     '/quiet',
@@ -111,7 +112,7 @@ class TestWindows(unittest.TestCase):
                 ],
                 shell=True
             ),
-            mock.call([
+            call([
                 'powershell.exe',
                 '-Command', 'Restart-Service',
                 '-Name', 'codedeployagent'
@@ -121,13 +122,13 @@ class TestWindows(unittest.TestCase):
         self.open().write.assert_called_with(self.body)
 
     def test_uninstall(self):
-        process = mock.MagicMock()
+        process = MagicMock()
         process.communicate.side_effect = [('', ''), ('', '')]
         process.returncode = 0
         self.popen.return_value = process
         self.windows.uninstall(self.params)
         self.popen.assert_has_calls([
-            mock.call(
+            call(
                 [
                     'powershell.exe',
                     '-Command', 'Stop-Service',
@@ -136,8 +137,8 @@ class TestWindows(unittest.TestCase):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
             ),
-            mock.call().communicate(),
-            mock.call(
+            call().communicate(),
+            call(
                 [
                     'wmic',
                     'product', 'where', 'name="CodeDeploy Host Agent"',
@@ -146,25 +147,25 @@ class TestWindows(unittest.TestCase):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
             ),
-            mock.call().communicate()
+            call().communicate()
         ])
 
 
 class TestLinux(unittest.TestCase):
     def setUp(self):
-        self.popen_patcher = mock.patch('subprocess.Popen')
+        self.popen_patcher = patch('subprocess.Popen')
         self.popen = self.popen_patcher.start()
 
-        self.check_call_patcher = mock.patch('subprocess.check_call')
+        self.check_call_patcher = patch('subprocess.check_call')
         self.check_call = self.check_call_patcher.start()
 
-        self.open_patcher = mock.patch(
+        self.open_patcher = patch(
             'awscli.customizations.codedeploy.systems.open',
-            mock.mock_open(), create=True
+            mock_open(), create=True
         )
         self.open = self.open_patcher.start()
 
-        self.environ_patcher = mock.patch('os.environ')
+        self.environ_patcher = patch('os.environ')
         self.environ = self.environ_patcher.start()
         self.environ.copy.return_value = dict()
 
@@ -179,7 +180,7 @@ class TestLinux(unittest.TestCase):
         self.access_key_id = 'ACCESSKEYID'
         self.secret_access_key = 'SECRETACCESSKEY'
         self.session_token = 'SESSION_TOKEN'
-        self.credentials = mock.MagicMock()
+        self.credentials = MagicMock()
         self.credentials.access_key = self.access_key_id
         self.credentials.secret_key = self.secret_access_key
         self.credentials.token = self.session_token
@@ -192,12 +193,12 @@ class TestLinux(unittest.TestCase):
         })
 
         self.body = 'install-script'
-        self.reader = mock.MagicMock()
+        self.reader = MagicMock()
         self.reader.read.return_value = self.body
-        self.s3 = mock.MagicMock()
+        self.s3 = MagicMock()
         self.s3.get_object.return_value = {'Body': self.reader}
 
-        self.session = mock.MagicMock()
+        self.session = MagicMock()
         self.session.create_client.return_value = self.s3
         self.session.get_credentials.return_value = self.credentials
 
@@ -231,7 +232,7 @@ class TestUbuntu(TestLinux):
     def test_installer(self):
         self.assertEqual(self.installer, self.ubuntu.INSTALLER)
 
-    @mock.patch('os.geteuid', create=True)
+    @patch('os.geteuid', create=True)
     def test_validate_administrator_throws(self, geteuid):
         geteuid.return_value = 1
         with self.assertRaisesRegex(
@@ -239,24 +240,24 @@ class TestUbuntu(TestLinux):
             self.ubuntu.validate_administrator()
 
     def test_install(self):
-        process = mock.MagicMock()
+        process = MagicMock()
         process.communicate.return_value = ('', '')
         process.returncode = 0
         self.popen.return_value = process
         self.ubuntu.install(self.params)
         self.popen.assert_has_calls([
-            mock.call(
+            call(
                 ['service', 'codedeploy-agent', 'stop'],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
             ),
-            mock.call().communicate()
+            call().communicate()
         ])
         self.check_call.assert_has_calls([
-            mock.call(['apt-get', '-y', 'update']),
-            mock.call(['apt-get', '-y', 'install', 'ruby2.0']),
-            mock.call(['chmod', '+x', './{0}'.format(self.installer)]),
-            mock.call(
+            call(['apt-get', '-y', 'update']),
+            call(['apt-get', '-y', 'install', 'ruby2.0']),
+            call(['chmod', '+x', './{0}'.format(self.installer)]),
+            call(
                 ['./{0}'.format(self.installer), 'auto'],
                 env=self.environment
             )
@@ -265,21 +266,21 @@ class TestUbuntu(TestLinux):
         self.open().write.assert_called_with(self.body)
 
     def test_uninstall(self):
-        process = mock.MagicMock()
+        process = MagicMock()
         process.communicate.return_value = ('', '')
         process.returncode = 0
         self.popen.return_value = process
         self.ubuntu.uninstall(self.params)
         self.popen.assert_has_calls([
-            mock.call(
+            call(
                 ['service', 'codedeploy-agent', 'stop'],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
             ),
-            mock.call().communicate()
+            call().communicate()
         ])
         self.check_call.assert_has_calls([
-            mock.call(['dpkg', '-r', 'codedeploy-agent'])
+            call(['dpkg', '-r', 'codedeploy-agent'])
         ])
 
 class TestRHEL(TestLinux):
@@ -299,7 +300,7 @@ class TestRHEL(TestLinux):
     def test_installer(self):
         self.assertEqual(self.installer, self.rhel.INSTALLER)
 
-    @mock.patch('os.geteuid', create=True)
+    @patch('os.geteuid', create=True)
     def test_validate_administrator_throws(self, geteuid):
         geteuid.return_value = 1
         with self.assertRaisesRegex(
@@ -307,23 +308,23 @@ class TestRHEL(TestLinux):
             self.rhel.validate_administrator()
 
     def test_install(self):
-        process = mock.MagicMock()
+        process = MagicMock()
         process.communicate.return_value = ('', '')
         process.returncode = 0
         self.popen.return_value = process
         self.rhel.install(self.params)
         self.popen.assert_has_calls([
-            mock.call(
+            call(
                 ['service', 'codedeploy-agent', 'stop'],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
             ),
-            mock.call().communicate()
+            call().communicate()
         ])
         self.check_call.assert_has_calls([
-            mock.call(['yum', '-y', 'install', 'ruby']),
-            mock.call(['chmod', '+x', './{0}'.format(self.installer)]),
-            mock.call(
+            call(['yum', '-y', 'install', 'ruby']),
+            call(['chmod', '+x', './{0}'.format(self.installer)]),
+            call(
                 ['./{0}'.format(self.installer), 'auto'],
                 env=self.environment
             )
@@ -332,21 +333,21 @@ class TestRHEL(TestLinux):
         self.open().write.assert_called_with(self.body)
 
     def test_uninstall(self):
-        process = mock.MagicMock()
+        process = MagicMock()
         process.communicate.return_value = ('', '')
         process.returncode = 0
         self.popen.return_value = process
         self.rhel.uninstall(self.params)
         self.popen.assert_has_calls([
-            mock.call(
+            call(
                 ['service', 'codedeploy-agent', 'stop'],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
             ),
-            mock.call().communicate()
+            call().communicate()
         ])
         self.check_call.assert_has_calls([
-            mock.call(['yum', '-y', 'erase', 'codedeploy-agent'])
+            call(['yum', '-y', 'erase', 'codedeploy-agent'])
         ])
 
 if __name__ == "__main__":

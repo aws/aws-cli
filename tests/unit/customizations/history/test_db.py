@@ -17,6 +17,8 @@ import threading
 import datetime
 import numbers
 
+import mock
+
 from awscli.compat import queue
 from awscli.customizations.history.db import DatabaseConnection
 from awscli.customizations.history.db import DatabaseHistoryHandler
@@ -24,7 +26,7 @@ from awscli.customizations.history.db import DatabaseRecordWriter
 from awscli.customizations.history.db import DatabaseRecordReader
 from awscli.customizations.history.db import PayloadSerializer
 from awscli.customizations.history.db import RecordBuilder
-from awscli.testutils import mock, unittest, FileCreator
+from awscli.testutils import unittest, FileCreator
 from tests import CaseInsensitiveDict
 
 

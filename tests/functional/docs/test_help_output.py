@@ -23,10 +23,10 @@ at the man output, we look one step before at the generated rst output
 """
 from awscli.testutils import BaseAWSHelpOutputTest
 from awscli.testutils import FileCreator
-from awscli.testutils import mock
 
 from awscli.compat import six
 from awscli.alias import AliasLoader
+import mock
 
 
 class TestHelpOutput(BaseAWSHelpOutputTest):

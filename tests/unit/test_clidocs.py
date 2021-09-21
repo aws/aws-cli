@@ -12,10 +12,11 @@
 # language governing permissions and limitations under the License.
 import json
 
+import mock
 from botocore.model import ShapeResolver, StructureShape, StringShape, \
     ListShape, MapShape
 
-from awscli.testutils import mock, unittest, FileCreator
+from awscli.testutils import unittest, FileCreator
 from awscli.clidocs import OperationDocumentEventHandler, \
     CLIDocumentEventHandler, TopicListerDocumentEventHandler, \
     TopicDocumentEventHandler

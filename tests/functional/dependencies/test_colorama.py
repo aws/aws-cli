@@ -2,6 +2,8 @@ import os
 import sys
 from contextlib import contextmanager
 
+from mock import Mock, patch
+
 from awscli.testutils import unittest, skip_if_windows
 from awscli.testutils import capture_output
 from awscli.compat import StringIO

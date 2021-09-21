@@ -10,13 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import mock
+
 from botocore.compat import json
 from botocore.awsrequest import AWSResponse
 from botocore.exceptions import ClientError
 
 import awscli.customizations.emr.emrutils as emrutils
 import awscli.customizations.emr.createdefaultroles as createdefaultroles
-from awscli.testutils import mock, unittest
+from awscli.testutils import unittest
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
 

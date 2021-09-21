@@ -15,13 +15,14 @@ import sys
 
 from socket import timeout
 from argparse import Namespace
+from mock import MagicMock, patch
 from awscli.customizations.codedeploy.systems import Ubuntu, Windows, RHEL, System
 from awscli.customizations.codedeploy.utils import \
     validate_region, validate_instance_name, validate_tags, \
     validate_iam_user_arn, validate_instance, validate_s3_location, \
     MAX_INSTANCE_NAME_LENGTH, MAX_TAGS_PER_INSTANCE, MAX_TAG_KEY_LENGTH, \
     MAX_TAG_VALUE_LENGTH
-from awscli.testutils import mock, unittest
+from awscli.testutils import unittest
 
 
 class TestUtils(unittest.TestCase):
@@ -32,22 +33,22 @@ class TestUtils(unittest.TestCase):
         self.bucket = 'bucket'
         self.key = 'key'
 
-        self.system_patcher = mock.patch('platform.system')
+        self.system_patcher = patch('platform.system')
         self.system = self.system_patcher.start()
         self.system.return_value = 'Linux'
 
-        self.linux_distribution_patcher = mock.patch('awscli.compat.linux_distribution')
+        self.linux_distribution_patcher = patch('awscli.compat.linux_distribution')
         self.linux_distribution = self.linux_distribution_patcher.start()
         self.linux_distribution.return_value = ('Ubuntu', '', '')
 
-        self.urlopen_patcher = mock.patch(
+        self.urlopen_patcher = patch(
             'awscli.customizations.codedeploy.utils.urlopen'
         )
         self.urlopen = self.urlopen_patcher.start()
         self.urlopen.side_effect = timeout('Not EC2 instance')
 
-        self.globals = mock.MagicMock()
-        self.session = mock.MagicMock()
+        self.globals = MagicMock()
+        self.session = MagicMock()
         self.params = Namespace()
         self.params.session = self.session
 

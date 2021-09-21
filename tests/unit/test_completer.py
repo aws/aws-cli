@@ -13,6 +13,8 @@
 import pprint
 import difflib
 
+import mock
+
 from botocore.compat import OrderedDict
 from botocore.model import OperationModel
 from awscli.clidriver import (
@@ -20,7 +22,7 @@ from awscli.clidriver import (
 from awscli.arguments import BaseCLIArgument, CustomArgument
 from awscli.help import ProviderHelpCommand
 from awscli.completer import Completer
-from awscli.testutils import mock, unittest
+from awscli.testutils import unittest
 from awscli.customizations.commands import BasicCommand
 
 

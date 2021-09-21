@@ -10,12 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import mock
 import tempfile
+from mock import patch, Mock, MagicMock
 
 from botocore.compat import json
 from botocore.compat import OrderedDict
 
-from awscli.testutils import mock, unittest
+from awscli.testutils import unittest
 from awscli.customizations.cloudformation.deployer import Deployer
 from awscli.customizations.cloudformation.yamlhelper import yaml_parse, yaml_dump
 

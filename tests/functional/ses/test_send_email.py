@@ -15,6 +15,7 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 from awscli.compat import six
 from six.moves import cStringIO
+import mock
 
 
 class TestSendEmail(BaseAWSCommandParamsTest):

@@ -5,24 +5,13 @@
 
 import argparse
 import os
-from contextlib import contextmanager
 from subprocess import check_call
 
 _dname = os.path.dirname
 
 REPO_ROOT = _dname(_dname(_dname(os.path.abspath(__file__))))
 PACKAGE = "awscli"
-
-
-@contextmanager
-def cd(path):
-    """Change directory while inside context manager."""
-    cwd = os.getcwd()
-    try:
-        os.chdir(path)
-        yield
-    finally:
-        os.chdir(cwd)
+os.chdir(os.path.join(REPO_ROOT, "tests"))
 
 
 def run(command):
@@ -31,7 +20,7 @@ def run(command):
 
 def process_args(args):
     runner = args.test_runner
-    test_args = ""
+    test_args = ''
     if args.with_cov:
         test_args += (
             f"--with-xunit --cover-erase --with-coverage "
@@ -68,5 +57,4 @@ if __name__ == "__main__":
 
     cmd = f"{test_runner} {test_args}{test_dirs}"
     print(f"Running {cmd}...")
-    with cd(os.path.join(REPO_ROOT, "tests")):
-        run(cmd)
+    run(cmd)

@@ -14,11 +14,12 @@
 import base64
 import datetime
 
+import mock
 from six.moves import cStringIO
 
 import awscli.customizations.ec2.bundleinstance
 from awscli.compat import six
-from awscli.testutils import mock, BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestBundleInstance(BaseAWSCommandParamsTest):

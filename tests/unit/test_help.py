@@ -10,12 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import mock, unittest, skip_if_windows, FileCreator
+from awscli.testutils import unittest, skip_if_windows, FileCreator
 import signal
 import platform
 import json
 import sys
 import os
+
+import mock
 
 from awscli.compat import six
 from awscli.help import PosixHelpRenderer, ExecutableNotFoundError

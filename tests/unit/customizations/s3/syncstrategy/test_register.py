@@ -10,16 +10,18 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from mock import Mock
+
 from awscli.customizations.s3.syncstrategy.register import \
     register_sync_strategy
-from awscli.testutils import mock, unittest
+from awscli.testutils import unittest
 
 
 class TestRegisterSyncStrategy(unittest.TestCase):
     def setUp(self):
-        self.session = mock.Mock()
-        self.strategy_cls = mock.Mock()
-        self.strategy_object = mock.Mock()
+        self.session = Mock()
+        self.strategy_cls = Mock()
+        self.strategy_object = Mock()
         self.strategy_cls.return_value = self.strategy_object
 
     def test_register_sync_strategy(self):

@@ -10,10 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import mock, unittest
+from awscli.testutils import unittest
 from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.help import PagingHelpRenderer
 from awscli.customizations.cloudsearchdomain import validate_endpoint_url
+
+import mock
 
 
 class TestSearchCommand(BaseAWSCommandParamsTest):

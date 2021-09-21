@@ -14,7 +14,9 @@ import os
 import tempfile
 import random
 
-from awscli.testutils import mock, unittest, aws
+import mock
+
+from awscli.testutils import unittest, aws
 from awscli.customizations.configure.configure import ConfigureCommand
 
 

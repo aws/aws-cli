@@ -14,12 +14,13 @@
 import awscli
 
 from argparse import Namespace
+from mock import MagicMock, patch, call
 from six import StringIO
 from botocore.session import Session
 from botocore.credentials import Credentials
 from awscli.customizations.codecommit import CodeCommitGetCommand
 from awscli.customizations.codecommit import CodeCommitCommand
-from awscli.testutils import mock, unittest, StringIOWithFileNo
+from awscli.testutils import unittest, StringIOWithFileNo
 
 from botocore.auth import SigV4Auth
 from botocore.awsrequest import AWSRequest
@@ -76,12 +77,12 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.globals = Namespace()
         self.globals.region = 'us-east-1'
         self.globals.verify_ssl = False
-        self.session = mock.MagicMock()
+        self.session = MagicMock()
         self.session.get_config_variable.return_value = 'us-east-1'
         self.session.get_credentials.return_value = self.credentials
 
-    @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
-    @mock.patch('sys.stdin', StringIO(PROTOCOL_HOST_PATH))
+    @patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
+    @patch('sys.stdin', StringIO(PROTOCOL_HOST_PATH))
     def test_generate_credentials(self, stdout_mock):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
@@ -89,8 +90,8 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.assertRegexpMatches(
             output, 'username={0}\npassword=.+'.format('access'))
 
-    @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
-    @mock.patch('sys.stdin', StringIO(PROTOCOL_HOST_PATH_TRAILING_NEWLINE))
+    @patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
+    @patch('sys.stdin', StringIO(PROTOCOL_HOST_PATH_TRAILING_NEWLINE))
     def test_generate_credentials_trailing_newline(self, stdout_mock):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
@@ -98,8 +99,8 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.assertRegexpMatches(
             output, 'username={0}\npassword=.+'.format('access'))
 
-    @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
-    @mock.patch('sys.stdin', StringIO(PROTOCOL_HOST_PATH_BLANK_LINE))
+    @patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
+    @patch('sys.stdin', StringIO(PROTOCOL_HOST_PATH_BLANK_LINE))
     def test_generate_credentials_blank_line(self, stdout_mock):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
@@ -107,8 +108,8 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.assertRegexpMatches(
             output, 'username={0}\npassword=.+'.format('access'))
 
-    @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
-    @mock.patch('sys.stdin', StringIO(FIPS_PROTOCOL_HOST_PATH))
+    @patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
+    @patch('sys.stdin', StringIO(FIPS_PROTOCOL_HOST_PATH))
     def test_generate_credentials_fips_reads_region_from_url(self, stdout_mock):
         self.globals.region = None
         self.session.get_config_variable.return_value = None
@@ -118,8 +119,8 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.assertRegexpMatches(
             output, 'username={0}\npassword=.+'.format('access'))
 
-    @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
-    @mock.patch('sys.stdin', StringIO(VPC_1_PROTOCOL_HOST_PATH))
+    @patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
+    @patch('sys.stdin', StringIO(VPC_1_PROTOCOL_HOST_PATH))
     def test_generate_credentials_vpc_reads_region_from_url(self, stdout_mock):
         self.globals.region = None
         self.session.get_config_variable.return_value = None
@@ -129,8 +130,8 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.assertRegexpMatches(
             output, 'username={0}\npassword=.+'.format('access'))
 
-    @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
-    @mock.patch('sys.stdin', StringIO(VPC_2_PROTOCOL_HOST_PATH))
+    @patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
+    @patch('sys.stdin', StringIO(VPC_2_PROTOCOL_HOST_PATH))
     def test_generate_credentials_vpc_2_reads_region_from_url(self, stdout_mock):
         self.globals.region = None
         self.session.get_config_variable.return_value = None
@@ -140,8 +141,8 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.assertRegexpMatches(
             output, 'username={0}\npassword=.+'.format('access'))
 
-    @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
-    @mock.patch('sys.stdin', StringIO(FIPS_VPC_1_PROTOCOL_HOST_PATH))
+    @patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
+    @patch('sys.stdin', StringIO(FIPS_VPC_1_PROTOCOL_HOST_PATH))
     def test_generate_credentials_fips_vpc_1_reads_region_from_url(self, stdout_mock):
         self.globals.region = None
         self.session.get_config_variable.return_value = None
@@ -151,8 +152,8 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.assertRegexpMatches(
             output, 'username={0}\npassword=.+'.format('access'))
 
-    @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
-    @mock.patch('sys.stdin', StringIO(FIPS_VPC_2_PROTOCOL_HOST_PATH))
+    @patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
+    @patch('sys.stdin', StringIO(FIPS_VPC_2_PROTOCOL_HOST_PATH))
     def test_generate_credentials_fips_vpc_2_reads_region_from_url(self, stdout_mock):
         self.globals.region = None
         self.session.get_config_variable.return_value = None
@@ -162,8 +163,8 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.assertRegexpMatches(
             output, 'username={0}\npassword=.+'.format('access'))
 
-    @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
-    @mock.patch('sys.stdin', StringIO(NO_REGION_PROTOCOL_HOST_PATH))
+    @patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
+    @patch('sys.stdin', StringIO(NO_REGION_PROTOCOL_HOST_PATH))
     def test_generate_credentials_reads_region_from_session(self, stdout_mock):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
@@ -171,8 +172,8 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.assertRegexpMatches(
             output, 'username={0}\npassword=.+'.format('access'))
 
-    @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
-    @mock.patch('sys.stdin', StringIO(NON_AWS_PROTOCOL_HOST_PATH))
+    @patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
+    @patch('sys.stdin', StringIO(NON_AWS_PROTOCOL_HOST_PATH))
     def test_does_nothing_for_non_amazon_domain(self, stdout_mock):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
@@ -184,8 +185,8 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.get_command._run_main(self.args, self.globals)
 
-    @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
-    @mock.patch('sys.stdin', StringIO(PROTOCOL_HOST_PATH))
+    @patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
+    @patch('sys.stdin', StringIO(PROTOCOL_HOST_PATH))
     def test_generate_session_credentials(self, stdout_mock):
         self.credentials = Credentials('access', 'secret', 'token')
         self.session.get_credentials.return_value = self.credentials
@@ -196,10 +197,10 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
             output,
             'username={0}%{1}\npassword=.+'.format('access', 'token'))
 
-    @mock.patch('sys.stdout', MOCK_STDOUT_CLASS())
-    @mock.patch('sys.stdin', StringIO(PROTOCOL_HOST_PATH))
-    @mock.patch('botocore.auth.SigV4Auth.string_to_sign')
-    @mock.patch('botocore.auth.SigV4Auth.signature')
+    @patch('sys.stdout', MOCK_STDOUT_CLASS())
+    @patch('sys.stdin', StringIO(PROTOCOL_HOST_PATH))
+    @patch('botocore.auth.SigV4Auth.string_to_sign')
+    @patch('botocore.auth.SigV4Auth.signature')
     def test_generate_credentials_creates_a_valid_request(self, signature,
                                                           string_to_sign):
         self.credentials = Credentials('access', 'secret')

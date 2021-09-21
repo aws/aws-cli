@@ -14,9 +14,10 @@ import os
 import json
 import logging
 
+import mock
 from nose.tools import assert_equal
 
-from awscli.testutils import mock, unittest, aws, capture_output
+from awscli.testutils import unittest, aws, capture_output
 from awscli.clidriver import create_clidriver
 from awscli.customizations.preview import PREVIEW_SERVICES
 

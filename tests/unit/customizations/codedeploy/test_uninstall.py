@@ -16,7 +16,8 @@ import sys
 from argparse import Namespace
 from awscli.customizations.codedeploy.systems import Ubuntu, Windows, RHEL, System
 from awscli.customizations.codedeploy.uninstall import Uninstall
-from awscli.testutils import mock, unittest
+from awscli.testutils import unittest
+from mock import MagicMock, patch
 from socket import timeout
 
 
@@ -24,31 +25,31 @@ class TestUninstall(unittest.TestCase):
     def setUp(self):
         self.region = 'us-east-1'
 
-        self.system_patcher = mock.patch('platform.system')
+        self.system_patcher = patch('platform.system')
         self.system = self.system_patcher.start()
         self.system.return_value = 'Linux'
 
-        self.linux_distribution_patcher = mock.patch('awscli.compat.linux_distribution')
+        self.linux_distribution_patcher = patch('awscli.compat.linux_distribution')
         self.linux_distribution = self.linux_distribution_patcher.start()
         self.linux_distribution.return_value = ('Ubuntu', '', '')
 
-        self.urlopen_patcher = mock.patch(
+        self.urlopen_patcher = patch(
             'awscli.customizations.codedeploy.utils.urlopen'
         )
         self.urlopen = self.urlopen_patcher.start()
         self.urlopen.side_effect = timeout('Not EC2 instance')
 
-        self.geteuid_patcher = mock.patch('os.geteuid', create=True)
+        self.geteuid_patcher = patch('os.geteuid', create=True)
         self.geteuid = self.geteuid_patcher.start()
         self.geteuid.return_value = 0
 
-        self.remove_patcher = mock.patch('os.remove')
+        self.remove_patcher = patch('os.remove')
         self.remove = self.remove_patcher.start()
 
         self.args = Namespace()
         self.globals = Namespace()
         self.globals.region = self.region
-        self.session = mock.MagicMock()
+        self.session = MagicMock()
         self.uninstall = Uninstall(self.session)
 
     def tearDown(self):
@@ -84,7 +85,7 @@ class TestUninstall(unittest.TestCase):
                 RuntimeError, 'You must run this command as sudo.'):
             self.uninstall._run_main(self.args, self.globals)
 
-    @mock.patch.object(Ubuntu, 'uninstall')
+    @patch.object(Ubuntu, 'uninstall')
     def test_uninstall_for_ubuntu(self, uninstall):
         self.system.return_value = 'Linux'
         self.linux_distribution.return_value = ('Ubuntu', '', '')
@@ -94,7 +95,7 @@ class TestUninstall(unittest.TestCase):
             '/etc/codedeploy-agent/conf/codedeploy.onpremises.yml'
         )
 
-    @mock.patch.object(RHEL, 'uninstall')
+    @patch.object(RHEL, 'uninstall')
     def test_uninstall_for_RHEL(self, uninstall):
         self.system.return_value = 'Linux'
         self.linux_distribution.return_value = ('Red Hat Enterprise Linux Server', '', '')
@@ -104,8 +105,8 @@ class TestUninstall(unittest.TestCase):
             '/etc/codedeploy-agent/conf/codedeploy.onpremises.yml'
         )
 
-    @mock.patch.object(Windows, 'uninstall')
-    @mock.patch.object(Windows, 'validate_administrator')
+    @patch.object(Windows, 'uninstall')
+    @patch.object(Windows, 'validate_administrator')
     def test_uninstall_for_windows(self, validate_administrator, uninstall):
         self.system.return_value = 'Windows'
         self.uninstall._run_main(self.args, self.globals)

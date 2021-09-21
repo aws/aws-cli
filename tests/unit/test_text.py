@@ -19,10 +19,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
+import unittest
 import sys
 
 from awscli.compat import six
-from awscli.testutils import mock, unittest
+import mock
 
 from awscli import text
 

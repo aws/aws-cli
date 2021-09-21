@@ -16,7 +16,8 @@ import sys
 from argparse import Namespace
 from awscli.customizations.codedeploy.install import Install
 from awscli.customizations.codedeploy.systems import Ubuntu, Windows, RHEL, System
-from awscli.testutils import mock, unittest
+from awscli.testutils import unittest
+from mock import MagicMock, patch, mock_open
 from socket import timeout
 
 
@@ -29,37 +30,37 @@ class TestInstall(unittest.TestCase):
         self.key = 'latest/{0}'.format(self.installer)
         self.agent_installer = 's3://{0}/{1}'.format(self.bucket, self.key)
 
-        self.system_patcher = mock.patch('platform.system')
+        self.system_patcher = patch('platform.system')
         self.system = self.system_patcher.start()
         self.system.return_value = 'Linux'
 
-        self.linux_distribution_patcher = mock.patch('awscli.compat.linux_distribution')
+        self.linux_distribution_patcher = patch('awscli.compat.linux_distribution')
         self.linux_distribution = self.linux_distribution_patcher.start()
         self.linux_distribution.return_value = ('Ubuntu', '', '')
 
-        self.urlopen_patcher = mock.patch(
+        self.urlopen_patcher = patch(
             'awscli.customizations.codedeploy.utils.urlopen'
         )
         self.urlopen = self.urlopen_patcher.start()
         self.urlopen.side_effect = timeout('Not EC2 instance')
 
-        self.geteuid_patcher = mock.patch('os.geteuid', create=True)
+        self.geteuid_patcher = patch('os.geteuid', create=True)
         self.geteuid = self.geteuid_patcher.start()
         self.geteuid.return_value = 0
 
-        self.isfile_patcher = mock.patch('os.path.isfile')
+        self.isfile_patcher = patch('os.path.isfile')
         self.isfile = self.isfile_patcher.start()
         self.isfile.return_value = False
 
-        self.makedirs_patcher = mock.patch('os.makedirs')
+        self.makedirs_patcher = patch('os.makedirs')
         self.makedirs = self.makedirs_patcher.start()
 
-        self.copyfile_patcher = mock.patch('shutil.copyfile')
+        self.copyfile_patcher = patch('shutil.copyfile')
         self.copyfile = self.copyfile_patcher.start()
 
-        self.open_patcher = mock.patch(
+        self.open_patcher = patch(
             'awscli.customizations.codedeploy.systems.open',
-            mock.mock_open(), create=True
+            mock_open(), create=True
         )
         self.open = self.open_patcher.start()
 
@@ -72,12 +73,12 @@ class TestInstall(unittest.TestCase):
         self.globals.region = self.region
 
         self.body = 'install-script'
-        self.reader = mock.MagicMock()
+        self.reader = MagicMock()
         self.reader.read.return_value = self.body
-        self.s3 = mock.MagicMock()
+        self.s3 = MagicMock()
         self.s3.get_object.return_value = {'Body': self.reader}
 
-        self.session = mock.MagicMock()
+        self.session = MagicMock()
         self.session.create_client.return_value = self.s3
         self.install = Install(self.session)
 
@@ -135,7 +136,7 @@ class TestInstall(unittest.TestCase):
                 's3://<bucket>/<key>.'):
             self.install._run_main(self.args, self.globals)
 
-    @mock.patch.object(Ubuntu, 'install')
+    @patch.object(Ubuntu, 'install')
     def test_install_with_agent_installer(self, install):
         self.args.agent_installer = self.agent_installer
         self.install._run_main(self.args, self.globals)
@@ -147,7 +148,7 @@ class TestInstall(unittest.TestCase):
         self.assertEqual(self.installer, self.args.installer)
         install.assert_called_with(self.args)
 
-    @mock.patch.object(Ubuntu, 'install')
+    @patch.object(Ubuntu, 'install')
     def test_install_for_ubuntu(self, install):
         self.system.return_value = 'Linux'
         self.linux_distribution.return_value = ('Ubuntu', '', '')
@@ -165,8 +166,8 @@ class TestInstall(unittest.TestCase):
         )
         install.assert_called_with(self.args)
 
-    @mock.patch.object(Windows, 'install')
-    @mock.patch.object(Windows, 'validate_administrator')
+    @patch.object(Windows, 'install')
+    @patch.object(Windows, 'validate_administrator')
     def test_install_for_windows(self, validate_administrator, install):
         self.system.return_value = 'Windows'
         self.install._run_main(self.args, self.globals)

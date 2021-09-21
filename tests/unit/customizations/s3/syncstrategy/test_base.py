@@ -12,10 +12,12 @@
 # language governing permissions and limitations under the License.
 import datetime
 
+from mock import Mock, patch
+
 from awscli.customizations.s3.filegenerator import FileStat
 from awscli.customizations.s3.syncstrategy.base import BaseSync, \
     SizeAndLastModifiedSync, MissingFileSync, NeverSync
-from awscli.testutils import mock, unittest
+from awscli.testutils import unittest
 
 
 class TestBaseSync(unittest.TestCase):
@@ -37,7 +39,7 @@ class TestBaseSync(unittest.TestCase):
         """
         Ensures that the class registers all of the necessary handlers
         """
-        session = mock.Mock()
+        session = Mock()
         self.sync_strategy.register_strategy(session)
         register_args = session.register.call_args_list
         self.assertEqual(register_args[0][0][0],

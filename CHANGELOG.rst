@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.2.40
+======
+
+* api-change:``es``: This release adds an optional parameter in the ListDomainNames API to filter domains based on the engine type (OpenSearch/Elasticsearch).
+* api-change:``comprehend``: Amazon Comprehend now supports versioning of custom models, improved training with ONE_DOC_PER_FILE text documents for custom entity recognition, ability to provide specific test sets during training, and live migration to new model endpoints.
+* api-change:``ecr``: This release adds additional support for repository replication
+* api-change:``dms``: Optional flag force-planned-failover added to reboot-replication-instance API call. This flag can be used to test a planned failover scenario used during some maintenance operations.
+* api-change:``iot``: This release adds support for verifying, viewing and filtering AWS IoT Device Defender detect violations with four verification states.
+* api-change:``opensearch``: This release adds an optional parameter in the ListDomainNames API to filter domains based on the engine type (OpenSearch/Elasticsearch).
+* api-change:``ec2``: This update adds support for downloading configuration templates using new APIs (GetVpnConnectionDeviceTypes and GetVpnConnectionDeviceSampleConfiguration) and Internet Key Exchange version 2 (IKEv2) parameters for many popular CGW devices.
+
+
 2.2.39
 ======
 

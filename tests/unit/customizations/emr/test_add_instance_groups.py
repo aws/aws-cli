@@ -16,7 +16,8 @@ from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
 from tests.unit.customizations.emr import test_constants as \
     CONSTANTS
 import json
-from mock import patch
+from awscli.testutils import mock
+
 
 INSTANCE_GROUPS_WITH_AUTOSCALING_POLICY = (
     ' InstanceGroupType=TASK,InstanceType=d2.xlarge,InstanceCount=2,'
@@ -358,7 +359,7 @@ class TestAddInstanceGroups(BaseAWSCommandParamsTest):
                   'InstanceGroups': DEFAULT_INSTANCE_GROUPS_WITH_CUSTOM_AMI}
         self.assert_params_for_cmd(cmd, result)
 
-    @patch('awscli.customizations.emr.emrutils.call')
+    @mock.patch('awscli.customizations.emr.emrutils.call')
     def test_constructed_result(self, call_patch):
         call_patch.return_value = ADD_INSTANCE_GROUPS_RESULT
         cmd = self.prefix

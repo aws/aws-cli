@@ -1,4 +1,4 @@
-
+from awscli.testutils import mock
 from awscli.customizations.emr.createcluster import CreateCluster
 from awscli.customizations.emr.exceptions import InvalidBooleanConfigError
 from awscli.customizations.emr.ssh import Get
@@ -6,7 +6,6 @@ from awscli.customizations.emr.ssh import Put
 from awscli.customizations.emr.ssh import SSH
 from awscli.customizations.emr.ssh import Socks
 from awscli.testutils import BaseAWSHelpOutputTest
-import mock
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
 

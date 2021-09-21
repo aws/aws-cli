@@ -10,13 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
 import tempfile
 import six
-from mock import patch, Mock, MagicMock, call
 import collections
 
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 from awscli.customizations.cloudformation.deploy import DeployCommand
 from awscli.customizations.cloudformation.deployer import Deployer
 from awscli.customizations.cloudformation.yamlhelper import yaml_parse
@@ -67,12 +65,12 @@ class TestDeployCommand(unittest.TestCase):
                                        verify_ssl=None)
         self.deploy_command = DeployCommand(self.session)
 
-        self.deployer = Deployer(Mock())
-        self.deployer.create_and_wait_for_changeset = Mock()
-        self.deployer.execute_changeset = Mock()
-        self.deployer.wait_for_execute = Mock()
+        self.deployer = Deployer(mock.Mock())
+        self.deployer.create_and_wait_for_changeset = mock.Mock()
+        self.deployer.execute_changeset = mock.Mock()
+        self.deployer.wait_for_execute = mock.Mock()
 
-    @patch("awscli.customizations.cloudformation.deploy.yaml_parse")
+    @mock.patch("awscli.customizations.cloudformation.deploy.yaml_parse")
     def test_command_invoked(self, mock_yaml_parse):
         """
         Tests that deploy method is invoked when command is run
@@ -88,19 +86,19 @@ class TestDeployCommand(unittest.TestCase):
 
             open_mock = mock.mock_open()
             # Patch the file open method to return template string
-            with patch(
+            with mock.patch(
                     "awscli.customizations.cloudformation.deploy.open",
                     open_mock(read_data=template_str)) as open_mock:
 
                 fake_template = get_example_template()
                 mock_yaml_parse.return_value = fake_template
 
-                self.deploy_command.deploy = MagicMock()
+                self.deploy_command.deploy = mock.MagicMock()
                 self.deploy_command.deploy.return_value = 0
-                self.deploy_command.parse_key_value_arg = Mock()
+                self.deploy_command.parse_key_value_arg = mock.Mock()
                 self.deploy_command.parse_key_value_arg.side_effect = [
                     fake_parameter_overrides, fake_tags_dict]
-                self.deploy_command.merge_parameters = MagicMock(
+                self.deploy_command.merge_parameters = mock.MagicMock(
                         return_value=fake_parameters)
 
                 self.parsed_args.template_file = file_path
@@ -125,11 +123,11 @@ class TestDeployCommand(unittest.TestCase):
                 )
 
                 self.deploy_command.parse_key_value_arg.assert_has_calls([
-                    call(
+                    mock.call(
                         self.parsed_args.parameter_overrides,
                          "parameter-overrides"
                     ),
-                    call(
+                    mock.call(
                         self.parsed_args.tags,
                         "tags"
                     )
@@ -146,9 +144,9 @@ class TestDeployCommand(unittest.TestCase):
             result = self.deploy_command._run_main(self.parsed_args,
                                                   parsed_globals=self.parsed_globals)
 
-    @patch('awscli.customizations.cloudformation.deploy.os.path.isfile')
-    @patch('awscli.customizations.cloudformation.deploy.yaml_parse')
-    @patch('awscli.customizations.cloudformation.deploy.os.path.getsize')
+    @mock.patch('awscli.customizations.cloudformation.deploy.os.path.isfile')
+    @mock.patch('awscli.customizations.cloudformation.deploy.yaml_parse')
+    @mock.patch('awscli.customizations.cloudformation.deploy.os.path.getsize')
     def test_s3_upload_required_but_missing_bucket(self, mock_getsize, mock_yaml_parse, mock_isfile):
         """
         Tests that large templates are detected prior to deployment
@@ -160,18 +158,18 @@ class TestDeployCommand(unittest.TestCase):
         mock_yaml_parse.return_value = template_str
         open_mock = mock.mock_open()
 
-        with patch(
+        with mock.patch(
                 "awscli.customizations.cloudformation.deploy.open",
                 open_mock(read_data=template_str)) as open_mock:
             with self.assertRaises(exceptions.DeployBucketRequiredError):
                 result = self.deploy_command._run_main(self.parsed_args,
                                 parsed_globals=self.parsed_globals)
 
-    @patch('awscli.customizations.cloudformation.deploy.os.path.isfile')
-    @patch('awscli.customizations.cloudformation.deploy.yaml_parse')
-    @patch('awscli.customizations.cloudformation.deploy.os.path.getsize')
-    @patch('awscli.customizations.cloudformation.deploy.DeployCommand.deploy')
-    @patch('awscli.customizations.cloudformation.deploy.S3Uploader')
+    @mock.patch('awscli.customizations.cloudformation.deploy.os.path.isfile')
+    @mock.patch('awscli.customizations.cloudformation.deploy.yaml_parse')
+    @mock.patch('awscli.customizations.cloudformation.deploy.os.path.getsize')
+    @mock.patch('awscli.customizations.cloudformation.deploy.DeployCommand.deploy')
+    @mock.patch('awscli.customizations.cloudformation.deploy.S3Uploader')
     def test_s3_uploader_is_configured_properly(self, s3UploaderMock,
         deploy_method_mock, mock_getsize, mock_yaml_parse, mock_isfile):
         """
@@ -185,12 +183,12 @@ class TestDeployCommand(unittest.TestCase):
         mock_yaml_parse.return_value = template_str
         open_mock = mock.mock_open()
 
-        with patch(
+        with mock.patch(
                 "awscli.customizations.cloudformation.deploy.open",
                 open_mock(read_data=template_str)) as open_mock:
 
             self.parsed_args.s3_bucket = bucket_name
-            s3UploaderObject = Mock()
+            s3UploaderObject = mock.Mock()
             s3UploaderMock.return_value = s3UploaderObject
 
             result = self.deploy_command._run_main(self.parsed_args,

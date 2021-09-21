@@ -10,13 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
 import errno
 import json
 
 from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.testutils import BaseAWSHelpOutputTest
-
+from awscli.testutils import mock
 
 class TestExecuteCommand(BaseAWSCommandParamsTest):
 

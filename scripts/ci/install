@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import glob
 import sys
 from subprocess import check_call
 import shutil
@@ -25,6 +26,6 @@ run('pip install -r requirements.txt')
 run('pip install coverage')
 if os.path.isdir('dist') and os.listdir('dist'):
     shutil.rmtree('dist')
-run('python setup.py bdist_wheel')
-wheel_dist = os.listdir('dist')[0]
-run('pip install %s' % (os.path.join('dist', wheel_dist)))
+run('python -m build --no-isolation')
+wheel_dist = glob.glob(os.path.join('dist', '*.whl'))[0]
+run('pip install %s' % wheel_dist)

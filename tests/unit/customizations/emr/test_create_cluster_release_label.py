@@ -23,8 +23,7 @@ from tests.unit.customizations.emr import test_constants_instance_fleets as \
     CONSTANTS_FLEET
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
-from mock import patch
-
+from awscli.testutils import mock
 
 DEFAULT_CLUSTER_NAME = "Development Cluster"
 
@@ -991,7 +990,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result['Steps'] = [PIG_STEP]
         self.assert_params_for_cmd(cmd, result)
 
-    @patch('awscli.customizations.emr.emrutils.call')
+    @mock.patch('awscli.customizations.emr.emrutils.call')
     def test_constructed_result(self, call_patch):
         call_patch.return_value = CREATE_CLUSTER_RESULT
         cmd = DEFAULT_CMD

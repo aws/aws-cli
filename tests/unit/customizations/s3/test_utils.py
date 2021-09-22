@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest, temporary_file
+from awscli.testutils import mock, unittest, temporary_file
 import argparse
 import errno
 import os
@@ -20,7 +20,6 @@ import ntpath
 import time
 import datetime
 
-import mock
 from dateutil.tz import tzlocal
 from nose.tools import assert_equal
 from s3transfer.futures import TransferMeta, TransferFuture

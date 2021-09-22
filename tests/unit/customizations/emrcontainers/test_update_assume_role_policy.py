@@ -13,9 +13,8 @@
 
 import copy
 import json
-import mock
 
-from awscli.testutils import BaseAWSCommandParamsTest, unittest
+from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
 from awscli.customizations.emrcontainers.base36 import Base36
 from awscli.customizations.emrcontainers.constants \
     import TRUST_POLICY_STATEMENT_FORMAT, \

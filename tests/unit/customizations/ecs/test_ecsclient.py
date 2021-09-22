@@ -11,11 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import mock
-
 from argparse import Namespace
 from botocore import config
-from awscli.testutils import capture_output, unittest
+from awscli.testutils import capture_output, mock, unittest
 from awscli.customizations.ecs.deploy import ECSClient, ECSDeploy
 
 

@@ -8,18 +8,17 @@
 #
 # or in the "license" file accompanying this file. This file is
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
-# ANY KIND, either express or implied. See the License for the specific
+# mock.ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
 import awscli
 
 from argparse import Namespace
-from mock import MagicMock, patch, ANY, call
 from six import StringIO
 from botocore.exceptions import ClientError
 
 from awscli.customizations.codedeploy.push import Push
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 from awscli.compat import ZIP_COMPRESSION_MODE
 
 
@@ -67,22 +66,22 @@ class TestPush(unittest.TestCase):
             }
         }
 
-        self.bundle_mock = MagicMock()
+        self.bundle_mock = mock.MagicMock()
         self.bundle_mock.tell.return_value = (5 << 20)
         self.bundle_mock.read.return_value = b'a' * (5 << 20)
         self.bundle_mock.__enter__.return_value = self.bundle_mock
         self.bundle_mock.__exit__.return_value = None
 
-        self.zipfile_mock = MagicMock()
+        self.zipfile_mock = mock.MagicMock()
         self.zipfile_mock.write.return_value = None
         self.zipfile_mock.close.return_value = None
         self.zipfile_mock.__enter__.return_value = self.zipfile_mock
         self.zipfile_mock.__exit__.return_value = None
 
-        self.session = MagicMock()
+        self.session = mock.MagicMock()
 
         self.push = Push(self.session)
-        self.push.s3 = MagicMock()
+        self.push.s3 = mock.MagicMock()
         self.push.s3.put_object.return_value = self.upload_response
         self.push.s3.create_multipart_upload.return_value = {
             'UploadId': self.upload_id
@@ -92,35 +91,35 @@ class TestPush(unittest.TestCase):
         }
         self.push.s3.complete_multipart_upload\
             .return_value = self.upload_response
-        self.push.codedeploy = MagicMock()
+        self.push.codedeploy = mock.MagicMock()
 
     def test_run_main_throws_on_invalid_args(self):
-        self.push._validate_args = MagicMock()
+        self.push._validate_args = mock.MagicMock()
         self.push._validate_args.side_effect = RuntimeError()
         with self.assertRaises(RuntimeError):
             self.push._run_main(self.args, self.globals)
 
     def test_run_main_creates_clients(self):
-        self.push._validate_args = MagicMock()
-        self.push._push = MagicMock()
+        self.push._validate_args = mock.MagicMock()
+        self.push._push = mock.MagicMock()
         self.push._run_main(self.args, self.globals)
         self.session.create_client.assert_has_calls([
-            call(
+            mock.call(
                 'codedeploy',
                 region_name=self.region,
                 endpoint_url=self.endpoint_url,
                 verify=self.globals.verify_ssl
             ),
-            call('s3', region_name=self.region)
+            mock.call('s3', region_name=self.region)
         ])
 
     def test_run_main_calls_push(self):
-        self.push._validate_args = MagicMock()
-        self.push._push = MagicMock()
+        self.push._validate_args = mock.MagicMock()
+        self.push._push = mock.MagicMock()
         self.push._run_main(self.args, self.globals)
         self.push._push.assert_called_with(self.args)
 
-    @patch.object(
+    @mock.patch.object(
         awscli.customizations.codedeploy.push,
         'validate_s3_location'
     )
@@ -149,8 +148,8 @@ class TestPush(unittest.TestCase):
     def test_push_throws_on_upload_to_s3_error(self):
         self.args.bucket = self.bucket
         self.args.key = self.key
-        self.push._compress = MagicMock(return_value=self.bundle_mock)
-        self.push._upload_to_s3 = MagicMock()
+        self.push._compress = mock.MagicMock(return_value=self.bundle_mock)
+        self.push._upload_to_s3 = mock.MagicMock()
         self.push._upload_to_s3.side_effect = RuntimeError()
         with self.assertRaises(RuntimeError):
             self.push._push(self.args)
@@ -158,20 +157,20 @@ class TestPush(unittest.TestCase):
     def test_push_strips_quotes_from_etag(self):
         self.args.bucket = self.bucket
         self.args.key = self.key
-        self.push._compress = MagicMock(return_value=self.bundle_mock)
-        self.push._upload_to_s3 = MagicMock(return_value=self.upload_response)
-        self.push._register_revision = MagicMock()
+        self.push._compress = mock.MagicMock(return_value=self.bundle_mock)
+        self.push._upload_to_s3 = mock.MagicMock(return_value=self.upload_response)
+        self.push._register_revision = mock.MagicMock()
         self.push._push(self.args)
         self.push._register_revision.assert_called_with(self.args)
         self.assertEqual(str(self.args.eTag), self.upload_response['ETag'].replace('"',""))
 
-    @patch('sys.stdout', new_callable=StringIO)
+    @mock.patch('sys.stdout', new_callable=StringIO)
     def test_push_output_message(self, stdout_mock):
         self.args.bucket = self.bucket
         self.args.key = self.key
-        self.push._compress = MagicMock(return_value=self.bundle_mock)
-        self.push._upload_to_s3 = MagicMock(return_value=self.upload_response)
-        self.push._register_revision = MagicMock()
+        self.push._compress = mock.MagicMock(return_value=self.bundle_mock)
+        self.push._upload_to_s3 = mock.MagicMock(return_value=self.upload_response)
+        self.push._register_revision = mock.MagicMock()
         self.push._push(self.args)
         output = stdout_mock.getvalue().strip()
         expected_revision_output = (
@@ -195,10 +194,10 @@ class TestPush(unittest.TestCase):
         )
         self.assertEqual(expected_output, output)
 
-    @patch('zipfile.ZipFile')
-    @patch('tempfile.TemporaryFile')
-    @patch('os.path')
-    @patch('os.walk')
+    @mock.patch('zipfile.ZipFile')
+    @mock.patch('tempfile.TemporaryFile')
+    @mock.patch('os.path')
+    @mock.patch('os.walk')
     def test_compress_throws_when_no_appspec(self, walk, path, tf, zf):
         walk.return_value = [(self.source, [], ['noappspec.yml'])]
         noappsec_path = self.source + '/noappspec.yml'
@@ -213,10 +212,10 @@ class TestPush(unittest.TestCase):
                     self.args.ignore_hidden_files):
                 pass
 
-    @patch('zipfile.ZipFile')
-    @patch('tempfile.TemporaryFile')
-    @patch('os.path')
-    @patch('os.walk')
+    @mock.patch('zipfile.ZipFile')
+    @mock.patch('tempfile.TemporaryFile')
+    @mock.patch('os.path')
+    @mock.patch('os.walk')
     def test_compress_writes_to_zip_file(self, walk, path, tf, zf):
         walk.return_value = [(self.source, [], [self.appspec])]
         path.join.return_value = self.appspec_path
@@ -227,7 +226,7 @@ class TestPush(unittest.TestCase):
         with self.push._compress(
                 self.args.source,
                 self.args.ignore_hidden_files):
-            zf.assert_called_with(ANY, 'w', allowZip64=True)
+            zf.assert_called_with(mock.ANY, 'w', allowZip64=True)
             zf().write.assert_called_with(
                 '/tmp/appspec.yml',
                 self.appspec,
@@ -266,7 +265,7 @@ class TestPush(unittest.TestCase):
             Key=self.key,
             UploadId=self.upload_id,
             PartNumber=1,
-            Body=ANY
+            Body=mock.ANY
         )
         self.push.s3.complete_multipart_upload.assert_called_with(
             Bucket=self.bucket,

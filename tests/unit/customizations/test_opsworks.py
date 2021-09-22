@@ -14,12 +14,11 @@
 import argparse
 import datetime
 import json
-import mock
 
 from botocore.exceptions import ClientError
 
 from awscli.customizations import opsworks
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 
 
 class TestOpsWorksBase(unittest.TestCase):

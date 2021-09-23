@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.20.47
+=======
+
+* api-change:``mediaconvert``: This release adds style and positioning support for caption or subtitle burn-in from rich text sources such as TTML. This release also introduces configurable image-based trick play track generation.
+* api-change:``appsync``: Documented the new OpenSearchServiceDataSourceConfig data type. Added deprecation notes to the ElasticsearchDataSourceConfig data type.
+* api-change:``ssm``: Added cutoff behavior support for preventing new task invocations from starting when the maintenance window cutoff time is reached.
+
+
 1.20.46
 =======
 

@@ -16,12 +16,11 @@ import os
 
 from datetime import datetime
 
-from mock import patch
 from six import StringIO
 from botocore.session import Session
 from botocore.credentials import Credentials
 from awscli.customizations.codecommit import CodeCommitGetCommand
-from awscli.testutils import unittest, StringIOWithFileNo
+from awscli.testutils import mock, unittest, StringIOWithFileNo
 from botocore.awsrequest import AWSRequest
 from awscli.clidriver import create_clidriver, AWSCLIEntryPoint
 
@@ -56,9 +55,9 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         else:
             del os.environ['AWS_SECRET_ACCESS_KEY']
 
-    @patch('sys.stdin', StringIO(PROTOCOL_HOST_PATH))
-    @patch('sys.stdout', new_callable=StringIOWithFileNo)
-    @patch.object(awscli.customizations.codecommit.datetime, 'datetime')
+    @mock.patch('sys.stdin', StringIO(PROTOCOL_HOST_PATH))
+    @mock.patch('sys.stdout', new_callable=StringIOWithFileNo)
+    @mock.patch.object(awscli.customizations.codecommit.datetime, 'datetime')
     def test_integration_using_cli_driver(self, dt_mock, stdout_mock):
         dt_mock.utcnow.return_value = datetime(2010, 10, 8)
         driver = create_clidriver()
@@ -72,9 +71,9 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
              output)
         self.assertEquals(0, rc)
 
-    @patch('sys.stdin', StringIO(FIPS_PROTOCOL_HOST_PATH))
-    @patch('sys.stdout', new_callable=StringIOWithFileNo)
-    @patch.object(awscli.customizations.codecommit.datetime, 'datetime')
+    @mock.patch('sys.stdin', StringIO(FIPS_PROTOCOL_HOST_PATH))
+    @mock.patch('sys.stdout', new_callable=StringIOWithFileNo)
+    @mock.patch.object(awscli.customizations.codecommit.datetime, 'datetime')
     def test_integration_fips_using_cli_driver(self, dt_mock, stdout_mock):
         dt_mock.utcnow.return_value = datetime(2010, 10, 8)
         driver = create_clidriver()
@@ -88,9 +87,9 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
              output)
         self.assertEquals(0, rc)
 
-    @patch('sys.stdin', StringIO(VPC_PROTOCOL_HOST_PATH))
-    @patch('sys.stdout', new_callable=StringIOWithFileNo)
-    @patch.object(awscli.customizations.codecommit.datetime, 'datetime')
+    @mock.patch('sys.stdin', StringIO(VPC_PROTOCOL_HOST_PATH))
+    @mock.patch('sys.stdout', new_callable=StringIOWithFileNo)
+    @mock.patch.object(awscli.customizations.codecommit.datetime, 'datetime')
     def test_integration_vpc_using_cli_driver(self, dt_mock, stdout_mock):
         dt_mock.utcnow.return_value = datetime(2010, 10, 8)
         driver = create_clidriver()

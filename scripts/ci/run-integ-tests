@@ -24,7 +24,9 @@ def cd(path):
 
 
 def run(command):
-    return check_call(command, shell=True)
+    env = os.environ.copy()
+    env['TESTS_REMOVE_REPO_ROOT_FROM_PATH'] = 'true'
+    return check_call(command, shell=True, env=env)
 
 
 if __name__ == "__main__":

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.20.48
+=======
+
+* api-change:``license-manager``: AWS License Manager now allows customers to get the LicenseArn in the Checkout API Response.
+* api-change:``ec2``: DescribeInstances now returns Platform Details, Usage Operation, and Usage Operation Update Time.
+
+
 1.20.47
 =======
 

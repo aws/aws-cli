@@ -917,7 +917,6 @@ class TestEventHandler(object):
     def __init__(self, handler=None):
         self._handler = handler
         self._called = False
-        self.__test__ = False
 
     @property
     def called(self):

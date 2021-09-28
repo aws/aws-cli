@@ -14,15 +14,17 @@
 """This module contains some helpers for mocking eks clusters"""
 
 import os
+from nose.tools import nottest
 
 
 EXAMPLE_NAME = "ExampleCluster"
 
+@nottest
 def get_testdata(file_name):
     """Get the path of a specific fixture"""
-    return os.path.join(
-        os.path.dirname(os.path.realpath(__file__)), "testdata", file_name
-    )
+    return os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                        "testdata",
+                        file_name)
 
 
 def list_cluster_response():

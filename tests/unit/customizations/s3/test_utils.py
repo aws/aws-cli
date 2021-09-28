@@ -20,8 +20,8 @@ import ntpath
 import time
 import datetime
 
-import pytest
 from dateutil.tz import tzlocal
+from nose.tools import assert_equal
 from s3transfer.futures import TransferMeta, TransferFuture
 from s3transfer.compat import seekable
 from botocore.hooks import HierarchicalEmitter
@@ -46,45 +46,47 @@ from tests.unit.customizations.s3 import FakeTransferFutureMeta
 from tests.unit.customizations.s3 import FakeTransferFutureCallArgs
 
 
-@pytest.mark.parametrize(
-    'bytes_int, expected',
-    (
-        (1, '1 Byte'),
-        (10, '10 Bytes'),
-        (1000, '1000 Bytes'),
-        (1024, '1.0 KiB'),
-        (1024 ** 2, '1.0 MiB'),
-        (1024 ** 3, '1.0 GiB'),
-        (1024 ** 4, '1.0 TiB'),
-        (1024 ** 5, '1.0 PiB'),
-        (1024 ** 6, '1.0 EiB'),
-        (1024 ** 2 - 1, '1.0 MiB'),
-        (1024 ** 3 - 1, '1.0 GiB'),
-    )
-)
-def test_human_readable_size(bytes_int, expected):
-    assert human_readable_size(bytes_int) == expected
+def test_human_readable_size():
+    yield _test_human_size_matches, 1, '1 Byte'
+    yield _test_human_size_matches, 10, '10 Bytes'
+    yield _test_human_size_matches, 1000, '1000 Bytes'
+    yield _test_human_size_matches, 1024, '1.0 KiB'
+    yield _test_human_size_matches, 1024 ** 2, '1.0 MiB'
+    yield _test_human_size_matches, 1024 ** 2, '1.0 MiB'
+    yield _test_human_size_matches, 1024 ** 3, '1.0 GiB'
+    yield _test_human_size_matches, 1024 ** 4, '1.0 TiB'
+    yield _test_human_size_matches, 1024 ** 5, '1.0 PiB'
+    yield _test_human_size_matches, 1024 ** 6, '1.0 EiB'
+
+    # Round to the nearest block.
+    yield _test_human_size_matches, 1024 ** 2 - 1, '1.0 MiB'
+    yield _test_human_size_matches, 1024 ** 3 - 1, '1.0 GiB'
 
 
-@pytest.mark.parametrize(
-    'size_str, expected',
-    (
-        ("1", 1),
-        ("1024", 1024),
-        ("1KB", 1024),
-        ("1kb", 1024),
-        ("1MB", 1024 ** 2),
-        ("1GB", 1024 ** 3),
-        ("1TB", 1024 ** 4),
-        ("1KiB", 1024),
-        ("1kib", 1024),
-        ("1MiB", 1024 ** 2),
-        ("1GiB", 1024 ** 3),
-        ("1TiB", 1024 ** 4),
-    )
-)
-def test_convert_human_readable_to_bytes(size_str, expected):
-    assert human_readable_to_bytes(size_str) == expected
+def _test_human_size_matches(bytes_int, expected):
+    assert_equal(human_readable_size(bytes_int), expected)
+
+
+def test_convert_human_readable_to_bytes():
+    yield _test_convert_human_readable_to_bytes, "1", 1
+    yield _test_convert_human_readable_to_bytes, "1024", 1024
+    yield _test_convert_human_readable_to_bytes, "1KB", 1024
+    yield _test_convert_human_readable_to_bytes, "1kb", 1024
+    yield _test_convert_human_readable_to_bytes, "1MB", 1024 ** 2
+    yield _test_convert_human_readable_to_bytes, "1GB", 1024 ** 3
+    yield _test_convert_human_readable_to_bytes, "1TB", 1024 ** 4
+
+    # Also because of the "ls" output for s3, we support
+    # the IEC "mebibyte" format (MiB).
+    yield _test_convert_human_readable_to_bytes, "1KiB", 1024
+    yield _test_convert_human_readable_to_bytes, "1kib", 1024
+    yield _test_convert_human_readable_to_bytes, "1MiB", 1024 ** 2
+    yield _test_convert_human_readable_to_bytes, "1GiB", 1024 ** 3
+    yield _test_convert_human_readable_to_bytes, "1TiB", 1024 ** 4
+
+
+def _test_convert_human_readable_to_bytes(size_str, expected):
+    assert_equal(human_readable_to_bytes(size_str), expected)
 
 
 class AppendFilterTest(unittest.TestCase):
@@ -499,7 +501,7 @@ class TestGetFileStat(unittest.TestCase):
 
     def test_error_message(self):
         with mock.patch('os.stat', mock.Mock(side_effect=IOError('msg'))):
-            with self.assertRaisesRegex(ValueError, r'myfilename\.txt'):
+            with self.assertRaisesRegex(ValueError, 'myfilename\.txt'):
                 get_file_stat('myfilename.txt')
 
     def assert_handles_fromtimestamp_error(self, error):

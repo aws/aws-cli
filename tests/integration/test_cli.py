@@ -58,8 +58,8 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         p = aws('help')
         self.assertEqual(p.rc, 0)
         self.assertIn('AWS', p.stdout)
-        self.assertRegex(
-            p.stdout, r'The\s+AWS\s+Command\s+Line\s+Interface')
+        self.assertRegexpMatches(
+            p.stdout, 'The\s+AWS\s+Command\s+Line\s+Interface')
 
     def test_service_help_output(self):
         p = aws('ec2 help')
@@ -74,24 +74,25 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         # For now we're making the test less strict about formatting, but
         # we eventually should update this test to check exactly for
         # 'The describe-instances operation'.
-        self.assertRegex(p.stdout, r'\s+Describes\s+the\s+specified\s+instances')
+        self.assertRegexpMatches(p.stdout,
+                                 '\s+Describes\s+the\s+specified\s+instances')
 
     def test_topic_list_help_output(self):
         p = aws('help topics')
         self.assertEqual(p.rc, 0)
-        self.assertRegex(p.stdout, r'\s+AWS\s+CLI\s+Topic\s+Guide')
-        self.assertRegex(
+        self.assertRegexpMatches(p.stdout, '\s+AWS\s+CLI\s+Topic\s+Guide')
+        self.assertRegexpMatches(
             p.stdout,
-            r'\s+This\s+is\s+the\s+AWS\s+CLI\s+Topic\s+Guide'
+            '\s+This\s+is\s+the\s+AWS\s+CLI\s+Topic\s+Guide'
         )
 
     def test_topic_help_output(self):
         p = aws('help return-codes')
         self.assertEqual(p.rc, 0)
-        self.assertRegex(p.stdout, r'\s+AWS\s+CLI\s+Return\s+Codes')
-        self.assertRegex(
+        self.assertRegexpMatches(p.stdout, '\s+AWS\s+CLI\s+Return\s+Codes')
+        self.assertRegexpMatches(
             p.stdout,
-            r'These\s+are\s+the\s+following\s+return\s+codes'
+            'These\s+are\s+the\s+following\s+return\s+codes'
         )
 
     def test_operation_help_with_required_arg(self):
@@ -121,7 +122,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         self.assertEqual(p.rc, 0, p.stderr)
         # Check text that appears in the warning block to ensure
         # the block was actually rendered.
-        self.assertRegex(p.stdout, r'To\s+receive\s+notifications')
+        self.assertRegexpMatches(p.stdout, 'To\s+receive\s+notifications')
 
     def test_param_shorthand(self):
         p = aws(

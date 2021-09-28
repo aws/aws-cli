@@ -28,8 +28,6 @@ import docutils.nodes
 import docutils.parsers.rst
 import docutils.utils
 
-import pytest
-
 from awscli.argparser import MainArgParser
 from awscli.argparser import ServiceArgParser
 from awscli.testutils import BaseAWSHelpOutputTest, create_clidriver
@@ -68,45 +66,13 @@ class _ExampleTests(BaseAWSHelpOutputTest):
         pass
 
 
-def _get_example_test_cases():
-    test_cases = []
+def test_examples():
     for command, subcommands in COMMAND_EXAMPLES.items():
         for subcommand in subcommands:
-            test_cases.append((command, subcommand))
-    return test_cases
+            yield verify_has_examples, command, subcommand
 
 
-def _get_all_doc_examples():
-    rst_doc_examples = []
-    other_doc_examples = []
-    # Iterate over all rst doc examples0
-    for root, _, filenames in os.walk(EXAMPLES_DIR):
-        for filename in filenames:
-            full_path = os.path.join(root, filename)
-            if not filename.endswith('.rst'):
-                other_doc_examples.append(full_path)
-                continue
-            rst_doc_examples.append(full_path)
-    return rst_doc_examples, other_doc_examples
-
-
-RST_DOC_EXAMPLES, OTHER_DOC_EXAMPLES = _get_all_doc_examples()
-EXAMPLE_COMMAND_TESTS = _get_example_test_cases()
-
-
-@pytest.fixture(scope="module")
-def command_validator():
-    # CLIDriver can take up a lot of resources so we'll just create one
-    # instance and use it for all the validation tests.
-    driver = create_clidriver()
-    return CommandValidator(driver)
-
-
-@pytest.mark.parametrize(
-    "command, subcommand",
-    EXAMPLE_COMMAND_TESTS
-)
-def test_examples(command, subcommand):
+def verify_has_examples(command, subcommand):
     t = _ExampleTests(methodName='noop_test')
     t.setUp()
     try:
@@ -116,14 +82,27 @@ def test_examples(command, subcommand):
         t.tearDown()
 
 
-@pytest.mark.parametrize(
-    "example_file",
-    RST_DOC_EXAMPLES
-)
-def test_rst_doc_examples(command_validator, example_file):
-    verify_has_only_ascii_chars(example_file)
-    verify_is_valid_rst(example_file)
-    verify_cli_commands_valid(example_file, command_validator)
+def test_all_doc_examples():
+    # CLIDriver can take up a lot of resources so we'll just create one
+    # instance and use it for all the validation tests.
+    driver = create_clidriver()
+    command_validator = CommandValidator(driver)
+
+    for example_file in iter_all_doc_examples():
+        yield verify_has_only_ascii_chars, example_file
+        yield verify_is_valid_rst, example_file
+        yield verify_cli_commands_valid, example_file, command_validator
+
+
+def iter_all_doc_examples():
+    # Iterate over all rst doc examples0
+    _dname = os.path.dirname
+    for rootdir, _, filenames in os.walk(EXAMPLES_DIR):
+        for filename in filenames:
+            if not filename.endswith('.rst'):
+                continue
+            full_path = os.path.join(rootdir, filename)
+            yield full_path
 
 
 def verify_has_only_ascii_chars(filename):
@@ -284,14 +263,12 @@ class CollectCLICommands(docutils.nodes.GenericNodeVisitor):
         pass
 
 
-@pytest.mark.parametrize(
-    "example_file",
-    RST_DOC_EXAMPLES + OTHER_DOC_EXAMPLES
-)
-def test_example_file_name(example_file):
-    filename = example_file.split(os.sep)[-1]
-    _assert_file_is_rst_or_txt(example_file)
-    _assert_name_contains_only_allowed_characters(filename)
+def test_example_file_names():
+    for root, _, files in os.walk(EXAMPLES_DIR):
+        for filename in files:
+            filepath = os.path.join(root, filename)
+            yield (_assert_file_is_rst_or_txt, filepath)
+            yield (_assert_name_contains_only_allowed_characters, filename)
 
 
 def _assert_file_is_rst_or_txt(filepath):

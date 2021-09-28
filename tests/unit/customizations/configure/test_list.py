@@ -31,10 +31,10 @@ class TestConfigureListCommand(unittest.TestCase):
         self.configure_list = ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=None)
         rendered = stream.getvalue()
-        self.assertRegex(rendered, r'profile\s+<not set>')
-        self.assertRegex(rendered, r'access_key\s+<not set>')
-        self.assertRegex(rendered, r'secret_key\s+<not set>')
-        self.assertRegex(rendered, r'region\s+<not set>')
+        self.assertRegexpMatches(rendered, 'profile\s+<not set>')
+        self.assertRegexpMatches(rendered, 'access_key\s+<not set>')
+        self.assertRegexpMatches(rendered, 'secret_key\s+<not set>')
+        self.assertRegexpMatches(rendered, 'region\s+<not set>')
 
     def test_configure_from_env(self):
         env_vars = {
@@ -50,8 +50,8 @@ class TestConfigureListCommand(unittest.TestCase):
         self.configure_list = ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=None)
         rendered = stream.getvalue()
-        self.assertRegex(
-            rendered, r'profile\s+myprofilename\s+env\s+PROFILE_ENV_VAR')
+        self.assertRegexpMatches(
+            rendered, 'profile\s+myprofilename\s+env\s+PROFILE_ENV_VAR')
 
     def test_configure_from_config_file(self):
         config_file_vars = {
@@ -67,8 +67,8 @@ class TestConfigureListCommand(unittest.TestCase):
         self.configure_list = ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=None)
         rendered = stream.getvalue()
-        self.assertRegex(
-            rendered, r'region\s+us-west-2\s+config-file\s+/config/location')
+        self.assertRegexpMatches(
+            rendered, 'region\s+us-west-2\s+config-file\s+/config/location')
 
     def test_configure_from_multiple_sources(self):
         # Here the profile is from an env var, the
@@ -99,17 +99,17 @@ class TestConfigureListCommand(unittest.TestCase):
         self.configure_list(args=[], parsed_globals=None)
         rendered = stream.getvalue()
         # The profile came from an env var.
-        self.assertRegex(
-            rendered, r'profile\s+myprofilename\s+env\s+AWS_DEFAULT_PROFILE')
+        self.assertRegexpMatches(
+            rendered, 'profile\s+myprofilename\s+env\s+AWS_DEFAULT_PROFILE')
         # The region came from the config file.
-        self.assertRegex(
-            rendered, r'region\s+us-west-2\s+config-file\s+/config/location')
+        self.assertRegexpMatches(
+            rendered, 'region\s+us-west-2\s+config-file\s+/config/location')
         # The credentials came from an IAM role.  Note how we're
         # also checking that the access_key/secret_key are masked
         # with '*' chars except for the last 4 chars.
-        self.assertRegex(
+        self.assertRegexpMatches(
             rendered, r'access_key\s+\*+_key\s+iam-role')
-        self.assertRegex(
+        self.assertRegexpMatches(
             rendered, r'secret_key\s+\*+_key\s+iam-role')
 
     def test_configure_from_args(self):
@@ -127,5 +127,5 @@ class TestConfigureListCommand(unittest.TestCase):
         self.configure_list = ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=parsed_globals)
         rendered = stream.getvalue()
-        self.assertRegex(
-            rendered, r'profile\s+foo\s+manual\s+--profile')
+        self.assertRegexpMatches(
+            rendered, 'profile\s+foo\s+manual\s+--profile')

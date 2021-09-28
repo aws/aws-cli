@@ -18,6 +18,7 @@ import logging
 import io
 import sys
 
+import nose
 from awscli.compat import six
 from botocore.awsrequest import AWSResponse
 from botocore.exceptions import NoCredentialsError
@@ -575,6 +576,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             value='file:///foo',
         )
 
+    @unittest.skip
     def test_custom_arg_no_paramfile(self):
         driver = create_clidriver()
         driver.session.register(

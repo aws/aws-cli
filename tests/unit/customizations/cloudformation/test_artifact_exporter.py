@@ -5,8 +5,7 @@ import string
 import random
 import zipfile
 
-import pytest
-
+from nose.tools import assert_true, assert_false, assert_equal
 from contextlib import contextmanager, closing
 from botocore.stub import Stubber
 from awscli.testutils import mock, unittest, FileCreator
@@ -30,161 +29,151 @@ from awscli.customizations.cloudformation.artifact_exporter \
     StepFunctionsStateMachineDefinitionResource
 
 
-VALID_CASES = [
-    "s3://foo/bar",
-    "s3://foo/bar/baz/cat/dog",
-    "s3://foo/bar?versionId=abc",
-    "s3://foo/bar/baz?versionId=abc&versionId=123",
-    "s3://foo/bar/baz?versionId=abc",
-    "s3://www.amazon.com/foo/bar",
-    "s3://my-new-bucket/foo/bar?a=1&a=2&a=3&b=1",
-]
+def test_is_s3_url():
+    valid = [
+        "s3://foo/bar",
+        "s3://foo/bar/baz/cat/dog",
+        "s3://foo/bar?versionId=abc",
+        "s3://foo/bar/baz?versionId=abc&versionId=123",
+        "s3://foo/bar/baz?versionId=abc",
+        "s3://www.amazon.com/foo/bar",
+        "s3://my-new-bucket/foo/bar?a=1&a=2&a=3&b=1",
+    ]
 
-INVALID_CASES = [
-    # For purposes of exporter, we need S3 URLs to point to an object
-    # and not a bucket
-    "s3://foo",
+    invalid = [
 
-    # two versionIds is invalid
-    "https://s3-eu-west-1.amazonaws.com/bucket/key",
-    "https://www.amazon.com"
-]
+        # For purposes of exporter, we need S3 URLs to point to an object
+        # and not a bucket
+        "s3://foo",
 
+        # two versionIds is invalid
+        "https://s3-eu-west-1.amazonaws.com/bucket/key",
+        "https://www.amazon.com"
+    ]
 
-@pytest.mark.parametrize(
-    "url",
-    VALID_CASES
-)
-def test_is_valid_s3_url(url):
-    assert is_s3_url(url), f"{url} should be valid"
+    for url in valid:
+        yield _assert_is_valid_s3_url, url
 
+    for url in invalid:
+        yield _assert_is_invalid_s3_url, url
 
-@pytest.mark.parametrize(
-    "url",
-    INVALID_CASES
-)
-def test_is_invalid_s3_url(url):
-    assert not is_s3_url(url), f"{url} should be invalid"
+def _assert_is_valid_s3_url(url):
+    assert_true(is_s3_url(url), "{0} should be valid".format(url))
 
+def _assert_is_invalid_s3_url(url):
+    assert_false(is_s3_url(url), "{0} should be valid".format(url))
 
-UPLOADED_S3_URL = "s3://foo/bar?versionId=baz"
+def test_all_resources_export():
+    uploaded_s3_url = "s3://foo/bar?versionId=baz"
 
-RESOURCE_EXPORT_TEST_CASES = [
-    {
-        "class": ServerlessFunctionResource,
-        "expected_result": UPLOADED_S3_URL
-    },
+    setup = [
+        {
+            "class": ServerlessFunctionResource,
+            "expected_result": uploaded_s3_url
+        },
 
-    {
-        "class": ServerlessApiResource,
-        "expected_result": UPLOADED_S3_URL
-    },
+        {
+            "class": ServerlessApiResource,
+            "expected_result": uploaded_s3_url
+        },
 
-    {
-        "class": GraphQLSchemaResource,
-        "expected_result": UPLOADED_S3_URL
-    },
+        {
+            "class": GraphQLSchemaResource,
+            "expected_result": uploaded_s3_url
+        },
 
-    {
-        "class": AppSyncResolverRequestTemplateResource,
-        "expected_result": UPLOADED_S3_URL
-    },
+        {
+            "class": AppSyncResolverRequestTemplateResource,
+            "expected_result": uploaded_s3_url
+        },
 
-    {
-        "class": AppSyncResolverResponseTemplateResource,
-        "expected_result": UPLOADED_S3_URL
-    },
+        {
+            "class": AppSyncResolverResponseTemplateResource,
+            "expected_result": uploaded_s3_url
+        },
 
-    {
-        "class": AppSyncFunctionConfigurationRequestTemplateResource,
-        "expected_result": UPLOADED_S3_URL
-    },
+        {
+            "class": AppSyncFunctionConfigurationRequestTemplateResource,
+            "expected_result": uploaded_s3_url
+        },
 
-    {
-        "class": AppSyncFunctionConfigurationResponseTemplateResource,
-        "expected_result": UPLOADED_S3_URL
-    },
+        {
+            "class": AppSyncFunctionConfigurationResponseTemplateResource,
+            "expected_result": uploaded_s3_url
+        },
 
-    {
-        "class": ApiGatewayRestApiResource,
-        "expected_result": {
-            "Bucket": "foo", "Key": "bar", "Version": "baz"
-        }
-    },
+        {
+            "class": ApiGatewayRestApiResource,
+            "expected_result": {
+                "Bucket": "foo", "Key": "bar", "Version": "baz"
+            }
+        },
 
-    {
-        "class": LambdaFunctionResource,
-        "expected_result": {
-            "S3Bucket": "foo", "S3Key": "bar", "S3ObjectVersion": "baz"
-        }
-    },
+        {
+            "class": LambdaFunctionResource,
+            "expected_result": {
+                "S3Bucket": "foo", "S3Key": "bar", "S3ObjectVersion": "baz"
+            }
+        },
 
-    {
-        "class": ElasticBeanstalkApplicationVersion,
-        "expected_result": {
-            "S3Bucket": "foo", "S3Key": "bar"
-        }
-    },
-    {
-        "class": LambdaLayerVersionResource,
-        "expected_result": {
-            "S3Bucket": "foo", "S3Key": "bar", "S3ObjectVersion": "baz"
-        }
-    },
-    {
-        "class": ServerlessLayerVersionResource,
-        "expected_result": UPLOADED_S3_URL
-    },
-    {
-        "class": ServerlessRepoApplicationReadme,
-        "expected_result": UPLOADED_S3_URL
-    },
-    {
-        "class": ServerlessRepoApplicationLicense,
-        "expected_result": UPLOADED_S3_URL
-    },
-    {
-        "class": ServerlessRepoApplicationLicense,
-        "expected_result": UPLOADED_S3_URL
-    },
-    {
-        "class": GlueJobCommandScriptLocationResource,
-        "expected_result": {
-                "ScriptLocation": UPLOADED_S3_URL
-        }
-    },
-    {
-        "class": StepFunctionsStateMachineDefinitionResource,
-        "expected_result": {
-            "Bucket": "foo", "Key": "bar", "Version": "baz"
-        }
-    },
-]
+        {
+            "class": ElasticBeanstalkApplicationVersion,
+            "expected_result": {
+                "S3Bucket": "foo", "S3Key": "bar"
+            }
+        },
+        {
+            "class": LambdaLayerVersionResource,
+            "expected_result": {
+                "S3Bucket": "foo", "S3Key": "bar", "S3ObjectVersion": "baz"
+            }
+        },
+        {
+            "class": ServerlessLayerVersionResource,
+            "expected_result": uploaded_s3_url
+        },
+        {
+            "class": ServerlessRepoApplicationReadme,
+            "expected_result": uploaded_s3_url
+        },
+        {
+            "class": ServerlessRepoApplicationLicense,
+            "expected_result": uploaded_s3_url
+        },
+        {
+            "class": ServerlessRepoApplicationLicense,
+            "expected_result": uploaded_s3_url
+        },
+        {
+            "class": GlueJobCommandScriptLocationResource,
+            "expected_result": {
+                    "ScriptLocation": uploaded_s3_url
+            }
+        },
+        {
+            "class": StepFunctionsStateMachineDefinitionResource,
+            "expected_result": {
+                "Bucket": "foo", "Key": "bar", "Version": "baz"
+            }
+        },
+    ]
 
-
-@pytest.mark.parametrize(
-    "test",
-    RESOURCE_EXPORT_TEST_CASES
-)
-def test_all_resources_export(test):
-    mock_path = (
-        "awscli.customizations.cloudformation.artifact_exporter.upload_local_artifacts"
-    )
-    with mock.patch(mock_path) as upload_local_artifacts_mock:
-        _helper_verify_export_resources(
-            test["class"], upload_local_artifacts_mock, test["expected_result"]
-        )
+    with mock.patch("awscli.customizations.cloudformation.artifact_exporter.upload_local_artifacts") as upload_local_artifacts_mock:
+        for test in setup:
+            yield _helper_verify_export_resources, \
+                    test["class"], uploaded_s3_url, \
+                    upload_local_artifacts_mock, \
+                    test["expected_result"]
 
 
 def _helper_verify_export_resources(
-    test_class, upload_local_artifacts_mock, expected_result
-):
+        test_class, uploaded_s3_url, upload_local_artifacts_mock,
+        expected_result):
 
     s3_uploader_mock = mock.Mock()
     upload_local_artifacts_mock.reset_mock()
 
     resource_id = "id"
-    parent_dir = "dir"
 
     if '.' in test_class.PROPERTY_NAME:
         reversed_property_names = test_class.PROPERTY_NAME.split('.')
@@ -201,22 +190,25 @@ def _helper_verify_export_resources(
         resource_dict = {
             test_class.PROPERTY_NAME: "foo"
         }
+    parent_dir = "dir"
 
-    upload_local_artifacts_mock.return_value = UPLOADED_S3_URL
+    upload_local_artifacts_mock.return_value = uploaded_s3_url
+
     resource_obj = test_class(s3_uploader_mock)
+
     resource_obj.export(resource_id, resource_dict, parent_dir)
 
-    upload_local_artifacts_mock.assert_called_once_with(
-        resource_id, resource_dict, test_class.PROPERTY_NAME,
-        parent_dir, s3_uploader_mock
-    )
+    upload_local_artifacts_mock.assert_called_once_with(resource_id,
+                                                        resource_dict,
+                                                        test_class.PROPERTY_NAME,
+                                                        parent_dir,
+                                                        s3_uploader_mock)
     if '.' in test_class.PROPERTY_NAME:
         top_level_property_name = test_class.PROPERTY_NAME.split('.')[0]
         result = resource_dict[top_level_property_name]
     else:
         result = resource_dict[test_class.PROPERTY_NAME]
-
-    assert result == expected_result
+    assert_equal(result, expected_result)
 
 
 class TestArtifactExporter(unittest.TestCase):
@@ -507,7 +499,7 @@ class TestArtifactExporter(unittest.TestCase):
             zip_and_upload_mock.assert_called_once_with(tmp_dir, mock.ANY)
             rmtree_mock.assert_called_once_with(tmp_dir)
             is_zipfile_mock.assert_called_once_with(original_path)
-            assert resource_dict[resource.PROPERTY_NAME] == s3_url
+            assert_equal(resource_dict[resource.PROPERTY_NAME], s3_url)
 
     @mock.patch("shutil.rmtree")
     @mock.patch("zipfile.is_zipfile")
@@ -544,7 +536,7 @@ class TestArtifactExporter(unittest.TestCase):
         zip_and_upload_mock.assert_not_called()
         rmtree_mock.assert_not_called()
         is_zipfile_mock.assert_called_once_with(original_path)
-        assert resource_dict[resource.PROPERTY_NAME] == s3_url
+        assert_equal(resource_dict[resource.PROPERTY_NAME], s3_url)
 
     @mock.patch("shutil.rmtree")
     @mock.patch("zipfile.is_zipfile")
@@ -578,7 +570,7 @@ class TestArtifactExporter(unittest.TestCase):
         zip_and_upload_mock.assert_not_called()
         rmtree_mock.assert_not_called()
         is_zipfile_mock.assert_called_once_with(original_path)
-        assert resource_dict[resource.PROPERTY_NAME] == s3_url
+        assert_equal(resource_dict[resource.PROPERTY_NAME], s3_url)
 
     @mock.patch("awscli.customizations.cloudformation.artifact_exporter.upload_local_artifacts")
     def test_resource_empty_property_value(self, upload_local_artifacts_mock):

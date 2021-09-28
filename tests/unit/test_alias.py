@@ -98,9 +98,8 @@ class TestAliasLoader(unittest.TestCase):
         with open(self.alias_file, 'a+') as f:
             f.write(
                 'my-alias = \n'
-                '  my-alias-value \\ \n'
-                '  --parameter foo\n'
-            )
+                '  my-alias-value \ \n'
+                '  --parameter foo\n')
         alias_interface = AliasLoader(self.alias_file)
         self.assertEqual(
             alias_interface.get_aliases(),
@@ -463,7 +462,7 @@ class TestServiceAliasCommand(unittest.TestCase):
         with self.assertRaises(SystemExit):
             # Even though we catch the system exit, a message will always
             # be forced to screen because it happened at system exit.
-            # The patch is to ensure it does not get displayed.
+            # The patch is to ensure it does not get displayed by nosetests.
             with mock.patch('sys.stderr'):
                 alias_cmd([], FakeParsedArgs(command=self.alias_name))
 
@@ -479,7 +478,7 @@ class TestServiceAliasCommand(unittest.TestCase):
         with self.assertRaises(SystemExit):
             # Even though we catch the system exit, a message will always
             # be forced to screen because it happened at system exit.
-            # The patch is to ensure it does not get displayed.
+            # The patch is to ensure it does not get displayed by nosetests.
             with mock.patch('sys.stderr'):
                 alias_cmd([], FakeParsedArgs(command=self.alias_name))
 

@@ -14,7 +14,7 @@ import os
 import json
 import logging
 
-import pytest
+from nose.tools import assert_equal
 
 from awscli.testutils import mock, unittest, aws, capture_output
 from awscli.clidriver import create_clidriver
@@ -70,7 +70,7 @@ class TestIntegGenerateCliSkeleton(unittest.TestCase):
         self._assert_skeleton_matches(actual_skeleton, expected_skeleton)
 
 
-def _all_commands():
+def test_can_generate_skeletons_for_all_service_comands():
     environ = {
         'AWS_DATA_PATH': os.environ['AWS_DATA_PATH'],
         'AWS_DEFAULT_REGION': 'us-east-1',
@@ -95,14 +95,10 @@ def _all_commands():
                     op_help = sub_command.create_help_command()
                     arg_table = op_help.arg_table
                     if 'generate-cli-skeleton' in arg_table:
-                        yield command_name, sub_name
+                        yield _test_gen_skeleton, command_name, sub_name,
 
 
-@pytest.mark.parametrize(
-    "command_name, operation_name",
-    _all_commands()
-)
-def test_can_generate_skeletons_for_all_service_comands(command_name, operation_name):
+def _test_gen_skeleton(command_name, operation_name):
     command = '%s %s --generate-cli-skeleton' % (command_name,
                                                  operation_name)
     stdout, stderr, _ = _run_cmd(command)
@@ -111,9 +107,10 @@ def test_can_generate_skeletons_for_all_service_comands(command_name, operation_
         json.loads(stdout)
     except ValueError as e:
         raise AssertionError(
-            f"Could not generate CLI skeleton for command: {command_name} "
-            f"{operation_name}\n stdout:\n{stdout}\nstderr:\n{stderr}\n"
-        )
+            "Could not generate CLI skeleton for command: %s %s\n"
+            "stdout:\n%s\n"
+            "stderr:\n%s\n" % (command_name, operation_name, stdout,
+                               stderr))
 
 
 def _run_cmd(cmd, expected_rc=0):
@@ -141,8 +138,9 @@ def _run_cmd(cmd, expected_rc=0):
             rc = e.code
     stderr = captured.stderr.getvalue()
     stdout = captured.stdout.getvalue()
-    assert rc == expected_rc, (
+    assert_equal(
+        rc, expected_rc,
         "Unexpected rc (expected: %s, actual: %s) for command: %s\n"
-        "stdout:\n%sstderr:\n%s" % (expected_rc, rc, cmd, stdout, stderr)
-    )
+        "stdout:\n%sstderr:\n%s" % (
+            expected_rc, rc, cmd, stdout, stderr))
     return stdout, stderr, rc

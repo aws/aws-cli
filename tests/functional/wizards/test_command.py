@@ -40,7 +40,7 @@ class TestRunWizard(BaseAWSCommandParamsTest):
         wizard_path = os.path.join(self.tempdir, 'iam', 'test-wizard.yml')
         with open(wizard_path, 'w') as f:
             f.write(
-                'version: "0.9"\n'
+                'version: "0.1"\n'
                 'plan:\n'
                 '  start:\n'
                 '    values:\n'
@@ -64,7 +64,7 @@ class TestRunWizard(BaseAWSCommandParamsTest):
         wizard_path = os.path.join(self.tempdir, 'iam', '_main.yml')
         with open(wizard_path, 'w') as f:
             f.write(
-                'version: "0.9"\n'
+                'version: "0.1"\n'
                 'plan:\n'
                 '  start:\n'
                 '    values:\n'
@@ -85,10 +85,10 @@ class TestRunWizard(BaseAWSCommandParamsTest):
 
 
 class TestWizardHelpCommand(BaseAWSHelpOutputTest):
-    def test_wait_help_command(self):
+    def test_wizard_help_command(self):
         self.driver.main(['iam', 'wizard', 'help'])
         self.assert_contains('new-role')
 
-    def test_wait_help_command(self):
+    def test_wizard_subcommand_help_command(self):
         self.driver.main(['iam', 'wizard', 'new-role', 'help'])
         self.assert_contains('new-role')

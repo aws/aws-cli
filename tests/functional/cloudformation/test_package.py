@@ -17,6 +17,8 @@ import tempfile
 import os
 import zipfile
 
+import pytest
+
 from unittest import TestCase
 from awscli.customizations.cloudformation.artifact_exporter import make_zip
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump
@@ -63,21 +65,26 @@ class TestPackageZipFiles(TestCase):
         self.assertEquals(data.encode("utf-8"), myfile.read())
 
 
-def test_known_templates():
+def _generate_template_cases():
     test_case_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
         'deploy_templates'
     )
+    cases = []
     for case in os.listdir(test_case_path):
         case_path = os.path.join(test_case_path, case)
-        yield (
-            _assert_input_does_match_expected_output,
-            os.path.join(case_path, 'input.yml'),
-            os.path.join(case_path, 'output.yml'),
+        cases.append(
+            (
+                os.path.join(case_path, 'input.yml'),
+                os.path.join(case_path, 'output.yml')
+             )
         )
+    return cases
 
 
-def _assert_input_does_match_expected_output(input_template, output_template):
+@pytest.mark.parametrize(
+    'input_template,output_template', _generate_template_cases())
+def test_known_templates(input_template, output_template):
     template = Template(input_template, os.getcwd(), None)
     exported = template.export()
     result = yaml_dump(exported)

@@ -10,12 +10,10 @@
 # distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from tests import CLIRunner
 
-from awscli.testutils import unittest, aws
 
-
-class TestLexV2RuntimeRemoveOperations(unittest.TestCase):
-    def test_start_conversation_removed(self):
-        result = aws('lexv2-runtime start-conversation help')
-        error_msg = 'argument operation: Invalid choice, valid choices are:'
-        self.assertIn(error_msg, result.stderr)
+def test_start_conversation_removed():
+    result = CLIRunner().run(['lexv2-runtime', 'start-conversation', 'help'])
+    expected_error = 'argument operation: Invalid choice, valid choices are:'
+    assert expected_error in result.stderr

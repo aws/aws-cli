@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 from awscli import clidriver
 from jsonschema import Draft4Validator
-from nose.tools import assert_in
+import pytest
 
 
 COMPLETIONS_SCHEMA = {
@@ -72,19 +72,23 @@ COMPLETIONS_SCHEMA = {
 }
 
 
-def test_verify_generated_completions_are_valid():
+def get_models_with_completions():
     session = clidriver.create_clidriver().session
     loader = session.get_component('data_loader')
     services_with_completions = loader.list_available_services('completions-1')
+    models = []
     for service_name in services_with_completions:
-        yield _lint_service_completions, service_name, loader
+        service_model = loader.load_service_model(service_name, 'service-2')
+        api_version = service_model['metadata']['apiVersion']
+        completions = loader.load_service_model(
+            service_name, 'completions-1', api_version)
+        models.append((service_model, completions))
+    return models
 
 
-def _lint_service_completions(service_name, loader):
-    service_model = loader.load_service_model(service_name, 'service-2')
-    api_version = service_model['metadata']['apiVersion']
-    completions = loader.load_service_model(
-        service_name, 'completions-1', api_version)
+@pytest.mark.parametrize(
+    "service_model, completions", get_models_with_completions())
+def test_verify_generated_completions_are_valid(service_model, completions):
     _validate_schema(completions)
     # Validate that every operation named in the completions
     # file references a known operation.
@@ -103,13 +107,13 @@ def _validate_schema(completions):
 def _lint_model_references(completions, service_model):
     known_operations = set(service_model['operations'])
     for op_name in completions['operations']:
-        assert_in(op_name, known_operations)
+        assert op_name in known_operations
         # We also want to ensure that all parameters in completions-1.json
         # map to an input member in the service model.
         input_shape = service_model['operations'][op_name]['input']['shape']
         input_members = service_model['shapes'][input_shape]['members']
         for param in completions['operations'][op_name]:
-            assert_in(param, input_members)
+            assert param in input_members
 
 
 def _lint_resource_references(completions, service_model):
@@ -121,9 +125,9 @@ def _lint_resource_references(completions, service_model):
             for comp_data in param_data['completions']:
                 resource_name = comp_data['resourceName']
                 resource_id = comp_data['resourceIdentifier']
-                assert_in(resource_name, resources)
+                assert resource_name in resources
                 identifiers = resources[resource_name]['resourceIdentifier']
-                assert_in(resource_id, identifiers)
+                assert resource_id in identifiers
     # We also want to lint the 'resources' key as well.
     for resource_data in resources.values():
-        assert_in(resource_data['operation'], service_model['operations'])
+        assert resource_data['operation'] in service_model['operations']

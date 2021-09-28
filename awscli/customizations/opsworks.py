@@ -304,7 +304,7 @@ class OpsWorksRegister(BasicCommand):
                 if 'PublicIpAddress' in self._ec2_instance:
                     self._use_address = self._ec2_instance['PublicIpAddress']
                 elif 'PrivateIpAddress' in self._ec2_instance:
-                    LOG.warn(
+                    LOG.warning(
                         "Instance does not have a public IP address. Trying "
                         "to use the private address to connect.")
                     self._use_address = self._ec2_instance['PrivateIpAddress']

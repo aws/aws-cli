@@ -639,7 +639,6 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             value='file:///foo',
         )
 
-    @unittest.skip
     def test_custom_arg_no_paramfile(self):
         driver = create_clidriver()
         driver.session.register(

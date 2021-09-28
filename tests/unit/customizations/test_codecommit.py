@@ -86,7 +86,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        self.assertRegexpMatches(
+        self.assertRegex(
             output, 'username={0}\npassword=.+'.format('access'))
 
     @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
@@ -95,7 +95,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        self.assertRegexpMatches(
+        self.assertRegex(
             output, 'username={0}\npassword=.+'.format('access'))
 
     @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
@@ -104,7 +104,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        self.assertRegexpMatches(
+        self.assertRegex(
             output, 'username={0}\npassword=.+'.format('access'))
 
     @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
@@ -115,7 +115,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        self.assertRegexpMatches(
+        self.assertRegex(
             output, 'username={0}\npassword=.+'.format('access'))
 
     @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
@@ -126,7 +126,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        self.assertRegexpMatches(
+        self.assertRegex(
             output, 'username={0}\npassword=.+'.format('access'))
 
     @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
@@ -137,7 +137,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        self.assertRegexpMatches(
+        self.assertRegex(
             output, 'username={0}\npassword=.+'.format('access'))
 
     @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
@@ -148,7 +148,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        self.assertRegexpMatches(
+        self.assertRegex(
             output, 'username={0}\npassword=.+'.format('access'))
 
     @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
@@ -159,7 +159,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        self.assertRegexpMatches(
+        self.assertRegex(
             output, 'username={0}\npassword=.+'.format('access'))
 
     @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
@@ -168,7 +168,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        self.assertRegexpMatches(
+        self.assertRegex(
             output, 'username={0}\npassword=.+'.format('access'))
 
     @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
@@ -192,7 +192,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command = CodeCommitGetCommand(self.session)
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        self.assertRegexpMatches(
+        self.assertRegex(
             output,
             'username={0}%{1}\npassword=.+'.format('access', 'token'))
 

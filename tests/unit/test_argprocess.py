@@ -418,7 +418,7 @@ class TestParamShorthand(BaseArgProcessTest):
     def test_csv_syntax_escaped(self):
         p = self.get_param_model('cloudformation.CreateStack.Parameters')
         returned = self.parse_shorthand(
-            p, ["ParameterKey=key,ParameterValue=foo\,bar"])
+            p, [r"ParameterKey=key,ParameterValue=foo\,bar"])
         expected = [{"ParameterKey": "key",
                      "ParameterValue": "foo,bar"}]
         self.assertEqual(returned, expected)
@@ -680,7 +680,7 @@ class TestDocGen(BaseArgProcessTest):
     def test_can_document_nested_structs(self):
         argument = self.get_param_model('ec2.RunInstances.BlockDeviceMappings')
         generated_example = self.get_generated_example_for(argument)
-        self.assertRegexpMatches(generated_example, 'Ebs={\w+=\w+')
+        self.assertRegex(generated_example, r'Ebs={\w+=\w+')
 
     def test_can_document_nested_lists(self):
         argument = self.create_argument({

@@ -2,4 +2,4 @@
 
 The following ``delete-certificate`` command deletes the certificate with the specified ARN::
 
-  aws acm delete-certificate --certificate-arn arn:aws:acm:region:acvcount:certificate/12345678-1234-1234-1234-123456789012
+  aws acm delete-certificate --certificate-arn arn:aws:acm:region:account:certificate/12345678-1234-1234-1234-123456789012

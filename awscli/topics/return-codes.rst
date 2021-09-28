@@ -6,8 +6,8 @@
 These are the following return codes returned at the end of execution
 of a CLI command:
 
-* ``0`` -- Command was successful. There were no errors thrown by either
-  the CLI or by the service the request was made to.
+* ``0`` -- Command was successful. The service responded with an HTTP response code 
+  of 200 and there were no errors from  the CLI or the service.
 
 * ``1`` -- Limited to ``s3`` commands, at least one or more s3 transfers
   failed for the command executed.

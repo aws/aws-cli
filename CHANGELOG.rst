@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.20.51
+=======
+
+* api-change:``lambda``: Adds support for Lambda functions powered by AWS Graviton2 processors. Customers can now select the CPU architecture for their functions.
+* api-change:``sesv2``: This release includes the ability to use 2048 bits RSA key pairs for DKIM in SES, either with Easy DKIM or Bring Your Own DKIM.
+* api-change:``amp``: This release adds alert manager and rule group namespace APIs
+
+
 1.20.50
 =======
 

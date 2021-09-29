@@ -11,8 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import io
-import nose
 from collections import namedtuple
+
+import pytest
 
 from botocore.exceptions import (
     NoRegionError, NoCredentialsError, ClientError,
@@ -43,13 +44,14 @@ def _assert_rc_and_error_message(case, error_handler):
         raise case.exception
     except BaseException as e:
         cr = error_handler.handle_exception(e, stdout, stderr)
-        nose.tools.eq_(cr, case.rc, case.exception.__class__)
-        nose.tools.assert_in(case.stderr, stderr.getvalue())
-        nose.tools.eq_(case.stdout, stdout.getvalue())
+        assert cr == case.rc, case.exception.__class__
+        assert case.stderr in stderr.getvalue()
+        assert case.stdout == stdout.getvalue()
 
 
-def test_cli_error_handling_chain():
-    cases = [
+@pytest.mark.parametrize(
+    "case",
+    [
         Case(Exception('error'), 255, 'error', ''),
         Case(KeyboardInterrupt(), 130, '', '\n'),
         Case(NoRegionError(), 253, 'region', ''),
@@ -66,13 +68,15 @@ def test_cli_error_handling_chain():
         Case(ParamValidationError('error'), 252, 'error', ''),
         Case(ConfigurationError('error'), 253, 'error', ''),
     ]
+)
+def test_cli_error_handling_chain(case):
     error_handler = errorhandler.construct_cli_error_handlers_chain()
-    for case in cases:
-        yield _assert_rc_and_error_message, case, error_handler
+    _assert_rc_and_error_message(case, error_handler)
 
 
-def test_cli_error_handling_chain_injection():
-    cases = [
+@pytest.mark.parametrize(
+    "case",
+    [
         Case(Exception('error'), 255, 'error', ''),
         Case(KeyboardInterrupt(), 130, '', '\n'),
         Case(NoRegionError(), 253, 'region', ''),
@@ -87,21 +91,24 @@ def test_cli_error_handling_chain_injection():
         Case(ParamValidationError('error'), 252, '', ''),
         Case(ConfigurationError('error'), 253, 'error', ''),
     ]
+)
+def test_cli_error_handling_chain_injection(case):
     error_handler = errorhandler.construct_cli_error_handlers_chain()
     error_handler.inject_handler(
         0, errorhandler.SilenceParamValidationMsgErrorHandler()
     )
-    for case in cases:
-        yield _assert_rc_and_error_message, case, error_handler
+    _assert_rc_and_error_message(case, error_handler)
 
 
-def test_entry_point_error_handling_chain():
-    cases = [
+@pytest.mark.parametrize(
+    "case",
+    [
         Case(Exception('error'), 255, 'error', ''),
         Case(KeyboardInterrupt(), 130, '', '\n'),
         Case(PrompterKeyboardInterrupt('error'), 130, 'error', ''),
         Case(ParamValidationError('error'), 252, 'error', ''),
     ]
+)
+def test_entry_point_error_handling_chain(case):
     error_handler = errorhandler.construct_entry_point_handlers_chain()
-    for case in cases:
-        yield _assert_rc_and_error_message, case, error_handler
+    _assert_rc_and_error_message(case, error_handler)

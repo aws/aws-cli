@@ -10,8 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from nose.tools import assert_in, assert_true
-
 from awscli.autocomplete import main, generator
 from awscli.autocomplete.local import indexer
 from awscli import clidriver
@@ -40,13 +38,13 @@ def test_smoke_test_completer():
         # The API can change so we won't assert a specific list, but we'll
         # pick a few operations that we know will always be there.
         completion_strings = [c.name for c in completions]
-        assert_in('describe-instances', completion_strings)
-        assert_in('describe-regions', completion_strings)
+        assert 'describe-instances' in completion_strings
+        assert 'describe-regions' in completion_strings
 
         completions = _autocomplete(f.name, 'aws dynamodb describe-tab')
         completion_strings = [c.name for c in completions]
-        assert_true(all(completion.startswith('describe-table')
-                        for completion in completion_strings))
+        assert all(completion.startswith('describe-table')
+                   for completion in completion_strings)
 
 
 def _autocomplete(filename, command_line):

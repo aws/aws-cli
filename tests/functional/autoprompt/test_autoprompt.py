@@ -1,6 +1,7 @@
 import mock
-import nose
 import os
+
+import pytest
 
 from awscli.clidriver import create_clidriver
 from awscli.testutils import FileCreator
@@ -43,12 +44,9 @@ def set_env_var(environ, env_var=None):
     return environ
 
 
-def test_autoprompt_config_provider():
-    # Each case is a 3-tuple with the following meaning:
-    # First index is the config value. None means not specified.
-    # Second index is the environment variable. None means not set.
-    # The third index is the expected configuration value.
-    cases = [
+@pytest.mark.parametrize(
+    "config,env_var,expected_result",
+    [
         ('on', 'on', 'on'),
         ('on', 'off', 'off'),
         ('on', None, 'on'),
@@ -59,17 +57,16 @@ def test_autoprompt_config_provider():
         (None, 'off', 'off'),
         (None, None, 'off'),
     ]
-    for case in cases:
-        config, env_var, expected_result = case
-        try:
-            driver, environ_patch, files = set_up(config, env_var)
-            yield (_assert_auto_prompt_configures_as_expected, driver,
-                   expected_result)
-        finally:
-            environ_patch.stop()
-            files.remove_all()
+)
+def test_autoprompt_config_provider(config, env_var, expected_result):
+    try:
+        driver, environ_patch, files = set_up(config, env_var)
+        _assert_auto_prompt_configures_as_expected(driver, expected_result)
+    finally:
+        environ_patch.stop()
+        files.remove_all()
 
 
 def _assert_auto_prompt_configures_as_expected(driver, expected_result):
     actual = driver.session.get_config_variable('cli_auto_prompt')
-    nose.tools.eq_(actual, expected_result)
+    assert actual == expected_result

@@ -12,7 +12,8 @@
 # language governing permissions and limitations under the License.
 import copy
 from functools import partial
-from nose.tools import assert_equal, assert_is_instance, assert_true
+
+import pytest
 
 from awscli.testutils import unittest
 from awscli.autocomplete import parser
@@ -113,8 +114,26 @@ SAMPLE_MODEL = InMemoryIndex(
     },
 )
 
-
-def test_can_handle_arbitrary_ordering():
+@pytest.mark.parametrize(
+    'command_line',
+    [
+        ('aws ec2 stop-instances '
+         '--instance-ids i-123 i-124 --foo-arg value --debug '
+         '--endpoint-url https://foo '),
+        ('aws --debug ec2 stop-instances '
+         '--instance-ids i-123 i-124 --foo-arg value '
+         '--endpoint-url https://foo '),
+        ('aws --endpoint-url https://foo --debug ec2 stop-instances '
+         '--instance-ids i-123 i-124 --foo-arg value '),
+        ('aws ec2 --debug --endpoint-url https://foo stop-instances '
+         '--instance-ids i-123 i-124 --foo-arg value '),
+        ('aws ec2 stop-instances --debug --endpoint-url https://foo '
+         '--instance-ids i-123 i-124 --foo-arg value '),
+        ('aws ec2 --endpoint-url https://foo stop-instances --debug '
+         '--instance-ids i-123 i-124 --foo-arg value '),
+    ]
+)
+def test_can_handle_arbitrary_ordering(command_line):
     # This test verifies that parse to the same result given a command
     # with its arguments in varying orders.  For more detailed testing,
     # see TestCanParseCLICommand below.
@@ -126,21 +145,7 @@ def test_can_handle_arbitrary_ordering():
         lineage=['aws', 'ec2'],
         current_fragment='',
     )
-    test = partial(_assert_parses_to, expected=expected)
-    yield test, ('aws ec2 stop-instances '
-                 '--instance-ids i-123 i-124 --foo-arg value --debug '
-                 '--endpoint-url https://foo ')
-    yield test, ('aws --debug ec2 stop-instances '
-                 '--instance-ids i-123 i-124 --foo-arg value '
-                 '--endpoint-url https://foo ')
-    yield test, ('aws --endpoint-url https://foo --debug ec2 stop-instances '
-                 '--instance-ids i-123 i-124 --foo-arg value ')
-    yield test, ('aws ec2 --debug --endpoint-url https://foo stop-instances '
-                 '--instance-ids i-123 i-124 --foo-arg value ')
-    yield test, ('aws ec2 stop-instances --debug --endpoint-url https://foo '
-                 '--instance-ids i-123 i-124 --foo-arg value ')
-    yield test, ('aws ec2 --endpoint-url https://foo stop-instances --debug '
-                 '--instance-ids i-123 i-124 --foo-arg value ')
+    _assert_parses_to(command_line, expected)
 
 
 def _assert_parses_to(command_line, expected):
@@ -148,11 +153,22 @@ def _assert_parses_to(command_line, expected):
     result = p.parse(command_line)
     for key, value in vars(expected).items():
         actual = getattr(result, key)
-        assert_equal(getattr(result, key), value, '%r != %r for attribute: %r'
-                     % (actual, value, key))
+        assert getattr(result, key) == value, (
+            '%r != %r for attribute: %r' % (actual, value, key))
 
 
-def test_properties_of_unparsed_results():
+def _generate_command_chunks():
+    command_line = (
+        'aws ec2 stop-instances --instance-ids i-123 i-124 '
+        '--foo-arg value --debug --endpoint-url https://foo'
+    )
+    return [
+        command_line[:i] for i in range(1, len(command_line))
+    ]
+
+
+@pytest.mark.parametrize("chunk", _generate_command_chunks())
+def test_properties_of_unparsed_results(chunk):
     # The parser should never raise an exception.  If it can't
     # understand something it should still return a ParsedResult
     # with the parts it doesn't understand addded to the unparsed_items
@@ -160,29 +176,23 @@ def test_properties_of_unparsed_results():
     # we can verify which are called out in the tests below.
     # This test ensures that at every single slice of the full command_line
     # we always produce a sensical ParsedResult.
-    command_line = (
-        'aws ec2 stop-instances --instance-ids i-123 i-124 '
-        '--foo-arg value --debug --endpoint-url https://foo'
-    )
     cli_parser = parser.CLIParser(SAMPLE_MODEL)
-    for i in range(1, len(command_line)):
-        chunk = command_line[:i]
-        yield _assert_parsed_properties, chunk, cli_parser
+    _assert_parsed_properties(chunk, cli_parser)
 
 
 def _assert_parsed_properties(chunk, cli_parser):
     result = cli_parser.parse(chunk)
-    assert_is_instance(result, parser.ParsedResult)
+    assert isinstance(result, parser.ParsedResult)
     if chunk[-1].isspace():
         # If there's a space as the last char, then we should have
         # a current_fragment of an empty string.  This results in
         # all results being returned from the prefix match in the
         # auto-completer.
-        assert_equal(result.current_fragment, '')
+        assert result.current_fragment == ''
     elif result.current_fragment is not None:
         # The current_fragment, if not None is always the last part
         # of the command line.
-        assert_true(chunk.endswith(result.current_fragment))
+        assert chunk.endswith(result.current_fragment)
 
 
 class TestCanParseCLICommand(unittest.TestCase):

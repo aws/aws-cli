@@ -23,7 +23,7 @@ from prompt_toolkit.layout import walk
 
 from tests import (
     PromptToolkitApplicationStubber as ApplicationStubber,
-    FakeApplicationOutput
+    FakeApplicationOutput, FakeApplicationInput
 )
 from awscli.customizations.wizard.factory import create_wizard_app
 from awscli.customizations.wizard.app import (
@@ -67,7 +67,9 @@ class BaseWizardApplicationTest(unittest.TestCase):
         self.definition = self.get_definition()
         self.session = mock.Mock(spec=Session)
         self.app = create_wizard_app(
-            self.definition, self.session, FakeApplicationOutput())
+            self.definition, self.session, FakeApplicationOutput(),
+            app_input=FakeApplicationInput()
+        )
         self.stubbed_app = ApplicationStubber(self.app)
 
     def get_definition(self):

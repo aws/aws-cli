@@ -142,7 +142,7 @@ class TestPush(unittest.TestCase):
     def test_validate_args_default_description(self):
         self.args.description = None
         self.push._validate_args(self.args)
-        self.assertRegexpMatches(
+        self.assertRegex(
             self.args.description,
             'Uploaded by AWS CLI .* UTC'
         )

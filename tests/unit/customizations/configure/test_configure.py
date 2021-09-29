@@ -155,7 +155,7 @@ class TestInteractivePrompter(unittest.TestCase):
         # We should also not display the entire access key.
         prompt_text = self.stdout.getvalue()
         self.assertNotIn('myaccesskey', prompt_text)
-        self.assertRegexpMatches(prompt_text, r'\[\*\*\*\*.*\]')
+        self.assertRegex(prompt_text, r'\[\*\*\*\*.*\]')
 
     def test_access_key_not_masked_when_none(self):
         self.mock_raw_input.return_value = 'foo'
@@ -177,7 +177,7 @@ class TestInteractivePrompter(unittest.TestCase):
         # We should also not display the entire secret key.
         prompt_text = self.stdout.getvalue()
         self.assertNotIn('mysupersecretkey', prompt_text)
-        self.assertRegexpMatches(prompt_text, r'\[\*\*\*\*.*\]')
+        self.assertRegex(prompt_text, r'\[\*\*\*\*.*\]')
 
     def test_non_secret_keys_are_not_masked(self):
         prompter = configure.InteractivePrompter()
@@ -187,7 +187,7 @@ class TestInteractivePrompter(unittest.TestCase):
         # We should also not display the entire secret key.
         prompt_text = self.stdout.getvalue()
         self.assertIn('mycurrentvalue', prompt_text)
-        self.assertRegexpMatches(prompt_text, r'\[mycurrentvalue\]')
+        self.assertRegex(prompt_text, r'\[mycurrentvalue\]')
 
     def test_user_hits_enter_returns_none(self):
         # If a user hits enter, then raw_input returns the empty string.

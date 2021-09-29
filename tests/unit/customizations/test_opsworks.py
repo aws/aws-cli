@@ -502,7 +502,7 @@ class TestOpsWorksRegister(TestOpsWorksBase):
         self.assertEqual(cmd[0], "ssh")
         self.assertEqual(cmd[1], "-tt")
         self.assertEqual(cmd[2], "ip")
-        self.assertRegexpMatches(cmd[3], r"/bin/sh -c ")
+        self.assertRegex(cmd[3], r"/bin/sh -c ")
 
     @mock.patch.object(opsworks, "platform")
     @mock.patch.object(opsworks, "subprocess")
@@ -529,7 +529,7 @@ class TestOpsWorksRegister(TestOpsWorksBase):
         self.register.setup_target_machine(args)
 
         cmd = mock_subprocess.check_call.call_args[0][0]
-        self.assertRegexpMatches(cmd, r'^plink ".*" -m ".*"$')
+        self.assertRegex(cmd, r'^plink ".*" -m ".*"$')
 
     @mock.patch.object(opsworks, "subprocess")
     def test_setup_target_machine_local(self, mock_subprocess):

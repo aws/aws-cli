@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 from decimal import Decimal
 
-from nose.tools import assert_equal, assert_raises, assert_in
+import pytest
 
 from awscli.customizations.dynamodb.exceptions import (
     LexerError, EmptyExpressionError,
@@ -20,8 +20,12 @@ from awscli.customizations.dynamodb.exceptions import (
 from awscli.customizations.dynamodb.lexer import Lexer
 
 
-def test_lexer():
-    cases = [
+STRING_TOKENS = ['and', 'between', 'in', 'or', 'not']
+
+
+@pytest.mark.parametrize(
+    'case',
+    [
         ('foo', [{'type': 'unquoted_identifier', 'value': 'foo'}]),
         ("'foo'", [{'type': 'identifier', 'value': 'foo'}]),
         ("'f\\'oo'", [{'type': 'identifier', 'value': "f'oo"}]),
@@ -53,66 +57,77 @@ def test_lexer():
         ('false', [{'type': 'literal', 'value': False}]),
         ('null', [{'type': 'literal', 'value': None}]),
     ]
-
-    tester = LexTester()
-    for case in cases:
-        yield tester.assert_tokens, case[0], case[1]
-
-    simple_tokens = {
-        '.': 'dot',
-        ',': 'comma',
-        ':': 'colon',
-        '(': 'lparen',
-        ')': 'rparen',
-        '{': 'lbrace',
-        '}': 'rbrace',
-        '[': 'lbracket',
-        ']': 'rbracket',
-        '=': 'eq',
-        '>': 'gt',
-        '>=': 'gte',
-        '<': 'lt',
-        '<=': 'lte',
-        '<>': 'ne',
-    }
-    for token, token_type  in simple_tokens.items():
-        expected = [{'type': token_type, 'value': token}]
-        yield tester.assert_tokens, token, expected
-
-    string_tokens = ['and', 'between', 'in', 'or', 'not']
-    for token in string_tokens:
-        expected = [{'type': token, 'value': token}]
-        yield tester.assert_tokens, token, expected
-
-        expected = [{'type': token, 'value': token.upper()}]
-        yield tester.assert_tokens, token.upper(), expected
-
-        expected = [{'type': token, 'value': token.capitalize()}]
-        yield tester.assert_tokens, token.capitalize(), expected
+)
+def test_lexer(case):
+    LexTester().assert_tokens(case[0], case[1])
 
 
-def test_lexer_error():
-    cases = {
-        "'": "'\n^",
-        '"': '"\n^',
-        '-': '-\n^',
-        '1e-': '1e-\n  ^',
-        '1ex': '1ex\n  ^',
-        '1.': '1.\n ^',
-        '1.x': '1.x\n  ^',
-        '&': '&\n^',
-        '|': '|\n^',
-        'b"': 'b"\n ^',
-        'b"&"': 'b"&"\n^',
+@pytest.mark.parametrize(
+    "token,expected_token_type",
+    [
+        ('.', 'dot'),
+        (',', 'comma'),
+        (':', 'colon'),
+        ('(', 'lparen'),
+        (')', 'rparen'),
+        ('{', 'lbrace'),
+        ('}', 'rbrace'),
+        ('[', 'lbracket'),
+        (']', 'rbracket'),
+        ('=', 'eq'),
+        ('>', 'gt'),
+        ('>=', 'gte'),
+        ('<', 'lt'),
+        ('<=', 'lte'),
+        ('<>', 'ne'),
+    ]
+)
+def test_simple_tokens(token, expected_token_type):
+    LexTester().assert_tokens(
+        token, [{'type': expected_token_type, 'value': token}])
+
+
+@pytest.mark.parametrize("token", STRING_TOKENS)
+def test_string_token(token):
+    LexTester().assert_tokens(token, [{'type': token, 'value': token}])
+
+
+@pytest.mark.parametrize("token", STRING_TOKENS)
+def test_string_token_upper(token):
+    LexTester().assert_tokens(
+        token.upper(), [{'type': token, 'value': token.upper()}])
+
+
+@pytest.mark.parametrize("token", STRING_TOKENS)
+def test_string_token_capitalize(token):
+    LexTester().assert_tokens(
+        token.capitalize(), [{'type': token, 'value': token.capitalize()}])
+
+
+def test_lexer_empty_error():
+    LexTester().assert_empty_error('')
+
+
+@pytest.mark.parametrize(
+    "expression,error_part",
+    [
+        ("'", "'\n^"),
+        ('"', '"\n^'),
+        ('-', '-\n^'),
+        ('1e-', '1e-\n  ^'),
+        ('1ex', '1ex\n  ^'),
+        ('1.', '1.\n ^'),
+        ('1.x', '1.x\n  ^'),
+        ('&', '&\n^'),
+        ('|', '|\n^'),
+        ('b"', 'b"\n ^'),
+        ('b"&"', 'b"&"\n^'),
         # Invalid padding
-        'b"898989;;"': 'b"898989;;"\n^',
-    }
-
-    tester = LexTester()
-    yield tester.assert_empty_error, ''
-
-    for expression, error_part in cases.items():
-        yield tester.assert_lex_error, expression, error_part
+        ('b"898989;;"', 'b"898989;;"\n^'),
+    ]
+)
+def test_lexer_error(expression, error_part):
+    LexTester().assert_lex_error(expression, error_part)
 
 
 class LexTester(object):
@@ -124,8 +139,8 @@ class LexTester(object):
         simple_tokens = [
             {'type': t['type'], 'value': t['value']} for t in actual
         ]
-        assert_equal(simple_tokens.pop()['type'], 'eof')
-        assert_equal(simple_tokens, expected)
+        assert simple_tokens.pop()['type'] == 'eof'
+        assert simple_tokens == expected
 
     def assert_lex_error(self, expression, error_part):
         try:
@@ -134,8 +149,8 @@ class LexTester(object):
                 'LexerError not raised for expression: %s' % expression
             )
         except LexerError as e:
-            assert_in(error_part, str(e))
+            assert error_part in str(e)
 
     def assert_empty_error(self, expression):
-        with assert_raises(EmptyExpressionError):
+        with pytest.raises(EmptyExpressionError):
             list(self.lexer.tokenize(expression))

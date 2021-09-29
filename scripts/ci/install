@@ -15,15 +15,7 @@ def run(command):
     return check_call(command, shell=True)
 
 
-try:
-    # Has the form "major.minor"
-    python_version = os.environ['PYTHON_VERSION']
-except KeyError:
-    python_version = '.'.join([str(i) for i in sys.version_info[:2]])
-
-
 run('pip install -r requirements.txt')
-run('pip install coverage')
 if os.path.isdir('dist') and os.listdir('dist'):
     shutil.rmtree('dist')
 run('python -m build --no-isolation')

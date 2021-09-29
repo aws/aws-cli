@@ -12,16 +12,14 @@
 # language governing permissions and limitations under the License.
 
 from awscli.customizations.emr.emrutils import which
-from nose.tools import assert_equal
-from nose.tools import assert_not_equal
 
 
 class TestEMRutils(object):
 
     def test_which_with_existing_command(self):
         pythonPath = which('python') or which('python.exe')
-        assert_not_equal(pythonPath, None)
+        assert pythonPath is not None
 
     def test_which_with_non_existing_command(self):
         path = which('klajsflklj')
-        assert_equal(path, None)
+        assert path is None

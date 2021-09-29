@@ -30,7 +30,7 @@ from awscli.autoprompt.prompttoolkit import (
 from awscli.autoprompt.history import HistoryDriver
 from awscli.testutils import unittest, mock, FileCreator, cd
 from tests import PromptToolkitApplicationStubber as ApplicationStubber
-from tests import FakeApplicationOutput
+from tests import FakeApplicationOutput, FakeApplicationInput
 
 
 def _ec2_only_command_table(command_table, **kwargs):
@@ -106,7 +106,8 @@ class BasicPromptToolkitTest(unittest.TestCase):
             driver=self.driver,
             factory=self.factory,
             cli_parser=self.cli_parser,
-            output=FakeApplicationOutput()
+            output=FakeApplicationOutput(),
+            app_input=FakeApplicationInput(),
         )
         self.prompter.args = []
         self.prompter.input_buffer = self.factory.create_input_buffer()

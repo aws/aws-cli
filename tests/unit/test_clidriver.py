@@ -516,10 +516,6 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         argument = CustomArgument('unknown-arg', {})
         argument.add_to_arg_table(argument_table)
 
-    def inject_new_param_no_paramfile(self, argument_table, **kwargs):
-        argument = CustomArgument('unknown-arg', no_paramfile=True)
-        argument.add_to_arg_table(argument_table)
-
     def inject_command(self, command_table, session, **kwargs):
         command = FakeCommand(session)
         command.NAME = 'foo'
@@ -638,18 +634,6 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             service_name='custom',
             value='file:///foo',
         )
-
-    @unittest.skip
-    def test_custom_arg_no_paramfile(self):
-        driver = create_clidriver()
-        driver.session.register(
-            'building-argument-table', self.inject_new_param_no_paramfile)
-
-        self.patch_make_request()
-        rc = driver.main(
-            'ec2 describe-instances --unknown-arg file:///foo'.split())
-
-        self.assertEqual(rc, 0)
 
     def test_custom_command_schema(self):
         driver = create_clidriver()

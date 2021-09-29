@@ -63,9 +63,9 @@ class TestConfigureCommand(unittest.TestCase):
         self.env_vars.pop('AWS_SECRET_ACCESS_KEY', None)
         p = aws('configure list', env_vars=self.env_vars)
         self.assert_no_errors(p)
-        self.assertRegexpMatches(p.stdout, r'access_key.+config-file')
-        self.assertRegexpMatches(p.stdout, r'secret_key.+config-file')
-        self.assertRegexpMatches(p.stdout, r'region\s+us-west-2\s+config-file')
+        self.assertRegex(p.stdout, r'access_key.+config-file')
+        self.assertRegex(p.stdout, r'secret_key.+config-file')
+        self.assertRegex(p.stdout, r'region\s+us-west-2\s+config-file')
 
     def test_get_command(self):
         self.set_config_file_contents(

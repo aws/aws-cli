@@ -4,22 +4,31 @@
 # binary package not from the CWD.
 
 import os
-import sys
-
-import pytest
+from contextlib import contextmanager
+from subprocess import check_call
 
 _dname = os.path.dirname
 
 REPO_ROOT = _dname(_dname(_dname(os.path.abspath(__file__))))
-os.chdir(os.path.join(REPO_ROOT, 'tests'))
 
 
-def main():
-    args = ['-v', 'integration/']
-    print(f'Running py.test with args: {args}')
-    os.environ['TESTS_REMOVE_REPO_ROOT_FROM_PATH'] = 'true'
-    return pytest.main(args)
+@contextmanager
+def cd(path):
+    """Change directory while inside context manager."""
+    cwd = os.getcwd()
+    try:
+        os.chdir(path)
+        yield
+    finally:
+        os.chdir(cwd)
 
 
-if __name__ == '__main__':
-    sys.exit(main())
+def run(command):
+    env = os.environ.copy()
+    env['TESTS_REMOVE_REPO_ROOT_FROM_PATH'] = 'true'
+    return check_call(command, shell=True, env=env)
+
+
+if __name__ == "__main__":
+    with cd(os.path.join(REPO_ROOT, "tests")):
+        run(f"{REPO_ROOT}/scripts/ci/run-tests integration")

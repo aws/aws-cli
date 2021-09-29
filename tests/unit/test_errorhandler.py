@@ -46,7 +46,7 @@ def _assert_rc_and_error_message(case, error_handler):
         cr = error_handler.handle_exception(e, stdout, stderr)
         assert cr == case.rc, case.exception.__class__
         assert case.stderr in stderr.getvalue()
-        assert case.stdout in stdout.getvalue()
+        assert case.stdout == stdout.getvalue()
 
 
 @pytest.mark.parametrize(

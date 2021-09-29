@@ -35,7 +35,11 @@ def process_args(args):
     runner = args.test_runner
     test_args = ""
     if args.with_cov:
-        test_args += f"--cov={PACKAGE} --cov-report xml "
+        test_args += (
+            f"--cov={PACKAGE} "
+            f"--cov-config={os.path.join(REPO_ROOT, '.coveragerc')} "
+            f"--cov-report xml "
+        )
     dirs = " ".join(args.test_dirs)
 
     return runner, test_args, dirs

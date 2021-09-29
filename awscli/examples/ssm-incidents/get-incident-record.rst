@@ -1,6 +1,6 @@
 **To get an incident record**
 
-The following ``command-name`` example gets details about the specified incident record. ::
+The following ``get-incident-record`` example gets details about the specified incident record. ::
 
     aws ssm-incidents get-incident-record \
         --arn "arn:aws:ssm-incidents::111122223333:incident-record/Example-Response-Plan/6ebcc812-85f5-b7eb-8b2f-283e4d844308"

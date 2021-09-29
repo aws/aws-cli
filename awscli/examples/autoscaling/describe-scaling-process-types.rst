@@ -21,6 +21,9 @@ Output::
                 "ProcessName": "HealthCheck"
             },
             {
+                "ProcessName": "InstanceRefresh"
+            },
+            {
                 "ProcessName": "Launch"
             },
             {

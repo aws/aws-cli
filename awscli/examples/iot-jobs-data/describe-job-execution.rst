@@ -4,7 +4,8 @@ The following ``describe-job-execution`` example retrieves the details of the la
 
     aws iot-jobs-data describe-job-execution \
         --job-id SampleJob \
-        --thing-name MotionSensor1 
+        --thing-name MotionSensor1 \
+        --endpoint-url https://1234567890abcd.jobs.iot.us-west-2.amazonaws.com
 
 Output::
 

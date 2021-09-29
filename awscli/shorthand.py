@@ -71,7 +71,7 @@ class ShorthandParseError(Exception):
             num_spaces = self.index - last_newline - 1
         if '\n' in self.value[self.index:]:
             # If there's newline in the remaining, divide value
-            # into consumed and remainig
+            # into consumed and remaining
             # foo==bar,\n
             #     ^
             # bar=baz

@@ -106,7 +106,7 @@ class TestIgnoreCtrlC(unittest.TestCase):
             # Should have the noop signal handler installed.
             self.assertEqual(signal.getsignal(signal.SIGINT), signal.SIG_IGN)
             # And if we actually try to sigint ourselves, an exception
-            # should not propogate.
+            # should not propagate.
             os.kill(os.getpid(), signal.SIGINT)
 
 

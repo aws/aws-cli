@@ -847,18 +847,18 @@ class TestDirectoryCreatorSubscriber(BaseTestWithFileCreator):
         # The directory should still exist
         self.assertTrue(os.path.exists(self.directory_to_create))
 
-    def test_on_queued_failure_propogates_create_directory_error(self):
+    def test_on_queued_failure_propagates_create_directory_error(self):
         # If makedirs() raises an OSError of exception, we should
-        # propogate the exception with a better worded CreateDirectoryError.
+        # propagate the exception with a better worded CreateDirectoryError.
         with mock.patch('os.makedirs') as makedirs_patch:
             makedirs_patch.side_effect = OSError()
             with self.assertRaises(CreateDirectoryError):
                 self.subscriber.on_queued(self.future)
         self.assertFalse(os.path.exists(self.directory_to_create))
 
-    def test_on_queued_failure_propogates_clear_error_message(self):
+    def test_on_queued_failure_propagates_clear_error_message(self):
         # If makedirs() raises an OSError of exception, we should
-        # propogate the exception.
+        # propagate the exception.
         with mock.patch('os.makedirs') as makedirs_patch:
             os_error = OSError()
             os_error.errno = errno.EEXIST

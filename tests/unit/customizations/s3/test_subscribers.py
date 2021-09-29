@@ -17,6 +17,7 @@ import shutil
 import tempfile
 
 from dateutil.tz import tzlocal
+from s3transfer.crt import CRTTransferFuture, CRTTransferMeta
 from s3transfer.futures import TransferMeta, TransferFuture
 from s3transfer.manager import TransferConfig
 
@@ -52,6 +53,18 @@ class TestProvideSizeSubscriber(unittest.TestCase):
         subscriber = ProvideSizeSubscriber(10)
         subscriber.on_queued(self.transfer_future)
         self.assertEqual(self.transfer_meta.size, 10)
+
+    def test_does_not_try_to_set_size_on_crt_transfer_future(self):
+        crt_transfer_future = mock.Mock(spec=CRTTransferFuture)
+        crt_transfer_future.meta = CRTTransferMeta()
+        subscriber = ProvideSizeSubscriber(10)
+        try:
+            subscriber.on_queued(crt_transfer_future)
+        except AttributeError:
+            self.fail(
+                'Subscriber should not have used provide_transfer_size '
+                'method because it is not available'
+            )
 
 
 class OnDoneFilteredRecordingSubscriber(OnDoneFilteredSubscriber):

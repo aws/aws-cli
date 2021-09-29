@@ -1,6 +1,6 @@
 **To add a comment to a pull request**
 
-The following ``post-comment-for-pull-request`` example adds the comment "These don't appear to be used anywhere. Can we remove them?" on the change to the ``ahs_count.py`` file in a pull request with the ID of '47' in a repository named 'MyDemoRepo'. ::
+The following ``post-comment-for-pull-request`` example adds the comment "These don't appear to be used anywhere. Can we remove them?" on the change to the ``ahs_count.py`` file in a pull request with the ID of ``47`` in a repository named ``MyDemoRepo``. ::
 
     aws codecommit post-comment-for-pull-request \
         --pull-request-id "47" \
@@ -26,7 +26,9 @@ Output::
                 "creationDate": 1508369622.123,
                 "deleted": false,
                 "CommentId": "",
-                "lastModifiedDate": 1508369622.123
+                "lastModifiedDate": 1508369622.123,
+                "callerReactions": [],
+                "reactionCounts": []
             },
             "location": { 
                 "filePath": "ahs_count.py",

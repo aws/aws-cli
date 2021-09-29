@@ -163,7 +163,7 @@ For more information, see `Working with Queries in DynamoDB <https://docs.aws.am
 
 **Example 5: To query an index**
 
-The following example queries the local secondary index ``AlbumTitleIndex``. The query returns all attributes from the base table that have been projected into the local secondary index. Note that when querying a local secondary index or global secondary index, you must also provide the name of the base table using the ``table-name`` parameter.
+The following example queries the local secondary index ``AlbumTitleIndex``. The query returns all attributes from the base table that have been projected into the local secondary index. Note that when querying a local secondary index or global secondary index, you must also provide the name of the base table using the ``table-name`` parameter. ::
 
     aws dynamodb query \
         --table-name MusicCollection \

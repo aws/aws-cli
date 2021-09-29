@@ -133,7 +133,7 @@ def create_digest_traverser(cloudtrail_client, organization_client,
         LOG.debug('Loaded trail info: %s', trail_info)
         bucket = trail_info['S3BucketName']
         prefix = trail_info.get('S3KeyPrefix', None)
-        is_org_trail = trail_info['IsOrganizationTrail']
+        is_org_trail = trail_info.get('IsOrganizationTrail')
         if is_org_trail:
             if not account_id:
                 raise ParamValidationError(

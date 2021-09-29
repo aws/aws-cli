@@ -22,4 +22,4 @@ The following ``copy-snapshot`` command copies the specified unencrypted snapsho
         --source-region us-west-2 \
         --source-snapshot-id snap-066877671789bd71b \
         --encrypted \
-        --kmd-key-id alias/my-cmk
+        --kms-key-id alias/my-cmk

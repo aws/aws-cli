@@ -1,22 +1,27 @@
 **To move instances into standby mode**
 
-This example puts the specified instance into standby mode::
+This example puts the specified instance into standby mode. This is useful for updating or troubleshooting an instance that is currently in service. ::
 
-    aws autoscaling enter-standby --instance-ids i-93633f9b --auto-scaling-group-name my-auto-scaling-group --should-decrement-desired-capacity
+    aws autoscaling enter-standby \
+        --instance-ids i-061c63c5eb45f0416 \
+        --auto-scaling-group-name my-asg \
+        --should-decrement-desired-capacity
 
-The following is example output::
+Output::
 
     {
         "Activities": [
             {
-                "Description": "Moving EC2 instance to Standby: i-93633f9b",
-                "AutoScalingGroupName": "my-auto-scaling-group",
                 "ActivityId": "ffa056b4-6ed3-41ba-ae7c-249dfae6eba1",
-                "Details": {"Availability Zone": "us-west-2a"},
-                "StartTime": "2015-04-12T15:10:23.640Z",
+                "AutoScalingGroupName": "my-asg",
+                "Description": "Moving EC2 instance to Standby: i-061c63c5eb45f0416",
+                "Cause": "At 2020-10-31T20:31:00Z instance i-061c63c5eb45f0416 was moved to standby in response to a user request, shrinking the capacity from 1 to 0.",
+                "StartTime": "2020-10-31T20:31:00.949Z",
+                "StatusCode": "InProgress",
                 "Progress": 50,
-                "Cause": "At 2015-04-12T15:10:23Z instance i-93633f9b was moved to standby in response to a user request, shrinking the capacity from 2 to 1.",
-                "StatusCode": "InProgress"
+                "Details": "{\"Subnet ID\":\"subnet-6194ea3b\",\"Availability Zone\":\"us-west-2c\"}"
             }
         ]
     }
+
+For more information, see `Amazon EC2 Auto Scaling instance lifecycle <https://docs.aws.amazon.com/autoscaling/ec2/userguide/detach-instance-asg.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

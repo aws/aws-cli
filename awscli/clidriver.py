@@ -17,7 +17,6 @@ import sys
 import logging
 
 import distro
-
 import botocore.session
 from botocore import xform_name
 from botocore.compat import copy_kwargs, OrderedDict
@@ -50,7 +49,10 @@ from awscli.arguments import UnknownArgumentError
 from awscli.argprocess import unpack_argument
 from awscli.alias import AliasLoader
 from awscli.alias import AliasCommandInjector
-from awscli.logger import set_stream_logger, remove_stream_logger
+from awscli.logger import (
+    set_stream_logger, remove_stream_logger, enable_crt_logging,
+    disable_crt_logging,
+)
 from awscli.utils import emit_top_level_args_parsed_event
 from awscli.utils import OutputStreamFactory
 from awscli.utils import IMDSRegionProvider
@@ -456,6 +458,10 @@ class CLIDriver(object):
             HISTORY_RECORDER.record('CLI_ARGUMENTS', args, 'CLI')
             return command_table[parsed_args.command](remaining, parsed_args)
         except BaseException as e:
+            # when --version action executed default argparser prints out
+            # version string and calls sys.exit(0)
+            if isinstance(e, SystemExit) and e.code == 0:
+                return e.code
             LOG.debug("Exception caught in main()", exc_info=True)
             return self._error_handler.handle_exception(
                 e,
@@ -492,6 +498,7 @@ class CLIDriver(object):
             for logger_name in loggers_list:
                 set_stream_logger(logger_name, logging.DEBUG,
                                   format_string=LOG_FORMAT)
+            enable_crt_logging()
             LOG.debug("CLI version: %s", self.session.user_agent())
             LOG.debug("Arguments entered to CLI: %s", sys.argv[1:])
         else:
@@ -500,6 +507,7 @@ class CLIDriver(object):
             # debug handlers
             for logger_name in loggers_list:
                 remove_stream_logger(logger_name)
+            disable_crt_logging()
             set_stream_logger(logger_name='awscli',
                               log_level=logging.ERROR)
 

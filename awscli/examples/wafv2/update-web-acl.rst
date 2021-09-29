@@ -1,6 +1,6 @@
 **To update a web ACL**
 
-The following ``update-web-acl`` changes the high-level configuration for an existing web ACL, and leaves the rule statements unchanged. This call requires an ID, which you can obtain from the call, ``list-web-acls``, and a lock token which you can obtain from the calls, ``list-web-acls`` and ``get-web-acl``. This call also returns a lock token that you can use for a subsequent update. ::
+The following ``update-web-acl`` changes settings for an existing web ACL. This call requires an ID, which you can obtain from the call, ``list-web-acls``, and a lock token and other settings, which you can obtain from the call ``get-web-acl``. This call also returns a lock token that you can use for a subsequent update. ::
 
     aws wafv2 update-web-acl \
         --name TestWebAcl \
@@ -9,6 +9,7 @@ The following ``update-web-acl`` changes the high-level configuration for an exi
         --lock-token 2294b3a1-0000-0000-0000-a3ae04329de9 \
         --default-action Block={} \
         --visibility-config SampledRequestsEnabled=false,CloudWatchMetricsEnabled=false,MetricName=NewMetricTestWebAcl \
+        --rules file://waf-rule.json \
         --region us-west-2
 
 Output::

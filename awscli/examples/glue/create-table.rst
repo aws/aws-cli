@@ -26,6 +26,8 @@ The following ``create-table`` example creates a table in the AWS Glue Data Cata
 
 This command produces no output.
 
+For more information, see `Defining Tables in the AWS Glue Data Catalog <https://docs.aws.amazon.com/glue/latest/dg/tables-described.html>`__ in the *AWS Glue Developer Guide*.
+
 **Example 2: To create a table for a Kafka data store** 
 
 The following ``create-table`` example creates a table in the AWS Glue Data Catalog that describes a Kafka data store. ::
@@ -38,16 +40,16 @@ The following ``create-table`` example creates a table in the AWS Glue Data Cata
                     {"Name":"currenttemperature", "Type":"int"}, \
                     {"Name":"status", "Type":"string"}
                 ], \
-                "Location":"my-testing-stream", \
+                "Location":"glue-topic", \
                 "Parameters":{ \
-                    "typeOfData":"kinesis","streamName":"my-testing-stream", \
-                    "kinesisUrl":"https://kinesis.us-east-1.amazonaws.com" \
+                    "typeOfData":"kafka","topicName":"glue-topic", \
+                    "connectionName":"my-kafka-connection"
                 }, \
                 "SerdeInfo":{ \
-                    "SerializationLibrary":"org.openx.data.jsonserde.JsonSerDe"} \
+                    "SerializationLibrary":"org.apache.hadoop.hive.serde2.OpenCSVSerde"} \
                 }, \
                 "Parameters":{ \
-                    "classification":"json"} \
+                    "separatorChar":","} \
                 }' \
             --profile my-profile \
             --endpoint https://glue.us-east-1.amazonaws.com 

@@ -90,6 +90,7 @@ class TestResultSubscribers(unittest.TestCase):
             transfer_type=self.transfer_type,
             src=self.src,
             dest=self.dest,
+            size=self.size,
         )
 
     def test_on_queued(self):

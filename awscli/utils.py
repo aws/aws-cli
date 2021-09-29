@@ -23,10 +23,64 @@ import logging
 from awscli.compat import six
 from awscli.compat import get_stdout_text_writer
 from awscli.compat import get_popen_kwargs_for_pager_cmd
+from botocore.utils import resolve_imds_endpoint_mode
 from botocore.utils import IMDSFetcher
 from botocore.configprovider import BaseProvider
 
 logger = logging.getLogger(__name__)
+
+
+class PagerInitializationException(Exception):
+    pass
+
+
+class LazyStdin:
+    def __init__(self, process):
+        self._process = process
+        self._stream = None
+
+    def __getattr__(self, item):
+        if self._stream is None:
+            self._stream = self._process.initialize().stdin
+        return getattr(self._stream, item)
+
+    def flush(self):
+        # if stream has not been created yet there is no reason to create it
+        # just to call `flush`
+        if self._stream is not None:
+            return self._stream.flush()
+
+
+class LazyPager:
+    # Spin up a new process only in case it has been called or its stdin
+    # has been called
+    def __init__(self, popen, **kwargs):
+        self._popen = popen
+        self._popen_kwargs = kwargs
+        self._process = None
+        self.stdin = LazyStdin(self)
+
+    def initialize(self):
+        if self._process is None:
+            self._process = self._do_popen()
+        return self._process
+
+    def __getattr__(self, item):
+        return getattr(self.initialize(), item)
+
+    def communicate(self, *args, **kwargs):
+        # if pager process has not been created yet it means we didn't
+        # write to its stdin and there is no reason to create it just
+        # to call `communicate` so we can ignore this call
+        if self._process is not None or args or kwargs:
+            return getattr(self.initialize(), 'communicate')(*args, **kwargs)
+        return None, None
+
+    def _do_popen(self):
+        try:
+            return self._popen(**self._popen_kwargs)
+        except FileNotFoundError as e:
+            raise PagerInitializationException(e)
 
 
 class IMDSRegionProvider(BaseProvider):
@@ -76,7 +130,11 @@ class IMDSRegionProvider(BaseProvider):
         metadata_num_attempts = self._session.get_config_variable(
             'metadata_service_num_attempts')
         imds_config = {
-            'imds_use_ipv6': self._session.get_config_variable('imds_use_ipv6')
+            'ec2_metadata_service_endpoint': self._session.get_config_variable(
+                'ec2_metadata_service_endpoint'),
+            'ec2_metadata_service_endpoint_mode': resolve_imds_endpoint_mode(
+                self._session
+            )
         }
         fetcher = InstanceMetadataRegionFetcher(
             timeout=metadata_timeout,
@@ -239,6 +297,43 @@ def find_service_and_method_in_event_name(event_name):
     return service_name, operation_name
 
 
+def is_document_type(shape):
+    """Check if shape is a document type"""
+    return getattr(shape, 'is_document_type', False)
+
+
+def is_document_type_container(shape):
+    """Check if the shape is a document type or wraps document types
+
+    This is helpful to determine if a shape purely deals with document types
+    whether the shape is a document type or it is lists or maps whose base
+    values are document types.
+    """
+    if not shape:
+        return False
+    recording_visitor = ShapeRecordingVisitor()
+    ShapeWalker().walk(shape, recording_visitor)
+    end_shape = recording_visitor.visited.pop()
+    if not is_document_type(end_shape):
+        return False
+    for shape in recording_visitor.visited:
+        if shape.type_name not in ['list', 'map']:
+            return False
+    return True
+
+
+def operation_uses_document_types(operation_model):
+    """Check if document types are ever used in the operation"""
+    recording_visitor = ShapeRecordingVisitor()
+    walker = ShapeWalker()
+    walker.walk(operation_model.input_shape, recording_visitor)
+    walker.walk(operation_model.output_shape, recording_visitor)
+    for visited_shape in recording_visitor.visited:
+        if is_document_type(visited_shape):
+            return True
+    return False
+
+
 def json_encoder(obj):
     """JSON encoder that formats datetimes as ISO8601 format."""
     if isinstance(obj, datetime.datetime):
@@ -298,7 +393,7 @@ class OutputStreamFactory(object):
         if not preferred_pager:
             preferred_pager = self._get_configured_pager()
         popen_kwargs = self._get_process_pager_kwargs(preferred_pager)
-        process = self._popen(**popen_kwargs)
+        process = LazyPager(self._popen, **popen_kwargs)
         try:
             yield process.stdin
         except IOError:
@@ -358,3 +453,63 @@ def original_ld_library_path(env=None):
     finally:
         if value_to_put_back is not None:
             env['LD_LIBRARY_PATH'] = value_to_put_back
+
+
+class ShapeWalker(object):
+    def walk(self, shape, visitor):
+        """Walk through and visit shapes for introspection
+
+        :type shape: botocore.model.Shape
+        :param shape: Shape to walk
+
+        :type visitor: BaseShapeVisitor
+        :param visitor: The visitor to call when walking a shape
+        """
+
+        if shape is None:
+            return
+        stack = []
+        return self._walk(shape, visitor, stack)
+
+    def _walk(self, shape, visitor, stack):
+        if shape.name in stack:
+            return
+        stack.append(shape.name)
+        getattr(self, '_walk_%s' % shape.type_name, self._default_scalar_walk)(
+            shape, visitor, stack
+        )
+        stack.pop()
+
+    def _walk_structure(self, shape, visitor, stack):
+        self._do_shape_visit(shape, visitor)
+        for _, member_shape in shape.members.items():
+            self._walk(member_shape, visitor, stack)
+
+    def _walk_list(self, shape, visitor, stack):
+        self._do_shape_visit(shape, visitor)
+        self._walk(shape.member, visitor, stack)
+
+    def _walk_map(self, shape, visitor, stack):
+        self._do_shape_visit(shape, visitor)
+        self._walk(shape.value, visitor, stack)
+
+    def _default_scalar_walk(self, shape, visitor, stack):
+        self._do_shape_visit(shape, visitor)
+
+    def _do_shape_visit(self, shape, visitor):
+        visitor.visit_shape(shape)
+
+
+class BaseShapeVisitor(object):
+    """Visit shape encountered by ShapeWalker"""
+    def visit_shape(self, shape):
+        pass
+
+
+class ShapeRecordingVisitor(BaseShapeVisitor):
+    """Record shapes visited by ShapeWalker"""
+    def __init__(self):
+        self.visited = []
+
+    def visit_shape(self, shape):
+        self.visited.append(shape)

@@ -27,28 +27,31 @@ DEFAULT_CLUSTER_NAME = "Development Cluster"
 
 DEFAULT_INSTANCE_GROUPS_ARG = (
     'InstanceGroupType=MASTER,Name=MASTER,'
-    'InstanceCount=1,InstanceType=m1.large '
+    'InstanceCount=1,InstanceType=m1.large,CustomAmiId=ami-deadbeef '
     'InstanceGroupType=CORE,Name=CORE,'
-    'InstanceCount=1,InstanceType=m1.large '
+    'InstanceCount=1,InstanceType=m1.large,CustomAmiId=ami-deadbeef '
     'InstanceGroupType=TASK,Name=TASK,'
-    'InstanceCount=1,InstanceType=m1.large ')
+    'InstanceCount=1,InstanceType=m1.large,CustomAmiId=ami-deadpork ')
 
 DEFAULT_INSTANCE_GROUPS = \
     [{'InstanceRole': 'MASTER',
       'InstanceCount': 1,
       'Name': 'MASTER',
+      'CustomAmiId': 'ami-deadbeef',
       'Market': 'ON_DEMAND',
       'InstanceType': 'm1.large'
       },
      {'InstanceRole': 'CORE',
       'InstanceCount': 1,
       'Name': 'CORE',
+      'CustomAmiId': 'ami-deadbeef',
       'Market': 'ON_DEMAND',
       'InstanceType': 'm1.large'
       },
      {'InstanceRole': 'TASK',
       'InstanceCount': 1,
       'Name': 'TASK',
+      'CustomAmiId': 'ami-deadpork',
       'Market': 'ON_DEMAND',
       'InstanceType': 'm1.large'
       }]
@@ -557,9 +560,9 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         cmd = (
             'emr create-cluster --use-default-roles --ami-version 3.0.4 '
             '--instance-groups '
-            'InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m1.large '
-            'InstanceGroupType=CORE,InstanceCount=1,InstanceType=m1.large '
-            'InstanceGroupType=TASK,InstanceCount=1,InstanceType=m1.large ')
+            'InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m1.large,CustomAmiId=ami-deadbeef '
+            'InstanceGroupType=CORE,InstanceCount=1,InstanceType=m1.large,CustomAmiId=ami-deadbeef '
+            'InstanceGroupType=TASK,InstanceCount=1,InstanceType=m1.large,CustomAmiId=ami-deadpork ')
         self.assert_params_for_cmd(cmd, DEFAULT_RESULT)
 
     def test_instance_groups_instance_group_type_mismatch_cases(self):
@@ -567,9 +570,9 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             'emr create-cluster --use-default-roles --ami-version 3.0.4 '
             '--instance-groups '
             'Name=MASTER,InstanceGroupType=MaSter,InstanceCount=1,'
-            'InstanceType=m1.large Name=CORE,InstanceGroupType=cORE,'
-            'InstanceCount=1,InstanceType=m1.large Name=TASK,'
-            'InstanceGroupType=tAsK,InstanceCount=1,InstanceType=m1.large')
+            'InstanceType=m1.large,CustomAmiId=ami-deadbeef Name=CORE,InstanceGroupType=cORE,'
+            'InstanceCount=1,InstanceType=m1.large,CustomAmiId=ami-deadbeef Name=TASK,'
+            'InstanceGroupType=tAsK,InstanceCount=1,InstanceType=m1.large,CustomAmiId=ami-deadpork')
         self.assert_params_for_cmd(cmd, DEFAULT_RESULT)
 
     def test_instance_groups_instance_type_and_count(self):
@@ -1513,6 +1516,23 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             }
         self.assert_params_for_cmd(cmd, result)
 
+    def test_instance_fleets_with_on_demand_master_only_with_targeted_odcr(self):
+        cmd = (self.prefix + '--ami-version 3.1.0 --instance-fleets ' +
+               CONSTANTS_FLEET.INSTANCE_FLEETS_WITH_ON_DEMAND_MASTER_ONLY_WITH_TARGETED_ODCR)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceFleets':
+                                  CONSTANTS_FLEET.RES_INSTANCE_FLEETS_WITH_ON_DEMAND_MASTER_ONLY_WITH_TARGETED_ODCR
+                              },
+                'AmiVersion': '3.1.0',
+                'VisibleToAllUsers': True,
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
     def test_instance_fleets_with_spot_master_only(self):
         cmd = (self.prefix + '--ami-version 3.1.0 --instance-fleets ' +
                CONSTANTS_FLEET.INSTANCE_FLEETS_WITH_SPOT_MASTER_ONLY)
@@ -1595,6 +1615,23 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                               'TerminationProtected': False,
                               'InstanceFleets':
                                                 CONSTANTS_FLEET.RES_INSTANCE_FLEETS_WITH_SPOT_MASTER_CORE_CLUSTER
+                            },
+                'AmiVersion': '3.1.0',
+                'VisibleToAllUsers': True,
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_fleets_with_spot_master_core_cluster_multiple_custom_amis(self):
+        cmd = (self.prefix + '--ami-version 3.1.0 --instance-fleets ' +
+               CONSTANTS_FLEET.INSTANCE_FLEETS_WITH_SPOT_MASTER_CORE_CLUSTER_WITH_CUSTOM_AMI)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceFleets':
+                                                CONSTANTS_FLEET.RES_INSTANCE_FLEETS_WITH_SPOT_MASTER_CORE_CLUSTER_WITH_CUSTOM_AMI
                             },
                 'AmiVersion': '3.1.0',
                 'VisibleToAllUsers': True,

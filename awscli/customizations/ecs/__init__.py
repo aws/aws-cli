@@ -12,6 +12,9 @@
 # language governing permissions and limitations under the License.
 
 from awscli.customizations.ecs.deploy import ECSDeploy
+from awscli.customizations.ecs.executecommand import ECSExecuteCommand
+from awscli.customizations.ecs.executecommand import ExecuteCommandCaller
+
 
 def initialize(cli):
     """
@@ -19,9 +22,18 @@ def initialize(cli):
     """
     cli.register('building-command-table.ecs', inject_commands)
 
+
 def inject_commands(command_table, session, **kwargs):
     """
     Called when the ECS command table is being built. Used to inject new
     high level commands into the command list.
     """
     command_table['deploy'] = ECSDeploy(session)
+    command_table['execute-command'] = ECSExecuteCommand(
+        name='execute-command',
+        parent_name='ecs',
+        session=session,
+        operation_model=session.get_service_model('ecs')
+                    .operation_model('ExecuteCommand'),
+        operation_caller=ExecuteCommandCaller(session),
+    )

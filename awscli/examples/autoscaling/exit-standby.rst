@@ -1,22 +1,26 @@
 **To move instances out of standby mode**
 
-This example moves the specified instance out of standby mode::
+This example moves the specified instance out of standby mode. ::
 
-    aws autoscaling exit-standby --instance-ids i-93633f9b --auto-scaling-group-name my-auto-scaling-group
+    aws autoscaling exit-standby \
+        --instance-ids i-061c63c5eb45f0416 \
+        --auto-scaling-group-name my-asg
 
-The following is example output::
+Output::
 
     {
         "Activities": [
             {
-                "Description": "Moving EC2 instance out of Standby: i-93633f9b",
-                "AutoScalingGroupName": "my-auto-scaling-group",
                 "ActivityId": "142928e1-a2dc-453a-9b24-b85ad6735928",
-                "Details": {"Availability Zone": "us-west-2a"},
-                "StartTime": "2015-04-12T15:14:29.886Z",
+                "AutoScalingGroupName": "my-asg",
+                "Description": "Moving EC2 instance out of Standby: i-061c63c5eb45f0416",
+                "Cause": "At 2020-10-31T20:32:50Z instance i-061c63c5eb45f0416 was moved out of standby in response to a user request, increasing the capacity from 0 to 1.",
+                "StartTime": "2020-10-31T20:32:50.222Z",
+                "StatusCode": "PreInService",
                 "Progress": 30,
-                "Cause": "At 2015-04-12T15:14:29Z instance i-93633f9b was moved out of standby in response to a user request, increasing the capacity from 1 to 2.",
-                "StatusCode": "PreInService"
+                "Details": "{\"Subnet ID\":\"subnet-6194ea3b\",\"Availability Zone\":\"us-west-2c\"}"
             }
         ]
     }
+
+For more information, see `Temporarily removing instances from your Auto Scaling group <https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-enter-exit-standby.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

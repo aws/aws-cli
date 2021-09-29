@@ -1,10 +1,10 @@
-**To describe the Auto Scaling process types**
+**To describe the available process types**
 
-This example describes the Auto Scaling process types::
+This example describes the available process types. ::
 
     aws autoscaling describe-scaling-process-types
 
-The following is example output::
+Output::
 
     {
         "Processes": [
@@ -35,6 +35,4 @@ The following is example output::
         ]
     }
 
-For more information, see `Suspending and Resuming Scaling Processes`_ in the *Amazon EC2 Auto Scaling User Guide*.
-
-.. _`Suspending and Resuming Scaling Processes`: https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-suspend-resume-processes.html
+For more information, see `Suspending and resuming scaling processes <https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-suspend-resume-processes.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

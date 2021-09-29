@@ -14,10 +14,15 @@
 import mock
 import os
 
+from awscrt.s3 import S3RequestType, S3RequestTlsMode
+
+from awscli.customizations.s3.utils import relative_path
 from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.testutils import capture_input
 from awscli.compat import six, OrderedDict
-from tests.functional.s3 import BaseS3TransferCommandTest
+from tests.functional.s3 import (
+    BaseS3TransferCommandTest, BaseS3CLIRunnerTest, BaseCRTTransferClientTest
+)
 
 
 MB = 1024 ** 2
@@ -66,6 +71,32 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
         self.assertEqual(self.operations_called[0][1]['Key'], 'foo.txt')
         self.assertEqual(self.operations_called[0][1]['Bucket'], 'bucket')
+
+    def test_dryrun_upload(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --dryrun'
+        self.parsed_responses = []
+        stdout, _, _ = self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called, [])
+        self.assertIn(
+            f'(dryrun) upload: {relative_path(full_path)} to '
+            f's3://bucket/key.txt',
+            stdout
+        )
+
+    def test_error_on_same_line_as_status(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = f'{self.prefix} {full_path} s3://bucket-not-exist/key.txt'
+        self.http_response.status_code = 400
+        self.parsed_responses = [{'Error': {
+                                  'Code': 'BucketNotExists',
+                                  'Message': 'Bucket does not exist'}}]
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=1)
+        self.assertIn(
+            f'upload failed: {relative_path(full_path)} to '
+            's3://bucket-not-exist/key.txt An error',
+            stderr
+        )
 
     def test_upload_grants(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
@@ -202,6 +233,25 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertEqual(len(self.operations_called), 1, self.operations_called)
         self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
 
+    def test_dryrun_download(self):
+        self.parsed_responses = [self.head_object_response()]
+        target = self.files.full_path('file.txt')
+        cmdline = f'{self.prefix} s3://bucket/key.txt {target} --dryrun'
+        stdout, _, _ = self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('HeadObject', {
+                    'Bucket': 'bucket',
+                    'Key': 'key.txt',
+                })
+            ]
+        )
+        self.assertIn(
+            f'(dryrun) download: s3://bucket/key.txt to '
+            f'{relative_path(target)}',
+            stdout
+        )
+
     def test_website_redirect_ignore_paramfile(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
         cmdline = '%s %s s3://bucket/key.txt --website-redirect %s' % \
@@ -213,6 +263,25 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertEqual(
             self.operations_called[0][1]['WebsiteRedirectLocation'],
             'http://someserver'
+        )
+
+    def test_dryrun_copy(self):
+        self.parsed_responses = [self.head_object_response()]
+        cmdline = (
+            f'{self.prefix} s3://bucket/key.txt s3://bucket/key2.txt --dryrun'
+        )
+        stdout, _, _ = self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                ('HeadObject', {
+                    'Bucket': 'bucket',
+                    'Key': 'key.txt',
+                })
+            ]
+        )
+        self.assertIn(
+            '(dryrun) copy: s3://bucket/key.txt to s3://bucket/key2.txt',
+            stdout
         )
 
     def test_metadata_copy(self):
@@ -1202,6 +1271,36 @@ class TestAccesspointCPCommand(BaseCPCommandTest):
             ]
         )
 
+    def test_accepts_mrap_arns(self):
+        mrap_arn = (
+            'arn:aws:s3::123456789012:accesspoint:mfzwi23gnjvgw.mrap'
+        )
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = self.prefix
+        cmdline += ' %s' % filename
+        cmdline += ' s3://%s/mykey' % mrap_arn
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.put_object_request(mrap_arn, 'mykey')
+            ]
+        )
+
+    def test_accepts_mrap_arns_with_slash(self):
+        mrap_arn = (
+            'arn:aws:s3::123456789012:accesspoint/mfzwi23gnjvgw.mrap'
+        )
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = self.prefix
+        cmdline += ' %s' % filename
+        cmdline += ' s3://%s/mykey' % mrap_arn
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.put_object_request(mrap_arn, 'mykey')
+            ]
+        )
+
 
 class BaseCopyPropsCpCommandTest(BaseCPCommandTest):
     def setUp(self):
@@ -1807,3 +1906,260 @@ class TestCopyPropsDefaultCpCommand(BaseCopyPropsCpCommandTest):
         self.assert_in_operations_called(
             self.copy_object_request(MetadataDirective='REPLACE')
         )
+
+
+class TestCpSourceRegion(BaseS3CLIRunnerTest):
+    def test_respects_source_region_for_single_copy(self):
+        source_region = 'af-south-1'
+        cmdline = [
+            's3', 'cp', 's3://sourcebucket/key', 's3://bucket/',
+            '--region', self.region, '--source-region', source_region
+        ]
+        self.add_botocore_head_object_response()
+        self.add_botocore_copy_object_response()
+        result = self.run_command(cmdline)
+        self.assert_no_remaining_botocore_responses()
+        self.assert_operations_to_endpoints(
+            cli_runner_result=result,
+            expected_operations_to_endpoints=[
+                ('HeadObject',
+                 self.get_virtual_s3_host('sourcebucket', source_region)),
+                ('CopyObject',
+                 self.get_virtual_s3_host('bucket', self.region))
+            ]
+        )
+
+    def test_respects_source_region_for_recursive_copy(self):
+        source_region = 'af-south-1'
+        cmdline = [
+            's3', 'cp', 's3://sourcebucket/', 's3://bucket/',
+            '--region', self.region, '--source-region', source_region,
+            '--recursive'
+        ]
+        self.add_botocore_list_objects_response(['key'])
+        self.add_botocore_copy_object_response()
+        result = self.run_command(cmdline)
+        self.assert_no_remaining_botocore_responses()
+        self.assert_operations_to_endpoints(
+            cli_runner_result=result,
+            expected_operations_to_endpoints=[
+                ('ListObjectsV2',
+                 self.get_virtual_s3_host('sourcebucket', source_region)),
+                ('CopyObject',
+                 self.get_virtual_s3_host('bucket', self.region))
+            ]
+        )
+
+
+class TestCpWithCRTClient(BaseCRTTransferClientTest):
+    def test_upload_using_crt_client(self):
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = [
+            's3', 'cp', filename, 's3://bucket/key'
+        ]
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket'),
+            expected_path='/key',
+            expected_send_filepath=filename,
+        )
+
+    def test_recursive_upload_using_crt_client(self):
+        filename1 = self.files.create_file('myfile1', 'mycontent')
+        filename2 = self.files.create_file('myfile2', 'mycontent')
+        cmdline = [
+            's3', 'cp', self.files.rootdir, 's3://bucket/', '--recursive'
+        ]
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 2)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket'),
+            expected_path='/myfile1',
+            expected_send_filepath=filename1,
+        )
+        self.assert_crt_make_request_call(
+            crt_requests[1],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket'),
+            expected_path='/myfile2',
+            expected_send_filepath=filename2,
+        )
+
+    def test_download_using_crt_client(self):
+        filename = os.path.join(self.files.rootdir, 'myfile')
+        cmdline = [
+            's3', 'cp', 's3://bucket/key', filename
+        ]
+        self.add_botocore_head_object_response()
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.GET_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket'),
+            expected_path='/key',
+            expected_recv_startswith=filename,
+        )
+
+    def test_recursive_download_using_crt_client(self):
+        cmdline = [
+            's3', 'cp', 's3://bucket/', self.files.rootdir, '--recursive'
+        ]
+        self.add_botocore_list_objects_response(['key1', 'key2'])
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 2)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.GET_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket'),
+            expected_path='/key1',
+            expected_recv_startswith=os.path.join(self.files.rootdir, 'key1'),
+        )
+        self.assert_crt_make_request_call(
+            crt_requests[1],
+            expected_type=S3RequestType.GET_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket'),
+            expected_path='/key2',
+            expected_recv_startswith=os.path.join(self.files.rootdir, 'key2'),
+        )
+
+    def test_does_not_use_crt_client_for_copies(self):
+        cmdline = [
+            's3', 'cp', 's3://bucket/key', 's3://otherbucket/'
+        ]
+        self.add_botocore_head_object_response()
+        self.add_botocore_copy_object_response()
+        self.run_command(cmdline)
+        self.assertEqual(self.get_crt_make_request_calls(), [])
+        self.assert_no_remaining_botocore_responses()
+
+    def test_does_not_use_crt_client_for_streaming_upload(self):
+        cmdline = [
+            's3', 'cp', '-', 's3://bucket/key'
+        ]
+        self.add_botocore_put_object_response()
+        with mock.patch('sys.stdin', BufferedBytesIO(b'foo')):
+            self.run_command(cmdline)
+        self.assertEqual(self.get_crt_make_request_calls(), [])
+        self.assert_no_remaining_botocore_responses()
+
+    def test_does_not_use_crt_client_for_streaming_download(self):
+        cmdline = [
+            's3', 'cp', 's3://bucket/key', '-'
+        ]
+        self.add_botocore_head_object_response()
+        self.add_botocore_get_object_response()
+        self.run_command(cmdline)
+        self.assertEqual(self.get_crt_make_request_calls(), [])
+        self.assert_no_remaining_botocore_responses()
+
+    def test_respects_region_parameter(self):
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = [
+            's3', 'cp', filename, 's3://bucket/key', '--region', 'us-west-1',
+        ]
+        self.run_command(cmdline)
+        self.assert_crt_client_region('us-west-1')
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket', 'us-west-1'),
+            expected_path='/key',
+            expected_send_filepath=filename,
+        )
+
+    def test_respects_endpoint_url_parameter(self):
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = [
+            's3', 'cp', filename, 's3://bucket/key',
+            '--endpoint-url', 'https://my.endpoint.com'
+        ]
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host='my.endpoint.com',
+            expected_path='/bucket/key',
+            expected_send_filepath=filename,
+        )
+        self.assertEqual(
+            self.mock_crt_client.call_args[1]['tls_mode'],
+            S3RequestTlsMode.ENABLED
+        )
+
+    def test_can_disable_ssl_using_endpoint_url_parameter(self):
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = [
+            's3', 'cp', filename, 's3://bucket/key',
+            '--endpoint-url', 'http://my.endpoint.com'
+        ]
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host='my.endpoint.com',
+            expected_path='/bucket/key',
+            expected_send_filepath=filename,
+        )
+        self.assertEqual(
+            self.mock_crt_client.call_args[1]['tls_mode'],
+            S3RequestTlsMode.DISABLED
+        )
+
+    def test_respects_no_sign_request_parameter(self):
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = [
+            's3', 'cp', filename, 's3://bucket/key', '--no-sign-request'
+        ]
+        self.run_command(cmdline)
+        self.assert_crt_client_has_no_credential_provider()
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        # Generally the HTTP requests serialized for the CRT client will
+        # never be signed, but this is just to double check that especially
+        # for the --no-sign-request-flag
+        self.assertIsNone(
+            crt_requests[0][1]['request'].headers.get('Authorization')
+        )
+
+    @mock.patch('s3transfer.crt.ClientTlsContext')
+    def test_respects_ca_bundle_parameter(self, mock_client_tls_context_options):
+        filename = self.files.create_file('myfile', 'mycontent')
+        fake_ca_contents = b"fake ca content"
+        ca_bundle = self.files.create_file('fake_ca', fake_ca_contents, mode='wb')
+        cmdline = [
+            's3', 'cp', filename, 's3://bucket/key', '--ca-bundle', ca_bundle
+        ]
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        tls_context_options = mock_client_tls_context_options.call_args[0][0]
+        self.assertEqual(tls_context_options.ca_buffer, fake_ca_contents)
+
+    @mock.patch('s3transfer.crt.ClientTlsContext')
+    def test_respects_ca_bundle_parameter(self, mock_client_tls_context_options):
+        filename = self.files.create_file('myfile', 'mycontent')
+        ca_bundle = self.files.create_file('fake_ca', 'mycontent')
+        cmdline = [
+            's3', 'cp', filename, 's3://bucket/key', '--ca-bundle', ca_bundle, '--no-verify-ssl'
+        ]
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        tls_context_options = mock_client_tls_context_options.call_args[0][0]
+        self.assertFalse(tls_context_options.verify_peer)

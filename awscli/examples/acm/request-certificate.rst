@@ -30,4 +30,4 @@ If you are using email for validation, you can enter domain validation options t
   
 The following command opts out of certificate transparency logging when you request a new certificate::
 
-  aws acm request-certificate --domain-name www.example.com --validation-method DNS --certificate-options CertificateTransparencyLoggingPreference=DISABLED --idempotency-token 184627
+  aws acm request-certificate --domain-name www.example.com --validation-method DNS --options CertificateTransparencyLoggingPreference=DISABLED --idempotency-token 184627

@@ -25,6 +25,7 @@ from awscli.constants import (
     PARAM_VALIDATION_ERROR_RC, CONFIGURATION_ERROR_RC, CLIENT_ERROR_RC,
     GENERAL_ERROR_RC
 )
+from awscli.utils import PagerInitializationException
 from awscli.autoprompt.factory import PrompterKeyboardInterrupt
 from awscli.customizations.exceptions import (
     ParamValidationError, ConfigurationError
@@ -51,6 +52,7 @@ def construct_cli_error_handlers_chain():
         ConfigurationErrorHandler(),
         NoRegionErrorHandler(),
         NoCredentialsErrorHandler(),
+        PagerErrorHandler(),
         InterruptExceptionHandler(),
         ClientErrorHandler(),
         GeneralExceptionHandler()
@@ -113,6 +115,17 @@ class NoCredentialsErrorHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = NoCredentialsError
     RC = CONFIGURATION_ERROR_RC
     MESSAGE = '%s. You can configure credentials by running "aws configure".'
+
+
+class PagerErrorHandler(FilteredExceptionHandler):
+    EXCEPTIONS_TO_HANDLE = PagerInitializationException
+    RC = CONFIGURATION_ERROR_RC
+    MESSAGE = (
+        'Unable to redirect output to pager. Received the '
+        'following error when opening pager:\n%s\n\n'
+        'Learn more about configuring the output pager by running '
+        '"aws help config-vars".'
+    )
 
 
 class UnknownArgumentErrorHandler(FilteredExceptionHandler):

@@ -20,7 +20,7 @@ from prompt_toolkit.completion import Completer, ThreadedCompleter
 from prompt_toolkit.completion import Completion
 from prompt_toolkit.document import Document
 
-from awscli.logger import LOG_FORMAT
+from awscli.logger import LOG_FORMAT, disable_crt_logging
 from awscli.autocomplete import parser
 from awscli.autocomplete.local import model
 from awscli.autoprompt.doc import DocsGetter
@@ -210,6 +210,14 @@ class PromptToolkitPrompter:
         self._set_debug_mode()
         logging_manager = nullcontext
         if self._app.debug:
+            # NOTE: The CRT library is not integrated with the Python stdlib
+            # logger and only allows you to write to file names and
+            # stdout/stderr. Therefore we currently are unable to switch it
+            # to write logs to our promptoolkit debug buffer. So instead of
+            # letting it write to stderr and disrupting the UI, we are
+            # disabling it while in auto-prompt mode until it has
+            # integrations with the Python stdlib logger.
+            disable_crt_logging()
             logging_manager = loggers_handler_switcher
         with logging_manager():
             self._app.run(pre_run=self.pre_run)

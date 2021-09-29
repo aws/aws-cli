@@ -183,6 +183,14 @@ class TestOutput(BaseAWSCommandParamsTest):
             expected_less_flags='S'
         )
 
+    def test_raises_exception_when_pager_cannot_be_opened(self):
+        self.environ['AWS_PAGER'] = 'no-exists'
+        pager_error_message = 'Cannot open no-exists'
+        self.mock_popen.side_effect = FileNotFoundError(pager_error_message)
+        _, stderr, _ = self.run_cmd(self.cmdline, expected_rc=253)
+        self.assertIn('Unable to redirect output to pager', stderr)
+        self.assertIn(pager_error_message, stderr)
+
 
 class TestYAMLStream(BaseAWSCommandParamsTest):
     def assert_yaml_response_equal(self, response, expected):

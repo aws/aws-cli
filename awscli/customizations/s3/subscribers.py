@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import errno
+import logging
 import os
 import time
 
@@ -18,6 +19,9 @@ from botocore.utils import percent_encode_sequence
 from s3transfer.subscribers import BaseSubscriber
 
 from awscli.customizations.s3 import utils
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class CreateDirectoryError(Exception):
@@ -62,7 +66,15 @@ class ProvideSizeSubscriber(BaseSubscriber):
         self.size = size
 
     def on_queued(self, future, **kwargs):
-        future.meta.provide_transfer_size(self.size)
+        # The CRT transfer client does not support providing an expected
+        # size for the transfer. So only provide it if it is available.
+        if hasattr(future.meta, 'provide_transfer_size'):
+            future.meta.provide_transfer_size(self.size)
+        else:
+            LOGGER.debug(
+                'Not providing transfer size. Future: %s does not offer'
+                'the capability to notify the size of a transfer', future
+            )
 
 
 class DeleteSourceSubscriber(OnDoneFilteredSubscriber):

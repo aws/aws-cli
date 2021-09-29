@@ -3,7 +3,22 @@ from io import BytesIO, TextIOWrapper
 import collections
 import copy
 import os
+import sys
 from typing import Optional, Callable
+
+# Both nose and py.test will add the first parent directory it
+# encounters that does not have a __init__.py to the sys.path. In
+# our case, this is the root of the repository. This means that Python
+# will import the awscli package from source instead of any installed
+# distribution. This environment variable provides the option to remove the
+# repository root from sys.path to be able to rely on the installed
+# distribution when running the tests.
+if os.environ.get('TESTS_REMOVE_REPO_ROOT_FROM_PATH'):
+    rootdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sys.path = [
+        path for path in sys.path
+        if not os.path.isdir(path) or not os.path.samefile(path, rootdir)
+    ]
 
 import awscli
 from awscli.clidriver import create_clidriver, AWSCLIEntryPoint
@@ -207,9 +222,10 @@ class HTTPResponse(BaseResponse):
             headers = {}
         self.headers = headers
         self.body = body
-        # Botocore's interface uses content instead of body so just
-        # making the content an alias to the body.
+        # Botocore's interface uses content and raw instead of body so just
+        # making the content and raw aliases to the body.
         self.content = body
+        self.raw = body
 
     def on_http_request_sent(self, request):
         return self

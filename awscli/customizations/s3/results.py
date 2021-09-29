@@ -76,11 +76,12 @@ class ShutdownThreadRequest(object):
 
 
 class BaseResultSubscriber(BaseSubscriber):
-    def __init__(self, result_queue, transfer_type, src, dest):
+    def __init__(self, result_queue, transfer_type, src, dest, size):
         self._result_queue = result_queue
         self._transfer_type = transfer_type
         self._src = src
         self._dest = dest
+        self._size = size
 
 
 class QueuedResultSubscriber(BaseResultSubscriber):
@@ -90,7 +91,7 @@ class QueuedResultSubscriber(BaseResultSubscriber):
                 transfer_type=self._transfer_type,
                 src=self._src,
                 dest=self._dest,
-                total_transfer_size=future.meta.size
+                total_transfer_size=self._size
             )
         )
 
@@ -104,7 +105,7 @@ class ProgressResultSubscriber(BaseResultSubscriber):
                 dest=self._dest,
                 bytes_transferred=bytes_transferred,
                 timestamp=time.time(),
-                total_transfer_size=future.meta.size
+                total_transfer_size=self._size
             )
         )
 

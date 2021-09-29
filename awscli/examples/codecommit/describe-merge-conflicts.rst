@@ -4,7 +4,7 @@ The following ``describe-merge-conflicts`` example determines the merge conflict
 
     aws codecommit describe-merge-conflicts \
         --source-commit-specifier feature-randomizationfeature \
-        --destination-commit-specifier master \
+        --destination-commit-specifier main \
         --merge-option THREE_WAY_MERGE \
         --file-path readme.md \
         --repository-name MyDemoRepo

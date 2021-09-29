@@ -18,17 +18,20 @@ import os
 import shlex
 
 import botocore
+import botocore.model
 import botocore.session as session
 from botocore.exceptions import ConnectionClosedError
 from awscli.clidriver import create_clidriver
 from awscli.testutils import unittest, skip_if_windows, mock
 from awscli.compat import is_windows
-from awscli.utils import (split_on_commas, ignore_ctrl_c,
-                          find_service_and_method_in_event_name,
-                          OutputStreamFactory)
+from awscli.utils import (
+    split_on_commas, ignore_ctrl_c, find_service_and_method_in_event_name,
+    is_document_type, is_document_type_container,
+    operation_uses_document_types, ShapeWalker, ShapeRecordingVisitor,
+    OutputStreamFactory, LazyPager
+)
 from awscli.utils import InstanceMetadataRegionFetcher
 from awscli.utils import IMDSRegionProvider
-from awscli.utils import original_ld_library_path
 from tests import RawResponse
 
 
@@ -116,31 +119,6 @@ class TestIgnoreCtrlC(unittest.TestCase):
             os.kill(os.getpid(), signal.SIGINT)
 
 
-class TestOriginalLDLibraryPath(unittest.TestCase):
-    def test_swaps_original_ld_library_path(self):
-        env = {'LD_LIBRARY_PATH_ORIG': '/my/original',
-               'LD_LIBRARY_PATH': '/pyinstallers/version'}
-        with original_ld_library_path(env):
-            self.assertEqual(env['LD_LIBRARY_PATH'],
-                             '/my/original')
-        self.assertEqual(env['LD_LIBRARY_PATH'],
-                            '/pyinstallers/version')
-
-    def test_no_ld_library_path_original(self):
-        env = {'LD_LIBRARY_PATH': '/pyinstallers/version'}
-        with original_ld_library_path(env):
-            self.assertIsNone(env.get('LD_LIBRARY_PATH'))
-        self.assertEqual(env['LD_LIBRARY_PATH'],
-                            '/pyinstallers/version')
-
-    def test_no_ld_library_path(self):
-        env = {'OTHER_VALUE': 'foo'}
-        with original_ld_library_path(env):
-            self.assertIsNone(env.get('LD_LIBRARY_PATH'))
-            self.assertEqual(env, {'OTHER_VALUE': 'foo'})
-        self.assertEqual(env, {'OTHER_VALUE': 'foo'})
-
-
 class TestFindServiceAndOperationNameFromEvent(unittest.TestCase):
     def test_finds_service_and_operation_name(self):
         event_name = "foo.bar.baz"
@@ -211,51 +189,51 @@ class TestOutputStreamFactory(unittest.TestCase):
 
     def test_pager(self):
         self.set_session_pager('mypager --option')
-        with self.stream_factory.get_pager_stream():
+        with self.stream_factory.get_pager_stream() as stream:
+            stream.write()
             self.assert_popen_call(
                 expected_pager_cmd='mypager --option'
             )
 
     def test_explicit_pager(self):
         self.set_session_pager('sessionpager --option')
-        with self.stream_factory.get_pager_stream('mypager --option'):
+        with self.stream_factory.get_pager_stream('mypager --option') as stream:
+            stream.write()
             self.assert_popen_call(
                 expected_pager_cmd='mypager --option'
             )
 
     def test_exit_of_context_manager_for_pager(self):
         self.set_session_pager('mypager --option')
-        with self.stream_factory.get_pager_stream():
-            pass
+        with self.stream_factory.get_pager_stream() as stream:
+            stream.write()
         returned_process = self.popen.return_value
         self.assertTrue(returned_process.communicate.called)
 
     def test_propagates_exception_from_popen(self):
         self.popen.side_effect = PopenException
         with self.assertRaises(PopenException):
-            with self.stream_factory.get_pager_stream():
-                pass
+            with self.stream_factory.get_pager_stream() as stream:
+                stream.write()
 
     @mock.patch('awscli.utils.get_stdout_text_writer')
     def test_stdout(self, mock_stdout_writer):
-        with self.stream_factory.get_stdout_stream():
+        with self.stream_factory.get_stdout_stream() as stream:
+            stream.write()
             self.assertTrue(mock_stdout_writer.called)
 
     def test_can_silence_io_error_from_pager(self):
         self.popen.return_value = MockProcess()
         try:
-            # RuntimeError is caught here since a runtime error is raised
-            # when an IOError is raised before the context manager yields.
-            # If we ignore it like this we will actually see the IOError.
-            with self.assertRaises(RuntimeError):
-                with self.stream_factory.get_pager_stream():
-                    pass
+            with self.stream_factory.get_pager_stream() as stream:
+                stream.write()
         except IOError:
             self.fail('Should not raise IOError')
 
     def test_get_output_stream(self):
         self.set_session_pager('mypager --option')
-        with self.stream_factory.get_output_stream():
+        with self.stream_factory.get_output_stream() as stream:
+            stream.write()
             self.assert_popen_call(
                 expected_pager_cmd='mypager --option'
             )
@@ -263,18 +241,21 @@ class TestOutputStreamFactory(unittest.TestCase):
     @mock.patch('awscli.utils.get_stdout_text_writer')
     def test_use_stdout_if_not_tty(self, mock_stdout_writer):
         self.mock_is_a_tty.return_value = False
-        with self.stream_factory.get_output_stream():
+        with self.stream_factory.get_output_stream() as stream:
+            stream.write()
             self.assertTrue(mock_stdout_writer.called)
 
     @mock.patch('awscli.utils.get_stdout_text_writer')
     def test_use_stdout_if_pager_set_to_empty_string(self, mock_stdout_writer):
         self.set_session_pager('')
-        with self.stream_factory.get_output_stream():
+        with self.stream_factory.get_output_stream() as stream:
+            stream.write()
             self.assertTrue(mock_stdout_writer.called)
 
     def test_adds_default_less_env_vars(self):
         self.set_session_pager('myless')
-        with self.stream_factory.get_output_stream():
+        with self.stream_factory.get_output_stream() as stream:
+            stream.write()
             self.assert_popen_call(
                 expected_pager_cmd='myless',
                 env={'LESS': 'FRX'}
@@ -283,7 +264,8 @@ class TestOutputStreamFactory(unittest.TestCase):
     def test_does_not_clobber_less_env_var_if_in_env_vars(self):
         self.set_session_pager('less')
         self.environ['LESS'] = 'S'
-        with self.stream_factory.get_output_stream():
+        with self.stream_factory.get_output_stream() as stream:
+            stream.write()
             self.assert_popen_call(
                 expected_pager_cmd='less',
                 env={'LESS': 'S'}
@@ -293,11 +275,38 @@ class TestOutputStreamFactory(unittest.TestCase):
         self.set_session_pager('less')
         stream_factory = OutputStreamFactory(
             self.session, self.popen, self.environ, default_less_flags='ABC')
-        with stream_factory.get_output_stream():
+        with stream_factory.get_output_stream() as stream:
+            stream.write()
             self.assert_popen_call(
                 expected_pager_cmd='less',
                 env={'LESS': 'ABC'}
             )
+
+    def test_not_create_pager_process_if_not_called(self):
+        self.set_session_pager('sessionpager --option')
+        with self.stream_factory.get_pager_stream('mypager --option'):
+            self.assertEqual(self.popen.call_count, 0)
+
+    def test_create_process_on_stdin_method_call(self):
+        self.set_session_pager('less')
+        stream_factory = OutputStreamFactory(
+            self.session, self.popen, self.environ, default_less_flags='ABC')
+        with stream_factory.get_output_stream() as stream:
+            self.assertEqual(self.popen.call_count, 0)
+            stream.write()
+            self.assert_popen_call(
+                expected_pager_cmd='less',
+                env={'LESS': 'ABC'}
+            )
+
+    def test_not_create_process_if_stream_not_created(self):
+        self.set_session_pager('less')
+        stream_factory = OutputStreamFactory(
+            self.session, self.popen, self.environ, default_less_flags='ABC')
+        with stream_factory.get_output_stream():
+            self.assertEqual(self.popen.call_count, 0)
+        self.assertEqual(self.popen.call_count, 0)
+
 
 class TestInstanceMetadataRegionFetcher(unittest.TestCase):
     def setUp(self):
@@ -483,7 +492,7 @@ class TestIMDSRegionProvider(unittest.TestCase):
         provider = IMDSRegionProvider(driver.session)
         provider.provide()
         args, _ = send.call_args
-        self.assertIn('[fe80:ec2::254%eth0]', args[0].url)
+        self.assertIn('[fd00:ec2::254]', args[0].url)
 
     @mock.patch('botocore.httpsession.URLLib3Session.send')
     def test_use_ipv4_by_default(self, send):
@@ -492,3 +501,278 @@ class TestIMDSRegionProvider(unittest.TestCase):
         provider.provide()
         args, _ = send.call_args
         self.assertIn('169.254.169.254', args[0].url)
+
+    @mock.patch('botocore.httpsession.URLLib3Session.send')
+    def test_can_set_imds_endpoint_mode_to_ipv4(self, send):
+        driver = create_clidriver()
+        driver.session.set_config_variable(
+            'ec2_metadata_service_endpoint_mode', 'ipv4')
+        provider = IMDSRegionProvider(driver.session)
+        provider.provide()
+        args, _ = send.call_args
+        self.assertIn('169.254.169.254', args[0].url)
+
+    @mock.patch('botocore.httpsession.URLLib3Session.send')
+    def test_can_set_imds_endpoint_mode_to_ipv6(self, send):
+        driver = create_clidriver()
+        driver.session.set_config_variable(
+            'ec2_metadata_service_endpoint_mode', 'ipv6')
+        provider = IMDSRegionProvider(driver.session)
+        provider.provide()
+        args, _ = send.call_args
+        self.assertIn('[fd00:ec2::254]', args[0].url)
+
+    @mock.patch('botocore.httpsession.URLLib3Session.send')
+    def test_can_set_imds_service_endpoint(self, send):
+        driver = create_clidriver()
+        driver.session.set_config_variable(
+            'ec2_metadata_service_endpoint', 'http://myendpoint/')
+        provider = IMDSRegionProvider(driver.session)
+        provider.provide()
+        args, _ = send.call_args
+        self.assertIn('http://myendpoint/', args[0].url)
+
+    @mock.patch('botocore.httpsession.URLLib3Session.send')
+    def test_imds_service_endpoint_overrides_ipv6_endpoint(self, send):
+        driver = create_clidriver()
+        driver.session.set_config_variable(
+            'ec2_metadata_service_endpoint_mode', 'ipv6')
+        driver.session.set_config_variable(
+            'ec2_metadata_service_endpoint', 'http://myendpoint/')
+        provider = IMDSRegionProvider(driver.session)
+        provider.provide()
+        args, _ = send.call_args
+        self.assertIn('http://myendpoint/', args[0].url)
+
+
+class TestLazyPager(unittest.TestCase):
+    def setUp(self):
+        self.popen = mock.Mock(subprocess.Popen)
+        self.pager = LazyPager(self.popen)
+
+    def test_lazy_pager_process_not_created_on_communicate_call_wo_args(self):
+        stdout, stderr = self.pager.communicate()
+        self.assertEqual(self.popen.call_count, 0)
+        self.assertIsNone(stdout)
+        self.assertIsNone(stderr)
+
+    def test_lazy_pager_process_not_created_on_stdin_flush(self):
+        self.pager.stdin.flush()
+        self.assertEqual(self.popen.call_count, 0)
+
+    def test_lazy_pager_popen_communicate_calls_on_call_with_args(self):
+        process = mock.Mock(subprocess.Popen)
+        self.popen.return_value = process
+        pager = LazyPager(self.popen)
+        pager.communicate(timeout=20)
+        self.assertEqual(self.popen.call_count, 1)
+        process.communicate.assert_called_with(timeout=20)
+
+    def test_lazy_pager_popen_calls_on_stdin_call(self):
+        self.pager.stdin.foo()
+        self.assertEqual(self.popen.call_count, 1)
+
+    def test_lazy_pager_popen_calls_on_process_call(self):
+        self.pager.foo()
+        self.assertEqual(self.popen.call_count, 1)
+
+
+class BaseShapeTest(unittest.TestCase):
+    def setUp(self):
+        self.shapes = {}
+
+    def get_shape_model(self, shape_name):
+        shape_model = self.shapes[shape_name]
+        resolver = botocore.model.ShapeResolver(self.shapes)
+        shape_cls = resolver.SHAPE_CLASSES.get(
+            shape_model['type'], botocore.model.Shape
+        )
+        return shape_cls(shape_name, shape_model, resolver)
+
+    def get_doc_type_shape_definition(self):
+        return {
+            'type': 'structure',
+            'members': {},
+            'document': True
+        }
+
+
+class TestIsDocumentType(BaseShapeTest):
+    def test_is_document_type(self):
+        self.shapes['DocStructure'] = self.get_doc_type_shape_definition()
+        self.assertTrue(is_document_type(self.get_shape_model('DocStructure')))
+
+    def test_is_not_document_type_if_missing_document_trait(self):
+        self.shapes['NonDocStructure'] = {
+            'type': 'structure',
+            'members': {},
+        }
+        self.assertFalse(
+            is_document_type(self.get_shape_model('NonDocStructure'))
+        )
+
+    def test_is_not_document_type_if_not_structure(self):
+        self.shapes['String'] = {'type': 'string'}
+        self.assertFalse(is_document_type(self.get_shape_model('String')))
+
+
+class TestIsDocumentTypeContainer(BaseShapeTest):
+    def test_is_document_type_container_for_doc_type(self):
+        self.shapes['DocStructure'] = self.get_doc_type_shape_definition()
+        self.assertTrue(
+            is_document_type_container(self.get_shape_model('DocStructure'))
+        )
+
+    def test_is_not_document_type_container_if_missing_document_trait(self):
+        self.shapes['NonDocStructure'] = {
+            'type': 'structure',
+            'members': {},
+        }
+        self.assertFalse(
+            is_document_type_container(self.get_shape_model('NonDocStructure'))
+        )
+
+    def test_is_not_document_type_container_if_not_scalar(self):
+        self.shapes['String'] = {'type': 'string'}
+        self.assertFalse(
+            is_document_type_container(self.get_shape_model('String')))
+
+    def test_is_document_type_container_if_list_member(self):
+        self.shapes['ListOfDocTypes'] = {
+            'type': 'list',
+            'member': {'shape': 'DocType'}
+        }
+        self.shapes['DocType'] = self.get_doc_type_shape_definition()
+        self.assertTrue(
+            is_document_type_container(self.get_shape_model('ListOfDocTypes'))
+        )
+
+    def test_is_document_type_container_if_map_value(self):
+        self.shapes['MapOfDocTypes'] = {
+            'type': 'map',
+            'key': {'shape': 'String'},
+            'value': {'shape': 'DocType'}
+        }
+        self.shapes['DocType'] = self.get_doc_type_shape_definition()
+        self.shapes['String'] = {'type': 'string'}
+        self.assertTrue(
+            is_document_type_container(self.get_shape_model('MapOfDocTypes'))
+        )
+
+    def test_is_document_type_container_if_nested_list_member(self):
+        self.shapes['NestedListsOfDocTypes'] = {
+            'type': 'list',
+            'member': {'shape': 'ListOfDocTypes'}
+        }
+        self.shapes['ListOfDocTypes'] = {
+            'type': 'list',
+            'member': {'shape': 'DocType'}
+        }
+        self.shapes['DocType'] = self.get_doc_type_shape_definition()
+        self.assertTrue(
+            is_document_type_container(
+                self.get_shape_model('NestedListsOfDocTypes')
+            )
+        )
+
+
+class TestOperationUsesDocumentTypes(BaseShapeTest):
+    def setUp(self):
+        super(TestOperationUsesDocumentTypes, self).setUp()
+        self.input_shape_definition = {
+            'type': 'structure',
+            'members': {}
+        }
+        self.shapes['Input'] = self.input_shape_definition
+        self.output_shape_definition = {
+            'type': 'structure',
+            'members': {}
+        }
+        self.shapes['Output'] = self.output_shape_definition
+        self.operation_definition = {
+            'input': {'shape': 'Input'},
+            'output': {'shape': 'Output'}
+        }
+        self.service_model = botocore.model.ServiceModel(
+            {
+                'operations': {'DescribeResource': self.operation_definition},
+                'shapes': self.shapes
+            }
+        )
+        self.operation_model = self.service_model.operation_model(
+            'DescribeResource')
+
+    def test_operation_uses_document_types_if_doc_type_in_input(self):
+        self.shapes['DocType'] = self.get_doc_type_shape_definition()
+        self.input_shape_definition['members']['DocType'] = {
+            'shape': 'DocType'}
+        self.assertTrue(operation_uses_document_types(self.operation_model))
+
+    def test_operation_uses_document_types_if_doc_type_in_output(self):
+        self.shapes['DocType'] = self.get_doc_type_shape_definition()
+        self.output_shape_definition['members']['DocType'] = {
+            'shape': 'DocType'}
+        self.assertTrue(operation_uses_document_types(self.operation_model))
+
+    def test_operation_uses_document_types_is_false_when_no_doc_types(self):
+        self.assertFalse(operation_uses_document_types(self.operation_model))
+
+
+class TestShapeWalker(BaseShapeTest):
+    def setUp(self):
+        super(TestShapeWalker, self).setUp()
+        self.walker = ShapeWalker()
+        self.visitor = ShapeRecordingVisitor()
+
+    def assert_visited_shapes(self, expected_shape_names):
+        self.assertEqual(
+            expected_shape_names,
+            [shape.name for shape in self.visitor.visited]
+        )
+
+    def test_walk_scalar(self):
+        self.shapes['String'] = {'type': 'string'}
+        self.walker.walk(self.get_shape_model('String'), self.visitor)
+        self.assert_visited_shapes(['String'])
+
+    def test_walk_structure(self):
+        self.shapes['Structure'] = {
+            'type': 'structure',
+            'members': {
+                'String1': {'shape': 'String'},
+                'String2': {'shape': 'String'}
+            }
+        }
+        self.shapes['String'] = {'type': 'string'}
+        self.walker.walk(self.get_shape_model('Structure'), self.visitor)
+        self.assert_visited_shapes(['Structure', 'String', 'String'])
+
+    def test_walk_list(self):
+        self.shapes['List'] = {
+            'type': 'list',
+            'member': {'shape': 'String'}
+        }
+        self.shapes['String'] = {'type': 'string'}
+        self.walker.walk(self.get_shape_model('List'), self.visitor)
+        self.assert_visited_shapes(['List', 'String'])
+
+    def test_walk_map(self):
+        self.shapes['Map'] = {
+            'type': 'map',
+            'key': {'shape': 'KeyString'},
+            'value': {'shape': 'ValueString'}
+        }
+        self.shapes['KeyString'] = {'type': 'string'}
+        self.shapes['ValueString'] = {'type': 'string'}
+        self.walker.walk(self.get_shape_model('Map'), self.visitor)
+        self.assert_visited_shapes(['Map', 'ValueString'])
+
+    def test_can_escape_recursive_shapes(self):
+        self.shapes['Recursive'] = {
+            'type': 'structure',
+            'members': {
+                'Recursive': {'shape': 'Recursive'},
+            }
+        }
+        self.walker.walk(self.get_shape_model('Recursive'), self.visitor)
+        self.assert_visited_shapes(['Recursive'])

@@ -65,25 +65,25 @@ class TestListCommand(BaseHistoryCommandParamsTest):
         self.assertIn('ec2 describe-regions', stdout)
 
     def test_multiple_calls_present(self):
-            self.parsed_responses = [
-                {
-                    "Regions": [
-                        {
-                            "Endpoint": "ec2.ap-south-1.amazonaws.com",
-                            "RegionName": "ap-south-1"
-                        },
-                    ]
-                },
-                {
-                    "UserId": "foo",
-                    "Account": "bar",
-                    "Arn": "arn:aws:iam::1234567:user/baz"
-                }
-            ]
-            _, _, rc = self.run_cmd('ec2 describe-instances', expected_rc=0)
-            self.history_recorder.record('CLI_RC', rc, 'CLI')
-            _, _, rc = self.run_cmd('sts get-caller-identity', expected_rc=0)
-            self.history_recorder.record('CLI_RC', rc, 'CLI')
-            stdout, _, _ = self.run_cmd('history list', expected_rc=0)
-            self.assertIn('ec2 describe-instances', stdout)
-            self.assertIn('sts get-caller-identity', stdout)
+        self.parsed_responses = [
+            {
+                "Regions": [
+                    {
+                        "Endpoint": "ec2.ap-south-1.amazonaws.com",
+                        "RegionName": "ap-south-1"
+                    },
+                ]
+            },
+            {
+                "UserId": "foo",
+                "Account": "bar",
+                "Arn": "arn:aws:iam::1234567:user/baz"
+            }
+        ]
+        _, _, rc = self.run_cmd('ec2 describe-regions', expected_rc=0)
+        self.history_recorder.record('CLI_RC', rc, 'CLI')
+        _, _, rc = self.run_cmd('sts get-caller-identity', expected_rc=0)
+        self.history_recorder.record('CLI_RC', rc, 'CLI')
+        stdout, _, _ = self.run_cmd('history list', expected_rc=0)
+        self.assertIn('ec2 describe-regions', stdout)
+        self.assertIn('sts get-caller-identity', stdout)

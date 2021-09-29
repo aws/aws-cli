@@ -150,7 +150,7 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
                                     expected_create_deployment_params)
 
         stdout, _, _ = self.assert_params_list_for_cmd(
-            cmdline, expected_params, None)
+            cmdline, expected_params, 0)
 
         self.assertEqual(stdout, self.expected_stdout)
 
@@ -178,7 +178,7 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
                                     expected_create_deployment_params)
 
         stdout, _, _ = self.assert_params_list_for_cmd(
-            cmdline, expected_params, None)
+            cmdline, expected_params, 0)
 
         self.assertEqual(stdout, self.expected_stdout)
 
@@ -205,7 +205,7 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
                                     expected_create_deployment_params)
 
         stdout, _, _ = self.assert_params_list_for_cmd(
-            cmdline, expected_params, None)
+            cmdline, expected_params, 0)
 
         self.assertEqual(stdout, self.expected_stdout)
 
@@ -265,7 +265,7 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
                            + self.service_name + "'\n")
 
         stdout, _, _ = self.assert_params_list_for_cmd(
-            cmdline, expected_params, None)
+            cmdline, expected_params, 0)
 
         self.assertEqual(stdout, expected_stdout)
 
@@ -325,7 +325,7 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
                            + self.service_name + "'\n")
 
         stdout, _, _ = self.assert_params_list_for_cmd(
-            cmdline, expected_params, None)
+            cmdline, expected_params, 0)
 
         self.assertEqual(stdout, expected_stdout)
 
@@ -355,7 +355,7 @@ class TestDeployCommand(BaseAWSCommandParamsTest):
             custom_dgp, expected_create_deployment_params)
 
         stdout, _, _ = self.assert_params_list_for_cmd(
-            cmdline, expected_params, None)
+            cmdline, expected_params, 0)
 
         self.assertEqual(stdout, self.expected_stdout)
 

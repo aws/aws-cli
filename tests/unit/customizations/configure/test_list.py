@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import mock
+from argparse import Namespace
 
 from awscli.testutils import unittest
 from awscli.compat import six
@@ -120,3 +121,21 @@ class TestConfigureListCommand(unittest.TestCase):
         rendered = stream.getvalue()
         self.assertRegexpMatches(
             rendered, 'region\s+from-imds\s+imds')
+
+    def test_configure_from_args(self):
+        parsed_globals = Namespace(profile='foo')
+        env_vars = {
+            'profile': 'myprofilename'
+        }
+        session = FakeSession(
+            all_variables={'config_file': '/config/location'},
+            profile='foo', environment_vars=env_vars)
+        session.session_var_map = {'profile': (None, ['AWS_PROFILE'])}
+        session.full_config = {
+            'profiles': {'foo': {'region': 'AWS_REGION'}}}
+        stream = six.StringIO()
+        self.configure_list = ConfigureListCommand(session, stream)
+        self.configure_list(args=[], parsed_globals=parsed_globals)
+        rendered = stream.getvalue()
+        self.assertRegexpMatches(
+            rendered, 'profile\s+foo\s+manual\s+--profile')

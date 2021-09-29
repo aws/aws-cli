@@ -1189,7 +1189,7 @@ class TestArtifactExporter(BaseYAMLTest):
                 os.remove(zipfile_name)
             test_file_creator.remove_all()
 
-    @patch("shutil.copyfile")
+    @patch("shutil.copy")
     @patch("tempfile.mkdtemp")
     def test_copy_to_temp_dir(self, mkdtemp_mock, copyfile_mock):
         temp_dir = "/tmp/foo/"

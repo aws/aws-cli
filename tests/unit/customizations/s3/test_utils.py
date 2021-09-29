@@ -25,11 +25,12 @@ from s3transfer.compat import seekable
 from botocore.hooks import HierarchicalEmitter
 
 from awscli.compat import StringIO
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.s3.utils import (
     find_bucket_key,
-    guess_content_type, relative_path,
+    guess_content_type, relative_path, block_unsupported_resources,
     StablePriorityQueue, BucketLister, get_file_stat, AppendFilter,
-    create_warning, human_readable_size, human_readable_to_bytes,
+    create_warning, human_readable_size, human_readable_to_int,
     set_file_utime, SetFileUtimeError, RequestParamsMapper, StdoutBytesWriter,
     NonSeekableStream
 )
@@ -57,26 +58,26 @@ def _test_human_size_matches(bytes_int, expected):
     assert_equal(human_readable_size(bytes_int), expected)
 
 
-def test_convert_human_readable_to_bytes():
-    yield _test_convert_human_readable_to_bytes, "1", 1
-    yield _test_convert_human_readable_to_bytes, "1024", 1024
-    yield _test_convert_human_readable_to_bytes, "1KB", 1024
-    yield _test_convert_human_readable_to_bytes, "1kb", 1024
-    yield _test_convert_human_readable_to_bytes, "1MB", 1024 ** 2
-    yield _test_convert_human_readable_to_bytes, "1GB", 1024 ** 3
-    yield _test_convert_human_readable_to_bytes, "1TB", 1024 ** 4
+def test_convert_human_readable_to_int():
+    yield _test_convert_human_readable_to_int, "1", 1
+    yield _test_convert_human_readable_to_int, "1024", 1024
+    yield _test_convert_human_readable_to_int, "1KB", 1024
+    yield _test_convert_human_readable_to_int, "1kb", 1024
+    yield _test_convert_human_readable_to_int, "1MB", 1024 ** 2
+    yield _test_convert_human_readable_to_int, "1GB", 1024 ** 3
+    yield _test_convert_human_readable_to_int, "1TB", 1024 ** 4
 
     # Also because of the "ls" output for s3, we support
     # the IEC "mebibyte" format (MiB).
-    yield _test_convert_human_readable_to_bytes, "1KiB", 1024
-    yield _test_convert_human_readable_to_bytes, "1kib", 1024
-    yield _test_convert_human_readable_to_bytes, "1MiB", 1024 ** 2
-    yield _test_convert_human_readable_to_bytes, "1GiB", 1024 ** 3
-    yield _test_convert_human_readable_to_bytes, "1TiB", 1024 ** 4
+    yield _test_convert_human_readable_to_int, "1KiB", 1024
+    yield _test_convert_human_readable_to_int, "1kib", 1024
+    yield _test_convert_human_readable_to_int, "1MiB", 1024 ** 2
+    yield _test_convert_human_readable_to_int, "1GiB", 1024 ** 3
+    yield _test_convert_human_readable_to_int, "1TiB", 1024 ** 4
 
 
-def _test_convert_human_readable_to_bytes(size_str, expected):
-    assert_equal(human_readable_to_bytes(size_str), expected)
+def _test_convert_human_readable_to_int(size_str, expected):
+    assert_equal(human_readable_to_int(size_str), expected)
 
 
 class AppendFilterTest(unittest.TestCase):
@@ -288,6 +289,38 @@ class TestFindBucketKey(unittest.TestCase):
         self.assertEqual(key, 'prefix/key:name')
 
 
+class TestBlockUnsupportedResources(unittest.TestCase):
+    def test_object_lambda_arn_with_colon_raises_exception(self):
+        with self.assertRaisesRegexp(
+                ParamValidationError, 'Use s3api commands instead'):
+            block_unsupported_resources(
+                'arn:aws:s3-object-lambda:us-west-2:123456789012:'
+                'accesspoint:my-accesspoint'
+            )
+
+    def test_object_lambda_arn_with_slash_raises_exception(self):
+        with self.assertRaisesRegexp(
+                ParamValidationError, 'Use s3api commands instead'):
+            block_unsupported_resources(
+                 'arn:aws:s3-object-lambda:us-west-2:123456789012:'
+                 'accesspoint/my-accesspoint'
+            )
+
+    def test_outpost_bucket_arn_with_colon_raises_exception(self):
+        with self.assertRaisesRegexp(
+                ParamValidationError, 'Use s3control commands instead'):
+            block_unsupported_resources(
+                'arn:aws:s3-outposts:us-west-2:123456789012:'
+                'outpost/op-0a12345678abcdefg:bucket/bucket-foo'
+            )
+
+    def test_outpost_bucket_arn_with_slash_raises_exception(self):
+        with self.assertRaisesRegexp(
+                ParamValidationError, 'Use s3control commands instead'):
+            block_unsupported_resources(
+                 'arn:aws:s3-outposts:us-west-2:123456789012:'
+                 'outpost/op-0a12345678abcdefg/bucket/bucket-foo'
+            )
 
 
 class TestCreateWarning(unittest.TestCase):

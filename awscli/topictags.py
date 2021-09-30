@@ -288,7 +288,7 @@ class TopicTagDB(object):
         if value is not None:
             if len(value) != 1:
                 raise ValueError(
-                    'Tag %s for topic %s has value %. Expected a single '
+                    'Tag %s for topic %s has value %s. Expected a single '
                     'element in list.' % (tag, topic_name, value)
                 )
             value = value[0]

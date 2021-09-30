@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.20.52
+=======
+
+* api-change:``account``: This release of the Account Management API enables customers to manage the alternate contacts for their AWS accounts. For more information, see https://docs.aws.amazon.com/accounts/latest/reference/accounts-welcome.html
+* api-change:``workmail``: This release adds support for mobile device access overrides management in Amazon WorkMail.
+* api-change:``dataexchange``: This release enables subscribers to set up automatic exports of newly published revisions using the new EventAction API.
+* api-change:``macie2``: Amazon S3 bucket metadata now indicates whether an error or a bucket's permissions settings prevented Amazon Macie from retrieving data about the bucket or the bucket's objects.
+* api-change:``network-firewall``: This release adds support for strict ordering for stateful rule groups. Using strict ordering, stateful rules are evaluated in the exact order in which you provide them.
+* api-change:``workspaces``: Added CreateUpdatedWorkspaceImage API to update WorkSpace images with latest software and drivers. Updated DescribeWorkspaceImages API to display if there are updates available for WorkSpace images.
+* api-change:``cloudcontrol``: Initial release of the SDK for AWS Cloud Control API
+
+
 1.20.51
 =======
 

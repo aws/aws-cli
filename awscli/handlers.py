@@ -97,7 +97,7 @@ def awscli_initialize(event_handlers):
     event_handlers.register('session-initialized', register_uri_param_handler)
     param_shorthand = ParamShorthandParser()
     event_handlers.register('process-cli-arg', param_shorthand)
-    # The s3 error message needs to registered before the
+    # The s3 error mesage needs to registered before the
     # generic error handler.
     register_s3_error_msg(event_handlers)
 #    # The following will get fired for every option we are

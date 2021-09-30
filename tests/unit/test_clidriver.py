@@ -253,7 +253,7 @@ class FakeSession(object):
 class FakeCommand(BasicCommand):
     def _run_main(self, args, parsed_globals):
         # We just return success. If this code is reached, it means that
-        # all the logic in the __call__ method has successfully been run.
+        # all the logic in the __call__ method has sucessfully been run.
         # We subclass it here because the default implementation raises
         # an exception and we don't want that behavior.
         return 0
@@ -672,7 +672,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
 
         self.driver.session.register('calling-command', override_with_rc)
         rc = self.driver.main('ec2 describe-instances'.split())
-        # Check that the overridden rc is as expected.
+        # Check that the overriden rc is as expected.
         self.assertEqual(rc, 20)
 
     def test_override_calling_command_error(self):

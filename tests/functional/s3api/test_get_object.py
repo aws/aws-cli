@@ -71,7 +71,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
     def test_streaming_output_arg_with_error_response(self):
         # Checking that the StreamingOutputArg handles the
         # case where it's passed an error body.  Previously
-        # it would propagate a KeyError so we want to ensure
+        # it would propogate a KeyError so we want to ensure
         # this case is handled.
         self.parsed_response = {
             'Error': {

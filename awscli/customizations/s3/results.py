@@ -286,7 +286,7 @@ class ResultRecorder(BaseResultHandler):
         # gets created that the timestamp on the progress result is less
         # than the timestamp of when the result processor actually
         # processes that initial queued result. So this will avoid
-        # negative progress being displayed or zero divison occurring.
+        # negative progress being displayed or zero divison occuring.
         if result.timestamp > self.start_time:
             self.bytes_transfer_speed = self.bytes_transferred / (
                 result.timestamp - self.start_time)

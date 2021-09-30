@@ -106,7 +106,7 @@ class TestLSCommand(BaseS3TransferCommandTest):
         self.run_cmd('s3 ls s3://bucket/foo', expected_rc=0)
 
     def test_success_rc_empty_bucket_no_key_given(self):
-        # If no key has been provided and the bucket is empty, it should
+        # If no key has been provdided and the bucket is empty, it should
         # still return an rc of 0 since the user is not looking for an actual
         # object.
         self.parsed_responses = [{}]

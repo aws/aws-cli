@@ -277,7 +277,7 @@ class BaseTransferRequestSubmitter(object):
         for warning_handler in self._get_warning_handlers():
             if warning_handler(fileinfo):
                 # On the first warning handler that returns a signal to skip
-                # immediately propagate this signal and no longer check
+                # immediately propogate this signal and no longer check
                 # the other warning handlers as no matter what the file will
                 # be skipped.
                 return True

@@ -58,7 +58,7 @@ class TestArgumentTableModifications(TestPaginateBase):
         self.assertTrue(argument_table['foo']._UNDOCUMENTED)
         # Also need to hide the limit key.
         self.assertTrue(argument_table['bar']._UNDOCUMENTED)
-        # We also need to inject starting-token and max-items.
+        # We also need to inject startin-token and max-items.
         self.assertIn('starting-token', argument_table)
         self.assertIn('max-items', argument_table)
         self.assertIn('page-size', argument_table)

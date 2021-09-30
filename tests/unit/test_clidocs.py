@@ -358,7 +358,7 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         operation_handler = OperationDocumentEventHandler(help_command)
         operation_handler.doc_description(help_command=help_command)
         rendered = help_command.doc.getvalue().decode('utf-8')
-        # Should expect an external link because we're generating html.
+        # Should expect an externa link because we're generating html.
         self.assertIn(
             'See also: `AWS API Documentation '
             '<https://docs.aws.amazon.com/goto/'

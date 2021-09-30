@@ -636,7 +636,7 @@ class WebsiteCommand(S3Command):
         # bucketname
         #
         # We also strip off the trailing slash if a user
-        # accidentally appends a slash.
+        # accidently appends a slash.
         if path.startswith('s3://'):
             path = path[5:]
         if path.endswith('/'):

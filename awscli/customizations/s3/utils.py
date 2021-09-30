@@ -463,7 +463,7 @@ class RequestParamsMapper(object):
         >>> print(request_params)
         {'StorageClass': 'GLACIER', 'ServerSideEncryption': 'AES256'}
 
-    Note that existing parameters in ``request_params`` will be overridden if
+    Note that existing parameters in ``request_params`` will be overriden if
     a parameter in ``cli_params`` maps to the existing parameter.
     """
     @classmethod
@@ -652,7 +652,7 @@ class OnDoneFilteredSubscriber(BaseSubscriber):
             future.result()
         except Exception as e:
             future_exception = e
-        # If the result propagates an error, call the on_failure
+        # If the result propogates an error, call the on_failure
         # method instead.
         if future_exception:
             self._on_failure(future, future_exception)

@@ -412,14 +412,14 @@ class TestDeployCommand(unittest.TestCase):
         }
 
         expected_result = [
-            # Overriden values
+            # Overridden values
             {"ParameterKey": "Key1", "ParameterValue": "Value1"},
             {"ParameterKey": "Key3", "ParameterValue": "Value3"},
 
             # Parameter contains default value, but overridden with new value
             {"ParameterKey": "KeyWithDefaultValueButOverridden", "ParameterValue": "Value4"},
 
-            # non-overriden values
+            # non-overridden values
             {"ParameterKey": "Key2", "UsePreviousValue": True},
             {"ParameterKey": "Key4", "UsePreviousValue": True},
 

@@ -185,7 +185,7 @@ class TopicTagDB(object):
             if tag in self.VALID_TAGS:
                 # Get the value of the tag.
                 values = field_body.childNodes[0].firstChild.nodeValue
-                # Seperate values into a list by splitting at commas
+                # Separate values into a list by splitting at commas
                 tag_values = values.split(',')
                 # Strip the white space around each of these values.
                 for i in range(len(tag_values)):
@@ -288,7 +288,7 @@ class TopicTagDB(object):
         if value is not None:
             if len(value) != 1:
                 raise ValueError(
-                    'Tag %s for topic %s has value %. Expected a single '
+                    'Tag %s for topic %s has value %s. Expected a single '
                     'element in list.' % (tag, topic_name, value)
                 )
             value = value[0]

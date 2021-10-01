@@ -29,6 +29,8 @@ The aws-cli package works on Python versions:
 -  3.6.x and greater
 -  3.7.x and greater
 -  3.8.x and greater
+-  3.9.x and greater
+-  3.10.x and greater
 
 On 01/15/2021 deprecation for Python 2.7 was announced and support was dropped
 on 07/15/2021. To avoid disruption, customers using the AWS CLI on Python 2.7 may

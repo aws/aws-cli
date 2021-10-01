@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.20.53
+=======
+
+* api-change:``synthetics``: CloudWatch Synthetics now enables customers to choose a customer managed AWS KMS key or an Amazon S3-managed key instead of an AWS managed key (default) for the encryption of artifacts that the canary stores in Amazon S3. CloudWatch Synthetics also supports artifact S3 location updation now.
+* api-change:``apprunner``: This release contains several minor bug fixes.
+* api-change:``ssm``: When "AutoApprovable" is true for a Change Template, then specifying --auto-approve (boolean) in Start-Change-Request-Execution will create a change request that bypasses approver review. (except for change calendar restrictions)
+
+
 1.20.52
 =======
 

@@ -1,9 +1,9 @@
 The following ``sync`` command syncs objects under a specified prefix and bucket to files in a local directory by
-uploading the local files to s3.  A local file will require uploading if the size of the local file is different than
-the size of the s3 object, the last modified time of the local file is newer than the last modified time of the s3
-object, or the local file does not exist under the specified bucket and prefix.  In this example, the user syncs the
-bucket ``mybucket`` to the local current directory.  The local current directory contains the files ``test.txt`` and
-``test2.txt``.  The bucket ``mybucket`` contains no objects::
+uploading the local files to s3.  A local file will require uploading if the local file does not exist under the specified 
+bucket and prefix.  A local file will also require uploading if the size of the local file is different than
+the size of the s3 object, or if the last modified time of the local file is newer than the last modified time of the s3
+object.  In this example, the user syncs the bucket ``mybucket`` to the local current directory.  The local current directory 
+contains the files ``test.txt`` and ``test2.txt``.  The bucket ``mybucket`` contains no objects::
 
     aws s3 sync . s3://mybucket
 
@@ -13,7 +13,7 @@ Output::
     upload: test2.txt to s3://mybucket/test2.txt
 
 The following ``sync`` command syncs objects under a specified prefix and bucket to objects under another specified
-prefix and bucket by copying s3 objects.  A s3 object will require copying if the sizes of the two s3 objects differ,
+prefix and bucket by copying s3 objects.  An s3 object will require copying if the sizes of the two s3 objects differ,
 the last modified time of the source is newer than the last modified time of the destination, or the s3 object does not
 exist under the specified bucket and prefix destination.  In this example, the user syncs the bucket ``mybucket`` to
 the bucket ``mybucket2``.  The bucket ``mybucket`` contains the objects ``test.txt`` and ``test2.txt``.  The bucket
@@ -27,12 +27,12 @@ Output::
     copy: s3://mybucket/test2.txt to s3://mybucket2/test2.txt
 
 The following ``sync`` command syncs files in a local directory to objects under a specified prefix and bucket by
-downloading s3 objects.  A s3 object will require downloading if the size of the s3 object differs from the size of the
-local file, the last modified time of the s3 object is newer than the last modified time of the local file, or the s3
-object does not exist in the local directory.  Take note that when objects are downloaded from s3, the last modified
-time of the local file is changed to the last modified time of the s3 object.  In this example, the user syncs the
-current local directory to the bucket ``mybucket``.  The bucket ``mybucket`` contains the objects ``test.txt`` and
-``test2.txt``.  The current local directory has no files::
+downloading s3 objects.  An s3 object will require downloading if the s3 object does not exist in the local directory.  
+An s3 object will also require downloading if the size of the s3 object differs from the size of the local file, or if the 
+last modified time of the s3 object is older than the last modified time of the local file.  Take note that when objects 
+are downloaded from s3, the last modified time of the local file is changed to the last modified time of the s3 object.  
+In this example, the user syncs the current local directory to the bucket ``mybucket``.  The bucket ``mybucket`` contains 
+the objects ``test.txt`` and ``test2.txt``.  The current local directory has no files::
 
     aws s3 sync s3://mybucket .
 

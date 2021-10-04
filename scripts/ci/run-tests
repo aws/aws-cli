@@ -25,9 +25,10 @@ def cd(path):
         os.chdir(cwd)
 
 
-def run(command):
+def run(command, allow_repo_root_on_path=False):
     env = os.environ.copy()
-    env['TESTS_REMOVE_REPO_ROOT_FROM_PATH'] = 'true'
+    if not allow_repo_root_on_path:
+        env['TESTS_REMOVE_REPO_ROOT_FROM_PATH'] = 'true'
     return check_call(command, shell=True, env=env)
 
 
@@ -66,10 +67,21 @@ if __name__ == "__main__":
         action="store_true",
         help="Run default test-runner with code coverage enabled.",
     )
+    parser.add_argument(
+        "--allow-repo-root-on-path",
+        default=False,
+        action="store_true",
+        help=(
+            "Do not remove the repository root from the Python path when "
+            "running tests. This allows you to run the tests against the "
+            "current repository without have to install the package as a "
+            "distribution."
+        )
+    )
     raw_args = parser.parse_args()
     test_runner, test_args, test_dirs = process_args(raw_args)
 
     cmd = f"{test_runner} {test_args}{test_dirs}"
     print(f"Running {cmd}...")
     with cd(os.path.join(REPO_ROOT, "tests")):
-        run(cmd)
+        run(cmd, allow_repo_root_on_path=raw_args.allow_repo_root_on_path)

@@ -45,6 +45,7 @@ from botocore.paginate import Paginator
 from botocore.retries import adaptive, standard
 from botocore.utils import (
     CachedProperty,
+    EventbridgeSignerSetter,
     S3ArnParamHandler,
     S3ControlArnParamHandler,
     S3ControlEndpointSetter,
@@ -95,6 +96,8 @@ class ClientCreator(object):
             verify, credentials, scoped_config, client_config, endpoint_bridge)
         service_client = cls(**client_args)
         self._register_retries(service_client)
+        self._register_eventbridge_events(
+            service_client, endpoint_bridge, endpoint_url)
         self._register_s3_events(
             service_client, endpoint_bridge, endpoint_url, client_config,
             scoped_config)
@@ -215,6 +218,17 @@ class ClientCreator(object):
         if enabled == "auto":
             return client.meta.service_model.endpoint_discovery_required
         return enabled
+
+    def _register_eventbridge_events(
+        self, client, endpoint_bridge, endpoint_url
+    ):
+        if client.meta.service_model.service_name != 'events':
+            return
+        EventbridgeSignerSetter(
+            endpoint_resolver=self._endpoint_resolver,
+            region=client.meta.region_name,
+            endpoint_url=endpoint_url
+        ).register(client.meta.events)
 
     def _register_s3_events(self, client, endpoint_bridge, endpoint_url,
                             client_config, scoped_config):

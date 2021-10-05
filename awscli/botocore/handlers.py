@@ -177,6 +177,19 @@ def set_operation_specific_signer(context, signing_name, **kwargs):
     if auth_type == 'none':
         return botocore.UNSIGNED
 
+    if auth_type == 'v4a':
+        # If sigv4a is chosen, we must add additional
+        # signing config for global signature.
+        signing = {
+            'region': '*',
+            'signing_name': signing_name
+        }
+        if 'signing' in context:
+            context['signing'].update(signing)
+        else:
+            context['signing'] = signing
+        return 'v4a'
+
     if auth_type.startswith('v4'):
         signature_version = 'v4'
         if signing_name == 's3':

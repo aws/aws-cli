@@ -677,3 +677,9 @@ class AwsChunkedWrapperError(BotoCoreError):
 
 class FlexibleChecksumError(BotoCoreError):
     fmt = '{error_msg}'
+
+
+class InvalidEndpointConfigurationError(BotoCoreError):
+    fmt = (
+        'Invalid endpoint configuration: {msg}'
+    )

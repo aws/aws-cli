@@ -137,8 +137,11 @@ class EndpointResolver(BaseEndpointResolver):
                     result.append(endpoint_name)
         return result
 
-    def get_partition_dns_suffix(self, partition_name,
-                                 endpoint_variant_tags=None):
+    def get_partition_dns_suffix(
+        self,
+        partition_name,
+        endpoint_variant_tags=None
+    ):
         for partition in self._endpoint_data['partitions']:
             if partition['partition'] == partition_name:
                 if endpoint_variant_tags:
@@ -150,11 +153,21 @@ class EndpointResolver(BaseEndpointResolver):
                     return partition['dnsSuffix']
         return None
 
-    def construct_endpoint(self, service_name, region_name=None,
-                           partition_name=None, use_dualstack_endpoint=False,
-                           use_fips_endpoint=False):
-        if service_name == 's3' and use_dualstack_endpoint and region_name is None:
+    def construct_endpoint(
+        self,
+        service_name,
+        region_name=None,
+        partition_name=None,
+        use_dualstack_endpoint=False,
+        use_fips_endpoint=False
+    ):
+        if (
+            service_name == 's3'
+            and use_dualstack_endpoint
+            and region_name is None
+        ):
             region_name = 'us-east-1'
+
         if partition_name is not None:
             valid_partition = None
             for partition in self._endpoint_data['partitions']:

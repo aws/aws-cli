@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.20.55
+=======
+
+* api-change:``glue``: This release adds tag as an input of CreateConnection
+* api-change:``location``: Add support for PositionFiltering.
+* api-change:``ec2``: Released Capacity Reservation Fleet, a feature of Amazon EC2 Capacity Reservations, which provides a way to manage reserved capacity across instance types. For more information: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/cr-fleets.html
+* api-change:``workmail``: This release allows customers to change their inbound DMARC settings in Amazon WorkMail.
+* api-change:``application-autoscaling``: With this release, Application Auto Scaling adds support for Amazon Neptune. Customers can now automatically add or remove Read Replicas of their Neptune clusters to keep the average CPU Utilization at the target value specified by the customers.
+* api-change:``backup``: AWS Backup Audit Manager framework report.
+
+
 1.20.54
 =======
 

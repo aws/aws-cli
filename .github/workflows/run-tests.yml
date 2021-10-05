@@ -26,10 +26,14 @@ jobs:
       run: |
         python scripts/ci/install
         python scripts/ci/install-check
-    - name: Run tests
-      run: python scripts/ci/run-tests --with-cov
     - name: Run checks
       run: python scripts/ci/run-check
+    - name: Run tests
+      run: python scripts/ci/run-tests --with-cov
+    - name: Run backend tests
+      run: |
+        pip uninstall -y awscli
+        python scripts/ci/run-backend-tests
     - name: codecov
       uses: codecov/codecov-action@v2
       with:

@@ -177,7 +177,8 @@ class Deployer(object):
                                "Status: {1}. Reason: {2}"
                                .format(ex, status, reason))
 
-    def execute_changeset(self, changeset_id, stack_name):
+    def execute_changeset(self, changeset_id, stack_name,
+                          disable_rollback=False):
         """
         Calls CloudFormation to execute changeset
 
@@ -187,7 +188,8 @@ class Deployer(object):
         """
         return self._client.execute_change_set(
                 ChangeSetName=changeset_id,
-                StackName=stack_name)
+                StackName=stack_name,
+                DisableRollback=disable_rollback)
 
     def wait_for_execute(self, stack_name, changeset_type):
 

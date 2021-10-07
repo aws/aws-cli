@@ -156,7 +156,8 @@ class SelectCommand(PaginatedDDBCommand):
     DESCRIPTION = (
         '``select`` searches a table or index.\n\n'
         'Under the hood, this operation will use ``query`` if '
-        '``--key-condition`` is specified, or ``scan`` otherwise.'
+        '``--key-condition`` is specified, or ``scan`` otherwise.\n\n'
+        'Only YAML output is supported for this operation.'
     )
     ARG_TABLE = [
         parameters.TABLE_NAME,

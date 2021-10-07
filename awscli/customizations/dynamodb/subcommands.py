@@ -85,7 +85,8 @@ class DDBCommand(BasicCommand):
         return response
 
     def _dump_yaml(self, operation_name, data, parsed_globals):
-        if parsed_globals.output == 'yaml-stream':
+        output_type = parsed_globals.output
+        if output_type != 'yaml':
             # TODO: In the future, we should support yaml-stream. However, it
             #  would require a larger refactoring. Right now we always build
             #  the full result when paginating prior to sending it to the
@@ -96,7 +97,7 @@ class DDBCommand(BasicCommand):
             #  For example, botocore cannot serialize our Binary types into
             #  a resume token when --max-items gets set.
             raise ParamValidationError(
-                'yaml-stream output format is not supported for ddb commands'
+                f'{output_type} output format is not supported for ddb commands'
             )
         formatter = YAMLFormatter(parsed_globals, DynamoYAMLDumper())
         with self._output_stream_factory.get_output_stream() as stream:

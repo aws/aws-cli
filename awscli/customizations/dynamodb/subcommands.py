@@ -86,7 +86,7 @@ class DDBCommand(BasicCommand):
 
     def _dump_yaml(self, operation_name, data, parsed_globals):
         output_type = parsed_globals.output
-        if output_type != 'yaml':
+        if output_type is not None and output_type != 'yaml':
             # TODO: In the future, we should support yaml-stream. However, it
             #  would require a larger refactoring. Right now we always build
             #  the full result when paginating prior to sending it to the

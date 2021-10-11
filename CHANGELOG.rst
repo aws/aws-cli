@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.20.59
+=======
+
+* api-change:``frauddetector``: New model type: Transaction Fraud Insights, which is optimized for online transaction fraud. Stored Events, which allows customers to send and store data directly within Amazon Fraud Detector. Batch Import, which allows customers to upload a CSV file of historic event data for processing and storage
+* api-change:``ec2``: Documentation update for Amazon EC2.
+* api-change:``medialive``: This release adds support for Transport Stream files as an input type to MediaLive encoders.
+* api-change:``elbv2``: Update elbv2 command to latest version
+
+
 1.20.58
 =======
 

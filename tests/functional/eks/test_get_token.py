@@ -13,6 +13,7 @@
 import base64
 from datetime import datetime
 import json
+import os
 
 from awscli.testutils import mock
 from awscli.testutils import BaseAWSCommandParamsTest
@@ -143,3 +144,105 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
             expected_endpoint='sts.cn-north-1.amazonaws.com.cn',
             expected_signing_region='cn-north-1'
         )
+
+    def test_api_version_discovery_deprecated(self):
+        os.environ["KUBERNETES_EXEC_INFO"] = '{"kind":"ExecCredential","apiVersion":"client.authentication.k8s.io/v1alpha1","spec":{"interactive":true}}'
+        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        stdout, stderr, _ = self.run_cmd(cmd)
+        response = json.loads(stdout)
+
+        self.assertEqual(
+            response["apiVersion"],
+           "client.authentication.k8s.io/v1alpha1",
+        )
+
+        self.assertEqual(
+            stderr,
+           ("Kubeconfig user entry is using deprecated API "
+            "version client.authentication.k8s.io/v1alpha1. Run 'aws eks update-kubeconfig' to update\n")
+        )
+
+        del os.environ["KUBERNETES_EXEC_INFO"]
+
+    def test_api_version_discovery_malformed(self):
+        os.environ["KUBERNETES_EXEC_INFO"] = '{{"kind":"ExecCredential","apiVersion":"client.authentication.k8s.io/v1alpha1","spec":{"interactive":true}}'
+        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        stdout, stderr, _ = self.run_cmd(cmd)
+        response = json.loads(stdout)
+
+        self.assertEqual(
+            response["apiVersion"],
+           "client.authentication.k8s.io/v1alpha1",
+        )
+
+        self.assertEqual(
+            stderr,
+           ("Error parsing KUBERNETES_EXEC_INFO, defaulting to client.authentication.k8s.io/v1alpha1. "
+            "This is likely a bug in your Kubernetes client. Please update your Kubernetes client.\n")
+        )
+
+        del os.environ["KUBERNETES_EXEC_INFO"]
+
+    def test_api_version_discovery_empty(self):
+        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        stdout, stderr, _ = self.run_cmd(cmd)
+        response = json.loads(stdout)
+
+        self.assertEqual(
+            response["apiVersion"],
+           "client.authentication.k8s.io/v1alpha1",
+        )
+
+        self.assertEqual(
+            stderr,
+           ("Empty KUBERNETES_EXEC_INFO, defaulting to client.authentication.k8s.io/v1alpha1. "
+            "This is likely a bug in your Kubernetes client. Please update your Kubernetes client.\n")
+        )
+    def test_api_version_discovery_v1(self):
+        os.environ["KUBERNETES_EXEC_INFO"] = '{"kind":"ExecCredential","apiVersion":"client.authentication.k8s.io/v1","spec":{"interactive":true}}'
+        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        stdout, stderr, _ = self.run_cmd(cmd)
+        response = json.loads(stdout)
+
+        self.assertEqual(
+            response["apiVersion"],
+           "client.authentication.k8s.io/v1",
+        )
+
+        self.assertEqual(stderr, "")
+
+        del os.environ["KUBERNETES_EXEC_INFO"]
+
+    def test_api_version_discovery_v1beta1(self):
+        os.environ["KUBERNETES_EXEC_INFO"] = '{"kind":"ExecCredential","apiVersion":"client.authentication.k8s.io/v1beta1","spec":{"interactive":true}}'
+        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        stdout, stderr, _ = self.run_cmd(cmd)
+        response = json.loads(stdout)
+
+        self.assertEqual(
+            response["apiVersion"],
+           "client.authentication.k8s.io/v1beta1",
+        )
+
+        self.assertEqual(stderr, "")
+
+        del os.environ["KUBERNETES_EXEC_INFO"]
+
+    def test_api_version_discovery_unknown(self):
+        os.environ["KUBERNETES_EXEC_INFO"] = '{"kind":"ExecCredential","apiVersion":"client.authentication.k8s.io/v2","spec":{"interactive":true}}'
+        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        stdout, stderr, _ = self.run_cmd(cmd)
+        response = json.loads(stdout)
+
+        self.assertEqual(
+            response["apiVersion"],
+           "client.authentication.k8s.io/v1alpha1",
+        )
+
+        self.assertEqual(
+            stderr,
+           ("Unrecognized API version in KUBERNETES_EXEC_INFO, defaulting to client.authentication.k8s.io/v1alpha1. "
+            "This is likely due to an outdated AWS CLI. Please update your AWS CLI.\n")
+        )
+
+        del os.environ["KUBERNETES_EXEC_INFO"]

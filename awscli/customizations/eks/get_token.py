@@ -13,6 +13,8 @@
 import base64
 import botocore
 import json
+import os
+import sys
 
 from datetime import datetime, timedelta
 from botocore.signers import RequestSigner
@@ -74,7 +76,7 @@ class GetTokenCommand(BasicCommand):
 
         full_object = {
             "kind": "ExecCredential",
-            "apiVersion": "client.authentication.k8s.io/v1alpha1",
+            "apiVersion": self.discover_api_version(),
             "spec": {},
             "status": {
                 "expirationTimestamp": token_expiration,
@@ -86,6 +88,72 @@ class GetTokenCommand(BasicCommand):
         uni_print('\n')
         return 0
 
+    def discover_api_version(self):
+        """
+        Parses the KUBERNETES_EXEC_INFO environment variable and returns the API
+        version. If the environment variable is empty, malformed, or invalid,
+        return the v1alpha1 response and print an message to stderr.
+
+        If the v1alpha1 API is specified explicitly, a message is printed to
+        stderr with instructions to update.
+
+        :return: The client authentication API version
+        :rtype: string
+        """
+        alpha_api = "client.authentication.k8s.io/v1alpha1"
+        beta_api = "client.authentication.k8s.io/v1beta1"
+        v1_api = "client.authentication.k8s.io/v1"
+        # At the time Kubernetes v1.29 is released upstream (aprox Dec 2023),
+        # "v1beta1" will be removed. At or around that time, EKS will likely
+        # support v1.22 through v1.28, in which client API version "v1beta1"
+        # will be supported by all EKS versions.
+        fallback_api_version = alpha_api
+
+        error_prefixes = {
+            "error": "Error parsing",
+            "empty": "Empty",
+        }
+
+        error_msg_tpl = ("{0} KUBERNETES_EXEC_INFO, defaulting "
+                    "to {1}. This is likely a bug in your Kubernetes "
+                    "client. Please update your Kubernetes client.")
+        unrecognized_msg = ("Unrecognized API version in KUBERNETES_EXEC_INFO, defaulting "
+                    "to {0}. This is likely due to an outdated AWS CLI."
+                    " Please update your AWS CLI.".format(fallback_api_version))
+        deprecation_msg_tpl = ("Kubeconfig user entry is using deprecated API "
+                    "version {0}. Run 'aws eks update-kubeconfig' to update")
+
+        exec_info_raw = os.environ.get("KUBERNETES_EXEC_INFO", "")
+        if len(exec_info_raw) == 0:
+            # All kube clients should be setting this, we'll return the fallback and write an error
+            sys.stderr.write(error_msg_tpl.format(error_prefixes["empty"], fallback_api_version))
+            sys.stderr.write("\n")
+            sys.stderr.flush()
+            return fallback_api_version
+        try:
+            exec_info = json.loads(exec_info_raw)
+        except json.JSONDecodeError as e:
+            # The environment variable was malformed
+            sys.stderr.write(error_msg_tpl.format(error_prefixes["error"], fallback_api_version))
+            sys.stderr.write("\n")
+            sys.stderr.flush()
+            return fallback_api_version
+
+        api_version_raw = exec_info.get("apiVersion")
+        if api_version_raw == v1_api:
+            return v1_api
+        if api_version_raw == beta_api:
+            return beta_api
+        if api_version_raw == alpha_api:
+            sys.stderr.write(deprecation_msg_tpl.format(alpha_api))
+            sys.stderr.write("\n")
+            sys.stderr.flush()
+            return alpha_api
+
+        sys.stderr.write(unrecognized_msg)
+        sys.stderr.write("\n")
+        sys.stderr.flush()
+        return fallback_api_version
 
 class TokenGenerator(object):
     def __init__(self, sts_client):

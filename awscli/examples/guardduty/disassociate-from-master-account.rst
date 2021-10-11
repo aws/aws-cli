@@ -1,6 +1,6 @@
 **To disassociate from your current master account in the current region**
 
-The following ``disassociate-from-master-account`` example dissassociates your account from the current GaurdDuty master account in the current AWS region. ::
+The following ``disassociate-from-master-account`` example dissassociates your account from the current GuardDuty master account in the current AWS region. ::
 
     aws guardduty disassociate-from-master-account \
         --detector-id d4b040365221be2b54a6264dcexample 

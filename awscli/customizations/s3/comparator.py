@@ -44,7 +44,7 @@ class Comparator(object):
         the ``S3Handler``.
 
         :param src_files: The generated FileInfo objects from the source.
-        :param dest_files: The genereated FileInfo objects from the dest.
+        :param dest_files: The generated FileInfo objects from the dest.
 
         :returns: Yields the FilInfo objects of the files that need to be
             operated on
@@ -61,7 +61,7 @@ class Comparator(object):
             but not the source file.  If the source list is empty delete the
             rest of the files in the dest list from the destination.  If the
             dest list is empty add the rest of the file in source list to
-            the destionation.
+            the destination.
         """
         # :var src_done: True if there are no more files from the source left.
         src_done = False

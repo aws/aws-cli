@@ -1123,7 +1123,7 @@ class CommandArchitecture(object):
         )
 
     def _map_sse_c_params(self, request_parameters, paths_type):
-        # SSE-C may be neaded for HeadObject for copies/downloads/deletes
+        # SSE-C may be needed for HeadObject for copies/downloads/deletes
         # If the operation is s3 to s3, the FileGenerator should use the
         # copy source key and algorithm. Otherwise, use the regular
         # SSE-C key and algorithm. Note the reverse FileGenerator does

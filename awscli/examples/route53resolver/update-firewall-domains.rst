@@ -5,8 +5,7 @@ The following ``update-firewall-domains`` example adds the domains to a domain l
     aws route53resolver update-firewall-domains \
         --firewall-domain-list-id rslvr-fdl-42b60677cexampleb \
         --operation ADD \
-        --domains test1.com test2.com test3.com \
-        --profile yw
+        --domains test1.com test2.com test3.com
 
 Output::
 

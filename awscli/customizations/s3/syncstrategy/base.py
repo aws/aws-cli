@@ -97,8 +97,8 @@ class BaseSync(object):
         that this method must return a Boolean as documented below.
 
         :type src_file: ``FileStat`` object
-        :param src_file: A representation of the opertaion that is to be
-            performed on a specfic file existing in the source.  Note if
+        :param src_file: A representation of the operation that is to be
+            performed on a specific file existing in the source.  Note if
             the file does not exist at the source, ``src_file`` is None.
 
         :type dest_file: ``FileStat`` object

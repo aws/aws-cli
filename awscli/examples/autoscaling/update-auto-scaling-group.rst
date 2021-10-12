@@ -1,20 +1,19 @@
-**Example 1: To update the size of an Auto Scaling group**
+**Example 1: To update the size limits of an Auto Scaling group**
 
-This example updates the desired capacity, maximum size, and minimum size of the specified Auto Scaling group. ::
+This example updates the specified Auto Scaling group with a minimum size of 2 and a maximum size of 10. ::
 
     aws autoscaling update-auto-scaling-group \
         --auto-scaling-group-name my-asg \
-        --desired-capacity 6 \
-        --max-size 10 \
-        --min-size 2 
+        --min-size 2 \
+        --max-size 10
 
 This command produces no output.
 
-For more information, see `Auto Scaling groups <https://docs.aws.amazon.com/autoscaling/ec2/userguide/AutoScalingGroup.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
+For more information, see `Setting capacity limits for your Auto Scaling group <https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-capacity-limits.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
 
 **Example 2: To add Elastic Load Balancing health checks and specify which Availability Zones and subnets to use**
 
-This example updates the specified Auto Scaling group to add Elastic Load Balancing health checks. This command also updates the value of ``--vpc-zone-identifier``. This helps you change the Availability Zones where the instances are located as well as the subnets. ::
+This example updates the specified Auto Scaling group to add Elastic Load Balancing health checks. This command also updates the value of ``--vpc-zone-identifier`` with a list of subnet IDs in multiple Availability Zones. ::
 
     aws autoscaling update-auto-scaling-group \
         --auto-scaling-group-name my-asg \
@@ -24,7 +23,7 @@ This example updates the specified Auto Scaling group to add Elastic Load Balanc
 
 This command produces no output.
 
-For more information, see `Auto Scaling groups <https://docs.aws.amazon.com/autoscaling/ec2/userguide/AutoScalingGroup.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
+For more information, see `Elastic Load Balancing and Amazon EC2 Auto Scaling <https://docs.aws.amazon.com/autoscaling/ec2/userguide/autoscaling-load-balancer.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
 
 **Example 3: To update the placement group and termination policy**
 
@@ -49,11 +48,11 @@ This example updates the specified Auto Scaling group to use the latest version 
 
 This command produces no output.
 
-For more information, see `Auto Scaling groups <https://docs.aws.amazon.com/autoscaling/ec2/userguide/AutoScalingGroup.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
+For more information, see `Launch templates <https://docs.aws.amazon.com/autoscaling/ec2/userguide/LaunchTemplates.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
 
 **Example 5: To use a specific version of the launch template**
 
-This example updates the specified Auto Scaling group to use a specific version of the specified launch template. ::
+This example updates the specified Auto Scaling group to use a specific version of a launch template instead of the latest or default version. ::
 
     aws autoscaling update-auto-scaling-group \
         --auto-scaling-group-name my-asg \
@@ -61,7 +60,7 @@ This example updates the specified Auto Scaling group to use a specific version 
 
 This command produces no output.
 
-For more information, see `Auto Scaling groups <https://docs.aws.amazon.com/autoscaling/ec2/userguide/AutoScalingGroup.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
+For more information, see `Launch templates <https://docs.aws.amazon.com/autoscaling/ec2/userguide/LaunchTemplates.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
 
 **Example 6: To define a mixed instances policy and enable capacity rebalancing**
 
@@ -106,4 +105,4 @@ Contents of ``config.json``::
 
 This command produces no output.
 
-For more information, see `Auto Scaling groups <https://docs.aws.amazon.com/autoscaling/ec2/userguide/AutoScalingGroup.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
+For more information, see `Auto Scaling groups with multiple instance types and purchase options <https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-purchase-options.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

@@ -5,12 +5,6 @@ The following ``list-related-items`` example lists the related items of the spec
     aws ssm-incidents list-related-items \
         --incident-record-arn "arn:aws:ssm-incidents::111122223333:incident-record/Example-Response-Plan/6ebcc812-85f5-b7eb-8b2f-283e4d844308"
 
-Contents of ``myfile.json``::
-
-    {
-        "somekey": "some value"
-    }
-
 Output::
 
     {
@@ -28,7 +22,7 @@ Output::
                 "identifier": {
                     "type": "PARENT",
                     "value": {
-                        "arn": "arn:aws:ssm:us-east-1:111122223333:opsItem/oi-8084126392ac"
+                        "arn": "arn:aws:ssm:us-east-1:111122223333:opsitem/oi-8084126392ac"
                     }
                 },
                 "title": "parentItem"

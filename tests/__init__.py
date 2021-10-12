@@ -23,7 +23,7 @@ if os.environ.get('TESTS_REMOVE_REPO_ROOT_FROM_PATH'):
 import awscli
 from awscli.clidriver import create_clidriver, AWSCLIEntryPoint
 from awscli.compat import collections_abc
-from awscli.testutils import mock, capture_output
+from awscli.testutils import unittest, mock, capture_output, skip_if_windows
 
 import botocore.awsrequest
 import botocore.loaders
@@ -38,6 +38,14 @@ import prompt_toolkit.input.defaults
 import prompt_toolkit.keys
 import prompt_toolkit.utils
 import prompt_toolkit.key_binding.key_processor
+
+# Botocore testing utilities that we want to preserve import statements for
+# in botocore specific tests.
+from tests.utils.botocore import (
+    assert_url_equal, create_session, random_chars, temporary_file, BaseEnvVar,
+    BaseSessionTest, BaseClientDriverTest, StubbedSession, ClientHTTPStubber,
+    SessionHTTPStubber, ConsistencyWaiter, IntegerRefresher, FreezeTime,
+)
 
 # A shared loader to use for classes in this module. This allows us to
 # load models outside of influence of a session and take advantage of

@@ -1,6 +1,6 @@
 import botocore.crt.auth
 
-from tests.unit.auth.test_signers import (
+from tests.unit.botocore.auth.test_signers import (
     TestS3SigV4Auth, TestSigV4Presign, TestSigV4Resign
 )
 

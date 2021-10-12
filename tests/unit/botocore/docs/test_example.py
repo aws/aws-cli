@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import mock
 
-from tests.unit.docs import BaseDocsTest
+from tests.unit.botocore.docs import BaseDocsTest
 from botocore.hooks import HierarchicalEmitter
 from botocore.docs.example import ResponseExampleDocumenter
 from botocore.docs.example import RequestExampleDocumenter

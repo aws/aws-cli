@@ -14,7 +14,7 @@ import os
 
 import mock
 
-from tests.unit.docs import BaseDocsTest
+from tests.unit.botocore.docs import BaseDocsTest
 from botocore.session import get_session
 from botocore.docs.service import ServiceDocumenter
 

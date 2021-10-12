@@ -14,7 +14,7 @@ import os
 
 from botocore.session import Session
 from tests import ClientHTTPStubber
-from tests.functional import TEST_MODELS_DIR
+from tests.functional.botocore import TEST_MODELS_DIR
 
 
 def test_old_model_continues_to_work():

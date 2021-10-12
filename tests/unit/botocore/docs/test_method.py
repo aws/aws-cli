@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from tests import unittest
-from tests.unit.docs import BaseDocsTest
+from tests.unit.botocore.docs import BaseDocsTest
 from botocore.hooks import HierarchicalEmitter
 from botocore.docs.method import document_model_driven_signature
 from botocore.docs.method import document_custom_signature

@@ -155,5 +155,5 @@ def test_get_requires_for_build_wheel(config_settings, repo_root):
     assert requirements == expected_requirements
     # Also assert that some of the runtime dependencies we expect are actually
     # being from the setup.cfg
-    assert_dependency_in_requirements('botocore', requirements)
+    assert_dependency_in_requirements('urllib3', requirements)
     assert_dependency_in_requirements('awscrt', requirements)

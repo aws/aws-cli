@@ -22,8 +22,8 @@ from tests import skip_if_windows
 from tests import skip_if_using_serial_implementation
 from tests import RecordingSubscriber
 from tests import NonSeekableWriter
-from tests.integration import BaseTransferManagerIntegTest
-from tests.integration import WaitForTransferStart
+from tests.integration.s3transfer import BaseTransferManagerIntegTest
+from tests.integration.s3transfer import WaitForTransferStart
 from s3transfer.manager import TransferConfig
 
 

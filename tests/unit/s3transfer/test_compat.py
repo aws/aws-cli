@@ -77,31 +77,3 @@ class TestReadable(unittest.TestCase):
 
     def test_non_file_like_obj(self):
         self.assertFalse(readable(object()))
-
-
-class TestBaseManager(unittest.TestCase):
-    def create_pid_manager(self):
-        class PIDManager(BaseManager):
-            pass
-
-        PIDManager.register('getpid', os.getpid)
-        return PIDManager()
-
-    def get_pid(self, pid_manager):
-        pid = pid_manager.getpid()
-        # A proxy object is returned back. The needed value can be acquired
-        # from the repr and converting that to an integer
-        return int(str(pid))
-
-    @skip_if_windows('os.kill() with SIGINT not supported on Windows')
-    def test_can_provide_signal_handler_initializers_to_start(self):
-        manager = self.create_pid_manager()
-        manager.start(signal.signal, (signal.SIGINT, signal.SIG_IGN))
-        pid = self.get_pid(manager)
-        try:
-            os.kill(pid, signal.SIGINT)
-        except KeyboardInterrupt:
-            pass
-        # Try using the manager after the os.kill on the parent process. The
-        # manager should not have died and should still be usable.
-        self.assertEqual(pid, self.get_pid(manager))

@@ -72,6 +72,13 @@ class BaseTransferManagerIntegTest(unittest.TestCase):
     def tearDownClass(cls):
         recursive_delete(cls.client, cls.bucket_name)
 
+    def create_client(self, **override_kwargs):
+        kwargs = {
+            'region_name': self.region
+        }
+        kwargs.update(override_kwargs)
+        return self.session.create_client('s3', **kwargs)
+
     def delete_object(self, key):
         self.client.delete_object(
             Bucket=self.bucket_name,
@@ -107,8 +114,10 @@ class BaseTransferManagerIntegTest(unittest.TestCase):
                 **extra_args
             )
 
-    def create_transfer_manager(self, config=None):
-        return TransferManager(self.client, config=config)
+    def create_transfer_manager(self, config=None, client=None):
+        if client is None:
+            client = self.client
+        return TransferManager(client, config=config)
 
     def upload_file(self, filename, key, extra_args=None):
         transfer = self.create_transfer_manager()

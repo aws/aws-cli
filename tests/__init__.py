@@ -23,7 +23,9 @@ if os.environ.get('TESTS_REMOVE_REPO_ROOT_FROM_PATH'):
 import awscli
 from awscli.clidriver import create_clidriver, AWSCLIEntryPoint
 from awscli.compat import collections_abc
-from awscli.testutils import unittest, mock, capture_output, skip_if_windows
+from awscli.testutils import (
+    unittest, mock, capture_output, skip_if_windows, FileCreator
+)
 
 import botocore.awsrequest
 import botocore.loaders
@@ -45,6 +47,16 @@ from tests.utils.botocore import (
     assert_url_equal, create_session, random_chars, temporary_file, BaseEnvVar,
     BaseSessionTest, BaseClientDriverTest, StubbedSession, ClientHTTPStubber,
     SessionHTTPStubber, ConsistencyWaiter, IntegerRefresher, FreezeTime,
+)
+# S3transfer testing utilities that we want to preserve import statements for
+# in s3transfer specific tests.
+from tests.utils.s3transfer import (
+     HAS_CRT, requires_crt, skip_if_using_serial_implementation,
+     random_bucket_name, assert_files_equal,
+     NonSeekableReader, NonSeekableWriter, StreamWithError,
+     RecordingSubscriber, FileSizeProvider, RecordingOSUtils,
+     RecordingExecutor, TransferCoordinatorWithInterrupt, BaseTaskTest,
+     BaseSubmissionTaskTest, BaseGeneralInterfaceTest, StubbedClientTest,
 )
 
 # A shared loader to use for classes in this module. This allows us to

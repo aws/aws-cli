@@ -16,10 +16,11 @@ import threading
 from concurrent.futures import CancelledError
 
 from botocore.compat import six
+from botocore.config import Config
 from tests import skip_if_using_serial_implementation
 from tests import RecordingSubscriber, NonSeekableReader
-from tests.integration import BaseTransferManagerIntegTest
-from tests.integration import WaitForTransferStart
+from tests.integration.s3transfer import BaseTransferManagerIntegTest
+from tests.integration.s3transfer import WaitForTransferStart
 from s3transfer.manager import TransferConfig
 
 
@@ -29,6 +30,12 @@ class TestUpload(BaseTransferManagerIntegTest):
         self.multipart_threshold = 5 * 1024 * 1024
         self.config = TransferConfig(
             multipart_threshold=self.multipart_threshold)
+        # Client for ensuring any exceptions we throw while sending the body
+        # are not retried for the purposes of testing the ability to exit
+        # quickly.
+        self.client_with_no_retries = self.create_client(
+            config=Config(retries={'max_attempts': 1})
+        )
 
     def get_input_fileobj(self, size, name=''):
         return self.files.create_file_with_size(name, size)
@@ -59,7 +66,8 @@ class TestUpload(BaseTransferManagerIntegTest):
         'KeyboardInterrupt being thrown.'
     )
     def test_large_upload_exits_quicky_on_exception(self):
-        transfer_manager = self.create_transfer_manager(self.config)
+        transfer_manager = self.create_transfer_manager(
+            self.config, self.client_with_no_retries)
 
         filename = self.get_input_fileobj(
             name='foo.txt', size=20 * 1024 * 1024)
@@ -119,7 +127,8 @@ class TestUpload(BaseTransferManagerIntegTest):
         # of transfer requests to complete and it is backed up.
         self.config.max_request_queue_size = 1
         self.config.max_submission_concurrency = 1
-        transfer_manager = self.create_transfer_manager(self.config)
+        transfer_manager = self.create_transfer_manager(
+            self.config, self.client_with_no_retries)
 
         fileobjs = []
         keynames = []

@@ -18,7 +18,7 @@ import shutil
 import hashlib
 import string
 
-from tests.integration import BaseTransferManagerIntegTest
+from tests.integration.s3transfer import BaseTransferManagerIntegTest
 from botocore.compat import six
 from botocore.client import Config
 

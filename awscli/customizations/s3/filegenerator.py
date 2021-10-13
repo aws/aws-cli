@@ -352,6 +352,8 @@ class FileGenerator(object):
         try:
             params = {'Bucket': bucket, 'Key': key}
             params.update(self.request_parameters.get('HeadObject', {}))
+            del params['SSECustomerAlgorithm']
+            del params['SSECustomerKey']
             response = self._client.head_object(**params)
         except ClientError as e:
             # We want to try to give a more helpful error message.

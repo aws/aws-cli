@@ -2,6 +2,74 @@
 CHANGELOG
 =========
 
+1.20.60
+=======
+
+* api-change:``ecs``: Documentation only update to address tickets.
+* api-change:``mediatailor``: MediaTailor now supports ad prefetching.
+* api-change:``cloudsearch``: Adds an additional validation exception for Amazon CloudSearch configuration APIs for better error handling.
+* api-change:``ec2``: EncryptionSupport for InstanceStorageInfo added to DescribeInstanceTypes API
+
+
+1.20.59
+=======
+
+* api-change:``frauddetector``: New model type: Transaction Fraud Insights, which is optimized for online transaction fraud. Stored Events, which allows customers to send and store data directly within Amazon Fraud Detector. Batch Import, which allows customers to upload a CSV file of historic event data for processing and storage
+* api-change:``ec2``: Documentation update for Amazon EC2.
+* api-change:``medialive``: This release adds support for Transport Stream files as an input type to MediaLive encoders.
+* api-change:``elbv2``: Update elbv2 command to latest version
+
+
+1.20.58
+=======
+
+* api-change:``mediaconvert``: AWS Elemental MediaConvert has added the ability to set account policies which control access restrictions for HTTP, HTTPS, and S3 content sources.
+* api-change:``ec2``: This release removes a requirement for filters on SearchLocalGatewayRoutes operations.
+* api-change:``secretsmanager``: Documentation updates for Secrets Manager
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``securityhub``: Added new resource details objects to ASFF, including resources for WAF rate-based rules, EC2 VPC endpoints, ECR repositories, EKS clusters, X-Ray encryption, and OpenSearch domains. Added additional details for CloudFront distributions, CodeBuild projects, ELB V2 load balancers, and S3 buckets.
+* api-change:``lexv2-runtime``: Update lexv2-runtime command to latest version
+
+
+1.20.57
+=======
+
+* api-change:``backup``: Launch of AWS Backup Vault Lock, which protects your backups from malicious and accidental actions, works with existing backup policies, and helps you meet compliance requirements.
+* api-change:``grafana``: Initial release of the SDK for Amazon Managed Grafana API.
+* api-change:``schemas``: Removing unused request/response objects.
+* api-change:``firehose``: Allow support for Amazon Opensearch Service(successor to Amazon Elasticsearch Service) as a Kinesis Data Firehose delivery destination.
+* api-change:``chime``: This release enables customers to configure Chime MediaCapturePipeline via API.
+* api-change:``kendra``: Amazon Kendra now supports indexing and querying documents in different languages.
+
+
+1.20.56
+=======
+
+* api-change:``sagemaker``: This release adds a new TrainingInputMode FastFile for SageMaker Training APIs.
+* api-change:``amplifybackend``: Adding a new field 'AmplifyFeatureFlags' to the response of the GetBackend operation. It will return a stringified version of the cli.json file for the given Amplify project.
+* api-change:``kendra``: Amazon Kendra now supports integration with AWS SSO
+* api-change:``fsx``: This release adds support for Lustre 2.12 to FSx for Lustre.
+
+
+1.20.55
+=======
+
+* api-change:``glue``: This release adds tag as an input of CreateConnection
+* api-change:``location``: Add support for PositionFiltering.
+* api-change:``ec2``: Released Capacity Reservation Fleet, a feature of Amazon EC2 Capacity Reservations, which provides a way to manage reserved capacity across instance types. For more information: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/cr-fleets.html
+* api-change:``workmail``: This release allows customers to change their inbound DMARC settings in Amazon WorkMail.
+* api-change:``application-autoscaling``: With this release, Application Auto Scaling adds support for Amazon Neptune. Customers can now automatically add or remove Read Replicas of their Neptune clusters to keep the average CPU Utilization at the target value specified by the customers.
+* api-change:``backup``: AWS Backup Audit Manager framework report.
+
+
+1.20.54
+=======
+
+* api-change:``kms``: Added SDK examples for ConnectCustomKeyStore, CreateCustomKeyStore, CreateKey, DeleteCustomKeyStore, DescribeCustomKeyStores, DisconnectCustomKeyStore, GenerateDataKeyPair, GenerateDataKeyPairWithoutPlaintext, GetPublicKey, ReplicateKey, Sign, UpdateCustomKeyStore and Verify APIs
+* api-change:``efs``: Update efs command to latest version
+* api-change:``codebuild``: CodeBuild now allows you to select how batch build statuses are sent to the source provider for a project.
+
+
 1.20.53
 =======
 

@@ -11,7 +11,6 @@ from subprocess import check_call
 _dname = os.path.dirname
 
 REPO_ROOT = _dname(_dname(_dname(os.path.abspath(__file__))))
-PACKAGE = "awscli"
 
 
 @contextmanager
@@ -37,7 +36,11 @@ def process_args(args):
     test_args = ""
     if args.with_cov:
         test_args += (
-            f"--cov={PACKAGE} "
+            # Even though botocore and s3transfer reside in the awscli package,
+            # they are often imported via their top-level import alias in the
+            # codebase. Explicitly including them in --cov args ensures we
+            # include usage of these aliases for coverage purposes.
+            f"--cov=awscli --cov=botocore --cov=s3transfer "
             f"--cov-config={os.path.join(REPO_ROOT, '.coveragerc')} "
             f"--cov-report xml "
         )

@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import threading
+import time
 import re
 from concurrent.futures import Future
 
@@ -176,6 +177,9 @@ class TestCRTTransferManager(unittest.TestCase):
             thread = submitThread(self.transfer_manager, futures, callargs)
             thread.start()
             threads.append(thread)
+        # Sleep until the expected max requests has been reached
+        while len(futures) < max_request_processes:
+            time.sleep(0.05)
         self.assertLessEqual(
             self.s3_crt_client.make_request.call_count,
             max_request_processes)

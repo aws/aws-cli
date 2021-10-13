@@ -291,7 +291,7 @@ class TestBuiltinEventHandlers(BaseSessionTest):
         self.foo_called = True
 
     def tearDown(self):
-        super(TestBuiltinEventHandlers, self).setUp()
+        super(TestBuiltinEventHandlers, self).tearDown()
         self.handler_patch.stop()
 
     def test_registered_builtin_handlers(self):

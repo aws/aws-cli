@@ -24,6 +24,7 @@ class TestMturk(BaseSessionTest):
         self.stubber.activate()
 
     def tearDown(self):
+        super(TestMturk, self).tearDown()
         self.stubber.deactivate()
 
     def test_list_hits_aliased(self):

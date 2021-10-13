@@ -1,3 +1,5 @@
+**Sync from local directory to S3 bucket**
+
 The following ``sync`` command syncs objects under a specified prefix and bucket to files in a local directory by
 uploading the local files to s3.  A local file will require uploading if the local file does not exist under the specified 
 bucket and prefix.  A local file will also require uploading if the size of the local file is different than
@@ -11,6 +13,8 @@ Output::
 
     upload: test.txt to s3://mybucket/test.txt
     upload: test2.txt to s3://mybucket/test2.txt
+    
+**Sync from S3 bucket to another S3 bucket**
 
 The following ``sync`` command syncs objects under a specified prefix and bucket to objects under another specified
 prefix and bucket by copying s3 objects.  An s3 object will require copying if the sizes of the two s3 objects differ,
@@ -25,6 +29,8 @@ Output::
 
     copy: s3://mybucket/test.txt to s3://mybucket2/test.txt
     copy: s3://mybucket/test2.txt to s3://mybucket2/test2.txt
+    
+**Sync from s3 bucket to local directory**
 
 The following ``sync`` command syncs files in a local directory to objects under a specified prefix and bucket by
 downloading s3 objects.  An s3 object will require downloading if the s3 object does not exist in the local directory.  
@@ -40,6 +46,8 @@ Output::
 
     download: s3://mybucket/test.txt to test.txt
     download: s3://mybucket/test2.txt to test2.txt
+    
+**Sync from local directory to S3 bucket while deleting files that exist in the destination but not in the source**
 
 The following ``sync`` command syncs objects under a specified prefix and bucket to files in a local directory by
 uploading the local files to s3.  Because the ``--delete`` parameter flag is thrown, any files existing under the
@@ -54,6 +62,8 @@ Output::
     upload: test.txt to s3://mybucket/test.txt
     upload: test2.txt to s3://mybucket/test2.txt
     delete: s3://mybucket/test3.txt
+    
+**Sync from local directory to S3 bucket while excluding files that match a specified pattern**
 
 The following ``sync`` command syncs objects under a specified prefix and bucket to files in a local directory by
 uploading the local files to s3.  Because the ``--exclude`` parameter flag is thrown, all files matching the pattern
@@ -66,6 +76,8 @@ bucket ``mybucket`` contains the object ``test.jpg`` of a different size than th
 Output::
 
     upload: test2.txt to s3://mybucket/test2.txt
+    
+**Sync from S3 bucket to local directory while excluding objects that match a specified pattern**
 
 The following ``sync`` command syncs files under a local directory to objects under a specified prefix and bucket by
 downloading s3 objects.  This example uses the ``--exclude`` parameter flag to exclude a specified directory
@@ -78,6 +90,8 @@ and s3 prefix from the ``sync`` command.  In this example, the user syncs the lo
 Output::
 
     download: s3://mybucket/test1.txt to test1.txt
+    
+**Sync from S3 bucket to another S3 bucket in a different region**
 
 The following ``sync`` command syncs files between two buckets in different regions::
 

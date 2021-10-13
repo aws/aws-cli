@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.20.61
+=======
+
+* api-change:``workmail``: This release adds APIs for adding, removing and retrieving details of mail domains
+* api-change:``ec2``: This release adds support for additional VPC Flow Logs delivery options to S3, such as Apache Parquet formatted files, Hourly partitions and Hive-compatible S3 prefixes
+* api-change:``kinesisanalyticsv2``: Support for Apache Flink 1.13 in Kinesis Data Analytics. Changed the required status of some Update properties to better fit the corresponding Create properties.
+* api-change:``config``: Adding Config support for AWS::OpenSearch::Domain
+* api-change:``storagegateway``: Adding support for Audit Logs on NFS shares and Force Closing Files on SMB shares.
+
+
 1.20.60
 =======
 

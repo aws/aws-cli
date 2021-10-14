@@ -30,7 +30,7 @@ The SNS topic must have an IAM policy attached to it that allows Amazon S3 to pu
      "Action": [
       "SNS:Publish"
      ],
-     "Resource": "arn:aws:sns:us-west-2:123456789012:my-bucket",
+     "Resource": "arn:aws:sns:us-west-2:123456789012:s3-notification-topic",
      "Condition": {
         "ArnLike": {          
         "aws:SourceArn": "arn:aws:s3:*:*:my-bucket"    

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.20.64
+=======
+
+* api-change:``quicksight``: AWS QuickSight Service  Features    - Add IP Restriction UI and public APIs support.
+* api-change:``ivs``: Bug fix: remove unsupported maxResults and nextToken pagination parameters from ListTagsForResource
+
+
 1.20.63
 =======
 

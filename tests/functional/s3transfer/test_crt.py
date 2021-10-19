@@ -10,9 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import fnmatch
 import threading
 import time
-import re
 from concurrent.futures import Future
 
 from botocore.session import Session
@@ -135,8 +135,11 @@ class TestCRTTransferManager(unittest.TestCase):
         callargs_kwargs = callargs[1]
         # the recv_filepath will be set to a temporary file path with some
         # random suffix
-        self.assertTrue(re.match(self.filename + ".*",
-                                 callargs_kwargs["recv_filepath"]))
+        self.assertTrue(
+            fnmatch.fnmatch(
+                callargs_kwargs["recv_filepath"], f'{self.filename}.*',
+            )
+        )
         self.assertIsNone(callargs_kwargs["send_filepath"])
         self.assertEqual(callargs_kwargs["type"],
                          awscrt.s3.S3RequestType.GET_OBJECT)

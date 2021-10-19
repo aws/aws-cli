@@ -38,7 +38,8 @@ SPECIAL_CASES = [
 ]
 
 
-def _test_parsed_response(xmlfile, response_body, operation_model, expected):
+def _test_parsed_response(xmlfile, operation_model, expected):
+    response_body = _get_raw_response_body(xmlfile)
     response = {
         'body': response_body,
         'status_code': 200,
@@ -121,17 +122,16 @@ def _xml_test_cases():
             for xmlfile in service_xml_files:
                 expected = _get_expected_parsed_result(xmlfile)
                 operation_model = _get_operation_model(service_model, xmlfile)
-                raw_response_body = _get_raw_response_body(xmlfile)
-                yield xmlfile, raw_response_body, operation_model, expected
+                yield xmlfile, operation_model, expected
 
 
 @pytest.mark.parametrize(
-    "xmlfile, raw_response_body, operation_model, expected",
+    "xmlfile, operation_model, expected",
     _xml_test_cases()
 )
-def test_xml_parsing(xmlfile, raw_response_body, operation_model, expected):
+def test_xml_parsing(xmlfile, operation_model, expected):
     _test_parsed_response(
-        xmlfile, raw_response_body, operation_model, expected
+        xmlfile, operation_model, expected
     )
 
 
@@ -189,18 +189,16 @@ def _json_test_cases():
         for op_name in operation_names:
             if xform_name(op_name) == operation_name.replace('-', '_'):
                 operation_model = service_model.operation_model(op_name)
-        with open(raw_response_file, 'rb') as f:
-            raw_response_body = f.read()
-        yield raw_response_file, raw_response_body, operation_model, expected
+        yield raw_response_file, operation_model, expected
 
 
 @pytest.mark.parametrize(
-    "raw_response_file, raw_response_body, operation_model, expected",
+    "raw_response_file, operation_model, expected",
     _json_test_cases()
 )
 def test_json_errors_parsing(
-    raw_response_file, raw_response_body, operation_model, expected
+    raw_response_file, operation_model, expected
 ):
     _test_parsed_response(
-        raw_response_file, raw_response_body, operation_model, expected
+        raw_response_file, operation_model, expected
     )

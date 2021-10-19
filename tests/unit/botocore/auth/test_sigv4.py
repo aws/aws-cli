@@ -88,7 +88,9 @@ def generate_test_cases():
         if not any(f.endswith('.req') for f in filenames):
             continue
 
-        test_case = os.path.relpath(dirpath, TESTSUITE_DIR)
+        test_case = os.path.relpath(dirpath, TESTSUITE_DIR).replace(
+            os.sep, '/'
+        )
         if test_case in TESTS_TO_IGNORE:
             log.debug("Skipping test: %s", test_case)
             continue

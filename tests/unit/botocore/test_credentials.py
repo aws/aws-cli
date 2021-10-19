@@ -3338,7 +3338,7 @@ class TestSSOProvider(unittest.TestCase):
             'sso_role_name': self.role_name,
             'sso_account_id': self.account_id,
         }
-        self.expires_at =  datetime.now(tzlocal()) + timedelta(hours=24)
+        self.expires_at = datetime.now(tzutc()) + timedelta(hours=24)
         self.cached_creds_key = '048db75bbe50955c16af7aba6ff9c41a3131bb7e'
         self.cached_token_key = '13f9d35043871d073ab260e020f0ffde092cb14b'
         self.cache = {

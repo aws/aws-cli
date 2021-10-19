@@ -2629,6 +2629,27 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.20.65
+=======
+
+* api-change:``dataexchange``: This release adds support for our public preview of AWS Data Exchange for Amazon Redshift. This enables data providers to list products including AWS Data Exchange datashares for Amazon Redshift, giving subscribers read-only access to provider data in Amazon Redshift.
+* api-change:``chime-sdk-messaging``: The Amazon Chime SDK now allows developers to execute business logic on in-flight messages before they are delivered to members of a messaging channel with channel flows.
+
+
+1.20.64
+=======
+
+* api-change:``quicksight``: AWS QuickSight Service  Features    - Add IP Restriction UI and public APIs support.
+* api-change:``ivs``: Bug fix: remove unsupported maxResults and nextToken pagination parameters from ListTagsForResource
+
+
+1.20.63
+=======
+
+* api-change:``glue``: Enable S3 event base crawler API.
+* api-change:``efs``: Update efs command to latest version
+
+
 1.20.62
 =======
 
